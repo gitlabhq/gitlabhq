@@ -1,6 +1,6 @@
 <script>
-import { __ } from '~/locale';
 import { GlSprintf, GlLink } from '@gitlab/ui';
+import { __ } from '~/locale';
 import { BLOB_RENDER_ERRORS } from './constants';
 
 export default {

@@ -5,7 +5,7 @@ module Clusters
     include Gitlab::Utils::StrongMemoize
 
     MAX_ACCEPTABLE_ARTIFACT_SIZE = 5.kilobytes
-    RELEASE_NAMES = %w[prometheus cilium].freeze
+    RELEASE_NAMES = %w[cilium].freeze
 
     def initialize(job, current_user)
       @job = job
@@ -14,8 +14,6 @@ module Clusters
     end
 
     def execute(artifact)
-      return success unless Feature.enabled?(:cluster_applications_artifact, project)
-
       raise ArgumentError, 'Artifact is not cluster_applications file type' unless artifact&.cluster_applications?
 
       return error(too_big_error_message, :bad_request) unless artifact.file.size < MAX_ACCEPTABLE_ARTIFACT_SIZE
@@ -46,6 +44,8 @@ module Clusters
       releases = []
 
       artifact.each_blob do |blob|
+        next if blob.empty?
+
         releases.concat(Gitlab::Kubernetes::Helm::Parsers::ListV2.new(blob).releases)
       end
 

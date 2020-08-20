@@ -64,6 +64,12 @@ module QA
           super
         end
 
+        def click_element_coordinates(name)
+          log(%Q(clicking the coordinates of :#{name}))
+
+          super
+        end
+
         def click_element(name, page = nil, **kwargs)
           msg = ["clicking :#{name}"]
           msg << ", expecting to be at #{page.class}" if page
@@ -120,7 +126,7 @@ module QA
           found
         end
 
-        def finished_loading?
+        def finished_loading?(wait: QA::Support::Repeater::DEFAULT_MAX_WAIT_TIME)
           log('waiting for loading to complete...')
           now = Time.now
 

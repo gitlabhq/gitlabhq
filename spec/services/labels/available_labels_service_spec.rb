@@ -10,7 +10,7 @@ RSpec.describe Labels::AvailableLabelsService do
   let(:other_project_label) { create(:label) }
   let(:group_label) { create(:group_label, group: group) }
   let(:other_group_label) { create(:group_label) }
-  let(:labels) { [project_label, other_project_label, group_label, other_group_label] }
+  let!(:labels) { [project_label, other_project_label, group_label, other_group_label] }
 
   describe '#find_or_create_by_titles' do
     let(:label_titles) { labels.map(&:title).push('non existing title') }
@@ -86,6 +86,34 @@ RSpec.describe Labels::AvailableLabelsService do
         result = described_class.new(user, group, ids: label_ids).filter_labels_ids_in_param(:ids)
 
         expect(result).to match_array([group_label.id])
+      end
+    end
+
+    it 'accepts a single id parameter' do
+      result = described_class.new(user, project, label_id: project_label.id).filter_labels_ids_in_param(:label_id)
+
+      expect(result).to match_array([project_label.id])
+    end
+  end
+
+  describe '#available_labels' do
+    context 'when parent is a project' do
+      it 'returns only relevant labels' do
+        result = described_class.new(user, project, {}).available_labels
+
+        expect(result.count).to eq(2)
+        expect(result).to include(project_label, group_label)
+        expect(result).not_to include(other_project_label, other_group_label)
+      end
+    end
+
+    context 'when parent is a group' do
+      it 'returns only relevant labels' do
+        result = described_class.new(user, group, {}).available_labels
+
+        expect(result.count).to eq(1)
+        expect(result).to include(group_label)
+        expect(result).not_to include(project_label, other_project_label, other_group_label)
       end
     end
   end

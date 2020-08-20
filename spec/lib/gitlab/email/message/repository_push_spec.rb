@@ -18,10 +18,12 @@ RSpec.describe Gitlab::Email::Message::RepositoryPush do
       { author_id: author.id, ref: 'master', action: :push, compare: compare,
         send_from_committer_email: true }
     end
+
     let(:raw_compare) do
       Gitlab::Git::Compare.new(project.repository.raw_repository,
         sample_image_commit.id, sample_commit.id)
     end
+
     let(:compare) do
       Compare.decorate(raw_compare, project)
     end

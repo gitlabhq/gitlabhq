@@ -117,7 +117,7 @@ The following are required to run Geo:
   The following operating systems are known to ship with a current version of OpenSSH:
   - [CentOS](https://www.centos.org) 7.4+
   - [Ubuntu](https://ubuntu.com) 16.04+
-- PostgreSQL 11+ with [FDW](https://www.postgresql.org/docs/11/postgres-fdw.html) support and [Streaming Replication](https://wiki.postgresql.org/wiki/Streaming_Replication)
+- PostgreSQL 11+ with [Streaming Replication](https://wiki.postgresql.org/wiki/Streaming_Replication)
 - Git 2.9+
 - All nodes must run the same GitLab version.
 
@@ -166,7 +166,6 @@ The tracking database instance is used as metadata to control what needs to be u
 - Fetch changes from a repository that has recently been updated.
 
 Because the replicated database instance is read-only, we need this additional database instance for each **secondary** node.
-The tracking database requires the `postgres_fdw` extension.
 
 ### Geo Log Cursor
 

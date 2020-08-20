@@ -1,6 +1,7 @@
 import $ from 'jquery';
 import ContextualSidebar from './contextual_sidebar';
 import initFlyOutNav from './fly_out_nav';
+import initWhatsNew from '~/whats_new';
 
 function hideEndFade($scrollingTabs) {
   $scrollingTabs.each(function scrollTabsLoop() {
@@ -20,6 +21,7 @@ export default function initLayoutNav() {
   contextualSidebar.bindEvents();
 
   initFlyOutNav();
+  initWhatsNew();
 
   // We need to init it on DomContentLoaded as others could also call it
   $(document).on('init.scrolling-tabs', () => {

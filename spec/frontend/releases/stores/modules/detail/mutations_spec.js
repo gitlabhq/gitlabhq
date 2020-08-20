@@ -21,6 +21,22 @@ describe('Release detail mutations', () => {
     release = convertObjectPropsToCamelCase(originalRelease);
   });
 
+  describe(`${types.INITIALIZE_EMPTY_RELEASE}`, () => {
+    it('set state.release to an empty release object', () => {
+      mutations[types.INITIALIZE_EMPTY_RELEASE](state);
+
+      expect(state.release).toEqual({
+        tagName: null,
+        name: '',
+        description: '',
+        milestones: [],
+        assets: {
+          links: [],
+        },
+      });
+    });
+  });
+
   describe(`${types.REQUEST_RELEASE}`, () => {
     it('set state.isFetchingRelease to true', () => {
       mutations[types.REQUEST_RELEASE](state);
@@ -56,6 +72,26 @@ describe('Release detail mutations', () => {
     });
   });
 
+  describe(`${types.UPDATE_RELEASE_TAG_NAME}`, () => {
+    it("updates the release's tag name", () => {
+      state.release = release;
+      const newTag = 'updated-tag-name';
+      mutations[types.UPDATE_RELEASE_TAG_NAME](state, newTag);
+
+      expect(state.release.tagName).toBe(newTag);
+    });
+  });
+
+  describe(`${types.UPDATE_CREATE_FROM}`, () => {
+    it('updates the ref that the ref will be created from', () => {
+      state.createFrom = 'main';
+      const newRef = 'my-feature-branch';
+      mutations[types.UPDATE_CREATE_FROM](state, newRef);
+
+      expect(state.createFrom).toBe(newRef);
+    });
+  });
+
   describe(`${types.UPDATE_RELEASE_TITLE}`, () => {
     it("updates the release's title", () => {
       state.release = release;
@@ -76,17 +112,17 @@ describe('Release detail mutations', () => {
     });
   });
 
-  describe(`${types.REQUEST_UPDATE_RELEASE}`, () => {
+  describe(`${types.REQUEST_SAVE_RELEASE}`, () => {
     it('set state.isUpdatingRelease to true', () => {
-      mutations[types.REQUEST_UPDATE_RELEASE](state);
+      mutations[types.REQUEST_SAVE_RELEASE](state);
 
       expect(state.isUpdatingRelease).toBe(true);
     });
   });
 
-  describe(`${types.RECEIVE_UPDATE_RELEASE_SUCCESS}`, () => {
+  describe(`${types.RECEIVE_SAVE_RELEASE_SUCCESS}`, () => {
     it('handles a successful response from the server', () => {
-      mutations[types.RECEIVE_UPDATE_RELEASE_SUCCESS](state, release);
+      mutations[types.RECEIVE_SAVE_RELEASE_SUCCESS](state, release);
 
       expect(state.updateError).toBeUndefined();
 
@@ -94,10 +130,10 @@ describe('Release detail mutations', () => {
     });
   });
 
-  describe(`${types.RECEIVE_UPDATE_RELEASE_ERROR}`, () => {
+  describe(`${types.RECEIVE_SAVE_RELEASE_ERROR}`, () => {
     it('handles an unsuccessful response from the server', () => {
       const error = { message: 'An error occurred!' };
-      mutations[types.RECEIVE_UPDATE_RELEASE_ERROR](state, error);
+      mutations[types.RECEIVE_SAVE_RELEASE_ERROR](state, error);
 
       expect(state.isUpdatingRelease).toBe(false);
 

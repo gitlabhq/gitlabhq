@@ -23,15 +23,20 @@ export default {
       type: Object,
       required: true,
     },
+    collapsible: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
   },
 };
 </script>
 
 <template>
-  <div class="info-well w-100">
+  <div class="info-well mw-100 mx-0">
     <div class="well-segment">
       <ul class="blob-commit-info">
-        <commit-item :commit="commit" />
+        <commit-item :commit="commit" :collapsible="collapsible" />
       </ul>
     </div>
   </div>

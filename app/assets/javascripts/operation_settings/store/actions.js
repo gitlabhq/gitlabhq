@@ -1,6 +1,6 @@
 import axios from '~/lib/utils/axios_utils';
 import { __ } from '~/locale';
-import createFlash from '~/flash';
+import { deprecatedCreateFlash as createFlash } from '~/flash';
 import { refreshCurrentPage } from '~/lib/utils/url_utility';
 import * as mutationTypes from './mutation_types';
 
@@ -37,6 +37,3 @@ export const receiveSaveChangesError = (_, error) => {
 
   createFlash(`${__('There was an error saving your changes.')} ${message}`, 'alert');
 };
-
-// prevent babel-plugin-rewire from generating an invalid default during karma tests
-export default () => {};

@@ -27,7 +27,7 @@ export default {
 <template>
   <div class="block gl-display-flex gl-justify-content-space-between">
     <span class="issuable-header-text hide-collapsed">
-      {{ __('To Do') }}
+      {{ __('To-Do') }}
     </span>
     <sidebar-todo
       v-if="!sidebarCollapsed"

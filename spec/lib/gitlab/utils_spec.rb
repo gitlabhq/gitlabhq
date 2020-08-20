@@ -5,39 +5,93 @@ require 'spec_helper'
 RSpec.describe Gitlab::Utils do
   delegate :to_boolean, :boolean_to_yes_no, :slugify, :random_string, :which,
            :ensure_array_from_string, :to_exclusive_sentence, :bytes_to_megabytes,
-           :append_path, :check_path_traversal!, :ms_to_round_sec, to: :described_class
+           :append_path, :check_path_traversal!, :allowlisted?, :check_allowed_absolute_path!, :decode_path, :ms_to_round_sec, to: :described_class
 
   describe '.check_path_traversal!' do
+    it 'detects path traversal in string without any separators' do
+      expect { check_path_traversal!('.') }.to raise_error(/Invalid path/)
+      expect { check_path_traversal!('..') }.to raise_error(/Invalid path/)
+    end
+
     it 'detects path traversal at the start of the string' do
       expect { check_path_traversal!('../foo') }.to raise_error(/Invalid path/)
+      expect { check_path_traversal!('..\\foo') }.to raise_error(/Invalid path/)
     end
 
     it 'detects path traversal at the start of the string, even to just the subdirectory' do
       expect { check_path_traversal!('../') }.to raise_error(/Invalid path/)
+      expect { check_path_traversal!('..\\') }.to raise_error(/Invalid path/)
+      expect { check_path_traversal!('/../') }.to raise_error(/Invalid path/)
+      expect { check_path_traversal!('\\..\\') }.to raise_error(/Invalid path/)
     end
 
     it 'detects path traversal in the middle of the string' do
       expect { check_path_traversal!('foo/../../bar') }.to raise_error(/Invalid path/)
+      expect { check_path_traversal!('foo\\..\\..\\bar') }.to raise_error(/Invalid path/)
+      expect { check_path_traversal!('foo/..\\bar') }.to raise_error(/Invalid path/)
+      expect { check_path_traversal!('foo\\../bar') }.to raise_error(/Invalid path/)
+      expect { check_path_traversal!('foo/..\\..\\..\\..\\../bar') }.to raise_error(/Invalid path/)
     end
 
     it 'detects path traversal at the end of the string when slash-terminates' do
       expect { check_path_traversal!('foo/../') }.to raise_error(/Invalid path/)
+      expect { check_path_traversal!('foo\\..\\') }.to raise_error(/Invalid path/)
     end
 
     it 'detects path traversal at the end of the string' do
       expect { check_path_traversal!('foo/..') }.to raise_error(/Invalid path/)
+      expect { check_path_traversal!('foo\\..') }.to raise_error(/Invalid path/)
     end
 
     it 'does nothing for a safe string' do
       expect(check_path_traversal!('./foo')).to eq('./foo')
+      expect(check_path_traversal!('.test/foo')).to eq('.test/foo')
+      expect(check_path_traversal!('..test/foo')).to eq('..test/foo')
+      expect(check_path_traversal!('dir/..foo.rb')).to eq('dir/..foo.rb')
+      expect(check_path_traversal!('dir/.foo.rb')).to eq('dir/.foo.rb')
+    end
+  end
+
+  describe '.allowlisted?' do
+    let(:allowed_paths) { ['/home/foo', '/foo/bar', '/etc/passwd']}
+
+    it 'returns true if path is allowed' do
+      expect(allowlisted?('/foo/bar', allowed_paths)).to be(true)
     end
 
-    it 'does nothing if an absolute path is allowed' do
-      expect(check_path_traversal!('/etc/folder/path', allowed_absolute: true)). to eq('/etc/folder/path')
+    it 'returns false if path is not allowed' do
+      expect(allowlisted?('/test/test', allowed_paths)).to be(false)
+    end
+  end
+
+  describe '.check_allowed_absolute_path!' do
+    let(:allowed_paths) { ['/home/foo'] }
+
+    it 'raises an exception if an absolute path is not allowed' do
+      expect { check_allowed_absolute_path!('/etc/passwd', allowed_paths) }.to raise_error(StandardError)
     end
 
-    it 'raises exception if an absolute path is not allowed' do
-      expect { check_path_traversal!('/etc/folder/path') }.to raise_error(/Invalid path/)
+    it 'does nothing for an allowed absolute path' do
+      expect(check_allowed_absolute_path!('/home/foo', allowed_paths)).to be_nil
+    end
+  end
+
+  describe '.decode_path' do
+    it 'returns path unencoded for singled-encoded paths' do
+      expect(decode_path('%2Fhome%2Fbar%3Fasd%3Dqwe')).to eq('/home/bar?asd=qwe')
+    end
+
+    it 'returns path when it is unencoded' do
+      expect(decode_path('/home/bar?asd=qwe')).to eq('/home/bar?asd=qwe')
+    end
+
+    [
+      '..%252F..%252F..%252Fetc%252Fpasswd',
+      '%25252Fresult%25252Fchosennickname%25253D%252522jj%252522'
+    ].each do |multiple_encoded_path|
+      it 'raises an exception when the path is multiple-encoded' do
+        expect { decode_path(multiple_encoded_path) }.to raise_error(/path #{multiple_encoded_path} is not allowed/)
+      end
     end
   end
 

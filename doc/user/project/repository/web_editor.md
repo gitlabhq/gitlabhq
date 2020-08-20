@@ -1,4 +1,7 @@
 ---
+stage: Create
+group: Editor
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 type: howto
 ---
 
@@ -46,7 +49,7 @@ has already been created, which creates a link to the license itself.
 
 ![New file button](img/web_editor_template_dropdown_buttons.png)
 
->**Note:**
+NOTE: **Note:**
 The **Set up CI/CD** button will not appear on an empty repository. You have to at
 least add a file in order for the button to show up.
 

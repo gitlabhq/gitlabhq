@@ -9,6 +9,89 @@ RSpec.describe Gitlab::RepositoryCacheAdapter do
   let(:redis_set_cache) { repository.send(:redis_set_cache) }
   let(:redis_hash_cache) { repository.send(:redis_hash_cache) }
 
+  describe '.cache_method_output_as_redis_set', :clean_gitlab_redis_cache, :aggregate_failures do
+    let(:klass) do
+      Class.new do
+        include Gitlab::RepositoryCacheAdapter # can't use described_class here
+
+        def letters
+          %w(b a c)
+        end
+        cache_method_as_redis_set(:letters)
+
+        def redis_set_cache
+          @redis_set_cache ||= Gitlab::RepositorySetCache.new(self)
+        end
+
+        def full_path
+          'foo/bar'
+        end
+
+        def project
+        end
+      end
+    end
+
+    let(:fake_repository) { klass.new }
+
+    context 'with an existing repository' do
+      it 'caches the output, sorting the results' do
+        expect(fake_repository).to receive(:_uncached_letters).once.and_call_original
+
+        2.times do
+          expect(fake_repository.letters).to eq(%w(a b c))
+        end
+
+        expect(fake_repository.redis_set_cache.exist?(:letters)).to eq(true)
+        expect(fake_repository.instance_variable_get(:@letters)).to eq(%w(a b c))
+      end
+
+      context 'membership checks' do
+        context 'when the cache key does not exist' do
+          it 'calls the original method and populates the cache' do
+            expect(fake_repository.redis_set_cache.exist?(:letters)).to eq(false)
+            expect(fake_repository).to receive(:_uncached_letters).once.and_call_original
+
+            # This populates the cache and memoizes the full result
+            expect(fake_repository.letters_include?('a')).to eq(true)
+            expect(fake_repository.letters_include?('d')).to eq(false)
+            expect(fake_repository.redis_set_cache.exist?(:letters)).to eq(true)
+          end
+        end
+
+        context 'when the cache key exists' do
+          before do
+            fake_repository.redis_set_cache.write(:letters, %w(b a c))
+          end
+
+          it 'calls #include? on the set cache' do
+            expect(fake_repository.redis_set_cache)
+              .to receive(:include?).with(:letters, 'a').and_call_original
+            expect(fake_repository.redis_set_cache)
+              .to receive(:include?).with(:letters, 'd').and_call_original
+
+            expect(fake_repository.letters_include?('a')).to eq(true)
+            expect(fake_repository.letters_include?('d')).to eq(false)
+          end
+
+          it 'memoizes the result' do
+            expect(fake_repository.redis_set_cache)
+              .to receive(:include?).once.and_call_original
+
+            expect(fake_repository.letters_include?('a')).to eq(true)
+            expect(fake_repository.letters_include?('a')).to eq(true)
+
+            expect(fake_repository.redis_set_cache)
+              .to receive(:include?).once.and_call_original
+
+            expect(fake_repository.letters_include?('d')).to eq(false)
+            expect(fake_repository.letters_include?('d')).to eq(false)
+          end
+        end
+      end
+    end
+  end
+
   describe '#cache_method_output', :use_clean_rails_memory_store_caching do
     let(:fallback) { 10 }
 
@@ -212,8 +295,7 @@ RSpec.describe Gitlab::RepositoryCacheAdapter do
       expect(cache).to receive(:expire).with(:rendered_readme)
       expect(cache).to receive(:expire).with(:branch_names)
       expect(redis_set_cache).to receive(:expire).with(:rendered_readme, :branch_names)
-      expect(redis_hash_cache).to receive(:delete).with(:rendered_readme)
-      expect(redis_hash_cache).to receive(:delete).with(:branch_names)
+      expect(redis_hash_cache).to receive(:delete).with(:rendered_readme, :branch_names)
 
       repository.expire_method_caches(%i(rendered_readme branch_names))
     end

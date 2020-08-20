@@ -10,6 +10,7 @@ RSpec.describe Groups::MilestonesController do
     let!(:public_project_with_private_issues_and_mrs) do
       create(:project, :public, :issues_private, :merge_requests_private, group: public_group)
     end
+
     let!(:private_milestone) { create(:milestone, project: public_project_with_private_issues_and_mrs, title: 'project milestone') }
 
     describe 'GET #index' do

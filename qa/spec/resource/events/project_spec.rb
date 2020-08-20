@@ -8,6 +8,7 @@ describe QA::Resource::Events::Project do
       end
     end
   end
+
   let(:all_events) do
     [
       {

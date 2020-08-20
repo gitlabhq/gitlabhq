@@ -16,7 +16,7 @@ RSpec.describe PagesDomainVerificationWorker do
     end
 
     it 'does nothing for a non-existent domain' do
-      domain.destroy
+      domain.destroy!
 
       expect(VerifyPagesDomainService).not_to receive(:new)
 

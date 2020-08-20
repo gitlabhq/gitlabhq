@@ -1,5 +1,4 @@
 <script>
-import { __ } from '~/locale';
 import {
   GlAvatar,
   GlIcon,
@@ -7,11 +6,12 @@ import {
   GlModal,
   GlAlert,
   GlLoadingIcon,
-  GlDropdown,
-  GlDropdownItem,
+  GlDeprecatedDropdown,
+  GlDeprecatedDropdownItem,
   GlButton,
   GlTooltipDirective,
 } from '@gitlab/ui';
+import { __ } from '~/locale';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 
 import DeleteSnippetMutation from '../mutations/deleteSnippet.mutation.graphql';
@@ -26,8 +26,8 @@ export default {
     GlModal,
     GlAlert,
     GlLoadingIcon,
-    GlDropdown,
-    GlDropdownItem,
+    GlDeprecatedDropdown,
+    GlDeprecatedDropdownItem,
     TimeAgoTooltip,
     GlButton,
   },
@@ -68,6 +68,11 @@ export default {
     snippetHasBinary() {
       return Boolean(this.snippet.blobs.find(blob => blob.binary));
     },
+    authoredMessage() {
+      return this.snippet.author
+        ? __('Authored %{timeago} by %{author}')
+        : __('Authored %{timeago}');
+    },
     personalSnippetActions() {
       return [
         {
@@ -91,8 +96,8 @@ export default {
           condition: this.canCreateSnippet,
           text: __('New snippet'),
           href: this.snippet.project
-            ? `${this.snippet.project.webUrl}/snippets/new`
-            : '/snippets/new',
+            ? `${this.snippet.project.webUrl}/-/snippets/new`
+            : '/-/snippets/new',
           variant: 'success',
           category: 'secondary',
           cssClass: 'ml-2',
@@ -130,7 +135,9 @@ export default {
   },
   methods: {
     redirectToSnippets() {
-      window.location.pathname = `${this.snippet.project?.fullPath || 'dashboard'}/snippets`;
+      window.location.pathname = this.snippet.project
+        ? `${this.snippet.project.fullPath}/-/snippets`
+        : 'dashboard/snippets';
     },
     closeDeleteModal() {
       this.$refs.deleteModal.hide();
@@ -176,8 +183,8 @@ export default {
         </span>
         <gl-icon :name="visibilityLevelIcon" :size="14" />
       </div>
-      <div class="creator">
-        <gl-sprintf :message="__('Authored %{timeago} by %{author}')">
+      <div class="creator" data-testid="authored-message">
+        <gl-sprintf :message="authoredMessage">
           <template #timeago>
             <time-ago-tooltip
               :time="snippet.createdAt"
@@ -221,17 +228,17 @@ export default {
         </template>
       </div>
       <div class="d-block d-sm-none dropdown">
-        <gl-dropdown :text="__('Options')" class="w-100" toggle-class="text-center">
-          <gl-dropdown-item
+        <gl-deprecated-dropdown :text="__('Options')" class="w-100" toggle-class="text-center">
+          <gl-deprecated-dropdown-item
             v-for="(action, index) in personalSnippetActions"
             :key="index"
             :disabled="action.disabled"
             :title="action.title"
             :href="action.href"
             @click="action.click ? action.click() : undefined"
-            >{{ action.text }}</gl-dropdown-item
+            >{{ action.text }}</gl-deprecated-dropdown-item
           >
-        </gl-dropdown>
+        </gl-deprecated-dropdown>
       </div>
     </div>
 

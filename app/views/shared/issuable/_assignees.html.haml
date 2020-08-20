@@ -6,5 +6,5 @@
 - issuable.assignees.take(render_count).each do |assignee| # rubocop: disable CodeReuse/ActiveRecord
   = link_to_member(@project, assignee, name: false, title: "Assigned to :name")
 
-- if more_assignees_count.positive?
-  %span{ class: 'avatar-counter has-tooltip', data: { container: 'body', placement: 'bottom', 'line-type' => 'old', 'original-title' => "+#{more_assignees_count} more assignees", qa_selector: 'avatar_counter' } } +#{more_assignees_count}
+- if more_assignees_count > 0
+  %span{ class: 'avatar-counter has-tooltip', data: { container: 'body', placement: 'bottom', 'line-type' => 'old', 'original-title' => "+#{more_assignees_count} more assignees", qa_selector: 'avatar_counter_content' } } +#{more_assignees_count}

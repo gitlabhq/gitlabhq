@@ -1,4 +1,8 @@
 ---
+stage: Create
+group: Source Code
+info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers"
+type: reference, howto
 disqus_identifier: 'https://docs.gitlab.com/ee/workflow/git_annex.html'
 ---
 
@@ -90,8 +94,8 @@ one is located in `config.yml` of GitLab Shell.
 
 ## Using GitLab git-annex
 
-> **Note:**
-> Your Git remotes must be using the SSH protocol, not HTTP(S).
+NOTE: **Note:**
+Your Git remotes must be using the SSH protocol, not HTTP(S).
 
 Here is an example workflow of uploading a very large file and then checking it
 into your Git repository:

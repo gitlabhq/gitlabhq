@@ -1,5 +1,5 @@
 <script>
-import { GlLoadingIcon, GlTooltipDirective, GlDeprecatedButton } from '@gitlab/ui';
+import { GlTooltipDirective, GlButton } from '@gitlab/ui';
 import CiStatus from '~/vue_shared/components/ci_icon.vue';
 import { __, sprintf } from '~/locale';
 
@@ -9,8 +9,7 @@ export default {
   },
   components: {
     CiStatus,
-    GlLoadingIcon,
-    GlDeprecatedButton,
+    GlButton,
   },
   props: {
     pipeline: {
@@ -95,26 +94,21 @@ export default {
     @mouseover="onDownstreamHovered"
     @mouseleave="onDownstreamHoverLeave"
   >
-    <gl-deprecated-button
+    <gl-button
       :id="buttonId"
       v-gl-tooltip
       :title="tooltipText"
-      class="js-linked-pipeline-content linked-pipeline-content"
+      class="linked-pipeline-content"
       data-qa-selector="linked_pipeline_button"
       :class="`js-pipeline-expand-${pipeline.id}`"
+      :loading="pipeline.isLoading"
       @click="onClickLinkedPipeline"
     >
-      <gl-loading-icon v-if="pipeline.isLoading" class="js-linked-pipeline-loading d-inline" />
-      <ci-status
-        v-else
-        :status="pipelineStatus"
-        css-classes="position-top-0"
-        class="js-linked-pipeline-status"
-      />
+      <ci-status v-if="!pipeline.isLoading" :status="pipelineStatus" css-classes="gl-top-0" />
       <span class="str-truncated"> {{ downstreamTitle }} &#8226; #{{ pipeline.id }} </span>
       <div class="gl-pt-2">
         <span class="badge badge-primary" data-testid="downstream-pipeline-label">{{ label }}</span>
       </div>
-    </gl-deprecated-button>
+    </gl-button>
   </li>
 </template>

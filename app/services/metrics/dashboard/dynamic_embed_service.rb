@@ -18,7 +18,7 @@ module Metrics
         # Determines whether the provided params are sufficient
         # to uniquely identify a panel from a yml-defined dashboard.
         #
-        # See https://docs.gitlab.com/ee/user/project/integrations/prometheus.html#defining-custom-dashboards-per-project
+        # See https://docs.gitlab.com/ee/operations/metrics/dashboards/index.html#defining-custom-dashboards-per-project
         # for additional info on defining custom dashboards.
         def valid_params?(params)
           [

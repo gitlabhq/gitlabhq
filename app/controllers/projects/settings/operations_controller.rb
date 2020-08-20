@@ -6,10 +6,6 @@ module Projects
       before_action :authorize_admin_operations!
       before_action :authorize_read_prometheus_alerts!, only: [:reset_alerting_token]
 
-      before_action do
-        push_frontend_feature_flag(:pagerduty_webhook, project)
-      end
-
       respond_to :json, only: [:reset_alerting_token, :reset_pagerduty_token]
 
       helper_method :error_tracking_setting
@@ -49,7 +45,7 @@ module Projects
 
         if result[:status] == :success
           pagerduty_token = project.incident_management_setting&.pagerduty_token
-          webhook_url = project_incidents_pagerduty_url(project, token: pagerduty_token)
+          webhook_url = project_incidents_integrations_pagerduty_url(project, token: pagerduty_token)
 
           render json: { pagerduty_webhook_url: webhook_url, pagerduty_token: pagerduty_token }
         else

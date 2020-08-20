@@ -1,7 +1,7 @@
 import { escape } from 'lodash';
 import axios from '../lib/utils/axios_utils';
 import { s__ } from '../locale';
-import Flash from '../flash';
+import { deprecatedCreateFlash as Flash } from '../flash';
 import { parseBoolean } from '../lib/utils/common_utils';
 import statusCodes from '../lib/utils/http_status';
 import VariableList from './ci_variable_list';

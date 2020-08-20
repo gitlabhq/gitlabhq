@@ -1,6 +1,6 @@
+import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import Api from '~/api';
 import { convertObjectPropsToSnakeCase } from '~/lib/utils/common_utils';
-import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 
 import {
   DEFAULT_TARGET_BRANCH,

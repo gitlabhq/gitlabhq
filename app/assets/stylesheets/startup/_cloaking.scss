@@ -1,0 +1,13 @@
+/**
+  Prevent flashing of content when using startup.css
+ */
+@mixin cloak-startup-scss($display) {
+  // Breadcrumbs and alerts on the top of the page
+  .content-wrapper > .alert-wrapper,
+  // Content on pages
+  #content-body,
+  // Prevent flashing of haml generated modal contents
+  .modal-dialog {
+    display: $display;
+  }
+}

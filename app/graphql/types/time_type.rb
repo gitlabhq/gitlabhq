@@ -7,6 +7,8 @@ module Types
 
     def self.coerce_input(value, ctx)
       Time.parse(value)
+    rescue ArgumentError, TypeError => e
+      raise GraphQL::CoercionError, e.message
     end
 
     def self.coerce_result(value, ctx)

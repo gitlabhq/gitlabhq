@@ -274,8 +274,6 @@
   svg {
     height: 15px;
     width: 15px;
-    position: relative;
-    top: 2px;
   }
 
   svg,
@@ -495,6 +493,10 @@
   }
 }
 
+// The .btn-svg class is available for legacy icon buttons to
+// preserve a 34px height and have 16x16 icons at the same time.
+// Once a button is migrated (to the current 32px height)
+// please remove this class from the new button.
 .btn-svg svg {
   @include btn-svg;
 }

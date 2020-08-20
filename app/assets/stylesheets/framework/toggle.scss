@@ -31,7 +31,7 @@
   height: 24px;
   cursor: pointer;
   user-select: none;
-  background: $gl-gray-400;
+  background: $gray-400;
   border-radius: 12px;
   padding: 3px;
   transition: all 0.4s ease;
@@ -51,26 +51,10 @@
     display: block;
     left: 0;
     border-radius: 9px;
-    background: $feature-toggle-color;
+    background: $white;
     transition: all 0.2s ease;
-
-    &,
-    .toggle-icon-svg {
-      width: $default-icon-size;
-      height: $default-icon-size;
-    }
-
-    .toggle-icon-svg {
-      fill: $gl-gray-400;
-    }
-
-    .toggle-status-checked {
-      display: none;
-    }
-
-    .toggle-status-unchecked {
-      display: inline;
-    }
+    width: $default-icon-size;
+    height: $default-icon-size;
   }
 
   .loading-icon {
@@ -84,10 +68,6 @@
   }
 
   &.is-loading {
-    .toggle-icon {
-      display: none;
-    }
-
     .loading-icon {
       display: block;
 
@@ -101,23 +81,22 @@
   }
 
   &.is-checked {
-    background: $feature-toggle-color-enabled;
+    background: $blue-400;
 
     .toggle-icon {
       left: calc(100% - 18px);
-
-      .toggle-icon-svg {
-        fill: $feature-toggle-color-enabled;
-      }
-
-      .toggle-status-checked {
-        display: inline;
-      }
-
-      .toggle-status-unchecked {
-        display: none;
-      }
     }
+  }
+
+  &.is-checked .toggle-icon .toggle-status-checked,
+  .toggle-icon .toggle-status-unchecked {
+    display: inline;
+  }
+
+  &.is-checked .toggle-icon .toggle-status-unchecked,
+  &.is-loading .toggle-icon,
+  .toggle-icon .toggle-status-checked {
+    display: none;
   }
 
   &.is-disabled {

@@ -3,7 +3,7 @@ import { GlButton } from '@gitlab/ui';
 import Approvals from '~/vue_merge_request_widget/components/approvals/approvals.vue';
 import ApprovalsSummary from '~/vue_merge_request_widget/components/approvals/approvals_summary.vue';
 import ApprovalsSummaryOptional from '~/vue_merge_request_widget/components/approvals/approvals_summary_optional.vue';
-import createFlash from '~/flash';
+import { deprecatedCreateFlash as createFlash } from '~/flash';
 import {
   FETCH_LOADING,
   FETCH_ERROR,

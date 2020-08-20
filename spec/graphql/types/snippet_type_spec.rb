@@ -33,6 +33,7 @@ RSpec.describe GitlabSchema.types['Snippet'] do
         }
       )
     end
+
     let(:response) { subject.dig('data', 'snippets', 'nodes')[0] }
 
     subject { GitlabSchema.execute(query, context: { current_user: current_user }).as_json }
@@ -97,6 +98,7 @@ RSpec.describe GitlabSchema.types['Snippet'] do
         }
       )
     end
+
     let(:response) { subject.dig('data', 'snippets', 'nodes')[0] }
 
     subject { GitlabSchema.execute(query, context: { current_user: user }).as_json }

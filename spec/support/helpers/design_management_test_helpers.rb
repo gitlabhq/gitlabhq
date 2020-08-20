@@ -35,9 +35,9 @@ module DesignManagementTestHelpers
 
   def act_on_designs(designs, &block)
     issue = designs.first.issue
-    version = build(:design_version, :empty, issue: issue).tap { |v| v.save(validate: false) }
+    version = build(:design_version, :empty, issue: issue).tap { |v| v.save!(validate: false) }
     designs.each do |d|
-      yield.create(design: d, version: version)
+      yield.create!(design: d, version: version)
     end
     version
   end

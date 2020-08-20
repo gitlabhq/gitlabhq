@@ -167,7 +167,7 @@ user = User.find_by_username('root')
 # Find the project, update the xxx-changeme values from above
 project = Project.find_by_full_path('group-changeme/project-changeme')
 
-# Delete the project
+# Immediately delete the project
 ::Projects::DestroyService.new(project, user, {}).execute
 ```
 
@@ -248,7 +248,8 @@ end
 
 A Projects Wiki can be recreated by
 
-**Note:** This is a destructive operation, the Wiki will be empty
+NOTE: **Note:**
+This is a destructive operation, the Wiki will be empty.
 
 ```ruby
 p = Project.find_by_full_path('<username-or-group>/<project-name>')  ### enter your projects path
@@ -689,10 +690,10 @@ end
 As a GitLab administrator, you may need to reduce disk space consumption.
 A common culprit is Docker Registry images that are no longer in use. To find
 the storage broken down by each project, run the following in the
-GitLab Rails console:
+[GitLab Rails console](../troubleshooting/navigating_gitlab_via_rails_console.md):
 
 ```ruby
-projects_and_size = []
+projects_and_size = [["project_id", "creator_id", "registry_size_bytes", "project path"]]
 # You need to specify the projects that you want to look through. You can get these in any manner.
 projects = Project.last(100)
 
@@ -707,16 +708,20 @@ projects.each do |p|
    end
 
    if project_total_size > 0
-      projects_and_size << [p.full_path,project_total_size]
+      projects_and_size << [p.project_id, p.creator.id, project_total_size, p.full_path]
    end
 end
 
 # projects_and_size is filled out now
 # maybe print it as comma separated output?
 projects_and_size.each do |ps|
-   puts "%s,%s" % ps
+   puts "%s,%s,%s,%s" % ps
 end
 ```
+
+### Run the Cleanup policy now
+
+Find this content in the [Container Registry troubleshooting docs](../packages/container_registry.md#run-the-cleanup-policy-now).
 
 ## Sidekiq
 
@@ -831,19 +836,19 @@ Geo::JobArtifactRegistry.synced.missing_on_primary.pluck(:artifact_id)
 #### Get the number of verification failed repositories
 
 ```ruby
-Geo::ProjectRegistryFinder.new.count_verification_failed_repositories
+Geo::ProjectRegistry.verification_failed('repository').count
 ```
 
 #### Find the verification failed repositories
 
 ```ruby
-Geo::ProjectRegistry.verification_failed_repos
+Geo::ProjectRegistry.verification_failed('repository')
 ```
 
 ### Find repositories that failed to sync
 
 ```ruby
-Geo::ProjectRegistryFinder.new.find_failed_project_registries('repository')
+Geo::ProjectRegistry.sync_failed('repository')
 ```
 
 ### Resync repositories

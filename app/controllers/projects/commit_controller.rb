@@ -15,8 +15,8 @@ class Projects::CommitController < Projects::ApplicationController
   before_action :authorize_download_code!
   before_action :authorize_read_pipeline!, only: [:pipelines]
   before_action :commit
-  before_action :define_commit_vars, only: [:show, :diff_for_path, :pipelines, :merge_requests]
-  before_action :define_note_vars, only: [:show, :diff_for_path]
+  before_action :define_commit_vars, only: [:show, :diff_for_path, :diff_files, :pipelines, :merge_requests]
+  before_action :define_note_vars, only: [:show, :diff_for_path, :diff_files]
   before_action :authorize_edit_tree!, only: [:revert, :cherry_pick]
 
   BRANCH_SEARCH_LIMIT = 1000
@@ -39,6 +39,10 @@ class Projects::CommitController < Projects::ApplicationController
 
   def diff_for_path
     render_diff_for_path(@commit.diffs(diff_options))
+  end
+
+  def diff_files
+    render json: { html: view_to_html_string('projects/commit/diff_files', diffs: @diffs, environment: @environment) }
   end
 
   # rubocop: disable CodeReuse/ActiveRecord

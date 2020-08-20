@@ -1,9 +1,9 @@
 import { mount } from '@vue/test-utils';
 import { trimText } from 'helpers/text_helper';
+import { cloneDeep } from 'lodash';
 import ReleaseBlockMetadata from '~/releases/components/release_block_metadata.vue';
 import { release as originalRelease } from '../mock_data';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
-import { cloneDeep } from 'lodash';
 
 const mockFutureDate = new Date(9999, 0, 0).toISOString();
 let mockIsFutureRelease = false;

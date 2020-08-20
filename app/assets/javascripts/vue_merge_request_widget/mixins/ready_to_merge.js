@@ -32,5 +32,8 @@ export default {
     isMergeImmediatelyDangerous() {
       return false;
     },
+    shouldRenderMergeTrainHelperText() {
+      return false;
+    },
   },
 };

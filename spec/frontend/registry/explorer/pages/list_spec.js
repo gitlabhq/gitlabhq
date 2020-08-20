@@ -1,7 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
 import { GlSkeletonLoader, GlSprintf, GlAlert, GlSearchBoxByClick } from '@gitlab/ui';
-import Tracking from '~/tracking';
 import waitForPromises from 'helpers/wait_for_promises';
+import Tracking from '~/tracking';
 import component from '~/registry/explorer/pages/list.vue';
 import CliCommands from '~/registry/explorer/components/list_page/cli_commands.vue';
 import GroupEmptyState from '~/registry/explorer/components/list_page/group_empty_state.vue';
@@ -14,7 +14,7 @@ import {
   SET_IMAGES_LIST_SUCCESS,
   SET_PAGINATION,
   SET_INITIAL_STATE,
-} from '~/registry/explorer/stores/mutation_types/';
+} from '~/registry/explorer/stores/mutation_types';
 import {
   DELETE_IMAGE_SUCCESS_MESSAGE,
   DELETE_IMAGE_ERROR_MESSAGE,

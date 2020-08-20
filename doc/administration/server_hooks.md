@@ -163,13 +163,13 @@ them as they can change.
 The following server hooks have been re-implemented in Go:
 
 - `pre-receive`, with the Go implementation used by default. To use the Ruby implementation instead,
-  [disable](../operations/feature_flags.md#enable-or-disable-feature-flag-strategies) the
-  `:gitaly_go_preceive_hook` feature flag.
+  [disable](feature_flags.md#enable-or-disable-the-feature) the `:gitaly_go_preceive_hook` feature
+  flag.
 - `update`, with the Go implementation used by default. To use the Ruby implementation instead,
-  [disable](../operations/feature_flags.md#enable-or-disable-feature-flag-strategies) the
-  `:gitaly_go_update_hook` feature flag.
+  [disable](feature_flags.md#enable-or-disable-the-feature) the `:gitaly_go_update_hook` feature
+  flag.
 - `post-receive`, however the Ruby implementation is used by default. To use the Go implementation
-  instead, [enable](../operations/feature_flags.md#enable-or-disable-feature-flag-strategies) the
+  instead, [enable](feature_flags.md#enable-or-disable-the-feature) the
   `:gitaly_go_postreceive_hook` feature flag.
 
 ## Custom error messages

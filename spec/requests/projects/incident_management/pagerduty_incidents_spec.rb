@@ -12,7 +12,7 @@ RSpec.describe 'PagerDuty webhook' do
 
     def make_request
       headers = { 'Content-Type' => 'application/json' }
-      post project_incidents_pagerduty_url(project, token: 'VALID-TOKEN'), params: payload.to_json, headers: headers
+      post project_incidents_integrations_pagerduty_url(project, token: 'VALID-TOKEN'), params: payload.to_json, headers: headers
     end
 
     before do

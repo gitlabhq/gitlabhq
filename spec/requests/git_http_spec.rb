@@ -301,14 +301,14 @@ RSpec.describe 'Git HTTP requests' do
             it 'rejects clones with 404 Not Found' do
               download(path, user: user.username, password: user.password) do |response|
                 expect(response).to have_gitlab_http_status(:not_found)
-                expect(response.body).to eq(git_access_error(:project_not_found))
+                expect(response.body).to eq(git_access_wiki_error(:not_found))
               end
             end
 
             it 'rejects pushes with 404 Not Found' do
               upload(path, user: user.username, password: user.password) do |response|
                 expect(response).to have_gitlab_http_status(:not_found)
-                expect(response.body).to eq(git_access_error(:project_not_found))
+                expect(response.body).to eq(git_access_wiki_error(:not_found))
               end
             end
           end

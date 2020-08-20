@@ -171,4 +171,43 @@ RSpec.describe 'getting merge request listings nested in a project' do
 
     it_behaves_like 'searching with parameters'
   end
+
+  describe 'fields' do
+    let(:requested_fields) { nil }
+    let(:extra_iid_for_second_query) { merge_request_c.iid.to_s }
+    let(:search_params) { { iids: [merge_request_a.iid.to_s, merge_request_b.iid.to_s] } }
+
+    def execute_query
+      query = query_merge_requests(requested_fields)
+      post_graphql(query, current_user: current_user)
+    end
+
+    context 'when requesting `commit_count`' do
+      let(:requested_fields) { [:commit_count] }
+
+      it 'exposes `commit_count`' do
+        merge_request_a.metrics.update!(commits_count: 5)
+
+        execute_query
+
+        expect(results).to include(a_hash_including('commitCount' => 5))
+      end
+
+      include_examples 'N+1 query check'
+    end
+
+    context 'when requesting `merged_at`' do
+      let(:requested_fields) { [:merged_at] }
+
+      before do
+        # make the MRs "merged"
+        [merge_request_a, merge_request_b, merge_request_c].each do |mr|
+          mr.update_column(:state_id, MergeRequest.available_states[:merged])
+          mr.metrics.update_column(:merged_at, Time.now)
+        end
+      end
+
+      include_examples 'N+1 query check'
+    end
+  end
 end

@@ -928,29 +928,51 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build do
       end
     end
 
-    context 'when lower limit of needs is reached' do
-      before do
-        stub_feature_flags(ci_dag_limit_needs: true)
+    context 'when using 101 needs' do
+      let(:needs_count) { 101 }
+
+      context 'when ci_plan_needs_size_limit is disabled' do
+        before do
+          stub_feature_flags(ci_plan_needs_size_limit: false)
+        end
+
+        it "returns an error" do
+          expect(subject.errors).to contain_exactly(
+            "rspec: one job can only need 10 others, but you have listed 101. See needs keyword documentation for more details")
+        end
       end
 
-      let(:needs_count) { described_class::LOW_NEEDS_LIMIT + 1 }
+      context 'when ci_plan_needs_size_limit is enabled' do
+        before do
+          stub_feature_flags(ci_plan_needs_size_limit: true)
+        end
 
-      it "returns an error" do
-        expect(subject.errors).to contain_exactly(
-          "rspec: one job can only need 10 others, but you have listed 11. See needs keyword documentation for more details")
-      end
-    end
+        it "returns an error" do
+          expect(subject.errors).to contain_exactly(
+            "rspec: one job can only need 50 others, but you have listed 101. See needs keyword documentation for more details")
+        end
 
-    context 'when upper limit of needs is reached' do
-      before do
-        stub_feature_flags(ci_dag_limit_needs: false)
-      end
+        context 'when ci_needs_size_limit is set to 100' do
+          before do
+            project.actual_limits.update!(ci_needs_size_limit: 100)
+          end
 
-      let(:needs_count) { described_class::HARD_NEEDS_LIMIT + 1 }
+          it "returns an error" do
+            expect(subject.errors).to contain_exactly(
+              "rspec: one job can only need 100 others, but you have listed 101. See needs keyword documentation for more details")
+          end
+        end
 
-      it "returns an error" do
-        expect(subject.errors).to contain_exactly(
-          "rspec: one job can only need 50 others, but you have listed 51. See needs keyword documentation for more details")
+        context 'when ci_needs_size_limit is set to 0' do
+          before do
+            project.actual_limits.update!(ci_needs_size_limit: 0)
+          end
+
+          it "returns an error" do
+            expect(subject.errors).to contain_exactly(
+              "rspec: one job can only need 0 others, but you have listed 101. See needs keyword documentation for more details")
+          end
+        end
       end
     end
   end

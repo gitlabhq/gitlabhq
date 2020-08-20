@@ -1,11 +1,11 @@
-import axios from '~/lib/utils/axios_utils';
-import Clusters from '~/clusters_list/components/clusters.vue';
-import ClusterStore from '~/clusters_list/store';
 import MockAdapter from 'axios-mock-adapter';
-import { apiData } from '../mock_data';
 import { mount } from '@vue/test-utils';
 import { GlLoadingIcon, GlPagination, GlSkeletonLoading, GlTable } from '@gitlab/ui';
 import * as Sentry from '@sentry/browser';
+import axios from '~/lib/utils/axios_utils';
+import Clusters from '~/clusters_list/components/clusters.vue';
+import ClusterStore from '~/clusters_list/store';
+import { apiData } from '../mock_data';
 
 describe('Clusters', () => {
   let mock;

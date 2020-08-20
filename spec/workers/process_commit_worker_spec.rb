@@ -160,7 +160,7 @@ RSpec.describe ProcessCommitWorker do
 
       context 'when issue has first_mentioned_in_commit_at earlier than given committed_date' do
         before do
-          issue.metrics.update(first_mentioned_in_commit_at: commit.committed_date - 1.day)
+          issue.metrics.update!(first_mentioned_in_commit_at: commit.committed_date - 1.day)
         end
 
         it "doesn't update issue metrics" do
@@ -170,7 +170,7 @@ RSpec.describe ProcessCommitWorker do
 
       context 'when issue has first_mentioned_in_commit_at later than given committed_date' do
         before do
-          issue.metrics.update(first_mentioned_in_commit_at: commit.committed_date + 1.day)
+          issue.metrics.update!(first_mentioned_in_commit_at: commit.committed_date + 1.day)
         end
 
         it "doesn't update issue metrics" do

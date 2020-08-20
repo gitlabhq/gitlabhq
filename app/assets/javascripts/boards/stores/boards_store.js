@@ -1,6 +1,6 @@
 /* eslint-disable no-shadow, no-param-reassign,consistent-return */
 /* global List */
-
+/* global ListIssue */
 import $ from 'jquery';
 import { sortBy } from 'lodash';
 import Vue from 'vue';
@@ -81,7 +81,7 @@ const boardsStore = {
   showPage(page) {
     this.state.currentPage = page;
   },
-  addList(listObj) {
+  updateListPosition(listObj) {
     const listType = listObj.listType || listObj.list_type;
     let { position } = listObj;
     if (listType === ListType.closed) {
@@ -91,6 +91,10 @@ const boardsStore = {
     }
 
     const list = new List({ ...listObj, position });
+    return list;
+  },
+  addList(listObj) {
+    const list = this.updateListPosition(listObj);
     this.state.lists = sortBy([...this.state.lists, list], 'position');
     return list;
   },
@@ -641,7 +645,9 @@ const boardsStore = {
           list.issues = [];
         }
 
-        list.createIssues(data.issues);
+        data.issues.forEach(issueObj => {
+          list.addIssue(new ListIssue(issueObj));
+        });
 
         return data;
       });
@@ -848,19 +854,28 @@ const boardsStore = {
   },
 
   refreshIssueData(issue, obj) {
-    issue.id = obj.id;
-    issue.iid = obj.iid;
-    issue.title = obj.title;
-    issue.confidential = obj.confidential;
-    issue.dueDate = obj.due_date;
-    issue.sidebarInfoEndpoint = obj.issue_sidebar_endpoint;
-    issue.referencePath = obj.reference_path;
-    issue.path = obj.real_path;
-    issue.toggleSubscriptionEndpoint = obj.toggle_subscription_endpoint;
+    // issue.id = obj.id;
+    // issue.iid = obj.iid;
+    // issue.title = obj.title;
+    // issue.confidential = obj.confidential;
+    // issue.dueDate = obj.due_date || obj.dueDate;
+    // issue.sidebarInfoEndpoint = obj.issue_sidebar_endpoint;
+    // issue.referencePath = obj.reference_path || obj.referencePath;
+    // issue.path = obj.real_path || obj.webUrl;
+    // issue.toggleSubscriptionEndpoint = obj.toggle_subscription_endpoint;
+    // issue.project_id = obj.project_id;
+    // issue.timeEstimate = obj.time_estimate || obj.timeEstimate;
+    // issue.assignableLabelsEndpoint = obj.assignable_labels_endpoint;
+    // issue.blocked = obj.blocked;
+    // issue.epic = obj.epic;
+
+    const convertedObj = convertObjectPropsToCamelCase(obj, {
+      dropKeys: ['issue_sidebar_endpoint', 'real_path', 'webUrl'],
+    });
+    convertedObj.sidebarInfoEndpoint = obj.issue_sidebar_endpoint;
+    issue.path = obj.real_path || obj.webUrl;
     issue.project_id = obj.project_id;
-    issue.timeEstimate = obj.time_estimate;
-    issue.assignableLabelsEndpoint = obj.assignable_labels_endpoint;
-    issue.blocked = obj.blocked;
+    Object.assign(issue, convertedObj);
 
     if (obj.project) {
       issue.project = new IssueProject(obj.project);

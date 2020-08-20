@@ -90,6 +90,12 @@ Check the [currently supported languages](#currently-supported-languages).
 Auto Test uses tests you already have in your application. If there are no
 tests, it's up to you to add them.
 
+NOTE: **Note:**
+Not all buildpacks supported by [Auto Build](#auto-build) are supported by Auto Test.
+Auto Test uses [Herokuish](https://gitlab.com/gitlab-org/gitlab/-/issues/212689), *not*
+Cloud Native Buildpacks, and only buildpacks that implement the
+[Testpack API](https://devcenter.heroku.com/articles/testpack-api) are supported.
+
 ### Currently supported languages
 
 Note that not all buildpacks support Auto Test yet, as it's a relatively new
@@ -454,8 +460,9 @@ For example, in a Rails application in an image built with
 
 Unless your repository contains a `Dockerfile`, your image is built with
 Herokuish, and you must prefix commands run in these images with
-`/bin/herokuish procfile exec` to replicate the environment where your application
-will run.
+`/bin/herokuish procfile exec` (for Herokuish) or `/cnb/lifecycle/launcher`
+(for Cloud Native Buildpacks) to replicate the environment where your
+application runs.
 
 ### Upgrade auto-deploy-app Chart
 
@@ -616,6 +623,12 @@ For example, to start a Rails console from the application root directory, run:
 /bin/herokuish procfile exec bin/rails c
 ```
 
+When using Cloud Native Buildpacks, instead of `/bin/herokuish procfile exec`, use
+
+```shell
+/cnb/lifecycle/launcher $COMMAND
+```
+
 ## Auto Monitoring
 
 After your application deploys, Auto Monitoring helps you monitor
@@ -644,6 +657,6 @@ To use Auto Monitoring:
 1. After the pipeline finishes successfully, open the
    [monitoring dashboard for a deployed environment](../../ci/environments/index.md#monitoring-environments)
    to view the metrics of your deployed application. To view the metrics of the
-   whole Kubernetes cluster, navigate to **{cloud-gear}** **Operations > Metrics**.
+   whole Kubernetes cluster, navigate to **Operations > Metrics**.
 
 ![Auto Metrics](img/auto_monitoring.png)

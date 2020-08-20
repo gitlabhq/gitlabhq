@@ -7,7 +7,7 @@ import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import { formatDate } from '~/lib/utils/datetime_utility';
 import DeleteButton from '../delete_button.vue';
 import ListItem from '../list_item.vue';
-import DetailsRow from './details_row.vue';
+import DetailsRow from '~/registry/shared/components/details_row.vue';
 import {
   REMOVE_TAG_BUTTON_TITLE,
   DIGEST_LABEL,

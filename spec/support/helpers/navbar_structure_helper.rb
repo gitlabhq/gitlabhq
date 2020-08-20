@@ -18,4 +18,22 @@ module NavbarStructureHelper
     index = hash[:nav_sub_items].find_index(before_sub_nav_item_name)
     hash[:nav_sub_items].insert(index + 1, new_sub_nav_item_name)
   end
+
+  def insert_package_nav(within)
+    insert_after_nav_item(
+      within,
+      new_nav_item: {
+        nav_item: _('Packages & Registries'),
+        nav_sub_items: [_('Package Registry')]
+      }
+    )
+  end
+
+  def insert_container_nav(within)
+    insert_after_sub_nav_item(
+      _('Package Registry'),
+      within: _('Packages & Registries'),
+      new_sub_nav_item_name: _('Container Registry')
+    )
+  end
 end

@@ -10,9 +10,11 @@ RSpec.describe Gitlab::IncidentManagement::PagerDuty::IncidentIssueDescription d
     let(:assignees) do
       [{ 'summary' => 'Laura Haley', 'url' => 'https://webdemo.pagerduty.com/users/P553OPV' }]
     end
+
     let(:impacted_services) do
       [{ 'summary' => 'Production XDB Cluster', 'url' => 'https://webdemo.pagerduty.com/services/PN49J75' }]
     end
+
     let(:incident_payload) do
       {
         'url' => 'https://webdemo.pagerduty.com/incidents/PRORDTY',

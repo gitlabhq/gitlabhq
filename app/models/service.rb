@@ -10,6 +10,7 @@ class Service < ApplicationRecord
   include IgnorableColumns
 
   ignore_columns %i[title description], remove_with: '13.4', remove_after: '2020-09-22'
+  ignore_columns %i[default], remove_with: '13.5', remove_after: '2020-10-22'
 
   SERVICE_NAMES = %w[
     alerts asana assembla bamboo bugzilla buildkite campfire confluence custom_issue_tracker discord
@@ -47,19 +48,20 @@ class Service < ApplicationRecord
   belongs_to :project, inverse_of: :services
   has_one :service_hook
 
-  validates :project_id, presence: true, unless: -> { template? || instance? }
-  validates :project_id, absence: true, if: -> { template? || instance? }
-  validates :type, uniqueness: { scope: :project_id }, unless: -> { template? || instance? }, on: :create
+  validates :project_id, presence: true, unless: -> { template? || instance? || group_id }
+  validates :group_id, presence: true, unless: -> { template? || instance? || project_id }
+  validates :project_id, :group_id, absence: true, if: -> { template? || instance? }
+  validates :type, uniqueness: { scope: :project_id }, unless: -> { template? || instance? || group_id }, on: :create
+  validates :type, uniqueness: { scope: :group_id }, unless: -> { template? || instance? || project_id }
   validates :type, presence: true
   validates :template, uniqueness: { scope: :type }, if: -> { template? }
   validates :instance, uniqueness: { scope: :type }, if: -> { instance? }
   validate :validate_is_instance_or_template
+  validate :validate_belongs_to_project_or_group
 
-  scope :visible, -> { where.not(type: 'GitlabIssueTrackerService') }
-  scope :issue_trackers, -> { where(category: 'issue_tracker') }
+  scope :external_issue_trackers, -> { where(category: 'issue_tracker').active }
   scope :external_wikis, -> { where(type: 'ExternalWikiService').active }
   scope :active, -> { where(active: true) }
-  scope :without_defaults, -> { where(default: false) }
   scope :by_type, -> (type) { where(type: type) }
   scope :by_active_flag, -> (flag) { where(active: flag) }
   scope :templates, -> { where(template: true, type: available_services_types) }
@@ -77,7 +79,6 @@ class Service < ApplicationRecord
   scope :wiki_page_hooks, -> { where(wiki_page_events: true, active: true) }
   scope :deployment_hooks, -> { where(deployment_events: true, active: true) }
   scope :alert_hooks, -> { where(alert_events: true, active: true) }
-  scope :external_issue_trackers, -> { issue_trackers.active.without_defaults }
   scope :deployment, -> { where(category: 'deployment') }
 
   default_value_for :category, 'common'
@@ -377,6 +378,10 @@ class Service < ApplicationRecord
 
   def validate_is_instance_or_template
     errors.add(:template, 'The service should be a service template or instance-level integration') if template? && instance?
+  end
+
+  def validate_belongs_to_project_or_group
+    errors.add(:project_id, 'The service cannot belong to both a project and a group') if project_id && group_id
   end
 
   def cache_project_has_external_issue_tracker

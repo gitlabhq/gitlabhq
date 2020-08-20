@@ -1,0 +1,5 @@
+---
+title: Improve performance of test report with summary and test suite endpoints
+merge_request: 37629
+author:
+type: performance

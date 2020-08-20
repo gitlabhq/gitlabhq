@@ -164,9 +164,30 @@ _The artifacts are stored by default in
    gitlab-rake gitlab:artifacts:migrate
    ```
 
+1. Optional: Verify all files migrated properly.
+   From [PostgreSQL console](https://docs.gitlab.com/omnibus/settings/database.html#connecting-to-the-bundled-postgresql-database)
+   (`sudo gitlab-psql -d gitlabhq_production`) verify `objectstg` below (where `file_store=2`) has count of all artifacts:
+
+   ```shell
+   gitlabhq_production=# SELECT count(*) AS total, sum(case when file_store = '1' then 1 else 0 end) AS filesystem, sum(case when file_store = '2' then 1 else 0 end) AS objectstg FROM ci_job_artifacts;
+
+   total | filesystem | objectstg
+   ------+------------+-----------
+    2409 |          0 |      2409
+   ```
+
+   Verify no files on disk in `artifacts` folder:
+
+   ```shell
+   sudo find /var/opt/gitlab/gitlab-rails/shared/artifacts -type f | grep -v tmp/cache | wc -l
+   ```
+
+   In some cases, you may need to run the [orphan artifact file cleanup Rake task](../raketasks/cleanup.md#remove-orphan-artifact-files)
+   to clean up orphaned artifacts.
+
 CAUTION: **Caution:**
 JUnit test report artifact (`junit.xml.gz`) migration
-[is not supported](https://gitlab.com/gitlab-org/gitlab/-/issues/27698)
+[was not supported until GitLab 12.8](https://gitlab.com/gitlab-org/gitlab/-/issues/27698#note_317190991)
 by the `gitlab:artifacts:migrate` script.
 
 **In installations from source:**
@@ -197,9 +218,29 @@ _The artifacts are stored by default in
    sudo -u git -H bundle exec rake gitlab:artifacts:migrate RAILS_ENV=production
    ```
 
+1. Optional: Verify all files migrated properly.
+   From PostgreSQL console (`sudo -u git -H psql -d gitlabhq_production`) verify `objectstg` below (where `file_store=2`) has count of all artifacts:
+
+   ```shell
+   gitlabhq_production=# SELECT count(*) AS total, sum(case when file_store = '1' then 1 else 0 end) AS filesystem, sum(case when file_store = '2' then 1 else 0 end) AS objectstg FROM ci_job_artifacts;
+
+   total | filesystem | objectstg
+   ------+------------+-----------
+    2409 |          0 |      2409
+   ```
+
+   Verify no files on disk in `artifacts` folder:
+
+   ```shell
+   sudo find /var/opt/gitlab/gitlab-rails/shared/artifacts -type f | grep -v tmp/cache | wc -l
+   ```
+
+   In some cases, you may need to run the [orphan artifact file cleanup Rake task](../raketasks/cleanup.md#remove-orphan-artifact-files)
+   to clean up orphaned artifacts.
+
 CAUTION: **Caution:**
 JUnit test report artifact (`junit.xml.gz`) migration
-[is not supported](https://gitlab.com/gitlab-org/gitlab/-/issues/27698)
+[was not supported until GitLab 12.8](https://gitlab.com/gitlab-org/gitlab/-/issues/27698#note_317190991)
 by the `gitlab:artifacts:migrate` script.
 
 ### OpenStack example

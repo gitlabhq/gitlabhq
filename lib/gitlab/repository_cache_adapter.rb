@@ -58,11 +58,19 @@ module Gitlab
         # wrong answer. We handle that by querying the full list - which fills
         # the cache - and using it directly to answer the question.
         define_method("#{name}_include?") do |value|
-          if strong_memoized?(name) || !redis_set_cache.exist?(name)
-            return __send__(name).include?(value) # rubocop:disable GitlabSecurity/PublicSend
-          end
+          ivar = "@#{name}_include"
+          memoized = instance_variable_get(ivar) || {}
 
-          redis_set_cache.include?(name, value)
+          next memoized[value] if memoized.key?(value)
+
+          memoized[value] =
+            if strong_memoized?(name) || !redis_set_cache.exist?(name)
+              __send__(name).include?(value) # rubocop:disable GitlabSecurity/PublicSend
+            else
+              redis_set_cache.include?(name, value)
+            end
+
+          instance_variable_set(ivar, memoized)[value]
         end
       end
 
@@ -241,7 +249,7 @@ module Gitlab
     end
 
     def expire_redis_hash_method_caches(methods)
-      methods.each { |name| redis_hash_cache.delete(name) }
+      redis_hash_cache.delete(*methods)
     end
 
     # All cached repository methods depend on the existence of a Git repository,

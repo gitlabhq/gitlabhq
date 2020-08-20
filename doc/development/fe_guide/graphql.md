@@ -75,7 +75,7 @@ their execution by clicking **Execute query** button on the top left:
 ## Apollo Client
 
 To save duplicated clients getting created in different apps, we have a
-[default client](https://gitlab.com/gitlab-org/gitlab/blob/master/app/assets/javascripts/lib/graphql.js) that should be used. This setups the
+[default client](https://gitlab.com/gitlab-org/gitlab/blob/master/app/assets/javascripts/lib/graphql.js) that should be used. This sets up the
 Apollo client with the correct URL and also sets the CSRF headers.
 
 Default client accepts two parameters: `resolvers` and `config`.
@@ -85,6 +85,7 @@ Default client accepts two parameters: `resolvers` and `config`.
   - `cacheConfig` field accepts an optional object of settings to [customize Apollo cache](https://www.apollographql.com/docs/react/caching/cache-configuration/#configuring-the-cache)
   - `baseUrl` allows us to pass a URL for GraphQL endpoint different from our main endpoint (i.e.`${gon.relative_url_root}/api/graphql`)
   - `assumeImmutableResults` (set to `false` by default) - this setting, when set to `true`, will assume that every single operation on updating Apollo Cache is immutable. It also sets `freezeResults` to `true`, so any attempt on mutating Apollo Cache will throw a console warning in development environment. Please ensure you're following the immutability pattern on cache update operations before setting this option to `true`.
+  - `fetchPolicy` determines how you want your component to interact with the Apollo cache. Defaults to "cache-first".
 
 ## GraphQL Queries
 
@@ -167,9 +168,7 @@ import VueApollo from 'vue-apollo';
 import createDefaultClient from '~/lib/graphql';
 Vue.use(VueApollo);
 
-const defaultClient = createDefaultClient({
-  resolvers: {}
-});
+const defaultClient = createDefaultClient();
 
 defaultClient.cache.writeData({
   data: {
@@ -257,10 +256,7 @@ We need to pass resolvers object to our existing Apollo Client:
 import createDefaultClient from '~/lib/graphql';
 import resolvers from './graphql/resolvers';
 
-const defaultClient = createDefaultClient(
-  {},
-  resolvers,
-);
+const defaultClient = createDefaultClient(resolvers);
 ```
 
 Now every single time on attempt to fetch a version, our client will fetch `id` and `sha` from the remote API endpoint and will assign our hardcoded values to `author` and `createdAt` version properties. With this data, frontend developers are able to work on UI part without being blocked by backend. When actual response is added to the API, a custom local resolver can be removed fast and the only change to query/fragment is `@client` directive removal.
@@ -470,6 +466,28 @@ fetchNextPage() {
 Please note we don't have to save `pageInfo` one more time; `fetchMore` triggers a query
 `result` hook as well.
 
+### Managing performance
+
+The Apollo client will batch queries by default. This means that if you have 3 queries defined,
+Apollo will group them into one request, send the single request off to the server and only
+respond once all 3 queries have completed.
+
+If you need to have queries sent as individual requests, additional context can be provided
+to tell Apollo to do this.
+
+```javascript
+export default {
+  apollo: {
+    user: {
+      query: QUERY_IMPORT,
+      context: {
+        isSingleRequest: true,
+      }
+    }
+  },
+};
+```
+
 ### Testing
 
 #### Mocking response as component data
@@ -501,6 +519,7 @@ If we need to test how our component renders when results from the GraphQL API a
         designs: {
           loading,
         },
+      },
     };
 
     wrapper = shallowMount(Index, {
@@ -595,7 +614,7 @@ These errors are located at the "top level" of a GraphQL response. These are non
 
 #### Handling top-level errors
 
-Apollo is aware of top-level errors, so we are able to leverage Apollo's various error-handling mechanisms to handle these errors (e.g. handling Promise rejections after invoking the [`mutate`](https://www.apollographql.com/docs/react/api/apollo-client/#ApolloClient.mutate) method, or handling the `error` event emitted from the [`ApolloMutation`](https://apollo.vuejs.org/api/apollo-mutation.html#events) component).
+Apollo is aware of top-level errors, so we are able to leverage Apollo's various error-handling mechanisms to handle these errors (e.g. handling Promise rejections after invoking the [`mutate`](https://www.apollographql.com/docs/react/api/core/ApolloClient/#ApolloClient.mutate) method, or handling the `error` event emitted from the [`ApolloMutation`](https://apollo.vuejs.org/api/apollo-mutation.html#events) component).
 
 Because these errors are not intended for users, error messages for top-level errors should be defined client-side.
 

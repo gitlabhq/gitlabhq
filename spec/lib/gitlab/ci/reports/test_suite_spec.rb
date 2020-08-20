@@ -50,9 +50,11 @@ RSpec.describe Gitlab::Ci::Reports::TestSuite do
     before do
       test_suite.add_test_case(test_case_success)
       test_suite.add_test_case(test_case_failed)
+      test_suite.add_test_case(test_case_skipped)
+      test_suite.add_test_case(test_case_error)
     end
 
-    it { is_expected.to eq(2) }
+    it { is_expected.to eq(4) }
   end
 
   describe '#total_status' do

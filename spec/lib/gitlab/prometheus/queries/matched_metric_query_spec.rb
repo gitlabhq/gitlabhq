@@ -17,6 +17,7 @@ RSpec.describe Gitlab::Prometheus::Queries::MatchedMetricQuery do
     [{ '__name__' => 'metric_a' },
      { '__name__' => 'metric_b' }]
   end
+
   let(:partially_empty_series_info) { [{ '__name__' => 'metric_a', 'environment' => '' }] }
   let(:empty_series_info) { [] }
 

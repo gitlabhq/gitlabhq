@@ -53,6 +53,12 @@ RSpec.describe Clusters::Aws::AuthorizeRoleService do
         expect(subject.status).to eq(:unprocessable_entity)
         expect(subject.body).to eq({})
       end
+
+      it 'logs the error' do
+        expect(::Gitlab::ErrorTracking).to receive(:track_exception)
+
+        subject
+      end
     end
 
     context 'cannot create role' do

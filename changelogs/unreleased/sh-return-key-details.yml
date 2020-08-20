@@ -1,0 +1,5 @@
+---
+title: Return SSH key details in /internal/allowed response
+merge_request: 37289
+author:
+type: changed

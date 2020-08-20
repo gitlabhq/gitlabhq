@@ -20,11 +20,6 @@ class Packages::PackageFileUploader < GitlabUploader
   private
 
   def dynamic_segment
-    File.join(disk_hash[0..1], disk_hash[2..3], disk_hash,
-              'packages', model.package.id.to_s, 'files', model.id.to_s)
-  end
-
-  def disk_hash
-    @disk_hash ||= Digest::SHA2.hexdigest(model.package.project_id.to_s)
+    Gitlab::HashedPath.new('packages', model.package.id, 'files', model.id, root_hash: model.package.project_id)
   end
 end

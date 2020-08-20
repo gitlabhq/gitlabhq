@@ -1,3 +1,9 @@
+---
+stage: Enablement
+group: Global Search
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # Elasticsearch knowledge **(STARTER ONLY)**
 
 This area is to maintain a compendium of useful information when working with Elasticsearch.
@@ -120,6 +126,9 @@ Patterns:
 - `Character` filters (as opposed to token filters) always replace the original character, so they're not a good choice as they can hinder exact searches
 
 ## Zero downtime reindexing with multiple indices
+
+NOTE: **Note:**
+This is not applicable yet as multiple indices functionality is not fully implemented.
 
 Currently GitLab can only handle a single version of setting. Any setting/schema changes would require reindexing everything from scratch. Since reindexing can take a long time, this can cause search functionality downtime.
 

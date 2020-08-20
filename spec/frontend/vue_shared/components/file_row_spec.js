@@ -1,8 +1,8 @@
 import { file } from 'jest/ide/helpers';
-import FileRow from '~/vue_shared/components/file_row.vue';
-import FileHeader from '~/vue_shared/components/file_row_header.vue';
 import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
+import FileRow from '~/vue_shared/components/file_row.vue';
+import FileHeader from '~/vue_shared/components/file_row_header.vue';
 import { escapeFileUrl } from '~/lib/utils/url_utility';
 
 describe('File row component', () => {

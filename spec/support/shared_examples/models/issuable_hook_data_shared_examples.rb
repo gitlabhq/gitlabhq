@@ -38,6 +38,7 @@ RSpec.shared_examples 'issuable hook data' do |kind|
           title_html: %w[foo bar]
         }
       end
+
       let(:data) { builder.build(user: user, changes: changes) }
 
       it 'populates the :changes hash' do

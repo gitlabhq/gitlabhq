@@ -16,8 +16,7 @@ RSpec.describe Gitlab::Kubernetes::Helm::BaseCommand do
         super(
           name: 'test-class-name',
           rbac: rbac,
-          files: { some: 'value' },
-          local_tiller_enabled: false
+          files: { some: 'value' }
         )
       end
     end

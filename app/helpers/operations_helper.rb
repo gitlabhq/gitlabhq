@@ -45,7 +45,7 @@ module OperationsHelper
       send_email: setting.send_email.to_s,
       pagerduty_active: setting.pagerduty_active.to_s,
       pagerduty_token: setting.pagerduty_token.to_s,
-      pagerduty_webhook_url: project_incidents_pagerduty_url(@project, token: setting.pagerduty_token),
+      pagerduty_webhook_url: project_incidents_integrations_pagerduty_url(@project, token: setting.pagerduty_token),
       pagerduty_reset_key_path: reset_pagerduty_token_project_settings_operations_path(@project)
     }
   end

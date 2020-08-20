@@ -1,4 +1,4 @@
-import flash from '~/flash';
+import { deprecatedCreateFlash as flash } from '~/flash';
 import { __ } from '~/locale';
 import { scrollToElement } from '~/lib/utils/common_utils';
 import service from '../../../services/drafts_service';
@@ -146,6 +146,3 @@ export const expandAllDiscussions = ({ dispatch, state }) =>
 export const toggleResolveDiscussion = ({ commit }, draftId) => {
   commit(types.TOGGLE_RESOLVE_DISCUSSION, draftId);
 };
-
-// prevent babel-plugin-rewire from generating an invalid default during karma tests
-export default () => {};

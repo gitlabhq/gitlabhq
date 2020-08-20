@@ -5,8 +5,8 @@
 import { shallowMount } from '@vue/test-utils';
 
 import MockAdapter from 'axios-mock-adapter';
-import axios from '~/lib/utils/axios_utils';
 import waitForPromises from 'helpers/wait_for_promises';
+import axios from '~/lib/utils/axios_utils';
 
 import eventHub from '~/boards/eventhub';
 import sidebarEventHub from '~/sidebar/event_hub';

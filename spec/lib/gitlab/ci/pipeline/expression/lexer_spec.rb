@@ -81,6 +81,35 @@ RSpec.describe Gitlab::Ci::Pipeline::Expression::Lexer do
       with_them do
         it { is_expected.to eq(tokens) }
       end
+
+      context 'with parentheses are used' do
+        where(:expression, :tokens) do
+          '($PRESENT_VARIABLE =~ /my var/) && $EMPTY_VARIABLE =~ /nope/' | ['(', '$PRESENT_VARIABLE', '=~', '/my var/', ')', '&&', '$EMPTY_VARIABLE', '=~', '/nope/']
+          '$PRESENT_VARIABLE =~ /my var/ || ($EMPTY_VARIABLE =~ /nope/)' | ['$PRESENT_VARIABLE', '=~', '/my var/', '||', '(', '$EMPTY_VARIABLE', '=~', '/nope/', ')']
+          '($PRESENT_VARIABLE && (null || $EMPTY_VARIABLE == ""))'       | ['(', '$PRESENT_VARIABLE', '&&', '(', 'null', '||', '$EMPTY_VARIABLE', '==', '""', ')', ')']
+        end
+
+        with_them do
+          context 'when ci_if_parenthesis_enabled is enabled' do
+            before do
+              stub_feature_flags(ci_if_parenthesis_enabled: true)
+            end
+
+            it { is_expected.to eq(tokens) }
+          end
+
+          context 'when ci_if_parenthesis_enabled is disabled' do
+            before do
+              stub_feature_flags(ci_if_parenthesis_enabled: false)
+            end
+
+            it do
+              expect { subject }
+                .to raise_error described_class::SyntaxError
+            end
+          end
+        end
+      end
     end
   end
 

@@ -1,0 +1,5 @@
+---
+title: Add database migrations to prepare for future Geo replication
+merge_request: 38549
+author:
+type: changed

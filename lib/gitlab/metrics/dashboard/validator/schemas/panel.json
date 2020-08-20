@@ -1,0 +1,24 @@
+{
+  "type": "object",
+  "required": ["title", "metrics"],
+  "properties": {
+    "type": {
+      "type": "string",
+      "enum": ["area-chart", "anomaly-chart", "bar", "column", "stacked-column", "single-stat", "heatmap"],
+      "default": "area-chart"
+    },
+    "title": { "type": "string" },
+    "y_label": { "type": "string" },
+    "y_axis": { "$ref": "./axis.json" },
+    "max_value": { "type": "number" },
+    "weight": { "type": "number" },
+    "metrics": {
+      "type": "array",
+      "items": { "$ref": "./metric.json" }
+    },
+    "links": {
+      "type": "array",
+      "items": { "$ref": "./link.json" }
+    }
+  }
+}

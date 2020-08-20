@@ -1,23 +1,10 @@
-# Webhooks
+---
+stage: Create
+group: Ecosystem
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
 
-> **Note:**
-> Starting from GitLab 8.5:
->
-> - the `repository` key is deprecated in favor of the `project` key
-> - the `project.ssh_url` key is deprecated in favor of the `project.git_ssh_url` key
-> - the `project.http_url` key is deprecated in favor of the `project.git_http_url` key
->
-> **Note:**
-> Starting from GitLab 11.1, the logs of webhooks are automatically removed after
-> one month.
->
-> **Note:**
-> Starting from GitLab 11.2:
->
-> - The `description` field for issues, merge requests, comments, and wiki pages
->   is rewritten so that simple Markdown image references (like
->   `![](/uploads/...)`) have their target URL changed to an absolute URL. See
->   [image URL rewriting](#image-url-rewriting) for more details.
+# Webhooks
 
 Project webhooks allow you to trigger a URL if for example new code is pushed or
 a new issue is created. You can configure webhooks to listen for specific events
@@ -48,7 +35,25 @@ Navigate to the webhooks page by going to your project's
 **Settings ➔ Webhooks**.
 
 NOTE: **Note:**
-On GitLab.com, the [maximum number of webhooks](../../../user/gitlab_com/index.md#maximum-number-of-webhooks) per project, and per group, is limited.
+On GitLab.com, the [maximum number of webhooks and their size](../../../user/gitlab_com/index.md#webhooks) per project, and per group, is limited.
+
+## Version history
+
+Starting from GitLab 8.5:
+
+- the `repository` key is deprecated in favor of the `project` key
+- the `project.ssh_url` key is deprecated in favor of the `project.git_ssh_url` key
+- the `project.http_url` key is deprecated in favor of the `project.git_http_url` key
+
+Starting from GitLab 11.1, the logs of webhooks are automatically removed after
+one month.
+
+Starting from GitLab 11.2:
+
+- The `description` field for issues, merge requests, comments, and wiki pages
+  is rewritten so that simple Markdown image references (like
+  `![](/uploads/...)`) have their target URL changed to an absolute URL. See
+  [image URL rewriting](#image-url-rewriting) for more details.
 
 ## Use-cases
 
@@ -722,7 +727,7 @@ X-Gitlab-Event: Note Hook
         "type": "ProjectLabel",
         "group_id": null
       }
-    ],
+    ]
   }
 }
 ```
@@ -1296,6 +1301,58 @@ X-Gitlab-Event: Job Hook
 
 Note that `commit.id` is the ID of the pipeline, not the ID of the commit.
 
+### Deployment events
+
+Triggered when deployment is finished/failed/canceled.
+
+**Request Header**:
+
+```plaintext
+X-Gitlab-Event: Deployment Hook
+```
+
+**Request Body**:
+
+```json
+{
+  "object_kind": "deployment",
+  "status": "success",
+  "deployable_id": 796,
+  "deployable_url": "http://10.126.0.2:3000/root/test-deployment-webhooks/-/jobs/796",
+  "environment": "staging",
+  "project": {
+    "id": 30,
+    "name": "test-deployment-webhooks",
+    "description": "",
+    "web_url": "http://10.126.0.2:3000/root/test-deployment-webhooks",
+    "avatar_url": null,
+    "git_ssh_url": "ssh://vlad@10.126.0.2:2222/root/test-deployment-webhooks.git",
+    "git_http_url": "http://10.126.0.2:3000/root/test-deployment-webhooks.git",
+    "namespace": "Administrator",
+    "visibility_level": 0,
+    "path_with_namespace": "root/test-deployment-webhooks",
+    "default_branch": "master",
+    "ci_config_path": "",
+    "homepage": "http://10.126.0.2:3000/root/test-deployment-webhooks",
+    "url": "ssh://vlad@10.126.0.2:2222/root/test-deployment-webhooks.git",
+    "ssh_url": "ssh://vlad@10.126.0.2:2222/root/test-deployment-webhooks.git",
+    "http_url": "http://10.126.0.2:3000/root/test-deployment-webhooks.git"
+  },
+  "short_sha": "279484c0",
+  "user": {
+    "name": "Administrator",
+    "username": "root",
+    "avatar_url": "https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
+    "email": "admin@example.com"
+  },
+  "user_url": "http://10.126.0.2:3000/root",
+  "commit_url": "http://10.126.0.2:3000/root/test-deployment-webhooks/-/commit/279484c09fbe69ededfced8c1bb6e6d24616b468",
+  "commit_title": "Add new file"
+}
+```
+
+Note that `deployable_id` is the ID of the CI job.
+
 ## Image URL rewriting
 
 From GitLab 11.2, simple image references are rewritten to use an absolute URL
@@ -1339,7 +1396,8 @@ On this page, you can see data that GitLab sends (request headers and body) and 
 
 From this page, you can repeat delivery with the same data by clicking `Resend Request` button.
 
-> **Note:** If URL or secret token of the webhook were updated, data will be delivered to the new address.
+NOTE: **Note:**
+If URL or secret token of the webhook were updated, data will be delivered to the new address.
 
 ### Receiving duplicate or multiple webhook requests triggered by one event
 

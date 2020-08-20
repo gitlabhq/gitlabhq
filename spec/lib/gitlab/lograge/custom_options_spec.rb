@@ -22,6 +22,7 @@ RSpec.describe Gitlab::Lograge::CustomOptions do
         metadata: { 'meta.user' => 'jane.doe' }
       }
     end
+
     let(:event) { ActiveSupport::Notifications::Event.new('test', 1, 2, 'transaction_id', event_payload) }
 
     subject { described_class.call(event) }

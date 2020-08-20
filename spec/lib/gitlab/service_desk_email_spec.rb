@@ -56,4 +56,26 @@ RSpec.describe Gitlab::ServiceDeskEmail do
       end
     end
   end
+
+  describe '.address_for_key' do
+    context 'when service desk address is set' do
+      before do
+        stub_service_desk_email_setting(address: 'address+%{key}@example.com')
+      end
+
+      it 'returns address' do
+        expect(described_class.address_for_key('foo')).to eq('address+foo@example.com')
+      end
+    end
+
+    context 'when service desk address is not set' do
+      before do
+        stub_service_desk_email_setting(address: nil)
+      end
+
+      it 'returns nil' do
+        expect(described_class.key_from_address('foo')).to be_nil
+      end
+    end
+  end
 end

@@ -105,6 +105,7 @@ RSpec.describe Projects::ForkService do
             group.add_owner(@to_user)
             group
           end
+
           let(:to_project) { fork_project(from_forked_project, @to_user, namespace: other_namespace) }
 
           it 'sets the root of the network to the root project' do
@@ -439,37 +440,71 @@ RSpec.describe Projects::ForkService do
   end
 
   describe '#valid_fork_target?' do
-    subject { described_class.new(project, user, params).valid_fork_target? }
-
     let(:project) { Project.new }
     let(:params) { {} }
 
-    context 'when current user is an admin' do
-      let(:user) { build(:user, :admin) }
+    context 'when target is not passed' do
+      subject { described_class.new(project, user, params).valid_fork_target? }
 
-      it { is_expected.to be_truthy }
-    end
-
-    context 'when current_user is not an admin' do
-      let(:user) { create(:user) }
-
-      let(:finder_mock) { instance_double('ForkTargetsFinder', execute: [user.namespace]) }
-      let(:project) { create(:project) }
-
-      before do
-        allow(ForkTargetsFinder).to receive(:new).with(project, user).and_return(finder_mock)
-      end
-
-      context 'when target namespace is in valid fork targets' do
-        let(:params) { { namespace: user.namespace } }
+      context 'when current user is an admin' do
+        let(:user) { build(:user, :admin) }
 
         it { is_expected.to be_truthy }
       end
 
-      context 'when target namespace is not in valid fork targets' do
-        let(:params) { { namespace: create(:group) } }
+      context 'when current_user is not an admin' do
+        let(:user) { create(:user) }
 
-        it { is_expected.to be_falsey }
+        let(:finder_mock) { instance_double('ForkTargetsFinder', execute: [user.namespace]) }
+        let(:project) { create(:project) }
+
+        before do
+          allow(ForkTargetsFinder).to receive(:new).with(project, user).and_return(finder_mock)
+        end
+
+        context 'when target namespace is in valid fork targets' do
+          let(:params) { { namespace: user.namespace } }
+
+          it { is_expected.to be_truthy }
+        end
+
+        context 'when target namespace is not in valid fork targets' do
+          let(:params) { { namespace: create(:group) } }
+
+          it { is_expected.to be_falsey }
+        end
+      end
+    end
+
+    context 'when target is passed' do
+      let(:target) { create(:group) }
+
+      subject { described_class.new(project, user, params).valid_fork_target?(target) }
+
+      context 'when current user is an admin' do
+        let(:user) { build(:user, :admin) }
+
+        it { is_expected.to be_truthy }
+      end
+
+      context 'when current user is not an admin' do
+        let(:user) { create(:user) }
+
+        before do
+          allow(ForkTargetsFinder).to receive(:new).with(project, user).and_return(finder_mock)
+        end
+
+        context 'when target namespace is in valid fork targets' do
+          let(:finder_mock) { instance_double('ForkTargetsFinder', execute: [target]) }
+
+          it { is_expected.to be_truthy }
+        end
+
+        context 'when target namespace is not in valid fork targets' do
+          let(:finder_mock) { instance_double('ForkTargetsFinder', execute: [create(:group)]) }
+
+          it { is_expected.to be_falsey }
+        end
       end
     end
   end

@@ -115,7 +115,7 @@ RSpec.describe Ci::PipelinesForMergeRequestFinder do
 
     context 'with multiple irrelevant merge_request_diffs' do
       before do
-        merge_request.update(target_branch: 'v1.0.0')
+        merge_request.update!(target_branch: 'v1.0.0')
       end
 
       it_behaves_like 'returning pipelines with proper ordering'

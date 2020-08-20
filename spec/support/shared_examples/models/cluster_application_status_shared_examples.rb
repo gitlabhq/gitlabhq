@@ -48,25 +48,31 @@ RSpec.shared_examples 'cluster application status specs' do |application_name|
         expect(subject).to be_installed
       end
 
-      context 'managed_apps_local_tiller feature flag disabled' do
-        before do
-          stub_feature_flags(managed_apps_local_tiller: false)
-        end
+      it 'does not update the helm version' do
+        subject.cluster.application_helm.update!(version: '1.2.3')
 
-        it 'updates helm version' do
-          subject.cluster.application_helm.update!(version: '1.2.3')
-
+        expect do
           subject.make_installed!
 
           subject.cluster.application_helm.reload
+        end.not_to change { subject.cluster.application_helm.version }
+      end
 
-          expect(subject.cluster.application_helm.version).to eq(Gitlab::Kubernetes::Helm::HELM_VERSION)
+      context 'the cluster has no helm installed' do
+        subject { create(application_name, :installing, :no_helm_installed) }
+
+        it 'runs without errors' do
+          expect { subject.make_installed! }.not_to raise_error
         end
       end
 
-      context 'managed_apps_local_tiller feature flag enabled' do
-        before do
-          stub_feature_flags(managed_apps_local_tiller: subject.cluster.clusterable)
+      context 'application is updating' do
+        subject { create(application_name, :updating) }
+
+        it 'is updated' do
+          subject.make_installed!
+
+          expect(subject).to be_updated
         end
 
         it 'does not update the helm version' do
@@ -80,60 +86,10 @@ RSpec.shared_examples 'cluster application status specs' do |application_name|
         end
 
         context 'the cluster has no helm installed' do
-          subject { create(application_name, :installing, :no_helm_installed) }
+          subject { create(application_name, :updating, :no_helm_installed) }
 
           it 'runs without errors' do
             expect { subject.make_installed! }.not_to raise_error
-          end
-        end
-      end
-
-      context 'application is updating' do
-        subject { create(application_name, :updating) }
-
-        it 'is updated' do
-          subject.make_installed!
-
-          expect(subject).to be_updated
-        end
-
-        context 'managed_apps_local_tiller feature flag disabled' do
-          before do
-            stub_feature_flags(managed_apps_local_tiller: false)
-          end
-
-          it 'updates helm version' do
-            subject.cluster.application_helm.update!(version: '1.2.3')
-
-            subject.make_installed!
-
-            subject.cluster.application_helm.reload
-
-            expect(subject.cluster.application_helm.version).to eq(Gitlab::Kubernetes::Helm::HELM_VERSION)
-          end
-        end
-
-        context 'managed_apps_local_tiller feature flag enabled' do
-          before do
-            stub_feature_flags(managed_apps_local_tiller: true)
-          end
-
-          it 'does not update the helm version' do
-            subject.cluster.application_helm.update!(version: '1.2.3')
-
-            expect do
-              subject.make_installed!
-
-              subject.cluster.application_helm.reload
-            end.not_to change { subject.cluster.application_helm.version }
-          end
-
-          context 'the cluster has no helm installed' do
-            subject { create(application_name, :updating, :no_helm_installed) }
-
-            it 'runs without errors' do
-              expect { subject.make_installed! }.not_to raise_error
-            end
           end
         end
       end
@@ -185,62 +141,26 @@ RSpec.shared_examples 'cluster application status specs' do |application_name|
         expect(subject).to be_installed
       end
 
-      context 'local tiller flag enabled' do
-        before do
-          stub_feature_flags(managed_apps_local_tiller: true)
-        end
+      context 'helm record does not exist' do
+        subject { build(application_name, :installing, :no_helm_installed) }
 
-        context 'helm record does not exist' do
-          subject { build(application_name, :installing, :no_helm_installed) }
+        it 'does not create a helm record' do
+          subject.make_externally_installed!
 
-          it 'does not create a helm record' do
-            subject.make_externally_installed!
-
-            subject.cluster.reload
-            expect(subject.cluster.application_helm).to be_nil
-          end
-        end
-
-        context 'helm record exists' do
-          subject { build(application_name, :installing, cluster: old_helm.cluster) }
-
-          it 'does not update helm version' do
-            subject.make_externally_installed!
-
-            subject.cluster.application_helm.reload
-
-            expect(subject.cluster.application_helm.version).to eq('1.2.3')
-          end
+          subject.cluster.reload
+          expect(subject.cluster.application_helm).to be_nil
         end
       end
 
-      context 'local tiller flag disabled' do
-        before do
-          stub_feature_flags(managed_apps_local_tiller: false)
-        end
+      context 'helm record exists' do
+        subject { build(application_name, :installing, cluster: old_helm.cluster) }
 
-        context 'helm record does not exist' do
-          subject { build(application_name, :installing, :no_helm_installed) }
+        it 'does not update helm version' do
+          subject.make_externally_installed!
 
-          it 'creates a helm record' do
-            subject.make_externally_installed!
+          subject.cluster.application_helm.reload
 
-            subject.cluster.reload
-            expect(subject.cluster.application_helm).to be_present
-            expect(subject.cluster.application_helm).to be_persisted
-          end
-        end
-
-        context 'helm record exists' do
-          subject { build(application_name, :installing, cluster: old_helm.cluster) }
-
-          it 'does not update helm version' do
-            subject.make_externally_installed!
-
-            subject.cluster.application_helm.reload
-
-            expect(subject.cluster.application_helm.version).to eq('1.2.3')
-          end
+          expect(subject.cluster.application_helm.version).to eq('1.2.3')
         end
       end
 
@@ -261,6 +181,14 @@ RSpec.shared_examples 'cluster application status specs' do |application_name|
           subject.make_externally_installed
 
           expect(subject).to be_installed
+        end
+
+        it 'clears #status_reason' do
+          expect(subject.status_reason).not_to be_nil
+
+          subject.make_externally_installed!
+
+          expect(subject.status_reason).to be_nil
         end
       end
     end
@@ -291,6 +219,14 @@ RSpec.shared_examples 'cluster application status specs' do |application_name|
           subject.make_externally_uninstalled
 
           expect(subject).to be_uninstalled
+        end
+
+        it 'clears #status_reason' do
+          expect(subject.status_reason).not_to be_nil
+
+          subject.make_externally_uninstalled!
+
+          expect(subject.status_reason).to be_nil
         end
       end
     end

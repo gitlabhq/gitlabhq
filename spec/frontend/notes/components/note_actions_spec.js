@@ -1,10 +1,10 @@
 import Vue from 'vue';
 import { shallowMount, createLocalVue, createWrapper } from '@vue/test-utils';
 import { TEST_HOST } from 'spec/test_constants';
+import AxiosMockAdapter from 'axios-mock-adapter';
 import createStore from '~/notes/stores';
 import noteActions from '~/notes/components/note_actions.vue';
 import { userDataMock } from '../mock_data';
-import AxiosMockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
 
 describe('noteActions', () => {

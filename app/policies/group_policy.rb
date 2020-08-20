@@ -138,6 +138,7 @@ class GroupPolicy < BasePolicy
     enable :read_group_labels
     enable :read_group_milestones
     enable :read_group_merge_requests
+    enable :read_group_build_report_results
   end
 
   rule { can?(:read_cross_project) & can?(:read_group) }.policy do

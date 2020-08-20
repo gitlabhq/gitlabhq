@@ -34,6 +34,15 @@ RSpec.describe DesignManagement::DesignCollection do
         collection.find_or_create_design!(filename: 'world.jpg')
       end.not_to exceed_query_limit(1)
     end
+
+    it 'inserts the design after any existing designs' do
+      design1 = collection.find_or_create_design!(filename: 'design1.jpg')
+      design1.update!(relative_position: 100)
+
+      design2 = collection.find_or_create_design!(filename: 'design2.jpg')
+
+      expect(collection.designs.ordered(issue.project)).to eq([design1, design2])
+    end
   end
 
   describe "#versions" do

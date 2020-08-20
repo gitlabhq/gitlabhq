@@ -1,6 +1,6 @@
 <script>
-import { isSafeURL } from '~/lib/utils/url_utility';
 import { GlModal, GlFormGroup, GlFormInput, GlTabs, GlTab } from '@gitlab/ui';
+import { isSafeURL } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { IMAGE_TABS } from '../../constants';

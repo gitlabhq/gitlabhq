@@ -112,7 +112,9 @@ export default {
   },
   // Managed apps data
   [types.RECEIVE_MANAGED_APPS_DATA_SUCCESS](state, apps) {
-    state.managedApps.options = apps;
+    state.managedApps.options = apps.filter(
+      ({ gitlab_managed_apps_logs_path }) => gitlab_managed_apps_logs_path, // eslint-disable-line babel/camelcase
+    );
     state.managedApps.isLoading = false;
   },
   [types.RECEIVE_MANAGED_APPS_DATA_ERROR](state) {

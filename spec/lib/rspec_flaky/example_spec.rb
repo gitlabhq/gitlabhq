@@ -15,6 +15,7 @@ RSpec.describe RspecFlaky::Example do
       attempts: 1
     }
   end
+
   let(:rspec_example) { double(example_attrs) }
 
   describe '#initialize' do

@@ -9,24 +9,24 @@
   %p
     = _("Customize how Google Code email addresses and usernames are imported into GitLab. In the next step, you'll be able to select the projects you want to import.")
   %p
-    = _("The user map is a JSON document mapping the Google Code users that participated on your projects to the way their email addresses and usernames will be imported into GitLab. You can change this by changing the value on the right hand side of <code>:</code>. Be sure to preserve the surrounding double quotes, other punctuation and the email address or username on the left hand side.").html_safe
+    = html_escape(_("The user map is a JSON document mapping the Google Code users that participated on your projects to the way their email addresses and usernames will be imported into GitLab. You can change this by changing the value on the right hand side of %{code_open}:%{code_close}. Be sure to preserve the surrounding double quotes, other punctuation and the email address or username on the left hand side.")) % { code_open: '<code>'.html_safe, code_close: '</code>'.html_safe }
   %ul
     %li
       %strong= _("Default: Directly import the Google Code email address or username")
       %p
-        = _('<code>"johnsmith@example.com": "johnsm...@example.com"</code> will add "By johnsm...@example.com" to all issues and comments originally created by johnsmith@example.com. The email address or username is masked to ensure the user\'s privacy.').html_safe
+        = html_escape(_('%{code_open}"johnsmith@example.com": "johnsm...@example.com"%{code_close} will add "By johnsm...@example.com" to all issues and comments originally created by johnsmith@example.com. The email address or username is masked to ensure the user\'s privacy.')) % { code_open: '<code>'.html_safe, code_close: '</code>'.html_safe }
     %li
       %strong= _("Map a Google Code user to a GitLab user")
       %p
-        = _('<code>"johnsmith@example.com": "@johnsmith"</code> will add "By <a href="#">@johnsmith</a>" to all issues and comments originally created by johnsmith@example.com, and will set <a href="#">@johnsmith</a> as the assignee on all issues originally assigned to johnsmith@example.com.').html_safe
+        = html_escape(_('%{code_open}"johnsmith@example.com": "@johnsmith"%{code_close} will add "By %{link_open}@johnsmith%{link_close}" to all issues and comments originally created by johnsmith@example.com, and will set %{link_open}@johnsmith%{link_close} as the assignee on all issues originally assigned to johnsmith@example.com.')) % { code_open: '<code>'.html_safe, code_close: '</code>'.html_safe, link_open: '<a href="#">'.html_safe, link_close: '</a>'.html_safe }
     %li
       %strong= _("Map a Google Code user to a full name")
       %p
-        = _('<code>"johnsmith@example.com": "John Smith"</code> will add "By John Smith" to all issues and comments originally created by johnsmith@example.com.').html_safe
+        = html_escape(_('%{code_open}"johnsmith@example.com": "John Smith"%{code_close} will add "By John Smith" to all issues and comments originally created by johnsmith@example.com.')) % { code_open: '<code>'.html_safe, code_close: '</code>'.html_safe }
     %li
       %strong= _("Map a Google Code user to a full email address")
       %p
-        = _('<code>"johnsmith@example.com": "johnsmith@example.com"</code> will add "By <a href="#">johnsmith@example.com</a>" to all issues and comments originally created by johnsmith@example.com. By default, the email address or username is masked to ensure the user\'s privacy. Use this option if you want to show the full email address.').html_safe
+        = html_escape(_('%{code_open}"johnsmith@example.com": "johnsmith@example.com"%{code_close} will add "By %{link_open}johnsmith@example.com%{link_close}" to all issues and comments originally created by johnsmith@example.com. By default, the email address or username is masked to ensure the user\'s privacy. Use this option if you want to show the full email address.')) % { code_open: '<code>'.html_safe, code_close: '</code>'.html_safe, link_open: '<a href="#">'.html_safe, link_close: '</a>'.html_safe }
 
   .form-group.row
     .col-sm-12

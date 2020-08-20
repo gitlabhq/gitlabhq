@@ -36,7 +36,7 @@ class PipelineEntity < Grape::Entity
 
   expose :details do
     expose :detailed_status, as: :status, with: DetailedStatusEntity
-    expose :ordered_stages, as: :stages, using: StageEntity
+    expose :stages, using: StageEntity
     expose :duration
     expose :finished_at
     expose :name
@@ -85,8 +85,8 @@ class PipelineEntity < Grape::Entity
     pipeline.failed_builds
   end
 
-  expose :tests_total_count, if: -> (pipeline, _) { Feature.enabled?(:build_report_summary, pipeline.project) } do |pipeline|
-    pipeline.test_report_summary.total_count
+  expose :tests_total_count do |pipeline|
+    pipeline.test_report_summary.total[:count]
   end
 
   private

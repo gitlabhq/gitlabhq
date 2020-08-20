@@ -1,0 +1,16 @@
+- page_title _('Product Analytics')
+
+= render 'links'
+
+- if @events.any?
+  %p
+    - if @events.total_count > @events.size
+      = _('Number of events for this project: %{total_count}.') % { total_count: number_with_delimiter(@events.total_count) }
+  %ol
+    - @events.each do |event|
+      %li
+        %code= event.as_json_wo_empty
+- else
+  .empty-state
+    .text-content
+      = _('There are currently no events.')

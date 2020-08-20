@@ -1,0 +1,6 @@
+---
+title: Add database migrations to ensure Geo replicates all package files when sync
+  object storage is disabled
+merge_request: 38822
+author:
+type: added

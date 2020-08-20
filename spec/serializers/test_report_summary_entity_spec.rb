@@ -9,12 +9,8 @@ RSpec.describe TestReportSummaryEntity do
   describe '#as_json' do
     subject(:as_json) { entity.as_json }
 
-    it 'contains the total time' do
-      expect(as_json).to include(:total_time)
-    end
-
-    it 'contains the counts' do
-      expect(as_json).to include(:total_count, :success_count, :failed_count, :skipped_count, :error_count)
+    it 'contains the total' do
+      expect(as_json).to include(:total)
     end
 
     context 'when summary has test suites' do

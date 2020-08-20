@@ -4,7 +4,7 @@ import { shallowMount } from '@vue/test-utils';
 import { GlModal } from '@gitlab/ui';
 import AlertsServiceForm from '~/alerts_service_settings/components/alerts_service_form.vue';
 import ToggleButton from '~/vue_shared/components/toggle_button.vue';
-import createFlash from '~/flash';
+import { deprecatedCreateFlash as createFlash } from '~/flash';
 
 jest.mock('~/flash');
 

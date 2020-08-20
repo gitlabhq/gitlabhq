@@ -1,0 +1,5 @@
+---
+title: Fix N+1 issue in Explore Projects controller.
+merge_request: 36874
+author:
+type: performance

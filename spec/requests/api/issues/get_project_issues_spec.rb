@@ -28,6 +28,7 @@ RSpec.describe API::Issues do
       updated_at: 3.hours.ago,
       closed_at: 1.hour.ago
   end
+
   let!(:confidential_issue) do
     create :issue,
       :confidential,
@@ -37,6 +38,7 @@ RSpec.describe API::Issues do
       created_at: generate(:past_time),
       updated_at: 2.hours.ago
   end
+
   let!(:issue) do
     create :issue,
       author: user,
@@ -48,6 +50,7 @@ RSpec.describe API::Issues do
       title: issue_title,
       description: issue_description
   end
+
   let_it_be(:label) do
     create(:label, title: 'label', color: '#FFAABB', project: project)
   end
@@ -69,6 +72,7 @@ RSpec.describe API::Issues do
            target_project: project,
            description: "closes #{issue.to_reference}")
   end
+
   let!(:merge_request2) do
     create(:merge_request,
            :simple,
@@ -180,11 +184,14 @@ RSpec.describe API::Issues do
     it 'avoids N+1 queries' do
       get api("/projects/#{project.id}/issues", user)
 
-      create_list(:issue, 3, project: project)
+      create_list(:issue, 3, project: project, closed_by: user)
 
       control_count = ActiveRecord::QueryRecorder.new(skip_cached: false) do
         get api("/projects/#{project.id}/issues", user)
       end.count
+
+      milestone = create(:milestone, project: project)
+      create(:issue, project: project, milestone: milestone, closed_by: create(:user))
 
       expect do
         get api("/projects/#{project.id}/issues", user)

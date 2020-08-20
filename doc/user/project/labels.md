@@ -43,7 +43,7 @@ To assign a label to an issue, merge request or epic:
      click on them. You can search repeatedly and add more labels.
 1. Click **X** or anywhere outside the label section and the labels are applied.
 
-You can also assign a label with the [`/assign @username` quick action](quick_actions.md).
+You can also assign a label with the [`/label ~label1 ~label2` quick action](quick_actions.md).
 
 ## Label management
 
@@ -81,6 +81,9 @@ label section of the right sidebar of an issue or a merge request:
 Once created, you can edit a label by clicking the pencil (**{pencil}**), or delete
 a label by clicking the three dots (**{ellipsis_v}**) next to the **Subscribe** button
 and selecting **Delete**.
+
+CAUTION: **Caution:**
+If you delete a label, it is permanently deleted. You will not be able to undo the deletion, and all references to the label will be removed from the system.
 
 #### Promote a project label to a group label
 

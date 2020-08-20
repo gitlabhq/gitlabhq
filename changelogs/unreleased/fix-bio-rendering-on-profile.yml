@@ -1,0 +1,5 @@
+---
+title: Fix bio container width on profile page
+merge_request: 37572
+author:
+type: fixed

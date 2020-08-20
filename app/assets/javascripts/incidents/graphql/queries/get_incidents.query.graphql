@@ -1,0 +1,52 @@
+query getIncidents(
+  $projectPath: ID!
+  $issueTypes: [IssueType!]
+  $sort: IssueSort
+  $status: IssuableState
+  $firstPageSize: Int
+  $lastPageSize: Int
+  $prevPageCursor: String = ""
+  $nextPageCursor: String = ""
+  $searchTerm: String
+) {
+  project(fullPath: $projectPath) {
+    issues(
+      search: $searchTerm
+      types: $issueTypes
+      sort: $sort
+      state: $status
+      first: $firstPageSize
+      last: $lastPageSize
+      after: $nextPageCursor
+      before: $prevPageCursor
+    ) {
+      nodes {
+        iid
+        title
+        createdAt
+        state
+        labels {
+          nodes {
+            title
+            color
+          }
+        }
+        assignees {
+          nodes {
+            name
+            username
+            avatarUrl
+            webUrl
+          }
+        }
+        statusPagePublishedIncident
+      }
+      pageInfo {
+        hasNextPage
+        endCursor
+        hasPreviousPage
+        startCursor
+      }
+    }
+  }
+}

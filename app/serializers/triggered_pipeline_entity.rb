@@ -24,8 +24,8 @@ class TriggeredPipelineEntity < Grape::Entity
   expose :details do
     expose :detailed_status, as: :status, with: DetailedStatusEntity
 
-    expose :ordered_stages,
-      as: :stages, using: StageEntity,
+    expose :stages,
+      using: StageEntity,
       if: -> (_, opts) { can_read_details? && expand?(opts) }
   end
 

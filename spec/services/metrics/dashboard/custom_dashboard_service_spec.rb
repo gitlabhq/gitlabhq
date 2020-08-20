@@ -57,6 +57,16 @@ RSpec.describe Metrics::Dashboard::CustomDashboardService, :use_clean_rails_memo
         described_class.new(*service_params).get_dashboard
       end
 
+      it 'tracks panel type' do
+        allow(::Gitlab::Tracking).to receive(:event).and_call_original
+
+        described_class.new(*service_params).get_dashboard
+
+        expect(::Gitlab::Tracking).to have_received(:event)
+          .with('MetricsDashboard::Chart', 'chart_rendered', { label: 'area-chart' })
+          .at_least(:once)
+      end
+
       context 'and the dashboard is then deleted' do
         it 'does not return the previously cached dashboard' do
           described_class.new(*service_params).get_dashboard
@@ -103,6 +113,16 @@ RSpec.describe Metrics::Dashboard::CustomDashboardService, :use_clean_rails_memo
             out_of_the_box_dashboard: false
           }]
         )
+      end
+
+      it 'caches repo file list' do
+        expect(Gitlab::Metrics::Dashboard::RepoDashboardFinder).to receive(:list_dashboards)
+          .with(project)
+          .once
+          .and_call_original
+
+        described_class.all_dashboard_paths(project)
+        described_class.all_dashboard_paths(project)
       end
     end
   end

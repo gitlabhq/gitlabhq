@@ -1,9 +1,9 @@
-import { milestones as projectMilestones } from './mock_data';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import { shallowMount } from '@vue/test-utils';
-import MilestoneCombobox from '~/milestones/project_milestone_combobox.vue';
 import { GlNewDropdown, GlLoadingIcon, GlSearchBoxByType } from '@gitlab/ui';
+import MilestoneCombobox from '~/milestones/project_milestone_combobox.vue';
+import { milestones as projectMilestones } from './mock_data';
 
 const TEST_SEARCH_ENDPOINT = '/api/v4/projects/8/search';
 

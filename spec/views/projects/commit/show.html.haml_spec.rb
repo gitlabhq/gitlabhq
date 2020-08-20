@@ -14,6 +14,12 @@ RSpec.describe 'projects/commit/show.html.haml' do
     assign(:notes, [])
     assign(:diffs, commit.diffs)
 
+    controller.params[:controller] = 'projects/commit'
+    controller.params[:action] = 'show'
+    controller.params[:namespace_id] = project.namespace.to_param
+    controller.params[:project_id] = project.to_param
+    controller.params[:id] = commit.id
+
     allow(view).to receive(:current_user).and_return(nil)
     allow(view).to receive(:can?).and_return(false)
     allow(view).to receive(:can_collaborate_with_project?).and_return(false)

@@ -69,7 +69,6 @@ module Gitlab
         def resource_url
           url_for(
             [
-              resource.project.namespace.becomes(Namespace),
               resource.project,
               resource
             ]

@@ -38,7 +38,9 @@ module API
       desc 'Ping the Conan API' do
         detail 'This feature was introduced in GitLab 12.2'
       end
-      route_setting :authentication, job_token_allowed: true
+
+      route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
+
       get 'ping' do
         header 'X-Conan-Server-Capabilities', [].join(',')
       end
@@ -46,10 +48,13 @@ module API
       desc 'Search for packages' do
         detail 'This feature was introduced in GitLab 12.4'
       end
+
       params do
         requires :q, type: String, desc: 'Search query'
       end
-      route_setting :authentication, job_token_allowed: true
+
+      route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
+
       get 'conans/search' do
         service = ::Packages::Conan::SearchService.new(current_user, query: params[:q]).execute
         service.payload
@@ -61,7 +66,9 @@ module API
         desc 'Authenticate user against conan CLI' do
           detail 'This feature was introduced in GitLab 12.2'
         end
-        route_setting :authentication, job_token_allowed: true
+
+        route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
+
         get 'authenticate' do
           unauthorized! unless token
 
@@ -71,7 +78,9 @@ module API
         desc 'Check for valid user credentials per conan CLI' do
           detail 'This feature was introduced in GitLab 12.4'
         end
-        route_setting :authentication, job_token_allowed: true
+
+        route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
+
         get 'check_credentials' do
           authenticate!
           :ok
@@ -93,10 +102,13 @@ module API
         desc 'Package Snapshot' do
           detail 'This feature was introduced in GitLab 12.5'
         end
+
         params do
           requires :conan_package_reference, type: String, desc: 'Conan package ID'
         end
-        route_setting :authentication, job_token_allowed: true
+
+        route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
+
         get 'packages/:conan_package_reference' do
           authorize!(:read_package, project)
 
@@ -113,7 +125,9 @@ module API
         desc 'Recipe Snapshot' do
           detail 'This feature was introduced in GitLab 12.5'
         end
-        route_setting :authentication, job_token_allowed: true
+
+        route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
+
         get do
           authorize!(:read_package, project)
 
@@ -133,7 +147,9 @@ module API
         params do
           requires :conan_package_reference, type: String, desc: 'Conan package ID'
         end
-        route_setting :authentication, job_token_allowed: true
+
+        route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
+
         get 'packages/:conan_package_reference/digest' do
           present_package_download_urls
         end
@@ -141,7 +157,9 @@ module API
         desc 'Recipe Digest' do
           detail 'This feature was introduced in GitLab 12.5'
         end
-        route_setting :authentication, job_token_allowed: true
+
+        route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
+
         get 'digest' do
           present_recipe_download_urls
         end
@@ -155,10 +173,13 @@ module API
         desc 'Package Download Urls' do
           detail 'This feature was introduced in GitLab 12.5'
         end
+
         params do
           requires :conan_package_reference, type: String, desc: 'Conan package ID'
         end
-        route_setting :authentication, job_token_allowed: true
+
+        route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
+
         get 'packages/:conan_package_reference/download_urls' do
           present_package_download_urls
         end
@@ -166,7 +187,9 @@ module API
         desc 'Recipe Download Urls' do
           detail 'This feature was introduced in GitLab 12.5'
         end
-        route_setting :authentication, job_token_allowed: true
+
+        route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
+
         get 'download_urls' do
           present_recipe_download_urls
         end
@@ -181,36 +204,39 @@ module API
         desc 'Package Upload Urls' do
           detail 'This feature was introduced in GitLab 12.4'
         end
+
         params do
           requires :conan_package_reference, type: String, desc: 'Conan package ID'
         end
-        route_setting :authentication, job_token_allowed: true
+
+        route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
+
         post 'packages/:conan_package_reference/upload_urls' do
           authorize!(:read_package, project)
 
           status 200
-          upload_urls = package_upload_urls(::Packages::Conan::FileMetadatum::PACKAGE_FILES)
-
-          present upload_urls, with: ::API::Entities::ConanPackage::ConanUploadUrls
+          present package_upload_urls, with: ::API::Entities::ConanPackage::ConanUploadUrls
         end
 
         desc 'Recipe Upload Urls' do
           detail 'This feature was introduced in GitLab 12.4'
         end
-        route_setting :authentication, job_token_allowed: true
+
+        route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
+
         post 'upload_urls' do
           authorize!(:read_package, project)
 
           status 200
-          upload_urls = recipe_upload_urls(::Packages::Conan::FileMetadatum::RECIPE_FILES)
-
-          present upload_urls, with: ::API::Entities::ConanPackage::ConanUploadUrls
+          present recipe_upload_urls, with: ::API::Entities::ConanPackage::ConanUploadUrls
         end
 
         desc 'Delete Package' do
           detail 'This feature was introduced in GitLab 12.5'
         end
-        route_setting :authentication, job_token_allowed: true
+
+        route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
+
         delete do
           authorize!(:destroy_package, project)
 
@@ -239,7 +265,9 @@ module API
           desc 'Download recipe files' do
             detail 'This feature was introduced in GitLab 12.6'
           end
-          route_setting :authentication, job_token_allowed: true
+
+          route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
+
           get do
             download_package_file(:recipe_file)
           end
@@ -247,10 +275,13 @@ module API
           desc 'Upload recipe package files' do
             detail 'This feature was introduced in GitLab 12.6'
           end
+
           params do
             use :workhorse_upload_params
           end
-          route_setting :authentication, job_token_allowed: true
+
+          route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
+
           put do
             upload_package_file(:recipe_file)
           end
@@ -258,7 +289,9 @@ module API
           desc 'Workhorse authorize the conan recipe file' do
             detail 'This feature was introduced in GitLab 12.6'
           end
-          route_setting :authentication, job_token_allowed: true
+
+          route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
+
           put 'authorize' do
             authorize_workhorse!(subject: project)
           end
@@ -273,7 +306,9 @@ module API
           desc 'Download package files' do
             detail 'This feature was introduced in GitLab 12.5'
           end
-          route_setting :authentication, job_token_allowed: true
+
+          route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
+
           get do
             download_package_file(:package_file)
           end
@@ -281,7 +316,9 @@ module API
           desc 'Workhorse authorize the conan package file' do
             detail 'This feature was introduced in GitLab 12.6'
           end
-          route_setting :authentication, job_token_allowed: true
+
+          route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
+
           put 'authorize' do
             authorize_workhorse!(subject: project)
           end
@@ -289,10 +326,13 @@ module API
           desc 'Upload package files' do
             detail 'This feature was introduced in GitLab 12.6'
           end
+
           params do
             use :workhorse_upload_params
           end
-          route_setting :authentication, job_token_allowed: true
+
+          route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
+
           put do
             upload_package_file(:package_file)
           end

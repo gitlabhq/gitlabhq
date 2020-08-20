@@ -1,6 +1,6 @@
+import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import getUnicodeSupportMap from '~/emoji/support/unicode_support_map';
 import AccessorUtilities from '~/lib/utils/accessor';
-import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 
 describe('Unicode Support Map', () => {
   useLocalStorageSpy();

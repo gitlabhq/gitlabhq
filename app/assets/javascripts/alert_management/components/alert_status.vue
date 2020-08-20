@@ -1,5 +1,5 @@
 <script>
-import { GlDropdown, GlDropdownItem, GlButton } from '@gitlab/ui';
+import { GlDeprecatedDropdown, GlDeprecatedDropdownItem, GlButton } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import Tracking from '~/tracking';
 import { trackAlertStatusUpdateOptions } from '../constants';
@@ -18,8 +18,8 @@ export default {
     RESOLVED: s__('AlertManagement|Resolved'),
   },
   components: {
-    GlDropdown,
-    GlDropdownItem,
+    GlDeprecatedDropdown,
+    GlDeprecatedDropdownItem,
     GlButton,
   },
   props: {
@@ -91,7 +91,7 @@ export default {
 
 <template>
   <div class="dropdown dropdown-menu-selectable" :class="dropdownClass">
-    <gl-dropdown
+    <gl-deprecated-dropdown
       ref="dropdown"
       right
       :text="$options.statuses[alert.status]"
@@ -112,7 +112,7 @@ export default {
         />
       </div>
       <div class="dropdown-content dropdown-body">
-        <gl-dropdown-item
+        <gl-deprecated-dropdown-item
           v-for="(label, field) in $options.statuses"
           :key="field"
           data-testid="statusDropdownItem"
@@ -122,8 +122,8 @@ export default {
           @click="updateAlertStatus(label)"
         >
           {{ label }}
-        </gl-dropdown-item>
+        </gl-deprecated-dropdown-item>
       </div>
-    </gl-dropdown>
+    </gl-deprecated-dropdown>
   </div>
 </template>

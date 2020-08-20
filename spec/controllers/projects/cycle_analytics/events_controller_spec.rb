@@ -57,6 +57,8 @@ RSpec.describe Projects::CycleAnalytics::EventsController do
     end
   end
 
+  include_examples GracefulTimeoutHandling
+
   def get_issue(additional_params: {})
     params = additional_params.merge(namespace_id: project.namespace, project_id: project)
     get(:issue, params: params, format: :json)

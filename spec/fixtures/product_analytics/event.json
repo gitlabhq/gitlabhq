@@ -12,5 +12,10 @@
   "lang":"en-US",
   "cookie":"1",
   "tz":"America/Los_Angeles",
-  "cs":"UTF-8"
+  "cs":"UTF-8",
+  "se_ca": "category",
+  "se_ac": "action",
+  "se_la": "label",
+  "se_pr": "property",
+  "se_va": 12.34
 }

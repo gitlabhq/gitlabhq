@@ -9,14 +9,26 @@ module Gitlab
     # The state values that can be safely casted to a Symbol.
     STATES = %w[opened closed merged all].freeze
 
+    attr_reader :project
+
+    def self.declarative_policy_class
+      'IssuablePolicy'
+    end
+
     # finder - The finder class to use for retrieving the issuables.
-    def initialize(finder)
+    def initialize(finder, project = nil)
       @finder = finder
+      @project = project
       @cache = Gitlab::SafeRequestStore[CACHE_KEY] ||= initialize_cache
     end
 
     def for_state_or_opened(state = nil)
       self[state || :opened]
+    end
+
+    # Define method for each state
+    STATES.each do |state|
+      define_method(state) { self[state] }
     end
 
     # Returns the count for the given state.

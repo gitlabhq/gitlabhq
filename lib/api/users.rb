@@ -218,7 +218,7 @@ module API
 
         user_params = declared_params(include_missing: false)
 
-        user_params[:password_expires_at] = Time.now if user_params[:password].present?
+        user_params[:password_expires_at] = Time.current if user_params[:password].present?
         result = ::Users::UpdateService.new(current_user, user_params.merge(user: user)).execute
 
         if result[:status] == :success

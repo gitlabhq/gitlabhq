@@ -13,4 +13,14 @@ module MetricsDashboardUrlHelpers
       Gitlab::Metrics::Dashboard::Url.clear_memoization(method_name)
     end
   end
+
+  def stub_gitlab_domain
+    allow_any_instance_of(Banzai::Filter::InlineEmbedsFilter)
+      .to receive(:gitlab_domain)
+      .and_return(urls.root_url.chomp('/'))
+
+    allow(Gitlab::Metrics::Dashboard::Url)
+      .to receive(:gitlab_domain)
+      .and_return(urls.root_url.chomp('/'))
+  end
 end

@@ -7,6 +7,7 @@ RSpec.describe API::Internal::Pages do
     jwt_token = JWT.encode({ 'iss' => 'gitlab-pages' }, Gitlab::Pages.secret, 'HS256')
     { Gitlab::Pages::INTERNAL_API_REQUEST_HEADER => jwt_token }
   end
+
   let(:pages_secret) { SecureRandom.random_bytes(Gitlab::Pages::SECRET_LENGTH) }
 
   before do

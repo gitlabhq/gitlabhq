@@ -2,12 +2,10 @@ dashboard: 'Cluster health'
 priority: 1
 panel_groups:
 - group: Cluster Health
-  priority: 10
   panels:
   - title: "CPU Usage"
     type: "area-chart"
     y_label: "CPU (cores)"
-    weight: 1
     metrics:
       - id: cluster_health_cpu_usage
         query_range: 'avg(sum(rate(container_cpu_usage_seconds_total{id="/"}[15m])) by (job)) without (job)'
@@ -24,7 +22,6 @@ panel_groups:
   - title: "Memory Usage"
     type: "area-chart"
     y_label: "Memory (GiB)"
-    weight: 1
     metrics:
       - id: cluster_health_memory_usage
         query_range: 'avg(sum(container_memory_usage_bytes{id="/"}) by (job)) without (job) / 2^30'

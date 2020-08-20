@@ -1,0 +1,61 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Design management toolbar component renders design and updated data 1`] = `
+<header
+  class="d-flex p-2 bg-white align-items-center js-design-header"
+>
+  <a
+    aria-label="Go back to designs"
+    class="mr-3 text-plain d-flex justify-content-center align-items-center"
+  >
+    <icon-stub
+      name="close"
+      size="18"
+    />
+  </a>
+   
+  <div
+    class="overflow-hidden d-flex align-items-center"
+  >
+    <h2
+      class="m-0 str-truncated-100 gl-font-base"
+    >
+      test.jpg
+    </h2>
+     
+    <small
+      class="text-secondary"
+    >
+      Updated 1 hour ago by Test Name
+    </small>
+  </div>
+   
+  <pagination-stub
+    class="ml-auto flex-shrink-0"
+    id="1"
+  />
+   
+  <gl-deprecated-button-stub
+    class="mr-2"
+    href="/-/designs/306/7f747adcd4693afadbe968d7ba7d983349b9012d"
+    size="md"
+    variant="secondary"
+  >
+    <icon-stub
+      name="download"
+      size="18"
+    />
+  </gl-deprecated-button-stub>
+   
+  <delete-button-stub
+    buttonclass=""
+    buttonvariant="danger"
+    hasselecteddesigns="true"
+  >
+    <icon-stub
+      name="remove"
+      size="18"
+    />
+  </delete-button-stub>
+</header>
+`;

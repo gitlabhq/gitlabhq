@@ -32,6 +32,7 @@ RSpec.describe Gitlab::Database::CustomStructure do
       Gitlab::Database::PartitioningMigrationHelpers::PartitionedForeignKey.create(
         cascade_delete: true, from_table: 'issues', from_column: 'project_id', to_table: 'projects', to_column: 'id')
     end
+
     let!(:second_fk) do
       Gitlab::Database::PartitioningMigrationHelpers::PartitionedForeignKey.create(
         cascade_delete: false, from_table: 'issues', from_column: 'moved_to_id', to_table: 'issues', to_column: 'id')

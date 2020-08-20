@@ -39,8 +39,7 @@ module IncidentManagement
       end
 
       def webhook_setting_active?
-        Feature.enabled?(:pagerduty_webhook, project) &&
-          incident_management_setting.pagerduty_active?
+        incident_management_setting.pagerduty_active?
       end
 
       def valid_token?(token)

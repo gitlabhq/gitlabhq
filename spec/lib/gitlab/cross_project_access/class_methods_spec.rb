@@ -8,6 +8,7 @@ RSpec.describe Gitlab::CrossProjectAccess::ClassMethods do
       extend Gitlab::CrossProjectAccess::ClassMethods
     end
   end
+
   let(:dummy_proc) { lambda { false } }
 
   describe '#requires_cross_project_access' do

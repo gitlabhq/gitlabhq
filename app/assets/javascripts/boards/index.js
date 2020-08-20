@@ -4,7 +4,6 @@ import { mapActions } from 'vuex';
 
 import 'ee_else_ce/boards/models/issue';
 import 'ee_else_ce/boards/models/list';
-import BoardContent from '~/boards/components/board_content.vue';
 import BoardSidebar from 'ee_else_ce/boards/components/board_sidebar';
 import initNewListDropdown from 'ee_else_ce/boards/components/new_list_dropdown';
 import boardConfigToggle from 'ee_else_ce/boards/config_toggle';
@@ -19,8 +18,9 @@ import {
 } from 'ee_else_ce/boards/ee_functions';
 
 import VueApollo from 'vue-apollo';
+import BoardContent from '~/boards/components/board_content.vue';
 import createDefaultClient from '~/lib/graphql';
-import Flash from '~/flash';
+import { deprecatedCreateFlash as Flash } from '~/flash';
 import { __ } from '~/locale';
 import './models/label';
 import './models/assignee';
@@ -83,8 +83,7 @@ export default () => {
       Board: () => import('ee_else_ce/boards/components/board_column.vue'),
       BoardSidebar,
       BoardAddIssuesModal,
-      BoardSettingsSidebar: () =>
-        import('ee_component/boards/components/board_settings_sidebar.vue'),
+      BoardSettingsSidebar: () => import('~/boards/components/board_settings_sidebar.vue'),
     },
     store,
     apolloProvider,
@@ -118,7 +117,7 @@ export default () => {
         boardId: this.boardId,
         fullPath: $boardApp.dataset.fullPath,
       };
-      this.setEndpoints(endpoints);
+      this.setInitialBoardData({ ...endpoints, boardType: this.parent });
       boardsStore.setEndpoints(endpoints);
       boardsStore.rootPath = this.boardsEndpoint;
 
@@ -190,7 +189,7 @@ export default () => {
       }
     },
     methods: {
-      ...mapActions(['setEndpoints']),
+      ...mapActions(['setInitialBoardData']),
       updateTokens() {
         this.filterManager.updateTokens();
       },

@@ -1,6 +1,6 @@
+import { TEST_HOST } from 'jest/helpers/test_constants';
 import * as commentIndicatorHelper from '~/image_diff/helpers/comment_indicator_helper';
 import * as mockData from '../mock_data';
-import { TEST_HOST } from 'jest/helpers/test_constants';
 
 describe('commentIndicatorHelper', () => {
   const { coordinate } = mockData;

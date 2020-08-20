@@ -1,4 +1,18 @@
+---
+stage: Verify
+group: Continuous Integration
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # Pipelines API
+
+## Single Pipeline Requests
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/36494) in GitLab 13.3.
+
+Endpoints that request information about a single pipeline return data for any pipeline.
+Before 13.3, requests for [child pipelines](../ci/parent_child_pipelines.md) returned
+a 404 error.
 
 ## Pipelines pagination
 
@@ -19,7 +33,7 @@ GET /projects/:id/pipelines
 |-----------|---------|----------|---------------------|
 | `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `scope`   | string  | no       | The scope of pipelines, one of: `running`, `pending`, `finished`, `branches`, `tags` |
-| `status`  | string  | no       | The status of pipelines, one of: `running`, `pending`, `success`, `failed`, `canceled`, `skipped`, `created`, `manual` |
+| `status`  | string  | no       | The status of pipelines, one of: `created`, `waiting_for_resource`, `preparing`, `pending`, `running`, `success`, `failed`, `canceled`, `skipped`, `manual`, `scheduled` |
 | `ref`     | string  | no       | The ref of pipelines |
 | `sha`     | string  | no       | The SHA of pipelines |
 | `yaml_errors`| boolean  | no       | Returns pipelines with invalid configurations |
@@ -205,7 +219,7 @@ POST /projects/:id/pipeline
 |-------------|---------|----------|---------------------|
 | `id`        | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `ref`       | string  | yes      | Reference to commit |
-| `variables` | array   | no       | An array containing the variables available in the pipeline, matching the structure `[{ 'key' => 'UPLOAD_TO_S3', 'variable_type' => 'file', 'value' => 'true' }]` |
+| `variables` | array   | no       | An array containing the variables available in the pipeline, matching the structure `[{ 'key': 'UPLOAD_TO_S3', 'variable_type': 'file', 'value': 'true' }]` |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/pipeline?ref=master"

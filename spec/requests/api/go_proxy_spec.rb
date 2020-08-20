@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe API::GoProxy do
   include PackagesManagerApiSpecHelpers
+  include HttpBasicAuthHelpers
 
   let_it_be(:user) { create :user }
   let_it_be(:project) { create :project_empty_repo, creator: user, path: 'my-go-lib' }
@@ -108,6 +109,7 @@ RSpec.describe API::GoProxy do
 
       project.repository.commit_by(oid: sha)
     end
+
     let(:resource) { "#{version}.info" }
 
     it_behaves_like 'an unavailable resource'
@@ -386,7 +388,7 @@ RSpec.describe API::GoProxy do
       end
 
       it 'returns ok with a personal access token and basic authentication' do
-        get_resource(headers: build_basic_auth_header(user.username, pa_token.token))
+        get_resource(headers: basic_auth_header(user.username, pa_token.token))
 
         expect(response).to have_gitlab_http_status(:ok)
       end

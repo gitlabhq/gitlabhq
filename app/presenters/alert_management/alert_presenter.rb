@@ -4,6 +4,7 @@ module AlertManagement
   class AlertPresenter < Gitlab::View::Presenter::Delegated
     include Gitlab::Utils::StrongMemoize
     include IncidentManagement::Settings
+    include ActionView::Helpers::UrlHelper
 
     MARKDOWN_LINE_BREAK = "  \n".freeze
 
@@ -37,7 +38,17 @@ module AlertManagement
       MARKDOWN
     end
 
+    def runbook
+      strong_memoize(:runbook) do
+        payload&.dig('runbook')
+      end
+    end
+
     def metrics_dashboard_url; end
+
+    def details_url
+      details_project_alert_management_url(project, alert.iid)
+    end
 
     private
 
@@ -61,6 +72,7 @@ module AlertManagement
       metadata << list_item('Monitoring tool', monitoring_tool) if monitoring_tool
       metadata << list_item('Hosts', host_links) if hosts.any?
       metadata << list_item('Description', description) if description.present?
+      metadata << list_item('GitLab alert', details_url) if details_url.present?
 
       metadata.join(MARKDOWN_LINE_BREAK)
     end

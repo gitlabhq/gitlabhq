@@ -26,6 +26,7 @@ RSpec.describe 'Updating a Snippet' do
       title: updated_title
     }
   end
+
   let(:mutation) do
     graphql_mutation(:update_snippet, mutation_vars)
   end
@@ -157,7 +158,7 @@ RSpec.describe 'Updating a Snippet' do
     let(:mutation_vars) do
       {
         id: snippet_gid,
-        files: [
+        blob_actions: [
           { action: :update, filePath: updated_file, content: updated_content },
           { action: :delete, filePath: deleted_file }
         ]

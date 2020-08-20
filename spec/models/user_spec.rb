@@ -76,6 +76,7 @@ RSpec.describe User do
     it { is_expected.to have_many(:groups) }
     it { is_expected.to have_many(:keys).dependent(:destroy) }
     it { is_expected.to have_many(:deploy_keys).dependent(:nullify) }
+    it { is_expected.to have_many(:group_deploy_keys) }
     it { is_expected.to have_many(:events).dependent(:delete_all) }
     it { is_expected.to have_many(:issues).dependent(:destroy) }
     it { is_expected.to have_many(:notes).dependent(:destroy) }
@@ -239,6 +240,22 @@ RSpec.describe User do
 
     describe 'last name' do
       it { is_expected.to validate_length_of(:last_name).is_at_most(127) }
+    end
+
+    describe 'preferred_language' do
+      context 'when its value is nil in the database' do
+        let(:user) { build(:user, preferred_language: nil) }
+
+        it 'falls back to I18n.default_locale when empty in the database' do
+          expect(user.preferred_language).to eq I18n.default_locale.to_s
+        end
+
+        it 'falls back to english when I18n.default_locale is not an available language' do
+          I18n.default_locale = :kl
+
+          expect(user.preferred_language).to eq 'en'
+        end
+      end
     end
 
     describe 'username' do
@@ -836,6 +853,24 @@ RSpec.describe User do
         it 'only includes user2' do
           expect(users).to contain_exactly(user2)
         end
+      end
+    end
+
+    describe '.with_personal_access_tokens_expired_today' do
+      let_it_be(:user1) { create(:user) }
+      let_it_be(:expired_today) { create(:personal_access_token, user: user1, expires_at: Date.current) }
+
+      let_it_be(:user2) { create(:user) }
+      let_it_be(:revoked_token) { create(:personal_access_token, user: user2, expires_at: Date.current, revoked: true) }
+
+      let_it_be(:user3) { create(:user) }
+      let_it_be(:impersonated_token) { create(:personal_access_token, user: user3, expires_at: Date.current, impersonation: true) }
+
+      let_it_be(:user4) { create(:user) }
+      let_it_be(:already_notified) { create(:personal_access_token, user: user4, expires_at: Date.current, after_expiry_notification_delivered: true) }
+
+      it 'returns users whose token has expired today' do
+        expect(described_class.with_personal_access_tokens_expired_today).to contain_exactly(user1)
       end
     end
 

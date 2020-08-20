@@ -125,7 +125,8 @@ can use <https://rubular.com> to test your regex. The regex returns the **last**
 match found in the output.
 
 If the pipeline succeeds, the coverage is shown in the merge request widget and
-in the jobs table.
+in the jobs table. If multiple jobs in the pipeline have coverage reports, they will
+be averaged.
 
 ![MR widget coverage](img/pipelines_test_coverage_mr_widget.png)
 
@@ -207,7 +208,7 @@ If you want all pending non-HEAD pipelines on branches to auto-cancel each time
 a new pipeline is created, such as after a Git push or manually from the UI,
 you can enable this in the project settings:
 
-1. Go to **{settings}** **Settings > CI / CD**.
+1. Go to **Settings > CI / CD**.
 1. Expand **General Pipelines**.
 1. Check the **Auto-cancel redundant, pending pipelines** checkbox.
 1. Click **Save changes**.
@@ -226,7 +227,7 @@ newer one, which may not be what you want.
 
 To avoid this scenario:
 
-1. Go to **{settings}** **Settings > CI / CD**.
+1. Go to **Settings > CI / CD**.
 1. Expand **General pipelines**.
 1. Check the **Skip outdated deployment jobs** checkbox.
 1. Click **Save changes**.

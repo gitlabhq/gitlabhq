@@ -1,0 +1,5 @@
+---
+title: Cleanup migration to drop temporary table untracked_files_for_uploads if exists
+merge_request: 37352
+author:
+type: other

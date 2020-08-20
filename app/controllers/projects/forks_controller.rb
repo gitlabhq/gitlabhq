@@ -36,7 +36,19 @@ class Projects::ForksController < Projects::ApplicationController
   end
 
   def new
-    @namespaces = fork_service.valid_fork_targets - [project.namespace]
+    respond_to do |format|
+      format.html do
+        @own_namespace = current_user.namespace if fork_service.valid_fork_targets.include?(current_user.namespace)
+        @project = project
+      end
+
+      format.json do
+        namespaces = fork_service.valid_fork_targets - [current_user.namespace, project.namespace]
+        render json: {
+          namespaces: ForkNamespaceSerializer.new.represent(namespaces, project: project, current_user: current_user)
+        }
+      end
+    end
   end
 
   # rubocop: disable CodeReuse/ActiveRecord

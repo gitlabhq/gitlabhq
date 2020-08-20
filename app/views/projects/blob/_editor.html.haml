@@ -8,13 +8,13 @@
       = sprite_icon('fork', size: 12)
       = ref
     - if current_action?(:edit) || current_action?(:update)
-      %span.pull-left.gl-mr-3
+      %span.float-left.gl-mr-3
       = text_field_tag 'file_path', (params[:file_path] || @path),
         class: 'form-control new-file-path js-file-path-name-input'
       = render 'template_selectors'
 
     - if current_action?(:new) || current_action?(:create)
-      %span.pull-left.gl-mr-3
+      %span.float-left.gl-mr-3
         \/
       = text_field_tag 'file_name', params[:file_name], placeholder: "File name",
         required: true, class: 'form-control new-file-name js-file-path-name-input', value: params[:file_name] || (should_suggest_gitlab_ci_yml? ? '.gitlab-ci.yml' : '')
@@ -40,7 +40,8 @@
         = select_tag :encoding, options_for_select([ "base64", "text" ], "text"), class: 'select2', tabindex: '-1'
 
   .file-editor.code
-    %pre.js-edit-mode-pane.qa-editor#editor{ data: { 'editor-loading': true } }= params[:content] || local_assigns[:blob_data]
+    .js-edit-mode-pane.qa-editor#editor{ data: { 'editor-loading': true } }<
+      %pre.editor-loading-content= params[:content] || local_assigns[:blob_data]
     - if local_assigns[:path]
       .js-edit-mode-pane#preview.hide
         .center

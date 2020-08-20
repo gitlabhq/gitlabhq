@@ -18,12 +18,14 @@ RSpec.describe RemoveUnreferencedLfsObjectsWorker do
                 lfs_object: referenced_lfs_object1
             )
     end
+
     let!(:lfs_objects_project2_1) do
       create(:lfs_objects_project,
                 project: project2,
                 lfs_object: referenced_lfs_object1
             )
     end
+
     let!(:lfs_objects_project1_2) do
       create(:lfs_objects_project,
                 project: project1,
@@ -46,7 +48,7 @@ RSpec.describe RemoveUnreferencedLfsObjectsWorker do
     end
 
     it 'removes unreferenced lfs objects after project removal' do
-      project1.destroy
+      project1.destroy!
 
       worker.perform
 

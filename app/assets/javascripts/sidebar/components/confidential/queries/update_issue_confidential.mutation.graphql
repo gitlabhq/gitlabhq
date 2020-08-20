@@ -1,7 +1,0 @@
-mutation updateIssueConfidential($input: IssueSetConfidentialInput!) {
-  issueSetConfidential(input: $input) {
-    issue {
-      confidential
-    }
-  }
-}

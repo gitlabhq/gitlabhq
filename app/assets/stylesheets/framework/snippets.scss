@@ -32,6 +32,10 @@
 
 .snippet-file-content {
   border-radius: 3px;
+
+  + .snippet-file-content {
+    @include gl-mt-5;
+  }
 }
 
 .snippet-header {

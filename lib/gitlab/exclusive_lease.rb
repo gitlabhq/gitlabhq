@@ -102,7 +102,7 @@ module Gitlab
       Gitlab::Redis::SharedState.with do |redis|
         ttl = redis.ttl(@redis_shared_state_key)
 
-        ttl if ttl.positive?
+        ttl if ttl > 0
       end
     end
 

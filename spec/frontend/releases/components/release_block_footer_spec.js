@@ -1,11 +1,11 @@
 import { mount } from '@vue/test-utils';
 import { GlLink } from '@gitlab/ui';
 import { trimText } from 'helpers/text_helper';
+import { cloneDeep } from 'lodash';
 import ReleaseBlockFooter from '~/releases/components/release_block_footer.vue';
 import Icon from '~/vue_shared/components/icon.vue';
 import { release as originalRelease } from '../mock_data';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
-import { cloneDeep } from 'lodash';
 
 const mockFutureDate = new Date(9999, 0, 0).toISOString();
 let mockIsFutureRelease = false;

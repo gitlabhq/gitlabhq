@@ -14,27 +14,9 @@ module IncidentManagement
     def execute
       label = Labels::FindOrCreateService
         .new(current_user, project, **LABEL_PROPERTIES)
-        .execute
-
-      if label.invalid?
-        log_invalid_label_info(label)
-        return ServiceResponse.error(payload: { label: label }, message: full_error_message(label))
-      end
+        .execute(skip_authorization: true)
 
       ServiceResponse.success(payload: { label: label })
-    end
-
-    private
-
-    def log_invalid_label_info(label)
-      log_info <<~TEXT.chomp
-        Cannot create incident label "#{label.title}" \
-        for "#{label.project.full_name}": #{full_error_message(label)}.
-      TEXT
-    end
-
-    def full_error_message(label)
-      label.errors.full_messages.to_sentence
     end
   end
 end

@@ -1,0 +1,5 @@
+---
+title: When generating markdown for ordered lists, the list marker should not increment
+merge_request: 36851
+author:
+type: changed

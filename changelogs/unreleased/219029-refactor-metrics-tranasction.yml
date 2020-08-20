@@ -1,0 +1,5 @@
+---
+title: Unify Prometheus metric initialization by always using inline transaction metrics
+merge_request: 32980
+author:
+type: other

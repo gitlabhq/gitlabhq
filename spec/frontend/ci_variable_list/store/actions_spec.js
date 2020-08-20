@@ -1,8 +1,8 @@
-import Api from '~/api';
 import MockAdapter from 'axios-mock-adapter';
 import testAction from 'helpers/vuex_action_helper';
+import Api from '~/api';
 import axios from '~/lib/utils/axios_utils';
-import createFlash from '~/flash';
+import { deprecatedCreateFlash as createFlash } from '~/flash';
 import getInitialState from '~/ci_variable_list/store/state';
 import * as actions from '~/ci_variable_list/store/actions';
 import * as types from '~/ci_variable_list/store/mutation_types';

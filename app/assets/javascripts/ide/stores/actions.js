@@ -2,7 +2,7 @@ import Vue from 'vue';
 import { escape } from 'lodash';
 import { __, sprintf } from '~/locale';
 import { visitUrl } from '~/lib/utils/url_utility';
-import flash from '~/flash';
+import { deprecatedCreateFlash as flash } from '~/flash';
 import * as types from './mutation_types';
 import { decorateFiles } from '../lib/files';
 import { stageKeys } from '../constants';

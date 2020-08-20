@@ -329,6 +329,7 @@ RSpec.describe API::Commits do
           ]
         }
       end
+
       let(:valid_c_params) do
         {
           branch: 'master',
@@ -342,6 +343,7 @@ RSpec.describe API::Commits do
           ]
         }
       end
+
       let(:valid_utf8_c_params) do
         {
           branch: 'master',
@@ -621,6 +623,7 @@ RSpec.describe API::Commits do
           ]
         }
       end
+
       let(:valid_d_params) do
         {
           branch: 'markdown',
@@ -664,6 +667,7 @@ RSpec.describe API::Commits do
           ]
         }
       end
+
       let(:valid_m_params) do
         {
           branch: 'feature',
@@ -708,6 +712,7 @@ RSpec.describe API::Commits do
           ]
         }
       end
+
       let(:valid_u_params) do
         {
           branch: 'master',
@@ -819,6 +824,7 @@ RSpec.describe API::Commits do
           ]
         }
       end
+
       let(:valid_mo_params) do
         {
           branch: 'master',
@@ -1462,6 +1468,16 @@ RSpec.describe API::Commits do
           expect(json_response['author_name']).to eq(commit.author_name)
           expect(json_response['committer_name']).to eq(user.name)
         end
+
+        it 'supports dry-run without applying changes' do
+          head = project.commit(branch)
+
+          post api(route, current_user), params: { branch: branch, dry_run: true }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response).to eq("dry_run" => "success")
+          expect(project.commit(branch)).to eq(head)
+        end
       end
 
       context 'when repository is disabled' do
@@ -1532,6 +1548,14 @@ RSpec.describe API::Commits do
           post api(route, current_user), params: { branch: 'markdown' }
 
           expect(json_response['error_code']).to eq 'empty'
+        end
+
+        it 'includes an additional dry_run error field when enabled' do
+          post api(route, current_user), params: { branch: 'markdown', dry_run: true }
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+          expect(json_response['error_code']).to eq 'empty'
+          expect(json_response['dry_run']).to eq 'error'
         end
       end
 
@@ -1623,6 +1647,16 @@ RSpec.describe API::Commits do
           expect(json_response['committer_name']).to eq(user.name)
           expect(json_response['parent_ids']).to contain_exactly(commit_id)
         end
+
+        it 'supports dry-run without applying changes' do
+          head = project.commit(branch)
+
+          post api(route, current_user), params: { branch: branch, dry_run: true }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response).to eq("dry_run" => "success")
+          expect(project.commit(branch)).to eq(head)
+        end
       end
 
       context 'when repository is disabled' do
@@ -1703,6 +1737,18 @@ RSpec.describe API::Commits do
 
           expect(response).to have_gitlab_http_status(:bad_request)
           expect(json_response['error_code']).to eq 'empty'
+        end
+
+        it 'includes an additional dry_run error field when enabled' do
+          # First one actually reverts
+          post api(route, current_user), params: { branch: 'markdown' }
+
+          # Second one is redundant and should be empty
+          post api(route, current_user), params: { branch: 'markdown', dry_run: true }
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+          expect(json_response['error_code']).to eq 'empty'
+          expect(json_response['dry_run']).to eq 'error'
         end
       end
     end

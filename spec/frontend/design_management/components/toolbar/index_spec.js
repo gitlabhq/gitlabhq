@@ -1,9 +1,9 @@
 import { createLocalVue, shallowMount } from '@vue/test-utils';
 import VueRouter from 'vue-router';
+import { GlButton } from '@gitlab/ui';
 import Toolbar from '~/design_management/components/toolbar/index.vue';
 import DeleteButton from '~/design_management/components/delete_button.vue';
 import { DESIGNS_ROUTE_NAME } from '~/design_management/router/constants';
-import { GlDeprecatedButton } from '@gitlab/ui';
 
 const localVue = createLocalVue();
 localVue.use(VueRouter);
@@ -116,7 +116,7 @@ describe('Design management toolbar component', () => {
   });
 
   it('renders download button with correct link', () => {
-    expect(wrapper.find(GlDeprecatedButton).attributes('href')).toBe(
+    expect(wrapper.find(GlButton).attributes('href')).toBe(
       '/-/designs/306/7f747adcd4693afadbe968d7ba7d983349b9012d',
     );
   });

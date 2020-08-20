@@ -1,6 +1,7 @@
 <script>
-import { GlEmptyState, GlButton } from '@gitlab/ui';
+import { GlEmptyState, GlButton, GlLink } from '@gitlab/ui';
 import { s__ } from '~/locale';
+import alertsHelpUrlQuery from '../graphql/queries/alert_help_url.query.graphql';
 
 export default {
   i18n: {
@@ -25,6 +26,12 @@ export default {
   components: {
     GlEmptyState,
     GlButton,
+    GlLink,
+  },
+  apollo: {
+    alertsHelpUrl: {
+      query: alertsHelpUrlQuery,
+    },
   },
   props: {
     enableAlertManagementPath: {
@@ -50,6 +57,11 @@ export default {
       default: '',
     },
   },
+  data() {
+    return {
+      alertsHelpUrl: '',
+    };
+  },
   computed: {
     emptyState() {
       return {
@@ -71,13 +83,9 @@ export default {
       <template #description>
         <div class="gl-display-block">
           <span>{{ emptyState.info }}</span>
-          <a
-            v-if="!opsgenieMvcEnabled"
-            href="/help/user/project/operations/alert_management.html"
-            target="_blank"
-          >
+          <gl-link v-if="!opsgenieMvcEnabled" :href="alertsHelpUrl" target="_blank">
             {{ $options.i18n.moreInformation }}
-          </a>
+          </gl-link>
         </div>
         <div v-if="alertsCanBeEnabled" class="gl-display-block center gl-pt-4">
           <gl-button category="primary" variant="success" :href="emptyState.link">

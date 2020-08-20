@@ -181,10 +181,11 @@ RSpec.describe Projects::IssuesController do
         project.add_developer(user)
       end
 
-      it 'builds a new issue' do
+      it 'builds a new issue', :aggregate_failures do
         get :new, params: { namespace_id: project.namespace, project_id: project }
 
         expect(assigns(:issue)).to be_a_new(Issue)
+        expect(assigns(:issue).issue_type).to eq('issue')
       end
 
       where(:conf_value, :conf_result) do
@@ -211,6 +212,24 @@ RSpec.describe Projects::IssuesController do
           assigned_issue = assigns(:issue)
           expect(assigned_issue).to be_a_new(Issue)
           expect(assigned_issue.confidential).to eq conf_result
+        end
+      end
+
+      context 'setting issue type' do
+        let(:issue_type) { 'issue' }
+
+        before do
+          get :new, params: { namespace_id: project.namespace, project_id: project, issue: { issue_type: issue_type } }
+        end
+
+        subject { assigns(:issue).issue_type }
+
+        it { is_expected.to eq('issue') }
+
+        context 'incident issue' do
+          let(:issue_type) { 'incident' }
+
+          it { is_expected.to eq(issue_type) }
         end
       end
 
@@ -964,6 +983,33 @@ RSpec.describe Projects::IssuesController do
         expect { issue.update(description: [issue.description, labels].join(' ')) }
           .not_to exceed_query_limit(control_count + 2 * labels.count)
       end
+
+      context 'real-time sidebar feature flag' do
+        using RSpec::Parameterized::TableSyntax
+
+        let_it_be(:project) { create(:project, :public) }
+        let_it_be(:issue) { create(:issue, project: project) }
+
+        where(:action_cable_in_app_enabled, :feature_flag_enabled, :gon_feature_flag) do
+          true  | true  | true
+          true  | false | true
+          false | true  | true
+          false | false | false
+        end
+
+        with_them do
+          before do
+            expect(Gitlab::ActionCable::Config).to receive(:in_app?).and_return(action_cable_in_app_enabled)
+            stub_feature_flags(real_time_issue_sidebar: feature_flag_enabled)
+          end
+
+          it 'broadcasts to the issues channel based on ActionCable and feature flag values' do
+            go(id: issue.to_param)
+
+            expect(Gon.features).to include('realTimeIssueSidebar' => gon_feature_flag)
+          end
+        end
+      end
     end
 
     describe 'GET #realtime_changes' do
@@ -1020,6 +1066,14 @@ RSpec.describe Projects::IssuesController do
       }.merge(additional_params)
 
       project.issues.first
+    end
+
+    it 'creates the issue successfully', :aggregate_failures do
+      issue = post_new_issue
+
+      expect(issue).to be_a(Issue)
+      expect(issue.persisted?).to eq(true)
+      expect(issue.issue_type).to eq('issue')
     end
 
     context 'resolving discussions in MergeRequest' do
@@ -1260,6 +1314,20 @@ RSpec.describe Projects::IssuesController do
             issue: { title: 'Title', description: 'Description' }
           }
         end
+      end
+    end
+
+    context 'setting issue type' do
+      let(:issue_type) { 'issue' }
+
+      subject { post_new_issue(issue_type: issue_type)&.issue_type }
+
+      it { is_expected.to eq('issue') }
+
+      context 'incident issue' do
+        let(:issue_type) { 'incident' }
+
+        it { is_expected.to eq(issue_type) }
       end
     end
   end

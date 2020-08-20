@@ -165,12 +165,12 @@ $gray-10: #fafafa !default;
 $gray-50: #f0f0f0 !default;
 $gray-100: #dbdbdb !default;
 $gray-200: #bfbfbf !default;
-$gray-300: #ccc !default;
-$gray-400: #bababa !default;
-$gray-500: #a7a7a7 !default;
-$gray-600: #919191 !default;
-$gray-700: #707070 !default;
-$gray-800: #4f4f4f !default;
+$gray-300: #999 !default;
+$gray-400: #868686 !default;
+$gray-500: #666 !default;
+$gray-600: #5e5e5e !default;
+$gray-700: #525252 !default;
+$gray-800: #404040 !default;
 $gray-900: #303030 !default;
 $gray-950: #1f1f1f !default;
 
@@ -350,12 +350,12 @@ $gl-font-size-large: 16px;
 $gl-font-weight-normal: 400;
 $gl-font-weight-bold: 600;
 $gl-text-color: $gray-900;
-$gl-text-color-secondary: $gray-700;
-$gl-text-color-tertiary: $gray-600;
+$gl-text-color-secondary: $gray-500;
+$gl-text-color-tertiary: $gray-400;
 $gl-text-color-quaternary: #d6d6d6;
 $gl-text-color-inverted: $white;
 $gl-text-color-secondary-inverted: rgba($white, 0.85);
-$gl-text-color-disabled: $gray-600;
+$gl-text-color-disabled: $gray-400;
 $gl-grayish-blue: #7f8fa4;
 $gl-gray-dark: #313236;
 $gl-gray-light: #5c5c5c;
@@ -446,6 +446,8 @@ $context-header-height: 60px;
 $breadcrumb-min-height: 48px;
 $home-panel-title-row-height: 64px;
 $home-panel-avatar-mobile-size: 24px;
+$issuable-title-max-width: 350px;
+$milestone-title-max-width: 75px;
 $gl-line-height: 16px;
 $gl-line-height-18: 18px;
 $gl-line-height-20: 20px;
@@ -637,10 +639,13 @@ $issue-boards-card-shadow: rgba(0, 0, 0, 0.1);
  They probably should be derived in a smarter way.
 */
 $issue-boards-filter-height: 68px;
+$issue-boards-filter-height-md: 110px;
+$issue-boards-filter-height-sm: 299px;
 $issue-boards-breadcrumbs-height-xs: 63px;
 $issue-board-list-difference-xs: $header-height + $issue-boards-breadcrumbs-height-xs;
 $issue-board-list-difference-sm: $header-height + $breadcrumb-min-height;
-$issue-board-list-difference-md: $issue-board-list-difference-sm + $issue-boards-filter-height;
+$issue-board-list-difference-md: $issue-board-list-difference-sm + $issue-boards-filter-height-md;
+$issue-board-list-difference-lg: $issue-board-list-difference-sm + $issue-boards-filter-height;
 /*
  The following heights are used in environment_logs.scss and are used for calculation of the log viewer height.
 */
@@ -747,10 +752,6 @@ $login-brand-holder-color: #888;
 */
 $project-option-descr-color: #54565b;
 $project-network-controls-color: #888;
-
-$feature-toggle-color: #fff;
-$feature-toggle-text-color: #fff;
-$feature-toggle-color-enabled: #4a8bee;
 
 /*
  * Monitor Charts
@@ -870,7 +871,7 @@ $popover-max-width: 384px;
 $popover-box-shadow: 0 2px 3px 1px $gray-100;
 
 /*
-Issues Analytics
+Issue Analytics
 */
 $issues-analytics-popover-boarder-color: rgba(0, 0, 0, 0.15);
 

@@ -2,6 +2,7 @@
 
 module Gitlab
   class UserAccessSnippet < UserAccess
+    extend ::Gitlab::Utils::Override
     extend ::Gitlab::Cache::RequestCache
     # TODO: apply override check https://gitlab.com/gitlab-org/gitlab/issues/205677
 
@@ -9,11 +10,10 @@ module Gitlab
       [user&.id, snippet&.id]
     end
 
-    attr_reader :snippet
+    alias_method :snippet, :container
 
     def initialize(user, snippet: nil)
-      @user = user
-      @snippet = snippet
+      super(user, container: snippet)
       @project = snippet&.project
     end
 
@@ -43,13 +43,9 @@ module Gitlab
 
     def can_push_to_branch?(ref)
       return true if snippet_migration?
-
-      super
-
       return false unless snippet
-      return false unless can_do_action?(:update_snippet)
 
-      true
+      can_do_action?(:update_snippet)
     end
 
     def can_merge_to_branch?(ref)
@@ -59,5 +55,8 @@ module Gitlab
     def snippet_migration?
       user&.migration_bot? && snippet
     end
+
+    override :project
+    attr_reader :project
   end
 end

@@ -15,7 +15,7 @@ RSpec.describe Packages::PackageFileUploader do
 
   context 'object store is remote' do
     before do
-      stub_packages_object_storage
+      stub_package_file_object_storage
     end
 
     include_context 'with storage', described_class::Store::REMOTE
@@ -29,7 +29,7 @@ RSpec.describe Packages::PackageFileUploader do
 
     context 'with object storage enabled' do
       before do
-        stub_packages_object_storage
+        stub_package_file_object_storage
       end
 
       it 'can store file remotely' do

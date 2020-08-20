@@ -9,6 +9,7 @@ export default class FilteredSearchServiceDesk extends FilteredSearchManager {
     super({
       page: 'service_desk',
       filteredSearchTokenKeys: IssuableFilteredSearchTokenKeys,
+      useDefaultState: true,
     });
 
     this.supportBotData = supportBotData;

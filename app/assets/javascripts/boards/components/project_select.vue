@@ -64,10 +64,10 @@ export default {
           this.groupId,
           term,
           {
-            search_namespaces: true,
             with_issues_enabled: true,
             with_shared: false,
             include_subgroups: true,
+            order_by: 'similarity',
             ...additionalAttrs,
           },
           projects => {
@@ -97,7 +97,7 @@ export default {
 
 <template>
   <div>
-    <label class="label-bold prepend-top-10">{{ __('Project') }}</label>
+    <label class="label-bold gl-mt-3">{{ __('Project') }}</label>
     <div ref="projectsDropdown" class="dropdown dropdown-projects">
       <button
         class="dropdown-menu-toggle wide"

@@ -9,27 +9,12 @@ RSpec.describe Gitlab::Metrics::ElasticsearchRackMiddleware do
   let(:transaction) { Gitlab::Metrics::WebTransaction.new(env) }
 
   describe '#call' do
-    let(:counter) { instance_double(Prometheus::Client::Counter, increment: nil) }
-    let(:histogram) { instance_double(Prometheus::Client::Histogram, observe: nil) }
     let(:elasticsearch_query_time) { 0.1 }
     let(:elasticsearch_requests_count) { 2 }
 
     before do
       allow(Gitlab::Instrumentation::ElasticsearchTransport).to receive(:query_time) { elasticsearch_query_time }
       allow(Gitlab::Instrumentation::ElasticsearchTransport).to receive(:get_request_count) { elasticsearch_requests_count }
-
-      allow(Gitlab::Metrics).to receive(:counter)
-        .with(:http_elasticsearch_requests_total,
-              an_instance_of(String),
-              Gitlab::Metrics::Transaction::BASE_LABELS)
-        .and_return(counter)
-
-      allow(Gitlab::Metrics).to receive(:histogram)
-        .with(:http_elasticsearch_requests_duration_seconds,
-              an_instance_of(String),
-              Gitlab::Metrics::Transaction::BASE_LABELS,
-              described_class::HISTOGRAM_BUCKETS)
-        .and_return(histogram)
 
       allow(Gitlab::Metrics).to receive(:current_transaction).and_return(transaction)
     end
@@ -39,19 +24,30 @@ RSpec.describe Gitlab::Metrics::ElasticsearchRackMiddleware do
     end
 
     it 'records elasticsearch metrics' do
-      expect(counter).to receive(:increment).with(transaction.labels, elasticsearch_requests_count)
-      expect(histogram).to receive(:observe).with(transaction.labels, elasticsearch_query_time)
+      expect(transaction).to receive(:increment).with(:http_elasticsearch_requests_total, elasticsearch_requests_count)
+      expect(transaction).to receive(:observe).with(:http_elasticsearch_requests_duration_seconds, elasticsearch_query_time)
 
       middleware.call(env)
     end
 
     it 'records elasticsearch metrics if an error is raised' do
-      expect(counter).to receive(:increment).with(transaction.labels, elasticsearch_requests_count)
-      expect(histogram).to receive(:observe).with(transaction.labels, elasticsearch_query_time)
+      expect(transaction).to receive(:increment).with(:http_elasticsearch_requests_total, elasticsearch_requests_count)
+      expect(transaction).to receive(:observe).with(:http_elasticsearch_requests_duration_seconds, elasticsearch_query_time)
 
       allow(app).to receive(:call).with(env).and_raise(StandardError)
 
       expect { middleware.call(env) }.to raise_error(StandardError)
+    end
+
+    context 'when there are no elasticsearch requests' do
+      let(:elasticsearch_requests_count) { 0 }
+
+      it 'does not record any metrics' do
+        expect(transaction).not_to receive(:observe).with(:http_elasticsearch_requests_duration_seconds)
+        expect(transaction).not_to receive(:increment).with(:http_elasticsearch_requests_total, 0)
+
+        middleware.call(env)
+      end
     end
   end
 end

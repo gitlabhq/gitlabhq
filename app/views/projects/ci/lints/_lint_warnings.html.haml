@@ -1,0 +1,6 @@
+- if warnings
+  - warnings.each do |warning|
+    .bs-callout.bs-callout-warning
+      %p
+        %b= _("Warning:")
+        = markdown(warning)

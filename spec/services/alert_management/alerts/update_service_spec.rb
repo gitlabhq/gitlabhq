@@ -147,8 +147,7 @@ RSpec.describe AlertManagement::Alerts::UpdateService do
         end
 
         it_behaves_like 'does not add a system note'
-        # TODO: We should not add another todo in this scenario
-        it_behaves_like 'adds a todo'
+        it_behaves_like 'does not add a todo'
       end
 
       context 'with multiple users included' do

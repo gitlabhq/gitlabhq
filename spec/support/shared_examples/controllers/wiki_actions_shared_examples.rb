@@ -61,6 +61,14 @@ RSpec.shared_examples 'wiki controller actions' do
       expect(assigns(:sidebar_wiki_entries)).to be_nil
       expect(assigns(:sidebar_limited)).to be_nil
     end
+
+    context 'when the request is of non-html format' do
+      it 'returns a 404 error' do
+        get :pages, params: routing_params.merge(format: 'json')
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
   end
 
   describe 'GET #history' do
@@ -151,6 +159,14 @@ RSpec.shared_examples 'wiki controller actions' do
         expect(assigns(:page).title).to eq(wiki_title)
         expect(assigns(:sidebar_wiki_entries)).to contain_exactly(an_instance_of(WikiPage))
         expect(assigns(:sidebar_limited)).to be(false)
+      end
+
+      it 'increases the page view counter' do
+        expect do
+          subject
+
+          expect(response).to have_gitlab_http_status(:ok)
+        end.to change { Gitlab::UsageDataCounters::WikiPageCounter.read(:view) }.by(1)
       end
 
       context 'when page content encoding is invalid' do
@@ -335,6 +351,44 @@ RSpec.shared_examples 'wiki controller actions' do
         subject
 
         expect(response).to render_template('shared/wikis/empty')
+      end
+    end
+  end
+
+  describe 'POST #create' do
+    let(:new_title) { 'New title' }
+    let(:new_content) { 'New content' }
+
+    subject do
+      post(:create,
+            params: routing_params.merge(
+              wiki: { title: new_title, content: new_content }
+            ))
+    end
+
+    context 'when page is valid' do
+      it 'creates the page' do
+        expect do
+          subject
+        end.to change { wiki.list_pages.size }.by 1
+
+        wiki_page = wiki.find_page(new_title)
+
+        expect(wiki_page.title).to eq new_title
+        expect(wiki_page.content).to eq new_content
+      end
+    end
+
+    context 'when page is not valid' do
+      let(:new_title) { '' }
+
+      it 'renders the edit state' do
+        expect do
+          subject
+        end.not_to change { wiki.list_pages.size }
+
+        expect(response).to render_template('shared/wikis/edit')
+        expect(flash[:alert]).to eq('Could not create wiki page')
       end
     end
   end

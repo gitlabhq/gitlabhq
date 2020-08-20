@@ -2,7 +2,6 @@
 import { GlButton, GlTabs, GlTab } from '@gitlab/ui';
 import AlertsSettingsForm from './alerts_form.vue';
 import PagerDutySettingsForm from './pagerduty_form.vue';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { INTEGRATION_TABS_CONFIG, I18N_INTEGRATION_TABS } from '../constants';
 
 export default {
@@ -13,17 +12,8 @@ export default {
     AlertsSettingsForm,
     PagerDutySettingsForm,
   },
-  mixins: [glFeatureFlagMixin()],
   tabs: INTEGRATION_TABS_CONFIG,
   i18n: I18N_INTEGRATION_TABS,
-  methods: {
-    isFeatureFlagEnabled(tab) {
-      if (tab.featureFlag) {
-        return this.glFeatures[tab.featureFlag];
-      }
-      return true;
-    },
-  },
 };
 </script>
 
@@ -34,9 +24,9 @@ export default {
     class="settings no-animate qa-incident-management-settings"
   >
     <div class="settings-header">
-      <h3 ref="sectionHeader" class="h4">
+      <h4 ref="sectionHeader" class="gl-my-3! gl-py-1">
         {{ $options.i18n.headerText }}
-      </h3>
+      </h4>
       <gl-button ref="toggleBtn" class="js-settings-toggle">{{
         $options.i18n.expandBtnLabel
       }}</gl-button>
@@ -49,7 +39,7 @@ export default {
       <gl-tabs>
         <gl-tab
           v-for="(tab, index) in $options.tabs"
-          v-if="tab.active && isFeatureFlagEnabled(tab)"
+          v-if="tab.active"
           :key="`${tab.title}_${index}`"
           :title="tab.title"
         >

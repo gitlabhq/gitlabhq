@@ -1,0 +1,5 @@
+---
+title: Allow GraphQL pipeline to resolve non-CI pipelines and expose configSource field
+merge_request: 39275
+author:
+type: added

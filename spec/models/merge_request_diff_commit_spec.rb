@@ -30,6 +30,7 @@ RSpec.describe MergeRequestDiffCommit do
         project.commit('570e7b2abdd848b95f2f578043fc23bd6f6fd24d')
       ]
     end
+
     let(:rows) do
       [
         {
@@ -73,6 +74,7 @@ RSpec.describe MergeRequestDiffCommit do
         # This commit's date is "Sun Aug 17 07:12:55 292278994 +0000"
         [project.commit('ba3343bc4fa403a8dfbfcab7fc1a8c29ee34bd69')]
       end
+
       let(:timestamp) { Time.zone.at((1 << 31) - 1) }
       let(:rows) do
         [{

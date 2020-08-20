@@ -1,0 +1,5 @@
+---
+title: Fix creating release asset links when using the API
+merge_request: 37557
+author:
+type: fixed

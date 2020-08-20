@@ -2,22 +2,22 @@
 import { mapActions, mapState } from 'vuex';
 import {
   GlEmptyState,
-  GlDeprecatedButton,
+  GlButton,
   GlIcon,
   GlLink,
   GlLoadingIcon,
   GlTable,
   GlFormInput,
-  GlDropdown,
-  GlDropdownItem,
-  GlDropdownDivider,
+  GlDeprecatedDropdown,
+  GlDeprecatedDropdownItem,
+  GlDeprecatedDropdownDivider,
   GlTooltipDirective,
   GlPagination,
 } from '@gitlab/ui';
+import { isEmpty } from 'lodash';
 import AccessorUtils from '~/lib/utils/accessor';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import { __ } from '~/locale';
-import { isEmpty } from 'lodash';
 import ErrorTrackingActions from './error_tracking_actions.vue';
 import Tracking from '~/tracking';
 import { trackErrorListViewsOptions, trackErrorStatusUpdateOptions } from '../utils';
@@ -71,10 +71,10 @@ export default {
   },
   components: {
     GlEmptyState,
-    GlDeprecatedButton,
-    GlDropdown,
-    GlDropdownItem,
-    GlDropdownDivider,
+    GlButton,
+    GlDeprecatedDropdown,
+    GlDeprecatedDropdownItem,
+    GlDeprecatedDropdownDivider,
     GlIcon,
     GlLink,
     GlLoadingIcon,
@@ -233,7 +233,7 @@ export default {
       >
         <div class="search-box flex-fill mb-1 mb-md-0">
           <div class="filtered-search-box mb-0">
-            <gl-dropdown
+            <gl-deprecated-dropdown
               :text="__('Recent searches')"
               class="filtered-search-history-dropdown-wrapper"
               toggle-class="filtered-search-history-dropdown-toggle-button"
@@ -243,19 +243,19 @@ export default {
                 {{ __('This feature requires local storage to be enabled') }}
               </div>
               <template v-else-if="recentSearches.length > 0">
-                <gl-dropdown-item
+                <gl-deprecated-dropdown-item
                   v-for="searchQuery in recentSearches"
                   :key="searchQuery"
                   @click="setSearchText(searchQuery)"
                   >{{ searchQuery }}
-                </gl-dropdown-item>
-                <gl-dropdown-divider />
-                <gl-dropdown-item ref="clearRecentSearches" @click="clearRecentSearches"
+                </gl-deprecated-dropdown-item>
+                <gl-deprecated-dropdown-divider />
+                <gl-deprecated-dropdown-item ref="clearRecentSearches" @click="clearRecentSearches"
                   >{{ __('Clear recent searches') }}
-                </gl-dropdown-item>
+                </gl-deprecated-dropdown-item>
               </template>
               <div v-else class="px-3">{{ __("You don't have any recent searches") }}</div>
-            </gl-dropdown>
+            </gl-deprecated-dropdown>
             <div class="filtered-search-input-container flex-fill">
               <gl-form-input
                 v-model="errorSearchQuery"
@@ -267,27 +267,26 @@ export default {
               />
             </div>
             <div class="gl-search-box-by-type-right-icons">
-              <gl-deprecated-button
+              <gl-button
                 v-if="errorSearchQuery.length > 0"
                 v-gl-tooltip.hover
                 :title="__('Clear')"
                 class="clear-search text-secondary"
                 name="clear"
+                icon="close"
                 @click="errorSearchQuery = ''"
-              >
-                <gl-icon name="close" :size="12" />
-              </gl-deprecated-button>
+              />
             </div>
           </div>
         </div>
 
-        <gl-dropdown
+        <gl-deprecated-dropdown
           :text="$options.statusFilters[statusFilter]"
           class="status-dropdown mx-md-1 mb-1 mb-md-0"
           menu-class="dropdown"
           :disabled="loading"
         >
-          <gl-dropdown-item
+          <gl-deprecated-dropdown-item
             v-for="(label, status) in $options.statusFilters"
             :key="status"
             @click="filterErrors(status, label)"
@@ -300,16 +299,16 @@ export default {
               />
               {{ label }}
             </span>
-          </gl-dropdown-item>
-        </gl-dropdown>
+          </gl-deprecated-dropdown-item>
+        </gl-deprecated-dropdown>
 
-        <gl-dropdown
+        <gl-deprecated-dropdown
           :text="$options.sortFields[sortField]"
           left
           :disabled="loading"
           menu-class="dropdown"
         >
-          <gl-dropdown-item
+          <gl-deprecated-dropdown-item
             v-for="(label, field) in $options.sortFields"
             :key="field"
             @click="sortByField(field)"
@@ -322,8 +321,8 @@ export default {
               />
               {{ label }}
             </span>
-          </gl-dropdown-item>
-        </gl-dropdown>
+          </gl-deprecated-dropdown-item>
+        </gl-deprecated-dropdown>
       </div>
 
       <div v-if="loading" class="py-3">

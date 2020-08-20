@@ -12,6 +12,14 @@ namespace :gettext do
     )
   end
 
+  # Disallow HTML from translatable strings
+  # See: https://docs.gitlab.com/ee/development/i18n/externalization.html#html
+  def html_todolist
+    return @html_todolist if defined?(@html_todolist)
+
+    @html_todolist = YAML.load_file(Rails.root.join('lib/gitlab/i18n/html_todo.yml'))
+  end
+
   task :compile do
     # See: https://gitlab.com/gitlab-org/gitlab-foss/issues/33014#note_31218998
     FileUtils.touch(File.join(Rails.root, 'locale/gitlab.pot'))
@@ -54,11 +62,11 @@ namespace :gettext do
     linters = files.map do |file|
       locale = File.basename(File.dirname(file))
 
-      Gitlab::I18n::PoLinter.new(file, locale)
+      Gitlab::I18n::PoLinter.new(po_path: file, html_todolist: html_todolist, locale: locale)
     end
 
     pot_file = Rails.root.join('locale/gitlab.pot')
-    linters.unshift(Gitlab::I18n::PoLinter.new(pot_file))
+    linters.unshift(Gitlab::I18n::PoLinter.new(po_path: pot_file, html_todolist: html_todolist))
 
     failed_linters = linters.select { |linter| linter.errors.any? }
 

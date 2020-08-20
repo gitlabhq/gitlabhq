@@ -11,7 +11,7 @@ module Gitlab
             PATTERN = %r{^\/([^\/]|\\/)+[^\\]\/[ismU]*}.freeze
 
             def initialize(regexp)
-              @value = regexp.gsub(/\\\//, '/')
+              super(regexp.gsub(/\\\//, '/'))
 
               unless Gitlab::UntrustedRegexp::RubySyntax.valid?(@value)
                 raise Lexer::SyntaxError, 'Invalid regular expression!'
@@ -22,6 +22,10 @@ module Gitlab
               Gitlab::UntrustedRegexp::RubySyntax.fabricate!(@value)
             rescue RegexpError
               raise Expression::RuntimeError, 'Invalid regular expression!'
+            end
+
+            def inspect
+              "/#{value}/"
             end
 
             def self.pattern

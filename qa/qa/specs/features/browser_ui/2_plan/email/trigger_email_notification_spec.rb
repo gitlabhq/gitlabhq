@@ -26,7 +26,7 @@ module QA
 
         mailhog_items = mailhog_json.dig('items')
 
-        expect(mailhog_items).to include(an_object_satisfying { |o| /project was granted/ === o.dig('Content', 'Headers', 'Subject', 0) })
+        expect(mailhog_items).to include(an_object_satisfying { |o| /project was granted/ === mailhog_item_subject(o) })
       end
 
       private
@@ -38,10 +38,21 @@ module QA
           mailhog_response = get QA::Runtime::MailHog.api_messages_url
 
           mailhog_data = JSON.parse(mailhog_response.body)
+          total = mailhog_data.dig('total')
+          subjects = mailhog_data.dig('items')
+            .map(&method(:mailhog_item_subject))
+            .join("\n")
+
+          Runtime::Logger.debug(%Q[Total number of emails: #{total}])
+          Runtime::Logger.debug(%Q[Subjects:\n#{subjects}])
 
           # Expect at least two invitation messages: group and project
-          mailhog_data if mailhog_data.dig('total') >= 2
+          mailhog_data if total >= 2
         end
+      end
+
+      def mailhog_item_subject(item)
+        item.dig('Content', 'Headers', 'Subject', 0)
       end
     end
   end

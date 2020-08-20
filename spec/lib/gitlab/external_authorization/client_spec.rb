@@ -14,7 +14,7 @@ RSpec.describe Gitlab::ExternalAuthorization::Client do
 
   describe '#request_access' do
     it 'performs requests to the configured endpoint' do
-      expect(Excon).to receive(:post).with(dummy_url, any_args)
+      expect(Gitlab::HTTP).to receive(:post).with(dummy_url, any_args)
 
       client.request_access
     end
@@ -25,7 +25,7 @@ RSpec.describe Gitlab::ExternalAuthorization::Client do
         project_classification_label: 'dummy_label',
         identities: []
       }.to_json
-      expect(Excon).to receive(:post)
+      expect(Gitlab::HTTP).to receive(:post)
                          .with(dummy_url, hash_including(body: expected_body))
 
       client.request_access
@@ -36,7 +36,7 @@ RSpec.describe Gitlab::ExternalAuthorization::Client do
         external_authorization_service_timeout: 3
       )
 
-      expect(Excon).to receive(:post).with(dummy_url,
+      expect(Gitlab::HTTP).to receive(:post).with(dummy_url,
                                            hash_including(
                                              connect_timeout: 3,
                                              read_timeout: 3,
@@ -58,23 +58,31 @@ RSpec.describe Gitlab::ExternalAuthorization::Client do
         client_key_pass: 'open sesame'
       }
 
-      expect(Excon).to receive(:post).with(dummy_url, hash_including(expected_params))
+      expect(Gitlab::HTTP).to receive(:post).with(dummy_url, hash_including(expected_params))
 
       client.request_access
     end
 
     it 'returns an expected response' do
-      expect(Excon).to receive(:post)
+      expect(Gitlab::HTTP).to receive(:post)
 
       expect(client.request_access)
         .to be_kind_of(::Gitlab::ExternalAuthorization::Response)
     end
 
     it 'wraps exceptions if the request fails' do
-      expect(Excon).to receive(:post) { raise Excon::Error.new('the request broke') }
+      expect(Gitlab::HTTP).to receive(:post) { raise Gitlab::HTTP::BlockedUrlError.new('the request broke') }
 
       expect { client.request_access }
         .to raise_error(::Gitlab::ExternalAuthorization::RequestFailed)
+    end
+
+    it 'passes local request setting to Gitlab::HTTP' do
+      stub_application_setting(allow_local_requests_from_system_hooks: false)
+
+      expect(Gitlab::HTTP).to receive(:post).with(dummy_url, hash_including(allow_local_requests: false))
+
+      client.request_access
     end
 
     describe 'for ldap users' do
@@ -92,7 +100,7 @@ RSpec.describe Gitlab::ExternalAuthorization::Client do
           identities: [{ provider: 'ldapprovider', extern_uid: 'external id' }],
           user_ldap_dn: 'external id'
         }.to_json
-        expect(Excon).to receive(:post)
+        expect(Gitlab::HTTP).to receive(:post)
                            .with(dummy_url, hash_including(body: expected_body))
 
         client.request_access
@@ -115,7 +123,7 @@ RSpec.describe Gitlab::ExternalAuthorization::Client do
             { provider: 'facebook', extern_uid: 'facebook_external_id' }
           ]
         }.to_json
-        expect(Excon).to receive(:post)
+        expect(Gitlab::HTTP).to receive(:post)
                            .with(dummy_url, hash_including(body: expected_body))
 
         client.request_access

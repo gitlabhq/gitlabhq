@@ -20,8 +20,7 @@ module QA
           end
 
           def save_changes
-            click_element(:submit_button)
-            wait_until { assert_no_element(:submit_button) }
+            click_element(:submit_button, Page::Dashboard::Snippet::Show)
           end
 
           private

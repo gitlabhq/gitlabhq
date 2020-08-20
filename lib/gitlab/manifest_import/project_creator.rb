@@ -18,6 +18,7 @@ module Gitlab
 
         params = {
           import_url: repository[:url],
+          import_source: repository[:url],
           import_type: 'manifest',
           namespace_id: group.id,
           path: project_path,

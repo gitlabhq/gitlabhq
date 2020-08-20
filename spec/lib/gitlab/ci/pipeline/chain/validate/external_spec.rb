@@ -41,9 +41,10 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Validate::External do
     )
   end
 
+  let(:save_incompleted) { true }
   let(:command) do
     Gitlab::Ci::Pipeline::Chain::Command.new(
-      project: project, current_user: user, config_processor: yaml_processor
+      project: project, current_user: user, config_processor: yaml_processor, save_incompleted: save_incompleted
     )
   end
 
@@ -84,6 +85,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Validate::External do
         perform!
 
         expect(pipeline.status).to eq('failed')
+        expect(pipeline).to be_persisted
         expect(pipeline.errors.to_a).to include('External validation failed')
       end
 
@@ -97,6 +99,30 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Validate::External do
         expect(Gitlab::AppLogger).to receive(:info).with(message: 'Pipeline not authorized', project_id: project.id, user_id: user.id)
 
         perform!
+      end
+
+      context 'when save_incompleted is false' do
+        let(:save_incompleted) { false}
+
+        it 'adds errors to the pipeline without dropping it' do
+          perform!
+
+          expect(pipeline.status).to eq('pending')
+          expect(pipeline).not_to be_persisted
+          expect(pipeline.errors.to_a).to include('External validation failed')
+        end
+
+        it 'breaks the chain' do
+          perform!
+
+          expect(step.break?).to be true
+        end
+
+        it 'logs the authorization' do
+          expect(Gitlab::AppLogger).to receive(:info).with(message: 'Pipeline not authorized', project_id: project.id, user_id: user.id)
+
+          perform!
+        end
       end
     end
   end

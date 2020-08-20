@@ -61,6 +61,7 @@ module API
         optional :auto_devops_deploy_strategy, type: String, values: %w(continuous manual timed_incremental), desc: 'Auto Deploy strategy'
         optional :autoclose_referenced_issues, type: Boolean, desc: 'Flag indication if referenced issues auto-closing is enabled'
         optional :repository_storage, type: String, desc: 'Which storage shard the repository is on. Available only to admins'
+        optional :packages_enabled, type: Boolean, desc: 'Enable project packages feature'
       end
 
       params :optional_project_params_ee do
@@ -137,6 +138,7 @@ module API
           :suggestion_commit_message,
           :repository_storage,
           :compliance_framework_setting,
+          :packages_enabled,
           :service_desk_enabled,
 
           # TODO: remove in API v5, replaced by *_access_level

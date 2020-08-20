@@ -23,6 +23,7 @@ RSpec.describe Gitlab::Database::Count::TablesampleCountStrategy do
         Namespace => threshold + 1
       }
     end
+
     let(:threshold) { Gitlab::Database::Count::TablesampleCountStrategy::EXACT_COUNT_THRESHOLD }
 
     before do

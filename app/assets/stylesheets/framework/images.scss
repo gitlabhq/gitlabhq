@@ -48,4 +48,12 @@ svg {
       @include svg-size(#{$svg-size}px);
     }
   }
+
+  &.s12 {
+    vertical-align: -1px;
+  }
+
+  &.s16 {
+    vertical-align: -3px;
+  }
 }

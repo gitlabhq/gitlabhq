@@ -1,3 +1,4 @@
+import { useMockIntersectionObserver } from 'helpers/mock_dom_observer';
 import autofocusonshow from '~/vue_shared/directives/autofocusonshow';
 
 /**
@@ -6,20 +7,14 @@ import autofocusonshow from '~/vue_shared/directives/autofocusonshow';
  * on underlying DOM methods.
  */
 describe('AutofocusOnShow directive', () => {
+  useMockIntersectionObserver();
+
   describe('with input invisible on component render', () => {
     let el;
 
     beforeEach(() => {
       setFixtures('<div id="container" style="display: none;"><input id="inputel"/></div>');
       el = document.querySelector('#inputel');
-
-      window.IntersectionObserver = class {
-        observe = jest.fn();
-      };
-    });
-
-    afterEach(() => {
-      delete window.IntersectionObserver;
     });
 
     it('should bind IntersectionObserver on input element', () => {

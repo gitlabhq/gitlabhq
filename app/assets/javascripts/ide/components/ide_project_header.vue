@@ -20,7 +20,11 @@ export default {
       <project-avatar-default :project="project" :size="48" />
       <span class="ide-sidebar-project-title">
         <span class="sidebar-context-title"> {{ project.name }} </span>
-        <span class="sidebar-context-title text-secondary">
+        <span
+          class="sidebar-context-title text-secondary"
+          data-qa-selector="project_path_content"
+          :data-qa-project-path="project.path_with_namespace"
+        >
           {{ project.path_with_namespace }}
         </span>
       </span>

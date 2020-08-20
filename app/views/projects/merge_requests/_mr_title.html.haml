@@ -7,16 +7,15 @@
   .alert.alert-danger
     The source project of this merge request has been removed.
 
-.detail-page-header{ class: ("border-bottom-0 pt-0 pb-0" if mr_tabs_position_enabled?) }
+.detail-page-header.border-bottom-0.pt-0.pb-0
   .detail-page-header-body
     .issuable-status-box.status-box{ class: status_box_class(@merge_request) }
-      = sprite_icon(state_icon_name, size: 16, css_class: 'd-block d-sm-none')
+      = sprite_icon(state_icon_name, css_class: 'd-block d-sm-none')
       %span.d-none.d-sm-block
         = state_human_name
 
     .issuable-meta
-      - if @merge_request.discussion_locked?
-        .issuable-warning-icon.inline= sprite_icon('lock', size: 16, css_class: 'icon')
+      #js-issuable-header-warnings
       = issuable_meta(@merge_request, @project, "Merge request")
 
     %a.btn.btn-default.float-right.d-block.d-sm-none.gutter-toggle.issuable-gutter-toggle.js-sidebar-toggle{ href: "#" }

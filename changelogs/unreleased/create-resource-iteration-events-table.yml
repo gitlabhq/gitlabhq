@@ -1,0 +1,5 @@
+---
+title: Add DB table and model to track changes of the iterations on issues
+merge_request: 37617
+author:
+type: added

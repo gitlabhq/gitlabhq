@@ -6,8 +6,8 @@
 .js-remove-member-modal
 %h3.page-title
   = _('Project: %{name}') % { name: @project.full_name }
-  = link_to edit_project_path(@project), class: "btn btn-nr float-right" do
-    %i.fa.fa-pencil-square-o
+  = link_to edit_project_path(@project), class: "btn btn-default gl-button float-right" do
+    = sprite_icon('pencil-square', css_class: 'gl-icon')
     = _('Edit')
 %hr
 - if @project.last_repository_check_failed?
@@ -178,8 +178,9 @@
           = _('group members')
           %span.badge.badge-pill= @group_members.size
           .float-right
-            = link_to admin_group_path(@group), class: 'btn btn-sm' do
-              = icon('pencil-square-o', text: _('Manage access'))
+            = link_to admin_group_path(@group), class: 'btn btn-default gl-button btn-sm' do
+              = sprite_icon('pencil-square', css_class: 'gl-icon')
+              = _('Manage access')
         %ul.content-list.members-list
           = render partial: 'shared/members/member', collection: @group_members, as: :member, locals: { show_controls: false }
         .card-footer
@@ -193,7 +194,9 @@
         = _('project members')
         %span.badge.badge-pill= @project.users.size
         .float-right
-          = link_to icon('pencil-square-o', text: _('Manage access')), project_project_members_path(@project), class: "btn btn-sm"
+          = link_to project_project_members_path(@project), class: 'btn btn-default gl-button btn-sm' do
+            = sprite_icon('pencil-square', css_class: 'gl-icon')
+            = _('Manage access')
       %ul.content-list.project_members.members-list
         = render partial: 'shared/members/member', collection: @project_members, as: :member, locals: { show_controls: false }
       .card-footer

@@ -4,9 +4,9 @@ group: Package
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 ---
 
-# Dependency Proxy **(PREMIUM ONLY)**
+# Dependency Proxy **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7934) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.11.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7934) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.11.
 
 NOTE: **Note:**
 This is the user guide. In order to use the dependency proxy, an administrator
@@ -63,10 +63,10 @@ To get a Docker image into the dependency proxy:
      image: gitlab.com/groupname/dependency_proxy/containers/alpine:latest
      ```
 
-GitLab will then pull the Docker image from Docker Hub and will cache the blobs
-on the GitLab server. The next time you pull the same image, it will get the latest
-information about the image from Docker Hub but will serve the existing blobs
-from GitLab.
+GitLab pulls the Docker image from Docker Hub and caches the blobs
+on the GitLab server. The next time you pull the same image, GitLab gets the latest
+information about the image from Docker Hub but serves the existing blobs
+from the GitLab server.
 
 The blobs are kept forever, and there is no hard limit on how much data can be
 stored.
@@ -82,6 +82,6 @@ for more details.
 
 The following limitations apply:
 
-- Only public groups are supported (authentication is not supported yet).
+- Only [public groups are supported](https://gitlab.com/gitlab-org/gitlab/-/issues/11582) (authentication is not supported yet).
 - Only Docker Hub is supported.
 - This feature requires Docker Hub being available.

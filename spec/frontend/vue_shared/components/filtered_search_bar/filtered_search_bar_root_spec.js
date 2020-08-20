@@ -1,4 +1,4 @@
-import { shallowMount } from '@vue/test-utils';
+import { shallowMount, mount } from '@vue/test-utils';
 import {
   GlFilteredSearch,
   GlButtonGroup,
@@ -16,13 +16,16 @@ import RecentSearchesService from '~/filtered_search/services/recent_searches_se
 import { mockAvailableTokens, mockSortOptions, mockHistoryItems } from './mock_data';
 
 const createComponent = ({
+  shallow = true,
   namespace = 'gitlab-org/gitlab-test',
   recentSearchesStorageKey = 'requirements',
   tokens = mockAvailableTokens,
-  sortOptions = mockSortOptions,
+  sortOptions,
   searchInputPlaceholder = 'Filter requirements',
-} = {}) =>
-  shallowMount(FilteredSearchBarRoot, {
+} = {}) => {
+  const mountMethod = shallow ? shallowMount : mount;
+
+  return mountMethod(FilteredSearchBarRoot, {
     propsData: {
       namespace,
       recentSearchesStorageKey,
@@ -31,12 +34,13 @@ const createComponent = ({
       searchInputPlaceholder,
     },
   });
+};
 
 describe('FilteredSearchBarRoot', () => {
   let wrapper;
 
   beforeEach(() => {
-    wrapper = createComponent();
+    wrapper = createComponent({ sortOptions: mockSortOptions });
   });
 
   afterEach(() => {
@@ -44,23 +48,38 @@ describe('FilteredSearchBarRoot', () => {
   });
 
   describe('data', () => {
-    it('initializes `filterValue`, `selectedSortOption` and `selectedSortDirection` data props', () => {
+    it('initializes `filterValue`, `selectedSortOption` and `selectedSortDirection` data props and displays the sort dropdown', () => {
       expect(wrapper.vm.filterValue).toEqual([]);
       expect(wrapper.vm.selectedSortOption).toBe(mockSortOptions[0].sortDirection.descending);
       expect(wrapper.vm.selectedSortDirection).toBe(SortDirection.descending);
+      expect(wrapper.contains(GlButtonGroup)).toBe(true);
+      expect(wrapper.contains(GlButton)).toBe(true);
+      expect(wrapper.contains(GlDropdown)).toBe(true);
+      expect(wrapper.contains(GlDropdownItem)).toBe(true);
+    });
+
+    it('does not initialize `selectedSortOption` and `selectedSortDirection` when `sortOptions` is not applied and hides the sort dropdown', () => {
+      const wrapperNoSort = createComponent();
+
+      expect(wrapperNoSort.vm.filterValue).toEqual([]);
+      expect(wrapperNoSort.vm.selectedSortOption).toBe(undefined);
+      expect(wrapperNoSort.contains(GlButtonGroup)).toBe(false);
+      expect(wrapperNoSort.contains(GlButton)).toBe(false);
+      expect(wrapperNoSort.contains(GlDropdown)).toBe(false);
+      expect(wrapperNoSort.contains(GlDropdownItem)).toBe(false);
     });
   });
 
   describe('computed', () => {
     describe('tokenSymbols', () => {
       it('returns a map containing type and symbols from `tokens` prop', () => {
-        expect(wrapper.vm.tokenSymbols).toEqual({ author_username: '@' });
+        expect(wrapper.vm.tokenSymbols).toEqual({ author_username: '@', label_name: '~' });
       });
     });
 
     describe('tokenTitles', () => {
       it('returns a map containing type and title from `tokens` prop', () => {
-        expect(wrapper.vm.tokenTitles).toEqual({ author_username: 'Author' });
+        expect(wrapper.vm.tokenTitles).toEqual({ author_username: 'Author', label_name: 'Label' });
       });
     });
 
@@ -97,6 +116,29 @@ describe('FilteredSearchBarRoot', () => {
         });
 
         expect(wrapper.vm.sortDirectionTooltip).toBe('Sort direction: Descending');
+      });
+    });
+
+    describe('filteredRecentSearches', () => {
+      it('returns array of recent searches filtering out any string type (unsupported) items', async () => {
+        wrapper.setData({
+          recentSearches: [{ foo: 'bar' }, 'foo'],
+        });
+
+        await wrapper.vm.$nextTick();
+
+        expect(wrapper.vm.filteredRecentSearches).toHaveLength(1);
+        expect(wrapper.vm.filteredRecentSearches[0]).toEqual({ foo: 'bar' });
+      });
+
+      it('returns undefined when recentSearchesStorageKey prop is not set on component', async () => {
+        wrapper.setProps({
+          recentSearchesStorageKey: '',
+        });
+
+        await wrapper.vm.$nextTick();
+
+        expect(wrapper.vm.filteredRecentSearches).not.toBeDefined();
       });
     });
   });
@@ -139,6 +181,46 @@ describe('FilteredSearchBarRoot', () => {
       });
     });
 
+    describe('removeQuotesEnclosure', () => {
+      const mockFilters = [
+        {
+          type: 'author_username',
+          value: {
+            data: 'root',
+            operator: '=',
+          },
+        },
+        {
+          type: 'label_name',
+          value: {
+            data: '"Documentation Update"',
+            operator: '=',
+          },
+        },
+        'foo',
+      ];
+
+      it('returns filter array with unescaped strings for values which have spaces', () => {
+        expect(wrapper.vm.removeQuotesEnclosure(mockFilters)).toEqual([
+          {
+            type: 'author_username',
+            value: {
+              data: 'root',
+              operator: '=',
+            },
+          },
+          {
+            type: 'label_name',
+            value: {
+              data: 'Documentation Update',
+              operator: '=',
+            },
+          },
+          'foo',
+        ]);
+      });
+    });
+
     describe('handleSortOptionClick', () => {
       it('emits component event `onSort` with selected sort by value', () => {
         wrapper.vm.handleSortOptionClick(mockSortOptions[1]);
@@ -172,9 +254,12 @@ describe('FilteredSearchBarRoot', () => {
 
     describe('handleHistoryItemSelected', () => {
       it('emits `onFilter` event with provided filters param', () => {
+        jest.spyOn(wrapper.vm, 'removeQuotesEnclosure');
+
         wrapper.vm.handleHistoryItemSelected(mockHistoryItems[0]);
 
         expect(wrapper.emitted('onFilter')[0]).toEqual([mockHistoryItems[0]]);
+        expect(wrapper.vm.removeQuotesEnclosure).toHaveBeenCalledWith(mockHistoryItems[0]);
       });
     });
 
@@ -233,10 +318,21 @@ describe('FilteredSearchBarRoot', () => {
         });
       });
 
+      it('calls `blurSearchInput` method to remove focus from filter input field', () => {
+        jest.spyOn(wrapper.vm, 'blurSearchInput');
+
+        wrapper.find(GlFilteredSearch).vm.$emit('submit', mockFilters);
+
+        expect(wrapper.vm.blurSearchInput).toHaveBeenCalled();
+      });
+
       it('emits component event `onFilter` with provided filters param', () => {
+        jest.spyOn(wrapper.vm, 'removeQuotesEnclosure');
+
         wrapper.vm.handleFilterSubmit(mockFilters);
 
         expect(wrapper.emitted('onFilter')[0]).toEqual([mockFilters]);
+        expect(wrapper.vm.removeQuotesEnclosure).toHaveBeenCalledWith(mockFilters);
       });
     });
   });
@@ -260,13 +356,28 @@ describe('FilteredSearchBarRoot', () => {
       expect(glFilteredSearchEl.props('historyItems')).toEqual(mockHistoryItems);
     });
 
+    it('renders search history items dropdown with formatting done using token symbols', async () => {
+      const wrapperFullMount = createComponent({ sortOptions: mockSortOptions, shallow: false });
+      wrapperFullMount.vm.recentSearchesStore.addRecentSearch(mockHistoryItems[0]);
+
+      await wrapperFullMount.vm.$nextTick();
+
+      const searchHistoryItemsEl = wrapperFullMount.findAll(
+        '.gl-search-box-by-click-menu .gl-search-box-by-click-history-item',
+      );
+
+      expect(searchHistoryItemsEl.at(0).text()).toBe('Author := @tobyLabel := ~Bug"duo"');
+
+      wrapperFullMount.destroy();
+    });
+
     it('renders sort dropdown component', () => {
       expect(wrapper.find(GlButtonGroup).exists()).toBe(true);
       expect(wrapper.find(GlDropdown).exists()).toBe(true);
       expect(wrapper.find(GlDropdown).props('text')).toBe(mockSortOptions[0].title);
     });
 
-    it('renders dropdown items', () => {
+    it('renders sort dropdown items', () => {
       const dropdownItemsEl = wrapper.findAll(GlDropdownItem);
 
       expect(dropdownItemsEl).toHaveLength(mockSortOptions.length);

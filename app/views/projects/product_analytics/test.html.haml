@@ -1,0 +1,16 @@
+- page_title _('Product Analytics')
+
+= render 'links'
+
+%p
+  = _('This page sends a payload. Go back to the events page to see a newly created event.')
+
+- if @event
+  %p
+    = _('Last item before this page loaded in your browser:')
+
+  %code
+    = @event.as_json_wo_empty
+
+:javascript
+  #{render 'tracker'}

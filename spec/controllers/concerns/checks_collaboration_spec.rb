@@ -33,7 +33,7 @@ RSpec.describe ChecksCollaboration do
     it 'is true when the user can push to a branch of the project' do
       fake_access = double('Gitlab::UserAccess')
       expect(fake_access).to receive(:can_push_to_branch?).with('a-branch').and_return(true)
-      expect(Gitlab::UserAccess).to receive(:new).with(user, project: project).and_return(fake_access)
+      expect(Gitlab::UserAccess).to receive(:new).with(user, container: project).and_return(fake_access)
 
       expect(helper.can_collaborate_with_project?(project, ref: 'a-branch')).to be_truthy
     end

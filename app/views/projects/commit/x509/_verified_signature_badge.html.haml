@@ -1,5 +1,5 @@
 - title = capture do
-  = _('This commit was signed with a <strong>verified</strong> signature and the committer email is verified to belong to the same user.').html_safe
+  = html_escape(_('This commit was signed with a %{strong_open}verified%{strong_close} signature and the committer email is verified to belong to the same user.')) % { strong_open: '<strong>'.html_safe, strong_close: '</strong>'.html_safe }
 
 - locals = { signature: signature, title: title, label: _('Verified'), css_class: 'valid', icon: 'status_success_borderless', show_user: true }
 

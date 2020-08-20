@@ -19,6 +19,7 @@ describe('AlertManagementList', () => {
       propsData: {
         projectPath: 'gitlab-org/gitlab',
         enableAlertManagementPath: '/link',
+        alertsHelpUrl: '/link',
         populatingAlertsHelpUrl: '/help/help-page.md#populating-alert-data',
         emptyAlertSvgPath: 'illustration/path',
         ...props,

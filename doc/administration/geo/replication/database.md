@@ -37,8 +37,7 @@ recover. See below for more details.
 The following guide assumes that:
 
 - You are using Omnibus and therefore you are using PostgreSQL 11 or later
-  which includes the [`pg_basebackup` tool](https://www.postgresql.org/docs/11/app-pgbasebackup.html) and improved
-  [Foreign Data Wrapper](https://www.postgresql.org/docs/11/postgres-fdw.html) support.
+  which includes the [`pg_basebackup` tool](https://www.postgresql.org/docs/11/app-pgbasebackup.html).
 - You have a **primary** node already set up (the GitLab server you are
   replicating from), running Omnibus' PostgreSQL (or equivalent version), and
   you have a new **secondary** server set up with the same versions of the OS,
@@ -166,6 +165,11 @@ There is an [issue where support is being discussed](https://gitlab.com/gitlab-o
    The `listen_address` option opens PostgreSQL up to network connections with the interface
    corresponding to the given address. See [the PostgreSQL documentation](https://www.postgresql.org/docs/11/runtime-config-connection.html)
    for more details.
+
+   NOTE: **Note:**
+   If you need to use `0.0.0.0` or `*` as the listen_address, you will also need to add
+   `127.0.0.1/32` to the `postgresql['md5_auth_cidr_addresses']` setting, to allow Rails to connect through
+   `127.0.0.1`. For more information, see [omnibus-5258](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5258).
 
    Depending on your network configuration, the suggested addresses may not
    be correct. If your **primary** node and **secondary** nodes connect over a local
@@ -341,10 +345,10 @@ There is an [issue where support is being discussed](https://gitlab.com/gitlab-o
    Ensure that the contents of `~gitlab-psql/data/server.crt` on the **primary** node
    match the contents of `~gitlab-psql/.postgresql/root.crt` on the **secondary** node.
 
-1. Configure PostgreSQL to enable FDW support:
+1. Configure PostgreSQL:
 
    This step is similar to how we configured the **primary** instance.
-   We need to enable this, to enable FDW support, even if using a single node.
+   We need to enable this, even if using a single node.
 
    Edit `/etc/gitlab/gitlab.rb` and add the following, replacing the IP
    addresses with addresses appropriate to your network configuration:
@@ -369,11 +373,6 @@ There is an [issue where support is being discussed](https://gitlab.com/gitlab-o
    ##
    postgresql['sql_user_password'] = '<md5_hash_of_your_password>'
    gitlab_rails['db_password'] = '<your_password_here>'
-
-   ##
-   ## Enable FDW support for the Geo Tracking Database (improves performance)
-   ##
-   geo_secondary['db_fdw'] = true
    ```
 
    For external PostgreSQL instances, see [additional instructions](external_database.md).
@@ -385,14 +384,11 @@ There is an [issue where support is being discussed](https://gitlab.com/gitlab-o
    gitlab-ctl reconfigure
    ```
 
-1. Restart PostgreSQL for the IP change to take effect and reconfigure again:
+1. Restart PostgreSQL for the IP change to take effect:
 
    ```shell
    gitlab-ctl restart postgresql
-   gitlab-ctl reconfigure
    ```
-
-   This last reconfigure will provision the FDW configuration and enable it.
 
 ### Step 3. Initiate the replication process
 
@@ -467,48 +463,6 @@ PostgreSQL connections. We recommend using PgBouncer if you use GitLab in a
 high-availability configuration with a cluster of nodes supporting a Geo
 **primary** node and another cluster of nodes supporting a Geo **secondary** node. For more
 information, see [High Availability with Omnibus GitLab](../../postgresql/replication_and_failover.md).
-
-For a Geo **secondary** node to work properly with PgBouncer in front of the database,
-it will need a separate read-only user to make [PostgreSQL FDW queries](https://www.postgresql.org/docs/11/postgres-fdw.html)
-work:
-
-1. On the **primary** Geo database, enter the PostgreSQL on the console as an
-   admin user. If you are using an Omnibus-managed database, log onto the **primary**
-   node that is running the PostgreSQL database (the default Omnibus database name is `gitlabhq_production`):
-
-   ```shell
-    sudo \
-       -u gitlab-psql /opt/gitlab/embedded/bin/psql \
-       -h /var/opt/gitlab/postgresql gitlabhq_production
-   ```
-
-1. Then create the read-only user:
-
-   ```sql
-   -- NOTE: Use the password defined earlier
-   CREATE USER gitlab_geo_fdw WITH password 'mypassword';
-   GRANT CONNECT ON DATABASE gitlabhq_production to gitlab_geo_fdw;
-   GRANT USAGE ON SCHEMA public TO gitlab_geo_fdw;
-   GRANT SELECT ON ALL TABLES IN SCHEMA public TO gitlab_geo_fdw;
-   GRANT SELECT ON ALL SEQUENCES IN SCHEMA public TO gitlab_geo_fdw;
-
-   -- Tables created by "gitlab" should be made read-only for "gitlab_geo_fdw"
-   -- automatically.
-   ALTER DEFAULT PRIVILEGES FOR USER gitlab IN SCHEMA public GRANT SELECT ON TABLES TO gitlab_geo_fdw;
-   ALTER DEFAULT PRIVILEGES FOR USER gitlab IN SCHEMA public GRANT SELECT ON SEQUENCES TO gitlab_geo_fdw;
-   ```
-
-1. On the **secondary** nodes, change `/etc/gitlab/gitlab.rb`:
-
-   ```ruby
-   geo_postgresql['fdw_external_user'] = 'gitlab_geo_fdw'
-   ```
-
-1. Save the file and reconfigure GitLab for the changes to be applied:
-
-   ```shell
-   gitlab-ctl reconfigure
-   ```
 
 ## Troubleshooting
 

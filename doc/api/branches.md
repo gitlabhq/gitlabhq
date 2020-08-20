@@ -1,3 +1,10 @@
+---
+stage: Create
+group: Source Code
+info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers"
+type: reference, api
+---
+
 # Branches API
 
 This API operates on [repository branches](../user/project/repository/branches/index.md).

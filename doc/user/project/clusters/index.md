@@ -67,17 +67,17 @@ to:
 ### Multiple Kubernetes clusters
 
 > - Introduced in [GitLab Premium](https://about.gitlab.com/pricing/) 10.3
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/35094) to GitLab core in 13.2.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/35094) to GitLab Core in 13.2.
 
 You can associate more than one Kubernetes cluster to your
 project. That way you can have different clusters for different environments,
 like dev, staging, production, and so on.
 
 Simply add another cluster, like you did the first time, and make sure to
-[set an environment scope](#setting-the-environment-scope-premium) that will
+[set an environment scope](#setting-the-environment-scope) that will
 differentiate the new cluster with the rest.
 
-#### Setting the environment scope **(PREMIUM)**
+#### Setting the environment scope
 
 When adding more than one Kubernetes cluster to your project, you need to differentiate
 them with an environment scope. The environment scope associates clusters with [environments](../../../ci/environments/index.md) similar to how the
@@ -368,7 +368,7 @@ Automatically detect and monitor Kubernetes metrics. Automatic monitoring of
 ### Visualizing cluster health
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/4701) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.6.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/208224) to GitLab core in 13.2.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/208224) to GitLab Core in 13.2.
 
 When [Prometheus is deployed](#installing-applications), GitLab will automatically monitor the cluster's health. At the top of the cluster settings page, CPU and Memory utilization is displayed, along with the total amount available. Keeping an eye on cluster resources can be important, if the cluster runs out of memory pods may be shutdown or fail to start.
 

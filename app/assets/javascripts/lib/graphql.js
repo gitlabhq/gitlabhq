@@ -14,7 +14,7 @@ export const fetchPolicies = {
 };
 
 export default (resolvers = {}, config = {}) => {
-  let uri = `${gon.relative_url_root}/api/graphql`;
+  let uri = `${gon.relative_url_root || ''}/api/graphql`;
 
   if (config.baseUrl) {
     // Prepend baseUrl and ensure that `///` are replaced with `/`

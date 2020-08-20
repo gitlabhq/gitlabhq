@@ -15,6 +15,7 @@ RSpec.describe 'getting a tree in a project' do
       }
     QUERY
   end
+
   let(:query) do
     graphql_query_for(
       'project',

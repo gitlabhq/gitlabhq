@@ -1,12 +1,14 @@
 import invalidUrl from '~/lib/utils/invalid_url';
 import { timezones } from '../format_date';
 import { dashboardEmptyStates } from '../constants';
+import { defaultTimeRange } from '~/vue_shared/constants';
 
 export default () => ({
   // API endpoints
   deploymentsEndpoint: null,
   dashboardEndpoint: invalidUrl,
   dashboardsEndpoint: invalidUrl,
+  panelPreviewEndpoint: invalidUrl,
 
   // Dashboard request parameters
   timeRange: null,
@@ -59,6 +61,15 @@ export default () => ({
    * via the dashboard yml file.
    */
   links: [],
+
+  // Panel editor / builder
+  panelPreviewYml: '',
+  panelPreviewIsLoading: false,
+  panelPreviewGraphData: null,
+  panelPreviewError: null,
+  panelPreviewTimeRange: defaultTimeRange,
+  panelPreviewIsShown: false,
+
   // Other project data
   dashboardTimezone: timezones.LOCAL,
   annotations: [],
@@ -69,9 +80,11 @@ export default () => ({
   currentEnvironmentName: null,
 
   // GitLab paths to other pages
+  externalDashboardUrl: '',
   projectPath: null,
   operationsSettingsPath: '',
   logsPath: invalidUrl,
+  addDashboardDocumentationPath: '',
 
   // static paths
   customDashboardBasePath: '',

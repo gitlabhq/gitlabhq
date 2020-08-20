@@ -1,3 +1,10 @@
+---
+stage: Create
+group: Editor
+info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers"
+type: reference
+---
+
 # Static objects external storage
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/31025) in GitLab 12.3.
@@ -52,10 +59,10 @@ sequenceDiagram
 
 ## Set up external storage
 
-While this procedure uses [CloudFlare Workers](https://workers.cloudflare.com) for external storage,
+While this procedure uses [Cloudflare Workers](https://workers.cloudflare.com) for external storage,
 other CDNs or Function as a Service (FaaS) systems should work using the same principles.
 
-1. Choose a CloudFlare Worker domain if you haven't done so already.
+1. Choose a Cloudflare Worker domain if you haven't done so already.
 1. In the following script, set the following values for the first two constants:
 
    - `ORIGIN_HOSTNAME`: the hostname of your GitLab installation.

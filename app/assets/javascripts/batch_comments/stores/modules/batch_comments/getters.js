@@ -82,6 +82,3 @@ export const isPublishingDraft = state => draftId =>
   state.currentlyPublishingDrafts.indexOf(draftId) !== -1;
 
 export const sortedDrafts = state => [...state.drafts].sort((a, b) => a.id > b.id);
-
-// prevent babel-plugin-rewire from generating an invalid default during karma tests
-export default () => {};

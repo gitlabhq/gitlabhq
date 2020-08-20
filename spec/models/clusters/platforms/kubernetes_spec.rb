@@ -410,6 +410,7 @@ RSpec.describe Clusters::Platforms::Kubernetes do
     let(:expected_pod_cached_data) do
       kube_pod.tap { |kp| kp['metadata'].delete('namespace') }
     end
+
     let(:namespace) { "project-namespace" }
     let(:environment) { instance_double(Environment, deployment_namespace: namespace) }
 

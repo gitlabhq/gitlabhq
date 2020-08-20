@@ -30,7 +30,7 @@ describe('CompareVersions', () => {
       store,
       propsData: {
         mergeRequestDiffs: diffsMockData,
-        diffFilesLength: 0,
+        diffFilesCountText: null,
         ...props,
       },
     });

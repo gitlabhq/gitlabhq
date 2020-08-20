@@ -5,6 +5,8 @@ require 'spec_helper'
 RSpec.describe Gitlab::HTTP do
   include StubRequests
 
+  let(:default_options) { described_class::DEFAULT_TIMEOUT_OPTIONS }
+
   context 'when allow_local_requests' do
     it 'sends the request to the correct URI' do
       stub_full_request('https://example.org:8080', ip_address: '8.8.8.8').to_return(status: 200)
@@ -101,6 +103,73 @@ RSpec.describe Gitlab::HTTP do
     end
   end
 
+  describe 'setting default timeouts' do
+    before do
+      stub_full_request('http://example.org', method: :any)
+    end
+
+    context 'when no timeouts are set' do
+      it 'sets default open and read and write timeouts' do
+        expect(described_class).to receive(:httparty_perform_request).with(
+          Net::HTTP::Get, 'http://example.org', default_options
+        ).and_call_original
+
+        described_class.get('http://example.org')
+      end
+    end
+
+    context 'when :timeout is set' do
+      it 'does not set any default timeouts' do
+        expect(described_class).to receive(:httparty_perform_request).with(
+          Net::HTTP::Get, 'http://example.org', timeout: 1
+        ).and_call_original
+
+        described_class.get('http://example.org', timeout: 1)
+      end
+    end
+
+    context 'when :open_timeout is set' do
+      it 'only sets default read and write timeout' do
+        expect(described_class).to receive(:httparty_perform_request).with(
+          Net::HTTP::Get, 'http://example.org', default_options.merge(open_timeout: 1)
+        ).and_call_original
+
+        described_class.get('http://example.org', open_timeout: 1)
+      end
+    end
+
+    context 'when :read_timeout is set' do
+      it 'only sets default open and write timeout' do
+        expect(described_class).to receive(:httparty_perform_request).with(
+          Net::HTTP::Get, 'http://example.org', default_options.merge(read_timeout: 1)
+        ).and_call_original
+
+        described_class.get('http://example.org', read_timeout: 1)
+      end
+    end
+
+    context 'when :write_timeout is set' do
+      it 'only sets default open and read timeout' do
+        expect(described_class).to receive(:httparty_perform_request).with(
+          Net::HTTP::Put, 'http://example.org', default_options.merge(write_timeout: 1)
+        ).and_call_original
+
+        described_class.put('http://example.org', write_timeout: 1)
+      end
+    end
+
+    context 'when default timeouts feature is disabled' do
+      it 'does not apply any defaults' do
+        stub_feature_flags(http_default_timeouts: false)
+        expect(described_class).to receive(:httparty_perform_request).with(
+          Net::HTTP::Get, 'http://example.org', open_timeout: 1
+        ).and_call_original
+
+        described_class.get('http://example.org', open_timeout: 1)
+      end
+    end
+  end
+
   describe '.try_get' do
     let(:path) { 'http://example.org' }
 
@@ -111,10 +180,10 @@ RSpec.describe Gitlab::HTTP do
     end
 
     let(:request_options) do
-      {
+      default_options.merge({
         verify: false,
         basic_auth: { username: 'user', password: 'pass' }
-      }
+      })
     end
 
     described_class::HTTP_ERRORS.each do |exception_class|
@@ -123,8 +192,8 @@ RSpec.describe Gitlab::HTTP do
 
         context 'with path' do
           before do
-            expect(described_class).to receive(:get)
-              .with(path, {})
+            expect(described_class).to receive(:httparty_perform_request)
+              .with(Net::HTTP::Get, path, default_options)
               .and_raise(klass)
           end
 
@@ -155,8 +224,8 @@ RSpec.describe Gitlab::HTTP do
 
         context 'with path and options' do
           before do
-            expect(described_class).to receive(:get)
-              .with(path, request_options)
+            expect(described_class).to receive(:httparty_perform_request)
+              .with(Net::HTTP::Get, path, request_options)
               .and_raise(klass)
           end
 
@@ -191,8 +260,8 @@ RSpec.describe Gitlab::HTTP do
           end
 
           before do
-            expect(described_class).to receive(:get)
-              .with(path, request_options, &block)
+            expect(described_class).to receive(:httparty_perform_request)
+              .with(Net::HTTP::Get, path, request_options, &block)
               .and_raise(klass)
           end
 

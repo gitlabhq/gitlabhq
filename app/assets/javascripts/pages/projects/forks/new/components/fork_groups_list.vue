@@ -2,7 +2,7 @@
 import { GlTabs, GlTab, GlLoadingIcon, GlSearchBoxByType } from '@gitlab/ui';
 import axios from '~/lib/utils/axios_utils';
 import { __ } from '~/locale';
-import createFlash from '~/flash';
+import { deprecatedCreateFlash as createFlash } from '~/flash';
 import ForkGroupsListItem from './fork_groups_list_item.vue';
 
 export default {

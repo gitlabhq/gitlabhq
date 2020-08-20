@@ -43,6 +43,3 @@ export const shouldRenderIssuesList = state =>
 export const unresolvedIssues = state => state.report.existing_errors;
 export const resolvedIssues = state => state.report.resolved_errors;
 export const newIssues = state => state.report.new_errors;
-
-// prevent babel-plugin-rewire from generating an invalid default during karma tests
-export default () => {};

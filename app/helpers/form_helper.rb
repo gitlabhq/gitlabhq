@@ -11,7 +11,7 @@ module FormHelper
       content_tag(:h4, headline) <<
         content_tag(:ul) do
           messages = model.errors.map do |attribute, message|
-            message = model.errors.full_message(attribute, message)
+            message = html_escape_once(model.errors.full_message(attribute, message)).html_safe
             message = content_tag(:span, message, class: 'str-truncated-100') if truncate.include?(attribute)
 
             content_tag(:li, message)

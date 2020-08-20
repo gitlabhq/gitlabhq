@@ -79,7 +79,7 @@ module Clusters
             transition [:scheduled] => :uninstalling
           end
 
-          before_transition any => [:scheduled] do |application, _|
+          before_transition any => [:scheduled, :installed, :uninstalled] do |application, _|
             application.status_reason = nil
           end
 
@@ -95,24 +95,6 @@ module Clusters
           before_transition any => [:update_errored, :uninstall_errored] do |application, transition|
             status_reason = transition.args.first
             application.status_reason = status_reason if status_reason
-          end
-
-          before_transition any => [:installed, :updated] do |application, transition|
-            unless application.cluster.local_tiller_enabled? || application.is_a?(Clusters::Applications::Helm)
-              if transition.event == :make_externally_installed
-                # If an application is externally installed
-                # We assume the helm application is externally installed too
-                helm = application.cluster.application_helm || application.cluster.build_application_helm
-
-                helm.make_externally_installed!
-              else
-                # When installing any application we are also performing an update
-                # of tiller (see Gitlab::Kubernetes::Helm::ClientCommand) so
-                # therefore we need to reflect that in the database.
-
-                application.cluster.application_helm.update!(version: Gitlab::Kubernetes::Helm::HELM_VERSION)
-              end
-            end
           end
 
           after_transition any => [:uninstalling], :use_transactions => false do |application, _|

@@ -1,0 +1,5 @@
+---
+title: Replace v-popover directive with GlPopover in ./app/assets/javascripts/pipelines/components/pipelines_list/pipeline_url.vue.vue
+merge_request: 38769
+author: Gilang Gumilar
+type: changed

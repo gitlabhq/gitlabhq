@@ -1,5 +1,6 @@
 import { s__, n__ } from '~/locale';
 
+// eslint-disable-next-line import/prefer-default-export
 export const title = state => {
   if (state.isLoading) {
     return s__('BuildArtifacts|Loading artifacts');
@@ -11,6 +12,3 @@ export const title = state => {
 
   return n__('View exposed artifact', 'View %d exposed artifacts', state.artifacts.length);
 };
-
-// prevent babel-plugin-rewire from generating an invalid default during karma tests
-export default () => {};

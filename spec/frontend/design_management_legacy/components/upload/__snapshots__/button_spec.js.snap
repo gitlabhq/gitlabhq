@@ -1,0 +1,79 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Design management upload button component renders inverted upload design button 1`] = `
+<div
+  isinverted="true"
+>
+  <gl-deprecated-button-stub
+    size="md"
+    title="Adding a design with the same filename replaces the file in a new version."
+    variant="success"
+  >
+    
+    Upload designs
+    
+    <!---->
+  </gl-deprecated-button-stub>
+   
+  <input
+    accept="image/*"
+    class="hide"
+    multiple="multiple"
+    name="design_file"
+    type="file"
+  />
+</div>
+`;
+
+exports[`Design management upload button component renders loading icon 1`] = `
+<div>
+  <gl-deprecated-button-stub
+    disabled="true"
+    size="md"
+    title="Adding a design with the same filename replaces the file in a new version."
+    variant="success"
+  >
+    
+    Upload designs
+    
+    <gl-loading-icon-stub
+      class="ml-1"
+      color="orange"
+      inline="true"
+      label="Loading"
+      size="sm"
+    />
+  </gl-deprecated-button-stub>
+   
+  <input
+    accept="image/*"
+    class="hide"
+    multiple="multiple"
+    name="design_file"
+    type="file"
+  />
+</div>
+`;
+
+exports[`Design management upload button component renders upload design button 1`] = `
+<div>
+  <gl-deprecated-button-stub
+    size="md"
+    title="Adding a design with the same filename replaces the file in a new version."
+    variant="success"
+  >
+    
+    Upload designs
+    
+    <!---->
+  </gl-deprecated-button-stub>
+   
+  <input
+    accept="image/*"
+    class="hide"
+    multiple="multiple"
+    name="design_file"
+    type="file"
+  />
+</div>
+`;

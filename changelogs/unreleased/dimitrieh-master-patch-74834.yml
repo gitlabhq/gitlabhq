@@ -1,0 +1,5 @@
+---
+title: Replace <gl-deprecated-button> with <gl-button> in app/assets/javascripts/pipelines/components/graph/linked_pipeline.vue
+merge_request: 36968
+author:
+type: other

@@ -1,6 +1,7 @@
+import testAction from 'helpers/vuex_action_helper';
 import actions from '~/boards/stores/actions';
 import * as types from '~/boards/stores/mutation_types';
-import testAction from 'helpers/vuex_action_helper';
+import { inactiveId } from '~/boards/constants';
 
 const expectNotImplemented = action => {
   it('is not implemented', () => {
@@ -8,19 +9,36 @@ const expectNotImplemented = action => {
   });
 };
 
-describe('setEndpoints', () => {
-  it('sets endpoints object', () => {
-    const mockEndpoints = {
+describe('setInitialBoardData', () => {
+  it('sets data object', () => {
+    const mockData = {
       foo: 'bar',
       bar: 'baz',
     };
 
     return testAction(
-      actions.setEndpoints,
-      mockEndpoints,
+      actions.setInitialBoardData,
+      mockData,
       {},
-      [{ type: types.SET_ENDPOINTS, payload: mockEndpoints }],
+      [{ type: types.SET_INITIAL_BOARD_DATA, payload: mockData }],
       [],
+    );
+  });
+});
+
+describe('setActiveId', () => {
+  it('should commit mutation SET_ACTIVE_ID', done => {
+    const state = {
+      activeId: inactiveId,
+    };
+
+    testAction(
+      actions.setActiveId,
+      1,
+      state,
+      [{ type: types.SET_ACTIVE_ID, payload: 1 }],
+      [],
+      done,
     );
   });
 });

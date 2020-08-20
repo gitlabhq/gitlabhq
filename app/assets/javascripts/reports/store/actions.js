@@ -85,6 +85,3 @@ export const openModal = ({ dispatch }, payload) => {
 };
 
 export const setModalData = ({ commit }, payload) => commit(types.SET_ISSUE_MODAL_DATA, payload);
-
-// prevent babel-plugin-rewire from generating an invalid default during karma tests
-export default () => {};

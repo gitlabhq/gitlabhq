@@ -11,41 +11,36 @@ const KEY = 'abcedfg123';
 const INVALID_URL = 'http://invalid';
 const ACTIVATED = false;
 
-const defaultProps = {
-  generic: {
-    initialAuthorizationKey: KEY,
-    formPath: INVALID_URL,
-    url: GENERIC_URL,
-    alertsSetupUrl: INVALID_URL,
-    alertsUsageUrl: INVALID_URL,
-    activated: ACTIVATED,
-  },
-  prometheus: {
-    prometheusAuthorizationKey: KEY,
-    prometheusFormPath: INVALID_URL,
-    prometheusUrl: PROMETHEUS_URL,
-    activated: ACTIVATED,
-  },
-  opsgenie: {
-    opsgenieMvcIsAvailable: true,
-    formPath: INVALID_URL,
-    activated: ACTIVATED,
-    opsgenieMvcTargetUrl: GENERIC_URL,
-  },
-};
-
 describe('AlertsSettingsForm', () => {
   let wrapper;
   let mockAxios;
 
-  const createComponent = (props = defaultProps, { methods } = {}, data) => {
+  const createComponent = ({ methods } = {}, data) => {
     wrapper = shallowMount(AlertsSettingsForm, {
       data() {
         return { ...data };
       },
-      propsData: {
-        ...defaultProps,
-        ...props,
+      provide: {
+        generic: {
+          authorizationKey: KEY,
+          formPath: INVALID_URL,
+          url: GENERIC_URL,
+          alertsSetupUrl: INVALID_URL,
+          alertsUsageUrl: INVALID_URL,
+          activated: ACTIVATED,
+        },
+        prometheus: {
+          authorizationKey: KEY,
+          prometheusFormPath: INVALID_URL,
+          prometheusUrl: PROMETHEUS_URL,
+          activated: ACTIVATED,
+        },
+        opsgenie: {
+          opsgenieMvcIsAvailable: true,
+          formPath: INVALID_URL,
+          activated: ACTIVATED,
+          opsgenieMvcTargetUrl: GENERIC_URL,
+        },
       },
       methods,
     });
@@ -83,32 +78,33 @@ describe('AlertsSettingsForm', () => {
 
   describe('reset key', () => {
     it('triggers resetKey method', () => {
-      const resetGenericKey = jest.fn();
-      const methods = { resetGenericKey };
-      createComponent(defaultProps, { methods });
+      const resetKey = jest.fn();
+      const methods = { resetKey };
+      createComponent({ methods });
 
       wrapper.find(GlModal).vm.$emit('ok');
 
-      expect(resetGenericKey).toHaveBeenCalled();
+      expect(resetKey).toHaveBeenCalled();
     });
 
     it('updates the authorization key on success', () => {
-      const formPath = 'some/path';
-      mockAxios.onPut(formPath, { service: { token: '' } }).replyOnce(200, { token: 'newToken' });
-      createComponent({ generic: { ...defaultProps.generic, formPath } });
+      createComponent(
+        {},
+        {
+          authKey: 'newToken',
+        },
+      );
 
-      return wrapper.vm.resetGenericKey().then(() => {
-        expect(findAuthorizationKey().attributes('value')).toBe('newToken');
-      });
+      expect(findAuthorizationKey().attributes('value')).toBe('newToken');
     });
 
     it('shows a alert message on error', () => {
       const formPath = 'some/path';
       mockAxios.onPut(formPath).replyOnce(404);
 
-      createComponent({ generic: { ...defaultProps.generic, formPath } });
+      createComponent();
 
-      return wrapper.vm.resetGenericKey().then(() => {
+      return wrapper.vm.resetKey().then(() => {
         expect(wrapper.find(GlAlert).exists()).toBe(true);
       });
     });
@@ -118,22 +114,18 @@ describe('AlertsSettingsForm', () => {
     it('triggers toggleActivated method', () => {
       const toggleService = jest.fn();
       const methods = { toggleService };
-      createComponent(defaultProps, { methods });
+      createComponent({ methods });
 
       wrapper.find(ToggleButton).vm.$emit('change', true);
-
       expect(toggleService).toHaveBeenCalled();
     });
 
     describe('error is encountered', () => {
-      beforeEach(() => {
+      it('restores previous value', () => {
         const formPath = 'some/path';
         mockAxios.onPut(formPath).replyOnce(500);
-      });
-
-      it('restores previous value', () => {
-        createComponent({ generic: { ...defaultProps.generic, initialActivated: false } });
-        return wrapper.vm.resetGenericKey().then(() => {
+        createComponent();
+        return wrapper.vm.resetKey().then(() => {
           expect(wrapper.find(ToggleButton).props('value')).toBe(false);
         });
       });
@@ -143,7 +135,6 @@ describe('AlertsSettingsForm', () => {
   describe('prometheus is active', () => {
     beforeEach(() => {
       createComponent(
-        { prometheus: { ...defaultProps.prometheus, prometheusIsActivated: true } },
         {},
         {
           selectedEndpoint: 'prometheus',
@@ -164,10 +155,9 @@ describe('AlertsSettingsForm', () => {
     });
   });
 
-  describe('opsgenie is active', () => {
+  describe('Opsgenie is active', () => {
     beforeEach(() => {
       createComponent(
-        { opsgenie: { ...defaultProps.opsgenie, opsgenieMvcActivated: true } },
         {},
         {
           selectedEndpoint: 'opsgenie',
@@ -175,15 +165,14 @@ describe('AlertsSettingsForm', () => {
       );
     });
 
-    it('shows a input for the opsgenie target URL', () => {
+    it('shows a input for the Opsgenie target URL', () => {
       expect(findApiUrl().exists()).toBe(true);
-      expect(findSelect().attributes('value')).toBe('opsgenie');
     });
   });
 
   describe('trigger test alert', () => {
     beforeEach(() => {
-      createComponent({ generic: { ...defaultProps.generic, initialActivated: true } }, {}, true);
+      createComponent({});
     });
 
     it('should enable the JSON input', () => {
@@ -191,30 +180,19 @@ describe('AlertsSettingsForm', () => {
       expect(findJsonInput().props('value')).toBe(null);
     });
 
-    it('should validate JSON input', () => {
-      createComponent({ generic: { ...defaultProps.generic } }, true, {
+    it('should validate JSON input', async () => {
+      createComponent(true, {
         testAlertJson: '{ "value": "test" }',
       });
 
       findJsonInput().vm.$emit('change');
-      return wrapper.vm.$nextTick().then(() => {
-        expect(findJsonInput().attributes('state')).toBe('true');
-      });
+
+      await wrapper.vm.$nextTick();
+
+      expect(findJsonInput().attributes('state')).toBe('true');
     });
 
     describe('alert service is toggled', () => {
-      it('should show a info alert if successful', () => {
-        const formPath = 'some/path';
-        const toggleService = true;
-        mockAxios.onPut(formPath).replyOnce(200);
-
-        createComponent({ generic: { ...defaultProps.generic, formPath } });
-
-        return wrapper.vm.toggleActivated(toggleService).then(() => {
-          expect(wrapper.find(GlAlert).attributes('variant')).toBe('info');
-        });
-      });
-
       it('should show a error alert if failed', () => {
         const formPath = 'some/path';
         const toggleService = true;
@@ -222,9 +200,10 @@ describe('AlertsSettingsForm', () => {
           errors: 'Error message to display',
         });
 
-        createComponent({ generic: { ...defaultProps.generic, formPath } });
+        createComponent();
 
         return wrapper.vm.toggleActivated(toggleService).then(() => {
+          expect(wrapper.vm.active).toBe(false);
           expect(wrapper.find(GlAlert).attributes('variant')).toBe('danger');
         });
       });

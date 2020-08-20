@@ -1,20 +1,18 @@
 <script>
-import { GlDeprecatedButton } from '@gitlab/ui';
+import { GlButton, GlIcon } from '@gitlab/ui';
 import { __, sprintf } from '~/locale';
-import Icon from '~/vue_shared/components/icon.vue';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
-import Pagination from './pagination.vue';
+import DesignNavigation from './design_navigation.vue';
 import DeleteButton from '../delete_button.vue';
 import permissionsQuery from '../../graphql/queries/design_permissions.query.graphql';
-import appDataQuery from '../../graphql/queries/app_data.query.graphql';
 import { DESIGNS_ROUTE_NAME } from '../../router/constants';
 
 export default {
   components: {
-    Icon,
-    Pagination,
+    GlButton,
+    GlIcon,
+    DesignNavigation,
     DeleteButton,
-    GlDeprecatedButton,
   },
   mixins: [timeagoMixin],
   props: {
@@ -55,19 +53,17 @@ export default {
       permissions: {
         createDesign: false,
       },
-      projectPath: '',
-      issueIid: null,
     };
   },
-  apollo: {
-    appData: {
-      query: appDataQuery,
-      manual: true,
-      result({ data: { projectPath, issueIid } }) {
-        this.projectPath = projectPath;
-        this.issueIid = issueIid;
-      },
+  inject: {
+    projectPath: {
+      default: '',
     },
+    issueIid: {
+      default: '',
+    },
+  },
+  apollo: {
     permissions: {
       query: permissionsQuery,
       variables() {
@@ -95,32 +91,36 @@ export default {
 </script>
 
 <template>
-  <header class="d-flex p-2 bg-white align-items-center js-design-header">
-    <router-link
-      :to="{
-        name: $options.DESIGNS_ROUTE_NAME,
-        query: $route.query,
-      }"
-      :aria-label="s__('DesignManagement|Go back to designs')"
-      class="mr-3 text-plain d-flex justify-content-center align-items-center"
-    >
-      <icon :size="18" name="close" />
-    </router-link>
-    <div class="overflow-hidden d-flex align-items-center">
-      <h2 class="m-0 str-truncated-100 gl-font-base">{{ filename }}</h2>
-      <small v-if="updatedAt" class="text-secondary">{{ updatedText }}</small>
+  <header
+    class="gl-display-flex gl-align-items-center gl-justify-content-space-between gl-bg-white gl-py-4 gl-pl-4 js-design-header"
+  >
+    <div class="gl-display-flex gl-align-items-center">
+      <router-link
+        :to="{
+          name: $options.DESIGNS_ROUTE_NAME,
+          query: $route.query,
+        }"
+        :aria-label="s__('DesignManagement|Go back to designs')"
+        data-testid="close-design"
+        class="gl-mr-5 gl-display-flex gl-align-items-center gl-justify-content-center text-plain"
+      >
+        <gl-icon name="close" />
+      </router-link>
+      <div class="overflow-hidden d-flex align-items-center">
+        <h2 class="m-0 str-truncated-100 gl-font-base">{{ filename }}</h2>
+        <small v-if="updatedAt" class="text-secondary">{{ updatedText }}</small>
+      </div>
     </div>
-    <pagination :id="id" class="ml-auto flex-shrink-0" />
-    <gl-deprecated-button :href="image" class="mr-2">
-      <icon :size="18" name="download" />
-    </gl-deprecated-button>
+    <design-navigation :id="id" class="ml-auto flex-shrink-0" />
+    <gl-button :href="image" icon="download" />
     <delete-button
       v-if="isLatestVersion && canDeleteDesign"
+      class="gl-ml-3"
       :is-deleting="isDeleting"
-      button-variant="danger"
+      button-variant="warning"
+      button-icon="archive"
+      button-category="secondary"
       @deleteSelectedDesigns="$emit('delete')"
-    >
-      <icon :size="18" name="remove" />
-    </delete-button>
+    />
   </header>
 </template>

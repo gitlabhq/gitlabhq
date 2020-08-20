@@ -10,16 +10,39 @@ RSpec.describe MembersFinder, '#execute' do
   let_it_be(:user2) { create(:user) }
   let_it_be(:user3) { create(:user) }
   let_it_be(:user4) { create(:user) }
+  let_it_be(:blocked_user) { create(:user, :blocked) }
 
   it 'returns members for project and parent groups' do
     nested_group.request_access(user1)
     member1 = group.add_maintainer(user2)
     member2 = nested_group.add_maintainer(user3)
     member3 = project.add_maintainer(user4)
+    blocked_member = project.add_maintainer(blocked_user)
 
     result = described_class.new(project, user2).execute
 
-    expect(result).to contain_exactly(member1, member2, member3)
+    expect(result).to contain_exactly(member1, member2, member3, blocked_member)
+  end
+
+  it 'returns owners and maintainers' do
+    member1 = group.add_owner(user1)
+    group.add_developer(user2)
+    member3 = project.add_maintainer(user3)
+    project.add_developer(user4)
+
+    result = described_class.new(project, user2, params: { owners_and_maintainers: true }).execute
+
+    expect(result).to contain_exactly(member1, member3)
+  end
+
+  it 'returns active users and excludes invited users' do
+    member1 = project.add_maintainer(user2)
+    create(:project_member, :invited, project: project, invite_email: create(:user).email)
+    project.add_maintainer(blocked_user)
+
+    result = described_class.new(project, user2, params: { active_without_invites_and_requests: true }).execute
+
+    expect(result).to contain_exactly(member1)
   end
 
   it 'includes only non-invite members if user do not have amdin permissions on project' do

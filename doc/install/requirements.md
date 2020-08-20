@@ -56,8 +56,8 @@ The minimum required Go version is 1.13.
 
 From GitLab 13.1:
 
-- Git 2.25.x and later is required.
-- Git 2.27.x and later [is recommended](https://gitlab.com/gitlab-org/gitaly/-/issues/2829).
+- Git 2.24.x and later is required.
+- Git 2.28.x and later [is recommended](https://gitlab.com/gitlab-org/gitaly/-/issues/2959).
 
 ### Node.js versions
 
@@ -91,7 +91,7 @@ Apart from a local hard drive you can also mount a volume that supports the netw
 If you have enough RAM and a recent CPU the speed of GitLab is mainly limited by hard drive seek times. Having a fast drive (7200 RPM and up) or a solid state drive (SSD) will improve the responsiveness of GitLab.
 
 NOTE: **Note:**
-Since file system performance may affect GitLab's overall performance, [we don't recommend using AWS EFS for storage](../administration/high_availability/nfs.md#avoid-using-awss-elastic-file-system-efs).
+Since file system performance may affect GitLab's overall performance, [we don't recommend using AWS EFS for storage](../administration/nfs.md#avoid-using-awss-elastic-file-system-efs).
 
 ### CPU
 
@@ -140,8 +140,8 @@ GitLab version | Minimum PostgreSQL version
 12.10 | 11
 13.0 | 11
 
-You must also ensure the `pg_trgm` extension is loaded into every
-GitLab database. This extension [can be enabled](https://www.postgresql.org/docs/11/sql-createextension.html) using a PostgreSQL super user.
+You must also ensure the `pg_trgm` and `btree_gist` extensions are loaded into every
+GitLab database. These extensions [can be enabled](https://www.postgresql.org/docs/11/sql-createextension.html) using a PostgreSQL super user.
 
 On some systems you may need to install an additional package (for example,
 `postgresql-contrib`) for this extension to become available.
@@ -156,10 +156,6 @@ If you're using [GitLab Geo](../administration/geo/replication/index.md):
 - We strongly recommend running Omnibus-managed instances as they are actively
   developed and tested. We aim to be compatible with most external (not managed
   by Omnibus) databases (for example, [AWS Relational Database Service (RDS)](https://aws.amazon.com/rds/)) but we don't guarantee compatibility.
-- You must also ensure the `postgres_fdw` extension is loaded into every
-  GitLab database. This extension
-  [can be enabled](https://www.postgresql.org/docs/11/sql-createextension.html)
-  using a PostgreSQL super user.
 
 ## Puma settings
 

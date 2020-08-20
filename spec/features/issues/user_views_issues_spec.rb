@@ -10,10 +10,6 @@ RSpec.describe "User views issues" do
 
   let_it_be(:user) { create(:user) }
 
-  before do
-    stub_feature_flags(vue_issuables_list: false)
-  end
-
   shared_examples "opens issue from list" do
     it "opens issue" do
       click_link(issue.title)
@@ -112,7 +108,7 @@ RSpec.describe "User views issues" do
     end
   end
 
-  context "when signed in as developer" do
+  context "when signed in as developer", :js do
     before do
       project.add_developer(user)
       sign_in(user)
@@ -122,27 +118,7 @@ RSpec.describe "User views issues" do
     include_examples "internal project"
   end
 
-  context "when not signed in" do
+  context "when not signed in", :js do
     include_examples "public project"
-  end
-
-  context 'when vue_issuables_list feature is enabled', :js do
-    before do
-      stub_feature_flags(vue_issuables_list: true)
-    end
-
-    context 'when signed in' do
-      before do
-        project.add_developer(user)
-        sign_in(user)
-      end
-
-      include_examples "public project"
-      include_examples "internal project"
-    end
-
-    context 'when not signed in' do
-      include_examples "public project"
-    end
   end
 end

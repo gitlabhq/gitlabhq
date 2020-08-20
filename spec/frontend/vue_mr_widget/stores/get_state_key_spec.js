@@ -11,15 +11,13 @@ describe('getStateKey', () => {
       hasMergeableDiscussionsState: false,
       isPipelineBlocked: false,
       canBeMerged: false,
+      projectArchived: false,
+      branchMissing: false,
+      commitsCount: 2,
+      hasConflicts: false,
+      workInProgress: false,
     };
-    const data = {
-      project_archived: false,
-      branch_missing: false,
-      commits_count: 2,
-      has_conflicts: false,
-      work_in_progress: false,
-    };
-    const bound = getStateKey.bind(context, data);
+    const bound = getStateKey.bind(context);
 
     expect(bound()).toEqual(null);
 
@@ -49,7 +47,7 @@ describe('getStateKey', () => {
 
     expect(bound()).toEqual('unresolvedDiscussions');
 
-    data.work_in_progress = true;
+    context.workInProgress = true;
 
     expect(bound()).toEqual('workInProgress');
 
@@ -62,7 +60,7 @@ describe('getStateKey', () => {
 
     expect(bound()).toEqual('rebase');
 
-    data.has_conflicts = true;
+    context.hasConflicts = true;
 
     expect(bound()).toEqual('conflicts');
 
@@ -70,15 +68,15 @@ describe('getStateKey', () => {
 
     expect(bound()).toEqual('checking');
 
-    data.commits_count = 0;
+    context.commitsCount = 0;
 
     expect(bound()).toEqual('nothingToMerge');
 
-    data.branch_missing = true;
+    context.branchMissing = true;
 
     expect(bound()).toEqual('missingBranch');
 
-    data.project_archived = true;
+    context.projectArchived = true;
 
     expect(bound()).toEqual('archived');
   });
@@ -94,15 +92,13 @@ describe('getStateKey', () => {
       isPipelineBlocked: false,
       canBeMerged: false,
       shouldBeRebased: true,
+      projectArchived: false,
+      branchMissing: false,
+      commitsCount: 2,
+      hasConflicts: false,
+      workInProgress: false,
     };
-    const data = {
-      project_archived: false,
-      branch_missing: false,
-      commits_count: 2,
-      has_conflicts: false,
-      work_in_progress: false,
-    };
-    const bound = getStateKey.bind(context, data);
+    const bound = getStateKey.bind(context);
 
     expect(bound()).toEqual('rebase');
   });
@@ -115,15 +111,11 @@ describe('getStateKey', () => {
   `(
     'returns $stateKey when canMerge is $canMerge and isSHAMismatch is $isSHAMismatch',
     ({ canMerge, isSHAMismatch, stateKey }) => {
-      const bound = getStateKey.bind(
-        {
-          canMerge,
-          isSHAMismatch,
-        },
-        {
-          commits_count: 2,
-        },
-      );
+      const bound = getStateKey.bind({
+        canMerge,
+        isSHAMismatch,
+        commitsCount: 2,
+      });
 
       expect(bound()).toEqual(stateKey);
     },

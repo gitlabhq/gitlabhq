@@ -1,3 +1,8 @@
+---
+stage: Plan
+group: Project Management
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
 # Issuable-like Rails models utilities
 
 GitLab Rails codebase contains several models that hold common functionality and behave similarly to
@@ -9,9 +14,9 @@ This guide accumulates guidelines on working with such Rails models.
 
 ## Important text fields
 
-There are max length constraints for the most important text fields for `Issuable`s:
+There are maximum length constraints for the most important text fields for issuables:
 
-- `title`: 255 chars
-- `title_html`: 800 chars
+- `title`: 255 characters
+- `title_html`: 800 characters
 - `description`: 1 megabyte
 - `description_html`: 5 megabytes

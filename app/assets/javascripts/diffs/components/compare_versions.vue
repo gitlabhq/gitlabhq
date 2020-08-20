@@ -32,9 +32,10 @@ export default {
       required: false,
       default: false,
     },
-    diffFilesLength: {
-      type: Number,
-      required: true,
+    diffFilesCountText: {
+      type: String,
+      required: false,
+      default: null,
     },
   },
   computed: {
@@ -119,7 +120,7 @@ export default {
       </div>
       <div class="inline-parallel-buttons d-none d-md-flex ml-auto">
         <diff-stats
-          :diff-files-length="diffFilesLength"
+          :diff-files-count-text="diffFilesCountText"
           :added-lines="addedLines"
           :removed-lines="removedLines"
         />

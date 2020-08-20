@@ -2,7 +2,7 @@
 
 module Gitlab::UsageDataCounters
   class WikiPageCounter < BaseCounter
-    KNOWN_EVENTS = %w[create update delete].freeze
+    KNOWN_EVENTS = %w[view create update delete].freeze
     PREFIX = 'wiki_pages'
   end
 end

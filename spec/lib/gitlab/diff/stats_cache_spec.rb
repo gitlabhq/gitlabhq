@@ -9,6 +9,7 @@ RSpec.describe Gitlab::Diff::StatsCache, :use_clean_rails_memory_store_caching d
   let(:cachable_key) { 'cachecachecache' }
   let(:stat) { Gitaly::DiffStats.new(path: 'temp', additions: 10, deletions: 15) }
   let(:stats) { Gitlab::Git::DiffStatsCollection.new([stat]) }
+  let(:serialized_stats) { stats.map(&:to_h).as_json }
   let(:cache) { Rails.cache }
 
   describe '#read' do
@@ -38,7 +39,7 @@ RSpec.describe Gitlab::Diff::StatsCache, :use_clean_rails_memory_store_caching d
       it 'writes the stats' do
         expect(cache)
           .to receive(:write)
-          .with(key, stats.as_json, expires_in: described_class::EXPIRATION)
+          .with(key, serialized_stats, expires_in: described_class::EXPIRATION)
           .and_call_original
 
         stats_cache.write_if_empty(stats)
@@ -53,7 +54,7 @@ RSpec.describe Gitlab::Diff::StatsCache, :use_clean_rails_memory_store_caching d
         it 'writes the stats' do
           expect(cache)
             .to receive(:write)
-            .with(key, stats.as_json, expires_in: described_class::EXPIRATION)
+            .with(key, serialized_stats, expires_in: described_class::EXPIRATION)
             .and_call_original
 
           stats_cache.write_if_empty(stats)
@@ -79,6 +80,30 @@ RSpec.describe Gitlab::Diff::StatsCache, :use_clean_rails_memory_store_caching d
       expect(cache).to receive(:delete).with(key)
 
       stats_cache.clear
+    end
+  end
+
+  it 'VERSION is set' do
+    expect(described_class::VERSION).to be_present
+  end
+
+  context 'with multiple cache versions' do
+    before do
+      stats_cache.write_if_empty(stats)
+    end
+
+    it 'does not read from a stale cache' do
+      expect(stats_cache.read.to_json).to eq(stats.to_json)
+
+      stub_const('Gitlab::Diff::StatsCache::VERSION', '1.0.new-new-thing')
+
+      stats_cache = described_class.new(cachable_key: cachable_key)
+
+      expect(stats_cache.read).to be_nil
+
+      stats_cache.write_if_empty(stats)
+
+      expect(stats_cache.read.to_json).to eq(stats.to_json)
     end
   end
 end

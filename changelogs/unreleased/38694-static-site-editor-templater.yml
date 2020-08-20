@@ -1,0 +1,5 @@
+---
+title: Added pre-processing step to the Static Site Editor so code templates (ERB) are interpreted as code not content
+merge_request: 38694
+author:
+type: added

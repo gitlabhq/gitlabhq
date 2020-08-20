@@ -1,7 +1,7 @@
 <script>
 import { mapActions, mapGetters } from 'vuex';
 import AwardsList from '~/vue_shared/components/awards_list.vue';
-import Flash from '../../flash';
+import { deprecatedCreateFlash as Flash } from '../../flash';
 import { __ } from '~/locale';
 
 export default {

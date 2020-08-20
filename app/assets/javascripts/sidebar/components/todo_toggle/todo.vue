@@ -6,7 +6,7 @@ import tooltip from '~/vue_shared/directives/tooltip';
 import Icon from '~/vue_shared/components/icon.vue';
 
 const MARK_TEXT = __('Mark as done');
-const TODO_TEXT = __('Add a To Do');
+const TODO_TEXT = __('Add a To-Do');
 
 export default {
   directives: {

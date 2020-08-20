@@ -10,34 +10,31 @@ module Backup
       @progress = progress
     end
 
-    def dump
+    def dump(max_concurrency:, max_storage_concurrency:)
       prepare
 
-      Project.find_each(batch_size: 1000) do |project|
-        progress.print " * #{display_repo_path(project)} ... "
+      if max_concurrency <= 1 && max_storage_concurrency <= 1
+        return dump_consecutive
+      end
 
-        if project.hashed_storage?(:repository)
-          FileUtils.mkdir_p(File.dirname(File.join(backup_repos_path, project.disk_path)))
-        else
-          FileUtils.mkdir_p(File.join(backup_repos_path, project.namespace.full_path)) if project.namespace
-        end
+      if Project.excluding_repository_storage(Gitlab.config.repositories.storages.keys).exists?
+        raise Error, 'repositories.storages in gitlab.yml is misconfigured'
+      end
 
-        if !empty_repo?(project)
-          backup_project(project)
-          progress.puts "[DONE]".color(:green)
-        else
-          progress.puts "[SKIPPED]".color(:cyan)
-        end
+      semaphore = Concurrent::Semaphore.new(max_concurrency)
+      errors = Queue.new
 
-        wiki = ProjectWiki.new(project)
-
-        if !empty_repo?(wiki)
-          backup_project(wiki)
-          progress.puts "[DONE] Wiki".color(:green)
-        else
-          progress.puts "[SKIPPED] Wiki".color(:cyan)
+      threads = Gitlab.config.repositories.storages.keys.map do |storage|
+        Thread.new do
+          dump_storage(storage, semaphore, max_storage_concurrency: max_storage_concurrency)
+        rescue => e
+          errors << e
         end
       end
+
+      threads.each(&:join)
+
+      raise errors.pop unless errors.empty?
     end
 
     def backup_project(project)
@@ -145,6 +142,71 @@ module Backup
     end
 
     private
+
+    def dump_consecutive
+      Project.find_each(batch_size: 1000) do |project|
+        dump_project(project)
+      end
+    end
+
+    def dump_storage(storage, semaphore, max_storage_concurrency:)
+      errors = Queue.new
+      queue = SizedQueue.new(1)
+
+      threads = Array.new(max_storage_concurrency) do
+        Thread.new do
+          while project = queue.pop
+            semaphore.acquire
+
+            begin
+              dump_project(project)
+            rescue => e
+              errors << e
+              break
+            ensure
+              semaphore.release
+            end
+          end
+        end
+      end
+
+      Project.for_repository_storage(storage).find_each(batch_size: 100) do |project|
+        break unless errors.empty?
+
+        queue.push(project)
+      end
+
+      queue.close
+      threads.each(&:join)
+
+      raise errors.pop unless errors.empty?
+    end
+
+    def dump_project(project)
+      progress.puts " * #{display_repo_path(project)} ... "
+
+      if project.hashed_storage?(:repository)
+        FileUtils.mkdir_p(File.dirname(File.join(backup_repos_path, project.disk_path)))
+      else
+        FileUtils.mkdir_p(File.join(backup_repos_path, project.namespace.full_path)) if project.namespace
+      end
+
+      if !empty_repo?(project)
+        backup_project(project)
+        progress.puts " * #{display_repo_path(project)} ... " + "[DONE]".color(:green)
+      else
+        progress.puts " * #{display_repo_path(project)} ... " + "[SKIPPED]".color(:cyan)
+      end
+
+      wiki = ProjectWiki.new(project)
+
+      if !empty_repo?(wiki)
+        backup_project(wiki)
+        progress.puts " * #{display_repo_path(project)} ... " + "[DONE] Wiki".color(:green)
+      else
+        progress.puts " * #{display_repo_path(project)} ... " + "[SKIPPED] Wiki".color(:cyan)
+      end
+    end
 
     def progress_warn(project, cmd, output)
       progress.puts "[WARNING] Executing #{cmd}".color(:orange)

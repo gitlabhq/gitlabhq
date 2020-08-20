@@ -1,10 +1,14 @@
 <script>
+import { GlButton } from '@gitlab/ui';
 import axios from '~/lib/utils/axios_utils';
-import Flash from '../../../flash';
+import { deprecatedCreateFlash as Flash } from '../../../flash';
 import { __ } from '../../../locale';
 import boardsStore from '../../stores/boards_store';
 
 export default {
+  components: {
+    GlButton,
+  },
   props: {
     issue: {
       type: Object,
@@ -75,8 +79,8 @@ export default {
 </script>
 <template>
   <div class="block list">
-    <button class="btn btn-default btn-block" type="button" @click="removeIssue">
+    <gl-button variant="default" category="secondary" block="block" @click="removeIssue">
       {{ __('Remove from board') }}
-    </button>
+    </gl-button>
   </div>
 </template>

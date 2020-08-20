@@ -1,8 +1,9 @@
 <script>
-import { GlAlert, GlButton, GlEmptyState, GlLink, GlSprintf } from '@gitlab/ui';
+import { GlAlert, GlButton, GlEmptyState, GlSprintf } from '@gitlab/ui';
 import { isEmpty } from 'lodash';
-import axios from '~/lib/utils/axios_utils';
 import { __ } from '~/locale';
+import { fetchPolicies } from '~/lib/graphql';
+import getDagVisData from '../../graphql/queries/get_dag_vis_data.query.graphql';
 import DagGraph from './dag_graph.vue';
 import DagAnnotations from './dag_annotations.vue';
 import {
@@ -23,26 +24,60 @@ export default {
     DagAnnotations,
     DagGraph,
     GlAlert,
-    GlLink,
     GlSprintf,
     GlEmptyState,
     GlButton,
   },
-  props: {
-    graphUrl: {
-      type: String,
-      required: false,
-      default: '',
+  inject: {
+    dagDocPath: {
+      default: null,
     },
     emptySvgPath: {
-      type: String,
-      required: true,
       default: '',
     },
-    dagDocPath: {
-      type: String,
-      required: true,
+    pipelineIid: {
       default: '',
+    },
+    pipelineProjectPath: {
+      default: '',
+    },
+  },
+  apollo: {
+    graphData: {
+      fetchPolicy: fetchPolicies.CACHE_AND_NETWORK,
+      query: getDagVisData,
+      variables() {
+        return {
+          projectPath: this.pipelineProjectPath,
+          iid: this.pipelineIid,
+        };
+      },
+      update(data) {
+        const {
+          stages: { nodes: stages },
+        } = data.project.pipeline;
+
+        const unwrappedGroups = stages
+          .map(({ name, groups: { nodes: groups } }) => {
+            return groups.map(group => {
+              return { category: name, ...group };
+            });
+          })
+          .flat(2);
+
+        const nodes = unwrappedGroups.map(group => {
+          const jobs = group.jobs.nodes.map(({ name, needs }) => {
+            return { name, needs: needs.nodes.map(need => need.name) };
+          });
+
+          return { ...group, jobs };
+        });
+
+        return nodes;
+      },
+      error() {
+        this.reportFailure(LOAD_FAILURE);
+      },
     },
   },
   data() {
@@ -51,7 +86,6 @@ export default {
       failureType: null,
       graphData: null,
       showFailureAlert: false,
-      showBetaInfo: true,
       hasNoDependentJobs: false,
     };
   },
@@ -72,11 +106,6 @@ export default {
     button: __('Learn more about job dependencies'),
   },
   computed: {
-    betaMessage() {
-      return __(
-        'This feature is currently in beta. We invite you to %{linkStart}give feedback%{linkEnd}.',
-      );
-    },
     failure() {
       switch (this.failureType) {
         case LOAD_FAILURE:
@@ -97,31 +126,19 @@ export default {
         default:
           return {
             text: this.$options.errorTexts[DEFAULT],
-            vatiant: 'danger',
+            variant: 'danger',
           };
       }
+    },
+    processedData() {
+      return this.processGraphData(this.graphData);
     },
     shouldDisplayAnnotations() {
       return !isEmpty(this.annotationsMap);
     },
     shouldDisplayGraph() {
-      return Boolean(!this.showFailureAlert && this.graphData);
+      return Boolean(!this.showFailureAlert && !this.hasNoDependentJobs && this.graphData);
     },
-  },
-  mounted() {
-    const { processGraphData, reportFailure } = this;
-
-    if (!this.graphUrl) {
-      reportFailure();
-      return;
-    }
-
-    axios
-      .get(this.graphUrl)
-      .then(response => {
-        processGraphData(response.data);
-      })
-      .catch(() => reportFailure(LOAD_FAILURE));
   },
   methods: {
     addAnnotationToMap({ uid, source, target }) {
@@ -131,31 +148,28 @@ export default {
       let parsed;
 
       try {
-        parsed = parseData(data.stages);
+        parsed = parseData(data);
       } catch {
         this.reportFailure(PARSE_FAILURE);
-        return;
+        return {};
       }
 
       if (parsed.links.length === 1) {
         this.reportFailure(UNSUPPORTED_DATA);
-        return;
+        return {};
       }
 
       // If there are no links, we don't report failure
       // as it simply means the user does not use job dependencies
       if (parsed.links.length === 0) {
         this.hasNoDependentJobs = true;
-        return;
+        return {};
       }
 
-      this.graphData = parsed;
+      return parsed;
     },
     hideAlert() {
       this.showFailureAlert = false;
-    },
-    hideBetaInfo() {
-      this.showBetaInfo = false;
     },
     removeAnnotationFromMap({ uid }) {
       this.$delete(this.annotationsMap, uid);
@@ -188,20 +202,11 @@ export default {
       {{ failure.text }}
     </gl-alert>
 
-    <gl-alert v-if="showBetaInfo" @dismiss="hideBetaInfo">
-      <gl-sprintf :message="betaMessage">
-        <template #link="{ content }">
-          <gl-link href="https://gitlab.com/gitlab-org/gitlab/-/issues/220368" target="_blank">
-            {{ content }}
-          </gl-link>
-        </template>
-      </gl-sprintf>
-    </gl-alert>
     <div class="gl-relative">
       <dag-annotations v-if="shouldDisplayAnnotations" :annotations="annotationsMap" />
       <dag-graph
         v-if="shouldDisplayGraph"
-        :graph-data="graphData"
+        :graph-data="processedData"
         @onFailure="reportFailure"
         @update-annotation="updateAnnotation"
       />
@@ -228,7 +233,7 @@ export default {
             </p>
           </div>
         </template>
-        <template #actions>
+        <template v-if="dagDocPath" #actions>
           <gl-button :href="dagDocPath" target="__blank" variant="success">
             {{ $options.emptyStateTexts.button }}
           </gl-button>

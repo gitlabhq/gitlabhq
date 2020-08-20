@@ -36,6 +36,19 @@ can be shared.
 It is also possible to add a `private_token` to the querystring, or
 add a `HTTP_PRIVATE_TOKEN` header.
 
+## Global IDs
+
+GitLab's GraphQL API uses Global IDs (i.e: `"gid://gitlab/MyObject/123"`)
+and never database primary key IDs.
+
+Global ID is [a standard](https://graphql.org/learn/global-object-identification/)
+used for caching and fetching in client-side libraries.
+
+See also:
+
+- [Exposing Global IDs](#exposing-global-ids).
+- [Mutation arguments](#object-identifier-arguments).
+
 ## Types
 
 We use a code-first schema, and we declare what type everything is in Ruby.
@@ -106,18 +119,28 @@ Further reading:
 
 ### Exposing Global IDs
 
-When exposing an `ID` field on a type, we will by default try to
-expose a global ID by calling `to_global_id` on the resource being
-rendered.
+In keeping with GitLab's use of [Global IDs](#global-ids), always convert
+database primary key IDs into Global IDs when you expose them.
 
-To override this behavior, you can implement an `id` method on the
-type for which you are exposing an ID. Please make sure that when
-exposing a `GraphQL::ID_TYPE` using a custom method that it is
-globally unique.
+All fields named `id` are
+[converted automatically](https://gitlab.com/gitlab-org/gitlab/-/blob/b0f56e7/app/graphql/types/base_object.rb#L11-14)
+into the object's Global ID.
 
-The records that are exposing a `full_path` as an `ID_TYPE` are one of
-these exceptions. Since the full path is a unique identifier for a
-`Project` or `Namespace`.
+Fields that are not named `id` need to be manually converted. We can do this using
+[`Gitlab::GlobalID.build`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/global_id.rb),
+or by calling `#to_global_id` on an object that has mixed in the
+`GlobalID::Identification` module.
+
+Using an example from
+[`Types::Notes::DiscussionType`](https://gitlab.com/gitlab-org/gitlab/-/blob/3c95bd9/app/graphql/types/notes/discussion_type.rb#L24-26):
+
+```ruby
+field :reply_id, GraphQL::ID_TYPE
+
+def reply_id
+  ::Gitlab::GlobalId.build(object, id: object.reply_id)
+end
+```
 
 ### Connection Types
 
@@ -429,6 +452,52 @@ module Types
 end
 ```
 
+## JSON
+
+When data to be returned by GraphQL is stored as
+[JSON](migration_style_guide.md#storing-json-in-database), we should continue to use
+GraphQL types whenever possible. Avoid using the `GraphQL::Types::JSON` type unless
+the JSON data returned is _truly_ unstructured.
+
+If the structure of the JSON data varies, but will be one of a set of known possible
+structures, use a
+[union](https://graphql-ruby.org/type_definitions/unions.html).
+An example of the use of a union for this purpose is
+[!30129](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/30129).
+
+Field names can be mapped to hash data keys using the `hash_key:` keyword if needed.
+
+For example, given the following simple JSON data:
+
+```json
+{
+  "title": "My chart",
+  "data": [
+    { "x": 0, "y": 1 },
+    { "x": 1, "y": 1 },
+    { "x": 2, "y": 2 }
+  ]
+}
+```
+
+We can use GraphQL types like this:
+
+```ruby
+module Types
+  class ChartType < BaseObject
+    field :title, GraphQL::STRING_TYPE, null: true, description: 'Title of the chart'
+    field :data, [Types::ChartDatumType], null: true, description: 'Data of the chart'
+  end
+end
+
+module Types
+  class ChartDatumType < BaseObject
+    field :x, GraphQL::INT_TYPE, null: true, description: 'X-axis value of the chart datum'
+    field :y, GraphQL::INT_TYPE, null: true, description: 'Y-axis value of the chart datum'
+  end
+end
+```
+
 ## Descriptions
 
 All fields and arguments
@@ -608,15 +677,8 @@ the objects in question.
 To find objects to display in a field, we can add resolvers to
 `app/graphql/resolvers`.
 
-Arguments can be defined within the resolver, those arguments will be
-made available to the fields using the resolver. When exposing a model
-that had an internal ID (`iid`), prefer using that in combination with
-the namespace path as arguments in a resolver over a database
-ID. Otherwise use a [globally unique ID](#exposing-global-ids).
-
-We already have a `FullPathLoader` that can be included in other
-resolvers to quickly find Projects and Namespaces which will have a
-lot of dependent objects.
+Arguments can be defined within the resolver in the same way as in a mutation.
+See the [Mutation arguments](#object-identifier-arguments) section.
 
 To limit the amount of queries performed, we can use `BatchLoader`.
 
@@ -705,10 +767,6 @@ actions. In the same way a GET-request should not modify data, we
 cannot modify data in a regular GraphQL-query. We can however in a
 mutation.
 
-To find objects for a mutation, arguments need to be specified. As with
-[resolvers](#resolvers), prefer using internal ID or, if needed, a
-global ID rather than the database ID.
-
 ### Building Mutations
 
 Mutations live in `app/graphql/mutations` ideally grouped per
@@ -763,10 +821,34 @@ If you need advice for mutation naming, canvass the Slack `#graphql` channel for
 
 ### Arguments
 
-Arguments required by the mutation can be defined as arguments
-required for a field. These will be wrapped up in an input type for
-the mutation. For example, the `Mutations::MergeRequests::SetWip`
-with GraphQL-name `MergeRequestSetWip` defines these arguments:
+Arguments for a mutation are defined using `argument`.
+
+Example:
+
+```ruby
+argument :my_arg, GraphQL::STRING_TYPE,
+         required: true,
+         description: "A description of the argument"
+```
+
+Each GraphQL `argument` defined will be passed to the `#resolve` method
+of a mutation as keyword arguments.
+
+Example:
+
+```ruby
+def resolve(my_arg:)
+  # Perform mutation ...
+end
+```
+
+`graphql-ruby` will automatically wrap up arguments into an
+[input type](https://graphql.org/learn/schema/#input-types).
+
+For example, the
+[`mergeRequestSetWip` mutation](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/graphql/mutations/merge_requests/set_wip.rb)
+defines these arguments (some
+[through inheritance](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/graphql/mutations/merge_requests/base.rb)):
 
 ```ruby
 argument :project_path, GraphQL::ID_TYPE,
@@ -786,12 +868,19 @@ argument :wip,
                       DESC
 ```
 
-This would automatically generate an input type called
+These arguments automatically generate an input type called
 `MergeRequestSetWipInput` with the 3 arguments we specified and the
 `clientMutationId`.
 
-These arguments are then passed to the `resolve` method of a mutation
-as keyword arguments.
+### Object identifier arguments
+
+In keeping with GitLab's use of [Global IDs](#global-ids), mutation
+arguments should use Global IDs to identify an object and never database
+primary key IDs.
+
+Where an object has an `iid`, prefer to use the `full_path` or `group_path`
+of its parent in combination with its `iid` as arguments to identify an
+object rather than its `id`.
 
 ### Fields
 
@@ -1204,3 +1293,7 @@ See the [schema reference](../api/graphql/reference/index.md) for details.
 This generated GraphQL documentation needs to be updated when the schema changes.
 For information on generating GraphQL documentation and schema files, see
 [updating the schema documentation](rake_tasks.md#update-graphql-documentation-and-schema-definitions).
+
+To help our readers, you should also add a new page to our [GraphQL API](../api/graphql/index.md) documentation.
+For guidance, see the [GraphQL API](documentation/styleguide.md#graphql-api) section
+of our documentation style guide.

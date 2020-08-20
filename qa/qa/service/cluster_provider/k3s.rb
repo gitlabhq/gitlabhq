@@ -10,6 +10,7 @@ module QA
 
         def setup
           @k3s = Service::DockerRun::K3s.new.tap do |k3s|
+            k3s.remove!
             k3s.register!
 
             shell "kubectl config set-cluster k3s --server https://#{k3s.host_name}:6443 --insecure-skip-tls-verify"

@@ -62,4 +62,4 @@ You can start the import with:
    to the import status page with projects list based on the manifest file.
 1. Check the list and click **Import all repositories** to start the import.
 
-   ![Manifest status](img/manifest_status.png)
+   ![Manifest status](img/manifest_status_v13_3.png)

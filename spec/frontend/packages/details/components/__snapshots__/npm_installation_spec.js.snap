@@ -1,0 +1,69 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`NpmInstallation renders all the messages 1`] = `
+<div>
+  <h3
+    class="gl-font-lg"
+  >
+    Installation
+  </h3>
+   
+  <h4
+    class="gl-font-base"
+  >
+    npm command
+  </h4>
+   
+  <code-instruction-stub
+    copytext="Copy npm command"
+    instruction="npm i @Test/package"
+    trackingaction="copy_npm_install_command"
+  />
+   
+  <h4
+    class="gl-font-base"
+  >
+    yarn command
+  </h4>
+   
+  <code-instruction-stub
+    copytext="Copy yarn command"
+    instruction="yarn add @Test/package"
+    trackingaction="copy_yarn_install_command"
+  />
+   
+  <h3
+    class="gl-font-lg"
+  >
+    Registry setup
+  </h3>
+   
+  <h4
+    class="gl-font-base"
+  >
+    npm command
+  </h4>
+   
+  <code-instruction-stub
+    copytext="Copy npm setup command"
+    instruction="echo @Test:registry=undefined >> .npmrc"
+    trackingaction="copy_npm_setup_command"
+  />
+   
+  <h4
+    class="gl-font-base"
+  >
+    yarn command
+  </h4>
+   
+  <code-instruction-stub
+    copytext="Copy yarn setup command"
+    instruction="echo \\\\\\"@Test:registry\\\\\\" \\\\\\"undefined\\\\\\" >> .yarnrc"
+    trackingaction="copy_yarn_setup_command"
+  />
+   
+  <gl-sprintf-stub
+    message="You may also need to setup authentication using an auth token. %{linkStart}See the documentation%{linkEnd} to find out more."
+  />
+</div>
+`;

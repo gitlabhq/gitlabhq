@@ -2,7 +2,7 @@ import Visibility from 'visibilityjs';
 import { GlLoadingIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Poll from '~/lib/utils/poll';
-import flash from '~/flash';
+import { deprecatedCreateFlash as flash } from '~/flash';
 import CiIcon from '~/vue_shared/components/ci_icon.vue';
 import CommitPipelineStatus from '~/projects/tree/components/commit_pipeline_status_component.vue';
 import { getJSONFixture } from '../helpers/fixtures';

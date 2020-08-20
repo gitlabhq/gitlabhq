@@ -28,7 +28,7 @@
         = f.label :password, class: 'label-bold'
         = f.password_field :password, class: "form-control bottom", data: { qa_selector: 'new_user_password_field' }, required: true, pattern: ".{#{@minimum_password_length},}", title: _("Minimum length is %{minimum_password_length} characters.") % { minimum_password_length: @minimum_password_length }
         %p.gl-field-hint.text-secondary= _('Minimum length is %{minimum_password_length} characters') % { minimum_password_length: @minimum_password_length }
-      - if Gitlab::CurrentSettings.current_application_settings.enforce_terms?
+      - if Gitlab::CurrentSettings.current_application_settings.enforce_terms? && !experiment_enabled?(:terms_opt_in)
         .form-group
           = check_box_tag :terms_opt_in, '1', false, required: true, data: { qa_selector: 'new_user_accept_terms_checkbox' }
           = label_tag :terms_opt_in do
@@ -41,5 +41,8 @@
         = recaptcha_tags
       .submit-container.mt-3
         = f.submit _("Register"), class: "btn-register btn btn-block btn-success mb-0 p-2", data: { qa_selector: 'new_user_register_button' }
+      - if experiment_enabled?(:terms_opt_in)
+        %p.gl-text-gray-500.gl-mt-5.gl-mb-0
+          = html_escape(_("By clicking Register, I agree that I have read and accepted the GitLab %{linkStart}Terms of Use and Privacy Policy%{linkEnd}")) % { linkStart: "<a href='#{terms_path}' target='_blank' rel='noreferrer noopener'>".html_safe, linkEnd: '</a>'.html_safe }
       - if omniauth_enabled? && button_based_providers_enabled?
         = render 'devise/shared/experimental_separate_sign_up_flow_omniauth_box'

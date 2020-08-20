@@ -103,7 +103,8 @@ end
 This will take care of renaming the column, ensuring data stays in sync, copying
 over indexes and foreign keys, etc.
 
-**NOTE:** if a column contains 1 or more indexes that do not contain the name of
+NOTE: **Note:**
+If a column contains 1 or more indexes that do not contain the name of
 the original column, the above procedure will fail. In this case you will first
 need to rename these indexes.
 
@@ -132,7 +133,7 @@ end
 
 NOTE: **Note:**
 If you're renaming a [large table](https://gitlab.com/gitlab-org/gitlab/-/blob/master/rubocop/rubocop-migrations.yml#L3), please carefully consider the state when the first migration has run but the second cleanup migration hasn't been run yet.
-With [Canary](https://about.gitlab.com/handbook/engineering/infrastructure/library/canary/) it is possible that the system runs in this state for a significant amount of time.
+With [Canary](https://gitlab.com/gitlab-com/gl-infra/readiness/-/tree/master/library/canary/) it is possible that the system runs in this state for a significant amount of time.
 
 ## Changing Column Constraints
 

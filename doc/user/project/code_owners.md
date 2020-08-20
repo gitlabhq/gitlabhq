@@ -1,4 +1,7 @@
 ---
+stage: Create
+group: Source Code
+info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers"
 type: reference
 ---
 
@@ -175,7 +178,7 @@ Owners" section:
 
 ```plaintext
 [README Owners]
-README.md @user1 @user 2
+README.md @user1 @user2
 internal/README.md @user2
 ```
 

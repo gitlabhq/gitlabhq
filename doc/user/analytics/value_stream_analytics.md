@@ -48,7 +48,30 @@ There are seven stages that are tracked as part of the Value Stream Analytics ca
 - **Total** (Total)
   - Total lifecycle time. That is, the velocity of the project or team. [Previously known](https://gitlab.com/gitlab-org/gitlab/-/issues/38317) as **Production**.
 
-## Date ranges
+## Filter the analytics data
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13216) in GitLab 13.3
+
+GitLab provides the ability to filter analytics based on the following parameters:
+
+- Milestones (Group level)
+- Labels (Group level)
+- Author
+- Assignees
+
+To filter results:
+
+1. Select a group.
+1. Click on the filter bar.
+1. Select a parameter to filter by.
+1. Select a value from the autocompleted results, or type to refine the results.
+
+![Value stream analytics filter bar](img/vsa_filter_bar_v13.3.png "Active filter bar for value stream analytics")
+
+NOTE: **Note:**
+Filtering is available only for group-level Value Stream Analytics.
+
+### Date ranges
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13216) in GitLab 12.4.
 
@@ -165,7 +188,7 @@ A few notes:
   cycles, calculate their median time and the result is what the dashboard of
   Value Stream Analytics is showing.
 
-## Customizable Value Stream Analytics
+## Customizable Value Stream Analytics **(PREMIUM)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12196) in GitLab 12.9.
 
@@ -173,8 +196,7 @@ The default stages are designed to work straight out of the box, but they might 
 all teams. Different teams use different approaches to building software, so some teams might want
 to customize their Value Stream Analytics.
 
-GitLab allows users to hide default stages and create custom stages that align better to their
-development workflow.
+GitLab allows users to create multiple value streams, hide default stages and create custom stages that align better to their development workflow.
 
 NOTE: **Note:**
 Customizability is [only available for group-level](https://gitlab.com/gitlab-org/gitlab/-/issues/35823#note_272558950) Value Stream Analytics.
@@ -271,6 +293,34 @@ To recover a default stage that was previously hidden:
 1. Click **Add a stage** button.
 1. In the top right corner open the **Recover hidden stage** dropdown.
 1. Select a stage.
+
+### Creating a value stream
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/221202) in GitLab 13.3
+
+A default value stream is readily available for each group. You can create additional value streams based on the different areas of work that you would like to measure.
+
+Once created, a new value stream includes the [seven stages](#overview) that follow
+[GitLab workflow](../../topics/gitlab_flow.md)
+best practices. You can customize this flow by adding, hiding or re-ordering stages.
+
+To create a value stream:
+
+1. Navigate to your group's **Analytics > Value Stream**.
+1. Click the Value stream dropdown and select **Create new Value Stream**
+1. Fill in a name for the new Value Stream
+1. Click the **Create Value Stream** button.
+
+![New value stream](img/new_value_stream_v13_3.png "Creating a new value stream")
+
+### Disabling custom value streams
+
+Custom value streams are enabled by default. If you have a self-managed instance, an
+administrator can open a Rails console and disable them with the following command:
+
+```ruby
+Feature.disable(:value_stream_analytics_create_multiple_value_streams)
+```
 
 ## Days to completion chart
 

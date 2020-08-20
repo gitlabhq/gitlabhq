@@ -90,6 +90,3 @@ export const fetchMachineTypes = ({ commit, state }) =>
     mutation: types.SET_MACHINE_TYPES,
     payloadKey: 'items',
   });
-
-// prevent babel-plugin-rewire from generating an invalid default during karma tests
-export default () => {};

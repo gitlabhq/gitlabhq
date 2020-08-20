@@ -1,0 +1,5 @@
+---
+title: Fix local Tiller not being default-enabled on the frontend
+merge_request: 37494
+author:
+type: fixed

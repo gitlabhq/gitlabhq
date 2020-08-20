@@ -1,12 +1,16 @@
 <script>
-import { escape } from 'lodash';
 import { mapState, mapGetters, mapActions } from 'vuex';
-import { s__, sprintf } from '~/locale';
+import { GlSprintf, GlLink } from '@gitlab/ui';
+import { s__ } from '~/locale';
 
 import gkeDropdownMixin from './gke_dropdown_mixin';
 
 export default {
   name: 'GkeProjectIdDropdown',
+  components: {
+    GlSprintf,
+    GlLink,
+  },
   mixins: [gkeDropdownMixin],
   props: {
     docsUrl: {
@@ -46,31 +50,23 @@ export default {
       return s__('ClusterIntegration|Select project');
     },
     helpText() {
-      let message;
       if (this.hasErrors) {
         return this.errorMessage;
       }
 
       if (!this.items) {
-        message =
-          'ClusterIntegration|We were unable to fetch any projects. Ensure that you have a project on %{docsLinkStart}Google Cloud Platform%{docsLinkEnd}.';
+        return s__(
+          'ClusterIntegration|We were unable to fetch any projects. Ensure that you have a project on %{docsLinkStart}Google Cloud Platform%{docsLinkEnd}.',
+        );
       }
 
-      message =
-        this.items && this.items.length
-          ? 'ClusterIntegration|To use a new project, first create one on %{docsLinkStart}Google Cloud Platform%{docsLinkEnd}.'
-          : 'ClusterIntegration|To create a cluster, first create a project on %{docsLinkStart}Google Cloud Platform%{docsLinkEnd}.';
-
-      return sprintf(
-        s__(message),
-        {
-          docsLinkEnd: '&nbsp;<i class="fa fa-external-link" aria-hidden="true"></i></a>',
-          docsLinkStart: `<a href="${escape(
-            this.docsUrl,
-          )}" target="_blank" rel="noopener noreferrer">`,
-        },
-        false,
-      );
+      return this.items.length
+        ? s__(
+            'ClusterIntegration|To use a new project, first create one on %{docsLinkStart}Google Cloud Platform%{docsLinkEnd}.',
+          )
+        : s__(
+            'ClusterIntegration|To create a cluster, first create a project on %{docsLinkStart}Google Cloud Platform%{docsLinkEnd}.',
+          );
     },
     errorMessage() {
       if (!this.projectHasBillingEnabled) {
@@ -80,21 +76,13 @@ export default {
           );
         }
 
-        return sprintf(
-          s__(
-            'This project does not have billing enabled. To create a cluster, <a href=%{linkToBilling} target="_blank" rel="noopener noreferrer">enable billing <i class="fa fa-external-link" aria-hidden="true"></i></a> and try again.',
-          ),
-          {
-            linkToBilling:
-              'https://console.cloud.google.com/freetrial?utm_campaign=2018_cpanel&utm_source=gitlab&utm_medium=referral',
-          },
-          false,
+        return s__(
+          'ClusterIntegration|This project does not have billing enabled. To create a cluster, %{linkToBillingStart}enable billing%{linkToBillingEnd} and try again.',
         );
       }
 
-      return sprintf(
-        s__('ClusterIntegration|An error occurred while trying to fetch your projects: %{error}'),
-        { error: this.gapiError },
+      return s__(
+        'ClusterIntegration|An error occurred while trying to fetch your projects: %{error}',
       );
     },
   },
@@ -182,7 +170,28 @@ export default {
         'text-muted': !hasErrors,
       }"
       class="form-text"
-      v-html="helpText"
-    ></span>
+    >
+      <gl-sprintf :message="helpText">
+        <template #linkToBilling="{ content }">
+          <gl-link
+            :href="
+              'https://console.cloud.google.com/freetrial?utm_campaign=2018_cpanel&utm_source=gitlab&utm_medium=referral'
+            "
+            target="_blank"
+            >{{ content }} <i class="fa fa-external-link" aria-hidden="true"></i
+          ></gl-link>
+        </template>
+
+        <template #docsLink="{ content }">
+          <gl-link :href="docsUrl" target="_blank"
+            >{{ content }} <i class="fa fa-external-link" aria-hidden="true"></i
+          ></gl-link>
+        </template>
+
+        <template #error>
+          {{ gapiError }}
+        </template>
+      </gl-sprintf>
+    </span>
   </div>
 </template>

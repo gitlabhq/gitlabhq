@@ -1,6 +1,13 @@
+---
+stage: Create
+group: Source Code
+info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers"
+type: reference, api
+---
+
 # Protected tags API
 
->**Note:** This feature was introduced in GitLab 11.3
+> Introduced in GitLab 11.3.
 
 **Valid access levels**
 

@@ -1,5 +1,6 @@
 <script>
 import { GlDeprecatedButton, GlLink } from '@gitlab/ui';
+import { mapState } from 'vuex';
 import { s__ } from '../../locale';
 
 export default {
@@ -8,20 +9,13 @@ export default {
     GlLink,
   },
   props: {
-    clustersPath: {
-      type: String,
-      required: true,
-    },
-    helpPath: {
-      type: String,
-      required: true,
-    },
     missingData: {
       type: Boolean,
       required: true,
     },
   },
   computed: {
+    ...mapState(['clustersPath', 'helpPath']),
     missingStateClass() {
       return this.missingData ? 'missing-prometheus-state' : 'empty-prometheus-state';
     },

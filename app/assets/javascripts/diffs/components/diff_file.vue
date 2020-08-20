@@ -2,8 +2,9 @@
 import { mapActions, mapGetters, mapState } from 'vuex';
 import { escape } from 'lodash';
 import { GlLoadingIcon } from '@gitlab/ui';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { __, sprintf } from '~/locale';
-import createFlash from '~/flash';
+import { deprecatedCreateFlash as createFlash } from '~/flash';
 import { hasDiff } from '~/helpers/diffs_helper';
 import eventHub from '../../notes/event_hub';
 import DiffFileHeader from './diff_file_header.vue';
@@ -16,6 +17,7 @@ export default {
     DiffContent,
     GlLoadingIcon,
   },
+  mixins: [glFeatureFlagsMixin()],
   props: {
     file: {
       type: Object,
@@ -89,8 +91,25 @@ export default {
 
       this.setFileCollapsed({ filePath: this.file.file_path, collapsed: newVal });
     },
+    'file.file_hash': {
+      handler: function watchFileHash() {
+        if (
+          this.glFeatures.autoExpandCollapsedDiffs &&
+          this.viewDiffsFileByFile &&
+          this.file.viewer.collapsed
+        ) {
+          this.isCollapsed = false;
+          this.handleLoadCollapsedDiff();
+        } else {
+          this.isCollapsed = this.file.viewer.collapsed || false;
+        }
+      },
+      immediate: true,
+    },
     'file.viewer.collapsed': function setIsCollapsed(newVal) {
-      this.isCollapsed = newVal;
+      if (!this.viewDiffsFileByFile && !this.glFeatures.autoExpandCollapsedDiffs) {
+        this.isCollapsed = newVal;
+      }
     },
   },
   created() {
@@ -148,6 +167,7 @@ export default {
     :id="file.file_hash"
     :class="{
       'is-active': currentDiffFileId === file.file_hash,
+      'comments-disabled': Boolean(file.brokenSymlink),
     }"
     :data-path="file.new_path"
     class="diff-file file-holder"

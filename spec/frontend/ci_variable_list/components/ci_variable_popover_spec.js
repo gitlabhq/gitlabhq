@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
-import { GlDeprecatedButton } from '@gitlab/ui';
+import { GlButton } from '@gitlab/ui';
 import CiVariablePopover from '~/ci_variable_list/components/ci_variable_popover.vue';
 import mockData from '../services/mock_data';
 
@@ -18,7 +18,7 @@ describe('Ci Variable Popover', () => {
     });
   };
 
-  const findButton = () => wrapper.find(GlDeprecatedButton);
+  const findButton = () => wrapper.find(GlButton);
 
   beforeEach(() => {
     createComponent();

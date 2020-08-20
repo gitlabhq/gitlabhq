@@ -26,6 +26,7 @@ RSpec.describe EnvironmentSerializer do
                           project: project,
                           sha: project.commit.id)
     end
+
     let(:resource) { deployment.environment }
 
     before do

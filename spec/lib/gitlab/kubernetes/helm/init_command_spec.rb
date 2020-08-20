@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Kubernetes::Helm::InitCommand do
-  subject(:init_command) { described_class.new(name: application.name, files: files, rbac: rbac, local_tiller_enabled: false) }
+  subject(:init_command) { described_class.new(name: application.name, files: files, rbac: rbac) }
 
   let(:application) { create(:clusters_applications_helm) }
   let(:rbac) { false }

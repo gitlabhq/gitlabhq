@@ -1,0 +1,4 @@
+- return unless use_startup_css?
+
+%style{ type: "text/css" }
+  = Rails.application.assets_manifest.find_sources('startup/startup-general.css').first.to_s.html_safe

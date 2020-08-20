@@ -1,7 +1,7 @@
 import { __ } from '~/locale';
 import axios from '~/lib/utils/axios_utils';
 import { refreshCurrentPage } from '~/lib/utils/url_utility';
-import createFlash from '~/flash';
+import { deprecatedCreateFlash as createFlash } from '~/flash';
 import { transformFrontendSettings } from '../utils';
 import * as types from './mutation_types';
 
@@ -89,6 +89,3 @@ export const updateSelectedProject = ({ commit }, selectedProject) => {
 export const setInitialState = ({ commit }, data) => {
   commit(types.SET_INITIAL_STATE, data);
 };
-
-// prevent babel-plugin-rewire from generating an invalid default during karma tests
-export default () => {};

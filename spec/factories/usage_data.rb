@@ -24,13 +24,15 @@ FactoryBot.define do
       create(:service, project: projects[2], type: 'SlackService', active: true)
       create(:service, project: projects[2], type: 'MattermostService', active: false)
       create(:service, :template, type: 'MattermostService', active: true)
+      matermost_instance = create(:service, :instance, type: 'MattermostService', active: true)
+      create(:service, project: projects[1], type: 'MattermostService', active: true, inherit_from_id: matermost_instance.id)
       create(:service, project: projects[2], type: 'CustomIssueTrackerService', active: true)
       create(:project_error_tracking_setting, project: projects[0])
       create(:project_error_tracking_setting, project: projects[1], enabled: false)
       create(:alerts_service, project: projects[0])
       create(:alerts_service, :inactive, project: projects[1])
-      alert_bot_issues = create_list(:issue, 2, project: projects[0], author: User.alert_bot)
-      create_list(:issue, 2, project: projects[1], author: User.alert_bot)
+      alert_bot_issues = create_list(:incident, 2, project: projects[0], author: User.alert_bot)
+      create_list(:incident, 2, project: projects[1], author: User.alert_bot)
       issues = create_list(:issue, 4, project: projects[0])
       create_list(:prometheus_alert, 2, project: projects[0])
       create(:prometheus_alert, project: projects[1])
@@ -45,6 +47,8 @@ FactoryBot.define do
       create(:zoom_meeting, project: projects[0], issue: projects[0].issues[2], issue_status: :added)
       create_list(:zoom_meeting, 2, project: projects[0], issue: projects[0].issues[2], issue_status: :removed)
       create(:sentry_issue, issue: projects[0].issues[0])
+      create(:protected_branch, project: projects[0])
+      create(:protected_branch, name: 'main', project: projects[0])
 
       # Incident Labeled Issues
       incident_label_attrs = IncidentManagement::CreateIncidentLabelService::LABEL_PROPERTIES

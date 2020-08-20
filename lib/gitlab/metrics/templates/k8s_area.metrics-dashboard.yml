@@ -1,0 +1,15 @@
+# Only one dashboard should be defined per file
+# More info: https://docs.gitlab.com/ee/operations/metrics/dashboards/yaml.html
+dashboard: 'Area Panel Example'
+
+# For more information about the required properties of panel_groups
+# please visit: https://docs.gitlab.com/ee/operations/metrics/dashboards/yaml.html#panel-group-panel_groups-properties
+panel_groups:
+  - group: 'Server Statistics'
+    panels:
+      - title: "Core Usage (Pod Average)"
+        type: area-chart
+        metrics:
+            - query_range: 'avg(sum(rate(container_cpu_usage_seconds_total{container!="POD",pod=~"^{{ci_environment_slug}}-([^c].*|c([^a]|a([^n]|n([^a]|a([^r]|r[^y])))).*|)-(.*)",namespace="{{kube_namespace}}"}[15m])) by (job)) without (job) / count(sum(rate(container_cpu_usage_seconds_total{container!="POD",pod=~"^{{ci_environment_slug}}-([^c].*|c([^a]|a([^n]|n([^a]|a([^r]|r[^y])))).*|)-(.*)",namespace="{{kube_namespace}}"}[15m])) by (pod))     OR      avg(sum(rate(container_cpu_usage_seconds_total{container_name!="POD",pod_name=~"^{{ci_environment_slug}}-([^c].*|c([^a]|a([^n]|n([^a]|a([^r]|r[^y])))).*|)-(.*)",namespace="{{kube_namespace}}"}[15m])) by (job)) without (job) / count(sum(rate(container_cpu_usage_seconds_total{container_name!="POD",pod_name=~"^{{ci_environment_slug}}-([^c].*|c([^a]|a([^n]|n([^a]|a([^r]|r[^y])))).*|)-(.*)",namespace="{{kube_namespace}}"}[15m])) by (pod_name))'
+              unit: 'cores'
+              label: "Pod Average (in seconds)"

@@ -2,29 +2,7 @@
 
 class ProjectPolicy < BasePolicy
   include CrudPolicyHelpers
-
-  READONLY_FEATURES_WHEN_ARCHIVED = %i[
-    issue
-    list
-    merge_request
-    label
-    milestone
-    snippet
-    wiki
-    design
-    note
-    pipeline
-    pipeline_schedule
-    build
-    trigger
-    environment
-    deployment
-    commit_status
-    container_image
-    pages
-    cluster
-    release
-  ].freeze
+  include ReadonlyAbilities
 
   desc "User is a project owner"
   condition :owner do
@@ -121,6 +99,11 @@ class ProjectPolicy < BasePolicy
   with_scope :subject
   condition(:design_management_disabled) do
     !@subject.design_management_enabled?
+  end
+
+  with_scope :subject
+  condition(:moving_designs_disabled) do
+    !::Feature.enabled?(:reorder_designs, @subject, default_enabled: true)
   end
 
   with_scope :subject
@@ -248,6 +231,7 @@ class ProjectPolicy < BasePolicy
     enable :admin_issue
     enable :admin_label
     enable :admin_list
+    enable :admin_issue_link
     enable :read_commit_status
     enable :read_build
     enable :read_container_image
@@ -258,11 +242,13 @@ class ProjectPolicy < BasePolicy
     enable :read_merge_request
     enable :read_sentry_issue
     enable :update_sentry_issue
+    enable :read_incidents
     enable :read_prometheus
     enable :read_metrics_dashboard_annotation
     enable :metrics_dashboard
     enable :read_confidential_issues
     enable :read_package
+    enable :read_product_analytics
   end
 
   # We define `:public_user_access` separately because there are cases in gitlab-ee
@@ -340,8 +326,10 @@ class ProjectPolicy < BasePolicy
     enable :read_alert_management_alert
     enable :update_alert_management_alert
     enable :create_design
+    enable :move_design
     enable :destroy_design
     enable :read_terraform_state
+    enable :read_pod_logs
   end
 
   rule { can?(:developer_access) & user_confirmed? }.policy do
@@ -381,7 +369,6 @@ class ProjectPolicy < BasePolicy
     enable :admin_operations
     enable :read_deploy_token
     enable :create_deploy_token
-    enable :read_pod_logs
     enable :destroy_deploy_token
     enable :read_prometheus_alerts
     enable :admin_terraform_state
@@ -403,16 +390,9 @@ class ProjectPolicy < BasePolicy
   rule { can?(:push_code) }.enable :admin_tag
 
   rule { archived }.policy do
-    prevent :push_code
-    prevent :push_to_delete_protected_branch
-    prevent :request_access
-    prevent :upload_file
-    prevent :resolve_note
-    prevent :create_merge_request_from
-    prevent :create_merge_request_in
-    prevent :award_emoji
+    prevent(*readonly_abilities)
 
-    READONLY_FEATURES_WHEN_ARCHIVED.each do |feature|
+    readonly_features.each do |feature|
       prevent(*create_update_admin_destroy(feature))
     end
   end
@@ -499,6 +479,8 @@ class ProjectPolicy < BasePolicy
     enable :read_note
     enable :read_pipeline
     enable :read_pipeline_schedule
+    enable :read_environment
+    enable :read_deployment
     enable :read_commit_status
     enable :read_container_image
     enable :download_code
@@ -563,6 +545,7 @@ class ProjectPolicy < BasePolicy
   rule { can?(:read_issue) }.policy do
     enable :read_design
     enable :read_design_activity
+    enable :read_issue_link
   end
 
   # Design abilities could also be prevented in the issue policy.
@@ -571,6 +554,11 @@ class ProjectPolicy < BasePolicy
     prevent :read_design_activity
     prevent :create_design
     prevent :destroy_design
+    prevent :move_design
+  end
+
+  rule { moving_designs_disabled }.policy do
+    prevent :move_design
   end
 
   rule { read_package_registry_deploy_token }.policy do

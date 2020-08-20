@@ -1,0 +1,6 @@
+---
+title: Speed up commit lists and file blob pages on repositories with huge amounts
+  of branches or tags
+merge_request: 38484
+author:
+type: performance

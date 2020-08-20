@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Merge request > User sees WIP help message' do
+RSpec.describe 'Merge request > User sees draft help message' do
   let(:project) { create(:project, :public, :repository) }
   let(:user)    { project.creator }
 
@@ -11,8 +11,8 @@ RSpec.describe 'Merge request > User sees WIP help message' do
     sign_in(user)
   end
 
-  context 'with WIP commits' do
-    it 'shows a specific WIP hint' do
+  context 'with draft commits' do
+    it 'shows a specific draft hint' do
       visit project_new_merge_request_path(
         project,
         merge_request: {
@@ -24,14 +24,14 @@ RSpec.describe 'Merge request > User sees WIP help message' do
 
       within_wip_explanation do
         expect(page).to have_text(
-          'It looks like you have some WIP commits in this branch'
+          'It looks like you have some draft commits in this branch'
         )
       end
     end
   end
 
-  context 'without WIP commits' do
-    it 'shows the regular WIP message' do
+  context 'without draft commits' do
+    it 'shows the regular draft message' do
       visit project_new_merge_request_path(
         project,
         merge_request: {
@@ -43,11 +43,11 @@ RSpec.describe 'Merge request > User sees WIP help message' do
 
       within_wip_explanation do
         expect(page).not_to have_text(
-          'It looks like you have some WIP commits in this branch'
+          'It looks like you have some draft commits in this branch'
         )
         expect(page).to have_text(
-          "Start the title with WIP: to prevent a Work In Progress merge \
-request from being merged before it's ready"
+          "Start the title with Draft: or WIP: to prevent a merge request that is a \
+work in progress from being merged before it's ready."
         )
       end
     end

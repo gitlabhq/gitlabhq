@@ -43,9 +43,7 @@ module Gitlab
         end
 
         def suite_errors
-          test_suites.each_with_object({}) do |(name, suite), errors|
-            errors[suite.name] = suite.suite_error if suite.suite_error
-          end
+          test_suites.transform_values(&:suite_error).compact
         end
 
         TestCase::STATUS_TYPES.each do |status_type|

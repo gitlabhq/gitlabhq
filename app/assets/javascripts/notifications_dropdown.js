@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import Flash from './flash';
+import { deprecatedCreateFlash as Flash } from './flash';
 import { __ } from '~/locale';
 
 export default function notificationsDropdown() {

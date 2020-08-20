@@ -1,0 +1,5 @@
+---
+title: Add can_push column to group_deploy_keys_groups table
+merge_request: 38714
+author:
+type: other

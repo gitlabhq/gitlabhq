@@ -11,6 +11,7 @@ class GitGarbageCollectWorker # rubocop:disable Scalability/IdempotentWorker
   LEASE_TIMEOUT = 86400
 
   def perform(project_id, task = :gc, lease_key = nil, lease_uuid = nil)
+    lease_key ||= "git_gc:#{task}:#{project_id}"
     project = Project.find(project_id)
     active_uuid = get_lease_uuid(lease_key)
 
@@ -26,14 +27,20 @@ class GitGarbageCollectWorker # rubocop:disable Scalability/IdempotentWorker
 
     task = task.to_sym
 
-    ::Projects::GitDeduplicationService.new(project).execute if task == :gc
+    if task == :gc
+      ::Projects::GitDeduplicationService.new(project).execute
+      cleanup_orphan_lfs_file_references(project)
+    end
 
     gitaly_call(task, project.repository.raw_repository)
 
     # Refresh the branch cache in case garbage collection caused a ref lookup to fail
     flush_ref_caches(project) if task == :gc
 
-    project.repository.expire_statistics_caches if task != :pack_refs
+    if task != :pack_refs
+      project.repository.expire_statistics_caches
+      Projects::UpdateStatisticsService.new(project, nil, statistics: [:repository_size, :lfs_objects_size]).execute
+    end
 
     # In case pack files are deleted, release libgit2 cache and open file
     # descriptors ASAP instead of waiting for Ruby garbage collection
@@ -84,6 +91,13 @@ class GitGarbageCollectWorker # rubocop:disable Scalability/IdempotentWorker
   rescue GRPC::BadStatus => e
     Gitlab::GitLogger.error("#{__method__} failed:\n#{e}")
     raise Gitlab::Git::CommandError.new(e)
+  end
+
+  def cleanup_orphan_lfs_file_references(project)
+    return unless Feature.enabled?(:cleanup_lfs_during_gc, project)
+    return if Gitlab::Database.read_only? # GitGarbageCollectWorker may be run on a Geo secondary
+
+    ::Gitlab::Cleanup::OrphanLfsFileReferences.new(project, dry_run: false, logger: logger).run!
   end
 
   def flush_ref_caches(project)

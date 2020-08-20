@@ -3,14 +3,14 @@
 
 .info-well
   .well-segment
-    %p= s_('SlackIntegration|This service send notifications about projects\' events to Slack channels. To set up this service:')
+    %p= s_('SlackIntegration|This service sends notifications about project events to Slack channels. To set up this service:')
     %ol
       %li
-        = s_('SlackIntegration|%{webhooks_link_start}Add an incoming webhook%{webhooks_link_end} in your Slack team. The default channel can be overridden for each event.').html_safe % { webhooks_link_start: webhooks_link_start, webhooks_link_end: '</a>'.html_safe }
+        = html_escape(s_('SlackIntegration|%{webhooks_link_start}Add an incoming webhook%{webhooks_link_end} in your Slack team. The default channel can be overridden for each event.')) % { webhooks_link_start: webhooks_link_start.html_safe, webhooks_link_end: '</a>'.html_safe }
       %li
-        = s_('SlackIntegration|Paste the <strong>Webhook URL</strong> into the field below.').html_safe
+        = html_escape(s_('SlackIntegration|Paste the %{strong_open}Webhook URL%{strong_close} into the field below.')) % { strong_open: '<strong>'.html_safe, strong_close: '</strong>'.html_safe }
       %li
-        = s_('SlackIntegration|Select events below to enable notifications. The <strong>Slack channel names</strong> and <strong>Slack username</strong> fields are optional.').html_safe
+        = html_escape(s_('SlackIntegration|Select events below to enable notifications. The %{strong_open}Slack channel names%{strong_close} and %{strong_open}Slack username%{strong_close} fields are optional.')) % { strong_open: '<strong>'.html_safe, strong_close: '</strong>'.html_safe }
     %p.mt-3.mb-0
-      = s_('SlackIntegration|<strong>Note:</strong> Usernames and private channels are not supported.').html_safe
+      = html_escape(s_('SlackIntegration|%{strong_open}Note:%{strong_close} Usernames and private channels are not supported.')) % { strong_open: '<strong>'.html_safe, strong_close: '</strong>'.html_safe }
       = link_to _('Learn more'), help_page_path('user/project/integrations/slack')

@@ -1,0 +1,5 @@
+---
+title: Bring SAST to Core - bandit, Flawfinder, Gitleaks, Gosec, Kubesec, NodeJsScan, phpcs-security-audit, PMD, Security Code Scan, Sobelow, SpotBugs
+merge_request: 37648
+author:
+type: changed

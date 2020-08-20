@@ -1,13 +1,13 @@
 <script>
-import { __ } from '~/locale';
 import { mapGetters } from 'vuex';
 import { GlLoadingIcon, GlTooltipDirective } from '@gitlab/ui';
+import { __ } from '~/locale';
 import resolvedStatusMixin from '~/batch_comments/mixins/resolved_status';
 import Icon from '~/vue_shared/components/icon.vue';
 import ReplyButton from './note_actions/reply_button.vue';
 import eventHub from '~/sidebar/event_hub';
 import Api from '~/api';
-import flash from '~/flash';
+import { deprecatedCreateFlash as flash } from '~/flash';
 
 export default {
   name: 'NoteActions',

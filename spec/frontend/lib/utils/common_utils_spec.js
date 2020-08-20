@@ -1,5 +1,5 @@
-import * as commonUtils from '~/lib/utils/common_utils';
 import $ from 'jquery';
+import * as commonUtils from '~/lib/utils/common_utils';
 
 describe('common_utils', () => {
   describe('parseUrl', () => {

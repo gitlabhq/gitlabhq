@@ -38,7 +38,7 @@ export default {
   <div class="inline">
     <label
       v-tooltip
-      :class="{ 'gl-text-gray-600': isDisabled }"
+      :class="{ 'gl-text-gray-400': isDisabled }"
       data-testid="squashLabel"
       :data-title="tooltipTitle"
     >

@@ -50,7 +50,7 @@ export default {
       }
 
       formatter = getFormatter(SUPPORTED_FORMATS.number);
-      return `${formatter(this.queryResult, defaultPrecision)}${this.queryInfo.unit}`;
+      return `${formatter(this.queryResult, defaultPrecision)}${this.queryInfo.unit ?? ''}`;
     },
     graphTitle() {
       return this.queryInfo.label;

@@ -19,4 +19,12 @@ RSpec.describe Gitlab::AppLogger do
 
     subject.info('Hello World!')
   end
+
+  it 'logs info to only the AppJsonLogger when unstructured logs are disabled' do
+    stub_env('UNSTRUCTURED_RAILS_LOG', 'false')
+    expect_any_instance_of(Gitlab::AppTextLogger).not_to receive(:info).and_call_original
+    expect_any_instance_of(Gitlab::AppJsonLogger).to receive(:info).and_call_original
+
+    subject.info('Hello World!')
+  end
 end

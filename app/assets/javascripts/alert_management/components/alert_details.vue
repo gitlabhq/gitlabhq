@@ -35,13 +35,24 @@ export default {
     errorMsg: s__(
       'AlertManagement|There was an error displaying the alert. Please refresh the page to try again.',
     ),
-    fullAlertDetailsTitle: s__('AlertManagement|Alert details'),
-    overviewTitle: s__('AlertManagement|Overview'),
-    metricsTitle: s__('AlertManagement|Metrics'),
     reportedAt: s__('AlertManagement|Reported %{when}'),
     reportedAtWithTool: s__('AlertManagement|Reported %{when} by %{tool}'),
   },
   severityLabels: ALERTS_SEVERITY_LABELS,
+  tabsConfig: [
+    {
+      id: 'overview',
+      title: s__('AlertManagement|Overview'),
+    },
+    {
+      id: 'fullDetails',
+      title: s__('AlertManagement|Alert details'),
+    },
+    {
+      id: 'metrics',
+      title: s__('AlertManagement|Metrics'),
+    },
+  ],
   components: {
     GlBadge,
     GlAlert,
@@ -102,8 +113,8 @@ export default {
       errored: false,
       sidebarStatus: false,
       isErrorDismissed: false,
-      createIssueError: '',
-      issueCreationInProgress: false,
+      createIncidentError: '',
+      incidentCreationInProgress: false,
       sidebarErrorMessage: '',
     };
   },
@@ -118,6 +129,18 @@ export default {
     },
     showErrorMsg() {
       return this.errored && !this.isErrorDismissed;
+    },
+    activeTab() {
+      return this.$route.params.tabId || this.$options.tabsConfig[0].id;
+    },
+    currentTabIndex: {
+      get() {
+        return this.$options.tabsConfig.findIndex(tab => tab.id === this.activeTab);
+      },
+      set(tabIdx) {
+        const tabId = this.$options.tabsConfig[tabIdx].id;
+        this.$router.replace({ name: 'tab', params: { tabId } });
+      },
     },
   },
   mounted() {
@@ -149,8 +172,8 @@ export default {
       this.errored = true;
       this.sidebarErrorMessage = errorMessage;
     },
-    createIssue() {
-      this.issueCreationInProgress = true;
+    createIncident() {
+      this.incidentCreationInProgress = true;
 
       this.$apollo
         .mutate({
@@ -162,18 +185,18 @@ export default {
         })
         .then(({ data: { createAlertIssue: { errors, issue } } }) => {
           if (errors?.length) {
-            [this.createIssueError] = errors;
-            this.issueCreationInProgress = false;
+            [this.createIncidentError] = errors;
+            this.incidentCreationInProgress = false;
           } else if (issue) {
-            visitUrl(this.issuePath(issue.iid));
+            visitUrl(this.incidentPath(issue.iid));
           }
         })
         .catch(error => {
-          this.createIssueError = error;
-          this.issueCreationInProgress = false;
+          this.createIncidentError = error;
+          this.incidentCreationInProgress = false;
         });
     },
-    issuePath(issueId) {
+    incidentPath(issueId) {
       return joinPaths(this.projectIssuesPath, issueId);
     },
     trackPageViews() {
@@ -190,12 +213,12 @@ export default {
       <p v-html="sidebarErrorMessage || $options.i18n.errorMsg"></p>
     </gl-alert>
     <gl-alert
-      v-if="createIssueError"
+      v-if="createIncidentError"
       variant="danger"
-      data-testid="issueCreationError"
-      @dismiss="createIssueError = null"
+      data-testid="incidentCreationError"
+      @dismiss="createIncidentError = null"
     >
-      {{ createIssueError }}
+      {{ createIncidentError }}
     </gl-alert>
     <div v-if="loading"><gl-loading-icon size="lg" class="gl-mt-5" /></div>
     <div
@@ -204,19 +227,12 @@ export default {
       :class="{ 'pr-sm-8': sidebarStatus }"
     >
       <div
-        class="gl-display-flex gl-justify-content-space-between gl-align-items-baseline gl-px-1 py-3 py-md-4 gl-border-b-1 gl-border-b-gray-100 gl-border-b-solid flex-column flex-sm-row"
+        class="gl-display-flex gl-justify-content-space-between gl-align-items-center gl-px-1 py-3 py-md-4 gl-border-b-1 gl-border-b-gray-100 gl-border-b-solid gl-flex-direction-column gl-sm-flex-direction-row"
       >
-        <div
-          data-testid="alert-header"
-          class="gl-display-flex gl-align-items-center gl-justify-content-center"
-        >
-          <div
-            class="gl-display-inline-flex gl-align-items-center gl-justify-content-space-between"
-          >
-            <gl-badge class="gl-mr-3">
-              <strong>{{ s__('AlertManagement|Alert') }}</strong>
-            </gl-badge>
-          </div>
+        <div data-testid="alert-header">
+          <gl-badge class="gl-mr-3">
+            <strong>{{ s__('AlertManagement|Alert') }}</strong>
+          </gl-badge>
           <span>
             <gl-sprintf :message="reportedAtMessage">
               <template #when>
@@ -228,24 +244,24 @@ export default {
         </div>
         <gl-button
           v-if="alert.issueIid"
-          class="gl-mt-3 mt-sm-0 align-self-center align-self-sm-baseline alert-details-issue-button"
-          data-testid="viewIssueBtn"
-          :href="issuePath(alert.issueIid)"
+          class="gl-mt-3 mt-sm-0 align-self-center align-self-sm-baseline alert-details-incident-button"
+          data-testid="viewIncidentBtn"
+          :href="incidentPath(alert.issueIid)"
           category="primary"
           variant="success"
         >
-          {{ s__('AlertManagement|View issue') }}
+          {{ s__('AlertManagement|View incident') }}
         </gl-button>
         <gl-button
           v-else
-          class="gl-mt-3 mt-sm-0 align-self-center align-self-sm-baseline alert-details-issue-button"
-          data-testid="createIssueBtn"
-          :loading="issueCreationInProgress"
+          class="gl-mt-3 mt-sm-0 align-self-center align-self-sm-baseline alert-details-incident-button"
+          data-testid="createIncidentBtn"
+          :loading="incidentCreationInProgress"
           category="primary"
           variant="success"
-          @click="createIssue()"
+          @click="createIncident()"
         >
-          {{ s__('AlertManagement|Create issue') }}
+          {{ s__('AlertManagement|Create incident') }}
         </gl-button>
         <gl-button
           :aria-label="__('Toggle sidebar')"
@@ -264,8 +280,8 @@ export default {
       >
         <h2 data-testid="title">{{ alert.title }}</h2>
       </div>
-      <gl-tabs v-if="alert" data-testid="alertDetailsTabs">
-        <gl-tab data-testid="overviewTab" :title="$options.i18n.overviewTitle">
+      <gl-tabs v-if="alert" v-model="currentTabIndex" data-testid="alertDetailsTabs">
+        <gl-tab :data-testid="$options.tabsConfig[0].id" :title="$options.tabsConfig[0].title">
           <div v-if="alert.severity" class="gl-mt-3 gl-mb-5 gl-display-flex">
             <div class="gl-font-weight-bold gl-w-13 gl-text-right gl-pr-3">
               {{ s__('AlertManagement|Severity') }}:
@@ -308,6 +324,12 @@ export default {
             </div>
             <div class="gl-pl-2" data-testid="service">{{ alert.service }}</div>
           </div>
+          <div v-if="alert.runbook" class="gl-my-5 gl-display-flex">
+            <div class="bold gl-w-13 gl-text-right gl-pr-3">
+              {{ s__('AlertManagement|Runbook') }}:
+            </div>
+            <div class="gl-pl-2" data-testid="runbook">{{ alert.runbook }}</div>
+          </div>
           <template>
             <div v-if="alert.notes.nodes" class="issuable-discussion py-5">
               <ul class="notes main-notes-list timeline">
@@ -316,7 +338,7 @@ export default {
             </div>
           </template>
         </gl-tab>
-        <gl-tab data-testid="fullDetailsTab" :title="$options.i18n.fullAlertDetailsTitle">
+        <gl-tab :data-testid="$options.tabsConfig[1].id" :title="$options.tabsConfig[1].title">
           <gl-table
             class="alert-management-details-table"
             :items="[{ key: 'Value', ...alert }]"
@@ -332,7 +354,7 @@ export default {
             </template>
           </gl-table>
         </gl-tab>
-        <gl-tab data-testId="metricsTab" :title="$options.i18n.metricsTitle">
+        <gl-tab :data-testid="$options.tabsConfig[2].id" :title="$options.tabsConfig[2].title">
           <alert-metrics :dashboard-url="alert.metricsDashboardUrl" />
         </gl-tab>
       </gl-tabs>

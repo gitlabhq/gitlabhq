@@ -17,6 +17,12 @@ module Gitlab
       def config
         Gitlab.config.service_desk_email
       end
+
+      def address_for_key(key)
+        return if config.address.blank?
+
+        config.address.sub(Gitlab::IncomingEmail::WILDCARD_PLACEHOLDER, key)
+      end
     end
   end
 end

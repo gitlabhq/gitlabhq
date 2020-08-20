@@ -1,0 +1,5 @@
+---
+title: Add support for never keyword in expire_in job artifacts
+merge_request: 38578
+author: Fabio Huser
+type: added

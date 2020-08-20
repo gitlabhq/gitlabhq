@@ -42,7 +42,6 @@
 - design_management
 - design_system
 - devops_reports
-- digital_experience_management
 - disaster_recovery
 - dynamic_application_security_testing
 - editor_extension
@@ -72,7 +71,6 @@
 - jupyter_notebooks
 - kanban_boards
 - kubernetes_management
-- language_specific
 - license_compliance
 - live_preview
 - load_testing

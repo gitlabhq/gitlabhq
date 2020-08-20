@@ -1,7 +1,7 @@
 <script>
 import { mapState, mapGetters, mapActions } from 'vuex';
 import { viewerInformationForPath } from '~/vue_shared/components/content_viewer/lib/viewer_utils';
-import flash from '~/flash';
+import { deprecatedCreateFlash as flash } from '~/flash';
 import ContentViewer from '~/vue_shared/components/content_viewer/content_viewer.vue';
 import DiffViewer from '~/vue_shared/components/diff_viewer/diff_viewer.vue';
 import {
@@ -167,7 +167,7 @@ export default {
   },
   mounted() {
     if (!this.editor) {
-      this.editor = Editor.create(this.editorOptions);
+      this.editor = Editor.create(this.$store, this.editorOptions);
     }
     this.initEditor();
 

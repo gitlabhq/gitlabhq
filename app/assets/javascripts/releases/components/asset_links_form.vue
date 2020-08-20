@@ -49,6 +49,12 @@ export default {
       this.removeAssetLink(linkId);
       this.ensureAtLeastOneLink();
     },
+    updateUrl(link, newUrl) {
+      this.updateAssetLinkUrl({ linkIdToUpdate: link.id, newUrl });
+    },
+    updateName(link, newName) {
+      this.updateAssetLinkName({ linkIdToUpdate: link.id, newName });
+    },
     hasDuplicateUrl(link) {
       return Boolean(this.getLinkErrors(link).isDuplicate);
     },
@@ -138,7 +144,9 @@ export default {
           type="text"
           class="form-control"
           :state="isUrlValid(link)"
-          @change="updateAssetLinkUrl({ linkIdToUpdate: link.id, newUrl: $event })"
+          @change="updateUrl(link, $event)"
+          @keydown.ctrl.enter="updateUrl(link, $event.target.value)"
+          @keydown.meta.enter="updateUrl(link, $event.target.value)"
         />
         <template #invalid-feedback>
           <span v-if="hasEmptyUrl(link)" class="invalid-feedback d-inline">
@@ -175,7 +183,9 @@ export default {
           type="text"
           class="form-control"
           :state="isNameValid(link)"
-          @change="updateAssetLinkName({ linkIdToUpdate: link.id, newName: $event })"
+          @change="updateName(link, $event)"
+          @keydown.ctrl.enter="updateName(link, $event.target.value)"
+          @keydown.meta.enter="updateName(link, $event.target.value)"
         />
         <template #invalid-feedback>
           <span v-if="hasEmptyName(link)" class="invalid-feedback d-inline">

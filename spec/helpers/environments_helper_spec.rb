@@ -23,7 +23,7 @@ RSpec.describe EnvironmentsHelper do
         'metrics-dashboard-base-path' => environment_metrics_path(environment),
         'current-environment-name' => environment.name,
         'documentation-path' => help_page_path('administration/monitoring/prometheus/index.md'),
-        'add-dashboard-documentation-path' => help_page_path('user/project/integrations/prometheus.md', anchor: 'adding-a-new-dashboard-to-your-project'),
+        'add-dashboard-documentation-path' => help_page_path('operations/metrics/dashboards/index.md', anchor: 'add-a-new-dashboard-to-your-project'),
         'empty-getting-started-svg-path' => match_asset_path('/assets/illustrations/monitoring/getting_started.svg'),
         'empty-loading-svg-path' => match_asset_path('/assets/illustrations/monitoring/loading.svg'),
         'empty-no-data-svg-path' => match_asset_path('/assets/illustrations/monitoring/no_data.svg'),
@@ -42,9 +42,10 @@ RSpec.describe EnvironmentsHelper do
         'custom-metrics-available' => 'true',
         'alerts-endpoint' => project_prometheus_alerts_path(project, environment_id: environment.id, format: :json),
         'prometheus-alerts-available' => 'true',
-        'custom-dashboard-base-path' => Metrics::Dashboard::CustomDashboardService::DASHBOARD_ROOT,
+        'custom-dashboard-base-path' => Gitlab::Metrics::Dashboard::RepoDashboardFinder::DASHBOARD_ROOT,
         'operations-settings-path' => project_settings_operations_path(project),
-        'can-access-operations-settings' => 'true'
+        'can-access-operations-settings' => 'true',
+        'panel-preview-endpoint' => project_metrics_dashboards_builder_path(project, format: :json)
       )
     end
 

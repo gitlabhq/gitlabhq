@@ -21,7 +21,7 @@ module MemoryUsageHelper
 
   def get_memory_usage
     output, status = Gitlab::Popen.popen(%w(free -m))
-    abort "`free -m` return code is #{status}: #{output}" unless status.zero?
+    abort "`free -m` return code is #{status}: #{output}" unless status == 0
 
     result = output.split("\n")[1].split(" ")[1..-1]
     attrs = %i(m_total m_used m_free m_shared m_buffers_cache m_available).freeze

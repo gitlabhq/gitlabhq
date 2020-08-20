@@ -3,7 +3,7 @@ import * as types from './mutation_types';
 import axios from '~/lib/utils/axios_utils';
 import Poll from '~/lib/utils/poll';
 import { setFaviconOverlay, resetFavicon } from '~/lib/utils/common_utils';
-import flash from '~/flash';
+import { deprecatedCreateFlash as flash } from '~/flash';
 import { __ } from '~/locale';
 import {
   canScroll,
@@ -247,6 +247,3 @@ export const triggerManualJob = ({ state }, variables) => {
     })
     .catch(() => flash(__('An error occurred while triggering the job.')));
 };
-
-// prevent babel-plugin-rewire from generating an invalid default during karma tests
-export default () => {};

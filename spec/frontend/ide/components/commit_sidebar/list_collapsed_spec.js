@@ -1,14 +1,17 @@
 import Vue from 'vue';
 import { createComponentWithStore } from 'helpers/vue_mount_component_helper';
-import store from '~/ide/stores';
+import { createStore } from '~/ide/stores';
 import listCollapsed from '~/ide/components/commit_sidebar/list_collapsed.vue';
 import { file } from '../../helpers';
 import { removeWhitespace } from '../../../helpers/text_helper';
 
 describe('Multi-file editor commit sidebar list collapsed', () => {
   let vm;
+  let store;
 
   beforeEach(() => {
+    store = createStore();
+
     const Component = Vue.extend(listCollapsed);
 
     vm = createComponentWithStore(Component, store, {

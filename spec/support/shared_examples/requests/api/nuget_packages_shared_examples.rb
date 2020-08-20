@@ -122,7 +122,7 @@ RSpec.shared_examples 'process nuget workhorse authorization' do |user_type, sta
 
     context 'with a request that bypassed gitlab-workhorse' do
       let(:headers) do
-        build_basic_auth_header(user.username, personal_access_token.token)
+        basic_auth_header(user.username, personal_access_token.token)
           .merge(workhorse_header)
           .tap { |h| h.delete(Gitlab::Workhorse::INTERNAL_API_REQUEST_HEADER) }
       end
@@ -180,6 +180,7 @@ RSpec.shared_examples 'process nuget upload' do |user_type, status, add_member =
           body: 'content'
         )
       end
+
       let(:fog_file) { fog_to_uploaded_file(tmp_object) }
       let(:params) { { package: fog_file, 'package.remote_id' => file_name } }
 
@@ -400,7 +401,7 @@ RSpec.shared_examples 'rejects nuget access with unknown project id' do
     end
 
     context 'as authenticated user' do
-      subject { get api(url), headers: build_basic_auth_header(user.username, personal_access_token.token) }
+      subject { get api(url), headers: basic_auth_header(user.username, personal_access_token.token) }
 
       it_behaves_like 'rejects nuget packages access', :anonymous, :not_found
     end

@@ -10,7 +10,7 @@ FactoryBot.define do
       maven_metadatum
 
       after :build do |package|
-        package.maven_metadatum.path = "#{package.name}/#{package.version}"
+        package.maven_metadatum.path = package.version? ? "#{package.name}/#{package.version}" : package.name
       end
 
       after :create do |package|

@@ -1,4 +1,4 @@
-import flash from '../flash';
+import { deprecatedCreateFlash as flash } from '../flash';
 import axios from '../lib/utils/axios_utils';
 import ProtectedTagAccessDropdown from './protected_tag_access_dropdown';
 import { __ } from '~/locale';

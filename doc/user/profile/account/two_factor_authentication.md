@@ -93,7 +93,7 @@ To set up 2FA with a U2F device:
 1. Go to your [**Profile settings**](../index.md#profile-settings).
 1. Go to **Account**.
 1. Click **Enable Two-Factor Authentication**.
-1. Plug in your U2F device.
+1. Connect your U2F device.
 1. Click on **Set up New U2F Device**.
 1. A light will start blinking on your device. Activate it by pressing its button.
 
@@ -109,9 +109,9 @@ CAUTION: **Caution:**
 Each code can be used only once to log in to your account.
 
 Immediately after successfully enabling two-factor authentication, you'll be
-prompted to download a set of set recovery codes. Should you ever lose access
-to your one time password authenticator, you can use one of them to log in to
-your account. We suggest copying them, printing them, or downloading them using
+prompted to download a set of generated recovery codes. Should you ever lose access
+to your one-time password authenticator, you can use one of these recovery codes to log in to
+your account. We suggest copying and printing them, or downloading them using
 the **Download codes** button for storage in a safe place. If you choose to
 download them, the file will be called `gitlab-recovery-codes.txt`.
 

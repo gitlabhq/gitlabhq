@@ -2,13 +2,15 @@ import { editor as monacoEditor, languages as monacoLanguages, Uri } from 'monac
 import Editor from '~/editor/editor_lite';
 import { DEFAULT_THEME, themes } from '~/ide/lib/themes';
 
+const URI_PREFIX = 'gitlab';
+
 describe('Base editor', () => {
   let editorEl;
   let editor;
   const blobContent = 'Foo Bar';
   const blobPath = 'test.md';
-  const uri = new Uri('gitlab', false, blobPath);
-  const fakeModel = { foo: 'bar' };
+  const blobGlobalId = 'snippet_777';
+  const fakeModel = { foo: 'bar', dispose: jest.fn() };
 
   beforeEach(() => {
     setFixtures('<div id="editor" data-editor-loading></div>');
@@ -20,6 +22,8 @@ describe('Base editor', () => {
     editor.dispose();
     editorEl.remove();
   });
+
+  const createUri = (...paths) => Uri.file([URI_PREFIX, ...paths].join('/'));
 
   it('initializes Editor with basic properties', () => {
     expect(editor).toBeDefined();
@@ -65,7 +69,7 @@ describe('Base editor', () => {
     it('creates model to be supplied to Monaco editor', () => {
       editor.createInstance({ el: editorEl, blobPath, blobContent });
 
-      expect(modelSpy).toHaveBeenCalledWith(blobContent, undefined, uri);
+      expect(modelSpy).toHaveBeenCalledWith(blobContent, undefined, createUri(blobPath));
       expect(setModel).toHaveBeenCalledWith(fakeModel);
     });
 
@@ -75,15 +79,21 @@ describe('Base editor', () => {
       expect(editor.editorEl).not.toBe(null);
       expect(instanceSpy).toHaveBeenCalledWith(editorEl, expect.anything());
     });
+
+    it('with blobGlobalId, creates model with id in uri', () => {
+      editor.createInstance({ el: editorEl, blobPath, blobContent, blobGlobalId });
+
+      expect(modelSpy).toHaveBeenCalledWith(
+        blobContent,
+        undefined,
+        createUri(blobGlobalId, blobPath),
+      );
+    });
   });
 
   describe('implementation', () => {
     beforeEach(() => {
       editor.createInstance({ el: editorEl, blobPath, blobContent });
-    });
-
-    afterEach(() => {
-      editor.model.dispose();
     });
 
     it('correctly proxies value from the model', () => {
@@ -130,10 +140,6 @@ describe('Base editor', () => {
     };
     beforeEach(() => {
       editor.createInstance({ el: editorEl, blobPath, blobContent });
-    });
-
-    afterEach(() => {
-      editor.model.dispose();
     });
 
     it('is extensible with the extensions', () => {

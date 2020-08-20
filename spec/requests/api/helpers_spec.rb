@@ -24,6 +24,7 @@ RSpec.describe API::Helpers do
       'CONTENT_TYPE' => 'text/plain;charset=utf-8'
     }
   end
+
   let(:header) { }
   let(:request) { Grape::Request.new(env)}
   let(:params) { request.params }

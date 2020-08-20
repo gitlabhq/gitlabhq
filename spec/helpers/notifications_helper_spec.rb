@@ -22,6 +22,7 @@ RSpec.describe NotificationsHelper do
     it { expect(notification_event_name(:success_pipeline)).to match('Successful pipeline') }
     it { expect(notification_event_name(:failed_pipeline)).to match('Failed pipeline') }
     it { expect(notification_event_name(:fixed_pipeline)).to match('Fixed pipeline') }
+    it { expect(notification_event_name(:moved_project)).to match('Moved project') }
   end
 
   describe '#notification_icon_level' do

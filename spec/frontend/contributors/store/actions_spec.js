@@ -1,7 +1,7 @@
 import MockAdapter from 'axios-mock-adapter';
 import testAction from 'helpers/vuex_action_helper';
 import axios from '~/lib/utils/axios_utils';
-import flashError from '~/flash';
+import { deprecatedCreateFlash as flashError } from '~/flash';
 import * as actions from '~/contributors/stores/actions';
 import * as types from '~/contributors/stores/mutation_types';
 

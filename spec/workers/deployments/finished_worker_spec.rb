@@ -49,5 +49,29 @@ RSpec.describe Deployments::FinishedWorker do
 
       expect(ProjectServiceWorker).not_to have_received(:perform_async)
     end
+
+    it 'execute webhooks' do
+      deployment = create(:deployment)
+      project = deployment.project
+      web_hook = create(:project_hook, deployment_events: true, project: project)
+
+      expect_next_instance_of(WebHookService, web_hook, an_instance_of(Hash), "deployment_hooks") do |service|
+        expect(service).to receive(:async_execute)
+      end
+
+      worker.perform(deployment.id)
+    end
+
+    it 'does not execute webhooks if feature flag is disabled' do
+      stub_feature_flags(deployment_webhooks: false)
+
+      deployment = create(:deployment)
+      project = deployment.project
+      create(:project_hook, deployment_events: true, project: project)
+
+      expect(WebHookService).not_to receive(:new)
+
+      worker.perform(deployment.id)
+    end
   end
 end

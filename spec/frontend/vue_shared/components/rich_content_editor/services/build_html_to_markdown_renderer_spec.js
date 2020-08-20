@@ -47,4 +47,87 @@ describe('HTMLToMarkdownRenderer', () => {
       expect(baseRenderer.convert).toHaveBeenCalledWith(NODE, list);
     });
   });
+
+  describe('UL LI visitor', () => {
+    it.each`
+      listItem           | unorderedListBulletChar | result             | bulletChar
+      ${'* list item'}   | ${undefined}            | ${'- list item'}   | ${'default'}
+      ${'  - list item'} | ${'*'}                  | ${'  * list item'} | ${'*'}
+      ${'  * list item'} | ${'-'}                  | ${'  - list item'} | ${'-'}
+    `(
+      'uses $bulletChar bullet char in unordered list items when $unorderedListBulletChar is set in config',
+      ({ listItem, unorderedListBulletChar, result }) => {
+        htmlToMarkdownRenderer = buildHTMLToMarkdownRenderer(baseRenderer, {
+          unorderedListBulletChar,
+        });
+        baseRenderer.convert.mockReturnValueOnce(listItem);
+
+        expect(htmlToMarkdownRenderer['UL LI'](NODE, listItem)).toBe(result);
+        expect(baseRenderer.convert).toHaveBeenCalledWith(NODE, listItem);
+      },
+    );
+  });
+
+  describe('OL LI visitor', () => {
+    it.each`
+      listItem              | result              | incrementListMarker | action
+      ${'2. list item'}     | ${'1. list item'}   | ${false}            | ${'increments'}
+      ${'  3. list item'}   | ${'  1. list item'} | ${false}            | ${'increments'}
+      ${'  123. list item'} | ${'  1. list item'} | ${false}            | ${'increments'}
+      ${'3. list item'}     | ${'3. list item'}   | ${true}             | ${'does not increment'}
+    `(
+      '$action a list item counter when incrementListMaker is $incrementListMarker',
+      ({ listItem, result, incrementListMarker }) => {
+        const subContent = null;
+
+        htmlToMarkdownRenderer = buildHTMLToMarkdownRenderer(baseRenderer, {
+          incrementListMarker,
+        });
+        baseRenderer.convert.mockReturnValueOnce(listItem);
+
+        expect(htmlToMarkdownRenderer['OL LI'](NODE, subContent)).toBe(result);
+        expect(baseRenderer.convert).toHaveBeenCalledWith(NODE, subContent);
+      },
+    );
+  });
+
+  describe('STRONG, B visitor', () => {
+    it.each`
+      input                | strongCharacter | result
+      ${'**strong text**'} | ${'_'}          | ${'__strong text__'}
+      ${'__strong text__'} | ${'*'}          | ${'**strong text**'}
+    `(
+      'converts $input to $result when strong character is $strongCharacter',
+      ({ input, strongCharacter, result }) => {
+        htmlToMarkdownRenderer = buildHTMLToMarkdownRenderer(baseRenderer, {
+          strong: strongCharacter,
+        });
+
+        baseRenderer.convert.mockReturnValueOnce(input);
+
+        expect(htmlToMarkdownRenderer['STRONG, B'](NODE, input)).toBe(result);
+        expect(baseRenderer.convert).toHaveBeenCalledWith(NODE, input);
+      },
+    );
+  });
+
+  describe('EM, I visitor', () => {
+    it.each`
+      input              | emphasisCharacter | result
+      ${'*strong text*'} | ${'_'}            | ${'_strong text_'}
+      ${'_strong text_'} | ${'*'}            | ${'*strong text*'}
+    `(
+      'converts $input to $result when emphasis character is $emphasisCharacter',
+      ({ input, emphasisCharacter, result }) => {
+        htmlToMarkdownRenderer = buildHTMLToMarkdownRenderer(baseRenderer, {
+          emphasis: emphasisCharacter,
+        });
+
+        baseRenderer.convert.mockReturnValueOnce(input);
+
+        expect(htmlToMarkdownRenderer['EM, I'](NODE, input)).toBe(result);
+        expect(baseRenderer.convert).toHaveBeenCalledWith(NODE, input);
+      },
+    );
+  });
 });

@@ -109,7 +109,6 @@ class Project < ApplicationRecord
   after_update :update_forks_visibility_level
 
   before_destroy :remove_private_deploy_keys
-  before_destroy :cleanup_chat_names
 
   use_fast_destroy :build_trace_chunks
 
@@ -168,7 +167,6 @@ class Project < ApplicationRecord
   has_one :youtrack_service
   has_one :custom_issue_tracker_service
   has_one :bugzilla_service
-  has_one :gitlab_issue_tracker_service, inverse_of: :project
   has_one :confluence_service
   has_one :external_wiki_service
   has_one :prometheus_service, inverse_of: :project
@@ -261,6 +259,7 @@ class Project < ApplicationRecord
   has_many :clusters, through: :cluster_project, class_name: 'Clusters::Cluster'
   has_many :kubernetes_namespaces, class_name: 'Clusters::KubernetesNamespace'
   has_many :management_clusters, class_name: 'Clusters::Cluster', foreign_key: :management_project_id, inverse_of: :management_project
+  has_many :cluster_agents, class_name: 'Clusters::Agent'
 
   has_many :prometheus_metrics
   has_many :prometheus_alerts, inverse_of: :project
@@ -300,6 +299,7 @@ class Project < ApplicationRecord
   has_many :build_trace_chunks, class_name: 'Ci::BuildTraceChunk', through: :builds, source: :trace_chunks
   has_many :build_report_results, class_name: 'Ci::BuildReportResult', inverse_of: :project
   has_many :job_artifacts, class_name: 'Ci::JobArtifact'
+  has_many :pipeline_artifacts, class_name: 'Ci::PipelineArtifact', inverse_of: :project
   has_many :runner_projects, class_name: 'Ci::RunnerProject', inverse_of: :project
   has_many :runners, through: :runner_projects, source: :runner, class_name: 'Ci::Runner'
   has_many :variables, class_name: 'Ci::Variable'
@@ -338,6 +338,10 @@ class Project < ApplicationRecord
 
   has_many :webide_pipelines, -> { webide_source }, class_name: 'Ci::Pipeline', inverse_of: :project
   has_many :reviews, inverse_of: :project
+
+  # Can be too many records. We need to implement delete_all in batches.
+  # Issue https://gitlab.com/gitlab-org/gitlab/-/issues/228637
+  has_many :product_analytics_events, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
   accepts_nested_attributes_for :variables, allow_destroy: true
   accepts_nested_attributes_for :project_feature, update_only: true
@@ -449,6 +453,16 @@ class Project < ApplicationRecord
   scope :sorted_by_stars_asc, -> { reorder(self.arel_table['star_count'].asc) }
   # Sometimes queries (e.g. using CTEs) require explicit disambiguation with table name
   scope :projects_order_id_desc, -> { reorder(self.arel_table['id'].desc) }
+
+  scope :sorted_by_similarity_desc, -> (search) do
+    order_expression = Gitlab::Database::SimilarityScore.build_expression(search: search, rules: [
+      { column: arel_table["path"], multiplier: 1 },
+      { column: arel_table["name"], multiplier: 0.7 },
+      { column: arel_table["description"], multiplier: 0.2 }
+    ])
+
+    reorder(order_expression.desc, arel_table['id'].desc)
+  end
 
   scope :with_packages, -> { joins(:packages) }
   scope :in_namespace, ->(namespace_ids) { where(namespace_id: namespace_ids) }
@@ -637,6 +651,8 @@ class Project < ApplicationRecord
   scope :joins_import_state, -> { joins("INNER JOIN project_mirror_data import_state ON import_state.project_id = projects.id") }
   scope :for_group, -> (group) { where(group: group) }
   scope :for_group_and_its_subgroups, ->(group) { where(namespace_id: group.self_and_descendants.select(:id)) }
+  scope :for_repository_storage, -> (repository_storage) { where(repository_storage: repository_storage) }
+  scope :excluding_repository_storage, -> (repository_storage) { where.not(repository_storage: repository_storage) }
 
   class << self
     # Searches for a list of projects based on the query given in `query`.
@@ -836,6 +852,10 @@ class Project < ApplicationRecord
     auto_devops_config = first_auto_devops_config
 
     auto_devops_config[:scope] != :project && !auto_devops_config[:status]
+  end
+
+  def has_packages?(package_type)
+    packages.where(package_type: package_type).exists?
   end
 
   def first_auto_devops_config
@@ -1103,7 +1123,7 @@ class Project < ApplicationRecord
 
     limit = creator.projects_limit
     error =
-      if limit.zero?
+      if limit == 0
         _('Personal project creation is not allowed. Please contact your administrator with questions')
       else
         _('Your project limit is %{limit} projects! Please contact your administrator to increase it')
@@ -1373,6 +1393,16 @@ class Project < ApplicationRecord
 
   def owner
     group || namespace.try(:owner)
+  end
+
+  def default_owner
+    obj = owner
+
+    if obj.respond_to?(:default_owner)
+      obj.default_owner
+    else
+      obj
+    end
   end
 
   def to_ability_name
@@ -1725,7 +1755,7 @@ class Project < ApplicationRecord
   end
 
   def pages_deployed?
-    Dir.exist?(public_pages_path)
+    pages_metadatum&.deployed?
   end
 
   def pages_group_url
@@ -1758,10 +1788,6 @@ class Project < ApplicationRecord
     File.join(Settings.pages.path, full_path)
   end
 
-  def public_pages_path
-    File.join(pages_path, 'public')
-  end
-
   def pages_available?
     Gitlab.config.pages.enabled
   end
@@ -1788,7 +1814,6 @@ class Project < ApplicationRecord
     return unless namespace
 
     mark_pages_as_not_deployed unless destroyed?
-    ::Projects::UpdatePagesConfigurationService.new(self).execute
 
     # 1. We rename pages to temporary directory
     # 2. We wait 5 minutes, due to NFS caching
@@ -1924,17 +1949,6 @@ class Project < ApplicationRecord
 
   def export_file
     import_export_upload&.export_file
-  end
-
-  # Before 12.9 we did not correctly clean up chat names and this causes issues.
-  # In 12.9, we add a foreign key relationship, but this code is used ensure the chat names are cleaned up while a post
-  # migration enables the foreign key relationship.
-  #
-  # This should be removed in 13.0.
-  #
-  # https://gitlab.com/gitlab-org/gitlab/issues/204787
-  def cleanup_chat_names
-    ChatName.where(service: services.select(:id)).delete_all
   end
 
   def full_path_slug
@@ -2466,12 +2480,26 @@ class Project < ApplicationRecord
   alias_method :service_desk_enabled?, :service_desk_enabled
 
   def service_desk_address
+    service_desk_custom_address || service_desk_incoming_address
+  end
+
+  def service_desk_incoming_address
     return unless service_desk_enabled?
 
     config = Gitlab.config.incoming_email
     wildcard = Gitlab::IncomingEmail::WILDCARD_PLACEHOLDER
 
     config.address&.gsub(wildcard, "#{full_path_slug}-#{id}-issue-")
+  end
+
+  def service_desk_custom_address
+    return unless ::Gitlab::ServiceDeskEmail.enabled?
+    return unless ::Feature.enabled?(:service_desk_custom_address, self)
+
+    key = service_desk_setting&.project_key
+    return unless key.present?
+
+    ::Gitlab::ServiceDeskEmail.address_for_key("#{full_path_slug}-#{key}")
   end
 
   def root_namespace
@@ -2578,6 +2606,8 @@ class Project < ApplicationRecord
       namespace != from.namespace
     when Namespace
       namespace != from
+    when User
+      true
     end
   end
 

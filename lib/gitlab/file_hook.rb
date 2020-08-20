@@ -27,7 +27,7 @@ module Gitlab
       end
 
       exit_status = result.status&.exitstatus
-      [exit_status.zero?, result.stderr]
+      [exit_status == 0, result.stderr]
     rescue => e
       [false, e.message]
     end

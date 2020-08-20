@@ -40,6 +40,10 @@ export const EXISTING_DESIGN_DROP_INVALID_FILENAME_MESSAGE = __(
   'You must upload a file with the same file name when dropping onto an existing design.',
 );
 
+export const MOVE_DESIGN_ERROR = __(
+  'Something went wrong when reordering designs. Please try again',
+);
+
 const MAX_SKIPPED_FILES_LISTINGS = 5;
 
 const oneDesignSkippedMessage = filename =>
@@ -69,7 +73,7 @@ const someDesignsSkippedMessage = skippedFiles => {
 
 export const designDeletionError = ({ singular = true } = {}) => {
   const design = singular ? __('a design') : __('designs');
-  return sprintf(s__('Could not delete %{design}. Please try again.'), {
+  return sprintf(s__('Could not archive %{design}. Please try again.'), {
     design,
   });
 };

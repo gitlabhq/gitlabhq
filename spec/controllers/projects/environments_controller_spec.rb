@@ -348,34 +348,10 @@ RSpec.describe Projects::EnvironmentsController do
   end
 
   describe 'GET #metrics_redirect' do
-    it 'redirects to environment if it exists' do
+    it 'redirects to metrics dashboard page' do
       get :metrics_redirect, params: { namespace_id: project.namespace, project_id: project }
 
-      expect(response).to redirect_to(environment_metrics_path(environment))
-    end
-
-    context 'with anonymous user and public dashboard visibility' do
-      let(:project) { create(:project, :public) }
-      let(:user) { create(:user) }
-
-      it 'redirects successfully' do
-        project.project_feature.update!(metrics_dashboard_access_level: ProjectFeature::ENABLED)
-
-        get :metrics_redirect, params: { namespace_id: project.namespace, project_id: project }
-
-        expect(response).to redirect_to(environment_metrics_path(environment))
-      end
-    end
-
-    context 'when there are no environments' do
-      let(:environment) { }
-
-      it 'redirects to empty metrics page' do
-        get :metrics_redirect, params: { namespace_id: project.namespace, project_id: project }
-
-        expect(response).to be_ok
-        expect(response).to render_template 'empty_metrics'
-      end
+      expect(response).to redirect_to(project_metrics_dashboard_path(project))
     end
   end
 
@@ -385,12 +361,12 @@ RSpec.describe Projects::EnvironmentsController do
     end
 
     context 'when environment has no metrics' do
-      it 'returns a metrics page' do
+      it 'redirects to metrics dashboard page' do
         expect(environment).not_to receive(:metrics)
 
         get :metrics, params: environment_params
 
-        expect(response).to be_ok
+        expect(response).to redirect_to(project_metrics_dashboard_path(project, environment: environment))
       end
 
       context 'when requesting metrics as JSON' do
@@ -440,12 +416,12 @@ RSpec.describe Projects::EnvironmentsController do
       let(:project) { create(:project, :public) }
       let(:user) { create(:user) }
 
-      it 'returns success' do
+      it 'redirects to metrics dashboard page' do
         project.project_feature.update!(metrics_dashboard_access_level: ProjectFeature::ENABLED)
 
         get :metrics, params: environment_params
 
-        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to redirect_to(project_metrics_dashboard_path(project, environment: environment))
       end
     end
   end

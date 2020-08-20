@@ -6,6 +6,6 @@
       - link_start = '<a href="%{url}">'.html_safe % { url: help_page_path("user/profile/account/delete_account", anchor: "associated-records") }
       = _('Certain user content will be moved to a system-wide "Ghost User" in order to maintain content for posterity. For further information, please refer to the %{link_start}user account deletion documentation.%{link_end}').html_safe % { link_start: link_start, link_end: '</a>'.html_safe }
   - personal_projects_count = user.personal_projects.count
-  - unless personal_projects_count.zero?
+  - unless personal_projects_count == 0
     %li
       = n_('%d personal project will be removed and cannot be restored.', '%d personal projects will be removed and cannot be restored.', personal_projects_count) % personal_projects_count

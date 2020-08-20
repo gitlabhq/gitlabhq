@@ -1,9 +1,10 @@
 <script>
 import { mapState, mapGetters, mapActions } from 'vuex';
-import { GlLoadingIcon, GlButtonGroup, GlButton } from '@gitlab/ui';
+import { GlLoadingIcon, GlButtonGroup, GlButton, GlAlert } from '@gitlab/ui';
 import Mousetrap from 'mousetrap';
 import { __ } from '~/locale';
-import createFlash from '~/flash';
+import { getParameterByName, parseBoolean } from '~/lib/utils/common_utils';
+import { deprecatedCreateFlash as createFlash } from '~/flash';
 import PanelResizer from '~/vue_shared/components/panel_resizer.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { isSingleViewStyle } from '~/helpers/diffs_helper';
@@ -38,6 +39,7 @@ export default {
     PanelResizer,
     GlButtonGroup,
     GlButton,
+    GlAlert,
   },
   mixins: [glFeatureFlagsMixin()],
   props: {
@@ -127,7 +129,16 @@ export default {
       emailPatchPath: state => state.diffs.emailPatchPath,
       retrievingBatches: state => state.diffs.retrievingBatches,
     }),
-    ...mapState('diffs', ['showTreeList', 'isLoading', 'startVersion', 'currentDiffFileId']),
+    ...mapState('diffs', [
+      'showTreeList',
+      'isLoading',
+      'startVersion',
+      'currentDiffFileId',
+      'isTreeLoaded',
+      'conflictResolutionPath',
+      'canMerge',
+      'hasConflicts',
+    ]),
     ...mapGetters('diffs', ['isParallelView', 'currentDiffIndex']),
     ...mapGetters(['isNotesFetched', 'getNoteableData']),
     diffs() {
@@ -154,6 +165,9 @@ export default {
     },
     isLimitedContainer() {
       return !this.showTreeList && !this.isParallelView && !this.isFluidLayout;
+    },
+    isDiffHead() {
+      return parseBoolean(getParameterByName('diff_head'));
     },
   },
   watch: {
@@ -400,12 +414,12 @@ export default {
 
 <template>
   <div v-show="shouldShow">
-    <div v-if="isLoading" class="loading"><gl-loading-icon size="lg" /></div>
+    <div v-if="isLoading || !isTreeLoaded" class="loading"><gl-loading-icon size="lg" /></div>
     <div v-else id="diffs" :class="{ active: shouldShow }" class="diffs tab-pane">
       <compare-versions
         :merge-request-diffs="mergeRequestDiffs"
         :is-limited-container="isLimitedContainer"
-        :diff-files-length="diffFilesLength"
+        :diff-files-count-text="numTotalFiles"
       />
 
       <hidden-files-warning
@@ -415,6 +429,49 @@ export default {
         :plain-diff-path="plainDiffPath"
         :email-patch-path="emailPatchPath"
       />
+
+      <div
+        v-if="isDiffHead && hasConflicts"
+        :class="{
+          [CENTERED_LIMITED_CONTAINER_CLASSES]: isLimitedContainer,
+        }"
+      >
+        <gl-alert
+          :dismissible="false"
+          :title="__('There are merge conflicts')"
+          variant="warning"
+          class="w-100 mb-3"
+        >
+          <p class="mb-1">
+            {{ __('The comparison view may be inaccurate due to merge conflicts.') }}
+          </p>
+          <p class="mb-0">
+            {{
+              __(
+                'Resolve these conflicts or ask someone with write access to this repository to merge it locally.',
+              )
+            }}
+          </p>
+          <template #actions>
+            <gl-button
+              v-if="conflictResolutionPath"
+              :href="conflictResolutionPath"
+              variant="info"
+              class="mr-3 gl-alert-action"
+            >
+              {{ __('Resolve conflicts') }}
+            </gl-button>
+            <gl-button
+              v-if="canMerge"
+              class="gl-alert-action"
+              data-toggle="modal"
+              data-target="#modal_merge_info"
+            >
+              {{ __('Merge locally') }}
+            </gl-button>
+          </template>
+        </gl-alert>
+      </div>
 
       <div
         :data-can-create-note="getNoteableData.current_user.can_create_note"
@@ -441,7 +498,7 @@ export default {
             [CENTERED_LIMITED_CONTAINER_CLASSES]: isLimitedContainer,
           }"
         >
-          <commit-widget v-if="commit" :commit="commit" />
+          <commit-widget v-if="commit" :commit="commit" :collapsible="false" />
           <div v-if="isBatchLoading" class="loading"><gl-loading-icon size="lg" /></div>
           <template v-else-if="renderDiffFiles">
             <diff-file

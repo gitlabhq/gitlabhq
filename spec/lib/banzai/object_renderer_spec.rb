@@ -73,6 +73,7 @@ RSpec.describe Banzai::ObjectRenderer do
           end
         end
       end
+
       let(:cacheless_thing) do
         cacheless_class.new.tap do |thing|
           thing.title = "Merge branch 'branch-merged' into 'master'"

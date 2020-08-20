@@ -112,7 +112,7 @@ RSpec.describe 'Commits' do
         describe 'Cancel build' do
           it 'cancels build', :js, :sidekiq_might_not_need_inline do
             visit pipeline_path(pipeline)
-            find('.js-btn-cancel-pipeline').click
+            find('[data-testid="cancelPipeline"]').click
             expect(page).to have_content 'canceled'
           end
         end

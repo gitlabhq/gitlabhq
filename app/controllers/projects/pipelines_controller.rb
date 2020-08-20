@@ -12,11 +12,10 @@ class Projects::PipelinesController < Projects::ApplicationController
   before_action :authorize_create_pipeline!, only: [:new, :create]
   before_action :authorize_update_pipeline!, only: [:retry, :cancel]
   before_action do
-    push_frontend_feature_flag(:junit_pipeline_view, project)
-    push_frontend_feature_flag(:build_report_summary, project)
     push_frontend_feature_flag(:filter_pipelines_search, project, default_enabled: true)
     push_frontend_feature_flag(:dag_pipeline_tab, project, default_enabled: true)
     push_frontend_feature_flag(:pipelines_security_report_summary, project)
+    push_frontend_feature_flag(:new_pipeline_form)
   end
   before_action :ensure_pipeline, only: [:show]
 
@@ -177,8 +176,6 @@ class Projects::PipelinesController < Projects::ApplicationController
   end
 
   def test_report
-    return unless Feature.enabled?(:junit_pipeline_view, project)
-
     respond_to do |format|
       format.html do
         render 'show'
@@ -190,12 +187,6 @@ class Projects::PipelinesController < Projects::ApplicationController
           .represent(pipeline_test_report, project: project, details: true)
       end
     end
-  end
-
-  def test_reports_count
-    return unless Feature.enabled?(:junit_pipeline_view, project)
-
-    render json: { total_count: pipeline.test_reports_count }.to_json
   end
 
   private

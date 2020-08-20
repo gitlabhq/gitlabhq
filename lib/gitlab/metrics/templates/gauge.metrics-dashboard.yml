@@ -1,0 +1,23 @@
+# Only one dashboard should be defined per file
+# More info: https://docs.gitlab.com/ee/operations/metrics/dashboards/yaml.html
+dashboard: 'Gauge Panel Example'
+
+# For more information about the required properties of panel_groups
+# please visit: https://docs.gitlab.com/ee/operations/metrics/dashboards/yaml.html#panel-group-panel_groups-properties
+panel_groups:
+  - group: 'Server Statistics'
+    panels:
+      - title: "Memory usage"
+        # More information about gauge panel types can be found here:
+        # https://docs.gitlab.com/ee/operations/metrics/dashboards/panel_types.html#gauge
+        type: "gauge-chart"
+        min_value: 0
+        max_value: 1024
+        split: 10
+        thresholds:
+          mode: "percentage"
+          values: [60, 90]
+        format: "megabytes"
+        metrics:
+            - query: '(node_memory_MemTotal_bytes - (node_memory_MemFree_bytes + node_memory_Buffers_bytes + node_memory_Cached_bytes)) / 1024 / 1024'
+              unit: 'MB'

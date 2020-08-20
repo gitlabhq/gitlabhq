@@ -59,39 +59,6 @@ RSpec.describe SessionsController do
         end
       end
     end
-
-    describe 'tracking data' do
-      context 'when the user is part of the experimental group' do
-        before do
-          stub_experiment_for_user(signup_flow: true)
-        end
-
-        it 'doesn\'t pass tracking parameters to the frontend' do
-          get(:new)
-          expect(Gon.tracking_data).to be_nil
-        end
-      end
-
-      context 'with the experimental signup flow enabled and the user is part of the control group' do
-        before do
-          stub_experiment(signup_flow: true)
-          stub_experiment_for_user(signup_flow: false)
-          allow_any_instance_of(described_class).to receive(:experimentation_subject_id).and_return('uuid')
-        end
-
-        it 'passes the right tracking parameters to the frontend' do
-          get(:new)
-          expect(Gon.tracking_data).to eq(
-            {
-              category: 'Growth::Acquisition::Experiment::SignUpFlow',
-              action: 'start',
-              label: 'uuid',
-              property: 'control_group'
-            }
-          )
-        end
-      end
-    end
   end
 
   describe '#create' do
@@ -216,7 +183,7 @@ RSpec.describe SessionsController do
 
           before do
             stub_application_setting(recaptcha_enabled: true)
-            request.headers[described_class::CAPTCHA_HEADER] = 1
+            request.headers[described_class::CAPTCHA_HEADER] = '1'
           end
 
           it 'displays an error when the reCAPTCHA is not solved' do
@@ -399,7 +366,7 @@ RSpec.describe SessionsController do
               end
 
               it 'warns about invalid login' do
-                expect(response).to set_flash.now[:alert].to /Your account is locked./
+                expect(flash[:alert]).to eq('Your account is locked.')
               end
 
               it 'locks the user' do
@@ -409,7 +376,7 @@ RSpec.describe SessionsController do
               it 'keeps the user locked on future login attempts' do
                 post(:create, params: { user: { login: user.username, password: user.password } })
 
-                expect(response).to set_flash.now[:alert].to /Your account is locked./
+                expect(flash[:alert]).to eq('Your account is locked.')
               end
             end
           end

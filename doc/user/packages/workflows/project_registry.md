@@ -1,3 +1,9 @@
+---
+stage: Package
+group: Package
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # Project as a package registry
 
 Using the features of the package registry, it is possible to use one project to store all of your packages.

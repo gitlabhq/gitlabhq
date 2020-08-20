@@ -1,4 +1,10 @@
-import flash, { createFlashEl, createAction, hideFlash, removeFlashClickListener } from '~/flash';
+import createFlash, {
+  deprecatedCreateFlash,
+  createFlashEl,
+  createAction,
+  hideFlash,
+  removeFlashClickListener,
+} from '~/flash';
 
 describe('Flash', () => {
   describe('createFlashEl', () => {
@@ -119,10 +125,10 @@ describe('Flash', () => {
     });
   });
 
-  describe('createFlash', () => {
+  describe('deprecatedCreateFlash', () => {
     describe('no flash-container', () => {
       it('does not add to the DOM', () => {
-        const flashEl = flash('testing');
+        const flashEl = deprecatedCreateFlash('testing');
 
         expect(flashEl).toBeNull();
 
@@ -144,7 +150,7 @@ describe('Flash', () => {
       });
 
       it('adds flash element into container', () => {
-        flash('test', 'alert', document, null, false, true);
+        deprecatedCreateFlash('test', 'alert', document, null, false, true);
 
         expect(document.querySelector('.flash-alert')).not.toBeNull();
 
@@ -152,26 +158,26 @@ describe('Flash', () => {
       });
 
       it('adds flash into specified parent', () => {
-        flash('test', 'alert', document.querySelector('.content-wrapper'));
+        deprecatedCreateFlash('test', 'alert', document.querySelector('.content-wrapper'));
 
         expect(document.querySelector('.content-wrapper .flash-alert')).not.toBeNull();
       });
 
       it('adds container classes when inside content-wrapper', () => {
-        flash('test');
+        deprecatedCreateFlash('test');
 
         expect(document.querySelector('.flash-text').className).toBe('flash-text');
       });
 
       it('does not add container when outside of content-wrapper', () => {
         document.querySelector('.content-wrapper').className = 'js-content-wrapper';
-        flash('test');
+        deprecatedCreateFlash('test');
 
         expect(document.querySelector('.flash-text').className.trim()).toContain('flash-text');
       });
 
       it('removes element after clicking', () => {
-        flash('test', 'alert', document, null, false, true);
+        deprecatedCreateFlash('test', 'alert', document, null, false, true);
 
         document.querySelector('.flash-alert .js-close-icon').click();
 
@@ -182,7 +188,7 @@ describe('Flash', () => {
 
       describe('with actionConfig', () => {
         it('adds action link', () => {
-          flash('test', 'alert', document, {
+          deprecatedCreateFlash('test', 'alert', document, {
             title: 'test',
           });
 
@@ -195,7 +201,110 @@ describe('Flash', () => {
             clickHandler: jest.fn(),
           };
 
-          flash('test', 'alert', document, actionConfig);
+          deprecatedCreateFlash('test', 'alert', document, actionConfig);
+
+          document.querySelector('.flash-action').click();
+
+          expect(actionConfig.clickHandler).toHaveBeenCalled();
+        });
+      });
+    });
+  });
+
+  describe('createFlash', () => {
+    const message = 'test';
+    const type = 'alert';
+    const parent = document;
+    const fadeTransition = false;
+    const addBodyClass = true;
+    const defaultParams = {
+      message,
+      type,
+      parent,
+      actionConfig: null,
+      fadeTransition,
+      addBodyClass,
+    };
+
+    describe('no flash-container', () => {
+      it('does not add to the DOM', () => {
+        const flashEl = createFlash({ message });
+
+        expect(flashEl).toBeNull();
+
+        expect(document.querySelector('.flash-alert')).toBeNull();
+      });
+    });
+
+    describe('with flash-container', () => {
+      beforeEach(() => {
+        setFixtures(
+          '<div class="content-wrapper js-content-wrapper"><div class="flash-container"></div></div>',
+        );
+      });
+
+      afterEach(() => {
+        document.querySelector('.js-content-wrapper').remove();
+      });
+
+      it('adds flash element into container', () => {
+        createFlash({ ...defaultParams });
+
+        expect(document.querySelector('.flash-alert')).not.toBeNull();
+
+        expect(document.body.className).toContain('flash-shown');
+      });
+
+      it('adds flash into specified parent', () => {
+        createFlash({ ...defaultParams, parent: document.querySelector('.content-wrapper') });
+
+        expect(document.querySelector('.content-wrapper .flash-alert')).not.toBeNull();
+        expect(document.querySelector('.content-wrapper').innerText.trim()).toEqual(message);
+      });
+
+      it('adds container classes when inside content-wrapper', () => {
+        createFlash(defaultParams);
+
+        expect(document.querySelector('.flash-text').className).toBe('flash-text');
+        expect(document.querySelector('.content-wrapper').innerText.trim()).toEqual(message);
+      });
+
+      it('does not add container when outside of content-wrapper', () => {
+        document.querySelector('.content-wrapper').className = 'js-content-wrapper';
+        createFlash(defaultParams);
+
+        expect(document.querySelector('.flash-text').className.trim()).toContain('flash-text');
+      });
+
+      it('removes element after clicking', () => {
+        createFlash({ ...defaultParams });
+
+        document.querySelector('.flash-alert .js-close-icon').click();
+
+        expect(document.querySelector('.flash-alert')).toBeNull();
+
+        expect(document.body.className).not.toContain('flash-shown');
+      });
+
+      describe('with actionConfig', () => {
+        it('adds action link', () => {
+          createFlash({
+            ...defaultParams,
+            actionConfig: {
+              title: 'test',
+            },
+          });
+
+          expect(document.querySelector('.flash-action')).not.toBeNull();
+        });
+
+        it('calls actionConfig clickHandler on click', () => {
+          const actionConfig = {
+            title: 'test',
+            clickHandler: jest.fn(),
+          };
+
+          createFlash({ ...defaultParams, actionConfig });
 
           document.querySelector('.flash-action').click();
 

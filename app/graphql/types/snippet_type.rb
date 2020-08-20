@@ -66,7 +66,8 @@ module Types
     field :blob, type: Types::Snippets::BlobType,
           description: 'Snippet blob',
           calls_gitaly: true,
-          null: false
+          null: false,
+          deprecated: { reason: 'Use `blobs`', milestone: '13.3' }
 
     field :blobs, type: [Types::Snippets::BlobType],
           description: 'Snippet blobs',

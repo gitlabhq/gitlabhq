@@ -3,7 +3,6 @@
 module Gitlab
   module Metrics
     include Gitlab::Metrics::Prometheus
-    include Gitlab::Metrics::Methods
 
     EXECUTION_MEASUREMENT_BUCKETS = [0.001, 0.01, 0.1, 1].freeze
 
@@ -81,25 +80,16 @@ module Gitlab
       real_time = (real_stop - real_start)
       cpu_time = cpu_stop - cpu_start
 
-      real_duration_seconds = fetch_histogram("gitlab_#{name}_real_duration_seconds".to_sym) do
+      trans.observe("gitlab_#{name}_real_duration_seconds".to_sym, real_time) do
         docstring "Measure #{name}"
-        base_labels Transaction::BASE_LABELS
         buckets EXECUTION_MEASUREMENT_BUCKETS
       end
 
-      real_duration_seconds.observe(trans.labels, real_time)
-
-      cpu_duration_seconds = fetch_histogram("gitlab_#{name}_cpu_duration_seconds".to_sym) do
+      trans.observe("gitlab_#{name}_cpu_duration_seconds".to_sym, cpu_time) do
         docstring "Measure #{name}"
-        base_labels Transaction::BASE_LABELS
         buckets EXECUTION_MEASUREMENT_BUCKETS
         with_feature "prometheus_metrics_measure_#{name}_cpu_duration"
       end
-      cpu_duration_seconds.observe(trans.labels, cpu_time)
-
-      trans.increment("#{name}_real_time", real_time.in_milliseconds, false)
-      trans.increment("#{name}_cpu_time", cpu_time.in_milliseconds, false)
-      trans.increment("#{name}_call_count", 1, false)
 
       retval
     end

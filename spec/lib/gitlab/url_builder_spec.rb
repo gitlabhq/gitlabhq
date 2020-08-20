@@ -22,7 +22,7 @@ RSpec.describe Gitlab::UrlBuilder do
       :issue             | ->(issue)         { "/#{issue.project.full_path}/-/issues/#{issue.iid}" }
       :merge_request     | ->(merge_request) { "/#{merge_request.project.full_path}/-/merge_requests/#{merge_request.iid}" }
       :project_milestone | ->(milestone)     { "/#{milestone.project.full_path}/-/milestones/#{milestone.iid}" }
-      :project_snippet   | ->(snippet)       { "/#{snippet.project.full_path}/snippets/#{snippet.id}" }
+      :project_snippet   | ->(snippet)       { "/#{snippet.project.full_path}/-/snippets/#{snippet.id}" }
       :project_wiki      | ->(wiki)          { "/#{wiki.container.full_path}/-/wikis/home" }
       :ci_build          | ->(build)         { "/#{build.project.full_path}/-/jobs/#{build.id}" }
       :design            | ->(design)        { "/#{design.project.full_path}/-/design_management/designs/#{design.id}/raw_image" }
@@ -31,7 +31,7 @@ RSpec.describe Gitlab::UrlBuilder do
       :group_milestone   | ->(milestone)     { "/groups/#{milestone.group.full_path}/-/milestones/#{milestone.iid}" }
 
       :user              | ->(user)          { "/#{user.full_path}" }
-      :personal_snippet  | ->(snippet)       { "/snippets/#{snippet.id}" }
+      :personal_snippet  | ->(snippet)       { "/-/snippets/#{snippet.id}" }
       :wiki_page         | ->(wiki_page)     { "#{wiki_page.wiki.wiki_base_path}/#{wiki_page.slug}" }
 
       :note_on_commit                      | ->(note) { "/#{note.project.full_path}/-/commit/#{note.commit_id}#note_#{note.id}" }
@@ -47,10 +47,10 @@ RSpec.describe Gitlab::UrlBuilder do
       :discussion_note_on_merge_request    | ->(note) { "/#{note.project.full_path}/-/merge_requests/#{note.noteable.iid}#note_#{note.id}" }
       :legacy_diff_note_on_merge_request   | ->(note) { "/#{note.project.full_path}/-/merge_requests/#{note.noteable.iid}#note_#{note.id}" }
 
-      :note_on_project_snippet             | ->(note) { "/#{note.project.full_path}/snippets/#{note.noteable_id}#note_#{note.id}" }
-      :discussion_note_on_project_snippet  | ->(note) { "/#{note.project.full_path}/snippets/#{note.noteable_id}#note_#{note.id}" }
-      :discussion_note_on_personal_snippet | ->(note) { "/snippets/#{note.noteable_id}#note_#{note.id}" }
-      :note_on_personal_snippet            | ->(note) { "/snippets/#{note.noteable_id}#note_#{note.id}" }
+      :note_on_project_snippet             | ->(note) { "/#{note.project.full_path}/-/snippets/#{note.noteable_id}#note_#{note.id}" }
+      :discussion_note_on_project_snippet  | ->(note) { "/#{note.project.full_path}/-/snippets/#{note.noteable_id}#note_#{note.id}" }
+      :discussion_note_on_personal_snippet | ->(note) { "/-/snippets/#{note.noteable_id}#note_#{note.id}" }
+      :note_on_personal_snippet            | ->(note) { "/-/snippets/#{note.noteable_id}#note_#{note.id}" }
     end
 
     with_them do
@@ -98,7 +98,7 @@ RSpec.describe Gitlab::UrlBuilder do
         it 'returns a raw snippet URL if requested' do
           url = subject.build(snippet, raw: true)
 
-          expect(url).to eq "#{Gitlab.config.gitlab.url}/snippets/#{snippet.id}/raw"
+          expect(url).to eq "#{Gitlab.config.gitlab.url}/-/snippets/#{snippet.id}/raw"
         end
 
         it 'returns a raw snippet blob URL if requested' do
@@ -114,7 +114,7 @@ RSpec.describe Gitlab::UrlBuilder do
         it 'returns a raw snippet URL if requested' do
           url = subject.build(snippet, raw: true)
 
-          expect(url).to eq "#{Gitlab.config.gitlab.url}/#{snippet.project.full_path}/snippets/#{snippet.id}/raw"
+          expect(url).to eq "#{Gitlab.config.gitlab.url}/#{snippet.project.full_path}/-/snippets/#{snippet.id}/raw"
         end
 
         it 'returns a raw snippet blob URL if requested' do

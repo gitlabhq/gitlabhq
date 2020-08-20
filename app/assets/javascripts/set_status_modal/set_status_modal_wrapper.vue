@@ -2,7 +2,7 @@
 import $ from 'jquery';
 import GfmAutoComplete from 'ee_else_ce/gfm_auto_complete';
 import { GlModal, GlTooltipDirective } from '@gitlab/ui';
-import createFlash from '~/flash';
+import { deprecatedCreateFlash as createFlash } from '~/flash';
 import Icon from '~/vue_shared/components/icon.vue';
 import { __, s__ } from '~/locale';
 import Api from '~/api';

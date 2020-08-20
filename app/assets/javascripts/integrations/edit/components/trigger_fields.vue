@@ -1,8 +1,8 @@
 <script>
 import { mapGetters } from 'vuex';
 import { startCase } from 'lodash';
-import { __ } from '~/locale';
 import { GlFormGroup, GlFormCheckbox, GlFormInput } from '@gitlab/ui';
+import { __ } from '~/locale';
 
 const typeWithPlaceholder = {
   SLACK: 'slack',

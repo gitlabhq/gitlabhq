@@ -1,5 +1,6 @@
 import Vuex from 'vuex';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import Home from '~/static_site_editor/pages/home.vue';
 import SkeletonLoader from '~/static_site_editor/components/skeleton_loader.vue';
 import EditArea from '~/static_site_editor/components/edit_area.vue';
@@ -7,7 +8,6 @@ import InvalidContentMessage from '~/static_site_editor/components/invalid_conte
 import SubmitChangesError from '~/static_site_editor/components/submit_changes_error.vue';
 import submitContentChangesMutation from '~/static_site_editor/graphql/mutations/submit_content_changes.mutation.graphql';
 import { SUCCESS_ROUTE } from '~/static_site_editor/router/constants';
-import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import { TRACKING_ACTION_INITIALIZE_EDITOR } from '~/static_site_editor/constants';
 
 import {

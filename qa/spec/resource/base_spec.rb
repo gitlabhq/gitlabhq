@@ -226,6 +226,7 @@ describe QA::Resource::Base do
           end
         end
       end
+
       let(:first_resource) do
         Class.new(base) do
           attribute :test do
@@ -233,6 +234,7 @@ describe QA::Resource::Base do
           end
         end
       end
+
       let(:second_resource) do
         Class.new(base) do
           attribute :test do

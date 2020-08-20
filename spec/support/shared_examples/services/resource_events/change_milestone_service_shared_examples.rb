@@ -1,49 +1,63 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples 'a milestone events creator' do
+RSpec.shared_examples 'timebox(milestone or iteration) resource events creator' do |timebox_event_class|
   let_it_be(:user) { create(:user) }
 
-  let(:created_at_time) { Time.utc(2019, 12, 30) }
-  let(:service) { described_class.new(resource, user, created_at: created_at_time, old_milestone: nil) }
-
-  context 'when milestone is present' do
-    let_it_be(:milestone) { create(:milestone) }
+  context 'when milestone/iteration is added' do
+    let(:service) { described_class.new(resource, user, add_timebox_args) }
 
     before do
-      resource.milestone = milestone
+      set_timebox(timebox_event_class, timebox)
     end
 
     it 'creates the expected event record' do
-      expect { service.execute }.to change { ResourceMilestoneEvent.count }.by(1)
+      expect { service.execute }.to change { timebox_event_class.count }.by(1)
 
-      expect_event_record(ResourceMilestoneEvent.last, action: 'add', milestone: milestone, state: 'opened')
+      expect_event_record(timebox_event_class, timebox_event_class.last, action: 'add', state: 'opened', timebox: timebox)
     end
   end
 
-  context 'when milestones is not present' do
-    before do
-      resource.milestone = nil
-    end
+  context 'when milestone/iteration is removed' do
+    let(:service) { described_class.new(resource, user, remove_timebox_args) }
 
-    let(:old_milestone) { create(:milestone, project: resource.project) }
-    let(:service) { described_class.new(resource, user, created_at: created_at_time, old_milestone: old_milestone) }
+    before do
+      set_timebox(timebox_event_class, nil)
+    end
 
     it 'creates the expected event records' do
-      expect { service.execute }.to change { ResourceMilestoneEvent.count }.by(1)
+      expect { service.execute }.to change { timebox_event_class.count }.by(1)
 
-      expect_event_record(ResourceMilestoneEvent.last, action: 'remove', milestone: old_milestone, state: 'opened')
+      expect_event_record(timebox_event_class, timebox_event_class.last, action: 'remove', timebox: timebox, state: 'opened')
     end
   end
 
-  def expect_event_record(event, expected_attrs)
+  def expect_event_record(timebox_event_class, event, expected_attrs)
     expect(event.action).to eq(expected_attrs[:action])
-    expect(event.state).to eq(expected_attrs[:state])
     expect(event.user).to eq(user)
     expect(event.issue).to eq(resource) if resource.is_a?(Issue)
     expect(event.issue).to be_nil unless resource.is_a?(Issue)
     expect(event.merge_request).to eq(resource) if resource.is_a?(MergeRequest)
     expect(event.merge_request).to be_nil unless resource.is_a?(MergeRequest)
-    expect(event.milestone).to eq(expected_attrs[:milestone])
     expect(event.created_at).to eq(created_at_time)
+    expect_timebox(timebox_event_class, event, expected_attrs)
+  end
+
+  def set_timebox(timebox_event_class, timebox)
+    case timebox_event_class.name
+    when 'ResourceMilestoneEvent'
+      resource.milestone = timebox
+    when 'ResourceIterationEvent'
+      resource.iteration = timebox
+    end
+  end
+
+  def expect_timebox(timebox_event_class, event, expected_attrs)
+    case timebox_event_class.name
+    when 'ResourceMilestoneEvent'
+      expect(event.state).to eq(expected_attrs[:state])
+      expect(event.milestone).to eq(expected_attrs[:timebox])
+    when 'ResourceIterationEvent'
+      expect(event.iteration).to eq(expected_attrs[:timebox])
+    end
   end
 end

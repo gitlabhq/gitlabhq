@@ -40,7 +40,7 @@ module LoginHelpers
       if user_or_role.is_a?(User)
         user_or_role
       else
-        create(user_or_role)
+        create(user_or_role) # rubocop:disable Rails/SaveBang
       end
 
     gitlab_sign_in_with(user, **kwargs)

@@ -5,13 +5,42 @@ require 'spec_helper'
 RSpec.describe Gitlab::Metrics::WebTransaction do
   let(:env) { {} }
   let(:transaction) { described_class.new(env) }
-  let(:prometheus_metric) { double("prometheus metric") }
+  let(:prometheus_metric) { instance_double(Prometheus::Client::Metric, base_labels: {}) }
 
   before do
-    allow(described_class).to receive(:transaction_metric).and_return(prometheus_metric)
+    allow(described_class).to receive(:prometheus_metric).and_return(prometheus_metric)
+  end
+
+  RSpec.shared_context 'ActionController request' do
+    let(:request) { double(:request, format: double(:format, ref: :html)) }
+    let(:controller_class) { double(:controller_class, name: 'TestController') }
+
+    before do
+      controller = double(:controller, class: controller_class, action_name: 'show', request: request)
+      env['action_controller.instance'] = controller
+    end
+  end
+
+  RSpec.shared_context 'transaction observe metrics' do
+    before do
+      allow(transaction).to receive(:observe)
+    end
+  end
+
+  RSpec.shared_examples 'metric with labels' do |metric_method|
+    include_context 'ActionController request'
+
+    it 'measures with correct labels and value' do
+      value = 1
+      expect(prometheus_metric).to receive(metric_method).with({ controller: 'TestController', action: 'show', feature_category: '' }, value)
+
+      transaction.send(metric_method, :bau, value)
+    end
   end
 
   describe '#duration' do
+    include_context 'transaction observe metrics'
+
     it 'returns the duration of a transaction in seconds' do
       transaction.run { sleep(0.5) }
 
@@ -19,15 +48,9 @@ RSpec.describe Gitlab::Metrics::WebTransaction do
     end
   end
 
-  describe '#allocated_memory' do
-    it 'returns the allocated memory in bytes' do
-      transaction.run { 'a' * 32 }
-
-      expect(transaction.allocated_memory).to be_a_kind_of(Numeric)
-    end
-  end
-
   describe '#run' do
+    include_context 'transaction observe metrics'
+
     it 'yields the supplied block' do
       expect { |b| transaction.run(&b) }.to yield_control
     end
@@ -53,26 +76,7 @@ RSpec.describe Gitlab::Metrics::WebTransaction do
     end
   end
 
-  describe '#increment' do
-    it 'increments a counter' do
-      expect(prometheus_metric).to receive(:increment).with({}, 1)
-
-      transaction.increment(:time, 1)
-    end
-  end
-
-  describe '#set' do
-    it 'sets a value' do
-      expect(prometheus_metric).to receive(:set).with({}, 10)
-
-      transaction.set(:number, 10)
-    end
-  end
-
   describe '#labels' do
-    let(:request) { double(:request, format: double(:format, ref: :html)) }
-    let(:controller_class) { double(:controller_class, name: 'TestController') }
-
     context 'when request goes to Grape endpoint' do
       before do
         route = double(:route, request_method: 'GET', path: '/:version/projects/:id/archive(.:format)')
@@ -86,7 +90,7 @@ RSpec.describe Gitlab::Metrics::WebTransaction do
       end
 
       it 'contains only the labels defined for transactions' do
-        expect(transaction.labels.keys).to contain_exactly(*described_class.superclass::BASE_LABELS.keys)
+        expect(transaction.labels.keys).to contain_exactly(*described_class.superclass::BASE_LABEL_KEYS)
       end
 
       it 'does not provide labels if route infos are missing' do
@@ -100,18 +104,14 @@ RSpec.describe Gitlab::Metrics::WebTransaction do
     end
 
     context 'when request goes to ActionController' do
-      before do
-        controller = double(:controller, class: controller_class, action_name: 'show', request: request)
-
-        env['action_controller.instance'] = controller
-      end
+      include_context 'ActionController request'
 
       it 'tags a transaction with the name and action of a controller' do
         expect(transaction.labels).to eq({ controller: 'TestController', action: 'show', feature_category: '' })
       end
 
       it 'contains only the labels defined for transactions' do
-        expect(transaction.labels.keys).to contain_exactly(*described_class.superclass::BASE_LABELS.keys)
+        expect(transaction.labels.keys).to contain_exactly(*described_class.superclass::BASE_LABEL_KEYS)
       end
 
       context 'when the request content type is not :html' do
@@ -144,6 +144,8 @@ RSpec.describe Gitlab::Metrics::WebTransaction do
   end
 
   describe '#add_event' do
+    let(:prometheus_metric) { instance_double(Prometheus::Client::Counter, :increment, base_labels: {}) }
+
     it 'adds a metric' do
       expect(prometheus_metric).to receive(:increment)
 
@@ -155,5 +157,23 @@ RSpec.describe Gitlab::Metrics::WebTransaction do
 
       transaction.add_event(:bau, animal: 'dog')
     end
+  end
+
+  describe '#increment' do
+    let(:prometheus_metric) { instance_double(Prometheus::Client::Counter, :increment, base_labels: {}) }
+
+    it_behaves_like 'metric with labels', :increment
+  end
+
+  describe '#set' do
+    let(:prometheus_metric) { instance_double(Prometheus::Client::Gauge, :set, base_labels: {}) }
+
+    it_behaves_like 'metric with labels', :set
+  end
+
+  describe '#observe' do
+    let(:prometheus_metric) { instance_double(Prometheus::Client::Histogram, :observe, base_labels: {}) }
+
+    it_behaves_like 'metric with labels', :observe
   end
 end

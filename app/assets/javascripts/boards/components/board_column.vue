@@ -1,10 +1,10 @@
 <script>
 import Sortable from 'sortablejs';
 import isWipLimitsOn from 'ee_else_ce/boards/mixins/is_wip_limits';
+import BoardListHeader from 'ee_else_ce/boards/components/board_list_header.vue';
 import Tooltip from '~/vue_shared/directives/tooltip';
 import EmptyComponent from '~/vue_shared/components/empty_component';
 import BoardBlankState from './board_blank_state.vue';
-import BoardListHeader from 'ee_else_ce/boards/components/board_list_header.vue';
 import BoardList from './board_list.vue';
 import boardsStore from '../stores/boards_store';
 import eventHub from '../eventhub';

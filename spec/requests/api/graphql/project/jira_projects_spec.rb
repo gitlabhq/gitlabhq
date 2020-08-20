@@ -8,7 +8,7 @@ RSpec.describe 'query Jira projects' do
   let_it_be(:current_user) { create(:user) }
   let_it_be(:project) { create(:project) }
 
-  include_context 'jira projects request context'
+  include_context 'Jira projects request context'
 
   let(:services) { graphql_data_at(:project, :services, :edges) }
   let(:jira_projects) { services.first.dig('node', 'projects', 'nodes') }

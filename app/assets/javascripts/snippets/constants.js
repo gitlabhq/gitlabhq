@@ -30,3 +30,6 @@ export const SNIPPET_BLOB_CONTENT_FETCH_ERROR = __("Can't fetch content for the 
 export const SNIPPET_BLOB_ACTION_CREATE = 'create';
 export const SNIPPET_BLOB_ACTION_UPDATE = 'update';
 export const SNIPPET_BLOB_ACTION_MOVE = 'move';
+export const SNIPPET_BLOB_ACTION_DELETE = 'delete';
+
+export const SNIPPET_MAX_BLOBS = 10;

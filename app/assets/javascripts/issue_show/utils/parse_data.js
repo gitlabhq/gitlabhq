@@ -1,4 +1,4 @@
-import sanitize from 'sanitize-html';
+import { sanitize } from 'dompurify';
 
 export const parseIssuableData = () => {
   try {

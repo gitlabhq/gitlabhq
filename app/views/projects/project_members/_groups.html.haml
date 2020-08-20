@@ -1,6 +1,6 @@
 .card.project-members-groups
   .card-header
-    = _("Groups with access to <strong>%{project_name}</strong>").html_safe % { project_name: sanitize(@project.name, tags: []) }
+    = html_escape(_("Groups with access to %{strong_open}%{project_name}%{strong_close}")) % { project_name: sanitize(@project.name, tags: []), strong_open: '<strong>'.html_safe, strong_close: '</strong>'.html_safe }
     %span.badge.badge-pill= group_links.size
   %ul.content-list.members-list
     - can_admin_member = can?(current_user, :admin_project_member, @project)

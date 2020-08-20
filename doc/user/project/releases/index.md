@@ -53,25 +53,26 @@ Read more about [Release permissions](../../../user/permissions.md#project-membe
 
 You can create a release in the user interface, or by using the
 [Releases API](../../../api/releases/index.md#create-a-release).
-We recommend using the API to add release notes as one of the last steps in your CI/CD release pipeline.
+We recommend using the API to create releases as one of the last steps in your
+CI/CD pipeline.
 
 To create a new release through the GitLab UI:
 
-1. Navigate to **Project overview > Releases** and click the **New release** button.
+1. Navigate to **Project overview > Releases** and click the **New release**
+   button.
 1. In the [**Tag name**](#tag-name) box, enter a name.
-1. In the **Create from** list, select the branch or enter a tag or commit SHA.
-1. In the **Message** box, enter a message associated with the tag.
-1. Optionally, in the [**Release notes**](#release-notes-description)
-   field, enter the release's description. You can use Markdown and drag and drop files to this field.
-   - If you leave this field empty, only a tag will be created.
-   - If you populate it, both a tag and a release will be created.
-1. Click **Create tag**.
 
-If you created a release, you can view it at **Project overview > Releases**.
-If you created a tag, you can view it at **Repository > Tags**.
+   NOTE: **Note:**
+   Creating a release based on an existing tag using the user
+   interface is not yet supported. However, this is possible using the
+   [Releases API](../../../api/releases/index.md#create-a-release).
 
-You can now edit the release to [add milestones](#associate-milestones-with-a-release)
-and [release assets](#release-assets).
+1. In the **Create from** list, select a branch, tag, or commit SHA to use when
+   creating the new tag.
+1. Optionally, fill out any additional information about the release, such as its
+   [title](#title), [milestones](#associate-milestones-with-a-release),
+   [release notes](#release-notes-description), or [assets links](#links).
+1. Click **Create release**.
 
 ### Schedule a future release
 
@@ -176,7 +177,7 @@ Prevent unintended production releases during a period of time you specify by
 setting a [*deploy freeze* period](../../../ci/environments/deployment_safety.md).
 Deploy freezes help reduce uncertainty and risk when automating deployments.
 
-Use the [Freeze Periods API](../../../api/freeze_periods.md) to set a `freeze_start` and a `freeze_end`, which
+A maintainer can set a deploy freeze window in the user interface or by using the [Freeze Periods API](../../../api/freeze_periods.md) to set a `freeze_start` and a `freeze_end`, which
 are defined as [crontab](https://crontab.guru/) entries.
 
 If the job that's executing is within a freeze period, GitLab CI/CD creates an environment
@@ -193,6 +194,22 @@ deploy_to_production:
     - if: $CI_DEPLOY_FREEZE == null
 ```
 
+To set a deploy freeze window in the UI, complete these steps:
+
+1. Sign in to GitLab as a user with project Maintainer [permissions](../../permissions.md).
+1. Navigate to **Project overview**.
+1. In the left navigation menu, navigate to **Settings > CI / CD**.
+1. Scroll to **Deploy freezes**.
+1. Click **Expand** to see the deploy freeze table.
+1. Click **Add deploy freeze** to open the deploy freeze modal.
+1. Enter the start time, end time, and timezone of the desired deploy freeze period.
+1. Click **Add deploy freeze** in the modal.
+
+![Deploy freeze modal for setting a deploy freeze period](img/deploy_freeze_v13_2.png)
+
+CAUTION: **Caution:**
+To edit or delete a deploy freeze, use the [Freeze Periods API](../../../api/freeze_periods.md).
+
 If a project contains multiple freeze periods, all periods apply. If they overlap, the freeze covers the
 complete overlapping period.
 
@@ -201,6 +218,21 @@ For more information, see [Deployment safety](../../../ci/environments/deploymen
 ## Release fields
 
 The following fields are available when you create or edit a release.
+
+### Title
+
+The release title can be customized using the **Release title** field when
+creating or editing a release. If no title is provided, the release's tag name
+is used instead.
+
+NOTE: **Note:**
+Guest users of private projects are allowed to view the **Releases** page
+but are _not_ allowed to view details about the Git repository (in particular,
+tag names). Because of this, release titles are replaced with a generic
+title like "Release-1234" for Guest users to avoid leaking tag name information.
+
+See the [Permissions](../../permissions.md#project-members-permissions) page for
+more information about permissions.
 
 ### Tag name
 
@@ -241,12 +273,12 @@ as pre-built packages, compliance/security evidence, or container images.
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/27300) in GitLab 12.9.
 
 The assets associated with a release are accessible through a permanent URL.
-GitLab will always redirect this URL to the actual asset
+GitLab always redirects this URL to the actual asset
 location, so even if the assets move to a different location, you can continue
 to use the same URL. This is defined during [link creation](../../../api/releases/links.md#create-a-link) or [updating](../../../api/releases/links.md#update-a-link).
 
 Each asset has a name, a URL of the *actual* asset location, and optionally, a
-`filepath` parameter, which, if you specify it, will create a URL pointing
+`filepath` parameter, which, if you specify it, creates a URL pointing
 to the asset for the Release. The format of the URL is:
 
 ```plaintext
@@ -270,7 +302,7 @@ This asset has a direct link of:
 https://gitlab.com/gitlab-org/gitlab-runner/releases/v11.9.0-rc2/downloads/binaries/gitlab-runner-linux-amd64
 ```
 
-The physical location of the asset can change at any time and the direct link will remain unchanged.
+The physical location of the asset can change at any time and the direct link remains unchanged.
 
 ### Source code
 
@@ -372,7 +404,7 @@ When a release is created, release evidence is automatically collected. To initi
 
 Evidence collection snapshots are visible on the Releases page, along with the timestamp the evidence was collected.
 
-### Include report artifacts as release evidence **(ULTIMATE ONLY)**
+### Include report artifacts as release evidence **(ULTIMATE)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32773) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.2.
 

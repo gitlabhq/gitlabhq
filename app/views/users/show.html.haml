@@ -14,7 +14,7 @@
     = render layout: 'users/cover_controls' do
       - if @user == current_user
         = link_to profile_path, class: link_classes + 'btn btn-default has-tooltip', title: s_('UserProfile|Edit profile'), 'aria-label': 'Edit profile' do
-          = icon('pencil')
+          = sprite_icon('pencil')
       - elsif current_user
         - if @user.abuse_report
           %button{ class: link_classes + 'btn btn-danger mr-1', title: s_('UserProfile|Already reported for abuse'),
@@ -25,8 +25,8 @@
             title: s_('UserProfile|Report abuse'), data: { toggle: 'tooltip', placement: 'bottom', container: 'body' } do
             = icon('exclamation-circle')
       - if can?(current_user, :read_user_profile, @user)
-        = link_to user_path(@user, rss_url_options), class: link_classes + 'btn btn-default has-tooltip', title: s_('UserProfile|Subscribe'), 'aria-label': 'Subscribe' do
-          = icon('rss')
+        = link_to user_path(@user, rss_url_options), class: link_classes + 'btn btn-svg btn-default has-tooltip', title: s_('UserProfile|Subscribe'), 'aria-label': 'Subscribe' do
+          = sprite_icon('rss', css_class: 'qa-rss-icon')
       - if current_user && current_user.admin?
         = link_to [:admin, @user], class: link_classes + 'btn btn-default', title: s_('UserProfile|View user in admin area'),
           data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
@@ -55,12 +55,12 @@
           .cover-desc.cgray.mb-1.mb-sm-2
             - unless @user.location.blank?
               .profile-link-holder.middle-dot-divider-sm.d-block.d-sm-inline.mb-1.mb-sm-0
-                = sprite_icon('location', size: 16, css_class: 'vertical-align-sub fgray')
+                = sprite_icon('location', css_class: 'vertical-align-sub fgray')
                 %span.vertical-align-middle
                   = @user.location
             - unless work_information(@user).blank?
               .profile-link-holder.middle-dot-divider-sm.d-block.d-sm-inline
-                = sprite_icon('work', size: 16, css_class: 'vertical-align-middle fgray')
+                = sprite_icon('work', css_class: 'vertical-align-middle fgray')
                 %span.vertical-align-middle
                   = work_information(@user)
           .cover-desc.cgray.mb-1.mb-sm-2
@@ -84,7 +84,7 @@
                 = link_to @user.public_email, "mailto:#{@user.public_email}", class: 'text-link'
         - if @user.bio.present?
           .cover-desc.cgray
-            %p.profile-user-bio
+            .profile-user-bio
               = markdown(@user.bio_html)
 
 
@@ -160,16 +160,12 @@
     .loading.hide
       .spinner.spinner-md
 
-  - if profile_tabs.empty?
-    .row
-      .col-12
-        .svg-content
-          = image_tag 'illustrations/profile_private_mode.svg'
-      .col-12.text-center
-        .text-content
-          %h4
-            - if @user.blocked?
-              = s_('UserProfile|This user is blocked')
-            - else
-              = s_('UserProfile|This user has a private profile')
-
+    - if profile_tabs.empty?
+      .svg-content
+        = image_tag 'illustrations/profile_private_mode.svg'
+      .text-content.text-center
+        %h4
+          - if @user.blocked?
+            = s_('UserProfile|This user is blocked')
+          - else
+            = s_('UserProfile|This user has a private profile')

@@ -1,0 +1,5 @@
+---
+title: Move gitlab-managed alerts embeds to core as documented
+merge_request: 39509
+author:
+type: fixed

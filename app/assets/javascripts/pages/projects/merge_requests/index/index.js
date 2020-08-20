@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initFilteredSearch({
     page: FILTERED_SEARCH.MERGE_REQUESTS,
     filteredSearchTokenKeys: IssuableFilteredSearchTokenKeys,
+    useDefaultState: true,
   });
 
   new IssuableIndex(ISSUABLE_INDEX.MERGE_REQUEST); // eslint-disable-line no-new

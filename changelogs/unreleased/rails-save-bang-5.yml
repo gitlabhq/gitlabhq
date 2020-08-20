@@ -1,0 +1,5 @@
+---
+title: Refactor spec/helpers and ee/spec/helpers to fix SaveBang Cop
+merge_request: 37446
+author: Rajendra Kadam
+type: fixed

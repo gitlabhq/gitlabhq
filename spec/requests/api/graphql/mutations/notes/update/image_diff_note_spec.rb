@@ -33,6 +33,7 @@ RSpec.describe 'Updating an image DiffNote' do
       y: updated_y
     }
   end
+
   let!(:diff_note) do
     create(:image_diff_note_on_merge_request,
            noteable: noteable,
@@ -40,6 +41,7 @@ RSpec.describe 'Updating an image DiffNote' do
            note: original_body,
            position: original_position)
   end
+
   let(:mutation) do
     variables = {
       id: GitlabSchema.id_from_object(diff_note).to_s,

@@ -1,7 +1,6 @@
 <script>
-import { n__, __ } from '~/locale';
+import Visibility from 'visibilityjs';
 import { mapActions } from 'vuex';
-
 import {
   GlButtonGroup,
   GlButton,
@@ -10,6 +9,9 @@ import {
   GlNewDropdownDivider,
   GlTooltipDirective,
 } from '@gitlab/ui';
+import { n__, __ } from '~/locale';
+
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 const makeInterval = (length = 0, unit = 's') => {
   const shortLabel = `${length}${unit}`;
@@ -53,6 +55,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [glFeatureFlagsMixin()],
   data() {
     return {
       refreshInterval: null,
@@ -60,6 +63,12 @@ export default {
     };
   },
   computed: {
+    disableMetricDashboardRefreshRate() {
+      // Can refresh rates impact performance?
+      // Add "negative" feature flag called `disable_metric_dashboard_refresh_rate`
+      // See more at: https://gitlab.com/gitlab-org/gitlab/-/issues/229831
+      return this.glFeatures.disableMetricDashboardRefreshRate;
+    },
     dropdownText() {
       return this.refreshInterval?.shortLabel ?? __('Off');
     },
@@ -90,7 +99,8 @@ export default {
       };
 
       this.stopAutoRefresh();
-      if (document.hidden) {
+
+      if (Visibility.hidden()) {
         // Inactive tab? Skip fetch and schedule again
         schedule();
       } else {
@@ -142,7 +152,12 @@ export default {
       icon="retry"
       @click="refresh"
     />
-    <gl-new-dropdown v-gl-tooltip :title="s__('Metrics|Set refresh rate')" :text="dropdownText">
+    <gl-new-dropdown
+      v-if="!disableMetricDashboardRefreshRate"
+      v-gl-tooltip
+      :title="s__('Metrics|Set refresh rate')"
+      :text="dropdownText"
+    >
       <gl-new-dropdown-item
         :is-check-item="true"
         :is-checked="refreshInterval === null"

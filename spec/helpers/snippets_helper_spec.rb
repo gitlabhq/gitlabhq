@@ -6,21 +6,29 @@ RSpec.describe SnippetsHelper do
   include Gitlab::Routing
   include IconsHelper
 
-  let_it_be(:public_personal_snippet) { create(:personal_snippet, :public) }
-  let_it_be(:public_project_snippet) { create(:project_snippet, :public) }
+  let_it_be(:public_personal_snippet) { create(:personal_snippet, :public, :repository) }
+  let_it_be(:public_project_snippet) { create(:project_snippet, :public, :repository) }
 
   describe '#embedded_raw_snippet_button' do
-    subject { embedded_raw_snippet_button.to_s }
+    let(:blob) { snippet.blobs.first }
+    let(:ref) { blob.repository.root_ref }
 
-    it 'returns view raw button of embedded snippets for personal snippets' do
-      @snippet = create(:personal_snippet, :public)
-      expect(subject).to eq(download_link("http://test.host/snippets/#{@snippet.id}/raw"))
+    subject { embedded_raw_snippet_button(snippet, blob) }
+
+    context 'for Personal Snippets' do
+      let(:snippet) { public_personal_snippet }
+
+      it 'returns view raw button of embedded snippets' do
+        expect(subject).to eq(download_link("http://test.host/-/snippets/#{snippet.id}/raw/#{ref}/#{blob.path}"))
+      end
     end
 
-    it 'returns view raw button of embedded snippets for project snippets' do
-      @snippet = create(:project_snippet, :public)
+    context 'for Project Snippets' do
+      let(:snippet) { public_project_snippet }
 
-      expect(subject).to eq(download_link("http://test.host/#{@snippet.project.path_with_namespace}/snippets/#{@snippet.id}/raw"))
+      it 'returns view raw button of embedded snippets' do
+        expect(subject).to eq(download_link("http://test.host/#{snippet.project.path_with_namespace}/-/snippets/#{snippet.id}/raw/#{ref}/#{blob.path}"))
+      end
     end
 
     def download_link(url)
@@ -29,18 +37,25 @@ RSpec.describe SnippetsHelper do
   end
 
   describe '#embedded_snippet_download_button' do
-    subject { embedded_snippet_download_button }
+    let(:blob) { snippet.blobs.first }
+    let(:ref) { blob.repository.root_ref }
 
-    it 'returns download button of embedded snippets for personal snippets' do
-      @snippet = create(:personal_snippet, :public)
+    subject { embedded_snippet_download_button(snippet, blob) }
 
-      expect(subject).to eq(download_link("http://test.host/snippets/#{@snippet.id}/raw"))
+    context 'for Personal Snippets' do
+      let(:snippet) { public_personal_snippet }
+
+      it 'returns download button of embedded snippets' do
+        expect(subject).to eq(download_link("http://test.host/-/snippets/#{snippet.id}/raw/#{ref}/#{blob.path}"))
+      end
     end
 
-    it 'returns download button of embedded snippets for project snippets' do
-      @snippet = create(:project_snippet, :public)
+    context 'for Project Snippets' do
+      let(:snippet) { public_project_snippet }
 
-      expect(subject).to eq(download_link("http://test.host/#{@snippet.project.path_with_namespace}/snippets/#{@snippet.id}/raw"))
+      it 'returns download button of embedded snippets' do
+        expect(subject).to eq(download_link("http://test.host/#{snippet.project.path_with_namespace}/-/snippets/#{snippet.id}/raw/#{ref}/#{blob.path}"))
+      end
     end
 
     def download_link(url)
@@ -56,7 +71,7 @@ RSpec.describe SnippetsHelper do
 
       context 'public' do
         it 'returns a script tag with the snippet full url' do
-          expect(subject).to eq(script_embed("http://test.host/snippets/#{snippet.id}"))
+          expect(subject).to eq(script_embed("http://test.host/-/snippets/#{snippet.id}"))
         end
       end
     end
@@ -65,7 +80,7 @@ RSpec.describe SnippetsHelper do
       let(:snippet) { public_project_snippet }
 
       it 'returns a script tag with the snippet full url' do
-        expect(subject).to eq(script_embed("http://test.host/#{snippet.project.path_with_namespace}/snippets/#{snippet.id}"))
+        expect(subject).to eq(script_embed("http://test.host/#{snippet.project.path_with_namespace}/-/snippets/#{snippet.id}"))
       end
     end
 
@@ -81,7 +96,7 @@ RSpec.describe SnippetsHelper do
       let(:snippet) { public_personal_snippet }
 
       it 'returns the download button' do
-        expect(subject).to eq(download_link("/snippets/#{snippet.id}/raw"))
+        expect(subject).to eq(download_link("/-/snippets/#{snippet.id}/raw"))
       end
     end
 
@@ -89,7 +104,7 @@ RSpec.describe SnippetsHelper do
       let(:snippet) { public_project_snippet }
 
       it 'returns the download button' do
-        expect(subject).to eq(download_link("/#{snippet.project.path_with_namespace}/snippets/#{snippet.id}/raw"))
+        expect(subject).to eq(download_link("/#{snippet.project.path_with_namespace}/-/snippets/#{snippet.id}/raw"))
       end
     end
 
@@ -107,7 +122,7 @@ RSpec.describe SnippetsHelper do
       let(:visibility) { :private }
 
       it 'returns the snippet badge' do
-        expect(subject).to eq "<span class=\"badge badge-gray\"><i class=\"fa fa-lock\"></i> private</span>"
+        expect(subject).to eq "<span class=\"badge badge-gray\">#{sprite_icon('lock', size: 14, css_class: 'gl-vertical-align-middle')} private</span>"
       end
     end
 

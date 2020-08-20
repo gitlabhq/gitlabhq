@@ -5,6 +5,7 @@ class Projects::CycleAnalyticsController < Projects::ApplicationController
   include ActionView::Helpers::TextHelper
   include CycleAnalyticsParams
   include Analytics::UniqueVisitsHelper
+  include GracefulTimeoutHandling
 
   before_action :whitelist_query_limiting, only: [:show]
   before_action :authorize_read_cycle_analytics!

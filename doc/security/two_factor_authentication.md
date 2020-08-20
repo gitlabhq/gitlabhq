@@ -1,5 +1,8 @@
 ---
 type: howto
+stage: Manage
+group: Access
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 ---
 
 # Enforce Two-factor Authentication (2FA)
@@ -36,8 +39,9 @@ period to `0`.
 
 If you want to enforce 2FA only for certain groups, you can:
 
-1. Enable it in the group's **Settings > General** page.
-1. Optionally specify a grace period as above.
+1. Enable it in the group's **Settings > General** page. Navigate to **Permissions, LFS, 2FA > Two-factor authentication**.
+You can then check the **Require all users in this group to setup Two-factor authentication** option.
+1. You can also specify a grace period in the **Time before enforced** option.
 
 To change this setting, you need to be administrator or owner of the group.
 

@@ -1,0 +1,5 @@
+---
+title: Add group_id column to the services table
+merge_request: 38499
+author:
+type: other

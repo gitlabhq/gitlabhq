@@ -1,6 +1,6 @@
 # Admin Sidekiq queues API
 
-> **Note:** This feature was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/25998) in GitLab 12.9
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/25998) in GitLab 12.9
 
 Delete jobs from a Sidekiq queue that match the given
 [metadata](../development/logging.md#logging-context-metadata-through-rails-or-grape-requests).

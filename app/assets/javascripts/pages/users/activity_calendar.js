@@ -5,7 +5,7 @@ import { select } from 'd3-selection';
 import dateFormat from 'dateformat';
 import { getDayName, getDayDifference } from '~/lib/utils/datetime_utility';
 import axios from '~/lib/utils/axios_utils';
-import flash from '~/flash';
+import { deprecatedCreateFlash as flash } from '~/flash';
 import { n__, s__, __ } from '~/locale';
 
 const d3 = { select, scaleLinear, scaleThreshold };

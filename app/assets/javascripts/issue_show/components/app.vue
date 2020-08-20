@@ -2,7 +2,7 @@
 import { GlIcon, GlIntersectionObserver } from '@gitlab/ui';
 import Visibility from 'visibilityjs';
 import { __, s__, sprintf } from '~/locale';
-import createFlash from '~/flash';
+import { deprecatedCreateFlash as createFlash } from '~/flash';
 import { visitUrl } from '~/lib/utils/url_utility';
 import Poll from '~/lib/utils/poll';
 import eventHub from '../event_hub';

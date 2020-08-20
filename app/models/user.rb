@@ -104,6 +104,7 @@ class User < ApplicationRecord
   # Profile
   has_many :keys, -> { regular_keys }, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :deploy_keys, -> { where(type: 'DeployKey') }, dependent: :nullify # rubocop:disable Cop/ActiveRecordDependent
+  has_many :group_deploy_keys
   has_many :gpg_keys
 
   has_many :emails, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
@@ -350,10 +351,24 @@ class User < ApplicationRecord
             .without_impersonation
             .expiring_and_not_notified(at).select(1))
   end
+  scope :with_personal_access_tokens_expired_today, -> do
+    where('EXISTS (?)',
+          ::PersonalAccessToken
+            .select(1)
+            .where('personal_access_tokens.user_id = users.id')
+            .without_impersonation
+            .expired_today_and_not_notified)
+  end
   scope :order_recent_sign_in, -> { reorder(Gitlab::Database.nulls_last_order('current_sign_in_at', 'DESC')) }
   scope :order_oldest_sign_in, -> { reorder(Gitlab::Database.nulls_last_order('current_sign_in_at', 'ASC')) }
   scope :order_recent_last_activity, -> { reorder(Gitlab::Database.nulls_last_order('last_activity_on', 'DESC')) }
   scope :order_oldest_last_activity, -> { reorder(Gitlab::Database.nulls_first_order('last_activity_on', 'ASC')) }
+
+  def preferred_language
+    read_attribute('preferred_language') ||
+      I18n.default_locale.to_s.presence_in(Gitlab::I18n::AVAILABLE_LANGUAGES.keys) ||
+      'en'
+  end
 
   def active_for_authentication?
     super && can?(:log_in)
@@ -948,7 +963,7 @@ class User < ApplicationRecord
   def require_ssh_key?
     count = Users::KeysCountService.new(self).count
 
-    count.zero? && Gitlab::ProtocolAccess.allowed?('ssh')
+    count == 0 && Gitlab::ProtocolAccess.allowed?('ssh')
   end
   # rubocop: enable CodeReuse/ServiceClass
 

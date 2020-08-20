@@ -61,6 +61,10 @@ describe('Design discussions component', () => {
           ...data,
         };
       },
+      provide: {
+        projectPath: 'project-path',
+        issueIid: '1',
+      },
       mocks: {
         $apollo,
         $route: {

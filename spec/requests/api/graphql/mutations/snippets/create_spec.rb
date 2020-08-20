@@ -149,7 +149,7 @@ RSpec.describe 'Creating a Snippet' do
           visibility_level: visibility_level,
           project_path: project_path,
           title: title,
-          files: actions
+          blob_actions: actions
         }
       end
 

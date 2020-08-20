@@ -8,7 +8,7 @@
   #promote-label-modal
   = render 'shared/labels/nav', labels_or_filters: labels_or_filters, can_admin_label: can_admin_label
 
-  .labels-container.prepend-top-10
+  .labels-container.gl-mt-3
     - if can_admin_label && search.blank?
       %p.text-muted
         = _('Labels can be applied to issues and merge requests.')
@@ -18,7 +18,7 @@
     -# Only show it in the first page
     - hide = @available_labels.empty? || (params[:page].present? && params[:page] != '1')
     .prioritized-labels{ class: [('hide' if hide), ('is-not-draggable' unless can_admin_label)] }
-      %h5.prepend-top-10= _('Prioritized Labels')
+      %h5.gl-mt-3= _('Prioritized Labels')
       .content-list.manage-labels-list.js-prioritized-labels{ data: { url: set_priorities_project_labels_path(@project), sortable: can_admin_label } }
         #js-priority-labels-empty-state.priority-labels-empty-state{ class: "#{'hidden' unless @prioritized_labels.empty? && search.blank?}" }
           = render 'shared/empty_states/priority_labels'

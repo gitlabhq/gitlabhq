@@ -16,6 +16,11 @@
     padding: 0;
     position: relative;
     width: 100%;
+
+    .editor-loading-content {
+      height: 100%;
+      border: 0;
+    }
   }
 
   .ace_gutter-cell {
@@ -160,9 +165,8 @@
   vertical-align: top;
 
   @media(max-width: map-get($grid-breakpoints, lg)-1) {
-    display: block;
+    display: inline-block;
     width: 100%;
-    margin: 5px 0;
     padding: 0;
     border-left: 0;
   }
@@ -182,7 +186,8 @@
   .gitignore-selector,
   .gitlab-ci-yml-selector,
   .dockerfile-selector,
-  .template-type-selector {
+  .template-type-selector,
+  .metrics-dashboard-selector {
     display: inline-block;
     vertical-align: top;
     font-family: $regular_font;

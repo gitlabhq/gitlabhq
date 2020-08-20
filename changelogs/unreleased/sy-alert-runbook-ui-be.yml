@@ -1,0 +1,5 @@
+---
+title: Add support for runbook url to PrometheusAlert table
+merge_request: 38234
+author:
+type: added

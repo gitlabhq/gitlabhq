@@ -28,7 +28,7 @@
           - help_link_start = '<a href="%{url}" target="_blank">' % { url: help_page_path('user/profile/account/two_factor_authentication') }
           - register_2fa_token = _('Install a soft token authenticator like %{free_otp_link} or Google Authenticator from your application repository and use that app to scan this QR code. More information is available in the %{help_link_start}documentation%{help_link_end}.') % { free_otp_link:'<a href="https://freeotp.github.io/">FreeOTP</a>', help_link_start:help_link_start, help_link_end:'</a>' }
           = register_2fa_token.html_safe
-        .row.append-bottom-10
+        .row.gl-mb-3
           .col-md-4
             = raw @qr_code
           .col-md-8
@@ -88,7 +88,7 @@
             %tbody
               - @u2f_registrations.each do |registration|
                 %tr
-                  %td= registration.name.presence || _("<no name set>")
+                  %td= registration.name.presence || html_escape_once(_("&lt;no name set&gt;")).html_safe
                   %td= registration.created_at.to_date.to_s(:medium)
                   %td= link_to _('Delete'), profile_u2f_registration_path(registration), method: :delete, class: "btn btn-danger float-right", data: { confirm: _('Are you sure you want to delete this device? This action cannot be undone.') }
 

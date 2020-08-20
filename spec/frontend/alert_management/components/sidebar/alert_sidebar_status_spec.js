@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils';
-import { GlDropdown, GlDropdownItem, GlLoadingIcon } from '@gitlab/ui';
+import { GlDeprecatedDropdown, GlDeprecatedDropdownItem, GlLoadingIcon } from '@gitlab/ui';
 import { trackAlertStatusUpdateOptions } from '~/alert_management/constants';
 import AlertSidebarStatus from '~/alert_management/components/sidebar/sidebar_status.vue';
 import updateAlertStatus from '~/alert_management/graphql/mutations/update_alert_status.mutation.graphql';
@@ -10,8 +10,8 @@ const mockAlert = mockAlerts[0];
 
 describe('Alert Details Sidebar Status', () => {
   let wrapper;
-  const findStatusDropdown = () => wrapper.find(GlDropdown);
-  const findStatusDropdownItem = () => wrapper.find(GlDropdownItem);
+  const findStatusDropdown = () => wrapper.find(GlDeprecatedDropdown);
+  const findStatusDropdownItem = () => wrapper.find(GlDeprecatedDropdownItem);
   const findStatusLoadingIcon = () => wrapper.find(GlLoadingIcon);
 
   function mountComponent({ data, sidebarCollapsed = true, loading = false, stubs = {} } = {}) {

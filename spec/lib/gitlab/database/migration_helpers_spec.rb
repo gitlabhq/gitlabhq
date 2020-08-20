@@ -712,7 +712,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
             expect(model).to receive(:add_not_null_constraint).with(:users, :new)
             expect(model).to receive(:execute).with("UPDATE \"users\" SET \"new\" = cast_to_jsonb_with_default(\"users\".\"id\") WHERE \"users\".\"id\" >= #{user.id}")
             expect(model).to receive(:execute).with("DROP TRIGGER IF EXISTS #{trigger_name}\nON \"users\"\n")
-            expect(model).to receive(:execute).with("CREATE TRIGGER #{trigger_name}\nBEFORE INSERT OR UPDATE\nON \"users\"\nFOR EACH ROW\nEXECUTE PROCEDURE #{trigger_name}()\n")
+            expect(model).to receive(:execute).with("CREATE TRIGGER #{trigger_name}\nBEFORE INSERT OR UPDATE\nON \"users\"\nFOR EACH ROW\nEXECUTE FUNCTION #{trigger_name}()\n")
             expect(model).to receive(:execute).with("CREATE OR REPLACE FUNCTION #{trigger_name}()\nRETURNS trigger AS\n$BODY$\nBEGIN\n  NEW.\"new\" := NEW.\"id\";\n  RETURN NEW;\nEND;\n$BODY$\nLANGUAGE 'plpgsql'\nVOLATILE\n")
 
             model.rename_column_concurrently(:users, :id, :new, type_cast_function: 'cast_to_jsonb_with_default')

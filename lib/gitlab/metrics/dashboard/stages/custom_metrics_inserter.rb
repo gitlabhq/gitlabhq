@@ -9,7 +9,10 @@ module Gitlab
           # config. If there are no project-specific metrics,
           # this will have no effect.
           def transform!
-            PrometheusMetricsFinder.new(project: project).execute.each do |project_metric|
+            custom_metrics = PrometheusMetricsFinder.new(project: project, ordered: true).execute
+            custom_metrics = Gitlab::Utils.stable_sort_by(custom_metrics) { |metric| -metric.priority }
+
+            custom_metrics.each do |project_metric|
               group = find_or_create_panel_group(dashboard[:panel_groups], project_metric)
               panel = find_or_create_panel(group[:panels], project_metric)
               find_or_create_metric(panel[:metrics], project_metric)
@@ -83,7 +86,6 @@ module Gitlab
           def new_panel_group(metric)
             {
               group: metric.group_title,
-              priority: metric.priority,
               panels: []
             }
           end

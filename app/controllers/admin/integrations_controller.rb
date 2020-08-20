@@ -12,7 +12,7 @@ class Admin::IntegrationsController < Admin::ApplicationController
   end
 
   def integrations_enabled?
-    Feature.enabled?(:instance_level_integrations)
+    true
   end
 
   def scoped_edit_integration_path(integration)

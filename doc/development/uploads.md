@@ -214,7 +214,8 @@ In this setup, an extra Rails route must be implemented in order to handle autho
   and [its routes](https://gitlab.com/gitlab-org/gitlab/blob/cc723071ad337573e0360a879cbf99bc4fb7adb9/config/routes/git_http.rb#L31-32).
 - [API endpoints for uploading packages](packages.md#file-uploads).
 
-**note:** this will fallback to _disk buffered upload_ when `direct_upload` is disabled inside the [object storage setting](../administration/uploads.md#object-storage-settings).
+Note: **Note:**
+This will fallback to _disk buffered upload_ when `direct_upload` is disabled inside the [object storage setting](../administration/uploads.md#object-storage-settings).
 The answer to the `/authorize` call will only contain a file system path.
 
 ```mermaid

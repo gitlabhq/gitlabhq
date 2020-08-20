@@ -51,7 +51,7 @@ RSpec.describe Namespaces::RootStatisticsWorker, '#perform' do
 
   context 'with no namespace' do
     before do
-      group.destroy
+      group.destroy!
     end
 
     it 'does not execute the refresher service' do
@@ -64,7 +64,7 @@ RSpec.describe Namespaces::RootStatisticsWorker, '#perform' do
 
   context 'with a namespace with no aggregation scheduled' do
     before do
-      group.aggregation_schedule.destroy
+      group.aggregation_schedule.destroy!
     end
 
     it 'does not execute the refresher service' do

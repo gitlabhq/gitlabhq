@@ -19,7 +19,6 @@ resources :pipelines, only: [:index, :new, :create, :show, :destroy] do
     get :failures
     get :status
     get :test_report
-    get :test_reports_count
   end
 
   resources :stages, only: [], param: :name, controller: 'pipelines/stages' do

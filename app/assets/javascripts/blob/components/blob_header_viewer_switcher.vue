@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlButtonGroup, GlIcon, GlTooltipDirective } from '@gitlab/ui';
+import { GlButton, GlButtonGroup, GlTooltipDirective } from '@gitlab/ui';
 import {
   RICH_BLOB_VIEWER,
   RICH_BLOB_VIEWER_TITLE,
@@ -9,7 +9,6 @@ import {
 
 export default {
   components: {
-    GlIcon,
     GlButtonGroup,
     GlButton,
   },
@@ -52,19 +51,21 @@ export default {
       :title="$options.SIMPLE_BLOB_VIEWER_TITLE"
       :selected="isSimpleViewer"
       :class="{ active: isSimpleViewer }"
+      icon="code"
+      category="primary"
+      variant="default"
       @click="switchToViewer($options.SIMPLE_BLOB_VIEWER)"
-    >
-      <gl-icon name="code" :size="14" />
-    </gl-button>
+    />
     <gl-button
       v-gl-tooltip.hover
       :aria-label="$options.RICH_BLOB_VIEWER_TITLE"
       :title="$options.RICH_BLOB_VIEWER_TITLE"
       :selected="isRichViewer"
       :class="{ active: isRichViewer }"
+      icon="document"
+      category="primary"
+      variant="default"
       @click="switchToViewer($options.RICH_BLOB_VIEWER)"
-    >
-      <gl-icon name="document" :size="14" />
-    </gl-button>
+    />
   </gl-button-group>
 </template>

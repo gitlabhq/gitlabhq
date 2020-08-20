@@ -1,3 +1,10 @@
+---
+stage: Create
+group: Editor
+info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers"
+type: reference
+---
+
 # Repository checks
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/3232) in GitLab 8.7.

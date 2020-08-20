@@ -229,6 +229,7 @@ module SearchHelper
       opts[:data]['group-id'] = @group.id
       opts[:data]['labels-endpoint'] = group_labels_path(@group)
       opts[:data]['milestones-endpoint'] = group_milestones_path(@group)
+      opts[:data]['releases-endpoint'] = group_releases_path(@group)
     else
       opts[:data]['labels-endpoint'] = dashboard_labels_path
       opts[:data]['milestones-endpoint'] = dashboard_milestones_path

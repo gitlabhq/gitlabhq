@@ -2,9 +2,7 @@
 
 module Registrations
   class ExperienceLevelsController < ApplicationController
-    # This will need to be changed to simply 'devise' as part of
-    # https://gitlab.com/gitlab-org/growth/engineering/issues/64
-    layout 'devise_experimental_separate_sign_up_flow'
+    layout 'devise_experimental_onboarding_issues'
 
     before_action :check_experiment_enabled
     before_action :ensure_namespace_path_param

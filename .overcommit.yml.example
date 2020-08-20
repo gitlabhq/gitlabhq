@@ -44,6 +44,22 @@ PreCommit:
 #    on_warn: fail # Treat all warnings as failures
   ScssLint:
     enabled: true
+  MarkdownLint:
+    enabled: true
+    description: 'Lint documentation for Markdown errors'
+    required_executable: 'node_modules/.bin/markdownlint'
+    flags: ['--config', '.markdownlint.json', 'doc/**/*.md']
+    install_command: 'yarn install'
+    include:
+      - 'doc/**/*.md'
+  Vale:
+    enabled: true
+    description: 'Lint documentation for grammatical and formatting errors'
+    required_executable: 'vale'
+    flags: ['--config', '.vale.ini', '--minAlertLevel', 'error', 'doc']
+    install_command: 'brew install vale # (or use another package manager)'
+    include:
+      - 'doc/**/*.md'
 
 CommitMsg:
   TextWidth:

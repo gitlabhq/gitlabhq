@@ -57,7 +57,11 @@ describe('Recent Searches Dropdown Content', () => {
 
     beforeEach(() => {
       createComponent({
-        items: ['foo', 'author:@root label:~foo bar'],
+        items: [
+          'foo',
+          'author:@root label:~foo bar',
+          [{ type: 'author_username', value: { data: 'toby', operator: '=' } }],
+        ],
         isLocalStorageAvailable: true,
       });
     });
@@ -76,7 +80,7 @@ describe('Recent Searches Dropdown Content', () => {
     });
 
     it('renders a correct amount of dropdown items', () => {
-      expect(findDropdownItems()).toHaveLength(2);
+      expect(findDropdownItems()).toHaveLength(2); // Ignore non-string recent item
     });
 
     it('expect second dropdown to have 2 tokens', () => {

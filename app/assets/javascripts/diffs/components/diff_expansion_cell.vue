@@ -1,6 +1,6 @@
 <script>
 import { mapState, mapActions } from 'vuex';
-import createFlash from '~/flash';
+import { deprecatedCreateFlash as createFlash } from '~/flash';
 import { s__ } from '~/locale';
 import Icon from '~/vue_shared/components/icon.vue';
 import { UNFOLD_COUNT, INLINE_DIFF_VIEW_TYPE, PARALLEL_DIFF_VIEW_TYPE } from '../constants';

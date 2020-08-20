@@ -1,0 +1,5 @@
+---
+title: Show meaningful message when applying inapplicable suggestion
+merge_request: 37267
+author:
+type: changed

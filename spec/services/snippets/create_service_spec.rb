@@ -15,6 +15,7 @@ RSpec.describe Snippets::CreateService do
         visibility_level: Gitlab::VisibilityLevel::PRIVATE
       }
     end
+
     let(:extra_opts) { {} }
     let(:creator) { admin }
 

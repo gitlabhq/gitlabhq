@@ -109,6 +109,15 @@ Key actions for Issues include:
 On an issue's page, you can view [all aspects of the issue](issue_data_and_actions.md),
 and modify them if you have the necessary [permissions](../../permissions.md).
 
+#### Real-time sidebar **(CORE ONLY)**
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/17589) in GitLab 13.3.
+> - It cannot be enabled or disabled per-project.
+> - It's not recommended for production use.
+
+Assignees in the sidebar are updated in real time. This feature is **disabled by default**.
+To enable, you need to enable [ActionCable in-app mode](https://docs.gitlab.com/omnibus/settings/actioncable.html).
+
 ### Issues list
 
 ![Project issues list view](img/project_issues_list_view.png)

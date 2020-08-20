@@ -35,7 +35,7 @@ RSpec.describe 'projects/settings/operations/show' do
       it 'renders the Operations Settings page' do
         render template: 'projects/settings/operations/show', locals: operations_show_locals
 
-        expect(rendered).to have_content _('Error Tracking')
+        expect(rendered).to have_content _('Error tracking')
         expect(rendered).to have_content _('To link Sentry to GitLab, enter your Sentry URL and Auth Token')
       end
     end

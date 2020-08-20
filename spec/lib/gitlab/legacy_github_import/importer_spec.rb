@@ -238,6 +238,7 @@ RSpec.describe Gitlab::LegacyGithubImport::Importer do
       labels: [double(name: 'Label #2')]
     )
   end
+
   let(:closed_pull_request) do
     double(
       number: 1347,

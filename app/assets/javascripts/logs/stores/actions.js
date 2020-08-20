@@ -200,6 +200,3 @@ export const dismissRequestLogsError = ({ commit }) => {
 export const dismissInvalidTimeRangeWarning = ({ commit }) => {
   commit(types.HIDE_TIME_RANGE_INVALID_WARNING);
 };
-
-// prevent babel-plugin-rewire from generating an invalid default during karma tests
-export default () => {};

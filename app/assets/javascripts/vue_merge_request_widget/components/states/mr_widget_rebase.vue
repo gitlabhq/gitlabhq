@@ -4,7 +4,7 @@ import { escape } from 'lodash';
 import simplePoll from '../../../lib/utils/simple_poll';
 import eventHub from '../../event_hub';
 import statusIcon from '../mr_widget_status_icon.vue';
-import Flash from '../../../flash';
+import { deprecatedCreateFlash as Flash } from '../../../flash';
 import { __, sprintf } from '~/locale';
 
 export default {

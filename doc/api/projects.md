@@ -1085,7 +1085,7 @@ POST /projects
 | `template_project_id` | integer | no | **(PREMIUM)** When used with `use_custom_template`, project ID of a custom project template. This is preferable to using `template_name` since `template_name` may be ambiguous. |
 | `use_custom_template` | boolean | no | **(PREMIUM)** Use either custom [instance](../user/admin_area/custom_project_templates.md) or [group](../user/group/custom_project_templates.md) (with `group_with_project_templates_id`) project template |
 | `group_with_project_templates_id` | integer | no | **(PREMIUM)** For group-level custom templates, specifies ID of group from which all the custom project templates are sourced. Leave empty for instance-level templates. Requires `use_custom_template` to be true |
-| `packages_enabled` | boolean | no | **(PREMIUM ONLY)** Enable or disable packages repository feature |
+| `packages_enabled` | boolean | no | Enable or disable packages repository feature |
 
 NOTE: **Note:**
 If your HTTP repository is not publicly accessible,
@@ -1156,7 +1156,7 @@ POST /projects/user/:user_id
 | `template_name` | string | no | When used without `use_custom_template`, name of a [built-in project template](../gitlab-basics/create-project.md#built-in-templates). When used with `use_custom_template`, name of a custom project template |
 | `use_custom_template` | boolean | no | **(PREMIUM)** Use either custom [instance](../user/admin_area/custom_project_templates.md) or [group](../user/group/custom_project_templates.md) (with `group_with_project_templates_id`) project template |
 | `group_with_project_templates_id` | integer | no | **(PREMIUM)** For group-level custom templates, specifies ID of group from which all the custom project templates are sourced. Leave empty for instance-level templates. Requires `use_custom_template` to be true |
-| `packages_enabled` | boolean | no | **(PREMIUM ONLY)** Enable or disable packages repository feature |
+| `packages_enabled` | boolean | no | Enable or disable packages repository feature |
 
 NOTE: **Note:**
 If your HTTP repository is not publicly accessible,
@@ -1227,8 +1227,8 @@ PUT /projects/:id
 | `mirror_trigger_builds` | boolean | no | **(STARTER)** Pull mirroring triggers builds |
 | `only_mirror_protected_branches` | boolean | no | **(STARTER)** Only mirror protected branches |
 | `mirror_overwrites_diverged_branches` | boolean | no | **(STARTER)** Pull mirror overwrites diverged branches |
-| `packages_enabled` | boolean | no | **(PREMIUM ONLY)** Enable or disable packages repository feature |
-| `service_desk_enabled` | boolean | no | Enable or disable service desk feature |
+| `packages_enabled` | boolean | no | Enable or disable packages repository feature |
+| `service_desk_enabled` | boolean | no | Enable or disable Service Desk feature |
 
 NOTE: **Note:**
 If your HTTP repository is not publicly accessible,
@@ -1258,7 +1258,7 @@ POST /projects/:id/fork
 
 ## List Forks of a project
 
->**Note:** This feature was introduced in GitLab 10.1
+> Introduced in GitLab 10.1.
 
 List the projects accessible to the calling user that have an established, forked relationship with the specified project
 
@@ -1832,16 +1832,16 @@ Example response:
 }
 ```
 
-## Remove project
+## Delete project
 
 This endpoint:
 
-- Removes a project including all associated resources (issues, merge requests etc).
+- Deletes a project including all associated resources (issues, merge requests etc).
 - From [GitLab 13.2](https://gitlab.com/gitlab-org/gitlab/-/issues/220382) on [Premium or Silver](https://about.gitlab.com/pricing/) or higher tiers,
 group admins can [configure](../user/group/index.md#enabling-delayed-project-removal-premium) projects within a group
 to be deleted after a delayed period.
 When enabled, actual deletion happens after the number of days
-specified in the [default deletion period](../user/admin_area/settings/visibility_and_access_controls.md#default-deletion-adjourned-period-premium-only).
+specified in the [default deletion delay](../user/admin_area/settings/visibility_and_access_controls.md#default-deletion-delay-premium-only).
 
 CAUTION: **Warning:**
 The default behavior of [Delayed Project deletion](https://gitlab.com/gitlab-org/gitlab/-/issues/32935) in GitLab 12.6
@@ -1985,6 +1985,7 @@ GET /projects/:id/hooks/:hook_id
   "job_events": true,
   "pipeline_events": true,
   "wiki_page_events": true,
+  "deployment_events": true,
   "enable_ssl_verification": true,
   "created_at": "2012-10-12T17:04:47Z"
 }
@@ -2013,6 +2014,7 @@ POST /projects/:id/hooks
 | `job_events` | boolean | no | Trigger hook on job events |
 | `pipeline_events` | boolean | no | Trigger hook on pipeline events |
 | `wiki_page_events` | boolean | no | Trigger hook on wiki events |
+| `deployment_events` | boolean | no | Trigger hook on deployment events |
 | `enable_ssl_verification` | boolean | no | Do SSL verification when triggering the hook |
 | `token` | string | no | Secret token to validate received payloads; this will not be returned in the response |
 
@@ -2040,6 +2042,7 @@ PUT /projects/:id/hooks/:hook_id
 | `job_events` | boolean | no | Trigger hook on job events |
 | `pipeline_events` | boolean | no | Trigger hook on pipeline events |
 | `wiki_events` | boolean | no | Trigger hook on wiki events |
+| `deployment_events` | boolean | no | Trigger hook on deployment events |
 | `enable_ssl_verification` | boolean | no | Do SSL verification when triggering the hook |
 | `token` | string | no | Secret token to validate received payloads; this will not be returned in the response |
 
@@ -2121,7 +2124,7 @@ POST /projects/:id/housekeeping
 
 ### Get project push rules
 
-Get the push rules of a project.
+Get the [push rules](../push_rules/push_rules.md#enabling-push-rules) of a project.
 
 ```plaintext
 GET /projects/:id/push_rule

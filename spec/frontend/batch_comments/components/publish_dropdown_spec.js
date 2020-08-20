@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import PreviewDropdown from '~/batch_comments/components/preview_dropdown.vue';
 import { mountComponentWithStore } from 'helpers/vue_mount_component_helper';
+import PreviewDropdown from '~/batch_comments/components/preview_dropdown.vue';
 import { createStore } from '~/mr_notes/stores';
 import '~/behaviors/markdown/render_gfm';
 import { createDraft } from '../mock_data';

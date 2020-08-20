@@ -1,3 +1,4 @@
+import invalidUrl from '~/lib/utils/invalid_url';
 // This import path needs to be relative for now because this mock data is used in
 // Karma specs too, where the helpers/test_constants alias can not be resolved
 import { TEST_HOST } from '../helpers/test_constants';
@@ -170,7 +171,7 @@ export const environmentData = [
 export const dashboardGitResponse = [
   {
     default: true,
-    display_name: 'Default',
+    display_name: 'Overview',
     can_edit: false,
     system_dashboard: true,
     out_of_the_box_dashboard: true,
@@ -209,7 +210,7 @@ export const selfMonitoringDashboardGitResponse = [
     default: true,
     display_name: 'Default',
     can_edit: false,
-    system_dashboard: false,
+    system_dashboard: true,
     out_of_the_box_dashboard: true,
     project_blob_path: null,
     path: 'config/prometheus/self_monitoring_default.yml',
@@ -243,83 +244,6 @@ export const metricsResult = [
     ],
   },
 ];
-
-export const graphDataPrometheusQueryRangeMultiTrack = {
-  title: 'Super Chart A3',
-  type: 'heatmap',
-  weight: 3,
-  x_label: 'Status Code',
-  y_label: 'Time',
-  metrics: [
-    {
-      metricId: '1_metric_b',
-      id: 'response_metrics_nginx_ingress_throughput_status_code',
-      query_range:
-        'sum(rate(nginx_upstream_responses_total{upstream=~"%{kube_namespace}-%{ci_environment_slug}-.*"}[60m])) by (status_code)',
-      unit: 'req / sec',
-      label: 'Status Code',
-      prometheus_endpoint_path:
-        '/root/rails_nodb/environments/3/prometheus/api/v1/query_range?query=sum%28rate%28nginx_upstream_responses_total%7Bupstream%3D~%22%25%7Bkube_namespace%7D-%25%7Bci_environment_slug%7D-.%2A%22%7D%5B2m%5D%29%29+by+%28status_code%29',
-      result: [
-        {
-          metric: { status_code: '1xx' },
-          values: [
-            ['2019-08-30T15:00:00.000Z', 0],
-            ['2019-08-30T16:00:00.000Z', 2],
-            ['2019-08-30T17:00:00.000Z', 0],
-            ['2019-08-30T18:00:00.000Z', 0],
-            ['2019-08-30T19:00:00.000Z', 0],
-            ['2019-08-30T20:00:00.000Z', 3],
-          ],
-        },
-        {
-          metric: { status_code: '2xx' },
-          values: [
-            ['2019-08-30T15:00:00.000Z', 1],
-            ['2019-08-30T16:00:00.000Z', 3],
-            ['2019-08-30T17:00:00.000Z', 6],
-            ['2019-08-30T18:00:00.000Z', 10],
-            ['2019-08-30T19:00:00.000Z', 8],
-            ['2019-08-30T20:00:00.000Z', 6],
-          ],
-        },
-        {
-          metric: { status_code: '3xx' },
-          values: [
-            ['2019-08-30T15:00:00.000Z', 1],
-            ['2019-08-30T16:00:00.000Z', 2],
-            ['2019-08-30T17:00:00.000Z', 3],
-            ['2019-08-30T18:00:00.000Z', 3],
-            ['2019-08-30T19:00:00.000Z', 2],
-            ['2019-08-30T20:00:00.000Z', 1],
-          ],
-        },
-        {
-          metric: { status_code: '4xx' },
-          values: [
-            ['2019-08-30T15:00:00.000Z', 2],
-            ['2019-08-30T16:00:00.000Z', 0],
-            ['2019-08-30T17:00:00.000Z', 0],
-            ['2019-08-30T18:00:00.000Z', 2],
-            ['2019-08-30T19:00:00.000Z', 0],
-            ['2019-08-30T20:00:00.000Z', 2],
-          ],
-        },
-        {
-          metric: { status_code: '5xx' },
-          values: [
-            ['2019-08-30T15:00:00.000Z', 0],
-            ['2019-08-30T16:00:00.000Z', 1],
-            ['2019-08-30T17:00:00.000Z', 0],
-            ['2019-08-30T18:00:00.000Z', 0],
-            ['2019-08-30T19:00:00.000Z', 0],
-            ['2019-08-30T20:00:00.000Z', 2],
-          ],
-        },
-      ],
-    },
-  ],
-};
 
 export const stackedColumnMockedData = {
   title: 'memories',
@@ -419,6 +343,11 @@ export const mockNamespace = `${baseNamespace}/1`;
 export const mockNamespaces = [`${baseNamespace}/1`, `${baseNamespace}/2`];
 
 export const mockTimeRange = { duration: { seconds: 120 } };
+
+export const mockFixedTimeRange = {
+  start: '2020-06-17T19:59:08.659Z',
+  end: '2020-07-17T19:59:08.659Z',
+};
 
 export const mockNamespacedData = {
   mockDeploymentData: ['mockDeploymentData'],
@@ -688,10 +617,28 @@ export const storeVariables = [
 
 export const dashboardHeaderProps = {
   defaultBranch: 'master',
-  addDashboardDocumentationPath: 'https://path/to/docs',
   isRearrangingPanels: false,
   selectedTimeRange: {
     start: '2020-01-01T00:00:00.000Z',
     end: '2020-01-01T01:00:00.000Z',
   },
+};
+
+export const dashboardActionsMenuProps = {
+  defaultBranch: 'master',
+  addingMetricsAvailable: true,
+  customMetricsPath: 'https://path/to/customMetrics',
+  validateQueryPath: 'https://path/to/validateQuery',
+  isOotbDashboard: true,
+};
+
+export const mockAlert = {
+  alert_path: 'alert_path',
+  id: 8,
+  metricId: 'mock_metric_id',
+  operator: '>',
+  query: 'testQuery',
+  runbookUrl: invalidUrl,
+  threshold: 5,
+  title: 'alert title',
 };

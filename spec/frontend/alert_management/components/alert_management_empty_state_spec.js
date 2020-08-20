@@ -15,6 +15,7 @@ describe('AlertManagementEmptyState', () => {
     wrapper = shallowMount(AlertManagementEmptyState, {
       propsData: {
         enableAlertManagementPath: '/link',
+        alertsHelpUrl: '/link',
         emptyAlertSvgPath: 'illustration/path',
         ...props,
       },

@@ -74,6 +74,18 @@ export default {
       return !this.showBranchesSection && !this.showTagsSection && !this.showCommitsSection;
     },
   },
+  watch: {
+    // Keep the Vuex store synchronized if the parent
+    // component updates the selected ref through v-model
+    value: {
+      immediate: true,
+      handler() {
+        if (this.value !== this.selectedRef) {
+          this.setSelectedRef(this.value);
+        }
+      },
+    },
+  },
   created() {
     this.setProjectId(this.projectId);
     this.search(this.query);
@@ -95,9 +107,9 @@ export default {
 </script>
 
 <template>
-  <gl-new-dropdown class="ref-selector" @shown="focusSearchBox">
+  <gl-new-dropdown v-bind="$attrs" class="ref-selector" @shown="focusSearchBox">
     <template slot="button-content">
-      <span class="gl-flex-grow-1 gl-ml-2 gl-text-gray-600" data-testid="button-content">
+      <span class="gl-flex-grow-1 gl-ml-2 gl-text-gray-400" data-testid="button-content">
         <span v-if="selectedRef" class="gl-font-monospace">{{ selectedRef }}</span>
         <span v-else>{{ i18n.noRefSelected }}</span>
       </span>

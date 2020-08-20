@@ -40,23 +40,24 @@ The following example shows an application that lists and adds users to the stat
 This is the entry point for our store. You can use the following as a guide:
 
 ```javascript
-import Vue from 'vue';
 import Vuex from 'vuex';
 import * as actions from './actions';
 import * as getters from './getters';
 import mutations from './mutations';
 import state from './state';
 
-Vue.use(Vuex);
-
-export const createStore = () => new Vuex.Store({
-  actions,
-  getters,
-  mutations,
-  state,
-});
-export default createStore();
+export const createStore = () =>
+  new Vuex.Store({
+    actions,
+    getters,
+    mutations,
+    state,
+  });
 ```
+
+_Note:_ Until this
+[RFC](https://gitlab.com/gitlab-org/frontend/rfcs/-/issues/20) is implemented,
+the above will need to disable the `import/prefer-default-export` ESLint rule.
 
 ### `state.js`
 
@@ -137,44 +138,12 @@ import { mapActions } from 'vuex';
 ### `mutations.js`
 
 The mutations specify how the application state changes in response to actions sent to the store.
-The only way to change state in a Vuex store should be by committing a mutation.
+The only way to change state in a Vuex store is by committing a mutation.
 
-**It's a good idea to think of the state before writing any code.**
+Most mutations are committed from an action using `commit`. If you don't have any
+asynchronous operations, you can call mutations from a component using the `mapMutations` helper.
 
-Remember that actions only describe that something happened, they don't describe how the application state changes.
-
-**Never commit a mutation directly from a component**
-
-Instead, you should create an action that will commit a mutation.
-
-```javascript
-  import * as types from './mutation_types';
-
-  export default {
-    [types.REQUEST_USERS](state) {
-      state.isLoading = true;
-    },
-    [types.RECEIVE_USERS_SUCCESS](state, data) {
-      // Do any needed data transformation to the received payload here
-      state.users = data;
-      state.isLoading = false;
-    },
-    [types.RECEIVE_USERS_ERROR](state, error) {
-      state.isLoading = false;
-    },
-    [types.REQUEST_ADD_USER](state, user) {
-      state.isAddingUser = true;
-    },
-    [types.RECEIVE_ADD_USER_SUCCESS](state, user) {
-      state.isAddingUser = false;
-      state.users.push(user);
-    },
-    [types.REQUEST_ADD_USER_ERROR](state, error) {
-      state.isAddingUser = false;
-      state.errorAddingUser = error;
-    },
-  };
-```
+See the Vuex docs for examples of [committing mutations from components](https://vuex.vuejs.org/guide/mutations.html#committing-mutations-in-components).
 
 #### Naming Pattern: `REQUEST` and `RECEIVE` namespaces
 
@@ -316,8 +285,11 @@ function when mounting your Vue component:
 // in the Vue app's initialization script (e.g. mount_show.js)
 
 import Vue from 'vue';
-import createStore from './stores';
+import Vuex from 'vuex';
+import { createStore } from './stores';
 import AwesomeVueApp from './components/awesome_vue_app.vue'
+
+Vue.use(Vuex);
 
 export default () => {
   const el = document.getElementById('js-awesome-vue-app');
@@ -398,10 +370,8 @@ discussion](https://gitlab.com/gitlab-org/frontend/rfcs/-/issues/56#note_3025148
 ```javascript
 <script>
 import { mapActions, mapState, mapGetters } from 'vuex';
-import store from './store';
 
 export default {
-  store,
   computed: {
     ...mapGetters([
       'getUsersWithPets'
@@ -417,12 +387,10 @@ export default {
       'fetchUsers',
       'addUser',
     ]),
-
     onClickAddUser(data) {
       this.addUser(data);
     }
   },
-
   created() {
     this.fetchUsers()
   }
@@ -448,29 +416,6 @@ export default {
 </template>
 ```
 
-### Vuex Gotchas
-
-1. Do not call a mutation directly. Always use an action to commit a mutation. Doing so will keep consistency throughout the application. From Vuex docs:
-
-   > Why don't we just call store.commit('action') directly? Well, remember that mutations must be synchronous? Actions aren't. We can perform asynchronous operations inside an action.
-
-   ```javascript
-     // component.vue
-
-     // bad
-     created() {
-       this.$store.commit('mutation');
-     }
-
-     // good
-     created() {
-       this.$store.dispatch('action');
-     }
-   ```
-
-1. Use mutation types instead of hardcoding strings. It will be less error prone.
-1. The State will be accessible in all components descending from the use where the store is instantiated.
-
 ### Testing Vuex
 
 #### Testing Vuex concerns
@@ -485,53 +430,48 @@ In order to write unit tests for those components, we need to include the store 
 ```javascript
 //component_spec.js
 import Vue from 'vue';
+import Vuex from 'vuex';
+import { mount, createLocalVue } from '@vue/test-utils';
 import { createStore } from './store';
-import component from './component.vue'
+import Component from './component.vue'
+
+const localVue = createLocalVue();
+localVue.use(Vuex);
 
 describe('component', () => {
   let store;
-  let vm;
-  let Component;
+  let wrapper;
+
+  const createComponent = () => {
+    store = createStore();
+
+    wrapper = mount(Component, {
+      localVue,
+      store,
+    });
+  };
 
   beforeEach(() => {
-    Component = Vue.extend(issueActions);
+    createComponent();
   });
 
   afterEach(() => {
-    vm.$destroy();
+    wrapper.destroy();
+    wrapper = null;
   });
 
-  it('should show a user', () => {
+  it('should show a user', async () => {
     const user = {
       name: 'Foo',
       age: '30',
     };
 
-    store = createStore();
-
     // populate the store
-    store.dispatch('addUser', user);
+    await store.dispatch('addUser', user);
 
-    vm = new Component({
-      store,
-      propsData: props,
-    }).$mount();
+    expect(wrapper.text()).toContain(user.name);
   });
 });
-```
-
-#### Testing Vuex actions and getters
-
-Because we're currently using [`babel-plugin-rewire`](https://github.com/speedskater/babel-plugin-rewire), you may encounter the following error when testing your Vuex actions and getters:
-`[vuex] actions should be function or object with "handler" function`
-
-To prevent this error from happening, you need to export an empty function as `default`:
-
-```javascript
-// getters.js or actions.js
-
-// prevent babel-plugin-rewire from generating an invalid default during karma tests
-export default () => {};
 ```
 
 ### Two way data binding

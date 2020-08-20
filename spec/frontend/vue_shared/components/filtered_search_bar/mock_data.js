@@ -1,5 +1,8 @@
+import { mockLabels } from 'jest/vue_shared/components/sidebar/labels_select_vue/mock_data';
 import Api from '~/api';
 import AuthorToken from '~/vue_shared/components/filtered_search_bar/tokens/author_token.vue';
+import LabelToken from '~/vue_shared/components/filtered_search_bar/tokens/label_token.vue';
+import MilestoneToken from '~/vue_shared/components/filtered_search_bar/tokens/milestone_token.vue';
 
 export const mockAuthor1 = {
   id: 1,
@@ -30,6 +33,28 @@ export const mockAuthor3 = {
 
 export const mockAuthors = [mockAuthor1, mockAuthor2, mockAuthor3];
 
+export const mockRegularMilestone = {
+  id: 1,
+  name: '4.0',
+  title: '4.0',
+};
+
+export const mockEscapedMilestone = {
+  id: 3,
+  name: '5.0 RC1',
+  title: '5.0 RC1',
+};
+
+export const mockMilestones = [
+  {
+    id: 2,
+    name: '5.0',
+    title: '5.0',
+  },
+  mockRegularMilestone,
+  mockEscapedMilestone,
+];
+
 export const mockAuthorToken = {
   type: 'author_username',
   icon: 'user',
@@ -42,7 +67,29 @@ export const mockAuthorToken = {
   fetchAuthors: Api.projectUsers.bind(Api),
 };
 
-export const mockAvailableTokens = [mockAuthorToken];
+export const mockLabelToken = {
+  type: 'label_name',
+  icon: 'labels',
+  title: 'Label',
+  unique: false,
+  symbol: '~',
+  token: LabelToken,
+  operators: [{ value: '=', description: 'is', default: 'true' }],
+  fetchLabels: () => Promise.resolve(mockLabels),
+};
+
+export const mockMilestoneToken = {
+  type: 'milestone_title',
+  icon: 'clock',
+  title: 'Milestone',
+  unique: true,
+  symbol: '%',
+  token: MilestoneToken,
+  operators: [{ value: '=', description: 'is', default: 'true' }],
+  fetchMilestones: () => Promise.resolve({ data: mockMilestones }),
+};
+
+export const mockAvailableTokens = [mockAuthorToken, mockLabelToken];
 
 export const mockHistoryItems = [
   [
@@ -50,6 +97,13 @@ export const mockHistoryItems = [
       type: 'author_username',
       value: {
         data: 'toby',
+        operator: '=',
+      },
+    },
+    {
+      type: 'label_name',
+      value: {
+        data: 'Bug',
         operator: '=',
       },
     },

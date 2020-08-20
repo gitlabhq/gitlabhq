@@ -1,3 +1,10 @@
+---
+stage: Create
+group: Source Code
+info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers"
+type: reference, api
+---
+
 # Merge requests API
 
 Every API call to merge requests must be authenticated.
@@ -2449,3 +2456,8 @@ Example response:
 ## Approvals **(STARTER)**
 
 For approvals, please see [Merge Request Approvals](merge_request_approvals.md)
+
+## List merge request state events
+
+To track which state was set, who did it, and when it happened, check out
+[Resource state events API](./resource_state_events.md#merge-requests).

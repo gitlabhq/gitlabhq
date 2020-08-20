@@ -1,0 +1,5 @@
+---
+title: Fix merge request approvals for EE without a license
+merge_request: 37246
+author:
+type: fixed

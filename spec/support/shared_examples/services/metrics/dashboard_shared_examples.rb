@@ -62,7 +62,7 @@ end
 RSpec.shared_examples 'dashboard_version contains SHA256 hash of dashboard file content' do
   specify do
     dashboard = File.read(Rails.root.join(dashboard_path))
-    expect(Digest::SHA256.hexdigest(dashboard)).to eq(dashboard_version)
+    expect(dashboard_version).to eq(Digest::SHA256.hexdigest(dashboard))
   end
 end
 
@@ -75,6 +75,12 @@ end
 RSpec.shared_examples 'raises error for users with insufficient permissions' do
   context 'when the user does not have sufficient access' do
     let(:user) { build(:user) }
+
+    it_behaves_like 'misconfigured dashboard service response', :unauthorized
+  end
+
+  context 'when the user is anonymous' do
+    let(:user) { nil }
 
     it_behaves_like 'misconfigured dashboard service response', :unauthorized
   end

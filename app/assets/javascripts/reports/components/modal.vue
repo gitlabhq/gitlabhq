@@ -33,7 +33,7 @@ export default {
         v-for="(field, key, index) in modalData"
         v-if="field.value"
         :key="index"
-        class="row prepend-top-10 append-bottom-10"
+        class="row gl-mt-3 gl-mb-3"
       >
         <strong class="col-sm-3 text-right"> {{ field.text }}: </strong>
 

@@ -2,7 +2,7 @@
 type: reference
 ---
 
-# Group SAML and SCIM troubleshooting **(SILVER ONLY)**
+# Troubleshooting Group SAML and SCIM **(SILVER ONLY)**
 
 These are notes and screenshots regarding Group SAML and SCIM that the GitLab Support Team sometimes uses while troubleshooting, but which do not fit into the official documentation. GitLab is making this public, so that anyone can make use of the Support team’s collected knowledge.
 

@@ -69,9 +69,11 @@ It can be set to:
 ## Feature flag strategies
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/35555) in GitLab 13.0.
-> - It's deployed behind a feature flag, disabled by default.
+> - It was deployed behind a feature flag, disabled by default.
+> - It became [enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/214684) in GitLab 13.2.
+> - It's recommended for production use.
 > - It's enabled on GitLab.com.
-> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-feature-flag-strategies). **(CORE ONLY)**
+> - For GitLab self-managed instances, a GitLab administrator can choose to [disable it](#enable-or-disable-feature-flag-strategies). **(CORE ONLY)**
 
 You can apply a feature flag strategy across multiple environments, without defining
 the strategy multiple times.
@@ -134,27 +136,72 @@ target users. See the [Ruby example](#ruby-application-example) below.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/35930) in GitLab 13.1.
 
-Enables the feature for lists of users created with the [Feature Flag User List API](../api/feature_flag_user_lists.md).
+Enables the feature for lists of users created [in the Feature Flags UI](#create-a-user-list), or with the [Feature Flag User List API](../api/feature_flag_user_lists.md).
 Similar to [User IDs](#user-ids), it uses the Unleash [`userWithId`](https://unleash.github.io/docs/activation_strategy#userwithid)
 activation strategy.
 
+It's not possible to *disable* a feature for members of a user list, but you can achieve the same
+effect by enabling a feature for a user list that doesn't contain the excluded users.
+
+For example:
+
+- `Full-user-list` = `User1A, User1B, User2A, User2B, User3A, User3B, ...`
+- `Full-user-list-excluding-B-users` = `User1A, User2A, User3A, ...`
+
+#### Create a user list
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13308) in GitLab 13.3.
+
+To create a user list:
+
+1. In your project, navigate to **Operations > Feature Flags**.
+1. Click on **New list**.
+1. Enter a name for the list.
+1. Click **Create**.
+
+You can view a list's User IDs by clicking the **{pencil}** (edit) button next to it.
+When viewing a list, you can rename it by clicking the **Edit** button.
+
+#### Add users to a user list
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13308) in GitLab 13.3.
+
+To add users to a user list:
+
+1. In your project, navigate to **Operations > Feature Flags**.
+1. Click on the **{pencil}** (edit) button next to the list you want to add users to.
+1. Click on **Add Users**.
+1. Enter the user IDs as a comma-separated list of values. For example,
+   `user@example.com, user2@example.com`, or `username1,username2,username3`, and so on.
+1. Click on **Add**.
+
+#### Remove users from a user list
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13308) in GitLab 13.3.
+
+To remove users from a user list:
+
+1. In your project, navigate to **Operations > Feature Flags**.
+1. Click on the **{pencil}** (edit) button next to the list you want to change.
+1. Click on the **{remove}** (remove) button next to the ID you want to remove.
+
 ### Enable or disable feature flag strategies
 
-This feature is under development, but is ready for testing. It's
-deployed behind a feature flag that is **disabled by default**.
+This feature is under development, but is ready for production use. It's
+deployed behind a feature flag that is **enabled by default**.
 [GitLab administrators with access to the GitLab Rails console](../administration/feature_flags.md)
-can enable it for your instance.
-
-To enable it:
-
-```ruby
-Feature.enable(:feature_flags_new_version)
-```
+can disable it for your instance.
 
 To disable it:
 
 ```ruby
 Feature.disable(:feature_flags_new_version)
+```
+
+To enable it:
+
+```ruby
+Feature.enable(:feature_flags_new_version)
 ```
 
 ## Disable a feature flag for a specific environment
@@ -194,9 +241,11 @@ To get the access credentials that your application needs to communicate with Gi
 1. Click the **Configure** button to view the following:
    - **API URL**: URL where the client (application) connects to get a list of feature flags.
    - **Instance ID**: Unique token that authorizes the retrieval of the feature flags.
-   - **Application name**: The name of the running environment. For instance,
-     if the application runs for a production server, the application name would be
-     `production` or similar. This value is used for the environment spec evaluation.
+   - **Application name**: The name of the *environment* the application runs in
+     (not the name of the application itself).
+
+     For example, if the application runs for a production server, the **Application name**
+     could be `production` or similar. This value is used for the environment spec evaluation.
 
 NOTE: **Note:**
 The meaning of these fields might change over time. For example, we are not sure
@@ -245,7 +294,7 @@ func init() {
     unleash.Initialize(
         unleash.WithUrl("https://gitlab.com/api/v4/feature_flags/unleash/42"),
         unleash.WithInstanceId("29QmjsW6KngPR5JNPMWx"),
-        unleash.WithAppName("production"),
+        unleash.WithAppName("production"), // Set to the running environment of your application
         unleash.WithListener(&metricsInterface{}),
     )
 }
@@ -278,7 +327,7 @@ require 'unleash/context'
 
 unleash = Unleash::Client.new({
   url: 'http://gitlab.com/api/v4/feature_flags/unleash/42',
-  app_name: 'production',
+  app_name: 'production', # Set to the running environment of your application
   instance_id: '29QmjsW6KngPR5JNPMWx'
 })
 

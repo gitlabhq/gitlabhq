@@ -59,11 +59,13 @@ describe('Sidebar details block', () => {
 
   describe('actions', () => {
     it('should render link to new issue', () => {
-      expect(vm.$el.querySelector('.js-new-issue').getAttribute('href')).toEqual(
+      expect(vm.$el.querySelector('[data-testid="job-new-issue"]').getAttribute('href')).toEqual(
         job.new_issue_path,
       );
 
-      expect(vm.$el.querySelector('.js-new-issue').textContent.trim()).toEqual('New issue');
+      expect(vm.$el.querySelector('[data-testid="job-new-issue"]').textContent.trim()).toEqual(
+        'New issue',
+      );
     });
 
     it('should render link to retry job', () => {

@@ -10,8 +10,9 @@
       = page_title
     %p
       = _('You can generate an access token scoped to this project for each application to use the GitLab API.')
-    %p
-      = _('You can also use project access tokens to authenticate against Git over HTTP.')
+    -# Commented out until https://gitlab.com/gitlab-org/gitlab/-/issues/219551 is fixed
+    -# %p
+    -#   = _('You can also use project access tokens to authenticate against Git over HTTP.')
 
   .col-lg-8
     - if @new_project_access_token

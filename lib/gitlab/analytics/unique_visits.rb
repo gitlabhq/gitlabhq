@@ -3,57 +3,36 @@
 module Gitlab
   module Analytics
     class UniqueVisits
-      TARGET_IDS = Set[
-        'g_analytics_contribution',
-        'g_analytics_insights',
-        'g_analytics_issues',
-        'g_analytics_productivity',
-        'g_analytics_valuestream',
-        'p_analytics_pipelines',
-        'p_analytics_code_reviews',
-        'p_analytics_valuestream',
-        'p_analytics_insights',
-        'p_analytics_issues',
-        'p_analytics_repo',
-        'u_analytics_todos',
-        'i_analytics_cohorts',
-        'i_analytics_dev_ops_score'
-      ].freeze
-
-      KEY_EXPIRY_LENGTH = 28.days
-
       def track_visit(visitor_id, target_id, time = Time.zone.now)
-        target_key = key(target_id, time)
-
-        Gitlab::Redis::SharedState.with do |redis|
-          redis.multi do |multi|
-            multi.pfadd(target_key, visitor_id)
-            multi.expire(target_key, KEY_EXPIRY_LENGTH)
-          end
-        end
+        Gitlab::UsageDataCounters::HLLRedisCounter.track_event(visitor_id, target_id, time)
       end
 
-      def weekly_unique_visits_for_target(target_id, week_of: 7.days.ago)
-        Gitlab::Redis::SharedState.with do |redis|
-          redis.pfcount(key(target_id, week_of))
-        end
+      # Returns number of unique visitors for given targets in given time frame
+      #
+      # @param [String, Array[<String>]] targets ids of targets to count visits on. Special case for :any
+      # @param [ActiveSupport::TimeWithZone] start_date start of time frame
+      # @param [ActiveSupport::TimeWithZone] end_date end of time frame
+      # @return [Integer] number of unique visitors
+      def unique_visits_for(targets:, start_date: 7.days.ago, end_date: start_date + 1.week)
+        target_ids = if targets == :analytics
+                       self.class.analytics_ids
+                     elsif targets == :compliance
+                       self.class.compliance_ids
+                     else
+                       Array(targets)
+                     end
+
+        Gitlab::UsageDataCounters::HLLRedisCounter.unique_events(event_names: target_ids, start_date: start_date, end_date: end_date)
       end
 
-      def weekly_unique_visits_for_any_target(week_of: 7.days.ago)
-        keys = TARGET_IDS.map { |target_id| key(target_id, week_of) }
-
-        Gitlab::Redis::SharedState.with do |redis|
-          redis.pfcount(*keys)
+      class << self
+        def analytics_ids
+          Gitlab::UsageDataCounters::HLLRedisCounter.events_for_category('analytics')
         end
-      end
 
-      private
-
-      def key(target_id, time)
-        raise "Invalid target id #{target_id}" unless TARGET_IDS.include?(target_id.to_s)
-
-        year_week = time.strftime('%G-%V')
-        "#{target_id}-{#{year_week}}"
+        def compliance_ids
+          Gitlab::UsageDataCounters::HLLRedisCounter.events_for_category('compliance')
+        end
       end
     end
   end

@@ -142,20 +142,42 @@ RSpec.describe Gitlab::Metrics::Dashboard::Finder, :use_clean_rails_memory_store
 
   describe '.find_all_paths' do
     let(:all_dashboard_paths) { described_class.find_all_paths(project) }
-    let(:system_dashboard) { { path: system_dashboard_path, display_name: 'Default dashboard', default: true, system_dashboard: true, out_of_the_box_dashboard: true } }
+    let(:system_dashboard) { { path: system_dashboard_path, display_name: 'Overview', default: true, system_dashboard: true, out_of_the_box_dashboard: true } }
+    let(:k8s_pod_health_dashboard) { { path: pod_dashboard_path, display_name: 'K8s pod health', default: false, system_dashboard: false, out_of_the_box_dashboard: true } }
 
-    it 'includes only the system dashboard by default' do
-      expect(all_dashboard_paths).to eq([system_dashboard])
+    it 'includes OOTB dashboards by default' do
+      expect(all_dashboard_paths).to eq([k8s_pod_health_dashboard, system_dashboard])
     end
 
     context 'when the project contains dashboards' do
-      let(:dashboard_path) { '.gitlab/dashboards/test.yml' }
-      let(:project) { project_with_dashboard(dashboard_path) }
+      let(:dashboard_content) { fixture_file('lib/gitlab/metrics/dashboard/sample_dashboard.yml') }
+      let(:project) { project_with_dashboards(dashboards) }
 
-      it 'includes system and project dashboards' do
-        project_dashboard = { path: dashboard_path, display_name: 'test.yml', default: false, system_dashboard: false, out_of_the_box_dashboard: false }
+      let(:dashboards) do
+        {
+          '.gitlab/dashboards/metrics.yml' => dashboard_content,
+          '.gitlab/dashboards/better_metrics.yml' => dashboard_content
+        }
+      end
 
-        expect(all_dashboard_paths).to contain_exactly(system_dashboard, project_dashboard)
+      it 'includes OOTB and project dashboards' do
+        project_dashboard1 = {
+          path: '.gitlab/dashboards/metrics.yml',
+          display_name: 'metrics.yml',
+          default: false,
+          system_dashboard: false,
+          out_of_the_box_dashboard: false
+        }
+
+        project_dashboard2 = {
+          path: '.gitlab/dashboards/better_metrics.yml',
+          display_name: 'better_metrics.yml',
+          default: false,
+          system_dashboard: false,
+          out_of_the_box_dashboard: false
+        }
+
+        expect(all_dashboard_paths).to eq([project_dashboard2, k8s_pod_health_dashboard, project_dashboard1, system_dashboard])
       end
     end
 
@@ -163,12 +185,13 @@ RSpec.describe Gitlab::Metrics::Dashboard::Finder, :use_clean_rails_memory_store
       let(:self_monitoring_dashboard) do
         {
           path: self_monitoring_dashboard_path,
-          display_name: 'Default dashboard',
+          display_name: 'Overview',
           default: true,
-          system_dashboard: false,
+          system_dashboard: true,
           out_of_the_box_dashboard: true
         }
       end
+
       let(:dashboard_path) { '.gitlab/dashboards/test.yml' }
       let(:project) { project_with_dashboard(dashboard_path) }
 
@@ -185,7 +208,7 @@ RSpec.describe Gitlab::Metrics::Dashboard::Finder, :use_clean_rails_memory_store
           out_of_the_box_dashboard: false
         }
 
-        expect(all_dashboard_paths).to contain_exactly(self_monitoring_dashboard, project_dashboard)
+        expect(all_dashboard_paths).to eq([self_monitoring_dashboard, project_dashboard])
       end
     end
   end

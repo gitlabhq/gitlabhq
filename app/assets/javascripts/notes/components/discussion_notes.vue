@@ -9,6 +9,7 @@ import NoteableNote from './noteable_note.vue';
 import ToggleRepliesWidget from './toggle_replies_widget.vue';
 import NoteEditedText from './note_edited_text.vue';
 import DiscussionNotesRepliesWrapper from './discussion_notes_replies_wrapper.vue';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 export default {
   name: 'DiscussionNotes',
@@ -17,6 +18,7 @@ export default {
     NoteEditedText,
     DiscussionNotesRepliesWrapper,
   },
+  mixins: [glFeatureFlagsMixin()],
   props: {
     discussion: {
       type: Object,
@@ -93,6 +95,18 @@ export default {
     componentData(note) {
       return note.isPlaceholderNote ? note.notes[0] : note;
     },
+    handleMouseEnter(discussion) {
+      if (this.glFeatures.multilineComments && discussion.position) {
+        this.setSelectedCommentPositionHover(discussion.position.line_range);
+      }
+    },
+    handleMouseLeave(discussion) {
+      // Even though position isn't used here we still don't want to unecessarily call a mutation
+      // The lack of position tells us that highlighting is irrelevant in this context
+      if (this.glFeatures.multilineComments && discussion.position) {
+        this.setSelectedCommentPositionHover();
+      }
+    },
   },
 };
 </script>
@@ -101,8 +115,8 @@ export default {
   <div class="discussion-notes">
     <ul
       class="notes"
-      @mouseenter="setSelectedCommentPositionHover(discussion.position.line_range)"
-      @mouseleave="setSelectedCommentPositionHover()"
+      @mouseenter="handleMouseEnter(discussion)"
+      @mouseleave="handleMouseLeave(discussion)"
     >
       <template v-if="shouldGroupReplies">
         <component

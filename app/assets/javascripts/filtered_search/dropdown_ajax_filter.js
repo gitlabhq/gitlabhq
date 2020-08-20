@@ -1,4 +1,4 @@
-import createFlash from '../flash';
+import { deprecatedCreateFlash as createFlash } from '../flash';
 import AjaxFilter from '../droplab/plugins/ajax_filter';
 import FilteredSearchDropdown from './filtered_search_dropdown';
 import DropdownUtils from './dropdown_utils';

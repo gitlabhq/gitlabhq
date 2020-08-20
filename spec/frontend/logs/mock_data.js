@@ -36,6 +36,16 @@ export const mockManagedApps = [
     path: '/root/autodevops-deploy/-/clusters/15',
     gitlab_managed_apps_logs_path: '/root/autodevops-deploy/-/logs?cluster_id=15',
   },
+  {
+    cluster_type: 'project_type',
+    enabled: true,
+    environment_scope: '*',
+    name: 'kubernetes-cluster-2',
+    provider_type: 'user',
+    status: 'connected',
+    path: '/root/autodevops-deploy/-/clusters/16',
+    gitlab_managed_apps_logs_path: null,
+  },
 ];
 
 export const mockPodName = 'production-764c58d697-aaaaa';

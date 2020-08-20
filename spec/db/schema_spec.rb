@@ -19,6 +19,7 @@ RSpec.describe 'Database schema' do
     approver_groups: %w[target_id],
     approvers: %w[target_id user_id],
     audit_events: %w[author_id entity_id],
+    audit_events_part_5fc467ac26: %w[author_id entity_id],
     award_emoji: %w[awardable_id user_id],
     aws_roles: %w[role_external_id],
     boards: %w[milestone_id],
@@ -164,6 +165,9 @@ RSpec.describe 'Database schema' do
 
   context 'for enums' do
     ApplicationRecord.descendants.each do |model|
+      # skip model if it is an abstract class as it would not have an associated DB table
+      next if model.abstract_class?
+
       describe model do
         let(:ignored_enums) { ignored_limit_enums(model.name) }
         let(:enums) { model.defined_enums.keys - ignored_enums }
@@ -185,6 +189,7 @@ RSpec.describe 'Database schema' do
     "Operations::FeatureFlagScope" => %w[strategies],
     "Operations::FeatureFlags::Strategy" => %w[parameters],
     "Packages::Composer::Metadatum" => %w[composer_json],
+    "RawUsageData" => %w[payload], # Usage data payload changes often, we cannot use one schema
     "Releases::Evidence" => %w[summary]
   }.freeze
 

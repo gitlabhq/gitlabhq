@@ -239,6 +239,18 @@ RSpec.describe API::Jobs do
         end
       end
 
+      context 'when config source not ci' do
+        let(:non_ci_config_source) { ::Ci::PipelineEnums.non_ci_config_source_values.first }
+        let(:pipeline) do
+          create(:ci_pipeline, config_source: non_ci_config_source, project: project)
+        end
+
+        it 'returns the specified pipeline' do
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response[0]['pipeline']['sha']).to eq(pipeline.sha.to_s)
+        end
+      end
+
       it 'avoids N+1 queries' do
         control_count = ActiveRecord::QueryRecorder.new(skip_cached: false) do
           get api("/projects/#{project.id}/pipelines/#{pipeline.id}/jobs", api_user), params: query

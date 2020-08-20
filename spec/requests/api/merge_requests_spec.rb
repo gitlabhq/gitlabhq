@@ -1551,25 +1551,33 @@ RSpec.describe API::MergeRequests do
       it "returns 422 when source_branch equals target_branch" do
         post api("/projects/#{project.id}/merge_requests", user),
         params: { title: "Test merge_request", source_branch: "master", target_branch: "master", author: user }
+
         expect(response).to have_gitlab_http_status(:unprocessable_entity)
+        expect(json_response['message']).to eq(["You can't use same project/branch for source and target"])
       end
 
       it "returns 400 when source_branch is missing" do
         post api("/projects/#{project.id}/merge_requests", user),
         params: { title: "Test merge_request", target_branch: "master", author: user }
+
         expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['error']).to eq('source_branch is missing')
       end
 
       it "returns 400 when target_branch is missing" do
         post api("/projects/#{project.id}/merge_requests", user),
         params: { title: "Test merge_request", source_branch: "markdown", author: user }
+
         expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['error']).to eq('target_branch is missing')
       end
 
       it "returns 400 when title is missing" do
         post api("/projects/#{project.id}/merge_requests", user),
         params: { target_branch: 'master', source_branch: 'markdown' }
+
         expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['error']).to eq('title is missing')
       end
 
       context 'with existing MR' do
@@ -1594,7 +1602,9 @@ RSpec.describe API::MergeRequests do
                    author: user
                  }
           end.to change { MergeRequest.count }.by(0)
+
           expect(response).to have_gitlab_http_status(:conflict)
+          expect(json_response['message']).to eq(["Another open merge request already exists for this source branch: !5"])
         end
       end
 

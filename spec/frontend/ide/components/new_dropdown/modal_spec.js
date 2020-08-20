@@ -2,7 +2,7 @@ import Vue from 'vue';
 import { createComponentWithStore } from 'helpers/vue_mount_component_helper';
 import { createStore } from '~/ide/stores';
 import modal from '~/ide/components/new_dropdown/modal.vue';
-import createFlash from '~/flash';
+import { deprecatedCreateFlash as createFlash } from '~/flash';
 
 jest.mock('~/flash');
 

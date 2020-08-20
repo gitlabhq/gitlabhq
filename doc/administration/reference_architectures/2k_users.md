@@ -1,27 +1,30 @@
 ---
 reading_time: true
+stage: Enablement
+group: Distribution
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 ---
 
-# Reference architecture: up to 2,000 users
+# Reference architecture: up to 2,000 users **(CORE ONLY)**
 
 This page describes GitLab reference architecture for up to 2,000 users.
 For a full list of reference architectures, see
 [Available reference architectures](index.md#available-reference-architectures).
 
 > - **Supported users (approximate):** 2,000
-> - **High Availability:** False
+> - **High Availability:** No
 > - **Test requests per second (RPS) rates:** API: 40 RPS, Web: 4 RPS, Git: 4 RPS
 
-| Service                                  | Nodes  | Configuration           | GCP             | AWS            | Azure     |
-|------------------------------------------|--------|-------------------------|-----------------|----------------|-----------|
-| Load balancer                            | 1      | 2 vCPU, 1.8GB memory    | `n1-highcpu-2`  | `c5.large`     | `F2s v2`  |
-| PostgreSQL                               | 1      | 2 vCPU, 7.5GB memory    | `n1-standard-2` | `m5.large`     | `D2s v3`  |
-| Redis                                    | 1      | 1 vCPU, 3.75GB memory   | `n1-standard-1` | `m5.large`     | `D2s v3`  |
-| Gitaly                                   | 1      | 4 vCPU, 15GB memory     | `n1-standard-4` | `m5.xlarge`    | `D4s v3`  |
-| GitLab Rails                             | 2      | 8 vCPU, 7.2GB memory    | `n1-highcpu-8`  | `c5.2xlarge`   | `F8s v2`  |
-| Monitoring node                          | 1      | 2 vCPU, 1.8GB memory    | `n1-highcpu-2`  | `c5.large`     | `F2s v2`  |
-| Object storage                           | n/a    | n/a                     | n/a             | n/a            | n/a       |
-| NFS server (optional, not recommended)   | 1      | 4 vCPU, 3.6GB memory    | `n1-highcpu-4`  | `c5.xlarge`    | `F4s v2`  |
+| Service                                  | Nodes  | Configuration           | GCP            | AWS          | Azure   |
+|------------------------------------------|--------|-------------------------|----------------|--------------|---------|
+| Load balancer                            | 1      | 2 vCPU, 1.8GB memory    | n1-highcpu-2   | c5.large     | F2s v2  |
+| PostgreSQL                               | 1      | 2 vCPU, 7.5GB memory    | n1-standard-2  | m5.large     | D2s v3  |
+| Redis                                    | 1      | 1 vCPU, 3.75GB memory   | n1-standard-1  | m5.large     | D2s v3  |
+| Gitaly                                   | 1      | 4 vCPU, 15GB memory     | n1-standard-4  | m5.xlarge    | D4s v3  |
+| GitLab Rails                             | 2      | 8 vCPU, 7.2GB memory    | n1-highcpu-8   | c5.2xlarge   | F8s v2  |
+| Monitoring node                          | 1      | 2 vCPU, 1.8GB memory    | n1-highcpu-2   | c5.large     | F2s v2  |
+| Object storage                           | n/a    | n/a                     | n/a            | n/a          | n/a     |
+| NFS server (optional, not recommended)   | 1      | 4 vCPU, 3.6GB memory    | n1-highcpu-4   | c5.xlarge    | F4s v2  |
 
 The Google Cloud Platform (GCP) architectures were built and tested using the
 [Intel Xeon E5 v3 (Haswell)](https://cloud.google.com/compute/docs/cpu-platforms)
@@ -554,7 +557,7 @@ On each node perform the following:
 
    1. Specify the necessary NFS mounts in `/etc/fstab`.
       The exact contents of `/etc/fstab` will depend on how you chose
-      to configure your NFS server. See the [NFS documentation](../high_availability/nfs.md)
+      to configure your NFS server. See the [NFS documentation](../nfs.md)
       for examples and the various options.
 
    1. Create the shared directories. These may be different depending on your NFS
@@ -852,7 +855,7 @@ along with [Gitaly](#configure-gitaly), are recommended over using NFS whenever
 possible. However, if you intend to use GitLab Pages,
 [you must use NFS](troubleshooting.md#gitlab-pages-requires-nfs).
 
-For information about configuring NFS, see the [NFS documentation page](../high_availability/nfs.md).
+For information about configuring NFS, see the [NFS documentation page](../nfs.md).
 
 <div align="right">
   <a type="button" class="btn btn-default" href="#setup-components">

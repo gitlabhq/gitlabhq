@@ -147,7 +147,6 @@ if Gitlab::Metrics.enabled? && !Rails.env.test? && !(Rails.env.development? && d
   Gitlab::Application.configure do |config|
     config.middleware.use(Gitlab::Metrics::RackMiddleware)
     config.middleware.use(Gitlab::Middleware::RailsQueueDuration)
-    config.middleware.use(Gitlab::Metrics::RedisRackMiddleware)
     config.middleware.use(Gitlab::Metrics::ElasticsearchRackMiddleware)
   end
 
@@ -199,7 +198,7 @@ if Gitlab::Metrics.enabled? && !Rails.env.test? && !(Rails.env.development? && d
       val = super
 
       if current_transaction = ::Gitlab::Metrics::Transaction.current
-        current_transaction.increment(:new_redis_connections, 1)
+        current_transaction.increment(:gitlab_transaction_new_redis_connections_total, 1)
       end
 
       val

@@ -1,0 +1,5 @@
+---
+title: Replace FontAwesome fa-clock icon with SVG icon
+merge_request: 37123
+author:
+type: performance

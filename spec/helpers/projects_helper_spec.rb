@@ -126,7 +126,7 @@ RSpec.describe ProjectsHelper do
       it "returns false if there are permissions and origin project is PRIVATE" do
         allow(helper).to receive(:can?) { true }
 
-        project.update(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
+        project.update!(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
 
         expect(helper.can_change_visibility_level?(forked_project, user)).to be_falsey
       end
@@ -134,7 +134,7 @@ RSpec.describe ProjectsHelper do
       it "returns true if there are permissions and origin project is INTERNAL" do
         allow(helper).to receive(:can?) { true }
 
-        project.update(visibility_level: Gitlab::VisibilityLevel::INTERNAL)
+        project.update!(visibility_level: Gitlab::VisibilityLevel::INTERNAL)
 
         expect(helper.can_change_visibility_level?(forked_project, user)).to be_truthy
       end
@@ -647,7 +647,7 @@ RSpec.describe ProjectsHelper do
       context 'user has a configured commit email' do
         before do
           confirmed_email = create(:email, :confirmed, user: user)
-          user.update(commit_email: confirmed_email)
+          user.update!(commit_email: confirmed_email)
         end
 
         it 'returns the commit email' do
@@ -866,7 +866,7 @@ RSpec.describe ProjectsHelper do
       when :developer, :maintainer
         project.add_user(user, access)
       when :owner
-        project.namespace.update(owner: user)
+        project.namespace.update!(owner: user)
       end
     end
 

@@ -1,0 +1,9 @@
+query getIncidentsCountByStatus($searchTerm: String, $projectPath: ID!, $issueTypes: [IssueType!]) {
+  project(fullPath: $projectPath) {
+    issueStatusCounts(search: $searchTerm, types: $issueTypes) {
+      all
+      opened
+      closed
+    }
+  }
+}

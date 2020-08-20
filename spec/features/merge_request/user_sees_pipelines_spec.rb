@@ -123,13 +123,23 @@ RSpec.describe 'Merge request > User sees pipelines', :js do
     context 'when actor is a developer in parent project' do
       let(:actor) { developer_in_parent }
 
-      it 'creates a pipeline in the parent project' do
+      it 'creates a pipeline in the parent project when user proceeds with the warning' do
         visit project_merge_request_path(parent_project, merge_request)
 
         create_merge_request_pipeline
+        act_on_security_warning(action: 'Run Pipeline')
 
         check_pipeline(expected_project: parent_project)
         check_head_pipeline(expected_project: parent_project)
+      end
+
+      it 'does not create a pipeline in the parent project when user cancels the action' do
+        visit project_merge_request_path(parent_project, merge_request)
+
+        create_merge_request_pipeline
+        act_on_security_warning(action: 'Cancel')
+
+        check_no_pipelines
       end
     end
 
@@ -185,6 +195,19 @@ RSpec.describe 'Merge request > User sees pipelines', :js do
 
       page.within('.ci-widget-content') do
         expect(page.find('.pipeline-id')[:href]).to include(expected_project.full_path)
+      end
+    end
+
+    def act_on_security_warning(action:)
+      page.within('#create-pipeline-for-fork-merge-request-modal') do
+        expect(page).to have_content('Are you sure you want to run this pipeline?')
+        click_button(action)
+      end
+    end
+
+    def check_no_pipelines
+      page.within('.ci-table') do
+        expect(page).to have_selector('.commit', count: 1)
       end
     end
   end

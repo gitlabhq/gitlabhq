@@ -74,7 +74,6 @@ export const getDiffFileDiscussions = (state, getters, rootState, rootGetters) =
     discussion => discussion.diff_discussion && discussion.diff_file.file_hash === diff.file_hash,
   ) || [];
 
-// prevent babel-plugin-rewire from generating an invalid default during karma∂ tests
 export const getDiffFileByHash = state => fileHash =>
   state.diffFiles.find(file => file.file_hash === fileHash);
 
@@ -130,6 +129,3 @@ export const fileLineCoverage = state => (file, line) => {
  */
 export const currentDiffIndex = state =>
   Math.max(0, state.diffFiles.findIndex(diff => diff.file_hash === state.currentDiffFileId));
-
-// prevent babel-plugin-rewire from generating an invalid default during karma tests
-export default () => {};

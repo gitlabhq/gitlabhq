@@ -2,7 +2,7 @@ import Vue from 'vue';
 import { createComponentWithStore } from 'helpers/vue_mount_component_helper';
 import { createStore } from '~/ide/stores';
 import FileRowExtra from '~/ide/components/file_row_extra.vue';
-import { file, resetStore } from '../helpers';
+import { file } from '../helpers';
 
 describe('IDE extra file row component', () => {
   let Component;
@@ -32,7 +32,6 @@ describe('IDE extra file row component', () => {
 
   afterEach(() => {
     vm.$destroy();
-    resetStore(vm.$store);
 
     stagedFilesCount = 0;
     unstagedFilesCount = 0;

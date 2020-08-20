@@ -29,10 +29,10 @@ Some examples where background migrations can be useful:
 - Populating one column based on JSON stored in another column.
 - Migrating data that depends on the output of external services (e.g. an API).
 
-> **Note:**
-> If the background migration is part of an important upgrade, make sure it's announced
-> in the release post. Discuss with your Project Manager if you're not sure the migration falls
-> into this category.
+NOTE: **Note:**
+If the background migration is part of an important upgrade, make sure it's announced
+in the release post. Discuss with your Project Manager if you're not sure the migration falls
+into this category.
 
 ## Isolation
 
@@ -123,7 +123,7 @@ once.
 
 ## Cleaning Up
 
->**Note:**
+NOTE: **Note:**
 Cleaning up any remaining background migrations _must_ be done in either a major
 or minor release, you _must not_ do this in a patch release.
 

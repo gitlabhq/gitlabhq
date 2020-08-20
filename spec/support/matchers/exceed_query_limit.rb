@@ -44,7 +44,7 @@ module ExceedQueryLimitHelpers
   def log_message
     if expected.is_a?(ActiveRecord::QueryRecorder)
       counts = count_queries(strip_marginalia_annotations(expected.log))
-      extra_queries = strip_marginalia_annotations(@recorder.log).reject { |query| counts[query] -= 1 unless counts[query].zero? }
+      extra_queries = strip_marginalia_annotations(@recorder.log).reject { |query| counts[query] -= 1 unless counts[query] == 0 }
       extra_queries_display = count_queries(extra_queries).map { |query, count| "[#{count}] #{query}" }
 
       (['Extra queries:'] + extra_queries_display).join("\n\n")
@@ -188,7 +188,7 @@ RSpec::Matchers.define :issue_same_number_of_queries_as do
 
   def expected_count_message
     or_fewer_msg = "or fewer" if @or_fewer
-    threshold_msg = "(+/- #{threshold})" unless threshold.zero?
+    threshold_msg = "(+/- #{threshold})" unless threshold == 0
 
     ["#{expected_count}", or_fewer_msg, threshold_msg].compact.join(' ')
   end

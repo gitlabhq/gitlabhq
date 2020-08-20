@@ -12,8 +12,8 @@ import {
   GlSearchBoxByType,
   GlSprintf,
 } from '@gitlab/ui';
-import { __, s__ } from '~/locale';
 import { debounce, trim } from 'lodash';
+import { __, s__ } from '~/locale';
 import { joinPaths, visitUrl } from '~/lib/utils/url_utility';
 import { fetchPolicies } from '~/lib/graphql';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
@@ -60,15 +60,15 @@ export default {
     {
       key: 'severity',
       label: s__('AlertManagement|Severity'),
-      tdClass: `${tdClass} rounded-top text-capitalize`,
       thClass: `${thClass} gl-w-eighth`,
+      tdClass: `${tdClass} rounded-top text-capitalize sortable-cell`,
       sortable: true,
     },
     {
       key: 'startedAt',
       label: s__('AlertManagement|Start time'),
       thClass: `${thClass} js-started-at w-15p`,
-      tdClass,
+      tdClass: `${tdClass} sortable-cell`,
       sortable: true,
     },
     {
@@ -81,7 +81,7 @@ export default {
       key: 'eventCount',
       label: s__('AlertManagement|Events'),
       thClass: `${thClass} text-right gl-w-12`,
-      tdClass: `${tdClass} text-md-right`,
+      tdClass: `${tdClass} text-md-right sortable-cell`,
       sortable: true,
     },
     {
@@ -89,7 +89,6 @@ export default {
       label: s__('AlertManagement|Issue'),
       thClass: 'gl-w-12 gl-pointer-events-none',
       tdClass,
-      sortable: false,
     },
     {
       key: 'assignees',
@@ -99,9 +98,9 @@ export default {
     },
     {
       key: 'status',
-      thClass: `${thClass} w-15p`,
       label: s__('AlertManagement|Status'),
-      tdClass: `${tdClass} rounded-bottom`,
+      thClass: `${thClass} w-15p`,
+      tdClass: `${tdClass} rounded-bottom sortable-cell`,
       sortable: true,
     },
   ],
@@ -169,7 +168,7 @@ export default {
         };
       },
       error() {
-        this.errored = true;
+        this.hasError = true;
       },
     },
     alertsCount: {
@@ -188,10 +187,9 @@ export default {
   data() {
     return {
       searchTerm: '',
-      errored: false,
+      hasError: false,
       errorMessage: '',
       isAlertDismissed: false,
-      isErrorAlertDismissed: false,
       sort: 'STARTED_AT_DESC',
       statusFilter: [],
       filteredByStatus: '',
@@ -204,15 +202,12 @@ export default {
   computed: {
     showNoAlertsMsg() {
       return (
-        !this.errored &&
+        !this.hasError &&
         !this.loading &&
         this.alertsCount?.all === 0 &&
         !this.searchTerm &&
         !this.isAlertDismissed
       );
-    },
-    showErrorMsg() {
-      return this.errored && !this.isErrorAlertDismissed;
     },
     loading() {
       return this.$apollo.queries.alerts.loading;
@@ -307,11 +302,11 @@ export default {
       };
     },
     handleAlertError(errorMessage) {
-      this.errored = true;
+      this.hasError = true;
       this.errorMessage = errorMessage;
     },
     dismissError() {
-      this.isErrorAlertDismissed = true;
+      this.hasError = false;
       this.errorMessage = '';
     },
   },
@@ -319,7 +314,7 @@ export default {
 </script>
 <template>
   <div>
-    <div class="alert-management-list">
+    <div class="incident-management-list">
       <gl-alert v-if="showNoAlertsMsg" @dismiss="isAlertDismissed = true">
         <gl-sprintf :message="$options.i18n.noAlertsMsg">
           <template #link="{ content }">
@@ -333,16 +328,14 @@ export default {
           </template>
         </gl-sprintf>
       </gl-alert>
-      <gl-alert
-        v-if="showErrorMsg"
-        variant="danger"
-        data-testid="alert-error"
-        @dismiss="dismissError"
-      >
+      <gl-alert v-if="hasError" variant="danger" data-testid="alert-error" @dismiss="dismissError">
         <p v-html="errorMessage || $options.i18n.errorMsg"></p>
       </gl-alert>
 
-      <gl-tabs content-class="gl-p-0" @input="filterAlertsByStatus">
+      <gl-tabs
+        content-class="gl-p-0 gl-border-b-solid gl-border-b-1 gl-border-gray-100"
+        @input="filterAlertsByStatus"
+      >
         <gl-tab v-for="tab in $options.statusTabs" :key="tab.status">
           <template slot="title">
             <span>{{ tab.title }}</span>

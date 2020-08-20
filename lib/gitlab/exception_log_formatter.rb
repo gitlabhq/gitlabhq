@@ -23,7 +23,7 @@ module Gitlab
       end
 
       if exception.backtrace
-        payload['exception.backtrace'] = Gitlab::BacktraceCleaner.clean_backtrace(exception.backtrace)
+        payload['exception.backtrace'] = Rails.backtrace_cleaner.clean(exception.backtrace)
       end
     end
   end

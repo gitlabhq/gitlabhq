@@ -21,7 +21,15 @@ RSpec.describe PersonalSnippet do
     let_it_be(:container) { create(:personal_snippet, :repository) }
     let(:stubbed_container) { build_stubbed(:personal_snippet) }
     let(:expected_full_path) { "@snippets/#{container.id}" }
-    let(:expected_web_url_path) { "snippets/#{container.id}" }
-    let(:expected_repo_url_path) { expected_web_url_path }
+    let(:expected_web_url_path) { "-/snippets/#{container.id}" }
+    let(:expected_repo_url_path) { "snippets/#{container.id}" }
+  end
+
+  describe '#parent_user' do
+    it 'returns the snippet author' do
+      snippet = build(:personal_snippet)
+
+      expect(snippet.parent_user).to eq(snippet.author)
+    end
   end
 end

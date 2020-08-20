@@ -1,0 +1,5 @@
+---
+title: Improve path traversal validation checks
+merge_request: 33114
+author:
+type: security

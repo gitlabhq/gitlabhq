@@ -51,7 +51,7 @@ RSpec.describe MergeRequestPolicy do
     let!(:merge_request) { create(:merge_request, source_project: project, target_project: project, author: author) }
 
     before do
-      project.project_feature.update(merge_requests_access_level: ProjectFeature::DISABLED)
+      project.project_feature.update!(merge_requests_access_level: ProjectFeature::DISABLED)
     end
 
     describe 'the author' do
@@ -83,8 +83,8 @@ RSpec.describe MergeRequestPolicy do
     let!(:merge_request) { create(:merge_request, source_project: project, target_project: project, author: author) }
 
     before do
-      project.update(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
-      project.project_feature.update(merge_requests_access_level: ProjectFeature::PRIVATE)
+      project.update!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
+      project.project_feature.update!(merge_requests_access_level: ProjectFeature::PRIVATE)
     end
 
     describe 'a non-team-member' do

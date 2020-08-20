@@ -120,8 +120,4 @@ module NotificationsHelper
   def can_read_project?(project)
     can?(current_user, :read_project, project)
   end
-
-  def notification_event_disabled?(event)
-    event == :fixed_pipeline && !Gitlab::Ci::Features.pipeline_fixed_notifications?
-  end
 end

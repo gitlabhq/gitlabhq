@@ -29,6 +29,11 @@ You also need to take into consideration the underlying network topology, making
 sure you have redundant connectivity between all Database and GitLab instances
 to avoid the network becoming a single point of failure.
 
+NOTE: **Note:**
+As of GitLab 13.3, PostgreSQL 12 is shipped with Omnibus GitLab. Clustering for PostgreSQL 12 is only supported with
+Patroni. See the [Patroni](#patroni) section for further details. The support for repmgr will not be extended beyond
+PostgreSQL 11.
+
 ### Database node
 
 Each database node runs three services:
@@ -97,7 +102,7 @@ This is why you will need:
 
 When using default setup, minimum configuration requires:
 
-- `CONSUL_USERNAME`. Defaults to `gitlab-consul`
+- `CONSUL_USERNAME`. The default user for Omnibus GitLab is `gitlab-consul`
 - `CONSUL_DATABASE_PASSWORD`. Password for the database user.
 - `CONSUL_PASSWORD_HASH`. This is a hash generated out of Consul username/password pair.
    Can be generated with:
@@ -140,7 +145,7 @@ server nodes.
 
 We will need the following password information for the application's database user:
 
-- `POSTGRESQL_USERNAME`. Defaults to `gitlab`
+- `POSTGRESQL_USERNAME`. The default user for Omnibus GitLab is `gitlab`
 - `POSTGRESQL_USER_PASSWORD`. The password for the database user
 - `POSTGRESQL_PASSWORD_HASH`. This is a hash generated out of the username/password pair.
   Can be generated with:
@@ -153,7 +158,7 @@ We will need the following password information for the application's database u
 
 When using default setup, minimum configuration requires:
 
-- `PGBOUNCER_USERNAME`. Defaults to `pgbouncer`
+- `PGBOUNCER_USERNAME`. The default user for Omnibus GitLab is `pgbouncer`
 - `PGBOUNCER_PASSWORD`. This is a password for PgBouncer service.
 - `PGBOUNCER_PASSWORD_HASH`. This is a hash generated out of PgBouncer username/password pair.
   Can be generated with:
@@ -198,7 +203,7 @@ When installing the GitLab package, do not supply `EXTERNAL_URL` value.
 
 ### Configuring the Database nodes
 
-1. Make sure to [configure the Consul nodes](../high_availability/consul.md).
+1. Make sure to [configure the Consul nodes](../consul.md).
 1. Make sure you collect [`CONSUL_SERVER_NODES`](#consul-information), [`PGBOUNCER_PASSWORD_HASH`](#pgbouncer-information), [`POSTGRESQL_PASSWORD_HASH`](#postgresql-information), the [number of db nodes](#postgresql-information), and the [network address](#network-information) before executing the next step.
 
 1. On the master database node, edit `/etc/gitlab/gitlab.rb` replacing values noted in the `# START user configuration` section:
@@ -303,6 +308,12 @@ Select one node as a primary node.
 
    ```shell
    CREATE EXTENSION pg_trgm;
+   ```
+
+1. Enable the `btree_gist` extension:
+
+   ```shell
+   CREATE EXTENSION btree_gist;
    ```
 
 1. Exit the database prompt by typing `\q` and Enter.
@@ -455,7 +466,7 @@ Check the [Troubleshooting section](#troubleshooting) before proceeding.
    gitlab-ctl write-pgpass --host 127.0.0.1 --database pgbouncer --user pgbouncer --hostuser gitlab-consul
    ```
 
-1. [Enable monitoring](../high_availability/pgbouncer.md#enable-monitoring)
+1. [Enable monitoring](../postgresql/pgbouncer.md#enable-monitoring)
 
 #### PgBouncer Checkpoint
 
@@ -736,9 +747,9 @@ consul['configuration'] = {
 
 After deploying the configuration follow these steps:
 
-1. On `10.6.0.31`, our primary database
+1. On `10.6.0.31`, our primary database:
 
-   Enable the `pg_trgm` extension
+   Enable the `pg_trgm` and `btree_gist` extensions:
 
    ```shell
    gitlab-psql -d gitlabhq_production
@@ -746,33 +757,34 @@ After deploying the configuration follow these steps:
 
    ```shell
    CREATE EXTENSION pg_trgm;
+   CREATE EXTENSION btree_gist;
    ```
 
-1. On `10.6.0.32`, our first standby database
+1. On `10.6.0.32`, our first standby database:
 
-   Make this node a standby of the primary
+   Make this node a standby of the primary:
 
    ```shell
    gitlab-ctl repmgr standby setup 10.6.0.21
    ```
 
-1. On `10.6.0.33`, our second standby database
+1. On `10.6.0.33`, our second standby database:
 
-   Make this node a standby of the primary
+   Make this node a standby of the primary:
 
    ```shell
    gitlab-ctl repmgr standby setup 10.6.0.21
    ```
 
-1. On `10.6.0.41`, our application server
+1. On `10.6.0.41`, our application server:
 
-   Set `gitlab-consul` user's PgBouncer password to `toomanysecrets`
+   Set `gitlab-consul` user's PgBouncer password to `toomanysecrets`:
 
    ```shell
    gitlab-ctl write-pgpass --host 127.0.0.1 --database pgbouncer --user pgbouncer --hostuser gitlab-consul
    ```
 
-   Run database migrations
+   Run database migrations:
 
    ```shell
    gitlab-rake gitlab:db:configure
@@ -783,7 +795,7 @@ After deploying the configuration follow these steps:
 This example uses 3 PostgreSQL servers, and 1 application node (with PgBouncer setup alongside).
 
 It differs from the [recommended setup](#example-recommended-setup) by moving the Consul servers into the same servers we use for PostgreSQL.
-The trade-off is between reducing server counts, against the increased operational complexity of needing to deal with PostgreSQL [failover](#failover-procedure) and [restore](#restore-procedure) procedures in addition to [Consul outage recovery](../high_availability/consul.md#outage-recovery) on the same set of machines.
+The trade-off is between reducing server counts, against the increased operational complexity of needing to deal with PostgreSQL [failover](#failover-procedure) and [restore](#restore-procedure) procedures in addition to [Consul outage recovery](../consul.md#outage-recovery) on the same set of machines.
 
 In this example we start with all servers on the same 10.6.0.0/16 private network range, they can connect to each freely other on those addresses.
 
@@ -1075,7 +1087,7 @@ To restart either service, run `gitlab-ctl restart SERVICE`
 
 For PostgreSQL, it is usually safe to restart the master node by default. Automatic failover defaults to a 1 minute timeout. Provided the database returns before then, nothing else needs to be done. To be safe, you can stop `repmgrd` on the standby nodes first with `gitlab-ctl stop repmgrd`, then start afterwards with `gitlab-ctl start repmgrd`.
 
-On the Consul server nodes, it is important to restart the Consul service in a controlled fashion. Read our [Consul documentation](../high_availability/consul.md#restarting-the-server-cluster) for instructions on how to restart the service.
+On the Consul server nodes, it is important to [restart the Consul service](../consul.md#restart-consul) in a controlled manner.
 
 ### `gitlab-ctl repmgr-check-master` command produces errors
 
@@ -1122,11 +1134,10 @@ postgresql['trust_auth_cidr_addresses'] = %w(123.123.123.123/32 <other_cidrs>)
 
 ### Issues with other components
 
-If you're running into an issue with a component not outlined here, be sure to check the troubleshooting section of their specific documentation page.
+If you're running into an issue with a component not outlined here, be sure to check the troubleshooting section of their specific documentation page:
 
-- [Consul](../high_availability/consul.md#troubleshooting)
+- [Consul](../consul.md#troubleshooting-consul)
 - [PostgreSQL](https://docs.gitlab.com/omnibus/settings/database.html#troubleshooting)
-- [GitLab application](../high_availability/gitlab.md#troubleshooting)
 
 ## Patroni
 
@@ -1324,7 +1335,7 @@ You can switch an exiting database cluster to use Patroni instead of repmgr with
 
    NOTE: **Note:**
    Ensure that there is no `walsender` process running on the primary node.
-   `ps aux | grep walsender` must not show any running process.  
+   `ps aux | grep walsender` must not show any running process.
 
 1. On the primary node, [configure Patroni](#configuring-patroni-cluster). Remove `repmgr` and any other
    repmgr-specific configuration. Also remove any configuration that is related to PostgreSQL replication.

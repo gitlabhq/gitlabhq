@@ -35,7 +35,7 @@ RSpec.describe 'Projects > Settings > For a forked project', :js do
       end
 
       it 'renders form for incident management' do
-        expect(page).to have_selector('h3', text: 'Incidents')
+        expect(page).to have_selector('h4', text: 'Incidents')
       end
 
       it 'sets correct default values' do
@@ -46,11 +46,14 @@ RSpec.describe 'Projects > Settings > For a forked project', :js do
       it 'updates form values' do
         check(create_issue)
         uncheck(send_email)
+        click_on('No template selected')
+        click_on('bug')
 
         save_form
         click_expand_incident_management_button
 
         expect(find_field(create_issue)).to be_checked
+        expect(page).to have_selector(:id, 'alert-integration-settings-issue-template', text: 'bug')
         expect(find_field(send_email)).not_to be_checked
       end
 

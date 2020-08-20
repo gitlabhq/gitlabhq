@@ -12,6 +12,7 @@ import {
   getProjectSlug,
   spriteIcon,
 } from './lib/utils/common_utils';
+import Tracking from '~/tracking';
 
 /**
  * Search input in top navigation bar.
@@ -355,6 +356,15 @@ export class SearchAutocomplete {
     if (!this.dropdown.hasClass('show')) {
       this.loadingSuggestions = false;
       this.dropdownToggle.dropdown('toggle');
+
+      const trackEvent = 'click_search_bar';
+      const trackCategory = undefined; // will be default set in event method
+
+      Tracking.event(trackCategory, trackEvent, {
+        label: 'main_navigation',
+        property: 'navigation',
+      });
+
       return this.searchInput.removeClass('js-autocomplete-disabled');
     }
   }

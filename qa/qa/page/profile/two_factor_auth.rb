@@ -16,6 +16,8 @@ module QA
 
         view 'app/views/profiles/two_factor_auths/_codes.html.haml' do
           element :proceed_button
+          element :codes_content
+          element :code_content
         end
 
         def click_configure_it_later_button
@@ -32,6 +34,13 @@ module QA
 
         def click_register_2fa_app_button
           click_element :register_2fa_app_button
+        end
+
+        def recovery_codes
+          code_elements = within_element(:codes_content) do
+            all_elements(:code_content, minimum: 1)
+          end
+          code_elements.map { |code_content| code_content.text }
         end
 
         def click_proceed_button

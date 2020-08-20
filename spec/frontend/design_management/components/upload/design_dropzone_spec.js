@@ -1,6 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
+import { GlIcon } from '@gitlab/ui';
 import DesignDropzone from '~/design_management/components/upload/design_dropzone.vue';
-import createFlash from '~/flash';
+import { deprecatedCreateFlash as createFlash } from '~/flash';
 
 jest.mock('~/flash');
 
@@ -12,10 +13,16 @@ describe('Design management dropzone component', () => {
   };
 
   const findDropzoneCard = () => wrapper.find('.design-dropzone-card');
+  const findDropzoneArea = () => wrapper.find('[data-testid="dropzone-area"]');
+  const findIcon = () => wrapper.find(GlIcon);
 
-  function createComponent({ slots = {}, data = {} } = {}) {
+  function createComponent({ slots = {}, data = {}, props = {} } = {}) {
     wrapper = shallowMount(DesignDropzone, {
       slots,
+      propsData: {
+        hasDesigns: true,
+        ...props,
+      },
       data() {
         return data;
       },
@@ -128,5 +135,19 @@ describe('Design management dropzone component', () => {
         expect(createFlash).toHaveBeenCalledTimes(1);
       });
     });
+  });
+
+  it('applies correct classes when there are no designs or no design saving loader', () => {
+    createComponent({ props: { hasDesigns: false } });
+    expect(findDropzoneArea().classes()).not.toContain('gl-flex-direction-column');
+    expect(findIcon().classes()).toEqual(['gl-mr-3', 'gl-text-gray-500']);
+    expect(findIcon().props('size')).toBe(16);
+  });
+
+  it('applies correct classes when there are designs or design saving loader', () => {
+    createComponent({ props: { hasDesigns: true } });
+    expect(findDropzoneArea().classes()).toContain('gl-flex-direction-column');
+    expect(findIcon().classes()).toEqual(['gl-mb-2']);
+    expect(findIcon().props('size')).toBe(24);
   });
 });

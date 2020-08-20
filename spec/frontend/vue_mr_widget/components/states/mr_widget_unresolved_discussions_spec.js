@@ -1,46 +1,68 @@
-import Vue from 'vue';
-import mountComponent from 'helpers/vue_mount_component_helper';
-import UnresolvedDiscussions from '~/vue_merge_request_widget/components/states/unresolved_discussions.vue';
+import { mount } from '@vue/test-utils';
 import { TEST_HOST } from 'helpers/test_constants';
+import UnresolvedDiscussions from '~/vue_merge_request_widget/components/states/unresolved_discussions.vue';
+import notesEventHub from '~/notes/event_hub';
+
+function createComponent({ path = '' } = {}) {
+  return mount(UnresolvedDiscussions, {
+    propsData: {
+      mr: {
+        createIssueToResolveDiscussionsPath: path,
+      },
+    },
+  });
+}
 
 describe('UnresolvedDiscussions', () => {
-  const Component = Vue.extend(UnresolvedDiscussions);
-  let vm;
+  let wrapper;
+
+  beforeEach(() => {
+    wrapper = createComponent();
+  });
 
   afterEach(() => {
-    vm.$destroy();
+    wrapper.destroy();
+  });
+
+  it('triggers the correct notes event when the jump to first unresolved discussion button is clicked', () => {
+    jest.spyOn(notesEventHub, '$emit');
+
+    wrapper.find('[data-testid="jump-to-first"]').trigger('click');
+
+    expect(notesEventHub.$emit).toHaveBeenCalledWith('jumpToFirstUnresolvedDiscussion');
   });
 
   describe('with threads path', () => {
     beforeEach(() => {
-      vm = mountComponent(Component, {
-        mr: {
-          createIssueToResolveDiscussionsPath: TEST_HOST,
-        },
-      });
+      wrapper = createComponent({ path: TEST_HOST });
+    });
+
+    afterEach(() => {
+      wrapper.destroy();
     });
 
     it('should have correct elements', () => {
-      expect(vm.$el.innerText).toContain(
-        'There are unresolved threads. Please resolve these threads',
+      expect(wrapper.element.innerText).toContain(
+        `Before this can be merged, one or more threads must be resolved.`,
       );
 
-      expect(vm.$el.innerText).toContain('Create an issue to resolve them later');
-      expect(vm.$el.querySelector('.js-create-issue').getAttribute('href')).toEqual(TEST_HOST);
+      expect(wrapper.element.innerText).toContain('Jump to first unresolved thread');
+      expect(wrapper.element.innerText).toContain('Resolve all threads in new issue');
+      expect(wrapper.element.querySelector('.js-create-issue').getAttribute('href')).toEqual(
+        TEST_HOST,
+      );
     });
   });
 
   describe('without threads path', () => {
-    beforeEach(() => {
-      vm = mountComponent(Component, { mr: {} });
-    });
-
     it('should not show create issue link if user cannot create issue', () => {
-      expect(vm.$el.innerText).toContain(
-        'There are unresolved threads. Please resolve these threads',
+      expect(wrapper.element.innerText).toContain(
+        `Before this can be merged, one or more threads must be resolved.`,
       );
 
-      expect(vm.$el.querySelector('.js-create-issue')).toEqual(null);
+      expect(wrapper.element.innerText).toContain('Jump to first unresolved thread');
+      expect(wrapper.element.innerText).not.toContain('Resolve all threads in new issue');
+      expect(wrapper.element.querySelector('.js-create-issue')).toEqual(null);
     });
   });
 });

@@ -125,6 +125,7 @@
 .db-patterns: &db-patterns
   - "{,ee/}{,spec/}{db,migrations}/**/*"
   - "{,ee/}{,spec/}lib/{,ee/}gitlab/background_migration/**/*"
+  - "config/prometheus/common_metrics.yml" # Used by Gitlab::DatabaseImporters::CommonMetrics::Importer
 
 .backstage-patterns: &backstage-patterns
   - "Dangerfile"

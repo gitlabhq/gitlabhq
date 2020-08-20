@@ -257,6 +257,7 @@ RSpec.describe 'Gitlab::Graphql::Authorization' do
         type.field :id, GraphQL::ID_TYPE, null: false
       end
     end
+
     let(:project_type) do |type|
       type_factory do |type|
         type.graphql_name 'FakeProjectType'
@@ -264,11 +265,13 @@ RSpec.describe 'Gitlab::Graphql::Authorization' do
                    resolve: -> (_, _, _) { Issue.where(project: [visible_project, other_project]).order(id: :asc) }
       end
     end
+
     let(:query_type) do
       query_factory do |query|
         query.field :test_project, project_type, null: false, resolve: -> (_, _, _) { visible_project }
       end
     end
+
     let(:query_string) do
       <<~QRY
         { testProject { testIssues(first: 3) { edges { node { id } } } } }

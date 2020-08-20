@@ -20,60 +20,10 @@ module Ci
     UnknownStatusError = Class.new(StandardError)
 
     class_methods do
-      def legacy_status_sql
-        scope_relevant = respond_to?(:exclude_ignored) ? exclude_ignored : all
-        scope_warnings = respond_to?(:failed_but_allowed) ? failed_but_allowed : none
-
-        builds = scope_relevant.select('count(*)').to_sql
-        created = scope_relevant.created.select('count(*)').to_sql
-        success = scope_relevant.success.select('count(*)').to_sql
-        manual = scope_relevant.manual.select('count(*)').to_sql
-        scheduled = scope_relevant.scheduled.select('count(*)').to_sql
-        preparing = scope_relevant.preparing.select('count(*)').to_sql
-        waiting_for_resource = scope_relevant.waiting_for_resource.select('count(*)').to_sql
-        pending = scope_relevant.pending.select('count(*)').to_sql
-        running = scope_relevant.running.select('count(*)').to_sql
-        skipped = scope_relevant.skipped.select('count(*)').to_sql
-        canceled = scope_relevant.canceled.select('count(*)').to_sql
-        warnings = scope_warnings.select('count(*) > 0').to_sql.presence || 'false'
-
-        Arel.sql(
-          "(CASE
-            WHEN (#{builds})=(#{skipped}) AND (#{warnings}) THEN 'success'
-            WHEN (#{builds})=(#{skipped}) THEN 'skipped'
-            WHEN (#{builds})=(#{success}) THEN 'success'
-            WHEN (#{builds})=(#{created}) THEN 'created'
-            WHEN (#{builds})=(#{preparing}) THEN 'preparing'
-            WHEN (#{builds})=(#{success})+(#{skipped}) THEN 'success'
-            WHEN (#{builds})=(#{success})+(#{skipped})+(#{canceled}) THEN 'canceled'
-            WHEN (#{builds})=(#{created})+(#{skipped})+(#{pending}) THEN 'pending'
-            WHEN (#{running})+(#{pending})>0 THEN 'running'
-            WHEN (#{waiting_for_resource})>0 THEN 'waiting_for_resource'
-            WHEN (#{manual})>0 THEN 'manual'
-            WHEN (#{scheduled})>0 THEN 'scheduled'
-            WHEN (#{preparing})>0 THEN 'preparing'
-            WHEN (#{created})>0 THEN 'running'
-            ELSE 'failed'
-          END)"
-        )
-      end
-
-      def legacy_status
-        all.pluck(legacy_status_sql).first
-      end
-
-      # This method should not be used.
-      # This method performs expensive calculation of status:
-      # 1. By plucking all related objects,
-      # 2. Or executes expensive SQL query
-      def slow_composite_status(project:)
-        if ::Gitlab::Ci::Features.composite_status?(project)
-          Gitlab::Ci::Status::Composite
-            .new(all, with_allow_failure: columns_hash.key?('allow_failure'))
-            .status
-        else
-          legacy_status
-        end
+      def composite_status
+        Gitlab::Ci::Status::Composite
+          .new(all, with_allow_failure: columns_hash.key?('allow_failure'))
+          .status
       end
 
       def started_at

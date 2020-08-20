@@ -96,9 +96,10 @@ Consider an example upstream project, `git@gitlab.com:gitlab-tests/test-git-lfs-
 1. Clean up the repository:
 
    ```shell
-   # cd path/to/mirror/repo:
+   # Change into the mirror repo directory:
    cd test-git-lfs-repo-migration.git
-   # clean up the repo:
+
+   # Clean up the repo:
    git reflog expire --expire=now --all && git gc --prune=now --aggressive
    ```
 
@@ -128,12 +129,23 @@ Consider an example upstream project, `git@gitlab.com:gitlab-tests/test-git-lfs-
 1. Track the files you want with LFS:
 
    ```shell
-   # cd path/to/upstream/repo:
+   # Change into the /tmp directory
+   cd /tmp
+
+   # Clone the repo
+   git clone git@gitlab.com:gitlab-tests/test-git-lfs-repo-migration.git
+
+   # Change into the upstream repo directory:
    cd test-git-lfs-repo-migration
+
    # You may need to reset your local copy with upstream's `master` after force-pushing from the mirror:
    git reset --hard origin/master
+
    # Track the files with LFS:
    git lfs track "*.gif" "*.png" "*.jpg" "*.psd" "*.mp4" "img/"
+
+   # Push up changes to .gitattributes
+   git add .gitattributes && git commit -m 'Track .gif,.png,.jpg,.psd,.mp4 and img/' && git push
    ```
 
    Now all existing the files you converted, as well as the new

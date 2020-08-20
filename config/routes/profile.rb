@@ -22,7 +22,7 @@ resource :profile, only: [:show, :update] do
     end
 
     resource :notifications, only: [:show, :update] do
-      resources :groups, only: :update
+      resources :groups, only: :update, constraints: { id: Gitlab::PathRegex.full_namespace_route_regex }
     end
 
     resource :password, only: [:new, :create, :edit, :update] do

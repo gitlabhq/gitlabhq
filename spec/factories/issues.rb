@@ -7,6 +7,7 @@ FactoryBot.define do
     author { project.creator }
     updated_by { author }
     relative_position { RelativePositioning::START_POSITION }
+    issue_type { :issue }
 
     trait :confidential do
       confidential { true }
@@ -38,8 +39,12 @@ FactoryBot.define do
       end
 
       after(:create) do |issue, evaluator|
-        issue.update(labels: evaluator.labels)
+        issue.update!(labels: evaluator.labels)
       end
+    end
+
+    factory :incident do
+      issue_type { :incident }
     end
   end
 end

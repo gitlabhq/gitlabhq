@@ -56,6 +56,7 @@ RSpec.describe Gitlab::HookData::IssuableBuilder do
             ]
           }
         end
+
         let(:data) { builder.build(user: user, changes: changes) }
 
         it 'populates the :changes hash' do

@@ -1,0 +1,5 @@
+---
+title: Fix pagination for bitbucket server importer
+merge_request: 39598
+author:
+type: fixed

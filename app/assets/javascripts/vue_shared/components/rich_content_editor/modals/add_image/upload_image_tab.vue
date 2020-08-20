@@ -1,6 +1,6 @@
 <script>
-import { __ } from '~/locale';
 import { GlFormGroup } from '@gitlab/ui';
+import { __ } from '~/locale';
 import { MAX_FILE_SIZE } from '../../constants';
 
 export default {

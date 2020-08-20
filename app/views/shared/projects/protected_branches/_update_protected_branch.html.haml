@@ -1,0 +1,35 @@
+- merge_access_levels = protected_branch.merge_access_levels.for_role
+- push_access_levels = protected_branch.push_access_levels.for_role
+
+- user_merge_access_levels = protected_branch.merge_access_levels.for_user
+- user_push_access_levels = protected_branch.push_access_levels.for_user
+
+- group_merge_access_levels = protected_branch.merge_access_levels.for_group
+- group_push_access_levels = protected_branch.push_access_levels.for_group
+
+%td.merge_access_levels-container
+  = hidden_field_tag "allowed_to_merge_#{protected_branch.id}", merge_access_levels.first&.access_level
+  = dropdown_tag( (merge_access_levels.first&.humanize || 'Select') ,
+                 options: { toggle_class: 'js-allowed-to-merge qa-allowed-to-merge', dropdown_class: 'dropdown-menu-selectable js-allowed-to-merge-container capitalize-header',
+                 data: { field_name: "allowed_to_merge_#{protected_branch.id}", preselected_items: access_levels_data(merge_access_levels) }})
+  - if user_merge_access_levels.any?
+    %p.small
+      = _('The following %{user} can also merge into this branch: %{branch}') % { user: 'user'.pluralize(user_merge_access_levels.size), branch: user_merge_access_levels.map(&:humanize).to_sentence }
+
+  - if group_merge_access_levels.any?
+    %p.small
+      = _('Members of %{group} can also merge into this branch: %{branch}') % { group: (group_merge_access_levels.size > 1 ? 'these groups' : 'this group'), branch: group_merge_access_levels.map(&:humanize).to_sentence }
+
+%td.push_access_levels-container
+  = hidden_field_tag "allowed_to_push_#{protected_branch.id}", push_access_levels.first&.access_level
+  = dropdown_tag( (push_access_levels.first&.humanize || 'Select') ,
+                 options: { toggle_class: 'js-allowed-to-push', dropdown_class: 'dropdown-menu-selectable js-allowed-to-push-container capitalize-header',
+                 data: { field_name: "allowed_to_push_#{protected_branch.id}", preselected_items: access_levels_data(push_access_levels) }})
+  - if user_push_access_levels.any?
+    %p.small
+      = _('The following %{user} can also push to this branch: %{branch}') % { user: 'user'.pluralize(user_push_access_levels.size), branch: user_push_access_levels.map(&:humanize).to_sentence }
+
+  - if group_push_access_levels.any?
+    %p.small
+      = _('Members of %{group} can also push to this branch: %{branch}') % { group: (group_push_access_levels.size > 1 ? 'these groups' : 'this group'), branch: group_push_access_levels.map(&:humanize).to_sentence }
+

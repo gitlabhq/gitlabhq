@@ -1,7 +1,7 @@
 <script>
 import $ from 'jquery';
 import { s__, sprintf } from '~/locale';
-import createFlash from '~/flash';
+import { deprecatedCreateFlash as createFlash } from '~/flash';
 import animateMixin from '../mixins/animate';
 import TaskList from '../../task_list';
 import recaptchaModalImplementor from '../../vue_shared/mixins/recaptcha_modal_implementor';

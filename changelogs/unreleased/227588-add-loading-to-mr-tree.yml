@@ -1,0 +1,5 @@
+---
+title: Keep large spinner while MR file tree is loading
+merge_request: 36446
+author:
+type: fixed

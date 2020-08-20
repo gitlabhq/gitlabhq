@@ -1,11 +1,13 @@
 import MockAdapter from 'axios-mock-adapter';
 import $ from 'jquery';
 import { TEST_HOST } from 'helpers/test_constants';
-import sanitize from 'sanitize-html';
+import { sanitize } from 'dompurify';
 import ProjectFindFile from '~/project_find_file';
 import axios from '~/lib/utils/axios_utils';
 
-jest.mock('sanitize-html', () => jest.fn(val => val));
+jest.mock('dompurify', () => ({
+  sanitize: jest.fn(val => val),
+}));
 
 const BLOB_URL_TEMPLATE = `${TEST_HOST}/namespace/project/blob/master`;
 const FILE_FIND_URL = `${TEST_HOST}/namespace/project/files/master?format=json`;

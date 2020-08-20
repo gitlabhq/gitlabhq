@@ -5,6 +5,7 @@ query getAnnotations(
   $startingFrom: Time!
 ) {
   project(fullPath: $projectPath) {
+    id
     environments(name: $environmentName) {
       nodes {
         id

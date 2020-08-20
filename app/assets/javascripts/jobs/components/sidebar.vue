@@ -147,7 +147,8 @@ export default {
           <gl-link
             v-if="job.new_issue_path"
             :href="job.new_issue_path"
-            class="js-new-issue btn btn-success btn-inverted float-left mr-2"
+            class="btn btn-success btn-inverted float-left mr-2"
+            data-testid="job-new-issue"
             >{{ __('New issue') }}</gl-link
           >
           <gl-link

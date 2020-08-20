@@ -21,7 +21,6 @@ class Commit
   participant :committer
   participant :notes_with_associations
 
-  attr_accessor :author
   attr_accessor :redacted_description_html
   attr_accessor :redacted_title_html
   attr_accessor :redacted_full_title_html

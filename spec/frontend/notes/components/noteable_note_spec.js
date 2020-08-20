@@ -83,18 +83,34 @@ describe('issue_note', () => {
       });
     });
 
-    it('should render multiline comment if editing discussion root', () => {
-      wrapper.setProps({ discussionRoot: true });
-      wrapper.vm.isEditing = true;
-
-      return wrapper.vm.$nextTick().then(() => {
-        expect(findMultilineComment().exists()).toBe(true);
+    it('should only render if it has everything it needs', () => {
+      const position = {
+        line_range: {
+          start: {
+            line_code: 'abc_1_1',
+            type: null,
+            old_line: '',
+            new_line: '',
+          },
+          end: {
+            line_code: 'abc_2_2',
+            type: null,
+            old_line: '2',
+            new_line: '2',
+          },
+        },
+      };
+      const line = {
+        line_code: 'abc_1_1',
+        type: null,
+        old_line: '1',
+        new_line: '1',
+      };
+      wrapper.setProps({
+        note: { ...note, position },
+        discussionRoot: true,
+        line,
       });
-    });
-
-    it('should not render multiline comment form unless it is the discussion root', () => {
-      wrapper.setProps({ discussionRoot: false });
-      wrapper.vm.isEditing = true;
 
       return wrapper.vm.$nextTick().then(() => {
         expect(findMultilineComment().exists()).toBe(false);

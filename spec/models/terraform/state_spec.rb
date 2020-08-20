@@ -45,9 +45,7 @@ RSpec.describe Terraform::State do
 
   describe '#update_file_store' do
     context 'when file is stored in object storage' do
-      it 'sets file_store to remote' do
-        expect(subject.file_store).to eq(ObjectStorage::Store::REMOTE)
-      end
+      it_behaves_like 'mounted file in object store'
     end
 
     context 'when file is stored locally' do
@@ -55,9 +53,7 @@ RSpec.describe Terraform::State do
         stub_terraform_state_object_storage(Terraform::StateUploader, enabled: false)
       end
 
-      it 'sets file_store to local' do
-        expect(subject.file_store).to eq(ObjectStorage::Store::LOCAL)
-      end
+      it_behaves_like 'mounted file in local store'
     end
   end
 end

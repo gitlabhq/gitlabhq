@@ -8,6 +8,7 @@ module QA
           project.name = 'pipeline-independent-relationship'
         end
       end
+
       let!(:runner) do
         Resource::Runner.fabricate_via_api! do |runner|
           runner.project = project

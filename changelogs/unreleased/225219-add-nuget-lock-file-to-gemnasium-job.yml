@@ -1,0 +1,5 @@
+---
+title: "Add NuGet lock files support to Dependency Scanning CI template"
+merge_request: 37553
+author:
+type: added

@@ -32,7 +32,7 @@ module Gitlab
         end
 
         def incident_created_at
-          Time.parse(incident_payload['created_at'])
+          Time.zone.parse(incident_payload['created_at'])
         rescue
           Time.current.utc # PagerDuty provides time in UTC
         end

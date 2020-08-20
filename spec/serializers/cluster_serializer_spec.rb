@@ -14,6 +14,7 @@ RSpec.describe ClusterSerializer do
         :enabled,
         :environment_scope,
         :gitlab_managed_apps_logs_path,
+        :kubernetes_errors,
         :name,
         :nodes,
         :path,

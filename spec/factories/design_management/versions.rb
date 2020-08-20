@@ -40,7 +40,7 @@ FactoryBot.define do
       )
       version.designs += specific_designs
 
-      unless evaluator.designs_count.zero? || version.designs.present?
+      unless evaluator.designs_count == 0 || version.designs.present?
         version.designs << create(:design, issue: version.issue)
       end
     end
@@ -135,7 +135,7 @@ FactoryBot.define do
           actions: version_actions
         )
 
-        version.update(sha: sha)
+        version.update!(sha: sha)
       end
     end
   end

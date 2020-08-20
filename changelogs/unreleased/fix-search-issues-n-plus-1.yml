@@ -1,0 +1,5 @@
+---
+title: Avoid N+1 of issue associations in Search
+merge_request: 36941
+author:
+type: performance

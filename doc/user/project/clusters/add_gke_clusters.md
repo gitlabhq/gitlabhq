@@ -48,14 +48,14 @@ To create and add a new Kubernetes cluster to your project, group, or instance:
 1. Navigate to your:
    - Project's **{cloud-gear}** **Operations > Kubernetes** page, for a project-level cluster.
    - Group's **{cloud-gear}** **Kubernetes** page, for a group-level cluster.
-   - **{admin}** **Admin Area >** **{cloud-gear}** **Kubernetes** page, for an instance-level cluster.
+   - **Admin Area >** **{cloud-gear}** **Kubernetes** page, for an instance-level cluster.
 1. Click **Add Kubernetes cluster**.
 1. Under the **Create new cluster** tab, click **Google GKE**.
 1. Connect your Google account if you haven't done already by clicking the
    **Sign in with Google** button.
 1. Choose your cluster's settings:
    - **Kubernetes cluster name** - The name you wish to give the cluster.
-   - **Environment scope** - The [associated environment](index.md#setting-the-environment-scope-premium) to this cluster.
+   - **Environment scope** - The [associated environment](index.md#setting-the-environment-scope) to this cluster.
    - **Google Cloud Platform project** - Choose the project you created in your GCP
      console that will host the Kubernetes cluster. Learn more about
      [Google Cloud Platform projects](https://cloud.google.com/resource-manager/docs/creating-managing-projects).

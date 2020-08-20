@@ -8,7 +8,7 @@ on-premise or GitLab.com plans and features.
 
 GitLab.com plans are persisted on user groups and namespaces, therefore, if you're adding a
 feature such as [Related issues](../user/project/issues/related_issues.md) or
-[Service desk](../user/project/service_desk.md),
+[Service Desk](../user/project/service_desk.md),
 it should be restricted on namespace scope.
 
 1. Add the feature symbol on `EES_FEATURES`, `EEP_FEATURES` or `EEU_FEATURES` constants in

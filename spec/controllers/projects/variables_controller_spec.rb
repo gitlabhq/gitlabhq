@@ -47,6 +47,7 @@ RSpec.describe Projects::VariablesController do
           protected: variable.protected?.to_s,
           environment_scope: variable.environment_scope }
       end
+
       let(:new_variable_attributes) do
         { key: 'new_key',
           secret_value: 'dummy_value',

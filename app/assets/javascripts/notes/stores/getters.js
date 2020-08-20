@@ -194,7 +194,9 @@ export const findUnresolvedDiscussionIdNeighbor = (state, getters) => ({
   diffOrder,
   step,
 }) => {
-  const ids = getters.unresolvedDiscussionsIdsOrdered(diffOrder);
+  const diffIds = getters.unresolvedDiscussionsIdsOrdered(diffOrder);
+  const dateIds = getters.unresolvedDiscussionsIdsOrdered(false);
+  const ids = diffIds.length ? diffIds : dateIds;
   const index = ids.indexOf(discussionId) + step;
 
   if (index < 0 && step < 0) {
@@ -229,6 +231,3 @@ export const getDiscussion = state => discussionId =>
   state.discussions.find(discussion => discussion.id === discussionId);
 
 export const commentsDisabled = state => state.commentsDisabled;
-
-// prevent babel-plugin-rewire from generating an invalid default during karma tests
-export default () => {};

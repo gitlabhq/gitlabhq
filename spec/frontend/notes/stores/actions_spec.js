@@ -1,7 +1,7 @@
 import { TEST_HOST } from 'spec/test_constants';
 import AxiosMockAdapter from 'axios-mock-adapter';
 import Api from '~/api';
-import Flash from '~/flash';
+import { deprecatedCreateFlash as Flash } from '~/flash';
 import * as actions from '~/notes/stores/actions';
 import * as mutationTypes from '~/notes/stores/mutation_types';
 import * as notesConstants from '~/notes/constants';
@@ -19,7 +19,9 @@ import {
 } from '../mock_data';
 import axios from '~/lib/utils/axios_utils';
 import * as utils from '~/notes/stores/utils';
-import updateIssueConfidentialMutation from '~/sidebar/components/confidential/queries/update_issue_confidential.mutation.graphql';
+import updateIssueConfidentialMutation from '~/sidebar/components/confidential/mutations/update_issue_confidential.mutation.graphql';
+import updateMergeRequestLockMutation from '~/sidebar/components/lock/mutations/update_merge_request_lock.mutation.graphql';
+import updateIssueLockMutation from '~/sidebar/components/lock/mutations/update_issue_lock.mutation.graphql';
 
 const TEST_ERROR_MESSAGE = 'Test error message';
 jest.mock('~/flash');
@@ -1219,7 +1221,7 @@ describe('Actions Notes Store', () => {
     });
   });
 
-  describe('updateConfidentialityOnIssue', () => {
+  describe('updateConfidentialityOnIssuable', () => {
     state = { noteableData: { confidential: false } };
     const iid = '1';
     const projectPath = 'full/path';
@@ -1234,13 +1236,13 @@ describe('Actions Notes Store', () => {
     });
 
     it('calls gqClient mutation one time', () => {
-      actions.updateConfidentialityOnIssue({ commit: () => {}, state, getters }, actionArgs);
+      actions.updateConfidentialityOnIssuable({ commit: () => {}, state, getters }, actionArgs);
 
       expect(utils.gqClient.mutate).toHaveBeenCalledTimes(1);
     });
 
     it('calls gqClient mutation with the correct values', () => {
-      actions.updateConfidentialityOnIssue({ commit: () => {}, state, getters }, actionArgs);
+      actions.updateConfidentialityOnIssuable({ commit: () => {}, state, getters }, actionArgs);
 
       expect(utils.gqClient.mutate).toHaveBeenCalledWith({
         mutation: updateIssueConfidentialMutation,
@@ -1253,7 +1255,7 @@ describe('Actions Notes Store', () => {
         const commitSpy = jest.fn();
 
         return actions
-          .updateConfidentialityOnIssue({ commit: commitSpy, state, getters }, actionArgs)
+          .updateConfidentialityOnIssuable({ commit: commitSpy, state, getters }, actionArgs)
           .then(() => {
             expect(commitSpy).toHaveBeenCalledWith(
               mutationTypes.SET_ISSUE_CONFIDENTIAL,
@@ -1261,6 +1263,77 @@ describe('Actions Notes Store', () => {
             );
           });
       });
+    });
+  });
+
+  describe.each`
+    issuableType
+    ${'issue'}   | ${'merge_request'}
+  `('updateLockedAttribute for issuableType=$issuableType', ({ issuableType }) => {
+    // Payload for mutation query
+    state = { noteableData: { discussion_locked: false } };
+    const targetType = issuableType;
+    const getters = { getNoteableData: { iid: '1', targetType } };
+
+    // Target state after mutation
+    const locked = true;
+    const actionArgs = { fullPath: 'full/path', locked };
+    const input = { iid: '1', projectPath: 'full/path', locked: true };
+
+    // Helper functions
+    const targetMutation = () => {
+      return targetType === 'issue' ? updateIssueLockMutation : updateMergeRequestLockMutation;
+    };
+
+    const mockResolvedValue = () => {
+      return targetType === 'issue'
+        ? { data: { issueSetLocked: { issue: { discussionLocked: locked } } } }
+        : { data: { mergeRequestSetLocked: { mergeRequest: { discussionLocked: locked } } } };
+    };
+
+    beforeEach(() => {
+      jest.spyOn(utils.gqClient, 'mutate').mockResolvedValue(mockResolvedValue());
+    });
+
+    it('calls gqClient mutation one time', () => {
+      actions.updateLockedAttribute({ commit: () => {}, state, getters }, actionArgs);
+
+      expect(utils.gqClient.mutate).toHaveBeenCalledTimes(1);
+    });
+
+    it('calls gqClient mutation with the correct values', () => {
+      actions.updateLockedAttribute({ commit: () => {}, state, getters }, actionArgs);
+
+      expect(utils.gqClient.mutate).toHaveBeenCalledWith({
+        mutation: targetMutation(),
+        variables: { input },
+      });
+    });
+
+    describe('on success of mutation', () => {
+      it('calls commit with the correct values', () => {
+        const commitSpy = jest.fn();
+
+        return actions
+          .updateLockedAttribute({ commit: commitSpy, state, getters }, actionArgs)
+          .then(() => {
+            expect(commitSpy).toHaveBeenCalledWith(mutationTypes.SET_ISSUABLE_LOCK, locked);
+          });
+      });
+    });
+  });
+
+  describe('updateDiscussionPosition', () => {
+    it('update the assignees state', done => {
+      const updatedPosition = { discussionId: 1, position: { test: true } };
+      testAction(
+        actions.updateDiscussionPosition,
+        updatedPosition,
+        { state: { discussions: [] } },
+        [{ type: mutationTypes.UPDATE_DISCUSSION_POSITION, payload: updatedPosition }],
+        [],
+        done,
+      );
     });
   });
 });

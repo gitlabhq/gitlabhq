@@ -1,6 +1,7 @@
 <script>
-import { GlLoadingIcon, GlDeprecatedButton, GlAlert } from '@gitlab/ui';
-import createFlash from '~/flash';
+import { GlLoadingIcon, GlButton, GlAlert } from '@gitlab/ui';
+import VueDraggable from 'vuedraggable';
+import { deprecatedCreateFlash as createFlash } from '~/flash';
 import { s__, sprintf } from '~/locale';
 import UploadButton from '../components/upload/button.vue';
 import DeleteButton from '../components/delete_button.vue';
@@ -9,6 +10,7 @@ import DesignDestroyer from '../components/design_destroyer.vue';
 import DesignVersionDropdown from '../components/upload/design_version_dropdown.vue';
 import DesignDropzone from '../components/upload/design_dropzone.vue';
 import uploadDesignMutation from '../graphql/mutations/upload_design.mutation.graphql';
+import moveDesignMutation from '../graphql/mutations/move_design.mutation.graphql';
 import permissionsQuery from '../graphql/queries/design_permissions.query.graphql';
 import getDesignListQuery from '../graphql/queries/get_design_list.query.graphql';
 import allDesignsMixin from '../mixins/all_designs';
@@ -16,13 +18,18 @@ import {
   UPLOAD_DESIGN_ERROR,
   EXISTING_DESIGN_DROP_MANY_FILES_MESSAGE,
   EXISTING_DESIGN_DROP_INVALID_FILENAME_MESSAGE,
+  MOVE_DESIGN_ERROR,
   designUploadSkippedWarning,
   designDeletionError,
 } from '../utils/error_messages';
-import { updateStoreAfterUploadDesign } from '../utils/cache_update';
+import {
+  updateStoreAfterUploadDesign,
+  updateDesignsOnStoreAfterReorder,
+} from '../utils/cache_update';
 import {
   designUploadOptimisticResponse,
   isValidDesignFile,
+  moveDesignOptimisticResponse,
 } from '../utils/design_management_utils';
 import { getFilename } from '~/lib/utils/file_upload';
 import { DESIGNS_ROUTE_NAME } from '../router/constants';
@@ -33,13 +40,14 @@ export default {
   components: {
     GlLoadingIcon,
     GlAlert,
-    GlDeprecatedButton,
+    GlButton,
     UploadButton,
     Design,
     DesignDestroyer,
     DesignVersionDropdown,
     DeleteButton,
     DesignDropzone,
+    VueDraggable,
   },
   mixins: [allDesignsMixin],
   apollo: {
@@ -61,6 +69,8 @@ export default {
       },
       filesToBeSaved: [],
       selectedDesigns: [],
+      isDraggingDesign: false,
+      reorderedDesigns: null,
     };
   },
   computed: {
@@ -96,9 +106,19 @@ export default {
         ? s__('DesignManagement|Deselect all')
         : s__('DesignManagement|Select all');
     },
+    isDesignListEmpty() {
+      return !this.isSaving && !this.hasDesigns;
+    },
+    designDropzoneWrapperClass() {
+      return this.isDesignListEmpty
+        ? 'col-12'
+        : 'gl-flex-direction-column col-md-6 col-lg-3 gl-mb-3';
+    },
   },
   mounted() {
-    this.toggleOnPasteListener(this.$route.name);
+    if (this.$route.path === '/designs') {
+      this.$el.scrollIntoView();
+    }
   },
   methods: {
     resetFilesToBeSaved() {
@@ -238,56 +258,97 @@ export default {
         this.onUploadDesign([newFile]);
       }
     },
-    toggleOnPasteListener(route) {
-      if (route === DESIGNS_ROUTE_NAME) {
-        document.addEventListener('paste', this.onDesignPaste);
-      } else {
-        document.removeEventListener('paste', this.onDesignPaste);
+    toggleOnPasteListener() {
+      document.addEventListener('paste', this.onDesignPaste);
+    },
+    toggleOffPasteListener() {
+      document.removeEventListener('paste', this.onDesignPaste);
+    },
+    designMoveVariables(newIndex, element) {
+      const variables = {
+        id: element.id,
+      };
+      if (newIndex > 0) {
+        variables.previous = this.reorderedDesigns[newIndex - 1].id;
       }
+      if (newIndex < this.reorderedDesigns.length - 1) {
+        variables.next = this.reorderedDesigns[newIndex + 1].id;
+      }
+      return variables;
+    },
+    reorderDesigns({ moved: { newIndex, element } }) {
+      this.$apollo
+        .mutate({
+          mutation: moveDesignMutation,
+          variables: this.designMoveVariables(newIndex, element),
+          update: (store, { data: { designManagementMove } }) => {
+            return updateDesignsOnStoreAfterReorder(
+              store,
+              designManagementMove,
+              this.projectQueryBody,
+            );
+          },
+          optimisticResponse: moveDesignOptimisticResponse(this.reorderedDesigns),
+        })
+        .catch(() => {
+          createFlash(MOVE_DESIGN_ERROR);
+        });
+    },
+    onDesignMove(designs) {
+      this.reorderedDesigns = designs;
     },
   },
   beforeRouteUpdate(to, from, next) {
-    this.toggleOnPasteListener(to.name);
     this.selectedDesigns = [];
     next();
   },
-  beforeRouteLeave(to, from, next) {
-    this.toggleOnPasteListener(to.name);
-    next();
+  dragOptions: {
+    animation: 200,
+    ghostClass: 'gl-visibility-hidden',
   },
 };
 </script>
 
 <template>
-  <div>
+  <div
+    data-testid="designs-root"
+    class="gl-mt-5"
+    @mouseenter="toggleOnPasteListener"
+    @mouseleave="toggleOffPasteListener"
+  >
     <header v-if="showToolbar" class="row-content-block border-top-0 p-2 d-flex">
-      <div class="d-flex justify-content-between align-items-center w-100">
-        <design-version-dropdown />
-        <div :class="['qa-selector-toolbar', { 'd-flex': hasDesigns, 'd-none': !hasDesigns }]">
-          <gl-deprecated-button
+      <div class="gl-display-flex gl-justify-content-space-between gl-align-items-center gl-w-full">
+        <div>
+          <span class="gl-font-weight-bold gl-mr-3">{{ s__('DesignManagement|Designs') }}</span>
+          <design-version-dropdown />
+        </div>
+        <div v-show="hasDesigns" class="qa-selector-toolbar gl-display-flex gl-align-items-center">
+          <gl-button
             v-if="isLatestVersion"
             variant="link"
-            class="mr-2 js-select-all"
+            size="small"
+            class="gl-mr-3 js-select-all"
             @click="toggleDesignsSelection"
-            >{{ selectAllButtonText }}</gl-deprecated-button
-          >
+            >{{ selectAllButtonText }}
+          </gl-button>
           <design-destroyer
             #default="{ mutate, loading }"
             :filenames="selectedDesigns"
-            :project-path="projectPath"
-            :iid="issueIid"
             @done="onDesignDelete"
             @error="onDesignDeleteError"
           >
             <delete-button
               v-if="isLatestVersion"
               :is-deleting="loading"
-              button-class="btn-danger btn-inverted mr-2"
+              button-variant="warning"
+              button-category="secondary"
+              button-class="gl-mr-3"
+              button-size="small"
+              :loading="loading"
               :has-selected-designs="hasSelectedDesigns"
               @deleteSelectedDesigns="mutate()"
             >
-              {{ s__('DesignManagement|Delete selected') }}
-              <gl-loading-icon v-if="loading" inline class="ml-1" />
+              {{ s__('DesignManagement|Archive selected') }}
             </delete-button>
           </design-destroyer>
           <upload-button v-if="canCreateDesign" :is-saving="isSaving" @upload="onUploadDesign" />
@@ -299,14 +360,35 @@ export default {
       <gl-alert v-else-if="error" variant="danger" :dismissible="false">
         {{ __('An error occurred while loading designs. Please try again.') }}
       </gl-alert>
-      <ol v-else class="list-unstyled row">
-        <li class="col-md-6 col-lg-4 mb-3">
-          <design-dropzone class="design-list-item" @change="onUploadDesign" />
-        </li>
-        <li v-for="design in designs" :key="design.id" class="col-md-6 col-lg-4 mb-3">
-          <design-dropzone @change="onExistingDesignDropzoneChange($event, design.filename)"
-            ><design v-bind="design" :is-uploading="isDesignToBeSaved(design.filename)"
-          /></design-dropzone>
+      <vue-draggable
+        v-else
+        :value="designs"
+        :disabled="!isLatestVersion"
+        v-bind="$options.dragOptions"
+        tag="ol"
+        draggable=".js-design-tile"
+        class="list-unstyled row"
+        @start="isDraggingDesign = true"
+        @end="isDraggingDesign = false"
+        @change="reorderDesigns"
+        @input="onDesignMove"
+      >
+        <li
+          v-for="design in designs"
+          :key="design.id"
+          class="col-md-6 col-lg-3 gl-mb-3 gl-bg-transparent gl-shadow-none js-design-tile"
+        >
+          <design-dropzone
+            :has-designs="hasDesigns"
+            :is-dragging-design="isDraggingDesign"
+            @change="onExistingDesignDropzoneChange($event, design.filename)"
+          >
+            <design
+              v-bind="design"
+              :is-uploading="isDesignToBeSaved(design.filename)"
+              class="gl-bg-white"
+            />
+          </design-dropzone>
 
           <input
             v-if="canSelectDesign(design.filename)"
@@ -316,7 +398,17 @@ export default {
             @change="changeSelectedDesigns(design.filename)"
           />
         </li>
-      </ol>
+        <template #header>
+          <li :class="designDropzoneWrapperClass" data-testid="design-dropzone-wrapper">
+            <design-dropzone
+              :is-dragging-design="isDraggingDesign"
+              :class="{ 'design-list-item design-list-item-new': !isDesignListEmpty }"
+              :has-designs="hasDesigns"
+              @change="onUploadDesign"
+            />
+          </li>
+        </template>
+      </vue-draggable>
     </div>
     <router-view :key="$route.fullPath" />
   </div>

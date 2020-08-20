@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe AlertManagement::PrometheusAlertPresenter do
   let_it_be(:project) { create(:project) }
-  let_it_be(:payload) do
+  let(:payload) do
     {
       'annotations' => {
         'title' => 'Alert title',
@@ -15,9 +15,12 @@ RSpec.describe AlertManagement::PrometheusAlertPresenter do
       'generatorURL' => 'http://8d467bd4607a:9090/graph?g0.expr=vector%281%29&g0.tab=1'
     }
   end
-  let(:alert) do
+
+  let!(:alert) do
     create(:alert_management_alert, :prometheus, project: project, payload: payload)
   end
+
+  let(:alert_url) { "http://localhost/#{project.full_path}/-/alert_management/#{alert.iid}/details" }
 
   subject(:presenter) { described_class.new(alert) }
 
@@ -32,7 +35,8 @@ RSpec.describe AlertManagement::PrometheusAlertPresenter do
           **Start time:** #{presenter.start_time}#{markdown_line_break}
           **Severity:** #{presenter.severity}#{markdown_line_break}
           **full_query:** `vector(1)`#{markdown_line_break}
-          **Monitoring tool:** Prometheus
+          **Monitoring tool:** Prometheus#{markdown_line_break}
+          **GitLab alert:** #{alert_url}
 
           #### Alert Details
 
@@ -63,6 +67,19 @@ RSpec.describe AlertManagement::PrometheusAlertPresenter do
       include_context 'gitlab-managed prometheus alert attributes'
 
       it { is_expected.to eq(dashboard_url_for_alert) }
+    end
+  end
+
+  describe '#runbook' do
+    subject { presenter.runbook }
+
+    it { is_expected.to be_nil }
+
+    context 'with runbook in payload' do
+      let(:expected_runbook) { 'https://awesome-runbook.com' }
+      let(:payload) { { 'annotations' => { 'runbook' => expected_runbook } } }
+
+      it { is_expected.to eq(expected_runbook) }
     end
   end
 end

@@ -40,7 +40,7 @@ module.exports = {
       'select2',
       'moment-mini',
       'aws-sdk',
-      'sanitize-html',
+      'dompurify',
       'bootstrap/dist/js/bootstrap.js',
       'sortablejs/modular/sortable.esm.js',
       'popper.js',

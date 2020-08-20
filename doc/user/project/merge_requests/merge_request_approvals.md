@@ -1,4 +1,7 @@
 ---
+stage: Create
+group: Source Code
+info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers"
 type: reference, concepts
 ---
 
@@ -10,16 +13,16 @@ process, as it clearly communicates the ability to merge the change.
 
 ## Optional Approvals **(CORE ONLY)**
 
-> Introduced in [GitLab Core 13.2](https://gitlab.com/gitlab-org/gitlab/-/issues/27426).
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/27426) in GitLab 13.2.
 
-Any user with Developer or greater [permissions](../../permissions.md) can approve a merge request in GitLab Core.
-This provides a consistent mechanism for reviewers to provide approval, and makes it easy for
+Any user with Developer or greater [permissions](../../permissions.md) can approve a merge request in GitLab Core and higher tiers.
+This provides a consistent mechanism for reviewers to approve merge requests, and makes it easy for
 maintainers to know when a change is ready to merge. Approvals in Core are optional and do
 not prevent a merge request from being merged when there is no approval.
 
 ## Required Approvals **(STARTER)**
 
-> Introduced in [GitLab Enterprise Edition 7.12](https://about.gitlab.com/releases/2015/06/22/gitlab-7-12-released/#merge-request-approvers-ee-only).
+> [Introduced](https://about.gitlab.com/releases/2015/06/22/gitlab-7-12-released/#merge-request-approvers-ee-only) in GitLab Enterprise Edition 7.12. Available in [GitLab Starter](https://about.gitlab.com/pricing/) and higher tiers.
 
 Required approvals enable enforced code review by requiring specified people
 to approve a merge request before it can be merged.
@@ -30,8 +33,8 @@ Required approvals enable multiple use cases:
 - Specifying reviewers for a given proposed code change, as well as a minimum number
   of reviewers, through [Approval rules](#approval-rules).
 - Specifying categories of reviewers, such as backend, frontend, quality assurance,
-  database, etc., for all proposed code changes.
-- Automatically designating [Code Owners as eligible approvers](#code-owners-as-eligible-approvers),
+  database, and so on, for all proposed code changes.
+- Designating [Code Owners as eligible approvers](#code-owners-as-eligible-approvers),
   determined by the files changed in a merge request.
 - [Requiring approval from a security team](#security-approvals-in-merge-requests-ultimate)
   before merging code that could introduce a vulnerability.**(ULTIMATE)**
@@ -47,14 +50,14 @@ be merged, and optionally which users should do the approving. Approvals can be 
 If no approval rules are defined, any user can approve a merge request, though the default
 minimum number of required approvers can still be set in the [project settings for merge request approvals](#merge-request-approvals-project-settings).
 
-Approval rules define how many approvals a merge request must receive before it can
-be merged, and optionally which users should do the approving. Approvals can be defined:
+You can opt to define one single rule to approve a merge request among the available rules
+or choose more than one. Single approval rules are available in GitLab Starter and higher tiers,
+while [multiple approval rules](#multiple-approval-rules-premium) are available in
+[GitLab Premium](https://about.gitlab.com/pricing/) and above.
 
-- [As project defaults](#adding--editing-a-default-approval-rule).
-- [Per merge request](#editing--overriding-approval-rules-per-merge-request).
-
-If no approval rules are defined, any user can approve a merge request, though the default
-minimum number of required approvers can still be set in the [project settings for merge request approvals](#merge-request-approvals-project-settings).
+NOTE: **Note:**
+On GitLab.com, you can add a group as an approver if you're a member of that group or the
+group is public.
 
 #### Eligible Approvers
 
@@ -80,6 +83,11 @@ to the merge request, do not count as eligible approvers,
 if [**Prevent author approval**](#allowing-merge-request-authors-to-approve-their-own-merge-requests) (enabled by default)
 and [**Prevent committers approval**](#prevent-approval-of-merge-requests-by-their-committers) (disabled by default)
 are enabled on the project settings.
+
+[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10294) in [GitLab Starter](https://about.gitlab.com/pricing/) 13.3,
+when an eligible approver comments on a merge request, it appears in the **Commented by** column of the Approvals widget,
+indicating who has engaged in the merge request review. Authors and reviewers can also easily identify who they should reach out
+to if they have any questions or inputs about the content of the merge request.
 
 ##### Implicit Approvers
 
@@ -116,7 +124,7 @@ Alternatively, you can **require**
 
 To add or edit the default merge request approval rule:
 
-1. Navigate to your project's **{settings}** **Settings > General** and expand **Merge request approvals**.
+1. Navigate to your project's **Settings > General** and expand **Merge request approvals**.
 
 1. Click **Add approval rule**, or **Edit**.
    - Add or change the **Rule name**.
@@ -151,6 +159,15 @@ settings.
 When creating or editing a merge request, find the **Approval rules** section, then follow
 the same steps as [Adding / editing a default approval rule](#adding--editing-a-default-approval-rule).
 
+#### Set up an optional approval rule
+
+MR approvals can be configured to be optional.
+This can be useful if you're working on a team where approvals are appreciated, but not required.
+
+To configure an approval to be optional, set the number of required approvals in **No. approvals required** to `0`.
+
+You can also set an optional approval rule through the [Merge requests approvals API](../../../api/merge_request_approvals.md#update-merge-request-level-rule), by setting the `approvals_required` attribute to `0`.
+
 #### Multiple approval rules **(PREMIUM)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/1979) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.10.
@@ -171,7 +188,7 @@ a rule is already defined.
 When an [eligible approver](#eligible-approvers) approves a merge request, it will
 reduce the number of approvals left for all rules that the approver belongs to.
 
-![Approvals premium merge request widget](img/approvals_premium_mr_widget_v12_7.png)
+![Approvals premium merge request widget](img/approvals_premium_mr_widget_v13_3.png)
 
 #### Scoped to Protected Branch **(PREMIUM)**
 
@@ -221,7 +238,7 @@ or a [failed CI/CD pipeline](merge_when_pipeline_succeeds.md).
 ### Merge request approvals project settings
 
 The project settings for Merge request approvals are found by going to
-**{settings}** **Settings > General** and expanding **Merge request approvals**.
+**Settings > General** and expanding **Merge request approvals**.
 
 #### Prevent overriding default approvals
 

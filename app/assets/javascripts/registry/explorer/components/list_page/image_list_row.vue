@@ -71,7 +71,7 @@ export default {
   >
     <template #left-primary>
       <router-link
-        class="gl-text-black-normal gl-font-weight-bold"
+        class="gl-text-body gl-font-weight-bold"
         data-testid="detailsLink"
         :to="{ name: 'details', params: { id: encodedItem } }"
       >
@@ -82,7 +82,7 @@ export default {
         :disabled="item.deleting"
         :text="item.location"
         :title="item.location"
-        css-class="btn-default btn-transparent btn-clipboard gl-text-gray-500"
+        css-class="btn-default btn-transparent btn-clipboard gl-text-gray-300"
       />
       <gl-icon
         v-if="item.failedDelete"

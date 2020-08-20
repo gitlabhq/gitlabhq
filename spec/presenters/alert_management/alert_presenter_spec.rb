@@ -4,16 +4,21 @@ require 'spec_helper'
 
 RSpec.describe AlertManagement::AlertPresenter do
   let_it_be(:project) { create(:project) }
+
   let_it_be(:generic_payload) do
     {
       'title' => 'Alert title',
       'start_time' => '2020-04-27T10:10:22.265949279Z',
-      'custom' => { 'param' => 73 }
+      'custom' => { 'param' => 73 },
+      'runbook' => 'https://runbook.com'
     }
   end
+
   let_it_be(:alert) do
     create(:alert_management_alert, :with_description, :with_host, :with_service, :with_monitoring_tool, project: project, payload: generic_payload)
   end
+
+  let(:alert_url) { "http://localhost/#{project.full_path}/-/alert_management/#{alert.iid}/details" }
 
   subject(:presenter) { described_class.new(alert) }
 
@@ -30,11 +35,13 @@ RSpec.describe AlertManagement::AlertPresenter do
           **Service:** #{alert.service}#{markdown_line_break}
           **Monitoring tool:** #{alert.monitoring_tool}#{markdown_line_break}
           **Hosts:** #{alert.hosts.join(' ')}#{markdown_line_break}
-          **Description:** #{alert.description}
+          **Description:** #{alert.description}#{markdown_line_break}
+          **GitLab alert:** #{alert_url}
 
           #### Alert Details
 
-          **custom.param:** 73
+          **custom.param:** 73#{markdown_line_break}
+          **runbook:** https://runbook.com
         MARKDOWN
       )
     end
@@ -43,6 +50,18 @@ RSpec.describe AlertManagement::AlertPresenter do
   describe '#metrics_dashboard_url' do
     it 'is not defined' do
       expect(presenter.metrics_dashboard_url).to be_nil
+    end
+  end
+
+  describe '#runbook' do
+    it 'shows the runbook from the payload' do
+      expect(presenter.runbook).to eq('https://runbook.com')
+    end
+  end
+
+  describe '#details_url' do
+    it 'returns the details URL' do
+      expect(presenter.details_url).to match(%r{#{project.web_url}/-/alert_management/#{alert.iid}/details})
     end
   end
 end

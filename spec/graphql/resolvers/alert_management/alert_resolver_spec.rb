@@ -7,8 +7,8 @@ RSpec.describe Resolvers::AlertManagement::AlertResolver do
 
   let_it_be(:current_user) { create(:user) }
   let_it_be(:project) { create(:project) }
-  let_it_be(:alert_1) { create(:alert_management_alert, :resolved, project: project, ended_at: 1.year.ago, events: 2, severity: :high) }
-  let_it_be(:alert_2) { create(:alert_management_alert, :ignored, project: project, events: 1, severity: :critical) }
+  let_it_be(:resolved_alert) { create(:alert_management_alert, :resolved, project: project, ended_at: 1.year.ago, events: 2, severity: :high) }
+  let_it_be(:ignored_alert) { create(:alert_management_alert, :ignored, project: project, events: 1, severity: :critical) }
   let_it_be(:alert_other_proj) { create(:alert_management_alert) }
 
   let(:args) { {} }
@@ -24,18 +24,18 @@ RSpec.describe Resolvers::AlertManagement::AlertResolver do
       project.add_developer(current_user)
     end
 
-    it { is_expected.to contain_exactly(alert_1, alert_2) }
+    it { is_expected.to contain_exactly(resolved_alert, ignored_alert) }
 
     context 'finding by iid' do
-      let(:args) { { iid: alert_1.iid } }
+      let(:args) { { iid: resolved_alert.iid } }
 
-      it { is_expected.to contain_exactly(alert_1) }
+      it { is_expected.to contain_exactly(resolved_alert) }
     end
 
     context 'finding by status' do
       let(:args) { { status: [Types::AlertManagement::StatusEnum.values['IGNORED'].value] } }
 
-      it { is_expected.to contain_exactly(alert_2) }
+      it { is_expected.to contain_exactly(ignored_alert) }
     end
 
     describe 'sorting' do
@@ -45,11 +45,11 @@ RSpec.describe Resolvers::AlertManagement::AlertResolver do
         let_it_be(:alert_count_3) { create(:alert_management_alert, project: project, events: 3) }
 
         it 'sorts alerts ascending' do
-          expect(resolve_alerts(sort: :event_count_asc)).to eq [alert_2, alert_1, alert_count_3, alert_count_6]
+          expect(resolve_alerts(sort: :event_count_asc)).to eq [ignored_alert, resolved_alert, alert_count_3, alert_count_6]
         end
 
         it 'sorts alerts descending' do
-          expect(resolve_alerts(sort: :event_count_desc)).to eq [alert_count_6, alert_count_3, alert_1, alert_2]
+          expect(resolve_alerts(sort: :event_count_desc)).to eq [alert_count_6, alert_count_3, resolved_alert, ignored_alert]
         end
       end
     end

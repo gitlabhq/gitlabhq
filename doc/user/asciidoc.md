@@ -1,3 +1,10 @@
+---
+stage: Create
+group: Source Code
+info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers"
+type: reference, howto
+---
+
 # AsciiDoc
 
 GitLab uses the [Asciidoctor](https://asciidoctor.org) gem to convert AsciiDoc content to HTML5.
@@ -362,6 +369,89 @@ comment - content which is not included in the output document
 | format
 | psv {vbar} csv {vbar} dsv
 |===
+```
+
+### Colors
+
+It’s possible to have color written in `HEX`, `RGB`, or `HSL` format rendered with a color indicator.
+Supported formats (named colors are not supported):
+
+- HEX: `` `#RGB[A]` `` or `` `#RRGGBB[AA]` ``
+- RGB: `` `RGB[A](R, G, B[, A])` ``
+- HSL: `` `HSL[A](H, S, L[, A])` ``
+
+Color written inside backticks will be followed by a color "chip":
+
+```plaintext
+- `#F00`
+- `#F00A`
+- `#FF0000`
+- `#FF0000AA`
+- `RGB(0,255,0)`
+- `RGB(0%,100%,0%)`
+- `RGBA(0,255,0,0.3)`
+- `HSL(540,70%,50%)`
+- `HSLA(540,70%,50%,0.3)`
+```
+
+### STEM
+
+To activate equation and formula support,
+set the `stem` attribute in the document's header to `latexmath`.
+Equations and formulas will be rendered using [KaTeX](https://katex.org/):
+
+```plaintext
+:stem: latexmath
+
+latexmath:[C = \alpha + \beta Y^{\gamma} + \epsilon]
+
+[stem]
+++++
+sqrt(4) = 2
+++++
+
+A matrix can be written as stem:[[[a,b\],[c,d\]\]((n),(k))].
+```
+
+### Diagrams and flowcharts
+
+It's possible to generate diagrams and flowcharts from text in GitLab using
+[Mermaid](https://mermaidjs.github.io/) or [PlantUML](https://plantuml.com).
+
+#### Mermaid
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/31818) in GitLab 13.3.
+
+Visit the [official page](https://mermaidjs.github.io/) for more details.
+If you're new to using Mermaid or need help identifying issues in your Mermaid code,
+the [Mermaid Live Editor](https://mermaid-js.github.io/mermaid-live-editor/) is a helpful tool
+for creating and resolving issues within Mermaid diagrams.
+
+In order to generate a diagram or flowchart, you should write your text inside the `mermaid` block:
+
+```plaintext
+[mermaid]
+----
+graph LR
+    A[Square Rect] -- Link text --> B((Circle))
+    A --> C(Round Rect)
+    B --> D{Rhombus}
+    C --> D
+----
+```
+
+#### PlantUML
+
+To make PlantUML available in GitLab, a GitLab administrator needs to enable it first.
+Read more in [PlantUML & GitLab](../administration/integration/plantuml.md).
+
+Once enabled, you should write your text inside the `plantuml` block:
+
+```plaintext
+[plantuml]
+----
+Bob -> Alice : hello
+----
 ```
 
 ### Multimedia

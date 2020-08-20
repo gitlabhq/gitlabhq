@@ -450,5 +450,19 @@ RSpec.describe 'Runners' do
         expect(all(:link, href: group_runner_path(group, runner)).length).to eq(1)
       end
     end
+
+    context 'filtered search' do
+      it 'allows user to search by status and type', :js do
+        visit group_settings_ci_cd_path(group)
+
+        find('.filtered-search').click
+
+        page.within('#js-dropdown-hint') do
+          expect(page).to have_content('Status')
+          expect(page).to have_content('Type')
+          expect(page).not_to have_content('Tag')
+        end
+      end
+    end
   end
 end

@@ -2,9 +2,7 @@
 
 module JiraImport
   class UsersImporter
-    attr_reader :user, :project, :start_at, :result
-
-    MAX_USERS = 50
+    attr_reader :user, :project, :start_at
 
     def initialize(user, project, start_at)
       @project = project
@@ -15,29 +13,43 @@ module JiraImport
     def execute
       Gitlab::JiraImport.validate_project_settings!(project, user: user)
 
-      return ServiceResponse.success(payload: nil) if users.blank?
-
-      result = UsersMapper.new(project, users).execute
-      ServiceResponse.success(payload: result)
+      ServiceResponse.success(payload: mapped_users)
     rescue Timeout::Error, Errno::EINVAL, Errno::ECONNRESET, Errno::ECONNREFUSED, URI::InvalidURIError, JIRA::HTTPError, OpenSSL::SSL::SSLError => error
-      Gitlab::ErrorTracking.track_exception(error, project_id: project.id, request: url)
-      ServiceResponse.error(message: "There was an error when communicating to Jira: #{error.message}")
+      Gitlab::ErrorTracking.track_exception(error, project_id: project.id)
+      ServiceResponse.error(message: "There was an error when communicating to Jira")
     rescue Projects::ImportService::Error => error
       ServiceResponse.error(message: error.message)
     end
 
     private
 
-    def users
-      @users ||= client.get(url)
+    def mapped_users
+      users_mapper_service.execute
     end
 
-    def url
-      "/rest/api/2/users?maxResults=#{MAX_USERS}&startAt=#{start_at.to_i}"
+    def users_mapper_service
+      @users_mapper_service ||= user_mapper_service_factory
+    end
+
+    def deployment_type
+      # TODO: use project.jira_service.deployment_type value when https://gitlab.com/gitlab-org/gitlab/-/merge_requests/37003 is merged
+      @deployment_type ||= client.ServerInfo.all.deploymentType
     end
 
     def client
       @client ||= project.jira_service.client
+    end
+
+    def user_mapper_service_factory
+      # TODO: use deployment_type enum from jira service when https://gitlab.com/gitlab-org/gitlab/-/merge_requests/37003 is merged
+      case deployment_type.upcase
+      when JiraService::DEPLOYMENT_TYPES[:server]
+        ServerUsersMapperService.new(project.jira_service, start_at)
+      when JiraService::DEPLOYMENT_TYPES[:cloud]
+        CloudUsersMapperService.new(project.jira_service, start_at)
+      else
+        raise ArgumentError
+      end
     end
   end
 end

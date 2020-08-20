@@ -4,13 +4,18 @@ exports[`Blob Header Editing rendering matches the snapshot 1`] = `
 <div
   class="js-file-title file-title-flex-parent"
 >
-  <gl-form-input-stub
-    class="form-control js-snippet-file-name"
-    id="snippet_file_name"
-    name="snippet_file_name"
-    placeholder="Give your file a name to add code highlighting, e.g. example.rb for Ruby"
-    type="text"
-    value="foo.md"
-  />
+  <div
+    class="gl-display-flex gl-align-items-center gl-w-full"
+  >
+    <gl-form-input-stub
+      class="form-control js-snippet-file-name"
+      name="snippet_file_name"
+      placeholder="Give your file a name to add code highlighting, e.g. example.rb for Ruby"
+      type="text"
+      value="foo.md"
+    />
+     
+    <!---->
+  </div>
 </div>
 `;

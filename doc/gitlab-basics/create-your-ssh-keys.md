@@ -1,6 +1,10 @@
 ---
+stage: Create
+group: Source Code
+info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers"
 type: howto
 ---
+
 # Create and add your SSH key pair
 
 It is best practice to use [Git over SSH instead of Git over HTTP](https://git-scm.com/book/en/v2/Git-on-the-Server-The-Protocols).

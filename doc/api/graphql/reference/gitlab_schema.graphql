@@ -210,6 +210,11 @@ type AlertManagementAlert implements Noteable {
   details: JSON
 
   """
+  The URL of the alert detail page
+  """
+  detailsUrl: String!
+
+  """
   All discussions on this noteable
   """
   discussions(
@@ -295,6 +300,16 @@ type AlertManagementAlert implements Noteable {
   ): NoteConnection!
 
   """
+  The alert condition for Prometheus
+  """
+  prometheusAlert: PrometheusAlert
+
+  """
+  Runbook for the alert as defined in alert details
+  """
+  runbook: String
+
+  """
   Service the alert came from
   """
   service: String
@@ -318,6 +333,61 @@ type AlertManagementAlert implements Noteable {
   Title of the alert
   """
   title: String
+
+  """
+  Todos of the current user for the alert
+  """
+  todos(
+    """
+    The action to be filtered
+    """
+    action: [TodoActionEnum!]
+
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    The ID of an author
+    """
+    authorId: [ID!]
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    The ID of a group
+    """
+    groupId: [ID!]
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+
+    """
+    The ID of a project
+    """
+    projectId: [ID!]
+
+    """
+    The state of the todo
+    """
+    state: [TodoStateEnum!]
+
+    """
+    The type of the todo
+    """
+    type: [TodoTargetEnum!]
+  ): TodoConnection
 
   """
   Timestamp the alert was last updated
@@ -874,6 +944,11 @@ type Blob implements Entry {
   type: EntryType!
 
   """
+  Web path of the blob
+  """
+  webPath: String
+
+  """
   Web URL of the blob
   """
   webUrl: String
@@ -928,6 +1003,51 @@ Represents a project or group board
 """
 type Board {
   """
+  The board assignee.
+  """
+  assignee: User
+
+  """
+  Epics associated with board issues.
+  """
+  epics(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Filters applied when selecting issues on the board
+    """
+    issueFilters: BoardEpicIssueInput
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+  ): EpicConnection
+
+  """
+  Whether or not backlog list is hidden.
+  """
+  hideBacklogList: Boolean
+
+  """
+  Whether or not closed list is hidden.
+  """
+  hideClosedList: Boolean
+
+  """
   ID (global ID) of the board
   """
   id: ID!
@@ -952,10 +1072,20 @@ type Board {
     first: Int
 
     """
+    Find a list by its global ID
+    """
+    id: ID
+
+    """
     Returns the last _n_ elements from the list.
     """
     last: Int
   ): BoardListConnection
+
+  """
+  The board milestone.
+  """
+  milestone: Milestone
 
   """
   Name of the board
@@ -963,7 +1093,7 @@ type Board {
   name: String
 
   """
-  Weight of the board
+  Weight of the board.
   """
   weight: Int
 }
@@ -1003,6 +1133,58 @@ type BoardEdge {
   node: Board
 }
 
+input BoardEpicIssueInput {
+  """
+  Filter by assignee username
+  """
+  assigneeUsername: [String]
+
+  """
+  Filter by author username
+  """
+  authorUsername: String
+
+  """
+  Filter by epic ID
+  """
+  epicId: String
+
+  """
+  Filter by label name
+  """
+  labelName: [String]
+
+  """
+  Filter by milestone title
+  """
+  milestoneTitle: String
+
+  """
+  Filter by reaction emoji
+  """
+  myReactionEmoji: String
+
+  """
+  List of negated params. Warning: this argument is experimental and a subject to change in future
+  """
+  not: NegatedBoardEpicIssueInput
+
+  """
+  Filter by release tag
+  """
+  releaseTag: String
+
+  """
+  Filter by weight
+  """
+  weight: String
+}
+
+"""
+Identifier of Board
+"""
+scalar BoardID
+
 """
 Represents a list for an issue board
 """
@@ -1021,6 +1203,36 @@ type BoardList {
   ID (global ID) of the list
   """
   id: ID!
+
+  """
+  Board issues
+  """
+  issues(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+  ): IssueConnection
+
+  """
+  Count of issues in the list
+  """
+  issuesCount: Int
 
   """
   Label of the list
@@ -1061,6 +1273,11 @@ type BoardList {
   Title of the list
   """
   title: String!
+
+  """
+  Total weight of all issues in the list
+  """
+  totalWeight: Int
 }
 
 """
@@ -1081,6 +1298,51 @@ type BoardListConnection {
   Information to aid in pagination.
   """
   pageInfo: PageInfo!
+}
+
+"""
+Autogenerated input type of BoardListCreate
+"""
+input BoardListCreateInput {
+  """
+  Create the backlog list
+  """
+  backlog: Boolean
+
+  """
+  The Global ID of the issue board to mutate
+  """
+  boardId: BoardID!
+
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  """
+  ID of an existing label
+  """
+  labelId: LabelID
+}
+
+"""
+Autogenerated return type of BoardListCreate
+"""
+type BoardListCreatePayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  """
+  Errors encountered during execution of the mutation.
+  """
+  errors: [String!]!
+
+  """
+  List of the issue board
+  """
+  list: BoardList
 }
 
 """
@@ -1160,6 +1422,239 @@ type Branch {
   name: String!
 }
 
+type CiGroup {
+  """
+  Jobs in group
+  """
+  jobs(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+  ): CiJobConnection
+
+  """
+  Name of the job group
+  """
+  name: String
+
+  """
+  Size of the group
+  """
+  size: Int
+}
+
+"""
+The connection type for CiGroup.
+"""
+type CiGroupConnection {
+  """
+  A list of edges.
+  """
+  edges: [CiGroupEdge]
+
+  """
+  A list of nodes.
+  """
+  nodes: [CiGroup]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+}
+
+"""
+An edge in a connection.
+"""
+type CiGroupEdge {
+  """
+  A cursor for use in pagination.
+  """
+  cursor: String!
+
+  """
+  The item at the end of the edge.
+  """
+  node: CiGroup
+}
+
+type CiJob {
+  """
+  Name of the job
+  """
+  name: String
+
+  """
+  Builds that must complete before the jobs run
+  """
+  needs(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+  ): CiJobConnection
+}
+
+"""
+The connection type for CiJob.
+"""
+type CiJobConnection {
+  """
+  A list of edges.
+  """
+  edges: [CiJobEdge]
+
+  """
+  A list of nodes.
+  """
+  nodes: [CiJob]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+}
+
+"""
+An edge in a connection.
+"""
+type CiJobEdge {
+  """
+  A cursor for use in pagination.
+  """
+  cursor: String!
+
+  """
+  The item at the end of the edge.
+  """
+  node: CiJob
+}
+
+type CiStage {
+  """
+  Group of jobs for the stage
+  """
+  groups(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+  ): CiGroupConnection
+
+  """
+  Name of the stage
+  """
+  name: String
+}
+
+"""
+The connection type for CiStage.
+"""
+type CiStageConnection {
+  """
+  A list of edges.
+  """
+  edges: [CiStageEdge]
+
+  """
+  A list of nodes.
+  """
+  nodes: [CiStage]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+}
+
+"""
+An edge in a connection.
+"""
+type CiStageEdge {
+  """
+  A cursor for use in pagination.
+  """
+  cursor: String!
+
+  """
+  The item at the end of the edge.
+  """
+  node: CiStage
+}
+
+type ClusterAgent {
+  """
+  Timestamp the cluster agent was created
+  """
+  createdAt: Time
+
+  """
+  ID of the cluster agent
+  """
+  id: ID!
+
+  """
+  Name of the cluster agent
+  """
+  name: String
+
+  """
+  The project this cluster agent is associated with
+  """
+  project: Project
+
+  """
+  Timestamp the cluster agent was updated
+  """
+  updatedAt: Time
+}
+
 type Commit {
   """
   Author of the commit
@@ -1185,6 +1680,11 @@ type Commit {
   Description of the commit message
   """
   description: String
+
+  """
+  The GitLab Flavored Markdown rendering of `description`
+  """
+  descriptionHtml: String
 
   """
   ID (global ID) of the commit
@@ -1275,6 +1775,11 @@ type Commit {
   The GitLab Flavored Markdown rendering of `title`
   """
   titleHtml: String
+
+  """
+  Web path of the commit
+  """
+  webPath: String!
 
   """
   Web URL of the commit
@@ -1454,6 +1959,46 @@ type ComplianceFrameworkEdge {
   The item at the end of the edge.
   """
   node: ComplianceFramework
+}
+
+"""
+Autogenerated input type of ConfigureSast
+"""
+input ConfigureSastInput {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  """
+  Payload containing SAST variable values (https://docs.gitlab.com/ee/user/application_security/sast/#available-variables).
+  """
+  configuration: JSON!
+
+  """
+  Full path of the project.
+  """
+  projectPath: ID!
+}
+
+"""
+Autogenerated return type of ConfigureSast
+"""
+type ConfigureSastPayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  """
+  Errors encountered during execution of the mutation.
+  """
+  errors: [String!]!
+
+  """
+  JSON containing the status of MR creation.
+  """
+  result: JSON
 }
 
 """
@@ -1743,6 +2288,46 @@ type CreateBranchPayload {
 }
 
 """
+Autogenerated input type of CreateClusterAgent
+"""
+input CreateClusterAgentInput {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  """
+  Name of the cluster agent
+  """
+  name: String!
+
+  """
+  Full path of the associated project for this cluster agent
+  """
+  projectPath: ID!
+}
+
+"""
+Autogenerated return type of CreateClusterAgent
+"""
+type CreateClusterAgentPayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  """
+  Cluster agent created after mutation
+  """
+  clusterAgent: ClusterAgent
+
+  """
+  Errors encountered during execution of the mutation.
+  """
+  errors: [String!]!
+}
+
+"""
 Autogenerated input type of CreateDiffNote
 """
 input CreateDiffNoteInput {
@@ -1944,7 +2529,12 @@ input CreateIterationInput {
   """
   The target group for the iteration
   """
-  groupPath: ID!
+  groupPath: ID
+
+  """
+  The target project for the iteration
+  """
+  projectPath: ID
 
   """
   The start date of the iteration
@@ -2072,6 +2662,11 @@ Autogenerated input type of CreateSnippet
 """
 input CreateSnippetInput {
   """
+  Actions to perform over the snippet repository and blobs
+  """
+  blobActions: [SnippetBlobActionInputType!]
+
+  """
   A unique identifier for the client performing the mutation.
   """
   clientMutationId: String
@@ -2090,11 +2685,6 @@ input CreateSnippetInput {
   File name of the snippet
   """
   fileName: String
-
-  """
-  The snippet files to create
-  """
-  files: [SnippetFileInputType!]
 
   """
   The project full path the snippet is associated with
@@ -2137,11 +2727,216 @@ type CreateSnippetPayload {
   snippet: Snippet
 }
 
+"""
+Autogenerated input type of DastOnDemandScanCreate
+"""
+input DastOnDemandScanCreateInput {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  """
+  ID of the site profile to be used for the scan.
+  """
+  dastSiteProfileId: DastSiteProfileID!
+
+  """
+  The project the site profile belongs to.
+  """
+  fullPath: ID!
+}
+
+"""
+Autogenerated return type of DastOnDemandScanCreate
+"""
+type DastOnDemandScanCreatePayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  """
+  Errors encountered during execution of the mutation.
+  """
+  errors: [String!]!
+
+  """
+  URL of the pipeline that was created.
+  """
+  pipelineUrl: String
+}
+
 enum DastScanTypeEnum {
   """
   Passive DAST scan. This scan will not make active attacks against the target site.
   """
   PASSIVE
+}
+
+"""
+Represents a DAST scanner profile.
+"""
+type DastScannerProfile {
+  """
+  ID of the DAST scanner profile
+  """
+  id: ID!
+
+  """
+  Name of the DAST scanner profile
+  """
+  profileName: String
+
+  """
+  The maximum number of seconds allowed for the spider to traverse the site
+  """
+  spiderTimeout: Int
+
+  """
+  The maximum number of seconds allowed for the site under test to respond to a request
+  """
+  targetTimeout: Int
+}
+
+"""
+The connection type for DastScannerProfile.
+"""
+type DastScannerProfileConnection {
+  """
+  A list of edges.
+  """
+  edges: [DastScannerProfileEdge]
+
+  """
+  A list of nodes.
+  """
+  nodes: [DastScannerProfile]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+}
+
+"""
+Autogenerated input type of DastScannerProfileCreate
+"""
+input DastScannerProfileCreateInput {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  """
+  The project the scanner profile belongs to.
+  """
+  fullPath: ID!
+
+  """
+  The name of the scanner profile.
+  """
+  profileName: String!
+
+  """
+  The maximum number of seconds allowed for the spider to traverse the site.
+  """
+  spiderTimeout: Int
+
+  """
+  The maximum number of seconds allowed for the site under test to respond to a request.
+  """
+  targetTimeout: Int
+}
+
+"""
+Autogenerated return type of DastScannerProfileCreate
+"""
+type DastScannerProfileCreatePayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  """
+  Errors encountered during execution of the mutation.
+  """
+  errors: [String!]!
+
+  """
+  ID of the scanner profile.
+  """
+  id: ID
+}
+
+"""
+An edge in a connection.
+"""
+type DastScannerProfileEdge {
+  """
+  A cursor for use in pagination.
+  """
+  cursor: String!
+
+  """
+  The item at the end of the edge.
+  """
+  node: DastScannerProfile
+}
+
+"""
+Represents a DAST Site Profile.
+"""
+type DastSiteProfile {
+  """
+  Relative web path to the edit page of a site profile
+  """
+  editPath: String
+
+  """
+  ID of the site profile
+  """
+  id: DastSiteProfileID!
+
+  """
+  The name of the site profile
+  """
+  profileName: String
+
+  """
+  The URL of the target to be scanned
+  """
+  targetUrl: String
+
+  """
+  Permissions for the current user on the resource
+  """
+  userPermissions: DastSiteProfilePermissions!
+
+  """
+  The current validation status of the site profile
+  """
+  validationStatus: DastSiteProfileValidationStatusEnum
+}
+
+"""
+The connection type for DastSiteProfile.
+"""
+type DastSiteProfileConnection {
+  """
+  A list of edges.
+  """
+  edges: [DastSiteProfileEdge]
+
+  """
+  A list of nodes.
+  """
+  nodes: [DastSiteProfile]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
 }
 
 """
@@ -2186,7 +2981,144 @@ type DastSiteProfileCreatePayload {
   """
   ID of the site profile.
   """
-  id: ID
+  id: DastSiteProfileID
+}
+
+"""
+Autogenerated input type of DastSiteProfileDelete
+"""
+input DastSiteProfileDeleteInput {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  """
+  The project the site profile belongs to.
+  """
+  fullPath: ID!
+
+  """
+  ID of the site profile to be deleted.
+  """
+  id: DastSiteProfileID!
+}
+
+"""
+Autogenerated return type of DastSiteProfileDelete
+"""
+type DastSiteProfileDeletePayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  """
+  Errors encountered during execution of the mutation.
+  """
+  errors: [String!]!
+}
+
+"""
+An edge in a connection.
+"""
+type DastSiteProfileEdge {
+  """
+  A cursor for use in pagination.
+  """
+  cursor: String!
+
+  """
+  The item at the end of the edge.
+  """
+  node: DastSiteProfile
+}
+
+"""
+Identifier of DastSiteProfile
+"""
+scalar DastSiteProfileID
+
+"""
+Check permissions for the current user on site profile
+"""
+type DastSiteProfilePermissions {
+  """
+  Indicates the user can perform `create_on_demand_dast_scan` on this resource
+  """
+  createOnDemandDastScan: Boolean!
+}
+
+"""
+Autogenerated input type of DastSiteProfileUpdate
+"""
+input DastSiteProfileUpdateInput {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  """
+  The project the site profile belongs to.
+  """
+  fullPath: ID!
+
+  """
+  ID of the site profile to be updated.
+  """
+  id: DastSiteProfileID!
+
+  """
+  The name of the site profile.
+  """
+  profileName: String!
+
+  """
+  The URL of the target to be scanned.
+  """
+  targetUrl: String
+}
+
+"""
+Autogenerated return type of DastSiteProfileUpdate
+"""
+type DastSiteProfileUpdatePayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  """
+  Errors encountered during execution of the mutation.
+  """
+  errors: [String!]!
+
+  """
+  ID of the site profile.
+  """
+  id: DastSiteProfileID
+}
+
+enum DastSiteProfileValidationStatusEnum {
+  """
+  Site validation process finished but failed
+  """
+  FAILED_VALIDATION
+
+  """
+  Site validation process is in progress
+  """
+  INPROGRESS_VALIDATION
+
+  """
+  Site validation process finished successfully
+  """
+  PASSED_VALIDATION
+
+  """
+  Site validation process has not started
+  """
+  PENDING_VALIDATION
 }
 
 """
@@ -2762,6 +3694,56 @@ type DesignManagementDeletePayload {
   The new version in which the designs are deleted
   """
   version: DesignVersion
+}
+
+"""
+Identifier of DesignManagement::Design
+"""
+scalar DesignManagementDesignID
+
+"""
+Autogenerated input type of DesignManagementMove
+"""
+input DesignManagementMoveInput {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  """
+  ID of the design to move
+  """
+  id: DesignManagementDesignID!
+
+  """
+  ID of the immediately following design
+  """
+  next: DesignManagementDesignID
+
+  """
+  ID of the immediately preceding design
+  """
+  previous: DesignManagementDesignID
+}
+
+"""
+Autogenerated return type of DesignManagementMove
+"""
+type DesignManagementMovePayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  """
+  The current state of the collection
+  """
+  designCollection: DesignCollection
+
+  """
+  Errors encountered during execution of the mutation.
+  """
+  errors: [String!]!
 }
 
 """
@@ -3524,6 +4506,11 @@ type Environment {
   id: ID!
 
   """
+  The most severe open alert for the environment. If multiple alerts have equal severity, the most recent is returned.
+  """
+  latestOpenedMostSevereAlert: AlertManagementAlert
+
+  """
   Metrics dashboard schema for the environment
   """
   metricsDashboard(
@@ -3642,6 +4629,11 @@ type Epic implements Noteable {
     Returns the last _n_ elements from the list.
     """
     last: Int
+
+    """
+    Filter epics by milestone title, computed from epic's issues
+    """
+    milestoneTitle: String
 
     """
     Search query for epic title or description
@@ -3991,7 +4983,7 @@ input EpicAddIssueInput {
   issueIid: String!
 
   """
-  The project the issue belongs to
+  The full path of the project the issue belongs to
   """
   projectPath: ID!
 }
@@ -4046,7 +5038,7 @@ Counts of descendent epics.
 """
 type EpicDescendantCount {
   """
-  Number of closed sub-epics
+  Number of closed child epics
   """
   closedEpics: Int
 
@@ -4056,7 +5048,7 @@ type EpicDescendantCount {
   closedIssues: Int
 
   """
-  Number of opened sub-epics
+  Number of opened child epics
   """
   openedEpics: Int
 
@@ -4149,6 +5141,11 @@ type EpicIssue implements Noteable {
   User that created the issue
   """
   author: User!
+
+  """
+  Indicates the issue is blocked
+  """
+  blocked: Boolean!
 
   """
   Timestamp of when the issue was closed
@@ -4361,6 +5358,11 @@ type EpicIssue implements Noteable {
   state: IssueState!
 
   """
+  Indicates whether an issue is published to the status page
+  """
+  statusPagePublishedIncident: Boolean
+
+  """
   Indicates the currently logged in user is subscribed to the issue
   """
   subscribed: Boolean!
@@ -4389,6 +5391,11 @@ type EpicIssue implements Noteable {
   Total time reported as spent on the issue
   """
   totalTimeSpent: Int!
+
+  """
+  Type of the issue
+  """
+  type: IssueType
 
   """
   Timestamp of when the issue was last updated
@@ -4926,6 +5933,11 @@ type Group {
     labelName: [String!]
 
     """
+    Filter epics by milestone title, computed from epic's issues
+    """
+    milestoneTitle: String
+
+    """
     Search query for epic title or description
     """
     search: String
@@ -5003,6 +6015,11 @@ type Group {
     last: Int
 
     """
+    Filter epics by milestone title, computed from epic's issues
+    """
+    milestoneTitle: String
+
+    """
     Search query for epic title or description
     """
     search: String
@@ -5050,6 +6067,11 @@ type Group {
   id: ID!
 
   """
+  Status of the temporary storage increase
+  """
+  isTemporaryStorageIncreaseEnabled: Boolean!
+
+  """
   Issues of the group
   """
   issues(
@@ -5064,7 +6086,7 @@ type Group {
     assigneeId: String
 
     """
-    Username of a user assigned to the issues
+    Username of a user assigned to the issue
     """
     assigneeUsername: String
 
@@ -5109,6 +6131,11 @@ type Group {
     iids: [String!]
 
     """
+    Include issues belonging to subgroups.
+    """
+    includeSubgroups: Boolean = false
+
+    """
     Iterations applied to the issue
     """
     iterationId: [ID]
@@ -5124,7 +6151,7 @@ type Group {
     last: Int
 
     """
-    Milestones applied to this issue
+    Milestone applied to this issue
     """
     milestoneTitle: [String]
 
@@ -5142,6 +6169,11 @@ type Group {
     Current state of this issue
     """
     state: IssuableState
+
+    """
+    Filter issues by the given issue types
+    """
+    types: [IssueType!]
 
     """
     Issues updated after this date
@@ -5267,7 +6299,7 @@ type Group {
   mentionsDisabled: Boolean
 
   """
-  Find milestones
+  Milestones of the group
   """
   milestones(
     """
@@ -5292,7 +6324,12 @@ type Group {
     first: Int
 
     """
-    Return also milestones in all subgroups and subprojects
+    Array of global milestone IDs, e.g., "gid://gitlab/Milestone/1"
+    """
+    ids: [ID!]
+
+    """
+    Also return milestones in all subgroups and subprojects
     """
     includeDescendants: Boolean
 
@@ -5514,7 +6551,43 @@ type Group {
   ): VulnerabilityConnection
 
   """
-  Number of vulnerabilities per severity level, per day, for the projects in the group and its subgroups
+  Number of vulnerabilities per day for the projects in the group and its subgroups
+  """
+  vulnerabilitiesCountByDay(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Last day for which to fetch vulnerability history
+    """
+    endDate: ISO8601Date!
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+
+    """
+    First day for which to fetch vulnerability history
+    """
+    startDate: ISO8601Date!
+  ): VulnerabilitiesCountByDayConnection
+
+  """
+  Number of vulnerabilities per severity level, per day, for the projects in the
+  group and its subgroups. Deprecated in 13.3: Use `vulnerabilitiesCountByDay`
   """
   vulnerabilitiesCountByDayAndSeverity(
     """
@@ -5546,7 +6619,12 @@ type Group {
     First day for which to fetch vulnerability history
     """
     startDate: ISO8601Date!
-  ): VulnerabilitiesCountByDayAndSeverityConnection
+  ): VulnerabilitiesCountByDayAndSeverityConnection @deprecated(reason: "Use `vulnerabilitiesCountByDay`. Deprecated in 13.3")
+
+  """
+  Represents vulnerable project counts for each grade
+  """
+  vulnerabilityGrades: [VulnerableProjectsByGrade!]!
 
   """
   Vulnerability scanners reported on the project vulnerabilties of the group and its subgroups
@@ -5702,6 +6780,11 @@ type InstanceSecurityDashboard {
   ): ProjectConnection!
 
   """
+  Represents vulnerable project counts for each grade
+  """
+  vulnerabilityGrades: [VulnerableProjectsByGrade!]!
+
+  """
   Vulnerability scanners reported on the vulnerabilties from projects selected in Instance Security Dashboard
   """
   vulnerabilityScanners(
@@ -5731,6 +6814,7 @@ type InstanceSecurityDashboard {
 State of a GitLab issue or merge request
 """
 enum IssuableState {
+  all
   closed
   locked
   opened
@@ -5766,6 +6850,11 @@ type Issue implements Noteable {
   User that created the issue
   """
   author: User!
+
+  """
+  Indicates the issue is blocked
+  """
+  blocked: Boolean!
 
   """
   Timestamp of when the issue was closed
@@ -5968,6 +7057,11 @@ type Issue implements Noteable {
   state: IssueState!
 
   """
+  Indicates whether an issue is published to the status page
+  """
+  statusPagePublishedIncident: Boolean
+
+  """
   Indicates the currently logged in user is subscribed to the issue
   """
   subscribed: Boolean!
@@ -5996,6 +7090,11 @@ type Issue implements Noteable {
   Total time reported as spent on the issue
   """
   totalTimeSpent: Int!
+
+  """
+  Type of the issue
+  """
+  type: IssueType
 
   """
   Timestamp of when the issue was last updated
@@ -6074,6 +7173,71 @@ type IssueEdge {
 }
 
 """
+Autogenerated input type of IssueMoveList
+"""
+input IssueMoveListInput {
+  """
+  Global ID of the board that the issue is in
+  """
+  boardId: ID!
+
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  """
+  ID of the board list that the issue will be moved from
+  """
+  fromListId: ID
+
+  """
+  IID of the issue to mutate
+  """
+  iid: String!
+
+  """
+  ID of issue after which the current issue will be positioned at
+  """
+  moveAfterId: ID
+
+  """
+  ID of issue before which the current issue will be positioned at
+  """
+  moveBeforeId: ID
+
+  """
+  Project the issue to mutate is in
+  """
+  projectPath: ID!
+
+  """
+  ID of the board list that the issue will be moved to
+  """
+  toListId: ID
+}
+
+"""
+Autogenerated return type of IssueMoveList
+"""
+type IssueMoveListPayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  """
+  Errors encountered during execution of the mutation.
+  """
+  errors: [String!]!
+
+  """
+  The issue after mutation
+  """
+  issue: Issue
+}
+
+"""
 Check permissions for the current user on a issue
 """
 type IssuePermissions {
@@ -6119,6 +7283,56 @@ type IssuePermissions {
 }
 
 """
+Autogenerated input type of IssueSetAssignees
+"""
+input IssueSetAssigneesInput {
+  """
+  The usernames to assign to the resource. Replaces existing assignees by default.
+  """
+  assigneeUsernames: [String!]!
+
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  """
+  The IID of the issue to mutate
+  """
+  iid: String!
+
+  """
+  The operation to perform. Defaults to REPLACE.
+  """
+  operationMode: MutationOperationMode
+
+  """
+  The project the issue to mutate is in
+  """
+  projectPath: ID!
+}
+
+"""
+Autogenerated return type of IssueSetAssignees
+"""
+type IssueSetAssigneesPayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  """
+  Errors encountered during execution of the mutation.
+  """
+  errors: [String!]!
+
+  """
+  The issue after mutation
+  """
+  issue: Issue
+}
+
+"""
 Autogenerated input type of IssueSetConfidential
 """
 input IssueSetConfidentialInput {
@@ -6133,7 +7347,7 @@ input IssueSetConfidentialInput {
   confidential: Boolean!
 
   """
-  The iid of the issue to mutate
+  The IID of the issue to mutate
   """
   iid: String!
 
@@ -6178,7 +7392,7 @@ input IssueSetDueDateInput {
   dueDate: Time!
 
   """
-  The iid of the issue to mutate
+  The IID of the issue to mutate
   """
   iid: String!
 
@@ -6209,6 +7423,51 @@ type IssueSetDueDatePayload {
 }
 
 """
+Autogenerated input type of IssueSetEpic
+"""
+input IssueSetEpicInput {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  """
+  Global ID of the epic to be assigned to the issue, epic will be removed if absent or set to null
+  """
+  epicId: ID
+
+  """
+  The IID of the issue to mutate
+  """
+  iid: String!
+
+  """
+  The project the issue to mutate is in
+  """
+  projectPath: ID!
+}
+
+"""
+Autogenerated return type of IssueSetEpic
+"""
+type IssueSetEpicPayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  """
+  Errors encountered during execution of the mutation.
+  """
+  errors: [String!]!
+
+  """
+  The issue after mutation
+  """
+  issue: Issue
+}
+
+"""
 Autogenerated input type of IssueSetIteration
 """
 input IssueSetIterationInput {
@@ -6218,7 +7477,7 @@ input IssueSetIterationInput {
   clientMutationId: String
 
   """
-  The iid of the issue to mutate
+  The IID of the issue to mutate
   """
   iid: String!
 
@@ -6263,7 +7522,7 @@ input IssueSetLockedInput {
   clientMutationId: String
 
   """
-  The iid of the issue to mutate
+  The IID of the issue to mutate
   """
   iid: String!
 
@@ -6299,6 +7558,51 @@ type IssueSetLockedPayload {
 }
 
 """
+Autogenerated input type of IssueSetSubscription
+"""
+input IssueSetSubscriptionInput {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  """
+  The IID of the issue to mutate
+  """
+  iid: String!
+
+  """
+  The project the issue to mutate is in
+  """
+  projectPath: ID!
+
+  """
+  The desired state of the subscription
+  """
+  subscribedState: Boolean!
+}
+
+"""
+Autogenerated return type of IssueSetSubscription
+"""
+type IssueSetSubscriptionPayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  """
+  Errors encountered during execution of the mutation.
+  """
+  errors: [String!]!
+
+  """
+  The issue after mutation
+  """
+  issue: Issue
+}
+
+"""
 Autogenerated input type of IssueSetWeight
 """
 input IssueSetWeightInput {
@@ -6308,7 +7612,7 @@ input IssueSetWeightInput {
   clientMutationId: String
 
   """
-  The iid of the issue to mutate
+  The IID of the issue to mutate
   """
   iid: String!
 
@@ -6427,9 +7731,45 @@ enum IssueSort {
 State of a GitLab issue
 """
 enum IssueState {
+  all
   closed
   locked
   opened
+}
+
+"""
+Represents total number of issues for the represented statuses.
+"""
+type IssueStatusCountsType {
+  """
+  Number of issues with status ALL for the project
+  """
+  all: Int
+
+  """
+  Number of issues with status CLOSED for the project
+  """
+  closed: Int
+
+  """
+  Number of issues with status OPENED for the project
+  """
+  opened: Int
+}
+
+"""
+Issue type
+"""
+enum IssueType {
+  """
+  Incident issue type
+  """
+  INCIDENT
+
+  """
+  Issue issue type
+  """
+  ISSUE
 }
 
 """
@@ -6447,6 +7787,11 @@ type Iteration {
   description: String
 
   """
+  The GitLab Flavored Markdown rendering of `description`
+  """
+  descriptionHtml: String
+
+  """
   Timestamp of the iteration due date
   """
   dueDate: Time
@@ -6460,6 +7805,16 @@ type Iteration {
   Internal ID of the iteration
   """
   iid: ID!
+
+  """
+  Web path of the iteration, scoped to the query parent. Only valid for Project parents. Returns null in other contexts
+  """
+  scopedPath: String
+
+  """
+  Web URL of the iteration, scoped to the query parent. Only valid for Project parents. Returns null in other contexts
+  """
+  scopedUrl: String
 
   """
   Timestamp of the iteration start date
@@ -6526,6 +7881,11 @@ type IterationEdge {
   """
   node: Iteration
 }
+
+"""
+Identifier of Iteration
+"""
+scalar IterationID
 
 """
 State of a GitLab iteration
@@ -6911,6 +8271,11 @@ type LabelEdge {
 }
 
 """
+Identifier of Label
+"""
+scalar LabelID
+
+"""
 List limit metric setting
 """
 enum ListLimitMetric {
@@ -6988,6 +8353,31 @@ type MergeRequest implements Noteable {
   allowCollaboration: Boolean
 
   """
+  Users who approved the merge request
+  """
+  approvedBy(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+  ): UserConnection
+
+  """
   Assignees of the merge request
   """
   assignees(
@@ -7016,6 +8406,11 @@ type MergeRequest implements Noteable {
   User who created this merge request
   """
   author: User
+
+  """
+  Number of commits in the merge request
+  """
+  commitCount: Int
 
   """
   Timestamp of when the merge request was created
@@ -7433,6 +8828,11 @@ The connection type for MergeRequest.
 """
 type MergeRequestConnection {
   """
+  Total count of collection
+  """
+  count: Int!
+
+  """
   A list of edges.
   """
   edges: [MergeRequestEdge]
@@ -7461,6 +8861,11 @@ input MergeRequestCreateInput {
   Description of the merge request (Markdown rendered as HTML for caching)
   """
   description: String
+
+  """
+  Labels of the merge request
+  """
+  labels: [String!]
 
   """
   Project full path the merge request is associated with
@@ -7568,7 +8973,7 @@ Autogenerated input type of MergeRequestSetAssignees
 """
 input MergeRequestSetAssigneesInput {
   """
-  The usernames to assign to the merge request. Replaces existing assignees by default.
+  The usernames to assign to the resource. Replaces existing assignees by default.
   """
   assigneeUsernames: [String!]!
 
@@ -7847,6 +9252,7 @@ type MergeRequestSetWipPayload {
 State of a GitLab merge request
 """
 enum MergeRequestState {
+  all
   closed
   locked
   merged
@@ -8134,6 +9540,11 @@ type MilestoneEdge {
   node: Milestone
 }
 
+"""
+Identifier of Milestone
+"""
+scalar MilestoneID
+
 enum MilestoneStateEnum {
   active
   closed
@@ -8178,11 +9589,14 @@ type Mutation {
   awardEmojiAdd(input: AwardEmojiAddInput!): AwardEmojiAddPayload
   awardEmojiRemove(input: AwardEmojiRemoveInput!): AwardEmojiRemovePayload
   awardEmojiToggle(input: AwardEmojiToggleInput!): AwardEmojiTogglePayload
+  boardListCreate(input: BoardListCreateInput!): BoardListCreatePayload
   boardListUpdateLimitMetrics(input: BoardListUpdateLimitMetricsInput!): BoardListUpdateLimitMetricsPayload
   commitCreate(input: CommitCreateInput!): CommitCreatePayload
+  configureSast(input: ConfigureSastInput!): ConfigureSastPayload
   createAlertIssue(input: CreateAlertIssueInput!): CreateAlertIssuePayload
   createAnnotation(input: CreateAnnotationInput!): CreateAnnotationPayload
   createBranch(input: CreateBranchInput!): CreateBranchPayload
+  createClusterAgent(input: CreateClusterAgentInput!): CreateClusterAgentPayload
   createDiffNote(input: CreateDiffNoteInput!): CreateDiffNotePayload
   createEpic(input: CreateEpicInput!): CreateEpicPayload
   createImageDiffNote(input: CreateImageDiffNoteInput!): CreateImageDiffNotePayload
@@ -8190,9 +9604,14 @@ type Mutation {
   createNote(input: CreateNoteInput!): CreateNotePayload
   createRequirement(input: CreateRequirementInput!): CreateRequirementPayload
   createSnippet(input: CreateSnippetInput!): CreateSnippetPayload
+  dastOnDemandScanCreate(input: DastOnDemandScanCreateInput!): DastOnDemandScanCreatePayload
+  dastScannerProfileCreate(input: DastScannerProfileCreateInput!): DastScannerProfileCreatePayload
   dastSiteProfileCreate(input: DastSiteProfileCreateInput!): DastSiteProfileCreatePayload
+  dastSiteProfileDelete(input: DastSiteProfileDeleteInput!): DastSiteProfileDeletePayload
+  dastSiteProfileUpdate(input: DastSiteProfileUpdateInput!): DastSiteProfileUpdatePayload
   deleteAnnotation(input: DeleteAnnotationInput!): DeleteAnnotationPayload
   designManagementDelete(input: DesignManagementDeleteInput!): DesignManagementDeletePayload
+  designManagementMove(input: DesignManagementMoveInput!): DesignManagementMovePayload
   designManagementUpload(input: DesignManagementUploadInput!): DesignManagementUploadPayload
   destroyNote(input: DestroyNoteInput!): DestroyNotePayload
   destroySnippet(input: DestroySnippetInput!): DestroySnippetPayload
@@ -8205,10 +9624,14 @@ type Mutation {
   epicAddIssue(input: EpicAddIssueInput!): EpicAddIssuePayload
   epicSetSubscription(input: EpicSetSubscriptionInput!): EpicSetSubscriptionPayload
   epicTreeReorder(input: EpicTreeReorderInput!): EpicTreeReorderPayload
+  issueMoveList(input: IssueMoveListInput!): IssueMoveListPayload
+  issueSetAssignees(input: IssueSetAssigneesInput!): IssueSetAssigneesPayload
   issueSetConfidential(input: IssueSetConfidentialInput!): IssueSetConfidentialPayload
   issueSetDueDate(input: IssueSetDueDateInput!): IssueSetDueDatePayload
+  issueSetEpic(input: IssueSetEpicInput!): IssueSetEpicPayload
   issueSetIteration(input: IssueSetIterationInput!): IssueSetIterationPayload
   issueSetLocked(input: IssueSetLockedInput!): IssueSetLockedPayload
+  issueSetSubscription(input: IssueSetSubscriptionInput!): IssueSetSubscriptionPayload
   issueSetWeight(input: IssueSetWeightInput!): IssueSetWeightPayload
   jiraImportStart(input: JiraImportStartInput!): JiraImportStartPayload
   jiraImportUsers(input: JiraImportUsersInput!): JiraImportUsersPayload
@@ -8225,6 +9648,7 @@ type Mutation {
   Update attributes of a merge request
   """
   mergeRequestUpdate(input: MergeRequestUpdateInput!): MergeRequestUpdatePayload
+  namespaceIncreaseStorageTemporarily(input: NamespaceIncreaseStorageTemporarilyInput!): NamespaceIncreaseStorageTemporarilyPayload
   removeAwardEmoji(input: RemoveAwardEmojiInput!): RemoveAwardEmojiPayload @deprecated(reason: "Use awardEmojiRemove. Deprecated in 13.2")
   removeProjectFromSecurityDashboard(input: RemoveProjectFromSecurityDashboardInput!): RemoveProjectFromSecurityDashboardPayload
   runDastScan(input: RunDASTScanInput!): RunDASTScanPayload
@@ -8234,6 +9658,8 @@ type Mutation {
   todosMarkAllDone(input: TodosMarkAllDoneInput!): TodosMarkAllDonePayload
   toggleAwardEmoji(input: ToggleAwardEmojiInput!): ToggleAwardEmojiPayload @deprecated(reason: "Use awardEmojiToggle. Deprecated in 13.2")
   updateAlertStatus(input: UpdateAlertStatusInput!): UpdateAlertStatusPayload
+  updateBoard(input: UpdateBoardInput!): UpdateBoardPayload
+  updateBoardList(input: UpdateBoardListInput!): UpdateBoardListPayload
   updateContainerExpirationPolicy(input: UpdateContainerExpirationPolicyInput!): UpdateContainerExpirationPolicyPayload
   updateEpic(input: UpdateEpicInput!): UpdateEpicPayload
 
@@ -8300,6 +9726,11 @@ type Namespace {
   ID of the namespace
   """
   id: ID!
+
+  """
+  Status of the temporary storage increase
+  """
+  isTemporaryStorageIncreaseEnabled: Boolean!
 
   """
   Indicates if Large File Storage (LFS) is enabled for namespace
@@ -8410,6 +9841,83 @@ type NamespaceEdge {
   The item at the end of the edge.
   """
   node: Namespace
+}
+
+"""
+Autogenerated input type of NamespaceIncreaseStorageTemporarily
+"""
+input NamespaceIncreaseStorageTemporarilyInput {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  """
+  The global id of the namespace to mutate
+  """
+  id: ID!
+}
+
+"""
+Autogenerated return type of NamespaceIncreaseStorageTemporarily
+"""
+type NamespaceIncreaseStorageTemporarilyPayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  """
+  Errors encountered during execution of the mutation.
+  """
+  errors: [String!]!
+
+  """
+  The namespace after mutation
+  """
+  namespace: Namespace
+}
+
+input NegatedBoardEpicIssueInput {
+  """
+  Filter by assignee username
+  """
+  assigneeUsername: [String]
+
+  """
+  Filter by author username
+  """
+  authorUsername: String
+
+  """
+  Filter by epic ID
+  """
+  epicId: String
+
+  """
+  Filter by label name
+  """
+  labelName: [String]
+
+  """
+  Filter by milestone title
+  """
+  milestoneTitle: String
+
+  """
+  Filter by reaction emoji
+  """
+  myReactionEmoji: String
+
+  """
+  Filter by release tag
+  """
+  releaseTag: String
+
+  """
+  Filter by weight
+  """
+  weight: String
 }
 
 type Note implements ResolvableInterface {
@@ -8832,6 +10340,13 @@ type Pipeline {
   committedAt: Time
 
   """
+  Config source of the pipeline (UNKNOWN_SOURCE, REPOSITORY_SOURCE,
+  AUTO_DEVOPS_SOURCE, WEBIDE_SOURCE, REMOTE_SOURCE, EXTERNAL_PROJECT_SOURCE,
+  BRIDGE_SOURCE, PARAMETER_SOURCE)
+  """
+  configSource: PipelineConfigSourceEnum
+
+  """
   Coverage percentage
   """
   coverage: Float
@@ -8877,6 +10392,31 @@ type Pipeline {
   sha: String!
 
   """
+  Stages of the pipeline
+  """
+  stages(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+  ): CiStageConnection
+
+  """
   Timestamp when the pipeline was started
   """
   startedAt: Time
@@ -8893,15 +10433,36 @@ type Pipeline {
   updatedAt: Time!
 
   """
+  Pipeline user
+  """
+  user: User
+
+  """
   Permissions for the current user on the resource
   """
   userPermissions: PipelinePermissions!
+}
+
+enum PipelineConfigSourceEnum {
+  AUTO_DEVOPS_SOURCE
+  BRIDGE_SOURCE
+  EXTERNAL_PROJECT_SOURCE
+  PARAMETER_SOURCE
+  REMOTE_SOURCE
+  REPOSITORY_SOURCE
+  UNKNOWN_SOURCE
+  WEBIDE_SOURCE
 }
 
 """
 The connection type for Pipeline.
 """
 type PipelineConnection {
+  """
+  Total count of collection
+  """
+  count: Int!
+
   """
   A list of edges.
   """
@@ -9147,6 +10708,56 @@ type Project {
   createdAt: Time
 
   """
+  The DAST scanner profiles associated with the project
+  """
+  dastScannerProfiles(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+  ): DastScannerProfileConnection
+
+  """
+  DAST Site Profiles associated with the project
+  """
+  dastSiteProfiles(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+  ): DastSiteProfileConnection
+
+  """
   Short description of the project
   """
   description: String
@@ -9155,6 +10766,26 @@ type Project {
   The GitLab Flavored Markdown rendering of `description`
   """
   descriptionHtml: String
+
+  """
+  A single environment of the project
+  """
+  environment(
+    """
+    Name of the environment
+    """
+    name: String
+
+    """
+    Search query for environment name
+    """
+    search: String
+
+    """
+    States of environments that should be included in result
+    """
+    states: [String!]
+  ): Environment
 
   """
   Environments of the project
@@ -9241,7 +10872,7 @@ type Project {
     assigneeId: String
 
     """
-    Username of a user assigned to the issues
+    Username of a user assigned to the issue
     """
     assigneeUsername: String
 
@@ -9286,7 +10917,7 @@ type Project {
     labelName: [String]
 
     """
-    Milestones applied to this issue
+    Milestone applied to this issue
     """
     milestoneTitle: [String]
 
@@ -9306,6 +10937,11 @@ type Project {
     state: IssuableState
 
     """
+    Filter issues by the given issue types
+    """
+    types: [IssueType!]
+
+    """
     Issues updated after this date
     """
     updatedAfter: Time
@@ -9315,6 +10951,81 @@ type Project {
     """
     updatedBefore: Time
   ): Issue
+
+  """
+  Counts of issues by status for the project
+  """
+  issueStatusCounts(
+    """
+    ID of a user assigned to the issues, "none" and "any" values supported
+    """
+    assigneeId: String
+
+    """
+    Username of a user assigned to the issue
+    """
+    assigneeUsername: String
+
+    """
+    Issues closed after this date
+    """
+    closedAfter: Time
+
+    """
+    Issues closed before this date
+    """
+    closedBefore: Time
+
+    """
+    Issues created after this date
+    """
+    createdAfter: Time
+
+    """
+    Issues created before this date
+    """
+    createdBefore: Time
+
+    """
+    IID of the issue. For example, "1"
+    """
+    iid: String
+
+    """
+    List of IIDs of issues. For example, [1, 2]
+    """
+    iids: [String!]
+
+    """
+    Labels applied to this issue
+    """
+    labelName: [String]
+
+    """
+    Milestone applied to this issue
+    """
+    milestoneTitle: [String]
+
+    """
+    Search query for issue title or description
+    """
+    search: String
+
+    """
+    Filter issues by the given issue types
+    """
+    types: [IssueType!]
+
+    """
+    Issues updated after this date
+    """
+    updatedAfter: Time
+
+    """
+    Issues updated before this date
+    """
+    updatedBefore: Time
+  ): IssueStatusCountsType
 
   """
   Issues of the project
@@ -9331,7 +11042,7 @@ type Project {
     assigneeId: String
 
     """
-    Username of a user assigned to the issues
+    Username of a user assigned to the issue
     """
     assigneeUsername: String
 
@@ -9391,7 +11102,7 @@ type Project {
     last: Int
 
     """
-    Milestones applied to this issue
+    Milestone applied to this issue
     """
     milestoneTitle: [String]
 
@@ -9411,6 +11122,11 @@ type Project {
     state: IssuableState
 
     """
+    Filter issues by the given issue types
+    """
+    types: [IssueType!]
+
+    """
     Issues updated after this date
     """
     updatedAfter: Time
@@ -9425,6 +11141,68 @@ type Project {
   Indicates if Issues are enabled for the current user
   """
   issuesEnabled: Boolean
+
+  """
+  Find iterations
+  """
+  iterations(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    List items within a time frame where items.end_date is between startDate and
+    endDate parameters (startDate parameter must be present)
+    """
+    endDate: Time
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    The ID of the Iteration to look up
+    """
+    id: ID
+
+    """
+    The internal ID of the Iteration to look up
+    """
+    iid: ID
+
+    """
+    Whether to include ancestor iterations. Defaults to true
+    """
+    includeAncestors: Boolean
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+
+    """
+    List items within a time frame where items.start_date is between startDate
+    and endDate parameters (endDate parameter must be present)
+    """
+    startDate: Time
+
+    """
+    Filter iterations by state
+    """
+    state: IterationState
+
+    """
+    Fuzzy search by title
+    """
+    title: String
+  ): IterationConnection
 
   """
   Status of Jira import background job of the project
@@ -9556,6 +11334,16 @@ type Project {
     last: Int
 
     """
+    Merge requests merged after this date
+    """
+    mergedAfter: Time
+
+    """
+    Merge requests merged before this date
+    """
+    mergedBefore: Time
+
+    """
     Array of source branch names. All resolved merge requests will have one of these branches as their source.
     """
     sourceBranches: [String!]
@@ -9582,6 +11370,58 @@ type Project {
   could be fast-forwarded.
   """
   mergeRequestsFfOnlyEnabled: Boolean
+
+  """
+  Milestones of the project
+  """
+  milestones(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    List items within a time frame where items.end_date is between startDate and
+    endDate parameters (startDate parameter must be present)
+    """
+    endDate: Time
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Array of global milestone IDs, e.g., "gid://gitlab/Milestone/1"
+    """
+    ids: [ID!]
+
+    """
+    Also return milestones in the project's parent group and its ancestors
+    """
+    includeAncestors: Boolean
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+
+    """
+    List items within a time frame where items.start_date is between startDate
+    and endDate parameters (endDate parameter must be present)
+    """
+    startDate: Time
+
+    """
+    Filter milestones by state
+    """
+    state: MilestoneStateEnum
+  ): MilestoneConnection
 
   """
   Name of the project (without namespace)
@@ -9883,6 +11723,11 @@ type Project {
   SAST CI configuration for the project
   """
   sastCiConfiguration: SastCiConfiguration
+
+  """
+  Path to project's security dashboard
+  """
+  securityDashboardPath: String
 
   """
   Information about security analyzers used in the project
@@ -10505,6 +12350,21 @@ type ProjectStatistics {
   wikiSize: Float
 }
 
+"""
+The alert condition for Prometheus
+"""
+type PrometheusAlert {
+  """
+  The human-readable text of the alert condition
+  """
+  humanizedText: String!
+
+  """
+  ID of the alert condition
+  """
+  id: ID!
+}
+
 type Query {
   """
   Get information about current user
@@ -10552,9 +12412,29 @@ type Query {
   instanceSecurityDashboard: InstanceSecurityDashboard
 
   """
+  Find an iteration
+  """
+  iteration(
+    """
+    Find an iteration by its ID
+    """
+    id: IterationID!
+  ): Iteration
+
+  """
   Metadata about GitLab
   """
   metadata: Metadata
+
+  """
+  Find a milestone
+  """
+  milestone(
+    """
+    Find a milestone by its ID
+    """
+    id: MilestoneID!
+  ): Milestone
 
   """
   Find a namespace
@@ -10772,7 +12652,44 @@ type Query {
   ): VulnerabilityConnection
 
   """
-  Number of vulnerabilities per severity level, per day, for the projects on the current user's instance security dashboard
+  Number of vulnerabilities per day for the projects on the current user's instance security dashboard
+  """
+  vulnerabilitiesCountByDay(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Last day for which to fetch vulnerability history
+    """
+    endDate: ISO8601Date!
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+
+    """
+    First day for which to fetch vulnerability history
+    """
+    startDate: ISO8601Date!
+  ): VulnerabilitiesCountByDayConnection
+
+  """
+  Number of vulnerabilities per severity level, per day, for the projects on the
+  current user's instance security dashboard. Deprecated in 13.3: Use
+  `vulnerabilitiesCountByDay`
   """
   vulnerabilitiesCountByDayAndSeverity(
     """
@@ -10804,7 +12721,7 @@ type Query {
     First day for which to fetch vulnerability history
     """
     startDate: ISO8601Date!
-  ): VulnerabilitiesCountByDayAndSeverityConnection
+  ): VulnerabilitiesCountByDayAndSeverityConnection @deprecated(reason: "Use `vulnerabilitiesCountByDay`. Deprecated in 13.3")
 }
 
 """
@@ -11833,6 +13750,11 @@ type SastCiConfigurationEntity {
   ): SastCiConfigurationOptionsEntityConnection
 
   """
+  Size of the UI component.
+  """
+  size: SastUiComponentSize
+
+  """
   Type of the field value.
   """
   type: String
@@ -11926,6 +13848,15 @@ type SastCiConfigurationOptionsEntityEdge {
   The item at the end of the edge.
   """
   node: SastCiConfigurationOptionsEntity
+}
+
+"""
+Size of UI component in SAST configuration page
+"""
+enum SastUiComponentSize {
+  LARGE
+  MEDIUM
+  SMALL
 }
 
 """
@@ -12063,6 +13994,7 @@ The type of the security scanner.
 """
 enum SecurityScannerType {
   CONTAINER_SCANNING
+  COVERAGE_FUZZING
   DAST
   DEPENDENCY_SCANNING
   SAST
@@ -12636,9 +14568,9 @@ type Snippet implements Noteable {
   author: User
 
   """
-  Snippet blob
+  Snippet blob. Deprecated in 13.3: Use `blobs`
   """
-  blob: SnippetBlob!
+  blob: SnippetBlob! @deprecated(reason: "Use `blobs`. Deprecated in 13.3")
 
   """
   Snippet blobs
@@ -12832,6 +14764,41 @@ type SnippetBlob {
 }
 
 """
+Type of a snippet blob input action
+"""
+enum SnippetBlobActionEnum {
+  create
+  delete
+  move
+  update
+}
+
+"""
+Represents an action to perform over a snippet file
+"""
+input SnippetBlobActionInputType {
+  """
+  Type of input action
+  """
+  action: SnippetBlobActionEnum!
+
+  """
+  Snippet file content
+  """
+  content: String
+
+  """
+  Path of the snippet file
+  """
+  filePath: String!
+
+  """
+  Previous path of the snippet file
+  """
+  previousPath: String
+}
+
+"""
 Represents how the blob content should be displayed
 """
 type SnippetBlobViewer {
@@ -12904,41 +14871,6 @@ type SnippetEdge {
   The item at the end of the edge.
   """
   node: Snippet
-}
-
-"""
-Type of a snippet file input action
-"""
-enum SnippetFileInputActionEnum {
-  create
-  delete
-  move
-  update
-}
-
-"""
-Represents an action to perform over a snippet file
-"""
-input SnippetFileInputType {
-  """
-  Type of input action
-  """
-  action: SnippetFileInputActionEnum!
-
-  """
-  Snippet file content
-  """
-  content: String
-
-  """
-  Path of the snippet file
-  """
-  filePath: String!
-
-  """
-  Previous path of the snippet file
-  """
-  previousPath: String
 }
 
 type SnippetPermissions {
@@ -13664,6 +15596,11 @@ type TreeEntry implements Entry {
   type: EntryType!
 
   """
+  Web path for the tree entry (directory)
+  """
+  webPath: String
+
+  """
   Web URL for the tree entry (directory)
   """
   webUrl: String
@@ -13767,6 +15704,116 @@ type UpdateAlertStatusPayload {
   The todo after mutation
   """
   todo: Todo
+}
+
+"""
+Autogenerated input type of UpdateBoard
+"""
+input UpdateBoardInput {
+  """
+  The id of user to be assigned to the board.
+  """
+  assigneeId: ID
+
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  """
+  Whether or not backlog list is hidden.
+  """
+  hideBacklogList: Boolean
+
+  """
+  Whether or not closed list is hidden.
+  """
+  hideClosedList: Boolean
+
+  """
+  The board global id.
+  """
+  id: ID!
+
+  """
+  The id of milestone to be assigned to the board.
+  """
+  milestoneId: ID
+
+  """
+  Name of the board
+  """
+  name: String
+
+  """
+  The weight value to be assigned to the board.
+  """
+  weight: Int
+}
+
+"""
+Autogenerated input type of UpdateBoardList
+"""
+input UpdateBoardListInput {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  """
+  Indicates if list is collapsed for this user
+  """
+  collapsed: Boolean
+
+  """
+  Global ID of the list.
+  """
+  listId: ID!
+
+  """
+  Position of list within the board
+  """
+  position: Int
+}
+
+"""
+Autogenerated return type of UpdateBoardList
+"""
+type UpdateBoardListPayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  """
+  Errors encountered during execution of the mutation.
+  """
+  errors: [String!]!
+
+  """
+  Mutated list
+  """
+  list: BoardList
+}
+
+"""
+Autogenerated return type of UpdateBoard
+"""
+type UpdateBoardPayload {
+  """
+  The board after mutation.
+  """
+  board: Board
+
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  """
+  Errors encountered during execution of the mutation.
+  """
+  errors: [String!]!
 }
 
 """
@@ -13996,6 +16043,11 @@ Autogenerated input type of UpdateIssue
 """
 input UpdateIssueInput {
   """
+  The IDs of labels to be added to the issue.
+  """
+  addLabelIds: [ID!]
+
+  """
   A unique identifier for the client performing the mutation.
   """
   clientMutationId: String
@@ -14021,14 +16073,29 @@ input UpdateIssueInput {
   healthStatus: HealthStatus
 
   """
-  The iid of the issue to mutate
+  The IID of the issue to mutate
   """
   iid: String!
+
+  """
+  Indicates discussion is locked on the issue
+  """
+  locked: Boolean
+
+  """
+  The ID of the milestone to be assigned, milestone will be removed if set to null.
+  """
+  milestoneId: ID
 
   """
   The project the issue to mutate is in
   """
   projectPath: ID!
+
+  """
+  The IDs of labels to be removed from the issue.
+  """
+  removeLabelIds: [ID!]
 
   """
   Title of the issue
@@ -14123,12 +16190,17 @@ input UpdateNoteInput {
   """
   Content of the note
   """
-  body: String!
+  body: String
 
   """
   A unique identifier for the client performing the mutation.
   """
   clientMutationId: String
+
+  """
+  The confidentiality flag of a note. Default is false.
+  """
+  confidential: Boolean
 
   """
   The global id of the note to update
@@ -14211,6 +16283,11 @@ Autogenerated input type of UpdateSnippet
 """
 input UpdateSnippetInput {
   """
+  Actions to perform over the snippet repository and blobs
+  """
+  blobActions: [SnippetBlobActionInputType!]
+
+  """
   A unique identifier for the client performing the mutation.
   """
   clientMutationId: String
@@ -14229,11 +16306,6 @@ input UpdateSnippetInput {
   File name of the snippet
   """
   fileName: String
-
-  """
-  The snippet files to update
-  """
-  files: [SnippetFileInputType!]
 
   """
   The global id of the snippet to update
@@ -14309,6 +16381,16 @@ type User {
     last: Int
 
     """
+    Merge requests merged after this date
+    """
+    mergedAfter: Time
+
+    """
+    Merge requests merged before this date
+    """
+    mergedBefore: Time
+
+    """
     The global ID of the project the authored merge requests should be in. Incompatible with projectPath.
     """
     projectId: ID
@@ -14369,6 +16451,16 @@ type User {
     last: Int
 
     """
+    Merge requests merged after this date
+    """
+    mergedAfter: Time
+
+    """
+    Merge requests merged before this date
+    """
+    mergedBefore: Time
+
+    """
     The global ID of the project the authored merge requests should be in. Incompatible with projectPath.
     """
     projectId: ID
@@ -14398,6 +16490,11 @@ type User {
   URL of the user's avatar
   """
   avatarUrl: String
+
+  """
+  User email
+  """
+  email: String
 
   """
   Group memberships of the user
@@ -14505,6 +16602,11 @@ type User {
   state: UserState!
 
   """
+  User status
+  """
+  status: UserStatus
+
+  """
   Todos of the user
   """
   todos(
@@ -14568,6 +16670,11 @@ type User {
   Username of the user. Unique within this instance of GitLab
   """
   username: String!
+
+  """
+  Web path of the user
+  """
+  webPath: String!
 
   """
   Web URL of the user
@@ -14637,6 +16744,23 @@ enum UserState {
   deactivated
 }
 
+type UserStatus {
+  """
+  String representation of emoji
+  """
+  emoji: String
+
+  """
+  User status message
+  """
+  message: String
+
+  """
+  HTML of the user status message
+  """
+  messageHtml: String
+}
+
 enum VisibilityLevelsEnum {
   internal
   private
@@ -14647,6 +16771,51 @@ enum VisibilityScopesEnum {
   internal
   private
   public
+}
+
+"""
+Represents the count of vulnerabilities by severity on a particular day
+"""
+type VulnerabilitiesCountByDay {
+  """
+  Total number of vulnerabilities on a particular day with critical severity
+  """
+  critical: Int!
+
+  """
+  Date for the count
+  """
+  date: ISO8601Date!
+
+  """
+  Total number of vulnerabilities on a particular day with high severity
+  """
+  high: Int!
+
+  """
+  Total number of vulnerabilities on a particular day with info severity
+  """
+  info: Int!
+
+  """
+  Total number of vulnerabilities on a particular day with low severity
+  """
+  low: Int!
+
+  """
+  Total number of vulnerabilities on a particular day with medium severity
+  """
+  medium: Int!
+
+  """
+  Total number of vulnerabilities on a particular day
+  """
+  total: Int!
+
+  """
+  Total number of vulnerabilities on a particular day with unknown severity
+  """
+  unknown: Int!
 }
 
 """
@@ -14702,6 +16871,41 @@ type VulnerabilitiesCountByDayAndSeverityEdge {
   The item at the end of the edge.
   """
   node: VulnerabilitiesCountByDayAndSeverity
+}
+
+"""
+The connection type for VulnerabilitiesCountByDay.
+"""
+type VulnerabilitiesCountByDayConnection {
+  """
+  A list of edges.
+  """
+  edges: [VulnerabilitiesCountByDayEdge]
+
+  """
+  A list of nodes.
+  """
+  nodes: [VulnerabilitiesCountByDay]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+}
+
+"""
+An edge in a connection.
+"""
+type VulnerabilitiesCountByDayEdge {
+  """
+  A cursor for use in pagination.
+  """
+  cursor: String!
+
+  """
+  The item at the end of the edge.
+  """
+  node: VulnerabilitiesCountByDay
 }
 
 """
@@ -14776,6 +16980,11 @@ type Vulnerability {
   reportType: VulnerabilityReportType
 
   """
+  Indicates whether the vulnerability is fixed on the default branch or not
+  """
+  resolvedOnDefaultBranch: Boolean!
+
+  """
   Scanner metadata for the vulnerability.
   """
   scanner: VulnerabilityScanner
@@ -14844,6 +17053,17 @@ type VulnerabilityEdge {
   The item at the end of the edge.
   """
   node: Vulnerability
+}
+
+"""
+The grade of the vulnerable project
+"""
+enum VulnerabilityGrade {
+  A
+  B
+  C
+  D
+  F
 }
 
 """
@@ -14937,7 +17157,7 @@ enum VulnerabilityIssueLinkType {
 """
 Represents a vulnerability location. The fields with data will depend on the vulnerability report type
 """
-union VulnerabilityLocation = VulnerabilityLocationContainerScanning | VulnerabilityLocationDast | VulnerabilityLocationDependencyScanning | VulnerabilityLocationSast | VulnerabilityLocationSecretDetection
+union VulnerabilityLocation = VulnerabilityLocationContainerScanning | VulnerabilityLocationCoverageFuzzing | VulnerabilityLocationDast | VulnerabilityLocationDependencyScanning | VulnerabilityLocationSast | VulnerabilityLocationSecretDetection
 
 """
 Represents the location of a vulnerability found by a container security scan
@@ -14957,6 +17177,36 @@ type VulnerabilityLocationContainerScanning {
   Operating system that runs on the vulnerable container image
   """
   operatingSystem: String
+}
+
+"""
+Represents the location of a vulnerability found by a Coverage Fuzzing scan
+"""
+type VulnerabilityLocationCoverageFuzzing {
+  """
+  Number of the last relevant line in the vulnerable file
+  """
+  endLine: String
+
+  """
+  Path to the vulnerable file
+  """
+  file: String
+
+  """
+  Number of the first relevant line in the vulnerable file
+  """
+  startLine: String
+
+  """
+  Class containing the vulnerability
+  """
+  vulnerableClass: String
+
+  """
+  Method containing the vulnerability
+  """
+  vulnerableMethod: String
 }
 
 """
@@ -15256,4 +17506,44 @@ type VulnerablePackage {
   The name of the vulnerable package
   """
   name: String
+}
+
+"""
+Represents vulnerability letter grades with associated projects
+"""
+type VulnerableProjectsByGrade {
+  """
+  Number of projects within this grade
+  """
+  count: Int!
+
+  """
+  Grade based on the highest severity vulnerability present
+  """
+  grade: VulnerabilityGrade!
+
+  """
+  Projects within this grade
+  """
+  projects(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+  ): ProjectConnection!
 }

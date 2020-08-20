@@ -66,10 +66,6 @@ execution time and the error output.
 
 ## How to set it up
 
-NOTE: **Note:**
-For a list of supported languages on JUnit tests, check the
-[Wikipedia article](https://en.wikipedia.org/wiki/JUnit#Ports).
-
 To enable the JUnit reports in merge requests, you need to add
 [`artifacts:reports:junit`](pipelines/job_artifacts.md#artifactsreportsjunit)
 in `.gitlab-ci.yml`, and specify the path(s) of the generated test reports.
@@ -80,9 +76,11 @@ collects the JUnit test report from each job. After each job is executed, the
 XML reports are stored in GitLab as artifacts and their results are shown in the
 merge request widget.
 
+To make the JUnit output files browsable, include them with the
+[`artifacts:paths`](yaml/README.md#artifactspaths) keyword as well, as shown in the [Ruby example](#ruby-example).
+
 NOTE: **Note:**
-If you also want the ability to browse JUnit output files, include the
-[`artifacts:paths`](yaml/README.md#artifactspaths) keyword. An example of this is shown in the Ruby example below.
+You cannot have multiple tests with the same name and class in your JUnit report.
 
 ### Ruby example
 
@@ -139,6 +137,9 @@ java:
     reports:
       junit: build/test-results/test/**/TEST-*.xml
 ```
+
+NOTE: **Note:**
+Support for `**` was added in [GitLab Runner 13.0](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/2620).
 
 #### Maven
 
@@ -236,9 +237,8 @@ Test:
 
 ## Viewing JUnit test reports on GitLab
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/24792) in GitLab 12.5.
-> - It's deployed behind a feature flag, disabled by default.
-> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enabling-the-junit-test-reports-feature-core-only). **(CORE ONLY)**
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/24792) in GitLab 12.5 behind a feature flag (`junit_pipeline_view`), disabled by default.
+> - The feature flag was removed and the feature was [made generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/216478) in GitLab 13.3.
 
 If JUnit XML files are generated and uploaded as part of a pipeline, these reports
 can be viewed inside the pipelines details page. The **Tests** tab on this page will
@@ -247,26 +247,9 @@ display a list of test suites and cases reported from the XML file.
 ![Test Reports Widget](img/pipelines_junit_test_report_ui_v12_5.png)
 
 You can view all the known test suites and click on each of these to see further
-details, including the cases that makeup the suite. Cases are ordered by status,
-with failed showing at the top, skipped next and successful cases last.
+details, including the cases that make up the suite.
 
 You can also retrieve the reports via the [GitLab API](../api/pipelines.md#get-a-pipelines-test-report).
-
-### Enabling the JUnit test reports feature **(CORE ONLY)**
-
-This feature comes with the `:junit_pipeline_view` feature flag disabled by default. This
-feature is disabled due to some performance issues with very large data sets.
-When [the performance is improved](https://gitlab.com/groups/gitlab-org/-/epics/2854), the feature will be enabled by default.
-
-To enable this feature, ask a GitLab administrator with [Rails console access](../administration/feature_flags.md#how-to-enable-and-disable-features-behind-flags) to run the
-following command:
-
-```ruby
-Feature.enable(:junit_pipeline_view)
-
-# Enable the feature for a specific project, GitLab 13.0 and above only.
-Feature.enable(:junit_pipeline_view, Project.find(<your-project-id-here>))
-```
 
 ## Viewing JUnit screenshots on GitLab
 

@@ -1,7 +1,7 @@
 <script>
 import { isEqual } from 'lodash';
 import { __, s__ } from '~/locale';
-import createFlash from '~/flash';
+import { deprecatedCreateFlash as createFlash } from '~/flash';
 import PipelinesService from '../../services/pipelines_service';
 import pipelinesMixin from '../../mixins/pipelines';
 import TablePagination from '~/vue_shared/components/pagination/table_pagination.vue';

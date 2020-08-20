@@ -14,6 +14,7 @@ RSpec.describe Gitlab::GitlabImport::ProjectCreator do
       owner: { name: "john" }
     }.with_indifferent_access
   end
+
   let(:namespace) { create(:group) }
   let(:token) { "asdffg" }
   let(:access_params) { { gitlab_access_token: token } }

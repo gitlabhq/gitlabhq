@@ -1,4 +1,7 @@
 ---
+stage: Create
+group: Source Code
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 type: howto
 description: "How to create Merge Requests in GitLab."
 disqus_identifier: 'https://docs.gitlab.com/ee/gitlab-basics/add-merge-request.html'
@@ -18,7 +21,7 @@ or through the [GitLab UI](#new-merge-request-from-a-new-branch-created-through-
 This document describes the several ways to create a merge request.
 
 When you start a new merge request, regardless of the method,
-you'll be taken to the [**New Merge Request** page](#new-merge-request-page)
+you are taken to the [**New Merge Request** page](#new-merge-request-page)
 to fill it with information about the merge request.
 
 If you push a new branch to GitLab, also regardless of the method,
@@ -29,8 +32,8 @@ button and start a merge request from there.
 
 On the **New Merge Request** page, start by filling in the title
 and description for the merge request. If there are already
-commits on the branch, the title will be prefilled with the first
-line of the first commit message, and the description will be
+commits on the branch, the title is prefilled with the first
+line of the first commit message, and the description is
 prefilled with any additional lines in the commit message.
 The title is the only field that is mandatory in all cases.
 
@@ -61,18 +64,18 @@ You can also see the **Create merge request** button in the top-right of the:
 - **Repository > Files** page.
 - **Merge Requests** page.
 
-In this case, GitLab will use the most recent branch you pushed
+In this case, GitLab uses the most recent branch you pushed
 changes to as the source branch, and the default branch in the current
 project as the target.
 
 ## New merge request by adding, editing, and uploading a file
 
 When you choose to edit, add, or upload a file through the GitLab UI,
-at the end of the file you'll see the option to add the **Commit message**,
+at the end of the file you see the option to add the **Commit message**,
 to select the **Target branch** of that commit, and the checkbox to
 **Start new a merge request with these changes**.
 
-Similarly, if you change files through the Web IDE, when you navigate to **Commit** on the left-hand sidebar, you'll see these same options.
+Similarly, if you change files through the Web IDE, when you navigate to **Commit** on the left-hand sidebar, you see these same options.
 
 Once you have added, edited, or uploaded the file:
 
@@ -81,23 +84,23 @@ Once you have added, edited, or uploaded the file:
 1. Keep the checkbox checked to start a new merge request straightaway, or, uncheck it to add more changes to that branch before starting the merge request.
 1. Click **Commit changes**.
 
-If you chose to start a merge request, you'll be taken to the
+If you chose to start a merge request, you are taken to the
 [**New Merge Request** page](#new-merge-request-page), from
 which you can fill it in with information and submit the merge request.
 
-The merge request will target the default branch of the repository.
+The merge request targets the default branch of the repository.
 If you want to change it, you can do it later by editing the merge request.
 
 ## New merge request from a new branch created through the UI
 
 To quickly start working on files through the GitLab UI,
 navigate to your project's **Repository > Branches** and click
-**New branch**. A new branch will be created and you can start
+**New branch**. A new branch is created and you can start
 editing files.
 
 Once committed and pushed, you can click on the [**Create Merge Request**](#create-merge-request-button)
 button to open the [**New Merge Request** page](#new-merge-request-page).
-A new merge request will be started using the current branch as the source,
+A new merge request is started using the current branch as the source,
 and the default branch in the current project as the target.
 
 ## New merge request from your local environment
@@ -123,7 +126,7 @@ Once you're done, [push your branch to GitLab](../../../gitlab-basics/start-usin
 git push origin my-new-branch
 ```
 
-In the output, GitLab will prompt you with a direct link for creating
+In the output, GitLab prompts you with a direct link for creating
 a merge request:
 
 ```shell
@@ -133,7 +136,7 @@ remote:   https://gitlab-instance.com/my-group/my-project/merge_requests/new?mer
 ```
 
 Copy that link and paste it in your browser, and the [**New Merge Request page**](#new-merge-request-page)
-will be displayed.
+is displayed.
 
 There is also a number of [flags you can add to commands when pushing through the command line](../push_options.md) to reduce the need for editing merge requests manually through the UI.
 
@@ -183,10 +186,10 @@ available in GitLab.com.
 
 You can create a new merge request by sending an email to a user-specific email
 address. The address can be obtained on the merge requests page by clicking on
-a **Email a new merge request to this project** button. The subject will be
+a **Email a new merge request to this project** button. The subject is
 used as the source branch name for the new merge request and the target branch
-will be the default branch for the project. The message body (if not empty)
-will be used as the merge request description. You need
+is the default branch for the project. The message body (if not empty)
+is used as the merge request description. You need
 ["Reply by email"](../../../administration/reply_by_email.md) enabled to use
 this feature. If it's not enabled to your instance, you may ask your GitLab
 administrator to do so.
@@ -207,16 +210,16 @@ or contacts to continue working._
 
 You can add commits to the merge request being created by adding
 patches as attachments to the email. All attachments with a filename
-ending in `.patch` will be considered patches and they will be processed
+ending in `.patch` are considered patches and they are processed
 ordered by name.
 
 The combined size of the patches can be 2MB.
 
-If the source branch from the subject does not exist, it will be
+If the source branch from the subject does not exist, it is
 created from the repository's HEAD or the specified target branch to
 apply the patches. The target branch can be specified using the
 [`/target_branch` quick action](../quick_actions.md). If the source
-branch already exists, the patches will be applied on top of it.
+branch already exists, the patches are applied on top of it.
 
 ## Reviewing and managing Merge Requests
 

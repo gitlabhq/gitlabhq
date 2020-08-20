@@ -27,6 +27,7 @@ RSpec.describe API::Entities::Nuget::SearchResult do
       }
     }
   end
+
   let(:expected) do
     {
       '@type': 'Package',

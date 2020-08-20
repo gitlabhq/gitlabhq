@@ -1,6 +1,6 @@
 <script>
 import { __ } from '~/locale';
-import Flash from '~/flash';
+import { deprecatedCreateFlash as Flash } from '~/flash';
 import DeprecatedModal from '~/vue_shared/components/deprecated_modal.vue';
 import { visitUrl } from '~/lib/utils/url_utility';
 import boardsStore from '~/boards/stores/boards_store';

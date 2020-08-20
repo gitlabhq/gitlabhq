@@ -69,7 +69,7 @@ RSpec.describe 'Groups > Members > Manage members' do
     visit group_group_members_path(group)
 
     # Open modal
-    find(:css, '.project-members-page li', text: user2.name).find(:css, 'button.btn-remove').click
+    find(:css, '.project-members-page li', text: user2.name).find(:css, 'button.btn-danger').click
 
     expect(page).to have_unchecked_field 'Also unassign this user from related issues and merge requests'
 
@@ -101,7 +101,7 @@ RSpec.describe 'Groups > Members > Manage members' do
 
     add_user('test@example.com', 'Reporter')
 
-    click_link('Pending')
+    click_link('Invited')
 
     page.within('.content-list.members-list') do
       expect(page).to have_content('test@example.com')
@@ -124,7 +124,7 @@ RSpec.describe 'Groups > Members > Manage members' do
       expect(page).not_to have_button 'Developer'
 
       # Can not remove user2
-      expect(page).not_to have_css('a.btn-remove')
+      expect(page).not_to have_css('a.btn-danger')
     end
   end
 

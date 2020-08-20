@@ -358,7 +358,7 @@ It is recommended to reuse the identifiers the GitLab scanners already define:
 | [CVE](https://cve.mitre.org/cve/) | `cve` | CVE-2019-10086 |
 | [CWE](https://cwe.mitre.org/data/index.html) | `cwe` | CWE-1026 |
 | [OSVD](https://cve.mitre.org/data/refs/refmap/source-OSVDB.html) | `osvdb` | OSVDB-113928 |
-| [USN](https://usn.ubuntu.com/) | `usn` | USN-4234-1 |
+| [USN](https://ubuntu.com/security/notices) | `usn` | USN-4234-1 |
 | [WASC](http://projects.webappsec.org/Threat-Classification-Reference-Grid)  | `wasc` | WASC-19 |
 | [RHSA](https://access.redhat.com/errata/#/) | `rhsa` | RHSA-2020:0111 |
 | [ELSA](https://linux.oracle.com/security/) | `elsa` | ELSA-2020-0085 |

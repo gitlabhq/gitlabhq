@@ -1,8 +1,8 @@
 <script>
 import { mapActions, mapState, mapGetters } from 'vuex';
-import flash from '~/flash';
-import { __, sprintf, s__ } from '~/locale';
 import { GlModal } from '@gitlab/ui';
+import { deprecatedCreateFlash as flash } from '~/flash';
+import { __, sprintf, s__ } from '~/locale';
 import { modalTypes } from '../../constants';
 import { trimPathComponents, getPathParent } from '../../utils';
 

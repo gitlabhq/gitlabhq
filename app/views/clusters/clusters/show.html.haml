@@ -35,7 +35,8 @@
   deploy_boards_help_path: help_page_path('user/project/deploy_boards.md', anchor: 'enabling-deploy-boards'),
   cloud_run_help_path: help_page_path('user/project/clusters/add_remove_clusters.md', anchor: 'cloud-run-for-anthos'),
   manage_prometheus_path: manage_prometheus_path,
-  cluster_id: @cluster.id } }
+  cluster_id: @cluster.id,
+  cilium_help_path: help_page_path('user/clusters/applications.md', anchor: 'install-cilium-using-gitlab-cicd')} }
 
   .js-cluster-application-notice
     .flash-container

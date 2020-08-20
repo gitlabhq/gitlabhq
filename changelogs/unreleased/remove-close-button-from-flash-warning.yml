@@ -1,0 +1,5 @@
+---
+title: Don’t show close icon on flash warning
+merge_request: 36581
+author:
+type: fixed

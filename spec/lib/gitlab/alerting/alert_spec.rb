@@ -191,7 +191,7 @@ RSpec.describe Gitlab::Alerting::Alert do
     end
 
     context 'with payload' do
-      let(:time) { Time.now.change(usec: 0) }
+      let(:time) { Time.current.change(usec: 0) }
 
       before do
         payload['startsAt'] = time.rfc3339
@@ -274,7 +274,7 @@ RSpec.describe Gitlab::Alerting::Alert do
     before do
       payload.update(
         'annotations' => { 'title' => 'some title' },
-        'startsAt' => Time.now.rfc3339
+        'startsAt' => Time.current.rfc3339
       )
     end
 

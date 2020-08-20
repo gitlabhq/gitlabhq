@@ -1,0 +1,6 @@
+---
+title: Update auto-build-image to v0.4.0 for an updated version of the pack CLI (v0.12.0) for
+  Cloud Native Buildpack builds
+merge_request: 39159
+author:
+type: changed

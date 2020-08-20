@@ -6,7 +6,7 @@ require 'simple_po_parser'
 # Disabling this cop to allow for multi-language examples in comments
 # rubocop:disable Style/AsciiComments
 RSpec.describe Gitlab::I18n::PoLinter do
-  let(:linter) { described_class.new(po_path) }
+  let(:linter) { described_class.new(po_path: po_path, html_todolist: {}) }
   let(:po_path) { 'spec/fixtures/valid.po' }
 
   def fake_translation(msgid:, translation:, plural_id: nil, plurals: [])
@@ -23,8 +23,9 @@ RSpec.describe Gitlab::I18n::PoLinter do
     end
 
     Gitlab::I18n::TranslationEntry.new(
-      data,
-      plurals.size + 1
+      entry_data: data,
+      nplurals: plurals.size + 1,
+      html_allowed: nil
     )
   end
 
@@ -145,6 +146,67 @@ RSpec.describe Gitlab::I18n::PoLinter do
         expect(errors[message_id]).to include(expected_error)
       end
     end
+
+    context 'when an entry contains html' do
+      let(:po_path) { 'spec/fixtures/potential_html.po' }
+
+      it 'presents an error for each component containing angle brackets' do
+        message_id = 'String with some <strong>emphasis</strong>'
+
+        expect(errors[message_id]).to match_array [
+          a_string_starting_with('contains < or >.'),
+          a_string_starting_with('plural id contains < or >.'),
+          a_string_starting_with('translation contains < or >.')
+        ]
+      end
+    end
+
+    context 'when an entry contains html on the todolist' do
+      subject(:linter) { described_class.new(po_path: po_path, html_todolist: todolist) }
+
+      let(:po_path) { 'spec/fixtures/potential_html.po' }
+      let(:todolist) do
+        {
+          'String with a legitimate < use' => {
+            'plural_id' => 'String with lots of < > uses',
+            'translations' => [
+              'Translated string with a legitimate < use',
+              'Translated string with lots of < > uses'
+            ]
+          }
+        }
+      end
+
+      it 'does not present an error' do
+        message_id = 'String with a legitimate < use'
+
+        expect(errors[message_id]).to be_nil
+      end
+    end
+
+    context 'when an entry on the html todolist has changed' do
+      subject(:linter) { described_class.new(po_path: po_path, html_todolist: todolist) }
+
+      let(:po_path) { 'spec/fixtures/potential_html.po' }
+      let(:todolist) do
+        {
+          'String with a legitimate < use' => {
+            'plural_id' => 'String with lots of < > uses',
+            'translations' => [
+              'Translated string with a different legitimate < use',
+              'Translated string with lots of < > uses'
+            ]
+          }
+        }
+      end
+
+      it 'presents an error for the changed component' do
+        message_id = 'String with a legitimate < use'
+
+        expect(errors[message_id])
+          .to include a_string_starting_with('translation contains < or >.')
+      end
+    end
   end
 
   describe '#parse_po' do
@@ -200,6 +262,7 @@ RSpec.describe Gitlab::I18n::PoLinter do
       expect(linter).to receive(:validate_number_of_plurals).with([], fake_entry)
       expect(linter).to receive(:validate_unescaped_chars).with([], fake_entry)
       expect(linter).to receive(:validate_translation).with([], fake_entry)
+      expect(linter).to receive(:validate_html).with([], fake_entry)
 
       linter.validate_entry(fake_entry)
     end
@@ -212,8 +275,9 @@ RSpec.describe Gitlab::I18n::PoLinter do
       allow(linter).to receive(:metadata_entry).and_return(fake_metadata)
 
       fake_entry = Gitlab::I18n::TranslationEntry.new(
-        { msgid: 'the singular', msgid_plural: 'the plural', 'msgstr[0]' => 'the singular' },
-        2
+        entry_data: { msgid: 'the singular', msgid_plural: 'the plural', 'msgstr[0]' => 'the singular' },
+        nplurals: 2,
+        html_allowed: nil
       )
       errors = []
 

@@ -194,6 +194,7 @@ RSpec.describe Ability do
       let(:cross_project_merge_request) do
         create(:merge_request, source_project: create(:project, :public))
       end
+
       let(:other_merge_request) { create(:merge_request) }
       let(:all_merge_requests) do
         [merge_request, cross_project_merge_request, other_merge_request]

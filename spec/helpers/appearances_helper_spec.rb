@@ -70,7 +70,7 @@ RSpec.describe AppearancesHelper do
     context 'when there is a logo but no associated upload' do
       before do
         # Legacy attachments were not tracked in the uploads table
-        appearance.logo.upload.destroy
+        appearance.logo.upload.destroy!
         appearance.reload
       end
 

@@ -102,7 +102,7 @@ RSpec.describe Gitlab::Badge::Coverage::Report do
 
     create(:ci_pipeline, opts).tap do |pipeline|
       yield pipeline
-      pipeline.update_legacy_status
+      ::Ci::ProcessPipelineService.new(pipeline).execute
     end
   end
 end

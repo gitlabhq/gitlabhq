@@ -2,7 +2,7 @@ import Vue from 'vue';
 import { createComponentWithStore } from 'helpers/vue_mount_component_helper';
 import { createStore } from '~/ide/stores';
 import ide from '~/ide/components/ide.vue';
-import { file, resetStore } from '../helpers';
+import { file } from '../helpers';
 import { projectData } from '../mock_data';
 import extendStore from '~/ide/stores/extend';
 
@@ -41,8 +41,6 @@ describe('ide component, empty repo', () => {
 
   afterEach(() => {
     vm.$destroy();
-
-    resetStore(vm.$store);
   });
 
   it('renders "New file" button in empty repo', done => {
@@ -63,8 +61,6 @@ describe('ide component, non-empty repo', () => {
 
   afterEach(() => {
     vm.$destroy();
-
-    resetStore(vm.$store);
   });
 
   it('shows error message when set', done => {

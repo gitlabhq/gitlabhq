@@ -23,6 +23,7 @@ RSpec.describe Gitlab::Diff::FileCollection::Compare do
         diff_refs: diffable.diff_refs
       }
     end
+
     let(:diffable) { Compare.new(raw_compare, project) }
     let(:stub_path) { '.gitignore' }
   end

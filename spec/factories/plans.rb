@@ -6,7 +6,7 @@ FactoryBot.define do
       factory :"#{plan}_plan" do
         name { plan }
         title { name.titleize }
-        initialize_with { Plan.find_or_create_by(name: plan) }
+        initialize_with { Plan.find_or_create_by!(name: plan) }
       end
     end
   end

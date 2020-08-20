@@ -9,6 +9,7 @@ RSpec.describe Gitlab::Diff::FileCollection::Commit do
     let(:collection_default_args) do
       { diff_options: {} }
     end
+
     let(:diffable) { project.commit }
     let(:stub_path) { 'bar/branch-test.txt' }
   end

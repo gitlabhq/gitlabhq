@@ -48,7 +48,19 @@ export default class IssuableForm {
     this.renderWipExplanation = this.renderWipExplanation.bind(this);
     this.resetAutosave = this.resetAutosave.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-    this.wipRegex = /^\s*(\[WIP\]\s*|WIP:\s*|WIP\s+)+\s*/i;
+    /* eslint-disable @gitlab/require-i18n-strings */
+    this.wipRegex = new RegExp(
+      '^\\s*(' + // Line start, then any amount of leading whitespace
+      'draft\\s-\\s' + // Draft_-_ where "_" are *exactly* one whitespace
+      '|\\[(draft|wip)\\]\\s*' + // [Draft] or [WIP] and any following whitespace
+      '|(draft|wip):\\s*' + // Draft: or WIP: and any following whitespace
+      '|(draft|wip)\\s+' + // Draft_ or WIP_ where "_" is at least one whitespace
+      '|\\(draft\\)\\s*' + // (Draft) and any following whitespace
+      ')+' + // At least one repeated match of the preceding parenthetical
+        '\\s*', // Any amount of trailing whitespace
+      'i', // Match any case(s)
+    );
+    /* eslint-enable @gitlab/require-i18n-strings */
 
     this.gfmAutoComplete = new GfmAutoComplete(
       gl.GfmAutoComplete && gl.GfmAutoComplete.dataSources,
@@ -131,9 +143,18 @@ export default class IssuableForm {
   workInProgress() {
     return this.wipRegex.test(this.titleField.val());
   }
+  titlePrefixContainsDraft() {
+    const prefix = this.titleField.val().match(this.wipRegex);
+
+    return prefix && prefix[0].match(/draft/i);
+  }
 
   renderWipExplanation() {
     if (this.workInProgress()) {
+      // These strings are not "translatable" (the code is hard-coded to look for them)
+      this.$wipExplanation.find('code')[0].textContent = this.titlePrefixContainsDraft()
+        ? 'Draft' /* eslint-disable-line @gitlab/require-i18n-strings */
+        : 'WIP';
       this.$wipExplanation.show();
       return this.$noWipExplanation.hide();
     }
@@ -156,7 +177,7 @@ export default class IssuableForm {
   }
 
   addWip() {
-    this.titleField.val(`WIP: ${this.titleField.val()}`);
+    this.titleField.val(`Draft: ${this.titleField.val()}`);
   }
 
   initTargetBranchDropdown() {

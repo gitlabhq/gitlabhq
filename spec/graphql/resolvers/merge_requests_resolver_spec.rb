@@ -161,6 +161,24 @@ RSpec.describe Resolvers::MergeRequestsResolver do
       end
     end
 
+    context 'by merged_after and merged_before' do
+      before do
+        merge_request_1.metrics.update!(merged_at: 10.days.ago)
+      end
+
+      it 'returns merge requests merged between the given period' do
+        result = resolve_mr(project, merged_after: 20.days.ago, merged_before: 5.days.ago)
+
+        expect(result).to eq([merge_request_1])
+      end
+
+      it 'does not return anything' do
+        result = resolve_mr(project, merged_after: 2.days.ago)
+
+        expect(result).to be_empty
+      end
+    end
+
     describe 'combinations' do
       it 'requires all filters' do
         create(:merge_request, :closed, source_project: project, target_project: project, source_branch: merge_request_4.source_branch)

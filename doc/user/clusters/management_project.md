@@ -73,10 +73,10 @@ configure cluster:
     name: production
 ```
 
-### Setting the environment scope **(PREMIUM)**
+### Setting the environment scope
 
 [Environment
-scopes](../project/clusters/index.md#setting-the-environment-scope-premium)
+scopes](../project/clusters/index.md#setting-the-environment-scope)
 are usable when associating multiple clusters to the same management
 project.
 

@@ -5,7 +5,7 @@ module QA
     module KubernetesCluster
       class ProjectCluster < Base
         attr_writer :cluster,
-                    :install_helm_tiller, :install_ingress, :install_prometheus, :install_runner, :domain
+                    :install_ingress, :install_prometheus, :install_runner, :domain
 
         attribute :project do
           Resource::Project.fabricate!
@@ -36,33 +36,27 @@ module QA
             cluster_page.add_cluster!
           end
 
-          if @install_helm_tiller
-            Page::Project::Operations::Kubernetes::Show.perform do |show|
-              # We must wait a few seconds for permissions to be set up correctly for new cluster
-              sleep 10
+          Page::Project::Operations::Kubernetes::Show.perform do |show|
+            # We must wait a few seconds for permissions to be set up correctly for new cluster
+            sleep 25
 
-              # Open applications tab
-              show.open_applications
+            # Open applications tab
+            show.open_applications
 
-              # Helm must be installed before everything else
-              show.install!(:helm)
-              show.await_installed(:helm)
+            show.install!(:ingress) if @install_ingress
+            show.install!(:prometheus) if @install_prometheus
+            show.install!(:runner) if @install_runner
 
-              show.install!(:ingress) if @install_ingress
-              show.install!(:prometheus) if @install_prometheus
-              show.install!(:runner) if @install_runner
+            show.await_installed(:ingress) if @install_ingress
+            show.await_installed(:prometheus) if @install_prometheus
+            show.await_installed(:runner) if @install_runner
 
-              show.await_installed(:ingress) if @install_ingress
-              show.await_installed(:prometheus) if @install_prometheus
-              show.await_installed(:runner) if @install_runner
+            if @install_ingress
+              populate(:ingress_ip)
 
-              if @install_ingress
-                populate(:ingress_ip)
-
-                show.open_details
-                show.set_domain("#{ingress_ip}.nip.io")
-                show.save_domain
-              end
+              show.open_details
+              show.set_domain("#{ingress_ip}.nip.io")
+              show.save_domain
             end
           end
         end

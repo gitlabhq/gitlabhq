@@ -2,11 +2,11 @@
 - hide_top_links = @hide_top_links || false
 
 %nav.breadcrumbs{ role: "navigation", class: [container, @content_class] }
-  .breadcrumbs-container{ class: ("border-bottom-0" if @no_breadcrumb_border && mr_tabs_position_enabled?) }
+  .breadcrumbs-container{ class: ("border-bottom-0" if @no_breadcrumb_border) }
     - if defined?(@left_sidebar)
       = button_tag class: 'toggle-mobile-nav', type: 'button' do
         %span.sr-only= _("Open sidebar")
-        = icon ('bars')
+        = sprite_icon('hamburger')
     .breadcrumbs-links.js-title-container{ data: { qa_selector: 'breadcrumb_links_content' } }
       %ul.list-unstyled.breadcrumbs-list.js-breadcrumbs-list
         - unless hide_top_links

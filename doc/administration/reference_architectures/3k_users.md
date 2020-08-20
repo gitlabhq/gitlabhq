@@ -1,49 +1,54 @@
 ---
 reading_time: true
+stage: Enablement
+group: Distribution
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 ---
 
-# Reference architecture: up to 3,000 users
+# Reference architecture: up to 3,000 users **(PREMIUM ONLY)**
 
-This page describes GitLab reference architecture for up to 3,000 users.
-For a full list of reference architectures, see
+This page describes GitLab reference architecture for up to 3,000 users. For a
+full list of reference architectures, see
 [Available reference architectures](index.md#available-reference-architectures).
 
 NOTE: **Note:**
-The 3,000-user reference architecture documented below is
-designed to help your organization achieve a highly-available GitLab deployment.
-If you do not have the expertise or need to maintain a highly-available
-environment, you can have a simpler and less costly-to-operate environment by
-following the [2,000-user reference architecture](2k_users.md).
+This reference architecture is designed to help your organization achieve a
+highly-available GitLab deployment. If you do not have the expertise or need to
+maintain a highly-available environment, you can have a simpler and less
+costly-to-operate environment by using the
+[2,000-user reference architecture](2k_users.md).
 
 > - **Supported users (approximate):** 3,000
-> - **High Availability:** True
-> - **Test RPS rates:** API: 60 RPS, Web: 6 RPS, Git: 6 RPS
+> - **High Availability:** Yes
+> - **Test requests per second (RPS) rates:** API: 60 RPS, Web: 6 RPS, Git: 6 RPS
 
-| Service                                                      | Nodes | Configuration                   | GCP             | AWS                     | Azure          |
-|--------------------------------------------------------------|-------|---------------------------------|-----------------|-------------------------|----------------|
-| External load balancing node                                 | 1     | 2 vCPU, 1.8GB Memory            | `n1-highcpu-2`  | `c5.large`              | `F2s v2`       |
-| Redis                                                        | 3     | 2 vCPU, 7.5GB Memory            | `n1-standard-2` | `m5.large`              | `D2s v3`       |
-| Consul + Sentinel                                            | 3     | 2 vCPU, 1.8GB Memory            | `n1-highcpu-2`  | `c5.large`              | `F2s v2`       |
-| PostgreSQL                                                   | 3     | 2 vCPU, 7.5GB Memory            | `n1-standard-2` | `m5.large`              | `D2s v3`       |
-| PgBouncer                                                    | 3     | 2 vCPU, 1.8GB Memory            | `n1-highcpu-2`  | `c5.large`              | `F2s v2`       |
-| Internal load balancing node                                 | 1     | 2 vCPU, 1.8GB Memory            | `n1-highcpu-2`  | `c5.large`              | `F2s v2`       |
-| Gitaly                                                       | 2 minimum     | 4 vCPU, 15GB Memory             | `n1-standard-4` | `m5.xlarge`     | `D4s v3`       |
-| Sidekiq                                                      | 4     | 2 vCPU, 7.5GB Memory            | `n1-standard-2` | `m5.large`              | `D2s v3`       |
-| GitLab Rails                                                 | 3     | 8 vCPU, 7.2GB Memory            | `n1-highcpu-8`  | `c5.2xlarge`            | `F8s v2`       |
-| Monitoring node                                              | 1     | 2 vCPU, 1.8GB Memory            | `n1-highcpu-2`  | `c5.large`              | `F2s v2`       |
-| Object Storage                                               | n/a   | n/a                             | n/a             | n/a                     | n/a            |
-| NFS Server (optional, not recommended)                       | 1     | 4 vCPU, 3.6GB Memory            | `n1-highcpu-4`  | `c5.xlarge`             | `F4s v2`       |
+| Service                                    | Nodes       | Configuration         | GCP            | AWS         | Azure   |
+|--------------------------------------------|-------------|-----------------------|----------------|-------------|---------|
+| External load balancing node               | 1           | 2 vCPU, 1.8GB memory  | n1-highcpu-2   | c5.large    | F2s v2  |
+| Redis                                      | 3           | 2 vCPU, 7.5GB memory  | n1-standard-2  | m5.large    | D2s v3  |
+| Consul + Sentinel                          | 3           | 2 vCPU, 1.8GB memory  | n1-highcpu-2   | c5.large    | F2s v2  |
+| PostgreSQL                                 | 3           | 2 vCPU, 7.5GB memory  | n1-standard-2  | m5.large    | D2s v3  |
+| PgBouncer                                  | 3           | 2 vCPU, 1.8GB memory  | n1-highcpu-2   | c5.large    | F2s v2  |
+| Internal load balancing node               | 1           | 2 vCPU, 1.8GB memory  | n1-highcpu-2   | c5.large    | F2s v2  |
+| Gitaly                                     | 2 (minimum) | 4 vCPU, 15GB memory   | n1-standard-4  | m5.xlarge   | D4s v3  |
+| Sidekiq                                    | 4           | 2 vCPU, 7.5GB memory  | n1-standard-2  | m5.large    | D2s v3  |
+| GitLab Rails                               | 3           | 8 vCPU, 7.2GB memory  | n1-highcpu-8   | c5.2xlarge  | F8s v2  |
+| Monitoring node                            | 1           | 2 vCPU, 1.8GB memory  | n1-highcpu-2   | c5.large    | F2s v2  |
+| Object Storage                             | n/a         | n/a                   | n/a            | n/a         | n/a     |
+| NFS Server (optional, not recommended)     | 1           | 4 vCPU, 3.6GB memory  | n1-highcpu-4   | c5.xlarge   | F4s v2  |
 
-The architectures were built and tested with the [Intel Xeon E5 v3 (Haswell)](https://cloud.google.com/compute/docs/cpu-platforms)
-CPU platform on GCP. On different hardware you may find that adjustments, either lower
-or higher, are required for your CPU or Node counts accordingly. For more information, a
-[Sysbench](https://github.com/akopytov/sysbench) benchmark of the CPU can be found
-[here](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Reference-Architectures/GCP-CPU-Benchmarks).
+The Google Cloud Platform (GCP) architectures were built and tested using the
+[Intel Xeon E5 v3 (Haswell)](https://cloud.google.com/compute/docs/cpu-platforms)
+CPU platform. On different hardware you may find that adjustments, either lower
+or higher, are required for your CPU or node counts. For more information, see
+our [Sysbench](https://github.com/akopytov/sysbench)-based
+[CPU benchmark](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Reference-Architectures/GCP-CPU-Benchmarks).
 
-For data objects such as LFS, Uploads, Artifacts, etc, an [object storage service](#configure-the-object-storage)
-is recommended over NFS where possible, due to better performance and availability.
-Since this doesn't require a node to be set up, it's marked as not applicable (n/a)
-in the table above.
+For data objects (such as LFS, Uploads, or Artifacts), an
+[object storage service](#configure-the-object-storage) is recommended instead
+of NFS where possible, due to better performance and availability. Since this
+doesn't require a node to be set up, *Object Storage* is noted as not
+applicable (n/a) in the previous table.
 
 ## Setup components
 
@@ -804,10 +809,11 @@ SSH into the **primary node**:
    gitlab-psql -d gitlabhq_production
    ```
 
-1. Enable the `pg_trgm` extension:
+1. Enable the `pg_trgm` and `btree_gist` extensions:
 
    ```shell
    CREATE EXTENSION pg_trgm;
+   CREATE EXTENSION btree_gist;
    ```
 
 1. Exit the database prompt by typing `\q` and Enter.
@@ -1439,7 +1445,7 @@ On each node perform the following:
 
    1. Specify the necessary NFS mounts in `/etc/fstab`.
       The exact contents of `/etc/fstab` will depend on how you chose
-      to configure your NFS server. See the [NFS documentation](../high_availability/nfs.md)
+      to configure your NFS server. See the [NFS documentation](../nfs.md)
       for examples and the various options.
 
    1. Create the shared directories. These may be different depending on your NFS
@@ -1748,7 +1754,7 @@ work.
 are recommended over NFS wherever possible for improved performance. If you intend
 to use GitLab Pages, this currently [requires NFS](troubleshooting.md#gitlab-pages-requires-nfs).
 
-See how to [configure NFS](../high_availability/nfs.md).
+See how to [configure NFS](../nfs.md).
 
 <div align="right">
   <a type="button" class="btn btn-default" href="#setup-components">

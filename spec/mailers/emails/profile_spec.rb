@@ -157,6 +157,56 @@ RSpec.describe Emails::Profile do
     end
   end
 
+  describe 'user personal access token has expired' do
+    let_it_be(:user) { create(:user) }
+
+    context 'when valid' do
+      subject { Notify.access_token_expired_email(user) }
+
+      it_behaves_like 'an email sent from GitLab'
+      it_behaves_like 'it should not have Gmail Actions links'
+      it_behaves_like 'a user cannot unsubscribe through footer link'
+
+      it 'is sent to the user' do
+        is_expected.to deliver_to user.email
+      end
+
+      it 'has the correct subject' do
+        is_expected.to have_subject /Your personal access token has expired/
+      end
+
+      it 'mentions the access token has expired' do
+        is_expected.to have_body_text /One or more of your personal access tokens has expired/
+      end
+
+      it 'includes a link to personal access tokens page' do
+        is_expected.to have_body_text /#{profile_personal_access_tokens_path}/
+      end
+
+      it 'includes the email reason' do
+        is_expected.to have_body_text /You're receiving this email because of your account on localhost/
+      end
+    end
+
+    context 'when invalid' do
+      context 'when user does not exist' do
+        it do
+          expect { Notify.access_token_expired_email(nil) }.not_to change { ActionMailer::Base.deliveries.count }
+        end
+      end
+
+      context 'when user is not active' do
+        before do
+          user.block!
+        end
+
+        it do
+          expect { Notify.access_token_expired_email(user) }.not_to change { ActionMailer::Base.deliveries.count }
+        end
+      end
+    end
+  end
+
   describe 'user unknown sign in email' do
     let_it_be(:user) { create(:user) }
     let_it_be(:ip) { '169.0.0.1' }

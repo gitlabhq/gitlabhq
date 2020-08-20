@@ -111,7 +111,7 @@ export default {
 
           <div class="gl-flex-grow-1 gl-display-flex gl-flex-direction-column">
             <span class="gl-font-monospace">{{ item.name }}</span>
-            <span class="gl-text-gray-600">{{ item.subtitle }}</span>
+            <span class="gl-text-gray-400">{{ item.subtitle }}</span>
           </div>
 
           <gl-badge v-if="item.default" size="sm" variant="info">{{

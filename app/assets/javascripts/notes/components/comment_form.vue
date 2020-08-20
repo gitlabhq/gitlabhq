@@ -6,7 +6,7 @@ import Autosize from 'autosize';
 import { GlAlert, GlIntersperse, GlLink, GlSprintf } from '@gitlab/ui';
 import { __, sprintf } from '~/locale';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
-import Flash from '../../flash';
+import { deprecatedCreateFlash as Flash } from '../../flash';
 import Autosave from '../../autosave';
 import {
   capitalizeFirstCharacter,

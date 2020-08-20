@@ -32,7 +32,7 @@ describe('Toggle Button', () => {
 
     it('renders input status icon', () => {
       expect(vm.$el.querySelectorAll('span.toggle-icon').length).toEqual(1);
-      expect(vm.$el.querySelectorAll('svg.s16.toggle-icon-svg').length).toEqual(1);
+      expect(vm.$el.querySelectorAll('svg.s18').length).toEqual(1);
     });
   });
 

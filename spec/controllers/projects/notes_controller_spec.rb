@@ -302,6 +302,7 @@ RSpec.describe Projects::NotesController do
         target_id: merge_request.id
       }.merge(extra_request_params)
     end
+
     let(:extra_request_params) { {} }
 
     let(:project_visibility) { Gitlab::VisibilityLevel::PUBLIC }

@@ -15,6 +15,7 @@ RSpec.describe Snippets::UpdateService do
         visibility_level: visibility_level
       }
     end
+
     let(:extra_opts) { {} }
     let(:options) { base_opts.merge(extra_opts) }
     let(:updater) { user }

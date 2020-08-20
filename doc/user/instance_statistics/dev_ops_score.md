@@ -7,7 +7,7 @@ NOTE: **Note:**
 Your GitLab instance's [usage ping](../admin_area/settings/usage_statistics.md#usage-ping-core-only) must be activated in order to use this feature.
 
 The DevOps Score gives you an overview of your entire instance's adoption of
-[Concurrent DevOps](https://about.gitlab.com/concurrent-devops/)
+[Concurrent DevOps](https://about.gitlab.com/topics/concurrent-devops/)
 from planning to monitoring.
 
 This displays the usage of these GitLab features over

@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Import::ManifestController < Import::BaseController
+  extend ::Gitlab::Utils::Override
+
   before_action :whitelist_query_limiting, only: [:create]
   before_action :verify_import_enabled
   before_action :ensure_import_vars, only: [:create, :status]
@@ -8,16 +10,9 @@ class Import::ManifestController < Import::BaseController
   def new
   end
 
-  # rubocop: disable CodeReuse/ActiveRecord
   def status
-    @already_added_projects = find_already_added_projects
-    already_added_import_urls = @already_added_projects.pluck(:import_url)
-
-    @pending_repositories = repositories.to_a.reject do |repository|
-      already_added_import_urls.include?(repository[:url])
-    end
+    super
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 
   def upload
     group = Group.find(params[:group_id])
@@ -42,8 +37,8 @@ class Import::ManifestController < Import::BaseController
     end
   end
 
-  def jobs
-    render json: find_jobs
+  def realtime_changes
+    super
   end
 
   def create
@@ -54,10 +49,41 @@ class Import::ManifestController < Import::BaseController
     project = Gitlab::ManifestImport::ProjectCreator.new(repository, group, current_user).execute
 
     if project.persisted?
-      render json: ProjectSerializer.new.represent(project)
+      render json: ProjectSerializer.new.represent(project, serializer: :import)
     else
       render json: { errors: project_save_error(project) }, status: :unprocessable_entity
     end
+  end
+
+  protected
+
+  # rubocop: disable CodeReuse/ActiveRecord
+  override :importable_repos
+  def importable_repos
+    already_added_projects_names = already_added_projects.pluck(:import_url)
+
+    repositories.reject { |repo| already_added_projects_names.include?(repo[:url]) }
+  end
+  # rubocop: enable CodeReuse/ActiveRecord
+
+  override :incompatible_repos
+  def incompatible_repos
+    []
+  end
+
+  override :provider_name
+  def provider_name
+    :manifest
+  end
+
+  override :provider_url
+  def provider_url
+    nil
+  end
+
+  override :extra_representation_opts
+  def extra_representation_opts
+    { group_full_path: group.full_path }
   end
 
   private
@@ -81,15 +107,6 @@ class Import::ManifestController < Import::BaseController
   def find_jobs
     find_already_added_projects.to_json(only: [:id], methods: [:import_status])
   end
-
-  # rubocop: disable CodeReuse/ActiveRecord
-  def find_already_added_projects
-    group.all_projects
-      .where(import_type: 'manifest')
-      .where(creator_id: current_user)
-      .with_import_state
-  end
-  # rubocop: enable CodeReuse/ActiveRecord
 
   def verify_import_enabled
     render_404 unless manifest_import_enabled?

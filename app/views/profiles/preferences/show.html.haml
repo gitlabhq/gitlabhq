@@ -2,7 +2,7 @@
 - @content_class = "limit-container-width" unless fluid_layout
 
 = form_for @user, url: profile_preferences_path, remote: true, method: :put, html: { class: 'row gl-mt-3 js-preferences-form' } do |f|
-  .col-lg-4.application-theme
+  .col-lg-4.application-theme#navigation-theme
     %h4.gl-mt-0
       = s_('Preferences|Navigation theme')
     %p
@@ -18,7 +18,7 @@
   .col-sm-12
     %hr
 
-  .col-lg-4.profile-settings-sidebar
+  .col-lg-4.profile-settings-sidebar#syntax-highlighting-theme
     %h4.gl-mt-0
       = s_('Preferences|Syntax highlighting theme')
     %p
@@ -35,7 +35,7 @@
   .col-sm-12
     %hr
 
-  .col-lg-4.profile-settings-sidebar
+  .col-lg-4.profile-settings-sidebar#behavior
     %h4.gl-mt-0
       = s_('Preferences|Behavior')
     %p
@@ -51,8 +51,10 @@
         = s_('Preferences|Choose between fixed (max. 1280px) and fluid (%{percentage}) application layout.').html_safe % { percentage: '100%' }
     .form-group
       = f.label :dashboard, class: 'label-bold' do
-        = s_('Preferences|Default dashboard')
+        = s_('Preferences|Homepage content')
       = f.select :dashboard, dashboard_choices, {}, class: 'select2'
+      .form-text.text-muted
+        = s_('Preferences|Choose what content you want to see on your homepage.')
 
     = render_if_exists 'profiles/preferences/group_overview_selector', f: f # EE-specific
 
@@ -90,7 +92,7 @@
   .col-sm-12
     %hr
 
-  .col-lg-4.profile-settings-sidebar
+  .col-lg-4.profile-settings-sidebar#localization
     %h4.gl-mt-0
       = _('Localization')
     %p

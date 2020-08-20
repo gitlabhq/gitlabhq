@@ -7,7 +7,7 @@
       .title-container
         %h1.title
           %span.gl-sr-only GitLab
-          = link_to root_path, title: _('Dashboard'), id: 'logo' do
+          = link_to root_path, title: _('Dashboard'), id: 'logo', **tracking_attrs('main_navigation', 'click_gitlab_logo_link', 'navigation') do
             = brand_header_logo
             - logo_text = brand_header_logo_type
             - if logo_text.present?
@@ -32,32 +32,47 @@
               = render 'layouts/search' unless current_controller?(:search)
             %li.nav-item.d-inline-block.d-lg-none
               = link_to search_context.search_url, title: _('Search'), aria: { label: _('Search') }, data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
-                = sprite_icon('search', size: 16)
+                = sprite_icon('search')
           - if header_link?(:issues)
             = nav_link(path: 'dashboard#issues', html_options: { class: "user-counter" }) do
-              = link_to assigned_issues_dashboard_path, title: _('Issues'), class: 'dashboard-shortcuts-issues', aria: { label: _('Issues') }, data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
-                = sprite_icon('issues', size: 16)
+              = link_to assigned_issues_dashboard_path, title: _('Issues'), class: 'dashboard-shortcuts-issues', aria: { label: _('Issues') },
+                data: { qa_selector: 'issues_shortcut_button', toggle: 'tooltip', placement: 'bottom',
+                track_label: 'main_navigation',
+                track_event: 'click_issues_link',
+                track_property: 'navigation',
+                container: 'body' } do
+                = sprite_icon('issues')
                 - issues_count = assigned_issuables_count(:issues)
-                %span.badge.badge-pill.issues-count.green-badge{ class: ('hidden' if issues_count.zero?) }
+                %span.badge.badge-pill.issues-count.green-badge{ class: ('hidden' if issues_count == 0) }
                   = number_with_delimiter(issues_count)
           - if header_link?(:merge_requests)
             = nav_link(path: 'dashboard#merge_requests', html_options: { class: "user-counter" }) do
-              = link_to assigned_mrs_dashboard_path, title: _('Merge requests'), class: 'dashboard-shortcuts-merge_requests', aria: { label: _('Merge requests') }, data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
-                = sprite_icon('git-merge', size: 16)
+              = link_to assigned_mrs_dashboard_path, title: _('Merge requests'), class: 'dashboard-shortcuts-merge_requests', aria: { label: _('Merge requests') },
+                data: { qa_selector: 'merge_requests_shortcut_button', toggle: 'tooltip', placement: 'bottom',
+                track_label: 'main_navigation',
+                track_event: 'click_merge_link',
+                track_property: 'navigation',
+                container: 'body' } do
+                = sprite_icon('git-merge')
                 - merge_requests_count = assigned_issuables_count(:merge_requests)
-                %span.badge.badge-pill.merge-requests-count{ class: ('hidden' if merge_requests_count.zero?) }
+                %span.badge.badge-pill.merge-requests-count{ class: ('hidden' if merge_requests_count == 0) }
                   = number_with_delimiter(merge_requests_count)
           - if header_link?(:todos)
             = nav_link(controller: 'dashboard/todos', html_options: { class: "user-counter" }) do
-              = link_to dashboard_todos_path, title: _('To-Do List'), aria: { label: _('To-Do List') }, class: 'shortcuts-todos', data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
-                = sprite_icon('todo-done', size: 16)
-                %span.badge.badge-pill.todos-count{ class: ('hidden' if todos_pending_count.zero?) }
+              = link_to dashboard_todos_path, title: _('To-Do List'), aria: { label: _('To-Do List') }, class: 'shortcuts-todos',
+                data: { qa_selector: 'todos_shortcut_button', toggle: 'tooltip', placement: 'bottom',
+                track_label: 'main_navigation',
+                track_event: 'click_to_do_link',
+                track_property: 'navigation',
+                container: 'body' } do
+                = sprite_icon('todo-done')
+                %span.badge.badge-pill.todos-count{ class: ('hidden' if todos_pending_count == 0) }
                   = todos_count_format(todos_pending_count)
-          %li.nav-item.header-help.dropdown.d-none.d-md-block
+          %li.nav-item.header-help.dropdown.d-none.d-md-block{ **tracking_attrs('main_navigation', 'click_question_mark_link', 'navigation') }
             = link_to help_path, class: 'header-help-dropdown-toggle', data: { toggle: "dropdown" } do
               %span.gl-sr-only
                 = s_('Nav|Help')
-              = sprite_icon('question', size: 16)
+              = sprite_icon('question')
               = sprite_icon('angle-down', css_class: 'caret-down')
             .dropdown-menu.dropdown-menu-right
               = render 'layouts/header/help_dropdown'
@@ -83,6 +98,9 @@
         %span.sr-only= _('Toggle navigation')
         = sprite_icon('ellipsis_h', size: 12, css_class: 'more-icon js-navbar-toggle-right')
         = sprite_icon('close', size: 12, css_class: 'close-icon js-navbar-toggle-left')
+
+- if ::Feature.enabled?(:whats_new_drawer)
+  #whats-new-app
 
 - if can?(current_user, :update_user_status, current_user)
   .js-set-status-modal-wrapper{ data: { current_emoji: current_user.status.present? ? current_user.status.emoji : '', current_message: current_user.status.present? ? current_user.status.message : '' } }

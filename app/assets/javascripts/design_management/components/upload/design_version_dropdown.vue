@@ -1,13 +1,14 @@
 <script>
-import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
+import { GlNewDropdown, GlNewDropdownItem, GlSprintf } from '@gitlab/ui';
 import { __, sprintf } from '~/locale';
 import allVersionsMixin from '../../mixins/all_versions';
 import { findVersionId } from '../../utils/design_management_utils';
 
 export default {
   components: {
-    GlDropdown,
-    GlDropdownItem,
+    GlNewDropdown,
+    GlNewDropdownItem,
+    GlSprintf,
   },
   mixins: [allVersionsMixin],
   computed: {
@@ -18,7 +19,7 @@ export default {
       if (!this.queryVersion) return 0;
 
       const idx = this.allVersions.findIndex(
-        version => this.findVersionId(version.node.id) === this.queryVersion,
+        version => this.findVersionId(version.id) === this.queryVersion,
       );
 
       // if the currentVersionId isn't a valid version (i.e. not in allVersions)
@@ -29,48 +30,52 @@ export default {
       if (this.queryVersion) return this.queryVersion;
 
       const currentVersion = this.allVersions[this.currentVersionIdx];
-      return this.findVersionId(currentVersion.node.id);
+      return this.findVersionId(currentVersion.id);
     },
     dropdownText() {
       if (this.isLatestVersion) {
-        return __('Showing Latest Version');
+        return __('Showing latest version');
       }
       // allVersions is sorted in reverse chronological order (latest first)
       const currentVersionNumber = this.allVersions.length - this.currentVersionIdx;
 
-      return sprintf(__('Showing Version #%{versionNumber}'), {
+      return sprintf(__('Showing version #%{versionNumber}'), {
         versionNumber: currentVersionNumber,
       });
     },
   },
   methods: {
     findVersionId,
+    routeToVersion(versionId) {
+      this.$router.push({
+        path: this.$route.path,
+        query: { version: this.findVersionId(versionId) },
+      });
+    },
+    versionText(versionId) {
+      if (this.findVersionId(versionId) === this.latestVersionId) {
+        return __('Version %{versionNumber} (latest)');
+      }
+      return __('Version %{versionNumber}');
+    },
   },
 };
 </script>
 
 <template>
-  <gl-dropdown :text="dropdownText" variant="link" class="design-version-dropdown">
-    <gl-dropdown-item v-for="(version, index) in allVersions" :key="version.node.id">
-      <router-link
-        class="d-flex js-version-link"
-        :to="{ path: $route.path, query: { version: findVersionId(version.node.id) } }"
-      >
-        <div class="flex-grow-1 ml-2">
-          <div>
-            <strong
-              >{{ __('Version') }} {{ allVersions.length - index }}
-              <span v-if="findVersionId(version.node.id) === latestVersionId"
-                >({{ __('latest') }})</span
-              >
-            </strong>
-          </div>
-        </div>
-        <i
-          v-if="findVersionId(version.node.id) === currentVersionId"
-          class="fa fa-check pull-right"
-        ></i>
-      </router-link>
-    </gl-dropdown-item>
-  </gl-dropdown>
+  <gl-new-dropdown :text="dropdownText" size="small">
+    <gl-new-dropdown-item
+      v-for="(version, index) in allVersions"
+      :key="version.id"
+      :is-check-item="true"
+      :is-checked="findVersionId(version.id) === currentVersionId"
+      @click="routeToVersion(version.id)"
+    >
+      <gl-sprintf :message="versionText(version.id)">
+        <template #versionNumber>
+          {{ allVersions.length - index }}
+        </template>
+      </gl-sprintf>
+    </gl-new-dropdown-item>
+  </gl-new-dropdown>
 </template>

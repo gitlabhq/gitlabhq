@@ -4,6 +4,32 @@ module Ci
   module BuildTraceChunks
     class Redis
       CHUNK_REDIS_TTL = 1.week
+      LUA_APPEND_CHUNK = <<~EOS.freeze
+        local key, new_data, offset = KEYS[1], ARGV[1], ARGV[2]
+        local length = new_data:len()
+        local expire = #{CHUNK_REDIS_TTL.seconds}
+        local current_size = redis.call("strlen", key)
+        offset = tonumber(offset)
+
+        if offset == 0 then
+          -- overwrite everything
+          redis.call("set", key, new_data, "ex", expire)
+          return redis.call("strlen", key)
+        elseif offset > current_size then
+          -- offset range violation
+          return -1
+        elseif offset + length >= current_size then
+          -- efficiently append or overwrite and append
+          redis.call("expire", key, expire)
+          return redis.call("setrange", key, offset, new_data)
+        else
+          -- append and truncate
+          local current_data = redis.call("get", key)
+          new_data = current_data:sub(1, offset) .. new_data
+          redis.call("set", key, new_data, "ex", expire)
+          return redis.call("strlen", key)
+        end
+      EOS
 
       def available?
         true
@@ -18,6 +44,18 @@ module Ci
       def set_data(model, data)
         Gitlab::Redis::SharedState.with do |redis|
           redis.set(key(model), data, ex: CHUNK_REDIS_TTL)
+        end
+      end
+
+      def append_data(model, new_data, offset)
+        Gitlab::Redis::SharedState.with do |redis|
+          redis.eval(LUA_APPEND_CHUNK, keys: [key(model)], argv: [new_data, offset])
+        end
+      end
+
+      def size(model)
+        Gitlab::Redis::SharedState.with do |redis|
+          redis.strlen(key(model))
         end
       end
 

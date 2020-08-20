@@ -24,7 +24,9 @@ RSpec.describe Gitlab::UsageData::Topology do
           expect_prometheus_api_to(
             receive_app_request_volume_query,
             receive_node_memory_query,
+            receive_node_memory_utilization_query,
             receive_node_cpu_count_query,
+            receive_node_cpu_utilization_query,
             receive_node_uname_info_query,
             receive_node_service_memory_rss_query,
             receive_node_service_memory_uss_query,
@@ -40,7 +42,9 @@ RSpec.describe Gitlab::UsageData::Topology do
             nodes: [
               {
                 node_memory_total_bytes: 512,
+                node_memory_utilization: 0.45,
                 node_cpus: 8,
+                node_cpu_utilization: 0.1,
                 node_uname_info: {
                   machine: 'x86_64',
                   sysname: 'Linux',
@@ -64,7 +68,9 @@ RSpec.describe Gitlab::UsageData::Topology do
               },
               {
                 node_memory_total_bytes: 1024,
+                node_memory_utilization: 0.25,
                 node_cpus: 16,
+                node_cpu_utilization: 0.2,
                 node_uname_info: {
                   machine: 'x86_64',
                   sysname: 'Linux',
@@ -102,7 +108,9 @@ RSpec.describe Gitlab::UsageData::Topology do
           expect_prometheus_api_to(
             receive_app_request_volume_query(result: []),
             receive_node_memory_query(result: []),
+            receive_node_memory_utilization_query(result: []),
             receive_node_cpu_count_query,
+            receive_node_cpu_utilization_query,
             receive_node_uname_info_query,
             receive_node_service_memory_rss_query(result: []),
             receive_node_service_memory_uss_query(result: []),
@@ -116,6 +124,7 @@ RSpec.describe Gitlab::UsageData::Topology do
             failures: [
               { 'app_requests' => 'empty_result' },
               { 'node_memory' => 'empty_result' },
+              { 'node_memory_utilization' => 'empty_result' },
               { 'service_rss' => 'empty_result' },
               { 'service_uss' => 'empty_result' },
               { 'service_workers' => 'empty_result' }
@@ -123,6 +132,7 @@ RSpec.describe Gitlab::UsageData::Topology do
             nodes: [
               {
                 node_cpus: 16,
+                node_cpu_utilization: 0.2,
                 node_uname_info: {
                   machine: 'x86_64',
                   release: '4.15.0-101-generic',
@@ -146,6 +156,7 @@ RSpec.describe Gitlab::UsageData::Topology do
               },
               {
                 node_cpus: 8,
+                node_cpu_utilization: 0.1,
                 node_uname_info: {
                   machine: 'x86_64',
                   release: '4.19.76-linuxkit',
@@ -177,6 +188,16 @@ RSpec.describe Gitlab::UsageData::Topology do
             }
           ]
         end
+
+        let(:node_memory_utilization_response) do
+          [
+            {
+              'metric' => { 'instance' => 'localhost:9100' },
+              'value' =>  [1000, '0.35']
+            }
+          ]
+        end
+
         let(:node_uname_info_response) do
           [
             {
@@ -195,6 +216,7 @@ RSpec.describe Gitlab::UsageData::Topology do
           ]
         end
         # The services in this response should all be mapped to localhost i.e. the same node
+
         let(:service_memory_response) do
           [
             {
@@ -224,7 +246,9 @@ RSpec.describe Gitlab::UsageData::Topology do
           expect_prometheus_api_to(
             receive_app_request_volume_query(result: []),
             receive_node_memory_query(result: node_memory_response),
+            receive_node_memory_utilization_query(result: node_memory_utilization_response),
             receive_node_cpu_count_query(result: []),
+            receive_node_cpu_utilization_query(result: []),
             receive_node_uname_info_query(result: node_uname_info_response),
             receive_node_service_memory_rss_query(result: service_memory_response),
             receive_node_service_memory_uss_query(result: []),
@@ -238,6 +262,7 @@ RSpec.describe Gitlab::UsageData::Topology do
             failures: [
               { 'app_requests' => 'empty_result' },
               { 'node_cpus' => 'empty_result' },
+              { 'node_cpu_utilization' => 'empty_result' },
               { 'service_uss' => 'empty_result' },
               { 'service_pss' => 'empty_result' },
               { 'service_process_count' => 'empty_result' },
@@ -246,6 +271,7 @@ RSpec.describe Gitlab::UsageData::Topology do
             nodes: [
               {
                 node_memory_total_bytes: 512,
+                node_memory_utilization: 0.35,
                 node_uname_info: {
                   machine: 'x86_64',
                   sysname: 'Linux',
@@ -284,7 +310,9 @@ RSpec.describe Gitlab::UsageData::Topology do
           expect_prometheus_api_to(
             receive_app_request_volume_query(result: []),
             receive_node_memory_query(result: []),
+            receive_node_memory_utilization_query(result: []),
             receive_node_cpu_count_query(result: []),
+            receive_node_cpu_utilization_query(result: []),
             receive_node_uname_info_query(result: []),
             receive_node_service_memory_rss_query,
             receive_node_service_memory_uss_query(result: []),
@@ -298,7 +326,9 @@ RSpec.describe Gitlab::UsageData::Topology do
             failures: [
               { 'app_requests' => 'empty_result' },
               { 'node_memory' => 'empty_result' },
+              { 'node_memory_utilization' => 'empty_result' },
               { 'node_cpus' => 'empty_result' },
+              { 'node_cpu_utilization' => 'empty_result' },
               { 'node_uname_info' => 'empty_result' },
               { 'service_uss' => 'empty_result' },
               { 'service_pss' => 'empty_result' },
@@ -335,27 +365,98 @@ RSpec.describe Gitlab::UsageData::Topology do
         end
       end
 
-      context 'and an error is raised when querying Prometheus' do
-        it 'returns empty result with failures' do
-          expect_prometheus_api_to receive(:query)
-            .at_least(:once)
-            .and_raise(Gitlab::PrometheusClient::ConnectionError)
+      context 'and unknown services are encountered' do
+        let(:unknown_service_process_count_response) do
+          [
+            {
+              'metric' => { 'instance' => 'instance2:9000', 'job' => 'unknown-service-A' },
+              'value' => [1000, '42']
+            },
+            {
+              'metric' => { 'instance' => 'instance2:9001', 'job' => 'unknown-service-B' },
+              'value' => [1000, '42']
+            }
+          ]
+        end
 
-          expect(subject[:topology]).to eq({
-            duration_s: 0,
-            failures: [
-              { 'app_requests' => 'Gitlab::PrometheusClient::ConnectionError' },
-              { 'node_memory' => 'Gitlab::PrometheusClient::ConnectionError' },
-              { 'node_cpus' => 'Gitlab::PrometheusClient::ConnectionError' },
-              { 'node_uname_info' => 'Gitlab::PrometheusClient::ConnectionError' },
-              { 'service_rss' => 'Gitlab::PrometheusClient::ConnectionError' },
-              { 'service_uss' => 'Gitlab::PrometheusClient::ConnectionError' },
-              { 'service_pss' => 'Gitlab::PrometheusClient::ConnectionError' },
-              { 'service_process_count' => 'Gitlab::PrometheusClient::ConnectionError' },
-              { 'service_workers' => 'Gitlab::PrometheusClient::ConnectionError' }
-            ],
-            nodes: []
-          })
+        it 'filters out unknown service data and reports the unknown services as a failure' do
+          expect_prometheus_api_to(
+            receive_app_request_volume_query(result: []),
+            receive_node_memory_query(result: []),
+            receive_node_memory_utilization_query(result: []),
+            receive_node_cpu_count_query(result: []),
+            receive_node_cpu_utilization_query(result: []),
+            receive_node_uname_info_query(result: []),
+            receive_node_service_memory_rss_query(result: []),
+            receive_node_service_memory_uss_query(result: []),
+            receive_node_service_memory_pss_query(result: []),
+            receive_node_service_process_count_query(result: unknown_service_process_count_response),
+            receive_node_service_app_server_workers_query(result: [])
+          )
+
+          expect(subject.dig(:topology, :failures)).to include(
+            { 'service_unknown' => 'unknown-service-A' },
+            { 'service_unknown' => 'unknown-service-B' }
+          )
+        end
+      end
+
+      context 'and an error is raised when querying Prometheus' do
+        context 'without timeout failures' do
+          it 'returns empty result and executes subsequent queries as usual' do
+            expect_prometheus_api_to receive(:query)
+              .at_least(:once)
+              .and_raise(Gitlab::PrometheusClient::ConnectionError)
+
+            expect(subject[:topology]).to eq({
+              duration_s: 0,
+              failures: [
+                { 'app_requests' => 'Gitlab::PrometheusClient::ConnectionError' },
+                { 'node_memory' => 'Gitlab::PrometheusClient::ConnectionError' },
+                { 'node_memory_utilization' => 'Gitlab::PrometheusClient::ConnectionError' },
+                { 'node_cpus' => 'Gitlab::PrometheusClient::ConnectionError' },
+                { 'node_cpu_utilization' => 'Gitlab::PrometheusClient::ConnectionError' },
+                { 'node_uname_info' => 'Gitlab::PrometheusClient::ConnectionError' },
+                { 'service_rss' => 'Gitlab::PrometheusClient::ConnectionError' },
+                { 'service_uss' => 'Gitlab::PrometheusClient::ConnectionError' },
+                { 'service_pss' => 'Gitlab::PrometheusClient::ConnectionError' },
+                { 'service_process_count' => 'Gitlab::PrometheusClient::ConnectionError' },
+                { 'service_workers' => 'Gitlab::PrometheusClient::ConnectionError' }
+              ],
+              nodes: []
+            })
+          end
+        end
+
+        context 'with timeout failures' do
+          where(:exception) do
+            described_class::TIMEOUT_ERRORS
+          end
+
+          with_them do
+            it 'returns empty result and cancelled subsequent queries' do
+              expect_prometheus_api_to receive(:query)
+                .and_raise(exception)
+
+              expect(subject[:topology]).to eq({
+                duration_s: 0,
+                failures: [
+                  { 'app_requests' => exception.to_s },
+                  { 'node_memory' => 'timeout_cancellation' },
+                  { 'node_memory_utilization' => 'timeout_cancellation' },
+                  { 'node_cpus' => 'timeout_cancellation' },
+                  { 'node_cpu_utilization' => 'timeout_cancellation' },
+                  { 'node_uname_info' => 'timeout_cancellation' },
+                  { 'service_rss' => 'timeout_cancellation' },
+                  { 'service_uss' => 'timeout_cancellation' },
+                  { 'service_pss' => 'timeout_cancellation' },
+                  { 'service_process_count' => 'timeout_cancellation' },
+                  { 'service_workers' => 'timeout_cancellation' }
+                ],
+                nodes: []
+              })
+            end
+          end
         end
       end
     end
@@ -411,6 +512,21 @@ RSpec.describe Gitlab::UsageData::Topology do
       ])
   end
 
+  def receive_node_memory_utilization_query(result: nil)
+    receive(:query)
+      .with(/node_memory_utilization/, an_instance_of(Hash))
+      .and_return(result || [
+        {
+          'metric' => { 'instance' => 'instance1:8080' },
+          'value' => [1000, '0.45']
+        },
+        {
+          'metric' => { 'instance' => 'instance2:8090' },
+          'value' => [1000, '0.25']
+        }
+      ])
+  end
+
   def receive_node_cpu_count_query(result: nil)
     receive(:query)
       .with(/node_cpus/, an_instance_of(Hash))
@@ -422,6 +538,21 @@ RSpec.describe Gitlab::UsageData::Topology do
         {
           'metric' => { 'instance' => 'instance1:8080' },
           'value' => [1000, '8']
+        }
+      ])
+  end
+
+  def receive_node_cpu_utilization_query(result: nil)
+    receive(:query)
+      .with(/node_cpu_utilization/, an_instance_of(Hash))
+      .and_return(result || [
+        {
+          'metric' => { 'instance' => 'instance2:8090' },
+          'value' => [1000, '0.2']
+        },
+        {
+          'metric' => { 'instance' => 'instance1:8080' },
+          'value' => [1000, '0.1']
         }
       ])
   end
@@ -534,11 +665,6 @@ RSpec.describe Gitlab::UsageData::Topology do
         {
           'metric' => { 'instance' => 'instance2:8080', 'job' => 'registry' },
           'value' => [1000, '1']
-        },
-        # unknown service => should be stripped out
-        {
-          'metric' => { 'instance' => 'instance2:9000', 'job' => 'not-a-gitlab-service' },
-          'value' => [1000, '42']
         }
       ])
   end

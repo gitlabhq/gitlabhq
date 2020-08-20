@@ -1,7 +1,7 @@
 <script>
 import { mapState, mapActions, mapGetters } from 'vuex';
-import { n__, __ } from '~/locale';
 import { GlModal } from '@gitlab/ui';
+import { n__, __ } from '~/locale';
 import LoadingButton from '~/vue_shared/components/loading_button.vue';
 import CommitMessageField from './message_field.vue';
 import Actions from './actions.vue';
@@ -138,7 +138,7 @@ export default {
           @input="updateCommitMessage"
           @submit="commit"
         />
-        <div class="clearfix prepend-top-15">
+        <div class="clearfix gl-mt-5">
           <actions />
           <loading-button
             :loading="submitCommitLoading"

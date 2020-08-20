@@ -14,6 +14,7 @@ RSpec.describe FileMover do
     "test ![banana_sample](/#{temp_file_path}) "\
     "same ![banana_sample](/#{temp_file_path}) "
   end
+
   let(:file_path) { File.join('uploads/-/system/personal_snippet', snippet.id.to_s, secret, filename) }
   let(:snippet) { create(:personal_snippet, description: temp_description) }
 

@@ -24,9 +24,11 @@ module Gitlab
         end
 
         def apply_headers(next_page)
-          link = pagination_links(next_page)
-          request.header('Links', link)
-          request.header('Link', link)
+          Gitlab::Pagination::Keyset::HeaderBuilder
+            .new(request)
+            .add_next_page_header(
+              query_params_for(next_page)
+            )
         end
 
         private
@@ -63,25 +65,8 @@ module Gitlab
           end
         end
 
-        def page_href(page)
-          base_request_uri.tap do |uri|
-            uri.query = query_params_for(page).to_query
-          end.to_s
-        end
-
-        def pagination_links(next_page)
-          %(<#{page_href(next_page)}>; rel="next")
-        end
-
-        def base_request_uri
-          @base_request_uri ||= URI.parse(request.request.url).tap do |uri|
-            uri.host = Gitlab.config.gitlab.host
-            uri.port = Gitlab.config.gitlab.port
-          end
-        end
-
         def query_params_for(page)
-          request.params.merge(lower_bounds_params(page))
+          lower_bounds_params(page)
         end
       end
     end

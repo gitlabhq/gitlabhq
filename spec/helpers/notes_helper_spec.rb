@@ -77,9 +77,9 @@ RSpec.describe NotesHelper do
 
     context 'for a merge request discusion' do
       let(:merge_request) { create(:merge_request, source_project: project, target_project: project, importing: true) }
-      let!(:merge_request_diff1) { merge_request.merge_request_diffs.create(head_commit_sha: '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9') }
-      let!(:merge_request_diff2) { merge_request.merge_request_diffs.create(head_commit_sha: nil) }
-      let!(:merge_request_diff3) { merge_request.merge_request_diffs.create(head_commit_sha: '5937ac0a7beb003549fc5fd26fc247adbce4a52e') }
+      let!(:merge_request_diff1) { merge_request.merge_request_diffs.create!(head_commit_sha: '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9') }
+      let!(:merge_request_diff2) { merge_request.merge_request_diffs.create!(head_commit_sha: nil) }
+      let!(:merge_request_diff3) { merge_request.merge_request_diffs.create!(head_commit_sha: '5937ac0a7beb003549fc5fd26fc247adbce4a52e') }
 
       context 'for a diff discussion' do
         context 'when the discussion is active' do
@@ -225,7 +225,7 @@ RSpec.describe NotesHelper do
     it 'return snippet notes path for personal snippet' do
       @snippet = create(:personal_snippet)
 
-      expect(helper.notes_url).to eq("/snippets/#{@snippet.id}/notes")
+      expect(helper.notes_url).to eq("/-/snippets/#{@snippet.id}/notes")
     end
 
     it 'return project notes path for project snippet' do
@@ -250,7 +250,7 @@ RSpec.describe NotesHelper do
     it 'return snippet notes path for personal snippet' do
       note = create(:note_on_personal_snippet)
 
-      expect(helper.note_url(note)).to eq("/snippets/#{note.noteable.id}/notes/#{note.id}")
+      expect(helper.note_url(note)).to eq("/-/snippets/#{note.noteable.id}/notes/#{note.id}")
     end
 
     it 'return project notes path for project snippet' do
@@ -284,7 +284,7 @@ RSpec.describe NotesHelper do
       @snippet = create(:project_snippet, project: @project)
       @note = create(:note_on_personal_snippet)
 
-      expect(helper.form_resources).to eq([@project.namespace, @project, @note])
+      expect(helper.form_resources).to eq([@project, @note])
     end
 
     it 'returns namespace, project and note path for other noteables' do
@@ -292,7 +292,7 @@ RSpec.describe NotesHelper do
       @project = create(:project, path: 'test', namespace: namespace)
       @note = create(:note_on_issue, project: @project)
 
-      expect(helper.form_resources).to eq([@project.namespace, @project, @note])
+      expect(helper.form_resources).to eq([@project, @note])
     end
   end
 

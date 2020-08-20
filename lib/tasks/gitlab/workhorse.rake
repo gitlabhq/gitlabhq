@@ -15,7 +15,7 @@ namespace :gitlab do
       checkout_or_clone_version(version: version, repo: args.repo, target_dir: args.dir, clone_opts: %w[--depth 1])
 
       _, status = Gitlab::Popen.popen(%w[which gmake])
-      command = status.zero? ? 'gmake' : 'make'
+      command = status == 0 ? 'gmake' : 'make'
 
       Dir.chdir(args.dir) do
         run_command!([command])

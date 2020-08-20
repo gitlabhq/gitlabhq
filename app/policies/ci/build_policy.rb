@@ -3,7 +3,7 @@
 module Ci
   class BuildPolicy < CommitStatusPolicy
     condition(:protected_ref) do
-      access = ::Gitlab::UserAccess.new(@user, project: @subject.project)
+      access = ::Gitlab::UserAccess.new(@user, container: @subject.project)
 
       if @subject.tag?
         !access.can_create_tag?(@subject.ref)

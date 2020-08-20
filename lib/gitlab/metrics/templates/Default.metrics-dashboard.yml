@@ -1,0 +1,24 @@
+# Only one dashboard should be defined per file
+# More info: https://docs.gitlab.com/ee/operations/metrics/dashboards/yaml.html
+dashboard: 'Single Stat'
+
+# This is where all of the variables that can be manipulated via the UI
+# are initialized
+# Check out: https://docs.gitlab.com/ee/operations/metrics/dashboards/templating_variables.html#templating-variables-for-metrics-dashboards-core
+templating:
+  variables:
+    job: 'prometheus'
+
+# For more information about the required properties of panel_groups
+# please visit: https://docs.gitlab.com/ee/operations/metrics/dashboards/yaml.html#panel-group-panel_groups-properties
+panel_groups:
+  - group: 'Memory'
+    panels:
+      - title: Prometheus
+        type: single-stat
+        metrics:
+            # Queries that make use of variables need to have double curly brackets {}
+            # set to the variables, per the example below
+            - query: 'max(go_memstats_alloc_bytes{job="{{job}}"}) / 1024 /1024'
+              unit: '%'
+              label: "Max"

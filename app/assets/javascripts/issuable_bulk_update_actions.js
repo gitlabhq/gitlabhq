@@ -1,7 +1,7 @@
 import $ from 'jquery';
 import { difference, intersection, union } from 'lodash';
 import axios from './lib/utils/axios_utils';
-import Flash from './flash';
+import { deprecatedCreateFlash as Flash } from './flash';
 import { __ } from './locale';
 
 export default {

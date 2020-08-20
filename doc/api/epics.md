@@ -92,7 +92,7 @@ Example response:
   "description": "Molestias dolorem eos vitae expedita impedit necessitatibus quo voluptatum.",
   "state": "opened",
   "confidential": "false",
-  "web_url": "http://localhost:3001/groups/test/-/epics/4",
+  "web_url": "http://gitlab.example.com/groups/test/-/epics/4",
   "reference": "&4",
   "references": {
     "short": "&4",
@@ -105,7 +105,7 @@ Example response:
     "username": "kam",
     "state": "active",
     "avatar_url": "http://www.gravatar.com/avatar/018729e129a6f31c80a6327a30196823?s=80&d=identicon",
-    "web_url": "http://localhost:3001/kam"
+    "web_url": "http://gitlab.example.com/kam"
   },
   "start_date": null,
   "start_date_is_fixed": false,
@@ -123,7 +123,12 @@ Example response:
   "closed_at": "2018-08-18T12:22:05.239Z",
   "labels": [],
   "upvotes": 4,
-  "downvotes": 0
+  "downvotes": 0,
+  "_links":{
+      "self": "http://gitlab.example.com/api/v4/groups/7/epics/4",
+      "epic_issues": "http://gitlab.example.com/api/v4/groups/7/epics/4/issues",
+      "group":"http://gitlab.example.com/api/v4/groups/7"
+  }
   },
   {
   "id": 50,
@@ -133,7 +138,7 @@ Example response:
   "title": "Accusamus iste et ullam ratione voluptatem omnis debitis dolor est.",
   "description": "Molestias dolorem eos vitae expedita impedit necessitatibus quo voluptatum.",
   "state": "opened",
-  "web_url": "http://localhost:3001/groups/test/sample/-/epics/4",
+  "web_url": "http://gitlab.example.com/groups/test/sample/-/epics/35",
   "reference": "&4",
   "references": {
     "short": "&4",
@@ -146,7 +151,7 @@ Example response:
     "username": "kam",
     "state": "active",
     "avatar_url": "http://www.gravatar.com/avatar/018729e129a6f31c80a6327a30196823?s=80&d=identicon",
-    "web_url": "http://localhost:3001/kam"
+    "web_url": "http://gitlab.example.com/kam"
   },
   "start_date": null,
   "start_date_is_fixed": false,
@@ -164,7 +169,12 @@ Example response:
   "closed_at": "2018-08-18T12:22:05.239Z",
   "labels": [],
   "upvotes": 4,
-  "downvotes": 0
+  "downvotes": 0,
+  "_links":{
+      "self": "http://gitlab.example.com/api/v4/groups/17/epics/35",
+      "epic_issues": "http://gitlab.example.com/api/v4/groups/17/epics/35/issues",
+      "group":"http://gitlab.example.com/api/v4/groups/17"
+  }
   }
 ]
 ```
@@ -196,7 +206,7 @@ Example response:
   "title": "Ea cupiditate dolores ut vero consequatur quasi veniam voluptatem et non.",
   "description": "Molestias dolorem eos vitae expedita impedit necessitatibus quo voluptatum.",
   "state": "opened",
-  "web_url": "http://localhost:3001/groups/test/-/epics/5",
+  "web_url": "http://gitlab.example.com/groups/test/-/epics/5",
   "reference": "&5",
   "references": {
     "short": "&5",
@@ -209,7 +219,7 @@ Example response:
     "username": "arnita",
     "state": "active",
     "avatar_url": "http://www.gravatar.com/avatar/a2f5c6fcef64c9c69cb8779cb292be1b?s=80&d=identicon",
-    "web_url": "http://localhost:3001/arnita"
+    "web_url": "http://gitlab.example.com/arnita"
   },
   "start_date": null,
   "start_date_is_fixed": false,
@@ -228,7 +238,12 @@ Example response:
   "labels": [],
   "upvotes": 4,
   "downvotes": 0,
-  "subscribed": true
+  "subscribed": true,
+  "_links":{
+      "self": "http://gitlab.example.com/api/v4/groups/7/epics/5",
+      "epic_issues": "http://gitlab.example.com/api/v4/groups/7/epics/5/issues",
+      "group":"http://gitlab.example.com/api/v4/groups/7"
+  }
 }
 ```
 
@@ -273,7 +288,7 @@ Example response:
   "description": "Epic description",
   "state": "opened",
   "confidential": "false",
-  "web_url": "http://localhost:3001/groups/test/-/epics/6",
+  "web_url": "http://gitlab.example.com/groups/test/-/epics/6",
   "reference": "&6",
   "references": {
     "short": "&6",
@@ -304,7 +319,12 @@ Example response:
   "closed_at": "2018-08-18T12:22:05.239Z",
   "labels": [],
   "upvotes": 4,
-  "downvotes": 0
+  "downvotes": 0,
+  "_links":{
+    "self": "http://gitlab.example.com/api/v4/groups/7/epics/6",
+    "epic_issues": "http://gitlab.example.com/api/v4/groups/7/epics/6/issues",
+    "group":"http://gitlab.example.com/api/v4/groups/7"
+  }
 }
 ```
 
@@ -350,7 +370,7 @@ Example response:
   "description": "Epic description",
   "state": "opened",
   "confidential": "false",
-  "web_url": "http://localhost:3001/groups/test/-/epics/6",
+  "web_url": "http://gitlab.example.com/groups/test/-/epics/6",
   "reference": "&6",
   "references": {
     "short": "&6",
@@ -456,9 +476,9 @@ Example response:
       "username": "arnita",
       "state": "active",
       "avatar_url": "http://www.gravatar.com/avatar/a2f5c6fcef64c9c69cb8779cb292be1b?s=80&d=identicon",
-      "web_url": "http://localhost:3001/arnita"
+      "web_url": "http://gitlab.example.com/arnita"
     },
-    "web_url": "http://localhost:3001/groups/test/-/epics/5",
+    "web_url": "http://gitlab.example.com/groups/test/-/epics/5",
     "reference": "&5",
     "references": {
       "short": "&5",

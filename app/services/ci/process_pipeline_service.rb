@@ -8,20 +8,14 @@ module Ci
       @pipeline = pipeline
     end
 
-    def execute(trigger_build_ids = nil, initial_process: false)
+    def execute
       increment_processing_counter
 
       update_retried
 
-      if ::Gitlab::Ci::Features.atomic_processing?(pipeline.project)
-        Ci::PipelineProcessing::AtomicProcessingService
-          .new(pipeline)
-          .execute
-      else
-        Ci::PipelineProcessing::LegacyProcessingService
-          .new(pipeline)
-          .execute(trigger_build_ids, initial_process: initial_process)
-      end
+      Ci::PipelineProcessing::AtomicProcessingService
+        .new(pipeline)
+        .execute
     end
 
     def metrics

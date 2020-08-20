@@ -23,6 +23,7 @@ RSpec.describe AccessibilityReportsComparerSerializer do
       }
     ]
   end
+
   let(:different_error) do
     [
       {

@@ -1,4 +1,4 @@
-.nav-sidebar{ class: ("sidebar-collapsed-desktop" if collapsed_sidebar?) }
+.nav-sidebar{ class: ("sidebar-collapsed-desktop" if collapsed_sidebar?), **tracking_attrs('user_side_navigation', 'render', 'user_side_navigation') }
   .nav-sidebar-inner-scroll
     .context-header
       = link_to profile_path, title: _('Profile Settings') do
@@ -18,7 +18,7 @@
               %strong.fly-out-top-item-name
                 = _('Profile')
       = nav_link(controller: [:accounts, :two_factor_auths]) do
-        = link_to profile_account_path do
+        = link_to profile_account_path, data: { qa_selector: 'profile_account_link' } do
           .nav-icon-container
             = sprite_icon('account')
           %span.nav-item-name

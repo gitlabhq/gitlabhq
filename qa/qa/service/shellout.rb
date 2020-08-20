@@ -33,6 +33,31 @@ module QA
           end
         end
       end
+
+      def sql_to_docker_exec_cmd(sql, username, password, database, host, container)
+        <<~CMD
+          docker exec --env PGPASSWORD=#{password} #{container} \
+            bash -c "psql -U #{username} -d #{database} -h #{host} -c \\"#{sql}\\""
+        CMD
+      end
+
+      def wait_until_shell_command(cmd, **kwargs)
+        sleep_interval = kwargs.delete(:sleep_interval) || 1
+
+        Support::Waiter.wait_until(sleep_interval: sleep_interval, **kwargs) do
+          shell cmd do |line|
+            break true if yield line
+          end
+        end
+      end
+
+      def wait_until_shell_command_matches(cmd, regex, **kwargs)
+        wait_until_shell_command(cmd, kwargs) do |line|
+          QA::Runtime::Logger.debug(line.chomp)
+
+          line =~ regex
+        end
+      end
     end
   end
 end

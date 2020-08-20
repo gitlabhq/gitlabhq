@@ -5,4 +5,4 @@
   %i.fa.fa-bitbucket-square
   = _('Import projects from Bitbucket Server')
 
-= render 'import/githubish_status', provider: 'bitbucket_server', extra_data: { reconfigure_path: configure_import_bitbucket_server_path }
+= render 'import/githubish_status', provider: 'bitbucket_server', paginatable: true, extra_data: { reconfigure_path: configure_import_bitbucket_server_path }

@@ -483,11 +483,7 @@ RSpec.describe Ci::JobArtifact do
     subject { create(:ci_job_artifact, :archive) }
 
     context 'when existing object has local store' do
-      it 'is stored locally' do
-        expect(subject.file_store).to be(ObjectStorage::Store::LOCAL)
-        expect(subject.file).to be_file_storage
-        expect(subject.file.object_store).to eq(ObjectStorage::Store::LOCAL)
-      end
+      it_behaves_like 'mounted file in local store'
     end
 
     context 'when direct upload is enabled' do
@@ -496,11 +492,7 @@ RSpec.describe Ci::JobArtifact do
       end
 
       context 'when file is stored' do
-        it 'is stored remotely' do
-          expect(subject.file_store).to eq(ObjectStorage::Store::REMOTE)
-          expect(subject.file).not_to be_file_storage
-          expect(subject.file.object_store).to eq(ObjectStorage::Store::REMOTE)
-        end
+        it_behaves_like 'mounted file in object store'
       end
     end
   end
@@ -529,11 +521,9 @@ RSpec.describe Ci::JobArtifact do
     context 'when file type is supported' do
       let(:project_closest_setting) { 1024 }
       let(:artifact_type) { 'junit' }
+      let(:limit_name) { "#{described_class::PLAN_LIMIT_PREFIX}#{artifact_type}" }
 
-      before do
-        stub_feature_flags(ci_max_artifact_size_per_type: flag_enabled)
-        allow(build.project).to receive(:closest_setting).with(:max_artifacts_size).and_return(project_closest_setting)
-      end
+      let!(:plan_limits) { create(:plan_limits, :default_plan) }
 
       shared_examples_for 'basing off the project closest setting' do
         it { is_expected.to eq(project_closest_setting.megabytes.to_i) }
@@ -543,49 +533,40 @@ RSpec.describe Ci::JobArtifact do
         it { is_expected.to eq(max_size_for_type.megabytes.to_i) }
       end
 
-      context 'and feature flag for custom max size per type is enabled' do
-        let(:flag_enabled) { true }
-        let(:limit_name) { "#{described_class::PLAN_LIMIT_PREFIX}#{artifact_type}" }
+      before do
+        allow(build.project).to receive(:closest_setting).with(:max_artifacts_size).and_return(project_closest_setting)
+      end
 
-        let!(:plan_limits) { create(:plan_limits, :default_plan) }
-
-        context 'and plan limit is disabled for the given artifact type' do
-          before do
-            plan_limits.update!(limit_name => 0)
-          end
-
-          it_behaves_like 'basing off the project closest setting'
-
-          context 'and project closest setting results to zero' do
-            let(:project_closest_setting) { 0 }
-
-            it { is_expected.to eq(0) }
-          end
+      context 'and plan limit is disabled for the given artifact type' do
+        before do
+          plan_limits.update!(limit_name => 0)
         end
 
-        context 'and plan limit is enabled for the given artifact type' do
-          before do
-            plan_limits.update!(limit_name => max_size_for_type)
-          end
+        it_behaves_like 'basing off the project closest setting'
 
-          context 'and plan limit is smaller than project setting' do
-            let(:max_size_for_type) { project_closest_setting - 1 }
+        context 'and project closest setting results to zero' do
+          let(:project_closest_setting) { 0 }
 
-            it_behaves_like 'basing off the plan limit'
-          end
-
-          context 'and plan limit is smaller than project setting' do
-            let(:max_size_for_type) { project_closest_setting + 1 }
-
-            it_behaves_like 'basing off the project closest setting'
-          end
+          it { is_expected.to eq(0) }
         end
       end
 
-      context 'and feature flag for custom max size per type is disabled' do
-        let(:flag_enabled) { false }
+      context 'and plan limit is enabled for the given artifact type' do
+        before do
+          plan_limits.update!(limit_name => max_size_for_type)
+        end
 
-        it_behaves_like 'basing off the project closest setting'
+        context 'and plan limit is smaller than project setting' do
+          let(:max_size_for_type) { project_closest_setting - 1 }
+
+          it_behaves_like 'basing off the plan limit'
+        end
+
+        context 'and plan limit is larger than project setting' do
+          let(:max_size_for_type) { project_closest_setting + 1 }
+
+          it_behaves_like 'basing off the project closest setting'
+        end
       end
     end
   end
@@ -597,7 +578,8 @@ RSpec.describe Ci::JobArtifact do
       Please refer to https://docs.gitlab.com/ee/development/application_limits.html on how to add new plan limit columns.
 
       Take note that while existing max size plan limits default to 0, succeeding new limits are recommended to have
-      non-zero default values.
+      non-zero default values. Also, remember to update the plan limits documentation (doc/administration/instance_limits.md)
+      when changes or new entries are made.
     MSG
   end
 end

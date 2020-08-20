@@ -1,5 +1,6 @@
 import { createLocalVue, shallowMount } from '@vue/test-utils';
 import { ApolloMutation } from 'vue-apollo';
+import VueDraggable from 'vuedraggable';
 import VueRouter from 'vue-router';
 import { GlEmptyState } from '@gitlab/ui';
 import Index from '~/design_management/pages/index.vue';
@@ -12,7 +13,7 @@ import {
   EXISTING_DESIGN_DROP_MANY_FILES_MESSAGE,
   EXISTING_DESIGN_DROP_INVALID_FILENAME_MESSAGE,
 } from '~/design_management/utils/error_messages';
-import createFlash from '~/flash';
+import { deprecatedCreateFlash as createFlash } from '~/flash';
 import createRouter from '~/design_management/router';
 import * as utils from '~/design_management/utils/design_management_utils';
 import { DESIGN_DETAIL_LAYOUT_CLASSLIST } from '~/design_management/constants';
@@ -24,6 +25,9 @@ const mockPageEl = {
   },
 };
 jest.spyOn(utils, 'getPageLayoutElement').mockReturnValue(mockPageEl);
+
+const scrollIntoViewMock = jest.fn();
+HTMLElement.prototype.scrollIntoView = scrollIntoViewMock;
 
 const localVue = createLocalVue();
 const router = createRouter();
@@ -54,9 +58,7 @@ const mockDesigns = [
 ];
 
 const mockVersion = {
-  node: {
-    id: 'gid://gitlab/DesignManagement::Version/1',
-  },
+  id: 'gid://gitlab/DesignManagement::Version/1',
 };
 
 describe('Design management index page', () => {
@@ -68,7 +70,10 @@ describe('Design management index page', () => {
   const findToolbar = () => wrapper.find('.qa-selector-toolbar');
   const findDeleteButton = () => wrapper.find(DeleteButton);
   const findDropzone = () => wrapper.findAll(DesignDropzone).at(0);
+  const dropzoneClasses = () => findDropzone().classes();
+  const findDropzoneWrapper = () => wrapper.find('[data-testid="design-dropzone-wrapper"]');
   const findFirstDropzoneWithDesign = () => wrapper.findAll(DesignDropzone).at(1);
+  const findDesignsWrapper = () => wrapper.find('[data-testid="designs-root"]');
 
   function createComponent({
     loading = false,
@@ -92,19 +97,23 @@ describe('Design management index page', () => {
     };
 
     wrapper = shallowMount(Index, {
+      data() {
+        return {
+          designs,
+          allVersions,
+          permissions: {
+            createDesign,
+          },
+        };
+      },
       mocks: { $apollo },
       localVue,
       router,
-      stubs: { DesignDestroyer, ApolloMutation, ...stubs },
+      stubs: { DesignDestroyer, ApolloMutation, VueDraggable, ...stubs },
       attachToDocument: true,
-    });
-
-    wrapper.setData({
-      designs,
-      allVersions,
-      issueIid: '1',
-      permissions: {
-        createDesign,
+      provide: {
+        projectPath: 'project-path',
+        issueIid: '1',
       },
     });
   }
@@ -117,9 +126,7 @@ describe('Design management index page', () => {
     it('renders loading icon', () => {
       createComponent({ loading: true });
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(wrapper.element).toMatchSnapshot();
-      });
+      expect(wrapper.element).toMatchSnapshot();
     });
 
     it('renders error', () => {
@@ -135,25 +142,35 @@ describe('Design management index page', () => {
     it('renders a toolbar with buttons when there are designs', () => {
       createComponent({ designs: mockDesigns, allVersions: [mockVersion] });
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(findToolbar().exists()).toBe(true);
-      });
+      expect(findToolbar().exists()).toBe(true);
     });
 
     it('renders designs list and header with upload button', () => {
       createComponent({ designs: mockDesigns, allVersions: [mockVersion] });
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(wrapper.element).toMatchSnapshot();
-      });
+      expect(wrapper.element).toMatchSnapshot();
     });
 
     it('does not render toolbar when there is no permission', () => {
       createComponent({ designs: mockDesigns, allVersions: [mockVersion], createDesign: false });
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(wrapper.element).toMatchSnapshot();
-      });
+      expect(wrapper.element).toMatchSnapshot();
+    });
+
+    it('has correct classes applied to design dropzone', () => {
+      createComponent({ designs: mockDesigns, allVersions: [mockVersion] });
+      expect(dropzoneClasses()).toContain('design-list-item');
+      expect(dropzoneClasses()).toContain('design-list-item-new');
+    });
+
+    it('has correct classes applied to dropzone wrapper', () => {
+      createComponent({ designs: mockDesigns, allVersions: [mockVersion] });
+      expect(findDropzoneWrapper().classes()).toEqual([
+        'gl-flex-direction-column',
+        'col-md-6',
+        'col-lg-3',
+        'gl-mb-3',
+      ]);
     });
   });
 
@@ -162,10 +179,19 @@ describe('Design management index page', () => {
       createComponent();
     });
 
-    it('renders empty text', () =>
+    it('renders design dropzone', () =>
       wrapper.vm.$nextTick().then(() => {
         expect(wrapper.element).toMatchSnapshot();
       }));
+
+    it('has correct classes applied to design dropzone', () => {
+      expect(dropzoneClasses()).not.toContain('design-list-item');
+      expect(dropzoneClasses()).not.toContain('design-list-item-new');
+    });
+
+    it('has correct classes applied to dropzone wrapper', () => {
+      expect(findDropzoneWrapper().classes()).toEqual(['col-12']);
+    });
 
     it('does not render a toolbar with buttons', () =>
       wrapper.vm.$nextTick().then(() => {
@@ -185,7 +211,7 @@ describe('Design management index page', () => {
         mutation: uploadDesignQuery,
         variables: {
           files: [{ name: 'test' }],
-          projectPath: '',
+          projectPath: 'project-path',
           iid: '1',
         },
         optimisticResponse: {
@@ -214,13 +240,10 @@ describe('Design management index page', () => {
                 },
                 versions: {
                   __typename: 'DesignVersionConnection',
-                  edges: {
-                    __typename: 'DesignVersionEdge',
-                    node: {
-                      __typename: 'DesignVersion',
-                      id: expect.anything(),
-                      sha: expect.anything(),
-                    },
+                  nodes: {
+                    __typename: 'DesignVersion',
+                    id: expect.anything(),
+                    sha: expect.anything(),
                   },
                 },
               },
@@ -231,12 +254,18 @@ describe('Design management index page', () => {
         },
       };
 
-      return wrapper.vm.$nextTick().then(() => {
-        findDropzone().vm.$emit('change', [{ name: 'test' }]);
-        expect(mutate).toHaveBeenCalledWith(mutationVariables);
-        expect(wrapper.vm.filesToBeSaved).toEqual([{ name: 'test' }]);
-        expect(wrapper.vm.isSaving).toBeTruthy();
-      });
+      return wrapper.vm
+        .$nextTick()
+        .then(() => {
+          findDropzone().vm.$emit('change', [{ name: 'test' }]);
+          expect(mutate).toHaveBeenCalledWith(mutationVariables);
+          expect(wrapper.vm.filesToBeSaved).toEqual([{ name: 'test' }]);
+          expect(wrapper.vm.isSaving).toBeTruthy();
+        })
+        .then(() => {
+          expect(dropzoneClasses()).toContain('design-list-item');
+          expect(dropzoneClasses()).toContain('design-list-item-new');
+        });
     });
 
     it('sets isSaving', () => {
@@ -384,8 +413,7 @@ describe('Design management index page', () => {
 
     it('renders toolbar buttons', () => {
       expect(findToolbar().exists()).toBe(true);
-      expect(findToolbar().classes()).toContain('d-flex');
-      expect(findToolbar().classes()).not.toContain('d-none');
+      expect(findToolbar().isVisible()).toBe(true);
     });
 
     it('adds two designs to selected designs when their checkboxes are checked', () => {
@@ -442,9 +470,9 @@ describe('Design management index page', () => {
     });
   });
 
-  it('on latest version when has no designs does not render toolbar buttons', () => {
+  it('on latest version when has no designs toolbar buttons are invisible', () => {
     createComponent({ designs: [], allVersions: [mockVersion] });
-    expect(findToolbar().exists()).toBe(false);
+    expect(findToolbar().isVisible()).toBe(false);
   });
 
   describe('on non-latest version', () => {
@@ -482,6 +510,10 @@ describe('Design management index page', () => {
       });
 
       event = new Event('paste');
+      event.clipboardData = {
+        files: [{ name: 'image.png', type: 'image/png' }],
+        getData: () => 'test.png',
+      };
 
       router.replace({
         name: DESIGNS_ROUTE_NAME,
@@ -491,43 +523,52 @@ describe('Design management index page', () => {
       });
     });
 
-    it('calls onUploadDesign with valid paste', () => {
-      event.clipboardData = {
-        files: [{ name: 'image.png', type: 'image/png' }],
-        getData: () => 'test.png',
-      };
-
-      document.dispatchEvent(event);
-
-      expect(wrapper.vm.onUploadDesign).toHaveBeenCalledTimes(1);
-      expect(wrapper.vm.onUploadDesign).toHaveBeenCalledWith([
-        new File([{ name: 'image.png' }], 'test.png'),
-      ]);
-    });
-
-    it('renames a design if it has an image.png filename', () => {
-      event.clipboardData = {
-        files: [{ name: 'image.png', type: 'image/png' }],
-        getData: () => 'image.png',
-      };
-
-      document.dispatchEvent(event);
-
-      expect(wrapper.vm.onUploadDesign).toHaveBeenCalledTimes(1);
-      expect(wrapper.vm.onUploadDesign).toHaveBeenCalledWith([
-        new File([{ name: 'image.png' }], `design_${Date.now()}.png`),
-      ]);
-    });
-
-    it('does not call onUploadDesign with invalid paste', () => {
-      event.clipboardData = {
-        items: [{ type: 'text/plain' }, { type: 'text' }],
-        files: [],
-      };
-
+    it('does not call paste event if designs wrapper is not hovered', () => {
       document.dispatchEvent(event);
 
       expect(wrapper.vm.onUploadDesign).not.toHaveBeenCalled();
+    });
+
+    describe('when designs wrapper is hovered', () => {
+      beforeEach(() => {
+        findDesignsWrapper().trigger('mouseenter');
+      });
+
+      it('calls onUploadDesign with valid paste', () => {
+        document.dispatchEvent(event);
+
+        expect(wrapper.vm.onUploadDesign).toHaveBeenCalledTimes(1);
+        expect(wrapper.vm.onUploadDesign).toHaveBeenCalledWith([
+          new File([{ name: 'image.png' }], 'test.png'),
+        ]);
+      });
+
+      it('renames a design if it has an image.png filename', () => {
+        document.dispatchEvent(event);
+
+        expect(wrapper.vm.onUploadDesign).toHaveBeenCalledTimes(1);
+        expect(wrapper.vm.onUploadDesign).toHaveBeenCalledWith([
+          new File([{ name: 'image.png' }], `design_${Date.now()}.png`),
+        ]);
+      });
+
+      it('does not call onUploadDesign with invalid paste', () => {
+        event.clipboardData = {
+          items: [{ type: 'text/plain' }, { type: 'text' }],
+          files: [],
+        };
+
+        document.dispatchEvent(event);
+
+        expect(wrapper.vm.onUploadDesign).not.toHaveBeenCalled();
+      });
+
+      it('removes onPaste listener after mouseleave event', async () => {
+        findDesignsWrapper().trigger('mouseleave');
+        document.dispatchEvent(event);
+
+        expect(wrapper.vm.onUploadDesign).not.toHaveBeenCalled();
+      });
     });
   });
 
@@ -535,9 +576,18 @@ describe('Design management index page', () => {
     it('ensures fullscreen layout is not applied', () => {
       createComponent(true);
 
-      wrapper.vm.$router.push('/designs');
+      wrapper.vm.$router.push('/');
       expect(mockPageEl.classList.remove).toHaveBeenCalledTimes(1);
       expect(mockPageEl.classList.remove).toHaveBeenCalledWith(...DESIGN_DETAIL_LAYOUT_CLASSLIST);
+    });
+
+    it('should trigger a scrollIntoView method if designs route is detected', () => {
+      router.replace({
+        path: '/designs',
+      });
+      createComponent(true);
+
+      expect(scrollIntoViewMock).toHaveBeenCalled();
     });
   });
 });

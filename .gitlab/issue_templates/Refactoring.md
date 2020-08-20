@@ -38,4 +38,12 @@ If you are aware of tests that need to be written or adjusted apart from unit te
 please list them here.
 -->
 
-/label ~backstage
+<!--
+Please select the appropriate label from the following:
+    ~"feature::addition"
+    ~"feature::maintenance"
+    ~"tooling::pipelines"
+    ~"tooling::workflow"
+-->
+
+/label ~"feature::maintenance"

@@ -18,7 +18,7 @@
         = render "layouts/nav/groups_dropdown/show"
 
   - if any_dashboard_nav_link?([:groups, :milestones, :activity, :snippets])
-    %li.header-more.dropdown
+    %li.header-more.dropdown{ **tracking_attrs('main_navigation', 'click_more_link', 'navigation') }
       %a{ href: "#", data: { toggle: "dropdown", qa_selector: 'more_dropdown' } }
         = _('More')
         = sprite_icon('angle-down', css_class: 'caret-down')

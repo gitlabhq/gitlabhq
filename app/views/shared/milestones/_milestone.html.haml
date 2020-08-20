@@ -15,7 +15,7 @@
         .text-tertiary.gl-mb-2
           = milestone_date_range(milestone)
       - recent_releases, total_count, more_count = recent_releases_with_counts(milestone)
-      - unless total_count.zero?
+      - unless total_count == 0
         .text-tertiary.gl-mb-2.milestone-release-links
           = sprite_icon("rocket", size: 12)
           = n_('Release', 'Releases', total_count)

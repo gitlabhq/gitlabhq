@@ -40,7 +40,7 @@ module TimeboxesHelper
     opts = { milestone_title: milestone.title, state: state }
 
     if @project
-      polymorphic_path([@project.namespace.becomes(Namespace), @project, type], opts)
+      polymorphic_path([@project, type], opts)
     elsif @group
       polymorphic_url([type, @group], opts)
     else
@@ -155,7 +155,7 @@ module TimeboxesHelper
     opened = milestone.opened_issues_count
     closed = milestone.closed_issues_count
 
-    return _("Issues") if total.zero?
+    return _("Issues") if total == 0
 
     content = []
 
@@ -187,7 +187,7 @@ module TimeboxesHelper
   def milestone_releases_tooltip_text(milestone)
     count = milestone.releases.count
 
-    return _("Releases") if count.zero?
+    return _("Releases") if count == 0
 
     n_("%{releases} release", "%{releases} releases", count) % { releases: count }
   end

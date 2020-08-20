@@ -1,0 +1,10 @@
+.mb-3
+  %ul.nav-links
+    = nav_link(path: 'product_analytics#index') do
+      = link_to _('Events'), project_product_analytics_path(@project)
+    = nav_link(path: 'product_analytics#graphs') do
+      = link_to 'Graphs', graphs_project_product_analytics_path(@project)
+    = nav_link(path: 'product_analytics#test') do
+      = link_to _('Test'), test_project_product_analytics_path(@project)
+    = nav_link(path: 'product_analytics#setup') do
+      = link_to _('Setup'), setup_project_product_analytics_path(@project)

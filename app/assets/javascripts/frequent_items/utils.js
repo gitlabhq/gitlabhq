@@ -1,6 +1,6 @@
 import { take } from 'lodash';
 import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
-import sanitize from 'sanitize-html';
+import { sanitize } from 'dompurify';
 import { FREQUENT_ITEMS, HOUR_IN_MS } from './constants';
 
 export const isMobile = () => ['md', 'sm', 'xs'].includes(bp.getBreakpointSize());
@@ -52,7 +52,7 @@ export const sanitizeItem = item => {
       return {};
     }
 
-    return { [key]: sanitize(item[key].toString(), { allowedTags: [] }) };
+    return { [key]: sanitize(item[key].toString(), { ALLOWED_TAGS: [] }) };
   };
 
   return {

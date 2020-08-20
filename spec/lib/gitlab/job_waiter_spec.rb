@@ -60,16 +60,14 @@ RSpec.describe Gitlab::JobWaiter do
         described_class.notify(waiter.key, 'a')
         described_class.notify(waiter.key, 'b')
 
-        result = nil
-        expect { Timeout.timeout(1) { result = waiter.wait(2) } }.not_to raise_error
+        expect { Timeout.timeout(1) { waiter.wait(2) } }.not_to raise_error
       end
 
       it 'increments job_waiter_started_total and job_waiter_timeouts_total when it times out' do
         expect(started_total).to receive(:increment).with(worker: 'Foo')
         expect(timeouts_total).to receive(:increment).with(worker: 'Foo')
 
-        result = nil
-        expect { Timeout.timeout(2) { result = waiter.wait(1) } }.not_to raise_error
+        expect { Timeout.timeout(2) { waiter.wait(1) } }.not_to raise_error
       end
     end
   end

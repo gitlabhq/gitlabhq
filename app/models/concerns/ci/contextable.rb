@@ -9,7 +9,7 @@ module Ci
     ##
     # Variables in the environment name scope.
     #
-    def scoped_variables(environment: expanded_environment_name)
+    def scoped_variables(environment: expanded_environment_name, dependencies: true)
       Gitlab::Ci::Variables::Collection.new.tap do |variables|
         variables.concat(predefined_variables)
         variables.concat(project.predefined_variables)
@@ -18,7 +18,7 @@ module Ci
         variables.concat(deployment_variables(environment: environment))
         variables.concat(yaml_variables)
         variables.concat(user_variables)
-        variables.concat(dependency_variables)
+        variables.concat(dependency_variables) if dependencies
         variables.concat(secret_instance_variables)
         variables.concat(secret_group_variables)
         variables.concat(secret_project_variables(environment: environment))
@@ -45,6 +45,12 @@ module Ci
       end
     end
 
+    def simple_variables_without_dependencies
+      strong_memoize(:variables_without_dependencies) do
+        scoped_variables(environment: nil, dependencies: false).to_runner_variables
+      end
+    end
+
     def user_variables
       Gitlab::Ci::Variables::Collection.new.tap do |variables|
         break variables if user.blank?
@@ -64,7 +70,7 @@ module Ci
         variables.append(key: 'CI_PIPELINE_TRIGGERED', value: 'true') if trigger_request
 
         variables.append(key: 'CI_NODE_INDEX', value: self.options[:instance].to_s) if self.options&.include?(:instance)
-        variables.append(key: 'CI_NODE_TOTAL', value: (self.options&.dig(:parallel) || 1).to_s)
+        variables.append(key: 'CI_NODE_TOTAL', value: ci_node_total_value.to_s)
 
         # legacy variables
         variables.append(key: 'CI_BUILD_NAME', value: name)
@@ -95,6 +101,14 @@ module Ci
 
     def secret_project_variables(environment: persisted_environment)
       project.ci_variables_for(ref: git_ref, environment: environment)
+    end
+
+    private
+
+    def ci_node_total_value
+      parallel = self.options&.dig(:parallel)
+      parallel = parallel.dig(:total) if parallel.is_a?(Hash)
+      parallel || 1
     end
   end
 end

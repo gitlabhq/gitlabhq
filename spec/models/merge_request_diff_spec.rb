@@ -103,6 +103,8 @@ RSpec.describe MergeRequestDiff do
 
       it 'ignores diffs with 0 files' do
         MergeRequestDiffFile.where(merge_request_diff_id: [closed_recently.id, merged_recently.id]).delete_all
+        closed_recently.update!(files_count: 0)
+        merged_recently.update!(files_count: 0)
 
         is_expected.to contain_exactly(outdated.id, latest.id, closed.id, merged.id)
       end
@@ -672,6 +674,12 @@ RSpec.describe MergeRequestDiff do
     end
   end
 
+  describe '#files_count' do
+    it 'returns number of diff files' do
+      expect(diff_with_commits.files_count).to eq(diff_with_commits.merge_request_diff_files.count)
+    end
+  end
+
   describe '#first_commit' do
     it 'returns first commit' do
       expect(diff_with_commits.first_commit.sha).to eq(diff_with_commits.merge_request_diff_commits.last.sha)
@@ -721,10 +729,12 @@ RSpec.describe MergeRequestDiff do
 
   describe '#modified_paths' do
     subject do
-      diff = create(:merge_request_diff)
-      create(:merge_request_diff_file, :new_file, merge_request_diff: diff)
-      create(:merge_request_diff_file, :renamed_file, merge_request_diff: diff)
-      diff
+      create(:merge_request_diff).tap do |diff|
+        create(:merge_request_diff_file, :new_file, merge_request_diff: diff)
+        create(:merge_request_diff_file, :renamed_file, merge_request_diff: diff)
+
+        diff.merge_request_diff_files.reset
+      end
     end
 
     it 'returns affected file paths' do
@@ -734,12 +744,6 @@ RSpec.describe MergeRequestDiff do
     context "when fallback_on_overflow is true" do
       let(:merge_request) { create(:merge_request, source_branch: 'feature', target_branch: 'master') }
       let(:diff) { merge_request.merge_request_diff }
-
-      # before do
-      #   # Temporarily unstub diff.modified_paths in favor of original code
-      #   #
-      #   allow(diff).to receive(:modified_paths).and_call_original
-      # end
 
       context "when the merge_request_diff is overflowed" do
         before do

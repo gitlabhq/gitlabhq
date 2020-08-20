@@ -3,10 +3,10 @@
 NOTE: **Note:**
 This documentation focuses only on how to **configure** a Jenkins *integration* with
 GitLab. Learn how to **migrate** from Jenkins to GitLab CI/CD in our
-[Migrating from Jenkins](../ci/jenkins/index.md) documentation.
+[Migrating from Jenkins](../ci/migration/jenkins.md) documentation.
 
 From GitLab, you can trigger a Jenkins build when you push code to a repository, or when a merge
-request is created. In return, Jenkins shows the pipeline status on merge requests widgets and
+request is created. In return, the Jenkins pipeline status is shown on merge requests widgets and
 on the GitLab project's home page.
 
 To better understand GitLab's Jenkins integration, watch the following video:
@@ -62,7 +62,7 @@ Grant a GitLab user access to the select GitLab projects.
 Create a personal access token to authorize Jenkins' access to GitLab.
 
 1. Log in to GitLab as the user to be used with Jenkins.
-1. Click your avatar, then **Settings.
+1. Click your avatar, then **Settings**.
 1. Click **Access Tokens** in the sidebar.
 1. Create a personal access token with the **API** scope checkbox checked. For more details, see
    [Personal access tokens](../user/profile/personal_access_tokens.md).
@@ -146,24 +146,6 @@ Configure the GitLab integration with Jenkins.
 1. Enter the **Username** and **Password** if your Jenkins server requires
    authentication.
 1. Click **Test settings and save changes**. GitLab tests the connection to Jenkins.
-
-## Plugin functional overview
-
-GitLab does not contain a database table listing commits. Commits are always
-read from the repository directly. Therefore, it's not possible to retain the
-build status of a commit in GitLab. This is overcome by requesting build
-information from the integrated CI tool. The CI tool is responsible for creating
-and storing build status for Commits and Merge Requests.
-
-### Steps required to implement a similar integration
-
-**Note:**
-All steps are implemented using AJAX requests on the merge request page.
-
-1. In order to display the build status in a merge request you must create a project service in GitLab.
-1. Your project service will do a (JSON) query to a URL of the CI tool with the SHA1 of the commit.
-1. The project service builds this URL and payload based on project service settings and knowledge of the CI tool.
-1. The response is parsed to give a response in GitLab (success/failed/pending).
 
 ## Troubleshooting
 

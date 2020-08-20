@@ -471,6 +471,7 @@ RSpec.describe Note do
           note: "added label #{private_label.to_reference(ext_proj)}",
           system: true
       end
+
       let!(:system_note_metadata) { create(:system_note_metadata, note: note, action: :label) }
 
       it_behaves_like "checks references"
@@ -1372,10 +1373,10 @@ RSpec.describe Note do
   describe 'banzai_render_context' do
     let(:project) { build(:project_empty_repo) }
 
+    subject(:context) { noteable.banzai_render_context(:title) }
+
     context 'when noteable is a merge request' do
       let(:noteable) { build :merge_request, target_project: project, source_project: project }
-
-      subject(:context) { noteable.banzai_render_context(:title) }
 
       it 'sets the label_url_method in the context' do
         expect(context[:label_url_method]).to eq(:project_merge_requests_url)
@@ -1385,11 +1386,34 @@ RSpec.describe Note do
     context 'when noteable is an issue' do
       let(:noteable) { build :issue, project: project }
 
-      subject(:context) { noteable.banzai_render_context(:title) }
-
       it 'sets the label_url_method in the context' do
         expect(context[:label_url_method]).to eq(:project_issues_url)
       end
+    end
+
+    context 'when noteable is a personal snippet' do
+      let(:noteable) { build(:personal_snippet) }
+
+      it 'sets the parent user in the context' do
+        expect(context[:user]).to eq(noteable.author)
+      end
+    end
+  end
+
+  describe '#parent_user' do
+    it 'returns the author of a personal snippet' do
+      note = build(:note_on_personal_snippet)
+      expect(note.parent_user).to eq(note.noteable.author)
+    end
+
+    it 'returns nil for project snippet' do
+      note = build(:note_on_project_snippet)
+      expect(note.parent_user).to be_nil
+    end
+
+    it 'returns nil when noteable is not a snippet' do
+      note = build(:note_on_issue)
+      expect(note.parent_user).to be_nil
     end
   end
 end

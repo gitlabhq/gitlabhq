@@ -14,7 +14,7 @@
   = _('Pages Domain')
 = render 'projects/pages_domains/helper_text'
 %div
-  = form_for [@project.namespace.becomes(Namespace), @project, domain_presenter], html: { class: 'fieldset-form' } do |f|
+  = form_for [@project, domain_presenter], html: { class: 'fieldset-form' } do |f|
     = render 'form', { f: f }
     .form-actions.d-flex.justify-content-between
       = f.submit _('Save Changes'), class: "btn btn-success"

@@ -73,8 +73,7 @@ module Ci
       return unless has_environment?
 
       strong_memoize(:persisted_environment) do
-        deployment&.environment ||
-          Environment.find_by(name: expanded_environment_name, project: project)
+        Environment.find_by(name: expanded_environment_name, project: project)
       end
     end
 
@@ -351,7 +350,7 @@ module Ci
       after_transition any => [:failed] do |build|
         next unless build.project
 
-        if build.retry_failure?
+        if build.auto_retry_allowed?
           begin
             Ci::Build.retry(build, build.user)
           rescue Gitlab::Access::AccessDeniedError => ex
@@ -371,6 +370,10 @@ module Ci
       after_transition any => [:skipped, :canceled] do |build|
         build.deployment&.cancel
       end
+    end
+
+    def auto_retry_allowed?
+      auto_retry.allowed?
     end
 
     def detailed_status(current_user)
@@ -439,27 +442,6 @@ module Ci
       pipeline.builds.retried.where(name: self.name).count
     end
 
-    def retry_failure?
-      max_allowed_retries = nil
-      max_allowed_retries ||= options_retry_max if retry_on_reason_or_always?
-      max_allowed_retries ||= DEFAULT_RETRIES.fetch(failure_reason.to_sym, 0)
-
-      max_allowed_retries > 0 && retries_count < max_allowed_retries
-    end
-
-    def options_retry_max
-      options_retry[:max]
-    end
-
-    def options_retry_when
-      options_retry.fetch(:when, ['always'])
-    end
-
-    def retry_on_reason_or_always?
-      options_retry_when.include?(failure_reason.to_s) ||
-        options_retry_when.include?('always')
-    end
-
     def any_unmet_prerequisites?
       prerequisites.present?
     end
@@ -474,8 +456,7 @@ module Ci
       strong_memoize(:expanded_environment_name) do
         # We're using a persisted expanded environment name in order to avoid
         # variable expansion per request.
-        if Feature.enabled?(:ci_persisted_expanded_environment_name, project, default_enabled: true) &&
-          metadata&.expanded_environment_name.present?
+        if metadata&.expanded_environment_name.present?
           metadata.expanded_environment_name
         else
           ExpandVariables.expand(environment, -> { simple_variables })
@@ -543,8 +524,6 @@ module Ci
       end
     end
 
-    CI_REGISTRY_USER = 'gitlab-ci-token'
-
     def persisted_variables
       Gitlab::Ci::Variables::Collection.new.tap do |variables|
         break variables unless persisted?
@@ -556,7 +535,7 @@ module Ci
           .append(key: 'CI_JOB_TOKEN', value: token.to_s, public: false, masked: true)
           .append(key: 'CI_BUILD_ID', value: id.to_s)
           .append(key: 'CI_BUILD_TOKEN', value: token.to_s, public: false, masked: true)
-          .append(key: 'CI_REGISTRY_USER', value: CI_REGISTRY_USER)
+          .append(key: 'CI_REGISTRY_USER', value: ::Gitlab::Auth::CI_JOB_USER)
           .append(key: 'CI_REGISTRY_PASSWORD', value: token.to_s, public: false, masked: true)
           .append(key: 'CI_REPOSITORY_URL', value: repo_url.to_s, public: false)
           .concat(deploy_token_variables)
@@ -615,7 +594,7 @@ module Ci
     def repo_url
       return unless token
 
-      auth = "gitlab-ci-token:#{token}@"
+      auth = "#{::Gitlab::Auth::CI_JOB_USER}:#{token}@"
       project.http_url_to_repo.sub(%r{^https?://}) do |prefix|
         prefix + auth
       end
@@ -666,6 +645,13 @@ module Ci
 
     def artifacts?
       !artifacts_expired? && artifacts_file&.exists?
+    end
+
+    # This method is similar to #artifacts? but it includes the artifacts
+    # locking mechanics. A new method was created to prevent breaking existing
+    # behavior and avoid introducing N+1s.
+    def available_artifacts?
+      (!artifacts_expired? || pipeline.artifacts_locked?) && job_artifacts_archive&.exists?
     end
 
     def artifacts_metadata?
@@ -878,8 +864,7 @@ module Ci
     end
 
     def multi_build_steps?
-      options.dig(:release)&.any? &&
-        Gitlab::Ci::Features.release_generation_enabled?
+      options.dig(:release)&.any?
     end
 
     def hide_secrets(trace)
@@ -962,6 +947,12 @@ module Ci
 
     private
 
+    def auto_retry
+      strong_memoize(:auto_retry) do
+        Gitlab::Ci::Build::AutoRetry.new(self)
+      end
+    end
+
     def dependencies
       strong_memoize(:dependencies) do
         Ci::BuildDependencies.new(self)
@@ -1014,19 +1005,6 @@ module Ci
         if has_environment? && merge_request
           EnvironmentStatus.new(project, persisted_environment, merge_request, pipeline.sha)
         end
-      end
-    end
-
-    # The format of the retry option changed in GitLab 11.5: Before it was
-    # integer only, after it is a hash. New builds are created with the new
-    # format, but builds created before GitLab 11.5 and saved in database still
-    # have the old integer only format. This method returns the retry option
-    # normalized as a hash in 11.5+ format.
-    def options_retry
-      strong_memoize(:options_retry) do
-        value = options&.dig(:retry)
-        value = value.is_a?(Integer) ? { max: value } : value.to_h
-        value.with_indifferent_access
       end
     end
 

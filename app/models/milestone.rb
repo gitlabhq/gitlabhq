@@ -127,7 +127,7 @@ class Milestone < ApplicationRecord
   end
 
   def can_be_closed?
-    active? && issues.opened.count.zero?
+    active? && issues.opened.count == 0
   end
 
   def author_id

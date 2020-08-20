@@ -1,3 +1,9 @@
+---
+stage: Package
+group: Package
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # Monorepo package management workflows
 
 Oftentimes, one project or Git repository may contain multiple different
@@ -76,44 +82,39 @@ Using the example project above, this `gitlab-ci.yml` file will publish
 and publish `MyPackage` anytime changes are made to anywhere _except_ the `Foo`
 directory on the `master` branch.
 
-```shell
+```yaml
+image: node:latest
+
 stages:
   - build
 
-.default-rule: &default-rule
-  if: '$CI_MERGE_REQUEST_IID || $CI_COMMIT_REF_SLUG == "master"'
-
-.foo-package:
+build-foo-package:
+  stage: build
   variables:
     PACKAGE: "Foo"
-  before_script:
+  script:
     - cd src/components/Foo
+    - echo "Building $PACKAGE"
+    - npm publish
   only:
+    refs:
+      - master
+      - merge_requests
     changes:
       - "src/components/Foo/**/*"
 
-.parent-package:
+build-my-project-package:
+  stage: build
   variables:
     PACKAGE: "MyPackage"
-  except:
-    changes:
-      - "src/components/Foo/**/*"
-
-.build-package:
-  stage: build
   script:
     - echo "Building $PACKAGE"
     - npm publish
-  rules:
-    - <<: *default-rule
-
-build-foo-package:
-  extends:
-    - .build-package
-    - .foo-package
-
-build-my-project-package:
-  extends:
-    - .build-package
-    - .parent-package
+  only:
+    refs:
+      - master
+      - merge_requests
+  except:
+    changes:
+      - "src/components/Foo/**/*"
 ```

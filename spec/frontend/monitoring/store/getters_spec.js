@@ -11,36 +11,35 @@ import {
   storeVariables,
   mockLinks,
 } from '../mock_data';
-import {
-  metricsDashboardPayload,
-  metricResultStatus,
-  metricResultPods,
-  metricResultEmpty,
-} from '../fixture_data';
+import { metricsDashboardPayload } from '../fixture_data';
 
 describe('Monitoring store Getters', () => {
+  let state;
+
+  const getMetric = ({ group = 0, panel = 0, metric = 0 } = {}) =>
+    state.dashboard.panelGroups[group].panels[panel].metrics[metric];
+
+  const setMetricSuccess = ({ group, panel, metric, result = metricsResult } = {}) => {
+    const { metricId } = getMetric({ group, panel, metric });
+    mutations[types.RECEIVE_METRIC_RESULT_SUCCESS](state, {
+      metricId,
+      data: {
+        resultType: 'matrix',
+        result,
+      },
+    });
+  };
+
+  const setMetricFailure = ({ group, panel, metric } = {}) => {
+    const { metricId } = getMetric({ group, panel, metric });
+    mutations[types.RECEIVE_METRIC_RESULT_FAILURE](state, {
+      metricId,
+    });
+  };
+
   describe('getMetricStates', () => {
     let setupState;
-    let state;
     let getMetricStates;
-
-    const setMetricSuccess = ({ result = metricsResult, group = 0, panel = 0, metric = 0 }) => {
-      const { metricId } = state.dashboard.panelGroups[group].panels[panel].metrics[metric];
-      mutations[types.RECEIVE_METRIC_RESULT_SUCCESS](state, {
-        metricId,
-        data: {
-          resultType: 'matrix',
-          result,
-        },
-      });
-    };
-
-    const setMetricFailure = ({ group = 0, panel = 0, metric = 0 }) => {
-      const { metricId } = state.dashboard.panelGroups[group].panels[panel].metrics[metric];
-      mutations[types.RECEIVE_METRIC_RESULT_FAILURE](state, {
-        metricId,
-      });
-    };
 
     beforeEach(() => {
       setupState = (initState = {}) => {
@@ -81,7 +80,7 @@ describe('Monitoring store Getters', () => {
 
       it('on an empty metric with no result, returns NO_DATA', () => {
         mutations[types.RECEIVE_METRICS_DASHBOARD_SUCCESS](state, metricsDashboardPayload);
-        setMetricSuccess({ result: [], group: 2 });
+        setMetricSuccess({ group: 2, result: [] });
 
         expect(getMetricStates()).toEqual([metricStates.NO_DATA]);
       });
@@ -147,7 +146,6 @@ describe('Monitoring store Getters', () => {
   describe('metricsWithData', () => {
     let metricsWithData;
     let setupState;
-    let state;
 
     beforeEach(() => {
       setupState = (initState = {}) => {
@@ -191,35 +189,39 @@ describe('Monitoring store Getters', () => {
 
       it('an empty metric, returns empty', () => {
         mutations[types.RECEIVE_METRICS_DASHBOARD_SUCCESS](state, metricsDashboardPayload);
-        mutations[types.RECEIVE_METRIC_RESULT_SUCCESS](state, metricResultEmpty);
+        setMetricSuccess({ result: [] });
 
         expect(metricsWithData()).toEqual([]);
       });
 
       it('a metric with results, it returns a metric', () => {
         mutations[types.RECEIVE_METRICS_DASHBOARD_SUCCESS](state, metricsDashboardPayload);
-        mutations[types.RECEIVE_METRIC_RESULT_SUCCESS](state, metricResultStatus);
+        setMetricSuccess();
 
-        expect(metricsWithData()).toEqual([metricResultStatus.metricId]);
+        expect(metricsWithData()).toEqual([getMetric().metricId]);
       });
 
       it('multiple metrics with results, it return multiple metrics', () => {
         mutations[types.RECEIVE_METRICS_DASHBOARD_SUCCESS](state, metricsDashboardPayload);
-        mutations[types.RECEIVE_METRIC_RESULT_SUCCESS](state, metricResultStatus);
-        mutations[types.RECEIVE_METRIC_RESULT_SUCCESS](state, metricResultPods);
+        setMetricSuccess({ panel: 0 });
+        setMetricSuccess({ panel: 1 });
 
-        expect(metricsWithData()).toEqual([metricResultStatus.metricId, metricResultPods.metricId]);
+        expect(metricsWithData()).toEqual([
+          getMetric({ panel: 0 }).metricId,
+          getMetric({ panel: 1 }).metricId,
+        ]);
       });
 
       it('multiple metrics with results, it returns metrics filtered by group', () => {
         mutations[types.RECEIVE_METRICS_DASHBOARD_SUCCESS](state, metricsDashboardPayload);
-        mutations[types.RECEIVE_METRIC_RESULT_SUCCESS](state, metricResultStatus);
-        mutations[types.RECEIVE_METRIC_RESULT_SUCCESS](state, metricResultPods);
+
+        setMetricSuccess({ group: 1 });
+        setMetricSuccess({ group: 1, panel: 1 });
 
         // First group has metrics
         expect(metricsWithData(state.dashboard.panelGroups[1].key)).toEqual([
-          metricResultStatus.metricId,
-          metricResultPods.metricId,
+          getMetric({ group: 1 }).metricId,
+          getMetric({ group: 1, panel: 1 }).metricId,
         ]);
 
         // Second group has no metrics
@@ -229,7 +231,6 @@ describe('Monitoring store Getters', () => {
   });
 
   describe('filteredEnvironments', () => {
-    let state;
     const setupState = (initState = {}) => {
       state = {
         ...state,
@@ -284,7 +285,6 @@ describe('Monitoring store Getters', () => {
 
   describe('metricsSavedToDb', () => {
     let metricsSavedToDb;
-    let state;
     let mockData;
 
     beforeEach(() => {
@@ -335,8 +335,6 @@ describe('Monitoring store Getters', () => {
   });
 
   describe('getCustomVariablesParams', () => {
-    let state;
-
     beforeEach(() => {
       state = {
         variables: {},
@@ -367,58 +365,65 @@ describe('Monitoring store Getters', () => {
 
   describe('selectedDashboard', () => {
     const { selectedDashboard } = getters;
-    const localGetters = state => ({
-      fullDashboardPath: getters.fullDashboardPath(state),
+    const localGetters = localState => ({
+      fullDashboardPath: getters.fullDashboardPath(localState),
     });
 
     it('returns a dashboard', () => {
-      const state = {
+      const localState = {
         allDashboards: dashboardGitResponse,
         currentDashboard: dashboardGitResponse[0].path,
         customDashboardBasePath,
       };
-      expect(selectedDashboard(state, localGetters(state))).toEqual(dashboardGitResponse[0]);
+      expect(selectedDashboard(localState, localGetters(localState))).toEqual(
+        dashboardGitResponse[0],
+      );
     });
 
-    it('returns a non-default dashboard', () => {
-      const state = {
+    it('returns a dashboard different from the overview dashboard', () => {
+      const localState = {
         allDashboards: dashboardGitResponse,
         currentDashboard: dashboardGitResponse[1].path,
         customDashboardBasePath,
       };
-      expect(selectedDashboard(state, localGetters(state))).toEqual(dashboardGitResponse[1]);
+      expect(selectedDashboard(localState, localGetters(localState))).toEqual(
+        dashboardGitResponse[1],
+      );
     });
 
-    it('returns a default dashboard when no dashboard is selected', () => {
-      const state = {
+    it('returns the overview dashboard when no dashboard is selected', () => {
+      const localState = {
         allDashboards: dashboardGitResponse,
         currentDashboard: null,
         customDashboardBasePath,
       };
-      expect(selectedDashboard(state, localGetters(state))).toEqual(dashboardGitResponse[0]);
+      expect(selectedDashboard(localState, localGetters(localState))).toEqual(
+        dashboardGitResponse[0],
+      );
     });
 
-    it('returns a default dashboard when dashboard cannot be found', () => {
-      const state = {
+    it('returns the overview dashboard when dashboard cannot be found', () => {
+      const localState = {
         allDashboards: dashboardGitResponse,
         currentDashboard: 'wrong_path',
         customDashboardBasePath,
       };
-      expect(selectedDashboard(state, localGetters(state))).toEqual(dashboardGitResponse[0]);
+      expect(selectedDashboard(localState, localGetters(localState))).toEqual(
+        dashboardGitResponse[0],
+      );
     });
 
     it('returns null when no dashboards are present', () => {
-      const state = {
+      const localState = {
         allDashboards: [],
         currentDashboard: dashboardGitResponse[0].path,
         customDashboardBasePath,
       };
-      expect(selectedDashboard(state, localGetters(state))).toEqual(null);
+      expect(selectedDashboard(localState, localGetters(localState))).toEqual(null);
     });
   });
 
   describe('linksWithMetadata', () => {
-    let state;
     const setupState = (initState = {}) => {
       state = {
         ...state,

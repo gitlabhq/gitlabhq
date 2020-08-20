@@ -2,13 +2,9 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Issues > User sees empty state' do
+RSpec.describe 'Issues > User sees empty state', :js do
   let_it_be(:project) { create(:project, :public) }
   let_it_be(:user) { project.creator }
-
-  before do
-    stub_feature_flags(vue_issuables_list: false)
-  end
 
   shared_examples_for 'empty state with filters' do
     it 'user sees empty state with filters' do

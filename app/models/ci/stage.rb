@@ -113,7 +113,7 @@ module Ci
     end
 
     def has_warnings?
-      number_of_warnings.positive?
+      number_of_warnings > 0
     end
 
     def number_of_warnings
@@ -138,7 +138,7 @@ module Ci
     end
 
     def latest_stage_status
-      statuses.latest.slow_composite_status(project: project) || 'skipped'
+      statuses.latest.composite_status || 'skipped'
     end
   end
 end

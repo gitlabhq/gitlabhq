@@ -54,7 +54,7 @@ module Gitlab
           end
 
           def execution_expired?
-            return false if execution_deadline.zero?
+            return false if execution_deadline == 0
 
             current_monotonic_time > execution_deadline
           end

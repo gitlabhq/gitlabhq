@@ -30,6 +30,10 @@ FactoryBot.define do
       association :root_storage_statistics, factory: :namespace_root_storage_statistics
     end
 
+    trait :with_namespace_settings do
+      association :namespace_settings, factory: :namespace_settings
+    end
+
     # Construct a hierarchy underneath the namespace.
     # Each namespace will have `children` amount of children,
     # and `depth` levels of descendants.

@@ -50,8 +50,10 @@ module API
         optional :ref,         type: String, desc: 'The commit sha or branch name'
         optional :assets, type: Hash do
           optional :links, type: Array do
-            requires :name, type: String
-            requires :url, type: String
+            requires :name, type: String, desc: 'The name of the link'
+            requires :url, type: String, desc: 'The URL of the link'
+            optional :filepath, type: String, desc: 'The filepath of the link'
+            optional :link_type, type: String, desc: 'The link type, one of: "runbook", "image", "package" or "other"'
           end
         end
         optional :milestones, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, desc: 'The titles of the related milestones', default: []

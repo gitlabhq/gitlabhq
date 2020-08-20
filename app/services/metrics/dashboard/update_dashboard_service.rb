@@ -7,7 +7,7 @@ module Metrics
       include Stepable
 
       ALLOWED_FILE_TYPE = '.yml'
-      USER_DASHBOARDS_DIR = ::Metrics::Dashboard::CustomDashboardService::DASHBOARD_ROOT
+      USER_DASHBOARDS_DIR = ::Gitlab::Metrics::Dashboard::RepoDashboardFinder::DASHBOARD_ROOT
 
       steps :check_push_authorized,
         :check_branch_name,
@@ -68,7 +68,7 @@ module Metrics
       end
 
       def push_authorized?
-        Gitlab::UserAccess.new(current_user, project: project).can_push_to_branch?(branch)
+        Gitlab::UserAccess.new(current_user, container: project).can_push_to_branch?(branch)
       end
 
       def valid_branch_name?

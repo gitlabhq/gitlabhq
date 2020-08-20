@@ -1,51 +1,21 @@
 # GitLab Docs monthly release process
 
-The [`dockerfiles` directory](https://gitlab.com/gitlab-org/gitlab-docs/blob/master/dockerfiles/)
-contains all needed Dockerfiles to build and deploy the versioned website. It
-is heavily inspired by Docker's
-[Dockerfile](https://github.com/docker/docker.github.io/blob/06ed03db13895bfe867761b6fc2ad40acf6026dd/Dockerfile).
-
-The following Dockerfiles are used.
-
-| Dockerfile | Docker image | Description |
-| ---------- | ------------ | ----------- |
-| [`Dockerfile.bootstrap`](https://gitlab.com/gitlab-org/gitlab-docs/blob/master/dockerfiles/Dockerfile.bootstrap) | `gitlab-docs:bootstrap` | Contains all the dependencies that are needed to build the website. If the gems are updated and `Gemfile{,.lock}` changes, the image must be rebuilt. |
-| [`Dockerfile.builder.onbuild`](https://gitlab.com/gitlab-org/gitlab-docs/blob/master/dockerfiles/Dockerfile.builder.onbuild) | `gitlab-docs:builder-onbuild` | Base image to build the docs website. It uses `ONBUILD` to perform all steps and depends on `gitlab-docs:bootstrap`. |
-| [`Dockerfile.nginx.onbuild`](https://gitlab.com/gitlab-org/gitlab-docs/blob/master/dockerfiles/Dockerfile.nginx.onbuild) | `gitlab-docs:nginx-onbuild` | Base image to use for building documentation archives. It uses `ONBUILD` to perform all required steps to copy the archive, and relies upon its parent `Dockerfile.builder.onbuild` that is invoked when building single documentation archives (see the `Dockerfile` of each branch. |
-| [`Dockerfile.archives`](https://gitlab.com/gitlab-org/gitlab-docs/blob/master/dockerfiles/Dockerfile.archives) | `gitlab-docs:archives` | Contains all the versions of the website in one archive. It copies all generated HTML files from every version in one location. |
-
-## How to build the images
-
-Although build images are built automatically via GitLab CI/CD, you can build
-and tag all tooling images locally:
-
-1. Make sure you have [Docker installed](https://docs.docker.com/install/).
-1. Make sure you're in the `dockerfiles/` directory of the `gitlab-docs` repository.
-1. Build the images:
-
-   ```shell
-   docker build -t registry.gitlab.com/gitlab-org/gitlab-docs:bootstrap -f Dockerfile.bootstrap ../
-   docker build -t registry.gitlab.com/gitlab-org/gitlab-docs:builder-onbuild -f Dockerfile.builder.onbuild ../
-   docker build -t registry.gitlab.com/gitlab-org/gitlab-docs:nginx-onbuild -f Dockerfile.nginx.onbuild ../
-   ```
-
-For each image, there's a manual job under the `images` stage in
-[`.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab-docs/blob/master/.gitlab-ci.yml) which can be invoked at will.
-
-## Monthly release process
-
 When a new GitLab version is released on the 22nd, we need to create the respective
 single Docker image, and update some files so that the dropdown works correctly.
 
-### 1. Add the chart version
+## 1. Add the chart version
 
 Since the charts use a different version number than all the other GitLab
 products, we need to add a
 [version mapping](https://docs.gitlab.com/charts/installation/version_mappings.html):
 
-1. Check that there is a [stable branch created](https://gitlab.com/gitlab-org/charts/gitlab/-/branches)
-   for the new chart version. If you're unsure or can't find it, drop a line in
-   the `#g_delivery` channel.
+NOTE: **Note:**
+The charts stable branch is not created automatically like the other products.
+There's an [issue to track this](https://gitlab.com/gitlab-org/charts/gitlab/-/issues/1442).
+It is usually created on the 21st or the 22nd.
+
+To add a new charts version:
+
 1. Make sure you're in the root path of the `gitlab-docs` repository.
 1. Open `content/_data/chart_versions.yaml` and add the new stable branch version using the
    version mapping. Note that only the `major.minor` version is needed.
@@ -56,7 +26,7 @@ It can be handy to create the future mappings since they are pretty much known.
 In that case, when a new GitLab version is released, you don't have to repeat
 this first step.
 
-### 2. Create an image for a single version
+## 2. Create an image for a single version
 
 The single docs version must be created before the release merge request, but
 this needs to happen when the stable branches for all products have been created.
@@ -89,7 +59,7 @@ docker run -it --rm -p 4000:4000 docs:12.0
 
 Visit `http://localhost:4000/12.0/` to see if everything works correctly.
 
-### 3. Create the release merge request
+## 3. Create the release merge request
 
 NOTE: **Note:**
 To be [automated](https://gitlab.com/gitlab-org/gitlab-docs/-/issues/750).
@@ -135,7 +105,7 @@ version and rotates the old one:
    git push origin release-12-0
    ```
 
-### 4. Update the dropdown for all online versions
+## 4. Update the dropdown for all online versions
 
 The versions dropdown is in a way "hardcoded". When the site is built, it looks
 at the contents of `content/_data/versions.yaml` and based on that, the dropdown
@@ -144,14 +114,18 @@ dropdown will list one or more releases behind. Remember that the new changes of
 the dropdown are included in the unmerged `release-X-Y` branch.
 
 The content of `content/_data/versions.yaml` needs to change for all online
-versions:
+versions (stable branches `X.Y` of the `gitlab-docs` project):
 
 1. Run the Rake task that will create all the respective merge requests needed to
    update the dropdowns and will be set to automatically be merged when their
-   pipelines succeed. The `release-X-Y` branch needs to be present locally,
-   and you need to have switched to it, otherwise the Rake task will fail:
+   pipelines succeed:
+
+   NOTE: **Note:**
+   The `release-X-Y` branch needs to be present locally,
+   and you need to have switched to it, otherwise the Rake task will fail.
 
    ```shell
+   git checkout release-X-Y
    ./bin/rake release:dropdowns
    ```
 
@@ -162,45 +136,21 @@ versions:
 TIP: **Tip:**
 In case a pipeline fails, see [troubleshooting](#troubleshooting).
 
-### 5. Merge the release merge request
+## 5. Merge the release merge request
 
 The dropdown merge requests should have now been merged into their respective
-version (stable branch), which will trigger another pipeline. At this point,
+version (stable `X.Y` branch), which will trigger another pipeline. At this point,
 you need to only babysit the pipelines and make sure they don't fail:
 
-1. Check the pipelines page: `https://gitlab.com/gitlab-org/gitlab-docs/pipelines`
+1. Check the [pipelines page](https://gitlab.com/gitlab-org/gitlab-docs/pipelines)
    and make sure all stable branches have green pipelines.
 1. After all the pipelines of the online versions succeed, merge the release merge request.
-1. Finally, from `https://gitlab.com/gitlab-org/gitlab-docs/pipeline_schedules` run
-   the `Build docker images weekly` pipeline that will build the `:latest` and `:archives` Docker images.
+1. Finally, run the
+   [`Build docker images weekly` pipeline](https://gitlab.com/gitlab-org/gitlab-docs/pipeline_schedules)
+   that will build the `:latest` and `:archives` Docker images.
 
 Once the scheduled pipeline succeeds, the docs site will be deployed with all
 new versions online.
-
-## Update an old Docker image with new upstream docs content
-
-If there are any changes to any of the stable branches of the products that are
-not included in the single Docker image, just rerun the pipeline (`https://gitlab.com/gitlab-org/gitlab-docs/pipelines/new`)
-for the version in question.
-
-## Porting new website changes to old versions
-
-CAUTION: **Warning:**
-Porting changes to older branches can have unintended effects as we're constantly
-changing the backend of the website. Use only when you know what you're doing
-and make sure to test locally.
-
-The website will keep changing and being improved. In order to consolidate
-those changes to the stable branches, we'd need to pick certain changes
-from time to time.
-
-If this is not possible or there are many changes, merge master into them:
-
-```shell
-git branch 12.0
-git fetch origin master
-git merge origin/master
-```
 
 ## Troubleshooting
 

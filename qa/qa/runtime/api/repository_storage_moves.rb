@@ -10,16 +10,24 @@ module QA
         RepositoryStorageMovesError = Class.new(RuntimeError)
 
         def has_status?(project, status, destination_storage = Env.additional_repository_storage)
-          all.any? do |move|
-            move[:project][:path_with_namespace] == project.path_with_namespace &&
+          find_any do |move|
+            next unless move[:project][:path_with_namespace] == project.path_with_namespace
+
+            QA::Runtime::Logger.debug("Move data: #{move}")
+
             move[:state] == status &&
             move[:destination_storage_name] == destination_storage
           end
         end
 
-        def all
+        def find_any
           Logger.debug('Getting repository storage moves')
-          parse_body(get(Request.new(api_client, '/project_repository_storage_moves').url))
+
+          Support::Waiter.wait_until do
+            with_paginated_response_body(Request.new(api_client, '/project_repository_storage_moves', per_page: '100').url) do |page|
+              break true if page.any? { |item| yield item }
+            end
+          end
         end
 
         private

@@ -13,6 +13,7 @@ RSpec.describe BlobViewer::RouteMap do
         public: 'team/'
     MAP
   end
+
   let(:blob) { fake_blob(path: '.gitlab/route-map.yml', data: data) }
 
   subject { described_class.new(blob) }

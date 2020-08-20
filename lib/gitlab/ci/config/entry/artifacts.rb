@@ -42,7 +42,7 @@ module Gitlab
                 inclusion: { in: %w[on_success on_failure always],
                              message: 'should be on_success, on_failure ' \
                                       'or always' }
-              validates :expire_in, duration: true
+              validates :expire_in, duration: { parser: ::Gitlab::Ci::Build::Artifacts::ExpireInParser }
             end
           end
 

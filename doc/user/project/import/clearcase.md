@@ -27,7 +27,7 @@ The following table illustrates the main differences between ClearCase and Git:
 | Server | UNIX, Windows legacy systems | UNIX, macOS |
 | License | Proprietary | GPL |
 
-_Taken from the slides [ClearCase and the journey to Git](https://www.open.collab.net/media/pdfs/ClearCase-and-the-journey-to-Git.pdf) provided by collab.net_
+_Taken from the slides [ClearCase and the journey to Git](https://docplayer.net/42708453-Clearcase-the-journey-to-git-migrating-your-skills-and-vobs-to-git.html) provided by [collab.net](https://www.collab.net/)_
 
 ## Why migrate
 
@@ -47,7 +47,7 @@ While there doesn't exist a tool to fully migrate from ClearCase to Git, here
 are some useful links to get you started:
 
 - [Bridge for Git and ClearCase](https://github.com/charleso/git-cc)
-- [Slides "ClearCase and the journey to Git"](https://www.open.collab.net/media/pdfs/ClearCase-and-the-journey-to-Git.pdf)
+- [Slides "ClearCase and the journey to Git"](https://docplayer.net/42708453-Clearcase-the-journey-to-git-migrating-your-skills-and-vobs-to-git.html)
 - [ClearCase to Git](https://therub.org/2013/07/19/clearcase-to-git/)
 - [Dual syncing ClearCase to Git](https://therub.org/2013/10/22/dual-syncing-clearcase-and-git/)
 - [Moving to Git from ClearCase](https://sateeshkumarb.wordpress.com/2011/01/15/moving-to-git-from-clearcase/)

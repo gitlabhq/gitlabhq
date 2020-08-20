@@ -1,4 +1,7 @@
-export const BASE_DASHBOARD_PAGE = 'dashboard';
-export const CUSTOM_DASHBOARD_PAGE = 'custom_dashboard';
+export const DASHBOARD_PAGE = 'dashboard';
+export const PANEL_NEW_PAGE = 'panel_new';
 
-export default {};
+export default {
+  DASHBOARD_PAGE,
+  PANEL_NEW_PAGE,
+};

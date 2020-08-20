@@ -191,7 +191,7 @@ RSpec.describe Gitlab::TreeSummary do
 
     with_them do
       before do
-        create_file('dummy', path: 'other') if num_entries.zero?
+        create_file('dummy', path: 'other') if num_entries == 0
         1.upto(num_entries) { |n| create_file(n, path: path) }
       end
 
@@ -218,7 +218,7 @@ RSpec.describe Gitlab::TreeSummary do
 
     with_them do
       before do
-        create_file('dummy', path: 'other') if num_entries.zero?
+        create_file('dummy', path: 'other') if num_entries == 0
         1.upto(num_entries) { |n| create_file(n, path: path) }
       end
 

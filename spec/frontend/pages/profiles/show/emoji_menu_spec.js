@@ -55,7 +55,7 @@ describe('EmojiMenu', () => {
       });
     });
 
-    it('does not make an axios requst', done => {
+    it('does not make an axios request', done => {
       jest.spyOn(axios, 'request').mockReturnValue();
 
       emojiMenu.addAward(dummyVotesBlock(), dummyAwardUrl, dummyEmoji, false, () => {

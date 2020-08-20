@@ -14,6 +14,7 @@ RSpec.describe Gitlab::JiraImport::MetadataCollector do
     let(:parent_field) do
       { 'key' => 'FOO-2', 'id' => '1050', 'fields' => { 'summary' => 'parent issue FOO' } }
     end
+
     let(:issue_type_field) { { 'name' => 'Task' } }
     let(:fix_versions_field) { [{ 'name' => '1.0' }, { 'name' => '1.1' }] }
     let(:priority_field) { { 'name' => 'Medium' } }
@@ -30,6 +31,7 @@ RSpec.describe Gitlab::JiraImport::MetadataCollector do
         'duedate' => duedate_field
       }
     end
+
     let(:jira_issue) do
       double(
         id: '1234',

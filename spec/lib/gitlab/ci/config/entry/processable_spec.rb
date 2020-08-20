@@ -230,6 +230,12 @@ RSpec.describe Gitlab::Ci::Config::Entry::Processable do
       end
     end
 
+    shared_examples 'has no warnings' do
+      it 'does not raise the warning' do
+        expect(entry.warnings).to be_empty
+      end
+    end
+
     context 'when workflow rules is used' do
       let(:workflow) { double('workflow', 'has_rules?' => true) }
 
@@ -251,6 +257,86 @@ RSpec.describe Gitlab::Ci::Config::Entry::Processable do
         it 'keeps only entry' do
           expect(entry).to be_only_defined
         end
+      end
+    end
+
+    context 'when workflow rules is not used' do
+      let(:workflow) { double('workflow', 'has_rules?' => false) }
+      let(:feature_flag_value) { true }
+
+      before do
+        stub_feature_flags(ci_raise_job_rules_without_workflow_rules_warning: feature_flag_value)
+        entry.compose!(deps)
+      end
+
+      context 'when rules are valid' do
+        let(:config) do
+          {
+            script: 'ls',
+            rules: [
+              { if: '$CI_COMMIT_BRANCH', when: 'on_success' },
+              last_rule
+            ]
+          }
+        end
+
+        context 'when last rule contains only `when`' do
+          let(:last_rule) { { when: when_value } }
+
+          context 'and its value is not `never`' do
+            let(:when_value) { 'on_success' }
+
+            it 'raises a warning' do
+              expect(entry.warnings).to contain_exactly(/may allow multiple pipelines/)
+            end
+
+            context 'when feature flag is disabled' do
+              let(:feature_flag_value) { false }
+
+              it_behaves_like 'has no warnings'
+            end
+          end
+
+          context 'and its value is `never`' do
+            let(:when_value) { 'never' }
+
+            it_behaves_like 'has no warnings'
+          end
+        end
+
+        context 'when last rule does not contain only `when`' do
+          let(:last_rule) { { if: '$CI_MERGE_REQUEST_ID', when: 'always' } }
+
+          it_behaves_like 'has no warnings'
+        end
+      end
+
+      context 'when rules are invalid' do
+        let(:config) { { script: 'ls', rules: { when: 'always' } } }
+
+        it_behaves_like 'has no warnings'
+      end
+    end
+
+    context 'when workflow rules is used' do
+      let(:workflow) { double('workflow', 'has_rules?' => true) }
+
+      before do
+        entry.compose!(deps)
+      end
+
+      context 'when last rule contains only `when' do
+        let(:config) do
+          {
+            script: 'ls',
+            rules: [
+              { if: '$CI_COMMIT_BRANCH', when: 'on_success' },
+              { when: 'always' }
+            ]
+          }
+        end
+
+        it_behaves_like 'has no warnings'
       end
     end
 

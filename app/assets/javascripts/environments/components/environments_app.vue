@@ -1,6 +1,6 @@
 <script>
 import { GlDeprecatedButton } from '@gitlab/ui';
-import Flash from '~/flash';
+import { deprecatedCreateFlash as Flash } from '~/flash';
 import { s__ } from '~/locale';
 import emptyState from './empty_state.vue';
 import eventHub from '../event_hub';

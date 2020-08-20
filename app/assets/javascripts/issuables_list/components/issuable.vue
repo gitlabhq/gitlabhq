@@ -23,6 +23,8 @@ import IssueAssignees from '~/vue_shared/components/issue/issue_assignees.vue';
 import { isScopedLabel } from '~/lib/utils/common_utils';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
+import { convertToCamelCase } from '~/lib/utils/text_utility';
+
 export default {
   i18n: {
     openedAgo: __('opened %{timeAgoString} by %{user}'),
@@ -34,6 +36,8 @@ export default {
     GlLabel,
     GlIcon,
     GlSprintf,
+    IssueHealthStatus: () =>
+      import('ee_component/related_items_tree/components/issue_health_status.vue'),
   },
   directives: {
     GlTooltip,
@@ -84,9 +88,6 @@ export default {
     },
     dueDateWords() {
       return this.dueDate ? dateInWords(this.dueDate, true) : undefined;
-    },
-    hasNoComments() {
-      return !this.userNotesCount;
     },
     isOverdue() {
       return this.dueDate ? this.dueDate < new Date() : false;
@@ -148,33 +149,58 @@ export default {
         time_ago: escape(getTimeago().format(this.issuable.updated_at)),
       });
     },
-    userNotesCount() {
-      return this.issuable.user_notes_count;
-    },
     issuableMeta() {
       return [
         {
           key: 'merge-requests',
+          visible: this.issuable.merge_requests_count > 0,
           value: this.issuable.merge_requests_count,
           title: __('Related merge requests'),
-          class: 'js-merge-requests',
+          dataTestId: 'merge-requests',
+          class: 'js-merge-requests icon-merge-request-unmerged',
           icon: 'merge-request',
         },
         {
           key: 'upvotes',
+          visible: this.issuable.upvotes > 0,
           value: this.issuable.upvotes,
           title: __('Upvotes'),
-          class: 'js-upvotes',
+          dataTestId: 'upvotes',
+          class: 'js-upvotes issuable-upvotes',
           icon: 'thumb-up',
         },
         {
           key: 'downvotes',
+          visible: this.issuable.downvotes > 0,
           value: this.issuable.downvotes,
           title: __('Downvotes'),
-          class: 'js-downvotes',
+          dataTestId: 'downvotes',
+          class: 'js-downvotes issuable-downvotes',
           icon: 'thumb-down',
         },
+        {
+          key: 'blocking-issues',
+          visible: this.issuable.blocking_issues_count > 0,
+          value: this.issuable.blocking_issues_count,
+          title: __('Blocking issues'),
+          dataTestId: 'blocking-issues',
+          href: `${this.issuable.web_url}#related-issues`,
+          icon: 'issue-block',
+        },
+        {
+          key: 'comments-count',
+          visible: !this.isJiraIssue,
+          value: this.issuable.user_notes_count,
+          title: __('Comments'),
+          dataTestId: 'notes-count',
+          href: `${this.issuable.web_url}#notes`,
+          class: { 'no-comments': !this.issuable.user_notes_count, 'issuable-comments': true },
+          icon: 'comments',
+        },
       ];
+    },
+    healthStatus() {
+      return convertToCamelCase(this.issuable.health_status);
     },
   },
   mounted() {
@@ -202,6 +228,9 @@ export default {
         selected: ev.target.checked,
       });
     },
+    issuableMetaComponent(href) {
+      return href ? 'gl-link' : 'span';
+    },
   },
 
   confidentialTooltipText: __('Confidential'),
@@ -215,11 +244,14 @@ export default {
     :data-id="issuable.id"
     :data-labels="labelIdsString"
     :data-url="issuable.web_url"
+    data-qa-selector="issue_container"
+    :data-qa-issue-title="issuable.title"
   >
-    <div class="d-flex">
+    <div class="gl-display-flex">
       <!-- Bulk edit checkbox -->
-      <div v-if="isBulkEditing" class="mr-2">
+      <div v-if="isBulkEditing" class="gl-mr-3">
         <input
+          :id="`selected_issue_${issuable.id}`"
           :checked="selected"
           class="selected-issuable"
           type="checkbox"
@@ -230,7 +262,7 @@ export default {
 
       <!-- Issuable info container -->
       <!-- Issuable main info -->
-      <div class="flex-grow-1">
+      <div class="gl-flex-grow-1">
         <div class="title">
           <span class="issue-title-text">
             <gl-icon
@@ -242,22 +274,28 @@ export default {
               :title="$options.confidentialTooltipText"
               :aria-label="$options.confidentialTooltipText"
             />
-            <gl-link :href="issuable.web_url" :target="linkTarget" data-testid="issuable-title">
-              {{ issuable.title }}
-              <gl-icon
+            <gl-link
+              :href="issuable.web_url"
+              :target="linkTarget"
+              data-testid="issuable-title"
+              data-qa-selector="issue_link"
+              >{{ issuable.title
+              }}<gl-icon
                 v-if="isJiraIssue"
                 name="external-link"
-                class="gl-vertical-align-text-bottom"
+                class="gl-vertical-align-text-bottom gl-ml-2"
               />
             </gl-link>
           </span>
-          <span v-if="issuable.has_tasks" class="ml-1 task-status d-none d-sm-inline-block">
-            {{ issuable.task_status }}
-          </span>
+          <span
+            v-if="issuable.has_tasks"
+            class="gl-ml-2 task-status gl-display-none d-sm-inline-block"
+            >{{ issuable.task_status }}</span
+          >
         </div>
 
         <div class="issuable-info">
-          <span class="js-ref-path">
+          <span class="js-ref-path gl-mr-4 mr-sm-0">
             <span
               v-if="isJiraIssue"
               class="svg-container jira-logo-container"
@@ -267,7 +305,7 @@ export default {
             {{ referencePath }}
           </span>
 
-          <span data-testid="openedByMessage" class="d-none d-sm-inline-block mr-1">
+          <span data-testid="openedByMessage" class="gl-display-none d-sm-inline-block gl-mr-4">
             &middot;
             <gl-sprintf
               :message="isJiraIssue ? $options.i18n.openedAgoJira : $options.i18n.openedAgo"
@@ -281,9 +319,8 @@ export default {
                   v-bind="popoverDataAttrs"
                   :href="issuableAuthor.web_url"
                   :target="linkTarget"
+                  >{{ issuableAuthor.name }}</gl-link
                 >
-                  {{ issuableAuthor.name }}
-                </gl-link>
               </template>
             </gl-sprintf>
           </span>
@@ -291,24 +328,42 @@ export default {
           <gl-link
             v-if="issuable.milestone"
             v-gl-tooltip
-            class="d-none d-sm-inline-block mr-1 js-milestone"
+            class="gl-display-none d-sm-inline-block gl-mr-4 js-milestone milestone"
             :href="milestoneLink"
             :title="milestoneTooltipText"
           >
-            <i class="fa fa-clock-o"></i>
+            <gl-icon name="clock" class="s16 gl-vertical-align-text-bottom" />
             {{ issuable.milestone.title }}
           </gl-link>
 
           <span
             v-if="dueDate"
             v-gl-tooltip
-            class="d-none d-sm-inline-block mr-1 js-due-date"
+            class="gl-display-none d-sm-inline-block gl-mr-4 js-due-date"
             :class="{ cred: isOverdue }"
             :title="__('Due date')"
           >
             <i class="fa fa-calendar"></i>
             {{ dueDateWords }}
           </span>
+
+          <span
+            v-if="hasWeight"
+            v-gl-tooltip
+            :title="__('Weight')"
+            class="gl-display-none d-sm-inline-block gl-mr-4"
+            data-testid="weight"
+            data-qa-selector="issuable_weight_content"
+          >
+            <gl-icon name="weight" class="align-text-bottom" />
+            {{ issuable.weight }}
+          </span>
+
+          <issue-health-status
+            v-if="issuable.health_status"
+            :health-status="healthStatus"
+            class="gl-mr-4 issuable-tag-valign"
+          />
 
           <gl-label
             v-for="label in issuable.labels"
@@ -321,61 +376,44 @@ export default {
             :title="label.name"
             :scoped="isScoped(label)"
             size="sm"
-            class="mr-1"
+            class="gl-mr-2 issuable-tag-valign"
             >{{ label.name }}</gl-label
           >
-
-          <span
-            v-if="hasWeight"
-            v-gl-tooltip
-            :title="__('Weight')"
-            class="d-none d-sm-inline-block js-weight"
-            data-testid="weight"
-          >
-            <gl-icon name="weight" class="align-text-bottom" />
-            {{ issuable.weight }}
-          </span>
         </div>
       </div>
 
       <!-- Issuable meta -->
-      <div class="flex-shrink-0 d-flex flex-column align-items-end justify-content-center">
-        <div class="controls d-flex">
+      <div
+        class="gl-flex-shrink-0 gl-display-flex gl-flex-direction-column align-items-end gl-justify-content-center"
+      >
+        <div class="controls gl-display-flex">
           <span v-if="isJiraIssue" data-testid="issuable-status">{{ issuable.status }}</span>
           <span v-else-if="isClosed" class="issuable-status">{{ __('CLOSED') }}</span>
 
           <issue-assignees
             :assignees="issuable.assignees"
-            class="align-items-center d-flex ml-2"
+            class="gl-align-items-center gl-display-flex gl-ml-3"
             :icon-size="16"
-            img-css-classes="mr-1"
+            img-css-classes="gl-mr-2!"
             :max-visible="4"
           />
 
           <template v-for="meta in issuableMeta">
             <span
-              v-if="meta.value"
+              v-if="meta.visible"
               :key="meta.key"
               v-gl-tooltip
-              :class="['d-none d-sm-inline-block ml-2 vertical-align-middle', meta.class]"
+              class="gl-display-none gl-display-sm-flex gl-align-items-center gl-ml-3"
+              :class="meta.class"
+              :data-testid="meta.dataTestId"
               :title="meta.title"
             >
-              <gl-icon v-if="meta.icon" :name="meta.icon" />
-              {{ meta.value }}
+              <component :is="issuableMetaComponent(meta.href)" :href="meta.href">
+                <gl-icon v-if="meta.icon" :name="meta.icon" />
+                {{ meta.value }}
+              </component>
             </span>
           </template>
-
-          <gl-link
-            v-if="!isJiraIssue"
-            v-gl-tooltip
-            class="ml-2 js-notes"
-            :href="`${issuable.web_url}#notes`"
-            :title="__('Comments')"
-            :class="{ 'no-comments': hasNoComments }"
-          >
-            <gl-icon name="comments" class="gl-vertical-align-text-bottom" />
-            {{ userNotesCount }}
-          </gl-link>
         </div>
         <div v-gl-tooltip class="issuable-updated-at" :title="updatedDateString">
           {{ updatedDateAgo }}

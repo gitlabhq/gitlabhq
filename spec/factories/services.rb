@@ -116,12 +116,6 @@ FactoryBot.define do
     issue_tracker
   end
 
-  factory :gitlab_issue_tracker_service do
-    project
-    active { true }
-    issue_tracker
-  end
-
   trait :issue_tracker do
     transient do
       create_data { true }
@@ -196,7 +190,7 @@ FactoryBot.define do
       IssueTrackerService.skip_callback(:validation, :before, :handle_properties)
     end
 
-    to_create { |instance| instance.save(validate: false) }
+    to_create { |instance| instance.save!(validate: false) }
 
     after(:create) do
       IssueTrackerService.set_callback(:validation, :before, :handle_properties)

@@ -3,7 +3,7 @@ import $ from 'jquery';
 import Visibility from 'visibilityjs';
 import axios from '~/lib/utils/axios_utils';
 import TaskList from '../../task_list';
-import Flash from '../../flash';
+import { deprecatedCreateFlash as Flash } from '../../flash';
 import Poll from '../../lib/utils/poll';
 import * as types from './mutation_types';
 import * as utils from './utils';
@@ -13,32 +13,35 @@ import sidebarTimeTrackingEventHub from '../../sidebar/event_hub';
 import { isInViewport, scrollToElement, isInMRPage } from '../../lib/utils/common_utils';
 import { mergeUrlParams } from '../../lib/utils/url_utility';
 import mrWidgetEventHub from '../../vue_merge_request_widget/event_hub';
-import updateIssueConfidentialMutation from '~/sidebar/components/confidential/queries/update_issue_confidential.mutation.graphql';
+import updateIssueConfidentialMutation from '~/sidebar/components/confidential/mutations/update_issue_confidential.mutation.graphql';
+import updateMergeRequestLockMutation from '~/sidebar/components/lock/mutations/update_merge_request_lock.mutation.graphql';
+import updateIssueLockMutation from '~/sidebar/components/lock/mutations/update_issue_lock.mutation.graphql';
 import { __, sprintf } from '~/locale';
 import Api from '~/api';
 
 let eTagPoll;
 
-export const updateConfidentialityOnIssue = ({ commit, getters }, { confidential, fullPath }) => {
-  const { iid } = getters.getNoteableData;
+export const updateLockedAttribute = ({ commit, getters }, { locked, fullPath }) => {
+  const { iid, targetType } = getters.getNoteableData;
 
   return utils.gqClient
     .mutate({
-      mutation: updateIssueConfidentialMutation,
+      mutation: targetType === 'issue' ? updateIssueLockMutation : updateMergeRequestLockMutation,
       variables: {
         input: {
           projectPath: fullPath,
           iid: String(iid),
-          confidential,
+          locked,
         },
       },
     })
     .then(({ data }) => {
-      const {
-        issueSetConfidential: { issue },
-      } = data;
+      const discussionLocked =
+        targetType === 'issue'
+          ? data.issueSetLocked.issue.discussionLocked
+          : data.mergeRequestSetLocked.mergeRequest.discussionLocked;
 
-      commit(types.SET_ISSUE_CONFIDENTIAL, issue.confidential);
+      commit(types.SET_ISSUABLE_LOCK, discussionLocked);
     });
 };
 
@@ -683,5 +686,32 @@ export const updateAssignees = ({ commit }, assignees) => {
   commit(types.UPDATE_ASSIGNEES, assignees);
 };
 
-// prevent babel-plugin-rewire from generating an invalid default during karma tests
-export default () => {};
+export const updateDiscussionPosition = ({ commit }, updatedPosition) => {
+  commit(types.UPDATE_DISCUSSION_POSITION, updatedPosition);
+};
+
+export const updateConfidentialityOnIssuable = (
+  { getters, commit },
+  { confidential, fullPath },
+) => {
+  const { iid } = getters.getNoteableData;
+
+  return utils.gqClient
+    .mutate({
+      mutation: updateIssueConfidentialMutation,
+      variables: {
+        input: {
+          projectPath: fullPath,
+          iid: String(iid),
+          confidential,
+        },
+      },
+    })
+    .then(({ data }) => {
+      const {
+        issueSetConfidential: { issue },
+      } = data;
+
+      setConfidentiality({ commit }, issue.confidential);
+    });
+};

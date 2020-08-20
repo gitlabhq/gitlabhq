@@ -1,4 +1,7 @@
 ---
+stage: Create
+group: Editor
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 disqus_identifier: 'https://docs.gitlab.com/ee/workflow/file_finder.html'
 ---
 
@@ -37,6 +40,7 @@ the `app/controllers/admin/deploy_keys_controller.rb` file.
 
 Using a fuzzy search, we start by typing letters that get us closer to the file.
 
-**Tip:** To narrow down your search, include `/` in your search terms.
+TIP: **Tip:**
+To narrow down your search, include `/` in your search terms.
 
 ![Find file button](img/file_finder_find_file_v12_10.png)

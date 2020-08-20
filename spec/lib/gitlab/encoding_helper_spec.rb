@@ -138,6 +138,7 @@ RSpec.describe Gitlab::EncodingHelper do
       let(:test_string) do
         "refs/heads/FixSymbolsTitleDropdown".encode("ASCII-8BIT")
       end
+
       let(:expected_string) do
         "refs/heads/FixSymbolsTitleDropdown".encode("UTF-8")
       end

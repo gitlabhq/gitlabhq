@@ -1,84 +1,99 @@
-- page_title _("Group members")
+- page_title _('Group members')
 - can_manage_members = can?(current_user, :admin_group_member, @group)
 - show_invited_members = can_manage_members && @invited_members.exists?
-- pending_active = params[:search_invited].present?
-- total_count = @members.count + @group.shared_with_group_links.count
+- show_access_requests = can_manage_members && @requesters.exists?
+- invited_active = params[:search_invited].present? || params[:invited_members_page].present?
+
+- form_item_label_css_class = 'label-bold gl-mr-2 gl-mb-0 gl-py-2 align-self-md-center'
 
 .js-remove-member-modal
 .project-members-page.gl-mt-3
   %h4
-    = _("Group members")
+    = _('Group members')
   %hr
   - if can_manage_members
     %ul.nav-links.nav.nav-tabs.gitlab-tabs{ role: 'tablist' }
       %li.nav-tab{ role: 'presentation' }
-        %a.nav-link.active{ href: '#invite-member-pane', id: 'invite-member-tab', data: { toggle: 'tab' }, role: 'tab' }= _("Invite member")
+        %a.nav-link.active{ href: '#invite-member-pane', id: 'invite-member-tab', data: { toggle: 'tab' }, role: 'tab' }= _('Invite member')
         %li.nav-tab{ role: 'presentation' }
-          %a.nav-link{ href: '#invite-group-pane', id: 'invite-group-tab', data: { toggle: 'tab', qa_selector: 'invite_group_tab' }, role: 'tab' }= _("Invite group")
+          %a.nav-link{ href: '#invite-group-pane', id: 'invite-group-tab', data: { toggle: 'tab', qa_selector: 'invite_group_tab' }, role: 'tab' }= _('Invite group')
     .tab-content.gitlab-tab-content
       .tab-pane.active{ id: 'invite-member-pane', role: 'tabpanel' }
         = render_invite_member_for_group(@group, @group_member.access_level)
       .tab-pane{ id: 'invite-group-pane', role: 'tabpanel' }
         = render 'shared/members/invite_group', submit_url: group_group_links_path(@group), access_levels: GroupMember.access_level_roles, default_access_level: @group_member.access_level, group_link_field: 'shared_with_group_id', group_access_field: 'shared_group_access'
 
-    = render 'shared/members/requests', membership_source: @group, requesters: @requesters
-
   = render_if_exists 'groups/group_members/ldap_sync'
 
-  %ul.nav-links.mobile-separator.nav.nav-tabs.clearfix
+  %ul.nav-links.mobile-separator.nav.nav-tabs
     %li.nav-item
-      = link_to "#existing_shares", class: ["nav-link", ("active" unless pending_active)] , 'data-toggle' => 'tab' do
+      = link_to '#tab-members', class: ['nav-link', ('active' unless invited_active)], data: { toggle: 'tab' } do
         %span
-          = _("Existing shares")
-        %span.badge.badge-pill= total_count
+          = _('Members')
+        %span.badge.badge-pill= @members.total_count
+    - if @group.shared_with_group_links.any?
+      %li.nav-item
+        = link_to '#tab-groups', class: ['nav-link'] , data: { toggle: 'tab', qa_selector: 'groups_list_tab' } do
+          %span
+            = _('Groups')
+          %span.badge.badge-pill= @group.shared_with_group_links.count
     - if show_invited_members
       %li.nav-item
-        = link_to "#invited_members", class: ["nav-link", ("active" if pending_active)], 'data-toggle' => 'tab' do
+        = link_to '#tab-invited-members', class: ['nav-link', ('active' if invited_active)], data: { toggle: 'tab' } do
           %span
-            = _("Pending")
+            = _('Invited')
           %span.badge.badge-pill= @invited_members.total_count
-
+    - if show_access_requests
+      %li.nav-item
+        = link_to '#tab-access-requests', class: 'nav-link', data: { toggle: 'tab' } do
+          %span
+            = _('Access requests')
+          %span.badge.badge-pill= @requesters.count
   .tab-content
-    #existing_shares.tab-pane{ :class => ("active" unless pending_active) }
-      - if @group.shared_with_group_links.any?
-        .card.card-without-border
-          .d-flex.flex-column.flex-md-row.row-content-block.second-block
-            %span.flex-grow-1.align-self-md-center.col-form-label
-              = _("Groups with access to %{strong_start}%{group_name}%{strong_end}").html_safe % { group_name: @group.name, strong_start: '<strong>'.html_safe, strong_end: '</strong>'.html_safe }
-          %ul.content-list.members-list{ data: { qa_selector: "groups_list" } }
-            - can_admin_member = can?(current_user, :admin_group_member, @group)
-            - @group.shared_with_group_links.each do |group_link|
-              = render 'shared/members/group', group_link: group_link, can_admin_member: can_admin_member, group_link_path: group_group_link_path(@group, group_link)
+    #tab-members.tab-pane{ class: ('active' unless invited_active) }
       .card.card-without-border
-        .d-flex.flex-column.flex-md-row.row-content-block.second-block
-          %span.flex-grow-1.align-self-md-center.col-form-label
-            = _("Members with access to %{strong_start}%{group_name}%{strong_end}").html_safe % { group_name: @group.name, strong_start: '<strong>'.html_safe, strong_end: '</strong>'.html_safe }
-          = form_tag group_group_members_path(@group), method: :get, class: 'form-inline user-search-form' do
-            .form-group.flex-grow
-              .position-relative.mr-md-2
-                = search_field_tag :search, params[:search], { placeholder: _('Search'), class: 'form-control', spellcheck: false }
-                %button.user-search-btn.border-left{ type: "submit", "aria-label" => _("Submit search") }
-                  = icon("search")
-              - if can_manage_members
-                = label_tag '2fa', '2FA', class: 'col-form-label label-bold pr-md-2'
+        = render 'groups/group_members/tab_pane/header' do
+          = render 'groups/group_members/tab_pane/title' do
+            = html_escape(_('Members with access to %{strong_start}%{group_name}%{strong_end}')) % { group_name: @group.name, strong_start: '<strong>'.html_safe, strong_end: '</strong>'.html_safe }
+          = form_tag group_group_members_path(@group), method: :get, class: 'user-search-form gl-display-flex gl-md-align-items-center gl-flex-wrap gl-flex-direction-column gl-md-flex-direction-row gl-mx-n3 gl-my-n3', data: { testid: 'user-search-form' } do
+            .gl-px-3.gl-py-2
+              .search-control-wrap.gl-relative
+                = render 'shared/members/search_field'
+            - if can_manage_members
+              = render 'groups/group_members/tab_pane/form_item' do
+                = label_tag '2fa', _('2FA'), class: form_item_label_css_class
                 = render 'shared/members/filter_2fa_dropdown'
+            = render 'groups/group_members/tab_pane/form_item' do
+              = label_tag :sort_by, _('Sort by'), class: form_item_label_css_class
               = render 'shared/members/sort_dropdown'
-        %ul.content-list.members-list{ data: { qa_selector: "members_list" } }
+        %ul.content-list.members-list{ data: { qa_selector: 'members_list' } }
           = render partial: 'shared/members/member', collection: @members, as: :member
-      = paginate @members, theme: 'gitlab'
-
-    - if show_invited_members
-      #invited_members.tab-pane{ :class => ("active" if pending_active) }
+      = paginate @members, theme: 'gitlab', params: { invited_members_page: nil, search_invited: nil }
+    - if @group.shared_with_group_links.any?
+      #tab-groups.tab-pane
         .card.card-without-border
-          .d-flex.flex-column.flex-md-row.row-content-block.second-block
-            %span.flex-grow-1
-              = _("Members with pending access to %{strong_start}%{group_name}%{strong_end}").html_safe % { group_name: @group.name, strong_start: '<strong>'.html_safe, strong_end: '</strong>'.html_safe }
-            = form_tag group_group_members_path(@group), method: :get, class: 'form-inline user-search-form' do
-              .form-group
-                .position-relative.mr-md-2
-                  = search_field_tag :search_invited, params[:search_invited], { placeholder: _('Search'), class: 'form-control', spellcheck: false }
-                  %button.user-search-btn.border-left{ type: "submit", "aria-label" => _("Submit search") }
-                    = icon("search")
+          = render 'groups/group_members/tab_pane/header' do
+            = render 'groups/group_members/tab_pane/title' do
+              = html_escape(_('Groups with access to %{strong_start}%{group_name}%{strong_end}')) % { group_name: @group.name, strong_start: '<strong>'.html_safe, strong_end: '</strong>'.html_safe }
+          %ul.content-list.members-list{ data: { qa_selector: 'groups_list' } }
+            - @group.shared_with_group_links.each do |group_link|
+              = render 'shared/members/group', group_link: group_link, can_admin_member: can_manage_members, group_link_path: group_group_link_path(@group, group_link)
+    - if show_invited_members
+      #tab-invited-members.tab-pane{ class: ('active' if invited_active) }
+        .card.card-without-border
+          = render 'groups/group_members/tab_pane/header' do
+            = render 'groups/group_members/tab_pane/title' do
+              = html_escape(_('Members invited to %{strong_start}%{group_name}%{strong_end}')) % { group_name: @group.name, strong_start: '<strong>'.html_safe, strong_end: '</strong>'.html_safe }
+            = form_tag group_group_members_path(@group), method: :get, class: 'user-search-form', data: { testid: 'user-search-form' } do
+              = render 'shared/members/search_field', name: 'search_invited'
           %ul.content-list.members-list
             = render partial: 'shared/members/member', collection: @invited_members, as: :member
-        = paginate @invited_members, param_name: 'invited_members_page', theme: 'gitlab'
+        = paginate @invited_members, param_name: 'invited_members_page', theme: 'gitlab', params: { page: nil }
+    - if show_access_requests
+      #tab-access-requests.tab-pane
+        .card.card-without-border
+          = render 'groups/group_members/tab_pane/header' do
+            = render 'groups/group_members/tab_pane/title' do
+              = html_escape(_('Users requesting access to %{strong_start}%{group_name}%{strong_end}')) % { group_name: @group.name, strong_start: '<strong>'.html_safe, strong_end: '</strong>'.html_safe }
+          %ul.content-list.members-list
+            = render partial: 'shared/members/member', collection: @requesters, as: :member

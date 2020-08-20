@@ -1,13 +1,15 @@
 import Vue from 'vue';
 import { createComponentWithStore } from 'helpers/vue_mount_component_helper';
-import { resetStore } from 'jest/ide/helpers';
-import store from '~/ide/stores';
+import { createStore } from '~/ide/stores';
 import radioGroup from '~/ide/components/commit_sidebar/radio_group.vue';
 
 describe('IDE commit sidebar radio group', () => {
   let vm;
+  let store;
 
   beforeEach(done => {
+    store = createStore();
+
     const Component = Vue.extend(radioGroup);
 
     store.state.commit.commitAction = '2';
@@ -25,8 +27,6 @@ describe('IDE commit sidebar radio group', () => {
 
   afterEach(() => {
     vm.$destroy();
-
-    resetStore(vm.$store);
   });
 
   it('uses label if present', () => {

@@ -27,11 +27,11 @@ class BuildDetailsEntity < JobEntity
   end
 
   expose :artifact, if: -> (*) { can?(current_user, :read_build, build) } do
-    expose :download_path, if: -> (*) { build.artifacts? } do |build|
+    expose :download_path, if: -> (*) { build.pipeline.artifacts_locked? || build.artifacts? } do |build|
       download_project_job_artifacts_path(project, build)
     end
 
-    expose :browse_path, if: -> (*) { build.browsable_artifacts? } do |build|
+    expose :browse_path, if: -> (*) { build.pipeline.artifacts_locked? || build.browsable_artifacts? } do |build|
       browse_project_job_artifacts_path(project, build)
     end
 
@@ -45,6 +45,10 @@ class BuildDetailsEntity < JobEntity
 
     expose :expired, if: -> (*) { build.artifacts_expire_at.present? } do |build|
       build.artifacts_expired?
+    end
+
+    expose :locked do |build|
+      build.pipeline.artifacts_locked?
     end
   end
 
@@ -147,7 +151,7 @@ class BuildDetailsEntity < JobEntity
   end
 
   def help_message(docs_url)
-    _("Please refer to <a href=\"%{docs_url}\">%{docs_url}</a>") % { docs_url: docs_url }
+    html_escape(_("Please refer to %{docs_url}")) % { docs_url: "<a href=\"#{docs_url}\">#{html_escape(docs_url)}</a>".html_safe }
   end
 end
 

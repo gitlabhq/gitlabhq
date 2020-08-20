@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initFilteredSearch({
     page: FILTERED_SEARCH.MERGE_REQUESTS,
     filteredSearchTokenKeys: IssuableFilteredSearchTokenKeys,
+    useDefaultState: true,
   });
 
   projectSelect();

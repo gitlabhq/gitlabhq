@@ -18,7 +18,7 @@
             = link_to edit_admin_application_settings_integration_path(service.to_param), class: 'gl-text-blue-300!' do
               %strong.has-tooltip{ title: s_('AdminSettings|Moved to integrations'), data: { container: 'body' } }
                 = service.title
-          %td.gl-cursor-default.gl-text-gray-600
+          %td.gl-cursor-default.gl-text-gray-400
             = service.description
           %td
       - else

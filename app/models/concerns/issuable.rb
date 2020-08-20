@@ -61,11 +61,13 @@ module Issuable
       end
     end
 
+    has_many :note_authors, -> { distinct }, through: :notes, source: :author
+
     has_many :label_links, as: :target, dependent: :destroy, inverse_of: :target # rubocop:disable Cop/ActiveRecordDependent
     has_many :labels, through: :label_links
     has_many :todos, as: :target, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
-    has_one :metrics
+    has_one :metrics, inverse_of: model_name.singular.to_sym, autosave: true
 
     delegate :name,
              :email,

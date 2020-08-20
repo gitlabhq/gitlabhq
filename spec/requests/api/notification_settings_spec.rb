@@ -70,12 +70,13 @@ RSpec.describe API::NotificationSettings do
 
   describe "PUT /projects/:id/notification_settings" do
     it "updates project level notification settings for the current user" do
-      put api("/projects/#{project.id}/notification_settings", user), params: { level: 'custom', new_note: true }
+      put api("/projects/#{project.id}/notification_settings", user), params: { level: 'custom', new_note: true, moved_project: true }
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['level']).to eq(user.reload.notification_settings_for(project).level)
       expect(json_response['events']['new_note']).to be_truthy
       expect(json_response['events']['new_issue']).to be_falsey
+      expect(json_response['events']['moved_project']).to be_truthy
     end
   end
 

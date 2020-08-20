@@ -1,5 +1,5 @@
-import SnippetDescription from '~/snippets/components/snippet_description_view.vue';
 import { shallowMount } from '@vue/test-utils';
+import SnippetDescription from '~/snippets/components/snippet_description_view.vue';
 
 describe('Snippet Description component', () => {
   let wrapper;

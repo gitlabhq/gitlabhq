@@ -9,11 +9,15 @@ module Gitlab
             PATTERN = /("(?<string>.*?)")|('(?<string>.*?)')/.freeze
 
             def initialize(value)
-              @value = value
+              super(value)
             end
 
             def evaluate(variables = {})
               @value.to_s
+            end
+
+            def inspect
+              @value.inspect
             end
 
             def self.build(string)

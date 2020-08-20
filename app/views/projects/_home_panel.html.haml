@@ -13,7 +13,7 @@
           %h1.home-panel-title.gl-mt-3.gl-mb-2{ data: { qa_selector: 'project_name_content' } }
             = @project.name
             %span.visibility-icon.text-secondary.gl-ml-2.has-tooltip{ data: { container: 'body' }, title: visibility_icon_description(@project) }
-              = visibility_level_icon(@project.visibility_level, fw: false, options: {class: 'icon'})
+              = visibility_level_icon(@project.visibility_level, options: { class: 'icon' })
             = render_if_exists 'compliance_management/compliance_framework/compliance_framework_badge', project: @project
         .home-panel-metadata.d-flex.flex-wrap.text-secondary
           - if can?(current_user, :read_project, @project)
@@ -24,7 +24,7 @@
               = render 'shared/members/access_request_links', source: @project
           - if @project.tag_list.present?
             %span.home-panel-topic-list.mt-2.w-100.d-inline-flex
-              = sprite_icon('tag', size: 16, css_class: 'icon gl-mr-2')
+              = sprite_icon('tag', css_class: 'icon gl-mr-2')
 
               - @project.topics_to_show.each do |topic|
                 - project_topics_classes = "badge badge-pill badge-secondary gl-mr-2"

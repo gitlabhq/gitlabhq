@@ -1,12 +1,10 @@
-import Vue from 'vue';
-import component from '~/jobs/components/empty_state.vue';
-import mountComponent from '../../helpers/vue_mount_component_helper';
+import { mount } from '@vue/test-utils';
+import EmptyState from '~/jobs/components/empty_state.vue';
 
 describe('Empty State', () => {
-  const Component = Vue.extend(component);
-  let vm;
+  let wrapper;
 
-  const props = {
+  const defaultProps = {
     illustrationPath: 'illustrations/pending_job_empty.svg',
     illustrationSizeClass: 'svg-430',
     title: 'This job has not started yet',
@@ -14,100 +12,107 @@ describe('Empty State', () => {
     variablesSettingsUrl: '',
   };
 
+  const createWrapper = props => {
+    wrapper = mount(EmptyState, {
+      propsData: {
+        ...defaultProps,
+        ...props,
+      },
+    });
+  };
+
   const content = 'This job is in pending state and is waiting to be picked by a runner';
 
+  const findEmptyStateImage = () => wrapper.find('img');
+  const findTitle = () => wrapper.find('[data-testid="job-empty-state-title"]');
+  const findContent = () => wrapper.find('[data-testid="job-empty-state-content"]');
+  const findAction = () => wrapper.find('[data-testid="job-empty-state-action"]');
+  const findManualVarsForm = () => wrapper.find('[data-testid="manual-vars-form"]');
+
   afterEach(() => {
-    vm.$destroy();
+    if (wrapper?.destroy) {
+      wrapper.destroy();
+      wrapper = null;
+    }
   });
 
   describe('renders image and title', () => {
     beforeEach(() => {
-      vm = mountComponent(Component, {
-        ...props,
-        content,
-      });
+      createWrapper();
     });
 
-    it('renders img with provided path and size', () => {
-      expect(vm.$el.querySelector('img').getAttribute('src')).toEqual(props.illustrationPath);
-      expect(vm.$el.querySelector('.svg-content').classList).toContain(props.illustrationSizeClass);
+    it('renders empty state image', () => {
+      expect(findEmptyStateImage().exists()).toBe(true);
     });
 
     it('renders provided title', () => {
-      expect(vm.$el.querySelector('.js-job-empty-state-title').textContent.trim()).toEqual(
-        props.title,
-      );
+      expect(
+        findTitle()
+          .text()
+          .trim(),
+      ).toBe(defaultProps.title);
     });
   });
 
   describe('with content', () => {
-    it('renders content', () => {
-      vm = mountComponent(Component, {
-        ...props,
-        content,
-      });
+    beforeEach(() => {
+      createWrapper({ content });
+    });
 
-      expect(vm.$el.querySelector('.js-job-empty-state-content').textContent.trim()).toEqual(
-        content,
-      );
+    it('renders content', () => {
+      expect(
+        findContent()
+          .text()
+          .trim(),
+      ).toBe(content);
     });
   });
 
   describe('without content', () => {
-    it('does not render content', () => {
-      vm = mountComponent(Component, {
-        ...props,
-      });
+    beforeEach(() => {
+      createWrapper();
+    });
 
-      expect(vm.$el.querySelector('.js-job-empty-state-content')).toBeNull();
+    it('does not render content', () => {
+      expect(findContent().exists()).toBe(false);
     });
   });
 
   describe('with action', () => {
-    it('renders action', () => {
-      vm = mountComponent(Component, {
-        ...props,
-        content,
+    beforeEach(() => {
+      createWrapper({
         action: {
           path: 'runner',
           button_title: 'Check runner',
           method: 'post',
         },
       });
+    });
 
-      expect(vm.$el.querySelector('.js-job-empty-state-action').getAttribute('href')).toEqual(
-        'runner',
-      );
+    it('renders action', () => {
+      expect(findAction().attributes('href')).toBe('runner');
     });
   });
 
   describe('without action', () => {
-    it('does not render action', () => {
-      vm = mountComponent(Component, {
-        ...props,
-        content,
+    beforeEach(() => {
+      createWrapper({
         action: null,
       });
-
-      expect(vm.$el.querySelector('.js-job-empty-state-action')).toBeNull();
     });
-  });
 
-  describe('without playbale action', () => {
+    it('does not render action', () => {
+      expect(findAction().exists()).toBe(false);
+    });
+
     it('does not render manual variables form', () => {
-      vm = mountComponent(Component, {
-        ...props,
-        content,
-      });
-
-      expect(vm.$el.querySelector('.js-manual-vars-form')).toBeNull();
+      expect(findManualVarsForm().exists()).toBe(false);
     });
   });
 
-  describe('with playbale action and not scheduled job', () => {
+  describe('with playable action and not scheduled job', () => {
     beforeEach(() => {
-      vm = mountComponent(Component, {
-        ...props,
+      createWrapper({
         content,
         playable: true,
         scheduled: false,
@@ -120,22 +125,25 @@ describe('Empty State', () => {
     });
 
     it('renders manual variables form', () => {
-      expect(vm.$el.querySelector('.js-manual-vars-form')).not.toBeNull();
+      expect(findManualVarsForm().exists()).toBe(true);
     });
 
     it('does not render the empty state action', () => {
-      expect(vm.$el.querySelector('.js-job-empty-state-action')).toBeNull();
+      expect(findAction().exists()).toBe(false);
     });
   });
 
-  describe('with playbale action and  scheduled job', () => {
-    it('does not render manual variables form', () => {
-      vm = mountComponent(Component, {
-        ...props,
+  describe('with playable action and scheduled job', () => {
+    beforeEach(() => {
+      createWrapper({
+        playable: true,
+        scheduled: true,
         content,
       });
+    });
 
-      expect(vm.$el.querySelector('.js-manual-vars-form')).toBeNull();
+    it('does not render manual variables form', () => {
+      expect(findManualVarsForm().exists()).toBe(false);
     });
   });
 });

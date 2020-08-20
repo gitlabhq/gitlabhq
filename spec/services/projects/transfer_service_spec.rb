@@ -11,6 +11,39 @@ RSpec.describe Projects::TransferService do
 
   subject(:execute_transfer) { described_class.new(project, user).execute(group) }
 
+  context 'with npm packages' do
+    before do
+      group.add_owner(user)
+    end
+
+    subject(:transfer_service) { described_class.new(project, user) }
+
+    let!(:package) { create(:npm_package, project: project) }
+
+    context 'with a root namespace change' do
+      it 'does not allow the transfer' do
+        expect(transfer_service.execute(group)).to be false
+        expect(project.errors[:new_namespace]).to include("Root namespace can't be updated if project has NPM packages")
+      end
+    end
+
+    context 'without a root namespace change' do
+      let(:root) { create(:group) }
+      let(:group) { create(:group, parent: root) }
+      let(:other_group) { create(:group, parent: root) }
+      let(:project) { create(:project, :repository, namespace: group) }
+
+      before do
+        other_group.add_owner(user)
+      end
+
+      it 'does allow the transfer' do
+        expect(transfer_service.execute(other_group)).to be true
+        expect(project.errors[:new_namespace]).to be_empty
+      end
+    end
+  end
+
   context 'namespace -> namespace' do
     before do
       allow_next_instance_of(Gitlab::UploadsTransfer) do |service|

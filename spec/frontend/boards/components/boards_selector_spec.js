@@ -1,6 +1,6 @@
 import { nextTick } from 'vue';
 import { mount } from '@vue/test-utils';
-import { GlDropdown, GlLoadingIcon } from '@gitlab/ui';
+import { GlDeprecatedDropdown, GlLoadingIcon } from '@gitlab/ui';
 import { TEST_HOST } from 'spec/test_constants';
 import BoardsSelector from '~/boards/components/boards_selector.vue';
 import boardsStore from '~/boards/stores/boards_store';
@@ -103,7 +103,7 @@ describe('BoardsSelector', () => {
     });
 
     // Emits gl-dropdown show event to simulate the dropdown is opened at initialization time
-    wrapper.find(GlDropdown).vm.$emit('show');
+    wrapper.find(GlDeprecatedDropdown).vm.$emit('show');
   });
 
   afterEach(() => {

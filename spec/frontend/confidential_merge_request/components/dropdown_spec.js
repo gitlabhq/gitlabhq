@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils';
-import { GlDropdownItem } from '@gitlab/ui';
+import { GlDeprecatedDropdownItem } from '@gitlab/ui';
 import Dropdown from '~/confidential_merge_request/components/dropdown.vue';
 
 let vm;
@@ -30,7 +30,7 @@ describe('Confidential merge request project dropdown component', () => {
       },
     ]);
 
-    expect(vm.findAll(GlDropdownItem).length).toBe(2);
+    expect(vm.findAll(GlDeprecatedDropdownItem).length).toBe(2);
   });
 
   it('renders selected project icon', () => {

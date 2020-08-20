@@ -123,17 +123,18 @@ export default {
           <span>{{ $options.i18n.sendEmail.label }}</span>
         </gl-form-checkbox>
       </gl-form-group>
-
-      <gl-button
-        ref="submitBtn"
-        data-qa-selector="save_changes_button"
-        :disabled="loading"
-        variant="success"
-        type="submit"
-        class="js-no-auto-disable"
-      >
-        {{ $options.i18n.saveBtnLabel }}
-      </gl-button>
+      <div class="gl-display-flex gl-justify-content-end">
+        <gl-button
+          ref="submitBtn"
+          data-qa-selector="save_changes_button"
+          :disabled="loading"
+          variant="success"
+          type="submit"
+          class="js-no-auto-disable"
+        >
+          {{ $options.i18n.saveBtnLabel }}
+        </gl-button>
+      </div>
     </form>
   </div>
 </template>

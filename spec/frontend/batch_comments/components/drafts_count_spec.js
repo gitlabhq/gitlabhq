@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import DraftsCount from '~/batch_comments/components/drafts_count.vue';
 import { mountComponentWithStore } from 'helpers/vue_mount_component_helper';
+import DraftsCount from '~/batch_comments/components/drafts_count.vue';
 import { createStore } from '~/batch_comments/stores';
 
 describe('Batch comments drafts count component', () => {
@@ -24,7 +24,7 @@ describe('Batch comments drafts count component', () => {
   });
 
   it('renders count', () => {
-    expect(vm.$el.querySelector('.drafts-count-number').textContent).toBe('1');
+    expect(vm.$el.textContent).toContain('1');
   });
 
   it('renders screen reader text', done => {

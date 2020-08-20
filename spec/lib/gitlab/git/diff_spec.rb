@@ -78,6 +78,7 @@ EOT
           patch: raw_patch
         )
       end
+
       let(:diff) { described_class.new(gitaly_diff) }
 
       context 'with a small diff' do
@@ -134,6 +135,7 @@ EOT
           to_id: '8e5177d718c561d36efde08bad36b43687ee6bf0'
         )
       end
+
       let(:diff) { described_class.new(commit_delta) }
 
       it 'initializes the diff' do

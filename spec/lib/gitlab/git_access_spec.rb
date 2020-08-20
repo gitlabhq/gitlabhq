@@ -20,6 +20,18 @@ RSpec.describe Gitlab::GitAccess do
   let(:push_access_check) { access.check('git-receive-pack', changes) }
   let(:pull_access_check) { access.check('git-upload-pack', changes) }
 
+  let(:access_class) do
+    Class.new(described_class) do
+      def push_ability
+        :push_code
+      end
+
+      def download_ability
+        :download_code
+      end
+    end
+  end
+
   describe '#check with single protocols allowed' do
     def disable_protocol(protocol)
       allow(Gitlab::ProtocolAccess).to receive(:allowed?).with(protocol).and_return(false)
@@ -58,7 +70,7 @@ RSpec.describe Gitlab::GitAccess do
 
         it "doesn't block http pull" do
           aggregate_failures do
-            expect { pull_access_check }.not_to raise_forbidden('Git access over HTTP is not allowed')
+            expect { pull_access_check }.not_to raise_error
           end
         end
 
@@ -67,36 +79,9 @@ RSpec.describe Gitlab::GitAccess do
 
           it "doesn't block http pull" do
             aggregate_failures do
-              expect { pull_access_check }.not_to raise_forbidden('Git access over HTTP is not allowed')
+              expect { pull_access_check }.not_to raise_error
             end
           end
-        end
-      end
-    end
-  end
-
-  describe '#check_namespace!' do
-    context 'when namespace exists' do
-      before do
-        project.add_maintainer(user)
-      end
-
-      it 'allows push and pull access' do
-        aggregate_failures do
-          expect { push_access_check }.not_to raise_error
-          expect { pull_access_check }.not_to raise_error
-        end
-      end
-    end
-
-    context 'when namespace and project are nil' do
-      let(:project) { nil }
-      let(:namespace_path) { nil }
-
-      it 'does not allow push and pull access' do
-        aggregate_failures do
-          expect { push_access_check }.to raise_namespace_not_found
-          expect { pull_access_check }.to raise_namespace_not_found
         end
       end
     end
@@ -464,7 +449,7 @@ RSpec.describe Gitlab::GitAccess do
         let(:public_project) { create(:project, :public, :repository) }
         let(:project_path) { public_project.path }
         let(:namespace_path) { public_project.namespace.path }
-        let(:access) { described_class.new(nil, public_project, 'web', authentication_abilities: [:download_code], repository_path: project_path, namespace_path: namespace_path) }
+        let(:access) { access_class.new(nil, public_project, 'web', authentication_abilities: [:download_code], repository_path: project_path, namespace_path: namespace_path) }
 
         context 'when repository is enabled' do
           it 'give access to download code' do
@@ -859,7 +844,7 @@ RSpec.describe Gitlab::GitAccess do
         message = "Push operation timed out\n\nTiming information for debugging purposes:\nRunning checks for ref: wow"
 
         expect_next_instance_of(Gitlab::Checks::ChangeAccess) do |check|
-          expect(check).to receive(:exec).and_raise(Gitlab::Checks::TimedLogger::TimeoutError)
+          expect(check).to receive(:validate!).and_raise(Gitlab::Checks::TimedLogger::TimeoutError)
         end
 
         expect { access.check('git-receive-pack', changes) }.to raise_error(described_class::TimeoutError, message)
@@ -1067,7 +1052,7 @@ RSpec.describe Gitlab::GitAccess do
   private
 
   def access
-    described_class.new(actor, project, protocol,
+    access_class.new(actor, project, protocol,
                         authentication_abilities: authentication_abilities,
                         namespace_path: namespace_path, repository_path: project_path,
                         redirected_path: redirected_path, auth_result_type: auth_result_type)
@@ -1078,15 +1063,11 @@ RSpec.describe Gitlab::GitAccess do
   end
 
   def raise_forbidden(message)
-    raise_error(Gitlab::GitAccess::ForbiddenError, message)
+    raise_error(described_class::ForbiddenError, message)
   end
 
   def raise_not_found
-    raise_error(Gitlab::GitAccess::NotFoundError, Gitlab::GitAccess::ERROR_MESSAGES[:project_not_found])
-  end
-
-  def raise_namespace_not_found
-    raise_error(Gitlab::GitAccess::NotFoundError, Gitlab::GitAccess::ERROR_MESSAGES[:namespace_not_found])
+    raise_error(described_class::NotFoundError, described_class::ERROR_MESSAGES[:project_not_found])
   end
 
   def build_authentication_abilities

@@ -25,7 +25,7 @@ module Notes
         note.note = content
       end
 
-      unless only_commands
+      unless only_commands || note.for_personal_snippet?
         note.create_new_cross_references!(current_user)
 
         update_todos(note, old_mentioned_users)

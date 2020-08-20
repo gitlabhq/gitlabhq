@@ -1,0 +1,5 @@
+---
+title: Add default_membership_role column to saml_providers table
+merge_request: 37552
+author:
+type: added

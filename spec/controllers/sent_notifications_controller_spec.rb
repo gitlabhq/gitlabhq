@@ -216,6 +216,7 @@ RSpec.describe SentNotificationsController do
             merge_request.subscriptions.create(user: user, project: project, subscribed: true)
           end
         end
+
         let(:sent_notification) { create(:sent_notification, project: project, noteable: merge_request, recipient: user) }
 
         before do

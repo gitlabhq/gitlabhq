@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: howto
 ---
 
-# Geo validation tests
+# Geo validation tests **(PREMIUM ONLY)**
 
 The Geo team performs manual testing and validation on common deployment configurations to ensure
 that Geo works when upgrading between minor GitLab versions and major PostgreSQL database versions.
@@ -26,6 +26,13 @@ The following are GitLab upgrade validation tests we performed.
 - Follow up issues/actions:
   - [Investigate why `reconfigure` and `hup` cause downtime on multi-node Geo deployments](https://gitlab.com/gitlab-org/gitlab/-/issues/228898)
   - [Geo multi-node deployment upgrade: investigate order when upgrading non-deploy nodes](https://gitlab.com/gitlab-org/gitlab/-/issues/228954)
+
+[Switch from repmgr to Patroni on a Geo primary site](https://gitlab.com/gitlab-org/gitlab/-/issues/224652):
+
+- Description: Tested switching from repmgr to Patroni on a multi-node Geo primary site. Used [the orchestrator tool](https://gitlab.com/gitlab-org/gitlab-orchestrator) to deploy a Geo installation with 3 database nodes managed by repmgr. With this approach, we were also able to address a related issue for [verifying a Geo installation with Patroni and PostgreSQL 11](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5113).
+- Outcome: Partial success. We enabled Patroni on the primary site and set up database replication on the secondary site. However, we found that Patroni would delete the secondary site's replication slot whenever Patroni was restarted. Another issue is that when Patroni elects a new leader in the cluster, the secondary site will fail to automatically follow the new leader. Until these issues are resolved, we cannot officially support and recommend Patroni for Geo installations.
+- Follow up issues/actions:
+  - [Investigate permanent replication slot for Patroni with Geo single node secondary](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5528)
 
 ### June 2020
 
@@ -106,6 +113,19 @@ The following are GitLab upgrade validation tests we performed.
 ## PostgreSQL upgrades
 
 The following are PostgreSQL upgrade validation tests we performed.
+
+### August 2020
+
+[Verify Geo installation with PostgreSQL 12](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5453):
+
+- Description: Prior to PostgreSQL 12 becoming available as an opt-in version in GitLab 13.3,
+  we tested fresh installations of GitLab 13.3 with PostgreSQL 12 enabled and Geo installed.
+- Outcome: Setting up a Geo secondary required manual intervention because the `recovery.conf` file
+  is no longer supported in PostgreSQL 12. We do not recommend deploying Geo with PostgreSQL 12 until
+  the appropriate changes have been made to Omnibus and verified.
+- Follow up issues:
+  - [Update `replicate-geo-database` to support PostgreSQL 12](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5575)
+  - [Remove PostgreSQL 12 check in `replicate-geo-database` for 14.0](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5576)
 
 ### April 2020
 

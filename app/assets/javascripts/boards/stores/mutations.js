@@ -6,8 +6,14 @@ const notImplemented = () => {
 };
 
 export default {
-  [mutationTypes.SET_ENDPOINTS]: (state, endpoints) => {
+  [mutationTypes.SET_INITIAL_BOARD_DATA]: (state, data) => {
+    const { boardType, ...endpoints } = data;
     state.endpoints = endpoints;
+    state.boardType = boardType;
+  },
+
+  [mutationTypes.SET_ACTIVE_ID](state, id) {
+    state.activeId = id;
   },
 
   [mutationTypes.REQUEST_ADD_LIST]: () => {
@@ -44,6 +50,20 @@ export default {
 
   [mutationTypes.RECEIVE_REMOVE_LIST_ERROR]: () => {
     notImplemented();
+  },
+
+  [mutationTypes.REQUEST_ISSUES_FOR_ALL_LISTS]: state => {
+    state.isLoadingIssues = true;
+  },
+
+  [mutationTypes.RECEIVE_ISSUES_FOR_ALL_LISTS_SUCCESS]: (state, listIssues) => {
+    state.issuesByListId = listIssues;
+    state.isLoadingIssues = false;
+  },
+
+  [mutationTypes.RECEIVE_ISSUES_FOR_ALL_LISTS_FAILURE]: state => {
+    state.listIssueFetchFailure = true;
+    state.isLoadingIssues = false;
   },
 
   [mutationTypes.REQUEST_ADD_ISSUE]: () => {

@@ -1,7 +1,7 @@
 <script>
-import { s__ } from '~/locale';
 import { mapState, mapActions } from 'vuex';
 import { GlFormGroup, GlFormSelect } from '@gitlab/ui';
+import { s__ } from '~/locale';
 import { timezones } from '~/monitoring/format_date';
 
 export default {

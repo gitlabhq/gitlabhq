@@ -11,7 +11,7 @@ module Mutations
 
       argument :iid, GraphQL::STRING_TYPE,
                required: true,
-               description: "The iid of the issue to mutate"
+               description: "The IID of the issue to mutate"
 
       field :issue,
             Types::IssueType,

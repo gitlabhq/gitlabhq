@@ -3,6 +3,17 @@
 module Avatarable
   extend ActiveSupport::Concern
 
+  ALLOWED_IMAGE_SCALER_WIDTHS = [
+    400,
+    200,
+    64,
+    48,
+    40,
+    26,
+    20,
+    16
+  ].freeze
+
   included do
     prepend ShadowMethods
     include ObjectStorage::BackgroundMove

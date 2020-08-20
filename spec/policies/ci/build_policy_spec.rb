@@ -146,7 +146,7 @@ RSpec.describe Ci::BuildPolicy do
           create(:protected_tag, :no_one_can_create,
                  name: build.ref, project: project)
 
-          build.update(tag: true)
+          build.update!(tag: true)
         end
 
         it 'does not include ability to update build' do
@@ -245,6 +245,36 @@ RSpec.describe Ci::BuildPolicy do
           end
 
           it { expect(policy).to be_disallowed :erase_build }
+        end
+      end
+
+      context 'when an admin erases a build', :enable_admin_mode do
+        let(:owner) { create(:user) }
+
+        before do
+          user.update!(admin: true)
+        end
+
+        context 'when the build was created for a protected branch' do
+          before do
+            create(:protected_branch, :developers_can_push,
+                   name: build.ref, project: project)
+          end
+
+          it { expect(policy).to be_allowed :erase_build }
+        end
+
+        context 'when the build was created for a protected tag' do
+          before do
+            create(:protected_tag, :developers_can_create,
+                   name: build.ref, project: project)
+          end
+
+          it { expect(policy).to be_allowed :erase_build }
+        end
+
+        context 'when the build was created for an unprotected ref' do
+          it { expect(policy).to be_allowed :erase_build }
         end
       end
     end

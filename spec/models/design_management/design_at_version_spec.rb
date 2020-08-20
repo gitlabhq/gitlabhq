@@ -78,18 +78,23 @@ RSpec.describe DesignManagement::DesignAtVersion do
     let!(:version_a) do
       create(:design_version, designs: [design_a])
     end
+
     let!(:version_b) do
       create(:design_version, designs: [design_b])
     end
+
     let!(:version_mod) do
       create(:design_version, modified_designs: [design_a, design_b])
     end
+
     let!(:version_c) do
       create(:design_version, deleted_designs: [design_a])
     end
+
     let!(:version_d) do
       create(:design_version, deleted_designs: [design_b])
     end
+
     let!(:version_e) do
       create(:design_version, designs: [design_a])
     end
@@ -296,9 +301,11 @@ RSpec.describe DesignManagement::DesignAtVersion do
     let!(:version_a) do
       create(:design_version, designs: create_list(:design, 3, issue: issue))
     end
+
     let!(:version_b) do
       create(:design_version, designs: create_list(:design, 1, issue: issue))
     end
+
     let!(:version_c) do
       create(:design_version, designs: create_list(:design, 1, issue: issue_b))
     end
@@ -346,10 +353,12 @@ RSpec.describe DesignManagement::DesignAtVersion do
     let!(:version_a) do
       create(:design_version, designs: create_list(:design, 3, issue: issue))
     end
+
     let!(:version_b) do
       create(:design_version, designs: create_list(:design, 2, issue: issue))
     end
     # 1 version, with 3 designs on issue B, so 1*3 = 3
+
     let!(:version_c) do
       create(:design_version, designs: create_list(:design, 3, issue: issue_b))
     end

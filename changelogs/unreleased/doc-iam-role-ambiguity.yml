@@ -1,0 +1,5 @@
+---
+title: Adds clarifying documentation on EKS IAM roles
+merge_request: 37870
+author:
+type: added

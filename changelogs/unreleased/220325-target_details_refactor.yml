@@ -1,0 +1,5 @@
+---
+title: Add target_details column to AuditEvent table
+merge_request: 37430
+author:
+type: changed

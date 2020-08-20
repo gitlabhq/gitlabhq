@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initFilteredSearch({
     page: FILTERED_SEARCH.ISSUES,
     filteredSearchTokenKeys: IssuableFilteredSearchTokenKeys,
+    useDefaultState: true,
   });
 
   projectSelect();

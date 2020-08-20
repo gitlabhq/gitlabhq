@@ -11,7 +11,7 @@
         = search_field_tag :search, params[:search], placeholder: _("Search for projects, issues, etc."), class: "form-control search-text-input js-search-input", id: "dashboard_search", autofocus: true, spellcheck: false
         = icon("search", class: "search-icon")
         %button.search-clear.js-search-clear{ class: ("hidden" if !params[:search].present?), type: "button", tabindex: "-1" }
-          = icon("times-circle")
+          = sprite_icon('clear')
           %span.sr-only
             = _("Clear search")
     - unless params[:snippets].eql? 'true'

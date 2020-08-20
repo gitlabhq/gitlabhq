@@ -26,6 +26,7 @@ RSpec.describe Group do
     it { is_expected.to have_many(:container_repositories) }
     it { is_expected.to have_many(:milestones) }
     it { is_expected.to have_many(:iterations) }
+    it { is_expected.to have_many(:group_deploy_keys) }
 
     describe '#members & #requesters' do
       let(:requester) { create(:user) }
@@ -1537,6 +1538,50 @@ RSpec.describe Group do
           .and not_change { sub_group.reload.allow_descendants_override_disabled_shared_runners }
           .and not_change { sub_group.reload.shared_runners_enabled }
           .and not_change { project.reload.shared_runners_enabled }
+      end
+    end
+  end
+
+  describe '#default_owner' do
+    let(:group) { build(:group) }
+
+    context 'the group has owners' do
+      before do
+        group.add_owner(create(:user))
+        group.add_owner(create(:user))
+      end
+
+      it 'is the first owner' do
+        expect(group.default_owner)
+          .to eq(group.owners.first)
+          .and be_a(User)
+      end
+    end
+
+    context 'the group has a parent' do
+      let(:parent) { build(:group) }
+
+      before do
+        group.parent = parent
+        parent.add_owner(create(:user))
+      end
+
+      it 'is the first owner of the parent' do
+        expect(group.default_owner)
+          .to eq(parent.default_owner)
+          .and be_a(User)
+      end
+    end
+
+    context 'we fallback to group.owner' do
+      before do
+        group.owner = build(:user)
+      end
+
+      it 'is the group.owner' do
+        expect(group.default_owner)
+          .to eq(group.owner)
+          .and be_a(User)
       end
     end
   end

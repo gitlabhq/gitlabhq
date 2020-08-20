@@ -18,6 +18,16 @@ and link the same type of objects (as specified by the `data-reference-type`
 attribute), then we only need one reference parser for that type of domain
 object.
 
+## Banzai pipeline
+
+`Banzai` pipeline returns the `result` Hash after being filtered by the Pipeline.
+
+The `result` Hash is passed to each filter for modification. This is where Filters store extracted information from the content.
+It contains:
+
+- An `:output` key with the DocumentFragment or String HTML markup based on the output of the last filter in the pipeline.
+- A `:reference_filter_nodes` key with the list of DocumentFragment `nodes` that are ready for processing, updated by each filter in the pipeline.
+
 ## Reference filters
 
 The first way that references are handled is by reference filters. These are
@@ -69,6 +79,8 @@ a minimum implementation of `AbstractReferenceFilter` should define:
 
 ### Performance
 
+#### Find object optimization
+
 This default implementation is not very efficient, because we need to call
 `#find_object` for each reference, which may require issuing a DB query every
 time. For this reason, most reference filter implementations will instead use an
@@ -95,6 +107,22 @@ end
 This makes the number of queries linear in the number of projects. We only need
 to implement `parent_records` method when we call `records_per_parent` in our
 reference filter.
+
+#### Filtering nodes optimization
+
+Each `ReferenceFilter` would iterate over all `<a>` and `text()` nodes in a document.
+
+Not all nodes are processed, document is filtered only for nodes that we want to process.
+We are skipping:
+
+- Link tags already processed by some previous filter (if they have a `gfm` class).
+- Nodes with the ancestor node that we want to ignore (`ignore_ancestor_query`).
+- Empty line.
+- Link tags with the empty `href` attribute.
+
+To avoid filtering such nodes for each `ReferenceFilter`, we do it only once and store the result in the result Hash of the pipeline as `result[:reference_filter_nodes]`.
+
+Pipeline `result` is passed to each filter for modification, so every time when `ReferenceFilter` replaces text or link tag, filtered list (`reference_filter_nodes`) will be updated for the next filter to use.
 
 ## Reference parsers
 

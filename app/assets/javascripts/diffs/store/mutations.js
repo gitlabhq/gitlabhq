@@ -323,6 +323,7 @@ export default {
   [types.SET_TREE_DATA](state, { treeEntries, tree }) {
     state.treeEntries = treeEntries;
     state.tree = tree;
+    state.isTreeLoaded = true;
   },
   [types.SET_RENDER_TREE_LIST](state, renderTreeList) {
     state.renderTreeList = renderTreeList;

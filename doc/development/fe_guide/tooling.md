@@ -40,7 +40,8 @@ yarn eslint-fix
 
 _If manual changes are required, a list of changes will be sent to the console._
 
-**Caution:** Limit use to global rule updates. Otherwise, the changes can lead to huge Merge Requests.
+CAUTION: **Caution:**
+Limit use to global rule updates. Otherwise, the changes can lead to huge Merge Requests.
 
 ### Disabling ESLint in new files
 

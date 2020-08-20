@@ -1,0 +1,5 @@
+---
+title: Refactor spec/policies and ee/spec/policies to fix SaveBang Cop
+merge_request: 37956
+author: Rajendra Kadam
+type: fixed

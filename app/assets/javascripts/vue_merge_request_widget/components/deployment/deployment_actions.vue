@@ -1,7 +1,7 @@
 <script>
 import { GlIcon } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
-import createFlash from '~/flash';
+import { deprecatedCreateFlash as createFlash } from '~/flash';
 import { visitUrl } from '~/lib/utils/url_utility';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import MRWidgetService from '../../services/mr_widget_service';

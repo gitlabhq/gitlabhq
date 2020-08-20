@@ -7,13 +7,12 @@ type: reference, howto, concepts
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/2772) in GitLab 9.0.
 
 GitLab supports up to 20 levels of subgroups, also known as nested groups or hierarchical groups.
-levels of groups.
 
 By using subgroups you can do the following:
 
 - **Separate internal / external organizations.** Since every group
-  can have its own visibility level, you are able to host groups for different
-  purposes under the same umbrella.
+  can have its own visibility level ([public, internal, or private](../../../development/permissions.md#general-permissions)),
+  you're able to host groups for different purposes under the same umbrella.
 - **Organize large projects.** For large projects, subgroups makes it
   potentially easier to separate permissions on parts of the source code.
 - **Make it easier to manage people and control visibility.** Give people

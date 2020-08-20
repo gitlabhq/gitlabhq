@@ -1,29 +1,27 @@
-import { __ } from '~/locale';
+import { STATUSES } from '../constants';
 
-export const namespaceSelectOptions = state => {
-  const serializedNamespaces = state.namespaces.map(({ fullPath }) => ({
-    id: fullPath,
-    text: fullPath,
-  }));
+export const isLoading = state => state.isLoadingRepos || state.isLoadingNamespaces;
 
-  return [
-    { text: __('Groups'), children: serializedNamespaces },
-    {
-      text: __('Users'),
-      children: [{ id: state.defaultTargetNamespace, text: state.defaultTargetNamespace }],
-    },
-  ];
+export const isImportingAnyRepo = state =>
+  state.repositories.some(repo =>
+    [STATUSES.SCHEDULING, STATUSES.SCHEDULED, STATUSES.STARTED].includes(repo.importStatus),
+  );
+
+export const hasIncompatibleRepos = state =>
+  state.repositories.some(repo => repo.importSource.incompatible);
+
+export const hasImportableRepos = state =>
+  state.repositories.some(repo => repo.importStatus === STATUSES.NONE);
+
+export const getImportTarget = state => repoId => {
+  if (state.customImportTargets[repoId]) {
+    return state.customImportTargets[repoId];
+  }
+
+  const repo = state.repositories.find(r => r.importSource.id === repoId);
+
+  return {
+    newName: repo.importSource.sanitizedName,
+    targetNamespace: state.defaultTargetNamespace,
+  };
 };
-
-export const isImportingAnyRepo = state => state.reposBeingImported.length > 0;
-
-export const hasProviderRepos = state => state.providerRepos.length > 0;
-
-export const hasImportedProjects = state => state.importedProjects.length > 0;
-
-export const hasIncompatibleRepos = state => state.incompatibleRepos.length > 0;
-
-export const reposPathWithFilter = ({ reposPath, filter = '' }) =>
-  filter ? `${reposPath}?filter=${filter}` : reposPath;
-export const jobsPathWithFilter = ({ jobsPath, filter = '' }) =>
-  filter ? `${jobsPath}?filter=${filter}` : jobsPath;

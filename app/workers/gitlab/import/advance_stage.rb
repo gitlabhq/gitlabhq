@@ -41,7 +41,7 @@ module Gitlab
           # complete the work fast enough.
           waiter.wait(BLOCKING_WAIT_TIME)
 
-          next unless waiter.jobs_remaining.positive?
+          next unless waiter.jobs_remaining > 0
 
           new_waiters[waiter.key] = waiter.jobs_remaining
         end

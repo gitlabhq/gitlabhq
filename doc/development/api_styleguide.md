@@ -13,7 +13,7 @@ Always use an [Entity](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/api/
 
 ## Documentation
 
-API endpoints must come with [documentation](documentation/styleguide.md#api), unless it is internal or behind a feature flag.
+API endpoints must come with [documentation](documentation/styleguide.md#restful-api), unless it is internal or behind a feature flag.
 The docs should be in the same merge request, or, if strictly necessary,
 in a follow-up with the same milestone as the original merge request.
 
@@ -85,7 +85,7 @@ User.create(params) # imagine the user submitted `admin=1`... :)
 User.create(declared(params, include_parent_namespaces: false).to_h)
 ```
 
->**Note:**
+NOTE: **Note:**
 `declared(params)` return a `Hashie::Mash` object, on which you will have to
 call `.to_h`.
 
@@ -173,7 +173,8 @@ guide on how you can add a new custom validator.
   validates the parameter value for different cases. Mainly, it checks whether a
   path is relative and does it contain `../../` relative traversal using
   `File::Separator` or not, and whether the path is absolute, for example
-  `/etc/passwd/`.
+  `/etc/passwd/`. By default, absolute paths are not allowed. However, you can optionally pass in an allowlist for allowed absolute paths in the following way:  
+  `requires :file_path, type: String, file_path: { allowlist: ['/foo/bar/', '/home/foo/', '/app/home'] }`
 
 - `Git SHA`:
 

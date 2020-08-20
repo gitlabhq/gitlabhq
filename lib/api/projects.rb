@@ -448,7 +448,7 @@ module API
           .execute.map { |lang| [lang.name, lang.share] }.to_h
       end
 
-      desc 'Remove a project'
+      desc 'Delete a project'
       delete ":id" do
         authorize! :remove_project, user_project
 

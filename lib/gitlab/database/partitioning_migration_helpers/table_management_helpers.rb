@@ -16,7 +16,9 @@ module Gitlab
         BATCH_SIZE = 50_000
 
         # Creates a partitioned copy of an existing table, using a RANGE partitioning strategy on a timestamp column.
-        # One partition is created per month between the given `min_date` and `max_date`.
+        # One partition is created per month between the given `min_date` and `max_date`. Also installs a trigger on
+        # the original table to copy writes into the partitioned table. To copy over historic data from before creation
+        # of the partitioned table, use the `enqueue_partitioning_data_migration` helper in a post-deploy migration.
         #
         # A copy of the original table is required as PG currently does not support partitioning existing tables.
         #
@@ -56,10 +58,10 @@ module Gitlab
           create_range_partitioned_copy(table_name, partitioned_table_name, partition_column, primary_key)
           create_daterange_partitions(partitioned_table_name, partition_column.name, min_date, max_date)
           create_trigger_to_sync_tables(table_name, partitioned_table_name, primary_key)
-          enqueue_background_migration(table_name, partitioned_table_name, primary_key)
         end
 
-        # Clean up a partitioned copy of an existing table. This deletes the partitioned table and all partitions.
+        # Clean up a partitioned copy of an existing table. First, deletes the database function and trigger that were
+        # used to copy writes to the partitioned table, then removes the partitioned table (also removing partitions).
         #
         # Example:
         #
@@ -68,8 +70,6 @@ module Gitlab
         def drop_partitioned_table_for(table_name)
           assert_table_is_allowed(table_name)
           assert_not_in_transaction_block(scope: ERROR_SCOPE)
-
-          cleanup_migration_jobs(table_name)
 
           with_lock_retries do
             trigger_name = make_sync_trigger_name(table_name)
@@ -81,6 +81,38 @@ module Gitlab
 
           partitioned_table_name = make_partitioned_table_name(table_name)
           drop_table(partitioned_table_name)
+        end
+
+        # Enqueue the background jobs that will backfill data in the partitioned table, by batch-copying records from
+        # original table. This helper should be called from a post-deploy migration.
+        #
+        # Example:
+        #
+        #   enqueue_partitioning_data_migration :audit_events
+        #
+        def enqueue_partitioning_data_migration(table_name)
+          assert_table_is_allowed(table_name)
+
+          assert_not_in_transaction_block(scope: ERROR_SCOPE)
+
+          partitioned_table_name = make_partitioned_table_name(table_name)
+          primary_key = connection.primary_key(table_name)
+          enqueue_background_migration(table_name, partitioned_table_name, primary_key)
+        end
+
+        # Cleanup a previously enqueued background migration to copy data into a partitioned table. This will not
+        # prevent the enqueued jobs from executing, but instead cleans up information in the database used to track the
+        # state of the background migration. It should be safe to also remove the partitioned table even if the
+        # background jobs are still in-progress, as the absence of the table will cause them to safely exit.
+        #
+        # Example:
+        #
+        #   cleanup_partitioning_data_migration :audit_events
+        #
+        def cleanup_partitioning_data_migration(table_name)
+          assert_table_is_allowed(table_name)
+
+          cleanup_migration_jobs(table_name)
         end
 
         def create_hash_partitions(table_name, number_of_partitions)

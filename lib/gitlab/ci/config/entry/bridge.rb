@@ -11,7 +11,7 @@ module Gitlab
         class Bridge < ::Gitlab::Config::Entry::Node
           include ::Gitlab::Ci::Config::Entry::Processable
 
-          ALLOWED_KEYS = %i[trigger allow_failure when needs].freeze
+          ALLOWED_KEYS = %i[trigger].freeze
 
           validations do
             validates :config, allowed_keys: ALLOWED_KEYS + PROCESSABLE_ALLOWED_KEYS

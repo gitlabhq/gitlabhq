@@ -5,7 +5,7 @@ import '~/boards/models/assignee';
 import '~/boards/models/issue';
 import '~/boards/models/list';
 import boardsStore from '~/boards/stores/boards_store';
-import { setMockEndpoints } from './mock_data';
+import { setMockEndpoints, mockIssue } from './mock_data';
 
 describe('Issue model', () => {
   let issue;
@@ -14,28 +14,7 @@ describe('Issue model', () => {
     setMockEndpoints();
     boardsStore.create();
 
-    issue = new ListIssue({
-      title: 'Testing',
-      id: 1,
-      iid: 1,
-      confidential: false,
-      labels: [
-        {
-          id: 1,
-          title: 'test',
-          color: 'red',
-          description: 'testing',
-        },
-      ],
-      assignees: [
-        {
-          id: 1,
-          name: 'name',
-          username: 'username',
-          avatar_url: 'http://avatar_url',
-        },
-      ],
-    });
+    issue = new ListIssue(mockIssue);
   });
 
   it('has label', () => {

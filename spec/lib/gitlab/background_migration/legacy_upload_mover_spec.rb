@@ -264,6 +264,7 @@ RSpec.describe Gitlab::BackgroundMigration::LegacyUploadMover do
     let(:remote_file) do
       { key: "#{legacy_upload.path}" }
     end
+
     let(:connection) { ::Fog::Storage.new(FileUploader.object_store_credentials) }
     let(:bucket) { connection.directories.create(key: 'uploads') }
 

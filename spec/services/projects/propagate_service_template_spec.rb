@@ -20,7 +20,7 @@ RSpec.describe Projects::PropagateServiceTemplate do
     end
 
     let!(:project) { create(:project) }
-    let(:excluded_attributes) { %w[id project_id template created_at updated_at title description] }
+    let(:excluded_attributes) { %w[id project_id template created_at updated_at default] }
 
     it 'creates services for projects' do
       expect(project.pushover_service).to be_nil
@@ -120,7 +120,7 @@ RSpec.describe Projects::PropagateServiceTemplate do
 
     describe 'external tracker' do
       it 'updates the project external tracker' do
-        service_template.update!(category: 'issue_tracker', default: false)
+        service_template.update!(category: 'issue_tracker')
 
         expect { described_class.propagate(service_template) }
           .to change { project.reload.has_external_issue_tracker }.to(true)

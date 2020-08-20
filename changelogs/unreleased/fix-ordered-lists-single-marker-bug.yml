@@ -1,0 +1,6 @@
+---
+title: 'Static Site Editor: Fix ordered list formatting bug and rendering bug in strong
+  and emphasis nodes with softbreaks'
+merge_request: 37964
+author:
+type: fixed

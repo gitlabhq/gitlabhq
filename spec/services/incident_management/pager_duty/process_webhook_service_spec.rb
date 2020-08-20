@@ -19,92 +19,68 @@ RSpec.describe IncidentManagement::PagerDuty::ProcessWebhookService do
 
     subject(:execute) { described_class.new(project, nil, webhook_payload).execute(token) }
 
-    context 'when pagerduty_webhook feature is enabled' do
-      before do
-        stub_feature_flags(pagerduty_webhook: project)
-      end
+    context 'when PagerDuty webhook setting is active' do
+      let_it_be(:incident_management_setting) { create(:project_incident_management_setting, project: project, pagerduty_active: true) }
 
-      context 'when PagerDuty webhook setting is active' do
-        let_it_be(:incident_management_setting) { create(:project_incident_management_setting, project: project, pagerduty_active: true) }
+      context 'when token is valid' do
+        let(:token) { incident_management_setting.pagerduty_token }
 
-        context 'when token is valid' do
-          let(:token) { incident_management_setting.pagerduty_token }
+        context 'when webhook payload has acceptable size' do
+          it 'responds with Accepted' do
+            result = execute
 
-          context 'when webhook payload has acceptable size' do
-            it 'responds with Accepted' do
-              result = execute
-
-              expect(result).to be_success
-              expect(result.http_status).to eq(:accepted)
-            end
-
-            it 'processes issues' do
-              incident_payload = ::PagerDuty::WebhookPayloadParser.call(webhook_payload).first['incident']
-
-              expect(::IncidentManagement::PagerDuty::ProcessIncidentWorker)
-                .to receive(:perform_async)
-                .with(project.id, incident_payload)
-                .once
-
-              execute
-            end
+            expect(result).to be_success
+            expect(result.http_status).to eq(:accepted)
           end
 
-          context 'when webhook payload is too big' do
-            let(:deep_size) { instance_double(Gitlab::Utils::DeepSize, valid?: false) }
+          it 'processes issues' do
+            incident_payload = ::PagerDuty::WebhookPayloadParser.call(webhook_payload).first['incident']
 
-            before do
-              allow(Gitlab::Utils::DeepSize)
-                .to receive(:new)
-                .with(webhook_payload, max_size: described_class::PAGER_DUTY_PAYLOAD_SIZE_LIMIT)
-                .and_return(deep_size)
-            end
+            expect(::IncidentManagement::PagerDuty::ProcessIncidentWorker)
+              .to receive(:perform_async)
+              .with(project.id, incident_payload)
+              .once
 
-            it 'responds with Bad Request' do
-              result = execute
-
-              expect(result).to be_error
-              expect(result.http_status).to eq(:bad_request)
-            end
-
-            it_behaves_like 'does not process incidents'
-          end
-
-          context 'when webhook payload is blank' do
-            let(:webhook_payload) { nil }
-
-            it 'responds with Accepted' do
-              result = execute
-
-              expect(result).to be_success
-              expect(result.http_status).to eq(:accepted)
-            end
-
-            it_behaves_like 'does not process incidents'
+            execute
           end
         end
 
-        context 'when token is invalid' do
-          let(:token) { 'invalid-token' }
+        context 'when webhook payload is too big' do
+          let(:deep_size) { instance_double(Gitlab::Utils::DeepSize, valid?: false) }
 
-          it 'responds with Unauthorized' do
+          before do
+            allow(Gitlab::Utils::DeepSize)
+              .to receive(:new)
+              .with(webhook_payload, max_size: described_class::PAGER_DUTY_PAYLOAD_SIZE_LIMIT)
+              .and_return(deep_size)
+          end
+
+          it 'responds with Bad Request' do
             result = execute
 
             expect(result).to be_error
-            expect(result.http_status).to eq(:unauthorized)
+            expect(result.http_status).to eq(:bad_request)
+          end
+
+          it_behaves_like 'does not process incidents'
+        end
+
+        context 'when webhook payload is blank' do
+          let(:webhook_payload) { nil }
+
+          it 'responds with Accepted' do
+            result = execute
+
+            expect(result).to be_success
+            expect(result.http_status).to eq(:accepted)
           end
 
           it_behaves_like 'does not process incidents'
         end
       end
 
-      context 'when both tokens are nil' do
-        let_it_be(:incident_management_setting) { create(:project_incident_management_setting, project: project, pagerduty_active: false) }
-        let(:token) { nil }
-
-        before do
-          incident_management_setting.update_column(:pagerduty_active, true)
-        end
+      context 'when token is invalid' do
+        let(:token) { 'invalid-token' }
 
         it 'responds with Unauthorized' do
           result = execute
@@ -115,25 +91,28 @@ RSpec.describe IncidentManagement::PagerDuty::ProcessWebhookService do
 
         it_behaves_like 'does not process incidents'
       end
-
-      context 'when PagerDuty webhook setting is not active' do
-        let_it_be(:incident_management_setting) { create(:project_incident_management_setting, project: project, pagerduty_active: false) }
-
-        it 'responds with Forbidden' do
-          result = execute
-
-          expect(result).to be_error
-          expect(result.http_status).to eq(:forbidden)
-        end
-
-        it_behaves_like 'does not process incidents'
-      end
     end
 
-    context 'when pagerduty_webhook feature is disabled' do
+    context 'when both tokens are nil' do
+      let_it_be(:incident_management_setting) { create(:project_incident_management_setting, project: project, pagerduty_active: false) }
+      let(:token) { nil }
+
       before do
-        stub_feature_flags(pagerduty_webhook: false)
+        incident_management_setting.update_column(:pagerduty_active, true)
       end
+
+      it 'responds with Unauthorized' do
+        result = execute
+
+        expect(result).to be_error
+        expect(result.http_status).to eq(:unauthorized)
+      end
+
+      it_behaves_like 'does not process incidents'
+    end
+
+    context 'when PagerDuty webhook setting is not active' do
+      let_it_be(:incident_management_setting) { create(:project_incident_management_setting, project: project, pagerduty_active: false) }
 
       it 'responds with Forbidden' do
         result = execute

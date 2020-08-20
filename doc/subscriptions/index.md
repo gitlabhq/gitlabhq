@@ -76,7 +76,7 @@ Every occupied seat, whether by person, job, or bot is counted in the subscripti
 renewal of a subscription won't be counted as active users for the renewal subscription. They may
 count as active users in the subscription period in which they were originally added.
 - Members with Guest permissions on an Ultimate subscription.
-- GitLab-created service accounts: `Ghost User` and `Support Bot`.
+- GitLab-created service accounts: `Ghost User`, `Support Bot` and [`Project bot users`](../user/project/settings/project_access_tokens.md#project-bot-users).
 
 ##### Users statistics
 
@@ -126,38 +126,78 @@ If you're purchasing a subscription for an existing **Core** self-managed
 instance, ensure you're purchasing enough seats to
 [cover your users](../user/admin_area/index.md#administering-users).
 
+### Credit card declined
+
+If your credit card is declined when purchasing a GitLab subscription, possible reasons include:
+
+- The credit card details provided are incorrect.
+- The credit card account has insufficient funds.
+- You are using a virtual credit card and it has insufficient funds, or has expired.
+- The transaction exceeds the credit limit.
+- The transaction exceeds the credit card's maximum transaction amount.
+
+Check with your financial institution to confirm if any of these reasons apply. If they don't
+apply, contact [GitLab Support](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=360000071293).
+
 ## Manage your GitLab account
 
 With the [Customers Portal](https://customers.gitlab.com/) you can:
 
-- [Change billing and company information](#change-billing-information)
-- [Change the payment method](#change-payment-method)
+- [Change your personal details](#change-your-personal-details)
+- [Change your company details](#change-your-company-details)
+- [Change your payment method](#change-your-payment-method)
 - [Change the linked account](#change-the-linked-account)
 - [Change the associated namespace](#change-the-associated-namespace)
 - [Change customers portal account password](#change-customer-portal-account-password)
 
-### Change billing information
+### Change your personal details
 
-To change billing information:
+Your personal details are used on invoices. Your email address is used for the Customers Portal
+login and license-related email.
+
+To change your personal details, including name and billing address:
 
 1. Log in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in).
-1. Select the **My account** drop-down and click on **Payment methods**.
-1. Make the required changes to the **Account Details** information.
+1. Select **My account > Account details**.
+1. Expand the **Personal details** section.
+1. Edit your personal details.
 1. Click **Save changes**.
 
-NOTE: **Note:**
-Future purchases will use the information in this section.
-The email listed in this section is used for the Customers Portal
-login and for license-related email communication.
+### Change your company details
 
-### Change payment method
-
-To change payment method or update credit card information:
+To change your company details, including company name and VAT number:
 
 1. Log in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in).
-1. Select the **My account** drop-down and click on **Payment methods**.
-1. **Edit** the existing payment method information or **Add new payment method**.
-1. Save changes.
+1. Select **My account > Account details**.
+1. Expand the **Company details** section.
+1. Edit the company details.
+1. Click **Save changes**.
+
+### Change your payment method
+
+Purchases in the Customers Portal require a credit card on record as a payment method. You can add
+multiple credit cards to your account, so that purchases for different products are charged to the
+correct card.
+
+If you would like to use an alternative method to pay, please [contact our Sales
+team](https://about.gitlab.com/sales/).
+
+To change your payment method:
+
+1. Log in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in).
+1. Select **My account > Payment methods**.
+1. **Edit** an existing payment method's information or **Add new payment method**.
+1. Click **Save Changes**.
+
+#### Set a default payment method
+
+Automatic renewal of a subscription is charged to your default payment method. To mark a payment
+method as the default:
+
+1. Log in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in).
+1. Select **My account > Payment methods**.
+1. **Edit** the selected payment method and check the **Make default payment method** checkbox.
+1. Click **Save Changes**.
 
 ### Change the linked account
 
@@ -196,32 +236,38 @@ To change the password for this customers portal account:
 
 ## View your subscription
 
+You can view details of your subscription in either GitLab.com or your self-managed instance:
+
+- [View your GitLab.com subscription](#view-your-gitlabcom-subscription)
+- [View your self-managed subscription](#view-your-self-managed-subscription)
+
 ### View your GitLab.com subscription
 
-To see the status of your GitLab.com subscription, log into GitLab.com and go to the **Billing** section of the relevant namespace:
+To see the status of your GitLab.com subscription, log in to GitLab.com and go to the **Billing** section of the relevant namespace:
 
 - For individuals:
   1. Go to **User Avatar > Settings**.
   1. Click **Billing**.
 - For groups:
   1. From the group page (*not* from a project within the group), go to **Settings > Billing**.
+     You must have Owner level permission to view a group's billing page.
 
 The following table describes details of your subscription for groups:
 
-| Field | Description |
-| ------ | ------ |
-| Seats in subscription | If this is a paid plan, represents the number of seats you've paid to support in your group. |
-| Seats currently in use | Number of active seats currently in use. |
-| Max seats used | Highest number of seats you've used. If this exceeds the seats in subscription, you may owe an additional fee for the additional users. |
-| Seats owed | If your maximum seats used exceeds the seats in your subscription, you'll owe an additional fee for the users you've added. |
-| Subscription start date | Date your subscription started. If this is for a Free plan, is the date you transitioned off your group's paid plan. |
-| Subscription end date | Date your current subscription will end. Does not apply to Free plans. |
+| Field                   | Description                                                                                                                             |
+|-------------------------|-----------------------------------------------------------------------------------------------------------------------------------------|
+| **Seats in subscription**   | If this is a paid plan, represents the number of seats you've paid to support in your group.                                            |
+| **Seats currently in use** | Number of active seats currently in use.                                                                                                |
+| **Max seats used**          | Highest number of seats you've used. If this exceeds the seats in subscription, you may owe an additional fee for the additional users. |
+| **Seats owed**              | If your maximum seats used exceeds the seats in your subscription, you'll owe an additional fee for the users you've added.             |
+| **Subscription start date** | Date your subscription started. If this is for a Free plan, is the date you transitioned off your group's paid plan.                    |
+| **Subscription end date**   | Date your current subscription will end. Does not apply to Free plans.                                                                  |
 
 ### View your self-managed subscription
 
-To view the status of your self-managed subscription, log into the self-managed instance and go to the **License** page.
+To view the status of your self-managed subscription, log in to the self-managed instance and go to the **License** page.
 
-  1. Go to **{admin}** **Admin Area**.
+  1. Go to **Admin Area**.
   1. From the left-hand menu, select **License**.
 
 ## Renew your subscription
@@ -353,8 +399,7 @@ You can view the exact JSON payload in the administration panel. To view the pay
 
 Seat Link is enabled by default.
 
-To disable this feature, go to
-**{admin}** **Admin Area > Settings > Metrics and profiling**, uncheck the **Enable Seat Link** checkbox > **Save changes**.
+To disable this feature, go to **Admin Area > Settings > Metrics and profiling**, uncheck the **Enable Seat Link** checkbox > **Save changes**.
 
 To disable Seat Link in an Omnibus GitLab installation, and prevent it from
 being configured in the future through the administration panel, set the following in
@@ -409,7 +454,7 @@ We recommend following these steps during renewal:
 1. Enter the number of [users over license](#users-over-license) in the second box for the user overage incurred in your previous subscription term.
 
    TIP: **Tip:**
-   You can find the _users over license_ in your instance's **Admin** dashboard by clicking on **{admin}** (**Admin Area**) in the top bar, or going to `/admin`.
+   You can find the _users over license_ in your instance's **Admin** dashboard by clicking on the **Admin Area** in the top bar, or going to `/admin`.
 
    The following table describes details of your admin dashboard and renewal terms:
 
@@ -486,8 +531,8 @@ CI pipeline minutes are the execution time for your [pipelines](../ci/pipelines/
 
 Quotas apply to:
 
-- Groups, where the minutes are shared across all members of the group, its subgroups, and nested projects. To view the group's usage, navigate to the group, then **{settings}** **Settings** > **Usage Quotas**.
-- Your personal account, where the minutes are available for your personal projects. To view and buy personal minutes, click your avatar, then **{settings}** **Settings** > **[Usage Quotas](https://gitlab.com/profile/usage_quotas#pipelines-quota-tab)**.
+- Groups, where the minutes are shared across all members of the group, its subgroups, and nested projects. To view the group's usage, navigate to the group, then **Settings > Usage Quotas**.
+- Your personal account, where the minutes are available for your personal projects. To view and buy personal minutes, click your avatar, then **Settings > [Usage Quotas](https://gitlab.com/profile/usage_quotas#pipelines-quota-tab)**.
 
 Only pipeline minutes for GitLab shared runners are restricted. If you have a specific runner set up for your projects, there is no limit to your build time on GitLab.com.
 
@@ -507,11 +552,11 @@ main quota. You can find pricing for additional CI/CD minutes in the [GitLab Cus
 
 To purchase additional minutes for your group on GitLab.com:
 
-1. From your group, go to **{settings}** **Settings > Usage Quotas**.
+1. From your group, go to **Settings > Usage Quotas**.
 1. Select **Buy additional minutes** and you will be directed to the Customers Portal.
 1. Locate the subscription card that's linked to your group on GitLab.com, click **Buy more CI minutes**, and complete the details about the transaction.
 1. Once we have processed your payment, the extra CI minutes will be synced to your group namespace.
-1. To confirm the available CI minutes, go to your group, then **{settings}** **Settings > Usage Quotas**.
+1. To confirm the available CI minutes, go to your group, then **Settings > Usage Quotas**.
 
    The **Additional minutes** displayed now includes the purchased additional CI minutes, plus any minutes rolled over from last month.
 

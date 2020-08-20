@@ -24,6 +24,18 @@ module ClustersHelper
     }
   end
 
+  def js_cluster_form_data(cluster, can_edit)
+    {
+      enabled: cluster.enabled?.to_s,
+      editable: can_edit.to_s,
+      environment_scope: cluster.environment_scope,
+      base_domain: cluster.base_domain,
+      application_ingress_external_ip: cluster.application_ingress_external_ip,
+      auto_devops_help_path: help_page_path('topics/autodevops/index'),
+      external_endpoint_help_path: help_page_path('user/clusters/applications.md', anchor: 'pointing-your-dns-at-the-external-endpoint')
+    }
+  end
+
   # This method is depreciated and will be removed when associated HAML files are moved to JavaScript
   def provider_icon(provider = nil)
     img_data = js_clusters_list_data.dig(:img_tags, provider&.to_sym) ||

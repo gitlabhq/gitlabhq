@@ -45,7 +45,7 @@ export default {
 };
 </script>
 <template>
-  <gl-new-dropdown :text="$options.labels.defaultLabel" category="primary" variant="info">
+  <gl-new-dropdown right :text="$options.labels.defaultLabel" category="primary" variant="info">
     <div class="pb-2 mx-1">
       <template v-if="sshLink">
         <gl-new-dropdown-header>{{ $options.labels.ssh }}</gl-new-dropdown-header>

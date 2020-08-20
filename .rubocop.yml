@@ -9,6 +9,7 @@ require:
 inherit_from:
   - .rubocop_todo.yml
   - ./rubocop/rubocop-migrations.yml
+  - ./rubocop/rubocop-usage-data.yml
 
 inherit_mode:
   merge:
@@ -335,6 +336,15 @@ Graphql/AuthorizeTypes:
     - 'spec/**/*.rb'
     - 'ee/spec/**/*.rb'
 
+Graphql/JSONType:
+  Enabled: true
+  Include:
+    - 'app/graphql/**/*'
+    - 'ee/app/graphql/**/*'
+  Exclude:
+    - 'spec/**/*.rb'
+    - 'ee/spec/**/*.rb'
+
 RSpec/EnvAssignment:
   Enable: true
   Include:
@@ -433,6 +443,11 @@ RSpec/HaveGitlabHttpStatus:
 Style/MultilineWhenThen:
   Enabled: false
 
+# We use EnforcedStyle of comparison here due to it being better
+# performing code as seen in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/36221#note_375659681
+Style/NumericPredicate:
+  EnforcedStyle: comparison
+
 Style/FloatDivision:
   Enabled: false
 
@@ -455,8 +470,10 @@ Rails/TimeZone:
   Include:
     - 'app/controllers/**/*'
     - 'app/services/**/*'
+    - 'lib/**/*'
     - 'spec/controllers/**/*'
     - 'spec/services/**/*'
+    - 'spec/lib/**/*'
     - 'ee/app/controllers/**/*'
     - 'ee/app/services/**/*'
     - 'ee/spec/controllers/**/*'
@@ -469,7 +486,8 @@ Rails/TimeZone:
     - 'spec/workers/**/*'
     - 'ee/app/workers/**/*'
     - 'ee/spec/workers/**/*'
-
+    - 'ee/lib/**/*'
+    - 'ee/spec/lib/**/*'
 
 # WIP: See https://gitlab.com/gitlab-org/gitlab/-/issues/220040
 Rails/SaveBang:
@@ -481,3 +499,13 @@ Rails/SaveBang:
     - 'ee/spec/**/*.rb'
     - 'qa/spec/**/*.rb'
     - 'qa/qa/specs/**/*.rb'
+
+Cop/PutProjectRoutesUnderScope:
+  Include:
+    - 'config/routes/project.rb'
+    - 'ee/config/routes/project.rb'
+
+Cop/PutGroupRoutesUnderScope:
+  Include:
+    - 'config/routes/group.rb'
+    - 'ee/config/routes/group.rb'

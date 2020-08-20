@@ -1,3 +1,10 @@
+---
+stage: Create
+group: Source Code
+info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers"
+type: reference, api
+---
+
 # Internal API
 
 The internal API is used by different GitLab components, it can not be
@@ -24,10 +31,11 @@ authentication.
 
 ## Git Authentication
 
-This is called by Gitaly and GitLab-shell to check access to a
+This is called by [Gitaly](https://gitlab.com/gitlab-org/gitaly) and
+[GitLab Shell](https://gitlab.com/gitlab-org/gitlab-shell) to check access to a
 repository.
 
-When called from GitLab-shell no changes are passed and the internal
+When called from GitLab Shell no changes are passed and the internal
 API replies with the information needed to pass the request on to
 Gitaly.
 
@@ -40,13 +48,13 @@ POST /internal/allowed
 
 | Attribute | Type   | Required | Description |
 |:----------|:-------|:---------|:------------|
-| `key_id`  | string | no       | ID of the SSH-key used to connect to GitLab-shell |
-| `username` | string | no      | Username from the certificate used to connect to GitLab-Shell |
+| `key_id`  | string | no       | ID of the SSH-key used to connect to GitLab Shell |
+| `username` | string | no      | Username from the certificate used to connect to GitLab Shell |
 | `project`  | string | no (if `gl_repository` is passed) | Path to the project |
 | `gl_repository`  | string | no (if `project` is passed) | Repository identifier (e.g. `project-7`) |
 | `protocol` | string | yes     | SSH when called from GitLab-shell, HTTP or SSH when called from Gitaly |
 | `action`   | string | yes     | Git command being run (`git-upload-pack`, `git-receive-pack`, `git-upload-archive`) |
-| `changes`  | string | yes     | `<oldrev> <newrev> <refname>` when called from Gitaly, The magic string `_any` when called from GitLab Shell |
+| `changes`  | string | yes     | `<oldrev> <newrev> <refname>` when called from Gitaly, the magic string `_any` when called from GitLab Shell |
 | `check_ip` | string | no     | IP address from which call to GitLab Shell was made |
 
 Example request:
@@ -84,17 +92,17 @@ Example response:
 ### Known consumers
 
 - Gitaly
-- GitLab-shell
+- GitLab Shell
 
 ## LFS Authentication
 
-This is the endpoint that gets called from GitLab-shell to provide
+This is the endpoint that gets called from GitLab Shell to provide
 information for LFS clients when the repository is accessed over SSH.
 
 | Attribute | Type   | Required | Description |
 |:----------|:-------|:---------|:------------|
-| `key_id`  | string | no       | ID of the SSH-key used to connect to GitLab-shell |
-| `username`| string | no       | Username from the certificate used to connect to GitLab-Shell |
+| `key_id`  | string | no       | ID of the SSH-key used to connect to GitLab Shell |
+| `username`| string | no       | Username from the certificate used to connect to GitLab Shell |
 | `project` | string | no       | Path to the project |
 
 Example request:
@@ -114,17 +122,17 @@ curl --request POST --header "Gitlab-Shared-Secret: <Base64 encoded token>" --da
 
 ### Known consumers
 
-- GitLab-shell
+- GitLab Shell
 
 ## Authorized Keys Check
 
-This endpoint is called by the GitLab-shell authorized keys
+This endpoint is called by the GitLab Shell authorized keys
 check. Which is called by OpenSSH for [fast SSH key
 lookup](../administration/operations/fast_ssh_key_lookup.md).
 
 | Attribute | Type   | Required | Description |
 |:----------|:-------|:---------|:------------|
-| `key`     | string | yes      | SSH key as passed by OpenSSH to GitLab-shell |
+| `key`     | string | yes      | SSH key as passed by OpenSSH to GitLab Shell |
 
 ```plaintext
 GET /internal/authorized_keys
@@ -149,7 +157,7 @@ Example response:
 
 ### Known consumers
 
-- GitLab-shell
+- GitLab Shell
 
 ## Get user for user ID or key
 
@@ -159,7 +167,7 @@ discovers the user associated with an SSH key.
 | Attribute | Type   | Required | Description |
 |:----------|:-------|:---------|:------------|
 | `key_id` | integer | no | The ID of the SSH key used as found in the authorized-keys file or through the `/authorized_keys` check |
-| `username` | string | no | Username of the user being looked up, used by GitLab-shell when authenticating using a certificate |
+| `username` | string | no | Username of the user being looked up, used by GitLab Shell when authenticating using a certificate |
 
 ```plaintext
 GET /internal/discover
@@ -183,12 +191,12 @@ Example response:
 
 ### Known consumers
 
-- GitLab-shell
+- GitLab Shell
 
 ## Instance information
 
 This gets some generic information about the instance. This is used
-by Geo nodes to get information about each other
+by Geo nodes to get information about each other.
 
 ```plaintext
 GET /internal/check
@@ -214,12 +222,12 @@ Example response:
 ### Known consumers
 
 - GitLab Geo
-- GitLab-shell's `bin/check`
+- GitLab Shell's `bin/check`
 
 ## Get new 2FA recovery codes using an SSH key
 
-This is called from GitLab-shell and allows users to get new 2FA
-recovery codes based on their SSH key
+This is called from GitLab Shell and allows users to get new 2FA
+recovery codes based on their SSH key.
 
 | Attribute | Type   | Required | Description |
 |:----------|:-------|:---------|:------------|
@@ -258,7 +266,45 @@ Example response:
 
 ### Known consumers
 
-- GitLab-shell
+- GitLab Shell
+
+## Get new personal access-token
+
+This is called from GitLab Shell and allows users to generate a new
+personal access token.
+
+| Attribute | Type   | Required | Description |
+|:----------|:-------|:---------|:------------|
+| `name` | string | yes | The name of the new token |
+| `scopes` | string array | yes | The authorization scopes for the new token, these must be valid token scopes |
+| `expires_at` | string | no | The expiry date for the new token |
+| `key_id`  | integer | no | The ID of the SSH key used as found in the authorized-keys file or through the `/authorized_keys` check |
+| `user_id` | integer | no | User\_id for which to generate the new token |
+
+```plaintext
+POST /internal/personal_access_token
+```
+
+Example request:
+
+```shell
+curl --request POST --header "Gitlab-Shared-Secret: <Base64 encoded secret>" --data "user_id=29&name=mytokenname&scopes[]=read_user&scopes[]=read_repository&expires_at=2020-07-24" http://localhost:3001/api/v4/internal/personal_access_token
+```
+
+Example response:
+
+```json
+{
+  "success": true,
+  "token": "Hf_79B288hRv_3-TSD1R",
+  "scopes": ["read_user","read_repository"],
+  "expires_at": "2020-07-24"
+}
+```
+
+### Known consumers
+
+- GitLab Shell
 
 ## Incrementing counter on pre-receive
 

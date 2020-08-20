@@ -66,6 +66,13 @@ class NotificationService
     mailer.access_token_about_to_expire_email(user).deliver_later
   end
 
+  # Notify the user when at least one of their personal access tokens has expired today
+  def access_token_expired(user)
+    return unless user.can?(:receive_notifications)
+
+    mailer.access_token_expired_email(user).deliver_later
+  end
+
   # Notify a user when a previously unknown IP or device is used to
   # sign in to their account
   def unknown_sign_in(user, ip, time)
@@ -424,8 +431,8 @@ class NotificationService
   end
 
   def project_was_moved(project, old_path_with_namespace)
-    recipients = project.private? ? project.team.members_in_project_and_ancestors : project.team.members
-    recipients = notifiable_users(recipients, :mention, project: project)
+    recipients = project_moved_recipients(project)
+    recipients = notifiable_users(recipients, :custom, custom_action: :moved_project, project: project)
 
     recipients.each do |recipient|
       mailer.project_was_moved_email(
@@ -703,6 +710,14 @@ class NotificationService
     end
 
     recipients
+  end
+
+  def project_moved_recipients(project)
+    finder = MembersFinder.new(project, nil, params: {
+      active_without_invites_and_requests: true,
+      owners_and_maintainers: true
+    })
+    finder.execute.preload_user_and_notification_settings.map(&:user)
   end
 
   def project_maintainers_recipients(target, action:)

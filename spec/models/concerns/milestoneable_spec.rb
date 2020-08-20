@@ -103,7 +103,7 @@ RSpec.describe Milestoneable do
   end
 
   describe 'release scopes' do
-    let_it_be(:project) { create(:project) }
+    let_it_be(:project) { create(:project, :repository) }
 
     let_it_be(:release_1) { create(:release, tag: 'v1.0', project: project) }
     let_it_be(:release_2) { create(:release, tag: 'v2.0', project: project) }
@@ -125,6 +125,22 @@ RSpec.describe Milestoneable do
     let_it_be(:issue_6) { create(:issue, project: project) }
 
     let_it_be(:items) { Issue.all }
+
+    describe '#any_milestone' do
+      context 'when milestone filter is present and related closing issues are joined' do
+        let_it_be(:merge_request_1) { create(:merge_request, source_project: project, source_branch: 'feature-1') }
+        let_it_be(:merge_request_2) { create(:merge_request, source_project: project, source_branch: 'feature-2') }
+
+        let_it_be(:mrc_issue_1) { create(:merge_requests_closing_issues, issue: issue_1, merge_request: merge_request_1) }
+        let_it_be(:mrc_issue_2) { create(:merge_requests_closing_issues, issue: issue_2, merge_request: merge_request_2) }
+
+        it 'returns merge request closing issues of any milestone' do
+          relation = items.joins(merge_requests_closing_issues: :issue).any_milestone
+
+          expect(relation).to contain_exactly(issue_1, issue_2)
+        end
+      end
+    end
 
     describe '#without_release' do
       it 'returns the issues not tied to any milestone and the ones tied to milestone with no release' do

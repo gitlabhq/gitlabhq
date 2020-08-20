@@ -3,7 +3,8 @@ query SnippetBlobContent($ids: [ID!], $rich: Boolean!) {
     edges {
       node {
         id
-        blob {
+        blobs {
+          path
           richData @include(if: $rich)
           plainData @skip(if: $rich)
         }

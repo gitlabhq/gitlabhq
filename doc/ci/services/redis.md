@@ -34,7 +34,7 @@ And that's it. Redis will now be available to be used within your testing
 framework.
 
 You can also use any other Docker image available on [Docker Hub](https://hub.docker.com/_/redis).
-For example, to use Redis 2.8 the service becomes `redis:2.8`.
+For example, to use Redis 6.0 the service becomes `redis:6.0`.
 
 ## Use Redis with the Shell executor
 

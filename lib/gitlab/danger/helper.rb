@@ -53,7 +53,7 @@ module Gitlab
 
       def ee?
         # Support former project name for `dev` and support local Danger run
-        %w[gitlab gitlab-ee].include?(ENV['CI_PROJECT_NAME']) || Dir.exist?('../../ee')
+        %w[gitlab gitlab-ee].include?(ENV['CI_PROJECT_NAME']) || Dir.exist?(File.expand_path('../../../ee', __dir__))
       end
 
       def gitlab_helper
@@ -124,7 +124,7 @@ module Gitlab
       }.freeze
       # First-match win, so be sure to put more specific regex at the top...
       CATEGORIES = {
-        [%r{usage_data}, %r{^(\+|-).*(count|distinct_count)\(.*\)(.*)$}] => [:database, :backend],
+        [%r{usage_data\.rb}, %r{^(\+|-).*(count|distinct_count)\(.*\)(.*)$}] => [:database, :backend],
 
         %r{\Adoc/.*(\.(md|png|gif|jpg))\z} => :docs,
         %r{\A(CONTRIBUTING|LICENSE|MAINTENANCE|PHILOSOPHY|PROCESS|README)(\.md)?\z} => :docs,
@@ -170,10 +170,15 @@ module Gitlab
         %r{\A(ee/)?(danger/|lib/gitlab/danger/)} => :engineering_productivity,
         %r{\A(ee/)?scripts/} => :engineering_productivity,
         %r{\Atooling/} => :engineering_productivity,
+        %r{(CODEOWNERS)} => :engineering_productivity,
+
+        %r{\A(ee/)?spec/features/} => :test,
+        %r{\A(ee/)?spec/support/shared_examples/features/} => :test,
+        %r{\A(ee/)?spec/support/shared_contexts/features/} => :test,
+        %r{\A(ee/)?spec/support/helpers/features/} => :test,
 
         %r{\A(ee/)?app/(?!assets|views)[^/]+} => :backend,
         %r{\A(ee/)?(bin|config|generator_templates|lib|rubocop)/} => :backend,
-        %r{\A(ee/)?spec/features/} => :test,
         %r{\A(ee/)?spec/} => :backend,
         %r{\A(ee/)?vendor/} => :backend,
         %r{\A(Gemfile|Gemfile.lock|Rakefile)\z} => :backend,
@@ -247,6 +252,10 @@ module Gitlab
         return '' unless labels.any?
 
         "/label #{labels_list(labels, sep: ' ')}"
+      end
+
+      def changed_files(regex)
+        all_changed_files.grep(regex)
       end
 
       private

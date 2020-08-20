@@ -129,7 +129,7 @@ the components outlined above and the pre-loaded demo runbook.
    %env DB_NAME={project.variables.get('DB_NAME').value}
    ```
 
-   1. Navigate to **{settings}** **Settings >> CI/CD >> Variables** to create
+   1. Navigate to **Settings > CI/CD > Variables** to create
       the variables in your project.
 
       ![GitLab variables](img/gitlab-variables.png)

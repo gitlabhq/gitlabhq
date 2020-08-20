@@ -1,7 +1,7 @@
+import { TEST_HOST } from 'jest/helpers/test_constants';
 import * as utilsHelper from '~/image_diff/helpers/utils_helper';
 import ImageBadge from '~/image_diff/image_badge';
 import * as mockData from '../mock_data';
-import { TEST_HOST } from 'jest/helpers/test_constants';
 
 describe('utilsHelper', () => {
   const { noteId, discussionId, image, imageProperties, imageMeta } = mockData;

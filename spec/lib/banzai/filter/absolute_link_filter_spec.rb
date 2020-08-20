@@ -12,6 +12,7 @@ RSpec.describe Banzai::Filter::AbsoluteLinkFilter do
       let(:only_path_context) do
         { only_path: false }
       end
+
       let(:fake_url) { 'http://www.example.com' }
 
       before do

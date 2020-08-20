@@ -25,7 +25,7 @@ class ContextCommitsFinder
       if search.present?
         search_commits
       else
-        project.repository.commits(merge_request.source_branch, { limit: limit, offset: offset })
+        project.repository.commits(merge_request.target_branch, { limit: limit, offset: offset })
       end
 
     commits
@@ -47,7 +47,7 @@ class ContextCommitsFinder
         commits = [commit_by_sha] if commit_by_sha
       end
     else
-      commits = project.repository.find_commits_by_message(search, nil, nil, 20)
+      commits = project.repository.find_commits_by_message(search, merge_request.target_branch, nil, 20)
     end
 
     commits

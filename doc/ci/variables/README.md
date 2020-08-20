@@ -74,8 +74,8 @@ pages:
     - echo $CI_PAGES_DOMAIN
 ```
 
-For GitLab.com users, the output will be `gitlab.io`. For your
-private instance, the output will be whatever your sysadmin has
+For GitLab.com users, the output is `gitlab.io`. For your
+private instance, the output is whatever your sysadmin has
 defined.
 
 ## Custom environment variables
@@ -120,8 +120,8 @@ From within the UI, you can add or update custom environment variables:
     - **Value**: No limitations.
     - **Type**: `File` or `Variable`.
     - **Environment scope**: `All`, or specific environments.
-    - **Protect variable** (Optional): If selected, the variable will only be available in pipelines that run on protected branches or tags.
-    - **Mask variable** (Optional): If selected, the variable's **Value** will be masked in job logs. The variable fails to save if the value does not meet the [masking requirements](#masked-variable-requirements).
+    - **Protect variable** (Optional): If selected, the variable is only available in pipelines that run on protected branches or tags.
+    - **Mask variable** (Optional): If selected, the variable's **Value** is masked in job logs. The variable fails to save if the value does not meet the [masking requirements](#masked-variable-requirements).
 
 After a variable is created, you can update any of the details by clicking the **{pencil}** **Edit** button.
 
@@ -137,7 +137,7 @@ test_variable:
     - cat $GREETING # the temp file itself contains the variable value
 ```
 
-The output will be:
+The output is:
 
 ![Output custom variable](img/custom_variables_output.png)
 
@@ -187,7 +187,7 @@ kubectl config set-cluster e2e --server="$KUBE_URL" --certificate-authority="$KU
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/13784) in GitLab 11.10
 
-Variables can be masked so that the value of the variable will be hidden in job logs.
+Variables can be masked so that the value of the variable is hidden in job logs.
 
 To mask a variable:
 
@@ -308,7 +308,7 @@ job_name:
 
 You can also list all environment variables with the `export` command in Bash
 or `dir env:` command in PowerShell.
-Be aware that this will also expose the values of all the variables
+Be aware that this also exposes the values of all the variables
 you set, in the job log:
 
 ```yaml
@@ -376,8 +376,8 @@ These variables are saved in the repository, and they
 are meant to store non-sensitive project configuration, like `RAILS_ENV` or
 `DATABASE_URL`.
 
-For example, if you set the variable below globally (not inside a job), it will
-be used in all executed commands and scripts:
+For example, if you set the variable below globally (not inside a job), it is
+used in all executed commands and scripts:
 
 ```yaml
 variables:
@@ -419,9 +419,9 @@ Group-level variables can be added by:
 
 1. Navigating to your group's **Settings > CI/CD** page.
 1. Inputting variable types, keys, and values in the **Variables** section.
-   Any variables of [subgroups](../../user/group/subgroups/index.md) will be inherited recursively.
+   Any variables of [subgroups](../../user/group/subgroups/index.md) are inherited recursively.
 
-Once you set them, they will be available for all subsequent pipelines. Any group-level user defined variables can be viewed in projects by:
+Once you set them, they are available for all subsequent pipelines. Any group-level user defined variables can be viewed in projects by:
 
 1. Navigating to the project's **Settings > CI/CD** page.
 1. Expanding the **Variables** section.
@@ -444,11 +444,11 @@ To add an instance-level variable:
 1. Navigate to your admin area's **Settings > CI/CD** and expand the **Variables** section.
 1. Click the **Add variable** button, and fill in the details:
 
-    - **Key**: Must be one line, using only letters, numbers, or `_` (underscore), with no spaces.
-    - **Value**: 700 characters allowed.
-    - **Type**: `File` or `Variable`.
-    - **Protect variable** (Optional): If selected, the variable will only be available in pipelines that run on protected branches or tags.
-    - **Mask variable** (Optional): If selected, the variable's **Value** will not be shown in job logs. The variable will not be saved if the value does not meet the [masking requirements](#masked-variable-requirements).
+   - **Key**: Must be one line, using only letters, numbers, or `_` (underscore), with no spaces.
+   - **Value**: [Since GitLab 13.3](https://gitlab.com/gitlab-org/gitlab/-/issues/220028), 10,000 characters allowed. This is also bounded by the limits of the selected Runner operating system. In GitLab 13.0 to 13.2, 700 characters allowed.
+   - **Type**: `File` or `Variable`.
+   - **Protect variable** (Optional): If selected, the variable is only available in pipelines that run on protected branches or tags.
+   - **Mask variable** (Optional): If selected, the variable's **Value** is not shown in job logs. The variable is not saved if the value does not meet the [masking requirements](#masked-variable-requirements).
 
 After a variable is created, you can update any of the details by clicking the **{pencil}** **Edit** button.
 
@@ -540,14 +540,14 @@ For example, if you define:
 - `API_TOKEN=secure` as a project variable.
 - `API_TOKEN=yaml` in your `.gitlab-ci.yml`.
 
-`API_TOKEN` will take the value `secure` as the project
+`API_TOKEN` takes the value `secure` as the project
 variables take precedence over those defined in `.gitlab-ci.yml`.
 
 ## Unsupported variables
 
 Variable names are limited by the underlying shell used to execute scripts (see [available shells](https://docs.gitlab.com/runner/shells/index.html).
 Each shell has its own unique set of reserved variable names.
-You will also want to keep in mind the [scope of environment variables](where_variables_can_be_used.md) to ensure a variable is defined in the scope
+You also want to keep in mind the [scope of environment variables](where_variables_can_be_used.md) to ensure a variable is defined in the scope
 in which you wish to use it.
 
 ## Where variables can be used
@@ -585,8 +585,8 @@ pass CI variables to the running application by prefixing the key of the
 variable with `K8S_SECRET_`.
 
 These [prefixed
-variables](../../topics/autodevops/customize.md#application-secret-variables) will
-then be available as environment variables on the running application
+variables](../../topics/autodevops/customize.md#application-secret-variables) are
+then available as environment variables on the running application
 container.
 
 CAUTION: **Caution:**
@@ -649,94 +649,132 @@ This follows the usual rules for [`only` / `except` policies](../yaml/README.md#
 
 ### Syntax of environment variable expressions
 
-Below you can find supported syntax reference:
+Below you can find supported syntax reference.
 
-1. Equality matching using a string
+#### Equality matching using a string
 
-   Examples:
+Examples:
 
-   - `$VARIABLE == "some value"`
-   - `$VARIABLE != "some value"` (introduced in GitLab 11.11)
+- `$VARIABLE == "some value"`
+- `$VARIABLE != "some value"` (introduced in GitLab 11.11)
 
-   You can use equality operator `==` or `!=` to compare a variable content to a
-   string. We support both, double quotes and single quotes to define a string
-   value, so both `$VARIABLE == "some value"` and `$VARIABLE == 'some value'`
-   are supported. `"some value" == $VARIABLE` is correct too.
+You can use equality operator `==` or `!=` to compare a variable content to a
+string. We support both, double quotes and single quotes to define a string
+value, so both `$VARIABLE == "some value"` and `$VARIABLE == 'some value'`
+are supported. `"some value" == $VARIABLE` is correct too.
 
-1. Checking for an undefined value
+#### Checking for an undefined value
 
-   Examples:
+Examples:
 
-   - `$VARIABLE == null`
-   - `$VARIABLE != null` (introduced in GitLab 11.11)
+- `$VARIABLE == null`
+- `$VARIABLE != null` (introduced in GitLab 11.11)
 
-   It sometimes happens that you want to check whether a variable is defined
-   or not. To do that, you can compare a variable to `null` keyword, like
-   `$VARIABLE == null`. This expression evaluates to true if
-   variable is not defined when `==` is used, or to false if `!=` is used.
+It sometimes happens that you want to check whether a variable is defined
+or not. To do that, you can compare a variable to `null` keyword, like
+`$VARIABLE == null`. This expression evaluates to true if
+variable is not defined when `==` is used, or to false if `!=` is used.
 
-1. Checking for an empty variable
+#### Checking for an empty variable
 
-   Examples:
+Examples:
 
-   - `$VARIABLE == ""`
-   - `$VARIABLE != ""` (introduced in GitLab 11.11)
+- `$VARIABLE == ""`
+- `$VARIABLE != ""` (introduced in GitLab 11.11)
 
-   If you want to check whether a variable is defined, but is empty, you can
-   simply compare it against an empty string, like `$VAR == ''` or non-empty
-   string `$VARIABLE != ""`.
+If you want to check whether a variable is defined, but is empty, you can
+simply compare it against an empty string, like `$VAR == ''` or non-empty
+string `$VARIABLE != ""`.
 
-1. Comparing two variables
+#### Comparing two variables
 
-   Examples:
+Examples:
 
-   - `$VARIABLE_1 == $VARIABLE_2`
-   - `$VARIABLE_1 != $VARIABLE_2` (introduced in GitLab 11.11)
+- `$VARIABLE_1 == $VARIABLE_2`
+- `$VARIABLE_1 != $VARIABLE_2` (introduced in GitLab 11.11)
 
-   It is possible to compare two variables. This is going to compare values
-   of these variables.
+It is possible to compare two variables. This compares values
+of these variables.
 
-1. Variable presence check
+#### Variable presence check
 
-   Example: `$STAGING`
+Example: `$STAGING`
 
-   If you only want to create a job when there is some variable present,
-   which means that it is defined and non-empty, you can simply use
-   variable name as an expression, like `$STAGING`. If `$STAGING` variable
-   is defined, and is non empty, expression will evaluate to truth.
-   `$STAGING` value needs to be a string, with length higher than zero.
-   Variable that contains only whitespace characters is not an empty variable.
+If you only want to create a job when there is some variable present,
+which means that it is defined and non-empty, you can simply use
+variable name as an expression, like `$STAGING`. If `$STAGING` variable
+is defined, and is non empty, expression evaluates to `true`.
+`$STAGING` value needs to be a string, with length higher than zero.
+Variable that contains only whitespace characters is not an empty variable.
 
-1. Pattern matching (introduced in GitLab 11.0)
+#### Regex pattern matching
 
-   Examples:
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/43601) in GitLab 11.0
 
-   - `=~`: True if pattern is matched. Ex: `$VARIABLE =~ /^content.*/`
-   - `!~`: True if pattern is not matched. Ex: `$VARIABLE_1 !~ /^content.*/` ([Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/61900) in GitLab 11.11)
+Examples:
 
-   Variable pattern matching with regular expressions uses the
-   [RE2 regular expression syntax](https://github.com/google/re2/wiki/Syntax).
-   Expressions evaluate as `true` if:
+- `=~`: True if pattern is matched. Ex: `$VARIABLE =~ /^content.*/`
+- `!~`: True if pattern is not matched. Ex: `$VARIABLE_1 !~ /^content.*/` ([Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/61900) in GitLab 11.11)
 
-   - Matches are found when using `=~`.
-   - Matches are *not* found when using `!~`.
+Variable pattern matching with regular expressions uses the
+[RE2 regular expression syntax](https://github.com/google/re2/wiki/Syntax).
+Expressions evaluate as `true` if:
 
-   Pattern matching is case-sensitive by default. Use `i` flag modifier, like
-   `/pattern/i` to make a pattern case-insensitive.
+- Matches are found when using `=~`.
+- Matches are *not* found when using `!~`.
 
-1. Conjunction / Disjunction ([introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/27925) in GitLab 12.0)
+Pattern matching is case-sensitive by default. Use `i` flag modifier, like
+`/pattern/i` to make a pattern case-insensitive.
 
-   Examples:
+#### Conjunction / Disjunction
 
-   - `$VARIABLE1 =~ /^content.*/ && $VARIABLE2 == "something"`
-   - `$VARIABLE1 =~ /^content.*/ && $VARIABLE2 =~ /thing$/ && $VARIABLE3`
-   - `$VARIABLE1 =~ /^content.*/ || $VARIABLE2 =~ /thing$/ && $VARIABLE3`
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/62867) in GitLab 12.0
 
-   It is possible to join multiple conditions using `&&` or `||`. Any of the otherwise
-   supported syntax may be used in a conjunctive or disjunctive statement.
-   Precedence of operators follows the
-   [Ruby 2.5 standard](https://ruby-doc.org/core-2.5.0/doc/syntax/precedence_rdoc.html),
-   so `&&` is evaluated before `||`.
+Examples:
+
+- `$VARIABLE1 =~ /^content.*/ && $VARIABLE2 == "something"`
+- `$VARIABLE1 =~ /^content.*/ && $VARIABLE2 =~ /thing$/ && $VARIABLE3`
+- `$VARIABLE1 =~ /^content.*/ || $VARIABLE2 =~ /thing$/ && $VARIABLE3`
+
+It is possible to join multiple conditions using `&&` or `||`. Any of the otherwise
+supported syntax may be used in a conjunctive or disjunctive statement.
+Precedence of operators follows the
+[Ruby 2.5 standard](https://ruby-doc.org/core-2.5.0/doc/syntax/precedence_rdoc.html),
+so `&&` is evaluated before `||`.
+
+#### Parentheses
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/230938) in GitLab 13.3
+
+It is possible to use parentheses to group conditions. Parentheses have the highest
+precedence of all operators. Expressions enclosed in parentheses are evaluated first,
+and the result is used for the rest of the expression.
+
+Many nested parentheses can be used to create complex conditions, and the inner-most
+expressions in parentheses are evaluated first. For an expression to be valid an equal
+number of `(` and `)` need to be used.
+
+Examples:
+
+- `($VARIABLE1 =~ /^content.*/ || $VARIABLE2) && ($VARIABLE3 =~ /thing$/ || $VARIABLE4)`
+- `($VARIABLE1 =~ /^content.*/ || $VARIABLE2 =~ /thing$/) && $VARIABLE3`
+- `$CI_COMMIT_BRANCH == "my-branch" || (($VARIABLE1 == "thing" || $VARIABLE2 == "thing") && $VARIABLE3)`
+
+The feature is currently deployed behind a feature flag that is **enabled by default**.
+[GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
+can opt to disable it for your instance.
+
+To enable it:
+
+```ruby
+Feature.enable(:ci_if_parenthesis_enabled)
+```
+
+To disable it:
+
+```ruby
+Feature.disable(:ci_if_parenthesis_enabled)
+```
 
 ### Storing regular expressions in variables
 

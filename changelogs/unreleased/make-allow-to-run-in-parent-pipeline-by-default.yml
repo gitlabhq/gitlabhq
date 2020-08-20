@@ -1,0 +1,5 @@
+---
+title: Allow to create merge request pipelines in target project when user has permission
+merge_request: 37322
+author:
+type: added

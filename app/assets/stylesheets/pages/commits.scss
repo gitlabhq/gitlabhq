@@ -388,3 +388,9 @@
   display: block;
   color: $link-color;
 }
+
+.add-review-item {
+  .gl-tab-nav-item {
+    height: 100%;
+  }
+}

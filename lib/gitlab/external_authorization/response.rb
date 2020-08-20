@@ -5,16 +5,16 @@ module Gitlab
     class Response
       include ::Gitlab::Utils::StrongMemoize
 
-      def initialize(excon_response)
-        @excon_response = excon_response
+      def initialize(response)
+        @response = response
       end
 
       def valid?
-        @excon_response && [200, 401, 403].include?(@excon_response.status)
+        @response && [200, 401, 403].include?(@response.code)
       end
 
       def successful?
-        valid? && @excon_response.status == 200
+        valid? && @response.code == 200
       end
 
       def reason
@@ -28,7 +28,7 @@ module Gitlab
       end
 
       def parse_response!
-        Gitlab::Json.parse(@excon_response.body)
+        Gitlab::Json.parse(@response.body)
       rescue JSON::JSONError
         # The JSON response is optional, so don't fail when it's missing
         nil

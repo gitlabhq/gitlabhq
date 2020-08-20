@@ -76,7 +76,7 @@ module Gitlab
     end
 
     def versions_sprite_icon
-      @versions_sprite_icon ||= sprite_icon('doc-versions', size: 16, css_class: 'doc-versions align-text-bottom')
+      @versions_sprite_icon ||= sprite_icon('doc-versions', css_class: 'doc-versions align-text-bottom')
     end
   end
 end

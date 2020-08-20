@@ -15,6 +15,8 @@ class Packages::PackageFile < ApplicationRecord
   validates :file, presence: true
   validates :file_name, presence: true
 
+  validates :file_name, uniqueness: { scope: :package }, if: -> { package&.pypi? }
+
   scope :recent, -> { order(id: :desc) }
   scope :with_file_name, ->(file_name) { where(file_name: file_name) }
   scope :with_file_name_like, ->(file_name) { where(arel_table[:file_name].matches(file_name)) }
@@ -37,20 +39,27 @@ class Packages::PackageFile < ApplicationRecord
 
   update_project_statistics project_statistics_name: :packages_size
 
+  before_save :update_size_from_file
+
   def update_file_metadata
     # The file.object_store is set during `uploader.store!`
     # which happens after object is inserted/updated
     self.update_column(:file_store, file.object_store)
-    self.update_column(:size, file.size) unless file.size == self.size
   end
 
   def download_path
-    Gitlab::Routing.url_helpers.download_project_package_file_path(project, self) if ::Gitlab.ee?
+    Gitlab::Routing.url_helpers.download_project_package_file_path(project, self)
   end
 
   def local?
     file_store == ::Packages::PackageFileUploader::Store::LOCAL
   end
+
+  private
+
+  def update_size_from_file
+    self.size ||= file.size
+  end
 end
 
-Packages::PackageFile.prepend_if_ee('EE::Packages::PackageFileGeo')
+Packages::PackageFile.prepend_if_ee('EE::Packages::PackageFile')

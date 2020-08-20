@@ -23,11 +23,11 @@ module API
         merge_request.metrics&.first_deployed_to_production_at
       end
 
-      expose :pipeline, using: Entities::PipelineBasic, if: -> (_, options) { build_available?(options) } do |merge_request, _options|
+      expose :pipeline, using: Entities::Ci::PipelineBasic, if: -> (_, options) { build_available?(options) } do |merge_request, _options|
         merge_request.metrics&.pipeline
       end
 
-      expose :head_pipeline, using: 'API::Entities::Pipeline', if: -> (_, options) do
+      expose :head_pipeline, using: '::API::Entities::Ci::Pipeline', if: -> (_, options) do
         Ability.allowed?(options[:current_user], :read_pipeline, options[:project])
       end
 

@@ -3,7 +3,7 @@
 Notification emails sent by GitLab can be signed with S/MIME for improved
 security.
 
-> **Note:**
+NOTE: **Note:**
 Please be aware that S/MIME certificates and TLS/SSL certificates are not the
 same and are used for different purposes: TLS creates a secure channel, whereas
 S/MIME signs and/or encrypts the message itself

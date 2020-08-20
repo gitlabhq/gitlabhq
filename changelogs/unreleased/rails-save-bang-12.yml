@@ -1,0 +1,5 @@
+---
+title: Refactor spec/support/helpers/* and ee/spec/support/helpers/* to fix Rails/SaveBang Cop
+merge_request: 38995
+author: Rajendra Kadam
+type: fixed

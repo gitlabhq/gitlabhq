@@ -58,14 +58,29 @@ RSpec.describe Notes::QuickActionsService do
       end
 
       describe '/spend' do
-        let(:note_text) { '/spend 1h' }
+        context 'when note is not persisted' do
+          let(:note_text) { '/spend 1h' }
 
-        it 'updates the spent time on the noteable' do
-          content, update_params = service.execute(note)
-          service.apply_updates(update_params, note)
+          it 'adds time to noteable, adds timelog with nil note_id and has no content' do
+            content, update_params = service.execute(note)
+            service.apply_updates(update_params, note)
 
-          expect(content).to eq ''
-          expect(note.noteable.time_spent).to eq(3600)
+            expect(content).to eq ''
+            expect(note.noteable.time_spent).to eq(3600)
+            expect(Timelog.last.note_id).to be_nil
+          end
+        end
+
+        context 'when note is persisted' do
+          let(:note_text) { "a note \n/spend 1h" }
+
+          it 'updates the spent time and populates timelog with note_id' do
+            new_content, update_params = service.execute(note)
+            note.update!(note: new_content)
+            service.apply_updates(update_params, note)
+
+            expect(Timelog.last.note_id).to eq(note.id)
+          end
         end
       end
     end

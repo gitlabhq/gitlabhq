@@ -1,0 +1,5 @@
+---
+title: Display authored message correctly on public snippets viewed by unauthenticated users
+merge_request: 38614
+author:
+type: fixed

@@ -1,11 +1,11 @@
 import Vue from 'vue';
 import MockAdapter from 'axios-mock-adapter';
 import { mountComponentWithStore } from 'helpers/vue_mount_component_helper';
+import { DUMMY_IMAGE_URL, TEST_HOST } from 'helpers/test_constants';
 import axios from '~/lib/utils/axios_utils';
 import store from '~/badges/store';
 import createEmptyBadge from '~/badges/empty_badge';
 import BadgeForm from '~/badges/components/badge_form.vue';
-import { DUMMY_IMAGE_URL, TEST_HOST } from 'helpers/test_constants';
 
 // avoid preview background process
 BadgeForm.methods.debouncedPreview = () => {};
@@ -182,11 +182,11 @@ describe('BadgeForm component', () => {
       const buttons = vm.$el.querySelectorAll('.row-content-block button');
 
       expect(buttons.length).toBe(2);
-      const buttonSaveElement = buttons[0];
+      const buttonSaveElement = buttons[1];
 
       expect(buttonSaveElement).toBeVisible();
       expect(buttonSaveElement).toHaveText('Save changes');
-      const buttonCancelElement = buttons[1];
+      const buttonCancelElement = buttons[0];
 
       expect(buttonCancelElement).toBeVisible();
       expect(buttonCancelElement).toHaveText('Cancel');

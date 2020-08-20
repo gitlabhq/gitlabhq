@@ -13,7 +13,7 @@ export const ListType = {
   blank: 'blank',
 };
 
-export const inactiveListId = 0;
+export const inactiveId = 0;
 
 export default {
   BoardType,

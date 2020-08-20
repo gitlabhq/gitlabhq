@@ -20,7 +20,8 @@
         .issues-other-filters.filtered-search-wrapper.d-flex.flex-column.flex-md-row
           .filtered-search-box
             - if type != :boards_modal && type != :boards
-              = dropdown_tag(_('Recent searches'),
+              - text = tag.span(sprite_icon('history'), class: "d-md-none") + tag.span(_('Recent searches'), class: "d-none d-md-inline")
+              = dropdown_tag(text,
                 options: { wrapper_class: "filtered-search-history-dropdown-wrapper",
                 toggle_class: "btn filtered-search-history-dropdown-toggle-button",
                 dropdown_class: "filtered-search-history-dropdown",
@@ -173,7 +174,7 @@
           = render 'shared/issuable/board_create_list_dropdown', board: board
           - if @project
             #js-add-issues-btn.gl-ml-3{ data: { can_admin_list: can?(current_user, :admin_list, @project) } }
-        - if Feature.enabled?(:boards_with_swimlanes, @group)
+        - if current_user && Feature.enabled?(:boards_with_swimlanes, @group)
           #js-board-epics-swimlanes-toggle
         #js-toggle-focus-btn
       - elsif is_not_boards_modal_or_productivity_analytics && show_sorting_dropdown

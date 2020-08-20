@@ -1,0 +1,12 @@
+- page_title _('Product Analytics')
+
+= render 'links'
+
+%p
+  = _('Showing graphs based on events of the last %{timerange} days.') % { timerange: @timerange }
+
+- @graphs.each_slice(2) do |pair|
+  .row.append-bottom-10
+    - pair.each do |graph|
+      .col-md-6{ id: graph[:id] }
+        = render 'graph', graph: graph

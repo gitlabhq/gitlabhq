@@ -2,7 +2,7 @@
 import Vue from 'vue';
 import { __ } from '~/locale';
 import SuggestionDiff from './suggestion_diff.vue';
-import Flash from '~/flash';
+import { deprecatedCreateFlash as Flash } from '~/flash';
 
 export default {
   props: {

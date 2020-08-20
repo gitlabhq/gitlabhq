@@ -1,6 +1,6 @@
 <script>
-import { s__ } from '~/locale';
 import { GlIcon, GlLink, GlSprintf } from '@gitlab/ui';
+import { s__ } from '~/locale';
 
 export default {
   name: 'TerraformPlan',

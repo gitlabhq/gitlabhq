@@ -17,7 +17,7 @@ module QA
             element :allowed_to_merge_dropdown
           end
 
-          view 'app/views/projects/protected_branches/_update_protected_branch.html.haml' do
+          view 'app/views/shared/projects/protected_branches/_update_protected_branch.html.haml' do
             element :allowed_to_merge
           end
 

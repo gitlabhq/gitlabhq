@@ -41,5 +41,3 @@ export const fetchMergeRequests = (
 };
 
 export const resetMergeRequests = ({ commit }) => commit(types.RESET_MERGE_REQUESTS);
-
-export default () => {};

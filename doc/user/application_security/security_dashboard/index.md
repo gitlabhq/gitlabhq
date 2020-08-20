@@ -8,24 +8,24 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # GitLab Security Dashboard **(ULTIMATE)**
 
 The Security Dashboard is a good place to get an overview of all the security
-vulnerabilities in your groups, projects and pipelines.
+vulnerabilities in your groups, projects, and pipelines.
 
-You can also drill down into a vulnerability and get extra information, see which
-project it comes from, the file it's in, and various metadata to help you analyze
-the risk. You can also take actions on vulnerabilities by creating an issue for them,
-or by dismissing them.
+You can also drill down into a vulnerability and get extra information. This includes the project it
+comes from, any related file(s), and metadata that helps you analyze the risk it poses. You can also
+dismiss a vulnerability or create an issue for it.
 
 To benefit from the Security Dashboard you must first configure one of the
-[security reports](../index.md).
+[security scanners](../index.md).
 
 ## Supported reports
 
-The Security Dashboard supports the following reports:
+The Security Dashboard displays vulnerabilities detected by scanners such as:
 
 - [Container Scanning](../container_scanning/index.md)
 - [Dynamic Application Security Testing](../dast/index.md)
 - [Dependency Scanning](../dependency_scanning/index.md)
 - [Static Application Security Testing](../sast/index.md)
+- And others!
 
 ## Requirements
 
@@ -43,9 +43,12 @@ To use the instance, group, project, or pipeline security dashboard:
 
 At the pipeline level, the Security section displays the vulnerabilities present in the branch of the project the pipeline was run against.
 
-Visit the page for any pipeline which has run any of the [supported reports](#supported-reports). Click the **Security** tab to view the Security findings.
-
 ![Pipeline Security Dashboard](img/pipeline_security_dashboard_v13_2.png)
+
+Visit the page for any pipeline that ran any of the [supported reports](#supported-reports). To view
+the pipeline's security findings, select the **Security** tab when viewing the pipeline.
+
+![Pipeline Security Navigation](img/pipeline_security_v13_3.gif)
 
 NOTE: **Note:**
 A pipeline consists of multiple jobs, including SAST and DAST scanning. If any job fails to finish for any reason, the security dashboard will not show SAST scanner output. For example, if the SAST job finishes but the DAST job fails, the security dashboard will not show SAST results. The analyzer will output an [exit code](../../../development/integrations/secure.md#exit-code) on failure.
@@ -56,7 +59,8 @@ A pipeline consists of multiple jobs, including SAST and DAST scanning. If any j
 
 At the project level, the Security Dashboard displays the vulnerabilities merged into your project's
 [default branch](../../project/repository/branches/index.md#default-branch). Access it by navigating
-to **Security & Compliance > Security Dashboard**.
+to **Security & Compliance > Security Dashboard**. By default, the Security Dashboard displays all
+detected and confirmed vulnerabilities.
 
 The Security Dashboard first displays the total number of vulnerabilities by severity (for example,
 Critical, High, Medium, Low). Below this, a table displays each vulnerability's status, severity,
@@ -67,7 +71,7 @@ You can filter the vulnerabilities by:
 
 - Status
 - Severity
-- Report type
+- Scanner
 
 You can also dismiss vulnerabilities in the table:
 
@@ -82,31 +86,21 @@ You can also dismiss vulnerabilities in the table:
 
 The group Security Dashboard gives an overview of the vulnerabilities in the default branches of the
 projects in a group and its subgroups. Access it by navigating to **Security > Security Dashboard**
-for your group.
+for your group. By default, the Security Dashboard displays all detected and confirmed
+vulnerabilities.
 
 NOTE: **Note:**
 The Security Dashboard only shows projects with [security reports](#supported-reports) enabled in a
 group.
 
-![Dashboard with action buttons and metrics](img/group_security_dashboard_v13_2_noNav.png)
+![Dashboard with action buttons and metrics](img/group_security_dashboard_v13_3.png)
 
-You can filter which vulnerabilities the Security Dashboard displays by:
-
-- Status
-- Severity
-- Report type
-- Project
-
-A table lists the vulnerabilities, sorted by severity. The table shows each vulnerability's status,
-severity, and description. Clicking a vulnerability takes you to its [Vulnerability Details](../vulnerabilities)
-page to view more information about that vulnerability.
-
-Next to the list is a timeline chart that shows how many open
+There is a timeline chart that shows how many open
 vulnerabilities your projects had at various points in time. You can filter among 30, 60, and
 90 days, with the default being 90. Hover over the chart to get more details about
 the open vulnerabilities at a specific time.
 
-Below the timeline chart is a list of projects, grouped and sorted by the severity of the vulnerability found:
+Next to the timeline chart is a list of projects, grouped and sorted by the severity of the vulnerability found:
 
 - F: 1 or more "critical"
 - D: 1 or more "high" or "unknown"
@@ -117,7 +111,7 @@ Below the timeline chart is a list of projects, grouped and sorted by the severi
 Projects with no vulnerability tests configured will not appear in the list. Additionally, dismissed
 vulnerabilities are not included either.
 
-Read more on how to [interact with the vulnerabilities](../index.md#interacting-with-the-vulnerabilities).
+Navigate to the group's [Vulnerability Report](#vulnerability-list) to view the vulnerabilities found.
 
 ## Instance Security Dashboard
 
@@ -195,10 +189,21 @@ to configure daily security scans.
 
 Each dashboard's vulnerability list contains vulnerabilities from the latest scans that were merged
 into the default branch.
-Click any vulnerability in the table to see more information on that vulnerability. To create an
-issue associated with the vulnerability, click the **Create Issue** button.
 
-![Create an issue for the vulnerability](img/standalone_vulnerability_page_v13_1.png)
+![Vulnerability Report](img/group_vulnerability_report_v13_3.png)
+
+You can filter which vulnerabilities the Security Dashboard displays by:
+
+- Status
+- Severity
+- Scanner
+- Project
+
+Clicking any vulnerability in the table takes you to its
+[Vulnerability Details](../vulnerabilities) page to see more information on that vulnerability.
+To create an issue associated with the vulnerability, click the **Create Issue** button.
+
+![Create an issue for the vulnerability](img/vulnerability_page_v13_1.png)
 
 Once you create the issue, the vulnerability list contains a link to the issue and an icon whose
 color indicates the issue's status (green for open issues, blue for closed issues).
@@ -216,3 +221,5 @@ questions that you know someone might ask.
 Each scenario can be a third-level heading, e.g. `### Getting error message X`.
 If you have none to add when creating a doc, leave this section in place
 but commented out to help encourage others to add to it in the future. -->
+
+Read more on how to [interact with the vulnerabilities](../index.md#interacting-with-the-vulnerabilities).

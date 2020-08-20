@@ -171,13 +171,14 @@ RSpec.describe VisibilityLevelHelper do
 
     with_them do
       it "provides correct visibility level for forked project" do
-        project.update(visibility_level: max_allowed)
+        project.update!(visibility_level: max_allowed)
 
         expect(selected_visibility_level(forked_project, requested_level)).to eq(expected)
       end
 
-      it "provides correct visibiility level for project in group" do
-        project.group.update(visibility_level: max_allowed)
+      it "provides correct visibility level for project in group" do
+        project.update!(visibility_level: max_allowed)
+        project.group.update!(visibility_level: max_allowed)
 
         expect(selected_visibility_level(project, requested_level)).to eq(expected)
       end

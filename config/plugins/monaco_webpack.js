@@ -8,10 +8,10 @@ const { languagesArr } = require('monaco-editor-webpack-plugin/out/languages');
 
 const yamlLang = languagesArr.find(t => t.label === 'yaml');
 
-yamlLang.entry = [yamlLang.entry, '../../monaco-yaml/esm/monaco.contribution'];
+yamlLang.entry = [yamlLang.entry, '../../monaco-yaml/lib/esm/monaco.contribution'];
 yamlLang.worker = {
   id: 'vs/language/yaml/yamlWorker',
-  entry: '../../monaco-yaml/esm/yaml.worker.js',
+  entry: '../../monaco-yaml/lib/esm/yaml.worker.js',
 };
 
 module.exports = require('monaco-editor-webpack-plugin');

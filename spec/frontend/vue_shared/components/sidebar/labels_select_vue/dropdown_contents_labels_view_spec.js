@@ -17,52 +17,46 @@ import { mockConfig, mockLabels, mockRegularLabel } from './mock_data';
 const localVue = createLocalVue();
 localVue.use(Vuex);
 
-const createComponent = (initialState = mockConfig) => {
-  const store = new Vuex.Store({
-    getters,
-    mutations,
-    state: {
-      ...defaultState(),
-      footerCreateLabelTitle: 'Create label',
-      footerManageLabelTitle: 'Manage labels',
-    },
-    actions: {
-      ...actions,
-      fetchLabels: jest.fn(),
-    },
-  });
-
-  store.dispatch('setInitialState', initialState);
-  store.dispatch('receiveLabelsSuccess', mockLabels);
-
-  return shallowMount(DropdownContentsLabelsView, {
-    localVue,
-    store,
-  });
-};
-
 describe('DropdownContentsLabelsView', () => {
   let wrapper;
-  let wrapperStandalone;
-  let wrapperEmbedded;
+
+  const createComponent = (initialState = mockConfig) => {
+    const store = new Vuex.Store({
+      getters,
+      mutations,
+      state: {
+        ...defaultState(),
+        footerCreateLabelTitle: 'Create label',
+        footerManageLabelTitle: 'Manage labels',
+      },
+      actions: {
+        ...actions,
+        fetchLabels: jest.fn(),
+      },
+    });
+
+    store.dispatch('setInitialState', initialState);
+    store.dispatch('receiveLabelsSuccess', mockLabels);
+
+    wrapper = shallowMount(DropdownContentsLabelsView, {
+      localVue,
+      store,
+    });
+  };
 
   beforeEach(() => {
-    wrapper = createComponent();
-    wrapperStandalone = createComponent({
-      ...mockConfig,
-      variant: 'standalone',
-    });
-    wrapperEmbedded = createComponent({
-      ...mockConfig,
-      variant: 'embedded',
-    });
+    createComponent();
   });
 
   afterEach(() => {
     wrapper.destroy();
-    wrapperStandalone.destroy();
-    wrapperEmbedded.destroy();
+    wrapper = null;
   });
+
+  const findDropdownContent = () => wrapper.find('[data-testid="dropdown-content"]');
+  const findDropdownTitle = () => wrapper.find('[data-testid="dropdown-title"]');
+  const findDropdownFooter = () => wrapper.find('[data-testid="dropdown-footer"]');
+  const findLoadingIcon = () => wrapper.find(GlLoadingIcon);
 
   describe('computed', () => {
     describe('visibleLabels', () => {
@@ -82,6 +76,24 @@ describe('DropdownContentsLabelsView', () => {
 
         expect(wrapper.vm.visibleLabels.length).toBe(mockLabels.length);
       });
+    });
+
+    describe('showListContainer', () => {
+      it.each`
+        variant          | loading  | showList
+        ${'sidebar'}     | ${false} | ${true}
+        ${'sidebar'}     | ${true}  | ${false}
+        ${'not-sidebar'} | ${true}  | ${true}
+        ${'not-sidebar'} | ${false} | ${true}
+      `(
+        'returns $showList if `state.variant` is "$variant" and `labelsFetchInProgress` is $loading',
+        ({ variant, loading, showList }) => {
+          createComponent({ ...mockConfig, variant });
+          wrapper.vm.$store.state.labelsFetchInProgress = loading;
+
+          expect(wrapper.vm.showListContainer).toBe(showList);
+        },
+      );
     });
   });
 
@@ -199,7 +211,7 @@ describe('DropdownContentsLabelsView', () => {
       wrapper.vm.$store.dispatch('requestLabels');
 
       return wrapper.vm.$nextTick(() => {
-        const loadingIconEl = wrapper.find(GlLoadingIcon);
+        const loadingIconEl = findLoadingIcon();
 
         expect(loadingIconEl.exists()).toBe(true);
         expect(loadingIconEl.attributes('class')).toContain('labels-fetch-loading');
@@ -207,22 +219,24 @@ describe('DropdownContentsLabelsView', () => {
     });
 
     it('renders dropdown title element', () => {
-      const titleEl = wrapper.find('.dropdown-title > span');
+      const titleEl = findDropdownTitle();
 
       expect(titleEl.exists()).toBe(true);
       expect(titleEl.text()).toBe('Assign labels');
     });
 
     it('does not render dropdown title element when `state.variant` is "standalone"', () => {
-      expect(wrapperStandalone.find('.dropdown-title').exists()).toBe(false);
+      createComponent({ ...mockConfig, variant: 'standalone' });
+      expect(findDropdownTitle().exists()).toBe(false);
     });
 
     it('renders dropdown title element when `state.variant` is "embedded"', () => {
-      expect(wrapperEmbedded.find('.dropdown-title').exists()).toBe(true);
+      createComponent({ ...mockConfig, variant: 'embedded' });
+      expect(findDropdownTitle().exists()).toBe(true);
     });
 
     it('renders dropdown close button element', () => {
-      const closeButtonEl = wrapper.find('.dropdown-title').find(GlButton);
+      const closeButtonEl = findDropdownTitle().find(GlButton);
 
       expect(closeButtonEl.exists()).toBe(true);
       expect(closeButtonEl.props('icon')).toBe('close');
@@ -249,8 +263,7 @@ describe('DropdownContentsLabelsView', () => {
       });
 
       return wrapper.vm.$nextTick(() => {
-        const labelsEl = wrapper.findAll('.dropdown-content li');
-        const labelItemEl = labelsEl.at(0).find(LabelItem);
+        const labelItemEl = findDropdownContent().find(LabelItem);
 
         expect(labelItemEl.props('highlight')).toBe(true);
       });
@@ -262,22 +275,28 @@ describe('DropdownContentsLabelsView', () => {
       });
 
       return wrapper.vm.$nextTick(() => {
-        const noMatchEl = wrapper.find('.dropdown-content li');
+        const noMatchEl = findDropdownContent().find('li');
 
         expect(noMatchEl.isVisible()).toBe(true);
         expect(noMatchEl.text()).toContain('No matching results');
       });
     });
 
+    it('renders empty content while loading', () => {
+      wrapper.vm.$store.state.labelsFetchInProgress = true;
+
+      return wrapper.vm.$nextTick(() => {
+        const dropdownContent = findDropdownContent();
+
+        expect(dropdownContent.exists()).toBe(true);
+        expect(dropdownContent.isVisible()).toBe(false);
+      });
+    });
+
     it('renders footer list items', () => {
-      const createLabelLink = wrapper
-        .find('.dropdown-footer')
-        .findAll(GlLink)
-        .at(0);
-      const manageLabelsLink = wrapper
-        .find('.dropdown-footer')
-        .findAll(GlLink)
-        .at(1);
+      const footerLinks = findDropdownFooter().findAll(GlLink);
+      const createLabelLink = footerLinks.at(0);
+      const manageLabelsLink = footerLinks.at(1);
 
       expect(createLabelLink.exists()).toBe(true);
       expect(createLabelLink.text()).toBe('Create label');
@@ -289,8 +308,7 @@ describe('DropdownContentsLabelsView', () => {
       wrapper.vm.$store.state.allowLabelCreate = false;
 
       return wrapper.vm.$nextTick(() => {
-        const createLabelLink = wrapper
-          .find('.dropdown-footer')
+        const createLabelLink = findDropdownFooter()
           .findAll(GlLink)
           .at(0);
 
@@ -299,11 +317,12 @@ describe('DropdownContentsLabelsView', () => {
     });
 
     it('does not render footer list items when `state.variant` is "standalone"', () => {
-      expect(wrapperStandalone.find('.dropdown-footer').exists()).toBe(false);
+      createComponent({ ...mockConfig, variant: 'standalone' });
+      expect(findDropdownFooter().exists()).toBe(false);
     });
 
     it('renders footer list items when `state.variant` is "embedded"', () => {
-      expect(wrapperEmbedded.find('.dropdown-footer').exists()).toBe(true);
+      expect(findDropdownFooter().exists()).toBe(true);
     });
   });
 });

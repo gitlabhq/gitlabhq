@@ -1,3 +1,10 @@
+---
+stage: Create
+group: Source Code
+info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers"
+type: reference, howto
+---
+
 # Badges
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/41174) in GitLab 10.7.
@@ -28,6 +35,20 @@ clicking on the trash icon.
 
 Badges associated with a group can only be edited or deleted on the
 [group level](#group-badges).
+
+### Example project badge: Pipeline Status
+
+A common project badge presents the GitLab CI pipeline status.
+
+To add this badge to a project:
+
+1. Navigate to your project's **Settings > General > Badges**.
+1. Under **Name**, enter _Pipeline Status_.
+1. Under **Link**, enter the following URL:
+   `https://gitlab.com/%{project_path}/-/commits/%{default_branch}`
+1. Under **Badge image URL**, enter the following URL:
+   `https://gitlab.com/%{project_path}/badges/%{default_branch}/pipeline.svg`
+1. Submit the badge by clicking the **Add badge** button.
 
 ## Group badges
 

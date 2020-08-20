@@ -105,22 +105,6 @@ RSpec.describe Admin::ApplicationSettingsController do
       expect(ApplicationSetting.current.minimum_password_length).to eq(10)
     end
 
-    it 'updates namespace_storage_size_limit setting' do
-      put :update, params: { application_setting: { namespace_storage_size_limit: '100' } }
-
-      expect(response).to redirect_to(general_admin_application_settings_path)
-      expect(response).to set_flash[:notice].to('Application settings saved successfully')
-      expect(ApplicationSetting.current.namespace_storage_size_limit).to eq(100)
-    end
-
-    it 'does not accept an invalid namespace_storage_size_limit' do
-      put :update, params: { application_setting: { namespace_storage_size_limit: '-100' } }
-
-      expect(response).to render_template(:general)
-      expect(assigns(:application_setting).errors[:namespace_storage_size_limit]).to be_present
-      expect(ApplicationSetting.current.namespace_storage_size_limit).not_to eq(-100)
-    end
-
     it 'updates repository_storages_weighted setting' do
       put :update, params: { application_setting: { repository_storages_weighted_default: 75 } }
 
@@ -158,22 +142,11 @@ RSpec.describe Admin::ApplicationSettingsController do
     end
 
     describe 'verify panel actions' do
-      before do
-        stub_feature_flags(instance_level_integrations: false)
-      end
-
       Admin::ApplicationSettingsController::VALID_SETTING_PANELS.each do |valid_action|
         it_behaves_like 'renders correct panels' do
           let(:action) { valid_action }
         end
       end
-    end
-  end
-
-  describe 'PATCH #integrations' do
-    before do
-      stub_feature_flags(instance_level_integrations: false)
-      sign_in(admin)
     end
 
     describe 'EKS integration' do
@@ -188,7 +161,7 @@ RSpec.describe Admin::ApplicationSettingsController do
       end
 
       it 'updates EKS settings' do
-        patch :integrations, params: { application_setting: settings_params }
+        put :update, params: { application_setting: settings_params }
 
         expect(application_setting.eks_integration_enabled).to be_truthy
         expect(application_setting.eks_account_id).to eq '123456789012'
@@ -202,7 +175,7 @@ RSpec.describe Admin::ApplicationSettingsController do
         it 'does not update the secret key' do
           application_setting.update!(eks_secret_access_key: 'dummy secret key')
 
-          patch :integrations, params: { application_setting: settings_params }
+          put :update, params: { application_setting: settings_params }
 
           expect(application_setting.reload.eks_secret_access_key).to eq 'dummy secret key'
         end

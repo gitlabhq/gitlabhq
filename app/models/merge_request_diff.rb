@@ -51,14 +51,16 @@ class MergeRequestDiff < ApplicationRecord
   scope :by_commit_sha, ->(sha) do
     joins(:merge_request_diff_commits).where(merge_request_diff_commits: { sha: sha }).reorder(nil)
   end
-  scope :has_diff_files, -> { where(id: MergeRequestDiffFile.select(:merge_request_diff_id)) }
 
   scope :by_project_id, -> (project_id) do
     joins(:merge_request).where(merge_requests: { target_project_id: project_id })
   end
 
   scope :recent, -> { order(id: :desc).limit(100) }
-  scope :files_in_database, -> { has_diff_files.where(stored_externally: [false, nil]) }
+
+  scope :files_in_database, -> do
+    where(stored_externally: [false, nil]).where(arel_table[:files_count].gt(0))
+  end
 
   scope :not_latest_diffs, -> do
     merge_requests = MergeRequest.arel_table
@@ -100,14 +102,25 @@ class MergeRequestDiff < ApplicationRecord
     joins(merge_request: :metrics).where(condition)
   end
 
-  def self.ids_for_external_storage_migration(limit:)
-    # No point doing any work unless the feature is enabled
-    return [] unless Gitlab.config.external_diffs.enabled
+  class << self
+    def ids_for_external_storage_migration(limit:)
+      return [] unless Gitlab.config.external_diffs.enabled
 
-    case Gitlab.config.external_diffs.when
-    when 'always'
+      case Gitlab.config.external_diffs.when
+      when 'always'
+        ids_for_external_storage_migration_strategy_always(limit: limit)
+      when 'outdated'
+        ids_for_external_storage_migration_strategy_outdated(limit: limit)
+      else
+        []
+      end
+    end
+
+    def ids_for_external_storage_migration_strategy_always(limit:)
       files_in_database.limit(limit).pluck(:id)
-    when 'outdated'
+    end
+
+    def ids_for_external_storage_migration_strategy_outdated(limit:)
       # Outdated is too complex to be a single SQL query, so split into three
       before = EXTERNAL_DIFF_CUTOFF.ago
 
@@ -129,8 +142,6 @@ class MergeRequestDiff < ApplicationRecord
         .not_latest_diffs
         .limit(limit - ids.size)
         .pluck(:id)
-    else
-      []
     end
   end
 
@@ -139,6 +150,7 @@ class MergeRequestDiff < ApplicationRecord
   # All diff information is collected from repository after object is created.
   # It allows you to override variables like head_commit_sha before getting diff.
   after_create :save_git_content, unless: :importing?
+  after_create :set_count_columns
   after_create_commit :set_as_latest_diff, unless: :importing?
 
   after_save :update_external_diff_store
@@ -621,7 +633,7 @@ class MergeRequestDiff < ApplicationRecord
   def save_diffs
     new_attributes = {}
 
-    if compare.commits.size.zero?
+    if compare.commits.empty?
       new_attributes[:state] = :empty
     else
       diff_collection = compare.diffs(Commit.max_diff_options)
@@ -632,6 +644,7 @@ class MergeRequestDiff < ApplicationRecord
 
         rows = build_merge_request_diff_files(diff_collection)
         create_merge_request_diff_files(rows)
+        self.class.uncached { merge_request_diff_files.reset }
       end
 
       # Set our state to 'overflow' to make the #empty? and #collected?
@@ -647,12 +660,14 @@ class MergeRequestDiff < ApplicationRecord
 
   def save_commits
     MergeRequestDiffCommit.create_bulk(self.id, compare.commits.reverse)
+    self.class.uncached { merge_request_diff_commits.reset }
+  end
 
-    # merge_request_diff_commits.reset is preferred way to reload associated
-    # objects but it returns cached result for some reason in this case
-    # we can circumvent that by specifying that we need an uncached reload
-    commits = self.class.uncached { merge_request_diff_commits.reset }
-    self.commits_count = commits.size
+  def set_count_columns
+    update_columns(
+      commits_count: merge_request_diff_commits.size,
+      files_count: merge_request_diff_files.size
+    )
   end
 
   def repository

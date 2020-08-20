@@ -14,6 +14,7 @@ RSpec.describe QualifiedDomainArrayValidator do
       end
     end
   end
+
   let!(:record) do
     qualified_domain_array_validator_test_class.new(['gitlab.com'])
   end

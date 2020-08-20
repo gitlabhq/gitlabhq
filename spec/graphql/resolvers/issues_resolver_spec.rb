@@ -13,7 +13,7 @@ RSpec.describe Resolvers::IssuesResolver do
 
   let_it_be(:milestone) { create(:milestone, project: project) }
   let_it_be(:assignee)  { create(:user) }
-  let_it_be(:issue1)    { create(:issue, project: project, state: :opened, created_at: 3.hours.ago, updated_at: 3.hours.ago, milestone: milestone) }
+  let_it_be(:issue1)    { create(:incident, project: project, state: :opened, created_at: 3.hours.ago, updated_at: 3.hours.ago, milestone: milestone) }
   let_it_be(:issue2)    { create(:issue, project: project, state: :closed, title: 'foo', created_at: 1.hour.ago, updated_at: 1.hour.ago, closed_at: 1.hour.ago, assignees: [assignee]) }
   let_it_be(:issue3)    { create(:issue, project: other_project, state: :closed, title: 'foo', created_at: 1.hour.ago, updated_at: 1.hour.ago, closed_at: 1.hour.ago, assignees: [assignee]) }
   let_it_be(:issue4)    { create(:issue) }
@@ -92,6 +92,20 @@ RSpec.describe Resolvers::IssuesResolver do
 
         it 'filters by closed_after' do
           expect(resolve_issues(closed_after: 2.hours.ago)).to contain_exactly(issue2)
+        end
+      end
+
+      describe 'filters by issue_type' do
+        it 'filters by a single type' do
+          expect(resolve_issues(issue_types: ['incident'])).to contain_exactly(issue1)
+        end
+
+        it 'filters by more than one type' do
+          expect(resolve_issues(issue_types: %w(incident issue))).to contain_exactly(issue1, issue2)
+        end
+
+        it 'ignores the filter if none given' do
+          expect(resolve_issues(issue_types: [])).to contain_exactly(issue1, issue2)
         end
       end
 

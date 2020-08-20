@@ -9,8 +9,23 @@ let presets = [
       useBuiltIns: 'usage',
       corejs: { version: 3, proposals: true },
       modules: false,
+      /**
+       * This list of browsers is a conservative first definition, based on
+       * https://docs.gitlab.com/ee/install/requirements.html#supported-web-browsers
+       * with the following reasoning:
+       *
+       * - Edge: Pick the last two major version before the Chrome switch
+       * - Rest: We should support the latest ESR of Firefox: 68, because it used quite a lot.
+       *         For the rest, pick browser versions that have a similar age to Firefox 68.
+       *
+       * See also this follow-up epic:
+       * https://gitlab.com/groups/gitlab-org/-/epics/3957
+       */
       targets: {
-        ie: '11',
+        chrome: '73',
+        edge: '17',
+        firefox: '68',
+        safari: '12',
       },
     },
   ],
@@ -22,6 +37,8 @@ const plugins = [
   '@babel/plugin-proposal-class-properties',
   '@babel/plugin-proposal-json-strings',
   '@babel/plugin-proposal-private-methods',
+  // See: https://gitlab.com/gitlab-org/gitlab/-/issues/229146
+  '@babel/plugin-transform-arrow-functions',
   'lodash',
 ];
 
@@ -33,11 +50,6 @@ if (BABEL_ENV === 'coverage') {
       exclude: ['spec/javascripts/**/*', 'app/assets/javascripts/locale/**/app.js'],
     },
   ]);
-}
-
-// add rewire support when running tests
-if (BABEL_ENV === 'karma' || BABEL_ENV === 'coverage') {
-  plugins.push('babel-plugin-rewire');
 }
 
 // Jest is running in node environment, so we need additional plugins

@@ -216,4 +216,23 @@ RSpec.describe SearchController do
     it_behaves_like 'when the user cannot read cross project', :autocomplete, { term: 'hello' }
     it_behaves_like 'with external authorization service enabled', :autocomplete, { term: 'hello' }
   end
+
+  describe '#append_info_to_payload' do
+    it 'appends search metadata for logging' do
+      last_payload = nil
+      original_append_info_to_payload = controller.method(:append_info_to_payload)
+
+      expect(controller).to receive(:append_info_to_payload) do |payload|
+        original_append_info_to_payload.call(payload)
+        last_payload = payload
+      end
+
+      get :show, params: { scope: 'issues', search: 'hello world', group_id: '123', project_id: '456' }
+
+      expect(last_payload[:metadata]['meta.search.group_id']).to eq('123')
+      expect(last_payload[:metadata]['meta.search.project_id']).to eq('456')
+      expect(last_payload[:metadata]['meta.search.search']).to eq('hello world')
+      expect(last_payload[:metadata]['meta.search.scope']).to eq('issues')
+    end
+  end
 end

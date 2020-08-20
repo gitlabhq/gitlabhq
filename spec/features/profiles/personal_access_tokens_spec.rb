@@ -100,14 +100,11 @@ RSpec.describe 'Profile > Personal Access Tokens', :js do
     context "when revocation fails" do
       it "displays an error message" do
         visit profile_personal_access_tokens_path
-        allow_any_instance_of(PersonalAccessToken).to receive(:update!).and_return(false)
-
-        errors = ActiveModel::Errors.new(PersonalAccessToken.new).tap { |e| e.add(:name, "cannot be nil") }
-        allow_any_instance_of(PersonalAccessToken).to receive(:errors).and_return(errors)
+        allow_any_instance_of(PersonalAccessTokens::RevokeService).to receive(:revocation_permitted?).and_return(false)
 
         accept_confirm { click_on "Revoke" }
         expect(active_personal_access_tokens).to have_text(personal_access_token.name)
-        expect(page).to have_content("Could not revoke")
+        expect(page).to have_content("Not permitted to revoke")
       end
     end
   end

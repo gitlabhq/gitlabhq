@@ -1,5 +1,5 @@
-- pretty_name = @project&.full_name || _('<project name>')
-- run_actions_text = s_("ProjectService|Perform common operations on GitLab project: %{project_name}") % { project_name: pretty_name }
+- pretty_name = html_escape(@project&.full_name) || html_escape_once(_('&lt;project name&gt;')).html_safe
+- run_actions_text = html_escape(s_("ProjectService|Perform common operations on GitLab project: %{project_name}")) % { project_name: pretty_name }
 
 %p= s_("ProjectService|To set up this service:")
 %ul.list-unstyled.indent-list
@@ -7,13 +7,13 @@
     1.
     = link_to 'https://docs.mattermost.com/developer/slash-commands.html#enabling-custom-commands', target: '_blank', rel: 'noopener noreferrer nofollow' do
       Enable custom slash commands
-      = sprite_icon('external-link', size: 16)
+      = sprite_icon('external-link')
     on your Mattermost installation
   %li
     2.
     = link_to 'https://docs.mattermost.com/developer/slash-commands.html#set-up-a-custom-command', target: '_blank', rel: 'noopener noreferrer nofollow' do
       Add a slash command
-      = sprite_icon('external-link', size: 16)
+      = sprite_icon('external-link')
     in your Mattermost team with these options:
 %hr
 
@@ -21,7 +21,7 @@
   .form-group
     = label_tag :display_name, _('Display name'), class: 'col-12 col-form-label label-bold'
     .col-12.input-group
-      = text_field_tag :display_name, "GitLab / #{pretty_name}", class: 'form-control form-control-sm', readonly: 'readonly'
+      = text_field_tag :display_name, "GitLab / #{pretty_name}".html_safe, class: 'form-control form-control-sm', readonly: 'readonly'
       .input-group-append
         = clipboard_button(target: '#display_name', class: 'input-group-text')
 

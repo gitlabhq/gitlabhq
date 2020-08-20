@@ -66,51 +66,35 @@ RSpec.describe CommitStatus do
   describe '#processed' do
     subject { commit_status.processed }
 
-    context 'when ci_atomic_processing is disabled' do
+    context 'status is latest' do
       before do
-        stub_feature_flags(ci_atomic_processing: false)
-
-        commit_status.save!
+        commit_status.update!(retried: false, status: :pending)
       end
 
-      it { is_expected.to be_nil }
+      it { is_expected.to be_falsey }
     end
 
-    context 'when ci_atomic_processing is enabled' do
+    context 'status is retried' do
       before do
-        stub_feature_flags(ci_atomic_processing: true)
+        commit_status.update!(retried: true, status: :pending)
       end
 
-      context 'status is latest' do
-        before do
-          commit_status.update!(retried: false, status: :pending)
-        end
+      it { is_expected.to be_truthy }
+    end
 
-        it { is_expected.to be_falsey }
-      end
+    it "processed state is always persisted" do
+      commit_status.update!(retried: false, status: :pending)
 
-      context 'status is retried' do
-        before do
-          commit_status.update!(retried: true, status: :pending)
-        end
+      # another process does mark object as processed
+      CommitStatus.find(commit_status.id).update_column(:processed, true)
 
-        it { is_expected.to be_truthy }
-      end
+      # subsequent status transitions on the same instance
+      # always saves processed=false to DB even though
+      # the current value did not change
+      commit_status.update!(retried: false, status: :running)
 
-      it "processed state is always persisted" do
-        commit_status.update!(retried: false, status: :pending)
-
-        # another process does mark object as processed
-        CommitStatus.find(commit_status.id).update_column(:processed, true)
-
-        # subsequent status transitions on the same instance
-        # always saves processed=false to DB even though
-        # the current value did not change
-        commit_status.update!(retried: false, status: :running)
-
-        # we look at a persisted state in DB
-        expect(CommitStatus.find(commit_status.id).processed).to eq(false)
-      end
+      # we look at a persisted state in DB
+      expect(CommitStatus.find(commit_status.id).processed).to eq(false)
     end
   end
 
@@ -438,7 +422,7 @@ RSpec.describe CommitStatus do
       end
 
       it 'returns a correct compound status' do
-        expect(described_class.all.slow_composite_status(project: project)).to eq 'running'
+        expect(described_class.all.composite_status).to eq 'running'
       end
     end
 
@@ -448,7 +432,7 @@ RSpec.describe CommitStatus do
       end
 
       it 'returns status that indicates success' do
-        expect(described_class.all.slow_composite_status(project: project)).to eq 'success'
+        expect(described_class.all.composite_status).to eq 'success'
       end
     end
 
@@ -459,7 +443,7 @@ RSpec.describe CommitStatus do
       end
 
       it 'returns status according to the scope' do
-        expect(described_class.latest.slow_composite_status(project: project)).to eq 'success'
+        expect(described_class.latest.composite_status).to eq 'success'
       end
     end
   end

@@ -194,6 +194,10 @@ module ApplicationHelper
     'https://' + promo_host
   end
 
+  def contact_sales_url
+    promo_url + '/sales'
+  end
+
   def support_url
     Gitlab::CurrentSettings.current_application_settings.help_page_support_url.presence || promo_url + '/getting-help/'
   end
@@ -229,6 +233,18 @@ module ApplicationHelper
     end
 
     "#{request.path}?#{options.compact.to_param}"
+  end
+
+  def use_startup_css?
+    Feature.enabled?(:startup_css) && !Rails.env.test?
+  end
+
+  def stylesheet_link_tag_defer(path)
+    if use_startup_css?
+      stylesheet_link_tag(path, media: "print")
+    else
+      stylesheet_link_tag(path, media: "all")
+    end
   end
 
   def outdated_browser?

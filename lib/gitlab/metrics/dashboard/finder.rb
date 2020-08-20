@@ -14,10 +14,7 @@ module Gitlab
           ::Metrics::Dashboard::SelfMonitoringDashboardService,
 
           # This dashboard is displayed on the K8s cluster settings health page.
-          ::Metrics::Dashboard::ClusterDashboardService,
-
-          # This dashboard is not yet ready for the world.
-          ::Metrics::Dashboard::PodDashboardService
+          ::Metrics::Dashboard::ClusterDashboardService
         ].freeze
 
         class << self
@@ -72,17 +69,11 @@ module Gitlab
           #                              display_name: String,
           #                              default: Boolean }]
           def find_all_paths(project)
-            project.repository.metrics_dashboard_paths
-          end
-
-          # Summary of all known dashboards. Used to populate repo cache.
-          # Prefer #find_all_paths.
-          def find_all_paths_from_source(project)
-            Gitlab::Metrics::Dashboard::Cache.delete_all!
-
-            user_facing_dashboard_services(project).flat_map do |service|
+            dashboards = user_facing_dashboard_services(project).flat_map do |service|
               service.all_dashboard_paths(project)
             end
+
+            Gitlab::Utils.stable_sort_by(dashboards) { |dashboard| dashboard[:display_name].downcase }
           end
 
           private

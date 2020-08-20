@@ -1,3 +1,9 @@
+---
+stage: Create
+group: Ecosystem
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # Creating an API token in Jira Cloud
 
 An API token is needed when integrating with Jira Cloud, follow the steps

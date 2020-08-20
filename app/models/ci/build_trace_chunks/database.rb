@@ -19,8 +19,22 @@ module Ci
         model.raw_data
       end
 
-      def set_data(model, data)
-        model.raw_data = data
+      def set_data(model, new_data)
+        model.raw_data = new_data
+      end
+
+      def append_data(model, new_data, offset)
+        if offset > 0
+          truncated_data = data(model).to_s.byteslice(0, offset)
+          new_data = truncated_data + new_data
+        end
+
+        model.raw_data = new_data
+        model.raw_data.to_s.bytesize
+      end
+
+      def size(model)
+        data(model).to_s.bytesize
       end
 
       def delete_data(model)

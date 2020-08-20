@@ -42,7 +42,7 @@ RSpec.describe 'Profile > Password' do
           fill_passwords('mypassword', 'mypassword')
 
           page.within('.flash-notice') do
-            expect(page).to have_content('Password was successfully updated. Please login with it')
+            expect(page).to have_content('Password was successfully updated. Please sign in again.')
           end
         end
       end

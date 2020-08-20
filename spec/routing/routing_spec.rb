@@ -76,46 +76,45 @@ end
 #          DELETE /snippets/:id(.:format)      snippets#destroy
 RSpec.describe SnippetsController, "routing" do
   it "to #raw" do
-    expect(get("/snippets/1/raw")).to route_to('snippets#raw', id: '1')
+    expect(get("/-/snippets/1/raw")).to route_to('snippets#raw', id: '1')
   end
 
   it "to #index" do
-    expect(get("/snippets")).to route_to('snippets#index')
+    expect(get("/-/snippets")).to route_to('snippets#index')
   end
 
   it "to #create" do
-    expect(post("/snippets")).to route_to('snippets#create')
+    expect(post("/-/snippets")).to route_to('snippets#create')
   end
 
   it "to #new" do
-    expect(get("/snippets/new")).to route_to('snippets#new')
+    expect(get("/-/snippets/new")).to route_to('snippets#new')
   end
 
   it "to #edit" do
-    expect(get("/snippets/1/edit")).to route_to('snippets#edit', id: '1')
+    expect(get("/-/snippets/1/edit")).to route_to('snippets#edit', id: '1')
   end
 
   it "to #show" do
-    expect(get("/snippets/1")).to route_to('snippets#show', id: '1')
+    expect(get("/-/snippets/1")).to route_to('snippets#show', id: '1')
   end
 
   it "to #update" do
-    expect(put("/snippets/1")).to route_to('snippets#update', id: '1')
+    expect(put("/-/snippets/1")).to route_to('snippets#update', id: '1')
   end
 
   it "to #destroy" do
-    expect(delete("/snippets/1")).to route_to('snippets#destroy', id: '1')
+    expect(delete("/-/snippets/1")).to route_to('snippets#destroy', id: '1')
   end
 
-  it 'to #show from scope routing' do
-    expect(get("/-/snippets/1")).to route_to('snippets#show', id: '1')
+  it 'to #show from unscoped routing' do
+    expect(get("/snippets/1")).to route_to('snippets#show', id: '1')
   end
 end
 
 #            help GET /help(.:format)                 help#index
 #       help_page GET /help/*path(.:format)           help#show
 #  help_shortcuts GET /help/shortcuts(.:format)       help#shortcuts
-#         help_ui GET /help/ui(.:format)              help#ui
 RSpec.describe HelpController, "routing" do
   it "to #index" do
     expect(get("/help")).to route_to('help#index')
@@ -131,9 +130,6 @@ RSpec.describe HelpController, "routing" do
     expect(get(path)).to route_to('help#show',
                                   path: 'workflow/protected_branches/protected_branches1',
                                   format: 'png')
-
-    path = '/help/ui'
-    expect(get(path)).to route_to('help#ui')
   end
 end
 

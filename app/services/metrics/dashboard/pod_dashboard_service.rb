@@ -4,10 +4,28 @@ module Metrics
   module Dashboard
     class PodDashboardService < ::Metrics::Dashboard::PredefinedDashboardService
       DASHBOARD_PATH = 'config/prometheus/pod_metrics.yml'
-      DASHBOARD_NAME = 'Pod Health'
+      DASHBOARD_NAME = N_('K8s pod health')
 
       # SHA256 hash of dashboard content
-      DASHBOARD_VERSION = 'f12f641d2575d5dcb69e2c633ff5231dbd879ad35020567d8fc4e1090bfdb4b4'
+      DASHBOARD_VERSION = '3a91b32f91b2dd3d90275333c0ea3630b3f3f37c4296ede5b5eef59bf523d66b'
+
+      SEQUENCE = [
+        STAGES::MetricEndpointInserter,
+        STAGES::VariableEndpointInserter,
+        STAGES::PanelIdsInserter
+      ].freeze
+
+      class << self
+        def all_dashboard_paths(_project)
+          [{
+            path: DASHBOARD_PATH,
+            display_name: _(DASHBOARD_NAME),
+            default: false,
+            system_dashboard: false,
+            out_of_the_box_dashboard: out_of_the_box_dashboard?
+          }]
+        end
+      end
 
       private
 

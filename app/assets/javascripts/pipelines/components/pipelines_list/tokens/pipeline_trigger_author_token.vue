@@ -3,12 +3,12 @@ import {
   GlFilteredSearchToken,
   GlAvatar,
   GlFilteredSearchSuggestion,
-  GlDropdownDivider,
+  GlDeprecatedDropdownDivider,
   GlLoadingIcon,
 } from '@gitlab/ui';
-import Api from '~/api';
-import createFlash from '~/flash';
 import { debounce } from 'lodash';
+import Api from '~/api';
+import { deprecatedCreateFlash as createFlash } from '~/flash';
 import {
   ANY_TRIGGER_AUTHOR,
   FETCH_AUTHOR_ERROR_MESSAGE,
@@ -21,7 +21,7 @@ export default {
     GlFilteredSearchToken,
     GlAvatar,
     GlFilteredSearchSuggestion,
-    GlDropdownDivider,
+    GlDeprecatedDropdownDivider,
     GlLoadingIcon,
   },
   props: {
@@ -94,7 +94,7 @@ export default {
       <gl-filtered-search-suggestion :value="$options.anyTriggerAuthor">{{
         $options.anyTriggerAuthor
       }}</gl-filtered-search-suggestion>
-      <gl-dropdown-divider />
+      <gl-deprecated-dropdown-divider />
 
       <gl-loading-icon v-if="loading" />
       <template v-else>

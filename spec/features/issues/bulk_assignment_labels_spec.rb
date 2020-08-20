@@ -14,9 +14,6 @@ RSpec.describe 'Issues > Labels bulk assignment' do
 
   context 'as an allowed user', :js do
     before do
-      # Make sure that issuables list FF is not turned on.
-      stub_feature_flags(vue_issuables_list: false)
-
       project.add_maintainer(user)
 
       sign_in user

@@ -13,7 +13,7 @@ describe('functionDetailsComponent', () => {
     localVue = createLocalVue();
     localVue.use(Vuex);
 
-    store = createStore();
+    store = createStore({ clustersPath: '/clusters', helpPath: '/help' });
   });
 
   afterEach(() => {
@@ -38,8 +38,6 @@ describe('functionDetailsComponent', () => {
         propsData: {
           func: serviceStub,
           hasPrometheus: false,
-          clustersPath: '/clusters',
-          helpPath: '/help',
         },
       });
 
@@ -65,8 +63,6 @@ describe('functionDetailsComponent', () => {
         propsData: {
           func: serviceStub,
           hasPrometheus: false,
-          clustersPath: '/clusters',
-          helpPath: '/help',
         },
       });
 
@@ -82,8 +78,6 @@ describe('functionDetailsComponent', () => {
         propsData: {
           func: serviceStub,
           hasPrometheus: false,
-          clustersPath: '/clusters',
-          helpPath: '/help',
         },
       });
 
@@ -99,8 +93,6 @@ describe('functionDetailsComponent', () => {
         propsData: {
           func: serviceStub,
           hasPrometheus: false,
-          clustersPath: '/clusters',
-          helpPath: '/help',
         },
       });
 

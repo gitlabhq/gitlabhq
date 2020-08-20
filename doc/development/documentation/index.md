@@ -445,8 +445,8 @@ In case the review app URL returns 404, follow these steps to debug:
 If you want to know the in-depth details, here's what's really happening:
 
 1. You manually run the `review-docs-deploy` job in a merge request.
-1. The job runs the [`scripts/trigger-build-docs`](https://gitlab.com/gitlab-org/gitlab/blob/master/scripts/trigger-build-docs)
-   script with the `deploy` flag, which in turn:
+1. The job runs the [`scripts/trigger-build`](https://gitlab.com/gitlab-org/gitlab/blob/master/scripts/trigger-build)
+   script with the `docs deploy` flag, which in turn:
    1. Takes your branch name and applies the following:
       - The `docs-preview-` prefix is added.
       - The product slug is used to know the project the review app originated
@@ -481,7 +481,7 @@ We treat documentation as code, and so use tests in our CI pipeline to maintain 
 standards and quality of the docs. The current tests, which run in CI jobs when a
 merge request with new or changed docs is submitted, are:
 
-- [`docs lint`](https://gitlab.com/gitlab-org/gitlab/blob/master/.gitlab/ci/docs.gitlab-ci.yml#L48):
+- [`docs lint`](https://gitlab.com/gitlab-org/gitlab/-/blob/0b562014f7b71f98540e682c8d662275f0011f2f/.gitlab/ci/docs.gitlab-ci.yml#L41):
   Runs several tests on the content of the docs themselves:
   - [`lint-doc.sh` script](https://gitlab.com/gitlab-org/gitlab/blob/master/scripts/lint-doc.sh)
     runs the following checks and linters:
@@ -492,32 +492,19 @@ merge request with new or changed docs is submitted, are:
     - [markdownlint](#markdownlint).
     - [Vale](#vale).
   - Nanoc tests:
-    - [`internal_links`](https://gitlab.com/gitlab-org/gitlab/blob/master/.gitlab/ci/docs.gitlab-ci.yml#L67)
+    - [`internal_links`](https://gitlab.com/gitlab-org/gitlab/-/blob/0b562014f7b71f98540e682c8d662275f0011f2f/.gitlab/ci/docs.gitlab-ci.yml#L58)
       checks that all internal links (ex: `[link](../index.md)`) are valid.
-    - [`internal_anchors`](https://gitlab.com/gitlab-org/gitlab/blob/master/.gitlab/ci/docs.gitlab-ci.yml#L69)
+    - [`internal_anchors`](https://gitlab.com/gitlab-org/gitlab/-/blob/0b562014f7b71f98540e682c8d662275f0011f2f/.gitlab/ci/docs.gitlab-ci.yml#L60)
       checks that all internal anchors (ex: `[link](../index.md#internal_anchor)`)
       are valid.
+  - [`ui-docs-links lint`](https://gitlab.com/gitlab-org/gitlab/-/blob/0b562014f7b71f98540e682c8d662275f0011f2f/.gitlab/ci/docs.gitlab-ci.yml#L62)
+    checks that all links to docs from UI elements (`app/views` files, for example)
+    are linking to valid docs and anchors.
 
-### Running tests
+### Run tests locally
 
 Apart from [previewing your changes locally](#previewing-the-changes-live), you can also run all lint checks
 and Nanoc tests locally.
-
-#### Nanoc tests
-
-To execute Nanoc tests locally:
-
-1. Navigate to the [`gitlab-docs`](https://gitlab.com/gitlab-org/gitlab-docs) directory.
-1. Run:
-
-   ```shell
-   # Check for broken internal links
-   bundle exec nanoc check internal_links
-
-   # Check for broken external links (might take a lot of time to complete).
-   # This test is set to be allowed to fail and is run only in the gitlab-docs project CI
-   bundle exec nanoc check internal_anchors
-   ```
 
 #### Lint checks
 
@@ -549,6 +536,57 @@ The output should be similar to:
 
 Note that this requires you to either have the required lint tools installed on your machine,
 or a working Docker installation, in which case an image with these tools pre-installed will be used.
+
+#### Nanoc tests
+
+To execute Nanoc tests locally:
+
+1. Navigate to the [`gitlab-docs`](https://gitlab.com/gitlab-org/gitlab-docs) directory.
+1. Run:
+
+   ```shell
+   # Check for broken internal links
+   bundle exec nanoc check internal_links
+
+   # Check for broken external links (might take a lot of time to complete).
+   # This test is set to be allowed to fail and is run only in the gitlab-docs project CI
+   bundle exec nanoc check internal_anchors
+   ```
+
+#### `ui-docs-links` test
+
+The `ui-docs-links lint` job uses `haml-lint` to test that all links to docs from
+UI elements (`app/views` files, for example) are linking to valid docs and anchors.
+
+To run the `ui-docs-links` test locally:
+
+1. Open the `gitlab` directory in a terminal window.
+1. Run:
+
+   ```shell
+   bundle exec haml-lint -i DocumentationLinks
+   ```
+
+If you receive an error the first time you run this test, run `bundle install`, which
+installs GitLab's dependencies, and try again.
+
+If you don't want to install all of GitLab's dependencies to test the links, you can:
+
+1. Open the `gitlab` directory in a terminal window.
+1. Install `haml-lint`:
+
+   ```shell
+   gem install haml_lint
+   ```
+
+1. Run:
+
+   ```shell
+   haml-lint -i DocumentationLinks
+   ```
+
+If you manually install `haml-lint` with this process, it will not update automatically
+and you should make sure your version matches the version used by GitLab.
 
 ### Local linters
 
@@ -586,6 +624,7 @@ You can use markdownlint:
 
 - [On the command line](https://github.com/igorshubovych/markdownlint-cli#markdownlint-cli--).
 - [Within a code editor](#configure-editors).
+- [In a `pre-commit` hook](#configure-pre-commit-hooks).
 
 #### Vale
 
@@ -612,6 +651,9 @@ You can use Vale:
 
 - [On the command line](https://errata-ai.gitbook.io/vale/getting-started/usage).
 - [Within a code editor](#configure-editors).
+- [In a `pre-commit` hook](#configure-pre-commit-hooks). Vale only reports errors in the
+  `pre-commit` hook (the same configuration as the CI/CD pipelines), and does not report suggestions
+  or warnings.
 
 #### Install linters
 
@@ -655,13 +697,31 @@ To configure markdownlint within your editor, install one of the following as ap
 - [Sublime Text](https://packagecontrol.io/packages/SublimeLinter-contrib-markdownlint)
 - [Visual Studio Code](https://marketplace.visualstudio.com/items?itemName=DavidAnson.vscode-markdownlint)
 - [Atom](https://atom.io/packages/linter-node-markdownlint)
+- [Vim](https://github.com/dense-analysis/ale)
 
 To configure Vale within your editor, install one of the following as appropriate:
 
 - The Sublime Text [`SublimeLinter-contrib-vale` plugin](https://packagecontrol.io/packages/SublimeLinter-contrib-vale)
 - The Visual Studio Code [`testthedocs.vale` extension](https://marketplace.visualstudio.com/items?itemName=testthedocs.vale)
+- [Vim](https://github.com/dense-analysis/ale)
 
 We don't use [Vale Server](https://errata-ai.github.io/vale/#using-vale-with-a-text-editor-or-another-third-party-application).
+
+#### Configure pre-commit hooks
+
+Git [pre-commit hooks](https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks) allow Git users to
+run tests or other processes before committing to a branch, with the ability to not commit to the branch if
+failures occur with these tests.
+
+[`overcommit`](https://github.com/sds/overcommit) is a Git hooks manager, making configuring,
+installing, and removing Git hooks easy.
+
+Sample configuration for `overcommit` is available in the
+[`.overcommit.yml.example`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.overcommit.yml.example)
+file for the [`gitlab`](https://gitlab.com/gitlab-org/gitlab) project.
+
+To set up `overcommit` for documentation linting, see
+[Pre-commit static analysis](../contributing/style_guides.md#pre-commit-static-analysis).
 
 #### Disable Vale tests
 

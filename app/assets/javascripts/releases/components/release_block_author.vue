@@ -1,6 +1,6 @@
 <script>
-import { __, sprintf } from '~/locale';
 import { GlSprintf } from '@gitlab/ui';
+import { __, sprintf } from '~/locale';
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 
 export default {

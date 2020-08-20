@@ -266,6 +266,7 @@ RSpec.describe Gitlab::GitalyClient::CommitService do
         repository: repository_message, revision: revision
       )
     end
+
     let(:response) do
       Gitaly::CommitStatsResponse.new(
         oid: revision,

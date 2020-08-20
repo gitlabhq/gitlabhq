@@ -191,7 +191,7 @@ export default {
         name="eye-slash"
         :size="14"
         :title="s__('Notes|Private comments are accessible by internal staff only')"
-        class="gl-ml-1 gl-text-gray-800 align-middle"
+        class="gl-ml-1 gl-text-gray-700 align-middle"
       />
       <slot name="extra-controls"></slot>
       <i

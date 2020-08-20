@@ -9,7 +9,7 @@
         = button_to accept_term_path(@term, redirect_params), class: 'btn btn-success gl-ml-3', data: { qa_selector: 'accept_terms_button' } do
           = _('Accept terms')
     - else
-      .pull-right
+      .float-right
         = link_to root_path, class: 'btn btn-success gl-ml-3' do
           = _('Continue')
     - if can?(current_user, :decline_terms, @term)

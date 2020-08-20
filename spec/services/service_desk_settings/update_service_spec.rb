@@ -31,6 +31,17 @@ RSpec.describe ServiceDeskSettings::UpdateService do
       end
     end
 
+    context 'when project_key is an empty string' do
+      let(:params) { { project_key: '' } }
+
+      it 'sets nil project_key' do
+        result = described_class.new(settings.project, user, params).execute
+
+        expect(result[:status]).to eq :success
+        expect(settings.reload.project_key).to be_nil
+      end
+    end
+
     context 'with invalid params' do
       let(:params) { { outgoing_name: 'x' * 256 } }
 

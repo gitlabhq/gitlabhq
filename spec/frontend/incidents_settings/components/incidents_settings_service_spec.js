@@ -1,9 +1,9 @@
-import axios from '~/lib/utils/axios_utils';
 import AxiosMockAdapter from 'axios-mock-adapter';
+import axios from '~/lib/utils/axios_utils';
 import httpStatusCodes from '~/lib/utils/http_status';
 import IncidentsSettingsService from '~/incidents_settings/incidents_settings_service';
 import { ERROR_MSG } from '~/incidents_settings/constants';
-import createFlash from '~/flash';
+import { deprecatedCreateFlash as createFlash } from '~/flash';
 import { refreshCurrentPage } from '~/lib/utils/url_utility';
 
 jest.mock('~/flash');

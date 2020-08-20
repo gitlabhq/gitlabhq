@@ -6,6 +6,7 @@ RSpec.describe Gitlab::LegacyGithubImport::IssuableFormatter do
   let(:raw_data) do
     double(number: 42)
   end
+
   let(:project) { double(import_type: 'github') }
   let(:issuable_formatter) { described_class.new(project, raw_data) }
 

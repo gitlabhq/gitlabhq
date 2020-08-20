@@ -1,6 +1,6 @@
 import { mount } from '@vue/test-utils';
-import DynamicField from '~/integrations/edit/components/dynamic_field.vue';
 import { GlFormGroup, GlFormCheckbox, GlFormInput, GlFormSelect, GlFormTextarea } from '@gitlab/ui';
+import DynamicField from '~/integrations/edit/components/dynamic_field.vue';
 
 describe('DynamicField', () => {
   let wrapper;

@@ -12,20 +12,24 @@ describe('Mutations TestReports Store', () => {
     testReports: {},
     selectedSuite: null,
     isLoading: false,
-    hasFullReport: false,
   };
 
   beforeEach(() => {
     mockState = { ...defaultState };
   });
 
-  describe('set reports', () => {
-    it('should set testReports', () => {
-      const expectedState = { ...mockState, testReports };
-      mutations[types.SET_REPORTS](mockState, testReports);
+  describe('set suite', () => {
+    it('should set the suite at the given index', () => {
+      mockState.testReports = testReports;
+      const suite = { name: 'test_suite' };
+      const index = 0;
+      const expectedState = { ...mockState };
+      expectedState.testReports.test_suites[index] = { suite, hasFullSuite: true };
+      mutations[types.SET_SUITE](mockState, { suite, index });
 
-      expect(mockState.testReports).toEqual(expectedState.testReports);
-      expect(mockState.hasFullReport).toBe(true);
+      expect(mockState.testReports.test_suites[index]).toEqual(
+        expectedState.testReports.test_suites[index],
+      );
     });
   });
 
@@ -40,10 +44,21 @@ describe('Mutations TestReports Store', () => {
 
   describe('set summary', () => {
     it('should set summary', () => {
-      const summary = { total_count: 1 };
+      const summary = {
+        total: { time: 0, count: 10, success: 1, failed: 2, skipped: 3, error: 4 },
+      };
+      const expectedSummary = {
+        ...summary,
+        total_time: 0,
+        total_count: 10,
+        success_count: 1,
+        failed_count: 2,
+        skipped_count: 3,
+        error_count: 4,
+      };
       mutations[types.SET_SUMMARY](mockState, summary);
 
-      expect(mockState.testReports).toEqual(summary);
+      expect(mockState.testReports).toEqual(expectedSummary);
     });
   });
 

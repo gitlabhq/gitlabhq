@@ -22,7 +22,7 @@ import AjaxCache from '~/lib/utils/ajax_cache';
 import syntaxHighlight from '~/syntax_highlight';
 import axios from './lib/utils/axios_utils';
 import { getLocationHash } from './lib/utils/url_utility';
-import Flash from './flash';
+import { deprecatedCreateFlash as Flash } from './flash';
 import { defaultAutocompleteConfig } from './gfm_auto_complete';
 import CommentTypeToggle from './comment_type_toggle';
 import GLForm from './gl_form';
@@ -1336,11 +1336,12 @@ export default class Notes {
   toggleCommitList(e) {
     const $element = $(e.currentTarget);
     const $closestSystemCommitList = $element.siblings('.system-note-commit-list');
+    const $svgChevronUpElement = $element.find('svg.js-chevron-up');
+    const $svgChevronDownElement = $element.find('svg.js-chevron-down');
 
-    $element
-      .find('.fa')
-      .toggleClass('fa-angle-down')
-      .toggleClass('fa-angle-up');
+    $svgChevronUpElement.toggleClass('gl-display-none');
+    $svgChevronDownElement.toggleClass('gl-display-none');
+
     $closestSystemCommitList.toggleClass('hide-shade');
   }
 

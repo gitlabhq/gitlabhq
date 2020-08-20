@@ -26,7 +26,6 @@ module Gitlab
         def generate_script
           super + [
             init_command,
-            wait_for_tiller_command,
             repository_command,
             repository_update_command,
             upgrade_command
@@ -38,7 +37,6 @@ module Gitlab
         def upgrade_command
           command = ['helm', 'upgrade', name, chart] +
             reuse_values_flag +
-            tls_flags_if_remote_tiller +
             version_flag +
             namespace_flag +
             value_flag

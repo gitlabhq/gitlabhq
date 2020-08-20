@@ -178,6 +178,13 @@ Once you decided where to put [test environment orchestration scenarios](https:/
 the [GitLab QA orchestrator README](https://gitlab.com/gitlab-org/gitlab-qa/tree/master/README.md), and [the already existing
 instance-level scenarios](https://gitlab.com/gitlab-org/gitlab-foss/tree/master/qa/qa/specs/features).
 
+### Consider **not** writing an end-to-end test
+
+We should follow these best practices for end-to-end tests:
+
+- Do not write an end-to-end test if a lower-level feature test exists. End-to-end tests require more work and resources.
+- Troubleshooting for end-to-end tests can be more complex as connections to the application under test are not known.
+
 Continued reading:
 
 - [Beginner's Guide](beginners_guide.md)

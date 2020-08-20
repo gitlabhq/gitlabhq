@@ -213,7 +213,7 @@ module DeclarativePolicy
     #
     # It also stores a reference to the cache, so it can be used
     # to cache computations by e.g. ManifestCondition.
-    attr_reader :user, :subject, :cache
+    attr_reader :user, :subject
     def initialize(user, subject, opts = {})
       @user = user
       @subject = subject

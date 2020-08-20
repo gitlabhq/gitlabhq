@@ -1,0 +1,5 @@
+---
+title: Fix Pypi and Nuget Storage Statistics
+merge_request: 37386
+author:
+type: fixed

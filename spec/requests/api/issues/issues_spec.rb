@@ -28,6 +28,7 @@ RSpec.describe API::Issues do
            updated_at: 3.hours.ago,
            closed_at: 1.hour.ago
   end
+
   let!(:confidential_issue) do
     create :issue,
            :confidential,
@@ -37,6 +38,7 @@ RSpec.describe API::Issues do
            created_at: generate(:past_time),
            updated_at: 2.hours.ago
   end
+
   let!(:issue) do
     create :issue,
            author: user,
@@ -48,6 +50,7 @@ RSpec.describe API::Issues do
            title: issue_title,
            description: issue_description
   end
+
   let_it_be(:label) do
     create(:label, title: 'label', color: '#FFAABB', project: project)
   end
@@ -381,6 +384,60 @@ RSpec.describe API::Issues do
           get api("/issues?updated_after=#{issue2.updated_at}", user)
 
           expect_paginated_array_response(issue2.id)
+        end
+      end
+
+      context 'filtering by due date' do
+        # This date chosen because it is the beginning of a week + near the beginning of a month
+        let_it_be(:frozen_time) { DateTime.parse('2020-08-03 12:00') }
+
+        let_it_be(:issue2) { create(:issue, project: project, author: user, due_date: frozen_time + 3.days) }
+        let_it_be(:issue3) { create(:issue, project: project, author: user, due_date: frozen_time + 10.days) }
+        let_it_be(:issue4) { create(:issue, project: project, author: user, due_date: frozen_time + 34.days) }
+        let_it_be(:issue5) { create(:issue, project: project, author: user, due_date: frozen_time - 8.days) }
+
+        before do
+          travel_to(frozen_time)
+        end
+
+        after do
+          travel_back
+        end
+
+        it 'returns them all when argument is empty' do
+          get api('/issues?due_date=', user)
+
+          expect_paginated_array_response(issue5.id, issue4.id, issue3.id, issue2.id, issue.id, closed_issue.id)
+        end
+
+        it 'returns issues without due date' do
+          get api('/issues?due_date=0', user)
+
+          expect_paginated_array_response(issue.id, closed_issue.id)
+        end
+
+        it 'returns issues due for this week' do
+          get api('/issues?due_date=week', user)
+
+          expect_paginated_array_response(issue2.id)
+        end
+
+        it 'returns issues due for this month' do
+          get api('/issues?due_date=month', user)
+
+          expect_paginated_array_response(issue3.id, issue2.id)
+        end
+
+        it 'returns issues that are due previous two weeks and next month' do
+          get api('/issues?due_date=next_month_and_previous_two_weeks', user)
+
+          expect_paginated_array_response(issue5.id, issue4.id, issue3.id, issue2.id)
+        end
+
+        it 'returns issues that are overdue' do
+          get api('/issues?due_date=overdue', user)
+
+          expect_paginated_array_response(issue5.id)
         end
       end
 
@@ -807,6 +864,7 @@ RSpec.describe API::Issues do
                target_project: private_mrs_project,
                description: "closes #{issue.to_reference(private_mrs_project)}")
       end
+
       let!(:merge_request2) do
         create(:merge_request,
                :simple,

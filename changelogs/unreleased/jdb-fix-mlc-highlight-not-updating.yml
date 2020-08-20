@@ -1,0 +1,5 @@
+---
+title: Fix highlight commented rows
+merge_request: 38420
+author:
+type: fixed

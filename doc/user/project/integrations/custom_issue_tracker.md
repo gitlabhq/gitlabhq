@@ -1,8 +1,14 @@
+---
+stage: Create
+group: Ecosystem
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # Custom Issue Tracker service
 
 To enable the Custom Issue Tracker integration in a project:
 
-1. Go to **{settings}** **Settings > Integrations**.
+1. Go to **Settings > Integrations**.
 1. Click **Custom Issue Tracker**
 1. Fill in the tracker's details, such as title, description, and URLs.
    You will be able to edit these fields later as well.

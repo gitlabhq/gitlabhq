@@ -107,7 +107,6 @@ RSpec.configure do |config|
   config.include FixtureHelpers
   config.include NonExistingRecordsHelpers
   config.include GitlabRoutingHelper
-  config.include StubFeatureFlags
   config.include StubExperiments
   config.include StubGitlabCalls
   config.include StubGitlabData
@@ -140,6 +139,8 @@ RSpec.configure do |config|
   config.include SidekiqMiddleware
   config.include StubActionCableConnection, type: :channel
 
+  include StubFeatureFlags
+
   if ENV['CI'] || ENV['RETRIES']
     # This includes the first try, i.e. tests will be run 4 times before failing.
     config.default_retry_count = ENV.fetch('RETRIES', 3).to_i + 1
@@ -158,6 +159,10 @@ RSpec.configure do |config|
 
     # Reload all feature flags definitions
     Feature.register_definitions
+
+    # Enable all features by default for testing
+    # Reset any changes in after hook.
+    stub_all_feature_flags
   end
 
   config.after(:all) do
@@ -176,9 +181,6 @@ RSpec.configure do |config|
 
   config.before do |example|
     if example.metadata.fetch(:stub_feature_flags, true)
-      # Enable all features by default for testing
-      stub_all_feature_flags
-
       # The following can be removed when we remove the staged rollout strategy
       # and we can just enable it using instance wide settings
       # (ie. ApplicationSetting#auto_devops_enabled)
@@ -203,6 +205,8 @@ RSpec.configure do |config|
       stub_feature_flags(file_identifier_hash: false)
 
       allow(Gitlab::GitalyClient).to receive(:can_use_disk?).and_return(enable_rugged)
+    else
+      unstub_all_feature_flags
     end
 
     # Enable Marginalia feature for all specs in the test suite.
@@ -314,6 +318,9 @@ RSpec.configure do |config|
   config.after do
     Fog.unmock! if Fog.mock?
     Gitlab::CurrentSettings.clear_in_memory_application_settings!
+
+    # Reset all feature flag stubs to default for testing
+    stub_all_feature_flags
   end
 
   config.before(:example, :mailer) do

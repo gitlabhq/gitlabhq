@@ -8,7 +8,7 @@
 
 = render_if_exists 'shared/milestones/burndown', milestone: @milestone, project: @project
 
-- if can?(current_user, :read_issue, @project) && @milestone.total_issues_count.zero?
+- if can?(current_user, :read_issue, @project) && @milestone.total_issues_count == 0
   .alert.alert-success.gl-mt-3
     %span= _('Assign some issues to this milestone.')
 - elsif @milestone.complete? && @milestone.active?

@@ -1,0 +1,5 @@
+---
+title: Use Gitaly protobuf version as DiffStats cache key
+merge_request: 38414
+author:
+type: fixed

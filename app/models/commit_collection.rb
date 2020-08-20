@@ -47,7 +47,10 @@ class CommitCollection
     pipelines = project.ci_pipelines.latest_pipeline_per_commit(map(&:id), ref)
 
     each do |commit|
-      commit.set_latest_pipeline_for_ref(ref, pipelines[commit.id])
+      pipeline = pipelines[commit.id]
+      pipeline&.number_of_warnings # preload number of warnings
+
+      commit.set_latest_pipeline_for_ref(ref, pipeline)
     end
 
     self

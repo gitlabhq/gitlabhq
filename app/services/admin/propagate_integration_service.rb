@@ -96,7 +96,7 @@ module Admin
 
     # rubocop: disable CodeReuse/ActiveRecord
     def run_callbacks(batch)
-      if active_external_issue_tracker?
+      if integration.issue_tracker?
         Project.where(id: batch).update_all(has_external_issue_tracker: true)
       end
 
@@ -105,10 +105,6 @@ module Admin
       end
     end
     # rubocop: enable CodeReuse/ActiveRecord
-
-    def active_external_issue_tracker?
-      integration.issue_tracker? && !integration.default
-    end
 
     def active_external_wiki?
       integration.type == 'ExternalWikiService'

@@ -12,7 +12,6 @@
     "y_label": { "type": "string" },
     "y_axis": { "$ref": "axis.json" },
     "max_value": { "type": "number" },
-    "weight": { "type": "number" },
     "metrics": {
       "type": "array",
       "items": { "$ref": "metrics.json" }

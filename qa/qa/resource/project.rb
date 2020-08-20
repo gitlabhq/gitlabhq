@@ -103,6 +103,20 @@ module QA
         response.any? { |file| file[:path] == file_path }
       end
 
+      def has_branches?(branches)
+        branches.all? do |branch|
+          response = get(Runtime::API::Request.new(api_client, "#{api_repository_branches_path}/#{branch}").url)
+          response.code == HTTP_STATUS_OK
+        end
+      end
+
+      def has_tags?(tags)
+        tags.all? do |tag|
+          response = get(Runtime::API::Request.new(api_client, "#{api_repository_tags_path}/#{tag}").url)
+          response.code == HTTP_STATUS_OK
+        end
+      end
+
       def api_get_path
         "/projects/#{CGI.escape(path_with_namespace)}"
       end
@@ -123,8 +137,16 @@ module QA
         "#{api_get_path}/runners"
       end
 
+      def api_commits_path
+        "#{api_get_path}/repository/commits"
+      end
+
       def api_repository_branches_path
         "#{api_get_path}/repository/branches"
+      end
+
+      def api_repository_tags_path
+        "#{api_get_path}/repository/tags"
       end
 
       def api_repository_tree_path
@@ -176,6 +198,10 @@ module QA
         raise Runtime::API::RepositoryStorageMoves::RepositoryStorageMovesError, 'Timed out while waiting for the repository storage move to finish'
       end
 
+      def commits
+        parse_body(get(Runtime::API::Request.new(api_client, api_commits_path).url))
+      end
+
       def import_status
         response = get Runtime::API::Request.new(api_client, "/projects/#{id}/import").url
 
@@ -202,6 +228,10 @@ module QA
 
       def repository_branches
         parse_body(get(Runtime::API::Request.new(api_client, api_repository_branches_path).url))
+      end
+
+      def repository_tags
+        parse_body(get(Runtime::API::Request.new(api_client, api_repository_tags_path).url))
       end
 
       def repository_tree

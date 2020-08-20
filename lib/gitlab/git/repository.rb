@@ -44,7 +44,7 @@ module Gitlab
       # Relative path of repo
       attr_reader :relative_path
 
-      attr_reader :storage, :gl_repository, :relative_path, :gl_project_path
+      attr_reader :storage, :gl_repository, :gl_project_path
 
       # This remote name has to be stable for all types of repositories that
       # can join an object pool. If it's structure ever changes, a migration
@@ -598,14 +598,15 @@ module Gitlab
         end
       end
 
-      def revert(user:, commit:, branch_name:, message:, start_branch_name:, start_repository:)
+      def revert(user:, commit:, branch_name:, message:, start_branch_name:, start_repository:, dry_run: false)
         args = {
           user: user,
           commit: commit,
           branch_name: branch_name,
           message: message,
           start_branch_name: start_branch_name,
-          start_repository: start_repository
+          start_repository: start_repository,
+          dry_run: dry_run
         }
 
         wrapped_gitaly_errors do
@@ -613,14 +614,15 @@ module Gitlab
         end
       end
 
-      def cherry_pick(user:, commit:, branch_name:, message:, start_branch_name:, start_repository:)
+      def cherry_pick(user:, commit:, branch_name:, message:, start_branch_name:, start_repository:, dry_run: false)
         args = {
           user: user,
           commit: commit,
           branch_name: branch_name,
           message: message,
           start_branch_name: start_branch_name,
-          start_repository: start_repository
+          start_repository: start_repository,
+          dry_run: dry_run
         }
 
         wrapped_gitaly_errors do
@@ -813,7 +815,7 @@ module Gitlab
       def fsck
         msg, status = gitaly_repository_client.fsck
 
-        raise GitError.new("Could not fsck repository: #{msg}") unless status.zero?
+        raise GitError.new("Could not fsck repository: #{msg}") unless status == 0
       end
 
       def create_from_bundle(bundle_path)

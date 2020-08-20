@@ -234,4 +234,30 @@ RSpec.describe 'User updates wiki page' do
 
     it_behaves_like 'wiki file attachments'
   end
+
+  context 'when an existing page exceeds the content size limit' do
+    let_it_be(:project) { create(:project, :wiki_repo) }
+    let!(:wiki_page) { create(:wiki_page, wiki: project.wiki, content: "one\ntwo\nthree") }
+
+    before do
+      stub_application_setting(wiki_page_max_content_bytes: 10)
+
+      visit wiki_page_path(wiki_page.wiki, wiki_page, action: :edit)
+    end
+
+    it 'allows changing the title if the content does not change' do
+      fill_in 'Title', with: 'new title'
+      click_on 'Save changes'
+
+      expect(page).to have_content('Wiki was successfully updated.')
+    end
+
+    it 'shows a validation error when trying to change the content' do
+      fill_in 'Content', with: 'new content'
+      click_on 'Save changes'
+
+      expect(page).to have_content('The form contains the following error:')
+      expect(page).to have_content('Content is too long (11 Bytes). The maximum size is 10 Bytes.')
+    end
+  end
 end

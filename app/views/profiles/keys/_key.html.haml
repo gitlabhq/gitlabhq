@@ -3,12 +3,12 @@
     - if key.valid?
       - if key.expired?
         %span.d-inline-block.has-tooltip{ title: s_('Profiles|Your key has expired') }
-          = sprite_icon('warning-solid', size: 16, css_class: 'settings-list-icon d-none d-sm-block')
+          = sprite_icon('warning-solid', css_class: 'settings-list-icon d-none d-sm-block')
       - else
-        = sprite_icon('key', size: 16, css_class: 'settings-list-icon d-none d-sm-block ')
+        = sprite_icon('key', css_class: 'settings-list-icon d-none d-sm-block ')
     - else
       %span.d-inline-block.has-tooltip{ title: key.errors.full_messages.join(', ') }
-        = sprite_icon('warning-solid', size: 16, css_class: 'settings-list-icon d-none d-sm-block')
+        = sprite_icon('warning-solid', css_class: 'settings-list-icon d-none d-sm-block')
 
   .key-list-item-info.w-100.float-none
     = link_to path_to_key(key, is_admin), class: "title" do
@@ -28,4 +28,4 @@
         - if key.can_delete?
           = link_to path_to_key(key, is_admin), data: { confirm: _('Are you sure?')}, method: :delete, class: "btn btn-transparent gl-ml-3 align-baseline" do
             %span.sr-only= _('Remove')
-            = sprite_icon('remove', size: 16)
+            = sprite_icon('remove')

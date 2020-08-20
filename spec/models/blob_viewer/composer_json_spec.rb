@@ -14,6 +14,7 @@ RSpec.describe BlobViewer::ComposerJson do
       }
     SPEC
   end
+
   let(:blob) { fake_blob(path: 'composer.json', data: data) }
 
   subject { described_class.new(blob) }

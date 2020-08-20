@@ -76,6 +76,89 @@ export default {
 Please use the following function inside JS to render an icon:
 `gl.utils.spriteIcon(iconName)`
 
+## Loading icon
+
+### Usage in HAML/Rails
+
+DANGER: **Danger:**
+Do not use the `spinner` or `icon('spinner spin')` rails helpers to insert
+loading icons. These helpers rely on the Font Awesome icon library which is
+deprecated.
+
+To insert a loading spinner in HAML or Rails use the `loading_icon` helper:
+
+```haml
+= loading_icon
+```
+
+You can include one or more of the following properties with the `loading_icon` helper, as demonstrated
+by the examples that follow:
+
+- `container` (optional): wraps the loading icon in a container, which centers the loading icon using the `text-center` CSS property.
+- `color` (optional): either `orange` (default), `light`, or `dark`.
+- `size` (optional): either `sm` (default), `md`, `lg`, or `xl`.
+- `css_class` (optional): defaults to an empty string, but can be useful for utility classes to fine-tune alignment or spacing.
+
+**Example 1:**
+
+The following HAML expression generates a loading icon’s markup and
+centers the icon by wrapping it in a `gl-spinner-container` element.
+
+```haml
+= loading_icon(container: true)
+```
+
+**Output from example 1:**
+
+```html
+<div class="gl-spinner-container">
+  <span class="gl-spinner gl-spinner-orange gl-spinner-sm" aria-label="Loading"></span>
+</div>
+```
+
+**Example 2:**
+
+The following HAML expression generates a loading icon’s markup
+with a custom size. It also appends a margin utility class.
+
+```haml
+= loading_icon(size: 'lg', css_class: 'gl-mr-2')
+```
+
+**Output from example 2:**
+
+```html
+<span class="gl-spinner gl-spinner-orange gl-spinner-lg gl-mr-2" aria-label="Loading"></span>
+```
+
+### Usage in Vue
+
+The [GitLab UI](https://gitlab-org.gitlab.io/gitlab-ui/) components library provides a
+`GlLoadingIcon` component. See the component’s
+[storybook](https://gitlab-org.gitlab.io/gitlab-ui/?path=/story/base-loading-icon--default)
+for more information about its usage.
+
+**Example:**
+
+The following code snippet demonstrates how to use `GlLoadingIcon` in
+a Vue component.
+
+```html
+<script>
+import { GlLoadingIcon } from "@gitlab/ui";
+
+export default {
+  components: {
+    GlLoadingIcon,
+  },
+};
+<script>
+
+<template>
+  <gl-loading-icon inline />
+</template>
+```
+
 ## SVG Illustrations
 
 Please use from now on for any SVG based illustrations simple `img` tags to show an illustration by simply using either `image_tag` or `image_path` helpers.

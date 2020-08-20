@@ -17,6 +17,7 @@ RSpec.describe GitlabSchema.types['Query'] do
       current_user
       snippets
       design_management
+      milestone
       user
       users
     ]

@@ -2,7 +2,7 @@
 
 RSpec.shared_examples 'deploy token for package GET requests' do
   context 'with deploy token headers' do
-    let(:headers) { build_basic_auth_header(deploy_token.username, deploy_token.token) }
+    let(:headers) { basic_auth_header(deploy_token.username, deploy_token.token) }
 
     subject { get api(url), headers: headers }
 
@@ -15,7 +15,7 @@ RSpec.shared_examples 'deploy token for package GET requests' do
     end
 
     context 'invalid token' do
-      let(:headers) { build_basic_auth_header(deploy_token.username, 'bar') }
+      let(:headers) { basic_auth_header(deploy_token.username, 'bar') }
 
       it_behaves_like 'returning response status', :unauthorized
     end
@@ -24,7 +24,7 @@ end
 
 RSpec.shared_examples 'deploy token for package uploads' do
   context 'with deploy token headers' do
-    let(:headers) { build_basic_auth_header(deploy_token.username, deploy_token.token).merge(workhorse_header) }
+    let(:headers) { basic_auth_header(deploy_token.username, deploy_token.token).merge(workhorse_header) }
 
     before do
       project.update!(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
@@ -35,7 +35,7 @@ RSpec.shared_examples 'deploy token for package uploads' do
     end
 
     context 'invalid token' do
-      let(:headers) { build_basic_auth_header(deploy_token.username, 'bar').merge(workhorse_header) }
+      let(:headers) { basic_auth_header(deploy_token.username, 'bar').merge(workhorse_header) }
 
       it_behaves_like 'returning response status', :unauthorized
     end

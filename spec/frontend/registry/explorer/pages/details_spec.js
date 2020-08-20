@@ -13,7 +13,7 @@ import {
   SET_TAGS_LIST_SUCCESS,
   SET_TAGS_PAGINATION,
   SET_INITIAL_STATE,
-} from '~/registry/explorer/stores/mutation_types/';
+} from '~/registry/explorer/stores/mutation_types';
 
 import { tagsListResponse } from '../mock_data';
 import { DeleteModal } from '../stubs';

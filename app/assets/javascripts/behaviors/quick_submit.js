@@ -72,7 +72,7 @@ $(document).on(
 
     $this.tooltip({
       container: 'body',
-      html: 'true',
+      html: true,
       placement: 'top',
       title,
       trigger: 'manual',

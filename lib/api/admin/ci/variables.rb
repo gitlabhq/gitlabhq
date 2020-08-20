@@ -12,7 +12,7 @@ module API
           namespace 'ci' do
             namespace 'variables' do
               desc 'Get instance-level variables' do
-                success Entities::Variable
+                success Entities::Ci::Variable
               end
               params do
                 use :pagination
@@ -20,11 +20,11 @@ module API
               get '/' do
                 variables = ::Ci::InstanceVariable.all
 
-                present paginate(variables), with: Entities::Variable
+                present paginate(variables), with: Entities::Ci::Variable
               end
 
               desc 'Get a specific variable from a group' do
-                success Entities::Variable
+                success Entities::Ci::Variable
               end
               params do
                 requires :key, type: String, desc: 'The key of the variable'
@@ -35,11 +35,11 @@ module API
 
                 break not_found!('InstanceVariable') unless variable
 
-                present variable, with: Entities::Variable
+                present variable, with: Entities::Ci::Variable
               end
 
               desc 'Create a new instance-level variable' do
-                success Entities::Variable
+                success Entities::Ci::Variable
               end
               params do
                 requires :key,
@@ -69,14 +69,14 @@ module API
                 variable = ::Ci::InstanceVariable.new(variable_params)
 
                 if variable.save
-                  present variable, with: Entities::Variable
+                  present variable, with: Entities::Ci::Variable
                 else
                   render_validation_error!(variable)
                 end
               end
 
               desc 'Update an existing instance-variable' do
-                success Entities::Variable
+                success Entities::Ci::Variable
               end
               params do
                 optional :key,
@@ -108,14 +108,14 @@ module API
                 variable_params = declared_params(include_missing: false).except(:key)
 
                 if variable.update(variable_params)
-                  present variable, with: Entities::Variable
+                  present variable, with: Entities::Ci::Variable
                 else
                   render_validation_error!(variable)
                 end
               end
 
               desc 'Delete an existing instance-level variable' do
-                success Entities::Variable
+                success Entities::Ci::Variable
               end
               params do
                 requires :key, type: String, desc: 'The key of the variable'

@@ -23,7 +23,7 @@ module Projects
       # for more context.
       # rubocop: disable CodeReuse/ActiveRecord
       def first_pipeline_failure?
-        auto_devops_pipelines.success.limit(1).count.zero? &&
+        auto_devops_pipelines.success.limit(1).count == 0 &&
           auto_devops_pipelines.failed.limit(1).count.nonzero?
       end
       # rubocop: enable CodeReuse/ActiveRecord

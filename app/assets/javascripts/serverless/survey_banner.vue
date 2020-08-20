@@ -1,7 +1,7 @@
 <script>
 import Cookies from 'js-cookie';
-import { parseBoolean } from '~/lib/utils/common_utils';
 import { GlBanner } from '@gitlab/ui';
+import { parseBoolean } from '~/lib/utils/common_utils';
 
 export default {
   components: {

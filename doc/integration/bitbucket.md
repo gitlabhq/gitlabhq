@@ -21,7 +21,7 @@ Bitbucket.org.
 
 ## Bitbucket OmniAuth provider
 
-> **Note:**
+NOTE: **Note:**
 GitLab 8.15 significantly simplified the way to integrate Bitbucket.org with
 GitLab. You are encouraged to upgrade your GitLab instance if you haven't done so
 already. If you're using GitLab 8.14 or below, [use the previous integration

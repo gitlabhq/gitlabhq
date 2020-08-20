@@ -4,7 +4,7 @@ module API
   class ProjectTemplates < Grape::API::Instance
     include PaginationParams
 
-    TEMPLATE_TYPES = %w[dockerfiles gitignores gitlab_ci_ymls licenses].freeze
+    TEMPLATE_TYPES = %w[dockerfiles gitignores gitlab_ci_ymls licenses metrics_dashboard_ymls issues merge_requests].freeze
     # The regex is needed to ensure a period (e.g. agpl-3.0)
     # isn't confused with a format type. We also need to allow encoded
     # values (e.g. C%2B%2B for C++), so allow % and + as well.
@@ -14,7 +14,7 @@ module API
 
     params do
       requires :id, type: String, desc: 'The ID of a project'
-      requires :type, type: String, values: TEMPLATE_TYPES, desc: 'The type (dockerfiles|gitignores|gitlab_ci_ymls|licenses) of the template'
+      requires :type, type: String, values: TEMPLATE_TYPES, desc: 'The type (dockerfiles|gitignores|gitlab_ci_ymls|licenses|metrics_dashboard_ymls|issues|merge_requests) of the template'
     end
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'Get a list of templates available to this project' do
@@ -42,9 +42,13 @@ module API
       end
 
       get ':id/templates/:type/:name', requirements: TEMPLATE_NAMES_ENDPOINT_REQUIREMENTS do
-        template = TemplateFinder
-          .build(params[:type], user_project, name: params[:name])
-          .execute
+        begin
+          template = TemplateFinder
+            .build(params[:type], user_project, name: params[:name])
+            .execute
+        rescue ::Gitlab::Template::Finders::RepoTemplateFinder::FileNotFoundError
+          not_found!('Template')
+        end
 
         not_found!('Template') unless template.present?
 

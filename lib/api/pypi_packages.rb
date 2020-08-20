@@ -22,10 +22,6 @@ module API
       render_api_error!(e.message, 400)
     end
 
-    rescue_from ActiveRecord::RecordInvalid do |e|
-      render_api_error!(e.message, 400)
-    end
-
     helpers do
       def packages_finder(project = authorized_user_project)
         project
@@ -68,7 +64,7 @@ module API
           requires :sha256, type: String, desc: 'The PyPi package sha256 check sum'
         end
 
-        route_setting :authentication, deploy_token_allowed: true
+        route_setting :authentication, deploy_token_allowed: true, basic_auth_personal_access_token: true
         get 'files/:sha256/*file_identifier' do
           project = unauthorized_user_project!
 
@@ -91,7 +87,7 @@ module API
 
         # An Api entry point but returns an HTML file instead of JSON.
         # PyPi simple API returns the package descriptor as a simple HTML file.
-        route_setting :authentication, deploy_token_allowed: true
+        route_setting :authentication, deploy_token_allowed: true, basic_auth_personal_access_token: true
         get 'simple/*package_name', format: :txt do
           authorize_read_package!(authorized_user_project)
 
@@ -121,7 +117,7 @@ module API
           optional :sha256_digest, type: String
         end
 
-        route_setting :authentication, deploy_token_allowed: true
+        route_setting :authentication, deploy_token_allowed: true, basic_auth_personal_access_token: true
         post do
           authorize_upload!(authorized_user_project)
 
@@ -138,7 +134,7 @@ module API
           forbidden!
         end
 
-        route_setting :authentication, deploy_token_allowed: true
+        route_setting :authentication, deploy_token_allowed: true, basic_auth_personal_access_token: true
         post 'authorize' do
           authorize_workhorse!(subject: authorized_user_project, has_length: false)
         end

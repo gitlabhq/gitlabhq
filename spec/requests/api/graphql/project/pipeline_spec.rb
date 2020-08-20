@@ -29,4 +29,10 @@ RSpec.describe 'getting pipeline information nested in a project' do
 
     expect(pipeline_graphql_data).not_to be_nil
   end
+
+  it 'contains configSource' do
+    post_graphql(query, current_user: current_user)
+
+    expect(pipeline_graphql_data.dig('configSource')).to eq('UNKNOWN_SOURCE')
+  end
 end

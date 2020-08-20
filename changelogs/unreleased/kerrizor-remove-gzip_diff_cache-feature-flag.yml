@@ -1,0 +1,5 @@
+---
+title: Remove :gzip_diff_cache feature flag
+merge_request: 38838
+author:
+type: other

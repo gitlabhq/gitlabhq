@@ -9,6 +9,13 @@ export default {
     DropdownContentsLabelsView,
     DropdownContentsCreateView,
   },
+  props: {
+    renderOnTop: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+  },
   computed: {
     ...mapState(['showDropdownContentsCreateView']),
     dropdownContentsView() {
@@ -17,6 +24,13 @@ export default {
       }
       return 'dropdown-contents-labels-view';
     },
+    directionStyle() {
+      if (this.renderOnTop) {
+        return { bottom: '100%' };
+      }
+
+      return {};
+    },
   },
 };
 </script>
@@ -24,6 +38,7 @@ export default {
 <template>
   <div
     class="labels-select-dropdown-contents w-100 mt-1 mb-3 py-2 rounded-top rounded-bottom position-absolute"
+    :style="directionStyle"
   >
     <component :is="dropdownContentsView" />
   </div>

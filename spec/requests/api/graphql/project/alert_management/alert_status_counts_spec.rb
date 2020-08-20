@@ -6,8 +6,8 @@ RSpec.describe 'getting Alert Management Alert counts by status' do
 
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:current_user) { create(:user) }
-  let_it_be(:alert_1) { create(:alert_management_alert, :resolved, project: project) }
-  let_it_be(:alert_2) { create(:alert_management_alert, project: project) }
+  let_it_be(:alert_resolved) { create(:alert_management_alert, :resolved, project: project) }
+  let_it_be(:alert_triggered) { create(:alert_management_alert, project: project) }
   let_it_be(:other_project_alert) { create(:alert_management_alert) }
   let(:params) { {} }
 
@@ -58,7 +58,7 @@ RSpec.describe 'getting Alert Management Alert counts by status' do
       end
 
       context 'with search criteria' do
-        let(:params) { { search: alert_1.title } }
+        let(:params) { { search: alert_resolved.title } }
 
         it_behaves_like 'a working graphql query'
         it 'returns the correct counts for each status' do

@@ -1,3 +1,10 @@
+---
+stage: Create
+group: Source Code
+info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers"
+type: reference, index, howto
+---
+
 # Project settings
 
 NOTE: **Note:**
@@ -57,7 +64,7 @@ Use the switches to enable or disable the following features:
 | **Pipelines**                     | ✓                         | Enables [CI/CD](../../../ci/README.md) functionality                                                                                                                                           |
 | **Container Registry**            |                           | Activates a [registry](../../packages/container_registry/) for your Docker images                                                                                                              |
 | **Git Large File Storage**        |                           | Enables the use of [large files](../../../topics/git/lfs/index.md#git-large-file-storage-lfs)                                                                                    |
-| **Packages**                      |                           | Supports configuration of a [package registry](../../../administration/packages/index.md#gitlab-package-registry-administration-premium-only) functionality                                    |
+| **Packages**                      |                           | Supports configuration of a [package registry](../../../administration/packages/index.md#gitlab-package-registry-administration) functionality                                    |
 | **Wiki**                          | ✓                         | Enables a separate system for [documentation](../wiki/)                                                                                                                                        |
 | **Snippets**                      | ✓                         | Enables [sharing of code and text](../../snippets.md)                                                                                                                                          |
 | **Pages**                         | ✓                         | Allows you to [publish static websites](../pages/)                                                                                                                                             |
@@ -128,13 +135,13 @@ no longer actively maintained. Projects that have been archived can also be
 unarchived. Only project Owners and Admin users have the
 [permissions](../../permissions.md#project-members-permissions) to archive a project.
 
-When a project is archived, the repository, issues, merge requests, and all
+When a project is archived, the repository, packages, issues, merge requests, and all
 other features are read-only. Archived projects are also hidden
 in project listings.
 
 To archive a project:
 
-1. Navigate to your project's **{settings}** **Settings > General**.
+1. Navigate to your project's **Settings > General**.
 1. Under **Advanced**, click **Expand**.
 1. In the **Archive project** section, click the **Archive project** button.
 1. Confirm the action when asked to.
@@ -158,7 +165,7 @@ To find an archived project:
 
 Next, to unarchive the project:
 
-1. Navigate to your project's **{settings}** **Settings > General**.
+1. Navigate to your project's **Settings > General**.
 1. Under **Advanced**, click **Expand**.
 1. In the **Unarchive project** section, click the **Unarchive project** button.
 1. Confirm the action when asked to.
@@ -175,7 +182,7 @@ project via a browser) and its place on the file disk where GitLab is installed.
 
 To rename a repository:
 
-1. Navigate to your project's **{settings}** **Settings > General**.
+1. Navigate to your project's **Settings > General**.
 1. Under **Advanced**, click **Expand**.
 1. Under "Rename repository", change the "Path" to your liking.
 1. Hit **Rename project**.
@@ -198,7 +205,7 @@ You can transfer an existing project into a [group](../../group/index.md) if:
 
 To transfer a project:
 
-1. Navigate to your project's **{settings}** **Settings > General**.
+1. Navigate to your project's **Settings > General**.
 1. Under **Advanced**, click **Expand**.
 1. Under "Transfer project", choose the namespace you want to transfer the
    project to.
@@ -212,25 +219,25 @@ NOTE: **Note:**
 GitLab administrators can use the admin interface to move any project to any
 namespace if needed.
 
-#### Remove a project
+#### Delete a project
 
 NOTE: **Note:**
-Only project owners and admins have [permissions](../../permissions.md#project-members-permissions) to remove a project.
+Only project owners and admins have [permissions](../../permissions.md#project-members-permissions) to delete a project.
 
-To remove a project:
+To delete a project:
 
-1. Navigate to your project, and select **{settings}** **Settings > General > Advanced**.
-1. In the Remove project section, click the **Remove project** button.
+1. Navigate to your project, and select **Settings > General > Advanced**.
+1. In the "Delete project" section, click the **Delete project** button.
 1. Confirm the action when asked to.
 
 This action:
 
-- Removes a project including all associated resources (issues, merge requests etc).
+- Deletes a project including all associated resources (issues, merge requests etc).
 - From [GitLab 13.2](https://gitlab.com/gitlab-org/gitlab/-/issues/220382) on [Premium or Silver](https://about.gitlab.com/pricing/) or higher tiers,
 group admins can [configure](../../group/index.md#enabling-delayed-project-removal-premium) projects within a group
 to be deleted after a delayed period.
 When enabled, actual deletion happens after number of days
-specified in [instance settings](../../admin_area/settings/visibility_and_access_controls.md#default-deletion-adjourned-period-premium-only).
+specified in [instance settings](../../admin_area/settings/visibility_and_access_controls.md#default-deletion-delay-premium-only).
 
 CAUTION: **Warning:**
 The default behavior of [Delayed Project deletion](https://gitlab.com/gitlab-org/gitlab/-/issues/32935) in GitLab 12.6 was changed to
@@ -242,7 +249,7 @@ The default behavior of [Delayed Project deletion](https://gitlab.com/gitlab-org
 
 To restore a project marked for deletion:
 
-1. Navigate to your project, and select **{settings}** **Settings > General > Advanced**.
+1. Navigate to your project, and select **Settings > General > Advanced**.
 1. In the Restore project section, click the **Restore project** button.
 
 #### Removing a fork relationship
@@ -270,7 +277,7 @@ to remove a fork relationship.
 
 ### Error Tracking
 
-Configure Error Tracking to discover and view [Sentry errors within GitLab](../operations/error_tracking.md).
+Configure Error Tracking to discover and view [Sentry errors within GitLab](../../../operations/error_tracking.md).
 
 ### Jaeger tracing **(ULTIMATE)**
 
@@ -278,5 +285,5 @@ Add the URL of a Jaeger server to allow your users to [easily access the Jaeger 
 
 ### Status Page
 
-[Add Storage credentials](../status_page/#syncing-incidents-to-the-status-page)
-to enable the syncing of public Issues to a [deployed status page](../status_page/#status-page-project).
+[Add Storage credentials](../../../operations/incident_management/status_page.md#sync-incidents-to-the-status-page)
+to enable the syncing of public Issues to a [deployed status page](../../../operations/incident_management/status_page.md#create-a-status-page-project).

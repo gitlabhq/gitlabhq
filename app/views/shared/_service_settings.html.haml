@@ -11,28 +11,3 @@
   - if @admin_integration
     .js-vue-admin-integration-settings{ data: integration_form_data(@admin_integration) }
   .js-vue-integration-settings{ data: integration_form_data(integration) }
-
-  - if show_service_trigger_events?(integration)
-    .form-group.row
-      %label.col-form-label.col-sm-2= _('Trigger')
-
-      .col-sm-10
-        - integration.configurable_events.each do |event|
-          .form-group
-            .form-check
-              = form.check_box service_event_field_name(event), class: 'form-check-input'
-              = form.label service_event_field_name(event), class: 'form-check-label' do
-                %strong
-                  = event.humanize
-
-            - field = integration.event_field(event)
-
-            - if field
-              = form.text_field field[:name], class: "form-control", placeholder: field[:placeholder]
-
-            %p.text-muted
-              = integration.class.event_description(event)
-
-  - unless integration_form_refactor?
-    - integration.global_fields.each do |field|
-      = render 'shared/field', form: form, field: field

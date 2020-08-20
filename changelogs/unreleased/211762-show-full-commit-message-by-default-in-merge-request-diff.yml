@@ -1,0 +1,5 @@
+---
+title: Show full commit message by default in merge request diff
+merge_request: 27981
+author: Gilang Gumilar
+type: changed

@@ -1,0 +1,32 @@
+---
+# Suggestion: gitlab.ContractionsDiscard
+#
+# Suggests a list of agreed-upon contractions to discard.
+#
+# For a list of all options, see https://errata-ai.gitbook.io/vale/getting-started/styles
+extends: substitution
+message: 'Use "%s" instead of "%s", for a friendly, informal tone.'
+link: https://docs.gitlab.com/ee/development/documentation/styleguide.html#language
+level: suggestion
+nonword: false
+ignorecase: true
+swap:
+
+  # Uncommon contractions are not ok
+  aren't: are not
+  couldn't: could not
+  didn't: did not
+  doesn't: does not
+  hasn't: has not
+  how's: how is
+  isn't: is not
+  shouldn't: should not
+  they're: they are
+  wasn't: was not
+  weren't: were not
+  we've: we have
+  what's: what is
+  when's: when is
+  where's: where is
+  who's: who is
+  why's: why is

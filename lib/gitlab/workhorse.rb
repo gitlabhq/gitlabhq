@@ -156,6 +156,18 @@ module Gitlab
         ]
       end
 
+      def send_scaled_image(location, width)
+        params = {
+          'Location' => location,
+          'Width' => width
+        }
+
+        [
+          SEND_DATA_HEADER,
+          "send-scaled-img:#{encode(params)}"
+        ]
+      end
+
       def channel_websocket(channel)
         details = {
           'Channel' => {

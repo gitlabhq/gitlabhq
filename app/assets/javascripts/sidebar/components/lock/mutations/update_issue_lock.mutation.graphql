@@ -1,0 +1,8 @@
+mutation updateIssueLocked($input: IssueSetLockedInput!) {
+  issueSetLocked(input: $input) {
+    issue {
+      discussionLocked
+    }
+    errors
+  }
+}

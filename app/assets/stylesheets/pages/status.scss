@@ -12,8 +12,6 @@
   svg {
     height: 13px;
     width: 13px;
-    position: relative;
-    top: 2px;
     overflow: visible;
   }
 
@@ -38,7 +36,7 @@
   }
 
   &.ci-preparing {
-    @include status-color($gray-100, $gray-500, $gray-600);
+    @include status-color($gray-100, $gray-300, $gray-400);
   }
 
   &.ci-pending,

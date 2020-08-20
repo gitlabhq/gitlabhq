@@ -1,0 +1,67 @@
+dashboard: 'Test Dashboard'
+priority: 1
+links:
+- title: Link 1
+  url: https://gitlab.com
+- title: Link 2
+  url: https://docs.gitlab.com
+templating:
+  variables:
+    text_variable_full_syntax:
+      label: 'Variable 1'
+      type: text
+      options:
+        default_value: 'default'
+    text_variable_simple_syntax: 'default value'
+    custom_variable_simple_syntax: ['value1', 'value2', 'value3']
+    custom_variable_full_syntax:
+      label: 'Variable 2'
+      type: custom
+      options:
+        values:
+        - value: 'value option 1'
+          text: 'Option 1'
+        - value: 'value_option_2'
+          text: 'Option 2'
+          default: true
+    metric_label_values_variable:
+      label: 'Variable 3'
+      type: metric_label_values
+      options:
+        series_selector: 'backend:haproxy_backend_availability:ratio{env="{{env}}"}'
+        label: 'backend'
+panel_groups:
+- group: Group A
+  priority: 1
+  panels:
+  - title: "Super Chart A1"
+    type: "area-chart"
+    y_label: "y_label"
+    weight: 1
+    max_value: 1
+    metrics:
+    - id: metric_a1
+      query_range: 'query'
+      unit: unit
+      label: Legend Label
+  - title: "Super Chart A2"
+    type: "area-chart"
+    y_label: "y_label"
+    weight: 2
+    metrics:
+    - id: metric_a1
+      query_range: 'query'
+      label: Legend Label
+      unit: unit
+- group: Group B
+  priority: 10
+  panels:
+  - title: "Super Chart B"
+    type: "area-chart"
+    y_label: "y_label"
+    weight: 1
+    metrics:
+    - id: metric_a1
+      query_range: 'query'
+      unit: unit
+      label: Legend Label

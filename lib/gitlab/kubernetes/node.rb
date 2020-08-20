@@ -8,22 +8,29 @@ module Gitlab
       end
 
       def all
-        nodes.map do |node|
-          attributes = node(node)
-          attributes.merge(node_metrics(node))
-        end
+        {
+          nodes: metadata.presence,
+          node_connection_error: nodes_from_cluster[:connection_error],
+          metrics_connection_error: nodes_metrics_from_cluster[:connection_error]
+        }.compact
       end
 
       private
 
       attr_reader :cluster
 
+      def metadata
+        nodes.map do |node|
+          base_data(node).merge(node_metrics(node))
+        end
+      end
+
       def nodes_from_cluster
-        graceful_request { cluster.kubeclient.get_nodes }
+        @nodes_from_cluster ||= graceful_request { cluster.kubeclient.get_nodes }
       end
 
       def nodes_metrics_from_cluster
-        graceful_request { cluster.kubeclient.metrics_client.get_nodes }
+        @nodes_metrics_from_cluster ||= graceful_request { cluster.kubeclient.metrics_client.get_nodes }
       end
 
       def nodes
@@ -44,7 +51,7 @@ module Gitlab
         ::Gitlab::Kubernetes::KubeClient.graceful_request(cluster.id, &block)
       end
 
-      def node(node)
+      def base_data(node)
         {
           'metadata' => {
             'name' => node.metadata.name

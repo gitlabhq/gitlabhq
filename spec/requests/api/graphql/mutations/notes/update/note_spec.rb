@@ -8,11 +8,9 @@ RSpec.describe 'Updating a Note' do
   let!(:note) { create(:note, note: original_body) }
   let(:original_body) { 'Initial body text' }
   let(:updated_body) { 'Updated body text' }
+  let(:params) { { body: updated_body, confidential: true } }
   let(:mutation) do
-    variables = {
-      id: GitlabSchema.id_from_object(note).to_s,
-      body: updated_body
-    }
+    variables = params.merge(id: GitlabSchema.id_from_object(note).to_s)
 
     graphql_mutation(:update_note, variables)
   end
@@ -31,6 +29,7 @@ RSpec.describe 'Updating a Note' do
       post_graphql_mutation(mutation, current_user: current_user)
 
       expect(note.reload.note).to eq(original_body)
+      expect(note.confidential).to be_falsey
     end
   end
 
@@ -43,12 +42,40 @@ RSpec.describe 'Updating a Note' do
       post_graphql_mutation(mutation, current_user: current_user)
 
       expect(note.reload.note).to eq(updated_body)
+      expect(note.confidential).to be_truthy
     end
 
     it 'returns the updated Note' do
       post_graphql_mutation(mutation, current_user: current_user)
 
       expect(mutation_response['note']['body']).to eq(updated_body)
+      expect(mutation_response['note']['confidential']).to be_truthy
+    end
+
+    context 'when only confidential param is present' do
+      let(:params) { { confidential: true } }
+
+      it 'updates only the note confidentiality' do
+        post_graphql_mutation(mutation, current_user: current_user)
+
+        expect(note.reload.note).to eq(original_body)
+        expect(note.confidential).to be_truthy
+      end
+    end
+
+    context 'when only body param is present' do
+      let(:params) { { body: updated_body } }
+
+      before do
+        note.update_column(:confidential, true)
+      end
+
+      it 'updates only the note body' do
+        post_graphql_mutation(mutation, current_user: current_user)
+
+        expect(note.reload.note).to eq(updated_body)
+        expect(note.confidential).to be_truthy
+      end
     end
 
     context 'when there are ActiveRecord validation errors' do
@@ -60,12 +87,14 @@ RSpec.describe 'Updating a Note' do
         post_graphql_mutation(mutation, current_user: current_user)
 
         expect(note.reload.note).to eq(original_body)
+        expect(note.confidential).to be_falsey
       end
 
-      it 'returns the Note with its original body' do
+      it 'returns the original Note' do
         post_graphql_mutation(mutation, current_user: current_user)
 
         expect(mutation_response['note']['body']).to eq(original_body)
+        expect(mutation_response['note']['confidential']).to be_falsey
       end
     end
 

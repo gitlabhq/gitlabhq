@@ -159,15 +159,6 @@ RSpec.describe HelpController do
     end
   end
 
-  describe 'GET #ui' do
-    context 'for UI Development Kit' do
-      it 'renders found' do
-        get :ui
-        expect(response).to have_gitlab_http_status(:ok)
-      end
-    end
-  end
-
   def stub_readme(content)
     expect(File).to receive(:read).and_return(content)
   end

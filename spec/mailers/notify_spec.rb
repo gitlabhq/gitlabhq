@@ -1373,6 +1373,7 @@ RSpec.describe Notify do
         group.request_access(user)
         group.requesters.find_by(user_id: user.id)
       end
+
       let(:recipient) { user }
 
       subject { described_class.member_access_denied_email('group', group.id, user.id) }

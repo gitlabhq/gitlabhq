@@ -106,12 +106,12 @@ module Gitlab
           include LegacyValidationHelpers
 
           def validate_each(record, attribute, value)
-            unless validate_duration(value)
+            unless validate_duration(value, options[:parser])
               record.errors.add(attribute, 'should be a duration')
             end
 
             if options[:limit]
-              unless validate_duration_limit(value, options[:limit])
+              unless validate_duration_limit(value, options[:limit], options[:parser])
                 record.errors.add(attribute, 'should not exceed the limit')
               end
             end
@@ -272,8 +272,22 @@ module Gitlab
           include LegacyValidationHelpers
 
           def validate_each(record, attribute, value)
+            if options[:array_values]
+              validate_key_array_values(record, attribute, value)
+            else
+              validate_key_values(record, attribute, value)
+            end
+          end
+
+          def validate_key_values(record, attribute, value)
             unless validate_variables(value)
               record.errors.add(attribute, 'should be a hash of key value pairs')
+            end
+          end
+
+          def validate_key_array_values(record, attribute, value)
+            unless validate_array_value_variables(value)
+              record.errors.add(attribute, 'should be a hash of key value pairs, value can be an array')
             end
           end
         end

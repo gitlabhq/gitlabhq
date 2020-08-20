@@ -1,0 +1,5 @@
+---
+title: Fix Conan recipe display in the package details page
+merge_request: 39643
+author:
+type: fixed

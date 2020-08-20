@@ -1,0 +1,5 @@
+---
+title: Add limit for wiki page content size
+merge_request: 36729
+author:
+type: performance

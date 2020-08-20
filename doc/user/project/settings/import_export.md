@@ -1,3 +1,10 @@
+---
+stage: Create
+group: Source Code
+info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers"
+type: reference, howto
+---
+
 # Project import/export
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/3050) in GitLab 8.9.
@@ -17,7 +24,7 @@ See also:
 
 To set up a project import/export:
 
-  1. Navigate to **{admin}** **Admin Area >** **{settings}** **Settings > Visibility and access controls**.
+  1. Navigate to **Admin Area > Settings > Visibility and access controls**.
   1. Scroll to **Import sources**
   1. Enable desired **Import sources**
 
@@ -34,7 +41,7 @@ Note the following:
 - Group members are exported as project members, as long as the user has
   maintainer or admin access to the group where the exported project lives.
 - Project members with owner access will be imported as maintainers.
-- Using an admin account to import will map users by email address (self-managed only).
+- Using an admin account to import will map users by primary email address (self-managed only).
   Otherwise, a supplementary comment is left to mention that the original author and
   the MRs, notes, or issues will be owned by the importer.
 - If an imported project contains merge requests originating from forks,
@@ -124,7 +131,7 @@ For more details on the specific data persisted in a project export, see the
 
 1. Go to your project's homepage.
 
-1. Click **{settings}** **Settings** in the sidebar.
+1. Click **Settings** in the sidebar.
 
 1. Scroll down to find the **Export project** button:
 

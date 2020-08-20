@@ -82,3 +82,25 @@ RSpec.shared_examples 'schedules resource mentions migration' do |resource_class
     end
   end
 end
+
+RSpec.shared_examples 'resource migration not run' do |migration_class, resource_class|
+  it 'does not migrate mentions' do
+    join = migration_class::JOIN
+    conditions = migration_class::QUERY_CONDITIONS
+
+    expect do
+      subject.perform(resource_class.name, join, conditions, false, resource_class.minimum(:id), resource_class.maximum(:id))
+    end.to change { user_mentions.count }.by(0)
+  end
+end
+
+RSpec.shared_examples 'resource notes migration not run' do |migration_class, resource_class|
+  it 'does not migrate mentions' do
+    join = migration_class::JOIN
+    conditions = migration_class::QUERY_CONDITIONS
+
+    expect do
+      subject.perform(resource_class.name, join, conditions, true, Note.minimum(:id), Note.maximum(:id))
+    end.to change { user_mentions.count }.by(0)
+  end
+end

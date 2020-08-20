@@ -1,6 +1,5 @@
-.nav-sidebar{ class: ("sidebar-collapsed-desktop" if collapsed_sidebar?) }
+.nav-sidebar{ class: ("sidebar-collapsed-desktop" if collapsed_sidebar?), **tracking_attrs('projects_side_navigation', 'render', 'projects_side_navigation') }
   .nav-sidebar-inner-scroll
-    - can_edit = can?(current_user, :admin_project, @project)
     .context-header
       = link_to project_path(@project), title: @project.name do
         .avatar-container.rect-avatar.s40.project-avatar
@@ -121,6 +120,8 @@
                 %span
                   = _('Milestones')
 
+            = render_if_exists 'layouts/nav/sidebar/project_iterations_link'
+
       - if project_nav_tab?(:external_issue_tracker)
         - issue_tracker = @project.external_issue_tracker
         - if issue_tracker.is_a?(JiraService) && project_jira_issues_integration?
@@ -221,16 +222,22 @@
             %li.divider.fly-out-top-item
 
             - if project_nav_tab? :metrics_dashboards
-              = nav_link(controller: :environments, action: [:metrics, :metrics_redirect]) do
-                = link_to metrics_project_environments_path(@project), title: _('Metrics'), class: 'shortcuts-metrics', data: { qa_selector: 'operations_metrics_link' } do
+              = nav_link(controller: :metrics_dashboard, action: [:show]) do
+                = link_to project_metrics_dashboard_path(@project), title: _('Metrics'), class: 'shortcuts-metrics', data: { qa_selector: 'operations_metrics_link' } do
                   %span
                     = _('Metrics')
 
             - if project_nav_tab?(:alert_management)
               = nav_link(controller: :alert_management) do
-                = link_to project_alert_management_index_path(@project), title: _('Alerts'), class: 'shortcuts-tracking qa-operations-tracking-link' do
+                = link_to project_alert_management_index_path(@project), title: _('Alerts') do
                   %span
                     = _('Alerts')
+
+              - if project_nav_tab?(:incidents)
+                = nav_link(controller: :incidents) do
+                  = link_to project_incidents_path(@project), title: _('Incidents'), data: { qa_selector: 'operations_incidents_link' } do
+                    %span
+                      = _('Incidents')
 
             - if project_nav_tab? :environments
               = render_if_exists "layouts/nav/sidebar/tracing_link"
@@ -242,9 +249,15 @@
 
             - if project_nav_tab?(:error_tracking)
               = nav_link(controller: :error_tracking) do
-                = link_to project_error_tracking_index_path(@project), title: _('Error Tracking'), class: 'shortcuts-tracking qa-operations-tracking-link' do
+                = link_to project_error_tracking_index_path(@project), title: _('Error Tracking') do
                   %span
                     = _('Error Tracking')
+
+            - if project_nav_tab?(:product_analytics)
+              = nav_link(controller: :product_analytics) do
+                = link_to project_product_analytics_path(@project), title: _('Product Analytics') do
+                  %span
+                    = _('Product Analytics')
 
             - if project_nav_tab? :serverless
               = nav_link(controller: :functions) do

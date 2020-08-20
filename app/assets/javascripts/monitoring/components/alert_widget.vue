@@ -1,12 +1,12 @@
 <script>
 import { GlBadge, GlLoadingIcon, GlModalDirective, GlIcon, GlTooltip, GlSprintf } from '@gitlab/ui';
+import { values, get } from 'lodash';
 import { s__ } from '~/locale';
-import createFlash from '~/flash';
+import { deprecatedCreateFlash as createFlash } from '~/flash';
 import AlertWidgetForm from './alert_widget_form.vue';
 import AlertsService from '../services/alerts_service';
 import { alertsValidator, queriesValidator } from '../validators';
 import { OPERATORS } from '../constants';
-import { values, get } from 'lodash';
 
 export default {
   components: {
@@ -174,8 +174,8 @@ export default {
     handleSetApiAction(apiAction) {
       this.apiAction = apiAction;
     },
-    handleCreate({ operator, threshold, prometheus_metric_id }) {
-      const newAlert = { operator, threshold, prometheus_metric_id };
+    handleCreate({ operator, threshold, prometheus_metric_id, runbookUrl }) {
+      const newAlert = { operator, threshold, prometheus_metric_id, runbookUrl };
       this.isLoading = true;
       this.service
         .createAlert(newAlert)
@@ -189,8 +189,8 @@ export default {
           this.isLoading = false;
         });
     },
-    handleUpdate({ alert, operator, threshold }) {
-      const updatedAlert = { operator, threshold };
+    handleUpdate({ alert, operator, threshold, runbookUrl }) {
+      const updatedAlert = { operator, threshold, runbookUrl };
       this.isLoading = true;
       this.service
         .updateAlert(alert, updatedAlert)

@@ -30,6 +30,7 @@ RSpec.describe "User Feed" do
                author: user,
                description: "Houston, we have a bug!\n\n***\n\nI guess.")
       end
+
       let(:note) do
         create(:note,
                noteable: issue,
@@ -37,6 +38,7 @@ RSpec.describe "User Feed" do
                note: 'Bug confirmed :+1:',
                project: project)
       end
+
       let(:merge_request) do
         create(:merge_request,
                title: 'Fix bug',
@@ -45,6 +47,7 @@ RSpec.describe "User Feed" do
                target_project: project,
                description: "Here is the fix: ![an image](image.png)")
       end
+
       let(:push_event) { create(:push_event, project: project, author: user) }
       let!(:push_event_payload) { create(:push_event_payload, event: push_event) }
 

@@ -118,3 +118,5 @@ module Ci
     end
   end
 end
+
+Ci::BuildRunnerPresenter.prepend_if_ee('EE::Ci::BuildRunnerPresenter')

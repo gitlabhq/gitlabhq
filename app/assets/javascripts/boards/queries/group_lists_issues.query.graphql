@@ -1,0 +1,18 @@
+#import "./issue.fragment.graphql"
+
+query GroupListIssues($fullPath: ID!, $boardId: ID!) {
+  group(fullPath: $fullPath) {
+    board(id: $boardId) {
+      lists {
+        nodes {
+          id
+          issues {
+            nodes {
+              ...IssueNode
+            }
+          }
+        }
+      }
+    }
+  }
+}

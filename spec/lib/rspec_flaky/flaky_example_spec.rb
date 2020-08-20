@@ -16,6 +16,7 @@ RSpec.describe RspecFlaky::FlakyExample, :aggregate_failures do
       flaky_reports: 1
     }
   end
+
   let(:example_attrs) do
     {
       uid: 'abc123',
@@ -28,6 +29,7 @@ RSpec.describe RspecFlaky::FlakyExample, :aggregate_failures do
       attempts: flaky_example_attrs[:last_attempts_count]
     }
   end
+
   let(:example) { double(example_attrs) }
 
   before do

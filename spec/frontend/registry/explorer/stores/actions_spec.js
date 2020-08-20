@@ -1,10 +1,10 @@
-import axios from '~/lib/utils/axios_utils';
 import MockAdapter from 'axios-mock-adapter';
+import testAction from 'helpers/vuex_action_helper';
+import { TEST_HOST } from 'helpers/test_constants';
+import axios from '~/lib/utils/axios_utils';
 import * as actions from '~/registry/explorer/stores/actions';
 import * as types from '~/registry/explorer/stores/mutation_types';
-import testAction from 'helpers/vuex_action_helper';
-import createFlash from '~/flash';
-import { TEST_HOST } from 'helpers/test_constants';
+import { deprecatedCreateFlash as createFlash } from '~/flash';
 import { reposServerResponse, registryServerResponse } from '../mock_data';
 
 jest.mock('~/flash.js');

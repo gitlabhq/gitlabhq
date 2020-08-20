@@ -9,6 +9,11 @@ You can only restore a backup to **exactly the same version and type (CE/EE)**
 of GitLab on which it was created. The best way to migrate your repositories
 from one server to another is through backup restore.
 
+CAUTION: **Warning:**
+GitLab will not backup items that are not stored on the
+filesystem. If using [object storage](../administration/object_storage.md),
+remember to enable backups with your object storage provider if desired.
+
 ## Requirements
 
 In order to be able to backup and restore, you need two essential tools
@@ -290,6 +295,30 @@ For installations from source:
 sudo -u git -H bundle exec rake gitlab:backup:create SKIP=tar RAILS_ENV=production
 ```
 
+#### Back up Git repositories concurrently
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/37158) in GitLab 13.3.
+
+Repositories can be backed up concurrently to help fully utilise CPU time. The following variables
+are available to modify the default behavior of the Rake task:
+
+- `GITLAB_BACKUP_MAX_CONCURRENCY` sets the maximum number of projects to backup at the same time.
+  Defaults to 1.
+- `GITLAB_BACKUP_MAX_STORAGE_CONCURRENCY` sets the maximum number of projects to backup at the same time on each storage. This allows the repository backups to be spread across storages.
+  Defaults to 1.
+
+For example, for Omnibus GitLab installations:
+
+```shell
+sudo gitlab-backup create GITLAB_BACKUP_MAX_CONCURRENCY=4 GITLAB_BACKUP_MAX_STORAGE_CONCURRENCY=1
+```
+
+For example, for installations from source:
+
+```shell
+sudo -u git -H bundle exec rake gitlab:backup:create GITLAB_BACKUP_MAX_CONCURRENCY=4 GITLAB_BACKUP_MAX_STORAGE_CONCURRENCY=1
+```
+
 #### Uploading backups to a remote (cloud) storage
 
 Starting with GitLab 7.4 you can let the backup script upload the `.tar` file it creates.
@@ -516,7 +545,7 @@ directory that you want to copy the tarballs to is the root of your mounted
 directory, just use `.` instead.
 
 NOTE: **Note:**
-Since file system performance may affect GitLab's overall performance, we do not recommend using EFS for storage. See the [relevant documentation](../administration/high_availability/nfs.md#avoid-using-awss-elastic-file-system-efs) for more details.
+Since file system performance may affect GitLab's overall performance, we do not recommend using EFS for storage. See the [relevant documentation](../administration/nfs.md#avoid-using-awss-elastic-file-system-efs) for more details.
 
 For Omnibus GitLab packages:
 
@@ -717,7 +746,7 @@ sure these directories are empty before attempting a restore. Otherwise GitLab
 will attempt to move these directories before restoring the new data and this
 would cause an error.
 
-Read more on [configuring NFS mounts](../administration/high_availability/nfs.md)
+Read more on [configuring NFS mounts](../administration/nfs.md)
 
 ### Restore for installation from source
 
@@ -960,11 +989,10 @@ For more information see similar questions on PostgreSQL issue tracker [here](ht
 
 ### When the secrets file is lost
 
-If you have failed to [back up the secrets file](#storing-configuration-files),
-then users with 2FA enabled will not be able to log into GitLab. In that case,
-you need to [disable 2FA for everyone](../security/two_factor_authentication.md#disabling-2fa-for-everyone).
+If you have failed to [back up the secrets file](#storing-configuration-files), you'll
+need to perform a number of steps to get GitLab working properly again.
 
-The secrets file is also responsible for storing the encryption key for several
+The secrets file is responsible for storing the encryption key for several
 columns containing sensitive information. If the key is lost, GitLab will be
 unable to decrypt those columns. This will break a wide range of functionality,
 including (but not restricted to):
@@ -972,7 +1000,7 @@ including (but not restricted to):
 - [CI/CD variables](../ci/variables/README.md)
 - [Kubernetes / GCP integration](../user/project/clusters/index.md)
 - [Custom Pages domains](../user/project/pages/custom_domains_ssl_tls_certification/index.md)
-- [Project error tracking](../user/project/operations/error_tracking.md)
+- [Project error tracking](../operations/error_tracking.md)
 - [Runner authentication](../ci/runners/README.md)
 - [Project mirroring](../user/project/repository/repository_mirroring.md)
 - [Web hooks](../user/project/integrations/webhooks.md)
@@ -983,17 +1011,28 @@ experience some unexpected behavior such as:
 - Stuck jobs.
 - 500 errors.
 
-You can check whether you have undecryptable values in the database using
-the [Secrets Doctor Rake task](../administration/raketasks/doctor.md).
-
 In this case, you are required to reset all the tokens for CI/CD variables
 and Runner Authentication, which is described in more detail below. After
 resetting the tokens, you should be able to visit your project and the jobs
-will have started running again.
+will have started running again. Use the information in the following sections at your own risk.
+
+#### Check for undecryptable values
+
+You can check whether you have undecryptable values in the database using
+the [Secrets Doctor Rake task](../administration/raketasks/doctor.md).
+
+#### Take a backup
+
+You will need to directly modify GitLab data to work around your lost secrets file.
 
 CAUTION: **Warning:**
-Use the following commands at your own risk, and make sure you've taken a
-backup beforehand.
+Make sure you've taken a backup beforehand, particularly a full database backup.
+
+#### Disable user two-factor authentication (2FA)
+
+Users with 2FA enabled will not be able to log into GitLab. In that case,
+you need to [disable 2FA for everyone](../security/two_factor_authentication.md#disabling-2fa-for-everyone)
+and then users will have to reactivate 2FA from scratch.
 
 #### Reset CI/CD variables
 
@@ -1089,6 +1128,35 @@ backup beforehand.
 A similar strategy can be employed for the remaining features - by removing the
 data that cannot be decrypted, GitLab can be brought back into working order,
 and the lost data can be manually replaced.
+
+#### Fix project integrations
+
+If you've lost your secrets, the
+[projects' integrations settings pages](../user/project/integrations/index.md)
+are probably generating 500 errors.
+
+The fix is to truncate the `web_hooks` table:
+
+1. Enter the DB console:
+
+   For Omnibus GitLab packages:
+
+   ```shell
+   sudo gitlab-rails dbconsole
+   ```
+
+   For installations from source:
+
+   ```shell
+   sudo -u git -H bundle exec rails dbconsole -e production
+   ```
+
+1. Truncate the table
+
+   ```sql
+   -- truncate web_hooks table
+   TRUNCATE web_hooks CASCADE;
+   ```
 
 ### Container Registry push failures after restoring from a backup
 

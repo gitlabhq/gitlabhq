@@ -56,6 +56,7 @@ RSpec.describe Projects::Settings::RepositoryController do
           deploy_token_type: DeployToken.deploy_token_types[:project_type]
         }
       end
+
       let(:request_params) do
         {
           namespace_id: project.namespace.to_param,
@@ -77,7 +78,7 @@ RSpec.describe Projects::Settings::RepositoryController do
             'token' => be_a(String),
             'scopes' => deploy_token_params.inject([]) do |scopes, kv|
               key, value = kv
-              key.to_s.start_with?('read_') && !value.to_i.zero? ? scopes << key.to_s : scopes
+              key.to_s.start_with?('read_') && value.to_i != 0 ? scopes << key.to_s : scopes
             end
           }
         end

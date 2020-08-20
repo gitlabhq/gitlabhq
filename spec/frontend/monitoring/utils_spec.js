@@ -1,6 +1,6 @@
+import { TEST_HOST } from 'jest/helpers/test_constants';
 import * as monitoringUtils from '~/monitoring/utils';
 import * as urlUtils from '~/lib/utils/url_utility';
-import { TEST_HOST } from 'jest/helpers/test_constants';
 import { mockProjectDir, barMockData } from './mock_data';
 import { singleStatGraphData, anomalyGraphData } from './graph_data';
 import { metricsDashboardViewModel, graphData } from './fixture_data';

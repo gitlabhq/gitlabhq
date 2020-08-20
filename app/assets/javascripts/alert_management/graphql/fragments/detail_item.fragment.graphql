@@ -11,6 +11,12 @@ fragment AlertDetailItem on AlertManagementAlert {
   updatedAt
   endedAt
   details
+  runbook
+  todos {
+    nodes {
+      id
+    }
+  }
   notes {
     nodes {
       ...AlertNote

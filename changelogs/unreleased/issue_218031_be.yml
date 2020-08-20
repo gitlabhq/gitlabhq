@@ -1,0 +1,5 @@
+---
+title: Add hide_backlog_list and hide_closed_list attributes to boards table
+merge_request: 38303
+author:
+type: added

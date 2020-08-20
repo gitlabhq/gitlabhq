@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createDefaultClient from '~/lib/graphql';
-import { parseBoolean } from '~/lib/utils/common_utils';
+import { parseBoolean, convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import IssuableListRootApp from './components/issuable_list_root_app.vue';
 import IssuablesListApp from './components/issuables_list_app.vue';
 
@@ -41,7 +41,7 @@ function mountIssuablesListApp() {
   }
 
   document.querySelectorAll('.js-issuables-list').forEach(el => {
-    const { canBulkEdit, ...data } = el.dataset;
+    const { canBulkEdit, emptyStateMeta = {}, ...data } = el.dataset;
 
     return new Vue({
       el,
@@ -49,6 +49,10 @@ function mountIssuablesListApp() {
         return createElement(IssuablesListApp, {
           props: {
             ...data,
+            emptyStateMeta:
+              Object.keys(emptyStateMeta).length !== 0
+                ? convertObjectPropsToCamelCase(JSON.parse(emptyStateMeta))
+                : {},
             canBulkEdit: Boolean(canBulkEdit),
           },
         });

@@ -3,11 +3,11 @@
 module Gitlab
   module Diff
     class StatsCache
-      include Gitlab::Metrics::Methods
       include Gitlab::Utils::StrongMemoize
 
       EXPIRATION = 1.week
-      VERSION = 1
+      # The DiffStats#as_json representation is tied to the Gitaly protobuf version
+      VERSION = Gem.loaded_specs['gitaly'].version.to_s
 
       def initialize(cachable_key:)
         @cachable_key = cachable_key
@@ -29,7 +29,8 @@ module Gitlab
         return if cache.exist?(key)
         return unless stats
 
-        cache.write(key, stats.as_json, expires_in: EXPIRATION)
+        cache.write(key, stats.map(&:to_h).as_json, expires_in: EXPIRATION)
+        clear_memoization(:cached_values)
       end
 
       def clear

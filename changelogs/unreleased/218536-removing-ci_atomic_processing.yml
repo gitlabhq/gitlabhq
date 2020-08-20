@@ -1,0 +1,5 @@
+---
+title: Remove legacy pipeline processing service and FF ci_atomic_processing
+merge_request: 37339
+author:
+type: other

@@ -1,12 +1,12 @@
-import SnippetVisibilityEdit from '~/snippets/components/snippet_visibility_edit.vue';
 import { GlFormRadio, GlIcon, GlFormRadioGroup, GlLink } from '@gitlab/ui';
+import { mount, shallowMount } from '@vue/test-utils';
+import SnippetVisibilityEdit from '~/snippets/components/snippet_visibility_edit.vue';
 import {
   SNIPPET_VISIBILITY,
   SNIPPET_VISIBILITY_PRIVATE,
   SNIPPET_VISIBILITY_INTERNAL,
   SNIPPET_VISIBILITY_PUBLIC,
 } from '~/snippets/constants';
-import { mount, shallowMount } from '@vue/test-utils';
 
 describe('Snippet Visibility Edit component', () => {
   let wrapper;

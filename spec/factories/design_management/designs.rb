@@ -22,8 +22,12 @@ FactoryBot.define do
       imported { true }
     end
 
+    trait :with_relative_position do
+      sequence(:relative_position) { |n| n * 1000 }
+    end
+
     create_versions = ->(design, evaluator, commit_version) do
-      unless evaluator.versions_count.zero?
+      unless evaluator.versions_count == 0
         project = design.project
         issue = design.issue
         repository = project.design_repository
@@ -34,7 +38,7 @@ FactoryBot.define do
         run_action = ->(action) do
           sha = commit_version[action]
           version = DesignManagement::Version.new(sha: sha, issue: issue, author: evaluator.author)
-          version.save(validate: false) # We need it to have an ID, validate later
+          version.save!(validate: false) # We need it to have an ID, validate later
           Gitlab::Database.bulk_insert(dv_table_name, [action.row_attrs(version)]) # rubocop:disable Gitlab/BulkInsert
         end
 

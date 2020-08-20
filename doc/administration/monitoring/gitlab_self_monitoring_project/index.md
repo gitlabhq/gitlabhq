@@ -55,10 +55,10 @@ panels, provide a regular expression in the **Instance label regex** field.
 The dashboard uses metrics available in
 [Omnibus GitLab](https://docs.gitlab.com/omnibus/) installations.
 
-![GitLab self monitoring default dashboard](img/self_monitoring_default_dashboard.png)
+![GitLab self monitoring overview dashboard](img/self_monitoring_overview_dashboard.png)
 
 You can also
-[create your own dashboards](../../../operations/metrics/dashboards/index.md#defining-custom-dashboards-per-project).
+[create your own dashboards](../../../operations/metrics/dashboards/index.md).
 
 ## Connection to Prometheus
 
@@ -83,8 +83,8 @@ Once the webhook is setup, you can
 
 You can add custom metrics in the self monitoring project by:
 
-1. [Duplicating](../../../operations/metrics/dashboards/index.md#duplicating-a-gitlab-defined-dashboard) the default dashboard.
-1. [Editing](../../../operations/metrics/dashboards/index.md#view-and-edit-the-source-file-of-a-custom-dashboard) the newly created dashboard file and configuring it with [dashboard YAML properties](../../../operations/metrics/dashboards/yaml.md).
+1. [Duplicating](../../../operations/metrics/dashboards/index.md#duplicate-a-gitlab-defined-dashboard) the overview dashboard.
+1. [Editing](../../../operations/metrics/index.md) the newly created dashboard file and configuring it with [dashboard YAML properties](../../../operations/metrics/dashboards/yaml.md).
 
 ## Troubleshooting
 

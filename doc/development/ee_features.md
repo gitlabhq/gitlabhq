@@ -56,6 +56,12 @@ This works because for every path that is present in CE's eager-load/auto-load
 paths, we add the same `ee/`-prepended path in [`config/application.rb`](https://gitlab.com/gitlab-org/gitlab/blob/925d3d4ebc7a2c72964ce97623ae41b8af12538d/config/application.rb#L42-52).
 This also applies to views.
 
+#### Testing EE-only features
+
+To test an EE class that doesn't exist in CE, create the spec file as you normally
+would in the `ee/spec` directory, but without the second `ee/` subdirectory.
+For example, a class `ee/app/models/vulnerability.rb` would have its tests in `ee/spec/models/vulnerability_spec.rb`.
+
 ### EE features based on CE features
 
 For features that build on existing CE features, write a module in the `EE`
@@ -95,6 +101,21 @@ This is also not just applied to models. Here's a list of other examples:
 - `ee/app/services/ee/foo/create_service.rb`
 - `ee/app/validators/ee/foo_attr_validator.rb`
 - `ee/app/workers/ee/foo_worker.rb`
+
+#### Testing EE features based on CE features
+
+To test an `EE` namespaced module that extends a CE class with EE features,
+create the spec file as you normally would in the `ee/spec` directory, including the second `ee/` subdirectory.
+For example, an extension `ee/app/models/ee/user.rb` would have its tests in `ee/app/models/ee/user_spec.rb`.
+
+In the `RSpec.describe` call, use the CE class name where the EE module would be used.
+For example, in `ee/app/models/ee/user_spec.rb`, the test would start with:
+
+```ruby
+RSpec.describe User do
+  describe 'ee feature added through extension'
+end
+```
 
 #### Overriding CE methods
 
@@ -904,7 +925,7 @@ export default {
 
 - Please do not use mixins unless ABSOLUTELY NECESSARY. Please try to find an alternative pattern.
 
-##### Reccomended alternative approach (named/scoped slots)
+##### Recommended alternative approach (named/scoped slots)
 
 - We can use slots and/or scoped slots to achieve the same thing as we did with mixins. If you only need an EE component there is no need to create the CE component.
 

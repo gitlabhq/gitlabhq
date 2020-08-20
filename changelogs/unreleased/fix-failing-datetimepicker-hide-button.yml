@@ -1,0 +1,5 @@
+---
+title: Fix broken date time picker hide button
+merge_request: 39755
+author:
+type: fixed

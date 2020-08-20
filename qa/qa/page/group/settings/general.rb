@@ -8,7 +8,7 @@ module QA
           include ::QA::Page::Settings::Common
 
           view 'app/views/groups/edit.html.haml' do
-            element :permission_lfs_2fa_section
+            element :permission_lfs_2fa_content
           end
 
           view 'app/views/groups/settings/_permissions.html.haml' do
@@ -54,49 +54,49 @@ module QA
           end
 
           def set_lfs_enabled
-            expand_section :permission_lfs_2fa_section
+            expand_content :permission_lfs_2fa_content
             check_element :lfs_checkbox
             click_element :save_permissions_changes_button
           end
 
           def set_lfs_disabled
-            expand_section :permission_lfs_2fa_section
+            expand_content :permission_lfs_2fa_content
             uncheck_element :lfs_checkbox
             click_element :save_permissions_changes_button
           end
 
           def set_request_access_enabled
-            expand_section :permission_lfs_2fa_section
+            expand_content :permission_lfs_2fa_content
             check_element :request_access_checkbox
             click_element :save_permissions_changes_button
           end
 
           def set_request_access_disabled
-            expand_section :permission_lfs_2fa_section
+            expand_content :permission_lfs_2fa_content
             uncheck_element :request_access_checkbox
             click_element :save_permissions_changes_button
           end
 
           def set_require_2fa_enabled
-            expand_section :permission_lfs_2fa_section
+            expand_content :permission_lfs_2fa_content
             check_element :require_2fa_checkbox
             click_element :save_permissions_changes_button
           end
 
           def set_require_2fa_disabled
-            expand_section :permission_lfs_2fa_section
+            expand_content :permission_lfs_2fa_content
             uncheck_element :require_2fa_checkbox
             click_element :save_permissions_changes_button
           end
 
           def set_project_creation_level(value)
-            expand_section :permission_lfs_2fa_section
+            expand_content :permission_lfs_2fa_content
             select_element(:project_creation_level_dropdown, value)
             click_element :save_permissions_changes_button
           end
 
           def toggle_request_access
-            expand_section :permission_lfs_2fa_section
+            expand_content :permission_lfs_2fa_content
 
             if find_element(:request_access_checkbox).checked?
               uncheck_element :request_access_checkbox

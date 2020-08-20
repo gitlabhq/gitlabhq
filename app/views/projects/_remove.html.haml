@@ -1,9 +1,10 @@
 - return unless can?(current_user, :remove_project, project)
+- confirm_phrase = s_('DeleteProject|Delete %{name}') % { name: project.full_name }
 
 .sub-section
-  %h4.danger-title= _('Remove project')
+  %h4.danger-title= _('Delete project')
   %p
-    %strong= _('Removing the project will delete its repository and all related resources including issues, merge requests etc.')
+    %strong= _('Deleting the project will delete its repository and all related resources including issues, merge requests etc.')
   %p
-    %strong= _('Removed projects cannot be restored!')
-  #js-confirm-project-remove{ data: { form_path: project_path(project), confirm_phrase: project.path, warning_message: remove_project_message(project) } }
+    %strong= _('Deleted projects cannot be restored!')
+  #js-project-delete-button{ data: { form_path: project_path(project), confirm_phrase: confirm_phrase } }

@@ -55,6 +55,33 @@ Project::Issues::Index.perform do |index|
 end
 ```
 
+## Prefer `aggregate_failures` when there are back-to-back expectations
+
+In cases where there must be multiple (back-to-back) expectations within a test case, it is preferable to use `aggregate_failures`.
+
+This allows you to group a set of expectations and see all the failures altogether, rather than having the test being aborted on the first failure.
+
+For example:
+
+```ruby
+#=> Good
+Page::Search::Results.perform do |search|
+  search.switch_to_code
+
+  aggregate_failures 'testing search results' do
+    expect(search).to have_file_in_project(template[:file_name], project.name)
+    expect(search).to have_file_with_content(template[:file_name], content[0..33])
+  end
+end
+
+#=> Bad
+Page::Search::Results.perform do |search|
+  search.switch_to_code
+  expect(search).to have_file_in_project(template[:file_name], project.name)
+  expect(search).to have_file_with_content(template[:file_name], content[0..33])
+end
+```
+
 ## Prefer to split tests across multiple files
 
 Our framework includes a couple of parallelization mechanisms that work by executing spec files in parallel.

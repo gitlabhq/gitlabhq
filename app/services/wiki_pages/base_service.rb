@@ -44,13 +44,19 @@ module WikiPages
     end
 
     def create_wiki_event(page)
-      response = WikiPages::EventCreateService.new(current_user).execute(slug_for_page(page), page, event_action)
+      response = WikiPages::EventCreateService
+        .new(current_user)
+        .execute(slug_for_page(page), page, event_action, fingerprint(page))
 
       log_error(response.message) if response.error?
     end
 
     def slug_for_page(page)
       page.slug
+    end
+
+    def fingerprint(page)
+      page.sha
     end
   end
 end

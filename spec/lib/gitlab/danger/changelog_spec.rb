@@ -57,6 +57,24 @@ RSpec.describe Gitlab::Danger::Changelog do
         is_expected.to be_truthy
       end
     end
+
+    context 'when MR contains a category that require changelog and a category that require no changelog with changelog label' do
+      let(:changes_by_category) { { category_with_changelog => nil, category_without_changelog => nil } }
+      let(:mr_labels) { ['feature'] }
+
+      it 'is truthy' do
+        is_expected.to be_truthy
+      end
+    end
+
+    context 'when MR contains a category that require changelog and a category that require no changelog with no changelog label' do
+      let(:changes_by_category) { { category_with_changelog => nil, category_without_changelog => nil } }
+      let(:mr_labels) { ['tooling'] }
+
+      it 'is truthy' do
+        is_expected.to be_falsey
+      end
+    end
   end
 
   describe '#found' do

@@ -77,10 +77,9 @@ Importing large projects may take several minutes depending on the size of the i
 
    In the **Jira-GitLab user mapping template** section, the table shows to which GitLab users your Jira
    users will be mapped.
-   If it wasn't possible to match a Jira user with a GitLab user, the dropdown defaults to the user
-   conducting the import.
+   When the form appears, the dropdown defaults to the user conducting the import.
 
-1. To change any of the suggested mappings, click the dropdown in the **GitLab username** column and
+1. To change any of the mappings, click the dropdown in the **GitLab username** column and
    select the user you want to map to each Jira user.
 
    The dropdown may not show all the users, so use the search bar to find a specific

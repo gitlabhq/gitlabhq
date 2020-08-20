@@ -1,3 +1,9 @@
+---
+stage: Create
+group: Ecosystem
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # Mattermost slash commands
 
 > Introduced in GitLab 8.14
@@ -42,9 +48,9 @@ the administrator console.
 
    ![Mattermost go to console](img/mattermost_goto_console.png)
 
-1. Click **Custom integrations** and set **Enable Custom Slash Commands**,
-   **Enable custom integrations to override usernames**, and **Override
-   custom integrations to override profile picture icons** to true
+1. Click **Integration Management** and set **Enable Custom Slash Commands**,
+   **Enable integrations to override usernames**, and **Enable
+   integrations to override profile picture icons** to true
 
    ![Mattermost console](img/mattermost_console_integrations.png)
 

@@ -13,7 +13,7 @@ module Metrics
         STAGES::MetricEndpointInserter,
         STAGES::VariableEndpointInserter,
         STAGES::PanelIdsInserter,
-        STAGES::Sorter,
+        STAGES::TrackPanelType,
         STAGES::AlertsInserter,
         STAGES::UrlValidator
       ].freeze
@@ -34,7 +34,7 @@ module Metrics
 
       # Returns an un-processed dashboard from the cache.
       def raw_dashboard
-        Gitlab::Metrics::Dashboard::Cache.fetch(cache_key) { get_raw_dashboard }
+        Gitlab::Metrics::Dashboard::Cache.for(project).fetch(cache_key) { get_raw_dashboard }
       end
 
       # Should return true if this dashboard service is for an out-of-the-box

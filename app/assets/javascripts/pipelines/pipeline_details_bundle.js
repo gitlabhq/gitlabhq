@@ -1,10 +1,10 @@
 import Vue from 'vue';
-import Flash from '~/flash';
+import { deprecatedCreateFlash as Flash } from '~/flash';
 import Translate from '~/vue_shared/translate';
 import { __ } from '~/locale';
 import { setUrlFragment, redirectTo } from '~/lib/utils/url_utility';
 import pipelineGraph from './components/graph/graph_component.vue';
-import Dag from './components/dag/dag.vue';
+import createDagApp from './pipeline_details_dag';
 import GraphBundleMixin from './mixins/graph_pipeline_bundle_mixin';
 import PipelinesMediator from './pipeline_details_mediator';
 import pipelineHeader from './components/header_component.vue';
@@ -92,47 +92,14 @@ const createPipelineHeaderApp = mediator => {
   });
 };
 
-const createPipelinesTabs = testReportsStore => {
-  const tabsElement = document.querySelector('.pipelines-tabs');
-
-  if (tabsElement) {
-    const fetchReportsAction = 'fetchFullReport';
-    const isTestTabActive = Boolean(
-      document.querySelector('.pipelines-tabs > li > a.test-tab.active'),
-    );
-
-    if (isTestTabActive) {
-      testReportsStore.dispatch(fetchReportsAction);
-    } else {
-      const tabClickHandler = e => {
-        if (e.target.className === 'test-tab') {
-          testReportsStore.dispatch(fetchReportsAction);
-          tabsElement.removeEventListener('click', tabClickHandler);
-        }
-      };
-
-      tabsElement.addEventListener('click', tabClickHandler);
-    }
-  }
-};
-
 const createTestDetails = () => {
-  if (!window.gon?.features?.junitPipelineView) {
-    return;
-  }
-
   const el = document.querySelector('#js-pipeline-tests-detail');
-  const { fullReportEndpoint, summaryEndpoint, countEndpoint } = el?.dataset || {};
+  const { summaryEndpoint, suiteEndpoint } = el?.dataset || {};
 
   const testReportsStore = createTestReportsStore({
-    fullReportEndpoint,
-    summaryEndpoint: summaryEndpoint || countEndpoint,
-    useBuildSummaryReport: window.gon?.features?.buildReportSummary,
+    summaryEndpoint,
+    suiteEndpoint,
   });
-
-  if (!window.gon?.features?.buildReportSummary) {
-    createPipelinesTabs(testReportsStore);
-  }
 
   // eslint-disable-next-line no-new
   new Vue({
@@ -143,32 +110,6 @@ const createTestDetails = () => {
     store: testReportsStore,
     render(createElement) {
       return createElement('test-reports');
-    },
-  });
-};
-
-const createDagApp = () => {
-  if (!window.gon?.features?.dagPipelineTab) {
-    return;
-  }
-
-  const el = document.querySelector('#js-pipeline-dag-vue');
-  const { pipelineDataPath, emptySvgPath, dagDocPath } = el?.dataset;
-
-  // eslint-disable-next-line no-new
-  new Vue({
-    el,
-    components: {
-      Dag,
-    },
-    render(createElement) {
-      return createElement('dag', {
-        props: {
-          graphUrl: pipelineDataPath,
-          emptySvgPath,
-          dagDocPath,
-        },
-      });
     },
   });
 };

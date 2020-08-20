@@ -4,9 +4,10 @@ group: Package
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 ---
 
-# GitLab Maven Repository **(PREMIUM)**
+# GitLab Maven Repository
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5811) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5811) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.3.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/221259) to GitLab Core in 13.3.
 
 With the GitLab [Maven](https://maven.apache.org) Repository, every
 project can have its own space to store its Maven artifacts.
@@ -17,7 +18,7 @@ project can have its own space to store its Maven artifacts.
 
 NOTE: **Note:**
 This option is available only if your GitLab administrator has
-[enabled support for the Maven repository](../../../administration/packages/index.md).**(PREMIUM ONLY)**
+[enabled support for the Maven repository](../../../administration/packages/index.md).
 
 After the Packages feature is enabled, the Maven Repository will be available for
 all new projects by default. To enable it for existing projects, or if you want
@@ -321,7 +322,7 @@ repositories {
         name "GitLab"
         credentials(HttpHeaderCredentials) {
             name = 'Job-Token'
-            value = '${CI_JOB_TOKEN}'
+            value = System.getenv("CI_JOB_TOKEN")
         }
         authentication {
             header(HttpHeaderAuthentication)
@@ -689,7 +690,7 @@ downloaded from the GitLab Package Registry:
 Downloading from gitlab-maven: http://gitlab.com/api/v4/projects/PROJECT_ID/packages/maven/com/mycompany/mydepartment/my-project/1.0-SNAPSHOT/my-project-1.0-20200128.120857-1.pom
 ```
 
-#### Install with `mvn dependency:get`
+### Install using Maven with `mvn dependency:get`
 
 The second way to install packages is to use the Maven commands directly.
 Inside your project directory, run:
@@ -782,7 +783,7 @@ is updated:
 
    ```yaml
    deploy:
-     image: maven:3.3.9-jdk-8
+     image: maven:3.6-jdk-11
      script:
        - 'mvn deploy -s ci_settings.xml'
      only:
@@ -807,7 +808,7 @@ is updated:
 
    ```yaml
    deploy:
-     image: gradle:latest
+     image: gradle:6.5-jdk11
      script:
        - 'gradle publish'
      only:
@@ -815,11 +816,6 @@ is updated:
    ```
 
 1. Push those files to your repository.
-
-The next time the `deploy` job runs, it will copy `ci_settings.xml` to the
-user's home location (in this case the user is `root` since it runs in a
-Docker container), and Maven will use the configured CI
-[environment variables](../../../ci/variables/README.md#predefined-environment-variables).
 
 ### Version validation
 
@@ -833,10 +829,25 @@ You can play around with the regex and try your version strings on [this regular
 
 ## Troubleshooting
 
-### Useful Maven command line options
+### Review network trace logs
 
-There's some [maven command line options](https://maven.apache.org/ref/current/maven-embedder/cli.html)
-which maybe useful when doing tasks with GitLab CI/CD.
+If you are having issues with the Maven Repository, you may want to review network trace logs.
+
+For example, try to run `mvn deploy` locally with a PAT token and use these options:
+
+```shell
+mvn deploy \
+-Dorg.slf4j.simpleLogger.log.org.apache.maven.wagon.providers.http.httpclient=trace \
+-Dorg.slf4j.simpleLogger.log.org.apache.maven.wagon.providers.http.httpclient.wire=trace
+```
+
+CAUTION: **Caution:**
+When you set these options, all network requests are logged and a large amount of output is generated.
+
+### Useful Maven command-line options
+
+There are some [Maven command-line options](https://maven.apache.org/ref/current/maven-embedder/cli.html)
+that may be useful when performing tasks with GitLab CI/CD.
 
 - File transfer progress can make the CI logs hard to read.
   Option `-ntp,--no-transfer-progress` was added in

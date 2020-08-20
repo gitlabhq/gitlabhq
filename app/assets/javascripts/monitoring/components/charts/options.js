@@ -1,6 +1,8 @@
+import { isFinite, uniq, sortBy, includes } from 'lodash';
 import { SUPPORTED_FORMATS, getFormatter } from '~/lib/utils/unit_format';
 import { __, s__ } from '~/locale';
 import { formatDate, timezones, formats } from '../../format_date';
+import { thresholdModeTypes } from '../../constants';
 
 const yAxisBoundaryGap = [0.1, 0.1];
 /**
@@ -108,4 +110,66 @@ export const getTooltipFormatter = ({
 } = {}) => {
   const formatter = getFormatter(format);
   return num => formatter(num, precision);
+};
+
+// Thresholds
+
+/**
+ *
+ * Used to find valid thresholds for the gauge chart
+ *
+ * An array of thresholds values is
+ * - duplicate values are removed;
+ * - filtered for invalid values;
+ * - sorted in ascending order;
+ * - only first two values are used.
+ */
+export const getValidThresholds = ({ mode, range = {}, values = [] } = {}) => {
+  const supportedModes = [thresholdModeTypes.ABSOLUTE, thresholdModeTypes.PERCENTAGE];
+  const { min, max } = range;
+
+  /**
+   * return early if min and max have invalid values
+   * or mode has invalid value
+   */
+  if (!isFinite(min) || !isFinite(max) || min >= max || !includes(supportedModes, mode)) {
+    return [];
+  }
+
+  const uniqueThresholds = uniq(values);
+
+  const numberThresholds = uniqueThresholds.filter(threshold => isFinite(threshold));
+
+  const validThresholds = numberThresholds.filter(threshold => {
+    let isValid;
+
+    if (mode === thresholdModeTypes.PERCENTAGE) {
+      isValid = threshold > 0 && threshold < 100;
+    } else if (mode === thresholdModeTypes.ABSOLUTE) {
+      isValid = threshold > min && threshold < max;
+    }
+
+    return isValid;
+  });
+
+  const transformedThresholds = validThresholds.map(threshold => {
+    let transformedThreshold;
+
+    if (mode === 'percentage') {
+      transformedThreshold = (threshold / 100) * (max - min);
+    } else {
+      transformedThreshold = threshold;
+    }
+
+    return transformedThreshold;
+  });
+
+  const sortedThresholds = sortBy(transformedThresholds);
+
+  const reducedThresholdsArray =
+    sortedThresholds.length > 2
+      ? [sortedThresholds[0], sortedThresholds[1]]
+      : [...sortedThresholds];
+
+  return reducedThresholdsArray;
 };

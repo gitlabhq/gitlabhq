@@ -1,4 +1,7 @@
 ---
+stage: Create
+group: Source Code
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 type: index, reference
 ---
 
@@ -132,7 +135,7 @@ specific commit page.
 
 ![MR diff](img/merge_request_diff.png)
 
->**Tip:**
+TIP: **Tip:**
 You can append `?w=1` while on the diffs page of a merge request to ignore any
 whitespace changes.
 
@@ -141,9 +144,52 @@ whitespace changes.
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/13950) in GitLab 11.5.
 
 GitLab provides a way of leaving comments in any part of the file being changed
-in a Merge Request. To do so, click the **...** button in the gutter of the Merge Request diff UI to expand the diff lines and leave a comment, just as you would for a changed line.
+in a Merge Request. To do so, click the **{comment}** **comment** icon in the gutter of the Merge Request diff UI to expand the diff lines and leave a comment, just as you would for a changed line.
 
 ![Comment on any diff file line](img/comment-on-any-diff-line.png)
+
+### Commenting on multiple lines
+
+> - [Introduced](https://gitlab.com/gitlab-org/ux-research/-/issues/870) in GitLab 13.2.
+> - It's deployed behind a feature flag, enabled by default.
+> - [Became enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/221268) on GitLab 13.3.
+> - It's enabled on GitLab.com.
+> - It can be disabled or enabled per-project.
+> - It's recommended for production use.
+> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-multiline-comments-core-only). **(CORE ONLY)**
+
+GitLab provides a way to select which lines of code a comment refers to. After starting a comment
+a dropdown selector is shown to select the first line that this comment refers to.
+The last line is the line that the comment icon was initially clicked on.
+
+New comments default to single line comments by having the first and last lines
+the same. Selecting a different starting line turns this into a multiline comment.
+
+![Multiline comment selection highlighted](img/multiline-comment-highlighted.png)
+
+Once a multiline comment is saved the lines of code pertaining to that comment are listed directly
+above it.
+
+![Multiline comment selection displayed above comment](img/multiline-comment-saved.png)
+
+### Enable or disable multiline comments **(CORE ONLY)**
+
+The multiline comments feature is under development but ready for production use.
+It is deployed behind a feature flag that is **disabled by default**.
+[GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
+can opt to enable it for your instance.
+
+To disable it:
+
+```ruby
+Feature.disable(:multiline_comments)
+```
+
+To enable it:
+
+```ruby
+Feature.enable(:multiline_comments)
+```
 
 ## Pipeline status in merge requests widgets
 
@@ -235,7 +281,7 @@ Merge Request again.
 Here are some tips that will help you be more efficient with merge requests in
 the command line.
 
-> **Note:**
+NOTE: **Note:**
 This section might move in its own document in the future.
 
 ### Checkout merge requests locally

@@ -22,6 +22,8 @@ module Packages
 
         package_detail[:maven_metadatum] = @package.maven_metadatum if @package.maven_metadatum
         package_detail[:nuget_metadatum] = @package.nuget_metadatum if @package.nuget_metadatum
+        package_detail[:composer_metadatum] = @package.composer_metadatum if @package.composer_metadatum
+        package_detail[:conan_metadatum] = @package.conan_metadatum if @package.conan_metadatum
         package_detail[:dependency_links] = @package.dependency_links.map(&method(:build_dependency_links))
         package_detail[:pipeline] = build_pipeline_info(@package.build_info.pipeline) if @package.build_info
 
@@ -49,7 +51,9 @@ module Packages
           user: build_user_info(pipeline_info.user),
           project: {
             name: pipeline_info.project.name,
-            web_url: pipeline_info.project.web_url
+            web_url: pipeline_info.project.web_url,
+            pipeline_url: Gitlab::Routing.url_helpers.project_pipeline_url(pipeline_info.project, pipeline_info),
+            commit_url: Gitlab::Routing.url_helpers.project_commit_url(pipeline_info.project, pipeline_info.sha)
           }
         }
       end

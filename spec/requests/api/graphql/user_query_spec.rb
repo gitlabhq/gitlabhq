@@ -75,7 +75,9 @@ RSpec.describe 'getting user information' do
             'name' => presenter.name,
             'username' => presenter.username,
             'webUrl' => presenter.web_url,
-            'avatarUrl' => presenter.avatar_url
+            'avatarUrl' => presenter.avatar_url,
+            'status' => presenter.status,
+            'email' => presenter.email
           ))
       end
 
@@ -83,6 +85,7 @@ RSpec.describe 'getting user information' do
         let(:user_fields) do
           query_graphql_field(:assigned_merge_requests, mr_args, 'nodes { id }')
         end
+
         let(:mr_args) { nil }
 
         it_behaves_like 'a working graphql query'
@@ -145,6 +148,7 @@ RSpec.describe 'getting user information' do
         let(:user_fields) do
           query_graphql_field(:authored_merge_requests, mr_args, 'nodes { id }')
         end
+
         let(:mr_args) { nil }
 
         it_behaves_like 'a working graphql query'

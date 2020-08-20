@@ -15,6 +15,7 @@ const whiteSpaceFromCookie = Cookies.get(DIFF_WHITESPACE_COOKIE_NAME);
 
 export default () => ({
   isLoading: true,
+  isTreeLoaded: false,
   isBatchLoading: false,
   retrievingBatches: false,
   addedLines: null,

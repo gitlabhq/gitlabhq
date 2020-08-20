@@ -28,32 +28,39 @@ RSpec.describe RemoveInvalidJiraData do
     data[:encrypted_api_url_iv] = nil
     jira_tracker_data.create(data)
   end
+
   let!(:missing_api_url) do
     data[:encrypted_api_url] = ''
     data[:encrypted_api_url_iv] = nil
     jira_tracker_data.create(data)
   end
+
   let!(:invalid_url) do
     data[:encrypted_url_iv] = nil
     jira_tracker_data.create(data)
   end
+
   let!(:missing_url) do
     data[:encrypted_url] = ''
     jira_tracker_data.create(data)
   end
+
   let!(:invalid_username) do
     data[:encrypted_username_iv] = nil
     jira_tracker_data.create(data)
   end
+
   let!(:missing_username) do
     data[:encrypted_username] = nil
     data[:encrypted_username_iv] = nil
     jira_tracker_data.create(data)
   end
+
   let!(:invalid_password) do
     data[:encrypted_password_iv] = nil
     jira_tracker_data.create(data)
   end
+
   let!(:missing_password) do
     data[:encrypted_password] = nil
     data[:encrypted_username_iv] = nil

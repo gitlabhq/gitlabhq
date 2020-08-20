@@ -6,8 +6,8 @@
 %h3.page-title
   = _('Group: %{group_name}') % { group_name: @group.full_name }
 
-  = link_to admin_group_edit_path(@group), class: "btn float-right", data: { qa_selector: 'edit_group_link' } do
-    %i.fa.fa-pencil-square-o
+  = link_to admin_group_edit_path(@group), class: "btn btn-default gl-button float-right", data: { qa_selector: 'edit_group_link' } do
+    = sprite_icon('pencil-square', css_class: 'gl-icon')
     = _('Edit')
 %hr
 .row
@@ -74,7 +74,7 @@
         - @projects.each do |project|
           %li
             %strong
-              = link_to project.full_name, [:admin, project.namespace.becomes(Namespace), project]
+              = link_to project.full_name, [:admin, project]
               %span.badge.badge-pill
                 = storage_counter(project.statistics.storage_size)
             %span.float-right.light
@@ -93,7 +93,7 @@
           - shared_projects.each do |project|
             %li
               %strong
-                = link_to project.full_name, [:admin, project.namespace.becomes(Namespace), project]
+                = link_to project.full_name, [:admin, project]
                 %span.badge.badge-pill
                   = storage_counter(project.statistics.storage_size)
               %span.float-right.light
@@ -106,13 +106,13 @@
           = _('Add user(s) to the group:')
         .card-body.form-holder
           %p.light
-            - link_to_help = link_to(_("here"), help_page_path("user/permissions"))
-            = _('Read more about project permissions <strong>%{link_to_help}</strong>').html_safe % { link_to_help: link_to_help }
+            - help_link_open = '<strong><a href="%{help_url}">'.html_safe % { help_url: help_page_url("user/permissions") }
+            = html_escape(_('Read more about project permissions %{help_link_open}here%{help_link_close}')) % { help_link_open: help_link_open, help_link_close: '</a></strong>'.html_safe }
 
           = form_tag admin_group_members_update_path(@group), id: "new_project_member", class: "bulk_import", method: :put do
             %div
               = users_select_tag(:user_ids, multiple: true, email_user: true, skip_ldap: @group.ldap_synced?, scope: :all)
-            .prepend-top-10
+            .gl-mt-3
               = select_tag :access_level, options_for_select(GroupMember.access_level_roles), class: "project-access-select select2"
             %hr
             = button_tag _('Add users to group'), class: "btn btn-success"
@@ -120,10 +120,12 @@
 
     .card
       .card-header
-        = _("<strong>%{group_name}</strong> group members").html_safe % { group_name: @group.name }
+        = html_escape(_("%{group_name} group members")) % { group_name: "<strong>#{html_escape(@group.name)}</strong>".html_safe }
         %span.badge.badge-pill= @group.members.size
         .float-right
-          = link_to icon('pencil-square-o', text: _('Manage access')), group_group_members_path(@group), class: "btn btn-sm"
+          = link_to group_group_members_path(@group), class: 'btn btn-default gl-button btn-sm' do
+            = sprite_icon('pencil-square', css_class: 'gl-icon')
+            = _('Manage access')
       %ul.content-list.group-users-list.content-list.members-list
         = render partial: 'shared/members/member', collection: @members, as: :member, locals: { show_controls: false }
       .card-footer

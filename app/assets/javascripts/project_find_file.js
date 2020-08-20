@@ -2,10 +2,10 @@
 
 import $ from 'jquery';
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
-import sanitize from 'sanitize-html';
+import { sanitize } from 'dompurify';
 import axios from '~/lib/utils/axios_utils';
 import { joinPaths, escapeFileUrl } from '~/lib/utils/url_utility';
-import flash from '~/flash';
+import { deprecatedCreateFlash as flash } from '~/flash';
 import { __ } from '~/locale';
 
 // highlight text(awefwbwgtc -> <b>a</b>wefw<b>b</b>wgt<b>c</b> )

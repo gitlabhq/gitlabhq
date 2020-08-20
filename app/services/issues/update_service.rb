@@ -22,7 +22,7 @@ module Issues
     end
 
     def after_update(issue)
-      IssuesChannel.broadcast_to(issue, event: 'updated') if Feature.enabled?(:broadcast_issue_updates, issue.project)
+      IssuesChannel.broadcast_to(issue, event: 'updated') if Gitlab::ActionCable::Config.in_app? || Feature.enabled?(:broadcast_issue_updates, issue.project)
     end
 
     def handle_changes(issue, options)
@@ -43,7 +43,7 @@ module Issues
       if issue.assignees != old_assignees
         create_assignee_note(issue, old_assignees)
         notification_service.async.reassigned_issue(issue, current_user, old_assignees)
-        todo_service.reassigned_issuable(issue, current_user, old_assignees)
+        todo_service.reassigned_assignable(issue, current_user, old_assignees)
       end
 
       if issue.previous_changes.include?('confidential')

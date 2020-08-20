@@ -19,6 +19,7 @@ RSpec.describe OmniAuth::Strategies::Jwt do
         iat: timestamp
       }
     end
+
     let(:algorithm) { 'HS256' }
     let(:secret) { jwt_config.strategy.secret }
     let(:private_key) { secret }
@@ -61,6 +62,7 @@ RSpec.describe OmniAuth::Strategies::Jwt do
               private_key_class.new(jwt_config.strategy.secret)
             end
           end
+
           let(:private_key) { private_key_class ? private_key_class.new(secret) : secret }
 
           it 'decodes the user information' do

@@ -35,6 +35,7 @@ RSpec.describe Gitlab::GitalyClient::ConflictsService do
     let(:files) do
       [{ old_path: 'some/path', new_path: 'some/path', content: '' }]
     end
+
     let(:source_branch) { 'master' }
     let(:target_branch) { 'feature' }
     let(:commit_message) { 'Solving conflicts\n\nTést' }

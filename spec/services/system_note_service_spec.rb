@@ -699,7 +699,7 @@ RSpec.describe SystemNoteService do
 
     it 'calls AlertManagementService' do
       expect_next_instance_of(SystemNotes::AlertManagementService) do |service|
-        expect(service).to receive(:new_alert_issue).with(alert, alert.issue)
+        expect(service).to receive(:new_alert_issue).with(alert.issue)
       end
 
       described_class.new_alert_issue(alert, alert.issue, author)

@@ -1,7 +1,7 @@
 /* eslint-disable no-new */
 import { debounce } from 'lodash';
 import axios from './lib/utils/axios_utils';
-import Flash from './flash';
+import { deprecatedCreateFlash as Flash } from './flash';
 import DropLab from './droplab/drop_lab';
 import ISetter from './droplab/plugins/input_setter';
 import { __, sprintf } from './locale';

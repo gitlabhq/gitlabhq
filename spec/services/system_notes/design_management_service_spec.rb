@@ -134,6 +134,7 @@ RSpec.describe SystemNotes::DesignManagementService do
     let(:discussion_note) do
       create(:diff_note_on_design, noteable: design, author: author)
     end
+
     let(:action) { 'designs_discussion_added' }
 
     it_behaves_like 'a system note' do

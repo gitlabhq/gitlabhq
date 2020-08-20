@@ -2,7 +2,7 @@ import * as types from './mutation_types';
 import axios from '~/lib/utils/axios_utils';
 import statusCodes from '~/lib/utils/http_status';
 import { backOff } from '~/lib/utils/common_utils';
-import createFlash from '~/flash';
+import { deprecatedCreateFlash as createFlash } from '~/flash';
 import { __ } from '~/locale';
 import { MAX_REQUESTS, CHECKING_INSTALLED, TIMEOUT } from '../constants';
 
@@ -123,6 +123,3 @@ export const fetchMetrics = ({ dispatch }, { metricsPath, hasPrometheus }) => {
       createFlash(error);
     });
 };
-
-// prevent babel-plugin-rewire from generating an invalid default during karma tests
-export default () => {};

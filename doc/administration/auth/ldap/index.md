@@ -548,7 +548,7 @@ or more LDAP group links](#adding-group-links-starter-only).
 
 ### Adding group links **(STARTER ONLY)**
 
-For information on adding group links via CNs and filters, refer to [the GitLab groups documentation](../../../user/group/index.md#manage-group-memberships-via-ldap).
+For information on adding group links via CNs and filters, refer to [the GitLab groups documentation](../../../user/group/index.md#manage-group-memberships-via-ldap-starter-only).
 
 ### Administrator sync **(STARTER ONLY)**
 
@@ -595,6 +595,8 @@ group, as opposed to the full DN.
 1. [Restart GitLab](../../restart_gitlab.md#installations-from-source) for the changes to take effect.
 
 ### Global group memberships lock **(STARTER ONLY)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/1793) in GitLab 12.0.
 
 "Lock memberships to LDAP synchronization" setting allows instance administrators
 to lock down user abilities to invite new members to a group.

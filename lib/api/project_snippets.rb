@@ -56,16 +56,20 @@ module API
       end
       params do
         requires :title, type: String, allow_blank: false, desc: 'The title of the snippet'
-        requires :file_name, type: String, desc: 'The file name of the snippet'
-        requires :content, type: String, allow_blank: false, desc: 'The content of the snippet'
         optional :description, type: String, desc: 'The description of a snippet'
         requires :visibility, type: String,
                               values: Gitlab::VisibilityLevel.string_values,
                               desc: 'The visibility of the snippet'
+        use :create_file_params
       end
       post ":id/snippets" do
         authorize! :create_snippet, user_project
-        snippet_params = declared_params(include_missing: false).merge(request: request, api: true)
+        snippet_params = declared_params(include_missing: false).tap do |create_args|
+          create_args[:request] = request
+          create_args[:api] = true
+
+          process_file_args(create_args)
+        end
 
         service_response = ::Snippets::CreateService.new(user_project, current_user, snippet_params).execute
         snippet = service_response.payload[:snippet]

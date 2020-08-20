@@ -120,10 +120,14 @@ RSpec.describe Projects::TagsController do
 
         request
 
-        release = project.releases.find_by_tag!('1.0')
+        aggregate_failures do
+          expect(response).to have_gitlab_http_status(:found)
 
-        expect(release).to be_present
-        expect(release.description).to eq(release_description)
+          release = project.releases.find_by_tag('1.0')
+
+          expect(release).to be_present
+          expect(release&.description).to eq(release_description)
+        end
       end
     end
   end

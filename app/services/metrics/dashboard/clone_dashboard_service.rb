@@ -9,12 +9,11 @@ module Metrics
       include Gitlab::Utils::StrongMemoize
 
       ALLOWED_FILE_TYPE = '.yml'
-      USER_DASHBOARDS_DIR = ::Metrics::Dashboard::CustomDashboardService::DASHBOARD_ROOT
+      USER_DASHBOARDS_DIR = ::Gitlab::Metrics::Dashboard::RepoDashboardFinder::DASHBOARD_ROOT
       SEQUENCES = {
         ::Metrics::Dashboard::SystemDashboardService::DASHBOARD_PATH => [
           ::Gitlab::Metrics::Dashboard::Stages::CommonMetricsInserter,
-          ::Gitlab::Metrics::Dashboard::Stages::CustomMetricsInserter,
-          ::Gitlab::Metrics::Dashboard::Stages::Sorter
+          ::Gitlab::Metrics::Dashboard::Stages::CustomMetricsInserter
         ].freeze,
 
         ::Metrics::Dashboard::SelfMonitoringDashboardService::DASHBOARD_PATH => [
@@ -22,8 +21,7 @@ module Metrics
         ].freeze,
 
         ::Metrics::Dashboard::ClusterDashboardService::DASHBOARD_PATH => [
-          ::Gitlab::Metrics::Dashboard::Stages::CommonMetricsInserter,
-          ::Gitlab::Metrics::Dashboard::Stages::Sorter
+          ::Gitlab::Metrics::Dashboard::Stages::CommonMetricsInserter
         ].freeze
       }.freeze
 
@@ -112,7 +110,7 @@ module Metrics
       end
 
       def push_authorized?
-        Gitlab::UserAccess.new(current_user, project: project).can_push_to_branch?(branch)
+        Gitlab::UserAccess.new(current_user, container: project).can_push_to_branch?(branch)
       end
 
       def dashboard_template

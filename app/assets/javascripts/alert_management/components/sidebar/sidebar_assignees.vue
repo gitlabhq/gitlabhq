@@ -1,20 +1,20 @@
 <script>
 import {
   GlIcon,
-  GlDropdown,
-  GlDropdownDivider,
-  GlDropdownHeader,
-  GlDropdownItem,
+  GlDeprecatedDropdown,
+  GlDeprecatedDropdownDivider,
+  GlDeprecatedDropdownHeader,
+  GlDeprecatedDropdownItem,
   GlLoadingIcon,
   GlTooltip,
   GlButton,
   GlSprintf,
 } from '@gitlab/ui';
+import { debounce } from 'lodash';
 import axios from '~/lib/utils/axios_utils';
 import { s__, __ } from '~/locale';
 import alertSetAssignees from '../../graphql/mutations/alert_set_assignees.mutation.graphql';
 import SidebarAssignee from './sidebar_assignee.vue';
-import { debounce } from 'lodash';
 
 const DATA_REFETCH_DELAY = 250;
 
@@ -33,10 +33,10 @@ export default {
   },
   components: {
     GlIcon,
-    GlDropdown,
-    GlDropdownItem,
-    GlDropdownDivider,
-    GlDropdownHeader,
+    GlDeprecatedDropdown,
+    GlDeprecatedDropdownItem,
+    GlDeprecatedDropdownDivider,
+    GlDeprecatedDropdownHeader,
     GlLoadingIcon,
     GlTooltip,
     GlButton,
@@ -213,7 +213,7 @@ export default {
       </p>
 
       <div class="dropdown dropdown-menu-selectable" :class="dropdownClass">
-        <gl-dropdown
+        <gl-deprecated-dropdown
           ref="dropdown"
           :text="assignedUser"
           class="w-100"
@@ -243,18 +243,18 @@ export default {
           </div>
           <div class="dropdown-content dropdown-body">
             <template v-if="userListValid">
-              <gl-dropdown-item
+              <gl-deprecated-dropdown-item
                 :active="!userName"
                 active-class="is-active"
                 @click="updateAlertAssignees('')"
               >
                 {{ __('Unassigned') }}
-              </gl-dropdown-item>
-              <gl-dropdown-divider />
+              </gl-deprecated-dropdown-item>
+              <gl-deprecated-dropdown-divider />
 
-              <gl-dropdown-header class="mt-0">
+              <gl-deprecated-dropdown-header class="mt-0">
                 {{ __('Assignee') }}
-              </gl-dropdown-header>
+              </gl-deprecated-dropdown-header>
               <sidebar-assignee
                 v-for="user in sortedUsers"
                 :key="user.username"
@@ -263,17 +263,17 @@ export default {
                 @update-alert-assignees="updateAlertAssignees"
               />
             </template>
-            <gl-dropdown-item v-else-if="userListEmpty">
+            <gl-deprecated-dropdown-item v-else-if="userListEmpty">
               {{ __('No Matching Results') }}
-            </gl-dropdown-item>
+            </gl-deprecated-dropdown-item>
             <gl-loading-icon v-else />
           </div>
-        </gl-dropdown>
+        </gl-deprecated-dropdown>
       </div>
 
       <gl-loading-icon v-if="isUpdating" :inline="true" />
       <p v-else-if="!isDropdownShowing" class="value gl-m-0" :class="{ 'no-value': !userName }">
-        <span v-if="userName" class="gl-text-gray-700" data-testid="assigned-users">{{
+        <span v-if="userName" class="gl-text-gray-500" data-testid="assigned-users">{{
           assignedUser
         }}</span>
         <span v-else class="gl-display-flex gl-align-items-center">

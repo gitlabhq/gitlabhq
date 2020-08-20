@@ -200,7 +200,7 @@ RSpec.describe EventsHelper do
     it 'returns a project snippet note url' do
       event.target = create(:note_on_project_snippet, note: 'keep going')
 
-      expect(subject).to eq("#{project_base_url}/snippets/#{event.note_target.id}#note_#{event.target.id}")
+      expect(subject).to eq("#{project_base_url}/-/snippets/#{event.note_target.id}#note_#{event.target.id}")
     end
 
     it 'returns a project issue url' do

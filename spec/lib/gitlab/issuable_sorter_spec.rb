@@ -52,6 +52,7 @@ RSpec.describe Gitlab::IssuableSorter do
        build_stubbed(:issue, iid: 1, project: project5),
        build_stubbed(:issue, iid: 1, project: project6)]
     end
+
     let(:unsorted) do
       [sorted[3], sorted[1], sorted[4], sorted[2],
        sorted[6], sorted[5], sorted[0], sorted[7]]

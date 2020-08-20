@@ -9,7 +9,7 @@ module MergeRequests
     def execute
       return [] if branch_names.blank?
 
-      source_branches = project.source_of_merge_requests.opened
+      source_branches = project.source_of_merge_requests.open_and_closed
         .from_source_branches(branch_names).pluck(:source_branch)
 
       target_branches = project.merge_requests.opened

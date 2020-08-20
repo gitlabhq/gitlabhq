@@ -136,7 +136,7 @@ module Banzai
       end
 
       def call
-        return doc unless project || group
+        return doc unless project || group || user
 
         ref_pattern = object_class.reference_pattern
         link_pattern = object_class.link_reference_pattern
@@ -280,7 +280,7 @@ module Banzai
       end
 
       def object_link_text(object, matches)
-        parent = context[:project] || context[:group]
+        parent = project || group || user
         text = object.reference_link_text(parent)
 
         extras = object_link_text_extras(object, matches)

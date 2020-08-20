@@ -14,10 +14,10 @@ module Projects
       @valid_fork_targets ||= ForkTargetsFinder.new(@project, current_user).execute
     end
 
-    def valid_fork_target?
+    def valid_fork_target?(namespace = target_namespace)
       return true if current_user.admin?
 
-      valid_fork_targets.include?(target_namespace)
+      valid_fork_targets.include?(namespace)
     end
 
     private

@@ -72,6 +72,12 @@
         %strong Wiki Page events
       %p.text-muted.ml-1
         This URL will be triggered when a wiki page is created/updated
+    %li
+      = form.check_box :deployment_events, class: 'form-check-input'
+      = form.label :deployment_events, class: 'list-label form-check-label ml-1' do
+        %strong= s_('Webhooks|Deployment events')
+      %p.text-muted.ml-1
+        = s_('Webhooks|This URL will be triggered when a deployment is finished/failed/canceled')
 .form-group
   = form.label :enable_ssl_verification, 'SSL verification', class: 'label-bold checkbox'
   .form-check

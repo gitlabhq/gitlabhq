@@ -19,6 +19,7 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
   it { is_expected.to have_many(:deployments) }
   it { is_expected.to have_many(:metrics_dashboard_annotations) }
   it { is_expected.to have_many(:alert_management_alerts) }
+  it { is_expected.to have_one(:latest_opened_most_severe_alert) }
 
   it { is_expected.to delegate_method(:stop_action).to(:last_deployment) }
   it { is_expected.to delegate_method(:manual_actions).to(:last_deployment) }
@@ -1345,6 +1346,29 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
 
     it 'returns zero state counts when environments are empty' do
       expect(project.environments.count_by_state).to eq({ stopped: 0, available: 0 })
+    end
+  end
+
+  describe '#has_opened_alert?' do
+    subject { environment.has_opened_alert? }
+
+    let_it_be(:project) { create(:project) }
+    let_it_be(:environment, reload: true) { create(:environment, project: project) }
+
+    context 'when environment has an triggered alert' do
+      let!(:alert) { create(:alert_management_alert, :triggered, project: project, environment: environment) }
+
+      it { is_expected.to be(true) }
+    end
+
+    context 'when environment has an resolved alert' do
+      let!(:alert) { create(:alert_management_alert, :resolved, project: project, environment: environment) }
+
+      it { is_expected.to be(false) }
+    end
+
+    context 'when environment does not have an alert' do
+      it { is_expected.to be(false) }
     end
   end
 end

@@ -55,6 +55,7 @@ RSpec.describe API::Notes do
         create(:project, namespace: private_user.namespace)
         .tap { |p| p.add_maintainer(private_user) }
       end
+
       let(:private_issue) { create(:issue, project: private_project) }
 
       let(:ext_proj)  { create(:project, :public) }

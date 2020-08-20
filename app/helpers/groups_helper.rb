@@ -28,6 +28,7 @@ module GroupsHelper
 
   def group_packages_nav_link_paths
     %w[
+      groups/packages#index
       groups/container_registries#index
     ]
   end
@@ -129,7 +130,7 @@ module GroupsHelper
   end
 
   def remove_group_message(group)
-    _("You are going to remove %{group_name}, this will also remove all of its subgroups and projects. Removed groups CANNOT be restored! Are you ABSOLUTELY sure?") %
+    _("You are going to remove %{group_name}, this will also delete all of its subgroups and projects. Removed groups CANNOT be restored! Are you ABSOLUTELY sure?") %
       { group_name: group.name }
   end
 
@@ -155,6 +156,15 @@ module GroupsHelper
     end
 
     groups.to_json
+  end
+
+  def group_packages_nav?
+    group_packages_list_nav? ||
+      group_container_registry_nav?
+  end
+
+  def group_packages_list_nav?
+    @group.packages_feature_enabled?
   end
 
   private

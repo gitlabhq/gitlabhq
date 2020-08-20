@@ -1,8 +1,8 @@
 <script>
 import { mapState } from 'vuex';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import BoardColumn from 'ee_else_ce/boards/components/board_column.vue';
 import EpicsSwimlanes from 'ee_component/boards/components/epics_swimlanes.vue';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 export default {
   components: {
@@ -42,7 +42,7 @@ export default {
     },
   },
   computed: {
-    ...mapState(['isShowingEpicsSwimlanes']),
+    ...mapState(['isShowingEpicsSwimlanes', 'boardLists']),
     isSwimlanesOn() {
       return this.glFeatures.boardsWithSwimlanes && this.isShowingEpicsSwimlanes;
     },
@@ -73,11 +73,12 @@ export default {
     <epics-swimlanes
       v-else
       ref="swimlanes"
-      :lists="lists"
+      :lists="boardLists"
       :can-admin-list="canAdminList"
       :disabled="disabled"
       :board-id="boardId"
       :group-id="groupId"
+      :root-path="rootPath"
     />
   </div>
 </template>

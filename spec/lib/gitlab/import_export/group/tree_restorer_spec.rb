@@ -172,7 +172,7 @@ RSpec.describe Gitlab::ImportExport::Group::TreeRestorer do
         let(:filepath) { "group_exports/visibility_levels/#{visibility_level}" }
 
         it "imports all subgroups as #{visibility_level}" do
-          expect(group.children.map(&:visibility_level)).to eq(expected_visibilities)
+          expect(group.children.map(&:visibility_level)).to match_array(expected_visibilities)
         end
       end
     end

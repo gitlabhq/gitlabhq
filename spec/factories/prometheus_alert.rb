@@ -13,5 +13,9 @@ FactoryBot.define do
     prometheus_metric do |alert|
       build(:prometheus_metric, project: alert.project)
     end
+
+    trait :with_runbook_url do
+      runbook_url { 'https://runbooks.gitlab.com/metric_gt_1'}
+    end
   end
 end

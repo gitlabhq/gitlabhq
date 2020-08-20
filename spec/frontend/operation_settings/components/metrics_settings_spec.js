@@ -1,5 +1,5 @@
 import { mount, shallowMount } from '@vue/test-utils';
-import { GlDeprecatedButton, GlLink, GlFormGroup, GlFormInput, GlFormSelect } from '@gitlab/ui';
+import { GlButton, GlLink, GlFormGroup, GlFormInput, GlFormSelect } from '@gitlab/ui';
 import { TEST_HOST } from 'helpers/test_constants';
 import MetricsSettings from '~/operation_settings/components/metrics_settings.vue';
 
@@ -9,7 +9,7 @@ import { timezones } from '~/monitoring/format_date';
 import store from '~/operation_settings/store';
 import axios from '~/lib/utils/axios_utils';
 import { refreshCurrentPage } from '~/lib/utils/url_utility';
-import createFlash from '~/flash';
+import { deprecatedCreateFlash as createFlash } from '~/flash';
 
 jest.mock('~/lib/utils/url_utility');
 jest.mock('~/flash');
@@ -56,12 +56,12 @@ describe('operation settings external dashboard component', () => {
 
   it('renders header text', () => {
     mountComponent();
-    expect(wrapper.find('.js-section-header').text()).toBe('Metrics Dashboard');
+    expect(wrapper.find('.js-section-header').text()).toBe('Metrics dashboard');
   });
 
   describe('expand/collapse button', () => {
     it('renders as an expand button by default', () => {
-      const button = wrapper.find(GlDeprecatedButton);
+      const button = wrapper.find(GlButton);
 
       expect(button.text()).toBe('Expand');
     });
@@ -160,8 +160,7 @@ describe('operation settings external dashboard component', () => {
     });
 
     describe('submit button', () => {
-      const findSubmitButton = () =>
-        wrapper.find('.settings-content form').find(GlDeprecatedButton);
+      const findSubmitButton = () => wrapper.find('.settings-content form').find(GlButton);
 
       const endpointRequest = [
         operationsSettingsEndpoint,

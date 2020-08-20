@@ -4,14 +4,14 @@ import { shallowMount } from '@vue/test-utils';
 import { GlEmptyState, GlPagination, GlSkeletonLoading } from '@gitlab/ui';
 import waitForPromises from 'helpers/wait_for_promises';
 import { TEST_HOST } from 'helpers/test_constants';
-import flash from '~/flash';
+import { deprecatedCreateFlash as flash } from '~/flash';
 import IssuablesListApp from '~/issuables_list/components/issuables_list_app.vue';
 import Issuable from '~/issuables_list/components/issuable.vue';
 import FilteredSearchBar from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
 import issueablesEventBus from '~/issuables_list/eventhub';
 import { PAGE_SIZE, PAGE_SIZE_MANUAL, RELATIVE_POSITION } from '~/issuables_list/constants';
 
-jest.mock('~/flash', () => jest.fn());
+jest.mock('~/flash');
 jest.mock('~/issuables_list/eventhub');
 jest.mock('~/lib/utils/common_utils', () => ({
   ...jest.requireActual('~/lib/utils/common_utils'),
@@ -21,7 +21,7 @@ jest.mock('~/lib/utils/common_utils', () => ({
 const TEST_LOCATION = `${TEST_HOST}/issues`;
 const TEST_ENDPOINT = '/issues';
 const TEST_CREATE_ISSUES_PATH = '/createIssue';
-const TEST_EMPTY_SVG_PATH = '/emptySvg';
+const TEST_SVG_PATH = '/emptySvg';
 
 const setUrl = query => {
   window.location.href = `${TEST_LOCATION}${query}`;
@@ -48,11 +48,15 @@ describe('Issuables list component', () => {
   };
 
   const factory = (props = { sortKey: 'priority' }) => {
+    const emptyStateMeta = {
+      createIssuePath: TEST_CREATE_ISSUES_PATH,
+      svgPath: TEST_SVG_PATH,
+    };
+
     wrapper = shallowMount(IssuablesListApp, {
       propsData: {
         endpoint: TEST_ENDPOINT,
-        createIssuePath: TEST_CREATE_ISSUES_PATH,
-        emptySvgPath: TEST_EMPTY_SVG_PATH,
+        emptyStateMeta,
         ...props,
       },
     });
@@ -117,9 +121,10 @@ describe('Issuables list component', () => {
       expect(wrapper.vm).toMatchObject({
         // Props
         canBulkEdit: false,
-        createIssuePath: TEST_CREATE_ISSUES_PATH,
-        emptySvgPath: TEST_EMPTY_SVG_PATH,
-
+        emptyStateMeta: {
+          createIssuePath: TEST_CREATE_ISSUES_PATH,
+          svgPath: TEST_SVG_PATH,
+        },
         // Data
         filters: {
           state: 'opened',

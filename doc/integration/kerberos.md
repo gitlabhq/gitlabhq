@@ -42,7 +42,7 @@ sudo chmod 0600 /etc/http.keytab
 
 **Installations from source**
 
->**Note:**
+NOTE: **Note:**
 For source installations, make sure the `kerberos` gem group
 [has been installed](../install/installation.md#install-gems).
 

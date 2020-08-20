@@ -4,6 +4,7 @@ class Iteration < ApplicationRecord
   self.table_name = 'sprints'
 
   attr_accessor :skip_future_date_validation
+  attr_accessor :skip_project_validation
 
   STATE_ENUM_MAP = {
       upcoming: 1,
@@ -24,6 +25,7 @@ class Iteration < ApplicationRecord
 
   validate :dates_do_not_overlap, if: :start_or_due_dates_changed?
   validate :future_date, if: :start_or_due_dates_changed?, unless: :skip_future_date_validation
+  validate :no_project, unless: :skip_project_validation
 
   scope :upcoming, -> { with_state(:upcoming) }
   scope :started, -> { with_state(:started) }
@@ -112,6 +114,12 @@ class Iteration < ApplicationRecord
       errors.add(:due_date, s_("Iteration|cannot be in the past")) if due_date < Date.current
       errors.add(:due_date, s_("Iteration|cannot be more than 500 years in the future")) if due_date > 500.years.from_now
     end
+  end
+
+  def no_project
+    return unless project_id.present?
+
+    errors.add(:project_id, s_("is not allowed. We do not currently support project-level iterations"))
   end
 end
 

@@ -8,6 +8,7 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::ForeignKeyHelpers
   let(:model) do
     ActiveRecord::Migration.new.extend(described_class)
   end
+
   let_it_be(:connection) { ActiveRecord::Base.connection }
   let(:referenced_table) { :issues }
   let(:function_name) { '_test_partitioned_foreign_keys_function' }

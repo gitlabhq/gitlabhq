@@ -22,14 +22,14 @@ RSpec.describe Autocomplete::MoveToProjectFinder do
         expect(finder.execute).to be_empty
       end
 
-      it 'returns projects equal or above Gitlab::Access::REPORTER ordered by name' do
+      it 'returns projects equal or above Gitlab::Access::REPORTER' do
         reporter_project.add_reporter(user)
         developer_project.add_developer(user)
         maintainer_project.add_maintainer(user)
 
         finder = described_class.new(user, project_id: project.id)
 
-        expect(finder.execute.to_a).to eq([reporter_project, developer_project, maintainer_project])
+        expect(finder.execute.to_a).to contain_exactly(reporter_project, developer_project, maintainer_project)
       end
 
       it 'does not include the source project' do
@@ -53,7 +53,7 @@ RSpec.describe Autocomplete::MoveToProjectFinder do
 
       it 'does not return projects for which issues are disabled' do
         reporter_project.add_reporter(user)
-        reporter_project.update(issues_enabled: false)
+        reporter_project.update!(issues_enabled: false)
         other_reporter_project = create(:project)
         other_reporter_project.add_reporter(user)
 
@@ -88,10 +88,10 @@ RSpec.describe Autocomplete::MoveToProjectFinder do
         wadus_project.add_maintainer(user)
 
         expect(described_class.new(user, project_id: project.id).execute.to_a)
-          .to eq([foo_project, wadus_project])
+          .to contain_exactly(foo_project, wadus_project)
 
         expect(described_class.new(user, project_id: project.id, search: 'wadus').execute.to_a)
-          .to eq([wadus_project])
+          .to contain_exactly(wadus_project)
       end
 
       it 'allows searching by parent namespace' do

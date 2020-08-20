@@ -116,6 +116,7 @@ RSpec.describe Gitlab::Graphql::Authorize::AuthorizeResource do
         end
       end
     end
+
     let(:error) { /#{fake_class.name} has no authorizations/ }
 
     describe '#authorized_find!' do

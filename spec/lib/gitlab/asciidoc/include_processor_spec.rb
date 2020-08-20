@@ -13,6 +13,7 @@ RSpec.describe Gitlab::Asciidoc::IncludeProcessor do
       ref: ref
     }
   end
+
   let(:ref) { project.repository.root_ref }
   let(:max_includes) { 10 }
 

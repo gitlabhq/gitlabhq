@@ -1,8 +1,7 @@
 import { propertyOf } from 'lodash';
-import createFlash from '~/flash';
+import { deprecatedCreateFlash as createFlash } from '~/flash';
 import { s__ } from '~/locale';
 import getDesignListQuery from '../graphql/queries/get_design_list.query.graphql';
-import { extractNodes } from '../utils/design_management_utils';
 import allVersionsMixin from './all_versions';
 import { DESIGNS_ROUTE_NAME } from '../router/constants';
 
@@ -19,9 +18,15 @@ export default {
         };
       },
       update: data => {
-        const designEdges = propertyOf(data)(['project', 'issue', 'designCollection', 'designs']);
-        if (designEdges) {
-          return extractNodes(designEdges);
+        const designNodes = propertyOf(data)([
+          'project',
+          'issue',
+          'designCollection',
+          'designs',
+          'nodes',
+        ]);
+        if (designNodes) {
+          return designNodes;
         }
         return [];
       },

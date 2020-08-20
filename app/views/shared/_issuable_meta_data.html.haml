@@ -11,15 +11,15 @@
 
 - if upvotes > 0
   %li.issuable-upvotes.d-none.d-sm-block.has-tooltip{ title: _('Upvotes') }
-    = sprite_icon('thumb-up', size: 16, css_class: "vertical-align-middle")
+    = sprite_icon('thumb-up', css_class: "vertical-align-middle")
     = upvotes
 
 - if downvotes > 0
   %li.issuable-downvotes.d-none.d-sm-block.has-tooltip{ title: _('Downvotes') }
-    = sprite_icon('thumb-down', size: 16, css_class: "vertical-align-middle")
+    = sprite_icon('thumb-down', css_class: "vertical-align-middle")
     = downvotes
 
 %li.issuable-comments.d-none.d-sm-block
-  = link_to issuable_path, class: ['has-tooltip', ('no-comments' if note_count.zero?)], title: _('Comments') do
-    = sprite_icon('comments', size: 16, css_class: 'gl-vertical-align-text-bottom')
+  = link_to issuable_path, class: ['has-tooltip', ('no-comments' if note_count == 0)], title: _('Comments') do
+    = sprite_icon('comments', css_class: 'gl-vertical-align-text-bottom')
     = note_count

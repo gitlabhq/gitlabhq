@@ -18,11 +18,9 @@ class Release < ApplicationRecord
   has_many :milestones, through: :milestone_releases
   has_many :evidences, inverse_of: :release, class_name: 'Releases::Evidence'
 
-  default_value_for :released_at, allows_nil: false do
-    Time.zone.now
-  end
-
   accepts_nested_attributes_for :links, allow_destroy: true
+
+  before_create :set_released_at
 
   validates :project, :tag, presence: true
   validates_associated :milestone_releases, message: -> (_, obj) { obj[:value].map(&:errors).map(&:full_messages).join(",") }
@@ -89,6 +87,10 @@ class Release < ApplicationRecord
     strong_memoize(:actual_tag) do
       repository.find_tag(tag)
     end
+  end
+
+  def set_released_at
+    self.released_at ||= created_at
   end
 end
 

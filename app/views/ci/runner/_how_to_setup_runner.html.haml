@@ -1,5 +1,5 @@
 - link = link_to _("Install GitLab Runner"), 'https://docs.gitlab.com/runner/install/', target: '_blank'
-.append-bottom-10
+.gl-mb-3
   %h4= _("Set up a %{type} Runner manually") % { type: type }
 
 %ol
@@ -13,7 +13,7 @@
     = _("Use the following registration token during setup:")
     %code#registration_token= registration_token
     = clipboard_button(target: '#registration_token', title: _("Copy token"), class: "btn-transparent btn-clipboard")
-    .prepend-top-10.append-bottom-10
+    .gl-mt-3.gl-mb-3
       = button_to _("Reset runners registration token"), reset_token_url,
       method: :put, class: 'btn btn-default',
       data: { confirm: _("Are you sure you want to reset registration token?") }

@@ -196,7 +196,7 @@ For example use `%{created_at}` in Ruby but `%{createdAt}` in JavaScript. Make s
   // => 'This is &lt;strong&gt;&lt;script&gt;alert(&#x27;evil&#x27;)&lt;/script&gt;&lt;/strong&gt;'
 
   // OK:
-  sprintf(__('This is %{value}'), { value: `<strong>${escape(someDynamicValue)}</strong>`, false);
+  sprintf(__('This is %{value}'), { value: `<strong>${escape(someDynamicValue)}</strong>` }, false);
   // => 'This is <strong>&lt;script&gt;alert(&#x27;evil&#x27;)&lt;/script&gt;</strong>'
   ```
 
@@ -295,6 +295,74 @@ Namespaces should be PascalCase.
 
 Note: The namespace should be removed from the translation. See the [translation
 guidelines for more details](translation.md#namespaced-strings).
+
+### HTML
+
+We no longer include HTML directly in the strings that are submitted for translation. This is for a couple of reasons:
+
+1. It introduces a chance for the translated string to accidentally include invalid HTML.
+1. It introduces a security risk where translated strings become an attack vector for XSS, as noted by the
+   [Open Web Application Security Project (OWASP)](https://owasp.org/www-community/attacks/xss/).
+
+To include formatting in the translated string, we can do the following:
+
+- In Ruby/HAML:
+
+  ```ruby
+    html_escape(_('Some %{strongOpen}bold%{strongClose} text.')) % { strongOpen: '<strong>'.html_safe, strongClose: '</strong>'.html_safe }
+
+    # => 'Some <strong>bold</strong> text.'
+  ```
+
+- In JavaScript:
+
+  ```javascript
+    sprintf(__('Some %{strongOpen}bold%{strongClose} text.'), { strongOpen: '<strong>', strongClose: '</strong>'}, false);
+
+    // => 'Some <strong>bold</strong> text.'
+  ```
+
+- In Vue
+
+  See the section on [interpolation](#interpolation).
+
+When [this translation helper issue](https://gitlab.com/gitlab-org/gitlab/-/issues/217935) is complete, we'll update the
+process of including formatting in translated strings.
+
+#### Including Angle Brackets
+
+If a string contains angles brackets (`<`/`>`) that are not used for HTML, it will still be flagged by the
+`rake gettext:lint` linter.
+To avoid this error, use the applicable HTML entity code (`&lt;` or `&gt;`) instead:
+
+- In Ruby/HAML:
+
+   ```ruby
+   html_escape_once(_('In &lt; 1 hour')).html_safe
+
+   # => 'In < 1 hour'
+   ```
+
+- In JavaScript:
+
+  ```javascript
+  import sanitize from 'sanitize-html';
+
+  const i18n = { LESS_THAN_ONE_HOUR: sanitize(__('In &lt; 1 hours'), { allowedTags: [] }) };
+
+  // ... using the string
+  element.innerHTML = i18n.LESS_THAN_ONE_HOUR;
+
+  // => 'In < 1 hour'
+  ```
+
+- In Vue:
+
+  ```vue
+  <gl-sprintf :message="s__('In &lt; 1 hours')"/>
+
+  // => 'In < 1 hour'
+  ```
 
 ### Dates / times
 
@@ -555,6 +623,7 @@ The linter will take the following into account:
   - There should be no variables used in a translation that aren't in the
     message ID
 - Errors during translation.
+- Presence of angle brackets (`<` or `>`)
 
 The errors are grouped per file, and per message ID:
 
@@ -567,7 +636,7 @@ Errors in `locale/zh_HK/gitlab.po`:
     Syntax error in msgstr
     Syntax error in message_line
     There should be only whitespace until the end of line after the double quote character of a message text.
-    Parsing result before error: '{:msgid=>["", "You are going to remove %{project_name_with_namespace}.\\n", "Removed project CANNOT be restored!\\n", "Are you ABSOLUTELY sure?"]}'
+    Parsing result before error: '{:msgid=>["", "You are going to delete %{project_name_with_namespace}.\\n", "Deleted projects CANNOT be restored!\\n", "Are you ABSOLUTELY sure?"]}'
     SimplePoParser filtered backtrace: SimplePoParser::ParserError
 Errors in `locale/zh_TW/gitlab.po`:
   1 pipeline
@@ -580,6 +649,10 @@ The `locale/zh_TW/gitlab.po` has variables that are used in the translation that
 aren't in the message with ID `1 pipeline`.
 
 ## Adding a new language
+
+NOTE: **Note:**
+[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/221012) in GitLab 13.3:
+Languages with less than 2% of translations won't be available in the UI.
 
 Let's suppose you want to add translations for a new language, let's say French.
 

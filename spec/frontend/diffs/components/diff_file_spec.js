@@ -1,7 +1,7 @@
 import Vue from 'vue';
-import { createStore } from '~/mr_notes/stores';
 import { createComponentWithStore } from 'helpers/vue_mount_component_helper';
 import { mockTracking, triggerEvent } from 'helpers/tracking_helper';
+import { createStore } from '~/mr_notes/stores';
 import DiffFileComponent from '~/diffs/components/diff_file.vue';
 import { diffViewerModes, diffViewerErrors } from '~/ide/constants';
 import diffFileMockDataReadable from '../mock_data/diff_file';
@@ -123,6 +123,26 @@ describe('DiffFile', () => {
         vm.$nextTick(() => {
           expect(vm.$el.innerText).toContain('This diff is collapsed');
           expect(vm.$el.querySelectorAll('.js-click-to-expand').length).toEqual(1);
+
+          done();
+        });
+      });
+
+      it('should auto-expand collapsed files when viewDiffsFileByFile is true', done => {
+        vm.$destroy();
+        window.gon = {
+          features: { autoExpandCollapsedDiffs: true },
+        };
+        vm = createComponentWithStore(Vue.extend(DiffFileComponent), createStore(), {
+          file: JSON.parse(JSON.stringify(diffFileMockDataUnreadable)),
+          canCurrentUserFork: false,
+          viewDiffsFileByFile: true,
+        }).$mount();
+
+        vm.$nextTick(() => {
+          expect(vm.$el.innerText).not.toContain('This diff is collapsed');
+
+          window.gon = {};
 
           done();
         });

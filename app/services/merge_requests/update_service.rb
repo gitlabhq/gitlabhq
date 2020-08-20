@@ -105,7 +105,7 @@ module MergeRequests
     def handle_assignees_change(merge_request, old_assignees)
       create_assignee_note(merge_request, old_assignees)
       notification_service.async.reassigned_merge_request(merge_request, current_user, old_assignees)
-      todo_service.reassigned_issuable(merge_request, current_user, old_assignees)
+      todo_service.reassigned_assignable(merge_request, current_user, old_assignees)
     end
 
     def create_branch_change_note(issuable, branch_type, old_branch, new_branch)

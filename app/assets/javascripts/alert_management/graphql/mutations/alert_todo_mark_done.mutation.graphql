@@ -1,0 +1,8 @@
+mutation todoMarkDone($id: ID!) {
+  todoMarkDone(input: { id: $id }) {
+    errors
+    todo {
+      id
+    }
+  }
+}

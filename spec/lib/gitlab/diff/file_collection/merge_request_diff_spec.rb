@@ -42,6 +42,7 @@ RSpec.describe Gitlab::Diff::FileCollection::MergeRequestDiff do
     let(:collection_default_args) do
       { diff_options: {} }
     end
+
     let(:diffable) { merge_request.merge_request_diff }
     let(:stub_path) { '.gitignore' }
   end

@@ -66,7 +66,7 @@ module Projects
 
     # rubocop: disable CodeReuse/ActiveRecord
     def run_callbacks(batch)
-      if active_external_issue_tracker?
+      if template.issue_tracker?
         Project.where(id: batch).update_all(has_external_issue_tracker: true)
       end
 
@@ -75,10 +75,6 @@ module Projects
       end
     end
     # rubocop: enable CodeReuse/ActiveRecord
-
-    def active_external_issue_tracker?
-      template.issue_tracker? && !template.default
-    end
 
     def active_external_wiki?
       template.type == 'ExternalWikiService'

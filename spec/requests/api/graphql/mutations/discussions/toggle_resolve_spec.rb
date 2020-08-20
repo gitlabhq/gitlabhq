@@ -10,9 +10,11 @@ RSpec.describe 'Toggling the resolve status of a discussion' do
   let(:discussion) do
     create(:diff_note_on_merge_request, noteable: noteable, project: project).to_discussion
   end
+
   let(:mutation) do
     graphql_mutation(:discussion_toggle_resolve, { id: discussion.to_global_id.to_s, resolve: true })
   end
+
   let(:mutation_response) { graphql_mutation_response(:discussion_toggle_resolve) }
 
   context 'when the user does not have permission' do

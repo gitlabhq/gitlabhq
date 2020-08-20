@@ -53,6 +53,7 @@ RSpec.describe Import::GitlabController do
     let(:gitlab_user) do
       { username: gitlab_username }.with_indifferent_access
     end
+
     let(:gitlab_repo) do
       {
         path: 'vim',

@@ -105,7 +105,7 @@ module Repositories
       access.check(git_command, Gitlab::GitAccess::ANY)
 
       if repo_type.project? && !container
-        @project = @container = access.project
+        @project = @container = access.container
       end
     end
 

@@ -1,3 +1,9 @@
+---
+stage: Create
+group: Ecosystem
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # GitHub project integration **(PREMIUM)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3836) in GitLab Premium 10.6.
@@ -14,7 +20,7 @@ and is automatically configured on [GitHub import](../../../integration/github.m
 
 ### Complete these steps on GitHub
 
-This integration requires a [GitHub API token](https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token)
+This integration requires a [GitHub API token](https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token)
 with `repo:status` access granted:
 
 1. Go to your "Personal access tokens" page at <https://github.com/settings/tokens>

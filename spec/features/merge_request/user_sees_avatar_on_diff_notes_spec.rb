@@ -16,6 +16,7 @@ RSpec.describe 'Merge request > User sees avatars on diff notes', :js do
       diff_refs: merge_request.diff_refs
     )
   end
+
   let!(:note) { create(:diff_note_on_merge_request, project: project, noteable: merge_request, position: position) }
 
   before do

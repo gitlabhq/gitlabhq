@@ -45,6 +45,9 @@ RSpec.describe Projects::Ci::LintsController do
   end
 
   describe 'POST #create' do
+    subject { post :create, params: params }
+
+    let(:params) { { namespace_id: project.namespace, project_id: project, content: content } }
     let(:remote_file_path) { 'https://gitlab.com/gitlab-org/gitlab-foss/blob/1234/.gitlab-ci-1.yml' }
 
     let(:remote_file_content) do
@@ -72,18 +75,62 @@ RSpec.describe Projects::Ci::LintsController do
       before do
         stub_full_request(remote_file_path).to_return(body: remote_file_content)
         project.add_developer(user)
-
-        post :create, params: { namespace_id: project.namespace, project_id: project, content: content }
       end
 
-      it { expect(response).to be_successful }
+      shared_examples 'returns a successful validation' do
+        it 'returns successfully' do
+          subject
+          expect(response).to be_successful
+        end
 
-      it 'render show page' do
-        expect(response).to render_template :show
+        it 'render show page' do
+          subject
+          expect(response).to render_template :show
+        end
+
+        it 'retrieves project' do
+          subject
+          expect(assigns(:project)).to eq(project)
+        end
       end
 
-      it 'retrieves project' do
-        expect(assigns(:project)).to eq(project)
+      context 'using legacy validation (YamlProcessor)' do
+        it_behaves_like 'returns a successful validation'
+
+        it 'runs validations through YamlProcessor' do
+          expect(Gitlab::Ci::YamlProcessor).to receive(:new_with_validation_errors).and_call_original
+
+          subject
+        end
+      end
+
+      context 'using dry_run mode' do
+        subject { post :create, params: params.merge(dry_run: 'true') }
+
+        it_behaves_like 'returns a successful validation'
+
+        it 'runs validations through Ci::CreatePipelineService' do
+          expect(Ci::CreatePipelineService)
+            .to receive(:new)
+            .with(project, user, ref: 'master')
+            .and_call_original
+
+          subject
+        end
+
+        context 'when dry_run feature flag is disabled' do
+          before do
+            stub_feature_flags(ci_lint_creates_pipeline_with_dry_run: false)
+          end
+
+          it_behaves_like 'returns a successful validation'
+
+          it 'runs validations through YamlProcessor' do
+            expect(Gitlab::Ci::YamlProcessor).to receive(:new_with_validation_errors).and_call_original
+
+            subject
+          end
+        end
       end
     end
 
@@ -98,12 +145,22 @@ RSpec.describe Projects::Ci::LintsController do
 
       before do
         project.add_developer(user)
-
-        post :create, params: { namespace_id: project.namespace, project_id: project, content: content }
       end
 
       it 'assigns errors' do
+        subject
+
         expect(assigns[:errors]).to eq(['root config contains unknown keys: rubocop'])
+      end
+
+      context 'with dry_run mode' do
+        subject { post :create, params: params.merge(dry_run: 'true') }
+
+        it 'assigns errors' do
+          subject
+
+          expect(assigns[:errors]).to eq(['root config contains unknown keys: rubocop'])
+        end
       end
     end
 

@@ -24,7 +24,8 @@ should be leveraged:
 - When development of a feature will be spread across multiple merge
   requests, you can use the following workflow:
 
-  1. Introduce a feature flag which is **off** by default, in the first merge request.
+  1. [Create a new feature flag](development.md#create-a-new-feature-flag)
+     which is **off** by default, in the first merge request.
   1. Submit incremental changes via one or more merge requests, ensuring that any
      new code added can only be reached if the feature flag is **on**.
      You can keep the feature flag enabled on your local GDK during development.

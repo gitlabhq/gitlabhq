@@ -1,6 +1,6 @@
 <script>
-import Tracking from '~/tracking';
 import { GlPopover } from '@gitlab/ui';
+import Tracking from '~/tracking';
 import LegacyContainer from './legacy_container.vue';
 
 const trackingMixin = Tracking.mixin(gon.tracking_data);

@@ -5,10 +5,13 @@ import {
   registerHTMLToMarkdownRenderer,
   addImage,
   getMarkdown,
+  getEditorOptions,
 } from '~/vue_shared/components/rich_content_editor/services/editor_service';
 import buildHTMLToMarkdownRenderer from '~/vue_shared/components/rich_content_editor/services/build_html_to_markdown_renderer';
+import buildCustomRenderer from '~/vue_shared/components/rich_content_editor/services/build_custom_renderer';
 
 jest.mock('~/vue_shared/components/rich_content_editor/services/build_html_to_markdown_renderer');
+jest.mock('~/vue_shared/components/rich_content_editor/services/build_custom_renderer');
 
 describe('Editor Service', () => {
   let mockInstance;
@@ -118,6 +121,27 @@ describe('Editor Service', () => {
 
     it('replaces the default renderer with extended renderer', () => {
       expect(mockInstance.toMarkOptions.renderer).toBe(extendedRenderer);
+    });
+  });
+
+  describe('getEditorOptions', () => {
+    const externalOptions = {
+      customRenderers: {},
+    };
+    const renderer = {};
+
+    beforeEach(() => {
+      buildCustomRenderer.mockReturnValueOnce(renderer);
+    });
+
+    it('generates a configuration object with a custom HTML renderer and toolbarItems', () => {
+      expect(getEditorOptions()).toHaveProp('customHTMLRenderer', renderer);
+      expect(getEditorOptions()).toHaveProp('toolbarItems');
+    });
+
+    it('passes external renderers to the buildCustomRenderers function', () => {
+      getEditorOptions(externalOptions);
+      expect(buildCustomRenderer).toHaveBeenCalledWith(externalOptions.customRenderers);
     });
   });
 });

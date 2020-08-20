@@ -38,6 +38,9 @@ module ResolvesMergeRequests
       assignees: [:assignees],
       labels: [:labels],
       author: [:author],
+      merged_at: [:metrics],
+      commit_count: [:metrics],
+      approved_by: [:approver_users],
       milestone: [:milestone],
       head_pipeline: [:merge_request_diff, { head_pipeline: [:merge_request] }]
     }

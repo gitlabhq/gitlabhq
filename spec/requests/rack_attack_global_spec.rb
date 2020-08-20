@@ -227,6 +227,7 @@ RSpec.describe 'Rack Attack global throttles' do
       let(:protected_path_that_does_not_require_authentication) do
         '/users/sign_in'
       end
+
       let(:post_params) { { user: { login: 'username', password: 'password' } } }
 
       before do

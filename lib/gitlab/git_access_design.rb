@@ -2,11 +2,18 @@
 
 module Gitlab
   class GitAccessDesign < GitAccess
+    extend ::Gitlab::Utils::Override
+
     def check(_cmd, _changes)
       check_protocol!
       check_can_create_design!
 
       success_result
+    end
+
+    override :push_ability
+    def push_ability
+      :create_design
     end
 
     private
@@ -18,7 +25,7 @@ module Gitlab
     end
 
     def check_can_create_design!
-      unless user&.can?(:create_design, project)
+      unless user_can_push?
         raise ::Gitlab::GitAccess::ForbiddenError, "You are not allowed to manage designs of this project"
       end
     end

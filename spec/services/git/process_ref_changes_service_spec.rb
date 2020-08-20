@@ -167,6 +167,7 @@ RSpec.describe Git::ProcessRefChangesService do
           { index: 0, oldrev: Gitlab::Git::BLANK_SHA, newrev: '789012', ref: "refs/tags/v10.0.0" }
         ]
       end
+
       let(:branch_changes) do
         [
           { index: 0, oldrev: Gitlab::Git::BLANK_SHA, newrev: '789012', ref: "#{ref_prefix}/create1" },
@@ -174,6 +175,7 @@ RSpec.describe Git::ProcessRefChangesService do
           { index: 2, oldrev: Gitlab::Git::BLANK_SHA, newrev: '789014', ref: "#{ref_prefix}/create3" }
         ]
       end
+
       let(:git_changes) { double(branch_changes: branch_changes, tag_changes: tag_changes) }
 
       it 'schedules job for existing merge requests' do
@@ -189,18 +191,6 @@ RSpec.describe Git::ProcessRefChangesService do
           .with(project.id, user.id, Gitlab::Git::BLANK_SHA, '789014', "#{ref_prefix}/create3").ordered
 
         subject.execute
-      end
-
-      context 'refresh_only_existing_merge_requests_on_push disabled' do
-        before do
-          stub_feature_flags(refresh_only_existing_merge_requests_on_push: false)
-        end
-
-        it 'refreshes all merge requests' do
-          expect(UpdateMergeRequestsWorker).to receive(:perform_async).exactly(3).times
-
-          subject.execute
-        end
       end
     end
   end

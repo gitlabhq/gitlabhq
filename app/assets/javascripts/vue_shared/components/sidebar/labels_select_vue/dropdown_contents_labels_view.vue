@@ -45,6 +45,16 @@ export default {
       }
       return this.labels;
     },
+    showListContainer() {
+      if (this.isDropdownVariantSidebar) {
+        return !this.labelsFetchInProgress;
+      }
+
+      return true;
+    },
+    showNoMatchingResultsMessage() {
+      return !this.labelsFetchInProgress && !this.visibleLabels.length;
+    },
   },
   watch: {
     searchKey(value) {
@@ -132,6 +142,7 @@ export default {
     <div
       v-if="isDropdownVariantSidebar || isDropdownVariantEmbedded"
       class="dropdown-title gl-display-flex gl-align-items-center gl-pt-0 gl-pb-3!"
+      data-testid="dropdown-title"
     >
       <span class="flex-grow-1">{{ labelsListTitle }}</span>
       <gl-button
@@ -146,7 +157,12 @@ export default {
     <div class="dropdown-input" @click.stop="() => {}">
       <gl-search-box-by-type v-model="searchKey" :autofocus="true" />
     </div>
-    <div v-show="!labelsFetchInProgress" ref="labelsListContainer" class="dropdown-content">
+    <div
+      v-show="showListContainer"
+      ref="labelsListContainer"
+      class="dropdown-content"
+      data-testid="dropdown-content"
+    >
       <smart-virtual-list
         :length="visibleLabels.length"
         :remain="$options.LIST_BUFFER_SIZE"
@@ -163,12 +179,16 @@ export default {
             @clickLabel="handleLabelClick(label)"
           />
         </li>
-        <li v-show="!visibleLabels.length" class="p-2 text-center">
+        <li v-show="showNoMatchingResultsMessage" class="gl-p-3 gl-text-center">
           {{ __('No matching results') }}
         </li>
       </smart-virtual-list>
     </div>
-    <div v-if="isDropdownVariantSidebar || isDropdownVariantEmbedded" class="dropdown-footer">
+    <div
+      v-if="isDropdownVariantSidebar || isDropdownVariantEmbedded"
+      class="dropdown-footer"
+      data-testid="dropdown-footer"
+    >
       <ul class="list-unstyled">
         <li v-if="allowLabelCreate">
           <gl-link

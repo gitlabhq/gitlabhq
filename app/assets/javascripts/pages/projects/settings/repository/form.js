@@ -14,7 +14,7 @@ export default () => {
   new ProtectedTagEditList();
   initDeployKeys();
   initSettingsPanels();
-  new ProtectedBranchCreate();
+  new ProtectedBranchCreate({ hasLicense: false });
   new ProtectedBranchEditList();
   new DueDateSelectors();
   fileUpload('.js-choose-file', '.js-object-map-input');

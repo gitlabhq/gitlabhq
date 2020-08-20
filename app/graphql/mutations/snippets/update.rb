@@ -30,8 +30,8 @@ module Mutations
                description: 'The visibility level of the snippet',
                required: false
 
-      argument :files, [Types::Snippets::FileInputType],
-               description: 'The snippet files to update',
+      argument :blob_actions, [Types::Snippets::BlobActionInputType],
+               description: 'Actions to perform over the snippet repository and blobs',
                required: false
 
       def resolve(args)
@@ -56,9 +56,9 @@ module Mutations
 
       def update_params(args)
         args.tap do |update_args|
-          # We need to rename `files` into `snippet_actions` because
+          # We need to rename `blob_actions` into `snippet_actions` because
           # it's the expected key param
-          update_args[:snippet_actions] = update_args.delete(:files)&.map(&:to_h)
+          update_args[:snippet_actions] = update_args.delete(:blob_actions)&.map(&:to_h)
         end
       end
     end

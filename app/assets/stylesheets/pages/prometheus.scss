@@ -48,7 +48,7 @@
 
   &.sortable-chosen .draggable-panel {
     background: $white;
-    box-shadow: 0 0 4px $gray-500;
+    box-shadow: 0 0 4px $gray-300;
   }
 
   .draggable-remove {
@@ -56,18 +56,13 @@
 
     .draggable-remove-link {
       cursor: pointer;
-      color: $gray-600;
+      color: $gray-400;
       background-color: $white;
     }
   }
 }
 
 .prometheus-graphs-header {
-  .monitor-environment-dropdown-header header,
-  .monitor-dashboard-dropdown-header header {
-    font-size: $gl-font-size;
-  }
-
   .monitor-environment-dropdown-menu,
   .monitor-dashboard-dropdown-menu {
     &.show {
@@ -117,7 +112,7 @@
 
 .prometheus-graph-cursor {
   position: absolute;
-  background: $gray-600;
+  background: $gray-400;
   width: 1px;
 }
 
@@ -290,7 +285,7 @@
       }
 
       > text {
-        fill: $gray-600;
+        fill: $gray-400;
         font-size: 10px;
       }
     }
@@ -340,4 +335,12 @@
   fill: none;
   opacity: 0;
   pointer-events: all;
+}
+
+.prometheus-panel-builder {
+  .preview-date-time-picker {
+    // same as in .dropdown-menu-toggle
+    // see app/assets/stylesheets/framework/dropdowns.scss
+    width: 160px;
+  }
 }

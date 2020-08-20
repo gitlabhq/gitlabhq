@@ -1,4 +1,7 @@
 ---
+stage: Create
+group: Source Code
+info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers"
 type: reference
 ---
 
@@ -64,7 +67,7 @@ To ensure only admin users can delete projects:
 1. Check the **Default project deletion protection** checkbox.
 1. Click **Save changes**.
 
-## Default deletion adjourned period **(PREMIUM ONLY)**
+## Default deletion delay **(PREMIUM ONLY)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32935) in GitLab 12.6.
 
@@ -85,7 +88,7 @@ To change this period:
 1. Select the desired option.
 1. Click **Save changes**.
 
-### Override default deletion adjourned period
+### Override default deletion delayed period
 
 Alternatively, projects that are marked for removal can be deleted immediately. To do so:
 

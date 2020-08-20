@@ -1,0 +1,5 @@
+---
+title: Migrate service desk setting button to gl-button
+merge_request: 37612
+author:
+type: changed

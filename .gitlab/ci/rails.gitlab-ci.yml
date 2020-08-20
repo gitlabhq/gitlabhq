@@ -70,7 +70,6 @@
     - run_timed_command "scripts/gitaly-test-build"
     - run_timed_command "scripts/gitaly-test-spawn"
     - source scripts/rspec_helpers.sh
-    - scripts/prepare_postgres_fdw.sh
     - rspec_paralellized_job "--tag ~quarantine --tag geo"
 
 .rspec-ee-base-geo-pg11:

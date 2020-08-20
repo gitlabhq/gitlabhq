@@ -1,5 +1,5 @@
 import axios from '~/lib/utils/axios_utils';
-import createFlash from '~/flash';
+import { deprecatedCreateFlash as createFlash } from '~/flash';
 import * as types from './mutation_types';
 import {
   FETCH_IMAGES_LIST_ERROR_MESSAGE,
@@ -102,5 +102,3 @@ export const requestDeleteImage = ({ commit }, image) => {
       commit(types.SET_MAIN_LOADING, false);
     });
 };
-
-export default () => {};

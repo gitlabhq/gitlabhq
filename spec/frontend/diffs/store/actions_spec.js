@@ -1,6 +1,8 @@
 import MockAdapter from 'axios-mock-adapter';
 import Cookies from 'js-cookie';
 import mockDiffFile from 'jest/diffs/mock_data/diff_file';
+import { useLocalStorageSpy } from 'helpers/local_storage_helper';
+import { TEST_HOST } from 'jest/helpers/test_constants';
 import {
   DIFF_VIEW_COOKIE_NAME,
   INLINE_DIFF_VIEW_TYPE,
@@ -56,12 +58,10 @@ import testAction from '../../helpers/vuex_action_helper';
 import * as utils from '~/diffs/store/utils';
 import * as commonUtils from '~/lib/utils/common_utils';
 import { mergeUrlParams } from '~/lib/utils/url_utility';
-import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import { diffMetadata } from '../mock_data/diff_metadata';
-import createFlash from '~/flash';
-import { TEST_HOST } from 'jest/helpers/test_constants';
+import { deprecatedCreateFlash as createFlash } from '~/flash';
 
-jest.mock('~/flash', () => jest.fn());
+jest.mock('~/flash');
 
 describe('DiffsStoreActions', () => {
   useLocalStorageSpy();
@@ -1594,24 +1594,39 @@ describe('DiffsStoreActions', () => {
   describe('setCurrentDiffFileIdFromNote', () => {
     it('commits UPDATE_CURRENT_DIFF_FILE_ID', () => {
       const commit = jest.fn();
+      const state = { diffFiles: [{ file_hash: '123' }] };
       const rootGetters = {
         getDiscussion: () => ({ diff_file: { file_hash: '123' } }),
         notesById: { '1': { discussion_id: '2' } },
       };
 
-      setCurrentDiffFileIdFromNote({ commit, rootGetters }, '1');
+      setCurrentDiffFileIdFromNote({ commit, state, rootGetters }, '1');
 
       expect(commit).toHaveBeenCalledWith(types.UPDATE_CURRENT_DIFF_FILE_ID, '123');
     });
 
     it('does not commit UPDATE_CURRENT_DIFF_FILE_ID when discussion has no diff_file', () => {
       const commit = jest.fn();
+      const state = { diffFiles: [{ file_hash: '123' }] };
       const rootGetters = {
         getDiscussion: () => ({ id: '1' }),
         notesById: { '1': { discussion_id: '2' } },
       };
 
-      setCurrentDiffFileIdFromNote({ commit, rootGetters }, '1');
+      setCurrentDiffFileIdFromNote({ commit, state, rootGetters }, '1');
+
+      expect(commit).not.toHaveBeenCalled();
+    });
+
+    it('does not commit UPDATE_CURRENT_DIFF_FILE_ID when diff file does not exist', () => {
+      const commit = jest.fn();
+      const state = { diffFiles: [{ file_hash: '123' }] };
+      const rootGetters = {
+        getDiscussion: () => ({ diff_file: { file_hash: '124' } }),
+        notesById: { '1': { discussion_id: '2' } },
+      };
+
+      setCurrentDiffFileIdFromNote({ commit, state, rootGetters }, '1');
 
       expect(commit).not.toHaveBeenCalled();
     });

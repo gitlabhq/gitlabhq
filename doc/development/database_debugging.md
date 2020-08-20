@@ -11,7 +11,7 @@ Available `RAILS_ENV`:
 - `development` (this is your main GDK db).
 - `test` (used for tests like RSpec).
 
-## Nuke everything and start over
+## Delete everything and start over
 
 If you just want to delete everything and start over with an empty DB (approximately 1 minute):
 

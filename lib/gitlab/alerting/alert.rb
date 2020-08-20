@@ -7,7 +7,17 @@ module Gitlab
       include Gitlab::Utils::StrongMemoize
       include Presentable
 
-      attr_accessor :project, :payload
+      attr_accessor :project, :payload, :am_alert
+
+      def self.for_alert_management_alert(project:, alert:)
+        params = if alert.prometheus?
+                   alert.payload
+                 else
+                   Gitlab::Alerting::NotificationPayloadParser.call(alert.payload.to_h, alert.project)
+                 end
+
+        self.new(project: project, payload: params, am_alert: alert)
+      end
 
       def gitlab_alert
         strong_memoize(:gitlab_alert) do

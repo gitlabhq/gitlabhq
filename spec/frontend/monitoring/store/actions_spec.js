@@ -1,10 +1,11 @@
 import MockAdapter from 'axios-mock-adapter';
 import testAction from 'helpers/vuex_action_helper';
+import { backoffMockImplementation } from 'jest/helpers/backoff_helper';
 import Tracking from '~/tracking';
 import axios from '~/lib/utils/axios_utils';
 import statusCodes from '~/lib/utils/http_status';
 import * as commonUtils from '~/lib/utils/common_utils';
-import createFlash from '~/flash';
+import { deprecatedCreateFlash as createFlash } from '~/flash';
 import { defaultTimeRange } from '~/vue_shared/constants';
 import * as getters from '~/monitoring/stores/getters';
 import { ENVIRONMENT_AVAILABLE_STATE } from '~/monitoring/constants';
@@ -30,6 +31,7 @@ import {
   duplicateSystemDashboard,
   updateVariablesAndFetchData,
   fetchVariableMetricLabelValues,
+  fetchPanelPreview,
 } from '~/monitoring/stores/actions';
 import {
   gqClient,
@@ -73,19 +75,7 @@ describe('Monitoring store actions', () => {
     commit = jest.fn();
     dispatch = jest.fn();
 
-    jest.spyOn(commonUtils, 'backOff').mockImplementation(callback => {
-      const q = new Promise((resolve, reject) => {
-        const stop = arg => (arg instanceof Error ? reject(arg) : resolve(arg));
-        const next = () => callback(next, stop);
-        // Define a timeout based on a mock timer
-        setTimeout(() => {
-          callback(next, stop);
-        });
-      });
-      // Run all resolved promises in chain
-      jest.runOnlyPendingTimers();
-      return q;
-    });
+    jest.spyOn(commonUtils, 'backOff').mockImplementation(backoffMockImplementation);
   });
 
   afterEach(() => {
@@ -483,7 +473,6 @@ describe('Monitoring store actions', () => {
         ],
         [],
         () => {
-          expect(mock.history.get).toHaveLength(1);
           done();
         },
       ).catch(done.fail);
@@ -569,46 +558,8 @@ describe('Monitoring store actions', () => {
       });
     });
 
-    it('commits result, when waiting for results', done => {
-      // Mock multiple attempts while the cache is filling up
-      mock.onGet(prometheusEndpointPath).replyOnce(statusCodes.NO_CONTENT);
-      mock.onGet(prometheusEndpointPath).replyOnce(statusCodes.NO_CONTENT);
-      mock.onGet(prometheusEndpointPath).replyOnce(statusCodes.NO_CONTENT);
-      mock.onGet(prometheusEndpointPath).reply(200, { data }); // 4th attempt
-
-      testAction(
-        fetchPrometheusMetric,
-        { metric, defaultQueryParams },
-        state,
-        [
-          {
-            type: types.REQUEST_METRIC_RESULT,
-            payload: {
-              metricId: metric.metricId,
-            },
-          },
-          {
-            type: types.RECEIVE_METRIC_RESULT_SUCCESS,
-            payload: {
-              metricId: metric.metricId,
-              data,
-            },
-          },
-        ],
-        [],
-        () => {
-          expect(mock.history.get).toHaveLength(4);
-          done();
-        },
-      ).catch(done.fail);
-    });
-
     it('commits failure, when waiting for results and getting a server error', done => {
-      // Mock multiple attempts while the cache is filling up and fails
-      mock.onGet(prometheusEndpointPath).replyOnce(statusCodes.NO_CONTENT);
-      mock.onGet(prometheusEndpointPath).replyOnce(statusCodes.NO_CONTENT);
-      mock.onGet(prometheusEndpointPath).replyOnce(statusCodes.NO_CONTENT);
-      mock.onGet(prometheusEndpointPath).reply(500); // 4th attempt
+      mock.onGet(prometheusEndpointPath).reply(500);
 
       const error = new Error('Request failed with status code 500');
 
@@ -633,7 +584,6 @@ describe('Monitoring store actions', () => {
         ],
         [],
       ).catch(e => {
-        expect(mock.history.get).toHaveLength(4);
         expect(e).toEqual(error);
         done();
       });
@@ -1203,6 +1153,71 @@ describe('Monitoring store actions', () => {
           );
         },
       );
+    });
+  });
+
+  describe('fetchPanelPreview', () => {
+    const panelPreviewEndpoint = '/builder.json';
+    const mockYmlContent = 'mock yml content';
+
+    beforeEach(() => {
+      state.panelPreviewEndpoint = panelPreviewEndpoint;
+    });
+
+    it('should not commit or dispatch if payload is empty', () => {
+      testAction(fetchPanelPreview, '', state, [], []);
+    });
+
+    it('should store the panel and fetch metric results', () => {
+      const mockPanel = {
+        title: 'Go heap size',
+        type: 'area-chart',
+      };
+
+      mock
+        .onPost(panelPreviewEndpoint, { panel_yaml: mockYmlContent })
+        .reply(statusCodes.OK, mockPanel);
+
+      testAction(
+        fetchPanelPreview,
+        mockYmlContent,
+        state,
+        [
+          { type: types.SET_PANEL_PREVIEW_IS_SHOWN, payload: true },
+          { type: types.REQUEST_PANEL_PREVIEW, payload: mockYmlContent },
+          { type: types.RECEIVE_PANEL_PREVIEW_SUCCESS, payload: mockPanel },
+        ],
+        [{ type: 'fetchPanelPreviewMetrics' }],
+      );
+    });
+
+    it('should display a validation error when the backend cannot process the yml', () => {
+      const mockErrorMsg = 'Each "metric" must define one of :query or :query_range';
+
+      mock
+        .onPost(panelPreviewEndpoint, { panel_yaml: mockYmlContent })
+        .reply(statusCodes.UNPROCESSABLE_ENTITY, {
+          message: mockErrorMsg,
+        });
+
+      testAction(fetchPanelPreview, mockYmlContent, state, [
+        { type: types.SET_PANEL_PREVIEW_IS_SHOWN, payload: true },
+        { type: types.REQUEST_PANEL_PREVIEW, payload: mockYmlContent },
+        { type: types.RECEIVE_PANEL_PREVIEW_FAILURE, payload: mockErrorMsg },
+      ]);
+    });
+
+    it('should display a generic error when the backend fails', () => {
+      mock.onPost(panelPreviewEndpoint, { panel_yaml: mockYmlContent }).reply(500);
+
+      testAction(fetchPanelPreview, mockYmlContent, state, [
+        { type: types.SET_PANEL_PREVIEW_IS_SHOWN, payload: true },
+        { type: types.REQUEST_PANEL_PREVIEW, payload: mockYmlContent },
+        {
+          type: types.RECEIVE_PANEL_PREVIEW_FAILURE,
+          payload: 'Request failed with status code 500',
+        },
+      ]);
     });
   });
 });

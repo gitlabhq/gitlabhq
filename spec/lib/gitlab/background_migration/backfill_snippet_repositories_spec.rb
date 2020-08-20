@@ -264,6 +264,7 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillSnippetRepositories, :migrat
                      user_type: user_type,
                      confirmed_at: 1.day.ago)
       end
+
       let!(:invalid_snippet) { snippets.create(id: 4, type: 'PersonalSnippet', author_id: user.id, file_name: '.', content: content) }
       let!(:snippet) { snippets.create(id: 5, type: 'PersonalSnippet', author_id: other_user.id, file_name: file_name, content: content) }
       let(:ids) { [4, 5] }

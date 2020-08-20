@@ -1,11 +1,11 @@
 import { mount } from '@vue/test-utils';
-import axios from '~/lib/utils/axios_utils';
 import MockAdapter from 'axios-mock-adapter';
+import { removeBreakLine, removeWhitespace } from 'helpers/text_helper';
+import { GlPagination } from '@gitlab/ui';
+import axios from '~/lib/utils/axios_utils';
 import EnvironmentsFolderViewComponent from '~/environments/folder/environments_folder_view.vue';
 import EnvironmentTable from '~/environments/components/environments_table.vue';
 import { environmentsList } from '../mock_data';
-import { removeBreakLine, removeWhitespace } from 'helpers/text_helper';
-import { GlPagination } from '@gitlab/ui';
 
 describe('Environments Folder View', () => {
   let mock;

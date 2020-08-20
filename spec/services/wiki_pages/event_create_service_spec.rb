@@ -12,7 +12,8 @@ RSpec.describe WikiPages::EventCreateService do
     let_it_be(:page) { create(:wiki_page, project: project) }
     let(:slug) { generate(:sluggified_title) }
     let(:action) { :created }
-    let(:response) { subject.execute(slug, page, action) }
+    let(:fingerprint) { page.sha }
+    let(:response) { subject.execute(slug, page, action, fingerprint) }
 
     context 'the user is nil' do
       subject { described_class.new(nil) }

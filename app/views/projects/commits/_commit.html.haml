@@ -10,12 +10,13 @@
 - ref           = local_assigns.fetch(:ref) { merge_request&.source_branch }
 - commit        = commit.present(current_user: current_user)
 - commit_status = commit.status_for(ref)
+- collapsible = local_assigns.fetch(:collapsible, true)
 
 - link = commit_path(project, commit, merge_request: merge_request)
 
 - show_project_name = local_assigns.fetch(:show_project_name, false)
 
-%li.commit.flex-row.js-toggle-container{ id: "commit-#{commit.short_id}" }
+%li{ class: ["commit flex-row", ("js-toggle-container" if collapsible)], id: "commit-#{commit.short_id}" }
 
   .avatar-cell.d-none.d-sm-block
     = author_avatar(commit, size: 40, has_tooltip: false)
@@ -29,7 +30,7 @@
       %span.commit-row-message.d-inline.d-sm-none
         &middot;
         = commit.short_id
-      - if commit.description?
+      - if commit.description? && collapsible
         %button.text-expander.js-toggle-button
           = sprite_icon('ellipsis_h', size: 12)
 
@@ -41,7 +42,7 @@
       = render_if_exists 'projects/commits/project_namespace', show_project_name: show_project_name, project: project
 
       - if commit.description?
-        %pre.commit-row-description.js-toggle-content.gl-mb-3
+        %pre{ class: ["commit-row-description gl-mb-3", (collapsible ? "js-toggle-content" : "d-block")] }
           = preserve(markdown_field(commit, :description))
 
     .commit-actions.flex-row

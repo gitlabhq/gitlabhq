@@ -13,7 +13,7 @@ RSpec.describe BuildkiteService, :use_clean_rails_memory_store_caching do
       project: project,
       properties: {
         service_hook: true,
-        project_url: 'https://buildkite.com/account-name/example-project',
+        project_url: 'https://buildkite.com/organization-name/example-pipeline',
         token: 'secret-sauce-webhook-token:secret-sauce-status-token'
       }
     )
@@ -45,9 +45,25 @@ RSpec.describe BuildkiteService, :use_clean_rails_memory_store_caching do
     end
   end
 
+  describe '.supported_events' do
+    it 'supports push, merge_request, and tag_push events' do
+      expect(service.supported_events).to eq %w(push merge_request tag_push)
+    end
+  end
+
   describe 'commits methods' do
     before do
       allow(project).to receive(:default_branch).and_return('default-brancho')
+    end
+
+    it 'always activates SSL verification after saved' do
+      service.create_service_hook(enable_ssl_verification: false)
+
+      service.enable_ssl_verification = false
+      service.active = true
+
+      expect { service.save! }
+        .to change { service.service_hook.enable_ssl_verification }.from(false).to(true)
     end
 
     describe '#webhook_url' do
@@ -69,7 +85,7 @@ RSpec.describe BuildkiteService, :use_clean_rails_memory_store_caching do
     describe '#build_page' do
       it 'returns the correct build page' do
         expect(service.build_page('2ab7834c', nil)).to eq(
-          'https://buildkite.com/account-name/example-project/builds?commit=2ab7834c'
+          'https://buildkite.com/organization-name/example-pipeline/builds?commit=2ab7834c'
         )
       end
     end

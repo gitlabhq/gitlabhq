@@ -41,6 +41,7 @@ RSpec.describe Gitlab::SidekiqLogging::StructuredLogger do
         'scheduling_latency_s' => scheduling_latency_s
       )
     end
+
     let(:end_payload) do
       start_payload.merge(
         'message' => 'TestWorker JID-da883554ee4fe414012f5f42: done: 0.0 sec',
@@ -51,6 +52,7 @@ RSpec.describe Gitlab::SidekiqLogging::StructuredLogger do
         'db_duration_s' => 0.0
       )
     end
+
     let(:exception_payload) do
       end_payload.merge(
         'message' => 'TestWorker JID-da883554ee4fe414012f5f42: fail: 0.0 sec',

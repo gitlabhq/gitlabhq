@@ -21,6 +21,7 @@ FactoryBot.define do
       job_events { true }
       pipeline_events { true }
       wiki_page_events { true }
+      deployment_events { true }
     end
   end
 end

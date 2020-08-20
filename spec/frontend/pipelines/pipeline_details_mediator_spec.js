@@ -1,7 +1,7 @@
 import MockAdapter from 'axios-mock-adapter';
+import waitForPromises from 'helpers/wait_for_promises';
 import axios from '~/lib/utils/axios_utils';
 import PipelineMediator from '~/pipelines/pipeline_details_mediator';
-import waitForPromises from 'helpers/wait_for_promises';
 
 describe('PipelineMdediator', () => {
   let mediator;

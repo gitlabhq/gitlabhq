@@ -56,8 +56,8 @@ RSpec.describe 'User edits snippet', :js do
     click_button 'Save changes'
     wait_for_requests
 
-    expect(page).to have_no_xpath("//i[@class='fa fa-lock']")
-    expect(page).to have_xpath("//i[@class='fa fa-shield']")
+    expect(page).to have_no_selector('[data-testid="lock-icon"]')
+    expect(page).to have_selector('[data-testid="shield-icon"]')
   end
 
   it 'updates the snippet to make it public' do
@@ -66,8 +66,8 @@ RSpec.describe 'User edits snippet', :js do
     click_button 'Save changes'
     wait_for_requests
 
-    expect(page).to have_no_xpath("//i[@class='fa fa-lock']")
-    expect(page).to have_xpath("//i[@class='fa fa-globe']")
+    expect(page).to have_no_selector('[data-testid="lock-icon"]')
+    expect(page).to have_selector('[data-testid="earth-icon"]')
   end
 
   context 'when the git operation fails' do

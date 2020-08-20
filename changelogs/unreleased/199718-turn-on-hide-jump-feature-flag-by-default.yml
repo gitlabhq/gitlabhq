@@ -1,0 +1,5 @@
+---
+title: Remove Jump to next unresolved thread button in merge request threads
+merge_request: 38375
+author:
+type: deprecated

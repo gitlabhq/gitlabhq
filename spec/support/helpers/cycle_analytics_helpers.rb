@@ -37,7 +37,7 @@ module CycleAnalyticsHelpers
   end
 
   def create_cycle(user, project, issue, mr, milestone, pipeline)
-    issue.update(milestone: milestone)
+    issue.update!(milestone: milestone)
     pipeline.run
 
     ci_build = create(:ci_build, pipeline: pipeline, status: :success, author: user)

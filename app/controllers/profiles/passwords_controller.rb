@@ -52,7 +52,7 @@ class Profiles::PasswordsController < Profiles::ApplicationController
     result = Users::UpdateService.new(current_user, password_attributes.merge(user: @user)).execute
 
     if result[:status] == :success
-      flash[:notice] = _('Password was successfully updated. Please login with it')
+      flash[:notice] = _('Password was successfully updated. Please sign in again.')
       redirect_to new_user_session_path
     else
       @user.reset

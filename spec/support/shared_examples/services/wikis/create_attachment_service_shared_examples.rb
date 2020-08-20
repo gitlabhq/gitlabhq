@@ -14,6 +14,7 @@ RSpec.shared_examples 'Wikis::CreateAttachmentService#execute' do |container_typ
       file_content: 'Content of attachment'
     }
   end
+
   let(:opts) { file_opts }
 
   let(:service) { Wikis::CreateAttachmentService.new(container: container, current_user: user, params: opts) }

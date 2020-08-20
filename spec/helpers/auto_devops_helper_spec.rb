@@ -128,7 +128,7 @@ RSpec.describe AutoDevopsHelper do
 
         context 'with groups' do
           before do
-            receiver.update(parent: parent)
+            receiver.update!(parent: parent)
           end
 
           context 'when auto devops is enabled on parent' do

@@ -15,7 +15,7 @@ RSpec.shared_context 'self-managed prometheus alert attributes' do
     {
       panel_groups: [{
         panels: [{
-          type: 'line-graph',
+          type: 'area-chart',
           title: title,
           y_label: y_label,
           metrics: [{ query_range: query }]

@@ -84,6 +84,7 @@ RSpec.describe Gitlab::Git::Branch, :seed_helper do
         parents: parents
       }
     end
+
     let(:stale_sha) { Timecop.freeze(Gitlab::Git::Branch::STALE_BRANCH_THRESHOLD.ago - 5.days) { create_commit } }
     let(:active_sha) { Timecop.freeze(Gitlab::Git::Branch::STALE_BRANCH_THRESHOLD.ago + 5.days) { create_commit } }
     let(:future_sha) { Timecop.freeze(100.days.since) { create_commit } }

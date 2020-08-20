@@ -3,7 +3,7 @@ import IdeReview from '~/ide/components/ide_review.vue';
 import { createStore } from '~/ide/stores';
 import { createComponentWithStore } from '../../helpers/vue_mount_component_helper';
 import { trimText } from '../../helpers/text_helper';
-import { resetStore, file } from '../helpers';
+import { file } from '../helpers';
 import { projectData } from '../mock_data';
 
 describe('IDE review mode', () => {
@@ -26,8 +26,6 @@ describe('IDE review mode', () => {
 
   afterEach(() => {
     vm.$destroy();
-
-    resetStore(vm.$store);
   });
 
   it('renders list of files', () => {

@@ -1,0 +1,14 @@
+{
+  "type": "object",
+  "properties": {
+    "name": { "type": "string" },
+    "format": {
+      "type": "string",
+      "default": "engineering"
+    },
+    "precision": {
+      "type": "number",
+      "default": 2
+     }
+  }
+}

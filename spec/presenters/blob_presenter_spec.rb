@@ -12,6 +12,7 @@ RSpec.describe BlobPresenter, :seed_helper do
       'files/ruby/regex.rb'
     )
   end
+
   let(:blob) { Blob.new(git_blob) }
 
   describe '.web_url' do
@@ -22,6 +23,16 @@ RSpec.describe BlobPresenter, :seed_helper do
     subject { described_class.new(blob) }
 
     it { expect(subject.web_url).to eq("http://localhost/#{project.full_path}/-/blob/#{blob.commit_id}/#{blob.path}") }
+  end
+
+  describe '#web_path' do
+    let(:project) { create(:project, :repository) }
+    let(:repository) { project.repository }
+    let(:blob) { Gitlab::Graphql::Representation::TreeEntry.new(repository.tree.blobs.first, repository) }
+
+    subject { described_class.new(blob) }
+
+    it { expect(subject.web_path).to eq("/#{project.full_path}/-/blob/#{blob.commit_id}/#{blob.path}") }
   end
 
   describe '#highlight' do

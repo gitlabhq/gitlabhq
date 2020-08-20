@@ -5,8 +5,14 @@ module QA
     module Project
       module Issue
         class Index < Page::Base
-          view 'app/helpers/projects_helper.rb' do
+          view 'app/assets/javascripts/issuables_list/components/issuable.vue' do
+            element :issue_container
+            element :issue_link
+          end
+
+          view 'app/assets/javascripts/vue_shared/components/issue/issue_assignees.vue' do
             element :assignee_link
+            element :avatar_counter_content
           end
 
           view 'app/views/projects/issues/export_csv/_button.html.haml' do
@@ -23,21 +29,12 @@ module QA
             element :import_from_jira_link
           end
 
-          view 'app/views/projects/issues/_issue.html.haml' do
-            element :issue
-            element :issue_link, 'link_to issue.title' # rubocop:disable QA/ElementWithPattern
-          end
-
-          view 'app/views/shared/issuable/_assignees.html.haml' do
-            element :avatar_counter
-          end
-
           view 'app/views/shared/issuable/_nav.html.haml' do
             element :closed_issues_link
           end
 
           def avatar_counter
-            find_element(:avatar_counter)
+            find_element(:avatar_counter_content)
           end
 
           def click_issue_link(title)
@@ -80,7 +77,7 @@ module QA
           end
 
           def has_issue?(issue)
-            has_element? :issue, issue_title: issue.title
+            has_element? :issue_container, issue_title: issue.title
           end
         end
       end

@@ -20,7 +20,10 @@ module Gitlab
       private
 
       def filter(name, **attributes)
-        filter = { parser: @filter_options[:default_parser], name: name }.merge(attributes)
+        filter = {
+          parser: @filter_options[:default_parser],
+          name: name
+        }.merge(attributes)
 
         @filters << filter
       end
@@ -33,12 +36,13 @@ module Gitlab
         fragments = []
 
         filters = @filters.each_with_object([]) do |filter, parsed_filters|
-          match = @raw_query.split.find { |part| part =~ /\A#{filter[:name]}:/ }
+          match = @raw_query.split.find { |part| part =~ /\A-?#{filter[:name]}:/ }
           next unless match
 
           input = match.split(':')[1..-1].join
           next if input.empty?
 
+          filter[:negated] = match.start_with?("-")
           filter[:value] = parse_filter(filter, input)
           filter[:regex_value] = Regexp.escape(filter[:value]).gsub('\*', '.*?')
           fragments << match

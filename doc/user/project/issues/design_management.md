@@ -1,7 +1,8 @@
 # Design Management
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/660) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.2.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212566) to GitLab Core in 13.0.
+> - Support for SVGs was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12771) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.4.
+> - Design Management was [moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212566) to GitLab Core in 13.0.
 
 ## Overview
 
@@ -41,10 +42,9 @@ If the requirements are not met, the **Designs** tab displays a message to the u
 ## Supported files
 
 Files uploaded must have a file extension of either `png`, `jpg`, `jpeg`,
-`gif`, `bmp`, `tiff` or `ico`.
+`gif`, `bmp`, `tiff`, `ico`, or `svg`.
 
-Support for [SVG files](https://gitlab.com/gitlab-org/gitlab/-/issues/12771)
-and [PDFs](https://gitlab.com/gitlab-org/gitlab/-/issues/32811) is planned for a future release.
+Support for [PDF](https://gitlab.com/gitlab-org/gitlab/issues/32811) is planned for a future release.
 
 ## Limitations
 
@@ -110,7 +110,7 @@ instead of directly on the issue description.
 To upload Design images, drag files from your computer and drop them in the Design Management section,
 or click **upload** to select images from your file browser:
 
-![Designs empty state](img/design_management_upload_v13.2.png)
+![Designs empty state](img/design_management_upload_v13.3.png)
 
 [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/34353) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.9,
 you can drag and drop designs onto the dedicated drop zone to upload them.
@@ -197,10 +197,18 @@ Once selected, click the **Delete selected** button to confirm the deletion:
 
 ![Delete multiple designs](img/delete_multiple_designs_v12_4.png)
 
-**Note:**
+NOTE: **Note:**
 Only the latest version of the designs can be deleted.
 Deleted designs are not permanently lost; they can be
 viewed by browsing previous versions.
+
+## Reordering designs
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/34382) in GitLab 13.3.
+
+You can change the order of designs by dragging them to a new position:
+
+![Reorder designs](img/designs_reordering_v13_3.gif)
 
 ## Starting discussions on designs
 
@@ -268,21 +276,21 @@ This will be rendered as:
 
 ### Enable or disable design references **(CORE ONLY)**
 
-Design reference parsing is under development and not ready for production use. It is
-deployed behind a feature flag that is **disabled by default**.
+Design reference parsing is
+deployed behind a feature flag that is **enabled by default**.
 [GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
-can enable it for your instance.
-
-To enable it:
-
-```ruby
-Feature.enable(:design_management_reference_filter_gfm_pipeline)
-```
+can disable it for your instance.
 
 To disable it:
 
 ```ruby
 Feature.disable(:design_management_reference_filter_gfm_pipeline)
+```
+
+To re-enable it:
+
+```ruby
+Feature.enable(:design_management_reference_filter_gfm_pipeline)
 ```
 
 ## Design activity records

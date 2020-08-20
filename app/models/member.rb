@@ -86,6 +86,7 @@ class Member < ApplicationRecord
   scope :owners, -> { active.where(access_level: OWNER) }
   scope :owners_and_maintainers, -> { active.where(access_level: [OWNER, MAINTAINER]) }
   scope :with_user, -> (user) { where(user: user) }
+  scope :preload_user_and_notification_settings, -> { preload(user: :notification_settings) }
 
   scope :with_source_id, ->(source_id) { where(source_id: source_id) }
   scope :including_source, -> { includes(:source) }

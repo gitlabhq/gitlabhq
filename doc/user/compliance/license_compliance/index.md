@@ -9,10 +9,10 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5483) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.0.
 
-## Overview
-
-If you are using [GitLab CI/CD](../../../ci/README.md), you can search your project dependencies for their licenses
-using License Compliance.
+If you're using [GitLab CI/CD](../../../ci/README.md), you can use License Compliance to search your
+project's dependencies for their licenses. You can then decide whether to allow or deny the use of
+each license. For example, if your application uses an external (open source) library whose license
+is incompatible with yours, then you can deny the use of that license.
 
 You can take advantage of License Compliance by either [including the job](#configuration)
 in your existing `.gitlab-ci.yml` file or by implicitly using
@@ -24,7 +24,9 @@ source and target branches, and shows the information right on the merge request
 Denied licenses will be clearly visible with an `x` red icon next to them
 as well as new licenses which need a decision from you. In addition, you can
 [manually allow or deny](#policies)
-licenses in your project's license compliance policy section.
+licenses in your project's license compliance policy section. If GitLab detects a denied license
+in a new commit, GitLab blocks any merge requests containing that commit and instructs the developer
+to remove the license.
 
 NOTE: **Note:**
 If the license compliance report doesn't have anything to compare to, no information
@@ -48,29 +50,23 @@ You can view and modify existing policies from the [policies](#policies) tab.
 
 ![Edit Policy](img/policies_maintainer_edit_v13_2.png)
 
-## Use cases
-
-It helps you find what licenses your project uses in its dependencies, and decide for each of then
-whether to allow it or forbid it. For example, your application is using an external (open source)
-library whose license is incompatible with yours.
-
 ## Supported languages and package managers
 
 The following languages and package managers are supported.
 
-| Language   | Package managers                                                  | Scan Tool                                                |
-|------------|-------------------------------------------------------------------|----------------------------------------------------------|
-| JavaScript | [Bower](https://bower.io/), [npm](https://www.npmjs.com/) |[License Finder](https://github.com/pivotal/LicenseFinder)|
-| Go         | [Godep](https://github.com/tools/godep), [go mod](https://github.com/golang/go/wiki/Modules) |[License Finder](https://github.com/pivotal/LicenseFinder)|
-| Java       | [Gradle](https://gradle.org/), [Maven](https://maven.apache.org/) |[License Finder](https://github.com/pivotal/LicenseFinder)|
-| .NET       | [Nuget](https://www.nuget.org/) (.NET Framework is supported via the [mono project](https://www.mono-project.com/). Windows specific dependencies are not supported at this time.)  |[License Finder](https://github.com/pivotal/LicenseFinder)|
-| Python     | [pip](https://pip.pypa.io/en/stable/) (Python is supported through [requirements.txt](https://pip.pypa.io/en/stable/user_guide/#requirements-files) and [Pipfile.lock](https://github.com/pypa/pipfile#pipfilelock).) |[License Finder](https://github.com/pivotal/LicenseFinder)|
-| Ruby       | [gem](https://rubygems.org/) |[License Finder](https://github.com/pivotal/LicenseFinder)|
-| Objective-C, Swift | [Carthage](https://github.com/Carthage/Carthage) |[License Finder](https://github.com/pivotal/LicenseFinder)|
+| Language   | Package managers | Notes | Scan Tool |
+|------------|------------------|-------|-----------|
+| JavaScript | [Bower](https://bower.io/), [npm](https://www.npmjs.com/) |  | [License Finder](https://github.com/pivotal/LicenseFinder) |
+| Go         | [Godep](https://github.com/tools/godep), [go mod](https://github.com/golang/go/wiki/Modules) |  | [License Finder](https://github.com/pivotal/LicenseFinder) |
+| Java       | [Gradle](https://gradle.org/), [Maven](https://maven.apache.org/) |  | [License Finder](https://github.com/pivotal/LicenseFinder) |
+| .NET       | [Nuget](https://www.nuget.org/) | The .NET Framework is supported via the [mono project](https://www.mono-project.com/). There are, however, some limitations. The scanner doesn't support Windows-specific dependencies and doesn't report dependencies of your project's listed dependencies. Also, the scanner always marks detected licenses for all dependencies as `unknown`. | [License Finder](https://github.com/pivotal/LicenseFinder) |
+| Python     | [pip](https://pip.pypa.io/en/stable/) | Python is supported through [requirements.txt](https://pip.pypa.io/en/stable/user_guide/#requirements-files) and [Pipfile.lock](https://github.com/pypa/pipfile#pipfilelock). | [License Finder](https://github.com/pivotal/LicenseFinder) |
+| Ruby       | [gem](https://rubygems.org/) |  | [License Finder](https://github.com/pivotal/LicenseFinder)|
+| Objective-C, Swift | [Carthage](https://github.com/Carthage/Carthage) |  | [License Finder](https://github.com/pivotal/LicenseFinder) |
 
 NOTE: **Note:**
-
 Java 8 and Gradle 1.x projects are not supported.
+The minimum supported version of Maven is 3.2.5.
 
 ### Experimental support
 
@@ -79,15 +75,15 @@ which means that the reported licenses might be incomplete or inaccurate.
 
 | Language   | Package managers                                                  | Scan Tool                                                |
 |------------|-------------------------------------------------------------------|----------------------------------------------------------|
-| JavaScript | [yarn](https://yarnpkg.com/)|[License Finder](https://github.com/pivotal/LicenseFinder)|
+| JavaScript | [Yarn](https://yarnpkg.com/)|[License Finder](https://github.com/pivotal/LicenseFinder)|
 | Go         | go get, gvt, glide, dep, trash, govendor |[License Finder](https://github.com/pivotal/LicenseFinder)|
-| Erlang     | [rebar](https://www.rebar3.org/) |[License Finder](https://github.com/pivotal/LicenseFinder)|
+| Erlang     | [Rebar](https://www.rebar3.org/) |[License Finder](https://github.com/pivotal/LicenseFinder)|
 | Objective-C, Swift | [CocoaPods](https://cocoapods.org/) v0.39 and below |[License Finder](https://github.com/pivotal/LicenseFinder)|
-| Elixir     | [mix](https://elixir-lang.org/getting-started/mix-otp/introduction-to-mix.html) |[License Finder](https://github.com/pivotal/LicenseFinder)|
-| C++/C      | [conan](https://conan.io/) |[License Finder](https://github.com/pivotal/LicenseFinder)|
+| Elixir     | [Mix](https://elixir-lang.org/getting-started/mix-otp/introduction-to-mix.html) |[License Finder](https://github.com/pivotal/LicenseFinder)|
+| C++/C      | [Conan](https://conan.io/) |[License Finder](https://github.com/pivotal/LicenseFinder)|
 | Scala      | [sbt](https://www.scala-sbt.org/) |[License Finder](https://github.com/pivotal/LicenseFinder)|
-| Rust       | [cargo](https://crates.io) |[License Finder](https://github.com/pivotal/LicenseFinder)|
-| PHP        | [composer](https://getcomposer.org/) |[License Finder](https://github.com/pivotal/LicenseFinder)|
+| Rust       | [Cargo](https://crates.io) |[License Finder](https://github.com/pivotal/LicenseFinder)|
+| PHP        | [Composer](https://getcomposer.org/) |[License Finder](https://github.com/pivotal/LicenseFinder)|
 
 ## Requirements
 
@@ -106,24 +102,19 @@ For older versions of GitLab from 11.9 to 12.7, you must
 For GitLab versions earlier than 11.9, you can copy and use the job as defined
 that template.
 
-NOTE: **Note:**
-GitLab 13.0 removes the `License-Management.gitlab-ci.yml` template.
-Use `License-Scanning.gitlab-ci.yml` instead.
-
 Add the following to your `.gitlab-ci.yml` file:
 
 ```yaml
 include:
-  - template: License-Scanning.gitlab-ci.yml
+  - template: Security/License-Scanning.gitlab-ci.yml
 ```
 
-The included template will create a `license_scanning` job in your CI/CD pipeline
-and scan your dependencies to find their licenses.
+The included template creates a `license_scanning` job in your CI/CD pipeline and scans your
+dependencies to find their licenses.
 
 NOTE: **Note:**
-Before GitLab 12.8, the `license_scanning` job was named `license_management`.
-GitLab 13.0 removes the `license_management` job,
-so you're advised to migrate to the `license_scanning` job and used the new
+Before GitLab 12.8, the `license_scanning` job was named `license_management`. GitLab 13.0 removes
+the `license_management` job, so you must migrate to the `license_scanning` job and use the new
 `License-Scanning.gitlab-ci.yml` template.
 
 The results will be saved as a
@@ -175,7 +166,7 @@ For example:
 
 ```yaml
 include:
-  - template: License-Scanning.gitlab-ci.yml
+  - template: Security/License-Scanning.gitlab-ci.yml
 
 variables:
   LICENSE_MANAGEMENT_SETUP_CMD: sh my-custom-install-script.sh
@@ -196,7 +187,7 @@ after the template inclusion and specify any additional keys under it. For examp
 
 ```yaml
 include:
-  - template: License-Scanning.gitlab-ci.yml
+  - template: Security/License-Scanning.gitlab-ci.yml
 
 license_scanning:
   variables:
@@ -211,7 +202,7 @@ Feel free to use it for the customization of Maven execution. For example:
 
 ```yaml
 include:
-  - template: License-Scanning.gitlab-ci.yml
+  - template: Security/License-Scanning.gitlab-ci.yml
 
 license_scanning:
   variables:
@@ -239,7 +230,7 @@ or internally trusted certificate. For example:
 
 ```yaml
 include:
-  - template: License-Scanning.gitlab-ci.yml
+  - template: Security/License-Scanning.gitlab-ci.yml
 
 license_scanning:
   variables:
@@ -262,7 +253,7 @@ by setting the `LM_PYTHON_VERSION` environment variable to `2`.
 
 ```yaml
 include:
-  - template: License-Scanning.gitlab-ci.yml
+  - template: Security/License-Scanning.gitlab-ci.yml
 
 license_scanning:
   variables:
@@ -282,7 +273,7 @@ to inject a custom [`pip.conf`](https://pip.pypa.io/en/stable/user_guide/#config
 
 ```yaml
 include:
-  - template: License-Scanning.gitlab-ci.yml
+  - template: Security/License-Scanning.gitlab-ci.yml
 
 license_scanning:
   variables:
@@ -339,13 +330,13 @@ strict-ssl = false
 
 ### Configuring Yarn projects
 
-You can configure Yarn projects by using a [`.yarnrc.yml`](https://yarnpkg.com/configuration/yarnrc)
+You can configure Yarn projects by using a [`.yarnrc.yml`](https://yarnpkg.com/configuration/yarnrc/)
 file.
 
 #### Using private Yarn registries
 
 If you have a private Yarn registry you can use the
-[`npmRegistryServer`](https://yarnpkg.com/configuration/yarnrc#npmRegistryServer)
+[`npmRegistryServer`](https://yarnpkg.com/configuration/yarnrc/#npmRegistryServer)
 setting to specify its location.
 
 For example:
@@ -385,6 +376,8 @@ You can supply a custom root certificate to complete TLS verification by using t
 specifying a `ca` setting in a [`.bowerrc`](https://bower.io/docs/config/#bowerrc-specification)
 file.
 
+### Configuring Bundler projects
+
 #### Using private Bundler registries
 
 If you have a private Bundler registry you can use the
@@ -402,6 +395,63 @@ source "https://gems.example.com"
 You can supply a custom root certificate to complete TLS verification by using the
 `ADDITIONAL_CA_CERT_BUNDLE` [environment variable](#available-variables), or by
 specifying a [`BUNDLE_SSL_CA_CERT`](https://bundler.io/v2.0/man/bundle-config.1.html)
+[environment variable](../../../ci/variables/README.md#custom-environment-variables)
+in the job definition.
+
+### Configuring Cargo projects
+
+#### Using private Cargo registries
+
+If you have a private Cargo registry you can use the
+[`registries`](https://doc.rust-lang.org/cargo/reference/registries.html)
+setting to specify its location.
+
+For example:
+
+```toml
+[registries]
+my-registry = { index = "https://my-intranet:8080/git/index" }
+```
+
+#### Custom root certificates for Cargo
+
+To supply a custom root certificate to complete TLS verification, do one of the following:
+
+- Use the `ADDITIONAL_CA_CERT_BUNDLE` [environment variable](#available-variables).
+- Specify a [`CARGO_HTTP_CAINFO`](https://doc.rust-lang.org/cargo/reference/environment-variables.html)
+  [environment variable](../../../ci/variables/README.md#custom-environment-variables)
+  in the job definition.
+
+### Configuring Composer projects
+
+#### Using private Composer registries
+
+If you have a private Composer registry you can use the
+[`repositories`](https://getcomposer.org/doc/05-repositories.md)
+setting to specify its location.
+
+For example:
+
+```json
+{
+  "repositories": [
+    { "packagist.org": false },
+    {
+      "type": "composer",
+      "url": "https://composer.example.com"
+    }
+  ],
+  "require": {
+    "monolog/monolog": "1.0.*"
+  }
+}
+```
+
+#### Custom root certificates for Composer
+
+You can supply a custom root certificate to complete TLS verification by using the
+`ADDITIONAL_CA_CERT_BUNDLE` [environment variable](#available-variables), or by
+specifying a [`COMPOSER_CAFILE`](https://getcomposer.org/doc/03-cli.md#composer-cafile)
 [environment variable](../../../ci/variables/README.md#custom-environment-variables)
 in the job definition.
 
@@ -503,7 +553,7 @@ environment variable. For example:
 
 ```yaml
 include:
-  - template: License-Scanning.gitlab-ci.yml
+  - template: Security/License-Scanning.gitlab-ci.yml
 
 license_scanning:
   variables:
@@ -560,7 +610,7 @@ Should be changed to:
 
 ```yaml
 include:
-  - template: License-Scanning.gitlab-ci.yml
+  - template: Security/License-Scanning.gitlab-ci.yml
 
 license_scanning:
   artifacts:
@@ -625,7 +675,7 @@ the License Compliance Docker image hosted on your local Docker container regist
 
 ```yaml
 include:
-  - template: License-Scanning.gitlab-ci.yml
+  - template: Security/License-Scanning.gitlab-ci.yml
 
 license_scanning:
   image:
@@ -644,6 +694,16 @@ Additional configuration may be needed for connecting to
 [private NPM registries](#using-private-npm-registries),
 [private Python repositories](#using-private-python-repos),
 and [private Yarn registries](#using-private-yarn-registries).
+
+### SPDX license list name matching
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/212388) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.3.
+
+Prior to GitLab 13.3, offline environments required an exact name match for [project policies](#policies).
+In GitLab 13.3 and later, GitLab matches the name of [project policies](#policies)
+with identifiers from the [SPDX license list](https://spdx.org/licenses/).
+A local copy of the SPDX license list is distributed with the GitLab instance. If needed, the GitLab
+instance's administrator can manually update it with a [Rake task](../../../raketasks/spdx.md).
 
 Exact name matches are required for [project policies](#policies)
 when running in an offline environment ([see related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/212388)).
@@ -675,10 +735,16 @@ in your project's sidebar, and you'll see the licenses displayed, where:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/22465) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.9.
 
-The **Policies** tab allows you to see your project's software license policies
-and the associated classifications for each.
+Policies allow you to specify licenses that are `allowed` or `denied` in a project. If a `denied`
+license is newly committed it will disallow a merge request and instruct the developer to remove it.
+Note, the merge request will not be able to be merged until the `denied` license is removed.
+You may add a [`License-Check` approval rule](#enabling-license-approvals-within-a-project),
+which enables a designated approver that can approve and then merge a merge request with `denied` license.
 
-Policies can be configured by maintainers of the project.
+![Merge Request with denied licenses](img/denied_licenses_v13_3.png)
+
+The **Policies** tab in the project's license compliance section displays your project's license
+policies. Project maintainers can specify policies in this section.
 
 ![Edit Policy](img/policies_maintainer_edit_v13_2.png)
 ![Add Policy](img/policies_maintainer_add_v13_2.png)
@@ -742,7 +808,7 @@ project's `.gitlab-ci.yml` file.
 
 ```yaml
 include:
-  - template: License-Scanning.gitlab-ci.yml
+  - template: Security/License-Scanning.gitlab-ci.yml
 
 license_scanning:
   variables:

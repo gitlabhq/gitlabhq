@@ -6,6 +6,7 @@ module Gitlab
     module UserMentions
       module Models
         class Commit
+          include EachBatch
           include Concerns::IsolatedMentionable
           include Concerns::MentionableMigrationMethods
 

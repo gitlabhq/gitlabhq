@@ -1,9 +1,15 @@
 <script>
-import { GlAlert, GlDropdown, GlDropdownItem, GlIcon, GlSprintf } from '@gitlab/ui';
+import {
+  GlAlert,
+  GlDeprecatedDropdown,
+  GlDeprecatedDropdownItem,
+  GlIcon,
+  GlSprintf,
+} from '@gitlab/ui';
 import { GlAreaChart } from '@gitlab/ui/dist/charts';
 import dateFormat from 'dateformat';
-import axios from '~/lib/utils/axios_utils';
 import { get } from 'lodash';
+import axios from '~/lib/utils/axios_utils';
 
 import { __ } from '~/locale';
 
@@ -11,8 +17,8 @@ export default {
   components: {
     GlAlert,
     GlAreaChart,
-    GlDropdown,
-    GlDropdownItem,
+    GlDeprecatedDropdown,
+    GlDeprecatedDropdownItem,
     GlIcon,
     GlSprintf,
   },
@@ -134,8 +140,8 @@ export default {
           {{ __('It seems that there is currently no available data for code coverage') }}
         </span>
       </gl-alert>
-      <gl-dropdown v-if="canShowData" :text="selectedDailyCoverageName">
-        <gl-dropdown-item
+      <gl-deprecated-dropdown v-if="canShowData" :text="selectedDailyCoverageName">
+        <gl-deprecated-dropdown-item
           v-for="({ group_name }, index) in dailyCoverageData"
           :key="index"
           :value="group_name"
@@ -151,8 +157,8 @@ export default {
               {{ group_name }}
             </span>
           </div>
-        </gl-dropdown-item>
-      </gl-dropdown>
+        </gl-deprecated-dropdown-item>
+      </gl-deprecated-dropdown>
     </div>
     <gl-area-chart
       v-if="!isLoading"

@@ -18,6 +18,7 @@ export const simpleIssue = {
   },
   assignee: null,
   user_notes_count: 0,
+  blocking_issues_count: 0,
   merge_requests_count: 0,
   upvotes: 0,
   downvotes: 0,
@@ -29,6 +30,7 @@ export const simpleIssue = {
   references: {
     relative: 'html-boilerplate#45',
   },
+  health_status: 'on_track',
 };
 
 export const testLabels = [

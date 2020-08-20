@@ -160,7 +160,7 @@ There is a limit when embedding metrics in GFM for performance reasons.
 
 ## Number of webhooks
 
-On GitLab.com, the [maximum number of webhooks](../user/gitlab_com/index.md#maximum-number-of-webhooks) per project, and per group, is limited.
+On GitLab.com, the [maximum number of webhooks and their size](../user/gitlab_com/index.md#webhooks) per project, and per group, is limited.
 
 To set this limit on a self-managed installation, run the following in the
 [GitLab Rails console](troubleshooting/debug.md#starting-a-rails-console-session):
@@ -314,6 +314,58 @@ To update this limit to a new value on a self-managed installation, run the foll
 Plan.default.actual_limits.update!(ci_instance_level_variables: 30)
 ```
 
+### Maximum file size per type of artifact
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/37226) in GitLab 13.3.
+
+Job artifacts defined with [`artifacts:reports`](../ci/pipelines/job_artifacts.md#artifactsreports)
+that are uploaded by the Runner are rejected if the file size exceeds the maximum
+file size limit. The limit is determined by comparing the project's
+[maximum artifact size setting](../user/admin_area/settings/continuous_integration.md#maximum-artifacts-size-core-only)
+with the instance limit for the given artifact type, and choosing the smaller value.
+
+Limits are set in megabytes, so the smallest possible value that can be defined is `1 MB`.
+
+Each type of artifact has a size limit that can be set. A default of `0` means there
+is no limit for that specific artifact type, and the project's maximum artifact size
+setting is used:
+
+| Artifact limit name                         | Default value |
+|---------------------------------------------|---------------|
+| `ci_max_artifact_size_accessibility`        | 0             |
+| `ci_max_artifact_size_archive`              | 0             |
+| `ci_max_artifact_size_browser_performance`  | 0             |
+| `ci_max_artifact_size_cluster_applications` | 0             |
+| `ci_max_artifact_size_cobertura`            | 0             |
+| `ci_max_artifact_size_codequality`          | 0             |
+| `ci_max_artifact_size_container_scanning`   | 0             |
+| `ci_max_artifact_size_coverage_fuzzing`     | 0             |
+| `ci_max_artifact_size_dast`                 | 0             |
+| `ci_max_artifact_size_dependency_scanning`  | 0             |
+| `ci_max_artifact_size_dotenv`               | 0             |
+| `ci_max_artifact_size_junit`                | 0             |
+| `ci_max_artifact_size_license_management`   | 0             |
+| `ci_max_artifact_size_license_scanning`     | 0             |
+| `ci_max_artifact_size_load_performance`     | 0             |
+| `ci_max_artifact_size_lsif`                 | 20 MB ([introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/37226) in GitLab 13.3) |
+| `ci_max_artifact_size_metadata`             | 0             |
+| `ci_max_artifact_size_metrics_referee`      | 0             |
+| `ci_max_artifact_size_metrics`              | 0             |
+| `ci_max_artifact_size_network_referee`      | 0             |
+| `ci_max_artifact_size_performance`          | 0             |
+| `ci_max_artifact_size_requirements`         | 0             |
+| `ci_max_artifact_size_sast`                 | 0             |
+| `ci_max_artifact_size_secret_detection`     | 0             |
+| `ci_max_artifact_size_terraform`            | 5 MB ([introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/37018) in GitLab 13.3) |
+| `ci_max_artifact_size_trace`                | 0             |
+
+For example, to set the `ci_max_artifact_size_junit` limit to 10MB on a self-managed
+installation, run the following in the [GitLab Rails console](troubleshooting/debug.md#starting-a-rails-console-session):
+
+```ruby
+Plan.default.actual_limits.update!(ci_max_artifact_size_junit: 10)
+```
+
 ## Instance monitoring and metrics
 
 ### Incident Management inbound alert limits
@@ -388,6 +440,24 @@ Reports that go over the 20 MB limit won't be loaded. Affected reports:
 
 ## Advanced Global Search limits
 
+### Maximum file size indexed
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/8638) in GitLab 13.3.
+
+You can set a limit on the content of repository files that are indexed in
+Elasticsearch. Any files larger than this limit will not be indexed, and thus
+will not be searchable.
+
+Setting a limit helps reduce the memory usage of the indexing processes as well
+as the overall index size. This value defaults to `1024 KiB` (1 MiB) as any
+text files larger than this likely aren't meant to be read by humans.
+
+NOTE: **Note:**
+You must set a limit, as an unlimited file size is not supported. Setting this
+value to be greater than the amount of memory on GitLab's Sidekiq nodes will
+lead to GitLab's Sidekiq nodes running out of memory as they will pre-allocate
+this amount of memory during indexing.
+
 ### Maximum field length
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/201826) in GitLab 12.8.
@@ -396,6 +466,9 @@ You can set a limit on the content of text fields indexed for Global Search.
 Setting a maximum helps to reduce the load of the indexing processes. If any
 text field exceeds this limit then the text will be truncated to this number of
 characters and the rest will not be indexed and hence will not be searchable.
+This is applicable to all indexed data except repository files that get
+indexed, which have a separate limit (see [Maximum file size
+indexed](#maximum-file-size-indexed)).
 
 - On GitLab.com this is limited to 20000 characters
 - For self-managed installations it is unlimited by default
@@ -408,6 +481,7 @@ Set the limit to `0` to disable it.
 
 ## Wiki limits
 
+- [Wiki page content size limit](wikis/index.md#wiki-page-content-size-limit).
 - [Length restrictions for file and directory names](../user/project/wiki/index.md#length-restrictions-for-file-and-directory-names).
 
 ## Snippets limits

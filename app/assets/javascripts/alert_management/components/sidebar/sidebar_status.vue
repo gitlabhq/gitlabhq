@@ -107,7 +107,7 @@ export default {
       >
         <span
           v-if="$options.statuses[alert.status]"
-          class="gl-text-gray-700"
+          class="gl-text-gray-500"
           data-testid="status"
           >{{ $options.statuses[alert.status] }}</span
         >

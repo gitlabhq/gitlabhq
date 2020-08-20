@@ -1,8 +1,18 @@
-- if @commits.empty?
-  .commits-empty
-    %h4
-      There are no commits yet.
+- can_update_merge_request = can?(current_user, :update_merge_request, @merge_request)
+
+- if @commits.empty? && @context_commits.empty?
+  .commits-empty.mt-5
     = custom_icon ('illustration_no_commits')
+    %h4
+      = _('There are no commits yet.')
+    - if @project&.context_commits_enabled? && can_update_merge_request
+      %p
+        = _('Push commits to the source branch or add previously merged commits to review them.')
+      %button.btn.btn-primary.add-review-item-modal-trigger{ type: "button", data: { commits_empty: 'true', context_commits_empty: 'true' } }
+        = _('Add previously merged commits')
 - else
   %ol#commits-list.list-unstyled
     = render "projects/commits/commits", merge_request: @merge_request
+
+- if @project&.context_commits_enabled? && can_update_merge_request && @merge_request.iid
+  .add-review-item-modal-wrapper{ data: { context_commits_path: context_commits_project_json_merge_request_url(@merge_request&.project, @merge_request, :json), target_branch: @merge_request.target_branch, merge_request_iid: @merge_request.iid, project_id: @merge_request.project.id } }

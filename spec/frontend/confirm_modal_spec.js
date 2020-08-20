@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import initConfirmModal from '~/confirm_modal';
 import { TEST_HOST } from 'helpers/test_constants';
+import initConfirmModal from '~/confirm_modal';
 
 describe('ConfirmModal', () => {
   const buttons = [

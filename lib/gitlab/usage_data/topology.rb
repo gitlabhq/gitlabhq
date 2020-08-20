@@ -17,6 +17,9 @@ module Gitlab
         'registry' => 'registry'
       }.freeze
 
+      # If these errors occur, all subsequent queries are likely to fail for the same error
+      TIMEOUT_ERRORS = [Errno::ETIMEDOUT, Net::OpenTimeout, Net::ReadTimeout].freeze
+
       CollectionFailure = Struct.new(:query, :error) do
         def to_h
           { query => error }
@@ -51,7 +54,7 @@ module Gitlab
 
       def topology_app_requests_per_hour(client)
         result = query_safely('gitlab_usage_ping:ops:rate5m', 'app_requests', fallback: nil) do |query|
-          client.query(one_week_average(query)).first
+          client.query(aggregate_one_week(query)).first
         end
 
         return unless result
@@ -63,7 +66,9 @@ module Gitlab
       def topology_node_data(client)
         # node-level data
         by_instance_mem = topology_node_memory(client)
+        by_instance_mem_utilization = topology_node_memory_utilization(client)
         by_instance_cpus = topology_node_cpus(client)
+        by_instance_cpu_utilization = topology_node_cpu_utilization(client)
         by_instance_uname_info = topology_node_uname_info(client)
         # service-level data
         by_instance_by_job_by_type_memory = topology_all_service_memory(client)
@@ -73,7 +78,9 @@ module Gitlab
         @instances.map do |instance|
           {
             node_memory_total_bytes: by_instance_mem[instance],
+            node_memory_utilization: by_instance_mem_utilization[instance],
             node_cpus: by_instance_cpus[instance],
+            node_cpu_utilization: by_instance_cpu_utilization[instance],
             node_uname_info: by_instance_uname_info[instance],
             node_services:
               topology_node_services(
@@ -84,14 +91,26 @@ module Gitlab
       end
 
       def topology_node_memory(client)
-        query_safely('gitlab_usage_ping:node_memory_total_bytes:avg', 'node_memory', fallback: {}) do |query|
-          aggregate_by_instance(client, one_week_average(query))
+        query_safely('gitlab_usage_ping:node_memory_total_bytes:max', 'node_memory', fallback: {}) do |query|
+          aggregate_by_instance(client, aggregate_one_week(query, aggregation: :max))
+        end
+      end
+
+      def topology_node_memory_utilization(client)
+        query_safely('gitlab_usage_ping:node_memory_utilization:avg', 'node_memory_utilization', fallback: {}) do |query|
+          aggregate_by_instance(client, aggregate_one_week(query), transform_value: :to_f)
         end
       end
 
       def topology_node_cpus(client)
         query_safely('gitlab_usage_ping:node_cpus:count', 'node_cpus', fallback: {}) do |query|
-          aggregate_by_instance(client, one_week_average(query))
+          aggregate_by_instance(client, aggregate_one_week(query, aggregation: :max))
+        end
+      end
+
+      def topology_node_cpu_utilization(client)
+        query_safely('gitlab_usage_ping:node_cpu_utilization:avg', 'node_cpu_utilization', fallback: {}) do |query|
+          aggregate_by_instance(client, aggregate_one_week(query), transform_value: :to_f)
         end
       end
 
@@ -114,25 +133,25 @@ module Gitlab
       def topology_service_memory_rss(client)
         query_safely(
           'gitlab_usage_ping:node_service_process_resident_memory_bytes:avg', 'service_rss', fallback: {}
-        ) { |query| aggregate_by_labels(client, one_week_average(query)) }
+        ) { |query| aggregate_by_labels(client, aggregate_one_week(query)) }
       end
 
       def topology_service_memory_uss(client)
         query_safely(
           'gitlab_usage_ping:node_service_process_unique_memory_bytes:avg', 'service_uss', fallback: {}
-        ) { |query| aggregate_by_labels(client, one_week_average(query)) }
+        ) { |query| aggregate_by_labels(client, aggregate_one_week(query)) }
       end
 
       def topology_service_memory_pss(client)
         query_safely(
           'gitlab_usage_ping:node_service_process_proportional_memory_bytes:avg', 'service_pss', fallback: {}
-        ) { |query| aggregate_by_labels(client, one_week_average(query)) }
+        ) { |query| aggregate_by_labels(client, aggregate_one_week(query)) }
       end
 
       def topology_all_service_process_count(client)
         query_safely(
           'gitlab_usage_ping:node_service_process:count', 'service_process_count', fallback: {}
-        ) { |query| aggregate_by_labels(client, one_week_average(query)) }
+        ) { |query| aggregate_by_labels(client, aggregate_one_week(query)) }
       end
 
       def topology_all_service_server_types(client)
@@ -142,6 +161,11 @@ module Gitlab
       end
 
       def query_safely(query, query_name, fallback:)
+        if timeout_error_exists?
+          @failures << CollectionFailure.new(query_name, 'timeout_cancellation')
+          return fallback
+        end
+
         result = yield query
 
         return result if result.present?
@@ -153,6 +177,14 @@ module Gitlab
         fallback
       end
 
+      def timeout_error_exists?
+        timeout_error_names = TIMEOUT_ERRORS.map(&:to_s).to_set
+
+        @failures.any? do |failure|
+          timeout_error_names.include?(failure.error)
+        end
+      end
+
       def topology_node_services(instance, all_process_counts, all_process_memory, all_server_types)
         # returns all node service data grouped by service name as the key
         instance_service_data =
@@ -160,14 +192,17 @@ module Gitlab
             .deep_merge(topology_instance_service_memory(instance, all_process_memory))
             .deep_merge(topology_instance_service_server_types(instance, all_server_types))
 
-        # map to list of hashes where service names become values instead, and remove
+        # map to list of hashes where service names become values instead, and skip
         # unknown services, since they might not be ours
         instance_service_data.each_with_object([]) do |entry, list|
           service, service_metrics = entry
-          gitlab_service = JOB_TO_SERVICE_NAME[service.to_s]
-          next unless gitlab_service
+          service_name = service.to_s.strip
 
-          list << { name: gitlab_service }.merge(service_metrics)
+          if gitlab_service = JOB_TO_SERVICE_NAME[service_name]
+            list << { name: gitlab_service }.merge(service_metrics)
+          else
+            @failures << CollectionFailure.new('service_unknown', service_name)
+          end
         end
       end
 
@@ -210,7 +245,7 @@ module Gitlab
 
       def normalize_localhost_address(instance)
         ip_addr = IPAddr.new(instance)
-        is_local_ip = ip_addr.loopback? || ip_addr.to_i.zero?
+        is_local_ip = ip_addr.loopback? || ip_addr.to_i == 0
 
         is_local_ip ? 'localhost' : instance
       rescue IPAddr::InvalidAddressError
@@ -228,17 +263,17 @@ module Gitlab
         end
       end
 
-      def one_week_average(query)
-        "avg_over_time (#{query}[1w])"
+      def aggregate_one_week(query, aggregation: :avg)
+        "#{aggregation}_over_time (#{query}[1w])"
       end
 
-      def aggregate_by_instance(client, query)
-        client.aggregate(query) { |metric| normalize_and_track_instance(metric['instance']) }
+      def aggregate_by_instance(client, query, transform_value: :to_i)
+        client.aggregate(query, transform_value: transform_value) { |metric| normalize_and_track_instance(metric['instance']) }
       end
 
       # Will retain a composite key that values are mapped to
-      def aggregate_by_labels(client, query)
-        client.aggregate(query) do |metric|
+      def aggregate_by_labels(client, query, transform_value: :to_i)
+        client.aggregate(query, transform_value: transform_value) do |metric|
           metric['instance'] = normalize_and_track_instance(metric['instance'])
           metric
         end

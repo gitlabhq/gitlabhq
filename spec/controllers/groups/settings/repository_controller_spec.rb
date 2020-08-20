@@ -36,6 +36,7 @@ RSpec.describe Groups::Settings::RepositoryController do
           deploy_token_type: DeployToken.deploy_token_types[:group_type]
         }
       end
+
       let(:request_params) do
         {
           group_id: group.to_param,
@@ -60,7 +61,7 @@ RSpec.describe Groups::Settings::RepositoryController do
             'token' => be_a(String),
             'scopes' => deploy_token_params.inject([]) do |scopes, kv|
               key, value = kv
-              key.to_s.start_with?('read_') && !value.to_i.zero? ? scopes << key.to_s : scopes
+              key.to_s.start_with?('read_') && value.to_i != 0 ? scopes << key.to_s : scopes
             end
           }
         end

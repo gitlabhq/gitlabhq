@@ -22,7 +22,7 @@ See the [authentication topic](../../topics/authentication/index.md) for more de
 
 ### Unknown sign-in
 
-GitLab will notify you if a sign-in occurs that is from an unknown IP address or device.
+GitLab notifies you if a sign-in occurs that is from an unknown IP address or device.
 See [Unknown Sign-In Notification](unknown_sign_in_notification.md) for more details.
 
 ## User profile
@@ -32,7 +32,7 @@ To access your profile:
 1. Click on your avatar.
 1. Select **Profile**.
 
-On your profile page, you will see the following information:
+On your profile page, you can see the following information:
 
 - Personal information
 - Activity stream: see your activity streamline and the history of your contributions
@@ -85,7 +85,7 @@ If you don't know your current password, select the 'I forgot my password' link.
 
 Your `username` is a unique [`namespace`](../group/index.md#namespaces)
 related to your user ID. Changing it can have unintended side effects, read
-[how redirects will behave](../project/index.md#redirects-when-changing-repository-paths)
+[how redirects behave](../project/index.md#redirects-when-changing-repository-paths)
 before proceeding.
 
 To change your `username`:
@@ -109,7 +109,7 @@ which also covers the case where you have projects hosted with
 
 ## Private profile
 
-The following information will be hidden from the user profile page (`https://gitlab.example.com/username`) if this feature is enabled:
+The following information is hidden from the user profile page (`https://gitlab.example.com/username`) if this feature is enabled:
 
 - Atom feed
 - Date when account is created
@@ -152,7 +152,7 @@ To add links to other accounts:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/14078) in GitLab 11.3.
 
-Enabling private contributions will include contributions to private projects, in the user contribution calendar graph and user recent activity.
+Enabling private contributions includes contributions to private projects, in the user contribution calendar graph and user recent activity.
 
 To enable private contributions:
 
@@ -225,7 +225,7 @@ To enable this option:
 1. Select **Use a private email** option.
 1. Click **Update profile settings**.
 
-Once this option is enabled, every Git-related action will be performed using the private commit email.
+Once this option is enabled, every Git-related action is performed using the private commit email.
 
 To stay fully anonymous, you can also copy this private commit email
 and configure it on your local machine using the following command:
@@ -253,7 +253,7 @@ When the `_gitlab_session` expires or isn't available, GitLab uses the `remember
 to get you a new `_gitlab_session` and keep you signed in through browser restarts.
 
 After your `remember_user_token` expires and your `_gitlab_session` is cleared/expired,
-you will be asked to sign in again to verify your identity for security reasons.
+you are asked to sign in again to verify your identity for security reasons.
 
 ### Increased sign-in time
 

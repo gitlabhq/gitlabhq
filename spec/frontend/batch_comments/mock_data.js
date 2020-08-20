@@ -1,5 +1,6 @@
 import { TEST_HOST } from 'spec/test_constants';
 
+// eslint-disable-next-line import/prefer-default-export
 export const createDraft = () => ({
   author: {
     id: 1,
@@ -23,5 +24,3 @@ export const createDraft = () => ({
   isDraft: true,
   position: null,
 });
-
-export default () => {};

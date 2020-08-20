@@ -1,8 +1,8 @@
 import Vuex from 'vuex';
 import { shallowMount } from '@vue/test-utils';
+import { GlSkeletonLoading } from '@gitlab/ui';
 import ReleaseShowApp from '~/releases/components/app_show.vue';
 import { release as originalRelease } from '../mock_data';
-import { GlSkeletonLoading } from '@gitlab/ui';
 import ReleaseBlock from '~/releases/components/release_block.vue';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 

@@ -13,7 +13,7 @@ module Gitlab
         MAPPINGS = {
           Issue => {
             serializer_class: AnalyticsIssueSerializer,
-            includes_for_query: { project: [:namespace], author: [] },
+            includes_for_query: { project: { namespace: [:route] }, author: [] },
             columns_for_select: %I[title iid id created_at author_id project_id]
           },
           MergeRequest => {
@@ -41,7 +41,7 @@ module Gitlab
                 project = record.project
                 attributes = record.attributes.merge({
                   project_path: project.path,
-                  namespace_path: project.namespace.path,
+                  namespace_path: project.namespace.route.path,
                   author: record.author
                 })
                 serializer.represent(attributes)
@@ -82,7 +82,7 @@ module Gitlab
 
           q = ordered_and_limited_query
             .joins(ci_build_join)
-            .select(build_table[:id], round_duration_to_seconds.as('total_time'))
+            .select(build_table[:id], *time_columns)
 
           results = execute_query(q).to_a
 
@@ -90,12 +90,12 @@ module Gitlab
         end
 
         def ordered_and_limited_query
-          order_by_end_event(query).limit(MAX_RECORDS)
+          order_by_end_event(query, columns).limit(MAX_RECORDS)
         end
 
         def records
           results = ordered_and_limited_query
-            .select(*columns, round_duration_to_seconds.as('total_time'))
+            .select(*columns, *time_columns)
 
           # using preloader instead of includes to avoid AR generating a large column list
           ActiveRecord::Associations::Preloader.new.preload(
@@ -106,6 +106,14 @@ module Gitlab
           results
         end
         # rubocop: enable CodeReuse/ActiveRecord
+
+        def time_columns
+          [
+            stage.start_event.timestamp_projection.as('start_event_timestamp'),
+            stage.end_event.timestamp_projection.as('end_event_timestamp'),
+            round_duration_to_seconds.as('total_time')
+          ]
+        end
       end
     end
   end

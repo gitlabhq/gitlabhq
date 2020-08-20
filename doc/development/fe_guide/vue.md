@@ -64,11 +64,11 @@ which will make the tests easier. See the following example:
 
 ```javascript
 // haml
-.js-vue-app{ data: { endpoint: 'foo' }}
+#js-vue-app{ data: { endpoint: 'foo' }}
 
 // index.js
 document.addEventListener('DOMContentLoaded', () => new Vue({
-  el: '.js-vue-app',
+  el: '#js-vue-app',
   data() {
     const dataset = this.$options.el.dataset;
     return {
@@ -84,6 +84,8 @@ document.addEventListener('DOMContentLoaded', () => new Vue({
   },
 }));
 ```
+
+> When adding an `id` attribute to mount a Vue application, please make sure this `id` is unique across the codebase
 
 #### Accessing the `gl` object
 
@@ -283,7 +285,7 @@ describe('~/todos/app.vue', () => {
 ### Test the component's output
 
 The main return value of a Vue component is the rendered output. In order to test the component we
-need to test the rendered output. [Vue](https://vuejs.org/v2/guide/unit-testing.html) guide's to unit test show us exactly that:
+need to test the rendered output. Visit the [Vue testing guide](https://vuejs.org/v2/guide/testing.html#Unit-Testing).
 
 ### Events
 

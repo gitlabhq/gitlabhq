@@ -6,8 +6,7 @@ RSpec.describe Banzai::Filter::GollumTagsFilter do
   include FilterSpecHelper
 
   let(:project) { create(:project) }
-  let(:user) { double }
-  let(:wiki) { ProjectWiki.new(project, user) }
+  let(:wiki) { ProjectWiki.new(project, nil) }
 
   describe 'validation' do
     it 'ensure that a :wiki key exists in context' do

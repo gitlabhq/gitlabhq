@@ -7,7 +7,8 @@ import stateMaps from 'ee_else_ce/vue_merge_request_widget/stores/state_maps';
 import { sprintf, s__, __ } from '~/locale';
 import Project from '~/pages/projects/project';
 import SmartInterval from '~/smart_interval';
-import createFlash from '../flash';
+import { deprecatedCreateFlash as createFlash } from '../flash';
+import mergeRequestQueryVariablesMixin from './mixins/merge_request_query_variables';
 import Loading from './components/loading.vue';
 import WidgetHeader from './components/mr_widget_header.vue';
 import WidgetSuggestPipeline from './components/mr_widget_suggest_pipeline.vue';
@@ -42,6 +43,7 @@ import GroupedCodequalityReportsApp from '../reports/codequality_report/grouped_
 import GroupedTestReportsApp from '../reports/components/grouped_test_reports_app.vue';
 import { setFaviconOverlay } from '../lib/utils/common_utils';
 import GroupedAccessibilityReportsApp from '../reports/accessibility_report/grouped_accessibility_reports_app.vue';
+import getStateQuery from './queries/get_state.query.graphql';
 
 export default {
   el: '#js-vue-mr-widget',
@@ -83,6 +85,27 @@ export default {
     GroupedAccessibilityReportsApp,
     MrWidgetApprovals,
   },
+  apollo: {
+    state: {
+      query: getStateQuery,
+      manual: true,
+      pollInterval: 10 * 1000,
+      skip() {
+        return !this.mr || !window.gon?.features?.mergeRequestWidgetGraphql;
+      },
+      variables() {
+        return this.mergeRequestQueryVariables;
+      },
+      result({
+        data: {
+          project: { mergeRequest },
+        },
+      }) {
+        this.mr.setGraphqlData(mergeRequest);
+      },
+    },
+  },
+  mixins: [mergeRequestQueryVariablesMixin],
   props: {
     mrData: {
       type: Object,
@@ -116,7 +139,12 @@ export default {
       return this.mr.hasCI || this.hasPipelineMustSucceedConflict;
     },
     shouldSuggestPipelines() {
-      return gon.features?.suggestPipeline && !this.mr.hasCI && this.mr.mergeRequestAddCiConfigPath;
+      return (
+        gon.features?.suggestPipeline &&
+        !this.mr.hasCI &&
+        this.mr.mergeRequestAddCiConfigPath &&
+        !this.mr.isDismissedSuggestPipeline
+      );
     },
     shouldRenderCodeQuality() {
       return this.mr?.codeclimate?.head_path;
@@ -374,6 +402,9 @@ export default {
         this.stopPolling();
       });
     },
+    dismissSuggestPipelines() {
+      this.mr.isDismissedSuggestPipeline = true;
+    },
   },
 };
 </script>
@@ -382,10 +413,14 @@ export default {
     <mr-widget-header :mr="mr" />
     <mr-widget-suggest-pipeline
       v-if="shouldSuggestPipelines"
+      data-testid="mr-suggest-pipeline"
       class="mr-widget-workflow"
       :pipeline-path="mr.mergeRequestAddCiConfigPath"
       :pipeline-svg-path="mr.pipelinesEmptySvgPath"
       :human-access="mr.humanAccess.toLowerCase()"
+      :user-callouts-path="mr.userCalloutsPath"
+      :user-callout-feature-id="mr.suggestPipelineFeatureId"
+      @dismiss="dismissSuggestPipelines"
     />
     <mr-widget-pipeline-container
       v-if="shouldRenderPipelines"

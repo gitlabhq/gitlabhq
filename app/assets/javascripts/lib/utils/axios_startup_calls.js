@@ -34,14 +34,17 @@ const setupAxiosStartupCalls = axios => {
           });
 
           // eslint-disable-next-line promise/no-nesting
-          return res.json().then(data => ({
-            data,
-            status: res.status,
-            statusText: res.statusText,
-            headers: fetchHeaders,
-            config: req,
-            request: req,
-          }));
+          return res
+            .clone()
+            .json()
+            .then(data => ({
+              data,
+              status: res.status,
+              statusText: res.statusText,
+              headers: fetchHeaders,
+              config: req,
+              request: req,
+            }));
         });
     }
 

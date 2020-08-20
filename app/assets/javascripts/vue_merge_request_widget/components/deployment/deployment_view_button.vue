@@ -60,28 +60,24 @@ export default {
       :main-action-link="deploymentExternalUrl"
       filter-key="path"
     >
-      <template slot="mainAction" slot-scope="slotProps">
+      <template #mainAction="{ className }">
         <review-app-link
           :display="appButtonText"
           :link="deploymentExternalUrl"
-          :css-class="`deploy-link js-deploy-url inline ${slotProps.className}`"
+          :css-class="`deploy-link js-deploy-url inline ${className}`"
         />
       </template>
 
-      <template slot="result" slot-scope="slotProps">
+      <template #result="{ result }">
         <gl-link
-          :href="slotProps.result.external_url"
+          :href="result.external_url"
           target="_blank"
           rel="noopener noreferrer nofollow"
           class="js-deploy-url-menu-item menu-item"
         >
-          <strong class="str-truncated-100 gl-mb-0 d-block">
-            {{ slotProps.result.path }}
-          </strong>
+          <strong class="str-truncated-100 gl-mb-0 d-block">{{ result.path }}</strong>
 
-          <p class="text-secondary str-truncated-100 gl-mb-0 d-block">
-            {{ slotProps.result.external_url }}
-          </p>
+          <p class="text-secondary str-truncated-100 gl-mb-0 d-block">{{ result.external_url }}</p>
         </gl-link>
       </template>
     </filtered-search-dropdown>

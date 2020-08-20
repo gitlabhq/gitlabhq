@@ -11,9 +11,7 @@ module Gitlab
 
           delegate :dig, to: :@seed_attributes
 
-          # When the `ci_dag_limit_needs` is enabled it uses the lower limit
-          LOW_NEEDS_LIMIT = 10
-          HARD_NEEDS_LIMIT = 50
+          DEFAULT_NEEDS_LIMIT = 10
 
           def initialize(pipeline, attributes, previous_stages)
             @pipeline = pipeline
@@ -142,10 +140,10 @@ module Gitlab
           end
 
           def max_needs_allowed
-            if Feature.enabled?(:ci_dag_limit_needs, @project, default_enabled: true)
-              LOW_NEEDS_LIMIT
+            if ::Gitlab::Ci::Features.ci_plan_needs_size_limit?(@pipeline.project)
+              @pipeline.project.actual_limits.ci_needs_size_limit
             else
-              HARD_NEEDS_LIMIT
+              DEFAULT_NEEDS_LIMIT
             end
           end
 

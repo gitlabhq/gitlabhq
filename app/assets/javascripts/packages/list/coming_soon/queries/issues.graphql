@@ -1,0 +1,20 @@
+query getComingSoonIssues($projectPath: ID!, $labelNames: [String]) {
+  project(fullPath: $projectPath) {
+    issues(state: opened, labelName: $labelNames) {
+      nodes {
+        iid
+        title
+        webUrl
+        labels {
+          nodes {
+            title
+            color
+          }
+        }
+        milestone {
+          title
+        }
+      }
+    }
+  }
+}

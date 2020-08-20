@@ -1,14 +1,17 @@
 import Vue from 'vue';
 import IdeTree from '~/ide/components/ide_tree.vue';
-import store from '~/ide/stores';
+import { createStore } from '~/ide/stores';
 import { createComponentWithStore } from '../../helpers/vue_mount_component_helper';
-import { resetStore, file } from '../helpers';
+import { file } from '../helpers';
 import { projectData } from '../mock_data';
 
 describe('IdeRepoTree', () => {
+  let store;
   let vm;
 
   beforeEach(() => {
+    store = createStore();
+
     const IdeRepoTree = Vue.extend(IdeTree);
 
     store.state.currentProjectId = 'abcproject';
@@ -24,8 +27,6 @@ describe('IdeRepoTree', () => {
 
   afterEach(() => {
     vm.$destroy();
-
-    resetStore(vm.$store);
   });
 
   it('renders list of files', () => {

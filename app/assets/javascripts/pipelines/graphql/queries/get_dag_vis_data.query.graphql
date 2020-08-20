@@ -1,0 +1,27 @@
+query getDagVisData($projectPath: ID!, $iid: ID!) {
+  project(fullPath: $projectPath) {
+    pipeline(iid: $iid) {
+      stages {
+        nodes {
+          name
+          groups {
+            nodes {
+              name
+              size
+              jobs {
+                nodes {
+                  name
+                  needs {
+                    nodes {
+                      name
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -21,6 +21,7 @@ RSpec.shared_examples 'PATCH #update updates variables' do
       secret_value: variable.value,
       protected: variable.protected?.to_s }
   end
+
   let(:new_variable_attributes) do
     { key: 'new_key',
       secret_value: 'dummy_value',

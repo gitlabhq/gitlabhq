@@ -3,7 +3,7 @@
 module Clusters
   module Applications
     class Ingress < ApplicationRecord
-      VERSION = '1.29.7'
+      VERSION = '1.40.2'
       INGRESS_CONTAINER_NAME = 'nginx-ingress-controller'
       MODSECURITY_LOG_CONTAINER_NAME = 'modsecurity-log'
       MODSECURITY_MODE_LOGGING = "DetectionOnly"
@@ -63,8 +63,7 @@ module Clusters
           version: VERSION,
           rbac: cluster.platform_kubernetes_rbac?,
           chart: chart,
-          files: files,
-          local_tiller_enabled: cluster.local_tiller_enabled?
+          files: files
         )
       end
 

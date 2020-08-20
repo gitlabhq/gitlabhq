@@ -42,10 +42,6 @@ module Projects
           Gitlab::Utils::DeepSize.new(params).valid?
         end
 
-        def send_email?
-          incident_management_setting.send_email && firings.any?
-        end
-
         def firings
           @firings ||= alerts_by_status('firing')
         end
@@ -125,6 +121,8 @@ module Projects
         end
 
         def send_alert_email
+          return unless firings.any?
+
           notification_service
             .async
             .prometheus_alerts_fired(project, firings)

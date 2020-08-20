@@ -27,6 +27,10 @@ module Mutations
                required: false,
                description: copy_field_description(Types::MergeRequestType, :description)
 
+      argument :labels, [GraphQL::STRING_TYPE],
+               required: false,
+               description: copy_field_description(Types::MergeRequestType, :labels)
+
       field :merge_request,
             Types::MergeRequestType,
             null: true,
@@ -34,18 +38,11 @@ module Mutations
 
       authorize :create_merge_request_from
 
-      def resolve(project_path:, title:, source_branch:, target_branch:, description: nil)
+      def resolve(project_path:, **attributes)
         project = authorized_find!(full_path: project_path)
+        params = attributes.merge(author_id: current_user.id)
 
-        attributes = {
-          title: title,
-          source_branch: source_branch,
-          target_branch: target_branch,
-          author_id: current_user.id,
-          description: description
-        }
-
-        merge_request = ::MergeRequests::CreateService.new(project, current_user, attributes).execute
+        merge_request = ::MergeRequests::CreateService.new(project, current_user, params).execute
 
         {
           merge_request: merge_request.valid? ? merge_request : nil,

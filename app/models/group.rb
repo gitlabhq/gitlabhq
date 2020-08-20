@@ -64,6 +64,8 @@ class Group < Namespace
 
   has_one :import_state, class_name: 'GroupImportState', inverse_of: :group
 
+  has_many :group_deploy_keys_groups, inverse_of: :group
+  has_many :group_deploy_keys, through: :group_deploy_keys_groups
   has_many :group_deploy_tokens
   has_many :deploy_tokens, through: :group_deploy_tokens
 
@@ -170,6 +172,10 @@ class Group < Namespace
 
   def notification_settings_for(user, hierarchy_order: nil)
     notification_settings(hierarchy_order: hierarchy_order).where(user: user)
+  end
+
+  def packages_feature_enabled?
+    ::Gitlab.config.packages.enabled
   end
 
   def notification_email_for(user)
@@ -555,6 +561,10 @@ class Group < Namespace
     Group.by_id(group_ids).update_all(allow_descendants_override_disabled_shared_runners: false)
 
     all_projects.update_all(shared_runners_enabled: false)
+  end
+
+  def default_owner
+    owners.first || parent&.default_owner || owner
   end
 
   private

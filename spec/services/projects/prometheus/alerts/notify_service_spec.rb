@@ -21,38 +21,6 @@ RSpec.describe Projects::Prometheus::Alerts::NotifyService do
     project.clear_memoization(:licensed_feature_available)
   end
 
-  shared_examples 'sends notification email' do
-    let(:notification_service) { spy }
-
-    it 'sends a notification for firing alerts only' do
-      expect(NotificationService)
-        .to receive(:new)
-        .and_return(notification_service)
-
-      expect(notification_service)
-        .to receive_message_chain(:async, :prometheus_alerts_fired)
-
-      expect(subject).to be_success
-    end
-  end
-
-  shared_examples 'notifies alerts' do
-    it_behaves_like 'sends notification email'
-  end
-
-  shared_examples 'no notifications' do |http_status:|
-    let(:notification_service) { spy }
-    let(:create_events_service) { spy }
-
-    it 'does not notify' do
-      expect(notification_service).not_to receive(:async)
-      expect(create_events_service).not_to receive(:execute)
-
-      expect(subject).to be_error
-      expect(subject.http_status).to eq(http_status)
-    end
-  end
-
   context 'with valid payload' do
     let_it_be(:alert_firing) { create(:prometheus_alert, project: project) }
     let_it_be(:alert_resolved) { create(:prometheus_alert, project: project) }
@@ -89,11 +57,11 @@ RSpec.describe Projects::Prometheus::Alerts::NotifyService do
       context 'without token' do
         let(:token_input) { nil }
 
-        it_behaves_like 'notifies alerts'
+        it_behaves_like 'Alert Notification Service sends notification email'
       end
 
       context 'with token' do
-        it_behaves_like 'no notifications', http_status: :unauthorized
+        it_behaves_like 'Alert Notification Service sends no notifications', http_status: :unauthorized
       end
     end
 
@@ -125,9 +93,9 @@ RSpec.describe Projects::Prometheus::Alerts::NotifyService do
 
         case result = params[:result]
         when :success
-          it_behaves_like 'notifies alerts'
+          it_behaves_like 'Alert Notification Service sends notification email'
         when :failure
-          it_behaves_like 'no notifications', http_status: :unauthorized
+          it_behaves_like 'Alert Notification Service sends no notifications', http_status: :unauthorized
         else
           raise "invalid result: #{result.inspect}"
         end
@@ -137,7 +105,7 @@ RSpec.describe Projects::Prometheus::Alerts::NotifyService do
     context 'without project specific cluster' do
       let!(:cluster) { create(:cluster, enabled: true) }
 
-      it_behaves_like 'no notifications', http_status: :unauthorized
+      it_behaves_like 'Alert Notification Service sends no notifications', http_status: :unauthorized
     end
 
     context 'with manual prometheus installation' do
@@ -166,9 +134,9 @@ RSpec.describe Projects::Prometheus::Alerts::NotifyService do
 
         case result = params[:result]
         when :success
-          it_behaves_like 'notifies alerts'
+          it_behaves_like 'Alert Notification Service sends notification email'
         when :failure
-          it_behaves_like 'no notifications', http_status: :unauthorized
+          it_behaves_like 'Alert Notification Service sends no notifications', http_status: :unauthorized
         else
           raise "invalid result: #{result.inspect}"
         end
@@ -199,9 +167,9 @@ RSpec.describe Projects::Prometheus::Alerts::NotifyService do
 
         case result = params[:result]
         when :success
-          it_behaves_like 'notifies alerts'
+          it_behaves_like 'Alert Notification Service sends notification email'
         when :failure
-          it_behaves_like 'no notifications', http_status: :unauthorized
+          it_behaves_like 'Alert Notification Service sends no notifications', http_status: :unauthorized
         else
           raise "invalid result: #{result.inspect}"
         end
@@ -226,7 +194,7 @@ RSpec.describe Projects::Prometheus::Alerts::NotifyService do
       end
 
       context 'when incident_management_setting.send_email is true' do
-        it_behaves_like 'notifies alerts'
+        it_behaves_like 'Alert Notification Service sends notification email'
       end
 
       context 'incident_management_setting.send_email is false' do
@@ -278,7 +246,7 @@ RSpec.describe Projects::Prometheus::Alerts::NotifyService do
           .and_return(false)
       end
 
-      it_behaves_like 'no notifications', http_status: :unprocessable_entity
+      it_behaves_like 'Alert Notification Service sends no notifications', http_status: :unprocessable_entity
     end
 
     context 'when the payload is too big' do
@@ -289,7 +257,7 @@ RSpec.describe Projects::Prometheus::Alerts::NotifyService do
         allow(Gitlab::Utils::DeepSize).to receive(:new).and_return(deep_size_object)
       end
 
-      it_behaves_like 'no notifications', http_status: :bad_request
+      it_behaves_like 'Alert Notification Service sends no notifications', http_status: :bad_request
 
       it 'does not process Prometheus alerts' do
         expect(AlertManagement::ProcessPrometheusAlertService)

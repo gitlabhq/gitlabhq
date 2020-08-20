@@ -12,6 +12,7 @@ RSpec.describe MergeRequests::FfMergeService do
            assignees: [user2],
            author: create(:user))
   end
+
   let(:project) { merge_request.project }
   let(:valid_merge_params) { { sha: merge_request.diff_head_sha } }
 
@@ -113,9 +114,16 @@ RSpec.describe MergeRequests::FfMergeService do
 
       it 'logs and saves error if there is an PreReceiveError exception' do
         error_message = 'error message'
+        raw_message = 'The truth is out there'
 
-        allow(service).to receive(:repository).and_raise(Gitlab::Git::PreReceiveError, "GitLab: #{error_message}")
+        pre_receive_error = Gitlab::Git::PreReceiveError.new(raw_message, "GitLab: #{error_message}")
+        allow(service).to receive(:repository).and_raise(pre_receive_error)
         allow(service).to receive(:execute_hooks)
+        expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
+          pre_receive_error,
+          pre_receive_message: raw_message,
+          merge_request_id: merge_request.id
+        )
 
         service.execute(merge_request)
 

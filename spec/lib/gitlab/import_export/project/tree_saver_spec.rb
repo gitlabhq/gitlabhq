@@ -275,6 +275,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeSaver do
           File.join(shared.export_path, Gitlab::ImportExport.project_filename)
         end
       end
+
       let(:shared) { project.import_export_shared }
       let(:params) { {} }
 

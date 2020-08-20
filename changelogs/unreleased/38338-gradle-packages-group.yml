@@ -1,0 +1,5 @@
+---
+title: Fix a Gradle bug where a package without a version would be created and thus not displayed on the UI.
+merge_request: 38338
+author:
+type: fixed

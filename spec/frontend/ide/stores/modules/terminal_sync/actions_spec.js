@@ -1,7 +1,7 @@
+import testAction from 'helpers/vuex_action_helper';
 import * as actions from '~/ide/stores/modules/terminal_sync/actions';
 import mirror, { canConnect, SERVICE_NAME } from '~/ide/lib/mirror';
 import * as types from '~/ide/stores/modules/terminal_sync/mutation_types';
-import testAction from 'helpers/vuex_action_helper';
 
 jest.mock('~/ide/lib/mirror');
 

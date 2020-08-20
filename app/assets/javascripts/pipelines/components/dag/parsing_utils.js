@@ -5,14 +5,16 @@ import { uniqWith, isEqual } from 'lodash';
     received from the endpoint into the format the d3 graph expects.
 
     Input is of the form:
-    [stages]
-      stages: {name, groups}
-        groups: [{ name, size, jobs }]
-          name is a group name; in the case that the group has one job, it is
-            also the job name
-          size is the number of parallel jobs
-          jobs: [{ name, needs}]
-            job name is either the same as the group name or group x/y
+    [nodes]
+      nodes: [{category, name, jobs, size}]
+        category is the stage name
+        name is a group name; in the case that the group has one job, it is
+          also the job name
+        size is the number of parallel jobs
+        jobs: [{ name, needs}]
+          job name is either the same as the group name or group x/y
+          needs: [job-names]
+          needs is an array of job-name strings
 
     Output is of the form:
     { nodes: [node], links: [link] }
@@ -20,29 +22,16 @@ import { uniqWith, isEqual } from 'lodash';
       link: { source, target, value }, with source & target being node names
         and value being a constant
 
-    We create nodes, create links, and then dedupe the links, so that in the case where
+    We create nodes in the GraphQL update function, and then here we create the node dictionary,
+    then create links, and then dedupe the links, so that in the case where
     job 4 depends on job 1 and job 2, and job 2 depends on job 1, we show only a single link
     from job 1 to job 2 then another from job 2 to job 4.
 
-    CREATE NODES
-    stage.name -> node.category
-    stage.group.name -> node.name (this is the group name if there are parallel jobs)
-    stage.group.jobs -> node.jobs
-    stage.group.size -> node.size
-
     CREATE LINKS
-    stages.groups.name -> target
-    stages.groups.needs.each -> source (source is the name of the group, not the parallel job)
+    nodes.name -> target
+    nodes.name.needs.each -> source (source is the name of the group, not the parallel job)
     10 -> value (constant)
   */
-
-export const createNodes = data => {
-  return data.flatMap(({ groups, name }) => {
-    return groups.map(group => {
-      return { ...group, category: name };
-    });
-  });
-};
 
 export const createNodeDict = nodes => {
   return nodes.reduce((acc, node) => {
@@ -60,13 +49,6 @@ export const createNodeDict = nodes => {
     acc[node.name] = newNode;
     return acc;
   }, {});
-};
-
-export const createNodesStructure = data => {
-  const nodes = createNodes(data);
-  const nodeDict = createNodeDict(nodes);
-
-  return { nodes, nodeDict };
 };
 
 export const makeLinksFromNodes = (nodes, nodeDict) => {
@@ -126,8 +108,8 @@ export const filterByAncestors = (links, nodeDict) =>
     return !allAncestors.includes(source);
   });
 
-export const parseData = data => {
-  const { nodes, nodeDict } = createNodesStructure(data);
+export const parseData = nodes => {
+  const nodeDict = createNodeDict(nodes);
   const allLinks = makeLinksFromNodes(nodes, nodeDict);
   const filteredLinks = filterByAncestors(allLinks, nodeDict);
   const links = uniqWith(filteredLinks, isEqual);

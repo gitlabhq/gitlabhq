@@ -40,7 +40,7 @@ RSpec.describe Ci::BuildTraceChunks::Fog do
       let(:model) { create(:ci_build_trace_chunk, :fog_without_data) }
 
       it 'returns nil' do
-        expect { data_store.data(model) }.to raise_error(Excon::Error::NotFound)
+        expect(data_store.data(model)).to be_nil
       end
     end
   end
@@ -66,7 +66,7 @@ RSpec.describe Ci::BuildTraceChunks::Fog do
       let(:model) { create(:ci_build_trace_chunk, :fog_without_data) }
 
       it 'sets new data' do
-        expect { data_store.data(model) }.to raise_error(Excon::Error::NotFound)
+        expect(data_store.data(model)).to be_nil
 
         subject
 
@@ -86,7 +86,7 @@ RSpec.describe Ci::BuildTraceChunks::Fog do
 
         subject
 
-        expect { data_store.data(model) }.to raise_error(Excon::Error::NotFound)
+        expect(data_store.data(model)).to be_nil
       end
     end
 
@@ -94,11 +94,29 @@ RSpec.describe Ci::BuildTraceChunks::Fog do
       let(:model) { create(:ci_build_trace_chunk, :fog_without_data) }
 
       it 'does nothing' do
-        expect { data_store.data(model) }.to raise_error(Excon::Error::NotFound)
+        expect(data_store.data(model)).to be_nil
 
         subject
 
-        expect { data_store.data(model) }.to raise_error(Excon::Error::NotFound)
+        expect(data_store.data(model)).to be_nil
+      end
+    end
+  end
+
+  describe '#size' do
+    context 'when data exists' do
+      let(:model) { create(:ci_build_trace_chunk, :fog_with_data, initial_data: 'üabcd') }
+
+      it 'returns data bytesize correctly' do
+        expect(data_store.size(model)).to eq 6
+      end
+    end
+
+    context 'when data does not exist' do
+      let(:model) { create(:ci_build_trace_chunk, :fog_without_data) }
+
+      it 'returns zero' do
+        expect(data_store.size(model)).to be_zero
       end
     end
   end

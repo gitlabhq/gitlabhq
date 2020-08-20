@@ -1,0 +1,5 @@
+---
+title: Reduce 'cached' query calls for Banzai
+merge_request: 36735
+author:
+type: performance

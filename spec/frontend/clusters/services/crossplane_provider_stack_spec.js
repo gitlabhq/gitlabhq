@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
-import { GlDropdownItem, GlIcon } from '@gitlab/ui';
+import { GlDeprecatedDropdownItem, GlIcon } from '@gitlab/ui';
 import CrossplaneProviderStack from '~/clusters/components/crossplane_provider_stack.vue';
 
 describe('CrossplaneProviderStack component', () => {
@@ -37,7 +37,7 @@ describe('CrossplaneProviderStack component', () => {
     createComponent({ crossplane });
   });
 
-  const findDropdownElements = () => wrapper.findAll(GlDropdownItem);
+  const findDropdownElements = () => wrapper.findAll(GlDeprecatedDropdownItem);
   const findFirstDropdownElement = () => findDropdownElements().at(0);
 
   afterEach(() => {

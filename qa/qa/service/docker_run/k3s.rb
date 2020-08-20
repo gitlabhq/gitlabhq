@@ -33,10 +33,12 @@ module QA
             --name #{@name}
             --publish 6443:6443
             --privileged
-            #{@image} server --cluster-secret some-secret
+            #{@image} server
+            --cluster-secret some-secret
+            --no-deploy traefik
           CMD
 
-          command.gsub!("--network #{network} ", '') unless QA::Runtime::Env.running_in_ci?
+          command.gsub!("--network #{network} --hostname #{host_name}", '') unless QA::Runtime::Env.running_in_ci?
 
           shell command
         end

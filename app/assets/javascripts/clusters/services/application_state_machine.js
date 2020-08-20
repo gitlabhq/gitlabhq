@@ -14,6 +14,7 @@ const {
   UNINSTALLING,
   UNINSTALL_ERRORED,
   PRE_INSTALLED,
+  UNINSTALLED,
 } = APPLICATION_STATUS;
 
 const applicationStateMachine = {
@@ -67,6 +68,9 @@ const applicationStateMachine = {
       [PRE_INSTALLED]: {
         target: PRE_INSTALLED,
       },
+      [UNINSTALLED]: {
+        target: UNINSTALLED,
+      },
     },
   },
   [NOT_INSTALLABLE]: {
@@ -87,9 +91,17 @@ const applicationStateMachine = {
       [NOT_INSTALLABLE]: {
         target: NOT_INSTALLABLE,
       },
-      // This is possible in artificial environments for E2E testing
       [INSTALLED]: {
         target: INSTALLED,
+        effects: {
+          installFailed: false,
+        },
+      },
+      [UNINSTALLED]: {
+        target: UNINSTALLED,
+        effects: {
+          installFailed: false,
+        },
       },
     },
   },
@@ -123,6 +135,15 @@ const applicationStateMachine = {
         effects: {
           uninstallFailed: false,
           uninstallSuccessful: false,
+        },
+      },
+      [UNINSTALLED]: {
+        target: UNINSTALLED,
+      },
+      [ERROR]: {
+        target: INSTALLABLE,
+        effects: {
+          installFailed: true,
         },
       },
     },
@@ -176,6 +197,19 @@ const applicationStateMachine = {
         target: INSTALLED,
         effects: {
           uninstallFailed: true,
+        },
+      },
+    },
+  },
+  [UNINSTALLED]: {
+    on: {
+      [INSTALLED]: {
+        target: INSTALLED,
+      },
+      [ERROR]: {
+        target: INSTALLABLE,
+        effects: {
+          installFailed: true,
         },
       },
     },

@@ -11,7 +11,7 @@
           .text-warning
             %p
               = icon("exclamation-triangle fw")
-              = _('You are an admin, which means granting access to <strong>%{client_name}</strong> will allow them to interact with GitLab as an admin as well. Proceed with caution.').html_safe % { client_name: @pre_auth.client.name }
+              = html_escape(_('You are an admin, which means granting access to %{client_name} will allow them to interact with GitLab as an admin as well. Proceed with caution.')) % { client_name: tag.strong(@pre_auth.client.name) }
         %p
           - link_to_client = link_to(@pre_auth.client.name, @pre_auth.redirect_uri, target: '_blank', rel: 'noopener noreferrer')
           = _("An application called %{link_to_client} is requesting access to your GitLab account.").html_safe % { link_to_client: link_to_client }

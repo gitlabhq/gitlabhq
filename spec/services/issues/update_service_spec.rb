@@ -840,27 +840,27 @@ RSpec.describe Issues::UpdateService, :mailer do
     end
 
     context 'real-time updates' do
+      using RSpec::Parameterized::TableSyntax
+
       let(:update_params) { { assignee_ids: [user2.id] } }
 
-      context 'when broadcast_issue_updates is enabled' do
-        before do
-          stub_feature_flags(broadcast_issue_updates: true)
-        end
-
-        it 'broadcasts to the issues channel' do
-          expect(IssuesChannel).to receive(:broadcast_to).with(issue, event: 'updated')
-
-          update_issue(update_params)
-        end
+      where(:action_cable_in_app_enabled, :feature_flag_enabled, :should_broadcast) do
+        true  | true  | true
+        true  | false | true
+        false | true  | true
+        false | false | false
       end
 
-      context 'when broadcast_issue_updates is disabled' do
-        before do
-          stub_feature_flags(broadcast_issue_updates: false)
-        end
+      with_them do
+        it 'broadcasts to the issues channel based on ActionCable and feature flag values' do
+          expect(Gitlab::ActionCable::Config).to receive(:in_app?).and_return(action_cable_in_app_enabled)
+          stub_feature_flags(broadcast_issue_updates: feature_flag_enabled)
 
-        it 'does not broadcast to the issues channel' do
-          expect(IssuesChannel).not_to receive(:broadcast_to)
+          if should_broadcast
+            expect(IssuesChannel).to receive(:broadcast_to).with(issue, event: 'updated')
+          else
+            expect(IssuesChannel).not_to receive(:broadcast_to)
+          end
 
           update_issue(update_params)
         end

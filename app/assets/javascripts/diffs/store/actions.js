@@ -3,7 +3,7 @@ import Cookies from 'js-cookie';
 import Poll from '~/lib/utils/poll';
 import axios from '~/lib/utils/axios_utils';
 import httpStatusCodes from '~/lib/utils/http_status';
-import createFlash from '~/flash';
+import { deprecatedCreateFlash as createFlash } from '~/flash';
 import { __, s__ } from '~/locale';
 import { handleLocationHash, historyPushState, scrollToElement } from '~/lib/utils/common_utils';
 import { mergeUrlParams, getLocationHash } from '~/lib/utils/url_utility';
@@ -743,14 +743,14 @@ export function moveToNeighboringCommit({ dispatch, state }, { direction }) {
   }
 }
 
-export const setCurrentDiffFileIdFromNote = ({ commit, rootGetters }, noteId) => {
+export const setCurrentDiffFileIdFromNote = ({ commit, state, rootGetters }, noteId) => {
   const note = rootGetters.notesById[noteId];
 
   if (!note) return;
 
   const fileHash = rootGetters.getDiscussion(note.discussion_id).diff_file?.file_hash;
 
-  if (fileHash) {
+  if (fileHash && state.diffFiles.some(f => f.file_hash === fileHash)) {
     commit(types.UPDATE_CURRENT_DIFF_FILE_ID, fileHash);
   }
 };
@@ -761,6 +761,3 @@ export const navigateToDiffFileIndex = ({ commit, state }, index) => {
 
   commit(types.UPDATE_CURRENT_DIFF_FILE_ID, fileHash);
 };
-
-// prevent babel-plugin-rewire from generating an invalid default during karma tests
-export default () => {};

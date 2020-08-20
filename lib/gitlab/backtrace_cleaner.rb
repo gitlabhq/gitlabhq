@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+# Remove some GitLab code from backtraces. Do not use this for logging errors in
+# production environments, as the error may be thrown by our middleware.
 module Gitlab
   module BacktraceCleaner
     IGNORE_BACKTRACES = %w[

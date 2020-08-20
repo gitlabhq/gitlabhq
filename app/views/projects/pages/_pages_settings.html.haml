@@ -1,4 +1,4 @@
-= form_for @project, url: namespace_project_pages_path(@project.namespace.becomes(Namespace), @project), html: { class: 'inline', title: pages_https_only_title } do |f|
+= form_for @project, url: project_pages_path(@project), html: { class: 'inline', title: pages_https_only_title } do |f|
   - if Gitlab.config.pages.external_http || Gitlab.config.pages.external_https
     = render_if_exists 'shared/pages/max_pages_size_input', form: f
 
@@ -9,5 +9,5 @@
           %strong
             = s_('GitLabPages|Force HTTPS (requires valid certificates)')
 
-    .prepend-top-10
+    .gl-mt-3
       = f.submit s_('GitLabPages|Save'), class: 'btn btn-success'

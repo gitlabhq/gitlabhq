@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
-require 'rspec-parameterized'
+require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Pipeline::Expression::Statement do
   subject do
@@ -109,6 +108,17 @@ RSpec.describe Gitlab::Ci::Pipeline::Expression::Statement do
       '$UNDEFINED_VARIABLE || $PRESENT_VARIABLE'                   | 'my variable'
       '$UNDEFINED_VARIABLE == null || $PRESENT_VARIABLE'           | true
       '$PRESENT_VARIABLE || $UNDEFINED_VARIABLE == null'           | 'my variable'
+
+      '($PRESENT_VARIABLE)'                                        | 'my variable'
+      '(($PRESENT_VARIABLE))'                                      | 'my variable'
+      '(($PRESENT_VARIABLE && null) || $EMPTY_VARIABLE == "")'     | true
+      '($PRESENT_VARIABLE) && (null || $EMPTY_VARIABLE == "")'     | true
+      '("string" || "test") == "string"'                           | true
+      '(null || ("test" == "string"))'                             | false
+      '("string" == ("test" && "string"))'                         | true
+      '("string" == ("test" || "string"))'                         | false
+      '("string" == "test" || "string")'                           | "string"
+      '("string" == ("string" || (("1" == "1") && ("2" == "3"))))' | true
     end
 
     with_them do

@@ -3,7 +3,7 @@
 import $ from 'jquery';
 import { __ } from '~/locale';
 import axios from '~/lib/utils/axios_utils';
-import flash from '~/flash';
+import { deprecatedCreateFlash as flash } from '~/flash';
 import CreateLabelDropdown from '../../create_label';
 import boardsStore from '../stores/boards_store';
 

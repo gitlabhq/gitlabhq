@@ -45,7 +45,9 @@ module Gitlab
 
             raise Errors::MissingQueryError.new('Each "metric" must define one of :query or :query_range') unless query
 
-            query
+            # We need to remove any newlines since our UrlBlocker does not allow
+            # multiline URLs.
+            query.to_s.squish
           end
         end
       end

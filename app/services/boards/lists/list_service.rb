@@ -8,7 +8,8 @@ module Boards
           board.lists.create(list_type: :backlog)
         end
 
-        board.lists.preload_associated_models
+        lists = board.lists.preload_associated_models
+        params[:list_id].present? ? lists.where(id: params[:list_id]) : lists # rubocop: disable CodeReuse/ActiveRecord
       end
     end
   end

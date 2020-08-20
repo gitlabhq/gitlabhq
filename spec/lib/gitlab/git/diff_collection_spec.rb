@@ -18,7 +18,7 @@ RSpec.describe Gitlab::Git::DiffCollection, :seed_helper do
         return enum_for(:each) unless block_given?
 
         loop do
-          break if @count.zero?
+          break if @count == 0
 
           # It is critical to decrement before yielding. We may never reach the lines after 'yield'.
           @count -= 1

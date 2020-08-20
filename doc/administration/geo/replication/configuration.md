@@ -191,17 +191,16 @@ keys must be manually replicated to the **secondary** node.
    gitlab-ctl reconfigure
    ```
 
-1. Visit the **primary** node's **{admin}** **Admin Area >** **{location-dot}** **Geo**
+1. Visit the **primary** node's **Admin Area > Geo**
    (`/admin/geo/nodes`) in your browser.
 1. Click the **New node** button.
-   ![Add secondary node](img/adding_a_secondary_node.png)
+   ![Add secondary node](img/adding_a_secondary_node_v13_3.png)
 1. Fill in **Name** with the `gitlab_rails['geo_node_name']` in
    `/etc/gitlab/gitlab.rb`. These values must always match *exactly*, character
    for character.
 1. Fill in **URL** with the `external_url` in `/etc/gitlab/gitlab.rb`. These
    values must always match, but it doesn't matter if one ends with a `/` and
    the other doesn't.
-1. **Do NOT** check the **This is a primary node** checkbox.
 1. Optionally, choose which groups or storage shards should be replicated by the
    **secondary** node. Leave blank to replicate all. Read more in
    [selective synchronization](#selective-synchronization).
@@ -238,7 +237,7 @@ You can login to the **secondary** node with the same credentials as used for th
 Using Hashed Storage significantly improves Geo replication. Project and group
 renames no longer require synchronization between nodes.
 
-1. Visit the **primary** node's **{admin}** **Admin Area >** **{settings}** **Settings > Repository**
+1. Visit the **primary** node's **Admin Area > Settings > Repository**
    (`/admin/application_settings/repository`) in your browser.
 1. In the **Repository storage** section, check **Use hashed storage paths for newly created and renamed projects**.
 
@@ -255,7 +254,7 @@ on the **secondary** node.
 ### Step 6. Enable Git access over HTTP/HTTPS
 
 Geo synchronizes repositories over HTTP/HTTPS, and therefore requires this clone
-method to be enabled. Navigate to **{admin}** **Admin Area >** **{settings}** **Settings**
+method to be enabled. Navigate to **Admin Area > Settings**
 (`/admin/application_settings/general`) on the **primary** node, and set
 `Enabled Git access protocols` to `Both SSH and HTTP(S)` or `Only HTTP(S)`.
 
@@ -264,7 +263,7 @@ method to be enabled. Navigate to **{admin}** **Admin Area >** **{settings}** **
 Your **secondary** node is now configured!
 
 You can login to the **secondary** node with the same credentials you used for the
-**primary** node. Visit the **secondary** node's **{admin}** **Admin Area >** **{location-dot}** **Geo**
+**primary** node. Visit the **secondary** node's **Admin Area > Geo**
 (`/admin/geo/nodes`) in your browser to check if it's correctly identified as a
 **secondary** Geo node and if Geo is enabled.
 

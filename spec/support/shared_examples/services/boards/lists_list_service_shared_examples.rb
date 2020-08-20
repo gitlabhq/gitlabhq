@@ -26,4 +26,22 @@ RSpec.shared_examples 'lists list service' do
       expect(service.execute(board)).to eq [board.backlog_list, list, board.closed_list]
     end
   end
+
+  context 'when wanting a specific list' do
+    let!(:list1) { create(:list, board: board) }
+
+    it 'returns list specified by id' do
+      service = described_class.new(parent, user, list_id: list1.id)
+
+      expect(service.execute(board, create_default_lists: false)).to eq [list1]
+    end
+
+    it 'returns empty result when list is not found' do
+      external_board = create(:board, resource_parent: create(:project))
+      external_list = create(:list, board: external_board)
+      service = described_class.new(parent, user, list_id: external_list.id)
+
+      expect(service.execute(board, create_default_lists: false)).to eq(List.none)
+    end
+  end
 end

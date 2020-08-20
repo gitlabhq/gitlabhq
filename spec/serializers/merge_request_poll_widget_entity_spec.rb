@@ -36,11 +36,26 @@ RSpec.describe MergeRequestPollWidgetEntity do
 
       it 'returns merge_pipeline' do
         pipeline.reload
-        pipeline_payload = PipelineDetailsEntity
-                             .represent(pipeline, request: request)
-                             .as_json
+        pipeline_payload =
+          MergeRequests::PipelineEntity
+            .represent(pipeline, request: request)
+            .as_json
 
         expect(subject[:merge_pipeline]).to eq(pipeline_payload)
+      end
+
+      context 'when merge_request_short_pipeline_serializer is disabled' do
+        it 'returns detailed info about pipeline' do
+          stub_feature_flags(merge_request_short_pipeline_serializer: false)
+
+          pipeline.reload
+          pipeline_payload =
+            PipelineDetailsEntity
+              .represent(pipeline, request: request)
+              .as_json
+
+          expect(subject[:merge_pipeline]).to eq(pipeline_payload)
+        end
       end
 
       context 'when user cannot read pipelines on target project' do
@@ -222,11 +237,25 @@ RSpec.describe MergeRequestPollWidgetEntity do
         let(:req) { double('request', current_user: user, project: project) }
 
         it 'returns pipeline' do
-          pipeline_payload = PipelineDetailsEntity
-            .represent(pipeline, request: req)
-            .as_json
+          pipeline_payload =
+            MergeRequests::PipelineEntity
+              .represent(pipeline, request: req)
+              .as_json
 
           expect(subject[:pipeline]).to eq(pipeline_payload)
+        end
+
+        context 'when merge_request_short_pipeline_serializer is disabled' do
+          it 'returns detailed info about pipeline' do
+            stub_feature_flags(merge_request_short_pipeline_serializer: false)
+
+            pipeline_payload =
+              PipelineDetailsEntity
+                .represent(pipeline, request: req)
+                .as_json
+
+            expect(subject[:pipeline]).to eq(pipeline_payload)
+          end
         end
 
         it 'returns ci_status' do

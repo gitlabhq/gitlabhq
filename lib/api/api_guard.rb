@@ -7,6 +7,7 @@ require 'rack/oauth2'
 module API
   module APIGuard
     extend ActiveSupport::Concern
+    include Gitlab::Utils::StrongMemoize
 
     included do |base|
       # OAuth2 Resource Server Authentication
@@ -64,10 +65,12 @@ module API
       end
 
       def find_user_from_sources
-        deploy_token_from_request ||
-          find_user_from_bearer_token ||
-          find_user_from_job_token ||
-          find_user_from_warden
+        strong_memoize(:find_user_from_sources) do
+          deploy_token_from_request ||
+            find_user_from_bearer_token ||
+            find_user_from_job_token ||
+            find_user_from_warden
+        end
       end
 
       private

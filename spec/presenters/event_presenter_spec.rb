@@ -35,7 +35,7 @@ RSpec.describe EventPresenter do
     context 'with project label' do
       subject { project_event.present.target_link_options }
 
-      it { is_expected.to eq([group.becomes(Namespace), project, target]) }
+      it { is_expected.to eq([project, target]) }
     end
   end
 end

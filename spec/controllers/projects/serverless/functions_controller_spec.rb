@@ -18,6 +18,7 @@ RSpec.describe Projects::Serverless::FunctionsController do
   let(:knative_stub_options) do
     { namespace: namespace.namespace, name: function_name, description: function_description }
   end
+
   let(:knative) { create(:clusters_applications_knative, :installed, cluster: cluster) }
 
   let(:namespace) do

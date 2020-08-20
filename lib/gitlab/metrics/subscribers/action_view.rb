@@ -5,14 +5,6 @@ module Gitlab
     module Subscribers
       # Class for tracking the rendering timings of views.
       class ActionView < ActiveSupport::Subscriber
-        include Gitlab::Metrics::Methods
-        define_histogram :gitlab_view_rendering_duration_seconds do
-          docstring 'View rendering time'
-          base_labels Transaction::BASE_LABELS.merge({ path: nil })
-          buckets [0.001, 0.01, 0.1, 1, 10.0]
-          with_feature :prometheus_metrics_view_instrumentation
-        end
-
         attach_to :action_view
 
         SERIES = 'views'
@@ -27,10 +19,14 @@ module Gitlab
 
         def track(event)
           tags = tags_for(event)
+          current_transaction.observe(:gitlab_view_rendering_duration_seconds, event.duration, tags) do
+            docstring 'View rendering time'
+            label_keys %i(view)
+            buckets [0.001, 0.01, 0.1, 1, 10.0]
+            with_feature :prometheus_metrics_view_instrumentation
+          end
 
-          self.class.gitlab_view_rendering_duration_seconds.observe(current_transaction.labels.merge(tags), event.duration)
-
-          current_transaction.increment(:view_duration, event.duration)
+          current_transaction.increment(:gitlab_transaction_view_duration_total, event.duration)
         end
 
         def relative_path(path)

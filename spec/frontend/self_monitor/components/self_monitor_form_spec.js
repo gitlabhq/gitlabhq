@@ -1,8 +1,8 @@
 import { shallowMount } from '@vue/test-utils';
 import { GlDeprecatedButton } from '@gitlab/ui';
+import { TEST_HOST } from 'helpers/test_constants';
 import SelfMonitor from '~/self_monitor/components/self_monitor_form.vue';
 import { createStore } from '~/self_monitor/store';
-import { TEST_HOST } from 'helpers/test_constants';
 
 describe('self monitor component', () => {
   let wrapper;

@@ -33,6 +33,10 @@ module Git
         strip_extension(raw_change.old_path || raw_change.new_path)
       end
 
+      def sha
+        change[:newrev]
+      end
+
       private
 
       attr_reader :raw_change, :change, :wiki

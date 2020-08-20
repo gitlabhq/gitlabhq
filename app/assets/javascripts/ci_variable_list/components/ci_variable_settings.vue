@@ -1,7 +1,7 @@
 <script>
+import { mapState, mapActions } from 'vuex';
 import CiVariableModal from './ci_variable_modal.vue';
 import CiVariableTable from './ci_variable_table.vue';
-import { mapState, mapActions } from 'vuex';
 
 export default {
   components: {

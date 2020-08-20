@@ -24,5 +24,5 @@
         name: value_input_name,
         placeholder: s_('CiVariables|Input variable value') }
         = value
-    %button.js-row-remove-button.ci-variable-row-remove-button.table-section.section-5.border-top-0{ type: 'button', 'aria-label': s_('CiVariables|Remove variable row') }
-      = icon('minus-circle')
+    %button.btn.btn-svg.btn-item-remove.js-row-remove-button.ci-variable-row-remove-button.table-section{ type: 'button', 'aria-label': s_('CiVariables|Remove variable row') }
+      = sprite_icon('close')

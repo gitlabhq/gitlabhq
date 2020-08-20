@@ -21,7 +21,8 @@ module Gitlab
         istio: { group: 'apis/networking.istio.io', version: 'v1alpha3' },
         knative: { group: 'apis/serving.knative.dev', version: 'v1alpha1' },
         metrics: { group: 'apis/metrics.k8s.io', version: 'v1beta1' },
-        networking: { group: 'apis/networking.k8s.io', version: 'v1' }
+        networking: { group: 'apis/networking.k8s.io', version: 'v1' },
+        cilium_networking: { group: 'apis/cilium.io', version: 'v2' }
       }.freeze
 
       SUPPORTED_API_GROUPS.each do |name, params|
@@ -95,6 +96,14 @@ module Gitlab
         :delete_network_policy,
         to: :networking_client
 
+      # CiliumNetworkPolicy methods delegate to the apis/cilium.io api
+      # group client
+      delegate :create_cilium_network_policy,
+        :get_cilium_network_policies,
+        :update_cilium_network_policy,
+        :delete_cilium_network_policy,
+        to: :cilium_networking_client
+
       attr_reader :api_prefix, :kubeclient_options
 
       DEFAULT_KUBECLIENT_OPTIONS = {
@@ -107,15 +116,15 @@ module Gitlab
       def self.graceful_request(cluster_id)
         { status: :connected, response: yield }
       rescue *Gitlab::Kubernetes::Errors::CONNECTION
-        { status: :unreachable }
+        { status: :unreachable, connection_error: :connection_error }
       rescue *Gitlab::Kubernetes::Errors::AUTHENTICATION
-        { status: :authentication_failure }
+        { status: :authentication_failure, connection_error: :authentication_error }
       rescue Kubeclient::HttpError => e
-        { status: kubeclient_error_status(e.message) }
+        { status: kubeclient_error_status(e.message), connection_error: :http_error }
       rescue => e
         Gitlab::ErrorTracking.track_exception(e, cluster_id: cluster_id)
 
-        { status: :unknown_failure }
+        { status: :unknown_failure, connection_error: :unknown_error }
       end
 
       # KubeClient uses the same error class

@@ -36,7 +36,7 @@ RSpec.describe 'Contributions Calendar', :js do
 
   def get_cell_date_selector(contributions, date)
     contribution_text =
-      if contributions.zero?
+      if contributions == 0
         'No contributions'
       else
         "#{contributions} #{'contribution'.pluralize(contributions)}"

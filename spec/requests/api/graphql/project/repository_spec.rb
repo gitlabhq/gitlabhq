@@ -11,6 +11,7 @@ RSpec.describe 'getting a repository in a project' do
       #{all_graphql_fields_for('repository'.classify)}
     QUERY
   end
+
   let(:query) do
     graphql_query_for(
       'project',

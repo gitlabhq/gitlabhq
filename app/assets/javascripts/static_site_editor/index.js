@@ -5,7 +5,14 @@ import createRouter from './router';
 import createApolloProvider from './graphql';
 
 const initStaticSiteEditor = el => {
-  const { isSupportedContent, path: sourcePath, baseUrl, namespace, project } = el.dataset;
+  const {
+    isSupportedContent,
+    path: sourcePath,
+    baseUrl,
+    namespace,
+    project,
+    mergeRequestsIllustrationPath,
+  } = el.dataset;
   const { current_username: username } = window.gon;
   const returnUrl = el.dataset.returnUrl || null;
 
@@ -26,7 +33,11 @@ const initStaticSiteEditor = el => {
       App,
     },
     render(createElement) {
-      return createElement('app');
+      return createElement('app', {
+        props: {
+          mergeRequestsIllustrationPath,
+        },
+      });
     },
   });
 };

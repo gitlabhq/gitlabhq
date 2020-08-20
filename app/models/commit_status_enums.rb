@@ -23,7 +23,8 @@ module CommitStatusEnums
       downstream_bridge_project_not_found: 1_002,
       invalid_bridge_trigger: 1_003,
       bridge_pipeline_is_child_pipeline: 1_006,
-      downstream_pipeline_creation_failed: 1_007
+      downstream_pipeline_creation_failed: 1_007,
+      secrets_provider_not_found: 1_008
     }
   end
 end

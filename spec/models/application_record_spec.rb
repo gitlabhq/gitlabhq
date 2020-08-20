@@ -38,6 +38,21 @@ RSpec.describe ApplicationRecord do
       expect { Suggestion.safe_find_or_create_by(build(:suggestion).attributes) }
         .to change { Suggestion.count }.by(1)
     end
+
+    it 'passes a block to find_or_create_by' do
+      attributes = build(:suggestion).attributes
+
+      expect do |block|
+        Suggestion.safe_find_or_create_by(attributes, &block)
+      end.to yield_with_args(an_object_having_attributes(attributes))
+    end
+
+    it 'does not create a record when is not valid' do
+      raw_usage_data = RawUsageData.safe_find_or_create_by({ recorded_at: nil })
+
+      expect(raw_usage_data.id).to be_nil
+      expect(raw_usage_data).not_to be_valid
+    end
   end
 
   describe '.safe_find_or_create_by!' do
@@ -50,6 +65,14 @@ RSpec.describe ApplicationRecord do
 
     it 'raises a validation error if the record was not persisted' do
       expect { Suggestion.find_or_create_by!(note: nil) }.to raise_error(ActiveRecord::RecordInvalid)
+    end
+
+    it 'passes a block to find_or_create_by' do
+      attributes = build(:suggestion).attributes
+
+      expect do |block|
+        Suggestion.safe_find_or_create_by!(attributes, &block)
+      end.to yield_with_args(an_object_having_attributes(attributes))
     end
   end
 

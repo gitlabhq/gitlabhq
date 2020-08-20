@@ -50,9 +50,9 @@ module Discussions
       merge_ref_head = merge_request.merge_ref_head
       return unless merge_ref_head
 
-      start_sha, base_sha = merge_ref_head.parent_ids
+      start_sha, _ = merge_ref_head.parent_ids
       new_diff_refs = Gitlab::Diff::DiffRefs.new(
-        base_sha: base_sha,
+        base_sha: start_sha,
         start_sha: start_sha,
         head_sha: merge_ref_head.id)
 

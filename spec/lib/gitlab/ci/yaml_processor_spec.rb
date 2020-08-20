@@ -443,15 +443,15 @@ module Gitlab
         context 'when a warning is raised in a given entry' do
           let(:config) do
             <<-EOYML
-              rspec:
-                script: rspec
-                rules:
-                  - if: '$VAR == "value"'
+            rspec:
+              script: echo
+              rules:
+                - when: always
             EOYML
           end
 
           it 'is propagated all the way up to the processor' do
-            expect(subject.warnings).to contain_exactly('jobs:rspec uses `rules` without defining `workflow:rules`')
+            expect(subject.warnings).to contain_exactly(/jobs:rspec may allow multiple pipelines to run/)
           end
         end
 
@@ -461,7 +461,7 @@ module Gitlab
               rspec:
                 script: rspec
                 rules:
-                  - if: '$VAR == "value"'
+                  - when: always
               invalid:
                 script: echo
                 artifacts:
@@ -473,7 +473,7 @@ module Gitlab
             expect { subject }.to raise_error do |error|
               expect(error).to be_a(described_class::ValidationError)
               expect(error.message).to eq('jobs:invalid:artifacts config should be a hash')
-              expect(error.warnings).to contain_exactly('jobs:rspec uses `rules` without defining `workflow:rules`')
+              expect(error.warnings).to contain_exactly(/jobs:rspec may allow multiple pipelines to run/)
             end
           end
         end
@@ -485,7 +485,7 @@ module Gitlab
               rspec:
                 script: rspec
                 rules:
-                  - if: '$VAR == "value"'
+                  - when: always
             EOYML
           end
 
@@ -516,7 +516,7 @@ module Gitlab
                   stage: custom_stage
                   script: rspec
                   rules:
-                    - if: '$VAR == "value"'
+                    - when: always
               EOYML
             end
 
@@ -530,7 +530,7 @@ module Gitlab
                   stage: build
                   script: echo
                   rules:
-                    - if: '$VAR == "value"'
+                    - when: always
                 test:
                   stage: test
                   script: echo
@@ -549,7 +549,7 @@ module Gitlab
                   script: echo
                   needs: [test]
                   rules:
-                    - if: '$VAR == "value"'
+                    - when: always
                 test:
                   stage: test
                   script: echo
@@ -571,7 +571,7 @@ module Gitlab
                 rspec:
                   script: rspec
                   rules:
-                    - if: '$VAR == "value"'
+                    - when: always
               EOYML
             end
 
@@ -942,6 +942,7 @@ module Gitlab
           let(:variables) do
             { 'VAR1' => 'value1', 'VAR2' => 'value2' }
           end
+
           let(:config) do
             {
               variables: variables,
@@ -962,9 +963,11 @@ module Gitlab
           let(:global_variables) do
             { 'VAR1' => 'global1', 'VAR3' => 'global3', 'VAR4' => 'global4' }
           end
+
           let(:job_variables) do
             { 'VAR1' => 'value1', 'VAR2' => 'value2' }
           end
+
           let(:config) do
             {
               before_script: ['pwd'],
@@ -1269,27 +1272,104 @@ module Gitlab
       end
 
       describe 'Parallel' do
+        let(:config) do
+          YAML.dump(rspec: { script: 'rspec',
+                             parallel: parallel,
+                             variables: { 'VAR1' => 1 } })
+        end
+
+        let(:config_processor) { Gitlab::Ci::YamlProcessor.new(config) }
+        let(:builds) { config_processor.stage_builds_attributes('test') }
+
         context 'when job is parallelized' do
           let(:parallel) { 5 }
 
-          let(:config) do
-            YAML.dump(rspec: { script: 'rspec',
-                               parallel: parallel })
-          end
-
           it 'returns parallelized jobs' do
-            config_processor = Gitlab::Ci::YamlProcessor.new(config)
-            builds = config_processor.stage_builds_attributes('test')
             build_options = builds.map { |build| build[:options] }
 
             expect(builds.size).to eq(5)
-            expect(build_options).to all(include(:instance, parallel: parallel))
+            expect(build_options).to all(include(:instance, parallel: { number: parallel, total: parallel }))
           end
 
           it 'does not have the original job' do
-            config_processor = Gitlab::Ci::YamlProcessor.new(config)
-            builds = config_processor.stage_builds_attributes('test')
+            expect(builds).not_to include(:rspec)
+          end
+        end
 
+        context 'with build matrix' do
+          let(:parallel) do
+            {
+              matrix: [
+                { 'PROVIDER' => 'aws', 'STACK' => %w[monitoring app1 app2] },
+                { 'PROVIDER' => 'ovh', 'STACK' => %w[monitoring backup app] },
+                { 'PROVIDER' => 'gcp', 'STACK' => %w[data processing] }
+              ]
+            }
+          end
+
+          it 'returns the number of parallelized jobs' do
+            expect(builds.size).to eq(8)
+          end
+
+          it 'returns the parallel config' do
+            build_options = builds.map { |build| build[:options] }
+            parallel_config = {
+              matrix: parallel[:matrix].map { |var| var.transform_values { |v| Array(v).flatten }},
+              total: build_options.size
+            }
+
+            expect(build_options).to all(include(:instance, parallel: parallel_config))
+          end
+
+          it 'sets matrix variables' do
+            build_variables = builds.map { |build| build[:yaml_variables] }
+            expected_variables = [
+              [
+                { key: 'VAR1', value: '1' },
+                { key: 'PROVIDER', value: 'aws' },
+                { key: 'STACK', value: 'monitoring' }
+              ],
+              [
+                { key: 'VAR1', value: '1' },
+                { key: 'PROVIDER', value: 'aws' },
+                { key: 'STACK', value: 'app1' }
+              ],
+              [
+                { key: 'VAR1', value: '1' },
+                { key: 'PROVIDER', value: 'aws' },
+                { key: 'STACK', value: 'app2' }
+              ],
+              [
+                { key: 'VAR1', value: '1' },
+                { key: 'PROVIDER', value: 'ovh' },
+                { key: 'STACK', value: 'monitoring' }
+              ],
+              [
+                { key: 'VAR1', value: '1' },
+                { key: 'PROVIDER', value: 'ovh' },
+                { key: 'STACK', value: 'backup' }
+              ],
+              [
+                { key: 'VAR1', value: '1' },
+                { key: 'PROVIDER', value: 'ovh' },
+                { key: 'STACK', value: 'app' }
+              ],
+              [
+                { key: 'VAR1', value: '1' },
+                { key: 'PROVIDER', value: 'gcp' },
+                { key: 'STACK', value: 'data' }
+              ],
+              [
+                { key: 'VAR1', value: '1' },
+                { key: 'PROVIDER', value: 'gcp' },
+                { key: 'STACK', value: 'processing' }
+              ]
+            ].map { |vars| vars.map { |var| a_hash_including(var) } }
+
+            expect(build_variables).to match(expected_variables)
+          end
+
+          it 'does not have the original job' do
             expect(builds).not_to include(:rspec)
           end
         end
@@ -1482,6 +1562,21 @@ module Gitlab
           })
         end
 
+        it "returns artifacts with expire_in never keyword" do
+          config = YAML.dump({
+                                rspec: {
+                                  script: "rspec",
+                                  artifacts: { paths: ["releases/"], expire_in: "never" }
+                                }
+                              })
+
+          config_processor = Gitlab::Ci::YamlProcessor.new(config)
+          builds = config_processor.stage_builds_attributes("test")
+
+          expect(builds.size).to eq(1)
+          expect(builds.first[:options][:artifacts][:expire_in]).to eq('never')
+        end
+
         %w[on_success on_failure always].each do |when_state|
           it "returns artifacts for when #{when_state}  defined" do
             config = YAML.dump({
@@ -1564,26 +1659,9 @@ module Gitlab
           }
         end
 
-        context 'with feature flag active' do
-          before do
-            stub_feature_flags(ci_release_generation: true)
-          end
-
-          it "returns release info" do
-            expect(processor.stage_builds_attributes('release').first[:options])
-              .to eq(config[:release].except(:stage, :only))
-          end
-        end
-
-        context 'with feature flag inactive' do
-          before do
-            stub_feature_flags(ci_release_generation: false)
-          end
-
-          it 'raises error' do
-            expect { processor }.to raise_error(
-              'jobs:release config release features are not enabled: release')
-          end
+        it "returns release info" do
+          expect(processor.stage_builds_attributes('release').first[:options])
+            .to eq(config[:release].except(:stage, :only))
         end
       end
 
@@ -1998,6 +2076,7 @@ module Gitlab
               { job: "build2" }
             ]
           end
+
           let(:dependencies) { %w(build3) }
 
           it { expect { subject }.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError, 'jobs:test1 dependencies the build3 should be part of needs') }
@@ -2407,6 +2486,14 @@ module Gitlab
           end.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError, "jobs config should contain at least one visible job")
         end
 
+        it "returns errors if the job script is not defined" do
+          config = YAML.dump({ rspec: { before_script: "test" } })
+
+          expect do
+            Gitlab::Ci::YamlProcessor.new(config)
+          end.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError, "jobs:rspec script can't be blank")
+        end
+
         it "returns errors if there are no visible jobs defined" do
           config = YAML.dump({ before_script: ["bundle update"], '.hidden'.to_sym => { script: 'ls' } })
           expect do
@@ -2618,6 +2705,14 @@ module Gitlab
           expect { Gitlab::Ci::YamlProcessor.new(config) }
             .to raise_error(Gitlab::Ci::YamlProcessor::ValidationError,
                             'rspec: unknown keys in `extends` (something)')
+        end
+
+        it 'returns errors if parallel is invalid' do
+          config = YAML.dump({ rspec: { parallel: 'test', script: 'test' } })
+
+          expect { Gitlab::Ci::YamlProcessor.new(config) }
+            .to raise_error(Gitlab::Ci::YamlProcessor::ValidationError,
+                            'jobs:rspec:parallel should be an integer or a hash')
         end
       end
 

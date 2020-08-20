@@ -19,16 +19,6 @@ RSpec.describe Ci::BuildReportResultService do
         expect(Ci::BuildReportResult.count).to eq(1)
       end
 
-      context 'when feature is disable' do
-        it 'does not persist the data' do
-          stub_feature_flags(build_report_summary: false)
-
-          subject
-
-          expect(Ci::BuildReportResult.count).to eq(0)
-        end
-      end
-
       context 'when data has already been persisted' do
         it 'raises an error and do not persist the same data twice' do
           expect { 2.times { described_class.new.execute(build) } }.to raise_error(ActiveRecord::RecordNotUnique)

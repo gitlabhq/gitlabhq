@@ -158,7 +158,7 @@ RSpec.describe 'Edit group settings' do
 
     page.within('.gs-advanced') do
       fill_in 'group_path', with: new_group_path
-      click_button 'Change group path'
+      click_button 'Change group URL'
     end
   end
 

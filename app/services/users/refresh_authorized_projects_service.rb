@@ -53,7 +53,13 @@ module Users
       current = current_authorizations_per_project
       fresh = fresh_access_levels_per_project
 
-      remove = current.each_with_object([]) do |(project_id, row), array|
+      # Delete projects that have more than one authorizations associated with
+      # the user. The correct authorization is added to the ``add`` array in the
+      # next stage.
+      remove = projects_with_duplicates
+      current.except!(*projects_with_duplicates)
+
+      remove |= current.each_with_object([]) do |(project_id, row), array|
         # rows not in the new list or with a different access level should be
         # removed.
         if !fresh[project_id] || fresh[project_id] != row.access_level
@@ -106,7 +112,7 @@ module Users
     end
 
     def current_authorizations
-      user.project_authorizations.select(:project_id, :access_level)
+      @current_authorizations ||= user.project_authorizations.select(:project_id, :access_level)
     end
 
     def fresh_authorizations
@@ -116,5 +122,12 @@ module Users
     private
 
     attr_reader :incorrect_auth_found_callback, :missing_auth_found_callback
+
+    def projects_with_duplicates
+      @projects_with_duplicates ||= current_authorizations
+                                      .group_by(&:project_id)
+                                      .select { |project_id, authorizations| authorizations.count > 1 }
+                                      .keys
+    end
   end
 end

@@ -1,12 +1,12 @@
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex';
+import { GlButton } from '@gitlab/ui';
 import { sprintf, s__ } from '~/locale';
 import { componentNames } from './issue_body';
 import ReportSection from './report_section.vue';
 import SummaryRow from './summary_row.vue';
 import IssuesList from './issues_list.vue';
 import Modal from './modal.vue';
-import { GlButton } from '@gitlab/ui';
 import createStore from '../store';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { summaryTextBuilder, reportTextBuilder, statusIcon } from '../store/utils';
@@ -56,7 +56,7 @@ export default {
       return `${this.pipelinePath}/test_report`;
     },
     showViewFullReport() {
-      return Boolean(this.glFeatures.junitPipelineView) && this.pipelinePath.length;
+      return this.pipelinePath.length;
     },
   },
   created() {
@@ -116,6 +116,7 @@ export default {
     <template v-if="showViewFullReport" #actionButtons>
       <gl-button
         :href="testTabURL"
+        target="_blank"
         icon="external-link"
         data-testid="group-test-reports-full-link"
         class="gl-mr-3"

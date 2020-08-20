@@ -1,0 +1,5 @@
+---
+title: Remove not-null constraint on type column in audit_events
+merge_request: 39192
+author:
+type: other

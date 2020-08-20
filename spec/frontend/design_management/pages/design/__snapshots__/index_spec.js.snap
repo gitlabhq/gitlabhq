@@ -10,7 +10,7 @@ exports[`Design management design index page renders design index 1`] = `
     <design-destroyer-stub
       filenames="test.jpg"
       iid="1"
-      projectpath=""
+      project-path="project-path"
     />
      
     <!---->
@@ -41,7 +41,7 @@ exports[`Design management design index page renders design index 1`] = `
     </h2>
      
     <a
-      class="gl-text-gray-600 gl-text-decoration-none gl-mb-6 gl-display-block"
+      class="gl-text-gray-400 gl-text-decoration-none gl-mb-6 gl-display-block"
       href="full-issue-url"
     >
       ull-issue-path
@@ -60,13 +60,13 @@ exports[`Design management design index page renders design index 1`] = `
       designid="test"
       discussion="[object Object]"
       discussionwithopenform=""
-      markdownpreviewpath="//preview_markdown?target_type=Issue"
+      markdownpreviewpath="/project-path/preview_markdown?target_type=Issue"
       noteableid="design-id"
     />
      
     <gl-button-stub
-      category="tertiary"
-      class="link-inherit-color gl-text-black-normal gl-text-decoration-none gl-font-weight-bold gl-mb-4"
+      category="primary"
+      class="link-inherit-color gl-text-body gl-text-decoration-none gl-font-weight-bold gl-mb-4"
       data-testid="resolved-comments"
       icon="chevron-right"
       id="resolved-comments"
@@ -108,7 +108,7 @@ exports[`Design management design index page renders design index 1`] = `
         designid="test"
         discussion="[object Object]"
         discussionwithopenform=""
-        markdownpreviewpath="//preview_markdown?target_type=Issue"
+        markdownpreviewpath="/project-path/preview_markdown?target_type=Issue"
         noteableid="design-id"
       />
     </gl-collapse-stub>
@@ -140,7 +140,7 @@ exports[`Design management design index page with error GlAlert is rendered in c
     <design-destroyer-stub
       filenames="test.jpg"
       iid="1"
-      projectpath=""
+      project-path="project-path"
     />
      
     <div
@@ -188,7 +188,7 @@ exports[`Design management design index page with error GlAlert is rendered in c
     </h2>
      
     <a
-      class="gl-text-gray-600 gl-text-decoration-none gl-mb-6 gl-display-block"
+      class="gl-text-gray-400 gl-text-decoration-none gl-mb-6 gl-display-block"
       href="full-issue-url"
     >
       ull-issue-path

@@ -1,10 +1,10 @@
-import axios from '~/lib/utils/axios_utils';
 import MockAdapter from 'axios-mock-adapter';
+import { TEST_HOST } from 'spec/test_constants';
+import testAction from 'helpers/vuex_action_helper';
+import axios from '~/lib/utils/axios_utils';
 import * as actions from '~/reports/codequality_report/store/actions';
 import * as types from '~/reports/codequality_report/store/mutation_types';
 import createStore from '~/reports/codequality_report/store';
-import { TEST_HOST } from 'spec/test_constants';
-import testAction from 'helpers/vuex_action_helper';
 import { headIssues, baseIssues, mockParsedHeadIssues, mockParsedBaseIssues } from '../mock_data';
 
 // mock codequality comparison worker

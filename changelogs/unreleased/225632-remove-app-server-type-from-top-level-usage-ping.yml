@@ -1,0 +1,5 @@
+---
+title: Remove app_server_type from top level usage ping
+merge_request: 37279
+author:
+type: other

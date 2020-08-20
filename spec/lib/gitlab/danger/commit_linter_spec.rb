@@ -16,6 +16,7 @@ RSpec.describe Gitlab::Danger::CommitLinter do
   let(:commit_class) do
     Struct.new(:message, :sha, :diff_parent)
   end
+
   let(:commit_message) { 'A commit message' }
   let(:commit_sha) { 'abcd1234' }
   let(:commit) { commit_class.new(commit_message, commit_sha, diff_parent) }

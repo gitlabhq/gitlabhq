@@ -25,7 +25,7 @@ class SessionsController < Devise::SessionsController
   before_action :store_unauthenticated_sessions, only: [:new]
   before_action :save_failed_login, if: :action_new_and_failed_login?
   before_action :load_recaptcha
-  before_action :frontend_tracking_data, only: [:new]
+  before_action :set_invite_params, only: [:new]
 
   after_action :log_failed_login, if: :action_new_and_failed_login?
   after_action :verify_known_sign_in, only: [:create]
@@ -293,9 +293,8 @@ class SessionsController < Devise::SessionsController
     end
   end
 
-  def frontend_tracking_data
-    # We want tracking data pushed to the frontend when the user is _in_ the control group
-    frontend_experimentation_tracking_data(:signup_flow, 'start') unless experiment_enabled?(:signup_flow)
+  def set_invite_params
+    @invite_email = ActionController::Base.helpers.sanitize(params[:invite_email])
   end
 end
 

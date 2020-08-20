@@ -7,8 +7,7 @@ RSpec.describe Banzai::Filter::WikiLinkFilter do
 
   let(:namespace) { build_stubbed(:namespace, name: "wiki_link_ns") }
   let(:project)   { build_stubbed(:project, :public, name: "wiki_link_project", namespace: namespace) }
-  let(:user) { double }
-  let(:wiki) { ProjectWiki.new(project, user) }
+  let(:wiki) { ProjectWiki.new(project, nil) }
   let(:repository_upload_folder) { Wikis::CreateAttachmentService::ATTACHMENT_PATH }
 
   it "doesn't rewrite absolute links" do

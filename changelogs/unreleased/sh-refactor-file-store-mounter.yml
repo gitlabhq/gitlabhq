@@ -1,0 +1,5 @@
+---
+title: Move file store updates and mount_uploader into a concern
+merge_request: 37907
+author:
+type: other

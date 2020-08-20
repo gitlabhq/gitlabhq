@@ -66,15 +66,27 @@ RSpec.describe Jira::Requests::Projects::ListService do
 
         context 'when the request returns values' do
           before do
-            expect(client).to receive(:get).and_return([{ "key" => 'project1' }, { "key" => 'project2' }])
+            expect(client).to receive(:get).and_return([{ 'key' => 'pr1', 'name' => 'First Project' }, { 'key' => 'pr2', 'name' => 'Second Project' }])
           end
 
-          it 'returns a paylod with jira projets' do
+          it 'returns a paylod with Jira projets' do
             payload = subject.payload
 
             expect(subject.success?).to be_truthy
-            expect(payload[:projects].map(&:key)).to eq(%w(project1 project2))
+            expect(payload[:projects].map(&:key)).to eq(%w(pr1 pr2))
             expect(payload[:is_last]).to be_truthy
+          end
+
+          context 'when filtering projects by name' do
+            let(:params) { { query: 'first' } }
+
+            it 'returns a paylod with Jira projets' do
+              payload = subject.payload
+
+              expect(subject.success?).to be_truthy
+              expect(payload[:projects].map(&:key)).to eq(%w(pr1))
+              expect(payload[:is_last]).to be_truthy
+            end
           end
         end
       end

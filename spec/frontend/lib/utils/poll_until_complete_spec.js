@@ -1,8 +1,8 @@
 import AxiosMockAdapter from 'axios-mock-adapter';
+import { TEST_HOST } from 'helpers/test_constants';
 import axios from '~/lib/utils/axios_utils';
 import pollUntilComplete from '~/lib/utils/poll_until_complete';
 import httpStatusCodes from '~/lib/utils/http_status';
-import { TEST_HOST } from 'helpers/test_constants';
 
 const endpoint = `${TEST_HOST}/foo`;
 const mockData = 'mockData';

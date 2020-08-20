@@ -1,6 +1,12 @@
 <script>
-import { initEditorLite } from '~/blob/utils';
 import { debounce } from 'lodash';
+import { initEditorLite } from '~/blob/utils';
+import {
+  SNIPPET_MARK_BLOBS_CONTENT,
+  SNIPPET_MARK_EDIT_APP_START,
+  SNIPPET_MEASURE_BLOBS_CONTENT,
+  SNIPPET_MEASURE_BLOBS_CONTENT_WITHIN_APP,
+} from '~/performance_constants';
 
 export default {
   props: {
@@ -10,6 +16,13 @@ export default {
       default: '',
     },
     fileName: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    // This is used to help uniquely create a monaco model
+    // even if two blob's share a file path.
+    fileGlobalId: {
       type: String,
       required: false,
       default: '',
@@ -30,17 +43,33 @@ export default {
       el: this.$refs.editor,
       blobPath: this.fileName,
       blobContent: this.value,
+      blobGlobalId: this.fileGlobalId,
+    });
+
+    this.editor.onChangeContent(debounce(this.onFileChange.bind(this), 250));
+
+    window.requestAnimationFrame(() => {
+      if (!performance.getEntriesByName(SNIPPET_MARK_BLOBS_CONTENT).length) {
+        performance.mark(SNIPPET_MARK_BLOBS_CONTENT);
+        performance.measure(SNIPPET_MEASURE_BLOBS_CONTENT);
+        performance.measure(SNIPPET_MEASURE_BLOBS_CONTENT_WITHIN_APP, SNIPPET_MARK_EDIT_APP_START);
+      }
     });
   },
+  beforeDestroy() {
+    this.editor.dispose();
+  },
   methods: {
-    triggerFileChange: debounce(function debouncedFileChange() {
+    onFileChange() {
       this.$emit('input', this.editor.getValue());
-    }, 250),
+    },
   },
 };
 </script>
 <template>
   <div class="file-content code">
-    <pre id="editor" ref="editor" data-editor-loading @keyup="triggerFileChange">{{ value }}</pre>
+    <div id="editor" ref="editor" data-editor-loading>
+      <pre class="editor-loading-content">{{ value }}</pre>
+    </div>
   </div>
 </template>

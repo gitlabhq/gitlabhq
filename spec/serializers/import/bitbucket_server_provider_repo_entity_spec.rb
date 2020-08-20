@@ -6,8 +6,10 @@ RSpec.describe Import::BitbucketServerProviderRepoEntity do
   let(:repo_data) do
     {
       'name' => 'test',
+      'slug' => 'TEST',
       'project' => {
-        'name' => 'demo'
+        'name' => 'demo',
+        'key' => 'DEM'
       },
       'links' => {
         'self' => [
@@ -19,6 +21,7 @@ RSpec.describe Import::BitbucketServerProviderRepoEntity do
       }
     }
   end
+
   let(:repo) { BitbucketServer::Representation::Repo.new(repo_data) }
 
   subject { described_class.new(repo).as_json }
@@ -26,7 +29,7 @@ RSpec.describe Import::BitbucketServerProviderRepoEntity do
   it_behaves_like 'exposes required fields for import entity' do
     let(:expected_values) do
       {
-        id: 'demo/test',
+        id: 'DEM/TEST',
         full_name: 'demo/test',
         sanitized_name: 'test',
         provider_link: 'http://local.bitbucket.server/demo/test.git'

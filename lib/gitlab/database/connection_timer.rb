@@ -23,7 +23,7 @@ module Gitlab
         end
 
         def interval_with_randomization
-          interval + rand(RANDOMIZATION_INTERVAL) if interval.positive?
+          interval + rand(RANDOMIZATION_INTERVAL) if interval > 0
         end
 
         def current_clock_value

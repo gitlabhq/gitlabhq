@@ -1,3 +1,9 @@
+---
+stage: Monitor
+group: APM
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # GitLab Developers Guide to Logging
 
 [GitLab Logs](../administration/logs.md) play a critical role for both
@@ -281,7 +287,7 @@ method or variable shouldn't be evaluated right away)
 See our [HOWTO: Use Sidekiq metadata logs](https://www.youtube.com/watch?v=_wDllvO_IY0) for further knowledge on
 creating visualizations in Kibana.
 
-**Note:**
+NOTE: **Note:**
 The fields of the context are currently only logged for Sidekiq jobs triggered
 through web requests. See the
 [follow-up work](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/68)

@@ -7,24 +7,6 @@ type: reference
 
 # Getting started with GitLab CI/CD
 
-NOTE: **Note:**
-Starting from version 8.0, GitLab [Continuous Integration](https://about.gitlab.com/stages-devops-lifecycle/continuous-integration/) (CI)
-is fully integrated into GitLab itself and is [enabled](../enable_or_disable_ci.md) by default on all
-projects.
-
-NOTE: **Note:**
-Please keep in mind that only project Maintainers and Admin users have
-the permissions to access a project's settings.
-
-NOTE: **Note:**
-Coming over to GitLab from Jenkins? Check out our [reference](../jenkins/index.md)
-for converting your pre-existing pipelines over to our format.
-
-NOTE: **Note:**
-There are a few different [basic pipeline architectures](../pipelines/pipeline_architectures.md)
-that you can consider for use in your project. You may want to familiarize
-yourself with these prior to getting started.
-
 GitLab offers a [continuous integration](https://about.gitlab.com/stages-devops-lifecycle/continuous-integration/) service. For each commit or push to trigger your CI
 [pipeline](../pipelines/index.md), you must:
 
@@ -49,7 +31,11 @@ something.
 It's also common to use pipelines to automatically deploy
 tested code to staging and production environments.
 
----
+If you're already familiar with general CI/CD concepts, you can review which
+[pipeline architectures](../pipelines/pipeline_architectures.md) can be used
+in your projects. If you're coming over to GitLab from Jenkins, you can check out
+our [reference](../migration/jenkins.md) for converting your pre-existing pipelines
+over to our format.
 
 This guide assumes that you have:
 
@@ -82,18 +68,22 @@ blog about it](https://about.gitlab.com/blog/2015/05/06/why-were-replacing-gitla
 
 ### Creating a simple `.gitlab-ci.yml` file
 
->**Note:**
-`.gitlab-ci.yml` is a [YAML](https://en.wikipedia.org/wiki/YAML) file
-so you have to pay extra attention to indentation. Always use spaces, not tabs.
+NOTE: **Note:**
+A GitLab team member has made an [unofficial visual pipeline editor](https://unofficial.gitlab.tools/visual-pipelines/).
+There is a [plan to make it an official part of GitLab](https://gitlab.com/groups/gitlab-org/-/epics/4069)
+in the future, but it's available for anyone who wants to try it at the above link.
 
 You need to create a file named `.gitlab-ci.yml` in the root directory of your
-repository. Below is an example for a Ruby on Rails project.
+repository. This is a [YAML](https://en.wikipedia.org/wiki/YAML) file
+so you have to pay extra attention to indentation. Always use spaces, not tabs.
+
+Below is an example for a Ruby on Rails project:
 
 ```yaml
 image: "ruby:2.5"
 
 before_script:
-  - apt-get update -qq && apt-get install -y -qq sqlite3 libsqlite3-dev nodejs
+  - sudo apt-get update -qq && sudo apt-get install -y -qq sqlite3 libsqlite3-dev nodejs
   - ruby -v
   - which ruby
   - gem install bundler --no-document
@@ -124,9 +114,7 @@ Jobs are used to create jobs, which are then picked by
 What is important is that each job is run independently from each other.
 
 If you want to check whether the `.gitlab-ci.yml` of your project is valid, there is a
-Lint tool under the page `/-/ci/lint` of your project namespace. You can also find
-a "CI Lint" button to go to this page under **CI/CD ➔ Pipelines** and
-**Pipelines ➔ Jobs** in your project.
+[CI Lint tool](../lint.md) available in every project.
 
 For more information and a complete `.gitlab-ci.yml` syntax, please read
 [the reference documentation on `.gitlab-ci.yml`](../yaml/README.md).

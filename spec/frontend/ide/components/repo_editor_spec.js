@@ -3,6 +3,8 @@ import Vue from 'vue';
 import MockAdapter from 'axios-mock-adapter';
 import '~/behaviors/markdown/render_gfm';
 import { Range } from 'monaco-editor';
+import waitForPromises from 'helpers/wait_for_promises';
+import waitUsingRealTimer from 'helpers/wait_using_real_timer';
 import axios from '~/lib/utils/axios_utils';
 import service from '~/ide/services';
 import { createStoreOptions } from '~/ide/stores';
@@ -15,10 +17,8 @@ import {
   viewerTypes,
 } from '~/ide/constants';
 import { createComponentWithStore } from '../../helpers/vue_mount_component_helper';
-import waitForPromises from 'helpers/wait_for_promises';
 import { file } from '../helpers';
 import { exampleConfigs, exampleFiles } from '../lib/editorconfig/mock_data';
-import waitUsingRealTimer from 'helpers/wait_using_real_timer';
 
 describe('RepoEditor', () => {
   let vm;

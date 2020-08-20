@@ -1,6 +1,7 @@
 import { range as rge } from 'lodash';
 import Vue from 'vue';
 import { mountComponentWithStore } from 'helpers/vue_mount_component_helper';
+import waitForPromises from 'helpers/wait_for_promises';
 import app from '~/releases/components/app_index.vue';
 import createStore from '~/releases/stores';
 import listModule from '~/releases/stores/modules/list';
@@ -13,7 +14,6 @@ import {
   releases,
 } from '../mock_data';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
-import waitForPromises from 'helpers/wait_for_promises';
 
 describe('Releases App ', () => {
   const Component = Vue.extend(app);

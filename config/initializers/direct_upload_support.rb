@@ -1,5 +1,5 @@
 class DirectUploadsValidator
-  SUPPORTED_DIRECT_UPLOAD_PROVIDERS = %w(Google AWS).freeze
+  SUPPORTED_DIRECT_UPLOAD_PROVIDERS = %w(Google AWS AzureRM).freeze
 
   ValidationError = Class.new(StandardError)
 
@@ -13,22 +13,32 @@ class DirectUploadsValidator
 
     raise ValidationError, "No provider configured for '#{uploader_type}'. #{supported_provider_text}" if provider.blank?
 
-    return if SUPPORTED_DIRECT_UPLOAD_PROVIDERS.include?(provider)
+    return if provider_loaded?(provider)
 
     raise ValidationError, "Object storage provider '#{provider}' is not supported " \
                            "when 'direct_upload' is used for '#{uploader_type}'. #{supported_provider_text}"
   end
 
+  private
+
+  def provider_loaded?(provider)
+    return false unless SUPPORTED_DIRECT_UPLOAD_PROVIDERS.include?(provider)
+
+    require 'fog/azurerm' if provider == 'AzureRM'
+
+    true
+  end
+
   def supported_provider_text
-    "Only #{SUPPORTED_DIRECT_UPLOAD_PROVIDERS.join(', ')} are supported."
+    "Only #{SUPPORTED_DIRECT_UPLOAD_PROVIDERS.to_sentence} are supported."
   end
 end
 
 DirectUploadsValidator.new.tap do |validator|
   CONFIGS = {
     artifacts: Gitlab.config.artifacts,
-    uploads: Gitlab.config.uploads,
-    lfs: Gitlab.config.lfs
+    lfs: Gitlab.config.lfs,
+    uploads: Gitlab.config.uploads
   }.freeze
 
   CONFIGS.each do |uploader_type, uploader|

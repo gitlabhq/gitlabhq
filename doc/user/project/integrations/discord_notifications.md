@@ -1,3 +1,9 @@
+---
+stage: Create
+group: Ecosystem
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+---
+
 # Discord Notifications service
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/22684) in GitLab 11.6.

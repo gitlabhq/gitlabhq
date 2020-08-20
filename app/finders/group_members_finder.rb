@@ -57,7 +57,7 @@ class GroupMembersFinder < UnionFinder
     members = members.search(params[:search]) if params[:search].present?
     members = members.sort_by_attribute(params[:sort]) if params[:sort].present?
 
-    if can_manage_members && params[:two_factor].present?
+    if params[:two_factor].present? && can_manage_members
       members = members.filter_by_2fa(params[:two_factor])
     end
 

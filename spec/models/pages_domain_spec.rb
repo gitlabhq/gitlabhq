@@ -328,9 +328,11 @@ RSpec.describe PagesDomain do
   end
 
   describe '#update_daemon' do
+    let_it_be(:project) { create(:project).tap(&:mark_pages_as_deployed) }
+
     context 'when usage is serverless' do
       it 'does not call the UpdatePagesConfigurationService' do
-        expect(Projects::UpdatePagesConfigurationService).not_to receive(:new)
+        expect(PagesUpdateConfigurationWorker).not_to receive(:perform_async)
 
         create(:pages_domain, usage: :serverless)
       end
@@ -352,12 +354,30 @@ RSpec.describe PagesDomain do
       domain.destroy!
     end
 
-    it 'delegates to Projects::UpdatePagesConfigurationService' do
+    it 'delegates to Projects::UpdatePagesConfigurationService when not running async' do
+      stub_feature_flags(async_update_pages_config: false)
+
       service = instance_double('Projects::UpdatePagesConfigurationService')
       expect(Projects::UpdatePagesConfigurationService).to receive(:new) { service }
       expect(service).to receive(:execute)
 
-      create(:pages_domain)
+      create(:pages_domain, project: project)
+    end
+
+    it "schedules a PagesUpdateConfigurationWorker" do
+      expect(PagesUpdateConfigurationWorker).to receive(:perform_async).with(project.id)
+
+      create(:pages_domain, project: project)
+    end
+
+    context "when the pages aren't deployed" do
+      let_it_be(:project) { create(:project).tap(&:mark_pages_as_not_deployed) }
+
+      it "does not schedule a PagesUpdateConfigurationWorker" do
+        expect(PagesUpdateConfigurationWorker).not_to receive(:perform_async).with(project.id)
+
+        create(:pages_domain, project: project)
+      end
     end
 
     context 'configuration updates when attributes change' do
@@ -611,6 +631,7 @@ RSpec.describe PagesDomain do
     let!(:domain_with_expired_user_provided_certificate) do
       create(:pages_domain, :with_expired_certificate)
     end
+
     let!(:domain_with_user_provided_certificate_and_auto_ssl) do
       create(:pages_domain, auto_ssl_enabled: true)
     end

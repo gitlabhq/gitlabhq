@@ -46,6 +46,7 @@ RSpec.describe Ci::Pipeline, :mailer do
   it { is_expected.to respond_to :git_author_email }
   it { is_expected.to respond_to :short_sha }
   it { is_expected.to delegate_method(:full_path).to(:project).with_prefix }
+  it { is_expected.to have_many(:pipeline_artifacts) }
 
   describe 'associations' do
     it 'has a bidirectional relationship with projects' do
@@ -813,6 +814,8 @@ RSpec.describe Ci::Pipeline, :mailer do
         expect(subject.to_hash)
           .to include(
             'CI_EXTERNAL_PULL_REQUEST_IID' => pull_request.pull_request_iid.to_s,
+            'CI_EXTERNAL_PULL_REQUEST_SOURCE_REPOSITORY' => pull_request.source_repository,
+            'CI_EXTERNAL_PULL_REQUEST_TARGET_REPOSITORY' => pull_request.target_repository,
             'CI_EXTERNAL_PULL_REQUEST_SOURCE_BRANCH_SHA' => pull_request.source_sha,
             'CI_EXTERNAL_PULL_REQUEST_TARGET_BRANCH_SHA' => pull_request.target_sha,
             'CI_EXTERNAL_PULL_REQUEST_SOURCE_BRANCH_NAME' => pull_request.source_branch,
@@ -936,69 +939,59 @@ RSpec.describe Ci::Pipeline, :mailer do
 
         subject { pipeline.legacy_stages }
 
-        where(:ci_composite_status) do
-          [false, true]
+        context 'stages list' do
+          it 'returns ordered list of stages' do
+            expect(subject.map(&:name)).to eq(%w[build test deploy])
+          end
         end
 
-        with_them do
-          before do
-            stub_feature_flags(ci_composite_status: ci_composite_status)
+        context 'stages with statuses' do
+          let(:statuses) do
+            subject.map { |stage| [stage.name, stage.status] }
           end
 
-          context 'stages list' do
-            it 'returns ordered list of stages' do
-              expect(subject.map(&:name)).to eq(%w[build test deploy])
-            end
+          it 'returns list of stages with correct statuses' do
+            expect(statuses).to eq([%w(build failed),
+                                    %w(test success),
+                                    %w(deploy running)])
           end
 
-          context 'stages with statuses' do
-            let(:statuses) do
-              subject.map { |stage| [stage.name, stage.status] }
+          context 'when commit status is retried' do
+            before do
+              create(:commit_status, pipeline: pipeline,
+                                    stage: 'build',
+                                    name: 'mac',
+                                    stage_idx: 0,
+                                    status: 'success')
+
+              Ci::ProcessPipelineService
+                .new(pipeline)
+                .execute
             end
 
-            it 'returns list of stages with correct statuses' do
-              expect(statuses).to eq([%w(build failed),
+            it 'ignores the previous state' do
+              expect(statuses).to eq([%w(build success),
                                       %w(test success),
                                       %w(deploy running)])
             end
+          end
+        end
 
-            context 'when commit status is retried' do
-              before do
-                create(:commit_status, pipeline: pipeline,
-                                      stage: 'build',
-                                      name: 'mac',
-                                      stage_idx: 0,
-                                      status: 'success')
-
-                Ci::ProcessPipelineService
-                  .new(pipeline)
-                  .execute
-              end
-
-              it 'ignores the previous state' do
-                expect(statuses).to eq([%w(build success),
-                                        %w(test success),
-                                        %w(deploy running)])
-              end
-            end
+        context 'when there is a stage with warnings' do
+          before do
+            create(:commit_status, pipeline: pipeline,
+                                  stage: 'deploy',
+                                  name: 'prod:2',
+                                  stage_idx: 2,
+                                  status: 'failed',
+                                  allow_failure: true)
           end
 
-          context 'when there is a stage with warnings' do
-            before do
-              create(:commit_status, pipeline: pipeline,
-                                    stage: 'deploy',
-                                    name: 'prod:2',
-                                    stage_idx: 2,
-                                    status: 'failed',
-                                    allow_failure: true)
-            end
+          it 'populates stage with correct number of warnings' do
+            deploy_stage = pipeline.legacy_stages.third
 
-            it 'populates stage with correct number of warnings' do
-              deploy_stage = pipeline.legacy_stages.third
-
-              expect(deploy_stage).not_to receive(:statuses)
-              expect(deploy_stage).to have_warnings
-            end
+            expect(deploy_stage).not_to receive(:statuses)
+            expect(deploy_stage).to have_warnings
           end
         end
       end
@@ -1044,19 +1037,6 @@ RSpec.describe Ci::Pipeline, :mailer do
       before do
         create(:ci_stage_entity, project: project,
                                  pipeline: pipeline,
-                                 name: 'build')
-      end
-
-      it 'returns persisted stages' do
-        expect(pipeline.stages).not_to be_empty
-        expect(pipeline.stages).to all(be_persisted)
-      end
-    end
-
-    describe '#ordered_stages' do
-      before do
-        create(:ci_stage_entity, project: project,
-                                 pipeline: pipeline,
                                  position: 4,
                                  name: 'deploy')
 
@@ -1083,60 +1063,25 @@ RSpec.describe Ci::Pipeline, :mailer do
                                  name: 'cleanup')
       end
 
-      subject { pipeline.ordered_stages }
+      subject { pipeline.stages }
 
-      context 'when using atomic processing' do
-        before do
-          stub_feature_flags(
-            ci_atomic_processing: true
-          )
-        end
-
-        context 'when pipelines is not complete' do
-          it 'returns stages in valid order' do
-            expect(subject).to all(be_a Ci::Stage)
-            expect(subject.map(&:name))
-              .to eq %w[sanity build test deploy cleanup]
-          end
-        end
-
-        context 'when pipeline is complete' do
-          before do
-            pipeline.succeed!
-          end
-
-          it 'returns stages in valid order' do
-            expect(subject).to all(be_a Ci::Stage)
-            expect(subject.map(&:name))
-              .to eq %w[sanity build test deploy cleanup]
-          end
+      context 'when pipelines is not complete' do
+        it 'returns stages in valid order' do
+          expect(subject).to all(be_a Ci::Stage)
+          expect(subject.map(&:name))
+            .to eq %w[sanity build test deploy cleanup]
         end
       end
 
-      context 'when using persisted stages' do
+      context 'when pipeline is complete' do
         before do
-          stub_feature_flags(
-            ci_atomic_processing: false
-          )
+          pipeline.succeed!
         end
 
-        context 'when pipelines is not complete' do
-          it 'still returns legacy stages' do
-            expect(subject).to all(be_a Ci::LegacyStage)
-            expect(subject.map(&:name)).to eq %w[build test]
-          end
-        end
-
-        context 'when pipeline is complete' do
-          before do
-            pipeline.succeed!
-          end
-
-          it 'returns stages in valid order' do
-            expect(subject).to all(be_a Ci::Stage)
-            expect(subject.map(&:name))
-              .to eq %w[sanity build test deploy cleanup]
-          end
+        it 'returns stages in valid order' do
+          expect(subject).to all(be_a Ci::Stage)
+          expect(subject.map(&:name))
+            .to eq %w[sanity build test deploy cleanup]
         end
       end
     end
@@ -1932,6 +1877,7 @@ RSpec.describe Ci::Pipeline, :mailer do
         project: project
       )
     end
+
     let!(:commit_123_ref_develop) do
       create(
         :ci_empty_pipeline,
@@ -1941,6 +1887,7 @@ RSpec.describe Ci::Pipeline, :mailer do
         project: project
       )
     end
+
     let!(:commit_456_ref_test) do
       create(
         :ci_empty_pipeline,
@@ -2136,58 +2083,6 @@ RSpec.describe Ci::Pipeline, :mailer do
       # Since the pipeline already run, so it should not be pending anymore
 
       it { is_expected.to eq('running') }
-    end
-  end
-
-  describe '#update_status' do
-    context 'when pipeline is empty' do
-      it 'updates does not change pipeline status' do
-        expect(pipeline.statuses.latest.slow_composite_status(project: project)).to be_nil
-
-        expect { pipeline.update_legacy_status }
-          .to change { pipeline.reload.status }
-          .from('created')
-          .to('skipped')
-      end
-    end
-
-    context 'when updating status to pending' do
-      before do
-        create(:ci_build, pipeline: pipeline, status: :running)
-      end
-
-      it 'updates pipeline status to running' do
-        expect { pipeline.update_legacy_status }
-          .to change { pipeline.reload.status }
-          .from('created')
-          .to('running')
-      end
-    end
-
-    context 'when updating status to scheduled' do
-      before do
-        create(:ci_build, pipeline: pipeline, status: :scheduled)
-      end
-
-      it 'updates pipeline status to scheduled' do
-        expect { pipeline.update_legacy_status }
-          .to change { pipeline.reload.status }
-          .from('created')
-          .to('scheduled')
-      end
-    end
-
-    context 'when statuses status was not recognized' do
-      before do
-        allow(pipeline)
-          .to receive(:latest_builds_status)
-          .and_return(:unknown)
-      end
-
-      it 'raises an exception' do
-        expect { pipeline.update_legacy_status }
-          .to raise_error(Ci::HasStatus::UnknownStatusError)
-      end
     end
   end
 
@@ -2918,24 +2813,8 @@ RSpec.describe Ci::Pipeline, :mailer do
   describe '#ensure_ci_ref!' do
     subject { pipeline.ensure_ci_ref! }
 
-    shared_examples_for 'protected by feature flag' do
-      context 'when feature flag is disabled' do
-        before do
-          stub_feature_flags(ci_pipeline_fixed_notifications: false)
-        end
-
-        it 'does not do anything' do
-          expect(Ci::Ref).not_to receive(:ensure_for)
-
-          subject
-        end
-      end
-    end
-
     context 'when ci_ref does not exist yet' do
       let!(:pipeline) { create(:ci_pipeline, ci_ref_presence: false) }
-
-      it_behaves_like 'protected by feature flag'
 
       it 'creates a new ci_ref and assigns it' do
         expect { subject }.to change { Ci::Ref.count }.by(1)
@@ -2946,8 +2825,6 @@ RSpec.describe Ci::Pipeline, :mailer do
 
     context 'when ci_ref already exists' do
       let!(:pipeline) { create(:ci_pipeline) }
-
-      it_behaves_like 'protected by feature flag'
 
       it 'fetches a new ci_ref and assigns it' do
         expect { subject }.not_to change { Ci::Ref.count }
@@ -3082,24 +2959,14 @@ RSpec.describe Ci::Pipeline, :mailer do
         create(:ci_build, :success, :report_results, name: 'java', pipeline: pipeline, project: project)
       end
 
-      it 'returns test report summary with collected data', :aggregate_failures do
-        expect(subject.total_time).to be(0.84)
-        expect(subject.total_count).to be(4)
-        expect(subject.success_count).to be(0)
-        expect(subject.failed_count).to be(0)
-        expect(subject.error_count).to be(4)
-        expect(subject.skipped_count).to be(0)
+      it 'returns test report summary with collected data' do
+        expect(subject.total).to include(time: 0.84, count: 4, success: 0, failed: 0, skipped: 0, error: 4)
       end
     end
 
     context 'when pipeline does not have any builds with report results' do
-      it 'returns empty test report sumary', :aggregate_failures do
-        expect(subject.total_time).to be(0)
-        expect(subject.total_count).to be(0)
-        expect(subject.success_count).to be(0)
-        expect(subject.failed_count).to be(0)
-        expect(subject.error_count).to be(0)
-        expect(subject.skipped_count).to be(0)
+      it 'returns empty test report summary' do
+        expect(subject.total).to include(time: 0, count: 0, success: 0, failed: 0, skipped: 0, error: 0)
       end
     end
   end
@@ -3137,40 +3004,6 @@ RSpec.describe Ci::Pipeline, :mailer do
     context 'when pipeline does not have any builds with test reports' do
       it 'returns empty test reports' do
         expect(subject.total_count).to be(0)
-      end
-    end
-  end
-
-  describe '#test_reports_count', :use_clean_rails_memory_store_caching do
-    subject { pipeline.test_reports }
-
-    context 'when pipeline has multiple builds with test reports' do
-      let!(:build_rspec) { create(:ci_build, :success, name: 'rspec', pipeline: pipeline, project: project) }
-      let!(:build_java) { create(:ci_build, :success, name: 'java', pipeline: pipeline, project: project) }
-
-      before do
-        create(:ci_job_artifact, :junit, job: build_rspec, project: project)
-        create(:ci_job_artifact, :junit_with_ant, job: build_java, project: project)
-      end
-
-      it 'returns test report count equal to test reports total_count' do
-        expect(subject.total_count).to eq(7)
-        expect(subject.total_count).to eq(pipeline.test_reports_count)
-      end
-
-      it 'reads from cache when records are cached' do
-        expect(Rails.cache.fetch(['project', project.id, 'pipeline', pipeline.id, 'test_reports_count'], force: false)).to be_nil
-
-        pipeline.test_reports_count
-
-        expect(ActiveRecord::QueryRecorder.new { pipeline.test_reports_count }.count).to eq(0)
-      end
-    end
-
-    context 'when pipeline does not have any builds with test reports' do
-      it 'returns empty test report count' do
-        expect(subject.total_count).to eq(0)
-        expect(subject.total_count).to eq(pipeline.test_reports_count)
       end
     end
   end
@@ -3279,32 +3112,6 @@ RSpec.describe Ci::Pipeline, :mailer do
           expect(AutoDevops::DisableWorker).not_to receive(:perform_async)
 
           pipeline.drop
-        end
-      end
-    end
-
-    context 'when transitioning to success' do
-      context 'when feature is enabled' do
-        before do
-          stub_feature_flags(keep_latest_artifacts_for_ref: true)
-        end
-
-        it 'calls the PipelineSuccessUnlockArtifactsWorker' do
-          expect(Ci::PipelineSuccessUnlockArtifactsWorker).to receive(:perform_async).with(pipeline.id)
-
-          pipeline.succeed!
-        end
-      end
-
-      context 'when feature is disabled' do
-        before do
-          stub_feature_flags(keep_latest_artifacts_for_ref: false)
-        end
-
-        it 'does not call the PipelineSuccessUnlockArtifactsWorker' do
-          expect(Ci::PipelineSuccessUnlockArtifactsWorker).not_to receive(:perform_async)
-
-          pipeline.succeed!
         end
       end
     end

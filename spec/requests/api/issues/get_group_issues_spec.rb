@@ -36,6 +36,7 @@ RSpec.describe API::Issues do
         updated_at: 3.hours.ago,
         created_at: 1.day.ago
     end
+
     let!(:group_confidential_issue) do
       create :issue,
         :confidential,
@@ -45,6 +46,7 @@ RSpec.describe API::Issues do
         updated_at: 2.hours.ago,
         created_at: 2.days.ago
     end
+
     let!(:group_issue) do
       create :issue,
         author: user,
@@ -56,14 +58,17 @@ RSpec.describe API::Issues do
         description: issue_description,
         created_at: 5.days.ago
     end
+
     let!(:group_label) do
       create(:label, title: 'group_lbl', color: '#FFAABB', project: group_project)
     end
+
     let!(:group_label_link) { create(:label_link, label: group_label, target: group_issue) }
     let!(:group_milestone) { create(:milestone, title: '3.0.0', project: group_project) }
     let!(:group_empty_milestone) do
       create(:milestone, title: '4.0.0', project: group_project)
     end
+
     let!(:group_note) { create(:note_on_issue, author: user, project: group_project, noteable: group_issue) }
 
     let(:base_url) { "/groups/#{group.id}/issues" }
@@ -246,6 +251,7 @@ RSpec.describe API::Issues do
                    target_project: private_mrs_project,
                    description: "closes #{group_issue.to_reference(private_mrs_project)}")
           end
+
           let!(:merge_request2) do
             create(:merge_request,
                    :simple,

@@ -37,6 +37,15 @@ RSpec.describe 'Merge requests > User mass updates', :js do
         expect(page).to have_selector('.merge-request', count: 0)
       end
     end
+
+    it 'does not exist in merged state' do
+      merge_request.close
+      visit project_merge_requests_path(project, state: 'merged')
+
+      click_button 'Edit merge requests'
+
+      expect(page).not_to have_css('.js-issue-status')
+    end
   end
 
   context 'assignee' do
@@ -86,7 +95,7 @@ RSpec.describe 'Merge requests > User mass updates', :js do
     describe 'unset milestone' do
       before do
         merge_request.milestone = milestone
-        merge_request.save
+        merge_request.save!
         visit project_merge_requests_path(project)
       end
 

@@ -1,4 +1,4 @@
-import flash from '~/flash';
+import { deprecatedCreateFlash as flash } from '~/flash';
 import { __ } from '~/locale';
 import axios from '~/lib/utils/axios_utils';
 import * as types from './mutation_types';
@@ -56,6 +56,3 @@ export const createLabel = ({ state, dispatch }, label) => {
 
 export const updateSelectedLabels = ({ commit }, labels) =>
   commit(types.UPDATE_SELECTED_LABELS, { labels });
-
-// prevent babel-plugin-rewire from generating an invalid default during karma tests
-export default () => {};

@@ -7,7 +7,7 @@ RSpec.describe Gitlab::BuildAccess do
   let(:project) { create(:project) }
 
   describe '#can_do_action' do
-    subject { described_class.new(user, project: project).can_do_action?(:download_code) }
+    subject { described_class.new(user, container: project).can_do_action?(:download_code) }
 
     context 'when the user can do an action on the project but cannot access git' do
       before do

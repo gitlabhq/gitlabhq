@@ -1,0 +1,46 @@
+UsageData/LargeTable:
+  Enabled: true
+  Include:
+    - 'lib/gitlab/usage_data.rb'
+    - 'ee/lib/ee/gitlab/usage_data.rb'
+  NonRelatedClasses:
+    - :Date
+    - :Feature
+    - :Gitlab
+    - :Gitlab::AppLogger
+    - :Gitlab::Auth
+    - :Gitlab::CurrentSettings
+    - :Gitlab::Database
+    - :Gitlab::ErrorTracking
+    - :Gitlab::Geo
+    - :Gitlab::Git
+    - :Gitlab::IncomingEmail
+    - :Gitlab::Metrics
+    - :Gitlab::Runtime
+    - :Gitaly::Server
+    - :Gitlab::UsageData
+    - :License
+    - :Rails
+    - :Time
+    - :SECURE_PRODUCT_TYPES
+    - :Settings
+  CountMethods:
+    - :count
+    - :distinct_count
+  AllowedMethods:
+    - :arel_table
+    - :minimum
+    - :maximum
+UsageData/DistinctCountByLargeForeignKey:
+  Enabled: true
+  Include:
+    - 'lib/gitlab/usage_data.rb'
+    - 'ee/lib/ee/gitlab/usage_data.rb'
+  AllowedForeignKeys:
+    - :user_id
+    - :author_id
+    - :creator_id
+    - :owner_id
+    - :project_id
+    - :issue_id
+    - :merge_request_id

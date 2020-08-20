@@ -9,15 +9,13 @@ RSpec.describe 'issuable list', :js do
   issuable_types = [:issue, :merge_request]
 
   before do
-    stub_feature_flags(vue_issuables_list: false)
-    # something is going on
     project.add_user(user, :developer)
     sign_in(user)
     issuable_types.each { |type| create_issuables(type) }
   end
 
   issuable_types.each do |issuable_type|
-    it "avoids N+1 database queries for #{issuable_type.to_s.humanize.pluralize}" do
+    it "avoids N+1 database queries for #{issuable_type.to_s.humanize.pluralize}", quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/231426' } do
       control_count = ActiveRecord::QueryRecorder.new { visit_issuable_list(issuable_type) }.count
 
       create_issuables(issuable_type)

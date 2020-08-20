@@ -19,31 +19,31 @@
         = _("Make sure you're logged into the account that owns the projects you'd like to import.")
     %li
       %p
-        = _('Click the <strong>Select none</strong> button on the right, since we only need "Google Code Project Hosting".').html_safe
+        = html_escape(_('Click the %{strong_open}Select none%{strong_close} button on the right, since we only need "Google Code Project Hosting".')) % { strong_open: '<strong>'.html_safe, strong_close: '</strong>'.html_safe }
     %li
       %p
-        = _('Scroll down to <strong>Google Code Project Hosting</strong> and enable the switch on the right.').html_safe
+        = html_escape(_('Scroll down to %{strong_open}Google Code Project Hosting%{strong_close} and enable the switch on the right.')) % { strong_open: '<strong>'.html_safe, strong_close: '</strong>'.html_safe }
     %li
       %p
-        = _('Choose <strong>Next</strong> at the bottom of the page.').html_safe
+        = html_escape(_('Choose %{strong_open}Next%{strong_close} at the bottom of the page.')) % { strong_open: '<strong>'.html_safe, strong_close: '</strong>'.html_safe }
     %li
       %p
         = _('Leave the "File type" and "Delivery method" options on their default values.')
     %li
       %p
-        = _('Choose <strong>Create archive</strong> and wait for archiving to complete.').html_safe
+        = html_escape(_('Choose %{strong_open}Create archive%{strong_close} and wait for archiving to complete.')) % { strong_open: '<strong>'.html_safe, strong_close: '</strong>'.html_safe }
     %li
       %p
-        = _('Click the <strong>Download</strong> button and wait for downloading to complete.').html_safe
+        = html_escape(_('Click the %{strong_open}Download%{strong_close} button and wait for downloading to complete.')) % { strong_open: '<strong>'.html_safe, strong_close: '</strong>'.html_safe }
     %li
       %p
         = _('Find the downloaded ZIP file and decompress it.')
     %li
       %p
-        = _('Find the newly extracted <code>Takeout/Google Code Project Hosting/GoogleCodeProjectHosting.json</code> file.').html_safe
+        = html_escape(_('Find the newly extracted %{code_open}Takeout/Google Code Project Hosting/GoogleCodeProjectHosting.json%{code_close} file.')) % { code_open: '<code>'.html_safe, code_close: '</code>'.html_safe }
     %li
       %p
-        = _('Upload <code>GoogleCodeProjectHosting.json</code> here:').html_safe
+        = html_escape(_('Upload %{code_open}GoogleCodeProjectHosting.json%{code_close} here:')) % { code_open: '<code>'.html_safe, code_close: '</code>'.html_safe }
       %p
         %input{ type: "file", name: "dump_file", id: "dump_file" }
     %li
@@ -57,6 +57,6 @@
         = label_tag :create_user_map_1 do
           = radio_button_tag :create_user_map, 1, false
           = _('Yes, let me map Google Code users to full names or GitLab users.')
-    %li
-      %p
-        = submit_tag _('Continue to the next step'), class: "btn btn-success"
+
+    %span
+      = submit_tag _('Continue to the next step'), class: "btn btn-success"

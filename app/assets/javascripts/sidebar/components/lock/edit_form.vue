@@ -1,40 +1,20 @@
 <script>
+import { GlSprintf } from '@gitlab/ui';
 import editFormButtons from './edit_form_buttons.vue';
-import issuableMixin from '../../../vue_shared/mixins/issuable';
-import { __, sprintf } from '../../../locale';
 
 export default {
   components: {
     editFormButtons,
+    GlSprintf,
   },
-  mixins: [issuableMixin],
   props: {
     isLocked: {
       required: true,
       type: Boolean,
     },
-
-    updateLockedAttribute: {
+    issuableDisplayName: {
       required: true,
-      type: Function,
-    },
-  },
-  computed: {
-    lockWarning() {
-      return sprintf(
-        __(
-          'Lock this %{issuableDisplayName}? Only <strong>project members</strong> will be able to comment.',
-        ),
-        { issuableDisplayName: this.issuableDisplayName },
-      );
-    },
-    unlockWarning() {
-      return sprintf(
-        __(
-          'Unlock this %{issuableDisplayName}? <strong>Everyone</strong> will be able to comment.',
-        ),
-        { issuableDisplayName: this.issuableDisplayName },
-      );
+      type: String,
     },
   },
 };
@@ -42,12 +22,38 @@ export default {
 
 <template>
   <div class="dropdown show">
-    <div class="dropdown-menu sidebar-item-warning-message">
-      <p v-if="isLocked" class="text" v-html="unlockWarning"></p>
+    <div class="dropdown-menu sidebar-item-warning-message" data-testid="warning-text">
+      <p v-if="isLocked" class="text">
+        <gl-sprintf
+          :message="
+            __(
+              'Unlock this %{issuableDisplayName}? %{strongStart}Everyone%{strongEnd} will be able to comment.',
+            )
+          "
+        >
+          <template #issuableDisplayName>{{ issuableDisplayName }}</template>
+          <template #strong="{ content }"
+            ><strong>{{ content }}</strong></template
+          >
+        </gl-sprintf>
+      </p>
 
-      <p v-else class="text" v-html="lockWarning"></p>
+      <p v-else class="text">
+        <gl-sprintf
+          :message="
+            __(
+              'Lock this %{issuableDisplayName}? Only %{strongStart}project members%{strongEnd} will be able to comment.',
+            )
+          "
+        >
+          <template #issuableDisplayName>{{ issuableDisplayName }}</template>
+          <template #strong="{ content }"
+            ><strong>{{ content }}</strong></template
+          >
+        </gl-sprintf>
+      </p>
 
-      <edit-form-buttons :is-locked="isLocked" :update-locked-attribute="updateLockedAttribute" />
+      <edit-form-buttons :is-locked="isLocked" :issuable-display-name="issuableDisplayName" />
     </div>
   </div>
 </template>

@@ -2,7 +2,7 @@ import { shallowMount, createLocalVue } from '@vue/test-utils';
 import VueRouter from 'vue-router';
 import { GlAlert } from '@gitlab/ui';
 import { ApolloMutation } from 'vue-apollo';
-import createFlash from '~/flash';
+import { deprecatedCreateFlash as createFlash } from '~/flash';
 import DesignIndex from '~/design_management/pages/design/index.vue';
 import DesignSidebar from '~/design_management/components/design_sidebar.vue';
 import DesignPresentation from '~/design_management/components/design_presentation.vue';
@@ -95,9 +95,12 @@ describe('Design management design index page', () => {
         DesignSidebar,
         DesignReplyForm,
       },
+      provide: {
+        issueIid: '1',
+        projectPath: 'project-path',
+      },
       data() {
         return {
-          issueIid: '1',
           activeDiscussion: {
             id: null,
             source: null,
@@ -149,7 +152,7 @@ describe('Design management design index page', () => {
 
     expect(findSidebar().props()).toEqual({
       design,
-      markdownPreviewPath: '//preview_markdown?target_type=Issue',
+      markdownPreviewPath: '/project-path/preview_markdown?target_type=Issue',
       resolvedDiscussionsExpanded: false,
     });
   });

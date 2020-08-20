@@ -21,5 +21,9 @@ module WikiPages
     def event_action
       :destroyed
     end
+
+    def fingerprint(page)
+      page.wiki.repository.head_commit.sha
+    end
   end
 end

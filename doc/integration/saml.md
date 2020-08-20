@@ -253,8 +253,7 @@ considered admin users.
 
 ### Auditor Groups **(STARTER ONLY)**
 
->**Note:**
-This setting is only available on GitLab 11.4 EE and above.
+> Introduced in [GitLab Starter](https://about.gitlab.com/pricing/) 11.4.
 
 The requirements are the same as the previous settings, your IdP needs to pass Group information to GitLab, you need to tell
 GitLab where to look for the groups in the SAML response, and which group(s) should be
@@ -379,7 +378,7 @@ You may also bypass the auto signin feature by browsing to
 
 ### `attribute_statements`
 
->**Note:**
+NOTE: **Note:**
 This setting should only be used to map attributes that are part of the
 OmniAuth `info` hash schema.
 
@@ -584,6 +583,10 @@ Avoid user control of the following attributes:
 These attributes define the SAML user. If users can change these attributes, they can impersonate others.
 
 Refer to the documentation for your SAML Identity Provider for information on how to fix these attributes.
+
+## Passwords for users created via SAML
+
+The [Generated passwords for users created through integrated authentication](../security/passwords_for_integrated_authentication_methods.md) guide provides an overview of how GitLab generates and sets passwords for users created via SAML.
 
 ## Troubleshooting
 

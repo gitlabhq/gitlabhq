@@ -72,6 +72,7 @@ GET /issues?confidential=true
 | `confidential`      | boolean          | no         | Filter confidential or public issues.                                                                                                               |
 | `not`               | Hash             | no         | Return issues that do not match the parameters supplied. Accepts: `labels`, `milestone`, `author_id`, `author_username`, `assignee_id`, `assignee_username`, `my_reaction_emoji` |
 | `non_archived`      | boolean          | no         | Return issues only from non-archived projects. If `false`, response will return issues from both archived and non-archived projects. Default is `true`. _(Introduced in [GitLab 13.0](https://gitlab.com/gitlab-org/gitlab/-/issues/197170))_ |
+| `due_date`          | string           | no         | Return issues that have no due date (`0`) or whose due date is this week, this month, between two weeks ago and next month, or which are overdue. Accepts: `0` (no due date), `overdue`, `week`, `month`, `next_month_and_previous_two_weeks`. _(Introduced in [GitLab 13.3](https://gitlab.com/gitlab-org/gitlab/-/issues/233420))_ |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/issues"
@@ -134,7 +135,7 @@ Example response:
       "merge_requests_count": 0,
       "user_notes_count": 1,
       "due_date": "2016-07-22",
-      "web_url": "http://example.com/my-group/my-project/issues/6",
+      "web_url": "http://gitlab.example.com/my-group/my-project/issues/6",
       "references": {
         "short": "#6",
         "relative": "my-group/my-project#6",
@@ -151,10 +152,10 @@ Example response:
       "confidential": false,
       "discussion_locked": false,
       "_links":{
-         "self":"http://example.com/api/v4/projects/1/issues/76",
-         "notes":"`http://example.com/`api/v4/projects/1/issues/76/notes",
-         "award_emoji":"http://example.com/api/v4/projects/1/issues/76/award_emoji",
-         "project":"http://example.com/api/v4/projects/1"
+         "self":"http://gitlab.example.com/api/v4/projects/1/issues/76",
+         "notes":"http://gitlab.example.com/api/v4/projects/1/issues/76/notes",
+         "award_emoji":"http://gitlab.example.com/api/v4/projects/1/issues/76/award_emoji",
+         "project":"http://gitlab.example.com/api/v4/projects/1"
       },
       "task_completion_status":{
          "count":0,
@@ -173,6 +174,20 @@ the `weight` parameter:
       "state" : "opened",
       "description" : "Ratione dolores corrupti mollitia soluta quia.",
       "weight": null,
+      ...
+   }
+]
+```
+
+Users on GitLab [Ultimate](https://about.gitlab.com/pricing/) will also see
+the `health_status` parameter:
+
+```json
+[
+   {
+      "state" : "opened",
+      "description" : "Ratione dolores corrupti mollitia soluta quia.",
+      "health_status": "on_track",
       ...
    }
 ]
@@ -231,6 +246,7 @@ GET /groups/:id/issues?confidential=true
 | `confidential`     | boolean          | no         | Filter confidential or public issues.                                                                                         |
 | `not`               | Hash             | no         | Return issues that do not match the parameters supplied. Accepts: `labels`, `milestone`, `author_id`, `author_username`, `assignee_id`, `assignee_username`, `my_reaction_emoji`, `search`, `in` |
 | `non_archived`      | boolean          | no         | Return issues from non archived projects. Default is true. _(Introduced in [GitLab 12.8](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/23785))_ |
+| `due_date`          | string           | no         | Return issues that have no due date (`0`) or whose due date is this week, this month, between two weeks ago and next month, or which are overdue. Accepts: `0` (no due date), `overdue`, `week`, `month`, `next_month_and_previous_two_weeks`. _(Introduced in [GitLab 13.3](https://gitlab.com/gitlab-org/gitlab/-/issues/233420))_ |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/4/issues"
@@ -292,7 +308,7 @@ Example response:
       "closed_by" : null,
       "user_notes_count": 1,
       "due_date": null,
-      "web_url": "http://example.com/my-group/my-project/issues/1",
+      "web_url": "http://gitlab.example.com/my-group/my-project/issues/1",
       "references": {
         "short": "#1",
         "relative": "my-project#1",
@@ -309,10 +325,10 @@ Example response:
       "confidential": false,
       "discussion_locked": false,
       "_links":{
-         "self":"http://example.com/api/v4/projects/4/issues/41",
-         "notes":"`http://example.com/`api/v4/projects/4/issues/41/notes",
-         "award_emoji":"http://example.com/api/v4/projects/4/issues/41/award_emoji",
-         "project":"http://example.com/api/v4/projects/4"
+         "self":"http://gitlab.example.com/api/v4/projects/4/issues/41",
+         "notes":"http://gitlab.example.com/api/v4/projects/4/issues/41/notes",
+         "award_emoji":"http://gitlab.example.com/api/v4/projects/4/issues/41/award_emoji",
+         "project":"http://gitlab.example.com/api/v4/projects/4"
       },
       "task_completion_status":{
          "count":0,
@@ -331,6 +347,20 @@ the `weight` parameter:
       "project_id" : 4,
       "description" : "Omnis vero earum sunt corporis dolor et placeat.",
       "weight": null,
+      ...
+   }
+]
+```
+
+Users on GitLab [Ultimate](https://about.gitlab.com/pricing/) will also see
+the `health_status` parameter:
+
+```json
+[
+   {
+      "project_id" : 4,
+      "description" : "Omnis vero earum sunt corporis dolor et placeat.",
+      "health_status": "at_risk",
       ...
    }
 ]
@@ -388,6 +418,7 @@ GET /projects/:id/issues?confidential=true
 | `updated_before`    | datetime         | no         | Return issues updated on or before the given time                                                                             |
 | `confidential`     | boolean          | no         | Filter confidential or public issues.                                                                                         |
 | `not`               | Hash             | no         | Return issues that do not match the parameters supplied. Accepts: `labels`, `milestone`, `author_id`, `author_username`, `assignee_id`, `assignee_username`, `my_reaction_emoji`, `search`, `in` |
+| `due_date`          | string           | no         | Return issues that have no due date (`0`) or whose due date is this week, this month, between two weeks ago and next month, or which are overdue. Accepts: `0` (no due date), `overdue`, `week`, `month`, `next_month_and_previous_two_weeks`. _(Introduced in [GitLab 13.3](https://gitlab.com/gitlab-org/gitlab/-/issues/233420))_ |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/4/issues"
@@ -456,7 +487,7 @@ Example response:
       },
       "user_notes_count": 1,
       "due_date": "2016-07-22",
-      "web_url": "http://example.com/my-group/my-project/issues/1",
+      "web_url": "http://gitlab.example.com/my-group/my-project/issues/1",
       "references": {
         "short": "#1",
         "relative": "#1",
@@ -473,10 +504,10 @@ Example response:
       "confidential": false,
       "discussion_locked": false,
       "_links":{
-         "self":"http://example.com/api/v4/projects/4/issues/41",
-         "notes":"`http://example.com/`api/v4/projects/4/issues/41/notes",
-         "award_emoji":"http://example.com/api/v4/projects/4/issues/41/award_emoji",
-         "project":"http://example.com/api/v4/projects/4"
+         "self":"http://gitlab.example.com/api/v4/projects/4/issues/41",
+         "notes":"http://gitlab.example.com/api/v4/projects/4/issues/41/notes",
+         "award_emoji":"http://gitlab.example.com/api/v4/projects/4/issues/41/award_emoji",
+         "project":"http://gitlab.example.com/api/v4/projects/4"
       },
       "task_completion_status":{
          "count":0,
@@ -495,6 +526,20 @@ the `weight` parameter:
       "project_id" : 4,
       "description" : "Omnis vero earum sunt corporis dolor et placeat.",
       "weight": null,
+      ...
+   }
+]
+```
+
+Users on GitLab [Ultimate](https://about.gitlab.com/pricing/) will also see
+the `health_status` parameter:
+
+```json
+[
+   {
+      "project_id" : 4,
+      "description" : "Omnis vero earum sunt corporis dolor et placeat.",
+      "health_status": "at_risk",
       ...
    }
 ]
@@ -581,7 +626,7 @@ Example response:
    "subscribed": false,
    "user_notes_count": 1,
    "due_date": null,
-   "web_url": "http://example.com/my-group/my-project/issues/1",
+   "web_url": "http://gitlab.example.com/my-group/my-project/issues/1",
    "references": {
      "short": "#1",
      "relative": "#1",
@@ -596,10 +641,10 @@ Example response:
    "confidential": false,
    "discussion_locked": false,
    "_links": {
-      "self": "http://example.com/api/v4/projects/1/issues/2",
-      "notes": "http://example.com/api/v4/projects/1/issues/2/notes",
-      "award_emoji": "http://example.com/api/v4/projects/1/issues/2/award_emoji",
-      "project": "http://example.com/api/v4/projects/1"
+      "self": "http://gitlab.example.com/api/v4/projects/1/issues/2",
+      "notes": "http://gitlab.example.com/api/v4/projects/1/issues/2/notes",
+      "award_emoji": "http://gitlab.example.com/api/v4/projects/1/issues/2/award_emoji",
+      "project": "http://gitlab.example.com/api/v4/projects/1"
    },
    "task_completion_status":{
       "count":0,
@@ -639,6 +684,20 @@ the `epic` property:
 }
 ```
 
+Users on GitLab [Ultimate](https://about.gitlab.com/pricing/) will also additionally see
+the `health_status` property:
+
+```json
+[
+   {
+      "project_id" : 4,
+      "description" : "Omnis vero earum sunt corporis dolor et placeat.",
+      "health_status": "on_track",
+      ...
+   }
+]
+```
+
 **Note**: `assignee` column is deprecated, now we show it as a single-sized array `assignees` to conform to the GitLab EE API.
 
 **Note**: The `closed_by` attribute was [introduced in GitLab 10.6](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/17042). This value will only be present for issues which were closed after GitLab 10.6 and when the user account that closed the issue still exists.
@@ -661,7 +720,7 @@ POST /projects/:id/issues
 | `title`                                   | string         | yes      | The title of an issue |
 | `description`                             | string         | no       | The description of an issue. Limited to 1,048,576 characters. |
 | `confidential`                            | boolean        | no       | Set an issue to be confidential. Default is `false`.  |
-| `assignee_ids`                            | integer array  | no       | The ID of a user to assign issue |
+| `assignee_ids`                            | integer array  | no       | The ID of the user(s) to assign the issue to. |
 | `milestone_id`                            | integer        | no       | The global ID of a milestone to assign issue  |
 | `labels`                                  | string         | no       | Comma-separated label names for an issue  |
 | `created_at`                              | string         | no       | Date time string, ISO 8601 formatted, for example `2016-03-11T03:45:40Z` (requires admin or project/group owner rights) |
@@ -710,7 +769,7 @@ Example response:
    "subscribed" : true,
    "user_notes_count": 0,
    "due_date": null,
-   "web_url": "http://example.com/my-group/my-project/issues/14",
+   "web_url": "http://gitlab.example.com/my-group/my-project/issues/14",
    "references": {
      "short": "#14",
      "relative": "#14",
@@ -725,10 +784,10 @@ Example response:
    "confidential": false,
    "discussion_locked": false,
    "_links": {
-      "self": "http://example.com/api/v4/projects/1/issues/2",
-      "notes": "http://example.com/api/v4/projects/1/issues/2/notes",
-      "award_emoji": "http://example.com/api/v4/projects/1/issues/2/award_emoji",
-      "project": "http://example.com/api/v4/projects/1"
+      "self": "http://gitlab.example.com/api/v4/projects/1/issues/2",
+      "notes": "http://gitlab.example.com/api/v4/projects/1/issues/2/notes",
+      "award_emoji": "http://gitlab.example.com/api/v4/projects/1/issues/2/award_emoji",
+      "project": "http://gitlab.example.com/api/v4/projects/1"
    },
    "task_completion_status":{
       "count":0,
@@ -749,17 +808,28 @@ the `weight` parameter:
 }
 ```
 
+Users on GitLab [Ultimate](https://about.gitlab.com/pricing/) will also see
+the `health_status` parameter:
+
+```json
+[
+   {
+      "project_id" : 4,
+      "description" : "Omnis vero earum sunt corporis dolor et placeat.",
+      "health_status": "on_track",
+      ...
+   }
+]
+```
+
 **Note**: `assignee` column is deprecated, now we show it as a single-sized array `assignees` to conform to the GitLab EE API.
 
 **Note**: The `closed_by` attribute was [introduced in GitLab 10.6](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/17042). This value will only be present for issues which were closed after GitLab 10.6 and when the user account that closed the issue still exists.
 
 ## Rate limits
 
-To help avoid abuse, users are limited to:
-
-| Request Type     | Limit                       |
-| ---------------- | --------------------------- |
-| Create           | 300 issues per minute       |
+To help avoid abuse, users can be limited to a specific number of `Create` requests per minute.
+See [Issues rate limits](../user/admin_area/settings/rate_limit_on_issues_creation.md).
 
 ## Edit issue
 
@@ -835,7 +905,7 @@ Example response:
    "subscribed" : true,
    "user_notes_count": 0,
    "due_date": "2016-07-22",
-   "web_url": "http://example.com/my-group/my-project/issues/15",
+   "web_url": "http://gitlab.example.com/my-group/my-project/issues/15",
    "references": {
      "short": "#15",
      "relative": "#15",
@@ -850,10 +920,10 @@ Example response:
    "confidential": false,
    "discussion_locked": false,
    "_links": {
-      "self": "http://example.com/api/v4/projects/1/issues/2",
-      "notes": "http://example.com/api/v4/projects/1/issues/2/notes",
-      "award_emoji": "http://example.com/api/v4/projects/1/issues/2/award_emoji",
-      "project": "http://example.com/api/v4/projects/1"
+      "self": "http://gitlab.example.com/api/v4/projects/1/issues/2",
+      "notes": "http://gitlab.example.com/api/v4/projects/1/issues/2/notes",
+      "award_emoji": "http://gitlab.example.com/api/v4/projects/1/issues/2/award_emoji",
+      "project": "http://gitlab.example.com/api/v4/projects/1"
    },
    "task_completion_status":{
       "count":0,
@@ -872,6 +942,20 @@ the `weight` parameter:
    "weight": null,
    ...
 }
+```
+
+Users on GitLab [Ultimate](https://about.gitlab.com/pricing/) will also see
+the `health_status` parameter:
+
+```json
+[
+   {
+      "project_id" : 4,
+      "description" : "Omnis vero earum sunt corporis dolor et placeat.",
+      "health_status": "on_track",
+      ...
+   }
+]
 ```
 
 NOTE: **Note:**
@@ -902,7 +986,7 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://git
 
 ## Reorder an issue
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/211864) as a [community contribution](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/35349) in GitLab 13.2.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/211864) in GitLab 13.2.
 
 Reorders an issue, you can see the results when sorting issues manually
 
@@ -988,7 +1072,7 @@ Example response:
     "web_url": "https://gitlab.example.com/solon.cremin"
   },
   "due_date": null,
-  "web_url": "http://example.com/my-group/my-project/issues/11",
+  "web_url": "http://gitlab.example.com/my-group/my-project/issues/11",
   "references": {
     "short": "#11",
     "relative": "#11",
@@ -1003,10 +1087,10 @@ Example response:
   "confidential": false,
   "discussion_locked": false,
   "_links": {
-    "self": "http://example.com/api/v4/projects/1/issues/2",
-    "notes": "http://example.com/api/v4/projects/1/issues/2/notes",
-    "award_emoji": "http://example.com/api/v4/projects/1/issues/2/award_emoji",
-    "project": "http://example.com/api/v4/projects/1"
+    "self": "http://gitlab.example.com/api/v4/projects/1/issues/2",
+    "notes": "http://gitlab.example.com/api/v4/projects/1/issues/2/notes",
+    "award_emoji": "http://gitlab.example.com/api/v4/projects/1/issues/2/award_emoji",
+    "project": "http://gitlab.example.com/api/v4/projects/1"
   },
   "task_completion_status":{
      "count":0,
@@ -1025,6 +1109,20 @@ the `weight` parameter:
   "weight": null,
   ...
 }
+```
+
+Users on GitLab [Ultimate](https://about.gitlab.com/pricing/) will also see
+the `health_status` parameter:
+
+```json
+[
+   {
+      "project_id" : 4,
+      "description" : "Omnis vero earum sunt corporis dolor et placeat.",
+      "health_status": "on_track",
+      ...
+   }
+]
 ```
 
 **Note**: `assignee` column is deprecated, now we show it as a single-sized array `assignees` to conform to the GitLab EE API.
@@ -1094,7 +1192,7 @@ Example response:
     "web_url": "https://gitlab.example.com/solon.cremin"
   },
   "due_date": null,
-  "web_url": "http://example.com/my-group/my-project/issues/11",
+  "web_url": "http://gitlab.example.com/my-group/my-project/issues/11",
   "references": {
     "short": "#11",
     "relative": "#11",
@@ -1109,10 +1207,10 @@ Example response:
   "confidential": false,
   "discussion_locked": false,
   "_links": {
-    "self": "http://example.com/api/v4/projects/1/issues/2",
-    "notes": "http://example.com/api/v4/projects/1/issues/2/notes",
-    "award_emoji": "http://example.com/api/v4/projects/1/issues/2/award_emoji",
-    "project": "http://example.com/api/v4/projects/1"
+    "self": "http://gitlab.example.com/api/v4/projects/1/issues/2",
+    "notes": "http://gitlab.example.com/api/v4/projects/1/issues/2/notes",
+    "award_emoji": "http://gitlab.example.com/api/v4/projects/1/issues/2/award_emoji",
+    "project": "http://gitlab.example.com/api/v4/projects/1"
   },
   "task_completion_status":{
      "count":0,
@@ -1193,7 +1291,7 @@ Example response:
   },
   "subscribed": false,
   "due_date": null,
-  "web_url": "http://example.com/my-group/my-project/issues/12",
+  "web_url": "http://gitlab.example.com/my-group/my-project/issues/12",
   "references": {
     "short": "#12",
     "relative": "#12",
@@ -1300,7 +1398,7 @@ Example response:
     "downvotes": 0,
     "merge_requests_count": 0,
     "due_date": null,
-    "web_url": "http://example.com/my-group/my-project/issues/10",
+    "web_url": "http://gitlab.example.com/my-group/my-project/issues/10",
     "references": {
       "short": "#10",
       "relative": "#10",
@@ -1732,7 +1830,7 @@ Example response:
     "username": "user1",
     "state": "active",
     "avatar_url": "http://www.gravatar.com/avatar/c922747a93b40d1ea88262bf1aebee62?s=80&d=identicon",
-    "web_url": "http://localhost/user1"
+    "web_url": "http://gitlab.example.com/user1"
   },
   {
     "id": 5,
@@ -1740,7 +1838,7 @@ Example response:
     "username": "user5",
     "state": "active",
     "avatar_url": "http://www.gravatar.com/avatar/4aea8cf834ed91844a2da4ff7ae6b491?s=80&d=identicon",
-    "web_url": "http://localhost/user5"
+    "web_url": "http://gitlab.example.com/user5"
   }
 ]
 ```
@@ -1775,3 +1873,8 @@ Example response:
   "akismet_submitted": false
 }
 ```
+
+## List issue state events
+
+To track which state was set, who did it, and when it happened, check out
+[Resource state events API](./resource_state_events.md#issues).

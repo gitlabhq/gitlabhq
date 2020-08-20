@@ -1,0 +1,33 @@
+dashboard: 'Test Dashboard'
+panel_groups:
+- panels:
+  - title: "Super Chart A1"
+    type: "area-chart"
+    y_label: "y_label"
+    weight: 1
+    max_value: 1
+    metrics:
+    - id: metric_a1
+      query_range: |+
+        avg(
+          sum(
+            container_memory_usage_bytes{
+              container_name!="POD",
+              pod_name=~"^{{ci_environment_slug}}-(.*)",
+              namespace="{{kube_namespace}}"
+            }
+          ) by (job)
+        ) without (job)
+        /1024/1024/1024
+      unit: unit
+      label: Legend Label
+  - title: "Super Chart A2"
+    type: "area-chart"
+    y_label: "y_label"
+    weight: 2
+    metrics:
+    - id: metric_a2
+      query_range: 'query'
+      label: Legend Label
+      unit: unit
+- group: Group B

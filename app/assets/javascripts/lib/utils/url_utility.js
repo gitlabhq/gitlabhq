@@ -71,29 +71,56 @@ export function getParameterValues(sParam, url = window.location) {
  *
  * @param {Object} params - url keys and value to merge
  * @param {String} url
+ * @param {Object} options
+ * @param {Boolean} options.spreadArrays - split array values into separate key/value-pairs
  */
-export function mergeUrlParams(params, url) {
+export function mergeUrlParams(params, url, options = {}) {
+  const { spreadArrays = false } = options;
   const re = /^([^?#]*)(\?[^#]*)?(.*)/;
-  const merged = {};
+  let merged = {};
   const [, fullpath, query, fragment] = url.match(re);
 
   if (query) {
-    query
+    merged = query
       .substr(1)
       .split('&')
-      .forEach(part => {
+      .reduce((memo, part) => {
         if (part.length) {
           const kv = part.split('=');
-          merged[decodeUrlParameter(kv[0])] = decodeUrlParameter(kv.slice(1).join('='));
+          let key = decodeUrlParameter(kv[0]);
+          const value = decodeUrlParameter(kv.slice(1).join('='));
+          if (spreadArrays && key.endsWith('[]')) {
+            key = key.slice(0, -2);
+            if (!Array.isArray(memo[key])) {
+              return { ...memo, [key]: [value] };
+            }
+            memo[key].push(value);
+
+            return memo;
+          }
+
+          return { ...memo, [key]: value };
         }
-      });
+
+        return memo;
+      }, {});
   }
 
   Object.assign(merged, params);
 
   const newQuery = Object.keys(merged)
     .filter(key => merged[key] !== null)
-    .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(merged[key])}`)
+    .map(key => {
+      let value = merged[key];
+      const encodedKey = encodeURIComponent(key);
+      if (spreadArrays && Array.isArray(value)) {
+        value = merged[key]
+          .map(arrayValue => encodeURIComponent(arrayValue))
+          .join(`&${encodedKey}[]=`);
+        return `${encodedKey}[]=${value}`;
+      }
+      return `${encodedKey}=${encodeURIComponent(value)}`;
+    })
     .join('&');
 
   if (newQuery) {

@@ -122,7 +122,7 @@ RSpec.describe GroupDescendantsFinder do
     it 'does not include projects shared with the group' do
       project = create(:project, namespace: group)
       other_project = create(:project)
-      other_project.project_group_links.create(group: group,
+      other_project.project_group_links.create!(group: group,
                                                group_access: Gitlab::Access::MAINTAINER)
 
       expect(finder.execute).to contain_exactly(project)

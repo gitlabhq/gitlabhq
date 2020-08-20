@@ -1,0 +1,23 @@
+.notify-slack:
+  image: alpine
+  stage: notify
+  dependencies: []
+  cache: {}
+  before_script:
+    - apk update && apk add git curl bash
+
+notify-update-gitaly:
+  extends:
+    - .notify-slack
+  rules:
+    - if: '$CI_MERGE_REQUEST_IID && $CI_COMMIT_BRANCH == $GITALY_UPDATE_BRANCH'
+      when: on_failure
+      allow_failure: true
+  variables:
+    NOTIFY_CHANNEL: g_create_gitaly
+    GITALY_UPDATE_BRANCH: release-tools/update-gitaly
+    MERGE_REQUEST_URL: ${CI_MERGE_REQUEST_PROJECT_URL}/-/merge_requests/${CI_MERGE_REQUEST_IID}
+  script:
+    - echo "NOTIFY_CHANNEL is ${NOTIFY_CHANNEL}"
+    - echo "CI_PIPELINE_URL is ${CI_PIPELINE_URL}"
+    - scripts/slack ${NOTIFY_CHANNEL} "☠️ \`${GITALY_UPDATE_BRANCH}\` failed! ☠️ See ${CI_PIPELINE_URL} (triggered from ${MERGE_REQUEST_URL})" ci_failing

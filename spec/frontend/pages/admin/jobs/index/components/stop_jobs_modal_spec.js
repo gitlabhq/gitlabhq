@@ -1,9 +1,9 @@
 import Vue from 'vue';
-import { redirectTo } from '~/lib/utils/url_utility';
 import mountComponent from 'helpers/vue_mount_component_helper';
+import { TEST_HOST } from 'jest/helpers/test_constants';
+import { redirectTo } from '~/lib/utils/url_utility';
 import axios from '~/lib/utils/axios_utils';
 import stopJobsModal from '~/pages/admin/jobs/index/components/stop_jobs_modal.vue';
-import { TEST_HOST } from 'jest/helpers/test_constants';
 
 jest.mock('~/lib/utils/url_utility', () => ({
   ...jest.requireActual('~/lib/utils/url_utility'),

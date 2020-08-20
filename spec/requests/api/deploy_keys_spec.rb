@@ -165,6 +165,7 @@ RSpec.describe API::DeployKeys do
         let(:deploy_keys_project) do
           create(:deploy_keys_project, project: project, deploy_key: deploy_key)
         end
+
         let(:extra_params) { { title: 'new title', can_push: true } }
 
         it 'updates the title of the deploy key' do

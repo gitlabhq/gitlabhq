@@ -32,7 +32,7 @@ module SystemCheck
 
     def only_one_sidekiq_running
       process_count = sidekiq_process_count
-      return if process_count.zero?
+      return if process_count == 0
 
       $stdout.print 'Number of Sidekiq processes ... '
 

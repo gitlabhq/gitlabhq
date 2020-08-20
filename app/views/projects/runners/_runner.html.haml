@@ -6,11 +6,12 @@
       = link_to _("%{token}...") % { token: runner.short_sha }, project_runner_path(@project, runner), class: 'commit-sha has-tooltip', title: _("Partial token for reference only")
 
       - if runner.locked?
-        = icon('lock', class: 'has-tooltip', title: _('Locked to current projects'))
+        %span.has-tooltip{ title: _('Locked to current projects') }
+          = sprite_icon('lock')
 
       %small.edit-runner
-        = link_to edit_project_runner_path(@project, runner) do
-          %i.fa.fa-edit.btn
+        = link_to edit_project_runner_path(@project, runner), class: 'btn btn-edit' do
+          = sprite_icon('pencil')
     - else
       %span.commit-sha
         = runner.short_sha
@@ -27,7 +28,7 @@
           - runner_project = @project.runner_projects.find_by(runner_id: runner) # rubocop: disable CodeReuse/ActiveRecord
           = link_to _('Disable for this project'), project_runner_project_path(@project, runner_project), data: { confirm: _("Are you sure?") }, method: :delete, class: 'btn btn-danger btn-sm'
       - elsif runner.project_type?
-        = form_for [@project.namespace.becomes(Namespace), @project, @project.runner_projects.new] do |f|
+        = form_for [@project, @project.runner_projects.new] do |f|
           = f.hidden_field :runner_id, value: runner.id
           = f.submit _('Enable for this project'), class: 'btn btn-sm'
   .float-right

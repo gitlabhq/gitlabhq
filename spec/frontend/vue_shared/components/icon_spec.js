@@ -1,8 +1,8 @@
 import Vue from 'vue';
 import { mount } from '@vue/test-utils';
 import mountComponent from 'helpers/vue_mount_component_helper';
-import Icon from '~/vue_shared/components/icon.vue';
 import iconsPath from '@gitlab/svgs/dist/icons.svg';
+import Icon from '~/vue_shared/components/icon.vue';
 
 jest.mock('@gitlab/svgs/dist/icons.svg', () => 'testing');
 

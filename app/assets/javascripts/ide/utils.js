@@ -1,6 +1,6 @@
-import { SIDE_LEFT, SIDE_RIGHT } from './constants';
 import { languages } from 'monaco-editor';
 import { flatten } from 'lodash';
+import { SIDE_LEFT, SIDE_RIGHT } from './constants';
 
 const toLowerCase = x => x.toLowerCase();
 

@@ -108,6 +108,8 @@
   - 1
 - - file_hook
   - 1
+- - flush_counter_increments
+  - 1
 - - gcp_cluster
   - 1
 - - geo
@@ -175,6 +177,8 @@
 - - pages_domain_ssl_renewal
   - 1
 - - pages_domain_verification
+  - 1
+- - pages_update_configuration
   - 1
 - - personal_access_tokens
   - 1

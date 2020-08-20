@@ -6,6 +6,7 @@ export default ({
   isGroup,
   isGroupAncestor,
   isGroupDecendent,
+  useDefaultState,
   stateFiltersSelector,
   anchor,
 }) => {
@@ -16,6 +17,7 @@ export default ({
       isGroup,
       isGroupAncestor,
       isGroupDecendent,
+      useDefaultState,
       filteredSearchTokenKeys,
       stateFiltersSelector,
       anchor,

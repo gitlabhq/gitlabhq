@@ -79,6 +79,7 @@ function generateEntries() {
   const manualEntries = {
     default: defaultEntries,
     sentry: './sentry/index.js',
+    chrome_84_icon_fix: './lib/chrome_84_icon_fix.js',
   };
 
   return Object.assign(manualEntries, autoEntries);
@@ -115,6 +116,15 @@ if (IS_EE) {
     ee_spec: path.join(ROOT_PATH, 'ee/spec/javascripts'),
     ee_jest: path.join(ROOT_PATH, 'ee/spec/frontend'),
     ee_else_ce: path.join(ROOT_PATH, 'ee/app/assets/javascripts'),
+  });
+}
+
+if (!IS_PRODUCTION) {
+  const fixtureDir = IS_EE ? 'fixtures-ee' : 'fixtures';
+
+  Object.assign(alias, {
+    test_fixtures: path.join(ROOT_PATH, `tmp/tests/frontend/${fixtureDir}`),
+    test_helpers: path.join(ROOT_PATH, 'spec/frontend_integration/test_helpers'),
   });
 }
 
@@ -257,6 +267,8 @@ module.exports = {
     runtimeChunk: 'single',
     splitChunks: {
       maxInitialRequests: 20,
+      // In order to prevent firewalls tripping up: https://gitlab.com/gitlab-org/gitlab/-/issues/22648
+      automaticNameDelimiter: '-',
       cacheGroups: {
         default: false,
         common: () => ({
@@ -268,7 +280,7 @@ module.exports = {
         monaco: {
           priority: 15,
           name: 'monaco',
-          chunks: 'initial',
+          chunks: 'all',
           test: /[\\/]node_modules[\\/]monaco-editor[\\/]/,
           minChunks: 2,
           reuseExistingChunk: true,

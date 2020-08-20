@@ -41,7 +41,7 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
   def diffs_metadata
     diffs = @compare.diffs(diff_options)
 
-    render json: DiffsMetadataSerializer.new(project: @merge_request.project)
+    render json: DiffsMetadataSerializer.new(project: @merge_request.project, current_user: current_user)
                    .represent(diffs, additional_attributes)
   end
 

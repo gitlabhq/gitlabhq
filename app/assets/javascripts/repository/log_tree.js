@@ -1,8 +1,8 @@
 import { normalizeData } from 'ee_else_ce/repository/utils/commit';
 import axios from '~/lib/utils/axios_utils';
-import getCommits from './queries/getCommits.query.graphql';
-import getProjectPath from './queries/getProjectPath.query.graphql';
-import getRef from './queries/getRef.query.graphql';
+import commitsQuery from './queries/commits.query.graphql';
+import projectPathQuery from './queries/project_path.query.graphql';
+import refQuery from './queries/ref.query.graphql';
 
 let fetchpromise;
 let resolvers = [];
@@ -22,8 +22,8 @@ export function fetchLogsTree(client, path, offset, resolver = null) {
 
   if (fetchpromise) return fetchpromise;
 
-  const { projectPath } = client.readQuery({ query: getProjectPath });
-  const { escapedRef } = client.readQuery({ query: getRef });
+  const { projectPath } = client.readQuery({ query: projectPathQuery });
+  const { escapedRef } = client.readQuery({ query: refQuery });
 
   fetchpromise = axios
     .get(
@@ -36,10 +36,10 @@ export function fetchLogsTree(client, path, offset, resolver = null) {
     )
     .then(({ data, headers }) => {
       const headerLogsOffset = headers['more-logs-offset'];
-      const { commits } = client.readQuery({ query: getCommits });
+      const { commits } = client.readQuery({ query: commitsQuery });
       const newCommitData = [...commits, ...normalizeData(data, path)];
       client.writeQuery({
-        query: getCommits,
+        query: commitsQuery,
         data: { commits: newCommitData },
       });
 

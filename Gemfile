@@ -41,7 +41,7 @@ gem 'omniauth-oauth2-generic', '~> 0.2.2'
 gem 'omniauth-saml', '~> 1.10'
 gem 'omniauth-shibboleth', '~> 1.3.0'
 gem 'omniauth-twitter', '~> 1.4'
-gem 'omniauth_crowd', '~> 2.2.0'
+gem 'omniauth_crowd', '~> 2.4.0'
 gem 'omniauth-authentiq', '~> 0.3.3'
 gem 'omniauth_openid_connect', '~> 0.3.5'
 gem 'omniauth-salesforce', '~> 1.0.5'
@@ -69,7 +69,7 @@ gem 'rubyzip', '~> 2.0.0', require: 'zip'
 gem 'acme-client', '~> 2.0', '>= 2.0.6'
 
 # Browser detection
-gem 'browser', '~> 2.5'
+gem 'browser', '~> 4.2'
 
 # GPG
 gem 'gpgme', '~> 2.0.19'
@@ -119,6 +119,7 @@ gem 'fog-local', '~> 0.6'
 gem 'fog-openstack', '~> 1.0'
 gem 'fog-rackspace', '~> 0.1.1'
 gem 'fog-aliyun', '~> 0.3'
+gem 'gitlab-fog-azure-rm', '~> 0.7', require: false
 
 # for Google storage
 gem 'google-api-client', '~> 0.33'
@@ -133,8 +134,10 @@ gem 'seed-fu', '~> 2.3.7'
 gem 'elasticsearch-model', '~> 6.1'
 gem 'elasticsearch-rails', '~> 6.1', require: 'elasticsearch/rails/instrumentation'
 gem 'elasticsearch-api',   '~> 6.8'
-gem 'aws-sdk'
-gem 'faraday_middleware-aws-signers-v4'
+gem 'aws-sdk-core', '~> 3'
+gem 'aws-sdk-cloudformation', '~> 1'
+gem 'aws-sdk-s3', '~> 1'
+gem 'faraday_middleware-aws-sigv4', '~>0.3.0'
 
 # Markdown and HTML processing
 gem 'html-pipeline', '~> 2.12'
@@ -188,7 +191,7 @@ gem 'acts-as-taggable-on', '~> 6.0'
 # Background jobs
 gem 'sidekiq', '~> 5.2.7'
 gem 'sidekiq-cron', '~> 1.0'
-gem 'redis-namespace', '~> 1.6.0'
+gem 'redis-namespace', '~> 1.7.0'
 gem 'gitlab-sidekiq-fetcher', '0.5.2', require: 'sidekiq-reliable-fetch'
 
 # Cron Parser
@@ -214,7 +217,7 @@ gem 're2', '~> 1.2.0'
 gem 'version_sorter', '~> 2.2.4'
 
 # Export Ruby Regex to Javascript
-gem 'js_regex', '~> 3.1'
+gem 'js_regex', '~> 3.4'
 
 # User agent parsing
 gem 'device_detector'
@@ -328,7 +331,7 @@ group :metrics do
   gem 'method_source', '~> 0.8', require: false
 
   # Prometheus
-  gem 'prometheus-client-mmap', '~> 0.10.0'
+  gem 'prometheus-client-mmap', '~> 0.11.0'
   gem 'raindrops', '~> 0.18'
 end
 
@@ -404,7 +407,7 @@ group :test do
   gem 'rspec_profiling', '~> 0.0.5'
   gem 'rspec-parameterized', require: false
 
-  gem 'capybara', '~> 3.22.0'
+  gem 'capybara', '~> 3.33.0'
   gem 'capybara-screenshot', '~> 1.0.22'
   gem 'selenium-webdriver', '~> 3.142'
 
@@ -413,7 +416,7 @@ group :test do
   gem 'webmock', '~> 3.5.1'
   gem 'rails-controller-testing'
   gem 'concurrent-ruby', '~> 1.1'
-  gem 'test-prof', '~> 0.10.0'
+  gem 'test-prof', '~> 0.12.0'
   gem 'rspec_junit_formatter'
   gem 'guard-rspec'
 
@@ -440,7 +443,7 @@ gem 'activerecord-explain-analyze', '~> 0.1', require: false
 gem 'oauth2', '~> 1.4'
 
 # Health check
-gem 'health_check', '~> 2.6.0'
+gem 'health_check', '~> 3.0'
 
 # System information
 gem 'vmstat', '~> 2.3.0'
@@ -460,11 +463,11 @@ group :ed25519 do
 end
 
 # Gitaly GRPC protocol definitions
-gem 'gitaly', '~> 13.2.0.pre.rc2'
+gem 'gitaly', '~> 13.3.0-rc1'
 
-gem 'grpc', '~> 1.24.0'
+gem 'grpc', '~> 1.30.2'
 
-gem 'google-protobuf', '~> 3.8.0'
+gem 'google-protobuf', '~> 3.12'
 
 gem 'toml-rb', '~> 1.0.0'
 
@@ -505,5 +508,7 @@ gem 'valid_email', '~> 0.1'
 # JSON
 gem 'json', '~> 2.3.0'
 gem 'json-schema', '~> 2.8.0'
+gem 'json_schemer', '~> 0.2.12'
 gem 'oj', '~> 3.10.6'
 gem 'multi_json', '~> 1.14.1'
+gem 'yajl-ruby', '~> 1.4.1', require: 'yajl'

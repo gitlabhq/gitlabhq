@@ -180,6 +180,10 @@ export class CopyAsGFM {
       })
       .catch(() => {});
   }
+
+  static quoted(markdown) {
+    return `> ${markdown.split('\n').join('\n> ')}`;
+  }
 }
 
 // Export CopyAsGFM as a global for rspec to access

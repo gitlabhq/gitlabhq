@@ -14,10 +14,9 @@ describe('Applications', () => {
 
   beforeEach(() => {
     gon.features = gon.features || {};
-    gon.features.managedAppsLocalTiller = false;
   });
 
-  const createApp = ({ applications, type } = {}, isShallow) => {
+  const createApp = ({ applications, type, props } = {}, isShallow) => {
     const mountMethod = isShallow ? shallowMount : mount;
 
     wrapper = mountMethod(Applications, {
@@ -25,6 +24,7 @@ describe('Applications', () => {
       propsData: {
         type,
         applications: { ...APPLICATIONS_MOCK_STATE, ...applications },
+        ...props,
       },
     });
   };
@@ -40,10 +40,6 @@ describe('Applications', () => {
       createApp({ type: CLUSTER_TYPE.PROJECT });
     });
 
-    it('renders a row for Helm Tiller', () => {
-      expect(wrapper.find('.js-cluster-application-row-helm').exists()).toBe(true);
-    });
-
     it('renders a row for Ingress', () => {
       expect(wrapper.find('.js-cluster-application-row-ingress').exists()).toBe(true);
     });
@@ -78,6 +74,9 @@ describe('Applications', () => {
 
     it('renders a row for Fluentd', () => {
       expect(wrapper.find('.js-cluster-application-row-fluentd').exists()).toBe(true);
+    });
+    it('renders a row for Cilium', () => {
+      expect(wrapper.find('.js-cluster-application-row-cilium').exists()).toBe(true);
     });
   });
 
@@ -86,10 +85,6 @@ describe('Applications', () => {
       createApp({ type: CLUSTER_TYPE.GROUP });
     });
 
-    it('renders a row for Helm Tiller', () => {
-      expect(wrapper.find('.js-cluster-application-row-helm').exists()).toBe(true);
-    });
-
     it('renders a row for Ingress', () => {
       expect(wrapper.find('.js-cluster-application-row-ingress').exists()).toBe(true);
     });
@@ -124,6 +119,10 @@ describe('Applications', () => {
 
     it('renders a row for Fluentd', () => {
       expect(wrapper.find('.js-cluster-application-row-fluentd').exists()).toBe(true);
+    });
+
+    it('renders a row for Cilium', () => {
+      expect(wrapper.find('.js-cluster-application-row-cilium').exists()).toBe(true);
     });
   });
 
@@ -132,10 +131,6 @@ describe('Applications', () => {
       createApp({ type: CLUSTER_TYPE.INSTANCE });
     });
 
-    it('renders a row for Helm Tiller', () => {
-      expect(wrapper.find('.js-cluster-application-row-helm').exists()).toBe(true);
-    });
-
     it('renders a row for Ingress', () => {
       expect(wrapper.find('.js-cluster-application-row-ingress').exists()).toBe(true);
     });
@@ -171,18 +166,16 @@ describe('Applications', () => {
     it('renders a row for Fluentd', () => {
       expect(wrapper.find('.js-cluster-application-row-fluentd').exists()).toBe(true);
     });
+
+    it('renders a row for Cilium', () => {
+      expect(wrapper.find('.js-cluster-application-row-cilium').exists()).toBe(true);
+    });
   });
 
   describe('Helm application', () => {
-    describe('when managedAppsLocalTiller enabled', () => {
-      beforeEach(() => {
-        gon.features.managedAppsLocalTiller = true;
-      });
-
-      it('does not render a row for Helm Tiller', () => {
-        createApp();
-        expect(wrapper.find('.js-cluster-application-row-helm').exists()).toBe(false);
-      });
+    it('does not render a row for Helm Tiller', () => {
+      createApp();
+      expect(wrapper.find('.js-cluster-application-row-helm').exists()).toBe(false);
     });
   });
 
@@ -240,7 +233,6 @@ describe('Applications', () => {
                 externalHostname: 'localhost.localdomain',
                 modsecurity_enabled: false,
               },
-              helm: { title: 'Helm Tiller' },
               cert_manager: { title: 'Cert-Manager' },
               crossplane: { title: 'Crossplane', stack: '' },
               runner: { title: 'GitLab Runner' },
@@ -249,6 +241,7 @@ describe('Applications', () => {
               knative: { title: 'Knative', hostname: '' },
               elastic_stack: { title: 'Elastic Stack' },
               fluentd: { title: 'Fluentd' },
+              cilium: { title: 'GitLab Container Network Policies' },
             },
           });
 
@@ -365,7 +358,11 @@ describe('Applications', () => {
       it('renders readonly input', () => {
         createApp({
           applications: {
-            ingress: { title: 'Ingress', status: 'installed', externalIp: '1.1.1.1' },
+            ingress: {
+              title: 'Ingress',
+              status: 'installed',
+              externalIp: '1.1.1.1',
+            },
             jupyter: { title: 'JupyterHub', status: 'installed', hostname: '' },
           },
         });
@@ -385,14 +382,6 @@ describe('Applications', () => {
         expect(wrapper.find('.js-cluster-application-row-jupyter .js-hostname').exists()).toBe(
           false,
         );
-      });
-
-      it('renders disabled install button', () => {
-        expect(
-          wrapper
-            .find('.js-cluster-application-row-jupyter .js-cluster-application-install-button')
-            .attributes('disabled'),
-        ).toEqual('disabled');
       });
     });
   });
@@ -513,7 +502,7 @@ describe('Applications', () => {
 
   describe('Elastic Stack application', () => {
     describe('with elastic stack installable', () => {
-      it('renders hostname active input', () => {
+      it('renders the install button enabled', () => {
         createApp();
 
         expect(
@@ -522,7 +511,7 @@ describe('Applications', () => {
               '.js-cluster-application-row-elastic_stack .js-cluster-application-install-button',
             )
             .attributes('disabled'),
-        ).toEqual('disabled');
+        ).toBeUndefined();
       });
     });
 
@@ -550,6 +539,13 @@ describe('Applications', () => {
 
     it('renders the correct Component', () => {
       expect(wrapper.find(FluentdOutputSettings).exists()).toBe(true);
+    });
+  });
+
+  describe('Cilium application', () => {
+    it('shows the correct description', () => {
+      createApp({ props: { ciliumHelpPath: 'cilium-help-path' } });
+      expect(findByTestId('ciliumDescription').element).toMatchSnapshot();
     });
   });
 });

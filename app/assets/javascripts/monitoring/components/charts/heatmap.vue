@@ -36,7 +36,7 @@ export default {
       );
     },
     xAxisName() {
-      return this.graphData.x_label || '';
+      return this.graphData.xLabel || '';
     },
     yAxisName() {
       return this.graphData.y_label || '';

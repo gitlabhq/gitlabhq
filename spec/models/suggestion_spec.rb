@@ -53,7 +53,7 @@ RSpec.describe Suggestion do
     end
 
     context 'when inapplicable_reason is not nil' do
-      let(:inapplicable_reason) { :applied }
+      let(:inapplicable_reason) { "Can't apply this suggestion." }
 
       it { is_expected.to be_falsey }
     end
@@ -77,7 +77,7 @@ RSpec.describe Suggestion do
     context 'when suggestion is already applied' do
       let(:suggestion) { build(:suggestion, :applied, note: note) }
 
-      it { is_expected.to eq(:applied) }
+      it { is_expected.to eq("Can't apply this suggestion.") }
     end
 
     context 'when merge request was merged' do
@@ -85,7 +85,7 @@ RSpec.describe Suggestion do
         merge_request.mark_as_merged!
       end
 
-      it { is_expected.to eq(:merge_request_merged) }
+      it { is_expected.to eq("This merge request was merged. To apply this suggestion, edit this file directly.") }
     end
 
     context 'when merge request is closed' do
@@ -93,7 +93,7 @@ RSpec.describe Suggestion do
         merge_request.close!
       end
 
-      it { is_expected.to eq(:merge_request_closed) }
+      it { is_expected.to eq("This merge request is closed. To apply this suggestion, edit this file directly.") }
     end
 
     context 'when source branch is deleted' do
@@ -101,23 +101,51 @@ RSpec.describe Suggestion do
         merge_request.project.repository.rm_branch(merge_request.author, merge_request.source_branch)
       end
 
-      it { is_expected.to eq(:source_branch_deleted) }
+      it { is_expected.to eq("Can't apply as the source branch was deleted.") }
     end
 
-    context 'when content is outdated' do
-      before do
-        allow(suggestion).to receive(:outdated?).and_return(true)
+    context 'when outdated' do
+      shared_examples_for 'outdated suggestion' do
+        before do
+          allow(suggestion).to receive(:single_line?).and_return(single_line)
+        end
+
+        context 'and suggestion is for a single line' do
+          let(:single_line) { true }
+
+          it { is_expected.to eq("Can't apply as this line was changed in a more recent version.") }
+        end
+
+        context 'and suggestion is for multiple lines' do
+          let(:single_line) { false }
+
+          it { is_expected.to eq("Can't apply as these lines were changed in a more recent version.") }
+        end
       end
 
-      it { is_expected.to eq(:outdated) }
+      context 'and content is outdated' do
+        before do
+          allow(suggestion).to receive(:outdated?).and_return(true)
+        end
+
+        it_behaves_like 'outdated suggestion'
+      end
+
+      context 'and note is outdated' do
+        before do
+          allow(note).to receive(:active?).and_return(false)
+        end
+
+        it_behaves_like 'outdated suggestion'
+      end
     end
 
-    context 'when note is outdated' do
+    context 'when suggestion has the same content' do
       before do
-        allow(note).to receive(:active?).and_return(false)
+        allow(suggestion).to receive(:different_content?).and_return(false)
       end
 
-      it { is_expected.to eq(:outdated) }
+      it { is_expected.to eq("This suggestion already matches its content.") }
     end
 
     context 'when applicable' do

@@ -13,6 +13,7 @@ class WebHookService
     end
   end
 
+  REQUEST_BODY_SIZE_LIMIT = 25.megabytes
   GITLAB_EVENT_HEADER = 'X-Gitlab-Event'
 
   attr_accessor :hook, :data, :hook_name, :request_options
@@ -53,17 +54,18 @@ class WebHookService
       http_status: response.code,
       message: response.to_s
     }
-  rescue SocketError, OpenSSL::SSL::SSLError, Errno::ECONNRESET, Errno::ECONNREFUSED, Errno::EHOSTUNREACH, Net::OpenTimeout, Net::ReadTimeout, Gitlab::HTTP::BlockedUrlError, Gitlab::HTTP::RedirectionTooDeep => e
+  rescue SocketError, OpenSSL::SSL::SSLError, Errno::ECONNRESET, Errno::ECONNREFUSED, Errno::EHOSTUNREACH, Net::OpenTimeout, Net::ReadTimeout, Gitlab::HTTP::BlockedUrlError, Gitlab::HTTP::RedirectionTooDeep, Gitlab::Json::LimitedEncoder::LimitExceeded => e
+    execution_duration = Gitlab::Metrics::System.monotonic_time - start_time
     log_execution(
       trigger: hook_name,
       url: hook.url,
       request_data: data,
       response: InternalErrorResponse.new,
-      execution_duration: Gitlab::Metrics::System.monotonic_time - start_time,
+      execution_duration: execution_duration,
       error_message: e.to_s
     )
 
-    Gitlab::AppLogger.error("WebHook Error => #{e}")
+    Gitlab::AppLogger.error("WebHook Error after #{execution_duration.to_i.seconds}s => #{e}")
 
     {
       status: :error,
@@ -83,7 +85,7 @@ class WebHookService
 
   def make_request(url, basic_auth = false)
     Gitlab::HTTP.post(url,
-      body: data.to_json,
+      body: Gitlab::Json::LimitedEncoder.encode(data, limit: REQUEST_BODY_SIZE_LIMIT),
       headers: build_headers(hook_name),
       verify: hook.enable_ssl_verification,
       basic_auth: basic_auth,

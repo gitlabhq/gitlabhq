@@ -1,7 +1,7 @@
 import $ from 'jquery';
 import { parseQueryStringIntoObject } from '~/lib/utils/common_utils';
 import axios from '~/lib/utils/axios_utils';
-import createFlash from '~/flash';
+import { deprecatedCreateFlash as createFlash } from '~/flash';
 import { __ } from '~/locale';
 
 export default class GpgBadges {

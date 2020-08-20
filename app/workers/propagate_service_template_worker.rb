@@ -4,7 +4,7 @@
 class PropagateServiceTemplateWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
 
-  feature_category :source_code_management
+  feature_category :integrations
 
   LEASE_TIMEOUT = 4.hours.to_i
 

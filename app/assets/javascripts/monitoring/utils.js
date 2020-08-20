@@ -24,13 +24,16 @@ export const stateAndPropsFromDataset = (dataset = {}) => {
     deploymentsEndpoint,
     dashboardEndpoint,
     dashboardsEndpoint,
+    panelPreviewEndpoint,
     dashboardTimezone,
     canAccessOperationsSettings,
     operationsSettingsPath,
     projectPath,
     logsPath,
+    externalDashboardUrl,
     currentEnvironmentName,
     customDashboardBasePath,
+    addDashboardDocumentationPath,
     ...dataProps
   } = dataset;
 
@@ -45,13 +48,16 @@ export const stateAndPropsFromDataset = (dataset = {}) => {
       deploymentsEndpoint,
       dashboardEndpoint,
       dashboardsEndpoint,
+      panelPreviewEndpoint,
       dashboardTimezone,
       canAccessOperationsSettings,
       operationsSettingsPath,
       projectPath,
       logsPath,
+      externalDashboardUrl,
       currentEnvironmentName,
       customDashboardBasePath,
+      addDashboardDocumentationPath,
     },
     dataProps,
   };

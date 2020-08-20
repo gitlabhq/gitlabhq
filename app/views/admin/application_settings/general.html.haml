@@ -13,7 +13,7 @@
   .settings-content
     = render 'visibility_and_access'
 
-%section.settings.qa-account-and-limit-settings.as-account-limit.no-animate#js-account-settings{ class: ('expanded' if expanded_by_default?) }
+%section.settings.as-account-limit.no-animate#js-account-settings{ class: ('expanded' if expanded_by_default?), data: { qa_selector: 'account_and_limit_settings_content' } }
   .settings-header
     %h4
       = _('Account and limit')
@@ -101,8 +101,8 @@
               = s_('IDE|Live Preview')
             %span.form-text.text-muted
               = s_('IDE|Allow live previews of JavaScript projects in the Web IDE using CodeSandbox Live Preview.')
-
-      = f.submit _('Save changes'), class: "btn btn-success"
+      .gl-display-flex.gl-justify-content-end
+        = f.submit _('Save changes'), class: "btn btn-success"
 
 - if Feature.enabled?(:maintenance_mode)
   %section.settings.no-animate#js-maintenance-mode-toggle{ class: ('expanded' if expanded_by_default?) }
@@ -116,11 +116,10 @@
     .settings-content
       #js-maintenance-mode-settings
 
-- if Feature.enabled?(:instance_level_integrations)
-  = render_if_exists 'admin/application_settings/elasticsearch_form'
-  = render 'admin/application_settings/plantuml'
-  = render 'admin/application_settings/sourcegraph'
-  = render_if_exists 'admin/application_settings/slack'
-  = render 'admin/application_settings/third_party_offers'
-  = render 'admin/application_settings/snowplow'
-  = render 'admin/application_settings/eks'
+= render_if_exists 'admin/application_settings/elasticsearch_form'
+= render 'admin/application_settings/plantuml'
+= render 'admin/application_settings/sourcegraph'
+= render_if_exists 'admin/application_settings/slack'
+= render 'admin/application_settings/third_party_offers'
+= render 'admin/application_settings/snowplow'
+= render 'admin/application_settings/eks'

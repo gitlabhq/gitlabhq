@@ -1,12 +1,12 @@
 <script>
 import { escape } from 'lodash';
-import { GlModal, GlDeprecatedButton, GlFormInput } from '@gitlab/ui';
+import { GlModal, GlButton, GlFormInput } from '@gitlab/ui';
 import { s__, sprintf } from '~/locale';
 
 export default {
   components: {
     GlModal,
-    GlDeprecatedButton,
+    GlButton,
     GlFormInput,
   },
   props: {
@@ -122,15 +122,18 @@ export default {
       </form>
     </template>
     <template #modal-footer>
-      <gl-deprecated-button variant="secondary" @click="onCancel">{{
-        s__('Cancel')
-      }}</gl-deprecated-button>
-      <gl-deprecated-button :disabled="!canSubmit" variant="warning" @click="onSecondaryAction">
+      <gl-button @click="onCancel">{{ s__('Cancel') }}</gl-button>
+      <gl-button
+        :disabled="!canSubmit"
+        category="primary"
+        variant="warning"
+        @click="onSecondaryAction"
+      >
         {{ secondaryAction }}
-      </gl-deprecated-button>
-      <gl-deprecated-button :disabled="!canSubmit" variant="danger" @click="onSubmit">{{
+      </gl-button>
+      <gl-button :disabled="!canSubmit" category="primary" variant="danger" @click="onSubmit">{{
         action
-      }}</gl-deprecated-button>
+      }}</gl-button>
     </template>
   </gl-modal>
 </template>

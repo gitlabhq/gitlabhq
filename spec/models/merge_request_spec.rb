@@ -63,6 +63,7 @@ RSpec.describe MergeRequest do
         subject.source_project.repository.path
       end
     end
+
     let(:squash_path) { File.join(repo_path, "gitlab-worktree", "squash-#{subject.id}") }
 
     before do
@@ -247,24 +248,20 @@ RSpec.describe MergeRequest do
 
   describe 'callbacks' do
     describe '#ensure_merge_request_metrics' do
-      it 'creates metrics after saving' do
-        merge_request = create(:merge_request)
+      let(:merge_request) { create(:merge_request) }
 
+      it 'creates metrics after saving' do
         expect(merge_request.metrics).to be_persisted
         expect(MergeRequest::Metrics.count).to eq(1)
       end
 
       it 'does not duplicate metrics for a merge request' do
-        merge_request = create(:merge_request)
-
         merge_request.mark_as_merged!
 
         expect(MergeRequest::Metrics.count).to eq(1)
       end
 
       it 'does not create duplicated metrics records when MR is concurrently updated' do
-        merge_request = create(:merge_request)
-
         merge_request.metrics.destroy
 
         instance1 = MergeRequest.find(merge_request.id)
@@ -275,6 +272,27 @@ RSpec.describe MergeRequest do
 
         metrics_records = MergeRequest::Metrics.where(merge_request_id: merge_request.id)
         expect(metrics_records.size).to eq(1)
+      end
+
+      it 'syncs the `target_project_id` to the metrics record' do
+        project = create(:project)
+
+        merge_request.update!(target_project: project, state: :closed)
+
+        expect(merge_request.target_project_id).to eq(project.id)
+        expect(merge_request.target_project_id).to eq(merge_request.metrics.target_project_id)
+      end
+
+      context 'when metrics record already exists with NULL target_project_id' do
+        before do
+          merge_request.metrics.update_column(:target_project_id, nil)
+        end
+
+        it 'returns the metrics record' do
+          metrics_record = merge_request.ensure_metrics
+
+          expect(metrics_record).to be_persisted
+        end
       end
     end
   end
@@ -725,6 +743,7 @@ RSpec.describe MergeRequest do
     let!(:diff_note) do
       create(:diff_note_on_merge_request, project: project, noteable: merge_request)
     end
+
     let!(:draft_note) do
       create(:draft_note_on_text_diff, author: user, merge_request: merge_request)
     end
@@ -3696,6 +3715,7 @@ RSpec.describe MergeRequest do
              source_branch: 'fixes',
              target_project: target_project)
     end
+
     let(:user) { create(:user) }
 
     before do

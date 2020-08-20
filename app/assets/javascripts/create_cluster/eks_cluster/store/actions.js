@@ -1,7 +1,7 @@
 import * as types from './mutation_types';
 import { setAWSConfig } from '../services/aws_services_facade';
 import axios from '~/lib/utils/axios_utils';
-import createFlash from '~/flash';
+import { deprecatedCreateFlash as createFlash } from '~/flash';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 
 const getErrorMessage = data => {

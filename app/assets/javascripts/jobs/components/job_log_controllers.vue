@@ -71,13 +71,14 @@ export default {
 <template>
   <div class="top-bar">
     <!-- truncate information -->
-    <div class="js-truncated-info truncated-info d-none d-sm-block float-left">
+    <div class="truncated-info d-none d-sm-block float-left" data-testid="log-truncated-info">
       <template v-if="isTraceSizeVisible">
         {{ jobLogSize }}
         <gl-link
           v-if="rawPath"
           :href="rawPath"
-          class="js-raw-link text-plain text-underline gl-ml-2"
+          class="text-plain text-underline gl-ml-2"
+          data-testid="raw-link"
           >{{ s__('Job|Complete Raw') }}</gl-link
         >
       </template>
@@ -91,7 +92,8 @@ export default {
         v-gl-tooltip.body
         :title="s__('Job|Show complete raw')"
         :href="rawPath"
-        class="js-raw-link-controller controllers-buttons"
+        class="controllers-buttons"
+        data-testid="job-raw-link-controller"
       >
         <icon name="doc-text" />
       </gl-link>
@@ -102,7 +104,8 @@ export default {
         :title="s__('Job|Erase job log')"
         :href="erasePath"
         :data-confirm="__('Are you sure you want to erase this build?')"
-        class="js-erase-link controllers-buttons"
+        class="controllers-buttons"
+        data-testid="job-log-erase-link"
         data-method="post"
       >
         <icon name="remove" />
@@ -114,7 +117,8 @@ export default {
         <gl-deprecated-button
           :disabled="isScrollTopDisabled"
           type="button"
-          class="js-scroll-top btn-scroll btn-transparent btn-blank"
+          class="btn-scroll btn-transparent btn-blank"
+          data-testid="job-controller-scroll-top"
           @click="handleScrollToTop"
         >
           <icon name="scroll_up" />
@@ -126,6 +130,7 @@ export default {
           :disabled="isScrollBottomDisabled"
           class="js-scroll-bottom btn-scroll btn-transparent btn-blank"
           :class="{ animate: isScrollingDown }"
+          data-testid="job-controller-scroll-bottom"
           @click="handleScrollToBottom"
           v-html="$options.scrollDown"
         />

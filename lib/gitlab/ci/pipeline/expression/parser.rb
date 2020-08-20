@@ -15,11 +15,18 @@ module Gitlab
           def tree
             results = []
 
-            tokens_rpn.each do |token|
+            tokens =
+              if ::Gitlab::Ci::Features.ci_if_parenthesis_enabled?
+                tokens_rpn
+              else
+                legacy_tokens_rpn
+              end
+
+            tokens.each do |token|
               case token.type
               when :value
                 results.push(token.build)
-              when :operator
+              when :logical_operator
                 right_operand = results.pop
                 left_operand  = results.pop
 
@@ -27,7 +34,7 @@ module Gitlab
                   results.push(res)
                 end
               else
-                raise ParseError, 'Unprocessable token found in parse tree'
+                raise ParseError, "Unprocessable token found in parse tree: #{token.type}"
               end
             end
 
@@ -45,6 +52,7 @@ module Gitlab
 
           # Parse the expression into Reverse Polish Notation
           # (See: Shunting-yard algorithm)
+          # Taken from: https://en.wikipedia.org/wiki/Shunting-yard_algorithm#The_algorithm_in_detail
           def tokens_rpn
             output = []
             operators = []
@@ -53,7 +61,34 @@ module Gitlab
               case token.type
               when :value
                 output.push(token)
-              when :operator
+              when :logical_operator
+                output.push(operators.pop) while token.lexeme.consume?(operators.last&.lexeme)
+
+                operators.push(token)
+              when :parenthesis_open
+                operators.push(token)
+              when :parenthesis_close
+                output.push(operators.pop) while token.lexeme.consume?(operators.last&.lexeme)
+
+                raise ParseError, 'Unmatched parenthesis' unless operators.last
+
+                operators.pop if operators.last.lexeme.type == :parenthesis_open
+              end
+            end
+
+            output.concat(operators.reverse)
+          end
+
+          # To be removed with `ci_if_parenthesis_enabled`
+          def legacy_tokens_rpn
+            output = []
+            operators = []
+
+            @tokens.each do |token|
+              case token.type
+              when :value
+                output.push(token)
+              when :logical_operator
                 if operators.any? && token.lexeme.precedence >= operators.last.lexeme.precedence
                   output.push(operators.pop)
                 end

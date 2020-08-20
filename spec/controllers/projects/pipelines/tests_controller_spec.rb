@@ -19,7 +19,7 @@ RSpec.describe Projects::Pipelines::TestsController do
         get_tests_summary_json
 
         expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response['total_count']).to eq(2)
+        expect(json_response.dig('total', 'count')).to eq(2)
       end
     end
 
@@ -28,20 +28,7 @@ RSpec.describe Projects::Pipelines::TestsController do
         get_tests_summary_json
 
         expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response['total_count']).to eq(0)
-      end
-    end
-
-    context 'when feature is disabled' do
-      before do
-        stub_feature_flags(build_report_summary: false)
-      end
-
-      it 'returns 404' do
-        get_tests_summary_json
-
-        expect(response).to have_gitlab_http_status(:not_found)
-        expect(response.body).to be_empty
+        expect(json_response.dig('total', 'count')).to eq(0)
       end
     end
   end
@@ -65,21 +52,6 @@ RSpec.describe Projects::Pipelines::TestsController do
       let(:suite_name) { 'test' }
 
       it 'renders 404' do
-        get_tests_show_json([])
-
-        expect(response).to have_gitlab_http_status(:not_found)
-        expect(response.body).to be_empty
-      end
-    end
-
-    context 'when feature is disabled' do
-      let(:suite_name) { 'test' }
-
-      before do
-        stub_feature_flags(build_report_summary: false)
-      end
-
-      it 'returns 404' do
         get_tests_show_json([])
 
         expect(response).to have_gitlab_http_status(:not_found)

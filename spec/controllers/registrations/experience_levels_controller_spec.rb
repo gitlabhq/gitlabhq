@@ -23,6 +23,7 @@ RSpec.describe Registrations::ExperienceLevelsController do
       end
 
       it { is_expected.to have_gitlab_http_status(:ok) }
+      it { is_expected.to render_template('layouts/devise_experimental_onboarding_issues') }
       it { is_expected.to render_template(:show) }
 
       context 'when not part of the onboarding issues experiment' do

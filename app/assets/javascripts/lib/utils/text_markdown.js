@@ -308,9 +308,11 @@ export function addMarkdownListeners(form) {
     .off('click')
     .on('click', function() {
       const $this = $(this);
+      const tag = this.dataset.mdTag;
+
       return updateText({
         textArea: $this.closest('.md-area').find('textarea'),
-        tag: $this.data('mdTag'),
+        tag,
         cursorOffset: $this.data('mdCursorOffset'),
         blockTag: $this.data('mdBlock'),
         wrap: !$this.data('mdPrepend'),

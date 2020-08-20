@@ -9,11 +9,15 @@ module Gitlab
             PATTERN = /null/.freeze
 
             def initialize(value = nil)
-              @value = nil
+              super
             end
 
             def evaluate(variables = {})
               nil
+            end
+
+            def inspect
+              'null'
             end
 
             def self.build(_value)

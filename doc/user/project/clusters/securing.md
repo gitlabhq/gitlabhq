@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 GitLab makes it easy to secure applications deployed in [connected Kubernetes clusters](index.md).
 You can benefit from the protection of a [Web Application Firewall](../../../topics/web_application_firewall/quick_start_guide.md),
 [Network Policies](../../../topics/autodevops/stages.md#network-policy),
-or even [Container Host Security](../../clusters/applications.md#install-falco-using-gitlab-cicd).
+and [Container Host Security](../../clusters/applications.md#install-falco-using-gitlab-cicd).
 
 This page contains full end-to-end steps and instructions to connect your cluster to GitLab and
 install these features, whether or not your applications are deployed through GitLab CI/CD. If you
@@ -25,7 +25,7 @@ At a high level, the required steps include the following:
 - Connect the cluster to GitLab.
 - Set up one or more runners.
 - Set up a cluster management project.
-- Install a Web Application Firewall, Network Policies, and/or Container Host
+- Install a Web Application Firewall, and/or Network Policies, and/or Container Host
   Security.
 - Install Prometheus to get statistics and metrics in the
   [threat monitoring](../../application_security/threat_monitoring/)
@@ -40,6 +40,10 @@ Minimum requirements (depending on the GitLab Manage Application you want to ins
 
 ### Understanding how GitLab Managed Apps are installed
 
+NOTE: **Note:**
+These diagrams use the term _Kubernetes_ for simplicity. In practice, Sidekiq connects to a Helm
+Tiller daemon running in a pod in the cluster.
+
 You install GitLab Managed Apps from the GitLab web interface with a one-click setup process. GitLab
 uses Sidekiq (a background processing service) to facilitate this.
 
@@ -52,12 +56,8 @@ uses Sidekiq (a background processing service) to facilitate this.
     Sidekiq-->>-GitLab: Refresh UI
 ```
 
-NOTE: **Note:**
-This diagram uses the term _Kubernetes_ for simplicity. In practice, Sidekiq connects to a Helm
-Tiller daemon running in a pod in the cluster.
-
 Although this installation method is easier because it's a point-and-click action in the user
-interface, it's inflexible and hard to debug. When something goes wrong, you can't see the
+interface, it's inflexible and harder to debug. If something goes wrong, you can't see the
 deployment logs. The Web Application Firewall feature uses this installation method.
 
 However, the next generation of GitLab Managed Apps V2 ([CI/CD-based GitLab Managed Apps](https://gitlab.com/groups/gitlab-org/-/epics/2103))
@@ -75,10 +75,10 @@ sequenceDiagram
 ```
 
 Debugging is easier because you have access to the raw logs of these jobs (the Helm Tiller output is
-available as an artifact in case of failure) and the flexibility is much better. Since these
+available as an artifact in case of failure), and the flexibility is much better. Since these
 deployments are only triggered when a pipeline is running (most likely when there's a new commit in
 the cluster management repository), every action has a paper trail and follows the classic merge
-request workflow (approvals, merge, deploy). The Network Policy (Cilium) Managed App and Container
+request workflow (approvals, merge, deploy). The Network Policy (Cilium) Managed App, and Container
 Host Security (Falco) are deployed with this model.
 
 ## Connect the cluster to GitLab
@@ -151,4 +151,5 @@ falco:
   installed: true
 ```
 
-[Read more] about configuring Container Host Security.
+[Read more](../../clusters/applications.md#install-falco-using-gitlab-cicd)
+about configuring Container Host Security.

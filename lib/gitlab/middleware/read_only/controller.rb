@@ -136,7 +136,7 @@ module Gitlab
         end
 
         def graphql_query?
-          request.post? && request.path.start_with?(GRAPHQL_URL)
+          request.post? && request.path.start_with?(File.join(relative_url, GRAPHQL_URL))
         end
       end
     end

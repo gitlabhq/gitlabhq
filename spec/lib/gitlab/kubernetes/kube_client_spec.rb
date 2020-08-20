@@ -80,13 +80,13 @@ RSpec.describe Gitlab::Kubernetes::KubeClient do
     context 'errored' do
       using RSpec::Parameterized::TableSyntax
 
-      where(:error, :error_status) do
-        SocketError                     | :unreachable
-        OpenSSL::X509::CertificateError | :authentication_failure
-        StandardError                   | :unknown_failure
-        Kubeclient::HttpError.new(408, "timed out", nil) | :unreachable
-        Kubeclient::HttpError.new(408, "timeout", nil) | :unreachable
-        Kubeclient::HttpError.new(408, "", nil) | :authentication_failure
+      where(:error, :connection_status, :error_status) do
+        SocketError                                      | :unreachable            | :connection_error
+        OpenSSL::X509::CertificateError                  | :authentication_failure | :authentication_error
+        StandardError                                    | :unknown_failure        | :unknown_error
+        Kubeclient::HttpError.new(408, "timed out", nil) | :unreachable            | :http_error
+        Kubeclient::HttpError.new(408, "timeout", nil)   | :unreachable            | :http_error
+        Kubeclient::HttpError.new(408, "", nil)          | :authentication_failure | :http_error
       end
 
       with_them do
@@ -97,7 +97,7 @@ RSpec.describe Gitlab::Kubernetes::KubeClient do
         it 'returns error status' do
           result = described_class.graceful_request(1) { client.foo }
 
-          expect(result).to eq({ status: error_status })
+          expect(result).to eq({ status: connection_status, connection_error: error_status })
         end
       end
     end
@@ -224,6 +224,20 @@ RSpec.describe Gitlab::Kubernetes::KubeClient do
 
     it 'has the api_version' do
       expect(subject.instance_variable_get(:@api_version)).to eq('v1')
+    end
+  end
+
+  describe '#cilium_networking_client' do
+    subject { client.cilium_networking_client }
+
+    it_behaves_like 'a Kubeclient'
+
+    it 'has the cilium API group endpoint' do
+      expect(subject.api_endpoint.to_s).to match(%r{\/apis\/cilium.io\Z})
+    end
+
+    it 'has the api_version' do
+      expect(subject.instance_variable_get(:@api_version)).to eq('v2')
     end
   end
 
@@ -371,6 +385,30 @@ RSpec.describe Gitlab::Kubernetes::KubeClient do
 
         it 'delegates to the networking client' do
           expect(client).to delegate_method(method).to(:networking_client)
+        end
+
+        it 'responds to the method' do
+          expect(client).to respond_to method
+        end
+      end
+    end
+  end
+
+  describe 'cilium API group' do
+    let(:cilium_networking_client) { client.cilium_networking_client }
+
+    [
+      :create_cilium_network_policy,
+      :get_cilium_network_policies,
+      :update_cilium_network_policy,
+      :delete_cilium_network_policy
+    ].each do |method|
+      describe "##{method}" do
+        include_examples 'redirection not allowed', method
+        include_examples 'dns rebinding not allowed', method
+
+        it 'delegates to the cilium client' do
+          expect(client).to delegate_method(method).to(:cilium_networking_client)
         end
 
         it 'responds to the method' do

@@ -142,6 +142,9 @@ the following node pools:
 
 - `e2-highcpu-16` (16 vCPU, 16 GB memory) pre-emptible nodes with autoscaling
 
+Node pool image type must be `Container-Optimized OS (cos)`, not `Container-Optimized OS with Containerd (cos_containerd)`,
+due to this [known issue on GitLab Runner Kubernetes executor](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/4755)
+
 ### Helm
 
 The Helm version used is defined in the
@@ -153,13 +156,12 @@ used by the `review-deploy` and `review-stop` jobs.
 ### Get access to the GCP Review Apps cluster
 
 You need to [open an access request (internal link)](https://gitlab.com/gitlab-com/access-requests/-/issues/new)
-for the `gcp-review-apps-sg` GCP group. In order to join a group, you must specify the desired GCP role in your access request.
-The role is what will grant you specific permissions in order to engage with Review App containers.
+for the `gcp-review-apps-dev` GCP group and role.
 
-Here are some permissions you may want to have, and the roles that grant them:
+This will grant you the following permissions for:
 
-- `container.pods.getLogs` - Required to [retrieve pod logs](#dig-into-a-pods-logs). Granted by [Viewer (`roles/viewer`)](https://cloud.google.com/iam/docs/understanding-roles#kubernetes-engine-roles).
-- `container.pods.exec` - Required to [run a Rails console](#run-a-rails-console). Granted by [Kubernetes Engine Developer (`roles/container.developer`)](https://cloud.google.com/iam/docs/understanding-roles#kubernetes-engine-roles).
+- [Retrieving pod logs](#dig-into-a-pods-logs). Granted by [Viewer (`roles/viewer`)](https://cloud.google.com/iam/docs/understanding-roles#kubernetes-engine-roles).
+- [Running a Rails console](#run-a-rails-console). Granted by [Kubernetes Engine Developer (`roles/container.pods.exec`)](https://cloud.google.com/iam/docs/understanding-roles#kubernetes-engine-roles).
 
 ### Log into my Review App
 

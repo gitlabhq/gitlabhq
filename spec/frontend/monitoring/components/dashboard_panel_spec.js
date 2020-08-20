@@ -2,23 +2,23 @@ import Vuex from 'vuex';
 import { shallowMount } from '@vue/test-utils';
 import AxiosMockAdapter from 'axios-mock-adapter';
 import { setTestTimeout } from 'helpers/timeout';
+import { GlNewDropdownItem as GlDropdownItem } from '@gitlab/ui';
 import invalidUrl from '~/lib/utils/invalid_url';
 import axios from '~/lib/utils/axios_utils';
-import { GlNewDropdownItem as GlDropdownItem } from '@gitlab/ui';
 import AlertWidget from '~/monitoring/components/alert_widget.vue';
 
 import DashboardPanel from '~/monitoring/components/dashboard_panel.vue';
 import {
+  mockAlert,
   mockLogsHref,
   mockLogsPath,
   mockNamespace,
   mockNamespacedData,
   mockTimeRange,
-  graphDataPrometheusQueryRangeMultiTrack,
   barMockData,
 } from '../mock_data';
 import { dashboardProps, graphData, graphDataEmpty } from '../fixture_data';
-import { anomalyGraphData, singleStatGraphData } from '../graph_data';
+import { anomalyGraphData, singleStatGraphData, heatmapGraphData } from '../graph_data';
 
 import { panelTypes } from '~/monitoring/constants';
 
@@ -56,9 +56,10 @@ describe('Dashboard Panel', () => {
   const findCtxMenu = () => wrapper.find({ ref: 'contextualMenu' });
   const findMenuItems = () => wrapper.findAll(GlDropdownItem);
   const findMenuItemByText = text => findMenuItems().filter(i => i.text() === text);
+  const findAlertsWidget = () => wrapper.find(AlertWidget);
 
-  const createWrapper = (props, options) => {
-    wrapper = shallowMount(DashboardPanel, {
+  const createWrapper = (props, { mountFn = shallowMount, ...options } = {}) => {
+    wrapper = mountFn(DashboardPanel, {
       propsData: {
         graphData,
         settingsPath: dashboardProps.settingsPath,
@@ -78,6 +79,9 @@ describe('Dashboard Panel', () => {
       },
     });
   };
+
+  const setMetricsSavedToDb = val =>
+    monitoringDashboard.getters.metricsSavedToDb.mockReturnValue(val);
 
   beforeEach(() => {
     setTestTimeout(1000);
@@ -235,7 +239,7 @@ describe('Dashboard Panel', () => {
         ${anomalyGraphData()}                      | ${MonitorAnomalyChart}       | ${false}
         ${dataWithType(panelTypes.COLUMN)}         | ${MonitorColumnChart}        | ${false}
         ${dataWithType(panelTypes.STACKED_COLUMN)} | ${MonitorStackedColumnChart} | ${false}
-        ${graphDataPrometheusQueryRangeMultiTrack} | ${MonitorHeatmapChart}       | ${false}
+        ${heatmapGraphData()}                      | ${MonitorHeatmapChart}       | ${false}
         ${barMockData}                             | ${MonitorBarChart}           | ${false}
       `('when $data.type data is provided', ({ data, component, hasCtxMenu }) => {
         const attrs = { attr1: 'attr1Value', attr2: 'attr2Value' };
@@ -252,6 +256,35 @@ describe('Dashboard Panel', () => {
 
         it(`contextual menu is ${hasCtxMenu ? '' : 'not '}shown`, () => {
           expect(findCtxMenu().exists()).toBe(hasCtxMenu);
+        });
+      });
+    });
+
+    describe('computed', () => {
+      describe('fixedCurrentTimeRange', () => {
+        it('returns fixed time for valid time range', () => {
+          state.timeRange = mockTimeRange;
+          return wrapper.vm.$nextTick(() => {
+            expect(findTimeChart().props('timeRange')).toEqual(
+              expect.objectContaining({
+                start: expect.any(String),
+                end: expect.any(String),
+              }),
+            );
+          });
+        });
+
+        it.each`
+          input           | output
+          ${''}           | ${{}}
+          ${undefined}    | ${{}}
+          ${null}         | ${{}}
+          ${'2020-12-03'} | ${{}}
+        `('returns $output for invalid input like $input', ({ input, output }) => {
+          state.timeRange = input;
+          return wrapper.vm.$nextTick(() => {
+            expect(findTimeChart().props('timeRange')).toEqual(output);
+          });
         });
       });
     });
@@ -444,7 +477,7 @@ describe('Dashboard Panel', () => {
 
     describe('csvText', () => {
       it('converts metrics data from json to csv', () => {
-        const header = `timestamp,${graphData.y_label}`;
+        const header = `timestamp,"${graphData.y_label} > ${graphData.metrics[0].label}"`;
         const data = graphData.metrics[0].result[0].values;
         const firstRow = `${data[0][0]},${data[0][1]}`;
         const secondRow = `${data[1][0]},${data[1][1]}`;
@@ -523,7 +556,7 @@ describe('Dashboard Panel', () => {
     });
 
     it('displays a heatmap in local timezone', () => {
-      createWrapper({ graphData: graphDataPrometheusQueryRangeMultiTrack });
+      createWrapper({ graphData: heatmapGraphData() });
       expect(wrapper.find(MonitorHeatmapChart).props('timezone')).toBe('LOCAL');
     });
 
@@ -538,7 +571,7 @@ describe('Dashboard Panel', () => {
       });
 
       it('displays a heatmap with UTC', () => {
-        createWrapper({ graphData: graphDataPrometheusQueryRangeMultiTrack });
+        createWrapper({ graphData: heatmapGraphData() });
         expect(wrapper.find(MonitorHeatmapChart).props('timezone')).toBe('UTC');
       });
     });
@@ -573,10 +606,6 @@ describe('Dashboard Panel', () => {
   });
 
   describe('panel alerts', () => {
-    const setMetricsSavedToDb = val =>
-      monitoringDashboard.getters.metricsSavedToDb.mockReturnValue(val);
-    const findAlertsWidget = () => wrapper.find(AlertWidget);
-
     beforeEach(() => {
       mockGetterReturnValue('metricsSavedToDb', []);
 
@@ -700,6 +729,62 @@ describe('Dashboard Panel', () => {
       createWrapperWithLinks();
 
       expect(findManageLinksItem().exists()).toBe(false);
+    });
+  });
+
+  describe('Runbook url', () => {
+    const findRunbookLinks = () => wrapper.findAll('[data-testid="runbookLink"]');
+    const { metricId } = graphData.metrics[0];
+    const { alert_path: alertPath } = mockAlert;
+
+    const mockRunbookAlert = {
+      ...mockAlert,
+      metricId,
+    };
+
+    beforeEach(() => {
+      mockGetterReturnValue('metricsSavedToDb', []);
+    });
+
+    it('does not show a runbook link when alerts are not present', () => {
+      createWrapper();
+
+      expect(findRunbookLinks().length).toBe(0);
+    });
+
+    describe('when alerts are present', () => {
+      beforeEach(() => {
+        setMetricsSavedToDb([metricId]);
+
+        createWrapper({
+          alertsEndpoint: '/endpoint',
+          prometheusAlertsAvailable: true,
+        });
+      });
+
+      it('does not show a runbook link when a runbook is not set', async () => {
+        findAlertsWidget().vm.$emit('setAlerts', alertPath, {
+          ...mockRunbookAlert,
+          runbookUrl: '',
+        });
+
+        await wrapper.vm.$nextTick();
+
+        expect(findRunbookLinks().length).toBe(0);
+      });
+
+      it('shows a runbook link when a runbook is set', async () => {
+        findAlertsWidget().vm.$emit('setAlerts', alertPath, mockRunbookAlert);
+
+        await wrapper.vm.$nextTick();
+
+        expect(findRunbookLinks().length).toBe(1);
+        expect(
+          findRunbookLinks()
+            .at(0)
+            .attributes('href'),
+        ).toBe(invalidUrl);
+      });
     });
   });
 });

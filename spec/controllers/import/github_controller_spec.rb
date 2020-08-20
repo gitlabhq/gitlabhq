@@ -15,10 +15,7 @@ RSpec.describe Import::GithubController do
     it "redirects to GitHub for an access token if logged in with GitHub" do
       allow(controller).to receive(:logged_in_with_provider?).and_return(true)
       expect(controller).to receive(:go_to_provider_for_permissions).and_call_original
-      allow_any_instance_of(Gitlab::LegacyGithubImport::Client)
-        .to receive(:authorize_url)
-        .with(users_import_github_callback_url)
-        .and_call_original
+      allow(controller).to receive(:authorize_url).and_call_original
 
       get :new
 
@@ -46,13 +43,15 @@ RSpec.describe Import::GithubController do
   end
 
   describe "GET callback" do
+    before do
+      allow(controller).to receive(:get_token).and_return(token)
+      allow(controller).to receive(:oauth_options).and_return({})
+
+      stub_omniauth_provider('github')
+    end
+
     it "updates access token" do
       token = "asdasd12345"
-      allow_any_instance_of(Gitlab::LegacyGithubImport::Client)
-        .to receive(:get_token).and_return(token)
-      allow_any_instance_of(Gitlab::LegacyGithubImport::Client)
-        .to receive(:github_options).and_return({})
-      stub_omniauth_provider('github')
 
       get :callback
 
@@ -66,7 +65,86 @@ RSpec.describe Import::GithubController do
   end
 
   describe "GET status" do
-    it_behaves_like 'a GitHub-ish import controller: GET status'
+    context 'when using OAuth' do
+      before do
+        allow(controller).to receive(:logged_in_with_provider?).and_return(true)
+      end
+
+      context 'when OAuth config is missing' do
+        let(:new_import_url) { public_send("new_import_#{provider}_url") }
+
+        before do
+          allow(controller).to receive(:oauth_config).and_return(nil)
+        end
+
+        it 'returns missing config error' do
+          expect(controller).to receive(:go_to_provider_for_permissions).and_call_original
+
+          get :status
+
+          expect(session[:"#{provider}_access_token"]).to be_nil
+          expect(controller).to redirect_to(new_import_url)
+          expect(flash[:alert]).to eq('Missing OAuth configuration for GitHub.')
+        end
+      end
+    end
+
+    context 'when feature remove_legacy_github_client is disabled' do
+      before do
+        stub_feature_flags(remove_legacy_github_client: false)
+        session[:"#{provider}_access_token"] = 'asdasd12345'
+      end
+
+      it_behaves_like 'a GitHub-ish import controller: GET status'
+
+      it 'uses Gitlab::LegacyGitHubImport::Client' do
+        expect(controller.send(:client)).to be_instance_of(Gitlab::LegacyGithubImport::Client)
+      end
+
+      it 'fetches repos using legacy client' do
+        expect_next_instance_of(Gitlab::LegacyGithubImport::Client) do |client|
+          expect(client).to receive(:repos)
+        end
+
+        get :status
+      end
+    end
+
+    context 'when feature remove_legacy_github_client is enabled' do
+      before do
+        stub_feature_flags(remove_legacy_github_client: true)
+        session[:"#{provider}_access_token"] = 'asdasd12345'
+      end
+
+      it_behaves_like 'a GitHub-ish import controller: GET status'
+
+      it 'uses Gitlab::GithubImport::Client' do
+        expect(controller.send(:client)).to be_instance_of(Gitlab::GithubImport::Client)
+      end
+
+      it 'fetches repos using latest github client' do
+        expect_next_instance_of(Gitlab::GithubImport::Client) do |client|
+          expect(client).to receive(:each_page).with(:repos).and_return([].to_enum)
+        end
+
+        get :status
+      end
+
+      it 'concatenates list of repos from multiple pages' do
+        repo_1 = OpenStruct.new(login: 'emacs', full_name: 'asd/emacs', name: 'emacs', owner: { login: 'owner' })
+        repo_2 = OpenStruct.new(login: 'vim', full_name: 'asd/vim', name: 'vim', owner: { login: 'owner' })
+        repos = [OpenStruct.new(objects: [repo_1]), OpenStruct.new(objects: [repo_2])].to_enum
+
+        allow(stub_client).to receive(:each_page).and_return(repos)
+
+        get :status, format: :json
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response.dig('provider_repos').count).to eq(2)
+        expect(json_response.dig('provider_repos', 0, 'id')).to eq(repo_1.id)
+        expect(json_response.dig('provider_repos', 1, 'id')).to eq(repo_2.id)
+      end
+    end
   end
 
   describe "POST create" do

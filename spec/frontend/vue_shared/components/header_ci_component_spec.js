@@ -35,7 +35,7 @@ describe('Header CI Component', () => {
     vm.$destroy();
   });
 
-  const findActionButtons = () => vm.$el.querySelector('.header-action-buttons');
+  const findActionButtons = () => vm.$el.querySelector('[data-testid="headerButtons"]');
 
   describe('render', () => {
     beforeEach(() => {

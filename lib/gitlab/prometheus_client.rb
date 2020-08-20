@@ -77,12 +77,12 @@ module Gitlab
     # metric labels to their respective values.
     #
     # @return [Hash] mapping labels to their aggregate numeric values, or the empty hash if no results were found
-    def aggregate(aggregate_query, time: Time.now)
+    def aggregate(aggregate_query, time: Time.now, transform_value: :to_f)
       response = query(aggregate_query, time: time)
       response.to_h do |result|
         key = block_given? ? yield(result['metric']) : result['metric']
         _timestamp, value = result['value']
-        [key, value.to_i]
+        [key, value.public_send(transform_value)] # rubocop:disable GitlabSecurity/PublicSend
       end
     end
 

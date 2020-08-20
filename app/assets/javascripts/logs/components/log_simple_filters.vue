@@ -1,14 +1,19 @@
 <script>
-import { s__ } from '~/locale';
 import { mapActions, mapState } from 'vuex';
-import { GlIcon, GlDropdown, GlDropdownHeader, GlDropdownItem } from '@gitlab/ui';
+import {
+  GlIcon,
+  GlDeprecatedDropdown,
+  GlDeprecatedDropdownHeader,
+  GlDeprecatedDropdownItem,
+} from '@gitlab/ui';
+import { s__ } from '~/locale';
 
 export default {
   components: {
     GlIcon,
-    GlDropdown,
-    GlDropdownHeader,
-    GlDropdownItem,
+    GlDeprecatedDropdown,
+    GlDeprecatedDropdownHeader,
+    GlDeprecatedDropdownItem,
   },
   props: {
     disabled: {
@@ -39,22 +44,22 @@ export default {
 </script>
 <template>
   <div>
-    <gl-dropdown
+    <gl-deprecated-dropdown
       ref="podsDropdown"
       :text="podDropdownText"
       :disabled="disabled"
       class="mb-2 gl-h-32 pr-2 d-flex d-md-block flex-grow-0 qa-pods-dropdown"
     >
-      <gl-dropdown-header class="text-center">
+      <gl-deprecated-dropdown-header class="text-center">
         {{ s__('Environments|Select pod') }}
-      </gl-dropdown-header>
+      </gl-deprecated-dropdown-header>
 
-      <gl-dropdown-item v-if="!pods.options.length" disabled>
+      <gl-deprecated-dropdown-item v-if="!pods.options.length" disabled>
         <span ref="noPodsMsg" class="text-muted">
           {{ s__('Environments|No pods to display') }}
         </span>
-      </gl-dropdown-item>
-      <gl-dropdown-item
+      </gl-deprecated-dropdown-item>
+      <gl-deprecated-dropdown-item
         v-for="podName in pods.options"
         :key="podName"
         class="text-nowrap"
@@ -67,7 +72,7 @@ export default {
           />
           <div class="flex-grow-1">{{ podName }}</div>
         </div>
-      </gl-dropdown-item>
-    </gl-dropdown>
+      </gl-deprecated-dropdown-item>
+    </gl-deprecated-dropdown>
   </div>
 </template>

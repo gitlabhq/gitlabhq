@@ -13,6 +13,8 @@ For programmatic help adhering to the guidelines, see [Testing](index.md#testing
 See the GitLab handbook for further [writing style guidelines](https://about.gitlab.com/handbook/communication/#writing-style-guidelines)
 that apply to all GitLab content, not just documentation.
 
+View [a list of recent style guide updates](https://gitlab.com/dashboard/merge_requests?scope=all&utf8=%E2%9C%93&state=merged&label_name[]=tw-style&not[label_name][]=docs%3A%3Afix).
+
 ## Documentation is the single source of truth (SSOT)
 
 ### Why a single source of truth
@@ -249,7 +251,7 @@ GitLab documentation should be clear and easy to understand.
 
 - Be clear, concise, and stick to the goal of the documentation.
 - Write in US English with US grammar. (Tested in [`British.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/British.yml).)
-- Use inclusive language.
+- Use [inclusive language](#inclusive-language).
 
 ### Point of view
 
@@ -261,37 +263,117 @@ because it’s friendly and easy to understand.
 
 ### Capitalization
 
-- Capitalize "G" and "L" in GitLab.
-- Use sentence case for:
-  - Titles.
-  - Labels.
-  - Menu items.
-  - Buttons.
-  - Headings. Don't capitalize other words in the title, unless
-    it refers to a product feature. For example:
-    - Capitalizing "issues" is acceptable in
-    `## What you can do with GitLab Issues`, but not in `## Closing multiple issues`.
-- Use title case when referring to:
-  - [GitLab Features](https://about.gitlab.com/features/). For example, Issue Board,
-    Geo, and Runner.
-  - GitLab [product tiers](https://about.gitlab.com/pricing/). For example, GitLab Core
-    and GitLab Ultimate. (Tested in [`BadgeCapitalization.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/BadgeCapitalization.yml).)
-  - Third-party products. For example, Prometheus, Kubernetes, and Git.
-  - Methods or methodologies. For example, Continuous Integration, Continuous
-    Deployment, Scrum, and Agile.
-    (Tested in [`.markdownlint.json`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.markdownlint.json).)
+#### Headings
 
-    NOTE: **Note:**
-    Some features are also objects. For example, "GitLab's Merge Requests support X" and
-    "Create a new merge request for Z."
+Use sentence case. For example:
+
+- `# Use variables to configure pipelines`
+- `## Use the To-Do List`
+
+#### UI text
+
+When referring to specific user interface text, like a button label or menu item, use the same capitalization that is displayed in the UI.
+Standards for this content are listed in the [Pajamas Design System Content section](https://design.gitlab.com/content/punctuation/) and typically
+match what is called for in this Documentation Style Guide.
+
+If you think there is a mistake in the way the UI text is styled,
+create an issue or an MR to propose a change to the UI text.
+
+#### Feature names
+
+- **Feature names are typically lowercase**, like those describing actions and types of objects in GitLab. For example:
+  - epics
+  - issues
+  - issue weights
+  - merge requests
+  - milestones
+  - reorder issues
+  - runner, runners, shared runners
+- **Some features are capitalized**, typically nouns naming GitLab-specific capabilities or tools. For example:
+  - GitLab CI/CD
+  - Repository Mirroring
+  - Value Stream Analytics
+  - the To-Do List
+  - the Web IDE
+  - Geo
+  - GitLab Runner (see [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/233529) for details)
+
+Document any exceptions in this style guide. If you're not sure, ask a GitLab Technical Writer so that they can help decide and document the result.
+
+Do not match the capitalization of terms or phrases on the [Features page](https://about.gitlab.com/features/) or [features.yml](https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/data/features.yml) by default.
+
+#### Other terms
+
+Capitalize names of:
+
+- GitLab [product tiers](https://about.gitlab.com/pricing/). For example, GitLab Core
+  and GitLab Ultimate. (Tested in [`BadgeCapitalization.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/BadgeCapitalization.yml).)
+- Third-party organizations, software, and products. For example, Prometheus, Kubernetes, Git, and The Linux Foundation.
+- Methods or methodologies. For example, Continuous Integration, Continuous Deployment, Scrum, and Agile. (Tested in [`.markdownlint.json`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.markdownlint.json).)
+
+Follow the capitalization style listed at the [authoritative source](#links-to-external-documentation) for the entity, which may use non-standard case styles. For example: GitLab and npm.
+
+### Inclusive language
+
+We strive to create documentation that is inclusive. This section includes guidance and examples in the
+following categories:
+
+- [Gender-specific wording](#avoid-gender-specific-wording).
+- [Ableist language](#avoid-ableist-language).
+- [Cultural sensitivity](#culturally-sensitive-language).
+
+We write our developer documentation with inclusivity and diversity in mind. This page is not an exhaustive reference, but describes some general guidelines and examples that illustrate some best practices to follow.
+
+#### Avoid gender-specific wording
+
+When possible, use gender-neutral pronouns. For example, you can use a singular
+[they](https://developers.google.com/style/pronouns#gender-neutral-pronouns) as a gender-neutral
+pronoun.
+
+Avoid the use of gender-specific pronouns, unless referring to a specific person.
+
+| Use                               | Avoid           |
+|-----------------------------------|-----------------|
+| People, humanity                  | Mankind         |
+| GitLab Team Members               | Manpower        |
+| You can install; They can install | He can install; She can install |
+
+If you need to set up [Fake user information](#fake-user-information), use diverse or non-gendered
+names with common surnames.
+
+#### Avoid ableist language
+
+Avoid terms that are also used in negative stereotypes for different groups.
+
+| Use                    | Avoid                |
+|------------------------|----------------------|
+| Check for completeness | Sanity check         |
+| Uncertain outliers     | Crazy outliers       |
+| Slows the service      | Cripples the service |
+| Placeholder variable   | Dummy variable       |
+| Active/Inactive        | Enabled/Disabled     |
+| On/Off                 | Enabled/Disabled     |
+
+Credit: [Avoid ableist language](https://developers.google.com/style/inclusive-documentation#ableist-language) in the Google Developer Style Guide.
+
+#### Culturally sensitive language
+
+Avoid terms that reflect negative cultural stereotypes and history. In most cases, you can replace terms such as `master` and `slave` with terms that are more precise and functional, such as `primary` and `secondary`.
+
+| Use                  | Avoid                 |
+|----------------------|-----------------------|
+| Primary / secondary  | Master / slave        |
+| Allowlist / denylist | Blacklist / whitelist |
+
+For more information see the following [Internet Draft specification](https://tools.ietf.org/html/draft-knodel-terminology-02).
 
 ### Language to avoid
 
 When creating documentation, limit or avoid the use of the following verb
 tenses, words, and phrases:
 
-- Avoid jargon.
-- Avoid uncommon words.
+- Avoid jargon when possible, and when not possible, define the term or [link to a definition](#links-to-external-documentation).
+- Avoid uncommon words when a more-common alternative is possible, ensuring that content is accessible to more readers.
 - Don't write in the first person singular.
   (Tested in [`FirstPerson.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/FirstPerson.yml).)
   - Instead of "I" or "me," use "we," "you," "us," or "one."
@@ -431,6 +513,7 @@ tenses, words, and phrases:
 
 Check the general punctuation rules for the GitLab documentation on the table below.
 Check specific punctuation rules for [lists](#lists) below.
+Additional examples are available in the [Pajamas guide for punctuation](https://design.gitlab.com/content/punctuation/).
 
 | Rule | Example |
 | ---- | ------- |
@@ -806,8 +889,39 @@ Using the Markdown extension is necessary for the [`/help`](index.md#gitlab-help
 ### Links to external documentation
 
 When describing interactions with external software, it's often helpful to include links to external
-documentation. When possible, make sure that you are linking to an **authoritative** source.
+documentation. When possible, make sure that you're linking to an [**authoritative** source](#authoritative-sources).
 For example, if you're describing a feature in Microsoft's Active Directory, include a link to official Microsoft documentation.
+
+### Authoritative sources
+
+When citing external information, use sources that are written by the people who created
+the item or product in question. These sources are the most likely to
+be accurate and remain up to date.
+
+Examples of authoritative sources include:
+
+- Specifications, such as a [Request for Comments](https://www.ietf.org/standards/rfcs/) document
+from the Internet Engineering Task Force.
+- Official documentation for a product. For example, if you're setting up an interface with the
+Google OAuth 2 authorization server, include a link to Google's documentation.
+- Official documentation for a project. For example, if you're citing NodeJS functionality,
+refer directly to [NodeJS documentation](https://nodejs.org/en/docs/).
+- Books from an authoritative publisher.
+
+Examples of sources to avoid include:
+
+- Personal blog posts.
+- Wikipedia.
+- Non-trustworthy articles.
+- Discussions on forums such as Stack Overflow.
+- Documentation from a company that describes another company's product.
+
+While many of these sources to avoid can help you learn skills and or features, they can become
+obsolete quickly. Nobody is obliged to maintain any of these sites. Therefore, we should avoid using them as reference literature.
+
+NOTE: **Note:**
+Non-authoritative sources are acceptable only if there is no equivalent authoritative source.
+Even then, focus on non-authoritative sources that are extensively cited or peer-reviewed.
 
 ### Links requiring permissions
 
@@ -1135,48 +1249,39 @@ Usage examples:
   [Bootstrap utility class](https://getbootstrap.com/docs/4.4/utilities/float/):
   `**{tanuki, 32, float-right}**` renders as: **{tanuki, 32, float-right}**
 
-### Use GitLab SVGs to describe UI elements
+### When to use icons
 
-When using GitLab SVGs to describe screen elements, also include the name or tooltip of the element as text.
+Icons should be used sparingly, and only in ways that aid and do not hinder the readability of the
+text.
 
-For example, for references to the Admin Area:
-
-- Correct: `**{admin}** **Admin Area > Settings**` (**{admin}** **Admin Area > Settings**)
-- Incorrect: `**{admin}** **> Settings**` (**{admin}** **> Settings**)
-
-This will ensure that the source Markdown remains readable and should help with accessibility.
-
-The following are examples of source Markdown for menu items with their published output:
+For example, the following adds little to the accompanying text:
 
 ```markdown
 1. Go to **{home}** **Project overview > Details**
-1. Go to **{doc-text}** **Repository > Branches**
-1. Go to **{issues}** **Issues > List**
-1. Go to **{merge-request}** **Merge Requests**
-1. Go to **{rocket}** **CI/CD > Pipelines**
-1. Go to **{shield}** **Security & Compliance > Configuration**
-1. Go to **{cloud-gear}** **Operations > Metrics**
-1. Go to **{package}** **Packages > Container Registry**
-1. Go to **{chart}** **Project Analytics > Code Review**
-1. Go to **{book}** **Wiki**
-1. Go to **{snippet}** **Snippets**
-1. Go to **{users}** **Members**
-1. Select the **More actions** **{ellipsis_v}** icon  > **Hide stage**
 ```
 
 1. Go to **{home}** **Project overview > Details**
-1. Go to **{doc-text}** **Repository > Branches**
-1. Go to **{issues}** **Issues > List**
-1. Go to **{merge-request}** **Merge Requests**
-1. Go to **{rocket}** **CI/CD > Pipelines**
-1. Go to **{shield}** **Security & Compliance > Configuration**
-1. Go to **{cloud-gear}** **Operations > Metrics**
-1. Go to **{package}** **Packages > Container Registry**
-1. Go to **{chart}** **Project Analytics > Code Review**
-1. Go to **{book}** **Wiki**
-1. Go to **{snippet}** **Snippets**
-1. Go to **{users}** **Members**
-1. Select the **More actions** **{ellipsis_v}** icon > **Hide stage**
+
+However, the following might help the reader connect the text to the user interface:
+
+```markdown
+| Section                  | Description                                                                                                                 |
+|:-------------------------|:----------------------------------------------------------------------------------------------------------------------------|
+| **{overview}** Overview  | View your GitLab Dashboard, and administer projects, users, groups, jobs, Runners, and Gitaly servers.                      |
+| **{monitor}** Monitoring | View GitLab system information, and information on background jobs, logs, health checks, requests profiles, and audit logs. |
+| **{messages}** Messages  | Send and manage broadcast messages for your users.                                                                          |
+```
+
+| Section                  | Description                                                                                                                 |
+|:-------------------------|:----------------------------------------------------------------------------------------------------------------------------|
+| **{overview}** Overview  | View your GitLab Dashboard, and administer projects, users, groups, jobs, Runners, and Gitaly servers.                      |
+| **{monitor}** Monitoring | View GitLab system information, and information on background jobs, logs, health checks, requests profiles, and audit logs. |
+| **{messages}** Messages  | Send and manage broadcast messages for your users.                                                                          |
+
+Use an icon when you find youself having to describe an interface element. For example:
+
+- Do: Click the Admin Area icon ( **{admin}** ).
+- Don't: Click the Admin Area icon (the wrench icon).
 
 ## Alert boxes
 
@@ -1294,21 +1399,20 @@ Which renders to:
 To maintain consistency through GitLab documentation, the following guides documentation authors
 on agreed styles and usage of terms.
 
-### Merge Requests (MRs)
+### Merge requests (MRs)
 
 Merge requests allow you to exchange changes you made to source code and collaborate
 with other people on the same project. You'll see this term used in the following ways:
 
-- If you're referring to the feature, use **Merge Request**.
-- In any other context, use **merge request**.
+- Use lowercase **merge requests** regardless of whether referring to the feature or individual merge requests.
 
-As noted in our corporate [Writing Style Guidelines](https://about.gitlab.com/handbook/communication/#writing-style-guidelines),
+As noted in the GitLab [Writing Style Guidelines](https://about.gitlab.com/handbook/communication/#writing-style-guidelines),
 if you use the **MR** acronym, expand it at least once per document page.
-For example, the first time you specify a MR, specify either _Merge Request (MR)_ or _merge request (MR)_.
+Typically, the first use would be phrased as _merge request (MR)_ with subsequent instances being _MR_.
 
 Examples:
 
-- "We prefer GitLab Merge Requests".
+- "We prefer GitLab merge requests".
 - "Open a merge request to fix a broken link".
 - "After you open a merge request (MR), submit your MR for review and approval".
 
@@ -1476,43 +1580,43 @@ GitLab Community Edition), don't split the product or feature name across lines.
 
 ### Product badges
 
-When a feature is available in EE-only tiers, add the corresponding tier according to the
-feature availability:
+When a feature is available in paid tiers, add the corresponding tier to the
+header or other page element according to the feature's availability:
 
-- For GitLab Core and GitLab.com Free: `**(CORE)**`.
-- For GitLab Starter and GitLab.com Bronze: `**(STARTER)**`.
-- For GitLab Premium and GitLab.com Silver: `**(PREMIUM)**`.
-- For GitLab Ultimate and GitLab.com Gold: `**(ULTIMATE)**`.
+| Tier in which feature is available                                     | Tier markup           |
+|:-----------------------------------------------------------------------|:----------------------|
+| GitLab Core and GitLab.com Free, and their higher tiers                | `**(CORE)**`          |
+| GitLab Starter and GitLab.com Bronze, and their higher tiers           | `**(STARTER)**`       |
+| GitLab Premium and GitLab.com Silver, and their higher tiers           | `**(PREMIUM)**`       |
+| GitLab Ultimate and GitLab.com Gold                                    | `**(ULTIMATE)**`      |
+| *Only* GitLab Core and higher tiers (no GitLab.com-based tiers)        | `**(CORE ONLY)**`     |
+| *Only* GitLab Starter and higher tiers (no GitLab.com-based tiers)     | `**(STARTER ONLY)**`  |
+| *Only* GitLab Premium and higher tiers (no GitLab.com-based tiers)     | `**(PREMIUM ONLY)**`  |
+| *Only* GitLab Ultimate (no GitLab.com-based tiers)                     | `**(ULTIMATE ONLY)**` |
+| *Only* GitLab.com Free and higher tiers (no self-managed instances)    | `**(FREE ONLY)**`     |
+| *Only* GitLab.com Bronze and higher tiers (no self-managed instances)  | `**(BRONZE ONLY)**`   |
+| *Only* GitLab.com Silver and higher tiers (no self-managed instances)  | `**(SILVER ONLY)**`   |
+| *Only* GitLab.com Gold (no self-managed instances)                     | `**(GOLD ONLY)**`     |
 
-To exclude GitLab.com tiers (when the feature is not available in GitLab.com), add the
-keyword "only":
+For clarity, all page title headers (H1s) must be have a tier markup for
+the lowest tier that has information on the documentation page.
 
-- For GitLab Core: `**(CORE ONLY)**`.
-- For GitLab Starter: `**(STARTER ONLY)**`.
-- For GitLab Premium: `**(PREMIUM ONLY)**`.
-- For GitLab Ultimate: `**(ULTIMATE ONLY)**`.
+If sections of a page apply to higher tier levels, they can be separately
+labeled with their own tier markup.
 
-For GitLab.com only tiers (when the feature is not available for self-managed instances):
+#### Product badge display behavior
 
-- For GitLab Free and higher tiers: `**(FREE ONLY)**`.
-- For GitLab Bronze and higher tiers: `**(BRONZE ONLY)**`.
-- For GitLab Silver and higher tiers: `**(SILVER ONLY)**`.
-- For GitLab Gold: `**(GOLD ONLY)**`.
+When using the tier markup with headers, the documentation page will
+display the full tier badge with the header line.
 
-The tier should be ideally added to headers, so that the full badge will be displayed.
-However, it can be also mentioned from paragraphs, list items, and table cells. For these cases,
-the tier mention will be represented by an orange info icon **(information)** that will show the tiers on hover.
+You can also use the tier markup with paragraphs, list items,
+and table cells. For these cases, the tier mention will be represented by an
+orange info icon **{information}** that will display the tiers when visitors
+point to the icon. For example:
 
-Use the lowest tier at the page level, even if higher-level tiers exist on the page. For example, you might have a page that is marked as Starter but a section badged as Premium.
-
-For example:
-
-- `**(STARTER)**` renders as **(STARTER)**
-- `**(STARTER ONLY)**` renders as **(STARTER ONLY)**
-- `**(SILVER ONLY)**` renders as **(SILVER ONLY)**
-
-The absence of tiers' mentions mean that the feature is available in GitLab Core,
-GitLab.com Free, and all higher tiers.
+- `**(STARTER)**` displays as **(STARTER)**
+- `**(STARTER ONLY)**` displays as **(STARTER ONLY)**
+- `**(SILVER ONLY)**` displays as **(SILVER ONLY)**
 
 #### How it works
 
@@ -1622,10 +1726,10 @@ Learn how to [document features deployed behind flags](feature_flags.md).
 For guidance on developing GitLab with feature flags, see
 [Feature flags in development of GitLab](../feature_flags/index.md).
 
-## API
+## RESTful API
 
-Here is a list of must-have items. Use them in the exact order that appears
-on this document. Further explanation is given below.
+Here is a list of must-have items for RESTful API documentation. Use them in the
+exact order that appears on this document. Further explanation is given below.
 
 - Every method must have the REST API request. For example:
 
@@ -1776,7 +1880,8 @@ curl --data "name=foo" --header "PRIVATE-TOKEN: <your_access_token>" "https://gi
 
 #### Post data using JSON content
 
-> **Note:** In this example we create a new group. Watch carefully the single
+NOTE: **Note:**
+In this example we create a new group. Watch carefully the single
 and double quotes.
 
 ```shell
@@ -1816,3 +1921,80 @@ exclude specific users when requesting a list of users for a project, you would 
 ```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" --data "skip_users[]=<user_id>" --data "skip_users[]=<user_id>" https://gitlab.example.com/api/v4/projects/<project_id>/users
 ```
+
+## GraphQL API
+
+GraphQL APIs are different from [RESTful APIs](#restful-api). Reference information is
+generated automatically in our [GraphQL reference](../../api/graphql/reference/index.md).
+
+However, it's helpful to include examples on how to use GraphQL for different "use cases",
+with samples that readers can use directly in the [GraphiQL explorer](../api_graphql_styleguide.md#graphiql).
+
+This section describes the steps required to add your GraphQL examples to GitLab documentation.
+
+### Add a dedicated GraphQL page
+
+To create a dedicated GraphQL page, create a new `.md` file in the `doc/api/graphql/` directory.
+Give that file a functional name, such as `import_from_specific_location.md`.
+
+### Start the page with an explanation
+
+Include a page title that describes the GraphQL functionality in a few words, such as:
+
+```markdown
+# Search for [substitute kind of data]
+```
+
+Describe the search. One sentence may be all you need. More information may help
+readers learn how to use the example for their GitLab deployments.
+
+### Include a procedure using the GraphiQL explorer
+
+The GraphiQL explorer can help readers test queries with working deployments. Set up the section with the following:
+
+- Use the following title:
+
+  ```markdown
+  ## Set up the GraphiQL explorer
+  ```
+
+- Include a code block with the query that anyone can include in their instance of
+  the GraphiQL explorer:
+
+  ````markdown
+  ```graphql
+  query {
+    <insert queries here>
+  }
+  ```
+  ````
+
+- Tell the user what to do:
+
+  ```markdown
+  1. Open the GraphiQL explorer tool in the following URL: `https://gitlab.com/-/graphql-explorer`.
+  1. Paste the `query` listed above into the left window of your GraphiQL explorer tool.
+  1. Click Play to get the result shown here:
+  ```
+
+- Include a screenshot of the result in the GraphiQL explorer. Follow the naming
+  convention described in the [Save the image](#save-the-image) section.
+- Follow up with an example of what you can do with the output.
+  Make sure the example is something that readers can do on their own deployments.
+- Include a link to the [GraphQL API resources](../../api/graphql/reference/index.md).
+
+### Add the GraphQL example to the Table of Contents
+
+You'll need to open a second MR, against the [GitLab Docs repository](https://gitlab.com/gitlab-org/gitlab-docs/).
+
+We store our Table of Contents in the `default-nav.yaml` file, in the `content/_data`
+subdirectory. You can find the GraphQL section under the following line:
+
+```yaml
+      - category_title: GraphQL
+```
+
+Be aware that CI tests for that second MR will fail with a bad link until the main MR
+that adds the new GraphQL page is merged.
+
+And that's all you need!

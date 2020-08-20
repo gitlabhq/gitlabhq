@@ -9,6 +9,8 @@ module ServiceDeskSettings
         params.delete(:project_key)
       end
 
+      params[:project_key] = nil if params[:project_key].blank?
+
       if settings.update(params)
         success
       else

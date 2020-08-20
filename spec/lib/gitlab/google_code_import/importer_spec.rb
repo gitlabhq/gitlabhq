@@ -12,6 +12,7 @@ RSpec.describe Gitlab::GoogleCodeImport::Importer do
       'user_map' => { 'thilo...' => "@#{mapped_user.username}" }
     }
   end
+
   let(:project) { create(:project) }
 
   subject { described_class.new(project) }

@@ -5,11 +5,7 @@ export default {
     issue: {
       designCollection: {
         designs: {
-          edges: [
-            {
-              node: design,
-            },
-          ],
+          nodes: [design],
         },
       },
     },

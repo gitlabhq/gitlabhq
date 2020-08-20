@@ -34,8 +34,7 @@ module Clusters
           repository: repository,
           files: files,
           preinstall: migrate_to_3_script,
-          postinstall: post_install_script,
-          local_tiller_enabled: cluster.local_tiller_enabled?
+          postinstall: post_install_script
         )
       end
 
@@ -44,8 +43,7 @@ module Clusters
           name: 'elastic-stack',
           rbac: cluster.platform_kubernetes_rbac?,
           files: files,
-          postdelete: post_delete_script,
-          local_tiller_enabled: cluster.local_tiller_enabled?
+          postdelete: post_delete_script
         )
       end
 
@@ -121,8 +119,7 @@ module Clusters
           Gitlab::Kubernetes::Helm::DeleteCommand.new(
             name: 'elastic-stack',
             rbac: cluster.platform_kubernetes_rbac?,
-            files: files,
-            local_tiller_enabled: cluster.local_tiller_enabled?
+            files: files
           ).delete_command,
           Gitlab::Kubernetes::KubectlCmd.delete("pvc", "--selector", "release=elastic-stack", "--namespace", Gitlab::Kubernetes::Helm::NAMESPACE)
         ]

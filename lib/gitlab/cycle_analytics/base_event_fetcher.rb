@@ -6,7 +6,7 @@ module Gitlab
       include BaseQuery
       include GroupProjectsProvider
 
-      attr_reader :projections, :query, :stage, :order, :options
+      attr_reader :projections, :query, :stage, :options
 
       MAX_EVENTS = 50
 

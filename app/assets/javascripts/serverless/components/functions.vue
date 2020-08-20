@@ -1,6 +1,6 @@
 <script>
 import { mapState, mapActions, mapGetters } from 'vuex';
-import { GlLoadingIcon } from '@gitlab/ui';
+import { GlLink, GlLoadingIcon } from '@gitlab/ui';
 import { sprintf, s__ } from '~/locale';
 import EnvironmentRow from './environment_row.vue';
 import EmptyState from './empty_state.vue';
@@ -10,24 +10,11 @@ export default {
   components: {
     EnvironmentRow,
     EmptyState,
+    GlLink,
     GlLoadingIcon,
   },
-  props: {
-    clustersPath: {
-      type: String,
-      required: true,
-    },
-    helpPath: {
-      type: String,
-      required: true,
-    },
-    statusPath: {
-      type: String,
-      required: true,
-    },
-  },
   computed: {
-    ...mapState(['installed', 'isLoading', 'hasFunctionData']),
+    ...mapState(['installed', 'isLoading', 'hasFunctionData', 'helpPath', 'statusPath']),
     ...mapGetters(['getFunctions']),
 
     checkingInstalled() {
@@ -118,14 +105,14 @@ export default {
             }}
           </p>
           <div class="text-center">
-            <a :href="helpPath" class="btn btn-success">
-              {{ s__('Serverless|Learn more about Serverless') }}
-            </a>
+            <gl-link :href="helpPath" class="btn btn-success">{{
+              s__('Serverless|Learn more about Serverless')
+            }}</gl-link>
           </div>
         </div>
       </div>
     </div>
 
-    <empty-state v-else :clusters-path="clustersPath" :help-path="helpPath" />
+    <empty-state v-else />
   </section>
 </template>

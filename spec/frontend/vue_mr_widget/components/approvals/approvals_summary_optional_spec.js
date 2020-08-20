@@ -1,9 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
 import { GlLink } from '@gitlab/ui';
-import {
-  OPTIONAL,
-  OPTIONAL_CAN_APPROVE,
-} from '~/vue_merge_request_widget/components/approvals/messages';
 import ApprovalsSummaryOptional from '~/vue_merge_request_widget/components/approvals/approvals_summary_optional.vue';
 
 const TEST_HELP_PATH = 'help/path';
@@ -29,10 +25,6 @@ describe('MRWidget approvals summary optional', () => {
       createComponent({ canApprove: true, helpPath: TEST_HELP_PATH });
     });
 
-    it('shows optional can approve message', () => {
-      expect(wrapper.text()).toEqual(OPTIONAL_CAN_APPROVE);
-    });
-
     it('shows help link', () => {
       const link = findHelpLink();
 
@@ -44,10 +36,6 @@ describe('MRWidget approvals summary optional', () => {
   describe('when cannot approve', () => {
     beforeEach(() => {
       createComponent({ canApprove: false, helpPath: TEST_HELP_PATH });
-    });
-
-    it('shows optional message', () => {
-      expect(wrapper.text()).toEqual(OPTIONAL);
     });
 
     it('does not show help link', () => {

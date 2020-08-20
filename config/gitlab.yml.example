@@ -218,6 +218,9 @@ production: &base
   #     region: us-east-1
   #     aws_signature_version: 4 # For creation of signed URLs. Set to 2 if provider does not support v4.
   #     endpoint: 'https://s3.amazonaws.com' # default: nil - Useful for S3 compliant services such as DigitalOcean Spaces
+  #   storage_options:
+  #     server_side_encryption: AES256 # AES256, aws:kms
+  #     server_side_encryption_kms_key_id: # Amazon Resource Name. See https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingKMSEncryption.html
   #   objects:
   #     artifacts:
   #       bucket: artifacts
@@ -884,6 +887,11 @@ production: &base
     # login, without having to do a manual login first and manually add SAML
     # (default: false)
     auto_link_saml_user: false
+
+    # Allow users with existing accounts to sign in and auto link their account via OmniAuth
+    # login, without having to do a manual login first and manually add OmniAuth. Links on email.
+    # (default: false)
+    auto_link_user: false
 
     # Set different Omniauth providers as external so that all users creating accounts
     # via these providers will not be able to have access to internal projects. You

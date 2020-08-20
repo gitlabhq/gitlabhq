@@ -19,6 +19,15 @@ RSpec.shared_examples 'issues list service' do
     end
   end
 
+  it 'avoids N+1' do
+    params = { board_id: board.id }
+    control = ActiveRecord::QueryRecorder.new { described_class.new(parent, user, params).execute }
+
+    create(:list, board: board)
+
+    expect { described_class.new(parent, user, params).execute }.not_to exceed_query_limit(control)
+  end
+
   context 'issues are ordered by priority' do
     it 'returns opened issues when list_id is missing' do
       params = { board_id: board.id }
@@ -69,6 +78,19 @@ RSpec.shared_examples 'issues list service' do
       service = described_class.new(parent, user, board_id: board.id, id: nil)
 
       expect { service.execute }.to raise_error(ActiveRecord::RecordNotFound)
+    end
+  end
+
+  context 'when :all_lists is used' do
+    it 'returns issues from all lists' do
+      params = { board_id: board.id, all_lists: true }
+
+      issues = described_class.new(parent, user, params).execute
+
+      expected = [opened_issue2, reopened_issue1, opened_issue1, list1_issue1,
+                  list1_issue2, list1_issue3, list2_issue1, closed_issue1,
+                  closed_issue2, closed_issue3, closed_issue4, closed_issue5]
+      expect(issues).to match_array(expected)
     end
   end
 end

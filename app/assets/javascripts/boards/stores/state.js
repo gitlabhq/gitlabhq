@@ -1,7 +1,11 @@
-import { inactiveListId } from '~/boards/constants';
+import { inactiveId } from '~/boards/constants';
 
 export default () => ({
   endpoints: {},
+  boardType: null,
   isShowingLabels: true,
-  activeListId: inactiveListId,
+  activeId: inactiveId,
+  issuesByListId: {},
+  isLoadingIssues: false,
+  listIssueFetchFailure: false,
 });

@@ -1,5 +1,6 @@
 <script>
 import { GlTooltipDirective } from '@gitlab/ui';
+
 import timeagoMixin from '../mixins/timeago';
 import '../../lib/utils/datetime_utility';
 
@@ -28,6 +29,11 @@ export default {
       default: '',
     },
   },
+  computed: {
+    timeAgo() {
+      return this.timeFormatted(this.time);
+    },
+  },
 };
 </script>
 <template>
@@ -35,7 +41,7 @@ export default {
     v-gl-tooltip.viewport="{ placement: tooltipPlacement }"
     :class="cssClass"
     :title="tooltipTitle(time)"
-    v-text="timeFormatted(time)"
+    :datetime="time"
+    ><slot :timeAgo="timeAgo">{{ timeAgo }}</slot></time
   >
-  </time>
 </template>

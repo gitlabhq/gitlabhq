@@ -193,7 +193,7 @@ RSpec.describe 'Merge request > User posts diff notes', :js do
 
   context 'when the MR only supports legacy diff notes' do
     before do
-      merge_request.merge_request_diff.update(start_commit_sha: nil)
+      merge_request.merge_request_diff.update!(start_commit_sha: nil)
       visit diffs_project_merge_request_path(project, merge_request, view: 'inline')
     end
 

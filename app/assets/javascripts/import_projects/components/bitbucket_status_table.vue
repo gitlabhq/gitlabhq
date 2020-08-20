@@ -9,6 +9,7 @@ export default {
     GlSprintf,
     GlLink,
   },
+  inheritAttrs: false,
   props: {
     providerTitle: {
       type: String,
@@ -28,7 +29,7 @@ export default {
 };
 </script>
 <template>
-  <import-projects-table :provider-title="providerTitle">
+  <import-projects-table :provider-title="providerTitle" v-bind="$attrs">
     <template #actions>
       <slot name="actions"></slot>
     </template>

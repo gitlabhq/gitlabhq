@@ -23,32 +23,39 @@ Example output:
 
 ```plaintext
 System information
-System:           Debian 7.8
-Current User:     git
-Using RVM:        no
-Ruby Version:     2.1.5p273
-Gem Version:      2.4.3
-Bundler Version:  1.7.6
-Rake Version:     10.3.2
-Redis Version:    3.2.5
-Sidekiq Version:  2.17.8
+System:         Ubuntu 20.04
+Proxy:          no
+Current User:   git
+Using RVM:      no
+Ruby Version:   2.6.6p146
+Gem Version:    2.7.10
+Bundler Version:1.17.3
+Rake Version:   12.3.3
+Redis Version:  5.0.9
+Git Version:    2.27.0
+Sidekiq Version:5.2.9
+Go Version:     unknown
 
 GitLab information
-Version:          7.7.1
-Revision:         41ab9e1
-Directory:        /home/git/gitlab
-DB Adapter:       postgresql
-URL:              https://gitlab.example.com
-HTTP Clone URL:   https://gitlab.example.com/some-project.git
-SSH Clone URL:    git@gitlab.example.com:some-project.git
-Using LDAP:       no
-Using Omniauth:   no
+Version:        13.2.2-ee
+Revision:       618883a1f9d
+Directory:      /opt/gitlab/embedded/service/gitlab-rails
+DB Adapter:     PostgreSQL
+DB Version:     11.7
+URL:            http://gitlab.example.com
+HTTP Clone URL: http://gitlab.example.com/some-group/some-project.git
+SSH Clone URL:  git@gitlab.example.com:some-group/some-project.git
+Elasticsearch:  no
+Geo:            no
+Using LDAP:     no
+Using Omniauth: yes
+Omniauth Providers:
 
 GitLab Shell
-Version:          2.4.1
-Repositories:     /home/git/repositories/
-Hooks:            /home/git/gitlab-shell/hooks/
-Git:              /usr/bin/git
+Version:    13.3.0
+Repository storage paths:
+- default:  /var/opt/gitlab/git-data/repositories
+GitLab Shell path:      /opt/gitlab/embedded/service/gitlab-shell
 ```
 
 ## Show GitLab license information **(STARTER ONLY)**

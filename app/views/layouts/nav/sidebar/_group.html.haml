@@ -1,7 +1,7 @@
 - issues_count = group_issues_count(state: 'opened')
 - merge_requests_count = group_merge_requests_count(state: 'opened')
 
-.nav-sidebar{ class: ("sidebar-collapsed-desktop" if collapsed_sidebar?) }
+.nav-sidebar{ class: ("sidebar-collapsed-desktop" if collapsed_sidebar?), **tracking_attrs('groups_side_navigation', 'render', 'groups_side_navigation') }
   .nav-sidebar-inner-scroll
     .context-header
       = link_to group_path(@group), title: @group.name do
@@ -85,7 +85,7 @@
                   %span
                     = _('Milestones')
 
-            = render_if_exists 'layouts/nav/sidebar/iterations_link'
+            = render_if_exists 'layouts/nav/sidebar/group_iterations_link'
 
       - if group_sidebar_link?(:merge_requests)
         = nav_link(path: 'groups#merge_requests') do

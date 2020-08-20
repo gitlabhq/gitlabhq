@@ -1,0 +1,5 @@
+---
+title: Make file icons extension detection be case-insensitive
+merge_request: 37817
+author:
+type: fixed

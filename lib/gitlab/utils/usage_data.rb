@@ -93,7 +93,7 @@ module Gitlab
       end
 
       def with_finished_at(key, &block)
-        yield.merge(key => Time.now)
+        yield.merge(key => Time.current)
       end
 
       private

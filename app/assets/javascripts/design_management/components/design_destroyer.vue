@@ -13,13 +13,14 @@ export default {
       type: Array,
       required: true,
     },
+  },
+  inject: {
     projectPath: {
-      type: String,
-      required: true,
+      default: '',
     },
     iid: {
-      type: String,
-      required: true,
+      from: 'issueIid',
+      defaut: '',
     },
   },
   computed: {

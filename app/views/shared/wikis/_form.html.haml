@@ -59,7 +59,7 @@
               - link_example = '[[page-slug]]'
             - else
               - link_example = '[Link Title](page-slug)'
-          = (s_('WikiMarkdownTip|To link to a (new) page, simply type <code class="js-markup-link-example">%{link_example}</code>') % { link_example: link_example }).html_safe
+          = html_escape(s_('WikiMarkdownTip|To link to a (new) page, simply type %{link_example}')) % { link_example: tag.code(link_example, class: 'js-markup-link-example') }
         = succeed '.' do
           - markdown_link = link_to s_("WikiMarkdownDocs|documentation"), help_page_path('user/markdown', anchor: 'wiki-specific-markdown')
           = (s_("WikiMarkdownDocs|More examples are in the %{docs_link}") % { docs_link: markdown_link }).html_safe

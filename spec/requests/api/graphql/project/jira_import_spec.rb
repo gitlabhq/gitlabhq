@@ -53,6 +53,7 @@ RSpec.describe 'query Jira import data' do
       }
     )
   end
+
   let(:jira_imports) { graphql_data.dig('project', 'jiraImports', 'nodes')}
   let(:jira_import_status) { graphql_data.dig('project', 'jiraImportStatus')}
 
@@ -106,7 +107,7 @@ RSpec.describe 'query Jira import data' do
         let(:query) do
           %(
             query {
-              project(fullPath:"#{project.full_path}") {
+              project(fullPath: "#{project.full_path}") {
                 jiraImports(first: 1) {
                   nodes {
                     jiraProjectKey
@@ -132,7 +133,7 @@ RSpec.describe 'query Jira import data' do
         let(:query) do
           %(
             query {
-              project(fullPath:"#{project.full_path}") {
+              project(fullPath: "#{project.full_path}") {
                 jiraImports(last: 1) {
                   nodes {
                     jiraProjectKey

@@ -8,9 +8,12 @@ module QA
     #
     module Members
       def add_member(user, access_level = AccessLevel::DEVELOPER)
-        QA::Runtime::Logger.debug(%Q[Adding user #{user.username} to #{full_path} #{self.class.name}])
+        Support::Retrier.retry_until do
+          QA::Runtime::Logger.debug(%Q[Adding user #{user.username} to #{full_path} #{self.class.name}])
 
-        post Runtime::API::Request.new(api_client, api_members_path).url, { user_id: user.id, access_level: access_level }
+          response = post Runtime::API::Request.new(api_client, api_members_path).url, { user_id: user.id, access_level: access_level }
+          response.code == QA::Support::Api::HTTP_STATUS_CREATED
+        end
       end
 
       def remove_member(user)

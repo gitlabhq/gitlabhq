@@ -5,10 +5,10 @@ import '~/boards/models/label';
 import '~/boards/models/assignee';
 import '~/boards/models/issue';
 import '~/boards/models/list';
+import { GlLabel } from '@gitlab/ui';
 import IssueCardInner from '~/boards/components/issue_card_inner.vue';
 import { listObj } from './mock_data';
 import store from '~/boards/stores';
-import { GlLabel } from '@gitlab/ui';
 
 describe('Issue card component', () => {
   const user = new ListAssignee({

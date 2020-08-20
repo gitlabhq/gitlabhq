@@ -143,6 +143,10 @@
       margin-bottom: 0;
     }
   }
+
+  .gl-label-scoped {
+    --label-inset-border: inset 0 0 0 1px currentColor;
+  }
 }
 
 @include media-breakpoint-down(sm) {

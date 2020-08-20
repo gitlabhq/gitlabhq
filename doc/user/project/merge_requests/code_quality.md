@@ -7,7 +7,8 @@ type: reference, howto
 
 # Code Quality
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/1984) in [GitLab Starter](https://about.gitlab.com/pricing/) 9.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/1984) in [GitLab Starter](https://about.gitlab.com/pricing/) 9.3.
+> - Made [available in all tiers](https://gitlab.com/gitlab-org/gitlab/-/issues/212499) in 13.2.
 
 Ensuring your project's code stays simple, readable and easy to contribute to can be problematic. With the help of [GitLab CI/CD](../../../ci/README.md), you can analyze your
 source code quality using GitLab Code Quality.
@@ -66,12 +67,10 @@ For instance, consider the following workflow:
 
 ## Example configuration
 
-CAUTION: **Caution:**
-The job definition shown below is supported on GitLab 11.11 and later versions. It
-also requires the GitLab Runner 11.5 or later. For earlier versions, use the
-[previous job definitions](#previous-job-definitions).
-
 This example shows how to run Code Quality on your code by using GitLab CI/CD and Docker.
+It requires GitLab 11.11 or later, and GitLab Runner 11.5 or later. If you are using
+GitLab 11.4 or ealier, you can view the deprecated job definitions in the
+[documentation archive](https://docs.gitlab.com/12.10/ee/user/project/merge_requests/code_quality.html#previous-job-definitions).
 
 First, you need GitLab Runner configured:
 
@@ -131,103 +130,65 @@ definition they will be able to execute privileged Docker commands on the Runner
 host. Having proper access control policies mitigates this attack vector by
 allowing access only to trusted actors.
 
-### Previous job definitions
+### Disabling the code quality job
 
-CAUTION: **Caution:**
-Before GitLab 11.5, Code Quality job and artifact had to be named specifically to
-automatically extract report data and show it in the merge request widget. While these
-old job definitions are still maintained they have been deprecated and are no longer supported on GitLab 12.0 or higher.
-You're advised to update your `.gitlab-ci.yml` configuration to reflect that change.
+The `code_quality` job will not run if the `$CODE_QUALITY_DISABLED` environment
+variable is present. Please refer to the environment variables [documentation](../../../ci/variables/README.md)
+to learn more about how to define one.
 
-For GitLab 11.5 and later, the job should look like:
+To disable the `code_quality` job, add `CODE_QUALITY_DISABLED` as a custom environment
+variable. This can be done:
 
-```yaml
-code_quality:
-  image: docker:stable
-  variables:
-    DOCKER_DRIVER: overlay2
-  allow_failure: true
-  services:
-    - docker:stable-dind
-  script:
-    - export SP_VERSION=$(echo "$CI_SERVER_VERSION" | sed 's/^\([0-9]*\)\.\([0-9]*\).*/\1-\2-stable/')
-    - docker run
-        --env SOURCE_CODE="$PWD"
-        --volume "$PWD":/code
-        --volume /var/run/docker.sock:/var/run/docker.sock
-        "registry.gitlab.com/gitlab-org/ci-cd/codequality:$SP_VERSION" /code
-  artifacts:
-    reports:
-      codequality: gl-code-quality-report.json
-```
+- For the whole project, [in the project settings](../../../ci/variables/README.md#create-a-custom-variable-in-the-ui)
+  or [CI/CD configuration](../../../ci/variables/README.md#create-a-custom-variable-in-the-ui).
+- For a single pipeline run:
 
-In GitLab 12.6, Code Quality switched to the
-[new versioning scheme](https://gitlab.com/gitlab-org/ci-cd/codequality#versioning-and-release-cycle).
-It's highly recommended to include the Code Quality template as shown in the
-[example configuration](#example-configuration), which uses the new versioning scheme.
-If not using the template, the `SP_VERSION` variable can be hardcoded to use the
-new image versions:
+  1. Go to **CI/CD > Pipelines**
+  1. Click **Run Pipeline**
+  1. Add `CODE_QUALITY_DISABLED` as the variable key, with any value.
+
+### Using with merge request pipelines
+
+The configuration provided by the Code Quality template does not let the `code_quality` job
+run on [pipelines for merge requests](../../../ci/merge_request_pipelines/index.md).
+
+If pipelines for merge requests is enabled, the `code_quality:rules` must be redefined.
+
+The template has these [`rules`](../../../ci/yaml/README.md#rules) for the `code quality` job:
 
 ```yaml
 code_quality:
-  image: docker:stable
-  variables:
-    DOCKER_DRIVER: overlay2
-    SP_VERSION: 0.85.6
-  allow_failure: true
-  services:
-    - docker:stable-dind
-  script:
-    - docker run
-        --env SOURCE_CODE="$PWD"
-        --volume "$PWD":/code
-        --volume /var/run/docker.sock:/var/run/docker.sock
-        "registry.gitlab.com/gitlab-org/ci-cd/codequality:$SP_VERSION" /code
-  artifacts:
-    reports:
-      codequality: gl-code-quality-report.json
+  rules:
+    - if: '$CODE_QUALITY_DISABLED'
+      when: never
+    - if: '$CI_COMMIT_TAG || $CI_COMMIT_BRANCH'
 ```
 
-For GitLab 11.4 and earlier, the job should look like:
+If you are using merge request pipelines, your `rules` (or [`workflow: rules`](../../../ci/yaml/README.md#workflowrules))
+might look like this example:
 
 ```yaml
+job1:
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"' # Run job1 in merge request pipelines
+    - if: '$CI_COMMIT_BRANCH == "master"'                # Run job1 in pipelines on the master branch (but not in other branch pipelines)
+    - if: '$CI_COMMIT_TAG'                               # Run job1 in pipelines for tags
+```
+
+To make these work together, you will need to overwrite the code quality `rules`
+so that they match your current `rules`. From the example above, it could look like:
+
+```yaml
+include:
+  - template: Code-Quality.gitlab-ci.yml
+
 code_quality:
-  image: docker:stable
-  variables:
-    DOCKER_DRIVER: overlay2
-  allow_failure: true
-  services:
-    - docker:stable-dind
-  script:
-    - export SP_VERSION=$(echo "$CI_SERVER_VERSION" | sed 's/^\([0-9]*\)\.\([0-9]*\).*/\1-\2-stable/')
-    - docker run
-        --env SOURCE_CODE="$PWD"
-        --volume "$PWD":/code
-        --volume /var/run/docker.sock:/var/run/docker.sock
-        "registry.gitlab.com/gitlab-org/ci-cd/codequality:$SP_VERSION" /code
-  artifacts:
-      paths: [gl-code-quality-report.json]
-```
-
-Alternatively the job name could be `codeclimate` or `codequality` and the artifact
-name could be `codeclimate.json`. These names have been deprecated with GitLab 11.0
-and may be removed in the next major release, GitLab 12.0.
-
-For GitLab 10.3 and earlier, the job should look like:
-
-```yaml
-codequality:
-  image: docker:latest
-  variables:
-    DOCKER_DRIVER: overlay
-  services:
-    - docker:dind
-  script:
-    - docker pull codeclimate/codeclimate:0.69.0
-    - docker run --env CODECLIMATE_CODE="$PWD" --volume "$PWD":/code --volume /var/run/docker.sock:/var/run/docker.sock --volume /tmp/cc:/tmp/cc codeclimate/codeclimate:0.69.0 init
-    - docker run --env CODECLIMATE_CODE="$PWD" --volume "$PWD":/code --volume /var/run/docker.sock:/var/run/docker.sock --volume /tmp/cc:/tmp/cc codeclimate/codeclimate:0.69.0 analyze -f json > codeclimate.json || true
-  artifacts:
-    paths: [codeclimate.json]
+  rules:
+    - if: '$CODE_QUALITY_DISABLED'
+      when: never
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"' # Run code quality job in merge request pipelines
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'      # Run code quality job in pipelines on the master branch (but not in other branch pipelines)
+    - if: '$CI_COMMIT_TAG'                               # Run code quality job in pipelines for tags
 ```
 
 ## Configuring jobs using variables

@@ -1,6 +1,6 @@
 import Store from 'ee_else_ce/sidebar/stores/sidebar_store';
 import { visitUrl } from '../lib/utils/url_utility';
-import Flash from '../flash';
+import { deprecatedCreateFlash as Flash } from '../flash';
 import Service from './services/sidebar_service';
 import { __ } from '~/locale';
 

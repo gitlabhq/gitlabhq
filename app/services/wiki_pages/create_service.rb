@@ -10,7 +10,11 @@ module WikiPages
         execute_hooks(page)
       end
 
-      page
+      if page.persisted?
+        ServiceResponse.success(payload: { page: page })
+      else
+        ServiceResponse.error(message: _('Could not create wiki page'), payload: { page: page })
+      end
     end
 
     def usage_counter_action

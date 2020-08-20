@@ -14,6 +14,10 @@ module Gitlab
       end
 
       def call(worker, job, queue)
+        # This gives all the sidekiq worker threads a name, so we can recognize them
+        # in metrics and can use them in the `ThreadsSampler` for setting a label
+        Thread.current.name ||= Gitlab::Metrics::Samplers::ThreadsSampler::SIDEKIQ_WORKER_THREAD_NAME
+
         labels = create_labels(worker.class, queue)
         queue_duration = ::Gitlab::InstrumentationHelper.queue_duration_for_job(job)
 

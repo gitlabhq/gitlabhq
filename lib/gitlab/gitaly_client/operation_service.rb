@@ -179,7 +179,7 @@ module Gitlab
         )
 
         if response.pre_receive_error.present?
-          raise Gitlab::Git::PreReceiveError.new("GL-HOOK-ERR: pre-receive hook failed.")
+          raise Gitlab::Git::PreReceiveError.new(response.pre_receive_error, "GL-HOOK-ERR: pre-receive hook failed.")
         end
 
         Gitlab::Git::OperationService::BranchUpdate.from_gitaly(response.branch_update)
@@ -187,24 +187,26 @@ module Gitlab
         raise Gitlab::Git::CommitError, e
       end
 
-      def user_cherry_pick(user:, commit:, branch_name:, message:, start_branch_name:, start_repository:)
+      def user_cherry_pick(user:, commit:, branch_name:, message:, start_branch_name:, start_repository:, dry_run: false)
         call_cherry_pick_or_revert(:cherry_pick,
                                    user: user,
                                    commit: commit,
                                    branch_name: branch_name,
                                    message: message,
                                    start_branch_name: start_branch_name,
-                                   start_repository: start_repository)
+                                   start_repository: start_repository,
+                                   dry_run: dry_run)
       end
 
-      def user_revert(user:, commit:, branch_name:, message:, start_branch_name:, start_repository:)
+      def user_revert(user:, commit:, branch_name:, message:, start_branch_name:, start_repository:, dry_run: false)
         call_cherry_pick_or_revert(:revert,
                                    user: user,
                                    commit: commit,
                                    branch_name: branch_name,
                                    message: message,
                                    start_branch_name: start_branch_name,
-                                   start_repository: start_repository)
+                                   start_repository: start_repository,
+                                   dry_run: dry_run)
       end
 
       def rebase(user, rebase_id, branch:, branch_sha:, remote_repository:, remote_branch:, push_options: [])
@@ -390,7 +392,7 @@ module Gitlab
         response
       end
 
-      def call_cherry_pick_or_revert(rpc, user:, commit:, branch_name:, message:, start_branch_name:, start_repository:)
+      def call_cherry_pick_or_revert(rpc, user:, commit:, branch_name:, message:, start_branch_name:, start_repository:, dry_run:)
         request_class = "Gitaly::User#{rpc.to_s.camelcase}Request".constantize
 
         request = request_class.new(
@@ -400,7 +402,8 @@ module Gitlab
           branch_name: encode_binary(branch_name),
           message: encode_binary(message),
           start_branch_name: encode_binary(start_branch_name.to_s),
-          start_repository: start_repository.gitaly_repository
+          start_repository: start_repository.gitaly_repository,
+          dry_run: dry_run
         )
 
         response = GitalyClient.call(

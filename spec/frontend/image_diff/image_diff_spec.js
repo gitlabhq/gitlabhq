@@ -1,8 +1,8 @@
+import { TEST_HOST } from 'jest/helpers/test_constants';
 import ImageDiff from '~/image_diff/image_diff';
 import * as imageUtility from '~/lib/utils/image_utility';
 import imageDiffHelper from '~/image_diff/helpers/index';
 import * as mockData from './mock_data';
-import { TEST_HOST } from 'jest/helpers/test_constants';
 
 describe('ImageDiff', () => {
   let element;

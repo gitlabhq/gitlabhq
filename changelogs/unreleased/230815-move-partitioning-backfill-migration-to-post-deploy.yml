@@ -1,0 +1,5 @@
+---
+title: Move partitioning backfill migration to post-deployment
+merge_request: 37633
+author:
+type: fixed

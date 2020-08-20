@@ -15,7 +15,7 @@ if they are enabled at an instance level.
 
 To enable merge request approval rules for an instance:
 
-1. Navigate to **{admin}** **Admin Area >** **{push-rules}** **Push Rules** and expand **Merge
+1. Navigate to **Admin Area >** **{push-rules}** **Push Rules** and expand **Merge
    requests approvals**.
 1. Set the required rule.
 1. Click **Save changes**.

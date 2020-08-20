@@ -9,6 +9,10 @@ module Gitlab
             def self.type
               :value
             end
+
+            def initialize(value)
+              @value = value
+            end
           end
         end
       end

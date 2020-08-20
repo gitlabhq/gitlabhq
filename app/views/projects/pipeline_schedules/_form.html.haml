@@ -1,4 +1,4 @@
-= form_for [@project.namespace.becomes(Namespace), @project, @schedule], as: :schedule, html: { id: "new-pipeline-schedule-form", class: "js-pipeline-schedule-form pipeline-schedule-form" } do |f|
+= form_for [@project, @schedule], as: :schedule, html: { id: "new-pipeline-schedule-form", class: "js-pipeline-schedule-form pipeline-schedule-form" } do |f|
   = form_errors(@schedule)
   .form-group.row
     .col-md-9
@@ -27,7 +27,7 @@
           = render 'ci/variables/variable_row', form_field: 'schedule', variable: variable, only_key_value: true
         = render 'ci/variables/variable_row', form_field: 'schedule', only_key_value: true
       - if @schedule.variables.size > 0
-        %button.btn.btn-info.btn-inverted.prepend-top-10.js-secret-value-reveal-button{ type: 'button', data: { secret_reveal_status: "#{@schedule.variables.size == 0}" } }
+        %button.btn.btn-info.btn-inverted.gl-mt-3.js-secret-value-reveal-button{ type: 'button', data: { secret_reveal_status: "#{@schedule.variables.size == 0}" } }
           - if @schedule.variables.size == 0
             = n_('Hide value', 'Hide values', @schedule.variables.size)
           - else

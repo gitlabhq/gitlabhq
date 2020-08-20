@@ -2,6 +2,14 @@ import { isEmpty } from 'lodash';
 import { hasContent } from '~/lib/utils/text_utility';
 
 /**
+ * @returns {Boolean} `true` if the app is editing an existing release.
+ * `false` if the app is creating a new release.
+ */
+export const isExistingRelease = state => {
+  return Boolean(state.tagName);
+};
+
+/**
  * @param {Object} link The link to test
  * @returns {Boolean} `true` if the release link is empty, i.e. it has
  * empty (or whitespace-only) values for both `url` and `name`.
@@ -37,6 +45,10 @@ export const validationErrors = state => {
 
   if (!state.release) {
     return errors;
+  }
+
+  if (!state.release.tagName?.trim?.().length) {
+    errors.isTagNameEmpty = true;
   }
 
   // Each key of this object is a URL, and the value is an
@@ -88,5 +100,6 @@ export const validationErrors = state => {
 
 /** Returns whether or not the release object is valid */
 export const isValid = (_state, getters) => {
-  return Object.values(getters.validationErrors.assets.links).every(isEmpty);
+  const errors = getters.validationErrors;
+  return Object.values(errors.assets.links).every(isEmpty) && !errors.isTagNameEmpty;
 };

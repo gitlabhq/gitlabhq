@@ -1,0 +1,5 @@
+---
+title: Add issue_type column to issues table
+merge_request: 37402
+author:
+type: added

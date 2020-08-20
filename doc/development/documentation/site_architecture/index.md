@@ -138,6 +138,8 @@ If you need to build and deploy the site immediately (must have maintainer level
 1. In [`gitlab-docs`](https://gitlab.com/gitlab-org/gitlab-docs), go to **{rocket}** **CI / CD > Schedules**.
 1. For the `Build docs.gitlab.com every 4 hours` scheduled pipeline, click the **play** (**{play}**) button.
 
+Read more about the [deployment process](deployment_process.md).
+
 ## Using YAML data files
 
 The easiest way to achieve something similar to

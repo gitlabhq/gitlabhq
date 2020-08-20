@@ -46,69 +46,101 @@ https://docs.google.com/drawings/d/1fBzAyklyveF-i-2q-OHUIqDkYfjjxC4mq5shwKSZHLs/
 ```mermaid
 graph TB
 
-  HTTP[HTTP/HTTPS] -- TCP 80, 443 --> NGINX[NGINX]
-  SSH -- TCP 22 --> GitLabShell[GitLab Shell]
-  SMTP[SMTP Gateway]
-  Geo[GitLab Geo Node] -- TCP 22, 80, 443 --> NGINX
+HTTP[HTTP/HTTPS] -- TCP 80, 443 --> NGINX[NGINX]
+SSH -- TCP 22 --> GitLabShell[GitLab Shell]
+SMTP[SMTP Gateway]
+Geo[GitLab Geo Node] -- TCP 22, 80, 443 --> NGINX
 
-  GitLabShell --TCP 8080 -->Unicorn["Unicorn (GitLab Rails)"]
-  GitLabShell --> Praefect
-  GitLabShell --> Redis
-  Unicorn --> PgBouncer[PgBouncer]
-  Unicorn --> Redis
-  Unicorn --> Praefect
-  Sidekiq --> Redis
-  Sidekiq --> PgBouncer
-  Sidekiq --> Praefect
-  GitLabWorkhorse[GitLab Workhorse] --> Unicorn
-  GitLabWorkhorse --> Redis
-  GitLabWorkhorse --> Praefect
-  Praefect --> Gitaly
-  NGINX --> GitLabWorkhorse
-  NGINX -- TCP 8090 --> GitLabPages[GitLab Pages]
-  NGINX --> Grafana[Grafana]
-  Grafana -- TCP 9090 --> Prometheus[Prometheus]
-  Prometheus -- TCP 80, 443 --> Unicorn
-  RedisExporter[Redis Exporter] --> Redis
-  Prometheus -- TCP 9121 --> RedisExporter
-  PostgreSQLExporter[PostgreSQL Exporter] --> PostgreSQL
-  PgBouncerExporter[PgBouncer Exporter] --> PgBouncer
-  Prometheus -- TCP 9187 --> PostgreSQLExporter
-  Prometheus -- TCP 9100 --> NodeExporter[Node Exporter]
-  Prometheus -- TCP 9168 --> GitLabExporter[GitLab Exporter]
-  Prometheus -- TCP 9127 --> PgBouncerExporter
-  GitLabExporter --> PostgreSQL
-  GitLabExporter --> GitLabShell
-  GitLabExporter --> Sidekiq
-  PgBouncer --> Consul
-  PostgreSQL --> Consul
-  PgBouncer --> PostgreSQL
-  NGINX --> Registry
-  Unicorn --> Registry
-  NGINX --> Mattermost
-  Mattermost --- Unicorn
-  Prometheus --> Alertmanager
-  Migrations --> PostgreSQL
-  Runner -- TCP 443 --> NGINX
-  Unicorn -- TCP 9200 --> Elasticsearch
-  Sidekiq -- TCP 9200 --> Elasticsearch
-  Sidekiq -- TCP 80, 443 --> Sentry
-  Unicorn -- TCP 80, 443 --> Sentry
-  Sidekiq -- UDP 6831 --> Jaeger
-  Unicorn -- UDP 6831 --> Jaeger
-  Gitaly -- UDP 6831 --> Jaeger
-  GitLabShell -- UDP 6831 --> Jaeger
-  GitLabWorkhorse -- UDP 6831 --> Jaeger
-  Alertmanager -- TCP 25 --> SMTP
-  Sidekiq -- TCP 25 --> SMTP
-  Unicorn -- TCP 25 --> SMTP
-  Unicorn -- TCP 369 --> LDAP
-  Sidekiq -- TCP 369 --> LDAP
-  Unicorn -- TCP 443 --> ObjectStorage["Object Storage"]
-  Sidekiq -- TCP 443 --> ObjectStorage
-  GitLabWorkhorse -- TCP 443 --> ObjectStorage
-  Registry -- TCP 443 --> ObjectStorage
-  Geo -- TCP 5432 --> PostgreSQL
+GitLabShell --TCP 8080 -->Unicorn["Unicorn (GitLab Rails)"]
+GitLabShell --> Praefect
+Unicorn --> PgBouncer[PgBouncer]
+Unicorn --> Redis
+Unicorn --> Praefect
+Sidekiq --> Redis
+Sidekiq --> PgBouncer
+Sidekiq --> Praefect
+GitLabWorkhorse[GitLab Workhorse] --> Unicorn
+GitLabWorkhorse --> Redis
+GitLabWorkhorse --> Praefect
+Praefect --> Gitaly
+NGINX --> GitLabWorkhorse
+NGINX -- TCP 8090 --> GitLabPages[GitLab Pages]
+NGINX --> Grafana[Grafana]
+Grafana -- TCP 9090 --> Prometheus[Prometheus]
+Prometheus -- TCP 80, 443 --> Unicorn
+RedisExporter[Redis Exporter] --> Redis
+Prometheus -- TCP 9121 --> RedisExporter
+PostgreSQLExporter[PostgreSQL Exporter] --> PostgreSQL
+PgBouncerExporter[PgBouncer Exporter] --> PgBouncer
+Prometheus -- TCP 9187 --> PostgreSQLExporter
+Prometheus -- TCP 9100 --> NodeExporter[Node Exporter]
+Prometheus -- TCP 9168 --> GitLabExporter[GitLab Exporter]
+Prometheus -- TCP 9127 --> PgBouncerExporter
+GitLabExporter --> PostgreSQL
+GitLabExporter --> GitLabShell
+GitLabExporter --> Sidekiq
+PgBouncer --> Consul
+PostgreSQL --> Consul
+PgBouncer --> PostgreSQL
+NGINX --> Registry
+Unicorn --> Registry
+NGINX --> Mattermost
+Mattermost --- Unicorn
+Prometheus --> Alertmanager
+Migrations --> PostgreSQL
+Runner -- TCP 443 --> NGINX
+Unicorn -- TCP 9200 --> Elasticsearch
+Sidekiq -- TCP 9200 --> Elasticsearch
+Sidekiq -- TCP 80, 443 --> Sentry
+Unicorn -- TCP 80, 443 --> Sentry
+Sidekiq -- UDP 6831 --> Jaeger
+Unicorn -- UDP 6831 --> Jaeger
+Gitaly -- UDP 6831 --> Jaeger
+GitLabShell -- UDP 6831 --> Jaeger
+GitLabWorkhorse -- UDP 6831 --> Jaeger
+Alertmanager -- TCP 25 --> SMTP
+Sidekiq -- TCP 25 --> SMTP
+Unicorn -- TCP 25 --> SMTP
+Unicorn -- TCP 369 --> LDAP
+Sidekiq -- TCP 369 --> LDAP
+Unicorn -- TCP 443 --> ObjectStorage["Object Storage"]
+Sidekiq -- TCP 443 --> ObjectStorage
+GitLabWorkhorse -- TCP 443 --> ObjectStorage
+Registry -- TCP 443 --> ObjectStorage
+Geo -- TCP 5432 --> PostgreSQL
+
+click Alertmanager "./architecture.html#alertmanager"
+click Praefect "./architecture.html#praefect"
+click Geo "./architecture.html#gitlab-geo"
+click NGINX "./architecture.html#nginx"
+click Runner "./architecture.html#gitlab-runner"
+click Registry "./architecture.html#registry"
+click ObjectStorage "./architecture.html#minio"
+click Mattermost "./architecture.html#mattermost"
+click Gitaly "./architecture.html#gitaly"
+click Jaeger "./architecture.html#jaeger"
+click GitLabWorkhorse "./architecture.html#gitlab-workhorse"
+click LDAP "./architecture.html#ldap-authentication"
+click Unicorn "./architecture.html#unicorn"
+click GitLabShell "./architecture.html#gitlab-shell"
+click SSH "./architecture.html#ssh-request-22"
+click Sidekiq "./architecture.html#sidekiq"
+click Sentry "./architecture.html#sentry"
+click GitLabExporter "./architecture.html#gitlab-exporter"
+click Elasticsearch "./architecture.html#elasticsearch"
+click Migrations "./architecture.html#database-migrations"
+click PostgreSQL "./architecture.html#postgresql"
+click Consul "./architecture.html#consul"
+click PgBouncer "./architecture.html#pgbouncer"
+click PgBouncerExporter "./architecture.html#pgbouncer-exporter"
+click RedisExporter "./architecture.html#redis-exporter"
+click Redis "./architecture.html#redis"
+click Prometheus "./architecture.html#prometheus"
+click Grafana "./architecture.html#grafana"
+click GitLabPages "./architecture.html#gitlab-pages"
+click PostgreSQLExporter "./architecture.html#postgresql-exporter"
+click SMTP "./architecture.html#outbound-email"
+click NodeExporter "./architecture.html#node-exporter"
 ```
 
 ### Component legend
@@ -215,7 +247,7 @@ GitLab can be considered to have two layers from a process perspective:
 
 - [Project page](https://github.com/hashicorp/consul/blob/master/README.md)
 - Configuration:
-  - [Omnibus](../administration/high_availability/consul.md)
+  - [Omnibus](../administration/consul.md)
   - [Charts](https://docs.gitlab.com/charts/installation/deployment.html#postgresql)
 - Layer: Core Service (Data)
 - GitLab.com: [Consul](../user/gitlab_com/index.md#consul)
@@ -435,7 +467,7 @@ NGINX has an Ingress port for all HTTP requests and routes them to the appropria
 
 - [Project page](https://github.com/pgbouncer/pgbouncer/blob/master/README.md)
 - Configuration:
-  - [Omnibus](../administration/high_availability/pgbouncer.md)
+  - [Omnibus](../administration/postgresql/pgbouncer.md)
   - [Charts](https://docs.gitlab.com/charts/installation/deployment.html#postgresql)
 - Layer: Core Service (Data)
 - GitLab.com: [Database Architecture](https://about.gitlab.com/handbook/engineering/infrastructure/production/architecture/#database-architecture)
@@ -554,7 +586,7 @@ An external registry can also be configured to use GitLab as an auth endpoint.
 Sentry fundamentally is a service that helps you monitor and fix crashes in real time.
 The server is in Python, but it contains a full API for sending events from any language, in any application.
 
-For monitoring deployed apps, see the [Sentry integration docs](../user/project/operations/error_tracking.md)
+For monitoring deployed apps, see the [Sentry integration docs](../operations/error_tracking.md)
 
 #### Sidekiq
 

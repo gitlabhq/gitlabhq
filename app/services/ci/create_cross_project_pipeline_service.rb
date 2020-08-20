@@ -98,7 +98,7 @@ module Ci
     end
 
     def can_update_branch?(target_ref)
-      ::Gitlab::UserAccess.new(current_user, project: downstream_project).can_update_branch?(target_ref)
+      ::Gitlab::UserAccess.new(current_user, container: downstream_project).can_update_branch?(target_ref)
     end
 
     def downstream_project

@@ -25,7 +25,7 @@ RSpec.describe MembersHelper do
 
     context 'an accepted user invitation with no user associated' do
       before do
-        group_member_invite.update(invite_email: "#{SecureRandom.hex}@example.com", invite_token: nil, user_id: nil)
+        group_member_invite.update_columns(invite_email: "#{SecureRandom.hex}@example.com", invite_token: nil, user_id: nil)
       end
 
       it 'logs an exception and shows orphaned status' do

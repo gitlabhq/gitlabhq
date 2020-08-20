@@ -24,6 +24,20 @@ RSpec.shared_examples 'PyPi package creation' do |user_type, status, add_member 
 
     it_behaves_like 'creating pypi package files'
 
+    context 'with a pre-existing file' do
+      it 'rejects the duplicated file' do
+        existing_package = create(:pypi_package, name: base_params[:name], version: base_params[:version], project: project)
+        create(:package_file, :pypi, package: existing_package, file_name: params[:content].original_filename)
+
+        expect { subject }
+            .to change { project.packages.pypi.count }.by(0)
+            .and change { Packages::PackageFile.count }.by(0)
+            .and change { Packages::Pypi::Metadatum.count }.by(0)
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+      end
+    end
+
     context 'with object storage disabled' do
       before do
         stub_package_file_object_storage(enabled: false)
@@ -49,6 +63,7 @@ RSpec.shared_examples 'PyPi package creation' do |user_type, status, add_member 
           body: 'content'
         )
       end
+
       let(:fog_file) { fog_to_uploaded_file(tmp_object) }
       let(:params) { base_params.merge(content: fog_file, 'content.remote_id' => file_name) }
 
@@ -144,7 +159,7 @@ RSpec.shared_examples 'rejects PyPI access with unknown project id' do
     end
 
     context 'as authenticated user' do
-      subject { get api(url), headers: build_basic_auth_header(user.username, personal_access_token.token) }
+      subject { get api(url), headers: basic_auth_header(user.username, personal_access_token.token) }
 
       it_behaves_like 'process PyPi api request', :anonymous, :not_found
     end

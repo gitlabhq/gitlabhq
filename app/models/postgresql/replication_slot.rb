@@ -33,7 +33,7 @@ module Postgresql
       # If too many replicas are falling behind too much, the availability of a
       # GitLab instance might suffer. To prevent this from happening we require
       # at least 1 replica to have data recent enough.
-      if sizes.any? && too_great.positive?
+      if sizes.any? && too_great > 0
         (sizes.length - too_great) <= 1
       else
         false

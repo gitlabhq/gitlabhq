@@ -1,4 +1,4 @@
-import { GlIcon, GlDropdownItem } from '@gitlab/ui';
+import { GlIcon, GlDeprecatedDropdownItem } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { createStore } from '~/logs/stores';
 import { mockPods, mockPodName } from '../mock_data';
@@ -17,7 +17,7 @@ describe('LogSimpleFilters', () => {
   const findPodsNoPodsText = () => wrapper.find({ ref: 'noPodsMsg' });
   const findPodsDropdownItems = () =>
     findPodsDropdown()
-      .findAll(GlDropdownItem)
+      .findAll(GlDeprecatedDropdownItem)
       .filter(item => !item.is('[disabled]'));
 
   const mockPodsLoading = () => {

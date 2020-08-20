@@ -40,9 +40,6 @@ export default class BranchGraph {
   }
 
   prepareData(days, commits) {
-    let c = 0;
-    let j = 0;
-    let len = 0;
     this.days = days;
     this.commits = commits;
     this.collectParents();
@@ -53,38 +50,33 @@ export default class BranchGraph {
     this.r = Raphael(this.element.get(0), cw, ch);
     this.top = this.r.set();
     this.barHeight = Math.max(this.graphHeight, this.unitTime * this.days.length + 320);
-    const ref = this.commits;
-    for (j = 0, len = ref.length; j < len; j += 1) {
-      c = ref[j];
-      if (c.id in this.parents) {
-        c.isParent = true;
+    this.commits = this.commits.reduce((acc, commit) => {
+      const updatedCommit = commit;
+      if (commit.id in this.parents) {
+        updatedCommit.isParent = true;
       }
-      this.preparedCommits[c.id] = c;
-      this.markCommit(c);
-    }
+      acc.push(updatedCommit);
+      this.preparedCommits[commit.id] = commit;
+      this.markCommit(commit);
+      return acc;
+    }, []);
     return this.collectColors();
   }
 
   collectParents() {
-    let j = 0;
-    let l = 0;
-    let len = 0;
-    let len1 = 0;
     const ref = this.commits;
     const results = [];
-    for (j = 0, len = ref.length; j < len; j += 1) {
-      const c = ref[j];
+    ref.forEach(c => {
       this.mtime = Math.max(this.mtime, c.time);
       this.mspace = Math.max(this.mspace, c.space);
       const ref1 = c.parents;
       const results1 = [];
-      for (l = 0, len1 = ref1.length; l < len1; l += 1) {
-        const p = ref1[l];
+      ref1.forEach(p => {
         this.parents[p[0]] = true;
         results1.push((this.mspace = Math.max(this.mspace, p[1])));
-      }
+      });
       results.push(results1);
-    }
+    });
     return results;
   }
 
@@ -114,7 +106,6 @@ export default class BranchGraph {
       fill: '#444',
     });
     const ref = this.days;
-
     for (mm = 0, len = ref.length; mm < len; mm += 1) {
       const day = ref[mm];
       if (cuday !== day[0] || cumonth !== day[1]) {
@@ -295,7 +286,6 @@ export default class BranchGraph {
     const { r } = this;
     const ref = commit.parents;
     const results = [];
-
     for (i = 0, len = ref.length; i < len; i += 1) {
       const parent = ref[i];
       const parentCommit = this.preparedCommits[parent[0]];

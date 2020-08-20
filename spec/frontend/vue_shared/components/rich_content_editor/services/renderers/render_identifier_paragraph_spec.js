@@ -1,8 +1,5 @@
 import renderer from '~/vue_shared/components/rich_content_editor/services/renderers/render_identifier_paragraph';
-import {
-  buildUneditableOpenTokens,
-  buildUneditableCloseToken,
-} from '~/vue_shared/components/rich_content_editor/services/renderers/build_uneditable_token';
+import { renderUneditableBranch } from '~/vue_shared/components/rich_content_editor/services/renderers/render_utils';
 
 import { buildMockTextNode } from './mock_data';
 
@@ -40,26 +37,8 @@ describe('Render Identifier Paragraph renderer', () => {
   });
 
   describe('render', () => {
-    let origin;
-
-    beforeEach(() => {
-      origin = jest.fn();
-    });
-
-    it('should return uneditable open tokens when entering', () => {
-      const context = { entering: true, origin };
-
-      expect(renderer.render(identifierParagraphNode, context)).toStrictEqual(
-        buildUneditableOpenTokens(origin()),
-      );
-    });
-
-    it('should return an uneditable close tokens when exiting', () => {
-      const context = { entering: false, origin };
-
-      expect(renderer.render(identifierParagraphNode, context)).toStrictEqual(
-        buildUneditableCloseToken(origin()),
-      );
+    it('should delegate rendering to the renderUneditableBranch util', () => {
+      expect(renderer.render).toBe(renderUneditableBranch);
     });
   });
 });

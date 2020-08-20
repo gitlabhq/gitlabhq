@@ -12,6 +12,7 @@ RSpec.describe 'getting an issue list for a project' do
     [create(:issue, project: project, discussion_locked: true),
      create(:issue, project: project)]
   end
+
   let(:fields) do
     <<~QUERY
     edges {

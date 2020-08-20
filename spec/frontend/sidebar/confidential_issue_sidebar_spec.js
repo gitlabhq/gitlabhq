@@ -1,13 +1,10 @@
 import { shallowMount } from '@vue/test-utils';
 import { mockTracking, triggerEvent } from 'helpers/tracking_helper';
+import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
 import ConfidentialIssueSidebar from '~/sidebar/components/confidential/confidential_issue_sidebar.vue';
 import EditForm from '~/sidebar/components/confidential/edit_form.vue';
-import SidebarService from '~/sidebar/services/sidebar_service';
-import createFlash from '~/flash';
-import RecaptchaModal from '~/vue_shared/components/recaptcha_modal.vue';
 import createStore from '~/notes/stores';
-import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
-import eventHub from '~/sidebar/event_hub';
+import * as types from '~/notes/stores/mutation_types';
 
 jest.mock('~/flash');
 jest.mock('~/sidebar/services/sidebar_service');
@@ -20,32 +17,14 @@ describe('Confidential Issue Sidebar Block', () => {
     .fn()
     .mockResolvedValue({ data: { issueSetConfidential: { issue: { confidential: true } } } });
 
-  const findRecaptchaModal = () => wrapper.find(RecaptchaModal);
-
-  const triggerUpdateConfidentialAttribute = () => {
-    wrapper.setData({ edit: true });
-    return (
-      // wait for edit form to become visible
-      wrapper.vm
-        .$nextTick()
-        .then(() => {
-          eventHub.$emit('updateConfidentialAttribute');
-        })
-        // wait for reCAPTCHA modal to render
-        .then(() => wrapper.vm.$nextTick())
-    );
-  };
-
   const createComponent = ({ propsData, data = {} }) => {
     const store = createStore();
-    const service = new SidebarService();
     wrapper = shallowMount(ConfidentialIssueSidebar, {
       store,
       data() {
         return data;
       },
       propsData: {
-        service,
         iid: '',
         fullPath: '',
         ...propsData,
@@ -133,61 +112,48 @@ describe('Confidential Issue Sidebar Block', () => {
         property: 'confidentiality',
       });
     });
-
-    describe('for successful update', () => {
-      beforeEach(() => {
-        SidebarService.prototype.update.mockResolvedValue({ data: 'irrelevant' });
+  });
+  describe('computed confidential', () => {
+    beforeEach(() => {
+      createComponent({
+        propsData: {
+          isEditable: true,
+        },
       });
-
-      it('reloads the page', () =>
-        triggerUpdateConfidentialAttribute().then(() => {
-          expect(window.location.reload).toHaveBeenCalled();
-        }));
-
-      it('does not show an error message', () =>
-        triggerUpdateConfidentialAttribute().then(() => {
-          expect(createFlash).not.toHaveBeenCalled();
-        }));
     });
 
-    describe('for update error', () => {
-      beforeEach(() => {
-        SidebarService.prototype.update.mockRejectedValue(new Error('updating failed!'));
-      });
+    it('returns false when noteableData is not present', () => {
+      wrapper.vm.$store.commit(types.SET_NOTEABLE_DATA, null);
 
-      it('does not reload the page', () =>
-        triggerUpdateConfidentialAttribute().then(() => {
-          expect(window.location.reload).not.toHaveBeenCalled();
-        }));
-
-      it('shows an error message', () =>
-        triggerUpdateConfidentialAttribute().then(() => {
-          expect(createFlash).toHaveBeenCalled();
-        }));
+      expect(wrapper.vm.confidential).toBe(false);
     });
 
-    describe('for spam error', () => {
-      beforeEach(() => {
-        SidebarService.prototype.update.mockRejectedValue({ name: 'SpamError' });
-      });
+    it('returns true when noteableData has confidential attr as true', () => {
+      wrapper.vm.$store.commit(types.SET_NOTEABLE_DATA, {});
+      wrapper.vm.$store.commit(types.SET_ISSUE_CONFIDENTIAL, true);
 
-      it('does not reload the page', () =>
-        triggerUpdateConfidentialAttribute().then(() => {
-          expect(window.location.reload).not.toHaveBeenCalled();
-        }));
+      expect(wrapper.vm.confidential).toBe(true);
+    });
 
-      it('does not show an error message', () =>
-        triggerUpdateConfidentialAttribute().then(() => {
-          expect(createFlash).not.toHaveBeenCalled();
-        }));
+    it('returns false when noteableData has confidential attr as false', () => {
+      wrapper.vm.$store.commit(types.SET_NOTEABLE_DATA, {});
+      wrapper.vm.$store.commit(types.SET_ISSUE_CONFIDENTIAL, false);
 
-      it('shows a reCAPTCHA modal', () => {
-        expect(findRecaptchaModal().exists()).toBe(false);
+      expect(wrapper.vm.confidential).toBe(false);
+    });
 
-        return triggerUpdateConfidentialAttribute().then(() => {
-          expect(findRecaptchaModal().exists()).toBe(true);
-        });
-      });
+    it('returns true when confidential attr is true', () => {
+      wrapper.vm.$store.commit(types.SET_NOTEABLE_DATA, {});
+      wrapper.vm.$store.commit(types.SET_ISSUE_CONFIDENTIAL, true);
+
+      expect(wrapper.vm.confidential).toBe(true);
+    });
+
+    it('returns false when confidential attr is false', () => {
+      wrapper.vm.$store.commit(types.SET_NOTEABLE_DATA, {});
+      wrapper.vm.$store.commit(types.SET_ISSUE_CONFIDENTIAL, false);
+
+      expect(wrapper.vm.confidential).toBe(false);
     });
   });
 });

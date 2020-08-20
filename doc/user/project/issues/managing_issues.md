@@ -287,3 +287,7 @@ To add an issue to an [iteration](../../group/iterations/index.md):
 
 1. In an issue sidebar, click **Edit** next to **Iteration**. A dropdown appears.
 1. Click an iteration you'd like to associate this issue with.
+
+You can also use the `/iteration`
+[quick action](../quick_actions.md#quick-actions-for-issues-merge-requests-and-epics)
+in a comment or description field.

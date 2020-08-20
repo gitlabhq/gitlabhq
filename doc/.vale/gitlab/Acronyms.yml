@@ -68,6 +68,7 @@ exceptions:
   - SSH
   - SSL
   - SSO
+  - SVG
   - SVN
   - TCP
   - TIP

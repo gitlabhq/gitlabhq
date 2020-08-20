@@ -34,6 +34,7 @@ RSpec.describe API::Entities::Nuget::DependencyGroup do
       ]
     }
   end
+
   let(:entity) { described_class.new(dependency_group) }
 
   subject { entity.as_json }

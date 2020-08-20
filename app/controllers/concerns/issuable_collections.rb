@@ -65,7 +65,7 @@ module IssuableCollections
   def page_count_for_relation(relation, row_count)
     limit = relation.limit_value.to_f
 
-    return 1 if limit.zero?
+    return 1 if limit == 0
 
     (row_count.to_f / limit).ceil
   end

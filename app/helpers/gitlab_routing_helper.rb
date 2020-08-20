@@ -100,8 +100,12 @@ module GitlabRoutingHelper
     toggle_award_emoji_snippet_path(*args)
   end
 
-  def toggle_award_emoji_namespace_project_project_snippet_path(*args)
-    toggle_award_emoji_namespace_project_snippet_path(*args)
+  def toggle_award_emoji_project_project_snippet_path(*args)
+    toggle_award_emoji_project_snippet_path(*args)
+  end
+
+  def toggle_award_emoji_project_project_snippet_url(*args)
+    toggle_award_emoji_project_snippet_url(*args)
   end
 
   ## Members
@@ -271,7 +275,7 @@ module GitlabRoutingHelper
     end
   end
 
-  def gitlab_raw_snippet_blob_url(snippet, path, ref = nil)
+  def gitlab_raw_snippet_blob_url(snippet, path, ref = nil, **options)
     params = {
       snippet_id: snippet,
       ref: ref || snippet.repository.root_ref,
@@ -279,26 +283,14 @@ module GitlabRoutingHelper
     }
 
     if snippet.is_a?(ProjectSnippet)
-      project_snippet_blob_raw_url(snippet.project, params)
+      project_snippet_blob_raw_url(snippet.project, **params, **options)
     else
-      snippet_blob_raw_url(params)
+      snippet_blob_raw_url(**params, **options)
     end
   end
 
-  def gitlab_raw_snippet_blob_path(blob, ref = nil)
-    snippet = blob.container
-
-    params = {
-      snippet_id: snippet,
-      ref: ref || blob.repository.root_ref,
-      path: blob.path
-    }
-
-    if snippet.is_a?(ProjectSnippet)
-      project_snippet_blob_raw_path(snippet.project, params)
-    else
-      snippet_blob_raw_path(params)
-    end
+  def gitlab_raw_snippet_blob_path(snippet, path, ref = nil, **options)
+    gitlab_raw_snippet_blob_url(snippet, path, ref, only_path: true, **options)
   end
 
   def gitlab_snippet_notes_path(snippet, *args)

@@ -3,7 +3,6 @@
 module Gitlab
   module Diff
     class HighlightCache
-      include Gitlab::Metrics::Methods
       include Gitlab::Utils::StrongMemoize
 
       EXPIRATION = 1.week
@@ -11,19 +10,6 @@ module Gitlab
 
       delegate :diffable,     to: :@diff_collection
       delegate :diff_options, to: :@diff_collection
-
-      define_histogram :gitlab_redis_diff_caching_memory_usage_bytes do
-        docstring 'Redis diff caching memory usage by key'
-        buckets [100, 1_000, 10_000, 100_000, 1_000_000, 10_000_000]
-      end
-
-      define_counter :gitlab_redis_diff_caching_hit do
-        docstring 'Redis diff caching hits'
-      end
-
-      define_counter :gitlab_redis_diff_caching_miss do
-        docstring 'Redis diff caching misses'
-      end
 
       def initialize(diff_collection)
         @diff_collection = diff_collection
@@ -117,7 +103,10 @@ module Gitlab
 
       def record_memory_usage(memory_usage)
         if memory_usage
-          self.class.gitlab_redis_diff_caching_memory_usage_bytes.observe({}, memory_usage)
+          current_transaction&.observe(:gitlab_redis_diff_caching_memory_usage_bytes, memory_usage) do
+            docstring 'Redis diff caching memory usage by key'
+            buckets [100, 1_000, 10_000, 100_000, 1_000_000, 10_000_000]
+          end
         end
       end
 
@@ -163,34 +152,24 @@ module Gitlab
       end
 
       def compose_data(json_data)
-        if ::Feature.enabled?(:gzip_diff_cache, default_enabled: true)
-          # #compress returns ASCII-8BIT, so we need to force the encoding to
-          #   UTF-8 before caching it in redis, else we risk encoding mismatch
-          #   errors.
-          #
-          ActiveSupport::Gzip.compress(json_data).force_encoding("UTF-8")
-        else
-          json_data
-        end
+        # #compress returns ASCII-8BIT, so we need to force the encoding to
+        #   UTF-8 before caching it in redis, else we risk encoding mismatch
+        #   errors.
+        #
+        ActiveSupport::Gzip.compress(json_data).force_encoding("UTF-8")
       rescue Zlib::GzipFile::Error
         json_data
       end
 
       def extract_data(data)
-        # Since when we deploy this code, we'll be dealing with an already
-        #   populated cache full of data that isn't gzipped, we want to also
-        #   check to see if the data is gzipped before we attempt to #decompress
-        #   it, thus we check the first 2 bytes for "\x1F\x8B" to confirm it is
-        #   a gzipped string. While a non-gzipped string will raise a
-        #   Zlib::GzipFile::Error, which we're rescuing, we don't want to count
-        #   on rescue for control flow. This check can be removed in the release
-        #   after this change is released.
+        # Since we could be dealing with an already populated cache full of data
+        #   that isn't gzipped, we want to also check to see if the data is
+        #   gzipped before we attempt to #decompress it, thus we check the first
+        #   2 bytes for "\x1F\x8B" to confirm it is a gzipped string. While a
+        #   non-gzipped string will raise a Zlib::GzipFile::Error, which we're
+        #   rescuing, we don't want to count on rescue for control flow.
         #
-        if ::Feature.enabled?(:gzip_diff_cache, default_enabled: true) && data[0..1] == "\x1F\x8B"
-          ActiveSupport::Gzip.decompress(data)
-        else
-          data
-        end
+        data[0..1] == "\x1F\x8B" ? ActiveSupport::Gzip.decompress(data) : data
       rescue Zlib::GzipFile::Error
         data
       end
@@ -205,6 +184,10 @@ module Gitlab
         #   reference.
         #
         @diff_collection.raw_diff_files
+      end
+
+      def current_transaction
+        ::Gitlab::Metrics::Transaction.current
       end
     end
   end

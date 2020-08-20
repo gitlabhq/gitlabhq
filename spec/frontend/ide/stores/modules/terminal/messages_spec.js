@@ -15,6 +15,8 @@ describe('IDE store terminal messages', () => {
         sprintf(
           messages.ERROR_CONFIG,
           {
+            codeStart: `<code>`,
+            codeEnd: `</code>`,
             helpStart: `<a href="${escape(TEST_HELP_URL)}" target="_blank">`,
             helpEnd: '</a>',
           },

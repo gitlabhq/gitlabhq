@@ -1,0 +1,8 @@
+query getState($projectPath: ID!, $iid: String!) {
+  project(fullPath: $projectPath) {
+    mergeRequest(iid: $iid) {
+      title
+      workInProgress
+    }
+  }
+}

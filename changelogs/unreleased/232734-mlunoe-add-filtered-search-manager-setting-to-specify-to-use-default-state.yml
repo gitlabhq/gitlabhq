@@ -1,0 +1,5 @@
+---
+title: Fix bug where filtering would sometimes display only open issues on different pages listing issues
+merge_request: 38906
+author:
+type: fixed

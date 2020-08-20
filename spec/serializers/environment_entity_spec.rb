@@ -82,10 +82,30 @@ RSpec.describe EnvironmentEntity do
     end
   end
 
+  context 'with alert' do
+    let!(:environment) { create(:environment, project: project) }
+    let!(:prometheus_alert) { create(:prometheus_alert, project: project, environment: environment) }
+    let!(:alert) { create(:alert_management_alert, :triggered, :prometheus, project: project, environment: environment, prometheus_alert: prometheus_alert) }
+
+    it 'exposes active alert flag' do
+      project.add_maintainer(user)
+
+      expect(subject[:has_opened_alert]).to eq(true)
+    end
+
+    context 'when user does not have permission to read alert' do
+      it 'does not expose active alert flag' do
+        project.add_reporter(user)
+
+        expect(subject[:has_opened_alert]).to be_nil
+      end
+    end
+  end
+
   context 'pod_logs' do
-    context 'with developer access' do
+    context 'with reporter access' do
       before do
-        project.add_developer(user)
+        project.add_reporter(user)
       end
 
       it 'does not expose logs keys' do
@@ -95,9 +115,9 @@ RSpec.describe EnvironmentEntity do
       end
     end
 
-    context 'with maintainer access' do
+    context 'with developer access' do
       before do
-        project.add_maintainer(user)
+        project.add_developer(user)
       end
 
       it 'exposes logs keys' do

@@ -24,7 +24,7 @@ RSpec.describe Ci::CreatePipelineService do
             test:
               script: rspec
               rules:
-                - if: '$CI_COMMIT_BRANCH'
+                - when: always
           YAML
         end
 
@@ -32,7 +32,7 @@ RSpec.describe Ci::CreatePipelineService do
           expect(pipeline.error_messages.map(&:content)).to be_empty
 
           expect(pipeline.warning_messages.map(&:content)).to contain_exactly(
-            'jobs:test uses `rules` without defining `workflow:rules`'
+            /jobs:test may allow multiple pipelines to run/
           )
         end
 
@@ -77,13 +77,13 @@ RSpec.describe Ci::CreatePipelineService do
               stage: test
               script: echo
               rules:
-                - if: '$CI_COMMIT_BRANCH'
+                - when: on_success
           YAML
         end
 
         it 'contains both errors and warnings' do
           error_message = 'build job: need test is not defined in prior stages'
-          warning_message = 'jobs:test uses `rules` without defining `workflow:rules`'
+          warning_message = /jobs:test may allow multiple pipelines to run/
 
           expect(pipeline.yaml_errors).to eq(error_message)
           expect(pipeline.error_messages.map(&:content)).to contain_exactly(error_message)

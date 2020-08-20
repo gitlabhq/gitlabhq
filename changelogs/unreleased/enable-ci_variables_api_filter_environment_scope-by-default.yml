@@ -1,0 +1,5 @@
+---
+title: Enable FF ci_variables_api_filter_environment_scope by default
+merge_request: 39209
+author:
+type: changed

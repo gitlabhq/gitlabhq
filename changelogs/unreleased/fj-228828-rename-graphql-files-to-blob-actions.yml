@@ -1,0 +1,5 @@
+---
+title: Rename snippet GraphQL files field to blob_actions
+merge_request: 36852
+author:
+type: changed

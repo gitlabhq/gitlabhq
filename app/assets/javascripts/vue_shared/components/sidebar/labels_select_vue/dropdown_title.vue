@@ -1,10 +1,10 @@
 <script>
 import { mapState, mapActions } from 'vuex';
-import { GlDeprecatedButton, GlLoadingIcon } from '@gitlab/ui';
+import { GlButton, GlLoadingIcon } from '@gitlab/ui';
 
 export default {
   components: {
-    GlDeprecatedButton,
+    GlButton,
     GlLoadingIcon,
   },
   props: {
@@ -23,16 +23,16 @@ export default {
 </script>
 
 <template>
-  <div class="title hide-collapsed append-bottom-10">
+  <div class="title hide-collapsed gl-mb-3">
     {{ __('Labels') }}
     <template v-if="allowLabelEdit">
       <gl-loading-icon v-show="labelsSelectInProgress" inline />
-      <gl-deprecated-button
+      <gl-button
         variant="link"
-        class="pull-right js-sidebar-dropdown-toggle"
+        class="float-right js-sidebar-dropdown-toggle"
         data-qa-selector="labels_edit_button"
         @click="toggleDropdownContents"
-        >{{ __('Edit') }}</gl-deprecated-button
+        >{{ __('Edit') }}</gl-button
       >
     </template>
   </div>

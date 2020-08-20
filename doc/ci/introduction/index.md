@@ -230,7 +230,7 @@ syntax and with its attributes.
 This document [introduces the concepts of GitLab CI/CD in the scope of GitLab Pages](../../user/project/pages/getting_started/pages_from_scratch.md), for deploying static websites.
 Although it's meant for users who want to write their own Pages
 script from scratch, it also serves as an introduction to the setup process for GitLab CI/CD.
-It covers the very first general steps of writing a CI/CD configuration
+It covers the first general steps of writing a CI/CD configuration
 file, so we recommend you read through it to understand GitLab's CI/CD
 logic, and learn how to write your own script (or tweak an
 existing one) for any application.

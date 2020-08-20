@@ -46,6 +46,3 @@ export const isScrollingDown = state => isScrolledToBottom() && !state.isTraceCo
 
 export const hasRunnersForProject = state =>
   state.job.runners.available && !state.job.runners.online;
-
-// prevent babel-plugin-rewire from generating an invalid default during karma tests
-export default () => {};

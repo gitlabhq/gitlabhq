@@ -1,3 +1,10 @@
+---
+stage: Create
+group: Source Code
+info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers"
+type: reference
+---
+
 # Syntax Highlighting
 
 GitLab provides syntax highlighting on all files through the [Rouge](https://rubygems.org/gems/rouge) Ruby gem. It will try to guess what language to use based on the file extension, which most of the time is sufficient.

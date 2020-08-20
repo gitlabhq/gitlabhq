@@ -1,6 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
-import LegacyContainer from '~/projects/experiment_new_project_creation/components/legacy_container.vue';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
+import LegacyContainer from '~/projects/experiment_new_project_creation/components/legacy_container.vue';
 
 describe('Legacy container component', () => {
   let wrapper;

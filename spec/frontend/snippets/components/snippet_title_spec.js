@@ -1,7 +1,7 @@
-import SnippetTitle from '~/snippets/components/snippet_title.vue';
-import SnippetDescription from '~/snippets/components/snippet_description_view.vue';
 import { GlSprintf } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+import SnippetTitle from '~/snippets/components/snippet_title.vue';
+import SnippetDescription from '~/snippets/components/snippet_description_view.vue';
 
 describe('Snippet header component', () => {
   let wrapper;

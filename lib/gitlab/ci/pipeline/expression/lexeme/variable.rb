@@ -8,12 +8,12 @@ module Gitlab
           class Variable < Lexeme::Value
             PATTERN = /\$(?<name>\w+)/.freeze
 
-            def initialize(name)
-              @name = name
+            def evaluate(variables = {})
+              variables.with_indifferent_access.fetch(@value, nil)
             end
 
-            def evaluate(variables = {})
-              variables.with_indifferent_access.fetch(@name, nil)
+            def inspect
+              "$#{@value}"
             end
 
             def self.build(string)

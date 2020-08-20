@@ -61,7 +61,12 @@ export default {
 </script>
 
 <template>
-  <svg :class="[iconSizeClass, iconTestClass]" aria-hidden="true" v-on="$listeners">
+  <svg
+    :key="spriteHref"
+    :class="[iconSizeClass, iconTestClass]"
+    aria-hidden="true"
+    v-on="$listeners"
+  >
     <use v-bind="{ 'xlink:href': spriteHref }" />
   </svg>
 </template>

@@ -1,0 +1,17 @@
+# Only one dashboard should be defined per file
+# More info: https://docs.gitlab.com/ee/operations/metrics/dashboards/yaml.html
+dashboard: 'Single Stat Panel Example'
+
+# For more information about the required properties of panel_groups
+# please visit: https://docs.gitlab.com/ee/operations/metrics/dashboards/yaml.html#panel-group-panel_groups-properties
+panel_groups:
+  - group: 'Server Statistics'
+    panels:
+      - title: "Memory usage"
+        # More information about heatmap panel types can be found here:
+        # https://docs.gitlab.com/ee/operations/metrics/dashboards/panel_types.html#single-stat
+        type: "single-stat"
+        metrics:
+            - query: 'avg(sum(container_memory_usage_bytes{container!="POD",pod=~"^{{ci_environment_slug}}-([^c].*|c([^a]|a([^n]|n([^a]|a([^r]|r[^y])))).*|)-(.*)",namespace="{{kube_namespace}}"}) by (job)) without (job) / count(avg(container_memory_usage_bytes{container!="POD",pod=~"^{{ci_environment_slug}}-([^c].*|c([^a]|a([^n]|n([^a]|a([^r]|r[^y])))).*|)-(.*)",namespace="{{kube_namespace}}"}) without (job)) /1024/1024     OR      avg(sum(container_memory_usage_bytes{container_name!="POD",pod_name=~"^{{ci_environment_slug}}-([^c].*|c([^a]|a([^n]|n([^a]|a([^r]|r[^y])))).*|)-(.*)",namespace="{{kube_namespace}}"}) by (job)) without (job) / count(avg(container_memory_usage_bytes{container_name!="POD",pod_name=~"^{{ci_environment_slug}}-([^c].*|c([^a]|a([^n]|n([^a]|a([^r]|r[^y])))).*|)-(.*)",namespace="{{kube_namespace}}"}) without (job)) /1024/1024'
+              unit: 'MB'
+              label: "Used memory"

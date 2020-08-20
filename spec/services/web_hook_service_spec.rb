@@ -13,9 +13,11 @@ RSpec.describe WebHookService do
       'X-Gitlab-Event' => 'Push Hook'
     }
   end
+
   let(:data) do
     { before: 'oldrev', after: 'newrev', ref: 'ref' }
   end
+
   let(:service_instance) { described_class.new(project_hook, data, :push_hooks) }
 
   describe '#initialize' do
@@ -125,6 +127,14 @@ RSpec.describe WebHookService do
         stub_full_request(project_hook.url, method: :post).to_raise(exception)
         expect(service_instance.execute).to eq({ status: :error, message: exception.to_s })
         expect { service_instance.execute }.not_to raise_error
+      end
+    end
+
+    context 'when request body size is too big' do
+      it 'does not perform the request' do
+        stub_const("#{described_class}::REQUEST_BODY_SIZE_LIMIT", 10.bytes)
+
+        expect(service_instance.execute).to eq({ status: :error, message: "Gitlab::Json::LimitedEncoder::LimitExceeded" })
       end
     end
 

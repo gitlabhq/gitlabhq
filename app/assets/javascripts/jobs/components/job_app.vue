@@ -198,17 +198,13 @@ export default {
 </script>
 <template>
   <div>
-    <gl-loading-icon
-      v-if="isLoading"
-      size="lg"
-      class="js-job-loading qa-loading-animation prepend-top-20"
-    />
+    <gl-loading-icon v-if="isLoading" size="lg" class="qa-loading-animation prepend-top-20" />
 
     <template v-else-if="shouldRenderContent">
-      <div class="js-job-content build-page">
+      <div class="build-page" data-testid="job-content">
         <!-- Header Section -->
         <header>
-          <div class="js-build-header build-header top-area">
+          <div class="build-header top-area">
             <ci-header
               :status="job.status"
               :item-id="job.id"
@@ -230,7 +226,6 @@ export default {
         <!-- Body Section -->
         <stuck-block
           v-if="job.stuck"
-          class="js-job-stuck"
           :has-no-runners-for-project="hasRunnersForProject"
           :tags="job.tags"
           :runners-path="runnerSettingsUrl"
@@ -238,13 +233,11 @@ export default {
 
         <unmet-prerequisites-block
           v-if="hasUnmetPrerequisitesFailure"
-          class="js-job-failed"
           :help-path="deploymentHelpUrl"
         />
 
         <shared-runner
           v-if="shouldRenderSharedRunnerLimitWarning"
-          class="js-shared-runner-limit"
           :quota-used="job.runners.quota.used"
           :quota-limit="job.runners.quota.limit"
           :runners-path="runnerHelpUrl"
@@ -254,7 +247,6 @@ export default {
 
         <environments-block
           v-if="hasEnvironment"
-          class="js-job-environment"
           :deployment-status="job.deployment_status"
           :deployment-cluster="job.deployment_cluster"
           :icon-status="job.status"
@@ -262,7 +254,7 @@ export default {
 
         <erased-block
           v-if="job.erased_at"
-          class="js-job-erased-block"
+          data-testid="job-erased-block"
           :user="job.erased_by"
           :erased-at="job.erased_at"
         />
@@ -270,8 +262,9 @@ export default {
         <div
           v-if="job.archived"
           ref="sticky"
-          class="js-archived-job gl-mt-3 archived-job"
+          class="gl-mt-3 archived-job"
           :class="{ 'sticky-top border-bottom-0': hasTrace }"
+          data-testid="archived-job"
         >
           <icon name="lock" class="align-text-bottom" />
           {{ __('This job is archived. Only the complete pipeline can be retried.') }}
@@ -305,7 +298,6 @@ export default {
         <!-- empty state -->
         <empty-state
           v-if="!hasTrace"
-          class="js-job-empty-state"
           :illustration-path="emptyStateIllustration.image"
           :illustration-size-class="emptyStateIllustration.size"
           :title="emptyStateTitle"
@@ -323,12 +315,12 @@ export default {
 
     <sidebar
       v-if="shouldRenderContent"
-      class="js-job-sidebar"
       :class="{
         'right-sidebar-expanded': isSidebarOpen,
         'right-sidebar-collapsed': !isSidebarOpen,
       }"
       :runner-help-url="runnerHelpUrl"
+      data-testid="job-sidebar"
     />
   </div>
 </template>

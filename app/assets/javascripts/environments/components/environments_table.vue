@@ -202,7 +202,7 @@ export default {
           />
 
           <div :key="`sub-div-${i}`">
-            <div class="text-center prepend-top-10">
+            <div class="text-center gl-mt-3">
               <a :href="folderUrl(model)" class="btn btn-default">
                 {{ s__('Environments|Show all') }}
               </a>

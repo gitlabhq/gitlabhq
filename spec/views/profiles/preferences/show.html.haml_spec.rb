@@ -12,6 +12,26 @@ RSpec.describe 'profiles/preferences/show' do
     allow(controller).to receive(:current_user).and_return(user)
   end
 
+  context 'navigation theme' do
+    before do
+      render
+    end
+
+    it 'has an id for anchoring' do
+      expect(rendered).to have_css('#navigation-theme')
+    end
+  end
+
+  context 'syntax highlighting theme' do
+    before do
+      render
+    end
+
+    it 'has an id for anchoring' do
+      expect(rendered).to have_css('#syntax-highlighting-theme')
+    end
+  end
+
   context 'behavior' do
     before do
       render
@@ -19,6 +39,25 @@ RSpec.describe 'profiles/preferences/show' do
 
     it 'has option for Render whitespace characters in the Web IDE' do
       expect(rendered).to have_unchecked_field('Render whitespace characters in the Web IDE')
+    end
+
+    it 'has an id for anchoring' do
+      expect(rendered).to have_css('#behavior')
+    end
+
+    it 'has helpful homepage setup guidance' do
+      expect(rendered).to have_field('Homepage content')
+      expect(rendered).to have_content('Choose what content you want to see on your homepage.')
+    end
+  end
+
+  context 'localization' do
+    before do
+      render
+    end
+
+    it 'has an id for anchoring' do
+      expect(rendered).to have_css('#localization')
     end
   end
 
@@ -28,7 +67,7 @@ RSpec.describe 'profiles/preferences/show' do
     end
 
     def have_integrations_section
-      have_css('.profile-settings-sidebar', { text: 'Integrations' })
+      have_css('#integrations.profile-settings-sidebar', { text: 'Integrations' })
     end
 
     before do

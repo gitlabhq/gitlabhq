@@ -20,7 +20,7 @@ RSpec.describe 'Clusterable > Show page' do
       expect(page).to have_content(cluster_type_label)
     end
 
-    it 'allow the user to set domain' do
+    it 'allow the user to set domain', :js do
       visit cluster_path
 
       within '.js-cluster-integration-form' do
@@ -28,20 +28,19 @@ RSpec.describe 'Clusterable > Show page' do
         click_on 'Save changes'
       end
 
-      expect(page.status_code).to eq(200)
       expect(page).to have_content('Kubernetes cluster was successfully updated.')
     end
 
-    context 'when there is a cluster with ingress and external ip' do
+    context 'when there is a cluster with ingress and external ip', :js do
       before do
         cluster.create_application_ingress!(external_ip: '192.168.1.100')
 
         visit cluster_path
       end
 
-      it 'shows help text with the domain as an alternative to custom domain' do
+      it 'shows help text with the domain as an alternative to custom domain', :js do
         within '.js-cluster-integration-form' do
-          expect(find(cluster_ingress_help_text_selector)).not_to match_css(hide_modifier_selector)
+          expect(find(cluster_ingress_help_text_selector).text).to include('192.168.1.100')
         end
       end
     end
@@ -51,7 +50,7 @@ RSpec.describe 'Clusterable > Show page' do
         visit cluster_path
 
         within '.js-cluster-integration-form' do
-          expect(find(cluster_ingress_help_text_selector)).to match_css(hide_modifier_selector)
+          expect(page).not_to have_selector(cluster_ingress_help_text_selector)
         end
       end
     end

@@ -6,17 +6,27 @@ module Gitlab
       module LegacyValidationHelpers
         private
 
-        def validate_duration(value)
-          value.is_a?(String) && ChronicDuration.parse(value)
+        def validate_duration(value, parser = nil)
+          return false unless value.is_a?(String)
+
+          if parser && parser.respond_to?(:validate_duration)
+            parser.validate_duration(value)
+          else
+            ChronicDuration.parse(value)
+          end
         rescue ChronicDuration::DurationParseError
           false
         end
 
-        def validate_duration_limit(value, limit)
+        def validate_duration_limit(value, limit, parser = nil)
           return false unless value.is_a?(String)
 
-          ChronicDuration.parse(value).second.from_now <
-            ChronicDuration.parse(limit).second.from_now
+          if parser && parser.respond_to?(:validate_duration_limit)
+            parser.validate_duration_limit(value, limit)
+          else
+            ChronicDuration.parse(value).second.from_now <
+              ChronicDuration.parse(limit).second.from_now
+          end
         rescue ChronicDuration::DurationParseError
           false
         end
@@ -30,10 +40,18 @@ module Gitlab
         end
 
         def validate_variables(variables)
+          variables.is_a?(Hash) && variables.flatten.all?(&method(:validate_alphanumeric))
+        end
+
+        def validate_array_value_variables(variables)
           variables.is_a?(Hash) &&
-            variables.flatten.all? do |value|
-              validate_string(value) || validate_integer(value)
-            end
+            variables.keys.all?(&method(:validate_alphanumeric)) &&
+            variables.values.all?(&:present?) &&
+            variables.values.flatten(1).all?(&method(:validate_alphanumeric))
+        end
+
+        def validate_alphanumeric(value)
+          validate_string(value) || validate_integer(value)
         end
 
         def validate_integer(value)

@@ -23,7 +23,7 @@ From left to right, it displays:
   details:
   ![Gitaly profiling using the Performance Bar](img/performance_bar_gitaly_calls.png)
 - **Rugged calls**: the time taken (in milliseconds) and the total number of
-  [Rugged](../../high_availability/nfs.md#improving-nfs-performance-with-gitlab) calls.
+  [Rugged](../../nfs.md#improving-nfs-performance-with-gitlab) calls.
   Click to display a modal window with more details:
   ![Rugged profiling using the Performance Bar](img/performance_bar_rugged_calls.png)
 - **Redis calls**: the time taken (in milliseconds) and the total number of
@@ -72,8 +72,8 @@ Requests with warnings display `(!)` after their path in the **Request selector*
 The GitLab Performance Bar is disabled by default. To enable it for a given group:
 
 1. Sign in as a user with Administrator [permissions](../../../user/permissions.md).
-1. In the menu bar, click the **{admin}** **Admin Area** icon.
-1. Navigate to **{settings}** **Settings > Metrics and profiling**
+1. In the menu bar, click **Admin Area**.
+1. Navigate to **Settings > Metrics and profiling**
    (`admin/application_settings/metrics_and_profiling`), and expand the section
    **Profiling - Performance bar**.
 1. Click **Enable access to the Performance Bar**.

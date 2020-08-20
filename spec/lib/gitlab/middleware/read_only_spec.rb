@@ -110,6 +110,19 @@ RSpec.describe Gitlab::Middleware::ReadOnly do
         expect(subject).not_to disallow_request
       end
 
+      context 'relative URL is configured' do
+        before do
+          stub_config_setting(relative_url_root: '/gitlab')
+        end
+
+        it 'expects a graphql request to be allowed' do
+          response = request.post("/gitlab/api/graphql")
+
+          expect(response).not_to be_redirect
+          expect(subject).not_to disallow_request
+        end
+      end
+
       context 'sidekiq admin requests' do
         where(:mounted_at) do
           [

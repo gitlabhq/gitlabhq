@@ -12,7 +12,7 @@ RSpec.describe 'projects/merge_requests/show.html.haml' do
   describe 'merge request assignee sidebar' do
     context 'when assignee is allowed to merge' do
       it 'does not show a warning icon' do
-        closed_merge_request.update(assignee_id: user.id)
+        closed_merge_request.update!(assignee_id: user.id)
         project.add_maintainer(user)
         assign(:issuable_sidebar, serialize_issuable_sidebar(user, project, closed_merge_request))
 
@@ -38,22 +38,6 @@ RSpec.describe 'projects/merge_requests/show.html.haml' do
 
       render
 
-      expect(rendered).to have_css('a', visible: false, text: 'Reopen')
-      expect(rendered).to have_css('a', visible: false, text: 'Close')
-    end
-  end
-
-  context 'when the merge request is open' do
-    it 'closes the merge request if the source project does not exist' do
-      closed_merge_request.update(state: 'open')
-      forked_project.destroy
-      # Reload merge request so MergeRequest#source_project turns to `nil`
-      closed_merge_request.reload
-      preload_view_requirements
-
-      render
-
-      expect(closed_merge_request.reload.state).to eq('closed')
       expect(rendered).to have_css('a', visible: false, text: 'Reopen')
       expect(rendered).to have_css('a', visible: false, text: 'Close')
     end

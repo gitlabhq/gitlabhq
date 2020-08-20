@@ -1,27 +1,15 @@
 <script>
-import { GlLink, GlTooltipDirective } from '@gitlab/ui';
-import { escape } from 'lodash';
+import { GlLink, GlPopover, GlSprintf, GlTooltipDirective } from '@gitlab/ui';
 import { SCHEDULE_ORIGIN } from '../../constants';
-import { __, sprintf } from '~/locale';
-import popover from '~/vue_shared/directives/popover';
-
-const popoverTitle = sprintf(
-  escape(
-    __(
-      `This pipeline makes use of a predefined CI/CD configuration enabled by %{strongStart}Auto DevOps.%{strongEnd}`,
-    ),
-  ),
-  { strongStart: '<b>', strongEnd: '</b>' },
-  false,
-);
 
 export default {
   components: {
     GlLink,
+    GlPopover,
+    GlSprintf,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
-    popover,
   },
   props: {
     pipeline: {
@@ -43,23 +31,6 @@ export default {
     },
     isScheduled() {
       return this.pipeline.source === SCHEDULE_ORIGIN;
-    },
-    popoverOptions() {
-      return {
-        html: true,
-        trigger: 'focus',
-        placement: 'top',
-        title: `<div class="autodevops-title">
-            ${popoverTitle}
-          </div>`,
-        content: `<a
-            class="autodevops-link"
-            href="${this.autoDevopsHelpPath}"
-            target="_blank"
-            rel="noopener noreferrer nofollow">
-            ${escape(__('Learn more about Auto DevOps'))}
-          </a>`,
-      };
     },
   },
 };
@@ -114,13 +85,42 @@ export default {
       </span>
       <gl-link
         v-if="pipeline.flags.auto_devops"
-        v-popover="popoverOptions"
+        :id="`pipeline-url-autodevops-${pipeline.id}`"
         tabindex="0"
         class="js-pipeline-url-autodevops badge badge-info autodevops-badge"
         data-testid="pipeline-url-autodevops"
         role="button"
         >{{ __('Auto DevOps') }}</gl-link
       >
+      <gl-popover
+        :target="`pipeline-url-autodevops-${pipeline.id}`"
+        triggers="focus"
+        placement="top"
+      >
+        <template #title>
+          <div class="autodevops-title">
+            <gl-sprintf
+              :message="
+                __(
+                  'This pipeline makes use of a predefined CI/CD configuration enabled by %{strongStart}Auto DevOps.%{strongEnd}',
+                )
+              "
+            >
+              <template #strong="{content}">
+                <b>{{ content }}</b>
+              </template>
+            </gl-sprintf>
+          </div>
+        </template>
+        <gl-link
+          class="autodevops-link"
+          :href="autoDevopsHelpPath"
+          target="_blank"
+          rel="noopener noreferrer nofollow"
+        >
+          {{ __('Learn more about Auto DevOps') }}
+        </gl-link>
+      </gl-popover>
       <span
         v-if="pipeline.flags.stuck"
         class="js-pipeline-url-stuck badge badge-warning"

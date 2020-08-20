@@ -36,7 +36,8 @@ RSpec.describe Projects::HooksController do
         note_events: true,
         job_events: true,
         pipeline_events: true,
-        wiki_page_events: true
+        wiki_page_events: true,
+        deployment_events: true
       }
 
       post :create, params: { namespace_id: project.namespace, project_id: project, hook: hook_params }

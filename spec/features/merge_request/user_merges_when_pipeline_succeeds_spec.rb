@@ -11,6 +11,7 @@ RSpec.describe 'Merge request > User merges when pipeline succeeds', :js do
                                       title: 'Bug NS-04',
                                       merge_params: { force_remove_source_branch: '1' })
   end
+
   let(:pipeline) do
     create(:ci_pipeline, project: project,
                          sha: merge_request.diff_head_sha,
@@ -115,6 +116,7 @@ RSpec.describe 'Merge request > User merges when pipeline succeeds', :js do
         merge_user: user,
         title: 'MepMep')
     end
+
     let!(:build) do
       create(:ci_build, pipeline: pipeline)
     end
@@ -154,7 +156,7 @@ RSpec.describe 'Merge request > User merges when pipeline succeeds', :js do
 
     context 'view merge request with MWPS enabled but automatically merge fails' do
       before do
-        merge_request.update(
+        merge_request.update!(
           merge_user: merge_request.author,
           merge_error: 'Something went wrong.'
         )
@@ -173,7 +175,7 @@ RSpec.describe 'Merge request > User merges when pipeline succeeds', :js do
 
     context 'view merge request with MWPS enabled but automatically merge fails' do
       before do
-        merge_request.update(
+        merge_request.update!(
           merge_user: merge_request.author,
           merge_error: 'Something went wrong.'
         )

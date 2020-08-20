@@ -1,0 +1,16 @@
+{
+	"type": "object",
+	"required": ["unit"],
+	"oneOf": [{ "required": ["query"] }, { "required": ["query_range"] }],
+	"properties": {
+		"id": {
+			"type": "string",
+			"format": "add_to_metric_id_cache"
+		 },
+		"unit": { "type": "string" },
+		"label": { "type": "string" },
+		"query": { "type": ["string", "number"] },
+		"query_range": { "type": ["string", "number"] },
+		"step": { "type": "number" }
+	}
+}

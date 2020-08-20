@@ -5,10 +5,14 @@ require 'spec_helper'
 RSpec.describe Issue do
   include ExternalAuthorizationServiceHelpers
 
+  let_it_be(:user) { create(:user) }
+  let_it_be(:reusable_project) { create(:project) }
+
   describe "Associations" do
     it { is_expected.to belong_to(:milestone) }
     it { is_expected.to belong_to(:iteration) }
     it { is_expected.to belong_to(:project) }
+    it { is_expected.to have_one(:namespace).through(:project) }
     it { is_expected.to belong_to(:moved_to).class_name('Issue') }
     it { is_expected.to have_one(:moved_from).class_name('Issue') }
     it { is_expected.to belong_to(:duplicated_to).class_name('Issue') }
@@ -52,6 +56,26 @@ RSpec.describe Issue do
       let(:scope) { :project }
       let(:scope_attrs) { { project: instance.project } }
       let(:usage) { :issues }
+    end
+  end
+
+  describe 'validations' do
+    subject { issue.valid? }
+
+    describe 'issue_type' do
+      let(:issue) { build(:issue, issue_type: issue_type) }
+
+      context 'when a valid type' do
+        let(:issue_type) { :issue }
+
+        it { is_expected.to eq(true) }
+      end
+
+      context 'empty type' do
+        let(:issue_type) { nil }
+
+        it { is_expected.to eq(false) }
+      end
     end
   end
 
@@ -105,14 +129,30 @@ RSpec.describe Issue do
     end
   end
 
+  describe '.with_issue_type' do
+    let_it_be(:project) { create(:project) }
+    let_it_be(:issue) { create(:issue, project: project) }
+    let_it_be(:incident) { create(:incident, project: project) }
+
+    it 'gives issues with the given issue type' do
+      expect(described_class.with_issue_type('issue'))
+        .to contain_exactly(issue)
+    end
+
+    it 'gives issues with the given issue type' do
+      expect(described_class.with_issue_type(%w(issue incident)))
+        .to contain_exactly(issue, incident)
+    end
+  end
+
   describe '#order_by_position_and_priority' do
-    let(:project) { create :project }
+    let(:project) { reusable_project }
     let(:p1) { create(:label, title: 'P1', project: project, priority: 1) }
     let(:p2) { create(:label, title: 'P2', project: project, priority: 2) }
     let!(:issue1) { create(:labeled_issue, project: project, labels: [p1]) }
     let!(:issue2) { create(:labeled_issue, project: project, labels: [p2]) }
-    let!(:issue3) { create(:issue, project: project, relative_position: 100) }
-    let!(:issue4) { create(:issue, project: project, relative_position: 200) }
+    let!(:issue3) { create(:issue, project: project, relative_position: -200) }
+    let!(:issue4) { create(:issue, project: project, relative_position: -100) }
 
     it 'returns ordered list' do
       expect(project.issues.order_by_position_and_priority)
@@ -121,10 +161,10 @@ RSpec.describe Issue do
   end
 
   describe '#sort' do
-    let(:project) { create(:project) }
+    let(:project) { reusable_project }
 
     context "by relative_position" do
-      let!(:issue)  { create(:issue, project: project) }
+      let!(:issue)  { create(:issue, project: project, relative_position: nil) }
       let!(:issue2) { create(:issue, project: project, relative_position: 2) }
       let!(:issue3) { create(:issue, project: project, relative_position: 1) }
 
@@ -166,39 +206,9 @@ RSpec.describe Issue do
 
       expect { issue.close }.to change { issue.state_id }.from(open_state).to(closed_state)
     end
-
-    context 'when there is an associated Alert Management Alert' do
-      context 'when alert can be resolved' do
-        let!(:alert) { create(:alert_management_alert, project: issue.project, issue: issue) }
-
-        it 'resolves an alert' do
-          expect { issue.close }.to change { alert.reload.resolved? }.to(true)
-        end
-      end
-
-      context 'when alert cannot be resolved' do
-        let!(:alert) { create(:alert_management_alert, :with_validation_errors, project: issue.project, issue: issue) }
-
-        before do
-          allow(Gitlab::AppLogger).to receive(:warn).and_call_original
-        end
-
-        it 'writes a warning into the log' do
-          issue.close
-
-          expect(Gitlab::AppLogger).to have_received(:warn).with(
-            message: 'Cannot resolve an associated Alert Management alert',
-            issue_id: issue.id,
-            alert_id: alert.id,
-            alert_errors: { hosts: ['hosts array is over 255 chars'] }
-          )
-        end
-      end
-    end
   end
 
   describe '#reopen' do
-    let(:user) { create(:user) }
     let(:issue) { create(:issue, state: 'closed', closed_at: Time.current, closed_by: user) }
 
     it 'sets closed_at to nil when an issue is reopend' do
@@ -282,7 +292,6 @@ RSpec.describe Issue do
   end
 
   describe '#assignee_or_author?' do
-    let(:user) { create(:user) }
     let(:issue) { create(:issue) }
 
     it 'returns true for a user that is assigned to an issue' do
@@ -303,7 +312,6 @@ RSpec.describe Issue do
   end
 
   describe '#can_move?' do
-    let(:user) { create(:user) }
     let(:issue) { create(:issue) }
 
     subject { issue.can_move?(user) }
@@ -1020,7 +1028,7 @@ RSpec.describe Issue do
 
   context "relative positioning" do
     it_behaves_like "a class that supports relative positioning" do
-      let(:project) { create(:project) }
+      let_it_be(:project) { create(:project) }
       let(:factory) { :issue }
       let(:default_params) { { project: project } }
     end

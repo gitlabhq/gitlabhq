@@ -20,5 +20,3 @@ export const failedJobsCount = state =>
   );
 
 export const jobsCount = state => state.stages.reduce((acc, stage) => acc + stage.jobs.length, 0);
-
-export default () => {};

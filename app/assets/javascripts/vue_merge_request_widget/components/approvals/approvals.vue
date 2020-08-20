@@ -1,6 +1,6 @@
 <script>
 import { GlButton } from '@gitlab/ui';
-import createFlash from '~/flash';
+import { deprecatedCreateFlash as createFlash } from '~/flash';
 import { s__ } from '~/locale';
 import eventHub from '../../event_hub';
 import approvalsMixin from '../../mixins/approvals';

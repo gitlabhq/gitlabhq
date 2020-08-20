@@ -40,7 +40,12 @@ module ProductAnalytics
         domain_userid:            params['duid'],
         user_fingerprint:         params['fp'],
         page_referrer:            params['refr'],
-        page_url:                 params['url']
+        page_url:                 params['url'],
+        se_category:              params['se_ca'],
+        se_action:                params['se_ac'],
+        se_label:                 params['se_la'],
+        se_property:              params['se_pr'],
+        se_value:                 params['se_va']
       }
     end
 

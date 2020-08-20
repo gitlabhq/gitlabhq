@@ -1,7 +1,7 @@
 <script>
+import { GlBreadcrumb, GlIcon } from '@gitlab/ui';
 import WelcomePage from './welcome.vue';
 import LegacyContainer from './legacy_container.vue';
-import { GlBreadcrumb, GlIcon } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
 
 import blankProjectIllustration from '../illustrations/blank-project.svg';

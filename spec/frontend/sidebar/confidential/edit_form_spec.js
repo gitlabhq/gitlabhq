@@ -12,6 +12,7 @@ describe('Edit Form Dropdown', () => {
         ...props,
         isLoading: false,
         fullPath: '',
+        issuableType: 'issue',
       },
     });
   };
@@ -22,26 +23,26 @@ describe('Edit Form Dropdown', () => {
   });
 
   describe('when not confidential', () => {
-    it('renders "You are going to turn off the confidentiality." in the ', () => {
+    it('renders "You are going to turn on the confidentiality." in the ', () => {
       createComponent({
-        isConfidential: false,
+        confidential: false,
         toggleForm,
         updateConfidentialAttribute,
       });
 
-      expect(wrapper.find('p').text()).toContain('You are going to turn on the confidentiality.');
+      expect(wrapper.element).toMatchSnapshot();
     });
   });
 
   describe('when confidential', () => {
     it('renders on or off text based on confidentiality', () => {
       createComponent({
-        isConfidential: true,
+        confidential: true,
         toggleForm,
         updateConfidentialAttribute,
       });
 
-      expect(wrapper.find('p').text()).toContain('You are going to turn off the confidentiality.');
+      expect(wrapper.element).toMatchSnapshot();
     });
   });
 });

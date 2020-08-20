@@ -3,24 +3,26 @@ import Issue from '~/issue';
 import ShortcutsIssuable from '~/behaviors/shortcuts/shortcuts_issuable';
 import ZenMode from '~/zen_mode';
 import '~/notes/index';
-import initIssueableApp, { issuableHeaderWarnings } from '~/issue_show';
+import { store } from '~/notes/stores';
+import initIssueableApp from '~/issue_show';
+import initIssuableHeaderWarning from '~/vue_shared/components/issuable/init_issuable_header_warning';
 import initSentryErrorStackTraceApp from '~/sentry_error_stack_trace';
 import initRelatedMergeRequestsApp from '~/related_merge_requests';
 import initVueIssuableSidebarApp from '~/issuable_sidebar/sidebar_bundle';
 
 export default function() {
   initIssueableApp();
+  initIssuableHeaderWarning(store);
   initSentryErrorStackTraceApp();
   initRelatedMergeRequestsApp();
-  issuableHeaderWarnings();
-
-  import(/* webpackChunkName: 'design_management' */ '~/design_management')
-    .then(module => module.default())
-    .catch(() => {});
 
   // This will be removed when we remove the `design_management_moved` feature flag
   // See https://gitlab.com/gitlab-org/gitlab/-/issues/223197
-  import(/* webpackChunkName: 'design_management' */ '~/design_management_new')
+  import(/* webpackChunkName: 'design_management' */ '~/design_management_legacy')
+    .then(module => module.default())
+    .catch(() => {});
+
+  import(/* webpackChunkName: 'design_management' */ '~/design_management')
     .then(module => module.default())
     .catch(() => {});
 

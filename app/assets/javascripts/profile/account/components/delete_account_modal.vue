@@ -100,6 +100,7 @@ Once you confirm %{deleteAccount}, it cannot be undone or recovered.`),
           name="password"
           class="form-control"
           type="password"
+          data-qa-selector="password_confirmation_field"
           aria-labelledby="input-label"
         />
         <input

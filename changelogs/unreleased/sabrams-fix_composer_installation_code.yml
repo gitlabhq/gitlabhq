@@ -1,0 +1,5 @@
+---
+title: Fix Composer installation code snippet to include package name and version
+merge_request: 39400
+author:
+type: fixed

@@ -6,12 +6,14 @@ RSpec.describe Boards::Lists::ListService do
   let(:user) { create(:user) }
 
   describe '#execute' do
+    let(:service) { described_class.new(parent, user) }
+
     context 'when board parent is a project' do
       let(:project) { create(:project) }
       let(:board) { create(:board, project: project) }
       let(:label) { create(:label, project: project) }
       let!(:list) { create(:list, board: board, label: label) }
-      let(:service) { described_class.new(project, user) }
+      let(:parent) { project }
 
       it_behaves_like 'lists list service'
     end
@@ -21,7 +23,7 @@ RSpec.describe Boards::Lists::ListService do
       let(:board) { create(:board, group: group) }
       let(:label) { create(:group_label, group: group) }
       let!(:list) { create(:list, board: board, label: label) }
-      let(:service) { described_class.new(group, user) }
+      let(:parent) { group }
 
       it_behaves_like 'lists list service'
     end

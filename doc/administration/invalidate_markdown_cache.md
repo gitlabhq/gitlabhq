@@ -1,3 +1,10 @@
+---
+stage: Create
+group: Source Code
+info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers"
+type: reference
+---
+
 # Invalidate Markdown Cache
 
 For performance reasons, GitLab caches the HTML version of Markdown text

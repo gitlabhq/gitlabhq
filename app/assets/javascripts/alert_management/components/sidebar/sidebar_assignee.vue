@@ -1,9 +1,9 @@
 <script>
-import { GlDropdownItem } from '@gitlab/ui';
+import { GlDeprecatedDropdownItem } from '@gitlab/ui';
 
 export default {
   components: {
-    GlDropdownItem,
+    GlDeprecatedDropdownItem,
   },
   props: {
     user: {
@@ -24,7 +24,7 @@ export default {
 </script>
 
 <template>
-  <gl-dropdown-item
+  <gl-deprecated-dropdown-item
     :key="user.username"
     data-testid="assigneeDropdownItem"
     class="assignee-dropdown-item gl-vertical-align-middle"
@@ -47,5 +47,5 @@ export default {
       </strong>
       <span class="dropdown-menu-user-username"> {{ user.username }}</span>
     </span>
-  </gl-dropdown-item>
+  </gl-deprecated-dropdown-item>
 </template>

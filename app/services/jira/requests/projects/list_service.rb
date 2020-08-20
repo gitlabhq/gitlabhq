@@ -6,7 +6,7 @@ module Jira
       class ListService < Base
         extend ::Gitlab::Utils::Override
 
-        def initialize(jira_service, params: {})
+        def initialize(jira_service, params = {})
           super(jira_service, params)
 
           @query = params[:query]
@@ -33,9 +33,9 @@ module Jira
         end
 
         def match_query?(jira_project)
-          query = query.to_s.downcase
+          downcase_query = query.to_s.downcase
 
-          jira_project&.key&.downcase&.include?(query) || jira_project&.name&.downcase&.include?(query)
+          jira_project&.key&.downcase&.include?(downcase_query) || jira_project&.name&.downcase&.include?(downcase_query)
         end
 
         def empty_payload

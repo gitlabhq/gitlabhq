@@ -169,6 +169,8 @@ module Gitlab
 
     config.assets.precompile << "application_dark.css"
 
+    config.assets.precompile << "startup/*.css"
+
     config.assets.precompile << "print.css"
     config.assets.precompile << "mailer.css"
     config.assets.precompile << "mailer_client_specific.css"
@@ -191,6 +193,11 @@ module Gitlab
     config.assets.precompile << "icons.svg"
     config.assets.precompile << "icons.json"
     config.assets.precompile << "illustrations/*.svg"
+
+    # Import Fontawesome fonts
+    config.assets.paths << "#{config.root}/node_modules/font-awesome/fonts"
+    config.assets.precompile << "fontawesome-webfont.woff2"
+    config.assets.precompile << "fontawesome-webfont.woff"
 
     # Import css for xterm
     config.assets.paths << "#{config.root}/node_modules/xterm/src/"

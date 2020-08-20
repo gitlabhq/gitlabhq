@@ -57,12 +57,12 @@ module Ci
     # the merge request's latest commit.
     has_many :merge_requests_as_head_pipeline, foreign_key: "head_pipeline_id", class_name: 'MergeRequest'
 
-    has_many :pending_builds, -> { pending }, foreign_key: :commit_id, class_name: 'Ci::Build'
+    has_many :pending_builds, -> { pending }, foreign_key: :commit_id, class_name: 'Ci::Build', inverse_of: :pipeline
     has_many :failed_builds, -> { latest.failed }, foreign_key: :commit_id, class_name: 'Ci::Build', inverse_of: :pipeline
-    has_many :retryable_builds, -> { latest.failed_or_canceled.includes(:project) }, foreign_key: :commit_id, class_name: 'Ci::Build'
+    has_many :retryable_builds, -> { latest.failed_or_canceled.includes(:project) }, foreign_key: :commit_id, class_name: 'Ci::Build', inverse_of: :pipeline
     has_many :cancelable_statuses, -> { cancelable }, foreign_key: :commit_id, class_name: 'CommitStatus'
-    has_many :manual_actions, -> { latest.manual_actions.includes(:project) }, foreign_key: :commit_id, class_name: 'Ci::Build'
-    has_many :scheduled_actions, -> { latest.scheduled_actions.includes(:project) }, foreign_key: :commit_id, class_name: 'Ci::Build'
+    has_many :manual_actions, -> { latest.manual_actions.includes(:project) }, foreign_key: :commit_id, class_name: 'Ci::Build', inverse_of: :pipeline
+    has_many :scheduled_actions, -> { latest.scheduled_actions.includes(:project) }, foreign_key: :commit_id, class_name: 'Ci::Build', inverse_of: :pipeline
 
     has_many :auto_canceled_pipelines, class_name: 'Ci::Pipeline', foreign_key: 'auto_canceled_by_id'
     has_many :auto_canceled_jobs, class_name: 'CommitStatus', foreign_key: 'auto_canceled_by_id'
@@ -83,6 +83,7 @@ module Ci
 
     has_many :daily_build_group_report_results, class_name: 'Ci::DailyBuildGroupReportResult', foreign_key: :last_pipeline_id
     has_many :latest_builds_report_results, through: :latest_builds, source: :report_results
+    has_many :pipeline_artifacts, class_name: 'Ci::PipelineArtifact', inverse_of: :pipeline, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
     accepts_nested_attributes_for :variables, reject_if: :persisted?
 
@@ -249,14 +250,6 @@ module Ci
 
         pipeline.run_after_commit { AutoDevops::DisableWorker.perform_async(pipeline.id) }
       end
-
-      after_transition any => [:success] do |pipeline|
-        next unless Gitlab::Ci::Features.keep_latest_artifacts_for_ref_enabled?(pipeline.project)
-
-        pipeline.run_after_commit do
-          Ci::PipelineSuccessUnlockArtifactsWorker.perform_async(pipeline.id)
-        end
-      end
     end
 
     scope :internal, -> { where(source: internal_sources) }
@@ -416,47 +409,13 @@ module Ci
 
     def legacy_stage(name)
       stage = Ci::LegacyStage.new(self, name: name)
-      stage unless stage.statuses_count.zero?
+      stage unless stage.statuses_count == 0
     end
 
     def ref_exists?
       project.repository.ref_exists?(git_ref)
     rescue Gitlab::Git::Repository::NoRepository
       false
-    end
-
-    def ordered_stages
-      if ::Gitlab::Ci::Features.atomic_processing?(project)
-        # The `Ci::Stage` contains all up-to date data
-        # as atomic processing updates all data in-bulk
-        stages
-      elsif complete?
-        # The `Ci::Stage` contains up-to date data only for `completed` pipelines
-        # this is due to asynchronous processing of pipeline, and stages possibly
-        # not updated inline with processing of pipeline
-        stages
-      else
-        # In other cases, we need to calculate stages dynamically
-        legacy_stages
-      end
-    end
-
-    def legacy_stages_using_sql
-      # TODO, this needs refactoring, see gitlab-foss#26481.
-      stages_query = statuses
-        .group('stage').select(:stage).order('max(stage_idx)')
-
-      status_sql = statuses.latest.where('stage=sg.stage').legacy_status_sql
-
-      warnings_sql = statuses.latest.select('COUNT(*)')
-        .where('stage=sg.stage').failed_but_allowed.to_sql
-
-      stages_with_statuses = CommitStatus.from(stages_query, :sg)
-        .pluck('sg.stage', Arel.sql(status_sql), Arel.sql("(#{warnings_sql})"))
-
-      stages_with_statuses.map do |stage|
-        Ci::LegacyStage.new(self, Hash[%i[name status warnings].zip(stage)])
-      end
     end
 
     def legacy_stages_using_composite_status
@@ -477,12 +436,9 @@ module Ci
       triggered_pipelines.preload(:source_job)
     end
 
+    # TODO: Remove usage of this method in templates
     def legacy_stages
-      if ::Gitlab::Ci::Features.composite_status?(project)
-        legacy_stages_using_composite_status
-      else
-        legacy_stages_using_sql
-      end
+      legacy_stages_using_composite_status
     end
 
     def valid_commit_sha
@@ -665,7 +621,7 @@ module Ci
     end
 
     def has_warnings?
-      number_of_warnings.positive?
+      number_of_warnings > 0
     end
 
     def number_of_warnings
@@ -755,10 +711,6 @@ module Ci
       end
     end
 
-    def update_legacy_status
-      set_status(latest_builds_status.to_s)
-    end
-
     def protected_ref?
       strong_memoize(:protected_ref) { project.protected_for?(git_ref) }
     end
@@ -828,7 +780,7 @@ module Ci
       return unless started_at
 
       seconds = (started_at - created_at).to_i
-      seconds unless seconds.zero?
+      seconds unless seconds == 0
     end
 
     def update_duration
@@ -919,12 +871,6 @@ module Ci
         latest_report_builds(Ci::JobArtifact.test_reports).preload(:project).find_each do |build|
           build.collect_test_reports!(test_reports)
         end
-      end
-    end
-
-    def test_reports_count
-      Rails.cache.fetch(['project', project.id, 'pipeline', id, 'test_reports_count'], force: false) do
-        test_reports.total_count
       end
     end
 
@@ -1061,10 +1007,6 @@ module Ci
       @persistent_ref ||= PersistentRef.new(pipeline: self)
     end
 
-    def find_successful_build_ids_by_names(names)
-      statuses.latest.success.where(name: names).pluck(:id)
-    end
-
     def cacheable?
       Ci::PipelineEnums.ci_config_sources.key?(config_source.to_sym)
     end
@@ -1084,8 +1026,6 @@ module Ci
     end
 
     def ensure_ci_ref!
-      return unless Gitlab::Ci::Features.pipeline_fixed_notifications?
-
       self.ci_ref = Ci::Ref.ensure_for(self)
     end
 
@@ -1121,12 +1061,6 @@ module Ci
           super
         end
       end
-    end
-
-    def latest_builds_status
-      return 'failed' unless yaml_errors.blank?
-
-      statuses.latest.slow_composite_status(project: project) || 'skipped'
     end
 
     def keep_around_commits

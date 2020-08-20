@@ -138,7 +138,7 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 ## Package Registry administration
 
 - [Container Registry](packages/container_registry.md): Configure Container Registry with GitLab.
-- [Package Registry](packages/index.md): Enable GitLab to act as an NPM Registry and a Maven Repository. **(PREMIUM ONLY)**
+- [Package Registry](packages/index.md): Enable GitLab to act as an NPM Registry and a Maven Repository.
 - [Dependency Proxy](packages/dependency_proxy.md): Configure the Dependency Proxy, a local proxy for frequently used upstream images/packages. **(PREMIUM ONLY)**
 
 ### Repository settings
@@ -163,7 +163,11 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 
 ## Snippet settings
 
-- [Setting snippet content size limit](snippets/index.md): Set a maximum size limit for snippets' content.
+- [Setting snippet content size limit](snippets/index.md): Set a maximum content size limit for snippets.
+
+## Wiki settings
+
+- [Setting wiki page content size limit](wikis/index.md): Set a maximum content size limit for wiki pages.
 
 ## Git configuration options
 

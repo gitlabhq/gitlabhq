@@ -833,10 +833,24 @@ describe('Notes Store mutations', () => {
       state = { noteableData: { confidential: false } };
     });
 
-    it('sets sort order', () => {
+    it('should set issuable as confidential', () => {
       mutations.SET_ISSUE_CONFIDENTIAL(state, true);
 
       expect(state.noteableData.confidential).toBe(true);
+    });
+  });
+
+  describe('SET_ISSUABLE_LOCK', () => {
+    let state;
+
+    beforeEach(() => {
+      state = { noteableData: { discussion_locked: false } };
+    });
+
+    it('should set issuable as locked', () => {
+      mutations.SET_ISSUABLE_LOCK(state, true);
+
+      expect(state.noteableData.discussion_locked).toBe(true);
     });
   });
 
@@ -849,6 +863,22 @@ describe('Notes Store mutations', () => {
       mutations.UPDATE_ASSIGNEES(state, [userDataMock.id]);
 
       expect(state.noteableData.assignees).toEqual([userDataMock.id]);
+    });
+  });
+
+  describe('UPDATE_DISCUSSION_POSITION', () => {
+    it('should upate the discusion position', () => {
+      const discussion1 = { id: 1, position: { line_code: 'abc_1_1' } };
+      const discussion2 = { id: 2, position: { line_code: 'abc_2_2' } };
+      const discussion3 = { id: 3, position: { line_code: 'abc_3_3' } };
+      const state = {
+        discussions: [discussion1, discussion2, discussion3],
+      };
+      const discussion1Position = { ...discussion1.position };
+      const position = { ...discussion1Position, test: true };
+
+      mutations.UPDATE_DISCUSSION_POSITION(state, { discussionId: discussion1.id, position });
+      expect(state.discussions[0].position).toEqual(position);
     });
   });
 });

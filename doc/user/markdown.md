@@ -1,7 +1,8 @@
 ---
-stage: Plan
-group: Project Management
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+stage: Create
+group: Source Code
+info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers"
+type: reference, howto
 ---
 
 # GitLab Markdown
@@ -21,7 +22,7 @@ We encourage you to view this document as [rendered by GitLab itself](https://gi
 
 GitLab uses "GitLab Flavored Markdown" (GFM). It extends the [CommonMark specification](https://spec.commonmark.org/current/)
 (which is based on standard Markdown) in several ways to add additional useful functionality.
-It was inspired by [GitHub Flavored Markdown](https://help.github.com/en/github/writing-on-github/basic-writing-and-formatting-syntax).
+It was inspired by [GitHub Flavored Markdown](https://docs.github.com/en/github/writing-on-github/basic-writing-and-formatting-syntax).
 
 You can use GFM in the following areas:
 
@@ -78,15 +79,15 @@ character of the top list item (`C` in this case):
    - milk
 
 NOTE: **Note:**
-We will flag any significant differences between Redcarpet and CommonMark
+We flag any significant differences between Redcarpet and CommonMark
   Markdown in this document.
 
 If you have a large volume of Markdown files, it can be tedious to determine
-if they will display correctly or not. You can use the
+if they display correctly or not. You can use the
 [diff_redcarpet_cmark](https://gitlab.com/digitalmoksha/diff_redcarpet_cmark)
 tool (not an officially supported product) to generate a list of files and the
-differences between how RedCarpet and CommonMark render the files. It can give
-an indication if anything needs to be changed - often nothing will need
+differences between how RedCarpet and CommonMark render the files. It gives
+an indication if anything needs to be changed - often nothing needs
 to change.
 
 ### GFM extends standard Markdown
@@ -136,7 +137,7 @@ Supported formats (named colors are not supported):
 - RGB: `` `RGB[A](R, G, B[, A])` ``
 - HSL: `` `HSL[A](H, S, L[, A])` ``
 
-Color written inside backticks will be followed by a color "chip":
+Color written inside backticks is followed by a color "chip":
 
 ```markdown
 - `#F00`
@@ -258,10 +259,11 @@ If you're new to this, don't be <img src="https://gitlab.com/gitlab-org/gitlab-f
 
 Consult the [Emoji Cheat Sheet](https://www.webfx.com/tools/emoji-cheat-sheet/) for a list of all supported emoji codes. <img src="https://gitlab.com/gitlab-org/gitlab-foss/raw/master/app/assets/images/emoji/thumbsup.png" width="20px" height="20px" style="display:inline;margin:0">
 
-> **Note:** The emoji example above uses hard-coded images for this documentation. The emoji,
+NOTE: **Note:**
+The emoji example above uses hard-coded images for this documentation. The emoji,
 when rendered within GitLab, may appear different depending on the OS and browser used.
 
-Most emoji are natively supported on macOS, Windows, iOS, Android, and will fall back on image-based emoji where there is no support.
+Most emoji are natively supported on macOS, Windows, iOS, Android, and fall back on image-based emoji where there is no support.
 
 NOTE: **Note:**
 On Linux, you can download [Noto Color Emoji](https://www.google.com/get/noto/help/emoji/)
@@ -346,10 +348,7 @@ The wrapping tags can be either curly braces or square brackets:
 - [- deletion 4 -]
 ```
 
-- {+ addition 1 +}
-- [+ addition 2 +]
-- {- deletion 3 -}
-- [- deletion 4 -]
+![Inline diff as rendered by GitLab's interface](img/inline_diff_01_v13_3.png)
 
 ---
 
@@ -363,7 +362,7 @@ However, the wrapping tags can't be mixed:
 ```
 
 If your diff includes words in `` `code` `` font, make sure to escape each backtick `` ` `` with a
-backslash `\`, otherwise the diff highlight won't render correctly:
+backslash `\`, otherwise the diff highlight don't render correctly:
 
 ```markdown
 - {+ Just regular text +}
@@ -371,9 +370,7 @@ backslash `\`, otherwise the diff highlight won't render correctly:
 - {+ Text with escaped \`backticks\` inside +}
 ```
 
-- {+ Just regular text +}
-- {+ Text with `backticks` inside +}
-- {+ Text with escaped \`backticks\` inside +}
+![Inline diff with mixed formatting, as rendered by GitLab's interface](img/inline_diff_02_v13_3.png)
 
 ### Math
 
@@ -381,8 +378,8 @@ backslash `\`, otherwise the diff highlight won't render correctly:
 
 It's possible to have math written with LaTeX syntax rendered using [KaTeX](https://github.com/KaTeX/KaTeX).
 
-Math written between dollar signs `$` will be rendered inline with the text. Math written
-inside a [code block](#code-spans-and-blocks) with the language declared as `math`, will be rendered
+Math written between dollar signs `$` are rendered inline with the text. Math written
+inside a [code block](#code-spans-and-blocks) with the language declared as `math`, are rendered
 on a separate line:
 
 ````markdown
@@ -412,13 +409,13 @@ the [Asciidoctor user manual](https://asciidoctor.org/docs/user-manual/#activati
 ### Special GitLab references
 
 GFM recognizes special GitLab related references. For example, you can reference
-an issue, a commit, a team member, or even the whole team within a project. GFM will turn
+an issue, a commit, a team member, or even the whole team within a project. GFM turns
 that reference into a link so you can navigate between them.
 
 Additionally, GFM recognizes certain cross-project references and also has a shorthand
 version to reference other projects from the same namespace.
 
-GFM will recognize the following:
+GFM recognizes the following:
 
 | references                      | input                      | cross-project reference                 | shortcut within same namespace |
 | :------------------------------ | :------------------------- | :-------------------------------------- | :----------------------------- |
@@ -444,9 +441,9 @@ GFM will recognize the following:
 
 In addition to this, links to some objects are also recognized and formatted. Some examples of these are:
 
-- Comments on issues: `"https://gitlab.com/gitlab-org/gitlab/-/issues/1234#note_101075757"`, which will be rendered as `#1234 (note1)`
-- The issues designs tab: `"https://gitlab.com/gitlab-org/gitlab/-/issues/1234/designs"`, which will be rendered as `#1234 (designs)`.
-- Links to individual designs: `"https://gitlab.com/gitlab-org/gitlab/-/issues/1234/designs/layout.png"`, which will be rendered as `#1234[layout.png]`.
+- Comments on issues: `"https://gitlab.com/gitlab-org/gitlab/-/issues/1234#note_101075757"`, which are rendered as `#1234 (note1)`
+- The issues designs tab: `"https://gitlab.com/gitlab-org/gitlab/-/issues/1234/designs"`, which are rendered as `#1234 (designs)`.
+- Links to individual designs: `"https://gitlab.com/gitlab-org/gitlab/-/issues/1234/designs/layout.png"`, which are rendered as `#1234[layout.png]`.
 
 ### Task lists
 
@@ -473,22 +470,13 @@ unordered or ordered lists:
    1. [x] Sub-task 2
 ```
 
-- [x] Completed task
-- [ ] Incomplete task
-  - [ ] Sub-task 1
-  - [x] Sub-task 2
-  - [ ] Sub-task 3
-
-1. [x] Completed task
-1. [ ] Incomplete task
-   1. [ ] Sub-task 1
-   1. [x] Sub-task 2
+![A task list as rendered by GitLab's interface](img/completed_tasks_v13_3.png)
 
 ### Table of contents
 
 You can add a table of contents to a Markdown file, wiki page, or issue/merge request
 description, by adding the tag `[[_TOC_]]` on its own line.
-It will appear as an unordered list that links to the various headers.
+It appears as an unordered list that links to the various headers.
 
 ```markdown
 This is an intro sentence to my Wiki page.
@@ -512,7 +500,7 @@ The following examples show how links inside wikis behave.
 
 #### Wiki - direct page link
 
-A link which just includes the slug for a page will point to that page,
+A link which just includes the slug for a page points to that page,
 _at the base level of the wiki_.
 
 This snippet would link to a `documentation` page at the root of your wiki:
@@ -583,13 +571,13 @@ This snippet links to `<wiki_root>/miscellaneous.md`:
 
 ### Embedding metrics in GitLab Flavored Markdown
 
-Metric charts can be embedded within GitLab Flavored Markdown. See [Embedding Metrics within GitLab flavored Markdown](../operations/metrics/embed.md#embedding-metric-charts-within-gitlab-flavored-markdown) for more details.
+Metric charts can be embedded within GitLab Flavored Markdown. See [Embedding Metrics within GitLab flavored Markdown](../operations/metrics/embed.md) for more details.
 
 ## Standard Markdown and extensions in GitLab
 
 All standard Markdown formatting should work as expected within GitLab. Some standard
 functionality is extended with additional features, without affecting the standard usage.
-If a functionality is extended, the new option will be listed as a sub-section.
+If a functionality is extended, the new option is listed as a sub-section.
 
 ### Blockquotes
 
@@ -602,7 +590,7 @@ by starting the lines of the blockquote with `>`:
 
 Quote break.
 
-> This is a very long line that will still be quoted properly when it wraps. Oh boy let's keep writing to make sure this is long enough to actually wrap for everyone. Oh, you can *put* **Markdown** into a blockquote.
+> This is a very long line that is still quoted properly when it wraps. Oh boy let's keep writing to make sure this is long enough to actually wrap for everyone. Oh, you can *put* **Markdown** into a blockquote.
 ```
 
 > Blockquotes are very handy to emulate reply text.
@@ -610,7 +598,7 @@ Quote break.
 
 Quote break.
 
-> This is a very long line that will still be quoted properly when it wraps. Oh boy let's keep writing to make sure this is long enough to actually wrap for everyone. Oh, you can *put* **Markdown** into a blockquote.
+> This is a very long line that is still quoted properly when it wraps. Oh boy let's keep writing to make sure this is long enough to actually wrap for everyone. Oh, you can *put* **Markdown** into a blockquote.
 
 #### Multiline blockquote
 
@@ -825,7 +813,7 @@ do*this*and*do*that*and*another thing
 
 ### Footnotes
 
-Footnotes add a link to a note that will be rendered at the end of a Markdown file.
+Footnotes add a link to a note that are rendered at the end of a Markdown file.
 
 To make a footnote, you need both a reference tag and a separate line (anywhere in the file) with
 the note content.
@@ -1016,7 +1004,7 @@ Here's a sample audio clip:
 
 > To see the Markdown rendered within HTML in the second example, [view it in GitLab itself](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/user/markdown.md#inline-html).
 
-You can also use raw HTML in your Markdown, and it will usually work pretty well.
+You can also use raw HTML in your Markdown, and it usually works pretty well.
 
 See the documentation for HTML::Pipeline's [SanitizationFilter](https://github.com/jch/html-pipeline/blob/v2.12.3/lib/html/pipeline/sanitization_filter.rb#L42)
 class for the list of allowed HTML tags and attributes. In addition to the default
@@ -1028,7 +1016,7 @@ class for the list of allowed HTML tags and attributes. In addition to the defau
   <dd>Is something people use sometimes.</dd>
 
   <dt>Markdown in HTML</dt>
-  <dd>Does *not* work **very** well. HTML <em>tags</em> will <b>work</b>, in most cases.</dd>
+  <dd>Does *not* work **very** well. HTML <em>tags</em> do <b>work</b>, in most cases.</dd>
 </dl>
 ```
 
@@ -1037,7 +1025,7 @@ class for the list of allowed HTML tags and attributes. In addition to the defau
   <dd>Is something people use sometimes.</dd>
 
   <dt>Markdown in HTML</dt>
-  <dd>Does *not* work **very** well. HTML <em>tags</em> will <b>work</b>, in most cases.</dd>
+  <dd>Does *not* work **very** well. HTML <em>tags</em> do <b>work</b>, in most cases.</dd>
 </dl>
 
 ---
@@ -1048,12 +1036,12 @@ are separated into their own lines:
 ```html
 <dl>
   <dt>Markdown in HTML</dt>
-  <dd>Does *not* work **very** well. HTML tags will work, in most cases.</dd>
+  <dd>Does *not* work **very** well. HTML tags work, in most cases.</dd>
 
   <dt>Markdown in HTML</dt>
   <dd>
 
-  Does *not* work **very** well. HTML tags will work, in most cases.
+  Does *not* work **very** well. HTML tags work, in most cases.
 
   </dd>
 </dl>
@@ -1061,17 +1049,17 @@ are separated into their own lines:
 
 <!--
 Note: The example below uses HTML to force correct rendering on docs.gitlab.com,
-Markdown will be fine in GitLab.
+Markdown is fine in GitLab.
 -->
 
 <dl>
   <dt>Markdown in HTML</dt>
-  <dd>Does *not* work **very** well. HTML tags will work, in most cases.</dd>
+  <dd>Does *not* work **very** well. HTML tags work, in most cases.</dd>
 
   <dt>Markdown in HTML</dt>
   <dd>
 
-  Does <em>not</em> work <b>very</b> well. HTML tags will work, in most cases.
+  Does <em>not</em> work <b>very</b> well. HTML tags work, in most cases.
 
   </dd>
 </dl>
@@ -1089,7 +1077,7 @@ tags. This is especially useful for collapsing long logs so they take up less sc
 <details>
 <summary>Click this to collapse/fold.</summary>
 
-These details <em>will</em> remain <strong>hidden</strong> until expanded.
+These details <em>remain</em> <strong>hidden</strong> until expanded.
 
 <pre><code>PASTE LOGS HERE</code></pre>
 
@@ -1101,7 +1089,7 @@ These details <em>will</em> remain <strong>hidden</strong> until expanded.
 <details>
 <summary>Click this to collapse/fold.</summary>
 
-These details <em>will</em> remain <strong>hidden</strong> until expanded.
+These details <em>remain</em> <strong>hidden</strong> until expanded.
 
 <pre><code>PASTE LOGS HERE</code></pre>
 
@@ -1124,7 +1112,7 @@ as shown in the example:
 <details>
 <summary>Click this to collapse/fold.</summary>
 
-These details _will_ remain **hidden** until expanded.
+These details _remain_ **hidden** until expanded.
 
 ```
 PASTE LOGS HERE
@@ -1135,13 +1123,13 @@ PASTE LOGS HERE
 
 <!--
 The example below uses HTML to force correct rendering on docs.gitlab.com, Markdown
-will work correctly in GitLab.
+works correctly in GitLab.
 -->
 
 <details>
 <summary>Click this to collapse/fold.</summary>
 
-These details <em>will</em> remain <b>hidden</b> until expanded.
+These details <em>remain</em> <b>hidden</b> until expanded.
 
 <pre><code>PASTE LOGS HERE</code></pre>
 
@@ -1149,16 +1137,16 @@ These details <em>will</em> remain <b>hidden</b> until expanded.
 
 ### Line breaks
 
-A line break will be inserted (a new paragraph will start) if the previous text is
+A line break is inserted (a new paragraph starts) if the previous text is
 ended with two newlines, like when you hit <kbd>Enter</kbd> twice in a row. If you only
-use one newline (hit <kbd>Enter</kbd> once), the next sentence will be part of the
+use one newline (hit <kbd>Enter</kbd> once), the next sentence remains part of the
 same paragraph. This is useful if you want to keep long lines from wrapping, and keep
 them editable:
 
 ```markdown
 Here's a line for us to start with.
 
-This longer line is separated from the one above by two newlines, so it will be a *separate paragraph*.
+This longer line is separated from the one above by two newlines, so it is a *separate paragraph*.
 
 This line is also a separate paragraph, but...
 These lines are only separated by single newlines,
@@ -1168,7 +1156,7 @@ in the *same paragraph*.
 
 Here's a line for us to start with.
 
-This longer line is separated from the one above by two newlines, so it will be a *separate paragraph*.
+This longer line is separated from the one above by two newlines, so it is a *separate paragraph*.
 
 This line is also a separate paragraph, but...
 These lines are only separated by single newlines,
@@ -1183,7 +1171,7 @@ A paragraph is one or more consecutive lines of text, separated by one or
 more blank lines (two newlines at the end of the first paragraph), as [explained above](#line-breaks).
 
 If you need more control over line breaks or soft returns, you can add a single line break
-by ending a line with a backslash, or two or more spaces. Two newlines in a row will create a new
+by ending a line with a backslash, or two or more spaces. Two newlines in a row create a new
 paragraph, with a blank line in between:
 
 ```markdown
@@ -1255,11 +1243,11 @@ NOTE: **Note:**
 Relative links do not allow the referencing of project files in a wiki
 page, or a wiki page in a project file. The reason for this is that a wiki is always
 in a separate Git repository in GitLab. For example, `[I'm a reference-style link](style)`
-will point the link to `wikis/style` only when the link is inside of a wiki Markdown file.
+points the link to `wikis/style` only when the link is inside of a wiki Markdown file.
 
 #### URL auto-linking
 
-GFM will auto-link almost any URL you put into your text:
+GFM auto-links almost any URL you put into your text:
 
 ```markdown
 - https://www.google.com
@@ -1283,9 +1271,9 @@ Ordered and unordered lists can be created.
 
 For an ordered list, add the number you want the list
 to start with, like `1.`, followed by a space, at the start of each line for ordered lists.
-After the first number, it does not matter what number you use, ordered lists will be
+After the first number, it does not matter what number you use, ordered lists are
 numbered automatically by vertical order, so repeating `1.` for all items in the
-same list is common. If you start with a number other than `1.`, it will use that as the first
+same list is common. If you start with a number other than `1.`, it uses that as the first
 number, and count up from there.
 
 Examples:
@@ -1379,7 +1367,7 @@ Example:
 ---
 
 If the paragraph of the first item is not indented with the proper number of spaces,
-the paragraph will appear outside the list, instead of properly indented under the list item.
+the paragraph appears outside the list, instead of properly indented under the list item.
 
 Example:
 
@@ -1429,18 +1417,18 @@ Example:
 | header 1 | header 2 | header 3 |
 | ---      |  ------  |---------:|
 | cell 1   | cell 2   | cell 3   |
-| cell 4 | cell 5 is longer | cell 6 is much longer than the others, but that's ok. It will eventually wrap the text when the cell is too large for the display size. |
+| cell 4 | cell 5 is longer | cell 6 is much longer than the others, but that's ok. It eventually wraps the text when the cell is too large for the display size. |
 | cell 7   |          | cell <br> 9 |
 ```
 
 | header 1 | header 2 | header 3 |
 | ---      |  ------  |---------:|
 | cell 1   | cell 2   | cell 3   |
-| cell 4 | cell 5 is longer | cell 6 is much longer than the others, but that's okay. It will eventually wrap the text when the cell is too large for the display size. |
+| cell 4 | cell 5 is longer | cell 6 is much longer than the others, but that's okay. It eventually wraps the text when the cell is too large for the display size. |
 | cell 7   |          | cell <br> 9 |
 
 Additionally, you can choose the alignment of text within columns by adding colons (`:`)
-to the sides of the "dash" lines in the second row. This will affect every cell in the column.
+to the sides of the "dash" lines in the second row. This affects every cell in the column.
 
 NOTE: **Note:**
 [Within GitLab itself](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/user/markdown.md#tables),
@@ -1463,8 +1451,8 @@ the headers are always left-aligned in Chrome and Firefox, and centered in Safar
 [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/27205) in GitLab 12.7.
 
 If you're working in spreadsheet software (for example, Microsoft Excel, Google
-Sheets, or Apple Numbers), you can copy from a spreadsheet, and GitLab will
-paste it as a Markdown table. For example, suppose you have the
+Sheets, or Apple Numbers), you can copy from a spreadsheet, and GitLab
+pastes it as a Markdown table. For example, suppose you have the
 following spreadsheet:
 
 ![Copy from spreadsheet](img/markdown_copy_from_spreadsheet_v12_7.png)

@@ -18,16 +18,6 @@ RSpec.describe RegistrationsController do
         stub_experiment_for_user(signup_flow: true)
       end
 
-      it 'tracks the event with the right parameters' do
-        expect(Gitlab::Tracking).to receive(:event).with(
-          'Growth::Acquisition::Experiment::SignUpFlow',
-          'start',
-          label: anything,
-          property: 'experimental_group'
-        )
-        subject
-      end
-
       it 'renders new template and sets the resource variable' do
         expect(subject).to render_template(:new)
         expect(response).to have_gitlab_http_status(:ok)
@@ -41,15 +31,50 @@ RSpec.describe RegistrationsController do
         stub_experiment_for_user(signup_flow: false)
       end
 
-      it 'does not track the event' do
-        expect(Gitlab::Tracking).not_to receive(:event)
-        subject
-      end
-
       it 'renders new template and sets the resource variable' do
         subject
         expect(response).to have_gitlab_http_status(:found)
         expect(response).to redirect_to(new_user_session_path(anchor: 'register-pane'))
+      end
+    end
+
+    context 'with sign up flow and terms_opt_in experiment being enabled' do
+      before do
+        stub_experiment(signup_flow: true, terms_opt_in: true)
+      end
+
+      context 'when user is not part of the experiment' do
+        before do
+          stub_experiment_for_user(signup_flow: true, terms_opt_in: false)
+        end
+
+        it 'tracks event with right parameters' do
+          expect(Gitlab::Tracking).to receive(:event).with(
+            'Growth::Acquisition::Experiment::TermsOptIn',
+            'start',
+            label: anything,
+            property: 'control_group'
+          )
+
+          subject
+        end
+      end
+
+      context 'when user is part of the experiment' do
+        before do
+          stub_experiment_for_user(signup_flow: true, terms_opt_in: true)
+        end
+
+        it 'tracks event with right parameters' do
+          expect(Gitlab::Tracking).to receive(:event).with(
+            'Growth::Acquisition::Experiment::TermsOptIn',
+            'start',
+            label: anything,
+            property: 'experimental_group'
+          )
+
+          subject
+        end
       end
     end
   end
@@ -250,35 +275,79 @@ RSpec.describe RegistrationsController do
         expect(subject.current_user).to be_present
         expect(subject.current_user.terms_accepted?).to be(true)
       end
+
+      context 'when experiment terms_opt_in is enabled' do
+        before do
+          stub_experiment(terms_opt_in: true)
+        end
+
+        context 'when user is part of the experiment' do
+          before do
+            stub_experiment_for_user(terms_opt_in: true)
+          end
+
+          it 'creates the user with accepted terms' do
+            post :create, params: user_params
+
+            expect(subject.current_user).to be_present
+            expect(subject.current_user.terms_accepted?).to be(true)
+          end
+        end
+
+        context 'when user is not part of the experiment' do
+          before do
+            stub_experiment_for_user(terms_opt_in: false)
+          end
+
+          it 'creates the user without accepted terms' do
+            post :create, params: user_params
+
+            expect(flash[:alert]).to eq(_('You must accept our Terms of Service and privacy policy in order to register an account'))
+          end
+        end
+      end
     end
 
     describe 'tracking data' do
-      context 'with the experimental signup flow enabled and the user is part of the control group' do
+      context 'with sign up flow and terms_opt_in experiment being enabled' do
+        subject { post :create, params: user_params }
+
         before do
-          stub_experiment(signup_flow: true)
-          stub_experiment_for_user(signup_flow: false)
+          stub_experiment(signup_flow: true, terms_opt_in: true)
         end
 
-        it 'tracks the event with the right parameters' do
-          expect(Gitlab::Tracking).to receive(:event).with(
-            'Growth::Acquisition::Experiment::SignUpFlow',
-            'end',
-            label: anything,
-            property: 'control_group'
-          )
-          post :create, params: user_params
-        end
-      end
+        context 'when user is not part of the experiment' do
+          before do
+            stub_experiment_for_user(signup_flow: true, terms_opt_in: false)
+          end
 
-      context 'with the experimental signup flow enabled and the user is part of the experimental group' do
-        before do
-          stub_experiment(signup_flow: true)
-          stub_experiment_for_user(signup_flow: true)
+          it 'tracks event with right parameters' do
+            expect(Gitlab::Tracking).to receive(:event).with(
+              'Growth::Acquisition::Experiment::TermsOptIn',
+              'end',
+              label: anything,
+              property: 'control_group'
+            )
+
+            subject
+          end
         end
 
-        it 'does not track the event' do
-          expect(Gitlab::Tracking).not_to receive(:event)
-          post :create, params: user_params
+        context 'when user is part of the experiment' do
+          before do
+            stub_experiment_for_user(signup_flow: true, terms_opt_in: true)
+          end
+
+          it 'tracks event with right parameters' do
+            expect(Gitlab::Tracking).to receive(:event).with(
+              'Growth::Acquisition::Experiment::TermsOptIn',
+              'end',
+              label: anything,
+              property: 'experimental_group'
+            )
+
+            subject
+          end
         end
       end
     end
@@ -383,24 +452,6 @@ RSpec.describe RegistrationsController do
 
         expect_success
       end
-    end
-  end
-
-  describe '#update_registration' do
-    before do
-      stub_experiment(signup_flow: true)
-      stub_experiment_for_user(signup_flow: true)
-      sign_in(create(:user))
-    end
-
-    it 'tracks the event with the right parameters' do
-      expect(Gitlab::Tracking).to receive(:event).with(
-        'Growth::Acquisition::Experiment::SignUpFlow',
-        'end',
-        label: anything,
-        property: 'experimental_group'
-      )
-      patch :update_registration, params: { user: { role: 'software_developer', setup_for_company: 'false' } }
     end
   end
 

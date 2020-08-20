@@ -1,0 +1,5 @@
+---
+title: Fix content validation for existing wiki pages
+merge_request: 37310
+author:
+type: fixed

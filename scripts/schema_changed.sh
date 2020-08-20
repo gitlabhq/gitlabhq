@@ -10,6 +10,16 @@ schema_changed() {
   else
     printf "Schema changes are correctly applied to db/structure.sql\n"
   fi
+
+  if [ ! -z "$(git add -A -n db/schema_migrations)" ]; then
+    printf "Schema version files have not been committed to the repository:\n"
+    printf "The following files should be committed:\n"
+    diff=$(git add -A -n db/schema_migrations)
+    printf "%s" "$diff"
+    exit 2
+  else
+    printf "Schema changes are correctly applied to db/structure.sql and db/schema_migrations/\n"
+  fi
 }
 
 schema_changed

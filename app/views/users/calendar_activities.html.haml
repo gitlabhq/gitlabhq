@@ -1,12 +1,12 @@
 %h4.prepend-top-20
-  = _("Contributions for <strong>%{calendar_date}</strong>").html_safe % { calendar_date: @calendar_date.to_s(:medium) }
+  = html_escape(_("Contributions for %{calendar_date}")) % { calendar_date: tag.strong(@calendar_date.to_s(:medium)) }
 
 - if @events.any?
   %ul.bordered-list
     - @events.sort_by(&:created_at).each do |event|
       %li
         %span.light
-          %i.fa.fa-clock-o
+          = sprite_icon('clock', css_class: 'gl-vertical-align-text-bottom')
           = event.created_at.to_time.in_time_zone.strftime('%-I:%M%P')
         - if event.visible_to_user?(current_user)
           - if event.push_action?
@@ -20,7 +20,7 @@
               - if event.note?
                 = link_to event.note_target.to_reference, event_note_target_url(event), class: 'has-tooltip', title: event.target_title
               - elsif event.target
-                = link_to event.target.to_reference, [event.project.namespace.becomes(Namespace), event.project, event.target], class: 'has-tooltip', title: event.target_title
+                = link_to event.target.to_reference, [event.project, event.target], class: 'has-tooltip', title: event.target_title
 
           = s_('UserProfile|at')
           %strong

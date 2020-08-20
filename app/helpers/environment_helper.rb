@@ -19,7 +19,7 @@ module EnvironmentHelper
   end
 
   def deployment_path(deployment)
-    [deployment.project.namespace.becomes(Namespace), deployment.project, deployment.deployable]
+    [deployment.project, deployment.deployable]
   end
 
   def deployment_link(deployment, text: nil)

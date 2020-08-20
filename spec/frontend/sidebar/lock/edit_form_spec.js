@@ -1,37 +1,54 @@
-import Vue from 'vue';
-import editForm from '~/sidebar/components/lock/edit_form.vue';
+import { shallowMount } from '@vue/test-utils';
+import EditForm from '~/sidebar/components/lock/edit_form.vue';
+import { ISSUABLE_TYPE_ISSUE, ISSUABLE_TYPE_MR } from './constants';
 
-describe('EditForm', () => {
-  let vm1;
-  let vm2;
+describe('Edit Form Dropdown', () => {
+  let wrapper;
+  let issuableType; // Either ISSUABLE_TYPE_ISSUE or ISSUABLE_TYPE_MR
+  let issuableDisplayName;
 
-  beforeEach(() => {
-    const Component = Vue.extend(editForm);
-    const toggleForm = () => {};
-    const updateLockedAttribute = () => {};
+  const setIssuableType = pageType => {
+    issuableType = pageType;
+    issuableDisplayName = issuableType.replace(/_/g, ' ');
+  };
 
-    vm1 = new Component({
-      propsData: {
-        isLocked: true,
-        toggleForm,
-        updateLockedAttribute,
-        issuableType: 'issue',
-      },
-    }).$mount();
+  const findWarningText = () => wrapper.find('[data-testid="warning-text"]');
 
-    vm2 = new Component({
+  const createComponent = ({ props }) => {
+    wrapper = shallowMount(EditForm, {
       propsData: {
         isLocked: false,
-        toggleForm,
-        updateLockedAttribute,
-        issuableType: 'merge_request',
+        issuableDisplayName,
+        ...props,
       },
-    }).$mount();
+    });
+  };
+
+  afterEach(() => {
+    wrapper.destroy();
+    wrapper = null;
   });
 
-  it('renders on the appropriate warning text', () => {
-    expect(vm1.$el.innerHTML.includes('Unlock this issue?')).toBe(true);
+  describe.each`
+    pageType
+    ${ISSUABLE_TYPE_ISSUE} | ${ISSUABLE_TYPE_MR}
+  `('In $pageType page', ({ pageType }) => {
+    beforeEach(() => {
+      setIssuableType(pageType);
+    });
 
-    expect(vm2.$el.innerHTML.includes('Lock this merge request?')).toBe(true);
+    describe.each`
+      isLocked | lockStatusText
+      ${false} | ${'unlocked'}
+      ${true}  | ${'locked'}
+    `('when $lockStatusText', ({ isLocked }) => {
+      beforeEach(() => {
+        createComponent({ props: { isLocked } });
+      });
+
+      it(`the appropriate warning text is rendered`, () => {
+        expect(findWarningText().element).toMatchSnapshot();
+      });
+    });
   });
 });

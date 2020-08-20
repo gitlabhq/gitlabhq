@@ -2,7 +2,7 @@
 
 import $ from 'jquery';
 import Cookies from 'js-cookie';
-import flash from './flash';
+import { deprecatedCreateFlash as flash } from './flash';
 import axios from './lib/utils/axios_utils';
 import { sprintf, s__, __ } from './locale';
 

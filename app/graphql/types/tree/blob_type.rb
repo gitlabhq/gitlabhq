@@ -12,6 +12,8 @@ module Types
 
       field :web_url, GraphQL::STRING_TYPE, null: true,
             description: 'Web URL of the blob'
+      field :web_path, GraphQL::STRING_TYPE, null: true,
+            description: 'Web path of the blob'
       field :lfs_oid, GraphQL::STRING_TYPE, null: true,
             description: 'LFS ID of the blob',
             resolve: -> (blob, args, ctx) do

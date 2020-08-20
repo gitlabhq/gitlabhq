@@ -191,6 +191,7 @@ http
 https
 idempotence
 idmapper
+inclusivity
 Ingress
 initializer
 initializers
@@ -308,6 +309,8 @@ Piwik
 PgBouncer
 plaintext
 Poedit
+polyfill
+polyfills
 pooler
 PostgreSQL
 precompile
@@ -330,6 +333,7 @@ profiler
 Prometheus
 proxied
 proxies
+proxyable
 proxying
 pseudonymized
 pseudonymizer
@@ -384,6 +388,7 @@ reverify
 Rubix
 Rubocop
 Rubular
+ruleset
 runbook
 runbooks
 runit
@@ -464,6 +469,7 @@ TypeScript
 Twilio
 Twitter
 Ubuntu
+unapplied
 unarchive
 unarchived
 unarchives

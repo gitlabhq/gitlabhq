@@ -1,5 +1,5 @@
 import axios from '~/lib/utils/axios_utils';
-import createFlash from '~/flash';
+import { deprecatedCreateFlash as createFlash } from '~/flash';
 import { s__ } from '~/locale';
 import { normalizeHeaders } from '~/lib/utils/common_utils';
 import * as types from './mutation_types';
@@ -32,6 +32,3 @@ export const fetchMergeRequests = ({ state, dispatch }) => {
       createFlash(s__('Something went wrong while fetching related merge requests.'));
     });
 };
-
-// prevent babel-plugin-rewire from generating an invalid default during karma tests
-export default () => {};

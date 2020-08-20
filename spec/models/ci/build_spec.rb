@@ -612,6 +612,62 @@ RSpec.describe Ci::Build do
     end
   end
 
+  describe '#available_artifacts?' do
+    let(:build) { create(:ci_build) }
+
+    subject { build.available_artifacts? }
+
+    context 'when artifacts are not expired' do
+      before do
+        build.artifacts_expire_at = Date.tomorrow
+      end
+
+      context 'when artifacts exist' do
+        before do
+          create(:ci_job_artifact, :archive, job: build)
+        end
+
+        it { is_expected.to be_truthy }
+      end
+
+      context 'when artifacts do not exist' do
+        it { is_expected.to be_falsey }
+      end
+    end
+
+    context 'when artifacts are expired' do
+      before do
+        build.artifacts_expire_at = Date.yesterday
+      end
+
+      context 'when artifacts are not locked' do
+        before do
+          build.pipeline.locked = :unlocked
+        end
+
+        it { is_expected.to be_falsey }
+      end
+
+      context 'when artifacts are locked' do
+        before do
+          build.pipeline.locked = :artifacts_locked
+        end
+
+        context 'when artifacts exist' do
+          before do
+            create(:ci_job_artifact, :archive, job: build)
+          end
+
+          it { is_expected.to be_truthy }
+        end
+
+        context 'when artifacts do not exist' do
+          it { is_expected.to be_falsey }
+        end
+      end
+    end
+  end
+
   describe '#browsable_artifacts?' do
     subject { build.browsable_artifacts? }
 
@@ -1195,18 +1251,6 @@ RSpec.describe Ci::Build do
 
             is_expected.to eq('review/host')
           end
-
-          context 'when ci_persisted_expanded_environment_name feature flag is disabled' do
-            before do
-              stub_feature_flags(ci_persisted_expanded_environment_name: false)
-            end
-
-            it 'returns an expanded environment name with a list of variables' do
-              expect(build).to receive(:simple_variables).once.and_call_original
-
-              is_expected.to eq('review/host')
-            end
-          end
         end
       end
 
@@ -1703,112 +1747,6 @@ RSpec.describe Ci::Build do
         end
       end
     end
-
-    describe '#options_retry_max' do
-      context 'with retries max config option' do
-        subject { create(:ci_build, options: { retry: { max: 1 } }) }
-
-        context 'when build_metadata_config is set' do
-          before do
-            stub_feature_flags(ci_build_metadata_config: true)
-          end
-
-          it 'returns the number of configured max retries' do
-            expect(subject.options_retry_max).to eq 1
-          end
-        end
-
-        context 'when build_metadata_config is not set' do
-          before do
-            stub_feature_flags(ci_build_metadata_config: false)
-          end
-
-          it 'returns the number of configured max retries' do
-            expect(subject.options_retry_max).to eq 1
-          end
-        end
-      end
-
-      context 'without retries max config option' do
-        subject { create(:ci_build) }
-
-        it 'returns nil' do
-          expect(subject.options_retry_max).to be_nil
-        end
-      end
-
-      context 'when build is degenerated' do
-        subject { create(:ci_build, :degenerated) }
-
-        it 'returns nil' do
-          expect(subject.options_retry_max).to be_nil
-        end
-      end
-
-      context 'with integer only config option' do
-        subject { create(:ci_build, options: { retry: 1 }) }
-
-        it 'returns the number of configured max retries' do
-          expect(subject.options_retry_max).to eq 1
-        end
-      end
-    end
-
-    describe '#options_retry_when' do
-      context 'with retries when config option' do
-        subject { create(:ci_build, options: { retry: { when: ['some_reason'] } }) }
-
-        it 'returns the configured when' do
-          expect(subject.options_retry_when).to eq ['some_reason']
-        end
-      end
-
-      context 'without retries when config option' do
-        subject { create(:ci_build) }
-
-        it 'returns always array' do
-          expect(subject.options_retry_when).to eq ['always']
-        end
-      end
-
-      context 'with integer only config option' do
-        subject { create(:ci_build, options: { retry: 1 }) }
-
-        it 'returns always array' do
-          expect(subject.options_retry_when).to eq ['always']
-        end
-      end
-    end
-
-    describe '#retry_failure?' do
-      using RSpec::Parameterized::TableSyntax
-
-      let(:build) { create(:ci_build) }
-
-      subject { build.retry_failure? }
-
-      where(:description, :retry_count, :options, :failure_reason, :result) do
-        "retries are disabled" | 0 | { max: 0 } | nil | false
-        "max equals count" | 2 | { max: 2 } | nil | false
-        "max is higher than count" | 1 | { max: 2 } | nil | true
-        "matching failure reason" | 0 | { when: %w[api_failure], max: 2 } | :api_failure | true
-        "not matching with always" | 0 | { when: %w[always], max: 2 } | :api_failure | true
-        "not matching reason" | 0 | { when: %w[script_error], max: 2 } | :api_failure | false
-        "scheduler failure override" | 1 | { when: %w[scheduler_failure], max: 1 } | :scheduler_failure | false
-        "default for scheduler failure" | 1 | {} | :scheduler_failure | true
-      end
-
-      with_them do
-        before do
-          allow(build).to receive(:retries_count) { retry_count }
-
-          build.options[:retry] = options
-          build.failure_reason = failure_reason
-        end
-
-        it { is_expected.to eq(result) }
-      end
-    end
   end
 
   describe '.keep_artifacts!' do
@@ -2115,23 +2053,13 @@ RSpec.describe Ci::Build do
       it { is_expected.to be_nil }
     end
 
-    context 'when build has a start environment' do
-      let(:build) { create(:ci_build, :with_deployment, :deploy_to_production, pipeline: pipeline) }
-
-      it 'does not expand environment name' do
-        expect(build).not_to receive(:expanded_environment_name)
-
-        subject
-      end
-    end
-
     context 'when build has a stop environment' do
-      let(:build) { create(:ci_build, :stop_review_app, pipeline: pipeline) }
+      let(:build) { create(:ci_build, :stop_review_app, pipeline: pipeline, environment: "foo-#{project.default_branch}") }
 
       it 'expands environment name' do
-        expect(build).to receive(:expanded_environment_name)
+        expect(build).to receive(:expanded_environment_name).and_call_original
 
-        subject
+        is_expected.to eq(environment)
       end
     end
   end
@@ -2925,6 +2853,7 @@ RSpec.describe Ci::Build do
       let(:ci_registry) do
         { key: 'CI_REGISTRY', value: 'registry.example.com', public: true, masked: false }
       end
+
       let(:ci_registry_image) do
         { key: 'CI_REGISTRY_IMAGE', value: project.container_registry_url, public: true, masked: false }
       end
@@ -3007,25 +2936,46 @@ RSpec.describe Ci::Build do
     end
 
     context 'when build is parallelized' do
-      let(:total) { 5 }
-      let(:index) { 3 }
+      shared_examples 'parallelized jobs config' do
+        let(:index) { 3 }
+        let(:total) { 5 }
 
-      before do
-        build.options[:parallel] = total
-        build.options[:instance] = index
-        build.name = "#{build.name} #{index}/#{total}"
+        before do
+          build.options[:parallel] = config
+          build.options[:instance] = index
+        end
+
+        it 'includes CI_NODE_INDEX' do
+          is_expected.to include(
+            { key: 'CI_NODE_INDEX', value: index.to_s, public: true, masked: false }
+          )
+        end
+
+        it 'includes correct CI_NODE_TOTAL' do
+          is_expected.to include(
+            { key: 'CI_NODE_TOTAL', value: total.to_s, public: true, masked: false }
+          )
+        end
       end
 
-      it 'includes CI_NODE_INDEX' do
-        is_expected.to include(
-          { key: 'CI_NODE_INDEX', value: index.to_s, public: true, masked: false }
-        )
+      context 'when parallel is a number' do
+        let(:config) { 5 }
+
+        it_behaves_like 'parallelized jobs config'
       end
 
-      it 'includes correct CI_NODE_TOTAL' do
-        is_expected.to include(
-          { key: 'CI_NODE_TOTAL', value: total.to_s, public: true, masked: false }
-        )
+      context 'when parallel is hash with the total key' do
+        let(:config) { { total: 5 } }
+
+        it_behaves_like 'parallelized jobs config'
+      end
+
+      context 'when parallel is nil' do
+        let(:config) {}
+
+        it_behaves_like 'parallelized jobs config' do
+          let(:total) { 1 }
+        end
       end
     end
 
@@ -3158,6 +3108,14 @@ RSpec.describe Ci::Build do
       it 'inherits dependent variables' do
         expect(build.scoped_variables.to_hash).to include(job_variable.key => job_variable.value)
       end
+    end
+  end
+
+  describe '#simple_variables_without_dependencies' do
+    it 'does not load dependencies' do
+      expect(build).not_to receive(:dependency_variables)
+
+      build.simple_variables_without_dependencies
     end
   end
 

@@ -9,6 +9,7 @@ RSpec.shared_examples_for 'metrics dashboard prometheus api proxy' do
       id: proxyable.id.to_s
     }
   end
+
   let(:expected_params) do
     ActionController::Parameters.new(
       prometheus_proxy_params(

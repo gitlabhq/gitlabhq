@@ -108,7 +108,7 @@ class Projects::ArtifactsController < Projects::ApplicationController
   end
 
   def validate_artifacts!
-    render_404 unless build&.artifacts?
+    render_404 unless build&.available_artifacts?
   end
 
   def build

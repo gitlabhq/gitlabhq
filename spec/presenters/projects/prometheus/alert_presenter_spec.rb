@@ -293,6 +293,19 @@ RSpec.describe Projects::Prometheus::AlertPresenter do
     end
   end
 
+  describe '#details_url' do
+    subject { presenter.details_url }
+
+    it { is_expected.to eq(nil) }
+
+    context 'alert management alert present' do
+      let_it_be(:am_alert) { create(:alert_management_alert, project: project) }
+      let(:alert) { create(:alerting_alert, project: project, payload: payload, am_alert: am_alert) }
+
+      it { is_expected.to eq("http://localhost/#{project.full_path}/-/alert_management/#{am_alert.iid}/details") }
+    end
+  end
+
   context 'with gitlab alert' do
     include_context 'gitlab alert'
 

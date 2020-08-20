@@ -125,6 +125,7 @@ RSpec.describe MigrateK8sServiceIntegration do
           platform_type: :kubernetes
         )
       end
+
       let(:new_cluster) { MigrateK8sServiceIntegration::Cluster.instance_type.last! }
       let(:platform) { new_cluster.platform_kubernetes }
 

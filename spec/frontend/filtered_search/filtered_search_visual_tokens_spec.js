@@ -280,8 +280,8 @@ describe('Filtered Search Visual Tokens', () => {
         );
       });
 
-      it('contains fa-close icon', () => {
-        expect(tokenElement.querySelector('.remove-token .fa-close')).toEqual(expect.anything());
+      it('contains close icon', () => {
+        expect(tokenElement.querySelector('.remove-token .close-icon')).toEqual(expect.anything());
       });
     });
   });

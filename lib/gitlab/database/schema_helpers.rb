@@ -25,7 +25,7 @@ module Gitlab
           CREATE TRIGGER #{name}
           #{fires} ON #{table_name}
           FOR EACH ROW
-          EXECUTE PROCEDURE #{function_name}()
+          EXECUTE FUNCTION #{function_name}()
         SQL
       end
 

@@ -30,6 +30,8 @@ class Issue < ApplicationRecord
   SORTING_PREFERENCE_FIELD = :issues_sort
 
   belongs_to :project
+  has_one :namespace, through: :project
+
   belongs_to :duplicated_to, class_name: 'Issue'
   belongs_to :closed_by, class_name: 'User'
   belongs_to :iteration, foreign_key: 'sprint_id'
@@ -66,6 +68,12 @@ class Issue < ApplicationRecord
   accepts_nested_attributes_for :sentry_issue
 
   validates :project, presence: true
+  validates :issue_type, presence: true
+
+  enum issue_type: {
+    issue: 0,
+    incident: 1
+  }
 
   alias_attribute :parent_ids, :project_id
   alias_method :issuing_parent, :project
@@ -87,11 +95,18 @@ class Issue < ApplicationRecord
   scope :order_created_at_desc, -> { reorder(created_at: :desc) }
 
   scope :preload_associated_models, -> { preload(:assignees, :labels, project: :namespace) }
+  scope :with_web_entity_associations, -> { preload(:author, :project) }
   scope :with_api_entity_associations, -> { preload(:timelogs, :assignees, :author, :notes, :labels, project: [:route, { namespace: :route }] ) }
   scope :with_label_attributes, ->(label_attributes) { joins(:labels).where(labels: label_attributes) }
   scope :with_alert_management_alerts, -> { joins(:alert_management_alert) }
   scope :with_prometheus_alert_events, -> { joins(:issues_prometheus_alert_events) }
   scope :with_self_managed_prometheus_alert_events, -> { joins(:issues_self_managed_prometheus_alert_events) }
+  scope :with_api_entity_associations, -> {
+    preload(:timelogs, :closed_by, :assignees, :author, :notes, :labels,
+      milestone: { project: [:route, { namespace: :route }] },
+      project: [:route, { namespace: :route }])
+  }
+  scope :with_issue_type, ->(types) { where(issue_type: types) }
 
   scope :public_only, -> { where(confidential: false) }
   scope :confidential_only, -> { where(confidential: true) }
@@ -145,10 +160,6 @@ class Issue < ApplicationRecord
     before_transition closed: :opened do |issue|
       issue.closed_at = nil
       issue.closed_by = nil
-    end
-
-    after_transition any => :closed do |issue|
-      issue.resolve_associated_alert_management_alert
     end
   end
 
@@ -361,18 +372,6 @@ class Issue < ApplicationRecord
 
   def design_collection
     @design_collection ||= ::DesignManagement::DesignCollection.new(self)
-  end
-
-  def resolve_associated_alert_management_alert
-    return unless alert_management_alert
-    return if alert_management_alert.resolve
-
-    Gitlab::AppLogger.warn(
-      message: 'Cannot resolve an associated Alert Management alert',
-      issue_id: id,
-      alert_id: alert_management_alert.id,
-      alert_errors: alert_management_alert.errors.messages
-    )
   end
 
   def from_service_desk?

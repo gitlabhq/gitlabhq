@@ -1,6 +1,6 @@
 import $ from 'jquery';
 import Vue from 'vue';
-import createFlash from '../flash';
+import { deprecatedCreateFlash as createFlash } from '../flash';
 import initIssuableSidebar from '../init_issuable_sidebar';
 import './merge_conflict_store';
 import MergeConflictsService from './merge_conflict_service';

@@ -3,7 +3,7 @@
 
 .row.gl-mt-3.gl-mb-3
   .col-lg-4
-    %h4.gl-mt-0
+    %h3.page-title.gl-mt-0
       = @service.title
       - [true, false].each do |value|
         - hide_class = 'd-none' if @service.operating? != value

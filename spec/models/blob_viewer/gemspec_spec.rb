@@ -14,6 +14,7 @@ RSpec.describe BlobViewer::Gemspec do
       end
     SPEC
   end
+
   let(:blob) { fake_blob(path: 'activerecord.gemspec', data: data) }
 
   subject { described_class.new(blob) }

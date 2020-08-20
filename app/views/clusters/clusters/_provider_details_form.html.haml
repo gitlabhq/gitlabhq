@@ -48,5 +48,5 @@
     - if cluster.allow_user_defined_namespace?
       = render('clusters/clusters/namespace', platform_field: platform_field)
 
-  .form-group
+  .form-group.gl-display-flex.gl-justify-content-end
     = field.submit s_('ClusterIntegration|Save changes'), class: 'btn btn-success'

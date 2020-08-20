@@ -1,5 +1,5 @@
 import {
-  createNodesStructure,
+  createNodeDict,
   makeLinksFromNodes,
   filterByAncestors,
   parseData,
@@ -8,56 +8,17 @@ import {
 } from '~/pipelines/components/dag/parsing_utils';
 
 import { createSankey } from '~/pipelines/components/dag/drawing_utils';
-import { mockBaseData } from './mock_data';
+import { mockParsedGraphQLNodes } from './mock_data';
 
 describe('DAG visualization parsing utilities', () => {
-  const { nodes, nodeDict } = createNodesStructure(mockBaseData.stages);
-  const unfilteredLinks = makeLinksFromNodes(nodes, nodeDict);
-  const parsed = parseData(mockBaseData.stages);
-
-  const layoutSettings = {
-    width: 200,
-    height: 200,
-    nodeWidth: 10,
-    nodePadding: 20,
-    paddingForLabels: 100,
-  };
-
-  const sankeyLayout = createSankey(layoutSettings)(parsed);
-
-  describe('createNodesStructure', () => {
-    const parallelGroupName = 'jest';
-    const parallelJobName = 'jest 1/2';
-    const singleJobName = 'frontend fixtures';
-
-    const { name, jobs, size } = mockBaseData.stages[0].groups[0];
-
-    it('returns the expected node structure', () => {
-      expect(nodes[0]).toHaveProperty('category', mockBaseData.stages[0].name);
-      expect(nodes[0]).toHaveProperty('name', name);
-      expect(nodes[0]).toHaveProperty('jobs', jobs);
-      expect(nodes[0]).toHaveProperty('size', size);
-    });
-
-    it('adds needs to top level of nodeDict entries', () => {
-      expect(nodeDict[parallelGroupName]).toHaveProperty('needs');
-      expect(nodeDict[parallelJobName]).toHaveProperty('needs');
-      expect(nodeDict[singleJobName]).toHaveProperty('needs');
-    });
-
-    it('makes entries in nodeDict for jobs and parallel jobs', () => {
-      const nodeNames = Object.keys(nodeDict);
-
-      expect(nodeNames.includes(parallelGroupName)).toBe(true);
-      expect(nodeNames.includes(parallelJobName)).toBe(true);
-      expect(nodeNames.includes(singleJobName)).toBe(true);
-    });
-  });
+  const nodeDict = createNodeDict(mockParsedGraphQLNodes);
+  const unfilteredLinks = makeLinksFromNodes(mockParsedGraphQLNodes, nodeDict);
+  const parsed = parseData(mockParsedGraphQLNodes);
 
   describe('makeLinksFromNodes', () => {
     it('returns the expected link structure', () => {
-      expect(unfilteredLinks[0]).toHaveProperty('source', 'frontend fixtures');
-      expect(unfilteredLinks[0]).toHaveProperty('target', 'jest');
+      expect(unfilteredLinks[0]).toHaveProperty('source', 'build_a');
+      expect(unfilteredLinks[0]).toHaveProperty('target', 'test_a');
       expect(unfilteredLinks[0]).toHaveProperty('value', 10);
     });
   });
@@ -107,8 +68,22 @@ describe('DAG visualization parsing utilities', () => {
 
   describe('removeOrphanNodes', () => {
     it('removes sankey nodes that have no needs and are not needed', () => {
+      const layoutSettings = {
+        width: 200,
+        height: 200,
+        nodeWidth: 10,
+        nodePadding: 20,
+        paddingForLabels: 100,
+      };
+
+      const sankeyLayout = createSankey(layoutSettings)(parsed);
       const cleanedNodes = removeOrphanNodes(sankeyLayout.nodes);
-      expect(cleanedNodes).toHaveLength(sankeyLayout.nodes.length - 1);
+      /*
+        These lengths are determined by the mock data.
+        If the data changes, the numbers may also change.
+      */
+      expect(parsed.nodes).toHaveLength(21);
+      expect(cleanedNodes).toHaveLength(12);
     });
   });
 

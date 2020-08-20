@@ -1,0 +1,6 @@
+---
+title: Set minimum Redis version to 4 and recommended version to 5 in Redis check
+  task
+merge_request: 38475
+author:
+type: changed

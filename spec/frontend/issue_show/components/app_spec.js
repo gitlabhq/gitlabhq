@@ -2,6 +2,7 @@ import { GlIntersectionObserver } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import { TEST_HOST } from 'helpers/test_constants';
+import { useMockIntersectionObserver } from 'helpers/mock_dom_observer';
 import axios from '~/lib/utils/axios_utils';
 import { visitUrl } from '~/lib/utils/url_utility';
 import '~/behaviors/markdown/render_gfm';
@@ -22,6 +23,8 @@ const zoomMeetingUrl = 'https://gitlab.zoom.us/j/95919234811';
 const publishedIncidentUrl = 'https://status.com/';
 
 describe('Issuable output', () => {
+  useMockIntersectionObserver();
+
   let mock;
   let realtimeRequestCount = 0;
   let wrapper;
@@ -44,11 +47,6 @@ describe('Issuable output', () => {
         <span id="task_status"></span>
       </div>
     `);
-
-    window.IntersectionObserver = class {
-      disconnect = jest.fn();
-      observe = jest.fn();
-    };
 
     mock = new MockAdapter(axios);
     mock
@@ -84,7 +82,6 @@ describe('Issuable output', () => {
   });
 
   afterEach(() => {
-    delete window.IntersectionObserver;
     mock.restore();
     realtimeRequestCount = 0;
 

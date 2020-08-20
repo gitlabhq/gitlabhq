@@ -4,7 +4,7 @@ module Types
   class IssueType < BaseObject
     graphql_name 'Issue'
 
-    connection_type_class(Types::IssueConnectionType)
+    connection_type_class(Types::CountableConnectionType)
 
     implements(Types::Notes::NoteableType)
 
@@ -97,6 +97,10 @@ module Types
 
     field :design_collection, Types::DesignManagement::DesignCollectionType, null: true,
           description: 'Collection of design images associated with this issue'
+
+    field :type, Types::IssueTypeEnum, null: true,
+          method: :issue_type,
+          description: 'Type of the issue'
   end
 end
 

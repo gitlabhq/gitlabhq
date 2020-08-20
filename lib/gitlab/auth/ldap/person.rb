@@ -11,7 +11,7 @@ module Gitlab
 
         InvalidEntryError = Class.new(StandardError)
 
-        attr_accessor :entry, :provider
+        attr_accessor :provider
 
         def self.find_by_uid(uid, adapter)
           uid = Net::LDAP::Filter.escape(uid)

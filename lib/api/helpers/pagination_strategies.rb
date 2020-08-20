@@ -48,7 +48,7 @@ module API
       end
 
       def offset_limit_exceeded?(offset_limit)
-        offset_limit.positive? && params[:page] * params[:per_page] > offset_limit
+        offset_limit > 0 && params[:page] * params[:per_page] > offset_limit
       end
     end
   end

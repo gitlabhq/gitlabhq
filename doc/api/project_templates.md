@@ -1,3 +1,10 @@
+---
+stage: Create
+group: Source Code
+info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers"
+type: reference, api
+---
+
 # Project templates API
 
 This API is a project-specific version of these endpoints:
@@ -6,14 +13,13 @@ This API is a project-specific version of these endpoints:
 - [Gitignore templates](templates/gitignores.md)
 - [GitLab CI/CD Configuration templates](templates/gitlab_ci_ymls.md)
 - [Open source license templates](templates/licenses.md)
+- [Issue and merge request templates](../user/project/description_templates.md)
+  ([introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/37890) in GitLab 13.3)
 
 It deprecates these endpoints, which will be removed for API version 5.
 
 In addition to templates common to the entire instance, project-specific
 templates are also available from this API endpoint.
-
-Support will be added for [Issue and Merge Request templates](../user/project/description_templates.md)
-in a future release.
 
 Support for [Group-level file templates](../user/group/index.md#group-file-templates-premium)
 **(PREMIUM)** was [added](https://gitlab.com/gitlab-org/gitlab/-/issues/5987)
@@ -28,7 +34,7 @@ GET /projects/:id/templates/:type
 | Attribute  | Type   | Required | Description |
 | ---------- | ------ | -------- | ----------- |
 | `id`      | integer / string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
-| `type`     | string | yes| The type `(dockerfiles|gitignores|gitlab_ci_ymls|licenses)` of the template |
+| `type`     | string | yes| The type `(dockerfiles|gitignores|gitlab_ci_ymls|licenses|issues|merge_requests)` of the template |
 
 Example response (licenses):
 
@@ -94,7 +100,7 @@ GET /projects/:id/templates/:type/:key
 | Attribute  | Type   | Required | Description |
 | ---------- | ------ | -------- | ----------- |
 | `id`      | integer / string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
-| `type`     | string | yes| The type `(dockerfiles|gitignores|gitlab_ci_ymls|licenses)` of the template |
+| `type`     | string | yes| The type `(dockerfiles|gitignores|gitlab_ci_ymls|licenses|issues|merge_requests)` of the template |
 | `key`      | string | yes      | The key of the template, as obtained from the collection endpoint |
 | `project`  | string | no       | The project name to use when expanding placeholders in the template. Only affects licenses |
 | `fullname` | string | no       | The full name of the copyright holder to use when expanding placeholders in the template. Only affects licenses |

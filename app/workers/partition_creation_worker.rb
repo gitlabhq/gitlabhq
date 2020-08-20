@@ -8,8 +8,6 @@ class PartitionCreationWorker
   idempotent!
 
   def perform
-    Gitlab::AppLogger.info("Checking state of dynamic postgres partitions")
-
     Gitlab::Database::Partitioning::PartitionCreator.new.create_partitions
   end
 end

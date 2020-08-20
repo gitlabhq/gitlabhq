@@ -76,13 +76,13 @@ RSpec.describe 'User visits the profile preferences page' do
 
     it 'updates their preference' do
       wait_for_requests
-      select2('eo', from: '#user_preferred_language')
+      select2('pt_BR', from: '#user_preferred_language')
       click_button 'Save'
 
       wait_for_requests
       refresh
 
-      expect(page).to have_css('html[lang="eo"]')
+      expect(page).to have_css('html[lang="pt-BR"]')
     end
   end
 

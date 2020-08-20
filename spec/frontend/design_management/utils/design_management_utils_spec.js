@@ -51,7 +51,7 @@ describe('extractDiscussions', () => {
     };
   });
 
-  it('discards the edges.node artifacts of GraphQL', () => {
+  it('discards the node artifacts of GraphQL', () => {
     expect(extractDiscussions(discussions)).toEqual([
       { id: 1, notes: ['a'], index: 1 },
       { id: 2, notes: ['b'], index: 2 },
@@ -96,10 +96,7 @@ describe('optimistic responses', () => {
             discussions: { __typename: 'DesignDiscussion', nodes: [] },
             versions: {
               __typename: 'DesignVersionConnection',
-              edges: {
-                __typename: 'DesignVersionEdge',
-                node: { __typename: 'DesignVersion', id: -1, sha: -1 },
-              },
+              nodes: { __typename: 'DesignVersion', id: -1, sha: -1 },
             },
           },
         ],

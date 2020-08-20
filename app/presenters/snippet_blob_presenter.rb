@@ -4,7 +4,6 @@ class SnippetBlobPresenter < BlobPresenter
   include GitlabRoutingHelper
 
   def rich_data
-    return if blob.binary?
     return unless blob.rich_viewer
 
     render_rich_partial
@@ -17,9 +16,11 @@ class SnippetBlobPresenter < BlobPresenter
   end
 
   def raw_path
-    return gitlab_raw_snippet_blob_path(blob) if snippet_multiple_files?
+    snippet_blob_raw_route(only_path: true)
+  end
 
-    gitlab_raw_snippet_path(snippet)
+  def raw_url
+    snippet_blob_raw_route
   end
 
   private
@@ -38,7 +39,7 @@ class SnippetBlobPresenter < BlobPresenter
 
   def render_rich_partial
     renderer.render("projects/blob/viewers/_#{blob.rich_viewer.partial_name}",
-                    locals: { viewer: blob.rich_viewer, blob: blob, blob_raw_path: raw_path },
+                    locals: { viewer: blob.rich_viewer, blob: blob, blob_raw_path: raw_path, blob_raw_url: raw_url },
                     layout: false)
   end
 
@@ -48,5 +49,11 @@ class SnippetBlobPresenter < BlobPresenter
     end
 
     ApplicationController.renderer.new('warden' => proxy)
+  end
+
+  def snippet_blob_raw_route(only_path: false)
+    return gitlab_raw_snippet_blob_url(snippet, blob.path, only_path: only_path) if snippet_multiple_files?
+
+    gitlab_raw_snippet_url(snippet, only_path: only_path)
   end
 end

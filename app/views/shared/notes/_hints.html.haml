@@ -12,7 +12,7 @@
 
   %span.uploading-container
     %span.uploading-progress-container.hide
-      = sprite_icon('media', size: 16, css_class: 'gl-icon gl-vertical-align-text-bottom')
+      = sprite_icon('media', css_class: 'gl-icon gl-vertical-align-text-bottom')
       %span.attaching-file-message
         -# Populated by app/assets/javascripts/dropzone_input.js
       %span.uploading-progress 0%
@@ -20,7 +20,7 @@
 
     %span.uploading-error-container.hide
       %span.uploading-error-icon
-        = sprite_icon('media', size: 16, css_class: 'gl-icon gl-vertical-align-text-bottom')
+        = sprite_icon('media', css_class: 'gl-icon gl-vertical-align-text-bottom')
       %span.uploading-error-message
         -# Populated by app/assets/javascripts/dropzone_input.js
       %button.retry-uploading-link{ type: 'button' }= _("Try again")
@@ -28,7 +28,7 @@
       %button.attach-new-file.markdown-selector{ type: 'button' }= _("attach a new file")
 
     %button.btn.markdown-selector.button-attach-file.btn-link{ type: 'button', tabindex: '-1' }
-      = sprite_icon('media', size: 16)
+      = sprite_icon('media')
       %span.text-attach-file<>
         = _("Attach a file")
 

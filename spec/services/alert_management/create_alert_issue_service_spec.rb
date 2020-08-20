@@ -88,7 +88,6 @@ RSpec.describe AlertManagement::CreateAlertIssueService do
 
         it_behaves_like 'creating an alert issue'
         it_behaves_like 'setting an issue attributes'
-        it_behaves_like 'create alert issue sets issue labels'
       end
 
       context 'when the alert is generic' do
@@ -97,7 +96,6 @@ RSpec.describe AlertManagement::CreateAlertIssueService do
 
         it_behaves_like 'creating an alert issue'
         it_behaves_like 'setting an issue attributes'
-        it_behaves_like 'create alert issue sets issue labels'
       end
 
       context 'when issue cannot be created' do

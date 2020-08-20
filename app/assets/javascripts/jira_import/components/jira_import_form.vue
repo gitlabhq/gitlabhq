@@ -1,5 +1,6 @@
 <script>
 import {
+  GlAlert,
   GlButton,
   GlNewDropdown,
   GlNewDropdownItem,
@@ -10,15 +11,27 @@ import {
   GlLabel,
   GlLoadingIcon,
   GlSearchBoxByType,
+  GlSprintf,
   GlTable,
 } from '@gitlab/ui';
 import { debounce } from 'lodash';
 import axios from '~/lib/utils/axios_utils';
 import { __ } from '~/locale';
+import getJiraUserMappingMutation from '../queries/get_jira_user_mapping.mutation.graphql';
+import initiateJiraImportMutation from '../queries/initiate_jira_import.mutation.graphql';
+import { addInProgressImportToStore } from '../utils/cache_update';
+import {
+  debounceWait,
+  dropdownLabel,
+  previousImportsMessage,
+  tableConfig,
+  userMappingMessage,
+} from '../utils/constants';
 
 export default {
   name: 'JiraImportForm',
   components: {
+    GlAlert,
     GlButton,
     GlNewDropdown,
     GlNewDropdownItem,
@@ -29,35 +42,21 @@ export default {
     GlLabel,
     GlLoadingIcon,
     GlSearchBoxByType,
+    GlSprintf,
     GlTable,
   },
   currentUsername: gon.current_username,
-  dropdownLabel: __('The GitLab user to which the Jira user %{jiraDisplayName} will be mapped'),
-  tableConfig: [
-    {
-      key: 'jiraDisplayName',
-      label: __('Jira display name'),
-    },
-    {
-      key: 'arrow',
-      label: '',
-    },
-    {
-      key: 'gitlabUsername',
-      label: __('GitLab username'),
-    },
-  ],
+  dropdownLabel,
+  previousImportsMessage,
+  tableConfig,
+  userMappingMessage,
   props: {
-    importLabel: {
-      type: String,
-      required: true,
-    },
-    isSubmitting: {
-      type: Boolean,
-      required: true,
-    },
     issuesPath: {
       type: String,
+      required: true,
+    },
+    jiraImports: {
+      type: Array,
       required: true,
     },
     jiraProjects: {
@@ -68,21 +67,19 @@ export default {
       type: String,
       required: true,
     },
-    userMappings: {
-      type: Array,
-      required: true,
-    },
-    value: {
+    projectPath: {
       type: String,
-      required: false,
-      default: undefined,
+      required: true,
     },
   },
   data() {
     return {
       isFetching: false,
+      isSubmitting: false,
       searchTerm: '',
+      selectedProject: undefined,
       selectState: null,
+      userMappings: [],
       users: [],
     };
   },
@@ -90,13 +87,45 @@ export default {
     shouldShowNoMatchesFoundText() {
       return !this.isFetching && this.users.length === 0;
     },
+    numberOfPreviousImports() {
+      return this.jiraImports?.reduce?.(
+        (acc, jiraProject) => (jiraProject.jiraProjectKey === this.selectedProject ? acc + 1 : acc),
+        0,
+      );
+    },
+    hasPreviousImports() {
+      return this.numberOfPreviousImports > 0;
+    },
+    importLabel() {
+      return this.selectedProject
+        ? `jira-import::${this.selectedProject}-${this.numberOfPreviousImports + 1}`
+        : 'jira-import::KEY-1';
+    },
   },
   watch: {
     searchTerm: debounce(function debouncedUserSearch() {
       this.searchUsers();
-    }, 500),
+    }, debounceWait),
   },
   mounted() {
+    this.$apollo
+      .mutate({
+        mutation: getJiraUserMappingMutation,
+        variables: {
+          input: {
+            projectPath: this.projectPath,
+          },
+        },
+      })
+      .then(({ data }) => {
+        if (data.jiraImportUsers.errors.length) {
+          this.$emit('error', data.jiraImportUsers.errors.join('. '));
+        } else {
+          this.userMappings = data.jiraImportUsers.jiraUsers;
+        }
+      })
+      .catch(() => this.$emit('error', __('There was an error retrieving the Jira users.')));
+
     this.searchUsers()
       .then(data => {
         this.initialUsers = data;
@@ -129,12 +158,53 @@ export default {
     },
     initiateJiraImport(event) {
       event.preventDefault();
-      if (this.value) {
+
+      if (this.selectedProject) {
         this.hideValidationError();
-        this.$emit('initiateJiraImport', this.value);
+
+        this.isSubmitting = true;
+
+        this.$apollo
+          .mutate({
+            mutation: initiateJiraImportMutation,
+            variables: {
+              input: {
+                jiraProjectKey: this.selectedProject,
+                projectPath: this.projectPath,
+                usersMapping: this.userMappings.map(({ gitlabId, jiraAccountId }) => ({
+                  gitlabId,
+                  jiraAccountId,
+                })),
+              },
+            },
+            update: (store, { data }) =>
+              addInProgressImportToStore(store, data.jiraImportStart, this.projectPath),
+          })
+          .then(({ data }) => {
+            if (data.jiraImportStart.errors.length) {
+              this.$emit('error', data.jiraImportStart.errors.join('. '));
+            } else {
+              this.selectedProject = undefined;
+            }
+          })
+          .catch(() => this.$emit('error', __('There was an error importing the Jira project.')))
+          .finally(() => {
+            this.isSubmitting = false;
+          });
       } else {
         this.showValidationError();
       }
+    },
+    updateMapping(jiraAccountId, gitlabId, gitlabUsername) {
+      this.userMappings = this.userMappings.map(userMapping =>
+        userMapping.jiraAccountId === jiraAccountId
+          ? {
+              ...userMapping,
+              gitlabId,
+              gitlabUsername,
+            }
+          : userMapping,
+      );
     },
     hideValidationError() {
       this.selectState = null;
@@ -148,8 +218,16 @@ export default {
 
 <template>
   <div>
+    <gl-alert v-if="hasPreviousImports" variant="warning" :dismissible="false">
+      <gl-sprintf :message="$options.previousImportsMessage">
+        <template #numberOfPreviousImports>{{ numberOfPreviousImports }}</template>
+      </gl-sprintf>
+    </gl-alert>
+
     <h3 class="page-title">{{ __('New Jira import') }}</h3>
+
     <hr />
+
     <form @submit="initiateJiraImport">
       <gl-form-group
         class="row align-items-center"
@@ -160,12 +238,11 @@ export default {
       >
         <gl-form-select
           id="jira-project-select"
+          v-model="selectedProject"
           data-qa-selector="jira_project_dropdown"
           class="mb-2"
           :options="jiraProjects"
           :state="selectState"
-          :value="value"
-          @change="$emit('input', $event)"
         />
       </gl-form-group>
 
@@ -186,17 +263,7 @@ export default {
 
       <h4 class="gl-mb-4">{{ __('Jira-GitLab user mapping template') }}</h4>
 
-      <p>
-        {{
-          __(
-            `Jira users have been matched with similar GitLab users.
-            This can be overwritten by selecting a GitLab user from the dropdown in the "GitLab
-            username" column.
-            If it wasn't possible to match a Jira user with a GitLab user, the dropdown defaults to
-            the user conducting the import.`,
-          )
-        }}
-      </p>
+      <p>{{ $options.userMappingMessage }}</p>
 
       <gl-table :fields="$options.tableConfig" :items="userMappings" fixed>
         <template #cell(arrow)>
@@ -221,7 +288,7 @@ export default {
               v-for="user in users"
               v-else
               :key="user.id"
-              @click="$emit('updateMapping', data.item.jiraAccountId, user.id, user.username)"
+              @click="updateMapping(data.item.jiraAccountId, user.id, user.username)"
             >
               {{ user.username }} ({{ user.name }})
             </gl-new-dropdown-item>

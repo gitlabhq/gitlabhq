@@ -18,8 +18,12 @@ module QA
             view 'app/assets/javascripts/monitoring/components/dashboard_header.vue' do
               element :dashboards_filter_dropdown
               element :environments_dropdown
-              element :edit_dashboard_button
               element :range_picker_dropdown
+            end
+
+            view 'app/assets/javascripts/monitoring/components/dashboard_actions_menu.vue' do
+              element :actions_menu_dropdown
+              element :edit_dashboard_button_enabled
             end
 
             view 'app/assets/javascripts/monitoring/components/duplicate_dashboard_form.vue' do
@@ -54,14 +58,16 @@ module QA
             end
 
             def has_edit_dashboard_enabled?
-              within_element :prometheus_graphs do
-                has_element? :edit_dashboard_button
+              click_element :actions_menu_dropdown
+
+              within_element :actions_menu_dropdown do
+                has_element? :edit_dashboard_button_enabled
               end
             end
 
             def duplicate_dashboard(save_as = 'test_duplication.yml', commit_option = 'Commit to master branch')
-              click_element :dashboards_filter_dropdown
-              click_on 'Duplicate dashboard'
+              click_element :actions_menu_dropdown
+              click_on 'Duplicate current dashboard'
               fill_element :duplicate_dashboard_filename_field, "#{SecureRandom.hex(8)}-#{save_as}"
               choose commit_option
               within('.modal-content') { click_button(class: 'btn-success') }

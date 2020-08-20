@@ -196,6 +196,7 @@ RSpec.describe 'Admin Mode Login', :clean_gitlab_redis_shared_state, :do_not_moc
             'base' => 'dc=example,dc=com'
           }
         end
+
         let(:user) { create(:omniauth_user, :admin, :two_factor, extern_uid: uid, provider: provider) }
 
         before do

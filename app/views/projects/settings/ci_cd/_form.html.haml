@@ -7,7 +7,7 @@
           %h5.gl-mt-0
             = _("Git strategy for pipelines")
           %p
-            = _("Choose between <code>clone</code> or <code>fetch</code> to get the recent application code").html_safe
+            = html_escape(_("Choose between %{code_open}clone%{code_close} or %{code_open}fetch%{code_close} to get the recent application code")) % { code_open: '<code>'.html_safe, code_close: '</code>'.html_safe }
             = link_to icon('question-circle'), help_page_path('ci/pipelines/settings', anchor: 'git-strategy'), target: '_blank'
           .form-check
             = f.radio_button :build_allow_git_fetch, 'false', { class: 'form-check-input' }
@@ -54,7 +54,7 @@
           = f.label :ci_config_path, _('Custom CI configuration path'), class: 'label-bold'
           = f.text_field :ci_config_path, class: 'form-control', placeholder: '.gitlab-ci.yml'
           %p.form-text.text-muted
-            = _("The path to the CI configuration file. Defaults to <code>.gitlab-ci.yml</code>").html_safe
+            = html_escape(_("The path to the CI configuration file. Defaults to %{code_open}.gitlab-ci.yml%{code_close}")) % { code_open: '<code>'.html_safe, code_close: '</code>'.html_safe }
             = link_to icon('question-circle'), help_page_path('ci/pipelines/settings', anchor: 'custom-ci-configuration-path'), target: '_blank'
 
         %hr

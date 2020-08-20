@@ -13,7 +13,6 @@ export default {
 
         if (value === 0) {
           this.containerRegistryEnabled = false;
-          this.lfsEnabled = false;
         }
       } else if (oldValue === 0) {
         this.mergeRequestsAccessLevel = value;

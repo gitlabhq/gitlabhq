@@ -1,7 +1,12 @@
+/* eslint-disable @gitlab/require-i18n-strings */
 import { defaults, repeat } from 'lodash';
 
 const DEFAULTS = {
   subListIndentSpaces: 4,
+  unorderedListBulletChar: '-',
+  incrementListMarker: false,
+  strong: '*',
+  emphasis: '_',
 };
 
 const countIndentSpaces = text => {
@@ -11,9 +16,18 @@ const countIndentSpaces = text => {
 };
 
 const buildHTMLToMarkdownRender = (baseRenderer, formattingPreferences = {}) => {
-  const { subListIndentSpaces } = defaults(formattingPreferences, DEFAULTS);
-  // eslint-disable-next-line @gitlab/require-i18n-strings
+  const {
+    subListIndentSpaces,
+    unorderedListBulletChar,
+    incrementListMarker,
+    strong,
+    emphasis,
+  } = defaults(formattingPreferences, DEFAULTS);
   const sublistNode = 'LI OL, LI UL';
+  const unorderedListItemNode = 'UL LI';
+  const orderedListItemNode = 'OL LI';
+  const emphasisNode = 'EM, I';
+  const strongNode = 'STRONG, B';
 
   return {
     TEXT_NODE(node) {
@@ -46,6 +60,27 @@ const buildHTMLToMarkdownRender = (baseRenderer, formattingPreferences = {}) => 
         .join('\n');
 
       return reindentedList;
+    },
+    [unorderedListItemNode](node, subContent) {
+      const baseResult = baseRenderer.convert(node, subContent);
+
+      return baseResult.replace(/^(\s*)([*|-])/, `$1${unorderedListBulletChar}`);
+    },
+    [orderedListItemNode](node, subContent) {
+      const baseResult = baseRenderer.convert(node, subContent);
+
+      return incrementListMarker ? baseResult : baseResult.replace(/^(\s*)\d+?\./, '$11.');
+    },
+    [emphasisNode](node, subContent) {
+      const result = baseRenderer.convert(node, subContent);
+
+      return result.replace(/(^[*_]{1}|[*_]{1}$)/g, emphasis);
+    },
+    [strongNode](node, subContent) {
+      const result = baseRenderer.convert(node, subContent);
+      const strongSyntax = repeat(strong, 2);
+
+      return result.replace(/^[*_]{2}/, strongSyntax).replace(/[*_]{2}$/, strongSyntax);
     },
   };
 };

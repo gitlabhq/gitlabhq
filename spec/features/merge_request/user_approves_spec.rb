@@ -22,7 +22,7 @@ RSpec.describe 'Merge request > User approves', :js do
     verify_approvals_count_on_index!
 
     click_approval_button('Revoke approval')
-    expect(page).to have_content('No approval required; you can still approve')
+    expect(page).to have_content('Approval is optional')
   end
 
   def verify_approvals_count_on_index!

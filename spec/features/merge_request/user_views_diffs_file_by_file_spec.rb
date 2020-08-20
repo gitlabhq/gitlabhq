@@ -6,6 +6,7 @@ RSpec.describe 'User views diffs file-by-file', :js do
   let(:merge_request) do
     create(:merge_request_with_diffs, source_project: project, target_project: project, source_branch: 'merge-test')
   end
+
   let(:project) { create(:project, :repository) }
   let(:user) { create(:user, view_diffs_file_by_file: true) }
 

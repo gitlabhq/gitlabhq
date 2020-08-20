@@ -1,7 +1,7 @@
 <script>
 import { GlLoadingIcon } from '@gitlab/ui';
 import { s__ } from '~/locale';
-import Flash from '~/flash';
+import { deprecatedCreateFlash as Flash } from '~/flash';
 import NavigationTabs from '~/vue_shared/components/navigation_tabs.vue';
 import eventHub from '../eventhub';
 import DeployKeysService from '../service';

@@ -84,9 +84,6 @@ export default {
     hasCommitInfo() {
       return this.pipeline.commit && Object.keys(this.pipeline.commit).length > 0;
     },
-    isTriggeredByMergeRequest() {
-      return Boolean(this.pipeline.merge_request);
-    },
     isMergeRequestPipeline() {
       return Boolean(this.pipeline.flags && this.pipeline.flags.merge_request_pipeline);
     },

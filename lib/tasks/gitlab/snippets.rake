@@ -13,7 +13,7 @@ namespace :gitlab do
         raise "Please supply the list of ids through the SNIPPET_IDS env var"
       end
 
-      raise "Invalid limit value" if limit.zero?
+      raise "Invalid limit value" if limit == 0
 
       if migration_running?
         raise "There are already snippet migrations running. Please wait until they are finished."
@@ -37,7 +37,7 @@ namespace :gitlab do
     def parse_snippet_ids!
       ids = ENV['SNIPPET_IDS'].delete(' ').split(',').map do |id|
         id.to_i.tap do |value|
-          raise "Invalid id provided" if value.zero?
+          raise "Invalid id provided" if value == 0
         end
       end
 
@@ -68,10 +68,10 @@ namespace :gitlab do
     #   bundle exec rake gitlab:snippets:list_non_migrated LIMIT=50
     desc 'GitLab | Show non migrated snippets'
     task list_non_migrated: :environment do
-      raise "Invalid limit value" if limit.zero?
+      raise "Invalid limit value" if limit == 0
 
       non_migrated_count = non_migrated_snippets.count
-      if non_migrated_count.zero?
+      if non_migrated_count == 0
         puts "All snippets have been successfully migrated"
       else
         puts "There are #{non_migrated_count} snippets that haven't been migrated. Showing a batch of ids of those snippets:\n"

@@ -93,7 +93,8 @@ Gitlab::Git::DiffCollection.collection_limits[:max_bytes] = Gitlab::Git::DiffCol
 
 No more files will be rendered at all if 5 megabytes have already been rendered.
 
-*Note:* All collection limit parameters are currently sent and applied on Gitaly. That is, once the limit is surpassed,
+NOTE: **Note:**
+All collection limit parameters are currently sent and applied on Gitaly. That is, once the limit is surpassed,
 Gitaly will only return the safe amount of data to be persisted on `merge_request_diff_files`.
 
 ### Individual diff file limits
@@ -107,7 +108,8 @@ That is, it's equivalent to 10kb if the maximum allowed value is 100kb.
 The diff will still be persisted and expandable if the patch size doesn't
 surpass `ApplicationSettings#diff_max_patch_bytes`.
 
-*Note:* Although this nomenclature (Collapsing) is also used on Gitaly, this limit is only used on GitLab (hardcoded - not sent to Gitaly).
+NOTE: **Note:**
+Although this nomenclature (Collapsing) is also used on Gitaly, this limit is only used on GitLab (hardcoded - not sent to Gitaly).
 Gitaly will only return `Diff.Collapsed` (RPC) when surpassing collection limits.
 
 #### Not expandable patches (too large)
@@ -121,7 +123,8 @@ Commit::DIFF_SAFE_LINES = Gitlab::Git::DiffCollection::DEFAULT_LIMITS[:max_lines
 
 File diff will be suppressed (technically different from collapsed, but behaves the same, and is expandable) if it has more than 5000 lines.
 
-*Note:* This limit is currently hardcoded and only applied on GitLab.
+NOTE: **Note:**
+This limit is currently hardcoded and only applied on GitLab.
 
 ## Viewers
 

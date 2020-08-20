@@ -45,6 +45,12 @@ To add Container Scanning, follow the steps listed in the [Container Scanning do
 
 To further configure any of the other scanners, refer to each scanner's documentation.
 
+### SAST configuration
+
+You can set up and configure Static Application Security Testing
+(SAST) for your project, without opening a text editor. For more details,
+see [configure SAST in the UI](sast/index.md#configure-sast-in-the-ui).
+
 ### Override the default registry base address
 
 By default, GitLab security scanners use `registry.gitlab.com/gitlab-org/security-products/analyzers` as the
@@ -61,9 +67,10 @@ GitLab uses the following tools to scan and report known vulnerabilities found i
 | [Dependency List](dependency_list/index.md) **(ULTIMATE)**                   | View your project's dependencies and their known vulnerabilities.      |
 | [Dependency Scanning](dependency_scanning/index.md) **(ULTIMATE)**           | Analyze your dependencies for known vulnerabilities.                   |
 | [Dynamic Application Security Testing (DAST)](dast/index.md) **(ULTIMATE)**  | Analyze running web applications for known vulnerabilities.            |
-| [Secret Detection](secret_detection/index.md) **(ULTIMATE)**                | Analyze Git history for leaked secrets.                                |
+| [Secret Detection](secret_detection/index.md) **(ULTIMATE)**                 | Analyze Git history for leaked secrets.                                |
 | [Security Dashboard](security_dashboard/index.md) **(ULTIMATE)**             | View vulnerabilities in all your projects and groups.                  |
-| [Static Application Security Testing (SAST)](sast/index.md) **(ULTIMATE)**   | Analyze source code for known vulnerabilities.                         |
+| [Static Application Security Testing (SAST)](sast/index.md)                  | Analyze source code for known vulnerabilities.                         |
+| [Coverage fuzzing](coverage_fuzzing/index.md) **(ULTIMATE)**                 | Find unknown bugs and vulnerabilities with coverage-guided fuzzing.    |
 
 ## Security Scanning with Auto DevOps
 
@@ -117,6 +124,8 @@ information with several options:
 ![Interacting with security reports](img/interacting_with_vulnerability_v13_0.png)
 
 ### View details of a DAST vulnerability
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/36332) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.1.
 
 Vulnerabilities detected by DAST occur in the live web application. Rectification of these types of
 vulnerabilities requires specific information. DAST provides the information required to
@@ -242,6 +251,36 @@ Click this button to create a merge request to apply the solution onto the sourc
 
 ![Create merge request from vulnerability](img/create_issue_with_list_hover.png)
 
+### Managing related issues for a vulnerability
+
+Issues can be linked to a vulnerability using the related issues block on the vulnerability page.
+The relationship is uni-directional. The vulnerability page shows related issues, but the issue page
+doesn't show the vulnerability it's related to. An issue can only be related to one vulnerability at
+a time. Issues can be linked across groups and projects.
+
+#### Adding a related issue
+
+You can link an issue by clicking the **{plus}** button in the **Related Issues** block.
+
+![Vulnerability related issues add button](img/vulnerability_related_issues_add_button_v13_2.png)
+
+A text box appears that lets you type an issue number or paste an issue link. You can enter multiple
+issues at once. Pressing the space bar after each issue number or link converts them to tags that
+you can remove by clicking the **{close}** icon to the tag's right. Typing `#` followed by a number
+shows an autocomplete menu. Click an issue in the menu to add it as a tag. When you're finished
+entering issues, click the **Add** button to link the issues to the vulnerability. Alternatively,
+click **Cancel** to exit without linking any issues.
+
+![Vulnerability related issues text box tags animation](img/vulnerability_related_issues_text_box_tags_v13_2.gif)
+
+### Removing a related issue
+
+Click the **{close}** icon to right of an issue to remove it as a related issue. Note that this only
+removes it as a related issue of the vulnerability; it doesn't modify or remove the issue itself.
+You can link it to the vulnerability again if desired.
+
+![Vulnerability related issues remove issue animation](img/vulnerability_related_issues_remove_v13_2.gif)
+
 ## Security approvals in merge requests
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9928) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.2.
@@ -272,7 +311,7 @@ To enable Security Approvals, a [project approval rule](../project/merge_request
 must be created with the case-sensitive name `Vulnerability-Check`. This approval group must be set
 with the number of approvals required greater than zero. You must have Maintainer or Owner [permissions](../permissions.md#project-members-permissions) to manage approval rules.
 
-1. Navigate to your project's **{settings}** **Settings > General** and expand **Merge request approvals**.
+1. Navigate to your project's **Settings > General** and expand **Merge request approvals**.
 1. Click **Add approval rule**, or **Edit**.
    - Add or change the **Rule name** to `Vulnerability-Check` (case sensitive).
 
@@ -282,14 +321,15 @@ Once this group is added to your project, the approval rule is enabled for all m
 
 Any code changes cause the approvals required to reset.
 
-An approval is required when a security report:
+An approval is required when the latest security report in a merge request:
 
-- Contains a new vulnerability of `high`, `critical`, or `unknown` severity, regardless of dismissal.
+- Contains a vulnerability of `high`, `critical`, or `unknown` severity that is not present in the
+  target branch. Note that approval is still required for dismissed vulnerabilities.
 - Is not generated during pipeline execution.
 
-An approval is optional when a security report:
+An approval is optional when the security report:
 
-- Contains no new vulnerabilities.
+- Contains no new vulnerabilities when compared to the target branch.
 - Contains only new vulnerabilities of `low` or `medium` severity.
 
 ## Enabling License Approvals within a project

@@ -1,0 +1,5 @@
+---
+title: Allow optional keyset pagination for branch list API
+merge_request: 37524
+author:
+type: added

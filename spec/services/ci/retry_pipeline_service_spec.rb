@@ -364,7 +364,7 @@ RSpec.describe Ci::RetryPipelineService, '#execute' do
                       stage: "stage_#{stage_num}",
                       stage_idx: stage_num,
                       pipeline: pipeline, **opts) do |build|
-      pipeline.update_legacy_status
+      ::Ci::ProcessPipelineService.new(pipeline).execute
     end
   end
 end

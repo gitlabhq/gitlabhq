@@ -1,0 +1,25 @@
+---
+# Suggestion: gitlab.ContractionsKeep
+#
+# Suggests a list of agreed-upon contractions to keep.
+#
+# For a list of all options, see https://errata-ai.gitbook.io/vale/getting-started/styles
+extends: substitution
+message: 'Use "%s" instead of "%s", for a friendly, informal tone.'
+link: https://docs.gitlab.com/ee/development/documentation/styleguide.html#language
+level: suggestion
+nonword: false
+ignorecase: true
+swap:
+
+  # Common contractions are ok
+  it is: it's
+  can not: can't
+  cannot: can't
+  do not: don't
+  have not: haven't
+  that is: that's
+  we are: we're
+  would not: wouldn't
+  you are: you're
+  you have: you've

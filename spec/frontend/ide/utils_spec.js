@@ -1,3 +1,4 @@
+import { languages } from 'monaco-editor';
 import {
   isTextFile,
   registerLanguages,
@@ -9,7 +10,6 @@ import {
   getPathParent,
   readFileAsDataURL,
 } from '~/ide/utils';
-import { languages } from 'monaco-editor';
 
 describe('WebIDE utils', () => {
   describe('isTextFile', () => {

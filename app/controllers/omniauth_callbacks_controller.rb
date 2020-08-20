@@ -27,6 +27,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
       user = User.by_login(params[:username])
 
       user&.increment_failed_attempts!
+      log_failed_login(params[:username], failed_strategy.name)
     end
 
     super
@@ -89,6 +90,10 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   end
 
   private
+
+  def log_failed_login(user, provider)
+    # overridden in EE
+  end
 
   def after_omniauth_failure_path_for(scope)
     if Feature.enabled?(:user_mode_in_session)
@@ -198,6 +203,8 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   end
 
   def fail_login(user)
+    log_failed_login(user.username, oauth['provider'])
+
     error_message = user.errors.full_messages.to_sentence
 
     redirect_to omniauth_error_path(oauth['provider'], error: error_message)

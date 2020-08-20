@@ -17,6 +17,7 @@ describe('Diffs tree list component', () => {
     });
 
     // Setup initial state
+    store.state.diffs.isTreeLoaded = true;
     store.state.diffs.diffFiles.push('test');
     store.state.diffs = {
       addedLines: 10,

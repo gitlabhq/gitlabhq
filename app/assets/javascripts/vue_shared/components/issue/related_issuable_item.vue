@@ -4,6 +4,7 @@ import { GlIcon, GlTooltip, GlTooltipDirective } from '@gitlab/ui';
 import { sprintf } from '~/locale';
 import IssueMilestone from './issue_milestone.vue';
 import IssueAssignees from './issue_assignees.vue';
+import IssueDueDate from '~/boards/components/issue_due_date.vue';
 import relatedIssuableMixin from '../../mixins/related_issuable_mixin';
 import CiIcon from '../ci_icon.vue';
 
@@ -15,6 +16,8 @@ export default {
     CiIcon,
     GlIcon,
     GlTooltip,
+    IssueWeight: () => import('ee_component/boards/components/issue_card_weight.vue'),
+    IssueDueDate,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -38,13 +41,6 @@ export default {
         },
       );
     },
-    heightStyle() {
-      return {
-        minHeight: '32px',
-        width: '0px',
-        visibility: 'hidden',
-      };
-    },
     iconClasses() {
       return `${this.iconClass} ic-${this.iconName}`;
     },
@@ -60,7 +56,9 @@ export default {
     }"
     class="item-body d-flex align-items-center py-2 px-3"
   >
-    <div class="item-contents d-flex align-items-center flex-wrap flex-grow-1 flex-xl-nowrap">
+    <div
+      class="item-contents gl-display-flex gl-align-items-center gl-flex-wrap gl-flex-grow-1 flex-xl-nowrap gl-min-h-7"
+    >
       <!-- Title area: Status icon (XL) and title -->
       <div class="item-title d-flex align-items-xl-center mb-xl-0">
         <div ref="iconElementXL">
@@ -125,8 +123,21 @@ export default {
             />
 
             <!-- Flex order for slots is defined in the parent component: e.g. related_issues_block.vue -->
-            <slot name="dueDate"></slot>
-            <slot name="weight"></slot>
+            <span v-if="weight > 0" class="order-md-1">
+              <issue-weight
+                :weight="weight"
+                class="item-weight gl-display-flex gl-align-items-center"
+                tag-name="span"
+              />
+            </span>
+
+            <span v-if="dueDate" class="order-md-1">
+              <issue-due-date
+                :date="dueDate"
+                tooltip-placement="top"
+                css-class="item-due-date gl-display-flex gl-align-items-center"
+              />
+            </span>
 
             <issue-assignees
               v-if="hasAssignees"
@@ -159,9 +170,5 @@ export default {
     >
       <icon :size="16" class="btn-item-remove-icon" name="close" />
     </button>
-
-    <!-- This element serves to set the issue card's height at a minimum of 32 px. -->
-    <!-- It fixes #59594: when the remove button is missing, issues have inconsistent heights. -->
-    <span :style="heightStyle"></span>
   </div>
 </template>

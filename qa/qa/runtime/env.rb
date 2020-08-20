@@ -61,6 +61,10 @@ module QA
         ENV['QA_ADDITIONAL_REPOSITORY_STORAGE']
       end
 
+      def non_cluster_repository_storage
+        ENV['QA_GITALY_NON_CLUSTER_STORAGE'] || 'gitaly'
+      end
+
       def praefect_repository_storage
         ENV['QA_PRAEFECT_REPOSITORY_STORAGE']
       end
@@ -105,6 +109,10 @@ module QA
 
       def running_in_ci?
         ENV['CI'] || ENV['CI_SERVER']
+      end
+
+      def cluster_api_url
+        ENV['CLUSTER_API_URL']
       end
 
       def qa_cookies

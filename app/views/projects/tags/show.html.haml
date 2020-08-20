@@ -42,18 +42,18 @@
     - if @tag.has_signature?
       = render partial: 'projects/commit/signature', object: @tag.signature
     - if can?(current_user, :admin_tag, @project)
-      = link_to edit_project_tag_release_path(@project, @tag.name), class: 'btn btn-edit controls-item has-tooltip', title: s_('TagsPage|Edit release notes') do
-        = icon("pencil")
-    = link_to project_tree_path(@project, @tag.name), class: 'btn controls-item has-tooltip', title: s_('TagsPage|Browse files') do
-      = sprite_icon('folder-open')
-    = link_to project_commits_path(@project, @tag.name), class: 'btn controls-item has-tooltip', title: s_('TagsPage|Browse commits') do
-      = icon('history')
+      = link_to edit_project_tag_release_path(@project, @tag.name), class: 'btn btn-icon btn-edit gl-button controls-item has-tooltip', title: s_('TagsPage|Edit release notes') do
+        = sprite_icon("pencil", css_class: 'gl-icon')
+    = link_to project_tree_path(@project, @tag.name), class: 'btn btn-icon gl-button controls-item has-tooltip', title: s_('TagsPage|Browse files') do
+      = sprite_icon('folder-open', css_class: 'gl-icon')
+    = link_to project_commits_path(@project, @tag.name), class: 'btn btn-icon gl-button controls-item has-tooltip', title: s_('TagsPage|Browse commits') do
+      = sprite_icon('history', css_class: 'gl-icon')
     .btn-container.controls-item
       = render 'projects/buttons/download', project: @project, ref: @tag.name
     - if can?(current_user, :admin_tag, @project)
       .btn-container.controls-item-full
-        = link_to project_tag_path(@project, @tag.name), class: "btn btn-remove remove-row has-tooltip #{protected_tag?(@project, @tag) ? 'disabled' : ''}", title: s_('TagsPage|Delete tag'), method: :delete, data: { confirm: s_('TagsPage|Deleting the %{tag_name} tag cannot be undone. Are you sure?') % { tag_name: @tag.name } } do
-          %i.fa.fa-trash-o
+        = link_to project_tag_path(@project, @tag.name), class: "btn btn-icon btn-danger gl-button remove-row has-tooltip #{protected_tag?(@project, @tag) ? 'disabled' : ''}", title: s_('TagsPage|Delete tag'), method: :delete, data: { confirm: s_('TagsPage|Deleting the %{tag_name} tag cannot be undone. Are you sure?') % { tag_name: @tag.name } } do
+          = sprite_icon('remove', css_class: 'gl-icon')
 
   - if @tag.message.present?
     %pre.wrap{ data: { qa_selector: 'tag_message_content' } }

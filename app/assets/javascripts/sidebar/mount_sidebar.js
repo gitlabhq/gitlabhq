@@ -5,13 +5,14 @@ import SidebarTimeTracking from './components/time_tracking/sidebar_time_trackin
 import SidebarAssignees from './components/assignees/sidebar_assignees.vue';
 import ConfidentialIssueSidebar from './components/confidential/confidential_issue_sidebar.vue';
 import SidebarMoveIssue from './lib/sidebar_move_issue';
-import LockIssueSidebar from './components/lock/lock_issue_sidebar.vue';
+import IssuableLockForm from './components/lock/issuable_lock_form.vue';
 import sidebarParticipants from './components/participants/sidebar_participants.vue';
 import sidebarSubscriptions from './components/subscriptions/sidebar_subscriptions.vue';
 import Translate from '../vue_shared/translate';
 import createDefaultClient from '~/lib/graphql';
 import { store } from '~/notes/stores';
 import { isInIssuePage } from '~/lib/utils/common_utils';
+import mergeRequestStore from '~/mr_notes/stores';
 
 Vue.use(Translate);
 Vue.use(VueApollo);
@@ -79,24 +80,28 @@ function mountConfidentialComponent(mediator) {
   });
 }
 
-function mountLockComponent(mediator) {
+function mountLockComponent() {
   const el = document.getElementById('js-lock-entry-point');
-
-  if (!el) return;
+  const { fullPath } = getSidebarOptions();
 
   const dataNode = document.getElementById('js-lock-issue-data');
   const initialData = JSON.parse(dataNode.innerHTML);
 
-  const LockComp = Vue.extend(LockIssueSidebar);
-
-  new LockComp({
-    propsData: {
-      isLocked: initialData.is_locked,
-      isEditable: initialData.is_editable,
-      mediator,
-      issuableType: isInIssuePage() ? 'issue' : 'merge_request',
-    },
-  }).$mount(el);
+  return el
+    ? new Vue({
+        el,
+        store: isInIssuePage() ? store : mergeRequestStore,
+        provide: {
+          fullPath,
+        },
+        render: createElement =>
+          createElement(IssuableLockForm, {
+            props: {
+              isEditable: initialData.is_editable,
+            },
+          }),
+      })
+    : undefined;
 }
 
 function mountParticipantsComponent(mediator) {

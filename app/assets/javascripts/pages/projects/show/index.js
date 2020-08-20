@@ -1,3 +1,4 @@
+import initTree from 'ee_else_ce/repository';
 import initBlob from '~/blob_edit/blob_bundle';
 import ShortcutsNavigation from '~/behaviors/shortcuts/shortcuts_navigation';
 import NotificationsForm from '~/notifications_form';
@@ -9,7 +10,6 @@ import leaveByUrl from '~/namespaces/leave_by_url';
 import Star from '../../../star';
 import notificationsDropdown from '../../../notifications_dropdown';
 import { showLearnGitLabProjectPopover } from '~/onboarding_issues';
-import initTree from 'ee_else_ce/repository';
 
 document.addEventListener('DOMContentLoaded', () => {
   initReadMore();

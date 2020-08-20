@@ -281,6 +281,10 @@ This can be done via `pkill -USR2 puma:`. The `:` disambiguates between `puma
 4.3.3.gitlab.2 ...` (the master process) from `puma: cluster worker 0: ...` (the
 worker processes), selecting the latter.
 
+For Sidekiq, the signal can be sent to the `sidekiq-cluster` process via `pkill
+-USR2 bin/sidekiq-cluster`, which will forward the signal to all Sidekiq
+children. Alternatively, you can also select a specific pid of interest.
+
 Production profiles can be especially noisy. It can be helpful to visualize them
 as a [flamegraph](https://github.com/brendangregg/FlameGraph). This can be done
 via:

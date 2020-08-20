@@ -1,7 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
-import { createStore } from '~/monitoring/stores';
+import Visibility from 'visibilityjs';
 import { GlNewDropdown, GlNewDropdownItem, GlButton } from '@gitlab/ui';
-
+import { createStore } from '~/monitoring/stores';
 import RefreshButton from '~/monitoring/components/refresh_button.vue';
 
 describe('RefreshButton', () => {
@@ -10,8 +10,8 @@ describe('RefreshButton', () => {
   let dispatch;
   let documentHidden;
 
-  const createWrapper = () => {
-    wrapper = shallowMount(RefreshButton, { store });
+  const createWrapper = (options = {}) => {
+    wrapper = shallowMount(RefreshButton, { store, ...options });
   };
 
   const findRefreshBtn = () => wrapper.find(GlButton);
@@ -31,14 +31,8 @@ describe('RefreshButton', () => {
     jest.spyOn(store, 'dispatch').mockResolvedValue();
     dispatch = store.dispatch;
 
-    // Document can be mock hidden by overriding the `hidden` property
     documentHidden = false;
-    Object.defineProperty(document, 'hidden', {
-      configurable: true,
-      get() {
-        return documentHidden;
-      },
-    });
+    jest.spyOn(Visibility, 'hidden').mockImplementation(() => documentHidden);
 
     createWrapper();
   });
@@ -55,6 +49,20 @@ describe('RefreshButton', () => {
 
   it('refresh rate is "Off" in the dropdown', () => {
     expect(findDropdown().props('text')).toBe('Off');
+  });
+
+  describe('when feature flag disable_metric_dashboard_refresh_rate is on', () => {
+    beforeEach(() => {
+      createWrapper({
+        provide: {
+          glFeatures: { disableMetricDashboardRefreshRate: true },
+        },
+      });
+    });
+
+    it('refresh rate is not available', () => {
+      expect(findDropdown().exists()).toBe(false);
+    });
   });
 
   describe('refresh rate options', () => {

@@ -5,6 +5,8 @@ module Types
     class PipelineType < BaseObject
       graphql_name 'Pipeline'
 
+      connection_type_class(Types::CountableConnectionType)
+
       authorize :read_pipeline
 
       expose_permissions Types::PermissionTypes::Ci::Pipeline
@@ -23,6 +25,8 @@ module Types
       field :detailed_status, Types::Ci::DetailedStatusType, null: false,
             description: 'Detailed status of the pipeline',
             resolve: -> (obj, _args, ctx) { obj.detailed_status(ctx[:current_user]) }
+      field :config_source, PipelineConfigSourceEnum, null: true,
+            description: "Config source of the pipeline (#{::Ci::PipelineEnums.config_sources.keys.join(', ').upcase})"
       field :duration, GraphQL::INT_TYPE, null: true,
             description: 'Duration of the pipeline in seconds'
       field :coverage, GraphQL::FLOAT_TYPE, null: true,
@@ -37,8 +41,13 @@ module Types
             description: "Timestamp of the pipeline's completion"
       field :committed_at, Types::TimeType, null: true,
             description: "Timestamp of the pipeline's commit"
-
-      # TODO: Add triggering user as a type
+      field :stages, Types::Ci::StageType.connection_type, null: true,
+            description: 'Stages of the pipeline',
+            extras: [:lookahead],
+            resolver: Resolvers::Ci::PipelineStagesResolver
+      field :user, Types::UserType, null: true,
+            description: 'Pipeline user',
+            resolve: -> (pipeline, _args, _context) { Gitlab::Graphql::Loaders::BatchModelLoader.new(User, pipeline.user_id).find }
     end
   end
 end

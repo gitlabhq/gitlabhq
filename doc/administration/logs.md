@@ -14,6 +14,11 @@ Find more about them [in Audit Events documentation](audit_events.md).
 System log files are typically plain text in a standard log file format.
 This guide talks about how to read and use these system log files.
 
+[Read more about how to customise logging on Omnibus GitLab
+installations](https://docs.gitlab.com/omnibus/settings/logs.html)
+including adjusting log retention, log forwarding,
+switching logs from JSON to plain text logging, and more.
+
 ## `production_json.log`
 
 This file lives in `/var/log/gitlab/gitlab-rails/production_json.log` for
@@ -831,6 +836,29 @@ For example:
 ```
 
 This message shows that Geo detected that a repository update was needed for project `1`.
+
+## `update_mirror_service_json.log`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/commit/7f637e2af7006dc2b1b2649d9affc0b86cfb33c4) in GitLab 11.12.
+
+This file is stored in:
+
+- `/var/log/gitlab/gitlab-rails/update_mirror_service_json.log` for Omnibus GitLab installations.
+- `/home/git/gitlab/log/update_mirror_service_json.log` for installations from source.
+
+This file contains information about any errors that occurred during project mirroring.
+
+```json
+{
+   "severity":"ERROR",
+   "time":"2020-07-28T23:29:29.473Z",
+   "correlation_id":"5HgIkCJsO53",
+   "user_id":"x",
+   "project_id":"x",
+   "import_url":"https://mirror-source/group/project.git",
+   "error_message":"The LFS objects download list couldn't be imported. Error: Unauthorized"
+}
+```
 
 ## Registry Logs
 

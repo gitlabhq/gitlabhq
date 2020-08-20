@@ -19,7 +19,7 @@ malicious users to gain access to resources like deployment environments.
 GitLab 11.9 includes a new check called Secret Detection. It scans the content of the repository
 to find API keys and other information that should not be there.
 
-GitLab displays identified secrets as part of the SAST reports visibly in a few places:
+GitLab displays identified secrets visibly in a few places:
 
 - [Security Dashboard](../security_dashboard/)
 - Pipelines' **Security** tab
@@ -45,6 +45,25 @@ Our Secret Detection jobs currently expect a Linux container type. Windows conta
 CAUTION: **Caution:**
 If you use your own Runners, make sure the Docker version installed
 is **not** `19.03.0`. See [troubleshooting information](../sast#error-response-from-daemon-error-processing-tar-file-docker-tar-relocation-error) for details.
+
+### Making Secret Detection available to all GitLab tiers
+
+To make Secret Detection available to as many customers as possible, we have enabled it for all GitLab tiers.
+However not all features are available on every tier. See the breakdown below for more details.
+
+#### Summary of features per tier
+
+Different features are available in different [GitLab tiers](https://about.gitlab.com/pricing/),
+as shown in the following table:
+
+| Capability                                                                | In Core             | In Ultimate        |
+|:--------------------------------------------------------------------------|:--------------------|:-------------------|
+| [Configure Secret Detection Scanners](#configuration)                                 | **{check-circle}**  | **{check-circle}** |
+| [Customize Secret Detection Settings](#customizing-settings)                 | **{check-circle}**  | **{check-circle}** |
+| View [JSON Report](../sast/index.md#reports-json-format)                                  | **{check-circle}**  | **{check-circle}** |
+| [Presentation of JSON Report in Merge Request](#overview)                 | **{dotted-circle}** | **{check-circle}** |
+| [Interaction with Vulnerabilities](../vulnerabilities/index.md) | **{dotted-circle}** | **{check-circle}** |
+| [Access to Security Dashboard](../security_dashboard/index.md)                       | **{dotted-circle}** | **{check-circle}** |
 
 ## Configuration
 
@@ -145,16 +164,19 @@ Secret Detection can be customized by defining available variables:
 |-------------------------|---------------|-------------|
 | `SECRET_DETECTION_COMMIT_FROM` | -     | The commit a Gitleaks scan starts at. |
 | `SECRET_DETECTION_COMMIT_TO` | -       | The commit a Gitleaks scan ends at. |
+| `SECRET_DETECTION_EXCLUDED_PATHS` | "" | Exclude vulnerabilities from output based on the paths. This is a comma-separated list of patterns. Patterns can be globs, or file or folder paths (for example, `doc,spec` ). Parent directories will also match patterns. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/225273) in GitLab 13.3. |
 | `SECRET_DETECTION_HISTORIC_SCAN` | false | Flag to enable a historic Gitleaks scan. |
 
-### Logging Level
+### Logging level
 
-You can control the verbosity of logs by setting the `SECURE_LOG_LEVEL` env var. The default is set to `info`, you can set it to any of the following levels:
+To control the verbosity of logs set the `SECURE_LOG_LEVEL` environment variable. Messages of this logging level or higher are output. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10880) in GitLab 13.1.
+
+From highest to lowest severity, the logging levels are:
 
 - `fatal`
 - `error`
 - `warn`
-- `info`
+- `info` (default)
 - `debug`
 
 ## Full History Secret Scan

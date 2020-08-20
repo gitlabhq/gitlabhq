@@ -445,6 +445,7 @@
 .pipeline-tab-content {
   display: flex;
   width: 100%;
+  min-height: $dropdown-max-height-lg;
   background-color: $gray-light;
   padding: $gl-padding 0;
   overflow: auto;
@@ -669,24 +670,13 @@
     &.ci-action-icon-wrapper {
       height: 30px;
       width: 30px;
-      background: $white;
-      border: 1px solid $border-color;
       border-radius: 100%;
       display: block;
-
-      &:hover {
-        background-color: $gray-darker;
-        border: 1px solid $dropdown-toggle-active-border-color;
-
-        svg {
-          fill: $gl-text-color;
-        }
-      }
+      padding: 0;
+      line-height: 0;
 
       svg {
         fill: $gl-text-color-secondary;
-        position: relative;
-        top: -1px;
       }
 
       .spinner {
@@ -695,7 +685,8 @@
 
       &.play {
         svg {
-          left: 2px;
+          left: 1px;
+          top: 1px;
         }
       }
     }
@@ -804,12 +795,12 @@
   &.ci-status-icon-disabled,
   &.ci-status-icon-not-found,
   &.ci-status-icon-manual {
-    @include mini-pipeline-graph-color($white, $gray-700, $gray-800, $gray-900, $gray-950, $black);
+    @include mini-pipeline-graph-color($white, $gray-500, $gray-700, $gray-900, $gray-950, $black);
   }
 
   &.ci-status-icon-created,
   &.ci-status-icon-skipped {
-    @include mini-pipeline-graph-color($white, $gray-100, $gray-300, $gray-500, $gray-600, $gray-700);
+    @include mini-pipeline-graph-color($white, $gray-100, $gray-200, $gray-300, $gray-400, $gray-500);
   }
 }
 
@@ -845,15 +836,12 @@ button.mini-pipeline-graph-dropdown-toggle {
     &.ci-action-icon-wrapper {
       height: $ci-action-dropdown-button-size;
       width: $ci-action-dropdown-button-size;
-
-      background: $white;
-      border: 1px solid $border-color;
       border-radius: 50%;
       display: block;
 
       &:hover {
+        box-shadow: inset 0 0 0 0.0625rem $dropdown-toggle-active-border-color;
         background-color: $gray-darker;
-        border: 1px solid $dropdown-toggle-active-border-color;
 
         svg {
           fill: $gl-text-color;
@@ -866,7 +854,7 @@ button.mini-pipeline-graph-dropdown-toggle {
         height: $ci-action-dropdown-svg-size;
         fill: $gl-text-color-secondary;
         position: relative;
-        top: auto;
+        top: 1px;
         vertical-align: initial;
       }
     }
@@ -874,7 +862,7 @@ button.mini-pipeline-graph-dropdown-toggle {
 
   // SVGs in the commit widget and mr widget
   a.ci-action-icon-container.ci-action-icon-wrapper svg {
-    top: 4px;
+    top: 5px;
   }
 
   .scrollable-menu {
@@ -1051,13 +1039,6 @@ button.mini-pipeline-graph-dropdown-toggle {
 
   .text-center {
     padding-top: 12px;
-  }
-
-  .header-action-buttons {
-    .btn,
-    a {
-      margin-left: 10px;
-    }
   }
 }
 

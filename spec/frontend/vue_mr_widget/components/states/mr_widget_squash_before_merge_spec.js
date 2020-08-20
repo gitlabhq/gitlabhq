@@ -79,7 +79,7 @@ describe('Squash before merge component', () => {
       });
 
       it(expectation, () => {
-        expect(findLabel().classes('gl-text-gray-600')).toBe(isDisabled);
+        expect(findLabel().classes('gl-text-gray-400')).toBe(isDisabled);
       });
     });
   });

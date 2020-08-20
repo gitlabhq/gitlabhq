@@ -72,9 +72,14 @@ RSpec.describe Gitlab::Database::WithLockRetries do
           lock_attempts = 0
           lock_acquired = false
 
-          expect_any_instance_of(Gitlab::Database::WithLockRetries).to receive(:sleep).exactly(retry_count - 1).times # we don't sleep in the last iteration
+          # the actual number of attempts to run_block_with_transaction can never exceed the number of
+          # timings_configurations, so here we limit the retry_count if it exceeds that value
+          #
+          # also, there is no call to sleep after the final attempt, which is why it will always be one less
+          expected_runs_with_timeout = [retry_count, timing_configuration.size].min
+          expect(subject).to receive(:sleep).exactly(expected_runs_with_timeout - 1).times
 
-          allow_any_instance_of(Gitlab::Database::WithLockRetries).to receive(:run_block_with_transaction).and_wrap_original do |method|
+          expect(subject).to receive(:run_block_with_transaction).exactly(expected_runs_with_timeout).times.and_wrap_original do |method|
             lock_fiber.resume if lock_attempts == retry_count
 
             method.call
@@ -111,6 +116,33 @@ RSpec.describe Gitlab::Database::WithLockRetries do
           before do
             expect(subject).to receive(:run_block_without_lock_timeout).and_call_original
           end
+        end
+      end
+
+      context 'after the retries, when requested to raise an error' do
+        let(:expected_attempts_with_timeout) { timing_configuration.size }
+        let(:retry_count) { timing_configuration.size + 1 }
+
+        it 'raises an error instead of waiting indefinitely for the lock' do
+          lock_attempts = 0
+          lock_acquired = false
+
+          expect(subject).to receive(:sleep).exactly(expected_attempts_with_timeout - 1).times
+          expect(subject).to receive(:run_block_with_transaction).exactly(expected_attempts_with_timeout).times.and_call_original
+
+          expect do
+            subject.run(raise_on_exhaustion: true) do
+              lock_attempts += 1
+
+              ActiveRecord::Base.transaction do
+                ActiveRecord::Base.connection.execute("LOCK TABLE #{Project.table_name} in exclusive mode")
+                lock_acquired = true
+              end
+            end
+          end.to raise_error(described_class::AttemptsExhaustedError)
+
+          expect(lock_attempts).to eq(retry_count - 1)
+          expect(lock_acquired).to eq(false)
         end
       end
 

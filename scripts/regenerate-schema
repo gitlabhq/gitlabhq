@@ -3,6 +3,7 @@
 # frozen_string_literal: true
 
 require 'open3'
+require 'fileutils'
 require 'uri'
 
 class SchemaRegenerator
@@ -19,11 +20,19 @@ class SchemaRegenerator
   # these to disable/enable migrations.
   MIGRATION_DIRS = %w[db/migrate db/post_migrate].freeze
 
+  ##
+  # Directory where we store schema versions
+  #
+  # The remove_schema_migration_files removes files added in this
+  # directory when it runs.
+  SCHEMA_MIGRATIONS_DIR = 'db/schema_migrations/'
+
   def execute
     Dir.chdir(File.expand_path('..', __dir__)) do
       checkout_ref
       checkout_clean_schema
       hide_migrations
+      remove_schema_migration_files
       reset_db
       unhide_migrations
       migrate
@@ -108,6 +117,35 @@ class SchemaRegenerator
     end
 
     raise error if error
+  end
+
+  ##
+  # Remove files added to db/schema_migrations
+  #
+  # In order to properly reset the database and re-run migrations
+  # the schema migrations for new migrations must be removed.
+  def remove_schema_migration_files
+    (untracked_schema_migrations + commited_schema_migrations).each do |schema_migration|
+      FileUtils.rm(schema_migration)
+    end
+  end
+
+  ##
+  # List of untracked schema migrations
+  #
+  # Get a list of schema migrations that are not tracked so we can remove them
+  def untracked_schema_migrations
+    git_command = "git ls-files --others --exclude-standard -- #{SCHEMA_MIGRATIONS_DIR}"
+    run(git_command).chomp.split("\n")
+  end
+
+  ##
+  # List of untracked schema migrations
+  #
+  # Get a list of schema migrations that have been committed since the last
+  def commited_schema_migrations
+    git_command = "git diff --name-only --diff-filter=A #{merge_base} -- #{SCHEMA_MIGRATIONS_DIR}"
+    run(git_command).chomp.split("\n")
   end
 
   ##

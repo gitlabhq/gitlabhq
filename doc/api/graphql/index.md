@@ -14,7 +14,15 @@ For those new to the GitLab GraphQL API, see
 - Get an [introduction to GraphQL from graphql.org](https://graphql.org/).
 - GitLab supports a wide range of resources, listed in the [GraphQL API Reference](reference/index.md).
 
-#### GraphiQL
+### Examples
+
+To work with sample queries that pull data from public projects on GitLab.com,
+see the menu options in the left-hand
+documentation menu, under API > GraphQL at `https://docs.gitlab.com/ee/api/graphql/`.
+
+The [Getting started](getting_started.md) page includes different methods to customize GraphQL queries.
+
+### GraphiQL
 
 Explore the GraphQL API using the interactive [GraphiQL explorer](https://gitlab.com/-/graphql-explorer),
 or on your self-managed GitLab instance on

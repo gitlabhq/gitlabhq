@@ -1,0 +1,5 @@
+---
+title: Add index for compliance merged MRs to events
+merge_request: 38885
+author:
+type: performance

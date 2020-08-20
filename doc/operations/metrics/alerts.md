@@ -4,7 +4,7 @@ group: APM
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 ---
 
-# Set up alerts for Prometheus metrics
+# Set up alerts for Prometheus metrics **(CORE)**
 
 After [configuring metrics for your CI/CD environment](index.md), you can set up
 alerting for Prometheus metrics depending on the location of your instances, and
@@ -13,22 +13,35 @@ your team when environment performance falls outside of the boundaries you set.
 
 ## Managed Prometheus instances
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/6590) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.2 for [custom metrics](index.md#adding-custom-metrics), and 11.3 for [library metrics](../../user/project/integrations/prometheus_library/metrics.md).
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/6590) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.2 for [custom metrics](index.md#adding-custom-metrics), and GitLab 11.3 for [library metrics](../../user/project/integrations/prometheus_library/metrics.md).
 
 For managed Prometheus instances using auto configuration, you can
 [configure alerts for metrics](index.md#adding-custom-metrics) directly in the
 [metrics dashboard](index.md). To set an alert:
 
-1. In your project, navigate to **{cloud-gear}** **Operations > Metrics**,
+1. In your project, navigate to **Operations > Metrics**,
 1. Identify the metric you want to create the alert for, and click the
    **ellipsis** **{ellipsis_v}** icon in the top right corner of the metric.
 1. Choose **Alerts**.
 1. Set threshold and operator.
+1. (Optional) Add a Runbook URL.
 1. Click **Add** to save and activate the alert.
 
-![Adding an alert](../../user/project/integrations/img/prometheus_alert.png)
+![Adding an alert](img/prometheus_alert.png)
 
 To remove the alert, click back on the alert icon for the desired metric, and click **Delete**.
+
+### Link runbooks to alerts
+
+> - Runbook URLs [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/39315) in GitLab 13.3.
+
+When creating alerts from the metrics dashboard for [managed Prometheus instances](#managed-prometheus-instances),
+you can also link a runbook. When the alert triggers, the
+[chart context menu](dashboards/index.md#chart-context-menu) on the metrics chart
+links to the runbook, making it easy for you to locate and access the correct runbook
+as soon as the alert fires:
+
+![Linked Runbook in charts](img/linked_runbooks_on_charts.png)
 
 ## External Prometheus instances
 
@@ -37,11 +50,11 @@ To remove the alert, click back on the alert icon for the desired metric, and cl
 
 For manually configured Prometheus servers, GitLab provides a notify endpoint for
 use with Prometheus webhooks. If you have manual configuration enabled, an
-**Alerts** section is added to **{settings}** **Settings > Integrations > Prometheus**.
+**Alerts** section is added to **Settings > Integrations > Prometheus**.
 This section contains the **URL** and **Authorization Key** you will need. The
 **Reset Key** button will invalidate the key and generate a new one.
 
-![Prometheus service configuration of Alerts](../../user/project/integrations/img/prometheus_service_alerts.png)
+![Prometheus service configuration of Alerts](img/prometheus_service_alerts.png)
 
 To send GitLab alert notifications, copy the **URL** and **Authorization Key** into the
 [`webhook_configs`](https://prometheus.io/docs/alerting/latest/configuration/#webhook_config)
@@ -75,22 +88,22 @@ Prometheus server to use the
 Alerts can be used to trigger actions, like opening an issue automatically
 (disabled by default since `13.1`). To configure the actions:
 
-1. Navigate to your project's **{settings}** **Settings > Operations > Incidents**.
+1. Navigate to your project's **Settings > Operations > Incidents**.
 1. Enable the option to create issues.
 1. Choose the [issue template](../../user/project/description_templates.md) to create the issue from.
 1. Optionally, select whether to send an email notification to the developers of the project.
 1. Click **Save changes**.
 
 After enabling, GitLab automatically opens an issue when an alert is triggered containing
-values extracted from [alert's payload](https://prometheus.io/docs/alerting/latest/configuration/#webhook_config):
+values extracted from the [`alerts` field in webhook payload](https://prometheus.io/docs/alerting/latest/configuration/#webhook_config):
 
 - Issue author: `GitLab Alert Bot`
-- Issue title: Extract from `annotations/title`, `annotations/summary` or `labels/alertname`
-- Alert `Summary`: A list of properties
-  - `starts_at`: Alert start time via `startsAt`
-  - `full_query`: Alert query extracted from `generatorURL`
+- Issue title: Extracted from the alert payload fields `annotations/title`, `annotations/summary`, or `labels/alertname`.
+- Alert `Summary`: A list of properties from the alert's payload.
+  - `starts_at`: Alert start time from the payload's `startsAt` field
+  - `full_query`: Alert query extracted from the payload's `generatorURL` field
   - Optional list of attached annotations extracted from `annotations/*`
-- Alert [GFM](../../user/markdown.md): GitLab Flavored Markdown from `annotations/gitlab_incident_markdown`
+- Alert [GFM](../../user/markdown.md): GitLab Flavored Markdown from the payload's `annotations/gitlab_incident_markdown` field.
 
 When GitLab receives a **Recovery Alert**, it closes the associated issue.
 This action is recorded as a system message on the issue indicating that it

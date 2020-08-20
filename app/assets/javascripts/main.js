@@ -9,6 +9,8 @@ import './commons';
 import './behaviors';
 
 // lib/utils
+import applyGitLabUIConfig from '@gitlab/ui/dist/config';
+import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
 import {
   handleLocationHash,
   addSelectOnFocusBehaviour,
@@ -19,9 +21,7 @@ import { getLocationHash, visitUrl } from './lib/utils/url_utility';
 
 // everything else
 import loadAwardsHandler from './awards_handler';
-import applyGitLabUIConfig from '@gitlab/ui/dist/config';
-import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
-import Flash, { removeFlashClickListener } from './flash';
+import { deprecatedCreateFlash as Flash, removeFlashClickListener } from './flash';
 import './gl_dropdown';
 import initTodoToggle from './header';
 import initImporterStatus from './importer_status';
@@ -156,6 +156,9 @@ function deferredInitialisation() {
   });
 
   loadAwardsHandler();
+
+  // Adding a helper class to activate animations only after all is rendered
+  setTimeout(() => $body.addClass('page-initialised'), 1000);
 }
 
 document.addEventListener('DOMContentLoaded', () => {

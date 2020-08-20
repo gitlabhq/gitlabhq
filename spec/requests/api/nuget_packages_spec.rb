@@ -4,6 +4,7 @@ require 'spec_helper'
 RSpec.describe API::NugetPackages do
   include WorkhorseHelpers
   include PackagesManagerApiSpecHelpers
+  include HttpBasicAuthHelpers
 
   let_it_be(:user) { create(:user) }
   let_it_be(:project, reload: true) { create(:project, :public) }
@@ -20,38 +21,76 @@ RSpec.describe API::NugetPackages do
       context 'with valid project' do
         using RSpec::Parameterized::TableSyntax
 
-        where(:project_visibility_level, :user_role, :member, :user_token, :shared_examples_name, :expected_status) do
-          'PUBLIC'  | :developer  | true  | true  | 'process nuget service index request'   | :success
-          'PUBLIC'  | :guest      | true  | true  | 'process nuget service index request'   | :success
-          'PUBLIC'  | :developer  | true  | false | 'process nuget service index request'   | :success
-          'PUBLIC'  | :guest      | true  | false | 'process nuget service index request'   | :success
-          'PUBLIC'  | :developer  | false | true  | 'process nuget service index request'   | :success
-          'PUBLIC'  | :guest      | false | true  | 'process nuget service index request'   | :success
-          'PUBLIC'  | :developer  | false | false | 'process nuget service index request'   | :success
-          'PUBLIC'  | :guest      | false | false | 'process nuget service index request'   | :success
-          'PUBLIC'  | :anonymous  | false | true  | 'process nuget service index request'   | :success
-          'PRIVATE' | :developer  | true  | true  | 'process nuget service index request'   | :success
-          'PRIVATE' | :guest      | true  | true  | 'rejects nuget packages access'         | :forbidden
-          'PRIVATE' | :developer  | true  | false | 'rejects nuget packages access'         | :unauthorized
-          'PRIVATE' | :guest      | true  | false | 'rejects nuget packages access'         | :unauthorized
-          'PRIVATE' | :developer  | false | true  | 'rejects nuget packages access'         | :not_found
-          'PRIVATE' | :guest      | false | true  | 'rejects nuget packages access'         | :not_found
-          'PRIVATE' | :developer  | false | false | 'rejects nuget packages access'         | :unauthorized
-          'PRIVATE' | :guest      | false | false | 'rejects nuget packages access'         | :unauthorized
-          'PRIVATE' | :anonymous  | false | true  | 'rejects nuget packages access'         | :unauthorized
-        end
-
-        with_them do
-          let(:token) { user_token ? personal_access_token.token : 'wrong' }
-          let(:headers) { user_role == :anonymous ? {} : build_basic_auth_header(user.username, token) }
-
-          subject { get api(url), headers: headers }
-
-          before do
-            project.update!(visibility_level: Gitlab::VisibilityLevel.const_get(project_visibility_level, false))
+        context 'personal token' do
+          where(:project_visibility_level, :user_role, :member, :user_token, :shared_examples_name, :expected_status) do
+            'PUBLIC'  | :developer  | true  | true  | 'process nuget service index request'   | :success
+            'PUBLIC'  | :guest      | true  | true  | 'process nuget service index request'   | :success
+            'PUBLIC'  | :developer  | true  | false | 'process nuget service index request'   | :success
+            'PUBLIC'  | :guest      | true  | false | 'process nuget service index request'   | :success
+            'PUBLIC'  | :developer  | false | true  | 'process nuget service index request'   | :success
+            'PUBLIC'  | :guest      | false | true  | 'process nuget service index request'   | :success
+            'PUBLIC'  | :developer  | false | false | 'process nuget service index request'   | :success
+            'PUBLIC'  | :guest      | false | false | 'process nuget service index request'   | :success
+            'PUBLIC'  | :anonymous  | false | true  | 'process nuget service index request'   | :success
+            'PRIVATE' | :developer  | true  | true  | 'process nuget service index request'   | :success
+            'PRIVATE' | :guest      | true  | true  | 'rejects nuget packages access'         | :forbidden
+            'PRIVATE' | :developer  | true  | false | 'rejects nuget packages access'         | :unauthorized
+            'PRIVATE' | :guest      | true  | false | 'rejects nuget packages access'         | :unauthorized
+            'PRIVATE' | :developer  | false | true  | 'rejects nuget packages access'         | :not_found
+            'PRIVATE' | :guest      | false | true  | 'rejects nuget packages access'         | :not_found
+            'PRIVATE' | :developer  | false | false | 'rejects nuget packages access'         | :unauthorized
+            'PRIVATE' | :guest      | false | false | 'rejects nuget packages access'         | :unauthorized
+            'PRIVATE' | :anonymous  | false | true  | 'rejects nuget packages access'         | :unauthorized
           end
 
-          it_behaves_like params[:shared_examples_name], params[:user_role], params[:expected_status], params[:member]
+          with_them do
+            let(:token) { user_token ? personal_access_token.token : 'wrong' }
+            let(:headers) { user_role == :anonymous ? {} : basic_auth_header(user.username, token) }
+
+            subject { get api(url), headers: headers }
+
+            before do
+              project.update!(visibility_level: Gitlab::VisibilityLevel.const_get(project_visibility_level, false))
+            end
+
+            it_behaves_like params[:shared_examples_name], params[:user_role], params[:expected_status], params[:member]
+          end
+        end
+
+        context 'with job token' do
+          where(:project_visibility_level, :user_role, :member, :user_token, :shared_examples_name, :expected_status) do
+            'PUBLIC'  | :developer  | true  | true  | 'process nuget service index request' | :success
+            'PUBLIC'  | :guest      | true  | true  | 'process nuget service index request' | :success
+            'PUBLIC'  | :developer  | true  | false | 'rejects nuget packages access'       | :unauthorized
+            'PUBLIC'  | :guest      | true  | false | 'rejects nuget packages access'       | :unauthorized
+            'PUBLIC'  | :developer  | false | true  | 'process nuget service index request' | :success
+            'PUBLIC'  | :guest      | false | true  | 'process nuget service index request' | :success
+            'PUBLIC'  | :developer  | false | false | 'rejects nuget packages access'       | :unauthorized
+            'PUBLIC'  | :guest      | false | false | 'rejects nuget packages access'       | :unauthorized
+            'PUBLIC'  | :anonymous  | false | true  | 'process nuget service index request' | :success
+            'PRIVATE' | :developer  | true  | true  | 'process nuget service index request' | :success
+            'PRIVATE' | :guest      | true  | true  | 'rejects nuget packages access'       | :forbidden
+            'PRIVATE' | :developer  | true  | false | 'rejects nuget packages access'       | :unauthorized
+            'PRIVATE' | :guest      | true  | false | 'rejects nuget packages access'       | :unauthorized
+            'PRIVATE' | :developer  | false | true  | 'rejects nuget packages access'       | :not_found
+            'PRIVATE' | :guest      | false | true  | 'rejects nuget packages access'       | :not_found
+            'PRIVATE' | :developer  | false | false | 'rejects nuget packages access'       | :unauthorized
+            'PRIVATE' | :guest      | false | false | 'rejects nuget packages access'       | :unauthorized
+            'PRIVATE' | :anonymous  | false | true  | 'rejects nuget packages access'       | :unauthorized
+          end
+
+          with_them do
+            let(:job) { user_token ? create(:ci_build, project: project, user: user) : double(token: 'wrong') }
+            let(:headers) { user_role == :anonymous ? {} : job_basic_auth_header(job) }
+
+            subject { get api(url), headers: headers }
+
+            before do
+              project.update!(visibility_level: Gitlab::VisibilityLevel.const_get(project_visibility_level, false))
+            end
+
+            it_behaves_like params[:shared_examples_name], params[:user_role], params[:expected_status], params[:member]
+          end
         end
       end
 
@@ -98,7 +137,7 @@ RSpec.describe API::NugetPackages do
 
         with_them do
           let(:token) { user_token ? personal_access_token.token : 'wrong' }
-          let(:user_headers) { user_role == :anonymous ? {} : build_basic_auth_header(user.username, token) }
+          let(:user_headers) { user_role == :anonymous ? {} : basic_auth_header(user.username, token) }
           let(:headers) { user_headers.merge(workhorse_header) }
 
           before do
@@ -165,7 +204,7 @@ RSpec.describe API::NugetPackages do
 
         with_them do
           let(:token) { user_token ? personal_access_token.token : 'wrong' }
-          let(:user_headers) { user_role == :anonymous ? {} : build_basic_auth_header(user.username, token) }
+          let(:user_headers) { user_role == :anonymous ? {} : basic_auth_header(user.username, token) }
           let(:headers) { user_headers.merge(workhorse_header) }
 
           before do
@@ -225,7 +264,7 @@ RSpec.describe API::NugetPackages do
 
         with_them do
           let(:token) { user_token ? personal_access_token.token : 'wrong' }
-          let(:headers) { user_role == :anonymous ? {} : build_basic_auth_header(user.username, token) }
+          let(:headers) { user_role == :anonymous ? {} : basic_auth_header(user.username, token) }
 
           subject { get api(url), headers: headers }
 
@@ -286,7 +325,7 @@ RSpec.describe API::NugetPackages do
 
         with_them do
           let(:token) { user_token ? personal_access_token.token : 'wrong' }
-          let(:headers) { user_role == :anonymous ? {} : build_basic_auth_header(user.username, token) }
+          let(:headers) { user_role == :anonymous ? {} : basic_auth_header(user.username, token) }
 
           subject { get api(url), headers: headers }
 
@@ -342,7 +381,7 @@ RSpec.describe API::NugetPackages do
 
         with_them do
           let(:token) { user_token ? personal_access_token.token : 'wrong' }
-          let(:headers) { user_role == :anonymous ? {} : build_basic_auth_header(user.username, token) }
+          let(:headers) { user_role == :anonymous ? {} : basic_auth_header(user.username, token) }
 
           subject { get api(url), headers: headers }
 
@@ -397,7 +436,7 @@ RSpec.describe API::NugetPackages do
 
         with_them do
           let(:token) { user_token ? personal_access_token.token : 'wrong' }
-          let(:headers) { user_role == :anonymous ? {} : build_basic_auth_header(user.username, token) }
+          let(:headers) { user_role == :anonymous ? {} : basic_auth_header(user.username, token) }
 
           subject { get api(url), headers: headers }
 
@@ -460,7 +499,7 @@ RSpec.describe API::NugetPackages do
 
         with_them do
           let(:token) { user_token ? personal_access_token.token : 'wrong' }
-          let(:headers) { user_role == :anonymous ? {} : build_basic_auth_header(user.username, token) }
+          let(:headers) { user_role == :anonymous ? {} : basic_auth_header(user.username, token) }
 
           subject { get api(url), headers: headers }
 

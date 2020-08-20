@@ -1,8 +1,9 @@
 <script>
 import { mapGetters, mapActions } from 'vuex';
-import { GlIcon } from '@gitlab/ui';
+import { GlIcon, GlTooltipDirective } from '@gitlab/ui';
 import { getParameterByName, parseBoolean } from '~/lib/utils/common_utils';
 import DiffGutterAvatars from './diff_gutter_avatars.vue';
+import { __ } from '~/locale';
 import {
   CONTEXT_LINE_TYPE,
   LINE_POSITION_RIGHT,
@@ -17,6 +18,9 @@ export default {
   components: {
     DiffGutterAvatars,
     GlIcon,
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
   },
   props: {
     line: {
@@ -123,6 +127,24 @@ export default {
     lineNumber() {
       return this.lineType === OLD_LINE_TYPE ? this.line.old_line : this.line.new_line;
     },
+    addCommentTooltip() {
+      const brokenSymlinks = this.line.commentsDisabled;
+      let tooltip = __('Add a comment to this line');
+
+      if (brokenSymlinks) {
+        if (brokenSymlinks.wasSymbolic || brokenSymlinks.isSymbolic) {
+          tooltip = __(
+            'Commenting on symbolic links that replace or are replaced by files is currently not supported.',
+          );
+        } else if (brokenSymlinks.wasReal || brokenSymlinks.isReal) {
+          tooltip = __(
+            'Commenting on files that replace or are replaced by symbolic links is currently not supported.',
+          );
+        }
+      }
+
+      return tooltip;
+    },
   },
   mounted() {
     this.unwatchShouldShowCommentButton = this.$watch('shouldShowCommentButton', newVal => {
@@ -146,17 +168,24 @@ export default {
 
 <template>
   <td ref="td" :class="classNameMap">
-    <button
-      v-if="shouldRenderCommentButton"
-      v-show="shouldShowCommentButton"
-      ref="addDiffNoteButton"
-      type="button"
-      class="add-diff-note js-add-diff-note-button qa-diff-comment"
-      title="Add a comment to this line"
-      @click="handleCommentButton"
+    <span
+      ref="addNoteTooltip"
+      v-gl-tooltip
+      class="add-diff-note tooltip-wrapper"
+      :title="addCommentTooltip"
     >
-      <gl-icon :size="12" name="comment" />
-    </button>
+      <button
+        v-if="shouldRenderCommentButton"
+        v-show="shouldShowCommentButton"
+        ref="addDiffNoteButton"
+        type="button"
+        class="add-diff-note note-button js-add-diff-note-button qa-diff-comment"
+        :disabled="line.commentsDisabled"
+        @click="handleCommentButton"
+      >
+        <gl-icon :size="12" name="comment" />
+      </button>
+    </span>
     <a
       v-if="lineNumber"
       ref="lineNumberRef"

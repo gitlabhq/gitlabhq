@@ -1,17 +1,8 @@
 import getDesignListQuery from '../graphql/queries/get_design_list.query.graphql';
-import appDataQuery from '../graphql/queries/app_data.query.graphql';
 import { findVersionId } from '../utils/design_management_utils';
 
 export default {
   apollo: {
-    appData: {
-      query: appDataQuery,
-      manual: true,
-      result({ data: { projectPath, issueIid } }) {
-        this.projectPath = projectPath;
-        this.issueIid = issueIid;
-      },
-    },
     allVersions: {
       query: getDesignListQuery,
       variables() {
@@ -21,7 +12,15 @@ export default {
           atVersion: null,
         };
       },
-      update: data => data.project.issue.designCollection.versions.edges,
+      update: data => data.project.issue.designCollection.versions.nodes,
+    },
+  },
+  inject: {
+    projectPath: {
+      default: '',
+    },
+    issueIid: {
+      default: '',
     },
   },
   computed: {
@@ -29,7 +28,7 @@ export default {
       return (
         this.$route.query.version &&
         this.allVersions &&
-        this.allVersions.some(version => version.node.id.endsWith(this.$route.query.version))
+        this.allVersions.some(version => version.id.endsWith(this.$route.query.version))
       );
     },
     designsVersion() {
@@ -39,7 +38,7 @@ export default {
     },
     latestVersionId() {
       const latestVersion = this.allVersions[0];
-      return latestVersion && findVersionId(latestVersion.node.id);
+      return latestVersion && findVersionId(latestVersion.id);
     },
     isLatestVersion() {
       if (this.allVersions.length > 0) {
@@ -55,8 +54,6 @@ export default {
   data() {
     return {
       allVersions: [],
-      projectPath: '',
-      issueIid: null,
     };
   },
 };

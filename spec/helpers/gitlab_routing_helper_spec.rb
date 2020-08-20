@@ -88,7 +88,7 @@ RSpec.describe GitlabRoutingHelper do
     it 'returns snippet preview markdown path for a personal snippet' do
       @snippet = create(:personal_snippet)
 
-      expect(preview_markdown_path(nil)).to eq("/snippets/preview_markdown")
+      expect(preview_markdown_path(nil)).to eq("/-/snippets/preview_markdown")
     end
 
     it 'returns project preview markdown path for a project snippet' do
@@ -153,132 +153,152 @@ RSpec.describe GitlabRoutingHelper do
 
     describe '#gitlab_snippet_path' do
       it 'returns the personal snippet path' do
-        expect(gitlab_snippet_path(personal_snippet)).to eq("/snippets/#{personal_snippet.id}")
+        expect(gitlab_snippet_path(personal_snippet)).to eq("/-/snippets/#{personal_snippet.id}")
       end
 
       it 'returns the project snippet path' do
-        expect(gitlab_snippet_path(project_snippet)).to eq("/#{project_snippet.project.full_path}/snippets/#{project_snippet.id}")
+        expect(gitlab_snippet_path(project_snippet)).to eq("/#{project_snippet.project.full_path}/-/snippets/#{project_snippet.id}")
       end
     end
 
     describe '#gitlab_snippet_url' do
       it 'returns the personal snippet url' do
-        expect(gitlab_snippet_url(personal_snippet)).to eq("http://test.host/snippets/#{personal_snippet.id}")
+        expect(gitlab_snippet_url(personal_snippet)).to eq("http://test.host/-/snippets/#{personal_snippet.id}")
       end
 
       it 'returns the project snippet url' do
-        expect(gitlab_snippet_url(project_snippet)).to eq("http://test.host/#{project_snippet.project.full_path}/snippets/#{project_snippet.id}")
+        expect(gitlab_snippet_url(project_snippet)).to eq("http://test.host/#{project_snippet.project.full_path}/-/snippets/#{project_snippet.id}")
       end
     end
 
     describe '#gitlab_raw_snippet_path' do
       it 'returns the raw personal snippet path' do
-        expect(gitlab_raw_snippet_path(personal_snippet)).to eq("/snippets/#{personal_snippet.id}/raw")
+        expect(gitlab_raw_snippet_path(personal_snippet)).to eq("/-/snippets/#{personal_snippet.id}/raw")
       end
 
       it 'returns the raw project snippet path' do
-        expect(gitlab_raw_snippet_path(project_snippet)).to eq("/#{project_snippet.project.full_path}/snippets/#{project_snippet.id}/raw")
+        expect(gitlab_raw_snippet_path(project_snippet)).to eq("/#{project_snippet.project.full_path}/-/snippets/#{project_snippet.id}/raw")
       end
     end
 
     describe '#gitlab_raw_snippet_blob_path' do
+      let(:snippet) { personal_snippet }
+      let(:blob) { snippet.blobs.first }
       let(:ref) { 'test-ref' }
+      let(:args) { {} }
 
-      it_behaves_like 'snippet blob raw path' do
-        subject { gitlab_raw_snippet_blob_path(blob, ref) }
+      subject { gitlab_raw_snippet_blob_path(snippet, blob.path, ref, args) }
+
+      it_behaves_like 'snippet blob raw path'
+
+      context 'when an argument is set' do
+        let(:args) { { inline: true } }
+
+        it { expect(subject).to eq("/-/snippets/#{personal_snippet.id}/raw/#{ref}/#{blob.path}?inline=true") }
       end
 
       context 'without a ref' do
-        let(:blob) { personal_snippet.blobs.first }
-        let(:ref) { blob.repository.root_ref }
+        let(:ref) { nil }
+        let(:expected_ref) { blob.repository.root_ref }
 
         it 'uses the root ref' do
-          expect(gitlab_raw_snippet_blob_path(blob)).to eq("/-/snippets/#{personal_snippet.id}/raw/#{ref}/#{blob.path}")
+          expect(subject).to eq("/-/snippets/#{personal_snippet.id}/raw/#{expected_ref}/#{blob.path}")
         end
       end
     end
 
     describe '#gitlab_raw_snippet_url' do
       it 'returns the raw personal snippet url' do
-        expect(gitlab_raw_snippet_url(personal_snippet)).to eq("http://test.host/snippets/#{personal_snippet.id}/raw")
+        expect(gitlab_raw_snippet_url(personal_snippet)).to eq("http://test.host/-/snippets/#{personal_snippet.id}/raw")
       end
 
       it 'returns the raw project snippet url' do
-        expect(gitlab_raw_snippet_url(project_snippet)).to eq("http://test.host/#{project_snippet.project.full_path}/snippets/#{project_snippet.id}/raw")
+        expect(gitlab_raw_snippet_url(project_snippet)).to eq("http://test.host/#{project_snippet.project.full_path}/-/snippets/#{project_snippet.id}/raw")
       end
     end
 
     describe '#gitlab_raw_snippet_blob_url' do
       let(:blob) { snippet.blobs.first }
       let(:ref)  { 'snippet-test-ref' }
+      let(:args) { {} }
 
-      context 'for a PersonalSnippet' do
+      subject { gitlab_raw_snippet_blob_url(snippet, blob.path, ref, args) }
+
+      it_behaves_like 'snippet blob raw url'
+
+      context 'when an argument is set' do
+        let(:args) { { inline: true } }
         let(:snippet) { personal_snippet }
 
-        it { expect(gitlab_raw_snippet_blob_url(snippet, blob.path, ref)).to eq("http://test.host/-/snippets/#{snippet.id}/raw/#{ref}/#{blob.path}") }
-      end
-
-      context 'for a ProjectSnippet' do
-        let(:snippet) { project_snippet }
-
-        it { expect(gitlab_raw_snippet_blob_url(snippet, blob.path, ref)).to eq("http://test.host/#{snippet.project.full_path}/-/snippets/#{snippet.id}/raw/#{ref}/#{blob.path}") }
+        it { expect(subject).to eq("http://test.host/-/snippets/#{snippet.id}/raw/#{ref}/#{blob.path}?inline=true") }
       end
 
       context 'without a ref' do
         let(:snippet) { personal_snippet }
-        let(:ref) { snippet.repository.root_ref }
+        let(:ref) { nil }
+        let(:expected_ref) { snippet.repository.root_ref }
 
         it 'uses the root ref' do
-          expect(gitlab_raw_snippet_blob_url(snippet, blob.path)).to eq("http://test.host/-/snippets/#{snippet.id}/raw/#{ref}/#{blob.path}")
+          expect(subject).to eq("http://test.host/-/snippets/#{snippet.id}/raw/#{expected_ref}/#{blob.path}")
         end
+      end
+    end
+
+    describe '#gitlab_raw_snippet_url' do
+      it 'returns the raw personal snippet url' do
+        expect(gitlab_raw_snippet_url(personal_snippet)).to eq("http://test.host/-/snippets/#{personal_snippet.id}/raw")
+      end
+
+      it 'returns the raw project snippet url' do
+        expect(gitlab_raw_snippet_url(project_snippet)).to eq("http://test.host/#{project_snippet.project.full_path}/-/snippets/#{project_snippet.id}/raw")
       end
     end
 
     describe '#gitlab_snippet_notes_path' do
       it 'returns the notes path for the personal snippet' do
-        expect(gitlab_snippet_notes_path(personal_snippet)).to eq("/snippets/#{personal_snippet.id}/notes")
+        expect(gitlab_snippet_notes_path(personal_snippet)).to eq("/-/snippets/#{personal_snippet.id}/notes")
       end
     end
 
     describe '#gitlab_snippet_notes_url' do
       it 'returns the notes url for the personal snippet' do
-        expect(gitlab_snippet_notes_url(personal_snippet)).to eq("http://test.host/snippets/#{personal_snippet.id}/notes")
+        expect(gitlab_snippet_notes_url(personal_snippet)).to eq("http://test.host/-/snippets/#{personal_snippet.id}/notes")
       end
     end
 
     describe '#gitlab_snippet_note_path' do
       it 'returns the note path for the personal snippet' do
-        expect(gitlab_snippet_note_path(personal_snippet, note)).to eq("/snippets/#{personal_snippet.id}/notes/#{note.id}")
+        expect(gitlab_snippet_note_path(personal_snippet, note)).to eq("/-/snippets/#{personal_snippet.id}/notes/#{note.id}")
       end
     end
 
     describe '#gitlab_snippet_note_url' do
       it 'returns the note url for the personal snippet' do
-        expect(gitlab_snippet_note_url(personal_snippet, note)).to eq("http://test.host/snippets/#{personal_snippet.id}/notes/#{note.id}")
+        expect(gitlab_snippet_note_url(personal_snippet, note)).to eq("http://test.host/-/snippets/#{personal_snippet.id}/notes/#{note.id}")
       end
     end
 
     describe '#gitlab_toggle_award_emoji_snippet_note_path' do
       it 'returns the note award emoji path for the personal snippet' do
-        expect(gitlab_toggle_award_emoji_snippet_note_path(personal_snippet, note)).to eq("/snippets/#{personal_snippet.id}/notes/#{note.id}/toggle_award_emoji")
+        expect(gitlab_toggle_award_emoji_snippet_note_path(personal_snippet, note)).to eq("/-/snippets/#{personal_snippet.id}/notes/#{note.id}/toggle_award_emoji")
       end
     end
 
     describe '#gitlab_toggle_award_emoji_snippet_note_url' do
       it 'returns the note award emoji url for the personal snippet' do
-        expect(gitlab_toggle_award_emoji_snippet_note_url(personal_snippet, note)).to eq("http://test.host/snippets/#{personal_snippet.id}/notes/#{note.id}/toggle_award_emoji")
+        expect(gitlab_toggle_award_emoji_snippet_note_url(personal_snippet, note)).to eq("http://test.host/-/snippets/#{personal_snippet.id}/notes/#{note.id}/toggle_award_emoji")
       end
     end
 
     describe '#gitlab_toggle_award_emoji_snippet_path' do
       it 'returns the award emoji path for the personal snippet' do
-        expect(gitlab_toggle_award_emoji_snippet_path(personal_snippet)).to eq("/snippets/#{personal_snippet.id}/toggle_award_emoji")
+        expect(gitlab_toggle_award_emoji_snippet_path(personal_snippet)).to eq("/-/snippets/#{personal_snippet.id}/toggle_award_emoji")
       end
     end
 
     describe '#gitlab_toggle_award_emoji_snippet_url' do
       it 'returns the award url for the personal snippet' do
-        expect(gitlab_toggle_award_emoji_snippet_url(personal_snippet)).to eq("http://test.host/snippets/#{personal_snippet.id}/toggle_award_emoji")
+        expect(gitlab_toggle_award_emoji_snippet_url(personal_snippet)).to eq("http://test.host/-/snippets/#{personal_snippet.id}/toggle_award_emoji")
       end
     end
 
@@ -288,7 +308,7 @@ RSpec.describe GitlabRoutingHelper do
       end
 
       it 'returns the project snippets dashboard path' do
-        expect(gitlab_dashboard_snippets_path(project_snippet)).to eq("/#{project_snippet.project.full_path}/snippets")
+        expect(gitlab_dashboard_snippets_path(project_snippet)).to eq("/#{project_snippet.project.full_path}/-/snippets")
       end
     end
   end

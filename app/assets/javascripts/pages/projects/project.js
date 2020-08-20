@@ -6,7 +6,7 @@ import { __ } from '~/locale';
 import { mergeUrlParams } from '~/lib/utils/url_utility';
 import { serializeForm } from '~/lib/utils/forms';
 import axios from '~/lib/utils/axios_utils';
-import flash from '~/flash';
+import { deprecatedCreateFlash as flash } from '~/flash';
 import projectSelect from '../../project_select';
 
 export default class Project {

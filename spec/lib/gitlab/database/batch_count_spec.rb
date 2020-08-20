@@ -13,9 +13,32 @@ RSpec.describe Gitlab::Database::BatchCount do
   let(:another_user) { create(:user) }
 
   before do
-    create_list(:issue, 3, author: user )
-    create_list(:issue, 2, author: another_user )
+    create_list(:issue, 3, author: user)
+    create_list(:issue, 2, author: another_user)
     allow(ActiveRecord::Base.connection).to receive(:transaction_open?).and_return(in_transaction)
+  end
+
+  shared_examples 'disallowed configurations' do |method|
+    it 'returns fallback if start is bigger than finish' do
+      expect(described_class.public_send(method, *args, start: 1, finish: 0)).to eq(fallback)
+    end
+
+    it 'returns fallback if loops more than allowed' do
+      large_finish = Gitlab::Database::BatchCounter::MAX_ALLOWED_LOOPS * default_batch_size + 1
+      expect(described_class.public_send(method, *args, start: 1, finish: large_finish)).to eq(fallback)
+    end
+
+    it 'returns fallback if batch size is less than min required' do
+      expect(described_class.public_send(method, *args, batch_size: small_batch_size)).to eq(fallback)
+    end
+  end
+
+  shared_examples 'when a transaction is open' do
+    let(:in_transaction) { true }
+
+    it 'raises an error' do
+      expect { subject }.to raise_error('BatchCount can not be run inside a transaction')
+    end
   end
 
   describe '#batch_count' do
@@ -53,38 +76,32 @@ RSpec.describe Gitlab::Database::BatchCount do
       [1, 2, 4, 5, 6].each { |i| expect(described_class.batch_count(model, batch_size: i)).to eq(5) }
     end
 
-    it 'will raise an error if distinct count is requested' do
-      expect do
-        described_class.batch_count(model.distinct(column))
-      end.to raise_error 'Use distinct count for optimized distinct counting'
-    end
-
-    context 'in a transaction' do
-      let(:in_transaction) { true }
-
-      it 'cannot count' do
-        expect do
-          described_class.batch_count(model)
-        end.to raise_error 'BatchCount can not be run inside a transaction'
-      end
-    end
-
     it 'counts with a start and finish' do
       expect(described_class.batch_count(model, start: model.minimum(:id), finish: model.maximum(:id))).to eq(5)
     end
 
-    context 'disallowed configurations' do
-      it 'returns fallback if start is bigger than finish' do
-        expect(described_class.batch_count(model, start: 1, finish: 0)).to eq(fallback)
+    it "defaults the batch size to #{Gitlab::Database::BatchCounter::DEFAULT_BATCH_SIZE}" do
+      min_id = model.minimum(:id)
+
+      expect_next_instance_of(Gitlab::Database::BatchCounter) do |batch_counter|
+        expect(batch_counter).to receive(:batch_fetch).with(min_id, Gitlab::Database::BatchCounter::DEFAULT_BATCH_SIZE + min_id, :itself).once.and_call_original
       end
 
-      it 'returns fallback if loops more than allowed' do
-        large_finish = Gitlab::Database::BatchCounter::MAX_ALLOWED_LOOPS * Gitlab::Database::BatchCounter::DEFAULT_BATCH_SIZE + 1
-        expect(described_class.batch_count(model, start: 1, finish: large_finish)).to eq(fallback)
+      described_class.batch_count(model)
+    end
+
+    it_behaves_like 'when a transaction is open' do
+      subject { described_class.batch_count(model) }
+    end
+
+    context 'disallowed_configurations' do
+      include_examples 'disallowed configurations', :batch_count do
+        let(:args) { [Issue] }
+        let(:default_batch_size) { Gitlab::Database::BatchCounter::DEFAULT_BATCH_SIZE }
       end
 
-      it 'returns fallback if batch size is less than min required' do
-        expect(described_class.batch_count(model, batch_size: small_batch_size)).to eq(fallback)
+      it 'raises an error if distinct count is requested' do
+        expect { described_class.batch_count(model.distinct(column)) }.to raise_error 'Use distinct count for optimized distinct counting'
       end
     end
   end
@@ -128,18 +145,24 @@ RSpec.describe Gitlab::Database::BatchCount do
       expect(described_class.batch_distinct_count(model, column, start: User.minimum(:id), finish: User.maximum(:id))).to eq(2)
     end
 
+    it "defaults the batch size to #{Gitlab::Database::BatchCounter::DEFAULT_DISTINCT_BATCH_SIZE}" do
+      min_id = model.minimum(:id)
+
+      expect_next_instance_of(Gitlab::Database::BatchCounter) do |batch_counter|
+        expect(batch_counter).to receive(:batch_fetch).with(min_id, Gitlab::Database::BatchCounter::DEFAULT_DISTINCT_BATCH_SIZE + min_id, :distinct).once.and_call_original
+      end
+
+      described_class.batch_distinct_count(model)
+    end
+
+    it_behaves_like 'when a transaction is open' do
+      subject { described_class.batch_distinct_count(model, column) }
+    end
+
     context 'disallowed configurations' do
-      it 'returns fallback if start is bigger than finish' do
-        expect(described_class.batch_distinct_count(model, column, start: 1, finish: 0)).to eq(fallback)
-      end
-
-      it 'returns fallback if loops more than allowed' do
-        large_finish = Gitlab::Database::BatchCounter::MAX_ALLOWED_LOOPS * Gitlab::Database::BatchCounter::DEFAULT_DISTINCT_BATCH_SIZE + 1
-        expect(described_class.batch_distinct_count(model, column, start: 1, finish: large_finish)).to eq(fallback)
-      end
-
-      it 'returns fallback if batch size is less than min required' do
-        expect(described_class.batch_distinct_count(model, column, batch_size: small_batch_size)).to eq(fallback)
+      include_examples 'disallowed configurations', :batch_distinct_count do
+        let(:args) { [model, column] }
+        let(:default_batch_size) { Gitlab::Database::BatchCounter::DEFAULT_DISTINCT_BATCH_SIZE }
       end
 
       it 'will raise an error if distinct count with the :id column is requested' do
@@ -147,6 +170,57 @@ RSpec.describe Gitlab::Database::BatchCount do
           described_class.batch_count(described_class.batch_distinct_count(model, :id))
         end.to raise_error 'Use distinct count only with non id fields'
       end
+    end
+  end
+
+  describe '#batch_sum' do
+    let(:column) { :weight }
+
+    before do
+      Issue.first.update_attribute(column, 3)
+      Issue.last.update_attribute(column, 4)
+    end
+
+    it 'returns the sum of values in the given column' do
+      expect(described_class.batch_sum(model, column)).to eq(7)
+    end
+
+    it 'works when given an Arel column' do
+      expect(described_class.batch_sum(model, model.arel_table[column])).to eq(7)
+    end
+
+    it 'works with a batch size of 50K' do
+      expect(described_class.batch_sum(model, column, batch_size: 50_000)).to eq(7)
+    end
+
+    it 'works with start and finish provided' do
+      expect(described_class.batch_sum(model, column, start: model.minimum(:id), finish: model.maximum(:id))).to eq(7)
+    end
+
+    it 'returns the same result regardless of batch size' do
+      stub_const('Gitlab::Database::BatchCounter::DEFAULT_SUM_BATCH_SIZE', 0)
+
+      (1..(model.count + 1)).each { |i| expect(described_class.batch_sum(model, column, batch_size: i)).to eq(7) }
+    end
+
+    it "defaults the batch size to #{Gitlab::Database::BatchCounter::DEFAULT_SUM_BATCH_SIZE}" do
+      min_id = model.minimum(:id)
+
+      expect_next_instance_of(Gitlab::Database::BatchCounter) do |batch_counter|
+        expect(batch_counter).to receive(:batch_fetch).with(min_id, Gitlab::Database::BatchCounter::DEFAULT_SUM_BATCH_SIZE + min_id, :itself).once.and_call_original
+      end
+
+      described_class.batch_sum(model, column)
+    end
+
+    it_behaves_like 'when a transaction is open' do
+      subject { described_class.batch_sum(model, column) }
+    end
+
+    it_behaves_like 'disallowed configurations', :batch_sum do
+      let(:args) { [model, column] }
+      let(:default_batch_size) { Gitlab::Database::BatchCounter::DEFAULT_SUM_BATCH_SIZE }
+      let(:small_batch_size) { Gitlab::Database::BatchCounter::DEFAULT_SUM_BATCH_SIZE - 1 }
     end
   end
 end

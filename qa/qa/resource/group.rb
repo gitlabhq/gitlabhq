@@ -18,10 +18,12 @@ module QA
       attribute :id
       attribute :name
       attribute :runners_token
+      attribute :require_two_factor_authentication
 
       def initialize
         @path = Runtime::Namespace.name
         @description = "QA test run at #{Runtime::Namespace.time}"
+        @require_two_factor_authentication = false
       end
 
       def fabricate!
@@ -72,7 +74,8 @@ module QA
           parent_id: sandbox.id,
           path: path,
           name: path,
-          visibility: 'public'
+          visibility: 'public',
+          require_two_factor_authentication: @require_two_factor_authentication
         }
       end
 

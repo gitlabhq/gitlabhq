@@ -19,5 +19,10 @@ module Types
     field :metrics_dashboard, Types::Metrics::DashboardType, null: true,
           description: 'Metrics dashboard schema for the environment',
           resolver: Resolvers::Metrics::DashboardResolver
+
+    field :latest_opened_most_severe_alert,
+          Types::AlertManagement::AlertType,
+          null: true,
+          description: 'The most severe open alert for the environment. If multiple alerts have equal severity, the most recent is returned.'
   end
 end

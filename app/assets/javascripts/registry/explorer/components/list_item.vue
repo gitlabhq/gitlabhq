@@ -70,7 +70,7 @@ export default {
       </div>
       <div class="gl-display-flex gl-flex-direction-column gl-flex-fill-1">
         <div
-          class="gl-display-flex gl-align-items-center gl-justify-content-space-between gl-text-black-normal gl-font-weight-bold"
+          class="gl-display-flex gl-align-items-center gl-justify-content-space-between gl-text-body gl-font-weight-bold"
         >
           <div class="gl-display-flex gl-align-items-center">
             <slot name="left-primary"></slot>
@@ -88,7 +88,7 @@ export default {
           </div>
         </div>
         <div
-          class="gl-display-flex gl-align-items-center gl-justify-content-space-between gl-font-sm gl-text-gray-500"
+          class="gl-display-flex gl-align-items-center gl-justify-content-space-between gl-font-sm gl-text-gray-300"
         >
           <div>
             <slot name="left-secondary"></slot>

@@ -17,11 +17,14 @@ RSpec.shared_examples 'UpdateProjectStatistics' do
 
   context 'when creating' do
     it 'updates the project statistics' do
-      delta = read_attribute
+      delta0 = reload_stat
 
-      expect { subject.save! }
-        .to change { reload_stat }
-        .by(delta)
+      subject.save!
+
+      delta1 = reload_stat
+
+      expect(delta1).to eq(delta0 + read_attribute)
+      expect(delta1).to be > delta0
     end
 
     it 'schedules a namespace statistics worker' do
@@ -80,15 +83,14 @@ RSpec.shared_examples 'UpdateProjectStatistics' do
     end
 
     it 'updates the project statistics' do
-      delta = -read_attribute
+      delta0 = reload_stat
 
-      expect(ProjectStatistics)
-        .to receive(:increment_statistic)
-        .and_call_original
+      subject.destroy!
 
-      expect { subject.destroy! }
-        .to change { reload_stat }
-        .by(delta)
+      delta1 = reload_stat
+
+      expect(delta1).to eq(delta0 - read_attribute)
+      expect(delta1).to be < delta0
     end
 
     it 'schedules a namespace statistics worker' do

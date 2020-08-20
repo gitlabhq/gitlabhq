@@ -29,7 +29,10 @@ gitlab.com ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAA
 ## Mail configuration
 
 GitLab.com sends emails from the `mg.gitlab.com` domain via [Mailgun](https://www.mailgun.com/) and has
-its own dedicated IP address (`198.61.254.240`).
+its own dedicated IP address (`192.237.158.143`).
+
+NOTE: **Note:**
+The IP address for `mg.gitlab.com` is subject to change at any time.
 
 ## Backups
 
@@ -81,6 +84,7 @@ Below are the current settings regarding [GitLab CI/CD](../../ci/README.md).
 | Artifacts [expiry time](../../ci/yaml/README.md#artifactsexpire_in)   | From June 22, 2020, deleted after 30 days unless otherwise specified (artifacts created before that date have no expiry).           | deleted after 30 days unless otherwise specified    |
 | Scheduled Pipeline Cron | `*/5 * * * *` | `19 * * * *` |
 | [Max jobs in active pipelines](../../administration/instance_limits.md#number-of-jobs-in-active-pipelines) | `500` for Free tier, unlimited otherwise | Unlimited
+| [Max CI/CD subscriptions to a project](../../administration/instance_limits.md#number-of-cicd-subscriptions-to-a-project) | `2` | Unlimited |
 | [Max pipeline schedules in projects](../../administration/instance_limits.md#number-of-pipeline-schedules) | `10` for Free tier, `50` for all paid tiers | Unlimited |
 | [Max number of instance level variables](../../administration/instance_limits.md#number-of-instance-level-variables) | `25` | `25` |
 | [Scheduled Job Archival](../../user/admin_area/settings/continuous_integration.md#archive-jobs-core-only) | 3 months | Never |
@@ -112,12 +116,13 @@ All our runners are deployed into Google Cloud Platform (GCP) - any IP based
 firewall can be configured by looking up all
 [IP address ranges or CIDR blocks for GCP](https://cloud.google.com/compute/docs/faq#where_can_i_find_product_name_short_ip_ranges).
 
-## Maximum number of webhooks
+## Webhooks
 
 A limit of:
 
 - 100 webhooks applies to projects.
 - 50 webhooks applies to groups. **(BRONZE ONLY)**
+- Payload is limited to 25MB
 
 ## Shared Runners
 
@@ -212,10 +217,6 @@ sentry_dsn = "X"
   [runners.machine]
     IdleCount = 50
     IdleTime = 3600
-    OffPeakPeriods = ["* * * * * sat,sun *"]
-    OffPeakTimezone = "UTC"
-    OffPeakIdleCount = 15
-    OffPeakIdleTime = 3600
     MaxBuilds = 1 # For security reasons we delete the VM after job has finished so it's not reused.
     MachineName = "srm-%s"
     MachineDriver = "google"
@@ -233,6 +234,16 @@ sentry_dsn = "X"
       "engine-opt=fixed-cidr-v6=fc00::/7",
       "google-operation-backoff-initial-interval=2" # Custom flag from forked docker-machine, for more information check https://github.com/docker/machine/pull/4600
     ]
+    [[runners.machine.autoscaling]]
+      Periods = ["* * * * * sat,sun *"]
+      Timezone = "UTC"
+      IdleCount = 70
+      IdleTime = 3600
+    [[runners.machine.autoscaling]]
+      Periods = ["* 30-59 3 * * * *", "* 0-30 4 * * * *"]
+      Timezone = "UTC"
+      IdleCount = 700
+      IdleTime = 3600
   [runners.cache]
     Type = "gcs"
     Shared = true

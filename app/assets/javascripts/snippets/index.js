@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import Translate from '~/vue_shared/translate';
 import VueApollo from 'vue-apollo';
+import Translate from '~/vue_shared/translate';
 import createDefaultClient from '~/lib/graphql';
 
 import SnippetsShow from './components/show.vue';
@@ -38,5 +38,3 @@ export const SnippetShowInit = () => {
 export const SnippetEditInit = () => {
   appFactory(document.getElementById('js-snippet-edit'), SnippetsEdit);
 };
-
-export default () => {};

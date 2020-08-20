@@ -184,7 +184,7 @@ Parameters:
 | `id`                          | integer/string | yes      | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `archived`                    | boolean        | no       | Limit by archived status |
 | `visibility`                  | string         | no       | Limit by visibility `public`, `internal`, or `private` |
-| `order_by`                    | string         | no       | Return projects ordered by `id`, `name`, `path`, `created_at`, `updated_at`, or `last_activity_at` fields. Default is `created_at` |
+| `order_by`                    | string         | no       | Return projects ordered by `id`, `name`, `path`, `created_at`, `updated_at`, `similarity` (1), or `last_activity_at` fields. Default is `created_at` |
 | `sort`                        | string         | no       | Return projects sorted in `asc` or `desc` order. Default is `desc` |
 | `search`                      | string         | no       | Return list of authorized projects matching the search criteria |
 | `simple`                      | boolean        | no       | Return only the ID, URL, name, and path of each project |
@@ -197,6 +197,13 @@ Parameters:
 | `min_access_level`            | integer        | no       | Limit to projects where current user has at least this [access level](members.md#valid-access-levels) |
 | `with_custom_attributes`      | boolean        | no       | Include [custom attributes](custom_attributes.md) in response (admins only) |
 | `with_security_reports`       | boolean        | no       | **(ULTIMATE)** Return only projects that have security reports artifacts present in any of their builds. This means "projects with security reports enabled". Default is `false` |
+
+1. Order by similarity: Orders the results by a similarity score calculated from the provided `search`
+URL parameter. This is an [alpha](https://about.gitlab.com/handbook/product/gitlab-the-product/#alpha) feature [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/221043) in GitLab 13.3.
+
+   The feature is behind a feature flag, you can [enable it](../administration/feature_flags.md#enable-or-disable-the-feature)
+with the `similarity_search` flag. When using `order_by=similarity` the `sort` parameter is
+ignored. When the `search` parameter is not provided, the API returns the projects ordered by `name`.
 
 Example response:
 
@@ -743,6 +750,7 @@ PUT /groups/:id
 | `file_template_project_id`           | integer | no       | **(PREMIUM)** The ID of a project to load custom file templates from. |
 | `shared_runners_minutes_limit`       | integer | no       | **(STARTER ONLY)** Pipeline minutes quota for this group (included in plan). Can be `nil` (default; inherit system default), `0` (unlimited) or `> 0` |
 | `extra_shared_runners_minutes_limit` | integer | no       | **(STARTER ONLY)** Extra pipeline minutes quota for this group (purchased in addition to the minutes included in the plan). |
+| `prevent_forking_outside_group`      | boolean | no       | **(PREMIUM)** When enabled, users can **not** fork projects from this group to external namespaces
 
 NOTE: **Note:**
 The `projects` and `shared_projects` attributes in the response are deprecated and will be [removed in API v5](https://gitlab.com/gitlab-org/gitlab/-/issues/213797).
@@ -839,7 +847,7 @@ Only available to group owners and administrators.
 This endpoint either:
 
 - Removes group, and queues a background job to delete all projects in the group as well.
-- Since [GitLab 12.8](https://gitlab.com/gitlab-org/gitlab/-/issues/33257), on [Premium or Silver](https://about.gitlab.com/pricing/) or higher tiers, marks a group for deletion. The deletion will happen 7 days later by default, but this can be changed in the [instance settings](../user/admin_area/settings/visibility_and_access_controls.md#default-deletion-adjourned-period-premium-only).
+- Since [GitLab 12.8](https://gitlab.com/gitlab-org/gitlab/-/issues/33257), on [Premium or Silver](https://about.gitlab.com/pricing/) or higher tiers, marks a group for deletion. The deletion will happen 7 days later by default, but this can be changed in the [instance settings](../user/admin_area/settings/visibility_and_access_controls.md#default-deletion-delay-premium-only).
 
 ```plaintext
 DELETE /groups/:id
@@ -1156,3 +1164,46 @@ DELETE /groups/:id/share/:group_id
 | --------- | -------------- | -------- | ----------- |
 | `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) |
 | `group_id` | integer | yes | The ID of the group to share with |
+
+## Push Rules **(STARTER)**
+
+### Get group push rules
+
+Get the [push rules](../user/group/index.md#group-push-rules-starter) of a group.
+
+```plaintext
+GET /groups/:id/push_rule
+```
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id` | integer/string | yes | The ID of the group or [URL-encoded path of the group](README.md#namespaced-path-encoding) |
+
+```json
+{
+  "id": 2,
+  "created_at": "2020-08-17T19:09:19.580Z",
+  "commit_message_regex": "[a-zA-Z]",
+  "commit_message_negative_regex": "[x+]",
+  "branch_name_regex": "[a-z]",
+  "deny_delete_tag": true,
+  "member_check": true,
+  "prevent_secrets": true,
+  "author_email_regex": "^[A-Za-z0-9.]+@gitlab.com$",
+  "file_name_regex": "(exe)$",
+  "max_file_size": 100
+}
+```
+
+Users on GitLab [Premium, Silver, or higher](https://about.gitlab.com/pricing/) will also see
+the `commit_committer_check` and `reject_unsigned_commits` parameters:
+
+```json
+{
+  "id": 2,
+  "created_at": "2020-08-17T19:09:19.580Z",
+  "commit_committer_check": true,
+  "reject_unsigned_commits": false,
+  ...
+}
+```

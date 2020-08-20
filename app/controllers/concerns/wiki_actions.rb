@@ -8,6 +8,8 @@ module WikiActions
   extend ActiveSupport::Concern
 
   included do
+    before_action { respond_to :html }
+
     before_action :authorize_read_wiki!
     before_action :authorize_create_wiki!, only: [:edit, :create]
     before_action :authorize_admin_wiki!, only: :destroy
@@ -65,6 +67,8 @@ module WikiActions
       @ref = params[:version_id]
       @path = page.path
 
+      Gitlab::UsageDataCounters::WikiPageCounter.count(:view)
+
       render 'shared/wikis/show'
     elsif file_blob
       send_blob(wiki.repository, file_blob)
@@ -107,14 +111,16 @@ module WikiActions
 
   # rubocop:disable Gitlab/ModuleWithInstanceVariables
   def create
-    @page = WikiPages::CreateService.new(container: container, current_user: current_user, params: wiki_params).execute
+    response = WikiPages::CreateService.new(container: container, current_user: current_user, params: wiki_params).execute
+    @page = response.payload[:page]
 
-    if page.persisted?
+    if response.success?
       redirect_to(
         wiki_page_path(wiki, page),
         notice: _('Wiki was successfully updated.')
       )
     else
+      flash[:alert] = response.message
       render 'shared/wikis/edit'
     end
   rescue Gitlab::Git::Wiki::OperationError => e

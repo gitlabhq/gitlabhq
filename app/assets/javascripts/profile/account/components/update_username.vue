@@ -3,7 +3,7 @@ import { escape } from 'lodash';
 import axios from '~/lib/utils/axios_utils';
 import DeprecatedModal2 from '~/vue_shared/components/deprecated_modal_2.vue';
 import { s__, sprintf } from '~/locale';
-import Flash from '~/flash';
+import { deprecatedCreateFlash as Flash } from '~/flash';
 
 export default {
   components: {

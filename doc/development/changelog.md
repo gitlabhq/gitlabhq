@@ -37,6 +37,8 @@ the `author` field. GitLab team members **should not**.
 - Any user-facing change **should** have a changelog entry. Example: "GitLab now
   uses system fonts for all text."
 - Performance improvements **should** have a changelog entry.
+- Changes that need to be documented in the Telemetry [Event Dictionary](telemetry/event_dictionary.md)
+  also require a changelog entry.
 - _Any_ contribution from a community member, no matter how small, **may** have
   a changelog entry regardless of these guidelines if the contributor wants one.
   Example: "Fixed a typo on the search results page."

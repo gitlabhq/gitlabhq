@@ -39,7 +39,7 @@ module Projects
 
           render json: serialize_as_json(@alert)
         else
-          head :no_content
+          head :bad_request
         end
       end
 
@@ -49,7 +49,7 @@ module Projects
 
           render json: serialize_as_json(alert)
         else
-          head :no_content
+          head :bad_request
         end
       end
 
@@ -59,14 +59,14 @@ module Projects
 
           head :ok
         else
-          head :no_content
+          head :bad_request
         end
       end
 
       private
 
       def alerts_params
-        params.permit(:operator, :threshold, :environment_id, :prometheus_metric_id)
+        params.permit(:operator, :threshold, :environment_id, :prometheus_metric_id, :runbook_url)
       end
 
       def notify_service

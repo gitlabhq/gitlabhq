@@ -28,7 +28,8 @@ RSpec.describe Projects::AlertManagementHelper do
         expect(helper.alert_management_data(current_user, project)).to match(
           'project-path' => project_path,
           'enable-alert-management-path' => setting_path,
-          'populating-alerts-help-url' => 'http://test.host/help/user/project/operations/alert_management.html#enable-alert-management',
+          'alerts-help-url' => 'http://test.host/help/operations/incident_management/index.md',
+          'populating-alerts-help-url' => 'http://test.host/help/operations/incident_management/index.md#enable-alert-management',
           'empty-alert-svg-path' => match_asset_path('/assets/illustrations/alert-management-empty-state.svg'),
           'user-can-enable-alert-management' => 'true',
           'alert-management-enabled' => 'false'
@@ -49,7 +50,7 @@ RSpec.describe Projects::AlertManagementHelper do
 
       context 'when alerts service is inactive' do
         it 'disables alert management' do
-          alerts_service.update(active: false)
+          alerts_service.update!(active: false)
 
           expect(data).to include(
             'alert-management-enabled' => 'false'

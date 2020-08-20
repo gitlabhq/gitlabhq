@@ -34,7 +34,7 @@ Follow these steps to enable SSL for your fresh instance. Note that these steps 
 
    ```ruby
    # Update external_url from "http" to "https"
-   external_url "https://example.gitlab.com"
+   external_url "https://gitlab.example.com"
 
    # Set Let's Encrypt to false
    letsencrypt['enable'] = false
@@ -64,8 +64,8 @@ Follow these steps to enable the container registry. Note that these steps refle
 
    ```ruby
    # Change external_registry_url to match external_url, but append the port 4567
-   external_url "https://example.gitlab.com"
-   registry_external_url "https://example.gitlab.com:4567"
+   external_url "https://gitlab.example.com"
+   registry_external_url "https://gitlab.example.com:4567"
    ```
 
 1. Reconfigure your instance to apply the changes:

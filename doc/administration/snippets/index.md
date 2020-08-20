@@ -1,5 +1,8 @@
 ---
 type: reference, howto
+stage: Create
+group: Editor
+info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers"
 ---
 
 # Snippets settings **(CORE ONLY)**
@@ -10,15 +13,15 @@ Adjust the snippets' settings of your GitLab instance.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/31133) in GitLab 12.6.
 
-You can set a content size max limit in snippets. This limit can prevent
-abuses of the feature. The default content size limit is **52428800 Bytes** (50MB).
+You can set a maximum content size limit for snippets. This limit can prevent
+abuse of the feature. The default value is **52428800 Bytes** (50 MB).
 
 ### How does it work?
 
-The content size limit will be applied when a snippet is created or
-updated. Nevertheless, in order not to break any existing snippet,
-the limit will only be enforced in stored snippets when the content
-is updated.
+The content size limit will be applied when a snippet is created or updated.
+
+In order not to break any existing snippets, the limit doesn't have any
+effect on them until a snippet is edited again and the content changes.
 
 ### Snippets size limit configuration
 
@@ -27,7 +30,7 @@ In order to configure this setting, use either the Rails console
 or the [Application settings API](../../api/settings.md).
 
 NOTE: **IMPORTANT:**
-The value of the limit **must** be in Bytes.
+The value of the limit **must** be in bytes.
 
 #### Through the Rails console
 

@@ -1,5 +1,4 @@
 <script>
-import eventHub from '../event_hub';
 import {
   GlFormGroup,
   GlFormCheckbox,
@@ -9,6 +8,7 @@ import {
   GlButton,
   GlCard,
 } from '@gitlab/ui';
+import eventHub from '../event_hub';
 
 export default {
   name: 'JiraIssuesFields',

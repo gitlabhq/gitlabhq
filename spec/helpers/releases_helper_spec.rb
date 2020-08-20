@@ -80,6 +80,7 @@ RSpec.describe ReleasesHelper do
     describe '#data_for_new_release_page' do
       it 'has the needed data to display the "new release" page' do
         keys = %i(project_id
+                  releases_page_path
                   markdown_preview_path
                   markdown_docs_path
                   update_release_api_docs_path

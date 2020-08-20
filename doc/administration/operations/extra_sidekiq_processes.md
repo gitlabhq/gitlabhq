@@ -82,7 +82,7 @@ To start multiple processes:
    ```
 
 After the extra Sidekiq processes are added, navigate to
-**{admin}** **Admin Area > Monitoring > Background Jobs** (`/admin/background_jobs`) in GitLab.
+**Admin Area > Monitoring > Background Jobs** (`/admin/background_jobs`) in GitLab.
 
 ![Multiple Sidekiq processes](img/sidekiq-cluster.png)
 

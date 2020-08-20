@@ -16,6 +16,12 @@ Due to [an issue](https://gitlab.com/gitlab-org/gitlab/-/issues/219299),
 projects in personal namespaces will not show owner (`50`) permission
 for owner.
 
+## Limitations
+
+The `group_saml_identity` attribute is only visible to a group owner for [SSO enabled groups](../user/group/saml_sso/index.md).
+
+The `email` attribute is only visible to a group owner who manages the user through [Group Managed Accounts](../user/group/saml_sso/group_managed_accounts.md).
+
 ## List all members of a group or project
 
 Gets a list of group or project members viewable by the authenticated user.
@@ -172,6 +178,7 @@ Example response:
   "avatar_url": "https://www.gravatar.com/avatar/c2525a7f58ae3776070e44c106c48e15?s=80&d=identicon",
   "web_url": "http://192.168.1.8:3000/root",
   "access_level": 30,
+  "email": "john@example.com",
   "expires_at": null,
   "group_saml_identity": null
 }
@@ -209,6 +216,7 @@ Example response:
   "avatar_url": "https://www.gravatar.com/avatar/c2525a7f58ae3776070e44c106c48e15?s=80&d=identicon",
   "web_url": "http://192.168.1.8:3000/root",
   "access_level": 30,
+  "email": "john@example.com",
   "expires_at": null,
   "group_saml_identity": null
 }
@@ -247,6 +255,7 @@ Example response:
   "web_url": "http://192.168.1.8:3000/root",
   "expires_at": "2012-10-22T14:13:35Z",
   "access_level": 30,
+  "email": "john@example.com",
   "group_saml_identity": null
 }
 ```
@@ -284,6 +293,7 @@ Example response:
   "web_url": "http://192.168.1.8:3000/root",
   "expires_at": "2012-10-22T14:13:35Z",
   "access_level": 40,
+  "email": "john@example.com",
   "group_saml_identity": null
 }
 ```
@@ -320,6 +330,7 @@ Example response:
   "web_url": "http://192.168.1.8:3000/root",
   "expires_at": "2012-10-22T14:13:35Z",
   "access_level": 40,
+  "email": "john@example.com",
   "override": true
 }
 ```
@@ -356,6 +367,7 @@ Example response:
   "web_url": "http://192.168.1.8:3000/root",
   "expires_at": "2012-10-22T14:13:35Z",
   "access_level": 40,
+  "email": "john@example.com",
   "override": false
 }
 ```

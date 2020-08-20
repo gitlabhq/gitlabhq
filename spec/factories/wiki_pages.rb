@@ -31,7 +31,8 @@ FactoryBot.define do
     end
 
     to_create do |page, evaluator|
-      page.create(message: evaluator.message)
+      # WikiPages is ActiveModel which doesn't support `create!`.
+      page.create(message: evaluator.message) # rubocop:disable Rails/SaveBang
     end
   end
 

@@ -49,11 +49,11 @@ class TodoService
     todo_users.each(&:update_todos_count_cache)
   end
 
-  # When we reassign an issuable we should:
+  # When we reassign an assignable object (issuable, alert) we should:
   #
-  #  * create a pending todo for new assignee if issuable is assigned
+  #  * create a pending todo for new assignee if object is assigned
   #
-  def reassigned_issuable(issuable, current_user, old_assignees = [])
+  def reassigned_assignable(issuable, current_user, old_assignees = [])
     create_assignment_todo(issuable, current_user, old_assignees)
   end
 
@@ -152,14 +152,6 @@ class TodoService
   #
   def new_award_emoji(awardable, current_user)
     resolve_todos_for_target(awardable, current_user)
-  end
-
-  # When assigning an alert we should:
-  #
-  #  * create a pending todo for new assignee if alert is assigned
-  #
-  def assign_alert(alert, current_user)
-    create_assignment_todo(alert, current_user, [])
   end
 
   # When user marks a target as todo

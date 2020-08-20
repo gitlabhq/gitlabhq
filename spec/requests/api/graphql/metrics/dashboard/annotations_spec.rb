@@ -30,22 +30,22 @@ RSpec.describe 'Getting Metrics Dashboard Annotations' do
 
   let(:query) do
     %(
-          query {
-            project(fullPath:"#{project.full_path}") {
-              environments(name: "#{environment.name}") {
-                nodes {
-                  metricsDashboard(path: "#{path}"){
-                    annotations(#{args}){
-                      nodes {
-                        #{fields}
-                      }
-                    }
+      query {
+        project(fullPath: "#{project.full_path}") {
+          environments(name: "#{environment.name}") {
+            nodes {
+              metricsDashboard(path: "#{path}") {
+                annotations(#{args}) {
+                  nodes {
+                    #{fields}
                   }
                 }
               }
             }
           }
-        )
+        }
+      }
+    )
   end
 
   before do

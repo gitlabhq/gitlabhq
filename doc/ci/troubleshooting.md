@@ -7,6 +7,24 @@ type: reference
 
 # Troubleshooting CI/CD
 
+## Pipeline warnings
+
+Pipeline configuration warnings are shown when you:
+
+- [View pipeline details](pipelines/index.md#view-pipelines).
+- [Validate configuration with the CI Lint tool](yaml/README.md#validate-the-gitlab-ciyml).
+- [Manually run a pipeline](pipelines/index.md#run-a-pipeline-manually).
+
+### "Job may allow multiple pipelines to run for a single action"
+
+When you use [`rules`](yaml/README.md#rules) with a `when:` clause without
+an `if:` clause, multiple pipelines may run. Usually
+this occurs when you push a commit to a branch that has an open merge request associated with it.
+
+To [prevent duplicate pipelines](yaml/README.md#prevent-duplicate-pipelines), use
+[`workflow: rules`](yaml/README.md#workflowrules) or rewrite your rules
+to control which pipelines can run.
+
 ## Merge request pipeline widget
 
 The merge request pipeline widget shows information about the pipeline status in a Merge Request. It's displayed above the [merge request ability to merge widget](#merge-request-ability-to-merge-widget).
@@ -15,15 +33,14 @@ There are several messages that can be displayed depending on the status of the 
 
 ### "Checking pipeline status"
 
-This message is shown when the merge request has no pipeline associated with the latest commit yet and [Pipelines must succeed](../user/project/merge_requests/merge_when_pipeline_succeeds.md#only-allow-merge-requests-to-be-merged-if-the-pipeline-succeeds) is turned on. This might be because:
+This message is shown when the merge request has no pipeline associated with the latest commit yet. This might be because:
 
 - GitLab hasn't finished creating the pipeline yet.
 - You are using an external CI service and GitLab hasn't heard back from the service yet.
 - You are not using CI/CD pipelines in your project.
+- The latest pipeline was deleted (this is a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/214323)).
 
 After the pipeline is created, the message will update with the pipeline status.
-
-Note: Currently if you delete the latest pipeline of a Merge Request, this message will be shown instead of a meaningful error message. This is a known issue and should be resolved soon.
 
 ## Merge request ability to merge widget
 

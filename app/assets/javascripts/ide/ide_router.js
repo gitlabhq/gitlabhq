@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import IdeRouter from '~/ide/ide_router_extension';
 import { joinPaths } from '~/lib/utils/url_utility';
-import flash from '~/flash';
+import { deprecatedCreateFlash as flash } from '~/flash';
 import { __ } from '~/locale';
 import { syncRouterAndStore } from './sync_router_and_store';
 

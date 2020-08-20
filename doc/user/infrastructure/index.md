@@ -50,7 +50,7 @@ If you plan to only run `terraform plan` and `terraform apply` commands from you
 local machine, this is a simple way to get started:
 
 1. Create your project on your GitLab instance.
-1. Navigate to **{settings}** **Settings > General** and note your **Project name**
+1. Navigate to **Settings > General** and note your **Project name**
    and **Project ID**.
 1. Define the Terraform backend in your Terraform project to be:
 
@@ -65,16 +65,16 @@ local machine, this is a simple way to get started:
    the `api` scope.
 
 1. On your local machine, run `terraform init`, passing in the following options,
-   replacing `<YOUR-PROJECT-NAME>`, `<YOUR-PROJECT-ID>`,  `<YOUR-USERNAME>` and
+   replacing `<YOUR-STATE-NAME>`, `<YOUR-PROJECT-ID>`,  `<YOUR-USERNAME>` and
    `<YOUR-ACCESS-TOKEN>` with the relevant values. This command initializes your
    Terraform state, and stores that state within your GitLab project. This example
    uses `gitlab.com`:
 
    ```shell
    terraform init \
-       -backend-config="address=https://gitlab.com/api/v4/projects/<YOUR-PROJECT-ID>/terraform/state/<YOUR-PROJECT-NAME>" \
-       -backend-config="lock_address=https://gitlab.com/api/v4/projects/<YOUR-PROJECT-ID>/terraform/state/<YOUR-PROJECT-NAME>/lock" \
-       -backend-config="unlock_address=https://gitlab.com/api/v4/projects/<YOUR-PROJECT-ID>/terraform/state/<YOUR-PROJECT-NAME>/lock" \
+       -backend-config="address=https://gitlab.com/api/v4/projects/<YOUR-PROJECT-ID>/terraform/state/<YOUR-STATE-NAME>" \
+       -backend-config="lock_address=https://gitlab.com/api/v4/projects/<YOUR-PROJECT-ID>/terraform/state/<YOUR-STATE-NAME>/lock" \
+       -backend-config="unlock_address=https://gitlab.com/api/v4/projects/<YOUR-PROJECT-ID>/terraform/state/<YOUR-STATE-NAME>/lock" \
        -backend-config="username=<YOUR-USERNAME>" \
        -backend-config="password=<YOUR-ACCESS-TOKEN>" \
        -backend-config="lock_method=POST" \
@@ -82,7 +82,7 @@ local machine, this is a simple way to get started:
        -backend-config="retry_wait_min=5"
    ```
 
-Next, [configure the backend](#configure-the-backend).
+You can now run `terraform plan` and `terraform apply` as you normally would.
 
 ## Get started using GitLab CI
 
@@ -121,17 +121,18 @@ and the CI YAML file:
    commands must be executed, `TF_ADDRESS` is the URL to the state on the GitLab
    instance where this pipeline runs, and the final path segment in `TF_ADDRESS`
    is the name of the Terraform state. Projects may have multiple states, and
-   this name is arbitrary, so in this example we will set it to the name of the
-   project, and we will ensure that the `.terraform` directory is cached between
-   jobs in the pipeline using a cache key based on the state name:
+   this name is arbitrary, so in this example we set it to `example-production`
+   which corresponds with the directory we're using as our `TF_ROOT`, and we
+   ensure that the `.terraform` directory is cached between jobs in the pipeline
+   using a cache key based on the state name (`example-production`):
 
    ```yaml
    variables:
-     TF_ROOT: ${CI_PROJECT_DIR}/environments/cloudflare/production
-     TF_ADDRESS: ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/terraform/state/${CI_PROJECT_NAME}
+     TF_ROOT: ${CI_PROJECT_DIR}/environments/example/production
+     TF_ADDRESS: ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/terraform/state/example-production
 
    cache:
-     key: ${CI_PROJECT_NAME}
+     key: example-production
      paths:
        - ${TF_ROOT}/.terraform
    ```
@@ -189,9 +190,112 @@ and the CI YAML file:
 
 The output from the above `terraform` commands should be viewable in the job logs.
 
+CAUTION: **Caution:**
+Like any other job artifact, Terraform plan data is [viewable by anyone with Guest access](../permissions.md) to the repository.
+Neither Terraform nor GitLab encrypts the plan file by default. If your Terraform plan
+includes sensitive data such as passwords, access tokens, or certificates, GitLab strongly
+recommends encrypting plan output or modifying the project visibility settings.
+
 ## Example project
 
 See [this reference project](https://gitlab.com/nicholasklick/gitlab-terraform-aws) using GitLab and Terraform to deploy a basic AWS EC2 within a custom VPC.
+
+## Copy Terraform state between backends
+
+Terraform supports copying the state when the backend is changed or
+reconfigured. This can be useful if you need to migrate from another backend to
+GitLab managed Terraform state. It's also useful if you need to change the state
+name as in the following example:
+
+```shell
+PROJECT_ID="<gitlab-project-id>"
+TF_USERNAME="<gitlab-username>"
+TF_PASSWORD="<gitlab-personal-access-token>"
+TF_ADDRESS="https://gitlab.com/api/v4/projects/${PROJECT_ID}/terraform/state/old-state-name"
+
+terraform init \
+  -backend-config=address=${TF_ADDRESS} \
+  -backend-config=lock_address=${TF_ADDRESS}/lock \
+  -backend-config=unlock_address=${TF_ADDRESS}/lock \
+  -backend-config=username=${TF_USERNAME} \
+  -backend-config=password=${TF_PASSWORD} \
+  -backend-config=lock_method=POST \
+  -backend-config=unlock_method=DELETE \
+  -backend-config=retry_wait_min=5
+```
+
+```plaintext
+Initializing the backend...
+
+Successfully configured the backend "http"! Terraform will automatically
+use this backend unless the backend configuration changes.
+
+Initializing provider plugins...
+
+Terraform has been successfully initialized!
+
+You may now begin working with Terraform. Try running "terraform plan" to see
+any changes that are required for your infrastructure. All Terraform commands
+should now work.
+
+If you ever set or change modules or backend configuration for Terraform,
+rerun this command to reinitialize your working directory. If you forget, other
+commands will detect it and remind you to do so if necessary.
+```
+
+Now that `terraform init` has created a `.terraform/` directory that knows where
+the old state is, you can tell it about the new location:
+
+```shell
+TF_ADDRESS="https://gitlab.com/api/v4/projects/${PROJECT_ID}/terraform/state/new-state-name"
+
+terraform init \
+  -backend-config=address=${TF_ADDRESS} \
+  -backend-config=lock_address=${TF_ADDRESS}/lock \
+  -backend-config=unlock_address=${TF_ADDRESS}/lock \
+  -backend-config=username=${TF_USERNAME} \
+  -backend-config=password=${TF_PASSWORD} \
+  -backend-config=lock_method=POST \
+  -backend-config=unlock_method=DELETE \
+  -backend-config=retry_wait_min=5
+```
+
+```plaintext
+Initializing the backend...
+Backend configuration changed!
+
+Terraform has detected that the configuration specified for the backend
+has changed. Terraform will now check for existing state in the backends.
+
+
+Acquiring state lock. This may take a few moments...
+Do you want to copy existing state to the new backend?
+  Pre-existing state was found while migrating the previous "http" backend to the
+  newly configured "http" backend. No existing state was found in the newly
+  configured "http" backend. Do you want to copy this state to the new "http"
+  backend? Enter "yes" to copy and "no" to start with an empty state.
+
+  Enter a value: yes
+
+
+Successfully configured the backend "http"! Terraform will automatically
+use this backend unless the backend configuration changes.
+
+Initializing provider plugins...
+
+Terraform has been successfully initialized!
+
+You may now begin working with Terraform. Try running "terraform plan" to see
+any changes that are required for your infrastructure. All Terraform commands
+should now work.
+
+If you ever set or change modules or backend configuration for Terraform,
+rerun this command to reinitialize your working directory. If you forget, other
+commands will detect it and remind you to do so if necessary.
+```
+
+If you type `yes`, it will copy your state from the old location to the new
+location. You can then go back to running it from within GitLab CI.
 
 ## Output Terraform Plan information into a merge request
 
@@ -275,11 +379,11 @@ can configure this manually as follows:
 image: registry.gitlab.com/gitlab-org/terraform-images/stable:latest
 
 variables:
-  TF_ROOT: ${CI_PROJECT_DIR}/environments/cloudflare/production
-  TF_ADDRESS: ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/terraform/state/${CI_PROJECT_NAME}
+  TF_ROOT: ${CI_PROJECT_DIR}/environments/example/production
+  TF_ADDRESS: ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/terraform/state/example-production
 
 cache:
-  key: ${CI_PROJECT_NAME}
+  key: example-production
   paths:
     - ${TF_ROOT}/.terraform
 
@@ -329,7 +433,7 @@ apply:
 
 ### Multiple Terraform Plan reports
 
-Starting with 13.2, you can display mutiple reports on the Merge Request page. The reports will also display the `artifact: name:`. See example below for a suggested setup.
+Starting with 13.2, you can display mutiple reports on the Merge Request page. The reports will also display the `artifacts: name:`. See example below for a suggested setup.
 
 ```yaml
 image:
@@ -383,3 +487,47 @@ production_plan:
   artifacts:
     name: Production
 ```
+
+## Using a GitLab managed Terraform state backend as a remote data source
+
+You can use a GitLab-managed Terraform state as a
+[Terraform data source](https://www.terraform.io/docs/providers/terraform/d/remote_state.html).
+To use your existing Terraform state backend as a data source, provide the following details
+as [Terraform input variables](https://www.terraform.io/docs/configuration/variables.html):
+
+- **address**: The URL of the remote state backend you want to use as a data source.
+  For example, `https://gitlab.com/api/v4/projects/<TARGET-PROJECT-ID>/terraform/state/<TARGET-STATE-NAME>`.
+- **username**: The username to authenticate with the data source. If you are using a [Personal Access Token](../profile/personal_access_tokens.md) for
+  authentication, this is your GitLab username. If you are using GitLab CI, this is `'gitlab-ci-token'`.
+- **password**: The password to authenticate with the data source. If you are using a Personal Access Token for
+  authentication, this is the token value. If you are using GitLab CI, it is the contents of the `${CI_JOB_TOKEN}` CI variable.
+
+An example setup is shown below:
+
+1. Create a file named `example.auto.tfvars` with the following contents:
+
+   ```plaintext
+   example_remote_state_address=https://gitlab.com/api/v4/projects/<TARGET-PROJECT-ID>/terraform/state/<TARGET-STATE-NAME>
+   example_username=<GitLab username>
+   example_access_token=<GitLab Personal Acceess Token>
+   ```
+
+1. Define the data source by adding the following code block in a `.tf` file (such as `data.tf`):
+
+   ```hcl
+   data "terraform_remote_state" "example" {
+     backend = "http"
+
+     config = {
+       address = var.example_remote_state_address
+       username = var.example_username
+       password = var.example_access_token
+     }
+   }
+   ```
+
+Outputs from the data source can now be referenced within your Terraform resources
+using `data.terraform_remote_state.example.outputs.<OUTPUT-NAME>`.
+
+You need at least [developer access](../permissions.md) to the target project
+to read the Terraform state.

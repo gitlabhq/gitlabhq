@@ -36,6 +36,7 @@ RSpec.describe Ci::DailyBuildGroupReportResult do
         data: { coverage: 71.2 }
       )
     end
+
     let!(:new_pipeline) { create(:ci_pipeline) }
 
     it 'creates or updates matching report results' do

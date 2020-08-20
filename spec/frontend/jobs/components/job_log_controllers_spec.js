@@ -1,16 +1,17 @@
-import Vue from 'vue';
-import component from '~/jobs/components/job_log_controllers.vue';
-import mountComponent from '../../helpers/vue_mount_component_helper';
+import { mount } from '@vue/test-utils';
+import JobLogControllers from '~/jobs/components/job_log_controllers.vue';
 
 describe('Job log controllers', () => {
-  const Component = Vue.extend(component);
-  let vm;
+  let wrapper;
 
   afterEach(() => {
-    vm.$destroy();
+    if (wrapper?.destroy) {
+      wrapper.destroy();
+      wrapper = null;
+    }
   });
 
-  const props = {
+  const defaultProps = {
     rawPath: '/raw',
     erasePath: '/erase',
     size: 511952,
@@ -20,70 +21,80 @@ describe('Job log controllers', () => {
     isTraceSizeVisible: true,
   };
 
+  const createWrapper = props => {
+    wrapper = mount(JobLogControllers, {
+      propsData: {
+        ...defaultProps,
+        ...props,
+      },
+    });
+  };
+
+  const findTruncatedInfo = () => wrapper.find('[data-testid="log-truncated-info"]');
+  const findRawLink = () => wrapper.find('[data-testid="raw-link"]');
+  const findRawLinkController = () => wrapper.find('[data-testid="job-raw-link-controller"]');
+  const findEraseLink = () => wrapper.find('[data-testid="job-log-erase-link"]');
+  const findScrollTop = () => wrapper.find('[data-testid="job-controller-scroll-top"]');
+  const findScrollBottom = () => wrapper.find('[data-testid="job-controller-scroll-bottom"]');
+
   describe('Truncate information', () => {
     describe('with isTraceSizeVisible', () => {
       beforeEach(() => {
-        vm = mountComponent(Component, props);
+        createWrapper();
       });
 
       it('renders size information', () => {
-        expect(vm.$el.querySelector('.js-truncated-info').textContent).toContain('499.95 KiB');
+        expect(findTruncatedInfo().text()).toMatch('499.95 KiB');
       });
 
       it('renders link to raw trace', () => {
-        expect(vm.$el.querySelector('.js-raw-link').getAttribute('href')).toEqual('/raw');
+        expect(findRawLink().attributes('href')).toBe(defaultProps.rawPath);
       });
     });
   });
 
   describe('links section', () => {
     describe('with raw trace path', () => {
-      it('renders raw trace link', () => {
-        vm = mountComponent(Component, props);
+      beforeEach(() => {
+        createWrapper();
+      });
 
-        expect(vm.$el.querySelector('.js-raw-link-controller').getAttribute('href')).toEqual(
-          '/raw',
-        );
+      it('renders raw trace link', () => {
+        expect(findRawLinkController().attributes('href')).toBe(defaultProps.rawPath);
       });
     });
 
     describe('without raw trace path', () => {
-      it('does not render raw trace link', () => {
-        vm = mountComponent(Component, {
-          erasePath: '/erase',
-          size: 511952,
-          isScrollTopDisabled: true,
-          isScrollBottomDisabled: true,
-          isScrollingDown: false,
-          isTraceSizeVisible: true,
+      beforeEach(() => {
+        createWrapper({
+          rawPath: null,
         });
+      });
 
-        expect(vm.$el.querySelector('.js-raw-link-controller')).toBeNull();
+      it('does not render raw trace link', () => {
+        expect(findRawLinkController().exists()).toBe(false);
       });
     });
 
     describe('when is erasable', () => {
       beforeEach(() => {
-        vm = mountComponent(Component, props);
+        createWrapper();
       });
 
       it('renders erase job link', () => {
-        expect(vm.$el.querySelector('.js-erase-link')).not.toBeNull();
+        expect(findEraseLink().exists()).toBe(true);
       });
     });
 
     describe('when it is not erasable', () => {
-      it('does not render erase button', () => {
-        vm = mountComponent(Component, {
-          rawPath: '/raw',
-          size: 511952,
-          isScrollTopDisabled: true,
-          isScrollBottomDisabled: true,
-          isScrollingDown: false,
-          isTraceSizeVisible: true,
+      beforeEach(() => {
+        createWrapper({
+          erasePath: null,
         });
+      });
 
-        expect(vm.$el.querySelector('.js-erase-link')).toBeNull();
+      it('does not render erase button', () => {
+        expect(findEraseLink().exists()).toBe(false);
       });
     });
   });
@@ -92,45 +103,39 @@ describe('Job log controllers', () => {
     describe('scroll top button', () => {
       describe('when user can scroll top', () => {
         beforeEach(() => {
-          vm = mountComponent(Component, props);
+          createWrapper({
+            isScrollTopDisabled: false,
+          });
         });
 
-        it('renders enabled scroll top button', () => {
-          expect(vm.$el.querySelector('.js-scroll-top').getAttribute('disabled')).toBeNull();
-        });
+        it('emits scrollJobLogTop event on click', async () => {
+          findScrollTop().trigger('click');
 
-        it('emits scrollJobLogTop event on click', () => {
-          jest.spyOn(vm, '$emit').mockImplementation(() => {});
-          vm.$el.querySelector('.js-scroll-top').click();
+          await wrapper.vm.$nextTick();
 
-          expect(vm.$emit).toHaveBeenCalledWith('scrollJobLogTop');
+          expect(wrapper.emitted().scrollJobLogTop).toHaveLength(1);
         });
       });
 
       describe('when user can not scroll top', () => {
         beforeEach(() => {
-          vm = mountComponent(Component, {
-            rawPath: '/raw',
-            erasePath: '/erase',
-            size: 511952,
+          createWrapper({
             isScrollTopDisabled: true,
             isScrollBottomDisabled: false,
             isScrollingDown: false,
-            isTraceSizeVisible: true,
           });
         });
 
         it('renders disabled scroll top button', () => {
-          expect(vm.$el.querySelector('.js-scroll-top').getAttribute('disabled')).toEqual(
-            'disabled',
-          );
+          expect(findScrollTop().attributes('disabled')).toBe('disabled');
         });
 
-        it('does not emit scrollJobLogTop event on click', () => {
-          jest.spyOn(vm, '$emit').mockImplementation(() => {});
-          vm.$el.querySelector('.js-scroll-top').click();
+        it('does not emit scrollJobLogTop event on click', async () => {
+          findScrollTop().trigger('click');
 
-          expect(vm.$emit).not.toHaveBeenCalledWith('scrollJobLogTop');
+          await wrapper.vm.$nextTick();
+
+          expect(wrapper.emitted().scrollJobLogTop).toBeUndefined();
         });
       });
     });
@@ -138,69 +143,61 @@ describe('Job log controllers', () => {
     describe('scroll bottom button', () => {
       describe('when user can scroll bottom', () => {
         beforeEach(() => {
-          vm = mountComponent(Component, props);
+          createWrapper();
         });
 
-        it('renders enabled scroll bottom button', () => {
-          expect(vm.$el.querySelector('.js-scroll-bottom').getAttribute('disabled')).toBeNull();
-        });
+        it('emits scrollJobLogBottom event on click', async () => {
+          findScrollBottom().trigger('click');
 
-        it('emits scrollJobLogBottom event on click', () => {
-          jest.spyOn(vm, '$emit').mockImplementation(() => {});
-          vm.$el.querySelector('.js-scroll-bottom').click();
+          await wrapper.vm.$nextTick();
 
-          expect(vm.$emit).toHaveBeenCalledWith('scrollJobLogBottom');
+          expect(wrapper.emitted().scrollJobLogBottom).toHaveLength(1);
         });
       });
 
       describe('when user can not scroll bottom', () => {
         beforeEach(() => {
-          vm = mountComponent(Component, {
-            rawPath: '/raw',
-            erasePath: '/erase',
-            size: 511952,
+          createWrapper({
             isScrollTopDisabled: false,
             isScrollBottomDisabled: true,
             isScrollingDown: false,
-            isTraceSizeVisible: true,
           });
         });
 
         it('renders disabled scroll bottom button', () => {
-          expect(vm.$el.querySelector('.js-scroll-bottom').getAttribute('disabled')).toEqual(
-            'disabled',
-          );
+          expect(findScrollBottom().attributes('disabled')).toEqual('disabled');
         });
 
-        it('does not emit scrollJobLogBottom event on click', () => {
-          jest.spyOn(vm, '$emit').mockImplementation(() => {});
-          vm.$el.querySelector('.js-scroll-bottom').click();
+        it('does not emit scrollJobLogBottom event on click', async () => {
+          findScrollBottom().trigger('click');
 
-          expect(vm.$emit).not.toHaveBeenCalledWith('scrollJobLogBottom');
+          await wrapper.vm.$nextTick();
+
+          expect(wrapper.emitted().scrollJobLogBottom).toBeUndefined();
         });
       });
 
       describe('while isScrollingDown is true', () => {
-        it('renders animate class for the scroll down button', () => {
-          vm = mountComponent(Component, props);
+        beforeEach(() => {
+          createWrapper();
+        });
 
-          expect(vm.$el.querySelector('.js-scroll-bottom').className).toContain('animate');
+        it('renders animate class for the scroll down button', () => {
+          expect(findScrollBottom().classes()).toContain('animate');
         });
       });
 
       describe('while isScrollingDown is false', () => {
-        it('does not render animate class for the scroll down button', () => {
-          vm = mountComponent(Component, {
-            rawPath: '/raw',
-            erasePath: '/erase',
-            size: 511952,
+        beforeEach(() => {
+          createWrapper({
             isScrollTopDisabled: true,
             isScrollBottomDisabled: false,
             isScrollingDown: false,
-            isTraceSizeVisible: true,
           });
+        });
 
-          expect(vm.$el.querySelector('.js-scroll-bottom').className).not.toContain('animate');
+        it('does not render animate class for the scroll down button', () => {
+          expect(findScrollBottom().classes()).not.toContain('animate');
         });
       });
     });

@@ -1,8 +1,8 @@
 import Vue from 'vue';
 import IdeTreeList from '~/ide/components/ide_tree_list.vue';
-import store from '~/ide/stores';
+import { createStore } from '~/ide/stores';
 import { createComponentWithStore } from '../../helpers/vue_mount_component_helper';
-import { resetStore, file } from '../helpers';
+import { file } from '../helpers';
 import { projectData } from '../mock_data';
 
 describe('IDE tree list', () => {
@@ -10,6 +10,7 @@ describe('IDE tree list', () => {
   const normalBranchTree = [file('fileName')];
   const emptyBranchTree = [];
   let vm;
+  let store;
 
   const bootstrapWithTree = (tree = normalBranchTree) => {
     store.state.currentProjectId = 'abcproject';
@@ -25,10 +26,12 @@ describe('IDE tree list', () => {
     });
   };
 
+  beforeEach(() => {
+    store = createStore();
+  });
+
   afterEach(() => {
     vm.$destroy();
-
-    resetStore(vm.$store);
   });
 
   describe('normal branch', () => {

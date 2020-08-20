@@ -17,6 +17,7 @@ resources :commit, only: [:show], constraints: { id: /\h{7,40}/ } do
     post :revert
     post :cherry_pick
     get :diff_for_path
+    get :diff_files
     get :merge_requests
   end
 end

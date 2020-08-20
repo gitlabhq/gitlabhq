@@ -61,6 +61,86 @@ RSpec.describe Ci::BuildTraceChunks::Redis, :clean_gitlab_redis_shared_state do
     end
   end
 
+  describe '#append_data' do
+    context 'when valid offset is used with existing data' do
+      let(:model) { create(:ci_build_trace_chunk, :redis_with_data, initial_data: 'abcd') }
+
+      it 'appends data' do
+        expect(data_store.data(model)).to eq('abcd')
+
+        length = data_store.append_data(model, '12345', 4)
+
+        expect(length).to eq 9
+        expect(data_store.data(model)).to eq('abcd12345')
+      end
+    end
+
+    context 'when data does not exist yet' do
+      let(:model) { create(:ci_build_trace_chunk, :redis_without_data) }
+
+      it 'sets new data' do
+        expect(data_store.data(model)).to be_nil
+
+        length = data_store.append_data(model, 'abc', 0)
+
+        expect(length).to eq 3
+        expect(data_store.data(model)).to eq('abc')
+      end
+    end
+
+    context 'when data needs to be truncated' do
+      let(:model) { create(:ci_build_trace_chunk, :redis_with_data, initial_data: '12345678') }
+
+      it 'appends data and truncates stored value' do
+        expect(data_store.data(model)).to eq('12345678')
+
+        length = data_store.append_data(model, 'ab', 4)
+
+        expect(length).to eq 6
+        expect(data_store.data(model)).to eq('1234ab')
+      end
+    end
+
+    context 'when invalid offset is provided' do
+      let(:model) { create(:ci_build_trace_chunk, :redis_with_data, initial_data: 'abc') }
+
+      it 'raises an exception' do
+        length = data_store.append_data(model, '12345', 4)
+
+        expect(length).to be_negative
+      end
+    end
+
+    context 'when trace contains multi-byte UTF8 characters' do
+      let(:model) { create(:ci_build_trace_chunk, :redis_with_data, initial_data: 'aüc') }
+
+      it 'appends data' do
+        length = data_store.append_data(model, '1234', 4)
+
+        data_store.data(model).then do |new_data|
+          expect(new_data.bytesize).to eq 8
+          expect(new_data).to eq 'aüc1234'
+        end
+
+        expect(length).to eq 8
+      end
+    end
+
+    context 'when trace contains non-UTF8 characters' do
+      let(:model) { create(:ci_build_trace_chunk, :redis_with_data, initial_data: "a\255c") }
+
+      it 'appends data' do
+        length = data_store.append_data(model, '1234', 3)
+
+        data_store.data(model).then do |new_data|
+          expect(new_data.bytesize).to eq 7
+        end
+
+        expect(length).to eq 7
+      end
+    end
+  end
+
   describe '#delete_data' do
     subject { data_store.delete_data(model) }
 
@@ -85,6 +165,24 @@ RSpec.describe Ci::BuildTraceChunks::Redis, :clean_gitlab_redis_shared_state do
         subject
 
         expect(data_store.data(model)).to be_nil
+      end
+    end
+  end
+
+  describe '#size' do
+    context 'when data exists' do
+      let(:model) { create(:ci_build_trace_chunk, :redis_with_data, initial_data: 'üabcd') }
+
+      it 'returns data bytesize correctly' do
+        expect(data_store.size(model)).to eq 6
+      end
+    end
+
+    context 'when data does not exist' do
+      let(:model) { create(:ci_build_trace_chunk, :redis_without_data) }
+
+      it 'returns zero' do
+        expect(data_store.size(model)).to be_zero
       end
     end
   end

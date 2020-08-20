@@ -1,56 +1,97 @@
-import { GlButton, GlFormSelect, GlLabel, GlTable } from '@gitlab/ui';
+import { GlAlert, GlButton, GlNewDropdown, GlFormSelect, GlLabel, GlTable } from '@gitlab/ui';
 import { getByRole } from '@testing-library/dom';
 import { mount, shallowMount } from '@vue/test-utils';
 import AxiosMockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
 import JiraImportForm from '~/jira_import/components/jira_import_form.vue';
-import { issuesPath, jiraProjects, userMappings } from '../mock_data';
+import getJiraUserMappingMutation from '~/jira_import/queries/get_jira_user_mapping.mutation.graphql';
+import initiateJiraImportMutation from '~/jira_import/queries/initiate_jira_import.mutation.graphql';
+import {
+  imports,
+  issuesPath,
+  jiraProjects,
+  projectId,
+  projectPath,
+  userMappings as defaultUserMappings,
+} from '../mock_data';
 
 describe('JiraImportForm', () => {
   let axiosMock;
+  let mutateSpy;
   let wrapper;
 
   const currentUsername = 'mrgitlab';
-  const importLabel = 'jira-import::MTG-1';
-  const value = 'MTG';
+
+  const getAlert = () => wrapper.find(GlAlert);
 
   const getSelectDropdown = () => wrapper.find(GlFormSelect);
 
+  const getContinueButton = () => wrapper.find(GlButton);
+
   const getCancelButton = () => wrapper.findAll(GlButton).at(1);
+
+  const getLabel = () => wrapper.find(GlLabel);
+
+  const getTable = () => wrapper.find(GlTable);
+
+  const getUserDropdown = () => getTable().find(GlNewDropdown);
 
   const getHeader = name => getByRole(wrapper.element, 'columnheader', { name });
 
-  const mountComponent = ({ isSubmitting = false, mountFunction = shallowMount } = {}) =>
+  const mountComponent = ({
+    isSubmitting = false,
+    loading = false,
+    mutate = mutateSpy,
+    selectedProject = 'MTG',
+    userMappings = defaultUserMappings,
+    mountFunction = shallowMount,
+  } = {}) =>
     mountFunction(JiraImportForm, {
       propsData: {
-        importLabel,
-        isSubmitting,
         issuesPath,
+        jiraImports: imports,
         jiraProjects,
-        projectId: '5',
-        userMappings,
-        value,
+        projectId,
+        projectPath,
       },
       data: () => ({
         isFetching: false,
+        isSubmitting,
         searchTerm: '',
+        selectedProject,
         selectState: null,
         users: [],
+        userMappings,
       }),
+      mocks: {
+        $apollo: {
+          loading,
+          mutate,
+        },
+      },
       currentUsername,
     });
 
   beforeEach(() => {
     axiosMock = new AxiosMockAdapter(axios);
+    mutateSpy = jest.fn(() =>
+      Promise.resolve({
+        data: {
+          jiraImportStart: { errors: [] },
+          jiraImportUsers: { jiraUsers: [], errors: [] },
+        },
+      }),
+    );
   });
 
   afterEach(() => {
     axiosMock.restore();
+    mutateSpy.mockRestore();
     wrapper.destroy();
     wrapper = null;
   });
 
-  describe('select dropdown', () => {
+  describe('select dropdown project selection', () => {
     it('is shown', () => {
       wrapper = mountComponent();
 
@@ -67,22 +108,40 @@ describe('JiraImportForm', () => {
         });
     });
 
-    it('emits an "input" event when the input select value changes', () => {
-      wrapper = mountComponent();
+    describe('when selected project has been imported before', () => {
+      it('shows jira-import::MTG-3 label since project MTG has been imported 2 time before', () => {
+        wrapper = mountComponent();
 
-      getSelectDropdown().vm.$emit('change', value);
+        expect(getLabel().props('title')).toBe('jira-import::MTG-3');
+      });
 
-      expect(wrapper.emitted('input')[0]).toEqual([value]);
+      it('shows warning alert to explain project MTG has been imported 2 times before', () => {
+        wrapper = mountComponent({ mountFunction: mount });
+
+        expect(getAlert().text()).toBe(
+          'You have imported from this project 2 times before. Each new import will create duplicate issues.',
+        );
+      });
+    });
+
+    describe('when selected project has not been imported before', () => {
+      beforeEach(() => {
+        wrapper = mountComponent({ selectedProject: 'MJP' });
+      });
+
+      it('shows jira-import::MJP-1 label since project MJP has not been imported before', () => {
+        expect(getLabel().props('title')).toBe('jira-import::MJP-1');
+      });
+
+      it('does not show warning alert since project MJP has not been imported before', () => {
+        expect(getAlert().exists()).toBe(false);
+      });
     });
   });
 
   describe('form information', () => {
     beforeEach(() => {
       wrapper = mountComponent();
-    });
-
-    it('shows a label which will be applied to imported Jira projects', () => {
-      expect(wrapper.find(GlLabel).props('title')).toBe(importLabel);
     });
 
     it('shows a heading for the user mapping section', () => {
@@ -93,7 +152,7 @@ describe('JiraImportForm', () => {
 
     it('shows information to the user', () => {
       expect(wrapper.find('p').text()).toBe(
-        'Jira users have been matched with similar GitLab users. This can be overwritten by selecting a GitLab user from the dropdown in the "GitLab username" column. If it wasn\'t possible to match a Jira user with a GitLab user, the dropdown defaults to the user conducting the import.',
+        'Jira users have been imported from the configured Jira instance. They can be mapped by selecting a GitLab user from the dropdown in the "GitLab username" column. When the form appears, the dropdown defaults to the user conducting the import.',
       );
     });
   });
@@ -121,13 +180,53 @@ describe('JiraImportForm', () => {
       it('shows all user mappings', () => {
         wrapper = mountComponent({ mountFunction: mount });
 
-        expect(wrapper.find(GlTable).findAll('tbody tr').length).toBe(userMappings.length);
+        expect(getTable().findAll('tbody tr')).toHaveLength(2);
       });
 
       it('shows correct information in each cell', () => {
         wrapper = mountComponent({ mountFunction: mount });
 
-        expect(wrapper.find(GlTable).element).toMatchSnapshot();
+        expect(getTable().element).toMatchSnapshot();
+      });
+
+      describe('when there is no Jira->GitLab user mapping', () => {
+        it('shows the logged in user in the dropdown', () => {
+          wrapper = mountComponent({
+            mountFunction: mount,
+            userMappings: [
+              {
+                jiraAccountId: 'aei23f98f-q23fj98qfj',
+                jiraDisplayName: 'Jane Doe',
+                jiraEmail: 'janedoe@example.com',
+                gitlabId: undefined,
+                gitlabUsername: undefined,
+              },
+            ],
+          });
+
+          expect(getUserDropdown().text()).toContain(currentUsername);
+        });
+      });
+
+      describe('when there is a Jira->GitLab user mapping', () => {
+        it('shows the mapped user in the dropdown', () => {
+          const gitlabUsername = 'mai';
+
+          wrapper = mountComponent({
+            mountFunction: mount,
+            userMappings: [
+              {
+                jiraAccountId: 'aei23f98f-q23fj98qfj',
+                jiraDisplayName: 'Jane Doe',
+                jiraEmail: 'janedoe@example.com',
+                gitlabId: 14,
+                gitlabUsername,
+              },
+            ],
+          });
+
+          expect(getUserDropdown().text()).toContain(gitlabUsername);
+        });
       });
     });
   });
@@ -137,13 +236,13 @@ describe('JiraImportForm', () => {
       it('is shown', () => {
         wrapper = mountComponent();
 
-        expect(wrapper.find(GlButton).text()).toBe('Continue');
+        expect(getContinueButton().text()).toBe('Continue');
       });
 
       it('is in loading state when the form is submitting', async () => {
         wrapper = mountComponent({ isSubmitting: true });
 
-        expect(wrapper.find(GlButton).props('loading')).toBe(true);
+        expect(getContinueButton().props('loading')).toBe(true);
       });
     });
 
@@ -162,13 +261,61 @@ describe('JiraImportForm', () => {
     });
   });
 
-  describe('form', () => {
-    it('emits an "initiateJiraImport" event with the selected dropdown value when submitted', () => {
+  describe('submitting the form', () => {
+    it('initiates the Jira import mutation with the expected arguments', () => {
       wrapper = mountComponent();
+
+      const mutationArguments = {
+        mutation: initiateJiraImportMutation,
+        variables: {
+          input: {
+            jiraProjectKey: 'MTG',
+            projectPath,
+            usersMapping: [
+              {
+                jiraAccountId: 'aei23f98f-q23fj98qfj',
+                gitlabId: 15,
+              },
+              {
+                jiraAccountId: 'fu39y8t34w-rq3u289t3h4i',
+                gitlabId: undefined,
+              },
+            ],
+          },
+        },
+      };
 
       wrapper.find('form').trigger('submit');
 
-      expect(wrapper.emitted('initiateJiraImport')[0]).toEqual([value]);
+      expect(mutateSpy).toHaveBeenCalledWith(expect.objectContaining(mutationArguments));
+    });
+  });
+
+  describe('on mount GraphQL user mapping mutation', () => {
+    it('is called with the expected arguments', () => {
+      wrapper = mountComponent();
+
+      const mutationArguments = {
+        mutation: getJiraUserMappingMutation,
+        variables: {
+          input: {
+            projectPath,
+          },
+        },
+      };
+
+      expect(mutateSpy).toHaveBeenCalledWith(expect.objectContaining(mutationArguments));
+    });
+
+    describe('when there is an error when called', () => {
+      beforeEach(() => {
+        const mutate = jest.fn(() => Promise.reject());
+        wrapper = mountComponent({ mutate });
+      });
+
+      it('shows error message', () => {
+        expect(getAlert().exists()).toBe(true);
+      });
     });
   });
 });

@@ -6,6 +6,7 @@ RSpec.describe Gitlab::Git::Patches::Collection do
   let(:patch_content1) do
     File.read(File.join(patches_folder, "0001-This-does-not-apply-to-the-feature-branch.patch"))
   end
+
   let(:patch_content2) do
     File.read(File.join(patches_folder, "0001-A-commit-from-a-patch.patch"))
   end

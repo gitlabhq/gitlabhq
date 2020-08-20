@@ -122,7 +122,7 @@ RSpec.describe Gitlab::Utils::UsageData do
       freeze_time do
         result = described_class.with_finished_at(:current_time) { { a: 1 } }
 
-        expect(result).to eq(a: 1, current_time: Time.now)
+        expect(result).to eq(a: 1, current_time: Time.current)
       end
     end
   end

@@ -8,6 +8,17 @@ module QA
           element :project_filter_form, required: true
         end
 
+        view 'app/views/shared/projects/_project.html.haml' do
+          element :project_content
+          element :user_role_content
+        end
+
+        def has_project_with_access_role?(project_name, access_role)
+          within_element(:project_content, text: project_name) do
+            has_element?(:user_role_content, text: access_role)
+          end
+        end
+
         def go_to_project(name)
           filter_by_name(name)
 

@@ -7,35 +7,61 @@ require 'spec_helper'
 RSpec.describe GitGarbageCollectWorker do
   include GitHelpers
 
-  let(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project, :repository) }
   let(:shell) { Gitlab::Shell.new }
   let!(:lease_uuid) { SecureRandom.uuid }
   let!(:lease_key) { "project_housekeeping:#{project.id}" }
+  let(:params) { [project.id, task, lease_key, lease_uuid] }
 
   subject { described_class.new }
 
+  shared_examples 'it calls Gitaly' do
+    specify do
+      expect_any_instance_of(Gitlab::GitalyClient::RepositoryService).to receive(gitaly_task)
+        .and_return(nil)
+
+      subject.perform(*params)
+    end
+  end
+
+  shared_examples 'it updates the project statistics' do
+    specify do
+      expect_any_instance_of(Projects::UpdateStatisticsService).to receive(:execute).and_call_original
+      expect(Projects::UpdateStatisticsService)
+        .to receive(:new)
+        .with(project, nil, statistics: [:repository_size, :lfs_objects_size])
+        .and_call_original
+
+      subject.perform(*params)
+    end
+  end
+
   describe "#perform" do
+    let(:gitaly_task) { :garbage_collect }
+    let(:task) { :gc }
+
     context 'with active lease_uuid' do
       before do
         allow(subject).to receive(:get_lease_uuid).and_return(lease_uuid)
       end
 
+      it_behaves_like 'it calls Gitaly'
+      it_behaves_like 'it updates the project statistics'
+
       it "flushes ref caches when the task if 'gc'" do
         expect(subject).to receive(:renew_lease).with(lease_key, lease_uuid).and_call_original
-        expect_any_instance_of(Gitlab::GitalyClient::RepositoryService).to receive(:garbage_collect)
-          .and_return(nil)
         expect_any_instance_of(Repository).to receive(:after_create_branch).and_call_original
         expect_any_instance_of(Repository).to receive(:branch_names).and_call_original
         expect_any_instance_of(Repository).to receive(:has_visible_content?).and_call_original
         expect_any_instance_of(Gitlab::Git::Repository).to receive(:has_visible_content?).and_call_original
 
-        subject.perform(project.id, :gc, lease_key, lease_uuid)
+        subject.perform(*params)
       end
 
       it 'handles gRPC errors' do
         expect_any_instance_of(Gitlab::GitalyClient::RepositoryService).to receive(:garbage_collect).and_raise(GRPC::NotFound)
 
-        expect { subject.perform(project.id, :gc, lease_key, lease_uuid) }.to raise_exception(Gitlab::Git::Repository::NoRepository)
+        expect { subject.perform(*params) }.to raise_exception(Gitlab::Git::Repository::NoRepository)
       end
     end
 
@@ -49,11 +75,13 @@ RSpec.describe GitGarbageCollectWorker do
         expect_any_instance_of(Repository).not_to receive(:branch_names).and_call_original
         expect_any_instance_of(Repository).not_to receive(:has_visible_content?).and_call_original
 
-        subject.perform(project.id, :gc, lease_key, lease_uuid)
+        subject.perform(*params)
       end
     end
 
     context 'with no active lease' do
+      let(:params) { [project.id] }
+
       before do
         allow(subject).to receive(:get_lease_uuid).and_return(false)
       end
@@ -63,15 +91,17 @@ RSpec.describe GitGarbageCollectWorker do
           allow(subject).to receive(:try_obtain_lease).and_return(SecureRandom.uuid)
         end
 
+        it_behaves_like 'it calls Gitaly'
+        it_behaves_like 'it updates the project statistics'
+
         it "flushes ref caches when the task if 'gc'" do
-          expect_any_instance_of(Gitlab::GitalyClient::RepositoryService).to receive(:garbage_collect)
-            .and_return(nil)
+          expect(subject).to receive(:get_lease_uuid).with("git_gc:#{task}:#{project.id}").and_return(false)
           expect_any_instance_of(Repository).to receive(:after_create_branch).and_call_original
           expect_any_instance_of(Repository).to receive(:branch_names).and_call_original
           expect_any_instance_of(Repository).to receive(:has_visible_content?).and_call_original
           expect_any_instance_of(Gitlab::Git::Repository).to receive(:has_visible_content?).and_call_original
 
-          subject.perform(project.id)
+          subject.perform(*params)
         end
 
         context 'when the repository has joined a pool' do
@@ -81,7 +111,57 @@ RSpec.describe GitGarbageCollectWorker do
           it 'ensures the repositories are linked' do
             expect_any_instance_of(PoolRepository).to receive(:link_repository).once
 
-            subject.perform(project.id)
+            subject.perform(*params)
+          end
+        end
+
+        context 'LFS object garbage collection' do
+          before do
+            stub_lfs_setting(enabled: true)
+          end
+
+          let_it_be(:lfs_reference) { create(:lfs_objects_project, project: project) }
+          let(:lfs_object) { lfs_reference.lfs_object }
+
+          context 'with cleanup_lfs_during_gc feature flag enabled' do
+            before do
+              stub_feature_flags(cleanup_lfs_during_gc: true)
+            end
+
+            it 'cleans up unreferenced LFS objects' do
+              expect_next_instance_of(Gitlab::Cleanup::OrphanLfsFileReferences) do |svc|
+                expect(svc.project).to eq(project)
+                expect(svc.dry_run).to be_falsy
+                expect(svc).to receive(:run!).and_call_original
+              end
+
+              subject.perform(*params)
+
+              expect(project.lfs_objects.reload).not_to include(lfs_object)
+            end
+
+            it 'does nothing if the database is read-only' do
+              expect(Gitlab::Database).to receive(:read_only?) { true }
+              expect_any_instance_of(Gitlab::Cleanup::OrphanLfsFileReferences).not_to receive(:run!)
+
+              subject.perform(*params)
+
+              expect(project.lfs_objects.reload).to include(lfs_object)
+            end
+          end
+
+          context 'with cleanup_lfs_during_gc feature flag disabled' do
+            before do
+              stub_feature_flags(cleanup_lfs_during_gc: false)
+            end
+
+            it 'does not clean up unreferenced LFS objects' do
+              expect_any_instance_of(Gitlab::Cleanup::OrphanLfsFileReferences).not_to receive(:run!)
+
+              subject.perform(*params)
+
+              expect(project.lfs_objects.reload).to include(lfs_object)
+            end
           end
         end
       end
@@ -97,48 +177,55 @@ RSpec.describe GitGarbageCollectWorker do
           expect_any_instance_of(Repository).not_to receive(:branch_names).and_call_original
           expect_any_instance_of(Repository).not_to receive(:has_visible_content?).and_call_original
 
-          subject.perform(project.id)
+          subject.perform(*params)
         end
       end
     end
 
     context "repack_full" do
+      let(:task) { :full_repack }
+      let(:gitaly_task) { :repack_full }
+
       before do
         expect(subject).to receive(:get_lease_uuid).and_return(lease_uuid)
       end
 
-      it "calls Gitaly" do
-        expect_any_instance_of(Gitlab::GitalyClient::RepositoryService).to receive(:repack_full)
-          .and_return(nil)
-
-        subject.perform(project.id, :full_repack, lease_key, lease_uuid)
-      end
+      it_behaves_like 'it calls Gitaly'
+      it_behaves_like 'it updates the project statistics'
     end
 
     context "pack_refs" do
+      let(:task) { :pack_refs }
+      let(:gitaly_task) { :pack_refs }
+
       before do
         expect(subject).to receive(:get_lease_uuid).and_return(lease_uuid)
       end
 
       it "calls Gitaly" do
-        expect_any_instance_of(Gitlab::GitalyClient::RefService).to receive(:pack_refs)
+        expect_any_instance_of(Gitlab::GitalyClient::RefService).to receive(task)
           .and_return(nil)
 
-        subject.perform(project.id, :pack_refs, lease_key, lease_uuid)
+        subject.perform(*params)
+      end
+
+      it 'does not update the project statistics' do
+        expect(Projects::UpdateStatisticsService).not_to receive(:new)
+
+        subject.perform(*params)
       end
     end
 
     context "repack_incremental" do
+      let(:task) { :incremental_repack }
+      let(:gitaly_task) { :repack_incremental }
+
       before do
         expect(subject).to receive(:get_lease_uuid).and_return(lease_uuid)
       end
 
-      it "calls Gitaly" do
-        expect_any_instance_of(Gitlab::GitalyClient::RepositoryService).to receive(:repack_incremental)
-          .and_return(nil)
-
-        subject.perform(project.id, :incremental_repack, lease_key, lease_uuid)
-      end
+      it_behaves_like 'it calls Gitaly'
+      it_behaves_like 'it updates the project statistics'
     end
 
     shared_examples 'gc tasks' do

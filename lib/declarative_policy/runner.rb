@@ -170,7 +170,7 @@ module DeclarativePolicy
             lowest_score = score
           end
 
-          break if lowest_score.zero?
+          break if lowest_score == 0
         end
 
         [remaining_steps, remaining_enablers, remaining_preventers].each do |set|

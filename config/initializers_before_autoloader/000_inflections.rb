@@ -25,6 +25,7 @@ ActiveSupport::Inflector.inflections do |inflect|
     project_registry
     project_statistics
     system_note_metadata
+    terraform_state_registry
     vulnerabilities_feedback
     vulnerability_feedback
   )

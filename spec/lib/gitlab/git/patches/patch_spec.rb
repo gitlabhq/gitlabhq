@@ -6,6 +6,7 @@ RSpec.describe Gitlab::Git::Patches::Patch do
   let(:patch_content) do
     File.read(File.join(patches_folder, "0001-This-does-not-apply-to-the-feature-branch.patch"))
   end
+
   let(:patch) { described_class.new(patch_content) }
 
   describe '#size' do

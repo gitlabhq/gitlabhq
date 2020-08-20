@@ -1,0 +1,5 @@
+---
+title: "Update Buildkite Service for supported events, fields, and always verify SSL"
+merge_request: 33697
+author: "Juanito Fatas"
+type: changed

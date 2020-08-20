@@ -111,6 +111,7 @@ gemnasium-dependency_scanning:
         - '{npm-shrinkwrap.json,*/npm-shrinkwrap.json,*/*/npm-shrinkwrap.json}'
         - '{package-lock.json,*/package-lock.json,*/*/package-lock.json}'
         - '{yarn.lock,*/yarn.lock,*/*/yarn.lock}'
+        - '{packages.lock.json,*/packages.lock.json,*/*/packages.lock.json}'
 
 gemnasium-maven-dependency_scanning:
   extends: .ds-analyzer
@@ -144,8 +145,8 @@ gemnasium-python-dependency_scanning:
         - '{Pipfile,*/Pipfile,*/*/Pipfile}'
         - '{requires.txt,*/requires.txt,*/*/requires.txt}'
         - '{setup.py,*/setup.py,*/*/setup.py}'
-      # Support passing of $PIP_REQUIREMENTS_FILE
-      # See https://docs.gitlab.com/ee/user/application_security/dependency_scanning/#configuring-specific-analyzers-used-by-dependency-scanning
+        # Support passing of $PIP_REQUIREMENTS_FILE
+        # See https://docs.gitlab.com/ee/user/application_security/dependency_scanning/#configuring-specific-analyzers-used-by-dependency-scanning
     - if: $CI_COMMIT_BRANCH &&
           $GITLAB_FEATURES =~ /\bdependency_scanning\b/ &&
           $DS_DEFAULT_ANALYZERS =~ /gemnasium-python/ &&

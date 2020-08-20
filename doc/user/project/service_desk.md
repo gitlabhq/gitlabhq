@@ -111,7 +111,7 @@ The **Thank you email** is the email sent to a user after they submit an issue.
 The file name of the template has to be `thank_you.md`.
 You can use `%{ISSUE_ID}` placeholder which will be replaced by an issue IID in the email and
 `%{ISSUE_PATH}` placeholder which will be replaced by project path and the issue IID.
-As the service desk issues are created as confidential (only project members can see them)
+As the Service Desk issues are created as confidential (only project members can see them)
 the response email does not provide the issue link.
 
 #### New note email

@@ -148,7 +148,7 @@ export default {
 
 <template>
   <div class="content discussion-form discussion-form-container discussion-notes">
-    <div v-if="glFeatures.multilineComments" class="gl-mb-3 gl-text-gray-700 gl-pb-3">
+    <div v-if="glFeatures.multilineComments" class="gl-mb-3 gl-text-gray-500 gl-pb-3">
       <multiline-comment-form
         v-model="commentLineStart"
         :line="line"
@@ -172,7 +172,7 @@ export default {
       :diff-file="diffFile"
       :show-suggest-popover="showSuggestPopover"
       save-button-title="Comment"
-      class="diff-comment-form prepend-top-10"
+      class="diff-comment-form gl-mt-3"
       @handleFormUpdateAddToReview="addToReview"
       @cancelForm="handleCancelCommentForm"
       @handleFormUpdate="handleSaveNote"

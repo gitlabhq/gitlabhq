@@ -180,6 +180,18 @@ RSpec.describe PersonalAccessToken do
       end
     end
 
+    describe '.expired_today_and_not_notified' do
+      let_it_be(:active) { create(:personal_access_token) }
+      let_it_be(:expired_yesterday) { create(:personal_access_token, expires_at: Date.yesterday) }
+      let_it_be(:revoked_token) { create(:personal_access_token, expires_at: Date.current, revoked: true) }
+      let_it_be(:expired_today) { create(:personal_access_token, expires_at: Date.current) }
+      let_it_be(:expired_today_and_notified) { create(:personal_access_token, expires_at: Date.current, after_expiry_notification_delivered: true) }
+
+      it 'returns tokens that have expired today' do
+        expect(described_class.expired_today_and_not_notified).to contain_exactly(expired_today)
+      end
+    end
+
     describe '.without_impersonation' do
       let_it_be(:impersonation_token) { create(:personal_access_token, :impersonation) }
       let_it_be(:personal_access_token) { create(:personal_access_token) }

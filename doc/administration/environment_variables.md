@@ -33,6 +33,7 @@ Variable | Type | Description
 `GITLAB_UNICORN_MEMORY_MIN`                | integer | The minimum memory threshold (in bytes) for the Unicorn worker killer
 `GITLAB_UNICORN_MEMORY_MAX`                | integer | The maximum memory threshold (in bytes) for the Unicorn worker killer
 `GITLAB_SHARED_RUNNERS_REGISTRATION_TOKEN` | string  | Sets the initial registration token used for GitLab Runners
+`UNSTRUCTURED_RAILS_LOG`                   | string  | Enables the unstructured log in addition to JSON logs (defaults to `true`)
 
 ## Complete database variables
 

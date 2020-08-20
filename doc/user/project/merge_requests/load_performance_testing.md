@@ -141,7 +141,8 @@ For example, you can override the duration of the test with a CLI option:
 GitLab only displays the key performance metrics in the MR widget if k6's results are saved
 via [summary export](https://k6.io/docs/results-visualization/json#summary-export)
 as a [Load Performance report artifact](../../../ci/pipelines/job_artifacts.md#artifactsreportsload_performance-premium).
-The latest Load Performance artifact available is always used.
+The latest Load Performance artifact available is always used, using the
+summary values from the test.
 
 If [GitLab Pages](../pages/index.md) is enabled, you can view the report directly in your browser.
 

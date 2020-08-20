@@ -9,6 +9,7 @@ RSpec.describe Gitlab::Auth::RequestAuthenticator do
       'REQUEST_METHOD' => 'GET'
     }
   end
+
   let(:request) { ActionDispatch::Request.new(env) }
 
   subject { described_class.new(request) }

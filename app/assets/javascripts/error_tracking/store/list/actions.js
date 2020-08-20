@@ -1,6 +1,6 @@
 import Service from '../../services';
 import * as types from './mutation_types';
-import createFlash from '~/flash';
+import { deprecatedCreateFlash as createFlash } from '~/flash';
 import Poll from '~/lib/utils/poll';
 import { __ } from '~/locale';
 
@@ -102,5 +102,3 @@ export const fetchPaginatedResults = ({ commit, dispatch }, cursor) => {
 export const removeIgnoredResolvedErrors = ({ commit }, error) => {
   commit(types.REMOVE_IGNORED_RESOLVED_ERRORS, error);
 };
-
-export default () => {};

@@ -1,4 +1,4 @@
-import Flash from '../flash';
+import { deprecatedCreateFlash as Flash } from '../flash';
 import BalsamiqViewer from './balsamiq/balsamiq_viewer';
 import { __ } from '~/locale';
 

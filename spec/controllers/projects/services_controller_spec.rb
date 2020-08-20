@@ -82,7 +82,7 @@ RSpec.describe Projects::ServicesController do
             'active' => '1',
             'push_events' => '1',
             'token' => 'token',
-            'project_url' => 'http://test.com'
+            'project_url' => 'https://buildkite.com/organization/pipeline'
           }
         end
 

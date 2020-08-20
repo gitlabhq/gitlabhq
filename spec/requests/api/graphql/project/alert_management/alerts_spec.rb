@@ -4,12 +4,12 @@ require 'spec_helper'
 RSpec.describe 'getting Alert Management Alerts' do
   include GraphqlHelpers
 
-  let_it_be(:payload) { { 'custom' => { 'alert' => 'payload' } } }
+  let_it_be(:payload) { { 'custom' => { 'alert' => 'payload' }, 'runbook' => 'runbook' } }
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:current_user) { create(:user) }
-  let_it_be(:resolved_alert) { create(:alert_management_alert, :all_fields, :resolved, project: project, issue: nil, severity: :low) }
-  let_it_be(:triggered_alert) { create(:alert_management_alert, :all_fields, project: project, severity: :critical, payload: payload) }
-  let_it_be(:other_project_alert) { create(:alert_management_alert, :all_fields) }
+  let_it_be(:resolved_alert) { create(:alert_management_alert, :all_fields, :resolved, project: project, issue: nil, severity: :low).present }
+  let_it_be(:triggered_alert) { create(:alert_management_alert, :all_fields, project: project, severity: :critical, payload: payload).present }
+  let_it_be(:other_project_alert) { create(:alert_management_alert, :all_fields).present }
 
   let(:params) { {} }
 
@@ -71,10 +71,13 @@ RSpec.describe 'getting Alert Management Alerts' do
           'eventCount' => triggered_alert.events,
           'startedAt' => triggered_alert.started_at.strftime('%Y-%m-%dT%H:%M:%SZ'),
           'endedAt' => nil,
-          'details' => { 'custom.alert' => 'payload' },
+          'details' => { 'custom.alert' => 'payload', 'runbook' => 'runbook' },
           'createdAt' => triggered_alert.created_at.strftime('%Y-%m-%dT%H:%M:%SZ'),
           'updatedAt' => triggered_alert.updated_at.strftime('%Y-%m-%dT%H:%M:%SZ'),
-          'metricsDashboardUrl' => nil
+          'metricsDashboardUrl' => nil,
+          'detailsUrl' => triggered_alert.details_url,
+          'prometheusAlert' => nil,
+          'runbook' => 'runbook'
         )
 
         expect(second_alert).to include(

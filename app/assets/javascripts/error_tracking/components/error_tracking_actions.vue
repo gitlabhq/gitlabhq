@@ -1,5 +1,5 @@
 <script>
-import { GlDeprecatedButton, GlIcon, GlButtonGroup, GlTooltipDirective } from '@gitlab/ui';
+import { GlButton, GlIcon, GlButtonGroup, GlTooltipDirective } from '@gitlab/ui';
 import { __ } from '~/locale';
 
 const IGNORED = 'ignored';
@@ -10,7 +10,7 @@ const statusValidation = [IGNORED, RESOLVED, UNRESOLVED];
 
 export default {
   components: {
-    GlDeprecatedButton,
+    GlButton,
     GlIcon,
     GlButtonGroup,
   },
@@ -44,37 +44,37 @@ export default {
 
 <template>
   <div>
-    <gl-button-group class="flex-column flex-md-row ml-0 ml-md-n4">
-      <gl-deprecated-button
+    <gl-button-group class="gl-flex-direction-column flex-md-row gl-ml-0 ml-md-n4">
+      <gl-button
         :key="ignoreBtn.status"
         :ref="`${ignoreBtn.title.toLowerCase()}Error`"
         v-gl-tooltip.hover
-        class="d-block mb-2 mb-md-0 w-100"
+        class="gl-display-block gl-mb-4 mb-md-0 gl-w-full"
         :title="ignoreBtn.title"
         @click="$emit('update-issue-status', { errorId: error.id, status: ignoreBtn.status })"
       >
-        <gl-icon class="d-none d-md-inline m-0" :name="ignoreBtn.icon" :size="12" />
+        <gl-icon class="gl-display-none d-md-inline gl-m-0" :name="ignoreBtn.icon" :size="12" />
         <span class="d-md-none">{{ ignoreBtn.title }}</span>
-      </gl-deprecated-button>
-      <gl-deprecated-button
+      </gl-button>
+      <gl-button
         :key="resolveBtn.status"
         :ref="`${resolveBtn.title.toLowerCase()}Error`"
         v-gl-tooltip.hover
-        class="d-block mb-2 mb-md-0 w-100"
+        class="gl-display-block gl-mb-4 mb-md-0 gl-w-full"
         :title="resolveBtn.title"
         @click="$emit('update-issue-status', { errorId: error.id, status: resolveBtn.status })"
       >
-        <gl-icon class="d-none d-md-inline m-0" :name="resolveBtn.icon" :size="12" />
+        <gl-icon class="gl-display-none d-md-inline gl-m-0" :name="resolveBtn.icon" :size="12" />
         <span class="d-md-none">{{ resolveBtn.title }}</span>
-      </gl-deprecated-button>
+      </gl-button>
     </gl-button-group>
-    <gl-deprecated-button
+    <gl-button
       :href="detailsLink"
-      category="secondary"
+      category="primary"
       variant="info"
-      class="d-block d-md-none mb-2 mb-md-0"
+      class="gl-display-block d-md-none gl-mb-4 mb-md-0"
     >
       {{ __('More details') }}
-    </gl-deprecated-button>
+    </gl-button>
   </div>
 </template>

@@ -35,6 +35,7 @@ module API
         end
       end
 
+      expose :packages_enabled
       expose :empty_repo?, as: :empty_repo
       expose :archived?, as: :archived
       expose :visibility

@@ -15,25 +15,25 @@ module QA
           end
 
           def expand_general_pipelines(&block)
-            expand_section(:general_pipelines_settings_content) do
+            expand_content(:general_pipelines_settings_content) do
               Settings::GeneralPipelines.perform(&block)
             end
           end
 
           def expand_runners_settings(&block)
-            expand_section(:runners_settings_content) do
+            expand_content(:runners_settings_content) do
               Settings::Runners.perform(&block)
             end
           end
 
           def expand_ci_variables(&block)
-            expand_section(:variables_settings_content) do
+            expand_content(:variables_settings_content) do
               Settings::CiVariables.perform(&block)
             end
           end
 
           def expand_auto_devops(&block)
-            expand_section(:autodevops_settings_content) do
+            expand_content(:autodevops_settings_content) do
               Settings::AutoDevops.perform(&block)
             end
           end

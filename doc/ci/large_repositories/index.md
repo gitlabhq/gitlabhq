@@ -124,6 +124,10 @@ are dependent on Git version.
 [`GIT_FETCH_EXTRA_FLAGS`](../yaml/README.md#git-fetch-extra-flags) allows you
 to modify `git fetch` behavior by passing extra flags.
 
+For example, if your project contains a large number of tags that your CI jobs don't rely on,
+you could add [`--no-tags`](https://git-scm.com/docs/git-fetch#Documentation/git-fetch.txt---no-tags)
+to the extra flags to make your fetches faster and more compact.
+
 See the [`GIT_FETCH_EXTRA_FLAGS` documentation](../yaml/README.md#git-fetch-extra-flags)
 for more information.
 
@@ -253,3 +257,11 @@ concurrent = 4
 
 This makes the cloning configuration to be part of given Runner
 and does not require us to update each `.gitlab-ci.yml`.
+
+## Pre-clone step
+
+For very active repositories with a large number of references and files, you can also
+optimize your CI jobs by seeding repository data with GitLab Runner's [`pre_clone_script`](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runners-section).
+
+See [our development documentation](../../development/pipelines.md#pre-clone-step) for
+an overview of how we implemented this approach on GitLab.com for the main GitLab repository.

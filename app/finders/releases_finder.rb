@@ -1,25 +1,54 @@
 # frozen_string_literal: true
 
 class ReleasesFinder
-  attr_reader :project, :current_user, :params
+  include Gitlab::Utils::StrongMemoize
 
-  def initialize(project, current_user = nil, params = {})
-    @project = project
+  attr_reader :parent, :current_user, :params
+
+  def initialize(parent, current_user = nil, params = {})
+    @parent = parent
     @current_user = current_user
     @params = params
   end
 
   def execute(preload: true)
-    return Release.none unless Ability.allowed?(current_user, :read_release, project)
+    return Release.none if projects.empty?
 
-    # See https://gitlab.com/gitlab-org/gitlab/-/issues/211988
-    releases = project.releases.where.not(tag: nil) # rubocop:disable CodeReuse/ActiveRecord
+    releases = get_releases
     releases = by_tag(releases)
     releases = releases.preloaded if preload
     releases.sorted
   end
 
   private
+
+  def get_releases
+    Release.where(project_id: projects).where.not(tag: nil) # rubocop: disable CodeReuse/ActiveRecord
+  end
+
+  def include_subgroups?
+    params.fetch(:include_subgroups, false)
+  end
+
+  def projects
+    strong_memoize(:projects) do
+      if parent.is_a?(Project)
+        Ability.allowed?(current_user, :read_release, parent) ? [parent] : []
+      elsif parent.is_a?(Group)
+        accessible_projects
+      end
+    end
+  end
+
+  def accessible_projects
+    projects = if include_subgroups?
+                 Project.for_group_and_its_subgroups(parent)
+               else
+                 parent.projects
+               end
+
+    projects.select { |project| Ability.allowed?(current_user, :read_release, project) }
+  end
 
   # rubocop: disable CodeReuse/ActiveRecord
   def by_tag(releases)

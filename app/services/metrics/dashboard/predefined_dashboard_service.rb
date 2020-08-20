@@ -12,8 +12,7 @@ module Metrics
       SEQUENCE = [
         STAGES::MetricEndpointInserter,
         STAGES::VariableEndpointInserter,
-        STAGES::PanelIdsInserter,
-        STAGES::Sorter
+        STAGES::PanelIdsInserter
       ].freeze
 
       class << self
@@ -28,6 +27,11 @@ module Metrics
         def out_of_the_box_dashboard?
           true
         end
+      end
+
+      # Returns an un-processed dashboard from the cache.
+      def raw_dashboard
+        Gitlab::Metrics::Dashboard::Cache.fetch(cache_key) { get_raw_dashboard }
       end
 
       private

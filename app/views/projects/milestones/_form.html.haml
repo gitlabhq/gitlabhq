@@ -1,4 +1,4 @@
-= form_for [@project.namespace.becomes(Namespace), @project, @milestone],
+= form_for [@project, @milestone],
            html: { class: 'milestone-form common-note-form js-quick-submit js-requires-input' } do |f|
   = form_errors(@milestone)
   .row

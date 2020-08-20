@@ -1,5 +1,5 @@
 ---
-redirect_to: 'dashboard_settings.md'
+redirect_to: '../../../operations/metrics/dashboards/settings.md'
 ---
 
-This document was moved to [another location](dashboard_settings.md).
+This document was moved to [another location](../../../operations/metrics/dashboards/settings.md).

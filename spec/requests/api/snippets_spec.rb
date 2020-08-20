@@ -84,8 +84,8 @@ RSpec.describe API::Snippets do
           public_snippet.id,
           public_snippet_other.id)
         expect(json_response.map { |snippet| snippet['web_url']} ).to contain_exactly(
-          "http://localhost/snippets/#{public_snippet.id}",
-          "http://localhost/snippets/#{public_snippet_other.id}")
+          "http://localhost/-/snippets/#{public_snippet.id}",
+          "http://localhost/-/snippets/#{public_snippet_other.id}")
         expect(json_response[0]['files'].first).to eq snippet_blob_file(public_snippet_other.blobs.first)
         expect(json_response[1]['files'].first).to eq snippet_blob_file(public_snippet.blobs.first)
       end
@@ -229,13 +229,16 @@ RSpec.describe API::Snippets do
     let(:base_params) do
       {
         title: 'Test Title',
-        file_name: 'test.rb',
         description: 'test description',
-        content: 'puts "hello world"',
         visibility: 'public'
       }
     end
-    let(:params) { base_params.merge(extra_params) }
+
+    let(:file_path) { 'file_1.rb' }
+    let(:file_content) { 'puts "hello world"' }
+
+    let(:params) { base_params.merge(file_params, extra_params) }
+    let(:file_params) { { files: [{ file_path: file_path, content: file_content }] } }
     let(:extra_params) { {} }
 
     subject { post api("/snippets/", user), params: params }
@@ -251,7 +254,7 @@ RSpec.describe API::Snippets do
         expect(response).to have_gitlab_http_status(:created)
         expect(json_response['title']).to eq(params[:title])
         expect(json_response['description']).to eq(params[:description])
-        expect(json_response['file_name']).to eq(params[:file_name])
+        expect(json_response['file_name']).to eq(file_path)
         expect(json_response['files']).to eq(snippet.blobs.map { |blob| snippet_blob_file(blob) })
         expect(json_response['visibility']).to eq(params[:visibility])
       end
@@ -265,11 +268,30 @@ RSpec.describe API::Snippets do
       it 'commit the files to the repository' do
         subject
 
-        blob = snippet.repository.blob_at('master', params[:file_name])
+        blob = snippet.repository.blob_at('master', file_path)
 
-        expect(blob.data).to eq params[:content]
+        expect(blob.data).to eq file_content
       end
     end
+
+    context 'with files parameter' do
+      it_behaves_like 'snippet creation with files parameter'
+
+      context 'with multiple files' do
+        let(:file_params) do
+          {
+            files: [
+              { file_path: 'file_1.rb', content: 'puts "hello world"' },
+              { file_path: 'file_2.rb', content: 'puts "hello world 2"' }
+            ]
+          }
+        end
+
+        it_behaves_like 'snippet creation'
+      end
+    end
+
+    it_behaves_like 'snippet creation without files parameter'
 
     context 'with restricted visibility settings' do
       before do
@@ -303,15 +325,6 @@ RSpec.describe API::Snippets do
       subject
 
       expect(response).to have_gitlab_http_status(:bad_request)
-    end
-
-    it 'returns 400 if content is blank' do
-      params[:content] = ''
-
-      subject
-
-      expect(response).to have_gitlab_http_status(:bad_request)
-      expect(json_response['error']).to eq 'content is empty'
     end
 
     it 'returns 400 if title is blank' do

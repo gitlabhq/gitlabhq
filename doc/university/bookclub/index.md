@@ -1,24 +1,5 @@
 ---
-comments: false
-type: index
+redirect_to: 'https://docs.gitlab.com'
 ---
 
-# The GitLab Book Club
-
-The Book Club is a casual meet-up to read and discuss books we like.
-We'll find a time that suits most, if not all.
-
-See the [book list](booklist.md) for additional recommendations.
-
-## Currently reading : Books about remote work
-
-1. **Remote: Office not required**
-
-   David Heinemeier Hansson and Jason Fried, 2013
-   ([Amazon](https://www.amazon.co.uk/dp/0091954673/ref=cm_sw_r_tw_dp_x_0yy9EbZ2WXJ6Y))
-
-1. **The Year Without Pants**
-
-   Scott Berkun, 2013 ([ScottBerkun.com](https://scottberkun.com/yearwithoutpants/))
-
-Any other books you'd like to suggest? Edit this page and add them to the queue.
+Visit our [documentation page](https://docs.gitlab.com) for information about GitLab.

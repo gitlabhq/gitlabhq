@@ -21,7 +21,7 @@ class HtmlSafetyValidator < ActiveModel::EachValidator
   end
 
   def self.error_message
-    _("cannot contain HTML/XML tags, including any word between angle brackets (<,>).")
+    _("cannot contain HTML/XML tags, including any word between angle brackets (&lt;,&gt;).")
   end
 
   private

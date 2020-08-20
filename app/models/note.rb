@@ -61,7 +61,7 @@ class Note < ApplicationRecord
   attr_accessor :commands_changes
 
   # A special role that may be displayed on issuable's discussions
-  attr_accessor :special_role
+  attr_reader :special_role
 
   default_value_for :system, false
 
@@ -417,7 +417,7 @@ class Note < ApplicationRecord
   end
 
   def can_create_todo?
-    # Skip system notes, and notes on project snippet
+    # Skip system notes, and notes on snippets
     !system? && !for_snippet?
   end
 
@@ -557,6 +557,10 @@ class Note < ApplicationRecord
 
   def system_note_with_references_visible_for?(user)
     (!system_note_with_references? || all_referenced_mentionables_allowed?(user)) && system_note_viewable_by?(user)
+  end
+
+  def parent_user
+    noteable.author if for_personal_snippet?
   end
 
   private

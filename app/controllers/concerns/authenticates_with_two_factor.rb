@@ -33,9 +33,7 @@ module AuthenticatesWithTwoFactor
   end
 
   def locked_user_redirect(user)
-    flash.now[:alert] = locked_user_redirect_alert(user)
-
-    render 'devise/sessions/new'
+    redirect_to new_user_session_path, alert: locked_user_redirect_alert(user)
   end
 
   def authenticate_with_two_factor
@@ -54,7 +52,13 @@ module AuthenticatesWithTwoFactor
   private
 
   def locked_user_redirect_alert(user)
-    user.access_locked? ? _('Your account is locked.') : _('Invalid Login or password')
+    if user.access_locked?
+      _('Your account is locked.')
+    elsif !user.confirmed?
+      I18n.t('devise.failure.unconfirmed')
+    else
+      _('Invalid Login or password')
+    end
   end
 
   def clear_two_factor_attempt!

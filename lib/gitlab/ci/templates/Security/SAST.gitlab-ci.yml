@@ -52,8 +52,7 @@ sast:
   rules:
     - if: $SAST_DISABLED || $SAST_DISABLE_DIND == 'false'
       when: never
-    - if: $CI_COMMIT_BRANCH &&
-          $GITLAB_FEATURES =~ /\bsast\b/
+    - if: $CI_COMMIT_BRANCH
   script:
     - /analyzer run
 
@@ -65,7 +64,6 @@ bandit-sast:
     - if: $SAST_DISABLED || $SAST_DISABLE_DIND == 'false'
       when: never
     - if: $CI_COMMIT_BRANCH &&
-          $GITLAB_FEATURES =~ /\bsast\b/ &&
           $SAST_DEFAULT_ANALYZERS =~ /bandit/
       exists:
         - '**/*.py'
@@ -106,7 +104,6 @@ flawfinder-sast:
     - if: $SAST_DISABLED || $SAST_DISABLE_DIND == 'false'
       when: never
     - if: $CI_COMMIT_BRANCH &&
-          $GITLAB_FEATURES =~ /\bsast\b/ &&
           $SAST_DEFAULT_ANALYZERS =~ /flawfinder/
       exists:
         - '**/*.c'
@@ -120,7 +117,6 @@ kubesec-sast:
     - if: $SAST_DISABLED || $SAST_DISABLE_DIND == 'false'
       when: never
     - if: $CI_COMMIT_BRANCH &&
-          $GITLAB_FEATURES =~ /\bsast\b/ &&
           $SAST_DEFAULT_ANALYZERS =~ /kubesec/ &&
           $SCAN_KUBERNETES_MANIFESTS == 'true'
 
@@ -132,7 +128,6 @@ gosec-sast:
     - if: $SAST_DISABLED || $SAST_DISABLE_DIND == 'false'
       when: never
     - if: $CI_COMMIT_BRANCH &&
-          $GITLAB_FEATURES =~ /\bsast\b/ &&
           $SAST_DEFAULT_ANALYZERS =~ /gosec/
       exists:
         - '**/*.go'
@@ -145,7 +140,6 @@ nodejs-scan-sast:
     - if: $SAST_DISABLED || $SAST_DISABLE_DIND == 'false'
       when: never
     - if: $CI_COMMIT_BRANCH &&
-          $GITLAB_FEATURES =~ /\bsast\b/ &&
           $SAST_DEFAULT_ANALYZERS =~ /nodejs-scan/
       exists:
         - 'package.json'
@@ -158,7 +152,6 @@ phpcs-security-audit-sast:
     - if: $SAST_DISABLED || $SAST_DISABLE_DIND == 'false'
       when: never
     - if: $CI_COMMIT_BRANCH &&
-          $GITLAB_FEATURES =~ /\bsast\b/ &&
           $SAST_DEFAULT_ANALYZERS =~ /phpcs-security-audit/
       exists:
         - '**/*.php'
@@ -171,7 +164,6 @@ pmd-apex-sast:
     - if: $SAST_DISABLED || $SAST_DISABLE_DIND == 'false'
       when: never
     - if: $CI_COMMIT_BRANCH &&
-          $GITLAB_FEATURES =~ /\bsast\b/ &&
           $SAST_DEFAULT_ANALYZERS =~ /pmd-apex/
       exists:
         - '**/*.cls'
@@ -184,7 +176,6 @@ secrets-sast:
     - if: $SAST_DISABLED || $SAST_DISABLE_DIND == 'false'
       when: never
     - if: $CI_COMMIT_BRANCH &&
-          $GITLAB_FEATURES =~ /\bsast\b/ &&
           $SAST_DEFAULT_ANALYZERS =~ /secrets/
 
 security-code-scan-sast:
@@ -195,7 +186,6 @@ security-code-scan-sast:
     - if: $SAST_DISABLED || $SAST_DISABLE_DIND == 'false'
       when: never
     - if: $CI_COMMIT_BRANCH &&
-          $GITLAB_FEATURES =~ /\bsast\b/ &&
           $SAST_DEFAULT_ANALYZERS =~ /security-code-scan/
       exists:
         - '**/*.csproj'
@@ -209,7 +199,6 @@ sobelow-sast:
     - if: $SAST_DISABLED || $SAST_DISABLE_DIND == 'false'
       when: never
     - if: $CI_COMMIT_BRANCH &&
-          $GITLAB_FEATURES =~ /\bsast\b/ &&
           $SAST_DEFAULT_ANALYZERS =~ /sobelow/
       exists:
         - 'mix.exs'
@@ -222,7 +211,6 @@ spotbugs-sast:
     - if: $SAST_DISABLED || $SAST_DISABLE_DIND == 'false'
       when: never
     - if: $CI_COMMIT_BRANCH &&
-          $GITLAB_FEATURES =~ /\bsast\b/ &&
           $SAST_DEFAULT_ANALYZERS =~ /spotbugs/
       exists:
         - '**/*.groovy'

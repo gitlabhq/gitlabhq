@@ -1,8 +1,8 @@
 import { noop } from 'lodash';
-import LazyLoader from '~/lazy_loader';
 import { TEST_HOST } from 'helpers/test_constants';
-import waitForPromises from './helpers/wait_for_promises';
 import { useMockMutationObserver, useMockIntersectionObserver } from 'helpers/mock_dom_observer';
+import LazyLoader from '~/lazy_loader';
+import waitForPromises from './helpers/wait_for_promises';
 
 const execImmediately = callback => {
   callback();
@@ -45,10 +45,24 @@ describe('LazyLoader', () => {
     return newImg;
   };
 
+  const mockLoadEvent = () => {
+    const addEventListener = window.addEventListener.bind(window);
+
+    jest.spyOn(window, 'addEventListener').mockImplementation((event, callback) => {
+      if (event === 'load') {
+        callback();
+      } else {
+        addEventListener(event, callback);
+      }
+    });
+  };
+
   beforeEach(() => {
     jest.spyOn(window, 'requestAnimationFrame').mockImplementation(execImmediately);
     jest.spyOn(window, 'requestIdleCallback').mockImplementation(execImmediately);
     jest.spyOn(LazyLoader, 'loadImage');
+
+    mockLoadEvent();
   });
 
   afterEach(() => {

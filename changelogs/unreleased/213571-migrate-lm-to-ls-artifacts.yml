@@ -1,0 +1,5 @@
+---
+title: Migrate license_management artifacts to license_scanning type
+merge_request: 36817
+author:
+type: changed

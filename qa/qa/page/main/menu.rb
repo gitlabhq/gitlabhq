@@ -14,6 +14,9 @@ module QA
           element :user_avatar, required: true
           element :user_menu, required: true
           element :stop_impersonation_link
+          element :issues_shortcut_button, required: true
+          element :merge_requests_shortcut_button, required: true
+          element :todos_shortcut_button, required: true
         end
 
         view 'app/views/layouts/nav/_dashboard.html.haml' do
@@ -60,6 +63,18 @@ module QA
           within_top_menu do
             click_element :more_dropdown
             click_element option_name
+          end
+        end
+
+        # To go to one of the popular pages using the provided shortcut buttons within top menu
+        # @param [Symbol] the name of the element (e.g: `:issues_shortcut button`)
+        # @example:
+        #   Menu.perform do |menu|
+        #     menu.go_to_page_by_shortcut(:issues_shortcut_button) #=> Go to Issues page using shortcut button
+        #   end
+        def go_to_page_by_shortcut(button)
+          within_top_menu do
+            click_element(button)
           end
         end
 

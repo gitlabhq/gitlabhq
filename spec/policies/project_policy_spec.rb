@@ -20,7 +20,7 @@ RSpec.describe ProjectPolicy do
       read_project_for_iids read_issue_iid read_label
       read_milestone read_snippet read_project_member read_note
       create_project create_issue create_note upload_file create_merge_request_in
-      award_emoji read_release
+      award_emoji read_release read_issue_link
     ]
   end
 
@@ -30,7 +30,7 @@ RSpec.describe ProjectPolicy do
       admin_issue admin_label admin_list read_commit_status read_build
       read_container_image read_pipeline read_environment read_deployment
       read_merge_request download_wiki_code read_sentry_issue read_metrics_dashboard_annotation
-      metrics_dashboard read_confidential_issues
+      metrics_dashboard read_confidential_issues admin_issue_link
     ]
   end
 
@@ -46,7 +46,7 @@ RSpec.describe ProjectPolicy do
       resolve_note create_container_image update_container_image destroy_container_image daily_statistics
       create_environment update_environment create_deployment update_deployment create_release update_release
       create_metrics_dashboard_annotation delete_metrics_dashboard_annotation update_metrics_dashboard_annotation
-      read_terraform_state
+      read_terraform_state read_pod_logs
     ]
   end
 
@@ -105,7 +105,7 @@ RSpec.describe ProjectPolicy do
     subject { described_class.new(owner, project) }
 
     before do
-      project.project_feature.destroy
+      project.project_feature.destroy!
       project.reload
     end
 
@@ -325,6 +325,7 @@ RSpec.describe ProjectPolicy do
         allow_collaboration: true
       )
     end
+
     let(:maintainer_abilities) do
       %w(create_build create_pipeline)
     end
@@ -953,7 +954,12 @@ RSpec.describe ProjectPolicy do
 
       context 'when repository is disabled' do
         before do
-          project.project_feature.update(repository_access_level: ProjectFeature::DISABLED)
+          project.project_feature.update!(
+            # Disable merge_requests and builds as well, since merge_requests and
+            # builds cannot have higher visibility than repository.
+            merge_requests_access_level: ProjectFeature::DISABLED,
+            builds_access_level: ProjectFeature::DISABLED,
+            repository_access_level: ProjectFeature::DISABLED)
         end
 
         it { is_expected.to be_disallowed(:read_package) }

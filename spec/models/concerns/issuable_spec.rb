@@ -17,6 +17,7 @@ RSpec.describe Issuable do
     it { is_expected.to have_many(:notes).dependent(:destroy) }
     it { is_expected.to have_many(:todos).dependent(:destroy) }
     it { is_expected.to have_many(:labels) }
+    it { is_expected.to have_many(:note_authors).through(:notes) }
 
     context 'Notes' do
       let!(:note) { create(:note, noteable: issue, project: issue.project) }
@@ -149,6 +150,7 @@ RSpec.describe Issuable do
     let!(:searchable_issue) do
       create(:issue, title: "Searchable awesome issue", description: 'Many cute kittens')
     end
+
     let!(:searchable_issue2) { create(:issue, title: "Aw", description: "Cu") }
 
     it 'returns issues with a matching title' do

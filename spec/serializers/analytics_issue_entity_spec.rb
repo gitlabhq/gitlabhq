@@ -17,16 +17,13 @@ RSpec.describe AnalyticsIssueEntity do
     }
   end
 
-  let(:project) { create(:project, name: 'my project') }
   let(:request) { EntityRequest.new(entity: :merge_request) }
 
   let(:entity) do
     described_class.new(entity_hash, request: request, project: project)
   end
 
-  context 'generic entity' do
-    subject { entity.as_json }
-
+  shared_examples 'generic entity' do
     it 'contains the entity URL' do
       expect(subject).to include(:url)
     end
@@ -38,6 +35,26 @@ RSpec.describe AnalyticsIssueEntity do
     it 'does not contain sensitive information' do
       expect(subject).not_to include(/token/)
       expect(subject).not_to include(/variables/)
+    end
+  end
+
+  context 'without subgroup' do
+    let_it_be(:project) { create(:project, name: 'my project') }
+
+    subject { entity.as_json }
+
+    it_behaves_like 'generic entity'
+  end
+
+  context 'with subgroup' do
+    let_it_be(:project) { create(:project, :in_subgroup, name: 'my project') }
+
+    subject { entity.as_json }
+
+    it_behaves_like 'generic entity'
+
+    it 'has URL containing subgroup' do
+      expect(subject[:url]).to include("#{project.group.parent.name}/#{project.group.name}/my_project/")
     end
   end
 end

@@ -1,10 +1,10 @@
 <script>
-import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
+import { GlDeprecatedDropdown, GlDeprecatedDropdownItem } from '@gitlab/ui';
 
 export default {
   components: {
-    GlDropdown,
-    GlDropdownItem,
+    GlDeprecatedDropdown,
+    GlDeprecatedDropdownItem,
   },
   props: {
     commits: {
@@ -18,20 +18,20 @@ export default {
 
 <template>
   <div>
-    <gl-dropdown
+    <gl-deprecated-dropdown
       right
       text="Use an existing commit message"
       variant="link"
       class="mr-commit-dropdown"
     >
-      <gl-dropdown-item
+      <gl-deprecated-dropdown-item
         v-for="commit in commits"
         :key="commit.short_id"
         class="text-nowrap text-truncate"
         @click="$emit('input', commit.message)"
       >
         <span class="monospace mr-2">{{ commit.short_id }}</span> {{ commit.title }}
-      </gl-dropdown-item>
-    </gl-dropdown>
+      </gl-deprecated-dropdown-item>
+    </gl-deprecated-dropdown>
   </div>
 </template>

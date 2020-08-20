@@ -28,6 +28,12 @@ module Resolvers
              required: false,
              as: :label_name,
              description: 'Array of label names. All resolved merge requests will have all of these labels.'
+    argument :merged_after, Types::TimeType,
+      required: false,
+      description: 'Merge requests merged after this date'
+    argument :merged_before, Types::TimeType,
+      required: false,
+      description: 'Merge requests merged before this date'
 
     def self.single
       ::Resolvers::MergeRequestResolver

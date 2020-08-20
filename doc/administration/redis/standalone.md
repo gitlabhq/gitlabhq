@@ -15,7 +15,7 @@ is generally stable and can handle many requests, so it is an acceptable
 trade off to have only a single instance. See the [reference architectures](../reference_architectures/index.md)
 page for an overview of GitLab scaling options.
 
-## Set up a standalone Redis instance
+## Set up the standalone Redis instance
 
 The steps below are the minimum necessary to configure a Redis server with
 Omnibus GitLab:
@@ -28,35 +28,48 @@ Omnibus GitLab:
 1. Edit `/etc/gitlab/gitlab.rb` and add the contents:
 
    ```ruby
-   ## Enable Redis
-   redis['enable'] = true
+   ## Enable Redis and disable all other services
+   ## https://docs.gitlab.com/omnibus/roles/
+   roles ['redis_master_role']
 
-   ## Disable all other services
-   sidekiq['enable'] = false
-   gitlab_workhorse['enable'] = false
-   puma['enable'] = false
-   postgresql['enable'] = false
-   nginx['enable'] = false
-   prometheus['enable'] = false
-   alertmanager['enable'] = false
-   pgbouncer_exporter['enable'] = false
-   gitlab_exporter['enable'] = false
-   gitaly['enable'] = false
-
+   ## Redis configuration
    redis['bind'] = '0.0.0.0'
    redis['port'] = 6379
-   redis['password'] = 'SECRET_PASSWORD_HERE'
+   redis['password'] = '<redis_password>'
 
-   gitlab_rails['enable'] = false
+   ## Disable automatic database migrations
+   ## Only the primary GitLab application server should handle migrations
+   gitlab_rails['auto_migrate'] = false
    ```
 
 1. [Reconfigure Omnibus GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
 1. Note the Redis node's IP address or hostname, port, and
-   Redis password. These will be necessary when configuring the GitLab
-   application servers later.
+   Redis password. These will be necessary when [configuring the GitLab
+   application servers](#set-up-the-gitlab-rails-application-instance).
 
 [Advanced configuration options](https://docs.gitlab.com/omnibus/settings/redis.html)
 are supported and can be added if needed.
+
+## Set up the GitLab Rails application instance
+
+On the instance where GitLab is installed:
+
+1. Edit the `/etc/gitlab/gitlab.rb` file and add the following contents:
+
+   ```ruby
+   ## Disable Redis
+   redis['enable'] = false
+
+   gitlab_rails['redis_host'] = 'redis.example.com'
+   gitlab_rails['redis_port'] = 6379
+
+   ## Required if Redis authentication is configured on the Redis node
+   gitlab_rails['redis_password'] = '<redis_password>'
+   ```
+
+1. Save your changes to `/etc/gitlab/gitlab.rb`.
+
+1. [Reconfigure Omnibus GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
 
 ## Troubleshooting
 

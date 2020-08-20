@@ -33,7 +33,7 @@ module Import
     end
 
     def repo
-      @repo ||= client.repo(params[:repo_id].to_i)
+      @repo ||= client.repository(params[:repo_id].to_i)
     end
 
     def project_name

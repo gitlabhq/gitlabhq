@@ -58,6 +58,7 @@ RSpec.describe Gitlab::PhabricatorImport::UserFinder, :clean_gitlab_redis_cache 
           )
         ]
       end
+
       let(:client) do
         client = instance_double(Gitlab::PhabricatorImport::Conduit::User)
         allow(client).to receive(:users).and_return(response)

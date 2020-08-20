@@ -2,7 +2,7 @@
 
 import $ from 'jquery';
 import axios from '~/lib/utils/axios_utils';
-import createFlash from '~/flash';
+import { deprecatedCreateFlash as createFlash } from '~/flash';
 import { BLOB_EDITOR_ERROR, BLOB_PREVIEW_ERROR } from './constants';
 import TemplateSelectorMediator from '../blob/file_template_mediator';
 import getModeByFileExtension from '~/lib/utils/ace_utils';

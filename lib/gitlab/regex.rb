@@ -3,7 +3,7 @@
 module Gitlab
   module Regex
     module Packages
-      CONAN_RECIPE_FILES = %w[conanfile.py conanmanifest.txt].freeze
+      CONAN_RECIPE_FILES = %w[conanfile.py conanmanifest.txt conan_sources.tgz conan_export.tgz].freeze
       CONAN_PACKAGE_FILES = %w[conaninfo.txt conanmanifest.txt conan_package.tgz].freeze
 
       def conan_file_name_regex
@@ -158,6 +158,15 @@ module Gitlab
 
     def environment_scope_regex_message
       "can contain only letters, digits, '-', '_', '/', '$', '{', '}', '.', '*' and spaces"
+    end
+
+    # https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/blob/master/doc/identity_and_auth.md#agent-identity-and-name
+    def cluster_agent_name_regex
+      /\A[a-z0-9]([-a-z0-9]*[a-z0-9])?\z/
+    end
+
+    def cluster_agent_name_regex_message
+      %q{can contain only lowercase letters, digits, and '-', but cannot start or end with '-'}
     end
 
     def kubernetes_namespace_regex

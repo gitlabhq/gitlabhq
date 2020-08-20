@@ -1,0 +1,5 @@
+---
+title: Add graceful timeout handling for analytics
+merge_request: 36811
+author:
+type: fixed
