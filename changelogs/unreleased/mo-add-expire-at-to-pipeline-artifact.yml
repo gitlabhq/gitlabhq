@@ -1,5 +1,0 @@
----
-title: Add expire_at to PipelineArtifact
-merge_request: 39114
-author:
-type: fixed

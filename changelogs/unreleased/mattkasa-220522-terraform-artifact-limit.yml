@@ -1,5 +1,0 @@
----
-title: Changes limit for terraform artifacts to 5MB
-merge_request: 37018
-author:
-type: changed

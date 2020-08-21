@@ -1,5 +1,0 @@
----
-title: Allow query/query_range keys in metrics dashboard to contain numbers
-merge_request: 39530
-author:
-type: changed

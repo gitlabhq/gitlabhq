@@ -1,5 +1,0 @@
----
-title: 'Add not null constraint for file to ci_pipeline_artifacts'
-merge_request: 39118
-author:
-type: fixed

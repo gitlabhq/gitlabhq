@@ -1,5 +1,0 @@
----
-title: Add GraphQL mutation for updating board list position and collapsed/expanded state.
-merge_request: 38942
-author:
-type: added

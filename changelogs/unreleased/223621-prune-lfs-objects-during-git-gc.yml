@@ -1,5 +1,0 @@
----
-title: Clean up orphaned LFS file references during GC
-merge_request: 38813
-author:
-type: added

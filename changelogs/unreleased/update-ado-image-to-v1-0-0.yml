@@ -1,5 +1,0 @@
----
-title: Update auto-deploy-image to v1.0.0, including a locally vendored auto-deploy-app chart instead of charts.gitlab.io
-merge_request: 39272
-author:
-type: changed

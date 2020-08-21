@@ -1,5 +1,0 @@
----
-title: Allow anonymous users to view embedded Grafana metrics in public project
-merge_request: 37844
-author:
-type: fixed

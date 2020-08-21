@@ -1,5 +1,0 @@
----
-title: Refactor spec/views/* and ee/spec/views/* to fix Rails/SaveBang Cop
-merge_request: 38981
-author: Rajendra Kadam
-type: fixed

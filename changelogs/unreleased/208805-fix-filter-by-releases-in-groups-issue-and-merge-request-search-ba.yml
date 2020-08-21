@@ -1,5 +1,0 @@
----
-title: Fix filter by releases at group issues and merge requests search bar.
-merge_request: 26740
-author: Gilang Gumilar
-type: fixed

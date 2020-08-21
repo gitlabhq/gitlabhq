@@ -1,5 +1,0 @@
----
-title: Update incident_issues usage ping to use issue type column
-merge_request: 38864
-author:
-type: changed

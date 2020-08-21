@@ -1,5 +1,0 @@
----
-title: Fix gitlab-rake gitlab:license:info crashing when no license exists
-merge_request: 39143
-author:
-type: fixed

@@ -1,5 +1,0 @@
----
-title: Always use expanded env name to load persisted environment
-merge_request: 37585
-author:
-type: performance

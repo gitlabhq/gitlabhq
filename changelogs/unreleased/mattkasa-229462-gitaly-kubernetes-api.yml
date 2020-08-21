@@ -1,5 +1,0 @@
----
-title: Return gitaly info in kubernetes internal API
-merge_request: 38654
-author:
-type: added

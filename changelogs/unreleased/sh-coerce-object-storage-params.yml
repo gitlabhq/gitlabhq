@@ -1,5 +1,0 @@
----
-title: Coerce string object storage options to booleans
-merge_request: 39901
-author:
-type: fixed

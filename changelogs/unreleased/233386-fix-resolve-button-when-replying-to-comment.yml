@@ -1,5 +1,0 @@
----
-title: Fix missing resolve button when replying to notes in MRs
-merge_request: 39614
-author:
-type: fixed

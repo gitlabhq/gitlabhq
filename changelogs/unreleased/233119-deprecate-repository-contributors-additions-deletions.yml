@@ -1,5 +1,0 @@
----
-title: Deprecate additions and deletions attributes in Repositories API
-merge_request: 39653
-author:
-type: deprecated

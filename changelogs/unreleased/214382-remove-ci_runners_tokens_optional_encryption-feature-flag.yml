@@ -1,5 +1,0 @@
----
-title: Disable ci_runners_tokens_optional_encryption feature flag.
-merge_request: 31800
-author: Gilang Gumilar
-type: changed

@@ -1,5 +1,0 @@
----
-title: Deprecate blob field on GraphQL SnippetType
-merge_request: 39088
-author:
-type: deprecated

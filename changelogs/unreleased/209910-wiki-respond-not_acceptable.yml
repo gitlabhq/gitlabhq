@@ -1,5 +1,0 @@
----
-title: Wiki controller should not crash with non-html format
-merge_request: 37466
-author:
-type: fixed

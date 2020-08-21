@@ -1,5 +1,0 @@
----
-title: Allows NuGet to authenticate with Job Token
-merge_request: 39147
-author:
-type: added

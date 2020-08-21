@@ -1,5 +1,0 @@
----
-title: Add sign_in_count to /users/:id API for admins
-merge_request: 35726
-author: Luc Didry
-type: changed

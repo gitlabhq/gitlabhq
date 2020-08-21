@@ -1,5 +1,0 @@
----
-title: Add pre-processing step so preexisting codeblocks are preserved prior to flagging content as code in the static site editor's WYSIWYG mode.
-merge_request: 38834
-author:
-type: added

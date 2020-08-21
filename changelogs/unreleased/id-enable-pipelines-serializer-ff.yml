@@ -1,5 +1,0 @@
----
-title: Serialize fewer pipeline fields for MR widget
-merge_request: 38215
-author:
-type: performance

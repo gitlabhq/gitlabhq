@@ -1,5 +1,0 @@
----
-title: Set longer Prometheus timeouts in PrometheusService
-merge_request: 39318
-author:
-type: other

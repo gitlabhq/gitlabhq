@@ -1,5 +1,0 @@
----
-title: Remove updated_at column on audit_events table
-merge_request: 35690
-author:
-type: other
