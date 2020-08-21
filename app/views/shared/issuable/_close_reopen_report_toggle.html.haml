@@ -9,7 +9,7 @@
   - add_blocked_class = !issuable.closed? && warn_before_close
 
 .float-left.btn-group.gl-ml-3.issuable-close-dropdown.droplab-dropdown.js-issuable-close-dropdown
-  %button{ class: "#{button_class} btn-#{button_action} #{(add_blocked_class ? 'btn-issue-blocked' : '')}", data: { qa_selector: 'close_issue_button', endpoint: close_reopen_issuable_path(issuable) } }
+  %button{ class: "#{button_class} btn-#{button_action} #{(add_blocked_class ? 'btn-issue-blocked' : '')}", data: { testid: 'close-issue-button', qa_selector: 'close_issue_button', endpoint: close_reopen_issuable_path(issuable) } }
     #{display_button_action} #{display_issuable_type}
 
   = button_tag type: 'button', class: "#{toggle_class} btn-#{button_action}-color",

@@ -26,8 +26,6 @@ RSpec.describe 'Mini Pipeline Graph in Commit View', :js do
       build.run
       visit project_commit_path(project, project.commit.id)
 
-      wait_for_all_requests
-
       expect(page).to have_selector('.mr-widget-pipeline-graph')
 
       first('.mini-pipeline-graph-dropdown-toggle').click

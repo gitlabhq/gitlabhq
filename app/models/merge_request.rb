@@ -333,7 +333,11 @@ class MergeRequest < ApplicationRecord
   def merge_pipeline
     return unless merged?
 
-    target_project.pipeline_for(target_branch, merge_commit_sha)
+    # When the merge_method is :merge there will be a merge_commit_sha, however
+    # when it is fast-forward there is no merge commit, so we must fall back to
+    # either the squash commit (if the MR was squashed) or the diff head commit.
+    sha = merge_commit_sha || squash_commit_sha || diff_head_sha
+    target_project.pipeline_for(target_branch, sha)
   end
 
   # Pattern used to extract `!123` merge request references from text

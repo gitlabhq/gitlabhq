@@ -12451,6 +12451,9 @@ msgstr ""
 msgid "Health status"
 msgstr ""
 
+msgid "Health status cannot be edited because this issue is closed"
+msgstr ""
+
 msgid "HealthCheck|Access token is"
 msgstr ""
 

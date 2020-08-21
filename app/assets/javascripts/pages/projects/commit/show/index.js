@@ -18,20 +18,18 @@ import { __ } from '~/locale';
 document.addEventListener('DOMContentLoaded', () => {
   const hasPerfBar = document.querySelector('.with-performance-bar');
   const performanceHeight = hasPerfBar ? 35 : 0;
+  initChangesDropdown(document.querySelector('.navbar-gitlab').offsetHeight + performanceHeight);
+  new ZenMode();
+  new ShortcutsNavigation();
+  new MiniPipelineGraph({
+    container: '.js-commit-pipeline-graph',
+  }).bindEvents();
+  initNotes();
+  // eslint-disable-next-line no-jquery/no-load
+  $('.commit-info.branches').load(document.querySelector('.js-commit-box').dataset.commitPath);
+  fetchCommitMergeRequests();
+
   const filesContainer = $('.js-diffs-batch');
-  const initAfterPageLoad = () => {
-    new Diff();
-    new ZenMode();
-    new ShortcutsNavigation();
-    new MiniPipelineGraph({
-      container: '.js-commit-pipeline-graph',
-    }).bindEvents();
-    initNotes();
-    initChangesDropdown(document.querySelector('.navbar-gitlab').offsetHeight + performanceHeight);
-    // eslint-disable-next-line no-jquery/no-load
-    $('.commit-info.branches').load(document.querySelector('.js-commit-box').dataset.commitPath);
-    fetchCommitMergeRequests();
-  };
 
   if (filesContainer.length) {
     const batchPath = filesContainer.data('diffFilesPath');
@@ -42,12 +40,12 @@ document.addEventListener('DOMContentLoaded', () => {
         filesContainer.html($(data.html));
         syntaxHighlight(filesContainer);
         handleLocationHash();
-        initAfterPageLoad();
+        new Diff();
       })
       .catch(() => {
         flash(__('An error occurred while retrieving diff files'));
       });
   } else {
-    initAfterPageLoad();
+    new Diff();
   }
 });

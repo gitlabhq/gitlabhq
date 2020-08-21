@@ -716,6 +716,18 @@ module Gitlab
         end
       end
 
+      def project_minimum_id
+        strong_memoize(:project_minimum_id) do
+          ::Project.minimum(:id)
+        end
+      end
+
+      def project_maximum_id
+        strong_memoize(:project_maximum_id) do
+          ::Project.maximum(:id)
+        end
+      end
+
       def clear_memoized
         clear_memoization(:issue_minimum_id)
         clear_memoization(:issue_maximum_id)
@@ -726,6 +738,8 @@ module Gitlab
         clear_memoization(:deployment_maximum_id)
         clear_memoization(:approval_merge_request_rule_minimum_id)
         clear_memoization(:approval_merge_request_rule_maximum_id)
+        clear_memoization(:project_minimum_id)
+        clear_memoization(:project_maximum_id)
       end
 
       # rubocop: disable CodeReuse/ActiveRecord

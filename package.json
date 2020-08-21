@@ -119,7 +119,7 @@
     "pdfjs-dist": "^2.0.943",
     "pikaday": "^1.8.0",
     "popper.js": "^1.16.1",
-    "prismjs": "^1.6.0",
+    "prismjs": "^1.21.0",
     "prosemirror-markdown": "^1.3.0",
     "prosemirror-model": "^1.6.4",
     "raphael": "^2.2.7",

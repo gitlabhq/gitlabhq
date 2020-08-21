@@ -1575,11 +1575,36 @@ RSpec.describe MergeRequest do
 
       before do
         subject.mark_as_merged!
-        subject.update_attribute(:merge_commit_sha, pipeline.sha)
       end
 
-      it 'returns the post-merge pipeline' do
-        expect(subject.merge_pipeline).to eq(pipeline)
+      context 'and there is a merge commit' do
+        before do
+          subject.update_attribute(:merge_commit_sha, pipeline.sha)
+        end
+
+        it 'returns the pipeline associated with that merge request' do
+          expect(subject.merge_pipeline).to eq(pipeline)
+        end
+      end
+
+      context 'and there is no merge commit, but there is a diff head' do
+        before do
+          allow(subject).to receive(:diff_head_sha).and_return(pipeline.sha)
+        end
+
+        it 'returns the pipeline associated with that merge request' do
+          expect(subject.merge_pipeline).to eq(pipeline)
+        end
+      end
+
+      context 'and there is no merge commit, but there is a squash commit' do
+        before do
+          subject.update_attribute(:squash_commit_sha, pipeline.sha)
+        end
+
+        it 'returns the pipeline associated with that merge request' do
+          expect(subject.merge_pipeline).to eq(pipeline)
+        end
       end
     end
   end

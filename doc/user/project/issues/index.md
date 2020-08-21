@@ -186,8 +186,8 @@ requires [GraphQL](../../../api/graphql/index.md) to be enabled.
 
 ### Health status **(ULTIMATE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/36427) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.10.
-
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/36427) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.10.
+> - Health status of closed issues [can't be edited](https://gitlab.com/gitlab-org/gitlab/-/issues/220867) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.4 and later.
 To help you track the status of your issues, you can assign a status to each issue to flag work
 that's progressing as planned or needs attention to keep on schedule:
 
@@ -196,6 +196,9 @@ that's progressing as planned or needs attention to keep on schedule:
 - **At risk** (red)
 
 !["On track" health status on an issue](img/issue_health_status_dropdown_v12_10.png)
+
+After an issue is closed, its health status can't be edited and the "Edit" button becomes disabled
+until the issue is reopened.
 
 You can then see issue statuses on the
 [Epic tree](../../group/epics/index.md#issue-health-status-in-epic-tree-ultimate).
