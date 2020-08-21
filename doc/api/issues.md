@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # Issues API
 
 If a user is not a member of a project and the project is private, a `GET`
-request on that project will result in a `404` status code.
+request on that project results in a `404` status code.
 
 ## Issues pagination
 
@@ -17,12 +17,13 @@ are paginated.
 Read more on [pagination](README.md#pagination).
 
 CAUTION: **Deprecation:**
-> `reference` attribute in response is deprecated in favour of `references`.
-> Introduced [GitLab 12.6](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20354)
+The `reference` attribute in responses is deprecated in favor of `references`.
+Introduced [GitLab 12.6](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20354).
 
 NOTE: **Note:**
-> `references.relative` is relative to the group / project that the issue is being requested. When issue is fetched from its project
-> `relative` format would be the same as `short` format and when requested across groups / projects it is expected to be the same as `full` format.
+The `references.relative` attribute is relative to the group or project of the issue being requested.
+When an issue is fetched from its project, the `relative` format is the same as the `short` format,
+and when requested across groups or projects it's expected to be the same as the `full` format.
 
 ## List issues
 
@@ -49,30 +50,30 @@ GET /issues?confidential=true
 
 | Attribute           | Type             | Required   | Description                                                                                                                                         |
 | ------------------- | ---------------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `state`             | string           | no         | Return `all` issues or just those that are `opened` or `closed`                                                                                       |
-| `labels`            | string           | no         | Comma-separated list of label names, issues must have all labels to be returned. `None` lists all issues with no labels. `Any` lists all issues with at least one label. `No+Label` (Deprecated) lists all issues with no labels. Predefined names are case-insensitive. |
-| `with_labels_details` | boolean        | no         | If `true`, response will return more details for each label in labels field: `:name`, `:color`, `:description`, `:description_html`, `:text_color`. Default is `false`. The `description_html` attribute was introduced in [GitLab 12.7](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/21413)|
-| `milestone`         | string           | no         | The milestone title. `None` lists all issues with no milestone. `Any` lists all issues that have an assigned milestone.                             |
-| `scope`             | string           | no         | Return issues for the given scope: `created_by_me`, `assigned_to_me` or `all`. Defaults to `created_by_me`<br> For versions before 11.0, use the now deprecated `created-by-me` or `assigned-to-me` scopes instead.<br> _([Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/13004) in GitLab 9.5. [Changed to snake_case](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/18935) in GitLab 11.0)_ |
+| `assignee_id`       | integer          | no         | Return issues assigned to the given user `id`. Mutually exclusive with `assignee_username`. `None` returns unassigned issues. `Any` returns issues with an assignee. _([Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/13004) in GitLab 9.5)_ |
+| `assignee_username` | string array     | no         | Return issues assigned to the given `username`. Similar to `assignee_id` and mutually exclusive with `assignee_id`. In GitLab CE, the `assignee_username` array should only contain a single value. Otherwise, an invalid parameter error is returned. |
 | `author_id`         | integer          | no         | Return issues created by the given user `id`. Mutually exclusive with `author_username`. Combine with `scope=all` or `scope=assigned_to_me`. _([Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/13004) in GitLab 9.5)_ |
 | `author_username`   | string           | no         | Return issues created by the given `username`. Similar to `author_id` and mutually exclusive with `author_id`. |
-| `assignee_id`       | integer          | no         | Return issues assigned to the given user `id`. Mutually exclusive with `assignee_username`. `None` returns unassigned issues. `Any` returns issues with an assignee. _([Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/13004) in GitLab 9.5)_ |
-| `assignee_username` | string array     | no         | Return issues assigned to the given `username`. Similar to `assignee_id` and mutually exclusive with `assignee_id`. In GitLab CE `assignee_username` array should only contain a single value or an invalid parameter error will be returned otherwise. |
-| `my_reaction_emoji` | string           | no         | Return issues reacted by the authenticated user by the given `emoji`. `None` returns issues not given a reaction. `Any` returns issues given at least one reaction. _([Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/14016) in GitLab 10.0)_ |
-| `weight` **(STARTER)** | integer       | no         | Return issues with the specified `weight`. `None` returns issues with no weight assigned. `Any` returns issues with a weight assigned.              |
-| `iids[]`            | integer array    | no         | Return only the issues having the given `iid`                                                                                                       |
-| `order_by`          | string           | no         | Return issues ordered by `created_at`, `updated_at`, `priority`, `due_date`, `relative_position`, `label_priority`, `milestone_due`, `popularity`, `weight` fields. Default is `created_at`                                                               |
-| `sort`              | string           | no         | Return issues sorted in `asc` or `desc` order. Default is `desc`                                                                                    |
-| `search`            | string           | no         | Search issues against their `title` and `description`                                                                                               |
-| `in`                | string           | no         | Modify the scope of the `search` attribute. `title`, `description`, or a string joining them with comma. Default is `title,description`             |
+| `confidential`      | boolean          | no         | Filter confidential or public issues.                                                                                                               |
 | `created_after`     | datetime         | no         | Return issues created on or after the given time                                                                                                    |
 | `created_before`    | datetime         | no         | Return issues created on or before the given time                                                                                                   |
+| `due_date`          | string           | no         | Return issues that have no due date (`0`) or whose due date is this week, this month, between two weeks ago and next month, or which are overdue. Accepts: `0` (no due date), `overdue`, `week`, `month`, `next_month_and_previous_two_weeks`. _(Introduced in [GitLab 13.3](https://gitlab.com/gitlab-org/gitlab/-/issues/233420))_ |
+| `iids[]`            | integer array    | no         | Return only the issues having the given `iid`                                                                                                       |
+| `in`                | string           | no         | Modify the scope of the `search` attribute. `title`, `description`, or a string joining them with comma. Default is `title,description`             |
+| `labels`            | string           | no         | Comma-separated list of label names, issues must have all labels to be returned. `None` lists all issues with no labels. `Any` lists all issues with at least one label. `No+Label` (Deprecated) lists all issues with no labels. Predefined names are case-insensitive. |
+| `milestone`         | string           | no         | The milestone title. `None` lists all issues with no milestone. `Any` lists all issues that have an assigned milestone.                             |
+| `my_reaction_emoji` | string           | no         | Return issues reacted by the authenticated user by the given `emoji`. `None` returns issues not given a reaction. `Any` returns issues given at least one reaction. _([Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/14016) in GitLab 10.0)_ |
+| `non_archived`      | boolean          | no         | Return issues only from non-archived projects. If `false`, the response returns issues from both archived and non-archived projects. Default is `true`. _(Introduced in [GitLab 13.0](https://gitlab.com/gitlab-org/gitlab/-/issues/197170))_ |
+| `not`               | Hash             | no         | Return issues that do not match the parameters supplied. Accepts: `labels`, `milestone`, `author_id`, `author_username`, `assignee_id`, `assignee_username`, `my_reaction_emoji` |
+| `order_by`          | string           | no         | Return issues ordered by `created_at`, `updated_at`, `priority`, `due_date`, `relative_position`, `label_priority`, `milestone_due`, `popularity`, `weight` fields. Default is `created_at`                                                               |
+| `scope`             | string           | no         | Return issues for the given scope: `created_by_me`, `assigned_to_me` or `all`. Defaults to `created_by_me`<br> For versions before 11.0, use the now deprecated `created-by-me` or `assigned-to-me` scopes instead.<br> _([Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/13004) in GitLab 9.5. [Changed to snake_case](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/18935) in GitLab 11.0)_ |
+| `search`            | string           | no         | Search issues against their `title` and `description`                                                                                               |
+| `sort`              | string           | no         | Return issues sorted in `asc` or `desc` order. Default is `desc`                                                                                    |
+| `state`             | string           | no         | Return `all` issues or just those that are `opened` or `closed`                                                                                       |
 | `updated_after`     | datetime         | no         | Return issues updated on or after the given time                                                                                                    |
 | `updated_before`    | datetime         | no         | Return issues updated on or before the given time                                                                                                   |
-| `confidential`      | boolean          | no         | Filter confidential or public issues.                                                                                                               |
-| `not`               | Hash             | no         | Return issues that do not match the parameters supplied. Accepts: `labels`, `milestone`, `author_id`, `author_username`, `assignee_id`, `assignee_username`, `my_reaction_emoji` |
-| `non_archived`      | boolean          | no         | Return issues only from non-archived projects. If `false`, response will return issues from both archived and non-archived projects. Default is `true`. _(Introduced in [GitLab 13.0](https://gitlab.com/gitlab-org/gitlab/-/issues/197170))_ |
-| `due_date`          | string           | no         | Return issues that have no due date (`0`) or whose due date is this week, this month, between two weeks ago and next month, or which are overdue. Accepts: `0` (no due date), `overdue`, `week`, `month`, `next_month_and_previous_two_weeks`. _(Introduced in [GitLab 13.3](https://gitlab.com/gitlab-org/gitlab/-/issues/233420))_ |
+| `weight` **(STARTER)** | integer       | no         | Return issues with the specified `weight`. `None` returns issues with no weight assigned. `Any` returns issues with a weight assigned.              |
+| `with_labels_details` | boolean        | no         | If `true`, the response returns more details for each label in labels field: `:name`, `:color`, `:description`, `:description_html`, `:text_color`. Default is `false`. The `description_html` attribute was introduced in [GitLab 12.7](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/21413)|
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/issues"
@@ -165,7 +166,7 @@ Example response:
 ]
 ```
 
-Users on GitLab [Starter, Bronze, or higher](https://about.gitlab.com/pricing/) will also see
+Users on GitLab [Starter, Bronze, or higher](https://about.gitlab.com/pricing/) can also see
 the `weight` parameter:
 
 ```json
@@ -179,7 +180,7 @@ the `weight` parameter:
 ]
 ```
 
-Users on GitLab [Ultimate](https://about.gitlab.com/pricing/) will also see
+Users on GitLab [Ultimate](https://about.gitlab.com/pricing/) can also see
 the `health_status` parameter:
 
 ```json
@@ -193,15 +194,20 @@ the `health_status` parameter:
 ]
 ```
 
-**Note**: `assignee` column is deprecated, now we show it as a single-sized array `assignees` to conform to the GitLab EE API.
+NOTE: **Note:**
+The `assignee` column is deprecated. We now show it as a single-sized array `assignees` to conform
+to the GitLab EE API.
 
-**Note**: The `closed_by` attribute was [introduced in GitLab 10.6](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/17042). This value will only be present for issues which were closed after GitLab 10.6 and when the user account that closed the issue still exists.
+NOTE: **Note:**
+The `closed_by` attribute was [introduced in GitLab 10.6](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/17042).
+This value is only present for issues closed after GitLab 10.6 and if the user account
+that closed the issue still exists.
 
 ## List group issues
 
 Get a list of a group's issues.
 
-If the group is private, credentials will need to be provided for authorization.
+If the group is private, credentials need to be provided for authorization.
 The preferred way to do this, is by using [personal access tokens](../user/profile/personal_access_tokens.md).
 
 ```plaintext
@@ -223,30 +229,30 @@ GET /groups/:id/issues?confidential=true
 
 | Attribute           | Type             | Required   | Description                                                                                                                   |
 | ------------------- | ---------------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user                 |
-| `state`             | string           | no         | Return all issues or just those that are `opened` or `closed`                                                                 |
-| `labels`            | string           | no         | Comma-separated list of label names, issues must have all labels to be returned. `None` lists all issues with no labels. `Any` lists all issues with at least one label. `No+Label` (Deprecated) lists all issues with no labels. Predefined names are case-insensitive. |
-| `with_labels_details` | boolean        | no         | If `true`, response will return more details for each label in labels field: `:name`, `:color`, `:description`, `:description_html`, `:text_color`. Default is `false`. The `description_html` attribute was introduced in [GitLab 12.7](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/21413) |
-| `iids[]`            | integer array    | no         | Return only the issues having the given `iid`                                                                                 |
-| `milestone`         | string           | no         | The milestone title. `None` lists all issues with no milestone. `Any` lists all issues that have an assigned milestone.       |
-| `scope`             | string           | no         | Return issues for the given scope: `created_by_me`, `assigned_to_me` or `all`.<br> For versions before 11.0, use the now deprecated `created-by-me` or `assigned-to-me` scopes instead.<br> _([Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/13004) in GitLab 9.5. [Changed to snake_case](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/18935) in GitLab 11.0)_ |
+| `assignee_id`       | integer          | no         | Return issues assigned to the given user `id`. Mutually exclusive with `assignee_username`. `None` returns unassigned issues. `Any` returns issues with an assignee. _([Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/13004) in GitLab 9.5)_ |
+| `assignee_username` | string array     | no         | Return issues assigned to the given `username`. Similar to `assignee_id` and mutually exclusive with `assignee_id`. In GitLab CE, the `assignee_username` array should only contain a single value. Otherwise, an invalid parameter error is returned. |
 | `author_id`         | integer          | no         | Return issues created by the given user `id`. Mutually exclusive with `author_username`. Combine with `scope=all` or `scope=assigned_to_me`. _([Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/13004) in GitLab 9.5)_ |
 | `author_username`   | string           | no         | Return issues created by the given `username`. Similar to `author_id` and mutually exclusive with `author_id`. |
-| `assignee_id`       | integer          | no         | Return issues assigned to the given user `id`. Mutually exclusive with `assignee_username`. `None` returns unassigned issues. `Any` returns issues with an assignee. _([Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/13004) in GitLab 9.5)_ |
-| `assignee_username` | string array     | no         | Return issues assigned to the given `username`. Similar to `assignee_id` and mutually exclusive with `assignee_id`. In GitLab CE `assignee_username` array should only contain a single value or an invalid parameter error will be returned otherwise. |
-| `my_reaction_emoji` | string           | no         | Return issues reacted by the authenticated user by the given `emoji`. `None` returns issues not given a reaction. `Any` returns issues given at least one reaction. _([Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/14016) in GitLab 10.0)_ |
-| `weight` **(STARTER)** | integer       | no         | Return issues with the specified `weight`. `None` returns issues with no weight assigned. `Any` returns issues with a weight assigned. |
-| `order_by`          | string           | no         | Return issues ordered by `created_at`, `updated_at`, `priority`, `due_date`, `relative_position`, `label_priority`, `milestone_due`, `popularity`, `weight` fields. Default is `created_at`                                                               |
-| `sort`              | string           | no         | Return issues sorted in `asc` or `desc` order. Default is `desc`                                                              |
-| `search`            | string           | no         | Search group issues against their `title` and `description`                                                                   |
+| `confidential`     | boolean          | no         | Filter confidential or public issues.                                                                                         |
 | `created_after`     | datetime         | no         | Return issues created on or after the given time                                                                              |
 | `created_before`    | datetime         | no         | Return issues created on or before the given time                                                                             |
+| `due_date`          | string           | no         | Return issues that have no due date (`0`) or whose due date is this week, this month, between two weeks ago and next month, or which are overdue. Accepts: `0` (no due date), `overdue`, `week`, `month`, `next_month_and_previous_two_weeks`. _(Introduced in [GitLab 13.3](https://gitlab.com/gitlab-org/gitlab/-/issues/233420))_ |
+| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user                 |
+| `iids[]`            | integer array    | no         | Return only the issues having the given `iid`                                                                                 |
+| `labels`            | string           | no         | Comma-separated list of label names, issues must have all labels to be returned. `None` lists all issues with no labels. `Any` lists all issues with at least one label. `No+Label` (Deprecated) lists all issues with no labels. Predefined names are case-insensitive. |
+| `milestone`         | string           | no         | The milestone title. `None` lists all issues with no milestone. `Any` lists all issues that have an assigned milestone.       |
+| `my_reaction_emoji` | string           | no         | Return issues reacted by the authenticated user by the given `emoji`. `None` returns issues not given a reaction. `Any` returns issues given at least one reaction. _([Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/14016) in GitLab 10.0)_ |
+| `non_archived`      | boolean          | no         | Return issues from non archived projects. Default is true. _(Introduced in [GitLab 12.8](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/23785))_ |
+| `not`               | Hash             | no         | Return issues that do not match the parameters supplied. Accepts: `labels`, `milestone`, `author_id`, `author_username`, `assignee_id`, `assignee_username`, `my_reaction_emoji`, `search`, `in` |
+| `order_by`          | string           | no         | Return issues ordered by `created_at`, `updated_at`, `priority`, `due_date`, `relative_position`, `label_priority`, `milestone_due`, `popularity`, `weight` fields. Default is `created_at`                                                               |
+| `scope`             | string           | no         | Return issues for the given scope: `created_by_me`, `assigned_to_me` or `all`.<br> For versions before 11.0, use the now deprecated `created-by-me` or `assigned-to-me` scopes instead.<br> _([Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/13004) in GitLab 9.5. [Changed to snake_case](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/18935) in GitLab 11.0)_ |
+| `search`            | string           | no         | Search group issues against their `title` and `description`                                                                   |
+| `sort`              | string           | no         | Return issues sorted in `asc` or `desc` order. Default is `desc`                                                              |
+| `state`             | string           | no         | Return all issues or just those that are `opened` or `closed`                                                                 |
 | `updated_after`     | datetime         | no         | Return issues updated on or after the given time                                                                              |
 | `updated_before`    | datetime         | no         | Return issues updated on or before the given time                                                                             |
-| `confidential`     | boolean          | no         | Filter confidential or public issues.                                                                                         |
-| `not`               | Hash             | no         | Return issues that do not match the parameters supplied. Accepts: `labels`, `milestone`, `author_id`, `author_username`, `assignee_id`, `assignee_username`, `my_reaction_emoji`, `search`, `in` |
-| `non_archived`      | boolean          | no         | Return issues from non archived projects. Default is true. _(Introduced in [GitLab 12.8](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/23785))_ |
-| `due_date`          | string           | no         | Return issues that have no due date (`0`) or whose due date is this week, this month, between two weeks ago and next month, or which are overdue. Accepts: `0` (no due date), `overdue`, `week`, `month`, `next_month_and_previous_two_weeks`. _(Introduced in [GitLab 13.3](https://gitlab.com/gitlab-org/gitlab/-/issues/233420))_ |
+| `weight` **(STARTER)** | integer       | no         | Return issues with the specified `weight`. `None` returns issues with no weight assigned. `Any` returns issues with a weight assigned. |
+| `with_labels_details` | boolean        | no         | If `true`, the response returns more details for each label in labels field: `:name`, `:color`, `:description`, `:description_html`, `:text_color`. Default is `false`. The `description_html` attribute was introduced in [GitLab 12.7](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/21413) |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/4/issues"
@@ -338,7 +344,7 @@ Example response:
 ]
 ```
 
-Users on GitLab [Starter, Bronze, or higher](https://about.gitlab.com/pricing/) will also see
+Users on GitLab [Starter, Bronze, or higher](https://about.gitlab.com/pricing/) can also see
 the `weight` parameter:
 
 ```json
@@ -352,7 +358,7 @@ the `weight` parameter:
 ]
 ```
 
-Users on GitLab [Ultimate](https://about.gitlab.com/pricing/) will also see
+Users on GitLab [Ultimate](https://about.gitlab.com/pricing/) can also see
 the `health_status` parameter:
 
 ```json
@@ -366,15 +372,19 @@ the `health_status` parameter:
 ]
 ```
 
-**Note**: `assignee` column is deprecated, now we show it as a single-sized array `assignees` to conform to the GitLab EE API.
+NOTE: **Note:**
+The `assignee` column is deprecated. We now show it as a single-sized array `assignees` to conform to the GitLab EE API.
 
-**Note**: The `closed_by` attribute was [introduced in GitLab 10.6](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/17042). This value will only be present for issues which were closed after GitLab 10.6 and when the user account that closed the issue still exists.
+NOTE: **Note:**
+The `closed_by` attribute was [introduced in GitLab 10.6](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/17042).
+This value is only present for issues closed after GitLab 10.6 and if the user account that closed
+the issue still exists.
 
 ## List project issues
 
 Get a list of a project's issues.
 
-If the project is private, credentials will need to be provided for authorization.
+If the project is private, you need to provide credentials to authorize.
 The preferred way to do this, is by using [personal access tokens](../user/profile/personal_access_tokens.md).
 
 ```plaintext
@@ -396,29 +406,29 @@ GET /projects/:id/issues?confidential=true
 
 | Attribute           | Type             | Required   | Description                                                                                                                   |
 | ------------------- | ---------------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user               |
-| `iids[]`            | integer array    | no         | Return only the issues having the given `iid`                                                                              |
-| `state`             | string           | no         | Return all issues or just those that are `opened` or `closed`                                                                 |
-| `labels`            | string           | no         | Comma-separated list of label names, issues must have all labels to be returned. `None` lists all issues with no labels. `Any` lists all issues with at least one label. `No+Label` (Deprecated) lists all issues with no labels. Predefined names are case-insensitive. |
-| `with_labels_details` | boolean        | no         | If `true`, response will return more details for each label in labels field: `:name`, `:color`, `:description`, `:description_html`, `:text_color`. Default is `false`. `description_html` Introduced in [GitLab 12.7](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/21413) |
-| `milestone`         | string           | no         | The milestone title. `None` lists all issues with no milestone. `Any` lists all issues that have an assigned milestone.       |
-| `scope`             | string           | no         | Return issues for the given scope: `created_by_me`, `assigned_to_me` or `all`.<br> For versions before 11.0, use the now deprecated `created-by-me` or `assigned-to-me` scopes instead.<br> _([Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/13004) in GitLab 9.5. [Changed to snake_case](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/18935) in GitLab 11.0)_ |
+| `assignee_id`       | integer          | no         | Return issues assigned to the given user `id`. Mutually exclusive with `assignee_username`. `None` returns unassigned issues. `Any` returns issues with an assignee. _([Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/13004) in GitLab 9.5)_ |
+| `assignee_username` | string array     | no         | Return issues assigned to the given `username`. Similar to `assignee_id` and mutually exclusive with `assignee_id`. In GitLab CE, the `assignee_username` array should only contain a single value. Otherwise, an invalid parameter error is returned. |
 | `author_id`         | integer          | no         | Return issues created by the given user `id`. Mutually exclusive with `author_username`. Combine with `scope=all` or `scope=assigned_to_me`. _([Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/13004) in GitLab 9.5)_ |
 | `author_username`   | string           | no         | Return issues created by the given `username`. Similar to `author_id` and mutually exclusive with `author_id`. |
-| `assignee_id`       | integer          | no         | Return issues assigned to the given user `id`. Mutually exclusive with `assignee_username`. `None` returns unassigned issues. `Any` returns issues with an assignee. _([Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/13004) in GitLab 9.5)_ |
-| `assignee_username` | string array     | no         | Return issues assigned to the given `username`. Similar to `assignee_id` and mutually exclusive with `assignee_id`. In GitLab CE `assignee_username` array should only contain a single value or an invalid parameter error will be returned otherwise. |
-| `my_reaction_emoji` | string           | no         | Return issues reacted by the authenticated user by the given `emoji`. `None` returns issues not given a reaction. `Any` returns issues given at least one reaction. _([Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/14016) in GitLab 10.0)_ |
-| `weight` **(STARTER)** | integer       | no         | Return issues with the specified `weight`. `None` returns issues with no weight assigned. `Any` returns issues with a weight assigned. |
-| `order_by`          | string           | no         | Return issues ordered by `created_at`, `updated_at`, `priority`, `due_date`, `relative_position`, `label_priority`, `milestone_due`, `popularity`, `weight` fields. Default is `created_at`                                                               |
-| `sort`              | string           | no         | Return issues sorted in `asc` or `desc` order. Default is `desc`                                                              |
-| `search`            | string           | no         | Search project issues against their `title` and `description`                                                                 |
+| `confidential`     | boolean          | no         | Filter confidential or public issues.                                                                                         |
 | `created_after`     | datetime         | no         | Return issues created on or after the given time                                                                              |
 | `created_before`    | datetime         | no         | Return issues created on or before the given time                                                                             |
+| `due_date`          | string           | no         | Return issues that have no due date (`0`) or whose due date is this week, this month, between two weeks ago and next month, or which are overdue. Accepts: `0` (no due date), `overdue`, `week`, `month`, `next_month_and_previous_two_weeks`. _(Introduced in [GitLab 13.3](https://gitlab.com/gitlab-org/gitlab/-/issues/233420))_ |
+| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user               |
+| `iids[]`            | integer array    | no         | Return only the issues having the given `iid`                                                                              |
+| `labels`            | string           | no         | Comma-separated list of label names, issues must have all labels to be returned. `None` lists all issues with no labels. `Any` lists all issues with at least one label. `No+Label` (Deprecated) lists all issues with no labels. Predefined names are case-insensitive. |
+| `milestone`         | string           | no         | The milestone title. `None` lists all issues with no milestone. `Any` lists all issues that have an assigned milestone.       |
+| `my_reaction_emoji` | string           | no         | Return issues reacted by the authenticated user by the given `emoji`. `None` returns issues not given a reaction. `Any` returns issues given at least one reaction. _([Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/14016) in GitLab 10.0)_ |
+| `not`               | Hash             | no         | Return issues that do not match the parameters supplied. Accepts: `labels`, `milestone`, `author_id`, `author_username`, `assignee_id`, `assignee_username`, `my_reaction_emoji`, `search`, `in` |
+| `order_by`          | string           | no         | Return issues ordered by `created_at`, `updated_at`, `priority`, `due_date`, `relative_position`, `label_priority`, `milestone_due`, `popularity`, `weight` fields. Default is `created_at`                                                               |
+| `scope`             | string           | no         | Return issues for the given scope: `created_by_me`, `assigned_to_me` or `all`.<br> For versions before 11.0, use the now deprecated `created-by-me` or `assigned-to-me` scopes instead.<br> _([Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/13004) in GitLab 9.5. [Changed to snake_case](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/18935) in GitLab 11.0)_ |
+| `search`            | string           | no         | Search project issues against their `title` and `description`                                                                 |
+| `sort`              | string           | no         | Return issues sorted in `asc` or `desc` order. Default is `desc`                                                              |
+| `state`             | string           | no         | Return all issues or just those that are `opened` or `closed`                                                                 |
 | `updated_after`     | datetime         | no         | Return issues updated on or after the given time                                                                              |
 | `updated_before`    | datetime         | no         | Return issues updated on or before the given time                                                                             |
-| `confidential`     | boolean          | no         | Filter confidential or public issues.                                                                                         |
-| `not`               | Hash             | no         | Return issues that do not match the parameters supplied. Accepts: `labels`, `milestone`, `author_id`, `author_username`, `assignee_id`, `assignee_username`, `my_reaction_emoji`, `search`, `in` |
-| `due_date`          | string           | no         | Return issues that have no due date (`0`) or whose due date is this week, this month, between two weeks ago and next month, or which are overdue. Accepts: `0` (no due date), `overdue`, `week`, `month`, `next_month_and_previous_two_weeks`. _(Introduced in [GitLab 13.3](https://gitlab.com/gitlab-org/gitlab/-/issues/233420))_ |
+| `weight` **(STARTER)** | integer       | no         | Return issues with the specified `weight`. `None` returns issues with no weight assigned. `Any` returns issues with a weight assigned. |
+| `with_labels_details` | boolean        | no         | If `true`, the response returns more details for each label in labels field: `:name`, `:color`, `:description`, `:description_html`, `:text_color`. Default is `false`. `description_html` Introduced in [GitLab 12.7](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/21413) |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/4/issues"
@@ -517,7 +527,7 @@ Example response:
 ]
 ```
 
-Users on GitLab [Starter, Bronze, or higher](https://about.gitlab.com/pricing/) will also see
+Users on GitLab [Starter, Bronze, or higher](https://about.gitlab.com/pricing/) can also see
 the `weight` parameter:
 
 ```json
@@ -531,7 +541,7 @@ the `weight` parameter:
 ]
 ```
 
-Users on GitLab [Ultimate](https://about.gitlab.com/pricing/) will also see
+Users on GitLab [Ultimate](https://about.gitlab.com/pricing/) can also see
 the `health_status` parameter:
 
 ```json
@@ -545,15 +555,18 @@ the `health_status` parameter:
 ]
 ```
 
-**Note**: `assignee` column is deprecated, now we show it as a single-sized array `assignees` to conform to the GitLab EE API.
+NOTE: **Note:**
+The `assignee` column is deprecated. We now show it as a single-sized array `assignees` to conform to the GitLab EE API.
 
-**Note**: The `closed_by` attribute was [introduced in GitLab 10.6](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/17042). This value will only be present for issues which were closed after GitLab 10.6 and when the user account that closed the issue still exists.
+NOTE: **Note:**
+The `closed_by` attribute was [introduced in GitLab 10.6](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/17042). This value is only present for issues closed after GitLab 10.6 and if the user account that closed
+the issue still exists.
 
 ## Single issue
 
 Get a single project issue.
 
-If the project is private or the issue is confidential, credentials will need to be provided for authorization.
+If the project is private or the issue is confidential, you need to provide credentials to authorize.
 The preferred way to do this, is by using [personal access tokens](../user/profile/personal_access_tokens.md).
 
 ```plaintext
@@ -653,7 +666,7 @@ Example response:
 }
 ```
 
-Users on GitLab [Starter, Bronze, or higher](https://about.gitlab.com/pricing/) will also see
+Users on GitLab [Starter, Bronze, or higher](https://about.gitlab.com/pricing/) can also see
 the `weight` parameter:
 
 ```json
@@ -665,7 +678,7 @@ the `weight` parameter:
 }
 ```
 
-Users on GitLab [Premium](https://about.gitlab.com/pricing/) will additionally see
+Users on GitLab [Premium](https://about.gitlab.com/pricing/) can also see
 the `epic` property:
 
 ```javascript
@@ -684,8 +697,8 @@ the `epic` property:
 }
 ```
 
-Users on GitLab [Ultimate](https://about.gitlab.com/pricing/) will also additionally see
-the `health_status` property:
+Users on GitLab [Ultimate](https://about.gitlab.com/pricing/) can also see the `health_status`
+property:
 
 ```json
 [
@@ -698,11 +711,15 @@ the `health_status` property:
 ]
 ```
 
-**Note**: `assignee` column is deprecated, now we show it as a single-sized array `assignees` to conform to the GitLab EE API.
+NOTE: **Note:**
+The `assignee` column is deprecated. We now show it as a single-sized array `assignees` to conform to the GitLab EE API.
 
-**Note**: The `closed_by` attribute was [introduced in GitLab 10.6](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/17042). This value will only be present for issues which were closed after GitLab 10.6 and when the user account that closed the issue still exists.
+NOTE: **Note:**
+The `closed_by` attribute was [introduced in GitLab 10.6](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/17042). This value is only present for issues closed after GitLab 10.6 and if the user account that closed
+the issue still exists.
 
-**Note**: The `epic_iid` attribute is deprecated and [will be removed in version 5](https://gitlab.com/gitlab-org/gitlab/-/issues/35157).
+NOTE: **Note:**
+The `epic_iid` attribute is deprecated and [will be removed in version 5](https://gitlab.com/gitlab-org/gitlab/-/issues/35157).
 Please use `iid` of the `epic` attribute instead.
 
 ## New issue
@@ -716,17 +733,17 @@ POST /projects/:id/issues
 | Attribute                                 | Type           | Required | Description  |
 |-------------------------------------------|----------------|----------|--------------|
 | `id`                                      | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
-| `iid`                                     | integer/string | no       | The internal ID of the project's issue (requires admin or project owner rights) |
+| `iid`                                     | integer/string | no       | The internal ID of the project's issue (requires administrator or project owner rights) |
 | `title`                                   | string         | yes      | The title of an issue |
 | `description`                             | string         | no       | The description of an issue. Limited to 1,048,576 characters. |
 | `confidential`                            | boolean        | no       | Set an issue to be confidential. Default is `false`.  |
 | `assignee_ids`                            | integer array  | no       | The ID of the user(s) to assign the issue to. |
 | `milestone_id`                            | integer        | no       | The global ID of a milestone to assign issue  |
 | `labels`                                  | string         | no       | Comma-separated label names for an issue  |
-| `created_at`                              | string         | no       | Date time string, ISO 8601 formatted, for example `2016-03-11T03:45:40Z` (requires admin or project/group owner rights) |
+| `created_at`                              | string         | no       | Date time string, ISO 8601 formatted, for example `2016-03-11T03:45:40Z` (requires administrator or project/group owner rights) |
 | `due_date`                                | string         | no       | Date time string in the format YEAR-MONTH-DAY, for example `2016-03-11` |
-| `merge_request_to_resolve_discussions_of` | integer        | no       | The IID of a merge request in which to resolve all issues. This will fill the issue with a default description and mark all discussions as resolved. When passing a description or title, these values will take precedence over the default values.|
-| `discussion_to_resolve`                   | string         | no       | The ID of a discussion to resolve. This will fill in the issue with a default description and mark the discussion as resolved. Use in combination with `merge_request_to_resolve_discussions_of`. |
+| `merge_request_to_resolve_discussions_of` | integer        | no       | The IID of a merge request in which to resolve all issues. This fills out the issue with a default description and mark all discussions as resolved. When passing a description or title, these values take precedence over the default values.|
+| `discussion_to_resolve`                   | string         | no       | The ID of a discussion to resolve. This fills out the issue with a default description and mark the discussion as resolved. Use in combination with `merge_request_to_resolve_discussions_of`. |
 | `weight` **(STARTER)**                    | integer        | no       | The weight of the issue. Valid values are greater than or equal to 0. |
 | `epic_id` **(PREMIUM)** | integer | no | ID of the epic to add the issue to. Valid values are greater than or equal to 0. |
 | `epic_iid` **(PREMIUM)** | integer | no | IID of the epic to add the issue to. Valid values are greater than or equal to 0. (deprecated, [will be removed in version 5](https://gitlab.com/gitlab-org/gitlab/-/issues/35157)) |
@@ -796,7 +813,7 @@ Example response:
 }
 ```
 
-Users on GitLab [Starter, Bronze, or higher](https://about.gitlab.com/pricing/) will also see
+Users on GitLab [Starter, Bronze, or higher](https://about.gitlab.com/pricing/) can also see
 the `weight` parameter:
 
 ```json
@@ -808,7 +825,7 @@ the `weight` parameter:
 }
 ```
 
-Users on GitLab [Ultimate](https://about.gitlab.com/pricing/) will also see
+Users on GitLab [Ultimate](https://about.gitlab.com/pricing/) can also see
 the `health_status` parameter:
 
 ```json
@@ -822,9 +839,12 @@ the `health_status` parameter:
 ]
 ```
 
-**Note**: `assignee` column is deprecated, now we show it as a single-sized array `assignees` to conform to the GitLab EE API.
+NOTE: **Note:**
+The `assignee` column is deprecated. We now show it as a single-sized array `assignees` to conform to the GitLab EE API.
 
-**Note**: The `closed_by` attribute was [introduced in GitLab 10.6](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/17042). This value will only be present for issues which were closed after GitLab 10.6 and when the user account that closed the issue still exists.
+NOTE: **Note:**
+The `closed_by` attribute was [introduced in GitLab 10.6](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/17042). This value is only present for issues closed after GitLab 10.6 and if the user account that closed
+the issue still exists.
 
 ## Rate limits
 
@@ -853,7 +873,7 @@ PUT /projects/:id/issues/:issue_iid
 | `add_labels`   | string  | no       | Comma-separated label names to add to an issue.                                                            |
 | `remove_labels`| string  | no       | Comma-separated label names to remove from an issue.                                                       |
 | `state_event`  | string  | no       | The state event of an issue. Set `close` to close the issue and `reopen` to reopen it                      |
-| `updated_at`   | string  | no       | Date time string, ISO 8601 formatted, for example `2016-03-11T03:45:40Z` (requires admin or project owner rights). Empty string or null values are not accepted.|
+| `updated_at`   | string  | no       | Date time string, ISO 8601 formatted, for example `2016-03-11T03:45:40Z` (requires administrator or project owner rights). Empty string or null values are not accepted.|
 | `due_date`     | string  | no       | Date time string in the format YEAR-MONTH-DAY, for example `2016-03-11`                                           |
 | `weight` **(STARTER)** | integer | no | The weight of the issue. Valid values are greater than or equal to 0. 0                                                                    |
 | `discussion_locked` | boolean | no  | Flag indicating if the issue's discussion is locked. If the discussion is locked only project members can add or edit comments. |
@@ -932,7 +952,7 @@ Example response:
 }
 ```
 
-Users on GitLab [Starter, Bronze, or higher](https://about.gitlab.com/pricing/) will also see
+Users on GitLab [Starter, Bronze, or higher](https://about.gitlab.com/pricing/) can also see
 the `weight` parameter:
 
 ```json
@@ -944,7 +964,7 @@ the `weight` parameter:
 }
 ```
 
-Users on GitLab [Ultimate](https://about.gitlab.com/pricing/) will also see
+Users on GitLab [Ultimate](https://about.gitlab.com/pricing/) can also see
 the `health_status` parameter:
 
 ```json
@@ -965,7 +985,8 @@ NOTE: **Note:**
 `assignee` column is deprecated. We now show it as a single-sized array `assignees` to conform to the GitLab EE API.
 
 NOTE: **Note:**
-The `closed_by` attribute was [introduced in GitLab 10.6](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/17042). This value will only be present for issues which were closed after GitLab 10.6 and when the user account that closed the issue still exists.
+The `closed_by` attribute was [introduced in GitLab 10.6](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/17042). This value is only present for issues closed after GitLab 10.6 and if the user account that closed
+the issue still exists.
 
 ## Delete an issue
 
@@ -1009,10 +1030,10 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab
 
 Moves an issue to a different project. If the target project
 equals the source project or the user has insufficient permissions to move an
-issue, error `400` together with an explaining error message is returned.
+issue, status code `400` and an error message is returned.
 
-If a given label and/or milestone with the same name also exists in the target
-project, it will then be assigned to the issue that is being moved.
+If a given label or milestone with the same name also exists in the target
+project, it's then assigned to the issue being moved.
 
 ```plaintext
 POST /projects/:id/issues/:issue_iid/move
@@ -1099,7 +1120,7 @@ Example response:
 }
 ```
 
-Users on GitLab [Starter, Bronze, or higher](https://about.gitlab.com/pricing/) will also see
+Users on GitLab [Starter, Bronze, or higher](https://about.gitlab.com/pricing/) can also see
 the `weight` parameter:
 
 ```json
@@ -1111,7 +1132,7 @@ the `weight` parameter:
 }
 ```
 
-Users on GitLab [Ultimate](https://about.gitlab.com/pricing/) will also see
+Users on GitLab [Ultimate](https://about.gitlab.com/pricing/) can also see
 the `health_status` parameter:
 
 ```json
@@ -1125,9 +1146,12 @@ the `health_status` parameter:
 ]
 ```
 
-**Note**: `assignee` column is deprecated, now we show it as a single-sized array `assignees` to conform to the GitLab EE API.
+NOTE: **Note:**
+The `assignee` column is deprecated. We now show it as a single-sized array `assignees` to conform to the GitLab EE API.
 
-**Note**: The `closed_by` attribute was [introduced in GitLab 10.6](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/17042). This value will only be present for issues which were closed after GitLab 10.6 and when the user account that closed the issue still exists.
+NOTE: **Note:**
+The `closed_by` attribute was [introduced in GitLab 10.6](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/17042). This value is only present for issues closed after GitLab 10.6 and if the user account that closed
+the issue still exists.
 
 ## Subscribe to an issue
 
@@ -1219,7 +1243,7 @@ Example response:
 }
 ```
 
-Users on GitLab [Starter, Bronze, or higher](https://about.gitlab.com/pricing/) will also see
+Users on GitLab [Starter, Bronze, or higher](https://about.gitlab.com/pricing/) can also see
 the `weight` parameter:
 
 ```json
@@ -1231,9 +1255,12 @@ the `weight` parameter:
 }
 ```
 
-**Note**: `assignee` column is deprecated, now we show it as a single-sized array `assignees` to conform to the GitLab EE API.
+NOTE: **Note:**
+The `assignee` column is deprecated. We now show it as a single-sized array `assignees` to conform to the GitLab EE API.
 
-**Note**: The `closed_by` attribute was [introduced in GitLab 10.6](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/17042). This value will only be present for issues which were closed after GitLab 10.6 and when the user account that closed the issue still exists.
+NOTE: **Note:**
+The `closed_by` attribute was [introduced in GitLab 10.6](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/17042). This value is only present for issues closed after GitLab 10.6 and if the user account that closed
+the issue still exists.
 
 ## Unsubscribe from an issue
 
@@ -1418,9 +1445,12 @@ Example response:
 }
 ```
 
-**Note**: `assignee` column is deprecated, now we show it as a single-sized array `assignees` to conform to the GitLab EE API.
+NOTE: **Note:**
+The `assignee` column is deprecated. We now show it as a single-sized array `assignees` to conform to the GitLab EE API.
 
-**Note**: The `closed_by` attribute was [introduced in GitLab 10.6](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/17042). This value will only be present for issues which were closed after GitLab 10.6 and when the user account that closed the issue still exists.
+NOTE: **Note:**
+The `closed_by` attribute was [introduced in GitLab 10.6](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/17042). This value is only present for issues closed after GitLab 10.6 and if the user account that closed
+the issue still exists.
 
 ## Set a time estimate for an issue
 
@@ -1538,7 +1568,7 @@ Example response:
 
 ## Get time tracking stats
 
-If the project is private or the issue is confidential, credentials will need to be provided for authorization.
+If the project is private or the issue is confidential, you need to provide credentials to authorize.
 The preferred way to do this, is by using [personal access tokens](../user/profile/personal_access_tokens.md).
 
 ```plaintext
@@ -1569,7 +1599,7 @@ Example response:
 
 Get all the merge requests that are related to the issue.
 
-If the project is private or the issue is confidential, credentials will need to be provided for authorization.
+If the project is private or the issue is confidential, you need to provide credentials to authorize.
 The preferred way to do this, is by using [personal access tokens](../user/profile/personal_access_tokens.md).
 
 ```plaintext
@@ -1726,9 +1756,9 @@ Example response:
 
 ## List merge requests that will close issue on merge
 
-Get all the merge requests that will close issue when merged.
+Get all the merge requests that will close an issue when merged.
 
-If the project is private or the issue is confidential, credentials will need to be provided for authorization.
+If the project is private or the issue is confidential, you need to provide credentials to authorize.
 The preferred way to do this, is by using [personal access tokens](../user/profile/personal_access_tokens.md).
 
 ```plaintext
@@ -1804,7 +1834,7 @@ Example response:
 
 ## Participants on issues
 
-If the project is private or the issue is confidential, credentials will need to be provided for authorization.
+If the project is private or the issue is confidential, you need to provide credentials to authorize.
 The preferred way to do this, is by using [personal access tokens](../user/profile/personal_access_tokens.md).
 
 ```plaintext

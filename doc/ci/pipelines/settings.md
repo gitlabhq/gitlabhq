@@ -57,12 +57,12 @@ The default value is 60 minutes. Decrease the time limit if you want to impose
 a hard limit on your jobs' running time or increase it otherwise. In any case,
 if the job surpasses the threshold, it is marked as failed.
 
-### Timeout overriding on Runner level
+### Timeout overriding for runners
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/17221) in GitLab 10.7.
 
 Project defined timeout (either specific timeout set by user or the default
-60 minutes timeout) may be [overridden on Runner level](../runners/README.md#set-maximum-job-timeout-for-a-runner).
+60 minutes timeout) may be [overridden for runners](../runners/README.md#set-maximum-job-timeout-for-a-runner).
 
 ## Maximum artifacts size **(CORE ONLY)**
 

@@ -129,7 +129,7 @@ the Omnibus GitLab distribution is not yet supported. Follow this
 Prepare all your new nodes by [installing
 GitLab](https://about.gitlab.com/install/).
 
-- 1 Praefect node (minimal storage required)
+- At least 1 Praefect node (minimal storage required)
 - 3 Gitaly nodes (high CPU, high memory, fast storage)
 - 1 GitLab server
 
@@ -232,7 +232,7 @@ The database used by Praefect is now configured.
 
 #### PgBouncer
 
-To reduce PostgreSQL resource consumption, you should set up and configure
+To reduce PostgreSQL resource consumption, we recommend setting up and configuring
 [PgBouncer](https://www.pgbouncer.org/) in front of the PostgreSQL instance. To do
 this, replace value of the `POSTGRESQL_SERVER_ADDRESS` with corresponding IP or host
 address of the PgBouncer instance.
@@ -274,6 +274,9 @@ PostgreSQL instances. Otherwise you should change the configuration parameter
 `praefect['database_port']` for each Praefect instance to the correct value.
 
 ### Praefect
+
+NOTE: **Note:**
+If there are multiple Praefect nodes, complete these steps for **each** node.
 
 To complete this section you will need:
 
@@ -426,7 +429,7 @@ application server, or a Gitaly node.
 
 1. To ensure that Praefect [has updated its Prometheus listen
    address](https://gitlab.com/gitlab-org/gitaly/-/issues/2734), [restart
-   Gitaly](../restart_gitlab.md#omnibus-gitlab-restart):
+   Praefect](../restart_gitlab.md#omnibus-gitlab-restart):
 
    ```shell
    gitlab-ctl restart praefect
@@ -444,7 +447,7 @@ application server, or a Gitaly node.
 
 **The steps above must be completed for each Praefect node!**
 
-## Enabling TLS support
+#### Enabling TLS support
 
 > [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/1698) in GitLab 13.2.
 
@@ -730,7 +733,7 @@ After all Gitaly nodes are configured, you can run the Praefect connection
 checker to verify Praefect can connect to all Gitaly servers in the Praefect
 config.
 
-1. SSH into the **Praefect** node and run the Praefect connection checker:
+1. SSH into each **Praefect** node and run the Praefect connection checker:
 
    ```shell
    sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml dial-nodes
@@ -774,9 +777,9 @@ application. This is done by updating the `git_data_dirs`.
 Particular attention should be shown to:
 
 - the storage name added to `git_data_dirs` in this section must match the
-  storage name under `praefect['virtual_storages']` on the Praefect node. This
+  storage name under `praefect['virtual_storages']` on the Praefect node(s). This
   was set in the [Praefect](#praefect) section of this guide. This document uses
-  `storage-1` as the Praefect storage name.
+  `default` as the Praefect storage name.
 
 1. SSH into the **GitLab** node and login as root:
 
@@ -833,7 +836,8 @@ Particular attention should be shown to:
    gitlab_shell['secret_token'] = 'GITLAB_SHELL_SECRET_TOKEN'
    ```
 
-1. Add Prometheus monitoring settings by editing `/etc/gitlab/gitlab.rb`.
+1. Add Prometheus monitoring settings by editing `/etc/gitlab/gitlab.rb`. If Prometheus
+   is enabled on a different node, make edits on that node instead.
 
    You will need to replace:
 
@@ -871,7 +875,7 @@ Particular attention should be shown to:
    gitlab-ctl reconfigure
    ```
 
-1. Verify each `gitlab-shell` on each Gitaly instance can reach GitLab. On each Gitaly instance run:
+1. Verify each `gitlab-shell` on each Gitaly node can reach GitLab. On each Gitaly node run:
 
    ```shell
    /opt/gitlab/embedded/service/gitlab-shell/bin/check -config /opt/gitlab/embedded/service/gitlab-shell/config.yml
@@ -901,7 +905,7 @@ for detailed documentation.
 
 To get started quickly:
 
-1. SSH into the **GitLab** node and login as root:
+1. SSH into the **GitLab** node (or whichever node has Grafana enabled) and login as root:
 
    ```shell
    sudo -i

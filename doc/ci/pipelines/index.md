@@ -22,7 +22,7 @@ Pipelines comprise:
 - Jobs, which define *what* to do. For example, jobs that compile or test code.
 - Stages, which define *when* to run the jobs. For example, stages that run tests after stages that compile the code.
 
-Jobs are executed by [Runners](../runners/README.md). Multiple jobs in the same stage are executed in parallel,
+Jobs are executed by [runners](../runners/README.md). Multiple jobs in the same stage are executed in parallel,
 if there are enough concurrent runners.
 
 If *all* jobs in a stage succeed, the pipeline moves on to the next stage.
@@ -562,5 +562,5 @@ To illustrate its life cycle:
    which retains the checkout-SHA of the associated pipeline record.
    This persistent ref stays intact during the pipeline execution,
    even if the commit history of the `example` branch has been overwritten by force-push.
-1. GitLab Runner fetches the persistent pipeline ref and gets source code from the checkout-SHA.
+1. The runner fetches the persistent pipeline ref and gets source code from the checkout-SHA.
 1. When the pipeline finished, its persistent ref is cleaned up in a background process.

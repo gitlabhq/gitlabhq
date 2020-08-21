@@ -388,7 +388,54 @@ RSpec.shared_examples 'wiki controller actions' do
         end.not_to change { wiki.list_pages.size }
 
         expect(response).to render_template('shared/wikis/edit')
-        expect(flash[:alert]).to eq('Could not create wiki page')
+      end
+    end
+  end
+
+  describe 'DELETE #destroy' do
+    let(:id_param) { wiki_title }
+
+    subject do
+      delete(:destroy,
+            params: routing_params.merge(
+              id: id_param
+            ))
+    end
+
+    context 'when page exists' do
+      it 'deletes the page' do
+        expect do
+          subject
+        end.to change { wiki.list_pages.size }.by(-1)
+      end
+
+      context 'but page cannot be deleted' do
+        before do
+          allow_next_instance_of(WikiPage) do |page|
+            allow(page).to receive(:delete).and_return(false)
+          end
+        end
+
+        it 'renders the edit state' do
+          expect do
+            subject
+          end.not_to change { wiki.list_pages.size }
+
+          expect(response).to render_template('shared/wikis/edit')
+          expect(assigns(:error).message).to eq('Could not delete wiki page')
+        end
+      end
+    end
+
+    context 'when page does not exist' do
+      let(:id_param) { 'nil' }
+
+      it 'renders 404' do
+        expect do
+          subject
+        end.not_to change { wiki.list_pages.size }
+
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
   end

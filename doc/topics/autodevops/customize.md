@@ -130,7 +130,7 @@ repository or by specifying a project variable:
 
 - **Bundled chart** - If your project has a `./chart` directory with a `Chart.yaml`
   file in it, Auto DevOps will detect the chart and use it instead of the
-  [default chart](https://gitlab.com/gitlab-org/charts/auto-deploy-app), enabling
+  [default chart](https://gitlab.com/gitlab-org/cluster-integration/auto-deploy-image/-/tree/master/assets/auto-deploy-app), enabling
   you to control exactly how your application is deployed.
 - **Project variable** - Create a [project variable](../../ci/variables/README.md#gitlab-cicd-environment-variables)
   `AUTO_DEVOPS_CHART` with the URL of a custom chart to use, or create two project
@@ -142,7 +142,7 @@ repository or by specifying a project variable:
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30628) in GitLab 12.6, `.gitlab/auto-deploy-values.yaml` will be used by default for Helm upgrades.
 
 You can override the default values in the `values.yaml` file in the
-[default Helm chart](https://gitlab.com/gitlab-org/charts/auto-deploy-app) by either:
+[default Helm chart](https://gitlab.com/gitlab-org/cluster-integration/auto-deploy-image/-/tree/master/assets/auto-deploy-app) by either:
 
 - Adding a file named `.gitlab/auto-deploy-values.yaml` to your repository, which is
   automatically used, if found.
@@ -316,7 +316,7 @@ applications.
 | `AUTO_DEVOPS_BUILD_IMAGE_CNB_BUILDER`   | The builder used when building with Cloud Native Buildpacks. The default builder is `heroku/buildpacks:18`. [More details](stages.md#auto-build-using-cloud-native-buildpacks-beta). |
 | `AUTO_DEVOPS_BUILD_IMAGE_EXTRA_ARGS`    | Extra arguments to be passed to the `docker build` command. Note that using quotes won't prevent word splitting. [More details](#passing-arguments-to-docker-build). |
 | `AUTO_DEVOPS_BUILD_IMAGE_FORWARDED_CI_VARIABLES` | A [comma-separated list of CI variable names](#forward-ci-variables-to-the-build-environment) to be forwarded to the build environment (the buildpack builder or `docker build`). |
-| `AUTO_DEVOPS_CHART`                     | Helm Chart used to deploy your apps. Defaults to the one [provided by GitLab](https://gitlab.com/gitlab-org/charts/auto-deploy-app). |
+| `AUTO_DEVOPS_CHART`                     | Helm Chart used to deploy your apps. Defaults to the one [provided by GitLab](https://gitlab.com/gitlab-org/cluster-integration/auto-deploy-image/-/tree/master/assets/auto-deploy-app). |
 | `AUTO_DEVOPS_CHART_REPOSITORY`          | Helm Chart repository used to search for charts. Defaults to `https://charts.gitlab.io`. |
 | `AUTO_DEVOPS_CHART_REPOSITORY_NAME`     | From GitLab 11.11, used to set the name of the Helm repository. Defaults to `gitlab`. |
 | `AUTO_DEVOPS_CHART_REPOSITORY_USERNAME` | From GitLab 11.11, used to set a username to connect to the Helm repository. Defaults to no credentials. Also set `AUTO_DEVOPS_CHART_REPOSITORY_PASSWORD`. |

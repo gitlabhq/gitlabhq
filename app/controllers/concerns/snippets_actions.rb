@@ -14,8 +14,6 @@ module SnippetsActions
     skip_before_action :verify_authenticity_token,
       if: -> { action_name == 'show' && js_request? }
 
-    before_action :redirect_if_binary, only: [:edit, :update]
-
     respond_to :html
   end
 
@@ -133,11 +131,5 @@ module SnippetsActions
     flash.now[:alert] = errors.first if errors.present?
 
     recaptcha_check_with_fallback(errors.empty?) { render action }
-  end
-
-  def redirect_if_binary
-    return if Feature.enabled?(:snippets_binary_blob)
-
-    redirect_to gitlab_snippet_path(snippet) if blob&.binary?
   end
 end

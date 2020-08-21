@@ -18,13 +18,13 @@ This document describes where and how the different types of variables can be us
 There are two places defined variables can be used. On the:
 
 1. GitLab side, in `.gitlab-ci.yml`.
-1. The runner side, in `config.toml`.
+1. The GitLab Runner side, in `config.toml`.
 
 ### `.gitlab-ci.yml` file
 
 | Definition                                 | Can be expanded? | Expansion place        | Description                                                                                                                                                                                                                                                                                                                                                                                                                       |
 |:-------------------------------------------|:-----------------|:-----------------------|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `environment:url`                          | yes              | GitLab                 | The variable expansion is made by GitLab's [internal variable expansion mechanism](#gitlab-internal-variable-expansion-mechanism).<br/><br/>Supported are all variables defined for a job (project/group variables, variables from `.gitlab-ci.yml`, variables from triggers, variables from pipeline schedules).<br/><br/>Not supported are variables defined in Runner's `config.toml` and variables created in job's `script`. |
+| `environment:url`                          | yes              | GitLab                 | The variable expansion is made by GitLab's [internal variable expansion mechanism](#gitlab-internal-variable-expansion-mechanism).<br/><br/>Supported are all variables defined for a job (project/group variables, variables from `.gitlab-ci.yml`, variables from triggers, variables from pipeline schedules).<br/><br/>Not supported are variables defined in the GitLab Runner `config.toml` and variables created in the job's `script`. |
 | `environment:name`                         | yes              | GitLab                 | Similar to `environment:url`, but the variables expansion doesn't support the following:<br/><br/>- Variables that are based on the environment's name (`CI_ENVIRONMENT_NAME`, `CI_ENVIRONMENT_SLUG`).<br/>- Any other variables related to environment (currently only `CI_ENVIRONMENT_URL`).<br/>- [Persisted variables](#persisted-variables).                                                                                 |
 | `resource_group`                           | yes              | GitLab                 | Similar to `environment:url`, but the variables expansion doesn't support the following:<br/><br/>- Variables that are based on the environment's name (`CI_ENVIRONMENT_NAME`, `CI_ENVIRONMENT_SLUG`).<br/>- Any other variables related to environment (currently only `CI_ENVIRONMENT_URL`).<br/>- [Persisted variables](#persisted-variables).                                                                                 |
 | `variables`                                | yes              | Runner                 | The variable expansion is made by GitLab Runner's [internal variable expansion mechanism](#gitlab-runner-internal-variable-expansion-mechanism)                                                                                                                                                                                                                                                                                   |
@@ -39,13 +39,13 @@ There are two places defined variables can be used. On the:
 ### `config.toml` file
 
 NOTE: **Note:**
-You can read more about `config.toml` in the [Runner's docs](https://docs.gitlab.com/runner/configuration/advanced-configuration.html).
+You can read more about `config.toml` in the [GitLab Runner docs](https://docs.gitlab.com/runner/configuration/advanced-configuration.html).
 
 | Definition                           | Can be expanded? | Description                                                                                                                                  |
 |:-------------------------------------|:-----------------|:---------------------------------------------------------------------------------------------------------------------------------------------|
-| `runners.environment`                | yes              | The variable expansion is made by the Runner's [internal variable expansion mechanism](#gitlab-runner-internal-variable-expansion-mechanism) |
-| `runners.kubernetes.pod_labels`      | yes              | The Variable expansion is made by the Runner's [internal variable expansion mechanism](#gitlab-runner-internal-variable-expansion-mechanism) |
-| `runners.kubernetes.pod_annotations` | yes              | The Variable expansion is made by the Runner's [internal variable expansion mechanism](#gitlab-runner-internal-variable-expansion-mechanism) |
+| `runners.environment`                | yes              | The variable expansion is made by GitLab Runner's [internal variable expansion mechanism](#gitlab-runner-internal-variable-expansion-mechanism) |
+| `runners.kubernetes.pod_labels`      | yes              | The Variable expansion is made by GitLab Runner's [internal variable expansion mechanism](#gitlab-runner-internal-variable-expansion-mechanism) |
+| `runners.kubernetes.pod_annotations` | yes              | The Variable expansion is made by GitLab Runner's [internal variable expansion mechanism](#gitlab-runner-internal-variable-expansion-mechanism) |
 
 ## Expansion mechanisms
 
@@ -59,7 +59,7 @@ There are three expansion mechanisms:
 
 The expanded part needs to be in a form of `$variable`, or `${variable}` or `%variable%`.
 Each form is handled in the same way, no matter which OS/shell will finally handle the job,
-since the expansion is done in GitLab before any Runner will get the job.
+since the expansion is done in GitLab before any runner will get the job.
 
 ### GitLab Runner internal variable expansion mechanism
 
@@ -67,7 +67,7 @@ since the expansion is done in GitLab before any Runner will get the job.
   variables from triggers, pipeline schedules, and manual pipelines.
 - Not supported: variables defined inside of scripts (e.g., `export MY_VARIABLE="test"`).
 
-The Runner uses Go's `os.Expand()` method for variable expansion. It means that it will handle
+The runner uses Go's `os.Expand()` method for variable expansion. It means that it will handle
 only variables defined as `$variable` and `${variable}`. What's also important, is that
 the expansion is done only once, so nested variables may or may not work, depending on the
 ordering of variables definitions.

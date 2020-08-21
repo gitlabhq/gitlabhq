@@ -5,16 +5,15 @@ module Search
     include Gitlab::Utils::StrongMemoize
 
     attr_accessor :current_user, :params
-    attr_reader :default_project_filter
 
     def initialize(user, params)
       @current_user, @params = user, params.dup
-      @default_project_filter = true
     end
 
     def execute
-      Gitlab::SearchResults.new(current_user, projects, params[:search],
-                                default_project_filter: default_project_filter)
+      Gitlab::SearchResults.new(current_user,
+                                params[:search],
+                                projects)
     end
 
     def projects

@@ -101,11 +101,15 @@ module API
         delete ':id/wikis/:slug' do
           authorize! :admin_wiki, container
 
-          WikiPages::DestroyService
+          response = WikiPages::DestroyService
             .new(container: container, current_user: current_user)
             .execute(wiki_page)
 
-          no_content!
+          if response.success?
+            no_content!
+          else
+            render_api_error!(reponse.message)
+          end
         end
 
         desc 'Upload an attachment to the wiki repository' do

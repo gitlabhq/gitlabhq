@@ -6982,6 +6982,9 @@ msgstr ""
 msgid "Could not delete chat nickname %{chat_name}."
 msgstr ""
 
+msgid "Could not delete wiki page"
+msgstr ""
+
 msgid "Could not find design."
 msgstr ""
 

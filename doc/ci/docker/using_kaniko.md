@@ -22,8 +22,8 @@ build](using_docker_build.md#use-docker-in-docker-workflow-with-docker-executor)
 
 ## Requirements
 
-In order to utilize kaniko with GitLab, a [GitLab Runner](https://docs.gitlab.com/runner/)
-using one of the following executors is required:
+In order to utilize kaniko with GitLab, [a runner](https://docs.gitlab.com/runner/)
+with one of the following executors is required:
 
 - [Kubernetes](https://docs.gitlab.com/runner/executors/kubernetes.html).
 - [Docker](https://docs.gitlab.com/runner/executors/docker.html).
@@ -100,8 +100,8 @@ The [Least Privilege Container Builds with Kaniko on GitLab](https://www.youtube
 video is a walkthrough of the [Kaniko Docker Build](https://gitlab.com/guided-explorations/containers/kaniko-docker-build)
 Guided Exploration project pipeline. It was tested on:
 
-- [GitLab.com Shared Runners](../../user/gitlab_com/index.md#shared-runners)
-- [The Kubernetes Runner executor](https://docs.gitlab.com/runner/executors/kubernetes.html)
+- [GitLab.com shared runners](../../user/gitlab_com/index.md#shared-runners)
+- [The Kubernetes runner executor](https://docs.gitlab.com/runner/executors/kubernetes.html)
 
 The example can be copied to your own group or instance for testing. More details
 on what other GitLab CI patterns are demonstrated are available at the project page.

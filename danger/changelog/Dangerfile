@@ -4,21 +4,6 @@
 require 'yaml'
 
 SEE_DOC = "See the [changelog documentation](https://docs.gitlab.com/ee/development/changelog.html)."
-CREATE_CHANGELOG_MESSAGE = <<~MSG
-If you want to create a changelog entry for GitLab FOSS, run the following:
-
-```
-bin/changelog -m %<mr_iid>s "%<mr_title>s"
-```
-
-If you want to create a changelog entry for GitLab EE, run the following instead:
-
-```
-bin/changelog --ee -m %<mr_iid>s "%<mr_title>s"
-```
-
-If this merge request [doesn't need a CHANGELOG entry](https://docs.gitlab.com/ee/development/changelog.html#what-warrants-a-changelog-entry), feel free to ignore this message.
-MSG
 
 SUGGEST_MR_COMMENT = <<~SUGGEST_COMMENT
 ```suggestion
@@ -70,13 +55,8 @@ def check_changelog_path(path)
   end
 end
 
-def sanitized_mr_title
-  helper.sanitize_mr_title(gitlab.mr_json["title"])
-end
-
 if git.modified_files.include?("CHANGELOG.md")
-  fail "**CHANGELOG.md was edited.** Please remove the additions and create a CHANGELOG entry.\n\n" +
-    format(CREATE_CHANGELOG_MESSAGE, mr_iid: gitlab.mr_json["iid"], mr_title: sanitized_mr_title)
+  fail changelog.modified_text
 end
 
 changelog_found = changelog.found
@@ -84,7 +64,8 @@ changelog_found = changelog.found
 if changelog_found
   check_changelog_yaml(changelog_found)
   check_changelog_path(changelog_found)
-elsif changelog.needed?
-  message "**[CHANGELOG missing](https://docs.gitlab.com/ee/development/changelog.html)**:\n\n" +
-          format(CREATE_CHANGELOG_MESSAGE, mr_iid: gitlab.mr_json["iid"], mr_title: sanitized_mr_title)
+elsif changelog.required?
+  fail changelog.required_text
+elsif changelog.optional?
+  message changelog.optional_text
 end

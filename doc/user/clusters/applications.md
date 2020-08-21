@@ -1421,7 +1421,7 @@ Refer to the [AppArmor chart](https://gitlab.com/gitlab-org/charts/apparmor) for
 
 After installing AppAmor, you can use profiles by adding Pod Annotations. If you're using Auto
 DevOps, you can [customize `auto-deploy-values.yaml`](../../topics/autodevops/customize.md#customize-values-for-helm-chart)
-to annotate your pods. Although it's helpful to be aware of the [list of custom attributes](https://gitlab.com/gitlab-org/charts/auto-deploy-app#gitlabs-auto-deploy-helm-chart), you're only required to set
+to annotate your pods. Although it's helpful to be aware of the [list of custom attributes](https://gitlab.com/gitlab-org/cluster-integration/auto-deploy-image/-/tree/master/assets/auto-deploy-app#gitlabs-auto-deploy-helm-chart), you're only required to set
 `podAnnotations` as follows:
 
 ```yaml

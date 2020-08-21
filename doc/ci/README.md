@@ -80,7 +80,7 @@ Once you're familiar with how GitLab CI/CD works, see the
 for all the attributes you can set and use.
 
 NOTE: **Note:**
-GitLab CI/CD and [shared runners](runners/README.md#shared-runners) are enabled in GitLab.com and available for all users, limited only to the [user's pipelines quota](../user/gitlab_com/index.md#shared-runners).
+GitLab CI/CD and [shared runners](runners/README.md#shared-runners) are enabled on GitLab.com and available for all users, limited only by the [pipeline quota](../user/gitlab_com/index.md#shared-runners).
 
 ## Concepts
 
@@ -93,7 +93,7 @@ GitLab CI/CD uses a number of concepts to describe and run your build and deploy
 | [Environments](environments/index.md) | Deploy your application to different environments (e.g., staging, production). |
 | [Job artifacts](pipelines/job_artifacts.md) | Output, use, and reuse job artifacts. |
 | [Cache dependencies](caching/index.md) | Cache your dependencies for a faster execution. |
-| [GitLab Runner](https://docs.gitlab.com/runner/) | Configure your own GitLab Runners to execute your scripts. |
+| [GitLab Runner](https://docs.gitlab.com/runner/) | Configure your own runners to execute your scripts. |
 
 ## Configuration
 
@@ -108,7 +108,7 @@ GitLab CI/CD supports numerous configuration options:
 | [Pipeline triggers](triggers/README.md) | Trigger pipelines through the API. |
 | [Pipelines for Merge Requests](merge_request_pipelines/index.md) | Design a pipeline structure for running a pipeline in merge requests. |
 | [Integrate with Kubernetes clusters](../user/project/clusters/index.md) | Connect your project to Google Kubernetes Engine (GKE) or an existing Kubernetes cluster. |
-| [Optimize GitLab and Runner for large repositories](large_repositories/index.md) | Recommended strategies for handling large repositories. |
+| [Optimize GitLab and GitLab Runner for large repositories](large_repositories/index.md) | Recommended strategies for handling large repositories. |
 | [`.gitlab-ci.yml` full reference](yaml/README.md) | All the attributes you can use with GitLab CI/CD. |
 
 Note that certain operations can only be performed according to the

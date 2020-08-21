@@ -6,7 +6,6 @@ module Gitlab
       include Gitlab::Git::WrapsGitalyErrors
 
       DuplicatePageError = Class.new(StandardError)
-      OperationError = Class.new(StandardError)
 
       DEFAULT_PAGINATION = Kaminari.config.default_per_page
 

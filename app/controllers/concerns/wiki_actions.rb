@@ -103,7 +103,7 @@ module WikiActions
     else
       render 'shared/wikis/edit'
     end
-  rescue WikiPage::PageChangedError, WikiPage::PageRenameError, Gitlab::Git::Wiki::OperationError => e
+  rescue WikiPage::PageChangedError, WikiPage::PageRenameError => e
     @error = e
     render 'shared/wikis/edit'
   end
@@ -120,13 +120,8 @@ module WikiActions
         notice: _('Wiki was successfully updated.')
       )
     else
-      flash[:alert] = response.message
       render 'shared/wikis/edit'
     end
-  rescue Gitlab::Git::Wiki::OperationError => e
-    @page = build_page(wiki_params)
-    @error = e
-    render 'shared/wikis/edit'
   end
   # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
@@ -162,14 +157,18 @@ module WikiActions
 
   # rubocop:disable Gitlab/ModuleWithInstanceVariables
   def destroy
-    WikiPages::DestroyService.new(container: container, current_user: current_user).execute(page)
+    return render_404 unless page
 
-    redirect_to wiki_path(wiki),
-                status: :found,
-                notice: _("Page was successfully deleted")
-  rescue Gitlab::Git::Wiki::OperationError => e
-    @error = e
-    render 'shared/wikis/edit'
+    response = WikiPages::DestroyService.new(container: container, current_user: current_user).execute(page)
+
+    if response.success?
+      redirect_to wiki_path(wiki),
+      status: :found,
+      notice: _("Page was successfully deleted")
+    else
+      @error = response
+      render 'shared/wikis/edit'
+    end
   end
   # rubocop:enable Gitlab/ModuleWithInstanceVariables
 

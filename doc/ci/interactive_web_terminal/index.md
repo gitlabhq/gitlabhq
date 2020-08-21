@@ -26,7 +26,7 @@ terminals are available when using your own group or project runner.
 
 Two things need to be configured for the interactive web terminal to work:
 
-- The Runner needs to have [`[session_server]` configured
+- The runner needs to have [`[session_server]` configured
   properly](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-session_server-section)
 - If you are using a reverse proxy with your GitLab instance, web terminals need to be
   [enabled](../../administration/integration/terminal.md#enabling-and-disabling-terminal-support)

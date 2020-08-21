@@ -350,7 +350,7 @@ group :development do
 end
 
 group :development, :test do
-  gem 'bullet', '~> 6.0.2'
+  gem 'bullet', '~> 6.1.0'
   gem 'pry-byebug', '~> 3.5.1', platform: :mri
   gem 'pry-rails', '~> 0.3.9'
 

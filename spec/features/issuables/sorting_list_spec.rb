@@ -10,10 +10,6 @@ RSpec.describe 'Sort Issuable List' do
   let(:first_updated_issuable) { issuables.order_updated_asc.first }
   let(:last_updated_issuable) { issuables.order_updated_desc.first }
 
-  before do
-    stub_feature_flags(vue_issuables_list: false)
-  end
-
   context 'for merge requests' do
     include MergeRequestHelpers
 
@@ -147,7 +143,7 @@ RSpec.describe 'Sort Issuable List' do
         let(:issuable_type) { :issue }
 
         it 'is "created date"' do
-          visit_issues_with_state(project, 'open')
+          visit_issues_with_state(project, 'opened')
 
           expect(find('.filter-dropdown-container')).to have_content('Created date')
           expect(first_issue).to include(last_created_issuable.title)
@@ -179,11 +175,11 @@ RSpec.describe 'Sort Issuable List' do
         end
       end
 
-      context 'when the sort in the URL is id_desc' do
+      context 'when the sort in the URL is created_date', :js do
         let(:issuable_type) { :issue }
 
         before do
-          visit_issues(project, sort: 'id_desc')
+          visit_issues(project, sort: 'created_date')
         end
 
         it 'shows the sort order as created date' do
@@ -194,11 +190,11 @@ RSpec.describe 'Sort Issuable List' do
       end
     end
 
-    context 'custom sorting' do
+    context 'custom sorting', :js do
       let(:issuable_type) { :issue }
 
       it 'supports sorting in asc and desc order' do
-        visit_issues_with_state(project, 'open')
+        visit_issues_with_state(project, 'opened')
 
         page.within('.filter-dropdown-container') do
           click_button('Created date')

@@ -7,13 +7,15 @@ module Search
     def initialize(user, group, params)
       super(user, params)
 
-      @default_project_filter = false
       @group = group
     end
 
     def execute
       Gitlab::GroupSearchResults.new(
-        current_user, projects, group, params[:search], default_project_filter: default_project_filter
+        current_user,
+        params[:search],
+        projects,
+        group: group
       )
     end
 

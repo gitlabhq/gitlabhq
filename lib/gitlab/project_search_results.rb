@@ -4,11 +4,11 @@ module Gitlab
   class ProjectSearchResults < SearchResults
     attr_reader :project, :repository_ref
 
-    def initialize(current_user, project, query, repository_ref = nil)
-      @current_user = current_user
+    def initialize(current_user, query, project:, repository_ref: nil)
       @project = project
       @repository_ref = repository_ref.presence
-      @query = query
+
+      super(current_user, query, [project])
     end
 
     def objects(scope, page: nil, per_page: DEFAULT_PER_PAGE, preload_method: nil)

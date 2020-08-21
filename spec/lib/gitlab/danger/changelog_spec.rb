@@ -16,20 +16,47 @@ RSpec.describe Gitlab::Danger::Changelog do
   let(:fake_gitlab) { double('fake-gitlab', mr_labels: mr_labels, mr_json: mr_json) }
 
   let(:changes_by_category) { nil }
+  let(:sanitize_mr_title) { nil }
   let(:ee?) { false }
-  let(:fake_helper) { double('fake-helper', changes_by_category: changes_by_category, ee?: ee?) }
+  let(:fake_helper) { double('fake-helper', changes_by_category: changes_by_category, sanitize_mr_title: sanitize_mr_title, ee?: ee?) }
 
   let(:fake_danger) { new_fake_danger.include(described_class) }
 
   subject(:changelog) { fake_danger.new(git: fake_git, gitlab: fake_gitlab, helper: fake_helper) }
 
-  describe '#needed?' do
+  describe '#required?' do
+    subject { changelog.required? }
+
+    context 'added files contain a migration' do
+      [
+        'db/migrate/20200000000000_new_migration.rb',
+        'db/post_migrate/20200000000000_new_migration.rb'
+      ].each do |file_path|
+        let(:added_files) { [file_path] }
+
+        it { is_expected.to be_truthy }
+      end
+    end
+
+    context 'added files do not contain a migration' do
+      [
+        'app/models/model.rb',
+        'app/assets/javascripts/file.js'
+      ].each do |file_path|
+        let(:added_files) { [file_path] }
+
+        it { is_expected.to be_falsey }
+      end
+    end
+  end
+
+  describe '#optional?' do
     let(:category_with_changelog) { :backend }
     let(:label_with_changelog) { 'frontend' }
     let(:category_without_changelog) { Gitlab::Danger::Changelog::NO_CHANGELOG_CATEGORIES.first }
     let(:label_without_changelog) { Gitlab::Danger::Changelog::NO_CHANGELOG_LABELS.first }
 
-    subject { changelog.needed? }
+    subject { changelog.optional? }
 
     context 'when MR contains only categories requiring no changelog' do
       let(:changes_by_category) { { category_without_changelog => nil } }
@@ -119,6 +146,45 @@ RSpec.describe Gitlab::Danger::Changelog do
       let(:file_path) { 'changelogs/unreleased/entry.yml' }
 
       it { is_expected.to be_falsy }
+    end
+  end
+
+  describe '#modified_text' do
+    let(:sanitize_mr_title) { 'Fake Title' }
+    let(:mr_json) { { "iid" => 1234, "title" => sanitize_mr_title } }
+
+    subject { changelog.modified_text }
+
+    it do
+      expect(subject).to include('CHANGELOG.md was edited')
+      expect(subject).to include('bin/changelog -m 1234 "Fake Title"')
+      expect(subject).to include('bin/changelog --ee -m 1234 "Fake Title"')
+    end
+  end
+
+  describe '#required_text' do
+    let(:sanitize_mr_title) { 'Fake Title' }
+    let(:mr_json) { { "iid" => 1234, "title" => sanitize_mr_title } }
+
+    subject { changelog.required_text }
+
+    it do
+      expect(subject).to include('CHANGELOG missing')
+      expect(subject).to include('bin/changelog -m 1234 "Fake Title"')
+      expect(subject).not_to include('--ee')
+    end
+  end
+
+  describe 'optional_text' do
+    let(:sanitize_mr_title) { 'Fake Title' }
+    let(:mr_json) { { "iid" => 1234, "title" => sanitize_mr_title } }
+
+    subject { changelog.optional_text }
+
+    it do
+      expect(subject).to include('CHANGELOG missing')
+      expect(subject).to include('bin/changelog -m 1234 "Fake Title"')
+      expect(subject).to include('bin/changelog --ee -m 1234 "Fake Title"')
     end
   end
 end

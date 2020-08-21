@@ -261,6 +261,7 @@ RSpec.configure do |config|
       ./spec/support/protected_tags
       ./spec/support/shared_examples/features
       ./spec/support/shared_examples/requests
+      ./spec/support/shared_examples/lib/gitlab
       ./spec/views
       ./spec/workers
     )

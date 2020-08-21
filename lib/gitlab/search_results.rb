@@ -19,10 +19,10 @@ module Gitlab
     # query
     attr_reader :default_project_filter
 
-    def initialize(current_user, limit_projects, query, default_project_filter: false)
+    def initialize(current_user, query, limit_projects = nil, default_project_filter: false)
       @current_user = current_user
-      @limit_projects = limit_projects || Project.all
       @query = query
+      @limit_projects = limit_projects || Project.all
       @default_project_filter = default_project_filter
     end
 
