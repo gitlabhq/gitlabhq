@@ -135,7 +135,7 @@ Now that the integration is configured, read more about how to test and use it i
 
 Refer to the items in this section if you're having problems with your DVCS connector.
 
-##### Jira cannot access GitLab server 
+##### Jira cannot access GitLab server
 
 ```plaintext
 Error obtaining access token. Cannot access https://gitlab.example.com from Jira.

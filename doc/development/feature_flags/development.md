@@ -1,3 +1,10 @@
+---
+type: reference, dev
+stage: none
+group: Development
+info: "See the Technical Writers assigned to Development Guidelines: https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments-to-development-guidelines"
+---
+
 # Developing with feature flags
 
 This document provides guidelines on how to use feature flags

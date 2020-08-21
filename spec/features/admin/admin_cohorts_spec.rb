@@ -12,7 +12,7 @@ RSpec.describe 'Cohorts page' do
   it 'See users count per month' do
     create_list(:user, 2)
 
-    visit instance_statistics_cohorts_path
+    visit admin_cohorts_path
 
     expect(page).to have_content("#{Time.now.strftime('%b %Y')} 3 0")
   end

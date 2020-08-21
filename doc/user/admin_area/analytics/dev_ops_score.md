@@ -4,7 +4,7 @@
 > - [Renamed from Conversational Development Index](https://gitlab.com/gitlab-org/gitlab/-/issues/20976) in GitLab 12.6.
 
 NOTE: **Note:**
-Your GitLab instance's [usage ping](../admin_area/settings/usage_statistics.md#usage-ping-core-only) must be activated in order to use this feature.
+Your GitLab instance's [usage ping](../settings/usage_statistics.md#usage-ping-core-only) must be activated in order to use this feature.
 
 The DevOps Score gives you an overview of your entire instance's adoption of
 [Concurrent DevOps](https://about.gitlab.com/topics/concurrent-devops/)
@@ -13,7 +13,7 @@ from planning to monitoring.
 This displays the usage of these GitLab features over
 the last 30 days, averaged over the number of active users in that time period. It also
 provides a Lead score per feature, which is calculated based on GitLab's analysis
-of top-performing instances based on [usage ping data](../admin_area/settings/usage_statistics.md#usage-ping-core-only) that GitLab has
+of top-performing instances based on [usage ping data](../settings/usage_statistics.md#usage-ping-core-only) that GitLab has
 collected. Your score is compared to the lead score of each feature and then expressed as a percentage at the bottom of said feature.
 Your overall **index score** is an average of your feature scores. You can use this score to compare your DevOps status to other organizations.
 

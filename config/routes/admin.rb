@@ -89,6 +89,10 @@ namespace :admin do
 
   resources :projects, only: [:index]
 
+  resources :instance_statistics, only: :index
+  resource :dev_ops_score, controller: 'dev_ops_score', only: :show
+  resources :cohorts, only: :index
+
   scope(path: 'projects/*namespace_id',
         as: :namespace,
         constraints: { namespace_id: Gitlab::PathRegex.full_namespace_route_regex }) do

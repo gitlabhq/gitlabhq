@@ -11,3 +11,9 @@ export const CANCELED = 'canceled';
 export const STOPPING = 'stopping';
 export const DEPLOYING = 'deploying';
 export const REDEPLOYING = 'redeploying';
+
+export const ACT_BUTTON_ICONS = {
+  play: 'play',
+  repeat: 'repeat',
+  stop: 'stop',
+};

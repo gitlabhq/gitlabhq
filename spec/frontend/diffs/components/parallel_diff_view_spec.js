@@ -1,33 +1,37 @@
-import Vue from 'vue';
-import { createComponentWithStore } from 'helpers/vue_mount_component_helper';
+import Vuex from 'vuex';
+import { shallowMount, createLocalVue } from '@vue/test-utils';
 import { createStore } from '~/mr_notes/stores';
 import ParallelDiffView from '~/diffs/components/parallel_diff_view.vue';
-import * as constants from '~/diffs/constants';
+import parallelDiffTableRow from '~/diffs/components/parallel_diff_table_row.vue';
 import diffFileMockData from '../mock_data/diff_file';
 
-describe('ParallelDiffView', () => {
-  let component;
-  const getDiffFileMock = () => ({ ...diffFileMockData });
+let wrapper;
+const localVue = createLocalVue();
 
-  beforeEach(() => {
-    const diffFile = getDiffFileMock();
+localVue.use(Vuex);
 
-    component = createComponentWithStore(Vue.extend(ParallelDiffView), createStore(), {
+function factory() {
+  const diffFile = { ...diffFileMockData };
+  const store = createStore();
+
+  wrapper = shallowMount(ParallelDiffView, {
+    localVue,
+    store,
+    propsData: {
       diffFile,
       diffLines: diffFile.parallel_diff_lines,
-    }).$mount();
+    },
   });
+}
 
+describe('ParallelDiffView', () => {
   afterEach(() => {
-    component.$destroy();
+    wrapper.destroy();
   });
 
-  describe('assigned', () => {
-    describe('diffLines', () => {
-      it('should normalize lines for empty cells', () => {
-        expect(component.diffLines[0].left.type).toEqual(constants.EMPTY_CELL_TYPE);
-        expect(component.diffLines[1].left.type).toEqual(constants.EMPTY_CELL_TYPE);
-      });
-    });
+  it('renders diff lines', () => {
+    factory();
+
+    expect(wrapper.findAll(parallelDiffTableRow).length).toBe(8);
   });
 });

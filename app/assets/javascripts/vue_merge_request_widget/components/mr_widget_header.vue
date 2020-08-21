@@ -1,9 +1,9 @@
 <script>
 import Mousetrap from 'mousetrap';
 import { escape } from 'lodash';
+import { GlIcon } from '@gitlab/ui';
 import { n__, s__, sprintf } from '~/locale';
 import { mergeUrlParams, webIDEUrl } from '~/lib/utils/url_utility';
-import Icon from '~/vue_shared/components/icon.vue';
 import clipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import tooltip from '~/vue_shared/directives/tooltip';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate.vue';
@@ -12,7 +12,7 @@ import MrWidgetIcon from './mr_widget_icon.vue';
 export default {
   name: 'MRWidgetHeader',
   components: {
-    Icon,
+    GlIcon,
     clipboardButton,
     TooltipOnTruncate,
     MrWidgetIcon,
@@ -157,7 +157,8 @@ export default {
             aria-haspopup="true"
             aria-expanded="false"
           >
-            <icon name="download" /> <i class="fa fa-caret-down" aria-hidden="true"> </i>
+            <gl-icon name="download" />
+            <gl-icon name="chevron-down" aria-hidden="true" />
           </button>
           <ul class="dropdown-menu dropdown-menu-right">
             <li>

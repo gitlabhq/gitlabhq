@@ -13189,9 +13189,6 @@ msgstr[1] ""
 msgid "Instance Configuration"
 msgstr ""
 
-msgid "Instance Statistics visibility"
-msgstr ""
-
 msgid "Instance administrators group already exists"
 msgstr ""
 
@@ -17003,9 +17000,6 @@ msgid "Only Project Members"
 msgstr ""
 
 msgid "Only active this projects shows up in the search and on the dashboard."
-msgstr ""
-
-msgid "Only admins"
 msgstr ""
 
 msgid "Only admins can delete project"

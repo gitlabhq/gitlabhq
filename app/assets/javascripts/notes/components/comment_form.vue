@@ -3,7 +3,7 @@ import $ from 'jquery';
 import { mapActions, mapGetters, mapState } from 'vuex';
 import { isEmpty } from 'lodash';
 import Autosize from 'autosize';
-import { GlAlert, GlIntersperse, GlLink, GlSprintf } from '@gitlab/ui';
+import { GlAlert, GlIntersperse, GlLink, GlSprintf, GlButton } from '@gitlab/ui';
 import { __, sprintf } from '~/locale';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
 import { deprecatedCreateFlash as Flash } from '../../flash';
@@ -20,7 +20,6 @@ import eventHub from '../event_hub';
 import NoteableWarning from '../../vue_shared/components/notes/noteable_warning.vue';
 import markdownField from '../../vue_shared/components/markdown/field.vue';
 import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
-import loadingButton from '../../vue_shared/components/loading_button.vue';
 import noteSignedOutWidget from './note_signed_out_widget.vue';
 import discussionLockedWidget from './discussion_locked_widget.vue';
 import issuableStateMixin from '../mixins/issuable_state';
@@ -33,7 +32,7 @@ export default {
     discussionLockedWidget,
     markdownField,
     userAvatarLink,
-    loadingButton,
+    GlButton,
     TimelineEntryItem,
     GlAlert,
     GlIntersperse,
@@ -101,6 +100,9 @@ export default {
         openOrClose: capitalizeFirstCharacter(openOrClose),
         noteable: this.noteableDisplayName,
       });
+    },
+    buttonVariant() {
+      return this.isOpen ? 'warning' : 'default';
     },
     actionButtonClassNames() {
       return {
@@ -480,17 +482,19 @@ export default {
                 </ul>
               </div>
 
-              <loading-button
+              <gl-button
                 v-if="canToggleIssueState && !isToggleBlockedIssueWarning"
                 :loading="isToggleStateButtonLoading"
-                :container-class="[
+                category="secondary"
+                :variant="buttonVariant"
+                :class="[
                   actionButtonClassNames,
-                  'btn btn-comment btn-comment-and-close js-action-button',
+                  'btn-comment btn-comment-and-close js-action-button',
                 ]"
                 :disabled="isToggleStateButtonLoading || isSubmitting"
-                :label="issueActionButtonTitle"
                 @click="handleSave(true)"
-              />
+                >{{ issueActionButtonTitle }}</gl-button
+              >
             </div>
           </form>
         </div>

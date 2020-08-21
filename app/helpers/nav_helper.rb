@@ -62,6 +62,10 @@ module NavHelper
     %w(system_info background_jobs health_check requests_profiles)
   end
 
+  def admin_analytics_nav_links
+    %w(dev_ops_score cohorts)
+  end
+
   def group_issues_sub_menu_items
     %w(groups#issues labels#index milestones#index boards#index boards#show)
   end

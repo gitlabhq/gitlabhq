@@ -2,13 +2,13 @@
 
 require 'spec_helper'
 
-RSpec.describe 'DevOps Score' do
+RSpec.describe 'DevOps Score page' do
   before do
     sign_in(create(:admin))
   end
 
   it 'has dismissable intro callout', :js do
-    visit instance_statistics_dev_ops_score_index_path
+    visit admin_dev_ops_score_path
 
     expect(page).to have_content 'Introducing Your DevOps Score'
 
@@ -23,13 +23,13 @@ RSpec.describe 'DevOps Score' do
     end
 
     it 'shows empty state' do
-      visit instance_statistics_dev_ops_score_index_path
+      visit admin_dev_ops_score_path
 
       expect(page).to have_content('Usage ping is not enabled')
     end
 
     it 'hides the intro callout' do
-      visit instance_statistics_dev_ops_score_index_path
+      visit admin_dev_ops_score_path
 
       expect(page).not_to have_content 'Introducing Your DevOps Score'
     end
@@ -39,7 +39,7 @@ RSpec.describe 'DevOps Score' do
     it 'shows empty state' do
       stub_application_setting(usage_ping_enabled: true)
 
-      visit instance_statistics_dev_ops_score_index_path
+      visit admin_dev_ops_score_path
 
       expect(page).to have_content('Data is still calculating')
     end
@@ -50,7 +50,7 @@ RSpec.describe 'DevOps Score' do
       stub_application_setting(usage_ping_enabled: true)
       create(:dev_ops_score_metric)
 
-      visit instance_statistics_dev_ops_score_index_path
+      visit admin_dev_ops_score_path
 
       expect(page).to have_content(
         'Issues created per active user 1.2 You 9.3 Lead 13.3%'

@@ -1,12 +1,12 @@
 <script>
-import { GlTooltipDirective, GlDeprecatedButton } from '@gitlab/ui';
+import { GlTooltipDirective, GlButton } from '@gitlab/ui';
 import { __ } from '~/locale';
 import { RUNNING } from './constants';
 
 export default {
   name: 'DeploymentActionButton',
   components: {
-    GlDeprecatedButton,
+    GlButton,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -35,6 +35,10 @@ export default {
       required: false,
       default: '',
     },
+    icon: {
+      type: String,
+      required: true,
+    },
   },
   computed: {
     isActionInProgress() {
@@ -58,18 +62,19 @@ export default {
 </script>
 
 <template>
-  <span v-gl-tooltip :title="actionInProgressTooltip" class="d-inline-block" tabindex="0">
-    <gl-deprecated-button
+  <span v-gl-tooltip :title="actionInProgressTooltip" class="gl-display-inline-block" tabindex="0">
+    <gl-button
       v-gl-tooltip
+      category="primary"
+      size="small"
       :title="buttonTitle"
       :loading="isLoading"
       :disabled="isActionInProgress"
-      :class="`btn btn-default btn-sm inline gl-ml-2 ${containerClasses}`"
+      :class="`inline gl-ml-2 ${containerClasses}`"
+      :icon="icon"
       @click="$emit('click')"
     >
-      <span class="d-inline-flex align-items-baseline">
-        <slot> </slot>
-      </span>
-    </gl-deprecated-button>
+      <slot> </slot>
+    </gl-button>
   </span>
 </template>

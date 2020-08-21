@@ -18,7 +18,7 @@ Read more on [pagination](README.md#pagination).
 
 CAUTION: **Deprecation:**
 The `reference` attribute in responses is deprecated in favor of `references`.
-Introduced [GitLab 12.6](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20354).
+Introduced in [GitLab 12.6](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20354).
 
 NOTE: **Note:**
 The `references.relative` attribute is relative to the group or project of the issue being requested.

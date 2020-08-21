@@ -45,7 +45,7 @@ the `author` field. GitLab team members **should not**.
   Example: "Fixed a typo on the search results page."
 - Any docs-only changes **should not** have a changelog entry.
 - Any change behind a disabled feature flag **should not** have a changelog entry.
-- Any change behind an enabled feature flag **should** should have a changelog entry.
+- Any change behind an enabled feature flag **should** have a changelog entry.
 - A change that [removes a feature flag](feature_flags/development.md) **should** have a changelog entry -
   only if the feature flag did not default to true already.
 - A fix for a regression introduced and then fixed in the same release (i.e.,

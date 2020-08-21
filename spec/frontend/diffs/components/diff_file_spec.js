@@ -45,7 +45,7 @@ describe('DiffFile', () => {
 
       vm.$nextTick()
         .then(() => {
-          expect(el.querySelectorAll('.line_content').length).toBe(5);
+          expect(el.querySelectorAll('.line_content').length).toBe(8);
           expect(el.querySelectorAll('.js-line-expansion-content').length).toBe(1);
           triggerEvent('.btn-clipboard');
         })

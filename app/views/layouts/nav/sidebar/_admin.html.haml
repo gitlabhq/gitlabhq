@@ -48,6 +48,28 @@
               %span
                 = _('Gitaly Servers')
 
+      = nav_link(controller: admin_analytics_nav_links) do
+        = link_to admin_dev_ops_score_path, data: { qa_selector: 'admin_analytics_link' } do
+          .nav-icon-container
+            = sprite_icon('chart')
+          %span.nav-item-name
+            = _('Analytics')
+
+        %ul.sidebar-sub-level-items{ data: { qa_selector: 'admin_sidebar_analytics_submenu_content' } }
+          = nav_link(controller: admin_analytics_nav_links, html_options: { class: "fly-out-top-item" }) do
+            = link_to admin_dev_ops_score_path do
+              %strong.fly-out-top-item-name
+                = _('Analytics')
+          %li.divider.fly-out-top-item
+          = nav_link(controller: :dev_ops_score) do
+            = link_to admin_dev_ops_score_path, title: _('DevOps Score') do
+              %span
+                = _('DevOps Score')
+          = nav_link(controller: :cohorts) do
+            = link_to admin_cohorts_path, title: _('Cohorts') do
+              %span
+                = _('Cohorts')
+
       = nav_link(controller: admin_monitoring_nav_links) do
         = link_to admin_system_info_path, data: { qa_selector: 'admin_monitoring_link' } do
           .nav-icon-container

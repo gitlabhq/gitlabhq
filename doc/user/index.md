@@ -151,6 +151,10 @@ requests you're assigned to.
 you have quick access to. You can also gather feedback on them through
 [Discussions](#discussions).
 
+## Features behind feature flags
+
+Understand what [features behind feature flags](feature_flags.md) mean.
+
 ## Keyboard shortcuts
 
 There are many [keyboard shortcuts](shortcuts.md) in GitLab to help you navigate between
@@ -175,9 +179,9 @@ Automate GitLab via [API](../api/README.md).
 
 Learn what is [Git](../topics/git/index.md) and its best practices.
 
-## Instance statistics
+## Instance-level analytics
 
-See [various statistics](instance_statistics/index.md) of your GitLab instance.
+See [various statistics](admin_area/analytics/index.md) of your GitLab instance.
 
 ## Operations Dashboard **(PREMIUM)**
 

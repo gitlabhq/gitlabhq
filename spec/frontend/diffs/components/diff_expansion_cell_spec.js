@@ -10,7 +10,6 @@ import diffFileMockData from '../mock_data/diff_file';
 
 const EXPAND_UP_CLASS = '.js-unfold';
 const EXPAND_DOWN_CLASS = '.js-unfold-down';
-const LINE_TO_USE = 5;
 const lineSources = {
   [INLINE_DIFF_VIEW_TYPE]: 'highlighted_diff_lines',
   [PARALLEL_DIFF_VIEW_TYPE]: 'parallel_diff_lines',
@@ -66,7 +65,7 @@ describe('DiffExpansionCell', () => {
 
   beforeEach(() => {
     mockFile = cloneDeep(diffFileMockData);
-    mockLine = getLine(mockFile, INLINE_DIFF_VIEW_TYPE, LINE_TO_USE);
+    mockLine = getLine(mockFile, INLINE_DIFF_VIEW_TYPE, 8);
     store = createStore();
     store.state.diffs.diffFiles = [mockFile];
     jest.spyOn(store, 'dispatch').mockReturnValue(Promise.resolve());
@@ -126,12 +125,12 @@ describe('DiffExpansionCell', () => {
 
   describe('any row', () => {
     [
-      { diffViewType: INLINE_DIFF_VIEW_TYPE, file: { parallel_diff_lines: [] } },
-      { diffViewType: PARALLEL_DIFF_VIEW_TYPE, file: { highlighted_diff_lines: [] } },
-    ].forEach(({ diffViewType, file }) => {
+      { diffViewType: INLINE_DIFF_VIEW_TYPE, lineIndex: 8, file: { parallel_diff_lines: [] } },
+      { diffViewType: PARALLEL_DIFF_VIEW_TYPE, lineIndex: 7, file: { highlighted_diff_lines: [] } },
+    ].forEach(({ diffViewType, file, lineIndex }) => {
       describe(`with diffViewType (${diffViewType})`, () => {
         beforeEach(() => {
-          mockLine = getLine(mockFile, diffViewType, LINE_TO_USE);
+          mockLine = getLine(mockFile, diffViewType, lineIndex);
           store.state.diffs.diffFiles = [{ ...mockFile, ...file }];
           store.state.diffs.diffViewType = diffViewType;
         });
@@ -189,10 +188,10 @@ describe('DiffExpansionCell', () => {
         });
 
         it('on expand down clicked, dispatch loadMoreLines', () => {
-          mockFile[lineSources[diffViewType]][LINE_TO_USE + 1] = cloneDeep(
-            mockFile[lineSources[diffViewType]][LINE_TO_USE],
+          mockFile[lineSources[diffViewType]][lineIndex + 1] = cloneDeep(
+            mockFile[lineSources[diffViewType]][lineIndex],
           );
-          const nextLine = getLine(mockFile, diffViewType, LINE_TO_USE + 1);
+          const nextLine = getLine(mockFile, diffViewType, lineIndex + 1);
 
           nextLine.meta_data.old_pos = 300;
           nextLine.meta_data.new_pos = 300;

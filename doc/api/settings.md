@@ -61,7 +61,6 @@ Example response:
    "enforce_terms": true,
    "terms": "Hello world!",
    "performance_bar_allowed_group_id": 42,
-   "instance_statistics_visibility_private": false,
    "user_show_add_ssh_key_message": true,
    "local_markdown_version": 0,
    "allow_local_requests_from_hooks_and_services": true,
@@ -151,7 +150,6 @@ Example response:
   "enforce_terms": true,
   "terms": "Hello world!",
   "performance_bar_allowed_group_id": 42,
-  "instance_statistics_visibility_private": false,
   "user_show_add_ssh_key_message": true,
   "file_template_project_id": 1,
   "local_markdown_version": 0,
@@ -285,7 +283,6 @@ are listed in the descriptions of the relevant settings.
 | `housekeeping_incremental_repack_period` | integer          | required by: `housekeeping_enabled`  | Number of Git pushes after which an incremental `git repack` is run. |
 | `html_emails_enabled`                    | boolean          | no                                   | Enable HTML emails. |
 | `import_sources`                         | array of strings | no                                   | Sources to allow project import from, possible values: `github`, `bitbucket`, `bitbucket_server`, `gitlab`, `google_code`, `fogbugz`, `git`, `gitlab_project`, `gitea`, `manifest`, and `phabricator`. |
-| `instance_statistics_visibility_private` | boolean          | no                                   | When set to `true` Instance statistics will only be available to admins. |
 | `issues_create_limit`                    | integer          | no                                   | Max number of issue creation requests per minute per user. Disabled by default.|
 | `local_markdown_version`                 | integer          | no                                   | Increase this value when any cached Markdown should be invalidated. |
 | `maintenance_mode_message`               | string           | no                                   | **(PREMIUM)** Message displayed when instance is in maintenance mode |

@@ -93,7 +93,7 @@ The following documentation relates to the DevOps **Manage** stage:
 |:--------------------------------------------------------------------------------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | [Authentication and<br/>Authorization](administration/auth/README.md) **(CORE ONLY)** | Supported authentication and authorization providers.                                                                                                                                                                        |
 | [GitLab Value Stream Analytics](user/project/cycle_analytics.md)                      | Measure the time it takes to go from an [idea to production](https://about.gitlab.com/blog/2016/08/05/continuous-integration-delivery-and-deployment-with-gitlab/#from-idea-to-production-with-gitlab) for each project you have. |
-| [Instance Statistics](user/instance_statistics/index.md)                              | Discover statistics on how many GitLab features you use and user activity.                                                                                                                                                   |
+| [Instance-level Anlytics](user/admin_area/analytics/index.md)                              | Discover statistics on how many GitLab features you use and user activity.                                                                                                                                                   |
 
 <div align="right">
   <a type="button" class="btn btn-default" href="#overview">

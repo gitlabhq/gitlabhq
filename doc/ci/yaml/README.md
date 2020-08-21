@@ -2188,14 +2188,14 @@ Downloading artifacts from jobs that are run in [`parallel:`](#parallel) is not 
 
 ### `tags`
 
-`tags` is used to select specific runners from the list of all runners that are
-allowed to run this project.
+Use `tags` to select a specific runner from the list of all runners that are
+available for the project.
 
-During the registration of a runner, you can specify the runner's tags, for
+When you register a runner, you can specify the runner's tags, for
 example `ruby`, `postgres`, `development`.
 
-`tags` allow you to run jobs with runners that have the specified tags
-assigned to them:
+In this example, the job is run by a runner that
+has both `ruby` AND `postgres` tags defined.
 
 ```yaml
 job:
@@ -2204,12 +2204,9 @@ job:
     - postgres
 ```
 
-The specification above, will make sure that `job` is built by a runner that
-has both `ruby` AND `postgres` tags defined.
-
-Tags are also a great way to run different jobs on different platforms, for
-example, given an OS X runner with tag `osx` and Windows runner with tag
-`windows`, the following jobs run on respective platforms:
+You can use tags to run different jobs on different platforms. For
+example, if you have an OS X runner with tag `osx` and a Windows runner with tag
+`windows`, you can run a job on each platform:
 
 ```yaml
 windows job:
@@ -2231,7 +2228,7 @@ osx job:
 
 ### `allow_failure`
 
-`allow_failure` allows a job to fail without impacting the rest of the CI
+Use `allow_failure` when you want to let a job fail without impacting the rest of the CI
 suite.
 The default value is `false`, except for [manual](#whenmanual) jobs using the
 `when: manual` syntax, unless using [`rules:`](#rules) syntax, where all jobs
@@ -2327,12 +2324,12 @@ cleanup_job:
   when: always
 ```
 
-The above script will:
+The above script:
 
-1. Execute `cleanup_build_job` only when `build_job` fails.
-1. Always execute `cleanup_job` as the last step in pipeline regardless of
+1. Executes `cleanup_build_job` only when `build_job` fails.
+1. Always executes `cleanup_job` as the last step in pipeline regardless of
    success or failure.
-1. Allow you to manually execute `deploy_job` from GitLab's UI.
+1. Executes `deploy_job` when you run it manually in the GitLab UI.
 
 #### `when:manual`
 
@@ -2770,10 +2767,10 @@ Since the cache is shared between jobs, if you're using different
 paths for different jobs, you should also set a different `cache:key`
 otherwise cache content can be overwritten.
 
-The `key` directive allows you to define the affinity of caching between jobs,
-allowing to have a single cache for all jobs, cache per-job, cache per-branch
+The `key` parameter defines the affinity of caching between jobs,
+to have a single cache for all jobs, cache per-job, cache per-branch
 or any other way that fits your workflow. This way, you can fine tune caching,
-allowing you to cache data between different jobs or even different branches.
+including caching data between different jobs or even different branches.
 
 The `cache:key` variable can use any of the
 [predefined variables](../variables/README.md). The default key, if not
@@ -2837,9 +2834,9 @@ use the new cache, instead of rebuilding the dependencies.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/18986) in GitLab v12.5.
 
-The `prefix` parameter adds extra functionality to `key:files` by allowing the key to
-be composed of the given `prefix` combined with the SHA computed for `cache:key:files`.
-For example, adding a `prefix` of `test`, will cause keys to look like: `test-feef9576d21ee9b6a32e30c5c79d0a0ceb68d1e5`.
+When you want to combine a prefix with the SHA computed for `cache:key:files`,
+use the `prefix` parameter with `key:files`.
+For example, if you add a `prefix` of `test`, the resulting key is: `test-feef9576d21ee9b6a32e30c5c79d0a0ceb68d1e5`.
 If neither file was changed in any commits, the prefix is added to `default`, so the
 key in the example would be `test-default`.
 
@@ -2899,8 +2896,8 @@ rspec:
 > Introduced in GitLab 9.4.
 
 The default behavior of a caching job is to download the files at the start of
-execution, and to re-upload them at the end. This allows any changes made by the
-job to be persisted for future runs, and is known as the `pull-push` cache
+execution, and to re-upload them at the end. Any changes made by the
+job are persisted for future runs. This behavior is known as the `pull-push` cache
 policy.
 
 If you know the job does not alter the cached files, you can skip the upload step
@@ -3227,8 +3224,10 @@ job:
 
 > Introduced in GitLab 8.9 and GitLab Runner v1.3.0.
 
-`expire_in` allows you to specify how long artifacts should live before they
-expire and are therefore deleted, counting from the time they are uploaded and
+Use `expire_in` to specify how long artifacts are active before they
+expire and are deleted.
+
+The expiration time period begins when the artifact is uploaded and
 stored on GitLab. If the expiry time is not defined, it defaults to the
 [instance wide setting](../../user/admin_area/settings/continuous_integration.md#default-artifacts-expiration-core-only)
 (30 days by default).
@@ -3367,7 +3366,7 @@ and bring back the old behavior.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/20428) in GitLab 8.17.
 
-`coverage` allows you to configure how code coverage will be extracted from the
+Use `coverage` to configure how code coverage is extracted from the
 job output.
 
 Regular expressions are the only valid kind of value expected here. So, using
@@ -3388,7 +3387,7 @@ job1:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/3442) in GitLab 9.5.
 > - [Behavior expanded](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/3515) in GitLab 11.5 to control which failures to retry on.
 
-`retry` allows you to configure how many times a job is going to be retried in
+Use `retry` to configure how many times a job is going to be retried in
 case of a failure.
 
 When a job fails and has `retry` configured, it's going to be processed again
@@ -3468,7 +3467,7 @@ You can specify the number of [retry attempts for certain stages of job executio
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/14887) in GitLab 12.3.
 
-`timeout` allows you to configure a timeout for a specific job. For example:
+Use `timeout` to configure a timeout for a specific job. For example:
 
 ```yaml
 build:
@@ -3488,7 +3487,7 @@ exceed the runner-specific timeout.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/21480) in GitLab 11.5.
 
-`parallel` allows you to configure how many instances of a job to run in
+Use `parallel` to configure how many instances of a job to run in
 parallel. This value has to be greater than or equal to two (2) and less than or equal to 50.
 
 This creates N instances of the same job that run in parallel. They are named
@@ -3537,7 +3536,7 @@ job split into three separate jobs.
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15356) in GitLab 13.3.
 
-`matrix:` allows you to configure different variables for jobs that are running in parallel.
+Use `matrix:` to configure different variables for jobs that are running in parallel.
 There can be from 2 to 50 jobs.
 
 Every job gets the same `CI_NODE_TOTAL` [environment variable](../variables/README.md#predefined-environment-variables) value, and a unique `CI_NODE_INDEX` value.
@@ -3580,11 +3579,10 @@ deploystacks 10/10 with PROVIDER=vultr and STACK=processing
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/8997) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.8.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/199224) to GitLab Core in 12.8.
 
-`trigger` allows you to define downstream pipeline trigger. When a job created
-from `trigger` definition is started by GitLab, a downstream pipeline gets
-created.
+Use `trigger` to define a downstream pipeline trigger. When GitLab starts a job created
+with a `trigger` definition, a downstream pipeline is created.
 
-This keyword allows the creation of two different types of downstream pipelines:
+You can use this keyword to create two different types of downstream pipelines:
 
 - [Multi-project pipelines](../multi_project_pipelines.md#creating-multi-project-pipelines-from-gitlab-ciyml)
 - [Child pipelines](../parent_child_pipelines.md)
@@ -4051,12 +4049,12 @@ NOTE: **Note:**
 Integers (as well as strings) are legal both for variable's name and value.
 Floats are not legal and can't be used.
 
-GitLab CI/CD allows you to define variables inside `.gitlab-ci.yml` that are
-then passed in the job environment. They can be set globally and per-job.
-When the `variables` keyword is used on a job level, it will override the global
+Variables are configurable values in `.gitlab-ci.yml` that are passed to jobs.
+They can be set globally and per-job.
+When you use the `variables` keyword in jobs, it overrides the global
 YAML variables and predefined ones of the same name.
 
-They are stored in the Git repository and are meant to store non-sensitive
+Variables are stored in the Git repository and are meant for non-sensitive
 project configuration, for example:
 
 ```yaml
@@ -4064,9 +4062,9 @@ variables:
   DATABASE_URL: "postgres://postgres@postgres/my_database"
 ```
 
-These variables can be later used in all executed commands and scripts.
+You can use these variables later in all executed commands and scripts.
 The YAML-defined variables are also set to all created service containers,
-thus allowing to fine tune them.
+so that you can fine tune them.
 
 Except for the user-defined variables, there are also variables [set up by the
 runner itself](../variables/README.md#predefined-environment-variables).
@@ -4406,7 +4404,7 @@ because `$CI_BUILDS_DIR` is not expanded.
 ## Special YAML features
 
 It's possible to use special YAML features like anchors (`&`), aliases (`*`)
-and map merging (`<<`), which allows you to greatly reduce the complexity
+and map merging (`<<`). Use these features to reduce the complexity
 of `.gitlab-ci.yml`.
 
 Read more about the various [YAML features](https://learnxinyminutes.com/docs/yaml/).

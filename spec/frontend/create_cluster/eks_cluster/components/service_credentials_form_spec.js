@@ -1,9 +1,7 @@
 import Vuex from 'vuex';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
-
+import { GlButton } from '@gitlab/ui';
 import ServiceCredentialsForm from '~/create_cluster/eks_cluster/components/service_credentials_form.vue';
-import LoadingButton from '~/vue_shared/components/loading_button.vue';
-
 import eksClusterState from '~/create_cluster/eks_cluster/store/state';
 
 const localVue = createLocalVue();
@@ -46,7 +44,7 @@ describe('ServiceCredentialsForm', () => {
   const findExternalIdInput = () => vm.find('#eks-external-id');
   const findCopyExternalIdButton = () => vm.find('.js-copy-external-id-button');
   const findInvalidCredentials = () => vm.find('.js-invalid-credentials');
-  const findSubmitButton = () => vm.find(LoadingButton);
+  const findSubmitButton = () => vm.find(GlButton);
 
   it('displays provided account id', () => {
     expect(findAccountIdInput().attributes('value')).toBe(accountId);
@@ -102,7 +100,7 @@ describe('ServiceCredentialsForm', () => {
     });
 
     it('displays Authenticating label on submit button', () => {
-      expect(findSubmitButton().props('label')).toBe('Authenticating');
+      expect(findSubmitButton().text()).toBe('Authenticating');
     });
   });
 

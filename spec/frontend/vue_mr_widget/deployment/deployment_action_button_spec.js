@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils';
-import { GlIcon, GlLoadingIcon, GlDeprecatedButton } from '@gitlab/ui';
+import { GlIcon, GlLoadingIcon, GlButton } from '@gitlab/ui';
 import DeploymentActionButton from '~/vue_merge_request_widget/components/deployment/deployment_action_button.vue';
 import {
   CREATED,
@@ -13,6 +13,7 @@ const baseProps = {
   actionsConfiguration: actionButtonMocks[DEPLOYING],
   actionInProgress: null,
   computedDeploymentStatus: CREATED,
+  icon: 'play',
 };
 
 describe('Deployment action button', () => {
@@ -28,18 +29,18 @@ describe('Deployment action button', () => {
     wrapper.destroy();
   });
 
-  describe('when passed only icon', () => {
+  describe('when passed only icon via props', () => {
     beforeEach(() => {
       factory({
         propsData: baseProps,
-        slots: { default: ['<gl-icon name="stop" />'] },
+        slots: {},
         stubs: {
           'gl-icon': GlIcon,
         },
       });
     });
 
-    it('renders slot correctly', () => {
+    it('renders prop icon correctly', () => {
       expect(wrapper.find(GlIcon).exists()).toBe(true);
     });
   });
@@ -49,7 +50,7 @@ describe('Deployment action button', () => {
       factory({
         propsData: baseProps,
         slots: {
-          default: ['<gl-icon name="play" />', `<span>${actionButtonMocks[DEPLOYING]}</span>`],
+          default: [`<span>${actionButtonMocks[DEPLOYING]}</span>`],
         },
         stubs: {
           'gl-icon': GlIcon,
@@ -57,7 +58,7 @@ describe('Deployment action button', () => {
       });
     });
 
-    it('renders slot correctly', () => {
+    it('renders slot and icon prop correctly', () => {
       expect(wrapper.find(GlIcon).exists()).toBe(true);
       expect(wrapper.text()).toContain(actionButtonMocks[DEPLOYING]);
     });
@@ -75,7 +76,7 @@ describe('Deployment action button', () => {
 
     it('is disabled and shows the loading icon', () => {
       expect(wrapper.find(GlLoadingIcon).exists()).toBe(true);
-      expect(wrapper.find(GlDeprecatedButton).props('disabled')).toBe(true);
+      expect(wrapper.find(GlButton).props('disabled')).toBe(true);
     });
   });
 
@@ -90,7 +91,7 @@ describe('Deployment action button', () => {
     });
     it('is disabled and does not show the loading icon', () => {
       expect(wrapper.find(GlLoadingIcon).exists()).toBe(false);
-      expect(wrapper.find(GlDeprecatedButton).props('disabled')).toBe(true);
+      expect(wrapper.find(GlButton).props('disabled')).toBe(true);
     });
   });
 
@@ -106,7 +107,7 @@ describe('Deployment action button', () => {
     });
     it('is disabled and does not show the loading icon', () => {
       expect(wrapper.find(GlLoadingIcon).exists()).toBe(false);
-      expect(wrapper.find(GlDeprecatedButton).props('disabled')).toBe(true);
+      expect(wrapper.find(GlButton).props('disabled')).toBe(true);
     });
   });
 
@@ -118,7 +119,7 @@ describe('Deployment action button', () => {
     });
     it('is not disabled nor does it show the loading icon', () => {
       expect(wrapper.find(GlLoadingIcon).exists()).toBe(false);
-      expect(wrapper.find(GlDeprecatedButton).props('disabled')).toBe(false);
+      expect(wrapper.find(GlButton).props('disabled')).toBe(false);
     });
   });
 });

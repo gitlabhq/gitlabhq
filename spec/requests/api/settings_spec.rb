@@ -31,7 +31,6 @@ RSpec.describe API::Settings, 'Settings' do
       expect(json_response['ecdsa_key_restriction']).to eq(0)
       expect(json_response['ed25519_key_restriction']).to eq(0)
       expect(json_response['performance_bar_allowed_group_id']).to be_nil
-      expect(json_response['instance_statistics_visibility_private']).to be(false)
       expect(json_response['allow_local_requests_from_hooks_and_services']).to be(false)
       expect(json_response['allow_local_requests_from_web_hooks_and_services']).to be(false)
       expect(json_response['allow_local_requests_from_system_hooks']).to be(true)
@@ -104,7 +103,6 @@ RSpec.describe API::Settings, 'Settings' do
             enforce_terms: true,
             terms: 'Hello world!',
             performance_bar_allowed_group_path: group.full_path,
-            instance_statistics_visibility_private: true,
             diff_max_patch_bytes: 150_000,
             default_branch_protection: ::Gitlab::Access::PROTECTION_DEV_CAN_MERGE,
             local_markdown_version: 3,
@@ -146,7 +144,6 @@ RSpec.describe API::Settings, 'Settings' do
         expect(json_response['enforce_terms']).to be(true)
         expect(json_response['terms']).to eq('Hello world!')
         expect(json_response['performance_bar_allowed_group_id']).to eq(group.id)
-        expect(json_response['instance_statistics_visibility_private']).to be(true)
         expect(json_response['diff_max_patch_bytes']).to eq(150_000)
         expect(json_response['default_branch_protection']).to eq(Gitlab::Access::PROTECTION_DEV_CAN_MERGE)
         expect(json_response['local_markdown_version']).to eq(3)

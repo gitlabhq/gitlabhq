@@ -64,6 +64,26 @@ Use [Factory Doctor](https://test-prof.evilmartians.io/#/profilers/factory_docto
 FDOC=1 bin/rspec spec/[path]/[to]/[spec].rb
 ```
 
+[Factory Profiler](https://test-prof.evilmartians.io/#/profilers/factory_prof) can help to identify unnecessary factory creation.
+
+```shell
+# run test for path
+FPROF=1 bin/rspec spec/[path]/[to]/[spec].rb
+
+# to visualize with a flamegraph
+FPROF=flamegraph bin/rspec spec/[path]/[to]/[spec].rb
+```
+
+A common change is to use [`let_it_be`](#common-test-setup).
+
+```ruby
+  # Old
+  let(:project) { create(:project) }
+
+  # New
+  let_it_be(:project) { create(:project) }
+```
+
 ### General guidelines
 
 - Use a single, top-level `RSpec.describe ClassName` block.

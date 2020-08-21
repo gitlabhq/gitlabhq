@@ -2,7 +2,7 @@
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/23361) in GitLab 9.1.
 
-As a benefit of having the [usage ping active](../admin_area/settings/usage_statistics.md),
+As a benefit of having the [usage ping active](../settings/usage_statistics.md),
 GitLab lets you analyze the users' activities over time of your GitLab installation.
 
 ## Overview
@@ -12,10 +12,10 @@ user cohorts.
 
 ![User cohort example](img/cohorts.png)
 
-For the cohort of Jan 2018, 15 users have been added on this server and have
-been active since this month. One month later, in Feb 2018, all 15 users are
-still active. 6 months later (Month 6, July), we can see 10 users from this cohort
-are active, or 66% of the original cohort of 15 that joined in January.
+For the cohort of March 2020, three users have been added on this server and have
+been active since this month. One month later, in April 2020, two users are
+still active. Five months later (August), we can see that one user from this cohort
+is active, or 33% of the original cohort of three that joined in March.
 
 The Inactive users column shows the number of users who have been added during
 the month, but who have never actually had any activity in the instance.

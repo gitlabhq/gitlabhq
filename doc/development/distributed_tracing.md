@@ -6,6 +6,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Distributed Tracing - development guidelines
 
+NOTE: **Note:**
+Distributed Tracing in GitLab is currently considered **experimental**, as it has not yet been tested at scale on GitLab.com.
+
 GitLab is instrumented for distributed tracing.
 
 According to [Open Tracing](https://opentracing.io/docs/overview/what-is-tracing/):

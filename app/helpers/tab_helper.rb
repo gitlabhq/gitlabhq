@@ -127,5 +127,3 @@ module TabHelper
     end
   end
 end
-
-TabHelper.prepend_if_ee('EE::TabHelper')
