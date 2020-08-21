@@ -1,5 +1,0 @@
----
-title: "Allow OAuth to auto link LDAP users via email address"
-merge_request: 33767
-author: Niko Wenselowski
-type: changed

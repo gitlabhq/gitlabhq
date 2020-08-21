@@ -1,5 +1,0 @@
----
-title: Add total_weight and issues_count fields to the board list graphQL endpoint
-merge_request: 39110
-author:
-type: added

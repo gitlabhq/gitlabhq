@@ -1,5 +1,0 @@
----
-title: Add concurrency support for Git repository backups
-merge_request: 37158
-author:
-type: changed

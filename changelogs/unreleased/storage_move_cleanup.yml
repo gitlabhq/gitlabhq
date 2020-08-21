@@ -1,5 +1,0 @@
----
-title: Remove repositories from previous storage when storage move succeeds
-merge_request: 38547
-author:
-type: changed

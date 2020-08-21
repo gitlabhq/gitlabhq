@@ -1,5 +1,0 @@
----
-title: Allow user to simulate pipeline creation via CI Lint and go beyond syntax checks
-merge_request: 37828
-author:
-type: added

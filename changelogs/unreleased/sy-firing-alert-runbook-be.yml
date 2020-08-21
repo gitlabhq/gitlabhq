@@ -1,5 +1,0 @@
----
-title: Expose runbook field in alert_management_alert GraphQL API
-merge_request: 38510
-author:
-type: added

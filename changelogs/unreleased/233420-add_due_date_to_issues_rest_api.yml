@@ -1,5 +1,0 @@
----
-title: Add due_date filter param to Issues REST API
-merge_request: 38973
-author:
-type: added

@@ -1,5 +1,0 @@
----
-title: Fix CI job artifacts metadata not extracting on some S3 providers
-merge_request: 39345
-author:
-type: fixed

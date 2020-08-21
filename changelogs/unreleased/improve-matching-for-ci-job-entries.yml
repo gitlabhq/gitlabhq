@@ -1,5 +1,0 @@
----
-title: Show relevant error messages when failing to match a CI job entry
-merge_request: 36536
-author:
-type: fixed

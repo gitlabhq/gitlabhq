@@ -1,5 +1,0 @@
----
-title: Migrate '.fa-spinner' to `gl-loading-icon` within shared boards haml
-merge_request: 36436
-author:
-type: changed

@@ -1,6 +1,0 @@
----
-title: Disable commenting on lines in files that were or are symlinks or replace or
-  are replaced by symlinks
-merge_request: 35371
-author:
-type: fixed

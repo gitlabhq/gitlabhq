@@ -1,5 +1,0 @@
----
-title: Fix failing bitbucket server import when project slug differs from name
-merge_request: 39433
-author:
-type: fixed

@@ -1,5 +1,0 @@
----
-title: Fix bug when promoting an Issue with attachments to an Epic
-merge_request: 39654
-author:
-type: fixed

@@ -1,5 +1,0 @@
----
-title: Allow multiline Prometheus queries in metrics dashboards yaml
-merge_request: 34508
-author:
-type: changed

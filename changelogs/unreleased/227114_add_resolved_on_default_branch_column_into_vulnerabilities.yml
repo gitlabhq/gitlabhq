@@ -1,5 +1,0 @@
----
-title: Add `resolved_on_default_branch` column into `vulnerabilities` table
-merge_request: 38638
-author:
-type: added

@@ -1,5 +1,0 @@
----
-title: Add a cache column for the number of changed files in a merge request diff
-merge_request: 38936
-author:
-type: changed
