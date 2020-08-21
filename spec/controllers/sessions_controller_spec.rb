@@ -130,8 +130,8 @@ RSpec.describe SessionsController do
         end
 
         it 'creates an audit log record' do
-          expect { post(:create, params: { user: user_params }) }.to change { SecurityEvent.count }.by(1)
-          expect(SecurityEvent.last.details[:with]).to eq('standard')
+          expect { post(:create, params: { user: user_params }) }.to change { AuditEvent.count }.by(1)
+          expect(AuditEvent.last.details[:with]).to eq('standard')
         end
 
         include_examples 'user login request with unique ip limit', 302 do
@@ -396,8 +396,8 @@ RSpec.describe SessionsController do
       end
 
       it "creates an audit log record" do
-        expect { authenticate_2fa(login: user.username, otp_attempt: user.current_otp) }.to change { SecurityEvent.count }.by(1)
-        expect(SecurityEvent.last.details[:with]).to eq("two-factor")
+        expect { authenticate_2fa(login: user.username, otp_attempt: user.current_otp) }.to change { AuditEvent.count }.by(1)
+        expect(AuditEvent.last.details[:with]).to eq("two-factor")
       end
     end
 
@@ -433,8 +433,8 @@ RSpec.describe SessionsController do
 
       it "creates an audit log record" do
         allow(U2fRegistration).to receive(:authenticate).and_return(true)
-        expect { authenticate_2fa_u2f(login: user.username, device_response: "{}") }.to change { SecurityEvent.count }.by(1)
-        expect(SecurityEvent.last.details[:with]).to eq("two-factor-via-u2f-device")
+        expect { authenticate_2fa_u2f(login: user.username, device_response: "{}") }.to change { AuditEvent.count }.by(1)
+        expect(AuditEvent.last.details[:with]).to eq("two-factor-via-u2f-device")
       end
     end
   end

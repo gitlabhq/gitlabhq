@@ -37,7 +37,7 @@ class AuditEventService
 
   # Writes event to a file and creates an event record in DB
   #
-  # @return [SecurityEvent] persited if saves and non-persisted if fails
+  # @return [AuditEvent] persited if saves and non-persisted if fails
   def security_event
     log_security_event_to_file
     log_security_event_to_database
@@ -81,7 +81,7 @@ class AuditEventService
   def log_security_event_to_database
     return if Gitlab::Database.read_only?
 
-    SecurityEvent.create(base_payload.merge(details: @details))
+    AuditEvent.create(base_payload.merge(details: @details))
   end
 end
 

@@ -631,12 +631,6 @@ module API
               name: :issues_url,
               type: String,
               desc: 'The issues URL'
-            },
-            {
-              required: false,
-              name: :description,
-              type: String,
-              desc: 'The description of the tracker'
             }
           ],
           'youtrack' => [
@@ -651,12 +645,6 @@ module API
               name: :issues_url,
               type: String,
               desc: 'The issues URL'
-            },
-            {
-              required: false,
-              name: :description,
-              type: String,
-              desc: 'The description of the tracker'
             }
           ],
           'slack' => [

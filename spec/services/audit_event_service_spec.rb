@@ -22,7 +22,7 @@ RSpec.describe AuditEventService do
                                             entity_type: "Project",
                                             action: :destroy)
 
-      expect { service.security_event }.to change(SecurityEvent, :count).by(1)
+      expect { service.security_event }.to change(AuditEvent, :count).by(1)
     end
 
     it 'formats from and to fields' do
@@ -44,9 +44,9 @@ RSpec.describe AuditEventService do
                                             action: :create,
                                             target_id: 1)
 
-      expect { service.security_event }.to change(SecurityEvent, :count).by(1)
+      expect { service.security_event }.to change(AuditEvent, :count).by(1)
 
-      details = SecurityEvent.last.details
+      details = AuditEvent.last.details
       expect(details[:from]).to be true
       expect(details[:to]).to be false
       expect(details[:action]).to eq(:create)

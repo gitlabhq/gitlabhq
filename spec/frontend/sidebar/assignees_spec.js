@@ -1,5 +1,6 @@
 import { mount } from '@vue/test-utils';
 import { trimText } from 'helpers/text_helper';
+import { GlIcon } from '@gitlab/ui';
 import Assignee from '~/sidebar/components/assignees/assignees.vue';
 import UsersMock from './mock_data';
 import UsersMockHelper from '../helpers/user_mock_data_helper';
@@ -29,10 +30,12 @@ describe('Assignee component', () => {
     it('displays no assignee icon when collapsed', () => {
       createWrapper();
       const collapsedChildren = findCollapsedChildren();
+      const userIcon = collapsedChildren.at(0).find(GlIcon);
 
       expect(collapsedChildren.length).toBe(1);
       expect(collapsedChildren.at(0).attributes('aria-label')).toBe('None');
-      expect(collapsedChildren.at(0).classes()).toContain('fa', 'fa-user');
+      expect(userIcon.exists()).toBe(true);
+      expect(userIcon.props('name')).toBe('user');
     });
 
     it('displays only "None" when no users are assigned and the issue is read-only', () => {

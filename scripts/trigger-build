@@ -321,8 +321,6 @@ module Trigger
     INTERVAL = 60 # seconds
     MAX_DURATION = 3600 * 3 # 3 hours
 
-    attr_reader :project, :id
-
     def self.unscoped_class_name
       name.split('::').last
     end
@@ -334,13 +332,11 @@ module Trigger
     def initialize(project, id)
       @project = project
       @id = id
-      @start = Time.now.to_i
+      @start_time = Time.now.to_i
     end
 
     def wait!
-      loop do
-        raise "#{self.class.unscoped_class_name} timed out after waiting for #{duration} minutes!" if timeout?
-
+      (MAX_DURATION / INTERVAL).times do
         case status
         when :created, :pending, :running
           print "."
@@ -354,14 +350,12 @@ module Trigger
 
         STDOUT.flush
       end
-    end
 
-    def timeout?
-      Time.now.to_i > (@start + MAX_DURATION)
+      raise "#{self.class.unscoped_class_name} timed out after waiting for #{duration} minutes!"
     end
 
     def duration
-      (Time.now.to_i - @start) / 60
+      (Time.now.to_i - start_time) / 60
     end
 
     def status
@@ -372,6 +366,10 @@ module Trigger
       # timeout anyway.
       :running
     end
+
+    private
+
+    attr_reader :project, :id, :start_time
   end
 
   Job = Class.new(Pipeline)

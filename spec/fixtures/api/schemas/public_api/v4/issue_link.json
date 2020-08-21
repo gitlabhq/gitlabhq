@@ -1,0 +1,20 @@
+{
+  "type": "object",
+  "properties" : {
+     "source_issue": {
+       "allOf": [
+          { "$ref": "../../../../../../spec/fixtures/api/schemas/public_api/v4/issue.json" }
+        ]
+     },
+     "target_issue": {
+       "allOf": [
+          { "$ref": "../../../../../../spec/fixtures/api/schemas/public_api/v4/issue.json" }
+        ]
+     },
+     "link_type": {
+       "type": "string",
+       "enum": ["relates_to", "blocks", "is_blocked_by"]
+     }
+  },
+  "required" : [ "source_issue", "target_issue", "link_type" ]
+}

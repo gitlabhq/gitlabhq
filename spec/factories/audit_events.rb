@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  factory :audit_event, class: 'SecurityEvent', aliases: [:user_audit_event] do
+  factory :audit_event, class: 'AuditEvent', aliases: [:user_audit_event] do
     user
 
     transient { target_user { create(:user) } }

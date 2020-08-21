@@ -5,7 +5,7 @@ module Clusters
     class Prometheus < ApplicationRecord
       include PrometheusAdapter
 
-      VERSION = '9.5.2'
+      VERSION = '10.4.1'
 
       self.table_name = 'clusters_applications_prometheus'
 

@@ -71,6 +71,7 @@ export default {
         :href="artifact.browse_path"
         class="btn btn-sm btn-default"
         data-testid="browse-artifacts"
+        data-qa-selector="browse_artifacts_button"
         >{{ s__('Job|Browse') }}</gl-link
       >
     </div>

@@ -763,6 +763,62 @@ RSpec.describe Projects::PipelinesController do
     end
   end
 
+  describe 'POST create.json' do
+    let(:project) { create(:project, :public, :repository) }
+
+    subject do
+      post :create, params: {
+                      namespace_id: project.namespace,
+                      project_id: project,
+                      pipeline: { ref: 'master' }
+                    },
+                    format: :json
+    end
+
+    before do
+      project.add_developer(user)
+      project.project_feature.update(builds_access_level: feature)
+    end
+
+    context 'with a valid .gitlab-ci.yml file' do
+      before do
+        stub_ci_pipeline_yaml_file(YAML.dump({
+          test: {
+            stage: 'test',
+            script: 'echo'
+          }
+        }))
+      end
+
+      it 'creates a pipeline' do
+        expect { subject }.to change { project.ci_pipelines.count }.by(1)
+
+        expect(response).to have_gitlab_http_status(:created)
+        expect(json_response['id']).to eq(project.ci_pipelines.last.id)
+      end
+    end
+
+    context 'with an invalid .gitlab-ci.yml file' do
+      before do
+        stub_ci_pipeline_yaml_file(YAML.dump({
+          test: {
+            stage: 'invalid',
+            script: 'echo'
+          }
+        }))
+      end
+
+      it 'does not create a pipeline' do
+        expect { subject }.not_to change { project.ci_pipelines.count }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['base']).to include(
+          'test job: chosen stage does not exist; available stages are .pre, build, test, deploy, .post'
+        )
+      end
+    end
+  end
+
   describe 'POST retry.json' do
     let!(:pipeline) { create(:ci_pipeline, :failed, project: project) }
     let!(:build) { create(:ci_build, :failed, pipeline: pipeline) }

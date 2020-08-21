@@ -9,6 +9,12 @@ module Gitlab
 
       subject { described_class.new(config, user: nil) }
 
+      shared_examples 'returns errors' do |error_message|
+        it 'raises exception when error encountered' do
+          expect { subject }.to raise_error(described_class::ValidationError, error_message)
+        end
+      end
+
       describe '#build_attributes' do
         subject { described_class.new(config, user: nil).build_attributes(:rspec) }
 
@@ -345,9 +351,7 @@ module Gitlab
             EOYML
           end
 
-          it 'parses the workflow:rules configuration' do
-            expect { subject }.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError, 'workflow config contains unknown keys: variables')
-          end
+          it_behaves_like 'returns errors', 'workflow config contains unknown keys: variables'
         end
 
         context 'with rules and variables' do
@@ -471,11 +475,11 @@ module Gitlab
 
           it 'is propagated all the way up into the raised exception' do
             expect { subject }.to raise_error do |error|
-              expect(error).to be_a(described_class::ValidationError)
-              expect(error.message).to eq('jobs:invalid:artifacts config should be a hash')
               expect(error.warnings).to contain_exactly(/jobs:rspec may allow multiple pipelines to run/)
             end
           end
+
+          it_behaves_like 'returns errors', 'jobs:invalid:artifacts config should be a hash'
         end
 
         context 'when error is raised before composing the config' do
@@ -491,11 +495,11 @@ module Gitlab
 
           it 'raises an exception with empty warnings array' do
             expect { subject }.to raise_error do |error|
-              expect(error).to be_a(described_class::ValidationError)
-              expect(error.message).to eq('Local file `unknown/file.yml` does not have project!')
               expect(error.warnings).to be_empty
             end
           end
+
+          it_behaves_like 'returns errors', 'Local file `unknown/file.yml` does not have project!'
         end
 
         context 'when error is raised after composing the config with warnings' do
@@ -585,65 +589,49 @@ module Gitlab
       describe 'only / except policies validations' do
         context 'when `only` has an invalid value' do
           let(:config) { { rspec: { script: "rspec", type: "test", only: only } } }
-          let(:processor) { Gitlab::Ci::YamlProcessor.new(YAML.dump(config)) }
+
+          subject { Gitlab::Ci::YamlProcessor.new(YAML.dump(config)) }
 
           context 'when it is integer' do
             let(:only) { 1 }
 
-            it do
-              expect { processor }.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError,
-                                                  'jobs:rspec:only has to be either an array of conditions or a hash')
-            end
+            it_behaves_like 'returns errors', 'jobs:rspec:only has to be either an array of conditions or a hash'
           end
 
           context 'when it is an array of integers' do
             let(:only) { [1, 1] }
 
-            it do
-              expect { processor }.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError,
-                                                  'jobs:rspec:only config should be an array of strings or regexps')
-            end
+            it_behaves_like 'returns errors', 'jobs:rspec:only config should be an array of strings or regexps'
           end
 
           context 'when it is invalid regex' do
             let(:only) { ["/*invalid/"] }
 
-            it do
-              expect { processor }.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError,
-                                                  'jobs:rspec:only config should be an array of strings or regexps')
-            end
+            it_behaves_like 'returns errors', 'jobs:rspec:only config should be an array of strings or regexps'
           end
         end
 
         context 'when `except` has an invalid value' do
           let(:config) { { rspec: { script: "rspec", except: except } } }
-          let(:processor) { Gitlab::Ci::YamlProcessor.new(YAML.dump(config)) }
+
+          subject { Gitlab::Ci::YamlProcessor.new(YAML.dump(config)) }
 
           context 'when it is integer' do
             let(:except) { 1 }
 
-            it do
-              expect { processor }.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError,
-                                                  'jobs:rspec:except has to be either an array of conditions or a hash')
-            end
+            it_behaves_like 'returns errors', 'jobs:rspec:except has to be either an array of conditions or a hash'
           end
 
           context 'when it is an array of integers' do
             let(:except) { [1, 1] }
 
-            it do
-              expect { processor }.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError,
-                                                  'jobs:rspec:except config should be an array of strings or regexps')
-            end
+            it_behaves_like 'returns errors', 'jobs:rspec:except config should be an array of strings or regexps'
           end
 
           context 'when it is invalid regex' do
             let(:except) { ["/*invalid/"] }
 
-            it do
-              expect { processor }.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError,
-                                                  'jobs:rspec:except config should be an array of strings or regexps')
-            end
+            it_behaves_like 'returns errors', 'jobs:rspec:except config should be an array of strings or regexps'
           end
         end
       end
@@ -1040,11 +1028,7 @@ module Gitlab
                 %w(VAR1 value1 VAR2 value2)
               end
 
-              it 'raises error' do
-                expect { subject }
-                  .to raise_error(Gitlab::Ci::YamlProcessor::ValidationError,
-                                   /jobs:rspec:variables config should be a hash of key value pairs/)
-              end
+              it_behaves_like 'returns errors', /jobs:rspec:variables config should be a hash of key value pairs/
             end
 
             context 'when variables key defined but value not specified' do
@@ -1156,17 +1140,13 @@ module Gitlab
           context "when an array is provided" do
             let(:include_content) { ["/local.gitlab-ci.yml"] }
 
-            it "returns a validation error" do
-              expect { subject }.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError, /does not have project/)
-            end
+            it_behaves_like 'returns errors', /does not have project/
           end
 
           context "when an array of wrong keyed object is provided" do
             let(:include_content) { [{ yolo: "/local.gitlab-ci.yml" }] }
 
-            it "returns a validation error" do
-              expect { subject }.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError)
-            end
+            it_behaves_like 'returns errors', /needs to match exactly one accessor/
           end
 
           context "when an array of mixed typed objects is provided" do
@@ -1193,9 +1173,7 @@ module Gitlab
           context "when the include type is incorrect" do
             let(:include_content) { { name: "/local.gitlab-ci.yml" } }
 
-            it "returns an invalid configuration error" do
-              expect { subject }.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError)
-            end
+            it_behaves_like 'returns errors', /needs to match exactly one accessor/
           end
         end
 
@@ -1216,12 +1194,7 @@ module Gitlab
           end
 
           context "when the included internal file is not present" do
-            it "returns an error with missing file details" do
-              expect { subject }.to raise_error(
-                Gitlab::Ci::YamlProcessor::ValidationError,
-                "Local file `#{include_content}` does not exist!"
-              )
-            end
+            it_behaves_like 'returns errors', "Local file `/local.gitlab-ci.yml` does not exist!"
           end
         end
       end
@@ -1243,13 +1216,14 @@ module Gitlab
 
         context 'delayed' do
           context 'with start_in' do
-            it 'creates one build and sets when:' do
-              config = YAML.dump({
+            let(:config) do
+              YAML.dump({
                 rspec: { script: 'rspec', when: 'delayed', start_in: '1 hour' }
               })
+            end
 
-              config_processor = Gitlab::Ci::YamlProcessor.new(config)
-              builds = config_processor.stage_builds_attributes("test")
+            it 'creates one build and sets when:' do
+              builds = subject.stage_builds_attributes("test")
 
               expect(builds.size).to eq(1)
               expect(builds.first[:when]).to eq('delayed')
@@ -1258,15 +1232,13 @@ module Gitlab
           end
 
           context 'without start_in' do
-            it 'raises an error' do
-              config = YAML.dump({
+            let(:config) do
+              YAML.dump({
                 rspec: { script: 'rspec', when: 'delayed' }
               })
-
-              expect do
-                Gitlab::Ci::YamlProcessor.new(config)
-              end.to raise_error(YamlProcessor::ValidationError, /start in should be a duration/)
             end
+
+            it_behaves_like 'returns errors', /start in should be a duration/
           end
         end
       end
@@ -1377,16 +1349,13 @@ module Gitlab
 
       describe 'cache' do
         context 'when cache definition has unknown keys' do
-          it 'raises relevant validation error' do
-            config = YAML.dump(
+          let(:config) do
+            YAML.dump(
               { cache: { untracked: true, invalid: 'key' },
                 rspec: { script: 'rspec' } })
-
-            expect { Gitlab::Ci::YamlProcessor.new(config) }.to raise_error(
-              Gitlab::Ci::YamlProcessor::ValidationError,
-              'cache config contains unknown keys: invalid'
-            )
           end
+
+          it_behaves_like 'returns errors', 'cache config contains unknown keys: invalid'
         end
 
         it "returns cache when defined globally" do
@@ -1594,17 +1563,19 @@ module Gitlab
           end
         end
 
-        it "gracefully handles errors in artifacts type" do
-          config = <<~YAML
-          test:
-            script:
-              - echo "Hello world"
-            artifacts:
-              - paths:
-              - test/
-          YAML
+        context 'when artifacts syntax is wrong' do
+          let(:config) do
+            <<~YAML
+            test:
+              script:
+                - echo "Hello world"
+              artifacts:
+                - paths:
+                - test/
+            YAML
+          end
 
-          expect { described_class.new(config) }.to raise_error(described_class::ValidationError)
+          it_behaves_like 'returns errors', 'jobs:test:artifacts config should be a hash'
         end
 
         it 'populates a build options with complete artifacts configuration' do
@@ -1672,8 +1643,9 @@ module Gitlab
           }
         end
 
-        let(:processor) { Gitlab::Ci::YamlProcessor.new(YAML.dump(config)) }
-        let(:builds) { processor.stage_builds_attributes('deploy') }
+        subject { Gitlab::Ci::YamlProcessor.new(YAML.dump(config)) }
+
+        let(:builds) { subject.stage_builds_attributes('deploy') }
 
         context 'when a production environment is specified' do
           let(:environment) { 'production' }
@@ -1723,18 +1695,13 @@ module Gitlab
         context 'is not a string' do
           let(:environment) { 1 }
 
-          it 'raises error' do
-            expect { builds }.to raise_error(
-              'jobs:deploy_to_production:environment config should be a hash or a string')
-          end
+          it_behaves_like 'returns errors', 'jobs:deploy_to_production:environment config should be a hash or a string'
         end
 
         context 'is not a valid string' do
           let(:environment) { 'production:staging' }
 
-          it 'raises error' do
-            expect { builds }.to raise_error("jobs:deploy_to_production:environment name #{Gitlab::Regex.environment_name_regex_message}")
-          end
+          it_behaves_like 'returns errors', "jobs:deploy_to_production:environment name #{Gitlab::Regex.environment_name_regex_message}"
         end
 
         context 'when on_stop is specified' do
@@ -1753,33 +1720,25 @@ module Gitlab
           context 'without matching job' do
             let(:close_review) { nil }
 
-            it 'raises error' do
-              expect { builds }.to raise_error('review job: on_stop job close_review is not defined')
-            end
+            it_behaves_like 'returns errors', 'review job: on_stop job close_review is not defined'
           end
 
           context 'with close job without environment' do
             let(:close_review) { { stage: 'deploy', script: 'test' } }
 
-            it 'raises error' do
-              expect { builds }.to raise_error('review job: on_stop job close_review does not have environment defined')
-            end
+            it_behaves_like 'returns errors', 'review job: on_stop job close_review does not have environment defined'
           end
 
           context 'with close job for different environment' do
             let(:close_review) { { stage: 'deploy', script: 'test', environment: 'production' } }
 
-            it 'raises error' do
-              expect { builds }.to raise_error('review job: on_stop job close_review have different environment name')
-            end
+            it_behaves_like 'returns errors', 'review job: on_stop job close_review have different environment name'
           end
 
           context 'with close job without stop action' do
             let(:close_review) { { stage: 'deploy', script: 'test', environment: { name: 'review' } } }
 
-            it 'raises error' do
-              expect { builds }.to raise_error('review job: on_stop job close_review needs to have action stop defined')
-            end
+            it_behaves_like 'returns errors', 'review job: on_stop job close_review needs to have action stop defined'
           end
         end
       end
@@ -1794,8 +1753,9 @@ module Gitlab
           }
         end
 
-        let(:processor) { Gitlab::Ci::YamlProcessor.new(YAML.dump(config)) }
-        let(:builds) { processor.stage_builds_attributes('deploy') }
+        subject { Gitlab::Ci::YamlProcessor.new(YAML.dump(config)) }
+
+        let(:builds) { subject.stage_builds_attributes('deploy') }
 
         context 'when no timeout was provided' do
           it 'does not include job_timeout' do
@@ -1809,9 +1769,7 @@ module Gitlab
             config[:deploy_to_production][:timeout] = 'not-a-number'
           end
 
-          it 'raises an error for invalid number' do
-            expect { builds }.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError, 'jobs:deploy_to_production:timeout config should be a duration')
-          end
+          it_behaves_like 'returns errors', 'jobs:deploy_to_production:timeout config should be a duration'
         end
 
         context 'when some valid timeout was provided' do
@@ -1860,13 +1818,13 @@ module Gitlab
         context 'undefined dependency' do
           let(:dependencies) { ['undefined'] }
 
-          it { expect { subject }.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError, 'test1 job: undefined dependency: undefined') }
+          it_behaves_like 'returns errors', 'test1 job: undefined dependency: undefined'
         end
 
         context 'dependencies to deploy' do
           let(:dependencies) { ['deploy'] }
 
-          it { expect { subject }.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError, 'test1 job: dependency deploy is not defined in prior stages') }
+          it_behaves_like 'returns errors', 'test1 job: dependency deploy is not defined in prior stages'
         end
 
         context 'when a job depends on another job that references a not-yet defined stage' do
@@ -1891,7 +1849,7 @@ module Gitlab
             }
           end
 
-          it { expect { subject }.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError, /is not defined in prior stages/) }
+          it_behaves_like 'returns errors', /is not defined in prior stages/
         end
       end
 
@@ -2053,20 +2011,20 @@ module Gitlab
         context 'undefined need' do
           let(:needs) { ['undefined'] }
 
-          it { expect { subject }.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError, 'test1 job: undefined need: undefined') }
+          it_behaves_like 'returns errors', 'test1 job: undefined need: undefined'
         end
 
         context 'needs to deploy' do
           let(:needs) { ['deploy'] }
 
-          it { expect { subject }.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError, 'test1 job: need deploy is not defined in prior stages') }
+          it_behaves_like 'returns errors', 'test1 job: need deploy is not defined in prior stages'
         end
 
         context 'needs and dependencies that are mismatching' do
           let(:needs) { %w(build1) }
           let(:dependencies) { %w(build2) }
 
-          it { expect { subject }.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError, 'jobs:test1 dependencies the build2 should be part of needs') }
+          it_behaves_like 'returns errors', 'jobs:test1 dependencies the build2 should be part of needs'
         end
 
         context 'needs with a Hash type and dependencies with a string type that are mismatching' do
@@ -2079,28 +2037,28 @@ module Gitlab
 
           let(:dependencies) { %w(build3) }
 
-          it { expect { subject }.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError, 'jobs:test1 dependencies the build3 should be part of needs') }
+          it_behaves_like 'returns errors', 'jobs:test1 dependencies the build3 should be part of needs'
         end
 
         context 'needs with an array type and dependency with a string type' do
           let(:needs) { %w(build1) }
           let(:dependencies) { 'deploy' }
 
-          it { expect { subject }.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError, 'jobs:test1 dependencies should be an array of strings') }
+          it_behaves_like 'returns errors', 'jobs:test1 dependencies should be an array of strings'
         end
 
         context 'needs with a string type and dependency with an array type' do
           let(:needs) { 'build1' }
           let(:dependencies) { %w(deploy) }
 
-          it { expect { subject }.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError, 'jobs:test1:needs config can only be a hash or an array') }
+          it_behaves_like 'returns errors', 'jobs:test1:needs config can only be a hash or an array'
         end
 
         context 'needs with a Hash type and dependency with a string type' do
           let(:needs) { { job: 'build1' } }
           let(:dependencies) { 'deploy' }
 
-          it { expect { subject }.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError, 'jobs:test1 dependencies should be an array of strings') }
+          it_behaves_like 'returns errors', 'jobs:test1 dependencies should be an array of strings'
         end
       end
 
@@ -2141,9 +2099,7 @@ module Gitlab
             }
           end
 
-          it 'raises a ValidationError' do
-            expect { subject }.to raise_error(YamlProcessor::ValidationError, /may not be used with `rules`: when/)
-          end
+          it_behaves_like 'returns errors', /may not be used with `rules`: when/
         end
 
         context 'used with job-level when:delayed' do
@@ -2159,9 +2115,7 @@ module Gitlab
             }
           end
 
-          it 'raises a ValidationError' do
-            expect { subject }.to raise_error(YamlProcessor::ValidationError, /may not be used with `rules`: when, start_in/)
-          end
+          it_behaves_like 'returns errors', /may not be used with `rules`: when, start_in/
         end
       end
 
@@ -2348,371 +2302,318 @@ module Gitlab
       end
 
       describe "Error handling" do
-        it "fails to parse YAML" do
-          expect do
-            Gitlab::Ci::YamlProcessor.new("invalid: yaml: test")
-          end.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError)
+        subject { described_class.new(config) }
+
+        context 'when YAML syntax is invalid' do
+          let(:config) { 'invalid: yaml: test' }
+
+          it_behaves_like 'returns errors', /mapping values are not allowed/
         end
 
-        it "indicates that object is invalid" do
-          expect do
-            Gitlab::Ci::YamlProcessor.new("invalid_yaml")
-          end.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError)
+        context 'when object is invalid' do
+          let(:config) { 'invalid_yaml' }
+
+          it_behaves_like 'returns errors', /Invalid configuration format/
         end
 
-        it "returns errors if tags parameter is invalid" do
-          config = YAML.dump({ rspec: { script: "test", tags: "mysql" } })
-          expect do
-            Gitlab::Ci::YamlProcessor.new(config)
-          end.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError, "jobs:rspec:tags config should be an array of strings")
+        context 'returns errors if tags parameter is invalid' do
+          let(:config) { YAML.dump({ rspec: { script: "test", tags: "mysql" } }) }
+
+          it_behaves_like 'returns errors', 'jobs:rspec:tags config should be an array of strings'
         end
 
-        it "returns errors if before_script parameter is invalid" do
-          config = YAML.dump({ before_script: "bundle update", rspec: { script: "test" } })
-          expect do
-            Gitlab::Ci::YamlProcessor.new(config)
-          end.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError, "before_script config should be an array containing strings and arrays of strings")
+        context 'returns errors if before_script parameter is invalid' do
+          let(:config) { YAML.dump({ before_script: "bundle update", rspec: { script: "test" } }) }
+
+          it_behaves_like 'returns errors', 'before_script config should be an array containing strings and arrays of strings'
         end
 
-        it "returns errors if job before_script parameter is not an array of strings" do
-          config = YAML.dump({ rspec: { script: "test", before_script: [10, "test"] } })
-          expect do
-            Gitlab::Ci::YamlProcessor.new(config)
-          end.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError, "jobs:rspec:before_script config should be an array containing strings and arrays of strings")
+        context 'returns errors if job before_script parameter is not an array of strings' do
+          let(:config) { YAML.dump({ rspec: { script: "test", before_script: [10, "test"] } }) }
+
+          it_behaves_like 'returns errors', 'jobs:rspec:before_script config should be an array containing strings and arrays of strings'
         end
 
-        it "returns errors if job before_script parameter is multi-level nested array of strings" do
-          config = YAML.dump({ rspec: { script: "test", before_script: [["ls", ["pwd"]], "test"] } })
-          expect do
-            Gitlab::Ci::YamlProcessor.new(config)
-          end.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError, "jobs:rspec:before_script config should be an array containing strings and arrays of strings")
+        context 'returns errors if job before_script parameter is multi-level nested array of strings' do
+          let(:config) { YAML.dump({ rspec: { script: "test", before_script: [["ls", ["pwd"]], "test"] } }) }
+
+          it_behaves_like 'returns errors', 'jobs:rspec:before_script config should be an array containing strings and arrays of strings'
         end
 
-        it "returns errors if after_script parameter is invalid" do
-          config = YAML.dump({ after_script: "bundle update", rspec: { script: "test" } })
-          expect do
-            Gitlab::Ci::YamlProcessor.new(config)
-          end.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError, "after_script config should be an array containing strings and arrays of strings")
+        context 'returns errors if after_script parameter is invalid' do
+          let(:config) { YAML.dump({ after_script: "bundle update", rspec: { script: "test" } }) }
+
+          it_behaves_like 'returns errors', 'after_script config should be an array containing strings and arrays of strings'
         end
 
-        it "returns errors if job after_script parameter is not an array of strings" do
-          config = YAML.dump({ rspec: { script: "test", after_script: [10, "test"] } })
-          expect do
-            Gitlab::Ci::YamlProcessor.new(config)
-          end.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError, "jobs:rspec:after_script config should be an array containing strings and arrays of strings")
+        context 'returns errors if job after_script parameter is not an array of strings' do
+          let(:config) { YAML.dump({ rspec: { script: "test", after_script: [10, "test"] } }) }
+
+          it_behaves_like 'returns errors', 'jobs:rspec:after_script config should be an array containing strings and arrays of strings'
         end
 
-        it "returns errors if job after_script parameter is multi-level nested array of strings" do
-          config = YAML.dump({ rspec: { script: "test", after_script: [["ls", ["pwd"]], "test"] } })
-          expect do
-            Gitlab::Ci::YamlProcessor.new(config)
-          end.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError, "jobs:rspec:after_script config should be an array containing strings and arrays of strings")
+        context 'returns errors if job after_script parameter is multi-level nested array of strings' do
+          let(:config) { YAML.dump({ rspec: { script: "test", after_script: [["ls", ["pwd"]], "test"] } }) }
+
+          it_behaves_like 'returns errors', 'jobs:rspec:after_script config should be an array containing strings and arrays of strings'
         end
 
-        it "returns errors if image parameter is invalid" do
-          config = YAML.dump({ image: ["test"], rspec: { script: "test" } })
-          expect do
-            Gitlab::Ci::YamlProcessor.new(config)
-          end.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError, "image config should be a hash or a string")
+        context 'returns errors if image parameter is invalid' do
+          let(:config) { YAML.dump({ image: ["test"], rspec: { script: "test" } }) }
+
+          it_behaves_like 'returns errors', 'image config should be a hash or a string'
         end
 
-        it "returns errors if job name is blank" do
-          config = YAML.dump({ '' => { script: "test" } })
-          expect do
-            Gitlab::Ci::YamlProcessor.new(config)
-          end.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError, "jobs:job name can't be blank")
+        context 'returns errors if job name is blank' do
+          let(:config) { YAML.dump({ '' => { script: "test" } }) }
+
+          it_behaves_like 'returns errors', "jobs:job name can't be blank"
         end
 
-        it "returns errors if job name is non-string" do
-          config = YAML.dump({ 10 => { script: "test" } })
-          expect do
-            Gitlab::Ci::YamlProcessor.new(config)
-          end.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError, "jobs:10 name should be a symbol")
+        context 'returns errors if job name is non-string' do
+          let(:config) { YAML.dump({ 10 => { script: "test" } }) }
+
+          it_behaves_like 'returns errors', 'jobs:10 name should be a symbol'
         end
 
-        it "returns errors if job image parameter is invalid" do
-          config = YAML.dump({ rspec: { script: "test", image: ["test"] } })
-          expect do
-            Gitlab::Ci::YamlProcessor.new(config)
-          end.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError, "jobs:rspec:image config should be a hash or a string")
+        context 'returns errors if job image parameter is invalid' do
+          let(:config) { YAML.dump({ rspec: { script: "test", image: ["test"] } }) }
+
+          it_behaves_like 'returns errors', 'jobs:rspec:image config should be a hash or a string'
         end
 
-        it "returns errors if services parameter is not an array" do
-          config = YAML.dump({ services: "test", rspec: { script: "test" } })
-          expect do
-            Gitlab::Ci::YamlProcessor.new(config)
-          end.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError, "services config should be a array")
+        context 'returns errors if services parameter is not an array' do
+          let(:config) { YAML.dump({ services: "test", rspec: { script: "test" } }) }
+
+          it_behaves_like 'returns errors', 'services config should be a array'
         end
 
-        it "returns errors if services parameter is not an array of strings" do
-          config = YAML.dump({ services: [10, "test"], rspec: { script: "test" } })
-          expect do
-            Gitlab::Ci::YamlProcessor.new(config)
-          end.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError, "services:service config should be a hash or a string")
+        context 'returns errors if services parameter is not an array of strings' do
+          let(:config) { YAML.dump({ services: [10, "test"], rspec: { script: "test" } }) }
+
+          it_behaves_like 'returns errors', 'services:service config should be a hash or a string'
         end
 
-        it "returns errors if job services parameter is not an array" do
-          config = YAML.dump({ rspec: { script: "test", services: "test" } })
-          expect do
-            Gitlab::Ci::YamlProcessor.new(config)
-          end.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError, "jobs:rspec:services config should be a array")
+        context 'returns errors if job services parameter is not an array' do
+          let(:config) { YAML.dump({ rspec: { script: "test", services: "test" } }) }
+
+          it_behaves_like 'returns errors', 'jobs:rspec:services config should be a array'
         end
 
-        it "returns errors if job services parameter is not an array of strings" do
-          config = YAML.dump({ rspec: { script: "test", services: [10, "test"] } })
-          expect do
-            Gitlab::Ci::YamlProcessor.new(config)
-          end.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError, "jobs:rspec:services:service config should be a hash or a string")
+        context 'returns errors if job services parameter is not an array of strings' do
+          let(:config) { YAML.dump({ rspec: { script: "test", services: [10, "test"] } }) }
+
+          it_behaves_like 'returns errors', 'jobs:rspec:services:service config should be a hash or a string'
         end
 
-        it "returns error if job configuration is invalid" do
-          config = YAML.dump({ extra: "bundle update" })
-          expect do
-            Gitlab::Ci::YamlProcessor.new(config)
-          end.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError, "root config contains unknown keys: extra")
+        context 'returns error if job configuration is invalid' do
+          let(:config) { YAML.dump({ extra: "bundle update" }) }
+
+          it_behaves_like 'returns errors', 'root config contains unknown keys: extra'
         end
 
-        it "returns errors if services configuration is not correct" do
-          config = YAML.dump({ extra: { script: 'rspec', services: "test" } })
-          expect do
-            Gitlab::Ci::YamlProcessor.new(config)
-          end.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError, "jobs:extra:services config should be a array")
+        context 'returns errors if services configuration is not correct' do
+          let(:config) { YAML.dump({ extra: { script: 'rspec', services: "test" } }) }
+
+          it_behaves_like 'returns errors', 'jobs:extra:services config should be a array'
         end
 
-        it "returns errors if there are no jobs defined" do
-          config = YAML.dump({ before_script: ["bundle update"] })
-          expect do
-            Gitlab::Ci::YamlProcessor.new(config)
-          end.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError, "jobs config should contain at least one visible job")
+        context 'returns errors if there are no jobs defined' do
+          let(:config) { YAML.dump({ before_script: ["bundle update"] }) }
+
+          it_behaves_like 'returns errors', 'jobs config should contain at least one visible job'
         end
 
-        it "returns errors if the job script is not defined" do
-          config = YAML.dump({ rspec: { before_script: "test" } })
+        context 'returns errors if the job script is not defined' do
+          let(:config) { YAML.dump({ rspec: { before_script: "test" } }) }
 
-          expect do
-            Gitlab::Ci::YamlProcessor.new(config)
-          end.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError, "jobs:rspec script can't be blank")
+          it_behaves_like 'returns errors', "jobs:rspec script can't be blank"
         end
 
-        it "returns errors if there are no visible jobs defined" do
-          config = YAML.dump({ before_script: ["bundle update"], '.hidden'.to_sym => { script: 'ls' } })
-          expect do
-            Gitlab::Ci::YamlProcessor.new(config)
-          end.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError, "jobs config should contain at least one visible job")
+        context 'returns errors if there are no visible jobs defined' do
+          let(:config) { YAML.dump({ before_script: ["bundle update"], '.hidden'.to_sym => { script: 'ls' } }) }
+
+          it_behaves_like 'returns errors', 'jobs config should contain at least one visible job'
         end
 
-        it "returns errors if job allow_failure parameter is not an boolean" do
-          config = YAML.dump({ rspec: { script: "test", allow_failure: "string" } })
-          expect do
-            Gitlab::Ci::YamlProcessor.new(config)
-          end.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError, "jobs:rspec allow failure should be a boolean value")
+        context 'returns errors if job allow_failure parameter is not an boolean' do
+          let(:config) { YAML.dump({ rspec: { script: "test", allow_failure: "string" } }) }
+
+          it_behaves_like 'returns errors', 'jobs:rspec allow failure should be a boolean value'
         end
 
-        it "returns errors if job stage is not a string" do
-          config = YAML.dump({ rspec: { script: "test", type: 1 } })
-          expect do
-            Gitlab::Ci::YamlProcessor.new(config)
-          end.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError, "jobs:rspec:type config should be a string")
+        context 'returns errors if job stage is not a string' do
+          let(:config) { YAML.dump({ rspec: { script: "test", type: 1 } }) }
+
+          it_behaves_like 'returns errors', 'jobs:rspec:type config should be a string'
         end
 
-        it "returns errors if job stage is not a pre-defined stage" do
-          config = YAML.dump({ rspec: { script: "test", type: "acceptance" } })
-          expect do
-            Gitlab::Ci::YamlProcessor.new(config)
-          end.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError, "rspec job: chosen stage does not exist; available stages are .pre, build, test, deploy, .post")
+        context 'returns errors if job stage is not a pre-defined stage' do
+          let(:config) { YAML.dump({ rspec: { script: "test", type: "acceptance" } }) }
+
+          it_behaves_like 'returns errors', 'rspec job: chosen stage does not exist; available stages are .pre, build, test, deploy, .post'
         end
 
-        it "returns errors if job stage is not a defined stage" do
-          config = YAML.dump({ types: %w(build test), rspec: { script: "test", type: "acceptance" } })
-          expect do
-            Gitlab::Ci::YamlProcessor.new(config)
-          end.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError, "rspec job: chosen stage does not exist; available stages are .pre, build, test, .post")
+        context 'returns errors if job stage is not a defined stage' do
+          let(:config) { YAML.dump({ types: %w(build test), rspec: { script: "test", type: "acceptance" } }) }
+
+          it_behaves_like 'returns errors', 'rspec job: chosen stage does not exist; available stages are .pre, build, test, .post'
         end
 
-        it "returns errors if stages is not an array" do
-          config = YAML.dump({ stages: "test", rspec: { script: "test" } })
-          expect do
-            Gitlab::Ci::YamlProcessor.new(config)
-          end.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError, "stages config should be an array of strings")
+        context 'returns errors if stages is not an array' do
+          let(:config) { YAML.dump({ stages: "test", rspec: { script: "test" } }) }
+
+          it_behaves_like 'returns errors', 'stages config should be an array of strings'
         end
 
-        it "returns errors if stages is not an array of strings" do
-          config = YAML.dump({ stages: [true, "test"], rspec: { script: "test" } })
-          expect do
-            Gitlab::Ci::YamlProcessor.new(config)
-          end.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError, "stages config should be an array of strings")
+        context 'returns errors if stages is not an array of strings' do
+          let(:config) { YAML.dump({ stages: [true, "test"], rspec: { script: "test" } }) }
+
+          it_behaves_like 'returns errors', 'stages config should be an array of strings'
         end
 
-        it "returns errors if variables is not a map" do
-          config = YAML.dump({ variables: "test", rspec: { script: "test" } })
-          expect do
-            Gitlab::Ci::YamlProcessor.new(config)
-          end.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError, "variables config should be a hash of key value pairs")
+        context 'returns errors if variables is not a map' do
+          let(:config) { YAML.dump({ variables: "test", rspec: { script: "test" } }) }
+
+          it_behaves_like 'returns errors', 'variables config should be a hash of key value pairs'
         end
 
-        it "returns errors if variables is not a map of key-value strings" do
-          config = YAML.dump({ variables: { test: false }, rspec: { script: "test" } })
-          expect do
-            Gitlab::Ci::YamlProcessor.new(config)
-          end.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError, "variables config should be a hash of key value pairs")
+        context 'returns errors if variables is not a map of key-value strings' do
+          let(:config) { YAML.dump({ variables: { test: false }, rspec: { script: "test" } }) }
+
+          it_behaves_like 'returns errors', 'variables config should be a hash of key value pairs'
         end
 
-        it "returns errors if job when is not on_success, on_failure or always" do
-          config = YAML.dump({ rspec: { script: "test", when: 1 } })
-          expect do
-            Gitlab::Ci::YamlProcessor.new(config)
-          end.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError, "jobs:rspec when should be one of: #{Gitlab::Ci::Config::Entry::Job::ALLOWED_WHEN.join(', ')}")
+        context 'returns errors if job when is not on_success, on_failure or always' do
+          let(:config) { YAML.dump({ rspec: { script: "test", when: 1 } }) }
+
+          it_behaves_like 'returns errors', "jobs:rspec when should be one of: #{Gitlab::Ci::Config::Entry::Job::ALLOWED_WHEN.join(', ')}"
         end
 
-        it "returns errors if job artifacts:name is not an a string" do
-          config = YAML.dump({ types: %w(build test), rspec: { script: "test", artifacts: { name: 1 } } })
-          expect do
-            Gitlab::Ci::YamlProcessor.new(config)
-          end.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError, "jobs:rspec:artifacts name should be a string")
+        context 'returns errors if job artifacts:name is not an a string' do
+          let(:config) { YAML.dump({ types: %w(build test), rspec: { script: "test", artifacts: { name: 1 } } }) }
+
+          it_behaves_like 'returns errors', 'jobs:rspec:artifacts name should be a string'
         end
 
-        it "returns errors if job artifacts:when is not an a predefined value" do
-          config = YAML.dump({ types: %w(build test), rspec: { script: "test", artifacts: { when: 1 } } })
-          expect do
-            Gitlab::Ci::YamlProcessor.new(config)
-          end.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError, "jobs:rspec:artifacts when should be on_success, on_failure or always")
+        context 'returns errors if job artifacts:when is not an a predefined value' do
+          let(:config) { YAML.dump({ types: %w(build test), rspec: { script: "test", artifacts: { when: 1 } } }) }
+
+          it_behaves_like 'returns errors', 'jobs:rspec:artifacts when should be on_success, on_failure or always'
         end
 
-        it "returns errors if job artifacts:expire_in is not an a string" do
-          config = YAML.dump({ types: %w(build test), rspec: { script: "test", artifacts: { expire_in: 1 } } })
-          expect do
-            Gitlab::Ci::YamlProcessor.new(config)
-          end.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError, "jobs:rspec:artifacts expire in should be a duration")
+        context 'returns errors if job artifacts:expire_in is not an a string' do
+          let(:config) { YAML.dump({ types: %w(build test), rspec: { script: "test", artifacts: { expire_in: 1 } } }) }
+
+          it_behaves_like 'returns errors', 'jobs:rspec:artifacts expire in should be a duration'
         end
 
-        it "returns errors if job artifacts:expire_in is not an a valid duration" do
-          config = YAML.dump({ types: %w(build test), rspec: { script: "test", artifacts: { expire_in: "7 elephants" } } })
-          expect do
-            Gitlab::Ci::YamlProcessor.new(config)
-          end.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError, "jobs:rspec:artifacts expire in should be a duration")
+        context 'returns errors if job artifacts:expire_in is not an a valid duration' do
+          let(:config) { YAML.dump({ types: %w(build test), rspec: { script: "test", artifacts: { expire_in: "7 elephants" } } }) }
+
+          it_behaves_like 'returns errors', 'jobs:rspec:artifacts expire in should be a duration'
         end
 
-        it "returns errors if job artifacts:untracked is not an array of strings" do
-          config = YAML.dump({ types: %w(build test), rspec: { script: "test", artifacts: { untracked: "string" } } })
-          expect do
-            Gitlab::Ci::YamlProcessor.new(config)
-          end.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError, "jobs:rspec:artifacts untracked should be a boolean value")
+        context 'returns errors if job artifacts:untracked is not an array of strings' do
+          let(:config) { YAML.dump({ types: %w(build test), rspec: { script: "test", artifacts: { untracked: "string" } } }) }
+
+          it_behaves_like 'returns errors', 'jobs:rspec:artifacts untracked should be a boolean value'
         end
 
-        it "returns errors if job artifacts:paths is not an array of strings" do
-          config = YAML.dump({ types: %w(build test), rspec: { script: "test", artifacts: { paths: "string" } } })
-          expect do
-            Gitlab::Ci::YamlProcessor.new(config)
-          end.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError, "jobs:rspec:artifacts paths should be an array of strings")
+        context 'returns errors if job artifacts:paths is not an array of strings' do
+          let(:config) { YAML.dump({ types: %w(build test), rspec: { script: "test", artifacts: { paths: "string" } } }) }
+
+          it_behaves_like 'returns errors', 'jobs:rspec:artifacts paths should be an array of strings'
         end
 
-        it "returns errors if cache:untracked is not an array of strings" do
-          config = YAML.dump({ cache: { untracked: "string" }, rspec: { script: "test" } })
-          expect do
-            Gitlab::Ci::YamlProcessor.new(config)
-          end.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError, "cache:untracked config should be a boolean value")
+        context 'returns errors if cache:untracked is not an array of strings' do
+          let(:config) { YAML.dump({ cache: { untracked: "string" }, rspec: { script: "test" } }) }
+
+          it_behaves_like 'returns errors', 'cache:untracked config should be a boolean value'
         end
 
-        it "returns errors if cache:paths is not an array of strings" do
-          config = YAML.dump({ cache: { paths: "string" }, rspec: { script: "test" } })
-          expect do
-            Gitlab::Ci::YamlProcessor.new(config)
-          end.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError, "cache:paths config should be an array of strings")
+        context 'returns errors if cache:paths is not an array of strings' do
+          let(:config) { YAML.dump({ cache: { paths: "string" }, rspec: { script: "test" } }) }
+
+          it_behaves_like 'returns errors', 'cache:paths config should be an array of strings'
         end
 
-        it "returns errors if cache:key is not a string" do
-          config = YAML.dump({ cache: { key: 1 }, rspec: { script: "test" } })
-          expect do
-            Gitlab::Ci::YamlProcessor.new(config)
-          end.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError, "cache:key should be a hash, a string or a symbol")
+        context 'returns errors if cache:key is not a string' do
+          let(:config) { YAML.dump({ cache: { key: 1 }, rspec: { script: "test" } }) }
+
+          it_behaves_like 'returns errors', "cache:key should be a hash, a string or a symbol"
         end
 
-        it "returns errors if job cache:key is not an a string" do
-          config = YAML.dump({ types: %w(build test), rspec: { script: "test", cache: { key: 1 } } })
-          expect do
-            Gitlab::Ci::YamlProcessor.new(config)
-          end.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError, "jobs:rspec:cache:key should be a hash, a string or a symbol")
+        context 'returns errors if job cache:key is not an a string' do
+          let(:config) { YAML.dump({ types: %w(build test), rspec: { script: "test", cache: { key: 1 } } }) }
+
+          it_behaves_like 'returns errors', "jobs:rspec:cache:key should be a hash, a string or a symbol"
         end
 
-        it 'returns errors if job cache:key:files is not an array of strings' do
-          config = YAML.dump({ types: %w(build test), rspec: { script: "test", cache: { key: { files: [1] } } } })
-          expect do
-            Gitlab::Ci::YamlProcessor.new(config)
-          end.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError, 'jobs:rspec:cache:key:files config should be an array of strings')
+        context 'returns errors if job cache:key:files is not an array of strings' do
+          let(:config) { YAML.dump({ types: %w(build test), rspec: { script: "test", cache: { key: { files: [1] } } } }) }
+
+          it_behaves_like 'returns errors', 'jobs:rspec:cache:key:files config should be an array of strings'
         end
 
-        it 'returns errors if job cache:key:files is an empty array' do
-          config = YAML.dump({ types: %w(build test), rspec: { script: "test", cache: { key: { files: [] } } } })
-          expect do
-            Gitlab::Ci::YamlProcessor.new(config)
-          end.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError, 'jobs:rspec:cache:key:files config requires at least 1 item')
+        context 'returns errors if job cache:key:files is an empty array' do
+          let(:config) { YAML.dump({ types: %w(build test), rspec: { script: "test", cache: { key: { files: [] } } } }) }
+
+          it_behaves_like 'returns errors', 'jobs:rspec:cache:key:files config requires at least 1 item'
         end
 
-        it 'returns errors if job defines only cache:key:prefix' do
-          config = YAML.dump({ types: %w(build test), rspec: { script: "test", cache: { key: { prefix: 'prefix-key' } } } })
-          expect do
-            Gitlab::Ci::YamlProcessor.new(config)
-          end.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError, 'jobs:rspec:cache:key config missing required keys: files')
+        context 'returns errors if job defines only cache:key:prefix' do
+          let(:config) { YAML.dump({ types: %w(build test), rspec: { script: "test", cache: { key: { prefix: 'prefix-key' } } } }) }
+
+          it_behaves_like 'returns errors', 'jobs:rspec:cache:key config missing required keys: files'
         end
 
-        it 'returns errors if job cache:key:prefix is not an a string' do
-          config = YAML.dump({ types: %w(build test), rspec: { script: "test", cache: { key: { prefix: 1, files: ['file'] } } } })
-          expect do
-            Gitlab::Ci::YamlProcessor.new(config)
-          end.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError, 'jobs:rspec:cache:key:prefix config should be a string or symbol')
+        context 'returns errors if job cache:key:prefix is not an a string' do
+          let(:config) { YAML.dump({ types: %w(build test), rspec: { script: "test", cache: { key: { prefix: 1, files: ['file'] } } } }) }
+
+          it_behaves_like 'returns errors', 'jobs:rspec:cache:key:prefix config should be a string or symbol'
         end
 
-        it "returns errors if job cache:untracked is not an array of strings" do
-          config = YAML.dump({ types: %w(build test), rspec: { script: "test", cache: { untracked: "string" } } })
-          expect do
-            Gitlab::Ci::YamlProcessor.new(config)
-          end.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError, "jobs:rspec:cache:untracked config should be a boolean value")
+        context "returns errors if job cache:untracked is not an array of strings" do
+          let(:config) { YAML.dump({ types: %w(build test), rspec: { script: "test", cache: { untracked: "string" } } }) }
+
+          it_behaves_like 'returns errors', "jobs:rspec:cache:untracked config should be a boolean value"
         end
 
-        it "returns errors if job cache:paths is not an array of strings" do
-          config = YAML.dump({ types: %w(build test), rspec: { script: "test", cache: { paths: "string" } } })
-          expect do
-            Gitlab::Ci::YamlProcessor.new(config)
-          end.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError, "jobs:rspec:cache:paths config should be an array of strings")
+        context "returns errors if job cache:paths is not an array of strings" do
+          let(:config) { YAML.dump({ types: %w(build test), rspec: { script: "test", cache: { paths: "string" } } }) }
+
+          it_behaves_like 'returns errors', "jobs:rspec:cache:paths config should be an array of strings"
         end
 
-        it "returns errors if job dependencies is not an array of strings" do
-          config = YAML.dump({ types: %w(build test), rspec: { script: "test", dependencies: "string" } })
-          expect do
-            Gitlab::Ci::YamlProcessor.new(config)
-          end.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError, "jobs:rspec dependencies should be an array of strings")
+        context "returns errors if job dependencies is not an array of strings" do
+          let(:config) { YAML.dump({ types: %w(build test), rspec: { script: "test", dependencies: "string" } }) }
+
+          it_behaves_like 'returns errors', "jobs:rspec dependencies should be an array of strings"
         end
 
-        it 'returns errors if pipeline variables expression policy is invalid' do
-          config = YAML.dump({ rspec: { script: 'test', only: { variables: ['== null'] } } })
+        context 'returns errors if pipeline variables expression policy is invalid' do
+          let(:config) { YAML.dump({ rspec: { script: 'test', only: { variables: ['== null'] } } }) }
 
-          expect { Gitlab::Ci::YamlProcessor.new(config) }
-            .to raise_error(Gitlab::Ci::YamlProcessor::ValidationError,
-                            'jobs:rspec:only variables invalid expression syntax')
+          it_behaves_like 'returns errors', 'jobs:rspec:only variables invalid expression syntax'
         end
 
-        it 'returns errors if pipeline changes policy is invalid' do
-          config = YAML.dump({ rspec: { script: 'test', only: { changes: [1] } } })
+        context 'returns errors if pipeline changes policy is invalid' do
+          let(:config) { YAML.dump({ rspec: { script: 'test', only: { changes: [1] } } }) }
 
-          expect { Gitlab::Ci::YamlProcessor.new(config) }
-            .to raise_error(Gitlab::Ci::YamlProcessor::ValidationError,
-                            'jobs:rspec:only changes should be an array of strings')
+          it_behaves_like 'returns errors', 'jobs:rspec:only changes should be an array of strings'
         end
 
-        it 'returns errors if extended hash configuration is invalid' do
-          config = YAML.dump({ rspec: { extends: 'something', script: 'test' } })
+        context 'returns errors if extended hash configuration is invalid' do
+          let(:config) { YAML.dump({ rspec: { extends: 'something', script: 'test' } }) }
 
-          expect { Gitlab::Ci::YamlProcessor.new(config) }
-            .to raise_error(Gitlab::Ci::YamlProcessor::ValidationError,
-                            'rspec: unknown keys in `extends` (something)')
+          it_behaves_like 'returns errors', 'rspec: unknown keys in `extends` (something)'
         end
 
-        it 'returns errors if parallel is invalid' do
-          config = YAML.dump({ rspec: { parallel: 'test', script: 'test' } })
+        context 'returns errors if parallel is invalid' do
+          let(:config) { YAML.dump({ rspec: { parallel: 'test', script: 'test' } }) }
 
-          expect { Gitlab::Ci::YamlProcessor.new(config) }
-            .to raise_error(Gitlab::Ci::YamlProcessor::ValidationError,
-                            'jobs:rspec:parallel should be an integer or a hash')
+          it_behaves_like 'returns errors', 'jobs:rspec:parallel should be an integer or a hash'
         end
       end
 
