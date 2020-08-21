@@ -9,7 +9,8 @@
       .js-customize-homepage-banner{ data: { svg_path: image_path('illustrations/monitoring/getting_started.svg'),
         preferences_behavior_path: profile_preferences_path(anchor: 'behavior'),
         callouts_path: user_callouts_path,
-        callouts_feature_id: UserCalloutsHelper::CUSTOMIZE_HOMEPAGE } }
+        callouts_feature_id: UserCalloutsHelper::CUSTOMIZE_HOMEPAGE,
+        track_label: 'home_page' } }
 
 = render_dashboard_gold_trial(current_user)
 

@@ -244,7 +244,7 @@ The following documentation relates to the DevOps **Verify** stage:
 |:----------------------------------------------------------------------------------|:--------------------------------------------------------------------------------------------------------|
 | [Code Quality reports](user/project/merge_requests/code_quality.md)               | Analyze source code quality.                                                                            |
 | [GitLab CI/CD](ci/README.md)                                                      | Explore the features and capabilities of Continuous Integration with GitLab.                            |
-| [JUnit test reports](ci/junit_test_reports.md)                                    | Display JUnit test reports on merge requests.                                                           |
+| [Unit test reports](ci/unit_test_reports.md)                                      | Display Unit test reports on merge requests.                                                           |
 | [Multi-project pipelines](ci/multi_project_pipelines.md) **(PREMIUM)**            | Visualize entire pipelines that span multiple projects, including all cross-project inter-dependencies. |
 | [Pipeline Graphs](ci/pipelines/index.md#visualize-pipelines)                      | Visualize builds.                                                                                       |
 | [Review Apps](ci/review_apps/index.md)                                            | Preview changes to your application right from a merge request.                                         |

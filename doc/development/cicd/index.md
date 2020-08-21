@@ -74,7 +74,7 @@ that need to be stored. Also, a job may depend on artifacts from previous jobs i
 case the Runner will download them using a dedicated API endpoint.
 
 Artifacts are stored in object storage, while metadata is kept in the database. An important example of artifacts
-is reports (JUnit, SAST, DAST, etc.) which are parsed and rendered in the merge request.
+are reports (JUnit, SAST, DAST, etc.) which are parsed and rendered in the merge request.
 
 Job status transitions are not all automated. A user may run [manual jobs](../../ci/yaml/README.md#whenmanual), cancel a pipeline, retry
 specific failed jobs or the entire pipeline. Anything that

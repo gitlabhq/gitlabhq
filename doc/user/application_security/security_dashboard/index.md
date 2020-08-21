@@ -48,8 +48,6 @@ At the pipeline level, the Security section displays the vulnerabilities present
 Visit the page for any pipeline that ran any of the [supported reports](#supported-reports). To view
 the pipeline's security findings, select the **Security** tab when viewing the pipeline.
 
-![Pipeline Security Navigation](img/pipeline_security_v13_3.gif)
-
 NOTE: **Note:**
 A pipeline consists of multiple jobs, including SAST and DAST scanning. If any job fails to finish for any reason, the security dashboard will not show SAST scanner output. For example, if the SAST job finishes but the DAST job fails, the security dashboard will not show SAST results. The analyzer will output an [exit code](../../../development/integrations/secure.md#exit-code) on failure.
 
@@ -63,11 +61,13 @@ to **Security & Compliance > Security Dashboard**. By default, the Security Dash
 detected and confirmed vulnerabilities.
 
 The Security Dashboard first displays the total number of vulnerabilities by severity (for example,
-Critical, High, Medium, Low). Below this, a table displays each vulnerability's status, severity,
+Critical, High, Medium, Low, Info, Unknown). Below this, a table shows each vulnerability's status, severity,
 and description. Clicking a vulnerability takes you to its [Vulnerability Details](../vulnerabilities)
 page to view more information about that vulnerability.
 
-You can filter the vulnerabilities by:
+![Project Security Dashboard](img/project_security_dashboard_v13_3.png)
+
+You can filter the vulnerabilities by one or more of the following:
 
 - Status
 - Severity

@@ -75,13 +75,13 @@ If you also want the ability to browse the report output files, include the
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/20390) in GitLab 11.2.
 > - Requires GitLab Runner 11.2 and above.
 
-The `junit` report collects [JUnit XML files](https://www.ibm.com/support/knowledgecenter/en/SSQ2R2_14.1.0/com.ibm.rsar.analysis.codereview.cobol.doc/topics/cac_useresults_junit.html)
+The `junit` report collects [JUnit report format XML files](https://www.ibm.com/support/knowledgecenter/en/SSQ2R2_14.1.0/com.ibm.rsar.analysis.codereview.cobol.doc/topics/cac_useresults_junit.html)
 as artifacts. Although JUnit was originally developed in Java, there are many
-[third party ports](https://en.wikipedia.org/wiki/JUnit#Ports) for other
+third party ports for other
 languages like JavaScript, Python, Ruby, and so on.
 
-See [JUnit test reports](../junit_test_reports.md) for more details and examples.
-Below is an example of collecting a JUnit XML file from Ruby's RSpec test tool:
+See [Unit test reports](../unit_test_reports.md) for more details and examples.
+Below is an example of collecting a JUnit report format XML file from Ruby's RSpec test tool:
 
 ```yaml
 rspec:
@@ -94,7 +94,7 @@ rspec:
       junit: rspec.xml
 ```
 
-The collected JUnit reports upload to GitLab as an artifact and display in merge requests.
+The collected Unit test reports upload to GitLab as an artifact and display in merge requests.
 
 NOTE: **Note:**
 If the JUnit tool you use exports to multiple XML files, specify

@@ -436,7 +436,7 @@ Reports that go over the 20 MB limit won't be loaded. Affected reports:
 
 - [Merge Request security reports](../user/project/merge_requests/testing_and_reports_in_merge_requests.md#security-reports-ultimate)
 - [CI/CD parameter `artifacts:expose_as`](../ci/yaml/README.md#artifactsexpose_as)
-- [JUnit test reports](../ci/junit_test_reports.md)
+- [Unit test reports](../ci/unit_test_reports.md)
 
 ## Advanced Global Search limits
 
