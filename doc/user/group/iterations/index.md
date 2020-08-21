@@ -76,7 +76,7 @@ To enable it:
 # Instance-wide
 Feature.enable(:group_iterations)
 # or by group
-Feature.enable(:group_iterations, Group.find(<group id>))
+Feature.enable(:group_iterations, Group.find(<group ID>))
 ```
 
 To disable it:
@@ -85,7 +85,7 @@ To disable it:
 # Instance-wide
 Feature.disable(:group_iterations)
 # or by group
-Feature.disable(:group_iterations, Group.find(<group id>))
+Feature.disable(:group_iterations, Group.find(<group ID>))
 ```
 
 <!-- ## Troubleshooting

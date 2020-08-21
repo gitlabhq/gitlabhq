@@ -43,9 +43,10 @@ class Projects::ForksController < Projects::ApplicationController
       end
 
       format.json do
-        namespaces = fork_service.valid_fork_targets - [current_user.namespace, project.namespace]
+        namespaces = load_namespaces_with_associations - [project.namespace]
+
         render json: {
-          namespaces: ForkNamespaceSerializer.new.represent(namespaces, project: project, current_user: current_user)
+          namespaces: ForkNamespaceSerializer.new.represent(namespaces, project: project, current_user: current_user, memberships: memberships_hash)
         }
       end
     end
@@ -99,6 +100,14 @@ class Projects::ForksController < Projects::ApplicationController
 
   def whitelist_query_limiting
     Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-foss/issues/42335')
+  end
+
+  def load_namespaces_with_associations
+    @load_namespaces_with_associations ||= fork_service.valid_fork_targets(only_groups: true).preload(:route)
+  end
+
+  def memberships_hash
+    current_user.members.where(source: load_namespaces_with_associations).index_by(&:source_id)
   end
 end
 

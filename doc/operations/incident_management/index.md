@@ -50,7 +50,7 @@ user, but it does not count toward your license limit.
 ## Configure external generic alerts
 
 GitLab can accept alerts from any source through a generic webhook receiver. When
-[configuring the generic alerts integration](../../user/project/integrations/generic_alerts.md),
+[configuring the generic alerts integration](generic_alerts.md),
 GitLab creates a unique endpoint which receives a JSON-formatted, customizable payload.
 
 ## Integrate incidents with Slack

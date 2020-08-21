@@ -192,7 +192,7 @@ When you see the result `id` of the note you created - take a note of it. Now le
 
 ```graphql
 mutation {
-  updateNote(input: { id: "gid://gitlab/Note/<note id>",
+  updateNote(input: { id: "gid://gitlab/Note/<note ID>",
       body: "*SIPS TEA*"
     }) {
     note {
@@ -210,7 +210,7 @@ Let's delete the comment, since our tea is all gone.
 
 ```graphql
 mutation {
-  destroyNote(input: { id: "gid://gitlab/Note/<note id>" }) {
+  destroyNote(input: { id: "gid://gitlab/Note/<note ID>" }) {
     note {
       id
       body

@@ -8464,7 +8464,7 @@
           "inputFields": [
             {
               "name": "id",
-              "description": "The global id of the annotation to delete",
+              "description": "The global ID of the annotation to delete",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -22659,7 +22659,7 @@
             },
             {
               "name": "jiraAccountId",
-              "description": "Account id of the Jira user",
+              "description": "Account ID of the Jira user",
               "args": [
 
               ],

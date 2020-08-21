@@ -45,7 +45,7 @@ RSpec.describe Mutations::Metrics::Dashboard::Annotations::Delete do
         graphql_mutation(:delete_annotation, variables)
       end
 
-      it_behaves_like 'a mutation that returns top-level errors', errors: ['invalid_id is not a valid GitLab id.']
+      it_behaves_like 'a mutation that returns top-level errors', errors: ['invalid_id is not a valid GitLab ID.']
     end
 
     context 'when the delete fails' do

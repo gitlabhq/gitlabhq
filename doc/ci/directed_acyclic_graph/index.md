@@ -106,5 +106,5 @@ can opt to disable it for your instance:
 # Instance-wide
 Feature.disable(:dag_pipeline_tab)
 # or by project
-Feature.disable(:dag_pipeline_tab, Project.find(<project id>))
+Feature.disable(:dag_pipeline_tab, Project.find(<project ID>))
 ```

@@ -11,6 +11,7 @@ class SystemNoteMetadata < ApplicationRecord
     close duplicate
     moved merge
     label milestone
+    relate unrelate
   ].freeze
 
   ICON_TYPES = %w[
@@ -19,7 +20,7 @@ class SystemNoteMetadata < ApplicationRecord
     title time_tracking branch milestone discussion task moved
     opened closed merged duplicate locked unlocked outdated
     tag due_date pinned_embed cherry_pick health_status approved unapproved
-    status alert_issue_added
+    status alert_issue_added relate unrelate
   ].freeze
 
   validates :note, presence: true

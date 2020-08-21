@@ -12,7 +12,7 @@ module Mutations
           argument :id,
                   GraphQL::ID_TYPE,
                   required: true,
-                  description: 'The global id of the annotation to delete'
+                  description: 'The global ID of the annotation to delete'
 
           def resolve(id:)
             annotation = authorized_find!(id: id)

@@ -128,7 +128,7 @@ When this is set in place, it's easy to access the replicator through
 the model:
 
 ```ruby
-package_file = Packages::PackageFile.find(4) # just a random id as example
+package_file = Packages::PackageFile.find(4) # just a random ID as example
 replicator = package_file.replicator
 ```
 

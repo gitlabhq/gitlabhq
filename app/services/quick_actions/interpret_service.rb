@@ -10,6 +10,7 @@ module QuickActions
     include Gitlab::QuickActions::MergeRequestActions
     include Gitlab::QuickActions::CommitActions
     include Gitlab::QuickActions::CommonActions
+    include Gitlab::QuickActions::RelateActions
 
     attr_reader :quick_action_target
 

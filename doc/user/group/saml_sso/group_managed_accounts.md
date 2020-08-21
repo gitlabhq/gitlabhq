@@ -76,7 +76,8 @@ This restriction also applies to projects forked from or to those groups.
 
 Groups with group-managed accounts can disallow forking of projects to destinations outside the group.
 To do so, enable the "Prohibit outer forks" option in **Settings > SAML SSO**.
-When enabled, projects within the group can only be forked to other destinations within the group (including its subgroups).
+When enabled **at the parent group level**, projects within the group can be forked
+only to other destinations within the group (including its subgroups).
 
 ## Credentials inventory for Group-managed accounts **(ULTIMATE)**
 

@@ -4,9 +4,9 @@ require 'spec_helper'
 
 RSpec.describe Notes::QuickActionsService do
   shared_context 'note on noteable' do
-    let(:project) { create(:project, :repository) }
-    let(:maintainer) { create(:user).tap { |u| project.add_maintainer(u) } }
-    let(:assignee) { create(:user) }
+    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:maintainer) { create(:user).tap { |u| project.add_maintainer(u) } }
+    let_it_be(:assignee) { create(:user) }
 
     before do
       project.add_maintainer(assignee)
@@ -38,6 +38,36 @@ RSpec.describe Notes::QuickActionsService do
           expect(note.noteable.labels).to match_array(labels)
           expect(note.noteable.assignees).to eq([assignee])
           expect(note.noteable.milestone).to eq(milestone)
+        end
+      end
+
+      context '/relate' do
+        let_it_be(:issue) { create(:issue, project: project) }
+        let_it_be(:other_issue) { create(:issue, project: project) }
+        let(:note_text) { "/relate #{other_issue.to_reference}" }
+        let(:note) { create(:note_on_issue, noteable: issue, project: project, note: note_text) }
+
+        context 'user cannot relate issues' do
+          before do
+            project.team.find_member(maintainer.id).destroy!
+            project.update!(visibility: Gitlab::VisibilityLevel::PUBLIC)
+          end
+
+          it 'does not create issue relation' do
+            expect do
+              _, update_params = service.execute(note)
+              service.apply_updates(update_params, note)
+            end.not_to change { IssueLink.count }
+          end
+        end
+
+        context 'user is allowed to relate issues' do
+          it 'creates issue relation' do
+            expect do
+              _, update_params = service.execute(note)
+              service.apply_updates(update_params, note)
+            end.to change { IssueLink.count }.by(1)
+          end
         end
       end
 

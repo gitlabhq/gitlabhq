@@ -7,8 +7,8 @@
       dismissible: true.to_s } }
       = notice[:message].html_safe
 
-- if show_license_breakdown?
-  = render_if_exists 'admin/licenses/breakdown', license: @license
+- if @license.present? && show_license_breakdown?
+  = render_if_exists 'admin/licenses/breakdown'
 
 .admin-dashboard.gl-mt-3
   .row

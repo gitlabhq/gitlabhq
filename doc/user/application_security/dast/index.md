@@ -678,7 +678,7 @@ To enable On-demand Scans:
 # Instance-wide
 Feature.enable(:security_on_demand_scans_feature_flag)
 # or by project
-Feature.enable(:security_on_demand_scans_feature_flag, Project.find(<project id>))
+Feature.enable(:security_on_demand_scans_feature_flag, Project.find(<project ID>))
 ```
 
 #### Enable or disable site profiles
@@ -703,7 +703,7 @@ To enable Site Profiles:
 # Instance-wide
 Feature.enable(:security_on_demand_scans_site_profiles_feature_flag)
 # or by project
-Feature.enable(:security_on_demand_scans_site_profiles_feature_flag, Project.find(<project id>))
+Feature.enable(:security_on_demand_scans_site_profiles_feature_flag, Project.find(<project ID>))
 ```
 
 ## Reports

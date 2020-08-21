@@ -78,7 +78,7 @@ Prometheus. The value of this should match the name of your environment in GitLa
 NOTE: **Note:**
 In GitLab versions 13.1 and greater, you can configure your manually configured
 Prometheus server to use the
-[Generic alerts integration](../../user/project/integrations/generic_alerts.md).
+[Generic alerts integration](../incident_management/generic_alerts.md).
 
 ## Trigger actions from alerts **(ULTIMATE)**
 

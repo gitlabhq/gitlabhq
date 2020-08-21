@@ -80,7 +80,7 @@ export default {
       v-if="!blob.isLoaded"
       :label="__('Loading snippet')"
       size="lg"
-      class="loading-animation prepend-top-20 append-bottom-20"
+      class="loading-animation prepend-top-20 gl-mb-6"
     />
     <blob-content-edit
       v-else

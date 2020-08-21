@@ -7,7 +7,7 @@ module Types
     graphql_name 'JiraUser'
 
     field :jira_account_id, GraphQL::STRING_TYPE, null: false,
-          description: 'Account id of the Jira user'
+          description: 'Account ID of the Jira user'
     field :jira_display_name, GraphQL::STRING_TYPE, null: false,
           description: 'Display name of the Jira user'
     field :jira_email, GraphQL::STRING_TYPE, null: true,

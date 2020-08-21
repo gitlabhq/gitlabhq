@@ -2,6 +2,34 @@
 
 module SystemNotes
   class IssuablesService < ::SystemNotes::BaseService
+    #
+    # noteable_ref - Referenced noteable object
+    #
+    # Example Note text:
+    #
+    #   "marked this issue as related to gitlab-foss#9001"
+    #
+    # Returns the created Note object
+    def relate_issue(noteable_ref)
+      body = "marked this issue as related to #{noteable_ref.to_reference(noteable.project)}"
+
+      create_note(NoteSummary.new(noteable, project, author, body, action: 'relate'))
+    end
+
+    #
+    # noteable_ref - Referenced noteable object
+    #
+    # Example Note text:
+    #
+    #   "removed the relation with gitlab-foss#9001"
+    #
+    # Returns the created Note object
+    def unrelate_issue(noteable_ref)
+      body = "removed the relation with #{noteable_ref.to_reference(noteable.project)}"
+
+      create_note(NoteSummary.new(noteable, project, author, body, action: 'unrelate'))
+    end
+
     # Called when the assignee of a Noteable is changed or removed
     #
     # assignee - User being assigned, or nil

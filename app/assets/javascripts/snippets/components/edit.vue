@@ -204,7 +204,7 @@ export default {
       v-if="isLoading"
       :label="__('Loading snippet')"
       size="lg"
-      class="loading-animation prepend-top-20 append-bottom-20"
+      class="loading-animation prepend-top-20 gl-mb-6"
     />
     <template v-else>
       <title-field

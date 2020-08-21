@@ -75,7 +75,7 @@ To enable it:
 # Instance-wide
 Feature.enable(:<feature flag>)
 # or by project
-Feature.enable(:<feature flag>, Project.find(<project id>))
+Feature.enable(:<feature flag>, Project.find(<project ID>))
 ```
 
 To disable it:
@@ -84,7 +84,7 @@ To disable it:
 # Instance-wide
 Feature.disable(:<feature flag>)
 # or by project
-Feature.disable(:<feature flag>, Project.find(<project id>))
+Feature.disable(:<feature flag>, Project.find(<project ID>))
 ```
 ````
 

@@ -305,6 +305,24 @@ class Issue < ApplicationRecord
     end
   end
 
+  def related_issues(current_user, preload: nil)
+    related_issues = ::Issue
+                       .select(['issues.*', 'issue_links.id AS issue_link_id',
+                                'issue_links.link_type as issue_link_type_value',
+                                'issue_links.target_id as issue_link_source_id'])
+                       .joins("INNER JOIN issue_links ON
+	                             (issue_links.source_id = issues.id AND issue_links.target_id = #{id})
+	                             OR
+	                             (issue_links.target_id = issues.id AND issue_links.source_id = #{id})")
+                       .preload(preload)
+                       .reorder('issue_link_id')
+
+    cross_project_filter = -> (issues) { issues.where(project: project) }
+    Ability.issues_readable_by_user(related_issues,
+      current_user,
+      filters: { read_cross_project: cross_project_filter })
+  end
+
   def can_be_worked_on?
     !self.closed? && !self.project.forked?
   end
@@ -376,6 +394,15 @@ class Issue < ApplicationRecord
 
   def from_service_desk?
     author.id == User.support_bot.id
+  end
+
+  def issue_link_type
+    return unless respond_to?(:issue_link_type_value) && respond_to?(:issue_link_source_id)
+
+    type = IssueLink.link_types.key(issue_link_type_value) || IssueLink::TYPE_RELATES_TO
+    return type if issue_link_source_id == id
+
+    IssueLink.inverse_link_type(type)
   end
 
   private

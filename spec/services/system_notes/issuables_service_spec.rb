@@ -13,6 +13,38 @@ RSpec.describe ::SystemNotes::IssuablesService do
 
   let(:service) { described_class.new(noteable: noteable, project: project, author: author) }
 
+  describe '#relate_issue' do
+    let(:noteable_ref) { create(:issue) }
+
+    subject { service.relate_issue(noteable_ref) }
+
+    it_behaves_like 'a system note' do
+      let(:action) { 'relate' }
+    end
+
+    context 'when issue marks another as related' do
+      it 'sets the note text' do
+        expect(subject.note).to eq "marked this issue as related to #{noteable_ref.to_reference(project)}"
+      end
+    end
+  end
+
+  describe '#unrelate_issue' do
+    let(:noteable_ref) { create(:issue) }
+
+    subject { service.unrelate_issue(noteable_ref) }
+
+    it_behaves_like 'a system note' do
+      let(:action) { 'unrelate' }
+    end
+
+    context 'when issue relation is removed' do
+      it 'sets the note text' do
+        expect(subject.note).to eq "removed the relation with #{noteable_ref.to_reference(project)}"
+      end
+    end
+  end
+
   describe '#change_assignee' do
     subject { service.change_assignee(assignee) }
 

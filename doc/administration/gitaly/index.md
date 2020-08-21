@@ -1072,6 +1072,24 @@ You can run a gRPC trace with:
 sudo GRPC_TRACE=all GRPC_VERBOSITY=DEBUG gitlab-rake gitlab:gitaly:check
 ```
 
+### Correlating Git processes with RPCs
+
+Sometimes you need to find out which Gitaly RPC created a particular Git process.
+
+One method for doing this is via `DEBUG` logging. However, this needs to be enabled
+ahead of time and the logs produced are quite verbose.
+
+A lightweight method for doing this correlation is by inspecting the environment
+of the Git process (using its `PID`) and looking at the `CORRELATION_ID` variable:
+
+```shell
+PID=<Git process ID>
+sudo cat /proc/$PID/environ | tr '\0' '\n' | grep ^CORRELATION_ID=
+```
+
+Please note that this method is not reliable for `git cat-file` processes because Gitaly
+internally pools and re-uses those across RPCs.
+
 ### Observing `gitaly-ruby` traffic
 
 [`gitaly-ruby`](#gitaly-ruby) is an internal implementation detail of Gitaly,

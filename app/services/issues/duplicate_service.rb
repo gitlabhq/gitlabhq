@@ -12,6 +12,8 @@ module Issues
 
       close_service.new(project, current_user, {}).execute(duplicate_issue)
       duplicate_issue.update(duplicated_to: canonical_issue)
+
+      relate_two_issues(duplicate_issue, canonical_issue)
     end
 
     private
@@ -23,7 +25,10 @@ module Issues
     def create_issue_canonical_note(canonical_issue, duplicate_issue)
       SystemNoteService.mark_canonical_issue_of_duplicate(canonical_issue, canonical_issue.project, current_user, duplicate_issue)
     end
+
+    def relate_two_issues(duplicate_issue, canonical_issue)
+      params = { target_issuable: canonical_issue }
+      IssueLinks::CreateService.new(duplicate_issue, current_user, params).execute
+    end
   end
 end
-
-Issues::DuplicateService.prepend_if_ee('EE::Issues::DuplicateService')

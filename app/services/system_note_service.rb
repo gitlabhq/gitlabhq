@@ -45,6 +45,14 @@ module SystemNoteService
     ::SystemNotes::IssuablesService.new(noteable: noteable, project: project, author: author).change_milestone(milestone)
   end
 
+  def relate_issue(noteable, noteable_ref, user)
+    ::SystemNotes::IssuablesService.new(noteable: noteable, project: noteable.project, author: user).relate_issue(noteable_ref)
+  end
+
+  def unrelate_issue(noteable, noteable_ref, user)
+    ::SystemNotes::IssuablesService.new(noteable: noteable, project: noteable.project, author: user).unrelate_issue(noteable_ref)
+  end
+
   # Called when the due_date of a Noteable is changed
   #
   # noteable  - Noteable object

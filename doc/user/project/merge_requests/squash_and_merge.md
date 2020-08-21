@@ -133,7 +133,7 @@ To enable it:
 # Instance-wide
 Feature.enable(:squash_options)
 # or by project
-Feature.enable(:squash_options, Project.find(<project id>))
+Feature.enable(:squash_options, Project.find(<project ID>))
 ```
 
 To disable it:
@@ -142,7 +142,7 @@ To disable it:
 # Instance-wide
 Feature.disable(:squash_options)
 # or by project
-Feature.disable(:squash_options, Project.find(<project id>))
+Feature.disable(:squash_options, Project.find(<project ID>))
 ```
 
 <!-- ## Troubleshooting

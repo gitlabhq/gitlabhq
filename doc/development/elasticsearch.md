@@ -229,7 +229,7 @@ be used both locally in development and on any deployed GitLab instance to
 diagnose poor search performance. This will show the exact queries being made,
 which is useful to diagnose why a search might be slow.
 
-### Correlation ID and X-Opaque-Id
+### Correlation ID and `X-Opaque-Id`
 
 Our [correlation
 ID](./distributed_tracing.md#developer-guidelines-for-working-with-correlation-ids)

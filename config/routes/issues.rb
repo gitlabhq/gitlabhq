@@ -22,4 +22,6 @@ resources :issues, concerns: :awardable, constraints: { id: /\d+/ } do
     post :import_csv
     post :export_csv
   end
+
+  resources :issue_links, only: [:index, :create, :destroy], as: 'links', path: 'links'
 end

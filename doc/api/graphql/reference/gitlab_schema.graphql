@@ -3131,7 +3131,7 @@ input DeleteAnnotationInput {
   clientMutationId: String
 
   """
-  The global id of the annotation to delete
+  The global ID of the annotation to delete
   """
   id: ID!
 }
@@ -8176,7 +8176,7 @@ type JiraUser {
   gitlabUsername: String
 
   """
-  Account id of the Jira user
+  Account ID of the Jira user
   """
   jiraAccountId: String!
 
