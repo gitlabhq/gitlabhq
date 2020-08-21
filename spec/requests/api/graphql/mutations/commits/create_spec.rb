@@ -24,8 +24,7 @@ RSpec.describe 'Creation of a new commit' do
   let(:mutation_response) { graphql_mutation_response(:commit_create) }
 
   context 'the user is not allowed to create a commit' do
-    it_behaves_like 'a mutation that returns top-level errors',
-      errors: ['The resource that you are attempting to access does not exist or you don\'t have permission to perform this action']
+    it_behaves_like 'a mutation that returns a top-level access error'
   end
 
   context 'when user has permissions to create a commit' do

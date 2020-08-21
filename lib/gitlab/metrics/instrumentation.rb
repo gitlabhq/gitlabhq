@@ -120,9 +120,6 @@ module Gitlab
       def self.instrument(type, mod, name)
         return unless ::Gitlab::Metrics.enabled?
 
-        name = name.to_sym
-        target = type == :instance ? mod : mod.singleton_class
-
         if type == :instance
           target = mod
           method_name = "##{name}"
@@ -154,6 +151,8 @@ module Gitlab
             '*args'
           end
 
+        method_visibility = method_visibility_for(target, name)
+
         proxy_module.class_eval <<-EOF, __FILE__, __LINE__ + 1
           def #{name}(#{args_signature})
             if trans = Gitlab::Metrics::Instrumentation.transaction
@@ -163,10 +162,22 @@ module Gitlab
               super
             end
           end
+          #{method_visibility} :#{name}
         EOF
 
         target.prepend(proxy_module)
       end
+
+      def self.method_visibility_for(mod, name)
+        if mod.private_method_defined?(name)
+          :private
+        elsif mod.protected_method_defined?(name)
+          :protected
+        else
+          :public
+        end
+      end
+      private_class_method :method_visibility_for
 
       # Small layer of indirection to make it easier to stub out the current
       # transaction.

@@ -42,7 +42,6 @@ const Api = {
   userPostStatusPath: '/api/:version/user/status',
   commitPath: '/api/:version/projects/:id/repository/commits/:sha',
   commitsPath: '/api/:version/projects/:id/repository/commits',
-
   applySuggestionPath: '/api/:version/suggestions/:id/apply',
   applySuggestionBatchPath: '/api/:version/suggestions/batch_apply',
   commitPipelinesPath: '/:project_id/commit/:sha/pipelines',
@@ -309,10 +308,12 @@ const Api = {
     });
   },
 
-  projectMilestones(id) {
+  projectMilestones(id, params = {}) {
     const url = Api.buildUrl(Api.projectMilestonesPath).replace(':id', encodeURIComponent(id));
 
-    return axios.get(url);
+    return axios.get(url, {
+      params,
+    });
   },
 
   mergeRequests(params = {}) {

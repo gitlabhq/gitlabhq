@@ -10,12 +10,14 @@ describe('Alert integration settings form', () => {
   beforeEach(() => {
     wrapper = shallowMount(AlertsSettingsForm, {
       provide: {
+        glFeatures: { autoCloseIncident: true },
         service,
         alertSettings: {
           issueTemplateKey: 'selecte_tmpl',
           createIssue: true,
           sendEmail: false,
           templates: [],
+          autoCloseIncident: true,
         },
       },
     });
@@ -42,6 +44,7 @@ describe('Alert integration settings form', () => {
           create_issue: wrapper.vm.createIssueEnabled,
           issue_template_key: wrapper.vm.issueTemplate,
           send_email: wrapper.vm.sendEmailEnabled,
+          auto_close_incident: wrapper.vm.autoCloseIncident,
         }),
       );
     });

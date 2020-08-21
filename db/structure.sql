@@ -14103,7 +14103,12 @@ CREATE TABLE public.plan_limits (
     ci_max_artifact_size_coverage_fuzzing integer DEFAULT 0 NOT NULL,
     ci_max_artifact_size_browser_performance integer DEFAULT 0 NOT NULL,
     ci_max_artifact_size_load_performance integer DEFAULT 0 NOT NULL,
-    ci_needs_size_limit integer DEFAULT 50 NOT NULL
+    ci_needs_size_limit integer DEFAULT 50 NOT NULL,
+    conan_max_file_size bigint DEFAULT 52428800 NOT NULL,
+    maven_max_file_size bigint DEFAULT 52428800 NOT NULL,
+    npm_max_file_size bigint DEFAULT 52428800 NOT NULL,
+    nuget_max_file_size bigint DEFAULT 52428800 NOT NULL,
+    pypi_max_file_size bigint DEFAULT 52428800 NOT NULL
 );
 
 CREATE SEQUENCE public.plan_limits_id_seq
@@ -15404,7 +15409,6 @@ CREATE TABLE public.services (
     tag_push_events boolean DEFAULT true,
     note_events boolean DEFAULT true NOT NULL,
     category character varying DEFAULT 'common'::character varying NOT NULL,
-    "default" boolean DEFAULT false,
     wiki_page_events boolean DEFAULT true,
     pipeline_events boolean DEFAULT false NOT NULL,
     confidential_issues_events boolean DEFAULT true NOT NULL,

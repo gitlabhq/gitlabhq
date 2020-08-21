@@ -25,10 +25,6 @@ export default {
       type: Boolean,
       required: true,
     },
-    milestonePath: {
-      type: String,
-      required: true,
-    },
     labelsPath: {
       type: String,
       required: true,
@@ -201,7 +197,6 @@ export default {
           :collapse-scope="isNewForm"
           :board="board"
           :can-admin-board="canAdminBoard"
-          :milestone-path="milestonePath"
           :labels-path="labelsPath"
           :enable-scoped-labels="enableScopedLabels"
           :project-id="projectId"

@@ -29,18 +29,33 @@ RSpec.describe Discussions::CaptureDiffNotePositionService do
     end
   end
 
-  context 'when position tracer returned nil position' do
+  context 'when position tracer returned position' do
     let!(:note) { create(:diff_note_on_merge_request) }
     let(:paths) { ['files/any_file.txt'] }
 
-    it 'does not create diff note position' do
+    before do
       expect(note.noteable).to receive(:merge_ref_head).and_return(double.as_null_object)
       expect_next_instance_of(Gitlab::Diff::PositionTracer) do |tracer|
-        expect(tracer).to receive(:trace).and_return({ position: nil })
+        expect(tracer).to receive(:trace).and_return({ position: position })
       end
+    end
 
-      expect(subject.execute(note.discussion)).to eq(nil)
-      expect(note.diff_note_positions).to be_empty
+    context 'which is nil' do
+      let(:position) { nil }
+
+      it 'does not create diff note position' do
+        expect(subject.execute(note.discussion)).to eq(nil)
+        expect(note.diff_note_positions).to be_empty
+      end
+    end
+
+    context 'which does not have a corresponding line' do
+      let(:position) { double(line_code: nil) }
+
+      it 'does not create diff note position' do
+        expect(subject.execute(note.discussion)).to eq(nil)
+        expect(note.diff_note_positions).to be_empty
+      end
     end
   end
 end

@@ -293,7 +293,7 @@ module API
           route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
 
           put 'authorize' do
-            authorize_workhorse!(subject: project)
+            authorize_workhorse!(subject: project, maximum_size: project.actual_limits.conan_max_file_size)
           end
         end
 
@@ -320,7 +320,7 @@ module API
           route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
 
           put 'authorize' do
-            authorize_workhorse!(subject: project)
+            authorize_workhorse!(subject: project, maximum_size: project.actual_limits.conan_max_file_size)
           end
 
           desc 'Upload package files' do

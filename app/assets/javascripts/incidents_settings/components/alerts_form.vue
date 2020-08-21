@@ -9,6 +9,7 @@ import {
   GlNewDropdown,
   GlNewDropdownItem,
 } from '@gitlab/ui';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import {
   I18N_ALERT_SETTINGS_FORM,
   NO_ISSUE_TEMPLATE_SELECTED,
@@ -27,6 +28,7 @@ export default {
     GlNewDropdown,
     GlNewDropdownItem,
   },
+  mixins: [glFeatureFlagsMixin()],
   inject: ['service', 'alertSettings'],
   data() {
     return {
@@ -34,6 +36,7 @@ export default {
       createIssueEnabled: this.alertSettings.createIssue,
       issueTemplate: this.alertSettings.issueTemplateKey,
       sendEmailEnabled: this.alertSettings.sendEmail,
+      autoCloseIncident: this.alertSettings.autoCloseIncident,
       loading: false,
     };
   },
@@ -49,6 +52,7 @@ export default {
         create_issue: this.createIssueEnabled,
         issue_template_key: this.issueTemplate,
         send_email: this.sendEmailEnabled,
+        auto_close_incident: this.autoCloseIncident,
       };
     },
   },
@@ -121,6 +125,11 @@ export default {
       <gl-form-group class="gl-pl-0 gl-mb-5">
         <gl-form-checkbox v-model="sendEmailEnabled">
           <span>{{ $options.i18n.sendEmail.label }}</span>
+        </gl-form-checkbox>
+      </gl-form-group>
+      <gl-form-group v-if="glFeatures.autoCloseIncident" class="gl-pl-0 gl-mb-5">
+        <gl-form-checkbox v-model="autoCloseIncident">
+          <span>{{ $options.i18n.autoCloseIncidents.label }}</span>
         </gl-form-checkbox>
       </gl-form-group>
       <div class="gl-display-flex gl-justify-content-end">

@@ -19,13 +19,16 @@ module Discussions
       position = result[:position]
       return unless position
 
+      line_code = position.line_code(project.repository)
+      return unless line_code
+
       # Currently position data is copied across all notes of a discussion
       # It makes sense to store a position only for the first note instead
       # Within the newly introduced table we can start doing just that
       DiffNotePosition.create_or_update_for(discussion.notes.first,
         diff_type: :head,
         position: position,
-        line_code: position.line_code(project.repository))
+        line_code: line_code)
     end
 
     private

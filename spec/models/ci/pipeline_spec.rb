@@ -2948,6 +2948,38 @@ RSpec.describe Ci::Pipeline, :mailer do
     end
   end
 
+  describe '#has_coverage_reports?' do
+    subject { pipeline.has_coverage_reports? }
+
+    context 'when pipeline has builds with coverage reports' do
+      before do
+        create(:ci_build, :coverage_reports, pipeline: pipeline, project: project)
+      end
+
+      context 'when pipeline status is running' do
+        let(:pipeline) { create(:ci_pipeline, :running, project: project) }
+
+        it { expect(subject).to be_falsey }
+      end
+
+      context 'when pipeline status is success' do
+        let(:pipeline) { create(:ci_pipeline, :success, project: project) }
+
+        it { expect(subject).to be_truthy }
+      end
+    end
+
+    context 'when pipeline does not have builds with coverage reports' do
+      before do
+        create(:ci_build, :artifacts, pipeline: pipeline, project: project)
+      end
+
+      let(:pipeline) { create(:ci_pipeline, :success, project: project) }
+
+      it { expect(subject).to be_falsey }
+    end
+  end
+
   describe '#test_report_summary' do
     subject { pipeline.test_report_summary }
 

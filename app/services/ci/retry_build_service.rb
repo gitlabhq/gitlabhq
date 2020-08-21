@@ -12,7 +12,7 @@ module Ci
       build.ensure_scheduling_type!
 
       reprocess!(build).tap do |new_build|
-        build.pipeline.mark_as_processable_after_stage(build.stage_idx)
+        mark_subsequent_stages_as_processable(build)
 
         Gitlab::OptimisticLocking.retry_lock(new_build, &:enqueue)
 
@@ -59,6 +59,12 @@ module Ci
         build.save!
       end
       build
+    end
+
+    def mark_subsequent_stages_as_processable(build)
+      build.pipeline.processables.skipped.after_stage(build.stage_idx).find_each do |processable|
+        Gitlab::OptimisticLocking.retry_lock(processable, &:process)
+      end
     end
   end
 end

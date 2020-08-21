@@ -36,10 +36,6 @@ export default {
       type: Object,
       required: true,
     },
-    milestonePath: {
-      type: String,
-      required: true,
-    },
     throttleDuration: {
       type: Number,
       default: 200,
@@ -335,7 +331,6 @@ export default {
 
       <board-form
         v-if="currentPage"
-        :milestone-path="milestonePath"
         :labels-path="labelsPath"
         :project-id="projectId"
         :group-id="groupId"

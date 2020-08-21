@@ -185,6 +185,18 @@ RSpec.describe API::PypiPackages do
     it_behaves_like 'deploy token for package uploads'
 
     it_behaves_like 'rejects PyPI access with unknown project id'
+
+    context 'file size above maximum limit' do
+      let(:headers) { basic_auth_header(deploy_token.username, deploy_token.token).merge(workhorse_header) }
+
+      before do
+        allow_next_instance_of(UploadedFile) do |uploaded_file|
+          allow(uploaded_file).to receive(:size).and_return(project.actual_limits.pypi_max_file_size + 1)
+        end
+      end
+
+      it_behaves_like 'returning response status', :bad_request
+    end
   end
 
   describe 'GET /api/v4/projects/:id/packages/pypi/files/:sha256/*file_identifier' do

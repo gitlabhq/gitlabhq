@@ -395,6 +395,9 @@ msgstr ""
 msgid "%{description}- Sentry event: %{errorUrl}- First seen: %{firstSeen}- Last seen: %{lastSeen} %{countLabel}: %{count}%{userCountLabel}: %{userCount}"
 msgstr ""
 
+msgid "%{due_date} (Past due)"
+msgstr ""
+
 msgid "%{duration}ms"
 msgstr ""
 
@@ -540,6 +543,12 @@ msgid "%{markdownDocsLinkStart}Markdown%{markdownDocsLinkEnd} and %{quickActions
 msgstr ""
 
 msgid "%{mergeLength}/%{usersLength} can merge"
+msgstr ""
+
+msgid "%{milestone_name} (Past due)"
+msgstr ""
+
+msgid "%{milestone} (expired)"
 msgstr ""
 
 msgid "%{mrText}, this issue will be closed automatically."
@@ -3630,6 +3639,9 @@ msgid "Automatic certificate management using %{lets_encrypt_link_start}Let's En
 msgstr ""
 
 msgid "Automatic certificate management using Let's Encrypt"
+msgstr ""
+
+msgid "Automatically close incident issues when the associated Prometheus alert resolves."
 msgstr ""
 
 msgid "Automatically create merge requests for vulnerabilities that have fixes available."

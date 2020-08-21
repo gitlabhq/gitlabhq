@@ -81,6 +81,18 @@ exports[`Alert integration settings form default state should match the default 
       </gl-form-checkbox-stub>
     </gl-form-group-stub>
      
+    <gl-form-group-stub
+      class="gl-pl-0 gl-mb-5"
+    >
+      <gl-form-checkbox-stub
+        checked="true"
+      >
+        <span>
+          Automatically close incident issues when the associated Prometheus alert resolves.
+        </span>
+      </gl-form-checkbox-stub>
+    </gl-form-group-stub>
+     
     <div
       class="gl-display-flex gl-justify-content-end"
     >

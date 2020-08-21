@@ -92,6 +92,7 @@ module API
 
         put do
           authorize_upload!(authorized_user_project)
+          bad_request!('File is too large') if authorized_user_project.actual_limits.exceeded?(:nuget_max_file_size, params[:package].size)
 
           file_params = params.merge(
             file: params[:package],
@@ -118,7 +119,11 @@ module API
         route_setting :authentication, deploy_token_allowed: true, job_token_allowed: :basic_auth, basic_auth_personal_access_token: true
 
         put 'authorize' do
-          authorize_workhorse!(subject: authorized_user_project, has_length: false)
+          authorize_workhorse!(
+            subject: authorized_user_project,
+            has_length: false,
+            maximum_size: authorized_user_project.actual_limits.nuget_max_file_size
+          )
         end
 
         params do

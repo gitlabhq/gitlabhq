@@ -155,6 +155,7 @@ module API
 
           def upload_package_file(file_type)
             authorize_upload!(project)
+            bad_request!('File is too large') if project.actual_limits.exceeded?(:conan_max_file_size, params['file.size'].to_i)
 
             current_package = find_or_create_package
 

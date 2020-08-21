@@ -120,6 +120,7 @@ module API
         route_setting :authentication, deploy_token_allowed: true, basic_auth_personal_access_token: true
         post do
           authorize_upload!(authorized_user_project)
+          bad_request!('File is too large') if authorized_user_project.actual_limits.exceeded?(:pypi_max_file_size, params[:content].size)
 
           track_event('push_package')
 
@@ -136,7 +137,11 @@ module API
 
         route_setting :authentication, deploy_token_allowed: true, basic_auth_personal_access_token: true
         post 'authorize' do
-          authorize_workhorse!(subject: authorized_user_project, has_length: false)
+          authorize_workhorse!(
+            subject: authorized_user_project,
+            has_length: false,
+            maximum_size: authorized_user_project.actual_limits.pypi_max_file_size
+          )
         end
       end
     end

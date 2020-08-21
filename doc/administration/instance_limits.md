@@ -514,3 +514,38 @@ Total number of changes (branches or tags) in a single push to determine whether
 individual push events or bulk push event will be created.
 
 More information can be found in the [Push event activities limit and bulk push events documentation](../user/admin_area/settings/push_event_activities_limit.md).
+
+## Package Registry Limits
+
+### File Size Limits
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/218017) in GitLab 13.4.
+
+On GitLab.com, the maximum file size for a package that's uploaded to the [GitLab Package Registry](../user/packages/package_registry/index.md)
+is 50 megabytes.
+
+Limits are set per package type.
+
+To set this limit on a self-managed installation, run the following in the
+[GitLab Rails console](troubleshooting/debug.md#starting-a-rails-console-session):
+
+```ruby
+# File size limit is stored in bytes
+
+# For Conan Packages
+Plan.default.actual_limits.update!(conan_max_file_size: 100.megabytes)
+
+# For NPM Packages
+Plan.default.actual_limits.update!(npm_max_file_size: 100.megabytes)
+
+# For NuGet Packages
+Plan.default.actual_limits.update!(nuget_max_file_size: 100.megabytes)
+
+# For Maven Packages
+Plan.default.actual_limits.update!(maven_max_file_size: 100.megabytes)
+
+# For PyPI Packages
+Plan.default.actual_limits.update!(pypi_max_file_size: 100.megabytes)
+```
+
+Set the limit to `0` to allow any file size.

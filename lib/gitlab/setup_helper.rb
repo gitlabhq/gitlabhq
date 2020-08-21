@@ -28,6 +28,26 @@ module Gitlab
     end
     # rubocop:enable Rails/Output
 
+    module Workhorse
+      extend Gitlab::SetupHelper
+      class << self
+        def configuration_toml(dir, _)
+          config = { redis: { URL: redis_url } }
+
+          TomlRB.dump(config)
+        end
+
+        def redis_url
+          data = YAML.load_file(Rails.root.join('config/resque.yml'))
+          data.dig(Rails.env, 'url')
+        end
+
+        def get_config_path(dir)
+          File.join(dir, 'config.toml')
+        end
+      end
+    end
+
     module Gitaly
       extend Gitlab::SetupHelper
       class << self

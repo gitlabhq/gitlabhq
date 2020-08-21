@@ -220,6 +220,18 @@ RSpec.describe API::NugetPackages do
       it_behaves_like 'rejects nuget access with unknown project id'
 
       it_behaves_like 'rejects nuget access with invalid project id'
+
+      context 'file size above maximum limit' do
+        let(:headers) { basic_auth_header(deploy_token.username, deploy_token.token).merge(workhorse_header) }
+
+        before do
+          allow_next_instance_of(UploadedFile) do |uploaded_file|
+            allow(uploaded_file).to receive(:size).and_return(project.actual_limits.nuget_max_file_size + 1)
+          end
+        end
+
+        it_behaves_like 'returning response status', :bad_request
+      end
     end
   end
 

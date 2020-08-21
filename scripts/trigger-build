@@ -343,7 +343,7 @@ module Trigger
           sleep INTERVAL
         when :success
           puts "#{self.class.unscoped_class_name} succeeded in #{duration} minutes!"
-          break
+          return
         else
           raise "#{self.class.unscoped_class_name} did not succeed!"
         end

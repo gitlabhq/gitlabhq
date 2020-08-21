@@ -398,6 +398,29 @@ describe('Api', () => {
     });
   });
 
+  describe('projectMilestones', () => {
+    it('fetches project milestones', done => {
+      const projectId = 1;
+      const options = { state: 'active' };
+      const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects/1/milestones`;
+      mock.onGet(expectedUrl).reply(200, [
+        {
+          id: 1,
+          title: 'milestone1',
+          state: 'active',
+        },
+      ]);
+
+      Api.projectMilestones(projectId, options)
+        .then(({ data }) => {
+          expect(data.length).toBe(1);
+          expect(data[0].title).toBe('milestone1');
+        })
+        .then(done)
+        .catch(done.fail);
+    });
+  });
+
   describe('newLabel', () => {
     it('creates a new label', done => {
       const namespace = 'some namespace';

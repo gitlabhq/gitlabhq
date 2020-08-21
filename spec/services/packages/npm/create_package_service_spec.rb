@@ -61,6 +61,15 @@ RSpec.describe Packages::Npm::CreatePackageService do
       it { expect(subject[:message]).to be 'Package already exists.' }
     end
 
+    context 'file size above maximum limit' do
+      before do
+        params['_attachments']["#{package_name}-#{version}.tgz"]['length'] = project.actual_limits.npm_max_file_size + 1
+      end
+
+      it { expect(subject[:http_status]).to eq 400 }
+      it { expect(subject[:message]).to be 'File is too large.' }
+    end
+
     context 'with incorrect namespace' do
       let(:package_name) { '@my_other_namespace/my-app' }
 

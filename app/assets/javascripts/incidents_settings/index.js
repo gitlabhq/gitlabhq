@@ -20,6 +20,7 @@ export default () => {
       pagerdutyActive,
       pagerdutyWebhookUrl,
       pagerdutyResetKeyPath,
+      autoCloseIncident,
     },
   } = el;
 
@@ -33,6 +34,7 @@ export default () => {
         createIssue: parseBoolean(createIssue),
         issueTemplateKey,
         sendEmail: parseBoolean(sendEmail),
+        autoCloseIncident: parseBoolean(autoCloseIncident),
       },
       pagerDutySettings: {
         active: parseBoolean(pagerdutyActive),

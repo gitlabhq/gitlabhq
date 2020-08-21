@@ -681,6 +681,18 @@ RSpec.describe API::ConanPackages do
     let(:recipe_path) { "foo/bar/#{project.full_path.tr('/', '+')}/baz"}
 
     shared_examples 'uploads a package file' do
+      context 'file size above maximum limit' do
+        before do
+          params['file.size'] = project.actual_limits.conan_max_file_size + 1
+        end
+
+        it 'handles as a local file' do
+          subject
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+        end
+      end
+
       context 'with object storage disabled' do
         context 'without a file from workhorse' do
           let(:params) { { file: nil } }

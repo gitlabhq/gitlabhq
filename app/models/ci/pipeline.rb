@@ -229,6 +229,12 @@ module Ci
       end
 
       after_transition any => ::Ci::Pipeline.completed_statuses do |pipeline|
+        pipeline.run_after_commit do
+          ::Ci::Pipelines::CreateArtifactWorker.perform_async(pipeline.id)
+        end
+      end
+
+      after_transition any => ::Ci::Pipeline.completed_statuses do |pipeline|
         next unless pipeline.bridge_triggered?
         next unless pipeline.bridge_waiting?
 
@@ -538,12 +544,6 @@ module Ci
         .execute(self)
     end
     # rubocop: enable CodeReuse/ServiceClass
-
-    def mark_as_processable_after_stage(stage_idx)
-      builds.skipped.after_stage(stage_idx).find_each do |build|
-        Gitlab::OptimisticLocking.retry_lock(build, &:process)
-      end
-    end
 
     def lazy_ref_commit
       return unless ::Gitlab::Ci::Features.pipeline_latest?
@@ -860,6 +860,10 @@ module Ci
 
     def has_reports?(reports_scope)
       complete? && latest_report_builds(reports_scope).exists?
+    end
+
+    def has_coverage_reports?
+      self.has_reports?(Ci::JobArtifact.coverage_reports)
     end
 
     def test_report_summary

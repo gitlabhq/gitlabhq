@@ -83,6 +83,10 @@ module Gitlab
       def self.project_transactionless_destroy?(project)
         Feature.enabled?(:project_transactionless_destroy, project, default_enabled: false)
       end
+
+      def self.coverage_report_view?(project)
+        ::Feature.enabled?(:coverage_report_view, project)
+      end
     end
   end
 end

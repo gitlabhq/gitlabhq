@@ -528,6 +528,18 @@ RSpec.describe API::MavenPackages do
     context 'when params from workhorse are correct' do
       let(:params) { { file: file_upload } }
 
+      context 'file size is too large' do
+        it 'rejects the request' do
+          allow_next_instance_of(UploadedFile) do |uploaded_file|
+            allow(uploaded_file).to receive(:size).and_return(project.actual_limits.maven_max_file_size + 1)
+          end
+
+          upload_file_with_token(params)
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+        end
+      end
+
       it 'rejects a malicious request' do
         put api("/projects/#{project.id}/packages/maven/com/example/my-app/#{version}/%2e%2e%2f.ssh%2fauthorized_keys"), params: params, headers: headers_with_token
 

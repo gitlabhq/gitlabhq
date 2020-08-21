@@ -482,4 +482,17 @@ RSpec.describe Packages::Package, type: :model do
       it { is_expected.to contain_exactly(*tags) }
     end
   end
+
+  describe 'plan_limits' do
+    Packages::Package.package_types.keys.without('composer').each do |pt|
+      context "File size limits for #{pt}" do
+        let(:package) { create("#{pt}_package") }
+
+        it "plan_limits includes column #{pt}_max_file_size" do
+          expect { package.project.actual_limits.send("#{pt}_max_file_size") }
+            .not_to raise_error(NoMethodError)
+        end
+      end
+    end
+  end
 end
