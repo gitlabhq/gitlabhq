@@ -635,6 +635,12 @@ Settings['workhorse'] ||= Settingslogic.new({})
 Settings.workhorse['secret_file'] ||= Rails.root.join('.gitlab_workhorse_secret')
 
 #
+# GitLab KAS
+#
+Settings['gitlab_kas'] ||= Settingslogic.new({})
+Settings.gitlab_kas['secret_file'] ||= Rails.root.join('.gitlab_kas_secret')
+
+#
 # Repositories
 #
 Settings['repositories'] ||= Settingslogic.new({})

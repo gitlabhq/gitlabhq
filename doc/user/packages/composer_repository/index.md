@@ -130,11 +130,8 @@ You also need to create a `auth.json` file with your GitLab credentials:
 
 ```json
 {
-    "http-basic": {
-        "gitlab.com": {
-            "username": "___token___",
-            "password": "<personal_access_token>"
-        }
+    "gitlab-token": {
+       "gitlab.com": "<personal_access_token>"
     }
 }
 ```

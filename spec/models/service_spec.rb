@@ -138,16 +138,16 @@ RSpec.describe Service do
     describe '#can_test?' do
       subject { service.can_test? }
 
-      let(:service) { create(:service, project: project) }
+      let(:service) { build(:service, project: project) }
 
       context 'when repository is not empty' do
-        let(:project) { create(:project, :repository) }
+        let(:project) { build(:project, :repository) }
 
         it { is_expected.to be true }
       end
 
       context 'when repository is empty' do
-        let(:project) { create(:project) }
+        let(:project) { build(:project) }
 
         it { is_expected.to be true }
       end
@@ -165,10 +165,10 @@ RSpec.describe Service do
 
     describe '#test' do
       let(:data) { 'test' }
-      let(:service) { create(:service, project: project) }
+      let(:service) { build(:service, project: project) }
 
       context 'when repository is not empty' do
-        let(:project) { create(:project, :repository) }
+        let(:project) { build(:project, :repository) }
 
         it 'test runs execute' do
           expect(service).to receive(:execute).with(data)
@@ -178,7 +178,7 @@ RSpec.describe Service do
       end
 
       context 'when repository is empty' do
-        let(:project) { create(:project) }
+        let(:project) { build(:project) }
 
         it 'test runs execute' do
           expect(service).to receive(:execute).with(data)
@@ -622,8 +622,8 @@ RSpec.describe Service do
   end
 
   context 'logging' do
-    let(:project) { create(:project) }
-    let(:service) { create(:service, project: project) }
+    let(:project) { build(:project) }
+    let(:service) { build(:service, project: project) }
     let(:test_message) { "test message" }
     let(:arguments) do
       {

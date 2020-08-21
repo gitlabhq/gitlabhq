@@ -2046,7 +2046,7 @@ This example creates four paths of execution:
   because of `only/except` rules or otherwise does not exist, the
   pipeline will be created with YAML error.
 - The maximum number of jobs that a single job can need in the `needs:` array is limited:
-  - For GitLab.com, the limit is ten. For more information, see our
+  - For GitLab.com, the limit is 50. For more information, see our
     [infrastructure issue](https://gitlab.com/gitlab-com/gl-infra/infrastructure/-/issues/7541).
   - For self-managed instances, the limit is: 50. This limit [can be changed](#changing-the-needs-job-limit-core-only).
 - If `needs:` refers to a job that is marked as `parallel:`.

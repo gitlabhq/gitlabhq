@@ -40,7 +40,7 @@ scheduling into milestones. Labeling is a task for everyone.
 
 Most issues will have labels for at least one of the following:
 
-- Type: `~feature`, `~bug`, `~backstage`, `~documentation`, etc.
+- Type: `~feature`, `~bug`, `~tooling`, `~documentation`, etc.
 - Stage: `~"devops::plan"`, `~"devops::create"`, etc.
 - Group: `~"group::source code"`, `~"group::knowledge"`, `~"group::editor"`, etc.
 - Category: `~"Category:Code Analytics"`, `~"Category:DevOps Score"`, `~"Category:Templates"`, etc.
@@ -67,7 +67,7 @@ The current type labels are:
 
 - ~feature
 - ~bug
-- ~backstage
+- ~tooling
 - ~"support request"
 - ~meta
 - ~documentation
@@ -93,9 +93,9 @@ Following is a non-exhaustive list of facet labels:
 - ~enhancement: This label can refine an issue that has the ~feature label.
 - ~"master:broken": This label can refine an issue that has the ~bug label.
 - ~"failure::flaky-test": This label can refine an issue that has the ~bug label.
-- ~"technical debt": This label can refine an issue that has the ~backstage label.
-- ~"static analysis": This label can refine an issue that has the ~backstage label.
-- ~"ci-build": This label can refine an issue that has the ~backstage label.
+- ~"technical debt": This label can refine an issue that has the ~tooling label.
+- ~"static analysis": This label can refine an issue that has the ~tooling label.
+- ~"ci-build": This label can refine an issue that has the ~tooling label.
 - ~performance: A performance issue could describe a ~bug or a ~feature.
 - ~security: A security issue could describe a ~bug or a ~feature.
 - ~database: A database issue could describe a ~bug or a ~feature.

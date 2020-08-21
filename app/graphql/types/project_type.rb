@@ -159,7 +159,7 @@ module Types
           resolver: Resolvers::ProjectMilestonesResolver
 
     field :project_members,
-          Types::ProjectMemberType.connection_type,
+          Types::MemberInterface.connection_type,
           description: 'Members of the project',
           resolver: Resolvers::ProjectMembersResolver
 

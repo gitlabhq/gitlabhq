@@ -1,5 +1,4 @@
 <script>
-import { GlButton } from '@gitlab/ui';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
 import { __ } from '../../locale';
 import FileTable from './table/index.vue';
@@ -17,7 +16,6 @@ export default {
   components: {
     FileTable,
     FilePreview,
-    GlButton,
   },
   mixins: [getRefMixin],
   apollo: {
@@ -127,7 +125,7 @@ export default {
         .concat(data.trees.pageInfo, data.submodules.pageInfo, data.blobs.pageInfo)
         .find(({ hasNextPage }) => hasNextPage);
     },
-    showMore() {
+    handleShowMore() {
       this.clickedShowMore = true;
       this.fetchFiles();
     },
@@ -142,20 +140,9 @@ export default {
       :entries="entries"
       :is-loading="isLoadingFiles"
       :loading-path="loadingPath"
+      :has-more="hasShowMore"
+      @showMore="handleShowMore"
     />
-    <div
-      v-if="hasShowMore"
-      class="gl-border-1 gl-border-gray-100 gl-rounded-base gl-border-t-none gl-border-b-solid gl-border-l-solid gl-border-r-solid gl-rounded-top-right-none gl-rounded-top-left-none gl-mt-n1"
-    >
-      <gl-button
-        variant="link"
-        class="gl-display-flex gl-w-full gl-py-4!"
-        :loading="isLoadingFiles"
-        @click="showMore"
-      >
-        {{ s__('ProjectFileTree|Show more') }}
-      </gl-button>
-    </div>
     <file-preview v-if="readme" :blob="readme" />
   </div>
 </template>

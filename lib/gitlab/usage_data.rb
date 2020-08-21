@@ -409,7 +409,7 @@ module Gitlab
       def successful_deployments_with_cluster(scope)
         scope
           .joins(cluster: :deployments)
-          .merge(Clusters::Cluster.enabled)
+          .merge(::Clusters::Cluster.enabled)
           .merge(Deployment.success)
       end
       # rubocop: enable UsageData/LargeTable

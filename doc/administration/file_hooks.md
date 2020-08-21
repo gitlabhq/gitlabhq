@@ -71,9 +71,9 @@ Below is an example that will only response on the event `project_create` and
 will inform the admins from the GitLab instance that a new project has been created.
 
 ```ruby
+#!/opt/gitlab/embedded/bin/ruby
 # By using the embedded ruby version we eliminate the possibility that our chosen language
 # would be unavailable from
-#!/opt/gitlab/embedded/bin/ruby
 require 'json'
 require 'mail'
 

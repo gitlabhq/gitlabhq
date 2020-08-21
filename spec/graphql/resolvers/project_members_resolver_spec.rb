@@ -9,7 +9,7 @@ RSpec.describe Resolvers::ProjectMembersResolver do
     let_it_be(:root_group)   { create(:group) }
     let_it_be(:group_1)      { create(:group, parent: root_group) }
     let_it_be(:group_2)      { create(:group, parent: root_group) }
-    let_it_be(:project)      { create(:project, :public, group: group_1) }
+    let_it_be(:project)      { create(:project, group: group_1) }
 
     let_it_be(:user_1) { create(:user, name: 'test user') }
     let_it_be(:user_2) { create(:user, name: 'test user 2') }
@@ -24,7 +24,7 @@ RSpec.describe Resolvers::ProjectMembersResolver do
     let(:args) { {} }
 
     subject do
-      resolve(described_class, obj: project, args: args, ctx: { context: user_4 })
+      resolve(described_class, obj: project, args: args, ctx: { current_user: user_4 })
     end
 
     describe '#resolve' do
@@ -50,11 +50,15 @@ RSpec.describe Resolvers::ProjectMembersResolver do
         end
       end
 
-      context 'when project is nil' do
-        let(:project) { nil }
+      context 'when user can not see project members' do
+        let_it_be(:other_user) { create(:user) }
 
-        it 'returns nil' do
-          expect(subject).to be_empty
+        subject do
+          resolve(described_class, obj: project, args: args, ctx: { current_user: other_user })
+        end
+
+        it 'raises an error' do
+          expect { subject }.to raise_error(Gitlab::Graphql::Errors::ResourceNotAvailable)
         end
       end
     end

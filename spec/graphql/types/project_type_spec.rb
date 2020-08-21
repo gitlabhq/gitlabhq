@@ -108,7 +108,7 @@ RSpec.describe GitlabSchema.types['Project'] do
   describe 'members field' do
     subject { described_class.fields['projectMembers'] }
 
-    it { is_expected.to have_graphql_type(Types::ProjectMemberType.connection_type) }
+    it { is_expected.to have_graphql_type(Types::MemberInterface.connection_type) }
     it { is_expected.to have_graphql_resolver(Resolvers::ProjectMembersResolver) }
   end
 

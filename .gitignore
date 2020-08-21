@@ -71,6 +71,7 @@ eslint-report.html
 /builds*
 /.gitlab_workhorse_secret
 /.gitlab_pages_secret
+/.gitlab_kas_secret
 /webpack-report/
 /knapsack/
 /rspec_flaky/

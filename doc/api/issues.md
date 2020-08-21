@@ -428,7 +428,7 @@ GET /projects/:id/issues?confidential=true
 | `updated_after`     | datetime         | no         | Return issues updated on or after the given time                                                                              |
 | `updated_before`    | datetime         | no         | Return issues updated on or before the given time                                                                             |
 | `weight` **(STARTER)** | integer       | no         | Return issues with the specified `weight`. `None` returns issues with no weight assigned. `Any` returns issues with a weight assigned. |
-| `with_labels_details` | boolean        | no         | If `true`, the response returns more details for each label in labels field: `:name`, `:color`, `:description`, `:description_html`, `:text_color`. Default is `false`. `description_html` Introduced in [GitLab 12.7](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/21413) |
+| `with_labels_details` | boolean        | no         | If `true`, the response returns more details for each label in labels field: `:name`, `:color`, `:description`, `:description_html`, `:text_color`. Default is `false`. `description_html` was introduced in [GitLab 12.7](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/21413) |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/4/issues"

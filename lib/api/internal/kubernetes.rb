@@ -4,7 +4,15 @@ module API
   # Kubernetes Internal API
   module Internal
     class Kubernetes < Grape::API::Instance
+      before do
+        authenticate_gitlab_kas_request!
+      end
+
       helpers do
+        def authenticate_gitlab_kas_request!
+          unauthorized! unless Gitlab::Kas.verify_api_request(headers)
+        end
+
         def agent_token
           @agent_token ||= cluster_agent_token_from_authorization_token
         end

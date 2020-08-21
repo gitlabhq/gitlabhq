@@ -26,8 +26,8 @@ file, and include the token Base64 encoded in a `secret_token` parameter
 or in the `Gitlab-Shared-Secret` header.
 
 NOTE: **Note:**
-The internal API used by GitLab Pages uses a different kind of
-authentication.
+The internal API used by GitLab Pages, and GitLab Kubernetes Agent Server (kas) uses JSON Web Token (JWT)
+authentication, which is different from GitLab Shell.
 
 ## Git Authentication
 

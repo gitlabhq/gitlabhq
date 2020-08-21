@@ -1257,10 +1257,8 @@ RSpec.describe MergeRequest do
     let(:repository) { merge_request.source_project.repository }
 
     context 'when the source project is set' do
-      it 'memoizes the value and returns the result' do
-        expect(repository).to receive(:branch_exists?).once.with(merge_request.source_branch).and_return(true)
-
-        2.times { expect(merge_request.source_branch_exists?).to eq(true) }
+      it 'returns true when the branch exists' do
+        expect(merge_request.source_branch_exists?).to eq(true)
       end
     end
 

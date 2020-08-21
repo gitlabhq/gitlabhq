@@ -43,7 +43,7 @@ To use the instance, group, project, or pipeline security dashboard:
 
 At the pipeline level, the Security section displays the vulnerabilities present in the branch of the project the pipeline was run against.
 
-![Pipeline Security Dashboard](img/pipeline_security_dashboard_v13_2.png)
+![Pipeline Security Dashboard](img/pipeline_security_dashboard_v13_3.png)
 
 Visit the page for any pipeline that ran any of the [supported reports](#supported-reports). To view
 the pipeline's security findings, select the **Security** tab when viewing the pipeline.

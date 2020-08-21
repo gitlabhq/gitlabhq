@@ -105,7 +105,6 @@ class MergeRequest < ApplicationRecord
 
   after_create :ensure_merge_request_diff
   after_update :clear_memoized_shas
-  after_update :clear_memoized_source_branch_exists
   after_update :reload_diff_if_branch_changed
   after_commit :ensure_metrics, on: [:create, :update], unless: :importing?
   after_commit :expire_etag_cache, unless: :importing?
@@ -871,10 +870,6 @@ class MergeRequest < ApplicationRecord
     clear_memoization(:target_branch_head)
   end
 
-  def clear_memoized_source_branch_exists
-    clear_memoization(:source_branch_exists)
-  end
-
   def reload_diff_if_branch_changed
     if (saved_change_to_source_branch? || saved_change_to_target_branch?) &&
         (source_branch_head && target_branch_head)
@@ -1126,11 +1121,9 @@ class MergeRequest < ApplicationRecord
   end
 
   def source_branch_exists?
-    strong_memoize(:source_branch_exists) do
-      next false unless self.source_project
+    return false unless self.source_project
 
-      self.source_project.repository.branch_exists?(self.source_branch)
-    end
+    self.source_project.repository.branch_exists?(self.source_branch)
   end
 
   def target_branch_exists?

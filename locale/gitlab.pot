@@ -5114,6 +5114,9 @@ msgstr ""
 msgid "ClusterAgent|You have insufficient permissions to create a cluster agent for this project"
 msgstr ""
 
+msgid "ClusterAgent|You have insufficient permissions to delete this cluster agent"
+msgstr ""
+
 msgid "ClusterIntegration|%{appList} was successfully installed on your Kubernetes cluster"
 msgstr ""
 

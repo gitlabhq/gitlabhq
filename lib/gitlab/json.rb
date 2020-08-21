@@ -22,7 +22,7 @@ module Gitlab
         string = string.to_s unless string.is_a?(String)
 
         legacy_mode = legacy_mode_enabled?(opts.delete(:legacy_mode))
-        data = adapter_load(string, opts)
+        data = adapter_load(string, **opts)
 
         handle_legacy_mode!(data) if legacy_mode
 
