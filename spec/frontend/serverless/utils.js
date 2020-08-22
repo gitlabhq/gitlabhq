@@ -1,4 +1,3 @@
-// eslint-disable-next-line import/prefer-default-export
 export const adjustMetricQuery = data => {
   const updatedMetric = data.metrics;
 

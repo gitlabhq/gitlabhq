@@ -14408,6 +14408,7 @@ CREATE TABLE public.project_incident_management_settings (
     pagerduty_active boolean DEFAULT false NOT NULL,
     encrypted_pagerduty_token bytea,
     encrypted_pagerduty_token_iv bytea,
+    auto_close_incident boolean DEFAULT true NOT NULL,
     CONSTRAINT pagerduty_token_iv_length_constraint CHECK ((octet_length(encrypted_pagerduty_token_iv) <= 12)),
     CONSTRAINT pagerduty_token_length_constraint CHECK ((octet_length(encrypted_pagerduty_token) <= 255))
 );

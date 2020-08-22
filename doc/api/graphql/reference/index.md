@@ -1686,7 +1686,7 @@ Information about pagination in a connection.
 | `sentryErrors` | SentryErrorCollection | Paginated collection of Sentry errors on the project |
 | `serviceDeskAddress` | String | E-mail address of the service desk. |
 | `serviceDeskEnabled` | Boolean | Indicates if the project has service desk enabled. |
-| `sharedRunnersEnabled` | Boolean | Indicates if Shared Runners are enabled for the project |
+| `sharedRunnersEnabled` | Boolean | Indicates if shared runners are enabled for the project |
 | `snippetsEnabled` | Boolean | Indicates if Snippets are enabled for the current user |
 | `sshUrlToRepo` | String | URL to connect to the project via SSH |
 | `starCount` | Int! | Number of times the project has been starred |

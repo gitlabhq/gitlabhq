@@ -55,10 +55,6 @@ export const createStore = () =>
   });
 ```
 
-_Note:_ Until this
-[RFC](https://gitlab.com/gitlab-org/frontend/rfcs/-/issues/20) is implemented,
-the above will need to disable the `import/prefer-default-export` ESLint rule.
-
 ### `state.js`
 
 The first thing you should do before writing any code is to design the state.

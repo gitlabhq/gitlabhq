@@ -204,8 +204,7 @@ password = <deploy token>
 When uploading packages, note that:
 
 - The maximum allowed size is 50 Megabytes.
-- If you upload the same package with the same version multiple times, each consecutive upload
-  is saved as a separate file. When installing a package, GitLab serves the most recent file.
+- You cannot upload the same version of a package multiple times. If you try, you receive the error `Validation failed: File name has already been taken`.
 
 ### Upload packages with Twine
 

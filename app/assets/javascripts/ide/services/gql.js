@@ -17,5 +17,4 @@ const getClient = memoize(() =>
   ),
 );
 
-// eslint-disable-next-line import/prefer-default-export
 export const query = (...args) => getClient().query(...args);

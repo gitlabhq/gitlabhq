@@ -1,4 +1,3 @@
-// eslint-disable-next-line import/prefer-default-export
 export const allCheck = state => {
   const checks = Object.values(state.checks);
 

@@ -14433,9 +14433,6 @@ msgstr ""
 msgid "License|License"
 msgstr ""
 
-msgid "License|Licensed user count exceeded"
-msgstr ""
-
 msgid "License|You can restore access to the Gold features at any time by upgrading."
 msgstr ""
 
@@ -14449,9 +14446,6 @@ msgid "License|Your License"
 msgstr ""
 
 msgid "License|Your free trial of GitLab Ultimate expired on %{trial_ends_on}."
-msgstr ""
-
-msgid "License|Your instance has exceeded your subscription's number of licensed users by %{extra_users_count}. You can continue to add more users and we'll include the overage in your next bill."
 msgstr ""
 
 msgid "Limit display of time tracking units to hours."

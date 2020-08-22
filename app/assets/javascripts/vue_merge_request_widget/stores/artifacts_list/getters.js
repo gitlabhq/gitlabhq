@@ -1,6 +1,5 @@
 import { s__, n__ } from '~/locale';
 
-// eslint-disable-next-line import/prefer-default-export
 export const title = state => {
   if (state.isLoading) {
     return s__('BuildArtifacts|Loading artifacts');

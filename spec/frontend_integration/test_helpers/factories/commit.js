@@ -2,7 +2,6 @@ import { withValues } from '../utils/obj';
 import { getCommit } from '../fixtures';
 import { createCommitId } from './commit_id';
 
-// eslint-disable-next-line import/prefer-default-export
 export const createNewCommit = ({ id = createCommitId(), message }, orig = getCommit()) => {
   return withValues(orig, {
     id,

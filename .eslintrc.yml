@@ -17,6 +17,7 @@ settings:
       config: './config/webpack.config.js'
 rules:
   import/no-commonjs: error
+  import/no-default-export: off
   no-underscore-dangle:
     - error
     - allow:

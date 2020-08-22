@@ -2,7 +2,6 @@ import GetSnippetQuery from '../queries/snippet.query.graphql';
 
 const blobsDefault = [];
 
-// eslint-disable-next-line import/prefer-default-export
 export const getSnippetMixin = {
   apollo: {
     snippet: {

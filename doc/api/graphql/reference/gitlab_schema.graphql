@@ -11886,7 +11886,7 @@ type Project {
   ): ServiceConnection
 
   """
-  Indicates if Shared Runners are enabled for the project
+  Indicates if shared runners are enabled for the project
   """
   sharedRunnersEnabled: Boolean
 

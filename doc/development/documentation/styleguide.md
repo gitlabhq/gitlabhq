@@ -313,6 +313,16 @@ Capitalize names of:
 
 Follow the capitalization style listed at the [authoritative source](#links-to-external-documentation) for the entity, which may use non-standard case styles. For example: GitLab and npm.
 
+Use forms of *sign in*, instead of *log in* or *login*. For example:
+
+- Sign in to GitLab.
+- Open the sign-in page.
+
+Exceptions to this rule include the concept of *single sign-on* and
+references to user interface elements. For example:
+
+- To sign in to product X, enter your credentials, and then click **Log in**.
+
 ### Inclusive language
 
 We strive to create documentation that is inclusive. This section includes guidance and examples in the

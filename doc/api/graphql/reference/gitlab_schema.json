@@ -34868,7 +34868,7 @@
             },
             {
               "name": "sharedRunnersEnabled",
-              "description": "Indicates if Shared Runners are enabled for the project",
+              "description": "Indicates if shared runners are enabled for the project",
               "args": [
 
               ],

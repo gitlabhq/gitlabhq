@@ -11,9 +11,6 @@
  * @typedef {String} UUIDv4
  */
 
-// https://gitlab.com/gitlab-org/frontend/rfcs/-/issues/20
-/* eslint-disable import/prefer-default-export */
-
 import MersenneTwister from 'mersenne-twister';
 import stringHash from 'string-hash';
 import { isString } from 'lodash';

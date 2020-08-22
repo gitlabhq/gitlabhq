@@ -5,7 +5,6 @@ const DESIGN_TRACKING_CONTEXT_SCHEMA = 'iglu:com.gitlab/design_management_contex
 const DESIGN_TRACKING_PAGE_NAME = 'projects:issues:design';
 const DESIGN_TRACKING_EVENT_NAME = 'view_design';
 
-// eslint-disable-next-line import/prefer-default-export
 export function trackDesignDetailView(
   referer = '',
   owner = '',

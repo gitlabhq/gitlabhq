@@ -6,30 +6,30 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Runners API
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/2640) in GitLab 8.5
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/2640) in GitLab 8.5.
 
 ## Registration and authentication tokens
 
-There are two tokens to take into account when connecting a Runner with GitLab.
+There are two tokens to take into account when connecting a runner with GitLab.
 
 | Token | Description |
 | ----- | ----------- |
-| Registration token   | Token used to [register the Runner](https://docs.gitlab.com/runner/register/). It can be [obtained through GitLab](../ci/runners/README.md). |
-| Authentication token | Token used to authenticate the Runner with the GitLab instance. It is obtained either automatically when [registering a Runner](https://docs.gitlab.com/runner/register/), or manually when [registering the Runner via the Runners API](#register-a-new-runner). |
+| Registration token   | Token used to [register the runner](https://docs.gitlab.com/runner/register/). It can be [obtained through GitLab](../ci/runners/README.md). |
+| Authentication token | Token used to authenticate the runner with the GitLab instance. It is obtained either automatically when [registering a runner](https://docs.gitlab.com/runner/register/), or manually when [registering the runner via the Runner API](#register-a-new-runner). |
 
-Here's an example of how the two tokens are used in Runner registration:
+Here's an example of how the two tokens are used in runner registration:
 
-1. You register the Runner via the GitLab API using a registration token, and an
+1. You register the runner via the GitLab API using a registration token, and an
    authentication token is returned.
 1. You use that authentication token and add it to the
-   [Runner's configuration file](https://docs.gitlab.com/runner/commands/#configuration-file):
+   [runner's configuration file](https://docs.gitlab.com/runner/commands/#configuration-file):
 
    ```toml
    [[runners]]
      token = "<authentication_token>"
    ```
 
-GitLab and Runner are then connected.
+GitLab and the runner are then connected.
 
 ## List owned runners
 
@@ -224,7 +224,7 @@ PUT /runners/:id
 | `run_untagged`| boolean | no       | Flag indicating the runner can execute untagged jobs |
 | `locked`      | boolean | no       | Flag indicating the runner is locked |
 | `access_level` | string | no       | The access_level of the runner; `not_protected` or `ref_protected` |
-| `maximum_timeout` | integer | no   | Maximum timeout set when this Runner will handle the job |
+| `maximum_timeout` | integer | no   | Maximum timeout set when this runner will handle the job |
 
 ```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/runners/6" --form "description=test-1-20150125-test" --form "tag_list=ruby,mysql,tag1,tag2"
@@ -291,7 +291,7 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://git
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/15432) in GitLab 10.3.
 
-List jobs that are being processed or were processed by specified Runner.
+List jobs that are being processed or were processed by specified runner.
 
 ```plaintext
 GET /runners/:id/jobs
@@ -541,9 +541,9 @@ Example response:
 ]
 ```
 
-## Register a new Runner
+## Register a new runner
 
-Register a new Runner for the instance.
+Register a new runner for the instance.
 
 ```plaintext
 POST /runners
@@ -554,12 +554,12 @@ POST /runners
 | `token`      | string  | yes      | [Registration token](#registration-and-authentication-tokens).  |
 | `description`| string  | no       | Runner's description|
 | `info`       | hash    | no       | Runner's metadata   |
-| `active`     | boolean | no       | Whether the Runner is active   |
-| `locked`     | boolean | no       | Whether the Runner should be locked for current project |
-| `run_untagged` | boolean | no     | Whether the Runner should handle untagged jobs |
-| `tag_list`   | string array | no  | List of Runner's tags |
+| `active`     | boolean | no       | Whether the runner is active   |
+| `locked`     | boolean | no       | Whether the runner should be locked for current project |
+| `run_untagged` | boolean | no     | Whether the runner should handle untagged jobs |
+| `tag_list`   | string array | no  | List of runner's tags |
 | `access_level`    | string | no   | The access_level of the runner; `not_protected` or `ref_protected` |
-| `maximum_timeout` | integer | no  | Maximum timeout set when this Runner will handle the job |
+| `maximum_timeout` | integer | no  | Maximum timeout set when this runner will handle the job |
 
 ```shell
 curl --request POST "https://gitlab.example.com/api/v4/runners" --form "token=<registration_token>" --form "description=test-1-20150125-test" --form "tag_list=ruby,mysql,tag1,tag2"
@@ -580,9 +580,9 @@ Example response:
 }
 ```
 
-## Delete a registered Runner
+## Delete a registered runner
 
-Deletes a registered Runner.
+Deletes a registered runner.
 
 ```plaintext
 DELETE /runners
@@ -602,9 +602,9 @@ Response:
 |-----------|---------------------------------|
 | 204       | Runner was deleted              |
 
-## Verify authentication for a registered Runner
+## Verify authentication for a registered runner
 
-Validates authentication credentials for a registered Runner.
+Validates authentication credentials for a registered runner.
 
 ```plaintext
 POST /runners/verify
