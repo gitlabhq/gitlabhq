@@ -83,6 +83,7 @@
   - ".gitlab/ci/frontend.gitlab-ci.yml"
   - ".gitlab/ci/build-images.gitlab-ci.yml"
   - ".gitlab/ci/review.gitlab-ci.yml"
+  - "scripts/trigger-build"
 
 .ci-qa-patterns: &ci-qa-patterns
   - ".gitlab-ci.yml"
