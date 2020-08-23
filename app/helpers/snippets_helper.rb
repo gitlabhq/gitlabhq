@@ -12,7 +12,7 @@ module SnippetsHelper
   end
 
   def download_raw_snippet_button(snippet)
-    link_to(icon('download'),
+    link_to(sprite_icon('download'),
             gitlab_raw_snippet_path(snippet, inline: false),
             target: '_blank',
             rel: 'noopener noreferrer',

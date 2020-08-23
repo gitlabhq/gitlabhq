@@ -132,7 +132,7 @@ At this point, you'll see the following message in the command line (for ED25519
 
 ```plaintext
 Generating public/private ed25519 key pair.
-Enter file in which to save the key (/home/user/.ssh/id_rsa):
+Enter file in which to save the key (/home/user/.ssh/id_ed25519):
 ```
 
 If you don't already have an SSH key pair and are not generating a [deploy key](#deploy-keys),

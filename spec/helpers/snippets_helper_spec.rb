@@ -109,7 +109,7 @@ RSpec.describe SnippetsHelper do
     end
 
     def download_link(url)
-      "<a target=\"_blank\" rel=\"noopener noreferrer\" class=\"btn btn-sm has-tooltip\" title=\"Download\" data-container=\"body\" href=\"#{url}?inline=false\"><i aria-hidden=\"true\" data-hidden=\"true\" class=\"fa fa-download\"></i></a>"
+      "<a target=\"_blank\" rel=\"noopener noreferrer\" class=\"btn btn-sm has-tooltip\" title=\"Download\" data-container=\"body\" href=\"#{url}?inline=false\">#{sprite_icon('download')}</a>"
     end
   end
 
