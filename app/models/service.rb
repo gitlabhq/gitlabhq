@@ -9,7 +9,6 @@ class Service < ApplicationRecord
   include DataFields
   include IgnorableColumns
 
-  ignore_columns %i[title description], remove_with: '13.4', remove_after: '2020-09-22'
   ignore_columns %i[default], remove_with: '13.5', remove_after: '2020-10-22'
 
   SERVICE_NAMES = %w[

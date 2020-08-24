@@ -51,6 +51,21 @@ module Gitlab
         maven_app_name_regex
       end
 
+      def pypi_version_regex
+        # See the official regex: https://github.com/pypa/packaging/blob/16.7/packaging/version.py#L159
+
+        @pypi_version_regex ||= %r{
+          \A(?:
+            v?
+            (?:([0-9]+)!)?                                                 (?# epoch)
+            ([0-9]+(?:\.[0-9]+)*)                                          (?# release segment)
+            ([-_\.]?((a|b|c|rc|alpha|beta|pre|preview))[-_\.]?([0-9]+)?)?  (?# pre-release)
+            ((?:-([0-9]+))|(?:[-_\.]?(post|rev|r)[-_\.]?([0-9]+)?))?       (?# post release)
+            ([-_\.]?(dev)[-_\.]?([0-9]+)?)?                                (?# dev release)
+            (?:\+([a-z0-9]+(?:[-_\.][a-z0-9]+)*))?                         (?# local version)
+            )\z}xi.freeze
+      end
+
       def unbounded_semver_regex
         # See the official regex: https://semver.org/#is-there-a-suggested-regular-expression-regex-to-check-a-semver-string
 

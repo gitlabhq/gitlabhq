@@ -27,9 +27,7 @@ const createComponent = ({ config = mockLabelToken, value = { data: '' }, active
       alignSuggestions: function fakeAlignSuggestions() {},
     },
     stubs: {
-      Portal: {
-        template: '<div><slot></slot></div>',
-      },
+      Portal: true,
       GlFilteredSearchSuggestionList: {
         template: '<div></div>',
         methods: {

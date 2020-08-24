@@ -23,9 +23,7 @@ const createComponent = ({ config = mockAuthorToken, value = { data: '' }, activ
       alignSuggestions: function fakeAlignSuggestions() {},
     },
     stubs: {
-      Portal: {
-        template: '<div><slot></slot></div>',
-      },
+      Portal: true,
       GlFilteredSearchSuggestionList: {
         template: '<div></div>',
         methods: {

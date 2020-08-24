@@ -52,7 +52,6 @@ describe('Issuable component', () => {
       },
       stubs: {
         'gl-sprintf': GlSprintf,
-        'gl-link': '<a><slot></slot></a>',
       },
     });
   };

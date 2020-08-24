@@ -1,5 +1,5 @@
 import Vuex from 'vuex';
-import { GlSorting } from '@gitlab/ui';
+import { GlSorting, GlSortingItem } from '@gitlab/ui';
 import { mount, createLocalVue } from '@vue/test-utils';
 import stubChildren from 'helpers/stub_children';
 import PackagesSort from '~/packages/list/components/packages_sort.vue';
@@ -12,8 +12,6 @@ describe('packages_sort', () => {
   let store;
   let sorting;
   let sortingItems;
-
-  const GlSortingItem = { name: 'sorting-item-stub', template: '<div><slot></slot></div>' };
 
   const findPackageListSorting = () => wrapper.find(GlSorting);
   const findSortingItems = () => wrapper.findAll(GlSortingItem);

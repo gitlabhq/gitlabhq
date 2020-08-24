@@ -36,8 +36,8 @@ RSpec.describe Resolvers::ProjectPipelineResolver do
 
   context 'when the pipeline is not a ci_config_source' do
     let(:pipeline) do
-      config_source_value = Ci::PipelineEnums.non_ci_config_source_values.first
-      config_source = Ci::PipelineEnums.config_sources.key(config_source_value)
+      config_source_value = ::Enums::Ci::Pipeline.non_ci_config_source_values.first
+      config_source = ::Enums::Ci::Pipeline.config_sources.key(config_source_value)
 
       create(:ci_pipeline, config_source: config_source, project: project)
     end

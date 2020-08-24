@@ -18,7 +18,6 @@ describe('packages_list', () => {
   let wrapper;
   let store;
 
-  const GlSortingItem = { name: 'sorting-item-stub', template: '<div><slot></slot></div>' };
   const EmptySlotStub = { name: 'empty-slot-stub', template: '<div>bar</div>' };
 
   const findPackagesListLoader = () => wrapper.find(PackagesListLoader);
@@ -67,7 +66,6 @@ describe('packages_list', () => {
       stubs: {
         ...stubChildren(PackagesList),
         GlTable,
-        GlSortingItem,
         GlModal,
       },
       ...options,

@@ -27,7 +27,7 @@ module Gitlab
           private
 
           def custom_group_titles
-            @custom_group_titles ||= PrometheusMetricEnums.custom_group_details.values.map { |group_details| group_details[:group_title] }
+            @custom_group_titles ||= Enums::PrometheusMetric.custom_group_details.values.map { |group_details| group_details[:group_title] }
           end
 
           def edit_path(metric)

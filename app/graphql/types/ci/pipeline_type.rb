@@ -26,7 +26,7 @@ module Types
             description: 'Detailed status of the pipeline',
             resolve: -> (obj, _args, ctx) { obj.detailed_status(ctx[:current_user]) }
       field :config_source, PipelineConfigSourceEnum, null: true,
-            description: "Config source of the pipeline (#{::Ci::PipelineEnums.config_sources.keys.join(', ').upcase})"
+            description: "Config source of the pipeline (#{::Enums::Ci::Pipeline.config_sources.keys.join(', ').upcase})"
       field :duration, GraphQL::INT_TYPE, null: true,
             description: 'Duration of the pipeline in seconds'
       field :coverage, GraphQL::FLOAT_TYPE, null: true,

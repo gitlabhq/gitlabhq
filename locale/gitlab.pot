@@ -26049,6 +26049,9 @@ msgstr ""
 msgid "Trigger cluster reindexing"
 msgstr ""
 
+msgid "Trigger manual job"
+msgstr ""
+
 msgid "Trigger pipelines for mirror updates"
 msgstr ""
 

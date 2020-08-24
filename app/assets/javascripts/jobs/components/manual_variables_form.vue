@@ -1,14 +1,13 @@
 <script>
 import { uniqueId } from 'lodash';
 import { mapActions } from 'vuex';
-import { GlDeprecatedButton, GlIcon } from '@gitlab/ui';
+import { GlButton } from '@gitlab/ui';
 import { s__, sprintf } from '~/locale';
 
 export default {
   name: 'ManualVariablesForm',
   components: {
-    GlDeprecatedButton,
-    GlIcon,
+    GlButton,
   },
   props: {
     action: {
@@ -136,12 +135,12 @@ export default {
         <div class="table-section section-10">
           <div class="table-mobile-header" role="rowheader"></div>
           <div class="table-mobile-content justify-content-end">
-            <gl-deprecated-button
-              class="btn-transparent btn-blank w-25"
+            <gl-button
+              category="tertiary"
+              icon="clear"
+              :aria-label="__('Delete variable')"
               @click="deleteVariable(variable.id)"
-            >
-              <gl-icon name="clear" />
-            </gl-deprecated-button>
+            />
           </div>
         </div>
       </div>
@@ -175,9 +174,14 @@ export default {
       <p class="text-muted" v-html="helpText"></p>
     </div>
     <div class="d-flex justify-content-center">
-      <gl-deprecated-button variant="primary" @click="triggerManualJob(variables)">
+      <gl-button
+        variant="info"
+        category="primary"
+        :aria-label="__('Trigger manual job')"
+        @click="triggerManualJob(variables)"
+      >
         {{ action.button_title }}
-      </gl-deprecated-button>
+      </gl-button>
     </div>
   </div>
 </template>

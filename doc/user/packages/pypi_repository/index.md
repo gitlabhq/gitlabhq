@@ -206,6 +206,26 @@ When uploading packages, note that:
 - The maximum allowed size is 50 Megabytes.
 - You cannot upload the same version of a package multiple times. If you try, you receive the error `Validation failed: File name has already been taken`.
 
+### Ensure your version string is valid
+
+If your version string (for example, `0.0.1`) is invalid, it will be rejected. GitLab uses the following regex to validate the version string.
+
+```ruby
+\A(?:
+    v?
+    (?:([0-9]+)!)?                                                 (?# epoch)
+    ([0-9]+(?:\.[0-9]+)*)                                          (?# release segment)
+    ([-_\.]?((a|b|c|rc|alpha|beta|pre|preview))[-_\.]?([0-9]+)?)?  (?# pre-release)
+    ((?:-([0-9]+))|(?:[-_\.]?(post|rev|r)[-_\.]?([0-9]+)?))?       (?# post release)
+    ([-_\.]?(dev)[-_\.]?([0-9]+)?)?                                (?# dev release)
+    (?:\+([a-z0-9]+(?:[-_\.][a-z0-9]+)*))?                         (?# local version)
+)\z}xi
+```
+
+You can play around with the regex and try your version strings on [this regular expression editor](https://rubular.com/r/FKM6d07ouoDaFV).
+
+For more details about the regex used, please check the [documentation here](https://www.python.org/dev/peps/pep-0440/#appendix-b-parsing-version-strings-with-regular-expressions))
+
 ### Upload packages with Twine
 
 If you were following the guide above, then the `MyPyPiPackage` package should

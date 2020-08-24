@@ -24,5 +24,6 @@ class IssuablePolicy < BasePolicy
     prevent :create_note
     prevent :admin_note
     prevent :resolve_note
+    prevent :award_emoji
   end
 end

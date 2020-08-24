@@ -83,4 +83,9 @@ namespace that started the import process.
 
 ## Troubleshooting
 
+If the GUI-based import tool does not work, you can try to:
+
+- Use the [GitLab Import API](../../../api/import.md#import-repository-from-bitbucket-server) Bitbucket server endpoint.
+- Set up [Repository Mirroring](../repository/repository_mirroring.md), which provides verbose error output.
+
 See the [troubleshooting](bitbucket.md#troubleshooting) section for [Bitbucket](bitbucket.md).

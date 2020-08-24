@@ -311,6 +311,73 @@ RSpec.describe Gitlab::Regex do
     it { is_expected.not_to match('%2e%2e%2f1.2.3') }
   end
 
+  describe '.pypi_version_regex' do
+    subject { described_class.pypi_version_regex }
+
+    it { is_expected.to match('0.1') }
+    it { is_expected.to match('2.0') }
+    it { is_expected.to match('1.2.0')}
+    it { is_expected.to match('0100!0.0') }
+    it { is_expected.to match('00!1.2') }
+    it { is_expected.to match('1.0a') }
+    it { is_expected.to match('1.0-a') }
+    it { is_expected.to match('1.0.a1') }
+    it { is_expected.to match('1.0a1') }
+    it { is_expected.to match('1.0-a1') }
+    it { is_expected.to match('1.0alpha1') }
+    it { is_expected.to match('1.0b1') }
+    it { is_expected.to match('1.0beta1') }
+    it { is_expected.to match('1.0rc1') }
+    it { is_expected.to match('1.0pre1') }
+    it { is_expected.to match('1.0preview1') }
+    it { is_expected.to match('1.0.dev1') }
+    it { is_expected.to match('1.0.DEV1') }
+    it { is_expected.to match('1.0.post1') }
+    it { is_expected.to match('1.0.rev1') }
+    it { is_expected.to match('1.0.r1') }
+    it { is_expected.to match('1.0c2') }
+    it { is_expected.to match('2012.15') }
+    it { is_expected.to match('1.0+5') }
+    it { is_expected.to match('1.0+abc.5') }
+    it { is_expected.to match('1!1.1') }
+    it { is_expected.to match('1.0c3') }
+    it { is_expected.to match('1.0rc2') }
+    it { is_expected.to match('1.0c1') }
+    it { is_expected.to match('1.0b2-346') }
+    it { is_expected.to match('1.0b2.post345') }
+    it { is_expected.to match('1.0b2.post345.dev456') }
+    it { is_expected.to match('1.2.rev33+123456') }
+    it { is_expected.to match('1.1.dev1') }
+    it { is_expected.to match('1.0b1.dev456') }
+    it { is_expected.to match('1.0a12.dev456') }
+    it { is_expected.to match('1.0b2') }
+    it { is_expected.to match('1.0.dev456') }
+    it { is_expected.to match('1.0c1.dev456') }
+    it { is_expected.to match('1.0.post456') }
+    it { is_expected.to match('1.0.post456.dev34') }
+    it { is_expected.to match('1.2+123abc') }
+    it { is_expected.to match('1.2+abc') }
+    it { is_expected.to match('1.2+abc123') }
+    it { is_expected.to match('1.2+abc123def') }
+    it { is_expected.to match('1.2+1234.abc') }
+    it { is_expected.to match('1.2+123456') }
+    it { is_expected.to match('1.2.r32+123456') }
+    it { is_expected.to match('1!1.2.rev33+123456') }
+    it { is_expected.to match('1.0a12') }
+    it { is_expected.to match('1.2.3-45+abcdefgh') }
+    it { is_expected.to match('v1.2.3') }
+    it { is_expected.not_to match('1.2.3-45-abcdefgh') }
+    it { is_expected.not_to match('..1.2.3') }
+    it { is_expected.not_to match('  1.2.3') }
+    it { is_expected.not_to match("1.2.3  \r\t") }
+    it { is_expected.not_to match("\r\t 1.2.3") }
+    it { is_expected.not_to match('1./2.3') }
+    it { is_expected.not_to match('1.2.3-4/../../') }
+    it { is_expected.not_to match('1.2.3-4%2e%2e%') }
+    it { is_expected.not_to match('../../../../../1.2.3') }
+    it { is_expected.not_to match('%2e%2e%2f1.2.3') }
+  end
+
   describe '.semver_regex' do
     subject { described_class.semver_regex }
 
