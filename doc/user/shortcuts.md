@@ -27,7 +27,7 @@ These shortcuts are available in most areas of GitLab
 | <kbd>Shift</kbd> + <kbd>a</kbd> | Go to your Activity page. |
 | <kbd>Shift</kbd> + <kbd>l</kbd> | Go to your Milestones page. |
 | <kbd>Shift</kbd> + <kbd>s</kbd> | Go to your Snippets page. |
-| <kbd>s</kbd>                    | Put cursor in the issues/merge requests search. |
+| <kbd>s</kbd> / <kbd>/</kbd>     | Put cursor in the search bar. |
 | <kbd>Shift</kbd> + <kbd>i</kbd> | Go to your Issues page. |
 | <kbd>Shift</kbd> + <kbd>m</kbd> | Go to your Merge requests page.|
 | <kbd>Shift</kbd> + <kbd>t</kbd> | Go to your To-Do List page. |

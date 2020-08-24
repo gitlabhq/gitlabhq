@@ -21,6 +21,11 @@ export default {
     commit(types.SET_ACTIVE_ID, id);
   },
 
+  setFilters: ({ commit }, filters) => {
+    const { scope, utf8, state, ...filterParams } = filters;
+    commit(types.SET_FILTERS, filterParams);
+  },
+
   fetchLists: () => {
     notImplemented();
   },

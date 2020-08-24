@@ -94,6 +94,10 @@ FactoryBot.define do
       create(:grafana_integration, project: projects[1], enabled: true)
       create(:grafana_integration, project: projects[2], enabled: false)
 
+      create(:package, project: projects[0])
+      create(:package, project: projects[0])
+      create(:package, project: projects[1])
+
       ProjectFeature.first.update_attribute('repository_access_level', 0)
 
       # Create fresh & a month (28-days SMAU) old  data

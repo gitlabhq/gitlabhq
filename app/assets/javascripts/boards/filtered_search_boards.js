@@ -27,6 +27,11 @@ export default class FilteredSearchBoards extends FilteredSearchManager {
   updateObject(path) {
     this.store.path = path.substr(1);
 
+    if (gon.features.boardsWithSwimlanes) {
+      boardsStore.updateFiltersUrl();
+      boardsStore.performSearch();
+    }
+
     if (this.updateUrl) {
       boardsStore.updateFiltersUrl();
     }

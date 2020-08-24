@@ -8,6 +8,7 @@ export default () => ({
   boardLists: [],
   issuesByListId: {},
   isLoadingIssues: false,
+  filterParams: {},
   error: undefined,
   // TODO: remove after ce/ee split of board_content.vue
   isShowingEpicsSwimlanes: false,

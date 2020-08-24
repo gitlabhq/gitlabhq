@@ -513,6 +513,10 @@ const boardsStore = {
     eventHub.$emit('updateTokens');
   },
 
+  performSearch() {
+    eventHub.$emit('performSearch');
+  },
+
   setListDetail(newList) {
     this.detail.list = newList;
   },

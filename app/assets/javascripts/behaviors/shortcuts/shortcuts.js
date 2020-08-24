@@ -34,6 +34,7 @@ export default class Shortcuts {
 
     Mousetrap.bind('?', this.onToggleHelp);
     Mousetrap.bind('s', Shortcuts.focusSearch);
+    Mousetrap.bind('/', Shortcuts.focusSearch);
     Mousetrap.bind('f', this.focusFilter.bind(this));
     Mousetrap.bind('p b', Shortcuts.onTogglePerfBar);
 

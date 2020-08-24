@@ -129,6 +129,7 @@ module Gitlab
             lfs_objects: count(LfsObject),
             milestone_lists: count(List.milestone),
             milestones: count(Milestone),
+            projects_with_packages: distinct_count(::Packages::Package, :project_id),
             pages_domains: count(PagesDomain),
             pool_repositories: count(PoolRepository),
             projects: count(Project),
@@ -527,9 +528,13 @@ module Gitlab
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def usage_activity_by_stage_package(time_period)
-        {}
+        {
+          projects_with_packages: distinct_count(::Project.with_packages.where(time_period), :creator_id)
+        }
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       # Omitted because no user, creator or author associated: `boards`, `labels`, `milestones`, `uploads`
       # Omitted because too expensive: `epics_deepest_relationship_level`

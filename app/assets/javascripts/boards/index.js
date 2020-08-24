@@ -1,6 +1,6 @@
 import $ from 'jquery';
 import Vue from 'vue';
-import { mapActions } from 'vuex';
+import { mapActions, mapState } from 'vuex';
 
 import 'ee_else_ce/boards/models/issue';
 import 'ee_else_ce/boards/models/list';
@@ -42,6 +42,7 @@ import {
   NavigationType,
   convertObjectPropsToCamelCase,
   parseBoolean,
+  urlParamsToObject,
 } from '~/lib/utils/common_utils';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import mountMultipleBoardsSwitcher from './mount_multiple_boards_switcher';
@@ -104,6 +105,7 @@ export default () => {
       };
     },
     computed: {
+      ...mapState(['isShowingEpicsSwimlanes']),
       detailIssueVisible() {
         return Object.keys(this.detailIssue.issue).length;
       },
@@ -125,16 +127,20 @@ export default () => {
       eventHub.$on('newDetailIssue', this.updateDetailIssue);
       eventHub.$on('clearDetailIssue', this.clearDetailIssue);
       sidebarEventHub.$on('toggleSubscription', this.toggleSubscription);
+      eventHub.$on('performSearch', this.performSearch);
     },
     beforeDestroy() {
       eventHub.$off('updateTokens', this.updateTokens);
       eventHub.$off('newDetailIssue', this.updateDetailIssue);
       eventHub.$off('clearDetailIssue', this.clearDetailIssue);
       sidebarEventHub.$off('toggleSubscription', this.toggleSubscription);
+      eventHub.$off('performSearch', this.performSearch);
     },
     mounted() {
       this.filterManager = new FilteredSearchBoards(boardsStore.filter, true, boardsStore.cantEdit);
       this.filterManager.setup();
+
+      this.performSearch();
 
       boardsStore.disabled = this.disabled;
 
@@ -189,9 +195,15 @@ export default () => {
       }
     },
     methods: {
-      ...mapActions(['setInitialBoardData']),
+      ...mapActions(['setInitialBoardData', 'setFilters', 'fetchEpicsSwimlanes']),
       updateTokens() {
         this.filterManager.updateTokens();
+      },
+      performSearch() {
+        this.setFilters(convertObjectPropsToCamelCase(urlParamsToObject(window.location.search)));
+        if (gon.features.boardsWithSwimlanes && this.isShowingEpicsSwimlanes) {
+          this.fetchEpicsSwimlanes(false);
+        }
       },
       updateDetailIssue(newIssue, multiSelect = false) {
         const { sidebarInfoEndpoint } = newIssue;

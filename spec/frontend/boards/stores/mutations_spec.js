@@ -44,6 +44,16 @@ describe('Board Store Mutations', () => {
     });
   });
 
+  describe('SET_FILTERS', () => {
+    it('updates filterParams to be the value that is passed', () => {
+      const filterParams = { labelName: 'label' };
+
+      mutations.SET_FILTERS(state, filterParams);
+
+      expect(state.filterParams).toBe(filterParams);
+    });
+  });
+
   describe('REQUEST_ADD_LIST', () => {
     expectNotImplemented(mutations.REQUEST_ADD_LIST);
   });

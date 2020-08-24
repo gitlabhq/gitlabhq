@@ -26,6 +26,25 @@ describe('setInitialBoardData', () => {
   });
 });
 
+describe('setFilters', () => {
+  it('should commit mutation SET_FILTERS', done => {
+    const state = {
+      filters: {},
+    };
+
+    const filters = { labelName: 'label' };
+
+    testAction(
+      actions.setFilters,
+      filters,
+      state,
+      [{ type: types.SET_FILTERS, payload: filters }],
+      [],
+      done,
+    );
+  });
+});
+
 describe('setActiveId', () => {
   it('should commit mutation SET_ACTIVE_ID', done => {
     const state = {
