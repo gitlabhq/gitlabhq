@@ -12,6 +12,10 @@ RSpec.describe Ci::PipelineArtifact, type: :model do
 
   it_behaves_like 'having unique enum values'
 
+  it_behaves_like 'UpdateProjectStatistics' do
+    subject { build(:ci_pipeline_artifact) }
+  end
+
   describe 'validations' do
     it { is_expected.to validate_presence_of(:pipeline) }
     it { is_expected.to validate_presence_of(:project) }

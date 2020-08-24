@@ -110,8 +110,8 @@ describe('ImportProjectsTable', () => {
       wrapper
         .findAll('th')
         .filter(w => w.text() === `From ${providerTitle}`)
-        .isEmpty(),
-    ).toBe(false);
+        .exists(),
+    ).toBe(true);
 
     expect(wrapper.contains(ProviderRepoTableRow)).toBe(true);
     expect(wrapper.contains(ImportedProjectTableRow)).toBe(true);

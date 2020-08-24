@@ -1,8 +1,8 @@
 <script>
 import { s__ } from '~/locale';
 import Todo from '~/sidebar/components/todo_toggle/todo.vue';
-import createAlertTodo from '../../graphql/mutations/alert_todo_create.mutation.graphql';
-import todoMarkDone from '../../graphql/mutations/alert_todo_mark_done.mutation.graphql';
+import createAlertTodoMutation from '../../graphql/mutations/alert_todo_create.mutation.graphql';
+import todoMarkDoneMutation from '~/graphql_shared/mutations/todo_mark_done.mutation.graphql';
 import alertQuery from '../../graphql/queries/details.query.graphql';
 
 export default {
@@ -66,7 +66,7 @@ export default {
       this.isUpdating = true;
       return this.$apollo
         .mutate({
-          mutation: createAlertTodo,
+          mutation: createAlertTodoMutation,
           variables: {
             iid: this.alert.iid,
             projectPath: this.projectPath,
@@ -89,7 +89,7 @@ export default {
       this.isUpdating = true;
       return this.$apollo
         .mutate({
-          mutation: todoMarkDone,
+          mutation: todoMarkDoneMutation,
           variables: {
             id: this.firstToDoId,
           },

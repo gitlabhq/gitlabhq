@@ -1,7 +1,7 @@
 import testAction from 'helpers/vuex_action_helper';
-import actions from '~/boards/stores/actions';
+import actions, { gqlClient } from '~/boards/stores/actions';
 import * as types from '~/boards/stores/mutation_types';
-import { inactiveId } from '~/boards/constants';
+import { inactiveId, ListType } from '~/boards/constants';
 
 const expectNotImplemented = action => {
   it('is not implemented', () => {
@@ -62,8 +62,31 @@ describe('setActiveId', () => {
   });
 });
 
-describe('fetchLists', () => {
-  expectNotImplemented(actions.fetchLists);
+describe('showWelcomeList', () => {
+  it('should dispatch addList action', done => {
+    const state = {
+      endpoints: { fullPath: 'gitlab-org', boardId: '1' },
+      boardType: 'group',
+      disabled: false,
+      boardLists: [{ type: 'backlog' }, { type: 'closed' }],
+    };
+
+    const blankList = {
+      id: 'blank',
+      listType: ListType.blank,
+      title: 'Welcome to your issue board!',
+      position: 0,
+    };
+
+    testAction(
+      actions.showWelcomeList,
+      {},
+      state,
+      [],
+      [{ type: 'addList', payload: blankList }],
+      done,
+    );
+  });
 });
 
 describe('generateDefaultLists', () => {
@@ -71,7 +94,70 @@ describe('generateDefaultLists', () => {
 });
 
 describe('createList', () => {
-  expectNotImplemented(actions.createList);
+  it('should dispatch addList action when creating backlog list', done => {
+    const backlogList = {
+      id: 'gid://gitlab/List/1',
+      listType: 'backlog',
+      title: 'Open',
+      position: 0,
+    };
+
+    jest.spyOn(gqlClient, 'mutate').mockReturnValue(
+      Promise.resolve({
+        data: {
+          boardListCreate: {
+            list: backlogList,
+            errors: [],
+          },
+        },
+      }),
+    );
+
+    const state = {
+      endpoints: { fullPath: 'gitlab-org', boardId: '1' },
+      boardType: 'group',
+      disabled: false,
+      boardLists: [{ type: 'closed' }],
+    };
+
+    testAction(
+      actions.createList,
+      { backlog: true },
+      state,
+      [],
+      [{ type: 'addList', payload: { ...backlogList, id: 1 } }],
+      done,
+    );
+  });
+
+  it('should commit CREATE_LIST_FAILURE mutation when API returns an error', done => {
+    jest.spyOn(gqlClient, 'mutate').mockReturnValue(
+      Promise.resolve({
+        data: {
+          boardListCreate: {
+            list: {},
+            errors: [{ foo: 'bar' }],
+          },
+        },
+      }),
+    );
+
+    const state = {
+      endpoints: { fullPath: 'gitlab-org', boardId: '1' },
+      boardType: 'group',
+      disabled: false,
+      boardLists: [{ type: 'closed' }],
+    };
+
+    testAction(
+      actions.createList,
+      { backlog: true },
+      state,
+      [{ type: types.CREATE_LIST_FAILURE }],
+      [],
+      done,
+    );
+  });
 });
 
 describe('updateList', () => {

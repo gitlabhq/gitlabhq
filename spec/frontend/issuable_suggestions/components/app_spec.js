@@ -41,7 +41,7 @@ describe('Issuable suggestions app component', () => {
       wrapper.setData(data);
 
       return wrapper.vm.$nextTick(() => {
-        expect(wrapper.isEmpty()).toBe(false);
+        expect(wrapper.findAll('li').length).toBe(data.issues.length);
       });
     });
 

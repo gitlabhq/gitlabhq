@@ -35,9 +35,7 @@ function parseDatasetToProps(data) {
   } = parseBooleanInData(booleanAttributes);
 
   return {
-    activeToggleProps: {
-      initialActivated: activated,
-    },
+    initialActivated: activated,
     showActive,
     type,
     triggerFieldsProps: {

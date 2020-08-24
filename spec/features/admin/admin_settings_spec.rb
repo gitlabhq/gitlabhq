@@ -525,6 +525,7 @@ RSpec.describe 'Admin updates settings', :clean_gitlab_redis_shared_state, :do_n
   end
 
   def check_all_events
+    page.check('Active')
     page.check('Push')
     page.check('Issue')
     page.check('Confidential Issue')

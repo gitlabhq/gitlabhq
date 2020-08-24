@@ -18,8 +18,8 @@ RSpec.shared_context 'project service activation' do
     click_link(name)
   end
 
-  def click_active_toggle
-    find('input[name="service[active]"] + button').click
+  def click_active_checkbox
+    find('input[name="service[active]"]').click
   end
 
   def click_test_integration

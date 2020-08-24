@@ -266,6 +266,14 @@ You can access a pipeline status badge image using the following link:
 https://gitlab.example.com/<namespace>/<project>/badges/<branch>/pipeline.svg
 ```
 
+#### Display only non-skipped status
+
+If you want the pipeline status badge to only display the last non-skipped status, you can use the `?ignore_skipped=true` query parameter:
+
+```plaintext
+https://example.gitlab.com/<namespace>/<project>/badges/<branch>/pipeline.svg?ignore_skipped=true
+```
+
 ### Test coverage report badge
 
 GitLab makes it possible to define the regular expression for [coverage report](#test-coverage-parsing),

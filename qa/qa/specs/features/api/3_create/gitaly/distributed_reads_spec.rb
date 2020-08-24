@@ -25,7 +25,7 @@ module QA
           Runtime::Feature.disable_and_verify('gitaly_distributed_reads')
         end
 
-        it 'reads from each node' do
+        it 'reads from each node', status_issue: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/979' do
           pre_read_data = praefect_manager.query_read_distribution
 
           wait_for_reads_to_increase(project, number_of_reads_per_loop, pre_read_data)
@@ -53,7 +53,7 @@ module QA
             praefect_manager.wait_for_reliable_connection
           end
 
-          it 'does not read from the unhealthy node' do
+          it 'does not read from the unhealthy node', status_issue: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/980' do
             pre_read_data = praefect_manager.query_read_distribution
 
             read_from_project(project, number_of_reads_per_loop * 10)

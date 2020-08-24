@@ -22,7 +22,7 @@ module QA
           praefect_manager.reset_primary_to_original
         end
 
-        it 'recovers from dataloss', quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/238186', type: :investigating } do
+        it 'recovers from dataloss', quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/238186', type: :investigating }, status_issue: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/978' do
           # Create a new project with a commit and wait for it to replicate
           praefect_manager.wait_for_replication(project.id)
 

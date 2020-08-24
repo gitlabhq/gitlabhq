@@ -122,7 +122,6 @@ describe('EnvironmentLogs', () => {
     initWrapper();
 
     expect(wrapper.isVueInstance()).toBe(true);
-    expect(wrapper.isEmpty()).toBe(false);
 
     expect(findEnvironmentsDropdown().is(GlDeprecatedDropdown)).toBe(true);
     expect(findSimpleFilters().exists()).toBe(true);

@@ -7,10 +7,16 @@ const notImplemented = () => {
 };
 
 export default {
-  [mutationTypes.SET_INITIAL_BOARD_DATA]: (state, data) => {
-    const { boardType, ...endpoints } = data;
+  [mutationTypes.SET_INITIAL_BOARD_DATA](state, data) {
+    const { boardType, disabled, showPromotion, ...endpoints } = data;
     state.endpoints = endpoints;
     state.boardType = boardType;
+    state.disabled = disabled;
+    state.showPromotion = showPromotion;
+  },
+
+  [mutationTypes.RECEIVE_LISTS]: (state, lists) => {
+    state.boardLists = lists;
   },
 
   [mutationTypes.SET_ACTIVE_ID](state, id) {
@@ -19,6 +25,10 @@ export default {
 
   [mutationTypes.SET_FILTERS](state, filterParams) {
     state.filterParams = filterParams;
+  },
+
+  [mutationTypes.CREATE_LIST_FAILURE]: state => {
+    state.error = __('An error occurred while creating the list. Please try again.');
   },
 
   [mutationTypes.REQUEST_ADD_LIST]: () => {

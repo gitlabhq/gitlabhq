@@ -47,7 +47,10 @@ export default class PerformanceBarStore {
   }
 
   canTrackRequest(requestUrl) {
-    return this.requests.filter(request => request.url === requestUrl).length < 2;
+    return (
+      requestUrl.endsWith('/api/graphql') ||
+      this.requests.filter(request => request.url === requestUrl).length < 2
+    );
   }
 
   static truncateUrl(requestUrl) {

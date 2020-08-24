@@ -5,6 +5,7 @@
 module Ci
   class PipelineArtifact < ApplicationRecord
     extend Gitlab::Ci::Model
+    include UpdateProjectStatistics
     include Artifactable
     include FileStoreMounter
 
@@ -29,6 +30,8 @@ module Ci
     validates :file_type, presence: true
 
     mount_file_store_uploader Ci::PipelineArtifactUploader
+
+    update_project_statistics project_statistics_name: :pipeline_artifacts_size
 
     enum file_type: {
       code_coverage: 1

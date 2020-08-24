@@ -3,7 +3,7 @@ import { mockIntegrationProps } from 'jest/integrations/edit/mock_data';
 import { createStore } from '~/integrations/edit/store';
 import IntegrationForm from '~/integrations/edit/components/integration_form.vue';
 import OverrideDropdown from '~/integrations/edit/components/override_dropdown.vue';
-import ActiveToggle from '~/integrations/edit/components/active_toggle.vue';
+import ActiveCheckbox from '~/integrations/edit/components/active_checkbox.vue';
 import JiraTriggerFields from '~/integrations/edit/components/jira_trigger_fields.vue';
 import JiraIssuesFields from '~/integrations/edit/components/jira_issues_fields.vue';
 import TriggerFields from '~/integrations/edit/components/trigger_fields.vue';
@@ -21,7 +21,7 @@ describe('IntegrationForm', () => {
       }),
       stubs: {
         OverrideDropdown,
-        ActiveToggle,
+        ActiveCheckbox,
         JiraTriggerFields,
         TriggerFields,
       },
@@ -39,27 +39,27 @@ describe('IntegrationForm', () => {
   });
 
   const findOverrideDropdown = () => wrapper.find(OverrideDropdown);
-  const findActiveToggle = () => wrapper.find(ActiveToggle);
+  const findActiveCheckbox = () => wrapper.find(ActiveCheckbox);
   const findJiraTriggerFields = () => wrapper.find(JiraTriggerFields);
   const findJiraIssuesFields = () => wrapper.find(JiraIssuesFields);
   const findTriggerFields = () => wrapper.find(TriggerFields);
 
   describe('template', () => {
     describe('showActive is true', () => {
-      it('renders ActiveToggle', () => {
+      it('renders ActiveCheckbox', () => {
         createComponent();
 
-        expect(findActiveToggle().exists()).toBe(true);
+        expect(findActiveCheckbox().exists()).toBe(true);
       });
     });
 
     describe('showActive is false', () => {
-      it('does not render ActiveToggle', () => {
+      it('does not render ActiveCheckbox', () => {
         createComponent({
           showActive: false,
         });
 
-        expect(findActiveToggle().exists()).toBe(false);
+        expect(findActiveCheckbox().exists()).toBe(false);
       });
     });
 

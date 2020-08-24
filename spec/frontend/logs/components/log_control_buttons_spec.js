@@ -29,7 +29,6 @@ describe('LogControlButtons', () => {
     initWrapper();
 
     expect(wrapper.isVueInstance()).toBe(true);
-    expect(wrapper.isEmpty()).toBe(false);
 
     expect(findScrollToTop().is(GlButton)).toBe(true);
     expect(findScrollToBottom().is(GlButton)).toBe(true);

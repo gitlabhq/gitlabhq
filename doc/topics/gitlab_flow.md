@@ -214,17 +214,17 @@ If you have an issue that spans across multiple repositories, create an issue fo
 With Git, you can use an interactive rebase (`rebase -i`) to squash multiple commits into one or reorder them.
 This functionality is useful if you want to replace a couple of small commits with a single commit, or if you want to make the order more logical.
 
-However, you should never rebase commits you have pushed to a remote server.
-Rebasing creates new commits for all your changes, which can cause confusion because the same change would have multiple identifiers.
-It also causes merge errors for anyone working on the same branch because their history would not match with yours.
+However, you should avoid rebasing commits you have pushed to a remote server if you have other active contributors in the same branch.
+Since rebasing creates new commits for all your changes, it can cause confusion because the same change would have multiple identifiers.
+It would cause merge errors for anyone working on the same branch because their history would not match with yours. It can be really troublesome for the author or other contributors.
 Also, if someone has already reviewed your code, rebasing makes it hard to tell what changed since the last review.
 
-You should also never rebase commits authored by other people.
+You should never rebase commits authored by other people unless you've agreed otherwise.
 Not only does this rewrite history, but it also loses authorship information.
 Rebasing prevents the other authors from being attributed and sharing part of the [`git blame`](https://git-scm.com/docs/git-blame).
 
 If a merge involves many commits, it may seem more difficult to undo.
-You might think to solve this by squashing all the changes into one commit before merging, but as discussed earlier, it is a bad idea to rebase commits that you have already pushed.
+You might consider solving this by squashing all the changes into one commit just before merging by using GitLab's [Squash-and-Merge](../user/project/merge_requests/squash_and_merge.md) feature.
 Fortunately, there is an easy way to undo a merge with all its commits.
 The way to do this is by reverting the merge commit.
 Preserving this ability to revert a merge is a good reason to always use the "no fast-forward" (`--no-ff`) strategy when you merge manually.
@@ -241,10 +241,9 @@ Having lots of merge commits can make your repository history messy.
 Therefore, you should try to avoid merge commits in feature branches.
 Often, people avoid merge commits by just using rebase to reorder their commits after the commits on the `master` branch.
 Using rebase prevents a merge commit when merging `master` into your feature branch, and it creates a neat linear history.
-However, as discussed in [the section about rebasing](#squashing-commits-with-rebase), you should never rebase commits you have pushed to a remote server.
-This restriction makes it impossible to rebase work in progress that you already shared with your team, which is something we recommend.
+However, as discussed in [the section about rebasing](#squashing-commits-with-rebase), you should avoid rebasing commits in a feature branch that you're sharing with others.
 
-Rebasing also creates more work, since every time you rebase, you have to resolve similar conflicts.
+Rebasing could create more work, since every time you rebase, you may need to resolve the same conflicts.
 Sometimes you can reuse recorded resolutions (`rerere`), but merging is better since you only have to resolve conflicts once.
 Atlassian has a more thorough explanation of the tradeoffs between merging and rebasing [on their blog](https://www.atlassian.com/blog/git/git-team-workflows-merge-or-rebase).
 

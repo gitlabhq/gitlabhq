@@ -42,7 +42,7 @@ export default {
 
 <template>
   <div class="card-header d-flex align-items-center bg-white pr-0">
-    <h2 class="card-title my-2 mr-auto gl-font-size-20-deprecated-no-really-do-not-use-me">
+    <h2 class="card-title my-2 mr-auto">
       <gl-link v-if="selfLink" :href="selfLink" class="font-size-inherit">
         {{ release.name }}
       </gl-link>

@@ -31,7 +31,7 @@ module RuboCop
         private
 
         def allowed_foreign_key?(key)
-          key.type == :sym && allowed_foreign_keys.include?(key.value)
+          [:sym, :str].include?(key.type) && allowed_foreign_keys.include?(key.value.to_sym)
         end
 
         def allowed_foreign_keys

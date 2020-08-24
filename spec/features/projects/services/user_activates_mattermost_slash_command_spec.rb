@@ -28,7 +28,7 @@ RSpec.describe 'Set up Mattermost slash commands', :js do
         token = ('a'..'z').to_a.join
 
         fill_in 'service_token', with: token
-        click_active_toggle
+        click_active_checkbox
         click_on 'Save changes'
 
         expect(current_path).to eq(edit_project_service_path(project, :mattermost_slash_commands))

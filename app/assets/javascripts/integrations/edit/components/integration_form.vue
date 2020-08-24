@@ -3,7 +3,7 @@ import { mapState, mapActions, mapGetters } from 'vuex';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 import OverrideDropdown from './override_dropdown.vue';
-import ActiveToggle from './active_toggle.vue';
+import ActiveCheckbox from './active_checkbox.vue';
 import JiraTriggerFields from './jira_trigger_fields.vue';
 import JiraIssuesFields from './jira_issues_fields.vue';
 import TriggerFields from './trigger_fields.vue';
@@ -13,7 +13,7 @@ export default {
   name: 'IntegrationForm',
   components: {
     OverrideDropdown,
-    ActiveToggle,
+    ActiveCheckbox,
     JiraTriggerFields,
     JiraIssuesFields,
     TriggerFields,
@@ -44,11 +44,7 @@ export default {
       :override="override"
       @change="setOverride"
     />
-    <active-toggle
-      v-if="propsSource.showActive"
-      :key="`${currentKey}-active-toggle`"
-      v-bind="propsSource.activeToggleProps"
-    />
+    <active-checkbox v-if="propsSource.showActive" :key="`${currentKey}-active-checkbox`" />
     <jira-trigger-fields
       v-if="isJira"
       :key="`${currentKey}-jira-trigger-fields`"

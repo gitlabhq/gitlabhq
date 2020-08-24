@@ -1848,6 +1848,9 @@ msgstr ""
 msgid "AdminSettings|Select a template"
 msgstr ""
 
+msgid "AdminSettings|Service Templates will soon be deprecated."
+msgstr ""
+
 msgid "AdminSettings|Service template allows you to set default values for integrations"
 msgstr ""
 
@@ -1861,6 +1864,9 @@ msgid "AdminSettings|Specify a domain to use by default for every project's Auto
 msgstr ""
 
 msgid "AdminSettings|The required pipeline configuration can be selected from the %{code_start}gitlab-ci%{code_end} directory inside of the configured %{link_start}instance template repository%{link_end} or from GitLab provided configurations."
+msgstr ""
+
+msgid "AdminSettings|Try using the latest version of Integrations instead."
 msgstr ""
 
 msgid "AdminSettings|When creating a new environment variable it will be protected by default."
@@ -2591,6 +2597,9 @@ msgstr ""
 msgid "An error occurred while committing your changes."
 msgstr ""
 
+msgid "An error occurred while creating the list. Please try again."
+msgstr ""
+
 msgid "An error occurred while decoding the file."
 msgstr ""
 
@@ -2664,6 +2673,9 @@ msgid "An error occurred while fetching the Service Desk address."
 msgstr ""
 
 msgid "An error occurred while fetching the board issues. Please reload the page."
+msgstr ""
+
+msgid "An error occurred while fetching the board lists. Please reload the page."
 msgstr ""
 
 msgid "An error occurred while fetching the board lists. Please try again."
@@ -7719,7 +7731,13 @@ msgstr ""
 msgid "DastProfiles|Manage profiles"
 msgstr ""
 
+msgid "DastProfiles|New Scanner Profile"
+msgstr ""
+
 msgid "DastProfiles|New Site Profile"
+msgstr ""
+
+msgid "DastProfiles|New scanner profile"
 msgstr ""
 
 msgid "DastProfiles|New site profile"
@@ -11710,6 +11728,9 @@ msgstr ""
 msgid "Go to %{strongStart}Issues%{strongEnd} &gt; %{strongStart}Boards%{strongEnd} to access your personalized learning issue board."
 msgstr ""
 
+msgid "Go to Integrations"
+msgstr ""
+
 msgid "Go to Webhooks"
 msgstr ""
 
@@ -12962,6 +12983,9 @@ msgstr ""
 msgid "ImportProjects|Update of imported projects with realtime changes failed"
 msgstr ""
 
+msgid "Improve Issue Boards"
+msgstr ""
+
 msgid "Improve Issue boards"
 msgstr ""
 
@@ -13289,6 +13313,9 @@ msgid "Invalid OS"
 msgstr ""
 
 msgid "Invalid URL"
+msgstr ""
+
+msgid "Invalid board"
 msgstr ""
 
 msgid "Invalid container_name"
@@ -14739,9 +14766,6 @@ msgid "Manifest file import"
 msgstr ""
 
 msgid "Manifest import"
-msgstr ""
-
-msgid "Manual job"
 msgstr ""
 
 msgid "ManualOrdering|Couldn't save the order of the issues"
@@ -21098,6 +21122,9 @@ msgid "Run CI/CD pipelines for external repositories"
 msgstr ""
 
 msgid "Run housekeeping"
+msgstr ""
+
+msgid "Run manual or delayed jobs"
 msgstr ""
 
 msgid "Run tests against your code live using the Web Terminal"
@@ -27584,6 +27611,9 @@ msgid "Welcome to the guided GitLab tour"
 msgstr ""
 
 msgid "Welcome to your Issue Board!"
+msgstr ""
+
+msgid "Welcome to your issue board!"
 msgstr ""
 
 msgid "We’ve been making changes to %{featureName} and we’d love your feedback %{linkStart}in this issue%{linkEnd} to help us improve the experience."

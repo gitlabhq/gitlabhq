@@ -1,8 +1,6 @@
 export const mockIntegrationProps = {
   id: 25,
-  activeToggleProps: {
-    initialActivated: true,
-  },
+  initialActivated: true,
   showActive: true,
   triggerFieldsProps: {
     initialTriggerCommit: false,

@@ -12,7 +12,12 @@ class ProjectStatistics < ApplicationRecord
   before_save :update_storage_size
 
   COLUMNS_TO_REFRESH = [:repository_size, :wiki_size, :lfs_objects_size, :commit_count, :snippets_size].freeze
-  INCREMENTABLE_COLUMNS = { build_artifacts_size: %i[storage_size], packages_size: %i[storage_size], snippets_size: %i[storage_size] }.freeze
+  INCREMENTABLE_COLUMNS = {
+    build_artifacts_size: %i[storage_size],
+    packages_size: %i[storage_size],
+    pipeline_artifacts_size: %i[storage_size],
+    snippets_size: %i[storage_size]
+  }.freeze
   NAMESPACE_RELATABLE_COLUMNS = [:repository_size, :wiki_size, :lfs_objects_size].freeze
 
   scope :for_project_ids, ->(project_ids) { where(project_id: project_ids) }
@@ -75,7 +80,7 @@ class ProjectStatistics < ApplicationRecord
   end
 
   def update_storage_size
-    storage_size = repository_size + wiki_size + lfs_objects_size + build_artifacts_size + packages_size
+    storage_size = repository_size + wiki_size + lfs_objects_size + build_artifacts_size + packages_size + pipeline_artifacts_size
     # The `snippets_size` column was added on 20200622095419 but db/post_migrate/20190527194900_schedule_calculate_wiki_sizes.rb
     # might try to update project statistics before the `snippets_size` column has been created.
     storage_size += snippets_size if self.class.column_names.include?('snippets_size')

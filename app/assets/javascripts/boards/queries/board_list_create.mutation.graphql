@@ -1,0 +1,10 @@
+#import "./board_list.fragment.graphql"
+
+mutation CreateBoardList($boardId: BoardID!, $backlog: Boolean) {
+  boardListCreate(input: { boardId: $boardId, backlog: $backlog }) {
+    list {
+      ...BoardListFragment
+    }
+    errors
+  }
+}

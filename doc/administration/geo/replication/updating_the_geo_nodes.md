@@ -7,32 +7,14 @@ type: howto
 
 # Updating the Geo nodes **(PREMIUM ONLY)**
 
+CAUTION: **Warning:**
+Please ensure you read these sections carefully before updating your Geo nodes! Not following version-specific update steps may result in unexpected downtime. Please [contact support](https://about.gitlab.com/support/#contact-support) if you have any specific questions.
+
 Updating Geo nodes involves performing:
 
-1. [Version-specific update steps](#version-specific-update-steps), depending on the
+1. [Version-specific update steps](version_specific_updates.md), depending on the
    version being updated to or from.
 1. [General update steps](#general-update-steps), for all updates.
-
-## Version specific update steps
-
-Depending on which version of Geo you are updating to/from, there may be
-different steps.
-
-- [Updating to GitLab 12.9](version_specific_updates.md#updating-to-gitlab-129)
-- [Updating to GitLab 12.7](version_specific_updates.md#updating-to-gitlab-127)
-- [Updating to GitLab 12.2](version_specific_updates.md#updating-to-gitlab-122)
-- [Updating to GitLab 12.1](version_specific_updates.md#updating-to-gitlab-121)
-- [Updating to GitLab 12.0](version_specific_updates.md#updating-to-gitlab-120)
-- [Updating to GitLab 11.11](version_specific_updates.md#updating-to-gitlab-1111)
-- [Updating to GitLab 10.8](version_specific_updates.md#updating-to-gitlab-108)
-- [Updating to GitLab 10.6](version_specific_updates.md#updating-to-gitlab-106)
-- [Updating to GitLab 10.5](version_specific_updates.md#updating-to-gitlab-105)
-- [Updating to GitLab 10.3](version_specific_updates.md#updating-to-gitlab-103)
-- [Updating to GitLab 10.2](version_specific_updates.md#updating-to-gitlab-102)
-- [Updating to GitLab 10.1](version_specific_updates.md#updating-to-gitlab-101)
-- [Updating to GitLab 10.0](version_specific_updates.md#updating-to-gitlab-100)
-- [Updating from GitLab 9.3 or older](version_specific_updates.md#updating-from-gitlab-93-or-older)
-- [Updating to GitLab 9.0](version_specific_updates.md#updating-to-gitlab-90)
 
 ## General update steps
 

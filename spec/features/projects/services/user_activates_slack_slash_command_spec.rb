@@ -21,7 +21,7 @@ RSpec.describe 'Slack slash commands', :js do
 
   it 'redirects to the integrations page after saving but not activating' do
     fill_in 'Token', with: 'token'
-    click_active_toggle
+    click_active_checkbox
     click_on 'Save'
 
     expect(current_path).to eq(edit_project_service_path(project, :slack_slash_commands))

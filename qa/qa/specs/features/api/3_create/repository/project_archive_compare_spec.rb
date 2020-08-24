@@ -28,7 +28,7 @@ module QA
         end
       end
 
-      it 'download archives of each user project then check they are different' do
+      it 'download archives of each user project then check they are different', status_issue: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/427' do
         archive_checksums = {}
 
         users.each do |user_key, user_info|

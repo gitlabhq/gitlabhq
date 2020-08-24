@@ -6,6 +6,7 @@ import boardsStore from '~/boards/stores/boards_store';
 import eventHub from '~/sidebar/event_hub';
 import { isScopedLabel } from '~/lib/utils/common_utils';
 import { inactiveId } from '~/boards/constants';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 // NOTE: need to revisit how we handle headerHeight, because we have so many different header and footer options.
 export default {
@@ -23,13 +24,17 @@ export default {
     BoardSettingsListTypes: () =>
       import('ee_component/boards/components/board_settings_list_types.vue'),
   },
+  mixins: [glFeatureFlagMixin()],
   computed: {
-    ...mapState(['activeId']),
+    ...mapState(['activeId', 'boardLists']),
     activeList() {
       /*
         Warning: Though a computed property it is not reactive because we are
         referencing a List Model class. Reactivity only applies to plain JS objects
       */
+      if (this.glFeatures.graphqlBoardLists) {
+        return this.boardLists.find(({ id }) => id === this.activeId);
+      }
       return boardsStore.state.lists.find(({ id }) => id === this.activeId);
     },
     isSidebarOpen() {

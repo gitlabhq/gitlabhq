@@ -8,13 +8,13 @@ describe('PerformanceBarService', () => {
       }
 
       it('returns false when the request URL is the peek URL', () => {
-        expect(fireCallback({ headers: { 'x-request-id': '123' }, url: '/peek' }, '/peek')).toBe(
-          false,
-        );
+        expect(
+          fireCallback({ headers: { 'x-request-id': '123' }, config: { url: '/peek' } }, '/peek'),
+        ).toBe(false);
       });
 
       it('returns false when there is no request ID', () => {
-        expect(fireCallback({ headers: {}, url: '/request' }, '/peek')).toBe(false);
+        expect(fireCallback({ headers: {}, config: { url: '/request' } }, '/peek')).toBe(false);
       });
 
       it('returns false when the response is from the cache', () => {
@@ -27,15 +27,18 @@ describe('PerformanceBarService', () => {
       });
 
       it('returns true when the request is an API request', () => {
-        expect(fireCallback({ headers: { 'x-request-id': '123' }, url: '/api/' }, '/peek')).toBe(
-          true,
-        );
+        expect(
+          fireCallback({ headers: { 'x-request-id': '123' }, config: { url: '/api/' } }, '/peek'),
+        ).toBe(true);
       });
 
       it('returns true for all other requests', () => {
-        expect(fireCallback({ headers: { 'x-request-id': '123' }, url: '/request' }, '/peek')).toBe(
-          true,
-        );
+        expect(
+          fireCallback(
+            { headers: { 'x-request-id': '123' }, config: { url: '/request' } },
+            '/peek',
+          ),
+        ).toBe(true);
       });
     });
 
@@ -45,7 +48,7 @@ describe('PerformanceBarService', () => {
       }
 
       it('gets the request ID from the headers', () => {
-        expect(requestId({ headers: { 'x-request-id': '123' } }, '/peek')).toEqual('123');
+        expect(requestId({ headers: { 'x-request-id': '123' } }, '/peek')).toBe('123');
       });
     });
 
@@ -54,14 +57,10 @@ describe('PerformanceBarService', () => {
         return PerformanceBarService.callbackParams(response, peekUrl)[2];
       }
 
-      it('gets the request URL from the response object', () => {
-        expect(requestUrl({ headers: {}, url: '/request' }, '/peek')).toEqual('/request');
-      });
-
-      it('gets the request URL from response.config if present', () => {
-        expect(
-          requestUrl({ headers: {}, config: { url: '/config-url' }, url: '/request' }, '/peek'),
-        ).toEqual('/config-url');
+      it('gets the request URL from response.config', () => {
+        expect(requestUrl({ headers: {}, config: { url: '/config-url' } }, '/peek')).toBe(
+          '/config-url',
+        );
       });
     });
   });

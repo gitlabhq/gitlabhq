@@ -24,7 +24,6 @@ import { deprecatedCreateFlash as Flash } from '~/flash';
 import { __ } from '~/locale';
 import './models/label';
 import './models/assignee';
-import { BoardType } from './constants';
 
 import toggleFocusMode from '~/boards/toggle_focus';
 import FilteredSearchBoards from '~/boards/filtered_search_boards';
@@ -44,10 +43,7 @@ import {
   parseBoolean,
   urlParamsToObject,
 } from '~/lib/utils/common_utils';
-import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import mountMultipleBoardsSwitcher from './mount_multiple_boards_switcher';
-import projectBoardQuery from './queries/project_board.query.graphql';
-import groupQuery from './queries/group_board.query.graphql';
 
 Vue.use(VueApollo);
 
@@ -119,7 +115,12 @@ export default () => {
         boardId: this.boardId,
         fullPath: $boardApp.dataset.fullPath,
       };
-      this.setInitialBoardData({ ...endpoints, boardType: this.parent });
+      this.setInitialBoardData({
+        ...endpoints,
+        boardType: this.parent,
+        disabled: this.disabled,
+        showPromotion: parseBoolean($boardApp.getAttribute('data-show-promotion')),
+      });
       boardsStore.setEndpoints(endpoints);
       boardsStore.rootPath = this.boardsEndpoint;
 
@@ -144,42 +145,7 @@ export default () => {
 
       boardsStore.disabled = this.disabled;
 
-      if (gon.features.graphqlBoardLists) {
-        this.$apollo.addSmartQuery('lists', {
-          query() {
-            return this.parent === BoardType.group ? groupQuery : projectBoardQuery;
-          },
-          variables() {
-            return {
-              fullPath: this.state.endpoints.fullPath,
-              boardId: `gid://gitlab/Board/${this.boardId}`,
-            };
-          },
-          update(data) {
-            return this.getNodes(data);
-          },
-          result({ data, error }) {
-            if (error) {
-              throw error;
-            }
-
-            const lists = this.getNodes(data);
-
-            lists.forEach(list =>
-              boardsStore.addList({
-                ...list,
-                id: getIdFromGraphQLId(list.id),
-              }),
-            );
-
-            boardsStore.addBlankState();
-            setPromotionState(boardsStore);
-          },
-          error() {
-            Flash(__('An error occurred while fetching the board lists. Please try again.'));
-          },
-        });
-      } else {
+      if (!gon.features.graphqlBoardLists) {
         boardsStore
           .all()
           .then(res => res.data)

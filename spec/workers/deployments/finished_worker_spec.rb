@@ -61,17 +61,5 @@ RSpec.describe Deployments::FinishedWorker do
 
       worker.perform(deployment.id)
     end
-
-    it 'does not execute webhooks if feature flag is disabled' do
-      stub_feature_flags(deployment_webhooks: false)
-
-      deployment = create(:deployment)
-      project = deployment.project
-      create(:project_hook, deployment_events: true, project: project)
-
-      expect(WebHookService).not_to receive(:new)
-
-      worker.perform(deployment.id)
-    end
   end
 end

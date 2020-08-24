@@ -78,6 +78,31 @@ module QA
         end
       end
 
+      it 'uses templating variables for metrics dashboards' do
+        templating_dashboard_yml = Pathname
+                                       .new(__dir__)
+                                       .join('../../../../fixtures/metrics_dashboards/templating.yml')
+
+        Resource::Repository::ProjectPush.fabricate! do |push|
+          push.project = @project
+          push.file_name = '.gitlab/dashboards/templating.yml'
+          push.file_content = File.read(templating_dashboard_yml)
+          push.commit_message = 'Add templating in dashboard file'
+          push.new_branch = false
+        end
+
+        Page::Project::Menu.perform(&:go_to_operations_metrics)
+
+        Page::Project::Operations::Metrics::Show.perform do |dashboard|
+          dashboard.select_dashboard('templating.yml')
+
+          expect(dashboard).to have_template_metric('CPU usage GitLab Runner')
+          expect(dashboard).to have_template_metric('Memory usage Postgresql')
+          expect(dashboard).to have_templating_variable('GitLab Runner')
+          expect(dashboard).to have_templating_variable('Postgresql')
+        end
+      end
+
       private
 
       def deploy_project_with_prometheus

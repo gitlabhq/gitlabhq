@@ -3,6 +3,8 @@ import { inactiveId } from '~/boards/constants';
 export default () => ({
   endpoints: {},
   boardType: null,
+  disabled: false,
+  showPromotion: false,
   isShowingLabels: true,
   activeId: inactiveId,
   boardLists: [],

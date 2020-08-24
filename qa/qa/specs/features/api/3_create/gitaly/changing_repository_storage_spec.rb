@@ -25,7 +25,7 @@ module QA
         end
       end
 
-      context 'when moving from one Gitaly storage to another', :orchestrated, :repository_storage do
+      context 'when moving from one Gitaly storage to another', :orchestrated, :repository_storage, status_issue: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/973' do
         let(:source_storage) { { type: :gitaly, name: 'default' } }
         let(:destination_storage) { { type: :gitaly, name: QA::Runtime::Env.additional_repository_storage } }
 
@@ -43,7 +43,7 @@ module QA
       # Note: This test doesn't have the :orchestrated tag because it runs in the Test::Integration::Praefect
       # scenario with other tests that aren't considered orchestrated.
       # It also runs on staging using nfs-file07 as non-cluster storage and nfs-file22 as cluster/praefect storage
-      context 'when moving from Gitaly to Gitaly Cluster', :requires_praefect do
+      context 'when moving from Gitaly to Gitaly Cluster', :requires_praefect, status_issue: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/974' do
         let(:source_storage) { { type: :gitaly, name: QA::Runtime::Env.non_cluster_repository_storage } }
         let(:destination_storage) { { type: :praefect, name: QA::Runtime::Env.praefect_repository_storage } }
 

@@ -296,6 +296,7 @@ RSpec.describe 'Labels Hierarchy', :js do
       let(:board) { create(:board, group: parent) }
 
       before do
+        stub_feature_flags(graphql_board_lists: false)
         parent.add_developer(user)
         visit group_board_path(parent, board)
         find('.js-new-board-list').click

@@ -1,36 +1,31 @@
 <script>
 import { mapGetters } from 'vuex';
-import { GlFormGroup, GlToggle } from '@gitlab/ui';
+import { GlFormGroup, GlFormCheckbox } from '@gitlab/ui';
 import eventHub from '../event_hub';
 
 export default {
-  name: 'ActiveToggle',
+  name: 'ActiveCheckbox',
   components: {
     GlFormGroup,
-    GlToggle,
-  },
-  props: {
-    initialActivated: {
-      type: Boolean,
-      required: true,
-    },
+    GlFormCheckbox,
   },
   data() {
     return {
-      activated: this.initialActivated,
+      activated: false,
     };
   },
   computed: {
-    ...mapGetters(['isInheriting']),
+    ...mapGetters(['isInheriting', 'propsSource']),
   },
   mounted() {
+    this.activated = this.propsSource.initialActivated;
     // Initialize view
     this.$nextTick(() => {
-      this.onToggle(this.activated);
+      this.onChange(this.activated);
     });
   },
   methods: {
-    onToggle(e) {
+    onChange(e) {
       eventHub.$emit('toggle', e);
     },
   },
@@ -39,12 +34,15 @@ export default {
 
 <template>
   <gl-form-group :label="__('Enable integration')" label-for="service[active]">
-    <gl-toggle
+    <input name="service[active]" type="hidden" :value="activated || false" />
+    <gl-form-checkbox
       v-model="activated"
       name="service[active]"
       class="gl-display-block gl-line-height-0"
       :disabled="isInheriting"
-      @change="onToggle"
-    />
+      @change="onChange"
+    >
+      {{ __('Active') }}
+    </gl-form-checkbox>
   </gl-form-group>
 </template>

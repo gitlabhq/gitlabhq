@@ -22,6 +22,10 @@ export function formatListIssues(listIssues) {
   }, {});
 }
 
+export function fullBoardId(boardId) {
+  return `gid://gitlab/Board/${boardId}`;
+}
+
 export default {
   getMilestone,
   formatListIssues,

@@ -5,7 +5,7 @@ RSpec.shared_context 'project service Jira context' do
   let(:test_url) { 'http://jira.example.com/rest/api/2/serverInfo' }
 
   def fill_form(disable: false)
-    click_active_toggle if disable
+    click_active_checkbox if disable
 
     fill_in 'service_url', with: url
     fill_in 'service_username', with: 'username'

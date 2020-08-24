@@ -17,6 +17,7 @@ module UserCalloutEnums
       suggest_popover_dismissed: 9,
       tabs_position_highlight: 10,
       webhooks_moved: 13,
+      service_templates_deprecated: 14,
       admin_integrations_moved: 15,
       personal_access_token_expiry: 21, # EE-only
       suggest_pipeline: 22,

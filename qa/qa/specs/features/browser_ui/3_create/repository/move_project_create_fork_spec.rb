@@ -22,7 +22,7 @@ module QA
         parent_project.add_member(user)
       end
 
-      it 'creates a 2nd fork after moving the parent project' do
+      it 'creates a 2nd fork after moving the parent project', status_issue: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/713' do
         Flow::Login.sign_in(as: user)
 
         fork_project.visit!

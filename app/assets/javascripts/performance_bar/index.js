@@ -24,15 +24,12 @@ export default ({ container }) =>
       };
     },
     mounted() {
-      this.interceptor = PerformanceBarService.registerInterceptor(
-        this.peekUrl,
-        this.loadRequestDetails,
-      );
+      PerformanceBarService.registerInterceptor(this.peekUrl, this.loadRequestDetails);
 
       this.loadRequestDetails(this.requestId, window.location.href);
     },
     beforeDestroy() {
-      PerformanceBarService.removeInterceptor(this.interceptor);
+      PerformanceBarService.removeInterceptor();
     },
     methods: {
       addRequestManually(urlOrRequestId) {

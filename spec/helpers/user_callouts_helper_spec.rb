@@ -81,6 +81,26 @@ RSpec.describe UserCalloutsHelper do
     end
   end
 
+  describe '.show_service_templates_deprecated?' do
+    subject { helper.show_service_templates_deprecated? }
+
+    context 'when user has not dismissed' do
+      before do
+        allow(helper).to receive(:user_dismissed?).with(described_class::SERVICE_TEMPLATES_DEPRECATED) { false }
+      end
+
+      it { is_expected.to be true }
+    end
+
+    context 'when user dismissed' do
+      before do
+        allow(helper).to receive(:user_dismissed?).with(described_class::SERVICE_TEMPLATES_DEPRECATED) { true }
+      end
+
+      it { is_expected.to be false }
+    end
+  end
+
   describe '.show_customize_homepage_banner?' do
     let(:customize_homepage) { true }
 
