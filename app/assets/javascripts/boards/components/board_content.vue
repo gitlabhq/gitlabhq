@@ -1,13 +1,14 @@
 <script>
 import { mapState } from 'vuex';
+import { GlAlert } from '@gitlab/ui';
 import BoardColumn from 'ee_else_ce/boards/components/board_column.vue';
-import EpicsSwimlanes from 'ee_component/boards/components/epics_swimlanes.vue';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 export default {
   components: {
     BoardColumn,
-    EpicsSwimlanes,
+    EpicsSwimlanes: () => import('ee_component/boards/components/epics_swimlanes.vue'),
+    GlAlert,
   },
   mixins: [glFeatureFlagMixin()],
   props: {
@@ -42,7 +43,7 @@ export default {
     },
   },
   computed: {
-    ...mapState(['isShowingEpicsSwimlanes', 'boardLists']),
+    ...mapState(['isShowingEpicsSwimlanes', 'boardLists', 'error']),
     isSwimlanesOn() {
       return this.glFeatures.boardsWithSwimlanes && this.isShowingEpicsSwimlanes;
     },
@@ -52,6 +53,9 @@ export default {
 
 <template>
   <div>
+    <gl-alert v-if="error" variant="danger" :dismissible="false">
+      {{ error }}
+    </gl-alert>
     <div
       v-if="!isSwimlanesOn"
       class="boards-list gl-w-full gl-py-5 gl-px-3 gl-white-space-nowrap"

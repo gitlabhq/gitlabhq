@@ -1,4 +1,5 @@
 import * as mutationTypes from './mutation_types';
+import { __ } from '~/locale';
 
 const notImplemented = () => {
   /* eslint-disable-next-line @gitlab/require-i18n-strings */
@@ -62,7 +63,7 @@ export default {
   },
 
   [mutationTypes.RECEIVE_ISSUES_FOR_ALL_LISTS_FAILURE]: state => {
-    state.listIssueFetchFailure = true;
+    state.error = __('An error occurred while fetching the board issues. Please reload the page.');
     state.isLoadingIssues = false;
   },
 

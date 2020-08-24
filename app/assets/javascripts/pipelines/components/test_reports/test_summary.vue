@@ -1,8 +1,8 @@
 <script>
 import { GlDeprecatedButton, GlProgressBar } from '@gitlab/ui';
 import { __ } from '~/locale';
-import { formatTime, secondsToMilliseconds } from '~/lib/utils/datetime_utility';
 import Icon from '~/vue_shared/components/icon.vue';
+import { formattedTime } from '../../stores/test_reports/utils';
 
 export default {
   name: 'TestSummary',
@@ -39,7 +39,7 @@ export default {
       return 0;
     },
     formattedDuration() {
-      return formatTime(secondsToMilliseconds(this.report.total_time));
+      return formattedTime(this.report.total_time);
     },
     progressBarVariant() {
       if (this.successPercentage < 33) {

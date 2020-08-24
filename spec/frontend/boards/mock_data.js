@@ -1,3 +1,5 @@
+import Vue from 'vue';
+import List from '~/boards/models/list';
 import boardsStore from '~/boards/stores/boards_store';
 
 export const boardObj = {
@@ -165,3 +167,36 @@ export const setMockEndpoints = (opts = {}) => {
     boardId,
   });
 };
+
+export const mockLists = [
+  {
+    id: 'gid://gitlab/List/1',
+    title: 'Backlog',
+    position: null,
+    listType: 'backlog',
+    collapsed: false,
+    label: null,
+    assignee: null,
+    milestone: null,
+  },
+  {
+    id: 'gid://gitlab/List/2',
+    title: 'To Do',
+    position: 0,
+    listType: 'label',
+    collapsed: false,
+    label: {
+      id: 'gid://gitlab/GroupLabel/121',
+      title: 'To Do',
+      color: '#F0AD4E',
+      textColor: '#FFFFFF',
+      description: null,
+    },
+    assignee: null,
+    milestone: null,
+  },
+];
+
+export const mockListsWithModel = mockLists.map(listMock =>
+  Vue.observable(new List({ ...listMock, doNotFetchIssues: true })),
+);

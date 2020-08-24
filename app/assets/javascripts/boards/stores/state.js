@@ -5,7 +5,10 @@ export default () => ({
   boardType: null,
   isShowingLabels: true,
   activeId: inactiveId,
+  boardLists: [],
   issuesByListId: {},
   isLoadingIssues: false,
-  listIssueFetchFailure: false,
+  error: undefined,
+  // TODO: remove after ce/ee split of board_content.vue
+  isShowingEpicsSwimlanes: false,
 });

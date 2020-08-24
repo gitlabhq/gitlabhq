@@ -113,6 +113,23 @@ describe('Board Store Mutations', () => {
     expectNotImplemented(mutations.REQUEST_ADD_ISSUE);
   });
 
+  describe('RECEIVE_ISSUES_FOR_ALL_LISTS_FAILURE', () => {
+    it('sets isLoadingIssues to false and sets error message', () => {
+      state = {
+        ...state,
+        isLoadingIssues: true,
+        error: undefined,
+      };
+
+      mutations.RECEIVE_ISSUES_FOR_ALL_LISTS_FAILURE(state);
+
+      expect(state.isLoadingIssues).toBe(false);
+      expect(state.error).toEqual(
+        'An error occurred while fetching the board issues. Please reload the page.',
+      );
+    });
+  });
+
   describe('RECEIVE_ADD_ISSUE_SUCCESS', () => {
     expectNotImplemented(mutations.RECEIVE_ADD_ISSUE_SUCCESS);
   });
