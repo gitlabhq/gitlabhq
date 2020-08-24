@@ -49,8 +49,8 @@ Most issues will have labels for at least one of the following:
 - Team: `~"Technical Writing"`, `~Delivery`
 - Specialization: `~frontend`, `~backend`, `~documentation`
 - Release Scoping: `~Deliverable`, `~Stretch`, `~"Next Patch Release"`
-- Priority: `~P::1`, `~P::2`, `~P::3`, `~P::4`
-- Severity: ~`S::1`, `~S::2`, `~S::3`, `~S::4`
+- Priority: `~"priority::1"`, `~"priority::2"`, `~"priority::3"`, `~"priority::4"`
+- Severity: ~`"severity::1"`, `~"severity::2"`, `~"severity::3"`, `~"severity::4"`
 
 All labels, their meaning and priority are defined on the
 [labels page](https://gitlab.com/gitlab-org/gitlab/-/labels).
@@ -275,10 +275,10 @@ or ~"Stretch". Any open issue for a previous milestone should be labeled
 
 We have the following priority labels:
 
-- ~P::1
-- ~P::2
-- ~P::3
-- ~P::4
+- ~"priority::1"
+- ~"priority::2"
+- ~"priority::3"
+- ~"priority::4"
 
 Please refer to the issue triage [priority label](https://about.gitlab.com/handbook/engineering/quality/issue-triage/#priority) section in our handbook to see how it's used.
 
@@ -286,10 +286,10 @@ Please refer to the issue triage [priority label](https://about.gitlab.com/handb
 
 We have the following severity labels:
 
-- ~S::1
-- ~S::2
-- ~S::3
-- ~S::4
+- ~"severity::1"
+- ~"severity::2"
+- ~"severity::3"
+- ~"severity::4"
 
 Please refer to the issue triage [severity label](https://about.gitlab.com/handbook/engineering/quality/issue-triage/#severity) section in our handbook to see how it's used.
 

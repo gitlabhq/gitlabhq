@@ -5,6 +5,7 @@ import { __ } from './locale';
 import axios from './lib/utils/axios_utils';
 import { deprecatedCreateFlash as flash } from './flash';
 import { capitalizeFirstCharacter } from './lib/utils/text_utility';
+import initDeprecatedJQueryDropdown from '~/deprecated_jquery_dropdown';
 
 export default function initCompareAutocomplete(limitTo = null, clickHandler = () => {}) {
   $('.js-compare-dropdown').each(function() {
@@ -13,7 +14,7 @@ export default function initCompareAutocomplete(limitTo = null, clickHandler = (
     const $dropdownContainer = $dropdown.closest('.dropdown');
     const $fieldInput = $(`input[name="${$dropdown.data('fieldName')}"]`, $dropdownContainer);
     const $filterInput = $('input[type="search"]', $dropdownContainer);
-    $dropdown.glDropdown({
+    initDeprecatedJQueryDropdown($dropdown, {
       data(term, callback) {
         const params = {
           ref: $dropdown.data('ref'),

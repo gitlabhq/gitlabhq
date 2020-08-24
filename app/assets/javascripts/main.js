@@ -22,7 +22,6 @@ import { getLocationHash, visitUrl } from './lib/utils/url_utility';
 // everything else
 import loadAwardsHandler from './awards_handler';
 import { deprecatedCreateFlash as Flash, removeFlashClickListener } from './flash';
-import './gl_dropdown';
 import initTodoToggle from './header';
 import initImporterStatus from './importer_status';
 import initLayoutNav from './layout_nav';

@@ -62,7 +62,7 @@ export default {
     this.addAssignee = this.store.addAssignee.bind(this.store);
     this.removeAllAssignees = this.store.removeAllAssignees.bind(this.store);
 
-    // Get events from glDropdown
+    // Get events from deprecatedJQueryDropdown
     eventHub.$on('sidebar.removeAssignee', this.removeAssignee);
     eventHub.$on('sidebar.addAssignee', this.addAssignee);
     eventHub.$on('sidebar.removeAllAssignees', this.removeAllAssignees);

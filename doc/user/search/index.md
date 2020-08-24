@@ -129,6 +129,14 @@ characters to begin your search. For example, if you want to search for
 issues that have the assignee "Simone Presley", you'll need to type at
 least "Sim" before autocomplete gives any relevant results.
 
+## Code search
+
+To search through code or other documents in a single project, you can use
+the search field on the top-right of your screen while the project page is open.
+
+![code search dropdown](img/project_search_dropdown.png)
+![code search results](img/project_code_search.png)
+
 ## Search history
 
 You can view recent searches by clicking on the little arrow-clock icon, which is to the left of the search input. Click the search entry to run that search again. This feature is available for issues and merge requests. Searches are stored locally in your browser.

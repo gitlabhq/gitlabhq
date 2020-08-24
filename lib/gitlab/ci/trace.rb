@@ -79,22 +79,15 @@ module Gitlab
         job.trace_chunks.any? || current_path.present? || old_trace.present?
       end
 
-      def read
-        stream = Gitlab::Ci::Trace::Stream.new do
-          if trace_artifact
-            trace_artifact.open
-          elsif job.trace_chunks.any?
-            Gitlab::Ci::Trace::ChunkedIO.new(job)
-          elsif current_path
-            File.open(current_path, "rb")
-          elsif old_trace
-            StringIO.new(old_trace)
-          end
-        end
+      def read(&block)
+        should_retry = true if lock_taken?(lock_key)
 
-        yield stream
-      ensure
-        stream&.close
+        read_stream(&block)
+      rescue Errno::ENOENT
+        raise unless should_retry
+
+        job.reset
+        read_stream(&block)
       end
 
       def write(mode, &blk)
@@ -141,6 +134,24 @@ module Gitlab
 
       private
 
+      def read_stream
+        stream = Gitlab::Ci::Trace::Stream.new do
+          if trace_artifact
+            trace_artifact.open
+          elsif job.trace_chunks.any?
+            Gitlab::Ci::Trace::ChunkedIO.new(job)
+          elsif current_path
+            File.open(current_path, "rb")
+          elsif old_trace
+            StringIO.new(old_trace)
+          end
+        end
+
+        yield stream
+      ensure
+        stream&.close
+      end
+
       def unsafe_write!(mode, &blk)
         stream = Gitlab::Ci::Trace::Stream.new do
           if trace_artifact
@@ -184,8 +195,11 @@ module Gitlab
       end
 
       def in_write_lock(&blk)
-        lock_key = "trace:write:lock:#{job.id}"
         in_lock(lock_key, ttl: LOCK_TTL, retries: LOCK_RETRIES, sleep_sec: LOCK_SLEEP, &blk)
+      end
+
+      def lock_key
+        "trace:write:lock:#{job.id}"
       end
 
       def archive_stream!(stream)

@@ -27066,6 +27066,9 @@ msgstr ""
 msgid "ValueStreamAnalytics|Median time from issue created to issue closed."
 msgstr ""
 
+msgid "ValueStream|The Default Value Stream cannot be deleted"
+msgstr ""
+
 msgid "Variable"
 msgstr ""
 

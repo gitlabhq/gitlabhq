@@ -13,6 +13,7 @@ import { s__, __, sprintf } from '../locale';
 import ModalStore from '../boards/stores/modal_store';
 import { parseBoolean } from '../lib/utils/common_utils';
 import { getAjaxUsersSelectOptions, getAjaxUsersSelectParams } from './utils';
+import initDeprecatedJQueryDropdown from '~/deprecated_jquery_dropdown';
 
 // TODO: remove eventHub hack after code splitting refactor
 window.emitSidebarEvent = window.emitSidebarEvent || $.noop;
@@ -233,14 +234,14 @@ function UsersSelect(currentUser, els, options = {}) {
         closingTag: '</a>',
       })}</span> <% } %>`,
     );
-    return $dropdown.glDropdown({
+    return initDeprecatedJQueryDropdown($dropdown, {
       showMenuAbove,
       data(term, callback) {
         return userSelect.users(term, options, users => {
           // GitLabDropdownFilter returns this.instance
           // GitLabDropdownRemote returns this.options.instance
-          const glDropdown = this.instance || this.options.instance;
-          glDropdown.options.processData(term, users, callback);
+          const deprecatedJQueryDropdown = this.instance || this.options.instance;
+          deprecatedJQueryDropdown.options.processData(term, users, callback);
         });
       },
       processData(term, data, callback) {
@@ -349,7 +350,7 @@ function UsersSelect(currentUser, els, options = {}) {
 
         callback(users);
         if (showMenuAbove) {
-          $dropdown.data('glDropdown').positionMenuAbove();
+          $dropdown.data('deprecatedJQueryDropdown').positionMenuAbove();
         }
       },
       filterable: true,
@@ -359,13 +360,13 @@ function UsersSelect(currentUser, els, options = {}) {
       },
       selectable: true,
       fieldName: $dropdown.data('fieldName'),
-      toggleLabel(selected, el, glDropdown) {
-        const inputValue = glDropdown.filterInput.val();
+      toggleLabel(selected, el, deprecatedJQueryDropdown) {
+        const inputValue = deprecatedJQueryDropdown.filterInput.val();
 
         if (this.multiSelect && inputValue === '') {
           // Remove non-users from the fullData array
-          const users = glDropdown.filteredFullData();
-          const callback = glDropdown.parseData.bind(glDropdown);
+          const users = deprecatedJQueryDropdown.filteredFullData();
+          const callback = deprecatedJQueryDropdown.parseData.bind(deprecatedJQueryDropdown);
 
           // Update the data model
           this.processData(inputValue, users, callback);

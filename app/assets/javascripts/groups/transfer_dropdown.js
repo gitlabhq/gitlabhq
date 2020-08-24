@@ -1,5 +1,6 @@
 import $ from 'jquery';
 import { __ } from '~/locale';
+import initDeprecatedJQueryDropdown from '~/deprecated_jquery_dropdown';
 
 export default class TransferDropdown {
   constructor() {
@@ -16,7 +17,7 @@ export default class TransferDropdown {
   buildDropdown() {
     const extraOptions = [{ id: '-1', text: __('No parent group') }, { type: 'divider' }];
 
-    this.groupDropdown.glDropdown({
+    initDeprecatedJQueryDropdown(this.groupDropdown, {
       selectable: true,
       filterable: true,
       toggleLabel: item => item.text,

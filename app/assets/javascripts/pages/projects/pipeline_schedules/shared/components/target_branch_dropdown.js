@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import initDeprecatedJQueryDropdown from '~/deprecated_jquery_dropdown';
 
 export default class TargetBranchDropdown {
   constructor() {
@@ -10,7 +11,7 @@ export default class TargetBranchDropdown {
   }
 
   initDropdown() {
-    this.$dropdown.glDropdown({
+    initDeprecatedJQueryDropdown(this.$dropdown, {
       data: this.formatBranchesList(),
       filterable: true,
       selectable: true,

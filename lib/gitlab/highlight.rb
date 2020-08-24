@@ -3,8 +3,8 @@
 module Gitlab
   class Highlight
     TIMEOUT_BACKGROUND = 30.seconds
-    TIMEOUT_FOREGROUND = 3.seconds
-    MAXIMUM_TEXT_HIGHLIGHT_SIZE = 1.megabyte
+    TIMEOUT_FOREGROUND = 1.5.seconds
+    MAXIMUM_TEXT_HIGHLIGHT_SIZE = 512.kilobytes
 
     def self.highlight(blob_name, blob_content, language: nil, plain: false)
       new(blob_name, blob_content, language: language)

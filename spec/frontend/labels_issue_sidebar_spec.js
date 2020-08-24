@@ -7,7 +7,6 @@ import axios from '~/lib/utils/axios_utils';
 import IssuableContext from '~/issuable_context';
 import LabelsSelect from '~/labels_select';
 
-import '~/gl_dropdown';
 import 'select2';
 import '~/api';
 import '~/create_label';

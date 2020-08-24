@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import '~/gl_dropdown';
+import initDeprecatedJQueryDropdown from '~/deprecated_jquery_dropdown';
 import { deprecatedCreateFlash as Flash } from '~/flash';
 import Api from '~/api';
 import { __ } from '~/locale';
@@ -20,7 +20,7 @@ export default class Search {
     this.eventListeners();
     refreshCounts();
 
-    $groupDropdown.glDropdown({
+    initDeprecatedJQueryDropdown($groupDropdown, {
       selectable: true,
       filterable: true,
       filterRemote: true,
@@ -46,7 +46,7 @@ export default class Search {
       clicked: () => Search.submitSearch(),
     });
 
-    $projectDropdown.glDropdown({
+    initDeprecatedJQueryDropdown($projectDropdown, {
       selectable: true,
       filterable: true,
       filterRemote: true,

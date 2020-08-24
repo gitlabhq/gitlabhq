@@ -77,6 +77,11 @@ review-deploy:
     # to have to manually start the jobs in sequence, so we do it for them.
     - '[ -z $CI_JOB_MANUAL ] || play_job "review-qa-smoke"'
     - '[ -z $CI_JOB_MANUAL ] || play_job "review-performance"'
+  after_script:
+    # Run seed-dast-test-data.sh only when DAST_RUN is set to true. This is to pupulate review app with data for DAST scan.
+    # Set DAST_RUN to true when jobs are manually scheduled.
+    - if [ "$DAST_RUN" == "true" ]; then source scripts/review_apps/seed-dast-test-data.sh; TRACE=1 trigger_proj_user_creation; fi
+
   artifacts:
     paths: [environment_url.txt]
     expire_in: 2 days

@@ -39,5 +39,10 @@ module Gitlab
     ensure
       lease&.cancel
     end
+
+    def lock_taken?(key)
+      lease = Gitlab::ExclusiveLease.new(key, timeout: 0)
+      lease.exists?
+    end
   end
 end

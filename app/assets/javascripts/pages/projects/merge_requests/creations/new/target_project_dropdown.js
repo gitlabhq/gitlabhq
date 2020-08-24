@@ -1,8 +1,9 @@
 import $ from 'jquery';
+import initDeprecatedJQueryDropdown from '~/deprecated_jquery_dropdown';
 
 export default () => {
   const $targetProjectDropdown = $('.js-target-project');
-  $targetProjectDropdown.glDropdown({
+  initDeprecatedJQueryDropdown($targetProjectDropdown, {
     selectable: true,
     fieldName: $targetProjectDropdown.data('fieldName'),
     filterable: true,
@@ -16,7 +17,7 @@ export default () => {
       $('.mr_target_commit').empty();
       const $targetBranchDropdown = $('.js-target-branch');
       $targetBranchDropdown.data('refsUrl', $el.data('refsUrl'));
-      $targetBranchDropdown.data('glDropdown').clearMenu();
+      $targetBranchDropdown.data('deprecatedJQueryDropdown').clearMenu();
     },
   });
 };

@@ -8,6 +8,7 @@ import { serializeForm } from '~/lib/utils/forms';
 import axios from '~/lib/utils/axios_utils';
 import { deprecatedCreateFlash as flash } from '~/flash';
 import projectSelect from '../../project_select';
+import initDeprecatedJQueryDropdown from '~/deprecated_jquery_dropdown';
 
 export default class Project {
   constructor() {
@@ -104,7 +105,7 @@ export default class Project {
       const action = $form.attr('action');
       const linkTarget = mergeUrlParams(serializeForm($form[0]), action);
 
-      return $dropdown.glDropdown({
+      return initDeprecatedJQueryDropdown($dropdown, {
         data(term, callback) {
           axios
             .get($dropdown.data('refsUrl'), {

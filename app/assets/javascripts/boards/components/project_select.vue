@@ -6,6 +6,7 @@ import { __ } from '~/locale';
 import eventHub from '../eventhub';
 import Api from '../../api';
 import { featureAccessLevel } from '~/pages/projects/shared/permissions/constants';
+import initDeprecatedJQueryDropdown from '~/deprecated_jquery_dropdown';
 
 export default {
   name: 'BoardProjectSelect',
@@ -36,7 +37,7 @@ export default {
     },
   },
   mounted() {
-    $(this.$refs.projectsDropdown).glDropdown({
+    initDeprecatedJQueryDropdown($(this.$refs.projectsDropdown), {
       filterable: true,
       filterRemote: true,
       search: {

@@ -1,5 +1,4 @@
 import $ from 'jquery';
-import '~/gl_dropdown';
 import AccessDropdown from '~/projects/settings/access_dropdown';
 import { LEVEL_TYPES } from '~/projects/settings/constants';
 

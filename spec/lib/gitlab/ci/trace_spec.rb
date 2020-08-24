@@ -11,6 +11,41 @@ RSpec.describe Gitlab::Ci::Trace, :clean_gitlab_redis_shared_state do
     it { expect(trace).to delegate_method(:old_trace).to(:job) }
   end
 
+  context 'when trace is migrated to object storage' do
+    let!(:job) { create(:ci_build, :trace_artifact) }
+    let!(:artifact1) { job.job_artifacts_trace }
+    let!(:artifact2) { job.reload.job_artifacts_trace }
+    let(:test_data) { "hello world" }
+
+    before do
+      stub_artifacts_object_storage
+
+      artifact1.file.migrate!(ObjectStorage::Store::REMOTE)
+    end
+
+    context 'when write lock is not present' do
+      it 'raises an exception' do
+        expect { artifact2.job.trace.raw }.to raise_error(Errno::ENOENT)
+      end
+    end
+
+    context 'when write lock is present', :clean_gitlab_redis_shared_state do
+      before do
+        Gitlab::ExclusiveLease.new("trace:write:lock:#{job.id}", timeout: 10.seconds).try_obtain
+      end
+
+      it 'reloads the trace after is it migrated' do
+        stub_const('Gitlab::HttpIO::BUFFER_SIZE', test_data.length)
+
+        expect_next_instance_of(Gitlab::HttpIO) do |http_io|
+          expect(http_io).to receive(:get_chunk).and_return(test_data, "")
+        end
+
+        expect(artifact2.job.trace.raw).to eq(test_data)
+      end
+    end
+  end
+
   context 'when live trace feature is disabled' do
     before do
       stub_feature_flags(ci_enable_live_trace: false)

@@ -1,5 +1,6 @@
 import $ from 'jquery';
 import { disableButtonIfEmptyField } from '~/lib/utils/common_utils';
+import initDeprecatedJQueryDropdown from '~/deprecated_jquery_dropdown';
 
 export default class Members {
   constructor() {
@@ -37,7 +38,7 @@ export default class Members {
     $('.js-member-permissions-dropdown').each((i, btn) => {
       const $btn = $(btn);
 
-      $btn.glDropdown({
+      initDeprecatedJQueryDropdown($btn, {
         selectable: true,
         isSelectable: (selected, $el) => this.dropdownIsSelectable(selected, $el),
         fieldName: $btn.data('fieldName'),

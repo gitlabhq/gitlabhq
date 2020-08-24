@@ -15,10 +15,14 @@ import {
   mockNamespace,
   mockNamespacedData,
   mockTimeRange,
-  barMockData,
 } from '../mock_data';
 import { dashboardProps, graphData, graphDataEmpty } from '../fixture_data';
-import { anomalyGraphData, singleStatGraphData, heatmapGraphData } from '../graph_data';
+import {
+  anomalyGraphData,
+  singleStatGraphData,
+  heatmapGraphData,
+  barGraphData,
+} from '../graph_data';
 
 import { panelTypes } from '~/monitoring/constants';
 
@@ -240,7 +244,7 @@ describe('Dashboard Panel', () => {
         ${dataWithType(panelTypes.COLUMN)}         | ${MonitorColumnChart}        | ${false}
         ${dataWithType(panelTypes.STACKED_COLUMN)} | ${MonitorStackedColumnChart} | ${false}
         ${heatmapGraphData()}                      | ${MonitorHeatmapChart}       | ${false}
-        ${barMockData}                             | ${MonitorBarChart}           | ${false}
+        ${barGraphData()}                          | ${MonitorBarChart}           | ${false}
       `('when $data.type data is provided', ({ data, component, hasCtxMenu }) => {
         const attrs = { attr1: 'attr1Value', attr2: 'attr2Value' };
 

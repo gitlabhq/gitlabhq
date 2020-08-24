@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 
 import $ from 'jquery';
-import '~/gl_dropdown';
+import initDeprecatedJQueryDropdown from '~/deprecated_jquery_dropdown';
 import '~/lib/utils/common_utils';
 import { visitUrl } from '~/lib/utils/url_utility';
 
@@ -9,8 +9,8 @@ jest.mock('~/lib/utils/url_utility', () => ({
   visitUrl: jest.fn().mockName('visitUrl'),
 }));
 
-describe('glDropdown', () => {
-  preloadFixtures('static/gl_dropdown.html');
+describe('deprecatedJQueryDropdown', () => {
+  preloadFixtures('static/deprecated_jquery_dropdown.html');
 
   const NON_SELECTABLE_CLASSES =
     '.divider, .separator, .dropdown-header, .dropdown-menu-empty-item';
@@ -60,14 +60,12 @@ describe('glDropdown', () => {
       id: project => project.id,
       ...extraOpts,
     };
-    test.dropdownButtonElement = $(
-      '#js-project-dropdown',
-      test.dropdownContainerElement,
-    ).glDropdown(options);
+    test.dropdownButtonElement = $('#js-project-dropdown', test.dropdownContainerElement);
+    initDeprecatedJQueryDropdown(test.dropdownButtonElement, options);
   }
 
   beforeEach(() => {
-    loadFixtures('static/gl_dropdown.html');
+    loadFixtures('static/deprecated_jquery_dropdown.html');
     test.dropdownContainerElement = $('.dropdown.inline');
     test.$dropdownMenuElement = $('.dropdown-menu', test.dropdownContainerElement);
     test.projectsData = getJSONFixture('static/projects.json');
@@ -248,9 +246,9 @@ describe('glDropdown', () => {
     function dropdownWithOptions(options) {
       const $dropdownDiv = $('<div />');
 
-      $dropdownDiv.glDropdown(options);
+      initDeprecatedJQueryDropdown($dropdownDiv, options);
 
-      return $dropdownDiv.data('glDropdown');
+      return $dropdownDiv.data('deprecatedJQueryDropdown');
     }
 
     function basicDropdown() {

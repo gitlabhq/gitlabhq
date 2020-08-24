@@ -522,7 +522,7 @@ More information can be found in the [Push event activities limit and bulk push 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/218017) in GitLab 13.4.
 
 On GitLab.com, the maximum file size for a package that's uploaded to the [GitLab Package Registry](../user/packages/package_registry/index.md)
-is 50 megabytes.
+is 5 gigabytes.
 
 Limits are set per package type.
 

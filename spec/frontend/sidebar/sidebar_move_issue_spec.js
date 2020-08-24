@@ -68,12 +68,10 @@ describe('SidebarMoveIssue', () => {
   });
 
   describe('initDropdown', () => {
-    it('should initialize the gl_dropdown', () => {
-      jest.spyOn($.fn, 'glDropdown').mockImplementation(() => {});
-
+    it('should initialize the deprecatedJQueryDropdown', () => {
       test.sidebarMoveIssue.initDropdown();
 
-      expect($.fn.glDropdown).toHaveBeenCalled();
+      expect(test.sidebarMoveIssue.$dropdownToggle.data('deprecatedJQueryDropdown')).toBeTruthy();
     });
 
     it('escapes html from project name', done => {

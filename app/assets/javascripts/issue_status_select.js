@@ -1,10 +1,11 @@
 import $ from 'jquery';
 import { __ } from './locale';
+import initDeprecatedJQueryDropdown from '~/deprecated_jquery_dropdown';
 
 export default function issueStatusSelect() {
   $('.js-issue-status').each((i, el) => {
     const fieldName = $(el).data('fieldName');
-    return $(el).glDropdown({
+    initDeprecatedJQueryDropdown($(el), {
       selectable: true,
       fieldName,
       toggleLabel(selected, element, instance) {

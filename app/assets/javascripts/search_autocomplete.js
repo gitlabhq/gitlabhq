@@ -13,6 +13,7 @@ import {
   spriteIcon,
 } from './lib/utils/common_utils';
 import Tracking from '~/tracking';
+import initDeprecatedJQueryDropdown from '~/deprecated_jquery_dropdown';
 
 /**
  * Search input in top navigation bar.
@@ -119,7 +120,7 @@ export class SearchAutocomplete {
   }
 
   createAutocomplete() {
-    return this.searchInput.glDropdown({
+    return initDeprecatedJQueryDropdown(this.searchInput, {
       filterInputBlur: false,
       filterable: true,
       filterRemote: true,
@@ -145,10 +146,10 @@ export class SearchAutocomplete {
     if (!term) {
       const contents = this.getCategoryContents();
       if (contents) {
-        const glDropdownInstance = this.searchInput.data('glDropdown');
+        const deprecatedJQueryDropdownInstance = this.searchInput.data('deprecatedJQueryDropdown');
 
-        if (glDropdownInstance) {
-          glDropdownInstance.filter.options.callback(contents);
+        if (deprecatedJQueryDropdownInstance) {
+          deprecatedJQueryDropdownInstance.filter.options.callback(contents);
         }
         this.enableAutocomplete();
       }
@@ -463,7 +464,7 @@ export class SearchAutocomplete {
   }
 
   highlightFirstRow() {
-    this.searchInput.data('glDropdown').highlightRowAtIndex(null, 0);
+    this.searchInput.data('deprecatedJQueryDropdown').highlightRowAtIndex(null, 0);
   }
 
   getAvatar(item) {

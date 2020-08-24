@@ -6,6 +6,7 @@ import { __ } from '~/locale';
 import axios from './lib/utils/axios_utils';
 import { timeFor, parsePikadayDate, pikadayToString } from './lib/utils/datetime_utility';
 import boardsStore from './boards/stores/boards_store';
+import initDeprecatedJQueryDropdown from '~/deprecated_jquery_dropdown';
 
 class DueDateSelect {
   constructor({ $dropdown, $loading } = {}) {
@@ -35,7 +36,7 @@ class DueDateSelect {
   }
 
   initGlDropdown() {
-    this.$dropdown.glDropdown({
+    initDeprecatedJQueryDropdown(this.$dropdown, {
       opened: () => {
         const calendar = this.$datePicker.data('pikaday');
         calendar.show();

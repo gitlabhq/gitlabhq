@@ -1,7 +1,6 @@
 /* eslint-disable no-unused-expressions, consistent-return, no-param-reassign, default-case, no-return-assign */
 
 import $ from 'jquery';
-import '~/gl_dropdown';
 import AxiosMockAdapter from 'axios-mock-adapter';
 import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import initSearchAutocomplete from '~/search_autocomplete';
@@ -215,7 +214,7 @@ describe('Search autocomplete dropdown', () => {
 
     function triggerAutocomplete() {
       return new Promise(resolve => {
-        const dropdown = widget.searchInput.data('glDropdown');
+        const dropdown = widget.searchInput.data('deprecatedJQueryDropdown');
         const filterCallback = dropdown.filter.options.callback;
         dropdown.filter.options.callback = jest.fn(data => {
           filterCallback(data);

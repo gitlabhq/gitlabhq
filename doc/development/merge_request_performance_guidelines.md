@@ -211,7 +211,7 @@ For keeping transaction as minimal as possible, please consider using `AfterComm
 module or `after_commit` AR hook.
 
 Here is [an example](https://gitlab.com/gitlab-org/gitlab/-/issues/36154#note_247228859)
-that one request to Gitaly instance during transaction triggered a P::1 issue.
+that one request to Gitaly instance during transaction triggered a ~"priority::1" issue.
 
 ## Eager Loading
 

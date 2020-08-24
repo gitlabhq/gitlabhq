@@ -1,4 +1,5 @@
 import FileTemplateSelector from '../file_template_selector';
+import initDeprecatedJQueryDropdown from '~/deprecated_jquery_dropdown';
 
 export default class BlobLicenseSelector extends FileTemplateSelector {
   constructor({ mediator }) {
@@ -14,7 +15,7 @@ export default class BlobLicenseSelector extends FileTemplateSelector {
   }
 
   initDropdown() {
-    this.$dropdown.glDropdown({
+    initDeprecatedJQueryDropdown(this.$dropdown, {
       data: this.$dropdown.data('data'),
       filterable: true,
       selectable: true,

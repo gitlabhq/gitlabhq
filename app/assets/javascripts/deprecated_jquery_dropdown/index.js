@@ -3,10 +3,10 @@
 import $ from 'jquery';
 import { escape } from 'lodash';
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
-import axios from './lib/utils/axios_utils';
+import axios from '../lib/utils/axios_utils';
 import { visitUrl } from '~/lib/utils/url_utility';
-import { isObject } from './lib/utils/type_utility';
-import renderItem from './gl_dropdown/render';
+import { isObject } from '~/lib/utils/type_utility';
+import renderItem from './render';
 
 const BLUR_KEYCODES = [27, 40];
 
@@ -890,12 +890,11 @@ class GitLabDropdown {
   }
 }
 
-// eslint-disable-next-line func-names
-$.fn.glDropdown = function(opts) {
+export default function initDeprecatedJQueryDropdown($el, opts) {
   // eslint-disable-next-line func-names
-  return this.each(function() {
-    if (!$.data(this, 'glDropdown')) {
-      return $.data(this, 'glDropdown', new GitLabDropdown(this, opts));
+  return $el.each(function() {
+    if (!$.data(this, 'deprecatedJQueryDropdown')) {
+      $.data(this, 'deprecatedJQueryDropdown', new GitLabDropdown(this, opts));
     }
   });
-};
+}
