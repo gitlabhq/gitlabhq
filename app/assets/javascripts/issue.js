@@ -173,11 +173,15 @@ export default class Issue {
   }
 
   initIssueWarningBtnEventListener() {
-    return $(document).on('click', '.js-close-blocked-issue-warning button.btn-secondary', e => {
-      e.preventDefault();
-      e.stopImmediatePropagation();
-      this.toggleWarningAndCloseButton();
-    });
+    return $(document).on(
+      'click',
+      '.js-close-blocked-issue-warning .js-cancel-blocked-issue-warning',
+      e => {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        this.toggleWarningAndCloseButton();
+      },
+    );
   }
 
   initIssueMovedFromServiceDeskDismissHandler() {

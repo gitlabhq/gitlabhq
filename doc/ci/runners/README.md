@@ -455,3 +455,7 @@ Example 2:
 1. The Runner is configured to run untagged jobs and has no tags defined.
 1. A job that has no tags defined is executed and run.
 1. A second job that has a `docker` tag defined is stuck.
+
+## System calls not available on GitLab.com shared runners
+
+GitLab.com shared runners run on CoreOS. This means that you cannot use some system calls, like `getlogin`, from the C standard library.
