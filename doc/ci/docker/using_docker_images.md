@@ -477,7 +477,7 @@ inside it and you would like to use it as a base image for your job because you
 want to execute some tests with this database binary. Let's also assume that
 this image is configured with `/usr/bin/super-sql run` as an entrypoint. That
 means that when starting the container without additional options, it runs
-the database's process, while runner expects that the image has no
+the database's process, while the runner expects that the image has no
 entrypoint or that the entrypoint is prepared to start a shell command.
 
 With the extended Docker configuration options, instead of creating your
