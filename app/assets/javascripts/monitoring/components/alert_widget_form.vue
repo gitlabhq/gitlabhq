@@ -11,12 +11,12 @@ import {
   GlNewDropdownItem as GlDropdownItem,
   GlModal,
   GlTooltipDirective,
+  GlIcon,
 } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
 import Translate from '~/vue_shared/translate';
 import TrackEventDirective from '~/vue_shared/directives/track_event';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import Icon from '~/vue_shared/components/icon.vue';
 import { alertsValidator, queriesValidator } from '../validators';
 import { OPERATORS } from '../constants';
 
@@ -44,7 +44,7 @@ export default {
     GlDropdownItem,
     GlModal,
     GlLink,
-    Icon,
+    GlIcon,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -242,7 +242,7 @@ export default {
         <template #description>
           <div class="d-flex align-items-center">
             {{ __('Single or combined queries') }}
-            <icon
+            <gl-icon
               v-gl-tooltip="$options.alertQueryText.descriptionTooltip"
               name="question"
               class="gl-ml-2"

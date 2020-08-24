@@ -13,7 +13,7 @@ exports[`SidebarTodo template renders component container element with proper da
   title=""
   type="button"
 >
-  <icon-stub
+  <gl-icon-stub
     class="todo-undone"
     name="todo-done"
     size="16"

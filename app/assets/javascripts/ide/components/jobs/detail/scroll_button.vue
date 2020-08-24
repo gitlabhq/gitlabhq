@@ -1,6 +1,6 @@
 <script>
+import { GlIcon } from '@gitlab/ui';
 import { __ } from '../../../../locale';
-import Icon from '../../../../vue_shared/components/icon.vue';
 import tooltip from '../../../../vue_shared/directives/tooltip';
 
 const directions = {
@@ -13,7 +13,7 @@ export default {
     tooltip,
   },
   components: {
-    Icon,
+    GlIcon,
   },
   props: {
     direction: {
@@ -58,7 +58,7 @@ export default {
       type="button"
       @click="clickedScroll"
     >
-      <icon :name="iconName" />
+      <gl-icon :name="iconName" />
     </button>
   </div>
 </template>

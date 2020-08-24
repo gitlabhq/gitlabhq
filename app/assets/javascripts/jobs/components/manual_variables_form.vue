@@ -1,15 +1,14 @@
 <script>
 import { uniqueId } from 'lodash';
 import { mapActions } from 'vuex';
-import { GlDeprecatedButton } from '@gitlab/ui';
+import { GlDeprecatedButton, GlIcon } from '@gitlab/ui';
 import { s__, sprintf } from '~/locale';
-import Icon from '~/vue_shared/components/icon.vue';
 
 export default {
   name: 'ManualVariablesForm',
   components: {
     GlDeprecatedButton,
-    Icon,
+    GlIcon,
   },
   props: {
     action: {
@@ -141,7 +140,7 @@ export default {
               class="btn-transparent btn-blank w-25"
               @click="deleteVariable(variable.id)"
             >
-              <icon name="clear" />
+              <gl-icon name="clear" />
             </gl-deprecated-button>
           </div>
         </div>

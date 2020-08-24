@@ -1,15 +1,14 @@
 <script>
 import $ from 'jquery';
-import { GlPopover, GlButton, GlTooltipDirective } from '@gitlab/ui';
+import { GlPopover, GlButton, GlTooltipDirective, GlIcon } from '@gitlab/ui';
 import { getSelectedFragment } from '~/lib/utils/common_utils';
 import { CopyAsGFM } from '../../../behaviors/markdown/copy_as_gfm';
 import ToolbarButton from './toolbar_button.vue';
-import Icon from '../icon.vue';
 
 export default {
   components: {
     ToolbarButton,
-    Icon,
+    GlIcon,
     GlPopover,
     GlButton,
   },
@@ -221,7 +220,7 @@ export default {
             :title="__('Go full screen')"
             type="button"
           >
-            <icon name="maximize" />
+            <gl-icon name="maximize" />
           </button>
         </div>
       </li>

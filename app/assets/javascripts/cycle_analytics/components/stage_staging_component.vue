@@ -1,16 +1,16 @@
 <script>
+import { GlIcon } from '@gitlab/ui';
 import userAvatarImage from '../../vue_shared/components/user_avatar/user_avatar_image.vue';
 import iconBranch from '../svg/icon_branch.svg';
 import limitWarning from './limit_warning_component.vue';
 import totalTime from './total_time_component.vue';
-import icon from '../../vue_shared/components/icon.vue';
 
 export default {
   components: {
     userAvatarImage,
     totalTime,
     limitWarning,
-    icon,
+    GlIcon,
   },
   props: {
     items: {
@@ -44,7 +44,7 @@ export default {
           <user-avatar-image :img-src="build.author.avatarUrl" />
           <h5 class="item-title">
             <a :href="build.url" class="pipeline-id"> #{{ build.id }} </a>
-            <icon :size="16" name="fork" />
+            <gl-icon :size="16" name="fork" />
             <a :href="build.branch.url" class="ref-name"> {{ build.branch.name }} </a>
             <span class="icon-branch" v-html="iconBranch"> </span>
             <a :href="build.commitUrl" class="commit-sha"> {{ build.shortSha }} </a>

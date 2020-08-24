@@ -1,8 +1,7 @@
 <script>
-import { GlTooltipDirective, GlLink, GlDeprecatedButton, GlLoadingIcon } from '@gitlab/ui';
+import { GlTooltipDirective, GlLink, GlDeprecatedButton, GlLoadingIcon, GlIcon } from '@gitlab/ui';
 import defaultAvatarUrl from 'images/no_avatar.png';
 import { sprintf, s__ } from '~/locale';
-import Icon from '../../vue_shared/components/icon.vue';
 import UserAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
 import TimeagoTooltip from '../../vue_shared/components/time_ago_tooltip.vue';
 import CiIcon from '../../vue_shared/components/ci_icon.vue';
@@ -13,7 +12,7 @@ import pathLastCommitQuery from '../queries/path_last_commit.query.graphql';
 
 export default {
   components: {
-    Icon,
+    GlIcon,
     UserAvatarLink,
     TimeagoTooltip,
     ClipboardButton,
@@ -130,7 +129,7 @@ export default {
             class="text-expander"
             @click="toggleShowDescription"
           >
-            <icon name="ellipsis_h" :size="10" />
+            <gl-icon name="ellipsis_h" :size="10" />
           </gl-deprecated-button>
           <div class="committer">
             <gl-link

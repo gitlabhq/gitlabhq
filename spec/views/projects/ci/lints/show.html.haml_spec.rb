@@ -4,16 +4,15 @@ require 'spec_helper'
 
 RSpec.describe 'projects/ci/lints/show' do
   include Devise::Test::ControllerHelpers
-  let(:project) { create(:project, :repository) }
-  let(:config_processor) { Gitlab::Ci::YamlProcessor.new(YAML.dump(content)) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:project) { create(:project, :repository) }
+  let(:lint) { Gitlab::Ci::Lint.new(project: project, current_user: user) }
+  let(:result) { lint.validate(YAML.dump(content)) }
 
   describe 'XSS protection' do
     before do
       assign(:project, project)
-      assign(:status, true)
-      assign(:builds, config_processor.builds)
-      assign(:stages, config_processor.stages)
-      assign(:jobs, config_processor.jobs)
+      assign(:result, result)
     end
 
     context 'when builds attrbiutes contain HTML nodes' do
@@ -66,10 +65,7 @@ RSpec.describe 'projects/ci/lints/show' do
 
     before do
       assign(:project, project)
-      assign(:status, true)
-      assign(:builds, config_processor.builds)
-      assign(:stages, config_processor.stages)
-      assign(:jobs, config_processor.jobs)
+      assign(:result, result)
     end
 
     it 'shows the correct values' do
@@ -85,7 +81,7 @@ RSpec.describe 'projects/ci/lints/show' do
 
     context 'when content has warnings' do
       before do
-        assign(:warnings, ['Warning 1', 'Warning 2'])
+        allow(result).to receive(:warnings).and_return(['Warning 1', 'Warning 2'])
       end
 
       it 'shows warning messages' do
@@ -99,11 +95,14 @@ RSpec.describe 'projects/ci/lints/show' do
   end
 
   context 'when the content is invalid' do
+    let(:content) { double(:content) }
+
     before do
+      allow(result).to receive(:warnings).and_return(['Warning 1', 'Warning 2'])
+      allow(result).to receive(:errors).and_return(['Undefined error'])
+
       assign(:project, project)
-      assign(:status, false)
-      assign(:errors, ['Undefined error'])
-      assign(:warnings, ['Warning 1', 'Warning 2'])
+      assign(:result, result)
     end
 
     it 'shows error message' do

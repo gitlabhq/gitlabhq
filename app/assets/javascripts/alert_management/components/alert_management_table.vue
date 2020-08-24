@@ -35,6 +35,7 @@ const tdClass =
 const thClass = 'gl-hover-bg-blue-50';
 const bodyTrClass =
   'gl-border-1 gl-border-t-solid gl-border-gray-100 gl-hover-bg-blue-50 gl-hover-cursor-pointer gl-hover-border-b-solid gl-hover-border-blue-200';
+const TH_TEST_ID = { 'data-testid': 'alert-management-severity-sort' };
 
 const initialPaginationState = {
   currentPage: 1,
@@ -61,6 +62,7 @@ export default {
       key: 'severity',
       label: s__('AlertManagement|Severity'),
       thClass: `${thClass} gl-w-eighth`,
+      thAttr: TH_TEST_ID,
       tdClass: `${tdClass} rounded-top text-capitalize sortable-cell`,
       sortable: true,
     },
@@ -72,7 +74,7 @@ export default {
       sortable: true,
     },
     {
-      key: 'title',
+      key: 'alertLabel',
       label: s__('AlertManagement|Alert'),
       thClass: `gl-pointer-events-none`,
       tdClass,
@@ -397,8 +399,14 @@ export default {
           {{ item.eventCount }}
         </template>
 
-        <template #cell(title)="{ item }">
-          <div class="gl-max-w-full text-truncate" :title="item.title">{{ item.title }}</div>
+        <template #cell(alertLabel)="{ item }">
+          <div
+            class="gl-max-w-full text-truncate"
+            :title="`${item.iid} - ${item.title}`"
+            data-testid="idField"
+          >
+            #{{ item.iid }} {{ item.title }}
+          </div>
         </template>
 
         <template #cell(issue)="{ item }">

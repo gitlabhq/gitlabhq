@@ -39,11 +39,13 @@ describe('AlertManagementTable', () => {
   const findStatusFilterBadge = () => wrapper.findAll(GlBadge);
   const findDateFields = () => wrapper.findAll(TimeAgo);
   const findFirstStatusOption = () => findStatusDropdown().find(GlDeprecatedDropdownItem);
-  const findAssignees = () => wrapper.findAll('[data-testid="assigneesField"]');
-  const findSeverityFields = () => wrapper.findAll('[data-testid="severityField"]');
-  const findSeverityColumnHeader = () => wrapper.findAll('th').at(0);
   const findPagination = () => wrapper.find(GlPagination);
   const findSearch = () => wrapper.find(GlSearchBoxByType);
+  const findSeverityColumnHeader = () =>
+    wrapper.find('[data-testid="alert-management-severity-sort"]');
+  const findFirstIDField = () => wrapper.findAll('[data-testid="idField"]').at(0);
+  const findAssignees = () => wrapper.findAll('[data-testid="assigneesField"]');
+  const findSeverityFields = () => wrapper.findAll('[data-testid="severityField"]');
   const findIssueFields = () => wrapper.findAll('[data-testid="issueField"]');
   const findAlertError = () => wrapper.find('[data-testid="alert-error"]');
   const alertsCount = {
@@ -190,6 +192,17 @@ describe('AlertManagementTable', () => {
           .at(0)
           .classes(),
       ).toContain('gl-hover-bg-blue-50');
+    });
+
+    it('displays the alert ID and title formatted correctly', () => {
+      mountComponent({
+        props: { alertManagementEnabled: true, userCanEnableAlertManagement: true },
+        data: { alerts: { list: mockAlerts }, alertsCount, hasError: false },
+        loading: false,
+      });
+
+      expect(findFirstIDField().exists()).toBe(true);
+      expect(findFirstIDField().text()).toBe(`#${mockAlerts[0].iid} ${mockAlerts[0].title}`);
     });
 
     it('displays status dropdown', () => {

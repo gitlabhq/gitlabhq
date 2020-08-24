@@ -1,14 +1,13 @@
 <script>
-import { GlTooltipDirective, GlLink, GlDeprecatedButton } from '@gitlab/ui';
+import { GlTooltipDirective, GlLink, GlDeprecatedButton, GlIcon } from '@gitlab/ui';
 import { polyfillSticky } from '~/lib/utils/sticky';
-import Icon from '~/vue_shared/components/icon.vue';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
 import { __, sprintf } from '~/locale';
 import scrollDown from '../svg/scroll_down.svg';
 
 export default {
   components: {
-    Icon,
+    GlIcon,
     GlLink,
     GlDeprecatedButton,
   },
@@ -95,7 +94,7 @@ export default {
         class="controllers-buttons"
         data-testid="job-raw-link-controller"
       >
-        <icon name="doc-text" />
+        <gl-icon name="doc-text" />
       </gl-link>
 
       <gl-link
@@ -108,7 +107,7 @@ export default {
         data-testid="job-log-erase-link"
         data-method="post"
       >
-        <icon name="remove" />
+        <gl-icon name="remove" />
       </gl-link>
       <!-- eo links -->
 
@@ -121,7 +120,7 @@ export default {
           data-testid="job-controller-scroll-top"
           @click="handleScrollToTop"
         >
-          <icon name="scroll_up" />
+          <gl-icon name="scroll_up" />
         </gl-deprecated-button>
       </div>
 

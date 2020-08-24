@@ -1175,6 +1175,11 @@ input BoardEpicIssueInput {
   releaseTag: String
 
   """
+  Search query for issue title or description
+  """
+  search: String
+
+  """
   Filter by weight
   """
   weight: String

@@ -1,9 +1,9 @@
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import Vuex from 'vuex';
+import { GlIcon } from '@gitlab/ui';
 import DiffFileHeader from '~/diffs/components/diff_file_header.vue';
 import EditButton from '~/diffs/components/edit_button.vue';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
-import Icon from '~/vue_shared/components/icon.vue';
 import diffDiscussionsMockData from '../mock_data/diff_discussions';
 import { truncateSha } from '~/lib/utils/text_utility';
 import { diffViewerModes } from '~/ide/constants';
@@ -70,7 +70,7 @@ describe('DiffFileHeader component', () => {
   const findCollapseIcon = () => wrapper.find({ ref: 'collapseIcon' });
 
   const findIconByName = iconName => {
-    const icons = wrapper.findAll(Icon).filter(w => w.props('name') === iconName);
+    const icons = wrapper.findAll(GlIcon).filter(w => w.props('name') === iconName);
     if (icons.length === 0) return icons;
     if (icons.length > 1) {
       throw new Error(`Multiple icons found for ${iconName}`);

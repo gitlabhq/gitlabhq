@@ -1,9 +1,8 @@
 <script>
 import { mapGetters } from 'vuex';
-import { GlLoadingIcon, GlTooltipDirective } from '@gitlab/ui';
+import { GlLoadingIcon, GlTooltipDirective, GlIcon } from '@gitlab/ui';
 import { __ } from '~/locale';
 import resolvedStatusMixin from '~/batch_comments/mixins/resolved_status';
-import Icon from '~/vue_shared/components/icon.vue';
 import ReplyButton from './note_actions/reply_button.vue';
 import eventHub from '~/sidebar/event_hub';
 import Api from '~/api';
@@ -12,7 +11,7 @@ import { deprecatedCreateFlash as flash } from '~/flash';
 export default {
   name: 'NoteActions',
   components: {
-    Icon,
+    GlIcon,
     ReplyButton,
     GlLoadingIcon,
   },
@@ -189,7 +188,7 @@ export default {
         @click="onResolve"
       >
         <template v-if="!isResolving">
-          <icon :name="isResolved ? 'check-circle-filled' : 'check-circle'" />
+          <gl-icon :name="isResolved ? 'check-circle-filled' : 'check-circle'" />
         </template>
         <gl-loading-icon v-else inline />
       </button>
@@ -203,9 +202,9 @@ export default {
         title="Add reaction"
         data-position="right"
       >
-        <icon class="link-highlight award-control-icon-neutral" name="slight-smile" />
-        <icon class="link-highlight award-control-icon-positive" name="smiley" />
-        <icon class="link-highlight award-control-icon-super-positive" name="smiley" />
+        <gl-icon class="link-highlight award-control-icon-neutral" name="slight-smile" />
+        <gl-icon class="link-highlight award-control-icon-positive" name="smiley" />
+        <gl-icon class="link-highlight award-control-icon-super-positive" name="smiley" />
       </a>
     </div>
     <reply-button
@@ -222,7 +221,7 @@ export default {
         class="note-action-button js-note-edit btn btn-transparent qa-note-edit-button"
         @click="onEdit"
       >
-        <icon name="pencil" class="link-highlight" />
+        <gl-icon name="pencil" class="link-highlight" />
       </button>
     </div>
     <div v-if="showDeleteAction" class="note-actions-item">
@@ -233,7 +232,7 @@ export default {
         class="note-action-button js-note-delete btn btn-transparent"
         @click="onDelete"
       >
-        <icon name="remove" class="link-highlight" />
+        <gl-icon name="remove" class="link-highlight" />
       </button>
     </div>
     <div v-else-if="shouldShowActionsDropdown" class="dropdown more-actions note-actions-item">
@@ -245,7 +244,7 @@ export default {
         data-toggle="dropdown"
         @click="closeTooltip"
       >
-        <icon class="icon" name="ellipsis_v" />
+        <gl-icon class="icon" name="ellipsis_v" />
       </button>
       <ul class="dropdown-menu more-actions-dropdown dropdown-open-left">
         <li v-if="canReportAsAbuse">

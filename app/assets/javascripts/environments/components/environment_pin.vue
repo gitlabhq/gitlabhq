@@ -3,14 +3,13 @@
  * Renders a prevent auto-stop button.
  * Used in environments table.
  */
-import { GlDeprecatedButton, GlTooltipDirective } from '@gitlab/ui';
-import Icon from '~/vue_shared/components/icon.vue';
+import { GlDeprecatedButton, GlTooltipDirective, GlIcon } from '@gitlab/ui';
 import { __ } from '~/locale';
 import eventHub from '../event_hub';
 
 export default {
   components: {
-    Icon,
+    GlIcon,
     GlDeprecatedButton,
   },
   directives: {
@@ -37,6 +36,6 @@ export default {
     :aria-label="$options.title"
     @click="onPinClick"
   >
-    <icon name="thumbtack" />
+    <gl-icon name="thumbtack" />
   </gl-deprecated-button>
 </template>

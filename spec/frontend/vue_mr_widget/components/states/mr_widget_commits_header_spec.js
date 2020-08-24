@@ -1,6 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
+import { GlIcon } from '@gitlab/ui';
 import CommitsHeader from '~/vue_merge_request_widget/components/states/commits_header.vue';
-import Icon from '~/vue_shared/components/icon.vue';
 
 describe('Commits header component', () => {
   let wrapper;
@@ -23,7 +23,7 @@ describe('Commits header component', () => {
 
   const findHeaderWrapper = () => wrapper.find('.js-mr-widget-commits-count');
   const findCommitToggle = () => wrapper.find('.commit-edit-toggle');
-  const findIcon = () => wrapper.find(Icon);
+  const findIcon = () => wrapper.find(GlIcon);
   const findCommitsCountMessage = () => wrapper.find('.commits-count-message');
   const findTargetBranchMessage = () => wrapper.find('.label-branch');
   const findModifyButton = () => wrapper.find('.modify-message-button');

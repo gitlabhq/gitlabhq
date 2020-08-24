@@ -1,6 +1,5 @@
 <script>
-import { GlTooltipDirective, GlLink } from '@gitlab/ui';
-import Icon from '~/vue_shared/components/icon.vue';
+import { GlTooltipDirective, GlLink, GlIcon } from '@gitlab/ui';
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
 import { __, sprintf } from '~/locale';
@@ -8,7 +7,7 @@ import { __, sprintf } from '~/locale';
 export default {
   name: 'ReleaseBlockFooter',
   components: {
-    Icon,
+    GlIcon,
     GlLink,
     UserAvatarLink,
   },
@@ -68,7 +67,7 @@ export default {
 <template>
   <div>
     <div v-if="commit" class="float-left mr-3 d-flex align-items-center js-commit-info">
-      <icon ref="commitIcon" name="commit" class="mr-1" />
+      <gl-icon ref="commitIcon" name="commit" class="mr-1" />
       <div v-gl-tooltip.bottom :title="commit.title">
         <gl-link v-if="commitPath" :href="commitPath">
           {{ commit.shortId }}
@@ -78,7 +77,7 @@ export default {
     </div>
 
     <div v-if="tagName" class="float-left mr-3 d-flex align-items-center js-tag-info">
-      <icon name="tag" class="mr-1" />
+      <gl-icon name="tag" class="mr-1" />
       <div v-gl-tooltip.bottom :title="__('Tag')">
         <gl-link v-if="tagPath" :href="tagPath">
           {{ tagName }}

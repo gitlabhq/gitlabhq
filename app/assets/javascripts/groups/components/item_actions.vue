@@ -1,12 +1,12 @@
 <script>
+import { GlIcon } from '@gitlab/ui';
 import tooltip from '~/vue_shared/directives/tooltip';
-import icon from '~/vue_shared/components/icon.vue';
 import eventHub from '../event_hub';
 import { COMMON_STR } from '../constants';
 
 export default {
   components: {
-    icon,
+    GlIcon,
   },
   directives: {
     tooltip,
@@ -56,7 +56,7 @@ export default {
       class="leave-group btn btn-xs no-expand gl-text-gray-500 gl-ml-5"
       @click.prevent="onLeaveGroup"
     >
-      <icon name="leave" class="position-top-0" />
+      <gl-icon name="leave" class="position-top-0" />
     </a>
     <a
       v-if="group.canEdit"
@@ -68,7 +68,7 @@ export default {
       data-placement="bottom"
       class="edit-group btn btn-xs no-expand gl-text-gray-500 gl-ml-5"
     >
-      <icon name="settings" class="position-top-0 align-middle" />
+      <gl-icon name="settings" class="position-top-0 align-middle" />
     </a>
   </div>
 </template>

@@ -1,10 +1,10 @@
 <script>
-import Icon from '~/vue_shared/components/icon.vue';
+import { GlIcon } from '@gitlab/ui';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 
 export default {
   components: {
-    Icon,
+    GlIcon,
     TimeAgo,
   },
   props: {
@@ -29,7 +29,7 @@ export default {
       aria-expanded="false"
     >
       <span> {{ selectedVersionName }} </span>
-      <icon :size="12" name="angle-down" class="position-absolute" />
+      <gl-icon :size="12" name="angle-down" class="position-absolute" />
     </a>
     <div class="dropdown-menu dropdown-select dropdown-menu-selectable">
       <div class="dropdown-content">

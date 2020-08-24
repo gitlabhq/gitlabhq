@@ -1,12 +1,11 @@
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex';
-import { GlDeprecatedButton } from '@gitlab/ui';
-import Icon from '~/vue_shared/components/icon.vue';
+import { GlDeprecatedButton, GlIcon } from '@gitlab/ui';
 
 export default {
   components: {
     GlDeprecatedButton,
-    Icon,
+    GlIcon,
   },
   computed: {
     ...mapGetters('diffs', ['isInlineView', 'isParallelView']),
@@ -31,7 +30,7 @@ export default {
       data-toggle="dropdown"
       data-display="static"
     >
-      <icon name="settings" /> <icon name="chevron-down" />
+      <gl-icon name="settings" /> <gl-icon name="chevron-down" />
     </button>
     <div class="dropdown-menu dropdown-menu-right p-2 pt-3 pb-3">
       <div>

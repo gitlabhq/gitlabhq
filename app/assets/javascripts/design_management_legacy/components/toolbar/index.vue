@@ -1,7 +1,6 @@
 <script>
-import { GlDeprecatedButton } from '@gitlab/ui';
+import { GlDeprecatedButton, GlIcon } from '@gitlab/ui';
 import { __, sprintf } from '~/locale';
-import Icon from '~/vue_shared/components/icon.vue';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
 import Pagination from './pagination.vue';
 import DeleteButton from '../delete_button.vue';
@@ -11,7 +10,7 @@ import { DESIGNS_ROUTE_NAME } from '../../router/constants';
 
 export default {
   components: {
-    Icon,
+    GlIcon,
     Pagination,
     DeleteButton,
     GlDeprecatedButton,
@@ -104,7 +103,7 @@ export default {
       :aria-label="s__('DesignManagement|Go back to designs')"
       class="mr-3 text-plain d-flex justify-content-center align-items-center"
     >
-      <icon :size="18" name="close" />
+      <gl-icon :size="18" name="close" />
     </router-link>
     <div class="overflow-hidden d-flex align-items-center">
       <h2 class="m-0 str-truncated-100 gl-font-base">{{ filename }}</h2>
@@ -112,7 +111,7 @@ export default {
     </div>
     <pagination :id="id" class="ml-auto flex-shrink-0" />
     <gl-deprecated-button :href="image" class="mr-2">
-      <icon :size="18" name="download" />
+      <gl-icon :size="18" name="download" />
     </gl-deprecated-button>
     <delete-button
       v-if="isLatestVersion && canDeleteDesign"
@@ -120,7 +119,7 @@ export default {
       button-variant="danger"
       @deleteSelectedDesigns="$emit('delete')"
     >
-      <icon :size="18" name="remove" />
+      <gl-icon :size="18" name="remove" />
     </delete-button>
   </header>
 </template>

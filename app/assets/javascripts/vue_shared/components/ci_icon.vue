@@ -1,5 +1,5 @@
 <script>
-import Icon from './icon.vue';
+import { GlIcon } from '@gitlab/ui';
 
 /**
  * Renders CI icon based on API response shared between all places where it is used.
@@ -28,7 +28,7 @@ const validSizes = [8, 12, 16, 18, 24, 32, 48, 72];
 
 export default {
   components: {
-    Icon,
+    GlIcon,
   },
   props: {
     status: {
@@ -66,5 +66,5 @@ export default {
 };
 </script>
 <template>
-  <span :class="cssClass"> <icon :name="icon" :size="size" :class="cssClasses" /> </span>
+  <span :class="cssClass"> <gl-icon :name="icon" :size="size" :class="cssClasses" /> </span>
 </template>

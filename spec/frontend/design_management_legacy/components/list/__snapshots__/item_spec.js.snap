@@ -59,7 +59,7 @@ exports[`Design management list item component with notes renders item with mult
     <div
       class="ml-auto d-flex align-items-center text-secondary"
     >
-      <icon-stub
+      <gl-icon-stub
         class="ml-1"
         name="comments"
         size="16"
@@ -129,7 +129,7 @@ exports[`Design management list item component with notes renders item with sing
     <div
       class="ml-auto d-flex align-items-center text-secondary"
     >
-      <icon-stub
+      <gl-icon-stub
         class="ml-1"
         name="comments"
         size="16"

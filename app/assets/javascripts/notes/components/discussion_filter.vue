@@ -1,8 +1,8 @@
 <script>
 import $ from 'jquery';
 import { mapGetters, mapActions } from 'vuex';
+import { GlIcon } from '@gitlab/ui';
 import { getLocationHash, doesHashExistInUrl } from '../../lib/utils/url_utility';
-import Icon from '~/vue_shared/components/icon.vue';
 import {
   DISCUSSION_FILTERS_DEFAULT_VALUE,
   HISTORY_ONLY_FILTER_VALUE,
@@ -14,7 +14,7 @@ import notesEventHub from '../event_hub';
 
 export default {
   components: {
-    Icon,
+    GlIcon,
   },
   props: {
     filters: {
@@ -120,7 +120,7 @@ export default {
       data-toggle="dropdown"
       aria-expanded="false"
     >
-      {{ currentFilter.title }} <icon name="chevron-down" />
+      {{ currentFilter.title }} <gl-icon name="chevron-down" />
     </button>
     <div
       ref="dropdownMenu"

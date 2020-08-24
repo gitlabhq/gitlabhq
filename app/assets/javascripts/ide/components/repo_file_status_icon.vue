@@ -1,12 +1,12 @@
 <script>
+import { GlIcon } from '@gitlab/ui';
 import { __, sprintf } from '~/locale';
-import icon from '~/vue_shared/components/icon.vue';
 import tooltip from '~/vue_shared/directives/tooltip';
 import '~/lib/utils/datetime_utility';
 
 export default {
   components: {
-    icon,
+    GlIcon,
   },
   directives: {
     tooltip,
@@ -29,6 +29,6 @@ export default {
 
 <template>
   <span v-if="file.file_lock" v-tooltip :title="lockTooltip" data-container="body">
-    <icon name="lock" class="file-status-icon" />
+    <gl-icon name="lock" class="file-status-icon" />
   </span>
 </template>

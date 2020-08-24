@@ -7,7 +7,7 @@ exports[`Design management pagination button component disables button when no d
   disabled="true"
   to="[object Object]"
 >
-  <icon-stub
+  <gl-icon-stub
     name="angle-right"
     size="16"
   />
@@ -20,7 +20,7 @@ exports[`Design management pagination button component renders router-link 1`] =
   class="btn btn-default"
   to="[object Object]"
 >
-  <icon-stub
+  <gl-icon-stub
     name="angle-right"
     size="16"
   />

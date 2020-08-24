@@ -1,10 +1,9 @@
 <script>
-import { GlTooltipDirective } from '@gitlab/ui';
-import Icon from '../icon.vue';
+import { GlTooltipDirective, GlIcon } from '@gitlab/ui';
 
 export default {
   components: {
-    Icon,
+    GlIcon,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -67,6 +66,6 @@ export default {
     data-container="body"
     @click="() => $emit('click')"
   >
-    <icon :name="icon" />
+    <gl-icon :name="icon" />
   </button>
 </template>

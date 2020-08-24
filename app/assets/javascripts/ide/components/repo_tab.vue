@@ -1,9 +1,9 @@
 <script>
 import { mapActions } from 'vuex';
+import { GlIcon } from '@gitlab/ui';
 import { __, sprintf } from '~/locale';
 
 import FileIcon from '~/vue_shared/components/file_icon.vue';
-import Icon from '~/vue_shared/components/icon.vue';
 import ChangedFileIcon from '~/vue_shared/components/changed_file_icon.vue';
 import FileStatusIcon from './repo_file_status_icon.vue';
 
@@ -11,7 +11,7 @@ export default {
   components: {
     FileStatusIcon,
     FileIcon,
-    Icon,
+    GlIcon,
     ChangedFileIcon,
   },
   props: {
@@ -91,7 +91,7 @@ export default {
       class="multi-file-tab-close"
       @click.stop.prevent="closeFile(tab)"
     >
-      <icon v-if="!showChangedIcon" :size="12" name="close" />
+      <gl-icon v-if="!showChangedIcon" :size="12" name="close" />
       <changed-file-icon v-else :file="tab" />
     </button>
   </li>

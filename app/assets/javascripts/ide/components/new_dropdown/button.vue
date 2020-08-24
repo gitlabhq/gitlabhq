@@ -1,5 +1,5 @@
 <script>
-import Icon from '~/vue_shared/components/icon.vue';
+import { GlIcon } from '@gitlab/ui';
 import tooltip from '~/vue_shared/directives/tooltip';
 
 export default {
@@ -7,7 +7,7 @@ export default {
     tooltip,
   },
   components: {
-    Icon,
+    GlIcon,
   },
   props: {
     label: {
@@ -52,7 +52,7 @@ export default {
     class="btn-blank"
     @click.stop.prevent="clicked"
   >
-    <icon :name="icon" :class="iconClasses" />
+    <gl-icon :name="icon" :class="iconClasses" />
     <template v-if="showLabel">
       {{ label }}
     </template>

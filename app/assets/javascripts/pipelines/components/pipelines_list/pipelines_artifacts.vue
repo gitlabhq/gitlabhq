@@ -1,14 +1,13 @@
 <script>
 /* eslint-disable @gitlab/vue-require-i18n-strings */
-import { GlLink, GlTooltipDirective } from '@gitlab/ui';
-import Icon from '~/vue_shared/components/icon.vue';
+import { GlLink, GlTooltipDirective, GlIcon } from '@gitlab/ui';
 
 export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
   components: {
-    Icon,
+    GlIcon,
     GlLink,
   },
   props: {
@@ -29,7 +28,7 @@ export default {
       data-toggle="dropdown"
       :aria-label="__('Artifacts')"
     >
-      <icon name="download" />
+      <gl-icon name="download" />
       <i class="fa fa-caret-down" aria-hidden="true"></i>
     </button>
     <ul class="dropdown-menu dropdown-menu-right">

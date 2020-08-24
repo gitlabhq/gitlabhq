@@ -13,7 +13,7 @@ exports[`Confidential Issue Sidebar Block renders for confidential = false and i
     data-placement="left"
     title=""
   >
-    <icon-stub
+    <gl-icon-stub
       aria-hidden="true"
       name="eye"
       size="16"
@@ -38,7 +38,7 @@ exports[`Confidential Issue Sidebar Block renders for confidential = false and i
       class="no-value sidebar-item-value"
       data-testid="not-confidential"
     >
-      <icon-stub
+      <gl-icon-stub
         aria-hidden="true"
         class="sidebar-item-icon inline"
         name="eye"
@@ -65,7 +65,7 @@ exports[`Confidential Issue Sidebar Block renders for confidential = false and i
     data-placement="left"
     title=""
   >
-    <icon-stub
+    <gl-icon-stub
       aria-hidden="true"
       name="eye"
       size="16"
@@ -98,7 +98,7 @@ exports[`Confidential Issue Sidebar Block renders for confidential = false and i
       class="no-value sidebar-item-value"
       data-testid="not-confidential"
     >
-      <icon-stub
+      <gl-icon-stub
         aria-hidden="true"
         class="sidebar-item-icon inline"
         name="eye"
@@ -125,7 +125,7 @@ exports[`Confidential Issue Sidebar Block renders for confidential = true and is
     data-placement="left"
     title=""
   >
-    <icon-stub
+    <gl-icon-stub
       aria-hidden="true"
       name="eye-slash"
       size="16"
@@ -149,7 +149,7 @@ exports[`Confidential Issue Sidebar Block renders for confidential = true and is
     <div
       class="value sidebar-item-value hide-collapsed"
     >
-      <icon-stub
+      <gl-icon-stub
         aria-hidden="true"
         class="sidebar-item-icon inline is-active"
         name="eye-slash"
@@ -176,7 +176,7 @@ exports[`Confidential Issue Sidebar Block renders for confidential = true and is
     data-placement="left"
     title=""
   >
-    <icon-stub
+    <gl-icon-stub
       aria-hidden="true"
       name="eye-slash"
       size="16"
@@ -208,7 +208,7 @@ exports[`Confidential Issue Sidebar Block renders for confidential = true and is
     <div
       class="value sidebar-item-value hide-collapsed"
     >
-      <icon-stub
+      <gl-icon-stub
         aria-hidden="true"
         class="sidebar-item-icon inline is-active"
         name="eye-slash"

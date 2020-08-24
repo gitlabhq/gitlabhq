@@ -1,6 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
+import { GlIcon } from '@gitlab/ui';
 import MonitoringComponent from '~/environments/components/environment_monitoring.vue';
-import Icon from '~/vue_shared/components/icon.vue';
 
 describe('Monitoring Component', () => {
   let wrapper;
@@ -15,7 +15,7 @@ describe('Monitoring Component', () => {
     });
   };
 
-  const findIcons = () => wrapper.findAll(Icon);
+  const findIcons = () => wrapper.findAll(GlIcon);
   const findIconsByName = name => findIcons().filter(icon => icon.props('name') === name);
 
   beforeEach(() => {

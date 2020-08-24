@@ -2,13 +2,13 @@
 import $ from 'jquery';
 import '~/behaviors/markdown/render_gfm';
 import { unescape } from 'lodash';
+import { GlIcon } from '@gitlab/ui';
 import { __, sprintf } from '~/locale';
 import { stripHtml } from '~/lib/utils/text_utility';
 import { deprecatedCreateFlash as Flash } from '~/flash';
 import GLForm from '~/gl_form';
 import MarkdownHeader from './header.vue';
 import MarkdownToolbar from './toolbar.vue';
-import Icon from '../icon.vue';
 import GlMentions from '~/vue_shared/components/gl_mentions.vue';
 import Suggestions from '~/vue_shared/components/markdown/suggestions.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -19,7 +19,7 @@ export default {
     GlMentions,
     MarkdownHeader,
     MarkdownToolbar,
-    Icon,
+    GlIcon,
     Suggestions,
   },
   mixins: [glFeatureFlagsMixin()],
@@ -254,7 +254,7 @@ export default {
           href="#"
           :aria-label="__('Leave zen mode')"
         >
-          <icon :size="16" name="minimize" />
+          <gl-icon :size="16" name="minimize" />
         </a>
         <markdown-toolbar
           :markdown-docs-path="markdownDocsPath"

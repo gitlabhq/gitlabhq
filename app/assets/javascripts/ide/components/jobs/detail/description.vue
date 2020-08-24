@@ -1,10 +1,10 @@
 <script>
-import Icon from '../../../../vue_shared/components/icon.vue';
+import { GlIcon } from '@gitlab/ui';
 import CiIcon from '../../../../vue_shared/components/ci_icon.vue';
 
 export default {
   components: {
-    Icon,
+    GlIcon,
     CiIcon,
   },
   props: {
@@ -27,7 +27,7 @@ export default {
     <span class="gl-ml-3">
       {{ job.name }}
       <a :href="job.path" target="_blank" class="ide-external-link position-relative">
-        {{ jobId }} <icon :size="12" name="external-link" />
+        {{ jobId }} <gl-icon :size="12" name="external-link" />
       </a>
     </span>
   </div>

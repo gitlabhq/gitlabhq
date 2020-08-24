@@ -1,11 +1,11 @@
 import $ from 'jquery';
 import { mount } from '@vue/test-utils';
+import { GlIcon } from '@gitlab/ui';
 import EvidenceBlock from '~/releases/components/evidence_block.vue';
 import ReleaseBlock from '~/releases/components/release_block.vue';
 import ReleaseBlockFooter from '~/releases/components/release_block_footer.vue';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
 import { release as originalRelease } from '../mock_data';
-import Icon from '~/vue_shared/components/icon.vue';
 import * as commonUtils from '~/lib/utils/common_utils';
 import { BACK_URL_PARAM } from '~/releases/constants';
 import * as urlUtility from '~/lib/utils/url_utility';
@@ -247,7 +247,7 @@ describe('Release block', () => {
       it('renders the milestone icon', () => {
         expect(
           milestoneListLabel()
-            .find(Icon)
+            .find(GlIcon)
             .exists(),
         ).toBe(true);
       });

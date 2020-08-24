@@ -5,28 +5,34 @@ require "spec_helper"
 RSpec.describe API::MergeRequests do
   include ProjectForksHelper
 
-  let(:base_time)   { Time.now }
+  let_it_be(:base_time) { Time.now }
   let_it_be(:user)  { create(:user) }
   let_it_be(:user2) { create(:user) }
   let_it_be(:admin) { create(:user, :admin) }
-  let(:project)     { create(:project, :public, :repository, creator: user, namespace: user.namespace, only_allow_merge_if_pipeline_succeeds: false) }
-  let(:milestone)   { create(:milestone, title: '1.0.0', project: project) }
-  let(:milestone1)  { create(:milestone, title: '0.9', project: project) }
-  let(:merge_request_context_commit) {create(:merge_request_context_commit, message: 'test')}
-  let!(:merge_request) { create(:merge_request, :simple, milestone: milestone1, author: user, assignees: [user], merge_request_context_commits: [merge_request_context_commit], source_project: project, target_project: project, source_branch: 'markdown', title: "Test", created_at: base_time) }
-  let!(:merge_request_closed) { create(:merge_request, state: "closed", milestone: milestone1, author: user, assignees: [user], source_project: project, target_project: project, title: "Closed test", created_at: base_time + 1.second) }
-  let!(:merge_request_merged) { create(:merge_request, state: "merged", author: user, assignees: [user], source_project: project, target_project: project, title: "Merged test", created_at: base_time + 2.seconds, merge_commit_sha: '9999999999999999999999999999999999999999') }
-  let!(:merge_request_locked) { create(:merge_request, state: "locked", milestone: milestone1, author: user, assignees: [user], source_project: project, target_project: project, title: "Locked test", created_at: base_time + 1.second) }
-  let!(:note)       { create(:note_on_merge_request, author: user, project: project, noteable: merge_request, note: "a comment on a MR") }
-  let!(:note2)      { create(:note_on_merge_request, author: user, project: project, noteable: merge_request, note: "another comment on a MR") }
+  let_it_be(:project) { create(:project, :public, :repository, creator: user, namespace: user.namespace, only_allow_merge_if_pipeline_succeeds: false) }
+
+  let(:milestone1) { create(:milestone, title: '0.9', project: project) }
+  let(:milestone) { create(:milestone, title: '1.0.0', project: project) }
   let(:label) { create(:label, title: 'label', color: '#FFAABB', project: project) }
   let(:label2) { create(:label, title: 'a-test', color: '#FFFFFF', project: project) }
+
+  let(:merge_request) { create(:merge_request, :simple, author: user, assignees: [user], source_project: project, target_project: project, source_branch: 'markdown', title: "Test", created_at: base_time) }
 
   before do
     project.add_reporter(user)
     project.add_reporter(user2)
 
     stub_licensed_features(multiple_merge_request_assignees: false)
+  end
+
+  shared_context 'with merge requests' do
+    let_it_be(:milestone1) { create(:milestone, title: '0.9', project: project) }
+    let_it_be(:merge_request) { create(:merge_request, :simple, milestone: milestone1, author: user, assignees: [user], source_project: project, target_project: project, source_branch: 'markdown', title: "Test", created_at: base_time) }
+    let_it_be(:merge_request_closed) { create(:merge_request, state: "closed", milestone: milestone1, author: user, assignees: [user], source_project: project, target_project: project, title: "Closed test", created_at: base_time + 1.second) }
+    let_it_be(:merge_request_merged) { create(:merge_request, state: "merged", author: user, assignees: [user], source_project: project, target_project: project, title: "Merged test", created_at: base_time + 2.seconds, merge_commit_sha: '9999999999999999999999999999999999999999') }
+    let_it_be(:merge_request_locked) { create(:merge_request, state: "locked", milestone: milestone1, author: user, assignees: [user], source_project: project, target_project: project, title: "Locked test", created_at: base_time + 1.second) }
+    let_it_be(:note) { create(:note_on_merge_request, author: user, project: project, noteable: merge_request, note: "a comment on a MR") }
+    let_it_be(:note2) { create(:note_on_merge_request, author: user, project: project, noteable: merge_request, note: "another comment on a MR") }
   end
 
   shared_context 'with labels' do
@@ -68,6 +74,7 @@ RSpec.describe API::MergeRequests do
       context 'when merge request is unchecked' do
         let(:check_service_class) { MergeRequests::MergeabilityCheckService }
         let(:mr_entity) { json_response.find { |mr| mr['id'] == merge_request.id } }
+        let(:merge_request) { create(:merge_request, :simple, author: user, source_project: project, title: "Test") }
 
         before do
           merge_request.mark_as_unchecked!
@@ -426,14 +433,13 @@ RSpec.describe API::MergeRequests do
       end
 
       context 'NOT params' do
-        let(:merge_request2) do
+        let!(:merge_request2) do
           create(
             :merge_request,
             :simple,
             milestone: milestone,
             author: user,
             assignees: [user],
-            merge_request_context_commits: [merge_request_context_commit],
             source_project: project,
             target_project: project,
             source_branch: 'what',
@@ -441,6 +447,8 @@ RSpec.describe API::MergeRequests do
             created_at: base_time
           )
         end
+
+        let!(:merge_request_context_commit) { create(:merge_request_context_commit, merge_request: merge_request2, message: 'test') }
 
         before do
           create(:label_link, label: label, target: merge_request)
@@ -527,6 +535,8 @@ RSpec.describe API::MergeRequests do
   end
 
   describe 'GET /merge_requests' do
+    include_context 'with merge requests'
+
     context 'when unauthenticated' do
       it 'returns an array of all merge requests' do
         get api('/merge_requests', user), params: { scope: 'all' }
@@ -563,9 +573,9 @@ RSpec.describe API::MergeRequests do
     end
 
     context 'when authenticated' do
-      let!(:project2) { create(:project, :public, namespace: user.namespace) }
-      let!(:merge_request2) { create(:merge_request, :simple, author: user, assignees: [user], source_project: project2, target_project: project2) }
-      let(:user2) { create(:user) }
+      let_it_be(:project2) { create(:project, :public, :repository, namespace: user.namespace) }
+      let_it_be(:merge_request2) { create(:merge_request, :simple, author: user, assignees: [user], source_project: project2, target_project: project2) }
+      let_it_be(:user2) { create(:user) }
 
       it 'returns an array of all merge requests except unauthorized ones' do
         get api('/merge_requests', user), params: { scope: :all }
@@ -778,8 +788,8 @@ RSpec.describe API::MergeRequests do
       end
 
       context 'search params' do
-        before do
-          merge_request.update(title: 'Search title', description: 'Search description')
+        let_it_be(:merge_request) do
+          create(:merge_request, :simple, author: user, source_project: project, target_project: project, title: 'Search title', description: 'Search description')
         end
 
         it 'returns merge requests matching given search string for title' do
@@ -818,6 +828,8 @@ RSpec.describe API::MergeRequests do
   end
 
   describe "GET /projects/:id/merge_requests" do
+    include_context 'with merge requests'
+
     let(:endpoint_path) { "/projects/#{project.id}/merge_requests" }
 
     it_behaves_like 'merge requests list'
@@ -845,7 +857,9 @@ RSpec.describe API::MergeRequests do
     end
 
     context 'a project which enforces all discussions to be resolved' do
-      let!(:project) { create(:project, :repository, only_allow_merge_if_all_discussions_are_resolved: true) }
+      let_it_be(:project) { create(:project, :repository, only_allow_merge_if_all_discussions_are_resolved: true) }
+
+      include_context 'with merge requests'
 
       it 'avoids N+1 queries' do
         control = ActiveRecord::QueryRecorder.new do
@@ -864,6 +878,9 @@ RSpec.describe API::MergeRequests do
   describe "GET /groups/:id/merge_requests" do
     let_it_be(:group) { create(:group, :public) }
     let_it_be(:project) { create(:project, :public, :repository, creator: user, namespace: group, only_allow_merge_if_pipeline_succeeds: false) }
+
+    include_context 'with merge requests'
+
     let(:endpoint_path) { "/groups/#{group.id}/merge_requests" }
 
     before do
@@ -876,6 +893,8 @@ RSpec.describe API::MergeRequests do
       let_it_be(:group) { create(:group, :public) }
       let_it_be(:subgroup) { create(:group, parent: group) }
       let_it_be(:project) { create(:project, :public, :repository, creator: user, namespace: subgroup, only_allow_merge_if_pipeline_succeeds: false) }
+
+      include_context 'with merge requests'
 
       it_behaves_like 'merge requests list'
     end
@@ -936,6 +955,8 @@ RSpec.describe API::MergeRequests do
   end
 
   describe "GET /projects/:id/merge_requests/:merge_request_iid" do
+    let(:merge_request) { create(:merge_request, :simple, author: user, assignees: [user], milestone: milestone, source_project: project, source_branch: 'markdown', title: "Test") }
+
     it 'matches json schema' do
       merge_request = create(:merge_request, :with_test_reports, milestone: milestone1, author: user, assignees: [user], source_project: project, target_project: project, title: "Test", created_at: base_time)
       get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}", user)
@@ -1059,6 +1080,9 @@ RSpec.describe API::MergeRequests do
     end
 
     context 'head_pipeline' do
+      let(:project) { create(:project, :repository) }
+      let(:merge_request) { create(:merge_request, :simple, author: user, source_project: project, source_branch: 'markdown', title: "Test") }
+
       before do
         merge_request.update(head_pipeline: create(:ci_pipeline))
         merge_request.project.project_feature.update(builds_access_level: 10)
@@ -1188,11 +1212,13 @@ RSpec.describe API::MergeRequests do
 
   describe 'GET /projects/:id/merge_requests/:merge_request_iid/participants' do
     it_behaves_like 'issuable participants endpoint' do
-      let(:entity) { merge_request }
+      let(:entity) { create(:merge_request, :simple, milestone: milestone1, author: user, assignees: [user], source_project: project, target_project: project, source_branch: 'markdown', title: "Test", created_at: base_time) }
     end
   end
 
   describe 'GET /projects/:id/merge_requests/:merge_request_iid/commits' do
+    include_context 'with merge requests'
+
     it 'returns a 200 when merge request is valid' do
       get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/commits", user)
       commit = merge_request.commits.first
@@ -1216,6 +1242,9 @@ RSpec.describe API::MergeRequests do
   end
 
   describe 'GET /projects/:id/merge_requests/:merge_request_iid/:context_commits' do
+    let_it_be(:merge_request) { create(:merge_request, :simple, author: user, source_project: project, target_project: project, source_branch: 'markdown', title: "Test", created_at: base_time) }
+    let_it_be(:merge_request_context_commit) { create(:merge_request_context_commit, merge_request: merge_request, message: 'test') }
+
     it 'returns a 200 when merge request is valid' do
       context_commit = merge_request.context_commits.first
 
@@ -1234,6 +1263,8 @@ RSpec.describe API::MergeRequests do
   end
 
   describe 'GET /projects/:id/merge_requests/:merge_request_iid/changes' do
+    let_it_be(:merge_request) { create(:merge_request, :simple, author: user, assignees: [user], source_project: project, target_project: project, source_branch: 'markdown', title: "Test", created_at: base_time) }
+
     it 'returns the change information of the merge_request' do
       get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/changes", user)
 
@@ -1254,6 +1285,8 @@ RSpec.describe API::MergeRequests do
   end
 
   describe 'GET /projects/:id/merge_requests/:merge_request_iid/pipelines' do
+    let_it_be(:merge_request) { create(:merge_request, :simple, author: user, assignees: [user], source_project: project, target_project: project, source_branch: 'markdown', title: "Test", created_at: base_time) }
+
     context 'when authorized' do
       let!(:pipeline) { create(:ci_empty_pipeline, project: project, user: user, ref: merge_request.source_branch, sha: merge_request.diff_head_sha) }
       let!(:pipeline2) { create(:ci_empty_pipeline, project: project) }
@@ -1308,16 +1341,15 @@ RSpec.describe API::MergeRequests do
       })
     end
 
-    let(:project) do
+    let_it_be(:project) do
       create(:project, :private, :repository,
         creator: user,
         namespace: user.namespace,
         only_allow_merge_if_pipeline_succeeds: false)
     end
 
-    let(:merge_request) do
+    let_it_be(:merge_request) do
       create(:merge_request, :with_detached_merge_request_pipeline,
-        milestone: milestone1,
         author: user,
         assignees: [user],
         source_project: project,
@@ -1351,7 +1383,7 @@ RSpec.describe API::MergeRequests do
     end
 
     context 'when the merge request does not exist' do
-      let(:merge_request_iid) { 777 }
+      let(:merge_request_iid) { non_existing_record_id }
 
       it 'responds with a blank 404' do
         expect { request }.not_to change(Ci::Pipeline, :count)
@@ -1604,7 +1636,7 @@ RSpec.describe API::MergeRequests do
           end.to change { MergeRequest.count }.by(0)
 
           expect(response).to have_gitlab_http_status(:conflict)
-          expect(json_response['message']).to eq(["Another open merge request already exists for this source branch: !5"])
+          expect(json_response['message']).to eq(["Another open merge request already exists for this source branch: !1"])
         end
       end
 
@@ -1778,6 +1810,7 @@ RSpec.describe API::MergeRequests do
         before do
           create(:merge_request_context_commit, merge_request: merge_request, sha: commit.id)
         end
+
         it 'returns 400 when the context commit is already created' do
           post api("/projects/#{project.id}/merge_requests/#{merge_request_iid}/context_commits", authenticated_user), params: params
           expect(response).to have_gitlab_http_status(:bad_request)
@@ -1937,7 +1970,9 @@ RSpec.describe API::MergeRequests do
   end
 
   describe "PUT /projects/:id/merge_requests/:merge_request_iid/merge", :clean_gitlab_redis_cache do
-    let(:pipeline) { create(:ci_pipeline) }
+    let(:project) { create(:project, :repository, namespace: user.namespace) }
+    let(:merge_request) { create(:merge_request, :simple, author: user, source_project: project, source_branch: 'markdown', title: 'Test') }
+    let(:pipeline) { create(:ci_pipeline, project: project) }
 
     it "returns merge_request in case of success" do
       put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/merge", user)
@@ -2169,9 +2204,7 @@ RSpec.describe API::MergeRequests do
     end
 
     context 'when merge-ref is not synced with merge status' do
-      before do
-        merge_request.update!(merge_status: 'cannot_be_merged')
-      end
+      let(:merge_request) { create(:merge_request, :simple, author: user, source_project: project, source_branch: 'markdown', merge_status: 'cannot_be_merged') }
 
       it 'returns 200 if MR can be merged' do
         get api(url, user)
@@ -2254,6 +2287,7 @@ RSpec.describe API::MergeRequests do
       end
 
       context 'with a merge request across forks' do
+        let(:project) { create(:project, :public, :repository, creator: user, namespace: user.namespace, only_allow_merge_if_pipeline_succeeds: false) }
         let(:fork_owner) { create(:user) }
         let(:source_project) { fork_project(project, fork_owner) }
         let(:target_project) { project }
@@ -2717,7 +2751,7 @@ RSpec.describe API::MergeRequests do
   end
 
   describe 'Time tracking' do
-    let(:issuable) { merge_request }
+    let!(:issuable) { create(:merge_request, :simple, author: user, assignees: [user], source_project: project, target_project: project, source_branch: 'markdown', title: "Test", created_at: base_time) }
 
     include_examples 'time tracking endpoints', 'merge_request'
   end

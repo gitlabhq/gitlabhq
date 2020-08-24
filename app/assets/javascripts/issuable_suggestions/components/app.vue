@@ -1,14 +1,13 @@
 <script>
-import { GlTooltipDirective } from '@gitlab/ui';
+import { GlTooltipDirective, GlIcon } from '@gitlab/ui';
 import { __ } from '~/locale';
-import Icon from '~/vue_shared/components/icon.vue';
 import Suggestion from './item.vue';
 import query from '../queries/issues.query.graphql';
 
 export default {
   components: {
     Suggestion,
-    Icon,
+    GlIcon,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -70,7 +69,7 @@ export default {
   <div v-show="showSuggestions" class="form-group row issuable-suggestions">
     <div v-once class="col-form-label col-sm-2 pt-0">
       {{ __('Similar issues') }}
-      <icon
+      <gl-icon
         v-gl-tooltip.bottom
         :title="$options.helpText"
         :aria-label="$options.helpText"

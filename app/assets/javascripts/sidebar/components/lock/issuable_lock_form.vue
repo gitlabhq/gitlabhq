@@ -1,8 +1,8 @@
 <script>
 import { mapGetters } from 'vuex';
+import { GlIcon } from '@gitlab/ui';
 import { __ } from '~/locale';
 import tooltip from '~/vue_shared/directives/tooltip';
-import Icon from '~/vue_shared/components/icon.vue';
 import eventHub from '~/sidebar/event_hub';
 import editForm from './edit_form.vue';
 
@@ -22,7 +22,7 @@ export default {
   },
   components: {
     editForm,
-    Icon,
+    GlIcon,
   },
 
   directives: {
@@ -88,7 +88,7 @@ export default {
       data-boundary="viewport"
       @click="toggleForm"
     >
-      <icon :name="lockStatus.icon" class="sidebar-item-icon is-active" />
+      <gl-icon :name="lockStatus.icon" class="sidebar-item-icon is-active" />
     </div>
 
     <div class="title hide-collapsed">
@@ -116,7 +116,7 @@ export default {
       />
 
       <div data-testid="lock-status" class="sidebar-item-value" :class="lockStatus.class">
-        <icon
+        <gl-icon
           :size="16"
           :name="lockStatus.icon"
           class="sidebar-item-icon"

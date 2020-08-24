@@ -1,8 +1,7 @@
 <script>
 import $ from 'jquery';
-import { GlDeprecatedButton } from '@gitlab/ui';
+import { GlDeprecatedButton, GlIcon } from '@gitlab/ui';
 import { __ } from '~/locale';
-import Icon from '~/vue_shared/components/icon.vue';
 /**
  * Renders a split dropdown with
  * an input that allows to search through the given
@@ -14,7 +13,7 @@ import Icon from '~/vue_shared/components/icon.vue';
 export default {
   name: 'FilteredSearchDropdown',
   components: {
-    Icon,
+    GlIcon,
     GlDeprecatedButton,
   },
   props: {
@@ -117,7 +116,7 @@ export default {
         aria-expanded="false"
         :aria-label="__('Expand dropdown')"
       >
-        <icon name="angle-down" :size="12" />
+        <gl-icon name="angle-down" :size="12" />
       </button>
       <div class="dropdown-menu dropdown-menu-right">
         <div class="dropdown-input">
@@ -128,7 +127,7 @@ export default {
             :placeholder="__('Filter')"
             class="js-filtered-dropdown-input dropdown-input-field"
           />
-          <icon class="dropdown-input-search" name="search" />
+          <gl-icon class="dropdown-input-search" name="search" />
         </div>
 
         <div class="dropdown-content">

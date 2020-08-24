@@ -412,32 +412,6 @@ RSpec.describe Projects::UpdateService do
 
         subject
       end
-
-      context 'when `async_update_pages_config` is disabled' do
-        before do
-          stub_feature_flags(async_update_pages_config: false)
-        end
-
-        it 'calls Projects::UpdatePagesConfigurationService when pages are deployed' do
-          project.mark_pages_as_deployed
-
-          expect(Projects::UpdatePagesConfigurationService)
-            .to receive(:new)
-                  .with(project)
-                  .and_call_original
-
-          subject
-        end
-
-        it "does not update pages config when pages aren't deployed" do
-          project.mark_pages_as_not_deployed
-
-          expect(Projects::UpdatePagesConfigurationService)
-            .not_to receive(:new)
-
-          subject
-        end
-      end
     end
 
     context 'when updating #pages_https_only', :https_pages_enabled do

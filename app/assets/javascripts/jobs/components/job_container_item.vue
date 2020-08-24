@@ -1,15 +1,14 @@
 <script>
-import { GlLink } from '@gitlab/ui';
+import { GlLink, GlIcon } from '@gitlab/ui';
 import tooltip from '~/vue_shared/directives/tooltip';
 import CiIcon from '~/vue_shared/components/ci_icon.vue';
-import Icon from '~/vue_shared/components/icon.vue';
 import delayedJobMixin from '~/jobs/mixins/delayed_job_mixin';
 import { sprintf } from '~/locale';
 
 export default {
   components: {
     CiIcon,
-    Icon,
+    GlIcon,
     GlLink,
   },
   directives: {
@@ -56,7 +55,7 @@ export default {
       data-boundary="viewport"
       class="js-job-link d-flex"
     >
-      <icon
+      <gl-icon
         v-if="isActive"
         name="arrow-right"
         class="js-arrow-right icon-arrow-right position-absolute d-block"
@@ -66,7 +65,7 @@ export default {
 
       <span class="text-truncate w-100">{{ job.name ? job.name : job.id }}</span>
 
-      <icon v-if="job.retried" name="retry" class="js-retry-icon" />
+      <gl-icon v-if="job.retried" name="retry" class="js-retry-icon" />
     </gl-link>
   </div>
 </template>

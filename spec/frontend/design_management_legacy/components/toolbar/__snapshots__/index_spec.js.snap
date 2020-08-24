@@ -8,7 +8,7 @@ exports[`Design management toolbar component renders design and updated data 1`]
     aria-label="Go back to designs"
     class="mr-3 text-plain d-flex justify-content-center align-items-center"
   >
-    <icon-stub
+    <gl-icon-stub
       name="close"
       size="18"
     />
@@ -41,7 +41,7 @@ exports[`Design management toolbar component renders design and updated data 1`]
     size="md"
     variant="secondary"
   >
-    <icon-stub
+    <gl-icon-stub
       name="download"
       size="18"
     />
@@ -52,7 +52,7 @@ exports[`Design management toolbar component renders design and updated data 1`]
     buttonvariant="danger"
     hasselecteddesigns="true"
   >
-    <icon-stub
+    <gl-icon-stub
       name="remove"
       size="18"
     />

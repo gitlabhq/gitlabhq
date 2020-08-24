@@ -5,7 +5,6 @@ import { GlButtonGroup, GlButton, GlIcon, GlTooltipDirective } from '@gitlab/ui'
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
-import Icon from '~/vue_shared/components/icon.vue';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 
@@ -39,7 +38,6 @@ import { setUrlParams } from '../../lib/utils/url_utility';
 export default {
   components: {
     UserAvatarLink,
-    Icon,
     ClipboardButton,
     TimeAgoTooltip,
     CommitPipelineStatus,
@@ -156,7 +154,7 @@ export default {
           type="button"
           :aria-label="__('Toggle commit description')"
         >
-          <icon :size="12" name="ellipsis_h" />
+          <gl-icon :size="12" name="ellipsis_h" />
         </button>
 
         <div class="committer">

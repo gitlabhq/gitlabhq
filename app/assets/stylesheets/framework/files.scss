@@ -495,9 +495,12 @@ span.idiff {
   max-height: 20rem;
 }
 
-#js-openapi-viewer pre.version {
-  background-color: transparent;
-  border: transparent;
+#js-openapi-viewer {
+  pre.version,
+  code {
+    background-color: transparent;
+    border: transparent;
+  }
 }
 
 .code-navigation-line:hover {

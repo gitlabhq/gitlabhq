@@ -354,16 +354,6 @@ RSpec.describe PagesDomain do
       domain.destroy!
     end
 
-    it 'delegates to Projects::UpdatePagesConfigurationService when not running async' do
-      stub_feature_flags(async_update_pages_config: false)
-
-      service = instance_double('Projects::UpdatePagesConfigurationService')
-      expect(Projects::UpdatePagesConfigurationService).to receive(:new) { service }
-      expect(service).to receive(:execute)
-
-      create(:pages_domain, project: project)
-    end
-
     it "schedules a PagesUpdateConfigurationWorker" do
       expect(PagesUpdateConfigurationWorker).to receive(:perform_async).with(project.id)
 

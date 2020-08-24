@@ -1,14 +1,13 @@
 <script>
-import { GlDeprecatedButton } from '@gitlab/ui';
+import { GlDeprecatedButton, GlIcon } from '@gitlab/ui';
 import { isString } from 'lodash';
-import Icon from '~/vue_shared/components/icon.vue';
 import ProjectAvatar from '~/vue_shared/components/project_avatar/default.vue';
 import highlight from '~/lib/utils/highlight';
 import { truncateNamespace } from '~/lib/utils/text_utility';
 
 export default {
   name: 'ProjectListItem',
-  components: { Icon, ProjectAvatar, GlDeprecatedButton },
+  components: { GlIcon, ProjectAvatar, GlDeprecatedButton },
   props: {
     project: {
       type: Object,
@@ -44,7 +43,7 @@ export default {
     class="d-flex align-items-center btn pt-1 pb-1 border-0 project-list-item"
     @click="onClick"
   >
-    <icon
+    <gl-icon
       class="gl-ml-3 gl-mr-3 flex-shrink-0 position-top-0 js-selected-icon"
       :class="{ 'js-selected visible': selected, 'js-unselected invisible': !selected }"
       name="mobile-issue-close"

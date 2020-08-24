@@ -1,14 +1,13 @@
 <script>
 import { mapGetters } from 'vuex';
-import { GlTooltipDirective, GlFriendlyWrap } from '@gitlab/ui';
-import Icon from '~/vue_shared/components/icon.vue';
+import { GlTooltipDirective, GlFriendlyWrap, GlIcon } from '@gitlab/ui';
 import { __ } from '~/locale';
 import SmartVirtualList from '~/vue_shared/components/smart_virtual_list.vue';
 
 export default {
   name: 'TestsSuiteTable',
   components: {
-    Icon,
+    GlIcon,
     SmartVirtualList,
     GlFriendlyWrap,
   },
@@ -96,7 +95,7 @@ export default {
                 class="add-border ci-status-icon d-flex align-items-center justify-content-end justify-content-md-center"
                 :class="`ci-status-icon-${testCase.status}`"
               >
-                <icon :size="24" :name="testCase.icon" />
+                <gl-icon :size="24" :name="testCase.icon" />
               </div>
             </div>
           </div>

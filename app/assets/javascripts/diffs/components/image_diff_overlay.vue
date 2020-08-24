@@ -2,12 +2,12 @@
 import { mapActions, mapGetters } from 'vuex';
 import { isArray } from 'lodash';
 import imageDiffMixin from 'ee_else_ce/diffs/mixins/image_diff';
-import Icon from '~/vue_shared/components/icon.vue';
+import { GlIcon } from '@gitlab/ui';
 
 export default {
   name: 'ImageDiffOverlay',
   components: {
-    Icon,
+    GlIcon,
   },
   mixins: [imageDiffMixin],
   props: {
@@ -112,7 +112,7 @@ export default {
       type="button"
       @click="clickedToggle(discussion)"
     >
-      <icon v-if="showCommentIcon" name="image-comment-dark" />
+      <gl-icon v-if="showCommentIcon" name="image-comment-dark" />
       <template v-else>
         {{ toggleText(discussion, index) }}
       </template>
@@ -127,7 +127,7 @@ export default {
       class="btn-transparent comment-indicator"
       type="button"
     >
-      <icon name="image-comment-dark" />
+      <gl-icon name="image-comment-dark" />
     </button>
   </div>
 </template>

@@ -1,10 +1,10 @@
 <script>
 import iconCycleAnalyticsSplash from 'icons/_icon_cycle_analytics_splash.svg';
-import Icon from '~/vue_shared/components/icon.vue';
+import { GlIcon } from '@gitlab/ui';
 
 export default {
   components: {
-    Icon,
+    GlIcon,
   },
   props: {
     documentationLink: {
@@ -32,7 +32,7 @@ export default {
       type="button"
       @click="dismissOverviewDialog"
     >
-      <icon name="close" />
+      <gl-icon name="close" />
     </button>
     <div class="svg-container" v-html="iconCycleAnalyticsSplash"></div>
     <div class="inner-content">

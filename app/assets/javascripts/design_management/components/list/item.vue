@@ -1,6 +1,5 @@
 <script>
 import { GlLoadingIcon, GlIcon, GlIntersectionObserver } from '@gitlab/ui';
-import Icon from '~/vue_shared/components/icon.vue';
 import Timeago from '~/vue_shared/components/time_ago_tooltip.vue';
 import { n__, __ } from '~/locale';
 import { DESIGN_ROUTE_NAME } from '../../router/constants';
@@ -10,7 +9,6 @@ export default {
     GlLoadingIcon,
     GlIntersectionObserver,
     GlIcon,
-    Icon,
     Timeago,
   },
   props: {
@@ -132,7 +130,7 @@ export default {
     <div class="card-body p-0 d-flex-center overflow-hidden position-relative">
       <div v-if="icon.name" data-testid="designEvent" class="design-event position-absolute">
         <span :title="icon.tooltip" :aria-label="icon.tooltip">
-          <icon :name="icon.name" :size="18" :class="icon.classes" />
+          <gl-icon :name="icon.name" :size="18" :class="icon.classes" />
         </span>
       </div>
       <gl-intersection-observer @appear="onAppear">
@@ -164,7 +162,7 @@ export default {
         </span>
       </div>
       <div v-if="notesCount" class="ml-auto d-flex align-items-center text-secondary">
-        <icon name="comments" class="ml-1" />
+        <gl-icon name="comments" class="ml-1" />
         <span :aria-label="notesLabel" class="ml-1">
           {{ notesCount }}
         </span>

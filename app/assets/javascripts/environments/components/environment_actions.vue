@@ -1,8 +1,7 @@
 <script>
-import { GlLoadingIcon } from '@gitlab/ui';
+import { GlLoadingIcon, GlIcon } from '@gitlab/ui';
 import { __, s__, sprintf } from '~/locale';
 import { formatTime } from '~/lib/utils/datetime_utility';
-import Icon from '~/vue_shared/components/icon.vue';
 import eventHub from '../event_hub';
 import tooltip from '../../vue_shared/directives/tooltip';
 
@@ -11,7 +10,7 @@ export default {
     tooltip,
   },
   components: {
-    Icon,
+    GlIcon,
     GlLoadingIcon,
   },
   props: {
@@ -80,8 +79,8 @@ export default {
       data-toggle="dropdown"
     >
       <span>
-        <icon name="play" />
-        <icon name="chevron-down" />
+        <gl-icon name="play" />
+        <gl-icon name="chevron-down" />
         <gl-loading-icon v-if="isLoading" />
       </span>
     </button>
@@ -97,7 +96,7 @@ export default {
         >
           <span class="flex-fill">{{ action.name }}</span>
           <span v-if="action.scheduledAt" class="text-secondary">
-            <icon name="clock" />
+            <gl-icon name="clock" />
             {{ remainingTime(action) }}
           </span>
         </button>

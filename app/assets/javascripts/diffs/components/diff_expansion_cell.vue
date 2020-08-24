@@ -1,8 +1,8 @@
 <script>
 import { mapState, mapActions } from 'vuex';
+import { GlIcon } from '@gitlab/ui';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
 import { s__ } from '~/locale';
-import Icon from '~/vue_shared/components/icon.vue';
 import { UNFOLD_COUNT, INLINE_DIFF_VIEW_TYPE, PARALLEL_DIFF_VIEW_TYPE } from '../constants';
 import * as utils from '../store/utils';
 import tooltip from '../../vue_shared/directives/tooltip';
@@ -26,7 +26,7 @@ export default {
     tooltip,
   },
   components: {
-    Icon,
+    GlIcon,
   },
   props: {
     fileHash: {
@@ -237,7 +237,7 @@ export default {
         :title="__('Expand up')"
         @click="handleExpandLines(EXPAND_UP)"
       >
-        <icon :size="12" name="expand-up" aria-hidden="true" />
+        <gl-icon :size="12" name="expand-up" aria-hidden="true" />
       </a>
       <a class="mx-2 cursor-pointer js-unfold-all" @click="handleExpandLines()">
         <span>{{ s__('Diffs|Show unchanged lines') }}</span>
@@ -251,7 +251,7 @@ export default {
         :title="__('Expand down')"
         @click="handleExpandLines(EXPAND_DOWN)"
       >
-        <icon :size="12" name="expand-down" aria-hidden="true" />
+        <gl-icon :size="12" name="expand-down" aria-hidden="true" />
       </a>
     </div>
   </td>

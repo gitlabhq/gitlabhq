@@ -2,8 +2,8 @@ import Vue from 'vue';
 import { shallowMount } from '@vue/test-utils';
 
 import { mockMilestone } from 'jest/boards/mock_data';
+import { GlIcon } from '@gitlab/ui';
 import IssueMilestone from '~/vue_shared/components/issue/issue_milestone.vue';
-import Icon from '~/vue_shared/components/icon.vue';
 
 const createComponent = (milestone = mockMilestone) => {
   const Component = Vue.extend(IssueMilestone);
@@ -135,7 +135,7 @@ describe('IssueMilestoneComponent', () => {
     });
 
     it('renders milestone icon', () => {
-      expect(wrapper.find(Icon).props('name')).toBe('clock');
+      expect(wrapper.find(GlIcon).props('name')).toBe('clock');
     });
 
     it('renders milestone title', () => {

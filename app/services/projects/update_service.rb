@@ -144,11 +144,7 @@ module Projects
     def update_pages_config
       return unless project.pages_deployed?
 
-      if Feature.enabled?(:async_update_pages_config, project)
-        PagesUpdateConfigurationWorker.perform_async(project.id)
-      else
-        Projects::UpdatePagesConfigurationService.new(project).execute
-      end
+      PagesUpdateConfigurationWorker.perform_async(project.id)
     end
 
     def changing_pages_https_only?

@@ -1,10 +1,9 @@
 <script>
-import { GlTooltipDirective, GlButton, GlLoadingIcon } from '@gitlab/ui';
+import { GlTooltipDirective, GlButton, GlLoadingIcon, GlIcon } from '@gitlab/ui';
 import axios from '~/lib/utils/axios_utils';
 import { dasherize } from '~/lib/utils/text_utility';
 import { __ } from '~/locale';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
-import Icon from '~/vue_shared/components/icon.vue';
 
 /**
  * Renders either a cancel, retry or play icon button and handles the post request
@@ -18,7 +17,7 @@ import Icon from '~/vue_shared/components/icon.vue';
  */
 export default {
   components: {
-    Icon,
+    GlIcon,
     GlButton,
     GlLoadingIcon,
   },
@@ -92,6 +91,6 @@ export default {
     @click="onClickAction"
   >
     <gl-loading-icon v-if="isLoading" class="js-action-icon-loading" />
-    <icon v-else :name="actionIcon" class="gl-mr-0!" />
+    <gl-icon v-else :name="actionIcon" class="gl-mr-0!" />
   </gl-button>
 </template>

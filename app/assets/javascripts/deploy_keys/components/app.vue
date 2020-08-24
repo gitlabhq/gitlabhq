@@ -1,5 +1,5 @@
 <script>
-import { GlLoadingIcon } from '@gitlab/ui';
+import { GlLoadingIcon, GlIcon } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import { deprecatedCreateFlash as Flash } from '~/flash';
 import NavigationTabs from '~/vue_shared/components/navigation_tabs.vue';
@@ -7,14 +7,13 @@ import eventHub from '../eventhub';
 import DeployKeysService from '../service';
 import DeployKeysStore from '../store';
 import KeysPanel from './keys_panel.vue';
-import Icon from '~/vue_shared/components/icon.vue';
 
 export default {
   components: {
     KeysPanel,
     NavigationTabs,
     GlLoadingIcon,
-    Icon,
+    GlIcon,
   },
   props: {
     endpoint: {
@@ -125,8 +124,8 @@ export default {
     />
     <template v-else-if="hasKeys">
       <div class="top-area scrolling-tabs-container inner-page-scroll-tabs">
-        <div class="fade-left"><icon name="chevron-lg-left" :size="12" /></div>
-        <div class="fade-right"><icon name="chevron-lg-right" :size="12" /></div>
+        <div class="fade-left"><gl-icon name="chevron-lg-left" :size="12" /></div>
+        <div class="fade-right"><gl-icon name="chevron-lg-right" :size="12" /></div>
 
         <navigation-tabs :tabs="tabs" scope="deployKeys" @onChangeTab="onChangeTab" />
       </div>

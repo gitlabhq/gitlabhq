@@ -1,13 +1,13 @@
 <script>
 import $ from 'jquery';
 import { mapActions, mapState } from 'vuex';
-import Icon from '~/vue_shared/components/icon.vue';
+import { GlIcon } from '@gitlab/ui';
 import tooltip from '~/vue_shared/directives/tooltip';
 import { leftSidebarViews } from '../constants';
 
 export default {
   components: {
-    Icon,
+    GlIcon,
   },
   directives: {
     tooltip,
@@ -48,7 +48,7 @@ export default {
           class="ide-sidebar-link js-ide-edit-mode"
           @click.prevent="changedActivityView($event, $options.leftSidebarViews.edit.name)"
         >
-          <icon name="code" />
+          <gl-icon name="code" />
         </button>
       </li>
       <li>
@@ -65,7 +65,7 @@ export default {
           class="ide-sidebar-link js-ide-review-mode"
           @click.prevent="changedActivityView($event, $options.leftSidebarViews.review.name)"
         >
-          <icon name="file-modified" />
+          <gl-icon name="file-modified" />
         </button>
       </li>
       <li>
@@ -82,7 +82,7 @@ export default {
           class="ide-sidebar-link js-ide-commit-mode qa-commit-mode-tab"
           @click.prevent="changedActivityView($event, $options.leftSidebarViews.commit.name)"
         >
-          <icon name="commit" />
+          <gl-icon name="commit" />
         </button>
       </li>
     </ul>

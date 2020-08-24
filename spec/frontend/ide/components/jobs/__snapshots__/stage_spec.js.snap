@@ -34,7 +34,7 @@ exports[`IDE pipeline stage renders stage details & icon 1`] = `
       </span>
     </div>
      
-    <icon-stub
+    <gl-icon-stub
       class="ide-stage-collapse-icon"
       name="angle-down"
       size="16"

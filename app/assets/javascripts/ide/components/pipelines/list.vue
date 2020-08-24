@@ -1,9 +1,8 @@
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex';
 import { escape } from 'lodash';
-import { GlLoadingIcon } from '@gitlab/ui';
+import { GlLoadingIcon, GlIcon } from '@gitlab/ui';
 import { sprintf, __ } from '../../../locale';
-import Icon from '../../../vue_shared/components/icon.vue';
 import CiIcon from '../../../vue_shared/components/ci_icon.vue';
 import Tabs from '../../../vue_shared/components/tabs/tabs';
 import Tab from '../../../vue_shared/components/tabs/tab.vue';
@@ -14,7 +13,7 @@ import IDEServices from '~/ide/services';
 
 export default {
   components: {
-    Icon,
+    GlIcon,
     CiIcon,
     Tabs,
     Tab,
@@ -70,7 +69,7 @@ export default {
             target="_blank"
             class="ide-external-link position-relative"
           >
-            #{{ latestPipeline.id }} <icon :size="12" name="external-link" />
+            #{{ latestPipeline.id }} <gl-icon :size="12" name="external-link" />
           </a>
         </span>
       </header>

@@ -1,11 +1,11 @@
 <script>
-import Icon from '~/vue_shared/components/icon.vue';
+import { GlIcon } from '@gitlab/ui';
 import LineNumber from './line_number.vue';
 import DurationBadge from './duration_badge.vue';
 
 export default {
   components: {
-    Icon,
+    GlIcon,
     LineNumber,
     DurationBadge,
   },
@@ -47,7 +47,7 @@ export default {
     role="button"
     @click="handleOnClick"
   >
-    <icon :name="iconName" class="arrow position-absolute" />
+    <gl-icon :name="iconName" class="arrow position-absolute" />
     <line-number :line-number="line.lineNumber" :path="path" />
     <span
       v-for="(content, i) in line.content"

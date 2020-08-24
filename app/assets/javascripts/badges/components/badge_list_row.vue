@@ -1,8 +1,7 @@
 <script>
 import { mapActions, mapState } from 'vuex';
-import { GlLoadingIcon } from '@gitlab/ui';
+import { GlLoadingIcon, GlIcon } from '@gitlab/ui';
 import { s__ } from '~/locale';
-import Icon from '~/vue_shared/components/icon.vue';
 import { PROJECT_BADGE } from '../constants';
 import Badge from './badge.vue';
 
@@ -10,7 +9,7 @@ export default {
   name: 'BadgeListRow',
   components: {
     Badge,
-    Icon,
+    GlIcon,
     GlLoadingIcon,
   },
   props: {
@@ -58,7 +57,7 @@ export default {
           type="button"
           @click="editBadge(badge)"
         >
-          <icon :size="16" :aria-label="__('Edit')" name="pencil" />
+          <gl-icon :size="16" :aria-label="__('Edit')" name="pencil" />
         </button>
         <button
           :disabled="badge.isDeleting"
@@ -68,7 +67,7 @@ export default {
           data-target="#delete-badge-modal"
           @click="updateBadgeInModal(badge)"
         >
-          <icon :size="16" :aria-label="__('Delete')" name="remove" />
+          <gl-icon :size="16" :aria-label="__('Delete')" name="remove" />
         </button>
         <gl-loading-icon v-show="badge.isDeleting" :inline="true" />
       </div>

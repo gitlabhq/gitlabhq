@@ -1,11 +1,10 @@
 <script>
 import { isEmpty } from 'lodash';
 import { mapActions, mapState } from 'vuex';
-import { GlLink, GlDeprecatedButton } from '@gitlab/ui';
+import { GlLink, GlDeprecatedButton, GlIcon } from '@gitlab/ui';
 import { __, sprintf } from '~/locale';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
 import { timeIntervalInWords } from '~/lib/utils/datetime_utility';
-import Icon from '~/vue_shared/components/icon.vue';
 import DetailRow from './sidebar_detail_row.vue';
 import ArtifactsBlock from './artifacts_block.vue';
 import TriggerBlock from './trigger_block.vue';
@@ -19,7 +18,7 @@ export default {
     ArtifactsBlock,
     CommitBlock,
     DetailRow,
-    Icon,
+    GlIcon,
     TriggerBlock,
     StagesDropdown,
     JobsContainer,
@@ -157,7 +156,7 @@ export default {
             class="js-terminal-link btn btn-primary btn-inverted visible-md-block visible-lg-block float-left"
             target="_blank"
           >
-            {{ __('Debug') }} <icon name="external-link" :size="14" />
+            {{ __('Debug') }} <gl-icon name="external-link" :size="14" />
           </gl-link>
         </div>
 

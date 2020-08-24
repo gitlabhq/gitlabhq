@@ -1,10 +1,9 @@
 <script>
 import { isString, isEmpty } from 'lodash';
-import { GlTooltipDirective, GlLink } from '@gitlab/ui';
+import { GlTooltipDirective, GlLink, GlIcon } from '@gitlab/ui';
 import { __, sprintf } from '~/locale';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate.vue';
 import UserAvatarLink from './user_avatar/user_avatar_link.vue';
-import Icon from './icon.vue';
 
 export default {
   directives: {
@@ -12,14 +11,14 @@ export default {
   },
   components: {
     UserAvatarLink,
-    Icon,
+    GlIcon,
     GlLink,
     TooltipOnTruncate,
   },
   props: {
     /**
      * Indicates the existence of a tag.
-     * Used to render the correct icon, if true will render `fa-tag` icon,
+     * Used to render the correct GlIcon, if true will render `tag` GlIcon,
      * if false will render a svg sprite fork icon
      */
     tag: {
@@ -141,9 +140,9 @@ export default {
   <div class="branch-commit cgray">
     <template v-if="shouldShowRefInfo">
       <div class="icon-container">
-        <icon v-if="tag" name="tag" />
-        <icon v-else-if="mergeRequestRef" name="git-merge" />
-        <icon v-else name="branch" />
+        <gl-icon v-if="tag" name="tag" />
+        <gl-icon v-else-if="mergeRequestRef" name="git-merge" />
+        <gl-icon v-else name="branch" />
       </div>
 
       <gl-link
@@ -163,7 +162,7 @@ export default {
         >{{ commitRef.name }}</gl-link
       >
     </template>
-    <icon name="commit" class="commit-icon js-commit-icon" />
+    <gl-icon name="commit" class="commit-icon js-commit-icon" />
 
     <gl-link :href="commitUrl" class="commit-sha mr-0">{{ shortSha }}</gl-link>
 

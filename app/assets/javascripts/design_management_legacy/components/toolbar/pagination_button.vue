@@ -1,10 +1,10 @@
 <script>
-import Icon from '~/vue_shared/components/icon.vue';
+import { GlIcon } from '@gitlab/ui';
 import { DESIGN_ROUTE_NAME } from '../../router/constants';
 
 export default {
   components: {
-    Icon,
+    GlIcon,
   },
   props: {
     design: {
@@ -43,6 +43,6 @@ export default {
     :aria-label="title"
     class="btn btn-default"
   >
-    <icon :name="iconName" />
+    <gl-icon :name="iconName" />
   </router-link>
 </template>

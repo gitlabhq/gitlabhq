@@ -1,7 +1,6 @@
 <script>
-import { GlTooltipDirective, GlLink } from '@gitlab/ui';
+import { GlTooltipDirective, GlLink, GlIcon } from '@gitlab/ui';
 import { __, sprintf } from '~/locale';
-import Icon from '~/vue_shared/components/icon.vue';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
 import ReleaseBlockAuthor from './release_block_author.vue';
 import ReleaseBlockMilestones from './release_block_milestones.vue';
@@ -9,7 +8,7 @@ import ReleaseBlockMilestones from './release_block_milestones.vue';
 export default {
   name: 'ReleaseBlockMetadata',
   components: {
-    Icon,
+    GlIcon,
     GlLink,
     ReleaseBlockAuthor,
     ReleaseBlockMilestones,
@@ -58,7 +57,7 @@ export default {
 <template>
   <div class="card-subtitle d-flex flex-wrap text-secondary">
     <div class="gl-mr-3">
-      <icon name="commit" class="align-middle" />
+      <gl-icon name="commit" class="align-middle" />
       <gl-link v-if="commitUrl" v-gl-tooltip.bottom :title="commit.title" :href="commitUrl">
         {{ commit.shortId }}
       </gl-link>
@@ -66,7 +65,7 @@ export default {
     </div>
 
     <div class="gl-mr-3">
-      <icon name="tag" class="align-middle" />
+      <gl-icon name="tag" class="align-middle" />
       <gl-link v-if="tagUrl" v-gl-tooltip.bottom :title="__('Tag')" :href="tagUrl">
         {{ release.tagName }}
       </gl-link>

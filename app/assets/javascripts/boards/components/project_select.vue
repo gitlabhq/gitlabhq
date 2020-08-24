@@ -1,8 +1,7 @@
 <script>
 import $ from 'jquery';
 import { escape } from 'lodash';
-import { GlLoadingIcon } from '@gitlab/ui';
-import Icon from '~/vue_shared/components/icon.vue';
+import { GlLoadingIcon, GlIcon } from '@gitlab/ui';
 import { __ } from '~/locale';
 import eventHub from '../eventhub';
 import Api from '../../api';
@@ -11,7 +10,7 @@ import { featureAccessLevel } from '~/pages/projects/shared/permissions/constant
 export default {
   name: 'BoardProjectSelect',
   components: {
-    Icon,
+    GlIcon,
     GlLoadingIcon,
   },
   props: {
@@ -105,13 +104,13 @@ export default {
         data-toggle="dropdown"
         aria-expanded="false"
       >
-        {{ selectedProjectName }} <icon name="chevron-down" class="dropdown-menu-toggle-icon" />
+        {{ selectedProjectName }} <gl-icon name="chevron-down" class="dropdown-menu-toggle-icon" />
       </button>
       <div class="dropdown-menu dropdown-menu-selectable dropdown-menu-full-width">
         <div class="dropdown-title">{{ __('Projects') }}</div>
         <div class="dropdown-input">
           <input class="dropdown-input-field" type="search" :placeholder="__('Search projects')" />
-          <icon name="search" class="dropdown-input-search" data-hidden="true" />
+          <gl-icon name="search" class="dropdown-input-search" data-hidden="true" />
         </div>
         <div class="dropdown-content"></div>
         <div class="dropdown-loading"><gl-loading-icon /></div>

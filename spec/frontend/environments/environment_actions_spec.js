@@ -1,9 +1,8 @@
 import { shallowMount } from '@vue/test-utils';
 import { TEST_HOST } from 'helpers/test_constants';
-import { GlLoadingIcon } from '@gitlab/ui';
+import { GlLoadingIcon, GlIcon } from '@gitlab/ui';
 import eventHub from '~/environments/event_hub';
 import EnvironmentActions from '~/environments/components/environment_actions.vue';
-import Icon from '~/vue_shared/components/icon.vue';
 
 describe('EnvironmentActions Component', () => {
   let vm;
@@ -17,7 +16,7 @@ describe('EnvironmentActions Component', () => {
   });
 
   it('should render a dropdown button with 2 icons', () => {
-    expect(vm.find('.dropdown-new').findAll(Icon).length).toBe(2);
+    expect(vm.find('.dropdown-new').findAll(GlIcon).length).toBe(2);
   });
 
   it('should render a dropdown button with aria-label description', () => {

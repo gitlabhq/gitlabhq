@@ -1,11 +1,10 @@
 <script>
-import { GlDeprecatedButton, GlLoadingIcon, GlTooltipDirective } from '@gitlab/ui';
-import Icon from '~/vue_shared/components/icon.vue';
+import { GlDeprecatedButton, GlLoadingIcon, GlTooltipDirective, GlIcon } from '@gitlab/ui';
 import { __ } from '~/locale';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 export default {
-  components: { Icon, GlDeprecatedButton, GlLoadingIcon },
+  components: { GlIcon, GlDeprecatedButton, GlLoadingIcon },
   directives: { 'gl-tooltip': GlTooltipDirective },
   mixins: [glFeatureFlagsMixin()],
   props: {
@@ -97,7 +96,7 @@ export default {
     <div class="qa-suggestion-diff-header js-suggestion-diff-header font-weight-bold">
       {{ __('Suggested change') }}
       <a v-if="helpPagePath" :href="helpPagePath" :aria-label="__('Help')" class="js-help-btn">
-        <icon name="question-o" css-classes="link-highlight" />
+        <gl-icon name="question-o" css-classes="link-highlight" />
       </a>
     </div>
     <div v-if="isApplied" class="badge badge-success">{{ __('Applied') }}</div>

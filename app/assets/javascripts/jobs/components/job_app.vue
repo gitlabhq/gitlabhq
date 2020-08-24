@@ -1,13 +1,12 @@
 <script>
 import { throttle, isEmpty } from 'lodash';
 import { mapGetters, mapState, mapActions } from 'vuex';
-import { GlLoadingIcon } from '@gitlab/ui';
+import { GlLoadingIcon, GlIcon } from '@gitlab/ui';
 import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
 import { isScrolledToBottom } from '~/lib/utils/scroll_utils';
 import { polyfillSticky } from '~/lib/utils/sticky';
 import CiHeader from '~/vue_shared/components/header_ci_component.vue';
 import Callout from '~/vue_shared/components/callout.vue';
-import Icon from '~/vue_shared/components/icon.vue';
 import EmptyState from './empty_state.vue';
 import EnvironmentsBlock from './environments_block.vue';
 import ErasedBlock from './erased_block.vue';
@@ -27,7 +26,7 @@ export default {
     EmptyState,
     EnvironmentsBlock,
     ErasedBlock,
-    Icon,
+    GlIcon,
     Log,
     LogTopBar,
     StuckBlock,
@@ -266,7 +265,7 @@ export default {
           :class="{ 'sticky-top border-bottom-0': hasTrace }"
           data-testid="archived-job"
         >
-          <icon name="lock" class="align-text-bottom" />
+          <gl-icon name="lock" class="align-text-bottom" />
           {{ __('This job is archived. Only the complete pipeline can be retried.') }}
         </div>
         <!-- job log -->

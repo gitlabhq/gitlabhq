@@ -3144,6 +3144,16 @@
                 "ofType": null
               },
               "defaultValue": null
+            },
+            {
+              "name": "search",
+              "description": "Search query for issue title or description",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "defaultValue": null
             }
           ],
           "interfaces": null,

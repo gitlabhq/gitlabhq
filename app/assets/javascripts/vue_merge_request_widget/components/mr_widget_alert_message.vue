@@ -1,13 +1,12 @@
 <script>
-import { GlLink } from '@gitlab/ui';
-import Icon from '~/vue_shared/components/icon.vue';
+import { GlLink, GlIcon } from '@gitlab/ui';
 import { WARNING, DANGER, WARNING_MESSAGE_CLASS, DANGER_MESSAGE_CLASS } from '../constants';
 
 export default {
   name: 'MrWidgetAlertMessage',
   components: {
     GlLink,
-    Icon,
+    GlIcon,
   },
   props: {
     type: {
@@ -40,7 +39,7 @@ export default {
   <div class="m-3 ml-7" :class="messageClass">
     <slot></slot>
     <gl-link v-if="helpPath" :href="helpPath" target="_blank">
-      <icon :size="16" name="question-o" class="align-middle" />
+      <gl-icon :size="16" name="question-o" class="align-middle" />
     </gl-link>
   </div>
 </template>

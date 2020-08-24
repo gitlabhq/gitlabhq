@@ -3,13 +3,12 @@
  * Renders a terminal button to open a web terminal.
  * Used in environments table.
  */
-import { GlTooltipDirective } from '@gitlab/ui';
-import Icon from '~/vue_shared/components/icon.vue';
+import { GlTooltipDirective, GlIcon } from '@gitlab/ui';
 import { __ } from '~/locale';
 
 export default {
   components: {
-    Icon,
+    GlIcon,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -42,6 +41,6 @@ export default {
     :class="{ disabled: disabled }"
     class="btn terminal-button d-none d-sm-none d-md-block text-secondary"
   >
-    <icon name="terminal" />
+    <gl-icon name="terminal" />
   </a>
 </template>

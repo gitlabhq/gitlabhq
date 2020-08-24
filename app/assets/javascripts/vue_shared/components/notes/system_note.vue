@@ -18,10 +18,9 @@
  */
 import $ from 'jquery';
 import { mapGetters, mapActions, mapState } from 'vuex';
-import { GlDeprecatedButton, GlSkeletonLoading, GlTooltipDirective } from '@gitlab/ui';
+import { GlDeprecatedButton, GlSkeletonLoading, GlTooltipDirective, GlIcon } from '@gitlab/ui';
 import descriptionVersionHistoryMixin from 'ee_else_ce/notes/mixins/description_version_history';
 import noteHeader from '~/notes/components/note_header.vue';
-import Icon from '~/vue_shared/components/icon.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import TimelineEntryItem from './timeline_entry_item.vue';
 import { spriteIcon } from '../../../lib/utils/common_utils';
@@ -32,7 +31,7 @@ const MAX_VISIBLE_COMMIT_LIST_COUNT = 3;
 export default {
   name: 'SystemNote',
   components: {
-    Icon,
+    GlIcon,
     noteHeader,
     TimelineEntryItem,
     GlDeprecatedButton,
@@ -109,7 +108,7 @@ export default {
             &middot;
             <button type="button" class="btn-blank btn-link" @click="toggleDescriptionVersion">
               {{ __('Compare with previous version') }}
-              <icon :name="descriptionVersionToggleIcon" :size="12" class="append-left-5" />
+              <gl-icon :name="descriptionVersionToggleIcon" :size="12" class="append-left-5" />
             </button>
           </template>
         </note-header>
@@ -122,7 +121,7 @@ export default {
         ></div>
         <div v-if="hasMoreCommits" class="flex-list">
           <div class="system-note-commit-list-toggler flex-row" @click="expanded = !expanded">
-            <icon :name="toggleIcon" :size="8" class="gl-mr-2" />
+            <gl-icon :name="toggleIcon" :size="8" class="gl-mr-2" />
             <span>{{ __('Toggle commit list') }}</span>
           </div>
         </div>
@@ -139,7 +138,7 @@ export default {
             class="btn-transparent delete-description-history"
             @click="deleteDescriptionVersion"
           >
-            <icon name="remove" />
+            <gl-icon name="remove" />
           </gl-deprecated-button>
         </div>
       </div>

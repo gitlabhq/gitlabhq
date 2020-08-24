@@ -10,10 +10,10 @@ import {
   GlSearchBoxByType,
   GlModalDirective,
   GlTooltipDirective,
+  GlIcon,
 } from '@gitlab/ui';
 import { mergeUrlParams, redirectTo } from '~/lib/utils/url_utility';
 import invalidUrl from '~/lib/utils/invalid_url';
-import Icon from '~/vue_shared/components/icon.vue';
 import DateTimePicker from '~/vue_shared/components/date_time_picker/date_time_picker.vue';
 
 import DashboardsDropdown from './dashboards_dropdown.vue';
@@ -26,7 +26,7 @@ import { timezones } from '../format_date';
 
 export default {
   components: {
-    Icon,
+    GlIcon,
     GlButton,
     GlNewDropdown,
     GlLoadingIcon,
@@ -260,7 +260,7 @@ export default {
           target="_blank"
           rel="noopener noreferrer"
         >
-          {{ __('View full dashboard') }} <icon name="external-link" />
+          {{ __('View full dashboard') }} <gl-icon name="external-link" />
         </gl-button>
       </div>
 

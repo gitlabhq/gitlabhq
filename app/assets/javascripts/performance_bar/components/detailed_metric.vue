@@ -1,14 +1,14 @@
 <script>
+import { GlIcon } from '@gitlab/ui';
 import RequestWarning from './request_warning.vue';
 
 import DeprecatedModal2 from '~/vue_shared/components/deprecated_modal_2.vue';
-import Icon from '~/vue_shared/components/icon.vue';
 
 export default {
   components: {
     RequestWarning,
     GlModal: DeprecatedModal2,
-    Icon,
+    GlIcon,
   },
   props: {
     currentRequest: {
@@ -104,7 +104,7 @@ export default {
                     type="button"
                     :aria-label="__('Toggle backtrace')"
                   >
-                    <icon :size="12" name="ellipsis_h" />
+                    <gl-icon :size="12" name="ellipsis_h" />
                   </button>
                 </div>
                 <pre v-if="item.backtrace" class="backtrace-row js-toggle-content mt-2">{{

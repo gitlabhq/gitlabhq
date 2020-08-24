@@ -1,10 +1,10 @@
-- if @status
+- if @result.valid?
   .bs-callout.bs-callout-success
     %p
       %b= _("Status:")
       = _("syntax is correct")
 
-  = render "projects/ci/lints/lint_warnings", warnings: @warnings
+  = render "projects/ci/lints/lint_warnings", warnings: @result.warnings
 
   .table-holder
     %table.table.table-bordered
@@ -13,54 +13,31 @@
           %th= _("Parameter")
           %th= _("Value")
       %tbody
-        - if @dry_run
-          - @stages.each do |stage|
-            - stage.statuses.each do |job|
-              %tr
-                %td #{stage.name.capitalize} Job - #{job.name}
-                %td
-                  %pre= job.options[:before_script].to_a.join('\n')
-                  %pre= job.options[:script].to_a.join('\n')
-                  %pre= job.options[:after_script].to_a.join('\n')
-                  %br
-                  %b= _("Tag list:")
-                  = job.tag_list.to_a.join(", ") if job.is_a?(Ci::Build)
-                  %br
-                  %b= _("Environment:")
-                  = job.options.dig(:environment, :name)
-                  %br
-                  %b= _("When:")
-                  = job.when
-                  - if job.allow_failure
-                    %b= _("Allowed to fail")
-
-        - else
-          - @stages.each do |stage|
-            - @builds.select { |build| build[:stage] == stage }.each do |build|
-              - job = @jobs[build[:name].to_sym]
-              %tr
-                %td #{stage.capitalize} Job - #{build[:name]}
-                %td
-                  %pre= job[:before_script].to_a.join('\n')
-                  %pre= job[:script].to_a.join('\n')
-                  %pre= job[:after_script].to_a.join('\n')
-                  %br
-                  %b= _("Tag list:")
-                  = build[:tag_list].to_a.join(", ")
-                  %br
-                  %b= _("Only policy:")
-                  = job[:only].to_a.join(", ")
-                  %br
-                  %b= _("Except policy:")
-                  = job[:except].to_a.join(", ")
-                  %br
-                  %b= _("Environment:")
-                  = build[:environment]
-                  %br
-                  %b= _("When:")
-                  = build[:when]
-                  - if build[:allow_failure]
-                    %b= _("Allowed to fail")
+        - @result.jobs.each do |job|
+          %tr
+            %td #{job[:stage].capitalize} Job - #{job[:name]}
+            %td
+              %pre= job[:before_script].to_a.join('\n')
+              %pre= job[:script].to_a.join('\n')
+              %pre= job[:after_script].to_a.join('\n')
+              %br
+              %b= _("Tag list:")
+              = job[:tag_list].to_a.join(", ")
+              - unless @dry_run
+                %br
+                %b= _("Only policy:")
+                = job[:only].to_a.join(", ")
+                %br
+                %b= _("Except policy:")
+                = job[:except].to_a.join(", ")
+              %br
+              %b= _("Environment:")
+              = job[:environment]
+              %br
+              %b= _("When:")
+              = job[:when]
+              - if job[:allow_failure]
+                %b= _("Allowed to fail")
 
 - else
   .bs-callout.bs-callout-danger
@@ -68,7 +45,7 @@
       %b= _("Status:")
       = _("syntax is incorrect")
   %pre
-    - @errors.each do |message|
+    - @result.errors.each do |message|
       %p= message
 
-  = render "projects/ci/lints/lint_warnings", warnings: @warnings
+  = render "projects/ci/lints/lint_warnings", warnings: @result.warnings

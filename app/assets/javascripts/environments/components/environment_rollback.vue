@@ -10,14 +10,14 @@ import {
   GlLoadingIcon,
   GlModalDirective,
   GlDeprecatedButton,
+  GlIcon,
 } from '@gitlab/ui';
 import { s__ } from '~/locale';
-import Icon from '~/vue_shared/components/icon.vue';
 import eventHub from '../event_hub';
 
 export default {
   components: {
-    Icon,
+    GlIcon,
     GlLoadingIcon,
     GlDeprecatedButton,
   },
@@ -81,7 +81,7 @@ export default {
     class="d-none d-md-block text-secondary"
     @click="onClick"
   >
-    <icon v-if="isLastDeployment" name="repeat" /> <icon v-else name="redo" />
+    <gl-icon v-if="isLastDeployment" name="repeat" /> <gl-icon v-else name="redo" />
     <gl-loading-icon v-if="isLoading" />
   </gl-deprecated-button>
 </template>

@@ -1,10 +1,10 @@
 <script>
+import { GlIcon } from '@gitlab/ui';
 import { __ } from '~/locale';
-import Icon from '~/vue_shared/components/icon.vue';
 
 export default {
   components: {
-    Icon,
+    GlIcon,
   },
   props: {
     placeholder: {
@@ -81,7 +81,7 @@ export default {
           >
             <div class="value-container rounded">
               <div class="value">{{ token.label }}</div>
-              <div class="remove-token inverted"><icon :size="10" name="close" /></div>
+              <div class="remove-token inverted"><gl-icon :size="10" name="close" /></div>
             </div>
           </button>
         </div>

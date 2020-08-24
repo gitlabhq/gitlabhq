@@ -1,10 +1,9 @@
 <script>
 import { isEmpty, omit, throttle } from 'lodash';
-import { GlLink, GlTooltip, GlResizeObserverDirective } from '@gitlab/ui';
+import { GlLink, GlTooltip, GlResizeObserverDirective, GlIcon } from '@gitlab/ui';
 import { GlAreaChart, GlLineChart, GlChartSeriesLabel } from '@gitlab/ui/dist/charts';
 import { s__ } from '~/locale';
 import { getSvgIconPathContent } from '~/lib/utils/icon_utils';
-import Icon from '~/vue_shared/components/icon.vue';
 import { panelTypes, chartHeight, lineTypes, lineWidths, legendLayoutTypes } from '../../constants';
 import { getYAxisOptions, getTimeAxisOptions, getChartGrid, getTooltipFormatter } from './options';
 import { annotationsYAxis, generateAnnotationsSeries } from './annotations';
@@ -27,7 +26,7 @@ export default {
     GlTooltip,
     GlChartSeriesLabel,
     GlLink,
-    Icon,
+    GlIcon,
   },
   directives: {
     GlResizeObserverDirective,
@@ -407,7 +406,7 @@ export default {
           {{ __('Deployed') }}
         </template>
         <div slot="tooltipContent" class="d-flex align-items-center">
-          <icon name="commit" class="mr-2" />
+          <gl-icon name="commit" class="mr-2" />
           <gl-link :href="tooltip.commitUrl">{{ tooltip.sha }}</gl-link>
         </div>
       </template>

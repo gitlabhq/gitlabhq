@@ -1,7 +1,6 @@
 <script>
-import { GlDeprecatedButton, GlProgressBar } from '@gitlab/ui';
+import { GlDeprecatedButton, GlProgressBar, GlIcon } from '@gitlab/ui';
 import { __ } from '~/locale';
-import Icon from '~/vue_shared/components/icon.vue';
 import { formattedTime } from '../../stores/test_reports/utils';
 
 export default {
@@ -9,7 +8,7 @@ export default {
   components: {
     GlDeprecatedButton,
     GlProgressBar,
-    Icon,
+    GlIcon,
   },
   props: {
     report: {
@@ -75,7 +74,7 @@ export default {
           class="gl-mr-3 js-back-button"
           @click="onBackClick"
         >
-          <icon name="angle-left" />
+          <gl-icon name="angle-left" />
         </gl-deprecated-button>
 
         <h4>{{ heading }}</h4>

@@ -1,10 +1,9 @@
 <script>
-import { GlTooltipDirective } from '@gitlab/ui';
-import Icon from '~/vue_shared/components/icon.vue';
+import { GlTooltipDirective, GlIcon } from '@gitlab/ui';
 
 export default {
   components: {
-    Icon,
+    GlIcon,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -36,6 +35,6 @@ export default {
     data-track-event="open_review_app"
     data-track-label="review_app"
   >
-    {{ display.text }} <icon class="fgray" name="external-link" />
+    {{ display.text }} <gl-icon class="fgray" name="external-link" />
   </a>
 </template>

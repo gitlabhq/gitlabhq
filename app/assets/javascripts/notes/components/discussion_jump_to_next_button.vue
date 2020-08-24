@@ -1,12 +1,11 @@
 <script>
-import { GlTooltipDirective } from '@gitlab/ui';
-import icon from '~/vue_shared/components/icon.vue';
+import { GlTooltipDirective, GlIcon } from '@gitlab/ui';
 import discussionNavigation from '../mixins/discussion_navigation';
 
 export default {
   name: 'JumpToNextDiscussionButton',
   components: {
-    icon,
+    GlIcon,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -33,7 +32,7 @@ export default {
       data-track-property="click_next_unresolved_thread"
       @click="jumpToNextRelativeDiscussion(fromDiscussionId)"
     >
-      <icon name="comment-next" />
+      <gl-icon name="comment-next" />
     </button>
   </div>
 </template>

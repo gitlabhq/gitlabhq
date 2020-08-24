@@ -1,11 +1,11 @@
 <script>
-import Icon from '~/vue_shared/components/icon.vue';
+import { GlIcon } from '@gitlab/ui';
 import tooltip from '~/vue_shared/directives/tooltip';
 import { __ } from '~/locale';
 
 export default {
   components: {
-    Icon,
+    GlIcon,
   },
   directives: {
     tooltip,
@@ -62,7 +62,7 @@ export default {
       rel="noopener noreferrer nofollow"
       data-container="body"
     >
-      <icon name="question" />
+      <gl-icon name="question" />
     </a>
   </div>
 </template>

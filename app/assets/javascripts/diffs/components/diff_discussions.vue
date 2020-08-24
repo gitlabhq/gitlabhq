@@ -1,12 +1,12 @@
 <script>
 import { mapActions } from 'vuex';
-import Icon from '~/vue_shared/components/icon.vue';
+import { GlIcon } from '@gitlab/ui';
 import noteableDiscussion from '../../notes/components/noteable_discussion.vue';
 
 export default {
   components: {
     noteableDiscussion,
-    Icon,
+    GlIcon,
   },
   props: {
     discussions: {
@@ -70,7 +70,7 @@ export default {
             class="js-diff-notes-toggle"
             @click="toggleDiscussion({ discussionId: discussion.id })"
           >
-            <icon v-if="discussion.expanded" name="collapse" class="collapse-icon" />
+            <gl-icon v-if="discussion.expanded" name="collapse" class="collapse-icon" />
             <template v-else>
               {{ index + 1 }}
             </template>

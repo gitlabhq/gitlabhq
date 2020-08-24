@@ -1,9 +1,8 @@
 <script>
 import $ from 'jquery';
 import GfmAutoComplete from 'ee_else_ce/gfm_auto_complete';
-import { GlModal, GlTooltipDirective } from '@gitlab/ui';
+import { GlModal, GlTooltipDirective, GlIcon } from '@gitlab/ui';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
-import Icon from '~/vue_shared/components/icon.vue';
 import { __, s__ } from '~/locale';
 import Api from '~/api';
 import eventHub from './event_hub';
@@ -14,7 +13,7 @@ const emojiMenuClass = 'js-modal-status-emoji-menu';
 
 export default {
   components: {
-    Icon,
+    GlIcon,
     GlModal,
   },
   directives: {
@@ -196,9 +195,9 @@ export default {
                 v-show="noEmoji"
                 class="js-no-emoji-placeholder no-emoji-placeholder position-relative"
               >
-                <icon name="slight-smile" class="award-control-icon-neutral" />
-                <icon name="smiley" class="award-control-icon-positive" />
-                <icon name="smile" class="award-control-icon-super-positive" />
+                <gl-icon name="slight-smile" class="award-control-icon-neutral" />
+                <gl-icon name="smiley" class="award-control-icon-positive" />
+                <gl-icon name="smile" class="award-control-icon-super-positive" />
               </span>
             </button>
           </span>
@@ -223,7 +222,7 @@ export default {
               class="js-clear-user-status-button clear-user-status btn"
               @click="clearStatusInputs()"
             >
-              <icon name="close" />
+              <gl-icon name="close" />
             </button>
           </span>
         </div>

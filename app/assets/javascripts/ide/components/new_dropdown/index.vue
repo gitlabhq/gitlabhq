@@ -1,6 +1,6 @@
 <script>
 import { mapActions } from 'vuex';
-import icon from '~/vue_shared/components/icon.vue';
+import { GlIcon } from '@gitlab/ui';
 import upload from './upload.vue';
 import ItemButton from './button.vue';
 import { modalTypes } from '../../constants';
@@ -8,7 +8,7 @@ import NewModal from './modal.vue';
 
 export default {
   components: {
-    icon,
+    GlIcon,
     upload,
     ItemButton,
     NewModal,
@@ -67,7 +67,7 @@ export default {
         data-qa-selector="dropdown_button"
         @click.stop="openDropdown()"
       >
-        <icon name="ellipsis_v" /> <icon name="chevron-down" />
+        <gl-icon name="ellipsis_v" /> <gl-icon name="chevron-down" />
       </button>
       <ul ref="dropdownMenu" class="dropdown-menu dropdown-menu-right">
         <template v-if="type === 'tree'">

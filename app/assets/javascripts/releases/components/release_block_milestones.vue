@@ -1,13 +1,12 @@
 <script>
-import { GlTooltipDirective, GlLink } from '@gitlab/ui';
+import { GlTooltipDirective, GlLink, GlIcon } from '@gitlab/ui';
 import { n__ } from '~/locale';
-import Icon from '~/vue_shared/components/icon.vue';
 
 export default {
   name: 'ReleaseBlockMilestones',
   components: {
     GlLink,
-    Icon,
+    GlIcon,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -29,7 +28,7 @@ export default {
 <template>
   <div>
     <div class="js-milestone-list-label">
-      <icon name="flag" class="align-middle" />
+      <gl-icon name="flag" class="align-middle" />
       <span class="js-label-text">{{ labelText }}</span>
     </div>
 

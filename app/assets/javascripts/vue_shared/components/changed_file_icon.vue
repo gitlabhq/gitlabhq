@@ -1,12 +1,11 @@
 <script>
-import { GlTooltipDirective } from '@gitlab/ui';
-import Icon from '~/vue_shared/components/icon.vue';
+import { GlTooltipDirective, GlIcon } from '@gitlab/ui';
 import getCommitIconMap from '~/ide/commit_icon';
 import { __ } from '~/locale';
 
 export default {
   components: {
-    Icon,
+    GlIcon,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -81,7 +80,7 @@ export default {
     :class="{ 'ml-auto': isCentered }"
     class="file-changed-icon d-inline-block"
   >
-    <icon v-if="showIcon" :name="changedIcon" :size="size" :class="changedIconClass" />
+    <gl-icon v-if="showIcon" :name="changedIcon" :size="size" :class="changedIconClass" />
   </span>
 </template>
 

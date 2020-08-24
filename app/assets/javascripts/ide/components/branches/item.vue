@@ -1,11 +1,11 @@
 <script>
 /* eslint-disable @gitlab/vue-require-i18n-strings */
-import Icon from '~/vue_shared/components/icon.vue';
+import { GlIcon } from '@gitlab/ui';
 import Timeago from '~/vue_shared/components/time_ago_tooltip.vue';
 
 export default {
   components: {
-    Icon,
+    GlIcon,
     Timeago,
   },
   props: {
@@ -34,7 +34,7 @@ export default {
 <template>
   <a :href="branchHref" class="btn-link d-flex align-items-center">
     <span class="d-flex gl-mr-3 ide-search-list-current-icon">
-      <icon v-if="isActive" :size="18" name="mobile-issue-close" />
+      <gl-icon v-if="isActive" :size="18" name="mobile-issue-close" />
     </span>
     <span>
       <strong> {{ item.name }} </strong>
