@@ -8,7 +8,6 @@ class AuditEvent < ApplicationRecord
   PARALLEL_PERSISTENCE_COLUMNS = [:author_name, :entity_path, :target_details, :target_type].freeze
 
   ignore_column :type, remove_with: '13.6', remove_after: '2020-11-22'
-  ignore_column :updated_at, remove_with: '13.4', remove_after: '2020-09-22'
 
   serialize :details, Hash # rubocop:disable Cop/ActiveRecordSerialize
 
