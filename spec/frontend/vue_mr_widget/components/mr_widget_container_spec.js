@@ -20,7 +20,7 @@ describe('MrWidgetContainer', () => {
   it('has layout', () => {
     factory();
 
-    expect(wrapper.is('.mr-widget-heading')).toBe(true);
+    expect(wrapper.classes()).toContain('mr-widget-heading');
     expect(wrapper.contains('.mr-widget-content')).toBe(true);
   });
 

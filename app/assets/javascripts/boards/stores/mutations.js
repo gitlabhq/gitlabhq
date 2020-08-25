@@ -19,8 +19,9 @@ export default {
     state.boardLists = lists;
   },
 
-  [mutationTypes.SET_ACTIVE_ID](state, id) {
+  [mutationTypes.SET_ACTIVE_ID](state, { id, sidebarType }) {
     state.activeId = id;
+    state.sidebarType = sidebarType;
   },
 
   [mutationTypes.SET_FILTERS](state, filterParams) {

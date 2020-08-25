@@ -38,6 +38,37 @@ module QA
             element :new_note_form, 'attr: :note' # rubocop:disable QA/ElementWithPattern
           end
 
+          view 'app/assets/javascripts/related_issues/components/add_issuable_form.vue' do
+            element :add_issue_button
+          end
+
+          view 'app/assets/javascripts/related_issues/components/related_issuable_input.vue' do
+            element :add_issue_input
+          end
+
+          view 'app/assets/javascripts/related_issues/components/related_issues_block.vue' do
+            element :related_issues_plus_button
+          end
+
+          view 'app/assets/javascripts/related_issues/components/related_issues_list.vue' do
+            element :related_issuable_item
+            element :related_issues_loading_icon
+          end
+
+          def relate_issue(issue)
+            click_element(:related_issues_plus_button)
+            fill_element(:add_issue_input, issue.web_url)
+            send_keys_to_element(:add_issue_input, :enter)
+          end
+
+          def related_issuable_item
+            find_element(:related_issuable_item)
+          end
+
+          def wait_for_related_issues_to_load
+            has_no_element?(:related_issues_loading_icon, wait: QA::Support::Repeater::DEFAULT_MAX_WAIT_TIME)
+          end
+
           def click_remove_related_issue_button
             click_element(:remove_related_issue_button)
           end

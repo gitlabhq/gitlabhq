@@ -3,83 +3,78 @@
 require 'spec_helper'
 
 RSpec.describe API::Helpers::PackagesManagerClientsHelpers do
+  include HttpBasicAuthHelpers
+
   let_it_be(:personal_access_token) { create(:personal_access_token) }
   let_it_be(:username) { personal_access_token.user.username }
   let_it_be(:helper) { Class.new.include(described_class).new }
   let(:password) { personal_access_token.token }
 
-  describe '#find_job_from_http_basic_auth' do
-    let_it_be(:user) { personal_access_token.user }
+  let(:env) do
+    {
+      'rack.input' => ''
+    }
+  end
 
-    let(:job) { create(:ci_build, user: user) }
-    let(:password) { job.token }
-    let(:headers) { { Authorization: basic_http_auth(username, password) } }
+  let(:request) { ActionDispatch::Request.new(env) }
 
-    subject { helper.find_job_from_http_basic_auth }
+  before do
+    allow(helper).to receive(:request).and_return(request)
+  end
 
-    before do
-      allow(helper).to receive(:headers).and_return(headers&.with_indifferent_access)
-    end
-
-    context 'with a valid Authorization header' do
-      it { is_expected.to eq job }
-    end
-
+  shared_examples 'invalid auth header' do
     context 'with an invalid Authorization header' do
-      where(:headers) do
-        [
-          [{ Authorization: 'Invalid' }],
-          [{}],
-          [nil]
-        ]
+      before do
+        env.merge!(build_auth_headers('Invalid'))
       end
-
-      with_them do
-        it { is_expected.to be nil }
-      end
-    end
-
-    context 'with an unknown Authorization header' do
-      let(:password) { 'Unknown' }
 
       it { is_expected.to be nil }
     end
   end
 
+  shared_examples 'valid auth header' do
+    context 'with a valid Authorization header' do
+      before do
+        env.merge!(basic_auth_header(username, password))
+      end
+
+      context 'with an unknown password' do
+        let(:password) { 'Unknown' }
+
+        it { is_expected.to be nil }
+      end
+
+      it { is_expected.to eq expected_result }
+    end
+  end
+
+  describe '#find_job_from_http_basic_auth' do
+    let_it_be(:user) { personal_access_token.user }
+    let(:job) { create(:ci_build, user: user) }
+    let(:password) { job.token }
+
+    subject { helper.find_job_from_http_basic_auth }
+
+    it_behaves_like 'valid auth header' do
+      let(:expected_result) { job }
+    end
+
+    it_behaves_like 'invalid auth header'
+  end
+
   describe '#find_deploy_token_from_http_basic_auth' do
     let_it_be(:deploy_token) { create(:deploy_token) }
     let(:token) { deploy_token.token }
-    let(:headers) { { Authorization: basic_http_auth(deploy_token.username, token) } }
+    let(:username) { deploy_token.username }
+    let(:password) { token }
 
     subject { helper.find_deploy_token_from_http_basic_auth }
 
-    before do
-      allow(helper).to receive(:headers).and_return(headers&.with_indifferent_access)
+    it_behaves_like 'valid auth header' do
+      let(:expected_result) { deploy_token }
     end
 
-    context 'with a valid Authorization header' do
-      it { is_expected.to eq deploy_token }
-    end
-
-    context 'with an invalid Authorization header' do
-      where(:headers) do
-        [
-          [{ Authorization: 'Invalid' }],
-          [{}],
-          [nil]
-        ]
-      end
-
-      with_them do
-        it { is_expected.to be nil }
-      end
-    end
-
-    context 'with an invalid token' do
-      let(:token) { 'Unknown' }
-
-      it { is_expected.to be nil }
-    end
+    it_behaves_like 'invalid auth header'
   end
 
   describe '#uploaded_package_file' do
@@ -112,9 +107,5 @@ RSpec.describe API::Helpers::PackagesManagerClientsHelpers do
         expect(subject).to be nil
       end
     end
-  end
-
-  def basic_http_auth(username, password)
-    ActionController::HttpAuthentication::Basic.encode_credentials(username, password)
   end
 end

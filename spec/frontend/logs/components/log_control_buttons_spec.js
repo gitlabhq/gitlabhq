@@ -56,7 +56,7 @@ describe('LogControlButtons', () => {
     });
 
     it('click on "scroll to top" scrolls up', () => {
-      expect(findScrollToTop().is('[disabled]')).toBe(false);
+      expect(findScrollToTop().attributes('disabled')).toBeUndefined();
 
       findScrollToTop().vm.$emit('click');
 
@@ -64,7 +64,7 @@ describe('LogControlButtons', () => {
     });
 
     it('click on "scroll to bottom" scrolls down', () => {
-      expect(findScrollToBottom().is('[disabled]')).toBe(false);
+      expect(findScrollToBottom().attributes('disabled')).toBeUndefined();
 
       findScrollToBottom().vm.$emit('click');
 

@@ -52,7 +52,7 @@ describe('IDE TerminalSession', () => {
     state.session = null;
     factory();
 
-    expect(wrapper.isEmpty()).toBe(true);
+    expect(wrapper.html()).toBe('');
   });
 
   it('shows terminal', () => {

@@ -34,7 +34,7 @@ describe('Pagination component', () => {
         change: spy,
       });
 
-      expect(wrapper.isEmpty()).toBe(true);
+      expect(wrapper.html()).toBe('');
     });
 
     it('renders if there is a next page', () => {

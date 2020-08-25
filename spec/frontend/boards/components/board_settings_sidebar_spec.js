@@ -6,8 +6,9 @@ import { shallowMount, createLocalVue } from '@vue/test-utils';
 import { GlDrawer, GlLabel } from '@gitlab/ui';
 import BoardSettingsSidebar from '~/boards/components/board_settings_sidebar.vue';
 import boardsStore from '~/boards/stores/boards_store';
+import { createStore } from '~/boards/stores';
 import sidebarEventHub from '~/sidebar/event_hub';
-import { inactiveId } from '~/boards/constants';
+import { inactiveId, LIST } from '~/boards/constants';
 
 const localVue = createLocalVue();
 
@@ -16,19 +17,12 @@ localVue.use(Vuex);
 describe('BoardSettingsSidebar', () => {
   let wrapper;
   let mock;
-  let storeActions;
+  let store;
   const labelTitle = 'test';
   const labelColor = '#FFFF';
   const listId = 1;
 
-  const createComponent = (state = { activeId: inactiveId }, actions = {}) => {
-    storeActions = actions;
-
-    const store = new Vuex.Store({
-      state,
-      actions: storeActions,
-    });
-
+  const createComponent = () => {
     wrapper = shallowMount(BoardSettingsSidebar, {
       store,
       localVue,
@@ -38,6 +32,9 @@ describe('BoardSettingsSidebar', () => {
   const findDrawer = () => wrapper.find(GlDrawer);
 
   beforeEach(() => {
+    store = createStore();
+    store.state.activeId = inactiveId;
+    store.state.sidebarType = LIST;
     boardsStore.create();
   });
 
@@ -46,114 +43,125 @@ describe('BoardSettingsSidebar', () => {
     wrapper.destroy();
   });
 
-  it('finds a GlDrawer component', () => {
-    createComponent();
-
-    expect(findDrawer().exists()).toBe(true);
-  });
-
-  describe('on close', () => {
-    it('calls closeSidebar', async () => {
-      const spy = jest.fn();
-      createComponent({ activeId: inactiveId }, { setActiveId: spy });
-
-      findDrawer().vm.$emit('close');
-
-      await wrapper.vm.$nextTick();
-
-      expect(storeActions.setActiveId).toHaveBeenCalledWith(
-        expect.anything(),
-        inactiveId,
-        undefined,
-      );
-    });
-
-    it('calls closeSidebar on sidebar.closeAll event', async () => {
-      createComponent({ activeId: inactiveId }, { setActiveId: jest.fn() });
-
-      sidebarEventHub.$emit('sidebar.closeAll');
-
-      await wrapper.vm.$nextTick();
-
-      expect(storeActions.setActiveId).toHaveBeenCalledWith(
-        expect.anything(),
-        inactiveId,
-        undefined,
-      );
-    });
-  });
-
-  describe('when activeId is zero', () => {
-    it('renders GlDrawer with open false', () => {
+  describe('when sidebarType is "list"', () => {
+    it('finds a GlDrawer component', () => {
       createComponent();
 
-      expect(findDrawer().props('open')).toBe(false);
+      expect(findDrawer().exists()).toBe(true);
     });
-  });
 
-  describe('when activeId is greater than zero', () => {
-    beforeEach(() => {
-      mock = new MockAdapter(axios);
+    describe('on close', () => {
+      it('closes the sidebar', async () => {
+        createComponent();
 
-      boardsStore.addList({
-        id: listId,
-        label: { title: labelTitle, color: labelColor },
-        list_type: 'label',
+        findDrawer().vm.$emit('close');
+
+        await wrapper.vm.$nextTick();
+
+        expect(wrapper.find(GlDrawer).exists()).toBe(false);
+      });
+
+      it('closes the sidebar when emitting the correct event', async () => {
+        createComponent();
+
+        sidebarEventHub.$emit('sidebar.closeAll');
+
+        await wrapper.vm.$nextTick();
+
+        expect(wrapper.find(GlDrawer).exists()).toBe(false);
       });
     });
 
-    afterEach(() => {
-      boardsStore.removeList(listId);
+    describe('when activeId is zero', () => {
+      it('renders GlDrawer with open false', () => {
+        createComponent();
+
+        expect(findDrawer().props('open')).toBe(false);
+      });
     });
 
-    it('renders GlDrawer with open false', () => {
-      createComponent({ activeId: 1 });
+    describe('when activeId is greater than zero', () => {
+      beforeEach(() => {
+        mock = new MockAdapter(axios);
 
-      expect(findDrawer().props('open')).toBe(true);
-    });
-  });
-
-  describe('when activeId is in boardsStore', () => {
-    beforeEach(() => {
-      mock = new MockAdapter(axios);
-
-      boardsStore.addList({
-        id: listId,
-        label: { title: labelTitle, color: labelColor },
-        list_type: 'label',
+        boardsStore.addList({
+          id: listId,
+          label: { title: labelTitle, color: labelColor },
+          list_type: 'label',
+        });
+        store.state.activeId = 1;
+        store.state.sidebarType = LIST;
       });
 
-      createComponent({ activeId: listId });
+      afterEach(() => {
+        boardsStore.removeList(listId);
+      });
+
+      it('renders GlDrawer with open false', () => {
+        createComponent();
+
+        expect(findDrawer().props('open')).toBe(true);
+      });
     });
 
-    afterEach(() => {
-      mock.restore();
+    describe('when activeId is in boardsStore', () => {
+      beforeEach(() => {
+        mock = new MockAdapter(axios);
+
+        boardsStore.addList({
+          id: listId,
+          label: { title: labelTitle, color: labelColor },
+          list_type: 'label',
+        });
+
+        store.state.activeId = listId;
+        store.state.sidebarType = LIST;
+
+        createComponent();
+      });
+
+      afterEach(() => {
+        mock.restore();
+      });
+
+      it('renders label title', () => {
+        expect(findLabel().props('title')).toBe(labelTitle);
+      });
+
+      it('renders label background color', () => {
+        expect(findLabel().props('backgroundColor')).toBe(labelColor);
+      });
     });
 
-    it('renders label title', () => {
-      expect(findLabel().props('title')).toBe(labelTitle);
-    });
+    describe('when activeId is not in boardsStore', () => {
+      beforeEach(() => {
+        mock = new MockAdapter(axios);
 
-    it('renders label background color', () => {
-      expect(findLabel().props('backgroundColor')).toBe(labelColor);
+        boardsStore.addList({ id: listId, label: { title: labelTitle, color: labelColor } });
+
+        store.state.activeId = inactiveId;
+
+        createComponent();
+      });
+
+      afterEach(() => {
+        mock.restore();
+      });
+
+      it('does not render GlLabel', () => {
+        expect(findLabel().exists()).toBe(false);
+      });
     });
   });
 
-  describe('when activeId is not in boardsStore', () => {
+  describe('when sidebarType is not List', () => {
     beforeEach(() => {
-      mock = new MockAdapter(axios);
-
-      boardsStore.addList({ id: listId, label: { title: labelTitle, color: labelColor } });
-
-      createComponent({ activeId: inactiveId });
+      store.state.sidebarType = '';
+      createComponent();
     });
 
-    afterEach(() => {
-      mock.restore();
-    });
-
-    it('does not render GlLabel', () => {
-      expect(findLabel().exists()).toBe(false);
+    it('does not render GlDrawer', () => {
+      expect(findDrawer().exists()).toBe(false);
     });
   });
 });

@@ -39,7 +39,7 @@ describe('Linked pipeline', () => {
     });
 
     it('should render a list item as the containing element', () => {
-      expect(wrapper.is('li')).toBe(true);
+      expect(wrapper.element.tagName).toBe('LI');
     });
 
     it('should render a button', () => {

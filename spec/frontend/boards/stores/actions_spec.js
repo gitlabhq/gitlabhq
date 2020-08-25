@@ -53,9 +53,9 @@ describe('setActiveId', () => {
 
     testAction(
       actions.setActiveId,
-      1,
+      { id: 1, sidebarType: 'something' },
       state,
-      [{ type: types.SET_ACTIVE_ID, payload: 1 }],
+      [{ type: types.SET_ACTIVE_ID, payload: { id: 1, sidebarType: 'something' } }],
       [],
       done,
     );

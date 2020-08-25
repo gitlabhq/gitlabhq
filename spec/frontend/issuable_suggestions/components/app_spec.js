@@ -89,8 +89,8 @@ describe('Issuable suggestions app component', () => {
           wrapper
             .findAll('li')
             .at(0)
-            .is('.gl-mb-3'),
-        ).toBe(true);
+            .classes(),
+        ).toContain('gl-mb-3');
       });
     });
 
@@ -102,8 +102,8 @@ describe('Issuable suggestions app component', () => {
           wrapper
             .findAll('li')
             .at(1)
-            .is('.gl-mb-3'),
-        ).toBe(false);
+            .classes(),
+        ).not.toContain('gl-mb-3');
       });
     });
   });

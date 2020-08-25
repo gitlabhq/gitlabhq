@@ -150,7 +150,7 @@ describe('DiscussionFilter component', () => {
       eventHub.$emit('MergeRequestTabChange', 'commit');
 
       wrapper.vm.$nextTick(() => {
-        expect(wrapper.isEmpty()).toBe(true);
+        expect(wrapper.html()).toBe('');
         done();
       });
     });

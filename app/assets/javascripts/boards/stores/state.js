@@ -7,6 +7,7 @@ export default () => ({
   showPromotion: false,
   isShowingLabels: true,
   activeId: inactiveId,
+  sidebarType: '',
   boardLists: [],
   issuesByListId: {},
   isLoadingIssues: false,

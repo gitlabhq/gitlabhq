@@ -18,7 +18,7 @@ describe('LogSimpleFilters', () => {
   const findPodsDropdownItems = () =>
     findPodsDropdown()
       .findAll(GlDeprecatedDropdownItem)
-      .filter(item => !item.is('[disabled]'));
+      .filter(item => !('disabled' in item.attributes()));
 
   const mockPodsLoading = () => {
     state.pods.options = [];

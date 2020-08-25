@@ -1,12 +1,13 @@
 <script>
-import { mapActions, mapState } from 'vuex';
-import { GlAlert } from '@gitlab/ui';
+import { mapState, mapGetters, mapActions } from 'vuex';
 import BoardColumn from 'ee_else_ce/boards/components/board_column.vue';
+import { GlAlert } from '@gitlab/ui';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 export default {
   components: {
     BoardColumn,
+    BoardContentSidebar: () => import('ee_component/boards/components/board_content_sidebar.vue'),
     EpicsSwimlanes: () => import('ee_component/boards/components/epics_swimlanes.vue'),
     GlAlert,
   },
@@ -43,10 +44,8 @@ export default {
     },
   },
   computed: {
-    ...mapState(['isShowingEpicsSwimlanes', 'boardLists', 'error']),
-    isSwimlanesOn() {
-      return this.glFeatures.boardsWithSwimlanes && this.isShowingEpicsSwimlanes;
-    },
+    ...mapState(['boardLists', 'error']),
+    ...mapGetters(['isSwimlanesOn']),
     boardListsToUse() {
       return this.glFeatures.graphqlBoardLists ? this.boardLists : this.lists;
     },
@@ -86,15 +85,18 @@ export default {
         :board-id="boardId"
       />
     </div>
-    <epics-swimlanes
-      v-else
-      ref="swimlanes"
-      :lists="boardListsToUse"
-      :can-admin-list="canAdminList"
-      :disabled="disabled"
-      :board-id="boardId"
-      :group-id="groupId"
-      :root-path="rootPath"
-    />
+
+    <template v-else>
+      <epics-swimlanes
+        ref="swimlanes"
+        :lists="boardLists"
+        :can-admin-list="canAdminList"
+        :disabled="disabled"
+        :board-id="boardId"
+        :group-id="groupId"
+        :root-path="rootPath"
+      />
+      <board-content-sidebar />
+    </template>
   </div>
 </template>

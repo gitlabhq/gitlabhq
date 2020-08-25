@@ -17,7 +17,7 @@ describe(`TimelineEntryItem`, () => {
   it('renders correctly', () => {
     factory();
 
-    expect(wrapper.is('.timeline-entry')).toBe(true);
+    expect(wrapper.classes()).toContain('timeline-entry');
 
     expect(wrapper.contains('.timeline-entry-inner')).toBe(true);
   });

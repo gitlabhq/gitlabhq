@@ -44,7 +44,7 @@ RSpec.describe 'Mermaid rendering', :js do
     expect(page.html.scan(expected).count).to be(4)
   end
 
-  it 'renders only 2 Mermaid blocks and ', :js do
+  it 'renders only 2 Mermaid blocks and ', :js, quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/234081' } do
     description = <<~MERMAID
     ```mermaid
     graph LR

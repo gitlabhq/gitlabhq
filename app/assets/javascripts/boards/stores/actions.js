@@ -5,7 +5,7 @@ import { __ } from '~/locale';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import createDefaultClient from '~/lib/graphql';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import { BoardType, ListType } from '~/boards/constants';
+import { BoardType, ListType, inactiveId } from '~/boards/constants';
 import * as types from './mutation_types';
 import { formatListIssues, fullBoardId } from '../boards_util';
 import boardStore from '~/boards/stores/boards_store';
@@ -28,8 +28,12 @@ export default {
     commit(types.SET_INITIAL_BOARD_DATA, data);
   },
 
-  setActiveId({ commit }, id) {
-    commit(types.SET_ACTIVE_ID, id);
+  setActiveId({ commit }, { id, sidebarType }) {
+    commit(types.SET_ACTIVE_ID, { id, sidebarType });
+  },
+
+  unsetActiveId({ dispatch }) {
+    dispatch('setActiveId', { id: inactiveId, sidebarType: '' });
   },
 
   setFilters: ({ commit }, filters) => {

@@ -28,7 +28,7 @@ describe('ClustersAncestorNotice', () => {
     });
 
     it('displays no notice', () => {
-      expect(wrapper.isEmpty()).toBe(true);
+      expect(wrapper.html()).toBe('');
     });
   });
 

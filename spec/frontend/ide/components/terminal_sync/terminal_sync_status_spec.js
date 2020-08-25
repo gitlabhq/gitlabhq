@@ -57,7 +57,7 @@ describe('ide/components/terminal_sync/terminal_sync_status', () => {
     it('shows nothing', () => {
       createComponent();
 
-      expect(wrapper.isEmpty()).toBe(true);
+      expect(wrapper.html()).toBe('');
     });
   });
 

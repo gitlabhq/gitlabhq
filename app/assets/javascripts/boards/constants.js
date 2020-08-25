@@ -15,6 +15,9 @@ export const ListType = {
 
 export const inactiveId = 0;
 
+export const ISSUABLE = 'issuable';
+export const LIST = 'list';
+
 export default {
   BoardType,
   ListType,

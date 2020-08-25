@@ -30,7 +30,7 @@ describe('detailedMetric', () => {
     });
 
     it('does not render the element', () => {
-      expect(wrapper.isEmpty()).toBe(true);
+      expect(wrapper.html()).toBe('');
     });
   });
 

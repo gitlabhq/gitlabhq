@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe SearchHelper do
+  include MarkupHelper
+
   # Override simple_sanitize for our testing purposes
   def simple_sanitize(str)
     str
@@ -225,6 +227,20 @@ RSpec.describe SearchHelper do
       it 'returns dashboard' do
         expect(search_history_storage_prefix).to eq("dashboard")
       end
+    end
+  end
+
+  describe 'search_md_sanitize' do
+    it 'does not do extra sql queries for partial markdown rendering' do
+      @project = create(:project)
+
+      description = FFaker::Lorem.characters(210)
+      control_count = ActiveRecord::QueryRecorder.new(skip_cached: false) { search_md_sanitize(description) }.count
+
+      issues = create_list(:issue, 4, project: @project)
+
+      description_with_issues = description + ' ' + issues.map { |issue| "##{issue.iid}" }.join(' ')
+      expect { search_md_sanitize(description_with_issues) }.not_to exceed_all_query_limit(control_count)
     end
   end
 

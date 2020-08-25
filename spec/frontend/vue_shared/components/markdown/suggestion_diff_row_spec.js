@@ -47,7 +47,7 @@ describe('SuggestionDiffRow', () => {
         },
       });
 
-      expect(wrapper.is('.line_holder')).toBe(true);
+      expect(wrapper.classes()).toContain('line_holder');
     });
 
     it('renders the rich text when it is available', () => {

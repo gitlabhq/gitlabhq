@@ -250,14 +250,15 @@ module SearchHelper
 
   # Sanitize a HTML field for search display. Most tags are stripped out and the
   # maximum length is set to 200 characters.
-  def search_md_sanitize(object, field)
-    html = markdown_field(object, field)
-    html = Truncato.truncate(
-      html,
+  def search_md_sanitize(source)
+    source = Truncato.truncate(
+      source,
       count_tags: false,
       count_tail: false,
       max_length: 200
     )
+
+    html = markdown(source)
 
     # Truncato's filtered_tags and filtered_attributes are not quite the same
     sanitize(html, tags: %w(a p ol ul li pre code))

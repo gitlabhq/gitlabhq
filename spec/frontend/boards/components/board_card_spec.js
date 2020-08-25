@@ -2,7 +2,7 @@
 /* global ListAssignee */
 /* global ListLabel */
 
-import { shallowMount } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
 
 import MockAdapter from 'axios-mock-adapter';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -15,12 +15,12 @@ import '~/boards/models/assignee';
 import '~/boards/models/list';
 import store from '~/boards/stores';
 import boardsStore from '~/boards/stores/boards_store';
-import boardCard from '~/boards/components/board_card.vue';
+import BoardCard from '~/boards/components/board_card.vue';
 import issueCardInner from '~/boards/components/issue_card_inner.vue';
 import userAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
-import { listObj, boardsMockInterceptor, setMockEndpoints } from './mock_data';
+import { listObj, boardsMockInterceptor, setMockEndpoints } from '../mock_data';
 
-describe('Board card', () => {
+describe('BoardCard', () => {
   let wrapper;
   let mock;
   let list;
@@ -30,7 +30,7 @@ describe('Board card', () => {
 
   // this particular mount component needs to be used after the root beforeEach because it depends on list being initialized
   const mountComponent = propsData => {
-    wrapper = shallowMount(boardCard, {
+    wrapper = mount(BoardCard, {
       stubs: {
         issueCardInner,
       },
@@ -47,7 +47,7 @@ describe('Board card', () => {
     });
   };
 
-  const setupData = () => {
+  const setupData = async () => {
     list = new List(listObj);
     boardsStore.create();
     boardsStore.detail.issue = {};
@@ -58,9 +58,9 @@ describe('Board card', () => {
       text_color: 'white',
       description: 'test',
     });
-    return waitForPromises().then(() => {
-      list.issues[0].labels.push(label1);
-    });
+    await waitForPromises();
+
+    list.issues[0].labels.push(label1);
   };
 
   beforeEach(() => {
@@ -79,7 +79,7 @@ describe('Board card', () => {
 
   it('when details issue is empty does not show the element', () => {
     mountComponent();
-    expect(wrapper.classes()).not.toContain('is-active');
+    expect(wrapper.find('[data-testid="board_card"').classes()).not.toContain('is-active');
   });
 
   it('when detailIssue is equal to card issue shows the element', () => {
@@ -124,29 +124,6 @@ describe('Board card', () => {
   });
 
   describe('mouse events', () => {
-    it('sets showDetail to true on mousedown', () => {
-      mountComponent();
-      wrapper.trigger('mousedown');
-      return wrapper.vm.$nextTick().then(() => {
-        expect(wrapper.vm.showDetail).toBe(true);
-      });
-    });
-
-    it('sets showDetail to false on mousemove', () => {
-      mountComponent();
-      wrapper.trigger('mousedown');
-      return wrapper.vm
-        .$nextTick()
-        .then(() => {
-          expect(wrapper.vm.showDetail).toBe(true);
-          wrapper.trigger('mousemove');
-          return wrapper.vm.$nextTick();
-        })
-        .then(() => {
-          expect(wrapper.vm.showDetail).toBe(false);
-        });
-    });
-
     it('does not set detail issue if showDetail is false', () => {
       mountComponent();
       expect(boardsStore.detail.issue).toEqual({});
@@ -218,6 +195,9 @@ describe('Board card', () => {
       jest.spyOn(sidebarEventHub, '$emit').mockImplementation(() => {});
       boardsStore.detail.issue = {};
       mountComponent();
+
+      // sets conditional so that event is emitted.
+      wrapper.trigger('mousedown');
 
       wrapper.trigger('mouseup');
 

@@ -62,7 +62,7 @@ describe('DropdownButton', () => {
 
   describe('template', () => {
     it('renders component container element', () => {
-      expect(wrapper.is('gl-button-stub')).toBe(true);
+      expect(wrapper.find(GlButton).element).toBe(wrapper.element);
     });
 
     it('renders default button text element', () => {
