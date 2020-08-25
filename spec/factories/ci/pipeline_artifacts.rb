@@ -24,5 +24,15 @@ FactoryBot.define do
         )
       end
     end
+
+    trait :with_code_coverage_with_multiple_files do
+      after(:build) do |artifact, _evaluator|
+        artifact.file = fixture_file_upload(
+          Rails.root.join('spec/fixtures/pipeline_artifacts/code_coverage_with_multiple_files.json'), 'application/json'
+        )
+      end
+
+      size { file.size }
+    end
   end
 end

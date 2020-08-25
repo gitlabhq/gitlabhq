@@ -57,12 +57,12 @@ RSpec.describe Gitlab::Checks::ProjectMoved, :clean_gitlab_redis_shared_state do
       shared_examples 'returns redirect message' do
         it do
           message = <<~MSG
-                    Project '#{redirect_path}' was moved to '#{project.full_path}'.
+            Project '#{redirect_path}' was moved to '#{project.full_path}'.
 
-                    Please update your Git remote:
+            Please update your Git remote:
 
-                      git remote set-url origin #{url_to_repo}
-                    MSG
+              git remote set-url origin #{url_to_repo}
+          MSG
 
           expect(subject.message).to eq(message)
         end

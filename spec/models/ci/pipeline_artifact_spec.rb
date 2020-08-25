@@ -91,4 +91,22 @@ RSpec.describe Ci::PipelineArtifact, type: :model do
       end
     end
   end
+
+  describe '.find_with_code_coverage' do
+    subject { Ci::PipelineArtifact.find_with_code_coverage }
+
+    context 'when pipeline artifact has a coverage report' do
+      let!(:coverage_report) { create(:ci_pipeline_artifact) }
+
+      it 'returns a pipeline artifact with a code coverage' do
+        expect(subject.file_type).to eq('code_coverage')
+      end
+    end
+
+    context 'when pipeline artifact does not have a coverage report' do
+      it 'returns nil' do
+        expect(subject).to be_nil
+      end
+    end
+  end
 end

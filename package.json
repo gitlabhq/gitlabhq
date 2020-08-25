@@ -92,6 +92,7 @@
     "glob": "^7.1.6",
     "graphql": "^14.7.0",
     "graphql-tag": "^2.10.1",
+    "immer": "^7.0.7",
     "imports-loader": "^0.8.0",
     "ipaddr.js": "^1.9.1",
     "jed": "^1.1.1",

@@ -2164,10 +2164,7 @@ build_job:
 ```
 
 Environment variables support for `project:`, `job:`, and `ref` was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/202093)
-in GitLab 13.3. This is under development, but it is ready for production use. It is deployed
-behind the `ci_expand_names_for_cross_pipeline_artifacts` feature flag, which is **disabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
-can enable it for your instance.
+in GitLab 13.3. [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/235761) in GitLab 13.4.
 
 For example:
 

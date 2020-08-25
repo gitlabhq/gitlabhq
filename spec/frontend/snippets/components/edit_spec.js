@@ -200,7 +200,7 @@ describe('Snippet Edit app', () => {
 
     it.each`
       projectPath       | snippetArg               | expectation
-      ${''}             | ${[]}                    | ${`${relativeUrlRoot}-/snippets`}
+      ${''}             | ${[]}                    | ${`${relativeUrlRoot}/-/snippets`}
       ${'project/path'} | ${[]}                    | ${`${relativeUrlRoot}project/path/-/snippets`}
       ${''}             | ${[createTestSnippet()]} | ${TEST_WEB_URL}
       ${'project/path'} | ${[createTestSnippet()]} | ${TEST_WEB_URL}

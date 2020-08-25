@@ -97,7 +97,7 @@ RSpec.describe 'Merge request > User sees diff', :js do
             let c = 3;
             let d = 3;
           }
-        CONTENT
+          CONTENT
 
         new_file_content =
           <<~CONTENT
@@ -107,7 +107,7 @@ RSpec.describe 'Merge request > User sees diff', :js do
             let c = 3;
             let x = 3;
           }
-        CONTENT
+          CONTENT
 
         file_name = 'xss_file.rs'
 

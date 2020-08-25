@@ -12,7 +12,7 @@ module Ci
       {
         status: :parsed,
         key: key(base_pipeline, head_pipeline),
-        data: head_pipeline.coverage_reports.pick(merge_request.new_paths)
+        data: Gitlab::Ci::Pipeline::Artifact::CodeCoverage.new(head_pipeline.pipeline_artifacts.find_with_code_coverage).for_files(merge_request.new_paths)
       }
     rescue => e
       Gitlab::ErrorTracking.track_exception(e, project_id: project.id)

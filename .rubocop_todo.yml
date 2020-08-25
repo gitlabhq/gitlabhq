@@ -20,19 +20,6 @@ Layout/ArgumentAlignment:
 
 # Offense count: 13
 # Cop supports --auto-correct.
-Layout/ClosingHeredocIndentation:
-  Exclude:
-    - 'app/graphql/mutations/merge_requests/set_wip.rb'
-    - 'ee/db/geo/migrate/20180322062741_migrate_ci_job_artifacts_to_separate_registry.rb'
-    - 'ee/lib/gitlab/geo/health_check.rb'
-    - 'spec/features/merge_request/user_sees_diff_spec.rb'
-    - 'spec/lib/gitlab/asciidoc_spec.rb'
-    - 'spec/lib/gitlab/checks/project_moved_spec.rb'
-    - 'spec/rubocop/cop/active_record_association_reload_spec.rb'
-    - 'spec/services/task_list_toggle_service_spec.rb'
-
-# Offense count: 13
-# Cop supports --auto-correct.
 Layout/ClosingParenthesisIndentation:
   Exclude:
     - 'db/post_migrate/20180704145007_update_project_indexes.rb'

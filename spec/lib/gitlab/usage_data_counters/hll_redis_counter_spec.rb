@@ -45,6 +45,32 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
     it 'raise error if metrics of unknown aggregation' do
       expect { described_class.track_event(entity1, 'unknown', Date.current) } .to raise_error(Gitlab::UsageDataCounters::HLLRedisCounter::UnknownEvent)
     end
+
+    it 'sets the keys in Redis to expire automatically after 12 weeks' do
+      described_class.track_event(entity1, "g_analytics_contribution")
+
+      Gitlab::Redis::SharedState.with do |redis|
+        keys = redis.scan_each(match: "g_{analytics}_contribution-*").to_a
+        expect(keys).not_to be_empty
+
+        keys.each do |key|
+          expect(redis.ttl(key)).to be_within(5.seconds).of(12.weeks)
+        end
+      end
+    end
+
+    it 'sets the keys in Redis to expire automatically after 6 weeks by default' do
+      described_class.track_event(entity1, "g_compliance_dashboard")
+
+      Gitlab::Redis::SharedState.with do |redis|
+        keys = redis.scan_each(match: "g_{compliance}_dashboard-*").to_a
+        expect(keys).not_to be_empty
+
+        keys.each do |key|
+          expect(redis.ttl(key)).to be_within(5.seconds).of(6.weeks)
+        end
+      end
+    end
   end
 
   describe '.unique_events' do

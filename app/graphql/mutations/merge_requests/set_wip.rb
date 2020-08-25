@@ -9,8 +9,8 @@ module Mutations
                GraphQL::BOOLEAN_TYPE,
                required: true,
                description: <<~DESC
-                            Whether or not to set the merge request as a WIP.
-                            DESC
+                 Whether or not to set the merge request as a WIP.
+               DESC
 
       def resolve(project_path:, iid:, wip: nil)
         merge_request = authorized_find!(project_path: project_path, iid: iid)

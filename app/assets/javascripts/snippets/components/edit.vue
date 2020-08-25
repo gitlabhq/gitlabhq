@@ -90,7 +90,7 @@ export default {
       if (this.newSnippet) {
         return this.projectPath
           ? `${gon.relative_url_root}${this.projectPath}/-/snippets`
-          : `${gon.relative_url_root}-/snippets`;
+          : `${gon.relative_url_root}/-/snippets`;
       }
       return this.snippet.webUrl;
     },

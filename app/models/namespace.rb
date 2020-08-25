@@ -135,6 +135,10 @@ class Namespace < ApplicationRecord
       uniquify.string(path) { |s| Namespace.find_by_path_or_name(s) }
     end
 
+    def clean_name(value)
+      value.scan(Gitlab::Regex.group_name_regex_chars).join(' ')
+    end
+
     def find_by_pages_host(host)
       gitlab_host = "." + Settings.pages.host.downcase
       host = host.downcase

@@ -15,7 +15,11 @@ RSpec.describe Ci::GenerateCoverageReportsService do
       let!(:head_pipeline) { merge_request.head_pipeline }
       let!(:base_pipeline) { nil }
 
-      it 'returns status and data' do
+      it 'returns status and data', :aggregate_failures do
+        expect_next_instance_of(Gitlab::Ci::Pipeline::Artifact::CodeCoverage) do |instance|
+          expect(instance).to receive(:for_files).with(merge_request.new_paths).and_call_original
+        end
+
         expect(subject[:status]).to eq(:parsed)
         expect(subject[:data]).to eq(files: {})
       end
@@ -28,8 +32,7 @@ RSpec.describe Ci::GenerateCoverageReportsService do
       let!(:base_pipeline) { nil }
 
       before do
-        build = create(:ci_build, pipeline: head_pipeline, project: head_pipeline.project)
-        create(:ci_job_artifact, :coverage_with_corrupted_data, job: build, project: project)
+        head_pipeline.pipeline_artifacts.destroy_all # rubocop: disable Cop/DestroyAll
       end
 
       it 'returns status and error message' do

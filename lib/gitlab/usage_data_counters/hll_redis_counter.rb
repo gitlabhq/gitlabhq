@@ -91,7 +91,7 @@ module Gitlab
         end
 
         def expiry(event)
-          return event[:expiry] if event[:expiry].present?
+          return event[:expiry].days if event[:expiry].present?
 
           event[:aggregation].to_sym == :daily ? DEFAULT_DAILY_KEY_EXPIRY_LENGTH : DEFAULT_WEEKLY_KEY_EXPIRY_LENGTH
         end

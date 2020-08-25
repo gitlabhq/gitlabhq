@@ -588,6 +588,21 @@ RSpec.describe Namespace do
     end
   end
 
+  describe ".clean_name" do
+    context "when the name complies with the group name regex" do
+      it "returns the name as is" do
+        valid_name = "Hello - World _ (Hi.)"
+        expect(described_class.clean_name(valid_name)).to eq(valid_name)
+      end
+    end
+
+    context "when the name does not comply with the group name regex" do
+      it "sanitizes the name by replacing all invalid char sequences with a space" do
+        expect(described_class.clean_name("Green'! Test~~~")).to eq("Green Test")
+      end
+    end
+  end
+
   describe "#default_branch_protection" do
     let(:namespace) { create(:namespace) }
     let(:default_branch_protection) { nil }

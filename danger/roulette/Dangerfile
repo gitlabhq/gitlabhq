@@ -56,7 +56,7 @@ def note_for_spin_role(spin, role)
     return OPTIONAL_REVIEW_TEMPLATE % { role: role.capitalize, category: helper.label_for_category(spin.category) }
   end
 
-  spin.public_send(role)&.markdown_name(timezone_experiment: spin.timezone_experiment, author: roulette.team_mr_author) # rubocop:disable GitlabSecurity/PublicSend
+  spin.public_send(role)&.markdown_name(author: roulette.team_mr_author) # rubocop:disable GitlabSecurity/PublicSend
 end
 
 def markdown_row_for_spins(category, spins_array)

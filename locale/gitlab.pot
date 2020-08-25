@@ -16907,16 +16907,10 @@ msgstr ""
 msgid "OnDemandScans|Could not run the scan. Please try again."
 msgstr ""
 
-msgid "OnDemandScans|Could not run the scan: %{backendErrorMessage}"
-msgstr ""
-
 msgid "OnDemandScans|Create a new site profile"
 msgstr ""
 
 msgid "OnDemandScans|Create new DAST scan"
-msgstr ""
-
-msgid "OnDemandScans|DAST will scan the target URL and any discovered sub URLs."
 msgstr ""
 
 msgid "OnDemandScans|Manage profiles"
@@ -16940,16 +16934,7 @@ msgstr ""
 msgid "OnDemandScans|Passive"
 msgstr ""
 
-msgid "OnDemandScans|Passive DAST Scan"
-msgstr ""
-
-msgid "OnDemandScans|Please enter a valid URL format, ex: http://www.example.com/home"
-msgstr ""
-
 msgid "OnDemandScans|Run scan"
-msgstr ""
-
-msgid "OnDemandScans|Run this scan"
 msgstr ""
 
 msgid "OnDemandScans|Scan mode"
@@ -16965,9 +16950,6 @@ msgid "OnDemandScans|Select one of the existing profiles"
 msgstr ""
 
 msgid "OnDemandScans|Site profiles"
-msgstr ""
-
-msgid "OnDemandScans|Target URL"
 msgstr ""
 
 msgid "OnDemandScans|Use existing site profile"

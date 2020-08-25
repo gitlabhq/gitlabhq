@@ -2,12 +2,13 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::Pipeline, :mailer do
+RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
   include ProjectForksHelper
   include StubRequests
 
-  let(:user) { create(:user) }
-  let_it_be(:project) { create(:project) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:namespace) { create_default(:namespace) }
+  let_it_be(:project) { create_default(:project, :repository) }
 
   let(:pipeline) do
     create(:ci_empty_pipeline, status: :created, project: project)
@@ -1436,8 +1437,6 @@ RSpec.describe Ci::Pipeline, :mailer do
     context 'when repository exists' do
       using RSpec::Parameterized::TableSyntax
 
-      let(:project) { create(:project, :repository) }
-
       where(:tag, :ref, :result) do
         false | 'master'              | true
         false | 'non-existent-branch' | false
@@ -1457,6 +1456,7 @@ RSpec.describe Ci::Pipeline, :mailer do
     end
 
     context 'when repository does not exist' do
+      let(:project) { create(:project) }
       let(:pipeline) do
         create(:ci_empty_pipeline, project: project, ref: 'master')
       end
@@ -1468,8 +1468,6 @@ RSpec.describe Ci::Pipeline, :mailer do
   end
 
   context 'with non-empty project' do
-    let(:project) { create(:project, :repository) }
-
     let(:pipeline) do
       create(:ci_pipeline,
              project: project,
@@ -1596,8 +1594,6 @@ RSpec.describe Ci::Pipeline, :mailer do
 
   describe '#modified_paths' do
     context 'when old and new revisions are set' do
-      let(:project) { create(:project, :repository) }
-
       before do
         pipeline.update(before_sha: '1234abcd', sha: '2345bcde')
       end
@@ -1866,8 +1862,6 @@ RSpec.describe Ci::Pipeline, :mailer do
   end
 
   describe '.latest_pipeline_per_commit' do
-    let(:project) { create(:project) }
-
     let!(:commit_123_ref_master) do
       create(
         :ci_empty_pipeline,
@@ -1962,7 +1956,6 @@ RSpec.describe Ci::Pipeline, :mailer do
   end
 
   describe '.last_finished_for_ref_id' do
-    let(:project) { create(:project, :repository) }
     let(:branch) { project.default_branch }
     let(:ref) { project.ci_refs.take }
     let(:config_source) { Enums::Ci::Pipeline.config_sources[:parameter_source] }
@@ -2452,7 +2445,6 @@ RSpec.describe Ci::Pipeline, :mailer do
   end
 
   describe "#merge_requests_as_head_pipeline" do
-    let(:project) { create(:project) }
     let(:pipeline) { create(:ci_empty_pipeline, status: 'created', project: project, ref: 'master', sha: 'a288a022a53a5a944fae87bcec6efc87b7061808') }
 
     it "returns merge requests whose `diff_head_sha` matches the pipeline's SHA" do
@@ -2685,7 +2677,8 @@ RSpec.describe Ci::Pipeline, :mailer do
   end
 
   describe 'notifications when pipeline success or failed' do
-    let(:project) { create(:project, :repository) }
+    let(:namespace) { create(:namespace) }
+    let(:project) { create(:project, :repository, namespace: namespace) }
 
     let(:pipeline) do
       create(:ci_pipeline,
@@ -3260,7 +3253,8 @@ RSpec.describe Ci::Pipeline, :mailer do
   end
 
   describe '#parent_pipeline' do
-    let(:project) { create(:project) }
+    let_it_be(:project) { create(:project) }
+
     let(:pipeline) { create(:ci_pipeline, project: project) }
 
     context 'when pipeline is triggered by a pipeline from the same project' do
@@ -3315,7 +3309,7 @@ RSpec.describe Ci::Pipeline, :mailer do
   end
 
   describe '#child_pipelines' do
-    let(:project) { create(:project) }
+    let_it_be(:project) { create(:project) }
     let(:pipeline) { create(:ci_pipeline, project: project) }
 
     context 'when pipeline triggered other pipelines on same project' do

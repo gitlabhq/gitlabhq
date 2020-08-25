@@ -122,7 +122,11 @@ module Gitlab
     end
 
     def group_name_regex
-      @group_name_regex ||= /\A[\p{Alnum}\u{00A9}-\u{1f9ff}_][\p{Alnum}\p{Pd}\u{00A9}-\u{1f9ff}_()\. ]*\z/.freeze
+      @group_name_regex ||= /\A#{group_name_regex_chars}\z/.freeze
+    end
+
+    def group_name_regex_chars
+      @group_name_regex_chars ||= /[\p{Alnum}\u{00A9}-\u{1f9ff}_][\p{Alnum}\p{Pd}\u{00A9}-\u{1f9ff}_()\. ]*/.freeze
     end
 
     def group_name_regex_message

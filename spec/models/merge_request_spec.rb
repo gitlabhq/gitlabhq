@@ -1890,12 +1890,6 @@ RSpec.describe MergeRequest do
     subject { merge_request.find_coverage_reports }
 
     context 'when head pipeline has coverage reports' do
-      let!(:job) do
-        create(:ci_build, options: { artifacts: { reports: { cobertura: ['cobertura-coverage.xml'] } } }, pipeline: pipeline)
-      end
-
-      let!(:artifacts_metadata) { create(:ci_job_artifact, :metadata, job: job) }
-
       context 'when reactive cache worker is parsing results asynchronously' do
         it 'returns status' do
           expect(subject[:status]).to eq(:parsing)

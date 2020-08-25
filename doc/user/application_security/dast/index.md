@@ -647,16 +647,13 @@ a fixed timeout of 60 seconds.
 - Click **Create new DAST scan**.
 - Click **Delete** in the matching site profile's row.
 
-### Enable or disable On-demand Scans and site profiles
+### Enable or disable On-demand Scans
 
-On-demand Scans with site profiles is enabled by default. You can disable On-demand Scans
-instance-wide, or disable it for specific projects if you prefer. DAST site profiles are not
-available if the On-demand Scans feature is disabled.
+On-demand Scans is enabled by default. You can disable On-demand Scans
+instance-wide, or disable it for specific projects if you prefer.
 
-Use of On-demand Scans with site profiles requires **both** the following feature flags enabled:
-
-- security_on_demand_scans_feature_flag
-- security_on_demand_scans_site_profiles_feature_flag
+Use of On-demand Scans requires the `security_on_demand_scans_feature_flag`
+feature flag enabled.
 
 [GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
 can disable or enable the feature flags.
@@ -679,31 +676,6 @@ To enable On-demand Scans:
 Feature.enable(:security_on_demand_scans_feature_flag)
 # or by project
 Feature.enable(:security_on_demand_scans_feature_flag, Project.find(<project ID>))
-```
-
-#### Enable or disable site profiles
-
-The Site Profiles feature is enabled instance-wide by default. You can disable it instance-wide, or disable it
-for specific projects if you prefer.
-[GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
-can disable or enable the feature flag.
-
-To disable Site Profiles:
-
-```ruby
-# Instance-wide
-Feature.disable(:security_on_demand_scans_site_profiles_feature_flag)
-# or by project
-Feature.disable(:security_on_demand_scans_site_profiles_feature_flag, Project.find(<project id>))
-```
-
-To enable Site Profiles:
-
-```ruby
-# Instance-wide
-Feature.enable(:security_on_demand_scans_site_profiles_feature_flag)
-# or by project
-Feature.enable(:security_on_demand_scans_site_profiles_feature_flag, Project.find(<project ID>))
 ```
 
 ## Reports

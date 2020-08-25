@@ -111,7 +111,7 @@ exports[`Design management index page designs renders designs list and header wi
       >
         <gl-button-stub
           category="primary"
-          class="gl-mr-3 js-select-all"
+          class="gl-mr-4 js-select-all"
           icon=""
           size="small"
           variant="link"

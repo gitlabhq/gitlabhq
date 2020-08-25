@@ -40,5 +40,9 @@ module Ci
     def self.has_code_coverage?
       where(file_type: :code_coverage).exists?
     end
+
+    def self.find_with_code_coverage
+      find_by(file_type: :code_coverage)
+    end
   end
 end

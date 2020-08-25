@@ -15,7 +15,7 @@ RSpec.describe RuboCop::Cop::ActiveRecordAssociationReload, type: :rubocop do
         users = User.all
         users.reload
               ^^^^^^ Use reset instead of reload. For more details check the https://gitlab.com/gitlab-org/gitlab-foss/issues/60218.
-        PATTERN
+      PATTERN
     end
 
     it 'does not register an offense on reset usage' do

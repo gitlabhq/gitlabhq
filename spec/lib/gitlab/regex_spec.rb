@@ -3,14 +3,19 @@
 require 'fast_spec_helper'
 
 RSpec.describe Gitlab::Regex do
-  shared_examples_for 'project/group name regex' do
+  shared_examples_for 'project/group name chars regex' do
     it { is_expected.to match('gitlab-ce') }
     it { is_expected.to match('GitLab CE') }
     it { is_expected.to match('100 lines') }
     it { is_expected.to match('gitlab.git') }
     it { is_expected.to match('Český název') }
     it { is_expected.to match('Dash – is this') }
+  end
+
+  shared_examples_for 'project/group name regex' do
+    it_behaves_like 'project/group name chars regex'
     it { is_expected.not_to match('?gitlab') }
+    it { is_expected.not_to match("Users's something") }
   end
 
   describe '.project_name_regex' do
@@ -30,6 +35,16 @@ RSpec.describe Gitlab::Regex do
 
     it 'does not start with parenthesis' do
       is_expected.not_to match('(Invalid Group name)')
+    end
+  end
+
+  describe '.group_name_regex_chars' do
+    subject { described_class.group_name_regex_chars }
+
+    it_behaves_like 'project/group name chars regex'
+
+    it 'allows partial matches' do
+      is_expected.to match(',Valid name wrapped in ivalid chars&')
     end
   end
 

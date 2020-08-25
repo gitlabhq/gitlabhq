@@ -97,7 +97,7 @@ export default {
           text: __('New snippet'),
           href: this.snippet.project
             ? `${this.snippet.project.webUrl}/-/snippets/new`
-            : `${gon.relative_url_root}-/snippets/new`,
+            : `${gon.relative_url_root}/-/snippets/new`,
           variant: 'success',
           category: 'secondary',
           cssClass: 'ml-2',

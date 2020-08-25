@@ -1,8 +1,9 @@
 /* eslint-disable @gitlab/require-i18n-strings */
 
 import { groupBy } from 'lodash';
+import produce from 'immer';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
-import { extractCurrentDiscussion, extractDesign } from './design_management_utils';
+import { extractCurrentDiscussion, extractDesign, extractDesigns } from './design_management_utils';
 import {
   ADD_IMAGE_DIFF_NOTE_ERROR,
   UPDATE_IMAGE_DIFF_NOTE_ERROR,
@@ -10,13 +11,20 @@ import {
   designDeletionError,
 } from './error_messages';
 
-const deleteDesignsFromStore = (store, query, selectedDesigns) => {
-  const data = store.readQuery(query);
+const designsOf = data => data.project.issue.designCollection.designs;
 
-  const changedDesigns = data.project.issue.designCollection.designs.nodes.filter(
-    node => !selectedDesigns.includes(node.filename),
-  );
-  data.project.issue.designCollection.designs.nodes = [...changedDesigns];
+const isParticipating = (design, username) =>
+  design.issue.participants.nodes.some(participant => participant.username === username);
+
+const deleteDesignsFromStore = (store, query, selectedDesigns) => {
+  const sourceData = store.readQuery(query);
+
+  const data = produce(sourceData, draftData => {
+    const changedDesigns = designsOf(sourceData).nodes.filter(
+      design => !selectedDesigns.includes(design.filename),
+    );
+    designsOf(draftData).nodes = [...changedDesigns];
+  });
 
   store.writeQuery({
     ...query,
@@ -33,13 +41,15 @@ const deleteDesignsFromStore = (store, query, selectedDesigns) => {
  */
 const addNewVersionToStore = (store, query, version) => {
   if (!version) return;
+  const sourceData = store.readQuery(query);
 
-  const data = store.readQuery(query);
-
-  data.project.issue.designCollection.versions.nodes = [
-    version,
-    ...data.project.issue.designCollection.versions.nodes,
-  ];
+  const data = produce(sourceData, draftData => {
+    // eslint-disable-next-line no-param-reassign
+    draftData.project.issue.designCollection.versions.nodes = [
+      version,
+      ...draftData.project.issue.designCollection.versions.nodes,
+    ];
+  });
 
   store.writeQuery({
     ...query,
@@ -48,46 +58,41 @@ const addNewVersionToStore = (store, query, version) => {
 };
 
 const addDiscussionCommentToStore = (store, createNote, query, queryVariables, discussionId) => {
-  const data = store.readQuery({
+  const sourceData = store.readQuery({
     query,
     variables: queryVariables,
   });
 
-  const design = extractDesign(data);
-  const currentDiscussion = extractCurrentDiscussion(design.discussions, discussionId);
-  currentDiscussion.notes.nodes = [...currentDiscussion.notes.nodes, createNote.note];
+  const newParticipant = {
+    __typename: 'User',
+    ...createNote.note.author,
+  };
 
-  design.notesCount += 1;
-  if (
-    !design.issue.participants.nodes.some(
-      participant => participant.username === createNote.note.author.username,
-    )
-  ) {
-    design.issue.participants.nodes = [
-      ...design.issue.participants.nodes,
-      {
-        __typename: 'User',
-        ...createNote.note.author,
-      },
-    ];
-  }
+  const data = produce(sourceData, draftData => {
+    const design = extractDesign(draftData);
+    const currentDiscussion = extractCurrentDiscussion(design.discussions, discussionId);
+    currentDiscussion.notes.nodes = [...currentDiscussion.notes.nodes, createNote.note];
+
+    if (!isParticipating(design, createNote.note.author.username)) {
+      design.issue.participants.nodes = [...design.issue.participants.nodes, newParticipant];
+    }
+
+    design.notesCount += 1;
+  });
+
   store.writeQuery({
     query,
     variables: queryVariables,
-    data: {
-      ...data,
-      design: {
-        ...design,
-      },
-    },
+    data,
   });
 };
 
 const addImageDiffNoteToStore = (store, createImageDiffNote, query, variables) => {
-  const data = store.readQuery({
+  const sourceData = store.readQuery({
     query,
     variables,
   });
+
   const newDiscussion = {
     __typename: 'Discussion',
     id: createImageDiffNote.note.discussion.id,
@@ -101,100 +106,100 @@ const addImageDiffNoteToStore = (store, createImageDiffNote, query, variables) =
       nodes: [createImageDiffNote.note],
     },
   };
-  const design = extractDesign(data);
-  const notesCount = design.notesCount + 1;
-  design.discussions.nodes = [...design.discussions.nodes, newDiscussion];
-  if (
-    !design.issue.participants.nodes.some(
-      participant => participant.username === createImageDiffNote.note.author.username,
-    )
-  ) {
-    design.issue.participants.nodes = [
-      ...design.issue.participants.nodes,
-      {
-        __typename: 'User',
-        ...createImageDiffNote.note.author,
-      },
-    ];
-  }
+
+  const data = produce(sourceData, draftData => {
+    const design = extractDesign(draftData);
+    design.notesCount += 1;
+    design.discussions.nodes = [...design.discussions.nodes, newDiscussion];
+
+    if (
+      !design.issue.participants.nodes.some(
+        participant => participant.username === createImageDiffNote.note.author.username,
+      )
+    ) {
+      design.issue.participants.nodes = [
+        ...design.issue.participants.nodes,
+        {
+          __typename: 'User',
+          ...createImageDiffNote.note.author,
+        },
+      ];
+    }
+  });
+
   store.writeQuery({
     query,
     variables,
-    data: {
-      ...data,
-      design: {
-        ...design,
-        notesCount,
-      },
-    },
+    data,
   });
 };
 
 const updateImageDiffNoteInStore = (store, updateImageDiffNote, query, variables) => {
-  const data = store.readQuery({
+  const sourceData = store.readQuery({
     query,
     variables,
   });
 
-  const design = extractDesign(data);
-  const discussion = extractCurrentDiscussion(
-    design.discussions,
-    updateImageDiffNote.note.discussion.id,
-  );
+  const data = produce(sourceData, draftData => {
+    const design = extractDesign(draftData);
+    const discussion = extractCurrentDiscussion(
+      design.discussions,
+      updateImageDiffNote.note.discussion.id,
+    );
 
-  discussion.notes = {
-    ...discussion.notes,
-    nodes: [updateImageDiffNote.note, ...discussion.notes.nodes.slice(1)],
-  };
+    discussion.notes = {
+      ...discussion.notes,
+      nodes: [updateImageDiffNote.note, ...discussion.notes.nodes.slice(1)],
+    };
+  });
 
   store.writeQuery({
     query,
     variables,
-    data: {
-      ...data,
-      design,
-    },
+    data,
   });
 };
 
 const addNewDesignToStore = (store, designManagementUpload, query) => {
-  const data = store.readQuery(query);
+  const sourceData = store.readQuery(query);
 
-  const currentDesigns = data.project.issue.designCollection.designs.nodes;
-  const existingDesigns = groupBy(currentDesigns, 'filename');
-  const newDesigns = currentDesigns.concat(
-    designManagementUpload.designs.filter(d => !existingDesigns[d.filename]),
-  );
+  const data = produce(sourceData, draftData => {
+    const currentDesigns = extractDesigns(draftData);
+    const existingDesigns = groupBy(currentDesigns, 'filename');
+    const newDesigns = currentDesigns.concat(
+      designManagementUpload.designs.filter(d => !existingDesigns[d.filename]),
+    );
 
-  let newVersionNode;
-  const findNewVersions = designManagementUpload.designs.find(design => design.versions);
+    let newVersionNode;
+    const findNewVersions = designManagementUpload.designs.find(design => design.versions);
 
-  if (findNewVersions) {
-    const findNewVersionsNodes = findNewVersions.versions.nodes;
+    if (findNewVersions) {
+      const findNewVersionsNodes = findNewVersions.versions.nodes;
 
-    if (findNewVersionsNodes && findNewVersionsNodes.length) {
-      newVersionNode = [findNewVersionsNodes[0]];
+      if (findNewVersionsNodes && findNewVersionsNodes.length) {
+        newVersionNode = [findNewVersionsNodes[0]];
+      }
     }
-  }
 
-  const newVersions = [
-    ...(newVersionNode || []),
-    ...data.project.issue.designCollection.versions.nodes,
-  ];
+    const newVersions = [
+      ...(newVersionNode || []),
+      ...draftData.project.issue.designCollection.versions.nodes,
+    ];
 
-  const updatedDesigns = {
-    __typename: 'DesignCollection',
-    designs: {
-      __typename: 'DesignConnection',
-      nodes: newDesigns,
-    },
-    versions: {
-      __typename: 'DesignVersionConnection',
-      nodes: newVersions,
-    },
-  };
-
-  data.project.issue.designCollection = updatedDesigns;
+    const updatedDesigns = {
+      __typename: 'DesignCollection',
+      designs: {
+        __typename: 'DesignConnection',
+        nodes: newDesigns,
+      },
+      versions: {
+        __typename: 'DesignVersionConnection',
+        nodes: newVersions,
+      },
+    };
+    // eslint-disable-next-line no-param-reassign
+    draftData.project.issue.designCollection = updatedDesigns;
+  });
 
   store.writeQuery({
     ...query,
@@ -203,8 +208,14 @@ const addNewDesignToStore = (store, designManagementUpload, query) => {
 };
 
 const moveDesignInStore = (store, designManagementMove, query) => {
-  const data = store.readQuery(query);
-  data.project.issue.designCollection.designs = designManagementMove.designCollection.designs;
+  const sourceData = store.readQuery(query);
+
+  const data = produce(sourceData, draftData => {
+    // eslint-disable-next-line no-param-reassign
+    draftData.project.issue.designCollection.designs =
+      designManagementMove.designCollection.designs;
+  });
+
   store.writeQuery({
     ...query,
     data,
