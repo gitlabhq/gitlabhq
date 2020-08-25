@@ -346,9 +346,9 @@ To avoid this error, use the applicable HTML entity code (`&lt;` or `&gt;`) inst
 - In JavaScript:
 
   ```javascript
-  import sanitize from 'sanitize-html';
+  import { sanitize } from 'dompurify';
 
-  const i18n = { LESS_THAN_ONE_HOUR: sanitize(__('In &lt; 1 hours'), { allowedTags: [] }) };
+  const i18n = { LESS_THAN_ONE_HOUR: sanitize(__('In &lt; 1 hour'), { ALLOWED_TAGS: [] }) };
 
   // ... using the string
   element.innerHTML = i18n.LESS_THAN_ONE_HOUR;

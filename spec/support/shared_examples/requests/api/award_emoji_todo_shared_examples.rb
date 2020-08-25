@@ -22,7 +22,7 @@ RSpec.shared_examples 'creating award emojis marks Todos as done' do
 
   with_them do
     let(:project) { awardable.project }
-    let(:awardable) { create(type) }
+    let(:awardable) { create(type) } # rubocop:disable Rails/SaveBang
     let!(:todo) { create(:todo, target: awardable, project: project, user: user) }
 
     specify do

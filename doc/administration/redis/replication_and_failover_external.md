@@ -17,9 +17,8 @@ Omnibus GitLab package.
 
 The following are the requirements for providing your own Redis instance:
 
-- Redis version 5.0 or higher is recommended, as this is what ships with
-  Omnibus GitLab packages starting with GitLab 12.7.
-- GitLab 13.0 and later requires Redis version 4.0 or higher.
+- Find the minimum Redis version that is required in the
+  [requirements page](../../install/requirements.md).
 - Standalone Redis or Redis high availability with Sentinel are supported. Redis
   Cluster is not supported.
 - Managed Redis from cloud providers such as AWS ElastiCache will work. If these

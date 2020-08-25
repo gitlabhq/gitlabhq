@@ -401,10 +401,11 @@ Starting from GitLab 12.1, only PostgreSQL is supported. Since GitLab 13.0, we r
 
 ## 7. Redis
 
-GitLab requires at least Redis 5.0.
+NOTE: **Note:**
+See the [requirements page](requirements.md#redis-versions) for the minimum
+Redis requirements.
 
-If you are using Debian 10 or Ubuntu 20.04 and up, you can install
-Redis 5.0 with:
+Install Redis with:
 
 ```shell
 sudo apt-get install redis-server

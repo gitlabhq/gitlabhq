@@ -74,9 +74,12 @@ a version older than `v10.13.0`, you need to update it to a newer version. You
 can find instructions to install from community maintained packages or compile
 from source at the [Node.js website](https://nodejs.org/en/download/).
 
-## Redis versions
+### Redis versions
 
-GitLab requires Redis 5.0+. Beginning in GitLab 13.0, lower versions are not supported.
+GitLab 13.0 and later requires Redis version 4.0 or higher.
+
+Redis version 5.0 or higher is recommended, as this is what ships with
+[Omnibus GitLab](https://docs.gitlab.com/omnibus/) packages starting with GitLab 12.7.
 
 ## Hardware requirements
 

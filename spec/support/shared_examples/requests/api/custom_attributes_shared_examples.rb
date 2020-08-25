@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'custom attributes endpoints' do |attributable_name|
-  let!(:custom_attribute1) { attributable.custom_attributes.create key: 'foo', value: 'foo' }
-  let!(:custom_attribute2) { attributable.custom_attributes.create key: 'bar', value: 'bar' }
+  let!(:custom_attribute1) { attributable.custom_attributes.create! key: 'foo', value: 'foo' }
+  let!(:custom_attribute2) { attributable.custom_attributes.create! key: 'bar', value: 'bar' }
 
   describe "GET /#{attributable_name} with custom attributes filter" do
     before do

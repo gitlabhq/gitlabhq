@@ -873,7 +873,6 @@ $mr-widget-min-height: 69px;
   .merge-request-tabs-container,
   .epic-tabs-container {
     flex-direction: column-reverse;
-    padding-top: $gl-padding-8;
   }
 }
 
@@ -883,7 +882,6 @@ $mr-widget-min-height: 69px;
     .epic-tabs-container {
       flex-direction: column-reverse;
       align-items: flex-start;
-      padding-top: $gl-padding-8;
     }
   }
 }

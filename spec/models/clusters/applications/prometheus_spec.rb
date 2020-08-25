@@ -109,10 +109,13 @@ RSpec.describe Clusters::Applications::Prometheus do
         expect(subject.prometheus_client).to be_instance_of(Gitlab::PrometheusClient)
       end
 
-      it 'copies proxy_url, options and headers from kube client to prometheus_client' do
+      it 'merges proxy_url, options and headers from kube client with prometheus_client options' do
         expect(Gitlab::PrometheusClient)
           .to(receive(:new))
-          .with(a_valid_url, kube_client.rest_client.options.merge(headers: kube_client.headers))
+          .with(a_valid_url, kube_client.rest_client.options.merge({
+            headers: kube_client.headers,
+            timeout: PrometheusAdapter::DEFAULT_PROMETHEUS_REQUEST_TIMEOUT_SEC
+          }))
         subject.prometheus_client
       end
 
