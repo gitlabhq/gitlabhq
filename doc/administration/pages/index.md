@@ -622,7 +622,7 @@ For more details see this [blog post](https://about.gitlab.com/blog/2020/08/03/h
 GitLab Pages can use an API-based configuration. This replaces disk source configuration, which
 was used prior to GitLab 13.0. Follow these steps to enable it:
 
-1. Add the following to your `/etc/gitlab/gitlab.erb` file:
+1. Add the following to your `/etc/gitlab/gitlab.rb` file:
 
    ```ruby
    gitlab_pages['domain_config_source'] = "gitlab"

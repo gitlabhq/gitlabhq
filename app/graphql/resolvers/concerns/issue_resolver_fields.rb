@@ -4,6 +4,8 @@ module IssueResolverFields
   extend ActiveSupport::Concern
 
   prepended do
+    include LooksAhead
+
     argument :iid, GraphQL::STRING_TYPE,
               required: false,
               description: 'IID of the issue. For example, "1"'
@@ -49,7 +51,7 @@ module IssueResolverFields
               required: false
   end
 
-  def resolve(**args)
+  def resolve_with_lookahead(**args)
     # The project could have been loaded in batch by `BatchLoader`.
     # At this point we need the `id` of the project to query for issues, so
     # make sure it's loaded and not `nil` before continuing.

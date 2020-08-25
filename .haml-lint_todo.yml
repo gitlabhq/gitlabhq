@@ -117,6 +117,7 @@ linters:
       - "app/views/import/bitbucket_server/status.html.haml"
       - "app/views/invites/show.html.haml"
       - "app/views/layouts/_mailer.html.haml"
+      - "app/views/layouts/experiment_mailer.html.haml"
       - "app/views/layouts/header/_default.html.haml"
       - "app/views/layouts/header/_new_dropdown.haml"
       - "app/views/layouts/notify.html.haml"

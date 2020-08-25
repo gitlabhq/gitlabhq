@@ -146,12 +146,14 @@ module Types
           Types::IssueType.connection_type,
           null: true,
           description: 'Issues of the project',
+          extras: [:lookahead],
           resolver: Resolvers::IssuesResolver
 
     field :issue_status_counts,
           Types::IssueStatusCountsType,
           null: true,
           description: 'Counts of issues by status for the project',
+          extras: [:lookahead],
           resolver: Resolvers::IssueStatusCountsResolver
 
     field :milestones, Types::MilestoneType.connection_type, null: true,

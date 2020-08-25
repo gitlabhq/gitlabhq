@@ -1,0 +1,5 @@
+---
+title: Update gitlab-puma to 4.3.5-gitlab-3
+merge_request: 40389
+author:
+type: changed

@@ -133,7 +133,7 @@ module QA
         Capybara::Screenshot.append_timestamp = false
 
         Capybara::Screenshot.register_filename_prefix_formatter(:rspec) do |example|
-          ::File.join(QA::Runtime::Namespace.name, example.full_description.downcase.parameterize(separator: "_")[0..99])
+          ::File.join(QA::Runtime::Namespace.name(reset_cache: false), example.full_description.downcase.parameterize(separator: "_")[0..99])
         end
 
         Capybara.configure do |config|

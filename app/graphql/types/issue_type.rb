@@ -101,6 +101,11 @@ module Types
     field :type, Types::IssueTypeEnum, null: true,
           method: :issue_type,
           description: 'Type of the issue'
+
+    field :alert_management_alert,
+          Types::AlertManagement::AlertType,
+          null: true,
+          description: 'Alert associated to this issue'
   end
 end
 

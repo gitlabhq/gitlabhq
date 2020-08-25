@@ -7,7 +7,7 @@ module Resolvers
     type Types::IssueStatusCountsType, null: true
 
     def continue_issue_resolve(parent, finder, **args)
-      Gitlab::IssuablesCountForState.new(finder, parent)
+      apply_lookahead(Gitlab::IssuablesCountForState.new(finder, parent))
     end
   end
 end

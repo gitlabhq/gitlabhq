@@ -65,7 +65,7 @@ module QA
       end
     end
 
-    it 'uses templating variables for metrics dashboards' do
+    it 'uses templating variables for metrics dashboards', quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/240984', type: :investigating } do
       templating_dashboard_yml = Pathname
                                      .new(__dir__)
                                      .join('../../../../fixtures/metrics_dashboards/templating.yml')

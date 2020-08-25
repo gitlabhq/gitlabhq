@@ -62,6 +62,9 @@ module Gitlab
       },
       customize_homepage: {
         tracking_category: 'Growth::Expansion::Experiment::CustomizeHomepage'
+      },
+      invite_email: {
+        tracking_category: 'Growth::Acquisition::Experiment::InviteEmail'
       }
     }.freeze
 

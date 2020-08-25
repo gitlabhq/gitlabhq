@@ -26,13 +26,17 @@ module Backup
 
       threads = Gitlab.config.repositories.storages.keys.map do |storage|
         Thread.new do
-          dump_storage(storage, semaphore, max_storage_concurrency: max_storage_concurrency)
-        rescue => e
-          errors << e
+          Rails.application.executor.wrap do
+            dump_storage(storage, semaphore, max_storage_concurrency: max_storage_concurrency)
+          rescue => e
+            errors << e
+          end
         end
       end
 
-      threads.each(&:join)
+      ActiveSupport::Dependencies.interlock.permit_concurrent_loads do
+        threads.each(&:join)
+      end
 
       raise errors.pop unless errors.empty?
     end
@@ -155,16 +159,18 @@ module Backup
 
       threads = Array.new(max_storage_concurrency) do
         Thread.new do
-          while project = queue.pop
-            semaphore.acquire
+          Rails.application.executor.wrap do
+            while project = queue.pop
+              semaphore.acquire
 
-            begin
-              dump_project(project)
-            rescue => e
-              errors << e
-              break
-            ensure
-              semaphore.release
+              begin
+                dump_project(project)
+              rescue => e
+                errors << e
+                break
+              ensure
+                semaphore.release
+              end
             end
           end
         end
@@ -177,7 +183,9 @@ module Backup
       end
 
       queue.close
-      threads.each(&:join)
+      ActiveSupport::Dependencies.interlock.permit_concurrent_loads do
+        threads.each(&:join)
+      end
 
       raise errors.pop unless errors.empty?
     end

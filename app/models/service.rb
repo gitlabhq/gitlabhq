@@ -63,6 +63,7 @@ class Service < ApplicationRecord
   scope :active, -> { where(active: true) }
   scope :by_type, -> (type) { where(type: type) }
   scope :by_active_flag, -> (flag) { where(active: flag) }
+  scope :by_group, -> (group) { where(group_id: group, type: available_services_types) }
   scope :templates, -> { where(template: true, type: available_services_types) }
   scope :instances, -> { where(instance: true, type: available_services_types) }
 
@@ -305,12 +306,18 @@ class Service < ApplicationRecord
     end
   end
 
-  def self.find_or_initialize_instances
-    instances + build_nonexistent_instances
+  def self.find_or_initialize_integration(name, instance: false, group_id: nil)
+    if name.in?(available_services_names)
+      "#{name}_service".camelize.constantize.find_or_initialize_by(instance: instance, group_id: group_id)
+    end
   end
 
-  private_class_method def self.build_nonexistent_instances
-    list_nonexistent_services_for(instances).map do |service_type|
+  def self.find_or_initialize_all(scope)
+    scope + build_nonexistent_services_for(scope)
+  end
+
+  private_class_method def self.build_nonexistent_services_for(scope)
+    list_nonexistent_services_for(scope).map do |service_type|
       service_type.constantize.new
     end
   end

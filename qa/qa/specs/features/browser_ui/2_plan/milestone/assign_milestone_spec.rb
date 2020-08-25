@@ -17,6 +17,7 @@ module QA
       let(:project) do
         Resource::Project.fabricate_via_api! do |project|
           project.name = 'project-to-test-milestones'
+          project.group = group
         end
       end
 

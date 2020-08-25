@@ -3,7 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe Groups::Settings::IntegrationsController do
-  let_it_be(:project) { create(:project) }
   let(:user) { create(:user) }
   let(:group) { create(:group) }
 
@@ -82,7 +81,7 @@ RSpec.describe Groups::Settings::IntegrationsController do
   end
 
   describe '#update' do
-    let(:integration) { create(:jira_service, project: project) }
+    let(:integration) { create(:jira_service, project: nil, group_id: group.id) }
 
     before do
       group.add_owner(user)

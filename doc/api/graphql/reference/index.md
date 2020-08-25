@@ -866,6 +866,7 @@ Relationship between an epic and an issue
 
 | Name  | Type  | Description |
 | ---   |  ---- | ----------  |
+| `alertManagementAlert` | AlertManagementAlert | Alert associated to this issue |
 | `author` | User! | User that created the issue |
 | `blocked` | Boolean! | Indicates the issue is blocked |
 | `closedAt` | Time | Timestamp of when the issue was closed |
@@ -1038,6 +1039,7 @@ Represents a Group Membership
 
 | Name  | Type  | Description |
 | ---   |  ---- | ----------  |
+| `alertManagementAlert` | AlertManagementAlert | Alert associated to this issue |
 | `author` | User! | User that created the issue |
 | `blocked` | Boolean! | Indicates the issue is blocked |
 | `closedAt` | Time | Timestamp of when the issue was closed |

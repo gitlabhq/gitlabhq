@@ -14375,6 +14375,20 @@
           "description": "Relationship between an epic and an issue",
           "fields": [
             {
+              "name": "alertManagementAlert",
+              "description": "Alert associated to this issue",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "AlertManagementAlert",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "assignees",
               "description": "Assignees of the issue",
               "args": [
@@ -18951,6 +18965,20 @@
           "name": "Issue",
           "description": null,
           "fields": [
+            {
+              "name": "alertManagementAlert",
+              "description": "Alert associated to this issue",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "AlertManagementAlert",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
             {
               "name": "assignees",
               "description": "Assignees of the issue",

@@ -3,6 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe Metrics::Dashboard::AnnotationPolicy, :models do
+  let(:policy) { described_class.new(user, annotation) }
+
+  let_it_be(:user) { create(:user) }
+
   shared_examples 'metrics dashboard annotation policy' do
     context 'when guest' do
       before do
@@ -51,23 +55,21 @@ RSpec.describe Metrics::Dashboard::AnnotationPolicy, :models do
 
   describe 'rules' do
     context 'environments annotation' do
-      let(:annotation) { create(:metrics_dashboard_annotation, environment: environment) }
-      let(:environment) { create(:environment) }
-      let!(:project) { environment.project }
-      let(:user) { create(:user) }
-      let(:policy) { described_class.new(user, annotation) }
+      let_it_be(:environment) { create(:environment) }
+      let_it_be(:annotation) { create(:metrics_dashboard_annotation, environment: environment) }
 
-      it_behaves_like 'metrics dashboard annotation policy'
+      it_behaves_like 'metrics dashboard annotation policy' do
+        let(:project) { environment.project }
+      end
     end
 
     context 'cluster annotation' do
-      let(:annotation) { create(:metrics_dashboard_annotation, environment: nil, cluster: cluster) }
-      let(:cluster) { create(:cluster, :project) }
-      let(:project) { cluster.project }
-      let(:user) { create(:user) }
-      let(:policy) { described_class.new(user, annotation) }
+      let_it_be(:cluster) { create(:cluster, :project) }
+      let_it_be(:annotation) { create(:metrics_dashboard_annotation, environment: nil, cluster: cluster) }
 
-      it_behaves_like 'metrics dashboard annotation policy'
+      it_behaves_like 'metrics dashboard annotation policy' do
+        let(:project) { cluster.project }
+      end
     end
   end
 end

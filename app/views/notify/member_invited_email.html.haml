@@ -10,7 +10,7 @@
       #{member_source.model_name.singular} as #{content_tag :span, member.human_access, class: :highlight}.
 
     %p
-      = link_to 'Accept invitation', invite_url(@token)
+      = link_to 'Accept invitation', invite_url(@token, @invite_url_params)
       or
       = link_to 'decline', decline_invite_url(@token)
 

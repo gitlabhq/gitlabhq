@@ -617,6 +617,24 @@ RSpec.describe Member do
     end
   end
 
+  describe "#invite_to_unknown_user?" do
+    subject { member.invite_to_unknown_user? }
+
+    let(:member) { create(:project_member, invite_email: "user@example.com", invite_token: '1234', user: user) }
+
+    context 'when user is nil' do
+      let(:user) { nil }
+
+      it { is_expected.to eq(true) }
+    end
+
+    context 'when user is set' do
+      let(:user) { build(:user) }
+
+      it { is_expected.to eq(false) }
+    end
+  end
+
   describe "destroying a record", :delete do
     it "refreshes user's authorized projects" do
       project = create(:project, :private)

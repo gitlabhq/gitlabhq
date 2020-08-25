@@ -12,11 +12,13 @@ class InvitesController < ApplicationController
   respond_to :html
 
   def show
+    track_experiment('opened')
     accept if skip_invitation_prompt?
   end
 
   def accept
     if member.accept_invite!(current_user)
+      track_experiment('accepted')
       redirect_to invite_details[:path], notice: _("You have been granted %{member_human_access} access to %{title} %{name}.") %
         { member_human_access: member.human_access, title: invite_details[:title], name: invite_details[:name] }
     else
@@ -95,5 +97,18 @@ class InvitesController < ApplicationController
                             path: group_path(@member.source)
                           }
                         end
+  end
+
+  def track_experiment(action)
+    return unless params[:new_user_invite]
+
+    property = params[:new_user_invite] == 'experiment' ? 'experiment_group' : 'control_group'
+
+    Gitlab::Tracking.event(
+      Gitlab::Experimentation::EXPERIMENTS[:invite_email][:tracking_category],
+      action,
+      property: property,
+      value: Digest::MD5.hexdigest(member.to_global_id.to_s)
+    )
   end
 end

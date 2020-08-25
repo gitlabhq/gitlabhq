@@ -5153,6 +5153,11 @@ Relationship between an epic and an issue
 """
 type EpicIssue implements Noteable {
   """
+  Alert associated to this issue
+  """
+  alertManagementAlert: AlertManagementAlert
+
+  """
   Assignees of the issue
   """
   assignees(
@@ -6871,6 +6876,11 @@ enum IssuableState {
 }
 
 type Issue implements Noteable {
+  """
+  Alert associated to this issue
+  """
+  alertManagementAlert: AlertManagementAlert
+
   """
   Assignees of the issue
   """

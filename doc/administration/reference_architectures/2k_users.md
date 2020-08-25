@@ -193,6 +193,9 @@ If you use a cloud-managed service, or provide your own PostgreSQL:
 1. Configure the GitLab application servers with the appropriate details.
    This step is covered in [Configuring the GitLab Rails application](#configure-gitlab-rails).
 
+See [Configure GitLab using an external PostgreSQL service](../postgresql/external.md) for
+further configuration steps.
+
 ### Standalone PostgreSQL using Omnibus GitLab
 
 1. SSH into the PostgreSQL server.
@@ -825,7 +828,7 @@ on the features you intend to use:
 1. [Object storage for packages](../packages/index.md#using-object-storage) (optional feature). **(PREMIUM ONLY)**
 1. [Object storage for Dependency Proxy](../packages/dependency_proxy.md#using-object-storage) (optional feature). **(PREMIUM ONLY)**
 1. [Object storage for Pseudonymizer](../pseudonymizer.md#configuration) (optional feature). **(ULTIMATE ONLY)**
-1. [Object storage for autoscale Runner caching](https://docs.gitlab.com/runner/configuration/autoscale.html#distributed-runners-caching) (optional, for improved performance).
+1. [Object storage for autoscale runner caching](https://docs.gitlab.com/runner/configuration/autoscale.html#distributed-runners-caching) (optional, for improved performance).
 1. [Object storage for Terraform state files](../terraform_state.md#using-object-storage-core-only).
 
 Using separate buckets for each data type is the recommended approach for GitLab.

@@ -436,7 +436,7 @@ GEM
     gitlab-mail_room (0.0.6)
     gitlab-markup (1.7.1)
     gitlab-net-dns (0.9.1)
-    gitlab-puma (4.3.3.gitlab.2)
+    gitlab-puma (4.3.5.gitlab.3)
       nio4r (~> 2.0)
     gitlab-puma_worker_killer (0.1.1.gitlab.1)
       get_process_mem (~> 0.2)

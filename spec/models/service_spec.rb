@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Service do
+  let_it_be(:group) { create(:group) }
+
   describe "Associations" do
     it { is_expected.to belong_to :project }
     it { is_expected.to have_one :service_hook }
@@ -13,7 +15,6 @@ RSpec.describe Service do
   describe 'validations' do
     using RSpec::Parameterized::TableSyntax
 
-    let(:group) { create(:group) }
     let(:project) { create(:project) }
 
     it { is_expected.to validate_presence_of(:type) }
@@ -91,17 +92,12 @@ RSpec.describe Service do
       end
     end
 
-    describe '#operating?' do
-      it 'is false when the service is not active' do
-        expect(build(:service).operating?).to eq(false)
-      end
+    describe '.by_group' do
+      let!(:service1) { create(:jira_service, project_id: nil, group_id: group.id) }
+      let!(:service2) { create(:jira_service) }
 
-      it 'is false when the service is not persisted' do
-        expect(build(:service, active: true).operating?).to eq(false)
-      end
-
-      it 'is true when the service is active and persisted' do
-        expect(create(:service, active: true).operating?).to eq(true)
+      it 'returns the right group service' do
+        expect(described_class.by_group(group)).to match_array([service1])
       end
     end
 
@@ -131,6 +127,20 @@ RSpec.describe Service do
 
         expect(described_class.alert_hooks.count).to eq 0
       end
+    end
+  end
+
+  describe '#operating?' do
+    it 'is false when the service is not active' do
+      expect(build(:service).operating?).to eq(false)
+    end
+
+    it 'is false when the service is not persisted' do
+      expect(build(:service, active: true).operating?).to eq(false)
+    end
+
+    it 'is true when the service is active and persisted' do
+      expect(create(:service, active: true).operating?).to eq(true)
     end
   end
 
@@ -189,14 +199,27 @@ RSpec.describe Service do
     end
   end
 
-  describe '.find_or_initialize_instances' do
+  describe '.find_or_initialize_integration' do
+    let!(:service1) { create(:jira_service, project_id: nil, group_id: group.id) }
+    let!(:service2) { create(:jira_service) }
+
+    it 'returns the right service' do
+      expect(Service.find_or_initialize_integration('jira', group_id: group)).to eq(service1)
+    end
+
+    it 'does not create a new service' do
+      expect { Service.find_or_initialize_integration('redmine', group_id: group) }.not_to change { Service.count }
+    end
+  end
+
+  describe '.find_or_initialize_all' do
     shared_examples 'service instances' do
       it 'returns the available service instances' do
-        expect(Service.find_or_initialize_instances.pluck(:type)).to match_array(Service.available_services_types)
+        expect(Service.find_or_initialize_all(Service.instances).pluck(:type)).to match_array(Service.available_services_types)
       end
 
       it 'does not create service instances' do
-        expect { Service.find_or_initialize_instances }.not_to change { Service.count }
+        expect { Service.find_or_initialize_all(Service.instances) }.not_to change { Service.count }
       end
     end
 
@@ -211,9 +234,9 @@ RSpec.describe Service do
 
       it_behaves_like 'service instances'
 
-      context 'with a previous existing service (Previous) and a new service (Asana)' do
+      context 'with a previous existing service (MockCiService) and a new service (Asana)' do
         before do
-          Service.insert(type: 'PreviousService', instance: true)
+          Service.insert(type: 'MockCiService', instance: true)
           Service.delete_by(type: 'AsanaService', instance: true)
         end
 

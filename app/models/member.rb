@@ -395,6 +395,10 @@ class Member < ApplicationRecord
     end
   end
 
+  def invite_to_unknown_user?
+    invite? && user_id.nil?
+  end
+
   private
 
   def send_invite

@@ -268,6 +268,10 @@ module QA
         ENV['JIRA_HOSTNAME']
       end
 
+      def cache_namespace_name?
+        enabled?(ENV['CACHE_NAMESPACE_NAME'], default: true)
+      end
+
       def knapsack?
         !!(ENV['KNAPSACK_GENERATE_REPORT'] || ENV['KNAPSACK_REPORT_PATH'] || ENV['KNAPSACK_TEST_FILE_PATTERN'])
       end
