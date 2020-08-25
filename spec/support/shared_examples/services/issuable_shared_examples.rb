@@ -19,7 +19,7 @@ RSpec.shared_examples 'system notes for milestones' do
     let(:group_milestone) { create(:milestone, group: group) }
 
     before do
-      project.update(namespace: group)
+      project.update!(namespace: group)
       create(:group_member, group: group, user: user)
     end
 

@@ -49,11 +49,11 @@ describe('AlertManagementTable', () => {
   const findIssueFields = () => wrapper.findAll('[data-testid="issueField"]');
   const findAlertError = () => wrapper.find('[data-testid="alert-error"]');
   const alertsCount = {
-    open: 14,
-    triggered: 10,
-    acknowledged: 6,
-    resolved: 1,
-    all: 16,
+    open: 24,
+    triggered: 20,
+    acknowledged: 16,
+    resolved: 11,
+    all: 26,
   };
   const selectFirstStatusOption = () => {
     findFirstStatusOption().vm.$emit('click');

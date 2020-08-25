@@ -30,9 +30,9 @@ describe('Incidents List', () => {
   const incidentTemplateName = 'incident';
   const incidentType = 'incident';
   const incidentsCount = {
-    opened: 14,
-    closed: 1,
-    all: 16,
+    opened: 24,
+    closed: 10,
+    all: 26,
   };
 
   const findTable = () => wrapper.find(GlTable);

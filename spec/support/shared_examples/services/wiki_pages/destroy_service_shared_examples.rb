@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'WikiPages::DestroyService#execute' do |container_type|
-  let(:container) { create(container_type) }
+  let(:container) { create(container_type) } # rubocop:disable Rails/SaveBang
 
   let(:user) { create(:user) }
   let(:page) { create(:wiki_page) }

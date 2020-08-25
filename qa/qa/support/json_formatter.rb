@@ -35,19 +35,30 @@ module QA
       private
 
       def format_example(example)
+        file_path, line_number = location_including_shared_examples(example.metadata)
+
         {
           id: example.id,
           description: example.description,
           full_description: example.full_description,
           status: example.execution_result.status.to_s,
-          file_path: example.metadata[:file_path],
-          line_number: example.metadata[:line_number],
+          file_path: file_path,
+          line_number: line_number.to_i,
           run_time: example.execution_result.run_time,
           pending_message: example.execution_result.pending_message,
           status_issue: example.metadata[:status_issue],
           quarantine: example.metadata[:quarantine],
           screenshot: example.metadata[:screenshot]
         }
+      end
+
+      def location_including_shared_examples(metadata)
+        if metadata[:shared_group_inclusion_backtrace].empty?
+          [metadata[:file_path], metadata[:line_number]]
+        else
+          # If there are nested shared examples, the outermost location is last in the array
+          metadata[:shared_group_inclusion_backtrace].last.formatted_inclusion_location.split(':')
+        end
       end
     end
   end

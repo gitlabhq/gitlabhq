@@ -34,4 +34,4 @@ export const INCIDENT_STATUS_TABS = [
 ];
 
 export const INCIDENT_SEARCH_DELAY = 300;
-export const DEFAULT_PAGE_SIZE = 10;
+export const DEFAULT_PAGE_SIZE = 20;

@@ -4,6 +4,7 @@ import { mapActions, mapState } from 'vuex';
 import { GlLink, GlDeprecatedButton, GlIcon } from '@gitlab/ui';
 import { __, sprintf } from '~/locale';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
+import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate.vue';
 import { timeIntervalInWords } from '~/lib/utils/datetime_utility';
 import DetailRow from './sidebar_detail_row.vue';
 import ArtifactsBlock from './artifacts_block.vue';
@@ -24,6 +25,7 @@ export default {
     JobsContainer,
     GlLink,
     GlDeprecatedButton,
+    TooltipOnTruncate,
   },
   mixins: [timeagoMixin],
   props: {
@@ -111,7 +113,11 @@ export default {
     <div class="sidebar-container">
       <div class="blocks-container">
         <div class="block d-flex flex-nowrap align-items-center">
-          <h4 class="my-0 mr-2 text-break-word">{{ job.name }}</h4>
+          <tooltip-on-truncate :title="job.name" truncate-target="child"
+            ><h4 class="my-0 mr-2 gl-text-truncate">
+              {{ job.name }}
+            </h4>
+          </tooltip-on-truncate>
           <div class="flex-grow-1 flex-shrink-0 text-right">
             <gl-link
               v-if="job.retry_path"

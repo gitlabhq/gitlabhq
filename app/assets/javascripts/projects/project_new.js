@@ -1,13 +1,18 @@
 import $ from 'jquery';
 import DEFAULT_PROJECT_TEMPLATES from 'ee_else_ce/projects/default_project_templates';
 import { addSelectOnFocusBehaviour } from '../lib/utils/common_utils';
-import { convertToTitleCase, humanize, slugify } from '../lib/utils/text_utility';
+import {
+  convertToTitleCase,
+  humanize,
+  slugify,
+  convertUnicodeToAscii,
+} from '../lib/utils/text_utility';
 
 let hasUserDefinedProjectPath = false;
 let hasUserDefinedProjectName = false;
 
 const onProjectNameChange = ($projectNameInput, $projectPathInput) => {
-  const slug = slugify($projectNameInput.val());
+  const slug = slugify(convertUnicodeToAscii($projectNameInput.val()));
   $projectPathInput.val(slug);
 };
 

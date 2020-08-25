@@ -321,80 +321,56 @@ it('tests a promise', async () => {
 });
 
 it('tests a promise rejection', async () => {
-  expect.assertions(1);
-  try {
-    await user.getUserName(1);
-  } catch (e) {
-    expect(e).toEqual({
-      error: 'User with 1 not found.',
-    });
-  }
+  await expect(user.getUserName(1)).rejects.toThrow('User with 1 not found.');
 });
 ```
 
-You can also work with Promise chains. In this case, you can make use of the `done` callback and `done.fail` in case an error occurred. Following are some examples:
+You can also simply return a promise from the test function.
+
+NOTE: **Note:**
+Using the `done` and `done.fail` callbacks is discouraged when working with
+promises. They should only be used when testing callback-based code.
 
 **Bad**:
 
 ```javascript
-// missing done callback
+// missing return
 it('tests a promise', () => {
   promise.then(data => {
     expect(data).toBe(asExpected);
   });
 });
 
-// missing catch
-it('tests a promise', done => {
-  promise
-    .then(data => {
-      expect(data).toBe(asExpected);
-    })
-    .then(done);
-});
-
-// use done.fail in asynchronous tests
+// uses done/done.fail
 it('tests a promise', done => {
   promise
     .then(data => {
       expect(data).toBe(asExpected);
     })
     .then(done)
-    .catch(fail);
-});
-
-// missing catch
-it('tests a promise rejection', done => {
-  promise
-    .catch(error => {
-      expect(error).toBe(expectedError);
-    })
-    .then(done);
+    .catch(done.fail);
 });
 ```
 
 **Good**:
 
 ```javascript
-// handling success
-it('tests a promise', done => {
-  promise
+// verifying a resolved promise
+it('tests a promise', () => {
+  return promise
     .then(data => {
       expect(data).toBe(asExpected);
-    })
-    .then(done)
-    .catch(done.fail);
+    });
 });
 
-// failure case
-it('tests a promise rejection', done => {
-  promise
-    .then(done.fail)
-    .catch(error => {
-      expect(error).toBe(expectedError);
-    })
-    .then(done)
-    .catch(done.fail);
+// verifying a resolved promise using Jest's `resolves` matcher
+it('tests a promise', () => {
+  return expect(promise).resolves.toBe(asExpected);
+});
+
+// verifying a rejected promise using Jest's `rejects` matcher
+it('tests a promise rejection', () => {
+  return expect(promise).rejects.toThrow(expectedError);
 });
 ```
 
