@@ -48,3 +48,14 @@ no_ee_check:
   stage: test
   script:
     - scripts/no-ee-check
+
+verify-tests-yml:
+  extends:
+    - .setup:rules:verify-tests-yml
+  image: ruby:2.6-alpine
+  stage: test
+  needs: []
+  script:
+    - source scripts/utils.sh
+    - install_tff_gem
+    - scripts/verify-tff-mapping

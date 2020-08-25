@@ -149,6 +149,7 @@
   - "*_VERSION"
   - "Gemfile{,.lock}"
   - "Rakefile"
+  - "tests.yml"
   - "config.ru"
   - "{,ee/}{app,bin,config,db,haml_lint,lib,locale,public,scripts,symbol,vendor}/**/*"
   - "doc/api/graphql/reference/*"  # Files in this folder are auto-generated
@@ -170,6 +171,7 @@
   - "*_VERSION"
   - "Gemfile{,.lock}"
   - "Rakefile"
+  - "tests.yml"
   - "config.ru"
   - "{,ee/}{app,bin,config,db,haml_lint,lib,locale,public,scripts,symbol,vendor}/**/*"
   - "doc/api/graphql/reference/*"  # Files in this folder are auto-generated
@@ -193,6 +195,7 @@
   - "*_VERSION"
   - "Gemfile{,.lock}"
   - "Rakefile"
+  - "tests.yml"
   - "config.ru"
   - "{,ee/}{app,bin,config,db,haml_lint,lib,locale,public,scripts,symbol,vendor}/**/*"
   - "doc/api/graphql/reference/*"  # Files in this folder are auto-generated
@@ -213,6 +216,7 @@
   - "*_VERSION"
   - "Gemfile{,.lock}"
   - "Rakefile"
+  - "tests.yml"
   - "config.ru"
   - "{,ee/}{app,bin,config,db,haml_lint,lib,locale,public,scripts,symbol,vendor}/**/*"
   - "doc/api/graphql/reference/*"  # Files in this folder are auto-generated
@@ -758,6 +762,12 @@
   rules:
     - <<: *if-not-foss
       when: never
+    - <<: *if-default-refs
+      changes: *code-backstage-patterns
+      when: on_success
+
+.setup:rules:verify-tests-yml:
+  rules:
     - <<: *if-default-refs
       changes: *code-backstage-patterns
       when: on_success

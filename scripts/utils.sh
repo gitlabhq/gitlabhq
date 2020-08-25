@@ -35,6 +35,10 @@ function install_gitlab_gem() {
   gem install gitlab --no-document --version 4.13.0
 }
 
+function install_tff_gem() {
+  gem install test_file_finder --version 0.1.0
+}
+
 function run_timed_command() {
   local cmd="${1}"
   local start=$(date +%s)

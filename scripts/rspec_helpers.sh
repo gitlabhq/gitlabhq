@@ -111,7 +111,7 @@ function rspec_paralellized_job() {
   date
 }
 
-function rspec_matched_tests() {
+function rspec_matched_foss_tests() {
   local test_file_count_threshold=20
   local matching_tests_file=${1}
   local rspec_opts=${2}
@@ -131,6 +131,6 @@ function rspec_matched_tests() {
   if [[ -n $test_files ]]; then
     rspec_simple_job "${rspec_opts} ${test_files}"
   else
-    echo "No test files to run"
+    echo "No FOSS test files to run"
   fi
 }

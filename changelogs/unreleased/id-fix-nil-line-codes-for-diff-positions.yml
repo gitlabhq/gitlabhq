@@ -1,0 +1,5 @@
+---
+title: Avoid creating diff position when line-code is nil
+merge_request: 40089
+author:
+type: fixed

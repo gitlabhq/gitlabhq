@@ -3328,6 +3328,9 @@ msgstr ""
 msgid "As U2F devices are only supported by a few browsers, we require that you set up a two-factor authentication app before a U2F device. That way you'll always be able to log in - even when you're using an unsupported browser."
 msgstr ""
 
+msgid "As we continue to build more features for SAST, we'd love your feedback on the SAST configuration feature in %{linkStart}this issue%{linkEnd}."
+msgstr ""
+
 msgid "AsanaService|%{user} pushed to branch %{branch} of %{project_name} ( %{commit_url} ):"
 msgstr ""
 
@@ -14283,6 +14286,9 @@ msgstr ""
 msgid "License ID:"
 msgstr ""
 
+msgid "License overview"
+msgstr ""
+
 msgid "License-Check"
 msgstr ""
 
@@ -14407,6 +14413,9 @@ msgid "Licensed Features"
 msgstr ""
 
 msgid "Licensed to"
+msgstr ""
+
+msgid "Licensed to:"
 msgstr ""
 
 msgid "Licenses"
@@ -26977,6 +26986,9 @@ msgid "Users requesting access to %{strong_start}%{group_name}%{strong_end}"
 msgstr ""
 
 msgid "Users were successfully added."
+msgstr ""
+
+msgid "Users with a Guest role or those who don't belong to a Project or Group will not use a seat from your license."
 msgstr ""
 
 msgid "Users with a Guest role or those who don't belong to any projects or groups don't count towards seats in use."

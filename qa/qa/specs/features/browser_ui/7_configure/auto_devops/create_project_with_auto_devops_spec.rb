@@ -23,7 +23,7 @@ module QA
           cluster&.remove!
         end
 
-        it 'runs auto devops' do
+        it 'runs auto devops', status_issue: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/702' do
           Flow::Login.sign_in
 
           # Set an application secret CI variable (prefixed with K8S_SECRET_)
@@ -116,7 +116,7 @@ module QA
         end
       end
 
-      it 'runs an AutoDevOps pipeline' do
+      it 'runs an AutoDevOps pipeline', status_issue: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/444' do
         Page::Project::Menu.perform(&:click_ci_cd_pipelines)
         Page::Project::Pipeline::Index.perform(&:click_on_latest_pipeline)
 

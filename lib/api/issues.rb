@@ -114,6 +114,19 @@ module API
 
         present issues, options
       end
+
+      desc "Get specified issue (admin only)" do
+        success Entities::Issue
+      end
+      params do
+        requires :id, type: String, desc: 'The ID of the Issue'
+      end
+      get ":id" do
+        authenticated_as_admin!
+        issue = Issue.find(params['id'])
+
+        present issue, with: Entities::Issue, current_user: current_user, project: issue.project
+      end
     end
 
     params do

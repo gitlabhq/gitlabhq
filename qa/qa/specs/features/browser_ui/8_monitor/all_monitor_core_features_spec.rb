@@ -10,13 +10,13 @@ module QA
       @project.visit!
     end
 
-    it 'configures custom metrics' do
+    it 'configures custom metrics', status_issue: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/872' do
       verify_add_custom_metric
       verify_edit_custom_metric
       verify_delete_custom_metric
     end
 
-    it 'duplicates to create dashboard to custom' do
+    it 'duplicates to create dashboard to custom', status_issue: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/871' do
       Page::Project::Menu.perform(&:go_to_operations_metrics)
 
       Page::Project::Operations::Metrics::Show.perform do |on_dashboard|
@@ -27,7 +27,7 @@ module QA
       end
     end
 
-    it 'verifies data on filtered deployed environment' do
+    it 'verifies data on filtered deployed environment', status_issue: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/874' do
       Page::Project::Menu.perform(&:go_to_operations_metrics)
 
       Page::Project::Operations::Metrics::Show.perform do |on_dashboard|
@@ -37,7 +37,7 @@ module QA
       end
     end
 
-    it 'filters using the quick range' do
+    it 'filters using the quick range', status_issue: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/873' do
       Page::Project::Menu.perform(&:go_to_operations_metrics)
 
       Page::Project::Operations::Metrics::Show.perform do |on_dashboard|
@@ -52,7 +52,7 @@ module QA
       end
     end
 
-    it 'observes cluster health graph' do
+    it 'observes cluster health graph', status_issue: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/920' do
       Page::Project::Menu.perform(&:go_to_operations_kubernetes)
 
       Page::Project::Operations::Kubernetes::Index.perform do |cluster_list|

@@ -171,6 +171,7 @@ module Gitlab
         %r{\A(ee/)?scripts/} => :engineering_productivity,
         %r{\Atooling/} => :engineering_productivity,
         %r{(CODEOWNERS)} => :engineering_productivity,
+        %r{(tests.yml)} => :engineering_productivity,
 
         %r{\A(ee/)?spec/features/} => :test,
         %r{\A(ee/)?spec/support/shared_examples/features/} => :test,

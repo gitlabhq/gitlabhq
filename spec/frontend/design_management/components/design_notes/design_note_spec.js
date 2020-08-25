@@ -15,6 +15,7 @@ const note = {
   userPermissions: {
     adminNote: false,
   },
+  createdAt: '2019-07-26T15:02:20Z',
 };
 HTMLElement.prototype.scrollIntoView = scrollIntoViewMock;
 
@@ -79,10 +80,7 @@ describe('Design note component', () => {
 
   it('should render a time ago tooltip if note has createdAt property', () => {
     createComponent({
-      note: {
-        ...note,
-        createdAt: '2019-07-26T15:02:20Z',
-      },
+      note,
     });
 
     expect(wrapper.find(TimeAgoTooltip).exists()).toBe(true);

@@ -165,12 +165,15 @@
 /.gitlab/ci/ @gl-quality/eng-prod
 /.gitlab/ci/docs.gitlab-ci.yml @gl-quality/eng-prod @gl-docsteam
 /.gitlab/ci/releases.gitlab-ci.yml @gl-quality/eng-prod @gitlab-org/delivery
+/.gitlab/ci/dast.gitlab-ci.yml @dappelt @ngeorge1 @gl-quality/eng-prod
+/.gitlab/ci/reports.gitlab-ci.yml @gitlab-com/gl-security/appsec @gl-quality/eng-prod
 /.gitlab/CODEOWNERS @gl-quality/eng-prod
 Dangerfile @gl-quality/eng-prod
 /danger/ @gl-quality/eng-prod
 /lib/gitlab/danger/ @gl-quality/eng-prod
 /scripts/ @gl-quality/eng-prod
 /scripts/frontend/ @gl-quality/eng-prod @gitlab-org/maintainers/frontend
+/scripts/review_apps/seed-dast-test-data.sh @dappelt @ngeorge1 @gl-quality/eng-prod
 .editorconfig @gl-quality/eng-prod
 
 [End-to-end]

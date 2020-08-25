@@ -46,7 +46,16 @@ exports[`Design note component should match the snapshot 1`] = `
           class="system-note-message"
         />
          
-        <!---->
+        <a
+          class="note-timestamp system-note-separator gl-display-block gl-mb-2"
+          href="#note_123"
+        >
+          <time-ago-tooltip-stub
+            cssclass=""
+            time="2019-07-26T15:02:20Z"
+            tooltipplacement="bottom"
+          />
+        </a>
       </span>
     </div>
      
