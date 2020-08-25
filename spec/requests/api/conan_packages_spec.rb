@@ -268,7 +268,7 @@ RSpec.describe API::ConanPackages do
       it 'returns not found' do
         allow(::Packages::Conan::PackagePresenter).to receive(:new)
           .with(
-            'aa/bb@%{project}/ccc' % { project: ::Packages::Conan::Metadatum.package_username_from(full_path: project.full_path) },
+            nil,
             user,
             project,
             any_args
@@ -280,6 +280,21 @@ RSpec.describe API::ConanPackages do
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(response.body).to eq("{}")
+      end
+    end
+  end
+
+  shared_examples 'not selecting a package with the wrong type' do
+    context 'with a nuget package with same name and version' do
+      let(:conan_username) { ::Packages::Conan::Metadatum.package_username_from(full_path: project.full_path) }
+      let(:wrong_package) { create(:nuget_package, name: "wrong", version: '1.0.0', project: project) }
+      let(:recipe_path) { "#{wrong_package.name}/#{wrong_package.version}/#{conan_username}/foo" }
+
+      it 'calls the presenter with a nil package' do
+        expect(::Packages::Conan::PackagePresenter).to receive(:new)
+          .with(nil, user, project, any_args)
+
+        subject
       end
     end
   end
@@ -299,6 +314,8 @@ RSpec.describe API::ConanPackages do
 
       expect(json_response).to eq(expected_response)
     end
+
+    it_behaves_like 'not selecting a package with the wrong type'
   end
 
   shared_examples 'package download_urls' do
@@ -317,6 +334,8 @@ RSpec.describe API::ConanPackages do
 
       expect(json_response).to eq(expected_response)
     end
+
+    it_behaves_like 'not selecting a package with the wrong type'
   end
 
   context 'recipe endpoints' do
@@ -327,7 +346,7 @@ RSpec.describe API::ConanPackages do
 
     before do
       allow(::Packages::Conan::PackagePresenter).to receive(:new)
-        .with(package.conan_recipe, user, package.project, any_args)
+        .with(package, user, package.project, any_args)
         .and_return(presenter)
     end
 

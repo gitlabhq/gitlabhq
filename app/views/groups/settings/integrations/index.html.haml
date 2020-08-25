@@ -5,5 +5,5 @@
 %h4= s_('GroupSettings|Apply integration settings to all Projects')
 %p
   = s_('GroupSettings|Integrations configured here will automatically apply to all projects in this group.')
-  = link_to _('Learn more'), '#'
+  = link_to _('Learn more'), integrations_help_page_path, target: '_blank', rel: 'noopener noreferrer'
 = render 'shared/integrations/index', integrations: @integrations

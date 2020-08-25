@@ -98,6 +98,7 @@ export default {
       :loading="loading"
       :icon="buttonIcon"
       :disabled="isDeleting || !hasSelectedDesigns"
-    />
+      ><slot></slot
+    ></gl-button>
   </div>
 </template>

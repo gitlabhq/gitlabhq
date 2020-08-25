@@ -119,10 +119,10 @@ RSpec.shared_context 'group navbar structure' do
       nav_item: _('Settings'),
       nav_sub_items: [
         _('General'),
+        _('Integrations'),
         _('Projects'),
         _('Repository'),
         _('CI / CD'),
-        _('Integrations'),
         _('Webhooks'),
         _('Audit Events')
       ]

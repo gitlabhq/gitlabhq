@@ -42,6 +42,7 @@ export default {
       v-if="adminState !== null"
       :inherit-from-id="adminState.id"
       :override="override"
+      :learn-more-path="propsSource.learnMorePath"
       @change="setOverride"
     />
     <active-checkbox v-if="propsSource.showActive" :key="`${currentKey}-active-checkbox`" />

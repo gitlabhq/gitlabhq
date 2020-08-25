@@ -109,10 +109,6 @@ module QA
       autoload :WikiPush, 'qa/resource/repository/wiki_push'
     end
 
-    module Settings
-      autoload :HashedStorage, 'qa/resource/settings/hashed_storage'
-    end
-
     module Wiki
       autoload :ProjectPage, 'qa/resource/wiki/project_page'
     end
@@ -419,7 +415,6 @@ module QA
       autoload :NewSession, 'qa/page/admin/new_session'
 
       module Settings
-        autoload :Repository, 'qa/page/admin/settings/repository'
         autoload :General, 'qa/page/admin/settings/general'
         autoload :MetricsAndProfiling, 'qa/page/admin/settings/metrics_and_profiling'
         autoload :Network, 'qa/page/admin/settings/network'
@@ -427,7 +422,6 @@ module QA
         module Component
           autoload :IpLimits, 'qa/page/admin/settings/component/ip_limits'
           autoload :OutboundRequests, 'qa/page/admin/settings/component/outbound_requests'
-          autoload :RepositoryStorage, 'qa/page/admin/settings/component/repository_storage'
           autoload :AccountAndLimit, 'qa/page/admin/settings/component/account_and_limit'
           autoload :PerformanceBar, 'qa/page/admin/settings/component/performance_bar'
         end

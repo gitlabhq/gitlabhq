@@ -92,6 +92,7 @@ module ServicesHelper
       commit_events: integration.commit_events.to_s,
       enable_comments: integration.comment_on_event_enabled.to_s,
       comment_detail: integration.comment_detail,
+      learn_more_path: integrations_help_page_path,
       trigger_events: trigger_events_for_service(integration),
       fields: fields_for_service(integration),
       inherit_from_id: integration.inherit_from_id
@@ -106,8 +107,16 @@ module ServicesHelper
     ServiceFieldSerializer.new(service: integration).represent(integration.global_fields).to_json
   end
 
+  def integrations_help_page_path
+    help_page_path('user/admin_area/settings/project_integration_management')
+  end
+
   def project_jira_issues_integration?
     false
+  end
+
+  def group_level_integrations?
+    @group.present? && Feature.enabled?(:group_level_integrations, @group)
   end
 
   extend self

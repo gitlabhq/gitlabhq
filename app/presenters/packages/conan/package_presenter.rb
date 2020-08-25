@@ -8,8 +8,8 @@ module Packages
 
       attr_reader :params
 
-      def initialize(recipe, user, project, params = {})
-        @recipe = recipe
+      def initialize(package, user, project, params = {})
+        @package = package
         @user = user
         @project = project
         @params = params
@@ -48,10 +48,10 @@ module Packages
       def build_recipe_file_url(package_file)
         expose_url(
           api_v4_packages_conan_v1_files_export_path(
-            package_name: package.name,
-            package_version: package.version,
-            package_username: package.conan_metadatum.package_username,
-            package_channel: package.conan_metadatum.package_channel,
+            package_name: @package.name,
+            package_version: @package.version,
+            package_username: @package.conan_metadatum.package_username,
+            package_channel: @package.conan_metadatum.package_channel,
             recipe_revision: package_file.conan_file_metadatum.recipe_revision,
             file_name: package_file.file_name
           )
@@ -61,10 +61,10 @@ module Packages
       def build_package_file_url(package_file)
         expose_url(
           api_v4_packages_conan_v1_files_package_path(
-            package_name: package.name,
-            package_version: package.version,
-            package_username: package.conan_metadatum.package_username,
-            package_channel: package.conan_metadatum.package_channel,
+            package_name: @package.name,
+            package_version: @package.version,
+            package_username: @package.conan_metadatum.package_username,
+            package_channel: @package.conan_metadatum.package_channel,
             recipe_revision: package_file.conan_file_metadatum.recipe_revision,
             conan_package_reference: package_file.conan_file_metadatum.conan_package_reference,
             package_revision: package_file.conan_file_metadatum.package_revision,
@@ -84,22 +84,9 @@ module Packages
       end
 
       def package_files
-        return unless package
+        return unless @package
 
-        @package_files ||= package.package_files.preload_conan_file_metadata
-      end
-
-      def package
-        strong_memoize(:package) do
-          name, version = @recipe.split('@')[0].split('/')
-
-          @project.packages
-                  .conan
-                  .with_name(name)
-                  .with_version(version)
-                  .order_created
-                  .last
-        end
+        @package_files ||= @package.package_files.preload_conan_file_metadata
       end
 
       def matching_reference?(package_file)
