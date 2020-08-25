@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
-import { GlDeprecatedButton, GlIcon } from '@gitlab/ui';
+import { GlButton, GlIcon } from '@gitlab/ui';
 import eventHub from '~/environments/event_hub';
 import PinComponent from '~/environments/components/environment_pin.vue';
 
@@ -36,7 +36,7 @@ describe('Pin Component', () => {
 
   it('should emit onPinClick when clicked', () => {
     const eventHubSpy = jest.spyOn(eventHub, '$emit');
-    const button = wrapper.find(GlDeprecatedButton);
+    const button = wrapper.find(GlButton);
 
     button.vm.$emit('click');
 

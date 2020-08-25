@@ -1,7 +1,7 @@
 # End-to-end testing Best Practices
 
 NOTE: **Note:**
-This is an tailored extension of the Best Practices [found in the testing guide](../best_practices.md).
+This is a tailored extension of the Best Practices [found in the testing guide](../best_practices.md).
 
 ## Prefer API over UI
 
@@ -166,3 +166,26 @@ end
 NOTE: **Note:**
 A few exceptions for using a `ProjectPush` would be when your test calls for testing SSH integration or
 using the Git CLI.
+
+## Preferred method to blur elements
+
+To blur an element, the preferred method is to click another element that does not alter the test state.
+If there's a mask that blocks the page elements, such as may occur with some dropdowns,
+use WebDriver's native mouse events to simulate a click event on the coordinates of an element. Use the following method: `click_element_coordinates`.
+
+Avoid clicking the `body` for blurring elements such as inputs and dropdowns because it clicks the center of the viewport.
+This action can also unintentionally click other elements, altering the test state and causing it to fail.
+
+```ruby
+# Clicking another element to blur an input
+def add_issue_to_epic(issue_url)
+  find_element(:issue_actions_split_button).find('button', text: 'Add an issue').click
+  fill_element :add_issue_input, issue_url
+  # Clicking the title blurs the input
+  click_element :title
+  click_element :add_issue_button
+end
+
+# Using native mouse click events in the case of a mask/overlay
+click_element_coordinates(:title)
+```

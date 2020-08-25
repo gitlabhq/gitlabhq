@@ -3,14 +3,14 @@
  * Renders a prevent auto-stop button.
  * Used in environments table.
  */
-import { GlDeprecatedButton, GlTooltipDirective, GlIcon } from '@gitlab/ui';
+import { GlButton, GlTooltipDirective, GlIcon } from '@gitlab/ui';
 import { __ } from '~/locale';
 import eventHub from '../event_hub';
 
 export default {
   components: {
     GlIcon,
-    GlDeprecatedButton,
+    GlButton,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -30,12 +30,7 @@ export default {
 };
 </script>
 <template>
-  <gl-deprecated-button
-    v-gl-tooltip
-    :title="$options.title"
-    :aria-label="$options.title"
-    @click="onPinClick"
-  >
+  <gl-button v-gl-tooltip :title="$options.title" :aria-label="$options.title" @click="onPinClick">
     <gl-icon name="thumbtack" />
-  </gl-deprecated-button>
+  </gl-button>
 </template>

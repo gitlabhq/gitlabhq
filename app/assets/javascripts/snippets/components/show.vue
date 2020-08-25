@@ -1,6 +1,6 @@
 <script>
 import { GlLoadingIcon } from '@gitlab/ui';
-import BlobEmbeddable from '~/blob/components/blob_embeddable.vue';
+import EmbedDropdown from './embed_dropdown.vue';
 import SnippetHeader from './snippet_header.vue';
 import SnippetTitle from './snippet_title.vue';
 import SnippetBlob from './snippet_blob_view.vue';
@@ -13,7 +13,7 @@ import { SNIPPET_MARK_VIEW_APP_START } from '~/performance_constants';
 
 export default {
   components: {
-    BlobEmbeddable,
+    EmbedDropdown,
     SnippetHeader,
     SnippetTitle,
     GlLoadingIcon,
@@ -46,7 +46,7 @@ export default {
       <snippet-header :snippet="snippet" />
       <snippet-title :snippet="snippet" />
       <div class="gl-display-flex gl-justify-content-end gl-mb-5">
-        <blob-embeddable v-if="embeddable" class="gl-flex-fill-1" :url="snippet.webUrl" />
+        <embed-dropdown v-if="embeddable" :url="snippet.webUrl" />
         <clone-dropdown-button
           v-if="canBeCloned"
           class="gl-ml-3"

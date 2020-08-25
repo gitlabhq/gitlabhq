@@ -1104,3 +1104,28 @@ header.header-content .dropdown-menu.frequent-items-dropdown-menu {
     }
   }
 }
+
+// This class won't be needed once we can directly add utility classes to the child
+// https://github.com/bootstrap-vue/bootstrap-vue/issues/5669
+.gl-dropdown-text-py-0 {
+  .b-dropdown-text {
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+}
+
+// This class won't be needed once we can directly add utility classes to the child
+// https://github.com/bootstrap-vue/bootstrap-vue/issues/5669
+.gl-dropdown-text-block {
+  .b-dropdown-text {
+    display: block;
+  }
+}
+
+// This class won't be needed once we can add a prop for this in the GitLab UI component
+// https://gitlab.com/gitlab-org/gitlab-ui/-/issues/966
+.gl-new-dropdown {
+  .gl-dropdown-menu-wide {
+    width: $gl-dropdown-width-wide;
+  }
+}

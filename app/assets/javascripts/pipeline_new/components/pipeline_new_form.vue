@@ -15,7 +15,7 @@ import {
   GlSprintf,
 } from '@gitlab/ui';
 import { s__, __ } from '~/locale';
-import Api from '~/api';
+import axios from '~/lib/utils/axios_utils';
 import { redirectTo } from '~/lib/utils/url_utility';
 import { VARIABLE_TYPE, FILE_TYPE } from '../constants';
 
@@ -145,13 +145,17 @@ export default {
         ({ key, value }) => key !== '' && value !== '',
       );
 
-      return Api.createPipeline(this.projectId, {
-        ref: this.refValue,
-        variables: filteredVariables,
-      })
-        .then(({ data }) => redirectTo(data.web_url))
+      return axios
+        .post(this.pipelinesPath, {
+          ref: this.refValue,
+          variables: filteredVariables,
+        })
+        .then(({ data }) => {
+          redirectTo(`${this.pipelinesPath}/${data.id}`);
+        })
         .catch(err => {
-          this.error = err.response.data.message.base;
+          const [message] = err.response.data.base;
+          this.error = message;
         });
     },
   },

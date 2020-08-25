@@ -14,7 +14,7 @@ module QA
         end
       end
 
-      it 'imports issues from Jira' do
+      it 'imports issues from Jira', status_issue: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/896' do
         set_up_jira_integration
         import_jira_issues
 

@@ -1,4 +1,8 @@
-<!-- The first four sections: "Problem to solve", "Intended users", "User experience goal", and "Proposal", are strongly recommended, while the rest of the sections can be filled out during the problem validation or breakdown phase. However, keep in mind that providing complete and relevant information early helps our product team validate the problem and start working on a solution. -->
+<!-- The first section "Release notes" is required if you want to have your release post blog MR auto generated. Currently piloting, details can be found in this issue: https://gitlab.com/gitlab-com/Product/-/issues/1392 and this video: https://www.youtube.com/watch?v=rfn9ebgTwKg The next four sections: "Problem to solve", "Intended users", "User experience goal", and "Proposal", are strongly recommended in your first draft, while the rest of the sections can be filled out during the problem validation or breakdown phase. However, keep in mind that providing complete and relevant information early helps our product team validate the problem and start working on a solution. -->
+
+### Release notes 
+
+<!-- What is the problem and solution you're proposing? This content sets the overall vision for the feature and serves as the release notes that will populate in various places, including the [release post blog](https://about.gitlab.com/releases/categories/releases/) and [Gitlab project releases](https://gitlab.com/gitlab-org/gitlab/-/releases). " -->
 
 ### Problem to solve
 
