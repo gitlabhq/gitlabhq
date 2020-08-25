@@ -84,7 +84,7 @@ RSpec.describe Packages::Package, type: :model do
   end
 
   describe 'validations' do
-    subject { create(:package) }
+    subject { build(:package) }
 
     it { is_expected.to validate_presence_of(:project) }
     it { is_expected.to validate_uniqueness_of(:name).scoped_to(:project_id, :version, :package_type) }
@@ -95,7 +95,7 @@ RSpec.describe Packages::Package, type: :model do
       it { is_expected.not_to allow_value("my(dom$$$ain)com.my-app").for(:name) }
 
       context 'conan package' do
-        subject { create(:conan_package) }
+        subject { build_stubbed(:conan_package) }
 
         let(:fifty_one_characters) {'f_b' * 17}
 
@@ -112,7 +112,7 @@ RSpec.describe Packages::Package, type: :model do
     describe '#version' do
       RSpec.shared_examples 'validating version to be SemVer compliant for' do |factory_name|
         context "for #{factory_name}" do
-          subject { create(factory_name) }
+          subject { build_stubbed(factory_name) }
 
           it { is_expected.to allow_value('1.2.3').for(:version) }
           it { is_expected.to allow_value('1.2.3-beta').for(:version) }
@@ -126,7 +126,7 @@ RSpec.describe Packages::Package, type: :model do
       end
 
       context 'conan package' do
-        subject { create(:conan_package) }
+        subject { build_stubbed(:conan_package) }
 
         let(:fifty_one_characters) {'1.2' * 17}
 
@@ -142,7 +142,7 @@ RSpec.describe Packages::Package, type: :model do
       end
 
       context 'maven package' do
-        subject { create(:maven_package) }
+        subject { build_stubbed(:maven_package) }
 
         it { is_expected.to allow_value('0').for(:version) }
         it { is_expected.to allow_value('1').for(:version) }

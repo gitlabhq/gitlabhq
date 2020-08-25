@@ -127,6 +127,7 @@
   - "{,ee/}{,spec/}{db,migrations}/**/*"
   - "{,ee/}{,spec/}lib/{,ee/}gitlab/background_migration/**/*"
   - "config/prometheus/common_metrics.yml" # Used by Gitlab::DatabaseImporters::CommonMetrics::Importer
+  - "{,ee/}app/models/project_statistics.rb" # Used to calculate sizes in migration specs
 
 .backstage-patterns: &backstage-patterns
   - "Dangerfile"

@@ -76,6 +76,10 @@ export default class MilestoneSelect {
           let getMilestones = Api.projectMilestones;
           const reqParams = { state: 'active', include_parent_milestones: true };
 
+          if (term) {
+            reqParams.search = term.trim();
+          }
+
           if (!contextId) {
             contextId = $dropdown.get(0).dataset.groupId;
             delete reqParams.include_parent_milestones;
@@ -162,6 +166,7 @@ export default class MilestoneSelect {
         `;
         },
         filterable: true,
+        filterRemote: true,
         search: {
           fields: ['title'],
         },
