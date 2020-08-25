@@ -2,6 +2,14 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 13.3.1 (2020-08-25)
+
+### Fixed (2 changes)
+
+- Fix bug when promoting an Issue with attachments to an Epic. !39654
+- Avoid creating diff position when line-code is nil. !40089
+
+
 ## 13.3.0 (2020-08-22)
 
 ### Security (2 changes)
