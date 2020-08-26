@@ -153,7 +153,7 @@ always take the latest SAST artifact available.
 For a project that does not have a `.gitlab-ci.yml` file, you can enable SAST with a basic
 configuration using the **SAST Configuration** page:
 
-1. From the project's home page, go to **Security & Configuration** > **Configuration** in the
+1. From the project's home page, go to **Security & Compliance** > **Configuration** in the
    left sidebar.
 1. Click **Enable via Merge Request** on the Static Application Security Testing (SAST) row.
 1. Enter the appropriate SAST details into the fields on the page. See [Available variables](#available-variables)

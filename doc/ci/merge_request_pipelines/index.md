@@ -13,7 +13,7 @@ last_update: 2019-07-03
 In a [basic configuration](../pipelines/pipeline_architectures.md#basic-pipelines), GitLab runs a pipeline each time
 changes are pushed to a branch.
 
-If you want the pipeline to run jobs **only** when merge requests are created or updated,
+If you want the pipeline to run jobs **only** on commits to a branch that is associated with a merge request,
 you can use *pipelines for merge requests*.
 
 In the UI, these pipelines are labeled as `detached`. Otherwise, these pipelines appear the same

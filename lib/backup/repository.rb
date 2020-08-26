@@ -182,12 +182,12 @@ module Backup
         queue.push(project)
       end
 
+      raise errors.pop unless errors.empty?
+    ensure
       queue.close
       ActiveSupport::Dependencies.interlock.permit_concurrent_loads do
         threads.each(&:join)
       end
-
-      raise errors.pop unless errors.empty?
     end
 
     def dump_project(project)

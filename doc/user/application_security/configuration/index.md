@@ -26,4 +26,4 @@ all security features are configured by default.
 To view a project's security configuration:
 
 1. Go to the project's home page.
-1. In the left sidebar, go to **Security & Configuration** > **Configuration**.
+1. In the left sidebar, go to **Security & Compliance** > **Configuration**.

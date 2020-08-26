@@ -555,6 +555,21 @@ RSpec.describe GroupsController do
       end
     end
 
+    context 'when there is a conflicting group path' do
+      render_views
+
+      let!(:conflict_group) { create(:group, path: SecureRandom.hex(12) ) }
+      let!(:old_name) { group.name }
+
+      it 'does not render references to the conflicting group' do
+        put :update, params: { id: group.to_param, group: { path: conflict_group.path } }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(group.reload.name).to eq(old_name)
+        expect(response.body).not_to include(conflict_group.path)
+      end
+    end
+
     context 'when a project inside the group has container repositories' do
       before do
         stub_container_registry_config(enabled: true)
