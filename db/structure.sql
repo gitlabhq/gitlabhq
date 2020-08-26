@@ -21007,6 +21007,8 @@ CREATE INDEX index_vulnerability_feedback_on_comment_author_id ON public.vulnera
 
 CREATE INDEX index_vulnerability_feedback_on_issue_id ON public.vulnerability_feedback USING btree (issue_id);
 
+CREATE INDEX index_vulnerability_feedback_on_issue_id_not_null ON public.vulnerability_feedback USING btree (id) WHERE (issue_id IS NOT NULL);
+
 CREATE INDEX index_vulnerability_feedback_on_merge_request_id ON public.vulnerability_feedback USING btree (merge_request_id);
 
 CREATE INDEX index_vulnerability_feedback_on_pipeline_id ON public.vulnerability_feedback USING btree (pipeline_id);

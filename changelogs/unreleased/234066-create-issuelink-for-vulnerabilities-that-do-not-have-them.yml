@@ -1,0 +1,5 @@
+---
+title: Create IssueLink for Vulnerabilities that do not have them
+merge_request: 39986
+author:
+type: fixed

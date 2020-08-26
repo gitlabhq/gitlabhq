@@ -96,7 +96,9 @@ dependency_scanning:
 gemnasium-dependency_scanning:
   extends: .ds-analyzer
   image:
-    name: "$SECURE_ANALYZERS_PREFIX/gemnasium:$DS_MAJOR_VERSION"
+    name: "$DS_ANALYZER_IMAGE"
+  variables:
+    DS_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/gemnasium:$DS_MAJOR_VERSION"
   rules:
     - if: $DEPENDENCY_SCANNING_DISABLED || $DS_DISABLE_DIND == 'false'
       when: never
@@ -116,7 +118,9 @@ gemnasium-dependency_scanning:
 gemnasium-maven-dependency_scanning:
   extends: .ds-analyzer
   image:
-    name: "$SECURE_ANALYZERS_PREFIX/gemnasium-maven:$DS_MAJOR_VERSION"
+    name: "$DS_ANALYZER_IMAGE"
+  variables:
+    DS_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/gemnasium-maven:$DS_MAJOR_VERSION"
   rules:
     - if: $DEPENDENCY_SCANNING_DISABLED || $DS_DISABLE_DIND == 'false'
       when: never
@@ -132,7 +136,9 @@ gemnasium-maven-dependency_scanning:
 gemnasium-python-dependency_scanning:
   extends: .ds-analyzer
   image:
-    name: "$SECURE_ANALYZERS_PREFIX/gemnasium-python:$DS_MAJOR_VERSION"
+    name: "$DS_ANALYZER_IMAGE"
+  variables:
+    DS_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/gemnasium-python:$DS_MAJOR_VERSION"
   rules:
     - if: $DEPENDENCY_SCANNING_DISABLED || $DS_DISABLE_DIND == 'false'
       when: never
@@ -155,7 +161,9 @@ gemnasium-python-dependency_scanning:
 bundler-audit-dependency_scanning:
   extends: .ds-analyzer
   image:
-    name: "$SECURE_ANALYZERS_PREFIX/bundler-audit:$DS_MAJOR_VERSION"
+    name: "$DS_ANALYZER_IMAGE"
+  variables:
+    DS_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/bundler-audit:$DS_MAJOR_VERSION"
   rules:
     - if: $DEPENDENCY_SCANNING_DISABLED || $DS_DISABLE_DIND == 'false'
       when: never
@@ -168,7 +176,9 @@ bundler-audit-dependency_scanning:
 retire-js-dependency_scanning:
   extends: .ds-analyzer
   image:
-    name: "$SECURE_ANALYZERS_PREFIX/retire.js:$DS_MAJOR_VERSION"
+    name: "$DS_ANALYZER_IMAGE"
+  variables:
+    DS_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/retire.js:$DS_MAJOR_VERSION"
   rules:
     - if: $DEPENDENCY_SCANNING_DISABLED || $DS_DISABLE_DIND == 'false'
       when: never

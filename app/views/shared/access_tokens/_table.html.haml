@@ -35,7 +35,7 @@
             %td
               - if token.expires?
                 - if token.expires_at.past? || token.expires_at.today?
-                  %span{ class: 'text-danger has-tooltip', title: _('Expiration not enforced') }
+                  %span{ class: 'text-danger has-tooltip', title: _('Token valid until revoked') }
                     = _('Expired')
                 - else
                   %span{ class: ('text-warning' if token.expires_soon?) }

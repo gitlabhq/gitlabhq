@@ -10136,9 +10136,6 @@ msgstr ""
 msgid "Expiration date"
 msgstr ""
 
-msgid "Expiration not enforced"
-msgstr ""
-
 msgid "Expired"
 msgstr ""
 
@@ -25978,6 +25975,9 @@ msgid "Toggled :%{name}: emoji award."
 msgstr ""
 
 msgid "Toggles :%{name}: emoji award."
+msgstr ""
+
+msgid "Token valid until revoked"
 msgstr ""
 
 msgid "Tomorrow"

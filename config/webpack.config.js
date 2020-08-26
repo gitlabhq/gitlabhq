@@ -327,6 +327,8 @@ module.exports = {
           chunks: false,
           modules: false,
           assets: true,
+          errors: !IS_PRODUCTION,
+          warnings: !IS_PRODUCTION,
         });
 
         // tell our rails helper where to find the DLL files
