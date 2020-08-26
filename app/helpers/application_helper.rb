@@ -236,12 +236,12 @@ module ApplicationHelper
   end
 
   def use_startup_css?
-    Feature.enabled?(:startup_css) && !Rails.env.test?
+    (Feature.enabled?(:startup_css) || params[:startup_css] == 'true' || cookies['startup_css'] == 'true') && !Rails.env.test?
   end
 
   def stylesheet_link_tag_defer(path)
     if use_startup_css?
-      stylesheet_link_tag(path, media: "print")
+      stylesheet_link_tag(path, media: "print", crossorigin: ActionController::Base.asset_host ? 'anonymous' : nil)
     else
       stylesheet_link_tag(path, media: "all")
     end

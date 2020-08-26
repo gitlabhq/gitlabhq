@@ -1,4 +1,5 @@
 <script>
+/* eslint-disable vue/no-v-html */
 import * as Sentry from '@sentry/browser';
 import {
   GlAlert,

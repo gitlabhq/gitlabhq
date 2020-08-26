@@ -37,10 +37,6 @@ describe('Bar component', () => {
         chartData = barChart.vm.chartData[graphData.metrics[0].label];
       });
 
-      it('is a Vue instance', () => {
-        expect(glbarChart.isVueInstance()).toBe(true);
-      });
-
       it('should display a label on the x axis', () => {
         expect(glbarChart.props('xAxisTitle')).toBe(graphData.xLabel);
       });

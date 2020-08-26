@@ -1,4 +1,5 @@
 <script>
+/* eslint-disable vue/no-v-html */
 import { mapActions, mapGetters, mapState } from 'vuex';
 import $ from 'jquery';
 import { GlTooltipDirective } from '@gitlab/ui';

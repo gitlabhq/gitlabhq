@@ -1,4 +1,5 @@
 <script>
+/* eslint-disable vue/no-v-html */
 import { escape } from 'lodash';
 import { GlModal, GlButton, GlDeprecatedButton, GlFormInput, GlSprintf } from '@gitlab/ui';
 import SplitButton from '~/vue_shared/components/split_button.vue';

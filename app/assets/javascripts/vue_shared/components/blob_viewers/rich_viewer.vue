@@ -1,4 +1,5 @@
 <script>
+/* eslint-disable vue/no-v-html */
 import MarkdownFieldView from '~/vue_shared/components/markdown/field_view.vue';
 import ViewerMixin from './mixins';
 import { handleBlobRichViewer } from '~/blob/viewer';

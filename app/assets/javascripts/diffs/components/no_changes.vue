@@ -1,4 +1,5 @@
 <script>
+/* eslint-disable vue/no-v-html */
 import { mapGetters } from 'vuex';
 import { escape } from 'lodash';
 import { GlButton } from '@gitlab/ui';

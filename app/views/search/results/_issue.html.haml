@@ -1,7 +1,7 @@
 .search-result-row
   %h4
     = confidential_icon(issue)
-    = link_to project_issue_path(issue.project, issue) do
+    = link_to project_issue_path(issue.project, issue), data: {track_event: 'click_text', track_label: 'issue_title', track_property: 'search_result'} do
       %span.term.str-truncated= issue.title
     - if issue.closed?
       %span.badge.badge-danger.gl-ml-2= _("Closed")

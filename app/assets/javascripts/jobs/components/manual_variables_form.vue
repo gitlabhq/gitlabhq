@@ -1,4 +1,5 @@
 <script>
+/* eslint-disable vue/no-v-html */
 import { uniqueId } from 'lodash';
 import { mapActions } from 'vuex';
 import { GlButton } from '@gitlab/ui';

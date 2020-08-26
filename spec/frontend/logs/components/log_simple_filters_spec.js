@@ -59,7 +59,7 @@ describe('LogSimpleFilters', () => {
   it('displays UI elements', () => {
     initWrapper();
 
-    expect(wrapper.isVueInstance()).toBe(true);
+    expect(wrapper.isEmpty()).toBe(false);
 
     expect(findPodsDropdown().exists()).toBe(true);
   });

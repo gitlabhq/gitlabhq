@@ -1,4 +1,5 @@
 <script>
+/* eslint-disable vue/no-v-html */
 import { GlTooltipDirective, GlLink, GlDeprecatedButton, GlLoadingIcon, GlIcon } from '@gitlab/ui';
 import defaultAvatarUrl from 'images/no_avatar.png';
 import { sprintf, s__ } from '~/locale';

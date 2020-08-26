@@ -1,4 +1,6 @@
 - return unless use_startup_css?
 
+- startup_filename = current_path?("sessions#new") ? 'signin' : user_application_theme == 'gl-dark' ? 'dark' : 'general'
+
 %style{ type: "text/css" }
-  = Rails.application.assets_manifest.find_sources('startup/startup-general.css').first.to_s.html_safe
+  = Rails.application.assets_manifest.find_sources("startup/startup-#{startup_filename}.css").first.to_s.html_safe

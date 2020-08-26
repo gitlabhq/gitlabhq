@@ -1,4 +1,5 @@
 <script>
+/* eslint-disable vue/no-v-html */
 import { GlModal } from '@gitlab/ui';
 import { sprintf, s__ } from '~/locale';
 import { ELASTIC_STACK } from '../constants';

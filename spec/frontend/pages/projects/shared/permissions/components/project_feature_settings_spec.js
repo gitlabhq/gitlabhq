@@ -27,14 +27,14 @@ describe('Project Feature Settings', () => {
 
   describe('Hidden name input', () => {
     it('should set the hidden name input if the name exists', () => {
-      expect(wrapper.find({ name: 'Test' }).props().value).toBe(1);
+      expect(wrapper.find(`input[name=${defaultProps.name}]`).attributes().value).toBe('1');
     });
 
     it('should not set the hidden name input if the name does not exist', () => {
       wrapper.setProps({ name: null });
 
       return wrapper.vm.$nextTick(() => {
-        expect(wrapper.find({ name: 'Test' }).exists()).toBe(false);
+        expect(wrapper.find(`input[name=${defaultProps.name}]`).exists()).toBe(false);
       });
     });
   });

@@ -1,5 +1,5 @@
 <script>
-/* eslint-disable @gitlab/vue-require-i18n-strings */
+/* eslint-disable @gitlab/vue-require-i18n-strings, vue/no-v-html */
 import { GlTooltipDirective } from '@gitlab/ui';
 import DeprecatedModal2 from '~/vue_shared/components/deprecated_modal_2.vue';
 import { s__, sprintf } from '~/locale';

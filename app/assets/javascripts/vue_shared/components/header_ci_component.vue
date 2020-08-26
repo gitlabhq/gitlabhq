@@ -1,4 +1,5 @@
 <script>
+/* eslint-disable vue/no-v-html */
 import { GlTooltipDirective, GlLink, GlDeprecatedButton } from '@gitlab/ui';
 import { __, sprintf } from '~/locale';
 import CiIconBadge from './ci_badge_link.vue';

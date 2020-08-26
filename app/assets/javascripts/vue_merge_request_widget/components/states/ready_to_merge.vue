@@ -1,4 +1,5 @@
 <script>
+/* eslint-disable vue/no-v-html */
 import { isEmpty } from 'lodash';
 import { GlIcon, GlButton, GlSprintf, GlLink } from '@gitlab/ui';
 import successSvg from 'icons/_icon_status_success.svg';

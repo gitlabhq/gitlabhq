@@ -104,7 +104,20 @@ module Gitlab
 
         def gitlab_fingerprint
           strong_memoize(:gitlab_fingerprint) do
-            Gitlab::AlertManagement::Fingerprint.generate(plain_gitlab_fingerprint) if plain_gitlab_fingerprint
+            next unless plain_gitlab_fingerprint
+
+            Gitlab::AlertManagement::Fingerprint.generate(plain_gitlab_fingerprint)
+          end
+        end
+
+        def environment
+          strong_memoize(:environment) do
+            next unless environment_name
+
+            EnvironmentsFinder
+              .new(project, nil, { name: environment_name })
+              .find
+              .first
           end
         end
 

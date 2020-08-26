@@ -1,5 +1,5 @@
 <script>
-/* eslint-disable vue/require-default-prop */
+/* eslint-disable vue/require-default-prop, vue/no-v-html */
 import { GlIcon, GlLink, GlLoadingIcon, GlSprintf, GlTooltipDirective } from '@gitlab/ui';
 import mrWidgetPipelineMixin from 'ee_else_ce/vue_merge_request_widget/mixins/mr_widget_pipeline';
 import { s__ } from '~/locale';

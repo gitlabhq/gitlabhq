@@ -1,4 +1,5 @@
 <script>
+/* eslint-disable vue/no-v-html */
 import { GlModal } from '@gitlab/ui';
 import { sprintf } from '~/locale';
 

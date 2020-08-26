@@ -1,4 +1,5 @@
 <script>
+/* eslint-disable vue/no-v-html */
 import $ from 'jquery';
 import GfmAutoComplete from 'ee_else_ce/gfm_auto_complete';
 import { GlModal, GlTooltipDirective, GlIcon } from '@gitlab/ui';

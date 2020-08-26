@@ -95,10 +95,6 @@ describe('Column component', () => {
 
   describe('wrapped components', () => {
     describe('GitLab UI column chart', () => {
-      it('is a Vue instance', () => {
-        expect(findChart().isVueInstance()).toBe(true);
-      });
-
       it('receives data properties needed for proper chart render', () => {
         expect(chartProps('data').values).toEqual(dataValues);
       });

@@ -1,4 +1,5 @@
 <script>
+/* eslint-disable vue/no-v-html */
 import { ApolloMutation } from 'vue-apollo';
 import { GlTooltipDirective, GlIcon } from '@gitlab/ui';
 import updateNoteMutation from '../../graphql/mutations/update_note.mutation.graphql';

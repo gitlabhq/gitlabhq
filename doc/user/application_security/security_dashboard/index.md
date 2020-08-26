@@ -131,14 +131,14 @@ bar at the top of the page. Under **More**, select **Security**.
 
 To add projects to the dashboard:
 
-1. Click the **Edit dashboard** button on the Instance Security Dashboard page.
+1. Click **Settings** in the left navigation bar.
 1. Search for and add one or more projects using the **Search your projects** field.
 1. Click the **Add projects** button.
 
-Once added, the Security Dashboard displays the vulnerabilities found in your chosen projects'
+After you add projects, the Security Dashboard displays the vulnerabilities found in those projects'
 default branches.
 
-![Instance Security Dashboard with projects](img/instance_security_dashboard_with_projects_v13_2_sm.png)
+![Uninitialized Instance Security Dashboard](img/instance_security_dashboard_empty_v13_3.png)
 
 ## Export vulnerabilities
 

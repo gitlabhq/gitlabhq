@@ -58,7 +58,7 @@ GitLab creates a unique endpoint which receives a JSON-formatted, customizable p
 Slack slash commands allow you to control GitLab and view GitLab content without leaving Slack.
 
 Learn how to [set up Slack slash commands](../../user/project/integrations/slack_slash_commands.md)
-and how to [use the available slash commands](../../user/project/slash_commands.md).
+and how to [use the available slash commands](../../integration/slash_commands.md).
 
 ## Integrate issues with Zoom
 

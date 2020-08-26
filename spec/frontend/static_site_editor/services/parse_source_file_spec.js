@@ -1,4 +1,8 @@
-import { sourceContent as content, sourceContentBody as body } from '../mock_data';
+import {
+  sourceContent as content,
+  sourceContentHeader as frontMatter,
+  sourceContentBody as body,
+} from '../mock_data';
 
 import parseSourceFile from '~/static_site_editor/services/parse_source_file';
 
@@ -8,6 +12,16 @@ describe('parseSourceFile', () => {
   const edit = 'and more';
   const newContent = `${content} ${edit}`;
   const newContentComplex = `${contentComplex} ${edit}`;
+
+  describe('unmodified front matter', () => {
+    it.each`
+      parsedSource
+      ${parseSourceFile(content)}
+      ${parseSourceFile(contentComplex)}
+    `('returns the correct front matter when queried', ({ parsedSource }) => {
+      expect(parsedSource.frontMatter()).toBe(frontMatter);
+    });
+  });
 
   describe('unmodified content', () => {
     it.each`
@@ -30,6 +44,28 @@ describe('parseSourceFile', () => {
       'returns only the $target content when the `isBody` parameter argument is $isBody',
       ({ parsedSource, isBody, target }) => {
         expect(parsedSource.content(isBody)).toBe(target);
+      },
+    );
+  });
+
+  describe('modified front matter', () => {
+    const newFrontMatter = '---\nnewKey: newVal\n---';
+    const contentWithNewFrontMatter = content.replace(frontMatter, newFrontMatter);
+    const contentComplexWithNewFrontMatter = contentComplex.replace(frontMatter, newFrontMatter);
+
+    it.each`
+      parsedSource                       | targetContent
+      ${parseSourceFile(content)}        | ${contentWithNewFrontMatter}
+      ${parseSourceFile(contentComplex)} | ${contentComplexWithNewFrontMatter}
+    `(
+      'returns the correct front matter and modified content',
+      ({ parsedSource, targetContent }) => {
+        expect(parsedSource.frontMatter()).toBe(frontMatter);
+
+        parsedSource.setFrontMatter(newFrontMatter);
+
+        expect(parsedSource.frontMatter()).toBe(newFrontMatter);
+        expect(parsedSource.content()).toBe(targetContent);
       },
     );
   });

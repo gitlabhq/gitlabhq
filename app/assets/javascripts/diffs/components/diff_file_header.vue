@@ -1,4 +1,5 @@
 <script>
+/* eslint-disable vue/no-v-html */
 import { escape } from 'lodash';
 import { mapActions, mapGetters } from 'vuex';
 import { GlDeprecatedButton, GlTooltipDirective, GlLoadingIcon, GlIcon } from '@gitlab/ui';

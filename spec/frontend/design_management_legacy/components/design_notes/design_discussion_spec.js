@@ -89,7 +89,7 @@ describe('Design discussions component', () => {
     });
 
     it('does not render a checkbox in reply form', () => {
-      findReplyPlaceholder().vm.$emit('onMouseDown');
+      findReplyPlaceholder().vm.$emit('onClick');
 
       return wrapper.vm.$nextTick().then(() => {
         expect(findResolveCheckbox().exists()).toBe(false);

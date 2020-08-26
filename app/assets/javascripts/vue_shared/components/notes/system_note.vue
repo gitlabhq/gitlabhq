@@ -1,4 +1,5 @@
 <script>
+/* eslint-disable vue/no-v-html */
 /**
  * Common component to render a system note, icon and user information.
  *

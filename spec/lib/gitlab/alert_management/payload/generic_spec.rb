@@ -80,4 +80,10 @@ RSpec.describe Gitlab::AlertManagement::Payload::Generic do
       is_expected.to eq(Digest::SHA1.hexdigest(plain_fingerprint))
     end
   end
+
+  describe '#environment_name' do
+    subject { parsed_payload.environment_name }
+
+    it_behaves_like 'parsable alert payload field', 'gitlab_environment_name'
+  end
 end

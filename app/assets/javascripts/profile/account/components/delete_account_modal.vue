@@ -1,4 +1,5 @@
 <script>
+/* eslint-disable vue/no-v-html */
 import DeprecatedModal from '~/vue_shared/components/deprecated_modal.vue';
 import { __, s__, sprintf } from '~/locale';
 import csrf from '~/lib/utils/csrf';

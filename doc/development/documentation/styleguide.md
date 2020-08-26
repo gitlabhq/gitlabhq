@@ -191,10 +191,10 @@ The table below shows what kind of documentation goes where.
    Do not use another file name and **do not** create `README.md` files.
 1. **Do not** use special characters and spaces, or capital letters in file names,
    directory names, branch names, and anything that generates a path.
-1. When creating a new document and it has more than one word in its name,
-   make sure to use underscores instead of spaces or dashes (`-`). For example,
-   a proper naming would be `import_projects_from_github.md`. The same rule
-   applies to images.
+1. When creating or renaming a file or directory and it has more than one word in its name,
+   use underscores (`_`) instead of spaces or dashes. For example,
+   proper naming would be `import_project/import_from_github.md`. This applies to
+   image files as well as Markdown files.
 1. For image files, do not exceed 100KB.
 1. Do not upload video files to the product repositories.
    [Link or embed videos](#videos) instead.
@@ -216,7 +216,7 @@ The table below shows what kind of documentation goes where.
          the **Visibility and Access Controls** category should have a document
          located at `doc/user/admin_area/settings/visibility_and_access_controls.md`.
 1. The `doc/topics/` directory holds topic-related technical content. Create
-   `doc/topics/topic-name/subtopic-name/index.md` when subtopics become necessary.
+   `doc/topics/topic_name/subtopic_name/index.md` when subtopics become necessary.
    General user- and admin- related documentation, should be placed accordingly.
 1. The directories `/workflow/`, `/university/`, and `/articles/` have
    been **deprecated** and the majority their docs have been moved to their correct location

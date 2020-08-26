@@ -3,15 +3,13 @@ import waitForPromises from 'helpers/wait_for_promises';
 import MockAdapter from 'axios-mock-adapter';
 import axios from 'axios';
 import AlertMetrics from '~/alert_management/components/alert_metrics.vue';
+import MetricEmbed from '~/monitoring/components/embeds/metric_embed.vue';
 
 jest.mock('~/monitoring/stores', () => ({
   monitoringDashboard: {},
 }));
 
-const mockEmbedName = 'MetricsEmbedStub';
-
 jest.mock('~/monitoring/components/embeds/metric_embed.vue', () => ({
-  name: mockEmbedName,
   render(h) {
     return h('div');
   },
@@ -26,13 +24,10 @@ describe('Alert Metrics', () => {
       propsData: {
         ...props,
       },
-      stubs: {
-        MetricEmbed: true,
-      },
     });
   }
 
-  const findChart = () => wrapper.find({ name: mockEmbedName });
+  const findChart = () => wrapper.find(MetricEmbed);
   const findEmptyState = () => wrapper.find({ ref: 'emptyState' });
 
   afterEach(() => {

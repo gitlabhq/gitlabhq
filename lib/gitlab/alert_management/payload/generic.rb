@@ -8,6 +8,7 @@ module Gitlab
         DEFAULT_TITLE = 'New: Incident'
         DEFAULT_SEVERITY = 'critical'
 
+        attribute :environment_name, paths: 'gitlab_environment_name'
         attribute :hosts, paths: 'hosts'
         attribute :monitoring_tool, paths: 'monitoring_tool'
         attribute :runbook, paths: 'runbook'

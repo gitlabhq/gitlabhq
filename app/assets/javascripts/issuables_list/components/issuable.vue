@@ -1,4 +1,5 @@
 <script>
+/* eslint-disable vue/no-v-html */
 /*
  * This is tightly coupled to projects/issues/_issue.html.haml,
  * any changes done to the haml need to be reflected here.

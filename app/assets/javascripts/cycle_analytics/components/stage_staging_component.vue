@@ -1,4 +1,5 @@
 <script>
+/* eslint-disable vue/no-v-html */
 import { GlIcon } from '@gitlab/ui';
 import userAvatarImage from '../../vue_shared/components/user_avatar/user_avatar_image.vue';
 import iconBranch from '../svg/icon_branch.svg';

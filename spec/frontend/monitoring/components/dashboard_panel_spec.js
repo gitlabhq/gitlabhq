@@ -141,7 +141,6 @@ describe('Dashboard Panel', () => {
 
     it('The Empty Chart component is rendered and is a Vue instance', () => {
       expect(wrapper.find(MonitorEmptyChart).exists()).toBe(true);
-      expect(wrapper.find(MonitorEmptyChart).isVueInstance()).toBe(true);
     });
   });
 
@@ -170,7 +169,6 @@ describe('Dashboard Panel', () => {
 
     it('The Empty Chart component is rendered and is a Vue instance', () => {
       expect(wrapper.find(MonitorEmptyChart).exists()).toBe(true);
-      expect(wrapper.find(MonitorEmptyChart).isVueInstance()).toBe(true);
     });
   });
 
@@ -226,13 +224,11 @@ describe('Dashboard Panel', () => {
       it('empty chart is rendered for empty results', () => {
         createWrapper({ graphData: graphDataEmpty });
         expect(wrapper.find(MonitorEmptyChart).exists()).toBe(true);
-        expect(wrapper.find(MonitorEmptyChart).isVueInstance()).toBe(true);
       });
 
       it('area chart is rendered by default', () => {
         createWrapper();
         expect(wrapper.find(MonitorTimeSeriesChart).exists()).toBe(true);
-        expect(wrapper.find(MonitorTimeSeriesChart).isVueInstance()).toBe(true);
       });
 
       describe.each`
@@ -254,7 +250,6 @@ describe('Dashboard Panel', () => {
 
         it(`renders the chart component and binds attributes`, () => {
           expect(wrapper.find(component).exists()).toBe(true);
-          expect(wrapper.find(component).isVueInstance()).toBe(true);
           expect(wrapper.find(component).attributes()).toMatchObject(attrs);
         });
 
@@ -548,7 +543,6 @@ describe('Dashboard Panel', () => {
     });
 
     it('it renders a time series chart with no errors', () => {
-      expect(wrapper.find(MonitorTimeSeriesChart).isVueInstance()).toBe(true);
       expect(wrapper.find(MonitorTimeSeriesChart).exists()).toBe(true);
     });
   });

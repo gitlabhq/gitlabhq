@@ -1,4 +1,5 @@
 <script>
+/* eslint-disable vue/no-v-html */
 import { escape } from 'lodash';
 import { mapState, mapGetters, createNamespacedHelpers } from 'vuex';
 import { sprintf, s__ } from '~/locale';

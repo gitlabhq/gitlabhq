@@ -1,4 +1,5 @@
 <script>
+/* eslint-disable vue/no-v-html */
 import { mapState, mapActions } from 'vuex';
 import { GlSkeletonLoading } from '@gitlab/ui';
 import DiffFileHeader from '~/diffs/components/diff_file_header.vue';

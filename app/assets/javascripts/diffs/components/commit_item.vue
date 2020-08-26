@@ -1,4 +1,5 @@
 <script>
+/* eslint-disable vue/no-v-html */
 import { mapActions } from 'vuex';
 import { GlButtonGroup, GlButton, GlIcon, GlTooltipDirective } from '@gitlab/ui';
 

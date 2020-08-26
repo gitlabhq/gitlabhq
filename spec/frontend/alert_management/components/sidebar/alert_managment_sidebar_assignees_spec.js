@@ -125,7 +125,7 @@ describe('Alert Details Sidebar Assignees', () => {
       });
     });
 
-    it('shows an error when request contains error messages', () => {
+    it('emits an error when request contains error messages', () => {
       wrapper.setData({ isDropdownSearching: false });
       const errorMutationResult = {
         data: {
@@ -137,12 +137,15 @@ describe('Alert Details Sidebar Assignees', () => {
       };
 
       jest.spyOn(wrapper.vm.$apollo, 'mutate').mockResolvedValue(errorMutationResult);
-
-      return wrapper.vm.$nextTick().then(() => {
-        const SideBarAssigneeItem = wrapper.findAll(SidebarAssignee).at(0);
-        SideBarAssigneeItem.vm.$emit('click');
-        expect(wrapper.emitted('alert-refresh')).toBeUndefined();
-      });
+      return wrapper.vm
+        .$nextTick()
+        .then(() => {
+          const SideBarAssigneeItem = wrapper.findAll(SidebarAssignee).at(0);
+          SideBarAssigneeItem.vm.$emit('update-alert-assignees');
+        })
+        .then(() => {
+          expect(wrapper.emitted('alert-error')).toBeDefined();
+        });
     });
 
     it('stops updating and cancels loading when the request fails', () => {

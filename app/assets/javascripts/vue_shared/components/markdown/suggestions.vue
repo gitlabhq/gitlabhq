@@ -1,4 +1,5 @@
 <script>
+/* eslint-disable vue/no-v-html */
 import Vue from 'vue';
 import { __ } from '~/locale';
 import SuggestionDiff from './suggestion_diff.vue';

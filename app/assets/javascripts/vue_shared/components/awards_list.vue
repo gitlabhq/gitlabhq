@@ -1,4 +1,5 @@
 <script>
+/* eslint-disable vue/no-v-html */
 import { groupBy } from 'lodash';
 import { GlIcon } from '@gitlab/ui';
 import tooltip from '~/vue_shared/directives/tooltip';

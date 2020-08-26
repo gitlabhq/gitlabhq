@@ -1,4 +1,5 @@
 <script>
+/* eslint-disable vue/no-v-html */
 import { mapGetters, mapActions, mapState } from 'vuex';
 import { mergeUrlParams } from '~/lib/utils/url_utility';
 import eventHub from '../event_hub';

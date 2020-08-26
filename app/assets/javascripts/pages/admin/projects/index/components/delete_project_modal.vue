@@ -1,4 +1,5 @@
 <script>
+/* eslint-disable vue/no-v-html */
 import { escape } from 'lodash';
 import DeprecatedModal from '~/vue_shared/components/deprecated_modal.vue';
 import { s__, sprintf } from '~/locale';

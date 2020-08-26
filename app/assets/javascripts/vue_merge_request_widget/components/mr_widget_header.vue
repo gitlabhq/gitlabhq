@@ -1,4 +1,5 @@
 <script>
+/* eslint-disable vue/no-v-html */
 import Mousetrap from 'mousetrap';
 import { escape } from 'lodash';
 import { GlIcon } from '@gitlab/ui';

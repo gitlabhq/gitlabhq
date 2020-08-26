@@ -1,4 +1,5 @@
 <script>
+/* eslint-disable vue/no-v-html */
 import { GlDeprecatedButton, GlIcon } from '@gitlab/ui';
 import { isString } from 'lodash';
 import ProjectAvatar from '~/vue_shared/components/project_avatar/default.vue';

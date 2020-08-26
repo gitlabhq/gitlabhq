@@ -1,4 +1,5 @@
 <script>
+/* eslint-disable vue/no-v-html */
 import '~/commons/bootstrap';
 import { GlIcon, GlTooltip, GlTooltipDirective } from '@gitlab/ui';
 import { sprintf } from '~/locale';

@@ -1,4 +1,5 @@
 <script>
+/* eslint-disable vue/no-v-html */
 import { GlFormInput, GlButton } from '@gitlab/ui';
 import { escape } from 'lodash';
 import { mapState, mapActions } from 'vuex';

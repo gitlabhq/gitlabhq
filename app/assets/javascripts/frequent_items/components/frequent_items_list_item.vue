@@ -1,5 +1,5 @@
 <script>
-/* eslint-disable vue/require-default-prop */
+/* eslint-disable vue/require-default-prop, vue/no-v-html */
 import Identicon from '~/vue_shared/components/identicon.vue';
 import highlight from '~/lib/utils/highlight';
 import { truncateNamespace } from '~/lib/utils/text_utility';

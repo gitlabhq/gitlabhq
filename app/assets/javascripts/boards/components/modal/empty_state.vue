@@ -1,4 +1,5 @@
 <script>
+/* eslint-disable vue/no-v-html */
 import { __, sprintf } from '~/locale';
 import ModalStore from '../../stores/modal_store';
 import modalMixin from '../../mixins/modal_mixins';

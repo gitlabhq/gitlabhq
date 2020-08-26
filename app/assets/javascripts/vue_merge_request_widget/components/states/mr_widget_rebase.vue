@@ -1,4 +1,5 @@
 <script>
+/* eslint-disable vue/no-v-html */
 import { GlLoadingIcon } from '@gitlab/ui';
 import { escape } from 'lodash';
 import simplePoll from '../../../lib/utils/simple_poll';

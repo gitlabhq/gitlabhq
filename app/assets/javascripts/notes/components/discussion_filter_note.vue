@@ -1,4 +1,5 @@
 <script>
+/* eslint-disable vue/no-v-html */
 import { GlButton, GlIcon } from '@gitlab/ui';
 import { __, sprintf } from '~/locale';
 

@@ -1,4 +1,5 @@
 <script>
+/* eslint-disable vue/no-v-html */
 import Vue from 'vue';
 import Cookies from 'js-cookie';
 import Translate from '../../../../../vue_shared/translate';

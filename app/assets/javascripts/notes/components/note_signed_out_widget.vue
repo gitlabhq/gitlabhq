@@ -1,4 +1,5 @@
 <script>
+/* eslint-disable vue/no-v-html */
 import { mapGetters } from 'vuex';
 import { __, sprintf } from '~/locale';
 

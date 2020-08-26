@@ -222,7 +222,7 @@ to learn more.
 
 The user that locks a file or directory is the only one that can edit and push their changes back to the repository where the locked objects are located.
 
-Read through the documentation on [permissions for File Locking](project/file_lock.md#permissions-on-file-locking) to learn more.
+Read through the documentation on [permissions for File Locking](project/file_lock.md#permissions) to learn more.
 
 ### Confidential Issues permissions
 

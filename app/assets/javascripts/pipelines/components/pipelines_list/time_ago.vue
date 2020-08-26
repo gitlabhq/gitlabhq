@@ -1,4 +1,5 @@
 <script>
+/* eslint-disable vue/no-v-html */
 import iconTimerSvg from 'icons/_icon_timer.svg';
 import '~/lib/utils/datetime_utility';
 import tooltip from '~/vue_shared/directives/tooltip';

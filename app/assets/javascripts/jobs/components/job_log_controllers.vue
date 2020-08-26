@@ -1,4 +1,5 @@
 <script>
+/* eslint-disable vue/no-v-html */
 import { GlTooltipDirective, GlLink, GlDeprecatedButton, GlIcon } from '@gitlab/ui';
 import { polyfillSticky } from '~/lib/utils/sticky';
 import { numberToHumanSize } from '~/lib/utils/number_utils';

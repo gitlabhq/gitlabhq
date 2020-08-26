@@ -1,1 +1,1 @@
-= render 'projects/commits/commit', project: commit.project, commit: commit, ref: nil, show_project_name: @project.nil?
+= render 'projects/commits/commit', project: commit.project, commit: commit, ref: nil, show_project_name: @project.nil?, link_data_attrs: {track_event: 'click_text', track_label: 'commit_title', track_property: 'search_result'}

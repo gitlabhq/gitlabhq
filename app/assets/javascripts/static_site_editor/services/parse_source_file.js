@@ -30,7 +30,7 @@ const parseSourceFile = raw => {
     editable = parse(editable.raw);
   };
 
-  const syncBodyToRaw = () => {
+  const refreshEditableRaw = () => {
     editable.raw = `${editable.header}${editable.spacing}${editable.body}`;
   };
 
@@ -39,10 +39,17 @@ const parseSourceFile = raw => {
     editable[editableKey] = newVal;
 
     if (isBodyToRaw) {
-      syncBodyToRaw();
+      refreshEditableRaw();
     }
 
     syncEditable();
+  };
+
+  const frontMatter = () => editable.header;
+
+  const setFrontMatter = val => {
+    editable.header = val;
+    refreshEditableRaw();
   };
 
   const content = (isBody = false) => {
@@ -56,6 +63,8 @@ const parseSourceFile = raw => {
   editable = parse(raw);
 
   return {
+    frontMatter,
+    setFrontMatter,
     content,
     isModified,
     sync,

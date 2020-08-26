@@ -1,8 +1,7 @@
 import { editor as monacoEditor, languages as monacoLanguages, Uri } from 'monaco-editor';
 import Editor from '~/editor/editor_lite';
 import { DEFAULT_THEME, themes } from '~/ide/lib/themes';
-
-const URI_PREFIX = 'gitlab';
+import { EDITOR_LITE_INSTANCE_ERROR_NO_EL, URI_PREFIX } from '~/editor/constants';
 
 describe('Base editor', () => {
   let editorEl;
@@ -28,8 +27,8 @@ describe('Base editor', () => {
   it('initializes Editor with basic properties', () => {
     expect(editor).toBeDefined();
     expect(editor.editorEl).toBe(null);
-    expect(editor.blobContent).toEqual('');
-    expect(editor.blobPath).toEqual('');
+    expect(editor.blobContent).toBe('');
+    expect(editor.blobPath).toBe('');
   });
 
   it('removes `editor-loading` data attribute from the target DOM element', () => {
@@ -51,15 +50,18 @@ describe('Base editor', () => {
       instanceSpy = jest.spyOn(monacoEditor, 'create').mockImplementation(() => ({
         setModel,
         dispose,
+        onDidDispose: jest.fn(),
       }));
     });
 
-    it('does nothing if no dom element is supplied', () => {
-      editor.createInstance();
+    it('throws an error if no dom element is supplied', () => {
+      expect(() => {
+        editor.createInstance();
+      }).toThrow(EDITOR_LITE_INSTANCE_ERROR_NO_EL);
 
       expect(editor.editorEl).toBe(null);
-      expect(editor.blobContent).toEqual('');
-      expect(editor.blobPath).toEqual('');
+      expect(editor.blobContent).toBe('');
+      expect(editor.blobPath).toBe('');
 
       expect(modelSpy).not.toHaveBeenCalled();
       expect(instanceSpy).not.toHaveBeenCalled();
@@ -89,15 +91,123 @@ describe('Base editor', () => {
         createUri(blobGlobalId, blobPath),
       );
     });
+
+    it('initializes instance with passed properties', () => {
+      editor.createInstance({
+        el: editorEl,
+        blobContent,
+        blobPath,
+      });
+      expect(editor.editorEl).toBe(editorEl);
+      expect(editor.blobContent).toBe(blobContent);
+      expect(editor.blobPath).toBe(blobPath);
+    });
+
+    it('disposes instance when the editor is disposed', () => {
+      editor.createInstance({ el: editorEl, blobPath, blobContent, blobGlobalId });
+
+      expect(dispose).not.toHaveBeenCalled();
+
+      editor.dispose();
+
+      expect(dispose).toHaveBeenCalled();
+    });
+  });
+
+  describe('multiple instances', () => {
+    let instanceSpy;
+    let inst1Args;
+    let inst2Args;
+    let editorEl1;
+    let editorEl2;
+    let inst1;
+    let inst2;
+    const readOnlyIndex = '68'; // readOnly option has the internal index of 68 in the editor's options
+
+    beforeEach(() => {
+      setFixtures('<div id="editor1"></div><div id="editor2"></div>');
+      editorEl1 = document.getElementById('editor1');
+      editorEl2 = document.getElementById('editor2');
+      inst1Args = {
+        el: editorEl1,
+        blobGlobalId,
+      };
+      inst2Args = {
+        el: editorEl2,
+        blobContent,
+        blobPath,
+        blobGlobalId,
+      };
+
+      editor = new Editor();
+      instanceSpy = jest.spyOn(monacoEditor, 'create');
+    });
+
+    afterEach(() => {
+      editor.dispose();
+    });
+
+    it('can initialize several instances of the same editor', () => {
+      editor.createInstance(inst1Args);
+      expect(editor.editorEl).toBe(editorEl1);
+      expect(editor.instances).toHaveLength(1);
+
+      editor.createInstance(inst2Args);
+      expect(editor.editorEl).toBe(editorEl2);
+
+      expect(instanceSpy).toHaveBeenCalledTimes(2);
+      expect(editor.instances).toHaveLength(2);
+    });
+
+    it('shares global editor options among all instances', () => {
+      editor = new Editor({
+        readOnly: true,
+      });
+
+      inst1 = editor.createInstance(inst1Args);
+      expect(inst1.getOption(readOnlyIndex)).toBe(true);
+
+      inst2 = editor.createInstance(inst2Args);
+      expect(inst2.getOption(readOnlyIndex)).toBe(true);
+    });
+
+    it('allows overriding editor options on the instance level', () => {
+      editor = new Editor({
+        readOnly: true,
+      });
+      inst1 = editor.createInstance({
+        ...inst1Args,
+        readOnly: false,
+      });
+
+      expect(inst1.getOption(readOnlyIndex)).toBe(false);
+    });
+
+    it('disposes instances and relevant models independently from each other', () => {
+      inst1 = editor.createInstance(inst1Args);
+      inst2 = editor.createInstance(inst2Args);
+
+      expect(inst1.getModel()).not.toBe(null);
+      expect(inst2.getModel()).not.toBe(null);
+      expect(editor.instances).toHaveLength(2);
+      expect(monacoEditor.getModels()).toHaveLength(2);
+
+      inst1.dispose();
+      expect(inst1.getModel()).toBe(null);
+      expect(inst2.getModel()).not.toBe(null);
+      expect(editor.instances).toHaveLength(1);
+      expect(monacoEditor.getModels()).toHaveLength(1);
+    });
   });
 
   describe('implementation', () => {
+    let instance;
     beforeEach(() => {
-      editor.createInstance({ el: editorEl, blobPath, blobContent });
+      instance = editor.createInstance({ el: editorEl, blobPath, blobContent });
     });
 
     it('correctly proxies value from the model', () => {
-      expect(editor.getValue()).toEqual(blobContent);
+      expect(instance.getValue()).toBe(blobContent);
     });
 
     it('is capable of changing the language of the model', () => {
@@ -108,10 +218,10 @@ describe('Base editor', () => {
 
       const blobRenamedPath = 'test.js';
 
-      expect(editor.model.getLanguageIdentifier().language).toEqual('markdown');
+      expect(editor.model.getLanguageIdentifier().language).toBe('markdown');
       editor.updateModelLanguage(blobRenamedPath);
 
-      expect(editor.model.getLanguageIdentifier().language).toEqual('javascript');
+      expect(editor.model.getLanguageIdentifier().language).toBe('javascript');
     });
 
     it('falls back to plaintext if there is no language associated with an extension', () => {
@@ -121,11 +231,12 @@ describe('Base editor', () => {
       editor.updateModelLanguage(blobRenamedPath);
 
       expect(spy).not.toHaveBeenCalled();
-      expect(editor.model.getLanguageIdentifier().language).toEqual('plaintext');
+      expect(editor.model.getLanguageIdentifier().language).toBe('plaintext');
     });
   });
 
   describe('extensions', () => {
+    let instance;
     const foo1 = jest.fn();
     const foo2 = jest.fn();
     const bar = jest.fn();
@@ -139,14 +250,14 @@ describe('Base editor', () => {
       foo: foo2,
     };
     beforeEach(() => {
-      editor.createInstance({ el: editorEl, blobPath, blobContent });
+      instance = editor.createInstance({ el: editorEl, blobPath, blobContent });
     });
 
     it('is extensible with the extensions', () => {
-      expect(editor.foo).toBeUndefined();
+      expect(instance.foo).toBeUndefined();
 
       editor.use(MyExt1);
-      expect(editor.foo).toEqual(foo1);
+      expect(instance.foo).toEqual(foo1);
     });
 
     it('does not fail if no extensions supplied', () => {
@@ -157,18 +268,18 @@ describe('Base editor', () => {
     });
 
     it('is extensible with multiple extensions', () => {
-      expect(editor.foo).toBeUndefined();
-      expect(editor.bar).toBeUndefined();
+      expect(instance.foo).toBeUndefined();
+      expect(instance.bar).toBeUndefined();
 
       editor.use([MyExt1, MyExt2]);
 
-      expect(editor.foo).toEqual(foo1);
-      expect(editor.bar).toEqual(bar);
+      expect(instance.foo).toEqual(foo1);
+      expect(instance.bar).toEqual(bar);
     });
 
     it('uses the last definition of a method in case of an overlap', () => {
       editor.use([MyExt1, MyExt2, MyExt3]);
-      expect(editor).toEqual(
+      expect(instance).toEqual(
         expect.objectContaining({
           foo: foo2,
           bar,
@@ -179,15 +290,48 @@ describe('Base editor', () => {
     it('correctly resolves references withing extensions', () => {
       const FunctionExt = {
         inst() {
-          return this.instance;
+          return this;
         },
         mod() {
-          return this.model;
+          return this.getModel();
         },
       };
       editor.use(FunctionExt);
-      expect(editor.inst()).toEqual(editor.instance);
-      expect(editor.mod()).toEqual(editor.model);
+      expect(instance.inst()).toEqual(editor.instances[0]);
+      expect(instance.mod()).toEqual(editor.model);
+    });
+
+    describe('multiple instances', () => {
+      let inst1;
+      let inst2;
+      let editorEl1;
+      let editorEl2;
+
+      beforeEach(() => {
+        setFixtures('<div id="editor1"></div><div id="editor2"></div>');
+        editorEl1 = document.getElementById('editor1');
+        editorEl2 = document.getElementById('editor2');
+        inst1 = editor.createInstance({ el: editorEl1, blobPath: `foo-${blobPath}` });
+        inst2 = editor.createInstance({ el: editorEl2, blobPath: `bar-${blobPath}` });
+      });
+
+      afterEach(() => {
+        editor.dispose();
+        editorEl1.remove();
+        editorEl2.remove();
+      });
+
+      it('extends all instances if no specific instance is passed', () => {
+        editor.use(MyExt1);
+        expect(inst1.foo).toEqual(foo1);
+        expect(inst2.foo).toEqual(foo1);
+      });
+
+      it('extends specific instance if it has been passed', () => {
+        editor.use(MyExt1, inst2);
+        expect(inst1.foo).toBeUndefined();
+        expect(inst2.foo).toEqual(foo1);
+      });
     });
   });
 

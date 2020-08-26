@@ -1,4 +1,5 @@
 <script>
+/* eslint-disable vue/no-v-html */
 import animateMixin from '../mixins/animate';
 import eventHub from '../event_hub';
 import tooltip from '../../vue_shared/directives/tooltip';

@@ -1,4 +1,5 @@
 <script>
+/* eslint-disable vue/no-v-html */
 import axios from '~/lib/utils/axios_utils';
 
 import { deprecatedCreateFlash as Flash } from '~/flash';

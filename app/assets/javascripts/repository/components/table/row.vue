@@ -1,4 +1,5 @@
 <script>
+/* eslint-disable vue/no-v-html */
 import { escapeRegExp } from 'lodash';
 import {
   GlBadge,

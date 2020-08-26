@@ -1,4 +1,5 @@
 <script>
+/* eslint-disable vue/no-v-html */
 import { GlIcon } from '@gitlab/ui';
 import iconBuildStatus from '../svg/icon_build_status.svg';
 import iconBranch from '../svg/icon_branch.svg';

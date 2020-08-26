@@ -1,4 +1,5 @@
 <script>
+/* eslint-disable vue/no-v-html */
 import { mapActions, mapGetters, mapState } from 'vuex';
 import { escape } from 'lodash';
 import { GlLoadingIcon, GlIcon } from '@gitlab/ui';

@@ -1,4 +1,5 @@
 <script>
+/* eslint-disable vue/no-v-html */
 import { mapActions, mapGetters, mapState } from 'vuex';
 import { GlTooltipDirective } from '@gitlab/ui';
 import DiffTableCell from './diff_table_cell.vue';

@@ -1,4 +1,5 @@
 <script>
+/* eslint-disable vue/no-v-html */
 import { GlLoadingIcon, GlBadge } from '@gitlab/ui';
 import { visitUrl } from '../../lib/utils/url_utility';
 import tooltip from '../../vue_shared/directives/tooltip';

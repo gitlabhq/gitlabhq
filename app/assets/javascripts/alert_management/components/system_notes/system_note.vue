@@ -1,4 +1,5 @@
 <script>
+/* eslint-disable vue/no-v-html */
 import NoteHeader from '~/notes/components/note_header.vue';
 import { spriteIcon } from '~/lib/utils/common_utils';
 

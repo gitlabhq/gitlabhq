@@ -38,10 +38,6 @@ describe('User Avatar Link Component', () => {
     wrapper = null;
   });
 
-  it('should return a defined Vue component', () => {
-    expect(wrapper.isVueInstance()).toBe(true);
-  });
-
   it('should have user-avatar-image registered as child component', () => {
     expect(wrapper.vm.$options.components.userAvatarImage).toBeDefined();
   });

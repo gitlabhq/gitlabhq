@@ -1,4 +1,5 @@
 <script>
+/* eslint-disable vue/no-v-html */
 import $ from 'jquery';
 import { s__, sprintf } from '~/locale';
 import { deprecatedCreateFlash as createFlash } from '~/flash';

@@ -1,4 +1,5 @@
 <script>
+/* eslint-disable vue/no-v-html */
 import $ from 'jquery';
 import '~/behaviors/markdown/render_gfm';
 import { GlLink, GlLoadingIcon } from '@gitlab/ui';

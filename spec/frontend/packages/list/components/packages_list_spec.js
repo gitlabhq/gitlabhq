@@ -23,7 +23,7 @@ describe('packages_list', () => {
   const findPackagesListLoader = () => wrapper.find(PackagesListLoader);
   const findPackageListPagination = () => wrapper.find(GlPagination);
   const findPackageListDeleteModal = () => wrapper.find(GlModal);
-  const findEmptySlot = () => wrapper.find({ name: 'empty-slot-stub' });
+  const findEmptySlot = () => wrapper.find(EmptySlotStub);
   const findPackagesListRow = () => wrapper.find(PackagesListRow);
 
   const createStore = (isGroupPage, packages, isLoading) => {
