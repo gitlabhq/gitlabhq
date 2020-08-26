@@ -43,15 +43,15 @@ export default {
   tabsConfig: [
     {
       id: 'overview',
-      title: s__('AlertManagement|Overview'),
-    },
-    {
-      id: 'fullDetails',
       title: s__('AlertManagement|Alert details'),
     },
     {
       id: 'metrics',
       title: s__('AlertManagement|Metrics'),
+    },
+    {
+      id: 'activity',
+      title: s__('AlertManagement|Activity feed'),
     },
   ],
   components: {
@@ -331,18 +331,9 @@ export default {
             </div>
             <div class="gl-pl-2" data-testid="runbook">{{ alert.runbook }}</div>
           </div>
-          <template>
-            <div v-if="alert.notes.nodes" class="issuable-discussion py-5">
-              <ul class="notes main-notes-list timeline">
-                <system-note v-for="note in alert.notes.nodes" :key="note.id" :note="note" />
-              </ul>
-            </div>
-          </template>
-        </gl-tab>
-        <gl-tab :data-testid="$options.tabsConfig[1].id" :title="$options.tabsConfig[1].title">
           <gl-table
             class="alert-management-details-table"
-            :items="[{ key: 'Value', ...alert }]"
+            :items="[{ 'Full Alert Payload': 'Value', ...alert }]"
             :show-empty="true"
             :busy="loading"
             stacked
@@ -355,8 +346,15 @@ export default {
             </template>
           </gl-table>
         </gl-tab>
-        <gl-tab :data-testid="$options.tabsConfig[2].id" :title="$options.tabsConfig[2].title">
+        <gl-tab :data-testid="$options.tabsConfig[1].id" :title="$options.tabsConfig[1].title">
           <alert-metrics :dashboard-url="alert.metricsDashboardUrl" />
+        </gl-tab>
+        <gl-tab :data-testid="$options.tabsConfig[2].id" :title="$options.tabsConfig[2].title">
+          <div v-if="alert.notes.nodes.length > 0" class="issuable-discussion">
+            <ul class="notes main-notes-list timeline">
+              <system-note v-for="note in alert.notes.nodes" :key="note.id" :note="note" />
+            </ul>
+          </div>
         </gl-tab>
       </gl-tabs>
       <alert-sidebar

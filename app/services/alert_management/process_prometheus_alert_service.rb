@@ -3,6 +3,7 @@
 module AlertManagement
   class ProcessPrometheusAlertService < BaseService
     include Gitlab::Utils::StrongMemoize
+    include ::IncidentManagement::Settings
 
     def execute
       return bad_request unless parsed_alert.valid?
@@ -69,6 +70,7 @@ module AlertManagement
 
     def process_resolved_alert_management_alert
       return if am_alert.blank?
+      return unless auto_close_incident?
 
       if am_alert.resolve(ends_at)
         close_issue(am_alert.issue)

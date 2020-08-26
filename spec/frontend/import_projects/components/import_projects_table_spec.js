@@ -6,9 +6,7 @@ import state from '~/import_projects/store/state';
 import * as getters from '~/import_projects/store/getters';
 import { STATUSES } from '~/import_projects/constants';
 import ImportProjectsTable from '~/import_projects/components/import_projects_table.vue';
-import ImportedProjectTableRow from '~/import_projects/components/imported_project_table_row.vue';
 import ProviderRepoTableRow from '~/import_projects/components/provider_repo_table_row.vue';
-import IncompatibleRepoTableRow from '~/import_projects/components/incompatible_repo_table_row.vue';
 import PageQueryParamSync from '~/import_projects/components/page_query_param_sync.vue';
 
 describe('ImportProjectsTable', () => {
@@ -88,20 +86,15 @@ describe('ImportProjectsTable', () => {
     expect(wrapper.contains(GlLoadingIcon)).toBe(true);
   });
 
-  it('renders a table with imported projects and provider repos', () => {
+  it('renders a table with provider repos', () => {
+    const repositories = [
+      { importSource: { id: 1 }, importedProject: null },
+      { importSource: { id: 2 }, importedProject: { importStatus: STATUSES.FINISHED } },
+      { importSource: { id: 3, incompatible: true }, importedProject: {} },
+    ];
+
     createComponent({
-      state: {
-        namespaces: [{ fullPath: 'path' }],
-        repositories: [
-          { importSource: { id: 1 }, importedProject: null, importStatus: STATUSES.NONE },
-          { importSource: { id: 2 }, importedProject: {}, importStatus: STATUSES.FINISHED },
-          {
-            importSource: { id: 3, incompatible: true },
-            importedProject: {},
-            importStatus: STATUSES.NONE,
-          },
-        ],
-      },
+      state: { namespaces: [{ fullPath: 'path' }], repositories },
     });
 
     expect(wrapper.contains(GlLoadingIcon)).toBe(false);
@@ -113,9 +106,7 @@ describe('ImportProjectsTable', () => {
         .exists(),
     ).toBe(true);
 
-    expect(wrapper.contains(ProviderRepoTableRow)).toBe(true);
-    expect(wrapper.contains(ImportedProjectTableRow)).toBe(true);
-    expect(wrapper.contains(IncompatibleRepoTableRow)).toBe(true);
+    expect(wrapper.findAll(ProviderRepoTableRow)).toHaveLength(repositories.length);
   });
 
   it.each`
@@ -142,7 +133,6 @@ describe('ImportProjectsTable', () => {
     createComponent({ state: { repositories: [] } });
 
     expect(wrapper.contains(ProviderRepoTableRow)).toBe(false);
-    expect(wrapper.contains(ImportedProjectTableRow)).toBe(false);
     expect(wrapper.text()).toContain(`No ${providerTitle} repositories found`);
   });
 

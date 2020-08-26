@@ -43,7 +43,7 @@ module OperationsHelper
       create_issue: setting.create_issue.to_s,
       issue_template_key: setting.issue_template_key.to_s,
       send_email: setting.send_email.to_s,
-      auto_close_incident: 'true',
+      auto_close_incident: setting.auto_close_incident.to_s,
       pagerduty_active: setting.pagerduty_active.to_s,
       pagerduty_token: setting.pagerduty_token.to_s,
       pagerduty_webhook_url: project_incidents_integrations_pagerduty_url(@project, token: setting.pagerduty_token),

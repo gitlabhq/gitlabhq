@@ -98,6 +98,7 @@ class ProjectsController < Projects::ApplicationController
         end
       else
         flash.now[:alert] = result[:message]
+        @project.reset
 
         format.html { render_edit }
       end

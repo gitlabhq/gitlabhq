@@ -4,20 +4,15 @@ import { mapActions, mapState, mapGetters } from 'vuex';
 import { GlButton, GlLoadingIcon } from '@gitlab/ui';
 import { __, sprintf } from '~/locale';
 import PaginationLinks from '~/vue_shared/components/pagination_links.vue';
-import ImportedProjectTableRow from './imported_project_table_row.vue';
 import ProviderRepoTableRow from './provider_repo_table_row.vue';
-import IncompatibleRepoTableRow from './incompatible_repo_table_row.vue';
 import PageQueryParamSync from './page_query_param_sync.vue';
-import { isProjectImportable } from '../utils';
 
 const reposFetchThrottleDelay = 1000;
 
 export default {
   name: 'ImportProjectsTable',
   components: {
-    ImportedProjectTableRow,
     ProviderRepoTableRow,
-    IncompatibleRepoTableRow,
     PageQueryParamSync,
     GlLoadingIcon,
     GlButton,
@@ -109,8 +104,6 @@ export default {
     throttledFetchRepos: throttle(function fetch() {
       this.fetchRepos();
     }, reposFetchThrottleDelay),
-
-    isProjectImportable,
   },
 };
 </script>
@@ -165,18 +158,11 @@ export default {
           </thead>
           <tbody>
             <template v-for="repo in repositories">
-              <incompatible-repo-table-row
-                v-if="repo.importSource.incompatible"
-                :key="repo.importSource.id"
-                :repo="repo"
-              />
               <provider-repo-table-row
-                v-else-if="isProjectImportable(repo)"
-                :key="repo.importSource.id"
+                :key="repo.importSource.providerLink"
                 :repo="repo"
                 :available-namespaces="availableNamespaces"
               />
-              <imported-project-table-row v-else :key="repo.importSource.id" :project="repo" />
             </template>
           </tbody>
         </table>

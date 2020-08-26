@@ -1,7 +1,16 @@
-import { isProjectImportable } from '~/import_projects/utils';
+import { isProjectImportable, isIncompatible, getImportStatus } from '~/import_projects/utils';
 import { STATUSES } from '~/import_projects/constants';
 
 describe('import_projects utils', () => {
+  const COMPATIBLE_PROJECT = {
+    importSource: { incompatible: false },
+  };
+
+  const INCOMPATIBLE_PROJECT = {
+    importSource: { incompatible: true },
+    importedProject: null,
+  };
+
   describe('isProjectImportable', () => {
     it.each`
       status                 | result
@@ -14,19 +23,43 @@ describe('import_projects utils', () => {
     `('returns $result when project is compatible and status is $status', ({ status, result }) => {
       expect(
         isProjectImportable({
-          importStatus: status,
-          importSource: { incompatible: false },
+          ...COMPATIBLE_PROJECT,
+          importedProject: { importStatus: status },
         }),
       ).toBe(result);
     });
 
+    it('returns true if import status is not defined', () => {
+      expect(isProjectImportable({ importSource: {} })).toBe(true);
+    });
+
     it('returns false if project is not compatible', () => {
+      expect(isProjectImportable(INCOMPATIBLE_PROJECT)).toBe(false);
+    });
+  });
+
+  describe('isIncompatible', () => {
+    it('returns true for incompatible project', () => {
+      expect(isIncompatible(INCOMPATIBLE_PROJECT)).toBe(true);
+    });
+
+    it('returns false for compatible project', () => {
+      expect(isIncompatible(COMPATIBLE_PROJECT)).toBe(false);
+    });
+  });
+
+  describe('getImportStatus', () => {
+    it('returns actual status when project status is provided', () => {
       expect(
-        isProjectImportable({
-          importStatus: STATUSES.NONE,
-          importSource: { incompatible: true },
+        getImportStatus({
+          ...COMPATIBLE_PROJECT,
+          importedProject: { importStatus: STATUSES.FINISHED },
         }),
-      ).toBe(false);
+      ).toBe(STATUSES.FINISHED);
+    });
+
+    it('returns NONE as status if import status is not provided', () => {
+      expect(getImportStatus(COMPATIBLE_PROJECT)).toBe(STATUSES.NONE);
     });
   });
 });

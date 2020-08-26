@@ -16,5 +16,9 @@ module IncidentManagement
     def process_issues?
       incident_management_setting.create_issue?
     end
+
+    def auto_close_incident?
+      incident_management_setting.auto_close_incident?
+    end
   end
 end

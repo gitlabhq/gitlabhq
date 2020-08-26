@@ -2,7 +2,7 @@
 require_relative 'cluster_with_prometheus.rb'
 
 module QA
-  RSpec.describe 'Monitor', :orchestrated, :kubernetes, :requires_admin do
+  RSpec.describe 'Monitor', :orchestrated, :kubernetes, :requires_admin, quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/241448', type: :investigating } do
     include_context "cluster with Prometheus installed"
 
     before do
@@ -65,7 +65,7 @@ module QA
       end
     end
 
-    it 'uses templating variables for metrics dashboards', quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/240984', type: :investigating } do
+    it 'uses templating variables for metrics dashboards' do
       templating_dashboard_yml = Pathname
                                      .new(__dir__)
                                      .join('../../../../fixtures/metrics_dashboards/templating.yml')

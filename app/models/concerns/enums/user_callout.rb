@@ -20,6 +20,7 @@ module Enums
         webhooks_moved: 13,
         service_templates_deprecated: 14,
         admin_integrations_moved: 15,
+        web_ide_alert_dismissed: 16,
         personal_access_token_expiry: 21, # EE-only
         suggest_pipeline: 22,
         customize_homepage: 23

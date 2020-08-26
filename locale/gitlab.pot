@@ -1557,6 +1557,9 @@ msgstr ""
 msgid "Add environment"
 msgstr ""
 
+msgid "Add existing confidential %{issuableType}"
+msgstr ""
+
 msgid "Add header and footer to emails. Please note that color settings will only be applied within the application interface"
 msgstr ""
 
@@ -2099,6 +2102,9 @@ msgstr[1] ""
 msgid "AlertManagement|Acknowledged"
 msgstr ""
 
+msgid "AlertManagement|Activity feed"
+msgstr ""
+
 msgid "AlertManagement|Alert"
 msgstr ""
 
@@ -2184,9 +2190,6 @@ msgid "AlertManagement|Open"
 msgstr ""
 
 msgid "AlertManagement|Opsgenie is enabled"
-msgstr ""
-
-msgid "AlertManagement|Overview"
 msgstr ""
 
 msgid "AlertManagement|Please try again."
@@ -7199,6 +7202,9 @@ msgid "Create new board"
 msgstr ""
 
 msgid "Create new branch"
+msgstr ""
+
+msgid "Create new confidential %{issuableType}"
 msgstr ""
 
 msgid "Create new directory"
@@ -17125,6 +17131,9 @@ msgstr ""
 msgid "Open Selection"
 msgstr ""
 
+msgid "Open Web IDE"
+msgstr ""
+
 msgid "Open comment type dropdown"
 msgstr ""
 
@@ -24330,6 +24339,9 @@ msgstr ""
 msgid "The URL to use for connecting to Elasticsearch. Use a comma-separated list to support clustering (e.g., \"http://localhost:9200, http://localhost:9201\")."
 msgstr ""
 
+msgid "The Web IDE offers advanced syntax highlighting capabilities and more."
+msgstr ""
+
 msgid "The X509 Certificate to use when mutual TLS is required to communicate with the external authorization service. If left blank, the server certificate is still validated when accessing over HTTPS."
 msgstr ""
 
@@ -24531,6 +24543,9 @@ msgid "The number of times an upload record could not find its file"
 msgstr ""
 
 msgid "The one place for your designs"
+msgstr ""
+
+msgid "The parent epic is confidential and can only contain confidential epics and issues"
 msgstr ""
 
 msgid "The passphrase required to decrypt the private key. This is optional and the value is encrypted at rest."

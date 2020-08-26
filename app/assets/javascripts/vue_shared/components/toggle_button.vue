@@ -73,7 +73,7 @@ export default {
         'is-disabled': disabledInput,
         'is-loading': isLoading,
       }"
-      @click="toggleFeature"
+      @click.prevent="toggleFeature"
     >
       <gl-loading-icon class="loading-icon" />
       <span class="toggle-icon">

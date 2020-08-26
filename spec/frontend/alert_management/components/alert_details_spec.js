@@ -87,8 +87,8 @@ describe('AlertDetails', () => {
         expect(wrapper.find('[data-testid="overview"]').exists()).toBe(true);
       });
 
-      it('renders a tab with full alert information', () => {
-        expect(wrapper.find('[data-testid="fullDetails"]').exists()).toBe(true);
+      it('renders a tab with an activity feed', () => {
+        expect(wrapper.find('[data-testid="activity"]').exists()).toBe(true);
       });
 
       it('renders severity', () => {
@@ -198,7 +198,6 @@ describe('AlertDetails', () => {
         mountComponent({ data: { alert: mockAlert } });
       });
       it('should display a table of raw alert details data', () => {
-        wrapper.find('[data-testid="fullDetails"]').trigger('click');
         expect(findDetailsTable().exists()).toBe(true);
       });
     });
@@ -268,8 +267,8 @@ describe('AlertDetails', () => {
       it.each`
         index | tabId
         ${0}  | ${'overview'}
-        ${1}  | ${'fullDetails'}
-        ${2}  | ${'metrics'}
+        ${1}  | ${'metrics'}
+        ${2}  | ${'activity'}
       `('will navigate to the correct tab via $tabId', ({ index, tabId }) => {
         wrapper.setData({ currentTabIndex: index });
         expect($router.replace).toHaveBeenCalledWith({ name: 'tab', params: { tabId } });

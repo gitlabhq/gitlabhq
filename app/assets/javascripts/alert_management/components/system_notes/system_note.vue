@@ -32,7 +32,7 @@ export default {
 </script>
 
 <template>
-  <li :id="noteAnchorId" class="timeline-entry note system-note note-wrapper">
+  <li :id="noteAnchorId" class="timeline-entry note system-note note-wrapper gl-px-0!">
     <div class="timeline-entry-inner">
       <div class="timeline-icon" v-html="iconHtml"></div>
       <div class="timeline-content">

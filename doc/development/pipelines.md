@@ -524,8 +524,10 @@ The current stages are:
   later used by the (Helm) Review App deployment (see
   [Review Apps](testing_guide/review_apps.md) for details).
 - `review`: This stage includes jobs that deploy the GitLab and Docs Review Apps.
+- `dast`: This stage includes jobs that run a DAST full scan against the Review App
+that is deployed in stage `review`.
 - `qa`: This stage includes jobs that perform QA tasks against the Review App
-  that is deployed in the previous stage.
+  that is deployed in stage `review`.
 - `post-qa`: This stage includes jobs that build reports or gather data from
   the `qa` stage's jobs (e.g. Review App performance report).
 - `pages`: This stage includes a job that deploys the various reports as

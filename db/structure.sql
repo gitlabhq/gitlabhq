@@ -12481,6 +12481,21 @@ CREATE SEQUENCE public.ip_restrictions_id_seq
 
 ALTER SEQUENCE public.ip_restrictions_id_seq OWNED BY public.ip_restrictions.id;
 
+CREATE TABLE public.issuable_severities (
+    id bigint NOT NULL,
+    issue_id bigint NOT NULL,
+    severity smallint DEFAULT 0 NOT NULL
+);
+
+CREATE SEQUENCE public.issuable_severities_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE public.issuable_severities_id_seq OWNED BY public.issuable_severities.id;
+
 CREATE TABLE public.issue_assignees (
     user_id integer NOT NULL,
     issue_id integer NOT NULL
@@ -17054,6 +17069,8 @@ ALTER TABLE ONLY public.internal_ids ALTER COLUMN id SET DEFAULT nextval('public
 
 ALTER TABLE ONLY public.ip_restrictions ALTER COLUMN id SET DEFAULT nextval('public.ip_restrictions_id_seq'::regclass);
 
+ALTER TABLE ONLY public.issuable_severities ALTER COLUMN id SET DEFAULT nextval('public.issuable_severities_id_seq'::regclass);
+
 ALTER TABLE ONLY public.issue_links ALTER COLUMN id SET DEFAULT nextval('public.issue_links_id_seq'::regclass);
 
 ALTER TABLE ONLY public.issue_metrics ALTER COLUMN id SET DEFAULT nextval('public.issue_metrics_id_seq'::regclass);
@@ -18133,6 +18150,9 @@ ALTER TABLE ONLY public.internal_ids
 
 ALTER TABLE ONLY public.ip_restrictions
     ADD CONSTRAINT ip_restrictions_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY public.issuable_severities
+    ADD CONSTRAINT issuable_severities_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY public.issue_links
     ADD CONSTRAINT issue_links_pkey PRIMARY KEY (id);
@@ -19854,6 +19874,8 @@ CREATE UNIQUE INDEX index_internal_ids_on_usage_and_namespace_id ON public.inter
 CREATE UNIQUE INDEX index_internal_ids_on_usage_and_project_id ON public.internal_ids USING btree (usage, project_id) WHERE (project_id IS NOT NULL);
 
 CREATE INDEX index_ip_restrictions_on_group_id ON public.ip_restrictions USING btree (group_id);
+
+CREATE UNIQUE INDEX index_issuable_severities_on_issue_id ON public.issuable_severities USING btree (issue_id);
 
 CREATE UNIQUE INDEX index_issue_assignees_on_issue_id_and_user_id ON public.issue_assignees USING btree (issue_id, user_id);
 
@@ -22191,6 +22213,9 @@ ALTER TABLE ONLY public.protected_branch_unprotect_access_levels
 
 ALTER TABLE ONLY public.ci_freeze_periods
     ADD CONSTRAINT fk_rails_2e02bbd1a6 FOREIGN KEY (project_id) REFERENCES public.projects(id);
+
+ALTER TABLE ONLY public.issuable_severities
+    ADD CONSTRAINT fk_rails_2fbb74ad6d FOREIGN KEY (issue_id) REFERENCES public.issues(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY public.saml_providers
     ADD CONSTRAINT fk_rails_306d459be7 FOREIGN KEY (group_id) REFERENCES public.namespaces(id) ON DELETE CASCADE;

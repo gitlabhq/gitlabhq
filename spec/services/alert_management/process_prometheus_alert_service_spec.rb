@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe AlertManagement::ProcessPrometheusAlertService do
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project, reload: true) { create(:project, :repository) }
 
   before do
     allow(ProjectServiceWorker).to receive(:perform_async)
@@ -128,55 +128,67 @@ RSpec.describe AlertManagement::ProcessPrometheusAlertService do
         let(:status) { 'resolved' }
         let!(:alert) { create(:alert_management_alert, project: project, fingerprint: parsed_alert.gitlab_fingerprint) }
 
-        context 'when status can be changed' do
-          it 'resolves an existing alert' do
-            expect { execute }.to change { alert.reload.resolved? }.to(true)
-          end
+        context 'when auto_resolve_incident set to true' do
+          let_it_be(:operations_settings) { create(:project_incident_management_setting, project: project, auto_close_incident: true) }
 
-          [true, false].each do |state_tracking_enabled|
-            context 'existing issue' do
-              before do
-                stub_feature_flags(track_resource_state_change_events: state_tracking_enabled)
-              end
+          context 'when status can be changed' do
+            it 'resolves an existing alert' do
+              expect { execute }.to change { alert.reload.resolved? }.to(true)
+            end
 
-              let!(:alert) { create(:alert_management_alert, :with_issue, project: project, fingerprint: parsed_alert.gitlab_fingerprint) }
+            [true, false].each do |state_tracking_enabled|
+              context 'existing issue' do
+                before do
+                  stub_feature_flags(track_resource_state_change_events: state_tracking_enabled)
+                end
 
-              it 'closes the issue' do
-                issue = alert.issue
+                let!(:alert) { create(:alert_management_alert, :with_issue, project: project, fingerprint: parsed_alert.gitlab_fingerprint) }
 
-                expect { execute }
-                  .to change { issue.reload.state }
-                  .from('opened')
-                  .to('closed')
-              end
+                it 'closes the issue' do
+                  issue = alert.issue
 
-              if state_tracking_enabled
-                specify { expect { execute }.to change(ResourceStateEvent, :count).by(1) }
-              else
-                specify { expect { execute }.to change(Note, :count).by(1) }
+                  expect { execute }
+                    .to change { issue.reload.state }
+                    .from('opened')
+                    .to('closed')
+                end
+
+                if state_tracking_enabled
+                  specify { expect { execute }.to change(ResourceStateEvent, :count).by(1) }
+                else
+                  specify { expect { execute }.to change(Note, :count).by(1) }
+                end
               end
             end
           end
-        end
 
-        context 'when status change did not succeed' do
-          before do
-            allow(AlertManagement::Alert).to receive(:for_fingerprint).and_return([alert])
-            allow(alert).to receive(:resolve).and_return(false)
+          context 'when status change did not succeed' do
+            before do
+              allow(AlertManagement::Alert).to receive(:for_fingerprint).and_return([alert])
+              allow(alert).to receive(:resolve).and_return(false)
+            end
+
+            it 'writes a warning to the log' do
+              expect(Gitlab::AppLogger).to receive(:warn).with(
+                message: 'Unable to update AlertManagement::Alert status to resolved',
+                project_id: project.id,
+                alert_id: alert.id
+              )
+
+              execute
+            end
           end
 
-          it 'writes a warning to the log' do
-            expect(Gitlab::AppLogger).to receive(:warn).with(
-              message: 'Unable to update AlertManagement::Alert status to resolved',
-              project_id: project.id,
-              alert_id: alert.id
-            )
-
-            execute
-          end
+          it { is_expected.to be_success }
         end
 
-        it { is_expected.to be_success }
+        context 'when auto_resolve_incident set to false' do
+          let_it_be(:operations_settings) { create(:project_incident_management_setting, project: project, auto_close_incident: false) }
+
+          it 'does not resolve an existing alert' do
+            expect { execute }.not_to change { alert.reload.resolved? }
+          end
+        end
       end
 
       context 'environment given' do

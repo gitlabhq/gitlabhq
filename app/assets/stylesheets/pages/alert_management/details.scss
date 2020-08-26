@@ -67,6 +67,10 @@
     }
   }
 
+  .main-notes-list::before {
+    left: 15px !important;
+  }
+
   .note-header-info {
     @include gl-mt-1;
   }

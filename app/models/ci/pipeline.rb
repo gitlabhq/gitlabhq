@@ -19,6 +19,8 @@ module Ci
     PROJECT_ROUTE_AND_NAMESPACE_ROUTE = {
       project: [:project_feature, :route, { namespace: :route }]
     }.freeze
+    CONFIG_EXTENSION = '.gitlab-ci.yml'
+    DEFAULT_CONFIG_PATH = CONFIG_EXTENSION
 
     BridgeStatusError = Class.new(StandardError)
 
@@ -647,7 +649,7 @@ module Ci
     def config_path
       return unless repository_source? || unknown_source?
 
-      project.ci_config_path.presence || '.gitlab-ci.yml'
+      project.ci_config_path_or_default
     end
 
     def has_yaml_errors?

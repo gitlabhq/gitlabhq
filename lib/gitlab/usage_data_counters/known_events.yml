@@ -3,86 +3,69 @@
 - name: g_compliance_dashboard
   redis_slot: compliance
   category: compliance
-  expiry: 84 # expiration time in days, equivalent to 12 weeks
   aggregation: weekly
 - name: g_compliance_audit_events
   category: compliance
   redis_slot: compliance
-  expiry: 84
   aggregation: weekly
 - name: i_compliance_audit_events
   category: compliance
   redis_slot: compliance
-  expiry: 84
   aggregation: weekly
 - name: i_compliance_credential_inventory
   category: compliance
   redis_slot: compliance
-  expiry: 84
   aggregation: weekly
 # Analytics category
 - name: g_analytics_contribution
   category: analytics
   redis_slot: analytics
-  expiry: 84
   aggregation: weekly
 - name: g_analytics_insights
   category: analytics
   redis_slot: analytics
-  expiry: 84
   aggregation: weekly
 - name: g_analytics_issues
   category: analytics
   redis_slot: analytics
-  expiry: 84
   aggregation: weekly
 - name: g_analytics_productivity
   category: analytics
   redis_slot: analytics
-  expiry: 84
   aggregation: weekly
 - name: g_analytics_valuestream
   category: analytics
   redis_slot: analytics
-  expiry: 84
   aggregation: weekly
 - name: p_analytics_pipelines
   category: analytics
   redis_slot: analytics
-  expiry: 84
   aggregation: weekly
 - name: p_analytics_code_reviews
   category: analytics
   redis_slot: analytics
-  expiry: 84
   aggregation: weekly
 - name: p_analytics_valuestream
   category: analytics
   redis_slot: analytics
-  expiry: 84
   aggregation: weekly
 - name: p_analytics_insights
   category: analytics
   redis_slot: analytics
-  expiry: 84
   aggregation: weekly
 - name: p_analytics_issues
   category: analytics
   redis_slot: analytics
-  expiry: 84
   aggregation: weekly
 - name: p_analytics_repo
   category: analytics
   redis_slot: analytics
-  expiry: 84
   aggregation: weekly
 - name: i_analytics_cohorts
   category: analytics
   redis_slot: analytics
-  expiry: 84
   aggregation: weekly
 - name: i_analytics_dev_ops_score
   category: analytics
   redis_slot: analytics
-  expiry: 84
   aggregation: weekly

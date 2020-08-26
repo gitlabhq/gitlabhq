@@ -2518,6 +2518,14 @@ class Project < ApplicationRecord
       .exists?
   end
 
+  def default_branch_or_master
+    default_branch || 'master'
+  end
+
+  def ci_config_path_or_default
+    ci_config_path.presence || Ci::Pipeline::DEFAULT_CONFIG_PATH
+  end
+
   private
 
   def find_service(services, name)

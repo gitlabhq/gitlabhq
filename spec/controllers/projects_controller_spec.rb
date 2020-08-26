@@ -555,6 +555,18 @@ RSpec.describe ProjectsController do
     end
 
     shared_examples_for 'updating a project' do
+      context 'when there is a conflicting project path' do
+        let(:random_name) { "project-#{SecureRandom.hex(8)}" }
+        let!(:conflict_project) { create(:project, name: random_name, path: random_name, namespace: project.namespace) }
+
+        it 'does not show any references to the conflicting path' do
+          expect { update_project(path: random_name) }.not_to change { project.reload.path }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response.body).not_to include(random_name)
+        end
+      end
+
       context 'when only renaming a project path' do
         it "sets the repository to the right path after a rename" do
           original_repository_path = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
