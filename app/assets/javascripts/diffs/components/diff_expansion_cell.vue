@@ -3,6 +3,7 @@ import { mapState, mapActions } from 'vuex';
 import { GlIcon } from '@gitlab/ui';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
 import { s__ } from '~/locale';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { UNFOLD_COUNT, INLINE_DIFF_VIEW_TYPE, PARALLEL_DIFF_VIEW_TYPE } from '../constants';
 import * as utils from '../store/utils';
 import tooltip from '../../vue_shared/directives/tooltip';
@@ -28,6 +29,7 @@ export default {
   components: {
     GlIcon,
   },
+  mixins: [glFeatureFlagsMixin()],
   props: {
     fileHash: {
       type: String,
@@ -59,7 +61,11 @@ export default {
   },
   computed: {
     ...mapState({
-      diffViewType: state => state.diffs.diffViewType,
+      diffViewType(state) {
+        return this.glFeatures.unifiedDiffLines
+          ? PARALLEL_DIFF_VIEW_TYPE
+          : state.diffs.diffViewType;
+      },
       diffFiles: state => state.diffs.diffFiles,
     }),
     canExpandUp() {

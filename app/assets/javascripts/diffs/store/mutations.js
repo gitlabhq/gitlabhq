@@ -1,4 +1,5 @@
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
+import { PARALLEL_DIFF_VIEW_TYPE } from '../constants';
 import {
   findDiffFile,
   addLineReferences,
@@ -154,7 +155,9 @@ export default {
     addContextLines({
       inlineLines: diffFile.highlighted_diff_lines,
       parallelLines: diffFile.parallel_diff_lines,
-      diffViewType: state.diffViewType,
+      diffViewType: window.gon?.features?.unifiedDiffLines
+        ? PARALLEL_DIFF_VIEW_TYPE
+        : state.diffViewType,
       contextLines: lines,
       bottom,
       lineNumbers,

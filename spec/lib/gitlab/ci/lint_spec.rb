@@ -72,7 +72,7 @@ RSpec.describe Gitlab::Ci::Lint do
 
         it 'returns a result with errors' do
           expect(subject).not_to be_valid
-          expect(subject.errors).to include(/root config contains unknown keys/)
+          expect(subject.errors).to include(/jobs build config should implement a script: or a trigger: keyword/)
         end
       end
 

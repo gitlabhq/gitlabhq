@@ -96,9 +96,23 @@ module Projects
           .rename_project(path_before, project_path, namespace_full_path)
       end
 
-      Gitlab::PagesTransfer
-        .new
-        .rename_project(path_before, project_path, namespace_full_path)
+      if ::Feature.enabled?(:async_pages_move_project_rename, project)
+        # Block will be evaluated in the context of project so we need
+        # to bind to a local variable to capture it, as the instance
+        # variable and method aren't available on Project
+        path_before_local = @path_before
+
+        project.run_after_commit_or_now do
+          Gitlab::PagesTransfer
+            .new
+            .async
+            .rename_project(path_before_local, path, namespace.full_path)
+        end
+      else
+        Gitlab::PagesTransfer
+          .new
+          .rename_project(path_before, project_path, namespace_full_path)
+      end
     end
 
     def log_completion

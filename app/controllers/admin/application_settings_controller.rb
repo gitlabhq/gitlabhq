@@ -32,7 +32,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
   end
 
   def integrations
-    @integrations = Service.find_or_initialize_all(Service.instances).sort_by(&:title)
+    @integrations = Service.find_or_initialize_all(Service.for_instance).sort_by(&:title)
   end
 
   def update

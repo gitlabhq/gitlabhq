@@ -344,9 +344,9 @@ RSpec.describe Gitlab::Ci::Config::Entry::Root do
       end
 
       describe '#errors' do
-        it 'reports errors about missing script' do
+        it 'reports errors about missing script or trigger' do
           expect(root.errors)
-            .to include "root config contains unknown keys: rspec"
+            .to include 'jobs rspec config should implement a script: or a trigger: keyword'
         end
       end
     end

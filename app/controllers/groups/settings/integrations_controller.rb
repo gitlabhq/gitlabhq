@@ -8,7 +8,7 @@ module Groups
       before_action :authorize_admin_group!
 
       def index
-        @integrations = Service.find_or_initialize_all(Service.by_group(group)).sort_by(&:title)
+        @integrations = Service.find_or_initialize_all(Service.for_group(group)).sort_by(&:title)
       end
 
       private

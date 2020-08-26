@@ -2409,7 +2409,7 @@ module Gitlab
         context 'returns error if job configuration is invalid' do
           let(:config) { YAML.dump({ extra: "bundle update" }) }
 
-          it_behaves_like 'returns errors', 'root config contains unknown keys: extra'
+          it_behaves_like 'returns errors', 'jobs extra config should implement a script: or a trigger: keyword'
         end
 
         context 'returns errors if services configuration is not correct' do
@@ -2427,7 +2427,7 @@ module Gitlab
         context 'returns errors if the job script is not defined' do
           let(:config) { YAML.dump({ rspec: { before_script: "test" } }) }
 
-          it_behaves_like 'returns errors', "jobs:rspec script can't be blank"
+          it_behaves_like 'returns errors', 'jobs rspec config should implement a script: or a trigger: keyword'
         end
 
         context 'returns errors if there are no visible jobs defined' do

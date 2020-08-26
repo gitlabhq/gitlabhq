@@ -1540,6 +1540,14 @@
   :weight: 1
   :idempotent:
   :tags: []
+- :name: pages_transfer
+  :feature_category: :pages
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent:
+  :tags: []
 - :name: pages_update_configuration
   :feature_category: :pages
   :has_external_dependencies:

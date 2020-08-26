@@ -57,14 +57,24 @@ bundle exec guard
 
 When using spring and guard together, use `SPRING=1 bundle exec guard` instead to make use of spring.
 
-Use [Factory Doctor](https://test-prof.evilmartians.io/#/profilers/factory_doctor) to find cases on un-necessary database manipulation, which can cause slow tests.
+Use [Factory Doctor](https://test-prof.evilmartians.io/#/profilers/factory_doctor) to find cases where database persistence is not needed in a given test.
 
 ```shell
 # run test for path
 FDOC=1 bin/rspec spec/[path]/[to]/[spec].rb
 ```
 
-[Factory Profiler](https://test-prof.evilmartians.io/#/profilers/factory_prof) can help to identify unnecessary factory creation.
+A common change is to use `build` instead of `create`:
+
+```ruby
+# Old
+let(:project) { create(:project) }
+
+# New
+let(:project) { build(:project) }
+```
+
+[Factory Profiler](https://test-prof.evilmartians.io/#/profilers/factory_prof) can help to identify repetitive database persistance via factories.
 
 ```shell
 # run test for path
@@ -74,14 +84,14 @@ FPROF=1 bin/rspec spec/[path]/[to]/[spec].rb
 FPROF=flamegraph bin/rspec spec/[path]/[to]/[spec].rb
 ```
 
-A common change is to use [`let_it_be`](#common-test-setup).
+A common change is to use [`let_it_be`](#common-test-setup):
 
 ```ruby
-  # Old
-  let(:project) { create(:project) }
+# Old
+let(:project) { create(:project) }
 
-  # New
-  let_it_be(:project) { create(:project) }
+# New
+let_it_be(:project) { create(:project) }
 ```
 
 ### General guidelines

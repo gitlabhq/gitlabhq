@@ -2533,11 +2533,11 @@ class Project < ApplicationRecord
   end
 
   def services_templates
-    @services_templates ||= Service.templates
+    @services_templates ||= Service.for_template
   end
 
   def services_instances
-    @services_instances ||= Service.instances
+    @services_instances ||= Service.for_instance
   end
 
   def closest_namespace_setting(name)

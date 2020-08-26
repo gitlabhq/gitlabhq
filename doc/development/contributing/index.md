@@ -67,6 +67,11 @@ we credit the original author by adding a changelog entry crediting the author
 and optionally include the original author on at least one of the commits
 within the MR.
 
+## Closing policy for inactive bugs
+
+GitLab values the time spent by contributors on reporting bugs. However, if a bug remains inactive for a very long period,
+it will qualify for auto-closure. Please refer to the [auto-close inactive bugs](https://about.gitlab.com/handbook/engineering/quality/triage-operations/#auto-close-inactive-bugs) section in our handbook to understand the complete workflow.
+
 ## Helping others
 
 Help other GitLab users when you can.

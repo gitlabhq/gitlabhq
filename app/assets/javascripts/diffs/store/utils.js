@@ -20,6 +20,77 @@ import {
 } from '../constants';
 import { prepareRawDiffFile } from '../diff_file';
 
+export const isAdded = line => ['new', 'new-nonewline'].includes(line.type);
+export const isRemoved = line => ['old', 'old-nonewline'].includes(line.type);
+export const isUnchanged = line => !line.type;
+export const isMeta = line => ['match', 'new-nonewline', 'old-nonewline'].includes(line.type);
+
+/**
+ * Pass in the inline diff lines array which gets converted
+ * to the parallel diff lines.
+ * This allows for us to convert inline diff lines to parallel
+ * on the frontend without needing to send any requests
+ * to the API.
+ *
+ * This method has been taken from the already existing backend
+ * implementation at lib/gitlab/diff/parallel_diff.rb
+ *
+ * @param {Object[]} diffLines - inline diff lines
+ *
+ * @returns {Object[]} parallel lines
+ */
+export const parallelizeDiffLines = (diffLines = []) => {
+  let freeRightIndex = null;
+  const lines = [];
+
+  for (let i = 0, diffLinesLength = diffLines.length, index = 0; i < diffLinesLength; i += 1) {
+    const line = diffLines[i];
+
+    if (isRemoved(line)) {
+      lines.push({
+        [LINE_POSITION_LEFT]: line,
+        [LINE_POSITION_RIGHT]: null,
+      });
+
+      if (freeRightIndex === null) {
+        // Once we come upon a new line it can be put on the right of this old line
+        freeRightIndex = index;
+      }
+      index += 1;
+    } else if (isAdded(line)) {
+      if (freeRightIndex !== null) {
+        // If an old line came before this without a line on the right, this
+        // line can be put to the right of it.
+        lines[freeRightIndex].right = line;
+
+        // If there are any other old lines on the left that don't yet have
+        // a new counterpart on the right, update the free_right_index
+        const nextFreeRightIndex = freeRightIndex + 1;
+        freeRightIndex = nextFreeRightIndex < index ? nextFreeRightIndex : null;
+      } else {
+        lines.push({
+          [LINE_POSITION_LEFT]: null,
+          [LINE_POSITION_RIGHT]: line,
+        });
+
+        freeRightIndex = null;
+        index += 1;
+      }
+    } else if (isMeta(line) || isUnchanged(line)) {
+      // line in the right panel is the same as in the left one
+      lines.push({
+        [LINE_POSITION_LEFT]: line,
+        [LINE_POSITION_RIGHT]: line,
+      });
+
+      freeRightIndex = null;
+      index += 1;
+    }
+  }
+
+  return lines;
+};
+
 export function findDiffFile(files, match, matchKey = 'file_hash') {
   return files.find(file => file[matchKey] === match);
 }
@@ -280,6 +351,13 @@ function mergeTwoFiles(target, source) {
 }
 
 function ensureBasicDiffFileLines(file) {
+  if (window.gon?.features?.unifiedDiffLines) {
+    return Object.assign(file, {
+      highlighted_diff_lines: [],
+      parallel_diff_lines: parallelizeDiffLines(file.highlighted_diff_lines || []),
+    });
+  }
+
   const missingInline = !file.highlighted_diff_lines;
   const missingParallel = !file.parallel_diff_lines;
 
@@ -716,75 +794,4 @@ export const getDefaultWhitespace = (queryString, cookie) => {
   if (queryString) return queryString === SHOW_WHITESPACE;
   if (cookie === NO_SHOW_WHITESPACE) return false;
   return true;
-};
-
-export const isAdded = line => ['new', 'new-nonewline'].includes(line.type);
-export const isRemoved = line => ['old', 'old-nonewline'].includes(line.type);
-export const isUnchanged = line => !line.type;
-export const isMeta = line => ['match', 'new-nonewline', 'old-nonewline'].includes(line.type);
-
-/**
- * Pass in the inline diff lines array which gets converted
- * to the parallel diff lines.
- * This allows for us to convert inline diff lines to parallel
- * on the frontend without needing to send any requests
- * to the API.
- *
- * This method has been taken from the already existing backend
- * implementation at lib/gitlab/diff/parallel_diff.rb
- *
- * @param {Object[]} diffLines - inline diff lines
- *
- * @returns {Object[]} parallel lines
- */
-export const parallelizeDiffLines = (diffLines = []) => {
-  let freeRightIndex = null;
-  const lines = [];
-
-  for (let i = 0, diffLinesLength = diffLines.length, index = 0; i < diffLinesLength; i += 1) {
-    const line = diffLines[i];
-
-    if (isRemoved(line)) {
-      lines.push({
-        [LINE_POSITION_LEFT]: line,
-        [LINE_POSITION_RIGHT]: null,
-      });
-
-      if (freeRightIndex === null) {
-        // Once we come upon a new line it can be put on the right of this old line
-        freeRightIndex = index;
-      }
-      index += 1;
-    } else if (isAdded(line)) {
-      if (freeRightIndex !== null) {
-        // If an old line came before this without a line on the right, this
-        // line can be put to the right of it.
-        lines[freeRightIndex].right = line;
-
-        // If there are any other old lines on the left that don't yet have
-        // a new counterpart on the right, update the free_right_index
-        const nextFreeRightIndex = freeRightIndex + 1;
-        freeRightIndex = nextFreeRightIndex < index ? nextFreeRightIndex : null;
-      } else {
-        lines.push({
-          [LINE_POSITION_LEFT]: null,
-          [LINE_POSITION_RIGHT]: line,
-        });
-
-        freeRightIndex = null;
-        index += 1;
-      }
-    } else if (isMeta(line) || isUnchanged(line)) {
-      // line in the right panel is the same as in the left one
-      lines.push({
-        [LINE_POSITION_LEFT]: line,
-        [LINE_POSITION_RIGHT]: line,
-      });
-
-      freeRightIndex = null;
-      index += 1;
-    }
-  }
-
-  return lines;
 };

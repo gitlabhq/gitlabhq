@@ -92,12 +92,12 @@ RSpec.describe Service do
       end
     end
 
-    describe '.by_group' do
+    describe '.for_group' do
       let!(:service1) { create(:jira_service, project_id: nil, group_id: group.id) }
       let!(:service2) { create(:jira_service) }
 
       it 'returns the right group service' do
-        expect(described_class.by_group(group)).to match_array([service1])
+        expect(described_class.for_group(group)).to match_array([service1])
       end
     end
 
@@ -215,11 +215,11 @@ RSpec.describe Service do
   describe '.find_or_initialize_all' do
     shared_examples 'service instances' do
       it 'returns the available service instances' do
-        expect(Service.find_or_initialize_all(Service.instances).pluck(:type)).to match_array(Service.available_services_types)
+        expect(Service.find_or_initialize_all(Service.for_instance).pluck(:type)).to match_array(Service.available_services_types)
       end
 
       it 'does not create service instances' do
-        expect { Service.find_or_initialize_all(Service.instances) }.not_to change { Service.count }
+        expect { Service.find_or_initialize_all(Service.for_instance) }.not_to change { Service.count }
       end
     end
 

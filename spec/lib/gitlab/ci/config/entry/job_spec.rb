@@ -74,16 +74,6 @@ RSpec.describe Gitlab::Ci::Config::Entry::Job do
       it { is_expected.to be_falsey }
     end
 
-    context 'when config does not contain script' do
-      let(:name) { :build }
-
-      let(:config) do
-        { before_script: "cd ${PROJ_DIR} " }
-      end
-
-      it { is_expected.to be_truthy }
-    end
-
     context 'when using the default job without script' do
       let(:name) { :default }
       let(:config) do
@@ -103,14 +93,6 @@ RSpec.describe Gitlab::Ci::Config::Entry::Job do
       end
 
       it { is_expected.to be_truthy }
-    end
-
-    context 'there are no shared keys between jobs and bridges' do
-      subject(:shared_values) do
-        described_class::ALLOWED_KEYS & Gitlab::Ci::Config::Entry::Bridge::ALLOWED_KEYS
-      end
-
-      it { is_expected.to be_empty }
     end
   end
 

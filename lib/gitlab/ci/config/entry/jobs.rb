@@ -14,8 +14,8 @@ module Gitlab
             validates :config, type: Hash
 
             validate do
-              unless has_valid_jobs?
-                errors.add(:config, 'should contain valid jobs')
+              each_unmatched_job do |name|
+                errors.add(name, 'config should implement a script: or a trigger: keyword')
               end
 
               unless has_visible_job?
@@ -23,9 +23,9 @@ module Gitlab
               end
             end
 
-            def has_valid_jobs?
-              config.all? do |name, value|
-                Jobs.find_type(name, value)
+            def each_unmatched_job
+              config.each do |name, value|
+                yield(name) unless Jobs.find_type(name, value)
               end
             end
 

@@ -150,7 +150,10 @@ RSpec.describe Projects::Ci::LintsController do
       it 'assigns result with errors' do
         subject
 
-        expect(assigns[:result].errors).to eq(['root config contains unknown keys: rubocop'])
+        expect(assigns[:result].errors).to match_array([
+          'jobs rubocop config should implement a script: or a trigger: keyword',
+          'jobs config should contain at least one visible job'
+        ])
       end
 
       context 'with dry_run mode' do
@@ -159,7 +162,7 @@ RSpec.describe Projects::Ci::LintsController do
         it 'assigns result with errors' do
           subject
 
-          expect(assigns[:result].errors).to eq(['root config contains unknown keys: rubocop'])
+          expect(assigns[:result].errors).to eq(['jobs rubocop config should implement a script: or a trigger: keyword'])
         end
       end
     end

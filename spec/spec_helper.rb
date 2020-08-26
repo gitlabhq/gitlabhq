@@ -194,6 +194,10 @@ RSpec.configure do |config|
       stub_feature_flags(vue_issuable_sidebar: false)
       stub_feature_flags(vue_issuable_epic_sidebar: false)
 
+      # The following can be removed once we are confident the
+      # unified diff lines works as expected
+      stub_feature_flags(unified_diff_lines: false)
+
       enable_rugged = example.metadata[:enable_rugged].present?
 
       # Disable Rugged features by default

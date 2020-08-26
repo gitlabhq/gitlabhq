@@ -134,7 +134,7 @@ module Gitlab
             @jobs_config = @config
               .except(*self.class.reserved_nodes_names)
               .select do |name, config|
-              Entry::Jobs.find_type(name, config).present?
+              Entry::Jobs.find_type(name, config).present? || ALLOWED_KEYS.exclude?(name)
             end
 
             @config = @config.except(*@jobs_config.keys)

@@ -150,10 +150,10 @@ class MergeRequestDiff < ApplicationRecord
   # All diff information is collected from repository after object is created.
   # It allows you to override variables like head_commit_sha before getting diff.
   after_create :save_git_content, unless: :importing?
-  after_create :set_count_columns
   after_create_commit :set_as_latest_diff, unless: :importing?
 
   after_save :update_external_diff_store
+  after_save :set_count_columns
 
   def self.find_by_diff_refs(diff_refs)
     find_by(start_commit_sha: diff_refs.start_sha, head_commit_sha: diff_refs.head_sha, base_commit_sha: diff_refs.base_sha)

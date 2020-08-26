@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'Admin visits service templates' do
   let(:admin) { create(:user, :admin) }
-  let(:slack_service) { Service.templates.find { |s| s.type == 'SlackService' } }
+  let(:slack_service) { Service.for_template.find { |s| s.type == 'SlackService' } }
 
   before do
     sign_in(admin)
