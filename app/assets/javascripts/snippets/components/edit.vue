@@ -4,7 +4,7 @@ import { GlButton, GlLoadingIcon } from '@gitlab/ui';
 import { deprecatedCreateFlash as Flash } from '~/flash';
 import { __, sprintf } from '~/locale';
 import TitleField from '~/vue_shared/components/form/title.vue';
-import { redirectTo } from '~/lib/utils/url_utility';
+import { redirectTo, joinPaths } from '~/lib/utils/url_utility';
 import FormFooterActions from '~/vue_shared/components/form/form_footer_actions.vue';
 
 import UpdateSnippetMutation from '../mutations/updateSnippet.mutation.graphql';
@@ -88,9 +88,7 @@ export default {
     },
     cancelButtonHref() {
       if (this.newSnippet) {
-        return this.projectPath
-          ? `${gon.relative_url_root}${this.projectPath}/-/snippets`
-          : `${gon.relative_url_root}/-/snippets`;
+        return joinPaths('/', gon.relative_url_root, this.projectPath, '-/snippets');
       }
       return this.snippet.webUrl;
     },

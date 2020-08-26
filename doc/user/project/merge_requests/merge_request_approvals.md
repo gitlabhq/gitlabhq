@@ -61,6 +61,8 @@ group is public.
 
 #### Eligible Approvers
 
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10294) in [GitLab Starter](https://about.gitlab.com/pricing/) 13.3, when an eligible approver comments on a merge request, it appears in the **Commented by** column of the Approvals widget.
+
 The following users can approve merge requests:
 
 - Users who have been added as approvers at the project or merge request levels with
@@ -84,8 +86,7 @@ if [**Prevent author approval**](#allowing-merge-request-authors-to-approve-thei
 and [**Prevent committers approval**](#prevent-approval-of-merge-requests-by-their-committers) (disabled by default)
 are enabled on the project settings.
 
-[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10294) in [GitLab Starter](https://about.gitlab.com/pricing/) 13.3,
-when an eligible approver comments on a merge request, it appears in the **Commented by** column of the Approvals widget,
+When an eligible approver comments on a merge request, it appears in the **Commented by** column of the Approvals widget,
 indicating who has engaged in the merge request review. Authors and reviewers can also easily identify who they should reach out
 to if they have any questions or inputs about the content of the merge request.
 

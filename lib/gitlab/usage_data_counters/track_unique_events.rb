@@ -3,8 +3,6 @@
 module Gitlab
   module UsageDataCounters
     module TrackUniqueEvents
-      KEY_EXPIRY_LENGTH = 29.days
-
       WIKI_ACTION = :wiki_action
       DESIGN_ACTION = :design_action
       PUSH_ACTION = :project_action
@@ -27,21 +25,17 @@ module Gitlab
 
       class << self
         def track_event(event_action:, event_target:, author_id:, time: Time.zone.now)
-          return unless Gitlab::CurrentSettings.usage_ping_enabled
           return unless valid_target?(event_target)
           return unless valid_action?(event_action)
 
           transformed_target = transform_target(event_target)
           transformed_action = transform_action(event_action, transformed_target)
-          target_key = key(transformed_action, time)
 
-          Gitlab::Redis::HLL.add(key: target_key, value: author_id, expiry: KEY_EXPIRY_LENGTH)
+          Gitlab::UsageDataCounters::TrackUniqueActions.track_action(action: transformed_action, author_id: author_id, time: time)
         end
 
         def count_unique_events(event_action:, date_from:, date_to:)
-          keys = (date_from.to_date..date_to.to_date).map { |date| key(event_action, date) }
-
-          Gitlab::Redis::HLL.count(keys: keys)
+          Gitlab::UsageDataCounters::TrackUniqueActions.count_unique(action: event_action, date_from: date_from, date_to: date_to)
         end
 
         private
@@ -60,11 +54,6 @@ module Gitlab
 
         def valid_action?(action)
           Event.actions.key?(action)
-        end
-
-        def key(event_action, date)
-          year_day = date.strftime('%G-%j')
-          "#{year_day}-{#{event_action}}"
         end
       end
     end

@@ -768,6 +768,8 @@
 
 .setup:rules:verify-tests-yml:
   rules:
+    - <<: *if-not-ee
+      when: never
     - <<: *if-default-refs
       changes: *code-backstage-patterns
       when: on_success

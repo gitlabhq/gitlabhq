@@ -4,16 +4,21 @@ import Trigger from './components/trigger.vue';
 import store from './store';
 
 export default () => {
+  const whatsNewElm = document.getElementById('whats-new-app');
+
   // eslint-disable-next-line no-new
   new Vue({
-    el: document.getElementById('whats-new-app'),
+    el: whatsNewElm,
     store,
     components: {
       App,
     },
-
     render(createElement) {
-      return createElement('app');
+      return createElement('app', {
+        props: {
+          features: whatsNewElm.getAttribute('data-features'),
+        },
+      });
     },
   });
 

@@ -72,8 +72,8 @@ export default class MilestoneSelect {
       return initDeprecatedJQueryDropdown($dropdown, {
         showMenuAbove,
         data: (term, callback) => {
-          let contextId = $dropdown.get(0).dataset.projectId;
-          let getMilestones = Api.projectMilestones;
+          let contextId = parseInt($dropdown.get(0).dataset.projectId, 10);
+          let getMilestones = Api.projectMilestones.bind(Api);
           const reqParams = { state: 'active', include_parent_milestones: true };
 
           if (term) {
@@ -83,7 +83,7 @@ export default class MilestoneSelect {
           if (!contextId) {
             contextId = $dropdown.get(0).dataset.groupId;
             delete reqParams.include_parent_milestones;
-            getMilestones = Api.groupMilestones;
+            getMilestones = Api.groupMilestones.bind(Api);
           }
 
           // We don't use $.data() as it caches initial value and never updates!

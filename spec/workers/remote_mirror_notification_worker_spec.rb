@@ -6,7 +6,7 @@ RSpec.describe RemoteMirrorNotificationWorker, :mailer do
   let_it_be(:project) { create(:project, :repository, :remote_mirror) }
   let_it_be(:mirror) { project.remote_mirrors.first }
 
-  describe '#execute' do
+  describe '#perform' do
     it 'calls NotificationService#remote_mirror_update_failed when the mirror exists' do
       mirror.update_column(:last_error, "There was a problem fetching")
 

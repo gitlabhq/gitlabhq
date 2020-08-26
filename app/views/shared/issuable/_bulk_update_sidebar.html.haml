@@ -40,7 +40,7 @@
         .title
           = _('Milestone')
         .filter-item
-          = dropdown_tag(_("Select milestone"), options: { title: _("Assign milestone"), toggle_class: "js-milestone-select js-extra-options js-filter-submit js-filter-bulk-update", filter: true, dropdown_class: "dropdown-menu-selectable dropdown-menu-milestone", placeholder: _("Search milestones"), data: { show_no: true, field_name: "update[milestone_id]", project_id: @project.id, milestones: project_milestones_path(@project, :json), use_id: true, default_label: _("Milestone") } })
+          = dropdown_tag(_("Select milestone"), options: { title: _("Assign milestone"), toggle_class: "js-milestone-select js-extra-options js-filter-submit js-filter-bulk-update", filter: true, dropdown_class: "dropdown-menu-selectable dropdown-menu-milestone", placeholder: _("Search milestones"), data: { show_no: true, field_name: "update[milestone_id]", project_id: @project.id, use_id: true, default_label: _("Milestone") } })
       .block
         .title
           = _('Labels')

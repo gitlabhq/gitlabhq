@@ -256,7 +256,39 @@ Implemented using Redis methods [PFADD](https://redis.io/commands/pfadd) and [PF
      keys for data storage. For `daily` we keep a key for metric per day of the year, for `weekly` we
      keep a key for metric per week of the year.
 
-1. Track event using `Gitlab::UsageDataCounters::HLLRedisCounter.track_event(entity_id, event_name)`.
+1. Track event in controller using `RedisTracking` module with `track_redis_hll_event(*controller_actions, name:, feature:)`.
+
+   Arguments:
+
+   - `controller_actions`: controller actions we want to track.
+   - `name`: event name.
+   - `feature`: feature name, all metrics we track should be under feature flag.
+
+   Example usage:
+
+   ```ruby
+   # controller
+   class ProjectsController < Projects::ApplicationController
+     include RedisTracking
+
+     skip_before_action :authenticate_user!, only: :show
+     track_redis_hll_event :index, :show, name: 'i_analytics_dev_ops_score', feature: :g_compliance_dashboard_feature
+
+     def index
+       render html: 'index'
+     end
+
+    def new
+      render html: 'new'
+    end
+
+    def show
+      render html: 'show'
+    end
+   end
+   ```
+
+1. Track event using base module `Gitlab::UsageDataCounters::HLLRedisCounter.track_event(entity_id, event_name)`.
 
    Arguments:
 

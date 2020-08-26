@@ -7,14 +7,13 @@ class SchedulePopulateResolvedOnDefaultBranchColumn < ActiveRecord::Migration[6.
   BATCH_SIZE = 100
   DELAY_INTERVAL = 5.minutes.to_i
   MIGRATION_CLASS = 'PopulateResolvedOnDefaultBranchColumn'
-  BASE_MODEL = EE::Gitlab::BackgroundMigration::PopulateResolvedOnDefaultBranchColumn::Vulnerability
 
   disable_ddl_transaction!
 
   def up
     return unless run_migration?
 
-    BASE_MODEL.distinct.each_batch(of: BATCH_SIZE, column: :project_id) do |batch, index|
+    EE::Gitlab::BackgroundMigration::PopulateResolvedOnDefaultBranchColumn::Vulnerability.distinct.each_batch(of: BATCH_SIZE, column: :project_id) do |batch, index|
       project_ids = batch.pluck(:project_id)
       migrate_in(index * DELAY_INTERVAL, MIGRATION_CLASS, project_ids)
     end
