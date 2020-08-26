@@ -48,7 +48,7 @@ describe('Application Row', () => {
   describe('Install button', () => {
     const button = () => wrapper.find('.js-cluster-application-install-button');
     const checkButtonState = (label, loading, disabled) => {
-      expect(button().props('label')).toEqual(label);
+      expect(button().text()).toEqual(label);
       expect(button().props('loading')).toEqual(loading);
       expect(button().props('disabled')).toEqual(disabled);
     };
@@ -56,7 +56,7 @@ describe('Application Row', () => {
     it('has indeterminate state on page load', () => {
       mountComponent({ status: null });
 
-      expect(button().props('label')).toBeUndefined();
+      expect(button().text()).toBe('');
     });
 
     it('has install button', () => {
@@ -225,7 +225,7 @@ describe('Application Row', () => {
       mountComponent({ updateAvailable: true });
 
       expect(button().exists()).toBe(true);
-      expect(button().props('label')).toContain('Update');
+      expect(button().text()).toContain('Update');
     });
 
     it('has enabled "Retry update" when update process fails', () => {
@@ -235,14 +235,14 @@ describe('Application Row', () => {
       });
 
       expect(button().exists()).toBe(true);
-      expect(button().props('label')).toContain('Retry update');
+      expect(button().text()).toContain('Retry update');
     });
 
     it('has disabled "Updating" when APPLICATION_STATUS.UPDATING', () => {
       mountComponent({ status: APPLICATION_STATUS.UPDATING });
 
       expect(button().exists()).toBe(true);
-      expect(button().props('label')).toContain('Updating');
+      expect(button().text()).toContain('Updating');
     });
 
     it('clicking update button emits event', () => {

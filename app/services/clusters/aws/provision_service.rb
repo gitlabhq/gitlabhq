@@ -63,6 +63,7 @@ module Clusters
         [
           parameter('ClusterName', provider.cluster.name),
           parameter('ClusterRole', provider.role_arn),
+          parameter('KubernetesVersion', provider.kubernetes_version),
           parameter('ClusterControlPlaneSecurityGroup', provider.security_group_id),
           parameter('VpcId', provider.vpc_id),
           parameter('Subnets', provider.subnet_ids.join(',')),

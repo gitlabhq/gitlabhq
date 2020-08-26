@@ -348,7 +348,7 @@ RSpec.describe Git::BranchHooksService do
 
     context 'when the project is forked', :sidekiq_might_not_need_inline do
       let(:upstream_project) { project }
-      let(:forked_project) { fork_project(upstream_project, user, repository: true) }
+      let(:forked_project) { fork_project(upstream_project, user, repository: true, using_service: true) }
 
       let!(:forked_service) do
         described_class.new(forked_project, user, change: { oldrev: oldrev, newrev: newrev, ref: ref })

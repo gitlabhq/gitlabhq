@@ -282,6 +282,14 @@ Cop/ActiveRecordAssociationReload:
 Gitlab/AvoidFeatureGet:
   Enabled: true
 
+RSpec/TimecopFreeze:
+  Enabled: false
+  AutoCorrect: true
+  Include:
+    - 'spec/**/*.rb'
+    - 'ee/spec/**/*.rb'
+    - 'qa/spec/**/*.rb'
+
 Naming/PredicateName:
   Enabled: true
   Exclude:

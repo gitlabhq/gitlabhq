@@ -9,7 +9,7 @@ RSpec.describe Projects::ForkService do
     it 'flushes the forks count cache of the source project', :clean_gitlab_redis_cache do
       expect(from_project.forks_count).to be_zero
 
-      fork_project(from_project, to_user)
+      fork_project(from_project, to_user, using_service: true)
       BatchLoader::Executor.clear_current
 
       expect(from_project.forks_count).to eq(1)
@@ -40,7 +40,7 @@ RSpec.describe Projects::ForkService do
             @guest = create(:user)
             @from_project.add_user(@guest, :guest)
           end
-          subject { fork_project(@from_project, @guest) }
+          subject { fork_project(@from_project, @guest, using_service: true) }
 
           it { is_expected.not_to be_persisted }
           it { expect(subject.errors[:forked_from_project_id]).to eq(['is forbidden']) }
@@ -56,7 +56,7 @@ RSpec.describe Projects::ForkService do
         end
 
         describe "successfully creates project in the user namespace" do
-          let(:to_project) { fork_project(@from_project, @to_user, namespace: @to_user.namespace) }
+          let(:to_project) { fork_project(@from_project, @to_user, namespace: @to_user.namespace, using_service: true) }
 
           it { expect(to_project).to be_persisted }
           it { expect(to_project.errors).to be_empty }
@@ -92,21 +92,21 @@ RSpec.describe Projects::ForkService do
           end
 
           it 'imports the repository of the forked project', :sidekiq_might_not_need_inline do
-            to_project = fork_project(@from_project, @to_user, repository: true)
+            to_project = fork_project(@from_project, @to_user, repository: true, using_service: true)
 
             expect(to_project.empty_repo?).to be_falsy
           end
         end
 
         context 'creating a fork of a fork' do
-          let(:from_forked_project) { fork_project(@from_project, @to_user) }
+          let(:from_forked_project) { fork_project(@from_project, @to_user, using_service: true) }
           let(:other_namespace) do
             group = create(:group)
             group.add_owner(@to_user)
             group
           end
 
-          let(:to_project) { fork_project(from_forked_project, @to_user, namespace: other_namespace) }
+          let(:to_project) { fork_project(from_forked_project, @to_user, namespace: other_namespace, using_service: true) }
 
           it 'sets the root of the network to the root project' do
             expect(to_project.fork_network.root_project).to eq(@from_project)
@@ -126,7 +126,7 @@ RSpec.describe Projects::ForkService do
       context 'project already exists' do
         it "fails due to validation, not transaction failure" do
           @existing_project = create(:project, :repository, creator_id: @to_user.id, name: @from_project.name, namespace: @to_namespace)
-          @to_project = fork_project(@from_project, @to_user, namespace: @to_namespace)
+          @to_project = fork_project(@from_project, @to_user, namespace: @to_namespace, using_service: true)
           expect(@existing_project).to be_persisted
 
           expect(@to_project).not_to be_persisted
@@ -137,7 +137,7 @@ RSpec.describe Projects::ForkService do
 
       context 'repository in legacy storage already exists' do
         let(:fake_repo_path) { File.join(TestEnv.repos_path, @to_user.namespace.full_path, "#{@from_project.path}.git") }
-        let(:params) { { namespace: @to_user.namespace } }
+        let(:params) { { namespace: @to_user.namespace, using_service: true } }
 
         before do
           stub_application_setting(hashed_storage_enabled: false)
@@ -169,13 +169,13 @@ RSpec.describe Projects::ForkService do
       context 'GitLab CI is enabled' do
         it "forks and enables CI for fork" do
           @from_project.enable_ci
-          @to_project = fork_project(@from_project, @to_user)
+          @to_project = fork_project(@from_project, @to_user, using_service: true)
           expect(@to_project.builds_enabled?).to be_truthy
         end
       end
 
       context "CI/CD settings" do
-        let(:to_project) { fork_project(@from_project, @to_user) }
+        let(:to_project) { fork_project(@from_project, @to_user, using_service: true) }
 
         context "when origin has git depth specified" do
           before do
@@ -206,7 +206,7 @@ RSpec.describe Projects::ForkService do
           end
 
           it "creates fork with lowest level" do
-            forked_project = fork_project(@from_project, @to_user)
+            forked_project = fork_project(@from_project, @to_user, using_service: true)
 
             expect(forked_project.visibility_level).to eq(Gitlab::VisibilityLevel::PRIVATE)
           end
@@ -218,7 +218,7 @@ RSpec.describe Projects::ForkService do
           end
 
           it "creates fork with private visibility levels" do
-            forked_project = fork_project(@from_project, @to_user)
+            forked_project = fork_project(@from_project, @to_user, using_service: true)
 
             expect(forked_project.visibility_level).to eq(Gitlab::VisibilityLevel::PRIVATE)
           end
@@ -232,7 +232,7 @@ RSpec.describe Projects::ForkService do
         end
 
         it 'fails' do
-          to_project = fork_project(@from_project, @to_user, namespace: @to_user.namespace)
+          to_project = fork_project(@from_project, @to_user, namespace: @to_user.namespace, using_service: true)
 
           expect(to_project.errors[:forked_from_project_id]).to eq(['is forbidden'])
         end
@@ -253,7 +253,7 @@ RSpec.describe Projects::ForkService do
         @group.add_user(@developer,   GroupMember::DEVELOPER)
         @project.add_user(@developer,   :developer)
         @project.add_user(@group_owner, :developer)
-        @opts = { namespace: @group }
+        @opts = { namespace: @group, using_service: true }
       end
 
       context 'fork project for group' do
@@ -299,7 +299,7 @@ RSpec.describe Projects::ForkService do
           group_owner = create(:user)
           private_group.add_owner(group_owner)
 
-          forked_project = fork_project(public_project, group_owner, namespace: private_group)
+          forked_project = fork_project(public_project, group_owner, namespace: private_group, using_service: true)
 
           expect(forked_project.visibility_level).to eq(Gitlab::VisibilityLevel::PRIVATE)
         end
@@ -310,7 +310,7 @@ RSpec.describe Projects::ForkService do
   context 'when a project is already forked' do
     it 'creates a new poolresository after the project is moved to a new shard' do
       project = create(:project, :public, :repository)
-      fork_before_move = fork_project(project)
+      fork_before_move = fork_project(project, nil, using_service: true)
 
       # Stub everything required to move a project to a Gitaly shard that does not exist
       allow(Gitlab::GitalyClient).to receive(:filesystem_id).with('default').and_call_original
@@ -329,7 +329,7 @@ RSpec.describe Projects::ForkService do
         destination_storage_name: 'test_second_storage'
       )
       Projects::UpdateRepositoryStorageService.new(storage_move).execute
-      fork_after_move = fork_project(project.reload)
+      fork_after_move = fork_project(project.reload, nil, using_service: true)
       pool_repository_before_move = PoolRepository.joins(:shard)
                                       .find_by(source_project: project, shards: { name: 'default' })
       pool_repository_after_move = PoolRepository.joins(:shard)
@@ -350,7 +350,7 @@ RSpec.describe Projects::ForkService do
 
     context 'when no pool exists' do
       it 'creates a new object pool' do
-        forked_project = fork_project(fork_from_project, forker)
+        forked_project = fork_project(fork_from_project, forker, using_service: true)
 
         expect(forked_project.pool_repository).to eq(fork_from_project.pool_repository)
       end
@@ -360,7 +360,7 @@ RSpec.describe Projects::ForkService do
       let!(:pool_repository) { create(:pool_repository, source_project: fork_from_project) }
 
       it 'joins the object pool' do
-        forked_project = fork_project(fork_from_project, forker)
+        forked_project = fork_project(fork_from_project, forker, using_service: true)
 
         expect(forked_project.pool_repository).to eq(fork_from_project.pool_repository)
       end

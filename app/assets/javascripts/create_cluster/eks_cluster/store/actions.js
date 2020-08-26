@@ -56,6 +56,7 @@ export const createCluster = ({ dispatch, state }) => {
       environment_scope: state.environmentScope,
       managed: state.gitlabManagedCluster,
       provider_aws_attributes: {
+        kubernetes_version: state.kubernetesVersion,
         region: state.selectedRegion,
         vpc_id: state.selectedVpc,
         subnet_ids: state.selectedSubnet,

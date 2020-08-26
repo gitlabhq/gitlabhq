@@ -147,6 +147,7 @@ describe('EksClusterConfigurationForm', () => {
       initialState: {
         clusterName: 'cluster name',
         environmentScope: '*',
+        kubernetesVersion: '1.16',
         selectedRegion: 'region',
         selectedRole: 'role',
         selectedKeyPair: 'key pair',

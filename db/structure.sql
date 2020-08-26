@@ -10593,7 +10593,9 @@ CREATE TABLE public.cluster_providers_aws (
     encrypted_secret_access_key_iv character varying(255),
     encrypted_secret_access_key text,
     session_token text,
-    status_reason text
+    status_reason text,
+    kubernetes_version text DEFAULT '1.14'::text NOT NULL,
+    CONSTRAINT check_f1f42cd85e CHECK ((char_length(kubernetes_version) <= 30))
 );
 
 CREATE SEQUENCE public.cluster_providers_aws_id_seq

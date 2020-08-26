@@ -7,11 +7,12 @@ Parameters:
   KubernetesVersion:
     Description: The Kubernetes version to install
     Type: String
-    Default: 1.14
+    Default: 1.16
     AllowedValues:
-      - 1.12
-      - 1.13
       - 1.14
+      - 1.15
+      - 1.16
+      - 1.17
 
   KeyName:
     Description: The EC2 Key Pair to allow SSH access to the node instances

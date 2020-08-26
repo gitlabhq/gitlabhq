@@ -19,7 +19,7 @@ RSpec.describe Backup::Repository do
     end
   end
 
-  describe '#dump' do
+  describe '#dump', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/241251' do
     before do
       allow(Gitlab.config.repositories.storages).to receive(:keys).and_return(storage_keys)
     end

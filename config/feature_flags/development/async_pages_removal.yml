@@ -1,0 +1,7 @@
+---
+name: async_pages_removal
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/38313
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/239318
+group: team::Scalability
+type: development
+default_enabled: false

@@ -2834,9 +2834,6 @@ msgstr ""
 msgid "An error occurred while saving assignees"
 msgstr ""
 
-msgid "An error occurred while saving the approval settings"
-msgstr ""
-
 msgid "An error occurred while saving the template. Please check if the template exists."
 msgstr ""
 
@@ -21124,6 +21121,9 @@ msgstr ""
 msgid "Rook"
 msgstr ""
 
+msgid "Rule name is already taken."
+msgstr ""
+
 msgid "Rules that define what git pushes are accepted for a project in this group. All newly created projects in this group will use these settings."
 msgstr ""
 
@@ -24893,10 +24893,10 @@ msgstr ""
 msgid "There was an error when unsubscribing from this label."
 msgstr ""
 
-msgid "There was an error while fetching the chart data."
+msgid "There was an error while fetching the chart data. Please refresh the page to try again."
 msgstr ""
 
-msgid "There was an error while fetching the table data."
+msgid "There was an error while fetching the table data. Please refresh the page to try again."
 msgstr ""
 
 msgid "There was an error while fetching value stream analytics %{requestTypeName} data."

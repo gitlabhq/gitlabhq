@@ -6,15 +6,15 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Analytics
 
-## Analytics workspace
+## Instance-level analytics
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12077) in GitLab 12.2.
 
-The Analytics workspace will make it possible to aggregate analytics across
+Instance-level analytics make it possible to aggregate analytics across
 GitLab, so that users can view information across multiple projects and groups
 in one place.
 
-To access the Analytics workspace, click on **More > Analytics** in the top navigation bar.
+[Learn more about instance-level analytics](../admin_area/analytics/index.md).
 
 ## Group-level analytics
 

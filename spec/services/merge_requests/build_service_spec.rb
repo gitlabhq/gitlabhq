@@ -88,6 +88,10 @@ RSpec.describe MergeRequests::BuildService do
       let(:source_project) { fork_project(project, user) }
       let(:merge_request) { described_class.new(project, user, mr_params).execute }
 
+      before do
+        project.add_reporter(user)
+      end
+
       it 'assigns force_remove_source_branch' do
         expect(merge_request.force_remove_source_branch?).to be_truthy
       end
