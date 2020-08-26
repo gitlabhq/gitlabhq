@@ -61,6 +61,7 @@ exceptions:
   - RSA
   - RSS
   - SAML
+  - SCIM
   - SCP
   - SCSS
   - SHA

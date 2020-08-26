@@ -18,7 +18,7 @@ If you follow our guidance to automate user provisioning using [SCIM](scim_setup
 User synchronization of SAML SSO groups is supported through [SCIM](scim_setup.md). SCIM supports adding and removing users from the GitLab group.
 For example, if you remove a user from the SCIM app, SCIM removes that same user from the GitLab group.
 
-SAML SSO is not supported at the subgroup level, 
+SAML SSO is not supported at the subgroup level.
 
 ## Configuring your Identity Provider
 
@@ -265,7 +265,7 @@ Group SAML SSO helps if you need to allow access via multiple SAML identity prov
 
 To proceed with configuring Group SAML SSO instead, you'll need to enable the `group_saml` OmniAuth provider. This can be done from:
 
-- `gitlab.rb` for GitLab [Omnibus installations](#omnibus-installations).
+- `gitlab.rb` for [Omnibus GitLab installations](#omnibus-installations).
 - `gitlab/config/gitlab.yml` for [source installations](#source-installations).
 
 ### Limitations
