@@ -55,6 +55,7 @@ namespace :gitlab do
         rake:assets:precompile
         gitlab:assets:compile_webpack_if_needed
         gitlab:assets:fix_urls
+        gitlab:assets:check_page_bundle_mixins_css_for_sideeffects
       ].each(&::Gitlab::TaskHelpers.method(:invoke_and_time_task))
     end
 
@@ -126,6 +127,11 @@ namespace :gitlab do
       unless system('yarn webpack-vendor')
         abort 'Error: Unable to compile webpack DLL.'.color(:red)
       end
+    end
+
+    desc 'GitLab | Assets | Check that scss mixins do not introduce any sideffects'
+    task :check_page_bundle_mixins_css_for_sideeffects do
+      system('./scripts/frontend/check_page_bundle_mixins_css_for_sideeffects.js')
     end
   end
 end

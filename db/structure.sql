@@ -13342,7 +13342,8 @@ CREATE TABLE public.namespace_root_storage_statistics (
     build_artifacts_size bigint DEFAULT 0 NOT NULL,
     storage_size bigint DEFAULT 0 NOT NULL,
     packages_size bigint DEFAULT 0 NOT NULL,
-    snippets_size bigint DEFAULT 0 NOT NULL
+    snippets_size bigint DEFAULT 0 NOT NULL,
+    pipeline_artifacts_size bigint DEFAULT 0 NOT NULL
 );
 
 CREATE TABLE public.namespace_settings (
@@ -16129,7 +16130,6 @@ CREATE TABLE public.users (
     skype character varying DEFAULT ''::character varying NOT NULL,
     linkedin character varying DEFAULT ''::character varying NOT NULL,
     twitter character varying DEFAULT ''::character varying NOT NULL,
-    bio character varying,
     failed_attempts integer DEFAULT 0,
     locked_at timestamp without time zone,
     username character varying,
@@ -21136,8 +21136,6 @@ CREATE INDEX terraform_states_verification_checksum_partial ON public.terraform_
 CREATE INDEX terraform_states_verification_failure_partial ON public.terraform_states USING btree (verification_failure) WHERE (verification_failure IS NOT NULL);
 
 CREATE INDEX tmp_build_stage_position_index ON public.ci_builds USING btree (stage_id, stage_idx) WHERE (stage_idx IS NOT NULL);
-
-CREATE INDEX tmp_idx_on_user_id_where_bio_is_filled ON public.users USING btree (id) WHERE ((COALESCE(bio, ''::character varying))::text IS DISTINCT FROM ''::text);
 
 CREATE INDEX tmp_index_for_email_unconfirmation_migration ON public.emails USING btree (id) WHERE (confirmed_at IS NOT NULL);
 

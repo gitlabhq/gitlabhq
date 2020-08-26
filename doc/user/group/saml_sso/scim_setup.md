@@ -159,7 +159,16 @@ application described above.
 
 ## User access and linking setup
 
-As long as [Group SAML](index.md) has been configured, prior to turning on sync, existing GitLab.com users can link to their accounts in one of the following ways, before synchronization is active:
+The following diagram is a general outline on what happens when you add users to your SCIM app:
+
+```mermaid
+graph TD
+  A[Add User to SCIM app] -->|IdP sends user info to GitLab| B(GitLab: Does the email exists?)
+  B -->|No| C[GitLab creates user with SCIM identity]
+  B -->|Yes| D[GitLab sends message back 'Email exists']
+```
+
+As long as [Group SAML](index.md) has been configured, existing GitLab.com users can link to their accounts in one of the following ways:
 
 - By updating their *primary* email address in their GitLab.com user account to match their identity provider's user profile email address.
 - By following these steps:
@@ -168,20 +177,40 @@ As long as [Group SAML](index.md) has been configured, prior to turning on sync,
   1. Click on the GitLab app in the identity provider's dashboard or visit the **GitLab single sign-on URL**.
   1. Click on the **Authorize** button.
 
+We recommend users do this prior to turning on sync, because while synchronization is active, there may be provisioning errors for existing users.
+
 New users and existing users on subsequent visits can access the group through the identify provider's dashboard or by visiting links directly.
 
 For role information, please see the [Group SAML page](index.md#user-access-and-management)
 
 ### Blocking access
 
-To rescind access to the group, we recommend removing the user from the identity
+To rescind access to the group, remove the user from the identity
 provider or users list for the specific app.
 
-Upon the next sync, the user will be deprovisioned, which means that the user will be removed from the group. The user account will not be deleted unless using [group managed accounts](group_managed_accounts.md).
+Upon the next sync, the user is deprovisioned, which means that the user is removed from the group.
+
+NOTE: **Note:**
+Deprovisioning does not delete the user account.
+
+```mermaid
+graph TD
+  A[Remove User from SCIM app] -->|IdP sends request to GitLab| B(GitLab: Is the user part of the group?)
+  B -->|No| C[Nothing to do]
+  B -->|Yes| D[GitLab removes user from GitLab group]
+```
 
 ## Troubleshooting
 
 This section contains possible solutions for problems you might encounter.
+
+### How come I can't add a user after I removed them?
+
+As outlined in the [Blocking access section](#blocking-access), when you remove a user, they are removed from the group. However, their account is not deleted.
+
+When the user is added back to the SCIM app, GitLab cannot create a new user because the user already exists.
+
+Solution: Have a user sign in directly to GitLab, then [manually link](#user-access-and-linking-setup) their account.
 
 ### Azure
 

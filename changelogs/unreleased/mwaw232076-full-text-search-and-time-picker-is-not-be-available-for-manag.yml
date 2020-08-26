@@ -1,0 +1,5 @@
+---
+title: Fix advanced filters in log explorer view for gitlab managed applications.
+merge_request: 37926
+author:
+type: fixed

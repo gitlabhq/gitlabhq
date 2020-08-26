@@ -1,0 +1,7 @@
+---
+name: async_pages_move_namespace_transfer
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/40259
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/235808
+group: team::Scalability
+type: development
+default_enabled: false

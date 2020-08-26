@@ -50,6 +50,10 @@ export default {
       type: String,
       required: true,
     },
+    mergeRequestPath: {
+      type: String,
+      required: true,
+    },
   },
   data() {
     return {

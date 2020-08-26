@@ -371,7 +371,7 @@ class Environment < ApplicationRecord
   end
 
   def elastic_stack_available?
-    !!deployment_platform&.cluster&.application_elastic_stack&.available?
+    !!deployment_platform&.cluster&.application_elastic_stack_available?
   end
 
   private

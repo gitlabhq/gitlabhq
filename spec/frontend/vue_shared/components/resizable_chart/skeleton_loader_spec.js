@@ -1,11 +1,11 @@
-import { shallowMount } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
 import ChartSkeletonLoader from '~/vue_shared/components/resizable_chart/skeleton_loader.vue';
 
 describe('Resizable Skeleton Loader', () => {
   let wrapper;
 
   const createComponent = (propsData = {}) => {
-    wrapper = shallowMount(ChartSkeletonLoader, {
+    wrapper = mount(ChartSkeletonLoader, {
       propsData,
     });
   };

@@ -1,0 +1,5 @@
+---
+title: Allow snippet move action without an existing file name
+merge_request: 40343
+author:
+type: fixed

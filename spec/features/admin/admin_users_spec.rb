@@ -353,7 +353,7 @@ RSpec.describe "Admin::Users" do
         it 'sees impersonation log out icon' do
           subject
 
-          icon = first('.fa.fa-user-secret')
+          icon = first('[data-testid="incognito-icon"]')
           expect(icon).not_to be nil
         end
 

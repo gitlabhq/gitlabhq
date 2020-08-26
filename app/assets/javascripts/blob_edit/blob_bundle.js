@@ -67,12 +67,15 @@ export default () => {
 
     if (commitButton) {
       const { dismissKey, humanAccess } = suggestEl.dataset;
+      const urlParams = new URLSearchParams(window.location.search);
+      const mergeRequestPath = urlParams.get('mr_path') || true;
+
       const commitCookieName = `suggest_gitlab_ci_yml_commit_${dismissKey}`;
       const commitTrackLabel = 'suggest_gitlab_ci_yml_commit_changes';
       const commitTrackValue = '20';
 
       commitButton.addEventListener('click', () => {
-        setCookie(commitCookieName, true);
+        setCookie(commitCookieName, mergeRequestPath);
 
         Tracking.event(undefined, 'click_button', {
           label: commitTrackLabel,

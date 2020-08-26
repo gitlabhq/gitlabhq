@@ -87,7 +87,7 @@
           - if has_impersonation_link
             %li.nav-item.impersonation.ml-0
               = link_to admin_impersonation_path, class: 'nav-link impersonation-btn', method: :delete, title: _('Stop impersonation'), aria: { label: _('Stop impersonation') }, data: { toggle: 'tooltip', placement: 'bottom', container: 'body', qa_selector: 'stop_impersonation_link' } do
-                = icon('user-secret')
+                = sprite_icon('incognito', size: 18)
           - if header_link?(:sign_in)
             %li.nav-item
               %div

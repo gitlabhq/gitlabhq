@@ -94,6 +94,32 @@ let(:project) { create(:project) }
 let_it_be(:project) { create(:project) }
 ```
 
+A common cause of a large number of created factories is [factory cascades](https://github.com/test-prof/test-prof/blob/master/docs/profilers/factory_prof.md#factory-flamegraph), which result when factories create and recreate associations.
+They can be identified by a noticeable difference between `total time` and `top-level time` numbers:
+
+```shell
+   total   top-level     total time      time per call      top-level time               name
+
+     208           0        9.5812s            0.0461s             0.0000s          namespace
+     208          76       37.4214s            0.1799s            13.8749s            project
+```
+
+In order to reuse a single factory for all implicit parent associations,
+[`FactoryDefault`](https://github.com/test-prof/test-prof/blob/master/docs/recipes/factory_default.md)
+can be used:
+
+```ruby
+  let_it_be(:namespace) { create_default(:namespace) }
+  let_it_be(:project) { create_default(:project) }
+```
+
+In this case, the `total time` and `top-level time` numbers match more closely:
+
+```shell
+      31          30        4.6378s            0.1496s             4.5366s            project
+       8           8        0.0477s            0.0477s             0.0477s          namespace
+```
+
 ### General guidelines
 
 - Use a single, top-level `RSpec.describe ClassName` block.

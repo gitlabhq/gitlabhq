@@ -22,7 +22,7 @@
 @import 'fontawesome_custom';
 
 // Page specific styles (issues, projects etc):
-@import 'pages/**/*';
+@import 'page_specific_files';
 
 // Component specific styles, will be moved to gitlab-ui
 @import 'components/**/*';

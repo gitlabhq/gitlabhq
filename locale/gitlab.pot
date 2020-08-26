@@ -14702,6 +14702,12 @@ msgstr ""
 msgid "MERGED"
 msgstr ""
 
+msgid "MR widget|Back to the Merge request"
+msgstr ""
+
+msgid "MR widget|See your pipeline in action"
+msgstr ""
+
 msgid "MR widget|Take a look at our %{beginnerLinkStart}Beginner's Guide to Continuous Integration%{beginnerLinkEnd} and our %{exampleLinkStart}examples of GitLab CI/CD%{exampleLinkEnd} to learn more."
 msgstr ""
 
@@ -21955,9 +21961,6 @@ msgid "See the affected projects in the GitLab admin panel"
 msgstr ""
 
 msgid "See what's new at GitLab"
-msgstr ""
-
-msgid "See your pipeline in action"
 msgstr ""
 
 msgid "Select"

@@ -22,7 +22,7 @@ gem 'rugged', '~> 0.28'
 gem 'grape-path-helpers', '~> 1.3'
 
 gem 'faraday', '~> 0.12'
-gem 'marginalia', '~> 1.8.0'
+gem 'marginalia', '~> 1.9.0'
 
 # Authentication libraries
 gem 'devise', '~> 4.6'

@@ -10,6 +10,7 @@ export default el =>
           target: el.dataset.target,
           trackLabel: el.dataset.trackLabel,
           dismissKey: el.dataset.dismissKey,
+          mergeRequestPath: el.dataset.mergeRequestPath,
           humanAccess: el.dataset.humanAccess,
         },
       });

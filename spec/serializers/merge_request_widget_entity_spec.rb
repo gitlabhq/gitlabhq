@@ -136,9 +136,22 @@ RSpec.describe MergeRequestWidgetEntity do
         let(:role) { :developer }
 
         it 'has add ci config path' do
-          expected_path = "/#{resource.project.full_path}/-/new/#{resource.source_branch}?commit_message=Add+.gitlab-ci.yml&file_name=.gitlab-ci.yml&suggest_gitlab_ci_yml=true"
+          expected_path = "/#{resource.project.full_path}/-/new/#{resource.source_branch}"
 
-          expect(subject[:merge_request_add_ci_config_path]).to eq(expected_path)
+          expect(subject[:merge_request_add_ci_config_path]).to include(expected_path)
+        end
+
+        it 'has expected params' do
+          expected_params = {
+            commit_message: 'Add .gitlab-ci.yml',
+            file_name: '.gitlab-ci.yml',
+            suggest_gitlab_ci_yml: 'true',
+            mr_path: "/#{resource.project.full_path}/-/merge_requests/#{resource.iid}"
+          }.with_indifferent_access
+
+          uri = Addressable::URI.parse(subject[:merge_request_add_ci_config_path])
+
+          expect(uri.query_values).to match(expected_params)
         end
 
         context 'when auto devops is enabled' do
