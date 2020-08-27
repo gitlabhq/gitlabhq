@@ -82,14 +82,14 @@ describe('BadgeSettings component', () => {
       const form = vm.$el.querySelector('form:nth-of-type(1)');
 
       expect(form).not.toBe(null);
-      const submitButton = form.querySelector('.btn-success');
-
-      expect(submitButton).not.toBe(null);
-      expect(submitButton).toHaveText(/Save changes/);
-      const cancelButton = form.querySelector('.btn-cancel');
+      const cancelButton = form.querySelector('[data-testid="cancelEditing"]');
 
       expect(cancelButton).not.toBe(null);
       expect(cancelButton).toHaveText(/Cancel/);
+      const submitButton = form.querySelector('[data-testid="saveEditing"]');
+
+      expect(submitButton).not.toBe(null);
+      expect(submitButton).toHaveText(/Save changes/);
     });
 
     it('displays no badge list', () => {

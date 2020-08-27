@@ -1,0 +1,5 @@
+---
+title: Fix tracking of frequently visited projects and groups
+merge_request: 40415
+author:
+type: fixed

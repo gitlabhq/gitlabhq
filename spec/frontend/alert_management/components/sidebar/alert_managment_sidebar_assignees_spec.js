@@ -56,6 +56,9 @@ describe('Alert Details Sidebar Assignees', () => {
     mock.restore();
   });
 
+  const findAssigned = () => wrapper.find('[data-testid="assigned-users"]');
+  const findUnassigned = () => wrapper.find('[data-testid="unassigned-users"]');
+
   describe('updating the alert status', () => {
     const mockUpdatedMutationResult = {
       data: {
@@ -100,28 +103,26 @@ describe('Alert Details Sidebar Assignees', () => {
       });
     });
 
-    it('renders a unassigned option', () => {
+    it('renders a unassigned option', async () => {
       wrapper.setData({ isDropdownSearching: false });
-      return wrapper.vm.$nextTick().then(() => {
-        expect(wrapper.find(GlDeprecatedDropdownItem).text()).toBe('Unassigned');
-      });
+      await wrapper.vm.$nextTick();
+      expect(wrapper.find(GlDeprecatedDropdownItem).text()).toBe('Unassigned');
     });
 
-    it('calls `$apollo.mutate` with `AlertSetAssignees` mutation and variables containing `iid`, `assigneeUsernames`, & `projectPath`', () => {
+    it('calls `$apollo.mutate` with `AlertSetAssignees` mutation and variables containing `iid`, `assigneeUsernames`, & `projectPath`', async () => {
       jest.spyOn(wrapper.vm.$apollo, 'mutate').mockResolvedValue(mockUpdatedMutationResult);
       wrapper.setData({ isDropdownSearching: false });
 
-      return wrapper.vm.$nextTick().then(() => {
-        wrapper.find(SidebarAssignee).vm.$emit('update-alert-assignees', 'root');
+      await wrapper.vm.$nextTick();
+      wrapper.find(SidebarAssignee).vm.$emit('update-alert-assignees', 'root');
 
-        expect(wrapper.vm.$apollo.mutate).toHaveBeenCalledWith({
-          mutation: AlertSetAssignees,
-          variables: {
-            iid: '1527542',
-            assigneeUsernames: ['root'],
-            projectPath: 'projectPath',
-          },
-        });
+      expect(wrapper.vm.$apollo.mutate).toHaveBeenCalledWith({
+        mutation: AlertSetAssignees,
+        variables: {
+          iid: '1527542',
+          assigneeUsernames: ['root'],
+          projectPath: 'projectPath',
+        },
       });
     });
 
@@ -151,7 +152,34 @@ describe('Alert Details Sidebar Assignees', () => {
     it('stops updating and cancels loading when the request fails', () => {
       jest.spyOn(wrapper.vm.$apollo, 'mutate').mockReturnValue(Promise.reject(new Error()));
       wrapper.vm.updateAlertAssignees('root');
-      expect(wrapper.find('[data-testid="unassigned-users"]').text()).toBe('assign yourself');
+      expect(findUnassigned().text()).toBe('assign yourself');
+    });
+
+    it('shows a user avatar, username and full name when a user is set', () => {
+      mountComponent({
+        data: { alert: mockAlerts[1] },
+        sidebarCollapsed: false,
+        loading: false,
+        stubs: {
+          SidebarAssignee,
+        },
+      });
+
+      expect(
+        findAssigned()
+          .find('img')
+          .attributes('src'),
+      ).toBe('/url');
+      expect(
+        findAssigned()
+          .find('.dropdown-menu-user-full-name')
+          .text(),
+      ).toBe('root');
+      expect(
+        findAssigned()
+          .find('.dropdown-menu-user-username')
+          .text(),
+      ).toBe('root');
     });
   });
 });

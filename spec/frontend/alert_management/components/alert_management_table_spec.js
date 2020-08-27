@@ -11,6 +11,7 @@ import {
   GlBadge,
   GlPagination,
   GlSearchBoxByType,
+  GlAvatar,
 } from '@gitlab/ui';
 import waitForPromises from 'helpers/wait_for_promises';
 import { visitUrl } from '~/lib/utils/url_utility';
@@ -268,18 +269,22 @@ describe('AlertManagementTable', () => {
       ).toBe('Unassigned');
     });
 
-    it('renders username(s) when assignee(s) present', () => {
+    it('renders user avatar when assignee present', () => {
       mountComponent({
         props: { alertManagementEnabled: true, userCanEnableAlertManagement: true },
         data: { alerts: { list: mockAlerts }, alertsCount, hasError: false },
         loading: false,
       });
 
-      expect(
-        findAssignees()
-          .at(1)
-          .text(),
-      ).toBe(mockAlerts[1].assignees.nodes[0].username);
+      const avatar = findAssignees()
+        .at(1)
+        .find(GlAvatar);
+      const { src, label } = avatar.attributes();
+      const { name, avatarUrl } = mockAlerts[1].assignees.nodes[0];
+
+      expect(avatar.exists()).toBe(true);
+      expect(label).toBe(name);
+      expect(src).toBe(avatarUrl);
     });
 
     it('navigates to the detail page when alert row is clicked', () => {

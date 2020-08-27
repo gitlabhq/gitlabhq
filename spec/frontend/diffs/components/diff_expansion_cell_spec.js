@@ -87,7 +87,7 @@ describe('DiffExpansionCell', () => {
 
   const findExpandUp = () => vm.$el.querySelector(EXPAND_UP_CLASS);
   const findExpandDown = () => vm.$el.querySelector(EXPAND_DOWN_CLASS);
-  const findExpandAll = () => getByText(vm.$el, 'Show unchanged lines');
+  const findExpandAll = () => getByText(vm.$el, 'Show all unchanged lines');
 
   describe('top row', () => {
     it('should have "expand up" and "show all" option', () => {

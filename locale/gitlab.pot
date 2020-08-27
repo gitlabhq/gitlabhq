@@ -2252,9 +2252,6 @@ msgstr ""
 msgid "AlertManagement|Triggered"
 msgstr ""
 
-msgid "AlertManagement|Unassigned"
-msgstr ""
-
 msgid "AlertManagement|Unknown"
 msgstr ""
 
@@ -8601,7 +8598,10 @@ msgstr ""
 msgid "Diffs|No file name available"
 msgstr ""
 
-msgid "Diffs|Show unchanged lines"
+msgid "Diffs|Show %{unfoldCount} lines"
+msgstr ""
+
+msgid "Diffs|Show all unchanged lines"
 msgstr ""
 
 msgid "Diffs|Something went wrong while fetching diff lines."
@@ -10112,9 +10112,6 @@ msgstr ""
 msgid "Expand approvers"
 msgstr ""
 
-msgid "Expand down"
-msgstr ""
-
 msgid "Expand dropdown"
 msgstr ""
 
@@ -10122,9 +10119,6 @@ msgid "Expand milestones"
 msgstr ""
 
 msgid "Expand sidebar"
-msgstr ""
-
-msgid "Expand up"
 msgstr ""
 
 msgid "Expected documents: %{expected_documents}"

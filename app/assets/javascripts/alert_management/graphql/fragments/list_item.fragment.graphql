@@ -8,7 +8,10 @@ fragment AlertListItem on AlertManagementAlert {
   issueIid
   assignees {
     nodes {
+      name
       username
+      avatarUrl
+      webUrl
     }
   }
 }
