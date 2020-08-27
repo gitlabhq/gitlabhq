@@ -395,7 +395,11 @@ variables:
   DAST_API_HOST_OVERRIDE: api-test.host.com
 ```
 
-Note that `DAST_API_HOST_OVERRIDE` is only applied to specifications imported by URL.
+NOTE: **Note:**
+Using a host override is ONLY supported when importing the API
+specification from a URL. It does not work and will be ignored when importing
+the specification from a file. This is due to a limitation in the ZAP OpenAPI
+extension.
 
 #### Authentication using headers
 
@@ -455,7 +459,7 @@ DAST can be [configured](#customizing-the-dast-settings) using environment varia
 | `DAST_FULL_SCAN_ENABLED` | boolean | Set to `true` to run a [ZAP Full Scan](https://github.com/zaproxy/zaproxy/wiki/ZAP-Full-Scan) instead of a [ZAP Baseline Scan](https://github.com/zaproxy/zaproxy/wiki/ZAP-Baseline-Scan). Default: `false` |
 | `DAST_FULL_SCAN_DOMAIN_VALIDATION_REQUIRED` | boolean | Set to `true` to require [domain validation](#domain-validation) when running DAST full scans. Not supported for API scans. Default: `false` |
 | `DAST_AUTO_UPDATE_ADDONS` | boolean | ZAP add-ons are pinned to specific versions in the DAST Docker image. Set to `true` to download the latest versions when the scan starts. Default: `false` |
-| `DAST_API_HOST_OVERRIDE` | string | Used to override domains defined in API specification files. Example: `example.com:8080` |
+| `DAST_API_HOST_OVERRIDE` | string | Used to override domains defined in API specification files. Only supported when importing the API specification from a URL. Example: `example.com:8080` |
 | `DAST_EXCLUDE_RULES` | string | Set to a comma-separated list of Vulnerability Rule IDs to exclude them from running during the scan. Rule IDs are numbers and can be found from the DAST log or on the [ZAP project](https://github.com/zaproxy/zaproxy/blob/develop/docs/scanners.md). For example, `HTTP Parameter Override` has a rule ID of `10026`. **Note:** In earlier versions of GitLab the excluded rules were executed but alerts they generated were supressed. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/118641) in GitLab 12.10. |
 | `DAST_REQUEST_HEADERS` | string | Set to a comma-separated list of request header names and values. Headers are added to every request made by DAST. For example, `Cache-control: no-cache,User-Agent: DAST/1.0` |
 | `DAST_DEBUG` | boolean | Enable debug message output. Default: `false` |

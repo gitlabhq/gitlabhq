@@ -110,7 +110,7 @@ Once the remote is set, you can use the remote when running Conan commands by ad
 For example:
 
 ```shell
-conan search Hello* --all --remote=gitlab
+conan search 'Hello*' --remote=gitlab
 ```
 
 ## Authenticating to the GitLab Conan Repository

@@ -135,7 +135,7 @@ Add the following to your `.gitlab-ci.yml` file:
 
 ```yaml
 include:
-  - template: SAST.gitlab-ci.yml
+  - template: Security/SAST.gitlab-ci.yml
 ```
 
 The included template creates SAST jobs in your CI/CD pipeline and scans
