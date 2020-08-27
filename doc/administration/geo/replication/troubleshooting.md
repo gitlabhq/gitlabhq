@@ -603,9 +603,9 @@ or `gitlab-ctl promote-to-primary-node`, either:
   bug](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/22021) was
   fixed.
 
-If the above does not work, another possible reason is that you have paused replication
-from the original primary node before attempting to promote this node.
+### Message: ActiveRecord::RecordInvalid: Validation failed: Enabled Geo primary node cannot be disabled
 
+This error may occur if you have paused replication from the original primary node before attempting to promote this node.
 To double check this, you can do the following:
 
 - Get the current secondary node's ID using:

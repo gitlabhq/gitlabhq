@@ -1738,8 +1738,13 @@ For guidance on developing GitLab with feature flags, see
 
 ## RESTful API
 
-Here is a list of must-have items for RESTful API documentation. Use them in the
-exact order that appears on this document. Further explanation is given below.
+REST API resources are documented in Markdown under [`/doc/api`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/doc/api). Each resource has its own Markdown file, which is linked from `api_resources.md`.
+
+When modifying the Markdown, also update the corresponding [OpenAPI definition](https://gitlab.com/gitlab-org/gitlab/-/tree/master/doc/api/openapi) if one exists for the resource.
+If not, consider creating one. Match the latest [OpenAPI 3.0.x specification](https://swagger.io/specification/).
+(For more information, see the discussion in [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/16023#note_370901810).)
+
+In the Markdown doc for a resource (AKA endpoint):
 
 - Every method must have the REST API request. For example:
 

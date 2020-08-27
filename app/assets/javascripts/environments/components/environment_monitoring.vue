@@ -1,13 +1,12 @@
 <script>
-import { GlDeprecatedButton, GlTooltipDirective, GlIcon } from '@gitlab/ui';
+import { GlButton, GlTooltipDirective } from '@gitlab/ui';
 import { __ } from '~/locale';
 /**
  * Renders the Monitoring (Metrics) link in environments table.
  */
 export default {
   components: {
-    GlIcon,
-    GlDeprecatedButton,
+    GlButton,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -26,15 +25,14 @@ export default {
 };
 </script>
 <template>
-  <gl-deprecated-button
+  <gl-button
     v-gl-tooltip
     :href="monitoringUrl"
     :title="title"
     :aria-label="title"
-    class="monitoring-url d-none d-sm-none d-md-block"
+    class="monitoring-url gl-display-none gl-display-sm-none gl-display-md-block"
+    icon="chart"
     rel="noopener noreferrer nofollow"
     variant="default"
-  >
-    <gl-icon name="chart" />
-  </gl-deprecated-button>
+  />
 </template>

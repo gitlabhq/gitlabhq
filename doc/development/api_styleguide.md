@@ -13,9 +13,11 @@ Always use an [Entity](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/api/
 
 ## Documentation
 
-API endpoints must come with [documentation](documentation/styleguide.md#restful-api), unless it is internal or behind a feature flag.
+Each new or updated API endpoint must come with documentation, unless it is internal or behind a feature flag.
 The docs should be in the same merge request, or, if strictly necessary,
 in a follow-up with the same milestone as the original merge request.
+
+See the [Documentation Style Guide RESTful API section](documentation/styleguide.md#restful-api) for details on documenting API resources in Markdown as well as in OpenAPI definition files.
 
 ## Methods and parameters description
 
