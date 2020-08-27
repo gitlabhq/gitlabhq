@@ -13,7 +13,8 @@ RSpec.describe AlertManagement::ProcessPrometheusAlertService do
     subject(:execute) { described_class.new(project, nil, payload).execute }
 
     context 'when alert payload is valid' do
-      let(:parsed_alert) { Gitlab::Alerting::Alert.new(project: project, payload: payload) }
+      let(:parsed_payload) { Gitlab::AlertManagement::Payload.parse(project, payload, monitoring_tool: 'Prometheus') }
+      let(:fingerprint) { parsed_payload.gitlab_fingerprint }
       let(:payload) do
         {
           'status' => status,
@@ -39,25 +40,25 @@ RSpec.describe AlertManagement::ProcessPrometheusAlertService do
 
       context 'when Prometheus alert status is firing' do
         context 'when alert with the same fingerprint already exists' do
-          let!(:alert) { create(:alert_management_alert, project: project, fingerprint: parsed_alert.gitlab_fingerprint) }
+          let!(:alert) { create(:alert_management_alert, project: project, fingerprint: fingerprint) }
 
           it_behaves_like 'adds an alert management alert event'
 
           context 'existing alert is resolved' do
-            let!(:alert) { create(:alert_management_alert, :resolved, project: project, fingerprint: parsed_alert.gitlab_fingerprint) }
+            let!(:alert) { create(:alert_management_alert, :resolved, project: project, fingerprint: fingerprint) }
 
             it_behaves_like 'creates an alert management alert'
           end
 
           context 'existing alert is ignored' do
-            let!(:alert) { create(:alert_management_alert, :ignored, project: project, fingerprint: parsed_alert.gitlab_fingerprint) }
+            let!(:alert) { create(:alert_management_alert, :ignored, project: project, fingerprint: fingerprint) }
 
             it_behaves_like 'adds an alert management alert event'
           end
 
           context 'two existing alerts, one resolved one open' do
-            let!(:resolved_alert) { create(:alert_management_alert, :resolved, project: project, fingerprint: parsed_alert.gitlab_fingerprint) }
-            let!(:alert) { create(:alert_management_alert, project: project, fingerprint: parsed_alert.gitlab_fingerprint) }
+            let!(:resolved_alert) { create(:alert_management_alert, :resolved, project: project, fingerprint: fingerprint) }
+            let!(:alert) { create(:alert_management_alert, project: project, fingerprint: fingerprint) }
 
             it_behaves_like 'adds an alert management alert event'
           end
@@ -84,6 +85,10 @@ RSpec.describe AlertManagement::ProcessPrometheusAlertService do
           context 'when alert can be created' do
             it_behaves_like 'creates an alert management alert'
 
+            it 'creates a system note corresponding to alert creation' do
+              expect { subject }.to change(Note, :count).by(1)
+            end
+
             it 'processes the incident alert' do
               expect(IncidentManagement::ProcessAlertWorker)
                 .to receive(:perform_async)
@@ -95,18 +100,15 @@ RSpec.describe AlertManagement::ProcessPrometheusAlertService do
           end
 
           context 'when alert cannot be created' do
-            let(:errors) { double(messages: { hosts: ['hosts array is over 255 chars'] })}
-            let(:am_alert) { instance_double(AlertManagement::Alert, save: false, errors: errors) }
-
             before do
-              allow(AlertManagement::Alert).to receive(:new).and_return(am_alert)
+              payload['annotations']['title'] = 'description' * 50
             end
 
             it 'writes a warning to the log' do
               expect(Gitlab::AppLogger).to receive(:warn).with(
                 message: 'Unable to create AlertManagement::Alert',
                 project_id: project.id,
-                alert_errors: { hosts: ['hosts array is over 255 chars'] }
+                alert_errors: { title: ["is too long (maximum is 200 characters)"] }
               )
 
               execute
@@ -126,7 +128,7 @@ RSpec.describe AlertManagement::ProcessPrometheusAlertService do
 
       context 'when Prometheus alert status is resolved' do
         let(:status) { 'resolved' }
-        let!(:alert) { create(:alert_management_alert, project: project, fingerprint: parsed_alert.gitlab_fingerprint) }
+        let!(:alert) { create(:alert_management_alert, project: project, fingerprint: fingerprint) }
 
         context 'when auto_resolve_incident set to true' do
           let_it_be(:operations_settings) { create(:project_incident_management_setting, project: project, auto_close_incident: true) }
@@ -142,7 +144,7 @@ RSpec.describe AlertManagement::ProcessPrometheusAlertService do
                   stub_feature_flags(track_resource_state_change_events: state_tracking_enabled)
                 end
 
-                let!(:alert) { create(:alert_management_alert, :with_issue, project: project, fingerprint: parsed_alert.gitlab_fingerprint) }
+                let!(:alert) { create(:alert_management_alert, :with_issue, project: project, fingerprint: fingerprint) }
 
                 it 'closes the issue' do
                   issue = alert.issue

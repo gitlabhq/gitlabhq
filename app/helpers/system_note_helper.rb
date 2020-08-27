@@ -33,7 +33,8 @@ module SystemNoteHelper
     'designs_removed' => 'doc-image',
     'designs_discussion_added' => 'doc-image',
     'status' => 'status',
-    'alert_issue_added' => 'issues'
+    'alert_issue_added' => 'issues',
+    'new_alert_added' => 'warning'
   }.freeze
 
   def system_note_icon_name(note)

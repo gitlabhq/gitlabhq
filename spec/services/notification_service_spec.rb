@@ -396,7 +396,7 @@ RSpec.describe NotificationService, :mailer do
             reset_delivered_emails!
           end
 
-          it 'sends emails to recipients' do
+          it 'sends emails to recipients', :aggregate_failures do
             subject
 
             expect_delivery_jobs_count(10)
@@ -730,7 +730,7 @@ RSpec.describe NotificationService, :mailer do
       let(:note) { create(:note_on_commit, project: project) }
 
       before do
-        build_team(note.project)
+        build_team(project)
         build_group(project)
         reset_delivered_emails!
         allow(note.noteable).to receive(:author).and_return(@u_committer)
@@ -947,20 +947,25 @@ RSpec.describe NotificationService, :mailer do
   end
 
   describe 'Issues', :deliver_mails_inline do
-    let(:group) { create(:group) }
-    let(:project) { create(:project, :public, namespace: group) }
     let(:another_project) { create(:project, :public, namespace: group) }
     let(:issue) { create :issue, project: project, assignees: [assignee], description: 'cc @participant @unsubscribed_mentioned' }
 
-    before do
+    let_it_be(:group) { create(:group) }
+    let_it_be(:project) { create(:project, :public, namespace: group) }
+
+    before_all do
       build_team(project)
       build_group(project)
-
       add_users(project)
+    end
+
+    before do
       add_user_subscriptions(issue)
       reset_delivered_emails!
       update_custom_notification(:new_issue, @u_guest_custom, resource: project)
       update_custom_notification(:new_issue, @u_custom_global)
+
+      issue.author.notified_of_own_activity = false
     end
 
     describe '#new_issue' do
@@ -1578,18 +1583,22 @@ RSpec.describe NotificationService, :mailer do
   end
 
   describe 'Merge Requests', :deliver_mails_inline do
-    let(:group) { create(:group) }
-    let(:project) { create(:project, :public, :repository, namespace: group) }
     let(:another_project) { create(:project, :public, namespace: group) }
     let(:assignees) { Array.wrap(assignee) }
     let(:author) { create(:user) }
     let(:merge_request) { create :merge_request, author: author, source_project: project, assignees: assignees, description: 'cc @participant' }
 
+    let_it_be(:group) { create(:group) }
+    let_it_be(:project) { create(:project, :public, :repository, namespace: group) }
+
+    before_all do
+      build_team(project)
+      add_users(project)
+    end
+
     before do
       project.add_maintainer(author)
       assignees.each { |assignee| project.add_maintainer(assignee) }
-      build_team(project)
-      add_users(project)
       add_user_subscriptions(merge_request)
       update_custom_notification(:new_merge_request, @u_guest_custom, resource: project)
       update_custom_notification(:new_merge_request, @u_custom_global)
@@ -2072,7 +2081,7 @@ RSpec.describe NotificationService, :mailer do
   end
 
   describe 'Projects', :deliver_mails_inline do
-    before do
+    before_all do
       build_team(project)
       reset_delivered_emails!
     end

@@ -265,32 +265,6 @@ license_scanning:
 You can supply a custom root certificate to complete TLS verification by using the
 `ADDITIONAL_CA_CERT_BUNDLE` [environment variable](#available-variables).
 
-To bypass TLS verification, you can use a custom [`pip.conf`](https://pip.pypa.io/en/stable/user_guide/#config-file)
-file to configure trusted hosts.
-
-The following `gitlab-ci.yml` file uses a [`before_script`](../../../ci/yaml/README.md#before_script-and-after_script)
-to inject a custom [`pip.conf`](https://pip.pypa.io/en/stable/user_guide/#config-file):
-
-```yaml
-include:
-  - template: Security/License-Scanning.gitlab-ci.yml
-
-license_scanning:
-  variables:
-    PIP_INDEX_URL: 'https://pypi.example.com/simple/'
-  before_script:
-    - mkdir -p ~/.config/pip/
-    - cp pip.conf ~/.config/pip/pip.conf
-```
-
-The [`pip.conf`](https://pip.pypa.io/en/stable/reference/pip/) allows you to specify a list of
-[trusted hosts](https://pip.pypa.io/en/stable/reference/pip/#cmdoption-trusted-host):
-
-```plaintext
-[global]
-trusted-host = pypi.example.com
-```
-
 #### Using private Python repos
 
 If you have a private Python repository you can use the `PIP_INDEX_URL` [environment variable](#available-variables)

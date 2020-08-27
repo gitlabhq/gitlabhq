@@ -739,4 +739,17 @@ RSpec.describe SystemNoteService do
       described_class.new_alert_issue(alert, alert.issue, author)
     end
   end
+
+  describe '.create_new_alert' do
+    let(:alert) { build(:alert_management_alert) }
+    let(:monitoring_tool) { 'Prometheus' }
+
+    it 'calls AlertManagementService' do
+      expect_next_instance_of(SystemNotes::AlertManagementService) do |service|
+        expect(service).to receive(:create_new_alert).with(monitoring_tool)
+      end
+
+      described_class.create_new_alert(alert, monitoring_tool)
+    end
+  end
 end

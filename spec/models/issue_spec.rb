@@ -1183,4 +1183,32 @@ RSpec.describe Issue do
       expect(context[:label_url_method]).to eq(:project_issues_url)
     end
   end
+
+  describe 'scheduling rebalancing' do
+    before do
+      allow(issue).to receive(:find_next_gap) { raise ActiveRecord::QueryCanceled }
+    end
+
+    let(:project) { build(:project_empty_repo) }
+    let(:issue) { build_stubbed(:issue, relative_position: 100, project: project) }
+
+    describe '#find_next_gap_before' do
+      it 'schedules rebalancing if we time-out when finding a gap' do
+        lhs = build_stubbed(:issue, relative_position: 99, project: project)
+        to_move = build(:issue, project: project)
+        expect(IssueRebalancingWorker).to receive(:perform_async).with(issue.id)
+
+        expect { to_move.move_between(lhs, issue) }.to raise_error(ActiveRecord::QueryCanceled)
+      end
+    end
+
+    describe '#find_next_gap_after' do
+      it 'schedules rebalancing if we time-out when finding a gap' do
+        allow(issue).to receive(:find_next_gap) { raise ActiveRecord::QueryCanceled }
+        expect(IssueRebalancingWorker).to receive(:perform_async).with(issue.id)
+
+        expect { issue.move_sequence_after }.to raise_error(ActiveRecord::QueryCanceled)
+      end
+    end
+  end
 end

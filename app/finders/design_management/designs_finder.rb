@@ -3,6 +3,7 @@
 module DesignManagement
   class DesignsFinder
     include Gitlab::Allowable
+    include FinderMethods
 
     # Params:
     # ids: integer[]

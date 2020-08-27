@@ -175,4 +175,36 @@ RSpec.describe Gitlab::AlertManagement::Payload::Base do
       it { is_expected.to eq(environment) }
     end
   end
+
+  describe '#resolved?' do
+    before do
+      allow(parsed_payload).to receive(:status).and_return(status)
+    end
+
+    subject { parsed_payload.resolved? }
+
+    context 'when status is not defined' do
+      let(:status) { nil }
+
+      it { is_expected.to be_falsey }
+    end
+
+    context 'when status is not resovled' do
+      let(:status) { 'firing' }
+
+      it { is_expected.to be_falsey }
+    end
+
+    context 'when status is resovled' do
+      let(:status) { 'resolved' }
+
+      it { is_expected.to be_truthy }
+    end
+  end
+
+  describe '#has_required_attributes?' do
+    subject { parsed_payload.has_required_attributes? }
+
+    it { is_expected.to be(true) }
+  end
 end

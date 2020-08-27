@@ -123,6 +123,10 @@ RSpec.describe Projects::Alerting::NotifyService do
           it_behaves_like 'creates an alert management alert'
           it_behaves_like 'assigns the alert properties'
 
+          it 'creates a system note corresponding to alert creation' do
+            expect { subject }.to change(Note, :count).by(1)
+          end
+
           context 'existing alert with same fingerprint' do
             let(:fingerprint_sha) { Digest::SHA1.hexdigest(fingerprint) }
             let!(:alert) { create(:alert_management_alert, project: project, fingerprint: fingerprint_sha) }

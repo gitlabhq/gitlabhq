@@ -3,13 +3,14 @@
 require('spec_helper')
 
 RSpec.describe Projects::TodosController do
-  let(:user)          { create(:user) }
-  let(:project)       { create(:project) }
+  let_it_be(:user)    { create(:user) }
+  let_it_be(:project) { create(:project) }
   let(:issue)         { create(:issue, project: project) }
   let(:merge_request) { create(:merge_request, source_project: project) }
+  let(:design)        { create(:design, project: project, issue: issue) }
   let(:parent)        { project }
 
-  shared_examples 'project todos actions' do
+  shared_examples 'issuable todo actions' do
     it_behaves_like 'todos actions'
 
     context 'when not authorized for resource' do
@@ -40,7 +41,7 @@ RSpec.describe Projects::TodosController do
           format: 'html'
       end
 
-      it_behaves_like 'project todos actions'
+      it_behaves_like 'issuable todo actions'
     end
   end
 
@@ -57,7 +58,31 @@ RSpec.describe Projects::TodosController do
           format: 'html'
       end
 
-      it_behaves_like 'project todos actions'
+      it_behaves_like 'issuable todo actions'
+    end
+  end
+
+  context 'Designs' do
+    include DesignManagementTestHelpers
+
+    before do
+      enable_design_management
+    end
+
+    describe 'POST create' do
+      def post_create
+        post :create,
+          params: {
+            namespace_id: project.namespace,
+            project_id: project,
+            issue_id: issue.id,
+            issuable_id: design.id,
+            issuable_type: 'design'
+          },
+          format: 'html'
+      end
+
+      it_behaves_like 'todos actions'
     end
   end
 end

@@ -48,6 +48,7 @@ module Projects
       def create_alert
         alert = AlertManagement::Alert.create(am_alert_params)
         alert.execute_services if alert.persisted?
+        SystemNoteService.create_new_alert(alert, 'Generic Alert Endpoint')
 
         alert
       end

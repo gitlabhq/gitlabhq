@@ -7,8 +7,6 @@ RSpec.describe FinderMethods do
     Class.new do
       include FinderMethods
 
-      attr_reader :current_user
-
       def initialize(user)
         @current_user = user
       end
@@ -16,6 +14,10 @@ RSpec.describe FinderMethods do
       def execute
         Project.all.order(id: :desc)
       end
+
+      private
+
+      attr_reader :current_user
     end
   end
 

@@ -10233,6 +10233,23 @@ CREATE SEQUENCE public.ci_pipelines_id_seq
 
 ALTER SEQUENCE public.ci_pipelines_id_seq OWNED BY public.ci_pipelines.id;
 
+CREATE TABLE public.ci_platform_metrics (
+    id bigint NOT NULL,
+    recorded_at timestamp with time zone NOT NULL,
+    platform_target text NOT NULL,
+    count integer NOT NULL,
+    CONSTRAINT check_f922abc32b CHECK ((char_length(platform_target) <= 255))
+);
+
+CREATE SEQUENCE public.ci_platform_metrics_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE public.ci_platform_metrics_id_seq OWNED BY public.ci_platform_metrics.id;
+
 CREATE TABLE public.ci_refs (
     id bigint NOT NULL,
     project_id bigint NOT NULL,
@@ -16857,6 +16874,8 @@ ALTER TABLE ONLY public.ci_pipelines ALTER COLUMN id SET DEFAULT nextval('public
 
 ALTER TABLE ONLY public.ci_pipelines_config ALTER COLUMN pipeline_id SET DEFAULT nextval('public.ci_pipelines_config_pipeline_id_seq'::regclass);
 
+ALTER TABLE ONLY public.ci_platform_metrics ALTER COLUMN id SET DEFAULT nextval('public.ci_platform_metrics_id_seq'::regclass);
+
 ALTER TABLE ONLY public.ci_refs ALTER COLUMN id SET DEFAULT nextval('public.ci_refs_id_seq'::regclass);
 
 ALTER TABLE ONLY public.ci_resource_groups ALTER COLUMN id SET DEFAULT nextval('public.ci_resource_groups_id_seq'::regclass);
@@ -17820,6 +17839,9 @@ ALTER TABLE ONLY public.ci_pipelines_config
 
 ALTER TABLE ONLY public.ci_pipelines
     ADD CONSTRAINT ci_pipelines_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY public.ci_platform_metrics
+    ADD CONSTRAINT ci_platform_metrics_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY public.ci_refs
     ADD CONSTRAINT ci_refs_pkey PRIMARY KEY (id);
@@ -19402,6 +19424,8 @@ CREATE INDEX index_ci_trigger_requests_on_trigger_id_and_id ON public.ci_trigger
 CREATE INDEX index_ci_triggers_on_owner_id ON public.ci_triggers USING btree (owner_id);
 
 CREATE INDEX index_ci_triggers_on_project_id ON public.ci_triggers USING btree (project_id);
+
+CREATE INDEX index_ci_variables_on_key ON public.ci_variables USING btree (key);
 
 CREATE UNIQUE INDEX index_ci_variables_on_project_id_and_key_and_environment_scope ON public.ci_variables USING btree (project_id, key, environment_scope);
 

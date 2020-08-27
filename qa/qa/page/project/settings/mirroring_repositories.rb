@@ -77,7 +77,7 @@ module QA
 
             # The host key detection process is interrupted if we navigate away
             # from the page before the fingerprint appears.
-            find_element(:fingerprints_list, text: /.*/)
+            find_element(:fingerprints_list, text: /.*/, wait: 60)
           end
 
           def mirror_repository

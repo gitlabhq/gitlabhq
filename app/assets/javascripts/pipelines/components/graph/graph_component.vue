@@ -131,7 +131,8 @@ export default {
     >
       <div
         :style="{
-          paddingLeft: `16px`,
+          paddingLeft: `${graphLeftPadding}px`,
+          paddingRight: `${graphRightPadding}px`,
         }"
       >
         <gl-loading-icon v-if="isLoading" class="m-auto" size="lg" />

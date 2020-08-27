@@ -25,9 +25,11 @@ Docker image with the fuzz engine to run your app.
 
 | Language | Fuzzing Engine | Example |
 |----------|----------------|---------|
-| C/C++    | [libFuzzer](https://llvm.org/docs/LibFuzzer.html) | [c-cpp-example](https://gitlab.com/gitlab-org/security-products/demos/c-cpp-fuzzing-example) |
-| GoLang   | [go-fuzz (libFuzzer support)](https://github.com/dvyukov/go-fuzz) | [go-fuzzing-example](https://gitlab.com/gitlab-org/security-products/demos/go-fuzzing-example) |
-| Rust     | [cargo-fuzz (libFuzzer support)](https://github.com/rust-fuzz/cargo-fuzz) |         |
+| C/C++    | [libFuzzer](https://llvm.org/docs/LibFuzzer.html) | [c-cpp-example](https://gitlab.com/gitlab-org/security-products/demos/coverage-fuzzing/c-cpp-fuzzing-example) |
+| GoLang   | [go-fuzz (libFuzzer support)](https://github.com/dvyukov/go-fuzz) | [go-fuzzing-example](https://gitlab.com/gitlab-org/security-products/demos/coverage-fuzzing/go-fuzzing-example) |
+| Swift    | [libfuzzer](https://github.com/apple/swift/blob/master/docs/libFuzzerIntegration.md) | [swift-fuzzing-example](https://gitlab.com/gitlab-org/security-products/demos/coverage-fuzzing/swift-fuzzing-example) |
+| Rust     | [cargo-fuzz (libFuzzer support)](https://github.com/rust-fuzz/cargo-fuzz) | [rust-fuzzing-example](https://gitlab.com/gitlab-org/security-products/demos/coverage-fuzzing/rust-fuzzing-example) |
+| Java     | [JQF](https://github.com/rohanpadhye/JQF) | [java-fuzzing-example](https://gitlab.com/gitlab-org/security-products/demos/coverage-fuzzing/java-fuzzing-example) |
 
 ## Configuration
 

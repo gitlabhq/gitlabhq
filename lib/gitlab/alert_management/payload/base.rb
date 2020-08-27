@@ -20,6 +20,7 @@ module Gitlab
           :alert_markdown,
           :alert_title,
           :annotations,
+          :description,
           :ends_at,
           :environment,
           :environment_name,
@@ -29,11 +30,12 @@ module Gitlab
           :gitlab_fingerprint,
           :gitlab_prometheus_alert_id,
           :gitlab_y_label,
-          :description,
+          :has_required_attributes?,
           :hosts,
           :metric_id,
           :metrics_dashboard_url,
           :monitoring_tool,
+          :resolved?,
           :runbook,
           :service,
           :severity,
@@ -119,6 +121,14 @@ module Gitlab
               .find
               .first
           end
+        end
+
+        def resolved?
+          status == 'resolved'
+        end
+
+        def has_required_attributes?
+          true
         end
 
         private

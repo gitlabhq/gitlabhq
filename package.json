@@ -147,7 +147,7 @@
     "vue": "^2.6.10",
     "vue-apollo": "^3.0.3",
     "vue-loader": "^15.9.0",
-    "vue-router": "^3.0.2",
+    "vue-router": "^3.4.3",
     "vue-template-compiler": "^2.6.10",
     "vue-virtual-scroll-list": "^1.4.4",
     "vuedraggable": "^2.23.0",

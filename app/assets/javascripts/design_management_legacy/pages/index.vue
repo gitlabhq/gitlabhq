@@ -168,7 +168,7 @@ export default {
 
       // if this upload resulted in a new version being created, redirect user to the latest version
       if (!this.isLatestVersion) {
-        this.$router.push({ name: DESIGNS_ROUTE_NAME });
+        this.$router.push({ name: DESIGNS_ROUTE_NAME }, () => {});
       }
       this.resetFilesToBeSaved();
     },

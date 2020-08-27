@@ -61,6 +61,10 @@ module Gitlab
           )
         end
 
+        def has_required_attributes?
+          project && title && starts_at_raw
+        end
+
         private
 
         def plain_gitlab_fingerprint

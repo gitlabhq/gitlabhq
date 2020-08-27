@@ -9,7 +9,7 @@ variables:
   # (SAST, Dependency Scanning, ...)
   SECURE_ANALYZERS_PREFIX: "registry.gitlab.com/gitlab-org/security-products/analyzers"
 
-  SAST_DEFAULT_ANALYZERS: "bandit, brakeman, gosec, spotbugs, flawfinder, phpcs-security-audit, security-code-scan, nodejs-scan, eslint, secrets, sobelow, pmd-apex, kubesec"
+  SAST_DEFAULT_ANALYZERS: "bandit, brakeman, gosec, spotbugs, flawfinder, phpcs-security-audit, security-code-scan, nodejs-scan, eslint, sobelow, pmd-apex, kubesec"
   SAST_EXCLUDED_PATHS: "spec, test, tests, tmp"
   SAST_ANALYZER_IMAGE_TAG: 2
   SAST_DISABLE_DIND: "true"
@@ -185,18 +185,6 @@ pmd-apex-sast:
           $SAST_DEFAULT_ANALYZERS =~ /pmd-apex/
       exists:
         - '**/*.cls'
-
-secrets-sast:
-  extends: .sast-analyzer
-  image:
-    name: "$SAST_ANALYZER_IMAGE"
-  variables:
-    SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/secrets:$SAST_ANALYZER_IMAGE_TAG"
-  rules:
-    - if: $SAST_DISABLED || $SAST_DISABLE_DIND == 'false'
-      when: never
-    - if: $CI_COMMIT_BRANCH &&
-          $SAST_DEFAULT_ANALYZERS =~ /secrets/
 
 security-code-scan-sast:
   extends: .sast-analyzer

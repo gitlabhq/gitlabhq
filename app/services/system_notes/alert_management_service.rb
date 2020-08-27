@@ -2,6 +2,21 @@
 
 module SystemNotes
   class AlertManagementService < ::SystemNotes::BaseService
+    # Called when the a new AlertManagement::Alert has been created
+    #
+    # alert - AlertManagement::Alert object.
+    #
+    # Example Note text:
+    #
+    #   "GitLab Alert Bot logged an alert from Prometheus"
+    #
+    # Returns the created Note object
+    def create_new_alert(monitoring_tool)
+      body = "logged an alert from **#{monitoring_tool}**"
+
+      create_note(NoteSummary.new(noteable, project, User.alert_bot, body, action: 'new_alert_added'))
+    end
+
     # Called when the status of an AlertManagement::Alert has changed
     #
     # alert - AlertManagement::Alert object.

@@ -6,7 +6,7 @@ module AlertManagement
     include ::IncidentManagement::Settings
 
     def execute
-      return bad_request unless parsed_alert.valid?
+      return bad_request unless incoming_payload.has_required_attributes?
 
       process_alert_management_alert
 
@@ -15,22 +15,17 @@ module AlertManagement
 
     private
 
-    delegate :firing?, :resolved?, :gitlab_fingerprint, :ends_at, to: :parsed_alert
-
-    def parsed_alert
-      strong_memoize(:parsed_alert) do
-        Gitlab::Alerting::Alert.new(project: project, payload: params)
+    def process_alert_management_alert
+      if incoming_payload.resolved?
+        process_resolved_alert_management_alert
+      else
+        process_firing_alert_management_alert
       end
     end
 
-    def process_alert_management_alert
-      process_firing_alert_management_alert if firing?
-      process_resolved_alert_management_alert if resolved?
-    end
-
     def process_firing_alert_management_alert
-      if am_alert.present?
-        am_alert.register_new_event!
+      if alert.persisted?
+        alert.register_new_event!
         reset_alert_management_alert_status
       else
         create_alert_management_alert
@@ -40,47 +35,42 @@ module AlertManagement
     end
 
     def reset_alert_management_alert_status
-      return if am_alert.trigger
+      return if alert.trigger
 
       logger.warn(
         message: 'Unable to update AlertManagement::Alert status to triggered',
         project_id: project.id,
-        alert_id: am_alert.id
+        alert_id: alert.id
       )
     end
 
     def create_alert_management_alert
-      new_alert = AlertManagement::Alert.new(am_alert_params.merge(ended_at: nil))
-      if new_alert.save
-        new_alert.execute_services
-        @am_alert = new_alert
+      if alert.save
+        alert.execute_services
+        SystemNoteService.create_new_alert(alert, Gitlab::AlertManagement::AlertParams::MONITORING_TOOLS[:prometheus])
         return
       end
 
       logger.warn(
         message: 'Unable to create AlertManagement::Alert',
         project_id: project.id,
-        alert_errors: new_alert.errors.messages
+        alert_errors: alert.errors.messages
       )
     end
 
-    def am_alert_params
-      Gitlab::AlertManagement::AlertParams.from_prometheus_alert(project: project, parsed_alert: parsed_alert)
-    end
-
     def process_resolved_alert_management_alert
-      return if am_alert.blank?
+      return unless alert.persisted?
       return unless auto_close_incident?
 
-      if am_alert.resolve(ends_at)
-        close_issue(am_alert.issue)
+      if alert.resolve(incoming_payload.ends_at)
+        close_issue(alert.issue)
         return
       end
 
       logger.warn(
         message: 'Unable to update AlertManagement::Alert status to resolved',
         project_id: project.id,
-        alert_id: am_alert.id
+        alert_id: alert.id
       )
     end
 
@@ -95,19 +85,44 @@ module AlertManagement
     end
 
     def process_incident_alert
-      return unless am_alert
-      return if am_alert.issue
+      return unless alert.persisted?
+      return if alert.issue
 
-      IncidentManagement::ProcessAlertWorker.perform_async(nil, nil, am_alert.id)
+      IncidentManagement::ProcessAlertWorker.perform_async(nil, nil, alert.id)
     end
 
     def logger
       @logger ||= Gitlab::AppLogger
     end
 
-    def am_alert
-      strong_memoize(:am_alert) do
-        AlertManagement::Alert.not_resolved.for_fingerprint(project, gitlab_fingerprint).first
+    def alert
+      strong_memoize(:alert) do
+        existing_alert || new_alert
+      end
+    end
+
+    def existing_alert
+      strong_memoize(:existing_alert) do
+        AlertManagement::Alert.not_resolved.for_fingerprint(project, incoming_payload.gitlab_fingerprint).first
+      end
+    end
+
+    def new_alert
+      strong_memoize(:new_alert) do
+        AlertManagement::Alert.new(
+          **incoming_payload.alert_params,
+          ended_at: nil
+        )
+      end
+    end
+
+    def incoming_payload
+      strong_memoize(:incoming_payload) do
+        Gitlab::AlertManagement::Payload.parse(
+          project,
+          params,
+          monitoring_tool: Gitlab::AlertManagement::Payload::MONITORING_TOOLS[:prometheus]
+        )
       end
     end
 

@@ -478,16 +478,15 @@ describe('Design management index page', () => {
   describe('on non-latest version', () => {
     beforeEach(() => {
       createComponent({ designs: mockDesigns, allVersions: [mockVersion] });
+    });
 
-      router.replace({
+    it('does not render design checkboxes', async () => {
+      await router.replace({
         name: DESIGNS_ROUTE_NAME,
         query: {
           version: '2',
         },
       });
-    });
-
-    it('does not render design checkboxes', () => {
       expect(findDesignCheckboxes()).toHaveLength(0);
     });
 
@@ -514,13 +513,6 @@ describe('Design management index page', () => {
         files: [{ name: 'image.png', type: 'image/png' }],
         getData: () => 'test.png',
       };
-
-      router.replace({
-        name: DESIGNS_ROUTE_NAME,
-        query: {
-          version: '2',
-        },
-      });
     });
 
     it('does not call paste event if designs wrapper is not hovered', () => {

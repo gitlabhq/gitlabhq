@@ -81,7 +81,13 @@ nodejs-scan-sast:
 secrets-sast:
   extends: .sast
   image:
-    name: "$SAST_ANALYZER_IMAGE_PREFIX/secrets:$SAST_ANALYZER_IMAGE_TAG"
+    name: "$SAST_ANALYZER_IMAGE_PREFIX/secrets:3"
+  artifacts:
+    paths:
+      - gl-secret-detection-report.json  # GitLab-specific
+    reports:
+      sast: gl-secret-detection-report.json
+    expire_in: 1 week  # GitLab-specific
 
 # We need to duplicate this job's definition because it seems it's impossible to
 # override an included `only.refs`.
