@@ -83,6 +83,7 @@ module Issues
       raise ActiveRecord::RecordNotFound unless issue_before || issue_after
 
       issue.move_between(issue_before, issue_after)
+      rebalance_if_needed(issue)
     end
 
     # rubocop: disable CodeReuse/ActiveRecord

@@ -75,6 +75,37 @@ RSpec.describe Issues::CreateService do
         expect(Todo.where(attributes).count).to eq 1
       end
 
+      it 'rebalances if needed' do
+        create(:issue, project: project, relative_position: RelativePositioning::MAX_POSITION)
+        expect(IssueRebalancingWorker).to receive(:perform_async).with(Integer)
+
+        expect(issue.relative_position).to eq(project.issues.maximum(:relative_position))
+      end
+
+      it 'does not rebalance if the flag is disabled' do
+        stub_feature_flags(rebalance_issues: false)
+
+        create(:issue, project: project, relative_position: RelativePositioning::MAX_POSITION)
+        expect(IssueRebalancingWorker).not_to receive(:perform_async).with(Integer)
+
+        expect(issue.relative_position).to eq(project.issues.maximum(:relative_position))
+      end
+
+      it 'does rebalance if the flag is enabled for the project' do
+        stub_feature_flags(rebalance_issues: project)
+
+        create(:issue, project: project, relative_position: RelativePositioning::MAX_POSITION)
+        expect(IssueRebalancingWorker).to receive(:perform_async).with(Integer)
+
+        expect(issue.relative_position).to eq(project.issues.maximum(:relative_position))
+      end
+
+      it 'does not rebalance unless needed' do
+        expect(IssueRebalancingWorker).not_to receive(:perform_async)
+
+        expect(issue.relative_position).to eq(project.issues.maximum(:relative_position))
+      end
+
       context 'when label belongs to project group' do
         let(:group) { create(:group) }
         let(:group_labels) { create_pair(:group_label, group: group) }

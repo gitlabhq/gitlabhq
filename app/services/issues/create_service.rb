@@ -30,6 +30,7 @@ module Issues
       user_agent_detail_service.create
       resolve_discussions_with_issue(issuable)
       delete_milestone_total_issue_counter_cache(issuable.milestone)
+      rebalance_if_needed(issuable)
 
       super
     end
