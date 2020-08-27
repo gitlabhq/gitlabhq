@@ -12807,7 +12807,7 @@ msgstr ""
 msgid "Improve customer support with GitLab Service Desk."
 msgstr ""
 
-msgid "Improve search with Advanced Global Search and GitLab Enterprise Edition."
+msgid "Improve search with Advanced Search and GitLab Enterprise Edition."
 msgstr ""
 
 msgid "In %{time_to_now}"
@@ -23878,8 +23878,8 @@ msgid_plural "The %{type} contains the following errors:"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "The Advanced Global Search in GitLab is a powerful search service that saves you time. Instead of creating duplicate code and wasting time, you can now search for code within other teams that can help your own project."
-msgstr "GitLab'daki Gelişmiş Genel arama, size zaman kazandıran güçlü bir arama hizmetidir. Yinelenen kod oluşturmak ve zaman kaybetmek yerine, artık kendi projenize yardımcı olabilecek diğer ekiplerin içinde kod arayabilirsiniz."
+msgid "The Advanced Search in GitLab is a powerful search service that saves you time. Instead of creating duplicate code and wasting time, you can now search for code within other teams that can help your own project."
+msgstr "GitLab'daki Gelişmiş Arama, size zaman kazandıran güçlü bir arama hizmetidir. Yinelenen kod oluşturmak ve zaman kaybetmek yerine, artık kendi projenize yardımcı olabilecek diğer ekiplerin içinde kod arayabilirsiniz."
 
 msgid "The CSV export will be created in the background. Once finished, it will be sent to %{strong_open}%{email}%{strong_close} in an attachment."
 msgstr ""
@@ -26122,7 +26122,7 @@ msgstr ""
 msgid "Upgrade your plan"
 msgstr ""
 
-msgid "Upgrade your plan to activate Advanced Global Search."
+msgid "Upgrade your plan to activate Advanced Search."
 msgstr "Gelişmiş Genel aramayı etkinleştirmek için planınızı yükseltin."
 
 msgid "Upgrade your plan to activate Audit Events."

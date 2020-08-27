@@ -289,10 +289,4 @@ RSpec.describe 'getting an issue list for a project' do
       issues_data
     end
   end
-
-  def grab_iids(data = issues_data)
-    data.map do |issue|
-      issue.dig('node', 'iid').to_i
-    end
-  end
 end

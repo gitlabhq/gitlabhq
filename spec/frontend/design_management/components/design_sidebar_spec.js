@@ -7,6 +7,9 @@ import DesignDiscussion from '~/design_management/components/design_notes/design
 import design from '../mock_data/design';
 import updateActiveDiscussionMutation from '~/design_management/graphql/mutations/update_active_discussion.mutation.graphql';
 
+const scrollIntoViewMock = jest.fn();
+HTMLElement.prototype.scrollIntoView = scrollIntoViewMock;
+
 const updateActiveDiscussionMutationVariables = {
   mutation: updateActiveDiscussionMutation,
   variables: {
@@ -53,6 +56,7 @@ describe('Design management design sidebar component', () => {
           mutate,
         },
       },
+      stubs: { GlPopover },
     });
   }
 
@@ -218,6 +222,10 @@ describe('Design management design sidebar component', () => {
 
     it('renders a popover if we show resolved comments collapsible for the first time', () => {
       expect(findPopover().exists()).toBe(true);
+    });
+
+    it('scrolls to resolved threads link', () => {
+      expect(scrollIntoViewMock).toHaveBeenCalled();
     });
 
     it('dismisses a popover on the outside click', () => {

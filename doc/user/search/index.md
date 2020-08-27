@@ -208,12 +208,12 @@ and **Labels**, select multiple issues to add to a list of your choice:
 
 ![search and select issues to add to board](img/search_issues_board.png)
 
-## Advanced Global Search **(STARTER)**
+## Advanced Search **(STARTER)**
 
 Leverage Elasticsearch for faster, more advanced code search across your entire
 GitLab instance.
 
-[Learn how to use the Advanced Global Search.](advanced_global_search.md)
+[Learn how to use the Advanced Search.](advanced_global_search.md)
 
 ## Advanced Syntax Search **(STARTER)**
 

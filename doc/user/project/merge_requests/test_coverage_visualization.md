@@ -8,10 +8,13 @@ type: reference, howto
 # Test Coverage Visualization **(CORE ONLY)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3708) in GitLab 12.9.
-> - It's deployed behind a feature flag, disabled by default.
+> - It's [deployed behind a feature flag](../../../user/feature_flags.md), disabled by default.
 > - It's disabled on GitLab.com.
 > - It can be enabled or disabled per-project.
 > - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enabling-the-feature). **(CORE ONLY)**
+
+CAUTION: **Caution:**
+This feature might not be available to you. Check the **version history** note above for details.
 
 With the help of [GitLab CI/CD](../../../ci/README.md), you can collect the test
 coverage information of your favorite testing or coverage-analysis tool, and visualize

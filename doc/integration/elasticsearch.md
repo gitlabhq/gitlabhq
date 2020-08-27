@@ -14,7 +14,7 @@ This document describes how to set up Elasticsearch with GitLab. After
 Elasticsearch is enabled, you'll have the benefit of fast search response times
 and the advantage of the following special searches:
 
-- [Advanced Global Search](../user/search/advanced_global_search.md)
+- [Advanced Search](../user/search/advanced_global_search.md)
 - [Advanced Syntax Search](../user/search/advanced_search_syntax.md)
 
 ## Version requirements

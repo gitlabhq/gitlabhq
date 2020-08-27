@@ -529,7 +529,7 @@ fewer than 3 nodes or consisting of `f1-micro`, `g1-small`, `n1-standard-1`, or
 
 NOTE: **Note:**
 The Elastic Stack cluster application is intended as a log aggregation solution and is not related to our
-[Advanced Global Search](../search/advanced_global_search.md) functionality, which uses a separate
+[Advanced Search](../search/advanced_global_search.md) functionality, which uses a separate
 Elasticsearch cluster.
 
 #### Optional: deploy Kibana to perform advanced queries

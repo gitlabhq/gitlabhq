@@ -438,7 +438,7 @@ Reports that go over the 20 MB limit won't be loaded. Affected reports:
 - [CI/CD parameter `artifacts:expose_as`](../ci/yaml/README.md#artifactsexpose_as)
 - [Unit test reports](../ci/unit_test_reports.md)
 
-## Advanced Global Search limits
+## Advanced Search limits
 
 ### Maximum file size indexed
 

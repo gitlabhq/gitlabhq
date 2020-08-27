@@ -53,7 +53,10 @@ export default {
       const url = joinPaths(baseUrl, this.blob.rawPath);
 
       axios
-        .get(url)
+        .get(url, {
+          // This prevents axios from automatically JSON.parse response
+          transformResponse: [f => f],
+        })
         .then(res => {
           this.notifyAboutUpdates({ content: res.data });
         })

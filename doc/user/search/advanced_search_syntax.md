@@ -10,7 +10,7 @@ type: reference
 > - Introduced in [GitLab Enterprise Starter](https://about.gitlab.com/pricing/) 9.2
 
 NOTE: **GitLab.com availability:**
-Advanced Global Search (powered by Elasticsearch) is enabled for Bronze and above on GitLab.com since 2020-07-10.
+Advanced Search (powered by Elasticsearch) is enabled for Bronze and above on GitLab.com since 2020-07-10.
 
 Use advanced queries for more targeted search results.
 
@@ -20,10 +20,10 @@ visit the [administrator documentation](../../integration/elasticsearch.md).
 ## Overview
 
 The Advanced Syntax Search is a subset of the
-[Advanced Global Search](advanced_global_search.md), which you can use if you
+[Advanced Search](advanced_global_search.md), which you can use if you
 want to have more specific search results.
 
-Advanced Global Search only supports searching the [default branch](../project/repository/branches/index.md#default-branch).
+Advanced Search only supports searching the [default branch](../project/repository/branches/index.md#default-branch).
 
 ## Use cases
 

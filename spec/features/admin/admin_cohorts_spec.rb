@@ -5,15 +5,27 @@ require 'spec_helper'
 RSpec.describe 'Cohorts page' do
   before do
     sign_in(create(:admin))
-
-    stub_application_setting(usage_ping_enabled: true)
   end
 
-  it 'See users count per month' do
-    create_list(:user, 2)
+  context 'with usage ping enabled' do
+    it 'shows users count per month' do
+      stub_application_setting(usage_ping_enabled: true)
 
-    visit admin_cohorts_path
+      create_list(:user, 2)
 
-    expect(page).to have_content("#{Time.now.strftime('%b %Y')} 3 0")
+      visit admin_cohorts_path
+
+      expect(page).to have_content("#{Time.now.strftime('%b %Y')} 3 0")
+    end
+  end
+
+  context 'with usage ping disabled' do
+    it 'shows empty state', :js do
+      stub_application_setting(usage_ping_enabled: false)
+
+      visit admin_cohorts_path
+
+      expect(page).to have_selector(".js-empty-state")
+    end
   end
 end

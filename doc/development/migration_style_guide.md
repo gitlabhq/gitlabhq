@@ -260,7 +260,9 @@ def up
 end
 
 def down
-  drop_table :issues
+  with_lock_retries do
+    drop_table :issues
+  end
 end
 ```
 

@@ -17,6 +17,7 @@ const TEST_PATH = 'foo/bar/test.md';
 const TEST_RAW_PATH = '/gitlab/raw/path/to/blob/7';
 const TEST_FULL_PATH = joinPaths(TEST_HOST, TEST_RAW_PATH);
 const TEST_CONTENT = 'Lorem ipsum dolar sit amet,\nconsectetur adipiscing elit.';
+const TEST_JSON_CONTENT = '{"abc":"lorem ipsum"}';
 
 const TEST_BLOB = {
   id: TEST_ID,
@@ -66,7 +67,7 @@ describe('Snippet Blob Edit component', () => {
   });
 
   describe('with not loaded blob', () => {
-    beforeEach(async () => {
+    beforeEach(() => {
       createComponent();
     });
 
@@ -97,6 +98,20 @@ describe('Snippet Blob Edit component', () => {
       await waitForPromises();
 
       expect(getLastUpdatedArgs()).toEqual({ content: TEST_CONTENT });
+    });
+  });
+
+  describe('with unloaded blob and JSON content', () => {
+    beforeEach(() => {
+      axiosMock.onGet(TEST_FULL_PATH).reply(200, TEST_JSON_CONTENT);
+      createComponent();
+    });
+
+    // This checks against this issue https://gitlab.com/gitlab-org/gitlab/-/issues/241199
+    it('emits raw content', async () => {
+      await waitForPromises();
+
+      expect(getLastUpdatedArgs()).toEqual({ content: TEST_JSON_CONTENT });
     });
   });
 

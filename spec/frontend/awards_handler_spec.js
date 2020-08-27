@@ -4,7 +4,6 @@ import MockAdapter from 'axios-mock-adapter';
 import { useFakeRequestAnimationFrame } from 'helpers/fake_request_animation_frame';
 import axios from '~/lib/utils/axios_utils';
 import loadAwardsHandler from '~/awards_handler';
-import { setTestTimeout } from './helpers/timeout';
 import { EMOJI_VERSION } from '~/emoji';
 
 window.gl = window.gl || {};
@@ -17,7 +16,44 @@ const urlRoot = gon.relative_url_root;
 describe('AwardsHandler', () => {
   useFakeRequestAnimationFrame();
 
-  const emojiData = getJSONFixture('emojis/emojis.json');
+  const emojiData = {
+    '8ball': {
+      c: 'activity',
+      e: '🎱',
+      d: 'billiards',
+      u: '6.0',
+    },
+    grinning: {
+      c: 'people',
+      e: '😀',
+      d: 'grinning face',
+      u: '6.1',
+    },
+    angel: {
+      c: 'people',
+      e: '👼',
+      d: 'baby angel',
+      u: '6.0',
+    },
+    anger: {
+      c: 'symbols',
+      e: '💢',
+      d: 'anger symbol',
+      u: '6.0',
+    },
+    alien: {
+      c: 'people',
+      e: '👽',
+      d: 'extraterrestrial alien',
+      u: '6.0',
+    },
+    sunglasses: {
+      c: 'people',
+      e: '😎',
+      d: 'smiling face with sunglasses',
+      u: '6.0',
+    },
+  };
   preloadFixtures('snippets/show.html');
 
   const openAndWaitForEmojiMenu = (sel = '.js-add-award') => {
@@ -25,7 +61,7 @@ describe('AwardsHandler', () => {
       .eq(0)
       .click();
 
-    jest.advanceTimersByTime(200);
+    jest.runOnlyPendingTimers();
 
     const $menu = $('.emoji-menu');
 
@@ -37,10 +73,6 @@ describe('AwardsHandler', () => {
   };
 
   beforeEach(async () => {
-    // These tests have had some timeout issues
-    // https://gitlab.com/gitlab-org/gitlab/-/issues/221086
-    setTestTimeout(6000);
-
     mock = new MockAdapter(axios);
     mock.onGet(`/-/emojis/${EMOJI_VERSION}/emojis.json`).reply(200, emojiData);
 

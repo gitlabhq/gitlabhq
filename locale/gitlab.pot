@@ -1396,6 +1396,9 @@ msgstr ""
 msgid "Activate Service Desk"
 msgstr ""
 
+msgid "Activate user activity analysis"
+msgstr ""
+
 msgid "Active"
 msgstr ""
 
@@ -13004,7 +13007,7 @@ msgstr ""
 msgid "Improve customer support with GitLab Service Desk."
 msgstr ""
 
-msgid "Improve search with Advanced Global Search and GitLab Enterprise Edition."
+msgid "Improve search with Advanced Search and GitLab Enterprise Edition."
 msgstr ""
 
 msgid "In %{time_to_now}"
@@ -21756,7 +21759,7 @@ msgstr ""
 msgid "SecurityReports|Add a project to your dashboard"
 msgstr ""
 
-msgid "SecurityReports|Add or remove projects from your dashboard"
+msgid "SecurityReports|Add or remove projects to monitor in the security area. Projects included in this list will have their results displayed in the security dashboard and vulnerability report."
 msgstr ""
 
 msgid "SecurityReports|Add projects"
@@ -21823,6 +21826,9 @@ msgid "SecurityReports|Load more vulnerabilities"
 msgstr ""
 
 msgid "SecurityReports|Monitor vulnerabilities in your code"
+msgstr ""
+
+msgid "SecurityReports|Monitored projects"
 msgstr ""
 
 msgid "SecurityReports|More info"
@@ -24312,7 +24318,7 @@ msgid_plural "The %{type} contains the following errors:"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "The Advanced Global Search in GitLab is a powerful search service that saves you time. Instead of creating duplicate code and wasting time, you can now search for code within other teams that can help your own project."
+msgid "The Advanced Search in GitLab is a powerful search service that saves you time. Instead of creating duplicate code and wasting time, you can now search for code within other teams that can help your own project."
 msgstr ""
 
 msgid "The CSV export will be created in the background. Once finished, it will be sent to %{strong_open}%{email}%{strong_close} in an attachment."
@@ -25806,9 +25812,6 @@ msgstr ""
 msgid "To define internal users, first enable new users set to external"
 msgstr ""
 
-msgid "To enable it and see User Cohorts, visit %{application_settings_link_start}application settings%{application_settings_link_end}."
-msgstr ""
-
 msgid "To further protect your account, consider configuring a %{mfa_link_start}two-factor authentication%{mfa_link_end} method."
 msgstr ""
 
@@ -26196,7 +26199,13 @@ msgstr ""
 msgid "Turn On"
 msgstr ""
 
+msgid "Turn on %{strongStart}usage ping%{strongEnd} to activate analysis of user activity, known as %{docLinkStart}Cohorts%{docLinkEnd}."
+msgstr ""
+
 msgid "Turn on Service Desk"
+msgstr ""
+
+msgid "Turn on usage ping"
 msgstr ""
 
 msgid "Twitter"
@@ -26601,7 +26610,7 @@ msgstr ""
 msgid "Upgrade your plan"
 msgstr ""
 
-msgid "Upgrade your plan to activate Advanced Global Search."
+msgid "Upgrade your plan to activate Advanced Search."
 msgstr ""
 
 msgid "Upgrade your plan to activate Audit Events."
@@ -26818,9 +26827,6 @@ msgid "User %{current_user_username} has started impersonating %{username}"
 msgstr ""
 
 msgid "User %{username} was successfully removed."
-msgstr ""
-
-msgid "User Cohorts are only shown when the %{usage_ping_link_start}usage ping%{usage_ping_link_end} is enabled."
 msgstr ""
 
 msgid "User IDs"

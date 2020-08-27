@@ -5,12 +5,12 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 type: reference
 ---
 
-# Advanced Global Search **(STARTER)**
+# Advanced Search **(STARTER)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/109) in GitLab [Starter](https://about.gitlab.com/pricing/) 8.4.
 
 NOTE: **GitLab.com availability:**
-Advanced Global Search (powered by Elasticsearch) is enabled for Bronze and above on GitLab.com since 2020-07-10.
+Advanced Search (powered by Elasticsearch) is enabled for Bronze and above on GitLab.com since 2020-07-10.
 
 Leverage Elasticsearch for faster, more advanced code search across your entire
 GitLab instance.
@@ -20,7 +20,7 @@ visit the [administrator documentation](../../integration/elasticsearch.md).
 
 ## Overview
 
-The Advanced Global Search in GitLab is a powerful search service that saves
+The Advanced Search in GitLab is a powerful search service that saves
 you time. Instead of creating duplicate code and wasting time, you can
 now search for code within other projects that can help your own project.
 
@@ -39,12 +39,12 @@ searching in:
 
 ## Use cases
 
-The Advanced Global Search can be useful in various scenarios.
+The Advanced Search can be useful in various scenarios.
 
 ### Faster searches
 
 If you are dealing with huge amount of data and want to keep GitLab's search
-fast, the Advanced Global Search will help you achieve that.
+fast, the Advanced Search will help you achieve that.
 
 ### Promote innersourcing
 
@@ -58,7 +58,7 @@ throughout the GitLab instance and find the code they search for.
 Just use the search as before and GitLab will show you matching code from each
 project you have access to.
 
-![Advanced Global Search](img/advanced_global_search.png)
+![Advanced Search](img/advanced_global_search.png)
 
 You can also use the [Advanced Syntax Search](advanced_search_syntax.md) which
 provides some useful queries.
@@ -66,5 +66,5 @@ provides some useful queries.
 NOTE: **Note:**
 Elasticsearch has only data for the default branch. That means that if you go
 to the repository tree and switch the branch from the default to something else,
-then the "Code" tab in the search result page will be served by the regular
+then the "Code" tab in the search result page will be served by the basic
 search even if Elasticsearch is enabled.
