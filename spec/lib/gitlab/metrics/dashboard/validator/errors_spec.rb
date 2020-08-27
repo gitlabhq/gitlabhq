@@ -34,6 +34,17 @@ RSpec.describe Gitlab::Metrics::Dashboard::Validator::Errors do
 
           it { is_expected.to eq 'root is missing required keys: one' }
         end
+
+        context 'when there is type mismatch' do
+          %w(null string boolean integer number array object).each do |expected_type|
+            context "on type: #{expected_type}" do
+              let(:type) { expected_type }
+              let(:details) { nil }
+
+              it { is_expected.to eq "'property_name' at root is not of type: #{expected_type}" }
+            end
+          end
+        end
       end
 
       context 'for nested object' do
@@ -51,8 +62,6 @@ RSpec.describe Gitlab::Metrics::Dashboard::Validator::Errors do
             context "on type: #{expected_type}" do
               let(:type) { expected_type }
               let(:details) { nil }
-
-              subject { described_class.new(error_hash).message }
 
               it { is_expected.to eq "'property_name' at /nested_objects/0 is not of type: #{expected_type}" }
             end

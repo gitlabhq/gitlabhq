@@ -19,5 +19,17 @@ RSpec.describe Ci::CancelUserPipelinesService do
         expect(build.reload).to be_canceled
       end
     end
+
+    context 'when an error ocurrs' do
+      it 'raises a service level error' do
+        service = double(execute: ServiceResponse.error(message: 'Error canceling pipeline'))
+        allow(::Ci::CancelUserPipelinesService).to receive(:new).and_return(service)
+
+        result = subject
+
+        expect(result).to be_a(ServiceResponse)
+        expect(result).to be_error
+      end
+    end
   end
 end

@@ -1333,8 +1333,8 @@ PUT /projects/:id/issues/:issue_iid/reorder
 |-------------|---------|----------|--------------------------------------|
 | `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user  |
 | `issue_iid` | integer | yes      | The internal ID of a project's issue |
-| `move_after_id` | integer | no | The ID of a projet's issue to move this issue after |
-| `move_before_id` | integer | no | The ID of a projet's issue to move this issue before |
+| `move_after_id` | integer | no | The ID of a project's issue to move this issue after |
+| `move_before_id` | integer | no | The ID of a project's issue to move this issue before |
 
 ```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/4/issues/85/reorder?move_after_id=51&move_before_id=92"

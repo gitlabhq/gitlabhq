@@ -197,6 +197,7 @@ module API
       mount ::API::ConanPackages
       mount ::API::MavenPackages
       mount ::API::NpmPackages
+      mount ::API::GenericPackages
       mount ::API::GoProxy
       mount ::API::Pages
       mount ::API::PagesDomains

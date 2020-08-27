@@ -1,5 +1,6 @@
 import getJiraImportDetailsQuery from '~/jira_import/queries/get_jira_import_details.query.graphql';
 import { IMPORT_STATE } from '~/jira_import/utils/jira_import_utils';
+import { userMappingsPageSize } from '~/jira_import/utils/constants';
 
 export const fullPath = 'gitlab-org/gitlab-test';
 
@@ -86,6 +87,8 @@ export const jiraProjects = [
   { text: 'My Second Jira Project (MSJP)', value: 'MSJP' },
   { text: 'Migrate to GitLab (MTG)', value: 'MTG' },
 ];
+
+export const jiraUsersResponse = new Array(userMappingsPageSize);
 
 export const imports = [
   {

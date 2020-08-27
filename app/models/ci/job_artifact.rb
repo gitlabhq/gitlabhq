@@ -12,8 +12,6 @@ module Ci
     include FileStoreMounter
     extend Gitlab::Ci::Model
 
-    NotSupportedAdapterError = Class.new(StandardError)
-
     ignore_columns :locked, remove_after: '2020-07-22', remove_with: '13.4'
 
     TEST_REPORT_FILE_TYPES = %w[junit].freeze
@@ -271,16 +269,6 @@ module Ci
         end
     end
 
-    def each_blob(&blk)
-      unless file_format_adapter_class
-        raise NotSupportedAdapterError, 'This file format requires a dedicated adapter'
-      end
-
-      file.open do |stream|
-        file_format_adapter_class.new(stream).each_blob(&blk)
-      end
-    end
-
     def self.archived_trace_exists_for?(job_id)
       where(job_id: job_id).trace.take&.file&.file&.exists?
     end
@@ -297,10 +285,6 @@ module Ci
     end
 
     private
-
-    def file_format_adapter_class
-      FILE_FORMAT_ADAPTERS[file_format.to_sym]
-    end
 
     def set_size
       self.size = file.size

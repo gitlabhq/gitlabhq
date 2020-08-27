@@ -60,3 +60,5 @@ module Types
     end
   end
 end
+
+Types::MilestoneType.prepend_if_ee('::EE::Types::MilestoneType')

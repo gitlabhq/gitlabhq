@@ -184,7 +184,7 @@ export default {
 
     <gl-search-box-by-type
       v-model.trim="searchQuery"
-      class="m-2"
+      class="gl-m-3"
       :placeholder="this.$options.translations.searchMilestones"
       @input="searchMilestones"
     />

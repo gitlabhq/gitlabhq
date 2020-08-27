@@ -21,7 +21,7 @@ You can find your correlation ID by searching in either place.
 
 You can use your browser's developer tools to monitor and inspect network
 activity with the site that you're visiting. See the links below for network monitoring
-documenation for some popular browsers.
+documentation for some popular browsers.
 
 - [Network Monitor - Firefox Developer Tools](https://developer.mozilla.org/en-US/docs/Tools/Network_Monitor)
 - [Inspect Network Activity In Chrome DevTools](https://developers.google.com/web/tools/chrome-devtools/network/)

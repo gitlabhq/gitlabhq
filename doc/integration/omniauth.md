@@ -299,7 +299,7 @@ providers without two factor authentication.
 Define the allowed providers using an array, e.g. `["twitter", 'google_oauth2']`, or as
 `true`/`false` to allow all providers or none. This option should only be configured
 for providers which already have two factor authentication (default: false).
-This configration dose not apply to SAML.
+This configuration dose not apply to SAML.
 
 ```ruby
 gitlab_rails['omniauth_allow_bypass_two_factor'] = ['twitter', 'google_oauth2']

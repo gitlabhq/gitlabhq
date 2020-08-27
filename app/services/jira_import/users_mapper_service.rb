@@ -2,6 +2,7 @@
 
 module JiraImport
   class UsersMapperService
+    # MAX_USERS must match the pageSize value in app/assets/javascripts/jira_import/utils/constants.js
     MAX_USERS = 50
 
     attr_reader :jira_service, :start_at

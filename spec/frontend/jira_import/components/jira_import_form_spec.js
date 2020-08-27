@@ -10,6 +10,7 @@ import {
   imports,
   issuesPath,
   jiraProjects,
+  jiraUsersResponse,
   projectId,
   projectPath,
   userMappings as defaultUserMappings,
@@ -38,7 +39,10 @@ describe('JiraImportForm', () => {
 
   const getHeader = name => getByRole(wrapper.element, 'columnheader', { name });
 
+  const findLoadMoreUsersButton = () => wrapper.find('[data-testid="load-more-users-button"]');
+
   const mountComponent = ({
+    hasMoreUsers = false,
     isSubmitting = false,
     loading = false,
     mutate = mutateSpy,
@@ -55,6 +59,7 @@ describe('JiraImportForm', () => {
         projectPath,
       },
       data: () => ({
+        hasMoreUsers,
         isFetching: false,
         isSubmitting,
         searchTerm: '',
@@ -300,6 +305,7 @@ describe('JiraImportForm', () => {
         variables: {
           input: {
             projectPath,
+            startAt: 0,
           },
         },
       };
@@ -315,6 +321,55 @@ describe('JiraImportForm', () => {
 
       it('shows error message', () => {
         expect(getAlert().exists()).toBe(true);
+      });
+    });
+  });
+
+  describe('load more users button', () => {
+    describe('when all users have been loaded', () => {
+      it('is not shown', () => {
+        wrapper = mountComponent();
+
+        expect(findLoadMoreUsersButton().exists()).toBe(false);
+      });
+    });
+
+    describe('when all users have not been loaded', () => {
+      it('is shown', () => {
+        wrapper = mountComponent({ hasMoreUsers: true });
+
+        expect(findLoadMoreUsersButton().exists()).toBe(true);
+      });
+    });
+
+    describe('when clicked', () => {
+      beforeEach(() => {
+        mutateSpy = jest.fn(() =>
+          Promise.resolve({
+            data: {
+              jiraImportStart: { errors: [] },
+              jiraImportUsers: { jiraUsers: jiraUsersResponse, errors: [] },
+            },
+          }),
+        );
+
+        wrapper = mountComponent({ hasMoreUsers: true });
+      });
+
+      it('calls the GraphQL user mapping mutation', async () => {
+        const mutationArguments = {
+          mutation: getJiraUserMappingMutation,
+          variables: {
+            input: {
+              projectPath,
+              startAt: 0,
+            },
+          },
+        };
+
+        findLoadMoreUsersButton().vm.$emit('click');
+
+        expect(mutateSpy).toHaveBeenCalledWith(expect.objectContaining(mutationArguments));
       });
     });
   });

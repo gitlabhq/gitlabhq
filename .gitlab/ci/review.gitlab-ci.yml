@@ -53,7 +53,7 @@ review-build-cng:
 review-deploy:
   extends:
     - .review-workflow-base
-    - .review:rules:mr-and-schedule-auto-if-frontend-manual-otherwise
+    - .review:rules:review-deploy
   stage: review
   dependencies: []
   resource_group: "review/${CI_COMMIT_REF_NAME}"
@@ -172,7 +172,7 @@ review-qa-all:
 review-performance:
   extends:
     - .default-retry
-    - .review:rules:mr-and-schedule-auto-if-frontend-manual-otherwise
+    - .review:rules:review-performance
   image:
     name: sitespeedio/sitespeed.io:6.3.1
     entrypoint: [""]

@@ -669,7 +669,23 @@
       allow_failure: true
     - <<: *if-dot-com-gitlab-org-schedule
 
-.review:rules:mr-and-schedule-auto-if-frontend-manual-otherwise:
+.review:rules:review-deploy:
+  rules:
+    - <<: *if-not-ee
+      when: never
+    - <<: *if-dot-com-gitlab-org-merge-request
+      changes: *ci-review-patterns
+    - <<: *if-dot-com-gitlab-org-merge-request
+      changes: *frontend-patterns
+      allow_failure: true
+    - <<: *if-dot-com-gitlab-org-merge-request
+      changes: *code-qa-patterns
+      when: manual
+      allow_failure: true
+    - <<: *if-dot-com-gitlab-org-schedule
+      allow_failure: true
+
+.review:rules:review-performance:
   rules:
     - if: '$DAST_RUN == "true"' # Skip this job when DAST is run
       when: never

@@ -205,7 +205,7 @@ Potential resolutions:
 
 [Contact GitLab Support](https://about.gitlab.com/support) if none of these reasons apply.
 
-#### Fixing synchonization issues
+#### Fixing synchronization issues
 
 If Jira displays incorrect information (such as deleted branches), you may need to
 resynchronize the information. To do so:
@@ -239,7 +239,7 @@ For a walkthrough of the integration with GitLab for Jira, watch [Configure GitL
 NOTE: **Note:**
 The GitLab user only needs access when adding a new namespace. For syncing with Jira, we do not depend on the user's token.
 
-   ![Confure namespace on GitLab Jira App](img/jira_dev_panel_setup_com_3.png)
+   ![Configure namespace on GitLab Jira App](img/jira_dev_panel_setup_com_3.png)
 
 After a namespace is added, all future commits, branches and merge requests of all projects under that namespace will be synced to Jira. Past data cannot be synced at the moment.
 

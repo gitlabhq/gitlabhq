@@ -67,7 +67,7 @@ export default {
 </script>
 <template>
   <gl-deprecated-dropdown :text="value">
-    <gl-search-box-by-type v-model.trim="searchTerm" class="m-2" />
+    <gl-search-box-by-type v-model.trim="searchTerm" class="gl-m-3" />
     <gl-deprecated-dropdown-item
       v-for="environment in filteredResults"
       :key="environment"

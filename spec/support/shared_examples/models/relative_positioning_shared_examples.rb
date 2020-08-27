@@ -70,6 +70,37 @@ RSpec.shared_examples 'a class that supports relative positioning' do
       expect(items.sort_by(&:relative_position)).to eq(items)
     end
 
+    it 'manages to move nulls to the end even if there is not enough space' do
+      run = run_at_end(20).to_a
+      bunch_a = create_items_with_positions(run[0..18])
+      bunch_b = create_items_with_positions([run.last])
+
+      nils = create_items_with_positions([nil] * 4)
+      described_class.move_nulls_to_end(nils)
+
+      items = [*bunch_a, *bunch_b, *nils]
+      items.each(&:reset)
+
+      expect(items.map(&:relative_position)).to all(be_valid_position)
+      expect(items.reverse.sort_by(&:relative_position)).to eq(items)
+    end
+
+    it 'manages to move nulls to the end, stacking if we cannot create enough space' do
+      run = run_at_end(40).to_a
+      bunch = create_items_with_positions(run.select(&:even?))
+
+      nils = create_items_with_positions([nil] * 20)
+      described_class.move_nulls_to_end(nils)
+
+      items = [*bunch, *nils]
+      items.each(&:reset)
+
+      expect(items.map(&:relative_position)).to all(be_valid_position)
+      expect(bunch.reverse.sort_by(&:relative_position)).to eq(bunch)
+      expect(nils.reverse.sort_by(&:relative_position)).not_to eq(nils)
+      expect(bunch.map(&:relative_position)).to all(be < nils.map(&:relative_position).min)
+    end
+
     it 'does not have an N+1 issue' do
       create_items_with_positions(10..12)
 
@@ -129,6 +160,37 @@ RSpec.shared_examples 'a class that supports relative positioning' do
 
       expect(described_class.move_nulls_to_start([item1])).to be(0)
       expect(item1.reload.relative_position).to be(1)
+    end
+
+    it 'manages to move nulls to the start even if there is not enough space' do
+      run = run_at_start(20).to_a
+      bunch_a = create_items_with_positions([run.first])
+      bunch_b = create_items_with_positions(run[2..])
+
+      nils = create_items_with_positions([nil, nil, nil, nil])
+      described_class.move_nulls_to_start(nils)
+
+      items = [*nils, *bunch_a, *bunch_b]
+      items.each(&:reset)
+
+      expect(items.map(&:relative_position)).to all(be_valid_position)
+      expect(items.reverse.sort_by(&:relative_position)).to eq(items)
+    end
+
+    it 'manages to move nulls to the end, stacking if we cannot create enough space' do
+      run = run_at_start(40).to_a
+      bunch = create_items_with_positions(run.select(&:even?))
+
+      nils = create_items_with_positions([nil].cycle.take(20))
+      described_class.move_nulls_to_start(nils)
+
+      items = [*nils, *bunch]
+      items.each(&:reset)
+
+      expect(items.map(&:relative_position)).to all(be_valid_position)
+      expect(bunch.reverse.sort_by(&:relative_position)).to eq(bunch)
+      expect(nils.reverse.sort_by(&:relative_position)).not_to eq(nils)
+      expect(bunch.map(&:relative_position)).to all(be > nils.map(&:relative_position).max)
     end
   end
 

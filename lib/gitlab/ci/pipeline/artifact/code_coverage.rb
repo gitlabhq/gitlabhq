@@ -5,6 +5,8 @@ module Gitlab
     module Pipeline
       module Artifact
         class CodeCoverage
+          include Gitlab::Utils::StrongMemoize
+
           def initialize(pipeline_artifact)
             @pipeline_artifact = pipeline_artifact
           end
@@ -18,7 +20,11 @@ module Gitlab
           private
 
           def raw_report
-            @raw_report ||= Gitlab::Json.parse(@pipeline_artifact.file.read)
+            strong_memoize(:raw_report) do
+              @pipeline_artifact.each_blob do |blob|
+                Gitlab::Json.parse(blob)
+              end
+            end
           end
         end
       end

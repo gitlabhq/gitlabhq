@@ -1,3 +1,5 @@
+- payload_class = 'js-usage-ping-payload'
+
 = form_for @application_setting, url: metrics_and_profiling_admin_application_settings_path(anchor: 'js-usage-settings'), html: { class: 'fieldset-form' } do |f|
   = form_errors(@application_setting)
 
@@ -25,10 +27,10 @@
             - usage_ping_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: usage_ping_path }
             %p.mb-2= s_('%{usage_ping_link_start}Learn more%{usage_ping_link_end} about what information is shared with GitLab Inc.').html_safe % { usage_ping_link_start: usage_ping_link_start, usage_ping_link_end: '</a>'.html_safe }
 
-            %button.btn.js-usage-ping-payload-trigger{ type: 'button' }
+            %button.btn.js-payload-preview-trigger{ type: 'button', data: { payload_selector: ".#{payload_class}" } }
               .spinner.js-spinner.d-none
               .js-text.d-inline= _('Preview payload')
-            %pre.usage-data.js-usage-ping-payload.js-syntax-highlight.code.highlight.mt-2.d-none{ data: { endpoint: usage_data_admin_application_settings_path(format: :html) } }
+            %pre.usage-data.js-syntax-highlight.code.highlight.mt-2.d-none{ class: payload_class, data: { endpoint: usage_data_admin_application_settings_path(format: :html) } }
           - else
             = _('The usage ping is disabled, and cannot be configured through this form.')
             - deactivating_usage_ping_path = help_page_path('development/telemetry/usage_ping', anchor: 'disable-usage-ping')

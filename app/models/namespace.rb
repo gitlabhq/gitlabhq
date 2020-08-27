@@ -353,6 +353,10 @@ class Namespace < ApplicationRecord
     )
   end
 
+  def any_project_with_pages_deployed?
+    all_projects.with_pages_deployed.any?
+  end
+
   def closest_setting(name)
     self_and_ancestors(hierarchy_order: :asc)
       .find { |n| !n.read_attribute(name).nil? }

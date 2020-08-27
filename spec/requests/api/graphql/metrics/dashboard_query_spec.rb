@@ -7,7 +7,7 @@ RSpec.describe 'Getting Metrics Dashboard' do
 
   let_it_be(:current_user) { create(:user) }
   let(:project) { create(:project) }
-  let!(:environment) { create(:environment, project: project) }
+  let(:environment) { create(:environment, project: project) }
 
   let(:query) do
     graphql_query_for(
@@ -25,73 +25,156 @@ RSpec.describe 'Getting Metrics Dashboard' do
     )
   end
 
-  context 'for anonymous user' do
+  context 'with metrics_dashboard_exhaustive_validations feature flag off' do
     before do
-      post_graphql(query, current_user: current_user)
+      stub_feature_flags(metrics_dashboard_exhaustive_validations: false)
     end
 
-    context 'requested dashboard is available' do
-      let(:path) { 'config/prometheus/common_metrics.yml' }
+    context 'for anonymous user' do
+      before do
+        post_graphql(query, current_user: current_user)
+      end
 
-      it_behaves_like 'a working graphql query'
+      context 'requested dashboard is available' do
+        let(:path) { 'config/prometheus/common_metrics.yml' }
 
-      it 'returns nil' do
-        dashboard = graphql_data.dig('project', 'environments', 'nodes')
+        it_behaves_like 'a working graphql query'
 
-        expect(dashboard).to be_nil
+        it 'returns nil' do
+          dashboard = graphql_data.dig('project', 'environments', 'nodes')
+
+          expect(dashboard).to be_nil
+        end
+      end
+    end
+
+    context 'for user with developer access' do
+      before do
+        project.add_developer(current_user)
+        post_graphql(query, current_user: current_user)
+      end
+
+      context 'requested dashboard is available' do
+        let(:path) { 'config/prometheus/common_metrics.yml' }
+
+        it_behaves_like 'a working graphql query'
+
+        it 'returns metrics dashboard' do
+          dashboard = graphql_data.dig('project', 'environments', 'nodes', 0, 'metricsDashboard')
+
+          expect(dashboard).to eql("path" => path, "schemaValidationWarnings" => nil)
+        end
+
+        context 'invalid dashboard' do
+          let(:path) { '.gitlab/dashboards/metrics.yml' }
+          let(:project) { create(:project, :repository, :custom_repo, namespace: current_user.namespace, files: { path => "---\ndashboard: 'test'" }) }
+
+          it 'returns metrics dashboard' do
+            dashboard = graphql_data.dig('project', 'environments', 'nodes', 0, 'metricsDashboard')
+
+            expect(dashboard).to eql("path" => path, "schemaValidationWarnings" => ["panel_groups: should be an array of panel_groups objects"])
+          end
+        end
+
+        context 'empty dashboard' do
+          let(:path) { '.gitlab/dashboards/metrics.yml' }
+          let(:project) { create(:project, :repository, :custom_repo, namespace: current_user.namespace, files: { path => "" }) }
+
+          it 'returns metrics dashboard' do
+            dashboard = graphql_data.dig('project', 'environments', 'nodes', 0, 'metricsDashboard')
+
+            expect(dashboard).to eql("path" => path, "schemaValidationWarnings" => ["dashboard: can't be blank", "panel_groups: should be an array of panel_groups objects"])
+          end
+        end
+      end
+
+      context 'requested dashboard can not be found' do
+        let(:path) { 'config/prometheus/i_am_not_here.yml' }
+
+        it_behaves_like 'a working graphql query'
+
+        it 'returns nil' do
+          dashboard = graphql_data.dig('project', 'environments', 'nodes', 0, 'metricsDashboard')
+
+          expect(dashboard).to be_nil
+        end
       end
     end
   end
 
-  context 'for user with developer access' do
+  context 'with metrics_dashboard_exhaustive_validations feature flag on' do
     before do
-      project.add_developer(current_user)
-      post_graphql(query, current_user: current_user)
+      stub_feature_flags(metrics_dashboard_exhaustive_validations: true)
     end
 
-    context 'requested dashboard is available' do
-      let(:path) { 'config/prometheus/common_metrics.yml' }
-
-      it_behaves_like 'a working graphql query'
-
-      it 'returns metrics dashboard' do
-        dashboard = graphql_data.dig('project', 'environments', 'nodes')[0]['metricsDashboard']
-
-        expect(dashboard).to eql("path" => path, "schemaValidationWarnings" => nil)
+    context 'for anonymous user' do
+      before do
+        post_graphql(query, current_user: current_user)
       end
 
-      context 'invalid dashboard' do
-        let(:path) { '.gitlab/dashboards/metrics.yml' }
-        let(:project) { create(:project, :repository, :custom_repo, namespace: current_user.namespace, files: { path => "---\ndashboard: 'test'" }) }
+      context 'requested dashboard is available' do
+        let(:path) { 'config/prometheus/common_metrics.yml' }
 
-        it 'returns metrics dashboard' do
-          dashboard = graphql_data.dig('project', 'environments', 'nodes', 0, 'metricsDashboard')
+        it_behaves_like 'a working graphql query'
 
-          expect(dashboard).to eql("path" => path, "schemaValidationWarnings" => ["panel_groups: should be an array of panel_groups objects"])
-        end
-      end
+        it 'returns nil' do
+          dashboard = graphql_data.dig('project', 'environments', 'nodes')
 
-      context 'empty dashboard' do
-        let(:path) { '.gitlab/dashboards/metrics.yml' }
-        let(:project) { create(:project, :repository, :custom_repo, namespace: current_user.namespace, files: { path => "" }) }
-
-        it 'returns metrics dashboard' do
-          dashboard = graphql_data.dig('project', 'environments', 'nodes', 0, 'metricsDashboard')
-
-          expect(dashboard).to eql("path" => path, "schemaValidationWarnings" => ["dashboard: can't be blank", "panel_groups: should be an array of panel_groups objects"])
+          expect(dashboard).to be_nil
         end
       end
     end
 
-    context 'requested dashboard can not be found' do
-      let(:path) { 'config/prometheus/i_am_not_here.yml' }
+    context 'for user with developer access' do
+      before do
+        project.add_developer(current_user)
+        post_graphql(query, current_user: current_user)
+      end
 
-      it_behaves_like 'a working graphql query'
+      context 'requested dashboard is available' do
+        let(:path) { 'config/prometheus/common_metrics.yml' }
 
-      it 'returns nil' do
-        dashboard = graphql_data.dig('project', 'environments', 'nodes')[0]['metricsDashboard']
+        it_behaves_like 'a working graphql query'
 
-        expect(dashboard).to be_nil
+        it 'returns metrics dashboard' do
+          dashboard = graphql_data.dig('project', 'environments', 'nodes', 0, 'metricsDashboard')
+
+          expect(dashboard).to eql("path" => path, "schemaValidationWarnings" => nil)
+        end
+
+        context 'invalid dashboard' do
+          let(:path) { '.gitlab/dashboards/metrics.yml' }
+          let(:project) { create(:project, :repository, :custom_repo, namespace: current_user.namespace, files: { path => "---\ndashboard: 'test'" }) }
+
+          it 'returns metrics dashboard' do
+            dashboard = graphql_data.dig('project', 'environments', 'nodes', 0, 'metricsDashboard')
+
+            expect(dashboard).to eql("path" => path, "schemaValidationWarnings" => ["root is missing required keys: panel_groups"])
+          end
+        end
+
+        context 'empty dashboard' do
+          let(:path) { '.gitlab/dashboards/metrics.yml' }
+          let(:project) { create(:project, :repository, :custom_repo, namespace: current_user.namespace, files: { path => "" }) }
+
+          it 'returns metrics dashboard' do
+            dashboard = graphql_data.dig('project', 'environments', 'nodes', 0, 'metricsDashboard')
+
+            expect(dashboard).to eql("path" => path, "schemaValidationWarnings" => ["root is missing required keys: dashboard, panel_groups"])
+          end
+        end
+      end
+
+      context 'requested dashboard can not be found' do
+        let(:path) { 'config/prometheus/i_am_not_here.yml' }
+
+        it_behaves_like 'a working graphql query'
+
+        it 'returns nil' do
+          dashboard = graphql_data.dig('project', 'environments', 'nodes', 0, 'metricsDashboard')
+
+          expect(dashboard).to be_nil
+        end
       end
     end
   end

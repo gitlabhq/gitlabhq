@@ -1,0 +1,7 @@
+---
+name: generic_packages
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/40045
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/239133
+group: group::release management
+type: development
+default_enabled: false

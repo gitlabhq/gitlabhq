@@ -111,14 +111,4 @@ RSpec.describe Gitlab::ExclusiveLeaseHelpers, :clean_gitlab_redis_shared_state d
       end
     end
   end
-
-  describe '#lock_taken?' do
-    it 'returns true when lock has been taken' do
-      expect(class_instance.lock_taken?(unique_key)).to be false
-
-      class_instance.in_lock(unique_key) do
-        expect(class_instance.lock_taken?(unique_key)).to be true
-      end
-    end
-  end
 end

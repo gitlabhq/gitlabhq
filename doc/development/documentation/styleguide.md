@@ -1288,7 +1288,7 @@ However, the following might help the reader connect the text to the user interf
 | **{monitor}** Monitoring | View GitLab system information, and information on background jobs, logs, health checks, requests profiles, and audit logs. |
 | **{messages}** Messages  | Send and manage broadcast messages for your users.                                                                          |
 
-Use an icon when you find youself having to describe an interface element. For example:
+Use an icon when you find yourself having to describe an interface element. For example:
 
 - Do: Click the Admin Area icon ( **{admin}** ).
 - Don't: Click the Admin Area icon (the wrench icon).

@@ -25,20 +25,30 @@ module BlobViewer
     private
 
     def parse_blob_data
-      yaml = ::Gitlab::Config::Loader::Yaml.new(blob.data).load_raw!
-
-      ::PerformanceMonitoring::PrometheusDashboard.from_json(yaml)
-      nil
-    rescue Gitlab::Config::Loader::FormatError => error
-      wrap_yml_syntax_error(error)
-    rescue ActiveModel::ValidationError => invalid
-      invalid.model.errors
+      if Feature.enabled?(:metrics_dashboard_exhaustive_validations, project)
+        exhaustive_metrics_dashboard_validation
+      else
+        old_metrics_dashboard_validation
+      end
     end
 
-    def wrap_yml_syntax_error(error)
-      ::PerformanceMonitoring::PrometheusDashboard.new.errors.tap do |errors|
-        errors.add(:'YAML syntax', error.message)
-      end
+    def old_metrics_dashboard_validation
+      yaml = ::Gitlab::Config::Loader::Yaml.new(blob.data).load_raw!
+      ::PerformanceMonitoring::PrometheusDashboard.from_json(yaml)
+      []
+    rescue Gitlab::Config::Loader::FormatError => error
+      ["YAML syntax: #{error.message}"]
+    rescue ActiveModel::ValidationError => invalid
+      invalid.model.errors.messages.map { |messages| messages.join(': ') }
+    end
+
+    def exhaustive_metrics_dashboard_validation
+      yaml = ::Gitlab::Config::Loader::Yaml.new(blob.data).load_raw!
+      Gitlab::Metrics::Dashboard::Validator
+        .errors(yaml, dashboard_path: blob.path, project: project)
+        .map(&:message)
+    rescue Gitlab::Config::Loader::FormatError => error
+      [error.message]
     end
   end
 end

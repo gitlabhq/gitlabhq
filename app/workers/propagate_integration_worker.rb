@@ -7,10 +7,8 @@ class PropagateIntegrationWorker
   idempotent!
   loggable_arguments 1
 
-  def perform(integration_id, overwrite)
-    Admin::PropagateIntegrationService.propagate(
-      integration: Service.find(integration_id),
-      overwrite: overwrite
-    )
+  # Keep overwrite parameter for backwards compatibility.
+  def perform(integration_id, overwrite = nil)
+    Admin::PropagateIntegrationService.propagate(Service.find(integration_id))
   end
 end

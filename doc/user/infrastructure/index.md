@@ -433,7 +433,7 @@ apply:
 
 ### Multiple Terraform Plan reports
 
-Starting with 13.2, you can display mutiple reports on the Merge Request page. The reports will also display the `artifacts: name:`. See example below for a suggested setup.
+Starting with 13.2, you can display multiple reports on the Merge Request page. The reports will also display the `artifacts: name:`. See example below for a suggested setup.
 
 ```yaml
 image:

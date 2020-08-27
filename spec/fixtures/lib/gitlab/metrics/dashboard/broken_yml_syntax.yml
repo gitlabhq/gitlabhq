@@ -1,0 +1,13 @@
+dashboard: 'Test Dashboard'
+ panel_groups:
+  - group: Group B
+    panels:
+      - title: "Super Chart B"
+        type: "area-chart"
+        y_label: "y_label"
+        metrics:
+          - id: metric_b
+            query_range: 'query'
+            unit: unit
+            label: Legend Label
+- group: Group A

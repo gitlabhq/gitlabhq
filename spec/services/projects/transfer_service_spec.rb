@@ -5,8 +5,8 @@ require 'spec_helper'
 RSpec.describe Projects::TransferService do
   include GitHelpers
 
-  let(:user) { create(:user) }
-  let(:group) { create(:group) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:group) { create(:group) }
   let(:project) { create(:project, :repository, :legacy_storage, namespace: user.namespace) }
 
   subject(:execute_transfer) { described_class.new(project, user).execute(group) }
@@ -485,6 +485,43 @@ RSpec.describe Projects::TransferService do
             full_path: old_full_path
           )
         end
+      end
+    end
+  end
+
+  context 'moving pages' do
+    let_it_be(:project) { create(:project, namespace: user.namespace) }
+
+    before do
+      group.add_owner(user)
+    end
+
+    it 'schedules a job  when pages are deployed' do
+      project.mark_pages_as_deployed
+
+      expect(PagesTransferWorker).to receive(:perform_async)
+                                       .with("move_project", [project.path, user.namespace.full_path, group.full_path])
+
+      execute_transfer
+    end
+
+    it 'does not schedule a job when no pages are deployed' do
+      expect(PagesTransferWorker).not_to receive(:perform_async)
+
+      execute_transfer
+    end
+
+    context 'when async_pages_move_project_transfer is disabled' do
+      before do
+        stub_feature_flags(async_pages_move_project_transfer: false)
+      end
+
+      it 'moves pages inline' do
+        expect_next_instance_of(Gitlab::PagesTransfer) do |transfer|
+          expect(transfer).to receive(:move_project).with(project.path, user.namespace.full_path, group.full_path)
+        end
+
+        execute_transfer
       end
     end
   end

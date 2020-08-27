@@ -27,3 +27,6 @@ export const tableConfig = [
 export const userMappingMessage = __(`Jira users have been imported from the configured Jira
   instance. They can be mapped by selecting a GitLab user from the dropdown in the "GitLab username"
   column. When the form appears, the dropdown defaults to the user conducting the import.`);
+
+// pageSize must match the MAX_USERS value in app/services/jira_import/users_mapper_service.rb
+export const userMappingsPageSize = 50;

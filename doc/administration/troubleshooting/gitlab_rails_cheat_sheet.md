@@ -43,10 +43,13 @@ instance_of_object.method(:foo).source_location
 project.method(:private?).source_location
 ```
 
-## Query an object
+## Query the database using an ActiveRecord Model
 
 ```ruby
-o = Object.where('attribute like ?', 'ex')
+m = Model.where('attribute like ?', 'ex%')
+
+# for example to query the projects
+projects = Project.where('path like ?', 'Oumua%')
 ```
 
 ## View all keys in cache

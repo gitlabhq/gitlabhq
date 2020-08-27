@@ -75,10 +75,25 @@ RSpec.describe Projects::AfterRenameService do
           end
         end
 
-        it 'schedules a move of the pages directory' do
-          expect(PagesTransferWorker).to receive(:perform_async).with('rename_project', anything)
+        context 'when the project has pages deployed' do
+          it 'schedules a move of the pages directory' do
+            allow(project).to receive(:pages_deployed?).and_return(true)
 
-          service_execute
+            expect(PagesTransferWorker).to receive(:perform_async).with('rename_project', anything)
+
+            service_execute
+          end
+        end
+
+        context 'when the project does not have pages deployed' do
+          it 'does nothing with the pages directory' do
+            allow(project).to receive(:pages_deployed?).and_return(false)
+
+            expect(PagesTransferWorker).not_to receive(:perform_async)
+            expect(Gitlab::PagesTransfer).not_to receive(:new)
+
+            service_execute
+          end
         end
       end
 
@@ -180,10 +195,25 @@ RSpec.describe Projects::AfterRenameService do
           end
         end
 
-        it 'schedules a move of the pages directory' do
-          expect(PagesTransferWorker).to receive(:perform_async).with('rename_project', anything)
+        context 'when the project has pages deployed' do
+          it 'schedules a move of the pages directory' do
+            allow(project).to receive(:pages_deployed?).and_return(true)
 
-          service_execute
+            expect(PagesTransferWorker).to receive(:perform_async).with('rename_project', anything)
+
+            service_execute
+          end
+        end
+
+        context 'when the project does not have pages deployed' do
+          it 'does nothing with the pages directory' do
+            allow(project).to receive(:pages_deployed?).and_return(false)
+
+            expect(PagesTransferWorker).not_to receive(:perform_async)
+            expect(Gitlab::PagesTransfer).not_to receive(:new)
+
+            service_execute
+          end
         end
       end
 

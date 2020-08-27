@@ -26,16 +26,17 @@ class Service < ApplicationRecord
 
   default_value_for :active, false
   default_value_for :alert_events, true
-  default_value_for :push_events, true
-  default_value_for :issues_events, true
-  default_value_for :confidential_issues_events, true
+  default_value_for :category, 'common'
   default_value_for :commit_events, true
-  default_value_for :merge_requests_events, true
-  default_value_for :tag_push_events, true
-  default_value_for :note_events, true
+  default_value_for :confidential_issues_events, true
   default_value_for :confidential_note_events, true
+  default_value_for :issues_events, true
   default_value_for :job_events, true
+  default_value_for :merge_requests_events, true
+  default_value_for :note_events, true
   default_value_for :pipeline_events, true
+  default_value_for :push_events, true
+  default_value_for :tag_push_events, true
   default_value_for :wiki_page_events, true
 
   after_initialize :initialize_properties
@@ -81,143 +82,7 @@ class Service < ApplicationRecord
   scope :alert_hooks, -> { where(alert_events: true, active: true) }
   scope :deployment, -> { where(category: 'deployment') }
 
-  default_value_for :category, 'common'
-
-  def activated?
-    active
-  end
-
-  def operating?
-    active && persisted?
-  end
-
-  def show_active_box?
-    true
-  end
-
-  def editable?
-    true
-  end
-
-  def category
-    read_attribute(:category).to_sym
-  end
-
-  def initialize_properties
-    self.properties = {} if properties.nil?
-  end
-
-  def title
-    # implement inside child
-  end
-
-  def description
-    # implement inside child
-  end
-
-  def help
-    # implement inside child
-  end
-
-  def to_param
-    # implement inside child
-    self.class.to_param
-  end
-
-  def self.to_param
-    raise NotImplementedError
-  end
-
-  def fields
-    # implement inside child
-    []
-  end
-
-  # Expose a list of fields in the JSON endpoint.
-  #
-  # This list is used in `Service#as_json(only: json_fields)`.
-  def json_fields
-    %w(active)
-  end
-
-  def to_service_hash
-    as_json(methods: :type, except: %w[id template instance project_id])
-  end
-
-  def to_data_fields_hash
-    data_fields.as_json(only: data_fields.class.column_names).except('id', 'service_id')
-  end
-
-  def event_channel_names
-    []
-  end
-
-  def event_names
-    self.class.event_names
-  end
-
-  def self.event_names
-    self.supported_events.map { |event| ServicesHelper.service_event_field_name(event) }
-  end
-
-  def event_field(event)
-    nil
-  end
-
-  def api_field_names
-    fields.map { |field| field[:name] }
-      .reject { |field_name| field_name =~ /(password|token|key|title|description)/ }
-  end
-
-  def global_fields
-    fields
-  end
-
-  def configurable_events
-    events = supported_events
-
-    # No need to disable individual triggers when there is only one
-    if events.count == 1
-      []
-    else
-      events
-    end
-  end
-
-  def configurable_event_actions
-    self.class.supported_event_actions
-  end
-
-  def self.supported_event_actions
-    %w()
-  end
-
-  def supported_events
-    self.class.supported_events
-  end
-
-  def self.supported_events
-    %w(commit push tag_push issue confidential_issue merge_request wiki_page)
-  end
-
-  def execute(data)
-    # implement inside child
-  end
-
-  def test(data)
-    # default implementation
-    result = execute(data)
-    { success: result.present?, result: result }
-  end
-
-  # Disable test for instance-level services.
-  # https://gitlab.com/gitlab-org/gitlab/-/issues/213138
-  def can_test?
-    !instance?
-  end
-
-  # Provide convenient accessor methods
-  # for each serialized property.
+  # Provide convenient accessor methods for each serialized property.
   # Also keep track of updated properties in a similar way as ActiveModel::Dirty
   def self.prop_accessor(*args)
     args.each do |arg|
@@ -249,8 +114,7 @@ class Service < ApplicationRecord
     end
   end
 
-  # Provide convenient boolean accessor methods
-  # for each serialized property.
+  # Provide convenient boolean accessor methods for each serialized property.
   # Also keep track of updated properties in a similar way as ActiveModel::Dirty
   def self.boolean_accessor(*args)
     self.prop_accessor(*args)
@@ -265,28 +129,24 @@ class Service < ApplicationRecord
     end
   end
 
-  # Returns a hash of the properties that have been assigned a new value since last save,
-  # indicating their original values (attr => original value).
-  # ActiveRecord does not provide a mechanism to track changes in serialized keys,
-  # so we need a specific implementation for service properties.
-  # This allows to track changes to properties set with the accessor methods,
-  # but not direct manipulation of properties hash.
-  def updated_properties
-    @updated_properties ||= ActiveSupport::HashWithIndifferentAccess.new
+  def self.to_param
+    raise NotImplementedError
   end
 
-  def reset_updated_properties
-    @updated_properties = nil
+  def self.event_names
+    self.supported_events.map { |event| ServicesHelper.service_event_field_name(event) }
   end
 
-  def async_execute(data)
-    return unless supported_events.include?(data[:object_kind])
-
-    ProjectServiceWorker.perform_async(id, data)
+  def self.supported_event_actions
+    %w[]
   end
 
-  def issue_tracker?
-    self.category == :issue_tracker
+  def self.supported_events
+    %w[commit push tag_push issue confidential_issue merge_request wiki_page]
+  end
+
+  def self.event_description(event)
+    ServicesHelper.service_event_description(event)
   end
 
   def self.find_or_create_templates
@@ -294,7 +154,7 @@ class Service < ApplicationRecord
     for_template
   end
 
-  private_class_method def self.create_nonexistent_templates
+  def self.create_nonexistent_templates
     nonexistent_services = list_nonexistent_services_for(for_template)
     return if nonexistent_services.empty?
 
@@ -305,6 +165,7 @@ class Service < ApplicationRecord
       end
     end
   end
+  private_class_method :create_nonexistent_templates
 
   def self.find_or_initialize_integration(name, instance: false, group_id: nil)
     if name.in?(available_services_names)
@@ -316,15 +177,19 @@ class Service < ApplicationRecord
     scope + build_nonexistent_services_for(scope)
   end
 
-  private_class_method def self.build_nonexistent_services_for(scope)
+  def self.build_nonexistent_services_for(scope)
     list_nonexistent_services_for(scope).map do |service_type|
       service_type.constantize.new
     end
   end
+  private_class_method :build_nonexistent_services_for
 
-  private_class_method def self.list_nonexistent_services_for(scope)
+  def self.list_nonexistent_services_for(scope)
+    # Using #map instead of #pluck to save one query count. This is because
+    # ActiveRecord loaded the object here, so we don't need to query again later.
     available_services_types - scope.map(&:type)
   end
+  private_class_method :list_nonexistent_services_for
 
   def self.available_services_names
     service_names = services_names
@@ -375,6 +240,147 @@ class Service < ApplicationRecord
     find_by(instance: true, type: type)
   end
 
+  def activated?
+    active
+  end
+
+  def operating?
+    active && persisted?
+  end
+
+  def show_active_box?
+    true
+  end
+
+  def editable?
+    true
+  end
+
+  def category
+    read_attribute(:category).to_sym
+  end
+
+  def initialize_properties
+    self.properties = {} if properties.nil?
+  end
+
+  def title
+    # implement inside child
+  end
+
+  def description
+    # implement inside child
+  end
+
+  def help
+    # implement inside child
+  end
+
+  def to_param
+    # implement inside child
+    self.class.to_param
+  end
+
+  def fields
+    # implement inside child
+    []
+  end
+
+  # Expose a list of fields in the JSON endpoint.
+  #
+  # This list is used in `Service#as_json(only: json_fields)`.
+  def json_fields
+    %w[active]
+  end
+
+  def to_service_hash
+    as_json(methods: :type, except: %w[id template instance project_id])
+  end
+
+  def to_data_fields_hash
+    data_fields.as_json(only: data_fields.class.column_names).except('id', 'service_id')
+  end
+
+  def event_channel_names
+    []
+  end
+
+  def event_names
+    self.class.event_names
+  end
+
+  def event_field(event)
+    nil
+  end
+
+  def api_field_names
+    fields.map { |field| field[:name] }
+      .reject { |field_name| field_name =~ /(password|token|key|title|description)/ }
+  end
+
+  def global_fields
+    fields
+  end
+
+  def configurable_events
+    events = supported_events
+
+    # No need to disable individual triggers when there is only one
+    if events.count == 1
+      []
+    else
+      events
+    end
+  end
+
+  def configurable_event_actions
+    self.class.supported_event_actions
+  end
+
+  def supported_events
+    self.class.supported_events
+  end
+
+  def execute(data)
+    # implement inside child
+  end
+
+  def test(data)
+    # default implementation
+    result = execute(data)
+    { success: result.present?, result: result }
+  end
+
+  # Disable test for instance-level services.
+  # https://gitlab.com/gitlab-org/gitlab/-/issues/213138
+  def can_test?
+    !instance?
+  end
+
+  # Returns a hash of the properties that have been assigned a new value since last save,
+  # indicating their original values (attr => original value).
+  # ActiveRecord does not provide a mechanism to track changes in serialized keys,
+  # so we need a specific implementation for service properties.
+  # This allows to track changes to properties set with the accessor methods,
+  # but not direct manipulation of properties hash.
+  def updated_properties
+    @updated_properties ||= ActiveSupport::HashWithIndifferentAccess.new
+  end
+
+  def reset_updated_properties
+    @updated_properties = nil
+  end
+
+  def async_execute(data)
+    return unless supported_events.include?(data[:object_kind])
+
+    ProjectServiceWorker.perform_async(id, data)
+  end
+
+  def issue_tracker?
+    self.category == :issue_tracker
+  end
+
   # override if needed
   def supports_data_fields?
     false
@@ -400,10 +406,6 @@ class Service < ApplicationRecord
     if project && !project.destroyed?
       project.cache_has_external_wiki
     end
-  end
-
-  def self.event_description(event)
-    ServicesHelper.service_event_description(event)
   end
 
   def valid_recipients?

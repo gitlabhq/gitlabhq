@@ -82,9 +82,9 @@ Read more about [Service templates](services_templates.md).
 
 ## Project integration management
 
-Project integraton management lets you control integration settings across all projects
+Project integration management lets you control integration settings across all projects
 of an instance. On the project level, administrators you can choose whether to inherit the
-instance configuraton or provide custom settings.
+instance configuration or provide custom settings.
 
 Read more about [Project integration management](../../admin_area/settings/project_integration_management.md).
 

@@ -69,7 +69,7 @@ For instance, consider the following workflow:
 
 This example shows how to run Code Quality on your code by using GitLab CI/CD and Docker.
 It requires GitLab 11.11 or later, and GitLab Runner 11.5 or later. If you are using
-GitLab 11.4 or ealier, you can view the deprecated job definitions in the
+GitLab 11.4 or earlier, you can view the deprecated job definitions in the
 [documentation archive](https://docs.gitlab.com/12.10/ee/user/project/merge_requests/code_quality.html#previous-job-definitions).
 
 First, you need GitLab Runner configured:
@@ -276,7 +276,7 @@ This adds SonarJava to the `plugins:` section of the [default `.codeclimate.yml`
 included in your project.
 
 Changes to the `plugins:` section do not affect the `exclude_patterns` section of the
-defeault `.codeclimate.yml`. See the Code Climate documentation for
+default `.codeclimate.yml`. See the Code Climate documentation for
 [excluding files and folders](https://docs.codeclimate.com/docs/excluding-files-and-folders)
 for more details.
 

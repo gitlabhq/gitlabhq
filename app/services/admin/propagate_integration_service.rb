@@ -6,39 +6,27 @@ module Admin
 
     delegate :data_fields_present?, to: :integration
 
-    def self.propagate(integration:, overwrite:)
-      new(integration, overwrite).propagate
+    def self.propagate(integration)
+      new(integration).propagate
     end
 
-    def initialize(integration, overwrite)
+    def initialize(integration)
       @integration = integration
-      @overwrite = overwrite
     end
 
     def propagate
-      if overwrite
-        update_integration_for_all_projects
-      else
-        update_integration_for_inherited_projects
-      end
-
+      update_inherited_integrations
       create_integration_for_projects_without_integration
     end
 
     private
 
-    attr_reader :integration, :overwrite
+    attr_reader :integration
 
     # rubocop: disable Cop/InBatches
     # rubocop: disable CodeReuse/ActiveRecord
-    def update_integration_for_inherited_projects
+    def update_inherited_integrations
       Service.where(type: integration.type, inherit_from_id: integration.id).in_batches(of: BATCH_SIZE) do |batch|
-        bulk_update_from_integration(batch)
-      end
-    end
-
-    def update_integration_for_all_projects
-      Service.where(type: integration.type).in_batches(of: BATCH_SIZE) do |batch|
         bulk_update_from_integration(batch)
       end
     end

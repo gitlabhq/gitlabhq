@@ -929,7 +929,7 @@ export default {
 
 - We can use slots and/or scoped slots to achieve the same thing as we did with mixins. If you only need an EE component there is no need to create the CE component.
 
-1. First, we have a CE component that can render a slot incase we need EE template and functionality to be decorated on top of the CE base.
+1. First, we have a CE component that can render a slot in case we need EE template and functionality to be decorated on top of the CE base.
 
 ```vue
 // ./ce/my_component.vue
@@ -1030,7 +1030,7 @@ separate SCSS file in an appropriate directory within `app/assets/stylesheets`.
 
 In some cases, this is not entirely possible or creating dedicated SCSS file is an overkill,
 e.g. a text style of some component is different for EE. In such cases,
-styles are usually kept in stylesheet that is common for both CE and EE, and it is wise
+styles are usually kept in a stylesheet that is common for both CE and EE, and it is wise
 to isolate such ruleset from rest of CE rules (along with adding comment describing the same)
 to avoid conflicts during CE to EE merge.
 

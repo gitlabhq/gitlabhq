@@ -4190,6 +4190,9 @@ msgstr ""
 msgid "Burnup chart"
 msgstr ""
 
+msgid "Burnup chart could not be generated due to too many events"
+msgstr ""
+
 msgid "Business"
 msgstr ""
 
@@ -7058,6 +7061,9 @@ msgid "Could not save project ID"
 msgstr ""
 
 msgid "Could not save prometheus manual configuration"
+msgstr ""
+
+msgid "Could not udpdate wiki page"
 msgstr ""
 
 msgid "Could not update the LDAP settings"
@@ -11299,6 +11305,12 @@ msgstr ""
 msgid "Geo|Geo Status"
 msgstr ""
 
+msgid "Geo|Go to the primary site"
+msgstr ""
+
+msgid "Geo|If you want to make changes, you must visit the primary site."
+msgstr ""
+
 msgid "Geo|In progress"
 msgstr ""
 
@@ -11431,10 +11443,10 @@ msgstr ""
 msgid "Geo|Waiting for scheduler"
 msgstr ""
 
-msgid "Geo|You are on a secondary, %{b_open}read-only%{b_close} Geo node. If you want to make changes, you must visit this page on the %{node_link_open}primary node%{node_link_close}."
+msgid "Geo|You are on a secondary, %{b_open}read-only%{b_close} Geo node."
 msgstr ""
 
-msgid "Geo|You are on a secondary, %{b_open}read-only%{b_close} Geo node. You may be able to make a limited amount of changes or perform a limited amount of actions on this page."
+msgid "Geo|You may be able to make a limited amount of changes or perform a limited amount of actions on this page."
 msgstr ""
 
 msgid "Geo|misconfigured"
@@ -14594,6 +14606,9 @@ msgstr ""
 msgid "Load more"
 msgstr ""
 
+msgid "Load more users"
+msgstr ""
+
 msgid "Loading"
 msgstr ""
 
@@ -15702,10 +15717,16 @@ msgid_plural "Milestones"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "Milestone does not support burnup charts"
+msgstr ""
+
 msgid "Milestone lists not available with your current license"
 msgstr ""
 
 msgid "Milestone lists show all issues from the selected milestone."
+msgstr ""
+
+msgid "Milestone must have a start and due date"
 msgstr ""
 
 msgid "MilestoneSidebar|Closed:"

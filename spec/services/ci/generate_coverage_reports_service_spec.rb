@@ -25,7 +25,7 @@ RSpec.describe Ci::GenerateCoverageReportsService do
       end
     end
 
-    context 'when head pipeline has corrupted coverage reports' do
+    context 'when head pipeline does not have a coverage report artifact' do
       let!(:merge_request) { create(:merge_request, :with_coverage_reports, source_project: project) }
       let!(:service) { described_class.new(project, nil, id: merge_request.id) }
       let!(:head_pipeline) { merge_request.head_pipeline }

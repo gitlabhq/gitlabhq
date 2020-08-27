@@ -83,7 +83,7 @@ export default {
       <gl-search-box-by-type
         ref="monitorDashboardsDropdownSearch"
         v-model="searchTerm"
-        class="m-2"
+        class="gl-m-3"
       />
 
       <div class="flex-fill overflow-auto">

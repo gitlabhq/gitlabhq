@@ -1,0 +1,5 @@
+---
+title: Fix snippet save button disabled with empty file path
+merge_request: 40412
+author:
+type: fixed

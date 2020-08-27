@@ -1648,7 +1648,7 @@ RSpec.describe User do
       # add user to project
       project.add_maintainer(user)
 
-      # create invite to projet
+      # create invite to project
       create(:project_member, :developer, project: project, invite_token: '1234', invite_email: 'inviteduser1@example.com')
 
       # create request to join project

@@ -88,15 +88,14 @@ module Projects
         # Move uploads
         move_project_uploads(project)
 
-        # Move pages
-        Gitlab::PagesTransfer.new.move_project(project.path, @old_namespace.full_path, @new_namespace.full_path)
-
         project.old_path_with_namespace = @old_path
 
         update_repository_configuration(@new_path)
 
         execute_system_hooks
       end
+
+      move_pages(project)
     rescue Exception # rubocop:disable Lint/RescueException
       rollback_side_effects
       raise
@@ -179,6 +178,19 @@ module Projects
         @old_namespace.full_path,
         @new_namespace.full_path
       )
+    end
+
+    def move_pages(project)
+      transfer = Gitlab::PagesTransfer.new
+
+      if Feature.enabled?(:async_pages_move_project_transfer, project)
+        # Avoid scheduling moves for directories that don't exist.
+        return unless project.pages_deployed?
+
+        transfer = transfer.async
+      end
+
+      transfer.move_project(project.path, @old_namespace.full_path, @new_namespace.full_path)
     end
 
     def old_wiki_repo_path

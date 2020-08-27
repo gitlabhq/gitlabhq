@@ -13,7 +13,7 @@ This document explains how to develop [GitLab CI/CD templates](../../ci/examples
 
 All template files reside in the `lib/gitlab/ci/templates` directory, and are categorized by the following sub-directories:
 
-| Sub-directroy | Content                                                      | [Selectable in UI](#make-sure-the-new-template-can-be-selected-in-ui) |
+| Sub-directory | Content                                                      | [Selectable in UI](#make-sure-the-new-template-can-be-selected-in-ui) |
 |---------------|--------------------------------------------------------------|-----------------------------------------------------------------------|
 | `/AWS/*`      | Cloud Deployment (AWS) related jobs                          | No                                                                    |
 | `/Jobs/*`     | Auto DevOps related jobs                                     | Yes                                                                   |

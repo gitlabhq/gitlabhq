@@ -75,7 +75,7 @@ This view allows you to:
 
 ### Control Container Registry for your group
 
-Navigate to your groups's **{package}** **Packages & Registries > Container Registry**.
+Navigate to your group's **{package}** **Packages & Registries > Container Registry**.
 
 ![Container Registry group repositories](img/container_registry_group_repositories_v13_1.png)
 

@@ -1,0 +1,5 @@
+---
+title: Avoid raising errors when moving unpositioned items
+merge_request: 40152
+author:
+type: fixed

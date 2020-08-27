@@ -25,10 +25,10 @@ The following list illustrates the main differences between CVS and Git:
   are not atomic. If an operation on the repository is interrupted in the middle,
   the repository can be left in an inconsistent state.
 - **Storage method.** Changes in CVS are per file (changeset), while in Git
-  a committed file(s) is stored in its entirety (snapshot). That means that's
+  a committed file(s) is stored in its entirety (snapshot). That means it's
   very easy in Git to revert or undo a whole change.
 - **Revision IDs.** The fact that in CVS changes are per files, the revision ID
-  is depicted by version numbers, for example `1.4` reflects how many time a
+  is depicted by version numbers, for example `1.4` reflects how many times a
   given file has been changed. In Git, each version of a project as a whole
   (each commit) has its unique name given by SHA-1.
 - **Merge tracking.** Git uses a commit-before-merge approach rather than
@@ -54,7 +54,7 @@ Wikipedia article on [comparing the different version control software](https://
 
 CVS is old with no new release since 2008. Git provides more tools to work
 with (`git bisect` for one) which makes for a more productive workflow.
-Migrating to Git/GitLab there is:
+Migrating to Git/GitLab will benefit you:
 
 - **Shorter learning curve**, Git has a big community and a vast number of
   tutorials to get you started (see our [Git topic](../../../topics/git/index.md)).

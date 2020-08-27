@@ -102,7 +102,7 @@ for you to install.
 
 For this guide, we need to install Ingress. Ingress provides load balancing,
 SSL termination, and name-based virtual hosting, using NGINX behind
-the scenes. Make sure to switch the toogle to the enabled position before installing.
+the scenes. Make sure to switch the toggle to the enabled position before installing.
 
 Both logging and blocking modes are available for WAF. While logging mode is useful for
 auditing anomalous traffic, blocking mode ensures the traffic doesn't reach past Ingress.

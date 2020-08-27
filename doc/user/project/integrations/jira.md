@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # GitLab Jira integration
 
-If you need to use Jira to track work that's implemented in GitLab, GitLab's Jira integrations make the process of working across systems more efficent.
+If you need to use Jira to track work that's implemented in GitLab, GitLab's Jira integrations make the process of working across systems more efficient.
 
 This page is about the GitLab Jira integration, which is available in every GitLab project by default, allowing you to connect it to any Jira instance, whether Cloud or self-managed. To compare features with the complementary Jira Development Panel integration, see [Jira integrations](jira_integrations.md).
 

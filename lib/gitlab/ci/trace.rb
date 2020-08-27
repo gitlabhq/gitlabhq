@@ -79,9 +79,7 @@ module Gitlab
         job.trace_chunks.any? || current_path.present? || old_trace.present?
       end
 
-      def read(&block)
-        should_retry = true if lock_taken?(lock_key)
-
+      def read(should_retry: true, &block)
         read_stream(&block)
       rescue Errno::ENOENT
         raise unless should_retry
@@ -195,11 +193,8 @@ module Gitlab
       end
 
       def in_write_lock(&blk)
+        lock_key = "trace:write:lock:#{job.id}"
         in_lock(lock_key, ttl: LOCK_TTL, retries: LOCK_RETRIES, sleep_sec: LOCK_SLEEP, &blk)
-      end
-
-      def lock_key
-        "trace:write:lock:#{job.id}"
       end
 
       def archive_stream!(stream)

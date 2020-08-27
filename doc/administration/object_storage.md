@@ -279,7 +279,7 @@ This is not compatible with the consolidated object storage form.
 OpenStack Swift is only supported with the storage-specific form. See the
 [S3 settings](#s3-compatible-connection-settings) if you want to use the consolidated form.
 
-While OpenStack Swift provides S3 compatibliity, some users may want to use the
+While OpenStack Swift provides S3 compatibility, some users may want to use the
 [Swift API](https://docs.openstack.org/swift/latest/api/object_api_v1_overview.html).
 Here are the valid connection settings below for the Swift API, provided by
 [fog-openstack](https://github.com/fog/fog-openstack):

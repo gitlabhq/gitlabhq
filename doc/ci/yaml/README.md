@@ -4246,7 +4246,7 @@ script:
   - ls -al cache/
 ```
 
-The configurtion above will result in `git fetch` being called this way:
+The configuration above will result in `git fetch` being called this way:
 
 ```shell
 git fetch origin $REFSPECS --depth 50  --prune

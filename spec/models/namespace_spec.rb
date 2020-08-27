@@ -391,14 +391,14 @@ RSpec.describe Namespace do
         let(:uploads_dir) { FileUploader.root }
         let(:pages_dir) { File.join(TestEnv.pages_path) }
 
-        def expect_project_directories_at(namespace_path)
+        def expect_project_directories_at(namespace_path, with_pages: true)
           expected_repository_path = File.join(TestEnv.repos_path, namespace_path, 'the-project.git')
           expected_upload_path = File.join(uploads_dir, namespace_path, 'the-project')
           expected_pages_path = File.join(pages_dir, namespace_path, 'the-project')
 
           expect(File.directory?(expected_repository_path)).to be_truthy
           expect(File.directory?(expected_upload_path)).to be_truthy
-          expect(File.directory?(expected_pages_path)).to be_truthy
+          expect(File.directory?(expected_pages_path)).to be(with_pages)
         end
 
         before do
@@ -412,7 +412,7 @@ RSpec.describe Namespace do
           FileUtils.remove_entry(File.join(TestEnv.repos_path, new_parent.full_path), true)
           FileUtils.remove_entry(File.join(TestEnv.repos_path, child.full_path), true)
           FileUtils.remove_entry(File.join(uploads_dir, project.full_path), true)
-          FileUtils.remove_entry(File.join(pages_dir, project.full_path), true)
+          FileUtils.remove_entry(pages_dir, true)
         end
 
         context 'renaming child' do
@@ -426,10 +426,22 @@ RSpec.describe Namespace do
             end
           end
 
-          it 'correctly moves the repository, uploads and pages', :sidekiq_inline do
-            child.update!(path: 'renamed')
+          context 'when no projects have pages deployed' do
+            it 'moves the repository and uploads', :sidekiq_inline do
+              project.pages_metadatum.update!(deployed: false)
+              child.update!(path: 'renamed')
 
-            expect_project_directories_at('parent/renamed')
+              expect_project_directories_at('parent/renamed', with_pages: false)
+            end
+          end
+
+          context 'when the project has pages deployed' do
+            it 'correctly moves the repository, uploads and pages', :sidekiq_inline do
+              project.pages_metadatum.update!(deployed: true)
+              child.update!(path: 'renamed')
+
+              expect_project_directories_at('parent/renamed')
+            end
           end
         end
 
@@ -444,10 +456,22 @@ RSpec.describe Namespace do
             end
           end
 
-          it 'correctly moves the repository, uploads and pages', :sidekiq_inline do
-            parent.update!(path: 'renamed')
+          context 'when no projects have pages deployed' do
+            it 'moves the repository and uploads', :sidekiq_inline do
+              project.pages_metadatum.update!(deployed: false)
+              parent.update!(path: 'renamed')
 
-            expect_project_directories_at('renamed/child')
+              expect_project_directories_at('renamed/child', with_pages: false)
+            end
+          end
+
+          context 'when the project has pages deployed' do
+            it 'correctly moves the repository, uploads and pages', :sidekiq_inline do
+              project.pages_metadatum.update!(deployed: true)
+              parent.update!(path: 'renamed')
+
+              expect_project_directories_at('renamed/child')
+            end
           end
         end
 
@@ -462,10 +486,22 @@ RSpec.describe Namespace do
             end
           end
 
-          it 'correctly moves the repository, uploads and pages', :sidekiq_inline do
-            child.update!(parent: new_parent)
+          context 'when no projects have pages deployed' do
+            it 'moves the repository and uploads', :sidekiq_inline do
+              project.pages_metadatum.update!(deployed: false)
+              child.update!(parent: new_parent)
 
-            expect_project_directories_at('new_parent/child')
+              expect_project_directories_at('new_parent/child', with_pages: false)
+            end
+          end
+
+          context 'when the project has pages deployed' do
+            it 'correctly moves the repository, uploads and pages', :sidekiq_inline do
+              project.pages_metadatum.update!(deployed: true)
+              child.update!(parent: new_parent)
+
+              expect_project_directories_at('new_parent/child')
+            end
           end
         end
 
@@ -480,10 +516,22 @@ RSpec.describe Namespace do
             end
           end
 
-          it 'correctly moves the repository, uploads and pages', :sidekiq_inline do
-            child.update!(parent: nil)
+          context 'when no projects have pages deployed' do
+            it 'moves the repository and uploads', :sidekiq_inline do
+              project.pages_metadatum.update!(deployed: false)
+              child.update!(parent: nil)
 
-            expect_project_directories_at('child')
+              expect_project_directories_at('child', with_pages: false)
+            end
+          end
+
+          context 'when the project has pages deployed' do
+            it 'correctly moves the repository, uploads and pages', :sidekiq_inline do
+              project.pages_metadatum.update!(deployed: true)
+              child.update!(parent: nil)
+
+              expect_project_directories_at('child')
+            end
           end
         end
 
@@ -498,10 +546,22 @@ RSpec.describe Namespace do
             end
           end
 
-          it 'correctly moves the repository, uploads and pages', :sidekiq_inline do
-            parent.update!(parent: new_parent)
+          context 'when no projects have pages deployed' do
+            it 'moves the repository and uploads', :sidekiq_inline do
+              project.pages_metadatum.update!(deployed: false)
+              parent.update!(parent: new_parent)
 
-            expect_project_directories_at('new_parent/parent/child')
+              expect_project_directories_at('new_parent/parent/child', with_pages: false)
+            end
+          end
+
+          context 'when the project has pages deployed' do
+            it 'correctly moves the repository, uploads and pages', :sidekiq_inline do
+              project.pages_metadatum.update!(deployed: true)
+              parent.update!(parent: new_parent)
+
+              expect_project_directories_at('new_parent/parent/child')
+            end
           end
         end
       end
@@ -1171,6 +1231,27 @@ RSpec.describe Namespace do
         # 1 to load routes
         expect(queries.count).to eq(3)
       end
+    end
+  end
+
+  describe '#any_project_with_pages_deployed?' do
+    it 'returns true if any project nested under the group has pages deployed' do
+      parent_1 = create(:group) # Three projects, one with pages
+      child_1_1 = create(:group, parent: parent_1) # Two projects, one with pages
+      child_1_2 = create(:group, parent: parent_1) # One project, no pages
+      parent_2 = create(:group) # No projects
+
+      create(:project, group: child_1_1).tap do |project|
+        project.pages_metadatum.update!(deployed: true)
+      end
+
+      create(:project, group: child_1_1)
+      create(:project, group: child_1_2)
+
+      expect(parent_1.any_project_with_pages_deployed?).to be(true)
+      expect(child_1_1.any_project_with_pages_deployed?).to be(true)
+      expect(child_1_2.any_project_with_pages_deployed?).to be(false)
+      expect(parent_2.any_project_with_pages_deployed?).to be(false)
     end
   end
 
