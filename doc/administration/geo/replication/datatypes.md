@@ -169,3 +169,21 @@ successfully, you must replicate their data using some other means.
   LFS objects from replicating](https://gitlab.com/gitlab-org/gitlab/-/issues/32696).
 - (*3*): If you are using Object Storage, the replication can be performed by the
   Object Storage provider if supported. Please see [Geo with Object Storage](object_storage.md)
+
+### Package file replication behind a feature flag
+
+Package file replication is behind a feature flag - `geo_self_service_framework_replication`, which is enabled by default.
+
+For GitLab self-managed instances, GitLab administrators can opt to disable them.
+
+To disable:
+
+```ruby
+Feature.disable(:geo_self_service_framework_replication)
+```
+
+To enable:
+
+```ruby
+Feature.enable(:geo_self_service_framework_replication)
+```
