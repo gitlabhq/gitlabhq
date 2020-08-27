@@ -9,6 +9,62 @@ module Gitlab
     # extractor = Gitlab::QuickActions::Extractor.new([:open, :assign, :labels])
     # ```
     class Extractor
+      CODE_REGEX = %r{
+        (?<code>
+          # Code blocks:
+          # ```
+          # Anything, including `/cmd arg` which are ignored by this filter
+          # ```
+
+          ^```
+          .+?
+          \n```$
+        )
+      }mix.freeze
+
+      INLINE_CODE_REGEX = %r{
+        (?<inline_code>
+          # Inline code on separate rows:
+          # `
+          # Anything, including `/cmd arg` which are ignored by this filter
+          # `
+
+          ^.*`\n*
+          .+?
+          \n*`$
+        )
+      }mix.freeze
+
+      HTML_BLOCK_REGEX = %r{
+        (?<html>
+          # HTML block:
+          # <tag>
+          # Anything, including `/cmd arg` which are ignored by this filter
+          # </tag>
+
+          ^<[^>]+?>\n
+          .+?
+          \n<\/[^>]+?>$
+        )
+      }mix.freeze
+
+      QUOTE_BLOCK_REGEX = %r{
+        (?<html>
+          # Quote block:
+          # >>>
+          # Anything, including `/cmd arg` which are ignored by this filter
+          # >>>
+
+          ^>>>
+          .+?
+          \n>>>$
+        )
+      }mix.freeze
+
+      EXCLUSION_REGEX = %r{
+        #{CODE_REGEX} | #{INLINE_CODE_REGEX} | #{HTML_BLOCK_REGEX} | #{QUOTE_BLOCK_REGEX}
+      }mix.freeze
+
       attr_reader :command_definitions
 
       def initialize(command_definitions)
@@ -35,9 +91,7 @@ module Gitlab
       def extract_commands(content, only: nil)
         return [content, []] unless content
 
-        content, commands = perform_regex(content, only: only)
-
-        perform_substitutions(content, commands)
+        perform_regex(content, only: only)
       end
 
       # Encloses quick action commands into code span markdown
@@ -55,13 +109,19 @@ module Gitlab
       private
 
       def perform_regex(content, only: nil, redact: false)
-        commands = []
-        content = content.dup
+        names     = command_names(limit_to_commands: only).map(&:to_s)
+        sub_names = substitution_names.map(&:to_s)
+        commands  = []
+        content   = content.dup
         content.delete!("\r")
 
-        names = command_names(limit_to_commands: only).map(&:to_s)
-        content.gsub!(commands_regex(names: names)) do
-          command, output = process_commands($~, redact)
+        content.gsub!(commands_regex(names: names, sub_names: sub_names)) do
+          command, output = if $~[:substitution]
+                              process_substitutions($~)
+                            else
+                              process_commands($~, redact)
+                            end
+
           commands << command
           output
         end
@@ -86,6 +146,21 @@ module Gitlab
         [command, output]
       end
 
+      def process_substitutions(matched_text)
+        output = matched_text[0]
+        command = []
+
+        if matched_text[:substitution]
+          cmd = matched_text[:substitution].downcase
+          command = [cmd, matched_text[:arg]].reject(&:blank?)
+
+          substitution = substitution_definitions.find { |definition| definition.all_names.include?(cmd.to_sym) }
+          output = substitution.perform_substitution(self, output) if substitution
+        end
+
+        [command, output]
+      end
+
       # Builds a regular expression to match known commands.
       # First match group captures the command name and
       # second match group captures its arguments.
@@ -93,51 +168,9 @@ module Gitlab
       # It looks something like:
       #
       #   /^\/(?<cmd>close|reopen|...)(?:( |$))(?<arg>[^\/\n]*)(?:\n|$)/
-      def commands_regex(names:)
+      def commands_regex(names:, sub_names:)
         @commands_regex[names] ||= %r{
-            (?<code>
-              # Code blocks:
-              # ```
-              # Anything, including `/cmd arg` which are ignored by this filter
-              # ```
-
-              ^```
-              .+?
-              \n```$
-            )
-          |
-            (?<inline_code>
-              # Inline code on separate rows:
-              # `
-              # Anything, including `/cmd arg` which are ignored by this filter
-              # `
-
-              ^.*`\n*
-              .+?
-              \n*`$
-            )
-          |
-            (?<html>
-              # HTML block:
-              # <tag>
-              # Anything, including `/cmd arg` which are ignored by this filter
-              # </tag>
-
-              ^<[^>]+?>\n
-              .+?
-              \n<\/[^>]+?>$
-            )
-          |
-            (?<html>
-              # Quote block:
-              # >>>
-              # Anything, including `/cmd arg` which are ignored by this filter
-              # >>>
-
-              ^>>>
-              .+?
-              \n>>>$
-            )
+            #{EXCLUSION_REGEX}
           |
             (?:
               # Command not in a blockquote, blockcode, or HTML tag:
@@ -151,32 +184,19 @@ module Gitlab
               )?
               (?:\s*\n|$)
             )
+          |
+            (?:
+              # Substitution not in a blockquote, blockcode, or HTML tag:
+
+              ^\/
+              (?<substitution>#{Regexp.new(Regexp.union(sub_names).source, Regexp::IGNORECASE)})
+              (?:
+                [ ]
+                (?<arg>[^\n]*)
+              )?
+              (?:\s*\n|$)
+            )
         }mix
-      end
-
-      def perform_substitutions(content, commands)
-        return unless content
-
-        substitution_definitions = self.command_definitions.select do |definition|
-          definition.is_a?(Gitlab::QuickActions::SubstitutionDefinition)
-        end
-
-        substitution_definitions.each do |substitution|
-          regex = commands_regex(names: substitution.all_names)
-          content = content.gsub(regex) do |text|
-            if $~[:cmd]
-              command = [substitution.name.to_s]
-              command << $~[:arg] if $~[:arg].present?
-              commands << command
-
-              substitution.perform_substitution(self, text)
-            else
-              text
-            end
-          end
-        end
-
-        [content, commands]
       end
 
       def command_names(limit_to_commands:)
@@ -189,6 +209,17 @@ module Gitlab
 
           command.all_names
         end.compact
+      end
+
+      def substitution_names
+        substitution_definitions.flat_map { |command| command.all_names }
+          .compact
+      end
+
+      def substitution_definitions
+        @substition_definitions ||= command_definitions.select do |command|
+          command.is_a?(Gitlab::QuickActions::SubstitutionDefinition)
+        end
       end
     end
   end

@@ -15,5 +15,15 @@ FactoryBot.define do
       locked_at { Time.current }
       locked_by_user { create(:user) }
     end
+
+    trait(:checksummed) do
+      with_file
+      verification_checksum { 'abc' }
+    end
+
+    trait(:checksum_failure) do
+      with_file
+      verification_failure { 'Could not calculate the checksum' }
+    end
   end
 end

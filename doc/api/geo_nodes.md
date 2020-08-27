@@ -447,7 +447,13 @@ Example response:
     "package_files_checksum_failed_count": 0,
     "package_files_registry_count": 10,
     "package_files_synced_count": 6,
-    "package_files_failed_count": 3
+    "package_files_failed_count": 3,
+    "terraform_states_count": 10,
+    "terraform_states_checksummed_count": 10,
+    "terraform_states_checksum_failed_count": 0,
+    "terraform_states_registry_count": 10,
+    "terraform_states_synced_count": 6,
+    "terraform_states_failed_count": 3
   }
 ]
 ```

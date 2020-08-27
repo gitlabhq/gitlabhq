@@ -95,13 +95,10 @@ describe('AlertManagementTable', () => {
     });
   }
 
-  beforeEach(() => {
-    mountComponent({ data: { alerts: mockAlerts, alertsCount } });
-  });
-
   afterEach(() => {
     if (wrapper) {
       wrapper.destroy();
+      wrapper = null;
     }
   });
 

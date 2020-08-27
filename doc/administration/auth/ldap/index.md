@@ -16,6 +16,8 @@ This integration works with most LDAP-compliant directory servers, including:
 - Open LDAP
 - 389 Server
 
+Users added through LDAP take a [licensed seat](../../../subscriptions/index.md#choosing-the-number-of-users).
+
 GitLab Enterprise Editions (EE) include enhanced integration,
 including group membership syncing as well as multiple LDAP servers support.
 

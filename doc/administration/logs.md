@@ -955,3 +955,38 @@ For Omnibus GitLab installations, GitLab Monitor logs reside in `/var/log/gitlab
 ## GitLab Exporter
 
 For Omnibus GitLab installations, GitLab Exporter logs reside in `/var/log/gitlab/gitlab-exporter/`.
+
+## Gathering logs
+
+When [troubleshooting](troubleshooting/index.md) issues that aren't localized to one of the
+previously listed components, it's helpful to simultaneously gather multiple logs and statistics
+from a GitLab instance.
+
+### GitLabSOS
+
+If performance degradations or cascading errors occur that can't readily be attributed to one
+of the previously listed GitLab components, [GitLabSOS](https://gitlab.com/gitlab-com/support/toolbox/gitlabsos/)
+can provide a perspective spanning all of Omnibus GitLab. For more details and instructions
+to run it, see [the GitLabSOS documentation](https://gitlab.com/gitlab-com/support/toolbox/gitlabsos/#gitlabsos).
+
+NOTE: **Note:**
+GitLab Support likes to use this custom-made tool.
+
+### Briefly tail the main logs
+
+If the bug or error is readily reproducible bug or error, save the main GitLab logs
+[to a file](troubleshooting/linux_cheat_sheet.md#files--dirs) while reproducing the
+problem once or more times:
+
+```shell
+sudo gitlab-ctl tail | tee /tmp/<case-ID-and-keywords>.log
+```
+
+Conclude the log gathering with <kbd>Ctrl</kbd> + <kbd>C</kbd>.
+
+### Fast-stats
+
+[Fast-stats](https://gitlab.com/gitlab-com/support/toolbox/fast-stats) is a tool
+for creating and comparing performance statistics from GitLab logs.
+For more details and instructions to run it, see
+[read the documentation for fast-stats](https://gitlab.com/gitlab-com/support/toolbox/fast-stats#usage).
