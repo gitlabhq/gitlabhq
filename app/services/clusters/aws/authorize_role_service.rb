@@ -9,6 +9,7 @@ module Clusters
 
       ERRORS = [
         ActiveRecord::RecordInvalid,
+        ActiveRecord::RecordNotFound,
         Clusters::Aws::FetchCredentialsService::MissingRoleError,
         ::Aws::Errors::MissingCredentialsError,
         ::Aws::STS::Errors::ServiceError
@@ -20,7 +21,8 @@ module Clusters
       end
 
       def execute
-        @role = create_or_update_role!
+        ensure_role_exists!
+        update_role_arn!
 
         Response.new(:ok, credentials)
       rescue *ERRORS
@@ -31,14 +33,12 @@ module Clusters
 
       attr_reader :role, :params
 
-      def create_or_update_role!
-        if role = user.aws_role
-          role.update!(params)
+      def ensure_role_exists!
+        @role = ::Aws::Role.find_by_user_id!(user.id)
+      end
 
-          role
-        else
-          user.create_aws_role!(params)
-        end
+      def update_role_arn!
+        role.update!(params)
       end
 
       def credentials

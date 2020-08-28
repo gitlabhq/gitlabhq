@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Auth::AuthFinders do
+RSpec.describe Gitlab::Auth::AuthFinders do
   include described_class
   include HttpBasicAuthHelpers
 
@@ -499,7 +499,7 @@ describe Gitlab::Auth::AuthFinders do
     context 'with CI username' do
       let(:username) { ::Ci::Build::CI_REGISTRY_USER }
       let(:user) { create(:user) }
-      let(:build) { create(:ci_build, user: user) }
+      let(:build) { create(:ci_build, user: user, status: :running) }
 
       it 'returns nil without password' do
         set_basic_auth_header(username, nil)
@@ -515,6 +515,13 @@ describe Gitlab::Auth::AuthFinders do
 
       it 'raises error with invalid token' do
         set_basic_auth_header(username, 'token')
+
+        expect { subject }.to raise_error(Gitlab::Auth::UnauthorizedError)
+      end
+
+      it 'returns exception if the job is not running' do
+        set_basic_auth_header(username, build.token)
+        build.success!
 
         expect { subject }.to raise_error(Gitlab::Auth::UnauthorizedError)
       end
@@ -567,7 +574,7 @@ describe Gitlab::Auth::AuthFinders do
   end
 
   describe '#find_user_from_job_token' do
-    let(:job) { create(:ci_build, user: user) }
+    let(:job) { create(:ci_build, user: user, status: :running) }
     let(:route_authentication_setting) { { job_token_allowed: true } }
 
     subject { find_user_from_job_token }
@@ -588,6 +595,13 @@ describe Gitlab::Auth::AuthFinders do
 
       it 'returns exception if invalid job token' do
         set_header(described_class::JOB_TOKEN_HEADER, 'invalid token')
+
+        expect { subject }.to raise_error(Gitlab::Auth::UnauthorizedError)
+      end
+
+      it 'returns exception if the job is not running' do
+        set_header(described_class::JOB_TOKEN_HEADER, job.token)
+        job.success!
 
         expect { subject }.to raise_error(Gitlab::Auth::UnauthorizedError)
       end

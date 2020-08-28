@@ -71,13 +71,20 @@ describe API::Terraform::State do
       let(:auth_header) { job_basic_auth_header(job) }
 
       context 'with maintainer permissions' do
-        let(:job) { create(:ci_build, project: project, user: maintainer) }
+        let(:job) { create(:ci_build, status: :running, project: project, user: maintainer) }
 
         it 'returns terraform state belonging to a project of given state name' do
           request
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(response.body).to eq(state.file.read)
+        end
+
+        it 'returns unauthorized if the the job is not running' do
+          job.update!(status: :failed)
+          request
+
+          expect(response).to have_gitlab_http_status(:unauthorized)
         end
 
         context 'for a project that does not exist' do
@@ -92,7 +99,7 @@ describe API::Terraform::State do
       end
 
       context 'with developer permissions' do
-        let(:job) { create(:ci_build, project: project, user: developer) }
+        let(:job) { create(:ci_build, status: :running, project: project, user: developer) }
 
         it 'returns forbidden if the user cannot access the state' do
           request
