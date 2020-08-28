@@ -56,3 +56,5 @@ export const uneditableBlockTokens = [
   },
   buildMockUneditableCloseToken('div'),
 ];
+
+export const attributeDefinition = '{:.no_toc .hidden-md .hidden-lg}';
