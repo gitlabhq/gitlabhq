@@ -111,7 +111,6 @@ module ExtractsRef
   end
 
   def use_first_path_segment?(ref)
-    return false unless ::Feature.enabled?(:extracts_path_optimization)
     return false unless repository_container
     return false if repository_container.repository.has_ambiguous_refs?
 

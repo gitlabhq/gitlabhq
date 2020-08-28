@@ -229,7 +229,6 @@ export default {
       projectPath: this.projectPath,
       dismissEndpoint: this.dismissEndpoint,
       showSuggestPopover: this.showSuggestPopover,
-      useSingleDiffStyle: this.glFeatures.singleMrDiffView,
       viewDiffsFileByFile: this.viewDiffsFileByFile,
     });
 
@@ -306,14 +305,10 @@ export default {
       );
     },
     needsReload() {
-      return (
-        this.glFeatures.singleMrDiffView &&
-        this.diffFiles.length &&
-        isSingleViewStyle(this.diffFiles[0])
-      );
+      return this.diffFiles.length && isSingleViewStyle(this.diffFiles[0]);
     },
     needsFirstLoad() {
-      return this.glFeatures.singleMrDiffView && !this.diffFiles.length;
+      return !this.diffFiles.length;
     },
     fetchData(toggleTree = true) {
       if (this.glFeatures.diffsBatchLoad) {

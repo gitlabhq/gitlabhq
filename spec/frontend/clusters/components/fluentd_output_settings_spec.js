@@ -168,7 +168,7 @@ describe('FluentdOutputSettings', () => {
       });
 
       it('displays a error message', () => {
-        expect(wrapper.contains(GlAlert)).toBe(true);
+        expect(wrapper.find(GlAlert).exists()).toBe(true);
       });
     });
   });

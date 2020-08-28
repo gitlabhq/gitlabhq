@@ -163,7 +163,7 @@ describe('ErrorTrackingList', () => {
 
     it('each error in the list should have an action button set', () => {
       findErrorListRows().wrappers.forEach(row => {
-        expect(row.contains(ErrorTrackingActions)).toBe(true);
+        expect(row.find(ErrorTrackingActions).exists()).toBe(true);
       });
     });
 

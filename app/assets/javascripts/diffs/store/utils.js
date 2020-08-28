@@ -495,11 +495,11 @@ export function prepareDiffData(diff, priorFiles = []) {
   return deduplicateFilesList([...priorFiles, ...cleanedFiles]);
 }
 
-export function getDiffPositionByLineCode(diffFiles, useSingleDiffStyle) {
+export function getDiffPositionByLineCode(diffFiles) {
   let lines = [];
   const hasInlineDiffs = diffFiles.some(file => file.highlighted_diff_lines.length > 0);
 
-  if (!useSingleDiffStyle || hasInlineDiffs) {
+  if (hasInlineDiffs) {
     // In either of these cases, we can use `highlighted_diff_lines` because
     // that will include all of the parallel diff lines, too
 

@@ -38,6 +38,7 @@ module Gitlab
             .merge(usage_activity_by_stage(:usage_activity_by_stage_monthly, last_28_days_time_period))
             .merge(analytics_unique_visits_data)
             .merge(compliance_unique_visits_data)
+            .merge(search_unique_visits_data)
         end
       end
 
@@ -130,6 +131,7 @@ module Gitlab
             milestone_lists: count(List.milestone),
             milestones: count(Milestone),
             projects_with_packages: distinct_count(::Packages::Package, :project_id),
+            packages: count(::Packages::Package),
             pages_domains: count(PagesDomain),
             pool_repositories: count(PoolRepository),
             projects: count(Project),
@@ -511,7 +513,17 @@ module Gitlab
           events: distinct_count(::Event.where(time_period), :author_id),
           groups: distinct_count(::GroupMember.where(time_period), :user_id),
           users_created: count(::User.where(time_period), start: user_minimum_id, finish: user_maximum_id),
-          omniauth_providers: filtered_omniauth_provider_names.reject { |name| name == 'group_saml' }
+          omniauth_providers: filtered_omniauth_provider_names.reject { |name| name == 'group_saml' },
+          projects_imported: {
+            gitlab_project: projects_imported_count('gitlab_project', time_period),
+            gitlab: projects_imported_count('gitlab', time_period),
+            github: projects_imported_count('github', time_period),
+            bitbucket: projects_imported_count('bitbucket', time_period),
+            bitbucket_server: projects_imported_count('bitbucket_server', time_period),
+            gitea: projects_imported_count('gitea', time_period),
+            git: projects_imported_count('git', time_period),
+            manifest: projects_imported_count('manifest', time_period)
+          }
         }
       end
       # rubocop: enable CodeReuse/ActiveRecord
@@ -606,6 +618,18 @@ module Gitlab
         results['compliance_unique_visits_for_any_target_monthly'] = redis_usage_data { unique_visit_service.unique_visits_for(targets: :compliance, start_date: 4.weeks.ago.to_date, end_date: Date.current) }
 
         { compliance_unique_visits: results }
+      end
+
+      def search_unique_visits_data
+        events = ::Gitlab::UsageDataCounters::HLLRedisCounter.events_for_category('search')
+        results = events.each_with_object({}) do |event, hash|
+          hash[event] = redis_usage_data { ::Gitlab::UsageDataCounters::HLLRedisCounter.unique_events(event_names: event, start_date: 7.days.ago.to_date, end_date: Date.current) }
+        end
+
+        results['search_unique_visits_for_any_target_weekly'] = redis_usage_data { ::Gitlab::UsageDataCounters::HLLRedisCounter.unique_events(event_names: events, start_date: 7.days.ago.to_date, end_date: Date.current) }
+        results['search_unique_visits_for_any_target_monthly'] = redis_usage_data { ::Gitlab::UsageDataCounters::HLLRedisCounter.unique_events(event_names: events, start_date: 4.weeks.ago.to_date, end_date: Date.current) }
+
+        { search_unique_visits: results }
       end
 
       def action_monthly_active_users(time_period)
@@ -773,6 +797,10 @@ module Gitlab
 
       def deployment_count(relation)
         count relation, start: deployment_minimum_id, finish: deployment_maximum_id
+      end
+
+      def projects_imported_count(from, time_period)
+        distinct_count(::Project.imported_from(from).where(time_period), :creator_id) # rubocop: disable CodeReuse/ActiveRecord
       end
     end
   end

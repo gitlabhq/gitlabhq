@@ -169,7 +169,7 @@ describe('Issuables list component', () => {
       it('does not display empty state', () => {
         expect(wrapper.vm.issuables.length).toBeGreaterThan(0);
         expect(wrapper.vm.emptyState).toEqual({});
-        expect(wrapper.contains(GlEmptyState)).toBe(false);
+        expect(wrapper.find(GlEmptyState).exists()).toBe(false);
       });
 
       it('sets the proper page and total items', () => {

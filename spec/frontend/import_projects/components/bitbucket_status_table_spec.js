@@ -33,7 +33,7 @@ describe('BitbucketStatusTable', () => {
 
   it('renders import table component', () => {
     createComponent({ providerTitle: 'Test' });
-    expect(wrapper.contains(ImportProjectsTable)).toBe(true);
+    expect(wrapper.find(ImportProjectsTable).exists()).toBe(true);
   });
 
   it('passes alert in incompatible-repos-warning slot', () => {

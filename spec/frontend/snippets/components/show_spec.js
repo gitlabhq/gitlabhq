@@ -66,7 +66,7 @@ describe('Snippet view app', () => {
         },
       },
     });
-    expect(wrapper.contains(EmbedDropdown)).toBe(true);
+    expect(wrapper.find(EmbedDropdown).exists()).toBe(true);
   });
 
   it('renders correct snippet-blob components', () => {
@@ -97,7 +97,7 @@ describe('Snippet view app', () => {
           },
         },
       });
-      expect(wrapper.contains(EmbedDropdown)).toBe(isRendered);
+      expect(wrapper.find(EmbedDropdown).exists()).toBe(isRendered);
     });
   });
 
@@ -119,7 +119,7 @@ describe('Snippet view app', () => {
             },
           },
         });
-        expect(wrapper.contains(CloneDropdownButton)).toBe(isRendered);
+        expect(wrapper.find(CloneDropdownButton).exists()).toBe(isRendered);
       },
     );
   });

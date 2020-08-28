@@ -7,7 +7,7 @@ module Gitlab
         include Gitlab::Utils::StrongMemoize
 
         # This class accepts an array of arrays/hashes/or objects
-        def initialize(all_statuses, with_allow_failure: true)
+        def initialize(all_statuses, with_allow_failure: true, dag: false)
           unless all_statuses.respond_to?(:pluck)
             raise ArgumentError, "all_statuses needs to respond to `.pluck`"
           end
@@ -15,6 +15,7 @@ module Gitlab
           @status_set = Set.new
           @status_key = 0
           @allow_failure_key = 1 if with_allow_failure
+          @dag = dag
 
           consume_all_statuses(all_statuses)
         end
@@ -31,7 +32,13 @@ module Gitlab
           return if none?
 
           strong_memoize(:status) do
-            if only_of?(:skipped, :ignored)
+            if @dag && any_of?(:skipped)
+              # The DAG job is skipped if one of the needs does not run at all.
+              'skipped'
+            elsif @dag && !only_of?(:success, :failed, :canceled, :skipped, :success_with_warnings)
+              # DAG is blocked from executing if a dependent is not "complete"
+              'pending'
+            elsif only_of?(:skipped, :ignored)
               'skipped'
             elsif only_of?(:success, :skipped, :success_with_warnings, :ignored)
               'success'

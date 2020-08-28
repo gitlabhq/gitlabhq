@@ -47,7 +47,7 @@ describe('IssuableListRootApp', () => {
     it('does not show an alert', () => {
       wrapper = mountComponent();
 
-      expect(wrapper.contains(GlAlert)).toBe(false);
+      expect(wrapper.find(GlAlert).exists()).toBe(false);
     });
   });
 
@@ -103,12 +103,12 @@ describe('IssuableListRootApp', () => {
         shouldShowInProgressAlert: true,
       });
 
-      expect(wrapper.contains(GlAlert)).toBe(true);
+      expect(wrapper.find(GlAlert).exists()).toBe(true);
 
       findAlert().vm.$emit('dismiss');
 
       return Vue.nextTick(() => {
-        expect(wrapper.contains(GlAlert)).toBe(false);
+        expect(wrapper.find(GlAlert).exists()).toBe(false);
       });
     });
   });

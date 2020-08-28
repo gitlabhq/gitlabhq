@@ -69,6 +69,11 @@
             = link_to admin_cohorts_path, title: _('Cohorts') do
               %span
                 = _('Cohorts')
+          - if Feature.enabled?(:instance_statistics)
+            = nav_link(controller: :instance_statistics) do
+              = link_to admin_instance_statistics_path, title: _('Instance Statistics') do
+                %span
+                  = _('Instance Statistics')
 
       = nav_link(controller: admin_monitoring_nav_links) do
         = link_to admin_system_info_path, data: { qa_selector: 'admin_monitoring_link' } do

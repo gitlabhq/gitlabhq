@@ -194,6 +194,45 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
       )
     end
 
+    it 'includes project imports usage data' do
+      for_defined_days_back do
+        user = create(:user)
+
+        %w(gitlab_project gitlab github bitbucket bitbucket_server gitea git manifest).each do |type|
+          create(:project, import_type: type, creator_id: user.id)
+        end
+      end
+
+      expect(described_class.usage_activity_by_stage_manage({})).to include(
+        {
+          projects_imported: {
+            gitlab_project: 2,
+            gitlab: 2,
+            github: 2,
+            bitbucket: 2,
+            bitbucket_server: 2,
+            gitea: 2,
+            git: 2,
+            manifest: 2
+          }
+        }
+      )
+      expect(described_class.usage_activity_by_stage_manage(described_class.last_28_days_time_period)).to include(
+        {
+          projects_imported: {
+            gitlab_project: 1,
+            gitlab: 1,
+            github: 1,
+            bitbucket: 1,
+            bitbucket_server: 1,
+            gitea: 1,
+            git: 1,
+            manifest: 1
+          }
+        }
+      )
+    end
+
     def omniauth_providers
       [
         OpenStruct.new(name: 'google_oauth2'),
@@ -417,6 +456,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
       expect(count_data[:project_snippets]).to eq(4)
 
       expect(count_data[:projects_with_packages]).to eq(2)
+      expect(count_data[:packages]).to eq(3)
     end
 
     it 'gathers object store usage correctly' do
@@ -1015,6 +1055,32 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
           'i_compliance_audit_events' => 123,
           'compliance_unique_visits_for_any_target' => 543,
           'compliance_unique_visits_for_any_target_monthly' => 987
+        }
+      })
+    end
+  end
+
+  describe '.search_unique_visits_data' do
+    subject { described_class.search_unique_visits_data }
+
+    before do
+      described_class.clear_memoization(:unique_visit_service)
+      events = ::Gitlab::UsageDataCounters::HLLRedisCounter.events_for_category('search')
+      events.each do |event|
+        allow(::Gitlab::UsageDataCounters::HLLRedisCounter).to receive(:unique_events).with(event_names: event, start_date: 7.days.ago.to_date, end_date: Date.current).and_return(123)
+      end
+      allow(::Gitlab::UsageDataCounters::HLLRedisCounter).to receive(:unique_events).with(event_names: events, start_date: 7.days.ago.to_date, end_date: Date.current).and_return(543)
+      allow(::Gitlab::UsageDataCounters::HLLRedisCounter).to receive(:unique_events).with(event_names: events, start_date: 4.weeks.ago.to_date, end_date: Date.current).and_return(987)
+    end
+
+    it 'returns the number of unique visits to pages with search features' do
+      expect(subject).to eq({
+        search_unique_visits: {
+          'i_search_total' => 123,
+          'i_search_advanced' => 123,
+          'i_search_paid' => 123,
+          'search_unique_visits_for_any_target_weekly' => 543,
+          'search_unique_visits_for_any_target_monthly' => 987
         }
       })
     end

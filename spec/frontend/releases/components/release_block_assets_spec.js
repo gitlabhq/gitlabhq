@@ -128,7 +128,7 @@ describe('Release block assets', () => {
 
   describe('external vs internal links', () => {
     const containsExternalSourceIndicator = () =>
-      wrapper.contains('[data-testid="external-link-indicator"]');
+      wrapper.find('[data-testid="external-link-indicator"]').exists();
 
     describe('when a link is external', () => {
       beforeEach(() => {

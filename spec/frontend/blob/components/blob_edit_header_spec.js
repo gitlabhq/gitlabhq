@@ -31,7 +31,7 @@ describe('Blob Header Editing', () => {
     });
 
     it('contains a form input field', () => {
-      expect(wrapper.contains(GlFormInput)).toBe(true);
+      expect(wrapper.find(GlFormInput).exists()).toBe(true);
     });
 
     it('does not show delete button', () => {

@@ -37,7 +37,7 @@ describe('Participants', () => {
         loading: true,
       });
 
-      expect(wrapper.contains(GlLoadingIcon)).toBe(true);
+      expect(wrapper.find(GlLoadingIcon).exists()).toBe(true);
     });
 
     it('does not show loading spinner not loading', () => {
@@ -45,7 +45,7 @@ describe('Participants', () => {
         loading: false,
       });
 
-      expect(wrapper.contains(GlLoadingIcon)).toBe(false);
+      expect(wrapper.find(GlLoadingIcon).exists()).toBe(false);
     });
 
     it('shows participant count when given', () => {
@@ -74,7 +74,7 @@ describe('Participants', () => {
         loading: true,
       });
 
-      expect(wrapper.contains(GlLoadingIcon)).toBe(true);
+      expect(wrapper.find(GlLoadingIcon).exists()).toBe(true);
     });
 
     it('when only showing visible participants, shows an avatar only for each participant under the limit', () => {
@@ -196,11 +196,11 @@ describe('Participants', () => {
     });
 
     it('does not show sidebar collapsed icon', () => {
-      expect(wrapper.contains('.sidebar-collapsed-icon')).toBe(false);
+      expect(wrapper.find('.sidebar-collapsed-icon').exists()).toBe(false);
     });
 
     it('does not show participants label title', () => {
-      expect(wrapper.contains('.title')).toBe(false);
+      expect(wrapper.find('.title').exists()).toBe(false);
     });
   });
 });

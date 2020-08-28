@@ -29,7 +29,7 @@ describe('IssueCount', () => {
     });
 
     it('does not contains maxIssueCount in the template', () => {
-      expect(vm.contains('.js-max-issue-size')).toBe(false);
+      expect(vm.find('.js-max-issue-size').exists()).toBe(false);
     });
   });
 

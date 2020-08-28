@@ -25,7 +25,6 @@ export default {
       projectPath,
       dismissEndpoint,
       showSuggestPopover,
-      useSingleDiffStyle,
     } = options;
     Object.assign(state, {
       endpoint,
@@ -35,7 +34,6 @@ export default {
       projectPath,
       dismissEndpoint,
       showSuggestPopover,
-      useSingleDiffStyle,
     });
   },
 

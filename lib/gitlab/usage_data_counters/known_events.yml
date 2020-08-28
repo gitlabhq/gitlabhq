@@ -84,3 +84,15 @@
   redis_slot: edit
   expiry: 29
   aggregation: daily
+- name: i_search_total
+  category: search
+  redis_slot: search
+  aggregation: weekly
+- name: i_search_advanced
+  category: search
+  redis_slot: search
+  aggregation: weekly
+- name: i_search_paid
+  category: search
+  redis_slot: search
+  aggregation: weekly

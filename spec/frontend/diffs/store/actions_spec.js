@@ -101,7 +101,6 @@ describe('DiffsStoreActions', () => {
       const projectPath = '/root/project';
       const dismissEndpoint = '/-/user_callouts';
       const showSuggestPopover = false;
-      const useSingleDiffStyle = false;
 
       testAction(
         setBaseConfig,
@@ -113,7 +112,6 @@ describe('DiffsStoreActions', () => {
           projectPath,
           dismissEndpoint,
           showSuggestPopover,
-          useSingleDiffStyle,
         },
         {
           endpoint: '',
@@ -123,7 +121,6 @@ describe('DiffsStoreActions', () => {
           projectPath: '',
           dismissEndpoint: '',
           showSuggestPopover: true,
-          useSingleDiffStyle: true,
         },
         [
           {
@@ -136,7 +133,6 @@ describe('DiffsStoreActions', () => {
               projectPath,
               dismissEndpoint,
               showSuggestPopover,
-              useSingleDiffStyle,
             },
           },
         ],
@@ -169,13 +165,6 @@ describe('DiffsStoreActions', () => {
           done();
         },
       );
-
-      fetchDiffFiles({ state: { endpoint }, commit: () => null })
-        .then(data => {
-          expect(data).toEqual(res);
-          done();
-        })
-        .catch(done.fail);
     });
   });
 
@@ -223,7 +212,7 @@ describe('DiffsStoreActions', () => {
       testAction(
         fetchDiffFilesBatch,
         {},
-        { endpointBatch, useSingleDiffStyle: true, diffViewType: 'inline' },
+        { endpointBatch, diffViewType: 'inline' },
         [
           { type: types.SET_BATCH_LOADING, payload: true },
           { type: types.SET_RETRIEVING_BATCHES, payload: true },
@@ -253,7 +242,6 @@ describe('DiffsStoreActions', () => {
           commit: () => {},
           state: {
             endpointBatch: `${endpointBatch}?view=${otherView}`,
-            useSingleDiffStyle: true,
             diffViewType: viewStyle,
           },
         })
@@ -283,7 +271,7 @@ describe('DiffsStoreActions', () => {
       testAction(
         fetchDiffFilesMeta,
         {},
-        { endpointMetadata },
+        { endpointMetadata, diffViewType: 'inline' },
         [
           { type: types.SET_LOADING, payload: true },
           { type: types.SET_LOADING, payload: false },
@@ -296,146 +284,6 @@ describe('DiffsStoreActions', () => {
           done();
         },
       );
-    });
-  });
-
-  describe('when the single diff view feature flag is off', () => {
-    describe('fetchDiffFiles', () => {
-      it('should fetch diff files', done => {
-        const endpoint = '/fetch/diff/files?w=1';
-        const mock = new MockAdapter(axios);
-        const res = { diff_files: 1, merge_request_diffs: [] };
-        mock.onGet(endpoint).reply(200, res);
-
-        testAction(
-          fetchDiffFiles,
-          {},
-          {
-            endpoint,
-            diffFiles: [],
-            showWhitespace: false,
-            diffViewType: 'inline',
-            useSingleDiffStyle: false,
-            currentDiffFileId: null,
-          },
-          [
-            { type: types.SET_LOADING, payload: true },
-            { type: types.SET_LOADING, payload: false },
-            { type: types.SET_MERGE_REQUEST_DIFFS, payload: res.merge_request_diffs },
-            { type: types.SET_DIFF_DATA, payload: res },
-          ],
-          [],
-          () => {
-            mock.restore();
-            done();
-          },
-        );
-
-        fetchDiffFiles({ state: { endpoint }, commit: () => null })
-          .then(data => {
-            expect(data).toEqual(res);
-            done();
-          })
-          .catch(done.fail);
-      });
-    });
-
-    describe('fetchDiffFilesBatch', () => {
-      let mock;
-
-      beforeEach(() => {
-        mock = new MockAdapter(axios);
-      });
-
-      afterEach(() => {
-        mock.restore();
-      });
-
-      it('should fetch batch diff files', done => {
-        const endpointBatch = '/fetch/diffs_batch';
-        const res1 = { diff_files: [{ file_hash: 'test' }], pagination: { next_page: 2 } };
-        const res2 = { diff_files: [{ file_hash: 'test2' }], pagination: {} };
-        mock
-          .onGet(mergeUrlParams({ per_page: DIFFS_PER_PAGE, w: '1', page: 1 }, endpointBatch))
-          .reply(200, res1)
-          .onGet(mergeUrlParams({ per_page: DIFFS_PER_PAGE, w: '1', page: 2 }, endpointBatch))
-          .reply(200, res2);
-
-        testAction(
-          fetchDiffFilesBatch,
-          {},
-          { endpointBatch, useSingleDiffStyle: false, currentDiffFileId: null },
-          [
-            { type: types.SET_BATCH_LOADING, payload: true },
-            { type: types.SET_RETRIEVING_BATCHES, payload: true },
-            { type: types.SET_DIFF_DATA_BATCH, payload: { diff_files: res1.diff_files } },
-            { type: types.SET_BATCH_LOADING, payload: false },
-            { type: types.UPDATE_CURRENT_DIFF_FILE_ID, payload: 'test' },
-            { type: types.SET_DIFF_DATA_BATCH, payload: { diff_files: res2.diff_files } },
-            { type: types.SET_BATCH_LOADING, payload: false },
-            { type: types.UPDATE_CURRENT_DIFF_FILE_ID, payload: 'test2' },
-            { type: types.SET_RETRIEVING_BATCHES, payload: false },
-          ],
-          [],
-          done,
-        );
-      });
-
-      it.each`
-        querystrings        | requestUrl
-        ${'?view=parallel'} | ${'/fetch/diffs_batch?view=parallel'}
-        ${'?view=inline'}   | ${'/fetch/diffs_batch?view=inline'}
-        ${''}               | ${'/fetch/diffs_batch'}
-      `(
-        'should use the endpoint $requestUrl if the endpointBatch in state includes `$querystrings` as a querystring',
-        ({ querystrings, requestUrl }) => {
-          const endpointBatch = '/fetch/diffs_batch';
-
-          fetchDiffFilesBatch({
-            commit: () => {},
-            state: {
-              endpointBatch: `${endpointBatch}${querystrings}`,
-              diffViewType: 'inline',
-            },
-          })
-            .then(() => {
-              expect(mock.history.get[0].url).toEqual(requestUrl);
-            })
-            .catch(() => {});
-        },
-      );
-    });
-
-    describe('fetchDiffFilesMeta', () => {
-      const endpointMetadata = '/fetch/diffs_metadata.json';
-      const noFilesData = { ...diffMetadata };
-      let mock;
-
-      beforeEach(() => {
-        mock = new MockAdapter(axios);
-
-        delete noFilesData.diff_files;
-
-        mock.onGet(endpointMetadata).reply(200, diffMetadata);
-      });
-      it('should fetch diff meta information', done => {
-        testAction(
-          fetchDiffFilesMeta,
-          {},
-          { endpointMetadata, useSingleDiffStyle: false },
-          [
-            { type: types.SET_LOADING, payload: true },
-            { type: types.SET_LOADING, payload: false },
-            { type: types.SET_MERGE_REQUEST_DIFFS, payload: diffMetadata.merge_request_diffs },
-            { type: types.SET_DIFF_DATA, payload: noFilesData },
-          ],
-          [],
-          () => {
-            mock.restore();
-            done();
-          },
-        );
-      });
     });
   });
 
@@ -589,7 +437,7 @@ describe('DiffsStoreActions', () => {
       testAction(
         assignDiscussionsToDiff,
         [],
-        { diffFiles: [], useSingleDiffStyle: true },
+        { diffFiles: [] },
         [],
         [{ type: 'setCurrentDiffFileIdFromNote', payload: '123' }],
         done,

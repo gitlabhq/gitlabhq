@@ -57,7 +57,7 @@ describe('JiraIssuesFields', () => {
       // As per https://vuejs.org/v2/guide/forms.html#Checkbox-1,
       // browsers don't include unchecked boxes in form submissions.
       it('includes issues_enabled as false even if unchecked', () => {
-        expect(wrapper.contains('input[name="service[issues_enabled]"]')).toBe(true);
+        expect(wrapper.find('input[name="service[issues_enabled]"]').exists()).toBe(true);
       });
 
       it('disables project_key input', () => {
@@ -90,7 +90,7 @@ describe('JiraIssuesFields', () => {
     it('contains link to editProjectPath', () => {
       createComponent();
 
-      expect(wrapper.contains(`a[href="${defaultProps.editProjectPath}"]`)).toBe(true);
+      expect(wrapper.find(`a[href="${defaultProps.editProjectPath}"]`).exists()).toBe(true);
     });
   });
 });

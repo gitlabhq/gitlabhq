@@ -76,6 +76,10 @@ module Gitlab
         Feature.enabled?(:project_transactionless_destroy, project, default_enabled: false)
       end
 
+      def self.new_matrix_job_names_enabled?
+        ::Feature.enabled?(:ci_matrix_job_names, default_enabled: false)
+      end
+
       def self.coverage_report_view?(project)
         ::Feature.enabled?(:coverage_report_view, project)
       end

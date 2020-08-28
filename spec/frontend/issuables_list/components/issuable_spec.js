@@ -97,7 +97,7 @@ describe('Issuable component', () => {
   const findUnscopedLabels = () => findLabels().filter(w => !isScopedLabel({ title: w.text() }));
   const findIssuableTitle = () => wrapper.find('[data-testid="issuable-title"]');
   const findIssuableStatus = () => wrapper.find('[data-testid="issuable-status"]');
-  const containsJiraLogo = () => wrapper.contains('[data-testid="jira-logo"]');
+  const containsJiraLogo = () => wrapper.find('[data-testid="jira-logo"]').exists();
   const findHealthStatus = () => wrapper.find('.health-status');
 
   describe('when mounted', () => {

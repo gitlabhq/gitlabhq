@@ -19884,6 +19884,8 @@ CREATE INDEX index_import_failures_on_project_id_and_correlation_id_value ON pub
 
 CREATE INDEX index_import_failures_on_project_id_not_null ON public.import_failures USING btree (project_id) WHERE (project_id IS NOT NULL);
 
+CREATE INDEX index_imported_projects_on_import_type_creator_id_created_at ON public.projects USING btree (import_type, creator_id, created_at) WHERE (import_type IS NOT NULL);
+
 CREATE UNIQUE INDEX index_index_statuses_on_project_id ON public.index_statuses USING btree (project_id);
 
 CREATE INDEX index_insights_on_namespace_id ON public.insights USING btree (namespace_id);

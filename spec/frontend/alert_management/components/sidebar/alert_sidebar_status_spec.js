@@ -56,7 +56,11 @@ describe('Alert Details Sidebar Status', () => {
     });
 
     it('displays the dropdown status header', () => {
-      expect(findStatusDropdown().contains('.dropdown-title')).toBe(true);
+      expect(
+        findStatusDropdown()
+          .find('.dropdown-title')
+          .exists(),
+      ).toBe(true);
     });
 
     describe('updating the alert status', () => {

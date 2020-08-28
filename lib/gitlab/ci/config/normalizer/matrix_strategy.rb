@@ -48,17 +48,28 @@ module Gitlab
             }
           end
 
-          def name_with_details
-            vars = variables.map { |key, value| "#{key}=#{value}"}.join('; ')
-
-            "#{job_name} (#{vars})"
-          end
-
           def name
-            "#{job_name} #{instance}/#{total}"
+            if Gitlab::Ci::Features.new_matrix_job_names_enabled?
+              name_with_variable_details
+            else
+              old_name
+            end
           end
 
           private
+
+          def name_with_variable_details
+            vars = variables
+              .values
+              .compact
+              .join(', ')
+
+            "#{job_name}: [#{vars}]"
+          end
+
+          def old_name
+            "#{job_name} #{instance}/#{total}"
+          end
 
           attr_reader :job_name, :instance, :variables, :total
         end

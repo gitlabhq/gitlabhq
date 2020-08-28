@@ -126,7 +126,11 @@ describe('Grouped code quality reports app', () => {
     });
 
     it('renders a help icon with more information', () => {
-      expect(findWidget().contains('[data-testid="question-icon"]')).toBe(true);
+      expect(
+        findWidget()
+          .find('[data-testid="question-icon"]')
+          .exists(),
+      ).toBe(true);
     });
   });
 
@@ -140,7 +144,11 @@ describe('Grouped code quality reports app', () => {
     });
 
     it('does not render a help icon', () => {
-      expect(findWidget().contains('[data-testid="question-icon"]')).toBe(false);
+      expect(
+        findWidget()
+          .find('[data-testid="question-icon"]')
+          .exists(),
+      ).toBe(false);
     });
   });
 });

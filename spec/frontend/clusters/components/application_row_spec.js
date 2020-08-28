@@ -300,11 +300,11 @@ describe('Application Row', () => {
       beforeEach(() => mountComponent({ updateAvailable: true }));
 
       it('the modal is not rendered', () => {
-        expect(wrapper.contains(UpdateApplicationConfirmationModal)).toBe(false);
+        expect(wrapper.find(UpdateApplicationConfirmationModal).exists()).toBe(false);
       });
 
       it('the correct button is rendered', () => {
-        expect(wrapper.contains("[data-qa-selector='update_button']")).toBe(true);
+        expect(wrapper.find("[data-qa-selector='update_button']").exists()).toBe(true);
       });
     });
 
@@ -318,11 +318,13 @@ describe('Application Row', () => {
       });
 
       it('displays a modal', () => {
-        expect(wrapper.contains(UpdateApplicationConfirmationModal)).toBe(true);
+        expect(wrapper.find(UpdateApplicationConfirmationModal).exists()).toBe(true);
       });
 
       it('the correct button is rendered', () => {
-        expect(wrapper.contains("[data-qa-selector='update_button_with_confirmation']")).toBe(true);
+        expect(wrapper.find("[data-qa-selector='update_button_with_confirmation']").exists()).toBe(
+          true,
+        );
       });
 
       it('triggers updateApplication event', () => {
@@ -344,8 +346,10 @@ describe('Application Row', () => {
           version: '1.1.2',
         });
 
-        expect(wrapper.contains("[data-qa-selector='update_button_with_confirmation']")).toBe(true);
-        expect(wrapper.contains(UpdateApplicationConfirmationModal)).toBe(true);
+        expect(wrapper.find("[data-qa-selector='update_button_with_confirmation']").exists()).toBe(
+          true,
+        );
+        expect(wrapper.find(UpdateApplicationConfirmationModal).exists()).toBe(true);
       });
 
       it('does not need confirmation is version is 3.0.0', () => {
@@ -355,8 +359,8 @@ describe('Application Row', () => {
           version: '3.0.0',
         });
 
-        expect(wrapper.contains("[data-qa-selector='update_button']")).toBe(true);
-        expect(wrapper.contains(UpdateApplicationConfirmationModal)).toBe(false);
+        expect(wrapper.find("[data-qa-selector='update_button']").exists()).toBe(true);
+        expect(wrapper.find(UpdateApplicationConfirmationModal).exists()).toBe(false);
       });
 
       it('does not need confirmation if version is higher than 3.0.0', () => {
@@ -366,8 +370,8 @@ describe('Application Row', () => {
           version: '5.2.1',
         });
 
-        expect(wrapper.contains("[data-qa-selector='update_button']")).toBe(true);
-        expect(wrapper.contains(UpdateApplicationConfirmationModal)).toBe(false);
+        expect(wrapper.find("[data-qa-selector='update_button']").exists()).toBe(true);
+        expect(wrapper.find(UpdateApplicationConfirmationModal).exists()).toBe(false);
       });
     });
   });

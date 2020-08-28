@@ -58,7 +58,7 @@ describe('Blob Header Editing', () => {
       createComponent({ value: undefined });
 
       expect(spy).not.toHaveBeenCalled();
-      expect(wrapper.contains('#editor')).toBe(true);
+      expect(wrapper.find('#editor').exists()).toBe(true);
     });
 
     it('initialises Editor Lite', () => {

@@ -11,13 +11,11 @@ describe('DiffsStoreMutations', () => {
       const state = {};
       const endpoint = '/diffs/endpoint';
       const projectPath = '/root/project';
-      const useSingleDiffStyle = false;
 
-      mutations[types.SET_BASE_CONFIG](state, { endpoint, projectPath, useSingleDiffStyle });
+      mutations[types.SET_BASE_CONFIG](state, { endpoint, projectPath });
 
       expect(state.endpoint).toEqual(endpoint);
       expect(state.projectPath).toEqual(projectPath);
-      expect(state.useSingleDiffStyle).toEqual(useSingleDiffStyle);
     });
   });
 

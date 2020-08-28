@@ -96,7 +96,11 @@ describe('Snippet Visibility Edit component', () => {
     it('when helpLink is not defined, does not render label help link', () => {
       createComponent({ helpLink: null });
 
-      expect(findLabel().contains(GlLink)).toBe(false);
+      expect(
+        findLabel()
+          .find(GlLink)
+          .exists(),
+      ).toBe(false);
     });
   });
 

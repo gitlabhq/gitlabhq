@@ -36,7 +36,7 @@ describe('BitbucketServerStatusTable', () => {
 
   it('renders bitbucket status table component', () => {
     createComponent();
-    expect(wrapper.contains(BitbucketStatusTable)).toBe(true);
+    expect(wrapper.find(BitbucketStatusTable).exists()).toBe(true);
   });
 
   it('renders Reconfigure button', async () => {

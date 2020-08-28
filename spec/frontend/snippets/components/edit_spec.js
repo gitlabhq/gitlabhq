@@ -168,10 +168,10 @@ describe('Snippet Edit app', () => {
       props => {
         createComponent(props);
 
-        expect(wrapper.contains(TitleField)).toBe(true);
-        expect(wrapper.contains(SnippetDescriptionEdit)).toBe(true);
-        expect(wrapper.contains(SnippetVisibilityEdit)).toBe(true);
-        expect(wrapper.contains(FormFooterActions)).toBe(true);
+        expect(wrapper.find(TitleField).exists()).toBe(true);
+        expect(wrapper.find(SnippetDescriptionEdit).exists()).toBe(true);
+        expect(wrapper.find(SnippetVisibilityEdit).exists()).toBe(true);
+        expect(wrapper.find(FormFooterActions).exists()).toBe(true);
         expect(findBlobActions().exists()).toBe(true);
       },
     );

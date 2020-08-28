@@ -10,7 +10,6 @@ describe('Alert integration settings form', () => {
   beforeEach(() => {
     wrapper = shallowMount(AlertsSettingsForm, {
       provide: {
-        glFeatures: { autoCloseIncident: true },
         service,
         alertSettings: {
           issueTemplateKey: 'selecte_tmpl',

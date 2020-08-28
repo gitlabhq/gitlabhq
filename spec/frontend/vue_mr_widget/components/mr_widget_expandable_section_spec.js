@@ -18,7 +18,7 @@ describe('MrWidgetExpanableSection', () => {
   });
 
   it('renders Icon', () => {
-    expect(wrapper.contains(GlIcon)).toBe(true);
+    expect(wrapper.find(GlIcon).exists()).toBe(true);
   });
 
   it('renders header slot', () => {

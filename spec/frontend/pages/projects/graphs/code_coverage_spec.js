@@ -124,7 +124,7 @@ describe('Code Coverage', () => {
     });
 
     it('renders the dropdown with all custom names as options', () => {
-      expect(wrapper.contains(GlDeprecatedDropdown)).toBeDefined();
+      expect(wrapper.find(GlDeprecatedDropdown).exists()).toBeDefined();
       expect(findAllDropdownItems()).toHaveLength(codeCoverageMockData.length);
       expect(findFirstDropdownItem().text()).toBe(codeCoverageMockData[0].group_name);
     });
@@ -150,7 +150,11 @@ describe('Code Coverage', () => {
           .find(GlIcon)
           .exists(),
       ).toBe(false);
-      expect(findSecondDropdownItem().contains(GlIcon)).toBe(true);
+      expect(
+        findSecondDropdownItem()
+          .find(GlIcon)
+          .exists(),
+      ).toBe(true);
     });
 
     it('updates the graph data when selecting a different option in dropdown', async () => {

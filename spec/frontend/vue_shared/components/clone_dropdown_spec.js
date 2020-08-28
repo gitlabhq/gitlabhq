@@ -40,7 +40,7 @@ describe('Clone Dropdown Button', () => {
       createComponent();
       const group = wrapper.findAll(GlFormInputGroup).at(index);
       expect(group.props('value')).toBe(value);
-      expect(group.contains(GlFormInputGroup)).toBe(true);
+      expect(group.find(GlFormInputGroup).exists()).toBe(true);
     });
 
     it.each`

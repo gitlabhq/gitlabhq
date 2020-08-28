@@ -49,7 +49,7 @@ describe('Ci variable modal', () => {
       });
 
       it('does not render the autocomplete dropdown', () => {
-        expect(wrapper.contains(GlFormCombobox)).toBe(false);
+        expect(wrapper.find(GlFormCombobox).exists()).toBe(false);
       });
     });
 

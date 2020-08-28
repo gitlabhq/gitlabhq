@@ -19,7 +19,7 @@ describe(`TimelineEntryItem`, () => {
 
     expect(wrapper.classes()).toContain('timeline-entry');
 
-    expect(wrapper.contains('.timeline-entry-inner')).toBe(true);
+    expect(wrapper.find('.timeline-entry-inner').exists()).toBe(true);
   });
 
   it('accepts default slot', () => {

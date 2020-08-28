@@ -48,7 +48,7 @@ describe('RemoveMemberModal', () => {
       });
 
       it(`${checkboxTestDescription}`, () => {
-        expect(wrapper.contains(GlFormCheckbox)).toBe(checkboxExpected);
+        expect(wrapper.find(GlFormCheckbox).exists()).toBe(checkboxExpected);
       });
 
       it('submits the form when the modal is submitted', () => {

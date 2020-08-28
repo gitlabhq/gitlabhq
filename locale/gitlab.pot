@@ -13243,6 +13243,9 @@ msgstr[1] ""
 msgid "Instance Configuration"
 msgstr ""
 
+msgid "Instance Statistics"
+msgstr ""
+
 msgid "Instance administrators group already exists"
 msgstr ""
 

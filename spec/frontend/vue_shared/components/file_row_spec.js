@@ -118,7 +118,7 @@ describe('File row component', () => {
       level: 0,
     });
 
-    expect(wrapper.contains(FileHeader)).toBe(true);
+    expect(wrapper.find(FileHeader).exists()).toBe(true);
   });
 
   it('matches the current route against encoded file URL', () => {

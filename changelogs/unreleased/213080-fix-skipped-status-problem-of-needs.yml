@@ -1,0 +1,5 @@
+---
+title: Fix skipped status of DAG pipelines
+merge_request: 39205
+author:
+type: fixed

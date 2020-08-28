@@ -38,16 +38,16 @@ describe('CustomizeHomepageBanner', () => {
   });
 
   it('should render the banner when not dismissed', () => {
-    expect(wrapper.contains(GlBanner)).toBe(true);
+    expect(wrapper.find(GlBanner).exists()).toBe(true);
   });
 
   it('should close the banner when dismiss is clicked', async () => {
     mockAxios.onPost(provide.calloutsPath).replyOnce(200);
-    expect(wrapper.contains(GlBanner)).toBe(true);
+    expect(wrapper.find(GlBanner).exists()).toBe(true);
     wrapper.find(GlBanner).vm.$emit('close');
 
     await wrapper.vm.$nextTick();
-    expect(wrapper.contains(GlBanner)).toBe(false);
+    expect(wrapper.find(GlBanner).exists()).toBe(false);
   });
 
   it('includes the body text from options', () => {

@@ -48,7 +48,7 @@ describe('Pagination links component', () => {
 
     describe('rendering', () => {
       it('it renders the gl-paginated-list', () => {
-        expect(wrapper.contains('ul.list-group')).toBe(true);
+        expect(wrapper.find('ul.list-group').exists()).toBe(true);
         expect(wrapper.findAll('li.list-group-item').length).toBe(2);
       });
     });

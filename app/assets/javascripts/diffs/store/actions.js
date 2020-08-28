@@ -52,7 +52,6 @@ export const setBaseConfig = ({ commit }, options) => {
     projectPath,
     dismissEndpoint,
     showSuggestPopover,
-    useSingleDiffStyle,
   } = options;
   commit(types.SET_BASE_CONFIG, {
     endpoint,
@@ -62,7 +61,6 @@ export const setBaseConfig = ({ commit }, options) => {
     projectPath,
     dismissEndpoint,
     showSuggestPopover,
-    useSingleDiffStyle,
   });
 };
 
@@ -70,12 +68,9 @@ export const fetchDiffFiles = ({ state, commit }) => {
   const worker = new TreeWorker();
   const urlParams = {
     w: state.showWhitespace ? '0' : '1',
+    view: window.gon?.features?.unifiedDiffLines ? 'inline' : state.diffViewType,
   };
   let returnData;
-
-  if (state.useSingleDiffStyle) {
-    urlParams.view = window.gon?.features?.unifiedDiffLines ? 'inline' : state.diffViewType;
-  }
 
   commit(types.SET_LOADING, true);
 
@@ -111,11 +106,8 @@ export const fetchDiffFilesBatch = ({ commit, state, dispatch }) => {
   const urlParams = {
     per_page: DIFFS_PER_PAGE,
     w: state.showWhitespace ? '0' : '1',
+    view: window.gon?.features?.unifiedDiffLines ? 'inline' : state.diffViewType,
   };
-
-  if (state.useSingleDiffStyle) {
-    urlParams.view = window.gon?.features?.unifiedDiffLines ? 'inline' : state.diffViewType;
-  }
 
   commit(types.SET_BATCH_LOADING, true);
   commit(types.SET_RETRIEVING_BATCHES, true);
@@ -175,11 +167,9 @@ export const fetchDiffFilesBatch = ({ commit, state, dispatch }) => {
 
 export const fetchDiffFilesMeta = ({ commit, state }) => {
   const worker = new TreeWorker();
-  const urlParams = {};
-
-  if (state.useSingleDiffStyle) {
-    urlParams.view = window.gon?.features?.unifiedDiffLines ? 'inline' : state.diffViewType;
-  }
+  const urlParams = {
+    view: window.gon?.features?.unifiedDiffLines ? 'inline' : state.diffViewType,
+  };
 
   commit(types.SET_LOADING, true);
 
@@ -240,10 +230,7 @@ export const assignDiscussionsToDiff = (
 ) => {
   const id = window?.location?.hash;
   const isNoteLink = id.indexOf('#note') === 0;
-  const diffPositionByLineCode = getDiffPositionByLineCode(
-    state.diffFiles,
-    state.useSingleDiffStyle,
-  );
+  const diffPositionByLineCode = getDiffPositionByLineCode(state.diffFiles);
   const hash = getLocationHash();
 
   discussions

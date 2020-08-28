@@ -77,13 +77,13 @@ describe('ImportProjectsTable', () => {
   it('renders a loading icon while repos are loading', () => {
     createComponent({ state: { isLoadingRepos: true } });
 
-    expect(wrapper.contains(GlLoadingIcon)).toBe(true);
+    expect(wrapper.find(GlLoadingIcon).exists()).toBe(true);
   });
 
   it('renders a loading icon while namespaces are loading', () => {
     createComponent({ state: { isLoadingNamespaces: true } });
 
-    expect(wrapper.contains(GlLoadingIcon)).toBe(true);
+    expect(wrapper.find(GlLoadingIcon).exists()).toBe(true);
   });
 
   it('renders a table with provider repos', () => {
@@ -97,8 +97,8 @@ describe('ImportProjectsTable', () => {
       state: { namespaces: [{ fullPath: 'path' }], repositories },
     });
 
-    expect(wrapper.contains(GlLoadingIcon)).toBe(false);
-    expect(wrapper.contains('table')).toBe(true);
+    expect(wrapper.find(GlLoadingIcon).exists()).toBe(false);
+    expect(wrapper.find('table').exists()).toBe(true);
     expect(
       wrapper
         .findAll('th')
@@ -132,7 +132,7 @@ describe('ImportProjectsTable', () => {
   it('renders an empty state if there are no projects available', () => {
     createComponent({ state: { repositories: [] } });
 
-    expect(wrapper.contains(ProviderRepoTableRow)).toBe(false);
+    expect(wrapper.find(ProviderRepoTableRow).exists()).toBe(false);
     expect(wrapper.text()).toContain(`No ${providerTitle} repositories found`);
   });
 

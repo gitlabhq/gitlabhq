@@ -62,7 +62,7 @@ describe('BoardContent', () => {
   });
 
   it('does not display EpicsSwimlanes component', () => {
-    expect(wrapper.contains(EpicsSwimlanes)).toBe(false);
-    expect(wrapper.contains(GlAlert)).toBe(false);
+    expect(wrapper.find(EpicsSwimlanes).exists()).toBe(false);
+    expect(wrapper.find(GlAlert).exists()).toBe(false);
   });
 });

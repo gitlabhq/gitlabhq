@@ -160,10 +160,6 @@ describe('diffs/components/app', () => {
         });
       }
 
-      beforeEach(() => {
-        wrapper.vm.glFeatures.singleMrDiffView = true;
-      });
-
       it('fetches diffs if it has none', done => {
         wrapper.vm.isLatestVersion = () => false;
 
@@ -320,7 +316,7 @@ describe('diffs/components/app', () => {
       state.diffs.isParallelView = false;
     });
 
-    expect(wrapper.contains('.container-limited.limit-container-width')).toBe(true);
+    expect(wrapper.find('.container-limited.limit-container-width').exists()).toBe(true);
   });
 
   it('does not add container-limiting classes when showFileTree is false with inline diffs', () => {
@@ -329,7 +325,7 @@ describe('diffs/components/app', () => {
       state.diffs.isParallelView = false;
     });
 
-    expect(wrapper.contains('.container-limited.limit-container-width')).toBe(false);
+    expect(wrapper.find('.container-limited.limit-container-width').exists()).toBe(false);
   });
 
   it('does not add container-limiting classes when isFluidLayout', () => {
@@ -337,7 +333,7 @@ describe('diffs/components/app', () => {
       state.diffs.isParallelView = false;
     });
 
-    expect(wrapper.contains('.container-limited.limit-container-width')).toBe(false);
+    expect(wrapper.find('.container-limited.limit-container-width').exists()).toBe(false);
   });
 
   it('displays loading icon on loading', () => {
@@ -345,7 +341,7 @@ describe('diffs/components/app', () => {
       state.diffs.isLoading = true;
     });
 
-    expect(wrapper.contains(GlLoadingIcon)).toBe(true);
+    expect(wrapper.find(GlLoadingIcon).exists()).toBe(true);
   });
 
   it('displays loading icon on batch loading', () => {
@@ -353,20 +349,20 @@ describe('diffs/components/app', () => {
       state.diffs.isBatchLoading = true;
     });
 
-    expect(wrapper.contains(GlLoadingIcon)).toBe(true);
+    expect(wrapper.find(GlLoadingIcon).exists()).toBe(true);
   });
 
   it('displays diffs container when not loading', () => {
     createComponent();
 
-    expect(wrapper.contains(GlLoadingIcon)).toBe(false);
-    expect(wrapper.contains('#diffs')).toBe(true);
+    expect(wrapper.find(GlLoadingIcon).exists()).toBe(false);
+    expect(wrapper.find('#diffs').exists()).toBe(true);
   });
 
   it('does not show commit info', () => {
     createComponent();
 
-    expect(wrapper.contains('.blob-commit-info')).toBe(false);
+    expect(wrapper.find('.blob-commit-info').exists()).toBe(false);
   });
 
   describe('row highlighting', () => {
@@ -442,7 +438,7 @@ describe('diffs/components/app', () => {
     it('renders empty state when no diff files exist', () => {
       createComponent();
 
-      expect(wrapper.contains(NoChanges)).toBe(true);
+      expect(wrapper.find(NoChanges).exists()).toBe(true);
     });
 
     it('does not render empty state when diff files exist', () => {
@@ -452,7 +448,7 @@ describe('diffs/components/app', () => {
         });
       });
 
-      expect(wrapper.contains(NoChanges)).toBe(false);
+      expect(wrapper.find(NoChanges).exists()).toBe(false);
       expect(wrapper.findAll(DiffFile).length).toBe(1);
     });
 
@@ -462,7 +458,7 @@ describe('diffs/components/app', () => {
         state.diffs.mergeRequestDiff = mergeRequestDiff;
       });
 
-      expect(wrapper.contains(NoChanges)).toBe(false);
+      expect(wrapper.find(NoChanges).exists()).toBe(false);
     });
   });
 
@@ -722,7 +718,7 @@ describe('diffs/components/app', () => {
         state.diffs.mergeRequestDiff = mergeRequestDiff;
       });
 
-      expect(wrapper.contains(CompareVersions)).toBe(true);
+      expect(wrapper.find(CompareVersions).exists()).toBe(true);
       expect(wrapper.find(CompareVersions).props()).toEqual(
         expect.objectContaining({
           mergeRequestDiffs: diffsMockData,
@@ -739,7 +735,7 @@ describe('diffs/components/app', () => {
         state.diffs.size = 1;
       });
 
-      expect(wrapper.contains(HiddenFilesWarning)).toBe(true);
+      expect(wrapper.find(HiddenFilesWarning).exists()).toBe(true);
       expect(wrapper.find(HiddenFilesWarning).props()).toEqual(
         expect.objectContaining({
           total: '5',
@@ -757,7 +753,7 @@ describe('diffs/components/app', () => {
         };
       });
 
-      expect(wrapper.contains(CommitWidget)).toBe(true);
+      expect(wrapper.find(CommitWidget).exists()).toBe(true);
     });
 
     it('should display diff file if there are diff files', () => {
@@ -765,7 +761,7 @@ describe('diffs/components/app', () => {
         state.diffs.diffFiles.push({ sha: '123' });
       });
 
-      expect(wrapper.contains(DiffFile)).toBe(true);
+      expect(wrapper.find(DiffFile).exists()).toBe(true);
     });
 
     it('should render tree list', () => {

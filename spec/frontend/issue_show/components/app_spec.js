@@ -134,7 +134,7 @@ describe('Issuable output', () => {
     wrapper.vm.showForm = true;
 
     return wrapper.vm.$nextTick().then(() => {
-      expect(wrapper.contains('.markdown-selector')).toBe(true);
+      expect(wrapper.find('.markdown-selector').exists()).toBe(true);
     });
   });
 
@@ -143,7 +143,7 @@ describe('Issuable output', () => {
     wrapper.setProps({ canUpdate: false });
 
     return wrapper.vm.$nextTick().then(() => {
-      expect(wrapper.contains('.markdown-selector')).toBe(false);
+      expect(wrapper.find('.markdown-selector').exists()).toBe(false);
     });
   });
 
@@ -403,7 +403,7 @@ describe('Issuable output', () => {
         .then(() => {
           expect(wrapper.vm.formState.lockedWarningVisible).toEqual(true);
           expect(wrapper.vm.formState.lock_version).toEqual(1);
-          expect(wrapper.contains('.alert')).toBe(true);
+          expect(wrapper.find('.alert').exists()).toBe(true);
         });
     });
   });
@@ -441,14 +441,14 @@ describe('Issuable output', () => {
 
   describe('show inline edit button', () => {
     it('should not render by default', () => {
-      expect(wrapper.contains('.btn-edit')).toBe(true);
+      expect(wrapper.find('.btn-edit').exists()).toBe(true);
     });
 
     it('should render if showInlineEditButton', () => {
       wrapper.setProps({ showInlineEditButton: true });
 
       return wrapper.vm.$nextTick(() => {
-        expect(wrapper.contains('.btn-edit')).toBe(true);
+        expect(wrapper.find('.btn-edit').exists()).toBe(true);
       });
     });
   });
@@ -531,7 +531,7 @@ describe('Issuable output', () => {
   describe('sticky header', () => {
     describe('when title is in view', () => {
       it('is not shown', () => {
-        expect(wrapper.contains('.issue-sticky-header')).toBe(false);
+        expect(wrapper.find('.issue-sticky-header').exists()).toBe(false);
       });
     });
 

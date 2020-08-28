@@ -82,7 +82,7 @@ describe('ProviderRepoTableRow', () => {
     });
 
     it('renders a select2 namespace select', () => {
-      expect(wrapper.contains(Select2Select)).toBe(true);
+      expect(wrapper.find(Select2Select).exists()).toBe(true);
       expect(wrapper.find(Select2Select).props().options.data).toBe(availableNamespaces);
     });
 
@@ -133,7 +133,7 @@ describe('ProviderRepoTableRow', () => {
     });
 
     it('does not renders a namespace select', () => {
-      expect(wrapper.contains(Select2Select)).toBe(false);
+      expect(wrapper.find(Select2Select).exists()).toBe(false);
     });
 
     it('does not render import button', () => {

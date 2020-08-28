@@ -100,7 +100,7 @@ describe('JiraImportForm', () => {
     it('is shown', () => {
       wrapper = mountComponent();
 
-      expect(wrapper.contains(GlFormSelect)).toBe(true);
+      expect(wrapper.find(GlFormSelect).exists()).toBe(true);
     });
 
     it('contains a list of Jira projects to select from', () => {

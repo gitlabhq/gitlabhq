@@ -745,7 +745,7 @@ so `&&` is evaluated before `||`.
 #### Parentheses
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/230938) in GitLab 13.3
-> - It's [deployed behind a feature flag](../../user/feature_flags.md), enabled by default.
+> - It's deployed behind a feature flag, enabled by default.
 > - It's enabled on GitLab.com.
 > - It's recommended for production use.
 > - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-parenthesis-support-for-variables-core-only). **(CORE ONLY)**

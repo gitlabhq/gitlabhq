@@ -9,7 +9,6 @@ import {
   GlNewDropdown,
   GlNewDropdownItem,
 } from '@gitlab/ui';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import {
   I18N_ALERT_SETTINGS_FORM,
   NO_ISSUE_TEMPLATE_SELECTED,
@@ -28,7 +27,6 @@ export default {
     GlNewDropdown,
     GlNewDropdownItem,
   },
-  mixins: [glFeatureFlagsMixin()],
   inject: ['service', 'alertSettings'],
   data() {
     return {
@@ -127,7 +125,7 @@ export default {
           <span>{{ $options.i18n.sendEmail.label }}</span>
         </gl-form-checkbox>
       </gl-form-group>
-      <gl-form-group v-if="glFeatures.autoCloseIncident" class="gl-pl-0 gl-mb-5">
+      <gl-form-group class="gl-pl-0 gl-mb-5">
         <gl-form-checkbox v-model="autoCloseIncident">
           <span>{{ $options.i18n.autoCloseIncidents.label }}</span>
         </gl-form-checkbox>

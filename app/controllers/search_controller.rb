@@ -4,11 +4,14 @@ class SearchController < ApplicationController
   include ControllerWithCrossProjectAccessCheck
   include SearchHelper
   include RendersCommits
+  include RedisTracking
 
   SCOPE_PRELOAD_METHOD = {
     projects: :with_web_entity_associations,
     issues: :with_web_entity_associations
   }.freeze
+
+  track_redis_hll_event :show, name: 'i_search_total', feature: :search_track_unique_users
 
   around_action :allow_gitaly_ref_name_caching
 
@@ -126,3 +129,5 @@ class SearchController < ApplicationController
     payload[:metadata]['meta.search.scope'] = params[:scope]
   end
 end
+
+SearchController.prepend_if_ee('EE::SearchController')
