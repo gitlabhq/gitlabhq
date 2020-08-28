@@ -2,6 +2,21 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 13.3.2 (2020-08-28)
+
+### Removed (1 change)
+
+- Display upcoming database deprecation warning only if current database version minimum is not met. !38225
+
+### Fixed (5 changes)
+
+- Fix race condition in concurrent backups. !39894
+- Prevent accidental group deletion if path rename fails. !40353
+- Fix snippet save button disabled with empty file path. !40412
+- Fix exception handling when a concurrent backup fails. !40451
+- Scope incident issue counts by given project or group. !40700
+
+
 ## 13.3.1 (2020-08-25)
 
 ### Fixed (2 changes)

@@ -1,5 +1,0 @@
----
-title: Fix exception handling when a concurrent backup fails
-merge_request: 40451
-author:
-type: fixed
