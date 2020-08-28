@@ -61,7 +61,10 @@ RSpec.describe 'User activates Jira', :js do
   end
 
   describe 'user disables the Jira Service' do
+    include JiraServiceHelper
+
     before do
+      stub_jira_service_test
       visit_project_integration('Jira')
       fill_form(disable: true)
       click_button('Save changes')

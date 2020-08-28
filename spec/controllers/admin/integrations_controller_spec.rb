@@ -23,9 +23,12 @@ RSpec.describe Admin::IntegrationsController do
   end
 
   describe '#update' do
+    include JiraServiceHelper
+
     let(:integration) { create(:jira_service, :instance) }
 
     before do
+      stub_jira_service_test
       allow(PropagateIntegrationWorker).to receive(:perform_async)
 
       put :update, params: { id: integration.class.to_param, service: { url: url } }

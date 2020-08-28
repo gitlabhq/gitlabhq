@@ -10,6 +10,11 @@ RSpec.describe JiraService do
   let(:username) { 'jira-username' }
   let(:password) { 'jira-password' }
   let(:transition_id) { 'test27' }
+  let(:server_info_results) { { 'deploymentType' => 'Cloud' } }
+
+  before do
+    WebMock.stub_request(:get, /serverInfo/).to_return(body: server_info_results.to_json )
+  end
 
   describe '#options' do
     let(:options) do
@@ -103,7 +108,7 @@ RSpec.describe JiraService do
       expect(subject.properties).to be_nil
     end
 
-    it 'stores data in data_fields correcty' do
+    it 'stores data in data_fields correctly' do
       service = subject
 
       expect(service.jira_tracker_data.url).to eq(url)
@@ -111,6 +116,35 @@ RSpec.describe JiraService do
       expect(service.jira_tracker_data.username).to eq(username)
       expect(service.jira_tracker_data.password).to eq(password)
       expect(service.jira_tracker_data.jira_issue_transition_id).to eq(transition_id)
+      expect(service.jira_tracker_data.deployment_cloud?).to be_truthy
+    end
+
+    context 'when loading serverInfo' do
+      let!(:jira_service) { subject }
+
+      context 'Cloud instance' do
+        let(:server_info_results) { { 'deploymentType' => 'Cloud' } }
+
+        it 'is detected' do
+          expect(jira_service.jira_tracker_data.deployment_cloud?).to be_truthy
+        end
+      end
+
+      context 'Server instance' do
+        let(:server_info_results) { { 'deploymentType' => 'Server' } }
+
+        it 'is detected' do
+          expect(jira_service.jira_tracker_data.deployment_server?).to be_truthy
+        end
+      end
+
+      context 'Unknown instance' do
+        let(:server_info_results) { { 'deploymentType' => 'FutureCloud' } }
+
+        it 'is detected' do
+          expect(jira_service.jira_tracker_data.deployment_unknown?).to be_truthy
+        end
+      end
     end
   end
 
@@ -151,8 +185,8 @@ RSpec.describe JiraService do
 
       describe '#update' do
         context 'basic update' do
-          let(:new_username) { 'new_username' }
-          let(:new_url) { 'http://jira-new.example.com' }
+          let_it_be(:new_username) { 'new_username' }
+          let_it_be(:new_url) { 'http://jira-new.example.com' }
 
           before do
             service.update(username: new_username, url: new_url)
@@ -170,6 +204,53 @@ RSpec.describe JiraService do
             expect(data.username).to eq(new_username)
             expect(data.password).to eq(password)
             expect(data.jira_issue_transition_id).to eq(transition_id)
+          end
+        end
+
+        context 'when updating the url, api_url, username, or password' do
+          it 'updates deployment type' do
+            service.update(url: 'http://first.url')
+            service.jira_tracker_data.update(deployment_type: 'server')
+
+            expect(service.jira_tracker_data.deployment_server?).to be_truthy
+
+            service.update(api_url: 'http://another.url')
+            service.jira_tracker_data.reload
+
+            expect(service.jira_tracker_data.deployment_cloud?).to be_truthy
+            expect(WebMock).to have_requested(:get, /serverInfo/).twice
+          end
+
+          it 'calls serverInfo for url' do
+            service.update(url: 'http://first.url')
+
+            expect(WebMock).to have_requested(:get, /serverInfo/)
+          end
+
+          it 'calls serverInfo for api_url' do
+            service.update(api_url: 'http://another.url')
+
+            expect(WebMock).to have_requested(:get, /serverInfo/)
+          end
+
+          it 'calls serverInfo for username' do
+            service.update(username: 'test-user')
+
+            expect(WebMock).to have_requested(:get, /serverInfo/)
+          end
+
+          it 'calls serverInfo for password' do
+            service.update(password: 'test-password')
+
+            expect(WebMock).to have_requested(:get, /serverInfo/)
+          end
+        end
+
+        context 'when not updating the url, api_url, username, or password' do
+          it 'does not update deployment type' do
+            service.update(jira_issue_transition_id: 'jira_issue_transition_id')
+
+            expect(WebMock).not_to have_requested(:get, /serverInfo/)
           end
         end
 
@@ -627,6 +708,7 @@ RSpec.describe JiraService do
   end
 
   describe '#test' do
+    let(:server_info_results) { { 'url' => 'http://url', 'deploymentType' => 'Cloud' } }
     let(:jira_service) do
       described_class.new(
         url: url,
@@ -635,24 +717,21 @@ RSpec.describe JiraService do
       )
     end
 
-    def test_settings(url = 'jira.example.com')
-      test_url = "http://#{url}/rest/api/2/serverInfo"
-
-      WebMock.stub_request(:get, test_url).with(basic_auth: [username, password])
-        .to_return(body: { url: 'http://url' }.to_json )
-
+    def server_info
       jira_service.test(nil)
     end
 
     context 'when the test succeeds' do
       it 'gets Jira project with URL when API URL not set' do
-        expect(test_settings).to eq(success: true, result: { 'url' => 'http://url' })
+        expect(server_info).to eq(success: true, result: server_info_results)
+        expect(WebMock).to have_requested(:get, /jira.example.com/)
       end
 
       it 'gets Jira project with API URL if set' do
         jira_service.update(api_url: 'http://jira.api.com')
 
-        expect(test_settings('jira.api.com')).to eq(success: true, result: { 'url' => 'http://url' })
+        expect(server_info).to eq(success: true, result: server_info_results)
+        expect(WebMock).to have_requested(:get, /jira.api.com/)
       end
     end
 

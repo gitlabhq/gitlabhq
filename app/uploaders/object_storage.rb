@@ -178,10 +178,14 @@ module ObjectStorage
       end
 
       def workhorse_authorize(has_length:, maximum_size: nil)
-        if self.object_store_enabled? && self.direct_upload_enabled?
-          { RemoteObject: workhorse_remote_upload_options(has_length: has_length, maximum_size: maximum_size) }
-        else
-          { TempPath: workhorse_local_upload_path }
+        {}.tap do |hash|
+          if self.object_store_enabled? && self.direct_upload_enabled?
+            hash[:RemoteObject] = workhorse_remote_upload_options(has_length: has_length, maximum_size: maximum_size)
+          else
+            hash[:TempPath] = workhorse_local_upload_path
+          end
+
+          hash[:MaximumSize] = maximum_size if maximum_size.present?
         end
       end
 

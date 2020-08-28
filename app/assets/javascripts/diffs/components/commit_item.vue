@@ -149,14 +149,13 @@ export default {
 
         <span class="commit-row-message d-block d-sm-none">&middot; {{ commit.short_id }}</span>
 
-        <button
+        <gl-button
           v-if="commit.description_html && collapsible"
-          class="text-expander js-toggle-button"
-          type="button"
+          class="js-toggle-button"
+          size="small"
+          icon="ellipsis_h"
           :aria-label="__('Toggle commit description')"
-        >
-          <gl-icon :size="12" name="ellipsis_h" />
-        </button>
+        />
 
         <div class="committer">
           <a

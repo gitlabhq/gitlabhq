@@ -24992,9 +24992,6 @@ msgstr ""
 msgid "There was an error while fetching value stream analytics duration data."
 msgstr ""
 
-msgid "There was an error while fetching value stream analytics duration median data."
-msgstr ""
-
 msgid "There was an error with the reCAPTCHA. Please solve the reCAPTCHA again."
 msgstr ""
 

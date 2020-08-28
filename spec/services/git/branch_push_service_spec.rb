@@ -416,6 +416,7 @@ RSpec.describe Git::BranchPushService, services: true do
       before do
         # project.create_jira_service doesn't seem to invalidate the cache here
         project.has_external_issue_tracker = true
+        stub_jira_service_test
         jira_service_settings
         stub_jira_urls("JIRA-1")
 

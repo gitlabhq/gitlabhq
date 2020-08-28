@@ -22,6 +22,6 @@ class CreateCiPlatformMetrics < ActiveRecord::Migration[6.0]
 
   def down
     drop_table :ci_platform_metrics
-    remove_concurrent_index :ci_variables, :key
+    remove_concurrent_index :ci_variables, :key, name: 'index_ci_variables_on_key'
   end
 end

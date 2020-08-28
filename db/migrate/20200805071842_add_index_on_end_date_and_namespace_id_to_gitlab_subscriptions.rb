@@ -12,6 +12,7 @@ class AddIndexOnEndDateAndNamespaceIdToGitlabSubscriptions < ActiveRecord::Migra
   end
 
   def down
-    remove_concurrent_index :gitlab_subscriptions, [:end_date, :namespace_id]
+    remove_concurrent_index :gitlab_subscriptions, [:end_date, :namespace_id],
+      name: 'index_gitlab_subscriptions_on_end_date_and_namespace_id'
   end
 end

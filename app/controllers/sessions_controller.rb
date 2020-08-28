@@ -156,13 +156,13 @@ class SessionsController < Devise::SessionsController
     (options = request.env["warden.options"]) && options[:action] == "unauthenticated"
   end
 
-  # storing sessions per IP lets us check if there are associated multiple
+  # counting sessions per IP lets us check if there are associated multiple
   # anonymous sessions with one IP and prevent situations when there are
   # multiple attempts of logging in
   def store_unauthenticated_sessions
     return if current_user
 
-    Gitlab::AnonymousSession.new(request.remote_ip, session_id: request.session.id).store_session_id_per_ip
+    Gitlab::AnonymousSession.new(request.remote_ip).count_session_ip
   end
 
   # Handle an "initial setup" state, where there's only one user, it's an admin,
@@ -280,7 +280,7 @@ class SessionsController < Devise::SessionsController
   end
 
   def exceeded_anonymous_sessions?
-    Gitlab::AnonymousSession.new(request.remote_ip).stored_sessions >= MAX_FAILED_LOGIN_ATTEMPTS
+    Gitlab::AnonymousSession.new(request.remote_ip).session_count >= MAX_FAILED_LOGIN_ATTEMPTS
   end
 
   def authentication_method

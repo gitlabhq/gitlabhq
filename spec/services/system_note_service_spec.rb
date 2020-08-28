@@ -347,6 +347,7 @@ RSpec.describe SystemNoteService do
     let(:success_message) { "SUCCESS: Successfully posted to http://jira.example.net." }
 
     before do
+      stub_jira_service_test
       stub_jira_urls(jira_issue.id)
       jira_service_settings
     end

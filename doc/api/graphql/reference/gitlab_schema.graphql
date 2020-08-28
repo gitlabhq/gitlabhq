@@ -13283,6 +13283,11 @@ The connection type for Release.
 """
 type ReleaseConnection {
   """
+  Total count of collection
+  """
+  count: Int!
+
+  """
   A list of edges.
   """
   edges: [ReleaseEdge]

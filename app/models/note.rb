@@ -563,6 +563,10 @@ class Note < ApplicationRecord
     noteable.author if for_personal_snippet?
   end
 
+  def skip_notification?
+    review.present?
+  end
+
   private
 
   # Using this method followed by a call to `save` may result in ActiveRecord::RecordNotUnique exception

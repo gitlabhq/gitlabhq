@@ -4,6 +4,12 @@ require 'spec_helper'
 
 RSpec.describe Admin::PropagateIntegrationService do
   describe '.propagate' do
+    include JiraServiceHelper
+
+    before do
+      stub_jira_service_test
+    end
+
     let(:excluded_attributes) { %w[id project_id inherit_from_id instance created_at updated_at default] }
     let!(:project) { create(:project) }
     let!(:instance_integration) do

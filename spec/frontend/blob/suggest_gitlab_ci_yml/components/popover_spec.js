@@ -31,7 +31,7 @@ describe('Suggest gitlab-ci.yml Popover', () => {
         humanAccess,
       },
       stubs: {
-        'gl-popover': '<div><slot name="title"></slot><slot></slot></div>',
+        'gl-popover': { template: '<div><slot name="title"></slot><slot></slot></div>' },
       },
     });
   }

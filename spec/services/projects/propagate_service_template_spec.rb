@@ -79,7 +79,11 @@ RSpec.describe Projects::PropagateServiceTemplate do
     end
 
     context 'service with data fields' do
+      include JiraServiceHelper
+
       let(:service_template) do
+        stub_jira_service_test
+
         JiraService.create!(
           template: true,
           active: true,

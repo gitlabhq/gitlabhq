@@ -229,7 +229,7 @@ RSpec.describe SessionsController do
 
           context 'when there are more than 5 anonymous session with the same IP' do
             before do
-              allow(Gitlab::AnonymousSession).to receive_message_chain(:new, :stored_sessions).and_return(6)
+              allow(Gitlab::AnonymousSession).to receive_message_chain(:new, :session_count).and_return(6)
             end
 
             it 'displays an error when the reCAPTCHA is not solved' do
@@ -241,7 +241,7 @@ RSpec.describe SessionsController do
             end
 
             it 'successfully logs in a user when reCAPTCHA is solved' do
-              expect(Gitlab::AnonymousSession).to receive_message_chain(:new, :cleanup_session_per_ip_entries)
+              expect(Gitlab::AnonymousSession).to receive_message_chain(:new, :cleanup_session_per_ip_count)
 
               succesful_login(user_params)
 

@@ -1416,4 +1416,20 @@ RSpec.describe Note do
       expect(note.parent_user).to be_nil
     end
   end
+
+  describe '#skip_notification?' do
+    subject(:skip_notification?) { note.skip_notification? }
+
+    context 'when there is no review' do
+      let(:note) { build(:note) }
+
+      it { is_expected.to be_falsey }
+    end
+
+    context 'when the review exists' do
+      let(:note) { build(:note, :with_review) }
+
+      it { is_expected.to be_truthy }
+    end
+  end
 end

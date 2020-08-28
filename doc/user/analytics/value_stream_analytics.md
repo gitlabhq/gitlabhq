@@ -350,15 +350,6 @@ administrator can open a Rails console and disable it with the following command
 Feature.disable(:cycle_analytics_scatterplot_enabled)
 ```
 
-### Disabling chart median line
-
-This chart's median line is enabled by default. If you have a self-managed instance, an
-administrator can open a Rails console and disable it with the following command:
-
-```ruby
-Feature.disable(:cycle_analytics_scatterplot_median_enabled)
-```
-
 ## Type of work - Tasks by type chart
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32421) in GitLab 12.10.

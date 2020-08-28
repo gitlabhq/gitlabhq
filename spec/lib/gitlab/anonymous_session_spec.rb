@@ -8,45 +8,36 @@ RSpec.describe Gitlab::AnonymousSession, :clean_gitlab_redis_shared_state do
 
   subject { new_anonymous_session }
 
-  def new_anonymous_session(session_id = default_session_id)
-    described_class.new('127.0.0.1', session_id: session_id)
+  def new_anonymous_session
+    described_class.new('127.0.0.1')
   end
 
-  describe '#store_session_id_per_ip' do
+  describe '#store_session_ip' do
     it 'adds session id to proper key' do
-      subject.store_session_id_per_ip
+      subject.count_session_ip
 
       Gitlab::Redis::SharedState.with do |redis|
-        expect(redis.smembers("session:lookup:ip:gitlab:127.0.0.1")).to eq [default_session_id]
+        expect(redis.get("session:lookup:ip:gitlab2:127.0.0.1").to_i).to eq 1
       end
     end
 
     it 'adds expiration time to key' do
       Timecop.freeze do
-        subject.store_session_id_per_ip
+        subject.count_session_ip
 
         Gitlab::Redis::SharedState.with do |redis|
-          expect(redis.ttl("session:lookup:ip:gitlab:127.0.0.1")).to eq(24.hours.to_i)
+          expect(redis.ttl("session:lookup:ip:gitlab2:127.0.0.1")).to eq(24.hours.to_i)
         end
       end
     end
 
-    it 'adds id only once' do
-      subject.store_session_id_per_ip
-      subject.store_session_id_per_ip
-
-      Gitlab::Redis::SharedState.with do |redis|
-        expect(redis.smembers("session:lookup:ip:gitlab:127.0.0.1")).to eq [default_session_id]
-      end
-    end
-
     context 'when there is already one session' do
-      it 'adds session id to proper key' do
-        subject.store_session_id_per_ip
-        new_anonymous_session(additional_session_id).store_session_id_per_ip
+      it 'increments the session count' do
+        subject.count_session_ip
+        new_anonymous_session.count_session_ip
 
         Gitlab::Redis::SharedState.with do |redis|
-          expect(redis.smembers("session:lookup:ip:gitlab:127.0.0.1")).to contain_exactly(default_session_id, additional_session_id)
+          expect(redis.get("session:lookup:ip:gitlab2:127.0.0.1").to_i).to eq(2)
         end
       end
     end
@@ -55,24 +46,22 @@ RSpec.describe Gitlab::AnonymousSession, :clean_gitlab_redis_shared_state do
   describe '#stored_sessions' do
     it 'returns all anonymous sessions per ip' do
       Gitlab::Redis::SharedState.with do |redis|
-        redis.sadd("session:lookup:ip:gitlab:127.0.0.1", default_session_id)
-        redis.sadd("session:lookup:ip:gitlab:127.0.0.1", additional_session_id)
+        redis.set("session:lookup:ip:gitlab2:127.0.0.1", 2)
       end
 
-      expect(subject.stored_sessions).to eq(2)
+      expect(subject.session_count).to eq(2)
     end
   end
 
   it 'removes obsolete lookup through ip entries' do
     Gitlab::Redis::SharedState.with do |redis|
-      redis.sadd("session:lookup:ip:gitlab:127.0.0.1", default_session_id)
-      redis.sadd("session:lookup:ip:gitlab:127.0.0.1", additional_session_id)
+      redis.set("session:lookup:ip:gitlab2:127.0.0.1", 2)
     end
 
-    subject.cleanup_session_per_ip_entries
+    subject.cleanup_session_per_ip_count
 
     Gitlab::Redis::SharedState.with do |redis|
-      expect(redis.smembers("session:lookup:ip:gitlab:127.0.0.1")).to eq [additional_session_id]
+      expect(redis.exists("session:lookup:ip:gitlab2:127.0.0.1")).to eq(false)
     end
   end
 end

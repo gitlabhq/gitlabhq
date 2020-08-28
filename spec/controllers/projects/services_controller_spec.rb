@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Projects::ServicesController do
+  include JiraServiceHelper
+
   let(:project) { create(:project, :repository) }
   let(:user)    { create(:user) }
   let(:service) { create(:jira_service, project: project) }
@@ -54,8 +56,7 @@ RSpec.describe Projects::ServicesController do
         end
 
         it 'returns success' do
-          stub_request(:get, 'http://example.com/rest/api/2/serverInfo')
-            .to_return(status: 200, body: '{}')
+          stub_jira_service_test
 
           expect(Gitlab::HTTP).to receive(:get).with('/rest/api/2/serverInfo', any_args).and_call_original
 
@@ -66,8 +67,7 @@ RSpec.describe Projects::ServicesController do
       end
 
       it 'returns success' do
-        stub_request(:get, 'http://example.com/rest/api/2/serverInfo')
-          .to_return(status: 200, body: '{}')
+        stub_jira_service_test
 
         expect(Gitlab::HTTP).to receive(:get).with('/rest/api/2/serverInfo', any_args).and_call_original
 
@@ -200,6 +200,7 @@ RSpec.describe Projects::ServicesController do
 
     describe 'as JSON' do
       before do
+        stub_jira_service_test
         put :update, params: project_params(service: service_params, format: :json)
       end
 

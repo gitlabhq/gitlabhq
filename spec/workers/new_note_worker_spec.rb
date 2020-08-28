@@ -50,10 +50,20 @@ RSpec.describe NewNoteWorker do
     end
   end
 
-  context 'when note is with review' do
-    it 'does not create a new note notification' do
-      note = create(:note, :with_review)
+  context 'when note does not require notification' do
+    let(:note) { create(:note) }
 
+    before do
+      # TODO: `allow_next_instance_of` helper method is not working
+      # because ActiveRecord is directly calling `.allocate` on model
+      # classes and bypasses the `.new` method call.
+      # Fix the `allow_next_instance_of` helper and change these to mock
+      # the next instance of `Note` model class.
+      allow(Note).to receive(:find_by).with(id: note.id).and_return(note)
+      allow(note).to receive(:skip_notification?).and_return(true)
+    end
+
+    it 'does not create a new note notification' do
       expect_any_instance_of(NotificationService).not_to receive(:new_note)
 
       subject.perform(note.id)

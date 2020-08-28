@@ -143,6 +143,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
                 expect(response.media_type).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
                 expect(json_response['TempPath']).to eq(JobArtifactUploader.workhorse_local_upload_path)
                 expect(json_response['RemoteObject']).to be_nil
+                expect(json_response['MaximumSize']).not_to be_nil
               end
             end
 
@@ -167,6 +168,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
                   expect(json_response['RemoteObject']).to have_key('StoreURL')
                   expect(json_response['RemoteObject']).to have_key('DeleteURL')
                   expect(json_response['RemoteObject']).to have_key('MultipartUpload')
+                  expect(json_response['MaximumSize']).not_to be_nil
                 end
               end
 
@@ -188,6 +190,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
             expect(response).to have_gitlab_http_status(:ok)
             expect(response.media_type).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
             expect(json_response['TempPath']).not_to be_nil
+            expect(json_response['MaximumSize']).not_to be_nil
           end
 
           it 'fails to post too large artifact' do

@@ -71,14 +71,14 @@ describe('Embed Group', () => {
 
     it('is expanded by default', () => {
       metricsWithDataGetter.mockReturnValue([1]);
-      mountComponent({ shallow: false, stubs: { MetricEmbed: '<div />' } });
+      mountComponent({ shallow: false, stubs: { MetricEmbed: true } });
 
       expect(wrapper.find('.card-body').classes()).not.toContain('d-none');
     });
 
     it('collapses when clicked', done => {
       metricsWithDataGetter.mockReturnValue([1]);
-      mountComponent({ shallow: false, stubs: { MetricEmbed: '<div />' } });
+      mountComponent({ shallow: false, stubs: { MetricEmbed: true } });
 
       wrapper.find(GlButton).trigger('click');
 
@@ -148,14 +148,14 @@ describe('Embed Group', () => {
   describe('button text', () => {
     it('has a singular label when there is one embed', () => {
       metricsWithDataGetter.mockReturnValue([1]);
-      mountComponent({ shallow: false, stubs: { MetricEmbed: '<div />' } });
+      mountComponent({ shallow: false, stubs: { MetricEmbed: true } });
 
       expect(wrapper.find(GlButton).text()).toBe('Hide chart');
     });
 
     it('has a plural label when there are multiple embeds', () => {
       metricsWithDataGetter.mockReturnValue([2]);
-      mountComponent({ shallow: false, stubs: { MetricEmbed: '<div />' } });
+      mountComponent({ shallow: false, stubs: { MetricEmbed: true } });
 
       expect(wrapper.find(GlButton).text()).toBe('Hide charts');
     });

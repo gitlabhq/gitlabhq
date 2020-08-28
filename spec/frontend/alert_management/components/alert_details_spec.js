@@ -233,7 +233,7 @@ describe('AlertDetails', () => {
 
     describe('header', () => {
       const findHeader = () => wrapper.find('[data-testid="alert-header"]');
-      const stubs = { TimeAgoTooltip: '<span>now</span>' };
+      const stubs = { TimeAgoTooltip: { template: '<span>now</span>' } };
 
       describe('individual header fields', () => {
         describe.each`
