@@ -70,16 +70,6 @@ describe('Edit Actions components', () => {
       expect(eventHub.$emit).toHaveBeenCalledWith('update.issuable');
     });
 
-    it('shows loading icon after clicking save button', done => {
-      vm.$el.querySelector('.btn-success').click();
-
-      Vue.nextTick(() => {
-        expect(vm.$el.querySelector('.btn-success .fa')).not.toBeNull();
-
-        done();
-      });
-    });
-
     it('disabled button after clicking save button', done => {
       vm.$el.querySelector('.btn-success').click();
 
@@ -105,17 +95,6 @@ describe('Edit Actions components', () => {
       vm.$el.querySelector('.btn-danger').click();
 
       expect(eventHub.$emit).toHaveBeenCalledWith('delete.issuable', { destroy_confirm: true });
-    });
-
-    it('shows loading icon after clicking delete button', done => {
-      jest.spyOn(window, 'confirm').mockReturnValue(true);
-      vm.$el.querySelector('.btn-danger').click();
-
-      Vue.nextTick(() => {
-        expect(vm.$el.querySelector('.btn-danger .fa')).not.toBeNull();
-
-        done();
-      });
     });
 
     it('does no actions when confirm is false', done => {

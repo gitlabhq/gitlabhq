@@ -59,7 +59,7 @@ sast:
 bandit-sast:
   extends: .sast-analyzer
   image:
-    name: "SAST_ANALYZER_IMAGE"
+    name: "$SAST_ANALYZER_IMAGE"
   variables:
     SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/bandit:$SAST_ANALYZER_IMAGE_TAG"
   rules:
@@ -73,7 +73,7 @@ bandit-sast:
 brakeman-sast:
   extends: .sast-analyzer
   image:
-    name: "SAST_ANALYZER_IMAGE"
+    name: "$SAST_ANALYZER_IMAGE"
   variables:
     SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/brakeman:$SAST_ANALYZER_IMAGE_TAG"
   rules:
@@ -105,7 +105,7 @@ eslint-sast:
 flawfinder-sast:
   extends: .sast-analyzer
   image:
-    name: "SAST_ANALYZER_IMAGE"
+    name: "$SAST_ANALYZER_IMAGE"
   variables:
     SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/flawfinder:$SAST_ANALYZER_IMAGE_TAG"
   rules:

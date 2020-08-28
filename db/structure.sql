@@ -9782,7 +9782,8 @@ CREATE TABLE public.ci_build_trace_chunks (
     build_id integer NOT NULL,
     chunk_index integer NOT NULL,
     data_store integer NOT NULL,
-    raw_data bytea
+    raw_data bytea,
+    checksum bytea
 );
 
 CREATE SEQUENCE public.ci_build_trace_chunks_id_seq

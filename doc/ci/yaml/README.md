@@ -1548,6 +1548,22 @@ considered for their usage and behavior in this context. Future keyword improvem
 are being discussed in our [epic for improving `rules`](https://gitlab.com/groups/gitlab-org/-/epics/2783),
 where anyone can add suggestions or requests.
 
+You can use [parentheses](../variables/README.md#parentheses) with `&&` and `||` to build more complicated variable expressions.
+[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/230938) in GitLab 13.3:
+
+```yaml
+job1:
+  script:
+    - echo This rule uses parentheses.
+  rules:
+    if: ($CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH == "develop") && $MY_VARIABLE
+```
+
+NOTE: **Note:**
+In GitLab 13.2 and older, the order of operations when mixing `||` and `&&` in a single rule may not have executed
+in the expected order. This is [fixed](https://gitlab.com/gitlab-org/gitlab/-/issues/230938)
+in GitLab 13.3.
+
 ### `only`/`except` (basic)
 
 NOTE: **Note:**
@@ -1833,7 +1849,17 @@ end-to-end:
       - $CI_COMMIT_MESSAGE =~ /skip-end-to-end-tests/
 ```
 
-Learn more about [variables expressions](../variables/README.md#environment-variables-expressions).
+You can use [parentheses](../variables/README.md#parentheses) with `&&` and `||` to build more complicated variable expressions.
+[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/230938) in GitLab 13.3:
+
+```yaml
+job1:
+  script:
+    - echo This rule uses parentheses.
+  only:
+    variables:
+      - ($CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH == "develop") && $MY_VARIABLE
+```
 
 #### `only:changes`/`except:changes`
 

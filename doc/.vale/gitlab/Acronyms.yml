@@ -14,6 +14,7 @@ first: '\b([A-Z]{3,5})\b'
 second: '(?:\b[A-Z][a-z]+ )+\(([A-Z]{3,5})\)'
 # ... with the exception of these:
 exceptions:
+  - ANSI
   - API
   - ARN
   - ASCII
@@ -24,11 +25,15 @@ exceptions:
   - CPU
   - CSS
   - CSV
+  - DAST
   - DNS
   - EKS
   - FAQ
+  - FOSS
+  - GCP
   - GDK
   - GET
+  - GKE
   - GNU
   - GPG
   - GPL
@@ -47,6 +52,8 @@ exceptions:
   - LESS
   - LFS
   - LRU
+  - MIME
+  - MVC
   - NFS
   - NGINX
   - NOTE
@@ -61,11 +68,15 @@ exceptions:
   - RPC
   - RSA
   - RSS
+  - RVM
   - SAML
+  - SAST
   - SCIM
   - SCP
   - SCSS
+  - SDK
   - SHA
+  - SMTP
   - SQL
   - SSH
   - SSL
@@ -84,5 +95,6 @@ exceptions:
   - UUID
   - VPC
   - WIP
+  - WSL
   - XML
   - YAML
