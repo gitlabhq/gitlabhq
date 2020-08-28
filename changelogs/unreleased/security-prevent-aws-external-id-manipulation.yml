@@ -1,0 +1,5 @@
+---
+title: Persist EKS External ID before presenting it to the user
+merge_request:
+author:
+type: security
