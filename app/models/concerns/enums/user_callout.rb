@@ -23,7 +23,8 @@ module Enums
         web_ide_alert_dismissed: 16,
         personal_access_token_expiry: 21, # EE-only
         suggest_pipeline: 22,
-        customize_homepage: 23
+        customize_homepage: 23,
+        feature_flags_new_version: 24
       }
     end
   end

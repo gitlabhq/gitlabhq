@@ -10,6 +10,7 @@ RSpec.describe InvitesController do
   let(:md5_member_global_id) { Digest::MD5.hexdigest(member.to_global_id.to_s) }
 
   before do
+    stub_application_setting(snowplow_enabled: true, snowplow_collector_hostname: 'localhost')
     controller.instance_variable_set(:@member, member)
     sign_in(user)
   end
@@ -51,17 +52,17 @@ RSpec.describe InvitesController do
       let(:params) { { id: token, new_user_invite: 'experiment' } }
 
       it 'tracks the user as experiment group' do
-        expect(Gitlab::Tracking).to receive(:event).with(
+        expect(Gitlab::Tracking).to receive(:event).and_call_original.with(
           'Growth::Acquisition::Experiment::InviteEmail',
           'opened',
           property: 'experiment_group',
-          value: md5_member_global_id
+          label: md5_member_global_id
         )
-        expect(Gitlab::Tracking).to receive(:event).with(
+        expect(Gitlab::Tracking).to receive(:event).and_call_original.with(
           'Growth::Acquisition::Experiment::InviteEmail',
           'accepted',
           property: 'experiment_group',
-          value: md5_member_global_id
+          label: md5_member_global_id
         )
 
         request
@@ -72,17 +73,17 @@ RSpec.describe InvitesController do
       let(:params) { { id: token, new_user_invite: 'control' } }
 
       it 'tracks the user as control group' do
-        expect(Gitlab::Tracking).to receive(:event).with(
+        expect(Gitlab::Tracking).to receive(:event).and_call_original.with(
           'Growth::Acquisition::Experiment::InviteEmail',
           'opened',
           property: 'control_group',
-          value: md5_member_global_id
+          label: md5_member_global_id
         )
-        expect(Gitlab::Tracking).to receive(:event).with(
+        expect(Gitlab::Tracking).to receive(:event).and_call_original.with(
           'Growth::Acquisition::Experiment::InviteEmail',
           'accepted',
           property: 'control_group',
-          value: md5_member_global_id
+          label: md5_member_global_id
         )
 
         request
@@ -107,11 +108,11 @@ RSpec.describe InvitesController do
       let(:params) { { id: token, new_user_invite: 'experiment' } }
 
       it 'tracks the user as experiment group' do
-        expect(Gitlab::Tracking).to receive(:event).with(
+        expect(Gitlab::Tracking).to receive(:event).and_call_original.with(
           'Growth::Acquisition::Experiment::InviteEmail',
           'accepted',
           property: 'experiment_group',
-          value: md5_member_global_id
+          label: md5_member_global_id
         )
 
         request
@@ -122,11 +123,11 @@ RSpec.describe InvitesController do
       let(:params) { { id: token, new_user_invite: 'control' } }
 
       it 'tracks the user as control group' do
-        expect(Gitlab::Tracking).to receive(:event).with(
+        expect(Gitlab::Tracking).to receive(:event).and_call_original.with(
           'Growth::Acquisition::Experiment::InviteEmail',
           'accepted',
           property: 'control_group',
-          value: md5_member_global_id
+          label: md5_member_global_id
         )
 
         request

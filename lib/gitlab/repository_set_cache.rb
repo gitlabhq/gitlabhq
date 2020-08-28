@@ -22,7 +22,7 @@ module Gitlab
 
       with do |redis|
         redis.multi do
-          redis.del(full_key)
+          redis.unlink(full_key)
 
           # Splitting into groups of 1000 prevents us from creating a too-long
           # Redis command

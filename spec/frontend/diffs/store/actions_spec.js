@@ -13,7 +13,6 @@ import {
 } from '~/diffs/constants';
 import {
   setBaseConfig,
-  fetchDiffFiles,
   fetchDiffFilesBatch,
   fetchDiffFilesMeta,
   fetchCoverageFiles,
@@ -138,32 +137,6 @@ describe('DiffsStoreActions', () => {
         ],
         [],
         done,
-      );
-    });
-  });
-
-  describe('fetchDiffFiles', () => {
-    it('should fetch diff files', done => {
-      const endpoint = '/fetch/diff/files?view=inline&w=1';
-      const mock = new MockAdapter(axios);
-      const res = { diff_files: 1, merge_request_diffs: [] };
-      mock.onGet(endpoint).reply(200, res);
-
-      testAction(
-        fetchDiffFiles,
-        {},
-        { endpoint, diffFiles: [], showWhitespace: false, diffViewType: 'inline' },
-        [
-          { type: types.SET_LOADING, payload: true },
-          { type: types.SET_LOADING, payload: false },
-          { type: types.SET_MERGE_REQUEST_DIFFS, payload: res.merge_request_diffs },
-          { type: types.SET_DIFF_DATA, payload: res },
-        ],
-        [],
-        () => {
-          mock.restore();
-          done();
-        },
       );
     });
   });

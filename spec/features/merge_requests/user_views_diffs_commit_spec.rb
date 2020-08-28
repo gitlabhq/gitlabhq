@@ -10,7 +10,6 @@ RSpec.describe 'User views diff by commit', :js do
   let(:project) { create(:project, :public, :repository) }
 
   before do
-    stub_feature_flags(diffs_batch_load: false)
     visit(diffs_project_merge_request_path(project, merge_request, commit_id: merge_request.diff_head_sha))
   end
 

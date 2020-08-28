@@ -68,12 +68,13 @@ describe('DiffsStoreMutations', () => {
   });
 
   describe('SET_DIFF_DATA', () => {
-    it('should set diff data type properly', () => {
+    it('should not modify the existing state', () => {
       const state = {
         diffFiles: [
           {
-            ...diffFileMockData,
-            parallel_diff_lines: [],
+            content_sha: diffFileMockData.content_sha,
+            file_hash: diffFileMockData.file_hash,
+            highlighted_diff_lines: [],
           },
         ],
       };
@@ -83,43 +84,7 @@ describe('DiffsStoreMutations', () => {
 
       mutations[types.SET_DIFF_DATA](state, diffMock);
 
-      const firstLine = state.diffFiles[0].parallel_diff_lines[0];
-
-      expect(firstLine.right.text).toBeUndefined();
-      expect(state.diffFiles.length).toEqual(1);
-      expect(state.diffFiles[0].renderIt).toEqual(true);
-      expect(state.diffFiles[0].collapsed).toEqual(false);
-    });
-
-    describe('given diffsBatchLoad feature flag is enabled', () => {
-      beforeEach(() => {
-        gon.features = { diffsBatchLoad: true };
-      });
-
-      afterEach(() => {
-        delete gon.features;
-      });
-
-      it('should not modify the existing state', () => {
-        const state = {
-          diffFiles: [
-            {
-              content_sha: diffFileMockData.content_sha,
-              file_hash: diffFileMockData.file_hash,
-              highlighted_diff_lines: [],
-            },
-          ],
-        };
-        const diffMock = {
-          diff_files: [diffFileMockData],
-        };
-
-        mutations[types.SET_DIFF_DATA](state, diffMock);
-
-        // If the batch load is enabled, there shouldn't be any processing
-        // done on the existing state object, so we shouldn't have this.
-        expect(state.diffFiles[0].parallel_diff_lines).toBeUndefined();
-      });
+      expect(state.diffFiles[0].parallel_diff_lines).toBeUndefined();
     });
   });
 

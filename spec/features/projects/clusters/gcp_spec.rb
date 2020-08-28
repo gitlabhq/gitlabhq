@@ -144,7 +144,7 @@ RSpec.describe 'Gcp Cluster', :js, :do_not_mock_admin_mode do
           visit project_clusters_path(project)
 
           click_link 'Add Kubernetes cluster'
-          click_link 'Add existing cluster'
+          click_link 'Connect existing cluster'
         end
 
         it 'user sees the "Environment scope" field' do

@@ -36,6 +36,12 @@ module ClustersHelper
     }
   end
 
+  def js_cluster_new
+    {
+      cluster_connect_help_path: help_page_path('user/project/clusters/add_remove_clusters', anchor: 'add-existing-cluster')
+    }
+  end
+
   # This method is depreciated and will be removed when associated HAML files are moved to JavaScript
   def provider_icon(provider = nil)
     img_data = js_clusters_list_data.dig(:img_tags, provider&.to_sym) ||

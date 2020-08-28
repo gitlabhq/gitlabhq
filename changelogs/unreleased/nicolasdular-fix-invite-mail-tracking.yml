@@ -1,0 +1,5 @@
+---
+title: Fix snowplow tracking event error for new user invite page
+merge_request: 40628
+author:
+type: fixed

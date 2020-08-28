@@ -3,6 +3,7 @@ import AxiosMockAdapter from 'axios-mock-adapter';
 import Api from '~/api';
 import { deprecatedCreateFlash as Flash } from '~/flash';
 import * as actions from '~/notes/stores/actions';
+import mutations from '~/notes/stores/mutations';
 import * as mutationTypes from '~/notes/stores/mutation_types';
 import * as notesConstants from '~/notes/constants';
 import createStore from '~/notes/stores';
@@ -651,6 +652,26 @@ describe('Actions Notes Store', () => {
   });
 
   describe('updateOrCreateNotes', () => {
+    it('Prevents `fetchDiscussions` being called multiple times within time limit', () => {
+      jest.useFakeTimers();
+      const note = { id: 1234, type: notesConstants.DIFF_NOTE };
+      const getters = { notesById: {} };
+      state = { discussions: [note], notesData: { discussionsPath: '' } };
+      commit.mockImplementation((type, value) => {
+        if (type === mutationTypes.SET_FETCHING_DISCUSSIONS) {
+          mutations[type](state, value);
+        }
+      });
+
+      actions.updateOrCreateNotes({ commit, state, getters, dispatch }, [note]);
+      actions.updateOrCreateNotes({ commit, state, getters, dispatch }, [note]);
+
+      jest.runAllTimers();
+      actions.updateOrCreateNotes({ commit, state, getters, dispatch }, [note]);
+
+      expect(dispatch).toHaveBeenCalledTimes(2);
+    });
+
     it('Updates existing note', () => {
       const note = { id: 1234 };
       const getters = { notesById: { 1234: note } };

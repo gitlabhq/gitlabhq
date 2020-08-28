@@ -56,10 +56,7 @@ export default {
   [types.SET_DIFF_DATA](state, data) {
     let files = state.diffFiles;
 
-    if (
-      !(gon?.features?.diffsBatchLoad && window.location.search.indexOf('diff_id') === -1) &&
-      data.diff_files
-    ) {
+    if (window.location.search.indexOf('diff_id') !== -1 && data.diff_files) {
       files = prepareDiffData(data, files);
     }
 

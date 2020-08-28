@@ -9,10 +9,6 @@ RSpec.describe 'Merge request > User sees diff', :js do
   let(:project) { create(:project, :public, :repository) }
   let(:merge_request) { create(:merge_request, source_project: project) }
 
-  before do
-    stub_feature_flags(diffs_batch_load: false)
-  end
-
   context 'when linking to note' do
     describe 'with unresolved note' do
       let(:note) { create :diff_note_on_merge_request, project: project, noteable: merge_request }

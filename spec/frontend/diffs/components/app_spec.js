@@ -108,7 +108,6 @@ describe('diffs/components/app', () => {
       };
       jest.spyOn(window, 'requestIdleCallback').mockImplementation(fn => fn());
       createComponent();
-      jest.spyOn(wrapper.vm, 'fetchDiffFiles').mockImplementation(fetchResolver);
       jest.spyOn(wrapper.vm, 'fetchDiffFilesMeta').mockImplementation(fetchResolver);
       jest.spyOn(wrapper.vm, 'fetchDiffFilesBatch').mockImplementation(fetchResolver);
       jest.spyOn(wrapper.vm, 'fetchCoverageFiles').mockImplementation(fetchResolver);
@@ -139,22 +138,10 @@ describe('diffs/components/app', () => {
         parallel_diff_lines: ['line'],
       };
 
-      function expectFetchToOccur({
-        vueInstance,
-        done = () => {},
-        batch = false,
-        existingFiles = 1,
-      } = {}) {
+      function expectFetchToOccur({ vueInstance, done = () => {}, existingFiles = 1 } = {}) {
         vueInstance.$nextTick(() => {
           expect(vueInstance.diffFiles.length).toEqual(existingFiles);
-
-          if (!batch) {
-            expect(vueInstance.fetchDiffFiles).toHaveBeenCalled();
-            expect(vueInstance.fetchDiffFilesBatch).not.toHaveBeenCalled();
-          } else {
-            expect(vueInstance.fetchDiffFiles).not.toHaveBeenCalled();
-            expect(vueInstance.fetchDiffFilesBatch).toHaveBeenCalled();
-          }
+          expect(vueInstance.fetchDiffFilesBatch).toHaveBeenCalled();
 
           done();
         });
@@ -165,7 +152,7 @@ describe('diffs/components/app', () => {
 
         store.state.diffs.diffViewType = getOppositeViewType(wrapper.vm.diffViewType);
 
-        expectFetchToOccur({ vueInstance: wrapper.vm, batch: false, existingFiles: 0, done });
+        expectFetchToOccur({ vueInstance: wrapper.vm, existingFiles: 0, done });
       });
 
       it('fetches diffs if it has both view styles, but no lines in either', done => {
@@ -196,89 +183,46 @@ describe('diffs/components/app', () => {
       });
 
       it('fetches batch diffs if it has none', done => {
-        wrapper.vm.glFeatures.diffsBatchLoad = true;
-
         store.state.diffs.diffViewType = getOppositeViewType(wrapper.vm.diffViewType);
 
-        expectFetchToOccur({ vueInstance: wrapper.vm, batch: true, existingFiles: 0, done });
+        expectFetchToOccur({ vueInstance: wrapper.vm, existingFiles: 0, done });
       });
 
       it('fetches batch diffs if it has both view styles, but no lines in either', done => {
-        wrapper.vm.glFeatures.diffsBatchLoad = true;
-
         store.state.diffs.diffFiles.push(noLinesDiff);
         store.state.diffs.diffViewType = getOppositeViewType(wrapper.vm.diffViewType);
 
-        expectFetchToOccur({ vueInstance: wrapper.vm, batch: true, done });
+        expectFetchToOccur({ vueInstance: wrapper.vm, done });
       });
 
       it('fetches batch diffs if it only has inline view style', done => {
-        wrapper.vm.glFeatures.diffsBatchLoad = true;
-
         store.state.diffs.diffFiles.push(inlineLinesDiff);
         store.state.diffs.diffViewType = getOppositeViewType(wrapper.vm.diffViewType);
 
-        expectFetchToOccur({ vueInstance: wrapper.vm, batch: true, done });
+        expectFetchToOccur({ vueInstance: wrapper.vm, done });
       });
 
       it('fetches batch diffs if it only has parallel view style', done => {
-        wrapper.vm.glFeatures.diffsBatchLoad = true;
-
         store.state.diffs.diffFiles.push(parallelLinesDiff);
         store.state.diffs.diffViewType = getOppositeViewType(wrapper.vm.diffViewType);
 
-        expectFetchToOccur({ vueInstance: wrapper.vm, batch: true, done });
-      });
-
-      it('does not fetch diffs if it has already fetched both styles of diff', () => {
-        wrapper.vm.glFeatures.diffsBatchLoad = false;
-
-        store.state.diffs.diffFiles.push(fullDiff);
-        store.state.diffs.diffViewType = getOppositeViewType(wrapper.vm.diffViewType);
-
-        expect(wrapper.vm.diffFiles.length).toEqual(1);
-        expect(wrapper.vm.fetchDiffFiles).not.toHaveBeenCalled();
-        expect(wrapper.vm.fetchDiffFilesBatch).not.toHaveBeenCalled();
+        expectFetchToOccur({ vueInstance: wrapper.vm, done });
       });
 
       it('does not fetch batch diffs if it has already fetched both styles of diff', () => {
-        wrapper.vm.glFeatures.diffsBatchLoad = true;
-
         store.state.diffs.diffFiles.push(fullDiff);
         store.state.diffs.diffViewType = getOppositeViewType(wrapper.vm.diffViewType);
 
         expect(wrapper.vm.diffFiles.length).toEqual(1);
-        expect(wrapper.vm.fetchDiffFiles).not.toHaveBeenCalled();
         expect(wrapper.vm.fetchDiffFilesBatch).not.toHaveBeenCalled();
-      });
-    });
-
-    it('calls fetchDiffFiles if diffsBatchLoad is not enabled', done => {
-      expect(wrapper.vm.diffFilesLength).toEqual(0);
-      wrapper.vm.glFeatures.diffsBatchLoad = false;
-      wrapper.vm.fetchData(false);
-
-      expect(wrapper.vm.fetchDiffFiles).toHaveBeenCalled();
-      setImmediate(() => {
-        expect(wrapper.vm.startRenderDiffsQueue).toHaveBeenCalled();
-        expect(wrapper.vm.fetchDiffFilesMeta).not.toHaveBeenCalled();
-        expect(wrapper.vm.fetchDiffFilesBatch).not.toHaveBeenCalled();
-        expect(wrapper.vm.fetchCoverageFiles).toHaveBeenCalled();
-        expect(wrapper.vm.unwatchDiscussions).toHaveBeenCalled();
-        expect(wrapper.vm.diffFilesLength).toEqual(100);
-        expect(wrapper.vm.unwatchRetrievingBatches).toHaveBeenCalled();
-
-        done();
       });
     });
 
     it('calls batch methods if diffsBatchLoad is enabled, and not latest version', done => {
       expect(wrapper.vm.diffFilesLength).toEqual(0);
-      wrapper.vm.glFeatures.diffsBatchLoad = true;
       wrapper.vm.isLatestVersion = () => false;
       wrapper.vm.fetchData(false);
 
-      expect(wrapper.vm.fetchDiffFiles).not.toHaveBeenCalled();
       setImmediate(() => {
         expect(wrapper.vm.startRenderDiffsQueue).toHaveBeenCalled();
         expect(wrapper.vm.fetchDiffFilesMeta).toHaveBeenCalled();
@@ -293,10 +237,8 @@ describe('diffs/components/app', () => {
 
     it('calls batch methods if diffsBatchLoad is enabled, and latest version', done => {
       expect(wrapper.vm.diffFilesLength).toEqual(0);
-      wrapper.vm.glFeatures.diffsBatchLoad = true;
       wrapper.vm.fetchData(false);
 
-      expect(wrapper.vm.fetchDiffFiles).not.toHaveBeenCalled();
       setImmediate(() => {
         expect(wrapper.vm.startRenderDiffsQueue).toHaveBeenCalled();
         expect(wrapper.vm.fetchDiffFilesMeta).toHaveBeenCalled();

@@ -7,6 +7,6 @@ class Admin::InstanceStatisticsController < Admin::ApplicationController
   end
 
   def check_feature_flag
-    render_404 unless Feature.enabled?(:instance_analytics)
+    render_404 unless Feature.enabled?(:instance_statistics)
   end
 end

@@ -43,7 +43,7 @@ RSpec.describe 'Clusters', :js do
       context 'when user filled form with environment scope' do
         before do
           click_link 'Add Kubernetes cluster'
-          click_link 'Add existing cluster'
+          click_link 'Connect existing cluster'
           fill_in 'cluster_name', with: 'staging-cluster'
           fill_in 'cluster_environment_scope', with: 'staging/*'
           click_button 'Add Kubernetes cluster'
@@ -72,7 +72,7 @@ RSpec.describe 'Clusters', :js do
       context 'when user updates duplicated environment scope' do
         before do
           click_link 'Add Kubernetes cluster'
-          click_link 'Add existing cluster'
+          click_link 'Connect existing cluster'
           fill_in 'cluster_name', with: 'staging-cluster'
           fill_in 'cluster_environment_scope', with: '*'
           fill_in 'cluster_platform_kubernetes_attributes_api_url', with: 'https://0.0.0.0'

@@ -17,6 +17,14 @@ entry.
 - Scope incident issue counts by given project or group. !40700
 
 
+## 13.3.1 (2020-08-25)
+
+### Fixed (2 changes)
+
+- Fix bug when promoting an Issue with attachments to an Epic. !39654
+- Avoid creating diff position when line-code is nil. !40089
+
+
 ## 13.3.0 (2020-08-22)
 
 ### Security (2 changes)

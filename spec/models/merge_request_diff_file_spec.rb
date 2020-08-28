@@ -25,6 +25,14 @@ RSpec.describe MergeRequestDiffFile do
         it 'unpacks from base 64' do
           expect(subject.diff).to eq(unpacked)
         end
+
+        context 'invalid base64' do
+          let(:packed) { '---/dev/null' }
+
+          it 'returns the raw diff' do
+            expect(subject.diff).to eq(packed)
+          end
+        end
       end
 
       context 'when the diff is not marked as binary' do

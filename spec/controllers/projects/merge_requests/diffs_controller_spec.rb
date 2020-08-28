@@ -414,6 +414,7 @@ RSpec.describe Projects::MergeRequests::DiffsController do
 
     def collection_arguments(pagination_data = {})
       {
+        environment: nil,
         merge_request: merge_request,
         diff_view: :inline,
         pagination_data: {
@@ -438,18 +439,6 @@ RSpec.describe Projects::MergeRequests::DiffsController do
     end
 
     it_behaves_like '404 for unexistent diffable'
-
-    context 'when feature is disabled' do
-      before do
-        stub_feature_flags(diffs_batch_load: false)
-      end
-
-      it 'returns 404' do
-        go
-
-        expect(response).to have_gitlab_http_status(:not_found)
-      end
-    end
 
     context 'when not authorized' do
       let(:other_user) { create(:user) }

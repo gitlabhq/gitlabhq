@@ -77,7 +77,15 @@ RSpec.describe ClustersHelper do
     end
 
     it 'displays and ancestor_help_path' do
-      expect(subject[:ancestor_help_path]).to eq('/help/user/group/clusters/index#cluster-precedence')
+      expect(subject[:ancestor_help_path]).to eq(help_page_path('user/group/clusters/index', anchor: 'cluster-precedence'))
+    end
+  end
+
+  describe '#js_cluster_new' do
+    subject { helper.js_cluster_new }
+
+    it 'displays a cluster_connect_help_path' do
+      expect(subject[:cluster_connect_help_path]).to eq(help_page_path('user/project/clusters/add_remove_clusters', anchor: 'add-existing-cluster'))
     end
   end
 

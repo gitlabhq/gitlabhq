@@ -5315,6 +5315,9 @@ msgstr ""
 msgid "ClusterIntegration|Clusters are utilized by selecting the nearest ancestor with a matching environment scope. For example, project clusters will override group clusters. %{linkStart}More information%{linkEnd}"
 msgstr ""
 
+msgid "ClusterIntegration|Connect existing cluster"
+msgstr ""
+
 msgid "ClusterIntegration|Copy API URL"
 msgstr ""
 
@@ -5693,7 +5696,7 @@ msgstr ""
 msgid "ClusterIntegration|Number of nodes must be a numerical value."
 msgstr ""
 
-msgid "ClusterIntegration|Please enter access information for your Kubernetes cluster. If you need help, you can read our %{link_to_help_page} on Kubernetes"
+msgid "ClusterIntegration|Please enter access information for your Kubernetes cluster. If you need help, you can read our %{linkStart}documentation%{linkEnd} on Kubernetes"
 msgstr ""
 
 msgid "ClusterIntegration|Please make sure that your Google account meets the following requirements:"
@@ -6054,9 +6057,6 @@ msgid "ClusterIntegration|access to Google Kubernetes Engine"
 msgstr ""
 
 msgid "ClusterIntegration|can be used instead of a custom domain. "
-msgstr ""
-
-msgid "ClusterIntegration|documentation"
 msgstr ""
 
 msgid "ClusterIntegration|installed via %{linkStart}Cloud Run%{linkEnd}"

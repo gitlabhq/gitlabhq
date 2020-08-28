@@ -64,42 +64,6 @@ export const setBaseConfig = ({ commit }, options) => {
   });
 };
 
-export const fetchDiffFiles = ({ state, commit }) => {
-  const worker = new TreeWorker();
-  const urlParams = {
-    w: state.showWhitespace ? '0' : '1',
-    view: window.gon?.features?.unifiedDiffLines ? 'inline' : state.diffViewType,
-  };
-  let returnData;
-
-  commit(types.SET_LOADING, true);
-
-  worker.addEventListener('message', ({ data }) => {
-    commit(types.SET_TREE_DATA, data);
-
-    worker.terminate();
-  });
-
-  return axios
-    .get(mergeUrlParams(urlParams, state.endpoint))
-    .then(res => {
-      commit(types.SET_LOADING, false);
-
-      commit(types.SET_MERGE_REQUEST_DIFFS, res.data.merge_request_diffs || []);
-      commit(types.SET_DIFF_DATA, res.data);
-
-      worker.postMessage(state.diffFiles);
-
-      returnData = res.data;
-      return Vue.nextTick();
-    })
-    .then(() => {
-      handleLocationHash();
-      return returnData;
-    })
-    .catch(() => worker.terminate());
-};
-
 export const fetchDiffFilesBatch = ({ commit, state, dispatch }) => {
   const id = window?.location?.hash;
   const isNoteLink = id.indexOf('#note') === 0;

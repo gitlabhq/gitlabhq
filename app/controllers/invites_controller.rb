@@ -108,7 +108,7 @@ class InvitesController < ApplicationController
       Gitlab::Experimentation::EXPERIMENTS[:invite_email][:tracking_category],
       action,
       property: property,
-      value: Digest::MD5.hexdigest(member.to_global_id.to_s)
+      label: Digest::MD5.hexdigest(member.to_global_id.to_s)
     )
   end
 end

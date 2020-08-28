@@ -87,6 +87,7 @@ export const fetchDiscussions = ({ commit, dispatch }, { path, filter, persistFi
 
   return axios.get(path, config).then(({ data }) => {
     commit(types.SET_INITIAL_DISCUSSIONS, data);
+    commit(types.SET_FETCHING_DISCUSSIONS, false);
 
     dispatch('updateResolvableDiscussionsCounts');
   });
@@ -136,6 +137,23 @@ export const updateNote = ({ commit, dispatch }, { endpoint, note }) =>
 
 export const updateOrCreateNotes = ({ commit, state, getters, dispatch }, notes) => {
   const { notesById } = getters;
+  const debouncedFetchDiscussions = isFetching => {
+    if (!isFetching) {
+      commit(types.SET_FETCHING_DISCUSSIONS, true);
+      dispatch('fetchDiscussions', { path: state.notesData.discussionsPath });
+    } else {
+      if (isFetching !== true) {
+        clearTimeout(state.currentlyFetchingDiscussions);
+      }
+
+      commit(
+        types.SET_FETCHING_DISCUSSIONS,
+        setTimeout(() => {
+          dispatch('fetchDiscussions', { path: state.notesData.discussionsPath });
+        }, constants.DISCUSSION_FETCH_TIMEOUT),
+      );
+    }
+  };
 
   notes.forEach(note => {
     if (notesById[note.id]) {
@@ -146,7 +164,7 @@ export const updateOrCreateNotes = ({ commit, state, getters, dispatch }, notes)
       if (discussion) {
         commit(types.ADD_NEW_REPLY_TO_DISCUSSION, note);
       } else if (note.type === constants.DIFF_NOTE) {
-        dispatch('fetchDiscussions', { path: state.notesData.discussionsPath });
+        debouncedFetchDiscussions(state.currentlyFetchingDiscussions);
       } else {
         commit(types.ADD_NEW_NOTE, note);
       }

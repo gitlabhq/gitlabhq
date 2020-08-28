@@ -1,0 +1,5 @@
+---
+title: Fix reading some merge request diffs
+merge_request: 40598
+author:
+type: fixed

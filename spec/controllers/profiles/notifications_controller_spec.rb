@@ -53,6 +53,22 @@ RSpec.describe Profiles::NotificationsController do
       end
     end
 
+    context 'with group notifications' do
+      let_it_be(:group) { create(:group) }
+      let_it_be(:subgroups) { create_list(:group, 10, parent: group) }
+
+      before do
+        group.add_developer(user)
+        sign_in(user)
+        stub_const('Profiles::NotificationsController::NOTIFICATIONS_PER_PAGE', 5)
+        get :show
+      end
+
+      it 'paginates the groups' do
+        expect(assigns(:group_notifications).count).to eq(5)
+      end
+    end
+
     context 'with project notifications' do
       let!(:notification_setting) { create(:notification_setting, source: project, user: user, level: :watch) }
 
