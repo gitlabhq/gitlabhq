@@ -84,6 +84,11 @@ module Gitlab
           egress: egress
         }
       end
+
+      override :kind
+      def kind
+        KIND
+      end
     end
   end
 end

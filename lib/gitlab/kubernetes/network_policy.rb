@@ -6,6 +6,8 @@ module Gitlab
       include NetworkPolicyCommon
       extend ::Gitlab::Utils::Override
 
+      KIND = 'NetworkPolicy'
+
       def initialize(name:, namespace:, selector:, ingress:, labels: nil, creation_timestamp: nil, policy_types: ["Ingress"], egress: nil)
         @name = name
         @namespace = namespace
@@ -79,6 +81,11 @@ module Gitlab
           ingress: ingress,
           egress: egress
         }
+      end
+
+      override :kind
+      def kind
+        KIND
       end
     end
   end

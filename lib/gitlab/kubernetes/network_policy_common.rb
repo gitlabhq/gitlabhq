@@ -57,8 +57,12 @@ module Gitlab
         raise NotImplementedError
       end
 
+      def kind
+        raise NotImplementedError
+      end
+
       def manifest
-        YAML.dump({ metadata: metadata, spec: spec }.deep_stringify_keys)
+        YAML.dump({ kind: kind, metadata: metadata, spec: spec }.deep_stringify_keys)
       end
     end
   end

@@ -13,6 +13,7 @@ RSpec.shared_examples 'network policy common specs' do
         creation_timestamp: nil,
         manifest: YAML.dump(
           {
+            kind: described_class::KIND,
             metadata: metadata,
             spec: spec
           }.deep_stringify_keys
