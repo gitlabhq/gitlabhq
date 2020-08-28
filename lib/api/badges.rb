@@ -109,9 +109,10 @@ module API
         end
         put ":id/badges/:badge_id" do
           source = find_source_if_admin(source_type)
+          badge = find_badge(source)
 
           badge = ::Badges::UpdateService.new(declared_params(include_missing: false))
-                                         .execute(find_badge(source))
+                                         .execute(badge)
 
           if badge.valid?
             present_badges(source, badge)
@@ -129,10 +130,6 @@ module API
         delete ":id/badges/:badge_id" do
           source = find_source_if_admin(source_type)
           badge = find_badge(source)
-
-          if badge.is_a?(GroupBadge) && source.is_a?(Project)
-            error!('To delete a Group badge please use the Group endpoint', 403)
-          end
 
           destroy_conditionally!(badge)
         end

@@ -9433,7 +9433,7 @@ CREATE TABLE public.aws_roles (
     user_id integer NOT NULL,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
-    role_arn character varying(2048) NOT NULL,
+    role_arn character varying(2048),
     role_external_id character varying(64) NOT NULL
 );
 
@@ -23867,5 +23867,6 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200715202659
 20200716044023
 20200716120419
+20200717040735
 \.
 

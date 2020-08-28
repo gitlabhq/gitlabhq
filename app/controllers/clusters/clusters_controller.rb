@@ -38,8 +38,7 @@ class Clusters::ClustersController < Clusters::BaseController
 
   def new
     if params[:provider] == 'aws'
-      @aws_role = current_user.aws_role || Aws::Role.new
-      @aws_role.ensure_role_external_id!
+      @aws_role = Aws::Role.create_or_find_by!(user: current_user)
       @instance_types = load_instance_types.to_json
 
     elsif params[:provider] == 'gcp'
@@ -273,7 +272,7 @@ class Clusters::ClustersController < Clusters::BaseController
   end
 
   def aws_role_params
-    params.require(:cluster).permit(:role_arn, :role_external_id)
+    params.require(:cluster).permit(:role_arn)
   end
 
   def generate_gcp_authorize_url
