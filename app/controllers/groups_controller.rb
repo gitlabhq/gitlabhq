@@ -123,7 +123,7 @@ class GroupsController < Groups::ApplicationController
     if Groups::UpdateService.new(@group, current_user, group_params).execute
       redirect_to edit_group_path(@group, anchor: params[:update_section]), notice: "Group '#{@group.name}' was successfully updated."
     else
-      @group.path = @group.path_before_last_save || @group.path_was
+      @group.reset
       render action: "edit"
     end
   end

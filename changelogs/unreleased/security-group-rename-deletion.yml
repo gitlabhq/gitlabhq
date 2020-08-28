@@ -1,0 +1,5 @@
+---
+title: Prevent accidental group deletion if path rename fails
+merge_request: 40353
+author:
+type: fixed

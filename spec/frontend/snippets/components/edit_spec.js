@@ -179,7 +179,7 @@ describe('Snippet Edit app', () => {
       ${'foo'} | ${[]}                                            | ${false}
       ${'foo'} | ${[TEST_ACTIONS.VALID]}                          | ${false}
       ${'foo'} | ${[TEST_ACTIONS.VALID, TEST_ACTIONS.NO_CONTENT]} | ${true}
-      ${'foo'} | ${[TEST_ACTIONS.VALID, TEST_ACTIONS.NO_PATH]}    | ${true}
+      ${'foo'} | ${[TEST_ACTIONS.VALID, TEST_ACTIONS.NO_PATH]}    | ${false}
     `(
       'should handle submit disable (title=$title, actions=$actions, shouldDisable=$shouldDisable)',
       async ({ title, actions, shouldDisable }) => {

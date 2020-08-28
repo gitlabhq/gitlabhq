@@ -744,7 +744,11 @@ so `&&` is evaluated before `||`.
 
 #### Parentheses
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/230938) in GitLab 13.3
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/230938) in GitLab 13.3
+> - It's deployed behind a feature flag, enabled by default.
+> - It's enabled on GitLab.com.
+> - It's recommended for production use.
+> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-parenthesis-support-for-variables-core-only). **(CORE ONLY)**
 
 It is possible to use parentheses to group conditions. Parentheses have the highest
 precedence of all operators. Expressions enclosed in parentheses are evaluated first,
@@ -760,20 +764,22 @@ Examples:
 - `($VARIABLE1 =~ /^content.*/ || $VARIABLE2 =~ /thing$/) && $VARIABLE3`
 - `$CI_COMMIT_BRANCH == "my-branch" || (($VARIABLE1 == "thing" || $VARIABLE2 == "thing") && $VARIABLE3)`
 
+##### Enable or disable parenthesis support for variables **(CORE ONLY)**
+
 The feature is currently deployed behind a feature flag that is **enabled by default**.
 [GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
 can opt to disable it for your instance.
-
-To enable it:
-
-```ruby
-Feature.enable(:ci_if_parenthesis_enabled)
-```
 
 To disable it:
 
 ```ruby
 Feature.disable(:ci_if_parenthesis_enabled)
+```
+
+To enable it:
+
+```ruby
+Feature.enable(:ci_if_parenthesis_enabled)
 ```
 
 ### Storing regular expressions in variables

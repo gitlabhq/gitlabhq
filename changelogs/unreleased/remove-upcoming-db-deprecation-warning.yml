@@ -1,0 +1,5 @@
+---
+title: Display upcoming database deprecation warning only if current database version minimum is not met
+merge_request: 38225
+author:
+type: removed

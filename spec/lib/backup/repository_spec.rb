@@ -55,7 +55,7 @@ RSpec.describe Backup::Repository do
     end
 
     [4, 10].each do |max_storage_concurrency|
-      context "max_storage_concurrency #{max_storage_concurrency}" do
+      context "max_storage_concurrency #{max_storage_concurrency}", quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/241701' do
         it 'creates the expected number of threads' do
           expect(Thread).to receive(:new)
             .exactly(storage_keys.length * (max_storage_concurrency + 1)).times

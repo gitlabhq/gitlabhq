@@ -63,7 +63,7 @@ export default {
       return this.actions.length > 0;
     },
     hasValidBlobs() {
-      return this.actions.every(x => x.filePath && x.content);
+      return this.actions.every(x => x.content);
     },
     updatePrevented() {
       return this.snippet.title === '' || !this.hasValidBlobs || this.isUpdating;

@@ -16610,9 +16610,6 @@ msgstr ""
 msgid "Note parameters are invalid: %{errors}"
 msgstr ""
 
-msgid "Note that PostgreSQL %{pg_version_upcoming} will become the minimum required version in GitLab %{gl_version_upcoming} (%{gl_version_upcoming_date}). Please consider upgrading your environment to a supported PostgreSQL version soon, see %{pg_version_upcoming_url_open}the related epic%{pg_version_upcoming_url_close} for details."
-msgstr ""
-
 msgid "Note that this invitation was sent to %{mail_to_invite_email}, but you are signed in as %{link_to_current_user} with email %{mail_to_current_user}."
 msgstr ""
 
@@ -27906,7 +27903,7 @@ msgstr ""
 msgid "You are trying to upload something other than an image. Please upload a .png, .jpg, .jpeg, .gif, .bmp, .tiff or .ico."
 msgstr ""
 
-msgid "You are using PostgreSQL %{pg_version_current}, but PostgreSQL %{pg_version_minimum} is required for this version of GitLab. Please upgrade your environment to a supported PostgreSQL version, see %{pg_requirements_url_open}database requirements%{pg_requirements_url_close} for details."
+msgid "You are using PostgreSQL %{pg_version_current}, but PostgreSQL %{pg_version_minimum} is required for this version of GitLab. Please upgrade your environment to a supported PostgreSQL version, see %{pg_requirements_url} for details."
 msgstr ""
 
 msgid "You can %{linkStart}view the blob%{linkEnd} instead."

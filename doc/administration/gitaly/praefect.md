@@ -940,6 +940,9 @@ cluster.
 
 ## Distributed reads
 
+> - Introduced in GitLab 13.1 in [beta](https://about.gitlab.com/handbook/product/gitlab-the-product/#alpha-beta-ga) with feature flag `gitaly_distributed_reads` set to disabled.
+> - [Made generally available](https://gitlab.com/gitlab-org/gitaly/-/issues/2951) in GitLab 13.3.
+
 Praefect supports distribution of read operations across Gitaly nodes that are
 configured for the virtual node.
 
