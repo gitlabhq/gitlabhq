@@ -60,7 +60,7 @@ project you have access to.
 
 ![Advanced Search](img/advanced_global_search.png)
 
-You can also use the [Advanced Syntax Search](advanced_search_syntax.md) which
+You can also use the [Advanced Search Syntax](advanced_search_syntax.md) which
 provides some useful queries.
 
 NOTE: **Note:**

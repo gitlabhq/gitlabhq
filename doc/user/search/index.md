@@ -215,8 +215,8 @@ GitLab instance.
 
 [Learn how to use the Advanced Search.](advanced_global_search.md)
 
-## Advanced Syntax Search **(STARTER)**
+## Advanced Search Syntax **(STARTER)**
 
 Use advanced queries for more targeted search results.
 
-[Learn how to use the Advanced Syntax Search.](advanced_search_syntax.md)
+[Learn how to use the Advanced Search Syntax.](advanced_search_syntax.md)

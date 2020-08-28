@@ -15,7 +15,7 @@ Elasticsearch is enabled, you'll have the benefit of fast search response times
 and the advantage of the following special searches:
 
 - [Advanced Search](../user/search/advanced_global_search.md)
-- [Advanced Syntax Search](../user/search/advanced_search_syntax.md)
+- [Advanced Search Syntax](../user/search/advanced_search_syntax.md)
 
 ## Version requirements
 
@@ -745,6 +745,17 @@ Here are some common pitfalls and how to overcome them:
 - **There are some projects that weren't indexed, but we don't know which ones**
 
   You can run `sudo gitlab-rake gitlab:elastic:projects_not_indexed` to display projects that aren't indexed.
+
+- **No new data is added to the Elasticsearch index when I push code**
+
+  NOTE: **Note:**
+  This was [fixed in GitLab 13.2](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/35936) and the Rake task is not available for versions greater than that.
+
+  When performing the initial indexing of blobs, we lock all projects until the project finishes indexing. It could happen that an error during the process causes one or multiple projects to remain locked. In order to unlock them, run:
+
+  ```shell
+  sudo gitlab-rake gitlab:elastic:clear_locked_projects
+  ```
 
 - **"Can't specify parent if no parent field has been configured"**
 

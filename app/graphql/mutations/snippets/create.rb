@@ -16,14 +16,6 @@ module Mutations
                required: true,
                description: 'Title of the snippet'
 
-      argument :file_name, GraphQL::STRING_TYPE,
-               required: false,
-               description: 'File name of the snippet'
-
-      argument :content, GraphQL::STRING_TYPE,
-               required: false,
-               description: 'Content of the snippet'
-
       argument :description, GraphQL::STRING_TYPE,
                required: false,
                description: 'Description of the snippet'

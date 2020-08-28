@@ -3,8 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::GroupSearchResults do
+  # group creation calls GroupFinder, so need to create the group
+  # before so expect(GroupsFinder) check works
+  let_it_be(:group) { create(:group) }
   let(:user) { create(:user) }
-  let(:group) { create(:group) }
 
   subject(:results) { described_class.new(user, 'gob', anything, group: group) }
 
@@ -59,6 +61,19 @@ RSpec.describe Gitlab::GroupSearchResults do
       create(:group_member, :developer, user: user, group: unrelated_group)
 
       is_expected.to be_empty
+    end
+
+    it 'does not return the user invited to the group' do
+      user = create(:user, username: 'gob_bluth')
+      create(:group_member, :invited, :developer, user: user, group: group)
+
+      is_expected.to be_empty
+    end
+
+    it 'calls GroupFinder during execution' do
+      expect(GroupsFinder).to receive(:new).with(user).and_call_original
+
+      subject
     end
   end
 

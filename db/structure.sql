@@ -15120,7 +15120,6 @@ CREATE TABLE public.requirements_management_test_reports (
     id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
     requirement_id bigint NOT NULL,
-    pipeline_id bigint,
     author_id bigint,
     state smallint NOT NULL,
     build_id bigint
@@ -20644,8 +20643,6 @@ CREATE INDEX index_requirements_management_test_reports_on_author_id ON public.r
 
 CREATE INDEX index_requirements_management_test_reports_on_build_id ON public.requirements_management_test_reports USING btree (build_id);
 
-CREATE INDEX index_requirements_management_test_reports_on_pipeline_id ON public.requirements_management_test_reports USING btree (pipeline_id);
-
 CREATE INDEX index_requirements_management_test_reports_on_requirement_id ON public.requirements_management_test_reports USING btree (requirement_id);
 
 CREATE INDEX index_requirements_on_author_id ON public.requirements USING btree (author_id);
@@ -22204,9 +22201,6 @@ ALTER TABLE ONLY public.service_desk_settings
 
 ALTER TABLE ONLY public.group_custom_attributes
     ADD CONSTRAINT fk_rails_246e0db83a FOREIGN KEY (group_id) REFERENCES public.namespaces(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY public.requirements_management_test_reports
-    ADD CONSTRAINT fk_rails_24cecc1e68 FOREIGN KEY (pipeline_id) REFERENCES public.ci_pipelines(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY public.cluster_agents
     ADD CONSTRAINT fk_rails_25e9fc2d5d FOREIGN KEY (project_id) REFERENCES public.projects(id) ON DELETE CASCADE;

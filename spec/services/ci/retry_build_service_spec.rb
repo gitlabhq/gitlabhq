@@ -22,7 +22,7 @@ RSpec.describe Ci::RetryBuildService do
     described_class.new(project, user)
   end
 
-  clone_accessors = described_class::CLONE_ACCESSORS
+  clone_accessors = described_class.clone_accessors
 
   reject_accessors =
     %i[id status user token token_encrypted coverage trace runner
@@ -142,6 +142,8 @@ RSpec.describe Ci::RetryBuildService do
         Ci::Build.attribute_aliases.keys.map(&:to_sym) +
         Ci::Build.reflect_on_all_associations.map(&:name) +
         [:tag_list, :needs_attributes]
+
+      current_accessors << :secrets if Gitlab.ee?
 
       current_accessors.uniq!
 

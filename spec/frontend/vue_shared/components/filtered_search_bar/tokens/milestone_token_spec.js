@@ -1,10 +1,15 @@
 import { mount } from '@vue/test-utils';
-import { GlFilteredSearchToken, GlFilteredSearchTokenSegment } from '@gitlab/ui';
+import {
+  GlFilteredSearchToken,
+  GlFilteredSearchSuggestion,
+  GlFilteredSearchTokenSegment,
+} from '@gitlab/ui';
 import MockAdapter from 'axios-mock-adapter';
 import waitForPromises from 'helpers/wait_for_promises';
 import axios from '~/lib/utils/axios_utils';
 
 import createFlash from '~/flash';
+import { DEFAULT_MILESTONES } from '~/vue_shared/components/filtered_search_bar/constants';
 import MilestoneToken from '~/vue_shared/components/filtered_search_bar/tokens/milestone_token.vue';
 
 import {
@@ -16,10 +21,21 @@ import {
 
 jest.mock('~/flash');
 
+const defaultStubs = {
+  Portal: true,
+  GlFilteredSearchSuggestionList: {
+    template: '<div></div>',
+    methods: {
+      getValue: () => '=',
+    },
+  },
+};
+
 const createComponent = ({
   config = mockMilestoneToken,
   value = { data: '' },
   active = false,
+  stubs = defaultStubs,
 } = {}) =>
   mount(MilestoneToken, {
     propsData: {
@@ -31,15 +47,7 @@ const createComponent = ({
       portalName: 'fake target',
       alignSuggestions: function fakeAlignSuggestions() {},
     },
-    stubs: {
-      Portal: true,
-      GlFilteredSearchSuggestionList: {
-        template: '<div></div>',
-        methods: {
-          getValue: () => '=',
-        },
-      },
-    },
+    stubs,
   });
 
 describe('MilestoneToken', () => {
@@ -126,6 +134,8 @@ describe('MilestoneToken', () => {
   });
 
   describe('template', () => {
+    const defaultMilestones = [{ text: 'foo', value: 'foo' }, { text: 'bar', value: 'baz' }];
+
     beforeEach(async () => {
       wrapper = createComponent({ value: { data: `"${mockRegularMilestone.title}"` } });
 
@@ -145,6 +155,44 @@ describe('MilestoneToken', () => {
 
       expect(tokenSegments).toHaveLength(3); // Milestone, =, '%"4.0"'
       expect(tokenSegments.at(2).text()).toBe(`%"${mockRegularMilestone.title}"`); // "4.0 RC1"
+    });
+
+    it('renders provided defaultMilestones as suggestions', async () => {
+      wrapper = createComponent({
+        active: true,
+        config: { ...mockMilestoneToken, defaultMilestones },
+        stubs: { Portal: true },
+      });
+      const tokenSegments = wrapper.findAll(GlFilteredSearchTokenSegment);
+      const suggestionsSegment = tokenSegments.at(2);
+      suggestionsSegment.vm.$emit('activate');
+      await wrapper.vm.$nextTick();
+
+      const suggestions = wrapper.findAll(GlFilteredSearchSuggestion);
+
+      expect(suggestions).toHaveLength(defaultMilestones.length);
+      defaultMilestones.forEach((milestone, index) => {
+        expect(suggestions.at(index).text()).toBe(milestone.text);
+      });
+    });
+
+    it('renders `DEFAULT_MILESTONES` as default suggestions', async () => {
+      wrapper = createComponent({
+        active: true,
+        config: { ...mockMilestoneToken },
+        stubs: { Portal: true },
+      });
+      const tokenSegments = wrapper.findAll(GlFilteredSearchTokenSegment);
+      const suggestionsSegment = tokenSegments.at(2);
+      suggestionsSegment.vm.$emit('activate');
+      await wrapper.vm.$nextTick();
+
+      const suggestions = wrapper.findAll(GlFilteredSearchSuggestion);
+
+      expect(suggestions).toHaveLength(DEFAULT_MILESTONES.length);
+      DEFAULT_MILESTONES.forEach((milestone, index) => {
+        expect(suggestions.at(index).text()).toBe(milestone.text);
+      });
     });
   });
 });

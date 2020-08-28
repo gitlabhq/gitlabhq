@@ -12,20 +12,24 @@ module Gitlab
 
     # rubocop:disable CodeReuse/ActiveRecord
     def users
-      # 1: get all groups the current user has access to
-      groups = GroupsFinder.new(current_user).execute.joins(:users)
+      # get all groups the current user has access to
+      # ignore order inherited from GroupsFinder to improve performance
+      current_user_groups = GroupsFinder.new(current_user).execute.unscope(:order)
 
-      # 2: Get the group's whole hierarchy
-      group_users = @group.direct_and_indirect_users
+      # the hierarchy of the current group
+      group_groups = @group.self_and_hierarchy.unscope(:order)
 
-      # 3: get all users the current user has access to (->
-      # `SearchResults#users`), which also applies the query.
+      # the groups where the above hierarchies intersect
+      intersect_groups = group_groups.where(id: current_user_groups)
+
+      # members of @group hierarchy where the user has access to the groups
+      members = GroupMember.where(group: intersect_groups).non_invite
+
+      # get all users the current user has access to (-> `SearchResults#users`), which also applies the query
       users = super
 
-      # 4: filter for users that belong to the previously selected groups
-      users
-        .where(id: group_users.select('id'))
-        .where(id: groups.select('members.user_id'))
+      #  filter users that belong to the previously selected groups
+      users.where(id: members.select(:user_id))
     end
     # rubocop:enable CodeReuse/ActiveRecord
 

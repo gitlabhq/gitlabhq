@@ -28080,6 +28080,9 @@ msgstr ""
 msgid "You are not authorized to perform this action"
 msgstr ""
 
+msgid "You are not authorized to update this scanner profile"
+msgstr ""
+
 msgid "You are now impersonating %{username}"
 msgstr ""
 

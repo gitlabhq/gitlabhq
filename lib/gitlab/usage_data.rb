@@ -111,6 +111,7 @@ module Gitlab
             clusters_applications_jupyter: count(::Clusters::Applications::Jupyter.available),
             clusters_applications_cilium: count(::Clusters::Applications::Cilium.available),
             clusters_management_project: count(::Clusters::Cluster.with_management_project),
+            kubernetes_agents: count(::Clusters::Agent),
             in_review_folder: count(::Environment.in_review_folder),
             grafana_integrated_projects: count(GrafanaIntegration.enabled),
             groups: count(Group),
