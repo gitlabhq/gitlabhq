@@ -424,8 +424,9 @@ RSpec.describe Gitlab::Workhorse do
   describe '.send_scaled_image' do
     let(:location) { 'http://example.com/avatar.png' }
     let(:width) { '150' }
+    let(:content_type) { 'image/png' }
 
-    subject { described_class.send_scaled_image(location, width) }
+    subject { described_class.send_scaled_image(location, width, content_type) }
 
     it 'sets the header correctly' do
       key, command, params = decode_workhorse_header(subject)
@@ -434,7 +435,8 @@ RSpec.describe Gitlab::Workhorse do
       expect(command).to eq("send-scaled-img")
       expect(params).to eq({
         'Location' => location,
-        'Width' => width
+        'Width' => width,
+        'ContentType' => content_type
       }.deep_stringify_keys)
     end
   end

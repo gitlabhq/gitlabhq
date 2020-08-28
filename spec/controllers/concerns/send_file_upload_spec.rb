@@ -49,10 +49,14 @@ RSpec.describe SendFileUpload do
     end
 
     shared_examples 'handles image resize requests' do
+      let(:params) do
+        { attachment: 'avatar.png' }
+      end
+
       let(:headers) { double }
 
       before do
-        allow(uploader).to receive(:image?).and_return(true)
+        allow(uploader).to receive(:image_safe_for_scaling?).and_return(true)
         allow(uploader).to receive(:mounted_as).and_return(:avatar)
 
         allow(controller).to receive(:headers).and_return(headers)
@@ -75,7 +79,10 @@ RSpec.describe SendFileUpload do
             expect(controller).not_to receive(:send_file)
             expect(controller).to receive(:params).at_least(:once).and_return(width: '64')
             expect(controller).to receive(:head).with(:ok)
-            expect(headers).to receive(:store).with(Gitlab::Workhorse::SEND_DATA_HEADER, /^send-scaled-img:/)
+            expect(Gitlab::Workhorse).to receive(:send_scaled_image).with(a_string_matching('^(/.+|https://.+)'), 64, 'image/png').and_return([
+              Gitlab::Workhorse::SEND_DATA_HEADER, "send-scaled-img:faux"
+            ])
+            expect(headers).to receive(:store).with(Gitlab::Workhorse::SEND_DATA_HEADER, "send-scaled-img:faux")
 
             subject
           end
@@ -115,6 +122,15 @@ RSpec.describe SendFileUpload do
             subject
           end
         end
+
+        context 'when image file type is not considered safe for scaling' do
+          it 'does not write workhorse command header' do
+            expect(uploader).to receive(:image_safe_for_scaling?).and_return(false)
+            expect(headers).not_to receive(:store).with(Gitlab::Workhorse::SEND_DATA_HEADER, /^send-scaled-img:/)
+
+            subject
+          end
+        end
       end
 
       context 'when feature is disabled' do
@@ -123,7 +139,6 @@ RSpec.describe SendFileUpload do
         end
 
         it 'does not write workhorse command header' do
-          expect(controller).to receive(:params).at_least(:once).and_return(width: '64')
           expect(headers).not_to receive(:store).with(Gitlab::Workhorse::SEND_DATA_HEADER, /^send-scaled-img:/)
 
           subject

@@ -192,6 +192,20 @@ RSpec.describe Gitlab::FileTypeDetection do
       end
     end
 
+    describe '#image_safe_for_scaling?' do
+      it 'returns true for allowed image formats' do
+        uploader.store!(upload_fixture('rails_sample.jpg'))
+
+        expect(uploader).to be_image_safe_for_scaling
+      end
+
+      it 'returns false for other files' do
+        uploader.store!(upload_fixture('unsanitized.svg'))
+
+        expect(uploader).not_to be_image_safe_for_scaling
+      end
+    end
+
     describe '#dangerous_image?' do
       it 'returns true if filename has a dangerous extension' do
         uploader.store!(upload_fixture('unsanitized.svg'))
@@ -374,6 +388,31 @@ RSpec.describe Gitlab::FileTypeDetection do
         allow(custom_class).to receive(:filename).and_return(nil)
 
         expect(custom_class).not_to be_image
+      end
+    end
+
+    describe '#image_safe_for_scaling?' do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:filename, :expectation) do
+        'img.jpg'  | true
+        'img.jpeg' | true
+        'img.png'  | true
+        'img.svg'  | false
+      end
+
+      with_them do
+        it "returns expected result" do
+          allow(custom_class).to receive(:filename).and_return(filename)
+
+          expect(custom_class.image_safe_for_scaling?).to be(expectation)
+        end
+      end
+
+      it 'returns false if filename is blank' do
+        allow(custom_class).to receive(:filename).and_return(nil)
+
+        expect(custom_class).not_to be_image_safe_for_scaling
       end
     end
 

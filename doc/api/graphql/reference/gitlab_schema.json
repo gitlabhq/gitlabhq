@@ -34305,6 +34305,36 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "milestoneTitle",
+                  "description": "Title of the milestone",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "assigneeUsername",
+                  "description": "Username of the assignee",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "authorUsername",
+                  "description": "Username of the author",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "after",
                   "description": "Returns the elements in the list that come after the specified cursor.",
                   "type": {
@@ -48967,6 +48997,16 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "milestoneTitle",
+                  "description": "Title of the milestone",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "projectPath",
                   "description": "The full-path of the project the authored merge requests should be in. Incompatible with projectId.",
                   "type": {
@@ -49137,6 +49177,16 @@
                   "type": {
                     "kind": "SCALAR",
                     "name": "Time",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "milestoneTitle",
+                  "description": "Title of the milestone",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
                     "ofType": null
                   },
                   "defaultValue": null

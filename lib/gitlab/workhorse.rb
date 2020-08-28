@@ -156,10 +156,11 @@ module Gitlab
         ]
       end
 
-      def send_scaled_image(location, width)
+      def send_scaled_image(location, width, content_type)
         params = {
           'Location' => location,
-          'Width' => width
+          'Width' => width,
+          'ContentType' => content_type
         }
 
         [

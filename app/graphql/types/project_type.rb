@@ -134,7 +134,7 @@ module Types
           null: true,
           description: 'Merge requests of the project',
           extras: [:lookahead],
-          resolver: Resolvers::MergeRequestsResolver
+          resolver: Resolvers::ProjectMergeRequestsResolver
 
     field :merge_request,
           Types::MergeRequestType,

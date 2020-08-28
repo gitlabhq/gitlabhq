@@ -6,7 +6,9 @@ RSpec.describe Resolvers::MergeRequestsResolver do
   include GraphqlHelpers
 
   let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:milestone) { create(:milestone, project: project) }
   let_it_be(:current_user) { create(:user) }
+  let_it_be(:other_user) { create(:user) }
   let_it_be(:common_attrs) { { author: current_user, source_project: project, target_project: project } }
   let_it_be(:merge_request_1) { create(:merge_request, :simple, **common_attrs) }
   let_it_be(:merge_request_2) { create(:merge_request, :rebased, **common_attrs) }
@@ -14,8 +16,10 @@ RSpec.describe Resolvers::MergeRequestsResolver do
   let_it_be(:merge_request_4) { create(:merge_request, :unique_branches, :locked, **common_attrs) }
   let_it_be(:merge_request_5) { create(:merge_request, :simple, :locked, **common_attrs) }
   let_it_be(:merge_request_6) { create(:labeled_merge_request, :unique_branches, labels: create_list(:label, 2), **common_attrs) }
+  let_it_be(:merge_request_with_milestone) { create(:merge_request, :unique_branches, **common_attrs, milestone: milestone) }
   let_it_be(:other_project) { create(:project, :repository) }
   let_it_be(:other_merge_request) { create(:merge_request, source_project: other_project, target_project: other_project) }
+
   let(:iid_1) { merge_request_1.iid }
   let(:iid_2) { merge_request_2.iid }
   let(:other_iid) { other_merge_request.iid }
@@ -32,7 +36,7 @@ RSpec.describe Resolvers::MergeRequestsResolver do
       it 'returns all merge requests' do
         result = resolve_mr(project, {})
 
-        expect(result).to contain_exactly(merge_request_1, merge_request_2, merge_request_3, merge_request_4, merge_request_5, merge_request_6)
+        expect(result).to contain_exactly(merge_request_1, merge_request_2, merge_request_3, merge_request_4, merge_request_5, merge_request_6, merge_request_with_milestone)
       end
 
       it 'returns only merge requests that the current user can see' do
@@ -174,6 +178,20 @@ RSpec.describe Resolvers::MergeRequestsResolver do
 
       it 'does not return anything' do
         result = resolve_mr(project, merged_after: 2.days.ago)
+
+        expect(result).to be_empty
+      end
+    end
+
+    context 'by milestone' do
+      it 'filters merge requests by milestone title' do
+        result = resolve_mr(project, milestone_title: milestone.title)
+
+        expect(result).to eq([merge_request_with_milestone])
+      end
+
+      it 'does not find anything' do
+        result = resolve_mr(project, milestone_title: 'unknown-milestone')
 
         expect(result).to be_empty
       end

@@ -59,7 +59,7 @@ RSpec.describe GitlabSchema.types['Project'] do
     subject { described_class.fields['mergeRequests'] }
 
     it { is_expected.to have_graphql_type(Types::MergeRequestType.connection_type) }
-    it { is_expected.to have_graphql_resolver(Resolvers::MergeRequestsResolver) }
+    it { is_expected.to have_graphql_resolver(Resolvers::ProjectMergeRequestsResolver) }
 
     it do
       is_expected.to have_graphql_arguments(:iids,
@@ -72,7 +72,10 @@ RSpec.describe GitlabSchema.types['Project'] do
                                             :first,
                                             :last,
                                             :merged_after,
-                                            :merged_before
+                                            :merged_before,
+                                            :author_username,
+                                            :assignee_username,
+                                            :milestone_title
                                            )
     end
   end

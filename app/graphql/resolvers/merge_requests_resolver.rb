@@ -29,11 +29,14 @@ module Resolvers
              as: :label_name,
              description: 'Array of label names. All resolved merge requests will have all of these labels.'
     argument :merged_after, Types::TimeType,
-      required: false,
-      description: 'Merge requests merged after this date'
+             required: false,
+             description: 'Merge requests merged after this date'
     argument :merged_before, Types::TimeType,
-      required: false,
-      description: 'Merge requests merged before this date'
+             required: false,
+             description: 'Merge requests merged before this date'
+    argument :milestone_title, GraphQL::STRING_TYPE,
+             required: false,
+             description: 'Title of the milestone'
 
     def self.single
       ::Resolvers::MergeRequestResolver
