@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-::Gitlab::DatabaseImporters::SelfMonitoring::Project::CreateService.new.execute
+response = ::Gitlab::DatabaseImporters::SelfMonitoring::Project::CreateService.new.execute
 
 if response[:status] == :success
   puts "Successfully created self monitoring project."

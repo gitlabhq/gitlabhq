@@ -28,8 +28,6 @@ output without searching through job logs, the full
 [Unit test reports](#viewing-unit-test-reports-on-gitlab) are available 
 in the pipeline detail view.
 
-## Use cases
-
 Consider the following workflow:
 
 1. Your `master` branch is rock solid, your project is using GitLab CI/CD and
@@ -44,9 +42,9 @@ Consider the following workflow:
 
 ## How it works
 
-First, GitLab Runner uploads all JUnit report format XML files as artifacts to GitLab. Then,
-when you visit a merge request, GitLab starts comparing the head and base branch's
-JUnit report format XML files, where:
+First, GitLab Runner uploads all [JUnit report format XML files](https://www.ibm.com/support/knowledgecenter/en/SSQ2R2_14.1.0/com.ibm.rsar.analysis.codereview.cobol.doc/topics/cac_useresults_junit.html)
+as [artifacts](pipelines/job_artifacts.md#artifactsreportsjunit) to GitLab. Then, when you visit a merge request, GitLab starts
+comparing the head and base branch's JUnit report format XML files, where:
 
 - The base branch is the target branch (usually `master`).
 - The head branch is the source branch (the latest pipeline in each merge request).

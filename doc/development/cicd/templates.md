@@ -13,15 +13,15 @@ This document explains how to develop [GitLab CI/CD templates](../../ci/examples
 
 All template files reside in the `lib/gitlab/ci/templates` directory, and are categorized by the following sub-directories:
 
-| Sub-directory | Content                                                      | [Selectable in UI](#make-sure-the-new-template-can-be-selected-in-ui) |
-|---------------|--------------------------------------------------------------|-----------------------------------------------------------------------|
-| `/AWS/*`      | Cloud Deployment (AWS) related jobs                          | No                                                                    |
-| `/Jobs/*`     | Auto DevOps related jobs                                     | Yes                                                                   |
-| `/Pages/*`    | Static site generators for GitLab Pages (for example Jekyll) | Yes                                                                   |
-| `/Security/*` | Security related jobs                                        | Yes                                                                   |
-| `/Verify/*`   | Verify/testing related jobs                                  | Yes                                                                   |
-| `/Worklows/*` | Common uses of the `workflow:` keyword                       | No                                                                    |
-| `/*` (root)   | General templates                                            | Yes                                                                   |
+| Sub-directory  | Content                                                      | [Selectable in UI](#make-sure-the-new-template-can-be-selected-in-ui) |
+|----------------|--------------------------------------------------------------|-----------------------------------------------------------------------|
+| `/AWS/*`       | Cloud Deployment (AWS) related jobs                          | No                                                                    |
+| `/Jobs/*`      | Auto DevOps related jobs                                     | Yes                                                                   |
+| `/Pages/*`     | Static site generators for GitLab Pages (for example Jekyll) | Yes                                                                   |
+| `/Security/*`  | Security related jobs                                        | Yes                                                                   |
+| `/Verify/*`    | Verify/testing related jobs                                  | Yes                                                                   |
+| `/Workflows/*` | Common uses of the `workflow:` keyword                       | No                                                                    |
+| `/*` (root)    | General templates                                            | Yes                                                                   |
 
 ## Criteria
 
