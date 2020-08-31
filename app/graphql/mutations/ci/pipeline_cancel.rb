@@ -2,18 +2,20 @@
 
 module Mutations
   module Ci
-    class PipelineCancel < BaseMutation
+    class PipelineCancel < Base
       graphql_name 'PipelineCancel'
 
       authorize :update_pipeline
 
-      def resolve
-        result = ::Ci::CancelUserPipelinesService.new.execute(current_user)
+      def resolve(id:)
+        pipeline = authorized_find!(id: id)
 
-        {
-          success: result.success?,
-          errors: [result&.message]
-        }
+        if pipeline.cancelable?
+          pipeline.cancel_running
+          { success: true, errors: [] }
+        else
+          { success: false, errors: ['Pipeline is not cancelable'] }
+        end
       end
     end
   end

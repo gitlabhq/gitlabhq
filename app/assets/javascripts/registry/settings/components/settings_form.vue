@@ -1,7 +1,7 @@
 <script>
 import { get } from 'lodash';
 import { mapActions, mapState, mapGetters } from 'vuex';
-import { GlCard, GlDeprecatedButton, GlLoadingIcon } from '@gitlab/ui';
+import { GlCard, GlButton, GlLoadingIcon } from '@gitlab/ui';
 import Tracking from '~/tracking';
 import { mapComputed } from '~/vuex_shared/bindings';
 import {
@@ -14,7 +14,7 @@ import { SET_CLEANUP_POLICY_BUTTON, CLEANUP_POLICY_CARD_HEADER } from '../consta
 export default {
   components: {
     GlCard,
-    GlDeprecatedButton,
+    GlButton,
     GlLoadingIcon,
     ExpirationPolicyFields,
   },
@@ -104,24 +104,25 @@ export default {
       </template>
       <template #footer>
         <div class="gl-display-flex gl-justify-content-end">
-          <gl-deprecated-button
+          <gl-button
             ref="cancel-button"
             type="reset"
             class="gl-mr-3 gl-display-block"
             :disabled="isCancelButtonDisabled"
           >
             {{ __('Cancel') }}
-          </gl-deprecated-button>
-          <gl-deprecated-button
+          </gl-button>
+          <gl-button
             ref="save-button"
             type="submit"
             :disabled="isSubmitButtonDisabled"
             variant="success"
+            category="primary"
             class="gl-display-flex gl-justify-content-center gl-align-items-center js-no-auto-disable"
           >
             {{ $options.i18n.SET_CLEANUP_POLICY_BUTTON }}
             <gl-loading-icon v-if="isLoading" class="gl-ml-3" />
-          </gl-deprecated-button>
+          </gl-button>
         </div>
       </template>
     </gl-card>

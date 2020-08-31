@@ -524,6 +524,11 @@ module Gitlab
             gitea: projects_imported_count('gitea', time_period),
             git: projects_imported_count('git', time_period),
             manifest: projects_imported_count('manifest', time_period)
+          },
+          issues_imported: {
+            jira: distinct_count(::JiraImportState.where(time_period), :user_id),
+            fogbugz: projects_imported_count('fogbugz', time_period),
+            phabricator: projects_imported_count('phabricator', time_period)
           }
         }
       end

@@ -10,7 +10,7 @@ module QA
         Flow::Login.sign_in
       end
 
-      it 'has changed the directory', status_issue: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/948' do
+      it 'has changed the directory', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/948' do
         initial_wiki.visit!
 
         Page::Project::Wiki::Show.perform(&:click_edit)

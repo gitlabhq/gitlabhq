@@ -157,17 +157,6 @@ RSpec.describe Gitlab::HTTP do
         described_class.put('http://example.org', write_timeout: 1)
       end
     end
-
-    context 'when default timeouts feature is disabled' do
-      it 'does not apply any defaults' do
-        stub_feature_flags(http_default_timeouts: false)
-        expect(described_class).to receive(:httparty_perform_request).with(
-          Net::HTTP::Get, 'http://example.org', open_timeout: 1
-        ).and_call_original
-
-        described_class.get('http://example.org', open_timeout: 1)
-      end
-    end
   end
 
   describe '.try_get' do

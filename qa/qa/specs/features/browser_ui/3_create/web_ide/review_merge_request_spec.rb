@@ -20,7 +20,7 @@ module QA
         merge_request.visit!
       end
 
-      it 'opens and edits a merge request in Web IDE', status_issue: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/705' do
+      it 'opens and edits a merge request in Web IDE', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/705' do
         Page::MergeRequest::Show.perform do |show|
           show.click_open_in_web_ide
         end

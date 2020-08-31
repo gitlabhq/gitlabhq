@@ -3,7 +3,7 @@ import { format } from 'timeago.js';
 import EnvironmentItem from '~/environments/components/environment_item.vue';
 import PinComponent from '~/environments/components/environment_pin.vue';
 import DeleteComponent from '~/environments/components/environment_delete.vue';
-
+import { differenceInMilliseconds } from '~/lib/utils/datetime_utility';
 import { environment, folder, tableData } from './mock_data';
 
 describe('Environment item', () => {
@@ -135,7 +135,7 @@ describe('Environment item', () => {
         });
 
         describe('in the past', () => {
-          const pastDate = new Date(Date.now() - 100000);
+          const pastDate = new Date(differenceInMilliseconds(100000));
           beforeEach(() => {
             factory({
               propsData: {

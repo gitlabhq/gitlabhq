@@ -73,7 +73,7 @@ module QA
 
       def api_post_body
         {
-          namespace: user.username,
+          namespace_path: user.username,
           name: name,
           path: name
         }

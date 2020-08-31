@@ -14,7 +14,7 @@ module QA
   end
 
   RSpec.describe 'Manage', :skip_signup_disabled do
-    describe 'standard', status_issue: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/936' do
+    describe 'standard', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/936' do
       it_behaves_like 'registration and login'
 
       context 'when user account is deleted', :requires_admin do
@@ -36,7 +36,7 @@ module QA
           end
         end
 
-        it 'allows recreating with same credentials', status_issue: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/937' do
+        it 'allows recreating with same credentials', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/937' do
           expect(Page::Main::Menu.perform(&:signed_in?)).to be_falsy
 
           Flow::Login.sign_in(as: user, skip_page_validation: true)
@@ -64,7 +64,7 @@ module QA
   end
 
   RSpec.describe 'Manage', :orchestrated, :ldap_no_tls, :skip_signup_disabled do
-    describe 'while LDAP is enabled', status_issue: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/935' do
+    describe 'while LDAP is enabled', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/935' do
       it_behaves_like 'registration and login'
     end
   end

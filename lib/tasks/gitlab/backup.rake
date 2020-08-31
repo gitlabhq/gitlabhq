@@ -47,6 +47,11 @@ namespace :gitlab do
         begin
           unless ENV['force'] == 'yes'
             warning = <<-MSG.strip_heredoc
+              Be sure to stop Puma, Sidekiq, and any other process that
+              connects to the database before proceeding. For Omnibus
+              installs, see the following link for more information:
+              https://docs.gitlab.com/ee/raketasks/backup_restore.html#restore-for-omnibus-gitlab-installations
+
               Before restoring the database, we will remove all existing
               tables to avoid future upgrade problems. Be aware that if you have
               custom tables in the GitLab database these tables and all data will be

@@ -5,6 +5,7 @@ import { Blob, BinaryBlob } from 'jest/blob/components/mock_data';
 import waitForPromises from 'helpers/wait_for_promises';
 import DeleteSnippetMutation from '~/snippets/mutations/deleteSnippet.mutation.graphql';
 import SnippetHeader from '~/snippets/components/snippet_header.vue';
+import { differenceInMilliseconds } from '~/lib/utils/datetime_utility';
 
 describe('Snippet header component', () => {
   let wrapper;
@@ -67,7 +68,7 @@ describe('Snippet header component', () => {
         name: 'Thor Odinson',
       },
       blobs: [Blob],
-      createdAt: new Date(Date.now() - 32 * 24 * 3600 * 1000).toISOString(),
+      createdAt: new Date(differenceInMilliseconds(32 * 24 * 3600 * 1000)).toISOString(),
     };
 
     mutationVariables = {

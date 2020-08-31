@@ -36,7 +36,7 @@ module QA
         Flow::Login.sign_in
       end
 
-      it 'clones, pushes, and pulls a project snippet over HTTP, edits via UI', status_issue: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/833' do
+      it 'clones, pushes, and pulls a project snippet over HTTP, edits via UI', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/833' do
         Resource::Repository::Push.fabricate! do |push|
           push.repository_http_uri = repository_uri_http
           push.file_name = new_file
@@ -65,7 +65,7 @@ module QA
         end
       end
 
-      it 'clones, pushes, and pulls a project snippet over SSH, deletes via UI', status_issue: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/832' do
+      it 'clones, pushes, and pulls a project snippet over SSH, deletes via UI', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/832' do
         Resource::Repository::Push.fabricate! do |push|
           push.repository_ssh_uri = repository_uri_ssh
           push.ssh_key = ssh_key

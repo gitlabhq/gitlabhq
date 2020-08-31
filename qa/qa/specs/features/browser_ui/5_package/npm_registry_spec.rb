@@ -21,7 +21,7 @@ module QA
         end
       end
 
-      it 'publishes an npm package and then deletes it', status_issue: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/944' do
+      it 'publishes an npm package and then deletes it', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/944' do
         uri = URI.parse(Runtime::Scenario.gitlab_address)
         gitlab_host_with_port = "#{uri.host}:#{uri.port}"
         gitlab_address_with_port = "#{uri.scheme}://#{uri.host}:#{uri.port}"

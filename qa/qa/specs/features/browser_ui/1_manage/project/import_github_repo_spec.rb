@@ -23,7 +23,7 @@ module QA
         Page::Main::Menu.perform(&:sign_out_if_signed_in)
       end
 
-      it 'user imports a GitHub repo', status_issue: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/385' do
+      it 'user imports a GitHub repo', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/385' do
         Flow::Login.sign_in
 
         imported_project # import the project

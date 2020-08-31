@@ -1,5 +1,6 @@
 import { deprecatedCreateFlash as flash } from '~/flash';
 import { s__, sprintf } from '~/locale';
+import { differenceInMilliseconds } from '~/lib/utils/datetime_utility';
 
 // Renders math using KaTeX in any element with the
 // `js-render-math` class
@@ -111,7 +112,7 @@ class SafeMathRenderer {
 
       // Give the browser time to reflow the svg
       waitForReflow(() => {
-        const deltaTime = Date.now() - this.startTime;
+        const deltaTime = differenceInMilliseconds(this.startTime);
         this.totalMS += deltaTime;
 
         this.renderElement();

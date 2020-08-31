@@ -152,17 +152,20 @@ The CI/CD YAML configuration example above works for testing against static envi
 but it can be extended to work with [review apps](../../../ci/review_apps) or
 [dynamic environments](../../../ci/environments) with a few extra steps.
 
-The best approach is to capture the dynamic URL into a custom environment variable that
-is then [inherited](../../../ci/variables/README.md#inherit-environment-variables)
-by the `load_performance` job. The k6 test script to be run should then be configured to
-use that environment URL, such as: ``http.get(`${__ENV.ENVIRONMENT_URL`})``.
+The best approach is to capture the dynamic URL in a [`.env` file](https://docs.docker.com/compose/env-file/)
+as a job artifact to be shared, then use a custom environment variable we've provided named `K6_DOCKER_OPTIONS`
+to configure the k6 Docker container to use the file. With this, k6 can then use any
+environment variables from the `.env` file in scripts using standard JavaScript,
+such as: ``http.get(`${__ENV.ENVIRONMENT_URL`})``.
 
 For example:
 
 1. In the `review` job:
-    1. Capture the dynamic URL and save it into a `.env` file, e.g. `echo "ENVIRONMENT_URL=$CI_ENVIRONMENT_URL" >> review.env`.
-    1. Set the `.env` file to be an [`artifacts:reports:dotenv` report](../../../ci/variables/README.md#inherit-environment-variables).
-1. Set the `load_performance` job to depend on the review job, so it inherits the environment variable.
+   1. Capture the dynamic URL and save it into a `.env` file, e.g. `echo "ENVIRONMENT_URL=$CI_ENVIRONMENT_URL" >> review.env`.
+   1. Set the `.env` file to be a [job artifact](../../../ci/pipelines/job_artifacts.md#job-artifacts).
+1. In the `load_performance` job:
+   1. Set it to depend on the review job, so it inherits the env file.
+   1. Set the `K6_DOCKER_OPTIONS` variable with the [Docker cli option for env files](https://docs.docker.com/engine/reference/commandline/run/#set-environment-variables--e---env---env-file), for example `--env-file review.env`.
 1. Configure the k6 test script to use the environment variable in it's steps.
 
 Your `.gitlab-ci.yml` file might be similar to:
@@ -184,15 +187,16 @@ review:
     - run_deploy_script
     - echo "ENVIRONMENT_URL=$CI_ENVIRONMENT_URL" >> review.env
   artifacts:
-    reports:
-      dotenv:
-        review.env
+    paths:
+      - review.env
   rules:
     - if: '$CI_COMMIT_BRANCH'  # Modify to match your pipeline rules, or use `only/except` if needed.
 
 load_performance:
   dependencies:
     - review
+  variables:
+    K6_DOCKER_OPTIONS: '--env-file review.env'
   rules:
     - if: '$CI_COMMIT_BRANCH'  # Modify to match your pipeline rules, or use `only/except` if needed.
 ```

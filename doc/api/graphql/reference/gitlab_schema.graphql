@@ -10656,6 +10656,11 @@ input PipelineCancelInput {
   A unique identifier for the client performing the mutation.
   """
   clientMutationId: String
+
+  """
+  The id of the pipeline to mutate
+  """
+  id: CiPipelineID!
 }
 
 """

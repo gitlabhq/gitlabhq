@@ -31968,6 +31968,20 @@
           "fields": null,
           "inputFields": [
             {
+              "name": "id",
+              "description": "The id of the pipeline to mutate",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "CiPipelineID",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null
+            },
+            {
               "name": "clientMutationId",
               "description": "A unique identifier for the client performing the mutation.",
               "type": {

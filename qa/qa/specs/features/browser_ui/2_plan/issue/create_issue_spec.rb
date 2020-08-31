@@ -9,7 +9,7 @@ module QA
         Flow::Login.sign_in
       end
 
-      it 'creates an issue', :reliable, status_issue: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/432' do
+      it 'creates an issue', :reliable, testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/432' do
         issue = Resource::Issue.fabricate_via_browser_ui!
 
         Page::Project::Menu.perform(&:click_issues)
@@ -19,7 +19,7 @@ module QA
         end
       end
 
-      it 'closes an issue', quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/225303', type: :bug }, status_issue: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/852' do
+      it 'closes an issue', quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/225303', type: :bug }, testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/852' do
         closed_issue.visit!
 
         Page::Project::Issue::Show.perform do |issue_page|
@@ -48,7 +48,7 @@ module QA
           Resource::Issue.fabricate_via_api!.visit!
         end
 
-        it 'comments on an issue with an attachment', status_issue: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/393' do
+        it 'comments on an issue with an attachment', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/393' do
           Page::Project::Issue::Show.perform do |show|
             show.comment('See attached banana for scale', attachment: file_to_attach)
 

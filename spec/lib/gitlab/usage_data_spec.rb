@@ -194,13 +194,16 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
       )
     end
 
-    it 'includes project imports usage data' do
+    it 'includes imports usage data' do
       for_defined_days_back do
         user = create(:user)
 
-        %w(gitlab_project gitlab github bitbucket bitbucket_server gitea git manifest).each do |type|
+        %w(gitlab_project gitlab github bitbucket bitbucket_server gitea git manifest fogbugz phabricator).each do |type|
           create(:project, import_type: type, creator_id: user.id)
         end
+
+        jira_project = create(:project, creator_id: user.id)
+        create(:jira_import_state, :finished, project: jira_project)
       end
 
       expect(described_class.usage_activity_by_stage_manage({})).to include(
@@ -214,6 +217,11 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
             gitea: 2,
             git: 2,
             manifest: 2
+          },
+          issues_imported: {
+            jira: 2,
+            fogbugz: 2,
+            phabricator: 2
           }
         }
       )
@@ -228,6 +236,11 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
             gitea: 1,
             git: 1,
             manifest: 1
+          },
+          issues_imported: {
+            jira: 1,
+            fogbugz: 1,
+            phabricator: 1
           }
         }
       )
@@ -1054,6 +1067,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
           'g_compliance_audit_events' => 123,
           'i_compliance_credential_inventory' => 123,
           'i_compliance_audit_events' => 123,
+          'i_compliance_audit_events_api' => 123,
           'compliance_unique_visits_for_any_target' => 543,
           'compliance_unique_visits_for_any_target_monthly' => 987
         }

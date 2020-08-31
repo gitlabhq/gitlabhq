@@ -59,7 +59,7 @@ module QA
       end
 
       context 'when deleted via API' do
-        it 'is not found', status_issue: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/931' do
+        it 'is not found', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/931' do
           delete(pipeline_data_request.url)
           expect(JSON.parse(get(pipeline_data_request.url))['message'].downcase).to have_content('404 not found')
         end
