@@ -218,10 +218,11 @@ describe('text_utility', () => {
 
     it('replaces Unicode characters', () => {
       expect(textUtils.convertUnicodeToAscii('Dĭd söméònê äšk fœŕ Ůnĭċődę?')).toBe(
-        'Did someone aesk foer Unicode?',
+        'Did soemeone aesk foer Unicode?',
       );
 
       expect(textUtils.convertUnicodeToAscii("Jürgen's Projekt")).toBe("Juergen's Projekt");
+      expect(textUtils.convertUnicodeToAscii('öäüÖÄÜ')).toBe('oeaeueOeAeUe');
     });
   });
 

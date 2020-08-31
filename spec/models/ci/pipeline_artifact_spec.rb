@@ -69,7 +69,7 @@ RSpec.describe Ci::PipelineArtifact, type: :model do
       let(:coverage_report_multibyte) { create(:ci_pipeline_artifact, :with_multibyte_characters) }
 
       it 'sets the size in bytesize' do
-        expect(coverage_report_multibyte.size).to eq(12)
+        expect(coverage_report_multibyte.size).to eq(14)
       end
     end
   end

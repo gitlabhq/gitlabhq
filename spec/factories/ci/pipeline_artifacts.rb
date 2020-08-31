@@ -15,7 +15,7 @@ FactoryBot.define do
     end
 
     trait :with_multibyte_characters do
-      size { { "utf8" => "✓" }.to_json.size }
+      size { { "utf8" => "✓" }.to_json.bytesize }
       after(:build) do |artifact, _evaluator|
         artifact.file = CarrierWaveStringFile.new_file(
           file_content: { "utf8" => "✓" }.to_json,

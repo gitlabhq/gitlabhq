@@ -234,10 +234,40 @@ RSpec.describe ProjectsFinder, :do_not_mock_admin_mode do
       end
 
       describe 'filter by without_deleted' do
-        let(:params) { { without_deleted: true } }
-        let!(:pending_delete_project) { create(:project, :public, pending_delete: true) }
+        let_it_be(:pending_delete_project) { create(:project, :public, pending_delete: true) }
 
-        it { is_expected.to match_array([public_project, internal_project]) }
+        let(:params) { { without_deleted: without_deleted } }
+
+        shared_examples 'returns all projects' do
+          it { expect(subject).to include(public_project, internal_project, pending_delete_project) }
+        end
+
+        context 'when without_deleted is true' do
+          let(:without_deleted) { true }
+
+          it 'returns projects that are not pending_delete' do
+            expect(subject).not_to include(pending_delete_project)
+            expect(subject).to include(public_project, internal_project)
+          end
+        end
+
+        context 'when without_deleted is false' do
+          let(:without_deleted) { false }
+
+          it_behaves_like 'returns all projects'
+        end
+
+        context 'when without_deleted is nil' do
+          let(:without_deleted) { nil }
+
+          it_behaves_like 'returns all projects'
+        end
+
+        context 'when without_deleted is not present' do
+          let(:params) { {} }
+
+          it_behaves_like 'returns all projects'
+        end
       end
 
       describe 'filter by last_activity_after' do

@@ -7749,10 +7749,10 @@ msgstr ""
 msgid "DastProfiles|Manage profiles"
 msgstr ""
 
-msgid "DastProfiles|New Scanner Profile"
+msgid "DastProfiles|New Profile"
 msgstr ""
 
-msgid "DastProfiles|New Site Profile"
+msgid "DastProfiles|New Scanner Profile"
 msgstr ""
 
 msgid "DastProfiles|New scanner profile"
@@ -7774,6 +7774,12 @@ msgid "DastProfiles|Save commonly used configurations for target sites and scan 
 msgstr ""
 
 msgid "DastProfiles|Save profile"
+msgstr ""
+
+msgid "DastProfiles|Scanner Profile"
+msgstr ""
+
+msgid "DastProfiles|Site Profile"
 msgstr ""
 
 msgid "DastProfiles|Site Profiles"
