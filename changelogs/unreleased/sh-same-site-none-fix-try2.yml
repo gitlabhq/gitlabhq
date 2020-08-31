@@ -1,0 +1,5 @@
+---
+title: Don't send SameSite=None to incompatible browsers
+merge_request: 40667
+author:
+type: fixed

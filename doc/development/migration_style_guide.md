@@ -369,6 +369,7 @@ migration involves one of the high-traffic tables:
 - `users`
 - `projects`
 - `namespaces`
+- `gitlab_subscriptions`
 - `issues`
 - `merge_requests`
 - `ci_pipelines`

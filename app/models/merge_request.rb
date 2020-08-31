@@ -80,6 +80,8 @@ class MergeRequest < ApplicationRecord
 
   has_many :merge_request_assignees
   has_many :assignees, class_name: "User", through: :merge_request_assignees
+  has_many :merge_request_reviewers
+  has_many :reviewers, class_name: "User", through: :merge_request_reviewers
   has_many :user_mentions, class_name: "MergeRequestUserMention", dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
 
   has_many :deployment_merge_requests

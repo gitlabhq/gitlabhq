@@ -11,6 +11,7 @@ Migration/UpdateLargeTable:
     - :ci_stages
     - :deployments
     - :events
+    - :gitlab_subscriptions
     - :issues
     - :merge_request_diff_commits
     - :merge_request_diff_files

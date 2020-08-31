@@ -120,6 +120,7 @@ merge_requests:
 - award_emoji
 - author
 - assignee
+- reviewers
 - updated_by
 - milestone
 - iteration
@@ -147,6 +148,7 @@ merge_requests:
 - latest_merge_request_diff
 - pipelines_for_merge_request
 - merge_request_assignees
+- merge_request_reviewers
 - suggestions
 - diff_note_positions
 - unresolved_notes

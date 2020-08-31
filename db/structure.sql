@@ -12133,7 +12133,9 @@ CREATE TABLE public.gitlab_subscriptions (
     seats integer DEFAULT 0,
     trial boolean DEFAULT false,
     trial_starts_on date,
-    auto_renew boolean
+    auto_renew boolean,
+    seats_in_use integer DEFAULT 0 NOT NULL,
+    seats_owed integer DEFAULT 0 NOT NULL
 );
 
 CREATE SEQUENCE public.gitlab_subscriptions_id_seq
@@ -13158,6 +13160,22 @@ CREATE SEQUENCE public.merge_request_metrics_id_seq
     CACHE 1;
 
 ALTER SEQUENCE public.merge_request_metrics_id_seq OWNED BY public.merge_request_metrics.id;
+
+CREATE TABLE public.merge_request_reviewers (
+    id bigint NOT NULL,
+    user_id bigint NOT NULL,
+    merge_request_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL
+);
+
+CREATE SEQUENCE public.merge_request_reviewers_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE public.merge_request_reviewers_id_seq OWNED BY public.merge_request_reviewers.id;
 
 CREATE TABLE public.merge_request_user_mentions (
     id bigint NOT NULL,
@@ -17142,6 +17160,8 @@ ALTER TABLE ONLY public.merge_request_diffs ALTER COLUMN id SET DEFAULT nextval(
 
 ALTER TABLE ONLY public.merge_request_metrics ALTER COLUMN id SET DEFAULT nextval('public.merge_request_metrics_id_seq'::regclass);
 
+ALTER TABLE ONLY public.merge_request_reviewers ALTER COLUMN id SET DEFAULT nextval('public.merge_request_reviewers_id_seq'::regclass);
+
 ALTER TABLE ONLY public.merge_request_user_mentions ALTER COLUMN id SET DEFAULT nextval('public.merge_request_user_mentions_id_seq'::regclass);
 
 ALTER TABLE ONLY public.merge_requests ALTER COLUMN id SET DEFAULT nextval('public.merge_requests_id_seq'::regclass);
@@ -18259,6 +18279,9 @@ ALTER TABLE ONLY public.merge_request_diffs
 
 ALTER TABLE ONLY public.merge_request_metrics
     ADD CONSTRAINT merge_request_metrics_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY public.merge_request_reviewers
+    ADD CONSTRAINT merge_request_reviewers_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY public.merge_request_user_mentions
     ADD CONSTRAINT merge_request_user_mentions_pkey PRIMARY KEY (id);
@@ -20090,6 +20113,10 @@ CREATE INDEX index_merge_request_metrics_on_pipeline_id ON public.merge_request_
 CREATE INDEX index_merge_request_metrics_on_target_project_id ON public.merge_request_metrics USING btree (target_project_id);
 
 CREATE INDEX index_merge_request_metrics_on_target_project_id_merged_at ON public.merge_request_metrics USING btree (target_project_id, merged_at);
+
+CREATE UNIQUE INDEX index_merge_request_reviewers_on_merge_request_id_and_user_id ON public.merge_request_reviewers USING btree (merge_request_id, user_id);
+
+CREATE INDEX index_merge_request_reviewers_on_user_id ON public.merge_request_reviewers USING btree (user_id);
 
 CREATE UNIQUE INDEX index_merge_request_user_mentions_on_note_id ON public.merge_request_user_mentions USING btree (note_id) WHERE (note_id IS NOT NULL);
 
@@ -22280,6 +22307,9 @@ ALTER TABLE ONLY public.board_labels
 ALTER TABLE ONLY public.merge_request_blocks
     ADD CONSTRAINT fk_rails_364d4bea8b FOREIGN KEY (blocked_merge_request_id) REFERENCES public.merge_requests(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY public.merge_request_reviewers
+    ADD CONSTRAINT fk_rails_3704a66140 FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY public.analytics_cycle_analytics_project_stages
     ADD CONSTRAINT fk_rails_3829e49b66 FOREIGN KEY (project_id) REFERENCES public.projects(id) ON DELETE CASCADE;
 
@@ -23053,6 +23083,9 @@ ALTER TABLE ONLY public.alert_management_alert_assignees
 
 ALTER TABLE ONLY public.geo_hashed_storage_attachments_events
     ADD CONSTRAINT fk_rails_d496b088e9 FOREIGN KEY (project_id) REFERENCES public.projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY public.merge_request_reviewers
+    ADD CONSTRAINT fk_rails_d9fec24b9d FOREIGN KEY (merge_request_id) REFERENCES public.merge_requests(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY public.jira_imports
     ADD CONSTRAINT fk_rails_da617096ce FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE SET NULL;
