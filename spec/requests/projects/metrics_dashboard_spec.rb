@@ -14,7 +14,7 @@ RSpec.describe 'Projects::MetricsDashboardController' do
   end
 
   describe 'GET /:namespace/:project/-/metrics' do
-    it 'returns 200' do
+    it "redirects to default environment's metrics dashboard" do
       send_request
       expect(response).to redirect_to(dashboard_route(environment: environment))
     end
@@ -22,6 +22,18 @@ RSpec.describe 'Projects::MetricsDashboardController' do
     it 'assigns default_environment' do
       send_request
       expect(assigns(:default_environment).id).to eq(environment.id)
+    end
+
+    it 'retains existing parameters when redirecting' do
+      get "#{dashboard_route(dashboard_path: '.gitlab/dashboards/dashboard_path.yml')}/panel/new"
+
+      expect(response).to redirect_to(
+        dashboard_route(
+          dashboard_path: '.gitlab/dashboards/dashboard_path.yml',
+          page: 'panel/new',
+          environment: environment
+        )
+      )
     end
 
     context 'with anonymous user and public dashboard visibility' do

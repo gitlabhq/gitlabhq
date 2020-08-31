@@ -61,6 +61,15 @@ GET /users?active=true
 GET /users?blocked=true
 ```
 
+GitLab supports bot users such as the [alert bot](../operations/incident_management/generic_alerts.md)
+or the [support bot](../user/project/service_desk.md#support-bot-user).
+To exclude these users from the users' list, you can use the parameter `exclude_internal=true`
+([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/241144) in GitLab 13.4).
+
+```plaintext
+GET /users?exclude_internal=true
+```
+
 NOTE: **Note:**
 Username search is case insensitive.
 

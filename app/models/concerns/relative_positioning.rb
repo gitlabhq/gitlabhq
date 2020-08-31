@@ -83,9 +83,9 @@ module RelativePositioning
       if gap_width < MIN_GAP
         raise NoSpaceLeft
       elsif gap_width > MAX_GAP
-        if pos_before == MIN_POSITION
+        if pos_before <= MIN_POSITION
           pos_after - IDEAL_DISTANCE
-        elsif pos_after == MAX_POSITION
+        elsif pos_after >= MAX_POSITION
           pos_before + IDEAL_DISTANCE
         else
           midpoint

@@ -27,7 +27,10 @@ RSpec.describe GitlabSchema.types['MergeRequest'] do
       total_time_spent reference author merged_at commit_count
     ]
 
-    expected_fields << 'approved_by' if Gitlab.ee?
+    if Gitlab.ee?
+      expected_fields << 'approved'
+      expected_fields << 'approved_by'
+    end
 
     expect(described_class).to have_graphql_fields(*expected_fields)
   end

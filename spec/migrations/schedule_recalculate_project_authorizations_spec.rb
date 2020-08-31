@@ -26,7 +26,7 @@ RSpec.describe ScheduleRecalculateProjectAuthorizations do
 
   it 'schedules background migration' do
     Sidekiq::Testing.fake! do
-      Timecop.freeze do
+      freeze_time do
         migrate!
 
         expect(BackgroundMigrationWorker.jobs.size).to eq(2)
@@ -45,7 +45,7 @@ RSpec.describe ScheduleRecalculateProjectAuthorizations do
                                          access_level: 30)
 
     Sidekiq::Testing.fake! do
-      Timecop.freeze do
+      freeze_time do
         migrate!
 
         expect(BackgroundMigrationWorker.jobs.size).to eq(2)

@@ -5156,6 +5156,9 @@ msgstr ""
 msgid "ClusterAgent|This feature is only available for premium plans"
 msgstr ""
 
+msgid "ClusterAgent|User has insufficient permissions to create a token for this project"
+msgstr ""
+
 msgid "ClusterAgent|You have insufficient permissions to create a cluster agent for this project"
 msgstr ""
 
@@ -8583,7 +8586,10 @@ msgstr ""
 msgid "Detect host keys"
 msgstr ""
 
-msgid "DevOps Score"
+msgid "DevOps"
+msgstr ""
+
+msgid "DevOps Report"
 msgstr ""
 
 msgid "Diff content limits"
@@ -8729,7 +8735,7 @@ msgid_plural "Dismiss %d selected vulnerabilities as"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "Dismiss DevOps Score introduction"
+msgid "Dismiss DevOps Report introduction"
 msgstr ""
 
 msgid "Dismiss Merge Request promotion"
@@ -13318,7 +13324,7 @@ msgstr ""
 msgid "Introducing Value Stream Analytics"
 msgstr ""
 
-msgid "Introducing Your DevOps Score"
+msgid "Introducing Your DevOps Report"
 msgstr ""
 
 msgid "Invalid Git ref"
@@ -21469,6 +21475,9 @@ msgstr ""
 msgid "Scopes can't be blank"
 msgstr ""
 
+msgid "Score"
+msgstr ""
+
 msgid "Scroll down"
 msgstr ""
 
@@ -28572,7 +28581,7 @@ msgstr ""
 msgid "Your Default Notification Email will be used for account notifications if a %{openingTag}group-specific email address%{closingTag} is not set."
 msgstr ""
 
-msgid "Your DevOps Score gives an overview of how you are using GitLab from a feature perspective. View how you compare with other organizations, discover features you are not using, and learn best practices through blog posts and white papers."
+msgid "Your DevOps Report gives an overview of how you are using GitLab from a feature perspective. View how you compare with other organizations, discover features you are not using, and learn best practices through blog posts and white papers."
 msgstr ""
 
 msgid "Your GPG keys (%{count})"
@@ -29323,9 +29332,6 @@ msgstr ""
 msgid "in project %{link_to_project}"
 msgstr ""
 
-msgid "index"
-msgstr ""
-
 msgid "instance completed"
 msgid_plural "instances completed"
 msgstr[0] ""
@@ -29995,9 +30001,6 @@ msgid "revised"
 msgstr ""
 
 msgid "satisfied"
-msgstr ""
-
-msgid "score"
 msgstr ""
 
 msgid "security Reports|There was an error creating the merge request"

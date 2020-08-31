@@ -35,7 +35,6 @@ RSpec.describe 'Database schema' do
     deploy_keys_projects: %w[deploy_key_id],
     deployments: %w[deployable_id environment_id user_id],
     draft_notes: %w[discussion_id commit_id],
-    emails: %w[user_id],
     epics: %w[updated_by_id last_edited_by_id state_id],
     events: %w[target_id],
     forked_project_links: %w[forked_from_project_id],

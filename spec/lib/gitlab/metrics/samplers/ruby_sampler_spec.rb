@@ -12,7 +12,7 @@ RSpec.describe Gitlab::Metrics::Samplers::RubySampler do
 
   describe '#initialize' do
     it 'sets process_start_time_seconds' do
-      Timecop.freeze do
+      freeze_time do
         expect(sampler.metrics[:process_start_time_seconds].get).to eq(Time.now.to_i)
       end
     end

@@ -99,6 +99,8 @@ RSpec.describe 'Creating a Snippet' do
         it_behaves_like 'a mutation that returns errors in the response', errors: ['Snippet actions have invalid data']
         it_behaves_like 'does not create snippet'
       end
+
+      it_behaves_like 'snippet edit usage data counters'
     end
 
     context 'with PersonalSnippet' do
@@ -129,6 +131,8 @@ RSpec.describe 'Creating a Snippet' do
         it_behaves_like 'a mutation that returns top-level errors',
                         errors: [Gitlab::Graphql::Authorize::AuthorizeResource::RESOURCE_ACCESS_ERROR]
       end
+
+      it_behaves_like 'snippet edit usage data counters'
     end
 
     context 'when there are ActiveRecord validation errors' do

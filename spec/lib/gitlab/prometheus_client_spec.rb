@@ -136,7 +136,7 @@ RSpec.describe Gitlab::PrometheusClient do
     let(:query_url) { prometheus_query_with_time_url(prometheus_query, Time.now.utc) }
 
     around do |example|
-      Timecop.freeze { example.run }
+      freeze_time { example.run }
     end
 
     context 'when request returns vector results' do
@@ -195,7 +195,7 @@ RSpec.describe Gitlab::PrometheusClient do
     let(:query_url) { prometheus_query_with_time_url(query, Time.now.utc) }
 
     around do |example|
-      Timecop.freeze { example.run }
+      freeze_time { example.run }
     end
 
     context 'when request returns vector results' do
@@ -228,7 +228,7 @@ RSpec.describe Gitlab::PrometheusClient do
     let(:query_url) { prometheus_series_url('series_name', 'other_service') }
 
     around do |example|
-      Timecop.freeze { example.run }
+      freeze_time { example.run }
     end
 
     it 'calls endpoint and returns list of series' do
@@ -259,7 +259,7 @@ RSpec.describe Gitlab::PrometheusClient do
     let(:query_url) { prometheus_query_range_url(prometheus_query) }
 
     around do |example|
-      Timecop.freeze { example.run }
+      freeze_time { example.run }
     end
 
     context 'when non utc time is passed' do
@@ -358,7 +358,7 @@ RSpec.describe Gitlab::PrometheusClient do
       let(:query_url) { prometheus_query_url(prometheus_query) }
 
       around do |example|
-        Timecop.freeze { example.run }
+        freeze_time { example.run }
       end
 
       context 'when response status code is 200' do

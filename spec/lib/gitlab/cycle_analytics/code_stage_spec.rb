@@ -34,7 +34,7 @@ RSpec.describe Gitlab::CycleAnalytics::CodeStage do
 
   describe '#project_median' do
     around do |example|
-      Timecop.freeze { example.run }
+      freeze_time { example.run }
     end
 
     it 'counts median from issues with metrics' do
@@ -76,7 +76,7 @@ RSpec.describe Gitlab::CycleAnalytics::CodeStage do
 
     describe '#group_median' do
       around do |example|
-        Timecop.freeze { example.run }
+        freeze_time { example.run }
       end
 
       it 'counts median from issues with metrics' do

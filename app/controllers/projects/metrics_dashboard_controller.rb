@@ -18,7 +18,13 @@ module Projects
       if environment
         render 'projects/environments/metrics'
       elsif default_environment
-        redirect_to project_metrics_dashboard_path(project, environment: default_environment)
+        redirect_to project_metrics_dashboard_path(
+          project,
+          **permitted_params
+            .to_h
+            .symbolize_keys
+            .merge(environment: default_environment)
+        )
       else
         render 'projects/environments/empty_metrics'
       end
@@ -26,9 +32,14 @@ module Projects
 
     private
 
+    def permitted_params
+      @permitted_params ||= params.permit(:dashboard_path, :environment, :page)
+    end
+
     def environment
       strong_memoize(:environment) do
-        project.environments.find(params[:environment]) if params[:environment]
+        env = permitted_params[:environment]
+        project.environments.find(env) if env
       end
     end
 

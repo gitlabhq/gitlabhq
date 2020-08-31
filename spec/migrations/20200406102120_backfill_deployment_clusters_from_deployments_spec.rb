@@ -27,7 +27,7 @@ RSpec.describe BackfillDeploymentClustersFromDeployments, :migration, :sidekiq, 
       batch_2_end = create_deployment(**deployment_data)
 
       Sidekiq::Testing.fake! do
-        Timecop.freeze do
+        freeze_time do
           migrate!
 
           # batch 1

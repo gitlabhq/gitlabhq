@@ -415,7 +415,7 @@ RSpec.describe API::Internal::Base do
       let(:env) { {} }
 
       around do |example|
-        Timecop.freeze { example.run }
+        freeze_time { example.run }
       end
 
       before do

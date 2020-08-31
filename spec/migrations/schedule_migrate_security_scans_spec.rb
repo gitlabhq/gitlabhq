@@ -40,7 +40,7 @@ RSpec.describe ScheduleMigrateSecurityScans, :sidekiq do
 
     it 'schedules migration of security scans' do
       Sidekiq::Testing.fake! do
-        Timecop.freeze do
+        freeze_time do
           migration.up
 
           expect(described_class::MIGRATION).to be_scheduled_delayed_migration(5.minutes, job_artifact_1.id, job_artifact_1.id)
@@ -57,7 +57,7 @@ RSpec.describe ScheduleMigrateSecurityScans, :sidekiq do
 
     it 'schedules migration of security scans' do
       Sidekiq::Testing.fake! do
-        Timecop.freeze do
+        freeze_time do
           migration.up
 
           expect(BackgroundMigrationWorker.jobs).to be_empty

@@ -8,7 +8,7 @@ RSpec.describe Gitlab::LogTimestampFormatter do
   let(:formatted_timestamp) { Time.now.utc.iso8601(3) }
 
   it 'logs the timestamp in UTC and ISO8601.3 format' do
-    Timecop.freeze(Time.now) do
+    freeze_time do
       expect(subject.call('', Time.now, '', '')).to include formatted_timestamp
     end
   end

@@ -17,7 +17,7 @@ RSpec.describe SchedulePagesMetadataMigration do
 
   it 'schedules pages metadata migration' do
     Sidekiq::Testing.fake! do
-      Timecop.freeze do
+      freeze_time do
         migrate!
 
         expect(described_class::MIGRATION).to be_scheduled_delayed_migration(2.minutes, 111, 111)

@@ -568,6 +568,12 @@ RSpec.shared_examples 'a class that supports relative positioning' do
       end
     end
 
+    it 'places items at most IDEAL_DISTANCE from the start when the range is open' do
+      n = item1.send(:scoped_items).count
+
+      expect([item1, item2].map(&:relative_position)).to all(be >= (RelativePositioning::START_POSITION - (n * RelativePositioning::IDEAL_DISTANCE)))
+    end
+
     it 'moves item to the end' do
       new_item.move_to_start
 
@@ -611,6 +617,12 @@ RSpec.shared_examples 'a class that supports relative positioning' do
       [item1, item2].each do |item1|
         item1.move_to_end && item1.save!
       end
+    end
+
+    it 'places items at most IDEAL_DISTANCE from the start when the range is open' do
+      n = item1.send(:scoped_items).count
+
+      expect([item1, item2].map(&:relative_position)).to all(be <= (RelativePositioning::START_POSITION + (n * RelativePositioning::IDEAL_DISTANCE)))
     end
 
     it 'moves item to the end' do

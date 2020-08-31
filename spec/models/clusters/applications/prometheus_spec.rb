@@ -46,7 +46,7 @@ RSpec.describe Clusters::Applications::Prometheus do
     subject { create(:clusters_applications_prometheus, :installed, cluster: cluster) }
 
     it 'sets last_update_started_at to now' do
-      Timecop.freeze do
+      freeze_time do
         expect { subject.make_updating }.to change { subject.reload.last_update_started_at }.to be_within(1.second).of(Time.current)
       end
     end
@@ -353,7 +353,7 @@ RSpec.describe Clusters::Applications::Prometheus do
     let(:timestamp) { Time.current - 5.minutes }
 
     around do |example|
-      Timecop.freeze { example.run }
+      freeze_time { example.run }
     end
 
     before do

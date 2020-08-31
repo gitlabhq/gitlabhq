@@ -21,7 +21,7 @@ RSpec.describe ScheduleCalculateWikiSizes do
     let!(:project_statistic3) { project_statistics.create!(project_id: project3.id, namespace_id: namespace.id, wiki_size: nil) }
 
     it 'schedules a background migration' do
-      Timecop.freeze do
+      freeze_time do
         migrate!
 
         expect(migration_name).to be_scheduled_delayed_migration(5.minutes, project_statistic2.id, project_statistic3.id)
@@ -49,7 +49,7 @@ RSpec.describe ScheduleCalculateWikiSizes do
 
     it 'does not schedule a background migration' do
       Sidekiq::Testing.fake! do
-        Timecop.freeze do
+        freeze_time do
           migrate!
 
           expect(BackgroundMigrationWorker.jobs.size).to eq 0

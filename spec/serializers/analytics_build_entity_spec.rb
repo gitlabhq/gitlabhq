@@ -16,7 +16,7 @@ RSpec.describe AnalyticsBuildEntity do
     subject { entity.as_json }
 
     around do |example|
-      Timecop.freeze { example.run }
+      freeze_time { example.run }
     end
 
     it 'contains the URL' do

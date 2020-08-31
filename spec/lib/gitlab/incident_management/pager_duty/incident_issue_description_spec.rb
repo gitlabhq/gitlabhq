@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'fast_spec_helper'
-require 'timecop'
 
 RSpec.describe Gitlab::IncidentManagement::PagerDuty::IncidentIssueDescription do
   describe '#to_s' do
@@ -50,7 +49,7 @@ RSpec.describe Gitlab::IncidentManagement::PagerDuty::IncidentIssueDescription d
       let(:created_at) { nil }
 
       it 'description contains current time in UTC' do
-        Timecop.freeze do
+        freeze_time do
           now = Time.current.utc.strftime('%d %B %Y, %-l:%M%p (%Z)')
 
           expect(to_s).to include(

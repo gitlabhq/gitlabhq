@@ -1,4 +1,4 @@
-- page_title _('DevOps Score')
+- page_title _('DevOps Report')
 - usage_ping_enabled = Gitlab::CurrentSettings.usage_ping_enabled
 
 .container
@@ -16,10 +16,10 @@
         %h2.devops-header-title{ class: "devops-#{score_level(@metric.average_percentage_score)}-score" }
           = number_to_percentage(@metric.average_percentage_score, precision: 1)
         .devops-header-subtitle
-          = _('index')
+          = _('DevOps')
           %br
-          = _('score')
-          = link_to icon('question-circle', 'aria-hidden' => 'true'), help_page_path('user/admin_area/analytics/dev_ops_score')
+          = _('Score')
+          = link_to icon('question-circle', 'aria-hidden' => 'true'), help_page_path('user/admin_area/analytics/dev_ops_report')
 
       .devops-cards.board-card-container
         - @metric.cards.each do |card|

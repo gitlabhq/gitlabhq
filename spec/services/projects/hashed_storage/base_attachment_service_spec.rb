@@ -30,7 +30,7 @@ RSpec.describe Projects::HashedStorage::BaseAttachmentService do
       target_path = Dir.mktmpdir
       expect(Dir.exist?(target_path)).to be_truthy
 
-      Timecop.freeze do
+      freeze_time do
         suffix = Time.current.utc.to_i
         subject.send(:discard_path!, target_path)
 

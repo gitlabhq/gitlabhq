@@ -100,6 +100,10 @@ RSpec.configure do |config|
     metadata[:enable_admin_mode] = true if location =~ %r{(ee)?/spec/controllers/admin/}
   end
 
+  config.define_derived_metadata(file_path: %r{(ee)?/spec/.+_docs\.rb\z}) do |metadata|
+    metadata[:type] = :feature
+  end
+
   config.include LicenseHelpers
   config.include ActiveJob::TestHelper
   config.include ActiveSupport::Testing::TimeHelpers

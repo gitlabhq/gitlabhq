@@ -107,7 +107,7 @@ class User < ApplicationRecord
   has_many :group_deploy_keys
   has_many :gpg_keys
 
-  has_many :emails, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+  has_many :emails
   has_many :personal_access_tokens, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :identities, dependent: :destroy, autosave: true # rubocop:disable Cop/ActiveRecordDependent
   has_many :u2f_registrations, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent

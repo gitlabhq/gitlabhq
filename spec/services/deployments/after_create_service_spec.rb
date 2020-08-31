@@ -122,7 +122,7 @@ RSpec.describe Deployments::AfterCreateService do
       end
 
       it 'renews auto stop at' do
-        Timecop.freeze do
+        freeze_time do
           environment.update!(auto_stop_at: nil)
 
           expect { subject.execute }

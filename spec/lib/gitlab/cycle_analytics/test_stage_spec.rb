@@ -37,7 +37,7 @@ RSpec.describe Gitlab::CycleAnalytics::TestStage do
     end
 
     around do |example|
-      Timecop.freeze { example.run }
+      freeze_time { example.run }
     end
 
     it 'counts median from issues with metrics' do

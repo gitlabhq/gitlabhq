@@ -85,7 +85,7 @@ RSpec.describe Gitlab::ConanToken do
     it 'returns the encoded JWT' do
       allow(SecureRandom).to receive(:uuid).and_return('u-u-i-d')
 
-      Timecop.freeze do
+      freeze_time do
         jwt = build_jwt(access_token_id: 123, user_id: 456)
 
         token = described_class.new(access_token_id: 123, user_id: 456)

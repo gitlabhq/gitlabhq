@@ -99,7 +99,7 @@ RSpec.describe Deployment do
       end
 
       it 'starts running' do
-        Timecop.freeze do
+        freeze_time do
           expect(deployment).to be_running
           expect(deployment.finished_at).to be_nil
         end
@@ -110,7 +110,7 @@ RSpec.describe Deployment do
       let(:deployment) { create(:deployment, :running) }
 
       it 'has correct status' do
-        Timecop.freeze do
+        freeze_time do
           deployment.succeed!
 
           expect(deployment).to be_success
@@ -137,7 +137,7 @@ RSpec.describe Deployment do
       let(:deployment) { create(:deployment, :running) }
 
       it 'has correct status' do
-        Timecop.freeze do
+        freeze_time do
           deployment.drop!
 
           expect(deployment).to be_failed
@@ -157,7 +157,7 @@ RSpec.describe Deployment do
       let(:deployment) { create(:deployment, :running) }
 
       it 'has correct status' do
-        Timecop.freeze do
+        freeze_time do
           deployment.cancel!
 
           expect(deployment).to be_canceled
@@ -584,7 +584,7 @@ RSpec.describe Deployment do
     end
 
     it 'updates finished_at when transitioning to a finished status' do
-      Timecop.freeze do
+      freeze_time do
         deploy.update_status('success')
 
         expect(deploy.read_attribute(:finished_at)).to eq(Time.current)

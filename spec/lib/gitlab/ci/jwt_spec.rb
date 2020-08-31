@@ -20,7 +20,7 @@ RSpec.describe Gitlab::Ci::Jwt do
     subject(:payload) { described_class.new(build, ttl: 30).payload }
 
     it 'has correct values for the standard JWT attributes' do
-      Timecop.freeze do
+      freeze_time do
         now = Time.now.to_i
 
         aggregate_failures do

@@ -20,7 +20,7 @@ RSpec.describe FixProjectsWithoutPrometheusService, :migration do
 
   around do |example|
     Sidekiq::Testing.fake! do
-      Timecop.freeze do
+      freeze_time do
         example.call
       end
     end

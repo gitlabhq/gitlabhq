@@ -28,7 +28,7 @@ RSpec.describe BoardGroupRecentVisit do
       let!(:visit) { create :board_group_recent_visit, group: board.group, board: board, user: user, updated_at: 7.days.ago }
 
       it 'updates the timestamp' do
-        Timecop.freeze do
+        freeze_time do
           described_class.visited!(user, board)
 
           expect(described_class.count).to eq 1

@@ -45,7 +45,7 @@ RSpec.describe Gitlab::AlertManagement::Payload::Prometheus do
     let(:current_time) { Time.current.utc }
 
     around do |example|
-      Timecop.freeze { example.run }
+      freeze_time { example.run }
     end
 
     subject { parsed_payload.starts_at }

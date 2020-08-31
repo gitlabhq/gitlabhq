@@ -21,7 +21,7 @@ module RuboCop
         private
 
         def acceptable_file_path?(path)
-          File.fnmatch?('*_spec.rb', path) || File.fnmatch?('*/frontend/fixtures/*', path)
+          File.fnmatch?('*_spec.rb', path) || File.fnmatch?('*/frontend/fixtures/*', path) || File.fnmatch?('*/docs_screenshots/*_docs.rb', path)
         end
 
         def shared_example?(node)

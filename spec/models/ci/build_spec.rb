@@ -448,7 +448,7 @@ RSpec.describe Ci::Build do
     end
 
     it 'schedules BuildScheduleWorker at the right time' do
-      Timecop.freeze do
+      freeze_time do
         expect(Ci::BuildScheduleWorker)
           .to receive(:perform_at).with(be_like_time(1.minute.since), build.id)
 
@@ -496,7 +496,7 @@ RSpec.describe Ci::Build do
       let(:option) { { start_in: '1 day' } }
 
       it 'returns date after 1 day' do
-        Timecop.freeze do
+        freeze_time do
           is_expected.to eq(1.day.since)
         end
       end
@@ -506,7 +506,7 @@ RSpec.describe Ci::Build do
       let(:option) { { start_in: '1 week' } }
 
       it 'returns date after 1 week' do
-        Timecop.freeze do
+        freeze_time do
           is_expected.to eq(1.week.since)
         end
       end
@@ -4087,7 +4087,7 @@ RSpec.describe Ci::Build do
     let(:path) { 'other_artifacts_0.1.2/another-subdirectory/banana_sample.gif' }
 
     around do |example|
-      Timecop.freeze { example.run }
+      freeze_time { example.run }
     end
 
     before do

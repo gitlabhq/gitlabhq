@@ -283,7 +283,7 @@ RSpec.describe RemoteMirror, :mailer do
     let(:remote_mirror) { create(:project, :repository, :remote_mirror).remote_mirrors.first }
 
     around do |example|
-      Timecop.freeze { example.run }
+      freeze_time { example.run }
     end
 
     context 'with remote mirroring disabled' do
@@ -397,7 +397,7 @@ RSpec.describe RemoteMirror, :mailer do
     let(:timestamp) { Time.current - 5.minutes }
 
     around do |example|
-      Timecop.freeze { example.run }
+      freeze_time { example.run }
     end
 
     before do

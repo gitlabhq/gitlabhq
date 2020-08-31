@@ -3,7 +3,7 @@
 RSpec.shared_examples 'throttled touch' do
   describe '#touch' do
     it 'updates the updated_at timestamp' do
-      Timecop.freeze do
+      freeze_time do
         subject.touch
         expect(subject.updated_at).to be_like_time(Time.zone.now)
       end

@@ -6,9 +6,9 @@ RSpec.describe Projects::IssuesController do
   include ProjectForksHelper
   include_context 'includes Spam constants'
 
-  let(:project) { create(:project) }
-  let(:user)    { create(:user) }
-  let(:issue)   { create(:issue, project: project) }
+  let_it_be(:project, reload: true) { create(:project) }
+  let_it_be(:user, reload: true) { create(:user) }
+  let(:issue) { create(:issue, project: project) }
 
   describe "GET #index" do
     context 'external issue tracker' do
@@ -39,8 +39,8 @@ RSpec.describe Projects::IssuesController do
       end
 
       context 'when project has moved' do
-        let(:new_project) { create(:project) }
-        let(:issue) { create(:issue, project: new_project) }
+        let_it_be(:new_project) { create(:project) }
+        let_it_be(:issue) { create(:issue, project: new_project) }
 
         before do
           project.route.destroy
@@ -297,6 +297,7 @@ RSpec.describe Projects::IssuesController do
       project.add_developer(developer)
     end
 
+    let_it_be(:issue) { create(:issue, project: project) }
     let(:developer) { user }
     let(:params) do
       {
@@ -401,7 +402,7 @@ RSpec.describe Projects::IssuesController do
     end
 
     context 'when moving issue to another private project' do
-      let(:another_project) { create(:project, :private) }
+      let_it_be(:another_project) { create(:project, :private) }
 
       context 'when user has access to move issue' do
         before do
@@ -438,10 +439,10 @@ RSpec.describe Projects::IssuesController do
   end
 
   describe 'PUT #reorder' do
-    let(:group)   { create(:group, projects: [project]) }
-    let!(:issue1) { create(:issue, project: project, relative_position: 10) }
-    let!(:issue2) { create(:issue, project: project, relative_position: 20) }
-    let!(:issue3) { create(:issue, project: project, relative_position: 30) }
+    let_it_be(:group)  { create(:group, projects: [project]) }
+    let_it_be(:issue1) { create(:issue, project: project, relative_position: 10) }
+    let_it_be(:issue2) { create(:issue, project: project, relative_position: 20) }
+    let_it_be(:issue3) { create(:issue, project: project, relative_position: 30) }
 
     before do
       sign_in(user)
@@ -657,15 +658,15 @@ RSpec.describe Projects::IssuesController do
   end
 
   describe 'Confidential Issues' do
-    let(:project) { create(:project_empty_repo, :public) }
-    let(:assignee) { create(:assignee) }
-    let(:author) { create(:user) }
-    let(:non_member) { create(:user) }
-    let(:member) { create(:user) }
-    let(:admin) { create(:admin) }
-    let!(:issue) { create(:issue, project: project) }
-    let!(:unescaped_parameter_value) { create(:issue, :confidential, project: project, author: author) }
-    let!(:request_forgery_timing_attack) { create(:issue, :confidential, project: project, assignees: [assignee]) }
+    let_it_be(:project) { create(:project_empty_repo, :public) }
+    let_it_be(:assignee) { create(:assignee) }
+    let_it_be(:author) { create(:user) }
+    let_it_be(:non_member) { create(:user) }
+    let_it_be(:member) { create(:user) }
+    let_it_be(:admin) { create(:admin) }
+    let_it_be(:issue) { create(:issue, project: project) }
+    let_it_be(:unescaped_parameter_value) { create(:issue, :confidential, project: project, author: author) }
+    let_it_be(:request_forgery_timing_attack) { create(:issue, :confidential, project: project, assignees: [assignee]) }
 
     describe 'GET #index' do
       it 'does not list confidential issues for guests' do
@@ -1077,7 +1078,7 @@ RSpec.describe Projects::IssuesController do
     end
 
     context 'resolving discussions in MergeRequest' do
-      let(:discussion) { create(:diff_note_on_merge_request).to_discussion }
+      let_it_be(:discussion) { create(:diff_note_on_merge_request).to_discussion }
       let(:merge_request) { discussion.noteable }
       let(:project) { merge_request.source_project }
 
@@ -1376,9 +1377,9 @@ RSpec.describe Projects::IssuesController do
     end
 
     context "when the user is owner" do
-      let(:owner)     { create(:user) }
-      let(:namespace) { create(:namespace, owner: owner) }
-      let(:project)   { create(:project, namespace: namespace) }
+      let_it_be(:owner)     { create(:user) }
+      let_it_be(:namespace) { create(:namespace, owner: owner) }
+      let_it_be(:project)   { create(:project, namespace: namespace) }
 
       before do
         sign_in(owner)
@@ -1461,7 +1462,8 @@ RSpec.describe Projects::IssuesController do
 
   describe 'POST create_merge_request' do
     let(:target_project_id) { nil }
-    let(:project) { create(:project, :repository, :public) }
+
+    let_it_be(:project) { create(:project, :repository, :public) }
 
     before do
       project.add_developer(user)
@@ -1539,7 +1541,7 @@ RSpec.describe Projects::IssuesController do
   end
 
   describe 'POST #import_csv' do
-    let(:project) { create(:project, :public) }
+    let_it_be(:project) { create(:project, :public) }
     let(:file) { fixture_file_upload('spec/fixtures/csv_comma.csv') }
 
     context 'unauthorized' do
@@ -1621,7 +1623,7 @@ RSpec.describe Projects::IssuesController do
     end
 
     context 'when not logged in' do
-      let(:project) { create(:project_empty_repo, :public) }
+      let(:empty_project) { create(:project_empty_repo, :public) }
 
       it 'redirects to the sign in page' do
         request_csv
@@ -1738,7 +1740,7 @@ RSpec.describe Projects::IssuesController do
       end
 
       context 'with cross-reference system note', :request_store do
-        let(:new_issue) { create(:issue) }
+        let_it_be(:new_issue) { create(:issue) }
         let(:cross_reference) { "mentioned in #{new_issue.to_reference(issue.project)}" }
 
         before do
@@ -1836,7 +1838,7 @@ RSpec.describe Projects::IssuesController do
   end
 
   context 'private project with token authentication' do
-    let(:private_project) { create(:project, :private) }
+    let_it_be(:private_project) { create(:project, :private) }
 
     it_behaves_like 'authenticates sessionless user', :index, :atom, ignore_incrementing: true do
       before do
@@ -1856,7 +1858,7 @@ RSpec.describe Projects::IssuesController do
   end
 
   context 'public project with token authentication' do
-    let(:public_project) { create(:project, :public) }
+    let_it_be(:public_project) { create(:project, :public) }
 
     it_behaves_like 'authenticates sessionless user', :index, :atom, public: true do
       before do

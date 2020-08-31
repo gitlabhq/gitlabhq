@@ -7,7 +7,7 @@ RSpec.describe Gitlab::ExternalAuthorization::Access, :clean_gitlab_redis_cache 
 
   describe '#loaded?' do
     it 'is `true` when it was loaded recently' do
-      Timecop.freeze do
+      freeze_time do
         allow(access).to receive(:loaded_at).and_return(5.minutes.ago)
 
         expect(access).to be_loaded
@@ -19,7 +19,7 @@ RSpec.describe Gitlab::ExternalAuthorization::Access, :clean_gitlab_redis_cache 
     end
 
     it 'is `false` when there the result was loaded a long time ago' do
-      Timecop.freeze do
+      freeze_time do
         allow(access).to receive(:loaded_at).and_return(2.weeks.ago)
 
         expect(access).not_to be_loaded
@@ -70,7 +70,7 @@ RSpec.describe Gitlab::ExternalAuthorization::Access, :clean_gitlab_redis_cache 
       end
 
       it 'stores the result in redis' do
-        Timecop.freeze do
+        freeze_time do
           fake_cache = double
           expect(fake_cache).to receive(:store).with(true, nil, Time.now)
           expect(access).to receive(:cache).and_return(fake_cache)
@@ -118,7 +118,7 @@ RSpec.describe Gitlab::ExternalAuthorization::Access, :clean_gitlab_redis_cache 
       end
 
       it 'does not load from the webservice' do
-        Timecop.freeze do
+        freeze_time do
           expect(fake_cache).to receive(:load).and_return([true, nil, Time.now])
 
           expect(access).to receive(:load_from_cache).and_call_original
@@ -129,7 +129,7 @@ RSpec.describe Gitlab::ExternalAuthorization::Access, :clean_gitlab_redis_cache 
       end
 
       it 'loads from the webservice when the cached result was too old' do
-        Timecop.freeze do
+        freeze_time do
           expect(fake_cache).to receive(:load).and_return([true, nil, 2.days.ago])
 
           expect(access).to receive(:load_from_cache).and_call_original

@@ -348,6 +348,26 @@ RSpec.describe API::Users, :do_not_mock_admin_mode do
         expect(response).to match_response_schema('public_api/v4/user/basics')
         expect(json_response.first.keys).not_to include 'is_admin'
       end
+
+      context 'exclude_internal param' do
+        let_it_be(:internal_user) { User.alert_bot }
+
+        it 'returns all users when it is not set' do
+          get api("/users?exclude_internal=false", user)
+
+          expect(response).to match_response_schema('public_api/v4/user/basics')
+          expect(response).to include_pagination_headers
+          expect(json_response.map { |u| u['id'] }).to include(internal_user.id)
+        end
+
+        it 'returns all non internal users when it is set' do
+          get api("/users?exclude_internal=true", user)
+
+          expect(response).to match_response_schema('public_api/v4/user/basics')
+          expect(response).to include_pagination_headers
+          expect(json_response.map { |u| u['id'] }).not_to include(internal_user.id)
+        end
+      end
     end
 
     context "when admin" do

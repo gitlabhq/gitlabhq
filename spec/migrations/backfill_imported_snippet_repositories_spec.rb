@@ -30,7 +30,7 @@ RSpec.describe BackfillImportedSnippetRepositories do
     create_snippet(10)
 
     Sidekiq::Testing.fake! do
-      Timecop.freeze do
+      freeze_time do
         migrate!
 
         expect(described_class::MIGRATION)

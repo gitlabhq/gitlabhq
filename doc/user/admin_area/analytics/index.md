@@ -6,5 +6,5 @@ Administrators have access to instance-wide analytics, as shown in **Admin Area 
 
 There are two kinds of statistics:
 
-- [Dev Ops Score](dev_ops_score.md): Provides an overview of your entire instance's feature usage.
+- [DevOps Report](dev_ops_report.md): Provides an overview of your entire instance's feature usage.
 - [User Cohorts](user_cohorts.md): Display the monthly cohorts of new users and their activities over time.

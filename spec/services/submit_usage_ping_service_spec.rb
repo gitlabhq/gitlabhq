@@ -68,7 +68,7 @@ RSpec.describe SubmitUsagePingService do
     end
   end
 
-  shared_examples 'saves DevOps score data from the response' do
+  shared_examples 'saves DevOps report data from the response' do
     it do
       expect { subject.execute }
         .to change { DevOpsScore::Metric.count }
@@ -123,15 +123,15 @@ RSpec.describe SubmitUsagePingService do
         stub_response(body: with_conv_index_params)
       end
 
-      it_behaves_like 'saves DevOps score data from the response'
+      it_behaves_like 'saves DevOps report data from the response'
     end
 
-    context 'when DevOps score data is passed' do
+    context 'when DevOps report data is passed' do
       before do
         stub_response(body: with_dev_ops_score_params)
       end
 
-      it_behaves_like 'saves DevOps score data from the response'
+      it_behaves_like 'saves DevOps report data from the response'
     end
 
     context 'with save_raw_usage_data feature enabled' do

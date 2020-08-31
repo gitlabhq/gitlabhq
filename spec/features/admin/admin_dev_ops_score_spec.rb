@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'DevOps Score page' do
+RSpec.describe 'DevOps Report page' do
   before do
     sign_in(create(:admin))
   end
@@ -10,11 +10,11 @@ RSpec.describe 'DevOps Score page' do
   it 'has dismissable intro callout', :js do
     visit admin_dev_ops_score_path
 
-    expect(page).to have_content 'Introducing Your DevOps Score'
+    expect(page).to have_content 'Introducing Your DevOps Report'
 
     find('.js-close-callout').click
 
-    expect(page).not_to have_content 'Introducing Your DevOps Score'
+    expect(page).not_to have_content 'Introducing Your DevOps Report'
   end
 
   context 'when usage ping is disabled' do
@@ -31,7 +31,7 @@ RSpec.describe 'DevOps Score page' do
     it 'hides the intro callout' do
       visit admin_dev_ops_score_path
 
-      expect(page).not_to have_content 'Introducing Your DevOps Score'
+      expect(page).not_to have_content 'Introducing Your DevOps Report'
     end
   end
 

@@ -153,7 +153,7 @@ RSpec.describe API::ConanPackages do
       end
 
       it 'token has valid validity time' do
-        Timecop.freeze do
+        freeze_time do
           subject
 
           payload = JSONWebToken::HMACToken.decode(

@@ -750,3 +750,64 @@ code review. For docs changes in merge requests, whenever a change to files unde
 is made, Danger Bot leaves a comment with further instructions about the documentation
 process. This is configured in the `Dangerfile` in the GitLab repository under
 [/danger/documentation/](https://gitlab.com/gitlab-org/gitlab/tree/master/danger/documentation).
+
+## Automatic screenshot generator
+
+You can now set up an automatic screenshot generator to take and compress screenshots, with the
+help of a configuration file known as **screenshot generator**.
+
+### Use the tool
+
+To run the tool on an existing screenshot generator, take the following steps:
+
+1. Set up the [GitLab Development Kit (GDK)](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/master/doc/howto/gitlab_docs.md).
+1. Navigate to the subdirectory with your cloned GitLab repository, typically `gdk/gitlab`.
+1. Make sure that your GDK database is fully migrated: `bin/rake db:migrate RAILS_ENV=development`.
+1. Install pngquant, see the tool website for more info: [`pngquant`](https://pngquant.org/)
+1. Run `scripts/docs_screenshots.rb spec/docs_screenshots/<name_of_screenshot_generator>.rb <milestone-version>`.
+1. Identify the location of the screenshots, based on the `gitlab/doc` location defined by the `it` parameter in your script.
+1. Commit the newly created screenshots.
+
+### Extending the tool
+
+To add an additional **screenshot generator**, take the following steps:
+
+- Locate the `spec/docs_screenshots` directory.
+- Add a new file with a `_docs.rb` extension.
+- Be sure to include the following bits in the file:
+
+```ruby
+require 'spec_helper'
+
+RSpec.describe '<What I am taking screenshots of>', :js do
+  include DocsScreenshotHelpers # Helper that enables the screenshots taking mechanism
+
+  before do
+    page.driver.browser.manage.window.resize_to(1366, 1024) # length and width of the page
+  end
+```
+
+- In addition, every `it` block must include the path where the screenshot is saved
+
+```ruby
+ it 'user/packages/container_registry/img/project_image_repositories_list'
+```
+
+#### Full page screenshots
+
+To take a full page screenshot simply `visit the page` and perform any expectation on real content (to have capybara wait till the page is ready and not take a white screenshot).
+
+#### Element screenshot
+
+To have the screenshot focuses few more steps are needed:
+
+- **find the area**: `screenshot_area = find('#js-registry-policies')`
+- **scroll the area in focus**: `scroll_to screenshot_area`
+- **wait for the content**: `expect(screenshot_area).to have_content 'Expiration interval'`
+- **set the crop area**: `set_crop_data(screenshot_area, 20)`
+
+In particular `set_crop_data` accepts as arguments: a `DOM` element and a padding, the padding will be added around the element enlarging the screenshot area.
+
+#### Live example
+
+Please use `spec/docs_screenshots/container_registry_docs.rb` as a guide and as an example to create your own scripts.

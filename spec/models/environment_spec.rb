@@ -1222,7 +1222,7 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
       let(:environment) { build(:environment, :will_auto_stop) }
 
       it 'returns when it will expire' do
-        Timecop.freeze { is_expected.to eq(1.day.to_i) }
+        freeze_time { is_expected.to eq(1.day.to_i) }
       end
     end
 
@@ -1248,7 +1248,7 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
     end
     with_them do
       it 'sets correct auto_stop_in' do
-        Timecop.freeze do
+        freeze_time do
           if expected_result.is_a?(Integer) || expected_result.nil?
             subject
 

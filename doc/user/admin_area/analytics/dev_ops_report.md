@@ -1,4 +1,4 @@
-# DevOps Score
+# DevOps Report
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/30469) in GitLab 9.3.
 > - [Renamed from Conversational Development Index](https://gitlab.com/gitlab-org/gitlab/-/issues/20976) in GitLab 12.6.
@@ -6,7 +6,7 @@
 NOTE: **Note:**
 Your GitLab instance's [usage ping](../settings/usage_statistics.md#usage-ping-core-only) must be activated in order to use this feature.
 
-The DevOps Score gives you an overview of your entire instance's adoption of
+The DevOps Report gives you an overview of your entire instance's adoption of
 [Concurrent DevOps](https://about.gitlab.com/topics/concurrent-devops/)
 from planning to monitoring.
 
@@ -15,9 +15,9 @@ the last 30 days, averaged over the number of active users in that time period. 
 provides a Lead score per feature, which is calculated based on GitLab's analysis
 of top-performing instances based on [usage ping data](../settings/usage_statistics.md#usage-ping-core-only) that GitLab has
 collected. Your score is compared to the lead score of each feature and then expressed as a percentage at the bottom of said feature.
-Your overall **index score** is an average of your feature scores. You can use this score to compare your DevOps status to other organizations.
+Your overall **DevOps Score** is an average of your feature scores. You can use this score to compare your DevOps status to other organizations.
 
-![DevOps Score](img/dev_ops_score_v12_6.png)
+![DevOps Report](img/dev_ops_report_v13_4.png)
 
 The page also provides helpful links to articles and GitLab docs, to help you
 improve your scores.

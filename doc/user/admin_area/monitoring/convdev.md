@@ -1,5 +1,5 @@
 ---
-redirect_to: '../analytics/dev_ops_score.md'
+redirect_to: '../analytics/dev_ops_report.md'
 ---
 
-Conversational Development Index was renamed to [DevOps Score](../analytics/dev_ops_score.md) in GitLab 12.6.
+Conversational Development Index was renamed to [DevOps Report](../analytics/dev_ops_report.md) in GitLab 12.6.
