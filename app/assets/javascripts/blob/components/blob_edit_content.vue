@@ -46,7 +46,7 @@ export default {
       blobGlobalId: this.fileGlobalId,
     });
 
-    this.editor.onChangeContent(debounce(this.onFileChange.bind(this), 250));
+    this.editor.onDidChangeModelContent(debounce(this.onFileChange.bind(this), 250));
 
     window.requestAnimationFrame(() => {
       if (!performance.getEntriesByName(SNIPPET_MARK_BLOBS_CONTENT).length) {

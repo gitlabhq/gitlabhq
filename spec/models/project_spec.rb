@@ -5831,32 +5831,57 @@ RSpec.describe Project do
     end
   end
 
-  context 'pages deployed' do
+  describe '#mark_pages_as_deployed' do
     let(:project) { create(:project) }
+    let(:artifacts_archive) { create(:ci_job_artifact, project: project) }
 
-    {
-      mark_pages_as_deployed: true,
-      mark_pages_as_not_deployed: false
-    }.each do |method_name, flag|
-      describe method_name do
-        it "creates new record and sets deployed to #{flag} if none exists yet" do
-          project.pages_metadatum.destroy!
-          project.reload
+    it "works when artifacts_archive is missing" do
+      project.mark_pages_as_deployed
 
-          project.send(method_name)
+      expect(project.pages_metadatum.reload.deployed).to eq(true)
+    end
 
-          expect(project.pages_metadatum.reload.deployed).to eq(flag)
-        end
+    it "creates new record and sets deployed to true if none exists yet" do
+      project.pages_metadatum.destroy!
+      project.reload
 
-        it "updates the existing record and sets deployed to #{flag}" do
-          pages_metadatum = project.pages_metadatum
-          pages_metadatum.update!(deployed: !flag)
+      project.mark_pages_as_deployed(artifacts_archive: artifacts_archive)
 
-          expect { project.send(method_name) }.to change {
-            pages_metadatum.reload.deployed
-          }.from(!flag).to(flag)
-        end
-      end
+      expect(project.pages_metadatum.reload.deployed).to eq(true)
+    end
+
+    it "updates the existing record and sets deployed to true and records artifact archive" do
+      pages_metadatum = project.pages_metadatum
+      pages_metadatum.update!(deployed: false)
+
+      expect do
+        project.mark_pages_as_deployed(artifacts_archive: artifacts_archive)
+      end.to change { pages_metadatum.reload.deployed }.from(false).to(true)
+               .and change { pages_metadatum.reload.artifacts_archive }.from(nil).to(artifacts_archive)
+    end
+  end
+
+  describe '#mark_pages_as_not_deployed' do
+    let(:project) { create(:project) }
+    let(:artifacts_archive) { create(:ci_job_artifact, project: project) }
+
+    it "creates new record and sets deployed to false if none exists yet" do
+      project.pages_metadatum.destroy!
+      project.reload
+
+      project.mark_pages_as_not_deployed
+
+      expect(project.pages_metadatum.reload.deployed).to eq(false)
+    end
+
+    it "updates the existing record and sets deployed to false and clears artifacts_archive" do
+      pages_metadatum = project.pages_metadatum
+      pages_metadatum.update!(deployed: true, artifacts_archive: artifacts_archive)
+
+      expect do
+        project.mark_pages_as_not_deployed
+      end.to change { pages_metadatum.reload.deployed }.from(true).to(false)
+               .and change { pages_metadatum.reload.artifacts_archive }.from(artifacts_archive).to(nil)
     end
   end
 

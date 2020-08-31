@@ -1,4 +1,4 @@
-import { editor as monacoEditor, languages as monacoLanguages, Position, Uri } from 'monaco-editor';
+import { editor as monacoEditor, languages as monacoLanguages, Uri } from 'monaco-editor';
 import { DEFAULT_THEME, themes } from '~/ide/lib/themes';
 import languages from '~/ide/lib/languages';
 import { defaultEditorOptions } from '~/ide/lib/editor_options';
@@ -73,6 +73,7 @@ export default class Editor {
       this.instances.splice(index, 1);
       model.dispose();
     });
+    instance.updateModelLanguage = path => this.updateModelLanguage(path);
 
     // Reference to the model on the editor level will go away in
     // https://gitlab.com/gitlab-org/gitlab/-/issues/241023
@@ -92,10 +93,6 @@ export default class Editor {
     delete this.editorEl.dataset.editorLoading;
   }
 
-  onChangeContent(fn) {
-    return this.model.onDidChangeContent(fn);
-  }
-
   updateModelLanguage(path) {
     if (path === this.blobPath) return;
     this.blobPath = path;
@@ -105,46 +102,6 @@ export default class Editor {
       .find(lang => lang.extensions.indexOf(ext) !== -1);
     const id = language ? language.id : 'plaintext';
     monacoEditor.setModelLanguage(this.model, id);
-  }
-
-  /**
-   * @deprecated do not use .getValue() directly on the editor.
-   * This proxy-method will be removed in https://gitlab.com/gitlab-org/gitlab/-/issues/241025
-   * Rather use it on the exact instance
-   */
-  getValue() {
-    return this.instances[0].getValue();
-  }
-
-  /**
-   * @deprecated do not use .setValue() directly on the editor.
-   * This proxy-method will be removed in https://gitlab.com/gitlab-org/gitlab/-/issues/241025
-   * Rather use it on the exact instance
-   */
-  setValue(val) {
-    this.instances[0].setValue(val);
-  }
-
-  /**
-   * @deprecated do not use .focus() directly on the editor.
-   * This proxy-method will be removed in https://gitlab.com/gitlab-org/gitlab/-/issues/241025
-   * Rather use it on the exact instance
-   */
-  focus() {
-    this.instances[0].focus();
-  }
-
-  /**
-   * @deprecated do not use .updateOptions() directly on the editor.
-   * This proxy-method will be removed in https://gitlab.com/gitlab-org/gitlab/-/issues/241025
-   * Rather use it on the exact instance
-   */
-  updateOptions(options = {}) {
-    this.instances[0].updateOptions(options);
-  }
-
-  navigateFileStart() {
-    this.instances[0].setPosition(new Position(1, 1));
   }
 
   use(exts = [], instance = null) {

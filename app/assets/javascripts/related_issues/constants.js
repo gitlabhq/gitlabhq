@@ -1,4 +1,4 @@
-import { __ } from '~/locale';
+import { __, sprintf } from '~/locale';
 
 export const issuableTypesMap = {
   ISSUE: 'issue',
@@ -20,9 +20,21 @@ export const linkedIssueTypesTextMap = {
 
 export const autoCompleteTextMap = {
   true: {
-    [issuableTypesMap.ISSUE]: __(' or <#issue id>'),
-    [issuableTypesMap.EPIC]: __(' or <&epic id>'),
-    [issuableTypesMap.MERGE_REQUEST]: __(' or <!merge request id>'),
+    [issuableTypesMap.ISSUE]: sprintf(
+      __(' or %{emphasisStart}#issue id%{emphasisEnd}'),
+      { emphasisStart: '<', emphasisEnd: '>' },
+      false,
+    ),
+    [issuableTypesMap.EPIC]: sprintf(
+      __(' or %{emphasisStart}&epic id%{emphasisEnd}'),
+      { emphasisStart: '<', emphasisEnd: '>' },
+      false,
+    ),
+    [issuableTypesMap.MERGE_REQUEST]: sprintf(
+      __(' or %{emphasisStart}!merge request id%{emphasisEnd}'),
+      { emphasisStart: '<', emphasisEnd: '>' },
+      false,
+    ),
   },
   false: {
     [issuableTypesMap.ISSUE]: '',

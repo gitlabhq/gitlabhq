@@ -78,18 +78,18 @@ describe('Markdown Extension for Editor Lite', () => {
       selectSecondString();
       instance.replaceSelectedText(expectedStr);
 
-      expect(editor.getValue()).toBe(`${firstLine}\n${expectedStr}\n${thirdLine}`);
+      expect(instance.getValue()).toBe(`${firstLine}\n${expectedStr}\n${thirdLine}`);
     });
 
     it('prepends the supplied text if no text is selected', () => {
       instance.replaceSelectedText(expectedStr);
-      expect(editor.getValue()).toBe(`${expectedStr}${firstLine}\n${secondLine}\n${thirdLine}`);
+      expect(instance.getValue()).toBe(`${expectedStr}${firstLine}\n${secondLine}\n${thirdLine}`);
     });
 
     it('replaces selection with empty string if no text is supplied', () => {
       selectSecondString();
       instance.replaceSelectedText();
-      expect(editor.getValue()).toBe(`${firstLine}\n\n${thirdLine}`);
+      expect(instance.getValue()).toBe(`${firstLine}\n\n${thirdLine}`);
     });
 
     it('puts cursor at the end of the new string and collapses selection by default', () => {

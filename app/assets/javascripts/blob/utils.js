@@ -6,12 +6,11 @@ export function initEditorLite({ el, ...args }) {
       alwaysConsumeMouseWheel: false,
     },
   });
-  editor.createInstance({
+
+  return editor.createInstance({
     el,
     ...args,
   });
-
-  return editor;
 }
 
 export default () => ({});

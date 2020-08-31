@@ -1828,12 +1828,12 @@ class Project < ApplicationRecord
   end
   # rubocop: enable CodeReuse/ServiceClass
 
-  def mark_pages_as_deployed
-    ensure_pages_metadatum.update!(deployed: true)
+  def mark_pages_as_deployed(artifacts_archive: nil)
+    ensure_pages_metadatum.update!(deployed: true, artifacts_archive: artifacts_archive)
   end
 
   def mark_pages_as_not_deployed
-    ensure_pages_metadatum.update!(deployed: false)
+    ensure_pages_metadatum.update!(deployed: false, artifacts_archive: nil)
   end
 
   def write_repository_config(gl_full_path: full_path)

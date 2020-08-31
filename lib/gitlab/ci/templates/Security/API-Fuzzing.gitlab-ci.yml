@@ -80,7 +80,7 @@ apifuzzer_fuzz:
             -p 8000:8000 \
             -p 514:514 \
             --restart=no \
-            registry.gitlab.com/gitlab-org/security-products/analyzers/api-fuzzing-src:${FUZZAPI_VERSION}-engine
+            registry.gitlab.com/gitlab-org/security-products/analyzers/api-fuzzing:${FUZZAPI_VERSION}-engine
         #
         # Start target container
         - |

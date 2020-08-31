@@ -71,7 +71,7 @@ module Backup
       end
 
       report_success(success)
-      abort Backup::Error, 'Restore failed' unless success
+      abort 'Restore failed' unless success
     end
 
     protected

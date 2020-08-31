@@ -53,8 +53,10 @@ module Gitlab
           Gitlab::Redis::HLL.count(keys: keys)
         end
 
+        # @param category [String] the category name
+        # @return [Array<String>] list of event names for given category
         def events_for_category(category)
-          known_events.select { |event| event[:category] == category }.map { |event| event[:name] }
+          known_events.select { |event| event[:category] == category.to_s }.map { |event| event[:name] }
         end
 
         private

@@ -142,6 +142,8 @@ The chosen OmniAuth provider is now active and can be used to sign in to GitLab 
 
 ## Automatically Link Existing Users to OmniAuth Users
 
+> [Introduced in GitLab 13.4.](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/36664)
+
 You can automatically link OmniAuth users with existing GitLab users if their email addresses match by adding the following setting:
 
 **For Omnibus installations**

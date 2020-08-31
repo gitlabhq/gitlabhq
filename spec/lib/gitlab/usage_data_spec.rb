@@ -1036,6 +1036,8 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
           'p_analytics_repo' => 123,
           'i_analytics_cohorts' => 123,
           'i_analytics_dev_ops_score' => 123,
+          'p_analytics_merge_request' => 123,
+          'g_analytics_merge_request' => 123,
           'analytics_unique_visits_for_any_target' => 543,
           'analytics_unique_visits_for_any_target_monthly' => 987
         }

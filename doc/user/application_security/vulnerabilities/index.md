@@ -9,10 +9,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13561) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.0.
 
-Each security vulnerability in the [Security Dashboard](../security_dashboard/index.md#project-security-dashboard) has its own standalone
-page.
+Each security vulnerability in a project's [Security Dashboard](../security_dashboard/index.md#project-security-dashboard) has an individual page which includes:
 
-![Vulnerability page](img/vulnerability_page_v13_1.png)
+- Details of the vulnerability.
+- The status of the vulnerability within the project.
+- Available actions for the vulnerability.
 
 On the vulnerability page, you can interact with the vulnerability in
 several different ways:

@@ -43,6 +43,12 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
     Timecop.freeze(reference_time) { example.run }
   end
 
+  describe '.events_for_category' do
+    it 'gets the event names for given category' do
+      expect(described_class.events_for_category(:analytics)).to contain_exactly(weekly_event, daily_event)
+    end
+  end
+
   describe '.track_event' do
     it "raise error if metrics don't have same aggregation" do
       expect { described_class.track_event(entity1, different_aggregation, Date.current) } .to raise_error(Gitlab::UsageDataCounters::HLLRedisCounter::UnknownAggregation)

@@ -56,13 +56,13 @@ msgstr[1] ""
 msgid " or "
 msgstr ""
 
-msgid " or <!merge request id>"
+msgid " or %{emphasisStart}!merge request id%{emphasisEnd}"
 msgstr ""
 
-msgid " or <#issue id>"
+msgid " or %{emphasisStart}#issue id%{emphasisEnd}"
 msgstr ""
 
-msgid " or <&epic id>"
+msgid " or %{emphasisStart}&epic id%{emphasisEnd}"
 msgstr ""
 
 msgid " or references (e.g. path/to/project!merge_request_id)"
@@ -824,6 +824,9 @@ msgstr ""
 msgid "%{webhooks_link_start}%{webhook_type}%{link_end} enable you to send notifications to web applications in response to events in a group or project. We recommend using an %{integrations_link_start}integration%{link_end} in preference to a webhook."
 msgstr ""
 
+msgid "&lt; 1 hour"
+msgstr ""
+
 msgid "&lt;no name set&gt;"
 msgstr ""
 
@@ -1091,9 +1094,6 @@ msgid "8 hours"
 msgstr ""
 
 msgid ":%{startLine} to %{endLine}"
-msgstr ""
-
-msgid "< 1 hour"
 msgstr ""
 
 msgid "A 'Runner' is a process which runs a job. You can set up as many Runners as you need."

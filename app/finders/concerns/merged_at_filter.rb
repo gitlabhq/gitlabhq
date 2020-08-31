@@ -12,7 +12,7 @@ module MergedAtFilter
     mr_metrics_scope = mr_metrics_scope.merged_before(merged_before) if merged_before.present?
 
     scope = items.joins(:metrics).merge(mr_metrics_scope)
-    scope = target_project_id_filter_on_metrics(scope) if Feature.enabled?(:improved_mr_merged_at_queries)
+    scope = target_project_id_filter_on_metrics(scope) if Feature.enabled?(:improved_mr_merged_at_queries, default_enabled: true)
     scope
   end
   # rubocop: enable CodeReuse/ActiveRecord
