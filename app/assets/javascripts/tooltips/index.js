@@ -10,9 +10,15 @@ const EVENTS_MAP = {
 };
 
 const DEFAULT_TRIGGER = 'hover focus';
+const APP_ELEMENT_ID = 'gl-tooltips-app';
 
 const tooltipsApp = () => {
   if (!app) {
+    const container = document.createElement('div');
+
+    container.setAttribute('id', APP_ELEMENT_ID);
+    document.body.appendChild(container);
+
     app = new Vue({
       render(h) {
         return h(Tooltips, {
@@ -22,7 +28,7 @@ const tooltipsApp = () => {
           ref: 'tooltips',
         });
       },
-    }).$mount();
+    }).$mount(container);
   }
 
   return app;
@@ -55,4 +61,13 @@ export const initTooltips = (selector, config = {}) => {
   });
 
   return tooltipsApp();
+};
+
+export const dispose = elements => {
+  return tooltipsApp().$refs.tooltips.dispose(elements);
+};
+
+export const destroy = () => {
+  tooltipsApp().$destroy();
+  app = null;
 };

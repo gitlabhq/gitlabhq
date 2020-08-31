@@ -36,13 +36,44 @@ export default {
       tooltips: [],
     };
   },
+  created() {
+    this.observer = new MutationObserver(mutations => {
+      mutations.forEach(mutation => {
+        this.dispose(mutation.removedNodes);
+      });
+    });
+  },
+  beforeDestroy() {
+    this.observer.disconnect();
+  },
   methods: {
     addTooltips(elements, config) {
       const newTooltips = elements
         .filter(element => !this.tooltipExists(element))
         .map(element => newTooltip(element, config));
 
+      newTooltips.forEach(tooltip => this.observe(tooltip));
+
       this.tooltips.push(...newTooltips);
+    },
+    observe(tooltip) {
+      this.observer.observe(tooltip.target.parentElement, {
+        childList: true,
+      });
+    },
+    dispose(elements) {
+      if (!elements) {
+        this.tooltips = [];
+        return;
+      }
+
+      elements.forEach(element => {
+        const index = this.tooltips.findIndex(tooltip => tooltip.target === element);
+
+        if (index > -1) {
+          this.tooltips.splice(index, 1);
+        }
+      });
     },
     tooltipExists(element) {
       return this.tooltips.some(tooltip => tooltip.target === element);

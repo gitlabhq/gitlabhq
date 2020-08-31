@@ -1,6 +1,8 @@
-import { initTooltips } from '~/tooltips';
+import { initTooltips, dispose, destroy } from '~/tooltips';
 
 describe('tooltips/index.js', () => {
+  let tooltipsApp;
+
   const createTooltipTarget = () => {
     const target = document.createElement('button');
     const attributes = {
@@ -13,7 +15,13 @@ describe('tooltips/index.js', () => {
 
     target.classList.add('has-tooltip');
 
+    document.body.appendChild(target);
+
     return target;
+  };
+
+  const buildTooltipsApp = () => {
+    tooltipsApp = initTooltips('.has-tooltip');
   };
 
   const triggerEvent = (target, eventName = 'mouseenter') => {
@@ -22,13 +30,16 @@ describe('tooltips/index.js', () => {
     target.dispatchEvent(event);
   };
 
+  afterEach(() => {
+    document.body.childNodes.forEach(node => node.remove());
+    destroy();
+  });
+
   describe('initTooltip', () => {
     it('attaches a GlTooltip for the elements specified in the selector', async () => {
       const target = createTooltipTarget();
-      const tooltipsApp = initTooltips('.has-tooltip');
 
-      document.body.appendChild(tooltipsApp.$el);
-      document.body.appendChild(target);
+      buildTooltipsApp();
 
       triggerEvent(target);
 
@@ -40,19 +51,33 @@ describe('tooltips/index.js', () => {
 
     it('supports triggering a tooltip in custom events', async () => {
       const target = createTooltipTarget();
-      const tooltipsApp = initTooltips('.has-tooltip', {
-        triggers: 'click',
-      });
 
-      document.body.appendChild(tooltipsApp.$el);
-      document.body.appendChild(target);
-
+      buildTooltipsApp();
       triggerEvent(target, 'click');
 
       await tooltipsApp.$nextTick();
 
       expect(document.querySelector('.gl-tooltip')).not.toBe(null);
       expect(document.querySelector('.gl-tooltip').innerHTML).toContain('default title');
+    });
+  });
+
+  describe('dispose', () => {
+    it('removes tooltips that target the elements specified', async () => {
+      const target = createTooltipTarget();
+
+      buildTooltipsApp();
+      triggerEvent(target);
+
+      await tooltipsApp.$nextTick();
+
+      expect(document.querySelector('.gl-tooltip')).not.toBe(null);
+
+      dispose([target]);
+
+      await tooltipsApp.$nextTick();
+
+      expect(document.querySelector('.gl-tooltip')).toBe(null);
     });
   });
 });

@@ -216,7 +216,10 @@ class RegistrationsController < Devise::RegistrationsController
   end
 
   def show_onboarding_issues_experiment?
-    !helpers.in_subscription_flow? && !helpers.in_invitation_flow? && !helpers.in_oauth_flow?
+    !helpers.in_subscription_flow? &&
+      !helpers.in_invitation_flow? &&
+      !helpers.in_oauth_flow? &&
+      !helpers.in_trial_flow?
   end
 end
 
