@@ -119,7 +119,7 @@ gem 'fog-local', '~> 0.6'
 gem 'fog-openstack', '~> 1.0'
 gem 'fog-rackspace', '~> 0.1.1'
 gem 'fog-aliyun', '~> 0.3'
-gem 'gitlab-fog-azure-rm', '~> 0.7', require: false
+gem 'gitlab-fog-azure-rm', '~> 0.8', require: false
 
 # for Google storage
 gem 'google-api-client', '~> 0.33'

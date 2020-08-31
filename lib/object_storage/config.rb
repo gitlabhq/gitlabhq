@@ -54,6 +54,12 @@ module ObjectStorage
     end
     # End AWS-specific options
 
+    # Begin Azure-specific options
+    def azure_storage_domain
+      credentials[:azure_storage_domain]
+    end
+    # End Azure-specific options
+
     def google?
       provider == 'Google'
     end

@@ -702,13 +702,7 @@ export const approximateDuration = (seconds = 0) => {
  * @return {Date} the date object from the params
  */
 export const dateFromParams = (year, month, day) => {
-  const date = new Date();
-
-  date.setFullYear(year);
-  date.setMonth(month);
-  date.setDate(day);
-
-  return date;
+  return new Date(year, month, day);
 };
 
 /**

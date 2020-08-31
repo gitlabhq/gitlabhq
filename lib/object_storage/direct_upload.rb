@@ -98,6 +98,9 @@ module ObjectStorage
         RemoteTempObjectID: object_name,
         ObjectStorage: {
           Provider: 'AzureRM',
+          AzureConfig: {
+            StorageDomain: config.azure_storage_domain
+          },
           GoCloudConfig: {
             URL: "azblob://#{bucket_name}"
           }

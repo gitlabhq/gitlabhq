@@ -80,6 +80,10 @@ Now that the basics of our project is completed, we can publish the package.
 To publish the package, you need:
 
 - A personal access token. You can generate a [personal access token](../../../user/profile/personal_access_tokens.md) with the scope set to `api` for repository authentication.
+   NOTE: **Note:**
+
+  [Deploy tokens](./../../project/deploy_tokens/index.md) are not yet supported for use with Composer.
+
 - Your project ID which can be found on the home page of your project.
 
 To publish the package hosted on GitLab, make a `POST` request to the GitLab package API.
