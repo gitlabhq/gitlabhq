@@ -16155,6 +16155,15 @@ msgstr ""
 msgid "NetworkPolicies|%{number} selected"
 msgstr ""
 
+msgid "NetworkPolicies|%{strongOpen}all%{strongClose} pods"
+msgstr ""
+
+msgid "NetworkPolicies|%{strongOpen}any%{strongClose} port"
+msgstr ""
+
+msgid "NetworkPolicies|.yaml"
+msgstr ""
+
 msgid "NetworkPolicies|.yaml mode"
 msgstr ""
 
@@ -16164,6 +16173,12 @@ msgstr ""
 msgid "NetworkPolicies|All selected"
 msgstr ""
 
+msgid "NetworkPolicies|Allow all inbound traffic to %{selector} from %{ruleSelector} on %{ports}"
+msgstr ""
+
+msgid "NetworkPolicies|Allow all outbound traffic from %{selector} to %{ruleSelector} on %{ports}"
+msgstr ""
+
 msgid "NetworkPolicies|Choose whether to enforce this policy."
 msgstr ""
 
@@ -16171,6 +16186,9 @@ msgid "NetworkPolicies|Create policy"
 msgstr ""
 
 msgid "NetworkPolicies|Define this policy's location, conditions and actions."
+msgstr ""
+
+msgid "NetworkPolicies|Deny all traffic"
 msgstr ""
 
 msgid "NetworkPolicies|Description"
@@ -16242,6 +16260,9 @@ msgstr ""
 msgid "NetworkPolicies|Policy type"
 msgstr ""
 
+msgid "NetworkPolicies|Rule"
+msgstr ""
+
 msgid "NetworkPolicies|Rule mode"
 msgstr ""
 
@@ -16260,6 +16281,12 @@ msgstr ""
 msgid "NetworkPolicies|YAML editor"
 msgstr ""
 
+msgid "NetworkPolicies|all DNS names"
+msgstr ""
+
+msgid "NetworkPolicies|all IP addresses"
+msgstr ""
+
 msgid "NetworkPolicies|any pod"
 msgstr ""
 
@@ -16275,13 +16302,22 @@ msgstr ""
 msgid "NetworkPolicies|inbound to"
 msgstr ""
 
+msgid "NetworkPolicies|nowhere"
+msgstr ""
+
 msgid "NetworkPolicies|outbound from"
 msgstr ""
 
 msgid "NetworkPolicies|pod with labels"
 msgstr ""
 
+msgid "NetworkPolicies|pods %{pods}"
+msgstr ""
+
 msgid "NetworkPolicies|pods with labels"
+msgstr ""
+
+msgid "NetworkPolicies|ports %{ports}"
 msgstr ""
 
 msgid "NetworkPolicies|ports/protocols"
@@ -28776,6 +28812,9 @@ msgid "already shared with this group"
 msgstr ""
 
 msgid "among other things"
+msgstr ""
+
+msgid "and"
 msgstr ""
 
 msgid "any-approver for the merge request already exists"

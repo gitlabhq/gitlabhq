@@ -1,5 +1,5 @@
 <script>
-import { GlLink, GlModalDirective, GlSprintf, GlButton } from '@gitlab/ui';
+import { GlLink, GlModalDirective, GlSprintf, GlButton, GlAlert } from '@gitlab/ui';
 import { s__, __, sprintf } from '~/locale';
 import eventHub from '../event_hub';
 import identicon from '../../vue_shared/components/identicon.vue';
@@ -14,6 +14,7 @@ export default {
     GlButton,
     identicon,
     GlLink,
+    GlAlert,
     GlSprintf,
     UninstallApplicationButton,
     UninstallApplicationConfirmationModal,
@@ -381,12 +382,14 @@ export default {
             </template>
           </div>
 
-          <div
+          <gl-alert
             v-if="updateFailed && !isUpdating"
-            class="bs-callout bs-callout-danger cluster-application-banner mt-2 mb-0 js-cluster-application-update-details"
+            variant="danger"
+            :dismissible="false"
+            class="gl-mt-3 gl-mb-0 js-cluster-application-update-details"
           >
             {{ updateFailureDescription }}
-          </div>
+          </gl-alert>
           <template v-if="updateAvailable || updateFailed || isUpdating">
             <template v-if="updatingNeedsConfirmation">
               <gl-button
