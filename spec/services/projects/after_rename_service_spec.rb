@@ -22,7 +22,6 @@ RSpec.describe Projects::AfterRenameService do
         # call. This makes testing a bit easier.
         allow(project).to receive(:gitlab_shell).and_return(gitlab_shell)
 
-        stub_feature_flags(skip_hashed_storage_upgrade: false)
         stub_application_setting(hashed_storage_enabled: false)
       end
 
@@ -151,7 +150,6 @@ RSpec.describe Projects::AfterRenameService do
         # call. This makes testing a bit easier.
         allow(project).to receive(:gitlab_shell).and_return(gitlab_shell)
 
-        stub_feature_flags(skip_hashed_storage_upgrade: false)
         stub_application_setting(hashed_storage_enabled: true)
       end
 

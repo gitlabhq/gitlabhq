@@ -212,11 +212,8 @@ Find the current permissions on the Value Stream Analytics dashboard, as describ
 
 ### Issue Board permissions
 
-Developers and users with higher permission level can use all
-the functionality of the Issue Board, that is create/delete lists
-and drag issues around. Read through the
-[documentation on Issue Boards permissions](project/issue_board.md#permissions)
-to learn more.
+Find the current permissions for interacting with the Issue Board feature in the
+[Issue Boards permissions page](project/issue_board.md#permissions).
 
 ### File Locking permissions **(PREMIUM)**
 

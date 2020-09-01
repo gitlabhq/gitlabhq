@@ -91,18 +91,6 @@ RSpec.describe AutoMerge::MergeWhenPipelineSucceedsService do
       end
     end
 
-    context 'without feature enabled' do
-      it 'does not send notification' do
-        stub_feature_flags(mwps_notification: false)
-
-        allow(merge_request)
-          .to receive_messages(head_pipeline: pipeline, actual_head_pipeline: pipeline)
-        expect(MailScheduler::NotificationServiceWorker).not_to receive(:perform_async)
-
-        service.execute(merge_request)
-      end
-    end
-
     context 'already approved' do
       let(:service) { described_class.new(project, user, should_remove_source_branch: true) }
       let(:build)   { create(:ci_build, ref: mr_merge_if_green_enabled.source_branch) }

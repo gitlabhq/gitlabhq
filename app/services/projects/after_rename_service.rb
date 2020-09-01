@@ -126,8 +126,7 @@ module Projects
 
     def migrate_to_hashed_storage?
       Gitlab::CurrentSettings.hashed_storage_enabled? &&
-        project.storage_upgradable? &&
-        Feature.disabled?(:skip_hashed_storage_upgrade)
+        project.storage_upgradable?
     end
 
     def send_move_instructions?

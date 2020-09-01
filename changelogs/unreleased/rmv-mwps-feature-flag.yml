@@ -1,0 +1,5 @@
+---
+title: Send notification when merge request is set to merge when pipeline succeeds
+merge_request: 39297
+author: Ravishankar Gnanaprakasam
+type: added

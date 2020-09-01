@@ -568,25 +568,42 @@ RSpec.describe ProjectsController do
       end
 
       context 'when only renaming a project path' do
-        it "sets the repository to the right path after a rename" do
+        it "doesnt change the disk_path when using hashed storage" do
+          skip unless project.hashed_storage?(:repository)
+
+          hashed_storage_path = ::Storage::Hashed.new(project).disk_path
           original_repository_path = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
             project.repository.path
           end
 
-          expect { update_project path: 'renamed_path' }
-            .to change { project.reload.path }
+          expect { update_project path: 'renamed_path' }.to change { project.reload.path }
           expect(project.path).to include 'renamed_path'
 
           assign_repository_path = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
             assigns(:repository).path
           end
 
-          if project.hashed_storage?(:repository)
-            expect(assign_repository_path).to eq(original_repository_path)
-          else
-            expect(assign_repository_path).to include(project.path)
+          expect(original_repository_path).to include(hashed_storage_path)
+          expect(assign_repository_path).to include(hashed_storage_path)
+        end
+
+        it "upgrades and move project to hashed storage when project was originally legacy" do
+          skip if project.hashed_storage?(:repository)
+
+          hashed_storage_path = Storage::Hashed.new(project).disk_path
+          original_repository_path = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+            project.repository.path
           end
 
+          expect { update_project path: 'renamed_path' }.to change { project.reload.path }
+          expect(project.path).to include 'renamed_path'
+
+          assign_repository_path = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+            assigns(:repository).path
+          end
+
+          expect(original_repository_path).not_to include(hashed_storage_path)
+          expect(assign_repository_path).to include(hashed_storage_path)
           expect(response).to have_gitlab_http_status(:found)
         end
       end

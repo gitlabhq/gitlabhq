@@ -184,6 +184,7 @@ To minimize the number of notifications that do not require any action, from [Gi
 | Close merge request    |         |
 | Reopen merge request   |         |
 | Merge merge request    |         |
+| Merge when pipeline succeeds ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/211961) in GitLab 13.4) |     |
 | Change milestone merge request | Subscribers, participants mentioned, and Custom notification level with this event selected |
 | Remove milestone merge request | Subscribers, participants mentioned, and Custom notification level with this event selected |
 | New comment            | The above, plus anyone mentioned by `@username` in the comment, with notification level "Mention" or higher |

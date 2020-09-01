@@ -995,8 +995,12 @@ information, see the [strong consistency epic](https://gitlab.com/groups/gitlab-
 
 To enable strong consistency:
 
-- In GitLab 13.3 and later, reference transactions are enabled by default with
-  a primary-wins strategy. This strategy causes all transactions to succeed for
+- In GitLab 13.4 and later, the strong consistency voting strategy has been
+  improved. Instead of requiring all nodes to agree, only the primary and half
+  of the secondaries need to agree. To enable this strategy, disable the
+  `:gitaly_reference_transactions_primary_wins` feature flag.
+- In GitLab 13.3, reference transactions are enabled by default with a
+  primary-wins strategy. This strategy causes all transactions to succeed for
   the primary and thus does not ensure strong consistency. To enable strong
   consistency, disable the `:gitaly_reference_transactions_primary_wins`
   feature flag.

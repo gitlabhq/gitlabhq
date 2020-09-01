@@ -17,7 +17,6 @@ class Admin::RunnersController < Admin::ApplicationController
   def update
     if Ci::UpdateRunnerService.new(@runner).update(runner_params)
       respond_to do |format|
-        format.js
         format.html { redirect_to admin_runner_path(@runner) }
       end
     else
