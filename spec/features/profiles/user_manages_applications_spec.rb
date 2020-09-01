@@ -15,6 +15,7 @@ RSpec.describe 'User manages applications' do
 
     fill_in :doorkeeper_application_name,         with: 'test'
     fill_in :doorkeeper_application_redirect_uri, with: 'https://test.com'
+    check :doorkeeper_application_scopes_read_user
     click_on 'Save application'
 
     expect(page).to have_content 'Application: test'
@@ -40,5 +41,17 @@ RSpec.describe 'User manages applications' do
       click_on 'Destroy'
     end
     expect(page.find('.oauth-applications')).not_to have_content 'test_changed'
+  end
+
+  context 'when scopes are blank' do
+    it 'returns an error' do
+      expect(page).to have_content 'Add new application'
+
+      fill_in :doorkeeper_application_name,         with: 'test'
+      fill_in :doorkeeper_application_redirect_uri, with: 'https://test.com'
+      click_on 'Save application'
+
+      expect(page).to have_content("Scopes can't be blank")
+    end
   end
 end

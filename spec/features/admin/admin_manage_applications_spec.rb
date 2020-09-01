@@ -7,7 +7,7 @@ RSpec.describe 'admin manage applications' do
     sign_in(create(:admin))
   end
 
-  it do
+  it 'creates new oauth application' do
     visit admin_applications_path
 
     click_on 'New application'
@@ -16,6 +16,7 @@ RSpec.describe 'admin manage applications' do
     fill_in :doorkeeper_application_name, with: 'test'
     fill_in :doorkeeper_application_redirect_uri, with: 'https://test.com'
     check :doorkeeper_application_trusted
+    check :doorkeeper_application_scopes_read_user
     click_on 'Submit'
     expect(page).to have_content('Application: test')
     expect(page).to have_content('Application ID')
@@ -42,5 +43,20 @@ RSpec.describe 'admin manage applications' do
       click_on 'Destroy'
     end
     expect(page.find('.oauth-applications')).not_to have_content('test_changed')
+  end
+
+  context 'when scopes are blank' do
+    it 'returns an error' do
+      visit admin_applications_path
+
+      click_on 'New application'
+      expect(page).to have_content('New application')
+
+      fill_in :doorkeeper_application_name, with: 'test'
+      fill_in :doorkeeper_application_redirect_uri, with: 'https://test.com'
+      click_on 'Submit'
+
+      expect(page).to have_content("Scopes can't be blank")
+    end
   end
 end
