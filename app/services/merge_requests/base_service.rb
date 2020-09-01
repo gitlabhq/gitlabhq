@@ -23,6 +23,8 @@ module MergeRequests
       merge_data = hook_data(merge_request, action, old_rev: old_rev, old_associations: old_associations)
       merge_request.project.execute_hooks(merge_data, :merge_request_hooks)
       merge_request.project.execute_services(merge_data, :merge_request_hooks)
+
+      enqueue_jira_connect_messages_for(merge_request)
     end
 
     def cleanup_environments(merge_request)
@@ -51,6 +53,14 @@ module MergeRequests
     end
 
     private
+
+    def enqueue_jira_connect_messages_for(merge_request)
+      return unless project.jira_subscription_exists?
+
+      if Atlassian::JiraIssueKeyExtractor.has_keys?(merge_request.title, merge_request.description)
+        JiraConnect::SyncMergeRequestWorker.perform_async(merge_request.id)
+      end
+    end
 
     def create(merge_request)
       self.params = assign_allowed_merge_params(merge_request, params)

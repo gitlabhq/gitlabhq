@@ -1,0 +1,26 @@
+{
+  "type": "object",
+  "properties": {
+    "id": { "type": "string" },
+    "issueKeys": { "type": "array" },
+    "displayId": { "type": "string" },
+    "title": { "type": "string" },
+    "author": {
+      "$ref": "./author.json"
+    },
+    "commentCount": { "type": "integer" },
+    "sourceBranch": { "type": "string" },
+    "destinationBranch": { "type": "string" },
+    "lastUpdate": { "type": "timestamp" },
+    "status": { "type": "string" },
+    "sourceBranchUrl": { "type": "uri" },
+    "url": { "type": "uri" },
+    "updateSequenceId": { "type": "integer" }
+  },
+  "required": [
+    "id", "issueKeys", "displayId", "title", "author", "commentCount",
+    "sourceBranch", "destinationBranch", "lastUpdate", "status",
+    "sourceBranchUrl", "url", "updateSequenceId"
+  ],
+  "additionalProperties": false
+}

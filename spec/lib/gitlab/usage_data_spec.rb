@@ -286,6 +286,8 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
         create(:issue, project: project, author: User.support_bot)
         create(:note, project: project, noteable: issue, author: user)
         create(:todo, project: project, target: issue, author: user)
+        create(:jira_service, :jira_cloud_service, active: true, project: create(:project, :jira_dvcs_cloud, creator: user))
+        create(:jira_service, active: true, project: create(:project, :jira_dvcs_server, creator: user))
       end
 
       expect(described_class.usage_activity_by_stage_plan({})).to include(
@@ -294,7 +296,10 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
         projects: 2,
         todos: 2,
         service_desk_enabled_projects: 2,
-        service_desk_issues: 2
+        service_desk_issues: 2,
+        projects_jira_active: 2,
+        projects_jira_dvcs_cloud_active: 2,
+        projects_jira_dvcs_server_active: 2
       )
       expect(described_class.usage_activity_by_stage_plan(described_class.last_28_days_time_period)).to include(
         issues: 2,
@@ -302,7 +307,10 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
         projects: 1,
         todos: 1,
         service_desk_enabled_projects: 1,
-        service_desk_issues: 1
+        service_desk_issues: 1,
+        projects_jira_active: 1,
+        projects_jira_dvcs_cloud_active: 1,
+        projects_jira_dvcs_server_active: 1
       )
     end
   end

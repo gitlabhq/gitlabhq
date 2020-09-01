@@ -1,0 +1,5 @@
+---
+title: Add index for expire_at to ci_pipeline_artifacts
+merge_request: 39882
+author:
+type: added

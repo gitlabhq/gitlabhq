@@ -116,6 +116,7 @@ class GroupPolicy < BasePolicy
     enable :update_cluster
     enable :admin_cluster
     enable :read_deploy_token
+    enable :create_jira_connect_subscription
   end
 
   rule { owner }.policy do

@@ -2908,7 +2908,12 @@ type DastScannerProfile {
   """
   ID of the DAST scanner profile
   """
-  id: ID!
+  globalId: DastScannerProfileID!
+
+  """
+  ID of the DAST scanner profile. Deprecated in 13.4: Use `global_id`
+  """
+  id: ID! @deprecated(reason: "Use `global_id`. Deprecated in 13.4")
 
   """
   Name of the DAST scanner profile
@@ -2993,7 +2998,12 @@ type DastScannerProfileCreatePayload {
   """
   ID of the scanner profile.
   """
-  id: ID
+  globalId: DastScannerProfileID
+
+  """
+  ID of the scanner profile.. Deprecated in 13.4: Use `global_id`
+  """
+  id: ID @deprecated(reason: "Use `global_id`. Deprecated in 13.4")
 }
 
 """

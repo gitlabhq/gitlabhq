@@ -423,27 +423,28 @@ export default {
               <div
                 class="btn-group gl-mr-3 comment-type-dropdown js-comment-type-dropdown droplab-dropdown"
               >
-                <button
+                <gl-button
                   :disabled="isSubmitButtonDisabled"
-                  class="btn btn-success js-comment-button js-comment-submit-button qa-comment-button"
+                  class="js-comment-button js-comment-submit-button qa-comment-button"
                   type="submit"
+                  category="primary"
+                  variant="success"
                   :data-track-label="trackingLabel"
                   data-track-event="click_button"
                   @click.prevent="handleSave()"
+                  >{{ commentButtonTitle }}</gl-button
                 >
-                  {{ commentButtonTitle }}
-                </button>
-                <button
+                <gl-button
                   :disabled="isSubmitButtonDisabled"
                   name="button"
-                  type="button"
-                  class="btn btn-success note-type-toggle js-note-new-discussion dropdown-toggle qa-note-dropdown"
+                  category="primary"
+                  variant="success"
+                  class="note-type-toggle js-note-new-discussion dropdown-toggle qa-note-dropdown"
                   data-display="static"
                   data-toggle="dropdown"
+                  icon="chevron-down"
                   :aria-label="__('Open comment type dropdown')"
-                >
-                  <i aria-hidden="true" class="fa fa-caret-down toggle-icon"></i>
-                </button>
+                />
 
                 <ul class="note-type-dropdown dropdown-open-top dropdown-menu">
                   <li :class="{ 'droplab-item-selected': noteType === 'comment' }">
@@ -467,11 +468,7 @@ export default {
                   </li>
                   <li class="divider droplab-item-ignore"></li>
                   <li :class="{ 'droplab-item-selected': noteType === 'discussion' }">
-                    <button
-                      type="button"
-                      class="btn btn-transparent qa-discussion-option"
-                      @click.prevent="setNoteType('discussion')"
-                    >
+                    <button class="qa-discussion-option" @click.prevent="setNoteType('discussion')">
                       <i aria-hidden="true" class="fa fa-check icon"></i>
                       <div class="description">
                         <strong>{{ __('Start thread') }}</strong>

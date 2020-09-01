@@ -109,6 +109,18 @@ FactoryBot.define do
       import_status { :failed }
     end
 
+    trait :jira_dvcs_cloud do
+      before(:create) do |project|
+        create(:project_feature_usage, :dvcs_cloud, project: project)
+      end
+    end
+
+    trait :jira_dvcs_server do
+      before(:create) do |project|
+        create(:project_feature_usage, :dvcs_server, project: project)
+      end
+    end
+
     trait :archived do
       archived { true }
     end

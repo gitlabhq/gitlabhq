@@ -4,9 +4,10 @@ group: Ecosystem
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 ---
 
-# GitLab Jira Development Panel integration **(PREMIUM)**
+# GitLab Jira Development Panel integration **(CORE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/2381) in [GitLab Premium](https://about.gitlab.com/pricing/) 10.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/2381) in [GitLab Premium](https://about.gitlab.com/pricing/) 10.0.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/233149) to [GitLab Core](https://about.gitlab.com/pricing/) in 13.4.
 
 The Jira Development Panel integration allows you to reference Jira issues within GitLab, displaying activity in the [Development panel](https://support.atlassian.com/jira-software-cloud/docs/view-development-information-for-an-issue/) in the issue. It complements the [GitLab Jira integration](../user/project/integrations/jira.md). You may choose to configure both integrations to take advantage of both sets of features. (See a [feature comparison](../user/project/integrations/jira_integrations.md#feature-comparison)).
 
@@ -199,9 +200,8 @@ Potential resolutions:
 
 - If you're using GitLab versions 11.10-12.7, upgrade to GitLab 12.8.10 or later
   to resolve an identified [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/37012).
-- The Jira Development Panel integration requires GitLab Premium, GitLab.com Silver,
-  or a higher tier. If you're using a lower tier of GitLab, you'll need to upgrade
-  to use this feature.
+- If you're using GitLab Core or GitLab Starter, be sure you're using
+  GitLab 13.4 or later.
 
 [Contact GitLab Support](https://about.gitlab.com/support) if none of these reasons apply.
 
@@ -234,7 +234,9 @@ For a walkthrough of the integration with GitLab for Jira, watch [Configure GitL
 1. After installing, click **Get started** to go to the configurations page. This page is always available under **Jira Settings > Apps > Manage apps**.
 
    ![Start GitLab App configuration on Jira](img/jira_dev_panel_setup_com_2.png)
-1. Enter the group or personal namespace in the **Namespace** field and click **Link namespace to Jira**. Make sure you are logged in on GitLab.com and the namespace has a Silver or above license. The user setting up _GitLab for Jira_ must have **Maintainer** access to the GitLab namespace.
+1. In **Namespace**, enter the group or personal namespace, and then click
+   **Link namespace to Jira**. The user setting up *GitLab for Jira* must have
+   *Maintainer* access to the GitLab namespace.
 
 NOTE: **Note:**
 The GitLab user only needs access when adding a new namespace. For syncing with Jira, we do not depend on the user's token.

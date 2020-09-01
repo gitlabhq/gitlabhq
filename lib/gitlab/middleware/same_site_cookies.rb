@@ -30,7 +30,7 @@ module Gitlab
         set_cookie = headers['Set-Cookie']&.strip
 
         return result if set_cookie.blank? || !ssl?
-        return result if same_site_none_incompatible?(headers['User-Agent'])
+        return result if same_site_none_incompatible?(env['HTTP_USER_AGENT'])
 
         cookies = set_cookie.split(COOKIE_SEPARATOR)
 

@@ -303,7 +303,41 @@ function updateText({ textArea, tag, cursorOffset, blockTag, wrap, select, tagCo
   });
 }
 
+/* eslint-disable @gitlab/require-i18n-strings */
+export function keypressNoteText(e) {
+  if (this.selectionStart === this.selectionEnd) {
+    return;
+  }
+  const keys = {
+    '*': '**{text}**', // wraps with bold character
+    _: '_{text}_', // wraps with italic character
+    '`': '`{text}`', // wraps with inline character
+    "'": "'{text}'", // single quotes
+    '"': '"{text}"', // double quotes
+    '[': '[{text}]', // brackets
+    '{': '{{text}}', // braces
+    '(': '({text})', // parentheses
+    '<': '<{text}>', // angle brackets
+  };
+  const tag = keys[e.key];
+
+  if (tag) {
+    e.preventDefault();
+
+    updateText({
+      tag,
+      textArea: this,
+      blockTag: '',
+      wrap: true,
+      select: '',
+      tagContent: '',
+    });
+  }
+}
+/* eslint-enable @gitlab/require-i18n-strings */
+
 export function addMarkdownListeners(form) {
+  $('.markdown-area', form).on('keydown', keypressNoteText);
   return $('.js-md', form)
     .off('click')
     .on('click', function() {
@@ -342,5 +376,6 @@ export function addEditorMarkdownListeners(editor) {
 }
 
 export function removeMarkdownListeners(form) {
+  $('.markdown-area', form).off('keydown', keypressNoteText);
   return $('.js-md', form).off('click');
 }

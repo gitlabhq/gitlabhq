@@ -1,0 +1,12 @@
+{
+  "type": "object",
+  "properties": {
+    "name": { "type": "string" },
+    "email": { "type": "string" },
+    "username": { "type": "string" },
+    "url": { "type": "uri" },
+    "avatar": { "type": "uri" }
+  },
+  "required": [ "name", "email" ],
+  "additionalProperties": false
+}

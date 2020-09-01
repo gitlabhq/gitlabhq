@@ -615,6 +615,7 @@ boards:
 - assignee
 - labels
 - user_preferences
+- boards_epic_user_preferences
 lists:
 - user
 - milestone
@@ -677,6 +678,7 @@ epic:
 - resource_label_events
 - user_mentions
 - note_authors
+- boards_epic_user_preferences
 epic_issue:
 - epic
 - issue

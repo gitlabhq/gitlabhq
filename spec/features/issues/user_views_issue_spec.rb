@@ -57,9 +57,13 @@ RSpec.describe "User views issue" do
       let_it_be(:status) { create(:user_status, user: user, emoji: 'smirk', message: "#{message} :#{message_emoji}:") }
 
       it 'correctly renders the emoji' do
+        wait_for_requests
+
         tooltip_span = page.first(".user-status-emoji[title^='#{message}']")
 
         tooltip_span.hover
+
+        wait_for_requests
 
         tooltip = page.find('.tooltip .tooltip-inner')
 

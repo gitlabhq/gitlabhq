@@ -1,14 +1,13 @@
 module RuboCop
   # Module containing helper methods for writing migration cops.
   module MigrationHelpers
-    WHITELISTED_TABLES = %i[
+    # Tables with permanently small number of records
+    SMALL_TABLES = %i[
       application_settings
       plan_limits
     ].freeze
 
-    # Blacklisted tables due to:
-    #   - number of columns (> 50 on GitLab.com as of 03/2020)
-    #   - number of records
+    # Tables with large number of columns (> 50 on GitLab.com as of 03/2020)
     WIDE_TABLES = %i[
       users
       projects

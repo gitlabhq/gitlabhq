@@ -11,22 +11,21 @@ RSpec.describe Gitlab::Middleware::SameSiteCookies do
     Class.new do
       attr_reader :cookies, :user_agent
 
-      def initialize(cookies, user_agent)
+      def initialize(cookies)
         @cookies = cookies
-        @user_agent = user_agent
       end
 
       def call(env)
         [
           200,
-          { 'Set-Cookie' => cookies, 'User-Agent' => user_agent }.compact,
+          { 'Set-Cookie' => cookies },
           ['OK']
         ]
       end
     end
   end
 
-  let(:app) { mock_app.new(cookies, user_agent) }
+  let(:app) { mock_app.new(cookies) }
 
   subject do
     described_class.new(app)
@@ -36,7 +35,7 @@ RSpec.describe Gitlab::Middleware::SameSiteCookies do
     let(:request) { Rack::MockRequest.new(subject) }
 
     def do_request
-      request.post('/some/path')
+      request.post('/some/path', { 'HTTP_USER_AGENT' => user_agent }.compact )
     end
 
     context 'without SSL enabled' do
@@ -79,6 +78,7 @@ RSpec.describe Gitlab::Middleware::SameSiteCookies do
           "Chrome v41" | "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2227.1 Safari/537.36" | true
           "Chrome v50" | "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2348.1 Safari/537.36" | true
           "Chrome v51" | "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2718.15 Safari/537.36" | false
+          "Chrome v62" | "Mozilla/5.0 (Macintosh; Intel NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.62 Safari/537.36" | false
           "Chrome v66" | "Mozilla/5.0 (Linux; Android 4.4.2; Avvio_793 Build/KOT49H) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.126 Mobile Safari/537.36" | false
           "Chrome v67" | "Mozilla/5.0 (Linux; Android 7.1.1; SM-J510F Build/NMF26X) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3371.0 Mobile Safari/537.36" | true
           "Chrome v85" | "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.83 Safari/537.36" | true

@@ -1,14 +1,13 @@
 <script>
-import { GlDeprecatedButton, GlProgressBar, GlIcon } from '@gitlab/ui';
+import { GlButton, GlProgressBar } from '@gitlab/ui';
 import { __ } from '~/locale';
 import { formattedTime } from '../../stores/test_reports/utils';
 
 export default {
   name: 'TestSummary',
   components: {
-    GlDeprecatedButton,
+    GlButton,
     GlProgressBar,
-    GlIcon,
   },
   props: {
     report: {
@@ -68,14 +67,13 @@ export default {
   <div>
     <div class="row">
       <div class="col-12 d-flex gl-mt-3 align-items-center">
-        <gl-deprecated-button
+        <gl-button
           v-if="showBack"
-          size="sm"
+          size="small"
           class="gl-mr-3 js-back-button"
+          icon="angle-left"
           @click="onBackClick"
-        >
-          <gl-icon name="angle-left" />
-        </gl-deprecated-button>
+        />
 
         <h4>{{ heading }}</h4>
       </div>

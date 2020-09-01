@@ -1,6 +1,8 @@
 <script>
+import { mapState } from 'vuex';
 import { GlNewDropdown, GlNewDropdownItem, GlLink } from '@gitlab/ui';
 import { s__ } from '~/locale';
+import { defaultIntegrationLevel, overrideDropdownDescriptions } from '../constants';
 
 const dropdownOptions = [
   {
@@ -41,6 +43,16 @@ export default {
       selected: dropdownOptions.find(x => x.value === this.override),
     };
   },
+  computed: {
+    ...mapState(['adminState']),
+    description() {
+      const level = this.adminState.integrationLevel;
+
+      return (
+        overrideDropdownDescriptions[level] || overrideDropdownDescriptions[defaultIntegrationLevel]
+      );
+    },
+  },
   methods: {
     onClick(option) {
       this.selected = option;
@@ -55,7 +67,7 @@ export default {
     class="gl-display-flex gl-justify-content-space-between gl-align-items-baseline gl-py-4 gl-mt-5 gl-mb-6 gl-border-t-1 gl-border-t-solid gl-border-b-1 gl-border-b-solid gl-border-gray-100"
   >
     <span
-      >{{ s__('Integrations|Default settings are inherited from the instance level.') }}
+      >{{ description }}
       <gl-link v-if="learnMorePath" :href="learnMorePath" target="_blank">{{
         __('Learn more')
       }}</gl-link>

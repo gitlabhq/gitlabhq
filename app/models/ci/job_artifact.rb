@@ -161,7 +161,6 @@ module Ci
       where(file_type: types)
     end
 
-    scope :expired, -> (limit) { where('expire_at < ?', Time.current).limit(limit) }
     scope :downloadable, -> { where(file_type: DOWNLOADABLE_TYPES) }
     scope :unlocked, -> { joins(job: :pipeline).merge(::Ci::Pipeline.unlocked).order(expire_at: :desc) }
 

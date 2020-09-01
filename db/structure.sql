@@ -9672,6 +9672,23 @@ CREATE TABLE public.boards (
     hide_closed_list boolean DEFAULT false NOT NULL
 );
 
+CREATE TABLE public.boards_epic_user_preferences (
+    id bigint NOT NULL,
+    board_id bigint NOT NULL,
+    user_id bigint NOT NULL,
+    epic_id bigint NOT NULL,
+    collapsed boolean DEFAULT false NOT NULL
+);
+
+CREATE SEQUENCE public.boards_epic_user_preferences_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE public.boards_epic_user_preferences_id_seq OWNED BY public.boards_epic_user_preferences.id;
+
 CREATE SEQUENCE public.boards_id_seq
     START WITH 1
     INCREMENT BY 1
@@ -16845,6 +16862,8 @@ ALTER TABLE ONLY public.board_user_preferences ALTER COLUMN id SET DEFAULT nextv
 
 ALTER TABLE ONLY public.boards ALTER COLUMN id SET DEFAULT nextval('public.boards_id_seq'::regclass);
 
+ALTER TABLE ONLY public.boards_epic_user_preferences ALTER COLUMN id SET DEFAULT nextval('public.boards_epic_user_preferences_id_seq'::regclass);
+
 ALTER TABLE ONLY public.broadcast_messages ALTER COLUMN id SET DEFAULT nextval('public.broadcast_messages_id_seq'::regclass);
 
 ALTER TABLE ONLY public.chat_names ALTER COLUMN id SET DEFAULT nextval('public.chat_names_id_seq'::regclass);
@@ -17773,6 +17792,9 @@ ALTER TABLE ONLY public.board_project_recent_visits
 
 ALTER TABLE ONLY public.board_user_preferences
     ADD CONSTRAINT board_user_preferences_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY public.boards_epic_user_preferences
+    ADD CONSTRAINT boards_epic_user_preferences_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY public.boards
     ADD CONSTRAINT boards_pkey PRIMARY KEY (id);
@@ -19219,6 +19241,14 @@ CREATE INDEX index_board_user_preferences_on_user_id ON public.board_user_prefer
 
 CREATE UNIQUE INDEX index_board_user_preferences_on_user_id_and_board_id ON public.board_user_preferences USING btree (user_id, board_id);
 
+CREATE INDEX index_boards_epic_user_preferences_on_board_id ON public.boards_epic_user_preferences USING btree (board_id);
+
+CREATE UNIQUE INDEX index_boards_epic_user_preferences_on_board_user_epic_unique ON public.boards_epic_user_preferences USING btree (board_id, user_id, epic_id);
+
+CREATE INDEX index_boards_epic_user_preferences_on_epic_id ON public.boards_epic_user_preferences USING btree (epic_id);
+
+CREATE INDEX index_boards_epic_user_preferences_on_user_id ON public.boards_epic_user_preferences USING btree (user_id);
+
 CREATE INDEX index_boards_on_group_id ON public.boards USING btree (group_id);
 
 CREATE INDEX index_boards_on_milestone_id ON public.boards USING btree (milestone_id);
@@ -19328,6 +19358,8 @@ CREATE INDEX index_ci_job_artifacts_on_project_id_for_security_reports ON public
 CREATE INDEX index_ci_job_variables_on_job_id ON public.ci_job_variables USING btree (job_id);
 
 CREATE UNIQUE INDEX index_ci_job_variables_on_key_and_job_id ON public.ci_job_variables USING btree (key, job_id);
+
+CREATE INDEX index_ci_pipeline_artifacts_on_expire_at ON public.ci_pipeline_artifacts USING btree (expire_at);
 
 CREATE INDEX index_ci_pipeline_artifacts_on_pipeline_id ON public.ci_pipeline_artifacts USING btree (pipeline_id);
 
@@ -22243,6 +22275,9 @@ ALTER TABLE ONLY public.group_custom_attributes
 ALTER TABLE ONLY public.cluster_agents
     ADD CONSTRAINT fk_rails_25e9fc2d5d FOREIGN KEY (project_id) REFERENCES public.projects(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY public.boards_epic_user_preferences
+    ADD CONSTRAINT fk_rails_268c57d62d FOREIGN KEY (board_id) REFERENCES public.boards(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY public.group_wiki_repositories
     ADD CONSTRAINT fk_rails_26f867598c FOREIGN KEY (group_id) REFERENCES public.namespaces(id) ON DELETE CASCADE;
 
@@ -22678,6 +22713,9 @@ ALTER TABLE ONLY public.x509_certificates
 ALTER TABLE ONLY public.pages_domain_acme_orders
     ADD CONSTRAINT fk_rails_76581b1c16 FOREIGN KEY (pages_domain_id) REFERENCES public.pages_domains(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY public.boards_epic_user_preferences
+    ADD CONSTRAINT fk_rails_76c4e9732d FOREIGN KEY (epic_id) REFERENCES public.epics(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY public.ci_subscriptions_projects
     ADD CONSTRAINT fk_rails_7871f9a97b FOREIGN KEY (upstream_project_id) REFERENCES public.projects(id) ON DELETE CASCADE;
 
@@ -22710,6 +22748,9 @@ ALTER TABLE ONLY public.approval_merge_request_rules_users
 
 ALTER TABLE ONLY public.dast_site_profiles
     ADD CONSTRAINT fk_rails_83e309d69e FOREIGN KEY (project_id) REFERENCES public.projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY public.boards_epic_user_preferences
+    ADD CONSTRAINT fk_rails_851fe1510a FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY public.deployment_merge_requests
     ADD CONSTRAINT fk_rails_86a6d8bf12 FOREIGN KEY (merge_request_id) REFERENCES public.merge_requests(id) ON DELETE CASCADE;

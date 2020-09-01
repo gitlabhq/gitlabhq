@@ -254,6 +254,7 @@ class Project < ApplicationRecord
   has_one :import_data, class_name: 'ProjectImportData', inverse_of: :project, autosave: true
   has_one :project_feature, inverse_of: :project
   has_one :statistics, class_name: 'ProjectStatistics'
+  has_one :feature_usage, class_name: 'ProjectFeatureUsage'
 
   has_one :cluster_project, class_name: 'Clusters::Project'
   has_many :clusters, through: :cluster_project, class_name: 'Clusters::Cluster'
@@ -393,6 +394,8 @@ class Project < ApplicationRecord
     to: :project_setting
   delegate :active?, to: :prometheus_service, allow_nil: true, prefix: true
 
+  delegate :log_jira_dvcs_integration_usage, :jira_dvcs_server_last_sync_at, :jira_dvcs_cloud_last_sync_at, to: :feature_usage
+
   # Validations
   validates :creator, presence: true, on: :create
   validates :description, length: { maximum: 2000 }, allow_blank: true
@@ -476,6 +479,9 @@ class Project < ApplicationRecord
   scope :for_milestones, ->(ids) { joins(:milestones).where('milestones.id' => ids).distinct }
   scope :with_push, -> { joins(:events).merge(Event.pushed_action) }
   scope :with_project_feature, -> { joins('LEFT JOIN project_features ON projects.id = project_features.project_id') }
+  scope :with_active_jira_services, -> { joins(:services).merge(::JiraService.active) } # rubocop:disable CodeReuse/ServiceClass
+  scope :with_jira_dvcs_cloud, -> { joins(:feature_usage).merge(ProjectFeatureUsage.with_jira_dvcs_integration_enabled(cloud: true)) }
+  scope :with_jira_dvcs_server, -> { joins(:feature_usage).merge(ProjectFeatureUsage.with_jira_dvcs_integration_enabled(cloud: false)) }
   scope :inc_routes, -> { includes(:route, namespace: :route) }
   scope :with_statistics, -> { includes(:statistics) }
   scope :with_namespace, -> { includes(:namespace) }
@@ -1442,6 +1448,10 @@ class Project < ApplicationRecord
   # Is overridden in EE
   def lfs_http_url_to_repo(_)
     http_url_to_repo
+  end
+
+  def feature_usage
+    super.presence || build_feature_usage
   end
 
   def forked?
@@ -2424,6 +2434,10 @@ class Project < ApplicationRecord
 
   def template_source?
     false
+  end
+
+  def jira_subscription_exists?
+    JiraConnectSubscription.for_project(self).exists?
   end
 
   def uses_default_ci_config?

@@ -1,0 +1,29 @@
+{
+  "type": "object",
+  "properties": {
+    "id": { "type": "string" },
+    "issueKeys": { "type": "array" },
+    "hash": { "type": "string" },
+    "displayId": { "type": "string" },
+    "message": { "type": "string" },
+    "flags": { "type": "array" },
+    "author": {
+      "$ref": "./author.json"
+    },
+    "fileCount": { "type": "integer" },
+    "files": {
+      "type": "array",
+      "items": {
+        "$ref": "./file.json"
+      }
+    },
+    "authorTimestamp": { "type": "timestamp" },
+    "url": { "type": "uri" },
+    "updateSequenceId": { "type": "integer" }
+  },
+  "required": [
+    "id", "issueKeys", "hash", "displayId", "message", "flags", "author",
+    "fileCount", "files", "authorTimestamp", "url", "updateSequenceId"
+  ],
+  "additionalProperties": false
+}

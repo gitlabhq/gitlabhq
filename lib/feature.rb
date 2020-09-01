@@ -137,6 +137,12 @@ class Feature
       Feature::Definition.load_all!
     end
 
+    def register_hot_reloader
+      return unless check_feature_flags_definition?
+
+      Feature::Definition.register_hot_reloader!
+    end
+
     private
 
     def flipper

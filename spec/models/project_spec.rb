@@ -1362,6 +1362,36 @@ RSpec.describe Project do
     end
   end
 
+  describe '.with_active_jira_services' do
+    it 'returns the correct project' do
+      active_jira_service = create(:jira_service)
+      active_service = create(:service, active: true)
+
+      expect(described_class.with_active_jira_services).to include(active_jira_service.project)
+      expect(described_class.with_active_jira_services).not_to include(active_service.project)
+    end
+  end
+
+  describe '.with_jira_dvcs_cloud' do
+    it 'returns the correct project' do
+      jira_dvcs_cloud_project = create(:project, :jira_dvcs_cloud)
+      jira_dvcs_server_project = create(:project, :jira_dvcs_server)
+
+      expect(described_class.with_jira_dvcs_cloud).to include(jira_dvcs_cloud_project)
+      expect(described_class.with_jira_dvcs_cloud).not_to include(jira_dvcs_server_project)
+    end
+  end
+
+  describe '.with_jira_dvcs_server' do
+    it 'returns the correct project' do
+      jira_dvcs_server_project = create(:project, :jira_dvcs_server)
+      jira_dvcs_cloud_project = create(:project, :jira_dvcs_cloud)
+
+      expect(described_class.with_jira_dvcs_server).to include(jira_dvcs_server_project)
+      expect(described_class.with_jira_dvcs_server).not_to include(jira_dvcs_cloud_project)
+    end
+  end
+
   describe '.cached_count', :use_clean_rails_memory_store_caching do
     let(:group)     { create(:group, :public) }
     let!(:project1) { create(:project, :public, group: group) }
@@ -6065,6 +6095,18 @@ RSpec.describe Project do
             .to not_change { project.visibility_level }
         end
       end
+    end
+  end
+
+  describe '#jira_subscription_exists?' do
+    let(:project) { create(:project) }
+
+    subject { project.jira_subscription_exists? }
+
+    context 'jira connect subscription exists' do
+      let!(:jira_connect_subscription) { create(:jira_connect_subscription, namespace: project.namespace) }
+
+      it { is_expected.to eq(true) }
     end
   end
 

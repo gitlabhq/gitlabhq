@@ -23,6 +23,7 @@ function parseDatasetToProps(data) {
     triggerEvents,
     fields,
     inheritFromId,
+    integrationLevel,
     ...booleanAttributes
   } = data;
   const {
@@ -56,6 +57,7 @@ function parseDatasetToProps(data) {
     triggerEvents: JSON.parse(triggerEvents),
     fields: JSON.parse(fields),
     inheritFromId: parseInt(inheritFromId, 10),
+    integrationLevel,
     id: parseInt(id, 10),
   };
 }

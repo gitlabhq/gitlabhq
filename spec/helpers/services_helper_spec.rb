@@ -21,7 +21,8 @@ RSpec.describe ServicesHelper do
           :comment_detail,
           :trigger_events,
           :fields,
-          :inherit_from_id
+          :inherit_from_id,
+          :integration_level
         )
       end
     end

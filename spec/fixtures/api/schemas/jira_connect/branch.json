@@ -1,0 +1,19 @@
+{
+  "type": "object",
+  "properties": {
+    "id": { "type": "string" },
+    "issueKeys": { "type": "array" },
+    "name": { "type": "string" },
+    "lastCommit": {
+      "$ref": "./commit.json"
+    },
+    "url": { "type": "uri" },
+    "createPullRequestUrl": { "type": "uri" },
+    "updateSequenceId": { "type": "integer" }
+  },
+  "required": [
+    "id", "issueKeys", "name", "lastCommit",
+    "url", "createPullRequestUrl", "updateSequenceId"
+  ],
+  "additionalProperties": false
+}

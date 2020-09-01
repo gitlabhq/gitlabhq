@@ -32,13 +32,10 @@ Rails.application.routes.draw do
   # This prefixless path is required because Jira gets confused if we set it up with a path
   # More information: https://gitlab.com/gitlab-org/gitlab/issues/6752
   scope path: '/login/oauth', controller: 'oauth/jira/authorizations', as: :oauth_jira do
-    Gitlab.ee do
-      get :authorize, action: :new
-      get :callback
-      post :access_token
-    end
+    get :authorize, action: :new
+    get :callback
+    post :access_token
 
-    # This helps minimize merge conflicts with CE for this scope block
     match '*all', via: [:get, :post], to: proc { [404, {}, ['']] }
   end
 
@@ -127,11 +124,11 @@ Rails.application.routes.draw do
     get 'ide/*vueroute' => 'ide#index', format: false
 
     draw :operations
+    draw :jira_connect
 
     Gitlab.ee do
       draw :security
       draw :smartcard
-      draw :jira_connect
       draw :username
       draw :trial
       draw :trial_registration

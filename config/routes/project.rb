@@ -564,3 +564,37 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
     # rubocop: enable Cop/PutProjectRoutesUnderScope
   end
 end
+
+# It's under /-/jira scope but cop is only checking /-/
+# rubocop: disable Cop/PutProjectRoutesUnderScope
+scope path: '(/-/jira)', constraints: ::Constraints::JiraEncodedUrlConstrainer.new, as: :jira do
+  scope path: '*namespace_id/:project_id',
+        namespace_id: Gitlab::Jira::Dvcs::ENCODED_ROUTE_REGEX,
+        project_id: Gitlab::Jira::Dvcs::ENCODED_ROUTE_REGEX do
+    get '/', to: redirect { |params, req|
+      ::Gitlab::Jira::Dvcs.restore_full_path(
+        namespace: params[:namespace_id],
+        project: params[:project_id]
+      )
+    }
+
+    get 'commit/:id', constraints: { id: /\h{7,40}/ }, to: redirect { |params, req|
+      project_full_path = ::Gitlab::Jira::Dvcs.restore_full_path(
+        namespace: params[:namespace_id],
+        project: params[:project_id]
+      )
+
+      "/#{project_full_path}/commit/#{params[:id]}"
+    }
+
+    get 'tree/*id', as: nil, to: redirect { |params, req|
+      project_full_path = ::Gitlab::Jira::Dvcs.restore_full_path(
+        namespace: params[:namespace_id],
+        project: params[:project_id]
+      )
+
+      "/#{project_full_path}/-/tree/#{params[:id]}"
+    }
+  end
+end
+# rubocop: enable Cop/PutProjectRoutesUnderScope

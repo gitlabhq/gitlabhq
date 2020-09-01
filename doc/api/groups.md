@@ -1170,7 +1170,7 @@ DELETE /groups/:id/share/:group_id
 
 ## Push Rules **(STARTER)**
 
-### Get group push rules
+### Get group push rules **(STARTER)**
 
 Get the [push rules](../user/group/index.md#group-push-rules-starter) of a group.
 
@@ -1233,3 +1233,70 @@ POST /groups/:id/push_rule
 | `max_file_size` **(STARTER)**                 | integer        | no       | Maximum file size (MB) allowed |
 | `commit_committer_check` **(PREMIUM)**        | boolean        | no       | Only commits pushed using verified emails will be allowed |
 | `reject_unsigned_commits` **(PREMIUM)**       | boolean        | no       | Only commits signed through GPG will be allowed |
+
+```shell
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/19/push_rule"
+```
+
+Response:
+
+```json
+{
+    "id": 19,
+    "created_at": "2020-08-31T15:53:00.073Z",
+    "commit_message_regex": "[a-zA-Z]",
+    "commit_message_negative_regex": "[x+]",
+    "branch_name_regex": null,
+    "deny_delete_tag": false,
+    "member_check": false,
+    "prevent_secrets": false,
+    "author_email_regex": "^[A-Za-z0-9.]+@gitlab.com$",
+    "file_name_regex": null,
+    "max_file_size": 100
+}
+```
+
+### Edit group push rule **(STARTER)**
+
+Edit push rules for a specified group.
+
+```plaintext
+PUT /groups/:id/push_rule
+```
+
+| Attribute                                     | Type           | Required | Description |
+| --------------------------------------------- | -------------- | -------- | ----------- |
+| `id`                                          | integer/string | yes      | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) |
+| `deny_delete_tag` **(STARTER)**               | boolean        | no       | Deny deleting a tag |
+| `member_check` **(STARTER)**                  | boolean        | no       | Restricts commits to be authored by existing GitLab users only |
+| `prevent_secrets` **(STARTER)**               | boolean        | no       | [Files that are likely to contain secrets](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/gitlab/checks/files_denylist.yml) will be rejected |
+| `commit_message_regex` **(STARTER)**          | string         | no       | All commit messages must match the regular expression provided in this attribute, e.g. `Fixed \d+\..*` |
+| `commit_message_negative_regex` **(STARTER)** | string         | no       | Commit messages matching the regular expression provided in this attribute will not be allowed, e.g. `ssh\:\/\/` |
+| `branch_name_regex` **(STARTER)**             | string         | no       | All branch names must match the regular expression provided in this attribute, e.g. `(feature|hotfix)\/*` |
+| `author_email_regex` **(STARTER)**            | string         | no       | All commit author emails must match the regular expression provided in this attribute, e.g. `@my-company.com$` |
+| `file_name_regex` **(STARTER)**               | string         | no       | Filenames matching the regular expression provided in this attribute will **not** be allowed, e.g. `(jar|exe)$` |
+| `max_file_size` **(STARTER)**                 | integer        | no       | Maximum file size (MB) allowed |
+| `commit_committer_check` **(PREMIUM)**        | boolean        | no       | Only commits pushed using verified emails will be allowed |
+| `reject_unsigned_commits` **(PREMIUM)**       | boolean        | no       | Only commits signed through GPG will be allowed |
+
+```shell
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/19/push_rule"
+```
+
+Response:
+
+```json
+{
+    "id": 19,
+    "created_at": "2020-08-31T15:53:00.073Z",
+    "commit_message_regex": "[a-zA-Z]",
+    "commit_message_negative_regex": "[x+]",
+    "branch_name_regex": null,
+    "deny_delete_tag": false,
+    "member_check": false,
+    "prevent_secrets": false,
+    "author_email_regex": "^[A-Za-z0-9.]+@staging.gitlab.com$",
+    "file_name_regex": null,
+    "max_file_size": 100
+}
+```

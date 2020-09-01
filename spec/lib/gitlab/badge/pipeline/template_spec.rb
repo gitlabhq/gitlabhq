@@ -22,7 +22,7 @@ RSpec.describe Gitlab::Badge::Pipeline::Template do
 
       context 'when its size is larger than the max allowed value' do
         before do
-          allow(badge).to receive(:customization).and_return({ key_text: 't' * 129 })
+          allow(badge).to receive(:customization).and_return({ key_text: 't' * 65 })
         end
 
         it 'returns default value' do
@@ -54,7 +54,7 @@ RSpec.describe Gitlab::Badge::Pipeline::Template do
 
       context 'when it is larger than the max allowed value' do
         before do
-          allow(badge).to receive(:customization).and_return({ key_width: 129 })
+          allow(badge).to receive(:customization).and_return({ key_width: 513 })
         end
 
         it 'returns default value' do

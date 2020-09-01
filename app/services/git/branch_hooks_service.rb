@@ -75,6 +75,7 @@ module Git
 
     def branch_change_hooks
       enqueue_process_commit_messages
+      enqueue_jira_connect_sync_messages
     end
 
     def branch_remove_hooks
@@ -100,6 +101,17 @@ module Git
           commit.to_hash,
           default_branch?
         )
+      end
+    end
+
+    def enqueue_jira_connect_sync_messages
+      return unless project.jira_subscription_exists?
+
+      branch_to_sync = branch_name if Atlassian::JiraIssueKeyExtractor.has_keys?(branch_name)
+      commits_to_sync = limited_commits.select { |commit| Atlassian::JiraIssueKeyExtractor.has_keys?(commit.safe_message) }.map(&:sha)
+
+      if branch_to_sync || commits_to_sync.any?
+        JiraConnect::SyncBranchWorker.perform_async(project.id, branch_to_sync, commits_to_sync)
       end
     end
 

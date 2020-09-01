@@ -31,8 +31,10 @@ class PasswordsController < Devise::PasswordsController
 
   def update
     super do |resource|
-      if resource.valid? && resource.password_automatically_set?
-        resource.update_attribute(:password_automatically_set, false)
+      if resource.valid?
+        resource.password_automatically_set = false
+        resource.password_expires_at = nil
+        resource.save(validate: false) if resource.changed?
       end
     end
   end

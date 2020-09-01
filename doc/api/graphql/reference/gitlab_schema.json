@@ -7866,8 +7866,26 @@
           "description": "Represents a DAST scanner profile.",
           "fields": [
             {
-              "name": "id",
+              "name": "globalId",
               "description": "ID of the DAST scanner profile",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "DastScannerProfileID",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "id",
+              "description": "ID of the DAST scanner profile. Deprecated in 13.4: Use `global_id`",
               "args": [
 
               ],
@@ -7880,8 +7898,8 @@
                   "ofType": null
                 }
               },
-              "isDeprecated": false,
-              "deprecationReason": null
+              "isDeprecated": true,
+              "deprecationReason": "Use `global_id`. Deprecated in 13.4"
             },
             {
               "name": "profileName",
@@ -8115,8 +8133,22 @@
               "deprecationReason": null
             },
             {
-              "name": "id",
+              "name": "globalId",
               "description": "ID of the scanner profile.",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "DastScannerProfileID",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "id",
+              "description": "ID of the scanner profile.. Deprecated in 13.4: Use `global_id`",
               "args": [
 
               ],
@@ -8125,8 +8157,8 @@
                 "name": "ID",
                 "ofType": null
               },
-              "isDeprecated": false,
-              "deprecationReason": null
+              "isDeprecated": true,
+              "deprecationReason": "Use `global_id`. Deprecated in 13.4"
             }
           ],
           "inputFields": null,

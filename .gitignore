@@ -94,5 +94,6 @@ webpack-dev-server.json
 .solargraph.yml
 apollo.config.js
 /tmp/matching_foss_tests.txt
+/tmp/matching_tests.txt
 ee/changelogs/unreleased-ee
 

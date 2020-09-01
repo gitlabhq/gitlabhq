@@ -17,6 +17,8 @@ module Ci
         zip: 2,
         gzip: 3
       }, _suffix: true
+
+      scope :expired, -> (limit) { where('expire_at < ?', Time.current).limit(limit) }
     end
 
     def each_blob(&blk)
