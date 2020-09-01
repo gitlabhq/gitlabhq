@@ -334,17 +334,32 @@ export function getWebSocketUrl(path) {
  * Convert search query into an object
  *
  * @param {String} query from "document.location.search"
+ * @param {Object} options
+ * @param {Boolean} options.gatherArrays - gather array values into an Array
  * @returns {Object}
  *
  * ex: "?one=1&two=2" into {one: 1, two: 2}
  */
-export function queryToObject(query) {
+export function queryToObject(query, options = {}) {
+  const { gatherArrays = false } = options;
   const removeQuestionMarkFromQuery = String(query).startsWith('?') ? query.slice(1) : query;
   return removeQuestionMarkFromQuery.split('&').reduce((accumulator, curr) => {
     const [key, value] = curr.split('=');
-    if (value !== undefined) {
-      accumulator[decodeURIComponent(key)] = decodeURIComponent(value);
+    if (value === undefined) {
+      return accumulator;
     }
+    const decodedValue = decodeURIComponent(value);
+
+    if (gatherArrays && key.endsWith('[]')) {
+      const decodedKey = decodeURIComponent(key.slice(0, -2));
+      if (!Array.isArray(accumulator[decodedKey])) {
+        accumulator[decodedKey] = [];
+      }
+      accumulator[decodedKey].push(decodedValue);
+    } else {
+      accumulator[decodeURIComponent(key)] = decodedValue;
+    }
+
     return accumulator;
   }, {});
 }

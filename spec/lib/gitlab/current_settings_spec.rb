@@ -115,6 +115,16 @@ RSpec.describe Gitlab::CurrentSettings do
           expect(settings).to have_attributes(settings_from_defaults)
         end
 
+        context 'when ApplicationSettings does not have a primary key' do
+          before do
+            allow(ActiveRecord::Base.connection).to receive(:primary_key).with('application_settings').and_return(nil)
+          end
+
+          it 'raises an exception if ApplicationSettings does not have a primary key' do
+            expect { described_class.current_application_settings }.to raise_error(/table is missing a primary key constraint/)
+          end
+        end
+
         context 'with pending migrations' do
           let(:current_settings) { described_class.current_application_settings }
 

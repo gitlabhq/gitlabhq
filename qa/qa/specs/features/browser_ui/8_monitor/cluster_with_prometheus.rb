@@ -1,17 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.configure do |rspec|
-    # This config option will be enabled by default on RSpec 4,
-    # but for reasons of backwards compatibility, you have to
-    # set it on RSpec 3.
-    #
-    # It causes the host group and examples to inherit metadata
-    # from the shared context.
-    rspec.shared_context_metadata_behavior = :apply_to_host_groups
-  end
-
-  RSpec.shared_context "cluster with Prometheus installed", shared_context: :metadata do
+  RSpec.shared_context "cluster with Prometheus installed" do
     before :all do
       @cluster = Service::KubernetesCluster.new(provider_class: Service::ClusterProvider::K3s).create!
       @project = Resource::Project.fabricate_via_api! do |project|
@@ -71,7 +61,7 @@ module QA
     end
 
     after :all do
-      @cluster.remove!
+      @cluster&.remove!
     end
   end
 end

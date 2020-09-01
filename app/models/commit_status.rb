@@ -199,7 +199,14 @@ class CommitStatus < ApplicationRecord
   end
 
   def group_name
-    name.to_s.gsub(%r{\d+[\s:/\\]+\d+\s*}, '').strip
+    # 'rspec:linux: 1/10' => 'rspec:linux'
+    common_name = name.to_s.gsub(%r{\d+[\s:\/\\]+\d+\s*}, '')
+
+    # 'rspec:linux: [aws, max memory]' => 'rspec:linux'
+    common_name.gsub!(%r{: \[.*, .*\]\s*\z}, '') if Gitlab::Ci::Features.new_matrix_job_names_enabled?
+
+    common_name.strip!
+    common_name
   end
 
   def failed_but_allowed?

@@ -616,6 +616,35 @@ describe('URL utility', () => {
 
       expect(urlUtils.queryToObject(searchQuery)).toEqual({ one: '1', two: '2' });
     });
+
+    describe('with gatherArrays=false', () => {
+      it('overwrites values with the same array-key and does not change the key', () => {
+        const searchQuery = '?one[]=1&one[]=2&two=2&two=3';
+
+        expect(urlUtils.queryToObject(searchQuery)).toEqual({ 'one[]': '2', two: '3' });
+      });
+    });
+
+    describe('with gatherArrays=true', () => {
+      const options = { gatherArrays: true };
+      it('gathers only values with the same array-key and strips `[]` from the key', () => {
+        const searchQuery = '?one[]=1&one[]=2&two=2&two=3';
+
+        expect(urlUtils.queryToObject(searchQuery, options)).toEqual({ one: ['1', '2'], two: '3' });
+      });
+
+      it('overwrites values with the same array-key name', () => {
+        const searchQuery = '?one=1&one[]=2&two=2&two=3';
+
+        expect(urlUtils.queryToObject(searchQuery, options)).toEqual({ one: ['2'], two: '3' });
+      });
+
+      it('overwrites values with the same key name', () => {
+        const searchQuery = '?one[]=1&one=2&two=2&two=3';
+
+        expect(urlUtils.queryToObject(searchQuery, options)).toEqual({ one: '2', two: '3' });
+      });
+    });
   });
 
   describe('objectToQuery', () => {
