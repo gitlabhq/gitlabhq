@@ -177,6 +177,14 @@ RSpec.describe 'Login' do
         expect(page).not_to have_content(I18n.t('devise.failure.already_authenticated'))
       end
 
+      it 'does not allow sign-in if the user password is updated before entering a one-time code' do
+        user.update!(password: 'new_password')
+
+        enter_code(user.current_otp)
+
+        expect(page).to have_content('An error occurred. Please sign in again.')
+      end
+
       context 'using one-time code' do
         it 'allows login with valid code' do
           expect(authentication_metrics)
@@ -232,7 +240,7 @@ RSpec.describe 'Login' do
           expect(codes.size).to eq 10
 
           # Ensure the generated codes get saved
-          user.save
+          user.save(touch: false)
         end
 
         context 'with valid code' do
@@ -290,7 +298,7 @@ RSpec.describe 'Login' do
             code = codes.sample
             expect(user.invalidate_otp_backup_code!(code)).to eq true
 
-            user.save!
+            user.save!(touch: false)
             expect(user.reload.otp_backup_codes.size).to eq 9
 
             enter_code(code)

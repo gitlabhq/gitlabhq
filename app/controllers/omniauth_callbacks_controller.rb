@@ -50,12 +50,6 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     redirect_unverified_saml_initiation
   end
 
-  def omniauth_error
-    @provider = params[:provider]
-    @error = params[:error]
-    render 'errors/omniauth_error', layout: "oauth_error", status: :unprocessable_entity
-  end
-
   def cas3
     ticket = params['ticket']
     if ticket
@@ -205,9 +199,10 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   def fail_login(user)
     log_failed_login(user.username, oauth['provider'])
 
-    error_message = user.errors.full_messages.to_sentence
+    @provider = Gitlab::Auth::OAuth::Provider.label_for(params[:action])
+    @error = user.errors.full_messages.to_sentence
 
-    redirect_to omniauth_error_path(oauth['provider'], error: error_message)
+    render 'errors/omniauth_error', layout: "oauth_error", status: :unprocessable_entity
   end
 
   def fail_auth0_login

@@ -96,7 +96,7 @@
     "ipaddr.js": "^1.9.1",
     "jed": "^1.1.1",
     "jest-transform-graphql": "^2.1.0",
-    "jquery": "^3.4.1",
+    "jquery": "^3.5.0",
     "jquery-ujs": "1.2.2",
     "jquery.caret": "^0.3.1",
     "jquery.waitforimages": "^2.2.0",

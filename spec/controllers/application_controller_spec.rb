@@ -229,6 +229,7 @@ RSpec.describe ApplicationController do
 
       it 'does not redirect if 2FA is not required' do
         allow(controller).to receive(:two_factor_authentication_required?).and_return(false)
+        allow(controller).to receive(:current_user).and_return(create(:user))
 
         expect(controller).not_to receive(:redirect_to)
 
@@ -346,13 +347,17 @@ RSpec.describe ApplicationController do
         let(:user) { create :user, otp_grace_period_started_at: 2.hours.ago }
 
         it 'returns true if the grace period has expired' do
-          allow(controller).to receive(:two_factor_grace_period).and_return(1)
+          allow_next_instance_of(Gitlab::Auth::TwoFactorAuthVerifier) do |verifier|
+            allow(verifier).to receive(:two_factor_grace_period).and_return(2)
+          end
 
           expect(subject).to be_truthy
         end
 
         it 'returns false if the grace period is still active' do
-          allow(controller).to receive(:two_factor_grace_period).and_return(3)
+          allow_next_instance_of(Gitlab::Auth::TwoFactorAuthVerifier) do |verifier|
+            allow(verifier).to receive(:two_factor_grace_period).and_return(3)
+          end
 
           expect(subject).to be_falsey
         end

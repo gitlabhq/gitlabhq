@@ -1,0 +1,5 @@
+---
+title: Invalidate two factor sign-in when user password changes
+merge_request:
+author:
+type: security
