@@ -18945,6 +18945,8 @@ CREATE UNIQUE INDEX any_approver_merge_request_rule_type_unique_index ON public.
 
 CREATE UNIQUE INDEX any_approver_project_rule_type_unique_index ON public.approval_project_rules USING btree (project_id) WHERE (rule_type = 3);
 
+CREATE INDEX approval_mr_rule_index_merge_request_id ON public.approval_merge_request_rules USING btree (merge_request_id);
+
 CREATE UNIQUE INDEX approval_rule_name_index_for_code_owners ON public.approval_merge_request_rules USING btree (merge_request_id, code_owner, name) WHERE ((code_owner = true) AND (section IS NULL));
 
 CREATE UNIQUE INDEX backup_labels_group_id_project_id_title_idx ON public.backup_labels USING btree (group_id, project_id, title);

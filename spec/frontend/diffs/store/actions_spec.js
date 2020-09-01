@@ -191,10 +191,10 @@ describe('DiffsStoreActions', () => {
           { type: types.SET_RETRIEVING_BATCHES, payload: true },
           { type: types.SET_DIFF_DATA_BATCH, payload: { diff_files: res1.diff_files } },
           { type: types.SET_BATCH_LOADING, payload: false },
-          { type: types.UPDATE_CURRENT_DIFF_FILE_ID, payload: 'test' },
+          { type: types.VIEW_DIFF_FILE, payload: 'test' },
           { type: types.SET_DIFF_DATA_BATCH, payload: { diff_files: res2.diff_files } },
           { type: types.SET_BATCH_LOADING, payload: false },
-          { type: types.UPDATE_CURRENT_DIFF_FILE_ID, payload: 'test2' },
+          { type: types.VIEW_DIFF_FILE, payload: 'test2' },
           { type: types.SET_RETRIEVING_BATCHES, payload: false },
         ],
         [],
@@ -300,7 +300,7 @@ describe('DiffsStoreActions', () => {
     it('should mark currently selected diff and set lineHash and fileHash of highlightedRow', () => {
       testAction(setHighlightedRow, 'ABC_123', {}, [
         { type: types.SET_HIGHLIGHTED_ROW, payload: 'ABC_123' },
-        { type: types.UPDATE_CURRENT_DIFF_FILE_ID, payload: 'ABC' },
+        { type: types.VIEW_DIFF_FILE, payload: 'ABC' },
       ]);
     });
   });
@@ -904,7 +904,7 @@ describe('DiffsStoreActions', () => {
       expect(document.location.hash).toBe('#test');
     });
 
-    it('commits UPDATE_CURRENT_DIFF_FILE_ID', () => {
+    it('commits VIEW_DIFF_FILE', () => {
       const state = {
         treeEntries: {
           path: {
@@ -915,7 +915,7 @@ describe('DiffsStoreActions', () => {
 
       scrollToFile({ state, commit }, 'path');
 
-      expect(commit).toHaveBeenCalledWith(types.UPDATE_CURRENT_DIFF_FILE_ID, 'test');
+      expect(commit).toHaveBeenCalledWith(types.VIEW_DIFF_FILE, 'test');
     });
   });
 
@@ -1413,7 +1413,7 @@ describe('DiffsStoreActions', () => {
   });
 
   describe('setCurrentDiffFileIdFromNote', () => {
-    it('commits UPDATE_CURRENT_DIFF_FILE_ID', () => {
+    it('commits VIEW_DIFF_FILE', () => {
       const commit = jest.fn();
       const state = { diffFiles: [{ file_hash: '123' }] };
       const rootGetters = {
@@ -1423,10 +1423,10 @@ describe('DiffsStoreActions', () => {
 
       setCurrentDiffFileIdFromNote({ commit, state, rootGetters }, '1');
 
-      expect(commit).toHaveBeenCalledWith(types.UPDATE_CURRENT_DIFF_FILE_ID, '123');
+      expect(commit).toHaveBeenCalledWith(types.VIEW_DIFF_FILE, '123');
     });
 
-    it('does not commit UPDATE_CURRENT_DIFF_FILE_ID when discussion has no diff_file', () => {
+    it('does not commit VIEW_DIFF_FILE when discussion has no diff_file', () => {
       const commit = jest.fn();
       const state = { diffFiles: [{ file_hash: '123' }] };
       const rootGetters = {
@@ -1439,7 +1439,7 @@ describe('DiffsStoreActions', () => {
       expect(commit).not.toHaveBeenCalled();
     });
 
-    it('does not commit UPDATE_CURRENT_DIFF_FILE_ID when diff file does not exist', () => {
+    it('does not commit VIEW_DIFF_FILE when diff file does not exist', () => {
       const commit = jest.fn();
       const state = { diffFiles: [{ file_hash: '123' }] };
       const rootGetters = {
@@ -1454,12 +1454,12 @@ describe('DiffsStoreActions', () => {
   });
 
   describe('navigateToDiffFileIndex', () => {
-    it('commits UPDATE_CURRENT_DIFF_FILE_ID', done => {
+    it('commits VIEW_DIFF_FILE', done => {
       testAction(
         navigateToDiffFileIndex,
         0,
         { diffFiles: [{ file_hash: '123' }] },
-        [{ type: types.UPDATE_CURRENT_DIFF_FILE_ID, payload: '123' }],
+        [{ type: types.VIEW_DIFF_FILE, payload: '123' }],
         [],
         done,
       );

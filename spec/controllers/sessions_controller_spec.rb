@@ -6,11 +6,11 @@ RSpec.describe SessionsController do
   include DeviseHelpers
   include LdapHelpers
 
-  describe '#new' do
-    before do
-      set_devise_mapping(context: @request)
-    end
+  before do
+    set_devise_mapping(context: @request)
+  end
 
+  describe '#new' do
     context 'when auto sign-in is enabled' do
       before do
         stub_omniauth_setting(auto_sign_in_with_provider: :saml)
@@ -59,13 +59,19 @@ RSpec.describe SessionsController do
         end
       end
     end
+
+    it "redirects correctly for referer on same host with params" do
+      host = "test.host"
+      search_path = "/search?search=seed_project"
+      request.headers[:HTTP_REFERER] = "http://#{host}#{search_path}"
+
+      get(:new, params: { redirect_to_referer: :yes })
+
+      expect(controller.stored_location_for(:redirect)).to eq(search_path)
+    end
   end
 
   describe '#create' do
-    before do
-      set_devise_mapping(context: @request)
-    end
-
     it_behaves_like 'known sign in' do
       let(:user) { create(:user) }
       let(:post_action) { post(:create, params: { user: { login: user.username, password: user.password } }) }
@@ -439,25 +445,8 @@ RSpec.describe SessionsController do
     end
   end
 
-  describe "#new" do
-    before do
-      set_devise_mapping(context: @request)
-    end
-
-    it "redirects correctly for referer on same host with params" do
-      host = "test.host"
-      search_path = "/search?search=seed_project"
-      request.headers[:HTTP_REFERER] = "http://#{host}#{search_path}"
-
-      get(:new, params: { redirect_to_referer: :yes })
-
-      expect(controller.stored_location_for(:redirect)).to eq(search_path)
-    end
-  end
-
   context 'when login fails' do
     before do
-      set_devise_mapping(context: @request)
       @request.env["warden.options"] = { action:  'unauthenticated' }
     end
 
@@ -470,10 +459,6 @@ RSpec.describe SessionsController do
 
   describe '#set_current_context' do
     let_it_be(:user) { create(:user) }
-
-    before do
-      set_devise_mapping(context: @request)
-    end
 
     context 'when signed in' do
       before do
@@ -525,6 +510,23 @@ RSpec.describe SessionsController do
 
         post(:create,
              params: { user: { login: user.username, password: user.password.succ } })
+      end
+    end
+  end
+
+  describe '#destroy' do
+    before do
+      sign_in(user)
+    end
+
+    context 'for a user whose password has expired' do
+      let(:user) { create(:user, password_expires_at: 2.days.ago) }
+
+      it 'allows to sign out successfully' do
+        delete :destroy
+
+        expect(response).to redirect_to(new_user_session_path)
+        expect(controller.current_user).to be_nil
       end
     end
   end

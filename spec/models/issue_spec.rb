@@ -1196,7 +1196,7 @@ RSpec.describe Issue do
       it 'schedules rebalancing if we time-out when finding a gap' do
         lhs = build_stubbed(:issue, relative_position: 99, project: project)
         to_move = build(:issue, project: project)
-        expect(IssueRebalancingWorker).to receive(:perform_async).with(issue.id)
+        expect(IssueRebalancingWorker).to receive(:perform_async).with(nil, project.id)
 
         expect { to_move.move_between(lhs, issue) }.to raise_error(ActiveRecord::QueryCanceled)
       end
@@ -1205,7 +1205,7 @@ RSpec.describe Issue do
     describe '#find_next_gap_after' do
       it 'schedules rebalancing if we time-out when finding a gap' do
         allow(issue).to receive(:find_next_gap) { raise ActiveRecord::QueryCanceled }
-        expect(IssueRebalancingWorker).to receive(:perform_async).with(issue.id)
+        expect(IssueRebalancingWorker).to receive(:perform_async).with(nil, project.id)
 
         expect { issue.move_sequence_after }.to raise_error(ActiveRecord::QueryCanceled)
       end

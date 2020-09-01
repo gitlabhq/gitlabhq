@@ -468,7 +468,7 @@ export default {
 
       <div
         :data-can-create-note="getNoteableData.current_user.can_create_note"
-        class="files d-flex"
+        class="files d-flex gl-mt-2"
       >
         <div
           v-if="showTreeList"

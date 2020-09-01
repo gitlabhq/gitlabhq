@@ -87,6 +87,15 @@ export default {
     },
   },
   created() {
+    // This method is defined here instead of in `methods`
+    // because we need to access the .cancel() method
+    // lodash attaches to the function, which is
+    // made inaccessible by Vue. More info:
+    // https://stackoverflow.com/a/52988020/1063392
+    this.debouncedSearch = debounce(function search() {
+      this.search(this.query);
+    }, SEARCH_DEBOUNCE_MS);
+
     this.setProjectId(this.projectId);
     this.search(this.query);
   },
@@ -95,9 +104,13 @@ export default {
     focusSearchBox() {
       this.$refs.searchBox.$el.querySelector('input').focus();
     },
-    onSearchBoxInput: debounce(function search() {
+    onSearchBoxEnter() {
+      this.debouncedSearch.cancel();
       this.search(this.query);
-    }, SEARCH_DEBOUNCE_MS),
+    },
+    onSearchBoxInput() {
+      this.debouncedSearch();
+    },
     selectRef(ref) {
       this.setSelectedRef(ref);
       this.$emit('input', this.selectedRef);
@@ -129,6 +142,7 @@ export default {
         class="gl-m-3"
         :placeholder="i18n.searchPlaceholder"
         @input="onSearchBoxInput"
+        @keydown.enter.prevent="onSearchBoxEnter"
       />
 
       <div class="gl-flex-grow-1 gl-overflow-y-auto">

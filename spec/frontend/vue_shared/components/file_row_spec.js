@@ -139,4 +139,16 @@ describe('File row component', () => {
 
     expect(wrapper.vm.hasUrlAtCurrentRoute()).toBe(true);
   });
+
+  it('render with the correct file classes prop', () => {
+    createComponent({
+      file: {
+        ...file(),
+      },
+      level: 0,
+      fileClasses: 'font-weight-bold',
+    });
+
+    expect(wrapper.find('.file-row-name').classes()).toContain('font-weight-bold');
+  });
 });

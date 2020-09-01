@@ -737,11 +737,11 @@ describe('DiffsStoreMutations', () => {
     });
   });
 
-  describe('UPDATE_CURRENT_DIFF_FILE_ID', () => {
+  describe('VIEW_DIFF_FILE', () => {
     it('updates currentDiffFileId', () => {
       const state = createState();
 
-      mutations[types.UPDATE_CURRENT_DIFF_FILE_ID](state, 'somefileid');
+      mutations[types.VIEW_DIFF_FILE](state, 'somefileid');
 
       expect(state.currentDiffFileId).toBe('somefileid');
     });

@@ -54,13 +54,9 @@ RSpec.describe NewNoteWorker do
     let(:note) { create(:note) }
 
     before do
-      # TODO: `allow_next_instance_of` helper method is not working
-      # because ActiveRecord is directly calling `.allocate` on model
-      # classes and bypasses the `.new` method call.
-      # Fix the `allow_next_instance_of` helper and change these to mock
-      # the next instance of `Note` model class.
-      allow(Note).to receive(:find_by).with(id: note.id).and_return(note)
-      allow(note).to receive(:skip_notification?).and_return(true)
+      allow_next_found_instance_of(Note) do |note|
+        allow(note).to receive(:skip_notification?).and_return(true)
+      end
     end
 
     it 'does not create a new note notification' do

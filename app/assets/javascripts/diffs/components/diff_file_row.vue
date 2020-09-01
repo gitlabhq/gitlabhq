@@ -3,9 +3,10 @@
  * This component is an iterative step towards refactoring and simplifying `vue_shared/components/file_row.vue`
  * https://gitlab.com/gitlab-org/gitlab/-/merge_requests/23720
  */
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import FileRow from '~/vue_shared/components/file_row.vue';
-import FileRowStats from './file_row_stats.vue';
 import ChangedFileIcon from '~/vue_shared/components/changed_file_icon.vue';
+import FileRowStats from './file_row_stats.vue';
 
 export default {
   name: 'DiffFileRow',
@@ -14,6 +15,7 @@ export default {
     FileRowStats,
     ChangedFileIcon,
   },
+  mixins: [glFeatureFlagsMixin()],
   props: {
     file: {
       type: Object,
@@ -28,10 +30,27 @@ export default {
       required: false,
       default: null,
     },
+    viewedFiles: {
+      type: Object,
+      required: false,
+      default: () => ({}),
+    },
   },
   computed: {
     showFileRowStats() {
       return !this.hideFileStats && this.file.type === 'blob';
+    },
+    fileClasses() {
+      if (!this.glFeatures.highlightCurrentDiffRow) {
+        return '';
+      }
+
+      return this.file.type === 'blob' && !this.viewedFiles[this.file.fileHash]
+        ? 'gl-font-weight-bold'
+        : '';
+    },
+    isActive() {
+      return this.currentDiffFileId === this.file.fileHash;
     },
   },
 };
@@ -41,8 +60,9 @@ export default {
   <file-row
     :file="file"
     v-bind="$attrs"
-    :class="{ 'is-active': currentDiffFileId === file.fileHash }"
+    :class="{ 'is-active': isActive }"
     class="diff-file-row"
+    :file-classes="fileClasses"
     v-on="$listeners"
   >
     <file-row-stats v-if="showFileRowStats" :file="file" class="mr-1" />

@@ -8,4 +8,15 @@
 // [2]: https://gitlab.com/gitlab-org/gitlab/-/issues/213378
 // Further reference: https://github.com/facebook/jest/issues/3465
 
-export default fn => fn;
+export default fn => {
+  const debouncedFn = jest.fn().mockImplementation(fn);
+  debouncedFn.cancel = jest.fn();
+  debouncedFn.flush = jest.fn().mockImplementation(() => {
+    const errorMessage =
+      "The .flush() method returned by lodash.debounce is not yet implemented/mocked by the mock in 'spec/frontend/__mocks__/lodash/debounce.js'.";
+
+    throw new Error(errorMessage);
+  });
+
+  return debouncedFn;
+};

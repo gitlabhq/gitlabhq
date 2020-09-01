@@ -44,6 +44,7 @@ describe('DiffFileHeader component', () => {
           toggleFileDiscussions: jest.fn(),
           toggleFileDiscussionWrappers: jest.fn(),
           toggleFullDiff: jest.fn(),
+          toggleActiveFileByHash: jest.fn(),
         },
       },
     },

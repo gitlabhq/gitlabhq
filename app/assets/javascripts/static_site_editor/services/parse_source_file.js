@@ -1,6 +1,11 @@
-const parseSourceFile = raw => {
-  const frontMatterRegex = /(^---$[\s\S]*?^---$)/m;
-  const preGroupedRegex = /([\s\S]*?)(^---$[\s\S]*?^---$)(\s*)([\s\S]*)/m; // preFrontMatter, frontMatter, spacing, and content
+import getFrontMatterLanguageDefinition from './parse_source_file_language_support';
+
+const parseSourceFile = (raw, options = { frontMatterLanguage: 'yaml' }) => {
+  const { open, close } = getFrontMatterLanguageDefinition(options.frontMatterLanguage);
+  const anyChar = '[\\s\\S]';
+  const frontMatterBlock = `^${open}$${anyChar}*?^${close}$`;
+  const frontMatterRegex = new RegExp(`${frontMatterBlock}`, 'm');
+  const preGroupedRegex = new RegExp(`(${anyChar}*?)(${frontMatterBlock})(\\s*)(${anyChar}*)`, 'm'); // preFrontMatter, frontMatter, spacing, and content
   let initial;
   let editable;
 

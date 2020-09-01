@@ -7021,6 +7021,9 @@ msgstr ""
 msgid "Could not create group"
 msgstr ""
 
+msgid "Could not create issue"
+msgstr ""
+
 msgid "Could not create project"
 msgstr ""
 
@@ -9279,9 +9282,6 @@ msgid "Enable two-factor authentication"
 msgstr ""
 
 msgid "Enable usage ping"
-msgstr ""
-
-msgid "Enable usage ping to get an overview of how you are using GitLab from a feature perspective."
 msgstr ""
 
 msgid "Enable/disable your service desk. %{link_start}Learn more about service desk%{link_end}."
@@ -13032,9 +13032,6 @@ msgid "Improve search with Advanced Search and GitLab Enterprise Edition."
 msgstr ""
 
 msgid "In %{time_to_now}"
-msgstr ""
-
-msgid "In order to enable instance-level analytics, please ask an admin to enable %{usage_ping_link_start}usage ping%{usage_ping_link_end}."
 msgstr ""
 
 msgid "In order to gather accurate feature usage data, it can take 1 to 2 weeks to see your index."
@@ -21873,6 +21870,9 @@ msgstr ""
 msgid "SecurityReports|Either you don't have permission to view this dashboard or the dashboard has not been setup. Please check your permission settings with your administrator or check your dashboard configurations to proceed."
 msgstr ""
 
+msgid "SecurityReports|Ensure that %{trackingStart}issue tracking%{trackingEnd} is enabled for this project and you have %{permissionsStart}permission to create new issues%{permissionsEnd}."
+msgstr ""
+
 msgid "SecurityReports|Error fetching the vulnerability counts. Please check your network connection and try again."
 msgstr ""
 
@@ -21922,6 +21922,9 @@ msgid "SecurityReports|Oops, something doesn't seem right."
 msgstr ""
 
 msgid "SecurityReports|Project"
+msgstr ""
+
+msgid "SecurityReports|Project was not found or you do not have permission to add this project to Security Dashboards."
 msgstr ""
 
 msgid "SecurityReports|Projects added"
@@ -21999,7 +22002,7 @@ msgstr ""
 msgid "SecurityReports|To widen your search, change or remove filters above"
 msgstr ""
 
-msgid "SecurityReports|Unable to add %{invalidProjectsMessage}"
+msgid "SecurityReports|Unable to add %{invalidProjectsMessage}: %{errorMessage}"
 msgstr ""
 
 msgid "SecurityReports|Unable to add %{invalidProjects}"
@@ -25974,6 +25977,9 @@ msgstr ""
 msgid "To view all %{scannedResourcesCount} scanned URLs, please download the CSV file"
 msgstr ""
 
+msgid "To view instance-level analytics, ask an admin to turn on %{docLinkStart}usage ping%{docLinkEnd}."
+msgstr ""
+
 msgid "To view the roadmap, add a start or due date to one of your epics in this group or its subgroups. In the months view, only epics in the past month, current month, and next 5 months are shown."
 msgstr ""
 
@@ -26281,6 +26287,9 @@ msgid "Turn on Service Desk"
 msgstr ""
 
 msgid "Turn on usage ping"
+msgstr ""
+
+msgid "Turn on usage ping to review instance-level analytics."
 msgstr ""
 
 msgid "Twitter"
@@ -26760,7 +26769,7 @@ msgstr ""
 msgid "Usage"
 msgstr ""
 
-msgid "Usage ping is not enabled"
+msgid "Usage ping is off"
 msgstr ""
 
 msgid "Usage statistics"
@@ -27545,9 +27554,6 @@ msgid "VulnerabilityManagement|Something went wrong while trying to save the com
 msgstr ""
 
 msgid "VulnerabilityManagement|Something went wrong while trying to unlink the issue. Please try again later."
-msgstr ""
-
-msgid "VulnerabilityManagement|Something went wrong, could not create an issue."
 msgstr ""
 
 msgid "VulnerabilityManagement|Something went wrong, could not get user."
@@ -29534,7 +29540,13 @@ msgstr ""
 msgid "mrWidget|%{prefixToLinkStart}No pipeline%{prefixToLinkEnd} %{addPipelineLinkStart}Add the .gitlab-ci.yml file%{addPipelineLinkEnd} to create one."
 msgstr ""
 
+msgid "mrWidget|A new merge train has started and this merge request is the first of the queue."
+msgstr ""
+
 msgid "mrWidget|Added to the merge train by"
+msgstr ""
+
+msgid "mrWidget|Added to the merge train. There are %{mergeTrainPosition} merge requests waiting to be merged"
 msgstr ""
 
 msgid "mrWidget|Allows commits from members who can merge to the target branch"
@@ -29622,9 +29634,6 @@ msgid "mrWidget|If the %{branch} branch exists in your local repository, you can
 msgstr ""
 
 msgid "mrWidget|If the %{missingBranchName} branch exists in your local repository, you can merge this merge request manually using the command line"
-msgstr ""
-
-msgid "mrWidget|In the merge train at position %{mergeTrainPosition}"
 msgstr ""
 
 msgid "mrWidget|Jump to first unresolved thread"

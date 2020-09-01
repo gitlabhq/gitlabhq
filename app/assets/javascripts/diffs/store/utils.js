@@ -11,7 +11,6 @@ import {
   OLD_LINE_TYPE,
   MATCH_LINE_TYPE,
   LINES_TO_BE_RENDERED_DIRECTLY,
-  MAX_LINES_TO_BE_RENDERED,
   TREE_TYPE,
   INLINE_DIFF_VIEW_TYPE,
   PARALLEL_DIFF_VIEW_TYPE,
@@ -457,12 +456,10 @@ function getVisibleDiffLines(file) {
 }
 
 function finalizeDiffFile(file) {
-  const name = (file.viewer && file.viewer.name) || diffViewerModes.text;
   const lines = getVisibleDiffLines(file);
 
   Object.assign(file, {
     renderIt: lines < LINES_TO_BE_RENDERED_DIRECTLY,
-    collapsed: name === diffViewerModes.text && lines > MAX_LINES_TO_BE_RENDERED,
     isShowingFullFile: false,
     isLoadingFullFile: false,
     discussions: [],

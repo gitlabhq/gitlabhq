@@ -22,10 +22,10 @@ RSpec.describe 'DevOps Report page' do
       stub_application_setting(usage_ping_enabled: false)
     end
 
-    it 'shows empty state' do
+    it 'shows empty state', :js do
       visit admin_dev_ops_score_path
 
-      expect(page).to have_content('Usage ping is not enabled')
+      expect(page).to have_selector(".js-empty-state")
     end
 
     it 'hides the intro callout' do

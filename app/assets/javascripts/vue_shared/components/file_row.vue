@@ -18,6 +18,11 @@ export default {
       type: Number,
       required: true,
     },
+    fileClasses: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   computed: {
     isTree() {
@@ -123,6 +128,7 @@ export default {
         :style="levelIndentation"
         class="file-row-name str-truncated"
         data-qa-selector="file_name_content"
+        :class="fileClasses"
       >
         <file-icon
           class="file-row-icon"

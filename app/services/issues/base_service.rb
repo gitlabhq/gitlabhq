@@ -29,7 +29,7 @@ module Issues
       gates = [issue.project, issue.project.group].compact
       return unless gates.any? { |gate| Feature.enabled?(:rebalance_issues, gate) }
 
-      IssueRebalancingWorker.perform_async(issue.id)
+      IssueRebalancingWorker.perform_async(nil, issue.project_id)
     end
 
     def create_assignee_note(issue, old_assignees)

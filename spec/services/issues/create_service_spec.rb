@@ -77,7 +77,7 @@ RSpec.describe Issues::CreateService do
 
       it 'rebalances if needed' do
         create(:issue, project: project, relative_position: RelativePositioning::MAX_POSITION)
-        expect(IssueRebalancingWorker).to receive(:perform_async).with(Integer)
+        expect(IssueRebalancingWorker).to receive(:perform_async).with(nil, project.id)
 
         expect(issue.relative_position).to eq(project.issues.maximum(:relative_position))
       end
@@ -86,7 +86,7 @@ RSpec.describe Issues::CreateService do
         stub_feature_flags(rebalance_issues: false)
 
         create(:issue, project: project, relative_position: RelativePositioning::MAX_POSITION)
-        expect(IssueRebalancingWorker).not_to receive(:perform_async).with(Integer)
+        expect(IssueRebalancingWorker).not_to receive(:perform_async)
 
         expect(issue.relative_position).to eq(project.issues.maximum(:relative_position))
       end
@@ -95,7 +95,7 @@ RSpec.describe Issues::CreateService do
         stub_feature_flags(rebalance_issues: project)
 
         create(:issue, project: project, relative_position: RelativePositioning::MAX_POSITION)
-        expect(IssueRebalancingWorker).to receive(:perform_async).with(Integer)
+        expect(IssueRebalancingWorker).to receive(:perform_async).with(nil, project.id)
 
         expect(issue.relative_position).to eq(project.issues.maximum(:relative_position))
       end

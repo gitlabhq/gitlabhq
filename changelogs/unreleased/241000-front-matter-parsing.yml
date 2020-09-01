@@ -1,0 +1,5 @@
+---
+title: Add toml and json front matter language support to Static Site Editor's WYSIWYG mode
+merge_request: 40718
+author:
+type: added

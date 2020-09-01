@@ -133,6 +133,7 @@ export default {
       'toggleFileDiscussions',
       'toggleFileDiscussionWrappers',
       'toggleFullDiff',
+      'toggleActiveFileByHash',
     ]),
     handleToggleFile() {
       this.$emit('toggleFile');
@@ -149,6 +150,9 @@ export default {
         const selector = this.diffContentIDSelector;
         scrollToElement(document.querySelector(selector));
         window.location.hash = selector;
+        if (!this.viewDiffsFileByFile) {
+          this.toggleActiveFileByHash(this.diffFile.file_hash);
+        }
       }
     },
   },

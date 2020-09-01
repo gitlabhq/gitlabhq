@@ -445,7 +445,7 @@ class Issue < ApplicationRecord
     super
   rescue ActiveRecord::QueryCanceled => e
     # Symptom of running out of space - schedule rebalancing
-    IssueRebalancingWorker.perform_async(id)
+    IssueRebalancingWorker.perform_async(nil, project_id)
     raise e
   end
 
@@ -453,7 +453,7 @@ class Issue < ApplicationRecord
     super
   rescue ActiveRecord::QueryCanceled => e
     # Symptom of running out of space - schedule rebalancing
-    IssueRebalancingWorker.perform_async(id)
+    IssueRebalancingWorker.perform_async(nil, project_id)
     raise e
   end
 end

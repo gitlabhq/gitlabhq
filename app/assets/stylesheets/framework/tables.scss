@@ -180,3 +180,33 @@ table {
     border-top: 0;
   }
 }
+
+.vulnerability-list {
+  @media (min-width: $breakpoint-sm) {
+    .checkbox {
+      padding-left: $gl-spacing-scale-4;
+      padding-right: 0;
+
+      + td,
+      + th {
+        padding-left: $gl-spacing-scale-4;
+      }
+    }
+
+    .status {
+      width: 8%;
+    }
+
+    .severity {
+      width: 9%;
+    }
+
+    .identifier {
+      width: 12%;
+    }
+
+    .scanner {
+      width: 15%;
+    }
+  }
+}

@@ -10,7 +10,7 @@ import UnsavedChangesConfirmDialog from '~/static_site_editor/components/unsaved
 
 import {
   sourceContentTitle as title,
-  sourceContent as content,
+  sourceContentYAML as content,
   sourceContentBody as body,
   returnUrl,
 } from '../mock_data';

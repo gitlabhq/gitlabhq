@@ -84,7 +84,7 @@ export const fetchDiffFilesBatch = ({ commit, state, dispatch }) => {
         commit(types.SET_BATCH_LOADING, false);
 
         if (!isNoteLink && !state.currentDiffFileId) {
-          commit(types.UPDATE_CURRENT_DIFF_FILE_ID, diff_files[0].file_hash);
+          commit(types.VIEW_DIFF_FILE, diff_files[0].file_hash);
         }
 
         if (isNoteLink) {
@@ -100,7 +100,7 @@ export const fetchDiffFilesBatch = ({ commit, state, dispatch }) => {
             !state.diffFiles.some(f => f.file_hash === state.currentDiffFileId) &&
             !isNoteLink
           ) {
-            commit(types.UPDATE_CURRENT_DIFF_FILE_ID, state.diffFiles[0].file_hash);
+            commit(types.VIEW_DIFF_FILE, state.diffFiles[0].file_hash);
           }
 
           if (gon.features?.codeNavigation) {
@@ -183,7 +183,7 @@ export const fetchCoverageFiles = ({ commit, state }) => {
 export const setHighlightedRow = ({ commit }, lineCode) => {
   const fileHash = lineCode.split('_')[0];
   commit(types.SET_HIGHLIGHTED_ROW, lineCode);
-  commit(types.UPDATE_CURRENT_DIFF_FILE_ID, fileHash);
+  commit(types.VIEW_DIFF_FILE, fileHash);
 };
 
 // This is adding line discussions to the actual lines in the diff tree
@@ -428,13 +428,17 @@ export const toggleTreeOpen = ({ commit }, path) => {
   commit(types.TOGGLE_FOLDER_OPEN, path);
 };
 
+export const toggleActiveFileByHash = ({ commit }, hash) => {
+  commit(types.VIEW_DIFF_FILE, hash);
+};
+
 export const scrollToFile = ({ state, commit }, path) => {
   if (!state.treeEntries[path]) return;
 
   const { fileHash } = state.treeEntries[path];
   document.location.hash = fileHash;
 
-  commit(types.UPDATE_CURRENT_DIFF_FILE_ID, fileHash);
+  commit(types.VIEW_DIFF_FILE, fileHash);
 };
 
 export const toggleShowTreeList = ({ commit, state }, saving = true) => {
@@ -702,7 +706,7 @@ export const setCurrentDiffFileIdFromNote = ({ commit, state, rootGetters }, not
   const fileHash = rootGetters.getDiscussion(note.discussion_id).diff_file?.file_hash;
 
   if (fileHash && state.diffFiles.some(f => f.file_hash === fileHash)) {
-    commit(types.UPDATE_CURRENT_DIFF_FILE_ID, fileHash);
+    commit(types.VIEW_DIFF_FILE, fileHash);
   }
 };
 
@@ -710,5 +714,5 @@ export const navigateToDiffFileIndex = ({ commit, state }, index) => {
   const fileHash = state.diffFiles[index].file_hash;
   document.location.hash = fileHash;
 
-  commit(types.UPDATE_CURRENT_DIFF_FILE_ID, fileHash);
+  commit(types.VIEW_DIFF_FILE, fileHash);
 };

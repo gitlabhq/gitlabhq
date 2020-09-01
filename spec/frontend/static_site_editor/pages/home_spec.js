@@ -13,7 +13,7 @@ import { TRACKING_ACTION_INITIALIZE_EDITOR } from '~/static_site_editor/constant
 import {
   projectId as project,
   returnUrl,
-  sourceContent as content,
+  sourceContentYAML as content,
   sourceContentTitle as title,
   sourcePath,
   username,

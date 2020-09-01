@@ -10,6 +10,8 @@ class SessionsController < Devise::SessionsController
   include KnownSignIn
 
   skip_before_action :check_two_factor_requirement, only: [:destroy]
+  skip_before_action :check_password_expiration, only: [:destroy]
+
   # replaced with :require_no_authentication_without_flash
   skip_before_action :require_no_authentication, only: [:new, :create]
 

@@ -89,6 +89,14 @@ export default {
       return this.requestCount !== 0;
     },
   },
+  created() {
+    // This method is defined here instead of in `methods`
+    // because we need to access the .cancel() method
+    // lodash attaches to the function, which is
+    // made inaccessible by Vue. More info:
+    // https://stackoverflow.com/a/52988020/1063392
+    this.debouncedSearchMilestones = debounce(this.searchMilestones, 100);
+  },
   mounted() {
     this.fetchMilestones();
   },
@@ -108,7 +116,7 @@ export default {
           this.requestCount -= 1;
         });
     },
-    searchMilestones: debounce(function searchMilestones() {
+    searchMilestones() {
       this.requestCount += 1;
       const options = {
         search: this.searchQuery,
@@ -133,7 +141,14 @@ export default {
         .finally(() => {
           this.requestCount -= 1;
         });
-    }, 100),
+    },
+    onSearchBoxInput() {
+      this.debouncedSearchMilestones();
+    },
+    onSearchBoxEnter() {
+      this.debouncedSearchMilestones.cancel();
+      this.searchMilestones();
+    },
     toggleMilestoneSelection(clickedMilestone) {
       if (!clickedMilestone) return [];
 
@@ -186,7 +201,8 @@ export default {
       v-model.trim="searchQuery"
       class="gl-m-3"
       :placeholder="this.$options.translations.searchMilestones"
-      @input="searchMilestones"
+      @input="onSearchBoxInput"
+      @keydown.enter.prevent="onSearchBoxEnter"
     />
 
     <gl-new-dropdown-item @click="onMilestoneClicked(null)">

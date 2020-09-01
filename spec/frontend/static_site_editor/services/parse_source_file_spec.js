@@ -1,12 +1,16 @@
 import {
-  sourceContent as content,
-  sourceContentHeader as frontMatter,
+  sourceContentYAML as content,
+  sourceContentTOML as tomlContent,
+  sourceContentJSON as jsonContent,
+  sourceContentHeaderYAML as yamlFrontMatter,
+  sourceContentHeaderTOML as tomlFrontMatter,
+  sourceContentHeaderJSON as jsonFrontMatter,
   sourceContentBody as body,
 } from '../mock_data';
 
 import parseSourceFile from '~/static_site_editor/services/parse_source_file';
 
-describe('parseSourceFile', () => {
+describe('static_site_editor/services/parse_source_file', () => {
   const contentComplex = [content, content, content].join('');
   const complexBody = [body, content, content].join('');
   const edit = 'and more';
@@ -14,13 +18,22 @@ describe('parseSourceFile', () => {
   const newContentComplex = `${contentComplex} ${edit}`;
 
   describe('unmodified front matter', () => {
+    const yamlOptions = { frontMatterLanguage: 'yaml' };
+
     it.each`
-      parsedSource
-      ${parseSourceFile(content)}
-      ${parseSourceFile(contentComplex)}
-    `('returns the correct front matter when queried', ({ parsedSource }) => {
-      expect(parsedSource.frontMatter()).toBe(frontMatter);
-    });
+      parsedSource                                                     | targetFrontMatter
+      ${parseSourceFile(content)}                                      | ${yamlFrontMatter}
+      ${parseSourceFile(contentComplex)}                               | ${yamlFrontMatter}
+      ${parseSourceFile(content, yamlOptions)}                         | ${yamlFrontMatter}
+      ${parseSourceFile(contentComplex, yamlOptions)}                  | ${yamlFrontMatter}
+      ${parseSourceFile(tomlContent, { frontMatterLanguage: 'toml' })} | ${tomlFrontMatter}
+      ${parseSourceFile(jsonContent, { frontMatterLanguage: 'json' })} | ${jsonFrontMatter}
+    `(
+      'returns $targetFrontMatter when frontMatter queried',
+      ({ parsedSource, targetFrontMatter }) => {
+        expect(parsedSource.frontMatter()).toBe(targetFrontMatter);
+      },
+    );
   });
 
   describe('unmodified content', () => {
@@ -49,9 +62,12 @@ describe('parseSourceFile', () => {
   });
 
   describe('modified front matter', () => {
-    const newFrontMatter = '---\nnewKey: newVal\n---';
-    const contentWithNewFrontMatter = content.replace(frontMatter, newFrontMatter);
-    const contentComplexWithNewFrontMatter = contentComplex.replace(frontMatter, newFrontMatter);
+    const newYamlFrontMatter = '---\nnewKey: newVal\n---';
+    const contentWithNewFrontMatter = content.replace(yamlFrontMatter, newYamlFrontMatter);
+    const contentComplexWithNewFrontMatter = contentComplex.replace(
+      yamlFrontMatter,
+      newYamlFrontMatter,
+    );
 
     it.each`
       parsedSource                       | targetContent
@@ -60,11 +76,11 @@ describe('parseSourceFile', () => {
     `(
       'returns the correct front matter and modified content',
       ({ parsedSource, targetContent }) => {
-        expect(parsedSource.frontMatter()).toBe(frontMatter);
+        expect(parsedSource.frontMatter()).toBe(yamlFrontMatter);
 
-        parsedSource.setFrontMatter(newFrontMatter);
+        parsedSource.setFrontMatter(newYamlFrontMatter);
 
-        expect(parsedSource.frontMatter()).toBe(newFrontMatter);
+        expect(parsedSource.frontMatter()).toBe(newYamlFrontMatter);
         expect(parsedSource.content()).toBe(targetContent);
       },
     );

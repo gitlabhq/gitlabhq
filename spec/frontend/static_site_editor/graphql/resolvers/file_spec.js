@@ -5,7 +5,7 @@ import {
   projectId,
   sourcePath,
   sourceContentTitle as title,
-  sourceContent as content,
+  sourceContentYAML as content,
 } from '../../mock_data';
 
 jest.mock('~/static_site_editor/services/load_source_content', () => jest.fn());
