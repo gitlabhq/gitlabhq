@@ -1,0 +1,5 @@
+---
+title: Add CI_MERGE_REQUEST_DESCRIPTION env variable
+merge_request: 40771
+author: Paul Spooren @aparcar
+type: added

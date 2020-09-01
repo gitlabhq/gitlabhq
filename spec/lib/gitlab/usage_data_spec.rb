@@ -460,7 +460,8 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
       expect(count_data[:clusters_applications_jupyter]).to eq(1)
       expect(count_data[:clusters_applications_cilium]).to eq(1)
       expect(count_data[:clusters_management_project]).to eq(1)
-      expect(count_data[:kubernetes_agents]).to eq(1)
+      expect(count_data[:kubernetes_agents]).to eq(2)
+      expect(count_data[:kubernetes_agents_with_token]).to eq(1)
 
       expect(count_data[:deployments]).to eq(4)
       expect(count_data[:successful_deployments]).to eq(2)
@@ -1069,7 +1070,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
           'g_compliance_audit_events' => 123,
           'i_compliance_credential_inventory' => 123,
           'i_compliance_audit_events' => 123,
-          'i_compliance_audit_events_api' => 123,
           'compliance_unique_visits_for_any_target' => 543,
           'compliance_unique_visits_for_any_target_monthly' => 987
         }

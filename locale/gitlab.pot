@@ -16278,6 +16278,9 @@ msgstr ""
 msgid "NetworkPolicies|Rule mode"
 msgstr ""
 
+msgid "NetworkPolicies|Rule mode is unavailable for this policy. In some cases, we cannot parse the YAML file back into the rules editor."
+msgstr ""
+
 msgid "NetworkPolicies|Rules"
 msgstr ""
 

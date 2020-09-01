@@ -16,11 +16,6 @@
   category: compliance
   redis_slot: compliance
   aggregation: weekly
-- name: i_compliance_audit_events_api
-  category: compliance
-  redis_slot: compliance
-  expiry: 42
-  aggregation: weekly
 # Analytics category
 - name: g_analytics_contribution
   category: analytics

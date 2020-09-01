@@ -83,6 +83,10 @@ module Gitlab
       def self.coverage_report_view?(project)
         ::Feature.enabled?(:coverage_report_view, project)
       end
+
+      def self.expose_mr_description_predefined_variable?
+        ::Feature.enabled?(:ci_expose_mr_description_predefined_variable, default_enabled: true)
+      end
     end
   end
 end

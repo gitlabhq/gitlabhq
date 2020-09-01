@@ -45,3 +45,4 @@ UsageData/DistinctCountByLargeForeignKey:
     - :issue_id
     - :merge_request_id
     - :merge_requests.target_project_id
+    - :agent_id
