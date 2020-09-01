@@ -123,13 +123,31 @@ RSpec.describe Oauth::ApplicationsController do
           invalid_uri_params = {
             doorkeeper_application: {
               name: 'foo',
-              redirect_uri: 'javascript://alert()'
+              redirect_uri: 'javascript://alert()',
+              scopes: ['api']
             }
           }
 
           post :create, params: invalid_uri_params
 
           expect(response.body).to include 'Redirect URI is forbidden by the server'
+        end
+      end
+
+      context 'when scopes are not present' do
+        render_views
+
+        it 'shows an error for blank scopes' do
+          invalid_uri_params = {
+            doorkeeper_application: {
+              name: 'foo',
+              redirect_uri: 'http://example.org'
+            }
+          }
+
+          post :create, params: invalid_uri_params
+
+          expect(response.body).to include 'Scopes can&#39;t be blank'
         end
       end
 
@@ -172,7 +190,8 @@ RSpec.describe Oauth::ApplicationsController do
     {
       doorkeeper_application: {
         name: 'foo',
-        redirect_uri: 'http://example.org'
+        redirect_uri: 'http://example.org',
+        scopes: ['api']
       }
     }
   end
