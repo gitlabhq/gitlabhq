@@ -264,5 +264,11 @@ RSpec.describe Gitlab::Ci::Config::Normalizer do
         is_expected.to match(config)
       end
     end
+
+    context 'when jobs config is nil' do
+      let(:config) { nil }
+
+      it { is_expected.to eq({}) }
+    end
   end
 end

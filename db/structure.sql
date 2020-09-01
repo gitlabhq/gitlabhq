@@ -8930,6 +8930,22 @@ CREATE SEQUENCE public.analytics_cycle_analytics_project_stages_id_seq
 
 ALTER SEQUENCE public.analytics_cycle_analytics_project_stages_id_seq OWNED BY public.analytics_cycle_analytics_project_stages.id;
 
+CREATE TABLE public.analytics_instance_statistics_measurements (
+    id bigint NOT NULL,
+    count bigint NOT NULL,
+    recorded_at timestamp with time zone NOT NULL,
+    identifier smallint NOT NULL
+);
+
+CREATE SEQUENCE public.analytics_instance_statistics_measurements_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE public.analytics_instance_statistics_measurements_id_seq OWNED BY public.analytics_instance_statistics_measurements.id;
+
 CREATE TABLE public.analytics_language_trend_repository_languages (
     file_count integer DEFAULT 0 NOT NULL,
     programming_language_id bigint NOT NULL,
@@ -15371,6 +15387,25 @@ CREATE SEQUENCE public.scim_oauth_access_tokens_id_seq
 
 ALTER SEQUENCE public.scim_oauth_access_tokens_id_seq OWNED BY public.scim_oauth_access_tokens.id;
 
+CREATE TABLE public.security_findings (
+    id bigint NOT NULL,
+    scan_id bigint NOT NULL,
+    scanner_id bigint NOT NULL,
+    severity smallint NOT NULL,
+    confidence smallint NOT NULL,
+    project_fingerprint text NOT NULL,
+    CONSTRAINT check_b9508c6df8 CHECK ((char_length(project_fingerprint) <= 40))
+);
+
+CREATE SEQUENCE public.security_findings_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE public.security_findings_id_seq OWNED BY public.security_findings.id;
+
 CREATE TABLE public.security_scans (
     id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -16814,6 +16849,8 @@ ALTER TABLE ONLY public.analytics_cycle_analytics_group_value_streams ALTER COLU
 
 ALTER TABLE ONLY public.analytics_cycle_analytics_project_stages ALTER COLUMN id SET DEFAULT nextval('public.analytics_cycle_analytics_project_stages_id_seq'::regclass);
 
+ALTER TABLE ONLY public.analytics_instance_statistics_measurements ALTER COLUMN id SET DEFAULT nextval('public.analytics_instance_statistics_measurements_id_seq'::regclass);
+
 ALTER TABLE ONLY public.appearances ALTER COLUMN id SET DEFAULT nextval('public.appearances_id_seq'::regclass);
 
 ALTER TABLE ONLY public.application_setting_terms ALTER COLUMN id SET DEFAULT nextval('public.application_setting_terms_id_seq'::regclass);
@@ -17368,6 +17405,8 @@ ALTER TABLE ONLY public.scim_identities ALTER COLUMN id SET DEFAULT nextval('pub
 
 ALTER TABLE ONLY public.scim_oauth_access_tokens ALTER COLUMN id SET DEFAULT nextval('public.scim_oauth_access_tokens_id_seq'::regclass);
 
+ALTER TABLE ONLY public.security_findings ALTER COLUMN id SET DEFAULT nextval('public.security_findings_id_seq'::regclass);
+
 ALTER TABLE ONLY public.security_scans ALTER COLUMN id SET DEFAULT nextval('public.security_scans_id_seq'::regclass);
 
 ALTER TABLE ONLY public.self_managed_prometheus_alert_events ALTER COLUMN id SET DEFAULT nextval('public.self_managed_prometheus_alert_events_id_seq'::regclass);
@@ -17711,6 +17750,9 @@ ALTER TABLE ONLY public.analytics_cycle_analytics_group_value_streams
 
 ALTER TABLE ONLY public.analytics_cycle_analytics_project_stages
     ADD CONSTRAINT analytics_cycle_analytics_project_stages_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY public.analytics_instance_statistics_measurements
+    ADD CONSTRAINT analytics_instance_statistics_measurements_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY public.appearances
     ADD CONSTRAINT appearances_pkey PRIMARY KEY (id);
@@ -18626,6 +18668,9 @@ ALTER TABLE ONLY public.scim_identities
 
 ALTER TABLE ONLY public.scim_oauth_access_tokens
     ADD CONSTRAINT scim_oauth_access_tokens_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY public.security_findings
+    ADD CONSTRAINT security_findings_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY public.security_scans
     ADD CONSTRAINT security_scans_pkey PRIMARY KEY (id);
@@ -20325,6 +20370,8 @@ CREATE INDEX index_on_id_partial_with_legacy_storage ON public.projects USING bt
 
 CREATE INDEX index_on_identities_lower_extern_uid_and_provider ON public.identities USING btree (lower((extern_uid)::text), provider);
 
+CREATE UNIQUE INDEX index_on_instance_statistics_recorded_at_and_identifier ON public.analytics_instance_statistics_measurements USING btree (identifier, recorded_at);
+
 CREATE INDEX index_on_users_name_lower ON public.users USING btree (lower((name)::text));
 
 CREATE INDEX index_open_project_tracker_data_on_service_id ON public.open_project_tracker_data USING btree (service_id);
@@ -20796,6 +20843,16 @@ CREATE UNIQUE INDEX index_scim_oauth_access_tokens_on_group_id_and_token_encrypt
 CREATE INDEX index_secure_ci_builds_on_user_id_created_at_parser_features ON public.ci_builds USING btree (user_id, created_at) WHERE (((type)::text = 'Ci::Build'::text) AND ((name)::text = ANY (ARRAY[('container_scanning'::character varying)::text, ('dast'::character varying)::text, ('dependency_scanning'::character varying)::text, ('license_management'::character varying)::text, ('license_scanning'::character varying)::text, ('sast'::character varying)::text, ('coverage_fuzzing'::character varying)::text, ('secret_detection'::character varying)::text])));
 
 CREATE INDEX index_security_ci_builds_on_name_and_id_parser_features ON public.ci_builds USING btree (name, id) WHERE (((name)::text = ANY (ARRAY[('container_scanning'::character varying)::text, ('dast'::character varying)::text, ('dependency_scanning'::character varying)::text, ('license_management'::character varying)::text, ('sast'::character varying)::text, ('secret_detection'::character varying)::text, ('coverage_fuzzing'::character varying)::text, ('license_scanning'::character varying)::text])) AND ((type)::text = 'Ci::Build'::text));
+
+CREATE INDEX index_security_findings_on_confidence ON public.security_findings USING btree (confidence);
+
+CREATE INDEX index_security_findings_on_project_fingerprint ON public.security_findings USING btree (project_fingerprint);
+
+CREATE INDEX index_security_findings_on_scan_id ON public.security_findings USING btree (scan_id);
+
+CREATE INDEX index_security_findings_on_scanner_id ON public.security_findings USING btree (scanner_id);
+
+CREATE INDEX index_security_findings_on_severity ON public.security_findings USING btree (severity);
 
 CREATE INDEX index_self_managed_prometheus_alert_events_on_environment_id ON public.self_managed_prometheus_alert_events USING btree (environment_id);
 
@@ -22674,6 +22731,9 @@ ALTER TABLE ONLY public.list_user_preferences
 ALTER TABLE ONLY public.project_custom_attributes
     ADD CONSTRAINT fk_rails_719c3dccc5 FOREIGN KEY (project_id) REFERENCES public.projects(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY public.security_findings
+    ADD CONSTRAINT fk_rails_729b763a54 FOREIGN KEY (scanner_id) REFERENCES public.vulnerability_scanners(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY public.dast_scanner_profiles
     ADD CONSTRAINT fk_rails_72a8ba7141 FOREIGN KEY (project_id) REFERENCES public.projects(id) ON DELETE CASCADE;
 
@@ -23006,6 +23066,9 @@ ALTER TABLE ONLY public.approval_project_rules_users
 
 ALTER TABLE ONLY public.lists
     ADD CONSTRAINT fk_rails_baed5f39b7 FOREIGN KEY (milestone_id) REFERENCES public.milestones(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY public.security_findings
+    ADD CONSTRAINT fk_rails_bb63863cf1 FOREIGN KEY (scan_id) REFERENCES public.security_scans(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY public.approval_merge_request_rules_users
     ADD CONSTRAINT fk_rails_bc8972fa55 FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;

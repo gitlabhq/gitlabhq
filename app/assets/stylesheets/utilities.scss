@@ -119,3 +119,7 @@
     width: auto !important;
   }
 }
+
+.gl-shadow-x0-y0-b3-s1-blue-500 {
+  box-shadow: inset 0 0 3px $gl-border-size-1 $blue-500;
+}

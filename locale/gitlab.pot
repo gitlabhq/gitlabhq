@@ -17338,16 +17338,10 @@ msgstr ""
 msgid "Outbound requests"
 msgstr ""
 
-msgid "OutdatedBrowser|From May 2020 GitLab no longer supports Internet Explorer 11."
-msgstr ""
-
 msgid "OutdatedBrowser|GitLab may not work properly, because you are using an outdated web browser."
 msgstr ""
 
 msgid "OutdatedBrowser|Please install a %{browser_link_start}supported web browser%{browser_link_end} for a better experience."
-msgstr ""
-
-msgid "OutdatedBrowser|You can provide feedback %{feedback_link_start}on this issue%{feedback_link_end} or via your usual support channels."
 msgstr ""
 
 msgid "Outdent"

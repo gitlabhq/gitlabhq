@@ -31,7 +31,7 @@ import delayedJobMixin from '~/jobs/mixins/delayed_job_mixin';
  */
 
 export default {
-  hoverClass: 'gl-inset-border-1-blue-500',
+  hoverClass: 'gl-shadow-x0-y0-b3-s1-blue-500',
   components: {
     ActionComponent,
     JobNameComponent,
@@ -60,6 +60,11 @@ export default {
       type: String,
       required: false,
       default: '',
+    },
+    pipelineExpanded: {
+      type: Object,
+      required: false,
+      default: () => ({}),
     },
   },
   computed: {
@@ -101,8 +106,14 @@ export default {
     hasAction() {
       return this.job.status && this.job.status.action && this.job.status.action.path;
     },
+    relatedDownstreamHovered() {
+      return this.job.name === this.jobHovered;
+    },
+    relatedDownstreamExpanded() {
+      return this.job.name === this.pipelineExpanded.jobName && this.pipelineExpanded.expanded;
+    },
     jobClasses() {
-      return this.job.name === this.jobHovered
+      return this.relatedDownstreamHovered || this.relatedDownstreamExpanded
         ? `${this.$options.hoverClass} ${this.cssClassJobName}`
         : this.cssClassJobName;
     },

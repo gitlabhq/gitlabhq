@@ -329,6 +329,13 @@ RSpec.describe API::ProjectSnippets do
       expect(snippet.description).to eq(new_description)
     end
 
+    it 'updates snippet with visibility parameter' do
+      expect { update_snippet(params: { visibility: 'private' }) }
+        .to change { snippet.reload.visibility }
+
+      expect(snippet.visibility).to eq('private')
+    end
+
     it 'returns 404 for invalid snippet id' do
       update_snippet(snippet_id: non_existing_record_id, params: { title: 'foo' })
 
@@ -340,6 +347,7 @@ RSpec.describe API::ProjectSnippets do
       update_snippet
 
       expect(response).to have_gitlab_http_status(:bad_request)
+      expect(json_response['error']).to eq 'title, file_name, content, visibility are missing, at least one parameter must be provided'
     end
 
     it 'returns 400 if content is blank' do

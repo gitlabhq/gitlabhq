@@ -4112,4 +4112,14 @@ RSpec.describe MergeRequest, factory_default: :keep do
       expect(context[:label_url_method]).to eq(:project_merge_requests_url)
     end
   end
+
+  describe '#head_pipeline_builds_with_coverage' do
+    it 'delegates to head_pipeline' do
+      expect(subject)
+        .to delegate_method(:builds_with_coverage)
+        .to(:head_pipeline)
+        .with_prefix
+        .with_arguments(allow_nil: true)
+    end
+  end
 end

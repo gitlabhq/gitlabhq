@@ -13,6 +13,7 @@ describe('pipeline graph job item', () => {
     });
   };
 
+  const triggerActiveClass = 'gl-shadow-x0-y0-b3-s1-blue-500';
   const delayedJobFixture = getJSONFixture('jobs/delayed.json');
   const mockJob = {
     id: 4256,
@@ -31,6 +32,18 @@ describe('pipeline graph job item', () => {
         path: '/root/ci-mock/builds/4256/retry',
         method: 'post',
       },
+    },
+  };
+  const mockJobWithoutDetails = {
+    id: 4257,
+    name: 'test',
+    status: {
+      icon: 'status_success',
+      text: 'passed',
+      label: 'passed',
+      group: 'success',
+      details_path: '/root/ci-mock/builds/4257',
+      has_details: false,
     },
   };
 
@@ -61,18 +74,7 @@ describe('pipeline graph job item', () => {
   describe('name without link', () => {
     beforeEach(() => {
       createWrapper({
-        job: {
-          id: 4257,
-          name: 'test',
-          status: {
-            icon: 'status_success',
-            text: 'passed',
-            label: 'passed',
-            group: 'success',
-            details_path: '/root/ci-mock/builds/4257',
-            has_details: false,
-          },
-        },
+        job: mockJobWithoutDetails,
         cssClassJobName: 'css-class-job-name',
         jobHovered: 'test',
       });
@@ -86,7 +88,7 @@ describe('pipeline graph job item', () => {
     });
 
     it('should apply hover class and provided class name', () => {
-      expect(findJobWithoutLink().classes()).toContain('gl-inset-border-1-blue-500');
+      expect(findJobWithoutLink().classes()).toContain(triggerActiveClass);
       expect(findJobWithoutLink().classes()).toContain('css-class-job-name');
     });
   });
@@ -152,6 +154,26 @@ describe('pipeline graph job item', () => {
       expect(wrapper.find('.js-pipeline-graph-job-link').attributes('title')).toEqual(
         `delayed job - delayed manual action (${wrapper.vm.remainingTime})`,
       );
+    });
+  });
+
+  describe('trigger job highlighting', () => {
+    it('trigger job should stay highlighted when downstream is expanded', () => {
+      createWrapper({
+        job: mockJobWithoutDetails,
+        pipelineExpanded: { jobName: mockJob.name, expanded: true },
+      });
+
+      expect(findJobWithoutLink().classes()).toContain(triggerActiveClass);
+    });
+
+    it('trigger job should not be highlighted when downstream is closed', () => {
+      createWrapper({
+        job: mockJobWithoutDetails,
+        pipelineExpanded: { jobName: mockJob.name, expanded: false },
+      });
+
+      expect(findJobWithoutLink().classes()).not.toContain(triggerActiveClass);
     });
   });
 });

@@ -95,7 +95,7 @@ module API
         optional :visibility, type: String,
                               values: Gitlab::VisibilityLevel.string_values,
                               desc: 'The visibility of the snippet'
-        at_least_one_of :title, :file_name, :content, :visibility_level
+        at_least_one_of :title, :file_name, :content, :visibility
       end
       # rubocop: disable CodeReuse/ActiveRecord
       put ":id/snippets/:snippet_id" do

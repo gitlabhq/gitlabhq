@@ -1335,6 +1335,8 @@ expression string per rule, rather than an array of them. Any set of expressions
 evaluated can be [conjoined into a single expression](../variables/README.md#conjunction--disjunction)
 by using `&&` or `||`, and use
 the [variable matching syntax](../variables/README.md#syntax-of-environment-variable-expressions).
+Unlike variables in [`script`](../variables/README.md#syntax-of-environment-variables-in-job-scripts)
+sections, variables in rules expressions are always formatted as `$VARIABLE`.
 
 `if:` clauses are evaluated based on the values of [predefined environment variables](../variables/predefined_variables.md)
 or [custom environment variables](../variables/README.md#custom-environment-variables).

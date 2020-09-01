@@ -157,7 +157,7 @@ RSpec.describe Gitlab::Ci::Lint do
 
         it 'uses YamlProcessor' do
           expect(Gitlab::Ci::YamlProcessor)
-            .to receive(:new_with_validation_errors)
+            .to receive(:new)
             .and_call_original
 
           subject

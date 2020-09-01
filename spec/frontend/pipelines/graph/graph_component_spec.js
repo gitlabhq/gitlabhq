@@ -16,6 +16,9 @@ describe('graph component', () => {
 
   let wrapper;
 
+  const findExpandPipelineBtn = () => wrapper.find('[data-testid="expandPipelineButton"]');
+  const findAllExpandPipelineBtns = () => wrapper.findAll('[data-testid="expandPipelineButton"]');
+
   beforeEach(() => {
     setHTMLFixture('<div class="layout-page"></div>');
   });
@@ -167,7 +170,7 @@ describe('graph component', () => {
       describe('triggered by', () => {
         describe('on click', () => {
           it('should emit `onClickTriggeredBy` when triggered by linked pipeline is clicked', () => {
-            const btnWrapper = wrapper.find('.linked-pipeline-content');
+            const btnWrapper = findExpandPipelineBtn();
 
             btnWrapper.trigger('click');
 
@@ -213,7 +216,7 @@ describe('graph component', () => {
               ),
             });
 
-            const btnWrappers = wrapper.findAll('.linked-pipeline-content');
+            const btnWrappers = findAllExpandPipelineBtns();
             const downstreamBtnWrapper = btnWrappers.at(btnWrappers.length - 1);
 
             downstreamBtnWrapper.trigger('click');

@@ -491,6 +491,12 @@ module Ci
       end
     end
 
+    def git_commit_timestamp
+      strong_memoize(:git_commit_timestamp) do
+        commit.try(:timestamp)
+      end
+    end
+
     def before_sha
       super || Gitlab::Git::BLANK_SHA
     end
@@ -768,6 +774,7 @@ module Ci
         variables.append(key: 'CI_COMMIT_TITLE', value: git_commit_full_title.to_s)
         variables.append(key: 'CI_COMMIT_DESCRIPTION', value: git_commit_description.to_s)
         variables.append(key: 'CI_COMMIT_REF_PROTECTED', value: (!!protected_ref?).to_s)
+        variables.append(key: 'CI_COMMIT_TIMESTAMP', value: git_commit_timestamp.to_s)
 
         # legacy variables
         variables.append(key: 'CI_BUILD_REF', value: sha)
@@ -858,6 +865,10 @@ module Ci
 
     def latest_report_builds(reports_scope = ::Ci::JobArtifact.with_reports)
       builds.latest.with_reports(reports_scope)
+    end
+
+    def builds_with_coverage
+      builds.with_coverage
     end
 
     def has_reports?(reports_scope)

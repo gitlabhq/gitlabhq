@@ -45,14 +45,15 @@ module Gitlab
       end
 
       def static_validation(content)
-        result = Gitlab::Ci::YamlProcessor.new_with_validation_errors(
+        result = Gitlab::Ci::YamlProcessor.new(
           content,
           project: @project,
           user: @current_user,
-          sha: @project.repository.commit.sha)
+          sha: @project.repository.commit.sha
+        ).execute
 
         Result.new(
-          jobs: static_validation_convert_to_jobs(result.config&.stages, result.config&.builds),
+          jobs: static_validation_convert_to_jobs(result),
           errors: result.errors,
           warnings: result.warnings
         )
@@ -76,12 +77,12 @@ module Gitlab
         end
       end
 
-      def static_validation_convert_to_jobs(stages, all_jobs)
+      def static_validation_convert_to_jobs(result)
         jobs = []
-        return jobs unless stages || all_jobs
+        return jobs unless result.valid?
 
-        stages.each do |stage_name|
-          all_jobs.each do |job|
+        result.stages.each do |stage_name|
+          result.builds.each do |job|
             next unless job[:stage] == stage_name
 
             jobs << {

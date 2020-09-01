@@ -381,12 +381,6 @@ RSpec.describe Gitlab::ImportExport::Project::TreeSaver do
 
         expect(project_tree_saver.save).to be true
       end
-
-      it 'has no when YML attributes but only the DB column' do
-        expect_any_instance_of(Gitlab::Ci::YamlProcessor).not_to receive(:build_attributes)
-
-        project_tree_saver.save
-      end
     end
   end
 

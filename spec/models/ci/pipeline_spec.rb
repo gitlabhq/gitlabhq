@@ -715,6 +715,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
         CI_COMMIT_TITLE
         CI_COMMIT_DESCRIPTION
         CI_COMMIT_REF_PROTECTED
+        CI_COMMIT_TIMESTAMP
         CI_BUILD_REF
         CI_BUILD_BEFORE_SHA
         CI_BUILD_REF_NAME
@@ -3438,6 +3439,19 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
       let(:pipeline) { create(:ci_pipeline, project: project, tag: true) }
 
       it { is_expected.to eq(Gitlab::Git::TAG_REF_PREFIX + pipeline.source_ref.to_s) }
+    end
+  end
+
+  describe "#builds_with_coverage" do
+    it 'returns builds with coverage only' do
+      rspec = create(:ci_build, name: 'rspec', coverage: 97.1, pipeline: pipeline)
+      jest  = create(:ci_build, name: 'jest', coverage: 94.1, pipeline: pipeline)
+      karma = create(:ci_build, name: 'karma', coverage: nil, pipeline: pipeline)
+
+      builds = pipeline.builds_with_coverage
+
+      expect(builds).to include(rspec, jest)
+      expect(builds).not_to include(karma)
     end
   end
 end

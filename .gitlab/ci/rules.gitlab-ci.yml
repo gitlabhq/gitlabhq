@@ -753,6 +753,17 @@
     - <<: *if-dot-com-gitlab-org-schedule
       allow_failure: true
 
+.review:rules:review-stop:
+  rules:
+    - <<: *if-not-ee
+      when: never
+    - <<: *if-dot-com-gitlab-org-merge-request
+      changes: *code-qa-patterns
+      when: manual
+      allow_failure: true
+    - <<: *if-master-refs
+      allow_failure: true
+
 .review:rules:danger:
   rules:
     - if: '$DANGER_GITLAB_API_TOKEN && $CI_MERGE_REQUEST_IID'

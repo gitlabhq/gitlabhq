@@ -133,12 +133,6 @@ RSpec.describe Gitlab::ImportExport::FastHashSerializer do
     expect(builds_count).to eq(1)
   end
 
-  it 'has no when YML attributes but only the DB column' do
-    expect_any_instance_of(Gitlab::Ci::YamlProcessor).not_to receive(:build_attributes)
-
-    subject
-  end
-
   it 'has pipeline commits' do
     expect(subject['ci_pipelines']).not_to be_empty
   end

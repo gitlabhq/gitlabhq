@@ -98,7 +98,7 @@ RSpec.describe Projects::Ci::LintsController do
         it_behaves_like 'returns a successful validation'
 
         it 'runs validations through YamlProcessor' do
-          expect(Gitlab::Ci::YamlProcessor).to receive(:new_with_validation_errors).and_call_original
+          expect(Gitlab::Ci::YamlProcessor).to receive(:new).and_call_original
 
           subject
         end
@@ -126,7 +126,7 @@ RSpec.describe Projects::Ci::LintsController do
           it_behaves_like 'returns a successful validation'
 
           it 'runs validations through YamlProcessor' do
-            expect(Gitlab::Ci::YamlProcessor).to receive(:new_with_validation_errors).and_call_original
+            expect(Gitlab::Ci::YamlProcessor).to receive(:new).and_call_original
 
             subject
           end

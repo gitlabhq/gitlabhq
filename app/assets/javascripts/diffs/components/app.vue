@@ -1,6 +1,6 @@
 <script>
 import { mapState, mapGetters, mapActions } from 'vuex';
-import { GlLoadingIcon, GlButton, GlAlert, GlPagination, GlSprintf } from '@gitlab/ui';
+import { GlLoadingIcon, GlPagination, GlSprintf } from '@gitlab/ui';
 import Mousetrap from 'mousetrap';
 import { __ } from '~/locale';
 import { getParameterByName, parseBoolean } from '~/lib/utils/common_utils';
@@ -13,9 +13,12 @@ import eventHub from '../../notes/event_hub';
 import CompareVersions from './compare_versions.vue';
 import DiffFile from './diff_file.vue';
 import NoChanges from './no_changes.vue';
-import HiddenFilesWarning from './hidden_files_warning.vue';
 import CommitWidget from './commit_widget.vue';
 import TreeList from './tree_list.vue';
+
+import HiddenFilesWarning from './hidden_files_warning.vue';
+import MergeConflictWarning from './merge_conflict_warning.vue';
+
 import {
   TREE_LIST_WIDTH_STORAGE_KEY,
   INITIAL_TREE_WIDTH,
@@ -33,13 +36,12 @@ export default {
     DiffFile,
     NoChanges,
     HiddenFilesWarning,
+    MergeConflictWarning,
     CommitWidget,
     TreeList,
     GlLoadingIcon,
     PanelResizer,
     GlPagination,
-    GlButton,
-    GlAlert,
     GlSprintf,
   },
   mixins: [glFeatureFlagsMixin()],
@@ -422,49 +424,12 @@ export default {
         :plain-diff-path="plainDiffPath"
         :email-patch-path="emailPatchPath"
       />
-
-      <div
+      <merge-conflict-warning
         v-if="isDiffHead && hasConflicts"
-        :class="{
-          [CENTERED_LIMITED_CONTAINER_CLASSES]: isLimitedContainer,
-        }"
-      >
-        <gl-alert
-          :dismissible="false"
-          :title="__('There are merge conflicts')"
-          variant="warning"
-          class="w-100 mb-3"
-        >
-          <p class="mb-1">
-            {{ __('The comparison view may be inaccurate due to merge conflicts.') }}
-          </p>
-          <p class="mb-0">
-            {{
-              __(
-                'Resolve these conflicts or ask someone with write access to this repository to merge it locally.',
-              )
-            }}
-          </p>
-          <template #actions>
-            <gl-button
-              v-if="conflictResolutionPath"
-              :href="conflictResolutionPath"
-              variant="info"
-              class="mr-3 gl-alert-action"
-            >
-              {{ __('Resolve conflicts') }}
-            </gl-button>
-            <gl-button
-              v-if="canMerge"
-              class="gl-alert-action"
-              data-toggle="modal"
-              data-target="#modal_merge_info"
-            >
-              {{ __('Merge locally') }}
-            </gl-button>
-          </template>
-        </gl-alert>
-      </div>
+        :limited="isLimitedContainer"
+        :resolution-path="conflictResolutionPath"
+        :mergeable="canMerge"
+      />
 
       <div
         :data-can-create-note="getNoteableData.current_user.can_create_note"

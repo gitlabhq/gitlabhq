@@ -44,6 +44,9 @@ export default {
     onDownstreamHovered(jobName) {
       this.$emit('downstreamHovered', jobName);
     },
+    onPipelineExpandToggle(jobName, expanded) {
+      this.$emit('pipelineExpandToggle', jobName, expanded);
+    },
   },
 };
 </script>
@@ -65,6 +68,7 @@ export default {
         :project-id="projectId"
         @pipelineClicked="onPipelineClick($event, pipeline, index)"
         @downstreamHovered="onDownstreamHovered"
+        @pipelineExpandToggle="onPipelineExpandToggle"
       />
     </ul>
   </div>

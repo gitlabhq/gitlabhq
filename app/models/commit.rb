@@ -221,12 +221,16 @@ class Commit
     description.present?
   end
 
+  def timestamp
+    committed_date.xmlschema
+  end
+
   def hook_attrs(with_changed_files: false)
     data = {
       id: id,
       message: safe_message,
       title: title,
-      timestamp: committed_date.xmlschema,
+      timestamp: timestamp,
       url: Gitlab::UrlBuilder.build(self),
       author: {
         name: author_name,

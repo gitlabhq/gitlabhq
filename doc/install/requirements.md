@@ -263,8 +263,6 @@ For reference, GitLab.com's [auto-scaling shared runner](../user/gitlab_com/inde
 
 CAUTION: **Caution:**
 With GitLab 13.0 (May 2020) we have removed official support for Internet Explorer 11.
-With the release of GitLab 13.4 (September 2020) we will remove all code that supports Internet Explorer 11.
-You can provide feedback [on this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/197987) or via your usual support channels.
 
 GitLab supports the following web browsers:
 
@@ -276,7 +274,7 @@ GitLab supports the following web browsers:
 
 For the listed web browsers, GitLab supports:
 
-- The current and previous major versions of browsers except Internet Explorer.
+- The current and previous major versions of browsers.
 - The current minor version of a supported major version.
 
 NOTE: **Note:**

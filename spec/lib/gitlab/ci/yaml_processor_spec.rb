@@ -7,16 +7,16 @@ module Gitlab
     RSpec.describe YamlProcessor do
       include StubRequests
 
-      subject { described_class.new(config, user: nil) }
+      subject { described_class.new(config, user: nil).execute }
 
       shared_examples 'returns errors' do |error_message|
-        it 'raises exception when error encountered' do
-          expect { subject }.to raise_error(described_class::ValidationError, error_message)
+        it 'adds a message when an error is encountered' do
+          expect(subject.errors).to include(error_message)
         end
       end
 
       describe '#build_attributes' do
-        subject { described_class.new(config, user: nil).build_attributes(:rspec) }
+        subject { described_class.new(config, user: nil).execute.build_attributes(:rspec) }
 
         describe 'attributes list' do
           let(:config) do
@@ -98,7 +98,7 @@ module Gitlab
             config = YAML.dump({ default: { tags: %w[A B] },
                                  rspec: { script: "rspec" } })
 
-            config_processor = Gitlab::Ci::YamlProcessor.new(config)
+            config_processor = Gitlab::Ci::YamlProcessor.new(config).execute
 
             expect(config_processor.stage_builds_attributes("test").size).to eq(1)
             expect(config_processor.stage_builds_attributes("test").first).to eq({
@@ -145,7 +145,7 @@ module Gitlab
             config = YAML.dump({ default: { interruptible: true },
                                  rspec: { script: "rspec" } })
 
-            config_processor = Gitlab::Ci::YamlProcessor.new(config)
+            config_processor = Gitlab::Ci::YamlProcessor.new(config).execute
 
             expect(config_processor.stage_builds_attributes("test").size).to eq(1)
             expect(config_processor.stage_builds_attributes("test").first).to eq({
@@ -474,9 +474,8 @@ module Gitlab
           end
 
           it 'is propagated all the way up into the raised exception' do
-            expect { subject }.to raise_error do |error|
-              expect(error.warnings).to contain_exactly(/jobs:rspec may allow multiple pipelines to run/)
-            end
+            expect(subject).not_to be_valid
+            expect(subject.warnings).to contain_exactly(/jobs:rspec may allow multiple pipelines to run/)
           end
 
           it_behaves_like 'returns errors', 'jobs:invalid:artifacts config should be a hash'
@@ -493,10 +492,8 @@ module Gitlab
             EOYML
           end
 
-          it 'raises an exception with empty warnings array' do
-            expect { subject }.to raise_error do |error|
-              expect(error.warnings).to be_empty
-            end
+          it 'has empty warnings' do
+            expect(subject.warnings).to be_empty
           end
 
           it_behaves_like 'returns errors', 'Local file `unknown/file.yml` does not have project!'
@@ -504,12 +501,9 @@ module Gitlab
 
         context 'when error is raised after composing the config with warnings' do
           shared_examples 'has warnings and expected error' do |error_message|
-            it 'raises an exception including warnings' do
-              expect { subject }.to raise_error do |error|
-                expect(error).to be_a(described_class::ValidationError)
-                expect(error.message).to match(error_message)
-                expect(error.warnings).to be_present
-              end
+            it 'returns errors and warnings', :aggregate_failures do
+              expect(subject.errors).to include(error_message)
+              expect(subject.warnings).to be_present
             end
           end
 
@@ -590,7 +584,7 @@ module Gitlab
         context 'when `only` has an invalid value' do
           let(:config) { { rspec: { script: "rspec", type: "test", only: only } } }
 
-          subject { Gitlab::Ci::YamlProcessor.new(YAML.dump(config)) }
+          subject { Gitlab::Ci::YamlProcessor.new(YAML.dump(config)).execute }
 
           context 'when it is integer' do
             let(:only) { 1 }
@@ -614,7 +608,7 @@ module Gitlab
         context 'when `except` has an invalid value' do
           let(:config) { { rspec: { script: "rspec", except: except } } }
 
-          subject { Gitlab::Ci::YamlProcessor.new(YAML.dump(config)) }
+          subject { Gitlab::Ci::YamlProcessor.new(YAML.dump(config)).execute }
 
           context 'when it is integer' do
             let(:except) { 1 }
@@ -638,7 +632,7 @@ module Gitlab
 
       describe "Scripts handling" do
         let(:config_data) { YAML.dump(config) }
-        let(:config_processor) { Gitlab::Ci::YamlProcessor.new(config_data) }
+        let(:config_processor) { Gitlab::Ci::YamlProcessor.new(config_data).execute }
 
         subject { config_processor.stage_builds_attributes('test').first }
 
@@ -807,7 +801,7 @@ module Gitlab
                                  before_script: ["pwd"],
                                  rspec: { script: "rspec" } })
 
-            config_processor = Gitlab::Ci::YamlProcessor.new(config)
+            config_processor = Gitlab::Ci::YamlProcessor.new(config).execute
 
             expect(config_processor.stage_builds_attributes("test").size).to eq(1)
             expect(config_processor.stage_builds_attributes("test").first).to eq({
@@ -840,7 +834,7 @@ module Gitlab
                                                        command: ["/usr/local/bin/init", "run"] }, "docker:dind"],
                                           script: "rspec" } })
 
-            config_processor = Gitlab::Ci::YamlProcessor.new(config)
+            config_processor = Gitlab::Ci::YamlProcessor.new(config).execute
 
             expect(config_processor.stage_builds_attributes("test").size).to eq(1)
             expect(config_processor.stage_builds_attributes("test").first).to eq({
@@ -871,7 +865,7 @@ module Gitlab
                                  before_script: ["pwd"],
                                  rspec: { script: "rspec" } })
 
-            config_processor = Gitlab::Ci::YamlProcessor.new(config)
+            config_processor = Gitlab::Ci::YamlProcessor.new(config).execute
 
             expect(config_processor.stage_builds_attributes("test").size).to eq(1)
             expect(config_processor.stage_builds_attributes("test").first).to eq({
@@ -898,7 +892,7 @@ module Gitlab
                                  before_script: ["pwd"],
                                  rspec: { image: "ruby:2.5", services: ["postgresql", "docker:dind"], script: "rspec" } })
 
-            config_processor = Gitlab::Ci::YamlProcessor.new(config)
+            config_processor = Gitlab::Ci::YamlProcessor.new(config).execute
 
             expect(config_processor.stage_builds_attributes("test").size).to eq(1)
             expect(config_processor.stage_builds_attributes("test").first).to eq({
@@ -922,9 +916,9 @@ module Gitlab
       end
 
       describe 'Variables' do
-        let(:config_processor) { Gitlab::Ci::YamlProcessor.new(YAML.dump(config)) }
+        subject { Gitlab::Ci::YamlProcessor.new(YAML.dump(config)).execute }
 
-        subject { config_processor.builds.first[:yaml_variables] }
+        let(:build_variables) { subject.builds.first[:yaml_variables] }
 
         context 'when global variables are defined' do
           let(:variables) do
@@ -940,7 +934,7 @@ module Gitlab
           end
 
           it 'returns global variables' do
-            expect(subject).to contain_exactly(
+            expect(build_variables).to contain_exactly(
               { key: 'VAR1', value: 'value1', public: true },
               { key: 'VAR2', value: 'value2', public: true }
             )
@@ -968,7 +962,7 @@ module Gitlab
             let(:inherit) { }
 
             it 'returns all unique variables' do
-              expect(subject).to contain_exactly(
+              expect(build_variables).to contain_exactly(
                 { key: 'VAR4', value: 'global4', public: true },
                 { key: 'VAR3', value: 'global3', public: true },
                 { key: 'VAR1', value: 'value1', public: true },
@@ -981,7 +975,7 @@ module Gitlab
             let(:inherit) { { variables: false } }
 
             it 'does not inherit variables' do
-              expect(subject).to contain_exactly(
+              expect(build_variables).to contain_exactly(
                 { key: 'VAR1', value: 'value1', public: true },
                 { key: 'VAR2', value: 'value2', public: true }
               )
@@ -992,7 +986,7 @@ module Gitlab
             let(:inherit) { { variables: %w[VAR1 VAR4] } }
 
             it 'returns all unique variables and inherits only specified variables' do
-              expect(subject).to contain_exactly(
+              expect(build_variables).to contain_exactly(
                 { key: 'VAR4', value: 'global4', public: true },
                 { key: 'VAR1', value: 'value1', public: true },
                 { key: 'VAR2', value: 'value2', public: true }
@@ -1015,7 +1009,7 @@ module Gitlab
             end
 
             it 'returns job variables' do
-              expect(subject).to contain_exactly(
+              expect(build_variables).to contain_exactly(
                 { key: 'VAR1', value: 'value1', public: true },
                 { key: 'VAR2', value: 'value2', public: true }
               )
@@ -1041,8 +1035,8 @@ module Gitlab
                 # When variables config is empty, we assume this is a valid
                 # configuration, see issue #18775
                 #
-                expect(subject).to be_an_instance_of(Array)
-                expect(subject).to be_empty
+                expect(build_variables).to be_an_instance_of(Array)
+                expect(build_variables).to be_empty
               end
             end
           end
@@ -1057,14 +1051,14 @@ module Gitlab
           end
 
           it 'returns empty array' do
-            expect(subject).to be_an_instance_of(Array)
-            expect(subject).to be_empty
+            expect(build_variables).to be_an_instance_of(Array)
+            expect(build_variables).to be_empty
           end
         end
       end
 
       context 'when using `extends`' do
-        let(:config_processor) { Gitlab::Ci::YamlProcessor.new(config) }
+        let(:config_processor) { Gitlab::Ci::YamlProcessor.new(config).execute }
 
         subject { config_processor.builds.first }
 
@@ -1126,15 +1120,13 @@ module Gitlab
           }
         end
 
-        subject { Gitlab::Ci::YamlProcessor.new(YAML.dump(config), opts) }
+        subject { Gitlab::Ci::YamlProcessor.new(YAML.dump(config), opts).execute }
 
         context "when validating a ci config file with no project context" do
           context "when a single string is provided" do
             let(:include_content) { "/local.gitlab-ci.yml" }
 
-            it "returns a validation error" do
-              expect { subject }.to raise_error /does not have project/
-            end
+            it_behaves_like 'returns errors', /does not have project/
           end
 
           context "when an array is provided" do
@@ -1165,9 +1157,7 @@ module Gitlab
                   body: 'prepare: { script: ls -al }')
             end
 
-            it "does not return any error" do
-              expect { subject }.not_to raise_error
-            end
+            it { is_expected.to be_valid }
           end
 
           context "when the include type is incorrect" do
@@ -1188,9 +1178,7 @@ module Gitlab
                 .and_return(YAML.dump({ job1: { script: 'hello' } }))
             end
 
-            it "does not return an error" do
-              expect { subject }.not_to raise_error
-            end
+            it { is_expected.to be_valid }
           end
 
           context "when the included internal file is not present" do
@@ -1206,7 +1194,7 @@ module Gitlab
               rspec: { script: 'rspec', when: when_state }
             })
 
-            config_processor = Gitlab::Ci::YamlProcessor.new(config)
+            config_processor = Gitlab::Ci::YamlProcessor.new(config).execute
             builds = config_processor.stage_builds_attributes("test")
 
             expect(builds.size).to eq(1)
@@ -1250,7 +1238,7 @@ module Gitlab
                              variables: { 'VAR1' => 1 } })
         end
 
-        let(:config_processor) { Gitlab::Ci::YamlProcessor.new(config) }
+        let(:config_processor) { Gitlab::Ci::YamlProcessor.new(config).execute }
         let(:builds) { config_processor.stage_builds_attributes('test') }
 
         context 'when job is parallelized' do
@@ -1366,7 +1354,7 @@ module Gitlab
                                }
                              })
 
-          config_processor = Gitlab::Ci::YamlProcessor.new(config)
+          config_processor = Gitlab::Ci::YamlProcessor.new(config).execute
 
           expect(config_processor.stage_builds_attributes("test").size).to eq(1)
           expect(config_processor.stage_builds_attributes("test").first[:cache]).to eq(
@@ -1388,7 +1376,7 @@ module Gitlab
               }
             })
 
-          config_processor = Gitlab::Ci::YamlProcessor.new(config)
+          config_processor = Gitlab::Ci::YamlProcessor.new(config).execute
 
           expect(config_processor.stage_builds_attributes("test").size).to eq(1)
           expect(config_processor.stage_builds_attributes("test").first[:cache]).to eq(
@@ -1407,7 +1395,7 @@ module Gitlab
                                }
                              })
 
-          config_processor = Gitlab::Ci::YamlProcessor.new(config)
+          config_processor = Gitlab::Ci::YamlProcessor.new(config).execute
 
           expect(config_processor.stage_builds_attributes('test').size).to eq(1)
           expect(config_processor.stage_builds_attributes('test').first[:cache]).to eq(
@@ -1430,7 +1418,7 @@ module Gitlab
             }
           )
 
-          config_processor = Gitlab::Ci::YamlProcessor.new(config)
+          config_processor = Gitlab::Ci::YamlProcessor.new(config).execute
 
           expect(config_processor.stage_builds_attributes('test').size).to eq(1)
           expect(config_processor.stage_builds_attributes('test').first[:cache]).to eq(
@@ -1453,7 +1441,7 @@ module Gitlab
             }
           )
 
-          config_processor = Gitlab::Ci::YamlProcessor.new(config)
+          config_processor = Gitlab::Ci::YamlProcessor.new(config).execute
 
           expect(config_processor.stage_builds_attributes('test').size).to eq(1)
           expect(config_processor.stage_builds_attributes('test').first[:cache]).to eq(
@@ -1473,7 +1461,7 @@ module Gitlab
                                }
                              })
 
-          config_processor = Gitlab::Ci::YamlProcessor.new(config)
+          config_processor = Gitlab::Ci::YamlProcessor.new(config).execute
 
           expect(config_processor.stage_builds_attributes("test").size).to eq(1)
           expect(config_processor.stage_builds_attributes("test").first[:cache]).to eq(
@@ -1503,7 +1491,7 @@ module Gitlab
                                }
                              })
 
-          config_processor = Gitlab::Ci::YamlProcessor.new(config)
+          config_processor = Gitlab::Ci::YamlProcessor.new(config).execute
 
           expect(config_processor.stage_builds_attributes("test").size).to eq(1)
           expect(config_processor.stage_builds_attributes("test").first).to eq({
@@ -1539,7 +1527,7 @@ module Gitlab
                                 }
                               })
 
-          config_processor = Gitlab::Ci::YamlProcessor.new(config)
+          config_processor = Gitlab::Ci::YamlProcessor.new(config).execute
           builds = config_processor.stage_builds_attributes("test")
 
           expect(builds.size).to eq(1)
@@ -1555,7 +1543,7 @@ module Gitlab
                                  }
                                })
 
-            config_processor = Gitlab::Ci::YamlProcessor.new(config)
+            config_processor = Gitlab::Ci::YamlProcessor.new(config).execute
             builds = config_processor.stage_builds_attributes("test")
 
             expect(builds.size).to eq(1)
@@ -1591,14 +1579,14 @@ module Gitlab
                   - my/test/something
           YAML
 
-          attributes = Gitlab::Ci::YamlProcessor.new(config).build_attributes('test')
+          attributes = Gitlab::Ci::YamlProcessor.new(config).execute.build_attributes('test')
 
           expect(attributes.dig(*%i[options artifacts exclude])).to eq(%w[my/test/something])
         end
       end
 
       describe "release" do
-        let(:processor) { Gitlab::Ci::YamlProcessor.new(YAML.dump(config)) }
+        let(:processor) { Gitlab::Ci::YamlProcessor.new(YAML.dump(config)).execute }
         let(:config) do
           {
             stages: %w[build test release],
@@ -1643,7 +1631,7 @@ module Gitlab
           }
         end
 
-        subject { Gitlab::Ci::YamlProcessor.new(YAML.dump(config)) }
+        subject { Gitlab::Ci::YamlProcessor.new(YAML.dump(config)).execute }
 
         let(:builds) { subject.stage_builds_attributes('deploy') }
 
@@ -1753,7 +1741,7 @@ module Gitlab
           }
         end
 
-        subject { Gitlab::Ci::YamlProcessor.new(YAML.dump(config)) }
+        subject { Gitlab::Ci::YamlProcessor.new(YAML.dump(config)).execute }
 
         let(:builds) { subject.stage_builds_attributes('deploy') }
 
@@ -1795,24 +1783,24 @@ module Gitlab
           }
         end
 
-        subject { Gitlab::Ci::YamlProcessor.new(YAML.dump(config)) }
+        subject { Gitlab::Ci::YamlProcessor.new(YAML.dump(config)).execute }
 
         context 'no dependencies' do
           let(:dependencies) { }
 
-          it { expect { subject }.not_to raise_error }
+          it { is_expected.to be_valid }
         end
 
         context 'dependencies to builds' do
           let(:dependencies) { %w(build1 build2) }
 
-          it { expect { subject }.not_to raise_error }
+          it { is_expected.to be_valid }
         end
 
         context 'dependencies to builds defined as symbols' do
           let(:dependencies) { [:build1, :build2] }
 
-          it { expect { subject }.not_to raise_error }
+          it { is_expected.to be_valid }
         end
 
         context 'undefined dependency' do
@@ -1868,10 +1856,10 @@ module Gitlab
           }
         end
 
-        subject { Gitlab::Ci::YamlProcessor.new(YAML.dump(config)) }
+        subject { Gitlab::Ci::YamlProcessor.new(YAML.dump(config)).execute }
 
         context 'no needs' do
-          it { expect { subject }.not_to raise_error }
+          it { is_expected.to be_valid }
         end
 
         context 'needs two builds' do
@@ -2063,7 +2051,7 @@ module Gitlab
       end
 
       context 'with when/rules conflict' do
-        subject { Gitlab::Ci::YamlProcessor.new(YAML.dump(config)) }
+        subject { Gitlab::Ci::YamlProcessor.new(YAML.dump(config)).execute }
 
         let(:config) do
           {
@@ -2079,9 +2067,7 @@ module Gitlab
           }
         end
 
-        it 'raises no exceptions' do
-          expect { subject }.not_to raise_error
-        end
+        it { is_expected.to be_valid }
 
         it 'returns all jobs regardless of their inclusion' do
           expect(subject.builds.count).to eq(config.keys.count)
@@ -2120,7 +2106,7 @@ module Gitlab
       end
 
       describe "Hidden jobs" do
-        let(:config_processor) { Gitlab::Ci::YamlProcessor.new(config) }
+        let(:config_processor) { Gitlab::Ci::YamlProcessor.new(config).execute }
 
         subject { config_processor.stage_builds_attributes("test") }
 
@@ -2167,7 +2153,7 @@ module Gitlab
       end
 
       describe "YAML Alias/Anchor" do
-        let(:config_processor) { Gitlab::Ci::YamlProcessor.new(config) }
+        let(:config_processor) { Gitlab::Ci::YamlProcessor.new(config).execute }
 
         subject { config_processor.stage_builds_attributes("build") }
 
@@ -2264,7 +2250,7 @@ module Gitlab
             })
           end
 
-          it { expect { subject }.not_to raise_error }
+          it { is_expected.to be_valid }
         end
 
         context 'when job is not specified specified while artifact is' do
@@ -2277,11 +2263,7 @@ module Gitlab
             })
           end
 
-          it do
-            expect { subject }.to raise_error(
-              described_class::ValidationError,
-              /include config must specify the job where to fetch the artifact from/)
-          end
+          it_behaves_like 'returns errors', /include config must specify the job where to fetch the artifact from/
         end
 
         context 'when include is a string' do
@@ -2297,12 +2279,12 @@ module Gitlab
             })
           end
 
-          it { expect { subject }.not_to raise_error }
+          it { is_expected.to be_valid }
         end
       end
 
       describe "Error handling" do
-        subject { described_class.new(config) }
+        subject { described_class.new(config).execute }
 
         context 'when YAML syntax is invalid' do
           let(:config) { 'invalid: yaml: test' }
@@ -2651,8 +2633,8 @@ module Gitlab
         end
       end
 
-      describe '.new_with_validation_errors' do
-        subject { Gitlab::Ci::YamlProcessor.new_with_validation_errors(content) }
+      describe '#execute' do
+        subject { Gitlab::Ci::YamlProcessor.new(content).execute }
 
         context 'when the YAML could not be parsed' do
           let(:content) { YAML.dump('invalid: yaml: test') }
@@ -2660,7 +2642,6 @@ module Gitlab
           it 'returns errors and empty configuration' do
             expect(subject.valid?).to eq(false)
             expect(subject.errors).to eq(['Invalid configuration format'])
-            expect(subject.config).to be_blank
           end
         end
 
@@ -2670,7 +2651,6 @@ module Gitlab
           it 'returns errors and empty configuration' do
             expect(subject.valid?).to eq(false)
             expect(subject.errors).to eq(['jobs:rspec:tags config should be an array of strings'])
-            expect(subject.config).to be_blank
           end
         end
 
@@ -2682,7 +2662,6 @@ module Gitlab
             expect(subject.errors).to contain_exactly(
               'jobs:rspec config contains unknown keys: bad_tags',
               'jobs:rspec rules should be an array of hashes')
-            expect(subject.config).to be_blank
           end
         end
 
@@ -2692,7 +2671,6 @@ module Gitlab
           it 'returns errors and empty configuration' do
             expect(subject.valid?).to eq(false)
             expect(subject.errors).to eq(['Please provide content of .gitlab-ci.yml'])
-            expect(subject.config).to be_blank
           end
         end
 
@@ -2702,7 +2680,6 @@ module Gitlab
           it 'returns errors and empty configuration' do
             expect(subject.valid?).to eq(false)
             expect(subject.errors).to eq(['Unknown alias: bad_alias'])
-            expect(subject.config).to be_blank
           end
         end
 
@@ -2712,7 +2689,7 @@ module Gitlab
           it 'returns errors and empty configuration' do
             expect(subject.valid?).to eq(true)
             expect(subject.errors).to be_empty
-            expect(subject.config).to be_present
+            expect(subject.builds).to be_present
           end
         end
       end
