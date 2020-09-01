@@ -1,0 +1,5 @@
+---
+title: Fix Improper Access Control on Deploy-Key
+merge_request:
+author:
+type: security

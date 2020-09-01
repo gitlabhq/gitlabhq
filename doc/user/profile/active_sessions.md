@@ -29,6 +29,11 @@ exceeds 100, the oldest ones are deleted.
 1. Use the previous steps to navigate to **Active Sessions**.
 1. Click on **Revoke** besides a session. The current session cannot be revoked, as this would sign you out of GitLab.
 
+NOTE: **Note:**
+When any session is revoked all **Remember me** tokens for all
+devices will be revoked. See ['Why do I keep getting signed out?'](index.md#why-do-i-keep-getting-signed-out)
+for more information about the **Remember me** feature.
+
 <!-- ## Troubleshooting
 
 Include any troubleshooting steps that you can foresee. If you know beforehand what issues

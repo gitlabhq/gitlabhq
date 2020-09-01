@@ -84,6 +84,27 @@ RSpec.describe API::Helpers do
           end
 
           it { is_expected.to eq(user) }
+
+          context 'when user should have 2fa enabled' do
+            before do
+              allow(user).to receive(:require_two_factor_authentication_from_group?).and_return(true)
+              allow_next_instance_of(Gitlab::Auth::TwoFactorAuthVerifier) do |verifier|
+                allow(verifier).to receive(:two_factor_grace_period_expired?).and_return(true)
+              end
+            end
+
+            context 'when 2fa is not enabled' do
+              it { is_expected.to be_nil }
+            end
+
+            context 'when 2fa is enabled' do
+              before do
+                allow(user).to receive(:two_factor_enabled?).and_return(true)
+              end
+
+              it { is_expected.to eq(user) }
+            end
+          end
         end
 
         context "PUT request" do

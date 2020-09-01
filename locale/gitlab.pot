@@ -2730,6 +2730,9 @@ msgstr ""
 msgid "An error occurred while validating username"
 msgstr ""
 
+msgid "An error occurred. Please sign in again."
+msgstr ""
+
 msgid "An error occurred. Please try again."
 msgstr ""
 
@@ -3143,7 +3146,7 @@ msgstr ""
 msgid "Are you sure? Removing this GPG key does not affect already signed commits."
 msgstr ""
 
-msgid "Are you sure? The device will be signed out of GitLab."
+msgid "Are you sure? The device will be signed out of GitLab and all remember me tokens revoked."
 msgstr ""
 
 msgid "Are you sure? This will invalidate your registered applications and U2F devices."

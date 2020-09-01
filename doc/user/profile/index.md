@@ -255,6 +255,12 @@ to get you a new `_gitlab_session` and keep you signed in through browser restar
 After your `remember_user_token` expires and your `_gitlab_session` is cleared/expired,
 you will be asked to sign in again to verify your identity for security reasons.
 
+NOTE: **Note:**
+When any session is signed out, or when a session is revoked
+via [Active Sessions](active_sessions.md), all **Remember me** tokens are revoked.
+While other sessions will remain active, the **Remember me** feature will not restore
+a session if the browser is closed or the existing session expires.
+
 ### Increased sign-in time
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/20340) in GitLab 13.1.
@@ -264,7 +270,7 @@ The `remember_user_token` lifetime of a cookie can now extend beyond the deadlin
 GitLab uses both session and persistent cookies:
 
 - Session cookie: Session cookies are normally removed at the end of the browser session when the browser is closed. The `_gitlab_session` cookie has no expiration date.
-- Persistent cookie: The `remember_me_token` is a cookie with an expiration date of two weeks. GitLab activates this cookie if you click Remember Me when you sign in.
+- Persistent cookie: The `remember_user_token` is a cookie with an expiration date of two weeks. GitLab activates this cookie if you click Remember Me when you sign in.
 
 By default, the server sets a time-to-live (TTL) of 1-week on any session that is used.
 

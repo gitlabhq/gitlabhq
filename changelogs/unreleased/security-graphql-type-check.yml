@@ -1,0 +1,5 @@
+---
+title: Ensure global ID is of Snippet type in GraphQL destroy mutation
+merge_request:
+author:
+type: security
