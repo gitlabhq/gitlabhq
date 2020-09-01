@@ -249,6 +249,10 @@ describe Members::DestroyService do
 
     before do
       create(:group_member, :developer, group: subsubgroup, user: member_user)
+      create(:project_member, :invited, project: group_project, created_by: member_user)
+      create(:group_member, :invited, group: group, created_by: member_user)
+      create(:project_member, :invited, project: subsubproject, created_by: member_user)
+      create(:group_member, :invited, group: subgroup, created_by: member_user)
 
       subsubproject.add_developer(member_user)
       control_project.add_maintainer(user)
@@ -281,6 +285,42 @@ describe Members::DestroyService do
 
     it 'does not remove the user from the control project' do
       expect(control_project.members.map(&:user)).to include(user)
+    end
+
+    it 'removes group members invited by deleted user' do
+      expect(group.members.not_accepted_invitations_by_user(member_user)).to be_empty
+    end
+
+    it 'removes project members invited by deleted user' do
+      expect(group_project.members.not_accepted_invitations_by_user(member_user)).to be_empty
+    end
+
+    it 'removes subgroup members invited by deleted user' do
+      expect(subgroup.members.not_accepted_invitations_by_user(member_user)).to be_empty
+    end
+
+    it 'removes subproject members invited by deleted user' do
+      expect(subsubproject.members.not_accepted_invitations_by_user(member_user)).to be_empty
+    end
+  end
+
+  context 'deletion of invitations created by deleted project member' do
+    let(:user) { project.owner }
+    let(:member_user) { create(:user) }
+    let(:opts) { {} }
+
+    let(:project) { create(:project) }
+
+    before do
+      create(:project_member, :invited, project: project, created_by: member_user)
+
+      project_member = create(:project_member, :maintainer, user: member_user, project: project)
+
+      described_class.new(user).execute(project_member, opts)
+    end
+
+    it 'removes project members invited by deleted user' do
+      expect(project.members.not_accepted_invitations_by_user(member_user)).to be_empty
     end
   end
 end

@@ -1,0 +1,5 @@
+---
+title: Create new 2FA code each time user is entering 2FA setup page
+merge_request:
+author:
+type: security

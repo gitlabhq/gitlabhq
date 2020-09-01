@@ -92,7 +92,7 @@ class Projects::TagsController < Projects::ApplicationController
         end
 
         format.js do
-          render status: :unprocessable_entity
+          render status: :ok
         end
       end
     end

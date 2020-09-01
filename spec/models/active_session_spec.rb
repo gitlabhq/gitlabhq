@@ -296,6 +296,59 @@ RSpec.describe ActiveSession, :clean_gitlab_redis_shared_state do
     end
   end
 
+  describe '.destroy_all_but_current' do
+    it 'gracefully handles a nil session ID' do
+      expect(described_class).not_to receive(:destroy_sessions)
+
+      ActiveSession.destroy_all_but_current(user, nil)
+    end
+
+    context 'with user sessions' do
+      let(:current_session_id) { '6919a6f1bb119dd7396fadc38fd18d0d' }
+
+      before do
+        Gitlab::Redis::SharedState.with do |redis|
+          redis.set(described_class.key_name(user.id, current_session_id),
+            Marshal.dump(ActiveSession.new(session_id: Rack::Session::SessionId.new(current_session_id))))
+          redis.set(described_class.key_name(user.id, '59822c7d9fcdfa03725eff41782ad97d'),
+            Marshal.dump(ActiveSession.new(session_id: Rack::Session::SessionId.new('59822c7d9fcdfa03725eff41782ad97d'))))
+          redis.set(described_class.key_name(9999, '5c8611e4f9c69645ad1a1492f4131358'),
+            Marshal.dump(ActiveSession.new(session_id: Rack::Session::SessionId.new('5c8611e4f9c69645ad1a1492f4131358'))))
+          redis.sadd(described_class.lookup_key_name(user.id), '59822c7d9fcdfa03725eff41782ad97d')
+          redis.sadd(described_class.lookup_key_name(user.id), current_session_id)
+          redis.sadd(described_class.lookup_key_name(9999), '5c8611e4f9c69645ad1a1492f4131358')
+        end
+      end
+
+      it 'removes the entry associated with the all user sessions but current' do
+        expect { ActiveSession.destroy_all_but_current(user, request.session) }.to change { ActiveSession.session_ids_for_user(user.id).size }.from(2).to(1)
+
+        expect(ActiveSession.session_ids_for_user(9999).size).to eq(1)
+      end
+
+      it 'removes the lookup entry of deleted sessions' do
+        ActiveSession.destroy_all_but_current(user, request.session)
+
+        Gitlab::Redis::SharedState.with do |redis|
+          expect(redis.smembers(described_class.lookup_key_name(user.id))).to eq [current_session_id]
+        end
+      end
+
+      it 'does not remove impersonated sessions' do
+        impersonated_session_id = '6919a6f1bb119dd7396fadc38fd18eee'
+        Gitlab::Redis::SharedState.with do |redis|
+          redis.set(described_class.key_name(user.id, impersonated_session_id),
+            Marshal.dump(ActiveSession.new(session_id: Rack::Session::SessionId.new(impersonated_session_id), is_impersonated: true)))
+          redis.sadd(described_class.lookup_key_name(user.id), impersonated_session_id)
+        end
+
+        expect { ActiveSession.destroy_all_but_current(user, request.session) }.to change { ActiveSession.session_ids_for_user(user.id).size }.from(3).to(2)
+
+        expect(ActiveSession.session_ids_for_user(9999).size).to eq(1)
+      end
+    end
+  end
+
   describe '.cleanup' do
     before do
       stub_const("ActiveSession::ALLOWED_NUMBER_OF_ACTIVE_SESSIONS", 5)

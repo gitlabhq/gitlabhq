@@ -91,9 +91,10 @@ describe Member do
   end
 
   describe 'Scopes & finders' do
+    let(:project) { create(:project, :public) }
+    let(:group) { create(:group) }
+
     before do
-      project = create(:project, :public)
-      group = create(:group)
       @owner_user = create(:user).tap { |u| group.add_owner(u) }
       @owner = group.members.find_by(user_id: @owner_user.id)
 
@@ -170,6 +171,19 @@ describe Member do
       it { expect(described_class.non_request).to include @accepted_invite_member }
       it { expect(described_class.non_request).not_to include @requested_member }
       it { expect(described_class.non_request).to include @accepted_request_member }
+    end
+
+    describe '.not_accepted_invitations_by_user' do
+      let(:invited_by_user) { create(:project_member, :invited, project: project, created_by: @owner_user) }
+
+      before do
+        create(:project_member, :invited, invite_email: 'test@test.com', project: project, created_by: @owner_user, invite_accepted_at: Time.zone.now)
+        create(:project_member, :invited, invite_email: 'test2@test.com', project: project, created_by: @maintainer_user)
+      end
+
+      subject { described_class.not_accepted_invitations_by_user(@owner_user) }
+
+      it { is_expected.to contain_exactly(invited_by_user) }
     end
 
     describe '.search_invite_email' do
