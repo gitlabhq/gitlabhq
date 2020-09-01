@@ -34,6 +34,17 @@ export const extractDesigns = data => data.project.issue.designCollection.design
 
 export const extractDesign = data => (extractDesigns(data) || [])[0];
 
+export const toDiffNoteGid = noteId => `gid://gitlab/DiffNote/${noteId}`;
+
+/**
+ * Return the note ID from a URL hash parameter
+ * @param {String} urlHash URL hash, including `#` prefix
+ */
+export const extractDesignNoteId = urlHash => {
+  const [, noteId] = urlHash.match('#note_([0-9]+$)') || [];
+  return noteId || null;
+};
+
 /**
  * Generates optimistic response for a design upload mutation
  * @param {Array<File>} files

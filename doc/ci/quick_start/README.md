@@ -11,9 +11,9 @@ GitLab offers a [continuous integration](https://about.gitlab.com/stages-devops-
 [pipeline](../pipelines/index.md), you must:
 
 - Add a [`.gitlab-ci.yml` file](#creating-a-gitlab-ciyml-file) to your repository's root directory.
-- Ensure your project is configured to use a [Runner](#configuring-a-runner).
+- Ensure your project is configured to use a [runner](#configuring-a-runner).
 
-The `.gitlab-ci.yml` file tells the GitLab Runner what to do. A simple pipeline commonly has
+The `.gitlab-ci.yml` file tells the runner what to do. A simple pipeline commonly has
 three [stages](../yaml/README.md#stages):
 
 - `build`
@@ -57,7 +57,7 @@ The `.gitlab-ci.yml` file is where you configure what CI does with your project.
 It lives in the root of your repository.
 
 On any push to your repository, GitLab will look for the `.gitlab-ci.yml`
-file and start jobs on _Runners_ according to the contents of the file,
+file and start jobs on _runners_ according to the contents of the file,
 for that commit.
 
 Because `.gitlab-ci.yml` is in the repository and is version controlled, old
@@ -109,7 +109,7 @@ The `.gitlab-ci.yml` file defines sets of jobs with constraints of how and when
 they should be run. The jobs are defined as top-level elements with a name (in
 our case `rspec` and `rubocop`) and always have to contain the `script` keyword.
 Jobs are used to create jobs, which are then picked by
-[Runners](../runners/README.md) and executed within the environment of the Runner.
+[runners](../runners/README.md) and executed within the environment of the runner.
 
 What is important is that each job is run independently from each other.
 
@@ -148,59 +148,54 @@ Clicking on it you will be directed to the jobs page for that specific commit.
 ![Single commit jobs page](img/single_commit_status_pending.png)
 
 Notice that there is a pending job which is named after what we wrote in
-`.gitlab-ci.yml`. "stuck" indicates that there is no Runner configured
+`.gitlab-ci.yml`. "stuck" indicates that there is no runner configured
 yet for this job.
 
-The next step is to configure a Runner so that it picks the pending jobs.
+The next step is to configure a runner so that it picks the pending jobs.
 
-## Configuring a Runner
+## Configuring a runner
 
-In GitLab, Runners run the jobs that you define in `.gitlab-ci.yml`. A Runner
-can be a virtual machine, a VPS, a bare-metal machine, a Docker container or
-even a cluster of containers. GitLab and the Runners communicate through an API,
-so the only requirement is that the Runner's machine has network access to the
+In GitLab, runners run the jobs that you define in `.gitlab-ci.yml`. A runner
+can be a virtual machine, a VPS, a bare-metal machine, a Docker container, or
+even a cluster of containers. GitLab and the runner communicate through an API,
+so the only requirement is that the runner's machine has network access to the
 GitLab server.
 
-A Runner can be specific to a certain project or serve multiple projects in
-GitLab. If it serves all projects it's called a _Shared Runner_.
+A runner can be specific to a certain project or serve multiple projects in
+GitLab. If it serves all projects, it's called a _shared runner_.
 
-Find more information about different Runners in the
-[Runners](../runners/README.md) documentation.
+Find more information about runners in the
+[runner](../runners/README.md) documentation.
 
-You can find whether any Runners are assigned to your project by going to
-**Settings ➔ CI/CD**. Setting up a Runner is easy and straightforward. The
-official Runner supported by GitLab is written in Go and its documentation
-can be found at <https://docs.gitlab.com/runner/>.
+The official runner supported by GitLab is written in Go.
+View [the documentation](https://docs.gitlab.com/runner/).
 
-In order to have a functional Runner you need to follow two steps:
+For a runner to be available in GitLab, you must:
 
-1. [Install it](https://docs.gitlab.com/runner/install/)
-1. [Configure it](https://docs.gitlab.com/runner/configuration/)
+1. [Install GitLab Runner](https://docs.gitlab.com/runner/install/).
+1. [Register a runner for your group or project](https://docs.gitlab.com/runner/register/).
 
-Follow the links above to set up your own Runner or use a Shared Runner as
-described in the next section.
-
-Once the Runner has been set up, you should see it on the Runners page of your
-project, following **Settings ➔ CI/CD**.
+When a runner is available, you can view it by
+clicking **Settings > CI/CD** and expanding **Runners**.
 
 ![Activated runners](img/runners_activated.png)
 
-### Shared Runners
+### Shared runners
 
-If you use [GitLab.com](https://gitlab.com/) you can use the **Shared Runners**
-provided by GitLab Inc.
+If you use [GitLab.com](https://gitlab.com/), you can use the **shared runners**
+provided by GitLab.
 
 These are special virtual machines that run on GitLab's infrastructure and can
 build any project.
 
-To enable the **Shared Runners** you have to go to your project's
-**Settings ➔ CI/CD** and click **Enable shared runners**.
+To enable shared runners, go to your project's or group's
+**Settings > CI/CD** and click **Enable shared runners**.
 
-[Read more on Shared Runners](../runners/README.md).
+[Read more about shared runners](../runners/README.md#shared-runners).
 
-## Seeing the status of your pipeline and jobs
+## Viewing the status of your pipeline and jobs
 
-After configuring the Runner successfully, you should see the status of your
+After configuring the runner successfully, you should see the status of your
 last commit change from _pending_ to either _running_, _success_ or _failed_.
 
 You can view all pipelines by going to the **Pipelines** page in your project.

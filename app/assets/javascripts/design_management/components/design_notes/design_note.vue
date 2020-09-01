@@ -60,9 +60,11 @@ export default {
     },
   },
   mounted() {
-    if (this.isNoteLinked) {
-      this.$el.scrollIntoView({ behavior: 'smooth', inline: 'start' });
-    }
+    this.$nextTick(() => {
+      if (this.isNoteLinked) {
+        this.$el.scrollIntoView({ behavior: 'smooth', inline: 'start' });
+      }
+    });
   },
   methods: {
     hideForm() {

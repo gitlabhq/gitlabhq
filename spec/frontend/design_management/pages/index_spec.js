@@ -579,7 +579,9 @@ describe('Design management index page', () => {
       });
       createComponent(true);
 
-      expect(scrollIntoViewMock).toHaveBeenCalled();
+      return wrapper.vm.$nextTick().then(() => {
+        expect(scrollIntoViewMock).toHaveBeenCalled();
+      });
     });
   });
 });

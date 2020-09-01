@@ -91,7 +91,9 @@ describe('Design note component', () => {
       note,
     });
 
-    expect(scrollIntoViewMock).toHaveBeenCalled();
+    return wrapper.vm.$nextTick().then(() => {
+      expect(scrollIntoViewMock).toHaveBeenCalled();
+    });
   });
 
   it('should not render edit icon when user does not have a permission', () => {

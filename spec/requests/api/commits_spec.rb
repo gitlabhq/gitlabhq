@@ -367,10 +367,31 @@ RSpec.describe API::Commits do
         end
       end
 
-      it 'does not increment the usage counters using access token authentication' do
-        expect(::Gitlab::UsageDataCounters::WebIdeCounter).not_to receive(:increment_commits_count)
+      context 'when using access token authentication' do
+        it 'does not increment the usage counters' do
+          expect(::Gitlab::UsageDataCounters::WebIdeCounter).not_to receive(:increment_commits_count)
+          expect(::Gitlab::UsageDataCounters::EditorUniqueCounter).not_to receive(:track_web_ide_edit_action)
 
-        post api(url, user), params: valid_c_params
+          post api(url, user), params: valid_c_params
+        end
+      end
+
+      context 'when using warden' do
+        it 'increments usage counters', :clean_gitlab_redis_shared_state do
+          session_id = Rack::Session::SessionId.new('6919a6f1bb119dd7396fadc38fd18d0d')
+          session_hash = { 'warden.user.user.key' => [[user.id], user.encrypted_password[0, 29]] }
+
+          Gitlab::Redis::SharedState.with do |redis|
+            redis.set("session:gitlab:#{session_id.private_id}", Marshal.dump(session_hash))
+          end
+
+          cookies[Gitlab::Application.config.session_options[:key]] = session_id.public_id
+
+          expect(::Gitlab::UsageDataCounters::WebIdeCounter).to receive(:increment_commits_count)
+          expect(::Gitlab::UsageDataCounters::EditorUniqueCounter).to receive(:track_web_ide_edit_action)
+
+          post api(url), params: valid_c_params
+        end
       end
 
       context 'a new file in project repo' do

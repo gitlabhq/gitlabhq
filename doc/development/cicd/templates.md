@@ -64,6 +64,65 @@ users have to fix their `.gitlab-ci.yml` that could annoy their workflow.
 
 Please read [versioning](#versioning) section for introducing breaking change safely.
 
+## Versioning
+
+Versioning allows you to introduce a new template without modifying the existing
+one. This process is useful when we need to introduce a breaking change,
+but don't want to affect the existing projects that depends on the current template.
+
+### Stable version
+
+A stable CI/CD template is a template that only introduces breaking changes in major
+release milestones. Name the stable version of a template as `<template-name>.gitlab-ci.yml`,
+for example `Jobs/Deploy.gitlab-ci.yml`.
+
+You can make a new stable template by copying [the latest template](#latest-version)
+available in a major milestone release of GitLab like `13.0`. All breaking changes
+must be announced in a blog post before the official release, for example
+[GitLab.com is moving to 13.0, with narrow breaking changes](https://about.gitlab.com/releases/2020/05/06/gitlab-com-13-0-breaking-changes/)
+
+You can change a stable template version in a minor GitLab release like `13.1` if:
+
+- The change is not a [breaking change](#backward-compatibility).
+- The change is ported to [the latest template](#latest-version), if one exists.
+
+### Latest version
+
+Templates marked as `latest` can be updated in any release, even with
+[breaking changes](#backward-compatibility). Add `.latest` to the template name if
+it's considered the latest version, for example `Jobs/Deploy.latest.gitlab-ci.yml`.
+
+When you introduce [a breaking change](#backward-compatibility),
+you **must** test and document [the upgrade path](#verify-breaking-changes).
+In general, we should not promote the latest template as the best option, as it could surprise users with unexpected problems.
+
+If the `latest` template does not exist yet, you can copy [the stable template](#stable-version).
+
+### How to include an older stable template
+
+Users may want to use an older [stable template](#stable-version) that is not bundled
+in the current GitLab package. For example, the stable templates in GitLab v13.0 and
+GitLab v14.0 could be so different that a user will want to continue using the v13.0 template even
+after upgrading to GitLab 14.0.
+
+You can add a note in the template or in documentation explaining how to use `include:remote`
+to include older template versions:
+
+```yaml
+# To use the v13 stable template, which is not included in v14, fetch the specifc
+# template from the remote template repository with the `include:remote:` keyword.
+# If you fetch from the GitLab canonical project, use the following URL format:
+# https://gitlab.com/gitlab-org/gitlab/-/raw/<version>/lib/gitlab/ci/templates/<template-name>
+include:
+  remote: https://gitlab.com/gitlab-org/gitlab/-/raw/v13.0.1-ee/lib/gitlab/ci/templates/Jobs/Deploy.gitlab-ci.yml
+```
+
+### Further reading
+
+There is an [open issue](https://gitlab.com/gitlab-org/gitlab/-/issues/17716) about
+introducing versioning concepts in GitLab CI Templates. You can check that issue to
+follow the progress.
+
 ## Testing
 
 Each CI/CD template must be tested in order to make sure that it's safe to be published.
@@ -95,18 +154,20 @@ You should write an RSpec test to make sure that pipeline jobs will be generated
 1. Add a test file at `spec/lib/gitlab/ci/templates/<template-category>/<template-name>_spec.rb`
 1. Test that pipeline jobs are properly created via `Ci::CreatePipelineService`.
 
+### Verify breaking changes
+
+When you introduce a breaking change to [a `latest` template](#latest-version),
+you must:
+
+1. Test the upgrade path from [the stable template](#stable-version).
+1. Verify what kind of errors users will encounter.
+1. Document it as a troubleshooting guide.
+
+This information will be important for users when [a stable template](#stable-version)
+is updated in a major version GitLab release.
+
 ## Security
 
 A template could contain malicious code. For example, a template that contains the `export` shell command in a job
 might accidentally expose project secret variables in a job log.
 If you're unsure if it's secure or not, you need to ask security experts for cross-validation.
-
-## Versioning
-
-Versioning allows you to introduce a new template without modifying the existing
-one. This is useful process especially when we need to introduce a breaking change,
-but don't want to affect the existing projects that depends on the current template.
-
-There is an [open issue](https://gitlab.com/gitlab-org/gitlab/-/issues/17716) for
-introducing versioning concept in GitLab Ci Template. Please follow the issue for
-checking the progress.

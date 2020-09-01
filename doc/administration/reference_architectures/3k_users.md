@@ -1131,7 +1131,7 @@ On each node:
    # to Gitaly, and a second for authentication callbacks from GitLab-Shell to the GitLab internal API.
    # The following two values must be the same as their respective values
    # of the GitLab Rails application setup
-   gitaly['auth_token'] = 'gitlaysecret'
+   gitaly['auth_token'] = 'gitalysecret'
    gitlab_shell['secret_token'] = 'shellsecret'
 
    # Avoid running unnecessary services on the Gitaly server
@@ -1474,7 +1474,7 @@ On each node perform the following:
    # to Gitaly, and a second for authentication callbacks from GitLab-Shell to the GitLab internal API.
    # The following two values must be the same as their respective values
    # of the Gitaly setup
-   gitlab_rails['gitaly_token'] = 'gitalyecret'
+   gitlab_rails['gitaly_token'] = 'gitalysecret'
    gitlab_shell['secret_token'] = 'shellsecret'
 
    git_data_dirs({

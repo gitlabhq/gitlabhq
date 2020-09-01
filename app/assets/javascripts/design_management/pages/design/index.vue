@@ -19,6 +19,8 @@ import {
   extractDiscussions,
   extractDesign,
   updateImageDiffNoteOptimisticResponse,
+  toDiffNoteGid,
+  extractDesignNoteId,
 } from '../../utils/design_management_utils';
 import {
   updateStoreAfterAddImageDiffNote,
@@ -145,8 +147,11 @@ export default {
   mounted() {
     Mousetrap.bind('esc', this.closeDesign);
     this.trackEvent();
-    // We need to reset the active discussion when opening a new design
-    this.updateActiveDiscussion();
+
+    // Set active discussion immediately.
+    // This will ensure that, if a note is specified in the URL hash,
+    // the browser will scroll to, and highlight, the note in the UI
+    this.updateActiveDiscussionFromUrl();
   },
   beforeDestroy() {
     Mousetrap.unbind('esc', this.closeDesign);
@@ -266,14 +271,19 @@ export default {
         this.isLatestVersion,
       );
     },
-    updateActiveDiscussion(id) {
+    updateActiveDiscussion(id, source = ACTIVE_DISCUSSION_SOURCE_TYPES.discussion) {
       this.$apollo.mutate({
         mutation: updateActiveDiscussionMutation,
         variables: {
           id,
-          source: ACTIVE_DISCUSSION_SOURCE_TYPES.discussion,
+          source,
         },
       });
+    },
+    updateActiveDiscussionFromUrl() {
+      const noteId = extractDesignNoteId(this.$route.hash);
+      const diffNoteGid = noteId ? toDiffNoteGid(noteId) : undefined;
+      return this.updateActiveDiscussion(diffNoteGid, ACTIVE_DISCUSSION_SOURCE_TYPES.url);
     },
     toggleResolvedComments() {
       this.resolvedDiscussionsExpanded = !this.resolvedDiscussionsExpanded;
