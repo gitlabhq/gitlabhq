@@ -104,6 +104,10 @@ module Gitlab
           \b (?# word boundary)
         /ix.freeze
       end
+
+      def generic_package_version_regex
+        /\A\d+\.\d+\.\d+\z/
+      end
     end
 
     extend self

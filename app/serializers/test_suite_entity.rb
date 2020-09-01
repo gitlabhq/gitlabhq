@@ -13,7 +13,7 @@ class TestSuiteEntity < Grape::Entity
   with_options if: -> (_, opts) { opts[:details] } do |test_suite|
     expose :suite_error
     expose :test_cases, using: TestCaseEntity do |test_suite|
-      test_suite.suite_error ? [] : test_suite.test_cases.values.flat_map(&:values)
+      test_suite.suite_error ? [] : test_suite.sorted.test_cases.values.flat_map(&:values)
     end
   end
 end

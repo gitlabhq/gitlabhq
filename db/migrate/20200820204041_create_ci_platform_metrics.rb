@@ -4,6 +4,7 @@ class CreateCiPlatformMetrics < ActiveRecord::Migration[6.0]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false
+  CI_VARIABLES_KEY_INDEX_NAME = "index_ci_variables_on_key"
 
   disable_ddl_transaction!
 
@@ -17,11 +18,14 @@ class CreateCiPlatformMetrics < ActiveRecord::Migration[6.0]
     end
 
     add_text_limit :ci_platform_metrics, :platform_target, 255
-    add_concurrent_index :ci_variables, :key
+    add_concurrent_index :ci_variables, :key, name: CI_VARIABLES_KEY_INDEX_NAME
   end
 
   def down
-    drop_table :ci_platform_metrics
-    remove_concurrent_index :ci_variables, :key, name: 'index_ci_variables_on_key'
+    if table_exists?(:ci_platform_metrics)
+      drop_table :ci_platform_metrics
+    end
+
+    remove_concurrent_index :ci_variables, :key, name: CI_VARIABLES_KEY_INDEX_NAME
   end
 end

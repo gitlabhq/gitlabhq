@@ -121,6 +121,12 @@ FactoryBot.define do
         conan_metadatum { build(:conan_metadatum, package: nil) }
       end
     end
+
+    factory :generic_package do
+      sequence(:name) { |n| "generic-package-#{n}" }
+      version { '1.0.0' }
+      package_type { :generic }
+    end
   end
 
   factory :composer_metadatum, class: 'Packages::Composer::Metadatum' do

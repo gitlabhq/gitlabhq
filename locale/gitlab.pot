@@ -7947,6 +7947,9 @@ msgstr ""
 msgid "Delete Snippet"
 msgstr ""
 
+msgid "Delete account"
+msgstr ""
+
 msgid "Delete artifacts"
 msgstr ""
 
@@ -18724,13 +18727,7 @@ msgstr ""
 msgid "Profiles|Default notification email"
 msgstr ""
 
-msgid "Profiles|Delete Account"
-msgstr ""
-
 msgid "Profiles|Delete account"
-msgstr ""
-
-msgid "Profiles|Delete your account?"
 msgstr ""
 
 msgid "Profiles|Deleting an account has the following effects:"

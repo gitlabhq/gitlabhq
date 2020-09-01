@@ -10,8 +10,12 @@ module RuboCop
 
         MSG = 'indexes added with custom options must be explicitly named'
 
+        def_node_matcher :match_create_table_index_with_options, <<~PATTERN
+          (send _ {:index } _ (hash $...))
+        PATTERN
+
         def_node_matcher :match_add_index_with_options, <<~PATTERN
-          (send _ {:add_concurrent_index} _ _ (hash $...))
+          (send _ {:add_index :add_concurrent_index} _ _ (hash $...))
         PATTERN
 
         def_node_matcher :name_option?, <<~PATTERN
@@ -26,13 +30,17 @@ module RuboCop
           return unless in_migration?(node)
 
           node.each_descendant(:send) do |send_node|
-            next unless add_index_offense?(send_node)
+            next unless create_table_with_index_offense?(send_node) || add_index_offense?(send_node)
 
             add_offense(send_node, location: :selector)
           end
         end
 
         private
+
+        def create_table_with_index_offense?(send_node)
+          match_create_table_index_with_options(send_node) { |option_nodes| needs_name_option?(option_nodes) }
+        end
 
         def add_index_offense?(send_node)
           match_add_index_with_options(send_node) { |option_nodes| needs_name_option?(option_nodes) }

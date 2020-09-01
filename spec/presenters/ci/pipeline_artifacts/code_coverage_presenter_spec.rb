@@ -2,12 +2,13 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Pipeline::Artifact::CodeCoverage do
+RSpec.describe Ci::PipelineArtifacts::CodeCoveragePresenter do
   let(:pipeline_artifact) { create(:ci_pipeline_artifact, :with_code_coverage_with_multiple_files) }
-  let(:code_coverage) { described_class.new(pipeline_artifact) }
+
+  subject(:presenter) { described_class.new(pipeline_artifact) }
 
   describe '#for_files' do
-    subject { code_coverage.for_files(filenames) }
+    subject { presenter.for_files(filenames) }
 
     context 'when code coverage has data' do
       context 'when filenames is empty' do

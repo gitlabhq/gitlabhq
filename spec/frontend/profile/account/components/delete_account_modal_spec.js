@@ -1,21 +1,49 @@
 import Vue from 'vue';
 
 import { TEST_HOST } from 'helpers/test_constants';
-import mountComponent from 'helpers/vue_mount_component_helper';
+import { merge } from 'lodash';
+import { mount } from '@vue/test-utils';
 import deleteAccountModal from '~/profile/account/components/delete_account_modal.vue';
+
+const GlModalStub = {
+  name: 'gl-modal-stub',
+  template: `
+    <div>
+      <slot></slot>
+    </div>
+  `,
+};
 
 describe('DeleteAccountModal component', () => {
   const actionUrl = `${TEST_HOST}/delete/user`;
   const username = 'hasnoname';
-  let Component;
+  let wrapper;
   let vm;
 
-  beforeEach(() => {
-    Component = Vue.extend(deleteAccountModal);
-  });
+  const createWrapper = (options = {}) => {
+    wrapper = mount(
+      deleteAccountModal,
+      merge(
+        {},
+        {
+          propsData: {
+            actionUrl,
+            username,
+          },
+          stubs: {
+            GlModal: GlModalStub,
+          },
+        },
+        options,
+      ),
+    );
+    vm = wrapper.vm;
+  };
 
   afterEach(() => {
-    vm.$destroy();
+    wrapper.destroy();
+    wrapper = null;
+    vm = null;
   });
 
   const findElements = () => {
@@ -23,16 +51,16 @@ describe('DeleteAccountModal component', () => {
     return {
       form: vm.$refs.form,
       input: vm.$el.querySelector(`[name="${confirmation}"]`),
-      submitButton: vm.$el.querySelector('.btn-danger'),
     };
   };
+  const findModal = () => wrapper.find(GlModalStub);
 
   describe('with password confirmation', () => {
     beforeEach(done => {
-      vm = mountComponent(Component, {
-        actionUrl,
-        confirmWithPassword: true,
-        username,
+      createWrapper({
+        propsData: {
+          confirmWithPassword: true,
+        },
       });
 
       vm.isOpen = true;
@@ -43,7 +71,7 @@ describe('DeleteAccountModal component', () => {
     });
 
     it('does not accept empty password', done => {
-      const { form, input, submitButton } = findElements();
+      const { form, input } = findElements();
       jest.spyOn(form, 'submit').mockImplementation(() => {});
       input.value = '';
       input.dispatchEvent(new Event('input'));
@@ -51,8 +79,8 @@ describe('DeleteAccountModal component', () => {
       Vue.nextTick()
         .then(() => {
           expect(vm.enteredPassword).toBe(input.value);
-          expect(submitButton).toHaveAttr('disabled', 'disabled');
-          submitButton.click();
+          expect(findModal().attributes('ok-disabled')).toBe('true');
+          findModal().vm.$emit('primary');
 
           expect(form.submit).not.toHaveBeenCalled();
         })
@@ -61,7 +89,7 @@ describe('DeleteAccountModal component', () => {
     });
 
     it('submits form with password', done => {
-      const { form, input, submitButton } = findElements();
+      const { form, input } = findElements();
       jest.spyOn(form, 'submit').mockImplementation(() => {});
       input.value = 'anything';
       input.dispatchEvent(new Event('input'));
@@ -69,8 +97,8 @@ describe('DeleteAccountModal component', () => {
       Vue.nextTick()
         .then(() => {
           expect(vm.enteredPassword).toBe(input.value);
-          expect(submitButton).not.toHaveAttr('disabled', 'disabled');
-          submitButton.click();
+          expect(findModal().attributes('ok-disabled')).toBeUndefined();
+          findModal().vm.$emit('primary');
 
           expect(form.submit).toHaveBeenCalled();
         })
@@ -81,10 +109,10 @@ describe('DeleteAccountModal component', () => {
 
   describe('with username confirmation', () => {
     beforeEach(done => {
-      vm = mountComponent(Component, {
-        actionUrl,
-        confirmWithPassword: false,
-        username,
+      createWrapper({
+        propsData: {
+          confirmWithPassword: false,
+        },
       });
 
       vm.isOpen = true;
@@ -95,7 +123,7 @@ describe('DeleteAccountModal component', () => {
     });
 
     it('does not accept wrong username', done => {
-      const { form, input, submitButton } = findElements();
+      const { form, input } = findElements();
       jest.spyOn(form, 'submit').mockImplementation(() => {});
       input.value = 'this is wrong';
       input.dispatchEvent(new Event('input'));
@@ -103,8 +131,8 @@ describe('DeleteAccountModal component', () => {
       Vue.nextTick()
         .then(() => {
           expect(vm.enteredUsername).toBe(input.value);
-          expect(submitButton).toHaveAttr('disabled', 'disabled');
-          submitButton.click();
+          expect(findModal().attributes('ok-disabled')).toBe('true');
+          findModal().vm.$emit('primary');
 
           expect(form.submit).not.toHaveBeenCalled();
         })
@@ -113,7 +141,7 @@ describe('DeleteAccountModal component', () => {
     });
 
     it('submits form with correct username', done => {
-      const { form, input, submitButton } = findElements();
+      const { form, input } = findElements();
       jest.spyOn(form, 'submit').mockImplementation(() => {});
       input.value = username;
       input.dispatchEvent(new Event('input'));
@@ -121,8 +149,8 @@ describe('DeleteAccountModal component', () => {
       Vue.nextTick()
         .then(() => {
           expect(vm.enteredUsername).toBe(input.value);
-          expect(submitButton).not.toHaveAttr('disabled', 'disabled');
-          submitButton.click();
+          expect(findModal().attributes('ok-disabled')).toBeUndefined();
+          findModal().vm.$emit('primary');
 
           expect(form.submit).toHaveBeenCalled();
         })

@@ -55,8 +55,8 @@
         = s_('Profiles|Deleting an account has the following effects:')
       = render 'users/deletion_guidance', user: current_user
 
-      %button#delete-account-button.btn.btn-danger.disabled{ data: { toggle: 'modal',
-        target: '#delete-account-modal', qa_selector: 'delete_account_button' } }
+      -# Delete button here
+      %button#delete-account-button.btn.btn-danger.disabled{ data: { qa_selector: 'delete_account_button' } }
         = s_('Profiles|Delete account')
 
       #delete-account-modal{ data: { action_url: user_registration_path,

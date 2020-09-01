@@ -236,6 +236,25 @@ RSpec.describe Packages::Package, type: :model do
         it { is_expected.not_to allow_value('%2e%2e%2f1.2.3').for(:version) }
       end
 
+      context 'generic package' do
+        subject { build_stubbed(:generic_package) }
+
+        it { is_expected.to validate_presence_of(:version) }
+        it { is_expected.to allow_value('1.2.3').for(:version) }
+        it { is_expected.to allow_value('1.3.350').for(:version) }
+        it { is_expected.not_to allow_value('1.3.350-20201230123456').for(:version) }
+        it { is_expected.not_to allow_value('..1.2.3').for(:version) }
+        it { is_expected.not_to allow_value('  1.2.3').for(:version) }
+        it { is_expected.not_to allow_value("1.2.3  \r\t").for(:version) }
+        it { is_expected.not_to allow_value("\r\t 1.2.3").for(:version) }
+        it { is_expected.not_to allow_value('1.2.3-4/../../').for(:version) }
+        it { is_expected.not_to allow_value('1.2.3-4%2e%2e%').for(:version) }
+        it { is_expected.not_to allow_value('../../../../../1.2.3').for(:version) }
+        it { is_expected.not_to allow_value('%2e%2e%2f1.2.3').for(:version) }
+        it { is_expected.not_to allow_value('').for(:version) }
+        it { is_expected.not_to allow_value(nil).for(:version) }
+      end
+
       it_behaves_like 'validating version to be SemVer compliant for', :npm_package
       it_behaves_like 'validating version to be SemVer compliant for', :nuget_package
     end
@@ -552,11 +571,17 @@ RSpec.describe Packages::Package, type: :model do
 
   describe 'plan_limits' do
     Packages::Package.package_types.keys.without('composer').each do |pt|
+      plan_limit_name = if pt == 'generic'
+                          "#{pt}_packages_max_file_size"
+                        else
+                          "#{pt}_max_file_size"
+                        end
+
       context "File size limits for #{pt}" do
         let(:package) { create("#{pt}_package") }
 
-        it "plan_limits includes column #{pt}_max_file_size" do
-          expect { package.project.actual_limits.send("#{pt}_max_file_size") }
+        it "plan_limits includes column #{plan_limit_name}" do
+          expect { package.project.actual_limits.send(plan_limit_name) }
             .not_to raise_error(NoMethodError)
         end
       end

@@ -8,6 +8,7 @@ module Ci
     include UpdateProjectStatistics
     include Artifactable
     include FileStoreMounter
+    include Presentable
 
     FILE_STORE_SUPPORTED = [
       ObjectStorage::Store::LOCAL,
@@ -43,6 +44,10 @@ module Ci
 
     def self.find_with_code_coverage
       find_by(file_type: :code_coverage)
+    end
+
+    def present
+      super(presenter_class: "Ci::PipelineArtifacts::#{self.file_type.camelize}Presenter".constantize)
     end
   end
 end

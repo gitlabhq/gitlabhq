@@ -426,4 +426,21 @@ RSpec.describe Gitlab::Regex do
     it { is_expected.not_to match('1.2') }
     it { is_expected.not_to match('1./2.3') }
   end
+
+  describe '.generic_package_version_regex' do
+    subject { described_class.generic_package_version_regex }
+
+    it { is_expected.to match('1.2.3') }
+    it { is_expected.to match('1.3.350') }
+    it { is_expected.not_to match('1.3.350-20201230123456') }
+    it { is_expected.not_to match('..1.2.3') }
+    it { is_expected.not_to match('  1.2.3') }
+    it { is_expected.not_to match("1.2.3  \r\t") }
+    it { is_expected.not_to match("\r\t 1.2.3") }
+    it { is_expected.not_to match('1.2.3-4/../../') }
+    it { is_expected.not_to match('1.2.3-4%2e%2e%') }
+    it { is_expected.not_to match('../../../../../1.2.3') }
+    it { is_expected.not_to match('%2e%2e%2f1.2.3') }
+    it { is_expected.not_to match('') }
+  end
 end

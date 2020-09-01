@@ -31806,6 +31806,12 @@
               "description": "Packages from the composer package manager",
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "GENERIC",
+              "description": "Packages from the generic package manager",
+              "isDeprecated": false,
+              "deprecationReason": null
             }
           ],
           "possibleTypes": null

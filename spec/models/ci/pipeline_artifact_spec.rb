@@ -109,4 +109,14 @@ RSpec.describe Ci::PipelineArtifact, type: :model do
       end
     end
   end
+
+  describe '#present' do
+    subject { coverage_report.present }
+
+    context 'when file_type is code_coverage' do
+      it 'uses code coverage presenter' do
+        expect(subject.present).to be_kind_of(Ci::PipelineArtifacts::CodeCoveragePresenter)
+      end
+    end
+  end
 end

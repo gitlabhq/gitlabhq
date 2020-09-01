@@ -10,12 +10,12 @@ module TestReportsHelper
       status: Gitlab::Ci::Reports::TestCase::STATUS_SUCCESS)
   end
 
-  def create_test_case_rspec_failed(name = 'test_spec')
+  def create_test_case_rspec_failed(name = 'test_spec', execution_time = 2.22)
     Gitlab::Ci::Reports::TestCase.new(
       name: 'Test#sum when a is 1 and b is 3 returns summary',
       classname: "spec.#{name}",
       file: './spec/test_spec.rb',
-      execution_time: 2.22,
+      execution_time: execution_time,
       system_output: sample_rspec_failed_message,
       status: Gitlab::Ci::Reports::TestCase::STATUS_FAILED)
   end

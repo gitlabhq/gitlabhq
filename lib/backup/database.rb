@@ -27,6 +27,7 @@ module Backup
           progress.print "Dumping PostgreSQL database #{config['database']} ... "
           pg_env
           pgsql_args = ["--clean"] # Pass '--clean' to include 'DROP TABLE' statements in the DB dump.
+          pgsql_args << '--if-exists'
 
           if Gitlab.config.backup.pg_schema
             pgsql_args << '-n'

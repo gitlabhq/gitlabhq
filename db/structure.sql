@@ -14195,7 +14195,8 @@ CREATE TABLE public.plan_limits (
     maven_max_file_size bigint DEFAULT 52428800 NOT NULL,
     npm_max_file_size bigint DEFAULT 52428800 NOT NULL,
     nuget_max_file_size bigint DEFAULT 52428800 NOT NULL,
-    pypi_max_file_size bigint DEFAULT 52428800 NOT NULL
+    pypi_max_file_size bigint DEFAULT 52428800 NOT NULL,
+    generic_packages_max_file_size bigint DEFAULT '5368709120'::bigint NOT NULL
 );
 
 CREATE SEQUENCE public.plan_limits_id_seq
@@ -20413,6 +20414,8 @@ CREATE INDEX index_packages_dependency_links_on_dependency_id ON public.packages
 CREATE INDEX index_packages_maven_metadata_on_package_id_and_path ON public.packages_maven_metadata USING btree (package_id, path);
 
 CREATE INDEX index_packages_nuget_dl_metadata_on_dependency_link_id ON public.packages_nuget_dependency_link_metadata USING btree (dependency_link_id);
+
+CREATE UNIQUE INDEX index_packages_on_project_id_name_version_unique_when_generic ON public.packages_packages USING btree (project_id, name, version) WHERE (package_type = 7);
 
 CREATE INDEX index_packages_package_files_file_store_is_null ON public.packages_package_files USING btree (id) WHERE (file_store IS NULL);
 
