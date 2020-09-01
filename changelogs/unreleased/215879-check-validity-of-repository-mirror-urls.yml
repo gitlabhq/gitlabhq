@@ -1,0 +1,5 @@
+---
+title: Check validity of project's import_url before mirroring repository
+merge_request:
+author:
+type: security
