@@ -222,6 +222,8 @@ module Gitlab
 
         # Registry access (with jwt) does not have access to project
         return if project && !token.has_access_to?(project)
+        # When repository is disabled, no resources are accessible via Deploy Token
+        return if project&.repository_access_level == ::ProjectFeature::DISABLED
 
         scopes = abilities_for_scopes(token.scopes)
 

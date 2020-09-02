@@ -29,12 +29,11 @@ module EnforcesTwoFactorAuthentication
   end
 
   def two_factor_authentication_required?
-    Gitlab::CurrentSettings.require_two_factor_authentication? ||
-      current_user.try(:require_two_factor_authentication_from_group?)
+    two_factor_verifier.two_factor_authentication_required?
   end
 
   def current_user_requires_two_factor?
-    current_user && !current_user.temp_oauth_email? && !current_user.two_factor_enabled? && !skip_two_factor?
+    two_factor_verifier.current_user_needs_to_setup_two_factor? && !skip_two_factor?
   end
 
   # rubocop: disable CodeReuse/ActiveRecord
@@ -43,7 +42,7 @@ module EnforcesTwoFactorAuthentication
       if Gitlab::CurrentSettings.require_two_factor_authentication?
         global.call
       else
-        groups = current_user.expanded_groups_requiring_two_factor_authentication.reorder(name: :asc)
+        groups = current_user.source_groups_of_two_factor_authentication_requirement.reorder(name: :asc)
         group.call(groups)
       end
     end
@@ -51,14 +50,11 @@ module EnforcesTwoFactorAuthentication
   # rubocop: enable CodeReuse/ActiveRecord
 
   def two_factor_grace_period
-    periods = [Gitlab::CurrentSettings.two_factor_grace_period]
-    periods << current_user.two_factor_grace_period if current_user.try(:require_two_factor_authentication_from_group?)
-    periods.min
+    two_factor_verifier.two_factor_grace_period
   end
 
   def two_factor_grace_period_expired?
-    date = current_user.otp_grace_period_started_at
-    date && (date + two_factor_grace_period.hours) < Time.current
+    two_factor_verifier.two_factor_grace_period_expired?
   end
 
   def two_factor_skippable?
@@ -69,6 +65,10 @@ module EnforcesTwoFactorAuthentication
 
   def skip_two_factor?
     session[:skip_two_factor] && session[:skip_two_factor] > Time.current
+  end
+
+  def two_factor_verifier
+    @two_factor_verifier ||= Gitlab::Auth::TwoFactorAuthVerifier.new(current_user) # rubocop:disable Gitlab/ModuleWithInstanceVariables
   end
 end
 

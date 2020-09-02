@@ -9514,7 +9514,7 @@ CREATE TABLE public.aws_roles (
     user_id integer NOT NULL,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
-    role_arn character varying(2048) NOT NULL,
+    role_arn character varying(2048),
     role_external_id character varying(64) NOT NULL
 );
 

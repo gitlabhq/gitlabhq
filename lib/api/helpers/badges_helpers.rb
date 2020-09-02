@@ -6,7 +6,13 @@ module API
       include ::API::Helpers::MembersHelpers
 
       def find_badge(source)
-        source.badges.find(params[:badge_id])
+        badge_id = params[:badge_id]
+
+        if source.is_a?(Project)
+          source.project_badges.find(badge_id)
+        else
+          source.badges.find(badge_id)
+        end
       end
 
       def present_badges(source, records, options = {})

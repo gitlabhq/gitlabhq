@@ -40,7 +40,7 @@ RSpec.describe Admin::ApplicationsController do
 
   describe 'POST #create' do
     it 'creates the application' do
-      create_params = attributes_for(:application, trusted: true, confidential: false)
+      create_params = attributes_for(:application, trusted: true, confidential: false, scopes: ['api'])
 
       expect do
         post :create, params: { doorkeeper_application: create_params }
@@ -63,7 +63,7 @@ RSpec.describe Admin::ApplicationsController do
 
     context 'when the params are for a confidential application' do
       it 'creates a confidential application' do
-        create_params = attributes_for(:application, confidential: true)
+        create_params = attributes_for(:application, confidential: true, scopes: ['read_user'])
 
         expect do
           post :create, params: { doorkeeper_application: create_params }
@@ -73,6 +73,18 @@ RSpec.describe Admin::ApplicationsController do
 
         expect(response).to redirect_to(admin_application_path(application))
         expect(application).to have_attributes(create_params.except(:uid, :owner_type))
+      end
+    end
+
+    context 'when scopes are not present' do
+      it 'renders the application form on errors' do
+        create_params = attributes_for(:application, trusted: true, confidential: false)
+
+        expect do
+          post :create, params: { doorkeeper_application: create_params }
+        end.not_to change { Doorkeeper::Application.count }
+
+        expect(response).to render_template :new
       end
     end
   end

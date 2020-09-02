@@ -6,6 +6,7 @@
 #                 WARNING: does not consider project feature visibility!
 # - user: The user for which to load the events
 # - params:
+#   - limit: Number of items that to be returned. Defaults to 20 and limited to 100.
 #   - offset: The page of events to return
 class UserRecentEventsFinder
   prepend FinderWithCrossProjectAccess
@@ -16,7 +17,8 @@ class UserRecentEventsFinder
 
   attr_reader :current_user, :target_user, :params
 
-  LIMIT = 20
+  DEFAULT_LIMIT = 20
+  MAX_LIMIT = 100
 
   def initialize(current_user, target_user, params = {})
     @current_user = current_user
@@ -31,7 +33,7 @@ class UserRecentEventsFinder
     recent_events(params[:offset] || 0)
       .joins(:project)
       .with_associations
-      .limit_recent(params[:limit].presence || LIMIT, params[:offset])
+      .limit_recent(limit, params[:offset])
   end
   # rubocop: enable CodeReuse/ActiveRecord
 
@@ -58,5 +60,11 @@ class UserRecentEventsFinder
 
   def projects
     target_user.project_interactions.to_sql
+  end
+
+  def limit
+    return DEFAULT_LIMIT unless params[:limit].present?
+
+    [params[:limit].to_i, MAX_LIMIT].min
   end
 end

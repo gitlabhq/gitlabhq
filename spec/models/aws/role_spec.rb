@@ -29,6 +29,12 @@ RSpec.describe Aws::Role do
 
         it { is_expected.to be_truthy }
       end
+
+      context 'ARN is nil' do
+        let(:role_arn) { }
+
+        it { is_expected.to be_truthy }
+      end
     end
   end
 

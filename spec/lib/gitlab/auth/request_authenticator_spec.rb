@@ -88,7 +88,7 @@ RSpec.describe Gitlab::Auth::RequestAuthenticator do
 
   describe '#find_user_from_job_token' do
     let!(:user) { build(:user) }
-    let!(:job) { build(:ci_build, user: user) }
+    let!(:job) { build(:ci_build, user: user, status: :running) }
 
     before do
       env[Gitlab::Auth::AuthFinders::JOB_TOKEN_HEADER] = 'token'
@@ -97,12 +97,17 @@ RSpec.describe Gitlab::Auth::RequestAuthenticator do
     context 'with API requests' do
       before do
         env['SCRIPT_NAME'] = '/api/endpoint'
+        expect(::Ci::Build).to receive(:find_by_token).with('token').and_return(job)
       end
 
       it 'tries to find the user' do
-        expect(::Ci::Build).to receive(:find_by_token).and_return(job)
-
         expect(subject.find_sessionless_user([:api])).to eq user
+      end
+
+      it 'returns nil if the job is not running' do
+        job.status = :success
+
+        expect(subject.find_sessionless_user([:api])).to be_blank
       end
     end
 

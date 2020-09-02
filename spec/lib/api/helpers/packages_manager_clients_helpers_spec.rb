@@ -11,7 +11,7 @@ RSpec.describe API::Helpers::PackagesManagerClientsHelpers do
   describe '#find_job_from_http_basic_auth' do
     let_it_be(:user) { personal_access_token.user }
 
-    let(:job) { create(:ci_build, user: user) }
+    let(:job) { create(:ci_build, user: user, status: :running) }
     let(:password) { job.token }
     let(:headers) { { Authorization: basic_http_auth(username, password) } }
 
@@ -23,6 +23,14 @@ RSpec.describe API::Helpers::PackagesManagerClientsHelpers do
 
     context 'with a valid Authorization header' do
       it { is_expected.to eq job }
+
+      context 'when the job is not running' do
+        before do
+          job.update!(status: :failed)
+        end
+
+        it { is_expected.to be nil }
+      end
     end
 
     context 'with an invalid Authorization header' do
