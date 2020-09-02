@@ -1,6 +1,0 @@
----
-title: Prevent not-2fa authenticated users that are supposed to use it to consume
-  api via session
-merge_request:
-author:
-type: security

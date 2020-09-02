@@ -1,5 +1,0 @@
----
-title: Remove all sessions but current while enabling 2FA
-merge_request:
-author:
-type: security
