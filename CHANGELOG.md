@@ -2,6 +2,13 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 13.1.10 (2020-09-02)
+
+### Security (1 change)
+
+- Protect OAuth endpoints from brute force/password stuffing.
+
+
 ## 13.1.9 (2020-09-02)
 
 ### Security (23 changes, 1 of them is from the community)
