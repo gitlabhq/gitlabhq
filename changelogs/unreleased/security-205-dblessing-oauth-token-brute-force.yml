@@ -1,5 +1,0 @@
----
-title: Protect OAuth endpoints from brute force/password stuffing
-merge_request:
-author:
-type: security
