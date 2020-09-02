@@ -261,7 +261,7 @@ RSpec.describe 'getting an issue list for a project' do
       <<~QUERY
       edges {
         node {
-          id
+          iid
           alertManagementAlert {
             title
           }
@@ -270,9 +270,9 @@ RSpec.describe 'getting an issue list for a project' do
       QUERY
     end
 
-    # Alerts need to reporter and above
+    # Alerts need to have developer permission and above
     before do
-      project.add_reporter(current_user)
+      project.add_developer(current_user)
     end
 
     it 'avoids N+1 queries' do
@@ -286,7 +286,10 @@ RSpec.describe 'getting an issue list for a project' do
     it 'returns the alert data' do
       post_graphql(query, current_user: current_user)
 
-      issues_data
+      alert_titles = issues_data.map { |issue| issue.dig('node', 'alertManagementAlert', 'title') }
+      expected_titles = issues.map { |issue| issue.alert_management_alert&.title }
+
+      expect(alert_titles).to contain_exactly(*expected_titles)
     end
   end
 end

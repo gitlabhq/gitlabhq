@@ -46,4 +46,18 @@ RSpec.describe RuboCop::Cop::PutGroupRoutesUnderScope, type: :rubocop do
       end
     PATTERN
   end
+
+  it 'does not register an offense for the root route' do
+    expect_no_offenses(<<~PATTERN)
+      get '/'
+    PATTERN
+  end
+
+  it 'does not register an offense for the root route within scope' do
+    expect_no_offenses(<<~PATTERN)
+      scope(path: 'groups/*group_id/-', module: :groups) do
+        get '/'
+      end
+    PATTERN
+  end
 end

@@ -22,7 +22,7 @@ module BulkMemberAccessLoad
       end
 
       # Look up only the IDs we need
-      resource_ids = resource_ids - access.keys
+      resource_ids -= access.keys
 
       return access if resource_ids.empty?
 

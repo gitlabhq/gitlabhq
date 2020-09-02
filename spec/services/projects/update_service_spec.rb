@@ -272,7 +272,7 @@ RSpec.describe Projects::UpdateService do
 
         result = update_project(project, user, project_feature_attributes:
                                  { issues_access_level: ProjectFeature::PRIVATE }
-                               )
+        )
 
         expect(result).to eq({ status: :success })
         expect(project.project_feature.issues_access_level).to be(ProjectFeature::PRIVATE)
@@ -479,14 +479,14 @@ RSpec.describe Projects::UpdateService do
           attributes_for(:prometheus_service,
                          project: project,
                          properties: { api_url: "http://new.prometheus.com", manual_configuration: "0" }
-          )
+                        )
         end
 
         let!(:prometheus_service) do
           create(:prometheus_service,
                  project: project,
                  properties: { api_url: "http://old.prometheus.com", manual_configuration: "0" }
-          )
+                )
         end
 
         it 'updates existing record' do
@@ -503,7 +503,7 @@ RSpec.describe Projects::UpdateService do
             attributes_for(:prometheus_service,
                            project: project,
                            properties: { api_url: "http://example.prometheus.com", manual_configuration: "0" }
-            )
+                          )
           end
 
           it 'creates new record' do
@@ -519,7 +519,7 @@ RSpec.describe Projects::UpdateService do
             attributes_for(:prometheus_service,
                            project: project,
                            properties: { api_url: nil, manual_configuration: "1" }
-            )
+                          )
           end
 
           it 'does not create new record' do

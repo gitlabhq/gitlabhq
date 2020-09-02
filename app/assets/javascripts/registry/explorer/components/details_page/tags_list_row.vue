@@ -5,8 +5,8 @@ import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import { formatDate } from '~/lib/utils/datetime_utility';
+import ListItem from '~/vue_shared/components/registry/list_item.vue';
 import DeleteButton from '../delete_button.vue';
-import ListItem from '../list_item.vue';
 import DetailsRow from '~/registry/shared/components/details_row.vue';
 import {
   REMOVE_TAG_BUTTON_TITLE,

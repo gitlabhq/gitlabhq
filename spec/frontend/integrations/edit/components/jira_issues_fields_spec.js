@@ -92,5 +92,21 @@ describe('JiraIssuesFields', () => {
 
       expect(wrapper.find(`a[href="${defaultProps.editProjectPath}"]`).exists()).toBe(true);
     });
+
+    describe('GitLab issues warning', () => {
+      const expectedText = 'Consider disabling GitLab issues';
+
+      it('contains warning when GitLab issues is enabled', () => {
+        createComponent();
+
+        expect(wrapper.text()).toContain(expectedText);
+      });
+
+      it('does not contain warning when GitLab issues is disabled', () => {
+        createComponent({ gitlabIssuesEnabled: false });
+
+        expect(wrapper.text()).not.toContain(expectedText);
+      });
+    });
   });
 });

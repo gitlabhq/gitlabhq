@@ -194,6 +194,15 @@ The following metrics are available:
 |:--------------------------------- |:--------- |:------------------------------------------------------------- |:-------------------------------------- |
 | `db_load_balancing_hosts`         | Gauge     | [12.3](https://gitlab.com/gitlab-org/gitlab/-/issues/13630)     | Current number of load balancing hosts |
 
+## Database partitioning metrics **(PREMIUM ONLY)**
+
+The following metrics are available:
+
+| Metric                            | Type      | Since                                                         | Description                                                       |
+|:--------------------------------- |:--------- |:------------------------------------------------------------- |:----------------------------------------------------------------- |
+| `db_partitions_present`           | Gauge     | [13.4](https://gitlab.com/gitlab-org/gitlab/-/issues/227353)  | Number of database partitions present                             |
+| `db_partitions_missing`           | Gauge     | [13.4](https://gitlab.com/gitlab-org/gitlab/-/issues/227353)  | Number of database partitions currently expected, but not present |
+
 ## Connection pool metrics
 
 These metrics record the status of the database

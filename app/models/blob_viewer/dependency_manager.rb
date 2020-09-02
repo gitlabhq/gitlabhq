@@ -33,8 +33,8 @@ module BlobViewer
       @json_data ||= begin
         prepare!
         Gitlab::Json.parse(blob.data)
-      rescue
-        {}
+                     rescue
+                       {}
       end
     end
 

@@ -9,5 +9,7 @@ class PartitionCreationWorker
 
   def perform
     Gitlab::Database::Partitioning::PartitionCreator.new.create_partitions
+  ensure
+    Gitlab::Database::Partitioning::PartitionMonitoring.new.report_metrics
   end
 end

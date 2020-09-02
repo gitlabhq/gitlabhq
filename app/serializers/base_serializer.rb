@@ -9,7 +9,7 @@ class BaseSerializer
   end
 
   def represent(resource, opts = {}, entity_class = nil)
-    entity_class = entity_class || self.class.entity_class
+    entity_class ||= self.class.entity_class
 
     entity_class
       .represent(resource, opts.merge(request: @request))

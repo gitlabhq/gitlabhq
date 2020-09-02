@@ -1,6 +1,6 @@
 import { GlButton } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import component from '~/registry/explorer/components/list_item.vue';
+import component from '~/vue_shared/components/registry/list_item.vue';
 
 describe('list item', () => {
   let wrapper;
@@ -34,7 +34,7 @@ describe('list item', () => {
     wrapper = null;
   });
 
-  it.each`
+  describe.each`
     slotName             | finderFunction
     ${'left-primary'}    | ${findLeftPrimarySlot}
     ${'left-secondary'}  | ${findLeftSecondarySlot}
@@ -42,10 +42,18 @@ describe('list item', () => {
     ${'right-secondary'} | ${findRightSecondarySlot}
     ${'left-action'}     | ${findLeftActionSlot}
     ${'right-action'}    | ${findRightActionSlot}
-  `('has a $slotName slot', ({ finderFunction }) => {
-    mountComponent();
+  `('$slotName slot', ({ finderFunction, slotName }) => {
+    it('exist when the slot is filled', () => {
+      mountComponent();
 
-    expect(finderFunction().exists()).toBe(true);
+      expect(finderFunction().exists()).toBe(true);
+    });
+
+    it('does not exist when the slot is empty', () => {
+      mountComponent({}, { [slotName]: '' });
+
+      expect(finderFunction().exists()).toBe(false);
+    });
   });
 
   describe.each`
@@ -106,51 +114,22 @@ describe('list item', () => {
     });
   });
 
-  describe('first prop', () => {
-    it('when is true displays a double top border', () => {
-      mountComponent({ first: true });
+  describe('borders and selection', () => {
+    it.each`
+      first    | selected | shouldHave                                 | shouldNotHave
+      ${true}  | ${true}  | ${['gl-bg-blue-50', 'gl-border-blue-200']} | ${['gl-border-t-transparent', 'gl-border-t-gray-100']}
+      ${false} | ${true}  | ${['gl-bg-blue-50', 'gl-border-blue-200']} | ${['gl-border-t-transparent', 'gl-border-t-gray-100']}
+      ${true}  | ${false} | ${['gl-border-b-gray-100']}                | ${['gl-bg-blue-50', 'gl-border-blue-200']}
+      ${false} | ${false} | ${['gl-border-b-gray-100']}                | ${['gl-bg-blue-50', 'gl-border-blue-200']}
+    `(
+      'when first is $first and selected is $selected',
+      ({ first, selected, shouldHave, shouldNotHave }) => {
+        mountComponent({ first, selected });
 
-      expect(wrapper.classes('gl-border-t-2')).toBe(true);
-    });
+        expect(wrapper.classes()).toEqual(expect.arrayContaining(shouldHave));
 
-    it('when is false display a single top border', () => {
-      mountComponent({ first: false });
-
-      expect(wrapper.classes('gl-border-t-1')).toBe(true);
-    });
-  });
-
-  describe('last prop', () => {
-    it('when is true displays a double bottom border', () => {
-      mountComponent({ last: true });
-
-      expect(wrapper.classes('gl-border-b-2')).toBe(true);
-    });
-
-    it('when is false display a single bottom border', () => {
-      mountComponent({ last: false });
-
-      expect(wrapper.classes('gl-border-b-1')).toBe(true);
-    });
-  });
-
-  describe('selected prop', () => {
-    it('when true applies the selected border and background', () => {
-      mountComponent({ selected: true });
-
-      expect(wrapper.classes()).toEqual(
-        expect.arrayContaining(['gl-bg-blue-50', 'gl-border-blue-200']),
-      );
-      expect(wrapper.classes()).toEqual(expect.not.arrayContaining(['gl-border-gray-100']));
-    });
-
-    it('when false applies the default border', () => {
-      mountComponent({ selected: false });
-
-      expect(wrapper.classes()).toEqual(
-        expect.not.arrayContaining(['gl-bg-blue-50', 'gl-border-blue-200']),
-      );
-      expect(wrapper.classes()).toEqual(expect.arrayContaining(['gl-border-gray-100']));
-    });
+        expect(wrapper.classes()).toEqual(expect.not.arrayContaining(shouldNotHave));
+      },
+    );
   });
 });

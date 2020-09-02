@@ -9,8 +9,8 @@ class DeleteStoredFilesWorker # rubocop:disable Scalability/IdempotentWorker
   def perform(class_name, keys)
     klass = begin
       class_name.constantize
-    rescue NameError
-      nil
+            rescue NameError
+              nil
     end
 
     unless klass

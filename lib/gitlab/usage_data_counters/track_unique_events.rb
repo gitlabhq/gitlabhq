@@ -6,6 +6,7 @@ module Gitlab
       WIKI_ACTION = :wiki_action
       DESIGN_ACTION = :design_action
       PUSH_ACTION = :project_action
+      MERGE_REQUEST_ACTION = :merge_request_action
 
       ACTION_TRANSFORMATIONS = HashWithIndifferentAccess.new({
         wiki: {
@@ -20,6 +21,12 @@ module Gitlab
         },
         project: {
           pushed: PUSH_ACTION
+        },
+        merge_request: {
+          closed: MERGE_REQUEST_ACTION,
+          merged: MERGE_REQUEST_ACTION,
+          created: MERGE_REQUEST_ACTION,
+          commented: MERGE_REQUEST_ACTION
         }
       }).freeze
 

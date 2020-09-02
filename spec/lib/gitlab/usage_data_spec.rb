@@ -959,24 +959,25 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
     end
   end
 
-  describe '.merge_requests_users' do
-    let(:time_period) { { created_at: 2.days.ago..Time.current } }
-    let(:merge_request) { create(:merge_request) }
-    let(:other_user) { create(:user) }
-    let(:another_user) { create(:user) }
+  describe '.merge_requests_users', :clean_gitlab_redis_shared_state do
+    let(:time_period) { { created_at: 2.days.ago..time } }
+    let(:time) { Time.current }
 
     before do
-      create(:event, target: merge_request, author: merge_request.author, created_at: 1.day.ago)
-      create(:event, target: merge_request, author: merge_request.author, created_at: 1.hour.ago)
-      create(:event, target: merge_request, author: merge_request.author, created_at: 3.days.ago)
-      create(:event, target: merge_request, author: other_user, created_at: 1.day.ago)
-      create(:event, target: merge_request, author: other_user, created_at: 1.hour.ago)
-      create(:event, target: merge_request, author: other_user, created_at: 3.days.ago)
-      create(:event, target: merge_request, author: another_user, created_at: 4.days.ago)
+      counter = Gitlab::UsageDataCounters::TrackUniqueEvents
+      merge_request = Event::TARGET_TYPES[:merge_request]
+      project = Event::TARGET_TYPES[:project]
+
+      counter.track_event(event_action: :commented, event_target: merge_request, author_id: 1, time: time)
+      counter.track_event(event_action: :opened, event_target: merge_request, author_id: 1, time: time)
+      counter.track_event(event_action: :merged, event_target: merge_request, author_id: 2, time: time)
+      counter.track_event(event_action: :closed, event_target: merge_request, author_id: 3, time: time)
+      counter.track_event(event_action: :opened, event_target: merge_request, author_id: 4, time: time - 3.days)
+      counter.track_event(event_action: :created, event_target: project, author_id: 5, time: time)
     end
 
     it 'returns the distinct count of users using merge requests (via events table) within the specified time period' do
-      expect(described_class.merge_requests_users(time_period)).to eq(2)
+      expect(described_class.merge_requests_users(time_period)).to eq(3)
     end
   end
 

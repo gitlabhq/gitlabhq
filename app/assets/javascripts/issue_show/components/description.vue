@@ -48,11 +48,16 @@ export default {
     return {
       preAnimation: false,
       pulseAnimation: false,
+      initialUpdate: true,
     };
   },
   watch: {
-    descriptionHtml() {
-      this.animateChange();
+    descriptionHtml(newDescription, oldDescription) {
+      if (!this.initialUpdate && newDescription !== oldDescription) {
+        this.animateChange();
+      } else {
+        this.initialUpdate = false;
+      }
 
       this.$nextTick(() => {
         this.renderGFM();

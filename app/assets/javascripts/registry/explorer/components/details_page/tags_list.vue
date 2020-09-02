@@ -67,7 +67,6 @@ export default {
       :key="tag.path"
       :tag="tag"
       :first="index === 0"
-      :last="index === tags.length - 1"
       :selected="selectedItems[tag.name]"
       :is-desktop="isDesktop"
       @select="updateSelectedItems(tag.name)"

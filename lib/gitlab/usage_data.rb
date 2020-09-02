@@ -426,16 +426,17 @@ module Gitlab
         {} # augmented in EE
       end
 
-      # rubocop: disable CodeReuse/ActiveRecord
       def merge_requests_users(time_period)
-        distinct_count(
-          Event.where(target_type: Event::TARGET_TYPES[:merge_request].to_s).where(time_period),
-          :author_id,
-          start: user_minimum_id,
-          finish: user_maximum_id
-        )
+        counter = Gitlab::UsageDataCounters::TrackUniqueEvents
+
+        redis_usage_data do
+          counter.count_unique_events(
+            event_action: Gitlab::UsageDataCounters::TrackUniqueEvents::MERGE_REQUEST_ACTION,
+            date_from: time_period[:created_at].first,
+            date_to: time_period[:created_at].last
+          )
+        end
       end
-      # rubocop: enable CodeReuse/ActiveRecord
 
       def installation_type
         if Rails.env.production?

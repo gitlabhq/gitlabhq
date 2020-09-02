@@ -10972,6 +10972,9 @@ msgstr ""
 msgid "Footer message"
 msgstr ""
 
+msgid "For help setting up the Service Desk for your instance, please contact an administrator."
+msgstr ""
+
 msgid "For internal projects, any logged in user can view pipelines and access job details (output logs and artifacts)"
 msgstr ""
 
@@ -13044,6 +13047,9 @@ msgid "Improve search with Advanced Search and GitLab Enterprise Edition."
 msgstr ""
 
 msgid "In %{time_to_now}"
+msgstr ""
+
+msgid "In order to enable Service Desk for your instance, you must first set up incoming email."
 msgstr ""
 
 msgid "In order to gather accurate feature usage data, it can take 1 to 2 weeks to see your index."
@@ -22390,6 +22396,12 @@ msgid "Service Desk"
 msgstr ""
 
 msgid "Service Desk is enabled but not yet active"
+msgstr ""
+
+msgid "Service Desk is not enabled"
+msgstr ""
+
+msgid "Service Desk is not supported"
 msgstr ""
 
 msgid "Service Templates"

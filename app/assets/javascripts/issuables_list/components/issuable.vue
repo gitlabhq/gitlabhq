@@ -158,7 +158,7 @@ export default {
           value: this.issuable.merge_requests_count,
           title: __('Related merge requests'),
           dataTestId: 'merge-requests',
-          class: 'js-merge-requests icon-merge-request-unmerged',
+          class: 'js-merge-requests',
           icon: 'merge-request',
         },
         {

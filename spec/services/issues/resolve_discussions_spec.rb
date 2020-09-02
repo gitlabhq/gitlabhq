@@ -79,7 +79,7 @@ RSpec.describe Issues::ResolveDiscussions do
                                                    noteable: merge_request,
                                                    project: merge_request.target_project,
                                                    line_number: 15
-                                                   )])
+        )])
         service = DummyService.new(
           project,
           user,

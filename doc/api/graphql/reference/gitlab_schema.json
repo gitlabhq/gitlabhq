@@ -51107,6 +51107,24 @@
               "deprecationReason": null
             },
             {
+              "name": "detectedAt",
+              "description": "Timestamp of when the vulnerability was first detected",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Time",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "id",
               "description": "GraphQL ID of the vulnerability",
               "args": [

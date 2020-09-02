@@ -2,7 +2,7 @@
 
 exports[`publish_method renders 1`] = `
 <div
-  class="d-flex align-items-center text-secondary order-1 order-md-0 mb-md-1"
+  class="d-flex align-items-center order-1 order-md-0 mb-md-1"
 >
   <gl-icon-stub
     class="mr-1"
@@ -10,11 +10,11 @@ exports[`publish_method renders 1`] = `
     size="16"
   />
    
-  <strong
-    class="mr-1 text-dark"
+  <span
+    class="mr-1"
   >
     branch-name
-  </strong>
+  </span>
    
   <gl-icon-stub
     class="mr-1"
@@ -30,7 +30,7 @@ exports[`publish_method renders 1`] = `
   </gl-link-stub>
    
   <clipboard-button-stub
-    cssclass="border-0 text-secondary py-0 px-1"
+    cssclass="border-0 py-0 px-1"
     text="sha-baz"
     title="Copy commit SHA"
     tooltipplacement="top"

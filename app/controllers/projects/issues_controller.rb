@@ -26,6 +26,7 @@ class Projects::IssuesController < Projects::ApplicationController
   before_action :whitelist_query_limiting, only: [:create, :create_merge_request, :move, :bulk_update]
   before_action :check_issues_available!
   before_action :issue, unless: ->(c) { c.issue_except_actions.include?(c.action_name.to_sym) }
+  after_action :log_issue_show, unless: ->(c) { c.issue_except_actions.include?(c.action_name.to_sym) }
 
   before_action :set_issuables_index, if: ->(c) { c.set_issuables_index_only_actions.include?(c.action_name.to_sym) }
 
@@ -249,6 +250,13 @@ class Projects::IssuesController < Projects::ApplicationController
     @issue
   end
   # rubocop: enable CodeReuse/ActiveRecord
+
+  def log_issue_show
+    return unless current_user && @issue
+
+    ::Gitlab::Search::RecentIssues.new(user: current_user).log_view(@issue)
+  end
+
   alias_method :subscribable_resource, :issue
   alias_method :issuable, :issue
   alias_method :awardable, :issue

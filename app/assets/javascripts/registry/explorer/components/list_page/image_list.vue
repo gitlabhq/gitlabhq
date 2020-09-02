@@ -38,7 +38,6 @@ export default {
       :key="index"
       :item="listItem"
       :first="index === 0"
-      :last="index === images.length - 1"
       @delete="$emit('delete', $event)"
     />
 

@@ -260,13 +260,5 @@ RSpec.describe PipelineEntity do
         end
       end
     end
-
-    context 'when pipeline has build report results' do
-      let(:pipeline) { create(:ci_pipeline, :with_report_results, project: project, user: user) }
-
-      it 'exposes tests total count' do
-        expect(subject[:tests_total_count]).to eq(2)
-      end
-    end
   end
 end

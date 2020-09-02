@@ -17411,6 +17411,11 @@ type Vulnerability {
   description: String
 
   """
+  Timestamp of when the vulnerability was first detected
+  """
+  detectedAt: Time!
+
+  """
   GraphQL ID of the vulnerability
   """
   id: ID!

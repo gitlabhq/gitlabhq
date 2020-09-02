@@ -4,6 +4,7 @@ import PackageTags from './package_tags.vue';
 import PublishMethod from './publish_method.vue';
 import { getPackageTypeLabel } from '../utils';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
+import ListItem from '~/vue_shared/components/registry/list_item.vue';
 
 export default {
   name: 'PackageListRow',
@@ -14,6 +15,7 @@ export default {
     GlSprintf,
     PackageTags,
     PublishMethod,
+    ListItem,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -59,14 +61,10 @@ export default {
 </script>
 
 <template>
-  <div class="gl-responsive-table-row" data-qa-selector="packages-row">
-    <div class="table-section section-50 d-flex flex-md-column justify-content-between flex-wrap">
-      <div class="d-flex align-items-center mr-2">
-        <gl-link
-          :href="packageLink"
-          data-qa-selector="package_link"
-          class="text-dark font-weight-bold mb-md-1"
-        >
+  <list-item data-qa-selector="packages-row">
+    <template #left-primary>
+      <div class="gl-display-flex gl-align-items-center gl-mr-3">
+        <gl-link :href="packageLink" class="gl-text-body" data-qa-selector="package_link">
           {{ packageEntity.name }}
         </gl-link>
 
@@ -78,52 +76,51 @@ export default {
           :tag-display-limit="1"
         />
       </div>
-
-      <div class="d-flex text-secondary text-truncate mt-md-2">
+    </template>
+    <template #left-secondary>
+      <div class="gl-display-flex">
         <span>{{ packageEntity.version }}</span>
 
-        <div v-if="hasPipeline" class="d-none d-md-inline-block ml-1">
+        <div v-if="hasPipeline" class="gl-display-none gl-display-sm-flex gl-ml-2">
           <gl-sprintf :message="s__('PackageRegistry|published by %{author}')">
             <template #author>{{ packageEntity.pipeline.user.name }}</template>
           </gl-sprintf>
         </div>
 
-        <div v-if="hasProjectLink" class="d-flex align-items-center">
-          <gl-icon name="review-list" class="text-secondary ml-2 mr-1" />
+        <div v-if="hasProjectLink" class="gl-display-flex gl-align-items-center">
+          <gl-icon name="review-list" class="gl-ml-3 gl-mr-2" />
 
           <gl-link
+            class="gl-text-body"
             data-testid="packages-row-project"
             :href="`/${packageEntity.project_path}`"
-            class="text-secondary"
-            >{{ packageEntity.projectPathName }}</gl-link
           >
+            {{ packageEntity.projectPathName }}
+          </gl-link>
         </div>
 
         <div v-if="showPackageType" class="d-flex align-items-center" data-testid="package-type">
-          <gl-icon name="package" class="text-secondary ml-2 mr-1" />
+          <gl-icon name="package" class="gl-ml-3 gl-mr-2" />
           <span>{{ packageType }}</span>
         </div>
       </div>
-    </div>
+    </template>
 
-    <div
-      class="table-section d-flex flex-md-column justify-content-between align-items-md-end"
-      :class="disableDelete ? 'section-50' : 'section-40'"
-    >
+    <template #right-primary>
       <publish-method :package-entity="packageEntity" :is-group="isGroup" />
+    </template>
 
-      <div class="text-secondary order-0 order-md-1 mt-md-2">
-        <gl-sprintf :message="__('Created %{timestamp}')">
-          <template #timestamp>
-            <span v-gl-tooltip :title="tooltipTitle(packageEntity.created_at)">
-              {{ timeFormatted(packageEntity.created_at) }}
-            </span>
-          </template>
-        </gl-sprintf>
-      </div>
-    </div>
+    <template #right-secondary>
+      <gl-sprintf :message="__('Created %{timestamp}')">
+        <template #timestamp>
+          <span v-gl-tooltip :title="tooltipTitle(packageEntity.created_at)">
+            {{ timeFormatted(packageEntity.created_at) }}
+          </span>
+        </template>
+      </gl-sprintf>
+    </template>
 
-    <div v-if="!disableDelete" class="table-section section-10 d-flex justify-content-end">
+    <template v-if="!disableDelete" #right-action>
       <gl-button
         data-testid="action-delete"
         icon="remove"
@@ -134,6 +131,6 @@ export default {
         :disabled="!packageEntity._links.delete_api_path"
         @click="$emit('packageToDelete', packageEntity)"
       />
-    </div>
-  </div>
+    </template>
+  </list-item>
 </template>

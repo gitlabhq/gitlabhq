@@ -132,7 +132,7 @@ RSpec.shared_examples 'custom attributes endpoints' do |attributable_name|
     end
 
     context 'with an authorized user' do
-      it'returns a single custom attribute' do
+      it 'returns a single custom attribute' do
         get api("/#{attributable_name}/#{attributable.id}/custom_attributes/foo", admin)
 
         expect(response).to have_gitlab_http_status(:ok)

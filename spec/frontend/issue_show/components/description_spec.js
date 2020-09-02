@@ -36,11 +36,26 @@ describe('Description component', () => {
     $('.issuable-meta .flash-container').remove();
   });
 
-  it('animates description changes', () => {
+  it('doesnt animate first description changes', () => {
     vm.descriptionHtml = 'changed';
 
+    return vm.$nextTick().then(() => {
+      expect(
+        vm.$el.querySelector('.md').classList.contains('issue-realtime-pre-pulse'),
+      ).toBeFalsy();
+      jest.runAllTimers();
+      return vm.$nextTick();
+    });
+  });
+
+  it('animates description changes on live update', () => {
+    vm.descriptionHtml = 'changed';
     return vm
       .$nextTick()
+      .then(() => {
+        vm.descriptionHtml = 'changed second time';
+        return vm.$nextTick();
+      })
       .then(() => {
         expect(
           vm.$el.querySelector('.md').classList.contains('issue-realtime-pre-pulse'),

@@ -2580,6 +2580,7 @@ Represents a vulnerability.
 | Name  | Type  | Description |
 | ---   |  ---- | ----------  |
 | `description` | String | Description of the vulnerability |
+| `detectedAt` | Time! | Timestamp of when the vulnerability was first detected |
 | `id` | ID! | GraphQL ID of the vulnerability |
 | `identifiers` | VulnerabilityIdentifier! => Array | Identifiers of the vulnerability. |
 | `location` | VulnerabilityLocation | Location metadata for the vulnerability. Its fields depend on the type of security scan that found the vulnerability |

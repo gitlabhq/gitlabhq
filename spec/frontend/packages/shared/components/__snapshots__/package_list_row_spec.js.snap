@@ -2,99 +2,139 @@
 
 exports[`packages_list_row renders 1`] = `
 <div
-  class="gl-responsive-table-row"
+  class="gl-display-flex gl-flex-direction-column gl-border-b-solid gl-border-t-solid gl-border-t-1 gl-border-b-1 gl-border-t-transparent gl-border-b-gray-100"
   data-qa-selector="packages-row"
 >
   <div
-    class="table-section section-50 d-flex flex-md-column justify-content-between flex-wrap"
+    class="gl-display-flex gl-align-items-center gl-py-5"
   >
+    <!---->
+     
     <div
-      class="d-flex align-items-center mr-2"
+      class="gl-display-flex gl-xs-flex-direction-column gl-justify-content-space-between gl-align-items-stretch gl-flex-fill-1"
     >
-      <gl-link-stub
-        class="text-dark font-weight-bold mb-md-1"
-        data-qa-selector="package_link"
-        href="foo"
+      <div
+        class="gl-display-flex gl-flex-direction-column gl-justify-content-space-between gl-xs-mb-3"
       >
-        
+        <div
+          class="gl-display-flex gl-align-items-center gl-text-body gl-font-weight-bold gl-min-h-6"
+        >
+          <div
+            class="gl-display-flex gl-align-items-center gl-mr-3"
+          >
+            <gl-link-stub
+              class="gl-text-body"
+              data-qa-selector="package_link"
+              href="foo"
+            >
+              
         Test package
       
-      </gl-link-stub>
-       
-      <!---->
-    </div>
-     
-    <div
-      class="d-flex text-secondary text-truncate mt-md-2"
-    >
-      <span>
-        1.0.0
-      </span>
-       
-      <!---->
-       
-      <div
-        class="d-flex align-items-center"
-      >
-        <gl-icon-stub
-          class="text-secondary ml-2 mr-1"
-          name="review-list"
-          size="16"
-        />
+            </gl-link-stub>
+             
+            <!---->
+          </div>
+           
+          <!---->
+        </div>
          
-        <gl-link-stub
-          class="text-secondary"
-          data-testid="packages-row-project"
-          href="/foo/bar/baz"
+        <div
+          class="gl-text-gray-500 gl-mt-1 gl-min-h-6"
         >
+          <div
+            class="gl-display-flex"
+          >
+            <span>
+              1.0.0
+            </span>
+             
+            <!---->
+             
+            <div
+              class="gl-display-flex gl-align-items-center"
+            >
+              <gl-icon-stub
+                class="gl-ml-3 gl-mr-2"
+                name="review-list"
+                size="16"
+              />
+               
+              <gl-link-stub
+                class="gl-text-body"
+                data-testid="packages-row-project"
+                href="/foo/bar/baz"
+              >
+                
           
-        </gl-link-stub>
+        
+              </gl-link-stub>
+            </div>
+             
+            <div
+              class="d-flex align-items-center"
+              data-testid="package-type"
+            >
+              <gl-icon-stub
+                class="gl-ml-3 gl-mr-2"
+                name="package"
+                size="16"
+              />
+               
+              <span>
+                Maven
+              </span>
+            </div>
+          </div>
+        </div>
       </div>
        
       <div
-        class="d-flex align-items-center"
-        data-testid="package-type"
+        class="gl-display-flex gl-flex-direction-column gl-sm-align-items-flex-end gl-justify-content-space-between gl-text-gray-500"
       >
-        <gl-icon-stub
-          class="text-secondary ml-2 mr-1"
-          name="package"
-          size="16"
-        />
+        <div
+          class="gl-sm-text-body gl-sm-font-weight-bold gl-min-h-6"
+        >
+          <publish-method-stub
+            packageentity="[object Object]"
+          />
+        </div>
          
-        <span>
-          Maven
-        </span>
+        <div
+          class="gl-mt-1 gl-min-h-6"
+        >
+          <gl-sprintf-stub
+            message="Created %{timestamp}"
+          />
+        </div>
       </div>
     </div>
-  </div>
-   
-  <div
-    class="table-section d-flex flex-md-column justify-content-between align-items-md-end section-40"
-  >
-    <publish-method-stub
-      packageentity="[object Object]"
-    />
      
     <div
-      class="text-secondary order-0 order-md-1 mt-md-2"
+      class="gl-w-9 gl-display-none gl-display-sm-flex gl-justify-content-end gl-pr-1"
     >
-      <gl-sprintf-stub
-        message="Created %{timestamp}"
+      <gl-button-stub
+        aria-label="Remove package"
+        category="primary"
+        data-testid="action-delete"
+        icon="remove"
+        size="medium"
+        title="Remove package"
+        variant="danger"
       />
     </div>
   </div>
    
   <div
-    class="table-section section-10 d-flex justify-content-end"
+    class="gl-display-flex"
   >
-    <gl-button-stub
-      aria-label="Remove package"
-      category="primary"
-      data-testid="action-delete"
-      icon="remove"
-      size="medium"
-      title="Remove package"
-      variant="danger"
+    <div
+      class="gl-w-7"
+    />
+     
+    <!---->
+     
+    <div
+      class="gl-w-9"
     />
   </div>
 </div>

@@ -880,7 +880,9 @@ module Ci
     end
 
     def test_report_summary
-      Gitlab::Ci::Reports::TestReportSummary.new(latest_builds_report_results)
+      strong_memoize(:test_report_summary) do
+        Gitlab::Ci::Reports::TestReportSummary.new(latest_builds_report_results)
+      end
     end
 
     def test_reports

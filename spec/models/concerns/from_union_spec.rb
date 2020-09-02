@@ -3,38 +3,13 @@
 require 'spec_helper'
 
 RSpec.describe FromUnion do
-  describe '.from_union' do
-    let(:model) do
-      Class.new(ActiveRecord::Base) do
-        self.table_name = 'users'
-
-        include FromUnion
+  [true, false].each do |sql_set_operator|
+    context "when sql-set-operators feature flag is #{sql_set_operator}" do
+      before do
+        stub_feature_flags(sql_set_operators: sql_set_operator)
       end
-    end
 
-    it 'selects from the results of the UNION' do
-      query = model.from_union([model.where(id: 1), model.where(id: 2)])
-
-      expect(query.to_sql).to match(/FROM \(\(SELECT.+\)\nUNION\n\(SELECT.+\)\) users/m)
-    end
-
-    it 'supports the use of a custom alias for the sub query' do
-      query = model.from_union(
-        [model.where(id: 1), model.where(id: 2)],
-        alias_as: 'kittens'
-      )
-
-      expect(query.to_sql).to match(/FROM \(\(SELECT.+\)\nUNION\n\(SELECT.+\)\) kittens/m)
-    end
-
-    it 'supports keeping duplicate rows' do
-      query = model.from_union(
-        [model.where(id: 1), model.where(id: 2)],
-        remove_duplicates: false
-      )
-
-      expect(query.to_sql)
-        .to match(/FROM \(\(SELECT.+\)\nUNION ALL\n\(SELECT.+\)\) users/m)
+      it_behaves_like 'from set operator', Gitlab::SQL::Union
     end
   end
 end

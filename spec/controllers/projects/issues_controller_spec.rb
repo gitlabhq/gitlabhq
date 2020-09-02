@@ -1011,6 +1011,24 @@ RSpec.describe Projects::IssuesController do
           end
         end
       end
+
+      it 'logs the view with Gitlab::Search::RecentIssues' do
+        sign_in(user)
+        recent_issues_double = instance_double(::Gitlab::Search::RecentIssues, log_view: nil)
+        expect(::Gitlab::Search::RecentIssues).to receive(:new).with(user: user).and_return(recent_issues_double)
+
+        go(id: issue.to_param)
+
+        expect(recent_issues_double).to have_received(:log_view)
+      end
+
+      context 'when not logged in' do
+        it 'does not log the view with Gitlab::Search::RecentIssues' do
+          expect(::Gitlab::Search::RecentIssues).not_to receive(:new)
+
+          go(id: issue.to_param)
+        end
+      end
     end
 
     describe 'GET #realtime_changes' do

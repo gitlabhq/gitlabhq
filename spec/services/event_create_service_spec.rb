@@ -8,6 +8,16 @@ RSpec.describe EventCreateService do
   let_it_be(:user, reload: true) { create :user }
   let_it_be(:project) { create(:project) }
 
+  shared_examples 'it records the event in the event counter' do
+    specify do
+      tracking_params = { event_action: event_action, date_from: Date.yesterday, date_to: Date.today }
+
+      expect { subject }
+        .to change { Gitlab::UsageDataCounters::TrackUniqueEvents.count_unique_events(tracking_params) }
+        .by(1)
+    end
+  end
+
   describe 'Issues' do
     describe '#open_issue' do
       let(:issue) { create(:issue) }
@@ -40,34 +50,52 @@ RSpec.describe EventCreateService do
     end
   end
 
-  describe 'Merge Requests' do
+  describe 'Merge Requests', :clean_gitlab_redis_shared_state do
     describe '#open_mr' do
+      subject(:open_mr) { service.open_mr(merge_request, merge_request.author) }
+
       let(:merge_request) { create(:merge_request) }
 
-      it { expect(service.open_mr(merge_request, merge_request.author)).to be_truthy }
+      it { expect(open_mr).to be_truthy }
 
       it "creates new event" do
-        expect { service.open_mr(merge_request, merge_request.author) }.to change { Event.count }
+        expect { open_mr }.to change { Event.count }
+      end
+
+      it_behaves_like "it records the event in the event counter" do
+        let(:event_action) { Gitlab::UsageDataCounters::TrackUniqueEvents::MERGE_REQUEST_ACTION }
       end
     end
 
     describe '#close_mr' do
+      subject(:close_mr) { service.close_mr(merge_request, merge_request.author) }
+
       let(:merge_request) { create(:merge_request) }
 
-      it { expect(service.close_mr(merge_request, merge_request.author)).to be_truthy }
+      it { expect(close_mr).to be_truthy }
 
       it "creates new event" do
-        expect { service.close_mr(merge_request, merge_request.author) }.to change { Event.count }
+        expect { close_mr }.to change { Event.count }
+      end
+
+      it_behaves_like "it records the event in the event counter" do
+        let(:event_action) { Gitlab::UsageDataCounters::TrackUniqueEvents::MERGE_REQUEST_ACTION }
       end
     end
 
     describe '#merge_mr' do
+      subject(:merge_mr) { service.merge_mr(merge_request, merge_request.author) }
+
       let(:merge_request) { create(:merge_request) }
 
-      it { expect(service.merge_mr(merge_request, merge_request.author)).to be_truthy }
+      it { expect(merge_mr).to be_truthy }
 
       it "creates new event" do
-        expect { service.merge_mr(merge_request, merge_request.author) }.to change { Event.count }
+        expect { merge_mr }.to change { Event.count }
+      end
+
+      it_behaves_like "it records the event in the event counter" do
+        let(:event_action) { Gitlab::UsageDataCounters::TrackUniqueEvents::MERGE_REQUEST_ACTION }
       end
     end
 
@@ -180,6 +208,8 @@ RSpec.describe EventCreateService do
     where(:action) { Event::WIKI_ACTIONS.map { |action| [action] } }
 
     with_them do
+      subject { create_event }
+
       it 'creates the event' do
         expect(create_event).to have_attributes(
           wiki_page?: true,
@@ -201,13 +231,8 @@ RSpec.describe EventCreateService do
         expect(duplicate).to eq(event)
       end
 
-      it 'records the event in the event counter' do
-        counter_class = Gitlab::UsageDataCounters::TrackUniqueEvents
-        tracking_params = { event_action: counter_class::WIKI_ACTION, date_from: Date.yesterday, date_to: Date.today }
-
-        expect { create_event }
-          .to change { counter_class.count_unique_events(tracking_params) }
-          .by(1)
+      it_behaves_like "it records the event in the event counter" do
+        let(:event_action) { Gitlab::UsageDataCounters::TrackUniqueEvents::WIKI_ACTION }
       end
     end
 
@@ -242,13 +267,8 @@ RSpec.describe EventCreateService do
 
     it_behaves_like 'service for creating a push event', PushEventPayloadService
 
-    it 'records the event in the event counter' do
-      counter_class = Gitlab::UsageDataCounters::TrackUniqueEvents
-      tracking_params = { event_action: counter_class::PUSH_ACTION, date_from: Date.yesterday, date_to: Date.today }
-
-      expect { subject }
-        .to change { counter_class.count_unique_events(tracking_params) }
-        .from(0).to(1)
+    it_behaves_like "it records the event in the event counter" do
+      let(:event_action) { Gitlab::UsageDataCounters::TrackUniqueEvents::PUSH_ACTION }
     end
   end
 
@@ -265,13 +285,8 @@ RSpec.describe EventCreateService do
 
     it_behaves_like 'service for creating a push event', BulkPushEventPayloadService
 
-    it 'records the event in the event counter' do
-      counter_class = Gitlab::UsageDataCounters::TrackUniqueEvents
-      tracking_params = { event_action: counter_class::PUSH_ACTION, date_from: Date.yesterday, date_to: Date.today }
-
-      expect { subject }
-        .to change { counter_class.count_unique_events(tracking_params) }
-        .from(0).to(1)
+    it_behaves_like "it records the event in the event counter" do
+      let(:event_action) { Gitlab::UsageDataCounters::TrackUniqueEvents::PUSH_ACTION }
     end
   end
 
@@ -299,7 +314,7 @@ RSpec.describe EventCreateService do
       let_it_be(:updated) { create_list(:design, 5) }
       let_it_be(:created) { create_list(:design, 3) }
 
-      let(:result) { service.save_designs(author, create: created, update: updated) }
+      subject(:result) { service.save_designs(author, create: created, update: updated) }
 
       specify { expect { result }.to change { Event.count }.by(8) }
 
@@ -319,13 +334,8 @@ RSpec.describe EventCreateService do
         expect(events.map(&:design)).to match_array(updated)
       end
 
-      it 'records the event in the event counter' do
-        counter_class = Gitlab::UsageDataCounters::TrackUniqueEvents
-        tracking_params = { event_action: counter_class::DESIGN_ACTION, date_from: Date.yesterday, date_to: Date.today }
-
-        expect { result }
-          .to change { counter_class.count_unique_events(tracking_params) }
-          .from(0).to(1)
+      it_behaves_like "it records the event in the event counter" do
+        let(:event_action) { Gitlab::UsageDataCounters::TrackUniqueEvents::DESIGN_ACTION }
       end
     end
 
@@ -333,7 +343,7 @@ RSpec.describe EventCreateService do
       let_it_be(:designs) { create_list(:design, 5) }
       let_it_be(:author) { create(:user) }
 
-      let(:result) { service.destroy_designs(designs, author) }
+      subject(:result) { service.destroy_designs(designs, author) }
 
       specify { expect { result }.to change { Event.count }.by(5) }
 
@@ -346,13 +356,37 @@ RSpec.describe EventCreateService do
         expect(events.map(&:design)).to match_array(designs)
       end
 
-      it 'records the event in the event counter' do
-        counter_class = Gitlab::UsageDataCounters::TrackUniqueEvents
-        tracking_params = { event_action: counter_class::DESIGN_ACTION, date_from: Date.yesterday, date_to: Date.today }
+      it_behaves_like "it records the event in the event counter" do
+        let(:event_action) { Gitlab::UsageDataCounters::TrackUniqueEvents::DESIGN_ACTION }
+      end
+    end
+  end
 
-        expect { result }
-          .to change { counter_class.count_unique_events(tracking_params) }
-          .from(0).to(1)
+  describe '#leave_note' do
+    subject(:leave_note) { service.leave_note(note, author) }
+
+    let(:note) { create(:note) }
+    let(:author) { create(:user) }
+    let(:event_action) { Gitlab::UsageDataCounters::TrackUniqueEvents::MERGE_REQUEST_ACTION }
+
+    it { expect(leave_note).to be_truthy }
+
+    it "creates new event" do
+      expect { leave_note }.to change { Event.count }.by(1)
+    end
+
+    context 'when it is a diff note' do
+      it_behaves_like "it records the event in the event counter" do
+        let(:note) { create(:diff_note_on_merge_request) }
+      end
+    end
+
+    context 'when it is not a diff note' do
+      it 'does not change the unique action counter' do
+        counter_class = Gitlab::UsageDataCounters::TrackUniqueEvents
+        tracking_params = { event_action: event_action, date_from: Date.yesterday, date_to: Date.today }
+
+        expect { subject }.not_to change { counter_class.count_unique_events(tracking_params) }
       end
     end
   end

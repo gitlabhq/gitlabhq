@@ -14025,7 +14025,8 @@ CREATE TABLE public.packages_packages (
     updated_at timestamp with time zone NOT NULL,
     name character varying NOT NULL,
     version character varying,
-    package_type smallint NOT NULL
+    package_type smallint NOT NULL,
+    creator_id integer
 );
 
 CREATE SEQUENCE public.packages_packages_id_seq
@@ -20457,6 +20458,8 @@ CREATE INDEX index_packages_package_files_on_file_store ON public.packages_packa
 
 CREATE INDEX index_packages_package_files_on_package_id_and_file_name ON public.packages_package_files USING btree (package_id, file_name);
 
+CREATE INDEX index_packages_packages_on_creator_id ON public.packages_packages USING btree (creator_id);
+
 CREATE INDEX index_packages_packages_on_name_trigram ON public.packages_packages USING gin (name public.gin_trgm_ops);
 
 CREATE INDEX index_packages_packages_on_project_id_and_created_at ON public.packages_packages USING btree (project_id, created_at);
@@ -22038,6 +22041,9 @@ ALTER TABLE ONLY public.ci_builds
 
 ALTER TABLE ONLY public.design_management_versions
     ADD CONSTRAINT fk_c1440b4896 FOREIGN KEY (author_id) REFERENCES public.users(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY public.packages_packages
+    ADD CONSTRAINT fk_c188f0dba4 FOREIGN KEY (creator_id) REFERENCES public.users(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY public.geo_event_log
     ADD CONSTRAINT fk_c1f241c70d FOREIGN KEY (upload_deleted_event_id) REFERENCES public.geo_upload_deleted_events(id) ON DELETE CASCADE;
