@@ -3,6 +3,7 @@ import {
   GlFilteredSearchToken,
   GlFilteredSearchSuggestion,
   GlFilteredSearchTokenSegment,
+  GlNewDropdownDivider as GlDropdownDivider,
 } from '@gitlab/ui';
 import MockAdapter from 'axios-mock-adapter';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -33,13 +34,14 @@ const defaultStubs = {
   },
 };
 
-const createComponent = ({
-  config = mockLabelToken,
-  value = { data: '' },
-  active = false,
-  stubs = defaultStubs,
-} = {}) =>
-  mount(LabelToken, {
+function createComponent(options = {}) {
+  const {
+    config = mockLabelToken,
+    value = { data: '' },
+    active = false,
+    stubs = defaultStubs,
+  } = options;
+  return mount(LabelToken, {
     propsData: {
       config,
       value,
@@ -51,6 +53,7 @@ const createComponent = ({
     },
     stubs,
   });
+}
 
 describe('LabelToken', () => {
   let mock;
@@ -202,6 +205,21 @@ describe('LabelToken', () => {
       defaultLabels.forEach((label, index) => {
         expect(suggestions.at(index).text()).toBe(label.text);
       });
+    });
+
+    it('does not render divider when no defaultLabels', async () => {
+      wrapper = createComponent({
+        active: true,
+        config: { ...mockLabelToken, defaultLabels: [] },
+        stubs: { Portal: true },
+      });
+      const tokenSegments = wrapper.findAll(GlFilteredSearchTokenSegment);
+      const suggestionsSegment = tokenSegments.at(2);
+      suggestionsSegment.vm.$emit('activate');
+      await wrapper.vm.$nextTick();
+
+      expect(wrapper.contains(GlFilteredSearchSuggestion)).toBe(false);
+      expect(wrapper.contains(GlDropdownDivider)).toBe(false);
     });
 
     it('renders `DEFAULT_LABELS` as default suggestions', async () => {

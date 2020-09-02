@@ -112,7 +112,7 @@ export default {
       >
         {{ label.text }}
       </gl-filtered-search-suggestion>
-      <gl-dropdown-divider />
+      <gl-dropdown-divider v-if="defaultLabels.length" />
       <gl-loading-icon v-if="loading" />
       <template v-else>
         <gl-filtered-search-suggestion v-for="label in labels" :key="label.id" :value="label.title">

@@ -3,6 +3,7 @@ import {
   GlFilteredSearchToken,
   GlFilteredSearchSuggestion,
   GlFilteredSearchTokenSegment,
+  GlNewDropdownDivider as GlDropdownDivider,
 } from '@gitlab/ui';
 import MockAdapter from 'axios-mock-adapter';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -31,13 +32,14 @@ const defaultStubs = {
   },
 };
 
-const createComponent = ({
-  config = mockMilestoneToken,
-  value = { data: '' },
-  active = false,
-  stubs = defaultStubs,
-} = {}) =>
-  mount(MilestoneToken, {
+function createComponent(options = {}) {
+  const {
+    config = mockMilestoneToken,
+    value = { data: '' },
+    active = false,
+    stubs = defaultStubs,
+  } = options;
+  return mount(MilestoneToken, {
     propsData: {
       config,
       value,
@@ -49,6 +51,7 @@ const createComponent = ({
     },
     stubs,
   });
+}
 
 describe('MilestoneToken', () => {
   let mock;
@@ -174,6 +177,21 @@ describe('MilestoneToken', () => {
       defaultMilestones.forEach((milestone, index) => {
         expect(suggestions.at(index).text()).toBe(milestone.text);
       });
+    });
+
+    it('does not render divider when no defaultMilestones', async () => {
+      wrapper = createComponent({
+        active: true,
+        config: { ...mockMilestoneToken, defaultMilestones: [] },
+        stubs: { Portal: true },
+      });
+      const tokenSegments = wrapper.findAll(GlFilteredSearchTokenSegment);
+      const suggestionsSegment = tokenSegments.at(2);
+      suggestionsSegment.vm.$emit('activate');
+      await wrapper.vm.$nextTick();
+
+      expect(wrapper.contains(GlFilteredSearchSuggestion)).toBe(false);
+      expect(wrapper.contains(GlDropdownDivider)).toBe(false);
     });
 
     it('renders `DEFAULT_MILESTONES` as default suggestions', async () => {

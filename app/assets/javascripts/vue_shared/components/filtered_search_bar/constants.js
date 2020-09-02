@@ -1,8 +1,6 @@
 /* eslint-disable @gitlab/require-i18n-strings */
 import { __ } from '~/locale';
 
-export const ANY_AUTHOR = 'Any';
-
 const DEFAULT_LABEL_NO_LABEL = { value: 'No label', text: __('No label') };
 export const DEFAULT_LABEL_NONE = { value: 'None', text: __('None') };
 export const DEFAULT_LABEL_ANY = { value: 'Any', text: __('Any') };

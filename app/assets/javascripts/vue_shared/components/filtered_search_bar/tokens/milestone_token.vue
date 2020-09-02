@@ -95,7 +95,7 @@ export default {
       >
         {{ milestone.text }}
       </gl-filtered-search-suggestion>
-      <gl-dropdown-divider />
+      <gl-dropdown-divider v-if="defaultMilestones.length" />
       <gl-loading-icon v-if="loading" />
       <template v-else>
         <gl-filtered-search-suggestion
