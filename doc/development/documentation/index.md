@@ -701,9 +701,9 @@ To configure markdownlint within your editor, install one of the following as ap
 
 To configure Vale within your editor, install one of the following as appropriate:
 
-- The Sublime Text [`SublimeLinter-contrib-vale` plugin](https://packagecontrol.io/packages/SublimeLinter-contrib-vale)
-- The Visual Studio Code [`testthedocs.vale` extension](https://marketplace.visualstudio.com/items?itemName=testthedocs.vale)
-- [Vim](https://github.com/dense-analysis/ale)
+- The Sublime Text [`SublimeLinter-contrib-vale` plugin](https://packagecontrol.io/packages/SublimeLinter-contrib-vale).
+- The Visual Studio Code [`errata-ai.vale-server` extension](https://marketplace.visualstudio.com/items?itemName=errata-ai.vale-server). You don't need Vale Server to use the plugin.
+- [Vim](https://github.com/dense-analysis/ale).
 
 We don't use [Vale Server](https://errata-ai.github.io/vale/#using-vale-with-a-text-editor-or-another-third-party-application).
 
@@ -736,9 +736,7 @@ document:
 - To disable all Vale linting rules, add a `<!-- vale off -->` tag before the text, and a
   `<!-- vale on -->` tag after the text.
 
-Whenever possible, exclude only the problematic rule and line(s). In some cases, such as list items,
-you may need to disable linting for the entire list until
-[Vale issue #175](https://github.com/errata-ai/vale/issues/175) is resolved.
+Whenever possible, exclude only the problematic rule and line(s).
 
 For more information, see
 [Vale's documentation](https://errata-ai.gitbook.io/vale/getting-started/markup#markup-based-configuration).

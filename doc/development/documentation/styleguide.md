@@ -497,7 +497,7 @@ tenses, words, and phrases:
   - Instead of "e.g.," use "for example," "such as," "for instance," or "like."
   - Instead of "etc.," either use "and so on" or consider editing it out, since
     it can be vague.
-    <!-- vale gitlab.rulename = NO -->
+    <!-- vale gitlab.LatinTerms = YES -->
 - Avoid using the word *currently* when talking about the product or its
   features. The documentation describes the product as it is, and not as it
   will be at some indeterminate point in the future.
@@ -534,6 +534,9 @@ tenses, words, and phrases:
   [user interfaces](https://design.gitlab.com/content/punctuation/#contractions).
   (Tested in [`Contractions.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/Contractions.yml).)
 
+  <!-- vale gitlab.ContractionsKeep = NO -->
+  <!-- vale gitlab.ContractionsDiscard = NO -->
+  <!-- vale gitlab.FutureTense = NO -->
   | Do       | Don't     |
   |----------|-----------|
   | it's     | it is     |
@@ -582,7 +585,9 @@ tenses, words, and phrases:
   | Requests to localhost are not allowed    | Requests to localhost aren't allowed |
   | Specified URL cannot be used             | Specified URL can't be used          |
 
-<!-- vale on -->
+  <!-- vale gitlab.ContractionsKeep = YES -->
+  <!-- vale gitlab.ContractionsDiscard = YES -->
+  <!-- vale gitlab.FutureTense = YES -->
 
 ## Text
 

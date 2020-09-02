@@ -31,7 +31,7 @@ authenticate with GitLab by using the `CI_JOB_TOKEN`.
 
 CI/CD templates, which you can use to get started, are in [this repo](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/ci/templates).
 
-Learn more about [using CI/CD to build Maven packages](../maven_repository/index.md#creating-maven-packages-with-gitlab-cicd), [NPM packages](../npm_registry/index.md#publishing-a-package-with-cicd) and [NuGet Packages](../nuget_repository/index.md#publishing-a-nuget-package-with-cicd).
+Learn more about [using CI/CD to build Maven packages](../maven_repository/index.md#creating-maven-packages-with-gitlab-cicd), [NPM packages](../npm_registry/index.md#publishing-a-package-with-cicd), [Composer packages](../composer_repository/index.md#publishing-the-package-with-cicd), and [NuGet packages](../nuget_repository/index.md#publishing-a-nuget-package-with-cicd).
 
 If you use CI/CD to build a package, extended activity
 information is displayed when you view the package details:

@@ -3,6 +3,7 @@
 module Gitlab
   module Diff
     class HighlightCache
+      include Gitlab::Utils::Gzip
       include Gitlab::Utils::StrongMemoize
 
       EXPIRATION = 1.week
@@ -83,7 +84,7 @@ module Gitlab
               redis.hset(
                 key,
                 diff_file_id,
-                compose_data(highlighted_diff_lines_hash.to_json)
+                gzip_compress(highlighted_diff_lines_hash.to_json)
               )
             end
 
@@ -145,33 +146,10 @@ module Gitlab
         end
 
         results.map! do |result|
-          Gitlab::Json.parse(extract_data(result), symbolize_names: true) unless result.nil?
+          Gitlab::Json.parse(gzip_decompress(result), symbolize_names: true) unless result.nil?
         end
 
         file_paths.zip(results).to_h
-      end
-
-      def compose_data(json_data)
-        # #compress returns ASCII-8BIT, so we need to force the encoding to
-        #   UTF-8 before caching it in redis, else we risk encoding mismatch
-        #   errors.
-        #
-        ActiveSupport::Gzip.compress(json_data).force_encoding("UTF-8")
-      rescue Zlib::GzipFile::Error
-        json_data
-      end
-
-      def extract_data(data)
-        # Since we could be dealing with an already populated cache full of data
-        #   that isn't gzipped, we want to also check to see if the data is
-        #   gzipped before we attempt to #decompress it, thus we check the first
-        #   2 bytes for "\x1F\x8B" to confirm it is a gzipped string. While a
-        #   non-gzipped string will raise a Zlib::GzipFile::Error, which we're
-        #   rescuing, we don't want to count on rescue for control flow.
-        #
-        data[0..1] == "\x1F\x8B" ? ActiveSupport::Gzip.decompress(data) : data
-      rescue Zlib::GzipFile::Error
-        data
       end
 
       def cacheable?(diff_file)

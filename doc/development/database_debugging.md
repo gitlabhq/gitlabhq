@@ -72,7 +72,7 @@ Use these instructions for exploring the GitLab database while developing with t
    1. **Port number to connect to**: `5432` (default).
    1. <!-- vale gitlab.Spelling = NO -->
       **Use an ssl connection?**
-      <!-- vale gitlab.rulename = NO --> This depends on your installation. Options are:
+      <!-- vale gitlab.Spelling = YES --> This depends on your installation. Options are:
       - **Use Secure Connection**
       - **Standard Connection** (default)
    1. **(Optional) The database to connect to**: `gitlabhq_development`.

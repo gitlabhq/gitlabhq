@@ -18,6 +18,7 @@ GitLab has been tested on a number of object storage providers:
 - [Digital Ocean Spaces](https://www.digitalocean.com/products/spaces/)
 - [Oracle Cloud Infrastructure](https://docs.cloud.oracle.com/en-us/iaas/Content/Object/Tasks/s3compatibleapi.htm)
 - [Openstack Swift](https://docs.openstack.org/swift/latest/s3_compat.html)
+- [Azure Blob storage](https://docs.microsoft.com/en-us/azure/storage/blobs/storage-blobs-introduction)
 - On-premises hardware and appliances from various storage vendors.
 - MinIO. We have [a guide to deploying this](https://docs.gitlab.com/charts/advanced/external-object-storage/minio.html) within our Helm Chart documentation.
 
@@ -158,7 +159,6 @@ See the section on [ETag mismatch errors](#etag-mismatch) for more details.
 
    ```toml
    [object_storage]
-     enabled = true
      provider = "AWS"
 
    [object_storage.s3]
@@ -271,6 +271,61 @@ gitlab_rails['object_store']['connection'] = {
   'google_json_key_location' => '<FILENAME>'
 }
 ```
+
+#### Azure Blob storage
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/25877) in GitLab 13.4.
+
+Although Azure uses the word `container` to denote a collection of
+blobs, GitLab standardizes on the term `bucket`. Be sure to configure
+Azure container names in the `bucket` settings.
+
+The following are the valid connection parameters for Azure. Read the
+[Azure Blob storage documentation](https://docs.microsoft.com/en-us/azure/storage/blobs/storage-blobs-introduction)
+to learn more.
+
+| Setting | Description | Example |
+|---------|-------------|---------|
+| `provider` | Provider name | `AzureRM` |
+| `azure_storage_account_name` | Name of the Azure Blob Storage account used to access the storage | `azuretest` |
+| `azure_storage_access_key` | Storage account access key used to access the container. This is typically a secret, 512-bit encryption key encoded in base64. | `"czV2OHkvQj9FKEgrTWJRZVRoV21ZcTN0Nnc5eiRDJkYpSkBOY1JmVWpYbjJy\nNHU3eCFBJUQqRy1LYVBkU2dWaw==\n"` |
+| `azure_storage_domain` | Domain name used to contact the Azure Blob Storage API (optional). Defaults to `blob.core.windows.net`. Set this if you are using Azure China, Azure Germany, Azure US Government, or some other custom Azure domain. | `blob.core.windows.net` |
+
+##### Azure example (consolidated form)
+
+For Omnibus installations, this is an example of the `connection` setting:
+
+```ruby
+gitlab_rails['object_store']['connection'] = {
+  'provider' => 'AzureRM',
+  'azure_storage_account_name' => '<AZURE STORAGE ACCOUNT NAME>',
+  'azure_storage_access_key' => '<AZURE STORAGE ACCESS KEY>',
+  'azure_storage_domain' => '<AZURE STORAGE DOMAIN>',
+}
+```
+
+###### Azure Workhorse settings (source installs only)
+
+NOTE: **Note:**
+For source installations, Workhorse needs to be configured with the
+Azure credentials as well. This is not needed in Omnibus installs because
+the Workhorse settings are populated from the settings above.
+
+1. Edit `/home/git/gitlab-workhorse/config.toml` and add or amend the following lines:
+
+   ```toml
+   [object_storage]
+     provider = "AzureRM"
+
+   [object_storage.azurerm]
+     azure_storage_account_name = "<AZURE STORAGE ACCOUNT NAME>"
+     azure_storage_access_key = "<AZURE STORAGE ACCESS KEY>"
+   ```
+
+If you are using a custom Azure storage domain, note that
+`azure_storage_domain` does **not** have to be set in the Workhorse
+configuration. This information is exchanged in an API call between
+GitLab Rails and Workhorse.
 
 #### OpenStack-compatible connection settings
 
