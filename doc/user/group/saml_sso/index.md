@@ -368,7 +368,7 @@ Group SAML SSO helps if you need to allow access via multiple SAML identity prov
 
 To proceed with configuring Group SAML SSO instead, you'll need to enable the `group_saml` OmniAuth provider. This can be done from:
 
-- `gitlab.rb` for GitLab [Omnibus installations](#omnibus-installations).
+- `gitlab.rb` for [Omnibus GitLab installations](#omnibus-installations).
 - `gitlab/config/gitlab.yml` for [source installations](#source-installations).
 
 ### Limitations
