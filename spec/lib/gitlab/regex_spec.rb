@@ -164,15 +164,6 @@ describe Gitlab::Regex do
     it { is_expected.not_to match('foo/bar') }
   end
 
-  describe '.conan_file_name_regex' do
-    subject { described_class.conan_file_name_regex }
-
-    it { is_expected.to match('conanfile.py') }
-    it { is_expected.to match('conan_package.tgz') }
-    it { is_expected.not_to match('foo.txt') }
-    it { is_expected.not_to match('!!()()') }
-  end
-
   describe '.conan_package_reference_regex' do
     subject { described_class.conan_package_reference_regex }
 

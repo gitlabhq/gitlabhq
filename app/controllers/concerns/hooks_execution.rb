@@ -17,4 +17,16 @@ module HooksExecution
       flash[:alert] = "Hook execution failed: #{message}"
     end
   end
+
+  def create_rate_limit(key, scope)
+    if rate_limiter.throttled?(key, scope: [scope, current_user])
+      rate_limiter.log_request(request, "#{key}_request_limit".to_sym, current_user)
+
+      render plain: _('This endpoint has been requested too many times. Try again later.'), status: :too_many_requests
+    end
+  end
+
+  def rate_limiter
+    ::Gitlab::ApplicationRateLimiter
+  end
 end

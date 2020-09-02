@@ -99,7 +99,9 @@ RSpec.describe Admin::ClustersController do
   end
 
   describe 'GET #new' do
-    def get_new(provider: 'gcp')
+    let(:user) { admin }
+
+    def go(provider: 'gcp')
       get :new, params: { provider: provider }
     end
 
@@ -112,7 +114,7 @@ RSpec.describe Admin::ClustersController do
 
         context 'when selected provider is gke and no valid gcp token exists' do
           it 'redirects to gcp authorize_url' do
-            get_new
+            go
 
             expect(response).to redirect_to(assigns(:authorize_url))
           end
@@ -125,7 +127,7 @@ RSpec.describe Admin::ClustersController do
         end
 
         it 'does not have authorize_url' do
-          get_new
+          go
 
           expect(assigns(:authorize_url)).to be_nil
         end
@@ -137,7 +139,7 @@ RSpec.describe Admin::ClustersController do
         end
 
         it 'has new object' do
-          get_new
+          go
 
           expect(assigns(:gcp_cluster)).to be_an_instance_of(Clusters::ClusterPresenter)
         end
@@ -158,16 +160,18 @@ RSpec.describe Admin::ClustersController do
 
     describe 'functionality for existing cluster' do
       it 'has new object' do
-        get_new
+        go
 
         expect(assigns(:user_cluster)).to be_an_instance_of(Clusters::ClusterPresenter)
       end
     end
 
+    include_examples 'GET new cluster shared examples'
+
     describe 'security' do
-      it { expect { get_new }.to be_allowed_for(:admin) }
-      it { expect { get_new }.to be_denied_for(:user) }
-      it { expect { get_new }.to be_denied_for(:external) }
+      it { expect { go }.to be_allowed_for(:admin) }
+      it { expect { go }.to be_denied_for(:user) }
+      it { expect { go }.to be_denied_for(:external) }
     end
   end
 
@@ -391,14 +395,13 @@ RSpec.describe Admin::ClustersController do
   end
 
   describe 'POST authorize AWS role for EKS cluster' do
-    let(:role_arn) { 'arn:aws:iam::123456789012:role/role-name' }
-    let(:role_external_id) { '12345' }
+    let!(:role) { create(:aws_role, user: admin) }
 
+    let(:role_arn) { 'arn:new-role' }
     let(:params) do
       {
         cluster: {
-          role_arn: role_arn,
-          role_external_id: role_external_id
+          role_arn: role_arn
         }
       }
     end
@@ -412,28 +415,32 @@ RSpec.describe Admin::ClustersController do
         .and_return(double(execute: double))
     end
 
-    it 'creates an Aws::Role record' do
-      expect { go }.to change { Aws::Role.count }
+    it 'updates the associated role with the supplied ARN' do
+      go
 
       expect(response).to have_gitlab_http_status(:ok)
-
-      role = Aws::Role.last
-      expect(role.user).to eq admin
-      expect(role.role_arn).to eq role_arn
-      expect(role.role_external_id).to eq role_external_id
+      expect(role.reload.role_arn).to eq(role_arn)
     end
 
-    context 'role cannot be created' do
+    context 'supplied role is invalid' do
       let(:role_arn) { 'invalid-role' }
 
-      it 'does not create a record' do
-        expect { go }.not_to change { Aws::Role.count }
+      it 'does not update the associated role' do
+        expect { go }.not_to change { role.role_arn }
 
         expect(response).to have_gitlab_http_status(:unprocessable_entity)
       end
     end
 
     describe 'security' do
+      before do
+        allow_next_instance_of(Clusters::Aws::AuthorizeRoleService) do |service|
+          response = double(status: :ok, body: double)
+
+          allow(service).to receive(:execute).and_return(response)
+        end
+      end
+
       it { expect { go }.to be_allowed_for(:admin) }
       it { expect { go }.to be_denied_for(:user) }
       it { expect { go }.to be_denied_for(:external) }

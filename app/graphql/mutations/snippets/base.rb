@@ -11,7 +11,7 @@ module Mutations
       private
 
       def find_object(id:)
-        GitlabSchema.object_from_id(id)
+        GitlabSchema.object_from_id(id, expected_type: ::Snippet)
       end
 
       def authorized_resource?(snippet)

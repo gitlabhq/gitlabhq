@@ -431,7 +431,7 @@ describe Gitlab::Auth, :use_clean_rails_memory_store_caching do
         end
       end
 
-      shared_examples 'deploy token with disabled registry' do
+      shared_examples 'deploy token with disabled feature' do
         context 'when registry disabled' do
           before do
             stub_container_registry_config(enabled: false)
@@ -439,6 +439,15 @@ describe Gitlab::Auth, :use_clean_rails_memory_store_caching do
 
           it 'fails when login and token are valid' do
             expect(gl_auth.find_for_git_client(login, deploy_token.token, project: nil, ip: 'ip'))
+              .to eq(auth_failure)
+          end
+        end
+
+        context 'when repository is disabled' do
+          let(:project) { create(:project, :repository_disabled) }
+
+          it 'fails when login and token are valid' do
+            expect(gl_auth.find_for_git_client(login, deploy_token.token, project: project, ip: 'ip'))
               .to eq(auth_failure)
           end
         end
@@ -594,7 +603,7 @@ describe Gitlab::Auth, :use_clean_rails_memory_store_caching do
           it_behaves_like 'registry token scope'
         end
 
-        it_behaves_like 'deploy token with disabled registry'
+        it_behaves_like 'deploy token with disabled feature'
       end
 
       context 'when the deploy token has write_registry as a scope' do
@@ -616,7 +625,7 @@ describe Gitlab::Auth, :use_clean_rails_memory_store_caching do
           it_behaves_like 'registry token scope'
         end
 
-        it_behaves_like 'deploy token with disabled registry'
+        it_behaves_like 'deploy token with disabled feature'
       end
     end
   end

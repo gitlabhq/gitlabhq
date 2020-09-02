@@ -6,11 +6,6 @@ module Gitlab
       CONAN_RECIPE_FILES = %w[conanfile.py conanmanifest.txt].freeze
       CONAN_PACKAGE_FILES = %w[conaninfo.txt conanmanifest.txt conan_package.tgz].freeze
 
-      def conan_file_name_regex
-        @conan_file_name_regex ||=
-          %r{\A#{(CONAN_RECIPE_FILES + CONAN_PACKAGE_FILES).join("|")}\z}.freeze
-      end
-
       def conan_package_reference_regex
         @conan_package_reference_regex ||= %r{\A[A-Za-z0-9]+\z}.freeze
       end
