@@ -1,5 +1,0 @@
----
-title: Prevent Deploy Tokens to read project resources when repository is disabled
-merge_request:
-author:
-type: security

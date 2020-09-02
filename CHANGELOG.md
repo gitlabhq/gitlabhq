@@ -2,6 +2,35 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 13.1.9 (2020-09-02)
+
+### Security (23 changes, 1 of them is from the community)
+
+- Check validity of project's import_url before mirroring repository.
+- Show on two-factor authentication setup page groups that are the cause of this requirement.
+- Prevent interrupted 2FA sign-in from signing-in incorrect user.
+- Create new 2FA code each time user is entering 2FA setup page.
+- Remove all sessions but current while enabling 2FA.
+- Invalidate two factor sign-in when user password changes.
+- Delete members invites created by users being deleted.
+- Prevent OmniAuth from rendering arbitrary error messages.
+- Prevent not-2fa authenticated users that are supposed to use it to consume api via session.
+- Invalidate remember me when an active session is revoked.
+- Add rate limit on webhooks testing feature.
+- Add scope presence validation to OAuth Application creation.
+- Allow only running job tokens for API authentication.
+- Prevent Deploy Tokens to read project resources when repository is disabled.
+- Change conan api to use proper workhorse validation.
+- Ensure global ID is of Snippet type in GraphQL destroy mutation.
+- Fix Improper Access Control on Deploy-Key.
+- Set maximum limit for profile events.
+- Persist EKS External ID before presenting it to the user.
+- Prevent project maintainers from editing group badges.
+- Upgrade jquery to v3.5.
+- Update websocket-extensions gem to 0.1.5. (Vitor Meireles De Sousa)
+- Update GitLab Runner Helm Chart to 0.18.3.
+
+
 ## 13.1.8 (2020-08-18)
 
 - No changes.
