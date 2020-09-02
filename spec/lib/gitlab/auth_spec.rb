@@ -680,10 +680,67 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching do
       expect( gl_auth.find_with_user_password(username, password) ).not_to eql user
     end
 
+    it 'does not find user in locked state' do
+      user.lock_access!
+
+      expect(gl_auth.find_with_user_password(username, password)).not_to eql user
+    end
+
     it "does not find user in ldap_blocked state" do
       user.ldap_block
 
       expect( gl_auth.find_with_user_password(username, password) ).not_to eql user
+    end
+
+    context 'with increment_failed_attempts' do
+      wrong_password = 'incorrect_password'
+
+      it 'increments failed_attempts when true and password is incorrect' do
+        expect do
+          gl_auth.find_with_user_password(username, wrong_password, increment_failed_attempts: true)
+          user.reload
+        end.to change(user, :failed_attempts).from(0).to(1)
+      end
+
+      it 'resets failed_attempts when true and password is correct' do
+        user.failed_attempts = 2
+        user.save
+
+        expect do
+          gl_auth.find_with_user_password(username, password, increment_failed_attempts: true)
+          user.reload
+        end.to change(user, :failed_attempts).from(2).to(0)
+      end
+
+      it 'does not increment failed_attempts by default' do
+        expect do
+          gl_auth.find_with_user_password(username, wrong_password)
+          user.reload
+        end.not_to change(user, :failed_attempts)
+      end
+
+      context 'when the database is read only' do
+        before do
+          allow(Gitlab::Database).to receive(:read_only?).and_return(true)
+        end
+
+        it 'does not increment failed_attempts when true and password is incorrect' do
+          expect do
+            gl_auth.find_with_user_password(username, wrong_password, increment_failed_attempts: true)
+            user.reload
+          end.not_to change(user, :failed_attempts)
+        end
+
+        it 'does not reset failed_attempts when true and password is correct' do
+          user.failed_attempts = 2
+          user.save
+
+          expect do
+            gl_auth.find_with_user_password(username, password, increment_failed_attempts: true)
+            user.reload
+          end.not_to change(user, :failed_attempts)
+        end
+      end
     end
 
     context "with ldap enabled" do
