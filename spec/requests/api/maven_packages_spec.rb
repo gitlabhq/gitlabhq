@@ -12,7 +12,7 @@ RSpec.describe API::MavenPackages do
   let_it_be(:package_file) { package.package_files.with_file_name_like('%.xml').first }
   let_it_be(:jar_file) { package.package_files.with_file_name_like('%.jar').first }
   let_it_be(:personal_access_token) { create(:personal_access_token, user: user) }
-  let_it_be(:job) { create(:ci_build, user: user) }
+  let_it_be(:job, reload: true) { create(:ci_build, user: user, status: :running) }
   let_it_be(:deploy_token) { create(:deploy_token, read_package_registry: true, write_package_registry: true) }
   let_it_be(:project_deploy_token) { create(:project_deploy_token, deploy_token: deploy_token, project: project) }
 
@@ -102,11 +102,25 @@ RSpec.describe API::MavenPackages do
   end
 
   shared_examples 'downloads with a job token' do
-    it 'allows download with job token' do
-      download_file(package_file.file_name, job_token: job.token)
+    context 'with a running job' do
+      it 'allows download with job token' do
+        download_file(package_file.file_name, job_token: job.token)
 
-      expect(response).to have_gitlab_http_status(:ok)
-      expect(response.media_type).to eq('application/octet-stream')
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response.media_type).to eq('application/octet-stream')
+      end
+    end
+
+    context 'with a finished job' do
+      before do
+        job.update!(status: :failed)
+      end
+
+      it 'returns unauthorized error' do
+        download_file(package_file.file_name, job_token: job.token)
+
+        expect(response).to have_gitlab_http_status(:unauthorized)
+      end
     end
   end
 
@@ -557,11 +571,18 @@ RSpec.describe API::MavenPackages do
         expect(jar_file.file_name).to eq(file_upload.original_filename)
       end
 
-      it 'allows upload with job token' do
+      it 'allows upload with running job token' do
         upload_file(params.merge(job_token: job.token))
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(project.reload.packages.last.build_info.pipeline).to eq job.pipeline
+      end
+
+      it 'rejects upload without running job token' do
+        job.update!(status: :failed)
+        upload_file(params.merge(job_token: job.token))
+
+        expect(response).to have_gitlab_http_status(:unauthorized)
       end
 
       it 'allows upload with deploy token' do

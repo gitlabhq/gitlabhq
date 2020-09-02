@@ -105,6 +105,19 @@ class ActiveSession
     end
   end
 
+  def self.destroy_all_but_current(user, current_session)
+    session_ids = not_impersonated(user)
+    session_ids.reject! { |session| session.current?(current_session) } if current_session
+
+    Gitlab::Redis::SharedState.with do |redis|
+      destroy_sessions(redis, user, session_ids.map(&:session_id)) if session_ids.any?
+    end
+  end
+
+  def self.not_impersonated(user)
+    list(user).reject(&:is_impersonated)
+  end
+
   def self.key_name(user_id, session_id = '*')
     "#{Gitlab::Redis::SharedState::USER_SESSIONS_NAMESPACE}:#{user_id}:#{session_id}"
   end

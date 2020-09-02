@@ -654,6 +654,19 @@ RSpec.describe Auth::ContainerRegistryAuthenticationService do
         it_behaves_like 'not a container repository factory'
       end
     end
+
+    context 'for project that disables repository' do
+      let(:project) { create(:project, :public, :repository_disabled) }
+
+      context 'disallow when pulling' do
+        let(:current_params) do
+          { scopes: ["repository:#{project.full_path}:pull"] }
+        end
+
+        it_behaves_like 'an inaccessible'
+        it_behaves_like 'not a container repository factory'
+      end
+    end
   end
 
   context 'registry catalog browsing authorized as admin' do

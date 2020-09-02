@@ -33,7 +33,7 @@ module API
 
         return unless token
 
-        ::Ci::Build.find_by_token(token)
+        ::Ci::AuthJobFinder.new(token: token).execute
       end
 
       def find_deploy_token_from_http_basic_auth
