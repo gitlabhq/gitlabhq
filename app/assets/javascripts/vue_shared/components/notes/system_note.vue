@@ -19,7 +19,12 @@
  */
 import $ from 'jquery';
 import { mapGetters, mapActions, mapState } from 'vuex';
-import { GlDeprecatedButton, GlSkeletonLoading, GlTooltipDirective, GlIcon } from '@gitlab/ui';
+import {
+  GlDeprecatedButton,
+  GlDeprecatedSkeletonLoading as GlSkeletonLoading,
+  GlTooltipDirective,
+  GlIcon,
+} from '@gitlab/ui';
 import descriptionVersionHistoryMixin from 'ee_else_ce/notes/mixins/description_version_history';
 import noteHeader from '~/notes/components/note_header.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';

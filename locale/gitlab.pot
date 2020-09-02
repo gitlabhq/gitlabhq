@@ -515,9 +515,6 @@ msgstr ""
 msgid "%{level_name} is not allowed since the fork source project has lower visibility."
 msgstr ""
 
-msgid "%{lineOneStart}Drag and drop to upload your designs%{lineOneEnd} or %{linkStart}click to upload%{linkEnd}."
-msgstr ""
-
 msgid "%{link_start}Learn more%{link_end} about what information is shared with GitLab Inc."
 msgstr ""
 
@@ -7039,9 +7036,6 @@ msgstr ""
 msgid "Could not create wiki page"
 msgstr ""
 
-msgid "Could not delete %{design}. Please try again."
-msgstr ""
-
 msgid "Could not delete chat nickname %{chat_name}."
 msgstr ""
 
@@ -8046,9 +8040,6 @@ msgstr ""
 msgid "Deleted chat nickname: %{chat_name}!"
 msgstr ""
 
-msgid "Deleted in this version"
-msgstr ""
-
 msgid "Deleted projects"
 msgstr ""
 
@@ -8487,9 +8478,6 @@ msgstr ""
 msgid "DesignManagement|Are you sure you want to cancel creating this comment?"
 msgstr ""
 
-msgid "DesignManagement|Are you sure you want to delete the selected designs?"
-msgstr ""
-
 msgid "DesignManagement|Cancel changes"
 msgstr ""
 
@@ -8518,15 +8506,6 @@ msgid "DesignManagement|Could not update discussion. Please try again."
 msgstr ""
 
 msgid "DesignManagement|Could not update note. Please try again."
-msgstr ""
-
-msgid "DesignManagement|Delete"
-msgstr ""
-
-msgid "DesignManagement|Delete designs confirmation"
-msgstr ""
-
-msgid "DesignManagement|Delete selected"
 msgstr ""
 
 msgid "DesignManagement|Deselect all"
@@ -8743,9 +8722,6 @@ msgid "Discuss a specific suggestion or question that needs to be resolved."
 msgstr ""
 
 msgid "Discuss a specific suggestion or question."
-msgstr ""
-
-msgid "Discussion"
 msgstr ""
 
 msgid "Discussion to reply to cannot be found"
@@ -13113,6 +13089,9 @@ msgid "IncidentManagement|Published"
 msgstr ""
 
 msgid "IncidentManagement|Published to status page"
+msgstr ""
+
+msgid "IncidentManagement|There are no closed incidents"
 msgstr ""
 
 msgid "IncidentManagement|There was an error displaying the incidents."
@@ -22750,12 +22729,6 @@ msgstr ""
 msgid "Showing %{pageSize} of %{total} issues"
 msgstr ""
 
-msgid "Showing Latest Version"
-msgstr ""
-
-msgid "Showing Version #%{versionNumber}"
-msgstr ""
-
 msgid "Showing all issues"
 msgstr ""
 
@@ -24421,9 +24394,6 @@ msgstr ""
 msgid "The %{link_start}true-up model%{link_end} allows having more users, and additional users will incur a retroactive charge on renewal."
 msgstr ""
 
-msgid "The %{true_up_link_start}true-up model%{link_end} has a retroactive charge for these users at the next renewal. If you want to update your license sooner to prevent this, %{support_link_start}please contact our Support team%{link_end}."
-msgstr ""
-
 msgid "The %{type} contains the following error:"
 msgid_plural "The %{type} contains the following errors:"
 msgstr[0] ""
@@ -24657,9 +24627,6 @@ msgid "The number of merge requests merged by month."
 msgstr ""
 
 msgid "The number of times an upload record could not find its file"
-msgstr ""
-
-msgid "The one place for your designs"
 msgstr ""
 
 msgid "The parent epic is confidential and can only contain confidential epics and issues"
@@ -28554,6 +28521,9 @@ msgstr ""
 msgid "You won't be able to pull or push project code via SSH until you add an SSH key to your profile"
 msgstr ""
 
+msgid "You'll be charged for %{true_up_link_start}users over license%{link_end} on a quartely or annual basis, depending on the terms of your agreement."
+msgstr ""
+
 msgid "You'll be signed out from your current account automatically."
 msgstr ""
 
@@ -28744,6 +28714,9 @@ msgid "Your groups"
 msgstr ""
 
 msgid "Your instance has %{remaining_user_count} users remaining of the %{total_user_count} included in your subscription. You can add more users than the number included in your license, and we will include the overage in your next bill."
+msgstr ""
+
+msgid "Your instance has exceeded your subscription's licensed user count."
 msgstr ""
 
 msgid "Your instance is approaching its licensed user count"

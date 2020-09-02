@@ -78,6 +78,7 @@ describe('Incidents List', () => {
       stubs: {
         GlButton: true,
         GlAvatar: true,
+        GlEmptyState: true,
       },
     });
   }
@@ -96,12 +97,30 @@ describe('Incidents List', () => {
     expect(findLoader().exists()).toBe(true);
   });
 
-  it('shows empty state', () => {
-    mountComponent({
-      data: { incidents: { list: [] }, incidentsCount: {} },
-      loading: false,
-    });
-    expect(findEmptyState().exists()).toBe(true);
+  describe('empty state', () => {
+    const {
+      emptyState: { title, emptyClosedTabTitle, description },
+    } = I18N;
+
+    it.each`
+      statusFilter | all  | closed | expectedTitle          | expectedDescription
+      ${'all'}     | ${2} | ${1}   | ${title}               | ${description}
+      ${'open'}    | ${2} | ${0}   | ${title}               | ${description}
+      ${'closed'}  | ${0} | ${0}   | ${title}               | ${description}
+      ${'closed'}  | ${2} | ${0}   | ${emptyClosedTabTitle} | ${undefined}
+    `(
+      `when active tab is $statusFilter and there are $all incidents in total and $closed closed incidents, the empty state
+      has title: $expectedTitle and description: $expectedDescription`,
+      ({ statusFilter, all, closed, expectedTitle, expectedDescription }) => {
+        mountComponent({
+          data: { incidents: { list: [] }, incidentsCount: { all, closed }, statusFilter },
+          loading: false,
+        });
+        expect(findEmptyState().exists()).toBe(true);
+        expect(findEmptyState().attributes('title')).toBe(expectedTitle);
+        expect(findEmptyState().attributes('description')).toBe(expectedDescription);
+      },
+    );
   });
 
   it('shows error state', () => {
@@ -187,6 +206,14 @@ describe('Incidents List', () => {
       return wrapper.vm.$nextTick().then(() => {
         expect(findCreateIncidentBtn().attributes('loading')).toBe('true');
       });
+    });
+
+    it("doesn't show the button when list is empty", () => {
+      mountComponent({
+        data: { incidents: { list: [] }, incidentsCount: {} },
+        loading: false,
+      });
+      expect(findCreateIncidentBtn().exists()).toBe(false);
     });
   });
 
@@ -313,7 +340,7 @@ describe('Incidents List', () => {
     describe('Status Filter Tabs', () => {
       beforeEach(() => {
         mountComponent({
-          data: { incidents: mockIncidents, incidentsCount },
+          data: { incidents: { list: mockIncidents }, incidentsCount },
           loading: false,
           stubs: {
             GlTab: true,
@@ -345,7 +372,7 @@ describe('Incidents List', () => {
   describe('sorting the incident list by column', () => {
     beforeEach(() => {
       mountComponent({
-        data: { incidents: mockIncidents, incidentsCount },
+        data: { incidents: { list: mockIncidents }, incidentsCount },
         loading: false,
       });
     });

@@ -1,3 +1,0 @@
-fragment DesignNotePermissions on NotePermissions {
-  adminNote
-}

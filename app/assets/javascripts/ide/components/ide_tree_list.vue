@@ -1,6 +1,6 @@
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex';
-import { GlSkeletonLoading } from '@gitlab/ui';
+import { GlDeprecatedSkeletonLoading as GlSkeletonLoading } from '@gitlab/ui';
 import FileTree from '~/vue_shared/components/file_tree.vue';
 import IdeFileRow from './ide_file_row.vue';
 import NavDropdown from './nav_dropdown.vue';

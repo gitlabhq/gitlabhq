@@ -1,6 +1,11 @@
 <script>
 import { mapState, mapActions } from 'vuex';
-import { GlSkeletonLoading, GlEmptyState, GlLink, GlButton } from '@gitlab/ui';
+import {
+  GlDeprecatedSkeletonLoading as GlSkeletonLoading,
+  GlEmptyState,
+  GlLink,
+  GlButton,
+} from '@gitlab/ui';
 import {
   getParameterByName,
   historyPushState,

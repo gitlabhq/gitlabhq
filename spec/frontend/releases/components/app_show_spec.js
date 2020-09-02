@@ -1,6 +1,6 @@
 import Vuex from 'vuex';
 import { shallowMount } from '@vue/test-utils';
-import { GlSkeletonLoading } from '@gitlab/ui';
+import { GlDeprecatedSkeletonLoading as GlSkeletonLoading } from '@gitlab/ui';
 import ReleaseShowApp from '~/releases/components/app_show.vue';
 import { release as originalRelease } from '../mock_data';
 import ReleaseBlock from '~/releases/components/release_block.vue';

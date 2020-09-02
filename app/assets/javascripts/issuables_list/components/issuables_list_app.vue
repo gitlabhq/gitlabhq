@@ -3,7 +3,7 @@ import { toNumber, omit } from 'lodash';
 import {
   GlEmptyState,
   GlPagination,
-  GlSkeletonLoading,
+  GlDeprecatedSkeletonLoading as GlSkeletonLoading,
   GlSafeHtmlDirective as SafeHtml,
 } from '@gitlab/ui';
 import { deprecatedCreateFlash as flash } from '~/flash';

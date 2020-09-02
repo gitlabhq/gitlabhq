@@ -4,7 +4,7 @@ import { escapeRegExp } from 'lodash';
 import {
   GlBadge,
   GlLink,
-  GlSkeletonLoading,
+  GlDeprecatedSkeletonLoading as GlSkeletonLoading,
   GlTooltipDirective,
   GlLoadingIcon,
   GlIcon,

@@ -1,6 +1,6 @@
 <script>
 /* eslint-disable vue/no-v-html */
-import { GlPopover, GlSkeletonLoading, GlIcon } from '@gitlab/ui';
+import { GlPopover, GlDeprecatedSkeletonLoading as GlSkeletonLoading, GlIcon } from '@gitlab/ui';
 import UserAvatarImage from '../user_avatar/user_avatar_image.vue';
 import { glEmojiTag } from '../../../emoji';
 

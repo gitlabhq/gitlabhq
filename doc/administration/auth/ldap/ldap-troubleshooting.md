@@ -136,6 +136,27 @@ are true for the user in question:
 - Run [an LDAP check command](#ldap-check) to make sure that the LDAP settings
   are correct and [GitLab can see your users](#no-users-are-found).
 
+#### Access denied for your LDAP account
+
+There is [a bug](https://gitlab.com/gitlab-org/gitlab/-/issues/235930) that
+may affect users with [Auditor level access](../../auditor_users.md). When
+downgrading from Premium/Ultimate, Auditor users who try to sign in
+may see the following message: `Access denied for your LDAP account`.
+
+We have a workaround, based on toggling the access level of affected users:
+
+1. As an administrator, go to **Admin Area > Overview > Users**.
+1. Select the name of the affected user.
+1. In the user's administrative page, press **Edit** on the top right of the page.
+1. Change the user's access level from **Regular** to **Admin** (or vice versa),
+   and press **Save changes** at the bottom of the page.
+1. Press **Edit** on the top right of the user's profile page
+   again.
+1. Restore the user's original access level (**Regular** or **Admin**)
+   and press **Save changes** again.
+
+The user should now be able to sign in.
+
 #### Email has already been taken
 
 A user tries to sign-in with the correct LDAP credentials, is denied access,

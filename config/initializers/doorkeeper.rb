@@ -3,6 +3,10 @@ Doorkeeper.configure do
   # Currently supported options are :active_record, :mongoid2, :mongoid3, :mongo_mapper
   orm :active_record
 
+  # Restore to pre-5.1 generator due to breaking change.
+  # See https://gitlab.com/gitlab-org/gitlab/-/issues/244371
+  default_generator_method :hex
+
   # This block will be called to check whether the resource owner is authenticated or not.
   resource_owner_authenticator do
     # Put your resource owner authentication logic here.

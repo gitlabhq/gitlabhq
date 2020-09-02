@@ -1,7 +1,11 @@
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import { shallowMount } from '@vue/test-utils';
-import { GlEmptyState, GlPagination, GlSkeletonLoading } from '@gitlab/ui';
+import {
+  GlEmptyState,
+  GlPagination,
+  GlDeprecatedSkeletonLoading as GlSkeletonLoading,
+} from '@gitlab/ui';
 import waitForPromises from 'helpers/wait_for_promises';
 import { TEST_HOST } from 'helpers/test_constants';
 import { deprecatedCreateFlash as flash } from '~/flash';

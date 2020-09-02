@@ -17,7 +17,7 @@ import Autosize from 'autosize';
 import 'jquery.caret'; // required by at.js
 import '@gitlab/at.js';
 import Vue from 'vue';
-import { GlSkeletonLoading } from '@gitlab/ui';
+import { GlDeprecatedSkeletonLoading as GlSkeletonLoading } from '@gitlab/ui';
 import AjaxCache from '~/lib/utils/ajax_cache';
 import syntaxHighlight from '~/syntax_highlight';
 import axios from './lib/utils/axios_utils';

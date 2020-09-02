@@ -245,7 +245,8 @@ module Gitlab
           Gitlab::UsageDataCounters::ProductivityAnalyticsCounter,
           Gitlab::UsageDataCounters::SourceCodeCounter,
           Gitlab::UsageDataCounters::MergeRequestCounter,
-          Gitlab::UsageDataCounters::DesignsCounter
+          Gitlab::UsageDataCounters::DesignsCounter,
+          Gitlab::UsageDataCounters::KubernetesAgentCounter
         ]
       end
 

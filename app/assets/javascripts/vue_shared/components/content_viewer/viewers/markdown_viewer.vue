@@ -3,7 +3,7 @@
 import $ from 'jquery';
 import '~/behaviors/markdown/render_gfm';
 
-import { GlSkeletonLoading } from '@gitlab/ui';
+import { GlDeprecatedSkeletonLoading as GlSkeletonLoading } from '@gitlab/ui';
 import { forEach, escape } from 'lodash';
 import axios from '~/lib/utils/axios_utils';
 import { __ } from '~/locale';

@@ -208,6 +208,31 @@ export default {
     isEmpty() {
       return !this.incidents.list?.length;
     },
+    showList() {
+      return !this.isEmpty || this.errored || this.loading;
+    },
+    activeClosedTabHasNoIncidents() {
+      const { all, closed } = this.incidentsCount || {};
+      const isClosedTabActive = this.statusFilter === this.$options.statusTabs[1].filters;
+
+      return isClosedTabActive && all && !closed;
+    },
+    emptyStateData() {
+      const {
+        emptyState: { title, emptyClosedTabTitle, description },
+        createIncidentBtnLabel,
+      } = this.$options.i18n;
+
+      if (this.activeClosedTabHasNoIncidents) {
+        return { title: emptyClosedTabTitle };
+      }
+      return {
+        title,
+        description,
+        btnLink: this.newIncidentPath,
+        btnText: createIncidentBtnLabel,
+      };
+    },
   },
   methods: {
     onInputChange: debounce(function debounceSearch(input) {
@@ -279,7 +304,7 @@ export default {
       </gl-tabs>
 
       <gl-button
-        v-if="!isEmpty"
+        v-if="!isEmpty || activeClosedTabHasNoIncidents"
         class="gl-my-3 gl-mr-5 create-incident-button"
         data-testid="createIncidentBtn"
         data-qa-selector="create_incident_button"
@@ -307,6 +332,7 @@ export default {
       {{ s__('IncidentManagement|Incidents') }}
     </h4>
     <gl-table
+      v-if="showList"
       :items="incidents.list || []"
       :fields="availableFields"
       :show-empty="true"
@@ -379,20 +405,19 @@ export default {
         <gl-loading-icon size="lg" color="dark" class="mt-3" />
       </template>
 
-      <template #empty>
-        <gl-empty-state
-          v-if="!errored"
-          :title="$options.i18n.emptyState.title"
-          :svg-path="emptyListSvgPath"
-          :description="$options.i18n.emptyState.description"
-          :primary-button-link="newIncidentPath"
-          :primary-button-text="$options.i18n.createIncidentBtnLabel"
-        />
-        <span v-else>
-          {{ $options.i18n.noIncidents }}
-        </span>
+      <template v-if="errored" #empty>
+        {{ $options.i18n.noIncidents }}
       </template>
     </gl-table>
+
+    <gl-empty-state
+      v-else
+      :title="emptyStateData.title"
+      :svg-path="emptyListSvgPath"
+      :description="emptyStateData.description"
+      :primary-button-link="emptyStateData.btnLink"
+      :primary-button-text="emptyStateData.btnText"
+    />
 
     <gl-pagination
       v-if="showPaginationControls"

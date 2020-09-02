@@ -15,16 +15,26 @@ RSpec.describe API::Internal::Kubernetes do
     allow(Gitlab::Kas).to receive(:secret).and_return(jwt_secret)
   end
 
-  describe "GET /internal/kubernetes/agent_info" do
-    def send_request(headers: {}, params: {})
-      get api('/internal/kubernetes/agent_info'), params: params, headers: headers.reverse_merge(jwt_auth_headers)
-    end
-
+  shared_examples 'authorization' do
     context 'not authenticated' do
       it 'returns 401' do
         send_request(headers: { Gitlab::Kas::INTERNAL_API_REQUEST_HEADER => '' })
 
         expect(response).to have_gitlab_http_status(:unauthorized)
+      end
+    end
+
+    context 'authenticated' do
+      it 'returns 403 if Authorization header not sent' do
+        send_request
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+
+      it 'returns 404 if Authorization is for non-existent agent' do
+        send_request(headers: { 'Authorization' => 'Bearer NONEXISTENT' })
+
+        expect(response).to have_gitlab_http_status(:forbidden)
       end
     end
 
@@ -39,12 +49,50 @@ RSpec.describe API::Internal::Kubernetes do
         expect(response).to have_gitlab_http_status(:not_found)
       end
     end
+  end
 
-    it 'returns 403 if Authorization header not sent' do
-      send_request
-
-      expect(response).to have_gitlab_http_status(:forbidden)
+  describe 'POST /internal/kubernetes/usage_metrics' do
+    def send_request(headers: {}, params: {})
+      post api('/internal/kubernetes/usage_metrics'), params: params, headers: headers.reverse_merge(jwt_auth_headers)
     end
+
+    include_examples 'authorization'
+
+    context 'is authenticated for an agent' do
+      let!(:agent_token) { create(:cluster_agent_token) }
+
+      it 'returns no_content for valid gitops_sync_count' do
+        send_request(params: { gitops_sync_count: 10 }, headers: { 'Authorization' => "Bearer #{agent_token.token}" })
+
+        expect(response).to have_gitlab_http_status(:no_content)
+      end
+
+      it 'returns no_content 0 gitops_sync_count' do
+        send_request(params: { gitops_sync_count: 0 }, headers: { 'Authorization' => "Bearer #{agent_token.token}" })
+
+        expect(response).to have_gitlab_http_status(:no_content)
+      end
+
+      it 'returns 400 for non number' do
+        send_request(params: { gitops_sync_count: 'string' }, headers: { 'Authorization' => "Bearer #{agent_token.token}" })
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+      end
+
+      it 'returns 400 for negative number' do
+        send_request(params: { gitops_sync_count: '-1' }, headers: { 'Authorization' => "Bearer #{agent_token.token}" })
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+      end
+    end
+  end
+
+  describe "GET /internal/kubernetes/agent_info" do
+    def send_request(headers: {}, params: {})
+      get api('/internal/kubernetes/agent_info'), params: params, headers: headers.reverse_merge(jwt_auth_headers)
+    end
+
+    include_examples 'authorization'
 
     context 'an agent is found' do
       let!(:agent_token) { create(:cluster_agent_token) }
@@ -77,14 +125,6 @@ RSpec.describe API::Internal::Kubernetes do
         )
       end
     end
-
-    context 'no such agent exists' do
-      it 'returns 404' do
-        send_request(headers: { 'Authorization' => 'Bearer ABCD' })
-
-        expect(response).to have_gitlab_http_status(:forbidden)
-      end
-    end
   end
 
   describe 'GET /internal/kubernetes/project_info' do
@@ -92,39 +132,7 @@ RSpec.describe API::Internal::Kubernetes do
       get api('/internal/kubernetes/project_info'), params: params, headers: headers.reverse_merge(jwt_auth_headers)
     end
 
-    context 'not authenticated' do
-      it 'returns 401' do
-        send_request(headers: { Gitlab::Kas::INTERNAL_API_REQUEST_HEADER => '' })
-
-        expect(response).to have_gitlab_http_status(:unauthorized)
-      end
-    end
-
-    context 'kubernetes_agent_internal_api feature flag disabled' do
-      before do
-        stub_feature_flags(kubernetes_agent_internal_api: false)
-      end
-
-      it 'returns 404' do
-        send_request
-
-        expect(response).to have_gitlab_http_status(:not_found)
-      end
-    end
-
-    it 'returns 403 if Authorization header not sent' do
-      send_request
-
-      expect(response).to have_gitlab_http_status(:forbidden)
-    end
-
-    context 'no such agent exists' do
-      it 'returns 404' do
-        send_request(headers: { 'Authorization' => 'Bearer ABCD' })
-
-        expect(response).to have_gitlab_http_status(:forbidden)
-      end
-    end
+    include_examples 'authorization'
 
     context 'an agent is found' do
       let!(:agent_token) { create(:cluster_agent_token) }

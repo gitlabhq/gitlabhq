@@ -25,12 +25,6 @@ export default function() {
   initSentryErrorStackTraceApp();
   initRelatedMergeRequestsApp();
 
-  // This will be removed when we remove the `design_management_moved` feature flag
-  // See https://gitlab.com/gitlab-org/gitlab/-/issues/223197
-  import(/* webpackChunkName: 'design_management' */ '~/design_management_legacy')
-    .then(module => module.default())
-    .catch(() => {});
-
   import(/* webpackChunkName: 'design_management' */ '~/design_management')
     .then(module => module.default())
     .catch(() => {});

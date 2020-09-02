@@ -76,8 +76,7 @@
     - if @issue.sentry_issue.present?
       #js-sentry-error-stack-trace{ data: error_details_data(@project, @issue.sentry_issue.sentry_issue_identifier) }
 
-    - if Feature.enabled?(:design_management_moved, @project, default_enabled: true)
-      = render 'projects/issues/design_management'
+    = render 'projects/issues/design_management'
 
     = render_if_exists 'projects/issues/related_issues'
 
@@ -97,9 +96,6 @@
         #js-vue-discussion-filter{ data: { default_filter: current_user&.notes_filter_for(@issue), notes_filters: UserPreference.notes_filters.to_json } }
         = render 'new_branch' if show_new_branch_button?
 
-  - if Feature.enabled?(:design_management_moved, @project, default_enabled: true)
-    = render 'projects/issues/discussion'
-  - else
-    = render 'projects/issues/tabs'
+  = render 'projects/issues/discussion'
 
 = render 'shared/issuable/sidebar', issuable_sidebar: @issuable_sidebar, assignees: @issue.assignees

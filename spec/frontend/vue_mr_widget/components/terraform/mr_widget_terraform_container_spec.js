@@ -1,4 +1,4 @@
-import { GlSkeletonLoading, GlSprintf } from '@gitlab/ui';
+import { GlDeprecatedSkeletonLoading as GlSkeletonLoading, GlSprintf } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import { invalidPlanWithName, plans, validPlanWithName } from './mock_data';

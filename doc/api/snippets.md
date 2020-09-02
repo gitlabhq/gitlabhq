@@ -169,9 +169,9 @@ Parameters:
 
 | Attribute   | Type    | Required | Description                                                        |
 |:------------|:--------|:---------|:-------------------------------------------------------------------|
-| `id`        | integer | yes      | ID of snippet to retrieve                                          |
-| `ref`       | string  | yes      | Reference to a tag, branch or commit                               |
-| `file_path` | string  | yes      | URL-encoded path to the file                                       |
+| `id`        | integer | yes      | ID of snippet to retrieve.                                         |
+| `ref`       | string  | yes      | Reference to a tag, branch or commit.                              |
+| `file_path` | string  | yes      | URL-encoded path to the file.                                      |
 
 Example request:
 

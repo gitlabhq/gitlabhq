@@ -96,6 +96,25 @@ module API
               gitaly_repository: gitaly_repository(project)
             }
           end
+
+          desc 'POST usage metrics' do
+            detail 'Updates usage metrics for agent'
+          end
+          route_setting :authentication, cluster_agent_token_allowed: true
+          params do
+            requires :gitops_sync_count, type: Integer, desc: 'The count to increment the gitops_sync metric by'
+          end
+          post '/usage_metrics' do
+            gitops_sync_count = params[:gitops_sync_count]
+
+            if gitops_sync_count < 0
+              bad_request!('gitops_sync_count must be greater than or equal to zero')
+            else
+              Gitlab::UsageDataCounters::KubernetesAgentCounter.increment_gitops_sync(gitops_sync_count)
+
+              no_content!
+            end
+          end
         end
       end
     end

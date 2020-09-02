@@ -575,6 +575,12 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
     end
   end
 
+  describe '.usage_counters' do
+    subject { described_class.usage_counters }
+
+    it { is_expected.to include(:kubernetes_agent_gitops_sync) }
+  end
+
   describe '.usage_data_counters' do
     subject { described_class.usage_data_counters }
 
