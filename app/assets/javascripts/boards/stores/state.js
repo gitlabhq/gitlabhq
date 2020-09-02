@@ -10,6 +10,7 @@ export default () => ({
   sidebarType: '',
   boardLists: [],
   issuesByListId: {},
+  issues: {},
   isLoadingIssues: false,
   filterParams: {},
   error: undefined,

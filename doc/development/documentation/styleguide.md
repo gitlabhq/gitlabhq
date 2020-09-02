@@ -12,12 +12,23 @@ files.
 
 For broader information about the documentation, see the [Documentation guidelines](index.md).
 
-For programmatic help adhering to the guidelines, see [Testing](index.md#testing).
+For guidelines specific to text in the GitLab interface, see the Pajamas [Content](https://design.gitlab.com/content/error-messages) section.
 
-See the GitLab Handbook for additional [writing style guidelines](https://about.gitlab.com/handbook/communication/#writing-style-guidelines)
-that apply to all GitLab content, not just documentation.
+For information on how to validate styles locally or by using GitLab CI/CD, see [Testing](index.md#testing).
 
-View a list of [recent style guide updates](https://gitlab.com/dashboard/merge_requests?scope=all&utf8=%E2%9C%93&state=merged&label_name[]=tw-style&not[label_name][]=docs%3A%3Afix).
+Use this guide for standards on grammar, formatting, word usage, and more.
+
+You can also view a list of [recent updates to this guide](https://gitlab.com/dashboard/merge_requests?scope=all&utf8=%E2%9C%93&state=merged&label_name[]=tw-style&not[label_name][]=docs%3A%3Afix).
+
+If you can't find what you need:
+
+- View the GitLab Handbook for [writing style guidelines](https://about.gitlab.com/handbook/communication/#writing-style-guidelines) that apply to all GitLab content.
+- Refer to one of the following:
+
+  - [Microsoft Style Guide](https://docs.microsoft.com/en-us/style-guide/).
+  - [Google Developer Documentation Style Guide](https://developers.google.com/style).
+
+If you have questions about style, mention `@tw-style` in an issue or merge request, or, if you have access to the GitLab Slack workspace, use `#docs-process`.
 
 ## Documentation is the single source of truth (SSOT)
 

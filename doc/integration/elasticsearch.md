@@ -163,10 +163,15 @@ NOTE: **Note:**
 For large GitLab instances you can follow the instructions for [Indexing large
 instances](#indexing-large-instances) below.
 
-In order to enable Elasticsearch, you need to have admin access in GitLab.
+To enable Elasticsearch, you need to have admin access to GitLab:
 
 1. Navigate to **Admin Area** (wrench icon), then **Settings > General**
-    and expand the **Elasticsearch** section.
+   and expand the **Elasticsearch** section.
+
+   NOTE: **Note:**
+   To see the Elasticsearch section, you need an active Starter
+   [license](../user/admin_area/license.md).
+
 1. Configure the [Elasticsearch settings](#elasticsearch-configuration) for
    your Elasticsearch cluster. Do not enable **Elasticsearch indexing** or
    **Search with Elasticsearch** yet.

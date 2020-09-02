@@ -9,7 +9,7 @@ module Gitlab
             class Remote < Source
               def content
                 strong_memoize(:content) do
-                  next unless ci_config_path =~ URI.regexp(%w[http https])
+                  next unless ci_config_path =~ URI::DEFAULT_PARSER.make_regexp(%w[http https])
 
                   YAML.dump('include' => [{ 'remote' => ci_config_path }])
                 end

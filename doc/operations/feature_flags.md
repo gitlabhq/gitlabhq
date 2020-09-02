@@ -16,6 +16,10 @@ delivery from customer launch.
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For an example of feature flags in action, see [GitLab for Deploys, Feature Flags, and Error Tracking](https://www.youtube.com/embed/5tw2p6lwXxo).
 
+NOTE: **Note:**
+The Feature Flags GitLab offer as a feature (described in this document) is not the same method
+used for the [development of GitLab](../development/feature_flags/index.md).
+
 ## How it works
 
 GitLab uses [Unleash](https://github.com/Unleash/unleash), a feature

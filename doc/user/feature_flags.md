@@ -1,7 +1,8 @@
 ---
-stage: Release
-group: Progressive Delivery
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+stage: none
+group: Development
+info: "See the Technical Writers assigned to Development Guidelines: https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments-to-development-guidelines"
+description: "Understand what 'GitLab features deployed behind flags' means."
 ---
 
 # GitLab functionality may be limited by feature flags

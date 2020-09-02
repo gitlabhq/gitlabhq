@@ -278,5 +278,7 @@ namespace :gitlab do
         $stdout
       end
     end
-  end # namespace end: backup
-end # namespace end: gitlab
+  end
+  # namespace end: backup
+end
+# namespace end: gitlab

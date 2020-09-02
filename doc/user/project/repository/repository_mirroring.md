@@ -45,6 +45,11 @@ The following are some possible use cases for repository mirroring:
 - You have old projects in another source that you don't use actively anymore, but don't want to
   remove for archiving purposes. In that case, you can create a push mirror so that your active
   GitLab repository can push its changes to the old location.
+- You are a GitLab self-managed user for privacy reasons and your instance is closed to the public,
+  but you still have certain software components that you want open sourced. In this case, utilizing
+  GitLab to be your primary repository which is closed from the public, and using push mirroring to a
+  GitLab.com repository that's public, allows you to open source specific projects and contribute back
+  to the open source community.
 
 ## Pushing to a remote repository **(CORE)**
 

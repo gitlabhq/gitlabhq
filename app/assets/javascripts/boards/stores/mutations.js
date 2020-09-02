@@ -72,8 +72,9 @@ export default {
     state.isLoadingIssues = true;
   },
 
-  [mutationTypes.RECEIVE_ISSUES_FOR_ALL_LISTS_SUCCESS]: (state, listIssues) => {
-    state.issuesByListId = listIssues;
+  [mutationTypes.RECEIVE_ISSUES_FOR_ALL_LISTS_SUCCESS]: (state, { listData, issues }) => {
+    state.issuesByListId = listData;
+    state.issues = issues;
     state.isLoadingIssues = false;
   },
 

@@ -16,11 +16,6 @@
       = doorkeeper_errors_for application, :redirect_uri
       %span.form-text.text-muted
         Use one line per URI
-      - if Doorkeeper.configuration.native_redirect_uri
-        %span.form-text.text-muted
-          Use
-          %code= Doorkeeper.configuration.native_redirect_uri
-          for local tests
 
   = content_tag :div, class: 'form-group row' do
     .col-sm-2.col-form-label.pt-0

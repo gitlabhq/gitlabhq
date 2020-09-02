@@ -14,6 +14,7 @@ class Oauth::Jira::AuthorizationsController < ApplicationController
 
     redirect_to oauth_authorization_path(client_id: params['client_id'],
                                          response_type: 'code',
+                                         scope: params['scope'],
                                          redirect_uri: oauth_jira_callback_url)
   end
 

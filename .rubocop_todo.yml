@@ -113,14 +113,6 @@ Lint/UriEscapeUnescape:
     - 'spec/lib/google_api/auth_spec.rb'
     - 'spec/requests/api/files_spec.rb'
 
-# Offense count: 3
-# Cop supports --auto-correct.
-Lint/UriRegexp:
-  Exclude:
-    - 'app/models/concerns/mentionable/reference_regexes.rb'
-    - 'app/services/projects/download_service.rb'
-    - 'lib/gitlab/ci/pipeline/chain/config/content/remote.rb'
-
 # Offense count: 65
 # Cop supports --auto-correct.
 Migration/DepartmentName:
@@ -540,12 +532,6 @@ Style/BarePercentLiterals:
   Enabled: false
 
 # Offense count: 5
-Style/CommentedKeyword:
-  Exclude:
-    - 'lib/tasks/gitlab/backup.rake'
-    - 'spec/tasks/gitlab/backup_rake_spec.rb'
-
-# Offense count: 5
 # Cop supports --auto-correct.
 Style/EachWithObject:
   Exclude:
@@ -626,13 +612,6 @@ Style/MixinUsage:
     - 'spec/factories/lfs_objects.rb'
     - 'spec/factories/notes.rb'
     - 'spec/lib/gitlab/import_export/version_checker_spec.rb'
-
-# Offense count: 2
-# Cop supports --auto-correct.
-Style/MultilineIfModifier:
-  Exclude:
-    - 'app/services/ci/process_pipeline_service.rb'
-    - 'lib/api/commit_statuses.rb'
 
 # Offense count: 29
 # Cop supports --auto-correct.

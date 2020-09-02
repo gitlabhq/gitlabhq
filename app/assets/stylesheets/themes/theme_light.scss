@@ -1,0 +1,129 @@
+@import './theme_helper';
+
+body {
+  &.ui-light {
+    @include gitlab-theme(
+      $gray-500,
+      $gray-700,
+      $gray-500,
+      $gray-500,
+      $gray-50,
+      $gray-500
+    );
+
+    .navbar-gitlab {
+      background-color: $gray-50;
+      box-shadow: 0 1px 0 0 $border-color;
+
+      .logo-text svg {
+        fill: $gray-900;
+      }
+
+      .navbar-sub-nav,
+      .navbar-nav {
+        > li {
+          > a:hover,
+          > a:focus,
+          > button:hover {
+            color: $gray-900;
+          }
+
+          &.active > a,
+          &.active > a:hover,
+          &.active > button {
+            color: $white;
+          }
+        }
+      }
+
+      .container-fluid {
+        .navbar-toggler,
+        .navbar-toggler:hover {
+          color: $gray-500;
+          border-left: 1px solid $gray-100;
+        }
+      }
+    }
+
+    .search {
+      form {
+        background-color: $white;
+        box-shadow: inset 0 0 0 1px $border-color;
+
+        &:hover {
+          background-color: $white;
+          box-shadow: inset 0 0 0 1px $blue-200;
+        }
+      }
+
+      .search-input-wrap {
+        .search-icon {
+          fill: $gray-100;
+        }
+
+        .search-input {
+          color: $gl-text-color;
+        }
+      }
+    }
+
+    .nav-sidebar li.active {
+      > a {
+        color: $gray-900;
+      }
+
+      svg {
+        fill: $gray-900;
+      }
+    }
+
+    .sidebar-top-level-items > li.active .badge.badge-pill {
+      color: $gray-900;
+    }
+  }
+
+  &.gl-dark {
+    .logo-text svg {
+      fill: $gl-text-color;
+    }
+
+    .navbar-gitlab {
+      background-color: $gray-50;
+
+      .navbar-sub-nav,
+      .navbar-nav {
+        li {
+          > a:hover,
+          > a:focus,
+          > button:hover,
+          > button:focus {
+            color: $gl-text-color;
+            background-color: $gray-200;
+          }
+        }
+
+        li.active,
+        li.dropdown.show {
+          > a,
+          > button {
+            color: $gl-text-color;
+            background-color: $gray-200;
+          }
+        }
+      }
+
+      .search {
+        form {
+          background-color: $gray-100;
+          box-shadow: inset 0 0 0 1px $border-color;
+
+          &:active,
+          &:hover {
+            background-color: $gray-100;
+            box-shadow: inset 0 0 0 1px $blue-200;
+          }
+        }
+      }
+    }
+  }
+}

@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # Alert details page
 
 Navigate to the Alert details view by visiting the
-[Alert list](alerts.md) and selecting an alert from the
+[Alert list](./alerts.md) and selecting an alert from the
 list. You need least Developer [permissions](../../user/permissions.md) to access
 alerts.
 
@@ -18,16 +18,16 @@ amount of information you need.
 
 The **Overview** tab provides basic information about the alert:
 
-![Alert Detail Overview](img/alert_detail_overview_v13_1.png)
+![Alert Detail Overview](./img/alert_detail_overview_v13_1.png)
 
 ## Alert details tab
 
-![Alert Full Details](img/alert_detail_full_v13_1.png)
+![Alert Full Details](./img/alert_detail_full_v13_1.png)
 
 ### Update an Alert's status
 
 The Alert detail view enables you to update the Alert Status.
-See [Create and manage alerts in GitLab](alerts.md) for more details.
+See [Create and manage alerts in GitLab](./alerts.md) for more details.
 
 ### Create an Issue from an Alert
 
@@ -57,11 +57,11 @@ GitLab currently only supports a single assignee per alert.
 1. To display the list of current alerts, click
    **{cloud-gear}** **Operations > Alerts**:
 
-   ![Alert List View Assignee(s)](img/alert_list_assignees_v13_1.png)
+   ![Alert List View Assignee(s)](./img/alert_list_assignees_v13_1.png)
 
 1. Select your desired alert to display its **Alert Details View**:
 
-   ![Alert Details View Assignee(s)](img/alert_details_assignees_v13_1.png)
+   ![Alert Details View Assignee(s)](./img/alert_details_assignees_v13_1.png)
 
 1. If the right sidebar is not expanded, click
    **{angle-double-right}** **Expand sidebar** to expand it.
@@ -69,7 +69,7 @@ GitLab currently only supports a single assignee per alert.
    dropdown menu, select each user you want to assign to the alert. GitLab creates
    a [To-Do list item](../../user/todos.md) for each user.
 
-   ![Alert Details View Assignee(s)](img/alert_todo_assignees_v13_1.png)
+   ![Alert Details View Assignee(s)](./img/alert_todo_assignees_v13_1.png)
 
 To remove an assignee, click **Edit** next to the **Assignee** dropdown menu and
 deselect the user from the list of assignees, or click **Unassigned**.
@@ -88,7 +88,7 @@ The following actions will result in a system note:
 - [Creating an issue based on an alert](#create-an-issue-from-an-alert)
 - [Assignment of an alert to a user](#update-an-alerts-assignee)
 
-![Alert Details View System Notes](img/alert_detail_system_notes_v13_1.png)
+![Alert Details View System Notes](./img/alert_detail_system_notes_v13_1.png)
 
 ### Create a To-Do from an Alert
 
@@ -102,11 +102,11 @@ Alert details screen, and view them later on your **To-Do List**. To add a To-Do
 1. Select your desired alert to display its **Alert Management Details View**.
 1. Click the **Add a To-Do** button in the right sidebar:
 
-   ![Alert Details Add A To Do](img/alert_detail_add_todo_v13_1.png)
+   ![Alert Details Add A To Do](./img/alert_detail_add_todo_v13_1.png)
 
 Click the **To-Do** **{todo-done}** in the navigation bar to view your current To-Do list.
 
-![Alert Details Added to Do](img/alert_detail_added_todo_v13_1.png)
+![Alert Details Added to Do](./img/alert_detail_added_todo_v13_1.png)
 
 ### View an Alert's metrics data
 
@@ -145,7 +145,7 @@ notifications, simplifying communication and ownership of the alert.
 
 After completing their portion of investigating or fixing the alert, users can
 unassign their account from the alert when their role is complete.
-The alert status can be updated on the [Alert list](alerts.md) to
+The alert status can be updated on the [Alert list](./alerts.md) to
 reflect if the alert has been resolved.
 
 ## View an Alert's logs

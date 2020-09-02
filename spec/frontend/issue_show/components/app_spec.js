@@ -1,14 +1,19 @@
 import { GlIntersectionObserver } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
-import { TEST_HOST } from 'helpers/test_constants';
 import { useMockIntersectionObserver } from 'helpers/mock_dom_observer';
 import axios from '~/lib/utils/axios_utils';
 import { visitUrl } from '~/lib/utils/url_utility';
 import '~/behaviors/markdown/render_gfm';
 import IssuableApp from '~/issue_show/components/app.vue';
 import eventHub from '~/issue_show/event_hub';
-import { initialRequest, secondRequest } from '../mock_data';
+import {
+  appProps,
+  initialRequest,
+  publishedIncidentUrl,
+  secondRequest,
+  zoomMeetingUrl,
+} from '../mock_data';
 import IncidentTabs from '~/issue_show/components/incident_tabs.vue';
 import DescriptionComponent from '~/issue_show/components/description.vue';
 import PinnedLinks from '~/issue_show/components/pinned_links.vue';
@@ -22,30 +27,6 @@ jest.mock('~/issue_show/event_hub');
 
 const REALTIME_REQUEST_STACK = [initialRequest, secondRequest];
 
-const zoomMeetingUrl = 'https://gitlab.zoom.us/j/95919234811';
-const publishedIncidentUrl = 'https://status.com/';
-
-const defaultProps = {
-  canUpdate: true,
-  canDestroy: true,
-  endpoint: '/gitlab-org/gitlab-shell/-/issues/9/realtime_changes',
-  updateEndpoint: TEST_HOST,
-  issuableRef: '#1',
-  issuableStatus: 'opened',
-  initialTitleHtml: '',
-  initialTitleText: '',
-  initialDescriptionHtml: 'test',
-  initialDescriptionText: 'test',
-  lockVersion: 1,
-  markdownPreviewPath: '/',
-  markdownDocsPath: '/',
-  projectNamespace: '/',
-  projectPath: '/',
-  issuableTemplateNamesPath: '/issuable-templates-path',
-  zoomMeetingUrl,
-  publishedIncidentUrl,
-};
-
 describe('Issuable output', () => {
   useMockIntersectionObserver();
 
@@ -57,7 +38,7 @@ describe('Issuable output', () => {
 
   const mountComponent = (props = {}) => {
     wrapper = mount(IssuableApp, {
-      propsData: { ...defaultProps, ...props },
+      propsData: { ...appProps, ...props },
     });
   };
 

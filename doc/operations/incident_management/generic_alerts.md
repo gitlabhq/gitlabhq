@@ -117,9 +117,9 @@ In GitLab versions 13.2 and greater, GitLab groups alerts based on their payload
 When an incoming alert contains the same payload as another alert (excluding the
 `start_time` and `hosts` attributes), GitLab groups these alerts together and
 displays a counter on the
-[Alert Management List](incidents.md)
+[Alert Management List](./incidents.md)
 and details pages.
 
 If the existing alert is already `resolved`, then a new alert will be created instead.
 
-![Alert Management List](img/alert_list_v13_1.png)
+![Alert Management List](./img/alert_list_v13_1.png)

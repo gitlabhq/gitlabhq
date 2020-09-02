@@ -10,4 +10,11 @@ export default {
 
     return state.isShowingEpicsSwimlanes;
   },
+  getIssueById: state => id => {
+    return state.issues[id] || {};
+  },
+
+  getActiveIssue: state => {
+    return state.issues[state.activeId] || {};
+  },
 };

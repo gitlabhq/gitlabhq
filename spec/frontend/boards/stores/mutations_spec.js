@@ -129,19 +129,24 @@ describe('Board Store Mutations', () => {
   describe('RECEIVE_ISSUES_FOR_ALL_LISTS_SUCCESS', () => {
     it('sets isLoadingIssues to false and updates issuesByListId object', () => {
       const listIssues = {
-        '1': [mockIssue],
+        '1': [mockIssue.id],
+      };
+      const issues = {
+        '1': mockIssue,
       };
 
       state = {
         ...state,
         isLoadingIssues: true,
         issuesByListId: {},
+        issues: {},
       };
 
-      mutations.RECEIVE_ISSUES_FOR_ALL_LISTS_SUCCESS(state, listIssues);
+      mutations.RECEIVE_ISSUES_FOR_ALL_LISTS_SUCCESS(state, { listData: listIssues, issues });
 
       expect(state.isLoadingIssues).toBe(false);
       expect(state.issuesByListId).toEqual(listIssues);
+      expect(state.issues).toEqual(issues);
     });
   });
 

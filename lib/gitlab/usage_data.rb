@@ -269,6 +269,9 @@ module Gitlab
           database: {
             adapter: alt_usage_data { Gitlab::Database.adapter_name },
             version: alt_usage_data { Gitlab::Database.version }
+          },
+          mail: {
+            smtp_server: alt_usage_data { ActionMailer::Base.smtp_settings[:address] }
           }
         }
       end

@@ -91,4 +91,28 @@ describe('Boards - Getters', () => {
       });
     });
   });
+
+  describe('getIssueById', () => {
+    const state = { issues: { '1': 'issue' } };
+
+    it.each`
+      id     | expected
+      ${'1'} | ${'issue'}
+      ${''}  | ${{}}
+    `('returns $expected when $id is passed to state', ({ id, expected }) => {
+      expect(getters.getIssueById(state)(id)).toEqual(expected);
+    });
+  });
+
+  describe('getActiveIssue', () => {
+    it.each`
+      id     | expected
+      ${'1'} | ${'issue'}
+      ${''}  | ${{}}
+    `('returns $expected when $id is passed to state', ({ id, expected }) => {
+      const state = { issues: { '1': 'issue' }, activeId: id };
+
+      expect(getters.getActiveIssue(state)).toEqual(expected);
+    });
+  });
 });

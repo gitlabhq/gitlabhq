@@ -190,6 +190,8 @@ module Gitlab
     config.assets.precompile << "errors.css"
     config.assets.precompile << "jira_connect.js"
 
+    config.assets.precompile << "themes/*.css"
+
     config.assets.precompile << "highlight/themes/*.css"
 
     # Import gitlab-svgs directly from vendored directory

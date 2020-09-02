@@ -155,7 +155,7 @@ The following variables allow configuration of global dependency scanning settin
 | `SECURE_ANALYZERS_PREFIX`               | Override the name of the Docker registry providing the official default images (proxy). Read more about [customizing analyzers](analyzers.md). |
 | `DS_DEFAULT_ANALYZERS`                  | Override the names of the official default images. Read more about [customizing analyzers](analyzers.md). |
 | `DS_DISABLE_DIND`                       | Disable Docker-in-Docker and run analyzers [individually](#enabling-docker-in-docker). This variable is `true` by default. |
-| `ADDITIONAL_CA_CERT_BUNDLE`             | Bundle of CA certs to trust. |
+| `ADDITIONAL_CA_CERT_BUNDLE`             | Bundle of CA certs to trust. The bundle of certificates provided here is also used by other tools during the scanning process, such as `git`, `yarn`, or `npm`. |
 | `DS_EXCLUDED_PATHS`                     | Exclude vulnerabilities from output based on the paths. A comma-separated list of patterns. Patterns can be globs, or file or folder paths (for example, `doc,spec`). Parent directories also match patterns. Default: `"spec, test, tests, tmp"` |
 | `SECURE_LOG_LEVEL`                      | Set the minimum logging level. Messages of this logging level or higher are output. From highest to lowest severity, the logging levels are: `fatal`, `error`, `warn`, `info`, `debug`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10880) in GitLab 13.1. Default: `info` |
 
@@ -444,7 +444,6 @@ include:
 variables:
   SECURE_ANALYZERS_PREFIX: "docker-registry.example.com/analyzers"
   GEMNASIUM_DB_REMOTE_URL: "gitlab.example.com/gemnasium-db.git"
-  GIT_SSL_NO_VERIFY: "true"
 ```
 
 See explanations of the variables above in the [configuration section](#configuration).

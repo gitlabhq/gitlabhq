@@ -52,7 +52,7 @@ module Mattermost
     # Next methods are needed for Doorkeeper
     def pre_auth
       @pre_auth ||= Doorkeeper::OAuth::PreAuthorization.new(
-        Doorkeeper.configuration, server.client_via_uid, params)
+        Doorkeeper.configuration, params)
     end
 
     def authorization

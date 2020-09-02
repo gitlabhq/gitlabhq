@@ -304,18 +304,6 @@ RSpec.describe MergeRequest, factory_default: :keep do
         expect(merge_request.target_project_id).to eq(project.id)
         expect(merge_request.target_project_id).to eq(merge_request.metrics.target_project_id)
       end
-
-      context 'when metrics record already exists with NULL target_project_id' do
-        before do
-          merge_request.metrics.update_column(:target_project_id, nil)
-        end
-
-        it 'returns the metrics record' do
-          metrics_record = merge_request.ensure_metrics
-
-          expect(metrics_record).to be_persisted
-        end
-      end
     end
   end
 

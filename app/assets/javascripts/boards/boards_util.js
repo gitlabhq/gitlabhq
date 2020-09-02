@@ -6,20 +6,29 @@ export function getMilestone() {
 }
 
 export function formatListIssues(listIssues) {
-  return listIssues.nodes.reduce((map, list) => {
+  const issues = {};
+
+  const listData = listIssues.nodes.reduce((map, list) => {
     return {
       ...map,
-      [list.id]: list.issues.nodes.map(
-        i =>
-          new ListIssue({
-            ...i,
-            id: getIdFromGraphQLId(i.id),
-            labels: i.labels?.nodes || [],
-            assignees: i.assignees?.nodes || [],
-          }),
-      ),
+      [list.id]: list.issues.nodes.map(i => {
+        const id = getIdFromGraphQLId(i.id);
+
+        const listIssue = new ListIssue({
+          ...i,
+          id,
+          labels: i.labels?.nodes || [],
+          assignees: i.assignees?.nodes || [],
+        });
+
+        issues[id] = listIssue;
+
+        return id;
+      }),
     };
   }, {});
+
+  return { listData, issues };
 }
 
 export function fullBoardId(boardId) {

@@ -20,7 +20,8 @@ module Enums
       {
         business: 0,
         response: 1,
-        system: 2
+        system: 2,
+        custom: 3
       }.freeze
     end
 
@@ -79,7 +80,11 @@ module Enums
         system: {
           group_title: _('System metrics (Custom)'),
           priority: -10
-        }.freeze
+        }.freeze,
+        custom: {
+          group_title: _('Custom metrics'),
+          priority: 0
+        }
       }.freeze
     end
   end

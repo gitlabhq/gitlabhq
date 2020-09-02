@@ -13,7 +13,7 @@ For users with at least Developer [permissions](../../user/permissions.md), the
 Incident Management list is available at **Operations > Incidents**
 in your project's sidebar. The list contains the following metrics:
 
-![Incident List](img/incident_list_sort_v13_3.png)
+![Incident List](./img/incident_list_sort_v13_3.png)
 
 - **Status** - To filter incidents by their status, click **Open**, **Closed**,
   or **All** above the incident list.
@@ -26,7 +26,7 @@ in your project's sidebar. The list contains the following metrics:
   tooltip depending on the user's locale.
 - **Assignees** - The user assigned to the incident.
 - **Published** - Displays a green check mark (**{check-circle}**) if the incident is published
-  to a [Status Page](status_page.md).. **(ULTIMATE)**
+  to a [Status Page](./status_page.md).. **(ULTIMATE)**
 
 The Incident list displays incidents sorted by incident created date.
 ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/229534) to GitLab core in 13.3).)
@@ -47,7 +47,7 @@ to create issues when alerts are triggered:
 1. Navigate to **Settings > Operations > Incidents** and expand
    **Incidents**:
 
-   ![Incident Management Settings](img/incident_management_settings_v13_3.png)
+   ![Incident Management Settings](./img/incident_management_settings_v13_3.png)
 
 1. For GitLab versions 11.11 and greater, you can select the **Create an issue**
    checkbox to create an issue based on your own
@@ -91,7 +91,7 @@ in both PagerDuty and GitLab:
 1. Navigate to **Settings > Operations > Incidents** and expand **Incidents**.
 1. Select the **PagerDuty integration** tab:
 
-   ![PagerDuty incidents integration](img/pagerduty_incidents_integration_v13_3.png)
+   ![PagerDuty incidents integration](./img/pagerduty_incidents_integration_v13_3.png)
 
 1. Activate the integration, and save the changes in GitLab.
 1. Copy the value of **Webhook URL** for use in a later step.

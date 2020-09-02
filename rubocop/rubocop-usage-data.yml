@@ -4,6 +4,7 @@ UsageData/LargeTable:
     - 'lib/gitlab/usage_data.rb'
     - 'ee/lib/ee/gitlab/usage_data.rb'
   NonRelatedClasses:
+    - :ActionMailer::Base
     - :Date
     - :Feature
     - :Gitlab

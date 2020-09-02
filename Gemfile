@@ -26,8 +26,8 @@ gem 'marginalia', '~> 1.9.0'
 
 # Authentication libraries
 gem 'devise', '~> 4.6'
-gem 'doorkeeper', '~> 5.1.1'
-gem 'doorkeeper-openid_connect', '~> 1.6.3'
+gem 'doorkeeper', '~> 5.3.0'
+gem 'doorkeeper-openid_connect', '~> 1.7.4'
 gem 'omniauth', '~> 1.8'
 gem 'omniauth-auth0', '~> 2.0.0'
 gem 'omniauth-azure-oauth2', '~> 0.0.9'

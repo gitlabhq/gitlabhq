@@ -18,6 +18,7 @@ module Gitlab
             business: 0,
             response: 1,
             system: 2,
+            custom: 3,
 
             cluster_health: -100
           }
@@ -34,7 +35,8 @@ module Gitlab
             aws_elb: _('Response metrics (AWS ELB)'),
             nginx: _('Response metrics (NGINX)'),
             kubernetes: _('System metrics (Kubernetes)'),
-            cluster_health: _('Cluster Health')
+            cluster_health: _('Cluster Health'),
+            custom: _('Custom metrics')
           }
         end
       end

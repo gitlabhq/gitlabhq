@@ -13209,7 +13209,8 @@ CREATE TABLE public.merge_request_metrics (
     first_reassigned_at timestamp with time zone,
     added_lines integer,
     removed_lines integer,
-    target_project_id integer
+    target_project_id integer,
+    CONSTRAINT check_e03d0900bf CHECK ((target_project_id IS NOT NULL))
 );
 
 CREATE SEQUENCE public.merge_request_metrics_id_seq

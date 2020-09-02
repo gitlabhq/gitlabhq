@@ -1,0 +1,5 @@
+---
+title: Add smtp_server to usage ping data
+merge_request: 39844
+author:
+type: changed

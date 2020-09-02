@@ -31,3 +31,28 @@ export const descriptionProps = {
   taskStatus: '',
   updateUrl: TEST_HOST,
 };
+
+export const publishedIncidentUrl = 'https://status.com/';
+
+export const zoomMeetingUrl = 'https://gitlab.zoom.us/j/95919234811';
+
+export const appProps = {
+  canUpdate: true,
+  canDestroy: true,
+  endpoint: '/gitlab-org/gitlab-shell/-/issues/9/realtime_changes',
+  updateEndpoint: TEST_HOST,
+  issuableRef: '#1',
+  issuableStatus: 'opened',
+  initialTitleHtml: '',
+  initialTitleText: '',
+  initialDescriptionHtml: 'test',
+  initialDescriptionText: 'test',
+  lockVersion: 1,
+  markdownPreviewPath: '/',
+  markdownDocsPath: '/',
+  projectNamespace: '/',
+  projectPath: '/',
+  issuableTemplateNamesPath: '/issuable-templates-path',
+  zoomMeetingUrl,
+  publishedIncidentUrl,
+};

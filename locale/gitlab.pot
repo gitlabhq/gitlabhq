@@ -7426,6 +7426,9 @@ msgstr ""
 msgid "Custom hostname (for private commit emails)"
 msgstr ""
 
+msgid "Custom metrics"
+msgstr ""
+
 msgid "Custom notification events"
 msgstr ""
 
@@ -26890,9 +26893,6 @@ msgid "UsageQuota|out of %{formattedLimit} of your namespace storage"
 msgstr ""
 
 msgid "Use %{code_start}::%{code_end} to create a %{link_start}scoped label set%{link_end} (eg. %{code_start}priority::1%{code_end})"
-msgstr ""
-
-msgid "Use %{native_redirect_uri} for local tests"
 msgstr ""
 
 msgid "Use Service Desk to connect with your users (e.g. to offer customer support) through email right inside GitLab"
