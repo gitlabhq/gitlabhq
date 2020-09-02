@@ -17,7 +17,7 @@ Doorkeeper.configure do
   end
 
   resource_owner_from_credentials do |routes|
-    user = Gitlab::Auth.find_with_user_password(params[:username], params[:password])
+    user = Gitlab::Auth.find_with_user_password(params[:username], params[:password], increment_failed_attempts: true)
     user unless user.try(:two_factor_enabled?)
   end
 
