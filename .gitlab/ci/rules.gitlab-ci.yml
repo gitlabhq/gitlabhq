@@ -761,7 +761,7 @@
       changes: *code-qa-patterns
       when: manual
       allow_failure: true
-    - <<: *if-master-refs
+    - <<: *if-dot-com-gitlab-org-schedule
       allow_failure: true
 
 .review:rules:danger:

@@ -11,8 +11,10 @@ RSpec.describe UserRecentEventsFinder do
   let!(:private_event)   { create(:event, project: private_project, author: project_owner) }
   let!(:internal_event)  { create(:event, project: internal_project, author: project_owner) }
   let!(:public_event)    { create(:event, project: public_project, author: project_owner) }
+  let(:limit) { nil }
+  let(:params) { { limit: limit } }
 
-  subject(:finder) { described_class.new(current_user, project_owner) }
+  subject(:finder) { described_class.new(current_user, project_owner, params) }
 
   describe '#execute' do
     context 'when profile is public' do
@@ -46,6 +48,39 @@ RSpec.describe UserRecentEventsFinder do
 
         expect(events).to include(event_a)
         expect(events).to include(event_b)
+      end
+    end
+
+    context 'limits' do
+      before do
+        stub_const("#{described_class}::DEFAULT_LIMIT", 1)
+        stub_const("#{described_class}::MAX_LIMIT", 3)
+      end
+
+      context 'when limit is not set' do
+        it 'returns events limited to DEFAULT_LIMIT' do
+          expect(finder.execute.size).to eq(described_class::DEFAULT_LIMIT)
+        end
+      end
+
+      context 'when limit is set' do
+        let(:limit) { 2 }
+
+        it 'returns events limited to specified limit' do
+          expect(finder.execute.size).to eq(limit)
+        end
+      end
+
+      context 'when limit is set to a number that exceeds maximum limit' do
+        let(:limit) { 4 }
+
+        before do
+          create(:event, project: public_project, author: project_owner)
+        end
+
+        it 'returns events limited to MAX_LIMIT' do
+          expect(finder.execute.size).to eq(described_class::MAX_LIMIT)
+        end
       end
     end
   end

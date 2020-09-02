@@ -71,7 +71,7 @@ RSpec.describe Gitlab::Workhorse do
 
     context "when the repository doesn't have an archive file path" do
       before do
-        allow(project.repository).to receive(:archive_metadata).and_return(Hash.new)
+        allow(project.repository).to receive(:archive_metadata).and_return({})
       end
 
       it "raises an error" do

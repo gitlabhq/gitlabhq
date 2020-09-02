@@ -8,11 +8,9 @@ module Banzai
           Filter::HtmlEntityFilter,
           Filter::SanitizationFilter,
           Filter::AssetProxyFilter,
-
           Filter::EmojiFilter,
           Filter::AutolinkFilter,
           Filter::ExternalLinkFilter,
-
           *reference_filters
         ]
       end

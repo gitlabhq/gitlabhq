@@ -134,7 +134,7 @@ module API
           end
 
           def track_push_package_event
-            if params[:file_name] == ::Packages::Conan::FileMetadatum::PACKAGE_BINARY && params['file.size'] > 0
+            if params[:file_name] == ::Packages::Conan::FileMetadatum::PACKAGE_BINARY && params[:file].size > 0 # rubocop: disable Style/ZeroLengthPredicate
               track_event('push_package')
             end
           end
@@ -148,9 +148,9 @@ module API
           end
 
           def create_package_file_with_type(file_type, current_package)
-            unless params['file.size'] == 0
+            unless params[:file].size == 0 # rubocop: disable Style/ZeroLengthPredicate
               # conan sends two upload requests, the first has no file, so we skip record creation if file.size == 0
-              ::Packages::Conan::CreatePackageFileService.new(current_package, uploaded_package_file, params.merge(conan_file_type: file_type)).execute
+              ::Packages::Conan::CreatePackageFileService.new(current_package, params[:file], params.merge(conan_file_type: file_type)).execute
             end
           end
 
@@ -222,7 +222,7 @@ module API
 
             return unless token
 
-            ::Ci::Build.find_by_token(token.access_token_id.to_s)
+            ::Ci::AuthJobFinder.new(token: token.access_token_id.to_s).execute
           end
 
           def decode_oauth_token_from_jwt

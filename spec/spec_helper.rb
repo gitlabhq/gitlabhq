@@ -47,10 +47,10 @@ require_relative('../ee/spec/spec_helper') if Gitlab.ee?
 require Rails.root.join("spec/support/helpers/git_helpers.rb")
 
 # Then the rest
-Dir[Rails.root.join("spec/support/helpers/*.rb")].each { |f| require f }
-Dir[Rails.root.join("spec/support/shared_contexts/*.rb")].each { |f| require f }
-Dir[Rails.root.join("spec/support/shared_examples/*.rb")].each { |f| require f }
-Dir[Rails.root.join("spec/support/**/*.rb")].each { |f| require f }
+Dir[Rails.root.join("spec/support/helpers/*.rb")].sort.each { |f| require f }
+Dir[Rails.root.join("spec/support/shared_contexts/*.rb")].sort.each { |f| require f }
+Dir[Rails.root.join("spec/support/shared_examples/*.rb")].sort.each { |f| require f }
+Dir[Rails.root.join("spec/support/**/*.rb")].sort.each { |f| require f }
 
 quality_level = Quality::TestLevel.new
 

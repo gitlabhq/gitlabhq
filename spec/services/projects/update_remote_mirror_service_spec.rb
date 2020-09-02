@@ -56,6 +56,39 @@ RSpec.describe Projects::UpdateRemoteMirrorService do
       expect(remote_mirror.last_error).to include('Badly broken')
     end
 
+    context 'when the URL is blocked' do
+      before do
+        allow(Gitlab::UrlBlocker).to receive(:blocked_url?).and_return(true)
+      end
+
+      it 'fails and returns error status' do
+        expect(execute!).to eq(status: :error, message: 'The remote mirror URL is invalid.')
+      end
+    end
+
+    context "when given URLs containing escaped elements" do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:url, :result_status) do
+        "https://user:0a%23@test.example.com/project.git"                               | :success
+        "https://git.example.com:1%2F%2F@source.developers.google.com/project.git"      | :success
+        CGI.escape("git://localhost:1234/some-path?some-query=some-val\#@example.com/") | :error
+        CGI.escape(CGI.escape("https://user:0a%23@test.example.com/project.git"))       | :error
+      end
+
+      with_them do
+        before do
+          allow(remote_mirror).to receive(:url).and_return(url)
+        end
+
+        it "returns expected status" do
+          result = execute!
+
+          expect(result[:status]).to eq(result_status)
+        end
+      end
+    end
+
     context 'when the update fails because of a `Gitlab::Git::CommandError`' do
       before do
         allow(remote_mirror).to receive(:update_repository)

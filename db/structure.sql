@@ -9190,7 +9190,7 @@ CREATE TABLE public.application_settings (
     throttle_protected_paths_enabled boolean DEFAULT false NOT NULL,
     throttle_protected_paths_requests_per_period integer DEFAULT 10 NOT NULL,
     throttle_protected_paths_period_in_seconds integer DEFAULT 60 NOT NULL,
-    protected_paths character varying(255)[] DEFAULT '{/users/password,/users/sign_in,/api/v3/session.json,/api/v3/session,/api/v4/session.json,/api/v4/session,/users,/users/confirmation,/unsubscribes/,/import/github/personal_access_token,/admin/session}'::character varying[],
+    protected_paths character varying(255)[] DEFAULT '{/users/password,/users/sign_in,/api/v3/session.json,/api/v3/session,/api/v4/session.json,/api/v4/session,/users,/users/confirmation,/unsubscribes/,/import/github/personal_access_token,/admin/session,/oauth/authorize,/oauth/token}'::character varying[],
     throttle_incident_management_notification_enabled boolean DEFAULT false NOT NULL,
     throttle_incident_management_notification_period_in_seconds integer DEFAULT 3600,
     throttle_incident_management_notification_per_period integer DEFAULT 3600,
@@ -9557,7 +9557,7 @@ CREATE TABLE public.aws_roles (
     user_id integer NOT NULL,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
-    role_arn character varying(2048) NOT NULL,
+    role_arn character varying(2048),
     role_external_id character varying(64) NOT NULL
 );
 

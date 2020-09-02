@@ -24,7 +24,6 @@ class Discussion
             :system_note_with_references_visible_for?,
             :resource_parent,
             :save,
-
             to: :first_note
 
   def declarative_policy_delegate

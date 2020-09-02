@@ -40,6 +40,22 @@ RSpec.describe OmniauthCallbacksController, type: :controller do
       end
     end
 
+    context 'when sign in is not valid' do
+      let(:provider) { :github }
+      let(:extern_uid) { 'my-uid' }
+
+      it 'renders omniauth error page' do
+        allow_next_instance_of(Gitlab::Auth::OAuth::User) do |instance|
+          allow(instance).to receive(:valid_sign_in?).and_return(false)
+        end
+
+        post provider
+
+        expect(response).to render_template("errors/omniauth_error")
+        expect(response).to have_gitlab_http_status(:unprocessable_entity)
+      end
+    end
+
     context 'when the user is on the last sign in attempt' do
       let(:extern_uid) { 'my-uid' }
 

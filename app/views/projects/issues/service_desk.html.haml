@@ -7,7 +7,7 @@
 
 - support_bot_attrs = { service_desk_enabled: @project.service_desk_enabled?, **UserSerializer.new.represent(User.support_bot) }.to_json
 
-- data_endpoint = "#{expose_path(api_v4_projects_issues_path(id: @project.id))}?author_id=#{User.support_bot.id}"
+- data_endpoint = "#{expose_path(api_v4_projects_issues_path(id: @project.id))}?author_username=#{User.support_bot.username}"
 
 %div{ class: "js-service-desk-issues service-desk-issues", data: { support_bot: support_bot_attrs, service_desk_meta: service_desk_meta(@project) } }
   .top-area

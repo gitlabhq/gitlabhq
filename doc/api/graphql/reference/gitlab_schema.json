@@ -3505,7 +3505,7 @@
           "inputFields": [
             {
               "name": "boardId",
-              "description": "The Global ID of the issue board to mutate",
+              "description": "Global ID of the issue board to mutate",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -3529,10 +3529,30 @@
             },
             {
               "name": "labelId",
-              "description": "ID of an existing label",
+              "description": "Global ID of an existing label",
               "type": {
                 "kind": "SCALAR",
                 "name": "LabelID",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "milestoneId",
+              "description": "Global ID of an existing milestone",
+              "type": {
+                "kind": "SCALAR",
+                "name": "MilestoneID",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "assigneeId",
+              "description": "Global ID of an existing user",
+              "type": {
+                "kind": "SCALAR",
+                "name": "UserID",
                 "ofType": null
               },
               "defaultValue": null
@@ -50475,6 +50495,16 @@
           "interfaces": [
 
           ],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "SCALAR",
+          "name": "UserID",
+          "description": "Identifier of User",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
           "enumValues": null,
           "possibleTypes": null
         },

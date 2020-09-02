@@ -149,9 +149,15 @@ RSpec.describe SearchController do
       expect(assigns[:search_objects].first).to eq note
     end
 
-    it_behaves_like 'tracking unique hll events', :show do
-      let(:request_params) { { scope: 'projects', search: 'term' } }
-      let(:target_id) { 'i_search_total' }
+    context 'unique users tracking' do
+      before do
+        allow(Gitlab::UsageDataCounters::HLLRedisCounter).to receive(:track_event)
+      end
+
+      it_behaves_like 'tracking unique hll events', :show do
+        let(:request_params) { { scope: 'projects', search: 'term' } }
+        let(:target_id) { 'i_search_total' }
+      end
     end
 
     context 'on restricted projects' do

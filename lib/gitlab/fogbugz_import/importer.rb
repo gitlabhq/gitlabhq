@@ -39,7 +39,7 @@ module Gitlab
 
       def user_map
         @user_map ||= begin
-          user_map = Hash.new
+          user_map = {}
           import_data = project.import_data.try(:data)
           stored_user_map = import_data['user_map'] if import_data
           user_map.update(stored_user_map) if stored_user_map

@@ -21,7 +21,7 @@ module StubObjectStorage
         proxy_download: false,
         background_upload: false,
         direct_upload: false
-      )
+  )
     allow(config).to receive(:enabled) { enabled }
     allow(config).to receive(:proxy_download) { proxy_download }
     allow(config).to receive(:background_upload) { background_upload }

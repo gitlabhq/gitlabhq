@@ -55,7 +55,7 @@ RSpec.describe API::GenericPackages do
 
       context 'authenticating using job token' do
         it 'responds with 200 OK when valid job token is provided' do
-          job_token = create(:ci_build, user: user).token
+          job_token = create(:ci_build, :running, user: user).token
 
           ping(job_token: job_token)
 

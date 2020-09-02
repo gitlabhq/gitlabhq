@@ -30,13 +30,11 @@ RSpec.describe 'Copy as GFM', :js do
     it 'works', :aggregate_failures do
       verify(
         'nesting',
-
         '> 1. [x] **[$`2 + 2`$ {-=-}{+=+} 2^2 ~~:thumbsup:~~](http://google.com)**'
       )
 
       verify(
         'a real world example from the gitlab-ce README',
-
         <<~GFM
           # GitLab
 
@@ -103,19 +101,16 @@ RSpec.describe 'Copy as GFM', :js do
 
       verify(
         'InlineDiffFilter',
-
         '{-Deleted text-}',
         '{+Added text+}'
       )
 
       verify(
         'TaskListFilter',
-
         <<~GFM,
           * [ ] Unchecked task
           * [x] Checked task
         GFM
-
         <<~GFM
           1. [ ] Unchecked ordered task
           1. [x] Checked ordered task
@@ -124,7 +119,6 @@ RSpec.describe 'Copy as GFM', :js do
 
       verify(
         'ReferenceFilter',
-
         # issue reference
         @feat.issue.to_reference,
         # full issue reference
@@ -141,13 +135,11 @@ RSpec.describe 'Copy as GFM', :js do
 
       verify(
         'AutolinkFilter',
-
         'https://example.com'
       )
 
       verify(
         'TableOfContentsFilter',
-
         <<~GFM,
           [[_TOC_]]
 
@@ -155,64 +147,53 @@ RSpec.describe 'Copy as GFM', :js do
 
           ## Heading 2
         GFM
-
         pipeline: :wiki,
         wiki: @project.wiki
       )
 
       verify(
         'EmojiFilter',
-
         ':thumbsup:'
       )
 
       verify(
         'ImageLinkFilter',
-
         '![Image](https://example.com/image.png)'
       )
 
       verify_media_with_partial_path(
         '[test.txt](/uploads/a123/image.txt)',
-
         project_media_uri(@project, '/uploads/a123/image.txt')
       )
 
       verify_media_with_partial_path(
         '![Image](/uploads/a123/image.png)',
-
         project_media_uri(@project, '/uploads/a123/image.png')
       )
 
       verify(
         'VideoLinkFilter',
-
         '![Video](https://example.com/video.mp4)'
       )
 
       verify_media_with_partial_path(
         '![Video](/uploads/a123/video.mp4)',
-
         project_media_uri(@project, '/uploads/a123/video.mp4')
       )
 
       verify(
         'AudioLinkFilter',
-
         '![Audio](https://example.com/audio.wav)'
       )
 
       verify_media_with_partial_path(
         '![Audio](/uploads/a123/audio.wav)',
-
         project_media_uri(@project, '/uploads/a123/audio.wav')
       )
 
       verify(
         'MathFilter: math as converted from GFM to HTML',
-
         '$`c = \pm\sqrt{a^2 + b^2}`$',
-
         # math block
         <<~GFM
           ```math
@@ -334,7 +315,6 @@ RSpec.describe 'Copy as GFM', :js do
 
       verify(
         'MermaidFilter: mermaid as converted from GFM to HTML',
-
         <<~GFM
           ```mermaid
           graph TD;
@@ -429,7 +409,6 @@ RSpec.describe 'Copy as GFM', :js do
 
       verify(
         'SuggestionFilter: suggestion as converted from GFM to HTML',
-
         <<~GFM
           ```suggestion
           New
@@ -491,7 +470,6 @@ RSpec.describe 'Copy as GFM', :js do
 
       verify(
         'SanitizationFilter',
-
         <<~GFM
         <sub>sub</sub>
 
@@ -527,13 +505,11 @@ RSpec.describe 'Copy as GFM', :js do
 
       verify(
         'SanitizationFilter',
-
         <<~GFM,
           ```
           Plain text
           ```
         GFM
-
         <<~GFM,
           ```ruby
           def foo
@@ -541,7 +517,6 @@ RSpec.describe 'Copy as GFM', :js do
           end
           ```
         GFM
-
         <<~GFM
           Foo
 
@@ -553,27 +528,19 @@ RSpec.describe 'Copy as GFM', :js do
 
       verify(
         'MarkdownFilter',
-
         "Line with two spaces at the end  \nto insert a linebreak",
-
         '`code`',
         '`` code with ` ticks ``',
-
         '> Quote',
-
         # multiline quote
         <<~GFM,
           > Multiline Quote
           >
           > With multiple paragraphs
         GFM
-
         '![Image](https://example.com/image.png)',
-
         '# Heading with no anchor link',
-
         '[Link](https://example.com)',
-
         <<~GFM,
           * List item
           * List item 2
@@ -598,7 +565,6 @@ RSpec.describe 'Copy as GFM', :js do
 
             > Blockquote
         GFM
-
         <<~GFM,
           1. Ordered list item
           1. Ordered list item 2
@@ -623,22 +589,16 @@ RSpec.describe 'Copy as GFM', :js do
 
           ---
         GFM
-
         '# Heading',
         '## Heading',
         '### Heading',
         '#### Heading',
         '##### Heading',
         '###### Heading',
-
         '**Bold**',
-
         '*Italics*',
-
         '~~Strikethrough~~',
-
         '---',
-
         # table
         <<~GFM,
           | Centered | Right | Left |
@@ -696,9 +656,7 @@ RSpec.describe 'Copy as GFM', :js do
           it 'copies as inline code' do
             verify(
               '[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_10_9"] .line .no',
-
               '`RuntimeError`',
-
               target: '[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_10_9"]'
             )
           end
@@ -708,9 +666,7 @@ RSpec.describe 'Copy as GFM', :js do
           it 'copies as inline code' do
             verify(
               '[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_10_9"]',
-
               '`raise RuntimeError, "System commands must be given as an array of strings"`',
-
               target: '[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_10_9"]'
             )
           end
@@ -720,14 +676,12 @@ RSpec.describe 'Copy as GFM', :js do
           it 'copies as a code block' do
             verify(
               '[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_10_9"], [id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_10_10"]',
-
               <<~GFM,
                 ```ruby
                       raise RuntimeError, "System commands must be given as an array of strings"
                     end
                 ```
               GFM
-
               target: '[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_10_9"]'
             )
           end
@@ -755,7 +709,6 @@ RSpec.describe 'Copy as GFM', :js do
           it 'copies as a code block' do
             verify(
               '[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_8_8"], [id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_9_9"], [id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_10_9"], [id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_10_10"]',
-
               <<~GFM,
                 ```ruby
                     unless cmd.is_a?(Array)
@@ -763,7 +716,6 @@ RSpec.describe 'Copy as GFM', :js do
                     end
                 ```
               GFM
-
               target: '[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_8_8"].left-side'
             )
           end
@@ -773,7 +725,6 @@ RSpec.describe 'Copy as GFM', :js do
           it 'copies as a code block' do
             verify(
               '[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_8_8"], [id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_9_9"], [id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_10_9"], [id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_10_10"]',
-
               <<~GFM,
                 ```ruby
                     unless cmd.is_a?(Array)
@@ -781,7 +732,6 @@ RSpec.describe 'Copy as GFM', :js do
                     end
                 ```
               GFM
-
               target: '[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_8_8"].right-side'
             )
           end
@@ -799,7 +749,6 @@ RSpec.describe 'Copy as GFM', :js do
         it 'copies as inline code' do
           verify(
             '.line[id="LC9"] .no',
-
             '`RuntimeError`'
           )
         end
@@ -809,7 +758,6 @@ RSpec.describe 'Copy as GFM', :js do
         it 'copies as inline code' do
           verify(
             '.line[id="LC9"]',
-
             '`raise RuntimeError, "System commands must be given as an array of strings"`'
           )
         end
@@ -819,7 +767,6 @@ RSpec.describe 'Copy as GFM', :js do
         it 'copies as a code block' do
           verify(
             '.line[id="LC9"], .line[id="LC10"]',
-
             <<~GFM
               ```ruby
                     raise RuntimeError, "System commands must be given as an array of strings"
@@ -841,7 +788,6 @@ RSpec.describe 'Copy as GFM', :js do
         it 'copies as inline code' do
           verify(
             '.line[id="LC27"] .nl',
-
             '`"bio"`'
           )
         end
@@ -851,7 +797,6 @@ RSpec.describe 'Copy as GFM', :js do
         it 'copies as inline code' do
           verify(
             '.line[id="LC27"]',
-
             '`"bio": null,`'
           )
         end
@@ -861,7 +806,6 @@ RSpec.describe 'Copy as GFM', :js do
         it 'copies as a code block with the correct language' do
           verify(
             '.line[id="LC27"], .line[id="LC28"]',
-
             <<~GFM
               ```json
                   "bio": null,

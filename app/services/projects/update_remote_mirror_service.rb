@@ -7,6 +7,10 @@ module Projects
     def execute(remote_mirror, tries)
       return success unless remote_mirror.enabled?
 
+      if Gitlab::UrlBlocker.blocked_url?(CGI.unescape(Gitlab::UrlSanitizer.sanitize(remote_mirror.url)))
+        return error("The remote mirror URL is invalid.")
+      end
+
       update_mirror(remote_mirror)
 
       success

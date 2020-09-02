@@ -165,7 +165,7 @@ instances](#indexing-large-instances) below.
 
 In order to enable Elasticsearch, you need to have admin access in GitLab.
 
-1. Navigate to **Admin Area** (wrench icon), then **Settings > Integrations**
+1. Navigate to **Admin Area** (wrench icon), then **Settings > General**
     and expand the **Elasticsearch** section.
 1. Configure the [Elasticsearch settings](#elasticsearch-configuration) for
    your Elasticsearch cluster. Do not enable **Elasticsearch indexing** or
@@ -183,7 +183,7 @@ In order to enable Elasticsearch, you need to have admin access in GitLab.
    ```
 
 1. Now enable `Elasticsearch indexing` in **Admin Area > Settings >
-   Integrations > Elasticsearch** and click **Save changes**.
+   General > Elasticsearch** and click **Save changes**.
 1. Click **Index all projects**.
 1. Click **Check progress** in the confirmation message to see the status of
    the background jobs.
@@ -198,7 +198,7 @@ In order to enable Elasticsearch, you need to have admin access in GitLab.
    ```
 
 1. After the indexing has completed, enable **Search with Elasticsearch** in
-   **Admin Area > Settings > Integrations > Elasticsearch** and click **Save
+   **Admin Area > Settings > General > Elasticsearch** and click **Save
    changes**.
 
 ### Elasticsearch configuration
@@ -251,7 +251,7 @@ from the Elasticsearch index as expected.
 
 To disable the Elasticsearch integration:
 
-1. Navigate to the **Admin Area** (wrench icon), then **Settings > Integrations**.
+1. Navigate to the **Admin Area** (wrench icon), then **Settings > General**.
 1. Expand the **Elasticsearch** section and uncheck **Elasticsearch indexing**
    and **Search with Elasticsearch enabled**.
 1. Click **Save changes** for the changes to take effect.
@@ -439,7 +439,7 @@ used by the GitLab Elasticsearch integration.
 
 ### Pause the indexing
 
-In the **Admin Area > Integration > Elasticsearch** section, select the
+In the **Admin Area > Settings > General > Elasticsearch** section, select the
 **Pause Elasticsearch Indexing** setting, and then save your change.
 
 With this, all updates that should happen on your Elasticsearch index will be
@@ -455,7 +455,7 @@ This process involves several shell commands and curl invocations, so a good
 initial setup will help for later:
 
 ```shell
-# You can find this value under Admin Area > Integration > Elasticsearch > URL
+# You can find this value under Admin Area > Settings > General > Elasticsearch > URL
 export CLUSTER_URL="http://localhost:9200"
 export PRIMARY_INDEX="gitlab-production"
 export SECONDARY_INDEX="gitlab-production-$(date +%s)"
@@ -556,14 +556,14 @@ To trigger the re-index from `primary` index:
 
 1. Unpause the indexing
 
-    Under **Admin Area > Integration > Elasticsearch**, uncheck the **Pause Elasticsearch Indexing** setting and save.
+    Under **Admin Area > Settings > General > Elasticsearch**, uncheck the **Pause Elasticsearch Indexing** setting and save.
 
 ### Trigger the reindex via the Elasticsearch administration
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/34069) in [GitLab Starter](https://about.gitlab.com/pricing/) 13.2.
 > - A scheduled index deletion and the ability to cancel it was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/38914) in GitLab Starter 13.3.
 
-Under **Admin Area > Integration > Elasticsearch zero-downtime reindexing**, click on **Trigger cluster reindexing**.
+Under **Admin Area > Settings > General > Elasticsearch > Elasticsearch zero-downtime reindexing**, click on **Trigger cluster reindexing**.
 
 NOTE: **Note:**
 Reindexing can be a lengthy process depending on the size of your Elasticsearch cluster.

@@ -14,7 +14,7 @@ RSpec.describe API::ConanPackages do
 
   let(:base_secret) { SecureRandom.base64(64) }
   let(:auth_token) { personal_access_token.token }
-  let(:job) { create(:ci_build, user: user) }
+  let(:job) { create(:ci_build, user: user, status: :running) }
   let(:job_token) { job.token }
   let(:deploy_token) { create(:deploy_token, read_package_registry: true, write_package_registry: true) }
   let(:project_deploy_token) { create(:project_deploy_token, deploy_token: deploy_token, project: project) }
@@ -90,6 +90,14 @@ RSpec.describe API::ConanPackages do
 
     it 'responds with 401 Unauthorized when invalid JWT is provided' do
       get api('/packages/conan/v1/ping'), headers: build_token_auth_header('invalid-jwt')
+
+      expect(response).to have_gitlab_http_status(:unauthorized)
+    end
+
+    it 'responds with 401 Unauthorized when the job is not running' do
+      job.update!(status: :failed)
+      jwt = build_jwt_from_job(job)
+      get api('/packages/conan/v1/ping'), headers: build_token_auth_header(jwt.encoded)
 
       expect(response).to have_gitlab_http_status(:unauthorized)
     end
@@ -226,6 +234,18 @@ RSpec.describe API::ConanPackages do
     context 'with invalid recipe path' do
       let(:recipe_path) { '../../foo++../..' }
 
+      it 'returns 400' do
+        subject
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+      end
+    end
+  end
+
+  shared_examples 'rejects invalid file_name' do |invalid_file_name|
+    let(:file_name) { invalid_file_name }
+
+    context 'with invalid file_name' do
       it 'returns 400' do
         subject
 
@@ -717,13 +737,15 @@ RSpec.describe API::ConanPackages do
         context 'without a file from workhorse' do
           let(:params) { { file: nil } }
 
-          it_behaves_like 'package workhorse uploads'
-
           it 'rejects the request' do
             subject
 
             expect(response).to have_gitlab_http_status(:bad_request)
           end
+        end
+
+        context 'with a file' do
+          it_behaves_like 'package workhorse uploads'
         end
 
         context 'without a token' do
@@ -884,16 +906,22 @@ RSpec.describe API::ConanPackages do
     end
 
     describe 'PUT /api/v4/packages/conan/v1/files/:package_name/package_version/:package_username/:package_channel/:recipe_revision/export/:file_name/authorize' do
-      subject { put api("/packages/conan/v1/files/#{recipe_path}/0/export/conanfile.py/authorize"), headers: headers_with_token }
+      let(:file_name) { 'conanfile.py' }
+
+      subject { put api("/packages/conan/v1/files/#{recipe_path}/0/export/#{file_name}/authorize"), headers: headers_with_token }
 
       it_behaves_like 'rejects invalid recipe'
+      it_behaves_like 'rejects invalid file_name', 'conanfile.py.git%2fgit-upload-pack'
       it_behaves_like 'workhorse authorization'
     end
 
     describe 'PUT /api/v4/packages/conan/v1/files/:package_name/package_version/:package_username/:package_channel/:recipe_revision/export/:conan_package_reference/:package_revision/:file_name/authorize' do
-      subject { put api("/packages/conan/v1/files/#{recipe_path}/0/package/123456789/0/conaninfo.txt/authorize"), headers: headers_with_token }
+      let(:file_name) { 'conaninfo.txt' }
+
+      subject { put api("/packages/conan/v1/files/#{recipe_path}/0/package/123456789/0/#{file_name}/authorize"), headers: headers_with_token }
 
       it_behaves_like 'rejects invalid recipe'
+      it_behaves_like 'rejects invalid file_name', 'conaninfo.txttest'
       it_behaves_like 'workhorse authorization'
     end
 
@@ -907,11 +935,13 @@ RSpec.describe API::ConanPackages do
           method: :put,
           file_key: :file,
           params: params,
+          send_rewritten_field: true,
           headers: headers_with_token
         )
       end
 
       it_behaves_like 'rejects invalid recipe'
+      it_behaves_like 'rejects invalid file_name', 'conanfile.py.git%2fgit-upload-pack'
       it_behaves_like 'uploads a package file'
     end
 
@@ -925,12 +955,15 @@ RSpec.describe API::ConanPackages do
           method: :put,
           file_key: :file,
           params: params,
-          headers: headers_with_token
+          headers: headers_with_token,
+          send_rewritten_field: true
         )
       end
 
       it_behaves_like 'rejects invalid recipe'
+      it_behaves_like 'rejects invalid file_name', 'conaninfo.txttest'
       it_behaves_like 'uploads a package file'
+
       context 'tracking the conan_package.tgz upload' do
         let(:file_name) { ::Packages::Conan::FileMetadatum::PACKAGE_BINARY }
 

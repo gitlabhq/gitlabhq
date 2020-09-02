@@ -37,6 +37,21 @@ RSpec.describe Branches::DeleteService do
       end
 
       it_behaves_like 'a deleted branch', 'feature'
+
+      context 'when Gitlab::Git::CommandError is raised' do
+        before do
+          allow(repository).to receive(:rm_branch) do
+            raise Gitlab::Git::CommandError.new('Could not update patch')
+          end
+        end
+
+        it 'handles and returns error' do
+          result = service.execute('feature')
+
+          expect(result.status).to eq(:error)
+          expect(result.message).to eq('Could not update patch')
+        end
+      end
     end
 
     context 'when user does not have access to push to repository' do

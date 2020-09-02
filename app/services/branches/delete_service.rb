@@ -26,7 +26,7 @@ module Branches
           message: 'Failed to remove branch',
           http_status: 400)
       end
-    rescue Gitlab::Git::PreReceiveError => ex
+    rescue Gitlab::Git::PreReceiveError, Gitlab::Git::CommandError => ex
       ServiceResponse.error(message: ex.message, http_status: 400)
     end
 

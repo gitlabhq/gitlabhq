@@ -332,10 +332,32 @@ RSpec.describe API::Badges do
 
   context 'when deleting a badge' do
     context 'and the source is a project' do
-      it 'cannot delete badges owned by the project group' do
-        delete api("/projects/#{project.id}/badges/#{project_group.badges.first.id}", maintainer)
+      let(:badge) { project.group.badges.first }
 
-        expect(response).to have_gitlab_http_status(:forbidden)
+      it 'cannot delete badges owned by the project group' do
+        expect do
+          delete api("/projects/#{project.id}/badges/#{badge.id}", maintainer)
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end.not_to change { badge.reload.persisted? }
+      end
+    end
+  end
+
+  context 'when updating a badge' do
+    context 'and the source is a project' do
+      let(:badge) { project.group.badges.first }
+      let(:example_name) { 'BadgeName' }
+      let(:example_url) { 'http://www.example.com' }
+      let(:example_url2) { 'http://www.example1.com' }
+
+      it 'cannot update badges owned by the project group' do
+        expect do
+          put api("/projects/#{project.id}/badges/#{badge.id}", maintainer),
+            params: { name: example_name, link_url: example_url, image_url: example_url2 }
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end.not_to change { badge.reload.updated_at }
       end
     end
   end

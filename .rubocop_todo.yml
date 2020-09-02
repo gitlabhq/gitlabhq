@@ -18,20 +18,6 @@ Capybara/CurrentPathExpectation:
 Layout/ArgumentAlignment:
   Enabled: false
 
-# Offense count: 72
-# Cop supports --auto-correct.
-Layout/EmptyLinesAroundArguments:
-  Exclude:
-    - 'app/models/concerns/discussion_on_diff.rb'
-    - 'app/models/concerns/resolvable_discussion.rb'
-    - 'app/models/diff_discussion.rb'
-    - 'app/models/discussion.rb'
-    - 'ee/spec/models/geo/project_registry_spec.rb'
-    - 'lib/banzai/pipeline/broadcast_message_pipeline.rb'
-    - 'lib/banzai/pipeline/gfm_pipeline.rb'
-    - 'lib/banzai/pipeline/single_line_pipeline.rb'
-    - 'spec/features/markdown/copy_as_gfm_spec.rb'
-
 # Offense count: 413
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle, IndentationWidth.
@@ -100,14 +86,6 @@ Layout/SpaceInsideParens:
 # Configuration parameters: MaximumRangeSize.
 Lint/MissingCopEnableDirective:
   Enabled: false
-
-# Offense count: 11
-# Cop supports --auto-correct.
-Lint/NonDeterministicRequireOrder:
-  Exclude:
-    - 'ee/spec/spec_helper.rb'
-    - 'qa/spec/spec_helper.rb'
-    - 'spec/spec_helper.rb'
 
 # Offense count: 27
 # Cop supports --auto-correct.
@@ -228,15 +206,6 @@ RSpec/ExpectChange:
 # Offense count: 751
 RSpec/ExpectInHook:
   Enabled: false
-
-# Offense count: 9
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: it_behaves_like, it_should_behave_like
-RSpec/ItBehavesLike:
-  Exclude:
-    - 'spec/lib/gitlab/git/commit_spec.rb'
-    - 'spec/services/notification_service_spec.rb'
 
 # Offense count: 68
 # Cop supports --auto-correct.
@@ -599,17 +568,6 @@ Style/EmptyLambdaParameter:
   Exclude:
     - 'app/models/ci/build.rb'
     - 'app/models/ci/runner.rb'
-
-# Offense count: 7
-# Cop supports --auto-correct.
-Style/EmptyLiteral:
-  Exclude:
-    - 'lib/gitlab/fogbugz_import/importer.rb'
-    - 'lib/gitlab/git/diff_collection.rb'
-    - 'lib/gitlab/gitaly_client.rb'
-    - 'spec/helpers/merge_requests_helper_spec.rb'
-    - 'spec/lib/gitlab/workhorse_spec.rb'
-    - 'spec/requests/api/jobs_spec.rb'
 
 # Offense count: 170
 # Cop supports --auto-correct.

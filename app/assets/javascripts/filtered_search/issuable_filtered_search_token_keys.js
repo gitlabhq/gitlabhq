@@ -86,6 +86,11 @@ export const conditions = flattenDeep(
       value: __('Any'),
     },
     {
+      url: 'author_username=support-bot',
+      tokenKey: 'author',
+      value: 'support-bot',
+    },
+    {
       url: 'milestone_title=None',
       tokenKey: 'milestone',
       value: __('None'),

@@ -65,7 +65,15 @@ module Gitlab
         raise Gitlab::Auth::MissingPersonalAccessTokenError
       end
 
-      def find_with_user_password(login, password)
+      # Find and return a user if the provided password is valid for various
+      # authenticators (OAuth, LDAP, Local Database).
+      #
+      # Specify `increment_failed_attempts: true` to increment Devise `failed_attempts`.
+      # CAUTION: Avoid incrementing failed attempts when authentication falls through
+      # different mechanisms, as in `.find_for_git_client`. This may lead to
+      # unwanted access locks when the value provided for `password` was actually
+      # a PAT, deploy token, etc.
+      def find_with_user_password(login, password, increment_failed_attempts: false)
         # Avoid resource intensive checks if login credentials are not provided
         return unless login.present? && password.present?
 
@@ -96,10 +104,14 @@ module Gitlab
           authenticators.compact!
 
           # return found user that was authenticated first for given login credentials
-          authenticators.find do |auth|
+          authenticated_user = authenticators.find do |auth|
             authenticated_user = auth.login(login, password)
             break authenticated_user if authenticated_user
           end
+
+          user_auth_attempt!(user, success: !!authenticated_user) if increment_failed_attempts
+
+          authenticated_user
         end
       end
 
@@ -222,6 +234,8 @@ module Gitlab
 
         # Registry access (with jwt) does not have access to project
         return if project && !token.has_access_to?(project)
+        # When repository is disabled, no resources are accessible via Deploy Token
+        return if project&.repository_access_level == ::ProjectFeature::DISABLED
 
         scopes = abilities_for_scopes(token.scopes)
 
@@ -354,6 +368,13 @@ module Gitlab
 
       def find_build_by_token(token)
         ::Ci::Build.running.find_by_token(token)
+      end
+
+      def user_auth_attempt!(user, success:)
+        return unless user && Gitlab::Database.read_write?
+        return user.unlock_access! if success
+
+        user.increment_failed_attempts!
       end
     end
   end

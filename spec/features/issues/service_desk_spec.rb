@@ -109,6 +109,14 @@ RSpec.describe 'Service Desk Issue Tracker', :js do
             find('.input-token .filtered-search').native.send_key(:backspace)
             expect(page).to have_selector('.js-visual-token', count: 1)
           end
+
+          it 'support bot author token has been properly added' do
+            within('.filtered-search-token') do
+              expect(page).to have_selector('.name', count: 1, visible: false)
+              expect(page).to have_selector('.operator', count: 1, visible: false)
+              expect(page).to have_selector('.value-container', count: 1, visible: false)
+            end
+          end
         end
       end
     end

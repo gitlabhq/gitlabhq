@@ -8,6 +8,7 @@ class SessionsController < Devise::SessionsController
   include Recaptcha::Verify
   include RendersLdapServers
   include KnownSignIn
+  include Gitlab::Utils::StrongMemoize
 
   skip_before_action :check_two_factor_requirement, only: [:destroy]
   skip_before_action :check_password_expiration, only: [:destroy]
@@ -199,10 +200,14 @@ class SessionsController < Devise::SessionsController
   end
 
   def find_user
-    if session[:otp_user_id]
-      User.find(session[:otp_user_id])
-    elsif user_params[:login]
-      User.by_login(user_params[:login])
+    strong_memoize(:find_user) do
+      if session[:otp_user_id] && user_params[:login]
+        User.by_id_and_login(session[:otp_user_id], user_params[:login]).first
+      elsif session[:otp_user_id]
+        User.find(session[:otp_user_id])
+      elsif user_params[:login]
+        User.by_login(user_params[:login])
+      end
     end
   end
 

@@ -151,9 +151,9 @@ RSpec.describe NotificationService, :mailer do
   end
 
   shared_examples_for 'participating notifications' do
-    it_should_behave_like 'participating by note notification'
-    it_should_behave_like 'participating by author notification'
-    it_should_behave_like 'participating by assignee notification'
+    it_behaves_like 'participating by note notification'
+    it_behaves_like 'participating by author notification'
+    it_behaves_like 'participating by assignee notification'
   end
 
   describe '#async' do
@@ -1682,13 +1682,13 @@ RSpec.describe NotificationService, :mailer do
       end
 
       context 'participating' do
-        it_should_behave_like 'participating by assignee notification' do
+        it_behaves_like 'participating by assignee notification' do
           let(:participant) { create(:user, username: 'user-participant')}
           let(:issuable) { merge_request }
           let(:notification_trigger) { notification.new_merge_request(merge_request, @u_disabled) }
         end
 
-        it_should_behave_like 'participating by note notification' do
+        it_behaves_like 'participating by note notification' do
           let(:participant) { create(:user, username: 'user-participant')}
           let(:issuable) { merge_request }
           let(:notification_trigger) { notification.new_merge_request(merge_request, @u_disabled) }

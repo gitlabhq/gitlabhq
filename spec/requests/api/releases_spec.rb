@@ -671,11 +671,19 @@ RSpec.describe API::Releases do
       end
 
       context 'when a valid token is provided' do
-        it 'creates the release' do
+        it 'creates the release for a running job' do
+          job.update!(status: :running)
           post api("/projects/#{project.id}/releases"), params: params.merge(job_token: job.token)
 
           expect(response).to have_gitlab_http_status(:created)
           expect(project.releases.last.description).to eq('Another nice release')
+        end
+
+        it 'returns an :unauthorized error for a completed job' do
+          job.success!
+          post api("/projects/#{project.id}/releases"), params: params.merge(job_token: job.token)
+
+          expect(response).to have_gitlab_http_status(:unauthorized)
         end
       end
     end

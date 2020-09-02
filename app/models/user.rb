@@ -364,6 +364,7 @@ class User < ApplicationRecord
   scope :order_oldest_sign_in, -> { reorder(Gitlab::Database.nulls_last_order('current_sign_in_at', 'ASC')) }
   scope :order_recent_last_activity, -> { reorder(Gitlab::Database.nulls_last_order('last_activity_on', 'DESC')) }
   scope :order_oldest_last_activity, -> { reorder(Gitlab::Database.nulls_first_order('last_activity_on', 'ASC')) }
+  scope :by_id_and_login, ->(id, login) { where(id: id).where('username = LOWER(:login) OR email = LOWER(:login)', login: login) }
 
   def preferred_language
     read_attribute('preferred_language') ||
@@ -885,6 +886,12 @@ class User < ApplicationRecord
 
   def expanded_groups_requiring_two_factor_authentication
     all_expanded_groups.where(require_two_factor_authentication: true)
+  end
+
+  def source_groups_of_two_factor_authentication_requirement
+    Gitlab::ObjectHierarchy.new(expanded_groups_requiring_two_factor_authentication)
+      .all_objects
+      .where(id: groups)
   end
 
   # rubocop: disable CodeReuse/ServiceClass

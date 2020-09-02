@@ -9,6 +9,7 @@ module Aws
     validates :role_external_id, uniqueness: true, length: { in: 1..64 }
     validates :role_arn,
       length: 1..2048,
+      allow_nil: true,
       format: {
         with: Gitlab::Regex.aws_arn_regex,
         message: Gitlab::Regex.aws_arn_regex_message

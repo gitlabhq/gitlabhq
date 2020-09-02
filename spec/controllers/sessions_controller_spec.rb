@@ -261,8 +261,8 @@ RSpec.describe SessionsController do
     context 'when using two-factor authentication via OTP' do
       let(:user) { create(:user, :two_factor) }
 
-      def authenticate_2fa(user_params)
-        post(:create, params: { user: user_params }, session: { otp_user_id: user.id })
+      def authenticate_2fa(user_params, otp_user_id: user.id)
+        post(:create, params: { user: user_params }, session: { otp_user_id: otp_user_id })
       end
 
       context 'remember_me field' do
@@ -299,8 +299,22 @@ RSpec.describe SessionsController do
         end
       end
 
+      # See issue gitlab-org/gitlab#20302.
+      context 'when otp_user_id is stale' do
+        render_views
+
+        it 'favors login over otp_user_id when password is present and does not authenticate the user' do
+          authenticate_2fa(
+            { login: 'random_username', password: user.password },
+            otp_user_id: user.id
+          )
+
+          expect(response).to set_flash.now[:alert].to /Invalid Login or password/
+        end
+      end
+
       ##
-      # See #14900 issue
+      # See issue gitlab-org/gitlab-foss#14900
       #
       context 'when authenticating with login and OTP of another user' do
         context 'when another user has 2FA enabled' do
@@ -384,18 +398,6 @@ RSpec.describe SessionsController do
 
                 expect(flash[:alert]).to eq('Your account is locked.')
               end
-            end
-          end
-
-          context 'when another user does not have 2FA enabled' do
-            let(:another_user) { create(:user) }
-
-            it 'does not leak that 2FA is disabled for another user' do
-              authenticate_2fa(login: another_user.username,
-                               otp_attempt: 'invalid')
-
-              expect(response).to set_flash.now[:alert]
-                .to /Invalid two-factor code/
             end
           end
         end

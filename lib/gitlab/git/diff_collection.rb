@@ -37,7 +37,7 @@ module Gitlab
         @byte_count = 0
         @overflow = false
         @empty = true
-        @array = Array.new
+        @array = []
       end
 
       def each(&block)

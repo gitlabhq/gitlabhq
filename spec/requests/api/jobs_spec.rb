@@ -56,7 +56,7 @@ RSpec.describe API::Jobs do
   end
 
   describe 'GET /projects/:id/jobs' do
-    let(:query) { Hash.new }
+    let(:query) { {} }
 
     before do |example|
       unless example.metadata[:skip_before_request]
@@ -167,7 +167,7 @@ RSpec.describe API::Jobs do
   end
 
   describe 'GET /projects/:id/pipelines/:pipeline_id/jobs' do
-    let(:query) { Hash.new }
+    let(:query) { {} }
 
     before do |example|
       unless example.metadata[:skip_before_request]
@@ -296,7 +296,7 @@ RSpec.describe API::Jobs do
              project: downstream_pipeline.project)
     end
 
-    let(:query) { Hash.new }
+    let(:query) { {} }
 
     before do |example|
       unless example.metadata[:skip_before_request]

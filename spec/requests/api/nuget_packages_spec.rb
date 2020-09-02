@@ -80,7 +80,7 @@ RSpec.describe API::NugetPackages do
           end
 
           with_them do
-            let(:job) { user_token ? create(:ci_build, project: project, user: user) : double(token: 'wrong') }
+            let(:job) { user_token ? create(:ci_build, project: project, user: user, status: :running) : double(token: 'wrong') }
             let(:headers) { user_role == :anonymous ? {} : job_basic_auth_header(job) }
 
             subject { get api(url), headers: headers }
