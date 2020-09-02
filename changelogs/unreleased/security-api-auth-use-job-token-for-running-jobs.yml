@@ -1,5 +1,0 @@
----
-title: Allow only running job tokens for API authentication
-merge_request:
-author:
-type: security

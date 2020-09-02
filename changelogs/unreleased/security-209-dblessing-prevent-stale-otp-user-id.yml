@@ -1,5 +1,0 @@
----
-title: Prevent interrupted 2FA sign-in from signing-in incorrect user
-merge_request:
-author:
-type: security

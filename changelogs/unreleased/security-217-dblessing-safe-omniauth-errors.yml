@@ -1,5 +1,0 @@
----
-title: Prevent OmniAuth from rendering arbitrary error messages
-merge_request:
-author:
-type: security
