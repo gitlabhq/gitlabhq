@@ -15,7 +15,7 @@ module Projects
         # This is a hack as the registry doesn't support deleting individual
         # tags. This code effectively pushes a dummy image and assigns the tag to it.
         # This way when the tag is deleted only the dummy image is affected.
-        # This is used to preverse compatibility with third-party registries that
+        # This is used to preserve compatibility with third-party registries that
         # don't support fast delete.
         # See https://gitlab.com/gitlab-org/gitlab/issues/15737 for a discussion
         def execute

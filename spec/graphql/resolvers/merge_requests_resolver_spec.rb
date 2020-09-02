@@ -206,6 +206,33 @@ RSpec.describe Resolvers::MergeRequestsResolver do
         expect(result.compact).to contain_exactly(merge_request_4)
       end
     end
+
+    describe 'sorting' do
+      context 'when sorting by created' do
+        it 'sorts merge requests ascending' do
+          expect(resolve_mr(project, sort: 'created_asc')).to eq [merge_request_1, merge_request_2, merge_request_3, merge_request_4, merge_request_5, merge_request_6, merge_request_with_milestone]
+        end
+
+        it 'sorts merge requests descending' do
+          expect(resolve_mr(project, sort: 'created_desc')).to eq [merge_request_with_milestone, merge_request_6, merge_request_5, merge_request_4, merge_request_3, merge_request_2, merge_request_1]
+        end
+      end
+
+      context 'when sorting by merged at' do
+        before do
+          merge_request_1.metrics.update!(merged_at: 10.days.ago)
+          merge_request_3.metrics.update!(merged_at: 5.days.ago)
+        end
+
+        it 'sorts merge requests ascending' do
+          expect(resolve_mr(project, sort: :merged_at_asc)).to eq [merge_request_1, merge_request_3, merge_request_with_milestone, merge_request_6, merge_request_5, merge_request_4, merge_request_2]
+        end
+
+        it 'sorts merge requests descending' do
+          expect(resolve_mr(project, sort: :merged_at_desc)).to eq [merge_request_3, merge_request_1, merge_request_with_milestone, merge_request_6, merge_request_5, merge_request_4, merge_request_2]
+        end
+      end
+    end
   end
 
   def resolve_mr_single(project, iid)

@@ -9521,6 +9521,71 @@ type MergeRequestSetWipPayload {
 }
 
 """
+Values for sorting merge requests
+"""
+enum MergeRequestSort {
+  """
+  Label priority by ascending order
+  """
+  LABEL_PRIORITY_ASC
+
+  """
+  Label priority by descending order
+  """
+  LABEL_PRIORITY_DESC
+
+  """
+  Merge time by ascending order
+  """
+  MERGED_AT_ASC
+
+  """
+  Merge time by descending order
+  """
+  MERGED_AT_DESC
+
+  """
+  Milestone due date by ascending order
+  """
+  MILESTONE_DUE_ASC
+
+  """
+  Milestone due date by descending order
+  """
+  MILESTONE_DUE_DESC
+
+  """
+  Priority by ascending order
+  """
+  PRIORITY_ASC
+
+  """
+  Priority by descending order
+  """
+  PRIORITY_DESC
+
+  """
+  Created at ascending order
+  """
+  created_asc
+
+  """
+  Created at descending order
+  """
+  created_desc
+
+  """
+  Updated at ascending order
+  """
+  updated_asc
+
+  """
+  Updated at descending order
+  """
+  updated_desc
+}
+
+"""
 State of a GitLab merge request
 """
 enum MergeRequestState {
@@ -11740,6 +11805,11 @@ type Project {
     Title of the milestone
     """
     milestoneTitle: String
+
+    """
+    Sort merge requests by this criteria
+    """
+    sort: MergeRequestSort = created_desc
 
     """
     Array of source branch names. All resolved merge requests will have one of these branches as their source.
@@ -16809,6 +16879,11 @@ type User {
     projectPath: String
 
     """
+    Sort merge requests by this criteria
+    """
+    sort: MergeRequestSort = created_desc
+
+    """
     Array of source branch names. All resolved merge requests will have one of these branches as their source.
     """
     sourceBranches: [String!]
@@ -16882,6 +16957,11 @@ type User {
     The full-path of the project the authored merge requests should be in. Incompatible with projectId.
     """
     projectPath: String
+
+    """
+    Sort merge requests by this criteria
+    """
+    sort: MergeRequestSort = created_desc
 
     """
     Array of source branch names. All resolved merge requests will have one of these branches as their source.

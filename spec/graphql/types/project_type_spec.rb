@@ -75,7 +75,8 @@ RSpec.describe GitlabSchema.types['Project'] do
                                             :merged_before,
                                             :author_username,
                                             :assignee_username,
-                                            :milestone_title
+                                            :milestone_title,
+                                            :sort
                                            )
     end
   end

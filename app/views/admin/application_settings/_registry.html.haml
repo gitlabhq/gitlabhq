@@ -14,5 +14,11 @@
         .form-text.text-muted
           = _("Existing projects will be able to use expiration policies. Avoid enabling this if an external Container Registry is being used, as there is a performance risk if many images exist on one project.")
           = link_to icon('question-circle'), help_page_path('user/packages/container_registry/index', anchor: 'use-with-external-container-registries')
+    - if limit_delete_tags_service?
+      .form-group
+        = f.label :container_registry_delete_tags_service_timeout, _('Cleanup policy maximum processing time (seconds)'), class: 'label-bold'
+        = f.number_field :container_registry_delete_tags_service_timeout, min: 0, class: 'form-control'
+        .form-text.text-muted
+          = _("Tags are deleted until the timeout is reached. Any remaining tags are included the next time the policy runs. To remove the time limit, set it to 0.")
 
   = f.submit 'Save changes', class: "btn btn-success"

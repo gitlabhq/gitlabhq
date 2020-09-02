@@ -282,6 +282,9 @@ class ApplicationSetting < ApplicationRecord
 
   validates :hashed_storage_enabled, inclusion: { in: [true], message: _("Hashed storage can't be disabled anymore for new projects") }
 
+  validates :container_registry_delete_tags_service_timeout,
+            numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+
   SUPPORTED_KEY_TYPES.each do |type|
     validates :"#{type}_key_restriction", presence: true, key_restriction: { type: type }
   end

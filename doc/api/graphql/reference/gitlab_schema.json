@@ -26641,6 +26641,89 @@
         },
         {
           "kind": "ENUM",
+          "name": "MergeRequestSort",
+          "description": "Values for sorting merge requests",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "updated_desc",
+              "description": "Updated at descending order",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "updated_asc",
+              "description": "Updated at ascending order",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "created_desc",
+              "description": "Created at descending order",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "created_asc",
+              "description": "Created at ascending order",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "PRIORITY_ASC",
+              "description": "Priority by ascending order",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "PRIORITY_DESC",
+              "description": "Priority by descending order",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "LABEL_PRIORITY_ASC",
+              "description": "Label priority by ascending order",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "LABEL_PRIORITY_DESC",
+              "description": "Label priority by descending order",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "MILESTONE_DUE_ASC",
+              "description": "Milestone due date by ascending order",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "MILESTONE_DUE_DESC",
+              "description": "Milestone due date by descending order",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "MERGED_AT_ASC",
+              "description": "Merge time by ascending order",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "MERGED_AT_DESC",
+              "description": "Merge time by descending order",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "possibleTypes": null
+        },
+        {
+          "kind": "ENUM",
           "name": "MergeRequestState",
           "description": "State of a GitLab merge request",
           "fields": null,
@@ -34770,6 +34853,16 @@
                     "ofType": null
                   },
                   "defaultValue": null
+                },
+                {
+                  "name": "sort",
+                  "description": "Sort merge requests by this criteria",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "MergeRequestSort",
+                    "ofType": null
+                  },
+                  "defaultValue": "created_desc"
                 },
                 {
                   "name": "assigneeUsername",
@@ -49462,6 +49555,16 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "sort",
+                  "description": "Sort merge requests by this criteria",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "MergeRequestSort",
+                    "ofType": null
+                  },
+                  "defaultValue": "created_desc"
+                },
+                {
                   "name": "projectPath",
                   "description": "The full-path of the project the authored merge requests should be in. Incompatible with projectId.",
                   "type": {
@@ -49645,6 +49748,16 @@
                     "ofType": null
                   },
                   "defaultValue": null
+                },
+                {
+                  "name": "sort",
+                  "description": "Sort merge requests by this criteria",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "MergeRequestSort",
+                    "ofType": null
+                  },
+                  "defaultValue": "created_desc"
                 },
                 {
                   "name": "projectPath",

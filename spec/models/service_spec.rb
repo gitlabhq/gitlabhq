@@ -171,6 +171,16 @@ RSpec.describe Service do
           it { is_expected.to be_falsey }
         end
       end
+
+      context 'when group-level service' do
+        Service.available_services_types.each do |service_type|
+          let(:service) do
+            service_type.constantize.new(group_id: group.id)
+          end
+
+          it { is_expected.to be_falsey }
+        end
+      end
     end
 
     describe '#test' do

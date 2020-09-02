@@ -64,12 +64,8 @@ module API
       end
       post ":id/snippets" do
         authorize! :create_snippet, user_project
-        snippet_params = declared_params(include_missing: false).tap do |create_args|
-          create_args[:request] = request
-          create_args[:api] = true
 
-          process_file_args(create_args)
-        end
+        snippet_params = process_create_params(declared_params(include_missing: false))
 
         service_response = ::Snippets::CreateService.new(user_project, current_user, snippet_params).execute
         snippet = service_response.payload[:snippet]

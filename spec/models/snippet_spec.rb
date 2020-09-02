@@ -787,4 +787,26 @@ RSpec.describe Snippet do
       end
     end
   end
+
+  describe '#multiple_files?' do
+    subject { snippet.multiple_files? }
+
+    context 'when snippet has multiple files' do
+      let(:snippet) { create(:snippet, :repository) }
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when snippet does not have multiple files' do
+      let(:snippet) { create(:snippet, :empty_repo) }
+
+      it { is_expected.to be_falsey }
+    end
+
+    context 'when the snippet does not have a repository' do
+      let(:snippet) { build(:snippet) }
+
+      it { is_expected.to be_falsey }
+    end
+  end
 end

@@ -292,6 +292,7 @@ module IssuablesHelper
 
     {
       hasClosingMergeRequest: issuable.merge_requests_count(current_user) != 0,
+      issueType: issuable.issue_type,
       zoomMeetingUrl: ZoomMeeting.canonical_meeting_url(issuable),
       sentryIssueIdentifier: SentryIssue.find_by(issue: issuable)&.sentry_issue_identifier # rubocop:disable CodeReuse/ActiveRecord
     }
@@ -301,8 +302,8 @@ module IssuablesHelper
     return { groupPath: parent.path } if parent.is_a?(Group)
 
     {
-        projectPath: ref_project.path,
-        projectNamespace: ref_project.namespace.full_path
+      projectPath: ref_project.path,
+      projectNamespace: ref_project.namespace.full_path
     }
   end
 

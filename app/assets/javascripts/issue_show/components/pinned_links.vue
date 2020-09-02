@@ -45,7 +45,7 @@ export default {
 </script>
 
 <template>
-  <div class="border-bottom gl-mb-6 gl-display-flex gl-justify-content-start">
+  <div class="gl-display-flex gl-justify-content-start">
     <template v-for="(link, i) in pinnedLinks">
       <div v-if="link.url" :key="link.id" :class="{ 'gl-pr-3': needsPaddingClass(i) }">
         <gl-button

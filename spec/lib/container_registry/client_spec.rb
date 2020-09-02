@@ -289,4 +289,57 @@ RSpec.describe ContainerRegistry::Client do
       end
     end
   end
+
+  describe '.supports_tag_delete?' do
+    let(:registry_enabled) { true }
+    let(:registry_api_url) { 'http://sandbox.local' }
+    let(:registry_tags_support_enabled) { true }
+    let(:is_on_dot_com) { false }
+
+    subject { described_class.supports_tag_delete? }
+
+    before do
+      allow(::Gitlab).to receive(:com?).and_return(is_on_dot_com)
+      stub_container_registry_config(enabled: registry_enabled, api_url: registry_api_url, key: 'spec/fixtures/x509_certificate_pk.key')
+      stub_registry_tags_support(registry_tags_support_enabled)
+    end
+
+    context 'with the registry enabled' do
+      it { is_expected.to be true }
+
+      context 'without an api url' do
+        let(:registry_api_url) { '' }
+
+        it { is_expected.to be false }
+      end
+
+      context 'on .com' do
+        let(:is_on_dot_com) { true }
+
+        it { is_expected.to be true }
+      end
+
+      context 'when registry server does not support tag deletion' do
+        let(:registry_tags_support_enabled) { false }
+
+        it { is_expected.to be false }
+      end
+    end
+
+    context 'with the registry disabled' do
+      let(:registry_enabled) { false }
+
+      it { is_expected.to be false }
+    end
+
+    def stub_registry_tags_support(supported = true)
+      status_code = supported ? 200 : 404
+      stub_request(:options, "#{registry_api_url}/v2/name/tags/reference/tag")
+        .to_return(
+          status: status_code,
+          body: '',
+          headers: { 'Allow' => 'DELETE' }
+        )
+    end
+  end
 end

@@ -1,8 +1,8 @@
 import Vue from 'vue';
 import issuableApp from './components/app.vue';
-import { parseIssuableData } from './utils/parse_data';
+import incidentTabs from './components/incident_tabs.vue';
 
-export default function initIssueableApp() {
+export default function initIssuableApp(issuableData = {}) {
   return new Vue({
     el: document.getElementById('js-issuable-app'),
     components: {
@@ -10,7 +10,11 @@ export default function initIssueableApp() {
     },
     render(createElement) {
       return createElement('issuable-app', {
-        props: parseIssuableData(),
+        props: {
+          ...issuableData,
+          descriptionComponent: incidentTabs,
+          showTitleBorder: false,
+        },
       });
     },
   });

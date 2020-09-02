@@ -1,3 +1,5 @@
+import { TEST_HOST } from 'helpers/test_constants';
+
 export const initialRequest = {
   title: '<p>this is a title</p>',
   title_text: 'this is a title',
@@ -20,4 +22,12 @@ export const secondRequest = {
   updated_by_name: 'Other User',
   updated_by_path: '/other_user',
   lock_version: 2,
+};
+
+export const descriptionProps = {
+  canUpdate: true,
+  descriptionHtml: 'test',
+  descriptionText: 'test',
+  taskStatus: '',
+  updateUrl: TEST_HOST,
 };

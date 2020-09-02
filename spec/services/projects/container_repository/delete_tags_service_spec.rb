@@ -90,6 +90,10 @@ RSpec.describe Projects::ContainerRepository::DeleteTagsService do
 
     subject { service.execute(repository) }
 
+    before do
+      stub_feature_flags(container_registry_expiration_policies_throttling: false)
+    end
+
     context 'without permissions' do
       it { is_expected.to include(status: :error) }
     end
@@ -118,6 +122,18 @@ RSpec.describe Projects::ContainerRepository::DeleteTagsService do
             it { is_expected.to include(status: :success) }
 
             it_behaves_like 'logging a success response'
+          end
+
+          context 'with a timeout error' do
+            before do
+              expect_next_instance_of(::Projects::ContainerRepository::Gitlab::DeleteTagsService) do |delete_service|
+                expect(delete_service).to receive(:delete_tags).and_raise(::Projects::ContainerRepository::Gitlab::DeleteTagsService::TimeoutError)
+              end
+            end
+
+            it { is_expected.to include(status: :error, message: 'timeout while deleting tags') }
+
+            it_behaves_like 'logging an error response', message: 'timeout while deleting tags'
           end
         end
 

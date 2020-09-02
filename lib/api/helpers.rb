@@ -537,6 +537,10 @@ module API
       )
     end
 
+    def with_api_params(&block)
+      yield({ api: true, request: request })
+    end
+
     protected
 
     def project_finder_params_visibility_ce

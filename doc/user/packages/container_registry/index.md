@@ -533,6 +533,11 @@ The cleanup policy:
 1. Excludes from the list any tags matching the `name_regex_keep` value (tags to preserve).
 1. Finally, the remaining tags in the list are deleted from the Container Registry.
 
+CAUTION: **Warning:**
+On GitLab.com, the execution time for the cleanup policy is limited, and some of the tags may remain in
+the Container Registry after the policy runs. The next time the policy runs, the remaining tags are included,
+so it may take multiple runs for all tags to be deleted.
+
 ### Create a cleanup policy
 
 You can create a cleanup policy in [the API](#use-the-cleanup-policy-api) or the UI.

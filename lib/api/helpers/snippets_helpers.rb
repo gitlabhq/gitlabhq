@@ -27,6 +27,20 @@ module API
         exactly_one_of :files, :content
       end
 
+      params :update_file_params do |options|
+        optional :files, type: Array, desc: 'An array of files to update' do
+          requires :action, type: String,
+            values: SnippetInputAction::ACTIONS.map(&:to_s),
+            desc: "The type of action to perform on the file, must be one of: #{SnippetInputAction::ACTIONS.join(", ")}"
+          optional :content, type: String, desc: 'The content of a snippet'
+          optional :file_path, file_path: true, type: String, desc: 'The file path of a snippet file'
+          optional :previous_path, file_path: true, type: String, desc: 'The previous path of a snippet file'
+        end
+
+        mutually_exclusive :files, :content
+        mutually_exclusive :files, :file_name
+      end
+
       def content_for(snippet)
         if snippet.empty_repo?
           env['api.format'] = :txt
@@ -53,10 +67,30 @@ module API
       end
     end
 
-    def process_file_args(args)
-      args[:snippet_actions] = args.delete(:files)&.map do |file|
-        file[:action] = :create
-        file.symbolize_keys
+    def process_create_params(args)
+      with_api_params do |api_params|
+        args[:snippet_actions] = args.delete(:files)&.map do |file|
+          file[:action] = :create
+          file.symbolize_keys
+        end
+
+        args.merge(api_params)
+      end
+    end
+
+    def process_update_params(args)
+      with_api_params do |api_params|
+        args[:snippet_actions] = args.delete(:files)&.map(&:symbolize_keys)
+
+        args.merge(api_params)
+      end
+    end
+
+    def validate_params_for_multiple_files(snippet)
+      return unless params[:content] || params[:file_name]
+
+      if Feature.enabled?(:snippet_multiple_files, current_user) && snippet.multiple_files?
+        render_api_error!({ error: _('To update Snippets with multiple files, you must use the `files` parameter') }, 400)
       end
     end
   end

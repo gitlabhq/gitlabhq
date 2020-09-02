@@ -345,6 +345,10 @@ class Snippet < ApplicationRecord
     repository.ls_files(ref)
   end
 
+  def multiple_files?
+    list_files(repository.root_ref).size > 1
+  end
+
   class << self
     # Searches for snippets with a matching title, description or file name.
     #

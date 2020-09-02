@@ -12,19 +12,21 @@ module QA
         # implementation so that it's not included.
       end
 
-      def stop(notification)
+      def stop(example_notification)
         # Based on https://github.com/rspec/rspec-core/blob/main/lib/rspec/core/formatters/json_formatter.rb#L35
-        # But modified to include full details of multiple exceptions
-        @output_hash[:examples] = notification.examples.map do |example|
-          format_example(example).tap do |hash|
-            e = example.exception
+        # But modified to include full details of multiple exceptions and to provide output similar to
+        # https://github.com/sj26/rspec_junit_formatter
+        @output_hash[:examples] = example_notification.notifications.map do |notification|
+          format_example(notification.example).tap do |hash|
+            e = notification.example.exception
             if e
               exceptions = e.respond_to?(:all_exceptions) ? e.all_exceptions : [e]
               hash[:exceptions] = exceptions.map do |exception|
                 {
                   class: exception.class.name,
                   message: exception.message,
-                  backtrace: exception.backtrace
+                  message_lines: strip_ansi_codes(notification.message_lines),
+                  backtrace: notification.formatted_backtrace
                 }
               end
             end
@@ -59,6 +61,12 @@ module QA
           # If there are nested shared examples, the outermost location is last in the array
           metadata[:shared_group_inclusion_backtrace].last.formatted_inclusion_location.split(':')
         end
+      end
+
+      def strip_ansi_codes(strings)
+        # The code below is from https://github.com/piotrmurach/pastel/blob/master/lib/pastel/color.rb
+        modified = Array(strings).map { |string| string.dup.gsub(/\x1b\[{1,2}[0-9;:?]*m/m, '') }
+        modified.size == 1 ? modified[0] : modified
       end
     end
   end

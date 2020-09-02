@@ -5,20 +5,13 @@ import mountComponent from 'helpers/vue_mount_component_helper';
 import { TEST_HOST } from 'helpers/test_constants';
 import Description from '~/issue_show/components/description.vue';
 import TaskList from '~/task_list';
+import { descriptionProps as props } from '../mock_data';
 
 jest.mock('~/task_list');
 
 describe('Description component', () => {
   let vm;
   let DescriptionComponent;
-  const props = {
-    canUpdate: true,
-    descriptionHtml: 'test',
-    descriptionText: 'test',
-    updatedAt: new Date().toString(),
-    taskStatus: '',
-    updateUrl: TEST_HOST,
-  };
 
   beforeEach(() => {
     DescriptionComponent = Vue.extend(Description);

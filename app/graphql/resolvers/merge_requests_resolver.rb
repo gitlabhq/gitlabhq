@@ -37,6 +37,10 @@ module Resolvers
     argument :milestone_title, GraphQL::STRING_TYPE,
              required: false,
              description: 'Title of the milestone'
+    argument :sort, Types::MergeRequestSortEnum,
+             description: 'Sort merge requests by this criteria',
+             required: false,
+             default_value: 'created_desc'
 
     def self.single
       ::Resolvers::MergeRequestResolver

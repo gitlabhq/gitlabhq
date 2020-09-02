@@ -20,7 +20,6 @@ export default {
   components: {
     GlIcon,
     GlIntersectionObserver,
-    descriptionComponent,
     titleComponent,
     editedComponent,
     formComponent,
@@ -152,6 +151,18 @@ export default {
       required: false,
       default: 0,
     },
+    descriptionComponent: {
+      type: Object,
+      required: false,
+      default: () => {
+        return descriptionComponent;
+      },
+    },
+    showTitleBorder: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
   },
   data() {
     const store = new Store({
@@ -208,6 +219,11 @@ export default {
     },
     isOpenStatus() {
       return this.issuableStatus === IssuableStatus.Open;
+    },
+    pinnedLinkClasses() {
+      return this.showTitleBorder
+        ? 'gl-border-b-1 gl-border-b-gray-100 gl-border-b-solid gl-mb-6'
+        : '';
     },
     statusIcon() {
       return this.isOpenStatus ? 'issue-open-m' : 'mobile-issue-close';
@@ -447,9 +463,11 @@ export default {
       <pinned-links
         :zoom-meeting-url="zoomMeetingUrl"
         :published-incident-url="publishedIncidentUrl"
+        :class="pinnedLinkClasses"
       />
 
-      <description-component
+      <component
+        :is="descriptionComponent"
         v-if="state.descriptionHtml"
         :can-update="canUpdate"
         :description-html="state.descriptionHtml"

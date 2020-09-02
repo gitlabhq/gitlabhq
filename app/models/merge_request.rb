@@ -251,6 +251,15 @@ class MergeRequest < ApplicationRecord
     joins(:notes).where(notes: { commit_id: sha })
   end
   scope :join_project, -> { joins(:target_project) }
+  scope :join_metrics, -> do
+    query = joins(:metrics)
+
+    if Feature.enabled?(:improved_mr_merged_at_queries, default_enabled: true)
+      query = query.where(MergeRequest.arel_table[:target_project_id].eq(MergeRequest::Metrics.arel_table[:target_project_id]))
+    end
+
+    query
+  end
   scope :references_project, -> { references(:target_project) }
   scope :with_api_entity_associations, -> {
     preload_routables
@@ -264,6 +273,14 @@ class MergeRequest < ApplicationRecord
     where("target_branch LIKE ?", ApplicationRecord.sanitize_sql_like(wildcard_branch_name).tr('*', '%'))
   end
   scope :by_target_branch, ->(branch_name) { where(target_branch: branch_name) }
+  scope :order_merged_at, ->(direction) do
+    query = join_metrics.order(Gitlab::Database.nulls_last_order('merge_request_metrics.merged_at', direction))
+
+    # Add `merge_request_metrics.merged_at` to the `SELECT` in order to make the keyset pagination work.
+    query.select(*query.arel.projections, MergeRequest::Metrics.arel_table[:merged_at].as('"merge_request_metrics.merged_at"'))
+  end
+  scope :order_merged_at_asc, -> { order_merged_at('ASC') }
+  scope :order_merged_at_desc, -> { order_merged_at('DESC') }
   scope :preload_source_project, -> { preload(:source_project) }
   scope :preload_target_project, -> { preload(:target_project) }
   scope :preload_routables, -> do
@@ -318,6 +335,15 @@ class MergeRequest < ApplicationRecord
       .reorder(arel_table[:updated_at].maximum.desc)
       .limit(limit)
       .pluck(:target_branch)
+  end
+
+  def self.sort_by_attribute(method, excluded_labels: [])
+    case method.to_s
+    when 'merged_at', 'merged_at_asc' then order_merged_at_asc.with_order_id_desc
+    when 'merged_at_desc' then order_merged_at_desc.with_order_id_desc
+    else
+      super
+    end
   end
 
   def rebase_in_progress?

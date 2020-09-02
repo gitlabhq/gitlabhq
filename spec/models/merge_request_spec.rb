@@ -61,6 +61,24 @@ RSpec.describe MergeRequest, factory_default: :keep do
     end
   end
 
+  describe '.order_merged_at_asc' do
+    let_it_be(:older_mr) { create(:merge_request, :with_merged_metrics) }
+    let_it_be(:newer_mr) { create(:merge_request, :with_merged_metrics) }
+
+    it 'returns MRs ordered by merged_at ascending' do
+      expect(described_class.order_merged_at_asc).to eq([older_mr, newer_mr])
+    end
+  end
+
+  describe '.order_merged_at_desc' do
+    let_it_be(:older_mr) { create(:merge_request, :with_merged_metrics) }
+    let_it_be(:newer_mr) { create(:merge_request, :with_merged_metrics) }
+
+    it 'returns MRs ordered by merged_at descending' do
+      expect(described_class.order_merged_at_desc).to eq([newer_mr, older_mr])
+    end
+  end
+
   describe '#squash_in_progress?' do
     let(:repo_path) do
       Gitlab::GitalyClient::StorageSettings.allow_disk_access do
@@ -428,6 +446,23 @@ RSpec.describe MergeRequest, factory_default: :keep do
 
     it 'returns target branches sort by updated at desc' do
       expect(described_class.recent_target_branches).to match_array(%w[feature merge-test fix])
+    end
+  end
+
+  describe '.sort_by_attribute' do
+    context 'merged_at' do
+      let_it_be(:older_mr) { create(:merge_request, :with_merged_metrics) }
+      let_it_be(:newer_mr) { create(:merge_request, :with_merged_metrics) }
+
+      it 'sorts asc' do
+        merge_requests = described_class.sort_by_attribute(:merged_at_asc)
+        expect(merge_requests).to eq([older_mr, newer_mr])
+      end
+
+      it 'sorts desc' do
+        merge_requests = described_class.sort_by_attribute(:merged_at_desc)
+        expect(merge_requests).to eq([newer_mr, older_mr])
+      end
     end
   end
 

@@ -76,12 +76,7 @@ module API
       post do
         authorize! :create_snippet
 
-        attrs = declared_params(include_missing: false).tap do |create_args|
-          create_args[:request] = request
-          create_args[:api] = true
-
-          process_file_args(create_args)
-        end
+        attrs = process_create_params(declared_params(include_missing: false))
 
         service_response = ::Snippets::CreateService.new(nil, current_user, attrs).execute
         snippet = service_response.payload[:snippet]
@@ -99,16 +94,20 @@ module API
         detail 'This feature was introduced in GitLab 8.15.'
         success Entities::PersonalSnippet
       end
+
       params do
         requires :id, type: Integer, desc: 'The ID of a snippet'
-        optional :title, type: String, allow_blank: false, desc: 'The title of a snippet'
-        optional :file_name, type: String, desc: 'The name of a snippet file'
         optional :content, type: String, allow_blank: false, desc: 'The content of a snippet'
         optional :description, type: String, desc: 'The description of a snippet'
+        optional :file_name, type: String, desc: 'The name of a snippet file'
+        optional :title, type: String, allow_blank: false, desc: 'The title of a snippet'
         optional :visibility, type: String,
                               values: Gitlab::VisibilityLevel.string_values,
                               desc: 'The visibility of the snippet'
-        at_least_one_of :title, :file_name, :content, :visibility
+
+        use :update_file_params
+
+        at_least_one_of :title, :file_name, :content, :files, :visibility
       end
       put ':id' do
         snippet = snippets_for_current_user.find_by_id(params.delete(:id))
@@ -116,8 +115,12 @@ module API
 
         authorize! :update_snippet, snippet
 
-        attrs = declared_params(include_missing: false).merge(request: request, api: true)
+        validate_params_for_multiple_files(snippet)
+
+        attrs = process_update_params(declared_params(include_missing: false))
+
         service_response = ::Snippets::UpdateService.new(nil, current_user, attrs).execute(snippet)
+
         snippet = service_response.payload[:snippet]
 
         if service_response.success?

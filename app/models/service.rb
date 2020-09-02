@@ -351,10 +351,10 @@ class Service < ApplicationRecord
     { success: result.present?, result: result }
   end
 
-  # Disable test for instance-level services.
+  # Disable test for instance-level and group-level services.
   # https://gitlab.com/gitlab-org/gitlab/-/issues/213138
   def can_test?
-    !instance?
+    !instance? && !group_id
   end
 
   # Returns a hash of the properties that have been assigned a new value since last save,

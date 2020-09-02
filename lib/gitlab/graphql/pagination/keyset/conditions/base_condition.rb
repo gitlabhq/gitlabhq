@@ -29,7 +29,7 @@ module Gitlab
             def table_condition(order_info, value, operator)
               if order_info.named_function
                 target = order_info.named_function
-                value  = value&.downcase if target&.name&.downcase == 'lower'
+                value  = value&.downcase if target.respond_to?(:name) && target&.name&.downcase == 'lower'
               else
                 target = arel_table[order_info.attribute_name]
               end

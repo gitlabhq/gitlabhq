@@ -4,14 +4,23 @@ import ShortcutsIssuable from '~/behaviors/shortcuts/shortcuts_issuable';
 import ZenMode from '~/zen_mode';
 import '~/notes/index';
 import { store } from '~/notes/stores';
-import initIssueableApp from '~/issue_show';
+import initIssueApp from '~/issue_show/issue';
+import initIncidentApp from '~/issue_show/incident';
 import initIssuableHeaderWarning from '~/vue_shared/components/issuable/init_issuable_header_warning';
 import initSentryErrorStackTraceApp from '~/sentry_error_stack_trace';
 import initRelatedMergeRequestsApp from '~/related_merge_requests';
 import initVueIssuableSidebarApp from '~/issuable_sidebar/sidebar_bundle';
+import { parseIssuableData } from '~/issue_show/utils/parse_data';
 
 export default function() {
-  initIssueableApp();
+  const { issueType, ...issuableData } = parseIssuableData();
+
+  if (issueType === 'incident') {
+    initIncidentApp(issuableData);
+  } else {
+    initIssueApp(issuableData);
+  }
+
   initIssuableHeaderWarning(store);
   initSentryErrorStackTraceApp();
   initRelatedMergeRequestsApp();

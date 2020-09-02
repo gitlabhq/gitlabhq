@@ -2834,6 +2834,9 @@ msgstr ""
 msgid "An error occurred while retrieving diff files"
 msgstr ""
 
+msgid "An error occurred while retrieving projects."
+msgstr ""
+
 msgid "An error occurred while saving LDAP override status. Please try again."
 msgstr ""
 
@@ -5004,6 +5007,9 @@ msgid "ClassificationLabelUnavailable|is unavailable: %{reason}"
 msgstr ""
 
 msgid "Cleanup policy for tags"
+msgstr ""
+
+msgid "Cleanup policy maximum processing time (seconds)"
 msgstr ""
 
 msgid "Clear"
@@ -8608,6 +8614,9 @@ msgid "Diff content limits"
 msgstr ""
 
 msgid "Diff limits"
+msgstr ""
+
+msgid "Diff view settings"
 msgstr ""
 
 msgid "Difference between start date and now"
@@ -24097,6 +24106,9 @@ msgstr ""
 msgid "Tags"
 msgstr ""
 
+msgid "Tags are deleted until the timeout is reached. Any remaining tags are included the next time the policy runs. To remove the time limit, set it to 0."
+msgstr ""
+
 msgid "Tags feed"
 msgstr ""
 
@@ -25966,6 +25978,9 @@ msgid "To start serving your jobs you can either add specific Runners to your pr
 msgstr ""
 
 msgid "To unsubscribe from this issue, please paste the following link into your browser:"
+msgstr ""
+
+msgid "To update Snippets with multiple files, you must use the `files` parameter"
 msgstr ""
 
 msgid "To view all %{scannedResourcesCount} scanned URLs, please download the CSV file"

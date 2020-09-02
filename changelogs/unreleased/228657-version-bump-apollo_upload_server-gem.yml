@@ -1,0 +1,5 @@
+---
+title: Bug fix GraphQL file uploads accepting non-file input
+merge_request: 39763
+author:
+type: fixed

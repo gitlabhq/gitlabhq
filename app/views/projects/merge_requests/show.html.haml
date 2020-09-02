@@ -1,5 +1,5 @@
 - @gfm_form = true
-- @content_class = "limit-container-width" unless fluid_layout
+- @content_class = "merge-request-container#{' limit-container-width' unless fluid_layout}"
 - add_to_breadcrumbs _("Merge Requests"), project_merge_requests_path(@project)
 - breadcrumb_title @merge_request.to_reference
 - page_title "#{@merge_request.title} (#{@merge_request.to_reference})", _("Merge Requests")
