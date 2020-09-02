@@ -763,6 +763,29 @@ RSpec.describe 'GFM autocomplete', :js do
       end
     end
 
+    shared_examples 'autocomplete suggestions' do
+      it 'suggests objects correctly' do
+        page.within '.timeline-content-form' do
+          find('#note-body').native.send_keys(object.class.reference_prefix)
+        end
+
+        page.within '.tribute-container' do
+          expect(page).to have_content(object.title)
+
+          find('ul li').click
+        end
+
+        expect(find('.new-note #note-body').value).to include(expected_body)
+      end
+    end
+
+    context 'merge requests' do
+      let(:object) { create(:merge_request, source_project: project) }
+      let(:expected_body) { object.to_reference }
+
+      it_behaves_like 'autocomplete suggestions'
+    end
+
     context 'when other notes are destroyed' do
       let!(:discussion) { create(:discussion_note_on_issue, noteable: issue, project: issue.project) }
 

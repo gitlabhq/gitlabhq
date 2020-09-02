@@ -26,6 +26,8 @@ module Gitlab
           # Sanitize fields based on those sanitized from Rails.
           config.sanitize_fields = Rails.application.config.filter_parameters.map(&:to_s)
           config.processors << ::Gitlab::ErrorTracking::Processor::SidekiqProcessor
+          config.processors << ::Gitlab::ErrorTracking::Processor::GrpcErrorProcessor
+
           # Sanitize authentication headers
           config.sanitize_http_headers = %w[Authorization Private-Token]
           config.tags = extra_tags_from_env.merge(program: Gitlab.process_name)

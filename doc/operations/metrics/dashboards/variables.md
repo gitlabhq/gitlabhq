@@ -18,6 +18,7 @@ Queries that continue to use the old format will show no data.
 
 GitLab supports a limited set of [CI variables](../../../ci/variables/README.md) in the Prometheus query. This is particularly useful for identifying a specific environment, for example with `ci_environment_slug`. The supported variables are:
 
+- `environment_filter`
 - `ci_environment_slug`
 - `kube_namespace`
 - `ci_project_name`
@@ -28,6 +29,14 @@ GitLab supports a limited set of [CI variables](../../../ci/variables/README.md)
 
 NOTE: **Note:**
 Variables for Prometheus queries must be lowercase.
+
+### environment_filter
+
+`environment_filter` is automatically expanded to `container_name!="POD",environment="ENVIRONMENT_NAME"`
+where `ENVIRONMENT_NAME` is the name of the current environment.
+
+For example, a Prometheus query like `container_memory_usage_bytes{ {{environment_filter}} }`
+becomes `container_memory_usage_bytes{ container_name!="POD",environment="production" }`.
 
 ### __range
 

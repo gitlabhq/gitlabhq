@@ -131,7 +131,7 @@ module QA
 
         def add_comment_to_diff(text)
           wait_until(sleep_interval: 5) do
-            has_text?("No newline at end of file")
+            has_css?('a[data-linenumber="1"]')
           end
           all_elements(:new_diff_line, minimum: 1).first.hover
           click_element(:diff_comment)

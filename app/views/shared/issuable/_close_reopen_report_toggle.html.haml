@@ -39,10 +39,8 @@
 
       %li.divider.droplab-item-ignore
 
-      %li.report-item{ data: { text: _('Report abuse'), url: new_abuse_report_path(user_id: issuable.author.id, ref_url: issuable_url(issuable)),
-                       button_class: "#{button_class} btn-close-color", toggle_class: "#{toggle_class} btn-close-color", method: '' } }
-        %button.btn.btn-transparent
-          = icon('check', class: 'icon')
+      %li.report-item{ data: { text: _('Report abuse'), button_class: "#{button_class} btn-close-color", toggle_class: "#{toggle_class} btn-close-color", method: '' } }
+        %a.report-abuse-link{ :href =>  new_abuse_report_path(user_id: issuable.author.id, ref_url: issuable_url(issuable)) }
           .description
             %strong.title= _('Report abuse')
             %p.text

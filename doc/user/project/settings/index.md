@@ -37,6 +37,9 @@ You can select a framework label to identify that your project has certain compl
 - SOC 2 - Service Organization Control 2
 - SOX - Sarbanes-Oxley
 
+NOTE: **Note:**
+Compliance framework labels do not affect your project settings.
+
 ### Sharing and permissions
 
 For your repository, you can set up features such as public access, repository features,

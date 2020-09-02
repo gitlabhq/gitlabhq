@@ -9,6 +9,7 @@ const AutoComplete = {
   Issues: 'issues',
   Labels: 'labels',
   Members: 'members',
+  MergeRequests: 'mergeRequests',
 };
 
 function doesCurrentLineStartWith(searchString, fullText, selectionStart) {
@@ -99,6 +100,14 @@ const autoCompleteMap = {
         ${icon}`;
     },
   },
+  [AutoComplete.MergeRequests]: {
+    filterValues() {
+      return this[AutoComplete.MergeRequests];
+    },
+    menuItemTemplate({ original }) {
+      return `<small>${original.reference || original.iid}</small> ${escape(original.title)}`;
+    },
+  },
 };
 
 export default {
@@ -138,6 +147,13 @@ export default {
               ? `~"${original.title}"`
               : `~${original.title}`,
           values: this.getValues(AutoComplete.Labels),
+        },
+        {
+          trigger: '!',
+          lookup: value => value.iid + value.title,
+          menuItemTemplate: autoCompleteMap[AutoComplete.MergeRequests].menuItemTemplate,
+          selectTemplate: ({ original }) => original.reference || `!${original.iid}`,
+          values: this.getValues(AutoComplete.MergeRequests),
         },
       ],
     });

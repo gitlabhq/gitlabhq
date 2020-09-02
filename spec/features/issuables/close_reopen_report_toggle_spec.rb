@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'Issuables Close/Reopen/Report toggle' do
+  include IssuablesHelper
+
   let(:user) { create(:user) }
 
   shared_examples 'an issuable close/reopen/report toggle' do
@@ -27,19 +29,11 @@ RSpec.describe 'Issuables Close/Reopen/Report toggle' do
       expect(container).not_to have_selector('.reopen-item')
     end
 
-    it 'changes the button when an item is selected' do
-      button = container.find('.issuable-close-button')
-
+    it 'links to Report Abuse' do
       container.find('.dropdown-toggle').click
-      container.find('.report-item').click
+      container.find('.report-abuse-link').click
 
-      expect(container).not_to have_selector('.dropdown-menu')
-      expect(button).to have_content('Report abuse')
-
-      container.find('.dropdown-toggle').click
-      container.find('.close-item').click
-
-      expect(button).to have_content("Close #{human_model_name}")
+      expect(page).to have_content('Report abuse to admin')
     end
   end
 

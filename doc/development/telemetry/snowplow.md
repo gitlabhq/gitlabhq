@@ -316,6 +316,11 @@ There are several tools for developing and testing Snowplow Event
 
 **{check-circle}** Available, **{status_preparing}** In progress, **{dotted-circle}** Not Planned
 
+### Preparing your MR for Review
+
+1. For frontend events, in the MR description section, add a screenshot of the event's relevant section using the [Snowplow Analytics Debugger](https://chrome.google.com/webstore/detail/snowplow-analytics-debugg/jbnlcgeengmijcghameodeaenefieedm) Chrome browser extension.
+1. For backend events, please use Snowplow Micro and add the output of the Snowplow Micro good events  `GET http://localhost:9090/micro/good`.
+
 ### Snowplow Analytics Debugger Chrome Extension
 
 Snowplow Analytics Debugger is a browser extension for testing frontend events. This works on production, staging and local development environments.

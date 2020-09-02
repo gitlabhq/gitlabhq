@@ -238,12 +238,13 @@ this, replace value of the `POSTGRESQL_SERVER_ADDRESS` with corresponding IP or 
 address of the PgBouncer instance.
 
 This documentation doesn't provide PgBouncer installation instructions,
-you can:
+but you can:
 
 - Find instructions on the [official website](https://www.pgbouncer.org/install.html).
 - Use a [Docker image](https://hub.docker.com/r/edoburu/pgbouncer/).
 
-In addition to base PgBouncer configuration options, set the following values:
+In addition to the base PgBouncer configuration options, set the following values in
+your `pgbouncer.ini` file:
 
 - The [Praefect PostgreSQL database](#postgresql) in the `[databases]` section:
 

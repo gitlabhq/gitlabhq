@@ -79,15 +79,16 @@ git push origin v1.0.0
 Now that the basics of our project is completed, we can publish the package.
 To publish the package, you need:
 
-- A personal access token. You can generate a [personal access token](../../../user/profile/personal_access_tokens.md) with the scope set to `api` for repository authentication.
-   NOTE: **Note:**
+- A personal access token or `CI_JOB_TOKEN`.
 
-  [Deploy tokens](./../../project/deploy_tokens/index.md) are not yet supported for use with Composer.
+  ([Deploy tokens](./../../project/deploy_tokens/index.md) are not yet supported for use with Composer.)
 
 - Your project ID which can be found on the home page of your project.
 
 To publish the package hosted on GitLab, make a `POST` request to the GitLab package API.
 A tool like `curl` can be used to make this request:
+
+You can generate a [personal access token](../../../user/profile/personal_access_tokens.md) with the scope set to `api` for repository authentication. For example:
 
 ```shell
 curl --data tag=<tag> 'https://__token__:<personal-access-token>@gitlab.com/api/v4/projects/<project_id>/packages/composer'
@@ -100,6 +101,21 @@ Where:
 - `<tag>` is the Git tag name of the version you want to publish. In this example it should be `v1.0.0`. Notice that instead of `tag=<tag>` you can also use `branch=<branch>` to publish branches.
 
 If the above command succeeds, you now should be able to see the package under the **Packages & Registries** section of your project page.
+
+### Publishing the package with CI/CD
+
+To work with Composer commands within [GitLab CI/CD](./../../../ci/README.md), you can
+publish Composer packages by using `CI_JOB_TOKEN` in your `.gitlab-ci.yml` file:
+
+```yaml
+stages:
+  - deploy
+
+deploy:
+  stage: deploy
+  script:
+    - 'curl --header "Job-Token: $CI_JOB_TOKEN" --data tag=<tag> "https://gitlab.example.com/api/v4/projects/$CI_PROJECT_ID/packages/composer"'
+```
 
 ### Installing a package
 
