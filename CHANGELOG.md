@@ -2,6 +2,13 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 13.3.4 (2020-09-02)
+
+### Security (1 change)
+
+- Protect OAuth endpoints from brute force/password stuffing.
+
+
 ## 13.3.3 (2020-09-02)
 
 ### Security (23 changes, 1 of them is from the community)
@@ -580,6 +587,13 @@ entry.
 - Remove a card-small class from HAML files. !39550 (Takuya Noguchi)
 - Provide versioning support to Sidekiq workers. !39562
 - Replace fa-pencil icon with GitLab SVG. !39648
+
+
+## 13.2.8 (2020-09-02)
+
+### Security (1 change)
+
+- Protect OAuth endpoints from brute force/password stuffing.
 
 
 ## 13.2.7 (2020-09-02)
@@ -1677,6 +1691,13 @@ entry.
 - Update GITLAB_WORKHORSE_VERSION to 8.37.0. !36988
 - Track the number of unique users who push, change wikis and change design managerment.
 - Remove removeIssue logic from list model. (nuwe1)
+
+
+## 13.1.10 (2020-09-02)
+
+### Security (1 change)
+
+- Protect OAuth endpoints from brute force/password stuffing.
 
 
 ## 13.1.9 (2020-09-02)
