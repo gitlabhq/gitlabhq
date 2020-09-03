@@ -848,10 +848,10 @@
   resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-1.161.0.tgz#661e8d19862dfba0e4c558e2eb6d64b402c1453e"
   integrity sha512-qsbboEICn08ZoEoAX/TuYygsFaXlzsCY+CfmdOzqvJbOdfHhVXmrJBxd2hP2qqjTZm2PkbRRmn+03+ce1jvatQ==
 
-"@gitlab/ui@20.18.0":
-  version "20.18.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-20.18.0.tgz#f308c444bcd2d0f09fb9ca358c97dd8817ea5598"
-  integrity sha512-JSIK7qHyQf0jAALUn9igOPSi6fIPNZyen7C0L2HFBzi5WIwYNIrV/4/uFfwdG/5fHvtPvTCbjFRRwOrP2IwCNA==
+"@gitlab/ui@20.18.1":
+  version "20.18.1"
+  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-20.18.1.tgz#c8a1e0830b63c056999b9417a499677fd46659af"
+  integrity sha512-WbLBP6Ni8YxKqlKOZChmedc8uS7MRm5CYg/k3mRUELydF/LoW4/M0CsKwgplW4OJfEQRJr8bvmjiTLAyKAky4g==
   dependencies:
     "@babel/standalone" "^7.0.0"
     "@gitlab/vue-toasted" "^1.3.0"
@@ -8371,10 +8371,10 @@ monaco-yaml@^2.4.1:
   optionalDependencies:
     prettier "^1.19.1"
 
-mousetrap@^1.4.6:
-  version "1.4.6"
-  resolved "https://registry.yarnpkg.com/mousetrap/-/mousetrap-1.4.6.tgz#eaca72e22e56d5b769b7555873b688c3332e390a"
-  integrity sha1-6spy4i5W1bdpt1VYc7aIwzMuOQo=
+mousetrap@1.6.5:
+  version "1.6.5"
+  resolved "https://registry.yarnpkg.com/mousetrap/-/mousetrap-1.6.5.tgz#8a766d8c272b08393d5f56074e0b5ec183485bf9"
+  integrity sha512-QNo4kEepaIBwiT8CDhP98umTetp+JNfQYBWvC1pc6/OAibuXtRcxZ58Qz8skvEHYvURne/7R8T5VoOI7rDsEUA==
 
 move-concurrently@^1.0.1:
   version "1.0.1"

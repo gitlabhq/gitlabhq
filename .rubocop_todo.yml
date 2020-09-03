@@ -498,17 +498,6 @@ Security/YAMLLoad:
     - 'spec/initializers/secret_token_spec.rb'
     - 'spec/lib/gitlab/prometheus/additional_metrics_parser_spec.rb'
 
-# Offense count: 10
-# Configuration parameters: EnforcedStyle, AllowModifiersOnSymbols.
-# SupportedStyles: inline, group
-Style/AccessModifierDeclarations:
-  Exclude:
-    - 'app/helpers/issues_helper.rb'
-    - 'app/helpers/lazy_image_tag_helper.rb'
-    - 'lib/gitlab/cache/request_cache.rb'
-    - 'lib/gitlab/request_profiler.rb'
-    - 'spec/support/forgery_protection.rb'
-
 # Offense count: 148
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle.
@@ -741,10 +730,6 @@ Rails/SaveBang:
     - 'ee/spec/models/license_spec.rb'
     - 'ee/spec/models/merge_request_spec.rb'
     - 'ee/spec/models/merge_train_spec.rb'
-    - 'ee/spec/models/operations/feature_flag_scope_spec.rb'
-    - 'ee/spec/models/operations/feature_flag_spec.rb'
-    - 'ee/spec/models/operations/feature_flags/strategy_spec.rb'
-    - 'ee/spec/models/operations/feature_flags/user_list_spec.rb'
     - 'spec/models/packages/package_spec.rb'
     - 'ee/spec/models/project_ci_cd_setting_spec.rb'
     - 'ee/spec/models/project_services/github_service_spec.rb'
@@ -1124,6 +1109,10 @@ Rails/SaveBang:
     - 'spec/models/namespace_spec.rb'
     - 'spec/models/note_spec.rb'
     - 'spec/models/notification_setting_spec.rb'
+    - 'spec/models/operations/feature_flag_scope_spec.rb'
+    - 'spec/models/operations/feature_flag_spec.rb'
+    - 'spec/models/operations/feature_flags/strategy_spec.rb'
+    - 'spec/models/operations/feature_flags/user_list_spec.rb'
     - 'spec/models/pages_domain_spec.rb'
     - 'spec/models/project_auto_devops_spec.rb'
     - 'spec/models/project_feature_spec.rb'

@@ -5,12 +5,13 @@ require 'spec_helper'
 RSpec.describe Gitlab::ProjectSearchResults do
   include SearchHelpers
 
-  let(:user) { create(:user) }
-  let(:project) { create(:project) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:project) { create(:project) }
   let(:query) { 'hello world' }
   let(:repository_ref) { nil }
+  let(:filters) { {} }
 
-  subject(:results) { described_class.new(user, query, project: project, repository_ref: repository_ref) }
+  subject(:results) { described_class.new(user, query, project: project, repository_ref: repository_ref, filters: filters) }
 
   context 'with a repository_ref' do
     context 'when empty' do
@@ -257,6 +258,24 @@ RSpec.describe Gitlab::ProjectSearchResults do
 
     describe "confidential issues" do
       include_examples "access restricted confidential issues"
+    end
+
+    context 'filtering' do
+      let_it_be(:project) { create(:project, :public) }
+      let_it_be(:closed_issue) { create(:issue, :closed, project: project, title: 'foo closed') }
+      let_it_be(:opened_issue) { create(:issue, :opened, project: project, title: 'foo opened') }
+      let(:query) { 'foo' }
+
+      include_examples 'search issues scope filters by state'
+    end
+
+    it 'filters issues when state is provided', :aggregate_failures do
+      closed_issue = create(:issue, :closed, project: project, title: "Revert: #{issue.title}")
+
+      results = described_class.new(project.creator, query, project: project, filters: { state: 'opened' })
+
+      expect(results.objects('issues')).not_to include closed_issue
+      expect(results.objects('issues')).to include issue
     end
   end
 

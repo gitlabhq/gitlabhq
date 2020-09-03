@@ -343,26 +343,36 @@ describe('File finder item spec', () => {
 
     it('always allows `command+p` to trigger toggle', () => {
       expect(
-        vm.mousetrapStopCallback(null, vm.$el.querySelector('.dropdown-input-field'), 'command+p'),
+        Mousetrap.prototype.stopCallback(
+          null,
+          vm.$el.querySelector('.dropdown-input-field'),
+          'command+p',
+        ),
       ).toBe(false);
     });
 
     it('always allows `ctrl+p` to trigger toggle', () => {
       expect(
-        vm.mousetrapStopCallback(null, vm.$el.querySelector('.dropdown-input-field'), 'ctrl+p'),
+        Mousetrap.prototype.stopCallback(
+          null,
+          vm.$el.querySelector('.dropdown-input-field'),
+          'ctrl+p',
+        ),
       ).toBe(false);
     });
 
     it('onlys handles `t` when focused in input-field', () => {
       expect(
-        vm.mousetrapStopCallback(null, vm.$el.querySelector('.dropdown-input-field'), 't'),
+        Mousetrap.prototype.stopCallback(null, vm.$el.querySelector('.dropdown-input-field'), 't'),
       ).toBe(true);
     });
 
     it('stops callback in monaco editor', () => {
       setFixtures('<div class="inputarea"></div>');
 
-      expect(vm.mousetrapStopCallback(null, document.querySelector('.inputarea'), 't')).toBe(true);
+      expect(
+        Mousetrap.prototype.stopCallback(null, document.querySelector('.inputarea'), 't'),
+      ).toBe(true);
     });
   });
 });

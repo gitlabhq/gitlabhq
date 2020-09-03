@@ -7,7 +7,7 @@ module Gitlab
     DEFAULT_PAGE = 1
     DEFAULT_PER_PAGE = 20
 
-    attr_reader :current_user, :query
+    attr_reader :current_user, :query, :filters
 
     # Limit search results by passed projects
     # It allows us to search only for projects user has access to
@@ -19,11 +19,12 @@ module Gitlab
     # query
     attr_reader :default_project_filter
 
-    def initialize(current_user, query, limit_projects = nil, default_project_filter: false)
+    def initialize(current_user, query, limit_projects = nil, default_project_filter: false, filters: {})
       @current_user = current_user
       @query = query
       @limit_projects = limit_projects || Project.all
       @default_project_filter = default_project_filter
+      @filters = filters
     end
 
     def objects(scope, page: nil, per_page: DEFAULT_PER_PAGE, without_count: true, preload_method: nil)
@@ -190,6 +191,8 @@ module Gitlab
         else
           params[:search] = query
         end
+
+        params[:state] = filters[:state] if filters.key?(:state)
       end
     end
 

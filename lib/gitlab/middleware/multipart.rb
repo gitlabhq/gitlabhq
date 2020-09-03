@@ -57,7 +57,8 @@ module Gitlab
 
           yield
         ensure
-          @open_files.each(&:close)
+          @open_files.compact
+                     .each(&:close)
         end
 
         # This function calls itself recursively
@@ -122,6 +123,7 @@ module Gitlab
 
         def allowed_paths
           [
+            Dir.tmpdir,
             ::FileUploader.root,
             ::Gitlab.config.uploads.storage_path,
             ::JobArtifactUploader.workhorse_upload_path,

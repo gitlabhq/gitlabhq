@@ -12,7 +12,8 @@ module Search
       Gitlab::ProjectSearchResults.new(current_user,
                                        params[:search],
                                        project: project,
-                                       repository_ref: params[:repository_ref])
+                                       repository_ref: params[:repository_ref],
+                                       filters: { state: params[:state] })
     end
 
     def scope

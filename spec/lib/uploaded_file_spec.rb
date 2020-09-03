@@ -23,7 +23,7 @@ RSpec.describe UploadedFile do
     end
 
     subject do
-      described_class.from_params(params, :file, upload_path, file_path_override)
+      described_class.from_params(params, :file, [upload_path, Dir.tmpdir], file_path_override)
     end
 
     context 'when valid file is specified' do

@@ -4,10 +4,10 @@ module Gitlab
   class GroupSearchResults < SearchResults
     attr_reader :group
 
-    def initialize(current_user, query, limit_projects = nil, group:, default_project_filter: false)
+    def initialize(current_user, query, limit_projects = nil, group:, default_project_filter: false, filters: {})
       @group = group
 
-      super(current_user, query, limit_projects, default_project_filter: default_project_filter)
+      super(current_user, query, limit_projects, default_project_filter: default_project_filter, filters: filters)
     end
 
     # rubocop:disable CodeReuse/ActiveRecord

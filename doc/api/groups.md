@@ -1170,9 +1170,13 @@ DELETE /groups/:id/share/:group_id
 
 ## Push Rules **(STARTER)**
 
+> Introduced in [GitLab Starter](https://about.gitlab.com/pricing/) 13.4.
+
 ### Get group push rules **(STARTER)**
 
 Get the [push rules](../user/group/index.md#group-push-rules-starter) of a group.
+
+Only available to group owners and administrators.
 
 ```plaintext
 GET /groups/:id/push_rule
@@ -1214,6 +1218,8 @@ the `commit_committer_check` and `reject_unsigned_commits` parameters:
 ### Add group push rule **(STARTER)**
 
 Adds [push rules](../user/group/index.md#group-push-rules-starter) to the specified group.
+
+Only available to group owners and administrators.
 
 ```plaintext
 POST /groups/:id/push_rule
@@ -1260,6 +1266,8 @@ Response:
 
 Edit push rules for a specified group.
 
+Only available to group owners and administrators.
+
 ```plaintext
 PUT /groups/:id/push_rule
 ```
@@ -1300,3 +1308,17 @@ Response:
     "max_file_size": 100
 }
 ```
+
+### Delete group push rule **(STARTER)**
+
+Deletes the [push rules](../user/group/index.md#group-push-rules-starter) of a group.
+
+Only available to group owners and administrators.
+
+```plaintext
+DELETE /groups/:id/push_rule
+```
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) |

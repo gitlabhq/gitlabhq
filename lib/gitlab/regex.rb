@@ -292,7 +292,14 @@ module Gitlab
     def base64_regex
       @base64_regex ||= /(?:[A-Za-z0-9+\/]{4})*(?:[A-Za-z0-9+\/]{2}==|[A-Za-z0-9+\/]{3}=)?/.freeze
     end
+
+    def feature_flag_regex
+      /\A[a-z]([-_a-z0-9]*[a-z0-9])?\z/
+    end
+
+    def feature_flag_regex_message
+      "can contain only lowercase letters, digits, '_' and '-'. " \
+      "Must start with a letter, and cannot end with '-' or '_'"
+    end
   end
 end
-
-Gitlab::Regex.prepend_if_ee('EE::Gitlab::Regex')

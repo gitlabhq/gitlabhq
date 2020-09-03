@@ -13,7 +13,8 @@ module Search
     def execute
       Gitlab::SearchResults.new(current_user,
                                 params[:search],
-                                projects)
+                                projects,
+                                filters: { state: params[:state] })
     end
 
     def projects

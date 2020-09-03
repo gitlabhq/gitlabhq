@@ -70,9 +70,9 @@ module Backup
       success = $?.success? && status.success?
 
       if errors.present?
-        progress.print "------ BEGIN ERRORS -----".color(:yellow)
+        progress.print "------ BEGIN ERRORS -----\n".color(:yellow)
         progress.print errors.join.color(:yellow)
-        progress.print "------ END ERRORS -------".color(:yellow)
+        progress.print "------ END ERRORS -------\n".color(:yellow)
       end
 
       report_success(success)
@@ -89,12 +89,12 @@ module Backup
       Open3.popen3(ENV, *cmd) do |stdin, stdout, stderr, thread|
         stdin.binmode
 
-        Thread.new do
+        out_reader = Thread.new do
           data = stdout.read
           $stdout.write(data)
         end
 
-        Thread.new do
+        err_reader = Thread.new do
           until (raw_line = stderr.gets).nil?
             warn(raw_line)
             # Recent database dumps will use --if-exists with pg_dump
@@ -108,8 +108,7 @@ module Backup
         end
 
         stdin.close
-
-        thread.join
+        [thread, out_reader, err_reader].each(&:join)
         [thread.value, errors]
       end
     end

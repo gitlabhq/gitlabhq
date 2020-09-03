@@ -15,7 +15,8 @@ module Search
         current_user,
         params[:search],
         projects,
-        group: group
+        group: group,
+        filters: { state: params[:state] }
       )
     end
 

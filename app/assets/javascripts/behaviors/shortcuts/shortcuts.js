@@ -9,13 +9,13 @@ import { refreshCurrentPage, visitUrl } from '../../lib/utils/url_utility';
 import findAndFollowLink from '../../lib/utils/navigation_utility';
 import { parseBoolean, getCspNonceValue } from '~/lib/utils/common_utils';
 
-const defaultStopCallback = Mousetrap.stopCallback;
-Mousetrap.stopCallback = (e, element, combo) => {
+const defaultStopCallback = Mousetrap.prototype.stopCallback;
+Mousetrap.prototype.stopCallback = function customStopCallback(e, element, combo) {
   if (['ctrl+shift+p', 'command+shift+p'].indexOf(combo) !== -1) {
     return false;
   }
 
-  return defaultStopCallback(e, element, combo);
+  return defaultStopCallback.call(this, e, element, combo);
 };
 
 function initToggleButton() {

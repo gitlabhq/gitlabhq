@@ -44,6 +44,16 @@ RSpec.describe Projects::MergeRequestsController do
       get :show, params: params.merge(extra_params)
     end
 
+    context 'with view param' do
+      before do
+        go(view: 'parallel')
+      end
+
+      it 'saves the preferred diff view in a cookie' do
+        expect(response.cookies['diff_view']).to eq('parallel')
+      end
+    end
+
     context 'when merge request is unchecked' do
       before do
         merge_request.mark_as_unchecked!

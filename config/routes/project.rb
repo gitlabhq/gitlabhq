@@ -367,6 +367,14 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
             post :mark_as_spam
           end
         end
+
+        resources :feature_flags, param: :iid do
+          resources :feature_flag_issues, only: [:index, :create, :destroy], as: 'issues', path: 'issues'
+        end
+        resource :feature_flags_client, only: [] do
+          post :reset_token
+        end
+        resources :feature_flags_user_lists, param: :iid, only: [:new, :edit, :show]
       end
       # End of the /-/ scope.
 

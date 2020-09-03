@@ -22,6 +22,8 @@
         = _("in group %{link_to_group}").html_safe % { link_to_group: link_to_group }
   = render_if_exists 'shared/promotions/promote_advanced_search'
 
+  #js-search-filter-by-state{ 'v-cloak': true, data: { scope: @scope, state: params[:state] } }
+
   .results.gl-mt-3
     - if @scope == 'commits'
       %ul.content-list.commit-list

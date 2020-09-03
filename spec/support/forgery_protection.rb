@@ -8,7 +8,7 @@ module ForgeryProtection
     ActionController::Base.allow_forgery_protection = false
   end
 
-  module_function :with_forgery_protection
+  module_function :with_forgery_protection # rubocop: disable Style/AccessModifierDeclarations
 end
 
 RSpec.configure do |config|

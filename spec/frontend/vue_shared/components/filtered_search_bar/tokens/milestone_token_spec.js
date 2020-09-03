@@ -157,7 +157,7 @@ describe('MilestoneToken', () => {
       const tokenSegments = wrapper.findAll(GlFilteredSearchTokenSegment);
 
       expect(tokenSegments).toHaveLength(3); // Milestone, =, '%"4.0"'
-      expect(tokenSegments.at(2).text()).toBe(`%"${mockRegularMilestone.title}"`); // "4.0 RC1"
+      expect(tokenSegments.at(2).text()).toBe(`%${mockRegularMilestone.title}`); // "4.0 RC1"
     });
 
     it('renders provided defaultMilestones as suggestions', async () => {

@@ -2914,6 +2914,11 @@ input DastOnDemandScanCreateInput {
   clientMutationId: String
 
   """
+  ID of the scanner profile to be used for the scan.
+  """
+  dastScannerProfileId: DastScannerProfileID
+
+  """
   ID of the site profile to be used for the scan.
   """
   dastSiteProfileId: DastSiteProfileID!

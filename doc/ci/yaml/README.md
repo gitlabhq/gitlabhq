@@ -2975,7 +2975,8 @@ skip the download step.
 attached to the job when it [succeeds, fails, or always](#artifactswhen).
 
 The artifacts will be sent to GitLab after the job finishes and will
-be available for download in the GitLab UI.
+be available for download in the GitLab UI provided that the size is not
+larger than the [maximum artifact size](../../user/gitlab_com/index.md#gitlab-cicd).
 
 [Read more about artifacts](../pipelines/job_artifacts.md).
 

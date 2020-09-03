@@ -4,7 +4,6 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
   include DiffHelper
   include RendersNotes
 
-  before_action :apply_diff_view_cookie!
   before_action :commit
   before_action :define_diff_vars
   before_action :define_diff_comment_vars, except: [:diffs_batch, :diffs_metadata]

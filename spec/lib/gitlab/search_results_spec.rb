@@ -6,13 +6,14 @@ RSpec.describe Gitlab::SearchResults do
   include ProjectForksHelper
   include SearchHelpers
 
-  let(:user) { create(:user) }
-  let!(:project) { create(:project, name: 'foo') }
-  let!(:issue) { create(:issue, project: project, title: 'foo') }
-  let!(:merge_request) { create(:merge_request, source_project: project, title: 'foo') }
-  let!(:milestone) { create(:milestone, project: project, title: 'foo') }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:project) { create(:project, name: 'foo') }
+  let_it_be(:issue) { create(:issue, project: project, title: 'foo') }
+  let_it_be(:milestone) { create(:milestone, project: project, title: 'foo') }
+  let(:merge_request) { create(:merge_request, source_project: project, title: 'foo') }
+  let(:filters) { {} }
 
-  subject(:results) { described_class.new(user, 'foo', Project.all) }
+  subject(:results) { described_class.new(user, 'foo', Project.all, filters: filters) }
 
   context 'as a user with access' do
     before do
@@ -105,10 +106,10 @@ RSpec.describe Gitlab::SearchResults do
 
       describe '#limited_issues_count' do
         it 'runs single SQL query to get the limited amount of issues' do
-          create(:milestone, project: project, title: 'foo2')
+          create(:issue, project: project, title: 'foo2')
 
           expect(results).to receive(:issues).with(public_only: true).and_call_original
-          expect(results).not_to receive(:issues).with(no_args).and_call_original
+          expect(results).not_to receive(:issues).with(no_args)
 
           expect(results.limited_issues_count).to eq(1)
         end
@@ -164,6 +165,13 @@ RSpec.describe Gitlab::SearchResults do
         expect(results).not_to receive(:project_ids_relation)
 
         results.objects('issues')
+      end
+
+      context 'filtering' do
+        let_it_be(:closed_issue) { create(:issue, :closed, project: project, title: 'foo closed') }
+        let_it_be(:opened_issue) { create(:issue, :opened, project: project, title: 'foo open') }
+
+        include_examples 'search issues scope filters by state'
       end
     end
 

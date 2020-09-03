@@ -874,9 +874,8 @@ For other punctuation rules, please refer to the
   someone in the Merge Request.
 - [Avoid using symbols and special characters](https://gitlab.com/gitlab-org/gitlab-docs/-/issues/84)
   in headers. Whenever possible, they should be plain and short text.
-- Avoid adding things that show ephemeral statuses. For example, if a feature is
-  considered beta or experimental, put this information in a note, not in the
-  heading.
+- When possible, avoid including words that might change in the future. Changing
+  a heading changes its anchor URL, which affects other linked pages.
 - When introducing a new document, be careful for the headings to be
   grammatically and syntactically correct. Mention an [assigned technical writer (TW)](https://about.gitlab.com/handbook/product/product-categories/)
   for review.

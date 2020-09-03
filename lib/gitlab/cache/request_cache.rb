@@ -55,7 +55,7 @@ module Gitlab
               .join(':')
           end
 
-          private cache_key_method_name
+          private cache_key_method_name # rubocop: disable Style/AccessModifierDeclarations
         end
       end
     end

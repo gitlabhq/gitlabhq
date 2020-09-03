@@ -9,7 +9,7 @@ export const MAX_FILE_FINDER_RESULTS = 40;
 export const FILE_FINDER_ROW_HEIGHT = 55;
 export const FILE_FINDER_EMPTY_ROW_HEIGHT = 33;
 
-const originalStopCallback = Mousetrap.stopCallback;
+const originalStopCallback = Mousetrap.prototype.stopCallback;
 
 export default {
   components: {
@@ -134,7 +134,18 @@ export default {
       this.toggle(!this.visible);
     });
 
-    Mousetrap.stopCallback = (e, el, combo) => this.mousetrapStopCallback(e, el, combo);
+    Mousetrap.prototype.stopCallback = function customStopCallback(e, el, combo) {
+      if (
+        (combo === 't' && el.classList.contains('dropdown-input-field')) ||
+        el.classList.contains('inputarea')
+      ) {
+        return true;
+      } else if (combo === 'command+p' || combo === 'ctrl+p') {
+        return false;
+      }
+
+      return originalStopCallback.call(this, e, el, combo);
+    };
   },
   methods: {
     toggle(visible) {
@@ -198,18 +209,6 @@ export default {
     onMouseMove(index) {
       this.cancelMouseOver = false;
       this.onMouseOver(index);
-    },
-    mousetrapStopCallback(e, el, combo) {
-      if (
-        (combo === 't' && el.classList.contains('dropdown-input-field')) ||
-        el.classList.contains('inputarea')
-      ) {
-        return true;
-      } else if (combo === 'command+p' || combo === 'ctrl+p') {
-        return false;
-      }
-
-      return originalStopCallback(e, el, combo);
     },
   },
 };

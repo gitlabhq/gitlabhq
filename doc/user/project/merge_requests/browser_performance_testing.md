@@ -93,7 +93,7 @@ you can view the report directly in your browser.
 You can also customize the jobs with environment variables:
 
 - `SITESPEED_IMAGE`: Configure the Docker image to use for the job (default `sitespeedio/sitespeed.io`), but not the image version.
-- `SITESPEED_VERSION`: Configure the version of the Docker image to use for the job (default `13.3.0`).
+- `SITESPEED_VERSION`: Configure the version of the Docker image to use for the job (default `14.1.0`).
 - `SITESPEED_OPTIONS`: Configure any additional sitespeed.io options as required (default `nil`). Refer to the [sitespeed.io documentation](https://www.sitespeed.io/documentation/sitespeed.io/configuration/) for more details.
 
 For example, you can override the number of runs sitespeed.io
@@ -196,13 +196,13 @@ performance:
   image: docker:git
   variables:
     URL: https://example.com
-    SITESPEED_VERSION: 13.3.0
+    SITESPEED_VERSION: 14.1.0
     SITESPEED_OPTIONS: ''
   services:
     - docker:stable-dind
   script:
     - mkdir gitlab-exporter
-    - wget -O ./gitlab-exporter/index.js https://gitlab.com/gitlab-org/gl-performance/raw/master/index.js
+    - wget -O ./gitlab-exporter/index.js https://gitlab.com/gitlab-org/gl-performance/raw/1.1.0/index.js
     - mkdir sitespeed-results
     - docker run --shm-size=1g --rm -v "$(pwd)":/sitespeed.io sitespeedio/sitespeed.io:$SITESPEED_VERSION --plugins.add ./gitlab-exporter --outputFolder sitespeed-results $URL $SITESPEED_OPTIONS
     - mv sitespeed-results/data/performance.json performance.json
@@ -226,7 +226,7 @@ performance:
     - docker:stable-dind
   script:
     - mkdir gitlab-exporter
-    - wget -O ./gitlab-exporter/index.js https://gitlab.com/gitlab-org/gl-performance/raw/master/index.js
+    - wget -O ./gitlab-exporter/index.js https://gitlab.com/gitlab-org/gl-performance/raw/1.1.0/index.js
     - mkdir sitespeed-results
     - docker run --shm-size=1g --rm -v "$(pwd)":/sitespeed.io sitespeedio/sitespeed.io:6.3.1 --plugins.add ./gitlab-exporter --outputFolder sitespeed-results $URL
     - mv sitespeed-results/data/performance.json performance.json

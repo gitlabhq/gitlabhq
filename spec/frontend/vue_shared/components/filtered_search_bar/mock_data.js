@@ -89,36 +89,40 @@ export const mockMilestoneToken = {
   fetchMilestones: () => Promise.resolve({ data: mockMilestones }),
 };
 
-export const mockAvailableTokens = [mockAuthorToken, mockLabelToken];
+export const mockAvailableTokens = [mockAuthorToken, mockLabelToken, mockMilestoneToken];
+
+export const tokenValueAuthor = {
+  type: 'author_username',
+  value: {
+    data: 'root',
+    operator: '=',
+  },
+};
+
+export const tokenValueLabel = {
+  type: 'label_name',
+  value: {
+    operator: '=',
+    data: 'bug',
+  },
+};
+
+export const tokenValueMilestone = {
+  type: 'milestone_title',
+  value: {
+    operator: '=',
+    data: 'v1.0',
+  },
+};
+
+export const tokenValuePlain = {
+  type: 'filtered-search-term',
+  value: { data: 'foo' },
+};
 
 export const mockHistoryItems = [
-  [
-    {
-      type: 'author_username',
-      value: {
-        data: 'toby',
-        operator: '=',
-      },
-    },
-    {
-      type: 'label_name',
-      value: {
-        data: 'Bug',
-        operator: '=',
-      },
-    },
-    'duo',
-  ],
-  [
-    {
-      type: 'author_username',
-      value: {
-        data: 'root',
-        operator: '=',
-      },
-    },
-    'si',
-  ],
+  [tokenValueAuthor, tokenValueLabel, tokenValueMilestone, 'duo'],
+  [tokenValueAuthor, 'si'],
 ];
 
 export const mockSortOptions = [

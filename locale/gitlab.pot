@@ -2957,6 +2957,9 @@ msgstr ""
 msgid "Any Author"
 msgstr ""
 
+msgid "Any Status"
+msgstr ""
+
 msgid "Any branch"
 msgstr ""
 

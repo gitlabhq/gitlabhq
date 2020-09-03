@@ -7890,6 +7890,16 @@
               "defaultValue": null
             },
             {
+              "name": "dastScannerProfileId",
+              "description": "ID of the scanner profile to be used for the scan.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "DastScannerProfileID",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
               "name": "clientMutationId",
               "description": "A unique identifier for the client performing the mutation.",
               "type": {
