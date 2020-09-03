@@ -68,10 +68,6 @@ module Gitlab
         ::Feature.enabled?(:ci_lint_creates_pipeline_with_dry_run, project, default_enabled: true)
       end
 
-      def self.reset_ci_minutes_for_all_namespaces?
-        ::Feature.enabled?(:reset_ci_minutes_for_all_namespaces, default_enabled: false)
-      end
-
       def self.project_transactionless_destroy?(project)
         Feature.enabled?(:project_transactionless_destroy, project, default_enabled: false)
       end

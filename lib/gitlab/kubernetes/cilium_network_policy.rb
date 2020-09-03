@@ -82,7 +82,7 @@ module Gitlab
           endpointSelector: selector,
           ingress: ingress,
           egress: egress
-        }
+        }.compact!
       end
 
       override :kind

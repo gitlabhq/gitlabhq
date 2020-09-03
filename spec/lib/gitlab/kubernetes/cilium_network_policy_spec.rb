@@ -20,7 +20,7 @@ RSpec.describe Gitlab::Kubernetes::CiliumNetworkPolicy do
       kind: partial_class_name,
       apiVersion: "cilium.io/v2",
       metadata: { name: name, namespace: namespace, resourceVersion: resource_version },
-      spec: { endpointSelector: endpoint_selector, ingress: ingress, egress: nil }
+      spec: { endpointSelector: endpoint_selector, ingress: ingress }
     )
   end
 
@@ -61,7 +61,7 @@ RSpec.describe Gitlab::Kubernetes::CiliumNetworkPolicy do
       )
     end
 
-    let(:spec) { { endpointSelector: selector, ingress: ingress, egress: nil } }
+    let(:spec) { { endpointSelector: selector, ingress: ingress } }
     let(:metadata) { { name: name, namespace: namespace, resourceVersion: resource_version } }
   end
 
@@ -180,7 +180,7 @@ RSpec.describe Gitlab::Kubernetes::CiliumNetworkPolicy do
         kind: partial_class_name,
         apiVersion: "cilium.io/v2",
         metadata: { name: name, namespace: namespace, resourceVersion: resource_version, labels: { app: 'foo' } },
-        spec: { endpointSelector: endpoint_selector, ingress: ingress, egress: nil }
+        spec: { endpointSelector: endpoint_selector, ingress: ingress }
       )
     end
 

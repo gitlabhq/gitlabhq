@@ -35,6 +35,6 @@ class Profiles::NotificationsController < Profiles::ApplicationController
   private
 
   def user_groups
-    GroupsFinder.new(current_user).execute.order_name_asc.page(params[:page]).per(NOTIFICATIONS_PER_PAGE)
+    GroupsFinder.new(current_user, all_available: false).execute.order_name_asc.page(params[:page]).per(NOTIFICATIONS_PER_PAGE)
   end
 end

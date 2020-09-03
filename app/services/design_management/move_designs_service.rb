@@ -13,7 +13,6 @@ module DesignManagement
 
     def execute
       return error(:no_focus) unless current_design.present?
-      return error(:cannot_move) unless ::Feature.enabled?(:reorder_designs, project, default_enabled: true)
       return error(:cannot_move) unless current_user.can?(:move_design, current_design)
       return error(:no_neighbors) unless neighbors.present?
       return error(:not_distinct) unless all_distinct?

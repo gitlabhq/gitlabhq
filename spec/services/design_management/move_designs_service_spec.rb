@@ -32,30 +32,6 @@ RSpec.describe DesignManagement::MoveDesignsService do
   describe '#execute' do
     subject { service.execute }
 
-    context 'the feature is unavailable' do
-      let(:current_design) { designs.first }
-      let(:previous_design) { designs.second }
-      let(:next_design) { designs.third }
-
-      before do
-        stub_feature_flags(reorder_designs: false)
-      end
-
-      it 'raises cannot_move' do
-        expect(subject).to be_error.and(have_attributes(message: :cannot_move))
-      end
-
-      context 'but it is available on the current project' do
-        before do
-          stub_feature_flags(reorder_designs: issue.project)
-        end
-
-        it 'is successful' do
-          expect(subject).to be_success
-        end
-      end
-    end
-
     context 'the user cannot move designs' do
       let(:current_design) { designs.first }
       let(:current_user) { build_stubbed(:user) }
@@ -124,7 +100,7 @@ RSpec.describe DesignManagement::MoveDesignsService do
 
         expect(subject).to be_success
 
-        expect(issue.designs.ordered(issue.project)).to eq([
+        expect(issue.designs.ordered).to eq([
           # Existing designs which already had a relative_position set.
           # These should stay at the beginning, in the same order.
           other_design1,

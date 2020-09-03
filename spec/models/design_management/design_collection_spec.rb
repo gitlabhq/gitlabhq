@@ -41,7 +41,7 @@ RSpec.describe DesignManagement::DesignCollection do
 
       design2 = collection.find_or_create_design!(filename: 'design2.jpg')
 
-      expect(collection.designs.ordered(issue.project)).to eq([design1, design2])
+      expect(collection.designs.ordered).to eq([design1, design2])
     end
   end
 

@@ -10,9 +10,8 @@ RSpec.describe Metrics::Dashboard::GitlabAlertEmbedService do
   let_it_be(:user) { create(:user) }
   let(:alert_id) { alert.id }
 
-  before do
+  before_all do
     project.add_maintainer(user)
-    project.clear_memoization(:licensed_feature_available)
   end
 
   describe '.valid_params?' do

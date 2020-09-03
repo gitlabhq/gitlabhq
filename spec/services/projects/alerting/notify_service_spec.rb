@@ -6,8 +6,6 @@ RSpec.describe Projects::Alerting::NotifyService do
   let_it_be(:project, reload: true) { create(:project, :repository) }
 
   before do
-    # We use `let_it_be(:project)` so we make sure to clear caches
-    project.clear_memoization(:licensed_feature_available)
     allow(ProjectServiceWorker).to receive(:perform_async)
   end
 

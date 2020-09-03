@@ -1528,7 +1528,7 @@ same rule.
 
 In the following example:
 
-- If the dockerfile or any file in `/docker/scripts` has changed, and var=blah,
+- If the `Dockerfile` file or any file in `/docker/scripts` has changed, and var=blah,
   then the job runs manually
 - Otherwise, the job isn't included in the pipeline.
 
@@ -1773,7 +1773,7 @@ This means the keys are treated as if joined by an OR. This relationship could b
 
 In the example below, the `test` job will **not** be created when **any** of the following are true:
 
-- The pipeline runs for the `master`.
+- The pipeline runs for the `master` branch.
 - There are changes to the `README.md` file in the root directory of the repository.
 
 ```yaml
@@ -3221,7 +3221,7 @@ Send all untracked files but [exclude](#artifactsexclude) `*.txt`:
 artifacts:
   untracked: true
   exclude:
-    - *.txt
+    - "*.txt"
 ```
 
 #### `artifacts:when`

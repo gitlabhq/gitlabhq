@@ -54,18 +54,35 @@ RSpec.describe Profiles::NotificationsController do
     end
 
     context 'with group notifications' do
+      let(:notifications_per_page) { 5 }
+
       let_it_be(:group) { create(:group) }
       let_it_be(:subgroups) { create_list(:group, 10, parent: group) }
 
       before do
         group.add_developer(user)
         sign_in(user)
-        stub_const('Profiles::NotificationsController::NOTIFICATIONS_PER_PAGE', 5)
-        get :show
+        stub_const('Profiles::NotificationsController::NOTIFICATIONS_PER_PAGE', notifications_per_page)
       end
 
       it 'paginates the groups' do
+        get :show
+
         expect(assigns(:group_notifications).count).to eq(5)
+      end
+
+      context 'when the user is not a member' do
+        let(:notifications_per_page) { 20 }
+
+        let_it_be(:public_group) { create(:group, :public) }
+
+        it 'does not show public groups', :aggregate_failures do
+          get :show
+
+          # Let's make sure we're grabbing all groups in one page, just in case
+          expect(assigns(:user_groups).count).to eq(11)
+          expect(assigns(:user_groups)).not_to include(public_group)
+        end
       end
     end
 

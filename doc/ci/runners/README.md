@@ -88,20 +88,20 @@ The fair usage algorithm assigns jobs in this order:
 
 If these jobs are in the queue:
 
-- Job 1 for project 1
-- Job 2 for project 1
-- Job 3 for project 1
-- Job 4 for project 2
-- Job 5 for project 2
-- Job 6 for project 3
+- Job 1 for Project 1
+- Job 2 for Project 1
+- Job 3 for Project 1
+- Job 4 for Project 2
+- Job 5 for Project 2
+- Job 6 for Project 3
 
 The fair usage algorithm assigns jobs in this order:
 
 1. Job 1 is chosen first, because it has the lowest job number from projects with no running jobs (that is, all projects).
-1. We finish job 1.
+1. We finish Job 1.
 1. Job 2 is next, because, having finished Job 1, all projects have 0 jobs running again, and 2 is the lowest available job number.
-1. Job 4 is next, because with Project 1 running a job, 4 is the lowest number from projects running no jobs (Projects 2 and 3).
-1. We finish job 4.
+1. Job 4 is next, because with Project 1 running a Job, 4 is the lowest number from projects running no jobs (Projects 2 and 3).
+1. We finish Job 4.
 1. Job 5 is next, because having finished Job 4, Project 2 has no jobs running again.
 1. Job 6 is next, because Project 3 is the only project left with no running jobs.
 1. Lastly we choose Job 3... because, again, it's the only job left.

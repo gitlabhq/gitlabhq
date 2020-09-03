@@ -79,16 +79,10 @@ module DesignManagement
       joins(join.join_sources).where(actions[:event].not_eq(deletion))
     end
 
-    scope :ordered, -> (project) do
-      # TODO: Always order by relative position after the feature flag is removed
-      # https://gitlab.com/gitlab-org/gitlab/-/issues/34382
-      if Feature.enabled?(:reorder_designs, project, default_enabled: true)
-        # We need to additionally sort by `id` to support keyset pagination.
-        # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/17788/diffs#note_230875678
-        order(:relative_position, :id)
-      else
-        in_creation_order
-      end
+    scope :ordered, -> do
+      # We need to additionally sort by `id` to support keyset pagination.
+      # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/17788/diffs#note_230875678
+      order(:relative_position, :id)
     end
 
     scope :in_creation_order, -> { reorder(:id) }

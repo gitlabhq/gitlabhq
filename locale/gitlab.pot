@@ -10684,9 +10684,6 @@ msgstr ""
 msgid "FeatureFlags|User List"
 msgstr ""
 
-msgid "FeatureFlag|Delete strategy"
-msgstr ""
-
 msgid "FeatureFlag|List"
 msgstr ""
 
