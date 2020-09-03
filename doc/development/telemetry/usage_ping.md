@@ -434,8 +434,6 @@ When adding, changing, or updating metrics, please update the [Event Dictionary'
 
 Check if new metrics need to be added to the Versions Application. See `usage_data` [schema](https://gitlab.com/gitlab-services/version-gitlab-com/-/blob/master/db/schema.rb#L147) and usage data [parameters accepted](https://gitlab.com/gitlab-services/version-gitlab-com/-/blob/master/app/services/usage_ping.rb). Any metrics added under the `counts` key are saved in the `counts` column.
 
-For further details, see the [Process to add additional instrumentation to the Usage Ping](https://about.gitlab.com/handbook/product/product-processes/#process-to-add-additional-instrumentation-to-the-usage-ping).
-
 ### 6. Add the feature label
 
 Add the `feature` label to the Merge Request for new Usage Ping metrics. These are user-facing changes and are part of expanding the Usage Ping feature.
