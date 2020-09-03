@@ -14,6 +14,11 @@ class Projects::Ci::LintsController < Projects::ApplicationController
       .new(project: @project, current_user: current_user)
       .validate(@content, dry_run: @dry_run)
 
-    render :show
+    respond_to do |format|
+      format.html { render :show }
+      format.json do
+        render json: ::Ci::Lint::ResultSerializer.new.represent(@result)
+      end
+    end
   end
 end

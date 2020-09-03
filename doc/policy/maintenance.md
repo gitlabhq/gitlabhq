@@ -76,6 +76,9 @@ Version specific changes in Omnibus GitLab Linux packages can be found in [the O
 NOTE: **Note:**
 Instructions are available for downloading an Omnibus GitLab Linux package locally and [manually installing](https://docs.gitlab.com/omnibus/manual_install.html) it.
 
+NOTE: **Note:**
+A step-by-step guide to [upgrading the Omnibus-bundled PostgreSQL is documented separately](https://docs.gitlab.com/omnibus/settings/database.html#upgrade-packaged-postgresql-server).
+
 ### Upgrading major versions
 
 Upgrading the *major* version requires more attention.

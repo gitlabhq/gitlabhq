@@ -65,10 +65,10 @@ module Gitlab
             {
               name: job.name,
               stage: stage.name,
-              before_script: job.options[:before_script],
-              script: job.options[:script],
-              after_script: job.options[:after_script],
-              tag_list: (job.tag_list if job.is_a?(::Ci::Build)),
+              before_script: job.options[:before_script].to_a,
+              script: job.options[:script].to_a,
+              after_script: job.options[:after_script].to_a,
+              tag_list: (job.tag_list if job.is_a?(::Ci::Build)).to_a,
               environment: job.options.dig(:environment, :name),
               when: job.when,
               allow_failure: job.allow_failure
@@ -88,9 +88,9 @@ module Gitlab
             jobs << {
               name: job[:name],
               stage: stage_name,
-              before_script: job.dig(:options, :before_script),
-              script: job.dig(:options, :script),
-              after_script: job.dig(:options, :after_script),
+              before_script: job.dig(:options, :before_script).to_a,
+              script: job.dig(:options, :script).to_a,
+              after_script: job.dig(:options, :after_script).to_a,
               tag_list: job[:tag_list].to_a,
               only: job[:only],
               except: job[:except],

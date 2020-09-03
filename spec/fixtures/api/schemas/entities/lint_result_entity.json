@@ -1,0 +1,25 @@
+{
+  "type": "object",
+  "required": ["valid", "errors", "jobs", "warnings"],
+  "properties": {
+    "errors": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "warnings": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "valid": {
+      "type": "boolean"
+    },
+    "jobs": {
+      "type": ["array", null],
+      "items": {
+        "type": "object",
+        "$ref": "lint_job_entity.json"
+      }
+    }
+  },
+  "additionalProperties": false
+}

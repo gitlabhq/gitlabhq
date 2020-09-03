@@ -983,7 +983,7 @@ Relative linking enables crosslinks to work:
 - in Review Apps, local previews, and `/help`.
 - when working on the documentation locally, so you can verify that they work as
   early as possible in the process.
-- within the GitLab user interace when browsing doc files in their respective
+- within the GitLab user interface when browsing doc files in their respective
   repositories. For example, the links displayed at
   `https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/README.md`.
 
@@ -1426,7 +1426,7 @@ interface:
 | **{monitor}** Monitoring | View GitLab system information, and information on background jobs, logs, health checks, requests profiles, and audit logs. |
 | **{messages}** Messages  | Send and manage broadcast messages for your users.                                                                          |
 
-Use an icon when you find youself having to describe an interface element. For
+Use an icon when you find yourself having to describe an interface element. For
 example:
 
 - Do: Click the Admin Area icon ( **{admin}** ).

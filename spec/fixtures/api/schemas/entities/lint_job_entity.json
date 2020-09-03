@@ -1,0 +1,58 @@
+{
+  "type": "object",
+  "required": [
+    "name",
+    "stage",
+    "before_script",
+    "script",
+    "after_script",
+    "tag_list",
+    "environment",
+    "when",
+    "allow_failure",
+    "only",
+    "except"
+  ],
+  "properties": {
+    "name": {
+      "type": ["string"]
+    },
+    "stage": {
+      "type": ["string"]
+    },
+    "before_script": {
+      "type": ["array"],
+      "items": { "type": "string" }
+    },
+    "script": {
+      "type": ["array"],
+      "items": { "type": "string" }
+    },
+    "after_script": {
+      "type": ["array"],
+      "items": { "type": "string" }
+    },
+    "when": {
+      "items": { "type": ["string"] }
+    },
+    "allow_failure": {
+      "type": ["boolean"]
+    },
+    "environment": {
+      "type": ["string", null]
+    },
+    "tag_list": {
+      "type": ["array"],
+      "items": { "type": "string" }
+    },
+    "only": {
+      "type": ["array", "object", null],
+      "items": { "type": ["string", "array"]}
+    },
+    "except": {
+      "type": ["array", "object", null],
+      "items": { "type": ["string", "array"]}
+    }
+  },
+  "additionalProperties": false
+}
