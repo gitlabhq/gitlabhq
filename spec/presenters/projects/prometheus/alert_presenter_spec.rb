@@ -63,8 +63,6 @@ RSpec.describe Projects::Prometheus::AlertPresenter do
       it do
         is_expected.to eq(
           <<~MARKDOWN.chomp
-            #### Summary
-
             **Start time:** #{presenter.start_time}
 
           MARKDOWN
@@ -80,8 +78,6 @@ RSpec.describe Projects::Prometheus::AlertPresenter do
       it do
         is_expected.to eq(
           <<~MARKDOWN.chomp
-            #### Summary
-
             **Start time:** #{presenter.start_time}
 
             #### Alert Details
@@ -101,8 +97,6 @@ RSpec.describe Projects::Prometheus::AlertPresenter do
       it do
         is_expected.to eq(
           <<~MARKDOWN.chomp
-            #### Summary
-
             **Start time:** #{presenter.start_time}#{markdown_line_break}
             **full_query:** `query`
 
@@ -129,8 +123,6 @@ RSpec.describe Projects::Prometheus::AlertPresenter do
       it do
         is_expected.to eq(
           <<~MARKDOWN.chomp
-            #### Summary
-
             **Start time:** #{presenter.start_time}#{markdown_line_break}
             **Service:** service_name#{markdown_line_break}
             **Monitoring tool:** monitoring_tool_name#{markdown_line_break}
@@ -151,8 +143,6 @@ RSpec.describe Projects::Prometheus::AlertPresenter do
         it do
           is_expected.to eq(
             <<~MARKDOWN.chomp
-            #### Summary
-
             **Start time:** #{presenter.start_time}#{markdown_line_break}
             **Hosts:** http://localhost:3000
 
@@ -168,8 +158,6 @@ RSpec.describe Projects::Prometheus::AlertPresenter do
       shared_examples_for 'markdown with metrics embed' do
         let(:expected_markdown) do
           <<~MARKDOWN.chomp
-          #### Summary
-
           **Start time:** #{presenter.start_time}#{markdown_line_break}
           **full_query:** `avg(metric) > 1.0`
 
@@ -222,8 +210,6 @@ RSpec.describe Projects::Prometheus::AlertPresenter do
         context 'when not enough information is present for an embed' do
           let(:expected_markdown) do
             <<~MARKDOWN.chomp
-            #### Summary
-
             **Start time:** #{presenter.start_time}#{markdown_line_break}
             **full_query:** `avg(metric) > 1.0`
 
@@ -249,8 +235,6 @@ RSpec.describe Projects::Prometheus::AlertPresenter do
           context 'without full_query' do
             let(:expected_markdown) do
               <<~MARKDOWN.chomp
-              #### Summary
-
               **Start time:** #{presenter.start_time}
 
               MARKDOWN

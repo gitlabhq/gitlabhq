@@ -548,13 +548,6 @@ Style/EachWithObject:
 Style/EmptyElse:
   Enabled: false
 
-# Offense count: 11
-# Cop supports --auto-correct.
-Style/EmptyLambdaParameter:
-  Exclude:
-    - 'app/models/ci/build.rb'
-    - 'app/models/ci/runner.rb'
-
 # Offense count: 170
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle.
@@ -637,22 +630,6 @@ Style/ParallelAssignment:
 # Configuration parameters: PreferredDelimiters.
 Style/PercentLiteralDelimiters:
   Enabled: false
-
-# Offense count: 15
-# Cop supports --auto-correct.
-Style/PerlBackrefs:
-  Exclude:
-    - 'app/controllers/projects/application_controller.rb'
-    - 'app/helpers/submodule_helper.rb'
-    - 'lib/backup/manager.rb'
-    - 'lib/banzai/filter/abstract_reference_filter.rb'
-    - 'lib/banzai/filter/autolink_filter.rb'
-    - 'lib/banzai/filter/emoji_filter.rb'
-    - 'lib/banzai/filter/gollum_tags_filter.rb'
-    - 'lib/expand_variables.rb'
-    - 'lib/gitlab/diff/highlight.rb'
-    - 'lib/gitlab/search_results.rb'
-    - 'lib/gitlab/sherlock/query.rb'
 
 # Offense count: 200
 # Cop supports --auto-correct.

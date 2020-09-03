@@ -88,7 +88,7 @@ module Backup
             # - 1495527097_2017_05_23_9.3.0-pre_gitlab_backup.tar
             next unless file =~ /^(\d{10})(?:_\d{4}_\d{2}_\d{2}(_\d+\.\d+\.\d+((-|\.)(pre|rc\d))?(-ee)?)?)?_gitlab_backup\.tar$/
 
-            timestamp = $1.to_i
+            timestamp = Regexp.last_match(1).to_i
 
             if Time.at(timestamp) < (Time.now - keep_time)
               begin

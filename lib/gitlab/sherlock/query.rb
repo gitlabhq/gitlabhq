@@ -105,7 +105,7 @@ module Gitlab
         query.each_line
           .map { |line| line.strip }
           .join("\n")
-          .gsub(PREFIX_NEWLINE) { "\n#{$1} " }
+          .gsub(PREFIX_NEWLINE) { "\n#{Regexp.last_match(1)} " }
       end
     end
   end

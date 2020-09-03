@@ -30,8 +30,6 @@ RSpec.describe AlertManagement::PrometheusAlertPresenter do
     it 'returns an alert issue description' do
       expect(presenter.issue_description).to eq(
         <<~MARKDOWN.chomp
-          #### Summary
-
           **Start time:** #{presenter.start_time}#{markdown_line_break}
           **Severity:** #{presenter.severity}#{markdown_line_break}
           **full_query:** `vector(1)`#{markdown_line_break}

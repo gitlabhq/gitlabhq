@@ -51,8 +51,6 @@ module Projects
 
       def issue_summary_markdown
         <<~MARKDOWN.chomp
-          #### Summary
-
           #{metadata_list}
           #{alert_details}#{metric_embed_for_alert}
         MARKDOWN

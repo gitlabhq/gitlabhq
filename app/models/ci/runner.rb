@@ -52,7 +52,7 @@ module Ci
     has_many :runner_namespaces, inverse_of: :runner
     has_many :groups, through: :runner_namespaces
 
-    has_one :last_build, ->() { order('id DESC') }, class_name: 'Ci::Build'
+    has_one :last_build, -> { order('id DESC') }, class_name: 'Ci::Build'
 
     before_save :ensure_token
 

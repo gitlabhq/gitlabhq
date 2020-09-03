@@ -11,14 +11,14 @@ module QA
 
           view 'app/assets/javascripts/profile/account/components/delete_account_modal.vue' do
             element :password_confirmation_field
-            element :confirm_deletion_button
+            element :confirm_delete_account_button
           end
 
           def delete_account(password)
             click_element(:delete_account_button)
 
             find_element(:password_confirmation_field).set password
-            click_element(:confirm_deletion_button)
+            click_element(:confirm_delete_account_button)
           end
         end
       end

@@ -26,10 +26,9 @@ Enable code intelligence for a project by adding a GitLab CI/CD job to the proje
 
 ```yaml
 code_navigation:
-  image: golang:1.14.0
+  image: sourcegraph/lsif-go:v1
   allow_failure: true # recommended
   script:
-    - go get github.com/sourcegraph/lsif-go/cmd/lsif-go
     - lsif-go
   artifacts:
     reports:

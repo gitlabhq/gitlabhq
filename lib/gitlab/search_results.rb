@@ -186,7 +186,7 @@ module Gitlab
         params[:sort] = 'updated_desc'
 
         if query =~ /#(\d+)\z/
-          params[:iids] = $1
+          params[:iids] = Regexp.last_match(1)
         else
           params[:search] = query
         end

@@ -33,7 +33,7 @@ module Banzai
       # Returns a String with :emoji: replaced with gl-emoji unicode.
       def emoji_name_element_unicode_filter(text)
         text.gsub(emoji_pattern) do |match|
-          name = $1
+          name = Regexp.last_match(1)
           Gitlab::Emoji.gl_emoji_tag(name)
         end
       end

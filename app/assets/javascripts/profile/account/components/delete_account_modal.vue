@@ -64,7 +64,7 @@ Once you confirm %{deleteAccount}, it cannot be undone or recovered.`),
       return {
         text: s__('Delete account'),
         attributes: [
-          { variant: 'danger', 'data-qa-selector': 'confirm_deletion_button' },
+          { variant: 'danger', 'data-qa-selector': 'confirm_delete_account_button' },
           { category: 'primary' },
           { disabled: !this.canSubmit },
         ],

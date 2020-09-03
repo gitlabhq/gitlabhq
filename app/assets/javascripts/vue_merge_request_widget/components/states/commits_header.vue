@@ -1,13 +1,12 @@
 <script>
 /* eslint-disable vue/no-v-html */
-import { GlDeprecatedButton, GlIcon } from '@gitlab/ui';
+import { GlButton } from '@gitlab/ui';
 import { escape } from 'lodash';
 import { __, n__, sprintf, s__ } from '~/locale';
 
 export default {
   components: {
-    GlIcon,
-    GlDeprecatedButton,
+    GlButton,
   },
   props: {
     isSquashEnabled: {
@@ -80,20 +79,19 @@ export default {
       class="js-mr-widget-commits-count mr-widget-extension clickable d-flex align-items-center px-3 py-2"
       @click="toggle()"
     >
-      <gl-deprecated-button
+      <gl-button
         :aria-label="ariaLabel"
-        variant="blank"
-        class="commit-edit-toggle square s24 gl-mr-3"
+        category="tertiary"
+        class="commit-edit-toggle gl-mr-3"
+        :icon="collapseIcon"
         @click.stop="toggle()"
-      >
-        <gl-icon :name="collapseIcon" :size="16" />
-      </gl-deprecated-button>
+      />
       <span v-if="expanded">{{ __('Collapse') }}</span>
       <span v-else>
         <span class="vertical-align-middle" v-html="message"></span>
-        <gl-deprecated-button variant="link" class="modify-message-button">
+        <gl-button variant="link" class="modify-message-button">
           {{ modifyLinkMessage }}
-        </gl-deprecated-button>
+        </gl-button>
       </span>
     </div>
     <div v-show="expanded"><slot></slot></div>

@@ -1,0 +1,5 @@
+---
+title: Fix Style/PerlBackrefs cop
+merge_request: 41246
+author: Rajendra Kadam
+type: fixed

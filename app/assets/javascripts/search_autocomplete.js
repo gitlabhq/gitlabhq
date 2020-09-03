@@ -135,6 +135,7 @@ export class SearchAutocomplete {
       data: this.getData.bind(this),
       selectable: true,
       clicked: this.onClick.bind(this),
+      trackSuggestionClickedLabel: 'search_autocomplete_suggestion',
     });
   }
 

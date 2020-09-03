@@ -1,3 +1,5 @@
+import { slugify } from '~/lib/utils/text_utility';
+
 const renderersByType = {
   divider(element) {
     element.classList.add('divider');
@@ -95,13 +97,20 @@ function checkSelected(data, options) {
   return options.parent.querySelector(`input[name='${options.fieldName}']`) == null;
 }
 
-function createLink(url, selected, options) {
+function createLink(data, selected, options, index) {
   const link = document.createElement('a');
 
-  link.href = url;
+  link.href = getPropertyWithDefault(data, options, 'url', '#');
 
   if (options.icon) {
     link.classList.add('d-flex', 'align-items-center');
+  }
+
+  if (options.trackSuggestionClickedLabel) {
+    link.setAttribute('data-track-event', 'click_text');
+    link.setAttribute('data-track-label', options.trackSuggestionClickedLabel);
+    link.setAttribute('data-track-value', index);
+    link.setAttribute('data-track-property', slugify(data.category || 'no-category'));
   }
 
   link.classList.toggle('is-active', selected);
@@ -123,8 +132,7 @@ function assignTextToLink(el, data, options) {
 
 function renderLink(row, data, { options, group, index }) {
   const selected = checkSelected(data, options);
-  const url = getPropertyWithDefault(data, options, 'url', '#');
-  const link = createLink(url, selected, options);
+  const link = createLink(data, selected, options, index);
 
   assignTextToLink(link, data, options);
 

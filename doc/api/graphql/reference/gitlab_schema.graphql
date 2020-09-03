@@ -16561,6 +16561,11 @@ input UpdateIssueInput {
   dueDate: Time
 
   """
+  The ID of the parent epic. NULL when removing the association
+  """
+  epicId: ID
+
+  """
   The desired health status
   """
   healthStatus: HealthStatus

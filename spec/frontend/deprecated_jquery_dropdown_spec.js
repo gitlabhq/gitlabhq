@@ -313,6 +313,42 @@ describe('deprecatedJQueryDropdown', () => {
       expect(li.childNodes.length).toEqual(1);
       expect(li.textContent).toEqual(text);
     });
+
+    describe('with a trackSuggestionsClickedLabel', () => {
+      it('it includes data-track attributes', () => {
+        const dropdown = dropdownWithOptions({
+          trackSuggestionClickedLabel: 'some_value_for_label',
+        });
+        const item = {
+          id: 'some-element-id',
+          text: 'the link text',
+          url: 'http://example.com',
+          category: 'Suggestion category',
+        };
+        const li = dropdown.renderItem(item, null, 3);
+        const link = li.querySelector('a');
+
+        expect(link).toHaveAttr('data-track-event', 'click_text');
+        expect(link).toHaveAttr('data-track-label', 'some_value_for_label');
+        expect(link).toHaveAttr('data-track-value', '3');
+        expect(link).toHaveAttr('data-track-property', 'suggestion-category');
+      });
+
+      it('it defaults property to no_category when category not provided', () => {
+        const dropdown = dropdownWithOptions({
+          trackSuggestionClickedLabel: 'some_value_for_label',
+        });
+        const item = {
+          id: 'some-element-id',
+          text: 'the link text',
+          url: 'http://example.com',
+        };
+        const li = dropdown.renderItem(item);
+        const link = li.querySelector('a');
+
+        expect(link).toHaveAttr('data-track-property', 'no-category');
+      });
+    });
   });
 
   it('should keep selected item after selecting a second time', () => {
