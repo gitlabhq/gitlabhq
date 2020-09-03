@@ -371,22 +371,6 @@ RSpec.describe Gitlab::Danger::Helper do
     end
   end
 
-  describe '#missing_database_labels' do
-    subject { helper.missing_database_labels(current_mr_labels) }
-
-    context 'when current merge request has ~database::review pending' do
-      let(:current_mr_labels) { ['database::review pending', 'feature'] }
-
-      it { is_expected.to match_array(['database']) }
-    end
-
-    context 'when current merge request does not have ~database::review pending' do
-      let(:current_mr_labels) { ['feature'] }
-
-      it { is_expected.to match_array(['database', 'database::review pending']) }
-    end
-  end
-
   describe '#sanitize_mr_title' do
     where(:mr_title, :expected_mr_title) do
       'My MR title'      | 'My MR title'

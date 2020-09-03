@@ -1,0 +1,5 @@
+---
+title: Replace v-html with v-safe-html in list.vue
+merge_request: 41145
+author: Kev @KevSlashNull
+type: other

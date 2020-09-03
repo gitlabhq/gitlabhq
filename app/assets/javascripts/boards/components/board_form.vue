@@ -29,6 +29,10 @@ export default {
       type: String,
       required: true,
     },
+    labelsWebUrl: {
+      type: String,
+      required: true,
+    },
     scopedIssueBoardFeatureEnabled: {
       type: Boolean,
       required: false,
@@ -198,6 +202,7 @@ export default {
           :board="board"
           :can-admin-board="canAdminBoard"
           :labels-path="labelsPath"
+          :labels-web-url="labelsWebUrl"
           :enable-scoped-labels="enableScopedLabels"
           :project-id="projectId"
           :group-id="groupId"

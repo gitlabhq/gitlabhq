@@ -86,6 +86,7 @@ describe('BoardsSelector', () => {
         canAdminBoard: true,
         multipleIssueBoardsAvailable: true,
         labelsPath: `${TEST_HOST}/labels/path`,
+        labelsWebUrl: `${TEST_HOST}/labels`,
         projectId: 42,
         groupId: 19,
         scopedIssueBoardFeatureEnabled: true,

@@ -119,7 +119,7 @@ RSpec.describe Issues::CreateService do
         end
 
         before do
-          project.update(group: group)
+          project.update!(group: group)
         end
 
         it 'assigns group labels' do
@@ -295,7 +295,7 @@ RSpec.describe Issues::CreateService do
 
         context "when issuable feature is private" do
           before do
-            project.project_feature.update(issues_access_level: ProjectFeature::PRIVATE,
+            project.project_feature.update!(issues_access_level: ProjectFeature::PRIVATE,
                                            merge_requests_access_level: ProjectFeature::PRIVATE)
           end
 
@@ -303,7 +303,7 @@ RSpec.describe Issues::CreateService do
 
           levels.each do |level|
             it "removes not authorized assignee when project is #{Gitlab::VisibilityLevel.level_name(level)}" do
-              project.update(visibility_level: level)
+              project.update!(visibility_level: level)
               opts = { title: 'Title', description: 'Description', assignee_ids: [assignee.id] }
 
               issue = described_class.new(project, user, opts).execute

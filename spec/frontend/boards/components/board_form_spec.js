@@ -11,6 +11,7 @@ describe('board_form.vue', () => {
   const propsData = {
     canAdminBoard: false,
     labelsPath: `${TEST_HOST}/labels/path`,
+    labelsWebUrl: `${TEST_HOST}/-/labels`,
   };
 
   const findModal = () => wrapper.find(DeprecatedModal);

@@ -295,6 +295,24 @@ For installations from source:
 sudo -u git -H bundle exec rake gitlab:backup:create SKIP=tar RAILS_ENV=production
 ```
 
+#### Disabling prompts during restore
+
+During a restore from backup, the restore script may ask for confirmation before
+proceeding. If you wish to disable these prompts, you can set the `GITLAB_ASSUME_YES`
+environment variable to `1`.
+
+For Omnibus GitLab packages:
+
+```shell
+sudo GITLAB_ASSUME_YES=1 gitlab-backup restore
+```
+
+For installations from source:
+
+```shell
+sudo -u git -H GITLAB_ASSUME_YES=1 bundle exec rake gitlab:backup:restore RAILS_ENV=production
+```
+
 #### Back up Git repositories concurrently
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/37158) in GitLab 13.3.

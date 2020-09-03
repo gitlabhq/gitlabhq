@@ -878,7 +878,11 @@ module Ci
     end
 
     def has_coverage_reports?
-      self.has_reports?(Ci::JobArtifact.coverage_reports)
+      pipeline_artifacts&.has_code_coverage?
+    end
+
+    def can_generate_coverage_reports?
+      has_reports?(Ci::JobArtifact.coverage_reports)
     end
 
     def test_report_summary

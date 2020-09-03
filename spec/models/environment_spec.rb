@@ -854,8 +854,8 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
     end
 
     it 'overrides reactive_cache_limit_enabled? with a FF' do
-      environment_with_enabled_ff = FactoryBot.build(:environment)
-      environment_with_disabled_ff = FactoryBot.build(:environment)
+      environment_with_enabled_ff = build(:environment, project: create(:project))
+      environment_with_disabled_ff = build(:environment, project: create(:project))
 
       stub_feature_flags(reactive_caching_limit_environment: environment_with_enabled_ff.project)
 

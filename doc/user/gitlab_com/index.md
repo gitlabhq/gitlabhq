@@ -68,7 +68,7 @@ Below are the settings for [GitLab Pages](https://about.gitlab.com/stages-devops
 | IP address                  | `35.185.44.232`   | -             |
 | Custom domains support      | yes               | no            |
 | TLS certificates support    | yes               | no            |
-| Maximum size (uncompressed) | 1G                | 100M          |
+| Maximum size (compressed) | 1G                | 100M          |
 
 NOTE: **Note:**
 The maximum size of your Pages site is regulated by the artifacts maximum size
@@ -80,7 +80,7 @@ Below are the current settings regarding [GitLab CI/CD](../../ci/README.md).
 
 | Setting                 | GitLab.com        | Default       |
 | -----------             | ----------------- | ------------- |
-| Artifacts maximum size (uncompressed) | 1G                | 100M          |
+| Artifacts maximum size (compressed) | 1G                | 100M          |
 | Artifacts [expiry time](../../ci/yaml/README.md#artifactsexpire_in)   | From June 22, 2020, deleted after 30 days unless otherwise specified (artifacts created before that date have no expiry).           | deleted after 30 days unless otherwise specified    |
 | Scheduled Pipeline Cron | `*/5 * * * *` | `19 * * * *` |
 | [Max jobs in active pipelines](../../administration/instance_limits.md#number-of-jobs-in-active-pipelines) | `500` for Free tier, unlimited otherwise | Unlimited

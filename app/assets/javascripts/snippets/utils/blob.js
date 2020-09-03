@@ -4,6 +4,8 @@ import {
   SNIPPET_BLOB_ACTION_UPDATE,
   SNIPPET_BLOB_ACTION_MOVE,
   SNIPPET_BLOB_ACTION_DELETE,
+  SNIPPET_LEVELS_MAP,
+  SNIPPET_VISIBILITY,
 } from '../constants';
 
 const createLocalId = () => uniqueId('blob_local_');
@@ -63,4 +65,17 @@ export const diffAll = (blobs, origBlobs) => {
     .filter(x => x);
 
   return [...deletedEntries, ...newEntries];
+};
+
+export const defaultSnippetVisibilityLevels = arr => {
+  if (Array.isArray(arr)) {
+    return arr.map(l => {
+      const translatedLevel = SNIPPET_LEVELS_MAP[l];
+      return {
+        value: translatedLevel,
+        ...SNIPPET_VISIBILITY[translatedLevel],
+      };
+    });
+  }
+  return [];
 };

@@ -288,7 +288,7 @@ RSpec.describe Issues::CloseService do
       end
 
       it 'deletes milestone issue counters cache' do
-        issue.update(milestone: create(:milestone, project: project))
+        issue.update!(milestone: create(:milestone, project: project))
 
         expect_next_instance_of(Milestones::ClosedIssuesCountService, issue.milestone) do |service|
           expect(service).to receive(:delete_cache).and_call_original

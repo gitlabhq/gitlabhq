@@ -13,6 +13,8 @@ import { __, sprintf } from '~/locale';
 import Api from '~/api';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
 
+const SEARCH_DEBOUNCE_MS = 250;
+
 export default {
   components: {
     GlNewDropdown,
@@ -95,12 +97,15 @@ export default {
     // lodash attaches to the function, which is
     // made inaccessible by Vue. More info:
     // https://stackoverflow.com/a/52988020/1063392
-    this.debouncedSearchMilestones = debounce(this.searchMilestones, 100);
+    this.debouncedSearchMilestones = debounce(this.searchMilestones, SEARCH_DEBOUNCE_MS);
   },
   mounted() {
     this.fetchMilestones();
   },
   methods: {
+    focusSearchBox() {
+      this.$refs.searchBox.$el.querySelector('input').focus();
+    },
     fetchMilestones() {
       this.requestCount += 1;
 
@@ -183,7 +188,7 @@ export default {
 </script>
 
 <template>
-  <gl-new-dropdown>
+  <gl-new-dropdown v-bind="$attrs" class="project-milestone-combobox" @shown="focusSearchBox">
     <template slot="button-content">
       <span ref="buttonText" class="flex-grow-1 ml-1 text-muted">{{
         selectedMilestonesLabel
@@ -198,6 +203,7 @@ export default {
     <gl-new-dropdown-divider />
 
     <gl-search-box-by-type
+      ref="searchBox"
       v-model.trim="searchQuery"
       class="gl-m-3"
       :placeholder="this.$options.translations.searchMilestones"

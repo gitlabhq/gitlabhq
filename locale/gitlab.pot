@@ -7734,10 +7734,19 @@ msgstr ""
 msgid "DastProfiles|Could not create the site profile. Please try again."
 msgstr ""
 
+msgid "DastProfiles|Could not delete scanner profile. Please refresh the page, or try again later."
+msgstr ""
+
+msgid "DastProfiles|Could not delete scanner profiles:"
+msgstr ""
+
 msgid "DastProfiles|Could not delete site profile. Please refresh the page, or try again later."
 msgstr ""
 
 msgid "DastProfiles|Could not delete site profiles:"
+msgstr ""
+
+msgid "DastProfiles|Could not fetch scanner profiles. Please refresh the page, or try again later."
 msgstr ""
 
 msgid "DastProfiles|Could not fetch site profiles. Please refresh the page, or try again later."
@@ -7750,6 +7759,9 @@ msgid "DastProfiles|Do you want to discard this site profile?"
 msgstr ""
 
 msgid "DastProfiles|Do you want to discard your changes?"
+msgstr ""
+
+msgid "DastProfiles|Edit feature will come soon. Please create a new profile if changes needed"
 msgstr ""
 
 msgid "DastProfiles|Edit site profile"
@@ -7792,6 +7804,9 @@ msgid "DastProfiles|Save profile"
 msgstr ""
 
 msgid "DastProfiles|Scanner Profile"
+msgstr ""
+
+msgid "DastProfiles|Scanner Profiles"
 msgstr ""
 
 msgid "DastProfiles|Site Profile"

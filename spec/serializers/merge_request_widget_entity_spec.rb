@@ -210,7 +210,7 @@ RSpec.describe MergeRequestWidgetEntity do
 
         context 'when build feature is disabled' do
           before do
-            project.project_feature.update(builds_access_level: ProjectFeature::DISABLED)
+            project.project_feature.update!(builds_access_level: ProjectFeature::DISABLED)
           end
 
           it 'has no path' do
@@ -346,7 +346,7 @@ RSpec.describe MergeRequestWidgetEntity do
 
     it 'returns a blank rebase_path' do
       allow(merge_request).to receive(:should_be_rebased?).and_return(true)
-      forked_project.destroy
+      forked_project.destroy!
       merge_request.reload
 
       entity = described_class.new(merge_request, request: request).as_json

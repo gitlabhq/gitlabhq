@@ -28,7 +28,8 @@ export default class AjaxLoadingSpinner {
   static toggleLoadingIcon(iconElement) {
     const { classList } = iconElement;
     classList.toggle(iconElement.dataset.icon);
-    classList.toggle('fa-spinner');
-    classList.toggle('fa-spin');
+    classList.toggle('gl-spinner');
+    classList.toggle('gl-spinner-orange');
+    classList.toggle('gl-spinner-sm');
   }
 }

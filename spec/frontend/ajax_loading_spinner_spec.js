@@ -19,8 +19,9 @@ describe('Ajax Loading Spinner', () => {
       req.beforeSend(xhr, { dataType: 'text/html' });
 
       expect(icon).not.toHaveClass('fa-trash-o');
-      expect(icon).toHaveClass('fa-spinner');
-      expect(icon).toHaveClass('fa-spin');
+      expect(icon).toHaveClass('gl-spinner');
+      expect(icon).toHaveClass('gl-spinner-orange');
+      expect(icon).toHaveClass('gl-spinner-sm');
       expect(icon.dataset.icon).toEqual('fa-trash-o');
       expect(ajaxLoadingSpinner.getAttribute('disabled')).toEqual('');
 
@@ -44,8 +45,9 @@ describe('Ajax Loading Spinner', () => {
       const icon = ajaxLoadingSpinner.querySelector('i');
 
       expect(icon).toHaveClass('fa-trash-o');
-      expect(icon).not.toHaveClass('fa-spinner');
-      expect(icon).not.toHaveClass('fa-spin');
+      expect(icon).not.toHaveClass('gl-spinner');
+      expect(icon).not.toHaveClass('gl-spinner-orange');
+      expect(icon).not.toHaveClass('gl-spinner-sm');
       expect(ajaxLoadingSpinner.getAttribute('disabled')).toEqual(null);
 
       done();

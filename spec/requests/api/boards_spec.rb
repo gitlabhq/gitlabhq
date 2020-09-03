@@ -41,7 +41,7 @@ RSpec.describe API::Boards do
     it 'creates a new issue board list for group labels' do
       group = create(:group)
       group_label = create(:group_label, group: group)
-      board_parent.update(group: group)
+      board_parent.update!(group: group)
 
       post api(url, user), params: { label_id: group_label.id }
 
@@ -54,7 +54,7 @@ RSpec.describe API::Boards do
       group = create(:group)
       sub_group = create(:group, parent: group)
       group_label = create(:group_label, group: group)
-      board_parent.update(group: sub_group)
+      board_parent.update!(group: sub_group)
       group.add_developer(user)
       sub_group.add_developer(user)
 

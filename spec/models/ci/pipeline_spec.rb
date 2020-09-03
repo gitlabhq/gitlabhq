@@ -2945,6 +2945,22 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
   describe '#has_coverage_reports?' do
     subject { pipeline.has_coverage_reports? }
 
+    context 'when pipeline has a code coverage artifact' do
+      let(:pipeline) { create(:ci_pipeline, :with_coverage_report_artifact, :running, project: project) }
+
+      it { expect(subject).to be_truthy }
+    end
+
+    context 'when pipeline does not have a code coverage artifact' do
+      let(:pipeline) { create(:ci_pipeline, :success, project: project) }
+
+      it { expect(subject).to be_falsey }
+    end
+  end
+
+  describe '#can_generate_coverage_reports?' do
+    subject { pipeline.can_generate_coverage_reports? }
+
     context 'when pipeline has builds with coverage reports' do
       before do
         create(:ci_build, :coverage_reports, pipeline: pipeline, project: project)

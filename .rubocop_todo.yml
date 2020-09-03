@@ -638,13 +638,6 @@ Style/RedundantInterpolation:
 Style/RedundantSelf:
   Enabled: false
 
-# Offense count: 2
-# Cop supports --auto-correct.
-Style/RedundantSort:
-  Exclude:
-    - 'app/presenters/packages/nuget/search_results_presenter.rb'
-    - 'spec/presenters/packages/nuget/search_results_presenter_spec.rb'
-
 # Offense count: 120
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle, AllowInnerSlashes.
@@ -697,11 +690,6 @@ Rails/SaveBang:
     - 'ee/spec/initializers/fog_google_https_private_urls_spec.rb'
     - 'ee/spec/lib/analytics/merge_request_metrics_calculator_spec.rb'
     - 'ee/spec/lib/ee/gitlab/auth/ldap/sync/group_spec.rb'
-    - 'ee/spec/lib/ee/gitlab/background_migration/migrate_approver_to_approval_rules_spec.rb'
-    - 'ee/spec/lib/ee/gitlab/background_migration/move_epic_issues_after_epics_spec.rb'
-    - 'ee/spec/lib/ee/gitlab/background_migration/populate_any_approval_rule_for_merge_requests_spec.rb'
-    - 'ee/spec/lib/ee/gitlab/background_migration/populate_any_approval_rule_for_projects_spec.rb'
-    - 'ee/spec/lib/ee/gitlab/background_migration/prune_orphaned_geo_events_spec.rb'
     - 'ee/spec/lib/ee/gitlab/checks/push_rules/commit_check_spec.rb'
     - 'ee/spec/lib/ee/gitlab/ci/pipeline/quota/activity_spec.rb'
     - 'ee/spec/lib/gitlab/auth/ldap/access_spec.rb'
@@ -829,10 +817,6 @@ Rails/SaveBang:
     - 'ee/spec/services/merge_requests/remove_approval_service_spec.rb'
     - 'ee/spec/services/merge_requests/update_blocks_service_spec.rb'
     - 'ee/spec/services/merge_trains/refresh_merge_request_service_spec.rb'
-    - 'ee/spec/services/projects/after_rename_service_spec.rb'
-    - 'ee/spec/services/projects/import_export/export_service_spec.rb'
-    - 'ee/spec/services/projects/update_mirror_service_spec.rb'
-    - 'ee/spec/services/projects/update_service_spec.rb'
     - 'ee/spec/services/quick_actions/interpret_service_spec.rb'
     - 'ee/spec/services/slash_commands/global_slack_handler_spec.rb'
     - 'ee/spec/services/start_pull_mirroring_service_spec.rb'
@@ -1111,9 +1095,6 @@ Rails/SaveBang:
     - 'spec/models/concerns/subscribable_spec.rb'
     - 'spec/models/concerns/token_authenticatable_spec.rb'
     - 'spec/models/container_repository_spec.rb'
-    - 'spec/models/cycle_analytics/issue_spec.rb'
-    - 'spec/models/cycle_analytics/plan_spec.rb'
-    - 'spec/models/cycle_analytics/production_spec.rb'
     - 'spec/models/deploy_keys_project_spec.rb'
     - 'spec/models/deploy_token_spec.rb'
     - 'spec/models/deployment_spec.rb'
@@ -1172,9 +1153,6 @@ Rails/SaveBang:
     - 'spec/presenters/ci/build_runner_presenter_spec.rb'
     - 'spec/presenters/ci/trigger_presenter_spec.rb'
     - 'spec/presenters/packages/conan/package_presenter_spec.rb'
-    - 'spec/requests/api/access_requests_spec.rb'
-    - 'spec/requests/api/boards_spec.rb'
-    - 'spec/requests/api/branches_spec.rb'
     - 'spec/requests/api/ci/runner_spec.rb'
     - 'spec/requests/api/commit_statuses_spec.rb'
     - 'spec/requests/api/conan_packages_spec.rb'
@@ -1196,9 +1174,6 @@ Rails/SaveBang:
     - 'spec/requests/api/merge_request_diffs_spec.rb'
     - 'spec/requests/api/merge_requests_spec.rb'
     - 'spec/requests/api/notes_spec.rb'
-    - 'spec/requests/api/pages/internal_access_spec.rb'
-    - 'spec/requests/api/pages/private_access_spec.rb'
-    - 'spec/requests/api/pages/public_access_spec.rb'
     - 'spec/requests/api/pipeline_schedules_spec.rb'
     - 'spec/requests/api/project_import_spec.rb'
     - 'spec/requests/api/project_milestones_spec.rb'
@@ -1208,11 +1183,6 @@ Rails/SaveBang:
     - 'spec/requests/lfs_http_spec.rb'
     - 'spec/requests/profiles/notifications_controller_spec.rb'
     - 'spec/requests/projects/cycle_analytics_events_spec.rb'
-    - 'spec/serializers/environment_status_entity_spec.rb'
-    - 'spec/serializers/issue_entity_spec.rb'
-    - 'spec/serializers/job_entity_spec.rb'
-    - 'spec/serializers/merge_request_poll_widget_entity_spec.rb'
-    - 'spec/serializers/merge_request_widget_entity_spec.rb'
     - 'spec/services/auth/container_registry_authentication_service_spec.rb'
     - 'spec/services/auto_merge/base_service_spec.rb'
     - 'spec/services/auto_merge_service_spec.rb'
@@ -1232,11 +1202,6 @@ Rails/SaveBang:
     - 'spec/services/issuable/bulk_update_service_spec.rb'
     - 'spec/services/issuable/clone/attributes_rewriter_spec.rb'
     - 'spec/services/issuable/common_system_notes_service_spec.rb'
-    - 'spec/services/issues/close_service_spec.rb'
-    - 'spec/services/issues/create_service_spec.rb'
-    - 'spec/services/issues/export_csv_service_spec.rb'
-    - 'spec/services/issues/reopen_service_spec.rb'
-    - 'spec/services/issues/update_service_spec.rb'
     - 'spec/services/labels/promote_service_spec.rb'
     - 'spec/services/members/destroy_service_spec.rb'
     - 'spec/services/merge_requests/build_service_spec.rb'

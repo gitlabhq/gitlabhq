@@ -2448,7 +2448,7 @@ You can set the period with `start_in` key. The value of `start_in` key is an el
 provided. `start_in` key must be less than or equal to one week. Examples of valid values include:
 
 - `'5'`
-- `10 seconds`
+- `5 seconds`
 - `30 minutes`
 - `1 day`
 - `1 week`
@@ -3269,7 +3269,8 @@ and are not accessible anymore.
 The value of `expire_in` is an elapsed time in seconds, unless a unit is
 provided. Examples of valid values:
 
-- `42`
+- `'42'`
+- `42 seconds`
 - `3 mins 4 sec`
 - `2 hrs 20 min`
 - `2h20min`

@@ -8,10 +8,10 @@ module Backup
     attr_reader :progress
     attr_reader :config, :db_file_name
 
-    def initialize(progress)
+    def initialize(progress, filename: nil)
       @progress = progress
       @config = YAML.load_file(File.join(Rails.root, 'config', 'database.yml'))[Rails.env]
-      @db_file_name = File.join(Gitlab.config.backup.path, 'db', 'database.sql.gz')
+      @db_file_name = filename || File.join(Gitlab.config.backup.path, 'db', 'database.sql.gz')
     end
 
     def dump
@@ -57,25 +57,62 @@ module Backup
       decompress_pid = spawn(*%w(gzip -cd), out: decompress_wr, in: db_file_name)
       decompress_wr.close
 
-      restore_pid =
+      status, errors =
         case config["adapter"]
         when "postgresql" then
           progress.print "Restoring PostgreSQL database #{config['database']} ... "
           pg_env
-          spawn('psql', config['database'], in: decompress_rd)
+          execute_and_track_errors(pg_restore_cmd, decompress_rd)
         end
       decompress_rd.close
 
-      success = [decompress_pid, restore_pid].all? do |pid|
-        Process.waitpid(pid)
-        $?.success?
+      Process.waitpid(decompress_pid)
+      success = $?.success? && status.success?
+
+      if errors.present?
+        progress.print "------ BEGIN ERRORS -----".color(:yellow)
+        progress.print errors.join.color(:yellow)
+        progress.print "------ END ERRORS -------".color(:yellow)
       end
 
       report_success(success)
-      abort 'Restore failed' unless success
+      raise Backup::Error, 'Restore failed' unless success
+
+      errors
     end
 
     protected
+
+    def execute_and_track_errors(cmd, decompress_rd)
+      errors = []
+
+      Open3.popen3(ENV, *cmd) do |stdin, stdout, stderr, thread|
+        stdin.binmode
+
+        Thread.new do
+          data = stdout.read
+          $stdout.write(data)
+        end
+
+        Thread.new do
+          until (raw_line = stderr.gets).nil?
+            warn(raw_line)
+            # Recent database dumps will use --if-exists with pg_dump
+            errors << raw_line unless raw_line =~ /does not exist$/
+          end
+        end
+
+        begin
+          IO.copy_stream(decompress_rd, stdin)
+        rescue Errno::EPIPE
+        end
+
+        stdin.close
+
+        thread.join
+        [thread.value, errors]
+      end
+    end
 
     def pg_env
       args = {
@@ -100,6 +137,12 @@ module Backup
       else
         progress.puts '[FAILED]'.color(:red)
       end
+    end
+
+    private
+
+    def pg_restore_cmd
+      ['psql', config['database']]
     end
   end
 end

@@ -1,9 +1,12 @@
 <script>
-/* eslint-disable vue/no-v-html */
+import { GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
 import { mapGetters } from 'vuex';
 import { __, sprintf } from '~/locale';
 
 export default {
+  directives: {
+    SafeHtml,
+  },
   computed: {
     ...mapGetters(['getNotesDataByProp']),
     registerLink() {
@@ -31,5 +34,5 @@ export default {
 </script>
 
 <template>
-  <div class="disabled-comment text-center" v-html="signedOutText"></div>
+  <div v-safe-html="signedOutText" class="disabled-comment text-center"></div>
 </template>

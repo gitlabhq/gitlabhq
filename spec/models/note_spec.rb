@@ -67,7 +67,7 @@ RSpec.describe Note do
     end
 
     context 'when noteable is a personal snippet' do
-      subject { build(:note_on_personal_snippet) }
+      subject { build(:note_on_personal_snippet, noteable: create(:personal_snippet)) }
 
       it 'is valid without project' do
         is_expected.to be_valid
@@ -109,7 +109,8 @@ RSpec.describe Note do
   describe 'callbacks' do
     describe '#notify_after_create' do
       it 'calls #after_note_created on the noteable' do
-        note = build(:note)
+        noteable = create(:issue)
+        note = build(:note, project: noteable.project, noteable: noteable)
 
         expect(note).to receive(:notify_after_create).and_call_original
         expect(note.noteable).to receive(:after_note_created).with(note)
@@ -840,7 +841,8 @@ RSpec.describe Note do
     let(:html) { '<p>some html</p>'}
 
     context 'note for a project snippet' do
-      let(:note) { build(:note_on_project_snippet) }
+      let(:snippet) { create(:project_snippet) }
+      let(:note) { build(:note_on_project_snippet, project: snippet.project, noteable: snippet) }
 
       before do
         expect(Banzai::Renderer).to receive(:cacheless_render_field)
@@ -855,7 +857,8 @@ RSpec.describe Note do
     end
 
     context 'note for a personal snippet' do
-      let(:note) { build(:note_on_personal_snippet) }
+      let(:snippet) { create(:personal_snippet) }
+      let(:note) { build(:note_on_personal_snippet, noteable: snippet) }
 
       before do
         expect(Banzai::Renderer).to receive(:cacheless_render_field)
@@ -889,7 +892,7 @@ RSpec.describe Note do
 
     context 'for a note on a commit' do
       it 'returns true' do
-        note = build(:note_on_commit)
+        note = build(:note_on_commit, project: create(:project, :repository))
 
         expect(note.can_be_discussion_note?).to be_truthy
       end
@@ -913,7 +916,7 @@ RSpec.describe Note do
 
     context 'for a diff note on commit' do
       it 'returns false' do
-        note = build(:diff_note_on_commit)
+        note = build(:diff_note_on_commit, project: create(:project, :repository))
 
         expect(note.can_be_discussion_note?).to be_falsey
       end
@@ -1143,7 +1146,8 @@ RSpec.describe Note do
   end
 
   describe 'expiring ETag cache' do
-    let(:note) { build(:note_on_issue) }
+    let_it_be(:issue) { create(:issue) }
+    let(:note) { build(:note, project: issue.project, noteable: issue) }
 
     def expect_expiration(noteable)
       expect_any_instance_of(Gitlab::EtagCaching::Store)

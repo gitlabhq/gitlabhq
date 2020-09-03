@@ -1,0 +1,5 @@
+---
+title: Fix Rails/SaveBang offenses for ee/spec/services/projects/*
+merge_request: 41332
+author: Rajendra Kadam
+type: fixed

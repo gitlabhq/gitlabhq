@@ -7,10 +7,16 @@ module Packages
 
       def execute
         ::Packages::Package.transaction do
-          Packages::Pypi::Metadatum.upsert(
-            package_id: created_package.id,
+          meta = Packages::Pypi::Metadatum.new(
+            package: created_package,
             required_python: params[:requires_python]
           )
+
+          unless meta.valid?
+            raise ActiveRecord::RecordInvalid.new(meta)
+          end
+
+          Packages::Pypi::Metadatum.upsert(meta.attributes)
 
           ::Packages::CreatePackageFileService.new(created_package, file_params).execute
         end

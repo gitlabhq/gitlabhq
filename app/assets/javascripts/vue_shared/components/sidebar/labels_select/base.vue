@@ -14,7 +14,10 @@ import DropdownSearchInput from './dropdown_search_input.vue';
 import DropdownFooter from './dropdown_footer.vue';
 import DropdownCreateLabel from './dropdown_create_label.vue';
 
+import { DropdownVariant } from '../labels_select_vue/constants';
+
 export default {
+  DropdownVariant,
   components: {
     DropdownTitle,
     DropdownValue,
@@ -80,6 +83,11 @@ export default {
       required: false,
       default: false,
     },
+    variant: {
+      type: String,
+      required: false,
+      default: DropdownVariant.Sidebar,
+    },
   },
   computed: {
     hiddenInputName() {
@@ -123,7 +131,7 @@ export default {
 <template>
   <div class="block labels js-labels-block">
     <dropdown-value-collapsed
-      v-if="showCreate"
+      v-if="showCreate && variant === $options.DropdownVariant.Sidebar"
       :labels="context.labels"
       @onValueClick="handleCollapsedValueClick"
     />
@@ -150,18 +158,21 @@ export default {
           :labels-path="labelsPath"
           :namespace="namespace"
           :labels="context.labels"
-          :show-extra-options="!showCreate"
+          :show-extra-options="!showCreate || variant !== $options.DropdownVariant.Sidebar"
           :enable-scoped-labels="enableScopedLabels"
         />
         <div
-          class="dropdown-menu dropdown-select dropdown-menu-paging
-dropdown-menu-labels dropdown-menu-selectable"
+          class="dropdown-menu dropdown-select dropdown-menu-paging dropdown-menu-labels dropdown-menu-selectable"
         >
           <div class="dropdown-page-one">
-            <dropdown-header v-if="showCreate" />
+            <dropdown-header v-if="showCreate && variant === $options.DropdownVariant.Sidebar" />
             <dropdown-search-input />
             <div class="dropdown-content" data-qa-selector="labels_dropdown_content"></div>
-            <div class="dropdown-loading"><gl-loading-icon /></div>
+            <div class="dropdown-loading">
+              <gl-loading-icon
+                class="gl-display-flex gl-justify-content-center gl-align-items-center gl-h-full"
+              />
+            </div>
             <dropdown-footer
               v-if="showCreate"
               :labels-web-url="labelsWebUrl"

@@ -86,36 +86,4 @@ RSpec.describe API::Helpers::PackagesManagerClientsHelpers do
 
     it_behaves_like 'invalid auth header'
   end
-
-  describe '#uploaded_package_file' do
-    let_it_be(:params) { {} }
-
-    subject { helper.uploaded_package_file }
-
-    before do
-      allow(helper).to receive(:params).and_return(params)
-    end
-
-    context 'with valid uploaded package file' do
-      let_it_be(:uploaded_file) { Object.new }
-
-      before do
-        allow(UploadedFile).to receive(:from_params).and_return(uploaded_file)
-      end
-
-      it { is_expected.to be uploaded_file }
-    end
-
-    context 'with invalid uploaded package file' do
-      before do
-        allow(UploadedFile).to receive(:from_params).and_return(nil)
-      end
-
-      it 'fails with bad_request!' do
-        expect(helper).to receive(:bad_request!)
-
-        expect(subject).to be nil
-      end
-    end
-  end
 end

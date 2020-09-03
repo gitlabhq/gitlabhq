@@ -61,6 +61,10 @@ export default {
       type: String,
       required: true,
     },
+    labelsWebUrl: {
+      type: String,
+      required: true,
+    },
     projectId: {
       type: Number,
       required: true,
@@ -332,6 +336,7 @@ export default {
       <board-form
         v-if="currentPage"
         :labels-path="labelsPath"
+        :labels-web-url="labelsWebUrl"
         :project-id="projectId"
         :group-id="groupId"
         :can-admin-board="canAdminBoard"

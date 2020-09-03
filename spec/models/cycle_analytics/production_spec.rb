@@ -15,7 +15,7 @@ RSpec.describe 'CycleAnalytics#production' do
   generate_cycle_analytics_spec(
     phase: :production,
     data_fn: -> (context) { { issue: context.build(:issue, project: context.project) } },
-    start_time_conditions: [["issue is created", -> (context, data) { data[:issue].save }]],
+    start_time_conditions: [["issue is created", -> (context, data) { data[:issue].save! }]],
     before_end_fn: lambda do |context, data|
       context.create_merge_request_closing_issue(context.user, context.project, data[:issue])
       context.merge_merge_requests_closing_issue(context.user, context.project, data[:issue])

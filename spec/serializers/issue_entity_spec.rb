@@ -112,7 +112,7 @@ RSpec.describe IssueEntity do
 
     context 'when project is archived' do
       before do
-        project.update(archived: true)
+        project.update!(archived: true)
       end
 
       it 'returns archived true' do

@@ -1,8 +1,7 @@
 <script>
-/* eslint-disable vue/no-v-html */
 import { mapActions, mapGetters, mapState } from 'vuex';
 import { escape } from 'lodash';
-import { GlLoadingIcon, GlIcon } from '@gitlab/ui';
+import { GlLoadingIcon, GlIcon, GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
 import { sprintf, __ } from '../../../locale';
 import CiIcon from '../../../vue_shared/components/ci_icon.vue';
 import Tabs from '../../../vue_shared/components/tabs/tabs';
@@ -21,6 +20,9 @@ export default {
     JobsList,
     EmptyState,
     GlLoadingIcon,
+  },
+  directives: {
+    SafeHtml,
   },
   computed: {
     ...mapState(['pipelinesEmptyStateSvgPath', 'links']),
@@ -84,7 +86,7 @@ export default {
       <div v-else-if="latestPipeline.yamlError" class="bs-callout bs-callout-danger">
         <p class="gl-mb-0">{{ __('Found errors in your .gitlab-ci.yml:') }}</p>
         <p class="gl-mb-0 break-word">{{ latestPipeline.yamlError }}</p>
-        <p class="gl-mb-0" v-html="ciLintText"></p>
+        <p v-safe-html="ciLintText" class="gl-mb-0"></p>
       </div>
       <tabs v-else class="ide-pipeline-list">
         <tab :active="!pipelineFailed">

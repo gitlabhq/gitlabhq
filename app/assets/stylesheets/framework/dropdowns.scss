@@ -171,6 +171,13 @@
   }
 }
 
+.labels {
+  // Prevent double scroll-bars for labels dropdown.
+  .dropdown-menu-toggle.wide + .dropdown-select {
+    max-height: unset;
+  }
+}
+
 .gl-dropdown .dropdown-menu-toggle {
   padding-right: $gl-padding-8;
 

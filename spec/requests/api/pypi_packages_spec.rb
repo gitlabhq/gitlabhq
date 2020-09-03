@@ -117,7 +117,8 @@ RSpec.describe API::PypiPackages do
     let_it_be(:file_name) { 'package.whl' }
     let(:url) { "/projects/#{project.id}/packages/pypi" }
     let(:headers) { {} }
-    let(:base_params) { { requires_python: '>=3.7', version: '1.0.0', name: 'sample-project', sha256_digest: '123' } }
+    let(:requires_python) { '>=3.7' }
+    let(:base_params) { { requires_python: requires_python, version: '1.0.0', name: 'sample-project', sha256_digest: '123' } }
     let(:params) { base_params.merge(content: temp_file(file_name)) }
     let(:send_rewritten_field) { true }
 
@@ -167,6 +168,19 @@ RSpec.describe API::PypiPackages do
 
         it_behaves_like params[:shared_examples_name], params[:user_role], params[:expected_status], params[:member]
       end
+    end
+
+    context 'with required_python too big' do
+      let(:requires_python) { 'x' * 51 }
+      let(:token) { personal_access_token.token }
+      let(:user_headers) { basic_auth_header(user.username, token) }
+      let(:headers) { user_headers.merge(workhorse_header) }
+
+      before do
+        project.update!(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
+      end
+
+      it_behaves_like 'process PyPi api request', :developer, :bad_request, true
     end
 
     context 'with an invalid package' do

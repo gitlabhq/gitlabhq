@@ -123,7 +123,7 @@ Read more about [GitLab as an OAuth2 provider](oauth2.md).
 ### Personal/project access tokens
 
 Access tokens can be used to authenticate with the API by passing it in either the `private_token` parameter
-or the `Private-Token` header.
+or the `PRIVATE-TOKEN` header.
 
 Example of using the personal/project access token in a parameter:
 
@@ -134,7 +134,7 @@ curl "https://gitlab.example.com/api/v4/projects?private_token=<your_access_toke
 Example of using the personal/project access token in a header:
 
 ```shell
-curl --header "Private-Token: <your_access_token>" "https://gitlab.example.com/api/v4/projects"
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects"
 ```
 
 You can also use personal/project access tokens with OAuth-compliant headers:
@@ -178,7 +178,7 @@ For more information, refer to the
 [users API](users.md#create-an-impersonation-token) docs.
 
 Impersonation tokens are used exactly like regular personal access tokens, and can be passed in either the
-`private_token` parameter or the `Private-Token` header.
+`private_token` parameter or the `PRIVATE-TOKEN` header.
 
 #### Disable impersonation
 
@@ -266,7 +266,7 @@ GET /projects?private_token=<your_access_token>&sudo=username
 ```
 
 ```shell
-curl --header "Private-Token: <your_access_token>" --header "Sudo: username" "https://gitlab.example.com/api/v4/projects"
+curl --header "PRIVATE-TOKEN: <your_access_token>" --header "Sudo: username" "https://gitlab.example.com/api/v4/projects"
 ```
 
 Example of a valid API call and a request using cURL with sudo request,
@@ -277,7 +277,7 @@ GET /projects?private_token=<your_access_token>&sudo=23
 ```
 
 ```shell
-curl --header "Private-Token: <your_access_token>" --header "Sudo: 23" "https://gitlab.example.com/api/v4/projects"
+curl --header "PRIVATE-TOKEN: <your_access_token>" --header "Sudo: 23" "https://gitlab.example.com/api/v4/projects"
 ```
 
 ## Status codes

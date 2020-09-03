@@ -40,7 +40,7 @@ FactoryBot.define do
       forward_deployment_enabled { nil }
     end
 
-    after(:create) do |project, evaluator|
+    before(:create) do |project, evaluator|
       # Builds and MRs can't have higher visibility level than repository access level.
       builds_access_level = [evaluator.builds_access_level, evaluator.repository_access_level].min
       merge_requests_access_level = [evaluator.merge_requests_access_level, evaluator.repository_access_level].min
@@ -56,8 +56,10 @@ FactoryBot.define do
         pages_access_level: evaluator.pages_access_level
       }
 
-      project.project_feature.update!(hash)
+      project.build_project_feature(hash)
+    end
 
+    after(:create) do |project, evaluator|
       # Normally the class Projects::CreateService is used for creating
       # projects, and this class takes care of making sure the owner and current
       # user have access to the project. Our specs don't use said service class,

@@ -1,0 +1,5 @@
+---
+title: Migrate '.fa-spinner' to '.spinner' for 'app/assets/javascripts/ajax_loading_spinner.js'
+merge_request: 41147
+author: Gilang Gumilar
+type: changed

@@ -45,7 +45,7 @@ RSpec.describe JobEntity do
 
   context 'when job is retryable' do
     before do
-      job.update(status: :failed)
+      job.update!(status: :failed)
     end
 
     it 'contains cancel path' do
@@ -55,7 +55,7 @@ RSpec.describe JobEntity do
 
   context 'when job is cancelable' do
     before do
-      job.update(status: :running)
+      job.update!(status: :running)
     end
 
     it 'contains cancel path' do

@@ -4,8 +4,8 @@ module Ci
     class CreateArtifactService
       def execute(pipeline)
         return unless ::Gitlab::Ci::Features.coverage_report_view?(pipeline.project)
-        return unless pipeline.has_coverage_reports?
-        return if pipeline.pipeline_artifacts.has_code_coverage?
+        return unless pipeline.can_generate_coverage_reports?
+        return if pipeline.has_coverage_reports?
 
         file = build_carrierwave_file(pipeline)
 

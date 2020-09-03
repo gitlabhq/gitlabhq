@@ -15,17 +15,17 @@ RSpec.describe 'CycleAnalytics#issue' do
   generate_cycle_analytics_spec(
     phase: :issue,
     data_fn: -> (context) { { issue: context.build(:issue, project: context.project) } },
-    start_time_conditions: [["issue created", -> (context, data) { data[:issue].save }]],
+    start_time_conditions: [["issue created", -> (context, data) { data[:issue].save! }]],
     end_time_conditions:   [["issue associated with a milestone",
                              -> (context, data) do
                                if data[:issue].persisted?
-                                 data[:issue].update(milestone: context.create(:milestone, project: context.project))
+                                 data[:issue].update!(milestone: context.create(:milestone, project: context.project))
                                end
                              end],
                             ["list label added to issue",
                              -> (context, data) do
                                if data[:issue].persisted?
-                                 data[:issue].update(label_ids: [context.create(:list).label_id])
+                                 data[:issue].update!(label_ids: [context.create(:list).label_id])
                                end
                              end]],
     post_fn: -> (context, data) do
@@ -35,7 +35,7 @@ RSpec.describe 'CycleAnalytics#issue' do
     it "returns nil" do
       regular_label = create(:label)
       issue = create(:issue, project: project)
-      issue.update(label_ids: [regular_label.id])
+      issue.update!(label_ids: [regular_label.id])
 
       create_merge_request_closing_issue(user, project, issue)
       merge_merge_requests_closing_issue(user, project, issue)

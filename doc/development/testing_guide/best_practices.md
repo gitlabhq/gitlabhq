@@ -524,6 +524,48 @@ for modifications. If you have no other choice, an `around` block similar to the
 example for global variables, above, can be used, but this should be avoided if
 at all possible.
 
+#### Test Snowplow events
+
+CAUTION: **Warning:**
+Snowplow performs **runtime type checks** by using the [contracts gem](https://rubygems.org/gems/contracts).
+Since Snowplow is **by default disabled in tests and development**, it can be hard to
+**catch exceptions** when mocking `Gitlab::Tracking`.
+
+To catch runtime errors due to type checks, you can enable Snowplow in tests by marking the spec with
+`:snowplow` and use the `expect_snowplow_event` helper which will check for
+calls to `Gitlab::Tracking#event`.
+
+```ruby
+describe '#show', :snowplow do
+  it 'tracks snowplow events' do
+    get :show
+
+    expect_snowplow_event(
+      category: 'Experiment',
+      action: 'start',
+    )
+    expect_snowplow_event(
+      category: 'Experiment',
+      action: 'sent',
+      property: 'property',
+      label: 'label'
+    )
+  end
+end
+```
+
+When you want to ensure that no event got called, you can use `expect_no_snowplow_event`.
+
+```ruby
+  describe '#show', :snowplow do
+    it 'does not track any snowplow events' do
+      get :show
+
+      expect_no_snowplow_event
+    end
+  end
+```
+
 ### Table-based / Parameterized tests
 
 This style of testing is used to exercise one piece of code with a comprehensive

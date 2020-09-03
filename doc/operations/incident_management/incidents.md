@@ -33,6 +33,10 @@ The Incident list displays incidents sorted by incident created date.
 To see if a column is sortable, point your mouse at the header. Sortable columns
 display an arrow next to the column name.
 
+TIP: **Tip:**
+For a live example of the incident list in action, visit this
+[demo project](https://gitlab.com/gitlab-examples/ops/incident-setup/everyone/tanuki-inc/-/incidents).
+
 NOTE: **Note:**
 Incidents share the [Issues API](../../user/project/issues/index.md).
 

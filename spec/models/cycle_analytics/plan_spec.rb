@@ -22,11 +22,11 @@ RSpec.describe 'CycleAnalytics#plan' do
     end,
     start_time_conditions: [["issue associated with a milestone",
                              -> (context, data) do
-                               data[:issue].update(milestone: context.create(:milestone, project: context.project))
+                               data[:issue].update!(milestone: context.create(:milestone, project: context.project))
                              end],
                             ["list label added to issue",
                              -> (context, data) do
-                               data[:issue].update(label_ids: [context.create(:list).label_id])
+                               data[:issue].update!(label_ids: [context.create(:list).label_id])
                              end]],
     end_time_conditions:   [["issue mentioned in a commit",
                              -> (context, data) do
@@ -40,7 +40,7 @@ RSpec.describe 'CycleAnalytics#plan' do
       branch_name = generate(:branch)
       label = create(:label)
       issue = create(:issue, project: project)
-      issue.update(label_ids: [label.id])
+      issue.update!(label_ids: [label.id])
       create_commit_referencing_issue(issue, branch_name: branch_name)
 
       create_merge_request_closing_issue(user, project, issue, source_branch: branch_name)

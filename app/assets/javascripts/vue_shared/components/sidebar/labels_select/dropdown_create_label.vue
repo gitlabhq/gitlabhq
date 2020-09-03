@@ -1,7 +1,11 @@
 <script>
+import { GlTooltipDirective } from '@gitlab/ui';
 import { __ } from '~/locale';
 
 export default {
+  directives: {
+    GlTooltip: GlTooltipDirective,
+  },
   props: {
     headerTitle: {
       type: String,
@@ -10,7 +14,11 @@ export default {
     },
   },
   created() {
-    this.suggestedColors = gon.suggested_label_colors;
+    const rawLabelsColors = gon.suggested_label_colors;
+    this.suggestedColors = Object.keys(rawLabelsColors).map(colorCode => ({
+      colorCode,
+      title: rawLabelsColors[colorCode],
+    }));
   },
 };
 </script>
@@ -46,10 +54,12 @@ export default {
         <a
           v-for="(color, index) in suggestedColors"
           :key="index"
-          :data-color="color"
+          v-gl-tooltip
+          :data-color="color.colorCode"
           :style="{
-            backgroundColor: color,
+            backgroundColor: color.colorCode,
           }"
+          :title="color.title"
           href="#"
         >
           &nbsp;

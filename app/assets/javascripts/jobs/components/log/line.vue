@@ -20,7 +20,7 @@ export default {
       return h(
         'span',
         {
-          class: ['ws-pre-wrap', content.style],
+          class: ['gl-white-space-pre-wrap', content.style],
         },
         content.text,
       );

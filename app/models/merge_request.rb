@@ -1372,7 +1372,7 @@ class MergeRequest < ApplicationRecord
   def has_coverage_reports?
     return false unless Feature.enabled?(:coverage_report_view, project)
 
-    actual_head_pipeline&.pipeline_artifacts&.has_code_coverage?
+    actual_head_pipeline&.has_coverage_reports?
   end
 
   def has_terraform_reports?

@@ -18,7 +18,9 @@ module Spec
     module Helpers
       module Features
         module ReleasesHelpers
-          # Returns the element that currently has keyboard focus
+          # Returns the element that currently has keyboard focus.
+          # Reminder that this returns a Selenium::WebDriver::Element
+          # _not_ a Capybara::Node::Element
           def focused_element
             page.driver.browser.switch_to.active_element
           end
@@ -39,7 +41,8 @@ module Spec
             # Wait for the dropdown to be rendered
             page.find('.ref-selector .dropdown-menu')
 
-            focused_element.send_keys(branch_name)
+            # Pressing Enter in the search box shouldn't submit the form
+            focused_element.send_keys(branch_name, :enter)
 
             # Wait for the search to return
             page.find('.ref-selector .dropdown-item', text: branch_name, match: :first)
@@ -63,12 +66,16 @@ module Spec
             focused_element.send_keys(:enter)
 
             # Wait for the dropdown to be rendered
-            page.find('.gl-new-dropdown .dropdown-menu')
+            page.find('.project-milestone-combobox .dropdown-menu')
 
-            focused_element.send_keys(:tab, milestone_title)
+            # Clear any existing input
+            focused_element.attribute('value').length.times { focused_element.send_keys(:backspace) }
+
+            # Pressing Enter in the search box shouldn't submit the form
+            focused_element.send_keys(milestone_title, :enter)
 
             # Wait for the search to return
-            page.find('.gl-new-dropdown .dropdown-item', text: milestone_title, match: :first)
+            page.find('.project-milestone-combobox .dropdown-item', text: milestone_title, match: :first)
 
             focused_element.send_keys(:arrow_down, :arrow_down, :enter)
 

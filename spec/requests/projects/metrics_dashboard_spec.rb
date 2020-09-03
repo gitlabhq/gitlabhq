@@ -38,16 +38,17 @@ RSpec.describe 'Projects::MetricsDashboardController' do
 
     context 'with anonymous user and public dashboard visibility' do
       let(:anonymous_user) { create(:user) }
-      let(:project) do
-        create(:project, :public, metrics_dashboard_access_level: 'enabled')
-      end
+      let(:project) { create(:project, :public) }
 
       before do
+        project.update!(metrics_dashboard_access_level: 'enabled')
+
         login_as(anonymous_user)
       end
 
       it 'returns 200' do
         send_request
+
         expect(response).to have_gitlab_http_status(:ok)
       end
     end

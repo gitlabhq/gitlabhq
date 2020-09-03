@@ -1,11 +1,14 @@
 <script>
-/* eslint-disable vue/no-v-html */
 import Vue from 'vue';
+import { GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
 import { __ } from '~/locale';
 import SuggestionDiff from './suggestion_diff.vue';
 import { deprecatedCreateFlash as Flash } from '~/flash';
 
 export default {
+  directives: {
+    SafeHtml,
+  },
   props: {
     lineType: {
       type: String,
@@ -116,6 +119,6 @@ export default {
 <template>
   <div>
     <div class="flash-container js-suggestions-flash"></div>
-    <div v-show="isRendered" ref="container" class="md" v-html="noteHtml"></div>
+    <div v-show="isRendered" ref="container" v-safe-html="noteHtml" class="md"></div>
   </div>
 </template>

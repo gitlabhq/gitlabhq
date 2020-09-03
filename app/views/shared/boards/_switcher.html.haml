@@ -10,6 +10,7 @@
     can_admin_board: can?(current_user, :admin_board, parent).to_s,
     multiple_issue_boards_available: parent.multiple_issue_boards_available?.to_s,
     labels_path: labels_filter_path_with_defaults(only_group_labels: true, include_descendant_groups: true),
+    labels_web_url: parent.is_a?(Project) ? project_labels_path(@project) : group_labels_path(@group),
     project_id: @project&.id,
     group_id: @group&.id,
     scoped_issue_board_feature_enabled: Gitlab.ee? && parent.feature_available?(:scoped_issue_board) ? 'true' : 'false',

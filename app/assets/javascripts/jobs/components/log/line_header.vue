@@ -52,7 +52,7 @@ export default {
     <span
       v-for="(content, i) in line.content"
       :key="i"
-      class="line-text w-100 ws-pre-wrap"
+      class="line-text w-100 gl-white-space-pre-wrap"
       :class="content.style"
       >{{ content.text }}</span
     >

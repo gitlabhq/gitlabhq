@@ -67,7 +67,7 @@ exports[`Project remove modal initialized matches the snapshot 1`] = `
        
       <p>
         <code
-          class="ws-pre-wrap"
+          class="gl-white-space-pre-wrap"
         >
           foo
         </code>

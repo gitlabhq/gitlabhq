@@ -1,0 +1,5 @@
+query defaultSnippetVisibility {
+  visibilityLevels @client
+  selectedLevel @client
+  multipleLevelsRestricted @client
+}

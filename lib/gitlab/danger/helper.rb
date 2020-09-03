@@ -206,16 +206,6 @@ module Gitlab
         usernames.map { |u| Gitlab::Danger::Teammate.new('username' => u) }
       end
 
-      def missing_database_labels(current_mr_labels)
-        labels = if has_database_scoped_labels?(current_mr_labels)
-                   ['database']
-                 else
-                   ['database', 'database::review pending']
-                 end
-
-        labels - current_mr_labels
-      end
-
       def sanitize_mr_title(title)
         title.gsub(DRAFT_REGEX, '').gsub(/`/, '\\\`')
       end
@@ -258,8 +248,6 @@ module Gitlab
       def changed_files(regex)
         all_changed_files.grep(regex)
       end
-
-      private
 
       def has_database_scoped_labels?(current_mr_labels)
         current_mr_labels.any? { |label| label.start_with?('database::') }
