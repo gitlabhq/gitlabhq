@@ -2,35 +2,37 @@
 
 exports[`publish_method renders 1`] = `
 <div
-  class="d-flex align-items-center order-1 order-md-0 mb-md-1"
+  class="gl-display-flex gl-align-items-center gl-mb-2"
 >
   <gl-icon-stub
-    class="mr-1"
+    class="gl-mr-2"
     name="git-merge"
     size="16"
   />
    
   <span
-    class="mr-1"
+    class="gl-mr-2"
+    data-testid="pipeline-ref"
   >
     branch-name
   </span>
    
   <gl-icon-stub
-    class="mr-1"
+    class="gl-mr-2"
     name="commit"
     size="16"
   />
    
   <gl-link-stub
-    class="mr-1"
+    class="gl-mr-2"
+    data-testid="pipeline-sha"
     href="../commit/sha-baz"
   >
     sha-baz
   </gl-link-stub>
    
   <clipboard-button-stub
-    cssclass="border-0 py-0 px-1"
+    cssclass="gl-border-0 gl-py-0 gl-px-2"
     text="sha-baz"
     title="Copy commit SHA"
     tooltipplacement="top"

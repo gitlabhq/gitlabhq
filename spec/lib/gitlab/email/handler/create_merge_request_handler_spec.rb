@@ -4,6 +4,18 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Email::Handler::CreateMergeRequestHandler do
   include_context :email_shared_context
+  let!(:user) do
+    create(
+      :user,
+      email: 'jake@adventuretime.ooo',
+      incoming_email_token: 'auth_token'
+    )
+  end
+
+  let!(:project)  { create(:project, :public, :repository, namespace: namespace, path: 'gitlabhq') }
+  let(:namespace) { create(:namespace, path: 'gitlabhq') }
+  let(:email_raw) { email_fixture('emails/valid_new_merge_request.eml') }
+
   it_behaves_like :reply_processing_shared_examples
 
   before do
@@ -13,18 +25,6 @@ RSpec.describe Gitlab::Email::Handler::CreateMergeRequestHandler do
 
   after do
     TestEnv.clean_test_path
-  end
-
-  let(:email_raw) { email_fixture('emails/valid_new_merge_request.eml') }
-  let(:namespace) { create(:namespace, path: 'gitlabhq') }
-
-  let!(:project)  { create(:project, :public, :repository, namespace: namespace, path: 'gitlabhq') }
-  let!(:user) do
-    create(
-      :user,
-      email: 'jake@adventuretime.ooo',
-      incoming_email_token: 'auth_token'
-    )
   end
 
   context "when email key" do

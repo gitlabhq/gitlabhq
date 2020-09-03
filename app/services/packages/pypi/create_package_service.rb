@@ -2,7 +2,7 @@
 
 module Packages
   module Pypi
-    class CreatePackageService < BaseService
+    class CreatePackageService < ::Packages::CreatePackageService
       include ::Gitlab::Utils::StrongMemoize
 
       def execute
@@ -20,10 +20,7 @@ module Packages
 
       def created_package
         strong_memoize(:created_package) do
-          project
-            .packages
-            .pypi
-            .safe_find_or_create_by!(name: params[:name], version: params[:version])
+          find_or_create_package!(:pypi)
         end
       end
 

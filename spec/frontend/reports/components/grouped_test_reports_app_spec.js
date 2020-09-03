@@ -1,7 +1,7 @@
 import { mount, createLocalVue } from '@vue/test-utils';
 import Vuex from 'vuex';
 import GroupedTestReportsApp from '~/reports/components/grouped_test_reports_app.vue';
-import store from '~/reports/store';
+import { getStoreConfig } from '~/reports/store';
 
 import { failedReport } from '../mock_data/mock_data';
 import successTestReports from '../mock_data/no_failures_report.json';
@@ -29,9 +29,6 @@ describe('Grouped test reports app', () => {
         pipelinePath,
         ...props,
       },
-      methods: {
-        fetchReports: () => {},
-      },
     });
   };
 
@@ -49,7 +46,13 @@ describe('Grouped test reports app', () => {
     wrapper.findAll('[data-testid="test-issue-body-description"]');
 
   beforeEach(() => {
-    mockStore = store();
+    mockStore = new Vuex.Store({
+      ...getStoreConfig(),
+      actions: {
+        fetchReports: () => {},
+        setEndpoint: () => {},
+      },
+    });
     mountComponent();
   });
 

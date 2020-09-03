@@ -3,20 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe PackagistService do
-  describe "Associations" do
-    it { is_expected.to belong_to :project }
-    it { is_expected.to have_one :service_hook }
-  end
-
-  let(:project) { create(:project) }
-
-  let(:packagist_server) { 'https://packagist.example.com' }
-  let(:packagist_username) { 'theUser' }
-  let(:packagist_token) { 'verySecret' }
-  let(:packagist_hook_url) do
-    "#{packagist_server}/api/update-package?username=#{packagist_username}&apiToken=#{packagist_token}"
-  end
-
   let(:packagist_params) do
     {
         active: true,
@@ -27,6 +13,20 @@ RSpec.describe PackagistService do
             server: packagist_server
         }
     }
+  end
+
+  let(:packagist_hook_url) do
+    "#{packagist_server}/api/update-package?username=#{packagist_username}&apiToken=#{packagist_token}"
+  end
+
+  let(:packagist_token) { 'verySecret' }
+  let(:packagist_username) { 'theUser' }
+  let(:packagist_server) { 'https://packagist.example.com' }
+  let(:project) { create(:project) }
+
+  describe "Associations" do
+    it { is_expected.to belong_to :project }
+    it { is_expected.to have_one :service_hook }
   end
 
   describe '#execute' do

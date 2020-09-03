@@ -27754,10 +27754,88 @@ msgstr ""
 msgid "Webhooks have moved. They can now be found under the Settings menu."
 msgstr ""
 
+msgid "Webhooks|Comments"
+msgstr ""
+
+msgid "Webhooks|Confidential Comments"
+msgstr ""
+
+msgid "Webhooks|Confidential Issues events"
+msgstr ""
+
 msgid "Webhooks|Deployment events"
 msgstr ""
 
+msgid "Webhooks|Enable SSL verification"
+msgstr ""
+
+msgid "Webhooks|Issues events"
+msgstr ""
+
+msgid "Webhooks|Job events"
+msgstr ""
+
+msgid "Webhooks|Merge request events"
+msgstr ""
+
+msgid "Webhooks|Pipeline events"
+msgstr ""
+
+msgid "Webhooks|Push events"
+msgstr ""
+
+msgid "Webhooks|SSL verification"
+msgstr ""
+
+msgid "Webhooks|Secret Token"
+msgstr ""
+
+msgid "Webhooks|Tag push events"
+msgstr ""
+
+msgid "Webhooks|This URL will be triggered by a push to the repository"
+msgstr ""
+
+msgid "Webhooks|This URL will be triggered when a confidential issue is created/updated/merged"
+msgstr ""
+
 msgid "Webhooks|This URL will be triggered when a deployment is finished/failed/canceled"
+msgstr ""
+
+msgid "Webhooks|This URL will be triggered when a merge request is created/updated/merged"
+msgstr ""
+
+msgid "Webhooks|This URL will be triggered when a new tag is pushed to the repository"
+msgstr ""
+
+msgid "Webhooks|This URL will be triggered when a wiki page is created/updated"
+msgstr ""
+
+msgid "Webhooks|This URL will be triggered when an issue is created/updated/merged"
+msgstr ""
+
+msgid "Webhooks|This URL will be triggered when someone adds a comment"
+msgstr ""
+
+msgid "Webhooks|This URL will be triggered when someone adds a comment on a confidential issue"
+msgstr ""
+
+msgid "Webhooks|This URL will be triggered when the job status changes"
+msgstr ""
+
+msgid "Webhooks|This URL will be triggered when the pipeline status changes"
+msgstr ""
+
+msgid "Webhooks|Trigger"
+msgstr ""
+
+msgid "Webhooks|URL"
+msgstr ""
+
+msgid "Webhooks|Use this token to validate received payloads. It will be sent with the request in the X-Gitlab-Token HTTP header."
+msgstr ""
+
+msgid "Webhooks|Wiki Page events"
 msgstr ""
 
 msgid "Wednesday"

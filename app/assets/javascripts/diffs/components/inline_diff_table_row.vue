@@ -1,8 +1,7 @@
 <script>
 /* eslint-disable vue/no-v-html */
 import { mapActions, mapGetters, mapState } from 'vuex';
-import { GlTooltipDirective } from '@gitlab/ui';
-import DiffTableCell from './diff_table_cell.vue';
+import { GlTooltipDirective, GlIcon } from '@gitlab/ui';
 import {
   MATCH_LINE_TYPE,
   NEW_LINE_TYPE,
@@ -11,11 +10,19 @@ import {
   CONTEXT_LINE_CLASS_NAME,
   LINE_POSITION_LEFT,
   LINE_POSITION_RIGHT,
+  LINE_HOVER_CLASS_NAME,
+  OLD_NO_NEW_LINE_TYPE,
+  NEW_NO_NEW_LINE_TYPE,
+  EMPTY_CELL_TYPE,
 } from '../constants';
+import { __ } from '~/locale';
+import { getParameterByName, parseBoolean } from '~/lib/utils/common_utils';
+import DiffGutterAvatars from './diff_gutter_avatars.vue';
 
 export default {
   components: {
-    DiffTableCell,
+    DiffGutterAvatars,
+    GlIcon,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -50,6 +57,7 @@ export default {
     };
   },
   computed: {
+    ...mapGetters(['isLoggedIn']),
     ...mapGetters('diffs', ['fileLineCoverage']),
     ...mapState({
       isHighlighted(state) {
@@ -79,6 +87,70 @@ export default {
     coverageState() {
       return this.fileLineCoverage(this.filePath, this.line.new_line);
     },
+    isMetaLine() {
+      const { type } = this.line;
+
+      return (
+        type === OLD_NO_NEW_LINE_TYPE || type === NEW_NO_NEW_LINE_TYPE || type === EMPTY_CELL_TYPE
+      );
+    },
+    classNameMapCell() {
+      const { type } = this.line;
+
+      return [
+        type,
+        {
+          hll: this.isHighlighted,
+          [LINE_HOVER_CLASS_NAME]:
+            this.isLoggedIn && this.isHover && !this.isContextLine && !this.isMetaLine,
+        },
+      ];
+    },
+    addCommentTooltip() {
+      const brokenSymlinks = this.line.commentsDisabled;
+      let tooltip = __('Add a comment to this line');
+
+      if (brokenSymlinks) {
+        if (brokenSymlinks.wasSymbolic || brokenSymlinks.isSymbolic) {
+          tooltip = __(
+            'Commenting on symbolic links that replace or are replaced by files is currently not supported.',
+          );
+        } else if (brokenSymlinks.wasReal || brokenSymlinks.isReal) {
+          tooltip = __(
+            'Commenting on files that replace or are replaced by symbolic links is currently not supported.',
+          );
+        }
+      }
+
+      return tooltip;
+    },
+    shouldRenderCommentButton() {
+      if (this.isLoggedIn) {
+        const isDiffHead = parseBoolean(getParameterByName('diff_head'));
+        return !isDiffHead || gon.features?.mergeRefHeadComments;
+      }
+
+      return false;
+    },
+    shouldShowCommentButton() {
+      return this.isHover && !this.isContextLine && !this.isMetaLine && !this.hasDiscussions;
+    },
+    hasDiscussions() {
+      return this.line.discussions && this.line.discussions.length > 0;
+    },
+    lineHref() {
+      return `#${this.line.line_code || ''}`;
+    },
+    lineCode() {
+      return (
+        this.line.line_code ||
+        (this.line.left && this.line.left.line_code) ||
+        (this.line.right && this.line.right.line_code)
+      );
+    },
+    shouldShowAvatarsOnGutter() {
+      return this.hasDiscussions;
+    },
   },
   created() {
     this.newLineType = NEW_LINE_TYPE;
@@ -90,11 +162,19 @@ export default {
     this.scrollToLineIfNeededInline(this.line);
   },
   methods: {
-    ...mapActions('diffs', ['scrollToLineIfNeededInline']),
+    ...mapActions('diffs', [
+      'scrollToLineIfNeededInline',
+      'showCommentForm',
+      'setHighlightedRow',
+      'toggleLineDiscussions',
+    ]),
     handleMouseMove(e) {
       // To show the comment icon on the gutter we need to know if we hover the line.
       // Current table structure doesn't allow us to do this with CSS in both of the diff view types
       this.isHover = e.type === 'mouseover';
+    },
+    handleCommentButton() {
+      this.showCommentForm({ lineCode: this.line.line_code, fileHash: this.fileHash });
     },
   },
 };
@@ -109,25 +189,52 @@ export default {
     @mouseover="handleMouseMove"
     @mouseout="handleMouseMove"
   >
-    <diff-table-cell
-      :file-hash="fileHash"
-      :line="line"
-      :line-type="oldLineType"
-      :is-bottom="isBottom"
-      :is-hover="isHover"
-      :show-comment-button="true"
-      :is-highlighted="isHighlighted"
-      class="diff-line-num old_line"
-    />
-    <diff-table-cell
-      :file-hash="fileHash"
-      :line="line"
-      :line-type="newLineType"
-      :is-bottom="isBottom"
-      :is-hover="isHover"
-      :is-highlighted="isHighlighted"
-      class="diff-line-num new_line qa-new-diff-line"
-    />
+    <td ref="oldTd" class="diff-line-num old_line" :class="classNameMapCell">
+      <span
+        v-if="shouldRenderCommentButton"
+        ref="addNoteTooltip"
+        v-gl-tooltip
+        class="add-diff-note tooltip-wrapper"
+        :title="addCommentTooltip"
+      >
+        <button
+          v-show="shouldShowCommentButton"
+          ref="addDiffNoteButton"
+          type="button"
+          class="add-diff-note note-button js-add-diff-note-button qa-diff-comment"
+          :disabled="line.commentsDisabled"
+          @click="handleCommentButton"
+        >
+          <gl-icon :size="12" name="comment" />
+        </button>
+      </span>
+      <a
+        v-if="line.old_line"
+        ref="lineNumberRefOld"
+        :data-linenumber="line.old_line"
+        :href="lineHref"
+        @click="setHighlightedRow(lineCode)"
+      >
+      </a>
+      <diff-gutter-avatars
+        v-if="shouldShowAvatarsOnGutter"
+        :discussions="line.discussions"
+        :discussions-expanded="line.discussionsExpanded"
+        @toggleLineDiscussions="
+          toggleLineDiscussions({ lineCode, fileHash, expanded: !line.discussionsExpanded })
+        "
+      />
+    </td>
+    <td ref="newTd" class="diff-line-num new_line qa-new-diff-line" :class="classNameMapCell">
+      <a
+        v-if="line.new_line"
+        ref="lineNumberRefNew"
+        :data-linenumber="line.new_line"
+        :href="lineHref"
+        @click="setHighlightedRow(lineCode)"
+      >
+      </a>
+    </td>
     <td
       v-gl-tooltip.hover
       :title="coverageState.text"

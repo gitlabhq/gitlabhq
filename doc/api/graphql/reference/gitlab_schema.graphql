@@ -1029,7 +1029,7 @@ type Board {
     """
     Filters applied when selecting issues on the board
     """
-    issueFilters: BoardEpicIssueInput
+    issueFilters: BoardIssueInput
 
     """
     Returns the last _n_ elements from the list.
@@ -1133,7 +1133,12 @@ type BoardEdge {
   node: Board
 }
 
-input BoardEpicIssueInput {
+"""
+Identifier of Board
+"""
+scalar BoardID
+
+input BoardIssueInput {
   """
   Filter by assignee username
   """
@@ -1145,9 +1150,14 @@ input BoardEpicIssueInput {
   authorUsername: String
 
   """
-  Filter by epic ID
+  Filter by epic ID. Incompatible with epicWildcardId
   """
-  epicId: String
+  epicId: ID
+
+  """
+  Filter by epic ID wildcard. Incompatible with epicId
+  """
+  epicWildcardId: EpicWildcardId
 
   """
   Filter by label name
@@ -1167,7 +1177,7 @@ input BoardEpicIssueInput {
   """
   List of negated params. Warning: this argument is experimental and a subject to change in future
   """
-  not: NegatedBoardEpicIssueInput
+  not: NegatedBoardIssueInput
 
   """
   Filter by release tag
@@ -1184,11 +1194,6 @@ input BoardEpicIssueInput {
   """
   weight: String
 }
-
-"""
-Identifier of Board
-"""
-scalar BoardID
 
 """
 Represents a list for an issue board
@@ -1222,6 +1227,11 @@ type BoardList {
     Returns the elements in the list that come before the specified cursor.
     """
     before: String
+
+    """
+    Filters applied when selecting issues in the board list
+    """
+    filters: BoardIssueInput
 
     """
     Returns the first _n_ elements from the list.
@@ -5884,6 +5894,21 @@ type EpicTreeReorderPayload {
   errors: [String!]!
 }
 
+"""
+Epic ID wildcard values
+"""
+enum EpicWildcardId {
+  """
+  Any epic is assigned
+  """
+  ANY
+
+  """
+  No epic is assigned
+  """
+  NONE
+}
+
 type GeoNode {
   """
   The maximum concurrency of container repository sync for this secondary node
@@ -6864,6 +6889,36 @@ type Group {
   ): VulnerabilityScannerConnection
 
   """
+  Counts for each vulnerability severity in the group and its subgroups
+  """
+  vulnerabilitySeveritiesCount(
+    """
+    Filter vulnerabilities by project
+    """
+    projectId: [ID!]
+
+    """
+    Filter vulnerabilities by report type
+    """
+    reportType: [VulnerabilityReportType!]
+
+    """
+    Filter vulnerabilities by scanner
+    """
+    scanner: [String!]
+
+    """
+    Filter vulnerabilities by severity
+    """
+    severity: [VulnerabilitySeverity!]
+
+    """
+    Filter vulnerabilities by state
+    """
+    state: [VulnerabilityState!]
+  ): VulnerabilitySeveritiesCount
+
+  """
   Web URL of the group
   """
   webUrl: String!
@@ -7030,6 +7085,36 @@ type InstanceSecurityDashboard {
     """
     last: Int
   ): VulnerabilityScannerConnection
+
+  """
+  Counts for each vulnerability severity from projects selected in Instance Security Dashboard
+  """
+  vulnerabilitySeveritiesCount(
+    """
+    Filter vulnerabilities by project
+    """
+    projectId: [ID!]
+
+    """
+    Filter vulnerabilities by report type
+    """
+    reportType: [VulnerabilityReportType!]
+
+    """
+    Filter vulnerabilities by scanner
+    """
+    scanner: [String!]
+
+    """
+    Filter vulnerabilities by severity
+    """
+    severity: [VulnerabilitySeverity!]
+
+    """
+    Filter vulnerabilities by state
+    """
+    state: [VulnerabilityState!]
+  ): VulnerabilitySeveritiesCount
 }
 
 """
@@ -10236,7 +10321,7 @@ type NamespaceIncreaseStorageTemporarilyPayload {
   namespace: Namespace
 }
 
-input NegatedBoardEpicIssueInput {
+input NegatedBoardIssueInput {
   """
   Filter by assignee username
   """
@@ -10248,9 +10333,9 @@ input NegatedBoardEpicIssueInput {
   authorUsername: String
 
   """
-  Filter by epic ID
+  Filter by epic ID. Incompatible with epicWildcardId
   """
-  epicId: String
+  epicId: ID
 
   """
   Filter by label name
@@ -12428,9 +12513,34 @@ type Project {
   ): VulnerabilityScannerConnection
 
   """
-  Counts for each severity of vulnerability of the project
+  Counts for each vulnerability severity in the project
   """
-  vulnerabilitySeveritiesCount: VulnerabilitySeveritiesCount
+  vulnerabilitySeveritiesCount(
+    """
+    Filter vulnerabilities by project
+    """
+    projectId: [ID!]
+
+    """
+    Filter vulnerabilities by report type
+    """
+    reportType: [VulnerabilityReportType!]
+
+    """
+    Filter vulnerabilities by scanner
+    """
+    scanner: [String!]
+
+    """
+    Filter vulnerabilities by severity
+    """
+    severity: [VulnerabilitySeverity!]
+
+    """
+    Filter vulnerabilities by state
+    """
+    state: [VulnerabilityState!]
+  ): VulnerabilitySeveritiesCount
 
   """
   Web URL of the project

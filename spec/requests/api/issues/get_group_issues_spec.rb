@@ -402,30 +402,76 @@ RSpec.describe API::Issues do
         expect_paginated_array_response([group_closed_issue.id, group_issue.id])
       end
 
-      it 'returns an array of labeled group issues' do
-        get api(base_url, user), params: { labels: group_label.title }
+      shared_examples 'labels parameter' do
+        it 'returns an array of labeled group issues' do
+          get api(base_url, user), params: { labels: group_label.title }
 
-        expect_paginated_array_response(group_issue.id)
-        expect(json_response.first['labels']).to eq([group_label.title])
+          expect_paginated_array_response(group_issue.id)
+          expect(json_response.first['labels']).to eq([group_label.title])
+        end
+
+        it 'returns an array of labeled group issues' do
+          get api(base_url, user), params: { labels: group_label.title }
+
+          expect_paginated_array_response(group_issue.id)
+          expect(json_response.first['labels']).to eq([group_label.title])
+        end
+
+        it 'returns an array of labeled group issues with labels param as array' do
+          get api(base_url, user), params: { labels: [group_label.title] }
+
+          expect_paginated_array_response(group_issue.id)
+          expect(json_response.first['labels']).to eq([group_label.title])
+        end
+
+        it 'returns an array of labeled group issues where all labels match' do
+          get api(base_url, user), params: { labels: "#{group_label.title},foo,bar" }
+
+          expect_paginated_array_response([])
+        end
+
+        it 'returns an array of labeled group issues where all labels match with labels param as array' do
+          get api(base_url, user), params: { labels: [group_label.title, 'foo', 'bar'] }
+
+          expect_paginated_array_response([])
+        end
+
+        context 'with labeled issues' do
+          let(:group_issue2) { create :issue, project: group_project }
+          let(:label_b) { create(:label, title: 'foo', project: group_project) }
+          let(:label_c) { create(:label, title: 'bar', project: group_project) }
+
+          before do
+            create(:label_link, label: group_label, target: group_issue2)
+            create(:label_link, label: label_b, target: group_issue)
+            create(:label_link, label: label_b, target: group_issue2)
+            create(:label_link, label: label_c, target: group_issue)
+
+            get api(base_url, user), params: params
+          end
+
+          let(:issue) { group_issue }
+          let(:issue2) { group_issue2 }
+          let(:label) { group_label }
+
+          it_behaves_like 'labeled issues with labels and label_name params'
+        end
       end
 
-      it 'returns an array of labeled group issues with labels param as array' do
-        get api(base_url, user), params: { labels: [group_label.title] }
+      context 'when `optimized_issuable_label_filter` feature flag is off' do
+        before do
+          stub_feature_flags(optimized_issuable_label_filter: false)
+        end
 
-        expect_paginated_array_response(group_issue.id)
-        expect(json_response.first['labels']).to eq([group_label.title])
+        it_behaves_like 'labels parameter'
       end
 
-      it 'returns an array of labeled group issues where all labels match' do
-        get api(base_url, user), params: { labels: "#{group_label.title},foo,bar" }
+      context 'when `optimized_issuable_label_filter` feature flag is on' do
+        before do
+          stub_feature_flags(optimized_issuable_label_filter: true)
+        end
 
-        expect_paginated_array_response([])
-      end
-
-      it 'returns an array of labeled group issues where all labels match with labels param as array' do
-        get api(base_url, user), params: { labels: [group_label.title, 'foo', 'bar'] }
-
-        expect_paginated_array_response([])
+        it_behaves_like 'labels parameter'
       end
 
       it 'returns issues matching given search string for title' do
@@ -438,27 +484,6 @@ RSpec.describe API::Issues do
         get api(base_url, user), params: { search: group_issue.description }
 
         expect_paginated_array_response(group_issue.id)
-      end
-
-      context 'with labeled issues' do
-        let(:group_issue2) { create :issue, project: group_project }
-        let(:label_b) { create(:label, title: 'foo', project: group_project) }
-        let(:label_c) { create(:label, title: 'bar', project: group_project) }
-
-        before do
-          create(:label_link, label: group_label, target: group_issue2)
-          create(:label_link, label: label_b, target: group_issue)
-          create(:label_link, label: label_b, target: group_issue2)
-          create(:label_link, label: label_c, target: group_issue)
-
-          get api(base_url, user), params: params
-        end
-
-        let(:issue) { group_issue }
-        let(:issue2) { group_issue2 }
-        let(:label) { group_label }
-
-        it_behaves_like 'labeled issues with labels and label_name params'
       end
 
       context 'with archived projects' do

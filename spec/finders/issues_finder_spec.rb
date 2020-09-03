@@ -330,100 +330,139 @@ RSpec.describe IssuesFinder do
         end
       end
 
-      context 'filtering by label' do
-        let(:params) { { label_name: label.title } }
+      shared_examples ':label_name parameter' do
+        context 'filtering by label' do
+          let(:params) { { label_name: label.title } }
 
-        it 'returns issues with that label' do
-          expect(issues).to contain_exactly(issue2)
-        end
-
-        context 'using NOT' do
-          let(:params) { { not: { label_name: label.title } } }
-
-          it 'returns issues that do not have that label' do
-            expect(issues).to contain_exactly(issue1, issue3, issue4)
+          it 'returns issues with that label' do
+            expect(issues).to contain_exactly(issue2)
           end
 
-          # IssuableFinder first filters using the outer params (the ones not inside the `not` key.)
-          # Afterwards, it applies the `not` params to that resultset. This means that things inside the `not` param
-          # do not take precedence over the outer params with the same name.
-          context 'shadowing the same outside param' do
-            let(:params) { { label_name: label2.title, not: { label_name: label.title } } }
+          context 'using NOT' do
+            let(:params) { { not: { label_name: label.title } } }
 
-            it 'does not take precedence over labels outside NOT' do
-              expect(issues).to contain_exactly(issue3)
+            it 'returns issues that do not have that label' do
+              expect(issues).to contain_exactly(issue1, issue3, issue4)
+            end
+
+            # IssuableFinder first filters using the outer params (the ones not inside the `not` key.)
+            # Afterwards, it applies the `not` params to that resultset. This means that things inside the `not` param
+            # do not take precedence over the outer params with the same name.
+            context 'shadowing the same outside param' do
+              let(:params) { { label_name: label2.title, not: { label_name: label.title } } }
+
+              it 'does not take precedence over labels outside NOT' do
+                expect(issues).to contain_exactly(issue3)
+              end
+            end
+
+            context 'further filtering outside params' do
+              let(:params) { { label_name: label2.title, not: { assignee_username: user2.username } } }
+
+              it 'further filters on the returned resultset' do
+                expect(issues).to be_empty
+              end
             end
           end
+        end
 
-          context 'further filtering outside params' do
-            let(:params) { { label_name: label2.title, not: { assignee_username: user2.username } } }
+        context 'filtering by multiple labels' do
+          let(:params) { { label_name: [label.title, label2.title].join(',') } }
+          let(:label2) { create(:label, project: project2) }
 
-            it 'further filters on the returned resultset' do
-              expect(issues).to be_empty
+          before do
+            create(:label_link, label: label2, target: issue2)
+          end
+
+          it 'returns the unique issues with all those labels' do
+            expect(issues).to contain_exactly(issue2)
+          end
+
+          context 'using NOT' do
+            let(:params) { { not: { label_name: [label.title, label2.title].join(',') } } }
+
+            it 'returns issues that do not have any of the labels provided' do
+              expect(issues).to contain_exactly(issue1, issue4)
             end
           end
         end
-      end
 
-      context 'filtering by multiple labels' do
-        let(:params) { { label_name: [label.title, label2.title].join(',') } }
-        let(:label2) { create(:label, project: project2) }
+        context 'filtering by a label that includes any or none in the title' do
+          let(:params) { { label_name: [label.title, label2.title].join(',') } }
+          let(:label) { create(:label, title: 'any foo', project: project2) }
+          let(:label2) { create(:label, title: 'bar none', project: project2) }
 
-        before do
-          create(:label_link, label: label2, target: issue2)
+          before do
+            create(:label_link, label: label2, target: issue2)
+          end
+
+          it 'returns the unique issues with all those labels' do
+            expect(issues).to contain_exactly(issue2)
+          end
+
+          context 'using NOT' do
+            let(:params) { { not: { label_name: [label.title, label2.title].join(',') } } }
+
+            it 'returns issues that do not have ANY ONE of the labels provided' do
+              expect(issues).to contain_exactly(issue1, issue4)
+            end
+          end
         end
 
-        it 'returns the unique issues with all those labels' do
-          expect(issues).to contain_exactly(issue2)
-        end
+        context 'filtering by no label' do
+          let(:params) { { label_name: described_class::Params::FILTER_NONE } }
 
-        context 'using NOT' do
-          let(:params) { { not: { label_name: [label.title, label2.title].join(',') } } }
-
-          it 'returns issues that do not have any of the labels provided' do
+          it 'returns issues with no labels' do
             expect(issues).to contain_exactly(issue1, issue4)
           end
         end
-      end
 
-      context 'filtering by a label that includes any or none in the title' do
-        let(:params) { { label_name: [label.title, label2.title].join(',') } }
-        let(:label) { create(:label, title: 'any foo', project: project2) }
-        let(:label2) { create(:label, title: 'bar none', project: project2) }
+        context 'filtering by any label' do
+          let(:params) { { label_name: described_class::Params::FILTER_ANY } }
 
-        before do
-          create(:label_link, label: label2, target: issue2)
+          it 'returns issues that have one or more label' do
+            create_list(:label_link, 2, label: create(:label, project: project2), target: issue3)
+
+            expect(issues).to contain_exactly(issue2, issue3)
+          end
         end
 
-        it 'returns the unique issues with all those labels' do
-          expect(issues).to contain_exactly(issue2)
-        end
+        context 'when the same label exists on project and group levels' do
+          let(:issue1) { create(:issue, project: project1) }
+          let(:issue2) { create(:issue, project: project1) }
 
-        context 'using NOT' do
-          let(:params) { { not: { label_name: [label.title, label2.title].join(',') } } }
+          # Skipping validation to reproduce a "real-word" scenario.
+          # We still have legacy labels on PRD that have the same title on the group and project levels, example: `bug`
+          let(:project_label) { build(:label, title: 'somelabel', project: project1).tap { |r| r.save!(validate: false) } }
+          let(:group_label) { create(:group_label, title: 'somelabel', group: project1.group) }
 
-          it 'returns issues that do not have ANY ONE of the labels provided' do
-            expect(issues).to contain_exactly(issue1, issue4)
+          let(:params) { { label_name: 'somelabel' } }
+
+          before do
+            create(:label_link, label: group_label, target: issue1)
+            create(:label_link, label: project_label, target: issue2)
+          end
+
+          it 'finds both issue records' do
+            expect(issues).to contain_exactly(issue1, issue2)
           end
         end
       end
 
-      context 'filtering by no label' do
-        let(:params) { { label_name: described_class::Params::FILTER_NONE } }
-
-        it 'returns issues with no labels' do
-          expect(issues).to contain_exactly(issue1, issue4)
+      context 'when `optimized_issuable_label_filter` feature flag is off' do
+        before do
+          stub_feature_flags(optimized_issuable_label_filter: false)
         end
+
+        it_behaves_like ':label_name parameter'
       end
 
-      context 'filtering by any label' do
-        let(:params) { { label_name: described_class::Params::FILTER_ANY } }
-
-        it 'returns issues that have one or more label' do
-          create_list(:label_link, 2, label: create(:label, project: project2), target: issue3)
-
-          expect(issues).to contain_exactly(issue2, issue3)
+      context 'when `optimized_issuable_label_filter` feature flag is on' do
+        before do
+          stub_feature_flags(optimized_issuable_label_filter: true)
         end
+
+        it_behaves_like ':label_name parameter'
       end
 
       context 'filtering by issue term' do

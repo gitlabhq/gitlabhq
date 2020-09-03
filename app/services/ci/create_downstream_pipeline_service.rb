@@ -1,8 +1,10 @@
 # frozen_string_literal: true
 
 module Ci
-  # TODO: rename this (and worker) to CreateDownstreamPipelineService
-  class CreateCrossProjectPipelineService < ::BaseService
+  # Takes in input a Ci::Bridge job and creates a downstream pipeline
+  # (either multi-project or child pipeline) according to the Ci::Bridge
+  # specifications.
+  class CreateDownstreamPipelineService < ::BaseService
     include Gitlab::Utils::StrongMemoize
 
     DuplicateDownstreamPipelineError = Class.new(StandardError)

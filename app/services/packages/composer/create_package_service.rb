@@ -2,7 +2,7 @@
 
 module Packages
   module Composer
-    class CreatePackageService < BaseService
+    class CreatePackageService < ::Packages::CreatePackageService
       include ::Gitlab::Utils::StrongMemoize
 
       def execute
@@ -21,10 +21,7 @@ module Packages
       private
 
       def created_package
-        project
-          .packages
-          .composer
-          .safe_find_or_create_by!(name: package_name, version: package_version)
+        find_or_create_package!(:composer, name: package_name, version: package_version)
       end
 
       def composer_json

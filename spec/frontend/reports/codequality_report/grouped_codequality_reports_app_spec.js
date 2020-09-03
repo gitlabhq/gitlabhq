@@ -2,7 +2,7 @@ import { mount, createLocalVue } from '@vue/test-utils';
 import Vuex from 'vuex';
 import GroupedCodequalityReportsApp from '~/reports/codequality_report/grouped_codequality_reports_app.vue';
 import CodequalityIssueBody from '~/reports/codequality_report/components/codequality_issue_body.vue';
-import store from '~/reports/codequality_report/store';
+import { getStoreConfig } from '~/reports/codequality_report/store';
 import { mockParsedHeadIssues, mockParsedBaseIssues } from './mock_data';
 
 const localVue = createLocalVue();
@@ -13,20 +13,21 @@ describe('Grouped code quality reports app', () => {
   let wrapper;
   let mockStore;
 
+  const PATHS = {
+    codequalityHelpPath: 'codequality_help.html',
+    basePath: 'base.json',
+    headPath: 'head.json',
+    baseBlobPath: 'base/blob/path/',
+    headBlobPath: 'head/blob/path/',
+  };
+
   const mountComponent = (props = {}) => {
     wrapper = mount(Component, {
       store: mockStore,
       localVue,
       propsData: {
-        basePath: 'base.json',
-        headPath: 'head.json',
-        baseBlobPath: 'base/blob/path/',
-        headBlobPath: 'head/blob/path/',
-        codequalityHelpPath: 'codequality_help.html',
+        ...PATHS,
         ...props,
-      },
-      methods: {
-        fetchReports: () => {},
       },
     });
   };
@@ -35,7 +36,19 @@ describe('Grouped code quality reports app', () => {
   const findIssueBody = () => wrapper.find(CodequalityIssueBody);
 
   beforeEach(() => {
-    mockStore = store();
+    const { state, ...storeConfig } = getStoreConfig();
+    mockStore = new Vuex.Store({
+      ...storeConfig,
+      actions: {
+        setPaths: () => {},
+        fetchReports: () => {},
+      },
+      state: {
+        ...state,
+        ...PATHS,
+      },
+    });
+
     mountComponent();
   });
 

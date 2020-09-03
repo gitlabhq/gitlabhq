@@ -30,7 +30,7 @@ RSpec.describe 'get board lists' do
           nodes {
             lists {
               nodes {
-                issues {
+                issues(filters: {labelName: "#{label2.title}"}) {
                   count
                   nodes {
                     #{all_graphql_fields_for('issues'.classify)}
@@ -51,8 +51,8 @@ RSpec.describe 'get board lists' do
   shared_examples 'group and project board list issues query' do
     let!(:board) { create(:board, resource_parent: board_parent) }
     let!(:label_list) { create(:list, board: board, label: label, position: 10) }
-    let!(:issue1) { create(:issue, project: issue_project, labels: [label], relative_position: 9) }
-    let!(:issue2) { create(:issue, project: issue_project, labels: [label], relative_position: 2) }
+    let!(:issue1) { create(:issue, project: issue_project, labels: [label, label2], relative_position: 9) }
+    let!(:issue2) { create(:issue, project: issue_project, labels: [label, label2], relative_position: 2) }
     let!(:issue3) { create(:issue, project: issue_project, labels: [label], relative_position: 9) }
     let!(:issue4) { create(:issue, project: issue_project, labels: [label2], relative_position: 432) }
 
@@ -72,7 +72,7 @@ RSpec.describe 'get board lists' do
       it 'can access the issues' do
         post_graphql(query("id: \"#{global_id_of(label_list)}\""), current_user: user)
 
-        expect(issue_titles).to eq([issue2.title, issue3.title, issue1.title])
+        expect(issue_titles).to eq([issue2.title, issue1.title])
       end
     end
   end

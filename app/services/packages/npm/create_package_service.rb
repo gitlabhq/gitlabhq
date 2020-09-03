@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 module Packages
   module Npm
-    class CreatePackageService < BaseService
+    class CreatePackageService < ::Packages::CreatePackageService
       include Gitlab::Utils::StrongMemoize
 
       def execute
@@ -9,17 +9,13 @@ module Packages
         return error('Package already exists.', 403) if current_package_exists?
         return error('File is too large.', 400) if file_size_exceeded?
 
-        ActiveRecord::Base.transaction { create_package! }
+        ActiveRecord::Base.transaction { create_npm_package! }
       end
 
       private
 
-      def create_package!
-        package = project.packages.create!(
-          name: name,
-          version: version,
-          package_type: 'npm'
-        )
+      def create_npm_package!
+        package = create_package!(:npm, name: name, version: version)
 
         if build.present?
           package.create_build_info!(pipeline: build.pipeline)

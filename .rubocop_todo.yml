@@ -199,21 +199,6 @@ RSpec/ExpectChange:
 RSpec/ExpectInHook:
   Enabled: false
 
-# Offense count: 68
-# Cop supports --auto-correct.
-RSpec/LetBeforeExamples:
-  Exclude:
-    - 'spec/lib/banzai/filter/issue_reference_filter_spec.rb'
-    - 'spec/lib/banzai/filter/user_reference_filter_spec.rb'
-    - 'spec/lib/gitlab/email/handler/create_issue_handler_spec.rb'
-    - 'spec/lib/gitlab/email/handler/create_merge_request_handler_spec.rb'
-    - 'spec/lib/gitlab/email/handler/create_note_handler_spec.rb'
-    - 'spec/models/commit_range_spec.rb'
-    - 'spec/models/milestone_spec.rb'
-    - 'spec/models/project_services/packagist_service_spec.rb'
-    - 'spec/rubocop/cop/migration/update_column_in_batches_spec.rb'
-    - 'spec/serializers/pipeline_details_entity_spec.rb'
-
 # Offense count: 2188
 # Cop supports --auto-correct.
 # Configuration parameters: Strict, EnforcedStyle, AllowedExplicitMatchers.
@@ -678,13 +663,6 @@ Style/RescueModifier:
 # SupportedStyles: implicit, explicit
 Style/RescueStandardError:
   Enabled: false
-
-# Offense count: 50
-# Cop supports --auto-correct.
-# Configuration parameters: AllowIfMethodIsEmpty.
-Style/SingleLineMethods:
-  Exclude:
-    - 'lib/gitlab/ci/ansi2html.rb'
 
 # Offense count: 102
 # Cop supports --auto-correct.

@@ -48,7 +48,7 @@ export default {
 
 <template>
   <div>
-    <div class="d-xs-flex flex-column d-md-none">
+    <div class="gl-display-sm-flex gl-flex-direction-column gl-display-md-none">
       <gl-skeleton-loader
         v-for="index in $options.rowsToRender.mobile"
         :key="index"
@@ -65,7 +65,7 @@ export default {
       </gl-skeleton-loader>
     </div>
 
-    <div class="d-none d-md-flex flex-column">
+    <div class="gl-display-none gl-display-md-flex gl-flex-direction-column">
       <gl-skeleton-loader
         v-for="index in $options.rowsToRender.desktop"
         :key="index"

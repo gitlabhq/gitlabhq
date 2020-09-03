@@ -27,6 +27,8 @@ RSpec.describe RuboCop::Cop::Migration::UpdateColumnInBatches do
     FileUtils.rm_rf(tmp_rails_root)
   end
 
+  let(:spec_filepath) { tmp_rails_root.join('spec', 'migrations', 'my_super_migration_spec.rb') }
+
   context 'outside of a migration' do
     it 'does not register any offenses' do
       inspect_source(migration_code)
@@ -34,8 +36,6 @@ RSpec.describe RuboCop::Cop::Migration::UpdateColumnInBatches do
       expect(cop.offenses).to be_empty
     end
   end
-
-  let(:spec_filepath) { tmp_rails_root.join('spec', 'migrations', 'my_super_migration_spec.rb') }
 
   shared_context 'with a migration file' do
     before do

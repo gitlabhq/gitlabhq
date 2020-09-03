@@ -82,7 +82,7 @@ export default {
 </script>
 
 <template>
-  <div class="d-flex flex-column">
+  <div class="gl-display-flex gl-flex-direction-column">
     <slot v-if="isListEmpty && !isLoading" name="empty-state"></slot>
 
     <div v-else-if="isLoading">
@@ -106,7 +106,7 @@ export default {
         :per-page="perPage"
         :total-items="totalItems"
         align="center"
-        class="w-100 mt-2"
+        class="gl-w-full gl-mt-3"
       />
 
       <gl-modal

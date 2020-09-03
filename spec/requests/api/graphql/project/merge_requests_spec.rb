@@ -8,7 +8,7 @@ RSpec.describe 'getting merge request listings nested in a project' do
   let_it_be(:project) { create(:project, :repository, :public) }
   let_it_be(:current_user) { create(:user) }
 
-  let_it_be(:label) { create(:label) }
+  let_it_be(:label) { create(:label, project: project) }
   let_it_be(:merge_request_a) { create(:labeled_merge_request, :unique_branches, source_project: project, labels: [label]) }
   let_it_be(:merge_request_b) { create(:merge_request, :closed, :unique_branches, source_project: project) }
   let_it_be(:merge_request_c) { create(:labeled_merge_request, :closed, :unique_branches, source_project: project, labels: [label]) }

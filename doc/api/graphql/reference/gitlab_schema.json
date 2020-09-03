@@ -2716,7 +2716,7 @@
                   "description": "Filters applied when selecting issues on the board",
                   "type": {
                     "kind": "INPUT_OBJECT",
-                    "name": "BoardEpicIssueInput",
+                    "name": "BoardIssueInput",
                     "ofType": null
                   },
                   "defaultValue": null
@@ -3042,8 +3042,18 @@
           "possibleTypes": null
         },
         {
+          "kind": "SCALAR",
+          "name": "BoardID",
+          "description": "Identifier of Board",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
           "kind": "INPUT_OBJECT",
-          "name": "BoardEpicIssueInput",
+          "name": "BoardIssueInput",
           "description": null,
           "fields": null,
           "inputFields": [
@@ -3106,8 +3116,8 @@
               "defaultValue": null
             },
             {
-              "name": "epicId",
-              "description": "Filter by epic ID",
+              "name": "myReactionEmoji",
+              "description": "Filter by reaction emoji",
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
@@ -3116,11 +3126,11 @@
               "defaultValue": null
             },
             {
-              "name": "myReactionEmoji",
-              "description": "Filter by reaction emoji",
+              "name": "epicId",
+              "description": "Filter by epic ID. Incompatible with epicWildcardId",
               "type": {
                 "kind": "SCALAR",
-                "name": "String",
+                "name": "ID",
                 "ofType": null
               },
               "defaultValue": null
@@ -3140,7 +3150,7 @@
               "description": "List of negated params. Warning: this argument is experimental and a subject to change in future",
               "type": {
                 "kind": "INPUT_OBJECT",
-                "name": "NegatedBoardEpicIssueInput",
+                "name": "NegatedBoardIssueInput",
                 "ofType": null
               },
               "defaultValue": null
@@ -3154,18 +3164,18 @@
                 "ofType": null
               },
               "defaultValue": null
+            },
+            {
+              "name": "epicWildcardId",
+              "description": "Filter by epic ID wildcard. Incompatible with epicId",
+              "type": {
+                "kind": "ENUM",
+                "name": "EpicWildcardId",
+                "ofType": null
+              },
+              "defaultValue": null
             }
           ],
-          "interfaces": null,
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "SCALAR",
-          "name": "BoardID",
-          "description": "Identifier of Board",
-          "fields": null,
-          "inputFields": null,
           "interfaces": null,
           "enumValues": null,
           "possibleTypes": null
@@ -3225,6 +3235,16 @@
               "name": "issues",
               "description": "Board issues",
               "args": [
+                {
+                  "name": "filters",
+                  "description": "Filters applied when selecting issues in the board list",
+                  "type": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "BoardIssueInput",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
                 {
                   "name": "after",
                   "description": "Returns the elements in the list that come after the specified cursor.",
@@ -16458,6 +16478,29 @@
           "possibleTypes": null
         },
         {
+          "kind": "ENUM",
+          "name": "EpicWildcardId",
+          "description": "Epic ID wildcard values",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "NONE",
+              "description": "No epic is assigned",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "ANY",
+              "description": "Any epic is assigned",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "possibleTypes": null
+        },
+        {
           "kind": "SCALAR",
           "name": "Float",
           "description": "Represents signed double-precision fractional values as specified by [IEEE 754](https://en.wikipedia.org/wiki/IEEE_floating_point).",
@@ -18892,6 +18935,109 @@
               "deprecationReason": null
             },
             {
+              "name": "vulnerabilitySeveritiesCount",
+              "description": "Counts for each vulnerability severity in the group and its subgroups",
+              "args": [
+                {
+                  "name": "projectId",
+                  "description": "Filter vulnerabilities by project",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "ID",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "reportType",
+                  "description": "Filter vulnerabilities by report type",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "ENUM",
+                        "name": "VulnerabilityReportType",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "severity",
+                  "description": "Filter vulnerabilities by severity",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "ENUM",
+                        "name": "VulnerabilitySeverity",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "state",
+                  "description": "Filter vulnerabilities by state",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "ENUM",
+                        "name": "VulnerabilityState",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "scanner",
+                  "description": "Filter vulnerabilities by scanner",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "String",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "VulnerabilitySeveritiesCount",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "webUrl",
               "description": "Web URL of the group",
               "args": [
@@ -19400,6 +19546,109 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "VulnerabilityScannerConnection",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "vulnerabilitySeveritiesCount",
+              "description": "Counts for each vulnerability severity from projects selected in Instance Security Dashboard",
+              "args": [
+                {
+                  "name": "projectId",
+                  "description": "Filter vulnerabilities by project",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "ID",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "reportType",
+                  "description": "Filter vulnerabilities by report type",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "ENUM",
+                        "name": "VulnerabilityReportType",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "severity",
+                  "description": "Filter vulnerabilities by severity",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "ENUM",
+                        "name": "VulnerabilitySeverity",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "state",
+                  "description": "Filter vulnerabilities by state",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "ENUM",
+                        "name": "VulnerabilityState",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "scanner",
+                  "description": "Filter vulnerabilities by scanner",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "String",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "VulnerabilitySeveritiesCount",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -30628,7 +30877,7 @@
         },
         {
           "kind": "INPUT_OBJECT",
-          "name": "NegatedBoardEpicIssueInput",
+          "name": "NegatedBoardIssueInput",
           "description": null,
           "fields": null,
           "inputFields": [
@@ -30691,8 +30940,8 @@
               "defaultValue": null
             },
             {
-              "name": "epicId",
-              "description": "Filter by epic ID",
+              "name": "myReactionEmoji",
+              "description": "Filter by reaction emoji",
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
@@ -30701,11 +30950,11 @@
               "defaultValue": null
             },
             {
-              "name": "myReactionEmoji",
-              "description": "Filter by reaction emoji",
+              "name": "epicId",
+              "description": "Filter by epic ID. Incompatible with epicWildcardId",
               "type": {
                 "kind": "SCALAR",
-                "name": "String",
+                "name": "ID",
                 "ofType": null
               },
               "defaultValue": null
@@ -36407,9 +36656,98 @@
             },
             {
               "name": "vulnerabilitySeveritiesCount",
-              "description": "Counts for each severity of vulnerability of the project",
+              "description": "Counts for each vulnerability severity in the project",
               "args": [
-
+                {
+                  "name": "projectId",
+                  "description": "Filter vulnerabilities by project",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "ID",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "reportType",
+                  "description": "Filter vulnerabilities by report type",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "ENUM",
+                        "name": "VulnerabilityReportType",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "severity",
+                  "description": "Filter vulnerabilities by severity",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "ENUM",
+                        "name": "VulnerabilitySeverity",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "state",
+                  "description": "Filter vulnerabilities by state",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "ENUM",
+                        "name": "VulnerabilityState",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "scanner",
+                  "description": "Filter vulnerabilities by scanner",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "String",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null
+                }
               ],
               "type": {
                 "kind": "OBJECT",

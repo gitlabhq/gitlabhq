@@ -37,6 +37,7 @@ class IssuableFinder
   include FinderMethods
   include CreatedAtFilter
   include Gitlab::Utils::StrongMemoize
+  prepend OptimizedIssuableLabelFilter
 
   requires_cross_project_access unless: -> { params.project? }
 

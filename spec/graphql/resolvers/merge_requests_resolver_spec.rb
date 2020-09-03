@@ -15,7 +15,7 @@ RSpec.describe Resolvers::MergeRequestsResolver do
   let_it_be(:merge_request_3) { create(:merge_request, :unique_branches, **common_attrs) }
   let_it_be(:merge_request_4) { create(:merge_request, :unique_branches, :locked, **common_attrs) }
   let_it_be(:merge_request_5) { create(:merge_request, :simple, :locked, **common_attrs) }
-  let_it_be(:merge_request_6) { create(:labeled_merge_request, :unique_branches, labels: create_list(:label, 2), **common_attrs) }
+  let_it_be(:merge_request_6) { create(:labeled_merge_request, :unique_branches, labels: create_list(:label, 2, project: project), **common_attrs) }
   let_it_be(:merge_request_with_milestone) { create(:merge_request, :unique_branches, **common_attrs, milestone: milestone) }
   let_it_be(:other_project) { create(:project, :repository) }
   let_it_be(:other_merge_request) { create(:merge_request, source_project: other_project, target_project: other_project) }

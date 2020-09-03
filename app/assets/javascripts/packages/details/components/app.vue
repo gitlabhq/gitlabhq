@@ -268,22 +268,24 @@ export default {
         </template>
       </gl-sprintf>
 
-      <div slot="modal-footer" class="w-100">
-        <div class="float-right">
-          <gl-button @click="cancelDelete()">{{ __('Cancel') }}</gl-button>
-          <gl-button
-            ref="modal-delete-button"
-            data-method="delete"
-            :to="destroyPath"
-            variant="danger"
-            category="primary"
-            data-qa-selector="delete_modal_button"
-            @click="track($options.trackingActions.DELETE_PACKAGE)"
-          >
-            {{ __('Delete') }}
-          </gl-button>
+      <template #modal-footer>
+        <div class="gl-w-full">
+          <div class="float-right">
+            <gl-button @click="cancelDelete">{{ __('Cancel') }}</gl-button>
+            <gl-button
+              ref="modal-delete-button"
+              data-method="delete"
+              :to="destroyPath"
+              variant="danger"
+              category="primary"
+              data-qa-selector="delete_modal_button"
+              @click="track($options.trackingActions.DELETE_PACKAGE)"
+            >
+              {{ __('Delete') }}
+            </gl-button>
+          </div>
         </div>
-      </div>
+      </template>
     </gl-modal>
   </div>
 </template>

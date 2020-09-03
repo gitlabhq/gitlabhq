@@ -7,9 +7,9 @@ describe('publish_method', () => {
 
   const [packageWithoutPipeline, packageWithPipeline] = packageList;
 
-  const findPipelineRef = () => wrapper.find({ ref: 'pipeline-ref' });
-  const findPipelineSha = () => wrapper.find({ ref: 'pipeline-sha' });
-  const findManualPublish = () => wrapper.find({ ref: 'manual-ref' });
+  const findPipelineRef = () => wrapper.find('[data-testid="pipeline-ref"]');
+  const findPipelineSha = () => wrapper.find('[data-testid="pipeline-sha"]');
+  const findManualPublish = () => wrapper.find('[data-testid="manually-published"]');
 
   const mountComponent = (packageEntity = {}, isGroup = false) => {
     wrapper = shallowMount(PublishMethod, {

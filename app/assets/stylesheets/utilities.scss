@@ -160,3 +160,20 @@
   min-height: $gl-spacing-scale-6;
 }
 
+.gl-justify-content-md-end {
+  @media (min-width: $breakpoint-md) {
+    width: auto !important;
+  }
+}
+
+.gl-display-md-flex {
+  @media (min-width: $breakpoint-md) {
+    display: flex;
+  }
+}
+
+.gl-display-md-none {
+  @media (min-width: $breakpoint-md) {
+    display: none;
+  }
+}

@@ -999,6 +999,9 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
   describe '#action_monthly_active_users', :clean_gitlab_redis_shared_state do
     let(:time_period) { { created_at: 2.days.ago..time } }
     let(:time) { Time.zone.now }
+    let(:user1) { build(:user, id: 1) }
+    let(:user2) { build(:user, id: 2) }
+    let(:user3) { build(:user, id: 3) }
 
     before do
       counter = Gitlab::UsageDataCounters::TrackUniqueEvents
@@ -1014,6 +1017,20 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
       counter.track_event(event_action: :created, event_target: project, author_id: 5, time: time - 3.days)
       counter.track_event(event_action: :created, event_target: wiki, author_id: 3)
       counter.track_event(event_action: :created, event_target: design, author_id: 3)
+
+      counter = Gitlab::UsageDataCounters::EditorUniqueCounter
+
+      counter.track_web_ide_edit_action(author: user1)
+      counter.track_web_ide_edit_action(author: user1)
+      counter.track_sfe_edit_action(author: user1)
+      counter.track_snippet_editor_edit_action(author: user1)
+      counter.track_snippet_editor_edit_action(author: user1, time: time - 3.days)
+
+      counter.track_web_ide_edit_action(author: user2)
+      counter.track_sfe_edit_action(author: user2)
+
+      counter.track_web_ide_edit_action(author: user3, time: time - 3.days)
+      counter.track_snippet_editor_edit_action(author: user3)
     end
 
     it 'returns the distinct count of user actions within the specified time period' do
@@ -1021,7 +1038,11 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
         {
           action_monthly_active_users_design_management: 1,
           action_monthly_active_users_project_repo: 3,
-          action_monthly_active_users_wiki_repo: 1
+          action_monthly_active_users_wiki_repo: 1,
+          action_monthly_active_users_web_ide_edit: 2,
+          action_monthly_active_users_sfe_edit: 2,
+          action_monthly_active_users_snippet_editor_edit: 2,
+          action_monthly_active_users_ide_edit: 3
         }
       )
     end

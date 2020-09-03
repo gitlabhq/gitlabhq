@@ -20123,7 +20123,7 @@ CREATE INDEX index_keys_on_user_id ON public.keys USING btree (user_id);
 
 CREATE UNIQUE INDEX index_kubernetes_namespaces_on_cluster_project_environment_id ON public.clusters_kubernetes_namespaces USING btree (cluster_id, project_id, environment_id);
 
-CREATE INDEX index_label_links_on_label_id ON public.label_links USING btree (label_id);
+CREATE INDEX index_label_links_on_label_id_and_target_type ON public.label_links USING btree (label_id, target_type);
 
 CREATE INDEX index_label_links_on_target_id_and_target_type ON public.label_links USING btree (target_id, target_type);
 
@@ -20408,6 +20408,8 @@ CREATE INDEX index_on_id_partial_with_legacy_storage ON public.projects USING bt
 CREATE INDEX index_on_identities_lower_extern_uid_and_provider ON public.identities USING btree (lower((extern_uid)::text), provider);
 
 CREATE UNIQUE INDEX index_on_instance_statistics_recorded_at_and_identifier ON public.analytics_instance_statistics_measurements USING btree (identifier, recorded_at);
+
+CREATE INDEX index_on_label_links_all_columns ON public.label_links USING btree (target_id, label_id, target_type);
 
 CREATE INDEX index_on_users_name_lower ON public.users USING btree (lower((name)::text));
 
@@ -21172,6 +21174,8 @@ CREATE INDEX index_vulnerabilities_on_last_edited_by_id ON public.vulnerabilitie
 CREATE INDEX index_vulnerabilities_on_milestone_id ON public.vulnerabilities USING btree (milestone_id);
 
 CREATE INDEX index_vulnerabilities_on_project_id ON public.vulnerabilities USING btree (project_id);
+
+CREATE INDEX index_vulnerabilities_on_project_id_and_id ON public.vulnerabilities USING btree (project_id, id);
 
 CREATE INDEX index_vulnerabilities_on_resolved_by_id ON public.vulnerabilities USING btree (resolved_by_id);
 

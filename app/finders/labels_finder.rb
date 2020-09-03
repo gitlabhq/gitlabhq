@@ -172,7 +172,14 @@ class LabelsFinder < UnionFinder
                   ProjectsFinder.new(params: { non_archived: true }, current_user: current_user).execute # rubocop: disable CodeReuse/Finder
                 end
 
-    @projects = @projects.in_namespace(group.id) if group?
+    if group?
+      @projects = if params[:include_subgroups]
+                    @projects.in_namespace(group.self_and_descendants.select(:id))
+                  else
+                    @projects.in_namespace(group.id)
+                  end
+    end
+
     @projects = @projects.where(id: params[:project_ids]) if projects?
     @projects = @projects.reorder(nil)
 

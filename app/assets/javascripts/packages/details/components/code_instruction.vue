@@ -48,7 +48,7 @@ export default {
     <input
       :value="instruction"
       type="text"
-      class="form-control monospace js-instruction-input"
+      class="form-control gl-font-monospace js-instruction-input"
       readonly
       @copy="trackCopy"
     />

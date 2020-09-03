@@ -6,6 +6,10 @@ RSpec.describe PipelineDetailsEntity do
   let_it_be(:user) { create(:user) }
   let(:request) { double('request') }
 
+  let(:entity) do
+    described_class.represent(pipeline, request: request)
+  end
+
   it 'inherrits from PipelineEntity' do
     expect(described_class).to be < PipelineEntity
   end
@@ -14,10 +18,6 @@ RSpec.describe PipelineDetailsEntity do
     stub_not_protect_default_branch
 
     allow(request).to receive(:current_user).and_return(user)
-  end
-
-  let(:entity) do
-    described_class.represent(pipeline, request: request)
   end
 
   describe '#as_json' do

@@ -16,7 +16,7 @@ exports[`Package code instruction single line to match the default snapshot 1`] 
   class="input-group gl-mb-3"
 >
   <input
-    class="form-control monospace js-instruction-input"
+    class="form-control gl-font-monospace js-instruction-input"
     readonly="readonly"
     type="text"
   />

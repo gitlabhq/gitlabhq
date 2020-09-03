@@ -13,7 +13,7 @@ RSpec.describe Ci::CreateCrossProjectPipelineWorker do
   describe '#perform' do
     context 'when bridge exists' do
       it 'calls cross project pipeline creation service' do
-        expect(Ci::CreateCrossProjectPipelineService)
+        expect(Ci::CreateDownstreamPipelineService)
           .to receive(:new)
           .with(project, user)
           .and_return(service)
@@ -26,7 +26,7 @@ RSpec.describe Ci::CreateCrossProjectPipelineWorker do
 
     context 'when bridge does not exist' do
       it 'does nothing' do
-        expect(Ci::CreateCrossProjectPipelineService)
+        expect(Ci::CreateDownstreamPipelineService)
           .not_to receive(:new)
 
         described_class.new.perform(non_existing_record_id)

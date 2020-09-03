@@ -4,21 +4,21 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Email::Handler::CreateNoteHandler do
   include_context :email_shared_context
+  let!(:sent_notification) do
+    SentNotification.record_note(note, user.id, mail_key)
+  end
+
+  let(:noteable)  { note.noteable }
+  let(:note)      { create(:diff_note_on_merge_request, project: project) }
+  let(:user)      { create(:user) }
+  let(:project)   { create(:project, :public, :repository) }
+  let(:email_raw) { fixture_file('emails/valid_reply.eml') }
+
   it_behaves_like :reply_processing_shared_examples
 
   before do
     stub_incoming_email_setting(enabled: true, address: "reply+%{key}@appmail.adventuretime.ooo")
     stub_config_setting(host: 'localhost')
-  end
-
-  let(:email_raw) { fixture_file('emails/valid_reply.eml') }
-  let(:project)   { create(:project, :public, :repository) }
-  let(:user)      { create(:user) }
-  let(:note)      { create(:diff_note_on_merge_request, project: project) }
-  let(:noteable)  { note.noteable }
-
-  let!(:sent_notification) do
-    SentNotification.record_note(note, user.id, mail_key)
   end
 
   context "when the recipient address doesn't include a mail key" do

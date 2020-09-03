@@ -3,24 +3,21 @@
 require 'spec_helper'
 
 RSpec.describe CommitRange do
+  let(:range2) { described_class.new("#{sha_from}..#{sha_to}", project) }
+  let(:range)  { described_class.new("#{sha_from}...#{sha_to}", project) }
+  let(:full_sha_to)   { commit2.id }
+  let(:full_sha_from) { commit1.id }
+  let(:sha_to)   { commit2.short_id }
+  let(:sha_from) { commit1.short_id }
+  let!(:commit2) { project.commit }
+  let!(:commit1) { project.commit("HEAD~2") }
+  let!(:project) { create(:project, :public, :repository) }
+
   describe 'modules' do
     subject { described_class }
 
     it { is_expected.to include_module(Referable) }
   end
-
-  let!(:project) { create(:project, :public, :repository) }
-  let!(:commit1) { project.commit("HEAD~2") }
-  let!(:commit2) { project.commit }
-
-  let(:sha_from) { commit1.short_id }
-  let(:sha_to)   { commit2.short_id }
-
-  let(:full_sha_from) { commit1.id }
-  let(:full_sha_to)   { commit2.id }
-
-  let(:range)  { described_class.new("#{sha_from}...#{sha_to}", project) }
-  let(:range2) { described_class.new("#{sha_from}..#{sha_to}", project) }
 
   it 'raises ArgumentError when given an invalid range string' do
     expect { described_class.new("Foo", project) }.to raise_error(ArgumentError)

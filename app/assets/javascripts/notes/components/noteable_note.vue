@@ -1,9 +1,8 @@
 <script>
-/* eslint-disable vue/no-v-html */
 import $ from 'jquery';
 import { mapGetters, mapActions } from 'vuex';
 import { escape } from 'lodash';
-import { GlSprintf } from '@gitlab/ui';
+import { GlSprintf, GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { truncateSha } from '~/lib/utils/text_utility';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
@@ -34,6 +33,9 @@ export default {
     noteActions,
     NoteBody,
     TimelineEntryItem,
+  },
+  directives: {
+    SafeHtml,
   },
   mixins: [noteable, resolvable, glFeatureFlagsMixin()],
   props: {
@@ -379,7 +381,7 @@ export default {
           :is-confidential="note.confidential"
         >
           <slot slot="note-header-info" name="note-header-info"></slot>
-          <span v-if="commit" v-html="actionText"></span>
+          <span v-if="commit" v-safe-html="actionText"></span>
           <span v-else-if="note.created_at" class="d-none d-sm-inline">&middot;</span>
         </note-header>
         <note-actions

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::CreateCrossProjectPipelineService, '#execute' do
+RSpec.describe Ci::CreateDownstreamPipelineService, '#execute' do
   let_it_be(:user) { create(:user) }
   let(:upstream_project) { create(:project, :repository) }
   let_it_be(:downstream_project) { create(:project, :repository) }
@@ -130,7 +130,7 @@ RSpec.describe Ci::CreateCrossProjectPipelineService, '#execute' do
         expect(Gitlab::ErrorTracking)
           .to receive(:track_exception)
           .with(
-            instance_of(Ci::CreateCrossProjectPipelineService::DuplicateDownstreamPipelineError),
+            instance_of(described_class::DuplicateDownstreamPipelineError),
             bridge_id: bridge.id, project_id: bridge.project.id)
           .and_call_original
         expect(Ci::CreatePipelineService).not_to receive(:new)
@@ -397,7 +397,7 @@ RSpec.describe Ci::CreateCrossProjectPipelineService, '#execute' do
 
     context 'when pipeline variables are defined' do
       before do
-        upstream_pipeline.variables.create(key: 'PIPELINE_VARIABLE', value: 'my-value')
+        upstream_pipeline.variables.create!(key: 'PIPELINE_VARIABLE', value: 'my-value')
       end
 
       it 'does not pass pipeline variables directly downstream' do
