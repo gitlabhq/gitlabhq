@@ -230,7 +230,7 @@ it('exists', () => {
   // Best
 
   // NOTE: both mount and shallowMount work as long as a DOM element is available  
-  // Finds a properly formatted link with an accessable name of "Click Me"
+  // Finds a properly formatted link with an accessible name of "Click Me"
   getByRole(el, 'link', { name: /Click Me/i })
   getByRole(el, 'link', { name: 'Click Me' })
   // Finds any element with the text "Click Me"

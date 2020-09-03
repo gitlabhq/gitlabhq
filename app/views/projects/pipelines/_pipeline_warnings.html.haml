@@ -1,6 +1,9 @@
+- total_warnings = warnings.length
+- message = warning_header(total_warnings)
+
 - if warnings.any?
-  - warnings.map(&:content).each do |warning|
-    .bs-callout.bs-callout-warning
-      %p
-        %b= _("Warning:")
+  .bs-callout.bs-callout-warning
+    %details
+      %summary.gl-mb-2= message
+      - warnings.map(&:content).each do |warning|
         = markdown(warning)

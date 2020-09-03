@@ -41,10 +41,6 @@ module SystemNoteService
     ::SystemNotes::IssuablesService.new(noteable: issuable, project: project, author: author).change_issuable_assignees(old_assignees)
   end
 
-  def change_milestone(noteable, project, author, milestone)
-    ::SystemNotes::IssuablesService.new(noteable: noteable, project: project, author: author).change_milestone(milestone)
-  end
-
   def relate_issue(noteable, noteable_ref, user)
     ::SystemNotes::IssuablesService.new(noteable: noteable, project: noteable.project, author: user).relate_issue(noteable_ref)
   end

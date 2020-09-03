@@ -26,7 +26,7 @@ RSpec.describe 'projects/pipelines/new' do
     it 'displays the warnings' do
       render
 
-      expect(rendered).to have_css('div.alert-warning')
+      expect(rendered).to have_css('div.bs-callout-warning')
       expect(rendered).to have_content('warning 1')
       expect(rendered).to have_content('warning 2')
     end

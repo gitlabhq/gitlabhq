@@ -84,7 +84,7 @@ See the [`RSpec.describe` outer block](#the-outer-rspecdescribe-block)
 
 CAUTION: **Deprecation notice:**
 The outer `context` [was deprecated](https://gitlab.com/gitlab-org/quality/team-tasks/-/issues/550) in `13.2`
-in adherance to RSpec 4.0 specifications. Use `RSpec.describe` instead.
+in adherence to RSpec 4.0 specifications. Use `RSpec.describe` instead.
 
 ### The outer `RSpec.describe` block
 

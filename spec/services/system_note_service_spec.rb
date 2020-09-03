@@ -74,18 +74,6 @@ RSpec.describe SystemNoteService do
     end
   end
 
-  describe '.change_milestone' do
-    let(:milestone) { double }
-
-    it 'calls IssuableService' do
-      expect_next_instance_of(::SystemNotes::IssuablesService) do |service|
-        expect(service).to receive(:change_milestone).with(milestone)
-      end
-
-      described_class.change_milestone(noteable, project, author, milestone)
-    end
-  end
-
   describe '.relate_issue' do
     let(:noteable_ref) { double }
     let(:noteable) { double }

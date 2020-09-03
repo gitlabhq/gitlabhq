@@ -380,10 +380,6 @@ RSpec.describe MergeRequests::UpdateService, :mailer do
       end
 
       context 'when the milestone is removed' do
-        before do
-          stub_feature_flags(track_resource_milestone_change_events: false)
-        end
-
         let!(:non_subscriber) { create(:user) }
 
         let!(:subscriber) do
@@ -392,8 +388,6 @@ RSpec.describe MergeRequests::UpdateService, :mailer do
             project.add_developer(u)
           end
         end
-
-        it_behaves_like 'system notes for milestones'
 
         it 'sends notifications for subscribers of changed milestone', :sidekiq_might_not_need_inline do
           merge_request.milestone = create(:milestone, project: project)
@@ -410,10 +404,6 @@ RSpec.describe MergeRequests::UpdateService, :mailer do
       end
 
       context 'when the milestone is changed' do
-        before do
-          stub_feature_flags(track_resource_milestone_change_events: false)
-        end
-
         let!(:non_subscriber) { create(:user) }
 
         let!(:subscriber) do
@@ -428,8 +418,6 @@ RSpec.describe MergeRequests::UpdateService, :mailer do
 
           expect(pending_todo.reload).to be_done
         end
-
-        it_behaves_like 'system notes for milestones'
 
         it 'sends notifications for subscribers of changed milestone', :sidekiq_might_not_need_inline do
           perform_enqueued_jobs do

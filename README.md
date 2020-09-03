@@ -68,7 +68,7 @@ GitLab is an open source project and we are very happy to accept community contr
 
 To work on GitLab itself, we recommend setting up your development environment with [the GitLab Development Kit](https://gitlab.com/gitlab-org/gitlab-development-kit).
 If you do not use the GitLab Development Kit you need to install and setup all the dependencies yourself, this is a lot of work and error prone.
-One small thing you also have to do when installing it yourself is to copy the example development unicorn configuration file:
+One small thing you also have to do when installing it yourself is to copy the example development Unicorn configuration file:
 
     cp config/unicorn.rb.example.development config/unicorn.rb
 
@@ -79,8 +79,8 @@ Instructions on how to start GitLab and how to run the tests can be found in the
 GitLab is a Ruby on Rails application that runs on the following software:
 
 - Ubuntu/Debian/CentOS/RHEL/OpenSUSE
-- Ruby (MRI) 2.6.5
-- Git 2.8.4+
+- Ruby (MRI) 2.6.6
+- Git 2.24+
 - Redis 4.0+
 - PostgreSQL 11+
 

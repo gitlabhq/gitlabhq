@@ -87,7 +87,7 @@ RSpec.describe 'projects/ci/lints/show' do
       it 'shows warning messages' do
         render
 
-        expect(rendered).to have_content('Warning:')
+        expect(rendered).to have_content('2 warning(s) found:')
         expect(rendered).to have_content('Warning 1')
         expect(rendered).to have_content('Warning 2')
       end
@@ -116,7 +116,7 @@ RSpec.describe 'projects/ci/lints/show' do
     it 'shows warning messages' do
       render
 
-      expect(rendered).to have_content('Warning:')
+      expect(rendered).to have_content('2 warning(s) found:')
       expect(rendered).to have_content('Warning 1')
       expect(rendered).to have_content('Warning 2')
     end

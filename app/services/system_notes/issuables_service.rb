@@ -77,24 +77,6 @@ module SystemNotes
       create_note(NoteSummary.new(noteable, project, author, body, action: 'assignee'))
     end
 
-    # Called when the milestone of a Noteable is changed
-    #
-    # milestone - Milestone being assigned, or nil
-    #
-    # Example Note text:
-    #
-    #   "removed milestone"
-    #
-    #   "changed milestone to 7.11"
-    #
-    # Returns the created Note object
-    def change_milestone(milestone)
-      format = milestone&.group_milestone? ? :name : :iid
-      body = milestone.nil? ? 'removed milestone' : "changed milestone to #{milestone.to_reference(project, format: format)}"
-
-      create_note(NoteSummary.new(noteable, project, author, body, action: 'milestone'))
-    end
-
     # Called when the title of a Noteable is changed
     #
     # old_title - Previous String title

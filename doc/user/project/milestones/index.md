@@ -154,9 +154,9 @@ For project milestones in [GitLab Starter](https://about.gitlab.com/pricing/), a
 
 ![burndown chart](img/burndown_chart.png)
 
-### Group Burndown Charts **(PREMIUM)**
+### Group Burndown Charts **(STARTER)**
 
-For group milestones in [GitLab Premium](https://about.gitlab.com/pricing/), a [burndown chart](burndown_charts.md) is in the milestone view, showing the progress of completing a milestone.
+For group milestones in [GitLab Starter](https://about.gitlab.com/pricing/), a [burndown chart](burndown_charts.md) is in the milestone view, showing the progress of completing a milestone.
 
 ### Milestone sidebar
 

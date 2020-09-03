@@ -677,8 +677,10 @@ module Ci
       messages.select(&:error?)
     end
 
-    def warning_messages
-      messages.select(&:warning?)
+    def warning_messages(limit: nil)
+      messages.select(&:warning?).tap do |warnings|
+        break warnings.take(limit) if limit
+      end
     end
 
     # Manually set the notes for a Ci::Pipeline

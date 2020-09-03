@@ -92,6 +92,31 @@ RSpec.describe Gitlab::Ci::Lint do
         end
       end
 
+      context 'when content has more warnings than max limit' do
+        # content will result in 2 warnings
+        let(:content) do
+          <<~YAML
+          rspec:
+            script: rspec
+            rules:
+              - when: always
+          rspec2:
+            script: rspec
+            rules:
+              - when: always
+          YAML
+        end
+
+        before do
+          stub_const('Gitlab::Ci::Warnings::MAX_LIMIT', 1)
+        end
+
+        it 'returns a result with warnings' do
+          expect(subject).to be_valid
+          expect(subject.warnings.size).to eq(1)
+        end
+      end
+
       context 'when content has errors and warnings' do
         let(:content) do
           <<~YAML

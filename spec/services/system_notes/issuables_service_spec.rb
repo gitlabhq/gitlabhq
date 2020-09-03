@@ -128,64 +128,6 @@ RSpec.describe ::SystemNotes::IssuablesService do
     end
   end
 
-  describe '#change_milestone' do
-    subject { service.change_milestone(milestone) }
-
-    context 'for a project milestone' do
-      let(:milestone) { create(:milestone, project: project) }
-
-      it_behaves_like 'a system note' do
-        let(:action) { 'milestone' }
-      end
-
-      context 'when milestone added' do
-        it 'sets the note text' do
-          reference = milestone.to_reference(format: :iid)
-
-          expect(subject.note).to eq "changed milestone to #{reference}"
-        end
-
-        it_behaves_like 'a note with overridable created_at'
-      end
-
-      context 'when milestone removed' do
-        let(:milestone) { nil }
-
-        it 'sets the note text' do
-          expect(subject.note).to eq 'removed milestone'
-        end
-
-        it_behaves_like 'a note with overridable created_at'
-      end
-    end
-
-    context 'for a group milestone' do
-      let(:milestone) { create(:milestone, group: group) }
-
-      it_behaves_like 'a system note' do
-        let(:action) { 'milestone' }
-      end
-
-      context 'when milestone added' do
-        it 'sets the note text to use the milestone name' do
-          expect(subject.note).to eq "changed milestone to #{milestone.to_reference(format: :name)}"
-        end
-
-        it_behaves_like 'a note with overridable created_at'
-      end
-
-      context 'when milestone removed' do
-        let(:milestone) { nil }
-
-        it 'sets the note text' do
-          expect(subject.note).to eq 'removed milestone'
-        end
-
-        it_behaves_like 'a note with overridable created_at'
-      end
-    end
-  end
-
   describe '#change_status' do
     subject { service.change_status(status, source) }
 

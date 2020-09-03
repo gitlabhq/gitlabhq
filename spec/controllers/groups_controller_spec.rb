@@ -422,10 +422,6 @@ RSpec.describe GroupsController do
     end
 
     context 'searching' do
-      before do
-        stub_feature_flags(attempt_group_search_optimizations: true)
-      end
-
       it 'works with popularity sort' do
         get :issues, params: { id: group.to_param, search: 'foo', sort: 'popularity' }
 

@@ -74,7 +74,7 @@ let(:project) { create(:project) }
 let(:project) { build(:project) }
 ```
 
-[Factory Profiler](https://test-prof.evilmartians.io/#/profilers/factory_prof) can help to identify repetitive database persistance via factories.
+[Factory Profiler](https://test-prof.evilmartians.io/#/profilers/factory_prof) can help to identify repetitive database persistence via factories.
 
 ```shell
 # run test for path

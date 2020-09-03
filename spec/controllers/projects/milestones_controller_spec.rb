@@ -135,10 +135,6 @@ RSpec.describe Projects::MilestonesController do
   end
 
   describe "#destroy" do
-    before do
-      stub_feature_flags(track_resource_milestone_change_events: false)
-    end
-
     it "removes milestone" do
       expect(issue.milestone_id).to eq(milestone.id)
 
@@ -153,10 +149,6 @@ RSpec.describe Projects::MilestonesController do
 
       merge_request.reload
       expect(merge_request.milestone_id).to eq(nil)
-
-      # Check system note left for milestone removal
-      last_note = project.issues.find(issue.id).notes[-1].note
-      expect(last_note).to eq('removed milestone')
     end
   end
 

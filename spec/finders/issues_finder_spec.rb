@@ -949,10 +949,6 @@ RSpec.describe IssuesFinder do
   describe '#use_cte_for_search?' do
     let(:finder) { described_class.new(nil, params) }
 
-    before do
-      stub_feature_flags(attempt_group_search_optimizations: true)
-    end
-
     context 'when there is no search param' do
       let(:params) { { attempt_group_search_optimizations: true } }
 
@@ -963,18 +959,6 @@ RSpec.describe IssuesFinder do
 
     context 'when the force_cte param is falsey' do
       let(:params) { { search: 'foo' } }
-
-      it 'returns false' do
-        expect(finder.use_cte_for_search?).to be_falsey
-      end
-    end
-
-    context 'when the attempt_group_search_optimizations flag is disabled' do
-      let(:params) { { search: 'foo', attempt_group_search_optimizations: true } }
-
-      before do
-        stub_feature_flags(attempt_group_search_optimizations: false)
-      end
 
       it 'returns false' do
         expect(finder.use_cte_for_search?).to be_falsey

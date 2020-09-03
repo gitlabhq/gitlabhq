@@ -40,7 +40,7 @@ module Gitlab
         Result.new(
           jobs: dry_run_convert_to_jobs(pipeline.stages),
           errors: pipeline.error_messages.map(&:content),
-          warnings: pipeline.warning_messages.map(&:content)
+          warnings: pipeline.warning_messages(limit: ::Gitlab::Ci::Warnings::MAX_LIMIT).map(&:content)
         )
       end
 
@@ -55,7 +55,7 @@ module Gitlab
         Result.new(
           jobs: static_validation_convert_to_jobs(result),
           errors: result.errors,
-          warnings: result.warnings
+          warnings: result.warnings.take(::Gitlab::Ci::Warnings::MAX_LIMIT) # rubocop: disable CodeReuse/ActiveRecord
         )
       end
 
