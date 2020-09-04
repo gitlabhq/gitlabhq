@@ -12,7 +12,7 @@
     "title": { "type": "string" },
     "confidential": { "type": "boolean" },
     "due_date": { "type": ["date", "null"] },
-    "relative_position": { "type": "integer" },
+    "relative_position": { "type": ["integer", "null"] },
     "time_estimate": { "type": "integer" },
     "issue_sidebar_endpoint": { "type": "string" },
     "toggle_subscription_endpoint": { "type": "string" },

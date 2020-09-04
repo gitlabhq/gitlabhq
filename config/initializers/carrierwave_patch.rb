@@ -7,7 +7,9 @@ require "carrierwave/storage/fog"
 #
 # This patch also incorporates
 # https://github.com/carrierwaveuploader/carrierwave/pull/2375 to
-# provide Azure support. This is already in CarrierWave v2.1.x, but
+# provide Azure support
+# and https://github.com/carrierwaveuploader/carrierwave/pull/2397 to
+# support custom expire_at. This is already in CarrierWave v2.1.x, but
 # upgrading this gem is a significant task:
 # https://gitlab.com/gitlab-org/gitlab/-/issues/216067
 module CarrierWave
@@ -28,7 +30,7 @@ module CarrierWave
             # avoid a get by using local references
             local_directory = connection.directories.new(key: @uploader.fog_directory)
             local_file = local_directory.files.new(key: path)
-            expire_at = ::Fog::Time.now + @uploader.fog_authenticated_url_expiration
+            expire_at = options[:expire_at] || ::Fog::Time.now + @uploader.fog_authenticated_url_expiration
             case @uploader.fog_credentials[:provider]
             when 'AWS', 'Google'
               # Older versions of fog-google do not support options as a parameter

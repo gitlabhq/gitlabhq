@@ -566,7 +566,7 @@ the Admin Area UI, and Prometheus!
          null: true,
          resolver: ::Resolvers::Geo::WidgetRegistriesResolver,
          description: 'Find widget registries on this Geo node',
-         feature_flag: :geo_self_service_framework
+         feature_flag: :geo_widget_replication
    ```
 
 1. Add the new `widget_registries` field name to the `expected_fields` array in

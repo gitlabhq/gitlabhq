@@ -1,4 +1,4 @@
-import AjaxLoadingSpinner from '~/ajax_loading_spinner';
+import AjaxLoadingSpinner from '~/branches/ajax_loading_spinner';
 import DeleteModal from '~/branches/branches_delete_modal';
 import initDiverganceGraph from '~/branches/divergence_graph';
 

@@ -1452,6 +1452,14 @@
   :weight: 1
   :idempotent:
   :tags: []
+- :name: issue_placement
+  :feature_category: :issue_tracking
+  :has_external_dependencies:
+  :urgency: :high
+  :resource_boundary: :cpu
+  :weight: 2
+  :idempotent: true
+  :tags: []
 - :name: issue_rebalancing
   :feature_category: :issue_tracking
   :has_external_dependencies:

@@ -1,5 +1,6 @@
 <script>
 /* eslint-disable vue/no-v-html */
+import { GlLoadingIcon } from '@gitlab/ui';
 import { sprintf, s__ } from '~/locale';
 import statusCodes from '~/lib/utils/http_status';
 import { bytesToMiB } from '~/lib/utils/number_utils';
@@ -11,6 +12,7 @@ export default {
   name: 'MemoryUsage',
   components: {
     MemoryGraph,
+    GlLoadingIcon,
   },
   props: {
     metricsUrl: {
@@ -156,8 +158,9 @@ export default {
 <template>
   <div class="mr-info-list clearfix mr-memory-usage js-mr-memory-usage">
     <p v-if="shouldShowLoading" class="usage-info js-usage-info usage-info-loading">
-      <i class="fa fa-spinner fa-spin usage-info-load-spinner" aria-hidden="true"> </i
-      >{{ s__('mrWidget|Loading deployment statistics') }}
+      <gl-loading-icon class="usage-info-load-spinner" />{{
+        s__('mrWidget|Loading deployment statistics')
+      }}
     </p>
     <p
       v-if="shouldShowMemoryGraph"

@@ -55,8 +55,7 @@ module SendFileUpload
   def image_scaling_request?(file_upload)
     avatar_safe_for_scaling?(file_upload) &&
       scaling_allowed_by_feature_flags?(file_upload) &&
-      valid_image_scaling_width? &&
-      current_user
+      valid_image_scaling_width?
   end
 
   def avatar_safe_for_scaling?(file_upload)

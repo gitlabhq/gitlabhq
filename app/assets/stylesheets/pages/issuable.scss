@@ -919,12 +919,12 @@
 }
 
 .issuable-todo-btn {
-  .fa-spinner {
+  .gl-spinner {
     display: none;
   }
 
   &.is-loading {
-    .fa-spinner {
+    .gl-spinner {
       display: inline-block;
     }
 

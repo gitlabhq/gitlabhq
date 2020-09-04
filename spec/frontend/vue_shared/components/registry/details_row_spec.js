@@ -1,6 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
 import { GlIcon } from '@gitlab/ui';
-import component from '~/registry/shared/components/details_row.vue';
+import component from '~/vue_shared/components/registry/details_row.vue';
 
 describe('DetailsRow', () => {
   let wrapper;

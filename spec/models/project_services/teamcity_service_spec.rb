@@ -11,7 +11,7 @@ RSpec.describe TeamcityService, :use_clean_rails_memory_store_caching do
   let(:project) { create(:project) }
 
   subject(:service) do
-    described_class.create(
+    described_class.create!(
       project: project,
       properties: {
         teamcity_url: teamcity_url,
@@ -85,7 +85,7 @@ RSpec.describe TeamcityService, :use_clean_rails_memory_store_caching do
           teamcity_service = service
 
           teamcity_service.teamcity_url = 'http://gitlab1.com'
-          teamcity_service.save
+          teamcity_service.save!
 
           expect(teamcity_service.password).to be_nil
         end
@@ -94,7 +94,7 @@ RSpec.describe TeamcityService, :use_clean_rails_memory_store_caching do
           teamcity_service = service
 
           teamcity_service.username = 'some_name'
-          teamcity_service.save
+          teamcity_service.save!
 
           expect(teamcity_service.password).to eq('password')
         end
@@ -104,7 +104,7 @@ RSpec.describe TeamcityService, :use_clean_rails_memory_store_caching do
 
           teamcity_service.teamcity_url = 'http://gitlab_edited.com'
           teamcity_service.password = 'password'
-          teamcity_service.save
+          teamcity_service.save!
 
           expect(teamcity_service.password).to eq('password')
           expect(teamcity_service.teamcity_url).to eq('http://gitlab_edited.com')
@@ -117,7 +117,7 @@ RSpec.describe TeamcityService, :use_clean_rails_memory_store_caching do
 
         teamcity_service.teamcity_url = 'http://gitlab_edited.com'
         teamcity_service.password = 'password'
-        teamcity_service.save
+        teamcity_service.save!
 
         expect(teamcity_service.password).to eq('password')
         expect(teamcity_service.teamcity_url).to eq('http://gitlab_edited.com')

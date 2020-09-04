@@ -33,7 +33,7 @@ RSpec.describe PackagistService do
     let(:user)    { create(:user) }
     let(:project) { create(:project, :repository) }
     let(:push_sample_data) { Gitlab::DataBuilder::Push.build_sample(project, user) }
-    let(:packagist_service) { described_class.create(packagist_params) }
+    let(:packagist_service) { described_class.create!(packagist_params) }
 
     before do
       stub_request(:post, packagist_hook_url)

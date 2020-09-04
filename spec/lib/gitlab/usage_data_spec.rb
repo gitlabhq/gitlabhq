@@ -479,7 +479,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
       expect(count_data[:project_snippets]).to eq(4)
 
       expect(count_data[:projects_with_packages]).to eq(2)
-      expect(count_data[:packages]).to eq(3)
+      expect(count_data[:packages]).to eq(4)
     end
 
     it 'gathers object store usage correctly' do
@@ -572,6 +572,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
       expect(counts_monthly[:snippets]).to eq(3)
       expect(counts_monthly[:personal_snippets]).to eq(1)
       expect(counts_monthly[:project_snippets]).to eq(2)
+      expect(counts_monthly[:packages]).to eq(3)
     end
   end
 

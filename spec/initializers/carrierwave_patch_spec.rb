@@ -28,5 +28,17 @@ RSpec.describe 'CarrierWave::Storage::Fog::File' do
         expect(subject.authenticated_url).to eq("https://sa.blob.core.windows.net/test_container/test_blob?token")
       end
     end
+
+    context 'with custom expire_at' do
+      it 'properly sets expires param' do
+        expire_at = 24.hours.from_now
+
+        expect_next_instance_of(Fog::Storage::AzureRM::File) do |file|
+          expect(file).to receive(:url).with(expire_at).and_call_original
+        end
+
+        expect(subject.authenticated_url(expire_at: expire_at)).to eq("https://sa.blob.core.windows.net/test_container/test_blob?token")
+      end
+    end
   end
 end

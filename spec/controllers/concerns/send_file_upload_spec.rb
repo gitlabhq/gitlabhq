@@ -79,6 +79,23 @@ RSpec.describe SendFileUpload do
         it_behaves_like 'handles image resize requests allowed by FFs'
       end
 
+      context 'when boths FFs are enabled globally' do
+        before do
+          stub_feature_flags(dynamic_image_resizing_requester: true)
+          stub_feature_flags(dynamic_image_resizing_owner: true)
+        end
+
+        it_behaves_like 'handles image resize requests allowed by FFs'
+
+        context 'when current_user is nil' do
+          before do
+            allow(controller).to receive(:current_user).and_return(nil)
+          end
+
+          it_behaves_like 'handles image resize requests allowed by FFs'
+        end
+      end
+
       context 'when only FF based on content requester is enabled for current user' do
         before do
           stub_feature_flags(dynamic_image_resizing_requester: image_requester)

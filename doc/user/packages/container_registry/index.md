@@ -70,7 +70,7 @@ This view allows you to:
 - Filter image repositories by their name.
 - [Delete](#delete-images-from-within-gitlab) one or more image repository.
 - Navigate to the image repository details page.
-- Show a **Quick start** dropdown with the most common commands to log in, build and push
+- Show a **Quick start** dropdown with the most common commands to log in, build and push.
 - Show a banner if the optional [cleanup policy](#cleanup-policy) is enabled for this project.
 
 ### Control Container Registry for your group

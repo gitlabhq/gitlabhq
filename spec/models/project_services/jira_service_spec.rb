@@ -28,7 +28,7 @@ RSpec.describe JiraService do
       }
     end
 
-    let(:service) { described_class.create(options) }
+    let(:service) { described_class.create!(options) }
 
     it 'sets the URL properly' do
       # jira-ruby gem parses the URI and handles trailing slashes fine:
@@ -102,7 +102,7 @@ RSpec.describe JiraService do
       }
     end
 
-    subject { described_class.create(params) }
+    subject { described_class.create!(params) }
 
     it 'does not store data into properties' do
       expect(subject.properties).to be_nil
@@ -189,7 +189,7 @@ RSpec.describe JiraService do
           let_it_be(:new_url) { 'http://jira-new.example.com' }
 
           before do
-            service.update(username: new_username, url: new_url)
+            service.update!(username: new_username, url: new_url)
           end
 
           it 'leaves properties field emtpy' do
@@ -209,12 +209,12 @@ RSpec.describe JiraService do
 
         context 'when updating the url, api_url, username, or password' do
           it 'updates deployment type' do
-            service.update(url: 'http://first.url')
-            service.jira_tracker_data.update(deployment_type: 'server')
+            service.update!(url: 'http://first.url')
+            service.jira_tracker_data.update!(deployment_type: 'server')
 
             expect(service.jira_tracker_data.deployment_server?).to be_truthy
 
-            service.update(api_url: 'http://another.url')
+            service.update!(api_url: 'http://another.url')
             service.jira_tracker_data.reload
 
             expect(service.jira_tracker_data.deployment_cloud?).to be_truthy
@@ -222,25 +222,25 @@ RSpec.describe JiraService do
           end
 
           it 'calls serverInfo for url' do
-            service.update(url: 'http://first.url')
+            service.update!(url: 'http://first.url')
 
             expect(WebMock).to have_requested(:get, /serverInfo/)
           end
 
           it 'calls serverInfo for api_url' do
-            service.update(api_url: 'http://another.url')
+            service.update!(api_url: 'http://another.url')
 
             expect(WebMock).to have_requested(:get, /serverInfo/)
           end
 
           it 'calls serverInfo for username' do
-            service.update(username: 'test-user')
+            service.update!(username: 'test-user')
 
             expect(WebMock).to have_requested(:get, /serverInfo/)
           end
 
           it 'calls serverInfo for password' do
-            service.update(password: 'test-password')
+            service.update!(password: 'test-password')
 
             expect(WebMock).to have_requested(:get, /serverInfo/)
           end
@@ -248,7 +248,7 @@ RSpec.describe JiraService do
 
         context 'when not updating the url, api_url, username, or password' do
           it 'does not update deployment type' do
-            service.update(jira_issue_transition_id: 'jira_issue_transition_id')
+            expect {service.update!(jira_issue_transition_id: 'jira_issue_transition_id')}.to raise_error(ActiveRecord::RecordInvalid)
 
             expect(WebMock).not_to have_requested(:get, /serverInfo/)
           end
@@ -268,7 +268,7 @@ RSpec.describe JiraService do
               it 'resets password if url changed' do
                 service
                 service.url = 'http://jira_edited.example.com'
-                service.save
+                service.save!
 
                 expect(service.reload.url).to eq('http://jira_edited.example.com')
                 expect(service.password).to be_nil
@@ -276,7 +276,7 @@ RSpec.describe JiraService do
 
               it 'does not reset password if url "changed" to the same url as before' do
                 service.url = 'http://jira.example.com'
-                service.save
+                service.save!
 
                 expect(service.reload.url).to eq('http://jira.example.com')
                 expect(service.password).not_to be_nil
@@ -284,7 +284,7 @@ RSpec.describe JiraService do
 
               it 'resets password if url not changed but api url added' do
                 service.api_url = 'http://jira_edited.example.com/rest/api/2'
-                service.save
+                service.save!
 
                 expect(service.reload.api_url).to eq('http://jira_edited.example.com/rest/api/2')
                 expect(service.password).to be_nil
@@ -293,7 +293,7 @@ RSpec.describe JiraService do
               it 'does not reset password if new url is set together with password, even if it\'s the same password' do
                 service.url = 'http://jira_edited.example.com'
                 service.password = password
-                service.save
+                service.save!
 
                 expect(service.password).to eq(password)
                 expect(service.url).to eq('http://jira_edited.example.com')
@@ -302,14 +302,14 @@ RSpec.describe JiraService do
               it 'resets password if url changed, even if setter called multiple times' do
                 service.url = 'http://jira1.example.com/rest/api/2'
                 service.url = 'http://jira1.example.com/rest/api/2'
-                service.save
+                service.save!
 
                 expect(service.password).to be_nil
               end
 
               it 'does not reset password if username changed' do
                 service.username = 'some_name'
-                service.save
+                service.save!
 
                 expect(service.reload.password).to eq(password)
               end
@@ -317,7 +317,7 @@ RSpec.describe JiraService do
               it 'does not reset password if password changed' do
                 service.url = 'http://jira_edited.example.com'
                 service.password = 'new_password'
-                service.save
+                service.save!
 
                 expect(service.reload.password).to eq('new_password')
               end
@@ -325,7 +325,7 @@ RSpec.describe JiraService do
               it 'does not reset password if the password is touched and same as before' do
                 service.url = 'http://jira_edited.example.com'
                 service.password = password
-                service.save
+                service.save!
 
                 expect(service.reload.password).to eq(password)
               end
@@ -342,20 +342,20 @@ RSpec.describe JiraService do
 
               it 'resets password if api url changed' do
                 service.api_url = 'http://jira_edited.example.com/rest/api/2'
-                service.save
+                service.save!
 
                 expect(service.password).to be_nil
               end
 
               it 'does not reset password if url changed' do
                 service.url = 'http://jira_edited.example.com'
-                service.save
+                service.save!
 
                 expect(service.password).to eq(password)
               end
 
               it 'resets password if api url set to empty' do
-                service.update(api_url: '')
+                service.update!(api_url: '')
 
                 expect(service.reload.password).to be_nil
               end
@@ -372,7 +372,7 @@ RSpec.describe JiraService do
             it 'saves password if new url is set together with password' do
               service.url = 'http://jira_edited.example.com/rest/api/2'
               service.password = 'password'
-              service.save
+              service.save!
               expect(service.reload.password).to eq('password')
               expect(service.reload.url).to eq('http://jira_edited.example.com/rest/api/2')
             end
@@ -441,7 +441,7 @@ RSpec.describe JiraService do
         allow_any_instance_of(JIRA::Resource::Issue).to receive(:key).and_return('JIRA-123')
         allow(JIRA::Resource::Remotelink).to receive(:all).and_return([])
 
-        @jira_service.save
+        @jira_service.save!
 
         project_issues_url = 'http://jira.example.com/rest/api/2/issue/JIRA-123'
         @transitions_url   = 'http://jira.example.com/rest/api/2/issue/JIRA-123/transitions'
@@ -709,9 +709,11 @@ RSpec.describe JiraService do
 
   describe '#test' do
     let(:server_info_results) { { 'url' => 'http://url', 'deploymentType' => 'Cloud' } }
+    let_it_be(:project) { create(:project, :repository) }
     let(:jira_service) do
       described_class.new(
         url: url,
+        project: project,
         username: username,
         password: password
       )
@@ -728,7 +730,7 @@ RSpec.describe JiraService do
       end
 
       it 'gets Jira project with API URL if set' do
-        jira_service.update(api_url: 'http://jira.api.com')
+        jira_service.update!(api_url: 'http://jira.api.com')
 
         expect(server_info).to eq(success: true, result: server_info_results)
         expect(WebMock).to have_requested(:get, /jira.api.com/)

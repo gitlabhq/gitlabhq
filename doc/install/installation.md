@@ -147,8 +147,7 @@ ldd $(command -v git) | grep pcre2
 
 The output should contain `libpcre2-8.so.0`.
 
-Is the system packaged Git too old, or not compiled with pcre2?
-Remove it:
+If the system packaged Git is too old or not compiled with `pcre2`, remove it:
 
 ```shell
 sudo apt-get remove git-core

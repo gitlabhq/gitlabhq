@@ -1,9 +1,9 @@
 import { shallowMount } from '@vue/test-utils';
 import { GlIcon } from '@gitlab/ui';
-import component from '~/packages/details/components/history_element.vue';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
+import component from '~/vue_shared/components/registry/history_item.vue';
 
-describe('History Element', () => {
+describe('History Item', () => {
   let wrapper;
   const defaultProps = {
     icon: 'pencil',
@@ -17,6 +17,7 @@ describe('History Element', () => {
       },
       slots: {
         default: '<div data-testid="default-slot"></div>',
+        body: '<div data-testid="body-slot"></div>',
       },
     });
   };
@@ -29,6 +30,7 @@ describe('History Element', () => {
   const findTimelineEntry = () => wrapper.find(TimelineEntryItem);
   const findGlIcon = () => wrapper.find(GlIcon);
   const findDefaultSlot = () => wrapper.find('[data-testid="default-slot"]');
+  const findBodySlot = () => wrapper.find('[data-testid="body-slot"]');
 
   it('renders the correct markup', () => {
     mountComponent();
@@ -41,11 +43,19 @@ describe('History Element', () => {
 
     expect(findDefaultSlot().exists()).toBe(true);
   });
+
+  it('has a body slot', () => {
+    mountComponent();
+
+    expect(findBodySlot().exists()).toBe(true);
+  });
+
   it('has a timeline entry', () => {
     mountComponent();
 
     expect(findTimelineEntry().exists()).toBe(true);
   });
+
   it('has an icon', () => {
     mountComponent();
 

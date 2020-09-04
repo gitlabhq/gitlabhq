@@ -3,12 +3,11 @@ import { GlIcon } from '@gitlab/ui';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
 
 export default {
-  name: 'HistoryElement',
+  name: 'HistoryItem',
   components: {
     GlIcon,
     TimelineEntryItem,
   },
-
   props: {
     icon: {
       type: String,
@@ -29,7 +28,9 @@ export default {
           <slot></slot>
         </span>
       </div>
-      <div class="note-body"></div>
+      <div class="note-body">
+        <slot name="body"></slot>
+      </div>
     </div>
   </timeline-entry-item>
 </template>

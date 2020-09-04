@@ -39,10 +39,10 @@ RSpec.describe NewIssueWorker do
     end
 
     context 'when everything is ok' do
-      let(:project) { create(:project, :public) }
-      let(:mentioned) { create(:user) }
-      let(:user) { create(:user) }
-      let(:issue) { create(:issue, project: project, description: "issue for #{mentioned.to_reference}") }
+      let_it_be(:user) { create_default(:user) }
+      let_it_be(:project) { create(:project, :public) }
+      let_it_be(:mentioned) { create(:user) }
+      let_it_be(:issue) { create(:issue, project: project, description: "issue for #{mentioned.to_reference}") }
 
       it 'creates a new event record' do
         expect { worker.perform(issue.id, user.id) }.to change { Event.count }.from(0).to(1)

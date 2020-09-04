@@ -20463,6 +20463,8 @@ CREATE INDEX index_packages_package_files_on_package_id_and_file_name ON public.
 
 CREATE INDEX index_packages_packages_on_creator_id ON public.packages_packages USING btree (creator_id);
 
+CREATE INDEX index_packages_packages_on_id_and_created_at ON public.packages_packages USING btree (id, created_at);
+
 CREATE INDEX index_packages_packages_on_name_trigram ON public.packages_packages USING gin (name public.gin_trgm_ops);
 
 CREATE INDEX index_packages_packages_on_project_id_and_created_at ON public.packages_packages USING btree (project_id, created_at);

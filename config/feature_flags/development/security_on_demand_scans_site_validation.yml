@@ -1,5 +1,5 @@
 ---
-name: security-on-demand-scans-site-validation
+name: security_on_demand_scans_site_validation
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/40685
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/241815
 group: group::dynamic analysis

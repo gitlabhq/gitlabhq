@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`History Element renders the correct markup 1`] = `
+exports[`History Item renders the correct markup 1`] = `
 <li
   class="timeline-entry system-note note-wrapper gl-mb-6!"
 >
@@ -31,7 +31,11 @@ exports[`History Element renders the correct markup 1`] = `
        
       <div
         class="note-body"
-      />
+      >
+        <div
+          data-testid="body-slot"
+        />
+      </div>
     </div>
   </div>
 </li>

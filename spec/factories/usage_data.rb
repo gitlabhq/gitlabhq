@@ -101,6 +101,7 @@ FactoryBot.define do
       create(:package, project: projects[0])
       create(:package, project: projects[0])
       create(:package, project: projects[1])
+      create(:package, created_at: 2.months.ago, project: projects[1])
 
       ProjectFeature.first.update_attribute('repository_access_level', 0)
 

@@ -9,7 +9,7 @@ RSpec.describe BuildkiteService, :use_clean_rails_memory_store_caching do
   let(:project) { create(:project) }
 
   subject(:service) do
-    described_class.create(
+    described_class.create!(
       project: project,
       properties: {
         service_hook: true,

@@ -16,12 +16,12 @@ module Issues
 
     def before_create(issue)
       spam_check(issue, current_user, action: :create)
-      issue.move_to_end
 
       # current_user (defined in BaseService) is not available within run_after_commit block
       user = current_user
       issue.run_after_commit do
         NewIssueWorker.perform_async(issue.id, user.id)
+        IssuePlacementWorker.perform_async(issue.id)
       end
     end
 
@@ -30,7 +30,6 @@ module Issues
       user_agent_detail_service.create
       resolve_discussions_with_issue(issuable)
       delete_milestone_total_issue_counter_cache(issuable.milestone)
-      rebalance_if_needed(issuable)
 
       super
     end

@@ -7779,6 +7779,9 @@ msgstr ""
 msgid "DastProfiles|Do you want to discard your changes?"
 msgstr ""
 
+msgid "DastProfiles|Download validation text file"
+msgstr ""
+
 msgid "DastProfiles|Edit feature will come soon. Please create a new profile if changes needed"
 msgstr ""
 
@@ -7839,7 +7842,22 @@ msgstr ""
 msgid "DastProfiles|Site Profiles"
 msgstr ""
 
+msgid "DastProfiles|Site is not validated yet, please follow the steps."
+msgstr ""
+
+msgid "DastProfiles|Site must be validated to run an active scan."
+msgstr ""
+
 msgid "DastProfiles|Spider timeout"
+msgstr ""
+
+msgid "DastProfiles|Step 1 - Choose site validation method"
+msgstr ""
+
+msgid "DastProfiles|Step 2 - Add following text to the target site"
+msgstr ""
+
+msgid "DastProfiles|Step 3 - Confirm text file location and validate"
 msgstr ""
 
 msgid "DastProfiles|Target URL"
@@ -7848,10 +7866,31 @@ msgstr ""
 msgid "DastProfiles|Target timeout"
 msgstr ""
 
+msgid "DastProfiles|Text file validation"
+msgstr ""
+
 msgid "DastProfiles|The maximum number of seconds allowed for the site under test to respond to a request."
 msgstr ""
 
 msgid "DastProfiles|The maximum number of seconds allowed for the spider to traverse the site."
+msgstr ""
+
+msgid "DastProfiles|Validate"
+msgstr ""
+
+msgid "DastProfiles|Validate target site"
+msgstr ""
+
+msgid "DastProfiles|Validating..."
+msgstr ""
+
+msgid "DastProfiles|Validation failed, please make sure that you follow the steps above with the choosen method."
+msgstr ""
+
+msgid "DastProfiles|Validation must be turned off to change the target URL"
+msgstr ""
+
+msgid "DastProfiles|Validation succeeded. Both active and passive scans can be run against the target site."
 msgstr ""
 
 msgid "Data is still calculating..."

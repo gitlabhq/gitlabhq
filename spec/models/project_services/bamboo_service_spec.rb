@@ -11,7 +11,7 @@ RSpec.describe BambooService, :use_clean_rails_memory_store_caching do
   let_it_be(:project) { create(:project) }
 
   subject(:service) do
-    described_class.create(
+    described_class.create!(
       project: project,
       properties: {
         bamboo_url: bamboo_url,
@@ -85,7 +85,7 @@ RSpec.describe BambooService, :use_clean_rails_memory_store_caching do
           bamboo_service = service
 
           bamboo_service.bamboo_url = 'http://gitlab1.com'
-          bamboo_service.save
+          bamboo_service.save!
 
           expect(bamboo_service.password).to be_nil
         end
@@ -94,7 +94,7 @@ RSpec.describe BambooService, :use_clean_rails_memory_store_caching do
           bamboo_service = service
 
           bamboo_service.username = 'some_name'
-          bamboo_service.save
+          bamboo_service.save!
 
           expect(bamboo_service.password).to eq('password')
         end
@@ -104,7 +104,7 @@ RSpec.describe BambooService, :use_clean_rails_memory_store_caching do
 
           bamboo_service.bamboo_url = 'http://gitlab_edited.com'
           bamboo_service.password = 'password'
-          bamboo_service.save
+          bamboo_service.save!
 
           expect(bamboo_service.password).to eq('password')
           expect(bamboo_service.bamboo_url).to eq('http://gitlab_edited.com')
@@ -117,7 +117,7 @@ RSpec.describe BambooService, :use_clean_rails_memory_store_caching do
 
         bamboo_service.bamboo_url = 'http://gitlab_edited.com'
         bamboo_service.password = 'password'
-        bamboo_service.save
+        bamboo_service.save!
 
         expect(bamboo_service.password).to eq('password')
         expect(bamboo_service.bamboo_url).to eq('http://gitlab_edited.com')

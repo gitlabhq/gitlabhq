@@ -295,20 +295,14 @@ RSpec.describe Issuable do
   end
 
   describe "#new?" do
-    it "returns true when created today and record hasn't been updated" do
-      allow(issue).to receive(:today?).and_return(true)
+    it "returns false when created 30 hours ago" do
+      allow(issue).to receive(:created_at).and_return(Time.current - 30.hours)
+      expect(issue.new?).to be_falsey
+    end
+
+    it "returns true when created 20 hours ago" do
+      allow(issue).to receive(:created_at).and_return(Time.current - 20.hours)
       expect(issue.new?).to be_truthy
-    end
-
-    it "returns false when not created today" do
-      allow(issue).to receive(:today?).and_return(false)
-      expect(issue.new?).to be_falsey
-    end
-
-    it "returns false when record has been updated" do
-      allow(issue).to receive(:today?).and_return(true)
-      issue.update_attribute(:updated_at, 1.hour.ago)
-      expect(issue.new?).to be_falsey
     end
   end
 
