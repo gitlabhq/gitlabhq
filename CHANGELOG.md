@@ -2,6 +2,14 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 13.1.11 (2020-09-04)
+
+### Fixed (2 changes)
+
+- Fix ActiveRecord::IrreversibleOrderError during restore from backup. !40789
+- Update the 2FA user update check to account for rounding errors. !41327
+
+
 ## 13.1.10 (2020-09-02)
 
 ### Security (1 change)

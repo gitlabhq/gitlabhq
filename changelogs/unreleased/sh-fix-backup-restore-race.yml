@@ -1,5 +1,0 @@
----
-title: Fix ActiveRecord::IrreversibleOrderError during restore from backup
-merge_request: 40789
-author:
-type: fixed
