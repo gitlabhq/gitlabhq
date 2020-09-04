@@ -104,6 +104,8 @@ RSpec.describe API::ProjectPackages do
           expect(json_response.first['name']).to include(package2.name)
         end
       end
+
+      it_behaves_like 'does not cause n^2 queries'
     end
   end
 
@@ -127,6 +129,22 @@ RSpec.describe API::ProjectPackages do
     end
 
     context 'without the need for a license' do
+      context 'with build info' do
+        it 'does not result in additional queries' do
+          control = ActiveRecord::QueryRecorder.new do
+            get api(package_url, user)
+          end
+
+          pipeline = create(:ci_pipeline, user: user)
+          create(:ci_build, user: user, pipeline: pipeline)
+          create(:package_build_info, package: package1, pipeline: pipeline)
+
+          expect do
+            get api(package_url, user)
+          end.not_to exceed_query_limit(control)
+        end
+      end
+
       context 'project is public' do
         it 'returns 200 and the package information' do
           subject

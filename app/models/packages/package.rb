@@ -51,6 +51,9 @@ class Packages::Package < ApplicationRecord
   scope :with_version, ->(version) { where(version: version) }
   scope :without_version_like, -> (version) { where.not(arel_table[:version].matches(version)) }
   scope :with_package_type, ->(package_type) { where(package_type: package_type) }
+  scope :including_build_info, -> { includes(build_info: { pipeline: :user }) }
+  scope :including_project_route, -> { includes(project: { namespace: :route }) }
+  scope :including_tags, -> { includes(:tags) }
 
   scope :with_conan_channel, ->(package_channel) do
     joins(:conan_metadatum).where(packages_conan_metadata: { package_channel: package_channel })
@@ -143,6 +146,8 @@ class Packages::Package < ApplicationRecord
 
   def versions
     project.packages
+           .including_build_info
+           .including_tags
            .with_name(name)
            .where.not(version: version)
            .with_package_type(package_type)

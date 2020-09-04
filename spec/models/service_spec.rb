@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Service do
   let_it_be(:group) { create(:group) }
+  let_it_be(:project) { create(:project, group: group) }
 
   describe "Associations" do
     it { is_expected.to belong_to :project }
@@ -14,8 +15,6 @@ RSpec.describe Service do
 
   describe 'validations' do
     using RSpec::Parameterized::TableSyntax
-
-    let(:project) { create(:project) }
 
     it { is_expected.to validate_presence_of(:type) }
 
@@ -145,10 +144,10 @@ RSpec.describe Service do
   end
 
   describe "Test Button" do
+    let(:service) { build(:service, project: project) }
+
     describe '#can_test?' do
       subject { service.can_test? }
-
-      let(:service) { build(:service, project: project) }
 
       context 'when repository is not empty' do
         let(:project) { build(:project, :repository) }
@@ -185,7 +184,6 @@ RSpec.describe Service do
 
     describe '#test' do
       let(:data) { 'test' }
-      let(:service) { build(:service, project: project) }
 
       context 'when repository is not empty' do
         let(:project) { build(:project, :repository) }
@@ -264,8 +262,6 @@ RSpec.describe Service do
   end
 
   describe 'template' do
-    let(:project) { create(:project) }
-
     shared_examples 'retrieves service templates' do
       it 'returns the available service templates' do
         expect(Service.find_or_create_templates.pluck(:type)).to match_array(Service.available_services_types)
@@ -453,7 +449,7 @@ RSpec.describe Service do
   describe "{property}_changed?" do
     let(:service) do
       BambooService.create(
-        project: create(:project),
+        project: project,
         properties: {
           bamboo_url: 'http://gitlab.com',
           username: 'mic',
@@ -493,7 +489,7 @@ RSpec.describe Service do
   describe "{property}_touched?" do
     let(:service) do
       BambooService.create(
-        project: create(:project),
+        project: project,
         properties: {
           bamboo_url: 'http://gitlab.com',
           username: 'mic',
@@ -533,7 +529,7 @@ RSpec.describe Service do
   describe "{property}_was" do
     let(:service) do
       BambooService.create(
-        project: create(:project),
+        project: project,
         properties: {
           bamboo_url: 'http://gitlab.com',
           username: 'mic',
@@ -573,7 +569,7 @@ RSpec.describe Service do
   describe 'initialize service with no properties' do
     let(:service) do
       BugzillaService.create(
-        project: create(:project),
+        project: project,
         project_url: 'http://gitlab.example.com'
       )
     end
@@ -588,7 +584,6 @@ RSpec.describe Service do
   end
 
   describe "callbacks" do
-    let(:project) { create(:project) }
     let!(:service) do
       RedmineService.new(
         project: project,
@@ -655,7 +650,6 @@ RSpec.describe Service do
   end
 
   context 'logging' do
-    let(:project) { build(:project) }
     let(:service) { build(:service, project: project) }
     let(:test_message) { "test message" }
     let(:arguments) do

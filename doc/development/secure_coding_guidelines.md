@@ -84,7 +84,7 @@ This Ruby Regex specialty can have security impact, as often regular expressions
 
 GitLab specific examples can be found [here](https://gitlab.com/gitlab-org/gitlab/-/issues/36029#note_251262187) and [there](https://gitlab.com/gitlab-org/gitlab/-/issues/33569).
 
-Another example would be this fictional Ruby On Rails controller:
+Another example would be this fictional Ruby on Rails controller:
 
 ```ruby
 class PingController < ApplicationController
@@ -127,9 +127,9 @@ class Email < ApplicationRecord
   DOMAIN_MATCH = Regexp.new('([a-zA-Z0-9]+)+\.com')
 
   validates :domain_matches
-  
+
   private
-  
+
   def domain_matches
     errors.add(:email, 'does not match') if email =~ DOMAIN_MATCH
   end
@@ -184,7 +184,7 @@ have been reported to GitLab include:
 - Reading internal services, including cloud service metadata.
   - The latter can be a serious problem, because an attacker can obtain keys that allow control of the victim's cloud infrastructure. (This is also a good reason
   to give only necessary privileges to the token.). [More details](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/51490).
-- When combined with CRLF vulnerability, remote code execution. [More details](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/41293)
+- When combined with CRLF vulnerability, remote code execution. [More details](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/41293).
 
 ### When to Consider
 
@@ -213,7 +213,7 @@ the mitigations for a new feature.
 
 #### Feature-specific Mitigations
 
-For situtions in which an allowlist or GitLab:HTTP cannot be used, it will be necessary to implement mitigations directly in the feature. It is best to validate the destination IP addresses themselves, not just domain names, as DNS can be controlled by the attacker. Below are a list of mitigations that should be implemented.
+For situations in which an allowlist or GitLab:HTTP cannot be used, it will be necessary to implement mitigations directly in the feature. It is best to validate the destination IP addresses themselves, not just domain names, as DNS can be controlled by the attacker. Below are a list of mitigations that should be implemented.
 
 **Important Note:** There are many tricks to bypass common SSRF validations. If feature-specific mitigations are necessary, they should be reviewed by the AppSec team, or a developer who has worked on SSRF mitigations previously.
 

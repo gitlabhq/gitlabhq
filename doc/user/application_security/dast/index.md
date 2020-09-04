@@ -455,7 +455,7 @@ DAST can be [configured](#customizing-the-dast-settings) using environment varia
 | `DAST_USERNAME_FIELD` | string | The name of username field at the sign-in HTML form. |
 | `DAST_PASSWORD_FIELD` | string | The name of password field at the sign-in HTML form. |
 | `DAST_MASK_HTTP_HEADERS` | string | Comma-separated list of request and response headers to be masked (GitLab 13.1). Must contain **all** headers to be masked. Refer to [list of headers that are masked by default](#hide-sensitive-information). |
-| `DAST_AUTH_EXCLUDE_URLS` | URLs | The URLs to skip during the authenticated scan; comma-separated, no spaces in between. Not supported for API scans. |
+| `DAST_AUTH_EXCLUDE_URLS` | URLs | The URLs to skip during the authenticated scan; comma-separated. Regular expression syntax can be used to match multiple URLs. For example, `.*` matches an arbitrary character sequence. Not supported for API scans. |
 | `DAST_FULL_SCAN_ENABLED` | boolean | Set to `true` to run a [ZAP Full Scan](https://github.com/zaproxy/zaproxy/wiki/ZAP-Full-Scan) instead of a [ZAP Baseline Scan](https://github.com/zaproxy/zaproxy/wiki/ZAP-Baseline-Scan). Default: `false` |
 | `DAST_FULL_SCAN_DOMAIN_VALIDATION_REQUIRED` | boolean | Set to `true` to require [domain validation](#domain-validation) when running DAST full scans. Not supported for API scans. Default: `false` |
 | `DAST_AUTO_UPDATE_ADDONS` | boolean | ZAP add-ons are pinned to specific versions in the DAST Docker image. Set to `true` to download the latest versions when the scan starts. Default: `false` |

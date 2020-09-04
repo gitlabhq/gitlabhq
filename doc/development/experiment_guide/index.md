@@ -16,7 +16,7 @@ In either case, an outcome of the experiment should be posted to the issue with 
 
 ## Code reviews
 
-Since the code of experiments will not be part of the codebase for a long time and we want to iterate fast to retrieve data,the code quality of experiments might sometimes not fulfill our standards but should not negatively impact the availability of GitLab whether the experiment is running or not.
+Since the code of experiments will not be part of the codebase for a long time and we want to iterate fast to retrieve data, the code quality of experiments might sometimes not fulfill our standards but should not negatively impact the availability of GitLab whether the experiment is running or not.
 Initially experiments will only be deployed to a fraction of users but we still want a flawless experience for those users. Therefore, experiments still require tests.
 
 For reviewers and maintainers: if you find code that would usually not make it through the review, but is temporarily acceptable, please mention your concerns but note that it's not necessary to change.

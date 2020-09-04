@@ -316,6 +316,12 @@ RSpec.describe RegistrationsController do
           stub_experiment(signup_flow: true, terms_opt_in: true)
         end
 
+        it 'records user for the terms_opt_in experiment' do
+          expect(controller).to receive(:record_experiment_user).with(:terms_opt_in)
+
+          subject
+        end
+
         context 'when user is not part of the experiment' do
           before do
             stub_experiment_for_user(signup_flow: true, terms_opt_in: false)

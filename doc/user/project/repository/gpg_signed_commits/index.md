@@ -44,7 +44,7 @@ If you don't already have a GPG key, the following steps will help you get
 started:
 
 1. [Install GPG](https://www.gnupg.org/download/index.html) for your operating system.
-   If your Operating System has `gpg2` installed, replace `gpg` with `gpg2` in
+   If your operating system has `gpg2` installed, replace `gpg` with `gpg2` in
    the following commands.
 1. Generate the private/public key pair with the following command, which will
    spawn a series of questions:

@@ -26,12 +26,12 @@ class RegistrationsController < Devise::RegistrationsController
   end
 
   def create
-    track_experiment_event(:terms_opt_in, 'end')
     accept_pending_invitations
 
     super do |new_user|
       persist_accepted_terms_if_required(new_user)
       set_role_required(new_user)
+      track_terms_experiment(new_user)
       yield new_user if block_given?
     end
 
@@ -199,6 +199,13 @@ class RegistrationsController < Devise::RegistrationsController
     return false if experiment_enabled?(:signup_flow)
 
     true
+  end
+
+  def track_terms_experiment(new_user)
+    return unless new_user.persisted?
+
+    track_experiment_event(:terms_opt_in, 'end')
+    record_experiment_user(:terms_opt_in)
   end
 
   def load_recaptcha

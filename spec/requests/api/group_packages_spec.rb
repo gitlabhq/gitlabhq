@@ -141,5 +141,7 @@ RSpec.describe API::GroupPackages do
 
       it_behaves_like 'returning response status', :bad_request
     end
+
+    it_behaves_like 'does not cause n^2 queries'
   end
 end

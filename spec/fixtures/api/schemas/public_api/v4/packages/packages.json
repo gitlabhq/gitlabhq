@@ -1,4 +1,4 @@
 {
   "type": "array",
-  "items": { "$ref": "./package.json" }
+  "items": { "$ref": "./collection_package.json" }
 }

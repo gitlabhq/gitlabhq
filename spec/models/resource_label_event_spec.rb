@@ -3,10 +3,12 @@
 require 'spec_helper'
 
 RSpec.describe ResourceLabelEvent, type: :model do
-  subject { build(:resource_label_event, issue: issue) }
+  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:issue) { create(:issue, project: project) }
+  let_it_be(:merge_request) { create(:merge_request, source_project: project) }
+  let_it_be(:label) { create(:label, project: project) }
 
-  let(:issue) { create(:issue) }
-  let(:merge_request) { create(:merge_request) }
+  subject { build(:resource_label_event, issue: issue, label: label) }
 
   it_behaves_like 'having unique enum values'
 

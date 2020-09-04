@@ -41,3 +41,32 @@ RSpec.shared_examples 'deploy token for package uploads' do
     end
   end
 end
+
+RSpec.shared_examples 'does not cause n^2 queries' do
+  it 'avoids N^2 database queries' do
+    # we create a package to set the baseline for expected queries from 1 package
+    create(
+      :npm_package,
+      name: "@#{project.root_namespace.path}/my-package",
+      project: project,
+      version: "0.0.1"
+    )
+
+    control = ActiveRecord::QueryRecorder.new do
+      get api(url)
+    end
+
+    5.times do |n|
+      create(
+        :npm_package,
+        name: "@#{project.root_namespace.path}/my-package",
+        project: project,
+        version: "#{n}.0.0"
+      )
+    end
+
+    expect do
+      get api(url)
+    end.not_to exceed_query_limit(control)
+  end
+end
