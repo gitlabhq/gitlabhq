@@ -2,6 +2,18 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 13.3.5 (2020-09-04)
+
+### Fixed (6 changes)
+
+- Coerce string object storage options to booleans. !39901
+- Fix Jira importer user mapping limit. !40310
+- Fix auto-deploy-image external chart dependencies. !40730
+- Fix ActiveRecord::IrreversibleOrderError during restore from backup. !40789
+- Fix wrong caching logic in ProcessRefChangesService. !40821
+- Update the 2FA user update check to account for rounding errors. !41327
+
+
 ## 13.3.4 (2020-09-02)
 
 ### Security (1 change)

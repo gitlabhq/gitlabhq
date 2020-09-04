@@ -1,5 +1,0 @@
----
-title: Update the 2FA user update check to account for rounding errors
-merge_request: 41327
-author:
-type: fixed
