@@ -190,7 +190,7 @@ pages:
       - public
 ```
 
-Then configure the pipeline to run the job for the master branch only.
+Then configure the pipeline to run the job for the `master` branch only.
 
 ```yaml
 image: ruby:2.7

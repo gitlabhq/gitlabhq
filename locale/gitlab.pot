@@ -13492,6 +13492,15 @@ msgstr ""
 msgid "InviteEmail|to join the %{strong_start}%{project_or_group_name}%{strong_end}"
 msgstr ""
 
+msgid "InviteMembersBanner|Collaborate with your team"
+msgstr ""
+
+msgid "InviteMembersBanner|Invite your colleagues"
+msgstr ""
+
+msgid "InviteMembersBanner|We noticed that you haven't invited anyone to this group. Invite your colleagues so you can discuss issues, collaborate on merge requests, and share your knowledge."
+msgstr ""
+
 msgid "Invited"
 msgstr ""
 

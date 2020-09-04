@@ -2,6 +2,12 @@
 - page_title _("Groups")
 - @content_class = "limit-container-width" unless fluid_layout
 
+- if show_invite_banner?(@group)
+  = content_for :group_invite_members_banner do
+    .container-fluid.container-limited{ class: "gl-pb-2! gl-pt-6! #{@content_class}" }
+      .js-group-invite-members-banner{ data: { svg_path: image_path('illustrations/merge_requests.svg'),
+        invite_members_path: group_group_members_path(@group) } }
+
 = content_for :meta_tags do
   = auto_discovery_link_tag(:atom, group_url(@group, rss_url_options), title: "#{@group.name} activity")
 

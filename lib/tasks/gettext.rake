@@ -38,7 +38,9 @@ namespace :gettext do
     Rake::Task['gettext:find'].invoke
 
     # leave only the required changes.
-    `git checkout -- locale/*/gitlab.po`
+    unless system(*%w(git checkout -- locale/*/gitlab.po))
+      raise 'failed to cleanup generated locale/*/gitlab.po files'
+    end
 
     # Remove timestamps from the pot file
     pot_content = File.read pot_file

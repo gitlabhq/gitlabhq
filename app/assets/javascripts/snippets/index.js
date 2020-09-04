@@ -5,7 +5,6 @@ import createDefaultClient from '~/lib/graphql';
 
 import SnippetsShow from './components/show.vue';
 import SnippetsEdit from './components/edit.vue';
-import { SNIPPET_LEVELS_MAP, SNIPPET_VISIBILITY_PRIVATE } from '~/snippets/constants';
 
 Vue.use(VueApollo);
 Vue.use(Translate);
@@ -19,23 +18,13 @@ function appFactory(el, Component) {
     defaultClient: createDefaultClient(),
   });
 
-  const { visibilityLevels, selectedLevel, multipleLevelsRestricted, ...restDataset } = el.dataset;
-
-  apolloProvider.clients.defaultClient.cache.writeData({
-    data: {
-      visibilityLevels: JSON.parse(visibilityLevels),
-      selectedLevel: SNIPPET_LEVELS_MAP[selectedLevel] ?? SNIPPET_VISIBILITY_PRIVATE,
-      multipleLevelsRestricted: 'multipleLevelsRestricted' in el.dataset,
-    },
-  });
-
   return new Vue({
     el,
     apolloProvider,
     render(createElement) {
       return createElement(Component, {
         props: {
-          ...restDataset,
+          ...el.dataset,
         },
       });
     },

@@ -64,7 +64,7 @@ then
   echo "Merge request pipeline (detached) detected. Testing all files."
 else
   MERGE_BASE=$(git merge-base ${CI_MERGE_REQUEST_TARGET_BRANCH_SHA} ${CI_MERGE_REQUEST_SOURCE_BRANCH_SHA})
-  MD_DOC_PATH=$(git diff --name-only "${MERGE_BASE}..${CI_MERGE_REQUEST_SOURCE_BRANCH_SHA}" '*.md')
+  MD_DOC_PATH=$(git diff --name-only "${MERGE_BASE}..${CI_MERGE_REQUEST_SOURCE_BRANCH_SHA}" 'doc/*.md')
   echo -e "Merged results pipeline detected. Testing only the following files:\n${MD_DOC_PATH}"
  fi
 

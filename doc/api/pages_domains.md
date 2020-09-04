@@ -10,9 +10,9 @@ Endpoints for connecting custom domain(s) and TLS certificates in [GitLab Pages]
 
 The GitLab Pages feature must be enabled to use these endpoints. Find out more about [administering](../administration/pages/index.md) and [using](../user/project/pages/index.md) the feature.
 
-## List all pages domains
+## List all Pages domains
 
-Get a list of all pages domains. The user must have admin permissions.
+Get a list of all Pages domains. The user must have admin permissions.
 
 ```plaintext
 GET /pages/domains
@@ -37,9 +37,9 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 ]
 ```
 
-## List pages domains
+## List Pages domains
 
-Get a list of project pages domains. The user must have permissions to view pages domains.
+Get a list of project Pages domains. The user must have permissions to view Pages domains.
 
 ```plaintext
 GET /projects/:id/pages/domains
@@ -73,9 +73,9 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 ]
 ```
 
-## Single pages domain
+## Single Pages domain
 
-Get a single project pages domain. The user must have permissions to view pages domains.
+Get a single project Pages domain. The user must have permissions to view Pages domains.
 
 ```plaintext
 GET /projects/:id/pages/domains/:domain
@@ -115,9 +115,9 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 }
 ```
 
-## Create new pages domain
+## Create new Pages domain
 
-Creates a new pages domain. The user must have permissions to create new pages domains.
+Creates a new Pages domain. The user must have permissions to create new Pages domains.
 
 ```plaintext
 POST /projects/:id/pages/domains
@@ -131,13 +131,19 @@ POST /projects/:id/pages/domains
 | `certificate`      | file/string    | no       | The certificate in PEM format with intermediates following in most specific to least specific order.|
 | `key`              | file/string    | no       | The certificate key in PEM format.       |
 
+Create a new Pages domain with a certificate from a `.pem` file:
+
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --form "domain=ssl.domain.example" --form "certificate=@/path/to/cert.pem" --form "key=@/path/to/key.pem" "https://gitlab.example.com/api/v4/projects/5/pages/domains"
 ```
 
+Create a new Pages domain by using a variable containing the certificate:
+
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --form "domain=ssl.domain.example" --form "certificate=$CERT_PEM" --form "key=$KEY_PEM" "https://gitlab.example.com/api/v4/projects/5/pages/domains"
 ```
+
+Create a new Pages domain with an [automatic certificate](../user/project/pages/custom_domains_ssl_tls_certification/lets_encrypt_integration.md#enabling-lets-encrypt-integration-for-your-custom-domain):
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --form "domain=ssl.domain.example" --form "auto_ssl_enabled=true" "https://gitlab.example.com/api/v4/projects/5/pages/domains"
@@ -157,9 +163,9 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --form "domain
 }
 ```
 
-## Update pages domain
+## Update Pages domain
 
-Updates an existing project pages domain. The user must have permissions to change an existing pages domains.
+Updates an existing project Pages domain. The user must have permissions to change an existing Pages domains.
 
 ```plaintext
 PUT /projects/:id/pages/domains/:domain
@@ -175,9 +181,13 @@ PUT /projects/:id/pages/domains/:domain
 
 ### Adding certificate
 
+Add a certificate for a Pages domain from a `.pem` file:
+
 ```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" --form "certificate=@/path/to/cert.pem" --form "key=@/path/to/key.pem" "https://gitlab.example.com/api/v4/projects/5/pages/domains/ssl.domain.example"
 ```
+
+Add a certificate for a Pages domain by using a variable containing the certificate:
 
 ```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" --form "certificate=$CERT_PEM" --form "key=$KEY_PEM" "https://gitlab.example.com/api/v4/projects/5/pages/domains/ssl.domain.example"
@@ -227,9 +237,9 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" --form "certifi
 }
 ```
 
-## Delete pages domain
+## Delete Pages domain
 
-Deletes an existing project pages domain.
+Deletes an existing project Pages domain.
 
 ```plaintext
 DELETE /projects/:id/pages/domains/:domain

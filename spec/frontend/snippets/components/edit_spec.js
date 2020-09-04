@@ -102,13 +102,6 @@ describe('Snippet Edit app', () => {
         markdownDocsPath: 'http://docs.foo.bar',
         ...props,
       },
-      data() {
-        return {
-          snippet: {
-            visibilityLevel: SNIPPET_VISIBILITY_PRIVATE,
-          },
-        };
-      },
     });
   }
 

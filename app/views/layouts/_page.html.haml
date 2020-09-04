@@ -3,6 +3,7 @@
     = render "layouts/nav/sidebar/#{nav}"
   .content-wrapper{ class: "#{@content_wrapper_class}" }
     .mobile-overlay
+    = yield :group_invite_members_banner
     .alert-wrapper
       = render 'shared/outdated_browser'
       = render_if_exists "layouts/header/licensed_user_count_threshold"

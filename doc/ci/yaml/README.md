@@ -982,7 +982,7 @@ If you do want to include the `rake test`, see [`before_script` and `after_scrip
 possible to inherit from regular jobs as well.
 
 `extends` supports multi-level inheritance. You should avoid using more than 3 levels,
-but you can use as many as ten.
+but you can use as many as eleven.
 The following example has two levels of inheritance:
 
 ```yaml

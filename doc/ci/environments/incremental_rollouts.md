@@ -19,7 +19,7 @@ tranches after a default pause of 5 minutes.
 Timed rollouts can also be manually triggered before the pause period has expired.
 
 Manual and Timed rollouts are included automatically in projects controlled by
-[AutoDevOps](../../topics/autodevops/index.md), but they are also configurable through
+[Auto DevOps](../../topics/autodevops/index.md), but they are also configurable through
 GitLab CI/CD in the `.gitlab-ci.yml` configuration file.
 
 Manually triggered rollouts can be implemented with your [Continuously Delivery](../introduction/index.md#continuous-delivery)

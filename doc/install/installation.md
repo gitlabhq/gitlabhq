@@ -687,7 +687,7 @@ Next, make sure that Gitaly is configured:
 sudo chmod 0700 /home/git/gitlab/tmp/sockets/private
 sudo chown git /home/git/gitlab/tmp/sockets/private
 
-# If you are using non-default settings you need to update config.toml
+# If you are using non-default settings, you need to update config.toml
 cd /home/git/gitaly
 sudo -u git -H editor config.toml
 ```
@@ -741,7 +741,7 @@ Download the init script (is `/etc/init.d/gitlab`):
 sudo cp lib/support/init.d/gitlab /etc/init.d/gitlab
 ```
 
-And if you are installing with a non-default folder or user copy and edit the defaults file:
+And if you are installing with a non-default folder or user, copy and edit the defaults file:
 
 ```shell
 sudo cp lib/support/init.d/gitlab.default.example /etc/default/gitlab
