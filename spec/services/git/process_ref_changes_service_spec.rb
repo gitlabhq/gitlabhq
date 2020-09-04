@@ -172,23 +172,31 @@ RSpec.describe Git::ProcessRefChangesService do
         [
           { index: 0, oldrev: Gitlab::Git::BLANK_SHA, newrev: '789012', ref: "#{ref_prefix}/create1" },
           { index: 1, oldrev: Gitlab::Git::BLANK_SHA, newrev: '789013', ref: "#{ref_prefix}/create2" },
-          { index: 2, oldrev: Gitlab::Git::BLANK_SHA, newrev: '789014', ref: "#{ref_prefix}/create3" }
+          { index: 2, oldrev: Gitlab::Git::BLANK_SHA, newrev: '789014', ref: "#{ref_prefix}/create3" },
+          { index: 3, oldrev: '789015', newrev: '789016', ref: "#{ref_prefix}/changed1" },
+          { index: 4, oldrev: '789017', newrev: '789018', ref: "#{ref_prefix}/changed2" },
+          { index: 5, oldrev: '789019', newrev: Gitlab::Git::BLANK_SHA, ref: "#{ref_prefix}/removed1" },
+          { index: 6, oldrev: '789020', newrev: Gitlab::Git::BLANK_SHA, ref: "#{ref_prefix}/removed2" }
         ]
       end
 
       let(:git_changes) { double(branch_changes: branch_changes, tag_changes: tag_changes) }
 
-      it 'schedules job for existing merge requests' do
-        expect_next_instance_of(MergeRequests::PushedBranchesService) do |service|
-          expect(service).to receive(:execute).and_return(%w(create1 create2))
-        end
+      before do
+        allow(MergeRequests::PushedBranchesService).to receive(:new).and_return(
+          double(execute: %w(create1 create2)), double(execute: %w(changed1)), double(execute: %w(removed2))
+        )
+      end
 
+      it 'schedules job for existing merge requests' do
         expect(UpdateMergeRequestsWorker).to receive(:perform_async)
           .with(project.id, user.id, Gitlab::Git::BLANK_SHA, '789012', "#{ref_prefix}/create1").ordered
         expect(UpdateMergeRequestsWorker).to receive(:perform_async)
           .with(project.id, user.id, Gitlab::Git::BLANK_SHA, '789013', "#{ref_prefix}/create2").ordered
-        expect(UpdateMergeRequestsWorker).not_to receive(:perform_async)
-          .with(project.id, user.id, Gitlab::Git::BLANK_SHA, '789014', "#{ref_prefix}/create3").ordered
+        expect(UpdateMergeRequestsWorker).to receive(:perform_async)
+          .with(project.id, user.id, '789015', '789016', "#{ref_prefix}/changed1").ordered
+        expect(UpdateMergeRequestsWorker).to receive(:perform_async)
+          .with(project.id, user.id, '789020', Gitlab::Git::BLANK_SHA, "#{ref_prefix}/removed2").ordered
 
         subject.execute
       end

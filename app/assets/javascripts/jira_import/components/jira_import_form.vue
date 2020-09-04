@@ -23,6 +23,7 @@ import { addInProgressImportToStore } from '../utils/cache_update';
 import {
   debounceWait,
   dropdownLabel,
+  userMappingsPageSize,
   previousImportsMessage,
   tableConfig,
   userMappingMessage,
@@ -74,12 +75,15 @@ export default {
   },
   data() {
     return {
+      hasMoreUsers: false,
       isFetching: false,
+      isLoadingMoreUsers: false,
       isSubmitting: false,
       searchTerm: '',
       selectedProject: undefined,
       selectState: null,
       userMappings: [],
+      userMappingsStartAt: 0,
       users: [],
     };
   },
@@ -101,6 +105,9 @@ export default {
         ? `jira-import::${this.selectedProject}-${this.numberOfPreviousImports + 1}`
         : 'jira-import::KEY-1';
     },
+    isInitialLoadingState() {
+      return this.isLoadingMoreUsers && !this.hasMoreUsers;
+    },
   },
   watch: {
     searchTerm: debounce(function debouncedUserSearch() {
@@ -108,23 +115,7 @@ export default {
     }, debounceWait),
   },
   mounted() {
-    this.$apollo
-      .mutate({
-        mutation: getJiraUserMappingMutation,
-        variables: {
-          input: {
-            projectPath: this.projectPath,
-          },
-        },
-      })
-      .then(({ data }) => {
-        if (data.jiraImportUsers.errors.length) {
-          this.$emit('error', data.jiraImportUsers.errors.join('. '));
-        } else {
-          this.userMappings = data.jiraImportUsers.jiraUsers;
-        }
-      })
-      .catch(() => this.$emit('error', __('There was an error retrieving the Jira users.')));
+    this.getJiraUserMapping();
 
     this.searchUsers()
       .then(data => {
@@ -133,6 +124,36 @@ export default {
       .catch(() => {});
   },
   methods: {
+    getJiraUserMapping() {
+      this.isLoadingMoreUsers = true;
+
+      this.$apollo
+        .mutate({
+          mutation: getJiraUserMappingMutation,
+          variables: {
+            input: {
+              projectPath: this.projectPath,
+              startAt: this.userMappingsStartAt,
+            },
+          },
+        })
+        .then(({ data }) => {
+          if (data.jiraImportUsers.errors.length) {
+            this.$emit('error', data.jiraImportUsers.errors.join('. '));
+            return;
+          }
+
+          this.userMappings = this.userMappings.concat(data.jiraImportUsers.jiraUsers);
+          this.hasMoreUsers = data.jiraImportUsers.jiraUsers.length === userMappingsPageSize;
+          this.userMappingsStartAt += userMappingsPageSize;
+        })
+        .catch(() => {
+          this.$emit('error', __('There was an error retrieving the Jira users.'));
+        })
+        .finally(() => {
+          this.isLoadingMoreUsers = false;
+        });
+    },
     searchUsers() {
       const params = {
         active: true,
@@ -187,7 +208,9 @@ export default {
               this.selectedProject = undefined;
             }
           })
-          .catch(() => this.$emit('error', __('There was an error importing the Jira project.')))
+          .catch(() => {
+            this.$emit('error', __('There was an error importing the Jira project.'));
+          })
           .finally(() => {
             this.isSubmitting = false;
           });
@@ -280,9 +303,7 @@ export default {
           >
             <gl-search-box-by-type v-model.trim="searchTerm" class="m-2" />
 
-            <div v-if="isFetching" class="gl-text-center">
-              <gl-loading-icon />
-            </div>
+            <gl-loading-icon v-if="isFetching" />
 
             <gl-new-dropdown-item
               v-for="user in users"
@@ -299,6 +320,17 @@ export default {
           </gl-new-dropdown>
         </template>
       </gl-table>
+
+      <gl-loading-icon v-if="isInitialLoadingState" />
+
+      <gl-button
+        v-if="hasMoreUsers"
+        :loading="isLoadingMoreUsers"
+        data-testid="load-more-users-button"
+        @click="getJiraUserMapping"
+      >
+        {{ __('Load more users') }}
+      </gl-button>
 
       <div class="footer-block row-content-block d-flex justify-content-between">
         <gl-button
