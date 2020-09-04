@@ -310,3 +310,4 @@ for more information.
 - [Restoring from backup after a failed upgrade](restore_after_failure.md)
 - [Upgrading PostgreSQL Using Slony](upgrading_postgresql_using_slony.md), for
   upgrading a PostgreSQL database with minimal downtime.
+- [Managing PostgreSQL extensions](../install/postgresql_extensions.md)

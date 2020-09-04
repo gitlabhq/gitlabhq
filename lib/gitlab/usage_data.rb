@@ -39,6 +39,7 @@ module Gitlab
             .merge(analytics_unique_visits_data)
             .merge(compliance_unique_visits_data)
             .merge(search_unique_visits_data)
+            .merge(redis_hll_counters)
         end
       end
 
@@ -616,6 +617,10 @@ module Gitlab
       # Once https://gitlab.com/gitlab-org/gitlab/merge_requests/17568 is merged, this might be doable
       def usage_activity_by_stage_secure(time_period)
         {}
+      end
+
+      def redis_hll_counters
+        { redis_hll_counters: ::Gitlab::UsageDataCounters::HLLRedisCounter.unique_events_data }
       end
 
       def analytics_unique_visits_data

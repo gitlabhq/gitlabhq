@@ -32,6 +32,8 @@ exports[`Design management design index page renders design index 1`] = `
   <div
     class="image-notes"
   >
+    <!---->
+     
     <h2
       class="gl-font-weight-bold gl-mt-0"
     >
@@ -179,6 +181,8 @@ exports[`Design management design index page with error GlAlert is rendered in c
   <div
     class="image-notes"
   >
+    <!---->
+     
     <h2
       class="gl-font-weight-bold gl-mt-0"
     >

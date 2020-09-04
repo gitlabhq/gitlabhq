@@ -143,11 +143,8 @@ GitLab version | Minimum PostgreSQL version
 12.10 | 11
 13.0 | 11
 
-You must also ensure the `pg_trgm` and `btree_gist` extensions are loaded into every
-GitLab database. These extensions [can be enabled](https://www.postgresql.org/docs/11/sql-createextension.html) using a PostgreSQL super user.
-
-On some systems you may need to install an additional package (for example,
-`postgresql-contrib`) for this extension to become available.
+You must also ensure the `pg_trgm` and `btree_gist` extensions are [loaded into every
+GitLab database](postgresql_extensions.html).
 
 NOTE: **Note:**
 Support for [PostgreSQL 9.6 and 10 has been removed in GitLab 13.0](https://about.gitlab.com/releases/2020/05/22/gitlab-13-0-released/#postgresql-11-is-now-the-minimum-required-version-to-install-gitlab) so that GitLab can benefit from PostgreSQL 11 improvements, such as partitioning. For the schedule of transitioning to PostgreSQL 12, see [the related epic](https://gitlab.com/groups/gitlab-org/-/epics/2184).

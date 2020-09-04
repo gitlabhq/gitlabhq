@@ -27,7 +27,7 @@ module Users
     def inject_validators
       class << @user
         validates :role, presence: true
-        validates :setup_for_company, inclusion: { in: [true, false], message: :blank }
+        validates :setup_for_company, inclusion: { in: [true, false], message: :blank } if Gitlab.com?
       end
     end
   end

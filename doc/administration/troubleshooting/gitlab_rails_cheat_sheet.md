@@ -245,6 +245,18 @@ p.each do |project|
 end
 ```
 
+### Incorrect repository statistics shown in the GUI
+
+After [reducing a repository size with third-party tools](../../user/project/repository/reducing_the_repo_size_using_git.md)
+the displayed size may still show old sizes or commit numbers. To force an update, do:
+
+```ruby
+p = Project.find_by_full_path('<namespace>/<project>')
+pp p.statistics
+p.statistics.refresh!
+pp p.statistics  # compare with earlier values
+```
+
 ## Wikis
 
 ### Recreate

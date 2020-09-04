@@ -1,8 +1,7 @@
 <script>
-/* eslint-disable vue/no-v-html */
 import { mapActions, mapGetters, mapState } from 'vuex';
 import $ from 'jquery';
-import { GlTooltipDirective } from '@gitlab/ui';
+import { GlTooltipDirective, GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
 import DiffTableCell from './diff_table_cell.vue';
 import {
   MATCH_LINE_TYPE,
@@ -22,6 +21,7 @@ export default {
   },
   directives: {
     GlTooltip: GlTooltipDirective,
+    SafeHtml,
   },
   props: {
     fileHash: {
@@ -161,10 +161,10 @@ export default {
       <td :class="parallelViewLeftLineType" class="line-coverage left-side"></td>
       <td
         :id="line.left.line_code"
+        v-safe-html="line.left.rich_text"
         :class="parallelViewLeftLineType"
         class="line_content with-coverage parallel left-side"
         @mousedown="handleParallelLineMouseDown"
-        v-html="line.left.rich_text"
       ></td>
     </template>
     <template v-else>
@@ -193,6 +193,7 @@ export default {
       ></td>
       <td
         :id="line.right.line_code"
+        v-safe-html="line.right.rich_text"
         :class="[
           line.right.type,
           {
@@ -201,7 +202,6 @@ export default {
         ]"
         class="line_content with-coverage parallel right-side"
         @mousedown="handleParallelLineMouseDown"
-        v-html="line.right.rich_text"
       ></td>
     </template>
     <template v-else>

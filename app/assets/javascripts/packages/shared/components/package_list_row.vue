@@ -61,7 +61,7 @@ export default {
 </script>
 
 <template>
-  <list-item data-qa-selector="packages-row">
+  <list-item data-qa-selector="package_row">
     <template #left-primary>
       <div class="gl-display-flex gl-align-items-center gl-mr-3">
         <gl-link :href="packageLink" class="gl-text-body" data-qa-selector="package_link">

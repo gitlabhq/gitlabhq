@@ -6,6 +6,7 @@ import Participants from '~/sidebar/components/participants/participants.vue';
 import DesignDiscussion from '~/design_management/components/design_notes/design_discussion.vue';
 import design from '../mock_data/design';
 import updateActiveDiscussionMutation from '~/design_management/graphql/mutations/update_active_discussion.mutation.graphql';
+import TodoButton from '~/vue_shared/components/todo_button.vue';
 
 const scrollIntoViewMock = jest.fn();
 HTMLElement.prototype.scrollIntoView = scrollIntoViewMock;
@@ -42,7 +43,7 @@ describe('Design management design sidebar component', () => {
   const findNewDiscussionDisclaimer = () =>
     wrapper.find('[data-testid="new-discussion-disclaimer"]');
 
-  function createComponent(props = {}) {
+  function createComponent(props = {}, { enableTodoButton } = {}) {
     wrapper = shallowMount(DesignSidebar, {
       propsData: {
         design,
@@ -57,6 +58,9 @@ describe('Design management design sidebar component', () => {
         },
       },
       stubs: { GlPopover },
+      provide: {
+        glFeatures: { designManagementTodoButton: enableTodoButton },
+      },
     });
   }
 
@@ -239,6 +243,25 @@ describe('Design management design sidebar component', () => {
       jest.spyOn(Cookies, 'set');
       wrapper.trigger('click');
       expect(Cookies.set).toHaveBeenCalledWith(cookieKey, 'true', { expires: 365 * 10 });
+    });
+  });
+
+  it('does not render To-Do button by default', () => {
+    createComponent();
+    expect(wrapper.find(TodoButton).exists()).toBe(false);
+  });
+
+  describe('when `design_management_todo_button` feature flag is enabled', () => {
+    beforeEach(() => {
+      createComponent({}, { enableTodoButton: true });
+    });
+
+    it('renders sidebar root element with no top padding', () => {
+      expect(wrapper.classes()).toContain('gl-pt-0');
+    });
+
+    it('renders todo_button component', () => {
+      expect(wrapper.find(TodoButton).exists()).toBe(true);
     });
   });
 });

@@ -8,6 +8,14 @@ module Backup
     attr_reader :progress
     attr_reader :config, :db_file_name
 
+    IGNORED_ERRORS = [
+      # Ignore the DROP errors; recent database dumps will use --if-exists with pg_dump
+      /does not exist$/,
+      # User may not have permissions to drop extensions or schemas
+      /must be owner of/
+    ].freeze
+    IGNORED_ERRORS_REGEXP = Regexp.union(IGNORED_ERRORS).freeze
+
     def initialize(progress, filename: nil)
       @progress = progress
       @config = YAML.load_file(File.join(Rails.root, 'config', 'database.yml'))[Rails.env]
@@ -49,6 +57,8 @@ module Backup
       end
 
       report_success(success)
+      progress.flush
+
       raise Backup::Error, 'Backup failed' unless success
     end
 
@@ -83,6 +93,10 @@ module Backup
 
     protected
 
+    def ignore_error?(line)
+      IGNORED_ERRORS_REGEXP.match?(line)
+    end
+
     def execute_and_track_errors(cmd, decompress_rd)
       errors = []
 
@@ -97,8 +111,7 @@ module Backup
         err_reader = Thread.new do
           until (raw_line = stderr.gets).nil?
             warn(raw_line)
-            # Recent database dumps will use --if-exists with pg_dump
-            errors << raw_line unless raw_line =~ /does not exist$/
+            errors << raw_line unless ignore_error?(raw_line)
           end
         end
 

@@ -49,6 +49,7 @@ class Projects::IssuesController < Projects::ApplicationController
     push_frontend_feature_flag(:vue_issuable_sidebar, project.group)
     push_frontend_feature_flag(:tribute_autocomplete, @project)
     push_frontend_feature_flag(:vue_issuables_list, project)
+    push_frontend_feature_flag(:design_management_todo_button, project)
   end
 
   before_action only: :show do

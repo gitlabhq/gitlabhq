@@ -1,0 +1,7 @@
+---
+name: pages_artifacts_archive
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/40361
+rollout_issue_url: 
+group: group::release management
+type: development
+default_enabled: false

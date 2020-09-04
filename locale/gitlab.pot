@@ -3214,9 +3214,6 @@ msgstr ""
 msgid "Are you ABSOLUTELY SURE you wish to delete this project?"
 msgstr ""
 
-msgid "Are you setting up GitLab for a company?"
-msgstr ""
-
 msgid "Are you sure that you want to archive this project?"
 msgstr ""
 
@@ -8041,9 +8038,6 @@ msgid "Delete"
 msgstr ""
 
 msgid "Delete Comment"
-msgstr ""
-
-msgid "Delete Package"
 msgstr ""
 
 msgid "Delete Snippet"
@@ -13136,9 +13130,6 @@ msgstr ""
 msgid "In order to personalize your experience with GitLab%{br_tag}we would like to know a bit more about you."
 msgstr ""
 
-msgid "In order to tailor your experience with GitLab we%{br_tag}would like to know a bit more about you."
-msgstr ""
-
 msgid "In progress"
 msgstr ""
 
@@ -17237,7 +17228,7 @@ msgstr ""
 msgid "OnDemandScans|Use existing site profile"
 msgstr ""
 
-msgid "Once a project is permanently deleted it %{strongStart}cannot be recovered%{strongEnd}. Permanently deleting this project will %{strongStart}immediately delete%{strongEnd} its respositories and %{strongStart}all related resources%{strongEnd} including issues, merge requests etc."
+msgid "Once a project is permanently deleted it %{strongStart}cannot be recovered%{strongEnd}. Permanently deleting this project will %{strongStart}immediately delete%{strongEnd} its repositories and %{strongStart}all related resources%{strongEnd} including issues, merge requests etc."
 msgstr ""
 
 msgid "Once a project is permanently deleted it cannot be recovered. You will lose this project's repository and all content: issues, merge requests etc."
@@ -20000,6 +19991,9 @@ msgid "Promoted confidential issue to a non-confidential epic. Information in th
 msgstr ""
 
 msgid "Promoted issue to an epic."
+msgstr ""
+
+msgid "Promotion is not supported."
 msgstr ""
 
 msgid "Promotions|Burndown Charts are visual representations of the progress of completing a milestone. At a glance, you see the current state for the completion a given milestone. Without them, you would have to organize the data from the milestone and plot it yourself to have the same sense of progress."
@@ -25244,7 +25238,7 @@ msgstr ""
 msgid "This action can lead to data loss. To prevent accidental actions we ask you to confirm your intention."
 msgstr ""
 
-msgid "This action cannot be undone. You will lose the project's respository and all conent: issues, merge requests, etc."
+msgid "This action cannot be undone. You will lose the project's repository and all content: issues, merge requests, etc."
 msgstr ""
 
 msgid "This action will %{strongOpen}permanently delete%{strongClose} %{codeOpen}%{project}%{codeClose} %{strongOpen}immediately%{strongClose}, including its repositories and all content: issues, merge requests, etc."
@@ -27832,7 +27826,7 @@ msgstr ""
 msgid "We sent you an email with reset password instructions"
 msgstr ""
 
-msgid "We tried to automatically renew your %{strong}%{plan_name}%{strong_close} subscription for %{strong}%{namespace_name}%{strong_close} on %{expires_on} but something went wrong so your subscription was downgraded to the free plan. Don't worry, your data is safe. We suggest you check your payment method and get in touch with our support team (%{support_link}). They'll gladly help with your subscription renewal."
+msgid "We tried to automatically renew your subscription for %{strong}%{namespace_name}%{strong_close} on %{expires_on} but something went wrong so your subscription was downgraded to the free plan. Don't worry, your data is safe. We suggest you check your payment method and get in touch with our support team (%{support_link}). They'll gladly help with your subscription renewal."
 msgstr ""
 
 msgid "We want to be sure it is you, please confirm you are not a robot."
@@ -27982,13 +27976,10 @@ msgstr ""
 msgid "Welcome to GitLab"
 msgstr ""
 
-msgid "Welcome to GitLab %{name}!"
+msgid "Welcome to GitLab%{br_tag}%{name}!"
 msgstr ""
 
 msgid "Welcome to GitLab, %{first_name}!"
-msgstr ""
-
-msgid "Welcome to GitLab.com%{br_tag}@%{name}!"
 msgstr ""
 
 msgid "Welcome to the guided GitLab tour"
@@ -28518,10 +28509,10 @@ msgstr ""
 msgid "You could not create a new trigger."
 msgstr ""
 
-msgid "You didn't renew your %{strong}%{plan_name}%{strong_close} subscription for %{strong}%{namespace_name}%{strong_close} so it was downgraded to the free plan."
+msgid "You didn't renew your subscription for %{strong}%{namespace_name}%{strong_close} so it was downgraded to the free plan."
 msgstr ""
 
-msgid "You didn't renew your %{strong}%{plan_name}%{strong_close} subscription so it was downgraded to the GitLab Core Plan."
+msgid "You didn't renew your subscription so it was downgraded to the GitLab Core Plan."
 msgstr ""
 
 msgid "You do not have an active license"
