@@ -601,6 +601,14 @@ entry.
 - Replace fa-pencil icon with GitLab SVG. !39648
 
 
+## 13.2.9 (2020-09-04)
+
+### Fixed (2 changes)
+
+- Fix ActiveRecord::IrreversibleOrderError during restore from backup. !40789
+- Update the 2FA user update check to account for rounding errors. !41327
+
+
 ## 13.2.8 (2020-09-02)
 
 ### Security (1 change)
