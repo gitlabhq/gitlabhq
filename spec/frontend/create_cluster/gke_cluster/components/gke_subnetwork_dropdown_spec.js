@@ -107,7 +107,7 @@ describe('GkeSubnetworkDropdown', () => {
 
       wrapper.find(ClusterFormDropdown).vm.$emit('input', selectedSubnetwork);
 
-      expect(setSubnetwork).toHaveBeenCalledWith(expect.anything(), selectedSubnetwork, undefined);
+      expect(setSubnetwork).toHaveBeenCalledWith(expect.anything(), selectedSubnetwork);
     });
   });
 });

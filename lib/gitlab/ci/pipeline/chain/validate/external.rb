@@ -51,7 +51,7 @@ module Gitlab
             def validate_service_request
               Gitlab::HTTP.post(
                 validation_service_url, timeout: VALIDATION_REQUEST_TIMEOUT,
-                body: validation_service_payload(@pipeline, @command.config_processor.stages_attributes)
+                body: validation_service_payload(@pipeline, @command.yaml_processor_result.stages_attributes)
               )
             end
 

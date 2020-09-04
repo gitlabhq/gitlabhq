@@ -722,7 +722,14 @@ RSpec.describe Event do
         note_on_commit: true
       }
       valid_target_factories.map do |kind, needs_project|
-        extra_data = needs_project ? { project: project } : {}
+        extra_data = if kind == :merge_request
+                       { source_project: project }
+                     elsif needs_project
+                       { project: project }
+                     else
+                       {}
+                     end
+
         target = kind == :project ? nil : build(kind, **extra_data)
         [kind, build(:event, :created, project: project, target: target)]
       end.to_h

@@ -39,7 +39,7 @@ module Gitlab
           end
 
           def workflow_config
-            @command.config_processor.workflow_attributes || {}
+            @command.yaml_processor_result.workflow_attributes || {}
           end
         end
       end

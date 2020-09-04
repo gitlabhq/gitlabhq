@@ -11353,6 +11353,16 @@ type Project {
   ): DastScannerProfileConnection
 
   """
+  DAST Site Profile associated with the project
+  """
+  dastSiteProfile(
+    """
+    ID of the site profile
+    """
+    id: DastSiteProfileID!
+  ): DastSiteProfile
+
+  """
   DAST Site Profiles associated with the project
   """
   dastSiteProfiles(

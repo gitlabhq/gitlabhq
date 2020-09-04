@@ -1,7 +1,0 @@
----
-name: async_pages_move_project_rename
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/40087
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/235802
-group: team::Scalability
-type: development
-default_enabled: false

@@ -64,16 +64,6 @@ RSpec.describe Projects::AfterRenameService do
           allow(project_storage).to receive(:rename_repo) { true }
         end
 
-        context 'when async_pages_move_project_rename is disabled' do
-          it 'moves pages folder to new location' do
-            stub_feature_flags(async_pages_move_project_rename: false)
-
-            expect_any_instance_of(Gitlab::PagesTransfer).to receive(:rename_project)
-
-            service_execute
-          end
-        end
-
         context 'when the project has pages deployed' do
           it 'schedules a move of the pages directory' do
             allow(project).to receive(:pages_deployed?).and_return(true)
@@ -183,16 +173,6 @@ RSpec.describe Projects::AfterRenameService do
       end
 
       context 'gitlab pages' do
-        context 'when async_pages_move_project_rename is disabled' do
-          it 'moves pages folder to new location' do
-            stub_feature_flags(async_pages_move_project_rename: false)
-
-            expect_any_instance_of(Gitlab::PagesTransfer).to receive(:rename_project)
-
-            service_execute
-          end
-        end
-
         context 'when the project has pages deployed' do
           it 'schedules a move of the pages directory' do
             allow(project).to receive(:pages_deployed?).and_return(true)

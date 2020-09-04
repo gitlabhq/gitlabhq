@@ -1,4 +1,5 @@
 <script>
+import { mapActions } from 'vuex';
 import {
   GlButton,
   GlButtonGroup,
@@ -17,6 +18,7 @@ import boardsStore from '../stores/boards_store';
 import eventHub from '../eventhub';
 import { ListType } from '../constants';
 import { isScopedLabel } from '~/lib/utils/common_utils';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 export default {
   components: {
@@ -32,7 +34,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [isWipLimitsOn],
+  mixins: [isWipLimitsOn, glFeatureFlagMixin()],
   props: {
     list: {
       type: Object,
@@ -128,6 +130,7 @@ export default {
     },
   },
   methods: {
+    ...mapActions(['updateList']),
     showScopedLabels(label) {
       return boardsStore.scopedLabels.enabled && isScopedLabel(label);
     },
@@ -136,20 +139,28 @@ export default {
       eventHub.$emit(`toggle-issue-form-${this.list.id}`);
     },
     toggleExpanded() {
-      if (this.list.isExpandable) {
-        this.list.isExpanded = !this.list.isExpanded;
+      this.list.isExpanded = !this.list.isExpanded;
 
-        if (AccessorUtilities.isLocalStorageAccessSafe() && !this.isLoggedIn) {
-          localStorage.setItem(`${this.uniqueKey}.expanded`, this.list.isExpanded);
-        }
+      if (!this.isLoggedIn) {
+        this.addToLocalStorage();
+      } else {
+        this.updateListFunction();
+      }
 
-        if (this.isLoggedIn) {
-          this.list.update();
-        }
-
-        // When expanding/collapsing, the tooltip on the caret button sometimes stays open.
-        // Close all tooltips manually to prevent dangling tooltips.
-        this.$root.$emit('bv::hide::tooltip');
+      // When expanding/collapsing, the tooltip on the caret button sometimes stays open.
+      // Close all tooltips manually to prevent dangling tooltips.
+      this.$root.$emit('bv::hide::tooltip');
+    },
+    addToLocalStorage() {
+      if (AccessorUtilities.isLocalStorageAccessSafe()) {
+        localStorage.setItem(`${this.uniqueKey}.expanded`, this.list.isExpanded);
+      }
+    },
+    updateListFunction() {
+      if (this.glFeatures.boardsWithSwimlanes && this.isSwimlanesHeader) {
+        this.updateList({ listId: this.list.id, collapsed: !this.list.isExpanded });
+      } else {
+        this.list.update();
       }
     },
   },

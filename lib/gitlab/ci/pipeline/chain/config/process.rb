@@ -23,7 +23,7 @@ module Gitlab
               add_warnings_to_pipeline(result.warnings)
 
               if result.valid?
-                @command.config_processor = result
+                @command.yaml_processor_result = result
               else
                 error(result.errors.first, config_error: true)
               end

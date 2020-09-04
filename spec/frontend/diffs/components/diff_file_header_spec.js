@@ -1,6 +1,7 @@
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import Vuex from 'vuex';
 import { GlIcon } from '@gitlab/ui';
+import { cloneDeep } from 'lodash';
 import DiffFileHeader from '~/diffs/components/diff_file_header.vue';
 import EditButton from '~/diffs/components/edit_button.vue';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
@@ -26,12 +27,16 @@ const diffFile = Object.freeze(
   }),
 );
 
+const localVue = createLocalVue();
+localVue.use(Vuex);
+
 describe('DiffFileHeader component', () => {
   let wrapper;
+  let mockStoreConfig;
 
   const diffHasExpandedDiscussionsResultMock = jest.fn();
   const diffHasDiscussionsResultMock = jest.fn();
-  const mockStoreConfig = {
+  const defaultMockStoreConfig = {
     state: {},
     modules: {
       diffs: {
@@ -56,6 +61,8 @@ describe('DiffFileHeader component', () => {
       diffHasExpandedDiscussionsResultMock,
       ...Object.values(mockStoreConfig.modules.diffs.actions),
     ].forEach(mock => mock.mockReset());
+
+    wrapper.destroy();
   });
 
   const findHeader = () => wrapper.find({ ref: 'header' });
@@ -80,8 +87,7 @@ describe('DiffFileHeader component', () => {
   };
 
   const createComponent = props => {
-    const localVue = createLocalVue();
-    localVue.use(Vuex);
+    mockStoreConfig = cloneDeep(defaultMockStoreConfig);
     const store = new Vuex.Store(mockStoreConfig);
 
     wrapper = shallowMount(DiffFileHeader, {
@@ -286,7 +292,7 @@ describe('DiffFileHeader component', () => {
           findToggleDiscussionsButton().vm.$emit('click');
           expect(
             mockStoreConfig.modules.diffs.actions.toggleFileDiscussionWrappers,
-          ).toHaveBeenCalledWith(expect.any(Object), diffFile, undefined);
+          ).toHaveBeenCalledWith(expect.any(Object), diffFile);
         });
       });
 

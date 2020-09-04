@@ -22,11 +22,7 @@ module Ci
       return result unless result[:status] == :success
 
       headers = JobArtifactUploader.workhorse_authorize(has_length: false, maximum_size: max_size(artifact_type))
-
-      if lsif?(artifact_type)
-        headers[:ProcessLsif] = true
-        headers[:ProcessLsifReferences] = Feature.enabled?(:code_navigation_references, project, default_enabled: true)
-      end
+      headers[:ProcessLsif] = lsif?(artifact_type)
 
       success(headers: headers)
     end

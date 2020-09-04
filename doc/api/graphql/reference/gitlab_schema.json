@@ -33933,6 +33933,33 @@
               "deprecationReason": null
             },
             {
+              "name": "dastSiteProfile",
+              "description": "DAST Site Profile associated with the project",
+              "args": [
+                {
+                  "name": "id",
+                  "description": "ID of the site profile",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "DastSiteProfileID",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "DastSiteProfile",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "dastSiteProfiles",
               "description": "DAST Site Profiles associated with the project",
               "args": [

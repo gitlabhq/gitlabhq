@@ -13,43 +13,42 @@
 
 = render partial: 'flash_messages'
 
-%div{ class: [("limit-container-width" unless fluid_layout)] }
-  = render_if_exists 'trials/banner', namespace: @group
+= render_if_exists 'trials/banner', namespace: @group
 
-  = render 'groups/home_panel'
+= render 'groups/home_panel'
 
-  = render_if_exists 'groups/self_or_ancestor_marked_for_deletion_notice', group: @group
+= render_if_exists 'groups/self_or_ancestor_marked_for_deletion_notice', group: @group
 
-  = render_if_exists 'groups/group_activity_analytics', group: @group
+= render_if_exists 'groups/group_activity_analytics', group: @group
 
-  .groups-listing{ data: { endpoints: { default: group_children_path(@group, format: :json), shared: group_shared_projects_path(@group, format: :json) } } }
-    .top-area.group-nav-container.justify-content-between
-      .scrolling-tabs-container.inner-page-scroll-tabs
-        .fade-left= sprite_icon('chevron-lg-left', size: 12)
-        .fade-right= sprite_icon('chevron-lg-right', size: 12)
-        %ul.nav-links.scrolling-tabs.mobile-separator.nav.nav-tabs
-          %li.js-subgroups_and_projects-tab
-            = link_to group_path, data: { target: 'div#subgroups_and_projects', action: 'subgroups_and_projects', toggle: 'tab'} do
-              = _("Subgroups and projects")
-          %li.js-shared-tab
-            = link_to group_shared_path, data: { target: 'div#shared', action: 'shared', toggle: 'tab'} do
-              = _("Shared projects")
-          %li.js-archived-tab
-            = link_to group_archived_path, data: { target: 'div#archived', action: 'archived', toggle: 'tab'} do
-              = _("Archived projects")
+.groups-listing{ data: { endpoints: { default: group_children_path(@group, format: :json), shared: group_shared_projects_path(@group, format: :json) } } }
+  .top-area.group-nav-container.justify-content-between
+    .scrolling-tabs-container.inner-page-scroll-tabs
+      .fade-left= sprite_icon('chevron-lg-left', size: 12)
+      .fade-right= sprite_icon('chevron-lg-right', size: 12)
+      %ul.nav-links.scrolling-tabs.mobile-separator.nav.nav-tabs
+        %li.js-subgroups_and_projects-tab
+          = link_to group_path, data: { target: 'div#subgroups_and_projects', action: 'subgroups_and_projects', toggle: 'tab'} do
+            = _("Subgroups and projects")
+        %li.js-shared-tab
+          = link_to group_shared_path, data: { target: 'div#shared', action: 'shared', toggle: 'tab'} do
+            = _("Shared projects")
+        %li.js-archived-tab
+          = link_to group_archived_path, data: { target: 'div#archived', action: 'archived', toggle: 'tab'} do
+            = _("Archived projects")
 
-      .nav-controls.d-block.d-md-flex
-        .group-search
-          = render "shared/groups/search_form"
+    .nav-controls.d-block.d-md-flex
+      .group-search
+        = render "shared/groups/search_form"
 
-        = render "shared/groups/dropdown", options_hash: subgroups_sort_options_hash
+      = render "shared/groups/dropdown", options_hash: subgroups_sort_options_hash
 
-    .tab-content
-      #subgroups_and_projects.tab-pane
-        = render "subgroups_and_projects", group: @group
+  .tab-content
+    #subgroups_and_projects.tab-pane
+      = render "subgroups_and_projects", group: @group
 
-      #shared.tab-pane
-        = render "shared_projects", group: @group
+    #shared.tab-pane
+      = render "shared_projects", group: @group
 
-      #archived.tab-pane
-        = render "archived_projects", group: @group
+    #archived.tab-pane
+      = render "archived_projects", group: @group

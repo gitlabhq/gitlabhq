@@ -20,7 +20,6 @@ import { localTimeAgo } from './lib/utils/datetime_utility';
 import { getLocationHash, visitUrl } from './lib/utils/url_utility';
 
 // everything else
-import loadAwardsHandler from './awards_handler';
 import { deprecatedCreateFlash as Flash, removeFlashClickListener } from './flash';
 import initTodoToggle from './header';
 import initImporterStatus from './importer_status';
@@ -37,7 +36,7 @@ import GlFieldErrors from './gl_field_errors';
 import initUserPopovers from './user_popovers';
 import initBroadcastNotifications from './broadcast_notification';
 import initPersistentUserCallouts from './persistent_user_callouts';
-import { initUserTracking } from './tracking';
+import { initUserTracking, initDefaultTrackers } from './tracking';
 import { __ } from './locale';
 
 import 'ee_else_ce/main_ee';
@@ -111,6 +110,7 @@ function deferredInitialisation() {
   initBroadcastNotifications();
   initFrequentItemDropdowns();
   initPersistentUserCallouts();
+  initDefaultTrackers();
 
   if (document.querySelector('.search')) initSearchAutocomplete();
 
@@ -153,8 +153,6 @@ function deferredInitialisation() {
     // the navigation can't overlap the popover
     viewport: '.layout-page',
   });
-
-  loadAwardsHandler();
 
   // Adding a helper class to activate animations only after all is rendered
   setTimeout(() => $body.addClass('page-initialised'), 1000);

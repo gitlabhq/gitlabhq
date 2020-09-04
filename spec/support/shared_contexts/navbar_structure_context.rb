@@ -138,6 +138,13 @@ RSpec.shared_context 'group navbar structure' do
     }
   end
 
+  let(:push_rules_nav_item) do
+    {
+      nav_item: _('Push Rules'),
+      nav_sub_items: []
+    }
+  end
+
   let(:structure) do
     [
       {
@@ -160,6 +167,7 @@ RSpec.shared_context 'group navbar structure' do
         nav_item: _('Merge Requests'),
         nav_sub_items: []
       },
+      (push_rules_nav_item if Gitlab.ee?),
       {
         nav_item: _('Kubernetes'),
         nav_sub_items: []

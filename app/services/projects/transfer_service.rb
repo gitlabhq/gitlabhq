@@ -181,15 +181,9 @@ module Projects
     end
 
     def move_pages(project)
-      transfer = Gitlab::PagesTransfer.new
+      return unless project.pages_deployed?
 
-      if Feature.enabled?(:async_pages_move_project_transfer, project)
-        # Avoid scheduling moves for directories that don't exist.
-        return unless project.pages_deployed?
-
-        transfer = transfer.async
-      end
-
+      transfer = Gitlab::PagesTransfer.new.async
       transfer.move_project(project.path, @old_namespace.full_path, @new_namespace.full_path)
     end
 

@@ -1,15 +1,14 @@
 import { shallowMount, createLocalVue } from '@vue/test-utils';
-import { createMockClient } from 'mock-apollo-client';
 import VueApollo from 'vue-apollo';
 import VueRouter from 'vue-router';
 import VueDraggable from 'vuedraggable';
-import { InMemoryCache } from 'apollo-cache-inmemory';
 import Design from '~/design_management/components/list/item.vue';
 import createRouter from '~/design_management/router';
 import getDesignListQuery from '~/design_management/graphql/queries/get_design_list.query.graphql';
 import permissionsQuery from '~/design_management/graphql/queries/design_permissions.query.graphql';
 import moveDesignMutation from '~/design_management/graphql/mutations/move_design.mutation.graphql';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
+import createMockApollo from '../../helpers/mock_apollo_helper';
 import Index from '~/design_management/pages/index.vue';
 import {
   designListQueryResponse,
@@ -39,8 +38,7 @@ const designToMove = {
 
 describe('Design management index page with Apollo mock', () => {
   let wrapper;
-  let mockClient;
-  let apolloProvider;
+  let fakeApollo;
   let moveDesignHandler;
 
   async function moveDesigns(localWrapper) {
@@ -56,41 +54,23 @@ describe('Design management index page with Apollo mock', () => {
     });
   }
 
-  const fragmentMatcher = { match: () => true };
-
-  const cache = new InMemoryCache({
-    fragmentMatcher,
-    addTypename: false,
-  });
-
   const findDesigns = () => wrapper.findAll(Design);
 
   function createComponent({
     moveHandler = jest.fn().mockResolvedValue(moveDesignMutationResponse),
   }) {
-    mockClient = createMockClient({ cache });
-
-    mockClient.setRequestHandler(
-      getDesignListQuery,
-      jest.fn().mockResolvedValue(designListQueryResponse),
-    );
-
-    mockClient.setRequestHandler(
-      permissionsQuery,
-      jest.fn().mockResolvedValue(permissionsQueryResponse),
-    );
-
     moveDesignHandler = moveHandler;
 
-    mockClient.setRequestHandler(moveDesignMutation, moveDesignHandler);
+    const requestHandlers = [
+      [getDesignListQuery, jest.fn().mockResolvedValue(designListQueryResponse)],
+      [permissionsQuery, jest.fn().mockResolvedValue(permissionsQueryResponse)],
+      [moveDesignMutation, moveDesignHandler],
+    ];
 
-    apolloProvider = new VueApollo({
-      defaultClient: mockClient,
-    });
-
+    fakeApollo = createMockApollo(requestHandlers);
     wrapper = shallowMount(Index, {
       localVue,
-      apolloProvider,
+      apolloProvider: fakeApollo,
       router,
       stubs: { VueDraggable },
     });
@@ -99,8 +79,6 @@ describe('Design management index page with Apollo mock', () => {
   afterEach(() => {
     wrapper.destroy();
     wrapper = null;
-    mockClient = null;
-    apolloProvider = null;
   });
 
   it('has a design with id 1 as a first one', async () => {
@@ -152,8 +130,9 @@ describe('Design management index page with Apollo mock', () => {
 
     await moveDesigns(wrapper);
 
-    await jest.runOnlyPendingTimers();
-    await wrapper.vm.$nextTick();
+    await wrapper.vm.$nextTick(); // kick off the DOM update
+    await jest.runOnlyPendingTimers(); // kick off the mocked GQL stuff (promises)
+    await wrapper.vm.$nextTick(); // kick off the DOM update for flash
 
     expect(createFlash).toHaveBeenCalledWith(
       'Something went wrong when reordering designs. Please try again',

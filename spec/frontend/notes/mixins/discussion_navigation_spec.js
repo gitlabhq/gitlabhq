@@ -194,13 +194,9 @@ describe('Discussion navigation mixin', () => {
           });
 
           it('expands discussion', () => {
-            expect(expandDiscussion).toHaveBeenCalledWith(
-              expect.anything(),
-              {
-                discussionId: expected,
-              },
-              undefined,
-            );
+            expect(expandDiscussion).toHaveBeenCalledWith(expect.anything(), {
+              discussionId: expected,
+            });
           });
 
           it('scrolls to discussion', () => {

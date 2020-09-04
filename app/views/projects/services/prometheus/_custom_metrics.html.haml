@@ -20,7 +20,7 @@
           .flash-text
       .loading-metrics.js-loading-custom-metrics
         %p.m-3
-          = icon('spinner spin', class: 'metrics-load-spinner')
+          = loading_icon(css_class: 'metrics-load-spinner')
           = s_('PrometheusService|Finding custom metrics...')
       .empty-metrics.hidden.js-empty-custom-metrics
         %p.text-tertiary.m-3.js-no-active-integration-text.hidden

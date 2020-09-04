@@ -272,6 +272,7 @@ export default {
         <ci-badge
           :status="pipelineStatus"
           :show-text="!isChildView"
+          :icon-classes="'gl-vertical-align-middle!'"
           data-qa-selector="pipeline_commit_status"
         />
       </div>

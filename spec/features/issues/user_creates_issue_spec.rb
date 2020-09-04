@@ -188,6 +188,46 @@ RSpec.describe "User creates issue" do
       end
     end
 
+    context 'form create handles issue creation by default' do
+      let(:project) { create(:project) }
+
+      before do
+        visit new_project_issue_path(project)
+      end
+
+      it 'pre-fills the issue type dropdown with issue type' do
+        expect(find('.js-issuable-type-filter-dropdown-wrap .dropdown-label')).to have_content('Issue')
+      end
+
+      it 'does not hide the milestone select' do
+        expect(page).to have_selector('.qa-issuable-milestone-dropdown')
+      end
+    end
+
+    context 'form create handles incident creation' do
+      let(:project) { create(:project) }
+
+      before do
+        visit new_project_issue_path(project, { 'issue[issue_type]': 'incident', issuable_template: 'incident' })
+      end
+
+      it 'pre-fills the issue type dropdown with incident type' do
+        expect(find('.js-issuable-type-filter-dropdown-wrap .dropdown-label')).to have_content('Incident')
+      end
+
+      it 'hides the epic select' do
+        expect(page).not_to have_selector('.epic-dropdown-container')
+      end
+
+      it 'hides the milestone select' do
+        expect(page).not_to have_selector('.qa-issuable-milestone-dropdown')
+      end
+
+      it 'hides the weight input' do
+        expect(page).not_to have_selector('.qa-issuable-weight-input')
+      end
+    end
+
     context 'suggestions', :js do
       it 'displays list of related issues' do
         issue = create(:issue, project: project)

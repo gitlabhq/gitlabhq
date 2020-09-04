@@ -3,11 +3,7 @@
 module Pages
   class DeleteService < BaseService
     def execute
-      if Feature.enabled?(:async_pages_removal, project)
-        PagesRemoveWorker.perform_async(project.id)
-      else
-        PagesRemoveWorker.new.perform(project.id)
-      end
+      PagesRemoveWorker.perform_async(project.id)
     end
   end
 end

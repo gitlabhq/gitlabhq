@@ -1,0 +1,10 @@
+#import "./board_list.fragment.graphql"
+
+mutation UpdateBoardList($listId: ID!, $position: Int, $collapsed: Boolean) {
+  updateBoardList(input: { listId: $listId, position: $position, collapsed: $collapsed }) {
+    list {
+      ...BoardListFragment
+    }
+    errors
+  }
+}

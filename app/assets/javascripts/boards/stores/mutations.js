@@ -1,3 +1,5 @@
+import Vue from 'vue';
+import { sortBy } from 'lodash';
 import * as mutationTypes from './mutation_types';
 import { __ } from '~/locale';
 
@@ -44,16 +46,17 @@ export default {
     notImplemented();
   },
 
-  [mutationTypes.REQUEST_UPDATE_LIST]: () => {
-    notImplemented();
+  [mutationTypes.MOVE_LIST]: (state, { movedList, listAtNewIndex }) => {
+    const { boardLists } = state;
+    const movedListIndex = state.boardLists.findIndex(l => l.id === movedList.id);
+    Vue.set(boardLists, movedListIndex, movedList);
+    Vue.set(boardLists, movedListIndex.position + 1, listAtNewIndex);
+    Vue.set(state, 'boardLists', sortBy(boardLists, 'position'));
   },
 
-  [mutationTypes.RECEIVE_UPDATE_LIST_SUCCESS]: () => {
-    notImplemented();
-  },
-
-  [mutationTypes.RECEIVE_UPDATE_LIST_ERROR]: () => {
-    notImplemented();
+  [mutationTypes.UPDATE_LIST_FAILURE]: (state, backupList) => {
+    state.error = __('An error occurred while updating the list. Please try again.');
+    Vue.set(state, 'boardLists', backupList);
   },
 
   [mutationTypes.REQUEST_REMOVE_LIST]: () => {

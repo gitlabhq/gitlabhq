@@ -238,13 +238,6 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
             expect(json_response['ProcessLsif']).to be_truthy
           end
 
-          it 'adds ProcessLsifReferences header' do
-            authorize_artifacts_with_token_in_headers(artifact_type: :lsif)
-
-            expect(response).to have_gitlab_http_status(:ok)
-            expect(json_response['ProcessLsifReferences']).to be_truthy
-          end
-
           context 'code_navigation feature flag is disabled' do
             it 'responds with a forbidden error' do
               stub_feature_flags(code_navigation: false)
@@ -253,20 +246,6 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
               aggregate_failures do
                 expect(response).to have_gitlab_http_status(:forbidden)
                 expect(json_response['ProcessLsif']).to be_falsy
-                expect(json_response['ProcessLsifReferences']).to be_falsy
-              end
-            end
-          end
-
-          context 'code_navigation_references feature flag is disabled' do
-            it 'sets ProcessLsifReferences header to false' do
-              stub_feature_flags(code_navigation_references: false)
-              authorize_artifacts_with_token_in_headers(artifact_type: :lsif)
-
-              aggregate_failures do
-                expect(response).to have_gitlab_http_status(:ok)
-                expect(json_response['ProcessLsif']).to be_truthy
-                expect(json_response['ProcessLsifReferences']).to be_falsy
               end
             end
           end

@@ -401,43 +401,33 @@ describe('EksClusterConfigurationForm', () => {
     });
 
     it('dispatches setRegion action', () => {
-      expect(actions.setRegion).toHaveBeenCalledWith(expect.anything(), { region }, undefined);
+      expect(actions.setRegion).toHaveBeenCalledWith(expect.anything(), { region });
     });
 
     it('fetches available vpcs', () => {
-      expect(vpcsActions.fetchItems).toHaveBeenCalledWith(expect.anything(), { region }, undefined);
+      expect(vpcsActions.fetchItems).toHaveBeenCalledWith(expect.anything(), { region });
     });
 
     it('fetches available key pairs', () => {
-      expect(keyPairsActions.fetchItems).toHaveBeenCalledWith(
-        expect.anything(),
-        { region },
-        undefined,
-      );
+      expect(keyPairsActions.fetchItems).toHaveBeenCalledWith(expect.anything(), { region });
     });
 
     it('cleans selected vpc', () => {
-      expect(actions.setVpc).toHaveBeenCalledWith(expect.anything(), { vpc: null }, undefined);
+      expect(actions.setVpc).toHaveBeenCalledWith(expect.anything(), { vpc: null });
     });
 
     it('cleans selected key pair', () => {
-      expect(actions.setKeyPair).toHaveBeenCalledWith(
-        expect.anything(),
-        { keyPair: null },
-        undefined,
-      );
+      expect(actions.setKeyPair).toHaveBeenCalledWith(expect.anything(), { keyPair: null });
     });
 
     it('cleans selected subnet', () => {
-      expect(actions.setSubnet).toHaveBeenCalledWith(expect.anything(), { subnet: [] }, undefined);
+      expect(actions.setSubnet).toHaveBeenCalledWith(expect.anything(), { subnet: [] });
     });
 
     it('cleans selected security group', () => {
-      expect(actions.setSecurityGroup).toHaveBeenCalledWith(
-        expect.anything(),
-        { securityGroup: null },
-        undefined,
-      );
+      expect(actions.setSecurityGroup).toHaveBeenCalledWith(expect.anything(), {
+        securityGroup: null,
+      });
     });
   });
 
@@ -446,11 +436,7 @@ describe('EksClusterConfigurationForm', () => {
 
     findClusterNameInput().vm.$emit('input', clusterName);
 
-    expect(actions.setClusterName).toHaveBeenCalledWith(
-      expect.anything(),
-      { clusterName },
-      undefined,
-    );
+    expect(actions.setClusterName).toHaveBeenCalledWith(expect.anything(), { clusterName });
   });
 
   it('dispatches setEnvironmentScope when environment scope input changes', () => {
@@ -458,11 +444,9 @@ describe('EksClusterConfigurationForm', () => {
 
     findEnvironmentScopeInput().vm.$emit('input', environmentScope);
 
-    expect(actions.setEnvironmentScope).toHaveBeenCalledWith(
-      expect.anything(),
-      { environmentScope },
-      undefined,
-    );
+    expect(actions.setEnvironmentScope).toHaveBeenCalledWith(expect.anything(), {
+      environmentScope,
+    });
   });
 
   it('dispatches setKubernetesVersion when kubernetes version dropdown changes', () => {
@@ -470,11 +454,9 @@ describe('EksClusterConfigurationForm', () => {
 
     findKubernetesVersionDropdown().vm.$emit('input', kubernetesVersion);
 
-    expect(actions.setKubernetesVersion).toHaveBeenCalledWith(
-      expect.anything(),
-      { kubernetesVersion },
-      undefined,
-    );
+    expect(actions.setKubernetesVersion).toHaveBeenCalledWith(expect.anything(), {
+      kubernetesVersion,
+    });
   });
 
   it('dispatches setGitlabManagedCluster when gitlab managed cluster input changes', () => {
@@ -482,11 +464,9 @@ describe('EksClusterConfigurationForm', () => {
 
     findGitlabManagedClusterCheckbox().vm.$emit('input', gitlabManagedCluster);
 
-    expect(actions.setGitlabManagedCluster).toHaveBeenCalledWith(
-      expect.anything(),
-      { gitlabManagedCluster },
-      undefined,
-    );
+    expect(actions.setGitlabManagedCluster).toHaveBeenCalledWith(expect.anything(), {
+      gitlabManagedCluster,
+    });
   });
 
   describe('when vpc is selected', () => {
@@ -499,35 +479,28 @@ describe('EksClusterConfigurationForm', () => {
     });
 
     it('dispatches setVpc action', () => {
-      expect(actions.setVpc).toHaveBeenCalledWith(expect.anything(), { vpc }, undefined);
+      expect(actions.setVpc).toHaveBeenCalledWith(expect.anything(), { vpc });
     });
 
     it('cleans selected subnet', () => {
-      expect(actions.setSubnet).toHaveBeenCalledWith(expect.anything(), { subnet: [] }, undefined);
+      expect(actions.setSubnet).toHaveBeenCalledWith(expect.anything(), { subnet: [] });
     });
 
     it('cleans selected security group', () => {
-      expect(actions.setSecurityGroup).toHaveBeenCalledWith(
-        expect.anything(),
-        { securityGroup: null },
-        undefined,
-      );
+      expect(actions.setSecurityGroup).toHaveBeenCalledWith(expect.anything(), {
+        securityGroup: null,
+      });
     });
 
     it('dispatches fetchSubnets action', () => {
-      expect(subnetsActions.fetchItems).toHaveBeenCalledWith(
-        expect.anything(),
-        { vpc, region },
-        undefined,
-      );
+      expect(subnetsActions.fetchItems).toHaveBeenCalledWith(expect.anything(), { vpc, region });
     });
 
     it('dispatches fetchSecurityGroups action', () => {
-      expect(securityGroupsActions.fetchItems).toHaveBeenCalledWith(
-        expect.anything(),
-        { vpc, region },
-        undefined,
-      );
+      expect(securityGroupsActions.fetchItems).toHaveBeenCalledWith(expect.anything(), {
+        vpc,
+        region,
+      });
     });
   });
 
@@ -539,7 +512,7 @@ describe('EksClusterConfigurationForm', () => {
     });
 
     it('dispatches setSubnet action', () => {
-      expect(actions.setSubnet).toHaveBeenCalledWith(expect.anything(), { subnet }, undefined);
+      expect(actions.setSubnet).toHaveBeenCalledWith(expect.anything(), { subnet });
     });
   });
 
@@ -551,7 +524,7 @@ describe('EksClusterConfigurationForm', () => {
     });
 
     it('dispatches setRole action', () => {
-      expect(actions.setRole).toHaveBeenCalledWith(expect.anything(), { role }, undefined);
+      expect(actions.setRole).toHaveBeenCalledWith(expect.anything(), { role });
     });
   });
 
@@ -563,7 +536,7 @@ describe('EksClusterConfigurationForm', () => {
     });
 
     it('dispatches setKeyPair action', () => {
-      expect(actions.setKeyPair).toHaveBeenCalledWith(expect.anything(), { keyPair }, undefined);
+      expect(actions.setKeyPair).toHaveBeenCalledWith(expect.anything(), { keyPair });
     });
   });
 
@@ -575,11 +548,7 @@ describe('EksClusterConfigurationForm', () => {
     });
 
     it('dispatches setSecurityGroup action', () => {
-      expect(actions.setSecurityGroup).toHaveBeenCalledWith(
-        expect.anything(),
-        { securityGroup },
-        undefined,
-      );
+      expect(actions.setSecurityGroup).toHaveBeenCalledWith(expect.anything(), { securityGroup });
     });
   });
 
@@ -591,11 +560,7 @@ describe('EksClusterConfigurationForm', () => {
     });
 
     it('dispatches setInstanceType action', () => {
-      expect(actions.setInstanceType).toHaveBeenCalledWith(
-        expect.anything(),
-        { instanceType },
-        undefined,
-      );
+      expect(actions.setInstanceType).toHaveBeenCalledWith(expect.anything(), { instanceType });
     });
   });
 
@@ -604,7 +569,7 @@ describe('EksClusterConfigurationForm', () => {
 
     findNodeCountInput().vm.$emit('input', nodeCount);
 
-    expect(actions.setNodeCount).toHaveBeenCalledWith(expect.anything(), { nodeCount }, undefined);
+    expect(actions.setNodeCount).toHaveBeenCalledWith(expect.anything(), { nodeCount });
   });
 
   describe('when all cluster configuration fields are set', () => {

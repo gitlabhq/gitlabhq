@@ -858,21 +858,6 @@ const boardsStore = {
   },
 
   refreshIssueData(issue, obj) {
-    // issue.id = obj.id;
-    // issue.iid = obj.iid;
-    // issue.title = obj.title;
-    // issue.confidential = obj.confidential;
-    // issue.dueDate = obj.due_date || obj.dueDate;
-    // issue.sidebarInfoEndpoint = obj.issue_sidebar_endpoint;
-    // issue.referencePath = obj.reference_path || obj.referencePath;
-    // issue.path = obj.real_path || obj.webUrl;
-    // issue.toggleSubscriptionEndpoint = obj.toggle_subscription_endpoint;
-    // issue.project_id = obj.project_id;
-    // issue.timeEstimate = obj.time_estimate || obj.timeEstimate;
-    // issue.assignableLabelsEndpoint = obj.assignable_labels_endpoint;
-    // issue.blocked = obj.blocked;
-    // issue.epic = obj.epic;
-
     const convertedObj = convertObjectPropsToCamelCase(obj, {
       dropKeys: ['issue_sidebar_endpoint', 'real_path', 'webUrl'],
     });

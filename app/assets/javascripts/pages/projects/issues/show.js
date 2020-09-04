@@ -1,3 +1,4 @@
+import loadAwardsHandler from '~/awards_handler';
 import initIssuableSidebar from '~/init_issuable_sidebar';
 import Issue from '~/issue';
 import ShortcutsIssuable from '~/behaviors/shortcuts/shortcuts_issuable';
@@ -37,4 +38,6 @@ export default function() {
   } else {
     initIssuableSidebar();
   }
+
+  loadAwardsHandler();
 }

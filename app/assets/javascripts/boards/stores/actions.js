@@ -15,6 +15,7 @@ import projectListsIssuesQuery from '../queries/project_lists_issues.query.graph
 import projectBoardQuery from '../queries/project_board.query.graphql';
 import groupBoardQuery from '../queries/group_board.query.graphql';
 import createBoardListMutation from '../queries/board_list_create.mutation.graphql';
+import updateBoardListMutation from '../queries/board_list_update.mutation.graphql';
 
 const notImplemented = () => {
   /* eslint-disable-next-line @gitlab/require-i18n-strings */
@@ -147,8 +148,42 @@ export default {
     notImplemented();
   },
 
-  updateList: () => {
-    notImplemented();
+  moveList: ({ state, commit, dispatch }, { listId, newIndex, adjustmentValue }) => {
+    const { boardLists } = state;
+    const backupList = [...boardLists];
+    const movedList = boardLists.find(({ id }) => id === listId);
+
+    const newPosition = newIndex - 1;
+    const listAtNewIndex = boardLists[newIndex];
+
+    movedList.position = newPosition;
+    listAtNewIndex.position += adjustmentValue;
+    commit(types.MOVE_LIST, {
+      movedList,
+      listAtNewIndex,
+    });
+
+    dispatch('updateList', { listId, position: newPosition, backupList });
+  },
+
+  updateList: ({ commit }, { listId, position, collapsed, backupList }) => {
+    gqlClient
+      .mutate({
+        mutation: updateBoardListMutation,
+        variables: {
+          listId,
+          position,
+          collapsed,
+        },
+      })
+      .then(({ data }) => {
+        if (data?.updateBoardList?.errors.length) {
+          commit(types.UPDATE_LIST_FAILURE, backupList);
+        }
+      })
+      .catch(() => {
+        commit(types.UPDATE_LIST_FAILURE, backupList);
+      });
   },
 
   deleteList: () => {

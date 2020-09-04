@@ -115,14 +115,10 @@ describe('Release edit component', () => {
 
       const expectStoreMethodToBeCalled = () => {
         expect(actions.updateAssetLinkUrl).toHaveBeenCalledTimes(1);
-        expect(actions.updateAssetLinkUrl).toHaveBeenCalledWith(
-          expect.anything(),
-          {
-            linkIdToUpdate,
-            newUrl,
-          },
-          undefined,
-        );
+        expect(actions.updateAssetLinkUrl).toHaveBeenCalledWith(expect.anything(), {
+          linkIdToUpdate,
+          newUrl,
+        });
       };
 
       it('calls the "updateAssetLinkUrl" store method when text is entered into the "URL" input field', () => {
@@ -177,14 +173,10 @@ describe('Release edit component', () => {
 
       const expectStoreMethodToBeCalled = () => {
         expect(actions.updateAssetLinkName).toHaveBeenCalledTimes(1);
-        expect(actions.updateAssetLinkName).toHaveBeenCalledWith(
-          expect.anything(),
-          {
-            linkIdToUpdate,
-            newName,
-          },
-          undefined,
-        );
+        expect(actions.updateAssetLinkName).toHaveBeenCalledWith(expect.anything(), {
+          linkIdToUpdate,
+          newName,
+        });
       };
 
       it('calls the "updateAssetLinkName" store method when text is entered into the "Link title" input field', () => {
@@ -225,14 +217,10 @@ describe('Release edit component', () => {
       wrapper.find({ ref: 'typeSelect' }).vm.$emit('change', newType);
 
       expect(actions.updateAssetLinkType).toHaveBeenCalledTimes(1);
-      expect(actions.updateAssetLinkType).toHaveBeenCalledWith(
-        expect.anything(),
-        {
-          linkIdToUpdate,
-          newType,
-        },
-        undefined,
-      );
+      expect(actions.updateAssetLinkType).toHaveBeenCalledWith(expect.anything(), {
+        linkIdToUpdate,
+        newType,
+      });
     });
 
     it('selects the default asset type if no type was provided by the backend', () => {

@@ -4,7 +4,7 @@
   stage: Plan
   self-managed: true
   gitlab-com: true
-  packages: ultimate, gold
+  packages: [Ultimate, Gold]
   url: https://docs.gitlab.com/ee/user/project/requirements/index.html
   image_url:
     published_at: 2020-04-22
@@ -14,7 +14,7 @@
   stage: Release
   self-managed: true
   gitlab-com: true
-  packages: All
+  packages: [All]
   url: https://docs.gitlab.com/ee/ci/examples/authenticating-with-hashicorp-vault/index.html
   image_url: https://about.gitlab.com/images/12_10/jwt-vault-1.png
   published_at: 2020-04-22
@@ -24,7 +24,7 @@
   stage: Plan
   self-managed: true
   gitlab-com: true
-  packages: ultimate, gold
+  packages: [Ultimate, Gold]
   url: https://docs.gitlab.com/ee/user/project/issues/index.html#health-status-ultimate
   image_url: https://about.gitlab.com/images/12_10/epic-health-status.png
   published_at: 2020-04-22
@@ -34,7 +34,7 @@
   stage: Plan
   self-managed: true
   gitlab-com: true
-  packages: All
+  packages: [All]
   url: https://docs.gitlab.com/ee/user/project/import/jira.html
   image_url: https://about.gitlab.com/images/12_10/jira-importer.png
   published_at: 2020-04-22
@@ -44,7 +44,7 @@
   stage: Verify
   self-managed: true
   gitlab-com: false
-  packages: core, starter, premium, ultimate
+  packages: [Core, Starter, Premium, Ultimate]
   url: https://gitlab.com/gitlab-org/ci-cd/custom-executor-drivers/fargate/-/blob/master/docs/README.md
   image_url: https://about.gitlab.com/images/12_9/autoscaling_ci_fargate.png
   published_at: 2020-04-22

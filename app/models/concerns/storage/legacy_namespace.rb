@@ -24,28 +24,20 @@ module Storage
         parent_full_path = parent&.full_path
         Gitlab::UploadsTransfer.new.move_namespace(path, former_parent_full_path, parent_full_path)
 
-        if ::Feature.enabled?(:async_pages_move_namespace_transfer, self)
-          if any_project_with_pages_deployed?
-            run_after_commit do
-              Gitlab::PagesTransfer.new.async.move_namespace(path, former_parent_full_path, parent_full_path)
-            end
+        if any_project_with_pages_deployed?
+          run_after_commit do
+            Gitlab::PagesTransfer.new.async.move_namespace(path, former_parent_full_path, parent_full_path)
           end
-        else
-          Gitlab::PagesTransfer.new.move_namespace(path, former_parent_full_path, parent_full_path)
         end
       else
         Gitlab::UploadsTransfer.new.rename_namespace(full_path_before_last_save, full_path)
 
-        if ::Feature.enabled?(:async_pages_move_namespace_rename, self)
-          if any_project_with_pages_deployed?
-            full_path_was = full_path_before_last_save
+        if any_project_with_pages_deployed?
+          full_path_was = full_path_before_last_save
 
-            run_after_commit do
-              Gitlab::PagesTransfer.new.async.rename_namespace(full_path_was, full_path)
-            end
+          run_after_commit do
+            Gitlab::PagesTransfer.new.async.rename_namespace(full_path_was, full_path)
           end
-        else
-          Gitlab::PagesTransfer.new.rename_namespace(full_path_before_last_save, full_path)
         end
       end
 

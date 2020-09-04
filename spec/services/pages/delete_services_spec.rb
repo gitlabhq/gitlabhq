@@ -27,16 +27,6 @@ RSpec.describe Pages::DeleteService do
     end
   end
 
-  context 'with feature flag disabled' do
-    before do
-      stub_feature_flags(async_pages_removal: false)
-
-      expect(PagesRemoveWorker).not_to receive(:perform_async)
-    end
-
-    it_behaves_like 'remove pages'
-  end
-
   context 'with feature flag enabled' do
     before do
       expect(PagesRemoveWorker).to receive(:perform_async).and_call_original

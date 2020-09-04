@@ -1,7 +1,7 @@
 import mutations from '~/boards/stores/mutations';
 import * as types from '~/boards/stores/mutation_types';
 import defaultState from '~/boards/stores/state';
-import { listObj, listObjDuplicate, mockIssue } from '../mock_data';
+import { listObj, listObjDuplicate, mockIssue, mockListsWithModel } from '../mock_data';
 
 const expectNotImplemented = action => {
   it('is not implemented', () => {
@@ -92,16 +92,35 @@ describe('Board Store Mutations', () => {
     expectNotImplemented(mutations.RECEIVE_ADD_LIST_ERROR);
   });
 
-  describe('REQUEST_UPDATE_LIST', () => {
-    expectNotImplemented(mutations.REQUEST_UPDATE_LIST);
+  describe('MOVE_LIST', () => {
+    it('updates boardLists state with reordered lists', () => {
+      state = {
+        ...state,
+        boardLists: mockListsWithModel,
+      };
+
+      mutations.MOVE_LIST(state, {
+        movedList: mockListsWithModel[0],
+        listAtNewIndex: mockListsWithModel[1],
+      });
+
+      expect(state.boardLists).toEqual([mockListsWithModel[1], mockListsWithModel[0]]);
+    });
   });
 
-  describe('RECEIVE_UPDATE_LIST_SUCCESS', () => {
-    expectNotImplemented(mutations.RECEIVE_UPDATE_LIST_SUCCESS);
-  });
+  describe('UPDATE_LIST_FAILURE', () => {
+    it('updates boardLists state with previous order and sets error message', () => {
+      state = {
+        ...state,
+        boardLists: [mockListsWithModel[1], mockListsWithModel[0]],
+        error: undefined,
+      };
 
-  describe('RECEIVE_UPDATE_LIST_ERROR', () => {
-    expectNotImplemented(mutations.RECEIVE_UPDATE_LIST_ERROR);
+      mutations.UPDATE_LIST_FAILURE(state, mockListsWithModel);
+
+      expect(state.boardLists).toEqual(mockListsWithModel);
+      expect(state.error).toEqual('An error occurred while updating the list. Please try again.');
+    });
   });
 
   describe('REQUEST_REMOVE_LIST', () => {

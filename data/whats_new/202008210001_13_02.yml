@@ -4,7 +4,7 @@
   stage: Plan
   self-managed: true
   gitlab-com: true
-  packages: starter, premium, ultimate
+  packages: [Starter, Premium, Ultimate]
   url: https://www.youtube.com/watch?v=31pNKjenlJY&feature=emb_title
   image_url: http://i3.ytimg.com/vi/31pNKjenlJY/maxresdefault.jpg
   published_at: 2020-07-22
@@ -14,7 +14,7 @@
   stage: Defend
   self-managed: true
   gitlab-com: true
-  packages: All
+  packages: [All]
   url: https://www.youtube.com/watch?v=WxBzBz76FxU&feature=youtu.be
   image_url: http://i3.ytimg.com/vi/WxBzBz76FxU/hqdefault.jpg
   published_at: 2020-07-22
@@ -24,7 +24,7 @@
   stage: Create
   self-managed: false
   gitlab-com: true
-  packages: All
+  packages: [All]
   url: https://docs.gitlab.com/ee/user/project/issues/design_management.html#gitlab-figma-plugin
   image_url: https://about.gitlab.com/images/13_2/figma-plugin.png
   published_at: 2020-07-22
@@ -34,7 +34,7 @@
   stage: Monitor
   self-managed: true
   gitlab-com: true
-  packages: All
+  packages: [All]
   url: https://docs.gitlab.com/ee/user/project/clusters/#visualizing-cluster-health
   image_url: https://about.gitlab.com/images/13_2/k8s_cluster_monitoring.png
   published_at: 2020-07-22

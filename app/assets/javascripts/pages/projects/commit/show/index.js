@@ -14,6 +14,7 @@ import axios from '~/lib/utils/axios_utils';
 import syntaxHighlight from '~/syntax_highlight';
 import flash from '~/flash';
 import { __ } from '~/locale';
+import loadAwardsHandler from '~/awards_handler';
 
 document.addEventListener('DOMContentLoaded', () => {
   const hasPerfBar = document.querySelector('.with-performance-bar');
@@ -48,4 +49,5 @@ document.addEventListener('DOMContentLoaded', () => {
   } else {
     new Diff();
   }
+  loadAwardsHandler();
 });

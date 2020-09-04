@@ -510,20 +510,6 @@ RSpec.describe Projects::TransferService do
 
       execute_transfer
     end
-
-    context 'when async_pages_move_project_transfer is disabled' do
-      before do
-        stub_feature_flags(async_pages_move_project_transfer: false)
-      end
-
-      it 'moves pages inline' do
-        expect_next_instance_of(Gitlab::PagesTransfer) do |transfer|
-          expect(transfer).to receive(:move_project).with(project.path, user.namespace.full_path, group.full_path)
-        end
-
-        execute_transfer
-      end
-    end
   end
 
   def rugged_config

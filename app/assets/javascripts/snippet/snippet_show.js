@@ -4,6 +4,7 @@ import ZenMode from '~/zen_mode';
 import initNotes from '~/init_notes';
 import snippetEmbed from '~/snippet/snippet_embed';
 import { SnippetShowInit } from '~/snippets';
+import loadAwardsHandler from '~/awards_handler';
 
 document.addEventListener('DOMContentLoaded', () => {
   if (!gon.features.snippetsVue) {
@@ -16,4 +17,5 @@ document.addEventListener('DOMContentLoaded', () => {
     SnippetShowInit();
     initNotes();
   }
+  loadAwardsHandler();
 });

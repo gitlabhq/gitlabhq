@@ -151,7 +151,7 @@
     "vue-template-compiler": "^2.6.10",
     "vue-virtual-scroll-list": "^1.4.4",
     "vuedraggable": "^2.23.0",
-    "vuex": "^3.1.0",
+    "vuex": "^3.5.1",
     "webpack": "^4.42.0",
     "webpack-bundle-analyzer": "^3.6.0",
     "webpack-cli": "^3.3.11",

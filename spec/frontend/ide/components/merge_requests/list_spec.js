@@ -56,14 +56,10 @@ describe('IDE merge requests list', () => {
 
   it('calls fetch on mounted', () => {
     createComponent();
-    expect(fetchMergeRequestsMock).toHaveBeenCalledWith(
-      expect.any(Object),
-      {
-        search: '',
-        type: '',
-      },
-      undefined,
-    );
+    expect(fetchMergeRequestsMock).toHaveBeenCalledWith(expect.any(Object), {
+      search: '',
+      type: '',
+    });
   });
 
   it('renders loading icon when merge request is loading', () => {
@@ -95,14 +91,10 @@ describe('IDE merge requests list', () => {
         const searchType = wrapper.vm.$options.searchTypes[0];
 
         expect(findTokenedInput().props('tokens')).toEqual([searchType]);
-        expect(fetchMergeRequestsMock).toHaveBeenCalledWith(
-          expect.any(Object),
-          {
-            type: searchType.type,
-            search: '',
-          },
-          undefined,
-        );
+        expect(fetchMergeRequestsMock).toHaveBeenCalledWith(expect.any(Object), {
+          type: searchType.type,
+          search: '',
+        });
       });
   });
 
@@ -136,14 +128,10 @@ describe('IDE merge requests list', () => {
         input.vm.$emit('input', 'something');
 
         return wrapper.vm.$nextTick().then(() => {
-          expect(fetchMergeRequestsMock).toHaveBeenCalledWith(
-            expect.any(Object),
-            {
-              search: 'something',
-              type: '',
-            },
-            undefined,
-          );
+          expect(fetchMergeRequestsMock).toHaveBeenCalledWith(expect.any(Object), {
+            search: 'something',
+            type: '',
+          });
         });
       });
     });

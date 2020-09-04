@@ -1,7 +1,0 @@
----
-name: async_pages_move_project_transfer
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/40492
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/235757
-group: team::Scalability
-type: development
-default_enabled: false

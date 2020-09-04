@@ -1162,7 +1162,7 @@ msgstr ""
 msgid "A merge request approval is required when a security report contains a new vulnerability of high, critical, or unknown severity."
 msgstr ""
 
-msgid "A merge request approval is required when the license compliance report contains a blacklisted license."
+msgid "A merge request approval is required when the license compliance report contains a denied license."
 msgstr ""
 
 msgid "A new Auto DevOps pipeline has been created, go to %{pipelines_link_start}Pipelines page%{pipelines_link_end} for details"
@@ -2871,6 +2871,9 @@ msgid "An error occurred while updating approvers"
 msgstr ""
 
 msgid "An error occurred while updating the comment"
+msgstr ""
+
+msgid "An error occurred while updating the list. Please try again."
 msgstr ""
 
 msgid "An error occurred while validating group path"
@@ -7704,6 +7707,9 @@ msgstr ""
 msgid "DAG visualization requires at least 3 dependent jobs."
 msgstr ""
 
+msgid "DAST Profiles"
+msgstr ""
+
 msgid "DNS"
 msgstr ""
 
@@ -7737,6 +7743,9 @@ msgstr ""
 msgid "DastProfiles|Are you sure you want to delete this profile?"
 msgstr ""
 
+msgid "DastProfiles|Could not create the scanner profile. Please try again."
+msgstr ""
+
 msgid "DastProfiles|Could not create the site profile. Please try again."
 msgstr ""
 
@@ -7761,6 +7770,9 @@ msgstr ""
 msgid "DastProfiles|Could not update the site profile. Please try again."
 msgstr ""
 
+msgid "DastProfiles|Do you want to discard this scanner profile?"
+msgstr ""
+
 msgid "DastProfiles|Do you want to discard this site profile?"
 msgstr ""
 
@@ -7782,10 +7794,13 @@ msgstr ""
 msgid "DastProfiles|Manage profiles"
 msgstr ""
 
-msgid "DastProfiles|New Profile"
+msgid "DastProfiles|Minimum = 0 (no timeout enabled), Maximum = 2880 minutes"
 msgstr ""
 
-msgid "DastProfiles|New Scanner Profile"
+msgid "DastProfiles|Minimum = 1 second, Maximum = 3600 seconds"
+msgstr ""
+
+msgid "DastProfiles|New Profile"
 msgstr ""
 
 msgid "DastProfiles|New scanner profile"
@@ -7798,6 +7813,9 @@ msgid "DastProfiles|No profiles created yet"
 msgstr ""
 
 msgid "DastProfiles|Please enter a valid URL format, ex: http://www.example.com/home"
+msgstr ""
+
+msgid "DastProfiles|Please enter a valid timeout value"
 msgstr ""
 
 msgid "DastProfiles|Profile name"
@@ -7821,7 +7839,19 @@ msgstr ""
 msgid "DastProfiles|Site Profiles"
 msgstr ""
 
+msgid "DastProfiles|Spider timeout"
+msgstr ""
+
 msgid "DastProfiles|Target URL"
+msgstr ""
+
+msgid "DastProfiles|Target timeout"
+msgstr ""
+
+msgid "DastProfiles|The maximum number of seconds allowed for the site under test to respond to a request."
+msgstr ""
+
+msgid "DastProfiles|The maximum number of seconds allowed for the spider to traverse the site."
 msgstr ""
 
 msgid "Data is still calculating..."
@@ -13074,6 +13104,9 @@ msgid "In progress"
 msgstr ""
 
 msgid "In the next step, you'll be able to select the projects you want to import."
+msgstr ""
+
+msgid "Incident"
 msgstr ""
 
 msgid "Incident Management Limits"
@@ -21481,6 +21514,9 @@ msgstr ""
 msgid "Save variables"
 msgstr ""
 
+msgid "Saved scan settings and target site settings which are reusable."
+msgstr ""
+
 msgid "Saving"
 msgstr ""
 
@@ -21774,6 +21810,9 @@ msgstr ""
 msgid "Secondary"
 msgstr ""
 
+msgid "Seconds"
+msgstr ""
+
 msgid "Secret"
 msgstr ""
 
@@ -21814,6 +21853,9 @@ msgid "SecurityApprovals|Requires license policy rules for licenses of Allowed, 
 msgstr ""
 
 msgid "SecurityConfiguration|An error occurred while creating the merge request."
+msgstr ""
+
+msgid "SecurityConfiguration|Available for on-demand DAST"
 msgstr ""
 
 msgid "SecurityConfiguration|Configure"
@@ -22246,6 +22288,9 @@ msgid "Select timeframe"
 msgstr ""
 
 msgid "Select timezone"
+msgstr ""
+
+msgid "Select type"
 msgstr ""
 
 msgid "Select user"

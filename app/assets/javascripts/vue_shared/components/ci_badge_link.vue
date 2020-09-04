@@ -39,6 +39,11 @@ export default {
       required: false,
       default: true,
     },
+    iconClasses: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   computed: {
     cssClass() {
@@ -55,7 +60,7 @@ export default {
     :class="cssClass"
     :title="!showText ? status.text : ''"
   >
-    <ci-icon :status="status" />
+    <ci-icon :status="status" :css-classes="iconClasses" />
 
     <template v-if="showText">
       {{ status.text }}

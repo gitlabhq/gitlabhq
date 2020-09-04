@@ -1,4 +1,5 @@
 import testAction from 'helpers/vuex_action_helper';
+import { mockListsWithModel } from '../mock_data';
 import actions, { gqlClient } from '~/boards/stores/actions';
 import * as types from '~/boards/stores/mutation_types';
 import { inactiveId, ListType } from '~/boards/constants';
@@ -160,8 +161,63 @@ describe('createList', () => {
   });
 });
 
+describe('moveList', () => {
+  it('should commit MOVE_LIST mutation and dispatch updateList action', done => {
+    const state = {
+      endpoints: { fullPath: 'gitlab-org', boardId: '1' },
+      boardType: 'group',
+      disabled: false,
+      boardLists: mockListsWithModel,
+    };
+
+    testAction(
+      actions.moveList,
+      { listId: 'gid://gitlab/List/1', newIndex: 1, adjustmentValue: 1 },
+      state,
+      [
+        {
+          type: types.MOVE_LIST,
+          payload: { movedList: mockListsWithModel[0], listAtNewIndex: mockListsWithModel[1] },
+        },
+      ],
+      [
+        {
+          type: 'updateList',
+          payload: { listId: 'gid://gitlab/List/1', position: 0, backupList: mockListsWithModel },
+        },
+      ],
+      done,
+    );
+  });
+});
+
 describe('updateList', () => {
-  expectNotImplemented(actions.updateList);
+  it('should commit UPDATE_LIST_FAILURE mutation when API returns an error', done => {
+    jest.spyOn(gqlClient, 'mutate').mockResolvedValue({
+      data: {
+        updateBoardList: {
+          list: {},
+          errors: [{ foo: 'bar' }],
+        },
+      },
+    });
+
+    const state = {
+      endpoints: { fullPath: 'gitlab-org', boardId: '1' },
+      boardType: 'group',
+      disabled: false,
+      boardLists: [{ type: 'closed' }],
+    };
+
+    testAction(
+      actions.updateList,
+      { listId: 'gid://gitlab/List/1', position: 1 },
+      state,
+      [{ type: types.UPDATE_LIST_FAILURE }],
+      [],
+      done,
+    );
+  });
 });
 
 describe('deleteList', () => {

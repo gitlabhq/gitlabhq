@@ -133,11 +133,7 @@ describe('Author Select', () => {
       const authorName = 'lorem';
       findSearchBox().vm.$emit('input', authorName);
 
-      expect(store.actions.fetchAuthors).toHaveBeenCalledWith(
-        expect.anything(),
-        authorName,
-        undefined,
-      );
+      expect(store.actions.fetchAuthors).toHaveBeenCalledWith(expect.anything(), authorName);
     });
   });
 

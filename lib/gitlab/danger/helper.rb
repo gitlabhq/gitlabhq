@@ -192,6 +192,7 @@ module Gitlab
         # Files that don't fit into any category are marked with :none
         %r{\A(ee/)?changelogs/} => :none,
         %r{\Alocale/gitlab\.pot\z} => :none,
+        %r{\Adata/whats_new/} => :none,
 
         # Fallbacks in case the above patterns miss anything
         %r{\.rb\z} => :backend,

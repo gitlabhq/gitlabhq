@@ -51,7 +51,7 @@ describe('IDE error message component', () => {
     createComponent();
     findDismissButton().trigger('click');
 
-    expect(setErrorMessageMock).toHaveBeenCalledWith(expect.any(Object), null, undefined);
+    expect(setErrorMessageMock).toHaveBeenCalledWith(expect.any(Object), null);
   });
 
   describe('with action', () => {

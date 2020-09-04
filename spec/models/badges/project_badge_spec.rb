@@ -27,8 +27,8 @@ RSpec.describe ProjectBadge do
   end
 
   context 'methods' do
-    let(:badge) { build(:project_badge, link_url: placeholder_url, image_url: placeholder_url) }
-    let!(:project) { badge.project }
+    let(:badge) { build_stubbed(:project_badge, link_url: placeholder_url, image_url: placeholder_url) }
+    let(:project) { badge.project }
 
     describe '#rendered_link_url' do
       let(:method) { :link_url }

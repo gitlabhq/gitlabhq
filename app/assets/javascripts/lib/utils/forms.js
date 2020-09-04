@@ -14,3 +14,40 @@ export const serializeForm = form => {
 
   return serializeFormEntries(entries);
 };
+
+/**
+ * Check if the value provided is empty or not
+ *
+ * It is being used to check if a form input
+ * value has been set or not
+ *
+ * @param {String, Number, Array} - Any form value
+ * @returns {Boolean} - returns false if a value is set
+ *
+ * @example
+ * returns true for '', [], null, undefined
+ */
+export const isEmptyValue = value => value == null || value.length === 0;
+
+/**
+ * A form object serializer
+ *
+ * @param {Object} - Form Object
+ * @returns {Object} - Serialized Form Object
+ *
+ * @example
+ * Input
+ * {"project": {"value": "hello", "state": false}, "username": {"value": "john"}}
+ *
+ * Returns
+ * {"project": "hello", "username": "john"}
+ */
+export const serializeFormObject = form =>
+  Object.fromEntries(
+    Object.entries(form).reduce((acc, [name, { value }]) => {
+      if (!isEmptyValue(value)) {
+        acc.push([name, value]);
+      }
+      return acc;
+    }, []),
+  );

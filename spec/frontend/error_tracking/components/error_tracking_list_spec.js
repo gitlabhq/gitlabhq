@@ -259,23 +259,15 @@ describe('ErrorTrackingList', () => {
         errorId: errorsList[0].id,
         status: 'ignored',
       });
-      expect(actions.updateStatus).toHaveBeenCalledWith(
-        expect.anything(),
-        {
-          endpoint: `/project/test/-/error_tracking/${errorsList[0].id}.json`,
-          status: 'ignored',
-        },
-        undefined,
-      );
+      expect(actions.updateStatus).toHaveBeenCalledWith(expect.anything(), {
+        endpoint: `/project/test/-/error_tracking/${errorsList[0].id}.json`,
+        status: 'ignored',
+      });
     });
 
     it('calls an action to remove the item from the list', () => {
       findErrorActions().vm.$emit('update-issue-status', { errorId: '1', status: undefined });
-      expect(actions.removeIgnoredResolvedErrors).toHaveBeenCalledWith(
-        expect.anything(),
-        '1',
-        undefined,
-      );
+      expect(actions.removeIgnoredResolvedErrors).toHaveBeenCalledWith(expect.anything(), '1');
     });
   });
 
@@ -298,23 +290,15 @@ describe('ErrorTrackingList', () => {
         errorId: errorsList[0].id,
         status: 'resolved',
       });
-      expect(actions.updateStatus).toHaveBeenCalledWith(
-        expect.anything(),
-        {
-          endpoint: `/project/test/-/error_tracking/${errorsList[0].id}.json`,
-          status: 'resolved',
-        },
-        undefined,
-      );
+      expect(actions.updateStatus).toHaveBeenCalledWith(expect.anything(), {
+        endpoint: `/project/test/-/error_tracking/${errorsList[0].id}.json`,
+        status: 'resolved',
+      });
     });
 
     it('calls an action to remove the item from the list', () => {
       findErrorActions().vm.$emit('update-issue-status', { errorId: '1', status: undefined });
-      expect(actions.removeIgnoredResolvedErrors).toHaveBeenCalledWith(
-        expect.anything(),
-        '1',
-        undefined,
-      );
+      expect(actions.removeIgnoredResolvedErrors).toHaveBeenCalledWith(expect.anything(), '1');
     });
   });
 
@@ -443,7 +427,6 @@ describe('ErrorTrackingList', () => {
           expect(actions.fetchPaginatedResults).toHaveBeenLastCalledWith(
             expect.anything(),
             'previousCursor',
-            undefined,
           );
         });
       });
@@ -462,7 +445,6 @@ describe('ErrorTrackingList', () => {
           expect(actions.fetchPaginatedResults).toHaveBeenLastCalledWith(
             expect.anything(),
             'nextCursor',
-            undefined,
           );
         });
       });

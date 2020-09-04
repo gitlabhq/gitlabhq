@@ -1,0 +1,22 @@
+.form-group.row.gl-mb-0
+  = form.label :type, 'Type', class: 'col-form-label col-sm-2'
+  .col-sm-10
+    .issuable-form-select-holder.selectbox.form-group
+      .dropdown.js-issuable-type-filter-dropdown-wrap
+        %button.dropdown-menu-toggle{ type: 'button', 'data-toggle' => 'dropdown' }
+          %span.dropdown-label
+            = type.capitalize || _("Select type")
+          = icon('chevron-down')
+        .dropdown-menu.dropdown-menu-selectable.dropdown-select
+          .dropdown-title
+            = _("Select type")
+          %button.dropdown-title-button.dropdown-menu-close.gl-mt-3
+            = icon('times', class: 'dropdown-menu-close-icon', 'aria-hidden' => 'true')
+          .dropdown-content
+            %ul
+              %li.js-filter-issuable-type
+                = link_to new_project_issue_path(@project), class: ("is-active" if type === 'issue') do
+                  = _("Issue")
+              %li.js-filter-issuable-type
+                = link_to new_project_issue_path(@project, { 'issue[issue_type]': 'incident', issuable_template: 'incident' }), class: ("is-active" if type === 'incident') do
+                  = _("Incident")
