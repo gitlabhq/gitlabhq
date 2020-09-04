@@ -125,6 +125,10 @@ module AuthenticatesWithTwoFactor
   def user_changed?(user)
     return false unless session[:user_updated_at]
 
-    user.updated_at != session[:user_updated_at]
+    # See: https://gitlab.com/gitlab-org/gitlab/-/issues/244638
+    # Rounding errors happen when the user is updated, as the Rails ActiveRecord
+    # object has higher precision than what is stored in the database, therefore
+    # using .to_i to force truncation to the timestamp
+    user.updated_at.to_i != session[:user_updated_at].to_i
   end
 end
