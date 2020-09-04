@@ -118,6 +118,14 @@ RSpec.describe EmailsHelper do
     end
   end
 
+  describe '#say_hello' do
+    let(:user) { build(:user, name: 'John') }
+
+    it 'returns the greeting message for the given user' do
+      expect(say_hello(user)).to eq('Hello, John!')
+    end
+  end
+
   describe '#two_factor_authentication_disabled_text' do
     it 'returns the message that 2FA is disabled' do
       expect(two_factor_authentication_disabled_text).to eq(
@@ -142,6 +150,33 @@ RSpec.describe EmailsHelper do
           "If you want to re-enable two-factor authentication, visit #{profile_two_factor_auth_url}"
         )
       end
+    end
+  end
+
+  describe '#admin_changed_password_text' do
+    context 'format is html' do
+      it 'returns HTML' do
+        expect(admin_changed_password_text(format: :html)).to eq(
+          "An administrator changed the password for your GitLab account on " \
+          "#{link_to(Gitlab.config.gitlab.url, Gitlab.config.gitlab.url, target: :_blank, rel: 'noopener noreferrer')}."
+        )
+      end
+    end
+
+    context 'format is not specified' do
+      it 'returns text' do
+        expect(admin_changed_password_text).to eq(
+          "An administrator changed the password for your GitLab account on #{Gitlab.config.gitlab.url}."
+        )
+      end
+    end
+  end
+
+  describe '#contact_your_administrator_text' do
+    it 'returns the message to contact the administrator' do
+      expect(contact_your_administrator_text).to eq(
+        _('Please contact your administrator with any questions.')
+      )
     end
   end
 

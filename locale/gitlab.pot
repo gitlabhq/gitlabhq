@@ -2540,6 +2540,9 @@ msgstr ""
 msgid "An %{link_start}alert%{link_end} with the same fingerprint is already open. To change the status of this alert, resolve the linked alert."
 msgstr ""
 
+msgid "An administrator changed the password for your GitLab account on %{link_to}."
+msgstr ""
+
 msgid "An alert has been triggered in %{project_path}."
 msgstr ""
 
@@ -12565,6 +12568,9 @@ msgstr ""
 msgid "Hello there"
 msgstr ""
 
+msgid "Hello, %{username}!"
+msgstr ""
+
 msgid "Help"
 msgstr ""
 
@@ -18302,6 +18308,9 @@ msgid "Please choose a group URL with no special characters."
 msgstr ""
 
 msgid "Please complete your profile with email address"
+msgstr ""
+
+msgid "Please contact your administrator with any questions."
 msgstr ""
 
 msgid "Please contact your administrator."
@@ -24327,6 +24336,9 @@ msgid "Test"
 msgstr ""
 
 msgid "Test Cases"
+msgstr ""
+
+msgid "Test cases are not available for this project"
 msgstr ""
 
 msgid "Test coverage parsing"

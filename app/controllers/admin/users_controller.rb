@@ -149,7 +149,7 @@ class Admin::UsersController < Admin::ApplicationController
         password_confirmation: params[:user][:password_confirmation]
       }
 
-      password_params[:password_expires_at] = Time.current unless changing_own_password?
+      password_params[:password_expires_at] = Time.current if admin_making_changes_for_another_user?
 
       user_params_with_pass.merge!(password_params)
     end
@@ -157,6 +157,7 @@ class Admin::UsersController < Admin::ApplicationController
     respond_to do |format|
       result = Users::UpdateService.new(current_user, user_params_with_pass.merge(user: user)).execute do |user|
         user.skip_reconfirmation!
+        user.send_only_admin_changed_your_password_notification! if admin_making_changes_for_another_user?
       end
 
       if result[:status] == :success
@@ -197,8 +198,8 @@ class Admin::UsersController < Admin::ApplicationController
 
   protected
 
-  def changing_own_password?
-    user == current_user
+  def admin_making_changes_for_another_user?
+    user != current_user
   end
 
   def user

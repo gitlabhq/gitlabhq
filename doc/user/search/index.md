@@ -162,6 +162,15 @@ quickly access issues and merge requests created or assigned to you within that 
 
 ![search per project - shortcut](img/project_search.png)
 
+### Autocomplete suggestions
+
+You can also type in this search bar to see autocomplete suggestions for:
+
+- Projects and groups
+- Various help pages (try and type **API help**)
+- Project feature pages (try and type **milestones**)
+- Various settings pages (try and type **user settings**)
+
 ## To-Do List
 
 Your [To-Do List](../todos.md#gitlab-to-do-list) can be searched by "to do" and "done".

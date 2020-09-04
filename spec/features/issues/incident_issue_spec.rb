@@ -3,17 +3,14 @@
 require 'spec_helper'
 
 RSpec.describe 'Incident Detail', :js do
-  let(:user)      { create(:user) }
-  let(:project)   { create(:project, :public) }
-  let(:incident)  { create(:issue, project: project, author: user, issue_type: 'incident', description: 'hello') }
-
   context 'when user displays the incident' do
-    before do
+    it 'shows the incident tabs' do
+      project = create(:project, :public)
+      incident = create(:incident, project: project, description: 'hello')
+
       visit project_issue_path(project, incident)
       wait_for_requests
-    end
 
-    it 'shows the incident tabs' do
       page.within('.issuable-details') do
         incident_tabs = find('[data-testid="incident-tabs"]')
 

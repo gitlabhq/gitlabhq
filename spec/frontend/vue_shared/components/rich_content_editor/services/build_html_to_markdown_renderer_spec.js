@@ -17,6 +17,10 @@ describe('rich_content_editor/services/html_to_markdown_renderer', () => {
     fakeNode = { nodeValue: 'mock_node', dataset: {} };
   });
 
+  afterEach(() => {
+    htmlToMarkdownRenderer = null;
+  });
+
   describe('TEXT_NODE visitor', () => {
     it('composes getSpaceControlled, getSpaceCollapsedText, and trim services', () => {
       htmlToMarkdownRenderer = buildHTMLToMarkdownRenderer(baseRenderer);
@@ -155,6 +159,32 @@ describe('rich_content_editor/services/html_to_markdown_renderer', () => {
       baseRenderer.convert.mockReturnValueOnce(`${heading}\n\n`);
 
       expect(htmlToMarkdownRenderer['H1, H2, H3, H4, H5, H6'](fakeNode, heading)).toBe(result);
+    });
+  });
+
+  describe('PRE CODE', () => {
+    let node;
+    const subContent = 'sub content';
+    const originalConverterResult = 'base result';
+
+    beforeEach(() => {
+      node = document.createElement('PRE');
+
+      node.innerText = 'reference definition content';
+      node.dataset.sseReferenceDefinition = true;
+
+      baseRenderer.convert.mockReturnValueOnce(originalConverterResult);
+      htmlToMarkdownRenderer = buildHTMLToMarkdownRenderer(baseRenderer);
+    });
+
+    it('returns raw text when pre node has sse-reference-definitions class', () => {
+      expect(htmlToMarkdownRenderer['PRE CODE'](node, subContent)).toBe(`\n\n${node.innerText}\n`);
+    });
+
+    it('returns base result when pre node does not have sse-reference-definitions class', () => {
+      delete node.dataset.sseReferenceDefinition;
+
+      expect(htmlToMarkdownRenderer['PRE CODE'](node, subContent)).toBe(originalConverterResult);
     });
   });
 });

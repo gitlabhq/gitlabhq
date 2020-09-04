@@ -1,6 +1,6 @@
 # Switching to Puma
 
-As of GitLab 12.9, [Puma](https://github.com/puma/puma) has replaced [Unicorn](https://yhbt.net/unicorn/).
+As of GitLab 12.9, [Puma](https://github.com/puma/puma) has replaced [Unicorn](https://yhbt.net/unicorn/)
 as the default web server. From GitLab 13.0, the following run Puma instead of Unicorn unless
 explicitly configured not to:
 

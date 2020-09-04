@@ -9,6 +9,10 @@ class DeviseMailer < Devise::Mailer
   helper EmailsHelper
   helper ApplicationHelper
 
+  def password_change_by_admin(record, opts = {})
+    devise_mail(record, :password_change_by_admin, opts)
+  end
+
   protected
 
   def subject_for(key)

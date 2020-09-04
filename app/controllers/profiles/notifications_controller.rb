@@ -1,13 +1,11 @@
 # frozen_string_literal: true
 
 class Profiles::NotificationsController < Profiles::ApplicationController
-  NOTIFICATIONS_PER_PAGE = 10
-
   # rubocop: disable CodeReuse/ActiveRecord
   def show
     @user = current_user
     @user_groups = user_groups
-    @group_notifications = user_groups.map { |group| current_user.notification_settings_for(group, inherit: true) }
+    @group_notifications = UserGroupNotificationSettingsFinder.new(current_user, user_groups).execute
 
     @project_notifications = current_user.notification_settings.for_projects.order(:id)
                              .preload_source_route
@@ -35,6 +33,6 @@ class Profiles::NotificationsController < Profiles::ApplicationController
   private
 
   def user_groups
-    GroupsFinder.new(current_user, all_available: false).execute.order_name_asc.page(params[:page]).per(NOTIFICATIONS_PER_PAGE)
+    GroupsFinder.new(current_user, all_available: false).execute.order_name_asc.page(params[:page])
   end
 end

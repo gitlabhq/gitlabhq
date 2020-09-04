@@ -148,20 +148,22 @@ module Backup
     private
 
     def dump_consecutive
-      Project.find_each(batch_size: 1000) do |project|
+      Project.includes(:route).find_each(batch_size: 1000) do |project|
         dump_project(project)
       end
     end
 
     def dump_storage(storage, semaphore, max_storage_concurrency:)
       errors = Queue.new
-      queue = SizedQueue.new(1)
+      queue = InterlockSizedQueue.new(1)
 
       threads = Array.new(max_storage_concurrency) do
         Thread.new do
           Rails.application.executor.wrap do
             while project = queue.pop
-              semaphore.acquire
+              ActiveSupport::Dependencies.interlock.permit_concurrent_loads do
+                semaphore.acquire
+              end
 
               begin
                 dump_project(project)
@@ -176,7 +178,7 @@ module Backup
         end
       end
 
-      Project.for_repository_storage(storage).find_each(batch_size: 100) do |project|
+      Project.for_repository_storage(storage).includes(:route).find_each(batch_size: 100) do |project|
         break unless errors.empty?
 
         queue.push(project)
@@ -239,6 +241,24 @@ module Backup
         pool.save
 
         pool.schedule
+      end
+    end
+
+    class InterlockSizedQueue < SizedQueue
+      extend ::Gitlab::Utils::Override
+
+      override :pop
+      def pop(*)
+        ActiveSupport::Dependencies.interlock.permit_concurrent_loads do
+          super
+        end
+      end
+
+      override :push
+      def push(*)
+        ActiveSupport::Dependencies.interlock.permit_concurrent_loads do
+          super
+        end
       end
     end
   end

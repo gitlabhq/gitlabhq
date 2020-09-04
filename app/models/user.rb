@@ -58,6 +58,8 @@ class User < ApplicationRecord
   devise :lockable, :recoverable, :rememberable, :trackable,
          :validatable, :omniauthable, :confirmable, :registerable
 
+  include AdminChangedPasswordNotifier
+
   # This module adds async behaviour to Devise emails
   # and should be added after Devise modules are initialized.
   include AsyncDeviseEmail
@@ -1459,6 +1461,11 @@ class User < ApplicationRecord
         ns.user = self
       end
     end
+  end
+
+  def notification_settings_for_groups(groups)
+    ids = groups.is_a?(ActiveRecord::Relation) ? groups.select(:id) : groups.map(&:id)
+    notification_settings.for_groups.where(source_id: ids)
   end
 
   # Lazy load global notification setting

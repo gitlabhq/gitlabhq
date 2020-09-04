@@ -80,14 +80,15 @@ so you have to pay extra attention to indentation. Always use spaces, not tabs.
 Below is an example for a Ruby on Rails project:
 
 ```yaml
-image: "ruby:2.5"
-
-before_script:
-  - sudo apt-get update -qq && sudo apt-get install -y -qq sqlite3 libsqlite3-dev nodejs
-  - ruby -v
-  - which ruby
-  - gem install bundler --no-document
-  - bundle install --jobs $(nproc)  "${FLAGS[@]}"
+default:
+  image: ruby:2.5
+  before_script:
+    - apt-get update
+    - apt-get install -y sqlite3 libsqlite3-dev nodejs
+    - ruby -v
+    - which ruby
+    - gem install bundler --no-document
+    - bundle install --jobs $(nproc) "${FLAGS[@]}"
 
 rspec:
   script:

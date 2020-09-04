@@ -48,11 +48,17 @@ module MergeRequests
     end
 
     def can_create_pipeline_in_target_project?(merge_request)
-      if Gitlab::Ci::Features.allow_to_create_merge_request_pipelines_in_target_project?(merge_request.target_project)
-        can?(current_user, :create_pipeline, merge_request.target_project)
-      else
+      if Gitlab::Ci::Features.disallow_to_create_merge_request_pipelines_in_target_project?(merge_request.target_project)
         merge_request.for_same_project?
+      else
+        can?(current_user, :create_pipeline, merge_request.target_project) &&
+          can_update_source_branch_in_target_project?(merge_request)
       end
+    end
+
+    def can_update_source_branch_in_target_project?(merge_request)
+      ::Gitlab::UserAccess.new(current_user, container: merge_request.target_project)
+        .can_update_branch?(merge_request.source_branch_ref)
     end
   end
 end

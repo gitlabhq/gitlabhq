@@ -25,8 +25,7 @@ RSpec.describe 'view user notifications' do
   end
 
   describe 'GET /profile/notifications' do
-    # To be fixed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/40457
-    it 'has an N+1 due to an additional groups (with no parent group) - but should not' do
+    it 'does not have an N+1 due to an additional groups (with no parent group)' do
       get_profile_notifications
 
       control = ActiveRecord::QueryRecorder.new do
@@ -37,7 +36,7 @@ RSpec.describe 'view user notifications' do
 
       expect do
         get_profile_notifications
-      end.to exceed_query_limit(control)
+      end.not_to exceed_query_limit(control)
     end
   end
 end

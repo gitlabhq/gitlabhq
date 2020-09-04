@@ -218,9 +218,15 @@ module API
                 .where.not(id: user.id).exists?
 
         user_params = declared_params(include_missing: false)
+        admin_making_changes_for_another_user = (current_user != user)
 
-        user_params[:password_expires_at] = Time.current if user_params[:password].present?
-        result = ::Users::UpdateService.new(current_user, user_params.merge(user: user)).execute
+        if user_params[:password].present?
+          user_params[:password_expires_at] = Time.current if admin_making_changes_for_another_user
+        end
+
+        result = ::Users::UpdateService.new(current_user, user_params.merge(user: user)).execute do |user|
+          user.send_only_admin_changed_your_password_notification! if admin_making_changes_for_another_user
+        end
 
         if result[:status] == :success
           present user, with: Entities::UserWithAdmin, current_user: current_user

@@ -16,7 +16,7 @@ remember to enable backups with your object storage provider if desired.
 
 ## Requirements
 
-In order to be able to backup and restore, you need two essential tools
+In order to be able to backup and restore, you need one essential tool
 installed on your system.
 
 - **Rsync**: If you installed GitLab:

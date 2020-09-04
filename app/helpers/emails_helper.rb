@@ -181,6 +181,10 @@ module EmailsHelper
     _('Hi %{username}!') % { username: sanitize_name(user.name) }
   end
 
+  def say_hello(user)
+    _('Hello, %{username}!') % { username: sanitize_name(user.name) }
+  end
+
   def two_factor_authentication_disabled_text
     _('Two-factor authentication has been disabled for your GitLab account.')
   end
@@ -190,7 +194,7 @@ module EmailsHelper
 
     case format
     when :html
-      settings_link_to = link_to(_('two-factor authentication settings'), url, target: :_blank, rel: 'noopener noreferrer').html_safe
+      settings_link_to = generate_link(_('two-factor authentication settings'), url).html_safe
       _("If you want to re-enable two-factor authentication, visit the %{settings_link_to} page.").html_safe % { settings_link_to: settings_link_to }
     else
       _('If you want to re-enable two-factor authentication, visit %{two_factor_link}') %
@@ -198,7 +202,27 @@ module EmailsHelper
     end
   end
 
+  def admin_changed_password_text(format: nil)
+    url = Gitlab.config.gitlab.url
+
+    case format
+    when :html
+      link_to = generate_link(url, url).html_safe
+      _('An administrator changed the password for your GitLab account on %{link_to}.').html_safe % { link_to: link_to }
+    else
+      _('An administrator changed the password for your GitLab account on %{link_to}.') % { link_to: url }
+    end
+  end
+
+  def contact_your_administrator_text
+    _('Please contact your administrator with any questions.')
+  end
+
   private
+
+  def generate_link(text, url)
+    link_to(text, url, target: :_blank, rel: 'noopener noreferrer')
+  end
 
   def show_footer?
     email_header_and_footer_enabled? && current_appearance&.show_footer?

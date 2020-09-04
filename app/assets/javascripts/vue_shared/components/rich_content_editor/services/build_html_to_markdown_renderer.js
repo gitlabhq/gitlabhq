@@ -29,6 +29,7 @@ const buildHTMLToMarkdownRender = (baseRenderer, formattingPreferences = {}) => 
   const emphasisNode = 'EM, I';
   const strongNode = 'STRONG, B';
   const headingNode = 'H1, H2, H3, H4, H5, H6';
+  const preCodeNode = 'PRE CODE';
 
   return {
     TEXT_NODE(node) {
@@ -90,6 +91,13 @@ const buildHTMLToMarkdownRender = (baseRenderer, formattingPreferences = {}) => 
       const { attributeDefinition } = node.dataset;
 
       return attributeDefinition ? `${result.trimRight()}\n${attributeDefinition}\n\n` : result;
+    },
+    [preCodeNode](node, subContent) {
+      const isReferenceDefinition = Boolean(node.dataset.sseReferenceDefinition);
+
+      return isReferenceDefinition
+        ? `\n\n${node.innerText}\n`
+        : baseRenderer.convert(node, subContent);
     },
   };
 };

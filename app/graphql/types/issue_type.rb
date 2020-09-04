@@ -42,8 +42,7 @@ module Types
     field :assignees, Types::UserType.connection_type, null: true, complexity: 5,
           description: 'Assignees of the issue'
 
-    # Remove complexity when BatchLoader is used
-    field :labels, Types::LabelType.connection_type, null: true, complexity: 5,
+    field :labels, Types::LabelType.connection_type, null: true,
           description: 'Labels of the issue'
     field :milestone, Types::MilestoneType, null: true,
           description: 'Milestone of the issue',

@@ -237,7 +237,7 @@ export default class Clusters {
   }
 
   addBannerCloseHandler(el, status) {
-    el.querySelector('.js-close-banner').addEventListener('click', () => {
+    el.querySelector('.js-close').addEventListener('click', () => {
       el.classList.add('hidden');
       this.setBannerDismissedState(status, true);
     });

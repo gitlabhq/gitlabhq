@@ -1,6 +1,9 @@
 # Uploads migrate Rake tasks **(CORE ONLY)**
 
-`gitlab:uploads:migrate` migrates uploads between different storage types.
+There is a Rake task for migrating uploads between different storage types.
+
+- Migrate all uploads with [`gitlab:uploads:migrate:all`](#all-in-one-rake-task) or
+- To only migrate specific upload types, use [`gitlab:uploads:migrate`](#individual-rake-tasks).
 
 ## Migrate to object storage
 
@@ -166,3 +169,17 @@ To migrate uploads from object storage to local storage:
 
 After running the Rake task, you can disable object storage by undoing the changes described
 in the instructions to [configure object storage](../../uploads.md#using-object-storage-core-only).
+
+## Troubleshooting
+
+### undefined method constantize
+
+You will see the following error if you run `gitlab:uploads:migrate` without parameters.
+
+```plaintext
+rake aborted!
+NoMethodError: undefined method `constantize' for nil:NilClass
+```
+
+- If you intend to migrate all uploads, use the all-in-one Rake task [`gitlab:uploads:migrate:all`](#all-in-one-rake-task).
+- To migrate specific uploads, use [`gitlab:uploads:migrate`](#individual-rake-tasks) and supply the necessary parameters.

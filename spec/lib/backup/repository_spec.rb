@@ -47,15 +47,27 @@ RSpec.describe Backup::Repository do
         end
 
         it 'project query raises an error' do
-          allow(Project).to receive(:find_each).and_raise(ActiveRecord::StatementTimeout)
+          allow(Project).to receive_message_chain(:includes, :find_each).and_raise(ActiveRecord::StatementTimeout)
 
           expect { subject.dump(max_concurrency: 1, max_storage_concurrency: 1) }.to raise_error(ActiveRecord::StatementTimeout)
         end
       end
+
+      it 'avoids N+1 database queries' do
+        control_count = ActiveRecord::QueryRecorder.new do
+          subject.dump(max_concurrency: 1, max_storage_concurrency: 1)
+        end.count
+
+        create_list(:project, 2, :wiki_repo)
+
+        expect do
+          subject.dump(max_concurrency: 1, max_storage_concurrency: 1)
+        end.not_to exceed_query_limit(control_count)
+      end
     end
 
     [4, 10].each do |max_storage_concurrency|
-      context "max_storage_concurrency #{max_storage_concurrency}", quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/241701' do
+      context "max_storage_concurrency #{max_storage_concurrency}" do
         it 'creates the expected number of threads' do
           expect(Thread).to receive(:new)
             .exactly(storage_keys.length * (max_storage_concurrency + 1)).times
@@ -89,7 +101,7 @@ RSpec.describe Backup::Repository do
           end
 
           it 'project query raises an error' do
-            allow(Project).to receive_message_chain('for_repository_storage.find_each').and_raise(ActiveRecord::StatementTimeout)
+            allow(Project).to receive_message_chain(:for_repository_storage, :includes, :find_each).and_raise(ActiveRecord::StatementTimeout)
 
             expect { subject.dump(max_concurrency: 1, max_storage_concurrency: max_storage_concurrency) }.to raise_error(ActiveRecord::StatementTimeout)
           end
@@ -101,6 +113,18 @@ RSpec.describe Backup::Repository do
               expect { subject.dump(max_concurrency: 1, max_storage_concurrency: max_storage_concurrency) }.to raise_error(Backup::Error, 'repositories.storages in gitlab.yml is misconfigured')
             end
           end
+        end
+
+        it 'avoids N+1 database queries' do
+          control_count = ActiveRecord::QueryRecorder.new do
+            subject.dump(max_concurrency: 1, max_storage_concurrency: max_storage_concurrency)
+          end.count
+
+          create_list(:project, 2, :wiki_repo)
+
+          expect do
+            subject.dump(max_concurrency: 1, max_storage_concurrency: max_storage_concurrency)
+          end.not_to exceed_query_limit(control_count)
         end
       end
     end

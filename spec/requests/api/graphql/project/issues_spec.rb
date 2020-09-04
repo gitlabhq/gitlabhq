@@ -292,4 +292,65 @@ RSpec.describe 'getting an issue list for a project' do
       expect(alert_titles).to contain_exactly(*expected_titles)
     end
   end
+
+  context 'fetching labels' do
+    let(:fields) do
+      <<~QUERY
+        edges {
+          node {
+            id
+            labels {
+              nodes {
+                id
+              }
+            }
+          }
+        }
+      QUERY
+    end
+
+    let(:query) do
+      graphql_query_for(
+        'project',
+        { 'fullPath' => project.full_path },
+        query_graphql_field('issues', {}, fields)
+      )
+    end
+
+    let_it_be(:project) { create(:project, :public) }
+    let_it_be(:label1) { create(:label, project: project) }
+    let_it_be(:label2) { create(:label, project: project) }
+    let_it_be(:issue1) { create(:issue, project: project, labels: [label1]) }
+    let_it_be(:issue2) { create(:issue, project: project, labels: [label2]) }
+    let_it_be(:issues) { [issue1, issue2] }
+
+    before do
+      stub_feature_flags(graphql_lookahead_support: true)
+    end
+
+    def response_label_ids(response_data)
+      response_data.map do |edge|
+        edge['node']['labels']['nodes'].map { |u| u['id'] }
+      end.flatten
+    end
+
+    def labels_as_global_ids(issues)
+      issues.map(&:labels).flatten.map(&:to_global_id).map(&:to_s)
+    end
+
+    it 'avoids N+1 queries', :aggregate_failures do
+      control = ActiveRecord::QueryRecorder.new { post_graphql(query, current_user: current_user) }
+      expect(issues_data.count).to eq(2)
+      expect(response_label_ids(issues_data)).to match_array(labels_as_global_ids(issues))
+
+      issues.append create(:issue, project: project, labels: [create(:label, project: project)])
+
+      expect { post_graphql(query, current_user: current_user) }.not_to exceed_query_limit(control)
+      # graphql_data is memoized (see spec/support/helpers/graphql_helpers.rb:271)
+      # so we have to parse the body ourselves the second time
+      response_data = Gitlab::Json.parse(response.body)['data']['project']['issues']['edges']
+      expect(response_data.count).to eq(3)
+      expect(response_label_ids(response_data)).to match_array(labels_as_global_ids(issues))
+    end
+  end
 end

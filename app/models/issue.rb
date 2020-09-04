@@ -73,7 +73,8 @@ class Issue < ApplicationRecord
 
   enum issue_type: {
     issue: 0,
-    incident: 1
+    incident: 1,
+    test_case: 2 ## EE-only
   }
 
   alias_attribute :parent_ids, :project_id

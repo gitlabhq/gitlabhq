@@ -143,7 +143,8 @@ Users will be notified of the following events:
 | New SSH key added            | User                | Security email, always sent. |
 | New email added              | User                | Security email, always sent. |
 | Email changed                | User                | Security email, always sent. |
-| Password changed             | User                | Security email, always sent. |
+| Password changed             | User                | Security email, always sent when user changes their own password |
+| Password changed by administrator | User | Security email, always sent when an adminstrator changes the password of another user |
 | Two-factor authentication disabled | User          | Security email, always sent. |
 | New user created             | User                | Sent on user creation, except for OmniAuth (LDAP)|
 | User added to project        | User                | Sent when user is added to project |

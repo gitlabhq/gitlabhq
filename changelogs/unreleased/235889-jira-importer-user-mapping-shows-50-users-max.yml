@@ -1,0 +1,5 @@
+---
+title: Fix Jira importer user mapping limit
+merge_request: 40310
+author:
+type: fixed

@@ -12,7 +12,7 @@ type: index
 - [Rate limits](rate_limits.md)
 - [Webhooks and insecure internal web services](webhooks.md)
 - [Information exclusivity](information_exclusivity.md)
-- [Reset your root password](reset_root_password.md)
+- [Reset user password](reset_user_password.md)
 - [Unlock a locked user](unlock_user.md)
 - [User File Uploads](user_file_uploads.md)
 - [How we manage the CRIME vulnerability](crime_vulnerability.md)

@@ -2079,10 +2079,10 @@ The preferred way to do this, is by using [personal access tokens](../user/profi
 GET /projects/:id/issues/:issue_iid/closed_by
 ```
 
-| Attribute   | Type    | Required | Description                          |
-| ---------   | ----    | -------- | -----------                          |
-| `id`        | integer | yes      | The ID of a project                  |
-| `issue_iid` | integer | yes      | The internal ID of a project issue   |
+| Attribute   | Type           | Required | Description                        |
+| ----------- | ---------------| -------- | ---------------------------------- |
+| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](./README.md#namespaced-path-encoding) owned by the authenticated user |
+| `issue_iid` | integer        | yes      | The internal ID of a project issue |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/issues/11/closed_by"

@@ -56,8 +56,11 @@ module Gitlab
         ::Feature.enabled?(:ci_if_parenthesis_enabled, default_enabled: true)
       end
 
-      def self.allow_to_create_merge_request_pipelines_in_target_project?(target_project)
-        ::Feature.enabled?(:ci_allow_to_create_merge_request_pipelines_in_target_project, target_project, default_enabled: true)
+      # NOTE: The feature flag `disallow_to_create_merge_request_pipelines_in_target_project`
+      # is a safe switch to disable the feature for a parituclar project when something went wrong,
+      # therefore it's not supposed to be enabled by default.
+      def self.disallow_to_create_merge_request_pipelines_in_target_project?(target_project)
+        ::Feature.enabled?(:ci_disallow_to_create_merge_request_pipelines_in_target_project, target_project)
       end
 
       def self.ci_plan_needs_size_limit?(project)
