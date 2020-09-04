@@ -653,6 +653,16 @@ describe ApplicationSetting do
     end
   end
 
+  context 'when ApplicationSettings does not have a primary key' do
+    before do
+      allow(ActiveRecord::Base.connection).to receive(:primary_key).with(described_class.table_name).and_return(nil)
+    end
+
+    it 'raises an exception' do
+      expect { described_class.create_from_defaults }.to raise_error(/table is missing a primary key constraint/)
+    end
+  end
+
   describe '#disabled_oauth_sign_in_sources=' do
     before do
       allow(Devise).to receive(:omniauth_providers).and_return([:github])
