@@ -316,9 +316,9 @@ Learn more about [using `CI_JOB_TOKEN` to authenticate to the GitLab NPM registr
 
 ## Troubleshooting
 
-### Error running yarn with NPM registry
+### Error running Yarn with NPM registry
 
-If you are using [yarn](https://classic.yarnpkg.com/en/) with the NPM registry, you may get
+If you are using [Yarn](https://classic.yarnpkg.com/en/) with the NPM registry, you may get
 an error message like:
 
 ```shell

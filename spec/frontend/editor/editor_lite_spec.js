@@ -26,9 +26,7 @@ describe('Base editor', () => {
 
   it('initializes Editor with basic properties', () => {
     expect(editor).toBeDefined();
-    expect(editor.editorEl).toBe(null);
-    expect(editor.blobContent).toBe('');
-    expect(editor.blobPath).toBe('');
+    expect(editor.instances).toEqual([]);
   });
 
   it('removes `editor-loading` data attribute from the target DOM element', () => {
@@ -58,10 +56,6 @@ describe('Base editor', () => {
       expect(() => {
         editor.createInstance();
       }).toThrow(EDITOR_LITE_INSTANCE_ERROR_NO_EL);
-
-      expect(editor.editorEl).toBe(null);
-      expect(editor.blobContent).toBe('');
-      expect(editor.blobPath).toBe('');
 
       expect(modelSpy).not.toHaveBeenCalled();
       expect(instanceSpy).not.toHaveBeenCalled();
@@ -93,14 +87,14 @@ describe('Base editor', () => {
     });
 
     it('initializes instance with passed properties', () => {
+      const instanceOptions = {
+        foo: 'bar',
+      };
       editor.createInstance({
         el: editorEl,
-        blobContent,
-        blobPath,
+        ...instanceOptions,
       });
-      expect(editor.editorEl).toBe(editorEl);
-      expect(editor.blobContent).toBe(blobContent);
-      expect(editor.blobPath).toBe(blobPath);
+      expect(instanceSpy).toHaveBeenCalledWith(editorEl, expect.objectContaining(instanceOptions));
     });
 
     it('disposes instance when the editor is disposed', () => {
@@ -149,14 +143,24 @@ describe('Base editor', () => {
 
     it('can initialize several instances of the same editor', () => {
       editor.createInstance(inst1Args);
-      expect(editor.editorEl).toBe(editorEl1);
       expect(editor.instances).toHaveLength(1);
 
       editor.createInstance(inst2Args);
-      expect(editor.editorEl).toBe(editorEl2);
 
       expect(instanceSpy).toHaveBeenCalledTimes(2);
       expect(editor.instances).toHaveLength(2);
+    });
+
+    it('sets independent models on independent instances', () => {
+      inst1 = editor.createInstance(inst1Args);
+      inst2 = editor.createInstance(inst2Args);
+
+      const model1 = inst1.getModel();
+      const model2 = inst2.getModel();
+
+      expect(model1).toBeDefined();
+      expect(model2).toBeDefined();
+      expect(model1).not.toEqual(model2);
     });
 
     it('shares global editor options among all instances', () => {
@@ -218,20 +222,20 @@ describe('Base editor', () => {
 
       const blobRenamedPath = 'test.js';
 
-      expect(editor.model.getLanguageIdentifier().language).toBe('markdown');
-      editor.updateModelLanguage(blobRenamedPath);
+      expect(instance.getModel().getLanguageIdentifier().language).toBe('markdown');
+      instance.updateModelLanguage(blobRenamedPath);
 
-      expect(editor.model.getLanguageIdentifier().language).toBe('javascript');
+      expect(instance.getModel().getLanguageIdentifier().language).toBe('javascript');
     });
 
     it('falls back to plaintext if there is no language associated with an extension', () => {
       const blobRenamedPath = 'test.myext';
       const spy = jest.spyOn(console, 'error').mockImplementation(() => {});
 
-      editor.updateModelLanguage(blobRenamedPath);
+      instance.updateModelLanguage(blobRenamedPath);
 
       expect(spy).not.toHaveBeenCalled();
-      expect(editor.model.getLanguageIdentifier().language).toBe('plaintext');
+      expect(instance.getModel().getLanguageIdentifier().language).toBe('plaintext');
     });
   });
 
@@ -298,7 +302,6 @@ describe('Base editor', () => {
       };
       editor.use(FunctionExt);
       expect(instance.inst()).toEqual(editor.instances[0]);
-      expect(instance.mod()).toEqual(editor.model);
     });
 
     describe('multiple instances', () => {

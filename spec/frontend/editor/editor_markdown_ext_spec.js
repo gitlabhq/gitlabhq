@@ -35,7 +35,7 @@ describe('Markdown Extension for Editor Lite', () => {
   });
 
   afterEach(() => {
-    editor.model.dispose();
+    instance.dispose();
     editorEl.remove();
   });
 

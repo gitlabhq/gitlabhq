@@ -63,7 +63,7 @@
   }
 
   .top-bar {
-    @include build-trace-top-bar(35px);
+    @include build-trace-top-bar(50px);
 
     &.has-archived-block {
       top: $header-height + 28px;

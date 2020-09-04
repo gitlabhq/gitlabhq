@@ -1,6 +1,6 @@
 <script>
-/* eslint-disable vue/no-v-html */
 import $ from 'jquery';
+import { GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
 import { s__, sprintf } from '~/locale';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
 import animateMixin from '../mixins/animate';
@@ -8,6 +8,10 @@ import TaskList from '../../task_list';
 import recaptchaModalImplementor from '../../vue_shared/mixins/recaptcha_modal_implementor';
 
 export default {
+  directives: {
+    SafeHtml,
+  },
+
   mixins: [animateMixin, recaptchaModalImplementor],
 
   props: {
@@ -142,12 +146,12 @@ export default {
   >
     <div
       ref="gfm-content"
+      v-safe-html="descriptionHtml"
       :class="{
         'issue-realtime-pre-pulse': preAnimation,
         'issue-realtime-trigger-pulse': pulseAnimation,
       }"
       class="md"
-      v-html="descriptionHtml"
     ></div>
     <textarea
       v-if="descriptionText"
