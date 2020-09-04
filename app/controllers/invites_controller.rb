@@ -76,8 +76,12 @@ class InvitesController < ApplicationController
     notice << "or create an account" if Gitlab::CurrentSettings.allow_signup?
     notice = notice.join(' ') + "."
 
+    initial_member = Member.find_by_invite_token(params[:id])
+    redirect_params = initial_member ? { invite_email: member.invite_email } : {}
+
     store_location_for :user, request.fullpath
-    redirect_to new_user_session_path(invite_email: member.invite_email), notice: notice
+
+    redirect_to new_user_session_path(redirect_params), notice: notice
   end
 
   def invite_details

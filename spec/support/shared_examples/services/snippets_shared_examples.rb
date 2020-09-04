@@ -40,3 +40,20 @@ RSpec.shared_examples 'snippets spam check is performed' do
     end
   end
 end
+
+shared_examples 'invalid params error response' do
+  before do
+    allow_next_instance_of(described_class) do |service|
+      allow(service).to receive(:valid_params?).and_return false
+    end
+  end
+
+  it 'responds to errors appropriately' do
+    response = subject
+
+    aggregate_failures do
+      expect(response).to be_error
+      expect(response.http_status).to eq 422
+    end
+  end
+end

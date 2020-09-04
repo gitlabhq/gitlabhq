@@ -417,7 +417,7 @@ RSpec.describe API::Snippets do
         true  | nil       | ''    | [create_action]                | :bad_request
         true  | nil       | nil   | [bad_file_path]                | :bad_request
         true  | nil       | nil   | [bad_previous_path]            | :bad_request
-        true  | nil       | nil   | [invalid_move]                 | :forbidden
+        true  | nil       | nil   | [invalid_move]                 | :unprocessable_entity
 
         false | 'foo.txt' | 'bar' | nil                            | :success
         false | 'foo.txt' | nil   | nil                            | :success

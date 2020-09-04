@@ -30,7 +30,7 @@
 
     = render_if_exists "shared/issuable/form/merge_request_blocks", issuable: issuable, form: form
 
-  - if has_due_date || issuable.supports_weight?
+  - if has_due_date
     .col-lg-6
       - if @issue[:issue_type] != 'incident'
         = render_if_exists "shared/issuable/form/weight", issuable: issuable, form: form

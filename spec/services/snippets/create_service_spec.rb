@@ -313,6 +313,7 @@ RSpec.describe Snippets::CreateService do
       it_behaves_like 'creates repository and files'
       it_behaves_like 'after_save callback to store_mentions', ProjectSnippet
       it_behaves_like 'when snippet_actions param is present'
+      it_behaves_like 'invalid params error response'
 
       context 'when uploaded files are passed to the service' do
         let(:extra_opts) { { files: ['foo'] } }
@@ -340,6 +341,7 @@ RSpec.describe Snippets::CreateService do
       it_behaves_like 'creates repository and files'
       it_behaves_like 'after_save callback to store_mentions', PersonalSnippet
       it_behaves_like 'when snippet_actions param is present'
+      it_behaves_like 'invalid params error response'
 
       context 'when the snippet description contains files' do
         include FileMoverHelpers

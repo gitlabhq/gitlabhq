@@ -177,10 +177,6 @@ module Issuable
       assignees.count > 1
     end
 
-    def supports_weight?
-      false
-    end
-
     def supports_time_tracking?
       is_a?(TimeTrackable) && !incident?
     end

@@ -182,7 +182,7 @@ vulnerability's status to Dismissed, a text box appears for you to add a comment
 dismissal. Once added, you can edit or delete it. This allows you to add and update context for a
 vulnerability as you learn more over time.
 
-![Dismissed vulnerability comment](img/adding_a_dismissal_reason_v13_0.png)
+![Dismissed vulnerability comment](img/adding_a_dismissal_reason_v13_4.png)
 
 #### Dismissing multiple vulnerabilities
 
@@ -196,23 +196,6 @@ Once you have selected some vulnerabilities, a menu appears at the top of the ta
 Pressing the "Dismiss Selected" button will dismiss all the selected vulnerabilities at once, with the reason you chose.
 
 ![Multiple vulnerability dismissal](img/multi_select_v12_9.png)
-
-### Creating an issue for a vulnerability
-
-You can create an issue for a vulnerability by visiting the vulnerability's page and clicking
-**Create issue**, which you can find in the **Related issues** section.
-
-![Create issue from vulnerability](img/create_issue_from_vulnerability_v13_3.png)
-
-This creates a [confidential issue](../project/issues/confidential_issues.md) in the project the
-vulnerability came from, and pre-populates it with some useful information taken from the vulnerability
-report. Once the issue is created, you are redirected to it so you can edit, assign, or comment on
-it.
-
-Upon returning to the group security dashboard, the vulnerability now has an associated issue next
-to the name.
-
-![Linked issue in the group security dashboard](img/issue.png)
 
 ### Solutions for vulnerabilities (auto-remediation)
 
@@ -248,10 +231,27 @@ vulnerability. Any vulnerability that has a
 [solution](#solutions-for-vulnerabilities-auto-remediation) can have a merge
 request created to automatically solve the issue.
 
-If this action is available, the vulnerability modal contains a **Create merge request** button.
+If this action is available, the vulnerability page or modal contains a **Create merge request** button.
 Click this button to create a merge request to apply the solution onto the source branch.
 
-![Create merge request from vulnerability](img/create_issue_with_list_hover.png)
+![Create merge request from vulnerability](img/create_mr_from_vulnerability_v13_4.png)
+
+### Creating an issue for a vulnerability
+
+You can create an issue for a vulnerability by visiting the vulnerability's page and clicking
+**Create issue**, which you can find in the **Related issues** section.
+
+![Create issue from vulnerability](img/create_issue_from_vulnerability_v13_3.png)
+
+This creates a [confidential issue](../project/issues/confidential_issues.md) in the project the
+vulnerability came from, and pre-populates it with some useful information taken from the vulnerability
+report. Once the issue is created, you are redirected to it so you can edit, assign, or comment on
+it.
+
+Upon returning to the group security dashboard, the vulnerability now has an associated issue next
+to the name.
+
+![Linked issue in the group security dashboard](img/issue.png)
 
 ### Managing related issues for a vulnerability
 

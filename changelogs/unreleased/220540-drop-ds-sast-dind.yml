@@ -1,0 +1,5 @@
+---
+title: Drop Docker-in-Docker mode for SAST and Dependency Scanning
+merge_request: 41260
+author:
+type: removed

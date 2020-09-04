@@ -161,8 +161,8 @@ class Member < ApplicationRecord
       where(user_id: user_ids).has_access.pluck(:user_id, :access_level).to_h
     end
 
-    def find_by_invite_token(invite_token)
-      invite_token = Devise.token_generator.digest(self, :invite_token, invite_token)
+    def find_by_invite_token(raw_invite_token)
+      invite_token = Devise.token_generator.digest(self, :invite_token, raw_invite_token)
       find_by(invite_token: invite_token)
     end
 

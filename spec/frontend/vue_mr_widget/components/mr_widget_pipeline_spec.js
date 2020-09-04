@@ -29,6 +29,8 @@ describe('MRWidgetPipeline', () => {
   const findAllPipelineStages = () => wrapper.findAll(PipelineStage);
   const findPipelineCoverage = () => wrapper.find('[data-testid="pipeline-coverage"]');
   const findPipelineCoverageDelta = () => wrapper.find('[data-testid="pipeline-coverage-delta"]');
+  const findPipelineCoverageTooltipText = () =>
+    wrapper.find('[data-testid="pipeline-coverage-tooltip"]').text();
   const findMonitoringPipelineMessage = () =>
     wrapper.find('[data-testid="monitoring-pipeline-message"]');
   const findLoadingIcon = () => wrapper.find(GlLoadingIcon);
@@ -140,6 +142,7 @@ describe('MRWidgetPipeline', () => {
         createWrapper(
           {
             pipelineCoverageDelta: mockData.pipelineCoverageDelta,
+            buildsWithCoverage: mockData.buildsWithCoverage,
           },
           mount,
         );
@@ -178,6 +181,22 @@ describe('MRWidgetPipeline', () => {
         expect(findPipelineCoverageDelta().exists()).toBe(true);
         expect(findPipelineCoverageDelta().text()).toBe(`(${mockData.pipelineCoverageDelta}%)`);
       });
+
+      it('should render tooltip for jobs contributing to code coverage', () => {
+        const tooltipText = findPipelineCoverageTooltipText();
+        const expectedDescription = `Coverage value for this pipeline was calculated by averaging the resulting coverage values of ${mockData.buildsWithCoverage.length} jobs.`;
+
+        expect(tooltipText).toContain(expectedDescription);
+      });
+
+      it.each(mockData.buildsWithCoverage)(
+        'should have name and coverage for build %s listed in tooltip',
+        build => {
+          const tooltipText = findPipelineCoverageTooltipText();
+
+          expect(tooltipText).toContain(`${build.name} (${build.coverage}%)`);
+        },
+      );
     });
 
     describe('without commit path', () => {

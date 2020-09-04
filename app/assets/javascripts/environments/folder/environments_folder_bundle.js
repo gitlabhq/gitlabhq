@@ -1,20 +1,33 @@
 import Vue from 'vue';
+import VueApollo from 'vue-apollo';
 import canaryCalloutMixin from '../mixins/canary_callout_mixin';
 import environmentsFolderApp from './environments_folder_view.vue';
 import { parseBoolean } from '../../lib/utils/common_utils';
 import Translate from '../../vue_shared/translate';
+import createDefaultClient from '~/lib/graphql';
 
 Vue.use(Translate);
+Vue.use(VueApollo);
 
-export default () =>
-  new Vue({
-    el: '#environments-folder-list-view',
+const apolloProvider = new VueApollo({
+  defaultClient: createDefaultClient(),
+});
+
+export default () => {
+  const el = document.getElementById('environments-folder-list-view');
+
+  return new Vue({
+    el,
     components: {
       environmentsFolderApp,
     },
     mixins: [canaryCalloutMixin],
+    apolloProvider,
+    provide: {
+      projectPath: el.dataset.projectPath,
+    },
     data() {
-      const environmentsData = document.querySelector(this.$options.el).dataset;
+      const environmentsData = el.dataset;
 
       return {
         endpoint: environmentsData.environmentsDataEndpoint,
@@ -35,3 +48,4 @@ export default () =>
       });
     },
   });
+};

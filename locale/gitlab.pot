@@ -7102,6 +7102,11 @@ msgstr ""
 msgid "Coverage Fuzzing"
 msgstr ""
 
+msgid "Coverage value for this pipeline was calculated by the coverage value of %d job."
+msgid_plural "Coverage value for this pipeline was calculated by averaging the resulting coverage values of %d jobs."
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "Create"
 msgstr ""
 
@@ -9534,6 +9539,9 @@ msgid "Environments allow you to track deployments of your application %{link_to
 msgstr ""
 
 msgid "Environments in %{name}"
+msgstr ""
+
+msgid "EnvironmentsAlert|%{severity} • %{title} %{text}. %{linkStart}View Details%{linkEnd} · %{startedAt} "
 msgstr ""
 
 msgid "EnvironmentsDashboard|Add a project to the dashboard"
@@ -29511,6 +29519,11 @@ msgstr ""
 
 msgid "from"
 msgstr ""
+
+msgid "from %d job"
+msgid_plural "from %d jobs"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "group"
 msgstr ""

@@ -77,6 +77,7 @@ export default {
     <mr-widget-pipeline
       :pipeline="pipeline"
       :pipeline-coverage-delta="mr.pipelineCoverageDelta"
+      :builds-with-coverage="mr.buildsWithCoverage"
       :ci-status="mr.ciStatus"
       :has-ci="mr.hasCI"
       :pipeline-must-succeed="mr.onlyAllowMergeIfPipelineSucceeds"

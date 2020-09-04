@@ -68,28 +68,32 @@ As we'll be using [Amazon S3 object storage](#amazon-s3-object-storage), our EC2
 1. Click **Create policy**, select the `JSON` tab, and add a policy. We want to [follow security best practices and grant _least privilege_](https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html#grant-least-privilege), giving our role only the permissions needed to perform the required actions.
    1. Assuming you prefix the S3 bucket names with `gl-` as shown in the diagram, add the following policy:
 
-```json
-{
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Effect": "Allow",
-            "Action": [
-                "s3:AbortMultipartUpload",
-                "s3:CompleteMultipartUpload",
-                "s3:ListBucket",
-                "s3:PutObject",
-                "s3:GetObject",
-                "s3:DeleteObject",
-                "s3:PutObjectAcl"
-            ],
-            "Resource": [
-                "arn:aws:s3:::gl-*/*"
-            ]
-        }
-    ]
-}
-```
+   ```json
+   {   "Version": "2012-10-17",
+       "Statement": [
+           {
+               "Effect": "Allow",
+               "Action": [
+                   "s3:PutObject",
+                   "s3:GetObject",
+                   "s3:DeleteObject",
+                   "s3:PutObjectAcl"
+               ],
+               "Resource": "arn:aws:s3:::gl-*/*"
+           },
+           {
+               "Effect": "Allow",
+               "Action": [
+                   "s3:ListBucket",
+                   "s3:AbortMultipartUpload",
+                   "s3:ListMultipartUploadParts",
+                   "s3:ListBucketMultipartUploads"
+               ],
+               "Resource": "arn:aws:s3:::gl-*"
+           }
+       ]
+   }
+   ```
 
 1. Click **Review policy**, give your policy a name (we'll use `gl-s3-policy`), and click **Create policy**.
 

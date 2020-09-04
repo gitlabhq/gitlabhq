@@ -698,6 +698,7 @@ RSpec.describe Snippets::UpdateService do
       it_behaves_like 'when snippet_actions param is present'
       it_behaves_like 'only file_name is present'
       it_behaves_like 'only content is present'
+      it_behaves_like 'invalid params error response'
       it_behaves_like 'snippets spam check is performed' do
         before do
           subject
@@ -725,6 +726,7 @@ RSpec.describe Snippets::UpdateService do
       it_behaves_like 'when snippet_actions param is present'
       it_behaves_like 'only file_name is present'
       it_behaves_like 'only content is present'
+      it_behaves_like 'invalid params error response'
       it_behaves_like 'snippets spam check is performed' do
         before do
           subject

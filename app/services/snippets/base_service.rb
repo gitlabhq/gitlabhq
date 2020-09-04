@@ -46,7 +46,7 @@ module Snippets
         snippet.errors.add(:snippet_actions, 'have invalid data')
       end
 
-      snippet_error_response(snippet, 403)
+      snippet_error_response(snippet, 422)
     end
 
     def snippet_error_response(snippet, http_status)

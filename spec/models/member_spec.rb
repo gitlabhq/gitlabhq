@@ -630,6 +630,14 @@ RSpec.describe Member do
     end
   end
 
+  describe '.find_by_invite_token' do
+    let!(:member) { create(:project_member, invite_email: "user@example.com", user: nil) }
+
+    it 'finds the member' do
+      expect(described_class.find_by_invite_token(member.raw_invite_token)).to eq member
+    end
+  end
+
   describe "#invite_to_unknown_user?" do
     subject { member.invite_to_unknown_user? }
 
