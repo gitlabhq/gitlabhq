@@ -90,20 +90,23 @@ module Gitlab
           end
 
           def extract_attribute_values(order_value)
-            named = nil
-            name  = if ordering_by_lower?(order_value)
-                      named = order_value.expr
-                      named.expressions[0].name.to_s
-                    else
-                      order_value.expr.name
-                    end
-
-            [name, order_value.direction, named]
+            if ordering_by_lower?(order_value)
+              [order_value.expr.expressions[0].name.to_s, order_value.direction, order_value.expr]
+            elsif ordering_by_similarity?(order_value)
+              ['similarity', order_value.direction, order_value.expr]
+            else
+              [order_value.expr.name, order_value.direction, nil]
+            end
           end
 
           # determine if ordering using LOWER, eg. "ORDER BY LOWER(boards.name)"
           def ordering_by_lower?(order_value)
             order_value.expr.is_a?(Arel::Nodes::NamedFunction) && order_value.expr&.name&.downcase == 'lower'
+          end
+
+          # determine if ordering using SIMILARITY scoring based on Gitlab::Database::SimilarityScore
+          def ordering_by_similarity?(order_value)
+            order_value.to_sql.match?(/SIMILARITY\(.+\*/)
           end
         end
       end

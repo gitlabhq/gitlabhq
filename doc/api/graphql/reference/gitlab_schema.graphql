@@ -6776,6 +6776,16 @@ type Group {
     Returns the last _n_ elements from the list.
     """
     last: Int
+
+    """
+    Search project with most similar names or paths
+    """
+    search: String = null
+
+    """
+    Sort projects by this criteria
+    """
+    sort: NamespaceProjectSort = null
   ): ProjectConnection!
 
   """
@@ -10366,6 +10376,16 @@ type Namespace {
     Returns the last _n_ elements from the list.
     """
     last: Int
+
+    """
+    Search project with most similar names or paths
+    """
+    search: String = null
+
+    """
+    Sort projects by this criteria
+    """
+    sort: NamespaceProjectSort = null
   ): ProjectConnection!
 
   """
@@ -10462,6 +10482,16 @@ type NamespaceIncreaseStorageTemporarilyPayload {
   The namespace after mutation
   """
   namespace: Namespace
+}
+
+"""
+Values for sorting projects
+"""
+enum NamespaceProjectSort {
+  """
+  Most similar to the search query
+  """
+  SIMILARITY
 }
 
 input NegatedBoardIssueInput {

@@ -461,14 +461,17 @@ class Project < ApplicationRecord
   # Sometimes queries (e.g. using CTEs) require explicit disambiguation with table name
   scope :projects_order_id_desc, -> { reorder(self.arel_table['id'].desc) }
 
-  scope :sorted_by_similarity_desc, -> (search) do
+  scope :sorted_by_similarity_desc, -> (search, include_in_select: false) do
     order_expression = Gitlab::Database::SimilarityScore.build_expression(search: search, rules: [
       { column: arel_table["path"], multiplier: 1 },
       { column: arel_table["name"], multiplier: 0.7 },
       { column: arel_table["description"], multiplier: 0.2 }
     ])
 
-    reorder(order_expression.desc, arel_table['id'].desc)
+    query = reorder(order_expression.desc, arel_table['id'].desc)
+
+    query = query.select(*query.arel.projections, order_expression.as('similarity')) if include_in_select
+    query
   end
 
   scope :with_packages, -> { joins(:packages) }

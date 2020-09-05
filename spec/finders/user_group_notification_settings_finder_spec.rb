@@ -71,6 +71,43 @@ RSpec.describe UserGroupNotificationSettingsFinder do
         end
       end
 
+      context 'when the group has parent_id set but that does not belong to any group' do
+        let_it_be(:group) { create(:group) }
+        let_it_be(:groups) { [group] }
+
+        before do
+          # Let's set a parent_id for a group that definitely doesn't exist
+          group.update_columns(parent_id: 19283746)
+        end
+
+        it 'returns a default Global notification setting' do
+          expect(subject.count).to eq(1)
+          expect(attributes(&:level)).to eq(['global'])
+          expect(attributes(&:notification_email)).to eq([nil])
+        end
+      end
+
+      context 'when the group has a private parent' do
+        let_it_be(:ancestor) { create(:group, :private) }
+        let_it_be(:group) { create(:group, :private, parent: ancestor) }
+        let_it_be(:ancestor_email) { create(:email, :confirmed, email: 'ancestor@example.com', user: user) }
+        let_it_be(:groups) { [group] }
+
+        before do
+          group.add_reporter(user)
+          # Adding the user creates a NotificationSetting, so we remove it here
+          user.notification_settings.where(source: group).delete_all
+
+          create(:notification_setting, user: user, source: ancestor, level: 'participating', notification_email: ancestor_email.email)
+        end
+
+        it 'still inherits the notification settings' do
+          expect(subject.count).to eq(1)
+          expect(attributes(&:level)).to eq(['participating'])
+          expect(attributes(&:notification_email)).to eq([ancestor_email.email])
+        end
+      end
+
       it 'does not cause an N+1', :aggregate_failures do
         parent = create(:group)
         child = create(:group, parent: parent)

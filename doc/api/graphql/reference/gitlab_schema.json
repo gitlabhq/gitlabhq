@@ -18630,6 +18630,26 @@
                   "defaultValue": "false"
                 },
                 {
+                  "name": "search",
+                  "description": "Search project with most similar names or paths",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": "null"
+                },
+                {
+                  "name": "sort",
+                  "description": "Sort projects by this criteria",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "NamespaceProjectSort",
+                    "ofType": null
+                  },
+                  "defaultValue": "null"
+                },
+                {
                   "name": "hasVulnerabilities",
                   "description": "Returns only the projects which have vulnerabilities",
                   "type": {
@@ -30964,6 +30984,26 @@
                   "defaultValue": "false"
                 },
                 {
+                  "name": "search",
+                  "description": "Search project with most similar names or paths",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": "null"
+                },
+                {
+                  "name": "sort",
+                  "description": "Sort projects by this criteria",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "NamespaceProjectSort",
+                    "ofType": null
+                  },
+                  "defaultValue": "null"
+                },
+                {
                   "name": "hasVulnerabilities",
                   "description": "Returns only the projects which have vulnerabilities",
                   "type": {
@@ -31316,6 +31356,23 @@
 
           ],
           "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "ENUM",
+          "name": "NamespaceProjectSort",
+          "description": "Values for sorting projects",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "SIMILARITY",
+              "description": "Most similar to the search query",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
           "possibleTypes": null
         },
         {

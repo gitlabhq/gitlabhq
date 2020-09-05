@@ -7,7 +7,9 @@ class UserGroupNotificationSettingsFinder
   end
 
   def execute
-    groups_with_ancestors = Gitlab::ObjectHierarchy.new(groups).base_and_ancestors
+    # rubocop: disable CodeReuse/ActiveRecord
+    groups_with_ancestors = Gitlab::ObjectHierarchy.new(Group.where(id: groups.select(:id))).base_and_ancestors
+    # rubocop: enable CodeReuse/ActiveRecord
 
     @loaded_groups_with_ancestors = groups_with_ancestors.index_by(&:id)
     @loaded_notification_settings = user.notification_settings_for_groups(groups_with_ancestors).preload_source_route.index_by(&:source_id)
@@ -26,6 +28,8 @@ class UserGroupNotificationSettingsFinder
     return user.notification_settings.build(source: group) if group.parent_id.nil?
 
     parent_setting = loaded_notification_settings[group.parent_id]
+
+    return user.notification_settings.build(source: group) unless parent_setting
 
     if should_copy?(parent_setting)
       user.notification_settings.build(source: group) do |ns|
