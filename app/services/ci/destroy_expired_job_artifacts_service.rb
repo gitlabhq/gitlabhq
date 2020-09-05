@@ -28,7 +28,7 @@ module Ci
     private
 
     def destroy_batch(klass)
-      artifact_batch = if klass == Ci::JobArtifact && Gitlab::Ci::Features.destroy_only_unlocked_expired_artifacts_enabled?
+      artifact_batch = if klass == Ci::JobArtifact
                          klass.expired(BATCH_SIZE).unlocked
                        else
                          klass.expired(BATCH_SIZE)

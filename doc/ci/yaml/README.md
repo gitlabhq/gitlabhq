@@ -3289,10 +3289,10 @@ job:
 ```
 
 NOTE: **Note:**
-Since [GitLab 13.0](https://gitlab.com/gitlab-org/gitlab/-/issues/16267), the latest
-artifacts for refs can be locked against deletion, and kept regardless of the expiry time. This feature is disabled
-by default and is not ready for production use. It can be enabled for testing by
-enabling the `:keep_latest_artifact_for_ref` and `:destroy_only_unlocked_expired_artifacts` [feature flags](../../administration/feature_flags.md).
+The latest artifacts for refs are locked against deletion, and kept regardless of
+the expiry time. [Introduced in](https://gitlab.com/gitlab-org/gitlab/-/issues/16267)
+GitLab 13.0 behind a disabled feature flag, and [made the default behavior](https://gitlab.com/gitlab-org/gitlab/-/issues/229936)
+in GitLab 13.4.
 
 #### `artifacts:reports`
 

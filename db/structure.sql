@@ -10083,7 +10083,6 @@ CREATE TABLE public.ci_job_artifacts (
     file_sha256 bytea,
     file_format smallint,
     file_location smallint,
-    locked boolean,
     CONSTRAINT check_27f0f6dbab CHECK ((file_store IS NOT NULL))
 );
 
@@ -10267,7 +10266,7 @@ CREATE TABLE public.ci_pipelines (
     target_sha bytea,
     external_pull_request_id bigint,
     ci_ref_id bigint,
-    locked smallint DEFAULT 0 NOT NULL,
+    locked smallint DEFAULT 1 NOT NULL,
     CONSTRAINT check_d7e99a025e CHECK ((lock_version IS NOT NULL))
 );
 

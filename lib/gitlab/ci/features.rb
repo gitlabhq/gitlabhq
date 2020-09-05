@@ -40,14 +40,6 @@ module Gitlab
         ::Feature.enabled?(:ci_raise_job_rules_without_workflow_rules_warning, default_enabled: true)
       end
 
-      def self.keep_latest_artifacts_for_ref_enabled?(project)
-        ::Feature.enabled?(:keep_latest_artifacts_for_ref, project, default_enabled: true)
-      end
-
-      def self.destroy_only_unlocked_expired_artifacts_enabled?
-        ::Feature.enabled?(:destroy_only_unlocked_expired_artifacts, default_enabled: true)
-      end
-
       def self.bulk_insert_on_create?(project)
         ::Feature.enabled?(:ci_bulk_insert_on_create, project, default_enabled: true)
       end

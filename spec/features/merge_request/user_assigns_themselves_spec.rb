@@ -21,6 +21,10 @@ RSpec.describe 'Merge request > User assigns themselves' do
       expect(page).to have_content '2 issues have been assigned to you'
     end
 
+    it 'updates updated_by', :js do
+      expect { click_button 'assign yourself' }.to change { merge_request.reload.updated_at }
+    end
+
     it 'returns user to the merge request', :js do
       click_link 'Assign yourself to these issues'
 

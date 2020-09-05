@@ -848,10 +848,10 @@
   resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-1.161.0.tgz#661e8d19862dfba0e4c558e2eb6d64b402c1453e"
   integrity sha512-qsbboEICn08ZoEoAX/TuYygsFaXlzsCY+CfmdOzqvJbOdfHhVXmrJBxd2hP2qqjTZm2PkbRRmn+03+ce1jvatQ==
 
-"@gitlab/ui@20.18.1":
-  version "20.18.1"
-  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-20.18.1.tgz#c8a1e0830b63c056999b9417a499677fd46659af"
-  integrity sha512-WbLBP6Ni8YxKqlKOZChmedc8uS7MRm5CYg/k3mRUELydF/LoW4/M0CsKwgplW4OJfEQRJr8bvmjiTLAyKAky4g==
+"@gitlab/ui@20.18.3":
+  version "20.18.3"
+  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-20.18.3.tgz#14b1d6571756fbef7966d6658f56ca213ded15e8"
+  integrity sha512-yeXc40J8ifXm1aApuNNjEOZraDexYAyKZNRa05rLPXPppLnwZtx4Io5z9QiskN6fMiL648EgzC8JW576qtByCw==
   dependencies:
     "@babel/standalone" "^7.0.0"
     "@gitlab/vue-toasted" "^1.3.0"
@@ -861,7 +861,7 @@
     echarts "^4.2.1"
     highlight.js "^9.13.1"
     js-beautify "^1.8.8"
-    lodash "^4.17.14"
+    lodash "^4.17.20"
     portal-vue "^2.1.6"
     resize-observer-polyfill "^1.5.1"
     url-search-params-polyfill "^5.0.0"
