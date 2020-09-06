@@ -45,7 +45,7 @@ module Gitlab
         def self.normalize_dn(dn)
           ::Gitlab::Auth::Ldap::DN.new(dn).to_normalized_s
         rescue ::Gitlab::Auth::Ldap::DN::FormatError => e
-          Rails.logger.info("Returning original DN \"#{dn}\" due to error during normalization attempt: #{e.message}") # rubocop:disable Gitlab/RailsLogger
+          Gitlab::AppLogger.info("Returning original DN \"#{dn}\" due to error during normalization attempt: #{e.message}") # rubocop:disable Gitlab/RailsLogger
 
           dn
         end
