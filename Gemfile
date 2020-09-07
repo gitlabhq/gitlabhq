@@ -21,7 +21,7 @@ gem 'pg', '~> 1.1'
 gem 'rugged', '~> 0.28'
 gem 'grape-path-helpers', '~> 1.3'
 
-gem 'faraday', '~> 0.12'
+gem 'faraday', '~> 1.0'
 gem 'marginalia', '~> 1.9.0'
 
 # Authentication libraries
@@ -119,7 +119,7 @@ gem 'fog-local', '~> 0.6'
 gem 'fog-openstack', '~> 1.0'
 gem 'fog-rackspace', '~> 0.1.1'
 gem 'fog-aliyun', '~> 0.3'
-gem 'gitlab-fog-azure-rm', '~> 0.8', require: false
+gem 'gitlab-fog-azure-rm', '~> 0.9', require: false
 
 # for Google storage
 gem 'google-api-client', '~> 0.33'
@@ -133,7 +133,7 @@ gem 'seed-fu', '~> 2.3.7'
 # Search
 gem 'elasticsearch-model', '~> 6.1'
 gem 'elasticsearch-rails', '~> 6.1', require: 'elasticsearch/rails/instrumentation'
-gem 'elasticsearch-api',   '~> 6.8'
+gem 'elasticsearch-api',   '~> 6.8.2'
 gem 'aws-sdk-core', '~> 3'
 gem 'aws-sdk-cloudformation', '~> 1'
 gem 'aws-sdk-s3', '~> 1'
@@ -249,9 +249,7 @@ gem 'slack-messenger', '~> 2.3.3'
 gem 'hangouts-chat', '~> 0.0.5'
 
 # Asana integration
-# asana 0.10.1 needs faraday 1.0
-# https://gitlab.com/gitlab-org/gitlab/-/issues/224296
-gem 'asana', '0.10.0'
+gem 'asana', '0.10.2'
 
 # FogBugz integration
 gem 'ruby-fogbugz', '~> 0.2.1'
@@ -304,7 +302,7 @@ gem "gitlab-license", "~> 1.0"
 gem 'rack-attack', '~> 6.3.0'
 
 # Sentry integration
-gem 'sentry-raven', '~> 2.9'
+gem 'sentry-raven', '~> 3.0'
 
 gem 'premailer-rails', '~> 1.10.3'
 
@@ -337,7 +335,7 @@ end
 
 group :development do
   gem 'brakeman', '~> 4.2', require: false
-  gem 'danger', '~> 6.0', require: false
+  gem 'danger', '~> 8.0', require: false
 
   gem 'letter_opener_web', '~> 1.3.4'
 

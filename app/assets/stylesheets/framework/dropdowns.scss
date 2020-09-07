@@ -600,7 +600,6 @@
   top: 0;
   padding: 0;
   color: $dropdown-title-btn-color;
-  font-size: 14px;
   border: 0;
   background: none;
   outline: 0;
@@ -611,7 +610,7 @@
 }
 
 .dropdown-menu-close {
-  top: $gl-padding-4;
+  top: $gl-padding-6;
   right: $gl-padding-8;
   width: 20px;
   height: 20px;
@@ -622,8 +621,8 @@
 }
 
 .dropdown-menu-back {
-  left: 7px;
-  top: 2px;
+  left: 10px;
+  top: $gl-padding-8;
 }
 
 .dropdown-input {

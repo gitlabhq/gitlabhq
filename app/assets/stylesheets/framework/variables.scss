@@ -472,6 +472,22 @@ $line-added: #ecfdf0;
 $line-added-dark: #c7f0d2 !default;
 $line-removed: #fbe9eb;
 $line-removed-dark: #fac5cd !default;
+/*
+ * The transparent colors are used in Monaco editor. Using full opacity colors
+ * would hide other layers (selected text, matching brackets).
+ *
+ * When the transparent colors get layered on white background, they create their
+ * full opacity counterparts (computed with https://stackoverflow.com/a/12228643/606571):
+ *
+ *  - white + $line-added-transparent = $line-added
+ *  - white + $line-added-transparent + $line-added-dark-transparent = $line-added-dark
+ *
+ * More details: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/41553
+ */
+$line-added-transparent: rgba(160, 245, 180, 0.2);
+$line-added-dark-transparent: rgba(51, 188, 90, 0.2);
+$line-removed-transparent: rgba(235, 145, 155, 0.2);
+$line-removed-dark-transparent: rgba(246, 53, 85, 0.2);
 $line-number-old: #f9d7dc;
 $line-number-new: #ddfbe6;
 $line-number-select: #fbf2da;

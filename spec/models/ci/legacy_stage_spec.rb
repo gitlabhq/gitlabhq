@@ -116,7 +116,7 @@ RSpec.describe Ci::LegacyStage do
         let!(:new_build) { create_job(:ci_build, status: :success) }
 
         before do
-          stage_build.update(retried: true)
+          stage_build.update!(retried: true)
         end
 
         it "returns status of latest build" do

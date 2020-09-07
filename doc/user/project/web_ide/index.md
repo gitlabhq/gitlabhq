@@ -59,7 +59,7 @@ Single file editing is based on the [Ace Editor](https://ace.c9.io).
 > - It was deployed behind a feature flag, disabled by default.
 > - It's enabled on GitLab.com.
 > - It cannot be enabled or disabled per-project.
-> - For GitLab self-managed instances, GitLab administrators can opt to [enable it](#enable-or-disable-schema-based-validation-core-only).
+> - For GitLab self-managed instances, GitLab administrators can opt to [enable it](#enable-or-disable-schema-based-validation).
 
 The Web IDE provides validation support for certain JSON and YAML files using schemas
 based on the [JSON Schema Store](https://www.schemastore.org/json/). This feature is

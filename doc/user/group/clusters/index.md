@@ -46,7 +46,7 @@ You can associate more than one Kubernetes cluster to your group, and maintain d
 for different environments, such as development, staging, and production.
 
 When adding another cluster,
-[set an environment scope](#environment-scopes-premium) to help
+[set an environment scope](#environment-scopes) to help
 differentiate the new cluster from your other clusters.
 
 ## GitLab-managed clusters

@@ -46,7 +46,7 @@
                 = _('Time based: Yes')
         = form_tag profile_two_factor_auth_path, method: :post do |f|
           - if @error
-            .alert.alert-danger
+            .gl-alert.gl-alert-danger.gl-mb-5
               = @error
           .form-group
             = label_tag :pin_code, _('Pin code'), class: "label-bold"

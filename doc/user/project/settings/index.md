@@ -78,7 +78,7 @@ Some features depend on others:
 - If you disable the **Issues** option, GitLab also removes the following
   features:
   - **Issue Boards**
-  - [**Service Desk**](#service-desk-starter)
+  - [**Service Desk**](#service-desk)
 
   NOTE: **Note:**
   When the **Issues** option is disabled, you can still access **Milestones**
@@ -237,10 +237,10 @@ This action:
 
 - Deletes a project including all associated resources (issues, merge requests etc).
 - From [GitLab 13.2](https://gitlab.com/gitlab-org/gitlab/-/issues/220382) on [Premium or Silver](https://about.gitlab.com/pricing/) or higher tiers,
-group admins can [configure](../../group/index.md#enabling-delayed-project-removal-premium) projects within a group
+group admins can [configure](../../group/index.md#enabling-delayed-project-removal) projects within a group
 to be deleted after a delayed period.
 When enabled, actual deletion happens after number of days
-specified in [instance settings](../../admin_area/settings/visibility_and_access_controls.md#default-deletion-delay-premium-only).
+specified in [instance settings](../../admin_area/settings/visibility_and_access_controls.md#default-deletion-delay).
 
 CAUTION: **Warning:**
 The default behavior of [Delayed Project deletion](https://gitlab.com/gitlab-org/gitlab/-/issues/32935) in GitLab 12.6 was changed to

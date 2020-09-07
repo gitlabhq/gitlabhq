@@ -570,7 +570,7 @@ RSpec.describe Ci::Runner do
       let!(:last_update) { runner.ensure_runner_queue_value }
 
       before do
-        Ci::UpdateRunnerService.new(runner).update(description: 'new runner')
+        Ci::UpdateRunnerService.new(runner).update(description: 'new runner') # rubocop: disable Rails/SaveBang
       end
 
       it 'sets a new last_update value' do
@@ -660,7 +660,7 @@ RSpec.describe Ci::Runner do
 
       before do
         runner.tick_runner_queue
-        runner.destroy
+        runner.destroy!
       end
 
       it 'cleans up the queue' do
@@ -878,7 +878,7 @@ RSpec.describe Ci::Runner do
 
     it 'can be destroyed' do
       subject
-      expect { subject.destroy }.to change { described_class.count }.by(-1)
+      expect { subject.destroy! }.to change { described_class.count }.by(-1)
     end
   end
 

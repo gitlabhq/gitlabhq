@@ -67,7 +67,7 @@ Project defined timeout (either specific timeout set by user or the default
 ## Maximum artifacts size **(CORE ONLY)**
 
 For information about setting a maximum artifact size for a project, see
-[Maximum artifacts size](../../user/admin_area/settings/continuous_integration.md#maximum-artifacts-size-core-only).
+[Maximum artifacts size](../../user/admin_area/settings/continuous_integration.md#maximum-artifacts-size).
 
 ## Custom CI configuration path
 

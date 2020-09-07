@@ -176,7 +176,7 @@ RSpec.describe MergeRequests::MergeService do
           end
 
           it 'does not close issue' do
-            jira_tracker.update(jira_issue_transition_id: nil)
+            jira_tracker.update!(jira_issue_transition_id: nil)
 
             expect_any_instance_of(JiraService).not_to receive(:transition_issue)
 
@@ -389,7 +389,7 @@ RSpec.describe MergeRequests::MergeService do
           error_message = 'Failed to squash. Should be done manually'
 
           allow_any_instance_of(MergeRequests::SquashService).to receive(:squash!).and_return(nil)
-          merge_request.update(squash: true)
+          merge_request.update!(squash: true)
 
           service.execute(merge_request)
 
@@ -403,7 +403,7 @@ RSpec.describe MergeRequests::MergeService do
           error_message = 'another squash is already in progress'
 
           allow_any_instance_of(MergeRequest).to receive(:squash_in_progress?).and_return(true)
-          merge_request.update(squash: true)
+          merge_request.update!(squash: true)
 
           service.execute(merge_request)
 
@@ -421,7 +421,7 @@ RSpec.describe MergeRequests::MergeService do
           %w(semi-linear ff).each do |merge_method|
             it "logs and saves error if merge is #{merge_method} only" do
               merge_method = 'rebase_merge' if merge_method == 'semi-linear'
-              merge_request.project.update(merge_method: merge_method)
+              merge_request.project.update!(merge_method: merge_method)
               error_message = 'Only fast-forward merge is allowed for your project. Please update your source branch'
               allow(service).to receive(:execute_hooks)
 

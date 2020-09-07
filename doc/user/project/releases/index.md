@@ -329,7 +329,7 @@ internal processes, like external audits.
 To access the release evidence, on the Releases page, click the link to the JSON file that's listed
 under the **Evidence collection** heading.
 
-You can also [use the API](../../../api/releases/index.md#collect-release-evidence-premium-only) to
+You can also [use the API](../../../api/releases/index.md#collect-release-evidence) to
 generate release evidence for an existing release. Because of this, each release
 can have multiple release evidence snapshots. You can view the release evidence and
 its details on the Releases page.
@@ -401,7 +401,7 @@ Here is an example of a release evidence object:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/199065) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.10.
 
-When a release is created, release evidence is automatically collected. To initiate evidence collection any other time, use an [API call](../../../api/releases/index.md#collect-release-evidence-premium-only). You can collect release evidence multiple times for one release.
+When a release is created, release evidence is automatically collected. To initiate evidence collection any other time, use an [API call](../../../api/releases/index.md#collect-release-evidence). You can collect release evidence multiple times for one release.
 
 Evidence collection snapshots are visible on the Releases page, along with the timestamp the evidence was collected.
 

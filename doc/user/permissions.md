@@ -55,7 +55,7 @@ The following table depicts the various user permission levels in a project.
 | View [Design Management](project/issues/design_management.md) pages | ✓ | ✓ | ✓        | ✓        | ✓      |
 | View project code                                 | ✓ (*1*) | ✓          | ✓           | ✓        | ✓      |
 | Pull project code                                 | ✓ (*1*) | ✓          | ✓           | ✓        | ✓      |
-| View GitLab Pages protected by [access control](project/pages/introduction.md#gitlab-pages-access-control-core) | ✓       | ✓          | ✓           | ✓        | ✓      |
+| View GitLab Pages protected by [access control](project/pages/introduction.md#gitlab-pages-access-control) | ✓       | ✓          | ✓           | ✓        | ✓      |
 | View wiki pages                                   | ✓       | ✓          | ✓           | ✓        | ✓      |
 | See a list of jobs                                | ✓ (*3*) | ✓          | ✓           | ✓        | ✓      |
 | See a job log                                     | ✓ (*3*) | ✓          | ✓           | ✓        | ✓      |
@@ -365,7 +365,7 @@ are unable to browse the project's repository, for example).
 
 TIP: **Tip:**
 To prevent a guest user from creating projects, as an admin, you can edit the
-user's profile to mark the user as [external](#external-users-core-only).
+user's profile to mark the user as [external](#external-users).
 Beware though that even if a user is external, if they already have Reporter or
 higher permissions in any project or group, they are **not** counted as a
 free guest user.
@@ -472,9 +472,9 @@ for details about the pipelines security model.
 ## LDAP users permissions
 
 Since GitLab 8.15, LDAP user permissions can now be manually overridden by an admin user.
-Read through the documentation on [LDAP users permissions](group/index.md#manage-group-memberships-via-ldap-starter-only) to learn more.
+Read through the documentation on [LDAP users permissions](group/index.md#manage-group-memberships-via-ldap) to learn more.
 
 ## Project aliases
 
 Project aliases can only be read, created and deleted by a GitLab administrator.
-Read through the documentation on [Project aliases](../user/project/index.md#project-aliases-premium-only) to learn more.
+Read through the documentation on [Project aliases](../user/project/index.md#project-aliases) to learn more.

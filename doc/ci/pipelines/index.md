@@ -40,7 +40,7 @@ A typical pipeline might consist of four stages, executed in the following order
 - A `production` stage, with a job called `deploy-to-prod`.
 
 NOTE: **Note:**
-If you have a [mirrored repository that GitLab pulls from](../../user/project/repository/repository_mirroring.md#pulling-from-a-remote-repository-starter),
+If you have a [mirrored repository that GitLab pulls from](../../user/project/repository/repository_mirroring.md#pulling-from-a-remote-repository),
 you may need to enable pipeline triggering in your project's
 **Settings > Repository > Pull from a remote repository > Trigger pipelines for mirror updates**.
 
@@ -483,7 +483,7 @@ be found when you are on a [single pipeline page](#view-pipelines). For example:
 
 ![Pipelines example](img/pipelines.png)
 
-[Multi-project pipeline graphs](../multi_project_pipelines.md#multi-project-pipeline-visualization-premium) help
+[Multi-project pipeline graphs](../multi_project_pipelines.md#multi-project-pipeline-visualization) help
 you visualize the entire pipeline, including all cross-project inter-dependencies. **(PREMIUM)**
 
 ### Pipeline mini graphs

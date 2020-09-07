@@ -13,7 +13,7 @@ last_update: 2019-07-03
 
 For more information about why you might want to use Merge Trains, read [How merge trains keep your master green](https://about.gitlab.com/blog/2020/01/30/all-aboard-merge-trains/).
 
-When [pipelines for merged results](../index.md#pipelines-for-merged-results-premium) are
+When [pipelines for merged results](../index.md#pipelines-for-merged-results) are
 enabled, the pipeline jobs run as if the changes from your source branch have already
 been merged into the target branch.
 
@@ -80,7 +80,7 @@ To enable merge trains:
 
 To enable merge trains for your project:
 
-1. If you are on a self-managed GitLab instance, ensure the [feature flag](#merge-trains-feature-flag-premium-only) is set correctly.
+1. If you are on a self-managed GitLab instance, ensure the [feature flag](#merge-trains-feature-flag) is set correctly.
 1. [Configure your CI/CD configuration file](../../index.md#configuring-pipelines-for-merge-requests)
    so that the pipeline or individual jobs run for merge requests.
 1. Visit your project's **Settings > General** and expand **Merge requests**.

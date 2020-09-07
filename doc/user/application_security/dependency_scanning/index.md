@@ -20,7 +20,7 @@ vulnerabilities using Dependency Scanning.
 All dependencies are scanned, including the transitive dependencies (also known as nested dependencies).
 You can take advantage of Dependency Scanning by either [including the Dependency Scanning template](#configuration)
 in your existing `.gitlab-ci.yml` file or by implicitly using
-the [Auto Dependency Scanning](../../../topics/autodevops/stages.md#auto-dependency-scanning-ultimate)
+the [Auto Dependency Scanning](../../../topics/autodevops/stages.md#auto-dependency-scanning)
 provided by [Auto DevOps](../../../topics/autodevops/index.md).
 
 GitLab checks the Dependency Scanning report, compares the found vulnerabilities
@@ -100,7 +100,7 @@ include:
 The included template creates Dependency Scanning jobs in your CI/CD
 pipeline and scans your project's source code for possible vulnerabilities.
 The results are saved as a
-[Dependency Scanning report artifact](../../../ci/pipelines/job_artifacts.md#artifactsreportsdependency_scanning-ultimate)
+[Dependency Scanning report artifact](../../../ci/pipelines/job_artifacts.md#artifactsreportsdependency_scanning)
 that you can later download and analyze. Due to implementation limitations, we
 always take the latest Dependency Scanning artifact available.
 

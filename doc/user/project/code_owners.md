@@ -74,7 +74,7 @@ Once you've added Code Owners to a project, you can configure it to
 be used for merge request approvals:
 
 - As [merge request eligible approvers](merge_requests/merge_request_approvals.md#code-owners-as-eligible-approvers).
-- As required approvers for [protected branches](protected_branches.md#protected-branches-approval-by-code-owners-premium). **(PREMIUM)**
+- As required approvers for [protected branches](protected_branches.md#protected-branches-approval-by-code-owners). **(PREMIUM)**
 
 NOTE: **Note:**
 Developer or higher [permissions](../permissions.md) are required in order to
@@ -88,11 +88,11 @@ While the `CODEOWNERS` file can be used in addition to Merge Request [Approval R
 it can also be used as the sole driver of merge request approvals
 (without using [Approval Rules](merge_requests/merge_request_approvals.md#approval-rules)).
 To do so, create the file in one of the three locations specified above and
-set the code owners as required approvers for [protected branches](protected_branches.md#protected-branches-approval-by-code-owners-premium).
+set the code owners as required approvers for [protected branches](protected_branches.md#protected-branches-approval-by-code-owners).
 Use [the syntax of Code Owners files](code_owners.md#the-syntax-of-code-owners-files)
 to specify the actual owners and granular permissions.
 
-Using Code Owners in conjunction with [Protected Branches](protected_branches.md#protected-branches-approval-by-code-owners-premium)
+Using Code Owners in conjunction with [Protected Branches](protected_branches.md#protected-branches-approval-by-code-owners)
 will prevent any user who is not specified in the `CODEOWNERS` file from pushing
 changes for the specified files/paths, even if their role is included in the
 **Allowed to push** column. This allows for a more inclusive push strategy, as
@@ -150,7 +150,7 @@ escaped using `\#` to address files for which the name starts with a
 > - It's enabled on GitLab.com.
 > - It can be enabled or disabled per-project.
 > - It's recommended for production use.
-> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-code-owner-sections-core-only). **(CORE ONLY)**
+> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-code-owner-sections). **(CORE ONLY)**
 
 Code Owner rules can be grouped into named sections. This allows for better
 organization of broader categories of Code Owner rules to be applied.

@@ -67,7 +67,7 @@ module DropdownsHelper
 
       if options.fetch(:back, false)
         title_output << content_tag(:button, class: "dropdown-title-button dropdown-menu-back", aria: { label: "Go back" }, type: "button") do
-          icon('arrow-left')
+          sprite_icon('arrow-left')
         end
       end
 
@@ -75,7 +75,7 @@ module DropdownsHelper
 
       if options.fetch(:close, true)
         title_output << content_tag(:button, class: "dropdown-title-button dropdown-menu-close", aria: { label: "Close" }, type: "button") do
-          icon('times', class: 'dropdown-menu-close-icon')
+          sprite_icon('close', css_class: 'dropdown-menu-close-icon')
         end
       end
 

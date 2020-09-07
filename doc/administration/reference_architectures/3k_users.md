@@ -1719,7 +1719,7 @@ based on what features you intend to use:
 1. Configure [object storage for job artifacts](../job_artifacts.md#using-object-storage)
    including [incremental logging](../job_logs.md#new-incremental-logging-architecture).
 1. Configure [object storage for LFS objects](../lfs/index.md#storing-lfs-objects-in-remote-object-storage).
-1. Configure [object storage for uploads](../uploads.md#using-object-storage-core-only).
+1. Configure [object storage for uploads](../uploads.md#using-object-storage).
 1. Configure [object storage for merge request diffs](../merge_request_diffs.md#using-object-storage).
 1. Configure [object storage for Container Registry](../packages/container_registry.md#use-object-storage) (optional feature).
 1. Configure [object storage for Mattermost](https://docs.mattermost.com/administration/config-settings.html#file-storage) (optional feature).
@@ -1727,7 +1727,7 @@ based on what features you intend to use:
 1. Configure [object storage for Dependency Proxy](../packages/dependency_proxy.md#using-object-storage) (optional feature). **(PREMIUM ONLY)**
 1. Configure [object storage for Pseudonymizer](../pseudonymizer.md#configuration) (optional feature). **(ULTIMATE ONLY)**
 1. Configure [object storage for autoscale runner caching](https://docs.gitlab.com/runner/configuration/autoscale.html#distributed-runners-caching) (optional - for improved performance).
-1. Configure [object storage for Terraform state files](../terraform_state.md#using-object-storage-core-only).
+1. Configure [object storage for Terraform state files](../terraform_state.md#using-object-storage).
 
 Using separate buckets for each data type is the recommended approach for GitLab.
 

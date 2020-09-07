@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 After [configuring metrics for your CI/CD environment](index.md), you can set up
 alerting for Prometheus metrics depending on the location of your instances, and
-[trigger actions from alerts](#trigger-actions-from-alerts-ultimate) to notify
+[trigger actions from alerts](#trigger-actions-from-alerts) to notify
 your team when environment performance falls outside of the boundaries you set.
 
 ## Managed Prometheus instances

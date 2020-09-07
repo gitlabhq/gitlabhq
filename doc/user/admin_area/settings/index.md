@@ -42,7 +42,7 @@ Access the default page for admin area settings by navigating to **Admin Area > 
 
 | Option | Description |
 | ------ | ----------- |
-| [Repository's custom initial branch name](../../project/repository/branches/index.md#custom-initial-branch-name-core-only) | Set a custom branch name rather than master for all the new repositories created within your instance. |
+| [Repository's custom initial branch name](../../project/repository/branches/index.md#custom-initial-branch-name) | Set a custom branch name rather than master for all the new repositories created within your instance. |
 | [Repository mirror](visibility_and_access_controls.md#allow-mirrors-to-be-set-up-for-projects) | Configure repository mirroring. |
 | [Repository storage](../../../administration/repository_storage_types.md) | Configure storage path settings. |
 | Repository maintenance | ([Repository checks](../../../administration/repository_checks.md) and [Housekeeping](../../../administration/housekeeping.md)). Configure automatic Git checks and housekeeping on repositories. |
@@ -60,8 +60,8 @@ Access the default page for admin area settings by navigating to **Admin Area > 
 | Option | Description |
 | ------ | ----------- |
 | [Continuous Integration and Deployment](continuous_integration.md) | Auto DevOps, runners and job artifacts. |
-| [Required pipeline configuration](continuous_integration.md#required-pipeline-configuration-premium-only) **(PREMIUM ONLY)** | Set an instance-wide auto included [pipeline configuration](../../../ci/yaml/README.md). This pipeline configuration will be run after the project's own configuration. |
-| [Package Registry](continuous_integration.md#package-registry-configuration-premium-only) | Settings related to the use and experience of using GitLab's Package Registry. Note there are [risks involved](./../../packages/container_registry/index.md#use-with-external-container-registries) in enabling some of these settings. |
+| [Required pipeline configuration](continuous_integration.md#required-pipeline-configuration) **(PREMIUM ONLY)** | Set an instance-wide auto included [pipeline configuration](../../../ci/yaml/README.md). This pipeline configuration will be run after the project's own configuration. |
+| [Package Registry](continuous_integration.md#package-registry-configuration) | Settings related to the use and experience of using GitLab's Package Registry. Note there are [risks involved](./../../packages/container_registry/index.md#use-with-external-container-registries) in enabling some of these settings. |
 
 ## Reporting
 
@@ -106,7 +106,7 @@ Access the default page for admin area settings by navigating to **Admin Area > 
 | [Pages](../../../administration/pages/index.md#custom-domain-verification) | Size and domain settings for static websites |
 | [Real-time features](../../../administration/polling.md) | Change this value to influence how frequently the GitLab UI polls for updates. |
 | [Gitaly timeouts](gitaly_timeouts.md) | Configure Gitaly timeouts. |
-| Localization | [Default first day of the week](../../profile/preferences.md) and [Time tracking](../../project/time_tracking.md#limit-displayed-units-to-hours-core-only). |
+| Localization | [Default first day of the week](../../profile/preferences.md) and [Time tracking](../../project/time_tracking.md#limit-displayed-units-to-hours). |
 
 NOTE: **Note:**
 You can change the [Default first day of the week](../../profile/preferences.md) for the entire GitLab instance

@@ -78,7 +78,7 @@ CAUTION: **Warning:**
 The default behavior of [Delayed Project deletion](https://gitlab.com/gitlab-org/gitlab/-/issues/32935) in GitLab 12.6 was changed to
 [Immediate deletion](https://gitlab.com/gitlab-org/gitlab/-/issues/220382) in GitLab 13.2.
 
-Projects within a group can be deleted after a delayed period, by [configuring in Group Settings](../../group/index.md#enabling-delayed-project-removal-premium).
+Projects within a group can be deleted after a delayed period, by [configuring in Group Settings](../../group/index.md#enabling-delayed-project-removal).
 
 The default period is 7 days, and can be changed. Setting this period to 0 will enable immediate removal
 of projects or groups.
@@ -92,7 +92,7 @@ To change this period:
 
 Alternatively, projects that are marked for removal can be deleted immediately. To do so:
 
-1. [Restore the project](../../project/settings/#restore-a-project-premium).
+1. [Restore the project](../../project/settings/#restore-a-project).
 1. Delete the project as described in the [Administering Projects page](../../admin_area/#administering-projects).
 
 ## Default project visibility

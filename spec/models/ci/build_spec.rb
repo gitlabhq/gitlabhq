@@ -566,18 +566,18 @@ RSpec.describe Ci::Build do
       let(:runner) { create(:ci_runner, :project, projects: [build.project]) }
 
       before do
-        runner.update(contacted_at: 1.second.ago)
+        runner.update!(contacted_at: 1.second.ago)
       end
 
       it { is_expected.to be_truthy }
 
       it 'that is inactive' do
-        runner.update(active: false)
+        runner.update!(active: false)
         is_expected.to be_falsey
       end
 
       it 'that is not online' do
-        runner.update(contacted_at: nil)
+        runner.update!(contacted_at: nil)
         is_expected.to be_falsey
       end
 
@@ -723,7 +723,7 @@ RSpec.describe Ci::Build do
 
     context 'is expired' do
       before do
-        build.update(artifacts_expire_at: Time.current - 7.days)
+        build.update!(artifacts_expire_at: Time.current - 7.days)
       end
 
       it { is_expected.to be_truthy }
@@ -731,7 +731,7 @@ RSpec.describe Ci::Build do
 
     context 'is not expired' do
       before do
-        build.update(artifacts_expire_at: Time.current + 7.days)
+        build.update!(artifacts_expire_at: Time.current + 7.days)
       end
 
       it { is_expected.to be_falsey }
@@ -1240,7 +1240,7 @@ RSpec.describe Ci::Build do
 
       context 'when environment is defined' do
         before do
-          build.update(environment: 'review')
+          build.update!(environment: 'review')
         end
 
         it { is_expected.to be_truthy }
@@ -1248,7 +1248,7 @@ RSpec.describe Ci::Build do
 
       context 'when environment is not defined' do
         before do
-          build.update(environment: nil)
+          build.update!(environment: nil)
         end
 
         it { is_expected.to be_falsey }
@@ -1356,7 +1356,7 @@ RSpec.describe Ci::Build do
 
       context 'when environment is defined' do
         before do
-          build.update(environment: 'review')
+          build.update!(environment: 'review')
         end
 
         context 'no action is defined' do
@@ -1365,7 +1365,7 @@ RSpec.describe Ci::Build do
 
         context 'and start action is defined' do
           before do
-            build.update(options: { environment: { action: 'start' } } )
+            build.update!(options: { environment: { action: 'start' } } )
           end
 
           it { is_expected.to be_truthy }
@@ -1374,7 +1374,7 @@ RSpec.describe Ci::Build do
 
       context 'when environment is not defined' do
         before do
-          build.update(environment: nil)
+          build.update!(environment: nil)
         end
 
         it { is_expected.to be_falsey }
@@ -1386,7 +1386,7 @@ RSpec.describe Ci::Build do
 
       context 'when environment is defined' do
         before do
-          build.update(environment: 'review')
+          build.update!(environment: 'review')
         end
 
         context 'no action is defined' do
@@ -1395,7 +1395,7 @@ RSpec.describe Ci::Build do
 
         context 'and stop action is defined' do
           before do
-            build.update(options: { environment: { action: 'stop' } } )
+            build.update!(options: { environment: { action: 'stop' } } )
           end
 
           it { is_expected.to be_truthy }
@@ -1404,7 +1404,7 @@ RSpec.describe Ci::Build do
 
       context 'when environment is not defined' do
         before do
-          build.update(environment: nil)
+          build.update!(environment: nil)
         end
 
         it { is_expected.to be_falsey }
@@ -1727,7 +1727,7 @@ RSpec.describe Ci::Build do
 
     describe '#action?' do
       before do
-        build.update(when: value)
+        build.update!(when: value)
       end
 
       subject { build.action? }
@@ -2272,7 +2272,7 @@ RSpec.describe Ci::Build do
   describe '#has_expiring_archive_artifacts?' do
     context 'when artifacts have expiration date set' do
       before do
-        build.update(artifacts_expire_at: 1.day.from_now)
+        build.update!(artifacts_expire_at: 1.day.from_now)
       end
 
       context 'and job artifacts archive record exists' do
@@ -2292,7 +2292,7 @@ RSpec.describe Ci::Build do
 
     context 'when artifacts do not have expiration date set' do
       before do
-        build.update(artifacts_expire_at: nil)
+        build.update!(artifacts_expire_at: nil)
       end
 
       it 'does not have expiring artifacts' do
@@ -2567,7 +2567,7 @@ RSpec.describe Ci::Build do
       end
 
       before do
-        build.update(user: user)
+        build.update!(user: user)
       end
 
       it { user_variables.each { |v| is_expected.to include(v) } }
@@ -2603,7 +2603,7 @@ RSpec.describe Ci::Build do
       end
 
       before do
-        build.update(environment: 'production')
+        build.update!(environment: 'production')
       end
 
       shared_examples 'containing environment variables' do
@@ -2630,7 +2630,7 @@ RSpec.describe Ci::Build do
 
         context 'when the URL was set from the job' do
           before do
-            build.update(options: { environment: { url: url } })
+            build.update!(options: { environment: { url: url } })
           end
 
           it_behaves_like 'containing environment variables'
@@ -2648,7 +2648,7 @@ RSpec.describe Ci::Build do
 
         context 'when the URL was not set from the job, but environment' do
           before do
-            environment.update(external_url: url)
+            environment.update!(external_url: url)
           end
 
           it_behaves_like 'containing environment variables'
@@ -2684,7 +2684,7 @@ RSpec.describe Ci::Build do
 
     context 'when build started manually' do
       before do
-        build.update(when: :manual)
+        build.update!(when: :manual)
       end
 
       let(:manual_variable) do
@@ -2710,8 +2710,8 @@ RSpec.describe Ci::Build do
       end
 
       before do
-        build.update(tag: false)
-        pipeline.update(tag: false)
+        build.update!(tag: false)
+        pipeline.update!(tag: false)
       end
 
       it { is_expected.to include(branch_variable) }
@@ -2723,8 +2723,8 @@ RSpec.describe Ci::Build do
       end
 
       before do
-        build.update(tag: true)
-        pipeline.update(tag: true)
+        build.update!(tag: true)
+        pipeline.update!(tag: true)
       end
 
       it { is_expected.to include(tag_variable) }
@@ -2901,7 +2901,7 @@ RSpec.describe Ci::Build do
 
       context 'and is disabled for project' do
         before do
-          project.update(container_registry_enabled: false)
+          project.update!(container_registry_enabled: false)
         end
 
         it { is_expected.to include(ci_registry) }
@@ -2910,7 +2910,7 @@ RSpec.describe Ci::Build do
 
       context 'and is enabled for project' do
         before do
-          project.update(container_registry_enabled: true)
+          project.update!(container_registry_enabled: true)
         end
 
         it { is_expected.to include(ci_registry) }
@@ -2922,7 +2922,7 @@ RSpec.describe Ci::Build do
       let(:runner) { create(:ci_runner, description: 'description', tag_list: %w(docker linux)) }
 
       before do
-        build.update(runner: runner)
+        build.update!(runner: runner)
       end
 
       it { is_expected.to include({ key: 'CI_RUNNER_ID', value: runner.id.to_s, public: true, masked: false }) }
@@ -3726,7 +3726,7 @@ RSpec.describe Ci::Build do
     subject { described_class.where(id: build).matches_tag_ids(tag_ids) }
 
     before do
-      build.update(tag_list: build_tag_list)
+      build.update!(tag_list: build_tag_list)
     end
 
     context 'when have different tags' do
@@ -3772,7 +3772,7 @@ RSpec.describe Ci::Build do
     subject { described_class.where(id: build).with_any_tags }
 
     before do
-      build.update(tag_list: tag_list)
+      build.update!(tag_list: tag_list)
     end
 
     context 'when does have tags' do

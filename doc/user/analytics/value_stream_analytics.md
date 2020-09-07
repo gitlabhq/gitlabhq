@@ -267,7 +267,7 @@ Once a custom stage has been added, you can "drag and drop" stages to rearrange 
 The pre-defined start and end events can cover many use cases involving both issues and merge requests.
 
 For supporting more complex workflows, use stages based on group labels. These events are based on
-labels being added or removed. In particular, [scoped labels](../project/labels.md#scoped-labels-premium)
+labels being added or removed. In particular, [scoped labels](../project/labels.md#scoped-labels)
 are useful for complex workflows.
 
 In this example, we'd like to measure more accurate code review times. The workflow is the following:

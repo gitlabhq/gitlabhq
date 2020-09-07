@@ -1,8 +1,11 @@
 <script>
-import { GlTooltipDirective } from '@gitlab/ui';
+import { GlButton, GlTooltipDirective } from '@gitlab/ui';
 import { __ } from '~/locale';
 
 export default {
+  components: {
+    GlButton,
+  },
   directives: {
     GlTooltip: GlTooltipDirective,
   },
@@ -26,13 +29,12 @@ export default {
 <template>
   <div class="dropdown-page-two dropdown-new-label">
     <div class="dropdown-title">
-      <button
+      <gl-button
         :aria-label="__('Go back')"
-        type="button"
+        category="tertiary"
         class="dropdown-title-button dropdown-menu-back"
-      >
-        <i aria-hidden="true" class="fa fa-arrow-left" data-hidden="true"> </i>
-      </button>
+        icon="arrow-left"
+      />
       {{ headerTitle }}
       <button
         :aria-label="__('Close')"

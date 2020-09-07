@@ -28,7 +28,7 @@ RSpec.describe Ci::InstanceVariable do
         let(:value) { SecureRandom.alphanumeric(10_002) }
 
         it 'raises a database level error' do
-          expect { variable.save }.to raise_error(ActiveRecord::StatementInvalid)
+          expect { variable.save! }.to raise_error(ActiveRecord::StatementInvalid)
         end
       end
 
@@ -36,7 +36,7 @@ RSpec.describe Ci::InstanceVariable do
         let(:value) { SecureRandom.alphanumeric(10_000) }
 
         it 'does not raise database level error' do
-          expect { variable.save }.not_to raise_error
+          expect { variable.save! }.not_to raise_error
         end
       end
     end
@@ -85,7 +85,7 @@ RSpec.describe Ci::InstanceVariable do
     it 'resets the cache when records are deleted' do
       expect(described_class.all_cached).to contain_exactly(protected_variable, unprotected_variable)
 
-      protected_variable.destroy
+      protected_variable.destroy!
 
       expect(described_class.all_cached).to contain_exactly(unprotected_variable)
     end

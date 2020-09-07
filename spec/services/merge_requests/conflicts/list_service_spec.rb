@@ -36,7 +36,7 @@ RSpec.describe MergeRequests::Conflicts::ListService do
 
     it 'returns a falsey value when the MR does not support new diff notes' do
       merge_request = create_merge_request('conflict-resolvable')
-      merge_request.merge_request_diff.update(start_commit_sha: nil)
+      merge_request.merge_request_diff.update!(start_commit_sha: nil)
 
       expect(conflicts_service(merge_request).can_be_resolved_in_ui?).to be_falsey
     end

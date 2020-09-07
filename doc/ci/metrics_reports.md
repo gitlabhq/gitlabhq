@@ -37,7 +37,7 @@ All values are considered strings and string compare is used to find differences
 
 ## How to set it up
 
-Add a job that creates a [metrics report](pipelines/job_artifacts.md#artifactsreportsmetrics-premium) (default filename: `metrics.txt`). The file should conform to the [OpenMetrics](https://openmetrics.io/) format.
+Add a job that creates a [metrics report](pipelines/job_artifacts.md#artifactsreportsmetrics) (default filename: `metrics.txt`). The file should conform to the [OpenMetrics](https://openmetrics.io/) format.
 
 For example:
 

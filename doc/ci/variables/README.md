@@ -149,7 +149,7 @@ Malicious code pushed to your `.gitlab-ci.yml` file could compromise your variab
 
 All merge requests that introduce changes to `.gitlab-ci.yml` should be reviewed carefully before:
 
-- [Running a pipeline in the parent project for a merge request submitted from a forked project](../merge_request_pipelines/index.md#run-pipelines-in-the-parent-project-for-merge-requests-from-a-forked-project-starter).
+- [Running a pipeline in the parent project for a merge request submitted from a forked project](../merge_request_pipelines/index.md#run-pipelines-in-the-parent-project-for-merge-requests-from-a-forked-project).
 - Merging the changes.
 
 Here is a simplified example of a malicious `.gitlab-ci.yml`:
@@ -766,7 +766,7 @@ so `&&` is evaluated before `||`.
 > - It's deployed behind a feature flag, enabled by default.
 > - It's enabled on GitLab.com.
 > - It's recommended for production use.
-> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-parenthesis-support-for-variables-core-only). **(CORE ONLY)**
+> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-parenthesis-support-for-variables). **(CORE ONLY)**
 
 It is possible to use parentheses to group conditions. Parentheses have the highest
 precedence of all operators. Expressions enclosed in parentheses are evaluated first,

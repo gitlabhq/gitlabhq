@@ -36,7 +36,7 @@ the Issue Board feature (introduced in GitLab 8.11 - August 2016).
 
 - Create multiple issue boards per project.
 - Create multiple issue boards per group. **(PREMIUM)**
-- Add lists for [assignees](#assignee-lists-premium) and [milestones](#milestone-lists-premium). **(PREMIUM)**
+- Add lists for [assignees](#assignee-lists) and [milestones](#milestone-lists). **(PREMIUM)**
 
 Check all the [GitLab Enterprise features for issue boards](#gitlab-enterprise-features-for-issue-boards).
 
@@ -155,8 +155,8 @@ that belong to it. Types of lists include:
   Always appears as the leftmost list.
 - **Closed** (default): all closed issues. Always appears as the rightmost list.
 - **Label list**: all open issues for a label.
-- [**Assignee list**](#assignee-lists-premium): all open issues assigned to a user.
-- [**Milestone list**](#milestone-lists-premium): all open issues for a milestone.
+- [**Assignee list**](#assignee-lists): all open issues assigned to a user.
+- [**Milestone list**](#milestone-lists): all open issues for a milestone.
 
 A **Card** is a box on a list, and it represents an issue. You can drag cards from one list to
 another to change their label, assignee, or milestone. The information you can see on a
@@ -265,7 +265,7 @@ is hidden, allowing you to focus on issues in the board.
 
 The top of each list indicates the sum of issue weights for the issues that
 belong to that list. This is useful when using boards for capacity allocation,
-especially in combination with [assignee lists](#assignee-lists-premium).
+especially in combination with [assignee lists](#assignee-lists).
 
 ![issue board summed weights](img/issue_board_summed_weights.png)
 

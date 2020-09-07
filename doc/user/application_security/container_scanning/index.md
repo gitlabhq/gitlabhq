@@ -26,7 +26,7 @@ To integrate security scanners other than Clair and Klar into GitLab, see
 You can enable container scanning by doing one of the following:
 
 - [Include the CI job](#configuration) in your existing `.gitlab-ci.yml` file.
-- Implicitly use [Auto Container Scanning](../../../topics/autodevops/stages.md#auto-container-scanning-ultimate)
+- Implicitly use [Auto Container Scanning](../../../topics/autodevops/stages.md#auto-container-scanning)
   provided by [Auto DevOps](../../../topics/autodevops/index.md).
 
 GitLab compares the found vulnerabilities between the source and target branches, and shows the
@@ -95,7 +95,7 @@ The included template:
   (see [requirements](#requirements)) and scans it for possible vulnerabilities.
 
 GitLab saves the results as a
-[Container Scanning report artifact](../../../ci/pipelines/job_artifacts.md#artifactsreportscontainer_scanning-ultimate)
+[Container Scanning report artifact](../../../ci/pipelines/job_artifacts.md#artifactsreportscontainer_scanning)
 that you can download and analyze later. When downloading, you always receive the most-recent
 artifact.
 

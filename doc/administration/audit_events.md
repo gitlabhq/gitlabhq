@@ -68,7 +68,7 @@ From there, you can see the following actions:
 - Roles allowed to create project changed.
 - Group CI/CD variable added, removed, or protected status changed. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30857) in GitLab 13.3.
 
-Group events can also be accessed via the [Group Audit Events API](../api/audit_events.md#group-audit-events-starter)
+Group events can also be accessed via the [Group Audit Events API](../api/audit_events.md#group-audit-events)
 
 ### Project events **(STARTER)**
 
@@ -98,7 +98,7 @@ From there, you can see the following actions:
 - Added or removed users and groups from project approval groups ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/213603) in GitLab 13.2)
 - Project CI/CD variable added, removed, or protected status changed. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30857) in GitLab 13.4.
 
-Project events can also be accessed via the [Project Audit Events API](../api/audit_events.md#project-audit-events-starter)
+Project events can also be accessed via the [Project Audit Events API](../api/audit_events.md#project-audit-events)
 
 ### Instance events **(PREMIUM ONLY)**
 
@@ -133,7 +133,7 @@ the filter dropdown box. You can further filter by specific group, project, or u
 
 ![audit log](img/audit_log.png)
 
-Instance events can also be accessed via the [Instance Audit Events API](../api/audit_events.md#instance-audit-events-premium-only)
+Instance events can also be accessed via the [Instance Audit Events API](../api/audit_events.md#instance-audit-events)
 
 ### Missing events
 

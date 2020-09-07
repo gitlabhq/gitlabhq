@@ -505,7 +505,7 @@ supported by consolidated configuration form, refer to the following guides:
 | [Backups](../raketasks/backup_restore.md#uploading-backups-to-a-remote-cloud-storage)|No|
 | [Job artifacts](job_artifacts.md#using-object-storage) and [incremental logging](job_logs.md#new-incremental-logging-architecture) | Yes |
 | [LFS objects](lfs/index.md#storing-lfs-objects-in-remote-object-storage) | Yes |
-| [Uploads](uploads.md#using-object-storage-core-only) | Yes |
+| [Uploads](uploads.md#using-object-storage) | Yes |
 | [Container Registry](packages/container_registry.md#use-object-storage) (optional feature) | No |
 | [Merge request diffs](merge_request_diffs.md#using-object-storage) | Yes |
 | [Mattermost](https://docs.mattermost.com/administration/config-settings.html#file-storage)| No |
@@ -513,7 +513,7 @@ supported by consolidated configuration form, refer to the following guides:
 | [Dependency Proxy](packages/dependency_proxy.md#using-object-storage) (optional feature) **(PREMIUM ONLY)** | Yes |
 | [Pseudonymizer](pseudonymizer.md#configuration) (optional feature) **(ULTIMATE ONLY)** | No |
 | [Autoscale Runner caching](https://docs.gitlab.com/runner/configuration/autoscale.html#distributed-runners-caching) (optional for improved performance) | No |
-| [Terraform state files](terraform_state.md#using-object-storage-core-only) | Yes |
+| [Terraform state files](terraform_state.md#using-object-storage) | Yes |
 
 ### Other alternatives to filesystem storage
 

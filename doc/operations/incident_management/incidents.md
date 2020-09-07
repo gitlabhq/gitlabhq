@@ -57,7 +57,7 @@ to create issues when alerts are triggered:
    checkbox to create an issue based on your own
    [issue templates](../../user/project/description_templates.md#creating-issue-templates).
    For more information, see
-   [Trigger actions from alerts](../metrics/alerts.md#trigger-actions-from-alerts-ultimate) **(ULTIMATE)**.
+   [Trigger actions from alerts](../metrics/alerts.md#trigger-actions-from-alerts) **(ULTIMATE)**.
 1. To create issues from alerts, select the template in the **Issue Template**
    select box.
 1. To send [separate email notifications](index.md#notify-developers-of-alerts) to users
@@ -68,7 +68,7 @@ to create issues when alerts are triggered:
 Appropriately configured alerts include an
 [embedded chart](../metrics/embed.md#embedding-metrics-based-on-alerts-in-incident-issues)
 for the query corresponding to the alert. You can also configure GitLab to
-[close issues](../metrics/alerts.md#trigger-actions-from-alerts-ultimate)
+[close issues](../metrics/alerts.md#trigger-actions-from-alerts)
 when you receive notification that the alert is resolved.
 
 ## Create an incident manually

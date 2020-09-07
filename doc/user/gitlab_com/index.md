@@ -87,7 +87,7 @@ Below are the current settings regarding [GitLab CI/CD](../../ci/README.md).
 | [Max CI/CD subscriptions to a project](../../administration/instance_limits.md#number-of-cicd-subscriptions-to-a-project) | `2` | Unlimited |
 | [Max pipeline schedules in projects](../../administration/instance_limits.md#number-of-pipeline-schedules) | `10` for Free tier, `50` for all paid tiers | Unlimited |
 | [Max number of instance level variables](../../administration/instance_limits.md#number-of-instance-level-variables) | `25` | `25` |
-| [Scheduled Job Archival](../../user/admin_area/settings/continuous_integration.md#archive-jobs-core-only) | 3 months | Never |
+| [Scheduled Job Archival](../../user/admin_area/settings/continuous_integration.md#archive-jobs) | 3 months | Never |
 
 ## Repository size limit
 
@@ -259,7 +259,7 @@ The Windows Shared Runners are currently in
 for production workloads.
 
 During the beta period, the
-[shared runner pipeline quota](../admin_area/settings/continuous_integration.md#shared-runners-pipeline-minutes-quota-starter-only)
+[shared runner pipeline quota](../admin_area/settings/continuous_integration.md#shared-runners-pipeline-minutes-quota)
 will apply for groups and projects in the same way as Linux Runners.
 This may change when the beta period ends, as discussed in this
 [related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/30834).

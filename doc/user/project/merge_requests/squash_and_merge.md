@@ -110,7 +110,7 @@ squashing can itself be considered equivalent to rebasing.
 > - It's enabled on GitLab.com.
 > - It can be enabled per project.
 > - It's recommended for production use.
-> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-squash-commit-options-core-only). **(CORE ONLY)**
+> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-squash-commit-options). **(CORE ONLY)**
 
 With Squash Commits Options you can configure the behavior of Squash and Merge for your project.
 To set it up, navigate to your project's **Settings > General** and expand **Merge requests**.

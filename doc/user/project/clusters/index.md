@@ -22,8 +22,8 @@ Using the GitLab project Kubernetes integration, you can:
 - Detect and [monitor Kubernetes](#monitoring-your-kubernetes-cluster).
 - Use it with [Auto DevOps](#auto-devops).
 - Use [Web terminals](#web-terminals).
-- Use [Deploy Boards](#deploy-boards-premium). **(PREMIUM)**
-- Use [Canary Deployments](#canary-deployments-premium). **(PREMIUM)**
+- Use [Deploy Boards](#deploy-boards). **(PREMIUM)**
+- Use [Canary Deployments](#canary-deployments). **(PREMIUM)**
 - View [Logs](#viewing-pod-logs).
 - Run serverless workloads on [Kubernetes with Knative](serverless/index.md).
 

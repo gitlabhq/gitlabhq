@@ -49,7 +49,7 @@ groups:
    - My-reaction
    - Confidential
    - Epic ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/195704) in GitLab 12.9),
-     including [child epic](../group/epics/index.md#multi-level-child-epics-ultimate)
+     including [child epic](../group/epics/index.md#multi-level-child-epics)
      ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9029) in
      [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.0)
    - Search for this text

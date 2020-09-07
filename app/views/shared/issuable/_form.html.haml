@@ -6,7 +6,7 @@
 = form_errors(issuable)
 
 - if @conflict
-  .alert.alert-danger
+  .gl-alert.gl-alert-danger.gl-mb-5
     Someone edited the #{issuable.class.model_name.human.downcase} the same time you did.
     Please check out
     = link_to "the #{issuable.class.model_name.human.downcase}", polymorphic_path([@project, issuable]), target: "_blank", rel: 'noopener noreferrer'

@@ -77,7 +77,7 @@ You can [add a webhook](../../../operations/metrics/alerts.md#external-prometheu
 to the Prometheus configuration in order for GitLab to receive notifications of any alerts.
 
 Once the webhook is setup, you can
-[take action on incoming alerts](../../../operations/metrics/alerts.md#trigger-actions-from-alerts-ultimate).
+[take action on incoming alerts](../../../operations/metrics/alerts.md#trigger-actions-from-alerts).
 
 ## Adding custom metrics to the self monitoring project
 
@@ -93,7 +93,7 @@ You can add custom metrics in the self monitoring project by:
 There is [a bug](https://gitlab.com/gitlab-org/gitlab/-/issues/208676) which causes
 project creation to fail with the following error (which appears in the log file)
 when the first admin user is an
-[external user](../../../user/permissions.md#external-users-core-only):
+[external user](../../../user/permissions.md#external-users):
 
 ```plaintext
 Could not create instance administrators group. Errors: ["You don’t have permission to create groups."]
@@ -108,6 +108,6 @@ User.admins.active.first.external?
 If this returns true, the first admin user is an external user.
 
 If you face this issue, you can temporarily
-[make the admin user a non-external user](../../../user/permissions.md#external-users-core-only)
+[make the admin user a non-external user](../../../user/permissions.md#external-users)
 and then try to create the project.
 Once the project is created, the admin user can be changed back to an external user.

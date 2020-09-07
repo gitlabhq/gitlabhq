@@ -2,16 +2,22 @@
 
 require 'spec_helper'
 
-RSpec.describe InvitesController do
+RSpec.describe InvitesController, :snowplow do
   let_it_be(:user) { create(:user) }
   let(:member) { create(:project_member, :invited, invite_email: user.email) }
   let(:raw_invite_token) { member.raw_invite_token }
   let(:project_members) { member.source.users }
   let(:md5_member_global_id) { Digest::MD5.hexdigest(member.to_global_id.to_s) }
   let(:params) { { id: raw_invite_token } }
+  let(:snowplow_event) do
+    {
+      category: 'Growth::Acquisition::Experiment::InviteEmail',
+      label: md5_member_global_id,
+      property: group_type
+    }
+  end
 
   before do
-    stub_application_setting(snowplow_enabled: true, snowplow_collector_hostname: 'localhost')
     controller.instance_variable_set(:@member, member)
   end
 
@@ -45,51 +51,33 @@ RSpec.describe InvitesController do
 
       context 'when new_user_invite is not set' do
         it 'does not track the user as experiment group' do
-          expect(Gitlab::Tracking).not_to receive(:event)
-
           request
+
+          expect_no_snowplow_event
         end
       end
 
       context 'when new_user_invite is experiment' do
         let(:params) { { id: raw_invite_token, new_user_invite: 'experiment' } }
+        let(:group_type) { 'experiment_group' }
 
         it 'tracks the user as experiment group' do
-          expect(Gitlab::Tracking).to receive(:event).and_call_original.with(
-            'Growth::Acquisition::Experiment::InviteEmail',
-            'opened',
-            property: 'experiment_group',
-            label: md5_member_global_id
-          )
-          expect(Gitlab::Tracking).to receive(:event).and_call_original.with(
-            'Growth::Acquisition::Experiment::InviteEmail',
-            'accepted',
-            property: 'experiment_group',
-            label: md5_member_global_id
-          )
-
           request
+
+          expect_snowplow_event(snowplow_event.merge(action: 'opened'))
+          expect_snowplow_event(snowplow_event.merge(action: 'accepted'))
         end
       end
 
       context 'when new_user_invite is control' do
         let(:params) { { id: raw_invite_token, new_user_invite: 'control' } }
+        let(:group_type) { 'control_group' }
 
         it 'tracks the user as control group' do
-          expect(Gitlab::Tracking).to receive(:event).and_call_original.with(
-            'Growth::Acquisition::Experiment::InviteEmail',
-            'opened',
-            property: 'control_group',
-            label: md5_member_global_id
-          )
-          expect(Gitlab::Tracking).to receive(:event).and_call_original.with(
-            'Growth::Acquisition::Experiment::InviteEmail',
-            'accepted',
-            property: 'control_group',
-            label: md5_member_global_id
-          )
-
           request
+
+          expect_snowplow_event(snowplow_event.merge(action: 'opened'))
+          expect_snowplow_event(snowplow_event.merge(action: 'accepted'))
         end
       end
     end
@@ -124,39 +112,31 @@ RSpec.describe InvitesController do
 
     context 'when new_user_invite is not set' do
       it 'does not track an event' do
-        expect(Gitlab::Tracking).not_to receive(:event)
-
         request
+
+        expect_no_snowplow_event
       end
     end
 
     context 'when new_user_invite is experiment' do
       let(:params) { { id: raw_invite_token, new_user_invite: 'experiment' } }
+      let(:group_type) { 'experiment_group' }
 
       it 'tracks the user as experiment group' do
-        expect(Gitlab::Tracking).to receive(:event).and_call_original.with(
-          'Growth::Acquisition::Experiment::InviteEmail',
-          'accepted',
-          property: 'experiment_group',
-          label: md5_member_global_id
-        )
-
         request
+
+        expect_snowplow_event(snowplow_event.merge(action: 'accepted'))
       end
     end
 
     context 'when new_user_invite is control' do
       let(:params) { { id: raw_invite_token, new_user_invite: 'control' } }
+      let(:group_type) { 'control_group' }
 
       it 'tracks the user as control group' do
-        expect(Gitlab::Tracking).to receive(:event).and_call_original.with(
-          'Growth::Acquisition::Experiment::InviteEmail',
-          'accepted',
-          property: 'control_group',
-          label: md5_member_global_id
-        )
-
         request
+
+        expect_snowplow_event(snowplow_event.merge(action: 'accepted'))
       end
     end
   end

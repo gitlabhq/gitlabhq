@@ -47,7 +47,7 @@ when the job fails, or always, by using [`artifacts:when`](../yaml/README.md#art
 parameter. GitLab keeps these uploaded artifacts for 1 week, as defined
 by the `expire_in` definition. You can keep the artifacts from expiring
 via the [web interface](#browsing-artifacts). If the expiry time is not defined, it defaults
-to the [instance wide setting](../../user/admin_area/settings/continuous_integration.md#default-artifacts-expiration-core-only).
+to the [instance wide setting](../../user/admin_area/settings/continuous_integration.md#default-artifacts-expiration).
 
 For more examples on artifacts, follow the [artifacts reference in
 `.gitlab-ci.yml`](../yaml/README.md#artifacts).
@@ -221,7 +221,7 @@ dashboards.
 
 CAUTION: **Warning:**
 This artifact is still valid but is **deprecated** in favor of the
-[artifacts:reports:license_scanning](../pipelines/job_artifacts.md#artifactsreportslicense_scanning-ultimate)
+[artifacts:reports:license_scanning](../pipelines/job_artifacts.md#artifactsreportslicense_scanning)
 introduced in GitLab 12.8.
 
 The `license_management` report collects [Licenses](../../user/compliance/license_compliance/index.md)

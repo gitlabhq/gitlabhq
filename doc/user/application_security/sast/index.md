@@ -48,7 +48,7 @@ To run SAST jobs, by default, you need a GitLab Runner with the
 [`kubernetes`](https://docs.gitlab.com/runner/install/kubernetes.html) executor.
 If you're using the shared Runners on GitLab.com, this is enabled by default.
 
-Beginning with GitLab 13.0, Docker privileged mode is necessary only if you've [enabled Docker-in-Docker for SAST](#enabling-docker-in-docker-ultimate).
+Beginning with GitLab 13.0, Docker privileged mode is necessary only if you've [enabled Docker-in-Docker for SAST](#enabling-docker-in-docker).
 
 CAUTION: **Caution:**
 Our SAST jobs require a Linux container type. Windows containers are not yet supported.
@@ -95,7 +95,7 @@ All open source (OSS) analyzers have been moved to the GitLab Core tier. Progres
 tracked in the corresponding
 [epic](https://gitlab.com/groups/gitlab-org/-/epics/2098).
 
-Please note that support for [Docker-in-Docker](#enabling-docker-in-docker-ultimate)
+Please note that support for [Docker-in-Docker](#enabling-docker-in-docker)
 will not be extended to the GitLab Core tier.
 
 #### Summary of features per tier
@@ -109,8 +109,8 @@ as shown in the following table:
 | [Customize SAST Settings](#customizing-the-sast-settings)                          | **{check-circle}**  | **{check-circle}** |
 | View [JSON Report](#reports-json-format)                                           | **{check-circle}**  | **{check-circle}** |
 | [Presentation of JSON Report in Merge Request](#overview)                          | **{dotted-circle}** | **{check-circle}** |
-| [Interaction with Vulnerabilities](#interacting-with-the-vulnerabilities-ultimate) | **{dotted-circle}** | **{check-circle}** |
-| [Access to Security Dashboard](#security-dashboard-ultimate)                       | **{dotted-circle}** | **{check-circle}** |
+| [Interaction with Vulnerabilities](#interacting-with-the-vulnerabilities) | **{dotted-circle}** | **{check-circle}** |
+| [Access to Security Dashboard](#security-dashboard)                       | **{dotted-circle}** | **{check-circle}** |
 
 ## Contribute your scanner
 
@@ -120,7 +120,7 @@ The [Security Scanner Integration](../../../development/integrations/secure.md) 
 
 To configure SAST for a project you can:
 
-- Use [Auto SAST](../../../topics/autodevops/stages.md#auto-sast-ultimate) provided by
+- Use [Auto SAST](../../../topics/autodevops/stages.md#auto-sast) provided by
   [Auto DevOps](../../../topics/autodevops/index.md).
 - [Configure SAST manually](#configure-sast-manually).
 - [Configure SAST using the UI](#configure-sast-in-the-ui) (introduced in GitLab 13.3).
@@ -143,7 +143,7 @@ The included template creates SAST jobs in your CI/CD pipeline and scans
 your project's source code for possible vulnerabilities.
 
 The results are saved as a
-[SAST report artifact](../../../ci/pipelines/job_artifacts.md#artifactsreportssast-ultimate)
+[SAST report artifact](../../../ci/pipelines/job_artifacts.md#artifactsreportssast)
 that you can later download and analyze. Due to implementation limitations, we
 always take the latest SAST artifact available.
 
@@ -329,7 +329,7 @@ The following are Docker image-related variables.
 | `SECURE_ANALYZERS_PREFIX` | Override the name of the Docker registry providing the default images (proxy). Read more about [customizing analyzers](analyzers.md). |
 | `SAST_ANALYZER_IMAGE_TAG` | **DEPRECATED:** Override the Docker tag of the default images. Read more about [customizing analyzers](analyzers.md).                 |
 | `SAST_DEFAULT_ANALYZERS`  | Override the names of default images. Read more about [customizing analyzers](analyzers.md).                                          |
-| `SAST_DISABLE_DIND`       | Disable Docker-in-Docker and run analyzers [individually](#enabling-docker-in-docker-ultimate). This variable is `true` by default.   |
+| `SAST_DISABLE_DIND`       | Disable Docker-in-Docker and run analyzers [individually](#enabling-docker-in-docker). This variable is `true` by default.   |
 
 #### Vulnerability filters
 
@@ -346,7 +346,7 @@ Some analyzers make it possible to filter out vulnerabilities under a given thre
 
 #### Docker-in-Docker orchestrator
 
-The following variables configure the Docker-in-Docker orchestrator, and therefore are only used when the Docker-in-Docker mode is [enabled](#enabling-docker-in-docker-ultimate).
+The following variables configure the Docker-in-Docker orchestrator, and therefore are only used when the Docker-in-Docker mode is [enabled](#enabling-docker-in-docker).
 
 | Environment variable                     | Default value | Description                                                                                                                                                                                                                                              |
 |------------------------------------------|---------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|

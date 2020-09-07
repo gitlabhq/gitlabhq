@@ -16,7 +16,7 @@ is incompatible with yours, then you can deny the use of that license.
 
 You can take advantage of License Compliance by either [including the job](#configuration)
 in your existing `.gitlab-ci.yml` file or by implicitly using
-[Auto License Compliance](../../../topics/autodevops/stages.md#auto-license-compliance-ultimate)
+[Auto License Compliance](../../../topics/autodevops/stages.md#auto-license-compliance)
 that is provided by [Auto DevOps](../../../topics/autodevops/index.md).
 
 GitLab checks the License Compliance report, compares the licenses between the
@@ -118,7 +118,7 @@ the `license_management` job, so you must migrate to the `license_scanning` job 
 `License-Scanning.gitlab-ci.yml` template.
 
 The results will be saved as a
-[License Compliance report artifact](../../../ci/pipelines/job_artifacts.md#artifactsreportslicense_scanning-ultimate)
+[License Compliance report artifact](../../../ci/pipelines/job_artifacts.md#artifactsreportslicense_scanning)
 that you can later download and analyze. Due to implementation limitations, we
 always take the latest License Compliance artifact available. Behind the scenes, the
 [GitLab License Compliance Docker image](https://gitlab.com/gitlab-org/security-products/license-management)

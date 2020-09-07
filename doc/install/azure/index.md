@@ -419,7 +419,7 @@ Check out our other [Technical Articles](../../articles/index.md) or browse the 
 ### Useful links
 
 - [GitLab Community Edition](https://about.gitlab.com/features/)
-- [GitLab Enterprise Edition](https://about.gitlab.com/features/#ee-starter)
+- [GitLab Enterprise Edition](https://about.gitlab.com/features/#ee)
 - [Microsoft Azure](https://azure.microsoft.com/en-us/)
   - [Azure - Free Account FAQ](https://azure.microsoft.com/en-us/free/free-account-faq/)
   - [Azure - Marketplace](https://azuremarketplace.microsoft.com/en-us/marketplace/)

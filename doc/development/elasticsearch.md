@@ -218,7 +218,7 @@ logs will also include the time spent on Database and Gitaly requests, which
 may help to diagnose which part of the search is performing poorly.
 
 There are additional logs specific to Elasticsearch that are sent to
-[`elasticsearch.log`](../administration/logs.md#elasticsearchlog-starter-only)
+[`elasticsearch.log`](../administration/logs.md#elasticsearchlog)
 that may contain information to help diagnose performance issues.
 
 ### Performance Bar

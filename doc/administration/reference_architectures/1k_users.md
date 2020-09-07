@@ -12,7 +12,7 @@ full list of reference architectures, see
 
 If you need to serve up to 1,000 users and you don't have strict availability
 requirements, a single-node solution with
-[frequent backups](index.md#automated-backups-core-only) is appropriate for
+[frequent backups](index.md#automated-backups) is appropriate for
 many organizations .
 
 > - **Supported users (approximate):** 1,000

@@ -26,7 +26,7 @@ If you're using [GitLab CI/CD](../../../ci/README.md), you can analyze your runn
 for known vulnerabilities using Dynamic Application Security Testing (DAST).
 You can take advantage of DAST by either [including the CI job](#configuration) in
 your existing `.gitlab-ci.yml` file or by implicitly using
-[Auto DAST](../../../topics/autodevops/stages.md#auto-dast-ultimate),
+[Auto DAST](../../../topics/autodevops/stages.md#auto-dast),
 provided by [Auto DevOps](../../../topics/autodevops/index.md).
 
 GitLab checks the DAST report, compares the found vulnerabilities between the source and target
@@ -106,7 +106,7 @@ The included template creates a `dast` job in your CI/CD pipeline and scans
 your project's source code for possible vulnerabilities.
 
 The results are saved as a
-[DAST report artifact](../../../ci/pipelines/job_artifacts.md#artifactsreportsdast-ultimate)
+[DAST report artifact](../../../ci/pipelines/job_artifacts.md#artifactsreportsdast)
 that you can later download and analyze. Due to implementation limitations we
 always take the latest DAST artifact available. Behind the scenes, the
 [GitLab DAST Docker image](https://gitlab.com/gitlab-org/security-products/dast)
@@ -183,7 +183,7 @@ variables:
 ```
 
 The results are saved as a
-[DAST report artifact](../../../ci/pipelines/job_artifacts.md#artifactsreportsdast-ultimate)
+[DAST report artifact](../../../ci/pipelines/job_artifacts.md#artifactsreportsdast)
 that you can later download and analyze.
 Due to implementation limitations, we always take the latest DAST artifact available.
 

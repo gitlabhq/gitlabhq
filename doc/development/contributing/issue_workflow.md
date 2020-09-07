@@ -118,7 +118,7 @@ the `gitlab-org` group since its key under `stages` is `manage`.
 
 The current stage labels can be found by [searching the labels list for `devops::`](https://gitlab.com/groups/gitlab-org/-/labels?search=devops::).
 
-These labels are [scoped labels](../../user/project/labels.md#scoped-labels-premium)
+These labels are [scoped labels](../../user/project/labels.md#scoped-labels)
 and thus are mutually exclusive.
 
 The Stage labels are used to generate the [direction pages](https://about.gitlab.com/direction/) automatically.
@@ -145,7 +145,7 @@ under `stages.manage.groups` is `continuous_integration`.
 
 The current group labels can be found by [searching the labels list for `group::`](https://gitlab.com/groups/gitlab-org/-/labels?search=group::).
 
-These labels are [scoped labels](../../user/project/labels.md#scoped-labels-premium)
+These labels are [scoped labels](../../user/project/labels.md#scoped-labels)
 and thus are mutually exclusive.
 
 You can find the groups listed in the [Product Stages, Groups, and Categories](https://about.gitlab.com/handbook/product/product-categories/) page.

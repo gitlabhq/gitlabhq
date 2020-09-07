@@ -137,7 +137,7 @@ Once a lifetime for personal access tokens is set, GitLab will:
 > - It is deployed behind a feature flag, disabled by default.
 > - It is disabled on GitLab.com.
 > - It is not recommended for production use.
-> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-optional-enforcement-of-personal-access-token-expiry-feature-core-only). **(CORE ONLY)**
+> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-optional-enforcement-of-personal-access-token-expiry-feature). **(CORE ONLY)**
 
 GitLab administrators can choose to prevent personal access tokens from expiring automatically. The tokens will be usable after the expiry date, unless they are revoked explicitly.
 

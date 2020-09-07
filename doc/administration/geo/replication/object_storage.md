@@ -44,7 +44,7 @@ For LFS, follow the documentation to
 For CI job artifacts, there is similar documentation to configure
 [jobs artifact object storage](../../job_artifacts.md#using-object-storage)
 
-For user uploads, there is similar documentation to configure [upload object storage](../../uploads.md#using-object-storage-core-only)
+For user uploads, there is similar documentation to configure [upload object storage](../../uploads.md#using-object-storage)
 
 If you want to migrate the **primary** node's files to object storage, you can
 configure the **secondary** in a few ways:

@@ -107,7 +107,7 @@ There are some high level differences between the products worth mentioning:
   is in the YAML format (see [complete reference](../yaml/README.md)) instead of a Groovy DSL. It's most
   analogous to the declarative Jenkinsfile format.
 - Manual approvals or gates can be set up as [`when:manual` jobs](../yaml/README.md#whenmanual). These can
-  also leverage [`protected environments`](../yaml/README.md#protecting-manual-jobs-premium)
+  also leverage [`protected environments`](../yaml/README.md#protecting-manual-jobs)
   to control who is able to approve them.
 - GitLab comes with a [container registry](../../user/packages/container_registry/index.md), and we recommend using
   container images to set up your build environment. For example, set up one pipeline that builds your build environment

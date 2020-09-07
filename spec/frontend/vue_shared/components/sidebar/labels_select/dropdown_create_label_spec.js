@@ -43,7 +43,7 @@ describe('DropdownCreateLabelComponent', () => {
       );
 
       expect(backButtonEl).not.toBe(null);
-      expect(backButtonEl.querySelector('.fa-arrow-left')).not.toBe(null);
+      expect(backButtonEl.querySelector('[data-testid="arrow-left-icon"]')).not.toBe(null);
     });
 
     it('renders component header element as `Create new label` when `headerTitle` prop is not provided', () => {

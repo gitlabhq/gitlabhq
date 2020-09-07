@@ -50,7 +50,7 @@ RSpec.describe MergeRequests::PostMergeService do
     end
 
     it 'marks MR as merged regardless of errors when closing issues' do
-      merge_request.update(target_branch: 'foo')
+      merge_request.update!(target_branch: 'foo')
       allow(project).to receive(:default_branch).and_return('foo')
 
       issue = create(:issue, project: project)

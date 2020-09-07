@@ -117,9 +117,9 @@ From the project issue/merge request list pages and the group issue/merge reques
 ### Filtering in issue boards
 
 - From [project issue boards](../issue_board.md), you can filter by both group milestones and project milestones in the [search and filter bar](../../search/index.md#issue-boards).
-- From [group issue boards](../issue_board.md#group-issue-boards-premium), you can filter by only group milestones in the [search and filter bar](../../search/index.md#issue-boards). **(PREMIUM)**
-- From [project issue boards](../issue_board.md), you can filter by both group milestones and project milestones in the [issue board configuration](../issue_board.md#configurable-issue-boards-starter). **(STARTER)**
-- From [group issue boards](../issue_board.md#group-issue-boards-premium) you can filter by only group milestones in the [issue board configuration](../issue_board.md#configurable-issue-boards-starter). **(STARTER)**
+- From [group issue boards](../issue_board.md#group-issue-boards), you can filter by only group milestones in the [search and filter bar](../../search/index.md#issue-boards). **(PREMIUM)**
+- From [project issue boards](../issue_board.md), you can filter by both group milestones and project milestones in the [issue board configuration](../issue_board.md#configurable-issue-boards). **(STARTER)**
+- From [group issue boards](../issue_board.md#group-issue-boards) you can filter by only group milestones in the [issue board configuration](../issue_board.md#configurable-issue-boards). **(STARTER)**
 
 ### Special milestone filters
 

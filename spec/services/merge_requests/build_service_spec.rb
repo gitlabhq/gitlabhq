@@ -514,7 +514,7 @@ RSpec.describe MergeRequests::BuildService do
       let(:target_project) { create(:project, :public, :repository) }
 
       before do
-        target_project.update(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
+        target_project.update!(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
       end
 
       it 'sets the target_project correctly' do

@@ -40,7 +40,7 @@ const defaultProps = {
   pagesAvailable: true,
   pagesAccessControlEnabled: false,
   pagesAccessControlForced: false,
-  pagesHelpPath: '/help/user/project/pages/introduction#gitlab-pages-access-control-core',
+  pagesHelpPath: '/help/user/project/pages/introduction#gitlab-pages-access-control',
   packagesAvailable: false,
   packagesHelpPath: '/help/user/packages/index',
 };

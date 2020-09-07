@@ -2,7 +2,7 @@
 
 ## Instance Audit Events **(PREMIUM ONLY)**
 
-The Audit Events API allows you to retrieve [instance audit events](../administration/audit_events.md#instance-events-premium-only).
+The Audit Events API allows you to retrieve [instance audit events](../administration/audit_events.md#instance-events).
 
 To retrieve audit events using the API, you must [authenticate yourself](README.md#authentication) as an Administrator.
 
@@ -124,7 +124,7 @@ Example response:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/34078) in GitLab 12.5.
 
-The Group Audit Events API allows you to retrieve [group audit events](../administration/audit_events.md#group-events-starter).
+The Group Audit Events API allows you to retrieve [group audit events](../administration/audit_events.md#group-events).
 
 To retrieve group audit events using the API, you must [authenticate yourself](README.md#authentication) as an Administrator or an owner of the group.
 
@@ -230,7 +230,7 @@ Example response:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/219238) in GitLab 13.1.
 
-The Project Audit Events API allows you to retrieve [project audit events](../administration/audit_events.md#project-events-starter).
+The Project Audit Events API allows you to retrieve [project audit events](../administration/audit_events.md#project-events).
 
 To retrieve project audit events using the API, you must [authenticate yourself](README.md#authentication) as a Maintainer or an Owner of the project.
 

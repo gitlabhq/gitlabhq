@@ -901,7 +901,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
 
       context 'when there is auto_canceled_by' do
         before do
-          pipeline.update(auto_canceled_by: create(:ci_empty_pipeline))
+          pipeline.update!(auto_canceled_by: create(:ci_empty_pipeline))
         end
 
         it 'is auto canceled' do
@@ -1571,7 +1571,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
         it 'looks up a commit for a tag' do
           expect(project.repository.branch_names).not_to include 'v1.0.0'
 
-          pipeline.update(sha: project.commit('v1.0.0').sha, ref: 'v1.0.0', tag: true)
+          pipeline.update!(sha: project.commit('v1.0.0').sha, ref: 'v1.0.0', tag: true)
 
           expect(pipeline).to be_tag
           expect(pipeline).to be_latest
@@ -1580,7 +1580,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
 
       context 'with not latest sha' do
         before do
-          pipeline.update(sha: project.commit("#{project.default_branch}~1").sha)
+          pipeline.update!(sha: project.commit("#{project.default_branch}~1").sha)
         end
 
         it 'returns false' do
@@ -1608,7 +1608,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
         let!(:manual2) { create(:ci_build, :manual, pipeline: pipeline, name: 'deploy') }
 
         before do
-          manual.update(retried: true)
+          manual.update!(retried: true)
         end
 
         it 'returns latest one' do
@@ -1644,7 +1644,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
   describe '#modified_paths' do
     context 'when old and new revisions are set' do
       before do
-        pipeline.update(before_sha: '1234abcd', sha: '2345bcde')
+        pipeline.update!(before_sha: '1234abcd', sha: '2345bcde')
       end
 
       it 'fetches stats for changes between commits' do
@@ -2740,7 +2740,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
       project.add_developer(pipeline.user)
 
       pipeline.user.global_notification_setting
-        .update(level: 'custom', failed_pipeline: true, success_pipeline: true)
+        .update!(level: 'custom', failed_pipeline: true, success_pipeline: true)
 
       perform_enqueued_jobs do
         pipeline.enqueue

@@ -358,10 +358,10 @@ When ready to merge:
   messy commit history that is intended to be squashed.
 - **Start a new merge request pipeline with the `Run Pipeline` button in the merge
   request's "Pipelines" tab, and enable "Merge When Pipeline Succeeds" (MWPS).** Note that:
-  - If the **latest [Pipeline for Merged Results](../ci/merge_request_pipelines/pipelines_for_merged_results/#pipelines-for-merged-results-premium)** finished less than 2 hours ago, you
+  - If the **latest [Pipeline for Merged Results](../ci/merge_request_pipelines/pipelines_for_merged_results/#pipelines-for-merged-results)** finished less than 2 hours ago, you
     might merge without starting a new pipeline as the merge request is close
     enough to `master`.
-  - If the **merge request is from a fork**, we can use [Pipelines for Merged Results from a forked project](../ci/merge_request_pipelines/index.md#run-pipelines-in-the-parent-project-for-merge-requests-from-a-forked-project-starter) with caution.
+  - If the **merge request is from a fork**, we can use [Pipelines for Merged Results from a forked project](../ci/merge_request_pipelines/index.md#run-pipelines-in-the-parent-project-for-merge-requests-from-a-forked-project) with caution.
     Before triggering the pipeline, review all changes for **malicious code**.
     If you cannot trigger the pipeline, review the status of the fork relative to `master`.
     If it's more than 100 commits behind, ask the author to rebase it before merging.

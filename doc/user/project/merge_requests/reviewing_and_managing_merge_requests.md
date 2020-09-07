@@ -73,7 +73,7 @@ list.
 > - It's deployed behind a feature flag, enabled by default.
 > - It's recommended for production use.
 > - It's enabled on GitLab.com.
-> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-file-by-file-diff-navigation-core-only).
+> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-file-by-file-diff-navigation).
 
 For larger merge requests it might sometimes be useful to review single files at a time. To enable,
 from your avatar on the top-right navbar, click **Settings**, and go to **Preferences** on the left
@@ -156,7 +156,7 @@ in a Merge Request. To do so, click the **{comment}** **comment** icon in the gu
 > - It's enabled on GitLab.com.
 > - It can be disabled or enabled per-project.
 > - It's recommended for production use.
-> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-multiline-comments-core-only). **(CORE ONLY)**
+> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-multiline-comments). **(CORE ONLY)**
 
 GitLab provides a way to select which lines of code a comment refers to. After starting a comment
 a dropdown selector is shown to select the first line that this comment refers to.

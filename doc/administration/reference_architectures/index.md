@@ -32,7 +32,7 @@ per 1,000 users:
 - Git: 2 RPS
 
 For GitLab instances with less than 2,000 users, it's recommended that you use
-the [default setup](#automated-backups-core-only) by
+the [default setup](#automated-backups) by
 [installing GitLab](../../install/README.md) on a single machine to minimize
 maintenance and resource costs.
 
@@ -73,11 +73,11 @@ The following reference architectures are available:
 GitLab comes with the following components for your use, listed from least to
 most complex:
 
-- [Automated backups](#automated-backups-core-only)
-- [Traffic load balancer](#traffic-load-balancer-starter-only)
-- [Zero downtime updates](#zero-downtime-updates-starter-only)
-- [Automated database failover](#automated-database-failover-premium-only)
-- [Instance level replication with GitLab Geo](#instance-level-replication-with-gitlab-geo-premium-only)
+- [Automated backups](#automated-backups)
+- [Traffic load balancer](#traffic-load-balancer)
+- [Zero downtime updates](#zero-downtime-updates)
+- [Automated database failover](#automated-database-failover)
+- [Instance level replication with GitLab Geo](#instance-level-replication-with-gitlab-geo)
 
 As you implement these components, begin with a single server and then do
 backups. Only after completing the first server should you proceed to the next.

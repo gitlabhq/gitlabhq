@@ -73,7 +73,7 @@ RSpec.describe Ci::BuildMetadata do
 
       context 'when both runner and job timeouts are set' do
         before do
-          build.update(runner: runner)
+          build.update!(runner: runner)
         end
 
         context 'when job timeout is higher than runner timeout' do

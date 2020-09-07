@@ -29,7 +29,7 @@ is added or updated. The following are added by the issue or merge request autho
 
 The following are also added by members of the Technical Writing team:
 
-- A documentation [scoped label](../../user/project/labels.md#scoped-labels-premium) with the
+- A documentation [scoped label](../../user/project/labels.md#scoped-labels) with the
   `docs::` prefix. For example, `~docs::improvement`.
 - The `~Technical Writing` [team label](../contributing/issue_workflow.md#team-labels).
 

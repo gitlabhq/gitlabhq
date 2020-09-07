@@ -118,7 +118,7 @@ After creating your dashboard, you can customize it to meet your needs:
   [create custom metrics](#adding-custom-metrics) and display them on your metrics dashboard.
 - **Configure alerts for metrics**: [Configure custom alerts](alerts.md) for your team when
   environment performance falls outside of the boundaries you set.
-- **Trigger actions from alerts**: [Open new issues for your team](alerts.md#trigger-actions-from-alerts-ultimate) **(ULTIMATE)**
+- **Trigger actions from alerts**: [Open new issues for your team](alerts.md#trigger-actions-from-alerts) **(ULTIMATE)**
   when environment performance falls outside of the boundaries you set.
 
 ## Metrics dashboard visibility

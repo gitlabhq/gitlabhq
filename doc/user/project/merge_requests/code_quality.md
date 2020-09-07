@@ -23,7 +23,7 @@ Code Quality:
   Quality](https://gitlab.com/gitlab-org/ci-cd/codequality) project using [default Code Climate configurations](https://gitlab.com/gitlab-org/ci-cd/codequality/-/tree/master/codeclimate_defaults).
 - Can make use of a [template](#example-configuration).
 - Is available with [Auto
-  DevOps](../../../topics/autodevops/stages.md#auto-code-quality-starter).
+  DevOps](../../../topics/autodevops/stages.md#auto-code-quality).
 - Can be extended through [Analysis Plugins](https://docs.codeclimate.com/docs/list-of-engines) or a [custom tool](#implementing-a-custom-tool).
 
 ## Code Quality Widget

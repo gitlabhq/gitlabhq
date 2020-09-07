@@ -231,7 +231,7 @@ available in the **Resolved Comment** area at the bottom of the right sidebar.
 > - It is deployed behind a feature flag, disabled by default.
 > - It is disabled on GitLab.com.
 > - It is not recommended for production use.
-> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-design-references-core-only). **(CORE ONLY)**
+> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-design-references). **(CORE ONLY)**
 
 We support referring to designs in [Markdown](../../markdown.md), which is available
 throughout the application, including in merge request and issue descriptions, in discussions and comments, and in wiki pages.

@@ -258,7 +258,7 @@ You can also retrieve the reports via the [GitLab API](../api/pipelines.md#get-a
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/202114) in GitLab 13.0.
 > - It's deployed behind a feature flag, disabled by default.
-> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enabling-the-junit-screenshots-feature-core-only). **(CORE ONLY)**
+> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enabling-the-junit-screenshots-feature). **(CORE ONLY)**
 
 If JUnit report format XML files contain an `attachment` tag, GitLab parses the attachment.
 

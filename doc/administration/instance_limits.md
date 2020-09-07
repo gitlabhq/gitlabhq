@@ -321,7 +321,7 @@ Plan.default.actual_limits.update!(ci_instance_level_variables: 30)
 Job artifacts defined with [`artifacts:reports`](../ci/pipelines/job_artifacts.md#artifactsreports)
 that are uploaded by the Runner are rejected if the file size exceeds the maximum
 file size limit. The limit is determined by comparing the project's
-[maximum artifact size setting](../user/admin_area/settings/continuous_integration.md#maximum-artifacts-size-core-only)
+[maximum artifact size setting](../user/admin_area/settings/continuous_integration.md#maximum-artifacts-size)
 with the instance limit for the given artifact type, and choosing the smaller value.
 
 Limits are set in megabytes, so the smallest possible value that can be defined is `1 MB`.
@@ -434,7 +434,7 @@ Kubernetes won't be shown.
 
 Reports that go over the 20 MB limit won't be loaded. Affected reports:
 
-- [Merge Request security reports](../user/project/merge_requests/testing_and_reports_in_merge_requests.md#security-reports-ultimate)
+- [Merge Request security reports](../user/project/merge_requests/testing_and_reports_in_merge_requests.md#security-reports)
 - [CI/CD parameter `artifacts:expose_as`](../ci/yaml/README.md#artifactsexpose_as)
 - [Unit test reports](../ci/unit_test_reports.md)
 

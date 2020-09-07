@@ -36,7 +36,7 @@ Required approvals enable multiple use cases:
   database, and so on, for all proposed code changes.
 - Designating [Code Owners as eligible approvers](#code-owners-as-eligible-approvers),
   determined by the files changed in a merge request.
-- [Requiring approval from a security team](#security-approvals-in-merge-requests-ultimate)
+- [Requiring approval from a security team](#security-approvals-in-merge-requests)
   before merging code that could introduce a vulnerability.**(ULTIMATE)**
 
 ### Approval Rules
@@ -52,7 +52,7 @@ minimum number of required approvers can still be set in the [project settings f
 
 You can opt to define one single rule to approve a merge request among the available rules
 or choose more than one. Single approval rules are available in GitLab Starter and higher tiers,
-while [multiple approval rules](#multiple-approval-rules-premium) are available in
+while [multiple approval rules](#multiple-approval-rules) are available in
 [GitLab Premium](https://about.gitlab.com/pricing/) and above.
 
 NOTE: **Note:**
@@ -119,7 +119,7 @@ users with Developer or higher permissions, as well as by Code Owners,
 indistinguishably.
 
 Alternatively, you can **require**
-[Code Owner's approvals for Protected Branches](../protected_branches.md#protected-branches-approval-by-code-owners-premium). **(PREMIUM)**
+[Code Owner's approvals for Protected Branches](../protected_branches.md#protected-branches-approval-by-code-owners). **(PREMIUM)**
 
 #### Adding / editing a default approval rule
 
@@ -205,7 +205,7 @@ Alternatively, you can select a very specific protected branch from the **Target
 
 ![Scoped to Protected Branch](img/scoped_to_protected_branch_v12_8.png)
 
-To enable this configuration, see [Code Owner’s approvals for protected branches](../protected_branches.md#protected-branches-approval-by-code-owners-premium).
+To enable this configuration, see [Code Owner’s approvals for protected branches](../protected_branches.md#protected-branches-approval-by-code-owners).
 
 ### Adding or removing an approval
 

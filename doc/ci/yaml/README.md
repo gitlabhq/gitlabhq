@@ -34,8 +34,9 @@ We have complete examples of configuring pipelines:
 >   from 30 days to under 8 hours with GitLab.
 
 NOTE: **Note:**
-If you have a [mirrored repository that GitLab pulls from](../../user/project/repository/repository_mirroring.md#pulling-from-a-remote-repository-starter),
+If you have a [mirrored repository that GitLab pulls from](../../user/project/repository/repository_mirroring.md#pulling-from-a-remote-repository),
 you may need to enable pipeline triggering. Go to your project's
+
 **Settings > Repository > Pull from a remote repository > Trigger pipelines for mirror updates**.
 
 ## Introduction
@@ -363,7 +364,7 @@ makes your pipelines run for branches and tags.
 Branch pipeline status will be displayed within merge requests that use that branch
 as a source, but this pipeline type does not support any features offered by
 [Merge Request Pipelines](../merge_request_pipelines/) like
-[Pipelines for Merge Results](../merge_request_pipelines/#pipelines-for-merged-results-premium)
+[Pipelines for Merge Results](../merge_request_pipelines/#pipelines-for-merged-results)
 or [Merge Trains](../merge_request_pipelines/pipelines_for_merged_results/merge_trains/).
 Use this template if you are intentionally avoiding those features.
 
@@ -2076,7 +2077,9 @@ This example creates four paths of execution:
 - The maximum number of jobs that a single job can need in the `needs:` array is limited:
   - For GitLab.com, the limit is 50. For more information, see our
     [infrastructure issue](https://gitlab.com/gitlab-com/gl-infra/infrastructure/-/issues/7541).
-  - For self-managed instances, the limit is: 50. This limit [can be changed](#changing-the-needs-job-limit-core-only).
+  - For self-managed instances, the limit is:
+    - 10, if the `ci_plan_needs_size_limit` feature flag is disabled (default).
+    - 50, if the `ci_plan_needs_size_limit` feature flag is enabled. This limit [can be changed](#changing-the-needs-job-limit).
 - If `needs:` refers to a job that is marked as `parallel:`.
   the current job will depend on all parallel jobs created.
 - `needs:` is similar to `dependencies:` in that it needs to use jobs from prior stages,
@@ -2391,7 +2394,7 @@ Manual actions are considered to be write actions, so permissions for
 a user wants to trigger an action. In other words, in order to trigger a manual
 action assigned to a branch that the pipeline is running for, the user needs to
 have the ability to merge to this branch. It's possible to use protected environments
-to more strictly [protect manual deployments](#protecting-manual-jobs-premium) from being
+to more strictly [protect manual deployments](#protecting-manual-jobs) from being
 run by unauthorized users.
 
 NOTE: **Note:**
@@ -3255,7 +3258,7 @@ expire and are deleted.
 
 The expiration time period begins when the artifact is uploaded and
 stored on GitLab. If the expiry time is not defined, it defaults to the
-[instance wide setting](../../user/admin_area/settings/continuous_integration.md#default-artifacts-expiration-core-only)
+[instance wide setting](../../user/admin_area/settings/continuous_integration.md#default-artifacts-expiration)
 (30 days by default).
 
 To override the expiration date and protect artifacts from being automatically deleted:
@@ -3306,17 +3309,17 @@ These are the available report types:
 |--------------------------------------------------------------------------------------------------------------------------------------|-------------|
 | [`artifacts:reports:cobertura`](../pipelines/job_artifacts.md#artifactsreportscobertura)                                             | The `cobertura` report collects Cobertura coverage XML files.                    |
 | [`artifacts:reports:codequality`](../pipelines/job_artifacts.md#artifactsreportscodequality)                                         | The `codequality` report collects CodeQuality issues.                            |
-| [`artifacts:reports:container_scanning`](../pipelines/job_artifacts.md#artifactsreportscontainer_scanning-ultimate) **(ULTIMATE)**   | The `container_scanning` report collects Container Scanning vulnerabilities.     |
-| [`artifacts:reports:dast`](../pipelines/job_artifacts.md#artifactsreportsdast-ultimate) **(ULTIMATE)**                               | The `dast` report collects Dynamic Application Security Testing vulnerabilities. |
-| [`artifacts:reports:dependency_scanning`](../pipelines/job_artifacts.md#artifactsreportsdependency_scanning-ultimate) **(ULTIMATE)** | The `dependency_scanning` report collects Dependency Scanning vulnerabilities.   |
+| [`artifacts:reports:container_scanning`](../pipelines/job_artifacts.md#artifactsreportscontainer_scanning) **(ULTIMATE)**   | The `container_scanning` report collects Container Scanning vulnerabilities.     |
+| [`artifacts:reports:dast`](../pipelines/job_artifacts.md#artifactsreportsdast) **(ULTIMATE)**                               | The `dast` report collects Dynamic Application Security Testing vulnerabilities. |
+| [`artifacts:reports:dependency_scanning`](../pipelines/job_artifacts.md#artifactsreportsdependency_scanning) **(ULTIMATE)** | The `dependency_scanning` report collects Dependency Scanning vulnerabilities.   |
 | [`artifacts:reports:dotenv`](../pipelines/job_artifacts.md#artifactsreportsdotenv)                                                   | The `dotenv` report collects a set of environment variables.                     |
 | [`artifacts:reports:junit`](../pipelines/job_artifacts.md#artifactsreportsjunit)                                                     | The `junit` report collects JUnit XML files.                                     |
-| [`artifacts:reports:license_management`](../pipelines/job_artifacts.md#artifactsreportslicense_management-ultimate) **(ULTIMATE)**   | The `license_management` report collects Licenses (*removed from GitLab 13.0*).  |
-| [`artifacts:reports:license_scanning`](../pipelines/job_artifacts.md#artifactsreportslicense_scanning-ultimate) **(ULTIMATE)**       | The `license_scanning` report collects Licenses.                                 |
-| [`artifacts:reports:load_performance`](../pipelines/job_artifacts.md#artifactsreportsload_performance-premium) **(PREMIUM)**         | The `load_performance` report collects load performance metrics.                 |
-| [`artifacts:reports:metrics`](../pipelines/job_artifacts.md#artifactsreportsmetrics-premium) **(PREMIUM)**                           | The `metrics` report collects Metrics.                                           |
-| [`artifacts:reports:performance`](../pipelines/job_artifacts.md#artifactsreportsperformance-premium) **(PREMIUM)**                   | The `performance` report collects Browser Performance metrics.                   |
-| [`artifacts:reports:sast`](../pipelines/job_artifacts.md#artifactsreportssast-ultimate) **(ULTIMATE)**                               | The `sast` report collects Static Application Security Testing vulnerabilities.  |
+| [`artifacts:reports:license_management`](../pipelines/job_artifacts.md#artifactsreportslicense_management) **(ULTIMATE)**   | The `license_management` report collects Licenses (*removed from GitLab 13.0*).  |
+| [`artifacts:reports:license_scanning`](../pipelines/job_artifacts.md#artifactsreportslicense_scanning) **(ULTIMATE)**       | The `license_scanning` report collects Licenses.                                 |
+| [`artifacts:reports:load_performance`](../pipelines/job_artifacts.md#artifactsreportsload_performance) **(PREMIUM)**         | The `load_performance` report collects load performance metrics.                 |
+| [`artifacts:reports:metrics`](../pipelines/job_artifacts.md#artifactsreportsmetrics) **(PREMIUM)**                           | The `metrics` report collects Metrics.                                           |
+| [`artifacts:reports:performance`](../pipelines/job_artifacts.md#artifactsreportsperformance) **(PREMIUM)**                   | The `performance` report collects Browser Performance metrics.                   |
+| [`artifacts:reports:sast`](../pipelines/job_artifacts.md#artifactsreportssast) **(ULTIMATE)**                               | The `sast` report collects Static Application Security Testing vulnerabilities.  |
 | [`artifacts:reports:terraform`](../pipelines/job_artifacts.md#artifactsreportsterraform)                                             | The `terraform` report collects Terraform `tfplan.json` files.                   |
 
 #### `dependencies`

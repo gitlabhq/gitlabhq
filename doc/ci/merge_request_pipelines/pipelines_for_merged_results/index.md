@@ -66,7 +66,7 @@ unresolved state or your pipelines may be dropped.
 
 ## Using Merge Trains
 
-When you enable [Pipelines for merged results](#pipelines-for-merged-results-premium),
+When you enable [Pipelines for merged results](#pipelines-for-merged-results),
 GitLab [automatically displays](merge_trains/index.md#add-a-merge-request-to-a-merge-train)
 a **Start/Add Merge Train button**.
 

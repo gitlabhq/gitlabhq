@@ -21,7 +21,7 @@ It deprecates these endpoints, which will be removed for API version 5.
 In addition to templates common to the entire instance, project-specific
 templates are also available from this API endpoint.
 
-Support for [Group-level file templates](../user/group/index.md#group-file-templates-premium)
+Support for [Group-level file templates](../user/group/index.md#group-file-templates)
 **(PREMIUM)** was [added](https://gitlab.com/gitlab-org/gitlab/-/issues/5987)
 in GitLab 11.5
 
