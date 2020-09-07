@@ -38,6 +38,11 @@ export default {
   },
   mixins: [delayedJobMixin],
   props: {
+    artifactHelpUrl: {
+      type: String,
+      required: false,
+      default: '',
+    },
     runnerSettingsUrl: {
       type: String,
       required: false,
@@ -319,6 +324,7 @@ export default {
         'right-sidebar-expanded': isSidebarOpen,
         'right-sidebar-collapsed': !isSidebarOpen,
       }"
+      :artifact-help-url="artifactHelpUrl"
       :runner-help-url="runnerHelpUrl"
       data-testid="job-sidebar"
     />

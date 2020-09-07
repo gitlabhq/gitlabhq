@@ -211,8 +211,7 @@ RSpec.describe ObjectStorage::DirectUpload do
         expect(subject[:UseWorkhorseClient]).to be true
         expect(subject[:RemoteTempObjectID]).to eq(object_name)
         expect(subject[:ObjectStorage][:Provider]).to eq('AzureRM')
-        expect(subject[:ObjectStorage][:AzureConfig][:StorageDomain]).to eq(storage_domain)
-        expect(subject[:ObjectStorage][:GoCloudConfig]).to eq({ URL: "azblob://#{bucket_name}" })
+        expect(subject[:ObjectStorage][:GoCloudConfig]).to eq({ URL: gocloud_url })
       end
     end
 
@@ -399,6 +398,7 @@ RSpec.describe ObjectStorage::DirectUpload do
       let(:has_length) { false }
       let(:storage_domain) { nil }
       let(:storage_url) { 'https://azuretest.blob.core.windows.net' }
+      let(:gocloud_url) { "azblob://#{bucket_name}" }
 
       it_behaves_like 'a valid AzureRM upload'
       it_behaves_like 'a valid upload without multipart data'
@@ -406,6 +406,7 @@ RSpec.describe ObjectStorage::DirectUpload do
       context 'when a custom storage domain is used' do
         let(:storage_domain) { 'blob.core.chinacloudapi.cn' }
         let(:storage_url) { "https://azuretest.#{storage_domain}" }
+        let(:gocloud_url) { "azblob://#{bucket_name}?domain=#{storage_domain}" }
 
         before do
           credentials[:azure_storage_domain] = storage_domain

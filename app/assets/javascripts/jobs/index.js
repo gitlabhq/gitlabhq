@@ -18,6 +18,7 @@ export default () => {
     },
     render(createElement) {
       const {
+        artifactHelpUrl,
         deploymentHelpUrl,
         runnerHelpUrl,
         runnerSettingsUrl,
@@ -32,6 +33,7 @@ export default () => {
 
       return createElement('job-app', {
         props: {
+          artifactHelpUrl,
           deploymentHelpUrl,
           runnerHelpUrl,
           runnerSettingsUrl,

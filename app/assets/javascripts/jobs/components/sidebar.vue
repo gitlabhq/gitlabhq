@@ -29,6 +29,11 @@ export default {
   },
   mixins: [timeagoMixin],
   props: {
+    artifactHelpUrl: {
+      type: String,
+      required: false,
+      default: '',
+    },
     runnerHelpUrl: {
       type: String,
       required: false,
@@ -208,7 +213,7 @@ export default {
           </p>
         </div>
 
-        <artifacts-block v-if="hasArtifact" :artifact="job.artifact" />
+        <artifacts-block v-if="hasArtifact" :artifact="job.artifact" :help-url="artifactHelpUrl" />
         <trigger-block v-if="hasTriggers" :trigger="job.trigger" />
         <commit-block
           :is-last-block="hasStages"
