@@ -1244,6 +1244,9 @@ Using the `GraphqlHelpers#all_graphql_fields_for`-helper, a query
 including all available fields can be constructed. This makes it easy
 to add a test rendering all possible fields for a query.
 
+If you're adding a field to a query that supports pagination and sorting,
+visit [Testing](graphql_guide/pagination.md#testing) for details.
+
 To test GraphQL mutation requests, `GraphqlHelpers` provides 2
 helpers: `graphql_mutation` which takes the name of the mutation, and
 a hash with the input for the mutation. This will return a struct with

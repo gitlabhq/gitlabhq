@@ -10,7 +10,7 @@ GitLab lets you analyze the users' activities over time of your GitLab installat
 How do we read the user cohorts table? Let's take an example with the following
 user cohorts.
 
-![User cohort example](img/cohorts.png)
+![User cohort example](img/cohorts_v13_4.png)
 
 For the cohort of March 2020, three users have been added on this server and have
 been active since this month. One month later, in April 2020, two users are

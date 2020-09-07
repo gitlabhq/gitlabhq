@@ -31,10 +31,10 @@ bug](https://bugzilla.redhat.com/show_bug.cgi?id=1783554) that causes
 following GitLab versions include a fix to work properly with that
 kernel version:
 
-1. [12.10.12](https://about.gitlab.com/releases/2020/06/25/gitlab-12-10-12-released/)
-1. [13.0.7](https://about.gitlab.com/releases/2020/06/25/gitlab-13-0-7-released/)
-1. [13.1.1](https://about.gitlab.com/releases/2020/06/24/gitlab-13-1-1-released/)
-1. 13.2 and up
+- [12.10.12](https://about.gitlab.com/releases/2020/06/25/gitlab-12-10-12-released/)
+- [13.0.7](https://about.gitlab.com/releases/2020/06/25/gitlab-13-0-7-released/)
+- [13.1.1](https://about.gitlab.com/releases/2020/06/24/gitlab-13-1-1-released/)
+- 13.2 and up
 
 If you are using that kernel version, be sure to upgrade GitLab to avoid
 errors.
@@ -173,6 +173,9 @@ Here is an example snippet to add to `/etc/fstab`:
 10.1.0.1:/var/opt/gitlab/git-data /var/opt/gitlab/git-data nfs4 defaults,vers=4.1,hard,rsize=1048576,wsize=1048576,noatime,nofail,lookupcache=positive 0 2
 ```
 
+You can view information and options set for each of the mounted NFS file
+systems by running `nfsstat -m` and `cat /etc/fstab`.
+
 Note there are several options that you should consider using:
 
 | Setting | Description |
@@ -270,9 +273,6 @@ NFS mount point is `/gitlab-nfs`. Then, add the following bind mounts in
 Using bind mounts will require manually making sure the data directories
 are empty before attempting a restore. Read more about the
 [restore prerequisites](../raketasks/backup_restore.md).
-
-You can view information and options set for each of the mounted NFS file
-systems by running `nfsstat -m` and `cat /etc/fstab`.
 
 ### Multiple NFS mounts
 

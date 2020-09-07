@@ -25,15 +25,16 @@ RSpec.describe 'Projects::MetricsDashboardController' do
     end
 
     it 'retains existing parameters when redirecting' do
-      get "#{dashboard_route(dashboard_path: '.gitlab/dashboards/dashboard_path.yml')}/panel/new"
+      params = {
+        dashboard_path: '.gitlab/dashboards/dashboard_path.yml',
+        page: 'panel/new',
+        group: 'System metrics (Kubernetes)',
+        title: 'Memory Usage (Pod average)',
+        y_label: 'Memory Used per Pod (MB)'
+      }
+      send_request(params)
 
-      expect(response).to redirect_to(
-        dashboard_route(
-          dashboard_path: '.gitlab/dashboards/dashboard_path.yml',
-          page: 'panel/new',
-          environment: environment
-        )
-      )
+      expect(response).to redirect_to(dashboard_route(params.merge(environment: environment.id)))
     end
 
     context 'with anonymous user and public dashboard visibility' do
@@ -110,15 +111,13 @@ RSpec.describe 'Projects::MetricsDashboardController' do
 
   describe 'GET :/namespace/:project/-/metrics/:page' do
     it 'returns 200 with path param page' do
-      # send_request(page: 'panel/new') cannot be used because it encodes '/'
-      get "#{dashboard_route}/panel/new?environment=#{environment.id}"
+      send_request(page: 'panel/new', environment: environment.id)
 
       expect(response).to have_gitlab_http_status(:ok)
     end
 
     it 'returns 200 with dashboard and path param page' do
-      # send_request(page: 'panel/new') cannot be used because it encodes '/'
-      get "#{dashboard_route(dashboard_path: 'dashboard.yml')}/panel/new?environment=#{environment.id}"
+      send_request(dashboard_path: 'dashboard.yml', page: 'panel/new', environment: environment.id)
 
       expect(response).to have_gitlab_http_status(:ok)
     end

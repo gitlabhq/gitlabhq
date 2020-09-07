@@ -111,7 +111,7 @@ RSpec.describe API::Snippets do
     end
 
     it 'returns 404 for invalid snippet id' do
-      snippet.destroy
+      snippet.destroy!
 
       get api("/snippets/#{snippet.id}/raw", author)
 
@@ -201,7 +201,7 @@ RSpec.describe API::Snippets do
       end
 
       it 'returns 404 for invalid snippet id' do
-        private_snippet.destroy
+        private_snippet.destroy!
 
         subject
 

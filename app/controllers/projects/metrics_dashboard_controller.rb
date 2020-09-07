@@ -20,10 +20,11 @@ module Projects
       elsif default_environment
         redirect_to project_metrics_dashboard_path(
           project,
-          **permitted_params
-            .to_h
-            .symbolize_keys
-            .merge(environment: default_environment)
+          # Reverse merge the query parameters so that a query parameter named dashboard_path doesn't
+          # override the dashboard_path path parameter.
+          **permitted_params.to_h.symbolize_keys
+            .merge(environment: default_environment.id)
+            .reverse_merge(request.query_parameters.symbolize_keys)
         )
       else
         render 'projects/environments/empty_metrics'

@@ -43,7 +43,7 @@ RSpec.describe API::ProjectMilestones do
         let(:milestones) { [group_milestone, ancestor_group_milestone, milestone, closed_milestone] }
 
         before_all do
-          project.update(namespace: group)
+          project.update!(namespace: group)
         end
 
         it_behaves_like 'listing all milestones'
@@ -108,7 +108,7 @@ RSpec.describe API::ProjectMilestones do
     let(:group) { create(:group) }
 
     before do
-      project.update(namespace: group)
+      project.update!(namespace: group)
     end
 
     context 'when user does not have permission to promote milestone' do
@@ -163,7 +163,7 @@ RSpec.describe API::ProjectMilestones do
 
     context 'when project does not belong to group' do
       before do
-        project.update(namespace: user.namespace)
+        project.update!(namespace: user.namespace)
       end
 
       it 'returns 403' do

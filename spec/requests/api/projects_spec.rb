@@ -208,7 +208,7 @@ RSpec.describe API::Projects do
       end
 
       it 'does not include projects marked for deletion' do
-        project.update(pending_delete: true)
+        project.update!(pending_delete: true)
 
         get api('/projects', user)
 
@@ -502,7 +502,7 @@ RSpec.describe API::Projects do
 
         before do
           project_member
-          user3.update(starred_projects: [project, project2, project3, public_project])
+          user3.update!(starred_projects: [project, project2, project3, public_project])
         end
 
         it 'returns the starred projects viewable by the user' do
@@ -523,7 +523,7 @@ RSpec.describe API::Projects do
         let!(:project9) { create(:project, :public, path: 'gitlab9') }
 
         before do
-          user.update(starred_projects: [project5, project7, project8, project9])
+          user.update!(starred_projects: [project5, project7, project8, project9])
         end
 
         context 'including owned filter' do
@@ -1232,7 +1232,7 @@ RSpec.describe API::Projects do
 
   describe 'GET /users/:user_id/starred_projects/' do
     before do
-      user3.update(starred_projects: [project, project2, project3])
+      user3.update!(starred_projects: [project, project2, project3])
     end
 
     it 'returns error when user not found' do
@@ -1745,7 +1745,7 @@ RSpec.describe API::Projects do
       end
 
       it 'returns 404 when project is marked for deletion' do
-        project.update(pending_delete: true)
+        project.update!(pending_delete: true)
 
         get api("/projects/#{project.id}", user)
 
@@ -2260,7 +2260,7 @@ RSpec.describe API::Projects do
     end
 
     it "returns a 400 error when sharing is disabled" do
-      project.namespace.update(share_with_group_lock: true)
+      project.namespace.update!(share_with_group_lock: true)
       post api("/projects/#{project.id}/share", user), params: { group_id: group.id, group_access: Gitlab::Access::DEVELOPER }
       expect(response).to have_gitlab_http_status(:bad_request)
     end
@@ -2417,7 +2417,7 @@ RSpec.describe API::Projects do
       end
 
       it 'updates visibility_level from public to private' do
-        project3.update({ visibility_level: Gitlab::VisibilityLevel::PUBLIC })
+        project3.update!({ visibility_level: Gitlab::VisibilityLevel::PUBLIC })
         project_param = { visibility: 'private' }
 
         put api("/projects/#{project3.id}", user), params: project_param
@@ -2877,8 +2877,8 @@ RSpec.describe API::Projects do
     let(:private_user) { create(:user, private_profile: true) }
 
     before do
-      user.update(starred_projects: [public_project])
-      private_user.update(starred_projects: [public_project])
+      user.update!(starred_projects: [public_project])
+      private_user.update!(starred_projects: [public_project])
     end
 
     it 'returns not_found(404) for not existing project' do

@@ -86,4 +86,57 @@ sorting by label priority in issues, due to the complexity of the sort.
 
 <!-- ### External pagination -->
 
-<!-- ### Pagination testing -->
+## Testing
+
+Any GraphQL field that supports pagination and sorting should be tested
+using the sorted paginated query shared example found in
+[`graphql/sorted_paginated_query_shared_examples.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/support/shared_examples/graphql/sorted_paginated_query_shared_examples.rb).
+It helps verify that your sort keys are compatible and that cursors
+work properly.
+
+This is particularly important when using keyset pagination, as some sort keys might not be supported.
+
+Add a section to your request specs like this:
+
+```ruby
+describe 'sorting and pagination' do
+  ...
+end
+```
+
+You can then use
+[`issues_spec.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/requests/api/graphql/project/issues_spec.rb)
+as an example to construct your tests.
+
+[`graphql/sorted_paginated_query_shared_examples.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/support/shared_examples/graphql/sorted_paginated_query_shared_examples.rb)
+also contains some documentation on how to use the shared examples.
+
+The shared example requires certain `let` variables and methods to be set up:
+
+```ruby
+describe 'sorting and pagination' do
+  let(:sort_project) { create(:project, :public) }
+  let(:data_path)    { [:project, :issues] }
+
+  def pagination_query(params, page_info)
+    graphql_query_for(
+      'project',
+      { 'fullPath' => sort_project.full_path },
+      query_graphql_field('issues', params, "#{page_info} edges { node { id } }")
+    )
+  end
+
+  def pagination_results_data(data)
+    data.map { |issue| issue.dig('node', 'iid').to_i }
+  end
+
+  context 'when sorting by weight' do
+    ...
+    context 'when ascending' do
+      it_behaves_like 'sorted paginated query' do
+        let(:sort_param)       { 'WEIGHT_ASC' }
+        let(:first_param)      { 2 }
+        let(:expected_results) { [weight_issue3.iid, weight_issue5.iid, weight_issue1.iid, weight_issue4.iid, weight_issue2.iid] }
+      end
+    end
+```

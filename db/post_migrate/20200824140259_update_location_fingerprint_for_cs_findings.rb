@@ -12,15 +12,10 @@ class UpdateLocationFingerprintForCsFindings < ActiveRecord::Migration[6.0]
 
   # 815_565 records
   def up
-    return unless Gitlab.ee?
-
-    migration = Gitlab::BackgroundMigration::UpdateLocationFingerprintForCsFindings
-    migration_name = migration.to_s.demodulize
-    relation = migration::Finding.container_scanning
-    queue_background_migration_jobs_by_range_at_intervals(relation,
-                                                          migration_name,
-                                                          INTERVAL,
-                                                          batch_size: BATCH_SIZE)
+    # no-op
+    # There was a bug introduced with this migration for gitlab.com
+    # We created new migration to mitigate that VERISON=20200907123723
+    # and change this one to no-op to prevent running migration twice
   end
 
   def down

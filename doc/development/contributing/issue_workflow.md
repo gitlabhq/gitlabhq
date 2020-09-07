@@ -190,7 +190,7 @@ their color is `#428BCA`.
 
 For instance, the "DevOps Report" category is represented by the
 ~"Category:DevOps Reports" label in the `gitlab-org` group since its
-`devops_score.name` value is "DevOps Reports".
+`devops_reports.name` value is "DevOps Reports".
 
 If a category's label doesn't respect this naming convention, it should be specified
 with [the `label` attribute](https://about.gitlab.com/handbook/marketing/website/#category-attributes)

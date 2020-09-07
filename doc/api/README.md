@@ -348,10 +348,10 @@ URL. Please use these links instead of generating your own URLs.
 
 In the cURL example below, we limit the output to 3 items per page (`per_page=3`)
 and we request the second page (`page=2`) of [comments](notes.md) of the issue
-with ID `8` which belongs to the project with ID `8`:
+with ID `8` which belongs to the project with ID `9`:
 
 ```shell
-curl --head --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/8/issues/8/notes?per_page=3&page=2"
+curl --head --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/9/issues/8/notes?per_page=3&page=2"
 ```
 
 The response will then be:
