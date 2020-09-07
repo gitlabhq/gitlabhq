@@ -8,8 +8,9 @@ import createNoteMutation from '~/design_management/graphql/mutations/create_not
 import toggleResolveDiscussionMutation from '~/design_management/graphql/mutations/toggle_resolve_discussion.mutation.graphql';
 import ReplyPlaceholder from '~/notes/components/discussion_reply_placeholder.vue';
 import ToggleRepliesWidget from '~/design_management/components/design_notes/toggle_replies_widget.vue';
+import mockDiscussion from '../../mock_data/discussion';
 
-const discussion = {
+const defaultMockDiscussion = {
   id: '0',
   resolved: false,
   resolvable: true,
@@ -49,7 +50,7 @@ describe('Design discussions component', () => {
     wrapper = mount(DesignDiscussion, {
       propsData: {
         resolvedDiscussionsExpanded: true,
-        discussion,
+        discussion: defaultMockDiscussion,
         noteableId: 'noteable-id',
         designId: 'design-id',
         discussionIndex: 1,
@@ -82,7 +83,7 @@ describe('Design discussions component', () => {
     beforeEach(() => {
       createComponent({
         discussion: {
-          ...discussion,
+          ...defaultMockDiscussion,
           resolvable: false,
         },
       });
@@ -125,7 +126,7 @@ describe('Design discussions component', () => {
 
     it('renders a checkbox with Resolve thread text in reply form', () => {
       findReplyPlaceholder().vm.$emit('onClick');
-      wrapper.setProps({ discussionWithOpenForm: discussion.id });
+      wrapper.setProps({ discussionWithOpenForm: defaultMockDiscussion.id });
 
       return wrapper.vm.$nextTick().then(() => {
         expect(findResolveCheckbox().text()).toBe('Resolve thread');
@@ -141,7 +142,7 @@ describe('Design discussions component', () => {
     beforeEach(() => {
       createComponent({
         discussion: {
-          ...discussion,
+          ...defaultMockDiscussion,
           resolved: true,
           resolvedBy: notes[0].author,
           resolvedAt: '2020-05-08T07:10:45Z',
@@ -206,7 +207,7 @@ describe('Design discussions component', () => {
 
       it('renders a checkbox with Unresolve thread text in reply form', () => {
         findReplyPlaceholder().vm.$emit('onClick');
-        wrapper.setProps({ discussionWithOpenForm: discussion.id });
+        wrapper.setProps({ discussionWithOpenForm: defaultMockDiscussion.id });
 
         return wrapper.vm.$nextTick().then(() => {
           expect(findResolveCheckbox().text()).toBe('Unresolve thread');
@@ -218,7 +219,7 @@ describe('Design discussions component', () => {
   it('hides reply placeholder and opens form on placeholder click', () => {
     createComponent();
     findReplyPlaceholder().vm.$emit('onClick');
-    wrapper.setProps({ discussionWithOpenForm: discussion.id });
+    wrapper.setProps({ discussionWithOpenForm: defaultMockDiscussion.id });
 
     return wrapper.vm.$nextTick().then(() => {
       expect(findReplyPlaceholder().exists()).toBe(false);
@@ -228,7 +229,7 @@ describe('Design discussions component', () => {
 
   it('calls mutation on submitting form and closes the form', () => {
     createComponent(
-      { discussionWithOpenForm: discussion.id },
+      { discussionWithOpenForm: defaultMockDiscussion.id },
       { discussionComment: 'test', isFormRendered: true },
     );
 
@@ -246,7 +247,7 @@ describe('Design discussions component', () => {
 
   it('clears the discussion comment on closing comment form', () => {
     createComponent(
-      { discussionWithOpenForm: discussion.id },
+      { discussionWithOpenForm: defaultMockDiscussion.id },
       { discussionComment: 'test', isFormRendered: true },
     );
 
@@ -263,19 +264,26 @@ describe('Design discussions component', () => {
       });
   });
 
-  it('applies correct class to design notes when discussion is highlighted', () => {
-    createComponent(
-      {},
-      {
-        activeDiscussion: {
-          id: notes[0].id,
-          source: 'pin',
-        },
-      },
-    );
+  describe('when any note from a discussion is active', () => {
+    it.each([notes[0], notes[0].discussion.notes.nodes[1]])(
+      'applies correct class to all notes in the active discussion',
+      note => {
+        createComponent(
+          { discussion: mockDiscussion },
+          {
+            activeDiscussion: {
+              id: note.id,
+              source: 'pin',
+            },
+          },
+        );
 
-    expect(wrapper.findAll(DesignNote).wrappers.every(note => note.classes('gl-bg-blue-50'))).toBe(
-      true,
+        expect(
+          wrapper
+            .findAll(DesignNote)
+            .wrappers.every(designNote => designNote.classes('gl-bg-blue-50')),
+        ).toBe(true);
+      },
     );
   });
 
@@ -285,7 +293,7 @@ describe('Design discussions component', () => {
     expect(mutate).toHaveBeenCalledWith({
       mutation: toggleResolveDiscussionMutation,
       variables: {
-        id: discussion.id,
+        id: defaultMockDiscussion.id,
         resolve: true,
       },
     });
@@ -296,7 +304,7 @@ describe('Design discussions component', () => {
 
   it('calls toggleResolveDiscussion mutation after adding a note if checkbox was checked', () => {
     createComponent(
-      { discussionWithOpenForm: discussion.id },
+      { discussionWithOpenForm: defaultMockDiscussion.id },
       { discussionComment: 'test', isFormRendered: true },
     );
     findResolveButton().trigger('click');
@@ -306,7 +314,7 @@ describe('Design discussions component', () => {
       expect(mutate).toHaveBeenCalledWith({
         mutation: toggleResolveDiscussionMutation,
         variables: {
-          id: discussion.id,
+          id: defaultMockDiscussion.id,
           resolve: true,
         },
       });

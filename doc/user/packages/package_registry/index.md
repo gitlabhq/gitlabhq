@@ -26,19 +26,19 @@ For information on how to create and upload a package, view the GitLab documenta
 ## Use GitLab CI/CD to build packages
 
 You can use [GitLab CI/CD](../../../ci/README.md) to build packages.
-For Maven, NuGet and NPM packages, and Composer dependencies, you can
+For Maven, NuGet, NPM, Conan, and PyPI packages, and Composer dependencies, you can
 authenticate with GitLab by using the `CI_JOB_TOKEN`.
 
 CI/CD templates, which you can use to get started, are in [this repo](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/ci/templates).
 
-Learn more about [using CI/CD to build Maven packages](../maven_repository/index.md#creating-maven-packages-with-gitlab-cicd), [NPM packages](../npm_registry/index.md#publishing-a-package-with-cicd), [Composer packages](../composer_repository/index.md#publishing-the-package-with-cicd), and [NuGet packages](../nuget_repository/index.md#publishing-a-nuget-package-with-cicd).
+Learn more about [using CI/CD to build Maven packages](../maven_repository/index.md#creating-maven-packages-with-gitlab-cicd), [NPM packages](../npm_registry/index.md#publishing-a-package-with-cicd), [Composer packages](../composer_repository/index.md#publishing-the-package-with-cicd), [NuGet Packages](../nuget_repository/index.md#publishing-a-nuget-package-with-cicd), [Conan Packages](../conan_repository/index.md#using-gitlab-ci-with-conan-packages), and [PyPI packages](../pypi_repository/index.md#using-gitlab-ci-with-pypi-packages).
 
 If you use CI/CD to build a package, extended activity
 information is displayed when you view the package details:
 
 ![Package CI/CD activity](img/package_activity_v12_10.png)
 
-You can view which pipeline published the package, as well as the commit and
+When using Maven and NPM, you can view which pipeline published the package, as well as the commit and
 user who triggered it.
 
 ## Download a package

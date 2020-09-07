@@ -7089,7 +7089,7 @@
             },
             {
               "name": "confidential",
-              "description": "Indicates if the epic is confidential. Will be ignored if `confidential_epics` feature flag is disabled",
+              "description": "Indicates if the epic is confidential",
               "type": {
                 "kind": "SCALAR",
                 "name": "Boolean",
@@ -49522,7 +49522,7 @@
             },
             {
               "name": "confidential",
-              "description": "Indicates if the epic is confidential. Will be ignored if `confidential_epics` feature flag is disabled",
+              "description": "Indicates if the epic is confidential",
               "type": {
                 "kind": "SCALAR",
                 "name": "Boolean",

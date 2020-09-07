@@ -11,6 +11,7 @@ RSpec.describe API::PypiPackages do
   let_it_be(:personal_access_token) { create(:personal_access_token, user: user) }
   let_it_be(:deploy_token) { create(:deploy_token, read_package_registry: true, write_package_registry: true) }
   let_it_be(:project_deploy_token) { create(:project_deploy_token, deploy_token: deploy_token, project: project) }
+  let_it_be(:job) { create(:ci_build, :running, user: user) }
 
   describe 'GET /api/v4/projects/:id/packages/pypi/simple/:package_name' do
     let_it_be(:package) { create(:pypi_package, project: project) }
@@ -57,6 +58,8 @@ RSpec.describe API::PypiPackages do
     end
 
     it_behaves_like 'deploy token for package GET requests'
+
+    it_behaves_like 'job token for package GET requests'
 
     it_behaves_like 'rejects PyPI access with unknown project id'
   end
@@ -107,6 +110,8 @@ RSpec.describe API::PypiPackages do
     end
 
     it_behaves_like 'deploy token for package uploads'
+
+    it_behaves_like 'job token for package uploads'
 
     it_behaves_like 'rejects PyPI access with unknown project id'
   end
@@ -198,6 +203,8 @@ RSpec.describe API::PypiPackages do
 
     it_behaves_like 'deploy token for package uploads'
 
+    it_behaves_like 'job token for package uploads'
+
     it_behaves_like 'rejects PyPI access with unknown project id'
 
     context 'file size above maximum limit' do
@@ -268,6 +275,26 @@ RSpec.describe API::PypiPackages do
 
       context 'invalid token' do
         let(:headers) { basic_auth_header('foo', 'bar') }
+
+        it_behaves_like 'returning response status', :success
+      end
+    end
+
+    context 'with job token headers' do
+      let(:headers) { basic_auth_header(::Gitlab::Auth::CI_JOB_USER, job.token) }
+
+      context 'valid token' do
+        it_behaves_like 'returning response status', :success
+      end
+
+      context 'invalid token' do
+        let(:headers) { basic_auth_header(::Gitlab::Auth::CI_JOB_USER, 'bar') }
+
+        it_behaves_like 'returning response status', :success
+      end
+
+      context 'invalid user' do
+        let(:headers) { basic_auth_header('foo', job.token) }
 
         it_behaves_like 'returning response status', :success
       end

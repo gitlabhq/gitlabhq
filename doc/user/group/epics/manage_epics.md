@@ -164,18 +164,6 @@ To make an epic confidential:
 - **In an existing epic:** in the epic's sidebar, select **Edit** next to **Confidentiality** then
   select **Turn on**.
 
-### Disable confidential epics **(PREMIUM ONLY)**
-
-The confidential epics feature is deployed behind a feature flag that is **enabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
-can disable it for your self-managed instance.
-
-To disable it:
-
-```ruby
-Feature.disable(:confidential_epics)
-```
-
 ## Manage issues assigned to an epic
 
 ### Add a new issue to an epic

@@ -237,7 +237,12 @@ export default {
       });
     },
     isNoteInactive(note) {
-      return this.activeDiscussion.id && this.activeDiscussion.id !== note.id;
+      const discussionNotes = note.discussion.notes.nodes || [];
+
+      return (
+        this.activeDiscussion.id &&
+        !discussionNotes.some(({ id }) => id === this.activeDiscussion.id)
+      );
     },
     designPinClass(note) {
       return { inactive: this.isNoteInactive(note), resolved: note.resolved };

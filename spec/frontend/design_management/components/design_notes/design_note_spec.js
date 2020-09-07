@@ -86,16 +86,6 @@ describe('Design note component', () => {
     expect(wrapper.find(TimeAgoTooltip).exists()).toBe(true);
   });
 
-  it('should trigger a scrollIntoView method', () => {
-    createComponent({
-      note,
-    });
-
-    return wrapper.vm.$nextTick().then(() => {
-      expect(scrollIntoViewMock).toHaveBeenCalled();
-    });
-  });
-
   it('should not render edit icon when user does not have a permission', () => {
     createComponent({
       note,

@@ -105,8 +105,8 @@ export default {
         atVersion: this.designsVersion,
       };
     },
-    isDiscussionHighlighted() {
-      return this.discussion.notes[0].id === this.activeDiscussion.id;
+    isDiscussionActive() {
+      return this.discussion.notes.some(({ id }) => id === this.activeDiscussion.id);
     },
     resolveCheckboxText() {
       return this.discussion.resolved
@@ -133,18 +133,6 @@ export default {
     },
     isFormVisible() {
       return this.isFormRendered && this.discussionWithOpenForm === this.discussion.id;
-    },
-    shouldScrollToDiscussion(activeDiscussion) {
-      const ALLOWED_ACTIVE_DISCUSSION_SOURCES = [
-        ACTIVE_DISCUSSION_SOURCE_TYPES.pin,
-        ACTIVE_DISCUSSION_SOURCE_TYPES.url,
-      ];
-      const { id: activeDiscussionId, source: activeDiscussionSource } = activeDiscussion;
-
-      return (
-        ALLOWED_ACTIVE_DISCUSSION_SOURCES.includes(activeDiscussionSource) &&
-        activeDiscussionId === this.discussion.notes[0].id
-      );
     },
   },
   methods: {
@@ -199,6 +187,14 @@ export default {
           this.isResolving = false;
         });
     },
+    shouldScrollToDiscussion(activeDiscussion) {
+      const ALLOWED_ACTIVE_DISCUSSION_SOURCES = [
+        ACTIVE_DISCUSSION_SOURCE_TYPES.pin,
+        ACTIVE_DISCUSSION_SOURCE_TYPES.url,
+      ];
+      const { source } = activeDiscussion;
+      return ALLOWED_ACTIVE_DISCUSSION_SOURCES.includes(source) && this.isDiscussionActive;
+    },
   },
   createNoteMutation,
 };
@@ -221,7 +217,7 @@ export default {
         :note="firstNote"
         :markdown-preview-path="markdownPreviewPath"
         :is-resolving="isResolving"
-        :class="{ 'gl-bg-blue-50': isDiscussionHighlighted }"
+        :class="{ 'gl-bg-blue-50': isDiscussionActive }"
         @error="$emit('updateNoteError', $event)"
       >
         <template v-if="discussion.resolvable" #resolveDiscussion>
@@ -265,7 +261,7 @@ export default {
         :note="note"
         :markdown-preview-path="markdownPreviewPath"
         :is-resolving="isResolving"
-        :class="{ 'gl-bg-blue-50': isDiscussionHighlighted }"
+        :class="{ 'gl-bg-blue-50': isDiscussionActive }"
         @error="$emit('updateNoteError', $event)"
       />
       <li v-show="isReplyPlaceholderVisible" class="reply-wrapper">

@@ -45,7 +45,7 @@ RSpec.describe Gitlab::Auth::OAuth::Provider do
     end
   end
 
-  describe '#config_for' do
+  describe '.config_for' do
     context 'for an LDAP provider' do
       context 'when the provider exists' do
         it 'returns the config' do
@@ -88,6 +88,48 @@ RSpec.describe Gitlab::Auth::OAuth::Provider do
         it 'returns nil' do
           expect(described_class.config_for('foo')).to be_nil
         end
+      end
+    end
+  end
+
+  describe '.label_for' do
+    subject { described_class.label_for(name) }
+
+    context 'when configuration specifies a custom label' do
+      let(:name) { 'google_oauth2' }
+      let(:label) { 'Custom Google Provider' }
+      let(:provider) { OpenStruct.new({ 'name' => name, 'label' => label }) }
+
+      before do
+        stub_omniauth_setting(providers: [provider])
+      end
+
+      it 'returns the custom label name' do
+        expect(subject).to eq(label)
+      end
+    end
+
+    context 'when configuration does not specify a custom label' do
+      let(:provider) { OpenStruct.new({ 'name' => name } ) }
+
+      before do
+        stub_omniauth_setting(providers: [provider])
+      end
+
+      context 'when the name does not correspond to a label mapping' do
+        let(:name) { 'twitter' }
+
+        it 'returns the titleized name' do
+          expect(subject).to eq(name.titleize)
+        end
+      end
+    end
+
+    context 'when the name corresponds to a label mapping' do
+      let(:name) { 'gitlab' }
+
+      it 'returns the mapped name' do
+        expect(subject).to eq('GitLab.com')
       end
     end
   end

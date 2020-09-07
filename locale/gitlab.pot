@@ -18783,6 +18783,9 @@ msgstr ""
 msgid "Profiles| You are going to change the username %{currentUsernameBold} to %{newUsernameBold}. Profile and projects will be redirected to the %{newUsername} namespace but this redirect will expire once the %{currentUsername} namespace is registered by another user or group. Please update your Git repository remotes as soon as possible."
 msgstr ""
 
+msgid "Profiles|%{provider} Active"
+msgstr ""
+
 msgid "Profiles|@username"
 msgstr ""
 
@@ -18834,7 +18837,7 @@ msgstr ""
 msgid "Profiles|Commit email"
 msgstr ""
 
-msgid "Profiles|Connect"
+msgid "Profiles|Connect %{provider}"
 msgstr ""
 
 msgid "Profiles|Connected Accounts"
@@ -18856,6 +18859,9 @@ msgid "Profiles|Deleting an account has the following effects:"
 msgstr ""
 
 msgid "Profiles|Disconnect"
+msgstr ""
+
+msgid "Profiles|Disconnect %{provider}"
 msgstr ""
 
 msgid "Profiles|Do not show on profile"

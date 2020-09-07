@@ -13,8 +13,9 @@ describe('Design overlay component', () => {
 
   const findAllNotes = () => wrapper.findAll('.js-image-badge');
   const findCommentBadge = () => wrapper.find('.comment-indicator');
-  const findFirstBadge = () => findAllNotes().at(0);
-  const findSecondBadge = () => findAllNotes().at(1);
+  const findBadgeAtIndex = noteIndex => findAllNotes().at(noteIndex);
+  const findFirstBadge = () => findBadgeAtIndex(0);
+  const findSecondBadge = () => findBadgeAtIndex(1);
 
   const clickAndDragBadge = (elem, fromPoint, toPoint) => {
     elem.trigger('mousedown', { clientX: fromPoint.x, clientY: fromPoint.y });
@@ -104,16 +105,43 @@ describe('Design overlay component', () => {
         expect(findSecondBadge().classes()).toContain('resolved');
       });
 
-      it('when there is an active discussion, should apply inactive class to all pins besides the active one', () => {
-        wrapper.setData({
-          activeDiscussion: {
-            id: notes[0].id,
-            source: 'discussion',
-          },
+      describe('when no discussion is active', () => {
+        it('should not apply inactive class to any pins', () => {
+          expect(
+            findAllNotes(0).wrappers.every(designNote => designNote.classes('gl-bg-blue-50')),
+          ).toBe(false);
         });
+      });
 
-        return wrapper.vm.$nextTick().then(() => {
-          expect(findSecondBadge().classes()).toContain('inactive');
+      describe('when a discussion is active', () => {
+        it.each([notes[0].discussion.notes.nodes[1], notes[0].discussion.notes.nodes[0]])(
+          'should not apply inactive class to the pin for the active discussion',
+          note => {
+            wrapper.setData({
+              activeDiscussion: {
+                id: note.id,
+                source: 'discussion',
+              },
+            });
+
+            return wrapper.vm.$nextTick().then(() => {
+              expect(findBadgeAtIndex(0).classes()).not.toContain('inactive');
+            });
+          },
+        );
+
+        it('should apply inactive class to all pins besides the active one', () => {
+          wrapper.setData({
+            activeDiscussion: {
+              id: notes[0].id,
+              source: 'discussion',
+            },
+          });
+
+          return wrapper.vm.$nextTick().then(() => {
+            expect(findSecondBadge().classes()).toContain('inactive');
+            expect(findFirstBadge().classes()).not.toContain('inactive');
+          });
         });
       });
     });

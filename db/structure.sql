@@ -9304,7 +9304,6 @@ CREATE TABLE public.approval_merge_request_rules (
     updated_at timestamp with time zone NOT NULL,
     merge_request_id integer NOT NULL,
     approvals_required smallint DEFAULT 0 NOT NULL,
-    code_owner boolean DEFAULT false NOT NULL,
     name character varying NOT NULL,
     rule_type smallint DEFAULT 1 NOT NULL,
     report_type smallint,
@@ -19048,8 +19047,6 @@ CREATE UNIQUE INDEX any_approver_project_rule_type_unique_index ON public.approv
 
 CREATE INDEX approval_mr_rule_index_merge_request_id ON public.approval_merge_request_rules USING btree (merge_request_id);
 
-CREATE UNIQUE INDEX approval_rule_name_index_for_code_owners ON public.approval_merge_request_rules USING btree (merge_request_id, code_owner, name) WHERE ((code_owner = true) AND (section IS NULL));
-
 CREATE UNIQUE INDEX backup_labels_group_id_project_id_title_idx ON public.backup_labels USING btree (group_id, project_id, title);
 
 CREATE INDEX backup_labels_group_id_title_idx ON public.backup_labels USING btree (group_id, title) WHERE (project_id = NULL::integer);
@@ -19221,8 +19218,6 @@ CREATE INDEX index_applicationsettings_on_instance_administration_project_id ON 
 CREATE UNIQUE INDEX index_approval_merge_request_rule_sources_1 ON public.approval_merge_request_rule_sources USING btree (approval_merge_request_rule_id);
 
 CREATE INDEX index_approval_merge_request_rule_sources_2 ON public.approval_merge_request_rule_sources USING btree (approval_project_rule_id);
-
-CREATE INDEX index_approval_merge_request_rules_1 ON public.approval_merge_request_rules USING btree (merge_request_id, code_owner);
 
 CREATE UNIQUE INDEX index_approval_merge_request_rules_approved_approvers_1 ON public.approval_merge_request_rules_approved_approvers USING btree (approval_merge_request_rule_id, user_id);
 

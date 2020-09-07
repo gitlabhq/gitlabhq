@@ -7,7 +7,7 @@ import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import DesignReplyForm from './design_reply_form.vue';
-import { findNoteId } from '../../utils/design_management_utils';
+import { findNoteId, extractDesignNoteId } from '../../utils/design_management_utils';
 import { hasErrors } from '../../utils/cache_update';
 
 export default {
@@ -47,7 +47,7 @@ export default {
       return findNoteId(this.note.id);
     },
     isNoteLinked() {
-      return this.$route.hash === `#note_${this.noteAnchorId}`;
+      return extractDesignNoteId(this.$route.hash) === this.noteAnchorId;
     },
     mutationPayload() {
       return {
@@ -58,13 +58,6 @@ export default {
     isEditButtonVisible() {
       return !this.isEditing && this.note.userPermissions.adminNote;
     },
-  },
-  mounted() {
-    this.$nextTick(() => {
-      if (this.isNoteLinked) {
-        this.$el.scrollIntoView({ behavior: 'smooth', inline: 'start' });
-      }
-    });
   },
   methods: {
     hideForm() {

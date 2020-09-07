@@ -22,7 +22,12 @@ RSpec.describe 'Merge request > User assigns themselves' do
     end
 
     it 'updates updated_by', :js do
-      expect { click_button 'assign yourself' }.to change { merge_request.reload.updated_at }
+      expect do
+        click_button 'assign yourself'
+
+        expect(find('.assignee')).to have_content(user.name)
+        wait_for_all_requests
+      end.to change { merge_request.reload.updated_at }
     end
 
     it 'returns user to the merge request', :js do

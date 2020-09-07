@@ -51,12 +51,17 @@ Using the consolidated object storage configuration has a number of advantages:
 - It enables the use of [encrypted S3 buckets](#encrypted-s3-buckets).
 - It [uploads files to S3 with proper `Content-MD5` headers](https://gitlab.com/gitlab-org/gitlab-workhorse/-/issues/222).
 
-NOTE: **Note:**
-Only AWS S3-compatible providers and Google are
-supported at the moment since [direct upload
-mode](../development/uploads.md#direct-upload) must be used. Background
-upload is not supported in this mode. We recommend direct upload mode because
-it does not require a shared folder, and [this setting may become the default](https://gitlab.com/gitlab-org/gitlab/-/issues/27331).
+Because [direct upload mode](../development/uploads.md#direct-upload)
+must be enabled, only the following providers can be used:
+
+- [Amazon S3-compatible providers](#s3-compatible-connection-settings)
+- [Google Cloud Storage](#google-cloud-storage-gcs)
+- [Azure Blob storage](#azure-blob-storage)
+
+Background upload is not supported with the consolidated object storage
+configuration. We recommend enabling direct upload mode because it does
+not require a shared folder, and [this setting may become the
+default](https://gitlab.com/gitlab-org/gitlab/-/issues/27331).
 
 NOTE: **Note:**
 Consolidated object storage configuration cannot be used for

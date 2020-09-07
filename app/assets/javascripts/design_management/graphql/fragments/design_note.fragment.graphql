@@ -25,5 +25,10 @@ fragment DesignNote on Note {
   }
   discussion {
     id
+    notes {
+      nodes {
+        id
+      }
+    }
   }
 }

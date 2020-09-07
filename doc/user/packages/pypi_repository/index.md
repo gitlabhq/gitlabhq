@@ -302,20 +302,10 @@ Successfully installed mypypipackage-0.0.1
 
 ## Using GitLab CI with PyPI packages
 
-NOTE: **Note:**
-`CI_JOB_TOKEN`s are not yet supported for use with PyPI.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/11678) in GitLab 13.4.
 
 To work with PyPI commands within [GitLab CI/CD](./../../../ci/README.md), you can use
-[environment variables](./../../../ci/variables/README.md#custom-environment-variables)
-to access your authentication tokens in your commands.
-
-Set up environment variables for `TWINE_PASSWORD` and `TWINE_USERNAME` using either:
-
-- A [personal access token](../../../user/profile/personal_access_tokens.md) and your GitLab username.
-- A [deploy token](./../../project/deploy_tokens/index.md) and its associated deploy token username.
-
-You can now access your `TWINE_USERNAME` and `TWINE_PASSWORD` using any `twine` command in your
-`.gitlab-ci.yml` file.
+`CI_JOB_TOKEN` in place of the personal access token or deploy token in your commands.
 
 For example:
 
@@ -326,5 +316,18 @@ run:
   script:
     - pip install twine
     - python setup.py sdist bdist_wheel
-    - TWINE_PASSWORD=${TWINE_PASSWORD} TWINE_USERNAME=${TWINE_USERNAME} python -m twine upload --repository-url https://gitlab.com/api/v4/projects/${CI_PROJECT_ID}/packages/pypi dist/*
+    - TWINE_PASSWORD=${CI_JOB_TOKEN} TWINE_USERNAME=gitlab-ci-token python -m twine upload --repository-url https://gitlab.com/api/v4/projects/${CI_PROJECT_ID}/packages/pypi dist/*
+```
+
+You can also use `CI_JOB_TOKEN` in a `~/.pypirc` file that you check into GitLab:
+
+```ini
+[distutils]
+index-servers =
+    gitlab
+
+[gitlab]
+repository = https://gitlab.com/api/v4/projects/${env.CI_PROJECT_ID}/packages/pypi
+username = gitlab-ci-token
+password = ${env.CI_JOB_TOKEN}
 ```
