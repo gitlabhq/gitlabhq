@@ -2614,7 +2614,7 @@ input CreateEpicInput {
   clientMutationId: String
 
   """
-  Indicates if the epic is confidential
+  Indicates if the epic is confidential. Will be ignored if `confidential_epics` feature flag is disabled
   """
   confidential: Boolean
 
@@ -16864,7 +16864,7 @@ input UpdateEpicInput {
   clientMutationId: String
 
   """
-  Indicates if the epic is confidential
+  Indicates if the epic is confidential. Will be ignored if `confidential_epics` feature flag is disabled
   """
   confidential: Boolean
 

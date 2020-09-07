@@ -24,20 +24,6 @@ RSpec.describe API::Internal::Kubernetes do
       end
     end
 
-    context 'authenticated' do
-      it 'returns 403 if Authorization header not sent' do
-        send_request
-
-        expect(response).to have_gitlab_http_status(:forbidden)
-      end
-
-      it 'returns 404 if Authorization is for non-existent agent' do
-        send_request(headers: { 'Authorization' => 'Bearer NONEXISTENT' })
-
-        expect(response).to have_gitlab_http_status(:forbidden)
-      end
-    end
-
     context 'kubernetes_agent_internal_api feature flag disabled' do
       before do
         stub_feature_flags(kubernetes_agent_internal_api: false)
@@ -48,6 +34,20 @@ RSpec.describe API::Internal::Kubernetes do
 
         expect(response).to have_gitlab_http_status(:not_found)
       end
+    end
+  end
+
+  shared_examples 'agent authentication' do
+    it 'returns 403 if Authorization header not sent' do
+      send_request
+
+      expect(response).to have_gitlab_http_status(:forbidden)
+    end
+
+    it 'returns 403 if Authorization is for non-existent agent' do
+      send_request(headers: { 'Authorization' => 'Bearer NONEXISTENT' })
+
+      expect(response).to have_gitlab_http_status(:forbidden)
     end
   end
 
@@ -93,6 +93,7 @@ RSpec.describe API::Internal::Kubernetes do
     end
 
     include_examples 'authorization'
+    include_examples 'agent authentication'
 
     context 'an agent is found' do
       let!(:agent_token) { create(:cluster_agent_token) }
@@ -133,6 +134,7 @@ RSpec.describe API::Internal::Kubernetes do
     end
 
     include_examples 'authorization'
+    include_examples 'agent authentication'
 
     context 'an agent is found' do
       let!(:agent_token) { create(:cluster_agent_token) }
