@@ -288,7 +288,7 @@ to learn more.
 |---------|-------------|---------|
 | `provider` | Provider name | `AzureRM` |
 | `azure_storage_account_name` | Name of the Azure Blob Storage account used to access the storage | `azuretest` |
-| `azure_storage_access_key` | Storage account access key used to access the container. This is typically a secret, 512-bit encryption key encoded in base64. | `"czV2OHkvQj9FKEgrTWJRZVRoV21ZcTN0Nnc5eiRDJkYpSkBOY1JmVWpYbjJy\nNHU3eCFBJUQqRy1LYVBkU2dWaw==\n"` |
+| `azure_storage_access_key` | Storage account access key used to access the container. This is typically a secret, 512-bit encryption key encoded in base64. | `czV2OHkvQj9FKEgrTWJRZVRoV21ZcTN0Nnc5eiRDJkYpSkBOY1JmVWpYbjJy\nNHU3eCFBJUQqRy1LYVBkU2dWaw==\n` |
 | `azure_storage_domain` | Domain name used to contact the Azure Blob Storage API (optional). Defaults to `blob.core.windows.net`. Set this if you are using Azure China, Azure Germany, Azure US Government, or some other custom Azure domain. | `blob.core.windows.net` |
 
 ##### Azure example (consolidated form)

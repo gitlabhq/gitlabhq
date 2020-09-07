@@ -206,6 +206,9 @@ variables:
   DAST_FULL_SCAN_ENABLED: "true"
 ```
 
+NOTE: **Note:**
+If your DAST job exceeds the job timeout and you need to reduce the scan duration, we shared some tips for optimizing DAST scans in a [blog post](https://about.gitlab.com/blog/2020/08/31/how-to-configure-dast-full-scans-for-complex-web-applications/).
+
 #### Domain validation
 
 The DAST job can be run anywhere, which means you can accidentally hit live web servers
@@ -800,6 +803,10 @@ variables:
 
 Here, DAST is being allocated 3072 MB.
 Change the number after `-Xmx` to the required memory amount.
+
+### DAST job exceeding the job timeout
+
+If your DAST job exceeds the job timeout and you need to reduce the scan duration, we shared some tips for optimizing DAST scans in a [blog post](https://about.gitlab.com/blog/2020/08/31/how-to-configure-dast-full-scans-for-complex-web-applications/).
 
 <!-- ## Troubleshooting
 

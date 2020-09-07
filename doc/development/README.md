@@ -18,7 +18,7 @@ For information on how to install, configure, update, and upgrade your own GitLa
 
 ## Get started
 
-- Set up GitLab's development environment with [GitLab Development Kit (GDK)](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/master/doc/howto/README.md)
+- Set up GitLab's development environment with [GitLab Development Kit (GDK)](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/master/README.md)
 - [GitLab contributing guide](contributing/index.md)
   - [Issues workflow](contributing/issue_workflow.md) for more information on:
     - Issue tracker guidelines.

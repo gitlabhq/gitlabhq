@@ -276,6 +276,8 @@ PostgreSQL instances. Otherwise you should change the configuration parameter
 
 ### Praefect
 
+> [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/2634) in GitLab 13.4, Praefect nodes can no longer be designated as `primary`.
+
 NOTE: **Note:**
 If there are multiple Praefect nodes, complete these steps for **each** node.
 
@@ -392,11 +394,6 @@ application server, or a Gitaly node.
    More Gitaly nodes can be added to the cluster to increase the number of
    replicas. More clusters can also be added for very large GitLab instances.
 
-   NOTE: **Note:**
-   The `gitaly-1` node is currently denoted the primary. This
-   can be used to manually fail from one node to another. This will be removed
-   in the [future](https://gitlab.com/gitlab-org/gitaly/-/issues/2634).
-
    ```ruby
    # Name of storage hash must match storage name in git_data_dirs on GitLab
    # server ('praefect') and in git_data_dirs on Gitaly nodes ('gitaly-1')
@@ -405,7 +402,6 @@ application server, or a Gitaly node.
        'gitaly-1' => {
          'address' => 'tcp://GITALY_HOST:8075',
          'token'   => 'PRAEFECT_INTERNAL_TOKEN',
-         'primary' => true
        },
        'gitaly-2' => {
          'address' => 'tcp://GITALY_HOST:8075',
@@ -1044,11 +1040,6 @@ current primary node is found to be unhealthy.
   will cause Praefect nodes to elect a new primary, monitor its health,
   and elect a new primary if the current one has not been reachable in
   10 seconds by a majority of the Praefect nodes.
-- **Manual:** Automatic failover is disabled. The primary node can be
-  reconfigured in `/etc/gitlab/gitlab.rb` on the Praefect node. Modify the
-  `praefect['virtual_storages']` field by moving the `primary = true` to promote
-  a different Gitaly node to primary. In the steps above, `gitaly-1` was set to
-  the primary. Requires `praefect['failover_enabled'] = false` in the configuration.
 - **Memory:** Enabled by setting `praefect['failover_election_strategy'] = 'local'`
   in `/etc/gitlab/gitlab.rb` on the Praefect node. If a sufficient number of health
   checks fail for the current primary backend Gitaly node, and new primary will
