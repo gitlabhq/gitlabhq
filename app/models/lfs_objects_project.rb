@@ -19,6 +19,7 @@ class LfsObjectsProject < ApplicationRecord
   }
 
   scope :project_id_in, ->(ids) { where(project_id: ids) }
+  scope :lfs_object_in, -> (lfs_objects) { where(lfs_object: lfs_objects) }
 
   private
 

@@ -712,30 +712,40 @@ RSpec.describe User do
         expect(users_with_two_factor).not_to include(user_without_2fa.id)
       end
 
-      it "returns users with 2fa enabled via U2F" do
-        user_with_2fa = create(:user, :two_factor_via_u2f)
-        user_without_2fa = create(:user)
-        users_with_two_factor = described_class.with_two_factor.pluck(:id)
+      shared_examples "returns the right users" do |trait|
+        it "returns users with 2fa enabled via hardware token" do
+          user_with_2fa = create(:user, trait)
+          user_without_2fa = create(:user)
+          users_with_two_factor = described_class.with_two_factor.pluck(:id)
 
-        expect(users_with_two_factor).to include(user_with_2fa.id)
-        expect(users_with_two_factor).not_to include(user_without_2fa.id)
+          expect(users_with_two_factor).to include(user_with_2fa.id)
+          expect(users_with_two_factor).not_to include(user_without_2fa.id)
+        end
+
+        it "returns users with 2fa enabled via OTP and hardware token" do
+          user_with_2fa = create(:user, :two_factor_via_otp, trait)
+          user_without_2fa = create(:user)
+          users_with_two_factor = described_class.with_two_factor.pluck(:id)
+
+          expect(users_with_two_factor).to eq([user_with_2fa.id])
+          expect(users_with_two_factor).not_to include(user_without_2fa.id)
+        end
+
+        it 'works with ORDER BY' do
+          user_with_2fa = create(:user, :two_factor_via_otp, trait)
+
+          expect(described_class
+                     .with_two_factor
+                     .reorder_by_name).to eq([user_with_2fa])
+        end
       end
 
-      it "returns users with 2fa enabled via OTP and U2F" do
-        user_with_2fa = create(:user, :two_factor_via_otp, :two_factor_via_u2f)
-        user_without_2fa = create(:user)
-        users_with_two_factor = described_class.with_two_factor.pluck(:id)
-
-        expect(users_with_two_factor).to eq([user_with_2fa.id])
-        expect(users_with_two_factor).not_to include(user_without_2fa.id)
+      describe "and U2F" do
+        it_behaves_like "returns the right users", :two_factor_via_u2f
       end
 
-      it 'works with ORDER BY' do
-        user_with_2fa = create(:user, :two_factor_via_otp, :two_factor_via_u2f)
-
-        expect(described_class
-          .with_two_factor
-          .reorder_by_name).to eq([user_with_2fa])
+      describe "and WebAuthn" do
+        it_behaves_like "returns the right users", :two_factor_via_webauthn
       end
     end
 
@@ -749,22 +759,44 @@ RSpec.describe User do
         expect(users_without_two_factor).not_to include(user_with_2fa.id)
       end
 
-      it "excludes users with 2fa enabled via U2F" do
-        user_with_2fa = create(:user, :two_factor_via_u2f)
-        user_without_2fa = create(:user)
-        users_without_two_factor = described_class.without_two_factor.pluck(:id)
+      describe "and u2f" do
+        it "excludes users with 2fa enabled via U2F" do
+          user_with_2fa = create(:user, :two_factor_via_u2f)
+          user_without_2fa = create(:user)
+          users_without_two_factor = described_class.without_two_factor.pluck(:id)
 
-        expect(users_without_two_factor).to include(user_without_2fa.id)
-        expect(users_without_two_factor).not_to include(user_with_2fa.id)
+          expect(users_without_two_factor).to include(user_without_2fa.id)
+          expect(users_without_two_factor).not_to include(user_with_2fa.id)
+        end
+
+        it "excludes users with 2fa enabled via OTP and U2F" do
+          user_with_2fa = create(:user, :two_factor_via_otp, :two_factor_via_u2f)
+          user_without_2fa = create(:user)
+          users_without_two_factor = described_class.without_two_factor.pluck(:id)
+
+          expect(users_without_two_factor).to include(user_without_2fa.id)
+          expect(users_without_two_factor).not_to include(user_with_2fa.id)
+        end
       end
 
-      it "excludes users with 2fa enabled via OTP and U2F" do
-        user_with_2fa = create(:user, :two_factor_via_otp, :two_factor_via_u2f)
-        user_without_2fa = create(:user)
-        users_without_two_factor = described_class.without_two_factor.pluck(:id)
+      describe "and webauthn" do
+        it "excludes users with 2fa enabled via WebAuthn" do
+          user_with_2fa = create(:user, :two_factor_via_webauthn)
+          user_without_2fa = create(:user)
+          users_without_two_factor = described_class.without_two_factor.pluck(:id)
 
-        expect(users_without_two_factor).to include(user_without_2fa.id)
-        expect(users_without_two_factor).not_to include(user_with_2fa.id)
+          expect(users_without_two_factor).to include(user_without_2fa.id)
+          expect(users_without_two_factor).not_to include(user_with_2fa.id)
+        end
+
+        it "excludes users with 2fa enabled via OTP and WebAuthn" do
+          user_with_2fa = create(:user, :two_factor_via_otp, :two_factor_via_webauthn)
+          user_without_2fa = create(:user)
+          users_without_two_factor = described_class.without_two_factor.pluck(:id)
+
+          expect(users_without_two_factor).to include(user_without_2fa.id)
+          expect(users_without_two_factor).not_to include(user_with_2fa.id)
+        end
       end
     end
 

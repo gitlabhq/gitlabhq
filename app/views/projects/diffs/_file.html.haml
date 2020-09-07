@@ -9,6 +9,10 @@
     .file-header-content
       = render "projects/diffs/file_header", diff_file: diff_file, url: "##{file_hash}"
 
+    - if diff_file.submodule?
+      .file-actions.d-none.d-sm-block
+        = submodule_diff_compare_link(diff_file)
+
     - unless diff_file.submodule?
       - blob = diff_file.blob
       .file-actions.d-none.d-sm-block

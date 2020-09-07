@@ -7,21 +7,50 @@ RSpec.describe DiffFileBaseEntity do
   let(:repository) { project.repository }
   let(:entity) { described_class.new(diff_file, options).as_json }
 
-  context 'diff for a changed submodule' do
-    let(:commit_sha_with_changed_submodule) do
-      "cfe32cf61b73a0d5e9f13e774abde7ff789b1660"
-    end
-
-    let(:commit) { project.commit(commit_sha_with_changed_submodule) }
+  context 'submodule information for a' do
+    let(:commit_sha) { "" }
+    let(:commit) { project.commit(commit_sha) }
     let(:options) { { request: {}, submodule_links: Gitlab::SubmoduleLinks.new(repository) } }
     let(:diff_file) { commit.diffs.diff_files.to_a.last }
 
-    it do
-      expect(entity[:submodule]).to eq(true)
-      expect(entity[:submodule_link]).to eq("https://github.com/randx/six")
-      expect(entity[:submodule_tree_url]).to eq(
-        "https://github.com/randx/six/tree/409f37c4f05865e4fb208c771485f211a22c4c2d"
-      )
+    context 'newly added submodule' do
+      let(:commit_sha) { "cfe32cf61b73a0d5e9f13e774abde7ff789b1660" }
+
+      it 'says it is a submodule and contains links' do
+        expect(entity[:submodule]).to eq(true)
+        expect(entity[:submodule_link]).to eq("https://github.com/randx/six")
+        expect(entity[:submodule_tree_url]).to eq(
+          "https://github.com/randx/six/tree/409f37c4f05865e4fb208c771485f211a22c4c2d"
+        )
+      end
+
+      it 'has no compare url because the submodule was newly added' do
+        expect(entity[:submodule_compare]).to eq(nil)
+      end
+    end
+
+    context 'changed submodule' do
+      # Test repo does not contain a commit that changes a submodule, so we have create such a commit here
+      let(:commit_sha) { repository.update_submodule(project.members[0].user, "six", "c6bc3aa2ee76cadaf0cbd325067c55450997632e", message: "Go one commit back", branch: "master") }
+
+      it 'contains a link to compare the changes' do
+        expect(entity[:submodule_compare]).to eq(
+          {
+            url: "https://github.com/randx/six/compare/409f37c4f05865e4fb208c771485f211a22c4c2d...c6bc3aa2ee76cadaf0cbd325067c55450997632e",
+            old_sha: "409f37c4f05865e4fb208c771485f211a22c4c2d",
+            new_sha: "c6bc3aa2ee76cadaf0cbd325067c55450997632e"
+          }
+        )
+      end
+    end
+
+    context 'normal file (no submodule)' do
+      let(:commit_sha) { '570e7b2abdd848b95f2f578043fc23bd6f6fd24d' }
+
+      it 'sets submodule to false' do
+        expect(entity[:submodule]).to eq(false)
+        expect(entity[:submodule_compare]).to eq(nil)
+      end
     end
   end
 

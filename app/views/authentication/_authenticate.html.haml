@@ -6,7 +6,7 @@
 
 %script#js-authenticate-token-2fa-error{ type: "text/template" }
   %div
-    %p <%= error_message %> (#{_("error code:")} <%= error_code %>)
+    %p <%= error_message %> (<%= error_name %>)
     %a.btn.btn-block.btn-warning#js-token-2fa-try-again= _("Try again?")
 
 %script#js-authenticate-token-2fa-authenticated{ type: "text/template" }

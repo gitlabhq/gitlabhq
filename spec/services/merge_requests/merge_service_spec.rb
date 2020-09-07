@@ -435,6 +435,43 @@ RSpec.describe MergeRequests::MergeService do
           end
         end
       end
+
+      context 'when not mergeable' do
+        let!(:error_message) { 'Merge request is not mergeable' }
+
+        context 'with failing CI' do
+          before do
+            allow(merge_request).to receive(:mergeable_ci_state?) { false }
+          end
+
+          it 'logs and saves error' do
+            service.execute(merge_request)
+
+            expect(Gitlab::AppLogger).to have_received(:error).with(a_string_matching(error_message))
+          end
+        end
+
+        context 'with unresolved discussions' do
+          before do
+            allow(merge_request).to receive(:mergeable_discussions_state?) { false }
+          end
+
+          it 'logs and saves error' do
+            service.execute(merge_request)
+
+            expect(Gitlab::AppLogger).to have_received(:error).with(a_string_matching(error_message))
+          end
+
+          context 'when passing `skip_discussions_check: true` as `options` parameter' do
+            it 'merges the merge request' do
+              service.execute(merge_request, skip_discussions_check: true)
+
+              expect(merge_request).to be_valid
+              expect(merge_request).to be_merged
+            end
+          end
+        end
+      end
     end
   end
 end

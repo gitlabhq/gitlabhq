@@ -63,6 +63,8 @@ linters:
       - "app/views/admin/users/new.html.haml"
       - "app/views/admin/users/projects.html.haml"
       - "app/views/admin/users/show.html.haml"
+      - 'app/views/authentication/_authenticate.html.haml'
+      - 'app/views/authentication/_register.html.haml'
       - "app/views/clusters/clusters/_cluster.html.haml"
       - "app/views/clusters/clusters/new.html.haml"
       - "app/views/dashboard/milestones/index.html.haml"
@@ -311,8 +313,6 @@ linters:
       - "app/views/shared/web_hooks/_form.html.haml"
       - "app/views/shared/web_hooks/_hook.html.haml"
       - "app/views/shared/wikis/_pages_wiki_page.html.haml"
-      - "app/views/u2f/_authenticate.html.haml"
-      - "app/views/u2f/_register.html.haml"
       - "app/views/users/_deletion_guidance.html.haml"
       - "ee/app/views/admin/_namespace_plan_info.html.haml"
       - "ee/app/views/admin/application_settings/_templates.html.haml"

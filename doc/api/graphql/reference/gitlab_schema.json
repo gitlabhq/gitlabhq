@@ -15845,6 +15845,20 @@
               "deprecationReason": null
             },
             {
+              "name": "severity",
+              "description": "Severity level of the incident",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "ENUM",
+                "name": "IssuableSeverity",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "state",
               "description": "State of the issue",
               "args": [
@@ -19048,6 +19062,16 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "sort",
+                  "description": "List vulnerabilities by sort order",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "VulnerabilitySort",
+                    "ofType": null
+                  },
+                  "defaultValue": "severity_desc"
+                },
+                {
                   "name": "after",
                   "description": "Returns the elements in the list that come after the specified cursor.",
                   "type": {
@@ -20077,6 +20101,47 @@
         },
         {
           "kind": "ENUM",
+          "name": "IssuableSeverity",
+          "description": "Incident severity",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "UNKNOWN",
+              "description": "Unknown severity",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "LOW",
+              "description": "Low severity",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "MEDIUM",
+              "description": "Medium severity",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "HIGH",
+              "description": "High severity",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "CRITICAL",
+              "description": "Critical severity",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "possibleTypes": null
+        },
+        {
+          "kind": "ENUM",
           "name": "IssuableState",
           "description": "State of a GitLab issue or merge request",
           "fields": null,
@@ -20722,6 +20787,20 @@
               "type": {
                 "kind": "SCALAR",
                 "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "severity",
+              "description": "Severity level of the incident",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "ENUM",
+                "name": "IssuableSeverity",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -37133,6 +37212,16 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "sort",
+                  "description": "List vulnerabilities by sort order",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "VulnerabilitySort",
+                    "ofType": null
+                  },
+                  "defaultValue": "severity_desc"
+                },
+                {
                   "name": "after",
                   "description": "Returns the elements in the list that come after the specified cursor.",
                   "type": {
@@ -39460,6 +39549,16 @@
                     }
                   },
                   "defaultValue": null
+                },
+                {
+                  "name": "sort",
+                  "description": "List vulnerabilities by sort order",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "VulnerabilitySort",
+                    "ofType": null
+                  },
+                  "defaultValue": "severity_desc"
                 },
                 {
                   "name": "after",
@@ -54028,6 +54127,29 @@
             {
               "name": "CRITICAL",
               "description": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "possibleTypes": null
+        },
+        {
+          "kind": "ENUM",
+          "name": "VulnerabilitySort",
+          "description": "Vulnerability sort values",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "severity_desc",
+              "description": "Severity in descending order",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "severity_asc",
+              "description": "Severity in ascending order",
               "isDeprecated": false,
               "deprecationReason": null
             }

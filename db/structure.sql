@@ -19075,6 +19075,8 @@ CREATE UNIQUE INDEX epic_user_mentions_on_epic_id_and_note_id_index ON public.ep
 
 CREATE UNIQUE INDEX epic_user_mentions_on_epic_id_index ON public.epic_user_mentions USING btree (epic_id) WHERE (note_id IS NULL);
 
+CREATE INDEX idx_audit_events_on_entity_id_desc_author_id_created_at ON public.audit_events USING btree (entity_id, entity_type, id DESC, author_id, created_at);
+
 CREATE INDEX idx_ci_pipelines_artifacts_locked ON public.ci_pipelines USING btree (ci_ref_id, id) WHERE (locked = 1);
 
 CREATE INDEX idx_container_scanning_findings ON public.vulnerability_occurrences USING btree (id) WHERE (report_type = 2);
@@ -19266,8 +19268,6 @@ CREATE INDEX index_approvers_on_target_id_and_target_type ON public.approvers US
 CREATE INDEX index_approvers_on_user_id ON public.approvers USING btree (user_id);
 
 CREATE UNIQUE INDEX index_atlassian_identities_on_extern_uid ON public.atlassian_identities USING btree (extern_uid);
-
-CREATE INDEX index_audit_events_on_entity_id_entity_type_id_desc_author_id ON public.audit_events USING btree (entity_id, entity_type, id DESC, author_id);
 
 CREATE INDEX index_award_emoji_on_awardable_type_and_awardable_id ON public.award_emoji USING btree (awardable_type, awardable_id);
 

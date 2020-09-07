@@ -897,7 +897,7 @@
   :urgency: :low
   :resource_boundary: :unknown
   :weight: 1
-  :idempotent:
+  :idempotent: true
   :tags: []
 - :name: pipeline_background:ci_daily_build_group_report_results
   :feature_category: :continuous_integration

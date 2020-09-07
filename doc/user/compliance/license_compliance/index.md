@@ -724,17 +724,21 @@ Developers of the project can view the policies configured in a project.
 
 ![View Policies](img/policies_v13_0.png)
 
-### Enabling License Approvals within a project
+## Enabling License Approvals within a project
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13067) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.3.
 
-`License-Check` is an approval rule you can enable to allow an approver, individual, or group to
-approve a merge request that contains a `denied` license.
+`License-Check` is a [security approval](../../application_security/index.md#enabling-security-approvals-within-a-project) rule you can enable to allow an individual or group to approve a
+merge request that contains a `denied` license.
 
 You can enable `License-Check` one of two ways:
 
-- Create a [project approval rule](../../project/merge_requests/merge_request_approvals.md#multiple-approval-rules-premium)
-  with the case-sensitive name `License-Check`.
+1. Navigate to your project's **Settings > General** and expand **Merge request approvals**.
+1. Click **Enable** or **Edit**.
+1. Add or change the **Rule name** to `License-Check` (case sensitive).
+
+![License Check Approver Rule](img/license-check_v13_4.png)
+
 - Create an approval group in the [project policies section for License Compliance](#policies).
   You must set this approval group's number of approvals required to greater than zero. Once you
   enable this group in your project, the approval rule is enabled for all merge requests.

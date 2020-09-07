@@ -881,8 +881,10 @@ RSpec.describe MergeRequest, factory_default: :keep do
   end
 
   describe '#diff_size' do
+    let_it_be(:project) { create(:project, :repository) }
+
     let(:merge_request) do
-      build(:merge_request, source_branch: 'expand-collapse-files', target_branch: 'master')
+      build(:merge_request, source_project: project, source_branch: 'expand-collapse-files', target_branch: 'master')
     end
 
     context 'when there are MR diffs' do
@@ -1512,7 +1514,9 @@ RSpec.describe MergeRequest, factory_default: :keep do
     end
 
     context 'new merge request' do
-      subject { build(:merge_request) }
+      let_it_be(:project) { create(:project, :repository) }
+
+      subject { build(:merge_request, source_project: project) }
 
       context 'compare commits' do
         before do
@@ -2116,11 +2120,13 @@ RSpec.describe MergeRequest, factory_default: :keep do
     end
 
     context 'when merge request is not persisted' do
+      let_it_be(:project) { create(:project, :repository) }
+
       context 'when compare commits are set in the service' do
         let(:commit) { spy('commit') }
 
         subject do
-          build(:merge_request, compare_commits: [commit, commit])
+          build(:merge_request, source_project: project, compare_commits: [commit, commit])
         end
 
         it 'returns commits from compare commits temporary data' do
@@ -2129,7 +2135,7 @@ RSpec.describe MergeRequest, factory_default: :keep do
       end
 
       context 'when compare commits are not set in the service' do
-        subject { build(:merge_request) }
+        subject { build(:merge_request, source_project: project) }
 
         it 'returns array with diff head sha element only' do
           expect(subject.all_commit_shas).to eq [subject.diff_head_sha]
@@ -2467,6 +2473,57 @@ RSpec.describe MergeRequest, factory_default: :keep do
 
       expect(subject.mergeable?).to be_truthy
     end
+
+    context 'with skip_ci_check option' do
+      using RSpec::Parameterized::TableSyntax
+
+      before do
+        allow(subject).to receive_messages(check_mergeability: nil,
+                                           can_be_merged?: true,
+                                           broken?: false)
+      end
+
+      where(:mergeable_ci_state, :skip_ci_check, :expected_mergeable) do
+        false | false | false
+        false | true  | true
+        true  | false | true
+        true  | true  | true
+      end
+
+      with_them do
+        it 'overrides mergeable_ci_state?' do
+          allow(subject).to receive(:mergeable_ci_state?) { mergeable_ci_state }
+
+          expect(subject.mergeable?(skip_ci_check: skip_ci_check)).to eq(expected_mergeable)
+        end
+      end
+    end
+
+    context 'with skip_discussions_check option' do
+      using RSpec::Parameterized::TableSyntax
+
+      before do
+        allow(subject).to receive_messages(mergeable_ci_state?: true,
+                                           check_mergeability: nil,
+                                           can_be_merged?: true,
+                                           broken?: false)
+      end
+
+      where(:mergeable_discussions_state, :skip_discussions_check, :expected_mergeable) do
+        false | false | false
+        false | true  | true
+        true  | false | true
+        true  | true  | true
+      end
+
+      with_them do
+        it 'overrides mergeable_discussions_state?' do
+          allow(subject).to receive(:mergeable_discussions_state?) { mergeable_discussions_state }
+
+          expect(subject.mergeable?(skip_discussions_check: skip_discussions_check)).to eq(expected_mergeable)
+        end
+      end
+    end
   end
 
   describe '#check_mergeability' do
@@ -2570,6 +2627,10 @@ RSpec.describe MergeRequest, factory_default: :keep do
         it 'returns false' do
           expect(subject.mergeable_state?).to be_falsey
         end
+
+        it 'returns true when skipping ci check' do
+          expect(subject.mergeable_state?(skip_ci_check: true)).to be(true)
+        end
       end
 
       context 'when #mergeable_discussions_state? is false' do
@@ -2637,9 +2698,9 @@ RSpec.describe MergeRequest, factory_default: :keep do
     let(:pipeline) { create(:ci_empty_pipeline) }
 
     context 'when it is only allowed to merge when build is green' do
-      let_it_be(:project) { create(:project, only_allow_merge_if_pipeline_succeeds: true) }
+      let_it_be(:project) { create(:project, :repository, only_allow_merge_if_pipeline_succeeds: true) }
 
-      subject { build(:merge_request, target_project: project) }
+      subject { build(:merge_request, source_project: project) }
 
       context 'and a failed pipeline is associated' do
         before do
@@ -2678,9 +2739,9 @@ RSpec.describe MergeRequest, factory_default: :keep do
     end
 
     context 'when it is only allowed to merge when build is green or skipped' do
-      let_it_be(:project) { create(:project, only_allow_merge_if_pipeline_succeeds: true, allow_merge_on_skipped_pipeline: true) }
+      let_it_be(:project) { create(:project, :repository, only_allow_merge_if_pipeline_succeeds: true, allow_merge_on_skipped_pipeline: true) }
 
-      subject { build(:merge_request, target_project: project) }
+      subject { build(:merge_request, source_project: project) }
 
       context 'and a failed pipeline is associated' do
         before do
@@ -2719,9 +2780,9 @@ RSpec.describe MergeRequest, factory_default: :keep do
     end
 
     context 'when merges are not restricted to green builds' do
-      let_it_be(:project) { create(:project, only_allow_merge_if_pipeline_succeeds: false) }
+      let_it_be(:project) { create(:project, :repository, only_allow_merge_if_pipeline_succeeds: false) }
 
-      subject { build(:merge_request, target_project: project) }
+      subject { build(:merge_request, source_project: project) }
 
       context 'and a failed pipeline is associated' do
         before do
@@ -4143,6 +4204,24 @@ RSpec.describe MergeRequest, factory_default: :keep do
         .to(:head_pipeline)
         .with_prefix
         .with_arguments(allow_nil: true)
+    end
+  end
+
+  describe '#allows_reviewers?' do
+    it 'returns false without merge_request_reviewers feature' do
+      stub_feature_flags(merge_request_reviewers: false)
+
+      merge_request = build_stubbed(:merge_request)
+
+      expect(merge_request.allows_reviewers?).to be(false)
+    end
+
+    it 'returns true with merge_request_reviewers feature' do
+      stub_feature_flags(merge_request_reviewers: true)
+
+      merge_request = build_stubbed(:merge_request)
+
+      expect(merge_request.allows_reviewers?).to be(true)
     end
   end
 end

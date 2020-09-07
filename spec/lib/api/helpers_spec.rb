@@ -189,6 +189,62 @@ RSpec.describe API::Helpers do
     end
   end
 
+  describe '#increment_unique_values' do
+    let(:value) { '9f302fea-f828-4ca9-aef4-e10bd723c0b3' }
+    let(:event_name) { 'my_event' }
+    let(:unknown_event) { 'unknown' }
+    let(:feature) { "usage_data_#{event_name}" }
+
+    context 'with feature enabled' do
+      before do
+        stub_feature_flags(feature => true)
+      end
+
+      it 'tracks redis hll event' do
+        stub_application_setting(usage_ping_enabled: true)
+
+        expect(Gitlab::UsageDataCounters::HLLRedisCounter).to receive(:track_event).with(value, event_name)
+
+        subject.increment_unique_values(event_name, value)
+      end
+
+      it 'does not track event usage ping is not enabled' do
+        stub_application_setting(usage_ping_enabled: false)
+        expect(Gitlab::UsageDataCounters::HLLRedisCounter).not_to receive(:track_event)
+
+        subject.increment_unique_values(event_name, value)
+      end
+
+      it 'logs an exception for unknown event' do
+        stub_application_setting(usage_ping_enabled: true)
+
+        expect(Gitlab::AppLogger).to receive(:warn).with("Redis tracking event failed for event: #{unknown_event}, message: Unknown event #{unknown_event}")
+
+        subject.increment_unique_values(unknown_event, value)
+      end
+
+      it 'does not track event for nil values' do
+        stub_application_setting(usage_ping_enabled: true)
+
+        expect(Gitlab::UsageDataCounters::HLLRedisCounter).not_to receive(:track_event)
+
+        subject.increment_unique_values(unknown_event, nil)
+      end
+    end
+
+    context 'with feature disabled' do
+      before do
+        stub_feature_flags(feature => false)
+      end
+
+      it 'does not track event' do
+        expect(Gitlab::UsageDataCounters::HLLRedisCounter).not_to receive(:track_event)
+
+        subject.increment_unique_values(event_name, value)
+      end
+    end
+  end
+
   describe '#order_options_with_tie_breaker' do
     subject { Class.new.include(described_class).new.order_options_with_tie_breaker }
 

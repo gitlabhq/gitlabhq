@@ -15,7 +15,9 @@ See [Geo current limitations](../replication/index.md#current-limitations) for m
 
 CAUTION: **Warning:**
 Disaster recovery for multi-secondary configurations is in **Alpha**.
-For the latest updates, check the multi-secondary [Disaster Recovery epic](https://gitlab.com/groups/gitlab-org/-/epics/65).
+For the latest updates, check the [Disaster Recovery epic for complete maturity](https://gitlab.com/groups/gitlab-org/-/epics/590). 
+Multi-secondary configurations require the complete re-synchronization and re-configuration of all non-promoted secondaries and
+will cause downtime.
 
 ## Promoting a **secondary** Geo node in single-secondary configurations
 

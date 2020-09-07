@@ -6,6 +6,9 @@ class ProfilesController < Profiles::ApplicationController
   before_action :user
   before_action :authorize_change_username!, only: :update_username
   skip_before_action :require_email, only: [:show, :update]
+  before_action do
+    push_frontend_feature_flag(:webauthn)
+  end
 
   def show
   end

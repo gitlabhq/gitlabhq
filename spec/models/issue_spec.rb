@@ -1212,4 +1212,14 @@ RSpec.describe Issue do
       end
     end
   end
+
+  describe '#allows_reviewers?' do
+    it 'returns false as issues do not support reviewers feature' do
+      stub_feature_flags(merge_request_reviewers: true)
+
+      issue = build_stubbed(:issue)
+
+      expect(issue.allows_reviewers?).to be(false)
+    end
+  end
 end

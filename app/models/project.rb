@@ -280,10 +280,9 @@ class Project < ApplicationRecord
   # The relation :all_pipelines is intended to be used when we want to get the
   # whole list of pipelines associated to the project
   has_many :all_pipelines, class_name: 'Ci::Pipeline', inverse_of: :project
-  # The relation :ci_pipelines is intended to be used when we want to get only
-  # those pipeline which are directly related to CI. There are
-  # other pipelines, like webide ones, that we won't retrieve
-  # if we use this relation.
+  # The relation :ci_pipelines includes all those that directly contribute to the
+  # latest status of a ref. This does not include dangling pipelines such as those
+  # from webide, child pipelines, etc.
   has_many :ci_pipelines,
           -> { ci_sources },
           class_name: 'Ci::Pipeline',
@@ -2709,9 +2708,11 @@ class Project < ApplicationRecord
   end
 
   def oids(objects, oids: [])
-    collection = oids.any? ? objects.where(oid: oids) : objects
+    objects = objects.where(oid: oids) if oids.any?
 
-    collection.pluck(:oid)
+    [].tap do |out|
+      objects.each_batch { |relation| out.concat(relation.pluck(:oid)) }
+    end
   end
 end
 

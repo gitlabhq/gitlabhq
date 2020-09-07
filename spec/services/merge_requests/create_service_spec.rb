@@ -339,6 +339,10 @@ RSpec.describe MergeRequests::CreateService, :clean_gitlab_redis_shared_state do
           end
         end
       end
+
+      it_behaves_like 'reviewer_ids filter' do
+        let(:execute) { service.execute }
+      end
     end
 
     it_behaves_like 'issuable record that supports quick actions' do

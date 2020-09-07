@@ -3325,6 +3325,9 @@ msgstr ""
 msgid "Are you sure? The device will be signed out of GitLab and all remember me tokens revoked."
 msgstr ""
 
+msgid "Are you sure? This will invalidate your registered applications and U2F / WebAuthn devices."
+msgstr ""
+
 msgid "Are you sure? This will invalidate your registered applications and U2F devices."
 msgstr ""
 
@@ -3344,6 +3347,9 @@ msgid "Artifacts"
 msgstr ""
 
 msgid "As U2F devices are only supported by a few browsers, we require that you set up a two-factor authentication app before a U2F device. That way you'll always be able to log in - even when you're using an unsupported browser."
+msgstr ""
+
+msgid "As WebAuthn devices are only supported by a few browsers, we require that you set up a two-factor authentication app before a WebAuthn device. That way you'll always be able to log in - even when you're using an unsupported browser."
 msgstr ""
 
 msgid "As we continue to build more features for SAST, we'd love your feedback on the SAST configuration feature in %{linkStart}this issue%{linkEnd}."
@@ -3575,7 +3581,7 @@ msgstr ""
 msgid "Authentication method updated"
 msgstr ""
 
-msgid "Authentication via U2F device failed."
+msgid "Authentication via %{method} device failed."
 msgstr ""
 
 msgid "Author"
@@ -6346,6 +6352,9 @@ msgstr ""
 msgid "Compare"
 msgstr ""
 
+msgid "Compare %{oldCommitId}...%{newCommitId}"
+msgstr ""
+
 msgid "Compare Git revisions"
 msgstr ""
 
@@ -6359,6 +6368,9 @@ msgid "Compare changes with the last commit"
 msgstr ""
 
 msgid "Compare changes with the merge request target branch"
+msgstr ""
+
+msgid "Compare submodule commit revisions"
 msgstr ""
 
 msgid "Compare with previous version"
@@ -20489,10 +20501,13 @@ msgstr ""
 msgid "Register Two-Factor Authenticator"
 msgstr ""
 
-msgid "Register U2F device"
+msgid "Register Universal Two-Factor (U2F) Device"
 msgstr ""
 
-msgid "Register Universal Two-Factor (U2F) Device"
+msgid "Register WebAuthn Device"
+msgstr ""
+
+msgid "Register device"
 msgstr ""
 
 msgid "Register for GitLab"
@@ -22661,7 +22676,7 @@ msgstr ""
 msgid "Set up assertions/attributes/claims (email, first_name, last_name) and NameID according to %{docsLinkStart}the documentation %{icon}%{docsLinkEnd}"
 msgstr ""
 
-msgid "Set up new U2F device"
+msgid "Set up new device"
 msgstr ""
 
 msgid "Set up new password"
@@ -24042,6 +24057,9 @@ msgstr ""
 msgid "Successfully deleted U2F device."
 msgstr ""
 
+msgid "Successfully deleted WebAuthn device."
+msgstr ""
+
 msgid "Successfully removed email."
 msgstr ""
 
@@ -24835,7 +24853,7 @@ msgstr ""
 msgid "The remote repository is being updated..."
 msgstr ""
 
-msgid "The repository can be commited to, and issues, comments and other entities can be created."
+msgid "The repository can be committed to, and issues, comments and other entities can be created."
 msgstr ""
 
 msgid "The repository for this project does not exist."
@@ -26414,6 +26432,9 @@ msgstr ""
 msgid "Try using a different search term to find the file you are looking for."
 msgstr ""
 
+msgid "Trying to communicate with your device. Plug it in (if needed) and press the button on the device now."
+msgstr ""
+
 msgid "Trying to communicate with your device. Plug it in (if you haven't already) and press the button on the device now."
 msgstr ""
 
@@ -27744,6 +27765,9 @@ msgstr ""
 msgid "Vulnerability|Description"
 msgstr ""
 
+msgid "Vulnerability|Detected"
+msgstr ""
+
 msgid "Vulnerability|Evidence"
 msgstr ""
 
@@ -27859,6 +27883,12 @@ msgid "Web Terminal"
 msgstr ""
 
 msgid "Web terminal"
+msgstr ""
+
+msgid "WebAuthn Devices (%{length})"
+msgstr ""
+
+msgid "WebAuthn only works with HTTPS-enabled websites. Contact your administrator for more details."
 msgstr ""
 
 msgid "WebIDE|Merge request"
@@ -28550,6 +28580,9 @@ msgstr ""
 msgid "You don't have any U2F devices registered yet."
 msgstr ""
 
+msgid "You don't have any WebAuthn devices registered yet."
+msgstr ""
+
 msgid "You don't have any active chat names."
 msgstr ""
 
@@ -28676,7 +28709,7 @@ msgstr ""
 msgid "You need to be logged in."
 msgstr ""
 
-msgid "You need to register a two-factor authentication app before you can set up a U2F device."
+msgid "You need to register a two-factor authentication app before you can set up a device."
 msgstr ""
 
 msgid "You need to set terms to be enforced"
@@ -28859,10 +28892,13 @@ msgstr ""
 msgid "Your U2F device did not send a valid JSON response."
 msgstr ""
 
-msgid "Your U2F device needs to be set up. Plug it in (if not already) and click the button on the left."
+msgid "Your U2F device was registered!"
 msgstr ""
 
-msgid "Your U2F device was registered!"
+msgid "Your WebAuthn device did not send a valid JSON response."
+msgstr ""
+
+msgid "Your WebAuthn device was registered!"
 msgstr ""
 
 msgid "Your access request to the %{source_type} has been withdrawn."
@@ -28884,6 +28920,9 @@ msgid "Your authorized applications"
 msgstr ""
 
 msgid "Your browser doesn't support U2F. Please use Google Chrome desktop (version 41 or newer)."
+msgstr ""
+
+msgid "Your browser doesn't support WebAuthn. Please use a supported browser, e.g. Chrome (67+) or Firefox (60+)."
 msgstr ""
 
 msgid "Your changes can be committed to %{branch_name} because a merge request is open."
@@ -28920,6 +28959,12 @@ msgid "Your dashboard has been updated. You can %{web_ide_link_start}edit it her
 msgstr ""
 
 msgid "Your deployment services will be broken, you will need to manually fix the services after renaming."
+msgstr ""
+
+msgid "Your device is not compatible with GitLab. Please try another device"
+msgstr ""
+
+msgid "Your device needs to be set up. Plug it in (if needed) and click the button on the left."
 msgstr ""
 
 msgid "Your device was successfully set up! Give it a name and register it with the GitLab server."
@@ -29471,9 +29516,6 @@ msgid "epic"
 msgstr ""
 
 msgid "error"
-msgstr ""
-
-msgid "error code:"
 msgstr ""
 
 msgid "estimateCommand|%{slash_command} will update the estimated time with the latest command."

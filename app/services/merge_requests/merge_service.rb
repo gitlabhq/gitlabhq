@@ -10,13 +10,14 @@ module MergeRequests
   class MergeService < MergeRequests::MergeBaseService
     delegate :merge_jid, :state, to: :@merge_request
 
-    def execute(merge_request)
+    def execute(merge_request, options = {})
       if project.merge_requests_ff_only_enabled && !self.is_a?(FfMergeService)
         FfMergeService.new(project, current_user, params).execute(merge_request)
         return
       end
 
       @merge_request = merge_request
+      @options = options
 
       validate!
 
@@ -55,7 +56,7 @@ module MergeRequests
       error =
         if @merge_request.should_be_rebased?
           'Only fast-forward merge is allowed for your project. Please update your source branch'
-        elsif !@merge_request.mergeable?
+        elsif !@merge_request.mergeable?(skip_discussions_check: @options[:skip_discussions_check])
           'Merge request is not mergeable'
         elsif !@merge_request.squash && project.squash_always?
           'This project requires squashing commits when merge requests are accepted.'

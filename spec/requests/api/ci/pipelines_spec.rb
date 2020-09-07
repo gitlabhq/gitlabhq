@@ -476,17 +476,18 @@ RSpec.describe API::Ci::Pipelines do
       end
     end
 
-    context 'when config source is not ci' do
-      let(:non_ci_config_source) { Enums::Ci::Pipeline.non_ci_config_source_values.first }
-      let(:pipeline_not_ci) do
-        create(:ci_pipeline, config_source: non_ci_config_source, project: project)
+    context 'when pipeline is a dangling pipeline' do
+      let(:dangling_source) { Enums::Ci::Pipeline.dangling_sources.each_value.first }
+
+      let(:dangling_pipeline) do
+        create(:ci_pipeline, source: dangling_source, project: project)
       end
 
       it 'returns the specified pipeline' do
-        get api("/projects/#{project.id}/pipelines/#{pipeline_not_ci.id}", user)
+        get api("/projects/#{project.id}/pipelines/#{dangling_pipeline.id}", user)
 
         expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response['sha']).to eq(pipeline_not_ci.sha)
+        expect(json_response['sha']).to eq(dangling_pipeline.sha)
       end
     end
   end

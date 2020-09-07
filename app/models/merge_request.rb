@@ -955,8 +955,9 @@ class MergeRequest < ApplicationRecord
     self.class.wip_title(self.title)
   end
 
-  def mergeable?(skip_ci_check: false)
-    return false unless mergeable_state?(skip_ci_check: skip_ci_check)
+  def mergeable?(skip_ci_check: false, skip_discussions_check: false)
+    return false unless mergeable_state?(skip_ci_check: skip_ci_check,
+                                         skip_discussions_check: skip_discussions_check)
 
     check_mergeability
 
@@ -1656,6 +1657,10 @@ class MergeRequest < ApplicationRecord
       metrics_record.association(:merge_request).target = self
       association(:metrics).target = metrics_record
     end
+  end
+
+  def allows_reviewers?
+    Feature.enabled?(:merge_request_reviewers, project)
   end
 
   private

@@ -288,6 +288,29 @@ Implemented using Redis methods [PFADD](https://redis.io/commands/pfadd) and [PF
    end
    ```
 
+1. Track event in API using `increment_unique_values(event_name, values)` helper method.
+
+   In order to be able to track the event, Usage Ping must be enabled and the event feature `usage_data_<event_name>` must be enabled.
+
+   Arguments:
+
+   - `event_name`: event name.
+   - `values`: values counted, one value or array of values.
+
+   Example usage:
+
+   ```ruby
+   get ':id/registry/repositories' do
+     repositories = ContainerRepositoriesFinder.new(
+       user: current_user, subject: user_group
+     ).execute
+
+     increment_unique_values('i_list_repositories', current_user.id)
+
+     present paginate(repositories), with: Entities::ContainerRegistry::Repository, tags: params[:tags], tags_count: params[:tags_count]
+   end
+   ```
+
 1. Track event using base module `Gitlab::UsageDataCounters::HLLRedisCounter.track_event(entity_id, event_name)`.
 
    Arguments:

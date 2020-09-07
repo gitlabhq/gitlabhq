@@ -10,7 +10,9 @@ The DevOps Report gives you an overview of your entire instance's adoption of
 [Concurrent DevOps](https://about.gitlab.com/topics/concurrent-devops/)
 from planning to monitoring.
 
-This displays the usage of these GitLab features over
+## DevOps Score
+
+DevOps Score displays the usage of GitLab's major features on your instance over
 the last 30 days, averaged over the number of active users in that time period. It also
 provides a Lead score per feature, which is calculated based on GitLab's analysis
 of top-performing instances based on [usage ping data](../settings/usage_statistics.md#usage-ping-core-only) that GitLab has

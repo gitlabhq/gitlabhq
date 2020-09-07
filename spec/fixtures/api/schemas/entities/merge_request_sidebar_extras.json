@@ -17,6 +17,10 @@
     "assignees": {
       "type": "array",
       "items": { "$ref": "../public_api/v4/user/basic.json" }
+    },
+    "reviewers": {
+      "type": "array",
+      "items": { "$ref": "../public_api/v4/user/basic.json" }
     }
   },
   "additionalProperties": false

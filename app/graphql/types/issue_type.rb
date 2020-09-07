@@ -105,6 +105,9 @@ module Types
           Types::AlertManagement::AlertType,
           null: true,
           description: 'Alert associated to this issue'
+
+    field :severity, Types::IssuableSeverityEnum, null: true,
+          description: 'Severity level of the incident'
   end
 end
 

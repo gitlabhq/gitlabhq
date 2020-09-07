@@ -588,8 +588,9 @@ database encryption. Proceed with caution.
 1. On the **GitLab server**, make the following changes to `/etc/gitlab/gitlab.rb`:
 
    ```ruby
-   gitlab_pages['enable'] = false
    pages_external_url "http://<pages_server_URL>"
+   gitlab_pages['enable'] = false
+   gitlab_rails['pages_enabled']=false
    gitlab_rails['pages_path'] = "/mnt/pages"
    ```
 

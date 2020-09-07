@@ -522,9 +522,10 @@ RSpec.describe Project do
     before do
       create(:ci_pipeline, project: project, ref: 'master', source: :web)
       create(:ci_pipeline, project: project, ref: 'master', source: :external)
+      create(:ci_pipeline, project: project, ref: 'master', source: :webide)
     end
 
-    it 'has ci pipelines' do
+    it 'excludes dangling pipelines such as :webide' do
       expect(project.ci_pipelines.size).to eq(2)
     end
 

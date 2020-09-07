@@ -81,6 +81,14 @@ FactoryBot.define do
       end
     end
 
+    trait :two_factor_via_webauthn do
+      transient { registrations_count { 5 } }
+
+      after(:create) do |user, evaluator|
+        create_list(:webauthn_registration, evaluator.registrations_count, user: user)
+      end
+    end
+
     trait :readme do
       project_view { :readme }
     end

@@ -3,9 +3,10 @@
 class FakeU2fDevice
   attr_reader :name
 
-  def initialize(page, name)
+  def initialize(page, name, device = nil)
     @page = page
     @name = name
+    @u2f_device = device
   end
 
   def respond_to_u2f_registration

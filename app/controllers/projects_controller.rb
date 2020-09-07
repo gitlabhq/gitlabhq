@@ -42,7 +42,7 @@ class ProjectsController < Projects::ApplicationController
 
   before_action only: [:edit] do
     push_frontend_feature_flag(:service_desk_custom_address, @project)
-    push_frontend_feature_flag(:approval_suggestions, @project)
+    push_frontend_feature_flag(:approval_suggestions, @project, default_enabled: true)
   end
 
   layout :determine_layout

@@ -262,7 +262,7 @@ module Ci
 
     scope :internal, -> { where(source: internal_sources) }
     scope :no_child, -> { where.not(source: :parent_pipeline) }
-    scope :ci_sources, -> { where(config_source: Enums::Ci::Pipeline.ci_config_sources_values) }
+    scope :ci_sources, -> { where(source: Enums::Ci::Pipeline.ci_sources.values) }
     scope :for_user, -> (user) { where(user: user) }
     scope :for_sha, -> (sha) { where(sha: sha) }
     scope :for_source_sha, -> (source_sha) { where(source_sha: source_sha) }
@@ -1033,7 +1033,11 @@ module Ci
     end
 
     def cacheable?
-      Enums::Ci::Pipeline.ci_config_sources.key?(config_source.to_sym)
+      !dangling?
+    end
+
+    def dangling?
+      Enums::Ci::Pipeline.dangling_sources.key?(source.to_sym)
     end
 
     def source_ref_path

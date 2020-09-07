@@ -45,6 +45,7 @@ docs lint:
   image: "registry.gitlab.com/gitlab-org/gitlab-docs/lint:vale-2.3.3-markdownlint-0.23.2"
   stage: test
   needs: []
+  allow_failure: true
   script:
     - scripts/lint-doc.sh
     # Prepare docs for build

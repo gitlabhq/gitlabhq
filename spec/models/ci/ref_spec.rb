@@ -107,8 +107,8 @@ RSpec.describe Ci::Ref do
 
   describe '#last_finished_pipeline_id' do
     let(:pipeline_status) { :running }
-    let(:config_source) { Enums::Ci::Pipeline.config_sources[:repository_source] }
-    let(:pipeline) { create(:ci_pipeline, pipeline_status, config_source: config_source) }
+    let(:pipeline_source) { Enums::Ci::Pipeline.sources[:push] }
+    let(:pipeline) { create(:ci_pipeline, pipeline_status, source: pipeline_source) }
     let(:ci_ref) { pipeline.ci_ref }
 
     context 'when there are no finished pipelines' do
@@ -124,8 +124,8 @@ RSpec.describe Ci::Ref do
         expect(ci_ref.last_finished_pipeline_id).to eq(pipeline.id)
       end
 
-      context 'when the pipeline is not a ci_source' do
-        let(:config_source) { Enums::Ci::Pipeline.config_sources[:parameter_source] }
+      context 'when the pipeline a dangling pipeline' do
+        let(:pipeline_source) { Enums::Ci::Pipeline.sources[:ondemand_dast_scan] }
 
         it 'returns nil' do
           expect(ci_ref.last_finished_pipeline_id).to be_nil

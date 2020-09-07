@@ -221,6 +221,26 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
     end
   end
 
+  describe '.ci_sources' do
+    subject { described_class.ci_sources }
+
+    let!(:push_pipeline)   { create(:ci_pipeline, source: :push) }
+    let!(:web_pipeline)    { create(:ci_pipeline, source: :web) }
+    let!(:api_pipeline)    { create(:ci_pipeline, source: :api) }
+    let!(:webide_pipeline) { create(:ci_pipeline, source: :webide) }
+    let!(:child_pipeline)  { create(:ci_pipeline, source: :parent_pipeline) }
+
+    it 'contains pipelines having CI only sources' do
+      expect(subject).to contain_exactly(push_pipeline, web_pipeline, api_pipeline)
+    end
+
+    it 'filters on expected sources' do
+      expect(::Enums::Ci::Pipeline.ci_sources.keys).to contain_exactly(
+        *%i[unknown push web trigger schedule api external pipeline chat
+            merge_request_event external_pull_request_event])
+    end
+  end
+
   describe '.outside_pipeline_family' do
     subject(:outside_pipeline_family) { described_class.outside_pipeline_family(upstream_pipeline) }
 
@@ -1239,14 +1259,42 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
     end
 
     describe 'pipeline caching' do
-      before do
-        pipeline.config_source = 'repository_source'
+      context 'if pipeline is cacheable' do
+        before do
+          pipeline.source = 'push'
+        end
+
+        it 'performs ExpirePipelinesCacheWorker' do
+          expect(ExpirePipelineCacheWorker).to receive(:perform_async).with(pipeline.id)
+
+          pipeline.cancel
+        end
       end
 
-      it 'performs ExpirePipelinesCacheWorker' do
-        expect(ExpirePipelineCacheWorker).to receive(:perform_async).with(pipeline.id)
+      context 'if pipeline is not cacheable' do
+        before do
+          pipeline.source = 'webide'
+        end
 
-        pipeline.cancel
+        it 'deos not perform ExpirePipelinesCacheWorker' do
+          expect(ExpirePipelineCacheWorker).not_to receive(:perform_async)
+
+          pipeline.cancel
+        end
+      end
+    end
+
+    describe '#dangling?' do
+      it 'returns true if pipeline comes from any dangling sources' do
+        pipeline.source = Enums::Ci::Pipeline.dangling_sources.each_key.first
+
+        expect(pipeline).to be_dangling
+      end
+
+      it 'returns true if pipeline comes from any CI sources' do
+        pipeline.source = Enums::Ci::Pipeline.ci_sources.each_key.first
+
+        expect(pipeline).not_to be_dangling
       end
     end
 
@@ -1959,12 +2007,12 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
   describe '.last_finished_for_ref_id' do
     let(:branch) { project.default_branch }
     let(:ref) { project.ci_refs.take }
-    let(:config_source) { Enums::Ci::Pipeline.config_sources[:parameter_source] }
+    let(:dangling_source) { Enums::Ci::Pipeline.sources[:ondemand_dast_scan] }
     let!(:pipeline1) { create(:ci_pipeline, :success, project: project, ref: branch) }
     let!(:pipeline2) { create(:ci_pipeline, :success, project: project, ref: branch) }
     let!(:pipeline3) { create(:ci_pipeline, :failed, project: project, ref: branch) }
     let!(:pipeline4) { create(:ci_pipeline, :success, project: project, ref: branch) }
-    let!(:pipeline5) { create(:ci_pipeline, :success, project: project, ref: branch, config_source: config_source) }
+    let!(:pipeline5) { create(:ci_pipeline, :success, project: project, ref: branch, source: dangling_source) }
 
     it 'returns the expected pipeline' do
       result = described_class.last_finished_for_ref_id(ref.id)

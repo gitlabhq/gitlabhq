@@ -309,15 +309,29 @@ rating.
 
 ### Enabling Security Approvals within a project
 
-To enable Security Approvals, a [project approval rule](../project/merge_requests/merge_request_approvals.md#adding--editing-a-default-approval-rule)
-must be created with the case-sensitive name `Vulnerability-Check`. This approval group must be set
-with the number of approvals required greater than zero. You must have Maintainer or Owner [permissions](../permissions.md#project-members-permissions) to manage approval rules.
+To enable the `Vulnerability-Check` or `License-Check` Security Approvals, a [project approval rule](../project/merge_requests/merge_request_approvals.md#adding--editing-a-default-approval-rule)
+must be created. A [security scanner job](#security-scanning-tools) must be enabled for
+`Vulnerability-Check`, and a [license scanning](../compliance/license_compliance/index.md#configuration)
+job must be enabled for `License-Check`. When the proper jobs aren't configured, the following
+appears:
+
+![Unconfigured Approval Rules](img/unconfigured_security_approval_rules_and_jobs_v13_4.png)
+
+If at least one security scanner is enabled, you will be able to enable the `Vulnerability-Check` approval rule. If a license scanning job is enabled, you will be able to enable the `License-Check` rule.
+
+![Unconfigured Approval Rules with valid pipeline jobs](img/unconfigured_security_approval_rules_and_enabled_jobs_v13_4.png)
+
+For this approval group, you must set the number of approvals required to greater than zero. You
+must have Maintainer or Owner [permissions](../permissions.md#project-members-permissions)
+to manage approval rules.
+
+Follow these steps to enable `Vulnerability-Check`:
 
 1. Navigate to your project's **Settings > General** and expand **Merge request approvals**.
-1. Click **Add approval rule**, or **Edit**.
-   - Add or change the **Rule name** to `Vulnerability-Check` (case sensitive).
+1. Click **Enable**, or **Edit**.
+1. Add or change the **Rule name** to `Vulnerability-Check` (case sensitive).
 
-![Vulnerability Check Approver Rule](img/vulnerability-check_v13_0.png)
+![Vulnerability Check Approver Rule](img/vulnerability-check_v13_4.png)
 
 Once this group is added to your project, the approval rule is enabled for all merge requests.
 
@@ -334,32 +348,14 @@ An approval is optional when the security report:
 - Contains no new vulnerabilities when compared to the target branch.
 - Contains only new vulnerabilities of `low` or `medium` severity.
 
-## Enabling License Approvals within a project
+### Enabling License Approvals within a project
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13067) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.3.
 
-`License-Check` is an approval rule you can enable to allow an individual or group to approve a
-merge request that contains a `denied` license.
-
-You can enable `License-Check` one of two ways:
-
-- Create a [project approval rule](../project/merge_requests/merge_request_approvals.md#multiple-approval-rules-premium)
-  with the case-sensitive name `License-Check`.
-- Create an approval group in the [project policies section for License Compliance](../compliance/license_compliance/index.md#policies).
-  You must set this approval group's number of approvals required to greater than zero. Once you
-  enable this group in your project, the approval rule is enabled for all merge requests.
-
-Any code changes cause the approvals required to reset.
-
-An approval is required when a license report:
-
-- Contains a dependency that includes a software license that is `denied`.
-- Is not generated during pipeline execution.
-
-An approval is optional when a license report:
-
-- Contains no software license violations.
-- Contains only new licenses that are `allowed` or unknown.
+`License-Check` is a [security approval rule](#enabling-security-approvals-within-a-project)
+you can enable to allow an individual or group to approve a merge request that contains a `denied`
+license. For instructions on enabling this rule, see
+[Enabling license approvals within a project](../compliance/license_compliance/index.md#enabling-license-approvals-within-a-project).
 
 ## Working in an offline environment
 

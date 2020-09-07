@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class IssuableSeverity < ApplicationRecord
+  DEFAULT = 'unknown'
+
   belongs_to :issue
 
   validates :issue, presence: true, uniqueness: true

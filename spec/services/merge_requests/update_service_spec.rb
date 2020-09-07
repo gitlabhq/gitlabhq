@@ -161,6 +161,29 @@ RSpec.describe MergeRequests::UpdateService, :mailer do
           expect(@merge_request.merge_params["force_remove_source_branch"]).to eq("1")
         end
       end
+
+      it_behaves_like 'reviewer_ids filter' do
+        let(:opts) { {} }
+        let(:execute) { update_merge_request(opts) }
+      end
+
+      context 'with an existing reviewer' do
+        let(:merge_request) do
+          create(:merge_request, :simple, source_project: project, reviewer_ids: [user2.id])
+        end
+
+        context 'when merge_request_reviewer feature is enabled' do
+          before do
+            stub_feature_flags(merge_request_reviewer: true)
+          end
+
+          let(:opts) { { reviewer_ids: [IssuableFinder::Params::NONE] } }
+
+          it 'removes reviewers' do
+            expect(update_merge_request(opts).reviewers).to eq []
+          end
+        end
+      end
     end
 
     context 'after_save callback to store_mentions' do

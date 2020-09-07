@@ -43,6 +43,7 @@ class Projects::MergeRequests::ApplicationController < Projects::ApplicationCont
       :discussion_locked,
       label_ids: [],
       assignee_ids: [],
+      reviewer_ids: [],
       update_task: [:index, :checked, :line_number, :line_source]
     ]
   end

@@ -177,12 +177,22 @@ module Issuable
       assignees.count > 1
     end
 
+    def allows_reviewers?
+      false
+    end
+
     def supports_time_tracking?
       is_a?(TimeTrackable) && !incident?
     end
 
     def incident?
       is_a?(Issue) && super
+    end
+
+    def severity
+      return IssuableSeverity::DEFAULT unless incident?
+
+      issuable_severity&.severity || IssuableSeverity::DEFAULT
     end
 
     private

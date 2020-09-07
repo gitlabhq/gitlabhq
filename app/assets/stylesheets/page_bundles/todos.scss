@@ -151,18 +151,6 @@
   }
 }
 
-@include media-breakpoint-down(sm) {
-  .todos-filters {
-    .dropdown-menu-toggle {
-      width: 130px;
-    }
-
-    .dropdown-menu-toggle-sort {
-      width: auto;
-    }
-  }
-}
-
 @include media-breakpoint-down(lg) {
   .todos-filters {
     .filter-categories {
@@ -205,6 +193,10 @@
 
     .dropdown-menu-toggle {
       width: 100%;
+    }
+
+    .dropdown-menu-toggle-sort {
+      width: auto;
     }
   }
 }

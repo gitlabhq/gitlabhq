@@ -2,7 +2,14 @@
 /* eslint-disable vue/no-v-html */
 import { escape } from 'lodash';
 import { mapActions, mapGetters } from 'vuex';
-import { GlDeprecatedButton, GlTooltipDirective, GlLoadingIcon, GlIcon } from '@gitlab/ui';
+import {
+  GlDeprecatedButton,
+  GlTooltipDirective,
+  GlSafeHtmlDirective,
+  GlLoadingIcon,
+  GlIcon,
+  GlButton,
+} from '@gitlab/ui';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import FileIcon from '~/vue_shared/components/file_icon.vue';
 import { truncateSha } from '~/lib/utils/text_utility';
@@ -21,9 +28,11 @@ export default {
     GlIcon,
     FileIcon,
     DiffStats,
+    GlButton,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
+    SafeHtml: GlSafeHtmlDirective,
   },
   props: {
     discussionPath: {
@@ -76,6 +85,21 @@ export default {
       }
 
       return this.discussionPath;
+    },
+    submoduleDiffCompareLinkText() {
+      if (this.diffFile.submodule_compare) {
+        const truncatedOldSha = escape(truncateSha(this.diffFile.submodule_compare.old_sha));
+        const truncatedNewSha = escape(truncateSha(this.diffFile.submodule_compare.new_sha));
+        return sprintf(
+          s__('Compare %{oldCommitId}...%{newCommitId}'),
+          {
+            oldCommitId: `<span class="commit-sha">${truncatedOldSha}</span>`,
+            newCommitId: `<span class="commit-sha">${truncatedNewSha}</span>`,
+          },
+          false,
+        );
+      }
+      return null;
     },
     filePath() {
       if (this.diffFile.submodule) {
@@ -310,6 +334,19 @@ export default {
           <gl-icon name="external-link" />
         </a>
       </div>
+    </div>
+
+    <div
+      v-if="diffFile.submodule_compare"
+      class="file-actions d-none d-sm-flex align-items-center flex-wrap"
+    >
+      <gl-button
+        v-gl-tooltip.hover
+        v-safe-html="submoduleDiffCompareLinkText"
+        class="submodule-compare"
+        :title="s__('Compare submodule commit revisions')"
+        :href="diffFile.submodule_compare.url"
+      />
     </div>
   </div>
 </template>

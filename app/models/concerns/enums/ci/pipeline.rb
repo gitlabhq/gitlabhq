@@ -36,6 +36,23 @@ module Enums
         }
       end
 
+      # Dangling sources are those events that generate pipelines for which
+      # we don't want to directly affect the ref CI status.
+      # - when a webide pipeline fails it does not change the ref CI status to failed
+      # - when a child pipeline (from parent_pipeline source) fails it affects its
+      #   parent pipeline. It's up to the parent to affect the ref CI status
+      # - when an ondemand_dast_scan pipeline runs it is for testing purpose and should
+      #   not affect the ref CI status.
+      def self.dangling_sources
+        sources.slice(:webide, :parent_pipeline, :ondemand_dast_scan)
+      end
+
+      # CI sources are those pipeline events that affect the CI status of the ref
+      # they run for. By definition it excludes dangling pipelines.
+      def self.ci_sources
+        sources.except(*dangling_sources.keys)
+      end
+
       # Returns the `Hash` to use for creating the `config_sources` enum for
       # `Ci::Pipeline`.
       def self.config_sources
@@ -49,24 +66,6 @@ module Enums
           bridge_source: 6,
           parameter_source: 7
         }
-      end
-
-      def self.ci_config_sources
-        config_sources.slice(
-          :unknown_source,
-          :repository_source,
-          :auto_devops_source,
-          :remote_source,
-          :external_project_source
-        )
-      end
-
-      def self.ci_config_sources_values
-        ci_config_sources.values
-      end
-
-      def self.non_ci_config_source_values
-        config_sources.values - ci_config_sources.values
       end
     end
   end

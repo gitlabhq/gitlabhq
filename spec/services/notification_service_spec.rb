@@ -8,9 +8,9 @@ RSpec.describe NotificationService, :mailer do
   include NotificationHelpers
 
   let_it_be(:project, reload: true) { create(:project, :public) }
+  let_it_be_with_refind(:assignee) { create(:user) }
 
   let(:notification) { described_class.new }
-  let(:assignee) { create(:user) }
 
   around(:example, :deliver_mails_inline) do |example|
     # This is a temporary `around` hook until all the examples check the
@@ -1585,20 +1585,21 @@ RSpec.describe NotificationService, :mailer do
   describe 'Merge Requests', :deliver_mails_inline do
     let(:another_project) { create(:project, :public, namespace: group) }
     let(:assignees) { Array.wrap(assignee) }
-    let(:author) { create(:user) }
     let(:merge_request) { create :merge_request, author: author, source_project: project, assignees: assignees, description: 'cc @participant' }
 
+    let_it_be_with_reload(:author) { create(:user) }
     let_it_be(:group) { create(:group) }
     let_it_be(:project) { create(:project, :public, :repository, namespace: group) }
 
     before_all do
       build_team(project)
       add_users(project)
+
+      project.add_maintainer(author)
+      project.add_maintainer(assignee)
     end
 
     before do
-      project.add_maintainer(author)
-      assignees.each { |assignee| project.add_maintainer(assignee) }
       add_user_subscriptions(merge_request)
       update_custom_notification(:new_merge_request, @u_guest_custom, resource: project)
       update_custom_notification(:new_merge_request, @u_custom_global)

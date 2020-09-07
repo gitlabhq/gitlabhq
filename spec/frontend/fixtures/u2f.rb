@@ -11,6 +11,10 @@ RSpec.context 'U2F' do
     clean_frontend_fixtures('u2f/')
   end
 
+  before do
+    stub_feature_flags(webauthn: false)
+  end
+
   describe SessionsController, '(JavaScript fixtures)', type: :controller do
     include DeviseHelpers
 

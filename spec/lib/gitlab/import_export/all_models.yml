@@ -15,6 +15,7 @@ issues:
 - resource_iteration_events
 - sent_notifications
 - sentry_issue
+- issuable_severity
 - label_links
 - labels
 - last_edited_by
@@ -648,6 +649,8 @@ versions: &version
 zoom_meetings:
 - issue
 sentry_issue:
+- issue
+issuable_severity:
 - issue
 design_versions: *version
 epic:

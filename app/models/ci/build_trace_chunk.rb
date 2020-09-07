@@ -108,6 +108,14 @@ module Ci
       Ci::BuildTraceChunkFlushWorker.perform_async(id)
     end
 
+    def persisted?
+      !redis?
+    end
+
+    def live?
+      redis?
+    end
+
     private
 
     def get_data
@@ -168,14 +176,6 @@ module Ci
       @size = new_size
 
       save! if changed?
-    end
-
-    def persisted?
-      !redis?
-    end
-
-    def live?
-      redis?
     end
 
     def full?

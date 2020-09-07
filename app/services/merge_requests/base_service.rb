@@ -97,6 +97,28 @@ module MergeRequests
       unless merge_request.can_allow_collaboration?(current_user)
         params.delete(:allow_collaboration)
       end
+
+      filter_reviewer(merge_request)
+    end
+
+    def filter_reviewer(merge_request)
+      return if params[:reviewer_ids].blank?
+
+      unless can_admin_issuable?(merge_request) && merge_request.allows_reviewers?
+        params.delete(:reviewer_ids)
+
+        return
+      end
+
+      reviewer_ids = params[:reviewer_ids].select { |reviewer_id| user_can_read?(merge_request, reviewer_id) }
+
+      if params[:reviewer_ids].map(&:to_s) == [IssuableFinder::Params::NONE]
+        params[:reviewer_ids] = []
+      elsif reviewer_ids.any?
+        params[:reviewer_ids] = reviewer_ids
+      else
+        params.delete(:reviewer_ids)
+      end
     end
 
     def merge_request_metrics_service(merge_request)

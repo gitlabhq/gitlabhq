@@ -854,4 +854,41 @@ RSpec.describe Issuable do
       it { is_expected.to eq(incident) }
     end
   end
+
+  describe '#severity' do
+    subject { issuable.severity }
+
+    context 'when issuable is not an incident' do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:issuable_type, :severity) do
+        :issue         | 'unknown'
+        :merge_request | 'unknown'
+      end
+
+      with_them do
+        let(:issuable) { build_stubbed(issuable_type) }
+
+        it { is_expected.to eq(severity) }
+      end
+    end
+
+    context 'when issuable type is an incident' do
+      let!(:issuable) { build_stubbed(:incident) }
+
+      context 'when incident does not have issuable_severity' do
+        it 'returns default serverity' do
+          is_expected.to eq(IssuableSeverity::DEFAULT)
+        end
+      end
+
+      context 'when incident has issuable_severity' do
+        let!(:issuable_severity) { build_stubbed(:issuable_severity, issue: issuable, severity: 'critical') }
+
+        it 'returns issuable serverity' do
+          is_expected.to eq('critical')
+        end
+      end
+    end
+  end
 end

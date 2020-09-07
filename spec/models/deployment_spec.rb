@@ -44,10 +44,14 @@ RSpec.describe Deployment do
 
   describe 'modules' do
     it_behaves_like 'AtomicInternalId' do
+      let_it_be(:project) { create(:project, :repository) }
+      let_it_be(:deployable) { create(:ci_build, project: project) }
+      let_it_be(:environment) { create(:environment, project: project) }
+
       let(:internal_id_attribute) { :iid }
-      let(:instance) { build(:deployment) }
+      let(:instance) { build(:deployment, deployable: deployable, environment: environment) }
       let(:scope) { :project }
-      let(:scope_attrs) { { project: instance.project } }
+      let(:scope_attrs) { { project: project } }
       let(:usage) { :deployments }
     end
   end

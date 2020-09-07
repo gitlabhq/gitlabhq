@@ -20,6 +20,13 @@ RSpec.describe HamlLint::Linter::DocumentationLinks do
     it { is_expected.not_to report_lint }
   end
 
+  # TODO: Remove me after https://gitlab.com/gitlab-org/gitlab/-/merge_requests/39715 is merged
+  context 'when link_to points to the existing file with partially matching anchor' do
+    let(:haml) { "= link_to 'Description', help_page_path('README.md', anchor: 'overview-premium'), target: '_blank'" }
+
+    it { is_expected.not_to report_lint }
+  end
+
   context 'when link_to points to the existing file path without .md extension' do
     let(:haml) { "= link_to 'Description', help_page_path('README')" }
 

@@ -1,5 +1,5 @@
 <script>
-/* eslint-disable vue/no-v-html */
+import { GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
 import axios from '~/lib/utils/axios_utils';
 
 import { deprecatedCreateFlash as Flash } from '~/flash';
@@ -11,6 +11,9 @@ import eventHub from '../event_hub';
 export default {
   components: {
     DeprecatedModal,
+  },
+  directives: {
+    SafeHtml,
   },
   props: {
     issueCount: {
@@ -125,7 +128,7 @@ Once deleted, it cannot be undone or recovered.`),
     @submit="onSubmit"
   >
     <template #body="props">
-      <p v-html="props.text"></p>
+      <p v-safe-html="props.text"></p>
     </template>
   </deprecated-modal>
 </template>

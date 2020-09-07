@@ -113,6 +113,7 @@ class User < ApplicationRecord
   has_many :personal_access_tokens, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :identities, dependent: :destroy, autosave: true # rubocop:disable Cop/ActiveRecordDependent
   has_many :u2f_registrations, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+  has_many :webauthn_registrations
   has_many :chat_names, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_one :user_synced_attributes_metadata, autosave: true
   has_one :aws_role, class_name: 'Aws::Role'
@@ -286,6 +287,7 @@ class User < ApplicationRecord
   delegate :path, to: :namespace, allow_nil: true, prefix: true
   delegate :job_title, :job_title=, to: :user_detail, allow_nil: true
   delegate :bio, :bio=, :bio_html, to: :user_detail, allow_nil: true
+  delegate :webauthn_xid, :webauthn_xid=, to: :user_detail, allow_nil: true
 
   accepts_nested_attributes_for :user_preference, update_only: true
   accepts_nested_attributes_for :user_detail, update_only: true
@@ -434,14 +436,21 @@ class User < ApplicationRecord
         FROM u2f_registrations AS u2f
         WHERE u2f.user_id = users.id
       ) OR users.otp_required_for_login = ?
+      OR
+      EXISTS (
+        SELECT *
+        FROM webauthn_registrations AS webauthn
+        WHERE webauthn.user_id = users.id
+      )
     SQL
 
     where(with_u2f_registrations, true)
   end
 
   def self.without_two_factor
-    joins("LEFT OUTER JOIN u2f_registrations AS u2f ON u2f.user_id = users.id")
-      .where("u2f.id IS NULL AND users.otp_required_for_login = ?", false)
+    joins("LEFT OUTER JOIN u2f_registrations AS u2f ON u2f.user_id = users.id
+           LEFT OUTER JOIN webauthn_registrations AS webauthn ON webauthn.user_id = users.id")
+      .where("u2f.id IS NULL AND webauthn.id IS NULL AND users.otp_required_for_login = ?", false)
   end
 
   #
@@ -754,11 +763,12 @@ class User < ApplicationRecord
         otp_backup_codes:            nil
       )
       self.u2f_registrations.destroy_all # rubocop: disable Cop/DestroyAll
+      self.webauthn_registrations.destroy_all # rubocop: disable Cop/DestroyAll
     end
   end
 
   def two_factor_enabled?
-    two_factor_otp_enabled? || two_factor_u2f_enabled?
+    two_factor_otp_enabled? || two_factor_webauthn_u2f_enabled?
   end
 
   def two_factor_otp_enabled?
@@ -771,6 +781,16 @@ class User < ApplicationRecord
     else
       u2f_registrations.exists?
     end
+  end
+
+  def two_factor_webauthn_u2f_enabled?
+    two_factor_u2f_enabled? || two_factor_webauthn_enabled?
+  end
+
+  def two_factor_webauthn_enabled?
+    return false unless Feature.enabled?(:webauthn)
+
+    (webauthn_registrations.loaded? && webauthn_registrations.any?) || (!webauthn_registrations.loaded? && webauthn_registrations.exists?)
   end
 
   def namespace_move_dir_allowed

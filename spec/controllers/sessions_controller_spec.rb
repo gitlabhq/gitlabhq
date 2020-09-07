@@ -416,6 +416,10 @@ RSpec.describe SessionsController do
         post(:create, params: { user: user_params }, session: { otp_user_id: user.id })
       end
 
+      before do
+        stub_feature_flags(webauthn: false)
+      end
+
       context 'remember_me field' do
         it 'sets a remember_user_token cookie when enabled' do
           allow(U2fRegistration).to receive(:authenticate).and_return(true)
