@@ -322,7 +322,7 @@ pipelines and merge request pipelines don't run, as there's no rule allowing the
 ```yaml
 workflow:
   rules:
-    - if: $CI_COMMIT_REF_NAME =~ /-wip$/
+    - if: $CI_COMMIT_MESSAGE =~ /-wip$/
       when: never
     - if: '$CI_PIPELINE_SOURCE == "push"'
 ```
