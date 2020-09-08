@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Reports::TestCase do
   describe '#initialize' do
-    let(:test_case) { described_class.new(params)}
+    let(:test_case) { described_class.new(params) }
 
     context 'when both classname and name are given' do
       context 'when test case is passed' do
@@ -62,7 +62,9 @@ RSpec.describe Gitlab::Ci::Reports::TestCase do
     end
 
     context 'when attachment is present' do
-      let(:attachment_test_case) { build(:test_case, :failed_with_attachment) }
+      let_it_be(:job) { create(:ci_build) }
+
+      let(:attachment_test_case) { build(:test_case, :failed_with_attachment, job: job) }
 
       it "initializes the attachment if present" do
         expect(attachment_test_case.attachment).to eq("some/path.png")

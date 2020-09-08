@@ -24,7 +24,7 @@ module Issues
 
       return unless target
 
-      pipeline = project.pipeline_for(branch_name, target.sha)
+      pipeline = project.latest_pipeline(branch_name, target.sha)
       pipeline.detailed_status(current_user) if can?(current_user, :read_pipeline, pipeline)
     end
 

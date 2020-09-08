@@ -956,13 +956,12 @@ class Project < ApplicationRecord
     latest_successful_build_for_ref(job_name, ref) || raise(ActiveRecord::RecordNotFound.new("Couldn't find job #{job_name}"))
   end
 
-  def latest_pipeline_for_ref(ref = default_branch)
+  def latest_pipeline(ref = default_branch, sha = nil)
     ref = ref.presence || default_branch
-    sha = commit(ref)&.sha
-
+    sha ||= commit(ref)&.sha
     return unless sha
 
-    ci_pipelines.newest_first(ref: ref, sha: sha).first
+    ci_pipelines.newest_first(ref: ref, sha: sha).take
   end
 
   def merge_base_commit(first_commit_id, second_commit_id)
@@ -1669,21 +1668,6 @@ class Project < ApplicationRecord
 
   def allowed_to_share_with_group?
     !namespace.share_with_group_lock
-  end
-
-  def pipeline_for(ref, sha = nil, id = nil)
-    sha ||= commit(ref).try(:sha)
-    return unless sha
-
-    if id.present?
-      pipelines_for(ref, sha).find_by(id: id)
-    else
-      pipelines_for(ref, sha).take
-    end
-  end
-
-  def pipelines_for(ref, sha)
-    ci_pipelines.order(id: :desc).where(sha: sha, ref: ref)
   end
 
   def latest_successful_pipeline_for_default_branch

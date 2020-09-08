@@ -178,7 +178,7 @@ module API
 
         def latest_pipeline
           strong_memoize(:latest_pipeline) do
-            user_project.latest_pipeline_for_ref(params[:ref])
+            user_project.latest_pipeline(params[:ref])
           end
         end
       end

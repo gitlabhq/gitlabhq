@@ -491,8 +491,8 @@ dast:
 ```
 
 You must then overwrite the `script` command to pass in the appropriate
-argument. For example, passive scanning can be delayed using option `-D`. The following
-configuration delays passive scanning by five minutes:
+argument. For example, vulnerability definitions in alpha can be included with
+`-a`. The following configuration includes those definitions:
 
 ```yaml
 include:
@@ -501,7 +501,7 @@ include:
 dast:
   script:
     - export DAST_WEBSITE=${DAST_WEBSITE:-$(cat environment_url.txt)}
-    - /analyze -D 300 -t $DAST_WEBSITE
+    - /analyze -a -t $DAST_WEBSITE
 ```
 
 ### Custom ZAProxy configuration

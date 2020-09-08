@@ -1269,60 +1269,6 @@ RSpec.describe Project do
     end
   end
 
-  describe '#pipeline_for' do
-    let(:project) { create(:project, :repository) }
-
-    shared_examples 'giving the correct pipeline' do
-      it { is_expected.to eq(pipeline) }
-
-      context 'return latest' do
-        let!(:pipeline2) { create_pipeline(project) }
-
-        it { is_expected.to eq(pipeline2) }
-      end
-    end
-
-    context 'with a matching pipeline' do
-      let!(:pipeline) { create_pipeline(project) }
-
-      context 'with explicit sha' do
-        subject { project.pipeline_for('master', pipeline.sha) }
-
-        it_behaves_like 'giving the correct pipeline'
-
-        context 'with supplied id' do
-          let!(:other_pipeline) { create_pipeline(project) }
-
-          subject { project.pipeline_for('master', pipeline.sha, other_pipeline.id) }
-
-          it { is_expected.to eq(other_pipeline) }
-        end
-      end
-
-      context 'with implicit sha' do
-        subject { project.pipeline_for('master') }
-
-        it_behaves_like 'giving the correct pipeline'
-      end
-    end
-
-    context 'when there is no matching pipeline' do
-      subject { project.pipeline_for('master') }
-
-      it { is_expected.to be_nil }
-    end
-  end
-
-  describe '#pipelines_for' do
-    let(:project) { create(:project, :repository) }
-    let!(:pipeline) { create_pipeline(project) }
-    let!(:other_pipeline) { create_pipeline(project) }
-
-    subject { project.pipelines_for(project.default_branch, project.commit.sha) }
-
-    it { is_expected.to contain_exactly(pipeline, other_pipeline) }
-  end
-
   describe '#builds_enabled' do
     let(:project) { create(:project) }
 
@@ -2369,41 +2315,89 @@ RSpec.describe Project do
     end
   end
 
-  describe '#latest_pipeline_for_ref' do
+  describe '#latest_pipeline' do
     let(:project) { create(:project, :repository) }
     let(:second_branch) { project.repository.branches[2] }
 
     let!(:pipeline_for_default_branch) do
-      create(:ci_empty_pipeline, project: project, sha: project.commit.id,
-                                 ref: project.default_branch)
+      create(:ci_pipeline, project: project, sha: project.commit.id,
+                           ref: project.default_branch)
     end
 
     let!(:pipeline_for_second_branch) do
-      create(:ci_empty_pipeline, project: project, sha: second_branch.target,
-                                 ref: second_branch.name)
+      create(:ci_pipeline, project: project, sha: second_branch.target,
+                           ref: second_branch.name)
     end
 
-    before do
-      create(:ci_empty_pipeline, project: project, sha: project.commit.parent.id,
-                                 ref: project.default_branch)
+    let!(:other_pipeline_for_default_branch) do
+      create(:ci_pipeline, project: project, sha: project.commit.parent.id,
+                           ref: project.default_branch)
     end
 
     context 'default repository branch' do
-      subject { project.latest_pipeline_for_ref(project.default_branch) }
+      context 'when explicitly provided' do
+        subject { project.latest_pipeline(project.default_branch) }
 
-      it { is_expected.to eq(pipeline_for_default_branch) }
+        it { is_expected.to eq(pipeline_for_default_branch) }
+      end
+
+      context 'when not provided' do
+        subject { project.latest_pipeline }
+
+        it { is_expected.to eq(pipeline_for_default_branch) }
+      end
+
+      context 'with provided sha' do
+        subject { project.latest_pipeline(project.default_branch, project.commit.parent.id) }
+
+        it { is_expected.to eq(other_pipeline_for_default_branch) }
+      end
     end
 
     context 'provided ref' do
-      subject { project.latest_pipeline_for_ref(second_branch.name) }
+      subject { project.latest_pipeline(second_branch.name) }
 
       it { is_expected.to eq(pipeline_for_second_branch) }
+
+      context 'with provided sha' do
+        let!(:latest_pipeline_for_ref) do
+          create(:ci_pipeline, project: project, sha: pipeline_for_second_branch.sha,
+                               ref: pipeline_for_second_branch.ref)
+        end
+
+        subject { project.latest_pipeline(second_branch.name, second_branch.target) }
+
+        it { is_expected.to eq(latest_pipeline_for_ref) }
+      end
     end
 
     context 'bad ref' do
-      subject { project.latest_pipeline_for_ref(SecureRandom.uuid) }
+      before do
+        # ensure we don't skip the filter by ref by mistakenly return this pipeline
+        create(:ci_pipeline, project: project)
+      end
+
+      subject { project.latest_pipeline(SecureRandom.uuid) }
 
       it { is_expected.to be_nil }
+    end
+
+    context 'on deleted ref' do
+      let(:branch) { project.repository.branches.last }
+
+      let!(:pipeline_on_deleted_ref) do
+        create(:ci_pipeline, project: project, sha: branch.target, ref: branch.name)
+      end
+
+      before do
+        project.repository.rm_branch(project.owner, branch.name)
+      end
+
+      subject { project.latest_pipeline(branch.name) }
+
+      it 'always returns nil despite a pipeline exists' do
+        expect(subject).to be_nil
+      end
     end
   end
 

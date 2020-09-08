@@ -261,7 +261,7 @@ class Projects::PipelinesController < Projects::ApplicationController
   end
 
   def latest_pipeline
-    @project.latest_pipeline_for_ref(params['ref'])
+    @project.latest_pipeline(params['ref'])
             &.present(current_user: current_user)
   end
 

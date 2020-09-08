@@ -364,7 +364,7 @@ class MergeRequest < ApplicationRecord
     # when it is fast-forward there is no merge commit, so we must fall back to
     # either the squash commit (if the MR was squashed) or the diff head commit.
     sha = merge_commit_sha || squash_commit_sha || diff_head_sha
-    target_project.pipeline_for(target_branch, sha)
+    target_project.latest_pipeline(target_branch, sha)
   end
 
   # Pattern used to extract `!123` merge request references from text
