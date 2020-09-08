@@ -36,7 +36,8 @@ For deployments where NFS is used to store Git repository, we allow GitLab to us
 [Rugged](https://github.com/libgit2/rugged).
 
 Rugged usage is automatically enabled if direct Git access
-[is available](../gitaly/index.md#how-it-works), unless it is disabled by
+[is available](../gitaly/index.md#how-it-works)
+and Puma is running single threaded, unless it is disabled by
 [feature flags](../../development/gitaly.md#legacy-rugged-code).
 
 MRI Ruby uses a GVL. This allows MRI Ruby to be multi-threaded, but running at
@@ -49,7 +50,7 @@ We are actively working on removing Rugged usage. Even though performance withou
 is acceptable today, in some cases it might be still beneficial to run with it.
 
 Given the caveat of running Rugged with multi-threaded Puma, and acceptable
-performance of Gitaly, we are disabling Rugged usage if Puma multi-threaded is
+performance of Gitaly, we disable Rugged usage if Puma multi-threaded is
 used (when Puma is configured to run with more than one thread).
 
 This default behavior may not be the optimal configuration in some situations. If Rugged

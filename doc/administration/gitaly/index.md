@@ -988,9 +988,12 @@ When GitLab calls a function that has a "Rugged patch", it performs two checks:
 - Is the feature flag for this patch set in the database? If so, the feature flag setting controls
   GitLab's use of "Rugged patch" code.
 - If the feature flag is not set, GitLab tries accessing the filesystem underneath the
-  Gitaly server directly. If it can, it will use the "Rugged patch".
+  Gitaly server directly. If it can, it will use the "Rugged patch":
+  - If using Unicorn.
+  - If using Puma and [thread count](../../install/requirements.md#puma-threads) is set
+    to `1`.
 
-The result of both of these checks is cached.
+The result of these checks is cached.
 
 To see if GitLab can access the repository filesystem directly, we use the following heuristic:
 
