@@ -100,24 +100,28 @@ describe('fetchLogsTree', () => {
       );
     }));
 
-  it('writes query to client', () =>
-    fetchLogsTree(client, '', '0', resolver).then(() => {
-      expect(client.writeQuery).toHaveBeenCalledWith({
-        query: expect.anything(),
-        data: {
-          commits: [
-            expect.objectContaining({
-              __typename: 'LogTreeCommit',
-              commitPath: 'https://test.com',
-              committedDate: '2019-01-01',
-              fileName: 'index.js',
-              filePath: '/index.js',
-              message: 'testing message',
-              sha: '123',
-              type: 'blob',
-            }),
-          ],
-        },
-      });
-    }));
+  it('writes query to client', async () => {
+    await fetchLogsTree(client, '', '0', resolver);
+    expect(client.writeQuery).toHaveBeenCalledWith({
+      query: expect.anything(),
+      data: {
+        projectPath: 'gitlab-org/gitlab-foss',
+        escapedRef: 'master',
+        commits: [
+          expect.objectContaining({
+            __typename: 'LogTreeCommit',
+            commitPath: 'https://test.com',
+            committedDate: '2019-01-01',
+            fileName: 'index.js',
+            filePath: '/index.js',
+            lockLabel: false,
+            message: 'testing message',
+            sha: '123',
+            titleHtml: undefined,
+            type: 'blob',
+          }),
+        ],
+      },
+    });
+  });
 });

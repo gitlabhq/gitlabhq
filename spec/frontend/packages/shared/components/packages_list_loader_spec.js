@@ -12,8 +12,8 @@ describe('PackagesListLoader', () => {
     });
   };
 
-  const getShapes = () => wrapper.vm.desktopShapes;
-  const findSquareButton = () => wrapper.find({ ref: 'button-loader' });
+  const findDesktopShapes = () => wrapper.find('[data-testid="desktop-loader"]');
+  const findMobileShapes = () => wrapper.find('[data-testid="mobile-loader"]');
 
   beforeEach(createComponent);
 
@@ -22,21 +22,30 @@ describe('PackagesListLoader', () => {
     wrapper = null;
   });
 
-  describe('when used for projects', () => {
-    it('should return 5 rects with last one being a square', () => {
-      expect(getShapes()).toHaveLength(5);
-      expect(findSquareButton().exists()).toBe(true);
+  describe('desktop loader', () => {
+    it('produces the right loader', () => {
+      expect(findDesktopShapes().findAll('rect[width="1000"]')).toHaveLength(20);
+    });
+
+    it('has the correct classes', () => {
+      expect(findDesktopShapes().classes()).toEqual([
+        'gl-display-none',
+        'gl-display-sm-flex',
+        'gl-flex-direction-column',
+      ]);
     });
   });
 
-  describe('when used for groups', () => {
-    beforeEach(() => {
-      createComponent({ isGroup: true });
+  describe('mobile loader', () => {
+    it('produces the right loader', () => {
+      expect(findMobileShapes().findAll('rect[height="170"]')).toHaveLength(5);
     });
 
-    it('should return 5 rects with no square', () => {
-      expect(getShapes()).toHaveLength(5);
-      expect(findSquareButton().exists()).toBe(false);
+    it('has the correct classes', () => {
+      expect(findMobileShapes().classes()).toEqual([
+        'gl-flex-direction-column',
+        'gl-display-sm-none',
+      ]);
     });
   });
 });

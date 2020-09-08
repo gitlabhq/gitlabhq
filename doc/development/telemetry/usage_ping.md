@@ -256,13 +256,14 @@ Implemented using Redis methods [PFADD](https://redis.io/commands/pfadd) and [PF
      keys for data storage. For `daily` we keep a key for metric per day of the year, for `weekly` we
      keep a key for metric per week of the year.
 
-1. Track event in controller using `RedisTracking` module with `track_redis_hll_event(*controller_actions, name:, feature:)`.
+1. Track event in controller using `RedisTracking` module with `track_redis_hll_event(*controller_actions, name:, feature:, feature_default_enabled: false)`.
 
    Arguments:
 
    - `controller_actions`: controller actions we want to track.
    - `name`: event name.
    - `feature`: feature name, all metrics we track should be under feature flag.
+   - `feature_default_enabled`: feature flag is disabled by default, set to `true` for it to be enabled by default.
 
    Example usage:
 
@@ -272,7 +273,7 @@ Implemented using Redis methods [PFADD](https://redis.io/commands/pfadd) and [PF
      include RedisTracking
 
      skip_before_action :authenticate_user!, only: :show
-     track_redis_hll_event :index, :show, name: 'i_analytics_dev_ops_score', feature: :g_compliance_dashboard_feature
+     track_redis_hll_event :index, :show, name: 'i_analytics_dev_ops_score', feature: :g_compliance_dashboard_feature, feature_default_enabled: true
 
      def index
        render html: 'index'

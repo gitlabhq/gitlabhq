@@ -58,6 +58,7 @@ const defaultClient = createDefaultClient(
         /* eslint-enable @gitlab/require-i18n-strings */
       },
     },
+    assumeImmutableResults: true,
   },
 );
 

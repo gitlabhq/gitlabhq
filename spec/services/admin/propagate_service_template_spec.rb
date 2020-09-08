@@ -2,10 +2,10 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::PropagateServiceTemplate do
+RSpec.describe Admin::PropagateServiceTemplate do
   describe '.propagate' do
     let!(:service_template) do
-      PushoverService.create(
+      PushoverService.create!(
         template: true,
         active: true,
         push_events: false,
@@ -31,8 +31,7 @@ RSpec.describe Projects::PropagateServiceTemplate do
     end
 
     it 'creates services for a project that has another service' do
-      BambooService.create(
-        template: true,
+      BambooService.create!(
         active: true,
         project: project,
         properties: {
@@ -51,7 +50,7 @@ RSpec.describe Projects::PropagateServiceTemplate do
     end
 
     it 'does not create the service if it exists already' do
-      other_service = BambooService.create(
+      other_service = BambooService.create!(
         template: true,
         active: true,
         properties: {
@@ -110,7 +109,7 @@ RSpec.describe Projects::PropagateServiceTemplate do
       let(:project_total) { 5 }
 
       before do
-        stub_const 'Projects::PropagateServiceTemplate::BATCH_SIZE', 3
+        stub_const('Admin::PropagateServiceTemplate::BATCH_SIZE', 3)
 
         project_total.times { create(:project) }
 

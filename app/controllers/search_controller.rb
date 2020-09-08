@@ -11,7 +11,7 @@ class SearchController < ApplicationController
     issues: :with_web_entity_associations
   }.freeze
 
-  track_redis_hll_event :show, name: 'i_search_total', feature: :search_track_unique_users
+  track_redis_hll_event :show, name: 'i_search_total', feature: :search_track_unique_users, feature_default_enabled: true
 
   around_action :allow_gitaly_ref_name_caching
 

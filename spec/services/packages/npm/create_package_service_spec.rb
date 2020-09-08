@@ -27,6 +27,10 @@ RSpec.describe Packages::Npm::CreatePackageService do
         .and change { Packages::Tag.count }.by(1)
     end
 
+    it_behaves_like 'assigns the package creator' do
+      let(:package) { subject }
+    end
+
     it { is_expected.to be_valid }
 
     it 'creates a package with name and version' do

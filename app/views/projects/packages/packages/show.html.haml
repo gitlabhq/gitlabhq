@@ -2,6 +2,7 @@
 - add_to_breadcrumbs @package.name, project_packages_path(@project)
 - breadcrumb_title @package.version
 - page_title _("Package Registry")
+- @content_class = "limit-container-width" unless fluid_layout
 
 .row
   .col-12

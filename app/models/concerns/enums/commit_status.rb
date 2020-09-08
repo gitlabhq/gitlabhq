@@ -23,9 +23,10 @@ module Enums
         insufficient_bridge_permissions: 1_001,
         downstream_bridge_project_not_found: 1_002,
         invalid_bridge_trigger: 1_003,
-        bridge_pipeline_is_child_pipeline: 1_006,
+        bridge_pipeline_is_child_pipeline: 1_006, # not used anymore, but cannot be deleted because of old data
         downstream_pipeline_creation_failed: 1_007,
-        secrets_provider_not_found: 1_008
+        secrets_provider_not_found: 1_008,
+        reached_max_descendant_pipelines_depth: 1_009
       }
     end
   end

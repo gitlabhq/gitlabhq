@@ -4,4 +4,4 @@ introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/40134
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/240906
 group: group::global search
 type: development
-default_enabled: false
+default_enabled: true

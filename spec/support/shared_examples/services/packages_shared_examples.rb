@@ -14,6 +14,14 @@ RSpec.shared_examples 'assigns build to package' do
   end
 end
 
+RSpec.shared_examples 'assigns the package creator' do
+  it 'assigns the package creator' do
+    subject
+
+    expect(package.creator).to eq user
+  end
+end
+
 RSpec.shared_examples 'returns packages' do |container_type, user_type|
   context "for #{user_type}" do
     before do

@@ -81,6 +81,15 @@ export default {
     state.isLoadingIssues = false;
   },
 
+  [mutationTypes.UPDATE_ISSUE_BY_ID]: (state, { issueId, prop, value }) => {
+    if (!state.issues[issueId]) {
+      /* eslint-disable-next-line @gitlab/require-i18n-strings */
+      throw new Error('No issue found.');
+    }
+
+    Vue.set(state.issues[issueId], prop, value);
+  },
+
   [mutationTypes.RECEIVE_ISSUES_FOR_ALL_LISTS_FAILURE]: state => {
     state.error = __('An error occurred while fetching the board issues. Please reload the page.');
     state.isLoadingIssues = false;

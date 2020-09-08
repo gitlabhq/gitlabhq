@@ -1,0 +1,5 @@
+---
+title: 'Package Registry: Adjust the max width for non-fluid screens to be 990'
+merge_request: 41549
+author:
+type: changed

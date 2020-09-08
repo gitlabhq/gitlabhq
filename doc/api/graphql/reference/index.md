@@ -2351,6 +2351,7 @@ Represents a requirement test report.
 | ---   |  ---- | ----------  |
 | `date` **{warning-solid}** | Time! | **Deprecated:** Use `spentAt`. Deprecated in 12.10 |
 | `issue` | Issue | The issue that logged time was added to |
+| `note` | Note | The note where the quick action to add the logged time was executed |
 | `spentAt` | Time | Timestamp of when the time tracked was spent at |
 | `timeSpent` | Int! | The time spent displayed in seconds |
 | `user` | User! | The user that logged the time |

@@ -2510,6 +2510,9 @@ msgstr ""
 msgid "Almost there"
 msgstr ""
 
+msgid "Already blocked"
+msgstr ""
+
 msgid "Also called \"Issuer\" or \"Relying party trust identifier\""
 msgstr ""
 
@@ -3957,6 +3960,9 @@ msgid "Bitbucket import"
 msgstr ""
 
 msgid "Blame"
+msgstr ""
+
+msgid "Block user"
 msgstr ""
 
 msgid "Blocked"
@@ -7102,10 +7108,10 @@ msgstr ""
 msgid "Could not save prometheus manual configuration"
 msgstr ""
 
-msgid "Could not udpdate wiki page"
+msgid "Could not update the LDAP settings"
 msgstr ""
 
-msgid "Could not update the LDAP settings"
+msgid "Could not update wiki page"
 msgstr ""
 
 msgid "Could not upload your designs as one or more files uploaded are not supported."
@@ -11475,6 +11481,9 @@ msgstr ""
 msgid "Geo|Please refer to Geo Troubleshooting."
 msgstr ""
 
+msgid "Geo|Primary node"
+msgstr ""
+
 msgid "Geo|Project"
 msgstr ""
 
@@ -11517,6 +11526,9 @@ msgstr ""
 msgid "Geo|Review replication status, and resynchronize and reverify items with the primary node."
 msgstr ""
 
+msgid "Geo|Secondary node"
+msgstr ""
+
 msgid "Geo|Status"
 msgstr ""
 
@@ -11554,6 +11566,9 @@ msgid "Geo|URL can't be blank"
 msgstr ""
 
 msgid "Geo|URL must be a valid url (ex: https://gitlab.com)"
+msgstr ""
+
+msgid "Geo|Undefined"
 msgstr ""
 
 msgid "Geo|Unknown state"
@@ -14079,6 +14094,9 @@ msgstr ""
 msgid "Join Zoom meeting"
 msgstr ""
 
+msgid "Joined %{time_ago}"
+msgstr ""
+
 msgid "Jul"
 msgstr ""
 
@@ -15478,6 +15496,9 @@ msgstr ""
 msgid "Merging immediately isn't recommended as it may negatively impact the existing merge train. Read the %{docsLinkStart}documentation%{docsLinkEnd} for more information."
 msgstr ""
 
+msgid "Message"
+msgstr ""
+
 msgid "Messages"
 msgstr ""
 
@@ -16832,6 +16853,9 @@ msgid "No panels matching properties %{opts}"
 msgstr ""
 
 msgid "No parent group"
+msgstr ""
+
+msgid "No plan"
 msgstr ""
 
 msgid "No pods available"
@@ -20746,6 +20770,9 @@ msgstr ""
 msgid "Remove priority"
 msgstr ""
 
+msgid "Remove report"
+msgstr ""
+
 msgid "Remove secondary node"
 msgstr ""
 
@@ -20756,6 +20783,9 @@ msgid "Remove stage"
 msgstr ""
 
 msgid "Remove time estimate"
+msgstr ""
+
+msgid "Remove user & report"
 msgstr ""
 
 msgid "Removed"
@@ -20924,6 +20954,9 @@ msgid "Report abuse to admin"
 msgstr ""
 
 msgid "Reported %{timeAgo} by %{reportedBy}"
+msgstr ""
+
+msgid "Reported by %{reporter}"
 msgstr ""
 
 msgid "Reporting"
@@ -21475,6 +21508,63 @@ msgid "Runners currently online: %{active_runners_count}"
 msgstr ""
 
 msgid "Runners page."
+msgstr ""
+
+msgid "Runners|Active"
+msgstr ""
+
+msgid "Runners|Architecture"
+msgstr ""
+
+msgid "Runners|Can run untagged jobs"
+msgstr ""
+
+msgid "Runners|Description"
+msgstr ""
+
+msgid "Runners|Group"
+msgstr ""
+
+msgid "Runners|IP Address"
+msgstr ""
+
+msgid "Runners|Last contact"
+msgstr ""
+
+msgid "Runners|Locked to this project"
+msgstr ""
+
+msgid "Runners|Maximum job timeout"
+msgstr ""
+
+msgid "Runners|Name"
+msgstr ""
+
+msgid "Runners|Platform"
+msgstr ""
+
+msgid "Runners|Property Name"
+msgstr ""
+
+msgid "Runners|Protected"
+msgstr ""
+
+msgid "Runners|Revision"
+msgstr ""
+
+msgid "Runners|Shared"
+msgstr ""
+
+msgid "Runners|Specific"
+msgstr ""
+
+msgid "Runners|Tags"
+msgstr ""
+
+msgid "Runners|Value"
+msgstr ""
+
+msgid "Runners|Version"
 msgstr ""
 
 msgid "Runners|You have used %{quotaUsed} out of %{quotaLimit} of your shared Runners pipeline minutes."
@@ -23089,6 +23179,9 @@ msgid "SnippetsEmptyState|There are no snippets to show."
 msgstr ""
 
 msgid "Snippets|Add another file %{num}/%{total}"
+msgstr ""
+
+msgid "Snippets|Authored %{time_ago} by %{author}"
 msgstr ""
 
 msgid "Snippets|Delete file"
@@ -26523,6 +26616,12 @@ msgid "URL of the external storage that will serve the repository static objects
 msgstr ""
 
 msgid "URL or request ID"
+msgstr ""
+
+msgid "USER %{user} WILL BE REMOVED! Are you sure?"
+msgstr ""
+
+msgid "USER WILL BE BLOCKED! Are you sure?"
 msgstr ""
 
 msgid "UTC"

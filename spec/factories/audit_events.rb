@@ -36,7 +36,7 @@ FactoryBot.define do
       ip_address { IPAddr.new '127.0.0.1' }
       details do
         {
-          change: 'packges_enabled',
+          change: 'packages_enabled',
           from: true,
           to: false,
           author_name: user.name,

@@ -2616,11 +2616,11 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
   end
 
   describe '#same_family_pipeline_ids' do
-    subject(:same_family_pipeline_ids) { pipeline.same_family_pipeline_ids }
+    subject { pipeline.same_family_pipeline_ids.map(&:id) }
 
     context 'when pipeline is not child nor parent' do
       it 'returns just the pipeline id' do
-        expect(same_family_pipeline_ids).to contain_exactly(pipeline.id)
+        expect(subject).to contain_exactly(pipeline.id)
       end
     end
 
@@ -2643,7 +2643,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
       end
 
       it 'returns parent sibling and self ids' do
-        expect(same_family_pipeline_ids).to contain_exactly(parent.id, pipeline.id, sibling.id)
+        expect(subject).to contain_exactly(parent.id, pipeline.id, sibling.id)
       end
     end
 
@@ -2659,7 +2659,46 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
       end
 
       it 'returns self and child ids' do
-        expect(same_family_pipeline_ids).to contain_exactly(pipeline.id, child.id)
+        expect(subject).to contain_exactly(pipeline.id, child.id)
+      end
+    end
+
+    context 'when pipeline is a child of a child pipeline' do
+      let(:ancestor) { create(:ci_pipeline, project: pipeline.project) }
+      let(:parent) { create(:ci_pipeline, project: pipeline.project) }
+      let(:cousin_parent) { create(:ci_pipeline, project: pipeline.project) }
+      let(:cousin) { create(:ci_pipeline, project: pipeline.project) }
+
+      before do
+        create(:ci_sources_pipeline,
+               source_job: create(:ci_build, pipeline: ancestor),
+               source_project: ancestor.project,
+               pipeline: parent,
+               project: parent.project)
+
+        create(:ci_sources_pipeline,
+               source_job: create(:ci_build, pipeline: ancestor),
+               source_project: ancestor.project,
+               pipeline: cousin_parent,
+               project: cousin_parent.project)
+
+        create(:ci_sources_pipeline,
+               source_job: create(:ci_build, pipeline: parent),
+               source_project: parent.project,
+               pipeline: pipeline,
+               project: pipeline.project)
+
+        create(:ci_sources_pipeline,
+               source_job: create(:ci_build, pipeline: cousin_parent),
+               source_project: cousin_parent.project,
+               pipeline: cousin,
+               project: cousin.project)
+      end
+
+      it 'returns all family ids' do
+        expect(subject).to contain_exactly(
+          ancestor.id, parent.id, cousin_parent.id, cousin.id, pipeline.id
+        )
       end
     end
   end

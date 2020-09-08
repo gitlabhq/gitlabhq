@@ -152,6 +152,10 @@ This is [resolved in GitLab 12.10](https://gitlab.com/gitlab-org/gitlab/-/issues
 
 ## Limitations
 
-A parent pipeline can trigger many child pipelines, but a child pipeline cannot trigger
-further child pipelines. See the [related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/29651)
-for discussion on possible future improvements.
+In GitLab 13.3 and older, a parent pipeline can trigger many child pipelines, but
+those child pipeline cannot trigger further child pipelines.
+
+In GitLab 13.4 and newer, the [maximum depth of child pipelines was increased to 2](https://gitlab.com/gitlab-org/gitlab/-/issues/29651).
+A parent pipeline can trigger many child pipelines. These child pipelines can trigger
+their own child pipelines. This second layer of child pipelines cannot trigger further
+child pipelines.

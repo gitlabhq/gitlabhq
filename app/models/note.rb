@@ -556,6 +556,8 @@ class Note < ApplicationRecord
   end
 
   def system_note_with_references_visible_for?(user)
+    return true unless system?
+
     (!system_note_with_references? || all_referenced_mentionables_allowed?(user)) && system_note_viewable_by?(user)
   end
 

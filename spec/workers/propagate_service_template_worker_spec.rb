@@ -21,7 +21,7 @@ RSpec.describe PropagateServiceTemplateWorker do
       stub_exclusive_lease("propagate_service_template_worker:#{template.id}",
         timeout: PropagateServiceTemplateWorker::LEASE_TIMEOUT)
 
-      expect(Projects::PropagateServiceTemplate)
+      expect(Admin::PropagateServiceTemplate)
         .to receive(:propagate)
         .with(template)
 

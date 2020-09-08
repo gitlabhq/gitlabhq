@@ -1,3 +1,5 @@
+- return if @issue.incident?
+
 - requirements_link_url = help_page_path('user/project/issues/design_management', anchor: 'requirements')
 - requirements_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: requirements_link_url }
 - link_end = '</a>'.html_safe

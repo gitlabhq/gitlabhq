@@ -47223,6 +47223,20 @@
               "deprecationReason": null
             },
             {
+              "name": "note",
+              "description": "The note where the quick action to add the logged time was executed",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "Note",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "spentAt",
               "description": "Timestamp of when the time tracked was spent at",
               "args": [
@@ -51376,6 +51390,69 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "SnippetConnection",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "starredProjects",
+              "description": "Projects starred by the user",
+              "args": [
+                {
+                  "name": "search",
+                  "description": "Search query",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "after",
+                  "description": "Returns the elements in the list that come after the specified cursor.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "before",
+                  "description": "Returns the elements in the list that come before the specified cursor.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "first",
+                  "description": "Returns the first _n_ elements from the list.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "last",
+                  "description": "Returns the last _n_ elements from the list.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "ProjectConnection",
                 "ofType": null
               },
               "isDeprecated": false,

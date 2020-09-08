@@ -311,7 +311,7 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute' do
           end
         end
 
-        context 'when upstream pipeline is a child pipeline' do
+        context 'when upstream pipeline is a first descendant pipeline' do
           let!(:pipeline_source) do
             create(:ci_sources_pipeline,
               source_pipeline: create(:ci_pipeline, project: upstream_pipeline.project),
@@ -323,12 +323,53 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute' do
             upstream_pipeline.update!(source: :parent_pipeline)
           end
 
-          it 'does not create a further child pipeline' do
+          it 'creates the pipeline' do
+            expect { service.execute(bridge) }
+              .to change { Ci::Pipeline.count }.by(1)
+
+            expect(bridge.reload).to be_success
+          end
+
+          context 'when FF ci_child_of_child_pipeline is disabled' do
+            before do
+              stub_feature_flags(ci_child_of_child_pipeline: false)
+            end
+
+            it 'does not create a further child pipeline' do
+              expect { service.execute(bridge) }
+                .not_to change { Ci::Pipeline.count }
+
+              expect(bridge.reload).to be_failed
+              expect(bridge.failure_reason).to eq 'bridge_pipeline_is_child_pipeline'
+            end
+          end
+        end
+
+        context 'when upstream pipeline is a second descendant pipeline' do
+          let!(:pipeline_source) do
+            parent_of_upstream_pipeline = create(:ci_pipeline, project: upstream_pipeline.project)
+
+            create(:ci_sources_pipeline,
+              source_pipeline: create(:ci_pipeline, project: upstream_pipeline.project),
+              pipeline: parent_of_upstream_pipeline
+            )
+
+            create(:ci_sources_pipeline,
+              source_pipeline: parent_of_upstream_pipeline,
+              pipeline: upstream_pipeline
+            )
+          end
+
+          before do
+            upstream_pipeline.update!(source: :parent_pipeline)
+          end
+
+          it 'does not create a second descendant pipeline' do
             expect { service.execute(bridge) }
               .not_to change { Ci::Pipeline.count }
 
             expect(bridge.reload).to be_failed
-            expect(bridge.failure_reason).to eq 'bridge_pipeline_is_child_pipeline'
+            expect(bridge.failure_reason).to eq 'reached_max_descendant_pipelines_depth'
           end
         end
       end

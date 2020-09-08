@@ -9,6 +9,8 @@ module Ci
 
     DuplicateDownstreamPipelineError = Class.new(StandardError)
 
+    MAX_DESCENDANTS_DEPTH = 2
+
     def execute(bridge)
       @bridge = bridge
 
@@ -75,9 +77,16 @@ module Ci
 
       # TODO: Remove this condition if favour of model validation
       # https://gitlab.com/gitlab-org/gitlab/issues/38338
-      if @bridge.triggers_child_pipeline? && @bridge.pipeline.parent_pipeline.present?
-        @bridge.drop!(:bridge_pipeline_is_child_pipeline)
-        return false
+      if ::Gitlab::Ci::Features.child_of_child_pipeline_enabled?(project)
+        if has_max_descendants_depth?
+          @bridge.drop!(:reached_max_descendant_pipelines_depth)
+          return false
+        end
+      else
+        if @bridge.triggers_child_pipeline? && @bridge.pipeline.parent_pipeline.present?
+          @bridge.drop!(:bridge_pipeline_is_child_pipeline)
+          return false
+        end
       end
 
       unless can_create_downstream_pipeline?(target_ref)
@@ -107,6 +116,13 @@ module Ci
       strong_memoize(:downstream_project) do
         @bridge.downstream_project
       end
+    end
+
+    def has_max_descendants_depth?
+      return false unless @bridge.triggers_child_pipeline?
+
+      ancestors_of_new_child = @bridge.pipeline.base_and_ancestors
+      ancestors_of_new_child.count > MAX_DESCENDANTS_DEPTH
     end
   end
 end

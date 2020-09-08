@@ -25,7 +25,8 @@ module Gitlab
             insufficient_bridge_permissions: 'no permissions to trigger downstream pipeline',
             bridge_pipeline_is_child_pipeline: 'creation of child pipeline not allowed from another child pipeline',
             downstream_pipeline_creation_failed: 'downstream pipeline can not be created',
-            secrets_provider_not_found: 'secrets provider can not be found'
+            secrets_provider_not_found: 'secrets provider can not be found',
+            reached_max_descendant_pipelines_depth: 'reached maximum depth of child pipelines'
           }.freeze
 
           private_constant :REASONS

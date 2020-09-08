@@ -86,7 +86,7 @@ export default {
     <slot v-if="isListEmpty && !isLoading" name="empty-state"></slot>
 
     <div v-else-if="isLoading">
-      <packages-list-loader :is-group="isGroupPage" />
+      <packages-list-loader />
     </div>
 
     <template v-else>

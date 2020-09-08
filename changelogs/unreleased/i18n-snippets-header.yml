@@ -1,0 +1,5 @@
+---
+title: Externalize i18n strings from snippets/_header HAML
+merge_request: 41235
+author: Takuya Noguchi
+type: other

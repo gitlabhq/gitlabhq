@@ -47,6 +47,10 @@ RSpec.describe Packages::Pypi::CreatePackageService do
       end
     end
 
+    it_behaves_like 'assigns the package creator' do
+      let(:package) { created_package }
+    end
+
     context 'with an existing package' do
       before do
         described_class.new(project, user, params).execute

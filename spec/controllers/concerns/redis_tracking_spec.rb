@@ -11,7 +11,7 @@ RSpec.describe RedisTracking do
     include RedisTracking
 
     skip_before_action :authenticate_user!, only: :show
-    track_redis_hll_event :index, :show, name: 'i_analytics_dev_ops_score', feature: :g_compliance_dashboard_feature
+    track_redis_hll_event :index, :show, name: 'i_analytics_dev_ops_score', feature: :g_compliance_dashboard_feature, feature_default_enabled: true
 
     def index
       render html: 'index'
@@ -58,6 +58,14 @@ RSpec.describe RedisTracking do
         sign_in(user)
 
         expect(Gitlab::UsageDataCounters::HLLRedisCounter).to receive(:track_event)
+
+        get :index
+      end
+
+      it 'passes default_enabled flag' do
+        sign_in(user)
+
+        expect(controller).to receive(:metric_feature_enabled?).with(feature.to_sym, true)
 
         get :index
       end

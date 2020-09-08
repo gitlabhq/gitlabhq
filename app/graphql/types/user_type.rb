@@ -37,6 +37,9 @@ module Types
     field :project_memberships, Types::ProjectMemberType.connection_type, null: true,
           description: 'Project memberships of the user',
           method: :project_members
+    field :starred_projects, Types::ProjectType.connection_type, null: true,
+          description: 'Projects starred by the user',
+          resolver: Resolvers::UserStarredProjectsResolver
 
     # Merge request field: MRs can be either authored or assigned:
     field :authored_merge_requests, Types::MergeRequestType.connection_type, null: true,

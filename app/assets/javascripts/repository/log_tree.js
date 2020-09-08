@@ -1,3 +1,4 @@
+import produce from 'immer';
 import { normalizeData } from 'ee_else_ce/repository/utils/commit';
 import axios from '~/lib/utils/axios_utils';
 import commitsQuery from './queries/commits.query.graphql';
@@ -34,16 +35,18 @@ export function fetchLogsTree(client, path, offset, resolver = null) {
         params: { format: 'json', offset },
       },
     )
-    .then(({ data, headers }) => {
+    .then(({ data: newData, headers }) => {
       const headerLogsOffset = headers['more-logs-offset'];
-      const { commits } = client.readQuery({ query: commitsQuery });
-      const newCommitData = [...commits, ...normalizeData(data, path)];
+      const sourceData = client.readQuery({ query: commitsQuery });
+      const data = produce(sourceData, draftState => {
+        draftState.commits.push(...normalizeData(newData, path));
+      });
       client.writeQuery({
         query: commitsQuery,
-        data: { commits: newCommitData },
+        data,
       });
 
-      resolvers.forEach(r => resolveCommit(newCommitData, path, r));
+      resolvers.forEach(r => resolveCommit(data.commits, path, r));
 
       fetchpromise = null;
 

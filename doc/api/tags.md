@@ -117,11 +117,13 @@ POST /projects/:id/repository/tags
 
 Parameters:
 
-- `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
-- `tag_name` (required) - The name of a tag
-- `ref` (required) - Create tag using commit SHA, another tag name, or branch name.
-- `message` (optional) - Creates annotated tag.
-- `release_description` (optional) - Add release notes to the Git tag and store it in the GitLab database.
+| Attribute             | Type           | Required | Description                                                                                                     |
+| --------------------- | -------------- | -------- | --------------------------------------------------------------------------------------------------------------- |
+| `id`                  | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `tag_name`            | string         | yes      | The name of a tag                                                                                               |
+| `ref`                 | string         | yes      | Create tag using commit SHA, another tag name, or branch name                                                   |
+| `message`             | string         | no       | Creates annotated tag                                                                                           |
+| `release_description` | string         | no       | Add release notes to the Git tag and store it in the GitLab database                                            |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/repository/tags?tag_name=test&ref=master"
@@ -177,8 +179,10 @@ DELETE /projects/:id/repository/tags/:tag_name
 
 Parameters:
 
-- `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
-- `tag_name` (required) - The name of a tag
+| Attribute  | Type           | Required | Description                                                                                                     |
+| ---------- | -------------- | -------- | --------------------------------------------------------------------------------------------------------------- |
+| `id`       | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `tag_name` | string         | yes      | The name of a tag                                                                                               |
 
 ## Create a new release
 
@@ -191,8 +195,10 @@ POST /projects/:id/repository/tags/:tag_name/release
 
 Parameters:
 
-- `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
-- `tag_name` (required) - The name of a tag
+| Attribute  | Type           | Required | Description                                                                                                     |
+| ---------- | -------------- | -------- | --------------------------------------------------------------------------------------------------------------- |
+| `id`       | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `tag_name` | string         | yes      | The name of a tag                                                                                               |
 
 Request body:
 
@@ -223,8 +229,10 @@ PUT /projects/:id/repository/tags/:tag_name/release
 
 Parameters:
 
-- `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
-- `tag_name` (required) - The name of a tag
+| Attribute  | Type           | Required | Description                                                                                                     |
+| ---------- | -------------- | -------- | --------------------------------------------------------------------------------------------------------------- |
+| `id`       | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `tag_name` | string         | yes      | The name of a tag                                                                                               |
 
 Request body:
 

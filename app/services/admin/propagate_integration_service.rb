@@ -2,17 +2,7 @@
 
 module Admin
   class PropagateIntegrationService
-    BATCH_SIZE = 100
-
-    delegate :data_fields_present?, to: :integration
-
-    def self.propagate(integration)
-      new(integration).propagate
-    end
-
-    def initialize(integration)
-      @integration = integration
-    end
+    include PropagateService
 
     def propagate
       update_inherited_integrations
@@ -20,8 +10,6 @@ module Admin
     end
 
     private
-
-    attr_reader :integration
 
     # rubocop: disable Cop/InBatches
     # rubocop: disable CodeReuse/ActiveRecord
@@ -50,61 +38,9 @@ module Admin
     end
     # rubocop: enable CodeReuse/ActiveRecord
 
-    def create_integration_for_projects_without_integration
-      loop do
-        batch = Project.uncached { Project.ids_without_integration(integration, BATCH_SIZE) }
-
-        bulk_create_from_integration(batch) unless batch.empty?
-
-        break if batch.size < BATCH_SIZE
-      end
-    end
-
-    def bulk_create_from_integration(batch)
-      service_list = ServiceList.new(batch, service_hash, { 'inherit_from_id' => integration.id }).to_array
-
-      Project.transaction do
-        results = bulk_insert(*service_list)
-
-        if data_fields_present?
-          data_list = DataList.new(results, data_fields_hash, integration.data_fields.class).to_array
-
-          bulk_insert(*data_list)
-        end
-
-        run_callbacks(batch)
-      end
-    end
-
-    def bulk_insert(klass, columns, values_array)
-      items_to_insert = values_array.map { |array| Hash[columns.zip(array)] }
-
-      klass.insert_all(items_to_insert, returning: [:id])
-    end
-
-    # rubocop: disable CodeReuse/ActiveRecord
-    def run_callbacks(batch)
-      if integration.issue_tracker?
-        Project.where(id: batch).update_all(has_external_issue_tracker: true)
-      end
-
-      if active_external_wiki?
-        Project.where(id: batch).update_all(has_external_wiki: true)
-      end
-    end
-    # rubocop: enable CodeReuse/ActiveRecord
-
-    def active_external_wiki?
-      integration.type == 'ExternalWikiService'
-    end
-
     def service_hash
       @service_hash ||= integration.to_service_hash
         .tap { |json| json['inherit_from_id'] = integration.id }
-    end
-
-    def data_fields_hash
-      @data_fields_hash ||= integration.to_data_fields_hash
     end
   end
 end

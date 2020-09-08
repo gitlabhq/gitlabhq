@@ -98,7 +98,7 @@ export default {
       :content="editableContent"
       :initial-edit-type="editorMode"
       :image-root="imageRoot"
-      class="mb-9 h-100"
+      class="mb-9 pb-6 h-100"
       @modeChange="onModeChange"
       @input="onInputChange"
       @uploadImage="onUploadImage"

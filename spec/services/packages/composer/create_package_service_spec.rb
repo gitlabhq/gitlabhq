@@ -37,12 +37,16 @@ RSpec.describe Packages::Composer::CreatePackageService do
           expect(created_package.composer_metadatum.target_sha).to eq branch.target
           expect(created_package.composer_metadatum.composer_json.to_json).to eq json
         end
+
+        it_behaves_like 'assigns the package creator' do
+          let(:package) { created_package }
+        end
       end
 
       context 'with a tag' do
         let(:tag) { project.repository.find_tag('v1.2.3') }
 
-        before do
+        before(:all) do
           project.repository.add_tag(user, 'v1.2.3', 'master')
         end
 
@@ -53,6 +57,10 @@ RSpec.describe Packages::Composer::CreatePackageService do
 
           expect(created_package.name).to eq package_name
           expect(created_package.version).to eq '1.2.3'
+        end
+
+        it_behaves_like 'assigns the package creator' do
+          let(:package) { created_package }
         end
       end
     end

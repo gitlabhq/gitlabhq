@@ -69,6 +69,7 @@ verify-tests-yml:
     - install_gitlab_gem
     - install_tff_gem
     - tooling/bin/find_foss_tests ${MATCHED_TESTS_FILE}
+    - 'echo "test files affected: $(cat $MATCHED_TESTS_FILE)"'
   artifacts:
     expire_in: 7d
     paths:

@@ -5,6 +5,8 @@ class Packages::Package < ApplicationRecord
   include UsageStatistics
 
   belongs_to :project
+  belongs_to :creator, class_name: 'User'
+
   # package_files must be destroyed by ruby code in order to properly remove carrierwave uploads and update project statistics
   has_many :package_files, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :dependency_links, inverse_of: :package, class_name: 'Packages::DependencyLink'

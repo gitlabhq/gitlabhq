@@ -821,11 +821,15 @@ module Ci
       all_merge_requests.order(id: :desc)
     end
 
-    # If pipeline is a child of another pipeline, include the parent
-    # and the siblings, otherwise return only itself and children.
     def same_family_pipeline_ids
-      parent = parent_pipeline || self
-      [parent.id] + parent.child_pipelines.pluck(:id)
+      if ::Gitlab::Ci::Features.child_of_child_pipeline_enabled?(project)
+        ::Gitlab::Ci::PipelineObjectHierarchy.new(base_and_ancestors).base_and_descendants.select(:id)
+      else
+        # If pipeline is a child of another pipeline, include the parent
+        # and the siblings, otherwise return only itself and children.
+        parent = parent_pipeline || self
+        [parent.id] + parent.child_pipelines.pluck(:id)
+      end
     end
 
     def bridge_triggered?
@@ -1056,6 +1060,14 @@ module Ci
 
     def ensure_ci_ref!
       self.ci_ref = Ci::Ref.ensure_for(self)
+    end
+
+    def base_and_ancestors
+      # Without using `unscoped`, caller scope is also included into the query.
+      # Using `unscoped` here will be redundant after Rails 6.1
+      ::Gitlab::Ci::PipelineObjectHierarchy
+        .new(self.class.unscoped.where(id: id))
+        .base_and_ancestors
     end
 
     private

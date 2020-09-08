@@ -16053,6 +16053,11 @@ type Timelog {
   issue: Issue
 
   """
+  The note where the quick action to add the logged time was executed
+  """
+  note: Note
+
+  """
   Timestamp of when the time tracked was spent at
   """
   spentAt: Time
@@ -17556,6 +17561,36 @@ type User {
     """
     visibility: VisibilityScopesEnum
   ): SnippetConnection
+
+  """
+  Projects starred by the user
+  """
+  starredProjects(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+
+    """
+    Search query
+    """
+    search: String
+  ): ProjectConnection
 
   """
   State of the user

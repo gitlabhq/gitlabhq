@@ -190,6 +190,48 @@ describe('Board Store Mutations', () => {
     });
   });
 
+  describe('UPDATE_ISSUE_BY_ID', () => {
+    const issueId = '1';
+    const prop = 'id';
+    const value = '2';
+    const issue = { [issueId]: { id: 1, title: 'Issue' } };
+
+    beforeEach(() => {
+      state = {
+        ...state,
+        isLoadingIssues: true,
+        error: undefined,
+        issues: {
+          ...issue,
+        },
+      };
+    });
+
+    describe('when the issue is in state', () => {
+      it('updates the property of the correct issue', () => {
+        mutations.UPDATE_ISSUE_BY_ID(state, {
+          issueId,
+          prop,
+          value,
+        });
+
+        expect(state.issues[issueId]).toEqual({ ...issue[issueId], id: '2' });
+      });
+    });
+
+    describe('when the issue is not in state', () => {
+      it('throws an error', () => {
+        expect(() => {
+          mutations.UPDATE_ISSUE_BY_ID(state, {
+            issueId: '3',
+            prop,
+            value,
+          });
+        }).toThrow(new Error('No issue found.'));
+      });
+    });
+  });
+
   describe('RECEIVE_ADD_ISSUE_SUCCESS', () => {
     expectNotImplemented(mutations.RECEIVE_ADD_ISSUE_SUCCESS);
   });

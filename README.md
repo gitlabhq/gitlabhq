@@ -116,7 +116,7 @@ Please see [Getting help for GitLab](https://about.gitlab.com/getting-help/) on 
 
 ## Is it any good?
 
-[Yes](https://news.ycombinator.com/item?id=3067434)
+[Yes](https://about.gitlab.com/is-it-any-good/)
 
 ## Is it awesome?
 

@@ -34,6 +34,8 @@ RSpec.describe Packages::Maven::CreatePackageService do
       end
 
       it_behaves_like 'assigns build to package'
+
+      it_behaves_like 'assigns the package creator'
     end
 
     context 'without version' do
@@ -57,6 +59,8 @@ RSpec.describe Packages::Maven::CreatePackageService do
         expect(package.maven_metadatum.app_name).to eq(app_name)
         expect(package.maven_metadatum.app_version).to be nil
       end
+
+      it_behaves_like 'assigns the package creator'
     end
 
     context 'path is missing' do

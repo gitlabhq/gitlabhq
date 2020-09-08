@@ -539,6 +539,7 @@ timelogs:
 - issue
 - merge_request
 - user
+- note
 push_event_payload:
 - event
 issue_assignees:

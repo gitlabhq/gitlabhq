@@ -11,7 +11,7 @@ module WikiPages
         ServiceResponse.success(payload: { page: page })
       else
         ServiceResponse.error(
-          message: _('Could not udpdate wiki page'),
+          message: _('Could not update wiki page'),
           payload: { page: page }
         )
       end
