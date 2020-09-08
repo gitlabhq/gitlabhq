@@ -540,36 +540,37 @@ tenses, words, and phrases:
 
 ### Contractions
 
-Contractions can create a friendly and informal tone, especially in tutorials, instructional
-documentation, and [user interfaces](https://design.gitlab.com/content/punctuation/#contractions).
+Contractions are encouraged, and can create a friendly and informal tone,
+especially in tutorials, instructional documentation, and
+[user interfaces](https://design.gitlab.com/content/punctuation/#contractions).
 
-Some contractions should be avoided:
+Some contractions, however, should be avoided:
 
 - Do not use contractions with a proper noun and a verb. For example:
 
-  | Do                   | Don't               |
-  |----------------------|---------------------|
-  | GitLab is creating X | GitLab's creating X |
+  | Do                                       | Don't                                   |
+  |------------------------------------------|-----------------------------------------|
+  | GitLab is creating X.                    | GitLab's creating X.                    |
 
 - Do not use contractions when you need to emphasize a negative. For example:
 
-  | Do                          | Don't                      |
-  |-----------------------------|----------------------------|
-  | Do **not** install X with Y   | **Don't** install X with Y   |
+  | Do                                       | Don't                                   |
+  |------------------------------------------|-----------------------------------------|
+  | Do *not* install X with Y.               | *Don't* install X with Y.               |
 
 - Do not use contractions in reference documentation. For example:
 
-  | Do                                       | Don't                                  |
-  |------------------------------------------|----------------------------------------|
-  | Do **not** set a limit greater than 1000   | **Don't** set a limit greater than 1000  |
-  | For `parameter1`, the default is 10      | For `parameter1`, the default's 10     |
+  | Do                                       | Don't                                   |
+  |------------------------------------------|-----------------------------------------|
+  | Do *not* set a limit greater than 1000.  | *Don't* set a limit greater than 1000.  |
+  | For `parameter1`, the default is 10.     | For `parameter1`, the default's 10.     |
 
 - Avoid contractions in error messages. Examples:
 
-  | Do                                       | Don't                                |
-  |------------------------------------------|--------------------------------------|
-  | Requests to localhost are not allowed    | Requests to localhost aren't allowed |
-  | Specified URL cannot be used             | Specified URL can't be used          |
+  | Do                                       | Don't                                   |
+  |------------------------------------------|-----------------------------------------|
+  | Requests to localhost are not allowed.   | Requests to localhost aren't allowed.   |
+  | Specified URL cannot be used.            | Specified URL can't be used.            |
 
 ## Text
 

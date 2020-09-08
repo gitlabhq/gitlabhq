@@ -101,6 +101,41 @@ RSpec.describe Issues::MoveService do
         end
       end
 
+      context 'issue with milestone' do
+        let(:milestone) { create(:milestone, group: sub_group_1) }
+        let(:new_project) { create(:project, namespace: sub_group_1) }
+
+        let(:old_issue) do
+          create(:issue, title: title, description: description, project: old_project, author: author, milestone: milestone)
+        end
+
+        before do
+          create(:resource_milestone_event, issue: old_issue, milestone: milestone, action: :add)
+        end
+
+        it 'does not create extra milestone events' do
+          new_issue = move_service.execute(old_issue, new_project)
+
+          expect(new_issue.resource_milestone_events.count).to eq(old_issue.resource_milestone_events.count)
+        end
+      end
+
+      context 'issue with due date' do
+        let(:old_issue) do
+          create(:issue, title: title, description: description, project: old_project, author: author, due_date: '2020-01-10')
+        end
+
+        before do
+          SystemNoteService.change_due_date(old_issue, old_project, author, old_issue.due_date)
+        end
+
+        it 'does not create extra system notes' do
+          new_issue = move_service.execute(old_issue, new_project)
+
+          expect(new_issue.notes.count).to eq(old_issue.notes.count)
+        end
+      end
+
       context 'issue with assignee' do
         let_it_be(:assignee) { create(:user) }
 

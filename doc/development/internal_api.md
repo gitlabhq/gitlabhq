@@ -370,3 +370,64 @@ Example response:
   "reference_counter_decreased": true
 }
 ```
+
+## Kubernetes agent information
+
+Called from GitLab Kubernetes Agent Server (kas) to retrieve agent
+information for the given agent token. This returns the Gitaly connection
+information for the agent's project in order for kas to fetch and update
+the agent's configuration.
+
+```plaintext
+GET /internal/kubernetes/agent_info
+```
+
+Example Request:
+
+```shell
+curl --request GET --header "Gitlab-Kas-Api-Request: <JWT token>" --header "Authorization: Bearer <agent token>" "http://localhost:3000/api/v4/internal/kubernetes/agent_info"
+```
+
+## Kubernetes agent project information
+
+Called from GitLab Kubernetes Agent Server (kas) to retrieve project
+information for the given agent token. This returns the Gitaly
+connection for the requested project. GitLab kas uses this to configure
+the agent to fetch Kubernetes resources from the project repository to
+sync.
+
+Only public projects are currently supported. For private projects, the ability for the
+agent to be authorized is [not yet implemented](https://gitlab.com/gitlab-org/gitlab/-/issues/220912).
+
+| Attribute | Type   | Required | Description |
+|:----------|:-------|:---------|:------------|
+| `id` | integer/string | yes | The ID or [URL-encoded path of the project](../api/README.md#namespaced-path-encoding) |
+
+```plaintext
+GET /internal/kubernetes/project_info
+```
+
+Example Request:
+
+```shell
+curl --request GET --header "Gitlab-Kas-Api-Request: <JWT token>" --header "Authorization: Bearer <agent token>" "http://localhost:3000/api/v4/internal/kubernetes/project_info?id=7"
+```
+
+## Kubernetes agent usage metrics
+
+Called from GitLab Kubernetes Agent Server (kas) to increase the usage
+metric counters.
+
+| Attribute | Type   | Required | Description |
+|:----------|:-------|:---------|:------------|
+| `gitops_sync_count` | integer| yes | The number to increase the `gitops_sync_count` counter by |
+
+```plaintext
+POST /internal/kubernetes/usage_metrics
+```
+
+Example Request:
+
+```shell
+curl --request POST --header "Gitlab-Kas-Api-Request: <JWT token>" --header "Content-Type: application/json" --data '{"gitops_sync_count":1}' "http://localhost:3000/api/v4/internal/kubernetes/usage_metrics"
+```

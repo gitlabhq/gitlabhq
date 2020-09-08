@@ -30,8 +30,11 @@ export default {
       return features;
     },
   },
+  mounted() {
+    this.openDrawer();
+  },
   methods: {
-    ...mapActions(['closeDrawer']),
+    ...mapActions(['openDrawer', 'closeDrawer']),
   },
 };
 </script>

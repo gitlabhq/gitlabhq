@@ -102,6 +102,16 @@ code_quality:
     CODE_QUALITY_IMAGE: "registry.example.com/codequality-fork:latest"
 ```
 
+In [GitLab 13.4 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/11100), you can override the [Code Quality environment variables](https://gitlab.com/gitlab-org/ci-cd/codequality#environment-variables):
+
+```yaml
+variables:
+  TIMEOUT_SECONDS: 1
+
+include:
+  - Code-Quality.gitlab-ci.yml
+```
+
 By default, report artifacts are not downloadable. If you need them downloadable on the
 job details page, you can add `gl-code-quality-report.json` to the artifact paths like so:
 

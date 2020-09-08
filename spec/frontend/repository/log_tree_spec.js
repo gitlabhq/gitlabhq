@@ -114,7 +114,6 @@ describe('fetchLogsTree', () => {
             committedDate: '2019-01-01',
             fileName: 'index.js',
             filePath: '/index.js',
-            lockLabel: false,
             message: 'testing message',
             sha: '123',
             titleHtml: undefined,

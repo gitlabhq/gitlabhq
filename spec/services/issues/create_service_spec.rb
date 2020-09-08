@@ -29,12 +29,24 @@ RSpec.describe Issues::CreateService do
       end
 
       it 'creates the issue with the given params' do
+        expect(Issuable::CommonSystemNotesService).to receive_message_chain(:new, :execute)
+
         expect(issue).to be_persisted
         expect(issue.title).to eq('Awesome issue')
         expect(issue.assignees).to eq [assignee]
         expect(issue.labels).to match_array labels
         expect(issue.milestone).to eq milestone
         expect(issue.due_date).to eq Date.tomorrow
+      end
+
+      context 'when skip_system_notes is true' do
+        let(:issue) { described_class.new(project, user, opts).execute(skip_system_notes: true) }
+
+        it 'does not call Issuable::CommonSystemNotesService' do
+          expect(Issuable::CommonSystemNotesService).not_to receive(:new)
+
+          issue
+        end
       end
 
       it 'refreshes the number of open issues', :use_clean_rails_memory_store_caching do

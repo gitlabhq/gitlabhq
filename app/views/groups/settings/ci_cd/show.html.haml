@@ -11,7 +11,7 @@
     .settings-header
       %h4
         = _("General pipelines")
-      %button.btn.js-settings-toggle{ type: 'button' }
+      %button.btn.gl-button.js-settings-toggle{ type: 'button' }
         = expanded ? _('Collapse') : _('Expand')
       %p
         = _("Customize your pipeline configuration.")
@@ -28,7 +28,7 @@
   .settings-header
     %h4
       = _('Runners')
-    %button.btn.btn-default.js-settings-toggle{ type: "button" }
+    %button.btn.gl-button.btn-default.js-settings-toggle{ type: "button" }
       = expanded ? _('Collapse') : _('Expand')
     %p
       = _("Runners are processes that pick up and execute jobs for GitLab. Here you can register and see your Runners for this project.")
@@ -40,7 +40,7 @@
   .settings-header
     %h4
       = _('Auto DevOps')
-    %button.btn.btn-default.js-settings-toggle{ type: "button" }
+    %button.btn.gl-button.btn-default.js-settings-toggle{ type: "button" }
       = expanded ? _('Collapse') : _('Expand')
     %p
       - auto_devops_url = help_page_path('topics/autodevops/index')

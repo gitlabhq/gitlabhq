@@ -5,13 +5,13 @@ module Issues
     include SpamCheckMethods
     include ResolveDiscussions
 
-    def execute
+    def execute(skip_system_notes: false)
       @issue = BuildService.new(project, current_user, params).execute
 
       filter_spam_check_params
       filter_resolve_discussion_params
 
-      create(@issue)
+      create(@issue, skip_system_notes: skip_system_notes)
     end
 
     def before_create(issue)

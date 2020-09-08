@@ -45,7 +45,7 @@ module API
         end
 
         def check_feature_enabled
-          not_found! unless Feature.enabled?(:kubernetes_agent_internal_api)
+          not_found! unless Feature.enabled?(:kubernetes_agent_internal_api, default_enabled: true)
         end
 
         def check_agent_token

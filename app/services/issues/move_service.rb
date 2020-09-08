@@ -52,7 +52,10 @@ module Issues
                    }
 
       new_params = original_entity.serializable_hash.symbolize_keys.merge(new_params)
-      CreateService.new(@target_project, @current_user, new_params).execute
+
+      # Skip creation of system notes for existing attributes of the issue. The system notes of the old
+      # issue are copied over so we don't want to end up with duplicate notes.
+      CreateService.new(@target_project, @current_user, new_params).execute(skip_system_notes: true)
     end
 
     def mark_as_moved

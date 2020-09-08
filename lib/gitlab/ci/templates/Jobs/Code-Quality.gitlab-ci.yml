@@ -9,6 +9,9 @@ code_quality:
     DOCKER_TLS_CERTDIR: ""
     CODE_QUALITY_IMAGE: "registry.gitlab.com/gitlab-org/ci-cd/codequality:0.85.10-gitlab.1"
   needs: []
+  before_script:
+    - source lib/gitlab/ci/templates/utils/env.sh
+    - export SOURCE_CODE=$PWD
   script:
     - |
       if ! docker info &>/dev/null; then
@@ -17,10 +20,18 @@ code_quality:
         fi
       fi
     - docker pull --quiet "$CODE_QUALITY_IMAGE"
-    - docker run
-        --env SOURCE_CODE="$PWD"
-        --volume "$PWD":/code
-        --volume /var/run/docker.sock:/var/run/docker.sock
+    - |
+      docker run \
+        $(propagate_env_vars \
+          SOURCE_CODE \
+          TIMEOUT_SECONDS \
+          CODECLIMATE_DEBUG \
+          CODECLIMATE_DEV \
+          REPORT_STDOUT \
+          ENGINE_MEMORY_LIMIT_BYTES \
+        ) \
+        --volume "$PWD":/code \
+        --volume /var/run/docker.sock:/var/run/docker.sock \
         "$CODE_QUALITY_IMAGE" /code
   artifacts:
     reports:

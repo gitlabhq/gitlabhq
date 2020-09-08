@@ -15,6 +15,7 @@ describe('App', () => {
 
   const buildWrapper = () => {
     actions = {
+      openDrawer: jest.fn(),
       closeDrawer: jest.fn(),
     };
 
@@ -46,6 +47,10 @@ describe('App', () => {
 
   it('contains a drawer', () => {
     expect(getDrawer().exists()).toBe(true);
+  });
+
+  it('dispatches openDrawer when mounted', () => {
+    expect(actions.openDrawer).toHaveBeenCalled();
   });
 
   it('dispatches closeDrawer when clicking close', () => {

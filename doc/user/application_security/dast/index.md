@@ -367,7 +367,7 @@ dast:
     DAST_API_SPECIFICATION: api-specification.yml
 ```
 
-#### Full scan
+#### Full API scan
 
 API scans support full scanning, which can be enabled by using the `DAST_FULL_SCAN_ENABLED`
 environment variable. Domain validation is not supported for full API scans.
@@ -622,9 +622,10 @@ project dashboard.
 
 ### Site profile
 
-An on-demand scan requires a site profile, which includes a profile name and target URL. The profile
-name allows you to describe the site to be scanned. The target URL specifies the URL against which
-the DAST scan is run.
+An on-demand scan requires a site profile, which includes:
+
+- **Profile name**: A name you assign to the site to be scanned.
+- **Target URL**: The URL against which the DAST scan runs.
 
 ### Run an on-demand scan
 
@@ -636,23 +637,31 @@ Running an on-demand scan requires an existing site profile. If a site profile f
 doesn't exist, first [create a site profile](#create-a-site-profile). An on-demand DAST scan has
 a fixed timeout of 60 seconds.
 
-- Navigate to your project's home page, then click **On-demand Scans** in the left sidebar.
+- From your project's home page, go to **Security & Compliance > On-demand Scans** in the left sidebar.
 - Click **Create new DAST scan**.
 - Select a site profile from the profiles dropdown.
 - Click **Run scan**.
 
 #### Create a site profile
 
-- Navigate to your project's home page, then click **On-demand Scans** in the left sidebar.
-- Click **Create new DAST scan**.
-- Click **New Site Profile**.
+- From your project's home page, go to **Security & Compliance > Configuration** in the left sidebar.
+- Click **Manage** in the **DAST Profiles** row.
+- Click **New Profile > Site Profile**.
 - Type in a unique **Profile name** and **Target URL** then click **Save profile**.
+
+#### Edit a site profile
+
+- From your project's home page, go to **Security & Compliance > Configuration** in the left sidebar.
+- Click **Manage** in the **DAST Profiles** row.
+- Click **Edit** in the row of the profile to edit.
+- Edit the **Profile name** and **Target URL** then click **Save profile**.
 
 #### Delete a site profile
 
-- Navigate to your project's home page, then click **On-demand Scans** in the left sidebar.
-- Click **Create new DAST scan**.
-- Click **Delete** in the matching site profile's row.
+- From your project's home page, go to **Security & Compliance > Configuration** in the left sidebar.
+- Click **Manage** in the **DAST Profiles** row.
+- Click **{remove}** in the row of the profile to delete.
+- Click **Delete**.
 
 ### Enable or disable On-demand Scans
 
@@ -664,8 +673,6 @@ feature flag enabled.
 
 [GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
 can disable or enable the feature flags.
-
-#### Enable or disable On-demand Scans
 
 To disable On-demand Scans:
 

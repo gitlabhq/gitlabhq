@@ -136,7 +136,7 @@ class IssuableBaseService < BaseService
     {}
   end
 
-  def create(issuable)
+  def create(issuable, skip_system_notes: false)
     handle_quick_actions(issuable)
     filter_params(issuable)
 
@@ -153,7 +153,7 @@ class IssuableBaseService < BaseService
     end
 
     if issuable_saved
-      Issuable::CommonSystemNotesService.new(project, current_user).execute(issuable, is_update: false)
+      create_system_notes(issuable, is_update: false) unless skip_system_notes
 
       after_create(issuable)
       execute_hooks(issuable)
@@ -220,8 +220,9 @@ class IssuableBaseService < BaseService
       end
 
       if issuable_saved
-        Issuable::CommonSystemNotesService.new(project, current_user).execute(
-          issuable, old_labels: old_associations[:labels], old_milestone: old_associations[:milestone])
+        create_system_notes(
+          issuable, old_labels: old_associations[:labels], old_milestone: old_associations[:milestone]
+        )
 
         handle_changes(issuable, old_associations: old_associations)
 
@@ -255,7 +256,7 @@ class IssuableBaseService < BaseService
       before_update(issuable, skip_spam_check: true)
 
       if issuable.with_transaction_returning_status { issuable.save }
-        Issuable::CommonSystemNotesService.new(project, current_user).execute(issuable, old_labels: nil)
+        create_system_notes(issuable, old_labels: nil)
 
         handle_task_changes(issuable)
         invalidate_cache_counts(issuable, users: issuable.assignees.to_a)
@@ -337,6 +338,10 @@ class IssuableBaseService < BaseService
   def toggle_award(issuable)
     award = params.delete(:emoji_award)
     AwardEmojis::ToggleService.new(issuable, award, current_user).execute if award
+  end
+
+  def create_system_notes(issuable, **options)
+    Issuable::CommonSystemNotesService.new(project, current_user).execute(issuable, **options)
   end
 
   def associations_before_update(issuable)
