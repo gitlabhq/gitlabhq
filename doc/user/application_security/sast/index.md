@@ -48,8 +48,6 @@ To run SAST jobs, by default, you need a GitLab Runner with the
 [`kubernetes`](https://docs.gitlab.com/runner/install/kubernetes.html) executor.
 If you're using the shared Runners on GitLab.com, this is enabled by default.
 
-Beginning with GitLab 13.0, Docker privileged mode is necessary only if you've [enabled Docker-in-Docker for SAST](#enabling-docker-in-docker).
-
 CAUTION: **Caution:**
 Our SAST jobs require a Linux container type. Windows containers are not yet supported.
 
@@ -94,9 +92,6 @@ The Java analyzers can also be used for variants like the
 All open source (OSS) analyzers have been moved to the GitLab Core tier. Progress can be
 tracked in the corresponding
 [epic](https://gitlab.com/groups/gitlab-org/-/epics/2098).
-
-Please note that support for [Docker-in-Docker](#enabling-docker-in-docker)
-will not be extended to the GitLab Core tier.
 
 #### Summary of features per tier
 
@@ -217,25 +212,6 @@ you can use the `MAVEN_CLI_OPTS` environment variable.
 
 Read more on [how to use private Maven repositories](../index.md#using-private-maven-repos).
 
-### Enabling Docker-in-Docker **(ULTIMATE)**
-
-If needed, you can enable Docker-in-Docker to restore the SAST behavior that existed prior to GitLab
-13.0. Follow these steps to do so:
-
-1. Configure a GitLab Runner with Docker-in-Docker in [privileged mode](https://docs.gitlab.com/runner/executors/docker.html#use-docker-in-docker-with-privileged-mode).
-1. Set the variable `SAST_DISABLE_DIND` set to `false`:
-
-   ```yaml
-   include:
-     - template: SAST.gitlab-ci.yml
-
-   variables:
-     SAST_DISABLE_DIND: "false"
-   ```
-
-This creates a single `sast` job in your CI/CD pipeline instead of multiple `<analyzer-name>-sast`
-jobs.
-
 #### Enabling Kubesec analyzer
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12752) in GitLab Ultimate 12.6.
@@ -329,7 +305,6 @@ The following are Docker image-related variables.
 | `SECURE_ANALYZERS_PREFIX` | Override the name of the Docker registry providing the default images (proxy). Read more about [customizing analyzers](analyzers.md). |
 | `SAST_ANALYZER_IMAGE_TAG` | **DEPRECATED:** Override the Docker tag of the default images. Read more about [customizing analyzers](analyzers.md).                 |
 | `SAST_DEFAULT_ANALYZERS`  | Override the names of default images. Read more about [customizing analyzers](analyzers.md).                                          |
-| `SAST_DISABLE_DIND`       | Disable Docker-in-Docker and run analyzers [individually](#enabling-docker-in-docker). This variable is `true` by default.   |
 
 #### Vulnerability filters
 
@@ -343,18 +318,6 @@ Some analyzers make it possible to filter out vulnerabilities under a given thre
 | `SAST_BRAKEMAN_LEVEL`         | 1                        | Ignore Brakeman vulnerabilities under given confidence level. Integer, 1=Low 3=High.                                                                                                                                        |
 | `SAST_FLAWFINDER_LEVEL`       | 1                        | Ignore Flawfinder vulnerabilities under given risk level. Integer, 0=No risk, 5=High risk.                                                                                                                                  |
 | `SAST_GOSEC_LEVEL`            | 0                        | Ignore Gosec vulnerabilities under given confidence level. Integer, 0=Undefined, 1=Low, 2=Medium, 3=High.                                                                                                                   |
-
-#### Docker-in-Docker orchestrator
-
-The following variables configure the Docker-in-Docker orchestrator, and therefore are only used when the Docker-in-Docker mode is [enabled](#enabling-docker-in-docker).
-
-| Environment variable                     | Default value | Description                                                                                                                                                                                                                                              |
-|------------------------------------------|---------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `SAST_ANALYZER_IMAGES`                   |               | Comma-separated list of custom images. Default images are still enabled. Read more about [customizing analyzers](analyzers.md).                                                                                                                          |
-| `SAST_PULL_ANALYZER_IMAGES`              | 1             | Pull the images from the Docker registry (set to 0 to disable). Read more about [customizing analyzers](analyzers.md).                                                                                                                                   |
-| `SAST_DOCKER_CLIENT_NEGOTIATION_TIMEOUT` | 2m            | Time limit for Docker client negotiation. Timeouts are parsed using Go's [`ParseDuration`](https://golang.org/pkg/time/#ParseDuration). Valid time units are `ns`, `us` (or `µs`), `ms`, `s`, `m`, `h`. For example, `300ms`, `1.5h` or `2h45m`.         |
-| `SAST_PULL_ANALYZER_IMAGE_TIMEOUT`       | 5m            | Time limit when pulling the image of an analyzer. Timeouts are parsed using Go's [`ParseDuration`](https://golang.org/pkg/time/#ParseDuration). Valid time units are `ns`, `us` (or `µs`), `ms`, `s`, `m`, `h`. For example, `300ms`, `1.5h` or `2h45m`. |
-| `SAST_RUN_ANALYZER_TIMEOUT`              | 20m           | Time limit when running an analyzer. Timeouts are parsed using Go's [`ParseDuration`](https://golang.org/pkg/time/#ParseDuration). Valid time units are `ns`, `us` (or `µs`), `ms`, `s`, `m`, `h`. For example, `300ms`, `1.5h` or `2h45m`.              |
 
 #### Analyzer settings
 
@@ -512,7 +475,6 @@ run successfully. For more information, see [Offline environments](../offline_de
 
 To use SAST in an offline environment, you need:
 
-- To keep Docker-In-Docker disabled (default).
 - A GitLab Runner with the [`docker` or `kubernetes` executor](#requirements).
 - A Docker Container Registry with locally available copies of SAST [analyzer](https://gitlab.com/gitlab-org/security-products/analyzers) images.
 - Configure certificate checking of packages (optional).

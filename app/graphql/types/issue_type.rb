@@ -38,8 +38,7 @@ module Types
           description: 'User that created the issue',
           resolve: -> (obj, _args, _ctx) { Gitlab::Graphql::Loaders::BatchModelLoader.new(User, obj.author_id).find }
 
-    # Remove complexity when BatchLoader is used
-    field :assignees, Types::UserType.connection_type, null: true, complexity: 5,
+    field :assignees, Types::UserType.connection_type, null: true,
           description: 'Assignees of the issue'
 
     field :labels, Types::LabelType.connection_type, null: true,

@@ -28,9 +28,8 @@ Each guideline is described in more detail in the sections below:
 
 > Introduced in GitLab Runner 8.9.
 
-GitLab and GitLab Runner always perform a full clone by default.
-While it means that all changes from GitLab are received,
-it often results in receiving extra commit logs.
+GitLab and GitLab Runner perform a [shallow clone](../pipelines/settings.md#git-shallow-clone)
+by default.
 
 Ideally, you should always use `GIT_DEPTH` with a small number
 like 10. This will instruct GitLab Runner to perform shallow clones.

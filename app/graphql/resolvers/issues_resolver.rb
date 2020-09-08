@@ -35,7 +35,8 @@ module Resolvers
     def preloads
       {
         alert_management_alert: [:alert_management_alert],
-        labels: [:labels]
+        labels: [:labels],
+        assignees: [:assignees]
       }
     end
 

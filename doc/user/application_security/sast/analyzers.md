@@ -96,32 +96,7 @@ That's needed when one totally relies on [custom analyzers](#custom-analyzers).
 
 ## Custom Analyzers
 
-### Custom analyzers with Docker-in-Docker
-
-When Docker-in-Docker for SAST is enabled,
-you can provide your own analyzers as a comma-separated list of Docker images.
-Here's how to add `analyzers/csharp` and `analyzers/perl` to the default images:
-In `.gitlab-ci.yml` define:
-
-```yaml
-include:
-  - template: SAST.gitlab-ci.yml
-
-variables:
-  SAST_ANALYZER_IMAGES: "my-docker-registry/analyzers/csharp,amy-docker-registry/analyzers/perl"
-```
-
-The values must be the full path to the container registry images,
-like what you would feed to the `docker pull` command.
-
-NOTE: **Note:**
-This configuration doesn't benefit from the integrated detection step.
-SAST has to fetch and spawn each Docker image to establish whether the
-custom analyzer can scan the source code.
-
-### Custom analyzers without Docker-in-Docker
-
-When Docker-in-Docker for SAST is disabled, you can provide your own analyzers by
+You can provide your own analyzers by
 defining CI jobs in your CI configuration. For consistency, you should suffix your custom
 SAST jobs with `-sast`. Here's how to add a scanning job that's based on the
 Docker image `my-docker-registry/analyzers/csharp` and generates a SAST report
