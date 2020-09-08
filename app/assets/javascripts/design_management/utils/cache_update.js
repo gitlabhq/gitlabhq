@@ -7,14 +7,10 @@ import { extractCurrentDiscussion, extractDesign, extractDesigns } from './desig
 import {
   ADD_IMAGE_DIFF_NOTE_ERROR,
   UPDATE_IMAGE_DIFF_NOTE_ERROR,
-  ADD_DISCUSSION_COMMENT_ERROR,
   designDeletionError,
 } from './error_messages';
 
 const designsOf = data => data.project.issue.designCollection.designs;
-
-const isParticipating = (design, username) =>
-  design.issue.participants.nodes.some(participant => participant.username === username);
 
 const deleteDesignsFromStore = (store, query, selectedDesigns) => {
   const sourceData = store.readQuery(query);
@@ -53,36 +49,6 @@ const addNewVersionToStore = (store, query, version) => {
 
   store.writeQuery({
     ...query,
-    data,
-  });
-};
-
-const addDiscussionCommentToStore = (store, createNote, query, queryVariables, discussionId) => {
-  const sourceData = store.readQuery({
-    query,
-    variables: queryVariables,
-  });
-
-  const newParticipant = {
-    __typename: 'User',
-    ...createNote.note.author,
-  };
-
-  const data = produce(sourceData, draftData => {
-    const design = extractDesign(draftData);
-    const currentDiscussion = extractCurrentDiscussion(design.discussions, discussionId);
-    currentDiscussion.notes.nodes = [...currentDiscussion.notes.nodes, createNote.note];
-
-    if (!isParticipating(design, createNote.note.author.username)) {
-      design.issue.participants.nodes = [...design.issue.participants.nodes, newParticipant];
-    }
-
-    design.notesCount += 1;
-  });
-
-  store.writeQuery({
-    query,
-    variables: queryVariables,
     data,
   });
 };
@@ -243,20 +209,6 @@ export const updateStoreAfterDesignsDelete = (store, data, query, designs) => {
   } else {
     deleteDesignsFromStore(store, query, designs);
     addNewVersionToStore(store, query, data.version);
-  }
-};
-
-export const updateStoreAfterAddDiscussionComment = (
-  store,
-  data,
-  query,
-  queryVariables,
-  discussionId,
-) => {
-  if (hasErrors(data)) {
-    onError(data, ADD_DISCUSSION_COMMENT_ERROR);
-  } else {
-    addDiscussionCommentToStore(store, data, query, queryVariables, discussionId);
   }
 };
 

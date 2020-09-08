@@ -58,7 +58,6 @@ plays an important role in your deployment, we suggest you benchmark to find the
 optimal configuration:
 
 - The safest option is to start with single-threaded Puma. When working with
-Rugged, single-threaded Puma does work the same as Unicorn.
-
-- To force Rugged auto detect with multi-threaded Puma, you can use [feature
-flags](../../development/gitaly.md#legacy-rugged-code).
+  Rugged, single-threaded Puma works the same as Unicorn.
+- To force Rugged to be used with multi-threaded Puma, you can use
+  [feature flags](../../development/gitaly.md#legacy-rugged-code).

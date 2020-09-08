@@ -2,18 +2,19 @@
 import { ApolloMutation } from 'vue-apollo';
 import { GlTooltipDirective, GlIcon, GlLoadingIcon, GlLink } from '@gitlab/ui';
 import { s__ } from '~/locale';
+import createFlash from '~/flash';
 import ReplyPlaceholder from '~/notes/components/discussion_reply_placeholder.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import allVersionsMixin from '../../mixins/all_versions';
 import createNoteMutation from '../../graphql/mutations/create_note.mutation.graphql';
 import toggleResolveDiscussionMutation from '../../graphql/mutations/toggle_resolve_discussion.mutation.graphql';
-import getDesignQuery from '../../graphql/queries/get_design.query.graphql';
 import activeDiscussionQuery from '../../graphql/queries/active_discussion.query.graphql';
 import DesignNote from './design_note.vue';
 import DesignReplyForm from './design_reply_form.vue';
-import { updateStoreAfterAddDiscussionComment } from '../../utils/cache_update';
 import { ACTIVE_DISCUSSION_SOURCE_TYPES } from '../../constants';
 import ToggleRepliesWidget from './toggle_replies_widget.vue';
+import { hasErrors } from '../../utils/cache_update';
+import { ADD_DISCUSSION_COMMENT_ERROR } from '../../utils/error_messages';
 
 export default {
   components: {
@@ -136,21 +137,10 @@ export default {
     },
   },
   methods: {
-    addDiscussionComment(
-      store,
-      {
-        data: { createNote },
-      },
-    ) {
-      updateStoreAfterAddDiscussionComment(
-        store,
-        createNote,
-        getDesignQuery,
-        this.designVariables,
-        this.discussion.id,
-      );
-    },
-    onDone() {
+    onDone({ data: { createNote } }) {
+      if (hasErrors(createNote)) {
+        createFlash({ message: ADD_DISCUSSION_COMMENT_ERROR });
+      }
       this.discussionComment = '';
       this.hideForm();
       if (this.shouldChangeResolvedStatus) {
@@ -278,7 +268,6 @@ export default {
           :variables="{
             input: mutationPayload,
           }"
-          :update="addDiscussionComment"
           @done="onDone"
           @error="onCreateNoteError"
         >

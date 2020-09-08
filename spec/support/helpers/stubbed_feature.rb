@@ -37,10 +37,7 @@ module StubbedFeature
       # We do `m.call` as we want to validate the execution of method arguments
       # and a feature flag state if it is not persisted
       unless Feature.persisted_name?(args.first)
-        # TODO: this is hack to support `promo_feature_available?`
-        # We enable all feature flags by default unless they are `promo_`
-        # Issue: https://gitlab.com/gitlab-org/gitlab/-/issues/218667
-        feature_flag = true unless args.first.to_s.start_with?('promo_')
+        feature_flag = true
       end
 
       feature_flag

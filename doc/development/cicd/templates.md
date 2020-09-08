@@ -16,7 +16,7 @@ All template files reside in the `lib/gitlab/ci/templates` directory, and are ca
 | Sub-directory  | Content                                                      | [Selectable in UI](#make-sure-the-new-template-can-be-selected-in-ui) |
 |----------------|--------------------------------------------------------------|-----------------------------------------------------------------------|
 | `/AWS/*`       | Cloud Deployment (AWS) related jobs                          | No                                                                    |
-| `/Jobs/*`      | Auto DevOps related jobs                                     | Yes                                                                   |
+| `/Jobs/*`      | Auto DevOps related jobs                                     | No                                                                    |
 | `/Pages/*`     | Static site generators for GitLab Pages (for example Jekyll) | Yes                                                                   |
 | `/Security/*`  | Security related jobs                                        | Yes                                                                   |
 | `/Verify/*`    | Verify/testing related jobs                                  | Yes                                                                   |

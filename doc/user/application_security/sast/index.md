@@ -106,6 +106,7 @@ as shown in the following table:
 | [Presentation of JSON Report in Merge Request](#overview)                          | **{dotted-circle}** | **{check-circle}** |
 | [Interaction with Vulnerabilities](#interacting-with-the-vulnerabilities) | **{dotted-circle}** | **{check-circle}** |
 | [Access to Security Dashboard](#security-dashboard)                       | **{dotted-circle}** | **{check-circle}** |
+| [Configure SAST in the UI](#configure-sast-in-the-ui)                     | **{dotted-circle}** | **{check-circle}** |
 
 ## Contribute your scanner
 
@@ -142,7 +143,7 @@ The results are saved as a
 that you can later download and analyze. Due to implementation limitations, we
 always take the latest SAST artifact available.
 
-### Configure SAST in the UI
+### Configure SAST in the UI **(ULTIMATE)**
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3659) in GitLab Ultimate 13.3.
 > - [Improved](https://gitlab.com/gitlab-org/gitlab/-/issues/232862) in GitLab Ultimate 13.4.

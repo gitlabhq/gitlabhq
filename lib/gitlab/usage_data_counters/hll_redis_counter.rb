@@ -34,6 +34,8 @@ module Gitlab
       # * Get unique counts per user: Gitlab::UsageDataCounters::HLLRedisCounter.unique_events(event_names: 'g_compliance_dashboard', start_date: 28.days.ago, end_date: Date.current)
       class << self
         def track_event(entity_id, event_name, time = Time.zone.now)
+          return unless Gitlab::CurrentSettings.usage_ping_enabled?
+
           event = event_for(event_name)
 
           raise UnknownEvent.new("Unknown event #{event_name}") unless event.present?

@@ -32,7 +32,6 @@ describe('Design discussions component', () => {
 
   const mutationVariables = {
     mutation: createNoteMutation,
-    update: expect.anything(),
     variables: {
       input: {
         noteableId: 'noteable-id',
@@ -41,7 +40,7 @@ describe('Design discussions component', () => {
       },
     },
   };
-  const mutate = jest.fn(() => Promise.resolve());
+  const mutate = jest.fn().mockResolvedValue({ data: { createNote: { errors: [] } } });
   const $apollo = {
     mutate,
   };
@@ -227,7 +226,7 @@ describe('Design discussions component', () => {
     });
   });
 
-  it('calls mutation on submitting form and closes the form', () => {
+  it('calls mutation on submitting form and closes the form', async () => {
     createComponent(
       { discussionWithOpenForm: defaultMockDiscussion.id },
       { discussionComment: 'test', isFormRendered: true },
@@ -236,13 +235,10 @@ describe('Design discussions component', () => {
     findReplyForm().vm.$emit('submitForm');
     expect(mutate).toHaveBeenCalledWith(mutationVariables);
 
-    return mutate()
-      .then(() => {
-        return wrapper.vm.$nextTick();
-      })
-      .then(() => {
-        expect(findReplyForm().exists()).toBe(false);
-      });
+    await mutate();
+    await wrapper.vm.$nextTick();
+
+    expect(findReplyForm().exists()).toBe(false);
   });
 
   it('clears the discussion comment on closing comment form', () => {

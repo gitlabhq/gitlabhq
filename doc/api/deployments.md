@@ -15,15 +15,15 @@ Get a list of deployments in a project.
 GET /projects/:id/deployments
 ```
 
-| Attribute | Type    | Required | Description         |
-|-----------|---------|----------|---------------------|
-| `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
-| `order_by`| string  | no       | Return deployments ordered by `id` or `iid` or `created_at` or `updated_at` or `ref` fields. Default is `id` |
-| `sort`    | string  | no       | Return deployments sorted in `asc` or `desc` order. Default is `asc` |
-| `updated_after` | datetime | no | Return deployments updated after the specified date |
-| `updated_before` | datetime | no | Return deployments updated before the specified date |
-| `environment` | string | no | The name of the environment to filter deployments by |
-| `status` | string | no | The status to filter deployments by |
+| Attribute        | Type           | Required | Description                                                                                                     |
+|------------------|----------------|----------|-----------------------------------------------------------------------------------------------------------------|
+| `id`             | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `order_by`       | string         | no       | Return deployments ordered by `id` or `iid` or `created_at` or `updated_at` or `ref` fields. Default is `id`    |
+| `sort`           | string         | no       | Return deployments sorted in `asc` or `desc` order. Default is `asc`                                            |
+| `updated_after`  | datetime       | no       | Return deployments updated after the specified date                                                             |
+| `updated_before` | datetime       | no       | Return deployments updated before the specified date                                                            |
+| `environment`    | string         | no       | The [name of the environment](../ci/environments/index.md#defining-environments) to filter deployments by       |
+| `status`         | string         | no       | The status to filter deployments by                                                                             |
 
 The status attribute can be one of the following values:
 
@@ -278,14 +278,14 @@ Example of response
 POST /projects/:id/deployments
 ```
 
-| Attribute        | Type           | Required | Description         |
-|------------------|----------------|----------|---------------------|
-| `id`             | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
-| `environment`    | string         | yes      | The name of the environment to create the deployment for |
-| `sha`            | string         | yes      | The SHA of the commit that is deployed |
-| `ref`            | string         | yes      | The name of the branch or tag that is deployed |
-| `tag`            | boolean        | yes      | A boolean that indicates if the deployed ref is a tag (true) or not (false) |
-| `status`         | string         | yes      | The status of the deployment |
+| Attribute     | Type           | Required | Description                                                                                                     |
+|---------------|----------------|----------|-----------------------------------------------------------------------------------------------------------------|
+| `id`          | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `environment` | string         | yes      | The [name of the environment](../ci/environments/index.md#defining-environments) to create the deployment for   |
+| `sha`         | string         | yes      | The SHA of the commit that is deployed                                                                          |
+| `ref`         | string         | yes      | The name of the branch or tag that is deployed                                                                  |
+| `tag`         | boolean        | yes      | A boolean that indicates if the deployed ref is a tag (true) or not (false)                                     |
+| `status`      | string         | yes      | The status of the deployment                                                                                    |
 
 The status can be one of the following values:
 

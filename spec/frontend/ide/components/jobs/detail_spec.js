@@ -24,7 +24,7 @@ describe('IDE jobs detail view', () => {
   beforeEach(() => {
     vm = createComponent();
 
-    jest.spyOn(vm, 'fetchJobTrace').mockResolvedValue();
+    jest.spyOn(vm, 'fetchJobLogs').mockResolvedValue();
   });
 
   afterEach(() => {
@@ -36,8 +36,8 @@ describe('IDE jobs detail view', () => {
       vm = vm.$mount();
     });
 
-    it('calls fetchJobTrace', () => {
-      expect(vm.fetchJobTrace).toHaveBeenCalled();
+    it('calls fetchJobLogs', () => {
+      expect(vm.fetchJobLogs).toHaveBeenCalled();
     });
 
     it('scrolls to bottom', () => {
@@ -96,7 +96,7 @@ describe('IDE jobs detail view', () => {
   describe('scroll buttons', () => {
     beforeEach(() => {
       vm = createComponent();
-      jest.spyOn(vm, 'fetchJobTrace').mockResolvedValue();
+      jest.spyOn(vm, 'fetchJobLogs').mockResolvedValue();
     });
 
     afterEach(() => {

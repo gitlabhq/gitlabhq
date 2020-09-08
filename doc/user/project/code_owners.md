@@ -9,7 +9,6 @@ type: reference
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/6916)
 in [GitLab Starter](https://about.gitlab.com/pricing/) 11.3.
-> - [Support for group namespaces](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/53182) added in GitLab Starter 12.1.
 > - Code Owners for Merge Request approvals was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/4418) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.9.
 
 ## Introduction
@@ -108,40 +107,53 @@ in the `.gitignore` file followed by one or more of:
 - A user's `@username`.
 - A user's email address.
 - The `@name` of one or more groups that should be owners of the file.
+- Lines starting with `#` are escaped.
 
-Groups must be added as [members of the project](members/index.md),
-or they will be ignored.
+The order in which the paths are defined is significant: the last pattern that
+matches a given path will be used to find the code owners.
 
-Starting in [GitLab 13.0](https://gitlab.com/gitlab-org/gitlab/-/issues/32432),
-you can additionally specify groups or subgroups from the project's upper group
-hierarchy as potential code owners, without having to invite them specifically
-to the project. Groups outside the project's hierarchy or children beneath the
-hierarchy must still be explicitly invited to the project in order to show as
-Code Owners.
+### Groups as Code Owners
 
-For example, consider the following hierarchy for the example project
-`example_project`:
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/53182) in GitLab Starter 12.1.
+> - Group and subgroup hierarchy support was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32432) in [GitLab Starter](https://about.gitlab.com/pricing/) 13.0.
+
+Groups and subgroups members are inherited as eligible Code Owners to a
+project, as long as the hierarchy is respected.
+
+For example, consider a given group called "Group X" (slug `group-x`) and a
+"Subgroup Y" (slug `group-x/subgroup-y`) that belongs to the Group X, and
+suppose you have a project called "Project A" within the group and a
+"Project B" within the subgroup.
+
+The eligible Code Owners to Project B are both the members of the Group X and
+the Subgroup Y. And the eligible Code Owners to the Project A are just the
+members of the Group X, given that Project A doesn't belong to the Subgroup Y:
+
+![Eligible Code Owners](img/code_owners_members_v13_4.png)
+
+But you have the option to [invite](members/share_project_with_groups.md)
+the Subgroup Y to the Project A so that their members also become eligible
+Code Owners:
+
+![Invite subgroup members to become eligible Code Owners](img/code_owners_invite_members_v13_4.png)
+
+Once invited, any member (`@user`) of the group or subgroup can be set
+as Code Owner to files of the Project A or B, as well as the entire Group X
+(`@group-x`) or Subgroup Y (`@group-x/subgroup-y`), as exemplified below:
 
 ```plaintext
-group >> sub-group >> sub-subgroup >> example_project >> file.md
+# A member of the group or subgroup as Code Owner to a file
+file.md @user
+
+# All group members as Code Owners to a file
+file.md @group-x
+
+# All subgroup members as Code Owners to a file
+file.md @group-x/subgroup-y
+
+# All group and subgroup members as Code Owners to a file
+file.md @group-x @group-x/subgroup-y
 ```
-
-Any of the following groups would be eligible to be specified as code owners:
-
-- `@group`
-- `@group/sub-group`
-- `@group/sub-group/sub-subgroup`
-
-In addition, any groups that have been invited to the project using the
-**Members** tool will also be recognized as eligible code owners.
-
-The order in which the paths are defined is significant: the last
-pattern that matches a given path will be used to find the code
-owners.
-
-Starting a line with a `#` indicates a comment. This needs to be
-escaped using `\#` to address files for which the name starts with a
-`#`.
 
 ### Code Owners Sections **(PREMIUM)**
 

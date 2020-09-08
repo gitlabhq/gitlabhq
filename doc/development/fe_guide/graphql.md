@@ -602,6 +602,174 @@ it('calls mutation on submitting form ', () => {
 });
 ```
 
+### Testing with mocked Apollo Client
+
+To test the logic of Apollo cache updates, we might want to mock an Apollo Client in our unit tests. To separate tests with mocked client from 'usual' unit tests, it's recommended to create an additional component factory. This way we only create Apollo Client instance when it's necessary:
+
+```javascript
+function createComponent() {...}
+
+function createComponentWithApollo() {...}
+```
+
+We use [`mock-apollo-client`](https://www.npmjs.com/package/mock-apollo-client) library to mock Apollo client in tests.
+
+```javascript
+import { createMockClient } from 'mock-apollo-client';
+```
+
+Then we need to inject `VueApollo` to Vue local instance (`localVue.use()` can also be called within `createComponentWithApollo()`)
+
+```javascript
+import VueApollo from 'vue-apollo';
+import { createLocalVue } from '@vue/test-utils';
+
+const localVue = createLocalVue();
+localVue.use(VueApollo);
+```
+
+After this, on the global `describe`, we should create a variable for `fakeApollo`:
+
+```javascript
+describe('Some component with Apollo mock', () => {
+  let wrapper;
+  let fakeApollo
+})
+```
+
+Within component factory, we need to define an array of _handlers_ for every query or mutation:
+
+```javascript
+import getDesignListQuery from '~/design_management/graphql/queries/get_design_list.query.graphql';
+import permissionsQuery from '~/design_management/graphql/queries/design_permissions.query.graphql';
+import moveDesignMutation from '~/design_management/graphql/mutations/move_design.mutation.graphql';
+
+describe('Some component with Apollo mock', () => {
+  let wrapper;
+  let fakeApollo;
+
+  function createComponentWithApollo() {
+    const requestHandlers = [
+      [getDesignListQuery, jest.fn().mockResolvedValue(designListQueryResponse)],
+      [permissionsQuery, jest.fn().mockResolvedValue(permissionsQueryResponse)],
+    ];
+  }
+})
+```
+
+After this, we need to create a mock Apollo Client instance using a helper:
+
+```javascript
+import createMockApollo from 'jest/helpers/mock_apollo_helper';
+
+describe('Some component with Apollo mock', () => {
+  let wrapper;
+  let fakeApollo;
+
+  function createComponentWithApollo() {
+    const requestHandlers = [
+      [getDesignListQuery, jest.fn().mockResolvedValue(designListQueryResponse)],
+      [permissionsQuery, jest.fn().mockResolvedValue(permissionsQueryResponse)],
+    ];
+
+    fakeApollo = createMockApollo(requestHandlers);
+    wrapper = shallowMount(Index, {
+      localVue,
+      apolloProvider: fakeApollo,
+    });
+  }
+})
+```
+
+NOTE: **Note:**
+When mocking resolved values, make sure the structure of the response is the same as actual API response: i.e. root property should be `data` for example
+
+When testing queries, please keep in mind they are promises, so they need to be _resolved_ to render a result. Without resolving, we can check the `loading` state of the query:
+
+```javascript
+it('renders a loading state', () => {
+  createComponentWithApollo();
+
+  expect(wrapper.find(LoadingSpinner).exists()).toBe(true)
+});
+
+it('renders designs list', async () => {
+  createComponentWithApollo();
+
+  jest.runOnlyPendingTimers();
+  await wrapper.vm.$nextTick();
+
+  expect(findDesigns()).toHaveLength(3);
+});
+```
+
+If we need to test a query error, we need to mock a rejected value as request handler:
+
+```javascript
+function createComponentWithApollo() {
+  ...
+  const requestHandlers = [
+    [getDesignListQuery, jest.fn().mockRejectedValue(new Error('GraphQL error')],
+  ];
+  ...
+}
+...
+
+it('renders error if query fails', async () => {
+  createComponent()
+
+  jest.runOnlyPendingTimers();
+  await wrapper.vm.$nextTick();
+
+  expect(wrapper.find('.test-error').exists()).toBe(true)
+})
+```
+
+Request handlers can also be passed to component factory as a parameter.
+
+Mutations could be tested the same way with a few additional `nextTick`s to get the updated result:
+
+```javascript
+function createComponentWithApollo({
+  moveHandler = jest.fn().mockResolvedValue(moveDesignMutationResponse),
+}) {
+  moveDesignHandler = moveHandler;
+
+  const requestHandlers = [
+    [getDesignListQuery, jest.fn().mockResolvedValue(designListQueryResponse)],
+    [permissionsQuery, jest.fn().mockResolvedValue(permissionsQueryResponse)],
+    [moveDesignMutation, moveDesignHandler],
+  ];
+
+  fakeApollo = createMockApollo(requestHandlers);
+  wrapper = shallowMount(Index, {
+    localVue,
+    apolloProvider: fakeApollo,
+  });
+}
+...
+it('calls a mutation with correct parameters and reorders designs', async () => {
+  createComponentWithApollo({});
+
+  wrapper.find(VueDraggable).vm.$emit('change', {
+    moved: {
+      newIndex: 0,
+      element: designToMove,
+    },
+  });
+
+  expect(moveDesignHandler).toHaveBeenCalled();
+
+  await wrapper.vm.$nextTick();
+
+  expect(
+    findDesigns()
+      .at(0)
+      .props('id'),
+  ).toBe('2');
+});
+```
+
 ## Handling errors
 
 GitLab's GraphQL mutations currently have two distinct error modes: [Top-level](#top-level-errors) and [errors-as-data](#errors-as-data).

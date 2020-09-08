@@ -1,0 +1,5 @@
+---
+title: Reduce MergeRequest::RefreshService loops
+merge_request: 40135
+author:
+type: performance

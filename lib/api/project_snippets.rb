@@ -84,14 +84,17 @@ module API
       end
       params do
         requires :snippet_id, type: Integer, desc: 'The ID of a project snippet'
-        optional :title, type: String, allow_blank: false, desc: 'The title of the snippet'
-        optional :file_name, type: String, desc: 'The file name of the snippet'
         optional :content, type: String, allow_blank: false, desc: 'The content of the snippet'
         optional :description, type: String, desc: 'The description of a snippet'
+        optional :file_name, type: String, desc: 'The file name of the snippet'
+        optional :title, type: String, allow_blank: false, desc: 'The title of the snippet'
         optional :visibility, type: String,
                               values: Gitlab::VisibilityLevel.string_values,
                               desc: 'The visibility of the snippet'
-        at_least_one_of :title, :file_name, :content, :visibility
+
+        use :update_file_params
+
+        at_least_one_of :title, :file_name, :content, :files, :visibility
       end
       # rubocop: disable CodeReuse/ActiveRecord
       put ":id/snippets/:snippet_id" do
@@ -100,8 +103,9 @@ module API
 
         authorize! :update_snippet, snippet
 
-        snippet_params = declared_params(include_missing: false)
-          .merge(request: request, api: true)
+        validate_params_for_multiple_files(snippet)
+
+        snippet_params = process_update_params(declared_params(include_missing: false))
 
         service_response = ::Snippets::UpdateService.new(user_project, current_user, snippet_params).execute(snippet)
         snippet = service_response.payload[:snippet]

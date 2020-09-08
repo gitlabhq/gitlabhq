@@ -540,35 +540,10 @@ tenses, words, and phrases:
 
 ### Contractions
 
-- Use common contractions when it helps create a friendly and informal tone,
-  especially in tutorials, instructional documentation, and
-  [user interfaces](https://design.gitlab.com/content/punctuation/#contractions).
-  (Tested in [`Contractions.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/Contractions.yml).)
+Contractions can create a friendly and informal tone, especially in tutorials, instructional
+documentation, and [user interfaces](https://design.gitlab.com/content/punctuation/#contractions).
 
-  <!-- vale gitlab.ContractionsKeep = NO -->
-  <!-- vale gitlab.ContractionsDiscard = NO -->
-  <!-- vale gitlab.FutureTense = NO -->
-  | Do       | Don't     |
-  |----------|-----------|
-  | it's     | it is     |
-  | can't    | cannot    |
-  | wouldn't | would not |
-  | you're   | you are   |
-  | you've   | you have  |
-  | haven't  | have not  |
-  | don't    | do not    |
-  | we're    | we are    |
-  | that's   | that is   |
-  | won't    | will not  |
-
-- Avoid less common contractions:
-
-  | Do           | Don't       |
-  |--------------|-------------|
-  | he would     | he'd        |
-  | it will      | it'll       |
-  | should have  | should've   |
-  | there would  | there'd     |
+Some contractions should be avoided:
 
 - Do not use contractions with a proper noun and a verb. For example:
 
@@ -580,13 +555,13 @@ tenses, words, and phrases:
 
   | Do                          | Don't                      |
   |-----------------------------|----------------------------|
-  | Do *not* install X with Y   | *Don't* install X with Y   |
+  | Do **not** install X with Y   | **Don't** install X with Y   |
 
 - Do not use contractions in reference documentation. For example:
 
   | Do                                       | Don't                                  |
   |------------------------------------------|----------------------------------------|
-  | Do *not* set a limit greater than 1000   | *Don't* set a limit greater than 1000  |
+  | Do **not** set a limit greater than 1000   | **Don't** set a limit greater than 1000  |
   | For `parameter1`, the default is 10      | For `parameter1`, the default's 10     |
 
 - Avoid contractions in error messages. Examples:
@@ -595,10 +570,6 @@ tenses, words, and phrases:
   |------------------------------------------|--------------------------------------|
   | Requests to localhost are not allowed    | Requests to localhost aren't allowed |
   | Specified URL cannot be used             | Specified URL can't be used          |
-
-  <!-- vale gitlab.ContractionsKeep = YES -->
-  <!-- vale gitlab.ContractionsDiscard = YES -->
-  <!-- vale gitlab.FutureTense = YES -->
 
 ## Text
 

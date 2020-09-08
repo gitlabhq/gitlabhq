@@ -40,10 +40,10 @@ export default {
     },
   },
   mounted() {
-    this.getTrace();
+    this.getLogs();
   },
   methods: {
-    ...mapActions('pipelines', ['fetchJobTrace', 'setDetailJob']),
+    ...mapActions('pipelines', ['fetchJobLogs', 'setDetailJob']),
     scrollDown() {
       if (this.$refs.buildTrace) {
         this.$refs.buildTrace.scrollTo(0, this.$refs.buildTrace.scrollHeight);
@@ -66,8 +66,8 @@ export default {
         this.scrollPos = '';
       }
     }),
-    getTrace() {
-      return this.fetchJobTrace().then(() => this.scrollDown());
+    getLogs() {
+      return this.fetchJobLogs().then(() => this.scrollDown());
     },
   },
 };

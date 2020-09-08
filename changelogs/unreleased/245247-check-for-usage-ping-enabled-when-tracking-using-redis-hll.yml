@@ -1,0 +1,5 @@
+---
+title: Check if usage ping enabled for all tracking using Redis HLL
+merge_request: 41562
+author:
+type: added

@@ -62,65 +62,81 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
     end
 
     describe '.track_event' do
-      it "raise error if metrics don't have same aggregation" do
-        expect { described_class.track_event(entity1, different_aggregation, Date.current) } .to raise_error(Gitlab::UsageDataCounters::HLLRedisCounter::UnknownAggregation)
+      context 'when usage_ping is disabled' do
+        it 'does not track the event' do
+          stub_application_setting(usage_ping_enabled: false)
+
+          described_class.track_event(entity1, weekly_event, Date.current)
+
+          expect(Gitlab::Redis::HLL).not_to receive(:add)
+        end
       end
 
-      it 'raise error if metrics of unknown aggregation' do
-        expect { described_class.track_event(entity1, 'unknown', Date.current) } .to raise_error(Gitlab::UsageDataCounters::HLLRedisCounter::UnknownEvent)
-      end
+      context 'when usage_ping is enabled' do
+        before do
+          stub_application_setting(usage_ping_enabled: true)
+        end
 
-      context 'for weekly events' do
-        it 'sets the keys in Redis to expire automatically after the given expiry time' do
-          described_class.track_event(entity1, "g_analytics_contribution")
+        it "raise error if metrics don't have same aggregation" do
+          expect { described_class.track_event(entity1, different_aggregation, Date.current) } .to raise_error(Gitlab::UsageDataCounters::HLLRedisCounter::UnknownAggregation)
+        end
 
-          Gitlab::Redis::SharedState.with do |redis|
-            keys = redis.scan_each(match: "g_{analytics}_contribution-*").to_a
-            expect(keys).not_to be_empty
+        it 'raise error if metrics of unknown aggregation' do
+          expect { described_class.track_event(entity1, 'unknown', Date.current) } .to raise_error(Gitlab::UsageDataCounters::HLLRedisCounter::UnknownEvent)
+        end
 
-            keys.each do |key|
-              expect(redis.ttl(key)).to be_within(5.seconds).of(12.weeks)
+        context 'for weekly events' do
+          it 'sets the keys in Redis to expire automatically after the given expiry time' do
+            described_class.track_event(entity1, "g_analytics_contribution")
+
+            Gitlab::Redis::SharedState.with do |redis|
+              keys = redis.scan_each(match: "g_{analytics}_contribution-*").to_a
+              expect(keys).not_to be_empty
+
+              keys.each do |key|
+                expect(redis.ttl(key)).to be_within(5.seconds).of(12.weeks)
+              end
+            end
+          end
+
+          it 'sets the keys in Redis to expire automatically after 6 weeks by default' do
+            described_class.track_event(entity1, "g_compliance_dashboard")
+
+            Gitlab::Redis::SharedState.with do |redis|
+              keys = redis.scan_each(match: "g_{compliance}_dashboard-*").to_a
+              expect(keys).not_to be_empty
+
+              keys.each do |key|
+                expect(redis.ttl(key)).to be_within(5.seconds).of(6.weeks)
+              end
             end
           end
         end
 
-        it 'sets the keys in Redis to expire automatically after 6 weeks by default' do
-          described_class.track_event(entity1, "g_compliance_dashboard")
+        context 'for daily events' do
+          it 'sets the keys in Redis to expire after the given expiry time' do
+            described_class.track_event(entity1, "g_analytics_search")
 
-          Gitlab::Redis::SharedState.with do |redis|
-            keys = redis.scan_each(match: "g_{compliance}_dashboard-*").to_a
-            expect(keys).not_to be_empty
+            Gitlab::Redis::SharedState.with do |redis|
+              keys = redis.scan_each(match: "*-g_{analytics}_search").to_a
+              expect(keys).not_to be_empty
 
-            keys.each do |key|
-              expect(redis.ttl(key)).to be_within(5.seconds).of(6.weeks)
+              keys.each do |key|
+                expect(redis.ttl(key)).to be_within(5.seconds).of(84.days)
+              end
             end
           end
-        end
-      end
 
-      context 'for daily events' do
-        it 'sets the keys in Redis to expire after the given expiry time' do
-          described_class.track_event(entity1, "g_analytics_search")
+          it 'sets the keys in Redis to expire after 29 days by default' do
+            described_class.track_event(entity1, "no_slot")
 
-          Gitlab::Redis::SharedState.with do |redis|
-            keys = redis.scan_each(match: "*-g_{analytics}_search").to_a
-            expect(keys).not_to be_empty
+            Gitlab::Redis::SharedState.with do |redis|
+              keys = redis.scan_each(match: "*-{no_slot}").to_a
+              expect(keys).not_to be_empty
 
-            keys.each do |key|
-              expect(redis.ttl(key)).to be_within(5.seconds).of(84.days)
-            end
-          end
-        end
-
-        it 'sets the keys in Redis to expire after 29 days by default' do
-          described_class.track_event(entity1, "no_slot")
-
-          Gitlab::Redis::SharedState.with do |redis|
-            keys = redis.scan_each(match: "*-{no_slot}").to_a
-            expect(keys).not_to be_empty
-
-            keys.each do |key|
-              expect(redis.ttl(key)).to be_within(5.seconds).of(29.days)
+              keys.each do |key|
+                expect(redis.ttl(key)).to be_within(5.seconds).of(29.days)
+              end
             end
           end
         end

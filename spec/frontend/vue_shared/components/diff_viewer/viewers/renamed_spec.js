@@ -14,19 +14,13 @@ import {
 const localVue = createLocalVue();
 localVue.use(Vuex);
 
-function createRenamedComponent({
-  props = {},
-  methods = {},
-  store = new Vuex.Store({}),
-  deep = false,
-}) {
+function createRenamedComponent({ props = {}, store = new Vuex.Store({}), deep = false }) {
   const mnt = deep ? mount : shallowMount;
 
   return mnt(Renamed, {
     propsData: { ...props },
     localVue,
     store,
-    methods,
   });
 }
 
@@ -258,25 +252,17 @@ describe('Renamed Diff Viewer', () => {
       'includes a link to the full file for alternate viewer type "$altType"',
       ({ altType, linkText }) => {
         const file = { ...diffFile };
-        const clickMock = jest.fn().mockImplementation(() => {});
 
         file.alternate_viewer.name = altType;
         wrapper = createRenamedComponent({
           deep: true,
           props: { diffFile: file },
-          methods: {
-            clickLink: clickMock,
-          },
         });
 
         const link = wrapper.find('a');
 
         expect(link.text()).toEqual(linkText);
         expect(link.attributes('href')).toEqual(DIFF_FILE_VIEW_PATH);
-
-        link.vm.$emit('click');
-
-        expect(clickMock).toHaveBeenCalled();
       },
     );
   });
