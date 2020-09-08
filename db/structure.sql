@@ -20817,6 +20817,8 @@ CREATE INDEX index_resource_iteration_events_on_merge_request_id ON public.resou
 
 CREATE INDEX index_resource_iteration_events_on_user_id ON public.resource_iteration_events USING btree (user_id);
 
+CREATE INDEX index_resource_iterationn_events_on_iteration_id_and_add_action ON public.resource_iteration_events USING btree (iteration_id) WHERE (action = 1);
+
 CREATE INDEX index_resource_label_events_issue_id_label_id_action ON public.resource_label_events USING btree (issue_id, label_id, action);
 
 CREATE INDEX index_resource_label_events_on_epic_id ON public.resource_label_events USING btree (epic_id);

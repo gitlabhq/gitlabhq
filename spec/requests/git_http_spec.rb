@@ -763,7 +763,7 @@ RSpec.describe 'Git HTTP requests' do
 
           context 'and build created by' do
             before do
-              build.update(user: user)
+              build.update!(user: user)
               project.add_reporter(user)
             end
 

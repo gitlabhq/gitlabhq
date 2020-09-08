@@ -96,10 +96,11 @@ export default {
     showAssigneeListDetails() {
       return this.list.type === 'assignee' && (this.list.isExpanded || !this.isSwimlanesHeader);
     },
+    issuesCount() {
+      return this.list.issuesSize;
+    },
     issuesTooltipLabel() {
-      const { issuesSize } = this.list;
-
-      return n__(`%d issue`, `%d issues`, issuesSize);
+      return n__(`%d issue`, `%d issues`, this.issuesCount);
     },
     chevronTooltip() {
       return this.list.isExpanded ? s__('Boards|Collapse') : s__('Boards|Expand');
@@ -299,7 +300,7 @@ export default {
           <gl-tooltip :target="() => $refs.issueCount" :title="issuesTooltipLabel" />
           <span ref="issueCount" class="issue-count-badge-count">
             <gl-icon class="gl-mr-2" name="issues" />
-            <issue-count :issues-size="list.issuesSize" :max-issue-count="list.maxIssueCount" />
+            <issue-count :issues-size="issuesCount" :max-issue-count="list.maxIssueCount" />
           </span>
           <!-- The following is only true in EE. -->
           <template v-if="weightFeatureAvailable">

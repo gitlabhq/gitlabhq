@@ -15,7 +15,7 @@ RSpec.describe NewIssueWorker do
       end
 
       it 'logs an error' do
-        expect(Rails.logger).to receive(:error).with('NewIssueWorker: couldn\'t find Issue with ID=99, skipping job')
+        expect(Gitlab::AppLogger).to receive(:error).with('NewIssueWorker: couldn\'t find Issue with ID=99, skipping job')
 
         worker.perform(99, create(:user).id)
       end
@@ -32,7 +32,7 @@ RSpec.describe NewIssueWorker do
       it 'logs an error' do
         issue = create(:issue)
 
-        expect(Rails.logger).to receive(:error).with('NewIssueWorker: couldn\'t find User with ID=99, skipping job')
+        expect(Gitlab::AppLogger).to receive(:error).with('NewIssueWorker: couldn\'t find User with ID=99, skipping job')
 
         worker.perform(issue.id, 99)
       end

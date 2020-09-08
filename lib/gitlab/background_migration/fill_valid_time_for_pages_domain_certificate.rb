@@ -25,7 +25,7 @@ module Gitlab
             certificate_valid_not_after: domain.x509&.not_after&.iso8601
           )
         rescue => e
-          Rails.logger.error "Failed to update pages domain certificate valid time. id: #{domain.id}, message: #{e.message}" # rubocop:disable Gitlab/RailsLogger
+          Gitlab::AppLogger.error "Failed to update pages domain certificate valid time. id: #{domain.id}, message: #{e.message}"
         end
       end
     end

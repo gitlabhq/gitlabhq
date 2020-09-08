@@ -252,7 +252,8 @@
     }
   }
 
-  .cross-project-reference {
+  .cross-project-reference,
+  .sidebar-mr-source-branch {
     color: inherit;
 
     span {
@@ -389,7 +390,8 @@
       border-bottom: 0;
       overflow: hidden;
 
-      &:hover {
+      &.with-sub-blocks .sub-block:hover,
+      &:not(.with-sub-blocks):hover {
         background-color: $gray-100;
       }
 

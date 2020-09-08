@@ -13,6 +13,7 @@ class GitlabDanger
     commit_messages
     telemetry
     utility_css
+    pajamas
   ].freeze
 
   CI_ONLY_RULES ||= %w[

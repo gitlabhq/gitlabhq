@@ -912,7 +912,7 @@ RSpec.describe API::MergeRequests do
         let(:parent_group) { create(:group) }
 
         before do
-          group.update(parent_id: parent_group.id)
+          group.update!(parent_id: parent_group.id)
           merge_request_merged.reload
         end
 
@@ -1027,7 +1027,7 @@ RSpec.describe API::MergeRequests do
       let(:non_member) { create(:user) }
 
       before do
-        merge_request.update(author: non_member)
+        merge_request.update!(author: non_member)
       end
 
       it 'exposes first_contribution as true' do
@@ -1084,8 +1084,8 @@ RSpec.describe API::MergeRequests do
       let(:merge_request) { create(:merge_request, :simple, author: user, source_project: project, source_branch: 'markdown', title: "Test") }
 
       before do
-        merge_request.update(head_pipeline: create(:ci_pipeline))
-        merge_request.project.project_feature.update(builds_access_level: 10)
+        merge_request.update!(head_pipeline: create(:ci_pipeline))
+        merge_request.project.project_feature.update!(builds_access_level: 10)
       end
 
       context 'when user can read the pipeline' do
@@ -1691,7 +1691,7 @@ RSpec.describe API::MergeRequests do
       end
 
       it 'returns 403 when target project has disabled merge requests' do
-        project.project_feature.update(merge_requests_access_level: 0)
+        project.project_feature.update!(merge_requests_access_level: 0)
 
         post api("/projects/#{forked_project.id}/merge_requests", user2),
              params: {
@@ -2146,7 +2146,7 @@ RSpec.describe API::MergeRequests do
       let(:source_branch) { merge_request.source_branch }
 
       before do
-        merge_request.update(merge_params: { 'force_remove_source_branch' => true })
+        merge_request.update!(merge_params: { 'force_remove_source_branch' => true })
       end
 
       it 'removes the source branch' do
@@ -2173,7 +2173,7 @@ RSpec.describe API::MergeRequests do
       let(:merge_request) { create(:merge_request, :rebased, source_project: project, squash: true) }
 
       before do
-        project.update(merge_requests_ff_only_enabled: true)
+        project.update!(merge_requests_ff_only_enabled: true)
       end
 
       it "records the squash commit SHA and returns it in the response" do
@@ -2263,7 +2263,7 @@ RSpec.describe API::MergeRequests do
   describe "PUT /projects/:id/merge_requests/:merge_request_iid" do
     context 'updates force_remove_source_branch properly' do
       it 'sets to false' do
-        merge_request.update(merge_params: { 'force_remove_source_branch' => true } )
+        merge_request.update!(merge_params: { 'force_remove_source_branch' => true } )
 
         expect(merge_request.force_remove_source_branch?).to be_truthy
 
@@ -2275,7 +2275,7 @@ RSpec.describe API::MergeRequests do
       end
 
       it 'sets to true' do
-        merge_request.update(merge_params: { 'force_remove_source_branch' => false } )
+        merge_request.update!(merge_params: { 'force_remove_source_branch' => false } )
 
         expect(merge_request.force_remove_source_branch?).to be_falsey
 
@@ -2760,7 +2760,7 @@ RSpec.describe API::MergeRequests do
     merge_request
     merge_request.created_at += 1.hour
     merge_request.updated_at += 30.minutes
-    merge_request.save
+    merge_request.save!
     merge_request
   end
 
@@ -2768,7 +2768,7 @@ RSpec.describe API::MergeRequests do
     merge_request_closed
     merge_request_closed.created_at -= 1.hour
     merge_request_closed.updated_at -= 30.minutes
-    merge_request_closed.save
+    merge_request_closed.save!
     merge_request_closed
   end
 end

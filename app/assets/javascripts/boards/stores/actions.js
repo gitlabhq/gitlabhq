@@ -1,5 +1,5 @@
 import Cookies from 'js-cookie';
-import { sortBy } from 'lodash';
+import { sortBy, pick } from 'lodash';
 import createFlash from '~/flash';
 import { __ } from '~/locale';
 import { parseBoolean } from '~/lib/utils/common_utils';
@@ -10,8 +10,7 @@ import * as types from './mutation_types';
 import { formatListIssues, fullBoardId } from '../boards_util';
 import boardStore from '~/boards/stores/boards_store';
 
-import groupListsIssuesQuery from '../queries/group_lists_issues.query.graphql';
-import projectListsIssuesQuery from '../queries/project_lists_issues.query.graphql';
+import listsIssuesQuery from '../queries/lists_issues.query.graphql';
 import projectBoardQuery from '../queries/project_board.query.graphql';
 import groupBoardQuery from '../queries/group_board.query.graphql';
 import createBoardListMutation from '../queries/board_list_create.mutation.graphql';
@@ -38,7 +37,14 @@ export default {
   },
 
   setFilters: ({ commit }, filters) => {
-    const { scope, utf8, state, ...filterParams } = filters;
+    const filterParams = pick(filters, [
+      'assigneeUsername',
+      'authorUsername',
+      'labelName',
+      'milestoneTitle',
+      'releaseTag',
+      'search',
+    ]);
     commit(types.SET_FILTERS, filterParams);
   },
 
@@ -197,19 +203,20 @@ export default {
   fetchIssuesForAllLists: ({ state, commit }) => {
     commit(types.REQUEST_ISSUES_FOR_ALL_LISTS);
 
-    const { endpoints, boardType } = state;
+    const { endpoints, boardType, filterParams } = state;
     const { fullPath, boardId } = endpoints;
-
-    const query = boardType === BoardType.group ? groupListsIssuesQuery : projectListsIssuesQuery;
 
     const variables = {
       fullPath,
       boardId: fullBoardId(boardId),
+      filters: filterParams,
+      isGroup: boardType === BoardType.group,
+      isProject: boardType === BoardType.project,
     };
 
     return gqlClient
       .query({
-        query,
+        query: listsIssuesQuery,
         variables,
       })
       .then(({ data }) => {

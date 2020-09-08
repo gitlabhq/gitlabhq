@@ -234,8 +234,7 @@ class IssuableFinder
   end
 
   def attempt_project_search_optimizations?
-    params[:attempt_project_search_optimizations] &&
-      Feature.enabled?(:attempt_project_search_optimizations, default_enabled: true)
+    params[:attempt_project_search_optimizations]
   end
 
   def count_key(value)

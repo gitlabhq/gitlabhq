@@ -202,10 +202,8 @@ module Gitlab
 
         def create_range_partitioned_copy(source_table_name, partitioned_table_name, partition_column, primary_key)
           if table_exists?(partitioned_table_name)
-            # rubocop:disable Gitlab/RailsLogger
-            Rails.logger.warn "Partitioned table not created because it already exists" \
+            Gitlab::AppLogger.warn "Partitioned table not created because it already exists" \
               " (this may be due to an aborted migration or similar): table_name: #{partitioned_table_name} "
-            # rubocop:enable Gitlab/RailsLogger
             return
           end
 
@@ -258,10 +256,8 @@ module Gitlab
 
         def create_range_partition_safely(partition_name, table_name, lower_bound, upper_bound)
           if table_exists?(table_for_range_partition(partition_name))
-            # rubocop:disable Gitlab/RailsLogger
-            Rails.logger.warn "Partition not created because it already exists" \
+            Gitlab::AppLogger.warn "Partition not created because it already exists" \
               " (this may be due to an aborted migration or similar): partition_name: #{partition_name}"
-            # rubocop:enable Gitlab/RailsLogger
             return
           end
 
@@ -282,10 +278,8 @@ module Gitlab
 
         def create_sync_function(name, partitioned_table_name, unique_key)
           if function_exists?(name)
-            # rubocop:disable Gitlab/RailsLogger
-            Rails.logger.warn "Partitioning sync function not created because it already exists" \
+            Gitlab::AppLogger.warn "Partitioning sync function not created because it already exists" \
               " (this may be due to an aborted migration or similar): function name: #{name}"
-            # rubocop:enable Gitlab/RailsLogger
             return
           end
 
@@ -317,10 +311,8 @@ module Gitlab
 
         def create_sync_trigger(table_name, trigger_name, function_name)
           if trigger_exists?(table_name, trigger_name)
-            # rubocop:disable Gitlab/RailsLogger
-            Rails.logger.warn "Partitioning sync trigger not created because it already exists" \
+            Gitlab::AppLogger.warn "Partitioning sync trigger not created because it already exists" \
               " (this may be due to an aborted migration or similar): trigger name: #{trigger_name}"
-            # rubocop:enable Gitlab/RailsLogger
             return
           end
 

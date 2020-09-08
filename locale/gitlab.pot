@@ -452,7 +452,7 @@ msgstr ""
 msgid "%{issuableType} will be removed! Are you sure?"
 msgstr ""
 
-msgid "%{issuesSize} issues with a limit of %{maxIssueCount}"
+msgid "%{issuesCount} issues with a limit of %{maxIssueCount}"
 msgstr ""
 
 msgid "%{issuesSize} with a limit of %{maxIssueCount}"
@@ -771,6 +771,12 @@ msgid "%{text} is available"
 msgstr ""
 
 msgid "%{timebox_name} should belong either to a project or a group."
+msgstr ""
+
+msgid "%{timebox_type} does not support burnup charts"
+msgstr ""
+
+msgid "%{timebox_type} must have a start and due date"
 msgstr ""
 
 msgid "%{title} %{operator} %{threshold}"
@@ -15857,16 +15863,10 @@ msgid_plural "Milestones"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "Milestone does not support burnup charts"
-msgstr ""
-
 msgid "Milestone lists not available with your current license"
 msgstr ""
 
 msgid "Milestone lists show all issues from the selected milestone."
-msgstr ""
-
-msgid "Milestone must have a start and due date"
 msgstr ""
 
 msgid "MilestoneSidebar|Closed:"
@@ -23482,6 +23482,9 @@ msgid "Source"
 msgstr ""
 
 msgid "Source (branch or tag)"
+msgstr ""
+
+msgid "Source branch: %{source_branch_open}${source_branch}%{source_branch_close}"
 msgstr ""
 
 msgid "Source code"

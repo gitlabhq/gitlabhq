@@ -12,7 +12,7 @@ module Gitlab
       def initialize(project, dry_run: true, logger: nil, limit: nil)
         @project = project
         @dry_run = dry_run
-        @logger = logger || Rails.logger # rubocop:disable Gitlab/RailsLogger
+        @logger = logger || Gitlab::AppLogger
         @limit = limit
       end
 

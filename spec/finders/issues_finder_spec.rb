@@ -1004,35 +1004,21 @@ RSpec.describe IssuesFinder do
       end
     end
 
-    context 'when attempt_group_search_optimizations is unset and attempt_project_search_optimizations is set' do
-      let(:params) { { search: 'foo', attempt_project_search_optimizations: true } }
-
-      context 'and the corresponding feature flag is disabled' do
-        before do
-          stub_feature_flags(attempt_project_search_optimizations: false)
-        end
-
-        it 'returns false' do
-          expect(finder.use_cte_for_search?).to be_falsey
-        end
-      end
-
-      context 'and the corresponding feature flag is enabled' do
-        before do
-          stub_feature_flags(attempt_project_search_optimizations: true)
-        end
+    context 'when all conditions are met' do
+      context "uses group search optimization" do
+        let(:params) { { search: 'foo', attempt_group_search_optimizations: true } }
 
         it 'returns true' do
           expect(finder.use_cte_for_search?).to be_truthy
         end
       end
-    end
 
-    context 'when all conditions are met' do
-      let(:params) { { search: 'foo', attempt_group_search_optimizations: true } }
+      context "uses project search optimization" do
+        let(:params) { { search: 'foo', attempt_project_search_optimizations: true } }
 
-      it 'returns true' do
-        expect(finder.use_cte_for_search?).to be_truthy
+        it 'returns true' do
+          expect(finder.use_cte_for_search?).to be_truthy
+        end
       end
     end
   end

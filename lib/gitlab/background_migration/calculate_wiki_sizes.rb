@@ -10,7 +10,7 @@ module Gitlab
           .includes(project: [:route, :group, namespace: [:owner]]).find_each do |statistics|
           statistics.refresh!(only: [:wiki_size])
         rescue => e
-          Rails.logger.error "Failed to update wiki statistics. id: #{statistics.id} message: #{e.message}" # rubocop:disable Gitlab/RailsLogger
+          Gitlab::AppLogger.error "Failed to update wiki statistics. id: #{statistics.id} message: #{e.message}"
         end
       end
     end

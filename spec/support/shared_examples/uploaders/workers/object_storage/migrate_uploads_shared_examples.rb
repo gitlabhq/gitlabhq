@@ -63,7 +63,7 @@ RSpec.shared_examples 'uploads migration worker' do
 
       if success > 0
         it 'outputs the reports' do
-          expect(Rails.logger).to receive(:info).with(%r{Migrated #{success}/#{total} files})
+          expect(Gitlab::AppLogger).to receive(:info).with(%r{Migrated #{success}/#{total} files})
 
           perform(uploads)
         end
@@ -71,7 +71,7 @@ RSpec.shared_examples 'uploads migration worker' do
 
       if failures > 0
         it 'outputs upload failures' do
-          expect(Rails.logger).to receive(:warn).with(/Error .* I am a teapot/)
+          expect(Gitlab::AppLogger).to receive(:warn).with(/Error .* I am a teapot/)
 
           perform(uploads)
         end

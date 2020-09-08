@@ -1922,7 +1922,9 @@ test:
 ```
 
 The following example will skip the `build` job if a change is detected in any file
-in the root directory of the repository with a `.md` extension:
+in the root directory of the repository with a `.md` extension. This mean that if you change multiple files,
+but only one file is a `.md` file, the `build` job will still be skipped and will
+not run for the other files.
 
 ```yaml
 build:

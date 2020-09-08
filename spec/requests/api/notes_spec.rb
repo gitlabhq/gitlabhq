@@ -81,7 +81,7 @@ RSpec.describe API::Notes do
 
           context "issue is confidential" do
             before do
-              ext_issue.update(confidential: true)
+              ext_issue.update!(confidential: true)
             end
 
             it "returns 404" do
@@ -183,7 +183,7 @@ RSpec.describe API::Notes do
 
           context "when issue is confidential" do
             before do
-              issue.update(confidential: true)
+              issue.update!(confidential: true)
             end
 
             it "returns 404" do

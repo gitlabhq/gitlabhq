@@ -14,8 +14,9 @@ SPECIALIZATIONS = {
 }.freeze
 
 labels_to_add = helper.changes_by_category.each_with_object([]) do |(category, _changes), memo|
-  label = SPECIALIZATIONS.fetch(category, category.to_s)
-  memo << label unless gitlab.mr_labels.include?(label)
+  label = SPECIALIZATIONS[category]
+
+  memo << label if label && !gitlab.mr_labels.include?(label)
 end
 
 if labels_to_add.any?

@@ -1,0 +1,38 @@
+#import "./issue.fragment.graphql"
+
+query ListIssues(
+  $fullPath: ID!
+  $boardId: ID!
+  $filters: BoardIssueInput
+  $isGroup: Boolean = false
+  $isProject: Boolean = false
+) {
+  group(fullPath: $fullPath) @include(if: $isGroup) {
+    board(id: $boardId) {
+      lists {
+        nodes {
+          id
+          issues(filters: $filters) {
+            nodes {
+              ...IssueNode
+            }
+          }
+        }
+      }
+    }
+  }
+  project(fullPath: $fullPath) @include(if: $isProject) {
+    board(id: $boardId) {
+      lists {
+        nodes {
+          id
+          issues(filters: $filters) {
+            nodes {
+              ...IssueNode
+            }
+          }
+        }
+      }
+    }
+  }
+}
