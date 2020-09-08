@@ -179,12 +179,12 @@ You can override cache settings without overwriting the global cache by using
 
 ```yaml
 cache: &global_cache
-    key: ${CI_COMMIT_REF_SLUG}
-    paths:
-      - node_modules/
-      - public/
-      - vendor/
-    policy: pull-push
+  key: ${CI_COMMIT_REF_SLUG}
+  paths:
+    - node_modules/
+    - public/
+    - vendor/
+  policy: pull-push
 
 job:
   cache:
@@ -281,7 +281,7 @@ image: python:latest
 # Change pip's cache directory to be inside the project directory since we can
 # only cache local items.
 variables:
-    PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
+  PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
 
 # Pip's cache doesn't store the python packages
 # https://pip.pypa.io/en/stable/reference/pip_install/#caching

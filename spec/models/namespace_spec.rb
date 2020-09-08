@@ -175,12 +175,13 @@ RSpec.describe Namespace do
   end
 
   describe '.with_statistics' do
-    let(:namespace) { create :namespace }
+    let_it_be(:namespace) { create(:namespace) }
 
     let(:project1) do
       create(:project,
              namespace: namespace,
              statistics: build(:project_statistics,
+                               namespace:            namespace,
                                repository_size:      101,
                                wiki_size:            505,
                                lfs_objects_size:     202,
@@ -193,6 +194,7 @@ RSpec.describe Namespace do
       create(:project,
              namespace: namespace,
              statistics: build(:project_statistics,
+                               namespace:            namespace,
                                repository_size:      10,
                                wiki_size:            50,
                                lfs_objects_size:     20,

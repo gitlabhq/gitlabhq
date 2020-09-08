@@ -199,7 +199,7 @@ trigger_a:
     include: a/.gitlab-ci.yml
   rules:
     - changes:
-      - a/*
+        - a/*
 
 trigger_b:
   stage: triggers
@@ -207,7 +207,7 @@ trigger_b:
     include: b/.gitlab-ci.yml
   rules:
     - changes:
-      - b/*
+        - b/*
 ```
 
 Example child `a` pipeline configuration, located in `/a/.gitlab-ci.yml`, making

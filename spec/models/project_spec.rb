@@ -131,7 +131,7 @@ RSpec.describe Project do
     end
 
     it_behaves_like 'model with wiki' do
-      let(:container) { create(:project, :wiki_repo) }
+      let_it_be(:container) { create(:project, :wiki_repo) }
       let(:container_without_wiki) { create(:project) }
     end
 
@@ -202,11 +202,11 @@ RSpec.describe Project do
     end
 
     describe '#members & #requesters' do
-      let(:project) { create(:project, :public) }
-      let(:requester) { create(:user) }
-      let(:developer) { create(:user) }
+      let_it_be(:project) { create(:project, :public) }
+      let_it_be(:requester) { create(:user) }
+      let_it_be(:developer) { create(:user) }
 
-      before do
+      before_all do
         project.request_access(requester)
         project.add_developer(developer)
       end
@@ -453,9 +453,9 @@ RSpec.describe Project do
   end
 
   describe '#all_pipelines' do
-    let(:project) { create(:project) }
+    let_it_be(:project) { create(:project) }
 
-    before do
+    before_all do
       create(:ci_pipeline, project: project, ref: 'master', source: :web)
       create(:ci_pipeline, project: project, ref: 'master', source: :external)
     end
@@ -477,7 +477,7 @@ RSpec.describe Project do
   end
 
   describe '#has_packages?' do
-    let(:project) { create(:project, :public) }
+    let_it_be(:project) { create(:project, :public) }
 
     subject { project.has_packages?(package_type) }
 
@@ -517,9 +517,9 @@ RSpec.describe Project do
   end
 
   describe '#ci_pipelines' do
-    let(:project) { create(:project) }
+    let_it_be(:project) { create(:project) }
 
-    before do
+    before_all do
       create(:ci_pipeline, project: project, ref: 'master', source: :web)
       create(:ci_pipeline, project: project, ref: 'master', source: :external)
       create(:ci_pipeline, project: project, ref: 'master', source: :webide)
@@ -543,7 +543,7 @@ RSpec.describe Project do
 
   describe '#autoclose_referenced_issues' do
     context 'when DB entry is nil' do
-      let(:project) { create(:project, autoclose_referenced_issues: nil) }
+      let(:project) { build(:project, autoclose_referenced_issues: nil) }
 
       it 'returns true' do
         expect(project.autoclose_referenced_issues).to be_truthy
@@ -551,7 +551,7 @@ RSpec.describe Project do
     end
 
     context 'when DB entry is true' do
-      let(:project) { create(:project, autoclose_referenced_issues: true) }
+      let(:project) { build(:project, autoclose_referenced_issues: true) }
 
       it 'returns true' do
         expect(project.autoclose_referenced_issues).to be_truthy
@@ -559,7 +559,7 @@ RSpec.describe Project do
     end
 
     context 'when DB entry is false' do
-      let(:project) { create(:project, autoclose_referenced_issues: false) }
+      let(:project) { build(:project, autoclose_referenced_issues: false) }
 
       it 'returns false' do
         expect(project.autoclose_referenced_issues).to be_falsey
@@ -769,8 +769,8 @@ RSpec.describe Project do
   end
 
   describe "#new_issuable_address" do
-    let(:project) { create(:project, path: "somewhere") }
-    let(:user) { create(:user) }
+    let_it_be(:project) { create(:project, path: "somewhere") }
+    let_it_be(:user) { create(:user) }
 
     context 'incoming email enabled' do
       before do
@@ -851,11 +851,11 @@ RSpec.describe Project do
   end
 
   describe '#get_issue' do
-    let(:project) { create(:project) }
-    let!(:issue)  { create(:issue, project: project) }
-    let(:user)    { create(:user) }
+    let_it_be(:project) { create(:project) }
+    let_it_be(:user) { create(:user) }
+    let!(:issue) { create(:issue, project: project) }
 
-    before do
+    before_all do
       project.add_developer(user)
     end
 
@@ -927,7 +927,7 @@ RSpec.describe Project do
   end
 
   describe '#issue_exists?' do
-    let(:project) { create(:project) }
+    let_it_be(:project) { create(:project) }
 
     it 'is truthy when issue exists' do
       expect(project).to receive(:get_issue).and_return(double)
@@ -1020,7 +1020,7 @@ RSpec.describe Project do
   end
 
   describe '#cache_has_external_issue_tracker' do
-    let(:project) { create(:project, has_external_issue_tracker: nil) }
+    let_it_be(:project) { create(:project, has_external_issue_tracker: nil) }
 
     it 'stores true if there is any external_issue_tracker' do
       services = double(:service, external_issue_trackers: [RedmineService.new])
@@ -1050,7 +1050,7 @@ RSpec.describe Project do
   end
 
   describe '#cache_has_external_wiki' do
-    let(:project) { create(:project, has_external_wiki: nil) }
+    let_it_be(:project) { create(:project, has_external_wiki: nil) }
 
     it 'stores true if there is any external_wikis' do
       services = double(:service, external_wikis: [ExternalWikiService.new])
@@ -1116,7 +1116,7 @@ RSpec.describe Project do
   end
 
   describe '#external_wiki' do
-    let(:project) { create(:project) }
+    let_it_be(:project) { create(:project) }
 
     context 'with an active external wiki' do
       before do
@@ -1736,7 +1736,7 @@ RSpec.describe Project do
   end
 
   describe '#visibility_level_allowed?' do
-    let(:project) { create(:project, :internal) }
+    let_it_be(:project) { create(:project, :internal) }
 
     context 'when checking on non-forked project' do
       it { expect(project.visibility_level_allowed?(Gitlab::VisibilityLevel::PRIVATE)).to be_truthy }
@@ -1745,7 +1745,6 @@ RSpec.describe Project do
     end
 
     context 'when checking on forked project' do
-      let(:project)        { create(:project, :internal) }
       let(:forked_project) { fork_project(project) }
 
       it { expect(forked_project.visibility_level_allowed?(Gitlab::VisibilityLevel::PRIVATE)).to be_truthy }
@@ -1930,7 +1929,7 @@ RSpec.describe Project do
   end
 
   describe '.optionally_search' do
-    let(:project) { create(:project) }
+    let_it_be(:project) { create(:project) }
 
     it 'searches for projects matching the query if one is given' do
       relation = described_class.optionally_search(project.name)
@@ -1987,7 +1986,7 @@ RSpec.describe Project do
   end
 
   describe '.search_by_title' do
-    let(:project) { create(:project, name: 'kittens') }
+    let_it_be(:project) { create(:project, name: 'kittens') }
 
     it 'returns projects with a matching name' do
       expect(described_class.search_by_title(project.name)).to eq([project])
@@ -2003,11 +2002,11 @@ RSpec.describe Project do
   end
 
   context 'when checking projects from groups' do
-    let(:private_group)    { create(:group, visibility_level: 0)  }
-    let(:internal_group)   { create(:group, visibility_level: 10) }
+    let(:private_group)    { build(:group, visibility_level: 0)  }
+    let(:internal_group)   { build(:group, visibility_level: 10) }
 
-    let(:private_project)  { create(:project, :private, group: private_group) }
-    let(:internal_project) { create(:project, :internal, group: internal_group) }
+    let(:private_project)  { build(:project, :private, group: private_group) }
+    let(:internal_project) { build(:project, :internal, group: internal_group) }
 
     context 'when group is private project can not be internal' do
       it { expect(private_project.visibility_level_allowed?(Gitlab::VisibilityLevel::INTERNAL)).to be_falsey }
@@ -2071,7 +2070,7 @@ RSpec.describe Project do
   end
 
   describe '#create_repository' do
-    let(:project) { create(:project, :repository) }
+    let_it_be(:project) { build(:project, :repository) }
 
     context 'using a regular repository' do
       it 'creates the repository' do
@@ -2097,7 +2096,7 @@ RSpec.describe Project do
   end
 
   describe '#ensure_repository' do
-    let(:project) { create(:project, :repository) }
+    let_it_be(:project) { build(:project, :repository) }
 
     it 'creates the repository if it not exist' do
       allow(project).to receive(:repository_exists?).and_return(false)
@@ -2151,7 +2150,7 @@ RSpec.describe Project do
   end
 
   describe '#container_registry_url' do
-    let(:project) { create(:project) }
+    let_it_be(:project) { build(:project) }
 
     subject { project.container_registry_url }
 
@@ -2178,7 +2177,7 @@ RSpec.describe Project do
   end
 
   describe '#has_container_registry_tags?' do
-    let(:project) { create(:project) }
+    let(:project) { build(:project) }
 
     context 'when container registry is enabled' do
       before do
@@ -2244,7 +2243,7 @@ RSpec.describe Project do
   describe '#ci_config_path=' do
     using RSpec::Parameterized::TableSyntax
 
-    let(:project) { create(:project) }
+    let(:project) { build_stubbed(:project) }
 
     where(:default_ci_config_path, :project_ci_config_path, :expected_ci_config_path) do
       nil           | :notset            | :default
@@ -2299,8 +2298,8 @@ RSpec.describe Project do
   end
 
   describe '#latest_successful_build_for_ref' do
-    let(:project) { create(:project, :repository) }
-    let(:pipeline) { create_pipeline(project) }
+    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:pipeline) { create_pipeline(project) }
 
     it_behaves_like 'latest successful build for sha or ref'
 
@@ -2316,7 +2315,7 @@ RSpec.describe Project do
   end
 
   describe '#latest_pipeline' do
-    let(:project) { create(:project, :repository) }
+    let_it_be(:project) { create(:project, :repository) }
     let(:second_branch) { project.repository.branches[2] }
 
     let!(:pipeline_for_default_branch) do
@@ -2402,8 +2401,8 @@ RSpec.describe Project do
   end
 
   describe '#latest_successful_build_for_sha' do
-    let(:project) { create(:project, :repository) }
-    let(:pipeline) { create_pipeline(project) }
+    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:pipeline) { create_pipeline(project) }
 
     it_behaves_like 'latest successful build for sha or ref'
 
@@ -2411,8 +2410,8 @@ RSpec.describe Project do
   end
 
   describe '#latest_successful_build_for_ref!' do
-    let(:project) { create(:project, :repository) }
-    let(:pipeline) { create_pipeline(project) }
+    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:pipeline) { create_pipeline(project) }
 
     context 'with many builds' do
       it 'gives the latest builds from latest pipeline' do
@@ -2485,7 +2484,7 @@ RSpec.describe Project do
   end
 
   describe '#jira_import_status' do
-    let(:project) { create(:project, import_type: 'jira') }
+    let_it_be(:project) { create(:project, import_type: 'jira') }
 
     context 'when no jira imports' do
       it 'returns none' do
@@ -2691,7 +2690,7 @@ RSpec.describe Project do
   end
 
   describe '#remote_mirror_available?' do
-    let(:project) { create(:project) }
+    let(:project) { build_stubbed(:project) }
 
     context 'when remote mirror global setting is enabled' do
       it 'returns true' do
@@ -2732,10 +2731,10 @@ RSpec.describe Project do
   end
 
   describe '#ancestors_upto' do
-    let(:parent) { create(:group) }
-    let(:child) { create(:group, parent: parent) }
-    let(:child2) { create(:group, parent: child) }
-    let(:project) { create(:project, namespace: child2) }
+    let_it_be(:parent) { create(:group) }
+    let_it_be(:child) { create(:group, parent: parent) }
+    let_it_be(:child2) { create(:group, parent: child) }
+    let_it_be(:project) { create(:project, namespace: child2) }
 
     it 'returns all ancestors when no namespace is given' do
       expect(project.ancestors_upto).to contain_exactly(child2, child, parent)
@@ -2780,7 +2779,7 @@ RSpec.describe Project do
   end
 
   describe '#emails_disabled?' do
-    let(:project) { create(:project, emails_disabled: false) }
+    let(:project) { build(:project, emails_disabled: false) }
 
     context 'emails disabled in group' do
       it 'returns true' do
@@ -2808,7 +2807,7 @@ RSpec.describe Project do
   end
 
   describe '#lfs_enabled?' do
-    let(:project) { create(:project) }
+    let(:project) { build(:project) }
 
     shared_examples 'project overrides group' do
       it 'returns true when enabled in project' do
@@ -2870,7 +2869,7 @@ RSpec.describe Project do
   end
 
   describe '#change_head' do
-    let(:project) { create(:project, :repository) }
+    let_it_be(:project) { create(:project, :repository) }
 
     it 'returns error if branch does not exist' do
       expect(project.change_head('unexisted-branch')).to be false
@@ -3065,7 +3064,7 @@ RSpec.describe Project do
   end
 
   describe '#pushes_since_gc' do
-    let(:project) { create(:project) }
+    let(:project) { build_stubbed(:project) }
 
     after do
       project.reset_pushes_since_gc
@@ -3087,7 +3086,7 @@ RSpec.describe Project do
   end
 
   describe '#increment_pushes_since_gc' do
-    let(:project) { create(:project) }
+    let(:project) { build_stubbed(:project) }
 
     after do
       project.reset_pushes_since_gc
@@ -3101,7 +3100,7 @@ RSpec.describe Project do
   end
 
   describe '#reset_pushes_since_gc' do
-    let(:project) { create(:project) }
+    let(:project) { build_stubbed(:project) }
 
     after do
       project.reset_pushes_since_gc
@@ -3117,7 +3116,7 @@ RSpec.describe Project do
   end
 
   describe '#deployment_variables' do
-    let(:project) { create(:project) }
+    let(:project) { build_stubbed(:project) }
     let(:environment) { 'production' }
     let(:namespace) { 'namespace' }
 
@@ -3194,7 +3193,7 @@ RSpec.describe Project do
   end
 
   describe '#default_environment' do
-    let(:project) { create(:project) }
+    let(:project) { build(:project) }
 
     it 'returns production environment when it exists' do
       production = create(:environment, name: "production", project: project)
@@ -3216,7 +3215,7 @@ RSpec.describe Project do
   end
 
   describe '#ci_variables_for' do
-    let(:project) { create(:project) }
+    let_it_be(:project) { create(:project) }
     let(:environment_scope) { '*' }
 
     let!(:ci_variable) do
@@ -3371,7 +3370,7 @@ RSpec.describe Project do
   end
 
   describe '#ci_instance_variables_for' do
-    let(:project) { create(:project) }
+    let(:project) { build_stubbed(:project) }
 
     let!(:instance_variable) do
       create(:ci_instance_variable, value: 'secret')

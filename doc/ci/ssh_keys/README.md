@@ -91,8 +91,8 @@ to access it. This is where an SSH key pair comes in handy.
      ## Optionally, if you will be using any Git commands, set the user name and
      ## and email.
      ##
-     #- git config --global user.email "user@example.com"
-     #- git config --global user.name "User name"
+     # - git config --global user.email "user@example.com"
+     # - git config --global user.name "User name"
    ```
 
    NOTE: **Note:**
@@ -193,8 +193,8 @@ before_script:
   ## Replace example.com with your private server's domain name. Repeat that
   ## command if you have more than one server to connect to.
   ##
-  #- ssh-keyscan example.com >> ~/.ssh/known_hosts
-  #- chmod 644 ~/.ssh/known_hosts
+  # - ssh-keyscan example.com >> ~/.ssh/known_hosts
+  # - chmod 644 ~/.ssh/known_hosts
 
   ##
   ## You can optionally disable host key checking. Be aware that by adding that
@@ -202,7 +202,7 @@ before_script:
   ## WARNING: Use this only with the Docker executor, if you use it with shell
   ## you will overwrite your user's SSH config.
   ##
-  #- '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" >> ~/.ssh/config'
+  # - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" >> ~/.ssh/config'
 ```
 
 ## Example project

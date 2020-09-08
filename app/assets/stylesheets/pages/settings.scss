@@ -384,6 +384,13 @@
         font-weight: $gl-font-weight-bold;
         border: 0;
       }
+
+      // When tables are "stacked", restore td padding
+      @media(max-width: map-get($grid-breakpoints, lg)) {
+        td {
+          padding-left: $gl-spacing-scale-5;
+        }
+      }
     }
   }
 

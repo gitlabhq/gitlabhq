@@ -164,6 +164,10 @@
 }
 
 @include media-breakpoint-down(sm) {
+  .container-fluid .todos-list-container {
+    margin: 0 (-$gl-padding);
+  }
+
   .todo {
     .avatar {
       display: none;

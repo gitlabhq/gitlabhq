@@ -120,7 +120,7 @@ stages:
   - build
   - test
   - deploy
-  
+
 job 1:
   stage: build
   script: make build dependencies
@@ -128,7 +128,7 @@ job 1:
 job 2:
   stage: build
   script: make build artifacts
-  
+
 job3:
   stage: test
   script: make test

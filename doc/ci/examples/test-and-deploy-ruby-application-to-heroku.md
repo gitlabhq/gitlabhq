@@ -19,27 +19,27 @@ This is what the `.gitlab-ci.yml` file looks like for this project:
 test:
   stage: test
   script:
-  - apt-get update -qy
-  - apt-get install -y nodejs
-  - bundle install --path /cache
-  - bundle exec rake db:create RAILS_ENV=test
-  - bundle exec rake test
+    - apt-get update -qy
+    - apt-get install -y nodejs
+    - bundle install --path /cache
+    - bundle exec rake db:create RAILS_ENV=test
+    - bundle exec rake test
 
 staging:
   stage: deploy
   script:
-  - gem install dpl
-  - dpl --provider=heroku --app=gitlab-ci-ruby-test-staging --api-key=$HEROKU_STAGING_API_KEY
+    - gem install dpl
+    - dpl --provider=heroku --app=gitlab-ci-ruby-test-staging --api-key=$HEROKU_STAGING_API_KEY
   only:
-  - master
+    - master
 
 production:
   stage: deploy
   script:
-  - gem install dpl
-  - dpl --provider=heroku --app=gitlab-ci-ruby-test-prod --api-key=$HEROKU_PRODUCTION_API_KEY
+    - gem install dpl
+    - dpl --provider=heroku --app=gitlab-ci-ruby-test-prod --api-key=$HEROKU_PRODUCTION_API_KEY
   only:
-  - tags
+    - tags
 ```
 
 This project has three jobs:

@@ -885,6 +885,11 @@ GitLab documentation from both the GitLab application and external sites.
 Headings generate anchor links automatically when rendered. `## This is an example`
 generates the anchor `#this-is-an-example`.
 
+NOTE: **Note:**
+[Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/39717) in GitLab 13.4, [product badges](#product-badges) used in headings aren't included in the
+generated anchor links. For example, when you link to
+`## This is an example **(CORE)**`, use the anchor `#this-is-an-example`.
+
 Keep in mind that the GitLab user interface links to many documentation pages
 and anchor links to take the user to the right spot. Therefore, when you change
 a heading, search `doc/*`, `app/views/*`, and `ee/app/views/*` for the old

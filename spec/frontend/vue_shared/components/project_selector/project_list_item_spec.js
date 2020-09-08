@@ -29,7 +29,7 @@ describe('ProjectListItem component', () => {
   it('does not render a check mark icon if selected === false', () => {
     wrapper = shallowMount(Component, options);
 
-    expect(wrapper.find('.js-selected-icon.js-unselected').exists()).toBe(true);
+    expect(wrapper.find('.js-selected-icon').exists()).toBe(false);
   });
 
   it('renders a check mark icon if selected === true', () => {
@@ -37,7 +37,7 @@ describe('ProjectListItem component', () => {
 
     wrapper = shallowMount(Component, options);
 
-    expect(wrapper.find('.js-selected-icon.js-selected').exists()).toBe(true);
+    expect(wrapper.find('.js-selected-icon').exists()).toBe(true);
   });
 
   it(`emits a "clicked" event when clicked`, () => {

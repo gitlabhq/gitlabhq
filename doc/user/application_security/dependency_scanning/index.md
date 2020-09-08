@@ -49,8 +49,6 @@ CAUTION: **Caution:**
 If you use your own Runners, make sure your installed version of Docker
 is **not** `19.03.0`. See [troubleshooting information](#error-response-from-daemon-error-processing-tar-file-docker-tar-relocation-error) for details.
 
-Beginning with GitLab 13.0, Docker privileged mode is necessary only if you've [enabled Docker-in-Docker for Dependency Scanning](#enabling-docker-in-docker).
-
 ## Supported languages and package managers
 
 GitLab relies on [`rules`](../../../ci/yaml/README.md#rules) to start relevant analyzers depending on the languages detected in the repository.
@@ -154,23 +152,9 @@ The following variables allow configuration of global dependency scanning settin
 | --------------------------------------- |------------ |
 | `SECURE_ANALYZERS_PREFIX`               | Override the name of the Docker registry providing the official default images (proxy). Read more about [customizing analyzers](analyzers.md). |
 | `DS_DEFAULT_ANALYZERS`                  | Override the names of the official default images. Read more about [customizing analyzers](analyzers.md). |
-| `DS_DISABLE_DIND`                       | Disable Docker-in-Docker and run analyzers [individually](#enabling-docker-in-docker). This variable is `true` by default. |
 | `ADDITIONAL_CA_CERT_BUNDLE`             | Bundle of CA certs to trust. The bundle of certificates provided here is also used by other tools during the scanning process, such as `git`, `yarn`, or `npm`. |
 | `DS_EXCLUDED_PATHS`                     | Exclude vulnerabilities from output based on the paths. A comma-separated list of patterns. Patterns can be globs, or file or folder paths (for example, `doc,spec`). Parent directories also match patterns. Default: `"spec, test, tests, tmp"` |
 | `SECURE_LOG_LEVEL`                      | Set the minimum logging level. Messages of this logging level or higher are output. From highest to lowest severity, the logging levels are: `fatal`, `error`, `warn`, `info`, `debug`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10880) in GitLab 13.1. Default: `info` |
-
-#### Configuring Docker-in-Docker orchestrator
-
-The following variables configure the Docker-in-Docker orchestrator, and therefore are only used when the Docker-in-Docker mode is [enabled](#enabling-docker-in-docker).
-
-| Environment variable                    | Default     | Description |
-| --------------------------------------- | ----------- | ----------- |
-| `DS_ANALYZER_IMAGES`                    |             | Comma-separated list of custom images. The official default images are still enabled. Read more about [customizing analyzers](analyzers.md). |
-| `DS_ANALYZER_IMAGE_TAG`                 |             | Override the Docker tag of the official default images. Read more about [customizing analyzers](analyzers.md). |
-| `DS_PULL_ANALYZER_IMAGES`               |             | Pull the images from the Docker registry (set to `0` to disable). |
-| `DS_DOCKER_CLIENT_NEGOTIATION_TIMEOUT`  | 2m          | Time limit for Docker client negotiation. Timeouts are parsed using Go's [`ParseDuration`](https://golang.org/pkg/time/#ParseDuration). Valid time units are `ns`, `us` (or `µs`), `ms`, `s`, `m`, or `h`. For example, `300ms`, `1.5h`, or `2h45m`. |
-| `DS_PULL_ANALYZER_IMAGE_TIMEOUT`        | 5m          | Time limit when pulling an analyzer's image. Timeouts are parsed using Go's [`ParseDuration`](https://golang.org/pkg/time/#ParseDuration). Valid time units are `ns`, `us` (or `µs`), `ms`, `s`, `m`, or `h`. For example, `300ms`, `1.5h`, or `2h45m`. |
-| `DS_RUN_ANALYZER_TIMEOUT`               | 20m         | Time limit when running an analyzer. Timeouts are parsed using Go's [`ParseDuration`](https://golang.org/pkg/time/#ParseDuration). Valid time units are `ns`, `us` (or `µs`), `ms`, `s`, `m`, or `h`. For example, `300ms`, `1.5h`, or `2h45m`. |
 
 #### Configuring specific analyzers used by Dependency Scanning
 
@@ -205,27 +189,6 @@ If your private Maven repository requires login credentials,
 you can use the `MAVEN_CLI_OPTS` environment variable.
 
 Read more on [how to use private Maven repositories](../index.md#using-private-maven-repos).
-
-### Enabling Docker-in-Docker
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12487) in GitLab Ultimate 12.5.
-
-If needed, you can enable Docker-in-Docker to restore the Dependency Scanning behavior that existed
-prior to GitLab 13.0. Follow these steps to do so:
-
-1. Configure GitLab Runner with Docker-in-Docker in [privileged mode](https://docs.gitlab.com/runner/executors/docker.html#use-docker-in-docker-with-privileged-mode).
-1. Set the `DS_DISABLE_DIND` variable to `false`:
-
-   ```yaml
-   include:
-     - template: Dependency-Scanning.gitlab-ci.yml
-
-   variables:
-     DS_DISABLE_DIND: "false"
-   ```
-
-This creates a single `dependency_scanning` job in your CI/CD pipeline instead of multiple
-`<analyzer-name>-dependency_scanning` jobs.
 
 ## Interacting with the vulnerabilities
 
@@ -389,7 +352,6 @@ jobs to run successfully. For more information, see [Offline environments](../of
 
 Here are the requirements for using Dependency Scanning in an offline environment:
 
-- Keep Docker-In-Docker disabled (default).
 - GitLab Runner with the [`docker` or `kubernetes` executor](#requirements).
 - Docker Container Registry with locally available copies of Dependency Scanning [analyzer](https://gitlab.com/gitlab-org/security-products/analyzers) images.
 - Host an offline Git copy of the [gemnasium-db advisory database](https://gitlab.com/gitlab-org/security-products/gemnasium-db/).

@@ -18,8 +18,10 @@ RSpec.describe UserAgentDetail do
   end
 
   describe '.valid?' do
+    let(:issue) { create(:issue) }
+
     it 'is valid with a subject' do
-      detail = build(:user_agent_detail)
+      detail = build(:user_agent_detail, subject: issue)
 
       expect(detail).to be_valid
     end

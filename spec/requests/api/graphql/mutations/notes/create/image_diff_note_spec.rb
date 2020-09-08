@@ -47,7 +47,7 @@ RSpec.describe 'Adding an image DiffNote' do
     it_behaves_like 'a Note mutation when there are active record validation errors', model: DiffNote
 
     context do
-      let(:diff_refs) { build(:merge_request).diff_refs } # Allow fake diff refs so arguments are valid
+      let(:diff_refs) { build(:commit).diff_refs } # Allow fake diff refs so arguments are valid
 
       it_behaves_like 'a Note mutation when the given resource id is not for a Noteable'
     end

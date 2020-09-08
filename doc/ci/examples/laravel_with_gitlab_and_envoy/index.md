@@ -566,15 +566,11 @@ Also set the variables `DB_HOST` to `mysql` and `DB_USERNAME` to `root`, which a
 We define `DB_HOST` as `mysql` instead of `127.0.0.1`, as we use MySQL Docker image as a service which [is linked to the main Docker image](../../docker/using_docker_images.md#how-services-are-linked-to-the-job).
 
 ```yaml
-...
-
 variables:
   MYSQL_DATABASE: homestead
   MYSQL_ROOT_PASSWORD: secret
   DB_HOST: mysql
   DB_USERNAME: root
-
-...
 ```
 
 #### Unit Test as the first job
@@ -584,8 +580,6 @@ We defined the required shell scripts as an array of the [script](../../yaml/REA
 These scripts are some Artisan commands to prepare the Laravel, and, at the end of the script, we'll run the tests by `PHPUnit`.
 
 ```yaml
-...
-
 unit_test:
   script:
     # Install app dependencies
@@ -598,8 +592,6 @@ unit_test:
     - php artisan migrate
     # Run tests
     - vendor/bin/phpunit
-
-...
 ```
 
 #### Deploy to production
@@ -615,8 +607,6 @@ The `only` keyword tells GitLab CI/CD that the job should be executed only when 
 Lastly, `when: manual` is used to turn the job from running automatically to a manual action.
 
 ```yaml
-...
-
 deploy_production:
   script:
     # Add the private SSH key to the build environment

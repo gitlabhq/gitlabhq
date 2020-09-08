@@ -131,10 +131,10 @@ After you set a variable, call it from the `.gitlab-ci.yml` file:
 test_variable:
   stage: test
   script:
-    - echo $CI_JOB_STAGE # calls a predefined variable
-    - echo $TEST # calls a custom variable of type `env_var`
-    - echo $GREETING # calls a custom variable of type `file` that contains the path to the temp file
-    - cat $GREETING # the temp file itself contains the variable value
+    - echo $CI_JOB_STAGE  # calls a predefined variable
+    - echo $TEST          # calls a custom variable of type `env_var`
+    - echo $GREETING      # calls a custom variable of type `file` that contains the path to the temp file
+    - cat $GREETING       # the temp file itself contains the variable value
 ```
 
 The output is:
@@ -511,7 +511,7 @@ build:
 deploy:
   stage: deploy
   script:
-    - echo $BUILD_VERSION # => hello
+    - echo $BUILD_VERSION  # => hello
   dependencies:
     - build
 ```
@@ -530,7 +530,7 @@ build:
 deploy:
   stage: deploy
   script:
-    - echo $BUILD_VERSION # => hello
+    - echo $BUILD_VERSION  # => hello
   needs:
     - job: build
       artifacts: true

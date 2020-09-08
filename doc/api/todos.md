@@ -21,12 +21,12 @@ Parameters:
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `action` | string | no | The action to be filtered. Can be `assigned`, `mentioned`, `build_failed`, `marked`, `approval_required`, `unmergeable` or `directly_addressed`. |
+| `action` | string | no | The action to be filtered. Can be `assigned`, `mentioned`, `build_failed`, `marked`, `approval_required`, `unmergeable`, `directly_addressed` or `merge_train_removed`. |
 | `author_id` | integer | no | The ID of an author |
 | `project_id` | integer | no | The ID of a project |
 | `group_id` | integer | no | The ID of a group |
 | `state` | string | no | The state of the todo. Can be either `pending` or `done` |
-| `type` | string | no | The type of a todo. Can be either `Issue` or `MergeRequest` |
+| `type` | string | no | The type of a todo. Can be either `Issue`, `MergeRequest`, `DesignManagement::Design` or `AlertManagement::Alert` |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/todos"

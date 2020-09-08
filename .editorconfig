@@ -14,5 +14,5 @@ indent_size = 2
 indent_style = space
 charset = utf-8
 
-[*.{md,markdown}]
+[*.{md,markdown,js.snap}]
 trim_trailing_whitespace = false

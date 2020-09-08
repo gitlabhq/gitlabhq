@@ -491,7 +491,7 @@ include:
     file: '/templates/.gitlab-ci-template.yml'
 
   - project: 'my-group/my-project'
-    ref: 787123b47f14b552955ca2786bc9542ae66fee5b # Git SHA
+    ref: 787123b47f14b552955ca2786bc9542ae66fee5b  # Git SHA
     file: '/templates/.gitlab-ci-template.yml'
 ```
 
@@ -1353,7 +1353,7 @@ job:
     - if: '$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME =~ /^feature/'
       when: manual
       allow_failure: true
-    - if: '$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME' # Checking for the presence of a variable is possible
+    - if: '$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME'  # Checking for the presence of a variable is possible
 ```
 
 Some details regarding the logic that determines the `when` for the job:
@@ -1538,11 +1538,11 @@ docker build:
   script: docker build -t my-image:$CI_COMMIT_REF_SLUG .
   rules:
     - if: '$VAR == "string value"'
-      changes: # Will include the job and set to when:manual if any of the follow paths match a modified file.
+      changes:  # Will include the job and set to when:manual if any of the follow paths match a modified file.
         - Dockerfile
         - docker/scripts/*
       when: manual
-  # - when: never would be redundant here, this is implied any time rules are listed.
+    # - when: never would be redundant here, this is implied any time rules are listed.
 ```
 
 Keywords such as `branches` or `refs` that are currently available for
@@ -3085,7 +3085,7 @@ For example, to match a single file:
 
 ```yaml
 test:
-  script: [ "echo 'test' > file.txt" ]
+  script: ["echo 'test' > file.txt"]
   artifacts:
     expose_as: 'artifact 1'
     paths: ['file.txt']
@@ -3098,7 +3098,7 @@ An example that will match an entire directory:
 
 ```yaml
 test:
-  script: [ "mkdir test && echo 'test' > test/file.txt" ]
+  script: ["mkdir test && echo 'test' > test/file.txt"]
   artifacts:
     expose_as: 'artifact 1'
     paths: ['test/']
@@ -3893,15 +3893,15 @@ ios-release:
   script:
     - echo 'iOS release job'
   release:
-     tag_name: v1.0.0-ios
-     description: 'iOS release v1.0.0'
+    tag_name: v1.0.0-ios
+    description: 'iOS release v1.0.0'
 
 android-release:
   script:
     - echo 'Android release job'
   release:
-     tag_name: v1.0.0-android
-     description: 'Android release v1.0.0'
+    tag_name: v1.0.0-android
+    description: 'Android release v1.0.0'
 ```
 
 #### `release:tag_name`
@@ -3973,25 +3973,24 @@ tags. These options cannot be used together, so choose one:
     script:
       - echo 'running release_job'
     release:
-       name: 'Release $CI_COMMIT_TAG'
-       description: 'Created using the release-cli $EXTRA_DESCRIPTION' # $EXTRA_DESCRIPTION must be defined
-       tag_name: '$CI_COMMIT_TAG'                                      # elsewhere in the pipeline.
-       ref: '$CI_COMMIT_TAG'
-       milestones:
-         - 'm1'
-         - 'm2'
-         - 'm3'
-       released_at: '2020-07-15T08:00:00Z'  # Optional, will auto generate if not defined,
-                                            # or can use a variable.
+      name: 'Release $CI_COMMIT_TAG'
+      description: 'Created using the release-cli $EXTRA_DESCRIPTION'  # $EXTRA_DESCRIPTION must be defined
+      tag_name: '$CI_COMMIT_TAG'                                       # elsewhere in the pipeline.
+      ref: '$CI_COMMIT_TAG'
+      milestones:
+        - 'm1'
+        - 'm2'
+        - 'm3'
+      released_at: '2020-07-15T08:00:00Z'  # Optional, will auto generate if not defined, or can use a variable.
   ```
 
 - To create a release automatically when commits are pushed or merged to the default branch,
   using a new Git tag that is defined with variables:
 
-NOTE: **Note:**
-Environment variables set in `before_script` or `script` are not available for expanding
-in the same job. Read more about
-[potentially making variables available for expanding](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/6400).
+  NOTE: **Note:**
+  Environment variables set in `before_script` or `script` are not available for expanding
+  in the same job. Read more about
+  [potentially making variables available for expanding](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/6400).
 
   ```yaml
   prepare_job:
@@ -4011,25 +4010,24 @@ in the same job. Read more about
     stage: release
     image: registry.gitlab.com/gitlab-org/release-cli:latest
     needs:
-    - job: prepare_job
-      artifacts: true
+      - job: prepare_job
+        artifacts: true
     rules:
       - if: $CI_COMMIT_TAG
-        when: never                                 # Do not run this job when a tag is created manually
-      - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH # Run this job when commits are pushed or merged to the default branch
+        when: never                                  # Do not run this job when a tag is created manually
+      - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH  # Run this job when commits are pushed or merged to the default branch
     script:
       - echo 'running release_job for $TAG'
     release:
-       name: 'Release $TAG'
-       description: 'Created using the release-cli $EXTRA_DESCRIPTION' # $EXTRA_DESCRIPTION and the $TAG
-       tag_name: '$TAG'                                                # variables must be defined elsewhere
-       ref: '$CI_COMMIT_SHA'                                           # in the pipeline. For example, in the
-       milestones:                                                     # prepare_job
-         - 'm1'
-         - 'm2'
-         - 'm3'
-       released_at: '2020-07-15T08:00:00Z'          # Optional, will auto generate if not defined,
-                                                    # or can use a variable.
+      name: 'Release $TAG'
+      description: 'Created using the release-cli $EXTRA_DESCRIPTION'  # $EXTRA_DESCRIPTION and the $TAG
+      tag_name: '$TAG'                                                 # variables must be defined elsewhere
+      ref: '$CI_COMMIT_SHA'                                            # in the pipeline. For example, in the
+      milestones:                                                      # prepare_job
+        - 'm1'
+        - 'm2'
+        - 'm3'
+      released_at: '2020-07-15T08:00:00Z'  # Optional, will auto generate if not defined, or can use a variable.
   ```
 
 #### `releaser-cli` command line
@@ -4664,9 +4662,9 @@ If you want to temporarily 'disable' a job, rather than commenting out all the
 lines where the job is defined:
 
 ```yaml
-#hidden_job:
-#  script:
-#    - run test
+# hidden_job:
+#   script:
+#     - run test
 ```
 
 You can instead start its name with a dot (`.`) and it won't be processed by

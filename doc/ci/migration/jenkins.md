@@ -238,7 +238,6 @@ case it will apply to all jobs in the pipeline:
 ```yaml
 my_job:
   image: alpine
-  ...
 ```
 
 #### `post`
@@ -284,7 +283,6 @@ stages:
 
 my_job:
   stage: build
-  ...
 ```
 
 #### `steps`
@@ -297,7 +295,6 @@ my_job:
   script:
     - echo "hello! the current time is:"
     - time
-  ...
 ```
 
 ### Directives

@@ -130,20 +130,20 @@ deployed from its [project on GitLab.com](https://gitlab.com/gitlab-com/www-gitl
 
 ```yaml
 # Team data
-- source: 'data/team.yml' # data/team.yml
-  public: 'team/' # team/
+- source: 'data/team.yml'  # data/team.yml
+  public: 'team/'  # team/
 
 # Blogposts
-- source: /source\/posts\/([0-9]{4})-([0-9]{2})-([0-9]{2})-(.+?)\..*/ # source/posts/2017-01-30-around-the-world-in-6-releases.html.md.erb
-  public: '\1/\2/\3/\4/' # 2017/01/30/around-the-world-in-6-releases/
+- source: /source\/posts\/([0-9]{4})-([0-9]{2})-([0-9]{2})-(.+?)\..*/  # source/posts/2017-01-30-around-the-world-in-6-releases.html.md.erb
+  public: '\1/\2/\3/\4/'  # 2017/01/30/around-the-world-in-6-releases/
 
 # HTML files
-- source: /source\/(.+?\.html).*/ # source/index.html.haml
-  public: '\1' # index.html
+- source: /source\/(.+?\.html).*/  # source/index.html.haml
+  public: '\1'  # index.html
 
 # Other files
-- source: /source\/(.*)/ # source/images/blogimages/around-the-world-in-6-releases-cover.png
-  public: '\1' # images/blogimages/around-the-world-in-6-releases-cover.png
+- source: /source\/(.*)/  # source/images/blogimages/around-the-world-in-6-releases-cover.png
+  public: '\1'  # images/blogimages/around-the-world-in-6-releases-cover.png
 ```
 
 Mappings are defined as entries in the root YAML array, and are identified by a `-` prefix. Within an entry, there is a hash map with two keys:

@@ -56,7 +56,7 @@ Some credentials are required to be able to run `aws` commands:
    ```yaml
    deploy:
      stage: deploy
-     image: registry.gitlab.com/gitlab-org/cloud-deploy/aws-base:latest # see the note below
+     image: registry.gitlab.com/gitlab-org/cloud-deploy/aws-base:latest  # see the note below
      script:
        - aws s3 ...
        - aws create-deployment ...

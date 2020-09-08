@@ -34,6 +34,29 @@ RSpec.describe API::Todos do
     end
 
     context 'when authenticated' do
+      context 'when invalid params' do
+        context "invalid action" do
+          it 'returns 400' do
+            get api('/todos', john_doe), params: { action: 'InvalidAction' }
+            expect(response).to have_gitlab_http_status(:bad_request)
+          end
+        end
+
+        context "invalid state" do
+          it 'returns 400' do
+            get api('/todos', john_doe), params: { state: 'InvalidState' }
+            expect(response).to have_gitlab_http_status(:bad_request)
+          end
+        end
+
+        context "invalid type" do
+          it 'returns 400' do
+            get api('/todos', john_doe), params: { type: 'InvalidType' }
+            expect(response).to have_gitlab_http_status(:bad_request)
+          end
+        end
+      end
+
       it 'returns an array of pending todos for current user' do
         get api('/todos', john_doe)
 
