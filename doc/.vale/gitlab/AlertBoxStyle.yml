@@ -3,6 +3,12 @@
 #
 # Makes sure alert boxes follow standard formatting.
 #
+# Checks for 4 known issues:
+# - Alert boxes with no colon, or colon outside the bold text
+# - Known incorrect capitalization of the most commonly used alert box text
+# - Alert boxes with the note text on the same line
+# - Alert boxes using blockquote formatting, like "> **Note:**"
+#
 # For a list of all options, see https://errata-ai.gitbook.io/vale/getting-started/styles
 extends: existence
 message: 'Alert box "%s" must use the formatting in the style guide.'

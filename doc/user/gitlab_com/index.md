@@ -523,6 +523,15 @@ Source:
 
 - Search for `rate_limit_http_rate_per_minute` and `rate_limit_sessions_per_second` in [GitLab.com's current HAProxy settings](https://gitlab.com/gitlab-cookbooks/gitlab-haproxy/blob/master/attributes/default.rb).
 
+### Pagination response headers
+
+For performance reasons, if a query returns more than 10,000 records, GitLab
+doesn't return the following headers:
+
+- `X-Total`.
+- `X-Total-Pages`.
+- `rel="last"` `Link`.
+
 ### Rack Attack initializer
 
 Details of rate limits enforced by [Rack Attack](../../security/rack_attack.md).

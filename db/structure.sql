@@ -13146,6 +13146,25 @@ CREATE TABLE public.merge_request_diff_commits (
     message text
 );
 
+CREATE TABLE public.merge_request_diff_details (
+    merge_request_diff_id bigint NOT NULL,
+    verification_retry_at timestamp with time zone,
+    verified_at timestamp with time zone,
+    verification_retry_count smallint,
+    verification_checksum bytea,
+    verification_failure text,
+    CONSTRAINT check_81429e3622 CHECK ((char_length(verification_failure) <= 255))
+);
+
+CREATE SEQUENCE public.merge_request_diff_details_merge_request_diff_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE public.merge_request_diff_details_merge_request_diff_id_seq OWNED BY public.merge_request_diff_details.merge_request_diff_id;
+
 CREATE TABLE public.merge_request_diff_files (
     merge_request_diff_id integer NOT NULL,
     relative_order integer NOT NULL,
@@ -17248,6 +17267,8 @@ ALTER TABLE ONLY public.merge_request_blocks ALTER COLUMN id SET DEFAULT nextval
 
 ALTER TABLE ONLY public.merge_request_context_commits ALTER COLUMN id SET DEFAULT nextval('public.merge_request_context_commits_id_seq'::regclass);
 
+ALTER TABLE ONLY public.merge_request_diff_details ALTER COLUMN merge_request_diff_id SET DEFAULT nextval('public.merge_request_diff_details_merge_request_diff_id_seq'::regclass);
+
 ALTER TABLE ONLY public.merge_request_diffs ALTER COLUMN id SET DEFAULT nextval('public.merge_request_diffs_id_seq'::regclass);
 
 ALTER TABLE ONLY public.merge_request_metrics ALTER COLUMN id SET DEFAULT nextval('public.merge_request_metrics_id_seq'::regclass);
@@ -18376,6 +18397,9 @@ ALTER TABLE ONLY public.merge_request_blocks
 
 ALTER TABLE ONLY public.merge_request_context_commits
     ADD CONSTRAINT merge_request_context_commits_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY public.merge_request_diff_details
+    ADD CONSTRAINT merge_request_diff_details_pkey PRIMARY KEY (merge_request_diff_id);
 
 ALTER TABLE ONLY public.merge_request_diffs
     ADD CONSTRAINT merge_request_diffs_pkey PRIMARY KEY (id);
@@ -20203,6 +20227,8 @@ CREATE INDEX index_merge_request_blocks_on_blocked_merge_request_id ON public.me
 CREATE UNIQUE INDEX index_merge_request_diff_commits_on_mr_diff_id_and_order ON public.merge_request_diff_commits USING btree (merge_request_diff_id, relative_order);
 
 CREATE INDEX index_merge_request_diff_commits_on_sha ON public.merge_request_diff_commits USING btree (sha);
+
+CREATE INDEX index_merge_request_diff_details_on_merge_request_diff_id ON public.merge_request_diff_details USING btree (merge_request_diff_id);
 
 CREATE UNIQUE INDEX index_merge_request_diff_files_on_mr_diff_id_and_order ON public.merge_request_diff_files USING btree (merge_request_diff_id, relative_order);
 
@@ -22870,6 +22896,9 @@ ALTER TABLE ONLY public.deployment_merge_requests
 
 ALTER TABLE ONLY public.analytics_language_trend_repository_languages
     ADD CONSTRAINT fk_rails_86cc9aef5f FOREIGN KEY (project_id) REFERENCES public.projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY public.merge_request_diff_details
+    ADD CONSTRAINT fk_rails_86f4d24ecd FOREIGN KEY (merge_request_diff_id) REFERENCES public.merge_request_diffs(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY public.clusters_applications_crossplane
     ADD CONSTRAINT fk_rails_87186702df FOREIGN KEY (cluster_id) REFERENCES public.clusters(id) ON DELETE CASCADE;

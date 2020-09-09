@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
+require 'rspec-parameterized'
 
 load File.expand_path('../../bin/feature-flag', __dir__)
 
@@ -11,25 +12,20 @@ RSpec.describe 'bin/feature-flag' do
     let(:argv) { %w[feature-flag-name -t development -g group::memory -i https://url -m http://url] }
     let(:options) { FeatureFlagOptionParser.parse(argv) }
     let(:creator) { described_class.new(options) }
-    let(:existing_flag) { File.join('config', 'feature_flags', 'development', 'existing-feature-flag.yml') }
+    let(:existing_flags) do
+      { 'existing-feature-flag' => File.join('config', 'feature_flags', 'development', 'existing-feature-flag.yml') }
+    end
 
     before do
-      # create a dummy feature flag
-      FileUtils.mkdir_p(File.dirname(existing_flag))
-      File.write(existing_flag, '{}')
+      allow(creator).to receive(:all_feature_flag_names) { existing_flags }
+      allow(creator).to receive(:branch_name) { 'feature-branch' }
+      allow(creator).to receive(:editor) { nil }
 
       # ignore writes
       allow(File).to receive(:write).and_return(true)
 
       # ignore stdin
       allow($stdin).to receive(:gets).and_raise('EOF')
-
-      # ignore Git commands
-      allow(creator).to receive(:branch_name) { 'feature-branch' }
-    end
-
-    after do
-      FileUtils.rm_f(existing_flag)
     end
 
     subject { creator.execute }

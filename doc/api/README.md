@@ -342,9 +342,12 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab
 
 #### Pagination `Link` header
 
-[`Link` headers](https://www.w3.org/wiki/LinkHeader) are sent back with each
-response. They have `rel` set to `prev`/`next`/`first`/`last` and contain the relevant
-URL. Please use these links instead of generating your own URLs.
+[`Link` headers](https://www.w3.org/wiki/LinkHeader) are returned with each
+response. They have `rel` set to `prev`/`next`/`first`/`last` and contain the
+relevant URL. Be sure to use these links instead of generating your own URLs.
+
+NOTE: **Note:**
+For GitLab.com users, [some pagination headers may not be returned](../user/gitlab_com/index.md#pagination-response-headers).
 
 In the cURL example below, we limit the output to 3 items per page (`per_page=3`)
 and we request the second page (`page=2`) of [comments](notes.md) of the issue
@@ -377,24 +380,19 @@ X-Total-Pages: 3
 
 #### Other pagination headers
 
-Additional pagination headers are also sent back.
+GitLab also returns the following additional pagination headers:
 
-| Header | Description |
-| ------ | ----------- |
-| `X-Total`       | The total number of items |
-| `X-Total-Pages` | The total number of pages |
-| `X-Per-Page`    | The number of items per page |
+| Header          | Description                                   |
+| --------------- | --------------------------------------------- |
+| `X-Total`       | The total number of items                     |
+| `X-Total-Pages` | The total number of pages                     |
+| `X-Per-Page`    | The number of items per page                  |
 | `X-Page`        | The index of the current page (starting at 1) |
-| `X-Next-Page`   | The index of the next page |
-| `X-Prev-Page`   | The index of the previous page |
+| `X-Next-Page`   | The index of the next page                    |
+| `X-Prev-Page`   | The index of the previous page                |
 
-CAUTION: **Caution:**
-For performance reasons since
-[GitLab 11.8](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/23931)
-and **behind the `api_kaminari_count_with_limit`
-[feature flag](../development/feature_flags/index.md)**, if the number of resources is
-more than 10,000, the `X-Total` and `X-Total-Pages` headers as well as the
-`rel="last"` `Link` are not present in the response headers.
+NOTE: **Note:**
+For GitLab.com users, [some pagination headers may not be returned](../user/gitlab_com/index.md#pagination-response-headers).
 
 ### Keyset-based pagination
 

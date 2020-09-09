@@ -526,7 +526,7 @@ Metrics are gathered by `Geo::MetricsUpdateWorker`, persisted in
    `GET /geo_nodes/status` example response in
    `doc/api/geo_nodes.md`.
 1. Add the same fields to `GET /geo_nodes/status` example response in
-   `doc/api/geo_nodes.md`.
+   `ee/spec/fixtures/api/schemas/public_api/v4/geo_node_status.json`.
 1. Add fields `geo_widgets`, `geo_widgets_checksummed`,
    `geo_widgets_checksum_failed`, `geo_widgets_synced`,
    `geo_widgets_failed`, and `geo_widgets_registry` to
