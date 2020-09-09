@@ -3,7 +3,7 @@
 FactoryBot.define do
   factory :project_member do
     user
-    project
+    source { association(:project) }
     maintainer
 
     trait(:guest)     { access_level { ProjectMember::GUEST } }

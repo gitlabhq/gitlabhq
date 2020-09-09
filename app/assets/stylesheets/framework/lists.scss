@@ -34,17 +34,6 @@
       }
     }
 
-    &.warning-row {
-      background-color: $orange-100;
-      border-color: $orange-200;
-      color: $orange-700;
-
-      &:hover {
-        background: $orange-100;
-      }
-
-    }
-
     &.smoke { background-color: $gray-light; }
 
     &:last-child {

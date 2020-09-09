@@ -112,7 +112,7 @@
 }
 
 @mixin btn-orange {
-  @include btn-color($orange-500, $orange-600, $orange-600, $orange-700, $orange-700, $orange-800, $white);
+  @include btn-color($orange-500, $orange-600, $orange-500, $orange-600, $orange-600, $orange-800, $white);
 }
 
 @mixin btn-red {
@@ -182,7 +182,7 @@
     }
 
     &.btn-warning {
-      @include btn-outline($white, $orange-500, $orange-500, $orange-100, $orange-700, $orange-500, $orange-200, $orange-600, $orange-800);
+      @include btn-outline($white, $orange-500, $orange-500, $orange-50, $orange-600, $orange-600, $orange-100, $orange-700, $orange-700);
     }
 
     &.btn-primary,
@@ -202,7 +202,7 @@
 
   &.btn-close,
   &.btn-close-color {
-    @include btn-outline($white, $orange-600, $orange-500, $orange-100, $orange-700, $orange-500, $orange-200, $orange-600, $orange-800);
+    @include btn-outline($white, $orange-500, $orange-500, $orange-50, $orange-600, $orange-600, $orange-100, $orange-700, $orange-700);
   }
 
   &.btn-spam {

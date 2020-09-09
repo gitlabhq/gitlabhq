@@ -3,7 +3,7 @@
 FactoryBot.define do
   factory :group_member do
     access_level { GroupMember::OWNER }
-    group
+    source { association(:group) }
     user
 
     trait(:guest)     { access_level { GroupMember::GUEST } }

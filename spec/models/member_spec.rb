@@ -23,7 +23,8 @@ RSpec.describe Member do
     end
 
     context "when an invite email is provided" do
-      let(:member) { build(:project_member, invite_email: "user@example.com", user: nil) }
+      let_it_be(:project) { create(:project) }
+      let(:member) { build(:project_member, source: project, invite_email: "user@example.com", user: nil) }
 
       it "doesn't require a user" do
         expect(member).to be_valid
@@ -681,7 +682,7 @@ RSpec.describe Member do
       describe 'create member' do
         let!(:source) { create(source_type) }
 
-        subject { create(member_type, :guest, user: user, source_type => source) }
+        subject { create(member_type, :guest, user: user, source: source) }
 
         include_examples 'update highest role with exclusive lease'
       end

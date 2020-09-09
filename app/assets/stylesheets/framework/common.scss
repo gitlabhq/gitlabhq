@@ -237,7 +237,7 @@ li.note {
 }
 
 .warning_message {
-  @include message($orange-100, $orange-200, $orange-800);
+  @include message($orange-50, $orange-200, $gray-900);
 }
 
 .danger_message {

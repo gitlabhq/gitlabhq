@@ -5054,9 +5054,6 @@ msgstr ""
 msgid "Clear due date"
 msgstr ""
 
-msgid "Clear input"
-msgstr ""
-
 msgid "Clear recent searches"
 msgstr ""
 
@@ -27780,34 +27777,25 @@ msgstr ""
 msgid "VulnerabilityChart|Severity"
 msgstr ""
 
+msgid "VulnerabilityManagement|%{statusStart}Confirmed%{statusEnd} %{timeago} by %{user}"
+msgstr ""
+
+msgid "VulnerabilityManagement|%{statusStart}Detected%{statusEnd} %{timeago} in pipeline %{pipelineLink}"
+msgstr ""
+
+msgid "VulnerabilityManagement|%{statusStart}Dismissed%{statusEnd} %{timeago} by %{user}"
+msgstr ""
+
+msgid "VulnerabilityManagement|%{statusStart}Resolved%{statusEnd} %{timeago} by %{user}"
+msgstr ""
+
 msgid "VulnerabilityManagement|A true-positive and will fix"
 msgstr ""
 
 msgid "VulnerabilityManagement|Change status"
 msgstr ""
 
-msgid "VulnerabilityManagement|Confirm"
-msgstr ""
-
-msgid "VulnerabilityManagement|Confirmed %{timeago} by %{user}"
-msgstr ""
-
 msgid "VulnerabilityManagement|Could not process %{issueReference}: %{errorMessage}."
-msgstr ""
-
-msgid "VulnerabilityManagement|Detected %{timeago} in pipeline %{pipelineLink}"
-msgstr ""
-
-msgid "VulnerabilityManagement|Dismiss"
-msgstr ""
-
-msgid "VulnerabilityManagement|Dismissed %{timeago} by %{user}"
-msgstr ""
-
-msgid "VulnerabilityManagement|Resolved"
-msgstr ""
-
-msgid "VulnerabilityManagement|Resolved %{timeago} by %{user}"
 msgstr ""
 
 msgid "VulnerabilityManagement|Something went wrong while trying to delete the comment. Please try again later."
