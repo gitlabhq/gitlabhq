@@ -17,9 +17,11 @@ class Todo < ApplicationRecord
   UNMERGEABLE         = 6
   DIRECTLY_ADDRESSED  = 7
   MERGE_TRAIN_REMOVED = 8 # This is an EE-only feature
+  REVIEW_REQUESTED    = 9
 
   ACTION_NAMES = {
     ASSIGNED => :assigned,
+    REVIEW_REQUESTED => :review_requested,
     MENTIONED => :mentioned,
     BUILD_FAILED => :build_failed,
     MARKED => :marked,
@@ -165,6 +167,10 @@ class Todo < ApplicationRecord
 
   def assigned?
     action == ASSIGNED
+  end
+
+  def review_requested?
+    action == REVIEW_REQUESTED
   end
 
   def merge_train_removed?

@@ -393,6 +393,7 @@ RSpec.describe API::Snippets do
 
     it_behaves_like 'snippet file updates'
     it_behaves_like 'snippet non-file updates'
+    it_behaves_like 'snippet individual non-file updates'
     it_behaves_like 'invalid snippet updates'
 
     it "returns 404 for another user's snippet" do

@@ -170,6 +170,25 @@ RSpec.shared_examples 'snippet non-file updates' do
   end
 end
 
+RSpec.shared_examples 'snippet individual non-file updates' do
+  using RSpec::Parameterized::TableSyntax
+
+  where(:attribute, :updated_value) do
+    :description | 'new description'
+    :title       | 'new title'
+    :visibility  | 'private'
+  end
+
+  with_them do
+    it 'updates the attribute' do
+      params = { attribute => updated_value }
+
+      expect { update_snippet(params: params) }
+        .to change { snippet.reload.send(attribute) }.to(updated_value)
+    end
+  end
+end
+
 RSpec.shared_examples 'invalid snippet updates' do
   it 'returns 404 for invalid snippet id' do
     update_snippet(snippet_id: non_existing_record_id, params: { title: 'foo' })

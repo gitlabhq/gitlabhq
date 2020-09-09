@@ -57,6 +57,14 @@ class TodoService
     create_assignment_todo(issuable, current_user, old_assignees)
   end
 
+  # When we reassign an reviewable object (merge request) we should:
+  #
+  #  * create a pending todo for new reviewer if object is assigned
+  #
+  def reassigned_reviewable(issuable, current_user, old_reviewers = [])
+    create_reviewer_todo(issuable, current_user, old_reviewers)
+  end
+
   # When create a merge request we should:
   #
   #  * creates a pending todo for assignee if merge request is assigned
@@ -217,6 +225,7 @@ class TodoService
 
   def new_issuable(issuable, author)
     create_assignment_todo(issuable, author)
+    create_reviewer_todo(issuable, author) if issuable.allows_reviewers?
     create_mention_todos(issuable.project, issuable, author)
   end
 
@@ -247,6 +256,14 @@ class TodoService
       assignees = target.assignees - old_assignees
       attributes = attributes_for_todo(target.project, target, author, Todo::ASSIGNED)
       create_todos(assignees, attributes)
+    end
+  end
+
+  def create_reviewer_todo(target, author, old_reviewers = [])
+    if target.reviewers.any?
+      reviewers = target.reviewers - old_reviewers
+      attributes = attributes_for_todo(target.project, target, author, Todo::REVIEW_REQUESTED)
+      create_todos(reviewers, attributes)
     end
   end
 

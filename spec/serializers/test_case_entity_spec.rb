@@ -5,6 +5,8 @@ require 'spec_helper'
 RSpec.describe TestCaseEntity do
   include TestReportsHelper
 
+  let_it_be(:job) { create(:ci_build) }
+
   let(:entity) { described_class.new(test_case) }
 
   describe '#as_json' do
@@ -38,7 +40,7 @@ RSpec.describe TestCaseEntity do
       end
 
       context 'when attachment is present' do
-        let(:test_case) { build(:test_case, :failed_with_attachment) }
+        let(:test_case) { build(:test_case, :failed_with_attachment, job: job) }
 
         it 'returns the attachment_url' do
           expect(subject).to include(:attachment_url)
@@ -46,7 +48,7 @@ RSpec.describe TestCaseEntity do
       end
 
       context 'when attachment is not present' do
-        let(:test_case) { build(:test_case) }
+        let(:test_case) { build(:test_case, job: job) }
 
         it 'returns a nil attachment_url' do
           expect(subject[:attachment_url]).to be_nil
@@ -60,7 +62,7 @@ RSpec.describe TestCaseEntity do
       end
 
       context 'when attachment is present' do
-        let(:test_case) { build(:test_case, :failed_with_attachment) }
+        let(:test_case) { build(:test_case, :failed_with_attachment, job: job) }
 
         it 'returns no attachment_url' do
           expect(subject).not_to include(:attachment_url)
@@ -68,7 +70,7 @@ RSpec.describe TestCaseEntity do
       end
 
       context 'when attachment is not present' do
-        let(:test_case) { build(:test_case) }
+        let(:test_case) { build(:test_case, job: job) }
 
         it 'returns no attachment_url' do
           expect(subject).not_to include(:attachment_url)

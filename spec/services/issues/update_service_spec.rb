@@ -52,7 +52,8 @@ RSpec.describe Issues::UpdateService, :mailer do
           state_event: 'close',
           label_ids: [label.id],
           due_date: Date.tomorrow,
-          discussion_locked: true
+          discussion_locked: true,
+          severity: 'low'
         }
       end
 
@@ -69,6 +70,24 @@ RSpec.describe Issues::UpdateService, :mailer do
         expect(issue.labels).to match_array [label]
         expect(issue.due_date).to eq Date.tomorrow
         expect(issue.discussion_locked).to be_truthy
+      end
+
+      context 'when issue type is not incident' do
+        it 'returns default severity' do
+          update_issue(opts)
+
+          expect(issue.severity).to eq(IssuableSeverity::DEFAULT)
+        end
+      end
+
+      context 'when issue type is incident' do
+        let(:issue) { create(:incident, project: project) }
+
+        it 'changes updates the severity' do
+          update_issue(opts)
+
+          expect(issue.severity).to eq('low')
+        end
       end
 
       it 'refreshes the number of open issues when the issue is made confidential', :use_clean_rails_memory_store_caching do

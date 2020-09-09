@@ -129,7 +129,7 @@ export default {
       <li :class="{ active: !previewMarkdown }" class="md-header-toolbar">
         <div class="d-inline-block">
           <toolbar-button tag="**" :button-title="__('Add bold text')" icon="bold" />
-          <toolbar-button tag="*" :button-title="__('Add italic text')" icon="italic" />
+          <toolbar-button tag="_" :button-title="__('Add italic text')" icon="italic" />
           <toolbar-button
             :prepend="true"
             :tag="tag"

@@ -47,6 +47,10 @@ module API
         authorize_create_package!(subject)
         require_gitlab_workhorse!
       end
+
+      def package_event(event_name, **args)
+        track_event(event_name, **args)
+      end
     end
   end
 end

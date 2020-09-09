@@ -1,6 +1,6 @@
 .md-header-toolbar.active
   = markdown_toolbar_button({ icon: "bold", data: { "md-tag" => "**" }, title: _("Add bold text") })
-  = markdown_toolbar_button({ icon: "italic", data: { "md-tag" => "*" }, title: _("Add italic text") })
+  = markdown_toolbar_button({ icon: "italic", data: { "md-tag" => "_" }, title: _("Add italic text") })
   = markdown_toolbar_button({ icon: "quote", data: { "md-tag" => "> ", "md-prepend" => true }, title: _("Insert a quote") })
   = markdown_toolbar_button({ icon: "code", data: { "md-tag" => "`", "md-block" => "```" }, title: _("Insert code") })
   = markdown_toolbar_button({ icon: "link", data: { "md-tag" => "[{text}](url)", "md-select" => "url" }, title: _("Add a link") })

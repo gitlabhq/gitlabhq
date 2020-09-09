@@ -306,14 +306,8 @@ RSpec.describe API::ProjectSnippets do
 
     it_behaves_like 'snippet file updates'
     it_behaves_like 'snippet non-file updates'
+    it_behaves_like 'snippet individual non-file updates'
     it_behaves_like 'invalid snippet updates'
-
-    it 'updates snippet with visibility parameter' do
-      expect { update_snippet(params: { visibility: 'private' }) }
-        .to change { snippet.reload.visibility }
-
-      expect(snippet.visibility).to eq('private')
-    end
 
     it_behaves_like 'update with repository actions' do
       let(:snippet_without_repo) { create(:project_snippet, author: admin, project: project, visibility_level: visibility_level) }

@@ -11,7 +11,6 @@ type: reference
 
 Pipeline configuration warnings are shown when you:
 
-- [View pipeline details](pipelines/index.md#view-pipelines).
 - [Validate configuration with the CI Lint tool](yaml/README.md#validate-the-gitlab-ciyml).
 - [Manually run a pipeline](pipelines/index.md#run-a-pipeline-manually).
 

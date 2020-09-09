@@ -242,7 +242,7 @@ module API
         delete do
           authorize!(:destroy_package, project)
 
-          track_event('delete_package')
+          package_event('delete_package')
 
           package.destroy
         end

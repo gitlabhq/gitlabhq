@@ -106,8 +106,7 @@ module API
                               desc: 'The visibility of the snippet'
 
         use :update_file_params
-
-        at_least_one_of :title, :file_name, :content, :files, :visibility
+        use :minimum_update_params
       end
       put ':id' do
         snippet = snippets_for_current_user.find_by_id(params.delete(:id))

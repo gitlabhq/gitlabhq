@@ -41,6 +41,10 @@ module API
         mutually_exclusive :files, :file_name
       end
 
+      params :minimum_update_params do
+        at_least_one_of :content, :description, :files, :file_name, :title, :visibility
+      end
+
       def content_for(snippet)
         if snippet.empty_repo?
           env['api.format'] = :txt

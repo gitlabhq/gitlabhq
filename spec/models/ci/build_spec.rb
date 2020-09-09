@@ -1052,18 +1052,53 @@ RSpec.describe Ci::Build do
   end
 
   describe '#hide_secrets' do
+    let(:metrics) { spy('metrics') }
     let(:subject) { build.hide_secrets(data) }
 
     context 'hide runners token' do
       let(:data) { "new #{project.runners_token} data"}
 
       it { is_expected.to match(/^new x+ data$/) }
+
+      it 'increments trace mutation metric' do
+        build.hide_secrets(data, metrics)
+
+        expect(metrics)
+          .to have_received(:increment_trace_operation)
+          .with(operation: :mutated)
+      end
     end
 
     context 'hide build token' do
       let(:data) { "new #{build.token} data"}
 
       it { is_expected.to match(/^new x+ data$/) }
+
+      it 'increments trace mutation metric' do
+        build.hide_secrets(data, metrics)
+
+        expect(metrics)
+          .to have_received(:increment_trace_operation)
+          .with(operation: :mutated)
+      end
+    end
+
+    context 'when build does not include secrets' do
+      let(:data) { 'my build log' }
+
+      it 'does not mutate trace' do
+        trace = build.hide_secrets(data)
+
+        expect(trace).to eq data
+      end
+
+      it 'does not increment trace mutation metric' do
+        build.hide_secrets(data, metrics)
+
+        expect(metrics)
+          .not_to have_received(:increment_trace_operation)
+          .with(operation: :mutated)
+      end
     end
   end
 

@@ -16,15 +16,24 @@ describe('ImportProjectsTable', () => {
     wrapper.find('input[data-qa-selector="githubish_import_filter_field"]');
 
   const providerTitle = 'THE PROVIDER';
-  const providerRepo = { id: 10, sanitizedName: 'sanitizedName', fullName: 'fullName' };
+  const providerRepo = {
+    importSource: {
+      id: 10,
+      sanitizedName: 'sanitizedName',
+      fullName: 'fullName',
+    },
+    importedProject: null,
+  };
 
   const findImportAllButton = () =>
     wrapper
       .findAll(GlButton)
       .filter(w => w.props().variant === 'success')
       .at(0);
+  const findImportAllModal = () => wrapper.find({ ref: 'importAllModal' });
 
   const importAllFn = jest.fn();
+  const importAllModalShowFn = jest.fn();
   const setPageFn = jest.fn();
 
   function createComponent({
@@ -64,6 +73,9 @@ describe('ImportProjectsTable', () => {
         paginatable,
       },
       slots,
+      stubs: {
+        GlModal: { template: '<div>Modal!</div>', methods: { show: importAllModalShowFn } },
+      },
     });
   }
 
@@ -110,18 +122,21 @@ describe('ImportProjectsTable', () => {
   });
 
   it.each`
-    hasIncompatibleRepos | buttonText
-    ${false}             | ${'Import all repositories'}
-    ${true}              | ${'Import all compatible repositories'}
+    hasIncompatibleRepos | count | buttonText
+    ${false}             | ${1}  | ${'Import 1 repository'}
+    ${true}              | ${1}  | ${'Import 1 compatible repository'}
+    ${false}             | ${5}  | ${'Import 5 repositories'}
+    ${true}              | ${5}  | ${'Import 5 compatible repositories'}
   `(
-    'import all button has "$buttonText" text when hasIncompatibleRepos is $hasIncompatibleRepos',
-    ({ hasIncompatibleRepos, buttonText }) => {
+    'import all button has "$buttonText" text when hasIncompatibleRepos is $hasIncompatibleRepos and repos count is $count',
+    ({ hasIncompatibleRepos, buttonText, count }) => {
       createComponent({
         state: {
           providerRepos: [providerRepo],
         },
         getters: {
           hasIncompatibleRepos: () => hasIncompatibleRepos,
+          importAllCount: () => count,
         },
       });
 
@@ -129,17 +144,26 @@ describe('ImportProjectsTable', () => {
     },
   );
 
-  it('renders an empty state if there are no projects available', () => {
+  it('renders an empty state if there are no repositories available', () => {
     createComponent({ state: { repositories: [] } });
 
     expect(wrapper.find(ProviderRepoTableRow).exists()).toBe(false);
     expect(wrapper.text()).toContain(`No ${providerTitle} repositories found`);
   });
 
-  it('sends importAll event when import button is clicked', async () => {
-    createComponent({ state: { providerRepos: [providerRepo] } });
+  it('opens confirmation modal when import all button is clicked', async () => {
+    createComponent({ state: { repositories: [providerRepo] } });
 
     findImportAllButton().vm.$emit('click');
+    await nextTick();
+
+    expect(importAllModalShowFn).toHaveBeenCalled();
+  });
+
+  it('triggers importAll action when modal is confirmed', async () => {
+    createComponent({ state: { providerRepos: [providerRepo] } });
+
+    findImportAllModal().vm.$emit('ok');
     await nextTick();
 
     expect(importAllFn).toHaveBeenCalled();

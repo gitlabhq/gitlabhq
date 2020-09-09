@@ -248,7 +248,7 @@ export default {
           });
         }
 
-        if (!file.parallel_diff_lines || !file.highlighted_diff_lines) {
+        if (!file.parallel_diff_lines.length || !file.highlighted_diff_lines.length) {
           const newDiscussions = (file.discussions || [])
             .filter(d => d.id !== discussion.id)
             .concat(discussion);

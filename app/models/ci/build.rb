@@ -871,13 +871,17 @@ module Ci
       options.dig(:release)&.any?
     end
 
-    def hide_secrets(trace)
+    def hide_secrets(data, metrics = ::Gitlab::Ci::Trace::Metrics.new)
       return unless trace
 
-      trace = trace.dup
-      Gitlab::Ci::MaskSecret.mask!(trace, project.runners_token) if project
-      Gitlab::Ci::MaskSecret.mask!(trace, token) if token
-      trace
+      data.dup.tap do |trace|
+        Gitlab::Ci::MaskSecret.mask!(trace, project.runners_token) if project
+        Gitlab::Ci::MaskSecret.mask!(trace, token) if token
+
+        if trace != data
+          metrics.increment_trace_operation(operation: :mutated)
+        end
+      end
     end
 
     def serializable_hash(options = {})

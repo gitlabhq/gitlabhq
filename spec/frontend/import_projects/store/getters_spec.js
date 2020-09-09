@@ -3,6 +3,7 @@ import {
   isImportingAnyRepo,
   hasIncompatibleRepos,
   hasImportableRepos,
+  importAllCount,
   getImportTarget,
 } from '~/import_projects/store/getters';
 import { STATUSES } from '~/import_projects/constants';
@@ -94,6 +95,19 @@ describe('import_projects store getters', () => {
       localState.repositories = [IMPORTED_REPO, INCOMPATIBLE_REPO];
 
       expect(hasImportableRepos(localState)).toBe(false);
+    });
+  });
+
+  describe('importAllCount', () => {
+    it('returns count of available importable projects ', () => {
+      localState.repositories = [
+        IMPORTABLE_REPO,
+        IMPORTABLE_REPO,
+        IMPORTED_REPO,
+        INCOMPATIBLE_REPO,
+      ];
+
+      expect(importAllCount(localState)).toBe(2);
     });
   });
 

@@ -52,6 +52,7 @@ RSpec.describe MergeRequests::UpdateService, :mailer do
           title: 'New title',
           description: 'Also please fix',
           assignee_ids: [user.id],
+          reviewer_ids: [user.id],
           state_event: 'close',
           label_ids: [label.id],
           target_branch: 'target',
@@ -75,6 +76,7 @@ RSpec.describe MergeRequests::UpdateService, :mailer do
         expect(@merge_request).to be_valid
         expect(@merge_request.title).to eq('New title')
         expect(@merge_request.assignees).to match_array([user])
+        expect(@merge_request.reviewers).to match_array([user])
         expect(@merge_request).to be_closed
         expect(@merge_request.labels.count).to eq(1)
         expect(@merge_request.labels.first.title).to eq(label.name)
@@ -395,6 +397,30 @@ RSpec.describe MergeRequests::UpdateService, :mailer do
             target_id: merge_request.id,
             target_type: merge_request.class.name,
             action: Todo::ASSIGNED,
+            state: :pending
+          }
+
+          expect(Todo.where(attributes).count).to eq 1
+        end
+      end
+
+      context 'when reviewers gets changed' do
+        before do
+          update_merge_request({ reviewer_ids: [user2.id] })
+        end
+
+        it 'marks pending todo as done' do
+          expect(pending_todo.reload).to be_done
+        end
+
+        it 'creates a pending todo for new review request' do
+          attributes = {
+            project: project,
+            author: user,
+            user: user2,
+            target_id: merge_request.id,
+            target_type: merge_request.class.name,
+            action: Todo::REVIEW_REQUESTED,
             state: :pending
           }
 

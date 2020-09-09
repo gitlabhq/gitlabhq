@@ -70,7 +70,7 @@ Sidekiq.configure_server do |config|
       cron_jobs[k]['class'] = cron_jobs[k].delete('job_class')
     else
       cron_jobs.delete(k)
-      Rails.logger.error("Invalid cron_jobs config key: '#{k}'. Check your gitlab config file.") # rubocop:disable Gitlab/RailsLogger
+      Gitlab::AppLogger.error("Invalid cron_jobs config key: '#{k}'. Check your gitlab config file.")
     end
   end
   Sidekiq::Cron::Job.load_from_hash! cron_jobs

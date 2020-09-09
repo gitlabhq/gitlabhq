@@ -29,6 +29,7 @@ issues:
 - merge_requests_closing_issues
 - metrics
 - timelogs
+- issuable_severity
 - issue_assignees
 - closed_by
 - epic_issue
@@ -542,6 +543,8 @@ timelogs:
 - note
 push_event_payload:
 - event
+issuable_severity:
+- issue
 issue_assignees:
 - issue
 - assignee

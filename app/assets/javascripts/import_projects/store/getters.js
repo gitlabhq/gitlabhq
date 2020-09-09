@@ -14,6 +14,8 @@ export const hasIncompatibleRepos = state => state.repositories.some(isIncompati
 
 export const hasImportableRepos = state => state.repositories.some(isProjectImportable);
 
+export const importAllCount = state => state.repositories.filter(isProjectImportable).length;
+
 export const getImportTarget = state => repoId => {
   if (state.customImportTargets[repoId]) {
     return state.customImportTargets[repoId];

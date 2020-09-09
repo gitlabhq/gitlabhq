@@ -105,7 +105,7 @@ module API
           package_file = ::Packages::CreatePackageFileService.new(package, file_params)
                                                              .execute
 
-          track_event('push_package')
+          package_event('push_package')
 
           ::Packages::Nuget::ExtractionWorker.perform_async(package_file.id) # rubocop:disable CodeReuse/Worker
 
@@ -198,7 +198,7 @@ module API
 
             not_found!('Package') unless package_file
 
-            track_event('pull_package')
+            package_event('pull_package')
 
             # nuget and dotnet don't support 302 Moved status codes, supports_direct_download has to be set to false
             present_carrierwave_file!(package_file.file, supports_direct_download: false)
@@ -233,7 +233,7 @@ module API
               .new(authorized_user_project, params[:q], search_options)
               .execute
 
-            track_event('search_package')
+            package_event('search_package')
 
             present ::Packages::Nuget::SearchResultsPresenter.new(search),
               with: ::API::Entities::Nuget::SearchResults

@@ -124,7 +124,7 @@ module API
                 conan_package_reference: params[:conan_package_reference]
               ).execute!
 
-            track_event('pull_package') if params[:file_name] == ::Packages::Conan::FileMetadatum::PACKAGE_BINARY
+            package_event('pull_package') if params[:file_name] == ::Packages::Conan::FileMetadatum::PACKAGE_BINARY
 
             present_carrierwave_file!(package_file.file)
           end
@@ -135,7 +135,7 @@ module API
 
           def track_push_package_event
             if params[:file_name] == ::Packages::Conan::FileMetadatum::PACKAGE_BINARY && params[:file].size > 0 # rubocop: disable Style/ZeroLengthPredicate
-              track_event('push_package')
+              package_event('push_package')
             end
           end
 

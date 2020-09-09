@@ -1105,6 +1105,9 @@ msgstr ""
 msgid ":%{startLine} to %{endLine}"
 msgstr ""
 
+msgid "A %{incident_docs_start}modified issue%{incident_docs_end} to guide the resolution of incidents."
+msgstr ""
+
 msgid "A 'Runner' is a process which runs a job. You can set up as many Runners as you need."
 msgstr ""
 
@@ -3267,6 +3270,11 @@ msgstr ""
 
 msgid "Are you sure you want to erase this build?"
 msgstr ""
+
+msgid "Are you sure you want to import %d repository?"
+msgid_plural "Are you sure you want to import %d repositories?"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "Are you sure you want to lose unsaved changes?"
 msgstr ""
@@ -10971,7 +10979,7 @@ msgstr ""
 msgid "Filter results..."
 msgstr ""
 
-msgid "Filter your projects by name"
+msgid "Filter your repositories by name"
 msgstr ""
 
 msgid "Filter..."
@@ -13018,6 +13026,16 @@ msgstr ""
 msgid "Import"
 msgstr ""
 
+msgid "Import %d compatible repository"
+msgid_plural "Import %d compatible repositories"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Import %d repository"
+msgid_plural "Import %d repositories"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "Import CSV"
 msgstr ""
 
@@ -13027,13 +13045,7 @@ msgstr ""
 msgid "Import all compatible projects"
 msgstr ""
 
-msgid "Import all compatible repositories"
-msgstr ""
-
 msgid "Import all projects"
-msgstr ""
-
-msgid "Import all repositories"
 msgstr ""
 
 msgid "Import an exported GitLab project"
@@ -13123,6 +13135,9 @@ msgstr ""
 msgid "ImportProjects|Error importing repository %{project_safe_import_url} into %{project_full_path} - %{message}"
 msgstr ""
 
+msgid "ImportProjects|Import repositories"
+msgstr ""
+
 msgid "ImportProjects|Importing the project failed"
 msgstr ""
 
@@ -13135,7 +13150,7 @@ msgstr ""
 msgid "ImportProjects|Requesting your %{provider} repositories failed"
 msgstr ""
 
-msgid "ImportProjects|Select the projects you want to import"
+msgid "ImportProjects|Select the repositories you want to import"
 msgstr ""
 
 msgid "ImportProjects|The remote data could not be imported."

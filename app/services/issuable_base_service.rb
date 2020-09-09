@@ -184,10 +184,7 @@ class IssuableBaseService < BaseService
     handle_quick_actions(issuable)
     filter_params(issuable)
 
-    change_state(issuable)
-    change_subscription(issuable)
-    change_todo(issuable)
-    toggle_award(issuable)
+    change_additional_attributes(issuable)
     old_associations = associations_before_update(issuable)
 
     label_ids = process_label_ids(params, existing_label_ids: issuable.label_ids)
@@ -305,12 +302,26 @@ class IssuableBaseService < BaseService
     issuable.title_changed? || issuable.description_changed?
   end
 
+  def change_additional_attributes(issuable)
+    change_state(issuable)
+    change_severity(issuable)
+    change_subscription(issuable)
+    change_todo(issuable)
+    toggle_award(issuable)
+  end
+
   def change_state(issuable)
     case params.delete(:state_event)
     when 'reopen'
       reopen_service.new(project, current_user, {}).execute(issuable)
     when 'close'
       close_service.new(project, current_user, {}).execute(issuable)
+    end
+  end
+
+  def change_severity(issuable)
+    if severity = params.delete(:severity)
+      issuable.update_severity(severity)
     end
   end
 
@@ -358,8 +369,8 @@ class IssuableBaseService < BaseService
     associations
   end
 
-  def has_changes?(issuable, old_labels: [], old_assignees: [])
-    valid_attrs = [:title, :description, :assignee_ids, :milestone_id, :target_branch]
+  def has_changes?(issuable, old_labels: [], old_assignees: [], old_reviewers: [])
+    valid_attrs = [:title, :description, :assignee_ids, :reviewer_ids, :milestone_id, :target_branch]
 
     attrs_changed = valid_attrs.any? do |attr|
       issuable.previous_changes.include?(attr.to_s)
@@ -369,7 +380,9 @@ class IssuableBaseService < BaseService
 
     assignees_changed = issuable.assignees != old_assignees
 
-    attrs_changed || labels_changed || assignees_changed
+    reviewers_changed = issuable.reviewers != old_reviewers if issuable.allows_reviewers?
+
+    attrs_changed || labels_changed || assignees_changed || reviewers_changed
   end
 
   def invalidate_cache_counts(issuable, users: [])

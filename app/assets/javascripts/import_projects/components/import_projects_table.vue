@@ -1,8 +1,8 @@
 <script>
 import { throttle } from 'lodash';
 import { mapActions, mapState, mapGetters } from 'vuex';
-import { GlButton, GlLoadingIcon } from '@gitlab/ui';
-import { __, sprintf } from '~/locale';
+import { GlButton, GlLoadingIcon, GlModal } from '@gitlab/ui';
+import { n__, __, sprintf } from '~/locale';
 import PaginationLinks from '~/vue_shared/components/pagination_links.vue';
 import ProviderRepoTableRow from './provider_repo_table_row.vue';
 import PageQueryParamSync from './page_query_param_sync.vue';
@@ -16,6 +16,7 @@ export default {
     PageQueryParamSync,
     GlLoadingIcon,
     GlButton,
+    GlModal,
     PaginationLinks,
   },
   props: {
@@ -42,6 +43,7 @@ export default {
       'isImportingAnyRepo',
       'hasImportableRepos',
       'hasIncompatibleRepos',
+      'importAllCount',
     ]),
 
     availableNamespaces() {
@@ -61,8 +63,12 @@ export default {
 
     importAllButtonText() {
       return this.hasIncompatibleRepos
-        ? __('Import all compatible repositories')
-        : __('Import all repositories');
+        ? n__(
+            'Import %d compatible repository',
+            'Import %d compatible repositories',
+            this.importAllCount,
+          )
+        : n__('Import %d repository', 'Import %d repositories', this.importAllCount);
     },
 
     emptyStateText() {
@@ -111,9 +117,8 @@ export default {
 <template>
   <div>
     <page-query-param-sync :page="pageInfo.page" @popstate="setPage" />
-
     <p class="light text-nowrap mt-2">
-      {{ s__('ImportProjects|Select the projects you want to import') }}
+      {{ s__('ImportProjects|Select the repositories you want to import') }}
     </p>
     <template v-if="hasIncompatibleRepos">
       <slot name="incompatible-repos-warning"></slot>
@@ -130,9 +135,25 @@ export default {
           :loading="isImportingAnyRepo"
           :disabled="!hasImportableRepos"
           type="button"
-          @click="importAll"
+          @click="$refs.importAllModal.show()"
           >{{ importAllButtonText }}</gl-button
         >
+        <gl-modal
+          ref="importAllModal"
+          modal-id="import-all-modal"
+          :title="s__('ImportProjects|Import repositories')"
+          :ok-title="__('Import')"
+          @ok="importAll"
+        >
+          {{
+            n__(
+              'Are you sure you want to import %d repository?',
+              'Are you sure you want to import %d repositories?',
+              importAllCount,
+            )
+          }}
+        </gl-modal>
+
         <slot name="actions"></slot>
         <form v-if="filterable" class="gl-ml-auto" novalidate @submit.prevent>
           <input
@@ -140,7 +161,7 @@ export default {
             data-qa-selector="githubish_import_filter_field"
             class="form-control"
             name="filter"
-            :placeholder="__('Filter your projects by name')"
+            :placeholder="__('Filter your repositories by name')"
             autofocus
             size="40"
             @input="handleFilterInput($event)"

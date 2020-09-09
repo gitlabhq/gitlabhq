@@ -192,11 +192,15 @@ To delete a project, first navigate to the home page for that project.
 
 ### Delayed deletion **(PREMIUM)**
 
-By default, clicking to delete a project is followed by a seven day delay. Admins can restore the project during this period of time.
+By default, projects in a personal namespace are deleted after a seven day delay.
+
+Admins can restore the project during this period of time.
 This delay [may be changed by an admin](../admin_area/settings/visibility_and_access_controls.md#default-deletion-delay).
 
 Admins can view all projects pending deletion. If you're an administrator, go to the top navigation bar, click **Projects > Your projects**, and then select the **Deleted projects** tab.
 From this tab an admin can restore any project.
+
+For information on delay deletion of projects within a group, please see [Enabling delayed Project removal](../group/index.md#enabling-delayed-project-removal)
 
 ## CI/CD for external repositories **(PREMIUM)**
 

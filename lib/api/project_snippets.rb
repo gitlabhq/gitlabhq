@@ -93,8 +93,7 @@ module API
                               desc: 'The visibility of the snippet'
 
         use :update_file_params
-
-        at_least_one_of :title, :file_name, :content, :files, :visibility
+        use :minimum_update_params
       end
       # rubocop: disable CodeReuse/ActiveRecord
       put ":id/snippets/:snippet_id" do

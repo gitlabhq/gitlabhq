@@ -645,6 +645,36 @@ describe('DiffsStoreMutations', () => {
       expect(state.diffFiles[0].highlighted_diff_lines[0].discussions).toHaveLength(1);
       expect(state.diffFiles[0].highlighted_diff_lines[0].discussions[0].id).toBe(1);
     });
+
+    it('should add discussion to file', () => {
+      const state = {
+        latestDiff: true,
+        diffFiles: [
+          {
+            file_hash: 'ABC',
+            discussions: [],
+            parallel_diff_lines: [],
+            highlighted_diff_lines: [],
+          },
+        ],
+      };
+      const discussion = {
+        id: 1,
+        line_code: 'ABC_1',
+        diff_discussion: true,
+        resolvable: true,
+        diff_file: {
+          file_hash: state.diffFiles[0].file_hash,
+        },
+      };
+
+      mutations[types.SET_LINE_DISCUSSIONS_FOR_FILE](state, {
+        discussion,
+        diffPositionByLineCode: null,
+      });
+
+      expect(state.diffFiles[0].discussions.length).toEqual(1);
+    });
   });
 
   describe('REMOVE_LINE_DISCUSSIONS', () => {
