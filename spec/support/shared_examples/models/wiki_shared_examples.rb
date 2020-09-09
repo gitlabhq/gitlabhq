@@ -322,8 +322,8 @@ RSpec.shared_examples 'wiki model' do
       expect(commit.committer_email).to eq(user.commit_email)
     end
 
-    it 'updates container activity' do
-      expect(subject).to receive(:update_container_activity)
+    it 'runs after_wiki_activity callbacks' do
+      expect(subject).to receive(:after_wiki_activity)
 
       subject.create_page('Test Page', 'This is content')
     end
@@ -363,10 +363,10 @@ RSpec.shared_examples 'wiki model' do
       expect(commit.committer_email).to eq(user.commit_email)
     end
 
-    it 'updates container activity' do
+    it 'runs after_wiki_activity callbacks' do
       page
 
-      expect(subject).to receive(:update_container_activity)
+      expect(subject).to receive(:after_wiki_activity)
 
       update_page
     end
@@ -389,10 +389,10 @@ RSpec.shared_examples 'wiki model' do
       expect(commit.committer_email).to eq(user.commit_email)
     end
 
-    it 'updates container activity' do
+    it 'runs after_wiki_activity callbacks' do
       page
 
-      expect(subject).to receive(:update_container_activity)
+      expect(subject).to receive(:after_wiki_activity)
 
       subject.delete_page(page)
     end

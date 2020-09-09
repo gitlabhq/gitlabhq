@@ -6,12 +6,20 @@ RSpec.describe Git::WikiPushService, services: true do
   include RepoHelpers
 
   let_it_be(:key_id) { create(:key, user: current_user).shell_id }
-  let_it_be(:project) { create(:project, :wiki_repo) }
-  let_it_be(:current_user) { create(:user) }
-  let_it_be(:git_wiki) { project.wiki.wiki }
-  let_it_be(:repository) { git_wiki.repository }
+  let_it_be(:wiki) { create(:project_wiki) }
+  let_it_be(:current_user) { wiki.container.default_owner }
+  let_it_be(:git_wiki) { wiki.wiki }
+  let_it_be(:repository) { wiki.repository }
 
   describe '#execute' do
+    it 'executes model-specific callbacks' do
+      expect(wiki).to receive(:after_post_receive)
+
+      create_service(current_sha).execute
+    end
+  end
+
+  describe '#process_changes' do
     context 'the push contains more than the permitted number of changes' do
       def run_service
         process_changes { described_class::MAX_CHANGES.succ.times { write_new_page } }
@@ -37,8 +45,8 @@ RSpec.describe Git::WikiPushService, services: true do
       let(:count) { Event::WIKI_ACTIONS.size }
 
       def run_service
-        wiki_page_a = create(:wiki_page, project: project)
-        wiki_page_b = create(:wiki_page, project: project)
+        wiki_page_a = create(:wiki_page, wiki: wiki)
+        wiki_page_b = create(:wiki_page, wiki: wiki)
 
         process_changes do
           write_new_page
@@ -135,7 +143,7 @@ RSpec.describe Git::WikiPushService, services: true do
     end
 
     context 'when a page we already know about has been updated' do
-      let(:wiki_page) { create(:wiki_page, project: project) }
+      let(:wiki_page) { create(:wiki_page, wiki: wiki) }
 
       before do
         create(:wiki_page_meta, :for_wiki_page, wiki_page: wiki_page)
@@ -165,7 +173,7 @@ RSpec.describe Git::WikiPushService, services: true do
 
     context 'when a page we do not know about has been updated' do
       def run_service
-        wiki_page = create(:wiki_page, project: project)
+        wiki_page = create(:wiki_page, wiki: wiki)
         process_changes { update_page(wiki_page.title) }
       end
 
@@ -189,7 +197,7 @@ RSpec.describe Git::WikiPushService, services: true do
 
     context 'when a page we do not know about has been deleted' do
       def run_service
-        wiki_page = create(:wiki_page, project: project)
+        wiki_page = create(:wiki_page, wiki: wiki)
         process_changes { delete_page(wiki_page.page.path) }
       end
 
@@ -254,9 +262,9 @@ RSpec.describe Git::WikiPushService, services: true do
 
         it_behaves_like 'a no-op push'
 
-        context 'but is enabled for a given project' do
+        context 'but is enabled for a given container' do
           before do
-            stub_feature_flags(wiki_events_on_git_push: project)
+            stub_feature_flags(wiki_events_on_git_push: wiki.container)
           end
 
           it 'creates events' do
@@ -280,19 +288,19 @@ RSpec.describe Git::WikiPushService, services: true do
 
   def create_service(base, refs = ['refs/heads/master'])
     changes = post_received(base, refs).changes
-    described_class.new(project, current_user, changes: changes)
+    described_class.new(wiki, current_user, changes: changes)
   end
 
   def post_received(base, refs)
     change_str = refs.map { |ref| +"#{base} #{current_sha} #{ref}" }.join("\n")
-    post_received = ::Gitlab::GitPostReceive.new(project, key_id, change_str, {})
+    post_received = ::Gitlab::GitPostReceive.new(wiki.container, key_id, change_str, {})
     allow(post_received).to receive(:identify).with(key_id).and_return(current_user)
 
     post_received
   end
 
   def current_sha
-    repository.gitaly_ref_client.find_branch('master')&.dereferenced_target&.id || Gitlab::Git::BLANK_SHA
+    repository.commit('master')&.id || Gitlab::Git::BLANK_SHA
   end
 
   # It is important not to re-use the WikiPage services here, since they create
@@ -312,7 +320,7 @@ RSpec.describe Git::WikiPushService, services: true do
       file_content: 'some stuff',
       branch_name: 'master'
     }
-    ::Wikis::CreateAttachmentService.new(container: project, current_user: project.owner, params: params).execute
+    ::Wikis::CreateAttachmentService.new(container: wiki.container, current_user: current_user, params: params).execute
   end
 
   def update_page(title)

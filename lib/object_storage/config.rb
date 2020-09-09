@@ -2,10 +2,24 @@
 
 module ObjectStorage
   class Config
+    AWS_PROVIDER = 'AWS'
+    AZURE_PROVIDER = 'AzureRM'
+    GOOGLE_PROVIDER = 'Google'
+
     attr_reader :options
 
     def initialize(options)
       @options = options.to_hash.deep_symbolize_keys
+    end
+
+    def load_provider
+      if aws?
+        require 'fog/aws'
+      elsif google?
+        require 'fog/google'
+      elsif azure?
+        require 'fog/azurerm'
+      end
     end
 
     def credentials
@@ -30,7 +44,7 @@ module ObjectStorage
 
     # AWS-specific options
     def aws?
-      provider == 'AWS'
+      provider == AWS_PROVIDER
     end
 
     def use_iam_profile?
@@ -61,11 +75,11 @@ module ObjectStorage
     # End Azure-specific options
 
     def google?
-      provider == 'Google'
+      provider == GOOGLE_PROVIDER
     end
 
     def azure?
-      provider == 'AzureRM'
+      provider == AZURE_PROVIDER
     end
 
     def fog_attributes

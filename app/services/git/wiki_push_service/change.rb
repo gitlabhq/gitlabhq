@@ -5,11 +5,11 @@ module Git
     class Change
       include Gitlab::Utils::StrongMemoize
 
-      # @param [ProjectWiki] wiki
+      # @param [Wiki] wiki
       # @param [Hash] change - must have keys `:oldrev` and `:newrev`
       # @param [Gitlab::Git::RawDiffChange] raw_change
-      def initialize(project_wiki, change, raw_change)
-        @wiki, @raw_change, @change = project_wiki, raw_change, change
+      def initialize(wiki, change, raw_change)
+        @wiki, @raw_change, @change = wiki, raw_change, change
       end
 
       def page

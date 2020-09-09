@@ -1,0 +1,5 @@
+---
+title: Fix merge request chat messages for adding and removing approvals
+merge_request: 41775
+author:
+type: fixed

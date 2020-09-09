@@ -159,11 +159,11 @@ export default {
       :resolved-discussions-expanded="resolvedDiscussionsExpanded"
       :discussion-with-open-form="discussionWithOpenForm"
       data-testid="unresolved-discussion"
-      @createNoteError="$emit('onDesignDiscussionError', $event)"
-      @updateNoteError="$emit('updateNoteError', $event)"
-      @resolveDiscussionError="$emit('resolveDiscussionError', $event)"
+      @create-note-error="$emit('onDesignDiscussionError', $event)"
+      @update-note-error="$emit('updateNoteError', $event)"
+      @resolve-discussion-error="$emit('resolveDiscussionError', $event)"
       @click.native.stop="updateActiveDiscussion(discussion.notes[0].id)"
-      @openForm="updateDiscussionWithOpenForm"
+      @open-form="updateDiscussionWithOpenForm"
     />
     <template v-if="resolvedDiscussions.length > 0">
       <gl-button

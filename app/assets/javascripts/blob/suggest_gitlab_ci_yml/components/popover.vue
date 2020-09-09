@@ -1,5 +1,4 @@
 <script>
-/* eslint-disable vue/no-v-html */
 import { GlPopover, GlSprintf, GlButton } from '@gitlab/ui';
 import { parseBoolean, scrollToElement, setCookie, getCookie } from '~/lib/utils/common_utils';
 import { s__ } from '~/locale';
@@ -114,7 +113,7 @@ export default {
     :css-classes="['suggest-gitlab-ci-yml', 'ml-4']"
   >
     <template #title>
-      <span v-html="suggestTitle"></span>
+      <span>{{ suggestTitle }}</span>
       <span class="ml-auto">
         <gl-button
           :aria-label="__('Close')"

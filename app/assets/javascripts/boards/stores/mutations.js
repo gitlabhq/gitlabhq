@@ -1,11 +1,15 @@
 import Vue from 'vue';
-import { sortBy } from 'lodash';
+import { sortBy, pull } from 'lodash';
 import * as mutationTypes from './mutation_types';
 import { __ } from '~/locale';
 
 const notImplemented = () => {
   /* eslint-disable-next-line @gitlab/require-i18n-strings */
   throw new Error('Not implemented!');
+};
+
+const removeIssueFromList = (state, listId, issueId) => {
+  Vue.set(state.issuesByListId, listId, pull(state.issuesByListId[listId], issueId));
 };
 
 export default {
@@ -129,6 +133,18 @@ export default {
 
   [mutationTypes.RECEIVE_UPDATE_ISSUE_ERROR]: () => {
     notImplemented();
+  },
+
+  [mutationTypes.ADD_ISSUE_TO_LIST]: (state, { list, issue, position }) => {
+    const listIssues = state.issuesByListId[list.id];
+    listIssues.splice(position, 0, issue.id);
+    Vue.set(state.issuesByListId, list.id, listIssues);
+    Vue.set(state.issues, issue.id, issue);
+  },
+
+  [mutationTypes.ADD_ISSUE_TO_LIST_FAILURE]: (state, { list, issue }) => {
+    state.error = __('An error occurred while creating the issue. Please try again.');
+    removeIssueFromList(state, list.id, issue.id);
   },
 
   [mutationTypes.SET_CURRENT_PAGE]: () => {

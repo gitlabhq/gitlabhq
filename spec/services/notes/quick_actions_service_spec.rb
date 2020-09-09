@@ -210,11 +210,13 @@ RSpec.describe Notes::QuickActionsService do
     let(:service) { described_class.new(project, maintainer) }
 
     it_behaves_like 'note on noteable that supports quick actions' do
-      let(:note) { build(:note_on_issue, project: project) }
+      let_it_be(:issue, reload: true) { create(:issue, project: project) }
+      let(:note) { build(:note_on_issue, project: project, noteable: issue) }
     end
 
     it_behaves_like 'note on noteable that supports quick actions' do
-      let(:note) { build(:note_on_merge_request, project: project) }
+      let_it_be(:merge_request, reload: true) { create(:merge_request, source_project: project) }
+      let(:note) { build(:note_on_merge_request, project: project, noteable: merge_request) }
     end
   end
 

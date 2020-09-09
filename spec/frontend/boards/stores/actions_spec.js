@@ -1,5 +1,5 @@
 import testAction from 'helpers/vuex_action_helper';
-import { mockListsWithModel } from '../mock_data';
+import { mockListsWithModel, mockLists, mockIssue } from '../mock_data';
 import actions, { gqlClient } from '~/boards/stores/actions';
 import * as types from '~/boards/stores/mutation_types';
 import { inactiveId, ListType } from '~/boards/constants';
@@ -234,6 +234,43 @@ describe('moveIssue', () => {
 
 describe('createNewIssue', () => {
   expectNotImplemented(actions.createNewIssue);
+});
+
+describe('addListIssue', () => {
+  it('should commit UPDATE_LIST_FAILURE mutation when API returns an error', done => {
+    const payload = {
+      list: mockLists[0],
+      issue: mockIssue,
+      position: 0,
+    };
+
+    testAction(
+      actions.addListIssue,
+      payload,
+      {},
+      [{ type: types.ADD_ISSUE_TO_LIST, payload }],
+      [],
+      done,
+    );
+  });
+});
+
+describe('addListIssueFailure', () => {
+  it('should commit UPDATE_LIST_FAILURE mutation when API returns an error', done => {
+    const payload = {
+      list: mockLists[0],
+      issue: mockIssue,
+    };
+
+    testAction(
+      actions.addListIssueFailure,
+      payload,
+      {},
+      [{ type: types.ADD_ISSUE_TO_LIST_FAILURE, payload }],
+      [],
+      done,
+    );
+  });
 });
 
 describe('fetchBacklog', () => {

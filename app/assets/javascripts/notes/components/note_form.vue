@@ -337,7 +337,7 @@ export default {
           v-model="updatedNoteBody"
           :data-supports-quick-actions="!isEditing"
           name="note[note]"
-          class="note-textarea js-gfm-input js-note-text js-autosize markdown-area js-vue-issue-note-form js-vue-textarea qa-reply-input"
+          class="note-textarea js-gfm-input js-note-text js-autosize markdown-area js-vue-issue-note-form qa-reply-input"
           dir="auto"
           :aria-label="__('Description')"
           :placeholder="__('Write a comment or drag your files here…')"

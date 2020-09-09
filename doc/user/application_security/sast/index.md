@@ -244,8 +244,8 @@ analyzer and compilation will be skipped:
 image: maven:3.6-jdk-8-alpine
 
 stages:
- - build
- - test
+  - build
+  - test
 
 include:
   - template: SAST.gitlab-ci.yml
@@ -523,13 +523,13 @@ For details on saving and transporting Docker images as a file, see Docker's doc
 Add the following configuration to your `.gitlab-ci.yml` file. You must replace
 `SECURE_ANALYZERS_PREFIX` to refer to your local Docker container registry:
 
-  ```yaml
+```yaml
 include:
   - template: SAST.gitlab-ci.yml
 
 variables:
   SECURE_ANALYZERS_PREFIX: "localhost:5000/analyzers"
-  ```
+```
 
 The SAST job should now use local copies of the SAST analyzers to scan your code and generate
 security reports without requiring internet access.

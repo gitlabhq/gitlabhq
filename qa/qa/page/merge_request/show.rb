@@ -275,7 +275,8 @@ module QA
         end
 
         def click_open_in_web_ide
-          click_element :open_in_web_ide_button
+          click_element(:open_in_web_ide_button)
+          wait_for_requests
         end
       end
     end

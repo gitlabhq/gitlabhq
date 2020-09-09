@@ -10,7 +10,6 @@ import {
   GlTabs,
   GlTab,
   GlButton,
-  GlTable,
 } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import alertQuery from '../graphql/queries/details.query.graphql';
@@ -28,6 +27,7 @@ import { toggleContainerClasses } from '~/lib/utils/dom_utils';
 import SystemNote from './system_notes/system_note.vue';
 import AlertSidebar from './alert_sidebar.vue';
 import AlertMetrics from './alert_metrics.vue';
+import AlertDetailsTable from '~/vue_shared/components/alert_details_table.vue';
 
 const containerEl = document.querySelector('.page-with-contextual-sidebar');
 
@@ -55,6 +55,7 @@ export default {
     },
   ],
   components: {
+    AlertDetailsTable,
     GlBadge,
     GlAlert,
     GlIcon,
@@ -63,7 +64,6 @@ export default {
     GlTab,
     GlTabs,
     GlButton,
-    GlTable,
     TimeAgoTooltip,
     AlertSidebar,
     SystemNote,
@@ -331,20 +331,7 @@ export default {
             </div>
             <div class="gl-pl-2" data-testid="runbook">{{ alert.runbook }}</div>
           </div>
-          <gl-table
-            class="alert-management-details-table"
-            :items="[{ 'Full Alert Payload': 'Value', ...alert }]"
-            :show-empty="true"
-            :busy="loading"
-            stacked
-          >
-            <template #empty>
-              {{ s__('AlertManagement|No alert data to display.') }}
-            </template>
-            <template #table-busy>
-              <gl-loading-icon size="lg" color="dark" class="mt-3" />
-            </template>
-          </gl-table>
+          <alert-details-table :alert="alert" :loading="loading" />
         </gl-tab>
         <gl-tab :data-testid="$options.tabsConfig[1].id" :title="$options.tabsConfig[1].title">
           <alert-metrics :dashboard-url="alert.metricsDashboardUrl" />

@@ -312,7 +312,7 @@ describe('boardsStore', () => {
   });
 
   describe('newIssue', () => {
-    const id = 'not-creative';
+    const id = 1;
     const issue = { some: 'issue data' };
     const url = `${endpoints.listsEndpoint}/${id}/issues`;
     const expectedRequest = expect.objectContaining({

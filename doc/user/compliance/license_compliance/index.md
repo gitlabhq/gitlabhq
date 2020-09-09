@@ -268,8 +268,7 @@ You can supply a custom root certificate to complete TLS verification by using t
 #### Using private Python repos
 
 If you have a private Python repository you can use the `PIP_INDEX_URL` [environment variable](#available-variables)
-to specify its location. It's also possible to provide a custom `pip.conf` for
-[additional configuration](#custom-root-certificates-for-python).
+to specify its location.
 
 ### Configuring NPM projects
 

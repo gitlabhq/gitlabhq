@@ -2,6 +2,7 @@
 
 require 'fast_spec_helper'
 require 'rspec-parameterized'
+require 'fog/core'
 
 RSpec.describe ObjectStorage::Config do
   using RSpec::Parameterized::TableSyntax
@@ -34,6 +35,46 @@ RSpec.describe ObjectStorage::Config do
   end
 
   subject { described_class.new(raw_config.as_json) }
+
+  describe '#load_provider' do
+    before do
+      subject.load_provider
+    end
+
+    context 'with AWS' do
+      it 'registers AWS as a provider' do
+        expect(Fog.providers.keys).to include(:aws)
+      end
+    end
+
+    context 'with Google' do
+      let(:credentials) do
+        {
+          provider: 'Google',
+          google_storage_access_key_id: 'GOOGLE_ACCESS_KEY_ID',
+          google_storage_secret_access_key: 'GOOGLE_SECRET_ACCESS_KEY'
+        }
+      end
+
+      it 'registers Google as a provider' do
+        expect(Fog.providers.keys).to include(:google)
+      end
+    end
+
+    context 'with Azure' do
+      let(:credentials) do
+        {
+          provider: 'AzureRM',
+          azure_storage_account_name: 'azuretest',
+          azure_storage_access_key: 'ABCD1234'
+        }
+      end
+
+      it 'registers AzureRM as a provider' do
+        expect(Fog.providers.keys).to include(:azurerm)
+      end
+    end
+  end
 
   describe '#credentials' do
     it { expect(subject.credentials).to eq(credentials) }

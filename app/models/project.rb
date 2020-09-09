@@ -3,7 +3,6 @@
 require 'carrierwave/orm/activerecord'
 
 class Project < ApplicationRecord
-  extend ::Gitlab::Utils::Override
   include Gitlab::ConfigHelper
   include Gitlab::VisibilityLevel
   include AccessRequestable
@@ -2468,11 +2467,6 @@ class Project < ApplicationRecord
 
   def latest_jira_import
     jira_imports.last
-  end
-
-  override :after_wiki_activity
-  def after_wiki_activity
-    touch(:last_activity_at, :last_repository_updated_at)
   end
 
   def metrics_setting

@@ -2165,6 +2165,9 @@ msgstr ""
 msgid "AlertManagement|Events"
 msgstr ""
 
+msgid "AlertManagement|Full Alert Payload"
+msgstr ""
+
 msgid "AlertManagement|High"
 msgstr ""
 
@@ -2265,6 +2268,9 @@ msgid "AlertManagement|Triggered"
 msgstr ""
 
 msgid "AlertManagement|Unknown"
+msgstr ""
+
+msgid "AlertManagement|Value"
 msgstr ""
 
 msgid "AlertManagement|View alerts in Opsgenie"
@@ -2619,6 +2625,9 @@ msgid "An error occurred while checking group path. Please refresh and try again
 msgstr ""
 
 msgid "An error occurred while committing your changes."
+msgstr ""
+
+msgid "An error occurred while creating the issue. Please try again."
 msgstr ""
 
 msgid "An error occurred while creating the list. Please try again."

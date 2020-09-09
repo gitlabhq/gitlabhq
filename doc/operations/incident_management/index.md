@@ -74,8 +74,8 @@ team members can join the Zoom call without requesting a link.
 
 For information about GitLab and incident management, see:
 
-- [Generic alerts](./generic_alerts.md)
-- [Alerts](./alerts.md)
-- [Alert details](./alert_details.md)
-- [Incidents](./incidents.md)
-- [Status page](./status_page.md)
+- [Generic alerts](generic_alerts.md)
+- [Alerts](alerts.md)
+- [Alert details](alert_details.md)
+- [Incidents](incidents.md)
+- [Status page](status_page.md)

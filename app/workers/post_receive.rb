@@ -12,8 +12,8 @@ class PostReceive # rubocop:disable Scalability/IdempotentWorker
   def perform(gl_repository, identifier, changes, push_options = {})
     container, project, repo_type = Gitlab::GlRepository.parse(gl_repository)
 
-    if project.nil? && (!repo_type.snippet? || container.is_a?(ProjectSnippet))
-      log("Triggered hook for non-existing project with gl_repository \"#{gl_repository}\"")
+    if container.nil? || (container.is_a?(ProjectSnippet) && project.nil?)
+      log("Triggered hook for non-existing gl_repository \"#{gl_repository}\"")
       return false
     end
 
@@ -24,7 +24,7 @@ class PostReceive # rubocop:disable Scalability/IdempotentWorker
     post_received = Gitlab::GitPostReceive.new(container, identifier, changes, push_options)
 
     if repo_type.wiki?
-      process_wiki_changes(post_received, container)
+      process_wiki_changes(post_received, container.wiki)
     elsif repo_type.project?
       process_project_changes(post_received, container)
     elsif repo_type.snippet?
@@ -59,18 +59,15 @@ class PostReceive # rubocop:disable Scalability/IdempotentWorker
     after_project_changes_hooks(project, user, changes.refs, changes.repository_data)
   end
 
-  def process_wiki_changes(post_received, project)
-    project.touch(:last_activity_at, :last_repository_updated_at)
-    project.wiki.repository.expire_statistics_caches
-    ProjectCacheWorker.perform_async(project.id, [], [:wiki_size])
-
+  def process_wiki_changes(post_received, wiki)
     user = identify_user(post_received)
     return false unless user
 
     # We only need to expire certain caches once per push
-    expire_caches(post_received, project.wiki.repository)
+    expire_caches(post_received, wiki.repository)
+    wiki.repository.expire_statistics_caches
 
-    ::Git::WikiPushService.new(project, user, changes: post_received.changes).execute
+    ::Git::WikiPushService.new(wiki, user, changes: post_received.changes).execute
   end
 
   def process_snippet_changes(post_received, snippet)

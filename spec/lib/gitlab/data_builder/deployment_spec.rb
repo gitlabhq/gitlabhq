@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::DataBuilder::Deployment do
   describe '.build' do
     it 'returns the object kind for a deployment' do
-      deployment = build(:deployment)
+      deployment = build(:deployment, deployable: nil, environment: create(:environment))
 
       data = described_class.build(deployment)
 

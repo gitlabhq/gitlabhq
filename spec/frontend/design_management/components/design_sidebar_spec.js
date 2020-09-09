@@ -154,22 +154,22 @@ describe('Design management design sidebar component', () => {
     });
 
     it('emits correct event on discussion create note error', () => {
-      findFirstDiscussion().vm.$emit('createNoteError', 'payload');
+      findFirstDiscussion().vm.$emit('create-note-error', 'payload');
       expect(wrapper.emitted('onDesignDiscussionError')).toEqual([['payload']]);
     });
 
     it('emits correct event on discussion update note error', () => {
-      findFirstDiscussion().vm.$emit('updateNoteError', 'payload');
+      findFirstDiscussion().vm.$emit('update-note-error', 'payload');
       expect(wrapper.emitted('updateNoteError')).toEqual([['payload']]);
     });
 
     it('emits correct event on discussion resolve error', () => {
-      findFirstDiscussion().vm.$emit('resolveDiscussionError', 'payload');
+      findFirstDiscussion().vm.$emit('resolve-discussion-error', 'payload');
       expect(wrapper.emitted('resolveDiscussionError')).toEqual([['payload']]);
     });
 
     it('changes prop correctly on opening discussion form', () => {
-      findFirstDiscussion().vm.$emit('openForm', 'some-id');
+      findFirstDiscussion().vm.$emit('open-form', 'some-id');
 
       return wrapper.vm.$nextTick().then(() => {
         expect(findFirstDiscussion().props('discussionWithOpenForm')).toBe('some-id');

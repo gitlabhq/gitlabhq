@@ -380,7 +380,7 @@ export default {
                 dir="auto"
                 :disabled="isSubmitting"
                 name="note[note]"
-                class="note-textarea js-vue-comment-form js-note-text js-gfm-input js-autosize markdown-area js-vue-textarea qa-comment-input"
+                class="note-textarea js-vue-comment-form js-note-text js-gfm-input js-autosize markdown-area qa-comment-input"
                 data-supports-quick-actions="true"
                 :aria-label="__('Description')"
                 :placeholder="__('Write a comment or drag your files here…')"

@@ -17,18 +17,27 @@ RSpec.describe ProjectWiki do
       end
     end
 
-    describe '#update_container_activity' do
+    describe '#after_wiki_activity' do
       it 'updates project activity' do
         wiki_container.update!(
           last_activity_at: nil,
           last_repository_updated_at: nil
         )
 
-        subject.create_page('Test Page', 'This is content')
+        subject.send(:after_wiki_activity)
         wiki_container.reload
 
         expect(wiki_container.last_activity_at).to be_within(1.minute).of(Time.current)
         expect(wiki_container.last_repository_updated_at).to be_within(1.minute).of(Time.current)
+      end
+    end
+
+    describe '#after_post_receive' do
+      it 'updates project activity and expires caches' do
+        expect(wiki).to receive(:after_wiki_activity)
+        expect(ProjectCacheWorker).to receive(:perform_async).with(wiki_container.id, [], [:wiki_size])
+
+        subject.send(:after_post_receive)
       end
     end
   end

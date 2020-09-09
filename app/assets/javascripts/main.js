@@ -31,7 +31,6 @@ import initLogoAnimation from './logo';
 import initFrequentItemDropdowns from './frequent_items';
 import initBreadcrumbs from './breadcrumb';
 import initUsagePingConsent from './usage_ping_consent';
-import initPerformanceBar from './performance_bar';
 import initSearchAutocomplete from './search_autocomplete';
 import GlFieldErrors from './gl_field_errors';
 import initUserPopovers from './user_popovers';
@@ -163,8 +162,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const $body = $('body');
   const $document = $(document);
   const bootstrapBreakpoint = bp.getBreakpointSize();
-
-  if (document.querySelector('#js-peek')) initPerformanceBar({ container: '#js-peek' });
 
   initUserTracking();
   initLayoutNav();

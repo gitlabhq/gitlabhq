@@ -606,36 +606,36 @@ Example profile definition:
 
 ```yaml
 Profiles:
-- Name: Quick-10
-  DefaultProfile: Quick
-  Routes:
-  - Route: *Route0
-    Checks:
-    - Name: FormBodyFuzzingCheck
-      Configuration:
-        FuzzingCount: 10
-        UnicodeFuzzing: true
-    - Name: GeneralFuzzingCheck
-      Configuration:
-        FuzzingCount: 10
-        UnicodeFuzzing: true
-    - Name: JsonFuzzingCheck
-      Configuration:
-        FuzzingCount: 10
-        UnicodeFuzzing: true
-    - Name: XmlFuzzingCheck
-      Configuration:
-        FuzzingCount: 10
-        UnicodeFuzzing: true
+  - Name: Quick-10
+    DefaultProfile: Quick
+    Routes:
+      - Route: *Route0
+        Checks:
+          - Name: FormBodyFuzzingCheck
+            Configuration:
+              FuzzingCount: 10
+              UnicodeFuzzing: true
+          - Name: GeneralFuzzingCheck
+            Configuration:
+              FuzzingCount: 10
+              UnicodeFuzzing: true
+          - Name: JsonFuzzingCheck
+            Configuration:
+              FuzzingCount: 10
+              UnicodeFuzzing: true
+          - Name: XmlFuzzingCheck
+            Configuration:
+              FuzzingCount: 10
+              UnicodeFuzzing: true
 ```
 
 To turn off the General Fuzzing Check you can remove these lines:
 
 ```yaml
-    - Name: GeneralFuzzingCheck
-      Configuration:
-        FuzzingCount: 10
-        UnicodeFuzzing: true
+- Name: GeneralFuzzingCheck
+  Configuration:
+    FuzzingCount: 10
+    UnicodeFuzzing: true
 ```
 
 This results in the following YAML:
@@ -644,20 +644,20 @@ This results in the following YAML:
 - Name: Quick-10
   DefaultProfile: Quick
   Routes:
-  - Route: *Route0
-    Checks:
-    - Name: FormBodyFuzzingCheck
-      Configuration:
-        FuzzingCount: 10
-        UnicodeFuzzing: true
-    - Name: JsonFuzzingCheck
-      Configuration:
-        FuzzingCount: 10
-        UnicodeFuzzing: true
-    - Name: XmlFuzzingCheck
-      Configuration:
-        FuzzingCount: 10
-        UnicodeFuzzing: true
+    - Route: *Route0
+      Checks:
+        - Name: FormBodyFuzzingCheck
+          Configuration:
+            FuzzingCount: 10
+            UnicodeFuzzing: true
+        - Name: JsonFuzzingCheck
+          Configuration:
+            FuzzingCount: 10
+            UnicodeFuzzing: true
+        - Name: XmlFuzzingCheck
+          Configuration:
+            FuzzingCount: 10
+            UnicodeFuzzing: true
 ```
 
 ### Turn off an Assertion for a Check
@@ -671,14 +671,14 @@ This example shows the FormBody Fuzzing Check:
 
 ```yaml
 Checks:
-- Name: FormBodyFuzzingCheck
-  Configuration:
-    FuzzingCount: 30
-    UnicodeFuzzing: true
-  Assertions:
-  - Name: LogAnalysisAssertion
-  - Name: ResponseAnalysisAssertion
-  - Name: StatusCodeAssertion
+  - Name: FormBodyFuzzingCheck
+    Configuration:
+      FuzzingCount: 30
+      UnicodeFuzzing: true
+    Assertions:
+      - Name: LogAnalysisAssertion
+      - Name: ResponseAnalysisAssertion
+      - Name: StatusCodeAssertion
 ```
 
 Here you can see three Assertions are on by default. A common source of false positives is
@@ -688,30 +688,30 @@ example provides only the other two Assertions (`LogAnalysisAssertion`,
 
 ```yaml
 Profiles:
-- Name: Quick-10
-  DefaultProfile: Quick
-  Routes:
-  - Route: *Route0
-    Checks:
-    - Name: FormBodyFuzzingCheck
-      Configuration:
-        FuzzingCount: 10
-        UnicodeFuzzing: true
-      Assertions:
-      - Name: LogAnalysisAssertion
-      - Name: ResponseAnalysisAssertion
-    - Name: GeneralFuzzingCheck
-      Configuration:
-        FuzzingCount: 10
-        UnicodeFuzzing: true
-    - Name: JsonFuzzingCheck
-      Configuration:
-        FuzzingCount: 10
-        UnicodeFuzzing: true
-    - Name: XmlInjectionCheck
-      Configuration:
-        FuzzingCount: 10
-        UnicodeFuzzing: true
+  - Name: Quick-10
+    DefaultProfile: Quick
+    Routes:
+      - Route: *Route0
+        Checks:
+          - Name: FormBodyFuzzingCheck
+            Configuration:
+              FuzzingCount: 10
+              UnicodeFuzzing: true
+            Assertions:
+              - Name: LogAnalysisAssertion
+              - Name: ResponseAnalysisAssertion
+          - Name: GeneralFuzzingCheck
+            Configuration:
+              FuzzingCount: 10
+              UnicodeFuzzing: true
+          - Name: JsonFuzzingCheck
+            Configuration:
+              FuzzingCount: 10
+              UnicodeFuzzing: true
+          - Name: XmlInjectionCheck
+            Configuration:
+              FuzzingCount: 10
+              UnicodeFuzzing: true
 ```
 
 <!--

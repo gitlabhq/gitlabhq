@@ -10,6 +10,11 @@ module QA
 
           view 'app/assets/javascripts/ide/components/activity_bar.vue' do
             element :commit_mode_tab
+            element :edit_mode_tab
+          end
+
+          view 'app/assets/javascripts/ide/components/ide_status_bar.vue' do
+            element :commit_sha_content
           end
 
           view 'app/assets/javascripts/ide/components/ide_tree.vue' do
@@ -104,11 +109,19 @@ module QA
             end
           end
 
+          def commit_sha
+            return unless has_element?(:commit_sha_content, wait: 0)
+
+            find_element(:commit_sha_content).text
+          end
+
           def commit_changes(open_merge_request: false)
             # Clicking :begin_commit_button switches from the
             # edit to the commit view
-            click_element :begin_commit_button
-            active_element? :commit_mode_tab
+            click_element(:begin_commit_button)
+            active_element?(:commit_mode_tab)
+
+            original_commit = commit_sha
 
             # After clicking :begin_commit_button, there is an animation
             # that hides :begin_commit_button and shows :commit_button
@@ -126,16 +139,17 @@ module QA
               # Click :commit_button and keep retrying just in case part of the
               # animation is still in process even when the buttons have the
               # expected visibility.
-              commit_success_msg_shown = retry_until(sleep_interval: 5) do
+              commit_success = retry_until(sleep_interval: 5) do
                 click_element(:commit_to_current_branch_radio) if has_element?(:commit_to_current_branch_radio)
                 click_element(:commit_button) if has_element?(:commit_button)
 
-                wait_until(reload: false) do
-                  has_text?('Your changes have been committed')
+                # If this is the first commit, the commit SHA only appears after reloading
+                wait_until(reload: true) do
+                  active_element?(:edit_mode_tab) && commit_sha != original_commit
                 end
               end
 
-              raise "The changes do not appear to have been committed successfully." unless commit_success_msg_shown
+              raise "The changes do not appear to have been committed successfully." unless commit_success
             end
           end
 

@@ -177,9 +177,9 @@ include:
 variables:
   DAST_WEBSITE: https://example.com
   DAST_AUTH_URL: https://example.com/sign-in
-  DAST_USERNAME_FIELD: session[user] # the name of username field at the sign-in HTML form
-  DAST_PASSWORD_FIELD: session[password] # the name of password field at the sign-in HTML form
-  DAST_AUTH_EXCLUDE_URLS: http://example.com/sign-out,http://example.com/sign-out-2 # optional, URLs to skip during the authenticated scan; comma-separated, no spaces in between
+  DAST_USERNAME_FIELD: session[user]  # the name of username field at the sign-in HTML form
+  DAST_PASSWORD_FIELD: session[password]  # the name of password field at the sign-in HTML form
+  DAST_AUTH_EXCLUDE_URLS: http://example.com/sign-out,http://example.com/sign-out-2  # optional, URLs to skip during the authenticated scan; comma-separated, no spaces in between
 ```
 
 The results are saved as a

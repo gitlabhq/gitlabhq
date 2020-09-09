@@ -133,8 +133,8 @@ describe('Design note component', () => {
         expect(findReplyForm().exists()).toBe(true);
       });
 
-      it('hides the form on hideForm event', () => {
-        findReplyForm().vm.$emit('cancelForm');
+      it('hides the form on cancel-form event', () => {
+        findReplyForm().vm.$emit('cancel-form');
 
         return wrapper.vm.$nextTick().then(() => {
           expect(findReplyForm().exists()).toBe(false);
@@ -142,8 +142,8 @@ describe('Design note component', () => {
         });
       });
 
-      it('calls a mutation on submitForm event and hides a form', () => {
-        findReplyForm().vm.$emit('submitForm');
+      it('calls a mutation on submit-form event and hides a form', () => {
+        findReplyForm().vm.$emit('submit-form');
         expect(mutate).toHaveBeenCalled();
 
         return mutate()

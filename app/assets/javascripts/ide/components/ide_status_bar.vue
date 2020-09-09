@@ -103,6 +103,7 @@ export default {
         :title="lastCommit.message"
         :href="getCommitPath(lastCommit.short_id)"
         class="commit-sha"
+        data-qa-selector="commit_sha_content"
         >{{ lastCommit.short_id }}</a
       >
       by

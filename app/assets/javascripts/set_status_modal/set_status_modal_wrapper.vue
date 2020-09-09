@@ -6,7 +6,6 @@ import { GlModal, GlTooltipDirective, GlIcon } from '@gitlab/ui';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
 import { __, s__ } from '~/locale';
 import Api from '~/api';
-import eventHub from './event_hub';
 import EmojiMenuInModal from './emoji_menu_in_modal';
 import * as Emoji from '~/emoji';
 
@@ -48,15 +47,12 @@ export default {
     },
   },
   mounted() {
-    eventHub.$on('openModal', this.openModal);
+    this.$root.$emit('bv::show::modal', this.modalId);
   },
   beforeDestroy() {
     this.emojiMenu.destroy();
   },
   methods: {
-    openModal() {
-      this.$root.$emit('bv::show::modal', this.modalId);
-    },
     closeModal() {
       this.$root.$emit('bv::hide::modal', this.modalId);
     },

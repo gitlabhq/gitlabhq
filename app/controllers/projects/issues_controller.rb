@@ -10,13 +10,8 @@ class Projects::IssuesController < Projects::ApplicationController
   include SpammableActions
   include RecordUserLastActivity
 
-  def issue_except_actions
-    %i[index calendar new create bulk_update import_csv export_csv service_desk]
-  end
-
-  def set_issuables_index_only_actions
-    %i[index calendar service_desk]
-  end
+  ISSUES_EXCEPT_ACTIONS = %i[index calendar new create bulk_update import_csv export_csv service_desk].freeze
+  SET_ISSUEABLES_INDEX_ONLY_ACTIONS = %i[index calendar service_desk].freeze
 
   prepend_before_action(only: [:index]) { authenticate_sessionless_user!(:rss) }
   prepend_before_action(only: [:calendar]) { authenticate_sessionless_user!(:ics) }
@@ -25,10 +20,10 @@ class Projects::IssuesController < Projects::ApplicationController
 
   before_action :whitelist_query_limiting, only: [:create, :create_merge_request, :move, :bulk_update]
   before_action :check_issues_available!
-  before_action :issue, unless: ->(c) { c.issue_except_actions.include?(c.action_name.to_sym) }
-  after_action :log_issue_show, unless: ->(c) { c.issue_except_actions.include?(c.action_name.to_sym) }
+  before_action :issue, unless: ->(c) { ISSUES_EXCEPT_ACTIONS.include?(c.action_name.to_sym) }
+  after_action :log_issue_show, unless: ->(c) { ISSUES_EXCEPT_ACTIONS.include?(c.action_name.to_sym) }
 
-  before_action :set_issuables_index, if: ->(c) { c.set_issuables_index_only_actions.include?(c.action_name.to_sym) }
+  before_action :set_issuables_index, if: ->(c) { SET_ISSUEABLES_INDEX_ONLY_ACTIONS.include?(c.action_name.to_sym) }
 
   # Allow write(create) issue
   before_action :authorize_create_issue!, only: [:new, :create]

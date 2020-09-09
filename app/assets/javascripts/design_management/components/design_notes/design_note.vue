@@ -1,7 +1,7 @@
 <script>
 /* eslint-disable vue/no-v-html */
 import { ApolloMutation } from 'vue-apollo';
-import { GlTooltipDirective, GlIcon } from '@gitlab/ui';
+import { GlTooltipDirective, GlIcon, GlLink } from '@gitlab/ui';
 import updateNoteMutation from '../../graphql/mutations/update_note.mutation.graphql';
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
@@ -18,6 +18,7 @@ export default {
     DesignReplyForm,
     ApolloMutation,
     GlIcon,
+    GlLink,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -83,27 +84,27 @@ export default {
       :img-alt="author.username"
       :img-size="40"
     />
-    <div class="d-flex justify-content-between">
+    <div class="gl-display-flex gl-justify-content-space-between">
       <div>
-        <a
+        <gl-link
           v-once
           :href="author.webUrl"
           class="js-user-link"
           :data-user-id="author.id"
           :data-username="author.username"
         >
-          <span class="note-header-author-name bold">{{ author.name }}</span>
+          <span class="note-header-author-name gl-font-weight-bold">{{ author.name }}</span>
           <span v-if="author.status_tooltip_html" v-html="author.status_tooltip_html"></span>
           <span class="note-headline-light">@{{ author.username }}</span>
-        </a>
+        </gl-link>
         <span class="note-headline-light note-headline-meta">
           <span class="system-note-message"> <slot></slot> </span>
-          <a
+          <gl-link
             class="note-timestamp system-note-separator gl-display-block gl-mb-2"
             :href="`#note_${noteAnchorId}`"
           >
             <time-ago-tooltip :time="note.createdAt" tooltip-placement="bottom" />
-          </a>
+          </gl-link>
         </span>
       </div>
       <div class="gl-display-flex">
@@ -122,7 +123,7 @@ export default {
     </div>
     <template v-if="!isEditing">
       <div
-        class="note-text js-note-text md"
+        class="note-text js-note-text"
         data-qa-selector="note_content"
         v-html="note.bodyHtml"
       ></div>
@@ -143,9 +144,9 @@ export default {
         :is-saving="loading"
         :markdown-preview-path="markdownPreviewPath"
         :is-new-comment="false"
-        class="mt-5"
-        @submitForm="mutate"
-        @cancelForm="hideForm"
+        class="gl-mt-5"
+        @submit-form="mutate"
+        @cancel-form="hideForm"
       />
     </apollo-mutation>
   </timeline-entry-item>

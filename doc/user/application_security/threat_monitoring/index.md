@@ -66,7 +66,7 @@ global:
     enabled: true
     metrics:
       enabled:
-      - 'flow:sourceContext=namespace;destinationContext=namespace'
+        - 'flow:sourceContext=namespace;destinationContext=namespace'
 ```
 
 The **Container Network Policy** section displays the following information

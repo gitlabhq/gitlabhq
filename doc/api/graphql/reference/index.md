@@ -2374,7 +2374,7 @@ Representing a todo entry
 | Name  | Type  | Description |
 | ---   |  ---- | ----------  |
 | `action` | TodoActionEnum! | Action of the todo |
-| `author` | User! | The owner of this todo |
+| `author` | User! | The author of this todo |
 | `body` | String! | Body of the todo |
 | `createdAt` | Time! | Timestamp this todo was created |
 | `group` | Group | Group this todo is associated with |

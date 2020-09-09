@@ -210,7 +210,7 @@ describe('Design management design index page', () => {
       },
     );
 
-    findDiscussionForm().vm.$emit('submitForm');
+    findDiscussionForm().vm.$emit('submit-form');
     expect(mutate).toHaveBeenCalledWith(createDiscussionMutationVariables);
 
     return wrapper.vm
@@ -235,7 +235,7 @@ describe('Design management design index page', () => {
       },
     );
 
-    findDiscussionForm().vm.$emit('cancelForm');
+    findDiscussionForm().vm.$emit('cancel-form');
 
     expect(wrapper.vm.comment).toBe('');
 

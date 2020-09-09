@@ -152,6 +152,18 @@ $red-800: #8d1300 !default;
 $red-900: #660e00 !default;
 $red-950: #4d0a00 !default;
 
+$purple-50: #f4f0ff !default;
+$purple-100: #e1d8f9 !default;
+$purple-200: #cbbbf2 !default;
+$purple-300: #ac93e6 !default;
+$purple-400: #9475db !default;
+$purple-500: #7b58cf !default;
+$purple-600: #694cc0 !default;
+$purple-700: #5943b6 !default;
+$purple-800: #453894 !default;
+$purple-900: #2f2a6b !default;
+$purple-950: #232150 !default;
+
 $gray-10: #fafafa !default;
 $gray-50: #f0f0f0 !default;
 $gray-100: #dbdbdb !default;
@@ -219,6 +231,20 @@ $reds: (
   '800': $red-800,
   '900': $red-900,
   '950': $red-950
+);
+
+$purples: (
+  '50': $purple-50,
+  '100': $purple-100,
+  '200': $purple-200,
+  '300': $purple-300,
+  '400': $purple-400,
+  '500': $purple-500,
+  '600': $purple-600,
+  '700': $purple-700,
+  '800': $purple-800,
+  '900': $purple-900,
+  '950': $purple-950
 );
 
 $grays: (

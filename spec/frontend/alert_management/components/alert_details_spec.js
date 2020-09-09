@@ -1,7 +1,8 @@
 import { mount, shallowMount } from '@vue/test-utils';
-import { GlAlert, GlLoadingIcon, GlTable } from '@gitlab/ui';
+import { GlAlert, GlLoadingIcon } from '@gitlab/ui';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
+import AlertDetailsTable from '~/vue_shared/components/alert_details_table.vue';
 import AlertDetails from '~/alert_management/components/alert_details.vue';
 import createIssueMutation from '~/alert_management/graphql/mutations/create_issue_from_alert.mutation.graphql';
 import { joinPaths } from '~/lib/utils/url_utility';
@@ -21,8 +22,6 @@ describe('AlertDetails', () => {
   const projectIssuesPath = 'root/alerts/-/issues';
   const projectId = '1';
   const $router = { replace: jest.fn() };
-
-  const findDetailsTable = () => wrapper.find(GlTable);
 
   function mountComponent({ data, loading = false, mountMethod = shallowMount, stubs = {} } = {}) {
     wrapper = mountMethod(AlertDetails, {
@@ -66,6 +65,7 @@ describe('AlertDetails', () => {
   const findCreateIncidentBtn = () => wrapper.find('[data-testid="createIncidentBtn"]');
   const findViewIncidentBtn = () => wrapper.find('[data-testid="viewIncidentBtn"]');
   const findIncidentCreationAlert = () => wrapper.find('[data-testid="incidentCreationError"]');
+  const findDetailsTable = () => wrapper.find(AlertDetailsTable);
 
   describe('Alert details', () => {
     describe('when alert is null', () => {

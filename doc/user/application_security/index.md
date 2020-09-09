@@ -166,7 +166,8 @@ reports. You can specify the list of all headers to be masked. For details, see
 
 ### Dismissing a vulnerability
 
-To dismiss a vulnerability, you must set its status to Dismissed. Follow these steps to do so:
+To dismiss a vulnerability, you must set its status to Dismissed. This dismisses the vulnerability
+for the entire project. Follow these steps to do so:
 
 1. Select the vulnerability in the Security Dashboard.
 1. Select **Dismissed** from the **Status** selector menu at the top-right.

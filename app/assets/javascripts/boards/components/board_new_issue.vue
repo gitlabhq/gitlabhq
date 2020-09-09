@@ -1,11 +1,13 @@
 <script>
 import $ from 'jquery';
+import { mapActions, mapGetters } from 'vuex';
 import { GlButton } from '@gitlab/ui';
 import { getMilestone } from 'ee_else_ce/boards/boards_util';
 import ListIssue from 'ee_else_ce/boards/models/issue';
 import eventHub from '../eventhub';
 import ProjectSelect from './project_select.vue';
 import boardsStore from '../stores/boards_store';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 export default {
   name: 'BoardNewIssue',
@@ -13,6 +15,7 @@ export default {
     ProjectSelect,
     GlButton,
   },
+  mixins: [glFeatureFlagMixin()],
   props: {
     groupId: {
       type: Number,
@@ -32,6 +35,7 @@ export default {
     };
   },
   computed: {
+    ...mapGetters(['isSwimlanesOn']),
     disabled() {
       if (this.groupId) {
         return this.title === '' || !this.selectedProject.name;
@@ -44,6 +48,7 @@ export default {
     eventHub.$on('setSelectedProject', this.setSelectedProject);
   },
   methods: {
+    ...mapActions(['addListIssue', 'addListIssueFailure']),
     submit(e) {
       e.preventDefault();
       if (this.title.trim() === '') return Promise.resolve();
@@ -70,21 +75,31 @@ export default {
       eventHub.$emit(`scroll-board-list-${this.list.id}`);
       this.cancel();
 
+      if (this.glFeatures.boardsWithSwimlanes && this.isSwimlanesOn) {
+        this.addListIssue({ list: this.list, issue, position: 0 });
+      }
+
       return this.list
         .newIssue(issue)
         .then(() => {
           // Need this because our jQuery very kindly disables buttons on ALL form submissions
           $(this.$refs.submitButton).enable();
 
-          boardsStore.setIssueDetail(issue);
-          boardsStore.setListDetail(this.list);
+          if (!this.glFeatures.boardsWithSwimlanes || !this.isSwimlanesOn) {
+            boardsStore.setIssueDetail(issue);
+            boardsStore.setListDetail(this.list);
+          }
         })
         .catch(() => {
           // Need this because our jQuery very kindly disables buttons on ALL form submissions
           $(this.$refs.submitButton).enable();
 
           // Remove the issue
-          this.list.removeIssue(issue);
+          if (this.glFeatures.boardsWithSwimlanes && this.isSwimlanesOn) {
+            this.addListIssueFailure({ list: this.list, issue });
+          } else {
+            this.list.removeIssue(issue);
+          }
 
           // Show error message
           this.error = true;

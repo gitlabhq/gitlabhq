@@ -44,6 +44,7 @@ export default {
           :aria-label="s__('IDE|Edit')"
           data-container="body"
           data-placement="right"
+          data-qa-selector="edit_mode_tab"
           type="button"
           class="ide-sidebar-link js-ide-edit-mode"
           @click.prevent="changedActivityView($event, $options.leftSidebarViews.edit.name)"
@@ -78,8 +79,9 @@ export default {
           :aria-label="s__('IDE|Commit')"
           data-container="body"
           data-placement="right"
+          data-qa-selector="commit_mode_tab"
           type="button"
-          class="ide-sidebar-link js-ide-commit-mode qa-commit-mode-tab"
+          class="ide-sidebar-link js-ide-commit-mode"
           @click.prevent="changedActivityView($event, $options.leftSidebarViews.commit.name)"
         >
           <gl-icon name="commit" />

@@ -117,6 +117,29 @@ export const mockIssue = {
   ],
 };
 
+export const mockIssue2 = {
+  title: 'Planning',
+  id: 2,
+  iid: 2,
+  confidential: false,
+  labels: [
+    {
+      id: 1,
+      title: 'plan',
+      color: 'blue',
+      description: 'planning',
+    },
+  ],
+  assignees: [
+    {
+      id: 1,
+      name: 'name',
+      username: 'username',
+      avatar_url: 'http://avatar_url',
+    },
+  ],
+};
+
 export const BoardsMockData = {
   GET: {
     '/test/-/boards/1/lists/300/issues?id=300&page=1': {

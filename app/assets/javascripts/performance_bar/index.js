@@ -5,7 +5,7 @@ import axios from '~/lib/utils/axios_utils';
 import PerformanceBarService from './services/performance_bar_service';
 import PerformanceBarStore from './stores/performance_bar_store';
 
-export default ({ container }) =>
+const initPerformanceBar = ({ container }) =>
   new Vue({
     el: container,
     components: {
@@ -118,3 +118,9 @@ export default ({ container }) =>
       });
     },
   });
+
+document.addEventListener('DOMContentLoaded', () => {
+  initPerformanceBar({ container: '#js-peek' });
+});
+
+export default initPerformanceBar;

@@ -235,6 +235,14 @@ export default {
     notImplemented();
   },
 
+  addListIssue: ({ commit }, { list, issue, position }) => {
+    commit(types.ADD_ISSUE_TO_LIST, { list, issue, position });
+  },
+
+  addListIssueFailure: ({ commit }, { list, issue }) => {
+    commit(types.ADD_ISSUE_TO_LIST_FAILURE, { list, issue });
+  },
+
   fetchBacklog: () => {
     notImplemented();
   },

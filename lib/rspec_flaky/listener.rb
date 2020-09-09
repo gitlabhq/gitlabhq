@@ -32,21 +32,19 @@ module RspecFlaky
       flaky_examples[current_example.uid] = flaky_example
     end
 
-    # rubocop:disable Gitlab/RailsLogger
     def dump_summary(_)
       RspecFlaky::Report.new(flaky_examples).write(RspecFlaky::Config.flaky_examples_report_path)
       # write_report_file(flaky_examples, RspecFlaky::Config.flaky_examples_report_path)
 
       new_flaky_examples = flaky_examples - suite_flaky_examples
       if new_flaky_examples.any?
-        Rails.logger.warn "\nNew flaky examples detected:\n"
-        Rails.logger.warn Gitlab::Json.pretty_generate(new_flaky_examples.to_h)
+        Gitlab::AppLogger.warn "\nNew flaky examples detected:\n"
+        Gitlab::AppLogger.warn Gitlab::Json.pretty_generate(new_flaky_examples.to_h)
 
         RspecFlaky::Report.new(new_flaky_examples).write(RspecFlaky::Config.new_flaky_examples_report_path)
         # write_report_file(new_flaky_examples, RspecFlaky::Config.new_flaky_examples_report_path)
       end
     end
-    # rubocop:enable Gitlab/RailsLogger
 
     private
 
