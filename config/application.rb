@@ -209,6 +209,13 @@ module Gitlab
     config.assets.paths << "#{config.root}/node_modules/xterm/src/"
     config.assets.precompile << "xterm.css"
 
+    # Add EE assets
+    if Gitlab.ee?
+      %w[images javascripts stylesheets].each do |path|
+        config.assets.paths << "#{config.root}/ee/app/assets/#{path}"
+      end
+    end
+
     # Import path for EE specific SCSS entry point
     # In CE it will import a noop file, in EE a functioning file
     # Order is important, so that the ee file takes precedence:

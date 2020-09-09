@@ -19466,6 +19466,8 @@ CREATE UNIQUE INDEX index_ci_pipeline_variables_on_pipeline_id_and_key ON public
 
 CREATE INDEX index_ci_pipelines_config_on_pipeline_id ON public.ci_pipelines_config USING btree (pipeline_id);
 
+CREATE INDEX index_ci_pipelines_for_ondemand_dast_scans ON public.ci_pipelines USING btree (id) WHERE (source = 13);
+
 CREATE INDEX index_ci_pipelines_on_auto_canceled_by_id ON public.ci_pipelines USING btree (auto_canceled_by_id);
 
 CREATE INDEX index_ci_pipelines_on_ci_ref_id ON public.ci_pipelines USING btree (ci_ref_id) WHERE (ci_ref_id IS NOT NULL);
