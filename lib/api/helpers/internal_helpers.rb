@@ -67,7 +67,7 @@ module API
 
         result == 'PONG'
       rescue => e
-        Rails.logger.warn("GitLab: An unexpected error occurred in pinging to Redis: #{e}") # rubocop:disable Gitlab/RailsLogger
+        Gitlab::AppLogger.warn("GitLab: An unexpected error occurred in pinging to Redis: #{e}")
         false
       end
 

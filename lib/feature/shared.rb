@@ -15,8 +15,18 @@ class Feature
         optional: true,
         rollout_issue: true,
         example: <<-EOS
-          Feature.enabled?(:my_feature_flag)
-          Feature.enabled?(:my_feature_flag, type: :development)
+          Feature.enabled?(:my_feature_flag, project)
+          Feature.enabled?(:my_feature_flag, project, type: :development)
+          push_frontend_feature_flag?(:my_feature_flag, project)
+        EOS
+      },
+      ops: {
+        description: "Long-lived feature flags that control operational aspects of GitLab's behavior",
+        optional: true,
+        rollout_issue: false,
+        example: <<-EOS
+          Feature.enabled?(:my_ops_flag, type: ops)
+          push_frontend_feature_flag?(:my_ops_flag, project, type: :ops)
         EOS
       }
     }.freeze

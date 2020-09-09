@@ -46,7 +46,7 @@
 - if @merge_request_to_resolve_discussions_of
   .form-group.row
     .col-sm-10.offset-sm-2
-      = icon('info-circle')
+      = sprite_icon('information-o')
       - if @merge_request_to_resolve_discussions_of.discussions_can_be_resolved_by?(current_user)
         = hidden_field_tag 'merge_request_to_resolve_discussions_of', @merge_request_to_resolve_discussions_of.iid
         - if @discussion_to_resolve

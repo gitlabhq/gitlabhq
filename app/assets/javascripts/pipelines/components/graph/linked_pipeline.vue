@@ -150,7 +150,7 @@ export default {
         :class="`js-pipeline-expand-${pipeline.id} ${expandButtonPosition}`"
         :icon="expandedIcon"
         data-testid="expandPipelineButton"
-        data-qa-selector="linked_pipeline_button"
+        data-qa-selector="expand_pipeline_button"
         @click="onClickLinkedPipeline"
       />
     </div>

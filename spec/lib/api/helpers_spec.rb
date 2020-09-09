@@ -183,7 +183,7 @@ RSpec.describe API::Helpers do
     end
 
     it "logs an exception" do
-      expect(Rails.logger).to receive(:warn).with(/Tracking event failed/)
+      expect(Gitlab::AppLogger).to receive(:warn).with(/Tracking event failed/)
 
       subject.track_event('my_event', category: nil)
     end

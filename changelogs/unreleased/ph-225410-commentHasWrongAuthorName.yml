@@ -1,0 +1,5 @@
+---
+title: Fixed note having wrong author after deleting
+merge_request: 41747
+author:
+type: fixed

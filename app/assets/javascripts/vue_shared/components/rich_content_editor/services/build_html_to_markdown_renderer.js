@@ -96,7 +96,7 @@ const buildHTMLToMarkdownRender = (baseRenderer, formattingPreferences = {}) => 
       const isReferenceDefinition = Boolean(node.dataset.sseReferenceDefinition);
 
       return isReferenceDefinition
-        ? `\n\n${node.innerText}\n`
+        ? `\n\n${node.innerText}\n\n`
         : baseRenderer.convert(node, subContent);
     },
   };

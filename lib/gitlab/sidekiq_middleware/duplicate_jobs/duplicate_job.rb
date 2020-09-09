@@ -71,7 +71,7 @@ module Gitlab
         end
 
         def droppable?
-          idempotent? && ::Feature.disabled?("disable_#{queue_name}_deduplication")
+          idempotent? && ::Feature.disabled?("disable_#{queue_name}_deduplication", type: :ops)
         end
 
         def scheduled_at

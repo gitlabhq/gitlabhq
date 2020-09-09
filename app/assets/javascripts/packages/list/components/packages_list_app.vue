@@ -2,11 +2,14 @@
 import { mapActions, mapState } from 'vuex';
 import { GlEmptyState, GlTab, GlTabs, GlLink, GlSprintf } from '@gitlab/ui';
 import { s__, sprintf } from '~/locale';
+import createFlash from '~/flash';
 import PackageFilter from './packages_filter.vue';
 import PackageList from './packages_list.vue';
 import PackageSort from './packages_sort.vue';
-import { PACKAGE_REGISTRY_TABS } from '../constants';
+import { PACKAGE_REGISTRY_TABS, DELETE_PACKAGE_SUCCESS_MESSAGE } from '../constants';
 import PackagesComingSoon from '../coming_soon/packages_coming_soon.vue';
+import { SHOW_DELETE_SUCCESS_ALERT } from '~/packages/shared/constants';
+import { historyReplaceState } from '~/lib/utils/common_utils';
 
 export default {
   components: {
@@ -34,6 +37,7 @@ export default {
   },
   mounted() {
     this.requestPackagesList();
+    this.checkDeleteAlert();
   },
   methods: {
     ...mapActions(['requestPackagesList', 'requestDeletePackage', 'setSelectedType']),
@@ -63,6 +67,16 @@ export default {
       }
 
       return s__('PackageRegistry|There are no packages yet');
+    },
+    checkDeleteAlert() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const showAlert = urlParams.get(SHOW_DELETE_SUCCESS_ALERT);
+      if (showAlert) {
+        // to be refactored to use gl-alert
+        createFlash({ message: DELETE_PACKAGE_SUCCESS_MESSAGE, type: 'notice' });
+        const cleanUrl = window.location.href.split('?')[0];
+        historyReplaceState(cleanUrl);
+      }
     },
   },
   i18n: {

@@ -3321,6 +3321,9 @@ msgstr ""
 msgid "Are you sure you want to revoke this nickname?"
 msgstr ""
 
+msgid "Are you sure you want to revoke this personal access token? This action cannot be undone."
+msgstr ""
+
 msgid "Are you sure you want to stop this environment?"
 msgstr ""
 

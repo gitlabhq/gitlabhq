@@ -178,7 +178,9 @@ describe('rich_content_editor/services/html_to_markdown_renderer', () => {
     });
 
     it('returns raw text when pre node has sse-reference-definitions class', () => {
-      expect(htmlToMarkdownRenderer['PRE CODE'](node, subContent)).toBe(`\n\n${node.innerText}\n`);
+      expect(htmlToMarkdownRenderer['PRE CODE'](node, subContent)).toBe(
+        `\n\n${node.innerText}\n\n`,
+      );
     });
 
     it('returns base result when pre node does not have sse-reference-definitions class', () => {

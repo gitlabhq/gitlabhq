@@ -21,7 +21,7 @@ module QA
           end
 
           view 'app/assets/javascripts/pipelines/components/graph/linked_pipeline.vue' do
-            element :linked_pipeline_button
+            element :expand_pipeline_button
             element :child_pipeline
           end
 
@@ -69,8 +69,10 @@ module QA
             click_element(:job_link, text: job_name)
           end
 
-          def click_linked_job(project_name)
-            click_element(:linked_pipeline_button, text: /#{project_name}/)
+          def expand_child_pipeline
+            within_element(:child_pipeline) do
+              click_element(:expand_pipeline_button)
+            end
           end
 
           def click_on_first_job

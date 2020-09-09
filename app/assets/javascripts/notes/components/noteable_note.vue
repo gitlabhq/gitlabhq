@@ -361,7 +361,7 @@ export default {
         </template>
       </gl-sprintf>
     </div>
-    <div v-once class="timeline-icon">
+    <div class="timeline-icon">
       <user-avatar-link
         :link-href="author.path"
         :img-src="author.avatar_url"
@@ -374,7 +374,6 @@ export default {
     <div class="timeline-content">
       <div class="note-header">
         <note-header
-          v-once
           :author="author"
           :created-at="note.created_at"
           :note-id="note.id"

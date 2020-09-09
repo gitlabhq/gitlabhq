@@ -25,9 +25,7 @@ This document is the subject of continued work as part of an epic to [improve in
 
 ## Types of feature flags
 
-Currently, only a single type of feature flag is available.
-Additional feature flag types will be provided in the future,
-with descriptions for their usage.
+Choose a feature flag type that matches the expected usage.
 
 ### `development` type
 
@@ -39,6 +37,29 @@ ideally created using the [Feature Flag Roll Out template](https://gitlab.com/gi
 
 NOTE: **Note:**
 This is the default type used when calling `Feature.enabled?`.
+
+### `ops` type
+
+`ops` feature flags are long-lived feature flags that control operational aspects
+of GitLab's behavior. For example, feature flags that disable features that might
+have a performance impact, like special Sidekiq worker behavior.
+
+`ops` feature flags likely do not have rollout issues, as it is hard to
+predict when they will be enabled or disabled.
+
+To use `ops` feature flags, you must append `type: :ops` to `Feature.enabled?`
+invocations:
+
+```ruby
+# Check if feature flag is enabled
+Feature.enabled?(:my_ops_flag, project, type: ops)
+
+# Check if feature flag is disabled
+Feature.disabled?(:my_ops_flag, project, type: ops)
+
+# Push feature flag to Frontend
+push_frontend_feature_flag(:my_ops_flag, project, type: :ops)
+```
 
 ## Feature flag definition and validation
 
@@ -147,6 +168,21 @@ if Feature.disabled?(:my_feature_flag, project, default_enabled: true)
 end
 ```
 
+If not specified, the default feature flag type for `Feature.enabled?` and `Feature.disabled?`
+is `type: development`. For all other feature flag types, you must specify the `type:`:
+
+```ruby
+if Feature.enabled?(:feature_flag, project, type: :ops)
+  # execute code if ops feature flag is enabled
+else
+  # execute code if ops feature flag is disabled
+end
+
+if Feature.disabled?(:my_feature_flag, project, type: :ops)
+  # execute code if feature flag is disabled
+end
+```
+
 ### Frontend
 
 Use the `push_frontend_feature_flag` method for frontend code, which is
@@ -189,6 +225,15 @@ in the merge request. Use `default_enabled: true` when checking the feature flag
 before_action do
   # Prefer to scope it per project or user e.g.
   push_frontend_feature_flag(:vim_bindings, project, default_enabled: true)
+end
+```
+
+If not specified, the default feature flag type for `push_frontend_feature_flag`
+is `type: development`. For all other feature flag types, you must specify the `type:`:
+
+```ruby
+before_action do
+  push_frontend_feature_flag(:vim_bindings, project, type: :ops)
 end
 ```
 

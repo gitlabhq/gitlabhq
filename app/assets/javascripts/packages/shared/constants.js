@@ -1,3 +1,5 @@
+import { __ } from '~/locale';
+
 export const PackageType = {
   CONAN: 'conan',
   MAVEN: 'maven',
@@ -22,3 +24,6 @@ export const TrackingCategories = {
   [PackageType.NPM]: 'NpmPackages',
   [PackageType.CONAN]: 'ConanPackages',
 };
+
+export const SHOW_DELETE_SUCCESS_ALERT = 'showSuccessDeleteAlert';
+export const DELETE_PACKAGE_ERROR_MESSAGE = __('Something went wrong while deleting the package.');

@@ -532,7 +532,7 @@ module API
 
       ::Gitlab::Tracking.event(category, action.to_s, **args)
     rescue => error
-      Rails.logger.warn( # rubocop:disable Gitlab/RailsLogger
+      Gitlab::AppLogger.warn(
         "Tracking event failed for action: #{action}, category: #{category}, message: #{error.message}"
       )
     end

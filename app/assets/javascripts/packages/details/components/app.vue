@@ -25,8 +25,9 @@ import { numberToHumanSize } from '~/lib/utils/number_utils';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
 import FileIcon from '~/vue_shared/components/file_icon.vue';
 import { __, s__ } from '~/locale';
-import { PackageType, TrackingActions } from '../../shared/constants';
+import { PackageType, TrackingActions, SHOW_DELETE_SUCCESS_ALERT } from '../../shared/constants';
 import { packageTypeToTrackCategory } from '../../shared/utils';
+import { objectToQueryString } from '~/lib/utils/common_utils';
 
 export default {
   name: 'PackagesApp',
@@ -62,16 +63,14 @@ export default {
       'packageFiles',
       'isLoading',
       'canDelete',
-      'destroyPath',
       'svgPath',
       'npmPath',
       'npmHelpPath',
+      'projectListUrl',
+      'groupListUrl',
     ]),
     isValidPackage() {
       return Boolean(this.packageEntity.name);
-    },
-    canDeletePackage() {
-      return this.canDelete && this.destroyPath;
     },
     filesTableRows() {
       return this.packageFiles.map(x => ({
@@ -100,7 +99,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions(['fetchPackageVersions']),
+    ...mapActions(['deletePackage', 'fetchPackageVersions']),
     formatSize(size) {
       return numberToHumanSize(size);
     },
@@ -111,6 +110,16 @@ export default {
       if (!this.packageEntity.versions) {
         this.fetchPackageVersions();
       }
+    },
+    async confirmPackageDeletion() {
+      this.track(TrackingActions.DELETE_PACKAGE);
+      await this.deletePackage();
+      const returnTo =
+        !this.groupListUrl || document.referrer.includes(this.projectName)
+          ? this.projectListUrl
+          : this.groupListUrl; // to avoid security issue url are supplied from backend
+      const modalQuery = objectToQueryString({ [SHOW_DELETE_SUCCESS_ALERT]: true });
+      window.location.replace(`${returnTo}?${modalQuery}`);
     },
   },
   i18n: {
@@ -150,7 +159,7 @@ export default {
     <package-title>
       <template #delete-button>
         <gl-button
-          v-if="canDeletePackage"
+          v-if="canDelete"
           v-gl-modal="'delete-modal'"
           class="js-delete-button"
           variant="danger"
@@ -272,12 +281,10 @@ export default {
             <gl-button @click="cancelDelete">{{ __('Cancel') }}</gl-button>
             <gl-button
               ref="modal-delete-button"
-              data-method="delete"
-              :to="destroyPath"
               variant="danger"
               category="primary"
               data-qa-selector="delete_modal_button"
-              @click="track($options.trackingActions.DELETE_PACKAGE)"
+              @click="confirmPackageDeletion"
             >
               {{ __('Delete') }}
             </gl-button>

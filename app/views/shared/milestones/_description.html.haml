@@ -1,6 +1,5 @@
 .detail-page-description.milestone-detail
-  %h2{ data: { qa_selector: "milestone_title_content" } }
-    .title
+  %h2.title{ data: { qa_selector: "milestone_title_content" } }
     = markdown_field(milestone, :title)
 
   - if milestone.try(:description).present?
