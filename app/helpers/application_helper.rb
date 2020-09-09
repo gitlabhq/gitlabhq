@@ -4,6 +4,8 @@ require 'digest/md5'
 require 'uri'
 
 module ApplicationHelper
+  include StartupCssHelper
+
   # See https://docs.gitlab.com/ee/development/ee_features.html#code-in-app-views
   # rubocop: disable CodeReuse/ActiveRecord
   def render_if_exists(partial, locals = {})
@@ -233,10 +235,6 @@ module ApplicationHelper
     end
 
     "#{request.path}?#{options.compact.to_param}"
-  end
-
-  def use_startup_css?
-    (Feature.enabled?(:startup_css) || params[:startup_css] == 'true' || cookies['startup_css'] == 'true') && !Rails.env.test?
   end
 
   def stylesheet_link_tag_defer(path)

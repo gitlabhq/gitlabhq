@@ -49,16 +49,6 @@ module Gitlab
           end
 
           def name
-            if Gitlab::Ci::Features.new_matrix_job_names_enabled?
-              name_with_variable_details
-            else
-              old_name
-            end
-          end
-
-          private
-
-          def name_with_variable_details
             vars = variables
               .values
               .compact
@@ -67,9 +57,7 @@ module Gitlab
             "#{job_name}: [#{vars}]"
           end
 
-          def old_name
-            "#{job_name} #{instance}/#{total}"
-          end
+          private
 
           attr_reader :job_name, :instance, :variables, :total
         end

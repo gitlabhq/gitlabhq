@@ -275,7 +275,7 @@ class Snippet < ApplicationRecord
 
   override :repository
   def repository
-    @repository ||= Repository.new(full_path, self, shard: repository_storage, disk_path: disk_path, repo_type: Gitlab::GlRepository::SNIPPET)
+    @repository ||= Gitlab::GlRepository::SNIPPET.repository_for(self)
   end
 
   override :repository_size_checker

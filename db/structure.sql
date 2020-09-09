@@ -30,6 +30,7 @@ ELSIF (TG_OP = 'UPDATE') THEN
     entity_path = NEW.entity_path,
     target_details = NEW.target_details,
     target_type = NEW.target_type,
+    target_id = NEW.target_id,
     created_at = NEW.created_at
   WHERE audit_events_part_5fc467ac26.id = NEW.id;
 ELSIF (TG_OP = 'INSERT') THEN
@@ -44,6 +45,7 @@ ELSIF (TG_OP = 'INSERT') THEN
     entity_path,
     target_details,
     target_type,
+    target_id,
     created_at)
   VALUES (NEW.id,
     NEW.author_id,
@@ -56,6 +58,7 @@ ELSIF (TG_OP = 'INSERT') THEN
     NEW.entity_path,
     NEW.target_details,
     NEW.target_type,
+    NEW.target_id,
     NEW.created_at);
 END IF;
 RETURN NULL;
@@ -78,6 +81,7 @@ CREATE TABLE public.audit_events_part_5fc467ac26 (
     target_details text,
     created_at timestamp without time zone NOT NULL,
     target_type text,
+    target_id bigint,
     CONSTRAINT check_492aaa021d CHECK ((char_length(entity_path) <= 5500)),
     CONSTRAINT check_83ff8406e2 CHECK ((char_length(author_name) <= 255)),
     CONSTRAINT check_97a8c868e7 CHECK ((char_length(target_type) <= 255)),
@@ -9518,6 +9522,7 @@ CREATE TABLE public.audit_events (
     entity_path text,
     target_details text,
     target_type text,
+    target_id bigint,
     CONSTRAINT check_492aaa021d CHECK ((char_length(entity_path) <= 5500)),
     CONSTRAINT check_82294106dd CHECK ((char_length(target_type) <= 255)),
     CONSTRAINT check_83ff8406e2 CHECK ((char_length(author_name) <= 255)),

@@ -148,7 +148,7 @@ module Backup
     private
 
     def dump_consecutive
-      Project.includes(:route).find_each(batch_size: 1000) do |project|
+      Project.includes(:route, :group, namespace: :owner).find_each(batch_size: 1000) do |project|
         dump_project(project)
       end
     end
@@ -178,7 +178,7 @@ module Backup
         end
       end
 
-      Project.for_repository_storage(storage).includes(:route).find_each(batch_size: 100) do |project|
+      Project.for_repository_storage(storage).includes(:route, :group, namespace: :owner).find_each(batch_size: 100) do |project|
         break unless errors.empty?
 
         queue.push(project)

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe Gitlab::Ci::Config::Normalizer do
   let(:job_name) { :rspec }
@@ -185,6 +185,13 @@ RSpec.describe Gitlab::Ci::Config::Normalizer do
         }
       end
 
+      let(:expanded_job_names) do
+        [
+          'rspec: [A, B]',
+          'rspec: [A, C]'
+        ]
+      end
+
       it 'does not have original job' do
         is_expected.not_to include(job_name)
       end
@@ -215,45 +222,12 @@ RSpec.describe Gitlab::Ci::Config::Normalizer do
         expect(configs).to all(match(a_hash_including(original_config)))
       end
 
-      context 'with new_matrix_job_names_enabled ff enabled' do
-        let(:expanded_job_names) do
-          [
-            'rspec: [A, B]',
-            'rspec: [A, C]'
-          ]
-        end
-
-        before do
-          stub_feature_flags(ci_matrix_job_names: true)
-        end
-
-        it 'has parallelized jobs' do
-          is_expected.to include(*expanded_job_names.map(&:to_sym))
-        end
-
-        it_behaves_like 'parallel dependencies'
-        it_behaves_like 'parallel needs'
+      it 'has parallelized jobs' do
+        is_expected.to include(*expanded_job_names.map(&:to_sym))
       end
 
-      context 'with new_matrix_job_names_enabled ff disabled' do
-        let(:expanded_job_names) do
-          [
-            'rspec 1/2',
-            'rspec 2/2'
-          ]
-        end
-
-        before do
-          stub_feature_flags(ci_matrix_job_names: false)
-        end
-
-        it 'has parallelized jobs' do
-          is_expected.to include(*expanded_job_names.map(&:to_sym))
-        end
-
-        it_behaves_like 'parallel dependencies'
-        it_behaves_like 'parallel needs'
-      end
+      it_behaves_like 'parallel dependencies'
+      it_behaves_like 'parallel needs'
     end
 
     context 'when parallel config does not matches a factory' do

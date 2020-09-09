@@ -22,7 +22,7 @@ module AuthenticatesWithTwoFactor
     return handle_locked_user(user) unless user.can?(:log_in)
 
     session[:otp_user_id] = user.id
-    session[:user_updated_at] = user.updated_at
+    session[:user_password_hash] = Digest::SHA256.hexdigest(user.encrypted_password)
     push_frontend_feature_flag(:webauthn)
 
     if user.two_factor_webauthn_enabled?
@@ -47,7 +47,7 @@ module AuthenticatesWithTwoFactor
   def authenticate_with_two_factor
     user = self.resource = find_user
     return handle_locked_user(user) unless user.can?(:log_in)
-    return handle_changed_user(user) if user_changed?(user)
+    return handle_changed_user(user) if user_password_changed?(user)
 
     if user_params[:otp_attempt].present? && session[:otp_user_id]
       authenticate_with_two_factor_via_otp(user)
@@ -76,7 +76,7 @@ module AuthenticatesWithTwoFactor
 
   def clear_two_factor_attempt!
     session.delete(:otp_user_id)
-    session.delete(:user_updated_at)
+    session.delete(:user_password_hash)
     session.delete(:challenge)
   end
 
@@ -142,7 +142,6 @@ module AuthenticatesWithTwoFactor
       gon.push(webauthn: { options: get_options.to_json })
     end
   end
-
   # rubocop: enable CodeReuse/ActiveRecord
 
   def handle_two_factor_success(user)
@@ -168,13 +167,9 @@ module AuthenticatesWithTwoFactor
 
   # If user has been updated since we validated the password,
   # the password might have changed.
-  def user_changed?(user)
-    return false unless session[:user_updated_at]
+  def user_password_changed?(user)
+    return false unless session[:user_password_hash]
 
-    # See: https://gitlab.com/gitlab-org/gitlab/-/issues/244638
-    # Rounding errors happen when the user is updated, as the Rails ActiveRecord
-    # object has higher precision than what is stored in the database, therefore
-    # using .to_i to force truncation to the timestamp
-    user.updated_at.to_i != session[:user_updated_at].to_i
+    Digest::SHA256.hexdigest(user.encrypted_password) != session[:user_password_hash]
   end
 end

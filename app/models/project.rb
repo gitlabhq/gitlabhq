@@ -896,12 +896,12 @@ class Project < ApplicationRecord
   end
 
   def repository
-    @repository ||= Repository.new(full_path, self, shard: repository_storage, disk_path: disk_path)
+    @repository ||= Gitlab::GlRepository::PROJECT.repository_for(self)
   end
 
   def design_repository
     strong_memoize(:design_repository) do
-      DesignManagement::Repository.new(self)
+      Gitlab::GlRepository::DESIGN.repository_for(self)
     end
   end
 

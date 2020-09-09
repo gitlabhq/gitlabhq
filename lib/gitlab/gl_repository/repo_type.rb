@@ -57,6 +57,8 @@ module Gitlab
       end
 
       def repository_for(container)
+        return unless container
+
         repository_resolver.call(container)
       end
 

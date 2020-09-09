@@ -180,7 +180,7 @@ class Wiki
 
   override :repository
   def repository
-    @repository ||= Repository.new(full_path, container, shard: repository_storage, disk_path: disk_path, repo_type: Gitlab::GlRepository::WIKI)
+    @repository ||= Gitlab::GlRepository::WIKI.repository_for(container)
   end
 
   def repository_storage

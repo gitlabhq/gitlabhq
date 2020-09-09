@@ -3594,17 +3594,19 @@ deploystacks:
 This generates 10 parallel `deploystacks` jobs, each with different values for `PROVIDER` and `STACK`:
 
 ```plaintext
-deploystacks 1/10 with PROVIDER=aws and STACK=monitoring
-deploystacks 2/10 with PROVIDER=aws and STACK=app1
-deploystacks 3/10 with PROVIDER=aws and STACK=app2
-deploystacks 4/10 with PROVIDER=ovh and STACK=monitoring
-deploystacks 5/10 with PROVIDER=ovh and STACK=backup
-deploystacks 6/10 with PROVIDER=ovh and STACK=app
-deploystacks 7/10 with PROVIDER=gcp and STACK=data
-deploystacks 8/10 with PROVIDER=gcp and STACK=processing
-deploystacks 9/10 with PROVIDER=vultr and STACK=data
-deploystacks 10/10 with PROVIDER=vultr and STACK=processing
+deploystacks: [aws, monitoring]
+deploystacks: [aws, app1]
+deploystacks: [aws, app2]
+deploystacks: [ovh, monitoring]
+deploystacks: [ovh, backup]
+deploystacks: [ovh, app]
+deploystacks: [gcp, data]
+deploystacks: [gcp, processing]
+deploystacks: [vultr, data]
+deploystacks: [vultr, processing]
 ```
+
+Job naming style [was improved](https://gitlab.com/gitlab-org/gitlab/-/issues/230452) in GitLab 13.4.
 
 ### `trigger`
 

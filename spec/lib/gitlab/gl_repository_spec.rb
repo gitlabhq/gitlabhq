@@ -31,15 +31,4 @@ RSpec.describe ::Gitlab::GlRepository do
       expect { described_class.parse("project-foo") }.to raise_error(ArgumentError)
     end
   end
-
-  describe 'DESIGN' do
-    it 'uses the design access checker' do
-      expect(described_class::DESIGN.access_checker_class).to eq(::Gitlab::GitAccessDesign)
-    end
-
-    it 'builds a design repository' do
-      expect(described_class::DESIGN.repository_resolver.call(create(:project)))
-        .to be_a(::DesignManagement::Repository)
-    end
-  end
 end

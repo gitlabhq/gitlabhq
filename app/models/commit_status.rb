@@ -203,7 +203,7 @@ class CommitStatus < ApplicationRecord
     common_name = name.to_s.gsub(%r{\d+[\s:\/\\]+\d+\s*}, '')
 
     # 'rspec:linux: [aws, max memory]' => 'rspec:linux'
-    common_name.gsub!(%r{: \[.*, .*\]\s*\z}, '') if Gitlab::Ci::Features.new_matrix_job_names_enabled?
+    common_name.gsub!(%r{: \[.*, .*\]\s*\z}, '')
 
     common_name.strip!
     common_name
