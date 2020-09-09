@@ -6,7 +6,7 @@ import Participants from '~/sidebar/components/participants/participants.vue';
 import DesignDiscussion from '~/design_management/components/design_notes/design_discussion.vue';
 import design from '../mock_data/design';
 import updateActiveDiscussionMutation from '~/design_management/graphql/mutations/update_active_discussion.mutation.graphql';
-import TodoButton from '~/vue_shared/components/todo_button.vue';
+import DesignTodoButton from '~/design_management/components/design_todo_button.vue';
 
 const scrollIntoViewMock = jest.fn();
 HTMLElement.prototype.scrollIntoView = scrollIntoViewMock;
@@ -248,7 +248,7 @@ describe('Design management design sidebar component', () => {
 
   it('does not render To-Do button by default', () => {
     createComponent();
-    expect(wrapper.find(TodoButton).exists()).toBe(false);
+    expect(wrapper.find(DesignTodoButton).exists()).toBe(false);
   });
 
   describe('when `design_management_todo_button` feature flag is enabled', () => {
@@ -260,8 +260,8 @@ describe('Design management design sidebar component', () => {
       expect(wrapper.classes()).toContain('gl-pt-0');
     });
 
-    it('renders todo_button component', () => {
-      expect(wrapper.find(TodoButton).exists()).toBe(true);
+    it('renders To-Do button', () => {
+      expect(wrapper.find(DesignTodoButton).exists()).toBe(true);
     });
   });
 });

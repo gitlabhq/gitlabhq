@@ -40,6 +40,7 @@ module QA
 
           base.view 'app/assets/javascripts/snippets/components/show.vue' do
             element :clone_button
+            element :snippet_embed_dropdown
           end
 
           base.view 'app/assets/javascripts/vue_shared/components/clone_dropdown.vue' do
@@ -73,6 +74,10 @@ module QA
             element :more_actions_dropdown
             element :delete_comment_button
           end
+
+          base.view 'app/assets/javascripts/snippets/components/embed_dropdown.vue' do
+            element :copy_button
+          end
         end
 
         def has_snippet_title?(snippet_title)
@@ -105,6 +110,10 @@ module QA
           end
         end
 
+        def has_embed_dropdown?
+          has_element?(:snippet_embed_dropdown)
+        end
+
         def click_edit_button
           click_element(:snippet_action_button, action: 'Edit')
         end
@@ -127,6 +136,11 @@ module QA
         def get_repository_uri_ssh
           click_element(:clone_button)
           Git::Location.new(find_element(:copy_ssh_url_button)['data-clipboard-text']).uri.to_s
+        end
+
+        def get_sharing_link
+          click_element(:snippet_embed_dropdown)
+          find_element(:copy_button, action: 'Share')['data-clipboard-text']
         end
 
         def add_comment(comment)

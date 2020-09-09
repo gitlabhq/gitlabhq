@@ -46,6 +46,10 @@ if !Rails.env.test? && Gitlab::Metrics.prometheus_metrics_enabled?
     Gitlab::Metrics::Samplers::DatabaseSampler.initialize_instance.start
     Gitlab::Metrics::Samplers::ThreadsSampler.initialize_instance.start
 
+    if Gitlab::Runtime.action_cable?
+      Gitlab::Metrics::Samplers::ActionCableSampler.instance.start
+    end
+
     if Gitlab.ee? && Gitlab::Runtime.sidekiq?
       Gitlab::Metrics::Samplers::GlobalSearchSampler.instance.start
     end

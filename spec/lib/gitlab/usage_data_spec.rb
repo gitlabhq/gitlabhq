@@ -974,14 +974,14 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
     before do
       counter = Gitlab::UsageDataCounters::TrackUniqueEvents
       merge_request = Event::TARGET_TYPES[:merge_request]
-      project = Event::TARGET_TYPES[:project]
+      design = Event::TARGET_TYPES[:design]
 
       counter.track_event(event_action: :commented, event_target: merge_request, author_id: 1, time: time)
       counter.track_event(event_action: :opened, event_target: merge_request, author_id: 1, time: time)
       counter.track_event(event_action: :merged, event_target: merge_request, author_id: 2, time: time)
       counter.track_event(event_action: :closed, event_target: merge_request, author_id: 3, time: time)
       counter.track_event(event_action: :opened, event_target: merge_request, author_id: 4, time: time - 3.days)
-      counter.track_event(event_action: :created, event_target: project, author_id: 5, time: time)
+      counter.track_event(event_action: :created, event_target: design, author_id: 5, time: time)
     end
 
     it 'returns the distinct count of users using merge requests (via events table) within the specified time period' do
@@ -1015,7 +1015,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
       counter.track_event(event_action: :pushed, event_target: project, author_id: 2)
       counter.track_event(event_action: :pushed, event_target: project, author_id: 3)
       counter.track_event(event_action: :pushed, event_target: project, author_id: 4, time: time - 3.days)
-      counter.track_event(event_action: :created, event_target: project, author_id: 5, time: time - 3.days)
       counter.track_event(event_action: :created, event_target: wiki, author_id: 3)
       counter.track_event(event_action: :created, event_target: design, author_id: 3)
 
@@ -1145,6 +1144,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
     subject { described_class.redis_hll_counters }
 
     let(:categories) { ::Gitlab::UsageDataCounters::HLLRedisCounter.categories }
+    let(:ineligible_total_categories) { ['source_code'] }
 
     it 'has all know_events' do
       expect(subject).to have_key(:redis_hll_counters)
@@ -1152,7 +1152,11 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
       expect(subject[:redis_hll_counters].keys).to match_array(categories)
 
       categories.each do |category|
-        keys = ::Gitlab::UsageDataCounters::HLLRedisCounter.events_for_category(category) + ["#{category}_total_unique_counts_weekly", "#{category}_total_unique_counts_monthly"]
+        keys = ::Gitlab::UsageDataCounters::HLLRedisCounter.events_for_category(category)
+
+        if ineligible_total_categories.exclude?(category)
+          keys.append("#{category}_total_unique_counts_weekly", "#{category}_total_unique_counts_monthly")
+        end
 
         expect(subject[:redis_hll_counters][category].keys).to match_array(keys)
       end

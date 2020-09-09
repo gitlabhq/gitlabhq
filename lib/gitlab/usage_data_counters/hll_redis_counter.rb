@@ -84,6 +84,10 @@ module Gitlab
           end
         end
 
+        def known_event?(event_name)
+          event_for(event_name).present?
+        end
+
         private
 
         # Allow to add totals for events that are in the same redis slot, category and have the same aggregation level

@@ -19,6 +19,10 @@ module QA
             text_area.has_text?(content) # wait for changes to take effect
           end
 
+          def change_visibility_to(visibility_type)
+            choose(visibility_type)
+          end
+
           def save_changes
             click_element(:submit_button, Page::Dashboard::Snippet::Show)
           end

@@ -3,9 +3,14 @@ import VueApollo from 'vue-apollo';
 import { uniqueId } from 'lodash';
 import produce from 'immer';
 import { defaultDataIdFromObject } from 'apollo-cache-inmemory';
+import axios from '~/lib/utils/axios_utils';
 import createDefaultClient from '~/lib/graphql';
 import activeDiscussionQuery from './graphql/queries/active_discussion.query.graphql';
+import getDesignQuery from './graphql/queries/get_design.query.graphql';
 import typeDefs from './graphql/typedefs.graphql';
+import { extractTodoIdFromDeletePath, createPendingTodo } from './utils/design_management_utils';
+import { CREATE_DESIGN_TODO_EXISTS_ERROR } from './utils/error_messages';
+import { addPendingTodoToStore } from './utils/cache_update';
 
 Vue.use(VueApollo);
 
@@ -24,6 +29,37 @@ const resolvers = {
       });
 
       cache.writeQuery({ query: activeDiscussionQuery, data });
+    },
+    createDesignTodo: (_, { projectPath, issueId, issueIid, filenames, atVersion }, { cache }) => {
+      return axios
+        .post(`/${projectPath}/todos`, {
+          issue_id: issueId,
+          issuable_id: issueIid,
+          issuable_type: 'design',
+        })
+        .then(({ data }) => {
+          const { delete_path } = data;
+          const todoId = extractTodoIdFromDeletePath(delete_path);
+          if (!todoId) {
+            return {
+              errors: [
+                {
+                  message: CREATE_DESIGN_TODO_EXISTS_ERROR,
+                },
+              ],
+            };
+          }
+
+          const pendingTodo = createPendingTodo(todoId);
+          addPendingTodoToStore(cache, pendingTodo, getDesignQuery, {
+            fullPath: projectPath,
+            iid: issueIid,
+            filenames,
+            atVersion,
+          });
+
+          return pendingTodo;
+        });
     },
   },
 };

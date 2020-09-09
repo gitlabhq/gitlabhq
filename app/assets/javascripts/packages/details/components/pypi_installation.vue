@@ -2,8 +2,8 @@
 import { GlLink, GlSprintf } from '@gitlab/ui';
 import { mapGetters, mapState } from 'vuex';
 import { s__ } from '~/locale';
-import CodeInstruction from './code_instruction.vue';
-import { TrackingActions } from '../constants';
+import CodeInstruction from '~/vue_shared/components/registry/code_instruction.vue';
+import { TrackingActions, TrackingLabels } from '../constants';
 
 export default {
   name: 'PyPiInstallation',
@@ -25,6 +25,7 @@ export default {
     ),
   },
   trackingActions: { ...TrackingActions },
+  TrackingLabels,
 };
 </script>
 
@@ -32,15 +33,13 @@ export default {
   <div>
     <h3 class="gl-font-lg">{{ __('Installation') }}</h3>
 
-    <h4 class="gl-font-base">
-      {{ s__('PackageRegistry|Pip Command') }}
-    </h4>
-
     <code-instruction
+      :label="s__('PackageRegistry|Pip Command')"
       :instruction="pypiPipCommand"
       :copy-text="s__('PackageRegistry|Copy Pip command')"
       data-testid="pip-command"
       :tracking-action="$options.trackingActions.COPY_PIP_INSTALL_COMMAND"
+      :tracking-label="$options.TrackingLabels.CODE_INSTRUCTION"
     />
 
     <h3 class="gl-font-lg">{{ __('Registry setup') }}</h3>
@@ -58,6 +57,7 @@ export default {
       data-testid="pypi-setup-content"
       multiline
       :tracking-action="$options.trackingActions.COPY_PYPI_SETUP_COMMAND"
+      :tracking-label="$options.TrackingLabels.CODE_INSTRUCTION"
     />
     <gl-sprintf :message="$options.i18n.helpText">
       <template #link="{ content }">

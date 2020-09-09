@@ -6908,6 +6908,16 @@ type Group {
     first: Int
 
     """
+    Returns only the vulnerabilities which have linked issues
+    """
+    hasIssues: Boolean
+
+    """
+    Returns only the vulnerabilities which have been resolved on default branch
+    """
+    hasResolution: Boolean
+
+    """
     Returns the last _n_ elements from the list.
     """
     last: Int
@@ -12710,6 +12720,16 @@ type Project {
     first: Int
 
     """
+    Returns only the vulnerabilities which have linked issues
+    """
+    hasIssues: Boolean
+
+    """
+    Returns only the vulnerabilities which have been resolved on default branch
+    """
+    hasResolution: Boolean
+
+    """
     Returns the last _n_ elements from the list.
     """
     last: Int
@@ -13475,6 +13495,16 @@ type Query {
     Returns the first _n_ elements from the list.
     """
     first: Int
+
+    """
+    Returns only the vulnerabilities which have linked issues
+    """
+    hasIssues: Boolean
+
+    """
+    Returns only the vulnerabilities which have been resolved on default branch
+    """
+    hasResolution: Boolean
 
     """
     Returns the last _n_ elements from the list.

@@ -2,172 +2,171 @@
 
 exports[`PackageTitle renders with tags 1`] = `
 <div
-  class="gl-flex-direction-column"
+  class="gl-display-flex gl-justify-content-space-between gl-py-3"
+  data-qa-selector="package_title"
 >
   <div
-    class="gl-display-flex"
+    class="gl-flex-direction-column"
   >
-    <!---->
-     
     <div
-      class="gl-display-flex gl-flex-direction-column"
+      class="gl-display-flex"
     >
-      <h1
-        class="gl-font-size-h1 gl-mt-3 gl-mb-2"
-      >
-        
-        Test package
-      
-      </h1>
+      <!---->
        
       <div
-        class="gl-display-flex gl-align-items-center gl-text-gray-500"
+        class="gl-display-flex gl-flex-direction-column"
+      >
+        <h1
+          class="gl-font-size-h1 gl-mt-3 gl-mb-2"
+          data-testid="title"
+        >
+          Test package
+        </h1>
+         
+        <div
+          class="gl-display-flex gl-align-items-center gl-text-gray-500 gl-mt-1"
+        >
+          <gl-icon-stub
+            class="gl-mr-3"
+            name="eye"
+            size="16"
+          />
+           
+          <gl-sprintf-stub
+            message="v%{version} published %{timeAgo}"
+          />
+        </div>
+      </div>
+    </div>
+     
+    <div
+      class="gl-display-flex gl-flex-wrap gl-align-items-center gl-mt-3"
+    >
+      <div
+        class="gl-display-flex gl-align-items-center gl-mr-5"
       >
         <gl-icon-stub
-          class="gl-mr-3"
-          name="eye"
+          class="gl-text-gray-500 gl-mr-3"
+          name="package"
           size="16"
         />
          
-        <gl-sprintf-stub
-          message="v%{version} published %{timeAgo}"
+        <span
+          class="gl-font-weight-bold"
+          data-testid="package-type"
+        >
+          maven
+        </span>
+      </div>
+      <div
+        class="gl-display-flex gl-align-items-center gl-mr-5"
+      >
+        <gl-icon-stub
+          class="gl-text-gray-500 gl-mr-3"
+          name="disk"
+          size="16"
+        />
+         
+        <span
+          class="gl-font-weight-bold"
+          data-testid="package-size"
+        >
+          300 bytes
+        </span>
+      </div>
+      <div
+        class="gl-display-flex gl-align-items-center gl-mr-5"
+      >
+        <package-tags-stub
+          hidelabel="true"
+          tagdisplaylimit="2"
+          tags="[object Object],[object Object],[object Object],[object Object]"
         />
       </div>
     </div>
   </div>
    
-  <div
-    class="gl-display-flex gl-flex-wrap gl-align-items-center gl-mb-3"
-  >
-    <div
-      class="gl-display-flex gl-align-items-center gl-mr-5"
-    >
-      <gl-icon-stub
-        class="gl-text-gray-500 gl-mr-3"
-        name="package"
-        size="16"
-      />
-       
-      <span
-        class="gl-font-weight-bold"
-        data-testid="package-type"
-      >
-        maven
-      </span>
-    </div>
-     
-    <div
-      class="gl-display-flex gl-align-items-center gl-mr-5"
-    >
-      <gl-icon-stub
-        class="gl-text-gray-500 gl-mr-3"
-        name="disk"
-        size="16"
-      />
-       
-      <span
-        class="gl-font-weight-bold"
-        data-testid="package-size"
-      >
-        300 bytes
-      </span>
-    </div>
-     
-    <!---->
-     
-    <!---->
-     
-    <div
-      class="gl-display-flex gl-align-items-center gl-mr-5"
-    >
-      <package-tags-stub
-        hidelabel="true"
-        tagdisplaylimit="2"
-        tags="[object Object],[object Object],[object Object],[object Object]"
-      />
-    </div>
-  </div>
+  <!---->
 </div>
 `;
 
 exports[`PackageTitle renders without tags 1`] = `
 <div
-  class="gl-flex-direction-column"
+  class="gl-display-flex gl-justify-content-space-between gl-py-3"
+  data-qa-selector="package_title"
 >
   <div
-    class="gl-display-flex"
+    class="gl-flex-direction-column"
   >
-    <!---->
-     
     <div
-      class="gl-display-flex gl-flex-direction-column"
+      class="gl-display-flex"
     >
-      <h1
-        class="gl-font-size-h1 gl-mt-3 gl-mb-2"
-      >
-        
-        Test package
-      
-      </h1>
+      <!---->
        
       <div
-        class="gl-display-flex gl-align-items-center gl-text-gray-500"
+        class="gl-display-flex gl-flex-direction-column"
+      >
+        <h1
+          class="gl-font-size-h1 gl-mt-3 gl-mb-2"
+          data-testid="title"
+        >
+          Test package
+        </h1>
+         
+        <div
+          class="gl-display-flex gl-align-items-center gl-text-gray-500 gl-mt-1"
+        >
+          <gl-icon-stub
+            class="gl-mr-3"
+            name="eye"
+            size="16"
+          />
+           
+          <gl-sprintf-stub
+            message="v%{version} published %{timeAgo}"
+          />
+        </div>
+      </div>
+    </div>
+     
+    <div
+      class="gl-display-flex gl-flex-wrap gl-align-items-center gl-mt-3"
+    >
+      <div
+        class="gl-display-flex gl-align-items-center gl-mr-5"
       >
         <gl-icon-stub
-          class="gl-mr-3"
-          name="eye"
+          class="gl-text-gray-500 gl-mr-3"
+          name="package"
           size="16"
         />
          
-        <gl-sprintf-stub
-          message="v%{version} published %{timeAgo}"
+        <span
+          class="gl-font-weight-bold"
+          data-testid="package-type"
+        >
+          maven
+        </span>
+      </div>
+      <div
+        class="gl-display-flex gl-align-items-center gl-mr-5"
+      >
+        <gl-icon-stub
+          class="gl-text-gray-500 gl-mr-3"
+          name="disk"
+          size="16"
         />
+         
+        <span
+          class="gl-font-weight-bold"
+          data-testid="package-size"
+        >
+          300 bytes
+        </span>
       </div>
     </div>
   </div>
    
-  <div
-    class="gl-display-flex gl-flex-wrap gl-align-items-center gl-mb-3"
-  >
-    <div
-      class="gl-display-flex gl-align-items-center gl-mr-5"
-    >
-      <gl-icon-stub
-        class="gl-text-gray-500 gl-mr-3"
-        name="package"
-        size="16"
-      />
-       
-      <span
-        class="gl-font-weight-bold"
-        data-testid="package-type"
-      >
-        maven
-      </span>
-    </div>
-     
-    <div
-      class="gl-display-flex gl-align-items-center gl-mr-5"
-    >
-      <gl-icon-stub
-        class="gl-text-gray-500 gl-mr-3"
-        name="disk"
-        size="16"
-      />
-       
-      <span
-        class="gl-font-weight-bold"
-        data-testid="package-size"
-      >
-        300 bytes
-      </span>
-    </div>
-     
-    <!---->
-     
-    <!---->
-     
-    <!---->
-  </div>
+  <!---->
 </div>
 `;

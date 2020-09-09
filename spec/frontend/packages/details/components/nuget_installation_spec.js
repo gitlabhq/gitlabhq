@@ -3,7 +3,7 @@ import { shallowMount, createLocalVue } from '@vue/test-utils';
 import { nugetPackage as packageEntity } from 'jest/packages/mock_data';
 import { registryUrl as nugetPath } from 'jest/packages/details/mock_data';
 import NugetInstallation from '~/packages/details/components/nuget_installation.vue';
-import CodeInstructions from '~/packages/details/components/code_instruction.vue';
+import CodeInstructions from '~/vue_shared/components/registry/code_instruction.vue';
 import { TrackingActions } from '~/packages/details/constants';
 
 const localVue = createLocalVue();

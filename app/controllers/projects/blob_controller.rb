@@ -37,7 +37,7 @@ class Projects::BlobController < Projects::ApplicationController
     push_frontend_feature_flag(:suggest_pipeline) if experiment_enabled?(:suggest_pipeline)
   end
 
-  track_redis_hll_event :create, :update, name: 'g_edit_by_sfe', feature: :track_editor_edit_actions
+  track_redis_hll_event :create, :update, name: 'g_edit_by_sfe', feature: :track_editor_edit_actions, feature_default_enabled: true
 
   def new
     commit unless @repository.empty?

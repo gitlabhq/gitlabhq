@@ -7,6 +7,7 @@ import { extractCurrentDiscussion, extractDesign, extractDesigns } from './desig
 import {
   ADD_IMAGE_DIFF_NOTE_ERROR,
   UPDATE_IMAGE_DIFF_NOTE_ERROR,
+  DELETE_DESIGN_TODO_ERROR,
   designDeletionError,
 } from './error_messages';
 
@@ -188,6 +189,30 @@ const moveDesignInStore = (store, designManagementMove, query) => {
   });
 };
 
+export const addPendingTodoToStore = (store, pendingTodo, query, queryVariables) => {
+  const data = store.readQuery({
+    query,
+    variables: queryVariables,
+  });
+
+  // TODO produce new version of data that includes the new pendingTodo.
+  // This is only possible after BE MR: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/40555
+
+  store.writeQuery({ query, variables: queryVariables, data });
+};
+
+export const deletePendingTodoFromStore = (store, pendingTodo, query, queryVariables) => {
+  const data = store.readQuery({
+    query,
+    variables: queryVariables,
+  });
+
+  // TODO produce new version of data without the pendingTodo.
+  // This is only possible after BE MR: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/40555
+
+  store.writeQuery({ query, variables: queryVariables, data });
+};
+
 const onError = (data, message) => {
   createFlash(message);
   throw new Error(data.errors);
@@ -241,5 +266,13 @@ export const updateDesignsOnStoreAfterReorder = (store, data, query) => {
     createFlash(data.errors[0]);
   } else {
     moveDesignInStore(store, data, query);
+  }
+};
+
+export const updateStoreAfterDeleteDesignTodo = (store, data, query, queryVariables) => {
+  if (hasErrors(data)) {
+    onError(data, DELETE_DESIGN_TODO_ERROR);
+  } else {
+    deletePendingTodoFromStore(store, data, query, queryVariables);
   }
 };

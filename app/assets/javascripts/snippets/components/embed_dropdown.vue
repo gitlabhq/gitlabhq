@@ -67,6 +67,8 @@ export default {
               :title="$options.MSG_COPY"
               :data-clipboard-text="value"
               icon="copy-to-clipboard"
+              data-qa-selector="copy_button"
+              :data-qa-action="name"
             />
           </template>
         </gl-form-input-group>

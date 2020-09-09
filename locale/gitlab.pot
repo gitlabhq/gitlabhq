@@ -10414,6 +10414,9 @@ msgstr ""
 msgid "Failed to create Merge Request. Please try again."
 msgstr ""
 
+msgid "Failed to create To-Do for the design."
+msgstr ""
+
 msgid "Failed to create a branch for this issue. Please try again."
 msgstr ""
 
@@ -10504,6 +10507,9 @@ msgstr ""
 msgid "Failed to publish issue on status page."
 msgstr ""
 
+msgid "Failed to remove To-Do for the design."
+msgstr ""
+
 msgid "Failed to remove a Zoom meeting"
 msgstr ""
 
@@ -10544,6 +10550,9 @@ msgid "Failed to set iteration on this issue. Please try again."
 msgstr ""
 
 msgid "Failed to signing using smartcard authentication"
+msgstr ""
+
+msgid "Failed to toggle To-Do for the design."
 msgstr ""
 
 msgid "Failed to update branch!"
@@ -16352,6 +16361,9 @@ msgstr ""
 msgid "NetworkPolicies|Description"
 msgstr ""
 
+msgid "NetworkPolicies|Edit policy"
+msgstr ""
+
 msgid "NetworkPolicies|Editor mode"
 msgstr ""
 
@@ -16428,6 +16440,9 @@ msgid "NetworkPolicies|Rule mode is unavailable for this policy. In some cases, 
 msgstr ""
 
 msgid "NetworkPolicies|Rules"
+msgstr ""
+
+msgid "NetworkPolicies|Save changes"
 msgstr ""
 
 msgid "NetworkPolicies|Something went wrong, failed to update policy"
@@ -25115,6 +25130,9 @@ msgid "There are no variables yet."
 msgstr ""
 
 msgid "There is a limit of %{ci_project_subscriptions_limit} subscriptions from or to a project."
+msgstr ""
+
+msgid "There is already a To-Do for this design."
 msgstr ""
 
 msgid "There is already a repository with that name on disk"

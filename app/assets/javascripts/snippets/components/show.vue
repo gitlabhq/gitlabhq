@@ -46,7 +46,11 @@ export default {
       <snippet-header :snippet="snippet" />
       <snippet-title :snippet="snippet" />
       <div class="gl-display-flex gl-justify-content-end gl-mb-5">
-        <embed-dropdown v-if="embeddable" :url="snippet.webUrl" />
+        <embed-dropdown
+          v-if="embeddable"
+          :url="snippet.webUrl"
+          data-qa-selector="snippet_embed_dropdown"
+        />
         <clone-dropdown-button
           v-if="canBeCloned"
           class="gl-ml-3"

@@ -1,10 +1,10 @@
 <script>
-import { GlDeprecatedButton, GlLoadingIcon, GlTooltipDirective, GlIcon } from '@gitlab/ui';
+import { GlButton, GlLoadingIcon, GlTooltipDirective, GlIcon } from '@gitlab/ui';
 import { __ } from '~/locale';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 export default {
-  components: { GlIcon, GlDeprecatedButton, GlLoadingIcon },
+  components: { GlIcon, GlButton, GlLoadingIcon },
   directives: { 'gl-tooltip': GlTooltipDirective },
   mixins: [glFeatureFlagsMixin()],
   props: {
@@ -105,14 +105,14 @@ export default {
       <span>{{ applyingSuggestionsMessage }}</span>
     </div>
     <div v-else-if="canApply && canBeBatched && isBatched" class="d-flex align-items-center">
-      <gl-deprecated-button
+      <gl-button
         class="btn-inverted js-remove-from-batch-btn btn-grouped"
         :disabled="isApplying"
         @click="removeSuggestionFromBatch"
       >
         {{ __('Remove from batch') }}
-      </gl-deprecated-button>
-      <gl-deprecated-button
+      </gl-button>
+      <gl-button
         v-gl-tooltip.viewport="__('This also resolves all related threads')"
         class="btn-inverted js-apply-batch-btn btn-grouped"
         :disabled="isApplying"
@@ -123,26 +123,26 @@ export default {
         <span class="badge badge-pill badge-pill-success">
           {{ batchSuggestionsCount }}
         </span>
-      </gl-deprecated-button>
+      </gl-button>
     </div>
     <div v-else class="d-flex align-items-center">
-      <gl-deprecated-button
+      <gl-button
         v-if="canBeBatched && !isDisableButton"
         class="btn-inverted js-add-to-batch-btn btn-grouped"
         :disabled="isDisableButton"
         @click="addSuggestionToBatch"
       >
         {{ __('Add suggestion to batch') }}
-      </gl-deprecated-button>
+      </gl-button>
       <span v-gl-tooltip.viewport="tooltipMessage" tabindex="0">
-        <gl-deprecated-button
+        <gl-button
           class="btn-inverted js-apply-btn btn-grouped"
           :disabled="isDisableButton"
           variant="success"
           @click="applySuggestion"
         >
           {{ __('Apply suggestion') }}
-        </gl-deprecated-button>
+        </gl-button>
       </span>
     </div>
   </div>

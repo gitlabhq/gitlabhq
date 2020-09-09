@@ -8,7 +8,7 @@ import { extractDiscussions, extractParticipants } from '../utils/design_managem
 import { ACTIVE_DISCUSSION_SOURCE_TYPES } from '../constants';
 import DesignDiscussion from './design_notes/design_discussion.vue';
 import Participants from '~/sidebar/components/participants/participants.vue';
-import TodoButton from '~/vue_shared/components/todo_button.vue';
+import DesignTodoButton from './design_todo_button.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 export default {
@@ -18,7 +18,7 @@ export default {
     GlCollapse,
     GlButton,
     GlPopover,
-    TodoButton,
+    DesignTodoButton,
   },
   mixins: [glFeatureFlagsMixin()],
   props: {
@@ -40,6 +40,14 @@ export default {
       isResolvedCommentsPopoverHidden: parseBoolean(Cookies.get(this.$options.cookieKey)),
       discussionWithOpenForm: '',
     };
+  },
+  inject: {
+    projectPath: {
+      default: '',
+    },
+    issueIid: {
+      default: '',
+    },
   },
   computed: {
     discussions() {
@@ -119,7 +127,7 @@ export default {
       class="gl-py-4 gl-mb-4 gl-display-flex gl-justify-content-space-between gl-align-items-center gl-border-b-1 gl-border-b-solid gl-border-b-gray-100"
     >
       <span>{{ __('To-Do') }}</span>
-      <todo-button issuable-type="design" :issuable-id="design.iid" />
+      <design-todo-button :design="design" @error="$emit('todoError', $event)" />
     </div>
     <h2 class="gl-font-weight-bold gl-mt-0">
       {{ issue.title }}

@@ -2,8 +2,8 @@
 import { GlLink, GlSprintf } from '@gitlab/ui';
 import { mapGetters, mapState } from 'vuex';
 import { s__ } from '~/locale';
-import CodeInstruction from './code_instruction.vue';
-import { TrackingActions } from '../constants';
+import CodeInstruction from '~/vue_shared/components/registry/code_instruction.vue';
+import { TrackingActions, TrackingLabels } from '../constants';
 
 export default {
   name: 'ConanInstallation',
@@ -22,30 +22,30 @@ export default {
     ),
   },
   trackingActions: { ...TrackingActions },
+  TrackingLabels,
 };
 </script>
 
 <template>
   <div>
     <h3 class="gl-font-lg">{{ __('Installation') }}</h3>
-    <h4 class="gl-font-base">
-      {{ s__('PackageRegistry|Conan Command') }}
-    </h4>
 
     <code-instruction
+      :label="s__('PackageRegistry|Conan Command')"
       :instruction="conanInstallationCommand"
       :copy-text="s__('PackageRegistry|Copy Conan Command')"
       :tracking-action="$options.trackingActions.COPY_CONAN_COMMAND"
+      :tracking-label="$options.TrackingLabels.CODE_INSTRUCTION"
     />
 
     <h3 class="gl-font-lg">{{ __('Registry setup') }}</h3>
-    <h4 class="gl-font-base">
-      {{ s__('PackageRegistry|Add Conan Remote') }}
-    </h4>
+
     <code-instruction
+      :label="s__('PackageRegistry|Add Conan Remote')"
       :instruction="conanSetupCommand"
       :copy-text="s__('PackageRegistry|Copy Conan Setup Command')"
       :tracking-action="$options.trackingActions.COPY_CONAN_SETUP_COMMAND"
+      :tracking-label="$options.TrackingLabels.CODE_INSTRUCTION"
     />
     <gl-sprintf :message="$options.i18n.helpText">
       <template #link="{ content }">

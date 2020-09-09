@@ -1,6 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
 import { GlSprintf, GlLink } from '@gitlab/ui';
 import Component from '~/registry/explorer/components/list_page/registry_header.vue';
+import TitleArea from '~/vue_shared/components/registry/title_area.vue';
 import {
   CONTAINER_REGISTRY_TITLE,
   LIST_INTRO_TEXT,
@@ -17,12 +18,10 @@ jest.mock('~/lib/utils/datetime_utility', () => ({
 describe('registry_header', () => {
   let wrapper;
 
-  const findHeader = () => wrapper.find('[data-testid="header"]');
-  const findTitle = () => wrapper.find('[data-testid="title"]');
+  const findTitleArea = () => wrapper.find(TitleArea);
   const findCommandsSlot = () => wrapper.find('[data-testid="commands-slot"]');
   const findInfoArea = () => wrapper.find('[data-testid="info-area"]');
   const findIntroText = () => wrapper.find('[data-testid="default-intro"]');
-  const findSubHeader = () => wrapper.find('[data-testid="subheader"]');
   const findImagesCountSubHeader = () => wrapper.find('[data-testid="images-count"]');
   const findExpirationPolicySubHeader = () => wrapper.find('[data-testid="expiration-policy"]');
   const findDisabledExpirationPolicyMessage = () =>
@@ -32,10 +31,12 @@ describe('registry_header', () => {
     wrapper = shallowMount(Component, {
       stubs: {
         GlSprintf,
+        TitleArea,
       },
       propsData,
       slots,
     });
+    return wrapper.vm.$nextTick();
   };
 
   afterEach(() => {
@@ -44,90 +45,73 @@ describe('registry_header', () => {
   });
 
   describe('header', () => {
-    it('exists', () => {
+    it('has a title', () => {
       mountComponent();
-      expect(findHeader().exists()).toBe(true);
-    });
 
-    it('contains the title of the page', () => {
-      mountComponent();
-      const title = findTitle();
-      expect(title.exists()).toBe(true);
-      expect(title.text()).toBe(CONTAINER_REGISTRY_TITLE);
+      expect(findTitleArea().props('title')).toBe(CONTAINER_REGISTRY_TITLE);
     });
 
     it('has a commands slot', () => {
-      mountComponent(null, { commands: 'baz' });
+      mountComponent(null, { commands: '<div data-testid="commands-slot">baz</div>' });
+
       expect(findCommandsSlot().text()).toBe('baz');
     });
-  });
 
-  describe('subheader', () => {
-    describe('when there are no images', () => {
-      it('is hidden ', () => {
-        mountComponent();
-        expect(findSubHeader().exists()).toBe(false);
-      });
-    });
+    describe('sub header parts', () => {
+      describe('images count', () => {
+        it('exists', async () => {
+          await mountComponent({ imagesCount: 1 });
 
-    describe('when there are images', () => {
-      it('is visible', () => {
-        mountComponent({ imagesCount: 1 });
-        expect(findSubHeader().exists()).toBe(true);
-      });
-
-      describe('sub header parts', () => {
-        describe('images count', () => {
-          it('exists', () => {
-            mountComponent({ imagesCount: 1 });
-            expect(findImagesCountSubHeader().exists()).toBe(true);
-          });
-
-          it('when there is one image', () => {
-            mountComponent({ imagesCount: 1 });
-            expect(findImagesCountSubHeader().text()).toMatchInterpolatedText('1 Image repository');
-          });
-
-          it('when there is more than one image', () => {
-            mountComponent({ imagesCount: 3 });
-            expect(findImagesCountSubHeader().text()).toMatchInterpolatedText(
-              '3 Image repositories',
-            );
-          });
+          expect(findImagesCountSubHeader().exists()).toBe(true);
         });
 
-        describe('expiration policy', () => {
-          it('when is disabled', () => {
-            mountComponent({
-              expirationPolicy: { enabled: false },
-              expirationPolicyHelpPagePath: 'foo',
-              imagesCount: 1,
-            });
-            const text = findExpirationPolicySubHeader();
-            expect(text.exists()).toBe(true);
-            expect(text.text()).toMatchInterpolatedText(EXPIRATION_POLICY_DISABLED_TEXT);
+        it('when there is one image', async () => {
+          await mountComponent({ imagesCount: 1 });
+
+          expect(findImagesCountSubHeader().text()).toMatchInterpolatedText('1 Image repository');
+        });
+
+        it('when there is more than one image', async () => {
+          await mountComponent({ imagesCount: 3 });
+
+          expect(findImagesCountSubHeader().text()).toMatchInterpolatedText('3 Image repositories');
+        });
+      });
+
+      describe('expiration policy', () => {
+        it('when is disabled', async () => {
+          await mountComponent({
+            expirationPolicy: { enabled: false },
+            expirationPolicyHelpPagePath: 'foo',
+            imagesCount: 1,
           });
 
-          it('when is enabled', () => {
-            mountComponent({
-              expirationPolicy: { enabled: true },
-              expirationPolicyHelpPagePath: 'foo',
-              imagesCount: 1,
-            });
-            const text = findExpirationPolicySubHeader();
-            expect(text.exists()).toBe(true);
-            expect(text.text()).toMatchInterpolatedText(EXPIRATION_POLICY_WILL_RUN_IN);
+          const text = findExpirationPolicySubHeader();
+          expect(text.exists()).toBe(true);
+          expect(text.text()).toMatchInterpolatedText(EXPIRATION_POLICY_DISABLED_TEXT);
+        });
+
+        it('when is enabled', async () => {
+          await mountComponent({
+            expirationPolicy: { enabled: true },
+            expirationPolicyHelpPagePath: 'foo',
+            imagesCount: 1,
           });
-          it('when the expiration policy is completely disabled', () => {
-            mountComponent({
-              expirationPolicy: { enabled: true },
-              expirationPolicyHelpPagePath: 'foo',
-              imagesCount: 1,
-              hideExpirationPolicyData: true,
-            });
-            const text = findExpirationPolicySubHeader();
-            expect(text.exists()).toBe(false);
+
+          const text = findExpirationPolicySubHeader();
+          expect(text.exists()).toBe(true);
+          expect(text.text()).toMatchInterpolatedText(EXPIRATION_POLICY_WILL_RUN_IN);
+        });
+        it('when the expiration policy is completely disabled', async () => {
+          await mountComponent({
+            expirationPolicy: { enabled: true },
+            expirationPolicyHelpPagePath: 'foo',
+            imagesCount: 1,
+            hideExpirationPolicyData: true,
           });
+
+          const text = findExpirationPolicySubHeader();
+          expect(text.exists()).toBe(false);
         });
       });
     });
@@ -136,12 +120,13 @@ describe('registry_header', () => {
   describe('info area', () => {
     it('exists', () => {
       mountComponent();
+
       expect(findInfoArea().exists()).toBe(true);
     });
 
     describe('default message', () => {
       beforeEach(() => {
-        mountComponent({ helpPagePath: 'bar' });
+        return mountComponent({ helpPagePath: 'bar' });
       });
 
       it('exists', () => {
@@ -165,6 +150,7 @@ describe('registry_header', () => {
       describe('when there are no images', () => {
         it('is hidden', () => {
           mountComponent();
+
           expect(findDisabledExpirationPolicyMessage().exists()).toBe(false);
         });
       });
@@ -172,7 +158,7 @@ describe('registry_header', () => {
       describe('when there are images', () => {
         describe('when expiration policy is disabled', () => {
           beforeEach(() => {
-            mountComponent({
+            return mountComponent({
               expirationPolicy: { enabled: false },
               expirationPolicyHelpPagePath: 'foo',
               imagesCount: 1,
@@ -202,6 +188,7 @@ describe('registry_header', () => {
               expirationPolicy: { enabled: true },
               imagesCount: 1,
             });
+
             expect(findDisabledExpirationPolicyMessage().exists()).toBe(false);
           });
         });
@@ -212,6 +199,7 @@ describe('registry_header', () => {
               imagesCount: 1,
               hideExpirationPolicyData: true,
             });
+
             expect(findDisabledExpirationPolicyMessage().exists()).toBe(false);
           });
         });

@@ -104,3 +104,15 @@
   category: search
   redis_slot: search
   aggregation: weekly
+- name: wiki_action
+  category: source_code
+  aggregation: daily
+- name: design_action
+  category: source_code
+  aggregation: daily
+- name: project_action
+  category: source_code
+  aggregation: daily
+- name: merge_request_action
+  category: source_code
+  aggregation: daily

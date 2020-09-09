@@ -8,14 +8,6 @@ exports[`MavenInstallation renders all the messages 1`] = `
     Installation
   </h3>
    
-  <h4
-    class="gl-font-base"
-  >
-    
-    Maven XML
-  
-  </h4>
-   
   <p>
     <gl-sprintf-stub
       message="Copy and paste this inside your %{codeStart}pom.xml%{codeEnd} %{codeStart}dependencies%{codeEnd} block."
@@ -25,22 +17,18 @@ exports[`MavenInstallation renders all the messages 1`] = `
   <code-instruction-stub
     copytext="Copy Maven XML"
     instruction="foo/xml"
+    label="Maven XML"
     multiline="true"
     trackingaction="copy_maven_xml"
+    trackinglabel="code_instruction"
   />
-   
-  <h4
-    class="gl-font-base"
-  >
-    
-    Maven Command
-  
-  </h4>
    
   <code-instruction-stub
     copytext="Copy Maven command"
     instruction="foo/command"
+    label="Maven Command"
     trackingaction="copy_maven_command"
+    trackinglabel="code_instruction"
   />
    
   <h3
@@ -58,8 +46,10 @@ exports[`MavenInstallation renders all the messages 1`] = `
   <code-instruction-stub
     copytext="Copy Maven registry XML"
     instruction="foo/setup"
+    label=""
     multiline="true"
     trackingaction="copy_maven_setup_xml"
+    trackinglabel="code_instruction"
   />
    
   <gl-sprintf-stub

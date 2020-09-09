@@ -2,8 +2,8 @@
 import { GlLink, GlSprintf } from '@gitlab/ui';
 import { mapGetters, mapState } from 'vuex';
 import { s__ } from '~/locale';
-import CodeInstruction from './code_instruction.vue';
-import { NpmManager, TrackingActions } from '../constants';
+import CodeInstruction from '~/vue_shared/components/registry/code_instruction.vue';
+import { NpmManager, TrackingActions, TrackingLabels } from '../constants';
 
 export default {
   name: 'NpmInstallation',
@@ -34,41 +34,46 @@ export default {
     ),
   },
   trackingActions: { ...TrackingActions },
+  TrackingLabels,
 };
 </script>
 
 <template>
   <div>
     <h3 class="gl-font-lg">{{ __('Installation') }}</h3>
-    <h4 class="gl-font-base">{{ s__('PackageRegistry|npm command') }}</h4>
 
     <code-instruction
+      :label="s__('PackageRegistry|npm command')"
       :instruction="npmCommand"
       :copy-text="s__('PackageRegistry|Copy npm command')"
       :tracking-action="$options.trackingActions.COPY_NPM_INSTALL_COMMAND"
+      :tracking-label="$options.TrackingLabels.CODE_INSTRUCTION"
     />
 
-    <h4 class="gl-font-base">{{ s__('PackageRegistry|yarn command') }}</h4>
     <code-instruction
+      :label="s__('PackageRegistry|yarn command')"
       :instruction="yarnCommand"
       :copy-text="s__('PackageRegistry|Copy yarn command')"
       :tracking-action="$options.trackingActions.COPY_YARN_INSTALL_COMMAND"
+      :tracking-label="$options.TrackingLabels.CODE_INSTRUCTION"
     />
 
     <h3 class="gl-font-lg">{{ __('Registry setup') }}</h3>
 
-    <h4 class="gl-font-base">{{ s__('PackageRegistry|npm command') }}</h4>
     <code-instruction
+      :label="s__('PackageRegistry|npm command')"
       :instruction="npmSetup"
       :copy-text="s__('PackageRegistry|Copy npm setup command')"
       :tracking-action="$options.trackingActions.COPY_NPM_SETUP_COMMAND"
+      :tracking-label="$options.TrackingLabels.CODE_INSTRUCTION"
     />
 
-    <h4 class="gl-font-base">{{ s__('PackageRegistry|yarn command') }}</h4>
     <code-instruction
+      :label="s__('PackageRegistry|yarn command')"
       :instruction="yarnSetupCommand"
       :copy-text="s__('PackageRegistry|Copy yarn setup command')"
       :tracking-action="$options.trackingActions.COPY_YARN_SETUP_COMMAND"
+      :tracking-label="$options.TrackingLabels.CODE_INSTRUCTION"
     />
 
     <gl-sprintf :message="$options.i18n.helpText">

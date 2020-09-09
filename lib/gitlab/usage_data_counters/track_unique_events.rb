@@ -38,11 +38,13 @@ module Gitlab
           transformed_target = transform_target(event_target)
           transformed_action = transform_action(event_action, transformed_target)
 
-          Gitlab::UsageDataCounters::TrackUniqueActions.track_action(action: transformed_action, author_id: author_id, time: time)
+          return unless Gitlab::UsageDataCounters::HLLRedisCounter.known_event?(transformed_action.to_s)
+
+          Gitlab::UsageDataCounters::HLLRedisCounter.track_event(author_id, transformed_action.to_s, time)
         end
 
         def count_unique_events(event_action:, date_from:, date_to:)
-          Gitlab::UsageDataCounters::TrackUniqueActions.count_unique(action: event_action, date_from: date_from, date_to: date_to)
+          Gitlab::UsageDataCounters::HLLRedisCounter.unique_events(event_names: event_action.to_s, start_date: date_from, end_date: date_to)
         end
 
         private

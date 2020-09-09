@@ -147,10 +147,8 @@ export default {
   />
 
   <div v-else class="packages-app">
-    <div class="detail-page-header d-flex justify-content-between flex-column flex-sm-row">
-      <package-title />
-
-      <div class="mt-sm-2">
+    <package-title>
+      <template #delete-button>
         <gl-button
           v-if="canDeletePackage"
           v-gl-modal="'delete-modal'"
@@ -161,8 +159,8 @@ export default {
         >
           {{ __('Delete') }}
         </gl-button>
-      </div>
-    </div>
+      </template>
+    </package-title>
 
     <gl-tabs>
       <gl-tab :title="__('Detail')">

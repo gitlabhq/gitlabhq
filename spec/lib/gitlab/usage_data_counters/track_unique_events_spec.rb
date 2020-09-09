@@ -33,17 +33,14 @@ RSpec.describe Gitlab::UsageDataCounters::TrackUniqueEvents, :clean_gitlab_redis
             expect(track_event(event_action: :pushed, event_target: project, author_id: 2)).to be_truthy
             expect(track_event(event_action: :pushed, event_target: project, author_id: 3)).to be_truthy
             expect(track_event(event_action: :pushed, event_target: project, author_id: 4, time: time - 3.days)).to be_truthy
-            expect(track_event(event_action: :created, event_target: project, author_id: 5, time: time - 3.days)).to be_truthy
 
             expect(track_event(event_action: :destroyed, event_target: design, author_id: 3)).to be_truthy
             expect(track_event(event_action: :created, event_target: design, author_id: 4)).to be_truthy
             expect(track_event(event_action: :updated, event_target: design, author_id: 5)).to be_truthy
-            expect(track_event(event_action: :pushed, event_target: design, author_id: 6)).to be_truthy
 
             expect(track_event(event_action: :destroyed, event_target: wiki, author_id: 5)).to be_truthy
             expect(track_event(event_action: :created, event_target: wiki, author_id: 3)).to be_truthy
             expect(track_event(event_action: :updated, event_target: wiki, author_id: 4)).to be_truthy
-            expect(track_event(event_action: :pushed, event_target: wiki, author_id: 6)).to be_truthy
 
             expect(count_unique(event_action: described_class::PUSH_ACTION, date_from: time, date_to: Date.today)).to eq(3)
             expect(count_unique(event_action: described_class::PUSH_ACTION, date_from: time - 5.days, date_to: Date.tomorrow)).to eq(4)
@@ -58,17 +55,13 @@ RSpec.describe Gitlab::UsageDataCounters::TrackUniqueEvents, :clean_gitlab_redis
     context 'when tracking unsuccessfully' do
       using RSpec::Parameterized::TableSyntax
 
-      where(:application_setting, :target, :action) do
-        true  | Project         | :invalid_action
-        false | Project         | :pushed
-        true  | :invalid_target | :pushed
+      where(:target, :action) do
+        Project         | :invalid_action
+        :invalid_target | :pushed
+        Project         | :created
       end
 
       with_them do
-        before do
-          stub_application_setting(usage_ping_enabled: application_setting)
-        end
-
         it 'returns the expected values' do
           expect(track_event(event_action: action, event_target: target, author_id: 2)).to be_nil
           expect(count_unique(event_action: described_class::PUSH_ACTION, date_from: time, date_to: Date.today)).to eq(0)

@@ -1,8 +1,8 @@
 <script>
-import { GlDeprecatedDropdown, GlFormGroup, GlFormInputGroup } from '@gitlab/ui';
+import { GlDeprecatedDropdown } from '@gitlab/ui';
 import { mapGetters } from 'vuex';
 import Tracking from '~/tracking';
-import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
+import CodeInstruction from '~/vue_shared/components/registry/code_instruction.vue';
 import {
   QUICK_START,
   LOGIN_COMMAND_LABEL,
@@ -13,22 +13,23 @@ import {
   COPY_PUSH_TITLE,
 } from '../../constants/index';
 
+const trackingLabel = 'quickstart_dropdown';
+
 export default {
   components: {
     GlDeprecatedDropdown,
-    GlFormGroup,
-    GlFormInputGroup,
-    ClipboardButton,
+    CodeInstruction,
   },
-  mixins: [Tracking.mixin({ label: 'quickstart_dropdown' })],
+  mixins: [Tracking.mixin({ label: trackingLabel })],
+  trackingLabel,
   i18n: {
-    dropdownTitle: QUICK_START,
-    loginCommandLabel: LOGIN_COMMAND_LABEL,
-    copyLoginTitle: COPY_LOGIN_TITLE,
-    buildCommandLabel: BUILD_COMMAND_LABEL,
-    copyBuildTitle: COPY_BUILD_TITLE,
-    pushCommandLabel: PUSH_COMMAND_LABEL,
-    copyPushTitle: COPY_PUSH_TITLE,
+    QUICK_START,
+    LOGIN_COMMAND_LABEL,
+    COPY_LOGIN_TITLE,
+    BUILD_COMMAND_LABEL,
+    COPY_BUILD_TITLE,
+    PUSH_COMMAND_LABEL,
+    COPY_PUSH_TITLE,
   },
   computed: {
     ...mapGetters(['dockerBuildCommand', 'dockerPushCommand', 'dockerLoginCommand']),
@@ -37,7 +38,7 @@ export default {
 </script>
 <template>
   <gl-deprecated-dropdown
-    :text="$options.i18n.dropdownTitle"
+    :text="$options.i18n.QUICK_START"
     variant="primary"
     size="sm"
     right
@@ -45,59 +46,30 @@ export default {
   >
     <!-- This li is used as a container since gl-dropdown produces a root ul, this mimics the functionality exposed by b-dropdown-form -->
     <li role="presentation" class="px-2 py-1 dropdown-menu-large">
-      <form>
-        <gl-form-group
-          label-size="sm"
-          label-for="docker-login-btn"
-          :label="$options.i18n.loginCommandLabel"
-        >
-          <gl-form-input-group id="docker-login-btn" :value="dockerLoginCommand" readonly>
-            <template #append>
-              <clipboard-button
-                class="border"
-                :text="dockerLoginCommand"
-                :title="$options.i18n.copyLoginTitle"
-                @click.native="track('click_copy_login')"
-              />
-            </template>
-          </gl-form-input-group>
-        </gl-form-group>
+      <code-instruction
+        :label="$options.i18n.LOGIN_COMMAND_LABEL"
+        :instruction="dockerLoginCommand"
+        :copy-text="$options.i18n.COPY_LOGIN_TITLE"
+        tracking-action="click_copy_login"
+        :tracking-label="$options.trackingLabel"
+      />
 
-        <gl-form-group
-          label-size="sm"
-          label-for="docker-build-btn"
-          :label="$options.i18n.buildCommandLabel"
-        >
-          <gl-form-input-group id="docker-build-btn" :value="dockerBuildCommand" readonly>
-            <template #append>
-              <clipboard-button
-                class="border"
-                :text="dockerBuildCommand"
-                :title="$options.i18n.copyBuildTitle"
-                @click.native="track('click_copy_build')"
-              />
-            </template>
-          </gl-form-input-group>
-        </gl-form-group>
+      <code-instruction
+        :label="$options.i18n.BUILD_COMMAND_LABEL"
+        :instruction="dockerBuildCommand"
+        :copy-text="$options.i18n.COPY_BUILD_TITLE"
+        tracking-action="click_copy_build"
+        :tracking-label="$options.trackingLabel"
+      />
 
-        <gl-form-group
-          class="mb-0"
-          label-size="sm"
-          label-for="docker-push-btn"
-          :label="$options.i18n.pushCommandLabel"
-        >
-          <gl-form-input-group id="docker-push-btn" :value="dockerPushCommand" readonly>
-            <template #append>
-              <clipboard-button
-                class="border"
-                :text="dockerPushCommand"
-                :title="$options.i18n.copyPushTitle"
-                @click.native="track('click_copy_push')"
-              />
-            </template>
-          </gl-form-input-group>
-        </gl-form-group>
-      </form>
+      <code-instruction
+        class="mb-0"
+        :label="$options.i18n.PUSH_COMMAND_LABEL"
+        :instruction="dockerPushCommand"
+        :copy-text="$options.i18n.COPY_PUSH_TITLE"
+        tracking-action="click_copy_push"
+        :tracking-label="$options.trackingLabel"
+      />
     </li>
   </gl-deprecated-dropdown>
 </template>

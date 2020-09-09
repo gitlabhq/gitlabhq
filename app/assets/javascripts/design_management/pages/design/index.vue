@@ -33,6 +33,7 @@ import {
   DESIGN_NOT_FOUND_ERROR,
   DESIGN_VERSION_NOT_EXIST_ERROR,
   UPDATE_NOTE_ERROR,
+  TOGGLE_TODO_ERROR,
   designDeletionError,
 } from '../../utils/error_messages';
 import { trackDesignDetailView } from '../../utils/tracking';
@@ -226,7 +227,7 @@ export default {
     },
     onError(message, e) {
       this.errorMessage = message;
-      throw e;
+      if (e) throw e;
     },
     onCreateImageDiffNoteError(e) {
       this.onError(ADD_IMAGE_DIFF_NOTE_ERROR, e);
@@ -245,6 +246,9 @@ export default {
     },
     onResolveDiscussionError(e) {
       this.onError(UPDATE_IMAGE_DIFF_NOTE_ERROR, e);
+    },
+    onTodoError(e) {
+      this.onError(e?.message || TOGGLE_TODO_ERROR, e);
     },
     openCommentForm(annotationCoordinates) {
       this.annotationCoordinates = annotationCoordinates;
@@ -349,6 +353,7 @@ export default {
         @updateNoteError="onUpdateNoteError"
         @resolveDiscussionError="onResolveDiscussionError"
         @toggleResolvedComments="toggleResolvedComments"
+        @todoError="onTodoError"
       >
         <template #replyForm>
           <apollo-mutation

@@ -1,9 +1,10 @@
 <script>
 import { GlSprintf } from '@gitlab/ui';
+import TitleArea from '~/vue_shared/components/registry/title_area.vue';
 import { DETAILS_PAGE_TITLE } from '../../constants/index';
 
 export default {
-  components: { GlSprintf },
+  components: { GlSprintf, TitleArea },
   props: {
     imageName: {
       type: String,
@@ -18,13 +19,13 @@ export default {
 </script>
 
 <template>
-  <div class="gl-display-flex gl-my-2 gl-align-items-center">
-    <h4>
+  <title-area>
+    <template #title>
       <gl-sprintf :message="$options.i18n.DETAILS_PAGE_TITLE">
         <template #imageName>
           {{ imageName }}
         </template>
       </gl-sprintf>
-    </h4>
-  </div>
+    </template>
+  </title-area>
 </template>

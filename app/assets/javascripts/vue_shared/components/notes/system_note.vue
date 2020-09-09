@@ -1,5 +1,4 @@
 <script>
-/* eslint-disable vue/no-v-html */
 /**
  * Common component to render a system note, icon and user information.
  *
@@ -20,10 +19,11 @@
 import $ from 'jquery';
 import { mapGetters, mapActions, mapState } from 'vuex';
 import {
-  GlDeprecatedButton,
+  GlButton,
   GlDeprecatedSkeletonLoading as GlSkeletonLoading,
   GlTooltipDirective,
   GlIcon,
+  GlSafeHtmlDirective as SafeHtml,
 } from '@gitlab/ui';
 import descriptionVersionHistoryMixin from 'ee_else_ce/notes/mixins/description_version_history';
 import noteHeader from '~/notes/components/note_header.vue';
@@ -40,11 +40,12 @@ export default {
     GlIcon,
     noteHeader,
     TimelineEntryItem,
-    GlDeprecatedButton,
+    GlButton,
     GlSkeletonLoading,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
+    SafeHtml,
   },
   mixins: [descriptionVersionHistoryMixin, glFeatureFlagsMixin()],
   props: {
@@ -105,25 +106,28 @@ export default {
     :class="{ target: isTargetNote, 'pr-0': shouldShowDescriptionVersion }"
     class="note system-note note-wrapper"
   >
-    <div class="timeline-icon" v-html="iconHtml"></div>
+    <div v-safe-html="iconHtml" class="timeline-icon"></div>
     <div class="timeline-content">
       <div class="note-header">
         <note-header :author="note.author" :created-at="note.created_at" :note-id="note.id">
-          <span v-html="actionTextHtml"></span>
+          <span v-safe-html="actionTextHtml"></span>
           <template v-if="canSeeDescriptionVersion" slot="extra-controls">
             &middot;
-            <button type="button" class="btn-blank btn-link" @click="toggleDescriptionVersion">
-              {{ __('Compare with previous version') }}
-              <gl-icon :name="descriptionVersionToggleIcon" :size="12" class="append-left-5" />
-            </button>
+            <gl-button
+              variant="link"
+              :icon="descriptionVersionToggleIcon"
+              data-testid="compare-btn"
+              @click="toggleDescriptionVersion"
+              >{{ __('Compare with previous version') }}</gl-button
+            >
           </template>
         </note-header>
       </div>
       <div class="note-body">
         <div
+          v-safe-html="note.note_html"
           :class="{ 'system-note-commit-list': hasMoreCommits, 'hide-shade': expanded }"
           class="note-text md"
-          v-html="note.note_html"
         ></div>
         <div v-if="hasMoreCommits" class="flex-list">
           <div class="system-note-commit-list-toggler flex-row" @click="expanded = !expanded">
@@ -135,17 +139,18 @@ export default {
           <pre v-if="isLoadingDescriptionVersion" class="loading-state">
             <gl-skeleton-loading />
           </pre>
-          <pre v-else class="wrapper mt-2" v-html="descriptionVersion"></pre>
-          <gl-deprecated-button
+          <pre v-else v-safe-html="descriptionVersion" class="wrapper mt-2"></pre>
+          <gl-button
             v-if="displayDeleteButton"
-            ref="deleteDescriptionVersionButton"
             v-gl-tooltip
             :title="__('Remove description history')"
-            class="btn-transparent delete-description-history"
+            variant="default"
+            category="tertiary"
+            icon="remove"
+            class="delete-description-history"
+            data-testid="delete-description-version-button"
             @click="deleteDescriptionVersion"
-          >
-            <gl-icon name="remove" />
-          </gl-deprecated-button>
+          />
         </div>
       </div>
     </div>

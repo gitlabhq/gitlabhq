@@ -1,10 +1,10 @@
 import Vuex from 'vuex';
 import { mount, createLocalVue } from '@vue/test-utils';
-import { GlDeprecatedDropdown, GlFormGroup, GlFormInputGroup } from '@gitlab/ui';
+import { GlDeprecatedDropdown } from '@gitlab/ui';
 import Tracking from '~/tracking';
 import * as getters from '~/registry/explorer/stores/getters';
 import QuickstartDropdown from '~/registry/explorer/components/list_page/cli_commands.vue';
-import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
+import CodeInstruction from '~/vue_shared/components/registry/code_instruction.vue';
 
 import {
   QUICK_START,
@@ -24,7 +24,7 @@ describe('cli_commands', () => {
   let store;
 
   const findDropdownButton = () => wrapper.find(GlDeprecatedDropdown);
-  const findFormGroups = () => wrapper.findAll(GlFormGroup);
+  const findCodeInstruction = () => wrapper.findAll(CodeInstruction);
 
   const mountComponent = () => {
     store = new Vuex.Store({
@@ -67,54 +67,29 @@ describe('cli_commands', () => {
   });
 
   describe.each`
-    index | id                    | labelText              | titleText           | getter                  | trackedEvent
-    ${0}  | ${'docker-login-btn'} | ${LOGIN_COMMAND_LABEL} | ${COPY_LOGIN_TITLE} | ${'dockerLoginCommand'} | ${'click_copy_login'}
-    ${1}  | ${'docker-build-btn'} | ${BUILD_COMMAND_LABEL} | ${COPY_BUILD_TITLE} | ${'dockerBuildCommand'} | ${'click_copy_build'}
-    ${2}  | ${'docker-push-btn'}  | ${PUSH_COMMAND_LABEL}  | ${COPY_PUSH_TITLE}  | ${'dockerPushCommand'}  | ${'click_copy_push'}
-  `('form group at $index', ({ index, id, labelText, titleText, getter, trackedEvent }) => {
-    let formGroup;
-
-    const findFormInputGroup = parent => parent.find(GlFormInputGroup);
-    const findClipboardButton = parent => parent.find(ClipboardButton);
+    index | labelText              | titleText           | getter                  | trackedEvent
+    ${0}  | ${LOGIN_COMMAND_LABEL} | ${COPY_LOGIN_TITLE} | ${'dockerLoginCommand'} | ${'click_copy_login'}
+    ${1}  | ${BUILD_COMMAND_LABEL} | ${COPY_BUILD_TITLE} | ${'dockerBuildCommand'} | ${'click_copy_build'}
+    ${2}  | ${PUSH_COMMAND_LABEL}  | ${COPY_PUSH_TITLE}  | ${'dockerPushCommand'}  | ${'click_copy_push'}
+  `('code instructions at $index', ({ index, labelText, titleText, getter, trackedEvent }) => {
+    let codeInstruction;
 
     beforeEach(() => {
-      formGroup = findFormGroups().at(index);
+      codeInstruction = findCodeInstruction().at(index);
     });
 
     it('exists', () => {
-      expect(formGroup.exists()).toBe(true);
+      expect(codeInstruction.exists()).toBe(true);
     });
 
-    it(`has a label ${labelText}`, () => {
-      expect(formGroup.text()).toBe(labelText);
-    });
-
-    it(`contains a form input group with ${id} id and with value equal to ${getter} getter`, () => {
-      const formInputGroup = findFormInputGroup(formGroup);
-      expect(formInputGroup.exists()).toBe(true);
-      expect(formInputGroup.attributes('id')).toBe(id);
-      expect(formInputGroup.props('value')).toBe(store.getters[getter]);
-    });
-
-    it(`contains a clipboard button with title of ${titleText} and text equal to ${getter} getter`, () => {
-      const clipBoardButton = findClipboardButton(formGroup);
-      expect(clipBoardButton.exists()).toBe(true);
-      expect(clipBoardButton.props('title')).toBe(titleText);
-      expect(clipBoardButton.props('text')).toBe(store.getters[getter]);
-    });
-
-    it('clipboard button tracks click event', () => {
-      const clipBoardButton = findClipboardButton(formGroup);
-      clipBoardButton.trigger('click');
-      /* This expect to be called with first argument undefined so that
-       * the function internally can default to document.body.dataset.page
-       * https://docs.gitlab.com/ee/telemetry/frontend.html#tracking-within-vue-components
-       */
-      expect(Tracking.event).toHaveBeenCalledWith(
-        undefined,
-        trackedEvent,
-        expect.objectContaining({ label: 'quickstart_dropdown' }),
-      );
+    it(`has the correct props`, () => {
+      expect(codeInstruction.props()).toMatchObject({
+        label: labelText,
+        instruction: store.getters[getter],
+        copyText: titleText,
+        trackingAction: trackedEvent,
+        trackingLabel: 'quickstart_dropdown',
+      });
     });
   });
 });

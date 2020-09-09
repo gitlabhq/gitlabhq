@@ -19072,6 +19072,26 @@
                   "defaultValue": "severity_desc"
                 },
                 {
+                  "name": "hasResolution",
+                  "description": "Returns only the vulnerabilities which have been resolved on default branch",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "hasIssues",
+                  "description": "Returns only the vulnerabilities which have linked issues",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "after",
                   "description": "Returns the elements in the list that come after the specified cursor.",
                   "type": {
@@ -37222,6 +37242,26 @@
                   "defaultValue": "severity_desc"
                 },
                 {
+                  "name": "hasResolution",
+                  "description": "Returns only the vulnerabilities which have been resolved on default branch",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "hasIssues",
+                  "description": "Returns only the vulnerabilities which have linked issues",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "after",
                   "description": "Returns the elements in the list that come after the specified cursor.",
                   "type": {
@@ -39559,6 +39599,26 @@
                     "ofType": null
                   },
                   "defaultValue": "severity_desc"
+                },
+                {
+                  "name": "hasResolution",
+                  "description": "Returns only the vulnerabilities which have been resolved on default branch",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "hasIssues",
+                  "description": "Returns only the vulnerabilities which have linked issues",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
+                  },
+                  "defaultValue": null
                 },
                 {
                   "name": "after",

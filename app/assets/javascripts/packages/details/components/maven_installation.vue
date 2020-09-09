@@ -2,8 +2,8 @@
 import { GlLink, GlSprintf } from '@gitlab/ui';
 import { mapGetters, mapState } from 'vuex';
 import { s__ } from '~/locale';
-import CodeInstruction from './code_instruction.vue';
-import { TrackingActions } from '../constants';
+import CodeInstruction from '~/vue_shared/components/registry/code_instruction.vue';
+import { TrackingActions, TrackingLabels } from '../constants';
 
 export default {
   name: 'MavenInstallation',
@@ -28,6 +28,7 @@ export default {
     ),
   },
   trackingActions: { ...TrackingActions },
+  TrackingLabels,
 };
 </script>
 
@@ -35,9 +36,6 @@ export default {
   <div>
     <h3 class="gl-font-lg">{{ __('Installation') }}</h3>
 
-    <h4 class="gl-font-base">
-      {{ s__('PackageRegistry|Maven XML') }}
-    </h4>
     <p>
       <gl-sprintf :message="$options.i18n.xmlText">
         <template #code="{ content }">
@@ -45,20 +43,22 @@ export default {
         </template>
       </gl-sprintf>
     </p>
+
     <code-instruction
+      :label="s__('PackageRegistry|Maven XML')"
       :instruction="mavenInstallationXml"
       :copy-text="s__('PackageRegistry|Copy Maven XML')"
       multiline
       :tracking-action="$options.trackingActions.COPY_MAVEN_XML"
+      :tracking-label="$options.TrackingLabels.CODE_INSTRUCTION"
     />
 
-    <h4 class="gl-font-base">
-      {{ s__('PackageRegistry|Maven Command') }}
-    </h4>
     <code-instruction
+      :label="s__('PackageRegistry|Maven Command')"
       :instruction="mavenInstallationCommand"
       :copy-text="s__('PackageRegistry|Copy Maven command')"
       :tracking-action="$options.trackingActions.COPY_MAVEN_COMMAND"
+      :tracking-label="$options.TrackingLabels.CODE_INSTRUCTION"
     />
 
     <h3 class="gl-font-lg">{{ __('Registry setup') }}</h3>
@@ -74,6 +74,7 @@ export default {
       :copy-text="s__('PackageRegistry|Copy Maven registry XML')"
       multiline
       :tracking-action="$options.trackingActions.COPY_MAVEN_SETUP"
+      :tracking-label="$options.TrackingLabels.CODE_INSTRUCTION"
     />
     <gl-sprintf :message="$options.i18n.helpText">
       <template #link="{ content }">

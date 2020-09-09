@@ -1,7 +1,7 @@
 import { mount } from '@vue/test-utils';
-import CodeInstruction from '~/packages/details/components/code_instruction.vue';
-import { TrackingLabels } from '~/packages/details/constants';
 import Tracking from '~/tracking';
+import CodeInstruction from '~/vue_shared/components/registry/code_instruction.vue';
+import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 
 describe('Package code instruction', () => {
   let wrapper;
@@ -20,16 +20,20 @@ describe('Package code instruction', () => {
     });
   }
 
-  const findInstructionInput = () => wrapper.find('.js-instruction-input');
-  const findInstructionPre = () => wrapper.find('.js-instruction-pre');
-  const findInstructionButton = () => wrapper.find('.js-instruction-button');
+  const findCopyButton = () => wrapper.find(ClipboardButton);
+  const findInputElement = () => wrapper.find('[data-testid="instruction-input"]');
+  const findMultilineInstruction = () => wrapper.find('[data-testid="multiline-instruction"]');
 
   afterEach(() => {
     wrapper.destroy();
   });
 
   describe('single line', () => {
-    beforeEach(() => createComponent());
+    beforeEach(() =>
+      createComponent({
+        label: 'foo_label',
+      }),
+    );
 
     it('to match the default snapshot', () => {
       expect(wrapper.element).toMatchSnapshot();
@@ -41,6 +45,7 @@ describe('Package code instruction', () => {
       createComponent({
         instruction: 'this is some\nmultiline text',
         copyText: 'Copy the command',
+        label: 'foo_label',
         multiline: true,
       }),
     );
@@ -53,7 +58,7 @@ describe('Package code instruction', () => {
   describe('tracking', () => {
     let eventSpy;
     const trackingAction = 'test_action';
-    const label = TrackingLabels.CODE_INSTRUCTION;
+    const trackingLabel = 'foo_label';
 
     beforeEach(() => {
       eventSpy = jest.spyOn(Tracking, 'event');
@@ -61,7 +66,7 @@ describe('Package code instruction', () => {
 
     it('should not track when no trackingAction is provided', () => {
       createComponent();
-      findInstructionButton().trigger('click');
+      findCopyButton().trigger('click');
 
       expect(eventSpy).toHaveBeenCalledTimes(0);
     });
@@ -70,22 +75,23 @@ describe('Package code instruction', () => {
       beforeEach(() =>
         createComponent({
           trackingAction,
+          trackingLabel,
         }),
       );
 
       it('should track when copying from the input', () => {
-        findInstructionInput().trigger('copy');
+        findInputElement().trigger('copy');
 
         expect(eventSpy).toHaveBeenCalledWith(undefined, trackingAction, {
-          label,
+          label: trackingLabel,
         });
       });
 
       it('should track when the copy button is pressed', () => {
-        findInstructionButton().trigger('click');
+        findCopyButton().trigger('click');
 
         expect(eventSpy).toHaveBeenCalledWith(undefined, trackingAction, {
-          label,
+          label: trackingLabel,
         });
       });
     });
@@ -94,15 +100,16 @@ describe('Package code instruction', () => {
       beforeEach(() =>
         createComponent({
           trackingAction,
+          trackingLabel,
           multiline: true,
         }),
       );
 
       it('should track when copying from the multiline pre element', () => {
-        findInstructionPre().trigger('copy');
+        findMultilineInstruction().trigger('copy');
 
         expect(eventSpy).toHaveBeenCalledWith(undefined, trackingAction, {
-          label,
+          label: trackingLabel,
         });
       });
     });
