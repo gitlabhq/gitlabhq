@@ -109,7 +109,7 @@ variables:
   TIMEOUT_SECONDS: 1
 
 include:
-  - Code-Quality.gitlab-ci.yml
+  - template: Code-Quality.gitlab-ci.yml
 ```
 
 By default, report artifacts are not downloadable. If you need them downloadable on the

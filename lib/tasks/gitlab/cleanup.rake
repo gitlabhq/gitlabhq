@@ -178,17 +178,19 @@ namespace :gitlab do
       end
     end
 
+    # rubocop:disable Gitlab/RailsLogger
     def logger
       return @logger if defined?(@logger)
 
       @logger = if Rails.env.development? || Rails.env.production?
                   Logger.new(STDOUT).tap do |stdout_logger|
-                    stdout_logger.extend(ActiveSupport::Logger.broadcast(Gitlab::AppLogger))
+                    stdout_logger.extend(ActiveSupport::Logger.broadcast(Rails.logger))
                     stdout_logger.level = debug? ? Logger::DEBUG : Logger::INFO
                   end
                 else
-                  Gitlab::AppLogger
+                  Rails.logger
                 end
     end
+    # rubocop:enable Gitlab/RailsLogger
   end
 end
