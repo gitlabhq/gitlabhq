@@ -1,10 +1,8 @@
 /* eslint no-param-reassign: "off" */
 
 import $ from 'jquery';
+import '~/lib/utils/jquery_at_who';
 import GfmAutoComplete, { membersBeforeSave } from 'ee_else_ce/gfm_auto_complete';
-
-import 'jquery.caret';
-import '@gitlab/at.js';
 
 import { TEST_HOST } from 'helpers/test_constants';
 import { getJSONFixture } from 'helpers/fixtures';

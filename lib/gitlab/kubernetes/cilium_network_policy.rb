@@ -9,7 +9,7 @@ module Gitlab
       API_VERSION = "cilium.io/v2"
       KIND = 'CiliumNetworkPolicy'
 
-      def initialize(name:, namespace:, selector:, ingress:, resource_version:, labels: nil, creation_timestamp: nil, egress: nil)
+      def initialize(name:, namespace:, selector:, ingress:, resource_version: nil, labels: nil, creation_timestamp: nil, egress: nil)
         @name = name
         @namespace = namespace
         @labels = labels

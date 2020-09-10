@@ -6,7 +6,13 @@ RSpec.describe 'User searches for issues', :js do
   let(:user) { create(:user) }
   let(:project) { create(:project, namespace: user.namespace) }
   let!(:issue1) { create(:issue, title: 'Foo', project: project) }
-  let!(:issue2) { create(:issue, title: 'Bar', project: project) }
+  let!(:issue2) { create(:issue, :closed, :confidential, title: 'Bar', project: project) }
+
+  def search_for_issue(search)
+    fill_in('dashboard_search', with: search)
+    find('.btn-search').click
+    select_search_scope('Issues')
+  end
 
   context 'when signed in' do
     before do
@@ -19,13 +25,45 @@ RSpec.describe 'User searches for issues', :js do
     include_examples 'top right search form'
 
     it 'finds an issue' do
-      fill_in('dashboard_search', with: issue1.title)
-      find('.btn-search').click
-      select_search_scope('Issues')
+      search_for_issue(issue1.title)
 
       page.within('.results') do
         expect(page).to have_link(issue1.title)
         expect(page).not_to have_link(issue2.title)
+      end
+    end
+
+    it 'hides confidential icon for non-confidential issues' do
+      search_for_issue(issue1.title)
+
+      page.within('.results') do
+        expect(page).not_to have_css('[data-testid="eye-slash-icon"]')
+      end
+    end
+
+    it 'shows confidential icon for confidential issues' do
+      search_for_issue(issue2.title)
+
+      page.within('.results') do
+        expect(page).to have_css('[data-testid="eye-slash-icon"]')
+      end
+    end
+
+    it 'shows correct badge for open issues' do
+      search_for_issue(issue1.title)
+
+      page.within('.results') do
+        expect(page).to have_css('.badge-success')
+        expect(page).not_to have_css('.badge-info')
+      end
+    end
+
+    it 'shows correct badge for closed issues' do
+      search_for_issue(issue2.title)
+
+      page.within('.results') do
+        expect(page).not_to have_css('.badge-success')
+        expect(page).to have_css('.badge-info')
       end
     end
 
@@ -37,9 +75,7 @@ RSpec.describe 'User searches for issues', :js do
           click_link(project.full_name)
         end
 
-        fill_in('dashboard_search', with: issue1.title)
-        find('.btn-search').click
-        select_search_scope('Issues')
+        search_for_issue(issue1.title)
 
         page.within('.results') do
           expect(page).to have_link(issue1.title)
@@ -59,9 +95,7 @@ RSpec.describe 'User searches for issues', :js do
     include_examples 'top right search form'
 
     it 'finds an issue' do
-      fill_in('dashboard_search', with: issue1.title)
-      find('.btn-search').click
-      select_search_scope('Issues')
+      search_for_issue(issue1.title)
 
       page.within('.results') do
         expect(page).to have_link(issue1.title)

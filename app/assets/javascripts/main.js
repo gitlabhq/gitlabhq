@@ -31,7 +31,6 @@ import initLogoAnimation from './logo';
 import initFrequentItemDropdowns from './frequent_items';
 import initBreadcrumbs from './breadcrumb';
 import initUsagePingConsent from './usage_ping_consent';
-import initSearchAutocomplete from './search_autocomplete';
 import GlFieldErrors from './gl_field_errors';
 import initUserPopovers from './user_popovers';
 import initBroadcastNotifications from './broadcast_notification';
@@ -112,7 +111,18 @@ function deferredInitialisation() {
   initPersistentUserCallouts();
   initDefaultTrackers();
 
-  if (document.querySelector('.search')) initSearchAutocomplete();
+  document.querySelector('#search').addEventListener(
+    'focus',
+    () => {
+      import(/* webpackChunkName: 'globalSearch' */ './search_autocomplete')
+        .then(({ default: initSearchAutocomplete }) => {
+          const searchDropdown = initSearchAutocomplete();
+          searchDropdown.onSearchInputFocus();
+        })
+        .catch(() => {});
+    },
+    { once: true },
+  );
 
   addSelectOnFocusBehaviour('.js-select-on-focus');
 

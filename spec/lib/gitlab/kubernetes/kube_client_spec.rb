@@ -376,6 +376,7 @@ RSpec.describe Gitlab::Kubernetes::KubeClient do
     [
       :create_network_policy,
       :get_network_policies,
+      :get_network_policy,
       :update_network_policy,
       :delete_network_policy
     ].each do |method|
@@ -400,6 +401,7 @@ RSpec.describe Gitlab::Kubernetes::KubeClient do
     [
       :create_cilium_network_policy,
       :get_cilium_network_policies,
+      :get_cilium_network_policy,
       :update_cilium_network_policy,
       :delete_cilium_network_policy
     ].each do |method|

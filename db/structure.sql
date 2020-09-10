@@ -14242,11 +14242,11 @@ CREATE TABLE public.plan_limits (
     ci_max_artifact_size_browser_performance integer DEFAULT 0 NOT NULL,
     ci_max_artifact_size_load_performance integer DEFAULT 0 NOT NULL,
     ci_needs_size_limit integer DEFAULT 50 NOT NULL,
-    conan_max_file_size bigint DEFAULT 52428800 NOT NULL,
-    maven_max_file_size bigint DEFAULT 52428800 NOT NULL,
-    npm_max_file_size bigint DEFAULT 52428800 NOT NULL,
-    nuget_max_file_size bigint DEFAULT 52428800 NOT NULL,
-    pypi_max_file_size bigint DEFAULT 52428800 NOT NULL,
+    conan_max_file_size bigint DEFAULT '3221225472'::bigint NOT NULL,
+    maven_max_file_size bigint DEFAULT '3221225472'::bigint NOT NULL,
+    npm_max_file_size bigint DEFAULT 524288000 NOT NULL,
+    nuget_max_file_size bigint DEFAULT 524288000 NOT NULL,
+    pypi_max_file_size bigint DEFAULT '3221225472'::bigint NOT NULL,
     generic_packages_max_file_size bigint DEFAULT '5368709120'::bigint NOT NULL
 );
 

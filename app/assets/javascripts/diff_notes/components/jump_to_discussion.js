@@ -2,6 +2,7 @@
 /* global CommentsStore */
 
 import $ from 'jquery';
+import 'vendor/jquery.scrollTo';
 import Vue from 'vue';
 import { __ } from '~/locale';
 

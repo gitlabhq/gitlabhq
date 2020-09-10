@@ -11,11 +11,10 @@ old_notes_spec.js is the spec for the legacy, jQuery notes application. It has n
  */
 
 import $ from 'jquery';
+import '~/lib/utils/jquery_at_who';
 import { escape, uniqueId } from 'lodash';
 import Cookies from 'js-cookie';
 import Autosize from 'autosize';
-import 'jquery.caret'; // required by at.js
-import '@gitlab/at.js';
 import Vue from 'vue';
 import { GlDeprecatedSkeletonLoading as GlSkeletonLoading } from '@gitlab/ui';
 import AjaxCache from '~/lib/utils/ajax_cache';

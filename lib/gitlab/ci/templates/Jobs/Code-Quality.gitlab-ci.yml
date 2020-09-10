@@ -10,7 +10,6 @@ code_quality:
     CODE_QUALITY_IMAGE: "registry.gitlab.com/gitlab-org/ci-cd/codequality:0.85.10-gitlab.1"
   needs: []
   before_script:
-    - source lib/gitlab/ci/templates/utils/env.sh
     - export SOURCE_CODE=$PWD
   script:
     - |
@@ -19,6 +18,14 @@ code_quality:
           export DOCKER_HOST='tcp://localhost:2375'
         fi
       fi
+    - | # this is required to avoid undesirable reset of Docker image ENV variables being set on build stage
+      function propagate_env_vars() {
+        CURRENT_ENV=$(printenv)
+
+        for VAR_NAME; do
+          echo $CURRENT_ENV | grep "${VAR_NAME}=" > /dev/null && echo "--env $VAR_NAME "
+        done
+      }
     - docker pull --quiet "$CODE_QUALITY_IMAGE"
     - |
       docker run \
