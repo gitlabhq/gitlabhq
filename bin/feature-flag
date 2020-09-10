@@ -181,6 +181,10 @@ class FeatureFlagOptionParser
         $stderr.puts "URL needs to start with https://"
       end
     end
+
+    def read_default_enabled(options)
+      TYPES.dig(options.type, :default_enabled)
+    end
   end
 end
 
@@ -226,7 +230,7 @@ class FeatureFlagCreator
       'rollout_issue_url' => options.rollout_issue_url,
       'group'             => options.group.to_s,
       'type'              => options.type.to_s,
-      'default_enabled'   => false
+      'default_enabled'   => FeatureFlagOptionParser.read_default_enabled(options)
     ).strip
   end
 

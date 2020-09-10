@@ -8289,7 +8289,7 @@
             },
             {
               "name": "spiderTimeout",
-              "description": "The maximum number of seconds allowed for the spider to traverse the site",
+              "description": "The maximum number of minutes allowed for the spider to traverse the site",
               "args": [
 
               ],
@@ -8426,7 +8426,7 @@
             },
             {
               "name": "spiderTimeout",
-              "description": "The maximum number of seconds allowed for the spider to traverse the site.",
+              "description": "The maximum number of minutes allowed for the spider to traverse the site.",
               "type": {
                 "kind": "SCALAR",
                 "name": "Int",
@@ -8747,7 +8747,7 @@
             },
             {
               "name": "spiderTimeout",
-              "description": "The maximum number of seconds allowed for the spider to traverse the site.",
+              "description": "The maximum number of minutes allowed for the spider to traverse the site.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,

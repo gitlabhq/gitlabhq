@@ -7,7 +7,7 @@ module Clusters
     end
 
     def feature_available?(feature)
-      ::Feature.enabled?(feature, default_enabled: true)
+      ::Feature.enabled?(feature, type: :licensed, default_enabled: true)
     end
 
     def flipper_id

@@ -3048,7 +3048,7 @@ type DastScannerProfile {
   profileName: String
 
   """
-  The maximum number of seconds allowed for the spider to traverse the site
+  The maximum number of minutes allowed for the spider to traverse the site
   """
   spiderTimeout: Int
 
@@ -3098,7 +3098,7 @@ input DastScannerProfileCreateInput {
   profileName: String!
 
   """
-  The maximum number of seconds allowed for the spider to traverse the site.
+  The maximum number of minutes allowed for the spider to traverse the site.
   """
   spiderTimeout: Int
 
@@ -3213,7 +3213,7 @@ input DastScannerProfileUpdateInput {
   profileName: String!
 
   """
-  The maximum number of seconds allowed for the spider to traverse the site.
+  The maximum number of minutes allowed for the spider to traverse the site.
   """
   spiderTimeout: Int!
 

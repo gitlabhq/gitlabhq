@@ -5,4 +5,9 @@ fragment DesignListItem on Design {
   notesCount
   image
   imageV432x230
+  currentUserTodos(state: pending) {
+    nodes {
+      id
+    }
+  }
 }

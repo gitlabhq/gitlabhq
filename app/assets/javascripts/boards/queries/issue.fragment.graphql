@@ -12,6 +12,7 @@ fragment IssueNode on Issue {
   webUrl
   subscribed
   blocked
+  relativePosition
   epic {
     id
   }

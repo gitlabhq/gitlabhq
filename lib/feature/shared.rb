@@ -8,12 +8,14 @@ class Feature
   module Shared
     # optional: defines if a on-disk definition is required for this feature flag type
     # rollout_issue: defines if `bin/feature-flag` asks for rollout issue
+    # default_enabled: defines a default state of a feature flag when created by `bin/feature-flag`
     # example: usage being shown when exception is raised
     TYPES = {
       development: {
         description: 'Short lived, used to enable unfinished code to be deployed',
         optional: true,
         rollout_issue: true,
+        default_enabled: false,
         example: <<-EOS
           Feature.enabled?(:my_feature_flag, project)
           Feature.enabled?(:my_feature_flag, project, type: :development)
@@ -24,9 +26,20 @@ class Feature
         description: "Long-lived feature flags that control operational aspects of GitLab's behavior",
         optional: true,
         rollout_issue: false,
+        default_enabled: false,
         example: <<-EOS
           Feature.enabled?(:my_ops_flag, type: ops)
           push_frontend_feature_flag?(:my_ops_flag, project, type: :ops)
+        EOS
+      },
+      licensed: {
+        description: 'Permanent feature flags used to temporarily disable licensed features.',
+        optional: true,
+        rollout_issue: false,
+        default_enabled: true,
+        example: <<-EOS
+          project.feature_available?(:my_licensed_feature)
+          namespace.feature_available?(:my_licensed_feature)
         EOS
       }
     }.freeze

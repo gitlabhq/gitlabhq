@@ -1833,9 +1833,6 @@ msgstr ""
 msgid "AdminProjects|Delete Project %{projectName}?"
 msgstr ""
 
-msgid "AdminProjects|Delete project"
-msgstr ""
-
 msgid "AdminSettings|Apply integration settings to all Projects"
 msgstr ""
 
@@ -2829,6 +2826,9 @@ msgid "An error occurred while making the request."
 msgstr ""
 
 msgid "An error occurred while moving the issue."
+msgstr ""
+
+msgid "An error occurred while moving the issue. Please try again."
 msgstr ""
 
 msgid "An error occurred while parsing recent searches"
@@ -6375,6 +6375,9 @@ msgstr ""
 msgid "Commit…"
 msgstr ""
 
+msgid "Community forum"
+msgstr ""
+
 msgid "Company"
 msgstr ""
 
@@ -7915,10 +7918,10 @@ msgstr ""
 msgid "DastProfiles|Text file validation"
 msgstr ""
 
-msgid "DastProfiles|The maximum number of seconds allowed for the site under test to respond to a request."
+msgid "DastProfiles|The maximum number of minutes allowed for the spider to traverse the site."
 msgstr ""
 
-msgid "DastProfiles|The maximum number of seconds allowed for the spider to traverse the site."
+msgid "DastProfiles|The maximum number of seconds allowed for the site under test to respond to a request."
 msgstr ""
 
 msgid "DastProfiles|Validate"
@@ -16373,6 +16376,9 @@ msgstr ""
 msgid "NetworkPolicies|Allow all outbound traffic from %{selector} to %{ruleSelector} on %{ports}"
 msgstr ""
 
+msgid "NetworkPolicies|Are you sure you want to delete this policy? This action cannot be undone."
+msgstr ""
+
 msgid "NetworkPolicies|Choose whether to enforce this policy."
 msgstr ""
 
@@ -16380,6 +16386,12 @@ msgid "NetworkPolicies|Create policy"
 msgstr ""
 
 msgid "NetworkPolicies|Define this policy's location, conditions and actions."
+msgstr ""
+
+msgid "NetworkPolicies|Delete policy"
+msgstr ""
+
+msgid "NetworkPolicies|Delete policy: %{policy}"
 msgstr ""
 
 msgid "NetworkPolicies|Deny all traffic"

@@ -11,13 +11,13 @@ RSpec.describe NewIssueWorker do
         expect(EventCreateService).not_to receive(:new)
         expect(NotificationService).not_to receive(:new)
 
-        worker.perform(99, create(:user).id)
+        worker.perform(non_existing_record_id, create(:user).id)
       end
 
       it 'logs an error' do
-        expect(Gitlab::AppLogger).to receive(:error).with('NewIssueWorker: couldn\'t find Issue with ID=99, skipping job')
+        expect(Gitlab::AppLogger).to receive(:error).with("NewIssueWorker: couldn't find Issue with ID=#{non_existing_record_id}, skipping job")
 
-        worker.perform(99, create(:user).id)
+        worker.perform(non_existing_record_id, create(:user).id)
       end
     end
 
@@ -26,15 +26,15 @@ RSpec.describe NewIssueWorker do
         expect(EventCreateService).not_to receive(:new)
         expect(NotificationService).not_to receive(:new)
 
-        worker.perform(create(:issue).id, 99)
+        worker.perform(create(:issue).id, non_existing_record_id)
       end
 
       it 'logs an error' do
         issue = create(:issue)
 
-        expect(Gitlab::AppLogger).to receive(:error).with('NewIssueWorker: couldn\'t find User with ID=99, skipping job')
+        expect(Gitlab::AppLogger).to receive(:error).with("NewIssueWorker: couldn't find User with ID=#{non_existing_record_id}, skipping job")
 
-        worker.perform(issue.id, 99)
+        worker.perform(issue.id, non_existing_record_id)
       end
     end
 
@@ -50,7 +50,7 @@ RSpec.describe NewIssueWorker do
 
       it 'creates a notification for the mentioned user' do
         expect(Notify).to receive(:new_issue_email).with(mentioned.id, issue.id, NotificationReason::MENTIONED)
-                            .and_return(double(deliver_later: true))
+          .and_return(double(deliver_later: true))
 
         worker.perform(issue.id, user.id)
       end

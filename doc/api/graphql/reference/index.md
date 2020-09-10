@@ -519,7 +519,7 @@ Represents a DAST scanner profile.
 | `globalId` | DastScannerProfileID! | ID of the DAST scanner profile |
 | `id` **{warning-solid}** | ID! | **Deprecated:** Use `global_id`. Deprecated in 13.4 |
 | `profileName` | String | Name of the DAST scanner profile |
-| `spiderTimeout` | Int | The maximum number of seconds allowed for the spider to traverse the site |
+| `spiderTimeout` | Int | The maximum number of minutes allowed for the spider to traverse the site |
 | `targetTimeout` | Int | The maximum number of seconds allowed for the site under test to respond to a request |
 
 ## DastScannerProfileCreatePayload

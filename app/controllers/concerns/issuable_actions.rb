@@ -9,7 +9,7 @@ module IssuableActions
     before_action :check_destroy_confirmation!, only: :destroy
     before_action :authorize_admin_issuable!, only: :bulk_update
     before_action only: :show do
-      push_frontend_feature_flag(:scoped_labels, default_enabled: true)
+      push_frontend_feature_flag(:scoped_labels, type: :licensed, default_enabled: true)
     end
     before_action do
       push_frontend_feature_flag(:not_issuable_queries, @project, default_enabled: true)

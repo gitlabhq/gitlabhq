@@ -1,5 +1,13 @@
 import testAction from 'helpers/vuex_action_helper';
-import { mockListsWithModel, mockLists, mockIssue } from '../mock_data';
+import {
+  mockListsWithModel,
+  mockLists,
+  mockIssue,
+  mockIssue2,
+  mockIssueWithModel,
+  mockIssue2WithModel,
+  rawIssue,
+} from '../mock_data';
 import actions, { gqlClient } from '~/boards/stores/actions';
 import * as types from '~/boards/stores/mutation_types';
 import { inactiveId, ListType } from '~/boards/constants';
@@ -229,7 +237,107 @@ describe('fetchIssuesForList', () => {
 });
 
 describe('moveIssue', () => {
-  expectNotImplemented(actions.moveIssue);
+  const listIssues = {
+    'gid://gitlab/List/1': [mockIssue.id, mockIssue2.id],
+    'gid://gitlab/List/2': [],
+  };
+
+  const issues = {
+    '1': mockIssueWithModel,
+    '2': mockIssue2WithModel,
+  };
+
+  const state = {
+    endpoints: { fullPath: 'gitlab-org', boardId: '1' },
+    boardType: 'group',
+    disabled: false,
+    boardLists: mockListsWithModel,
+    issuesByListId: listIssues,
+    issues,
+  };
+
+  it('should commit MOVE_ISSUE mutation and MOVE_ISSUE_SUCCESS mutation when successful', done => {
+    jest.spyOn(gqlClient, 'mutate').mockResolvedValue({
+      data: {
+        issueMoveList: {
+          issue: rawIssue,
+          errors: [],
+        },
+      },
+    });
+
+    testAction(
+      actions.moveIssue,
+      {
+        issueId: mockIssue.id,
+        issueIid: mockIssue.iid,
+        issuePath: mockIssue.referencePath,
+        fromListId: 'gid://gitlab/List/1',
+        toListId: 'gid://gitlab/List/2',
+      },
+      state,
+      [
+        {
+          type: types.MOVE_ISSUE,
+          payload: {
+            originalIssue: mockIssueWithModel,
+            fromListId: 'gid://gitlab/List/1',
+            toListId: 'gid://gitlab/List/2',
+          },
+        },
+        {
+          type: types.MOVE_ISSUE_SUCCESS,
+          payload: { issue: rawIssue },
+        },
+      ],
+      [],
+      done,
+    );
+  });
+
+  it('should commit MOVE_ISSUE mutation and MOVE_ISSUE_FAILURE mutation when unsuccessful', done => {
+    jest.spyOn(gqlClient, 'mutate').mockResolvedValue({
+      data: {
+        issueMoveList: {
+          issue: {},
+          errors: [{ foo: 'bar' }],
+        },
+      },
+    });
+
+    testAction(
+      actions.moveIssue,
+      {
+        issueId: mockIssue.id,
+        issueIid: mockIssue.iid,
+        issuePath: mockIssue.referencePath,
+        fromListId: 'gid://gitlab/List/1',
+        toListId: 'gid://gitlab/List/2',
+      },
+      state,
+      [
+        {
+          type: types.MOVE_ISSUE,
+          payload: {
+            originalIssue: mockIssueWithModel,
+            fromListId: 'gid://gitlab/List/1',
+            toListId: 'gid://gitlab/List/2',
+          },
+        },
+        {
+          type: types.MOVE_ISSUE_FAILURE,
+          payload: {
+            originalIssue: mockIssueWithModel,
+            fromListId: 'gid://gitlab/List/1',
+            toListId: 'gid://gitlab/List/2',
+            originalIndex: 0,
+          },
+        },
+      ],
+      [],
+      done,
+    );
+  });
 });
 
 describe('createNewIssue', () => {

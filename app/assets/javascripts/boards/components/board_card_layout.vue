@@ -95,6 +95,8 @@ export default {
     }"
     :index="index"
     :data-issue-id="issue.id"
+    :data-issue-iid="issue.iid"
+    :data-issue-path="issue.referencePath"
     data-testid="board_card"
     class="board-card p-3 rounded"
     @mousedown="mouseDown"

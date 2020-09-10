@@ -38,9 +38,7 @@ describe('DropdownCreateLabelComponent', () => {
     });
 
     it('renders `Go back` button on component header', () => {
-      const backButtonEl = vm.$el.querySelector(
-        '.dropdown-title button.dropdown-title-button.dropdown-menu-back',
-      );
+      const backButtonEl = vm.$el.querySelector('.dropdown-title .dropdown-menu-back');
 
       expect(backButtonEl).not.toBe(null);
       expect(backButtonEl.querySelector('[data-testid="arrow-left-icon"]')).not.toBe(null);
@@ -62,12 +60,9 @@ describe('DropdownCreateLabelComponent', () => {
     });
 
     it('renders `Close` button on component header', () => {
-      const closeButtonEl = vm.$el.querySelector(
-        '.dropdown-title button.dropdown-title-button.dropdown-menu-close',
-      );
+      const closeButtonEl = vm.$el.querySelector('.dropdown-title .dropdown-menu-close');
 
       expect(closeButtonEl).not.toBe(null);
-      expect(closeButtonEl.querySelector('.fa-times.dropdown-menu-close-icon')).not.toBe(null);
     });
 
     it('renders `Name new label` input element', () => {

@@ -1,7 +1,9 @@
 import Vue from 'vue';
 import { sortBy, pull } from 'lodash';
+import { formatIssue, moveIssueListHelper } from '../boards_util';
 import * as mutationTypes from './mutation_types';
 import { __ } from '~/locale';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 
 const notImplemented = () => {
   /* eslint-disable-next-line @gitlab/require-i18n-strings */
@@ -10,6 +12,18 @@ const notImplemented = () => {
 
 const removeIssueFromList = (state, listId, issueId) => {
   Vue.set(state.issuesByListId, listId, pull(state.issuesByListId[listId], issueId));
+};
+
+const addIssueToList = ({ state, listId, issueId, moveBeforeId, moveAfterId, atIndex }) => {
+  const listIssues = state.issuesByListId[listId];
+  let newIndex = atIndex || 0;
+  if (moveBeforeId) {
+    newIndex = listIssues.indexOf(moveBeforeId) + 1;
+  } else if (moveAfterId) {
+    newIndex = listIssues.indexOf(moveAfterId);
+  }
+  listIssues.splice(newIndex, 0, issueId);
+  Vue.set(state.issuesByListId, listId, listIssues);
 };
 
 export default {
@@ -111,16 +125,38 @@ export default {
     notImplemented();
   },
 
-  [mutationTypes.REQUEST_MOVE_ISSUE]: () => {
-    notImplemented();
+  [mutationTypes.MOVE_ISSUE]: (
+    state,
+    { originalIssue, fromListId, toListId, moveBeforeId, moveAfterId },
+  ) => {
+    const fromList = state.boardLists.find(l => l.id === fromListId);
+    const toList = state.boardLists.find(l => l.id === toListId);
+
+    const issue = moveIssueListHelper(originalIssue, fromList, toList);
+    Vue.set(state.issues, issue.id, issue);
+
+    removeIssueFromList(state, fromListId, issue.id);
+    addIssueToList({ state, listId: toListId, issueId: issue.id, moveBeforeId, moveAfterId });
   },
 
-  [mutationTypes.RECEIVE_MOVE_ISSUE_SUCCESS]: () => {
-    notImplemented();
+  [mutationTypes.MOVE_ISSUE_SUCCESS]: (state, { issue }) => {
+    const issueId = getIdFromGraphQLId(issue.id);
+    Vue.set(state.issues, issueId, formatIssue({ ...issue, id: issueId }));
   },
 
-  [mutationTypes.RECEIVE_MOVE_ISSUE_ERROR]: () => {
-    notImplemented();
+  [mutationTypes.MOVE_ISSUE_FAILURE]: (
+    state,
+    { originalIssue, fromListId, toListId, originalIndex },
+  ) => {
+    state.error = __('An error occurred while moving the issue. Please try again.');
+    Vue.set(state.issues, originalIssue.id, originalIssue);
+    removeIssueFromList(state, toListId, originalIssue.id);
+    addIssueToList({
+      state,
+      listId: fromListId,
+      issueId: originalIssue.id,
+      atIndex: originalIndex,
+    });
   },
 
   [mutationTypes.REQUEST_UPDATE_ISSUE]: () => {
