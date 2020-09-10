@@ -7,10 +7,9 @@ class Profiles::AccountsController < Profiles::ApplicationController
     render(locals: show_view_variables)
   end
 
-  # rubocop: disable CodeReuse/ActiveRecord
   def unlink
     provider = params[:provider]
-    identity = current_user.identities.find_by(provider: provider)
+    identity = find_identity(provider)
 
     return render_404 unless identity
 
@@ -22,12 +21,17 @@ class Profiles::AccountsController < Profiles::ApplicationController
 
     redirect_to profile_account_path
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 
   private
 
   def show_view_variables
     {}
+  end
+
+  def find_identity(provider)
+    return current_user.atlassian_identity if provider == 'atlassian_oauth2'
+
+    current_user.identities.find_by(provider: provider) # rubocop: disable CodeReuse/ActiveRecord
   end
 end
 

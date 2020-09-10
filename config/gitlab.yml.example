@@ -1404,6 +1404,11 @@ test:
           app_id: 'YOUR_CLIENT_ID',
           app_secret: 'YOUR_CLIENT_SECRET'
         }
+      - { name: 'atlassian_oauth2',
+          app_id: 'YOUR_CLIENT_ID',
+          app_secret: 'YOUR_CLIENT_SECRET',
+          args: { scope: 'offline_access read:jira-user read:jira-work', prompt: 'consent' }
+      }
   ldap:
     enabled: false
     servers:

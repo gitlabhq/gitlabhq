@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module DevOpsScore
+module DevOpsReport
   class MetricPresenter < Gitlab::View::Presenter::Simple
     def cards
       [

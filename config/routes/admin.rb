@@ -90,7 +90,9 @@ namespace :admin do
   resources :projects, only: [:index]
 
   resources :instance_statistics, only: :index
-  resource :dev_ops_score, controller: 'dev_ops_score', only: :show
+  resource :dev_ops_report, controller: 'dev_ops_report', only: :show
+  # remove in 13.5
+  get '/dev_ops_score', to: redirect('admin/dev_ops_report')
   resources :cohorts, only: :index
 
   scope(path: 'projects/*namespace_id',

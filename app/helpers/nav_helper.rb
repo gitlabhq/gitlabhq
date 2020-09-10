@@ -63,7 +63,7 @@ module NavHelper
   end
 
   def admin_analytics_nav_links
-    %w(dev_ops_score cohorts)
+    %w(dev_ops_report cohorts)
   end
 
   def group_issues_sub_menu_items

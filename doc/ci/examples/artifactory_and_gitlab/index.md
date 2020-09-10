@@ -3,12 +3,7 @@ stage: Verify
 group: Continuous Integration
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 disqus_identifier: 'https://docs.gitlab.com/ee/articles/artifactory_and_gitlab/index.html'
-author: Fabio Busatto
-author_gitlab: bikebilly
-level: intermediate
-article_type: tutorial
 type: tutorial
-date: 2017-08-15
 ---
 
 # How to deploy Maven projects to Artifactory with GitLab CI/CD

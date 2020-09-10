@@ -5,6 +5,13 @@ require 'spec_helper'
 RSpec.describe Projects::StaticSiteEditorController do
   let_it_be(:project) { create(:project, :public, :repository) }
   let_it_be(:user) { create(:user) }
+  let(:data) { instance_double(Hash) }
+
+  before do
+    allow_next_instance_of(Gitlab::StaticSiteEditor::Config::CombinedConfig) do |config|
+      allow(config).to receive(:data) { data }
+    end
+  end
 
   describe 'GET show' do
     let(:default_params) do
@@ -55,12 +62,12 @@ RSpec.describe Projects::StaticSiteEditorController do
           end
 
           it 'assigns a required variables' do
-            expect(assigns(:config)).to be_a(Gitlab::StaticSiteEditor::Config)
+            expect(assigns(:data)).to eq(data)
             expect(assigns(:ref)).to eq('master')
             expect(assigns(:path)).to eq('README.md')
           end
 
-          context 'when combination of ref and file path is incorrect' do
+          context 'when combination of ref and path is incorrect' do
             let(:default_params) { super().merge(id: 'unknown') }
 
             it 'responds with 404 page' do

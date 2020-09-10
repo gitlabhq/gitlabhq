@@ -22,7 +22,7 @@ module QA
         end
       end
 
-      it 'publishes a maven package and deletes it', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/943' do
+      it 'publishes a maven package and deletes it', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/943', quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/247281', type: :investigating } do
         uri = URI.parse(Runtime::Scenario.gitlab_address)
         gitlab_address_with_port = "#{uri.scheme}://#{uri.host}:#{uri.port}"
         pom_xml = {

@@ -1776,7 +1776,16 @@ msgstr ""
 msgid "AdminArea|Bots"
 msgstr ""
 
+msgid "AdminArea|Components"
+msgstr ""
+
 msgid "AdminArea|Developer"
+msgstr ""
+
+msgid "AdminArea|Features"
+msgstr ""
+
+msgid "AdminArea|Groups: %{number_of_groups}"
 msgstr ""
 
 msgid "AdminArea|Guest"
@@ -1785,10 +1794,31 @@ msgstr ""
 msgid "AdminArea|Included Free in license"
 msgstr ""
 
+msgid "AdminArea|Latest groups"
+msgstr ""
+
+msgid "AdminArea|Latest projects"
+msgstr ""
+
+msgid "AdminArea|Latest users"
+msgstr ""
+
 msgid "AdminArea|Maintainer"
 msgstr ""
 
+msgid "AdminArea|New group"
+msgstr ""
+
+msgid "AdminArea|New project"
+msgstr ""
+
+msgid "AdminArea|New user"
+msgstr ""
+
 msgid "AdminArea|Owner"
+msgstr ""
+
+msgid "AdminArea|Projects: %{number_of_projects}"
 msgstr ""
 
 msgid "AdminArea|Reporter"
@@ -1816,6 +1846,9 @@ msgid "AdminArea|Users with highest role"
 msgstr ""
 
 msgid "AdminArea|Users without a Group and Project"
+msgstr ""
+
+msgid "AdminArea|Users: %{number_of_users}"
 msgstr ""
 
 msgid "AdminArea|You’re about to stop all jobs.This will halt all current jobs that are running."
@@ -10772,7 +10805,7 @@ msgstr ""
 msgid "FeatureFlags|Include additional user IDs"
 msgstr ""
 
-msgid "FeatureFlags|Install a %{docs_link_anchored_start}compatible client library%{docs_link_anchored_end} and specify the API URL, application name, and instance ID during the configuration setup. %{docs_link_start}More Information%{docs_link_end}"
+msgid "FeatureFlags|Install a %{docsLinkAnchoredStart}compatible client library%{docsLinkAnchoredEnd} and specify the API URL, application name, and instance ID during the configuration setup. %{docsLinkStart}More Information%{docsLinkEnd}"
 msgstr ""
 
 msgid "FeatureFlags|Instance ID"
@@ -11696,7 +11729,13 @@ msgstr ""
 msgid "GitHub import"
 msgstr ""
 
+msgid "GitLab"
+msgstr ""
+
 msgid "GitLab / Unsubscribe"
+msgstr ""
+
+msgid "GitLab API"
 msgstr ""
 
 msgid "GitLab Enterprise Edition %{plan}"
@@ -11711,10 +11750,16 @@ msgstr ""
 msgid "GitLab Issue"
 msgstr ""
 
+msgid "GitLab Pages"
+msgstr ""
+
 msgid "GitLab Service Desk is a simple way to allow people to create issues in your GitLab instance without needing their own user account. It provides a unique email address for end users to create issues in a project, and replies can be sent either through the GitLab interface or by email. End users will only see the thread through email."
 msgstr ""
 
 msgid "GitLab Shared Runners execute code of different projects on the same Runner unless you configure GitLab Runner Autoscale with MaxBuilds 1 (which it is on GitLab.com)."
+msgstr ""
+
+msgid "GitLab Shell"
 msgstr ""
 
 msgid "GitLab Support Bot"
@@ -11724,6 +11769,9 @@ msgid "GitLab Team Member"
 msgstr ""
 
 msgid "GitLab User"
+msgstr ""
+
+msgid "GitLab Workhorse"
 msgstr ""
 
 msgid "GitLab allows you to continue using your license even if you exceed the number of seats you purchased. You will be required to pay for these seats when you renew your license."
@@ -12807,6 +12855,15 @@ msgstr ""
 msgid "Highest role:"
 msgstr ""
 
+msgid "HighlightBar|Alert events:"
+msgstr ""
+
+msgid "HighlightBar|Alert start time:"
+msgstr ""
+
+msgid "HighlightBar|Original alert:"
+msgstr ""
+
 msgid "History"
 msgstr ""
 
@@ -13252,16 +13309,28 @@ msgstr ""
 msgid "IncidentManagement|Create incident"
 msgstr ""
 
+msgid "IncidentManagement|Critical - S1"
+msgstr ""
+
 msgid "IncidentManagement|Date created"
 msgstr ""
 
 msgid "IncidentManagement|Display your incidents in a dedicated view"
 msgstr ""
 
+msgid "IncidentManagement|High - S2"
+msgstr ""
+
 msgid "IncidentManagement|Incident"
 msgstr ""
 
 msgid "IncidentManagement|Incidents"
+msgstr ""
+
+msgid "IncidentManagement|Low - S4"
+msgstr ""
+
+msgid "IncidentManagement|Medium - S3"
 msgstr ""
 
 msgid "IncidentManagement|No incidents to display."
@@ -13283,6 +13352,9 @@ msgid "IncidentManagement|There was an error displaying the incidents."
 msgstr ""
 
 msgid "IncidentManagement|Unassigned"
+msgstr ""
+
+msgid "IncidentManagement|Unknown"
 msgstr ""
 
 msgid "IncidentManagement|Unpublished"
@@ -20487,6 +20559,9 @@ msgstr ""
 msgid "README"
 msgstr ""
 
+msgid "Rails"
+msgstr ""
+
 msgid "Rake Tasks Help"
 msgstr ""
 
@@ -21511,6 +21586,9 @@ msgid "Rollback"
 msgstr ""
 
 msgid "Rook"
+msgstr ""
+
+msgid "Ruby"
 msgstr ""
 
 msgid "Rule name is already taken."
@@ -22932,6 +23010,15 @@ msgid "Setup"
 msgstr ""
 
 msgid "Severity"
+msgstr ""
+
+msgid "SeverityWidget|Severity"
+msgstr ""
+
+msgid "SeverityWidget|Severity: %{severity}"
+msgstr ""
+
+msgid "SeverityWidget|There was an error while updating severity."
 msgstr ""
 
 msgid "Shards (%{shards})"

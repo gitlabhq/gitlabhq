@@ -71,12 +71,12 @@ RSpec.describe SubmitUsagePingService do
   shared_examples 'saves DevOps report data from the response' do
     it do
       expect { subject.execute }
-        .to change { DevOpsScore::Metric.count }
+        .to change { DevOpsReport::Metric.count }
         .by(1)
 
-      expect(DevOpsScore::Metric.last.leader_issues).to eq 10.2
-      expect(DevOpsScore::Metric.last.instance_issues).to eq 3.2
-      expect(DevOpsScore::Metric.last.percentage_issues).to eq 31.37
+      expect(DevOpsReport::Metric.last.leader_issues).to eq 10.2
+      expect(DevOpsReport::Metric.last.instance_issues).to eq 3.2
+      expect(DevOpsReport::Metric.last.percentage_issues).to eq 31.37
     end
   end
 

@@ -14,7 +14,13 @@ class Projects::StaticSiteEditorController < Projects::ApplicationController
   end
 
   def show
-    @config = Gitlab::StaticSiteEditor::Config.new(@repository, @ref, @path, params[:return_url])
+    config = Gitlab::StaticSiteEditor::Config::CombinedConfig.new(
+      @repository,
+      @ref,
+      @path,
+      params[:return_url]
+    )
+    @data = config.data
   end
 
   private

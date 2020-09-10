@@ -16,6 +16,7 @@ RSpec.describe GroupMembersFinder, '#execute' do
     member1 = group.add_maintainer(user1)
     member2 = group.add_maintainer(user2)
     member3 = group.add_maintainer(user3)
+    create(:group_member, :minimal_access, user: create(:user), source: group)
 
     result = described_class.new(group).execute
 

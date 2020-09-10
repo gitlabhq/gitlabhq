@@ -692,6 +692,7 @@ RSpec.describe Group do
     before do
       create(:group_member, user: user, group: group_parent, access_level: parent_group_access_level)
       create(:group_member, user: user, group: group, access_level: group_access_level)
+      create(:group_member, :minimal_access, user: create(:user), source: group)
       create(:group_member, user: user, group: group_child, access_level: child_group_access_level)
     end
 

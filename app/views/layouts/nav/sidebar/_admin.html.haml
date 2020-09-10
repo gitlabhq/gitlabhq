@@ -49,7 +49,7 @@
                 = _('Gitaly Servers')
 
       = nav_link(controller: admin_analytics_nav_links) do
-        = link_to admin_dev_ops_score_path, data: { qa_selector: 'admin_analytics_link' } do
+        = link_to admin_dev_ops_report_path, data: { qa_selector: 'admin_analytics_link' } do
           .nav-icon-container
             = sprite_icon('chart')
           %span.nav-item-name
@@ -57,12 +57,12 @@
 
         %ul.sidebar-sub-level-items{ data: { qa_selector: 'admin_sidebar_analytics_submenu_content' } }
           = nav_link(controller: admin_analytics_nav_links, html_options: { class: "fly-out-top-item" }) do
-            = link_to admin_dev_ops_score_path do
+            = link_to admin_dev_ops_report_path do
               %strong.fly-out-top-item-name
                 = _('Analytics')
           %li.divider.fly-out-top-item
-          = nav_link(controller: :dev_ops_score) do
-            = link_to admin_dev_ops_score_path, title: _('DevOps Report') do
+          = nav_link(controller: :dev_ops_report) do
+            = link_to admin_dev_ops_report_path, title: _('DevOps Report') do
               %span
                 = _('DevOps Report')
           = nav_link(controller: :cohorts) do

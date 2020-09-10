@@ -45,7 +45,7 @@ module QA
           Flow::Login.sign_in
         end
 
-        it 'works with Auto DevOps' do
+        it 'works with Auto DevOps', quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/240946', type: :flaky } do
           %w[build code_quality test].each do |job|
             pipeline.visit!
 

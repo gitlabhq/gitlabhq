@@ -136,6 +136,16 @@ FactoryBot.define do
       end
     end
 
+    factory :atlassian_user do
+      transient do
+        extern_uid { generate(:username) }
+      end
+
+      after(:create) do |user, evaluator|
+        create(:atlassian_identity, user: user, extern_uid: evaluator.extern_uid)
+      end
+    end
+
     factory :admin, traits: [:admin]
   end
 end

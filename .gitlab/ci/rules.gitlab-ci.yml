@@ -584,6 +584,8 @@
   rules:
     - <<: *if-not-ee
       when: never
+    - <<: *if-merge-request
+      changes: *code-backstage-patterns
     - <<: *if-master-schedule-2-hourly
     - <<: *if-merge-request-title-run-all-rspec
 

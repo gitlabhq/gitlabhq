@@ -51,11 +51,11 @@ class SubmitUsagePingService
   end
 
   def store_metrics(response)
-    metrics = response['conv_index'] || response['dev_ops_score']
+    metrics = response['conv_index'] || response['dev_ops_score'] # leaving dev_ops_score here, as the response data comes from the gitlab-version-com
 
     return unless metrics.present?
 
-    DevOpsScore::Metric.create!(
+    DevOpsReport::Metric.create!(
       metrics.slice(*METRICS)
     )
   end

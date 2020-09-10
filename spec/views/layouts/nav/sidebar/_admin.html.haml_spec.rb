@@ -68,7 +68,7 @@ RSpec.describe 'layouts/nav/sidebar/_admin' do
 
   context 'on analytics' do
     before do
-      allow(controller).to receive(:controller_name).and_return('dev_ops_score')
+      allow(controller).to receive(:controller_name).and_return('dev_ops_report')
     end
 
     it_behaves_like 'page has active tab', 'Analytics'

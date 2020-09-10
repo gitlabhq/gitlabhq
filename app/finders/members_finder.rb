@@ -63,7 +63,7 @@ class MembersFinder
   def direct_group_members(include_descendants)
     requested_relations = [:inherited, :direct]
     requested_relations << :descendants if include_descendants
-    GroupMembersFinder.new(group).execute(include_relations: requested_relations).non_invite # rubocop: disable CodeReuse/Finder
+    GroupMembersFinder.new(group).execute(include_relations: requested_relations).non_invite.non_minimal_access # rubocop: disable CodeReuse/Finder
   end
 
   def project_invited_groups_members
@@ -73,7 +73,7 @@ class MembersFinder
       .public_or_visible_to_user(current_user)
       .select(:id)
 
-    GroupMember.with_source_id(invited_groups_ids_including_ancestors)
+    GroupMember.with_source_id(invited_groups_ids_including_ancestors).non_minimal_access
   end
 
   def distinct_union_of_members(union_members)

@@ -14,7 +14,7 @@ import {
   secondRequest,
   zoomMeetingUrl,
 } from '../mock_data';
-import IncidentTabs from '~/issue_show/components/incident_tabs.vue';
+import IncidentTabs from '~/issue_show/components/incidents/incident_tabs.vue';
 import DescriptionComponent from '~/issue_show/components/description.vue';
 import PinnedLinks from '~/issue_show/components/pinned_links.vue';
 
@@ -39,6 +39,13 @@ describe('Issuable output', () => {
   const mountComponent = (props = {}) => {
     wrapper = mount(IssuableApp, {
       propsData: { ...appProps, ...props },
+      provide: {
+        fullPath: 'gitlab-org/incidents',
+        iid: '19',
+      },
+      stubs: {
+        HighlightBar: true,
+      },
     });
   };
 

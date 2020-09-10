@@ -1,7 +1,5 @@
 ---
-type: tutorial, concepts
 description: "How to migrate an existing Git repository to Git LFS with BFG."
-last_updated: 2019-07-11
 ---
 
 # Migrate a Git repo into Git LFS with BFG

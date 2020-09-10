@@ -83,6 +83,10 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     end
   end
 
+  def atlassian_oauth2
+    omniauth_flow(Gitlab::Auth::Atlassian)
+  end
+
   private
 
   def log_failed_login(user, provider)

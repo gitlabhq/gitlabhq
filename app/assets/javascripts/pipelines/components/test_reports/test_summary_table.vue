@@ -2,13 +2,11 @@
 import { mapGetters } from 'vuex';
 import { GlIcon, GlTooltipDirective } from '@gitlab/ui';
 import { s__ } from '~/locale';
-import SmartVirtualList from '~/vue_shared/components/smart_virtual_list.vue';
 
 export default {
   name: 'TestsSummaryTable',
   components: {
     GlIcon,
-    SmartVirtualList,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -31,8 +29,6 @@ export default {
       this.$emit('row-click', index);
     },
   },
-  maxShownRows: 20,
-  typicalRowHeight: 55,
 };
 </script>
 
@@ -69,83 +65,77 @@ export default {
         </div>
       </div>
 
-      <smart-virtual-list
-        :length="getTestSuites.length"
-        :remain="$options.maxShownRows"
-        :size="$options.typicalRowHeight"
+      <div
+        v-for="(testSuite, index) in getTestSuites"
+        :key="index"
+        role="row"
+        class="gl-responsive-table-row test-reports-summary-row rounded js-suite-row"
+        :class="{
+          'gl-responsive-table-row-clickable cursor-pointer': !testSuite.suite_error,
+        }"
+        @click="tableRowClick(index)"
       >
-        <div
-          v-for="(testSuite, index) in getTestSuites"
-          :key="index"
-          role="row"
-          class="gl-responsive-table-row test-reports-summary-row rounded js-suite-row"
-          :class="{
-            'gl-responsive-table-row-clickable cursor-pointer': !testSuite.suite_error,
-          }"
-          @click="tableRowClick(index)"
-        >
-          <div class="table-section section-25">
-            <div role="rowheader" class="table-mobile-header font-weight-bold">
-              {{ __('Suite') }}
-            </div>
-            <div class="table-mobile-content underline cgray pl-3">
-              {{ testSuite.name }}
-              <gl-icon
-                v-if="testSuite.suite_error"
-                ref="suiteErrorIcon"
-                v-gl-tooltip
-                name="error"
-                :title="testSuite.suite_error"
-                class="vertical-align-middle"
-              />
-            </div>
+        <div class="table-section section-25">
+          <div role="rowheader" class="table-mobile-header font-weight-bold">
+            {{ __('Suite') }}
           </div>
-
-          <div class="table-section section-25">
-            <div role="rowheader" class="table-mobile-header font-weight-bold">
-              {{ __('Duration') }}
-            </div>
-            <div class="table-mobile-content text-md-left">
-              {{ testSuite.formattedTime }}
-            </div>
-          </div>
-
-          <div class="table-section section-10 text-center">
-            <div role="rowheader" class="table-mobile-header font-weight-bold">
-              {{ __('Failed') }}
-            </div>
-            <div class="table-mobile-content">{{ testSuite.failed_count }}</div>
-          </div>
-
-          <div class="table-section section-10 text-center">
-            <div role="rowheader" class="table-mobile-header font-weight-bold">
-              {{ __('Errors') }}
-            </div>
-            <div class="table-mobile-content">{{ testSuite.error_count }}</div>
-          </div>
-
-          <div class="table-section section-10 text-center">
-            <div role="rowheader" class="table-mobile-header font-weight-bold">
-              {{ __('Skipped') }}
-            </div>
-            <div class="table-mobile-content">{{ testSuite.skipped_count }}</div>
-          </div>
-
-          <div class="table-section section-10 text-center">
-            <div role="rowheader" class="table-mobile-header font-weight-bold">
-              {{ __('Passed') }}
-            </div>
-            <div class="table-mobile-content">{{ testSuite.success_count }}</div>
-          </div>
-
-          <div class="table-section section-10 text-right pr-md-3">
-            <div role="rowheader" class="table-mobile-header font-weight-bold">
-              {{ __('Total') }}
-            </div>
-            <div class="table-mobile-content">{{ testSuite.total_count }}</div>
+          <div class="table-mobile-content underline cgray pl-3">
+            {{ testSuite.name }}
+            <gl-icon
+              v-if="testSuite.suite_error"
+              ref="suiteErrorIcon"
+              v-gl-tooltip
+              name="error"
+              :title="testSuite.suite_error"
+              class="vertical-align-middle"
+            />
           </div>
         </div>
-      </smart-virtual-list>
+
+        <div class="table-section section-25">
+          <div role="rowheader" class="table-mobile-header font-weight-bold">
+            {{ __('Duration') }}
+          </div>
+          <div class="table-mobile-content text-md-left">
+            {{ testSuite.formattedTime }}
+          </div>
+        </div>
+
+        <div class="table-section section-10 text-center">
+          <div role="rowheader" class="table-mobile-header font-weight-bold">
+            {{ __('Failed') }}
+          </div>
+          <div class="table-mobile-content">{{ testSuite.failed_count }}</div>
+        </div>
+
+        <div class="table-section section-10 text-center">
+          <div role="rowheader" class="table-mobile-header font-weight-bold">
+            {{ __('Errors') }}
+          </div>
+          <div class="table-mobile-content">{{ testSuite.error_count }}</div>
+        </div>
+
+        <div class="table-section section-10 text-center">
+          <div role="rowheader" class="table-mobile-header font-weight-bold">
+            {{ __('Skipped') }}
+          </div>
+          <div class="table-mobile-content">{{ testSuite.skipped_count }}</div>
+        </div>
+
+        <div class="table-section section-10 text-center">
+          <div role="rowheader" class="table-mobile-header font-weight-bold">
+            {{ __('Passed') }}
+          </div>
+          <div class="table-mobile-content">{{ testSuite.success_count }}</div>
+        </div>
+
+        <div class="table-section section-10 text-right pr-md-3">
+          <div role="rowheader" class="table-mobile-header font-weight-bold">
+            {{ __('Total') }}
+          </div>
+          <div class="table-mobile-content">{{ testSuite.total_count }}</div>
+        </div>
+      </div>
     </div>
 
     <div v-else>

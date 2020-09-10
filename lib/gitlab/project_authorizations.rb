@@ -99,6 +99,7 @@ module Gitlab
         .and(members[:source_type].eq('Namespace'))
         .and(members[:requested_at].eq(nil))
         .and(members[:user_id].eq(user.id))
+        .and(members[:access_level].gt(Gitlab::Access::MINIMAL_ACCESS))
 
       Arel::Nodes::OuterJoin.new(members, Arel::Nodes::On.new(cond))
     end
@@ -119,6 +120,7 @@ module Gitlab
                     .and(members[:source_type].eq('Namespace'))
                     .and(members[:requested_at].eq(nil))
                     .and(members[:user_id].eq(user.id))
+                    .and(members[:access_level].gt(Gitlab::Access::MINIMAL_ACCESS))
       Arel::Nodes::InnerJoin.new(members, Arel::Nodes::On.new(cond))
     end
 

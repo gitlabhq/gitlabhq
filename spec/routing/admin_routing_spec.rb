@@ -134,6 +134,20 @@ RSpec.describe Admin::HealthCheckController, "routing" do
   end
 end
 
+# admin_dev_ops_report GET    /admin/dev_ops_report(.:format) admin/dev_ops_report#show
+RSpec.describe Admin::DevOpsReportController, "routing" do
+  it "to #show" do
+    expect(get("/admin/dev_ops_report")).to route_to('admin/dev_ops_report#show')
+  end
+end
+
+# admin_cohorts GET    /admin/cohorts(.:format) admin/cohorst#index
+RSpec.describe Admin::CohortsController, "routing" do
+  it "to #index" do
+    expect(get("/admin/cohorts")).to route_to('admin/cohorts#index')
+  end
+end
+
 RSpec.describe Admin::GroupsController, "routing" do
   let(:name) { 'complex.group-namegit' }
 

@@ -7,7 +7,7 @@ module SystemNoteHelper
     'description' => 'pencil-square',
     'merge' => 'git-merge',
     'merged' => 'git-merge',
-    'opened' => 'issue-open',
+    'opened' => 'issues',
     'closed' => 'issue-close',
     'time_tracking' => 'timer',
     'assignee' => 'user',

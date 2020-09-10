@@ -1,8 +1,9 @@
 import { shallowMount } from '@vue/test-utils';
 import { GlTab } from '@gitlab/ui';
-import IncidentTabs from '~/issue_show/components/incident_tabs.vue';
+import IncidentTabs from '~/issue_show/components/incidents/incident_tabs.vue';
 import { descriptionProps } from '../mock_data';
 import DescriptionComponent from '~/issue_show/components/description.vue';
+import HighlightBar from '~/issue_show/components/incidents/highlight_bar/higlight_bar.vue';
 
 describe('Incident Tabs component', () => {
   let wrapper;
@@ -25,6 +26,7 @@ describe('Incident Tabs component', () => {
   const findTabs = () => wrapper.findAll(GlTab);
   const findSummaryTab = () => findTabs().at(0);
   const findDescriptionComponent = () => wrapper.find(DescriptionComponent);
+  const findHighlightBarComponent = () => wrapper.find(HighlightBar);
 
   describe('default state', () => {
     it('renders the summary tab', async () => {
@@ -33,8 +35,9 @@ describe('Incident Tabs component', () => {
       expect(findSummaryTab().attributes('title')).toBe('Summary');
     });
 
-    it('renders the description component', () => {
+    it('renders the description component with highlight bar', () => {
       expect(findDescriptionComponent().exists()).toBe(true);
+      expect(findHighlightBarComponent().exists()).toBe(true);
     });
 
     it('passes all props to the description component', () => {

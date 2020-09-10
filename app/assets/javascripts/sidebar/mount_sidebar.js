@@ -8,6 +8,7 @@ import SidebarMoveIssue from './lib/sidebar_move_issue';
 import IssuableLockForm from './components/lock/issuable_lock_form.vue';
 import sidebarParticipants from './components/participants/sidebar_participants.vue';
 import sidebarSubscriptions from './components/subscriptions/sidebar_subscriptions.vue';
+import SidebarSeverity from './components/severity/sidebar_severity.vue';
 import Translate from '../vue_shared/translate';
 import createDefaultClient from '~/lib/graphql';
 import { store } from '~/notes/stores';
@@ -159,6 +160,35 @@ function mountTimeTrackingComponent() {
   });
 }
 
+function mountSeverityComponent() {
+  const severityContainerEl = document.querySelector('#js-severity');
+
+  if (!severityContainerEl) {
+    return false;
+  }
+  const apolloProvider = new VueApollo({
+    defaultClient: createDefaultClient(),
+  });
+
+  const { fullPath, iid, severity } = getSidebarOptions();
+
+  return new Vue({
+    el: severityContainerEl,
+    apolloProvider,
+    components: {
+      SidebarSeverity,
+    },
+    render: createElement =>
+      createElement('sidebar-severity', {
+        props: {
+          projectPath: fullPath,
+          iid: String(iid),
+          initialSeverity: severity.toUpperCase(),
+        },
+      }),
+  });
+}
+
 export function mountSidebar(mediator) {
   mountAssigneesComponent(mediator);
   mountConfidentialComponent(mediator);
@@ -173,6 +203,8 @@ export function mountSidebar(mediator) {
   ).init();
 
   mountTimeTrackingComponent();
+
+  mountSeverityComponent();
 }
 
 export { getSidebarOptions };

@@ -20,8 +20,10 @@ class Group < Namespace
 
   UpdateSharedRunnersError = Class.new(StandardError)
 
-  has_many :group_members, -> { where(requested_at: nil) }, dependent: :destroy, as: :source # rubocop:disable Cop/ActiveRecordDependent
+  has_many :all_group_members, -> { where(requested_at: nil) }, dependent: :destroy, as: :source, class_name: 'GroupMember' # rubocop:disable Cop/ActiveRecordDependent
+  has_many :group_members, -> { where(requested_at: nil).where.not(members: { access_level: Gitlab::Access::MINIMAL_ACCESS }) }, dependent: :destroy, as: :source # rubocop:disable Cop/ActiveRecordDependent
   alias_method :members, :group_members
+
   has_many :users, through: :group_members
   has_many :owners,
     -> { where(members: { access_level: Gitlab::Access::OWNER }) },
@@ -395,6 +397,10 @@ class Group < Namespace
     ])
   end
 
+  def users_count
+    members.count
+  end
+
   # Returns all users that are members of projects
   # belonging to the current group or sub-groups
   def project_users_with_descendants
@@ -630,6 +636,7 @@ class Group < Namespace
       .where(group_member_table[:requested_at].eq(nil))
       .where(group_member_table[:source_id].eq(group_group_link_table[:shared_with_group_id]))
       .where(group_member_table[:source_type].eq('Namespace'))
+      .non_minimal_access
   end
 
   def smallest_value_arel(args, column_alias)

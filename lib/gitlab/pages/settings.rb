@@ -7,11 +7,7 @@ module Gitlab
 
       def path
         if ::Gitlab::Runtime.web_server? && ENV['GITLAB_PAGES_DENY_DISK_ACCESS'] == '1'
-          begin
-            raise DiskAccessDenied
-          rescue DiskAccessDenied => ex
-            ::Gitlab::ErrorTracking.track_exception(ex)
-          end
+          raise DiskAccessDenied
         end
 
         super
