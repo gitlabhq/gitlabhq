@@ -44,12 +44,14 @@ module Issues
         create_assignee_note(issue, old_assignees)
         notification_service.async.reassigned_issue(issue, current_user, old_assignees)
         todo_service.reassigned_assignable(issue, current_user, old_assignees)
+        track_incident_action(current_user, issue, :incident_assigned)
       end
 
       if issue.previous_changes.include?('confidential')
         # don't enqueue immediately to prevent todos removal in case of a mistake
         TodosDestroyer::ConfidentialIssueWorker.perform_in(Todo::WAIT_FOR_DELETE, issue.id) if issue.confidential?
         create_confidentiality_note(issue)
+        track_usage_event(:incident_management_incident_change_confidential, current_user)
       end
 
       added_labels = issue.labels - old_labels

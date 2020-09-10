@@ -57,6 +57,16 @@ RSpec.describe Notes::CreateService do
 
         described_class.new(project, user, opts).execute
       end
+
+      context 'issue is an incident' do
+        subject { described_class.new(project, user, opts).execute }
+
+        let(:issue) { create(:incident, project: project) }
+
+        it_behaves_like 'an incident management tracked event', :incident_management_incident_comment do
+          let(:current_user) { user }
+        end
+      end
     end
 
     context 'noteable highlight cache clearing' do

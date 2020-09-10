@@ -30,6 +30,10 @@ RSpec.describe Mutations::AlertManagement::UpdateAlertStatus do
         )
       end
 
+      it_behaves_like 'an incident management tracked event', :incident_management_alert_status_changed do
+        let(:user) { current_user }
+      end
+
       context 'error occurs when updating' do
         it 'returns the alert with errors' do
           # Stub an error on the alert

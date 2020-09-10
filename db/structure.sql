@@ -10321,7 +10321,8 @@ CREATE TABLE public.ci_platform_metrics (
     recorded_at timestamp with time zone NOT NULL,
     platform_target text NOT NULL,
     count integer NOT NULL,
-    CONSTRAINT check_f922abc32b CHECK ((char_length(platform_target) <= 255))
+    CONSTRAINT check_f922abc32b CHECK ((char_length(platform_target) <= 255)),
+    CONSTRAINT ci_platform_metrics_check_count_positive CHECK ((count > 0))
 );
 
 CREATE SEQUENCE public.ci_platform_metrics_id_seq

@@ -96,6 +96,13 @@ module Gitlab
         yield.merge(key => Time.current)
       end
 
+      def track_usage_event(metric_name, target)
+        return unless Feature.enabled?(:"usage_data_#{metric_name}", default_enabled: true)
+        return unless Gitlab::CurrentSettings.usage_ping_enabled?
+
+        Gitlab::UsageDataCounters::HLLRedisCounter.track_event(target.id, metric_name.to_s)
+      end
+
       private
 
       def redis_usage_counter

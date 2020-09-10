@@ -740,6 +740,12 @@ and issues) performed by your group members.
 
 With [GitLab Issue Analytics](issues_analytics/index.md), you can see a bar chart of the number of issues created each month in your groups.
 
+## Repositories analytics **(PREMIUM)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/215104) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.4.
+
+With [GitLab Repositories Analytics](repositories_analytics/index.md), you can download a CSV of the latest coverage data for all the projects in your group.
+
 ## Dependency Proxy **(PREMIUM)**
 
 Use GitLab as a [dependency proxy](../packages/dependency_proxy/index.md) for upstream Docker images.

@@ -8,6 +8,7 @@
 #   TodoService.new.new_issue(issue, current_user)
 #
 class TodoService
+  include Gitlab::Utils::UsageData
   # When create an issue we should:
   #
   #  * create a todo for assignee if issue is assigned
@@ -217,6 +218,9 @@ class TodoService
     Array(users).map do |user|
       next if pending_todos(user, attributes).exists?
 
+      issue_type = attributes.delete(:issue_type)
+      track_todo_creation(user, issue_type)
+
       todo = Todo.create(attributes.merge(user_id: user.id))
       user.update_todos_count_cache
       todo
@@ -299,6 +303,8 @@ class TodoService
 
     if target.is_a?(Commit)
       attributes.merge!(target_id: nil, commit_id: target.id)
+    elsif target.is_a?(Issue)
+      attributes[:issue_type] = target.issue_type
     end
 
     attributes
@@ -345,6 +351,12 @@ class TodoService
 
   def pending_todos(user, criteria = {})
     PendingTodosFinder.new(user, criteria).execute
+  end
+
+  def track_todo_creation(user, issue_type)
+    return unless issue_type == 'incident'
+
+    track_usage_event(:incident_management_incident_todo, user)
   end
 end
 

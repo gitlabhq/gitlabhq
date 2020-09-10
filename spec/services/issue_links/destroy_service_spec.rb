@@ -36,6 +36,14 @@ RSpec.describe IssueLinks::DestroyService do
       it 'returns success message' do
         is_expected.to eq(message: 'Relation was removed', status: :success)
       end
+
+      context 'target is an incident' do
+        let(:issue_b) { create(:incident, project: project) }
+
+        it_behaves_like 'an incident management tracked event', :incident_management_incident_unrelate do
+          let(:current_user) { user }
+        end
+      end
     end
 
     context 'when failing to remove an issue link' do

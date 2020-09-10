@@ -194,6 +194,19 @@ RSpec.describe TodoService do
           should_create_todo(user: john_doe, target: issue)
         end
       end
+
+      context 'issue is an incident' do
+        let(:issue) { create(:incident, project: project, assignees: [john_doe], author: author) }
+
+        subject do
+          service.new_issue(issue, author)
+          should_create_todo(user: john_doe, target: issue, action: Todo::ASSIGNED)
+        end
+
+        it_behaves_like 'an incident management tracked event', :incident_management_incident_todo do
+          let(:current_user) { john_doe}
+        end
+      end
     end
 
     describe '#update_issue' do

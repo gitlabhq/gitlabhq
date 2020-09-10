@@ -13,6 +13,7 @@ module Issues
         invalidate_cache_counts(issue, users: issue.assignees)
         issue.update_project_counter_caches
         delete_milestone_closed_issue_counter_cache(issue.milestone)
+        track_incident_action(current_user, issue, :incident_reopened)
       end
 
       issue

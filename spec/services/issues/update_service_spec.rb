@@ -112,6 +112,18 @@ RSpec.describe Issues::UpdateService, :mailer do
         update_issue(confidential: false)
       end
 
+      context 'issue in incident type' do
+        before do
+          opts[:issue_type] = 'incident'
+        end
+
+        let(:current_user) { user }
+
+        subject { update_issue(confidential: true) }
+
+        it_behaves_like 'an incident management tracked event', :incident_management_incident_change_confidential
+      end
+
       it 'updates open issue counter for assignees when issue is reassigned' do
         update_issue(assignee_ids: [user2.id])
 
@@ -460,6 +472,13 @@ RSpec.describe Issues::UpdateService, :mailer do
           }
 
           expect(Todo.where(attributes).count).to eq(1)
+        end
+
+        context 'issue is incident type' do
+          let(:issue) { create(:incident, project: project) }
+          let(:current_user) { user }
+
+          it_behaves_like 'an incident management tracked event', :incident_management_incident_assigned
         end
       end
 

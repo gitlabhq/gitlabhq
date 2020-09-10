@@ -53,6 +53,15 @@ RSpec.describe Issues::ReopenService do
         described_class.new(project, user).execute(issue)
       end
 
+      context 'issue is incident type' do
+        let(:issue) { create(:incident, :closed, project: project) }
+        let(:current_user) { user }
+
+        subject { described_class.new(project, user).execute(issue) }
+
+        it_behaves_like 'an incident management tracked event', :incident_management_incident_reopened
+      end
+
       context 'when issue is not confidential' do
         it 'executes issue hooks' do
           expect(project).to receive(:execute_hooks).with(an_instance_of(Hash), :issue_hooks)

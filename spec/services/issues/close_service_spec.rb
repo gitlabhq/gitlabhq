@@ -67,6 +67,15 @@ RSpec.describe Issues::CloseService do
 
       service.execute(issue)
     end
+
+    context 'issue is incident type' do
+      let(:issue) { create(:incident, project: project) }
+      let(:current_user) { user }
+
+      subject { service.execute(issue) }
+
+      it_behaves_like 'an incident management tracked event', :incident_management_incident_closed
+    end
   end
 
   describe '#close_issue' do

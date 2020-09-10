@@ -118,6 +118,14 @@ RSpec.describe IssueLinks::CreateService do
 
         subject
       end
+
+      context 'issue is an incident' do
+        let(:issue) { create(:incident, project: project) }
+
+        it_behaves_like 'an incident management tracked event', :incident_management_incident_relate do
+          let(:current_user) { user }
+        end
+      end
     end
 
     context 'when reference of any already related issue is present' do

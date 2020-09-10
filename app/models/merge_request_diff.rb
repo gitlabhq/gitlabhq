@@ -17,6 +17,10 @@ class MergeRequestDiff < ApplicationRecord
   # diffs to external storage
   EXTERNAL_DIFF_CUTOFF = 7.days.freeze
 
+  # The files_count column is a 2-byte signed integer. Look up the true value
+  # from the database if this sentinel is seen
+  FILES_COUNT_SENTINEL = 2**15 - 1
+
   belongs_to :merge_request
 
   manual_inverse_association :merge_request, :merge_request_diff
@@ -199,6 +203,17 @@ class MergeRequestDiff < ApplicationRecord
       last_commit_sha
     else
       super
+    end
+  end
+
+  def files_count
+    db_value = read_attribute(:files_count)
+
+    case db_value
+    when nil, FILES_COUNT_SENTINEL
+      merge_request_diff_files.count
+    else
+      db_value
     end
   end
 
@@ -423,7 +438,7 @@ class MergeRequestDiff < ApplicationRecord
   # external storage. If external storage isn't an option for this diff, the
   # method is a no-op.
   def migrate_files_to_external_storage!
-    return if stored_externally? || !use_external_diff? || merge_request_diff_files.count == 0
+    return if stored_externally? || !use_external_diff? || files_count == 0
 
     rows = build_merge_request_diff_files(merge_request_diff_files)
     rows = build_external_merge_request_diff_files(rows)
@@ -449,7 +464,7 @@ class MergeRequestDiff < ApplicationRecord
   # If this diff isn't in external storage, the method is a no-op.
   def migrate_files_to_database!
     return unless stored_externally?
-    return if merge_request_diff_files.count == 0
+    return if files_count == 0
 
     rows = convert_external_diffs_to_database
 
@@ -666,7 +681,7 @@ class MergeRequestDiff < ApplicationRecord
   def set_count_columns
     update_columns(
       commits_count: merge_request_diff_commits.size,
-      files_count: merge_request_diff_files.size
+      files_count: [FILES_COUNT_SENTINEL, merge_request_diff_files.size].min
     )
   end
 

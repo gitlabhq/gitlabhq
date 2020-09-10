@@ -16,6 +16,8 @@ RSpec.describe Mutations::AlertManagement::Alerts::Todo::Create do
   describe '#resolve' do
     subject(:resolve) { mutation.resolve(args) }
 
+    it_behaves_like 'an incident management tracked event', :incident_management_alert_todo
+
     context 'when user does not have permissions' do
       let(:current_user) { nil }
 

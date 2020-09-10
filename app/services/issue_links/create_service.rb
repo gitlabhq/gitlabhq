@@ -36,6 +36,10 @@ module IssueLinks
     def set_link_type(_link)
       # EE only
     end
+
+    def track_event
+      track_incident_action(current_user, issuable, :incident_relate)
+    end
   end
 end
 

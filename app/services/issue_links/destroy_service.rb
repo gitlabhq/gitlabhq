@@ -20,5 +20,9 @@ module IssueLinks
       SystemNoteService.unrelate_issue(source, target, current_user)
       SystemNoteService.unrelate_issue(target, source, current_user)
     end
+
+    def track_event
+      track_incident_action(current_user, target, :incident_unrelate)
+    end
   end
 end

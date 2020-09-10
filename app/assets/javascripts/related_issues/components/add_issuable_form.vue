@@ -1,5 +1,5 @@
 <script>
-import { GlFormGroup, GlFormRadioGroup, GlLoadingIcon } from '@gitlab/ui';
+import { GlFormGroup, GlFormRadioGroup, GlButton } from '@gitlab/ui';
 import { __ } from '~/locale';
 import RelatedIssuableInput from './related_issuable_input.vue';
 import { mergeUrlParams } from '~/lib/utils/url_utility';
@@ -17,8 +17,8 @@ export default {
   components: {
     GlFormGroup,
     GlFormRadioGroup,
-    GlLoadingIcon,
     RelatedIssuableInput,
+    GlButton,
   },
   props: {
     inputValue: {
@@ -188,19 +188,20 @@ export default {
       {{ addRelatedErrorMessage }}
     </p>
     <div class="add-issuable-form-actions clearfix">
-      <button
+      <gl-button
         ref="addButton"
+        category="primary"
+        variant="success"
         :disabled="isSubmitButtonDisabled"
+        :loading="isSubmitting"
         type="submit"
-        class="js-add-issuable-form-add-button btn btn-success float-left qa-add-issue-button"
-        :class="{ disabled: isSubmitButtonDisabled }"
+        class="js-add-issuable-form-add-button float-left qa-add-issue-button"
       >
         {{ __('Add') }}
-        <gl-loading-icon v-if="isSubmitting" ref="loadingIcon" :inline="true" />
-      </button>
-      <button type="button" class="btn btn-default float-right" @click="onFormCancel">
+      </gl-button>
+      <gl-button class="float-right" @click="onFormCancel">
         {{ __('Cancel') }}
-      </button>
+      </gl-button>
     </div>
   </form>
 </template>

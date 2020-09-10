@@ -2,6 +2,8 @@
 
 module IssuableLinks
   class CreateService < BaseService
+    include IncidentManagement::UsageData
+
     attr_reader :issuable, :current_user, :params
 
     def initialize(issuable, user, params)
@@ -26,6 +28,8 @@ module IssuableLinks
       if @errors.present?
         return error(@errors.join('. '), 422)
       end
+
+      track_event
 
       success
     end

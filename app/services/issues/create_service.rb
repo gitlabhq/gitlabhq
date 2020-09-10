@@ -30,6 +30,7 @@ module Issues
       user_agent_detail_service.create
       resolve_discussions_with_issue(issuable)
       delete_milestone_total_issue_counter_cache(issuable.milestone)
+      track_incident_action(current_user, issuable, :incident_created)
 
       super
     end

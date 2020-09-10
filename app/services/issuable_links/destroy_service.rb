@@ -2,6 +2,8 @@
 
 module IssuableLinks
   class DestroyService < BaseService
+    include IncidentManagement::UsageData
+
     attr_reader :link, :current_user
 
     def initialize(link, user)
@@ -14,6 +16,7 @@ module IssuableLinks
 
       remove_relation
       create_notes
+      track_event
 
       success(message: 'Relation was removed')
     end

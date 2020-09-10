@@ -83,10 +83,9 @@ find /var/opt/gitlab/gitlab-rails/shared/artifacts -name "job.log" -mtime +60 -d
 ## New incremental logging architecture
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/18169) in GitLab 10.4.
-> - [Announced as generally available](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/46097) in GitLab 11.0.
 
 NOTE: **Note:**
-This feature is off by default. See below for how to [enable or disable](#enabling-incremental-logging) it.
+This beta feature is off by default. See below for how to [enable or disable](#enabling-incremental-logging) it.
 
 By combining the process with object storage settings, we can completely bypass
 the local file storage. This is a useful option if GitLab is installed as

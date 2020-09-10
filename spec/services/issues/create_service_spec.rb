@@ -49,6 +49,18 @@ RSpec.describe Issues::CreateService do
         end
       end
 
+      context 'issue is incident type' do
+        before do
+          opts[:issue_type] = 'incident'
+        end
+
+        let(:current_user) { user }
+
+        subject { issue }
+
+        it_behaves_like 'an incident management tracked event', :incident_management_incident_created
+      end
+
       it 'refreshes the number of open issues', :use_clean_rails_memory_store_caching do
         expect { issue }.to change { project.open_issues_count }.from(0).to(1)
       end

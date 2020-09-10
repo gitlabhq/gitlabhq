@@ -21201,6 +21201,15 @@ msgstr ""
 msgid "Repositories"
 msgstr ""
 
+msgid "Repositories Analytics"
+msgstr ""
+
+msgid "RepositoriesAnalytics|Download historic test coverage data (.csv)"
+msgstr ""
+
+msgid "RepositoriesAnalytics|Test Code Coverage"
+msgstr ""
+
 msgid "Repository"
 msgstr ""
 

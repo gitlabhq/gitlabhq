@@ -62,8 +62,10 @@ module Gitlab
 
           partitioned_table_name = make_partitioned_table_name(table_name)
 
-          create_range_partitioned_copy(table_name, partitioned_table_name, partition_column, primary_key)
-          create_daterange_partitions(partitioned_table_name, partition_column.name, min_date, max_date)
+          transaction do
+            create_range_partitioned_copy(table_name, partitioned_table_name, partition_column, primary_key)
+            create_daterange_partitions(partitioned_table_name, partition_column.name, min_date, max_date)
+          end
           create_trigger_to_sync_tables(table_name, partitioned_table_name, primary_key)
         end
 
