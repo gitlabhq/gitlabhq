@@ -76,6 +76,7 @@ Citus
 clonable
 Cloudwatch
 Cobertura
+Codepen
 Cognito
 colocated
 colocating

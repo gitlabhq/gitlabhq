@@ -76,6 +76,30 @@ RSpec.describe Gitlab::Danger::Helper do
     end
   end
 
+  describe '#changed_lines' do
+    subject { helper.changed_lines('changed_file.rb') }
+
+    before do
+      allow(fake_git).to receive(:diff_for_file).with('changed_file.rb').and_return(diff)
+    end
+
+    context 'when file has diff' do
+      let(:diff) { double(:diff, patch: "+ # New change here\n+ # New change there") }
+
+      it 'returns file changes' do
+        is_expected.to eq(['+ # New change here', '+ # New change there'])
+      end
+    end
+
+    context 'when file has no diff (renamed without changes)' do
+      let(:diff) { nil }
+
+      it 'returns a blank array' do
+        is_expected.to eq([])
+      end
+    end
+  end
+
   describe "changed_files" do
     it 'returns list of changed files matching given regex' do
       expect(helper).to receive(:all_changed_files).and_return(%w[migration.rb usage_data.rb])

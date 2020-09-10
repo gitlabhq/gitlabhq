@@ -21,6 +21,7 @@ RSpec.describe GitlabSchema.types['Query'] do
       user
       users
       issue
+      instance_statistics_measurements
     ]
 
     expect(described_class).to have_graphql_fields(*expected_fields).at_least
@@ -60,6 +61,14 @@ RSpec.describe GitlabSchema.types['Query'] do
 
     it 'returns issue' do
       is_expected.to have_graphql_type(Types::IssueType)
+    end
+  end
+
+  describe 'instance_statistics_measurements field' do
+    subject { described_class.fields['instanceStatisticsMeasurements'] }
+
+    it 'returns issue' do
+      is_expected.to have_graphql_type(Types::Admin::Analytics::InstanceStatistics::MeasurementType.connection_type)
     end
   end
 end

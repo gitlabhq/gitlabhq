@@ -1,78 +1,49 @@
-import getFrontMatterLanguageDefinition from './parse_source_file_language_support';
+import grayMatter from 'gray-matter';
 
-const parseSourceFile = (raw, options = { frontMatterLanguage: 'yaml' }) => {
-  const { open, close } = getFrontMatterLanguageDefinition(options.frontMatterLanguage);
-  const anyChar = '[\\s\\S]';
-  const frontMatterBlock = `^${open}$${anyChar}*?^${close}$`;
-  const frontMatterRegex = new RegExp(`${frontMatterBlock}`, 'm');
-  const preGroupedRegex = new RegExp(`(${anyChar}*?)(${frontMatterBlock})(\\s*)(${anyChar}*)`, 'm'); // preFrontMatter, frontMatter, spacing, and content
-  let initial;
-  let editable;
+const parseSourceFile = raw => {
+  const remake = source => grayMatter(source, {});
 
-  const hasFrontMatter = source => frontMatterRegex.test(source);
+  let editable = remake(raw);
 
-  const buildPayload = (source, header, spacing, body) => {
-    return { raw: source, header, spacing, body };
-  };
-
-  const parse = source => {
-    if (hasFrontMatter(source)) {
-      const match = source.match(preGroupedRegex);
-      const [, preFrontMatter, frontMatter, spacing, content] = match;
-      const header = preFrontMatter + frontMatter;
-
-      return buildPayload(source, header, spacing, content);
+  const syncContent = (newVal, isBody) => {
+    if (isBody) {
+      editable.content = newVal;
+    } else {
+      editable = remake(newVal);
     }
-
-    return buildPayload(source, '', '', source);
   };
 
-  const syncEditable = () => {
-    /*
-    We re-parse as markdown editing could have added non-body changes (preFrontMatter, frontMatter, or spacing).
-    Re-parsing additionally gets us the desired body that was extracted from the potentially mutated editable.raw
-    */
-    editable = parse(editable.raw);
+  const trimmedEditable = () => grayMatter.stringify(editable).trim();
+
+  const content = (isBody = false) => (isBody ? editable.content.trim() : trimmedEditable()); // gray-matter internally adds an eof newline so we trim to bypass, open issue: https://github.com/jonschlinkert/gray-matter/issues/96
+
+  const matter = () => editable.matter;
+
+  const syncMatter = newMatter => {
+    const targetMatter = newMatter.replace(/---/gm, ''); // TODO dynamic delimiter removal vs. hard code
+    const currentMatter = matter();
+    const currentContent = content();
+    const newSource = currentContent.replace(currentMatter, targetMatter);
+    syncContent(newSource);
+    editable.matter = newMatter;
   };
 
-  const refreshEditableRaw = () => {
-    editable.raw = `${editable.header}${editable.spacing}${editable.body}`;
+  const matterObject = () => editable.data;
+
+  const syncMatterObject = obj => {
+    editable.data = obj;
   };
 
-  const sync = (newVal, isBodyToRaw) => {
-    const editableKey = isBodyToRaw ? 'body' : 'raw';
-    editable[editableKey] = newVal;
-
-    if (isBodyToRaw) {
-      refreshEditableRaw();
-    }
-
-    syncEditable();
-  };
-
-  const frontMatter = () => editable.header;
-
-  const setFrontMatter = val => {
-    editable.header = val;
-    refreshEditableRaw();
-  };
-
-  const content = (isBody = false) => {
-    const editableKey = isBody ? 'body' : 'raw';
-    return editable[editableKey];
-  };
-
-  const isModified = () => initial.raw !== editable.raw;
-
-  initial = parse(raw);
-  editable = parse(raw);
+  const isModified = () => trimmedEditable() !== raw;
 
   return {
-    frontMatter,
-    setFrontMatter,
+    matter,
+    syncMatter,
+    matterObject,
+    syncMatterObject,
     content,
+    syncContent,
     isModified,
-    sync,
   };
 };
 

@@ -44,7 +44,10 @@ module Gitlab
       #   "+      # Test change",
       #   "-      # Old change" ]
       def changed_lines(changed_file)
-        git.diff_for_file(changed_file).patch.split("\n").select { |line| %r{^[+-]}.match?(line) }
+        diff = git.diff_for_file(changed_file)
+        return [] unless diff
+
+        diff.patch.split("\n").select { |line| %r{^[+-]}.match?(line) }
       end
 
       def all_ee_changes

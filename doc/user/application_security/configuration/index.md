@@ -15,17 +15,21 @@ The Security Configuration page displays the configuration state of each securit
 current project.
 
 To view a project's security configuration, go to the project's home page,
-then in the left sidebar, go to **Security & Compliance** > **Configuration**.
+then in the left sidebar go to **Security & Compliance > Configuration**.
+
+For each security control the page displays:
+
+- **Status** - Status of the security control: enabled, not enabled, or available.
+- **Manage** - A management option or a link to the documentation.
 
 ## Status
-
-For each security control, the page displays the status and either a management option or a
-documentation link.
 
 The status of each security control is determined by the project's latest default branch
 [CI pipeline](../../../ci/pipelines/index.md).
 If a job with the expected security report artifact exists in the pipeline, the feature's status is
 _enabled_.
+
+For SAST, click **View history** to see the `.gitlab-ci.yml` file’s history.
 
 NOTE: **Note:**
 If the latest pipeline used [Auto DevOps](../../../topics/autodevops/index.md),

@@ -1,31 +1,22 @@
 export const sourceContentHeaderYAML = `---
 layout: handbook-page-toc
 title: Handbook
-twitter_image: '/images/tweets/handbook-gitlab.png'
+twitter_image: /images/tweets/handbook-gitlab.png
 ---`;
-export const sourceContentHeaderTOML = `+++
-layout: "handbook-page-toc"
-title: "Handbook"
-twitter_image: "/images/tweets/handbook-gitlab.png"
-+++`;
-export const sourceContentHeaderJSON = `{
-"layout": "handbook-page-toc",
-"title": "Handbook",
-"twitter_image": "/images/tweets/handbook-gitlab.png",
-}`;
-export const sourceContentSpacing = `
-`;
+export const sourceContentHeaderObjYAML = {
+  layout: 'handbook-page-toc',
+  title: 'Handbook',
+  twitter_image: '/images/tweets/handbook-gitlab.png',
+};
+export const sourceContentSpacing = `\n`;
 export const sourceContentBody = `## On this page
 {:.no_toc .hidden-md .hidden-lg}
 
 - TOC
 {:toc .hidden-md .hidden-lg}
 
-![image](path/to/image1.png)
-`;
+![image](path/to/image1.png)`;
 export const sourceContentYAML = `${sourceContentHeaderYAML}${sourceContentSpacing}${sourceContentBody}`;
-export const sourceContentTOML = `${sourceContentHeaderTOML}${sourceContentSpacing}${sourceContentBody}`;
-export const sourceContentJSON = `${sourceContentHeaderJSON}${sourceContentSpacing}${sourceContentBody}`;
 export const sourceContentTitle = 'Handbook';
 
 export const username = 'gitlabuser';

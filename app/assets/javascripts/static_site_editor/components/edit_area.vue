@@ -68,7 +68,7 @@ export default {
       return templatedContent;
     },
     onInputChange(newVal) {
-      this.parsedSource.sync(newVal, this.isWysiwygMode);
+      this.parsedSource.syncContent(newVal, this.isWysiwygMode);
       this.isModified = this.parsedSource.isModified();
     },
     onModeChange(mode) {

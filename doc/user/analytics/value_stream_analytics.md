@@ -313,6 +313,19 @@ To create a value stream:
 
 ![New value stream](img/new_value_stream_v13_3.png "Creating a new value stream")
 
+### Deleting a value stream
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/221205) in GitLab 13.4.
+
+To delete a custom value stream:
+
+1. Navigate to your group's **Analytics > Value Stream**.
+1. Click the Value stream dropdown and select the value stream you would like to delete.
+1. Click the **Delete (name of value stream)**.
+1. Click the **Delete** button to confirm.
+
+![Delete value stream](img/delete_value_stream_v13.4.png "Deleting a custom value stream")
+
 ### Disabling custom value streams
 
 Custom value streams are enabled by default. If you have a self-managed instance, an

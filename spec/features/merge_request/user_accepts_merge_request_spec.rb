@@ -12,12 +12,38 @@ RSpec.describe 'User accepts a merge request', :js, :sidekiq_might_not_need_inli
     sign_in(user)
   end
 
-  it 'presents merged merge request content' do
-    visit(merge_request_path(merge_request))
+  context 'presents merged merge request content' do
+    it 'when merge method is set to merge commit' do
+      visit(merge_request_path(merge_request))
 
-    click_button('Merge')
+      click_button('Merge')
 
-    expect(page).to have_content("The changes were merged into #{merge_request.target_branch} with #{merge_request.short_merge_commit_sha}")
+      expect(page).to have_content("The changes were merged into #{merge_request.target_branch} with #{merge_request.short_merged_commit_sha}")
+    end
+
+    context 'when merge method is set to fast-forward merge' do
+      let(:project) { create(:project, :public, :repository, merge_requests_ff_only_enabled: true) }
+
+      it 'accepts a merge request with rebase and merge' do
+        merge_request = create(:merge_request, :rebased, source_project: project)
+
+        visit(merge_request_path(merge_request))
+
+        click_button('Merge')
+
+        expect(page).to have_content("The changes were merged into #{merge_request.target_branch} with #{merge_request.short_merged_commit_sha}")
+      end
+
+      it 'accepts a merge request with squash and merge' do
+        merge_request = create(:merge_request, :rebased, source_project: project, squash: true)
+
+        visit(merge_request_path(merge_request))
+
+        click_button('Merge')
+
+        expect(page).to have_content("The changes were merged into #{merge_request.target_branch} with #{merge_request.short_merged_commit_sha}")
+      end
+    end
   end
 
   context 'with removing the source branch' do

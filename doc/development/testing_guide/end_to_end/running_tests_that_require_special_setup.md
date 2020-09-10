@@ -135,9 +135,9 @@ docker stop gitlab-gitaly-ha praefect postgres gitaly3 gitaly2 gitaly1
 docker rm gitlab-gitaly-ha praefect postgres gitaly3 gitaly2 gitaly1
 ```
 
-## Guide to run and debug monitor tests
+## Guide to run and debug Monitor tests
 
-## How to set up
+### How to set up
 
 To run the Monitor tests locally, against the GDK, please follow the preparation steps below:
 
@@ -149,7 +149,7 @@ To enable Auto DevOps in GDK, follow the [associated setup](https://gitlab.com/g
 
 You might see NGINX issues when you run `gdk start` or `gdk restart`. In that case, run `sft login` to revalidate your credentials and regain access the QA Tunnel.
 
-## How to run
+### How to run
 
 Navigate to the folder in `/your-gdk/gitlab/qa` and issue the command:
 
@@ -174,7 +174,7 @@ At the moment of this writing, there are two specs which run monitor tests:
 -`qa/specs/features/browser_ui/8_monitor/all_monitor_core_features_spec.rb` - has the specs of features in GitLab Core
 -`qa/specs/features/ee/browser_ui/8_monitor/all_monitor_features_spec.rb` - has the specs of features for paid GitLab (Enterprise Edition)
 
-## How to debug
+### How to debug
 
 The monitor tests follow this setup flow:
 
@@ -187,7 +187,7 @@ The monitor tests follow this setup flow:
 The test requires a number of components. The setup requires time to collect the metrics of a real deployment.
 The complexity of the setup may lead to problems unrelated to the app. The following sections include common strategies to debug possible issues.
 
-### Deployment with Auto DevOps
+#### Deployment with Auto DevOps
 
 When debugging issues in the CI or locally in the CLI, open the Kubernetes job in the pipeline.
 In the job log window, click on the top right icon labeled as *"Show complete raw"* to reveal raw job logs.
@@ -205,7 +205,7 @@ The long test setup does not take screenshots of failures, which is a known [iss
 However, if the spec fails (after a successful deployment) then you should be able to find screenshots which display the feature failure.
 To access them in CI, go to the main job log window, look on the left side panel's Job artifacts section, and click Browse.
 
-### Common issues
+#### Common issues
 
 **Container Registry**
 
@@ -259,3 +259,137 @@ gitlab-managed-apps   install-runner                            0/1     Evicted 
 ```
 
 You can free some memory with either of the following commands: `docker prune system` or `docker prune volume`.
+
+## Geo tests
+
+Geo end-to-end tests can run locally against a [Geo GDK setup](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/master/doc/howto/geo.md) or on Geo spun up in Docker containers.
+
+### Using Geo GDK
+
+Run from the [`qa/` directory](https://gitlab.com/gitlab-org/gitlab/-/blob/f7272b77e80215c39d1ffeaed27794c220dbe03f/qa) with both GDK Geo primary and Geo secondary instances running:
+
+```shell
+CHROME_HEADLESS=false bundle exec bin/qa QA::EE::Scenario::Test::Geo --primary-address http://localhost:3001 --secondary-address http://localhost:3002 --without-setup
+```
+
+### Using Geo in Docker
+
+You can use [GitLab-QA Orchestrator](https://gitlab.com/gitlab-org/gitlab-qa) to orchestrate two GitLab containers and configure them as a Geo setup. 
+
+Geo requires an EE license. To visit the Geo sites in your browser, you will need a reverse proxy server (for example, [NGINX](https://www.nginx.com/)).
+
+1. Export your EE license
+
+   ```shell
+   export EE_LICENSE=$(cat <path/to/your/gitlab_license>)
+   ```
+
+1. (Optional) Pull the GitLab image
+
+   This step is optional because pulling the Docker image is part of the [`Test::Integration::Geo` orchestrated scenario](https://gitlab.com/gitlab-org/gitlab-qa/-/blob/d8c5c40607c2be0eda58bbca1b9f534b00889a0b/lib/gitlab/qa/scenario/test/integration/geo.rb). However, it's easier to monitor the download progress if you pull the image first, and the scenario will skip this step after checking that the image is up to date.
+
+   ```shell
+   # For the most recent nightly image
+   docker pull gitlab/gitlab-ee:nightly
+
+   # For a specific release
+   docker pull gitlab/gitlab-ee:13.0.10-ee.0
+
+   # For a specific image
+   docker pull registry.gitlab.com/gitlab-org/build/omnibus-gitlab-mirror/gitlab-ee:examplesha123456789
+   ```
+
+1. Run the [`Test::Integration::Geo` orchestrated scenario](https://gitlab.com/gitlab-org/gitlab-qa/-/blob/d8c5c40607c2be0eda58bbca1b9f534b00889a0b/lib/gitlab/qa/scenario/test/integration/geo.rb) with the `--no-teardown` option to build the GitLab containers, configure the Geo setup, and run Geo end-to-end tests. Running the tests after the Geo setup is complete is optional; the containers will keep running after you stop the tests.
+
+   ```shell
+   # Using the most recent nightly image
+   gitlab-qa Test::Integration::Geo EE --no-teardown
+
+   # Using a specific GitLab release
+   gitlab-qa Test::Integration::Geo EE:13.0.10-ee.0 --no-teardown
+
+   # Using a full image address
+   GITLAB_QA_ACCESS_TOKEN=your-token-here gitlab-qa Test::Integration::Geo registry.gitlab.com/gitlab-org/build/omnibus-gitlab-mirror/gitlab-ee:examplesha123456789 --no-teardown
+    ```
+
+   You can use the `--no-tests` option to build the containers only, and then run the [`EE::Scenario::Test::Geo` scenario](https://gitlab.com/gitlab-org/gitlab/-/blob/f7272b77e80215c39d1ffeaed27794c220dbe03f/qa/qa/ee/scenario/test/geo.rb) from your GDK to complete setup and run tests. However, there might be configuration issues if your GDK and the containers are based on different GitLab versions. With the `--no-teardown` option, GitLab-QA uses the same GitLab version for the GitLab containers and the GitLab QA container used to configure the Geo setup.
+
+1. To visit the Geo sites in your browser, proxy requests to the hostnames used inside the containers. NGINX is used as the reverse proxy server for this example.
+
+   _Map the hostnames to the local IP in `/etc/hosts` file on your machine:_
+
+   ```plaintext
+   127.0.0.1 gitlab-primary.geo gitlab-secondary.geo 
+   ```
+
+   _Note the assigned ports:_
+
+   ```shell
+   $ docker port gitlab-primary
+
+   80/tcp -> 0.0.0.0:32768
+
+   $ docker port gitlab-secondary
+
+   80/tcp -> 0.0.0.0:32769
+   ```
+
+   _Configure the reverse proxy server with the assigned ports in `nginx.conf` file (usually found in `/usr/local/etc/nginx` on a Mac):_
+
+   ```plaintext
+   server {
+     server_name gitlab-primary.geo;
+     location / {
+       proxy_pass http://localhost:32768; # Change port to your assigned port
+       proxy_set_header Host gitlab-primary.geo;
+     }
+   }
+
+   server {
+     server_name gitlab-secondary.geo;
+     location / {
+       proxy_pass http://localhost:32769; # Change port to your assigned port
+       proxy_set_header Host gitlab-secondary.geo;
+     }
+   }
+   ```
+
+   _Start or reload the reverse proxy server:_
+
+   ```shell
+   sudo nginx
+   # or
+   sudo nginx -s reload
+   ```
+
+1. To run end-to-end tests from your local GDK, run the [`EE::Scenario::Test::Geo` scenario](https://gitlab.com/gitlab-org/gitlab/-/blob/f7272b77e80215c39d1ffeaed27794c220dbe03f/qa/qa/ee/scenario/test/geo.rb) from the [`gitlab/qa/` directory](https://gitlab.com/gitlab-org/gitlab/-/blob/f7272b77e80215c39d1ffeaed27794c220dbe03f/qa). Include `--without-setup` to skip the Geo configuration steps.
+
+   ```shell
+   QA_DEBUG=true GITLAB_QA_ACCESS_TOKEN=[add token here] GITLAB_QA_ADMIN_ACCESS_TOKEN=[add token here] bundle exec bin/qa QA::EE::Scenario::Test::Geo \
+   --primary-address http://gitlab-primary.geo \
+   --secondary-address http://gitlab-secondary.geo \
+   --without-setup
+   ```
+
+   If the containers need to be configured first (for example, if you used the `--no-tests` option in the previous step), run the `QA::EE::Scenario::Test::Geo scenario` as shown below to first do the Geo configuration steps, and then run Geo end-to-end tests. Make sure that `EE_LICENSE` is (still) defined in your shell session.
+
+   ```shell
+   QA_DEBUG=true bundle exec bin/qa QA::EE::Scenario::Test::Geo \
+   --primary-address http://gitlab-primary.geo \
+   --primary-name gitlab-primary \
+   --secondary-address http://gitlab-secondary.geo \
+   --secondary-name gitlab-secondary
+   ```
+
+1. Stop and remove containers
+
+   ```shell
+   docker stop gitlab-primary gitlab-secondary
+   docker rm gitlab-primary gitlab-secondary
+   ```
+
+#### Notes
+
+- You can find the full image address from a pipeline by [following these instructions](https://about.gitlab.com/handbook/engineering/quality/guidelines/tips-and-tricks/#running-gitlab-qa-pipeline-against-a-specific-gitlab-release). You might be prompted to set the `GITLAB_QA_ACCESS_TOKEN` variable if you specify the full image address.
+- You can increase the wait time for replication by setting `GEO_MAX_FILE_REPLICATION_TIME` and `GEO_MAX_DB_REPLICATION_TIME`. The default is 120 seconds.
+- To save time during tests, create a Personal Access Token with API access on the Geo primary node, and pass that value in as `GITLAB_QA_ACCESS_TOKEN` and `GITLAB_QA_ADMIN_ACCESS_TOKEN`.

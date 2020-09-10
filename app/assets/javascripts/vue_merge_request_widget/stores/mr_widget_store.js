@@ -45,8 +45,8 @@ export default class MergeRequestStore {
     this.mergeTrainWhenPipelineSucceedsDocsPath = data.merge_train_when_pipeline_succeeds_docs_path;
     this.mergeStatus = data.merge_status;
     this.commitMessage = data.default_merge_commit_message;
-    this.shortMergeCommitSha = data.short_merge_commit_sha;
-    this.mergeCommitSha = data.merge_commit_sha;
+    this.shortMergeCommitSha = data.short_merged_commit_sha;
+    this.mergeCommitSha = data.merged_commit_sha;
     this.commitMessageWithDescription = data.default_merge_commit_message_with_description;
     this.commitsCount = data.commits_count;
     this.divergedCommitsCount = data.diverged_commits_count;
@@ -135,7 +135,7 @@ export default class MergeRequestStore {
     this.createIssueToResolveDiscussionsPath = data.create_issue_to_resolve_discussions_path;
     this.mergePath = data.merge_path;
     this.canMerge = Boolean(data.merge_path);
-    this.mergeCommitPath = data.merge_commit_path;
+    this.mergeCommitPath = data.merged_commit_path;
     this.canPushToSourceBranch = data.can_push_to_source_branch;
 
     if (data.work_in_progress !== undefined) {

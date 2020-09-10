@@ -1100,6 +1100,16 @@ Represents a Group Membership
 | `vulnerabilityGrades` | VulnerableProjectsByGrade! => Array | Represents vulnerable project counts for each grade |
 | `vulnerabilitySeveritiesCount` | VulnerabilitySeveritiesCount | Counts for each vulnerability severity from projects selected in Instance Security Dashboard |
 
+## InstanceStatisticsMeasurement
+
+Represents a recorded measurement (object count) for the Admins
+
+| Name  | Type  | Description |
+| ---   |  ---- | ----------  |
+| `count` | Int! | Object count |
+| `identifier` | MeasurementIdentifier! | The type of objects being measured |
+| `recordedAt` | Time | The time the measurement was recorded |
+
 ## Issue
 
 | Name  | Type  | Description |

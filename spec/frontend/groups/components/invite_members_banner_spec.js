@@ -1,19 +1,24 @@
 import { shallowMount } from '@vue/test-utils';
 import { GlBanner } from '@gitlab/ui';
 import InviteMembersBanner from '~/groups/components/invite_members_banner.vue';
+import { setCookie, parseBoolean } from '~/lib/utils/common_utils';
 
-const expectedTitle = 'Collaborate with your team';
-const expectedBody =
+jest.mock('~/lib/utils/common_utils');
+
+const isDismissedKey = 'invite_99_1';
+const title = 'Collaborate with your team';
+const body =
   "We noticed that you haven't invited anyone to this group. Invite your colleagues so you can discuss issues, collaborate on merge requests, and share your knowledge";
-const expectedSvgPath = '/illustrations/background';
-const expectedInviteMembersPath = 'groups/members';
-const expectedButtonText = 'Invite your colleagues';
+const svgPath = '/illustrations/background';
+const inviteMembersPath = 'groups/members';
+const buttonText = 'Invite your colleagues';
 
 const createComponent = (stubs = {}) => {
   return shallowMount(InviteMembersBanner, {
     provide: {
-      svgPath: expectedSvgPath,
-      inviteMembersPath: expectedInviteMembersPath,
+      svgPath,
+      inviteMembersPath,
+      isDismissedKey,
     },
     stubs,
   });
@@ -37,23 +42,23 @@ describe('InviteMembersBanner', () => {
     });
 
     it('uses the svgPath for the banner svgpath', () => {
-      expect(findBanner().attributes('svgpath')).toBe(expectedSvgPath);
+      expect(findBanner().attributes('svgpath')).toBe(svgPath);
     });
 
     it('uses the title from options for title', () => {
-      expect(findBanner().attributes('title')).toBe(expectedTitle);
+      expect(findBanner().attributes('title')).toBe(title);
     });
 
     it('includes the body text from options', () => {
-      expect(findBanner().html()).toContain(expectedBody);
+      expect(findBanner().html()).toContain(body);
     });
 
     it('uses the button_text text from options for buttontext', () => {
-      expect(findBanner().attributes('buttontext')).toBe(expectedButtonText);
+      expect(findBanner().attributes('buttontext')).toBe(buttonText);
     });
 
     it('uses the href from inviteMembersPath for buttonlink', () => {
-      expect(findBanner().attributes('buttonlink')).toBe(expectedInviteMembersPath);
+      expect(findBanner().attributes('buttonlink')).toBe(inviteMembersPath);
     });
   });
 
@@ -61,16 +66,35 @@ describe('InviteMembersBanner', () => {
     const findButton = () => {
       return wrapper.find('button');
     };
-    const stubs = {
-      GlBanner,
-    };
 
-    it('sets visible to false', () => {
-      wrapper = createComponent(stubs);
+    beforeEach(() => {
+      wrapper = createComponent({ GlBanner });
 
       findButton().trigger('click');
+    });
 
-      expect(wrapper.vm.visible).toBe(false);
+    it('sets iDismissed to true', () => {
+      expect(wrapper.vm.isDismissed).toBe(true);
+    });
+
+    it('sets the cookie with the isDismissedKey', () => {
+      expect(setCookie).toHaveBeenCalledWith(isDismissedKey, true);
+    });
+  });
+
+  describe('when a dismiss cookie exists', () => {
+    beforeEach(() => {
+      parseBoolean.mockReturnValue(true);
+
+      wrapper = createComponent({ GlBanner });
+    });
+
+    it('sets isDismissed to true', () => {
+      expect(wrapper.vm.isDismissed).toBe(true);
+    });
+
+    it('does not render the banner', () => {
+      expect(wrapper.contains(GlBanner)).toBe(false);
     });
   });
 });

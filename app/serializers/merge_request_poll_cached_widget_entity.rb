@@ -3,8 +3,8 @@
 class MergeRequestPollCachedWidgetEntity < IssuableEntity
   expose :auto_merge_enabled
   expose :state
-  expose :merge_commit_sha
-  expose :short_merge_commit_sha
+  expose :merged_commit_sha
+  expose :short_merged_commit_sha
   expose :merge_error
   expose :public_merge_status, as: :merge_status
   expose :merge_user_id
@@ -56,9 +56,9 @@ class MergeRequestPollCachedWidgetEntity < IssuableEntity
     presenter(merge_request).target_branch_tree_path
   end
 
-  expose :merge_commit_path do |merge_request|
-    if merge_request.merge_commit_sha
-      project_commit_path(merge_request.project, merge_request.merge_commit_sha)
+  expose :merged_commit_path do |merge_request|
+    if sha = merge_request.merged_commit_sha
+      project_commit_path(merge_request.project, sha)
     end
   end
 

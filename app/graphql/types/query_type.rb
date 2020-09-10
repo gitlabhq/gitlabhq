@@ -76,6 +76,11 @@ module Types
             argument :id, ::Types::GlobalIDType[::Issue], required: true, description: 'The global ID of the Issue'
           end
 
+    field :instance_statistics_measurements, Types::Admin::Analytics::InstanceStatistics::MeasurementType.connection_type,
+          null: true,
+          description: 'Get statistics on the instance',
+          resolver: Resolvers::Admin::Analytics::InstanceStatistics::MeasurementsResolver
+
     def design_management
       DesignManagementObject.new(nil)
     end

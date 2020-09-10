@@ -68,7 +68,7 @@ should be a one-to-one mapping of `licensed` feature flags to licensed features.
 
 `licensed` feature flags must be `default_enabled: true`, because that's the only
 supported option in the current implementation. This is under development as per
-the [related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/218667.
+the [related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/218667).
 
 The `licensed` type has a dedicated set of functions to check if a licensed
 feature is available for a project or namespace. This check validates

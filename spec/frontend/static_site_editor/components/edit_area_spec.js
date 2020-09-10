@@ -81,7 +81,7 @@ describe('~/static_site_editor/components/edit_area.vue', () => {
 
     it('updates parsedSource with new content', () => {
       const newContent = 'New content';
-      const spySyncParsedSource = jest.spyOn(wrapper.vm.parsedSource, 'sync');
+      const spySyncParsedSource = jest.spyOn(wrapper.vm.parsedSource, 'syncContent');
 
       findRichContentEditor().vm.$emit('input', newContent);
 

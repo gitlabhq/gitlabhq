@@ -1,10 +1,7 @@
 import {
   sourceContentYAML as content,
-  sourceContentTOML as tomlContent,
-  sourceContentJSON as jsonContent,
   sourceContentHeaderYAML as yamlFrontMatter,
-  sourceContentHeaderTOML as tomlFrontMatter,
-  sourceContentHeaderJSON as jsonFrontMatter,
+  sourceContentHeaderObjYAML as yamlFrontMatterObj,
   sourceContentBody as body,
 } from '../mock_data';
 
@@ -18,20 +15,15 @@ describe('static_site_editor/services/parse_source_file', () => {
   const newContentComplex = `${contentComplex} ${edit}`;
 
   describe('unmodified front matter', () => {
-    const yamlOptions = { frontMatterLanguage: 'yaml' };
-
     it.each`
-      parsedSource                                                     | targetFrontMatter
-      ${parseSourceFile(content)}                                      | ${yamlFrontMatter}
-      ${parseSourceFile(contentComplex)}                               | ${yamlFrontMatter}
-      ${parseSourceFile(content, yamlOptions)}                         | ${yamlFrontMatter}
-      ${parseSourceFile(contentComplex, yamlOptions)}                  | ${yamlFrontMatter}
-      ${parseSourceFile(tomlContent, { frontMatterLanguage: 'toml' })} | ${tomlFrontMatter}
-      ${parseSourceFile(jsonContent, { frontMatterLanguage: 'json' })} | ${jsonFrontMatter}
+      parsedSource                       | targetFrontMatter
+      ${parseSourceFile(content)}        | ${yamlFrontMatter}
+      ${parseSourceFile(contentComplex)} | ${yamlFrontMatter}
     `(
       'returns $targetFrontMatter when frontMatter queried',
       ({ parsedSource, targetFrontMatter }) => {
-        expect(parsedSource.frontMatter()).toBe(targetFrontMatter);
+        expect(targetFrontMatter).toContain(parsedSource.matter());
+        expect(parsedSource.matterObject()).toEqual(yamlFrontMatterObj);
       },
     );
   });
@@ -63,6 +55,7 @@ describe('static_site_editor/services/parse_source_file', () => {
 
   describe('modified front matter', () => {
     const newYamlFrontMatter = '---\nnewKey: newVal\n---';
+    const newYamlFrontMatterObj = { newKey: 'newVal' };
     const contentWithNewFrontMatter = content.replace(yamlFrontMatter, newYamlFrontMatter);
     const contentComplexWithNewFrontMatter = contentComplex.replace(
       yamlFrontMatter,
@@ -76,11 +69,12 @@ describe('static_site_editor/services/parse_source_file', () => {
     `(
       'returns the correct front matter and modified content',
       ({ parsedSource, targetContent }) => {
-        expect(parsedSource.frontMatter()).toBe(yamlFrontMatter);
+        expect(yamlFrontMatter).toContain(parsedSource.matter());
 
-        parsedSource.setFrontMatter(newYamlFrontMatter);
+        parsedSource.syncMatter(newYamlFrontMatter);
 
-        expect(parsedSource.frontMatter()).toBe(newYamlFrontMatter);
+        expect(parsedSource.matter()).toBe(newYamlFrontMatter);
+        expect(parsedSource.matterObject()).toEqual(newYamlFrontMatterObj);
         expect(parsedSource.content()).toBe(targetContent);
       },
     );
@@ -99,7 +93,7 @@ describe('static_site_editor/services/parse_source_file', () => {
     `(
       'returns $isModified after a $targetRaw sync',
       ({ parsedSource, isModified, targetRaw, targetBody }) => {
-        parsedSource.sync(targetRaw);
+        parsedSource.syncContent(targetRaw);
 
         expect(parsedSource.isModified()).toBe(isModified);
         expect(parsedSource.content()).toBe(targetRaw);

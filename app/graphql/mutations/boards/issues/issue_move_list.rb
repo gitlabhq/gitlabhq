@@ -29,11 +29,11 @@ module Mutations
 
         argument :move_before_id, GraphQL::ID_TYPE,
                   required: false,
-                  description: 'ID of issue before which the current issue will be positioned at'
+                  description: 'ID of issue that should be placed before the current issue'
 
         argument :move_after_id, GraphQL::ID_TYPE,
                   required: false,
-                  description: 'ID of issue after which the current issue will be positioned at'
+                  description: 'ID of issue that should be placed after the current issue'
 
         def ready?(**args)
           if move_arguments(args).blank?

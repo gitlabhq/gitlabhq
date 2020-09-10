@@ -1,20 +1,22 @@
 <script>
 import { GlBanner } from '@gitlab/ui';
 import { s__ } from '~/locale';
+import { parseBoolean, setCookie, getCookie } from '~/lib/utils/common_utils';
 
 export default {
   components: {
     GlBanner,
   },
-  inject: ['svgPath', 'inviteMembersPath'],
+  inject: ['svgPath', 'inviteMembersPath', 'isDismissedKey'],
   data() {
     return {
-      visible: true,
+      isDismissed: parseBoolean(getCookie(this.isDismissedKey)),
     };
   },
   methods: {
     handleClose() {
-      this.visible = false;
+      setCookie(this.isDismissedKey, true);
+      this.isDismissed = true;
     },
   },
   i18n: {
@@ -29,7 +31,7 @@ export default {
 
 <template>
   <gl-banner
-    v-if="visible"
+    v-if="!isDismissed"
     ref="banner"
     :title="$options.i18n.title"
     :button-text="$options.i18n.button_text"

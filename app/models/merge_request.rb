@@ -1473,6 +1473,19 @@ class MergeRequest < ApplicationRecord
     Commit.truncate_sha(merge_commit_sha) if merge_commit_sha
   end
 
+  def merged_commit_sha
+    return unless merged?
+
+    sha = merge_commit_sha || squash_commit_sha || diff_head_sha
+    sha.presence
+  end
+
+  def short_merged_commit_sha
+    if sha = merged_commit_sha
+      Commit.truncate_sha(sha)
+    end
+  end
+
   def can_be_reverted?(current_user)
     return false unless merge_commit
     return false unless merged_at
