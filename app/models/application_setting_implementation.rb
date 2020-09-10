@@ -131,7 +131,6 @@ module ApplicationSettingImplementation
         snowplow_collector_hostname: nil,
         snowplow_cookie_domain: nil,
         snowplow_enabled: false,
-        snowplow_iglu_registry_url: nil,
         sourcegraph_enabled: false,
         sourcegraph_public_only: true,
         sourcegraph_url: nil,

@@ -2526,6 +2526,12 @@ class Project < ApplicationRecord
     ci_config_path.presence || Ci::Pipeline::DEFAULT_CONFIG_PATH
   end
 
+  def enabled_group_deploy_keys
+    return GroupDeployKey.none unless group
+
+    GroupDeployKey.for_groups(group.self_and_ancestors_ids)
+  end
+
   private
 
   def find_service(services, name)

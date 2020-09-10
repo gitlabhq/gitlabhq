@@ -236,8 +236,7 @@ RSpec.describe API::Settings, 'Settings' do
           snowplow_collector_hostname: "snowplow.example.com",
           snowplow_cookie_domain: ".example.com",
           snowplow_enabled: true,
-          snowplow_app_id: "app_id",
-          snowplow_iglu_registry_url: 'https://example.com'
+          snowplow_app_id: "app_id"
         }
       end
 

@@ -82,4 +82,25 @@ RSpec.describe GroupDeployKey do
       end
     end
   end
+
+  describe '.for_groups' do
+    context 'when group deploy keys are enabled for some groups' do
+      let_it_be(:group1) { create(:group) }
+      let_it_be(:group2) { create(:group) }
+      let_it_be(:group3) { create(:group) }
+      let_it_be(:gdk1) { create(:group_deploy_key) }
+      let_it_be(:gdk2) { create(:group_deploy_key) }
+      let_it_be(:gdk3) { create(:group_deploy_key) }
+
+      it 'returns these group deploy keys' do
+        gdk1.groups << group1
+        gdk1.groups << group2
+        gdk2.groups << group3
+        gdk3.groups << group2
+
+        expect(described_class.for_groups([group1.id, group3.id])).to contain_exactly(gdk1, gdk2)
+        expect(described_class.for_groups([group2.id])).to contain_exactly(gdk1, gdk3)
+      end
+    end
+  end
 end

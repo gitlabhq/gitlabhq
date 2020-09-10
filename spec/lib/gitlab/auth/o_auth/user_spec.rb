@@ -202,7 +202,56 @@ RSpec.describe Gitlab::Auth::OAuth::User do
         include_examples "to verify compliance with allow_single_sign_on"
       end
 
-      context "with auto_link_user enabled" do
+      context "with auto_link_user enabled for a different provider" do
+        before do
+          stub_omniauth_config(auto_link_user: ['saml'])
+        end
+
+        context "and a current GitLab user with a matching email" do
+          let!(:existing_user) { create(:user, email: 'john@mail.com', username: 'john') }
+
+          it "adds the OmniAuth identity to the GitLab user account" do
+            oauth_user.save
+
+            expect(gl_user).not_to be_valid
+          end
+        end
+
+        context "and no current GitLab user with a matching email" do
+          include_examples "to verify compliance with allow_single_sign_on"
+        end
+      end
+
+      context "with auto_link_user enabled for the correct provider" do
+        before do
+          stub_omniauth_config(auto_link_user: ['twitter'])
+        end
+
+        context "and a current GitLab user with a matching email" do
+          let!(:existing_user) { create(:user, email: 'john@mail.com', username: 'john') }
+
+          it "adds the OmniAuth identity to the GitLab user account" do
+            oauth_user.save
+
+            expect(gl_user).to be_valid
+            expect(gl_user.username).to eql 'john'
+            expect(gl_user.email).to eql 'john@mail.com'
+            expect(gl_user.identities.length).to be 1
+            identities_as_hash = gl_user.identities.map { |id| { provider: id.provider, extern_uid: id.extern_uid } }
+            expect(identities_as_hash).to match_array(
+              [
+                { provider: 'twitter', extern_uid: uid }
+              ]
+            )
+          end
+        end
+
+        context "and no current GitLab user with a matching email" do
+          include_examples "to verify compliance with allow_single_sign_on"
+        end
+      end
+
+      context "with auto_link_user enabled for all providers" do
         before do
           stub_omniauth_config(auto_link_user: true)
         end
@@ -421,7 +470,7 @@ RSpec.describe Gitlab::Auth::OAuth::User do
 
       context "with both auto_link_user and auto_link_ldap_user enabled" do
         before do
-          stub_omniauth_config(auto_link_user: true, auto_link_ldap_user: true)
+          stub_omniauth_config(auto_link_user: ['twitter'], auto_link_ldap_user: true)
         end
 
         context "and at least one LDAP provider is defined" do

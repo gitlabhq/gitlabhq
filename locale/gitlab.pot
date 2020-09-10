@@ -12999,9 +12999,6 @@ msgstr ""
 msgid "If your HTTP repository is not publicly accessible, add your credentials."
 msgstr ""
 
-msgid "Iglu registry URL (optional)"
-msgstr ""
-
 msgid "Ignore"
 msgstr ""
 

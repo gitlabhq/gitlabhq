@@ -9,6 +9,7 @@ class ApplicationSetting < ApplicationRecord
 
   ignore_column :namespace_storage_size_limit, remove_with: '13.5', remove_after: '2020-09-22'
   ignore_column :instance_statistics_visibility_private, remove_with: '13.6', remove_after: '2020-10-22'
+  ignore_column :snowplow_iglu_registry_url, remove_with: '13.6', remove_after: '2020-11-22'
 
   GRAFANA_URL_ERROR_MESSAGE = 'Please check your Grafana URL setting in ' \
     'Admin Area > Settings > Metrics and profiling > Metrics - Grafana'
@@ -132,11 +133,6 @@ class ApplicationSetting < ApplicationRecord
   validates :snowplow_collector_hostname,
             presence: true,
             hostname: true,
-            if: :snowplow_enabled
-
-  validates :snowplow_iglu_registry_url,
-            addressable_url: true,
-            allow_blank: true,
             if: :snowplow_enabled
 
   validates :max_attachment_size,

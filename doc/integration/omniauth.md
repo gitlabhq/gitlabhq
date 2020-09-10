@@ -144,19 +144,20 @@ The chosen OmniAuth provider is now active and can be used to sign in to GitLab 
 
 > [Introduced in GitLab 13.4.](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/36664)
 
-You can automatically link OmniAuth users with existing GitLab users if their email addresses match by adding the following setting:
+You can automatically link OmniAuth users with existing GitLab users if their email addresses match.
+For example, the following setting is used to enable the auto link feature for both a SAML provider and the Twitter OAuth provider:
 
 **For Omnibus installations**
 
 ```ruby
-gitlab_rails['omniauth_auto_link_user'] = true
+gitlab_rails['omniauth_auto_link_user'] = ["saml", "twitter"]
 ```
 
 **For installations from source**
 
 ```yaml
 omniauth:
-  auto_link_user: true
+  auto_link_user: ["saml", "twitter"]
 ```
 
 ## Configure OmniAuth Providers as External

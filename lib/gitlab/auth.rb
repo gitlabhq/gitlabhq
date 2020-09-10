@@ -117,7 +117,6 @@ module Gitlab
 
       private
 
-      # rubocop:disable Gitlab/RailsLogger
       def rate_limit!(rate_limiter, success:, login:)
         return if skip_rate_limit?(login: login)
 
@@ -132,12 +131,11 @@ module Gitlab
           # This returns true when the failures are over the threshold and the IP
           # is banned.
           if rate_limiter.register_fail!
-            Rails.logger.info "IP #{rate_limiter.ip} failed to login " \
+            Gitlab::AppLogger.info "IP #{rate_limiter.ip} failed to login " \
               "as #{login} but has been temporarily banned from Git auth"
           end
         end
       end
-      # rubocop:enable Gitlab/RailsLogger
 
       def skip_rate_limit?(login:)
         CI_JOB_USER == login

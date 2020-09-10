@@ -138,6 +138,7 @@ module UsageDataHelpers
   USAGE_DATA_KEYS = %i(
       active_user_count
       counts
+      counts_monthly
       recorded_at
       edition
       version
@@ -162,6 +163,7 @@ module UsageDataHelpers
       web_ide_clientside_preview_enabled
       ingress_modsecurity_enabled
       object_store
+      topology
     ).freeze
 
   def stub_usage_data_connections

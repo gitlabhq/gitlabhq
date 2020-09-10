@@ -12,14 +12,14 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
 
   describe '.uncached_data' do
     describe '.usage_activity_by_stage' do
-      it 'includes usage_activity_by_stage data' do
-        uncached_data = described_class.uncached_data
+      subject { described_class.uncached_data }
 
-        expect(uncached_data).to include(:usage_activity_by_stage)
-        expect(uncached_data).to include(:usage_activity_by_stage_monthly)
-        expect(uncached_data[:usage_activity_by_stage])
+      it 'includes usage_activity_by_stage data' do
+        is_expected.to include(:usage_activity_by_stage)
+        is_expected.to include(:usage_activity_by_stage_monthly)
+        expect(subject[:usage_activity_by_stage])
           .to include(:configure, :create, :manage, :monitor, :plan, :release, :verify)
-        expect(uncached_data[:usage_activity_by_stage_monthly])
+        expect(subject[:usage_activity_by_stage_monthly])
           .to include(:configure, :create, :manage, :monitor, :plan, :release, :verify)
       end
 
@@ -34,15 +34,13 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
           expect(described_class).to receive(:clear_memoization).with(key)
         end
 
-        described_class.uncached_data
+        subject
       end
 
       it 'merge_requests_users is included only in montly counters' do
-        uncached_data = described_class.uncached_data
-
-        expect(uncached_data[:usage_activity_by_stage][:create])
+        expect(subject[:usage_activity_by_stage][:create])
           .not_to include(:merge_requests_users)
-        expect(uncached_data[:usage_activity_by_stage_monthly][:create])
+        expect(subject[:usage_activity_by_stage_monthly][:create])
           .to include(:merge_requests_users)
       end
     end
@@ -401,10 +399,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
       expect(UsageDataHelpers::COUNTS_KEYS - count_data.keys).to be_empty
     end
 
-    it 'gathers usage counts monthly hash' do
-      expect(subject[:counts_monthly]).to be_an(Hash)
-    end
-
     it 'gathers usage counts correctly' do
       count_data = subject[:counts]
 
@@ -490,10 +484,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
          uploads: { enabled: nil, object_store: { enabled: false, direct_upload: true, background_upload: false, provider: "AWS" } },
          packages: { enabled: true, object_store: { enabled: false, direct_upload: false, background_upload: true, provider: "AWS" } } }
       )
-    end
-
-    it 'gathers topology data' do
-      expect(subject.keys).to include(:topology)
     end
 
     context 'with existing container expiration policies' do
@@ -1173,6 +1163,48 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
 
       expect(subject).to eq(service_desk_enabled_projects: 1,
                             service_desk_issues: 2)
+    end
+  end
+
+  describe '.snowplow_event_counts' do
+    context 'when self-monitoring project exists' do
+      let_it_be(:project) { create(:project) }
+
+      before do
+        stub_application_setting(self_monitoring_project: project)
+      end
+
+      context 'and product_analytics FF is enabled for it' do
+        before do
+          stub_feature_flags(product_analytics: project)
+
+          create(:product_analytics_event, project: project, se_category: 'epics', se_action: 'promote')
+          create(:product_analytics_event, project: project, se_category: 'epics', se_action: 'promote', collector_tstamp: 28.days.ago)
+        end
+
+        it 'returns promoted_issues for the time period' do
+          expect(described_class.snowplow_event_counts[:promoted_issues]).to eq(2)
+          expect(described_class.snowplow_event_counts(
+            time_period: described_class.last_28_days_time_period(column: :collector_tstamp)
+          )[:promoted_issues]).to eq(1)
+        end
+      end
+
+      context 'and product_analytics FF is disabled' do
+        before do
+          stub_feature_flags(product_analytics: false)
+        end
+
+        it 'returns an empty hash' do
+          expect(described_class.snowplow_event_counts).to eq({})
+        end
+      end
+    end
+
+    context 'when self-monitoring project does not exist' do
+      it 'returns an empty hash' do
+        expect(described_class.snowplow_event_counts).to eq({})
+      end
     end
   end
 end

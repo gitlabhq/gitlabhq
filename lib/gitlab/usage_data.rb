@@ -166,13 +166,27 @@ module Gitlab
             user_preferences_usage,
             ingress_modsecurity_usage,
             container_expiration_policies_usage,
-            service_desk_counts
+            service_desk_counts,
+            snowplow_event_counts
           ).tap do |data|
             data[:snippets] = data[:personal_snippets] + data[:project_snippets]
           end
         }
       end
       # rubocop: enable Metrics/AbcSize
+
+      def snowplow_event_counts(time_period: {})
+        return {} unless report_snowplow_events?
+
+        {
+          promoted_issues: count(
+            self_monitoring_project
+              .product_analytics_events
+              .by_category_and_action('epics', 'promote')
+              .where(time_period)
+          )
+        }
+      end
 
       def system_usage_data_monthly
         {
@@ -185,7 +199,9 @@ module Gitlab
             packages: count(::Packages::Package.where(last_28_days_time_period)),
             personal_snippets: count(PersonalSnippet.where(last_28_days_time_period)),
             project_snippets: count(ProjectSnippet.where(last_28_days_time_period))
-          }.tap do |data|
+          }.merge(
+            snowplow_event_counts(time_period: last_28_days_time_period(column: :collector_tstamp))
+          ).tap do |data|
             data[:snippets] = data[:personal_snippets] + data[:project_snippets]
           end
         }
@@ -452,8 +468,8 @@ module Gitlab
         end
       end
 
-      def last_28_days_time_period
-        { created_at: 28.days.ago..Time.current }
+      def last_28_days_time_period(column: :created_at)
+        { column => 28.days.ago..Time.current }
       end
 
       # Source: https://gitlab.com/gitlab-data/analytics/blob/master/transform/snowflake-dbt/data/ping_metrics_to_stage_mapping_data.csv
@@ -687,6 +703,10 @@ module Gitlab
         }
       end
 
+      def report_snowplow_events?
+        self_monitoring_project && Feature.enabled?(:product_analytics, self_monitoring_project)
+      end
+
       def distinct_count_service_desk_enabled_projects(time_period)
         project_creator_id_start = user_minimum_id
         project_creator_id_finish = user_maximum_id
@@ -774,6 +794,10 @@ module Gitlab
         strong_memoize(:project_maximum_id) do
           ::Project.maximum(:id)
         end
+      end
+
+      def self_monitoring_project
+        Gitlab::CurrentSettings.self_monitoring_project
       end
 
       def clear_memoized
