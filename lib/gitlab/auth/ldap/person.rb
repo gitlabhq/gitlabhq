@@ -57,13 +57,13 @@ module Gitlab
         def self.normalize_uid(uid)
           ::Gitlab::Auth::Ldap::DN.normalize_value(uid)
         rescue ::Gitlab::Auth::Ldap::DN::FormatError => e
-          Rails.logger.info("Returning original UID \"#{uid}\" due to error during normalization attempt: #{e.message}") # rubocop:disable Gitlab/RailsLogger
+          Gitlab::AppLogger.info("Returning original UID \"#{uid}\" due to error during normalization attempt: #{e.message}")
 
           uid
         end
 
         def initialize(entry, provider)
-          Rails.logger.debug { "Instantiating #{self.class.name} with LDIF:\n#{entry.to_ldif}" } # rubocop:disable Gitlab/RailsLogger
+          Gitlab::AppLogger.debug "Instantiating #{self.class.name} with LDIF:\n#{entry.to_ldif}"
           @entry = entry
           @provider = provider
         end

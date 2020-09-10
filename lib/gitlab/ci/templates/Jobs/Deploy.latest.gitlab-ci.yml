@@ -1,0 +1,249 @@
+.auto-deploy:
+  image: "registry.gitlab.com/gitlab-org/cluster-integration/auto-deploy-image:v1.0.3"
+  dependencies: []
+
+review:
+  extends: .auto-deploy
+  stage: review
+  script:
+    - auto-deploy check_kube_domain
+    - auto-deploy download_chart
+    - auto-deploy ensure_namespace
+    - auto-deploy initialize_tiller
+    - auto-deploy create_secret
+    - auto-deploy deploy
+    - auto-deploy persist_environment_url
+  environment:
+    name: review/$CI_COMMIT_REF_NAME
+    url: http://$CI_PROJECT_ID-$CI_ENVIRONMENT_SLUG.$KUBE_INGRESS_BASE_DOMAIN
+    on_stop: stop_review
+  artifacts:
+    paths: [environment_url.txt, tiller.log]
+    when: always
+  rules:
+    - if: '$CI_KUBERNETES_ACTIVE == null || $CI_KUBERNETES_ACTIVE == ""'
+      when: never
+    - if: '$CI_COMMIT_BRANCH == "master"'
+      when: never
+    - if: '$REVIEW_DISABLED'
+      when: never
+    - if: '$CI_COMMIT_TAG || $CI_COMMIT_BRANCH'
+
+stop_review:
+  extends: .auto-deploy
+  stage: cleanup
+  variables:
+    GIT_STRATEGY: none
+  script:
+    - auto-deploy initialize_tiller
+    - auto-deploy delete
+  environment:
+    name: review/$CI_COMMIT_REF_NAME
+    action: stop
+  allow_failure: true
+  rules:
+    - if: '$CI_KUBERNETES_ACTIVE == null || $CI_KUBERNETES_ACTIVE == ""'
+      when: never
+    - if: '$CI_COMMIT_BRANCH == "master"'
+      when: never
+    - if: '$REVIEW_DISABLED'
+      when: never
+    - if: '$CI_COMMIT_TAG || $CI_COMMIT_BRANCH'
+      when: manual
+
+# Staging deploys are disabled by default since
+# continuous deployment to production is enabled by default
+# If you prefer to automatically deploy to staging and
+# only manually promote to production, enable this job by setting
+# STAGING_ENABLED.
+
+staging:
+  extends: .auto-deploy
+  stage: staging
+  script:
+    - auto-deploy check_kube_domain
+    - auto-deploy download_chart
+    - auto-deploy ensure_namespace
+    - auto-deploy initialize_tiller
+    - auto-deploy create_secret
+    - auto-deploy deploy
+  environment:
+    name: staging
+    url: http://$CI_PROJECT_PATH_SLUG-staging.$KUBE_INGRESS_BASE_DOMAIN
+  rules:
+    - if: '$CI_KUBERNETES_ACTIVE == null || $CI_KUBERNETES_ACTIVE == ""'
+      when: never
+    - if: '$CI_COMMIT_BRANCH != "master"'
+      when: never
+    - if: '$STAGING_ENABLED'
+
+# Canaries are disabled by default, but if you want them,
+# and know what the downsides are, you can enable this by setting
+# CANARY_ENABLED.
+
+canary:
+  extends: .auto-deploy
+  stage: canary
+  allow_failure: true
+  script:
+    - auto-deploy check_kube_domain
+    - auto-deploy download_chart
+    - auto-deploy ensure_namespace
+    - auto-deploy initialize_tiller
+    - auto-deploy create_secret
+    - auto-deploy deploy canary
+  environment:
+    name: production
+    url: http://$CI_PROJECT_PATH_SLUG.$KUBE_INGRESS_BASE_DOMAIN
+  rules:
+    - if: '$CI_KUBERNETES_ACTIVE == null || $CI_KUBERNETES_ACTIVE == ""'
+      when: never
+    - if: '$CI_COMMIT_BRANCH != "master"'
+      when: never
+    - if: '$CANARY_ENABLED'
+      when: manual
+
+.production: &production_template
+  extends: .auto-deploy
+  stage: production
+  script:
+    - auto-deploy check_kube_domain
+    - auto-deploy download_chart
+    - auto-deploy ensure_namespace
+    - auto-deploy initialize_tiller
+    - auto-deploy create_secret
+    - auto-deploy deploy
+    - auto-deploy delete canary
+    - auto-deploy delete rollout
+    - auto-deploy persist_environment_url
+  environment:
+    name: production
+    url: http://$CI_PROJECT_PATH_SLUG.$KUBE_INGRESS_BASE_DOMAIN
+  artifacts:
+    paths: [environment_url.txt, tiller.log]
+    when: always
+
+production:
+  <<: *production_template
+  rules:
+    - if: '$CI_KUBERNETES_ACTIVE == null || $CI_KUBERNETES_ACTIVE == ""'
+      when: never
+    - if: '$STAGING_ENABLED'
+      when: never
+    - if: '$CANARY_ENABLED'
+      when: never
+    - if: '$INCREMENTAL_ROLLOUT_ENABLED'
+      when: never
+    - if: '$INCREMENTAL_ROLLOUT_MODE'
+      when: never
+    - if: '$CI_COMMIT_BRANCH == "master"'
+
+production_manual:
+  <<: *production_template
+  allow_failure: false
+  rules:
+    - if: '$CI_KUBERNETES_ACTIVE == null || $CI_KUBERNETES_ACTIVE == ""'
+      when: never
+    - if: '$INCREMENTAL_ROLLOUT_ENABLED'
+      when: never
+    - if: '$INCREMENTAL_ROLLOUT_MODE'
+      when: never
+    - if: '$CI_COMMIT_BRANCH == "master" && $STAGING_ENABLED'
+      when: manual
+    - if: '$CI_COMMIT_BRANCH == "master" && $CANARY_ENABLED'
+      when: manual
+
+# This job implements incremental rollout on for every push to `master`.
+
+.rollout: &rollout_template
+  extends: .auto-deploy
+  script:
+    - auto-deploy check_kube_domain
+    - auto-deploy download_chart
+    - auto-deploy ensure_namespace
+    - auto-deploy initialize_tiller
+    - auto-deploy create_secret
+    - auto-deploy deploy rollout $ROLLOUT_PERCENTAGE
+    - auto-deploy scale stable $((100-ROLLOUT_PERCENTAGE))
+    - auto-deploy delete canary
+    - auto-deploy persist_environment_url
+  environment:
+    name: production
+    url: http://$CI_PROJECT_PATH_SLUG.$KUBE_INGRESS_BASE_DOMAIN
+  artifacts:
+    paths: [environment_url.txt, tiller.log]
+    when: always
+
+.manual_rollout_template: &manual_rollout_template
+  <<: *rollout_template
+  stage: production
+  resource_group: production
+  allow_failure: true
+  rules:
+    - if: '$CI_KUBERNETES_ACTIVE == null || $CI_KUBERNETES_ACTIVE == ""'
+      when: never
+    - if: '$INCREMENTAL_ROLLOUT_MODE == "timed"'
+      when: never
+    - if: '$CI_COMMIT_BRANCH != "master"'
+      when: never
+    # $INCREMENTAL_ROLLOUT_ENABLED is for compamtibilty with pre-GitLab 11.4 syntax
+    - if: '$INCREMENTAL_ROLLOUT_MODE == "manual" || $INCREMENTAL_ROLLOUT_ENABLED'
+      when: manual
+
+.timed_rollout_template: &timed_rollout_template
+  <<: *rollout_template
+  rules:
+    - if: '$CI_KUBERNETES_ACTIVE == null || $CI_KUBERNETES_ACTIVE == ""'
+      when: never
+    - if: '$INCREMENTAL_ROLLOUT_MODE == "manual"'
+      when: never
+    - if: '$CI_COMMIT_BRANCH != "master"'
+      when: never
+    - if: '$INCREMENTAL_ROLLOUT_MODE == "timed"'
+      when: delayed
+      start_in: 5 minutes
+
+timed rollout 10%:
+  <<: *timed_rollout_template
+  stage: incremental rollout 10%
+  variables:
+    ROLLOUT_PERCENTAGE: 10
+
+timed rollout 25%:
+  <<: *timed_rollout_template
+  stage: incremental rollout 25%
+  variables:
+    ROLLOUT_PERCENTAGE: 25
+
+timed rollout 50%:
+  <<: *timed_rollout_template
+  stage: incremental rollout 50%
+  variables:
+    ROLLOUT_PERCENTAGE: 50
+
+timed rollout 100%:
+  <<: *timed_rollout_template
+  <<: *production_template
+  stage: incremental rollout 100%
+  variables:
+    ROLLOUT_PERCENTAGE: 100
+
+rollout 10%:
+  <<: *manual_rollout_template
+  variables:
+    ROLLOUT_PERCENTAGE: 10
+
+rollout 25%:
+  <<: *manual_rollout_template
+  variables:
+    ROLLOUT_PERCENTAGE: 25
+
+rollout 50%:
+  <<: *manual_rollout_template
+  variables:
+    ROLLOUT_PERCENTAGE: 50
+
+rollout 100%:
+  <<: *manual_rollout_template
+  <<: *production_template
+  allow_failure: false

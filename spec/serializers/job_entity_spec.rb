@@ -218,4 +218,16 @@ RSpec.describe JobEntity do
       expect(subject).not_to include('recoverable')
     end
   end
+
+  context 'when job is a bridge' do
+    let(:job) { create(:ci_bridge) }
+
+    it 'does not include build path' do
+      expect(subject).not_to include(:build_path)
+    end
+
+    it 'does not include cancel path' do
+      expect(subject).not_to include(:cancel_path)
+    end
+  end
 end

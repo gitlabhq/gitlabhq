@@ -189,6 +189,10 @@ module Issuable
       is_a?(Issue) && super
     end
 
+    def supports_issue_type?
+      is_a?(Issue)
+    end
+
     def severity
       return IssuableSeverity::DEFAULT unless incident?
 

@@ -27,4 +27,12 @@ describe('IDE job description', () => {
       vm.$el.querySelector('.ci-status-icon [data-testid="status_success_borderless-icon"]'),
     ).not.toBe(null);
   });
+
+  it('renders bridge job details without the job link', () => {
+    vm = mountComponent(Component, {
+      job: { ...jobs[0], path: undefined },
+    });
+
+    expect(vm.$el.querySelector('[data-testid="description-detail-link"]')).toBe(null);
+  });
 });

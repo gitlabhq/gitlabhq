@@ -32,8 +32,7 @@
 
   - if has_due_date
     .col-lg-6
-      - if @issue[:issue_type] != 'incident'
-        = render_if_exists "shared/issuable/form/weight", issuable: issuable, form: form
+      = render_if_exists "shared/issuable/form/weight", issuable: issuable, form: form
       .form-group.row
         = form.label :due_date, "Due date", class: "col-form-label col-md-2 col-lg-4"
         .col-8

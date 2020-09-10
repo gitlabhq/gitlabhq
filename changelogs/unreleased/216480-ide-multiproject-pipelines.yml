@@ -1,0 +1,5 @@
+---
+title: Multi-project pipelines in Web IDE lead to 404
+merge_request: 41082
+author:
+type: fixed

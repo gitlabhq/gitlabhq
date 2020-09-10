@@ -35,9 +35,9 @@ class RegistrationsController < Devise::RegistrationsController
       yield new_user if block_given?
     end
 
-    # Do not show the signed_up notice message when the signup_flow experiment is enabled.
-    # Instead, show it after successfully updating the role.
-    flash[:notice] = nil if experiment_enabled?(:signup_flow)
+    # Devise sets a flash message on `create` for a successful signup,
+    # we want to show this message after the welcome page.
+    flash[:notice] = nil
   rescue Gitlab::Access::AccessDeniedError
     redirect_to(new_user_session_path)
   end
@@ -89,7 +89,7 @@ class RegistrationsController < Devise::RegistrationsController
   end
 
   def set_role_required(new_user)
-    new_user.set_role_required! if new_user.persisted? && experiment_enabled?(:signup_flow)
+    new_user.set_role_required! if new_user.persisted?
   end
 
   def destroy_confirmation_valid?
@@ -115,9 +115,7 @@ class RegistrationsController < Devise::RegistrationsController
   def after_sign_up_path_for(user)
     Gitlab::AppLogger.info(user_created_message(confirmed: user.confirmed?))
 
-    return users_sign_up_welcome_path if experiment_enabled?(:signup_flow)
-
-    path_for_signed_in_user(user)
+    users_sign_up_welcome_path
   end
 
   def after_inactive_sign_up_path_for(resource)
@@ -215,7 +213,7 @@ class RegistrationsController < Devise::RegistrationsController
   # Part of an experiment to build a new sign up flow. Will be resolved
   # with https://gitlab.com/gitlab-org/growth/engineering/issues/64
   def choose_layout
-    if experiment_enabled?(:signup_flow)
+    if %w(welcome update_registration).include?(action_name) || experiment_enabled?(:signup_flow)
       'devise_experimental_separate_sign_up_flow'
     else
       'devise'

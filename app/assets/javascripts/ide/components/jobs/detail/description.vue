@@ -26,7 +26,13 @@ export default {
     <ci-icon :status="job.status" :borderless="true" :size="24" class="d-flex" />
     <span class="gl-ml-3">
       {{ job.name }}
-      <a :href="job.path" target="_blank" class="ide-external-link position-relative">
+      <a
+        v-if="job.path"
+        :href="job.path"
+        target="_blank"
+        class="ide-external-link gl-relative"
+        data-testid="description-detail-link"
+      >
         {{ jobId }} <gl-icon :size="12" name="external-link" />
       </a>
     </span>

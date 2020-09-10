@@ -103,8 +103,6 @@ class Projects::BlobController < Projects::ApplicationController
   end
 
   def diff
-    apply_diff_view_cookie!
-
     @form = Blobs::UnfoldPresenter.new(blob, diff_params)
 
     # keep only json rendering when

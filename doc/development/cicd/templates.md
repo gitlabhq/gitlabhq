@@ -106,7 +106,8 @@ GitLab v14.0 could be so different that a user will want to continue using the v
 after upgrading to GitLab 14.0.
 
 You can add a note in the template or in documentation explaining how to use `include:remote`
-to include older template versions:
+to include older template versions. If other templates are included with `include: template`,
+they can be combined with the `include: remote`:
 
 ```yaml
 # To use the v13 stable template, which is not included in v14, fetch the specifc
@@ -114,7 +115,8 @@ to include older template versions:
 # If you fetch from the GitLab canonical project, use the following URL format:
 # https://gitlab.com/gitlab-org/gitlab/-/raw/<version>/lib/gitlab/ci/templates/<template-name>
 include:
-  remote: https://gitlab.com/gitlab-org/gitlab/-/raw/v13.0.1-ee/lib/gitlab/ci/templates/Jobs/Deploy.gitlab-ci.yml
+  - template: Auto-DevOps.gitlab-ci.yml
+  - remote: https://gitlab.com/gitlab-org/gitlab/-/raw/v13.0.1-ee/lib/gitlab/ci/templates/Jobs/Deploy.gitlab-ci.yml
 ```
 
 ### Further reading

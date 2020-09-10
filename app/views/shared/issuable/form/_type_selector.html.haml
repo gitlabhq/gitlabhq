@@ -1,3 +1,5 @@
+- return unless issuable.supports_issue_type?
+
 .form-group.row.gl-mb-0
   = form.label :type, 'Type', class: 'col-form-label col-sm-2'
   .col-sm-10
@@ -5,7 +7,7 @@
       .dropdown.js-issuable-type-filter-dropdown-wrap
         %button.dropdown-menu-toggle{ type: 'button', 'data-toggle' => 'dropdown' }
           %span.dropdown-toggle-text.is-default
-            = type.capitalize || _("Select type")
+            = issuable.issue_type.capitalize || _("Select type")
           = icon('chevron-down')
         .dropdown-menu.dropdown-menu-selectable.dropdown-select
           .dropdown-title
@@ -15,12 +17,12 @@
           .dropdown-content
             %ul
               %li.js-filter-issuable-type
-                = link_to new_project_issue_path(@project), class: ("is-active" if type === 'issue') do
+                = link_to new_project_issue_path(@project), class: ("is-active" if issuable.issue?) do
                   = _("Issue")
               %li.js-filter-issuable-type
-                = link_to new_project_issue_path(@project, { issuable_template: 'incident', issue: { issue_type: 'incident' } }), class: ("is-active" if type === 'incident') do
+                = link_to new_project_issue_path(@project, { issuable_template: 'incident', issue: { issue_type: 'incident' } }), class: ("is-active" if issuable.incident?) do
                   = _("Incident")
-    - if type === 'incident'
+    - if issuable.incident?
       %p.form-text.text-muted
         - incident_docs_url = help_page_path('operations/incident_management/incidents.md', anchor: 'create-and-manage-incidents-in-gitlab')
         - incident_docs_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: incident_docs_url }

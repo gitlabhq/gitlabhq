@@ -7870,6 +7870,9 @@ msgstr ""
 msgid "DastProfiles|No profiles created yet"
 msgstr ""
 
+msgid "DastProfiles|Passive"
+msgstr ""
+
 msgid "DastProfiles|Please enter a valid URL format, ex: http://www.example.com/home"
 msgstr ""
 
@@ -7883,6 +7886,9 @@ msgid "DastProfiles|Save commonly used configurations for target sites and scan 
 msgstr ""
 
 msgid "DastProfiles|Save profile"
+msgstr ""
+
+msgid "DastProfiles|Scan mode"
 msgstr ""
 
 msgid "DastProfiles|Scanner Profile"
@@ -17281,10 +17287,16 @@ msgstr ""
 msgid "OnDemandScans|Attached branch is where the scan job runs."
 msgstr ""
 
+msgid "OnDemandScans|Could not fetch scanner profiles. Please refresh the page, or try again later."
+msgstr ""
+
 msgid "OnDemandScans|Could not fetch site profiles. Please refresh the page, or try again later."
 msgstr ""
 
 msgid "OnDemandScans|Could not run the scan. Please try again."
+msgstr ""
+
+msgid "OnDemandScans|Create a new scanner profile"
 msgstr ""
 
 msgid "OnDemandScans|Create a new site profile"
@@ -17297,6 +17309,9 @@ msgid "OnDemandScans|Manage profiles"
 msgstr ""
 
 msgid "OnDemandScans|New on-demand DAST scan"
+msgstr ""
+
+msgid "OnDemandScans|No profile yet. In order to create a new scan, you need to have at least one completed scanner profile."
 msgstr ""
 
 msgid "OnDemandScans|No profile yet. In order to create a new scan, you need to have at least one completed site profile."
@@ -17330,6 +17345,9 @@ msgid "OnDemandScans|Select one of the existing profiles"
 msgstr ""
 
 msgid "OnDemandScans|Site profiles"
+msgstr ""
+
+msgid "OnDemandScans|Use existing scanner profile"
 msgstr ""
 
 msgid "OnDemandScans|Use existing site profile"

@@ -7,22 +7,21 @@
 
 = render partial: 'flash_messages', locals: { project: @project }
 
-%div{ class: [("limit-container-width" unless fluid_layout)] }
-  = render "projects/last_push"
+= render "projects/last_push"
 
-  = render "home_panel"
+= render "home_panel"
 
-  - if can?(current_user, :download_code, @project) && @project.repository_languages.present?
-    = repository_languages_bar(@project.repository_languages)
+- if can?(current_user, :download_code, @project) && @project.repository_languages.present?
+  = repository_languages_bar(@project.repository_languages)
 
-  = render "archived_notice", project: @project
-  = render_if_exists "projects/marked_for_deletion_notice", project: @project
-  = render_if_exists "projects/ancestor_group_marked_for_deletion_notice", project: @project
+= render "archived_notice", project: @project
+= render_if_exists "projects/marked_for_deletion_notice", project: @project
+= render_if_exists "projects/ancestor_group_marked_for_deletion_notice", project: @project
 
-  - view_path = @project.default_view
+- view_path = @project.default_view
 
-  - if show_auto_devops_callout?(@project)
-    = render 'shared/auto_devops_callout'
+- if show_auto_devops_callout?(@project)
+  = render 'shared/auto_devops_callout'
 
-  %div{ class: project_child_container_class(view_path) }
-    = render view_path, is_project_overview: true
+%div{ class: project_child_container_class(view_path) }
+  = render view_path, is_project_overview: true

@@ -9,7 +9,8 @@ class JobEntity < Grape::Entity
   expose :started?, as: :started
   expose :archived?, as: :archived
 
-  expose :build_path do |build|
+  # bridge jobs don't have build detail pages
+  expose :build_path, if: ->(build) { !build.is_a?(Ci::Bridge) } do |build|
     build_path(build)
   end
 

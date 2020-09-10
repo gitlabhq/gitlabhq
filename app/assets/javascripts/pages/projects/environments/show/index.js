@@ -1,3 +1,3 @@
 import initShowEnvironment from '~/environments/mount_show';
 
-document.addEventListener('DOMContentLoaded', () => initShowEnvironment());
+document.addEventListener('DOMContentLoaded', initShowEnvironment);

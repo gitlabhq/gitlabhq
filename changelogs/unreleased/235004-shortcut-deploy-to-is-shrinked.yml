@@ -1,0 +1,5 @@
+---
+title: Remove height limit on environments table
+merge_request: 41688
+author:
+type: fixed
