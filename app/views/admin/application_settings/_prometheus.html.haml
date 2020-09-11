@@ -10,7 +10,7 @@
       \. This setting requires a
       = link_to 'restart', help_page_path('administration/restart_gitlab')
       to take effect.
-      = link_to icon('question-circle'), help_page_path('administration/monitoring/prometheus/index')
+      = link_to sprite_icon('question-o'), help_page_path('administration/monitoring/prometheus/index')
     .form-group
       .form-check
         = f.check_box :prometheus_metrics_enabled, class: 'form-check-input'
@@ -22,7 +22,7 @@
             Environment variable
             %code prometheus_multiproc_dir
             does not exist or is not pointing to a valid directory.
-            = link_to icon('question-circle'), help_page_path('administration/monitoring/prometheus/gitlab_metrics', anchor: 'metrics-shared-directory')
+            = link_to sprite_icon('question-o'), help_page_path('administration/monitoring/prometheus/gitlab_metrics', anchor: 'metrics-shared-directory')
     .form-group
       = f.label :metrics_method_call_threshold, 'Method Call Threshold (ms)', class: 'label-bold'
       = f.number_field :metrics_method_call_threshold, class: 'form-control'

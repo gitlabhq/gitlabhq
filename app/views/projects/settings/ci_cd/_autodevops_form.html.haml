@@ -40,18 +40,18 @@
                   = form.radio_button :deploy_strategy, 'continuous', class: 'form-check-input'
                   = form.label :deploy_strategy_continuous, class: 'form-check-label' do
                     = s_('CICD|Continuous deployment to production')
-                    = link_to icon('question-circle'), help_page_path('topics/autodevops/stages.md', anchor: 'auto-deploy'), target: '_blank'
+                    = link_to sprite_icon('question-o'), help_page_path('topics/autodevops/stages.md', anchor: 'auto-deploy'), target: '_blank'
 
                 .form-check
                   = form.radio_button :deploy_strategy, 'timed_incremental', class: 'form-check-input'
                   = form.label :deploy_strategy_timed_incremental, class: 'form-check-label' do
                     = s_('CICD|Continuous deployment to production using timed incremental rollout')
-                    = link_to icon('question-circle'), help_page_path('topics/autodevops/customize.md', anchor: 'timed-incremental-rollout-to-production'), target: '_blank'
+                    = link_to sprite_icon('question-o'), help_page_path('topics/autodevops/customize.md', anchor: 'timed-incremental-rollout-to-production'), target: '_blank'
 
                 .form-check
                   = form.radio_button :deploy_strategy, 'manual', class: 'form-check-input'
                   = form.label :deploy_strategy_manual, class: 'form-check-label' do
                     = s_('CICD|Automatic deployment to staging, manual deployment to production')
-                    = link_to icon('question-circle'), help_page_path('topics/autodevops/customize.md', anchor: 'incremental-rollout-to-production'), target: '_blank'
+                    = link_to sprite_icon('question-o'), help_page_path('topics/autodevops/customize.md', anchor: 'incremental-rollout-to-production'), target: '_blank'
 
           = f.submit _('Save changes'), class: "btn btn-success gl-mt-5", data: { qa_selector: 'save_changes_button' }

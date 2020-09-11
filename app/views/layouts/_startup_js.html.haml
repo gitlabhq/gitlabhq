@@ -6,8 +6,11 @@
     gl.startup_calls = #{page_startup_api_calls.to_json};
     if (gl.startup_calls && window.fetch) {
       Object.keys(gl.startup_calls).forEach(apiCall => {
+        // fetch won’t send cookies in older browsers, unless you set the credentials init option.
+        // We set to `same-origin` which is default value in modern browsers.
+        // See https://github.com/whatwg/fetch/pull/585 for more information.
         gl.startup_calls[apiCall] = {
-          fetchCall: fetch(apiCall)
+          fetchCall: fetch(apiCall, { credentials: 'same-origin' })
         };
       });
     }

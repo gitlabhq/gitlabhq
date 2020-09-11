@@ -14,7 +14,7 @@
 .col-lg-8
   %label.label-bold
     = s_('Preferences|Sourcegraph')
-  = link_to icon('question-circle'), help_page_path('user/profile/preferences.md', anchor: 'sourcegraph'), target: '_blank', class: 'has-tooltip', title: _('More information')
+  = link_to sprite_icon('question-o'), help_page_path('user/profile/preferences.md', anchor: 'sourcegraph'), target: '_blank', class: 'has-tooltip', title: _('More information')
   .form-group.form-check
     = f.check_box :sourcegraph_enabled, class: 'form-check-input'
     = f.label :sourcegraph_enabled, class: 'form-check-label' do

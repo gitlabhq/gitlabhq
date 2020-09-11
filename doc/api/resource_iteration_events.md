@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Resource iteration events API **(STARTER)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/40850) in [GitLab Starter](https://about.gitlab.com/pricing/) 13.4.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/40850) in [GitLab Starter](https://about.gitlab.com/pricing/) 13.4
 > - It's [deployed behind a feature flag](../user/feature_flags.md), enabled by default.
 > - It's enabled on GitLab.com.
 > - It's recommended for production use.
@@ -68,7 +68,7 @@ Example response:
       "updated_at": "2020-01-27T05:07:12.573Z",
       "due_date": null,
       "start_date": null
-    },  
+    },
     "action": "add"
   },
   {

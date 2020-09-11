@@ -3,6 +3,11 @@
 module WikiHelpers
   extend self
 
+  def stub_group_wikis(enabled)
+    stub_feature_flags(group_wikis_feature_flag: enabled)
+    stub_licensed_features(group_wikis: enabled)
+  end
+
   def wait_for_svg_to_be_loaded(example = nil)
     # Ensure the SVG is loaded first before clicking the button
     find('.svg-content .js-lazy-loaded') if example.nil? || example.metadata.key?(:js)

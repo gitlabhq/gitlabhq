@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'cluster application helm specs' do |application_name|
-  let(:application) { create(application_name) }
+  let(:application) { create(application_name) } # rubocop:disable Rails/SaveBang
 
   describe '#uninstall_command' do
     subject { application.uninstall_command }

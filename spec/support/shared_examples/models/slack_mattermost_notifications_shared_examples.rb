@@ -164,7 +164,7 @@ RSpec.shared_examples 'slack or mattermost notifications' do |service_name|
 
     context "event channels" do
       it "uses the right channel for push event" do
-        chat_service.update(push_channel: "random")
+        chat_service.update!(push_channel: "random")
 
         expect(Slack::Messenger).to execute_with_options(channel: ['random'])
 
@@ -172,7 +172,7 @@ RSpec.shared_examples 'slack or mattermost notifications' do |service_name|
       end
 
       it "uses the right channel for merge request event" do
-        chat_service.update(merge_request_channel: "random")
+        chat_service.update!(merge_request_channel: "random")
 
         expect(Slack::Messenger).to execute_with_options(channel: ['random'])
 
@@ -180,7 +180,7 @@ RSpec.shared_examples 'slack or mattermost notifications' do |service_name|
       end
 
       it "uses the right channel for issue event" do
-        chat_service.update(issue_channel: "random")
+        chat_service.update!(issue_channel: "random")
 
         expect(Slack::Messenger).to execute_with_options(channel: ['random'])
 
@@ -191,7 +191,7 @@ RSpec.shared_examples 'slack or mattermost notifications' do |service_name|
         let(:issue_service_options) { { title: 'Secret', confidential: true } }
 
         it "uses confidential issue channel" do
-          chat_service.update(confidential_issue_channel: 'confidential')
+          chat_service.update!(confidential_issue_channel: 'confidential')
 
           expect(Slack::Messenger).to execute_with_options(channel: ['confidential'])
 
@@ -199,7 +199,7 @@ RSpec.shared_examples 'slack or mattermost notifications' do |service_name|
         end
 
         it 'falls back to issue channel' do
-          chat_service.update(issue_channel: 'fallback_channel')
+          chat_service.update!(issue_channel: 'fallback_channel')
 
           expect(Slack::Messenger).to execute_with_options(channel: ['fallback_channel'])
 
@@ -208,7 +208,7 @@ RSpec.shared_examples 'slack or mattermost notifications' do |service_name|
       end
 
       it "uses the right channel for wiki event" do
-        chat_service.update(wiki_page_channel: "random")
+        chat_service.update!(wiki_page_channel: "random")
 
         expect(Slack::Messenger).to execute_with_options(channel: ['random'])
 
@@ -221,7 +221,7 @@ RSpec.shared_examples 'slack or mattermost notifications' do |service_name|
         end
 
         it "uses the right channel" do
-          chat_service.update(note_channel: "random")
+          chat_service.update!(note_channel: "random")
 
           note_data = Gitlab::DataBuilder::Note.build(issue_note, user)
 
@@ -236,7 +236,7 @@ RSpec.shared_examples 'slack or mattermost notifications' do |service_name|
           end
 
           it "uses confidential channel" do
-            chat_service.update(confidential_note_channel: "confidential")
+            chat_service.update!(confidential_note_channel: "confidential")
 
             note_data = Gitlab::DataBuilder::Note.build(issue_note, user)
 
@@ -246,7 +246,7 @@ RSpec.shared_examples 'slack or mattermost notifications' do |service_name|
           end
 
           it 'falls back to note channel' do
-            chat_service.update(note_channel: "fallback_channel")
+            chat_service.update!(note_channel: "fallback_channel")
 
             note_data = Gitlab::DataBuilder::Note.build(issue_note, user)
 

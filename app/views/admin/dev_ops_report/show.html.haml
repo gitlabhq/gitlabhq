@@ -19,7 +19,7 @@
           = _('DevOps')
           %br
           = _('Score')
-          = link_to icon('question-circle', 'aria-hidden' => 'true'), help_page_path('user/admin_area/analytics/dev_ops_report')
+          = link_to sprite_icon('question-o', css_class: 'devops-header-icon'), help_page_path('user/admin_area/analytics/dev_ops_report')
 
       .devops-cards.board-card-container
         - @metric.cards.each do |card|

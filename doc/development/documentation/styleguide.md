@@ -1410,8 +1410,8 @@ example:
 
 ## Alert boxes
 
-Whenever you need to call special attention to particular sentences, use the
-following markup for highlighting.
+When you need to call special attention to particular sentences, use the
+following markup to create highlighted alert boxes.
 
 Note that the alert boxes only work for one paragraph only. Multiple paragraphs,
 lists, headers and so on, will not render correctly. For multiple lines, use
@@ -1420,6 +1420,16 @@ lists, headers and so on, will not render correctly. For multiple lines, use
 Alert boxes render only on the GitLab documentation site (<https://docs.gitlab.com>).
 Within GitLab itself, they will appear as plain Markdown text (like the examples
 above the rendered versions, below).
+
+These alert boxes are used in the GitLab documentation. These aren't strict
+guidelines, but for consistency you should try to use these values:
+
+| Color  | Markup     | Default keyword | Alternative keywords                                                 |
+|--------|------------|-----------------|----------------------------------------------------------------------|
+| Blue   | `NOTE:`    | `**Note:**`     |                                                                      |
+| Yellow | `CAUTION:` | `**Caution:**`  | `**Warning:**`, `**Important:**`                                     |
+| Red    | `DANGER:`  | `**Danger:**`   | `**Warning:**`, `**Important:**`, `**Deprecated:**`, `**Required:**` |
+| Green  | `TIP:`     | `**Tip:**`      |                                                                      |
 
 ### Note
 
@@ -1637,7 +1647,7 @@ heading level.
    warning such as:
 
    ```markdown
-   CAUTION: **Warning:**
+   DANGER: **Deprecated:**
    This feature was [deprecated](link-to-issue) in GitLab 12.3
    and replaced by [Feature name](link-to-feature-documentation).
    ```

@@ -34,13 +34,13 @@
       = f.number_field :max_artifacts_size, class: 'form-control'
       .form-text.text-muted
         = _("Set the maximum file size for each job's artifacts")
-        = link_to icon('question-circle'), help_page_path('user/admin_area/settings/continuous_integration', anchor: 'maximum-artifacts-size')
+        = link_to sprite_icon('question-o'), help_page_path('user/admin_area/settings/continuous_integration', anchor: 'maximum-artifacts-size')
     .form-group
       = f.label :default_artifacts_expire_in, _('Default artifacts expiration'), class: 'label-bold'
       = f.text_field :default_artifacts_expire_in, class: 'form-control'
       .form-text.text-muted
         = html_escape(_("Set the default expiration time for each job's artifacts. 0 for unlimited. The default unit is in seconds, but you can define an alternative. For example: %{code_open}4 mins 2 sec%{code_close}, %{code_open}2h42min%{code_close}.")) % { code_open: '<code>'.html_safe, code_close: '</code>'.html_safe }
-        = link_to icon('question-circle'), help_page_path('user/admin_area/settings/continuous_integration', anchor: 'default-artifacts-expiration')
+        = link_to sprite_icon('question-o'), help_page_path('user/admin_area/settings/continuous_integration', anchor: 'default-artifacts-expiration')
     .form-group
       = f.label :archive_builds_in_human_readable, _('Archive jobs'), class: 'label-bold'
       = f.text_field :archive_builds_in_human_readable, class: 'form-control', placeholder: 'never'
@@ -58,6 +58,6 @@
       = f.text_field :default_ci_config_path, class: 'form-control', placeholder: '.gitlab-ci.yml'
       %p.form-text.text-muted
         = _("The default CI configuration path for new projects.").html_safe
-        = link_to icon('question-circle'), help_page_path('ci/pipelines/settings', anchor: 'custom-ci-configuration-path'), target: '_blank'
+        = link_to sprite_icon('question-o'), help_page_path('ci/pipelines/settings', anchor: 'custom-ci-configuration-path'), target: '_blank'
 
   = f.submit _('Save changes'), class: "btn btn-success"

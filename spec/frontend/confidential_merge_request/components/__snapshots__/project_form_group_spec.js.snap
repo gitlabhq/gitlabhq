@@ -33,9 +33,9 @@ exports[`Confidential merge request project form group component renders empty s
           Read more
         </span>
          
-        <i
-          aria-hidden="true"
-          class="fa fa-question-circle"
+        <gl-icon-stub
+          name="question-o"
+          size="16"
         />
       </gl-link-stub>
     </p>
@@ -76,9 +76,9 @@ exports[`Confidential merge request project form group component renders fork dr
           Read more
         </span>
          
-        <i
-          aria-hidden="true"
-          class="fa fa-question-circle"
+        <gl-icon-stub
+          name="question-o"
+          size="16"
         />
       </gl-link-stub>
     </p>

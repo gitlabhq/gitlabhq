@@ -1,5 +1,5 @@
 <script>
-import { GlLink, GlSprintf } from '@gitlab/ui';
+import { GlIcon, GlLink, GlSprintf } from '@gitlab/ui';
 import { __ } from '../../locale';
 import { deprecatedCreateFlash as createFlash } from '../../flash';
 import Api from '../../api';
@@ -8,6 +8,7 @@ import Dropdown from './dropdown.vue';
 
 export default {
   components: {
+    GlIcon,
     GlLink,
     GlSprintf,
     Dropdown,
@@ -136,7 +137,7 @@ export default {
           target="_blank"
         >
           <span class="sr-only">{{ __('Read more') }}</span>
-          <i class="fa fa-question-circle" aria-hidden="true"></i>
+          <gl-icon name="question-o" />
         </gl-link>
       </p>
     </div>

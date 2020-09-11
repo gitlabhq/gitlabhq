@@ -1,3 +1,10 @@
+---
+type: reference, dev
+stage: none
+group: Development
+info: "See the Technical Writers assigned to Development Guidelines: https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments-to-development-guidelines"
+---
+
 # GraphQL
 
 ## Getting Started
@@ -31,6 +38,9 @@ If you are using GraphQL within a Vue application, the [Usage in Vue](#usage-in-
 can help you learn how to integrate Vue Apollo.
 
 For other use cases, check out the [Usage outside of Vue](#usage-outside-of-vue) section.
+
+We use [Immer](https://immerjs.github.io/immer/docs/introduction) for immutable cache updates;
+see [Immutability and cache updates](#immutability-and-cache-updates) for more information.
 
 ### Tooling
 
@@ -130,6 +140,42 @@ fragment DesignItem on Design {
 
 More about fragments:
 [GraphQL Docs](https://graphql.org/learn/queries/#fragments)
+
+## Immutability and cache updates
+
+From Apollo version 3.0.0 all the cache updates need to be immutable; it needs to be replaced entirely
+with a **new and updated** object.
+
+To facilitate the process of updating the cache and returning the new object we use the library [Immer](https://immerjs.github.io/immer/docs/introduction).
+When possible, follow these conventions:
+
+- The updated cache is named `data`.
+- The original cache data is named `sourceData`.
+
+A typical update process looks like this:
+
+```javascript
+...
+const sourceData = client.readQuery({ query });
+
+const data = produce(sourceData, draftState => {
+  draftState.commits.push(newCommit);
+});
+
+client.writeQuery({
+  query,
+  data,
+});
+...
+```
+
+As shown in the code example by using `produce`, we can perform any kind of direct manipulation of the
+`draftState`. Besides, `immer` guarantees that a new state which includes the changes to `draftState` will be generated.
+
+Finally, to verify whether the immutable cache update is working properly, we need to change
+`assumeImmutableResults` to `true` in the `default client config` (see [Apollo Client](#apollo-client) for more info). 
+
+If everything is working properly `assumeImmutableResults` should remain set to `true`.
 
 ## Usage in Vue
 

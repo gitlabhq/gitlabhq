@@ -47,7 +47,7 @@
 
 = f.label :visibility_level, class: 'label-bold' do
   = s_('ProjectsNew|Visibility Level')
-  = link_to icon('question-circle'), help_page_path("public_access/public_access"), aria: { label: 'Documentation for Visibility Level' }, target: '_blank', rel: 'noopener noreferrer'
+  = link_to sprite_icon('question-o'), help_page_path('public_access/public_access'), aria: { label: 'Documentation for Visibility Level' }, target: '_blank', rel: 'noopener noreferrer'
 = render 'shared/visibility_level', f: f, visibility_level: visibility_level.to_i, can_change_visibility_level: true, form_model: @project, with_label: false
 
 - if !hide_init_with_readme

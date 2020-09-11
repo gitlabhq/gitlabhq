@@ -57,7 +57,7 @@
           %span.light= _('Group Git LFS status:')
           %strong
             = group_lfs_status(@group)
-            = link_to icon('question-circle'), help_page_path('topics/git/lfs/index')
+            = link_to sprite_icon('question-o'), help_page_path('topics/git/lfs/index')
 
         = render_if_exists 'namespaces/shared_runner_status', namespace: @group
 

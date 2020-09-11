@@ -53,7 +53,7 @@ RSpec.shared_examples 'latest successful build for sha or ref' do
     let(:build_name) { pending_build.name }
 
     before do
-      pipeline.update(status: 'pending')
+      pipeline.update!(status: 'pending')
     end
 
     it 'returns empty relation' do

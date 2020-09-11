@@ -106,7 +106,7 @@ export default {
     <div class="title hide-collapsed">
       {{ __('Time tracking') }}
       <div v-if="!showHelpState" class="help-button float-right" @click="toggleHelpState(true)">
-        <i class="fa fa-question-circle" aria-hidden="true"> </i>
+        <gl-icon name="question-o" />
       </div>
       <div
         v-if="showHelpState"

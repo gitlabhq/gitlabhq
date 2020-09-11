@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'Group navbar' do
   include NavbarStructureHelper
+  include WikiHelpers
 
   include_context 'group navbar structure'
 
@@ -49,7 +50,7 @@ RSpec.describe 'Group navbar' do
     insert_package_nav(_('Kubernetes'))
 
     stub_feature_flags(group_iterations: false)
-    stub_feature_flags(group_wiki: false)
+    stub_group_wikis(false)
     group.add_maintainer(user)
     sign_in(user)
   end

@@ -13,7 +13,7 @@ RSpec.shared_examples 'members notifications' do |entity_type|
     it "sends email to user" do
       expect(notification_service).to receive(:"new_#{entity_type}_member").with(member)
 
-      member.save
+      member.save!
     end
   end
 
