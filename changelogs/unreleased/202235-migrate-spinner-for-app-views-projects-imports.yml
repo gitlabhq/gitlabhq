@@ -1,0 +1,5 @@
+---
+title: Migrate '.fa-spinner' to '.spinner' for 'app/views/projects/imports'
+merge_request: 41151
+author: Gilang Gumilar
+type: changed
