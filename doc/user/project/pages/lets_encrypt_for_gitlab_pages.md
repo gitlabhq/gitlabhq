@@ -1,7 +1,5 @@
 ---
 description: "How to secure GitLab Pages websites with Let's Encrypt (manual process, deprecated)."
-type: howto
-last_updated: 2019-07-15
 ---
 
 # Let's Encrypt for GitLab Pages (manual process, deprecated)

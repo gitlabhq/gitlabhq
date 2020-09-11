@@ -1,6 +1,4 @@
 ---
-last_updated: 2020-07-25
-type: reference, howto
 disqus_identifier: 'https://docs.gitlab.com/ee/user/project/pages/getting_started_part_three.html'
 stage: Release
 group: Release Management

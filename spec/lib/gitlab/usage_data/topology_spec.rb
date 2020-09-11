@@ -13,12 +13,7 @@ RSpec.describe Gitlab::UsageData::Topology do
       allow(Process).to receive(:clock_gettime).and_return(0)
     end
 
-    context 'when embedded Prometheus server is enabled' do
-      before do
-        expect(Gitlab::Prometheus::Internal).to receive(:prometheus_enabled?).and_return(true)
-        expect(Gitlab::Prometheus::Internal).to receive(:uri).and_return('http://prom:9090')
-      end
-
+    shared_examples 'query topology data from Prometheus' do
       context 'tracking node metrics' do
         it 'contains node level metrics for each instance' do
           expect_prometheus_api_to(
@@ -461,9 +456,29 @@ RSpec.describe Gitlab::UsageData::Topology do
       end
     end
 
-    context 'when embedded Prometheus server is disabled' do
+    context 'when Prometheus is available from Prometheus settings' do
+      before do
+        expect(Gitlab::Prometheus::Internal).to receive(:prometheus_enabled?).and_return(true)
+        expect(Gitlab::Prometheus::Internal).to receive(:uri).and_return('http://prom:9090')
+      end
+
+      include_examples 'query topology data from Prometheus'
+    end
+
+    context 'when Prometheus is available from Consul service discovery' do
+      before do
+        expect(Gitlab::Prometheus::Internal).to receive(:prometheus_enabled?).and_return(false)
+        expect(Gitlab::Consul::Internal).to receive(:api_url).and_return('http://127.0.0.1:8500')
+        expect(Gitlab::Consul::Internal).to receive(:discover_prometheus_uri).and_return('http://prom.net:9090')
+      end
+
+      include_examples 'query topology data from Prometheus'
+    end
+
+    context 'when Prometheus is not available' do
       it 'returns empty result with no failures' do
         expect(Gitlab::Prometheus::Internal).to receive(:prometheus_enabled?).and_return(false)
+        expect(Gitlab::Consul::Internal).to receive(:api_url).and_return(nil)
 
         expect(subject[:topology]).to eq({
           duration_s: 0,

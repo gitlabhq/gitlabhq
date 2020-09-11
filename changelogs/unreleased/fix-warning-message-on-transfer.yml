@@ -1,0 +1,5 @@
+---
+title: Change the warning message on project transfer to another namespace
+merge_request: 41059
+author: Takuya Noguchi
+type: fixed

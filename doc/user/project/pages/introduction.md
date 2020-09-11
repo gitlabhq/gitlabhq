@@ -1,6 +1,4 @@
 ---
-type: reference
-last_updated: 2020-01-06
 stage: Release
 group: Release Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
@@ -68,7 +66,8 @@ location, you can use the [HTTP meta refresh tag](https://en.wikipedia.org/wiki/
 
 Some static site generators provide plugins for that functionality so that you
 don't have to create and edit HTML files manually. For example, Jekyll has the
-[redirect-from plugin](https://github.com/jekyll/jekyll-redirect-from).
+[redirect-from plugin](https://github.com/jekyll/jekyll-redirect-from), Sphinx
+has the [sphinx-reredirects](https://gitlab.com/documatt/sphinx-reredirects) extension.
 
 ## GitLab Pages Access Control **(CORE)**
 

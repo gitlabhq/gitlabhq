@@ -131,3 +131,5 @@ class SnippetRepository < ApplicationRecord
     action[:action] == :update && action[:content].nil?
   end
 end
+
+SnippetRepository.prepend_if_ee('EE::SnippetRepository')

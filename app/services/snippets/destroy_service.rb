@@ -58,3 +58,5 @@ module Snippets
     end
   end
 end
+
+Snippets::DestroyService.prepend_if_ee('EE::Snippets::DestroyService')

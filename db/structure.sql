@@ -15667,7 +15667,13 @@ ALTER SEQUENCE public.smartcard_identities_id_seq OWNED BY public.smartcard_iden
 CREATE TABLE public.snippet_repositories (
     snippet_id bigint NOT NULL,
     shard_id bigint NOT NULL,
-    disk_path character varying(80) NOT NULL
+    disk_path character varying(80) NOT NULL,
+    verification_retry_count smallint,
+    verification_retry_at timestamp with time zone,
+    verified_at timestamp with time zone,
+    verification_checksum bytea,
+    verification_failure text,
+    CONSTRAINT snippet_repositories_verification_failure_text_limit CHECK ((char_length(verification_failure) <= 255))
 );
 
 CREATE TABLE public.snippet_statistics (
@@ -21373,6 +21379,10 @@ CREATE INDEX partial_index_ci_builds_on_scheduled_at_with_scheduled_jobs ON publ
 CREATE INDEX partial_index_deployments_for_legacy_successful_deployments ON public.deployments USING btree (id) WHERE ((finished_at IS NULL) AND (status = 2));
 
 CREATE INDEX partial_index_deployments_for_project_id_and_tag ON public.deployments USING btree (project_id) WHERE (tag IS TRUE);
+
+CREATE INDEX snippet_repositories_verification_checksum_partial ON public.snippet_repositories USING btree (verification_checksum) WHERE (verification_checksum IS NOT NULL);
+
+CREATE INDEX snippet_repositories_verification_failure_partial ON public.snippet_repositories USING btree (verification_failure) WHERE (verification_failure IS NOT NULL);
 
 CREATE UNIQUE INDEX snippet_user_mentions_on_snippet_id_and_note_id_index ON public.snippet_user_mentions USING btree (snippet_id, note_id);
 

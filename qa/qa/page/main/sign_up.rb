@@ -14,10 +14,6 @@ module QA
           element :new_user_accept_terms_checkbox
         end
 
-        view 'ee/app/views/registrations/welcome/_button.html.haml' do
-          element :get_started_button
-        end
-
         def sign_up!(user)
           fill_element :new_user_name_field, user.name
           fill_element :new_user_username_field, user.username
@@ -30,14 +26,22 @@ module QA
           signed_in = retry_until do
             click_element :new_user_register_button if has_element?(:new_user_register_button)
 
-            click_element :get_started_button if has_element?(:get_started_button)
+            click_get_started_button
 
             Page::Main::Menu.perform(&:has_personal_area?)
           end
 
           raise "Failed to register and sign in" unless signed_in
         end
+
+        private
+
+        # overridden in EE
+        def click_get_started_button
+        end
       end
     end
   end
 end
+
+QA::Page::Main::SignUp.prepend_if_ee('QA::EE::Page::Main::SignUp')

@@ -109,7 +109,7 @@ module ProjectsHelper
   end
 
   def transfer_project_message(project)
-    _("You are going to transfer %{project_full_name} to another owner. Are you ABSOLUTELY sure?") %
+    _("You are going to transfer %{project_full_name} to another namespace. Are you ABSOLUTELY sure?") %
       { project_full_name: project.full_name }
   end
 

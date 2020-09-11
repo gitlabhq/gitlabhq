@@ -1,7 +1,12 @@
 import { shallowMount } from '@vue/test-utils';
 import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
 import StateFilter from '~/search/state_filter/components/state_filter.vue';
-import { FILTER_STATES } from '~/search/state_filter/constants';
+import {
+  FILTER_STATES,
+  SCOPES,
+  FILTER_STATES_BY_SCOPE,
+  FILTER_TEXT,
+} from '~/search/state_filter/constants';
 import * as urlUtils from '~/lib/utils/url_utility';
 
 jest.mock('~/lib/utils/url_utility', () => ({
@@ -38,10 +43,10 @@ describe('StateFilter', () => {
     describe.each`
       scope               | showStateDropdown
       ${'issues'}         | ${true}
+      ${'merge_requests'} | ${true}
       ${'projects'}       | ${false}
       ${'milestones'}     | ${false}
       ${'users'}          | ${false}
-      ${'merge_requests'} | ${false}
       ${'notes'}          | ${false}
       ${'wiki_blobs'}     | ${false}
       ${'blobs'}          | ${false}
@@ -55,11 +60,29 @@ describe('StateFilter', () => {
       });
     });
 
+    describe.each`
+      state                         | label
+      ${FILTER_STATES.ANY.value}    | ${FILTER_TEXT}
+      ${FILTER_STATES.OPEN.value}   | ${FILTER_STATES.OPEN.label}
+      ${FILTER_STATES.CLOSED.value} | ${FILTER_STATES.CLOSED.label}
+      ${FILTER_STATES.MERGED.value} | ${FILTER_STATES.MERGED.label}
+    `(`filter text`, ({ state, label }) => {
+      describe(`when state is ${state}`, () => {
+        beforeEach(() => {
+          wrapper = createComponent({ scope: 'issues', state });
+        });
+
+        it(`sets dropdown label to ${label}`, () => {
+          expect(findGlDropdown().attributes('text')).toBe(label);
+        });
+      });
+    });
+
     describe('Filter options', () => {
       it('renders a dropdown item for each filterOption', () => {
         expect(findDropdownItemsText()).toStrictEqual(
-          Object.keys(FILTER_STATES).map(key => {
-            return FILTER_STATES[key].label;
+          FILTER_STATES_BY_SCOPE[SCOPES.ISSUES].map(v => {
+            return v.label;
           }),
         );
       });

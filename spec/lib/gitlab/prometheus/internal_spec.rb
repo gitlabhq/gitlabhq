@@ -61,7 +61,7 @@ RSpec.describe Gitlab::Prometheus::Internal do
     end
   end
 
-  describe 'prometheus_enabled?' do
+  describe '.prometheus_enabled?' do
     it 'returns correct value' do
       expect(described_class.prometheus_enabled?).to eq(true)
     end

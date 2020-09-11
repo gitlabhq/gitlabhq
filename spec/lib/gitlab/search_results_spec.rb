@@ -150,6 +150,15 @@ RSpec.describe Gitlab::SearchResults do
 
         results.objects('merge_requests')
       end
+
+      context 'filtering' do
+        let!(:opened_result) { create(:merge_request, :opened, source_project: project, title: 'foo opened') }
+        let!(:closed_result) { create(:merge_request, :closed, source_project: project, title: 'foo closed') }
+        let(:scope) { 'merge_requests' }
+        let(:query) { 'foo' }
+
+        include_examples 'search results filtered by state'
+      end
     end
 
     describe '#issues' do
@@ -168,10 +177,12 @@ RSpec.describe Gitlab::SearchResults do
       end
 
       context 'filtering' do
-        let_it_be(:closed_issue) { create(:issue, :closed, project: project, title: 'foo closed') }
-        let_it_be(:opened_issue) { create(:issue, :opened, project: project, title: 'foo open') }
+        let(:scope) { 'issues' }
 
-        include_examples 'search issues scope filters by state'
+        let_it_be(:closed_result) { create(:issue, :closed, project: project, title: 'foo closed') }
+        let_it_be(:opened_result) { create(:issue, :opened, project: project, title: 'foo open') }
+
+        include_examples 'search results filtered by state'
       end
     end
 

@@ -416,12 +416,20 @@ for verification state to the widgets table:
    # frozen_string_literal: true
 
    class AddVerificationFailureLimitToWidgets < ActiveRecord::Migration[6.0]
+     include Gitlab::Database::MigrationHelpers
+
      DOWNTIME = false
 
      disable_ddl_transaction!
 
-     def change
-       add_text_limit :widgets, :verification_failure, 255
+     CONSTRAINT_NAME = 'widget_verification_failure_text_limit'
+
+     def up
+       add_text_limit :widget, :verification_failure, 255, constraint_name: CONSTRAINT_NAME
+     end
+
+     def down
+       remove_check_constraint(:widget, CONSTRAINT_NAME)
      end
    end
    ```

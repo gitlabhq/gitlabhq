@@ -76,20 +76,37 @@ RSpec.describe Gitlab::Utils::UsageData do
   end
 
   describe '#with_prometheus_client' do
-    context 'when Prometheus is enabled' do
+    shared_examples 'query data from Prometheus' do
       it 'yields a client instance and returns the block result' do
-        expect(Gitlab::Prometheus::Internal).to receive(:prometheus_enabled?).and_return(true)
-        expect(Gitlab::Prometheus::Internal).to receive(:uri).and_return('http://prom:9090')
-
         result = described_class.with_prometheus_client { |client| client }
 
         expect(result).to be_an_instance_of(Gitlab::PrometheusClient)
       end
     end
 
-    context 'when Prometheus is disabled' do
+    context 'when Prometheus is available from settings' do
+      before do
+        expect(Gitlab::Prometheus::Internal).to receive(:prometheus_enabled?).and_return(true)
+        expect(Gitlab::Prometheus::Internal).to receive(:uri).and_return('http://prom:9090')
+      end
+
+      it_behaves_like 'query data from Prometheus'
+    end
+
+    context 'when Prometheus is available from Consul service discovery' do
       before do
         expect(Gitlab::Prometheus::Internal).to receive(:prometheus_enabled?).and_return(false)
+        expect(Gitlab::Consul::Internal).to receive(:api_url).and_return('http://localhost:8500')
+        expect(Gitlab::Consul::Internal).to receive(:discover_prometheus_uri).and_return('http://prom:9090')
+      end
+
+      it_behaves_like 'query data from Prometheus'
+    end
+
+    context 'when Prometheus is not available' do
+      before do
+        expect(Gitlab::Prometheus::Internal).to receive(:prometheus_enabled?).and_return(false)
+        expect(Gitlab::Consul::Internal).to receive(:api_url).and_return(nil)
       end
 
       it 'returns nil by default' do

@@ -7,6 +7,7 @@ RSpec.describe Gitlab::GroupSearchResults do
   # before so expect(GroupsFinder) check works
   let_it_be(:group) { create(:group) }
   let_it_be(:user) { create(:user) }
+  let_it_be(:project) { create(:project, :public, group: group) }
   let(:filters) { {} }
   let(:limit_projects) { Project.all }
   let(:query) { 'gob' }
@@ -14,13 +15,27 @@ RSpec.describe Gitlab::GroupSearchResults do
   subject(:results) { described_class.new(user, query, limit_projects, group: group, filters: filters) }
 
   describe 'issues search' do
-    let_it_be(:project) { create(:project, :public, group: group) }
-    let_it_be(:opened_issue) { create(:issue, :opened, project: project, title: 'foo opened') }
-    let_it_be(:closed_issue) { create(:issue, :closed, project: project, title: 'foo closed') }
+    let_it_be(:opened_result) { create(:issue, :opened, project: project, title: 'foo opened') }
+    let_it_be(:closed_result) { create(:issue, :closed, project: project, title: 'foo closed') }
     let(:query) { 'foo' }
-    let(:filters) { { state: 'opened' } }
+    let(:scope) { 'issues' }
 
-    include_examples 'search issues scope filters by state'
+    include_examples 'search results filtered by state'
+  end
+
+  describe 'merge_requests search' do
+    let(:opened_result) { create(:merge_request, :opened, source_project: project, title: 'foo opened') }
+    let(:closed_result) { create(:merge_request, :closed, source_project: project, title: 'foo closed') }
+    let(:query) { 'foo' }
+    let(:scope) { 'merge_requests' }
+
+    before do
+      # we're creating those instances in before block because otherwise factory for MRs will fail on after(:build)
+      opened_result
+      closed_result
+    end
+
+    include_examples 'search results filtered by state'
   end
 
   describe 'user search' do

@@ -75,8 +75,14 @@ class PostReceive # rubocop:disable Scalability/IdempotentWorker
 
     return false unless user
 
+    replicate_snippet_changes(snippet)
+
     expire_caches(post_received, snippet.repository)
     Snippets::UpdateStatisticsService.new(snippet).execute
+  end
+
+  def replicate_snippet_changes(snippet)
+    # Used by Gitlab Geo
   end
 
   # Expire the repository status, branch, and tag cache once per push.

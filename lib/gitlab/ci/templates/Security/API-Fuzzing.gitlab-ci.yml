@@ -37,9 +37,6 @@ apifuzzer_fuzz:
               $FUZZAPI_OPENAPI == null &&
               $FUZZAPI_D_WORKER_IMAGE == null
           when: never
-        - if: $FUZZAPI_D_WORKER_IMAGE == null &&
-              $FUZZAPI_TARGET_URL == null
-          when: never
         - if: $GITLAB_FEATURES =~ /\bapi_fuzzing\b/
     services:
         - docker:19.03.12-dind

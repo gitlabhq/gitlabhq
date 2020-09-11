@@ -1,6 +1,12 @@
 <script>
 import { GlDropdown, GlDropdownItem, GlDropdownDivider } from '@gitlab/ui';
-import { FILTER_STATES, FILTER_HEADER, FILTER_TEXT } from '../constants';
+import {
+  FILTER_STATES,
+  SCOPES,
+  FILTER_STATES_BY_SCOPE,
+  FILTER_HEADER,
+  FILTER_TEXT,
+} from '../constants';
 import { setUrlParams, visitUrl } from '~/lib/utils/url_utility';
 
 const FILTERS_ARRAY = Object.values(FILTER_STATES);
@@ -26,13 +32,15 @@ export default {
   },
   computed: {
     selectedFilterText() {
-      let filterText = FILTER_TEXT;
-      if (this.selectedFilter === FILTER_STATES.CLOSED.value) {
-        filterText = FILTER_STATES.CLOSED.label;
-      } else if (this.selectedFilter === FILTER_STATES.OPEN.value) {
-        filterText = FILTER_STATES.OPEN.label;
+      const filter = FILTERS_ARRAY.find(({ value }) => value === this.selectedFilter);
+      if (!filter || filter === FILTER_STATES.ANY) {
+        return FILTER_TEXT;
       }
-      return filterText;
+
+      return filter.label;
+    },
+    showDropdown() {
+      return Object.values(SCOPES).includes(this.scope);
     },
     selectedFilter: {
       get() {
@@ -63,29 +71,24 @@ export default {
   },
   filterStates: FILTER_STATES,
   filterHeader: FILTER_HEADER,
-  filtersArray: FILTERS_ARRAY,
+  filtersByScope: FILTER_STATES_BY_SCOPE,
 };
 </script>
 
 <template>
-  <gl-dropdown
-    v-if="scope === 'issues'"
-    :text="selectedFilterText"
-    class="col-sm-3 gl-pt-4 gl-pl-0"
-  >
+  <gl-dropdown v-if="showDropdown" :text="selectedFilterText" class="col-sm-3 gl-pt-4 gl-pl-0">
     <header class="gl-text-center gl-font-weight-bold gl-font-lg">
       {{ $options.filterHeader }}
     </header>
     <gl-dropdown-divider />
     <gl-dropdown-item
-      v-for="filter in $options.filtersArray"
+      v-for="filter in $options.filtersByScope[scope]"
       :key="filter.value"
       :is-check-item="true"
       :is-checked="isFilterSelected(filter.value)"
       :class="dropDownItemClass(filter)"
       @click="handleFilterChange(filter.value)"
+      >{{ filter.label }}</gl-dropdown-item
     >
-      {{ filter.label }}
-    </gl-dropdown-item>
   </gl-dropdown>
 </template>

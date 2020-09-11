@@ -512,6 +512,7 @@
     - <<: *if-security-merge-request
       changes: *db-patterns
     - <<: *if-merge-request-title-as-if-foss
+      changes: *db-patterns
     - <<: *if-merge-request
       changes: *ci-patterns
 
@@ -522,6 +523,7 @@
     - <<: *if-security-merge-request
       changes: *backend-patterns
     - <<: *if-merge-request-title-as-if-foss
+      changes: *backend-patterns
     - <<: *if-merge-request
       changes: *ci-patterns
 
@@ -532,6 +534,7 @@
     - <<: *if-security-merge-request
       changes: *backend-patterns
     - <<: *if-merge-request-title-as-if-foss
+      changes: *backend-patterns
     - <<: *if-merge-request
       changes: *ci-patterns
 
@@ -542,6 +545,7 @@
     - <<: *if-security-merge-request
       changes: *code-backstage-patterns
     - <<: *if-merge-request-title-as-if-foss
+      changes: *code-backstage-patterns
     - <<: *if-merge-request
       changes: *ci-patterns
 

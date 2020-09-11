@@ -249,8 +249,9 @@ RSpec.describe Gitlab::ProjectSearchResults do
   describe 'issues search' do
     let(:issue) { create(:issue, project: project) }
     let(:query) { issue.title }
+    let(:scope) { 'issues' }
 
-    subject(:objects) { results.objects('issues') }
+    subject(:objects) { results.objects(scope) }
 
     it 'does not list issues on private projects' do
       expect(objects).not_to include issue
@@ -262,20 +263,25 @@ RSpec.describe Gitlab::ProjectSearchResults do
 
     context 'filtering' do
       let_it_be(:project) { create(:project, :public) }
-      let_it_be(:closed_issue) { create(:issue, :closed, project: project, title: 'foo closed') }
-      let_it_be(:opened_issue) { create(:issue, :opened, project: project, title: 'foo opened') }
+      let_it_be(:closed_result) { create(:issue, :closed, project: project, title: 'foo closed') }
+      let_it_be(:opened_result) { create(:issue, :opened, project: project, title: 'foo opened') }
       let(:query) { 'foo' }
 
-      include_examples 'search issues scope filters by state'
+      include_examples 'search results filtered by state'
     end
+  end
 
-    it 'filters issues when state is provided', :aggregate_failures do
-      closed_issue = create(:issue, :closed, project: project, title: "Revert: #{issue.title}")
+  describe 'merge requests search' do
+    let(:scope) { 'merge_requests' }
+    let(:project) { create(:project, :public) }
 
-      results = described_class.new(project.creator, query, project: project, filters: { state: 'opened' })
+    context 'filtering' do
+      let!(:project) { create(:project, :public) }
+      let!(:opened_result) { create(:merge_request, :opened, source_project: project, title: 'foo opened') }
+      let!(:closed_result) { create(:merge_request, :closed, source_project: project, title: 'foo closed') }
+      let(:query) { 'foo' }
 
-      expect(results.objects('issues')).not_to include closed_issue
-      expect(results.objects('issues')).to include issue
+      include_examples 'search results filtered by state'
     end
   end
 
