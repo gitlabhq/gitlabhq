@@ -10,6 +10,17 @@ RSpec.describe API::UsageData do
     let(:known_event) { 'g_compliance_dashboard' }
     let(:unknown_event) { 'unknown' }
 
+    context 'without CSRF token' do
+      it 'returns forbidden' do
+        stub_feature_flags(usage_data_api: true)
+        allow(Gitlab::RequestForgeryProtection).to receive(:verified?).and_return(false)
+
+        post api(endpoint, user), params: { event: known_event }
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+    end
+
     context 'usage_data_api feature not enabled' do
       it 'returns not_found' do
         stub_feature_flags(usage_data_api: false)
@@ -33,6 +44,7 @@ RSpec.describe API::UsageData do
         stub_feature_flags(usage_data_api: true)
         stub_feature_flags("usage_data_#{known_event}" => true)
         stub_application_setting(usage_ping_enabled: true)
+        allow(Gitlab::RequestForgeryProtection).to receive(:verified?).and_return(true)
       end
 
       context 'when event is missing from params' do

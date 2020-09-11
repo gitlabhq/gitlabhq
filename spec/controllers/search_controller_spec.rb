@@ -95,46 +95,74 @@ RSpec.describe SearchController do
       using RSpec::Parameterized::TableSyntax
       render_views
 
-      it 'omits pipeline status from load' do
-        project = create(:project, :public)
-        expect(Gitlab::Cache::Ci::ProjectPipelineStatus).not_to receive(:load_in_batch_for_projects)
+      context 'when block_anonymous_global_searches is disabled' do
+        before do
+          stub_feature_flags(block_anonymous_global_searches: false)
+        end
 
-        get :show, params: { scope: 'projects', search: project.name }
+        it 'omits pipeline status from load' do
+          project = create(:project, :public)
+          expect(Gitlab::Cache::Ci::ProjectPipelineStatus).not_to receive(:load_in_batch_for_projects)
 
-        expect(assigns[:search_objects].first).to eq project
+          get :show, params: { scope: 'projects', search: project.name }
+
+          expect(assigns[:search_objects].first).to eq project
+        end
+
+        context 'check search term length' do
+          let(:search_queries) do
+            char_limit = SearchService::SEARCH_CHAR_LIMIT
+            term_limit = SearchService::SEARCH_TERM_LIMIT
+            {
+              chars_under_limit: ('a' * (char_limit - 1)),
+              chars_over_limit: ('a' * (char_limit + 1)),
+              terms_under_limit: ('abc ' * (term_limit - 1)),
+              terms_over_limit: ('abc ' * (term_limit + 1))
+            }
+          end
+
+          where(:string_name, :expectation) do
+            :chars_under_limit | :not_to_set_flash
+            :chars_over_limit  | :set_chars_flash
+            :terms_under_limit | :not_to_set_flash
+            :terms_over_limit  | :set_terms_flash
+          end
+
+          with_them do
+            it do
+              get :show, params: { scope: 'projects', search: search_queries[string_name] }
+
+              case expectation
+              when :not_to_set_flash
+                expect(controller).not_to set_flash[:alert]
+              when :set_chars_flash
+                expect(controller).to set_flash[:alert].to(/characters/)
+              when :set_terms_flash
+                expect(controller).to set_flash[:alert].to(/terms/)
+              end
+            end
+          end
+        end
       end
 
-      context 'check search term length' do
-        let(:search_queries) do
-          char_limit = SearchService::SEARCH_CHAR_LIMIT
-          term_limit = SearchService::SEARCH_TERM_LIMIT
-          {
-            chars_under_limit: ('a' * (char_limit - 1)),
-            chars_over_limit: ('a' * (char_limit + 1)),
-            terms_under_limit: ('abc ' * (term_limit - 1)),
-            terms_over_limit: ('abc ' * (term_limit + 1))
-          }
+      context 'when block_anonymous_global_searches is enabled' do
+        context 'for unauthenticated user' do
+          before do
+            sign_out(user)
+          end
+
+          it 'redirects to login page' do
+            get :show, params: { scope: 'projects', search: '*' }
+
+            expect(response).to redirect_to new_user_session_path
+          end
         end
 
-        where(:string_name, :expectation) do
-          :chars_under_limit | :not_to_set_flash
-          :chars_over_limit  | :set_chars_flash
-          :terms_under_limit | :not_to_set_flash
-          :terms_over_limit  | :set_terms_flash
-        end
+        context 'for authenticated user' do
+          it 'succeeds' do
+            get :show, params: { scope: 'projects', search: '*' }
 
-        with_them do
-          it do
-            get :show, params: { scope: 'projects', search: search_queries[string_name] }
-
-            case expectation
-            when :not_to_set_flash
-              expect(controller).not_to set_flash[:alert]
-            when :set_chars_flash
-              expect(controller).to set_flash[:alert].to(/characters/)
-            when :set_terms_flash
-              expect(controller).to set_flash[:alert].to(/terms/)
-            end
+            expect(response).to have_gitlab_http_status(:ok)
           end
         end
       end

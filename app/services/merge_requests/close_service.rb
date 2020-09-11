@@ -2,6 +2,8 @@
 
 module MergeRequests
   class CloseService < MergeRequests::BaseService
+    include RemovesRefs
+
     def execute(merge_request, commit = nil)
       return merge_request unless can?(current_user, :update_merge_request, merge_request)
 
@@ -19,6 +21,7 @@ module MergeRequests
         merge_request.update_project_counter_caches
         cleanup_environments(merge_request)
         abort_auto_merge(merge_request, 'merge request was closed')
+        cleanup_refs(merge_request)
       end
 
       merge_request

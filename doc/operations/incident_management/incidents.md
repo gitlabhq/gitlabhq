@@ -13,12 +13,18 @@ For users with at least Developer [permissions](../../user/permissions.md), the
 Incident Management list is available at **Operations > Incidents**
 in your project's sidebar. The list contains the following metrics:
 
-![Incident List](./img/incident_list_sort_v13_3.png)
+![Incident List](img/incident_list_v13_4.png)
 
 - **Status** - To filter incidents by their status, click **Open**, **Closed**,
   or **All** above the incident list.
 - **Search** - The Incident list supports a simple free text search, which filters
   on the **Title** and **Incident** fields.
+- **Severity** - Severity of a particular incident. Can have one of the following values:
+  - `Critical - S1`
+  - `High - S2`
+  - `Medium - S3`
+  - `Low - S4`
+  - `Unknown`
 - **Incident** - The description of the incident, which attempts to capture the
   most meaningful data.
 - **Date created** - How long ago the incident was created. This field uses the

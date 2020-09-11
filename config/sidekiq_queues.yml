@@ -154,6 +154,8 @@
   - 2
 - - merge
   - 5
+- - merge_request_cleanup_refs
+  - 1
 - - merge_request_mergeability_check
   - 1
 - - metrics_dashboard_prune_old_annotations

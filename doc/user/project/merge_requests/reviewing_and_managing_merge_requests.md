@@ -284,14 +284,25 @@ the command line.
 NOTE: **Note:**
 This section might move in its own document in the future.
 
-### Checkout merge requests locally
+### Checkout merge requests locally through the `head` ref
 
 A merge request contains all the history from a repository, plus the additional
 commits added to the branch associated with the merge request. Here's a few
-tricks to checkout a merge request locally.
+ways to checkout a merge request locally.
 
 Please note that you can checkout a merge request locally even if the source
 project is a fork (even a private fork) of the target project.
+
+This relies on the merge request `head` ref (`refs/merge-requests/:iid/head`)
+that is available for each merge request. It allows checking out a merge
+request via its ID instead of its branch.
+
+[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/223156) in GitLab
+13.4, 14 days after a merge request gets closed or merged, the merge request
+`head` ref will be deleted. This means that the merge request will not be available
+for local checkout via the merge request `head` ref anymore. The merge request
+can still be re-opened. Also, as long as the merge request's branch
+exists, you can still check out the branch as it won't be affected.
 
 #### Checkout locally by adding a Git alias
 

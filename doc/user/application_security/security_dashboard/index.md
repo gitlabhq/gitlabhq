@@ -196,7 +196,7 @@ to configure daily security scans.
 Each dashboard's vulnerability list contains vulnerabilities from the latest scans that were merged
 into the default branch.
 
-![Vulnerability Report](img/group_vulnerability_report_v13_3.png)
+![Vulnerability Report](img/group_vulnerability_report_v13_4.png)
 
 You can filter which vulnerabilities the Security Dashboard displays by:
 

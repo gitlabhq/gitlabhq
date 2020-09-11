@@ -13,6 +13,7 @@ import {
 } from '@gitlab/ui';
 import { visitUrl, joinPaths, mergeUrlParams } from '~/lib/utils/url_utility';
 import IncidentsList from '~/incidents/components/incidents_list.vue';
+import SeverityToken from '~/sidebar/components/severity/severity.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import { I18N, INCIDENT_STATUS_TABS } from '~/incidents/constants';
 import mockIncidents from '../mocks/incidents.json';
@@ -51,6 +52,7 @@ describe('Incidents List', () => {
   const findStatusFilterBadge = () => wrapper.findAll(GlBadge);
   const findStatusTabs = () => wrapper.find(GlTabs);
   const findEmptyState = () => wrapper.find(GlEmptyState);
+  const findSeverity = () => wrapper.findAll(SeverityToken);
 
   function mountComponent({ data = { incidents: [], incidentsCount: {} }, loading = false }) {
     wrapper = mount(IncidentsList, {
@@ -181,6 +183,10 @@ describe('Incidents List', () => {
           mockIncidents.filter(({ state }) => state === 'closed').length,
         );
       });
+    });
+
+    it('renders severity per row', () => {
+      expect(findSeverity().length).toBe(mockIncidents.length);
     });
   });
 

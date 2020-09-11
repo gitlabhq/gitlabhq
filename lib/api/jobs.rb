@@ -48,54 +48,6 @@ module API
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
-      desc 'Get pipeline jobs' do
-        success Entities::Ci::Job
-      end
-      params do
-        requires :pipeline_id, type: Integer, desc: 'The pipeline ID'
-        use :optional_scope
-        use :pagination
-      end
-      # rubocop: disable CodeReuse/ActiveRecord
-      get ':id/pipelines/:pipeline_id/jobs' do
-        authorize!(:read_pipeline, user_project)
-        pipeline = user_project.all_pipelines.find(params[:pipeline_id])
-        authorize!(:read_build, pipeline)
-
-        builds = pipeline.builds
-        builds = filter_builds(builds, params[:scope])
-        builds = builds.preload(:job_artifacts_archive, :job_artifacts, project: [:namespace])
-
-        present paginate(builds), with: Entities::Ci::Job
-      end
-      # rubocop: enable CodeReuse/ActiveRecord
-
-      desc 'Get pipeline bridge jobs' do
-        success ::API::Entities::Ci::Bridge
-      end
-      params do
-        requires :pipeline_id, type: Integer, desc: 'The pipeline ID'
-        use :optional_scope
-        use :pagination
-      end
-      # rubocop: disable CodeReuse/ActiveRecord
-      get ':id/pipelines/:pipeline_id/bridges' do
-        authorize!(:read_build, user_project)
-        pipeline = user_project.ci_pipelines.find(params[:pipeline_id])
-        authorize!(:read_pipeline, pipeline)
-
-        bridges = pipeline.bridges
-        bridges = filter_builds(bridges, params[:scope])
-        bridges = bridges.preload(
-          :metadata,
-          downstream_pipeline: [project: [:route, { namespace: :route }]],
-          project: [:namespace]
-        )
-
-        present paginate(bridges), with: ::API::Entities::Ci::Bridge
-      end
-      # rubocop: enable CodeReuse/ActiveRecord
-
       desc 'Get a specific job of a project' do
         success Entities::Ci::Job
       end

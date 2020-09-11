@@ -48,6 +48,14 @@ module Ci
       raise NotImplementedError
     end
 
+    def self.with_preloads
+      preload(
+        :metadata,
+        downstream_pipeline: [project: [:route, { namespace: :route }]],
+        project: [:namespace]
+      )
+    end
+
     def schedule_downstream_pipeline!
       raise InvalidBridgeTypeError unless downstream_project
 

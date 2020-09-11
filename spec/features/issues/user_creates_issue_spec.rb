@@ -61,6 +61,10 @@ RSpec.describe "User creates issue" do
         .and have_content(project.name)
       expect(page).to have_selector('strong', text: 'Description')
     end
+
+    it 'does not render the issue type dropdown' do
+      expect(page).not_to have_selector('.s-issuable-type-filter-dropdown-wrap')
+    end
   end
 
   context "when signed in as developer", :js do

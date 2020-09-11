@@ -36,53 +36,135 @@ RSpec.describe Ci::JobsFinder, '#execute' do
       end
     end
 
-    context 'scope is present' do
-      let(:jobs) { [job_1, job_2, job_3] }
-
-      where(:scope, :index) do
-        [
-          ['pending',  0],
-          ['running',  1],
-          ['finished', 2]
-        ]
+    context 'with ci_jobs_finder_refactor ff enabled' do
+      before do
+        stub_feature_flags(ci_jobs_finder_refactor: true)
       end
 
-      with_them do
-        let(:params) { { scope: scope } }
+      context 'scope is present' do
+        let(:jobs) { [job_1, job_2, job_3] }
 
-        it { expect(subject).to match_array([jobs[index]]) }
+        where(:scope, :index) do
+          [
+            ['pending',  0],
+            ['running',  1],
+            ['finished', 2]
+          ]
+        end
+
+        with_them do
+          let(:params) { { scope: scope } }
+
+          it { expect(subject).to match_array([jobs[index]]) }
+        end
+      end
+
+      context 'scope is an array' do
+        let(:jobs) { [job_1, job_2, job_3] }
+        let(:params) {{ scope: ['running'] }}
+
+        it 'filters by the job statuses in the scope' do
+          expect(subject).to match_array([job_2])
+        end
+      end
+    end
+
+    context 'with ci_jobs_finder_refactor ff disabled' do
+      before do
+        stub_feature_flags(ci_jobs_finder_refactor: false)
+      end
+
+      context 'scope is present' do
+        let(:jobs) { [job_1, job_2, job_3] }
+
+        where(:scope, :index) do
+          [
+            ['pending',  0],
+            ['running',  1],
+            ['finished', 2]
+          ]
+        end
+
+        with_them do
+          let(:params) { { scope: scope } }
+
+          it { expect(subject).to match_array([jobs[index]]) }
+        end
       end
     end
   end
 
-  context 'a project is present' do
-    subject { described_class.new(current_user: user, project: project, params: params).execute }
-
-    context 'user has access to the project' do
-      before do
-        project.add_maintainer(user)
-      end
-
-      it 'returns jobs for the specified project' do
-        expect(subject).to match_array([job_3])
-      end
+  context 'with ci_jobs_finder_refactor ff enabled' do
+    before do
+      stub_feature_flags(ci_jobs_finder_refactor: true)
     end
 
-    context 'user has no access to project builds' do
-      before do
-        project.add_guest(user)
+    context 'a project is present' do
+      subject { described_class.new(current_user: user, project: project, params: params).execute }
+
+      context 'user has access to the project' do
+        before do
+          project.add_maintainer(user)
+        end
+
+        it 'returns jobs for the specified project' do
+          expect(subject).to match_array([job_3])
+        end
       end
 
-      it 'returns no jobs' do
-        expect(subject).to be_empty
+      context 'user has no access to project builds' do
+        before do
+          project.add_guest(user)
+        end
+
+        it 'returns no jobs' do
+          expect(subject).to be_empty
+        end
+      end
+
+      context 'without user' do
+        let(:user) { nil }
+
+        it 'returns no jobs' do
+          expect(subject).to be_empty
+        end
       end
     end
+  end
 
-    context 'without user' do
-      let(:user) { nil }
+  context 'with ci_jobs_finder_refactor ff disabled' do
+    before do
+      stub_feature_flags(ci_jobs_finder_refactor: false)
+    end
+    context 'a project is present' do
+      subject { described_class.new(current_user: user, project: project, params: params).execute }
 
-      it 'returns no jobs' do
-        expect(subject).to be_empty
+      context 'user has access to the project' do
+        before do
+          project.add_maintainer(user)
+        end
+
+        it 'returns jobs for the specified project' do
+          expect(subject).to match_array([job_3])
+        end
+      end
+
+      context 'user has no access to project builds' do
+        before do
+          project.add_guest(user)
+        end
+
+        it 'returns no jobs' do
+          expect(subject).to be_empty
+        end
+      end
+
+      context 'without user' do
+        let(:user) { nil }
+
+        it 'returns no jobs' do
+          expect(subject).to be_empty
+        end
       end
     end
   end

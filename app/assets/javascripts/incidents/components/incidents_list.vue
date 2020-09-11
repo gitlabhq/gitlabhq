@@ -23,6 +23,8 @@ import { s__ } from '~/locale';
 import { mergeUrlParams, joinPaths, visitUrl } from '~/lib/utils/url_utility';
 import getIncidents from '../graphql/queries/get_incidents.query.graphql';
 import getIncidentsCountByStatus from '../graphql/queries/get_count_by_status.query.graphql';
+import SeverityToken from '~/sidebar/components/severity/severity.vue';
+import { INCIDENT_SEVERITY } from '~/sidebar/components/severity/constants';
 import { I18N, DEFAULT_PAGE_SIZE, INCIDENT_SEARCH_DELAY, INCIDENT_STATUS_TABS } from '../constants';
 
 const TH_TEST_ID = { 'data-testid': 'incident-management-created-at-sort' };
@@ -44,6 +46,12 @@ export default {
   i18n: I18N,
   statusTabs: INCIDENT_STATUS_TABS,
   fields: [
+    {
+      key: 'severity',
+      label: s__('IncidentManagement|Severity'),
+      thClass: `gl-pointer-events-none`,
+      tdClass,
+    },
     {
       key: 'title',
       label: s__('IncidentManagement|Incident'),
@@ -82,6 +90,7 @@ export default {
     PublishedCell: () => import('ee_component/incidents/components/published_cell.vue'),
     GlBadge,
     GlEmptyState,
+    SeverityToken,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -280,6 +289,9 @@ export default {
 
       this.sort = `${sortingColumn}_${sortingDirection}`;
     },
+    getSeverity(severity) {
+      return INCIDENT_SEVERITY[severity];
+    },
   },
 };
 </script>
@@ -348,6 +360,10 @@ export default {
       @row-clicked="navigateToIncidentDetails"
       @sort-changed="fetchSortedData"
     >
+      <template #cell(severity)="{ item }">
+        <severity-token :severity="getSeverity(item.severity)" />
+      </template>
+
       <template #cell(title)="{ item }">
         <div :class="{ 'gl-display-flex gl-align-items-center': item.state === 'closed' }">
           <div class="gl-max-w-full text-truncate" :title="item.title">{{ item.title }}</div>

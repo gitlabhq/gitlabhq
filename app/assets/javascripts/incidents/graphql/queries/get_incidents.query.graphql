@@ -40,6 +40,7 @@ query getIncidents(
           }
         }
         statusPagePublishedIncident
+        severity
       }
       pageInfo {
         hasNextPage

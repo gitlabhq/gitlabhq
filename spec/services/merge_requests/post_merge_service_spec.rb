@@ -72,6 +72,12 @@ RSpec.describe MergeRequests::PostMergeService do
       subject
     end
 
+    it 'schedules CleanupRefsService' do
+      expect(MergeRequests::CleanupRefsService).to receive(:schedule).with(merge_request)
+
+      subject
+    end
+
     context 'when the merge request has review apps' do
       it 'cancels all review app deployments' do
         pipeline = create(:ci_pipeline,

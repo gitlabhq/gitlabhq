@@ -7,6 +7,8 @@ module MergeRequests
   # and execute all hooks and notifications
   #
   class PostMergeService < MergeRequests::BaseService
+    include RemovesRefs
+
     def execute(merge_request)
       merge_request.mark_as_merged
       close_issues(merge_request)
@@ -20,6 +22,7 @@ module MergeRequests
       delete_non_latest_diffs(merge_request)
       cancel_review_app_jobs!(merge_request)
       cleanup_environments(merge_request)
+      cleanup_refs(merge_request)
     end
 
     private

@@ -1,0 +1,7 @@
+---
+name: ci_jobs_finder_refactor
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/36622
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/245183
+group: group::continuous integration
+type: development
+default_enabled: false

@@ -13345,6 +13345,9 @@ msgstr ""
 msgid "IncidentManagement|Published to status page"
 msgstr ""
 
+msgid "IncidentManagement|Severity"
+msgstr ""
+
 msgid "IncidentManagement|There are no closed incidents"
 msgstr ""
 
@@ -28950,6 +28953,9 @@ msgid "You may close the milestone now."
 msgstr ""
 
 msgid "You must accept our Terms of Service and privacy policy in order to register an account"
+msgstr ""
+
+msgid "You must be logged in to search across all of GitLab"
 msgstr ""
 
 msgid "You must disassociate %{domain} from all clusters it is attached to before deletion."

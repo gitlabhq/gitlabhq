@@ -543,3 +543,8 @@ Migration/CreateTableWithForeignKeys:
   # Disable this cop for all the existing migrations
   Exclude:
     - !ruby/regexp /\Adb\/(?:post_)?migrate\/(?:201[0-9]\d+|20200[0-8][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9])_.+\.rb\z/
+
+Gitlab/RailsLogger:
+  Exclude:
+    - 'spec/**/*.rb'
+    - 'ee/spec/**/*.rb'

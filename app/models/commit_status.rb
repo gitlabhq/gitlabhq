@@ -32,6 +32,8 @@ class CommitStatus < ApplicationRecord
     where(allow_failure: true, status: [:failed, :canceled])
   end
 
+  scope :order_id_desc, -> { order('ci_builds.id DESC') }
+
   scope :exclude_ignored, -> do
     # We want to ignore failed but allowed to fail jobs.
     #

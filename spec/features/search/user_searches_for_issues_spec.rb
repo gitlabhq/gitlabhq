@@ -86,20 +86,33 @@ RSpec.describe 'User searches for issues', :js do
   end
 
   context 'when signed out' do
-    let(:project) { create(:project, :public) }
+    context 'when block_anonymous_global_searches is disabled' do
+      let(:project) { create(:project, :public) }
 
-    before do
-      visit(search_path)
+      before do
+        stub_feature_flags(block_anonymous_global_searches: false)
+        visit(search_path)
+      end
+
+      include_examples 'top right search form'
+
+      it 'finds an issue' do
+        search_for_issue(issue1.title)
+
+        page.within('.results') do
+          expect(page).to have_link(issue1.title)
+          expect(page).not_to have_link(issue2.title)
+        end
+      end
     end
 
-    include_examples 'top right search form'
+    context 'when block_anonymous_global_searches is enabled' do
+      before do
+        visit(search_path)
+      end
 
-    it 'finds an issue' do
-      search_for_issue(issue1.title)
-
-      page.within('.results') do
-        expect(page).to have_link(issue1.title)
-        expect(page).not_to have_link(issue2.title)
+      it 'is redirected to login page' do
+        expect(page).to have_content('You must be logged in to search across all of GitLab')
       end
     end
   end

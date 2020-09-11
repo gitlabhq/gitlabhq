@@ -1,4 +1,5 @@
 <script>
+import produce from 'immer';
 import { s__ } from '~/locale';
 import Todo from '~/sidebar/components/todo_toggle/todo.vue';
 import createAlertTodoMutation from '../../graphql/mutations/alert_todo_create.mutation.graphql';
@@ -109,12 +110,15 @@ export default {
         });
     },
     updateCache(store) {
-      const data = store.readQuery({
+      const sourceData = store.readQuery({
         query: alertQuery,
         variables: this.getAlertQueryVariables,
       });
 
-      data.project.alertManagementAlerts.nodes[0].todos.nodes.shift();
+      const data = produce(sourceData, draftData => {
+        // eslint-disable-next-line no-param-reassign
+        draftData.project.alertManagementAlerts.nodes[0].todos.nodes = [];
+      });
 
       store.writeQuery({
         query: alertQuery,
