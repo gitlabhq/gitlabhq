@@ -1268,18 +1268,10 @@ pre.light-well {
   position: relative;
 
   .clear-icon {
-    @extend .fa-times;
     display: none;
     position: absolute;
-    right: 7px;
-    top: 7px;
-    color: $location-icon-color;
-
-    &::before {
-      font-family: FontAwesome;
-      font-weight: $gl-font-weight-normal;
-      font-style: normal;
-    }
+    right: 9px;
+    top: 9px;
   }
 
   &.has-value {

@@ -73,7 +73,7 @@
                     {{name}}
 
           = button_tag class: 'clear-search hidden' do
-            = icon('times')
+            = sprite_icon('close', size: 16, css_class: 'clear-search-icon')
         .filter-dropdown-container
           = render 'admin/runners/sort_dropdown'
 

@@ -13339,6 +13339,7 @@ CREATE TABLE public.merge_requests (
     rebase_jid character varying,
     squash_commit_sha bytea,
     sprint_id bigint,
+    merge_ref_sha bytea,
     CONSTRAINT check_970d272570 CHECK ((lock_version IS NOT NULL))
 );
 

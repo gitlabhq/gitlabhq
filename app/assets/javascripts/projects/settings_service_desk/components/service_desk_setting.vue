@@ -164,7 +164,7 @@ export default {
             :disabled="isTemplateSaving"
             @click="onSaveTemplate"
           >
-            {{ __('Save template') }}
+            {{ __('Save changes') }}
           </gl-button>
         </div>
       </div>

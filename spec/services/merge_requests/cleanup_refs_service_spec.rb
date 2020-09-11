@@ -35,6 +35,36 @@ RSpec.describe MergeRequests::CleanupRefsService do
         end
       end
 
+      context 'when merge request has merge ref' do
+        before do
+          MergeRequests::MergeToRefService
+            .new(merge_request.project, merge_request.author)
+            .execute(merge_request)
+        end
+
+        it 'caches merge ref sha and deletes merge ref' do
+          old_merge_ref_head = merge_request.merge_ref_head
+
+          aggregate_failures do
+            expect(result[:status]).to eq(:success)
+            expect(kept_around?(old_merge_ref_head)).to be_truthy
+            expect(merge_request.reload.merge_ref_sha).to eq(old_merge_ref_head.id)
+            expect(ref_exists?(merge_request.merge_ref_path)).to be_falsy
+          end
+        end
+
+        context 'when merge ref sha cannot be cached' do
+          before do
+            allow(merge_request)
+              .to receive(:update_column)
+              .with(:merge_ref_sha, merge_request.merge_ref_head.id)
+              .and_return(false)
+          end
+
+          it_behaves_like 'service that does not clean up merge request refs'
+        end
+      end
+
       context 'when keep around ref cannot be created' do
         before do
           allow_next_instance_of(Gitlab::Git::KeepAround) do |keep_around|
@@ -108,5 +138,9 @@ RSpec.describe MergeRequests::CleanupRefsService do
 
   def ref_head
     merge_request.project.repository.commit(merge_request.ref_path)
+  end
+
+  def ref_exists?(ref)
+    merge_request.project.repository.ref_exists?(ref)
   end
 end

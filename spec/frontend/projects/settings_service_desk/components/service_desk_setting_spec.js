@@ -163,7 +163,7 @@ describe('ServiceDeskSetting', () => {
         },
       });
 
-      expect(wrapper.find('button.btn-success').text()).toContain('Save template');
+      expect(wrapper.find('button.btn-success').text()).toContain('Save changes');
     });
 
     it('emits a save event with the chosen template when the save button is clicked', () => {

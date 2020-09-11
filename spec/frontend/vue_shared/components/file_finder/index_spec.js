@@ -84,7 +84,7 @@ describe('File finder item spec', () => {
 
       waitForPromises()
         .then(() => {
-          vm.$el.querySelector('.dropdown-input-clear').click();
+          vm.clearSearchInput();
         })
         .then(waitForPromises)
         .then(() => {
@@ -94,13 +94,13 @@ describe('File finder item spec', () => {
         .catch(done.fail);
     });
 
-    it('clear button focues search input', done => {
+    it('clear button focuses search input', done => {
       jest.spyOn(vm.$refs.searchInput, 'focus').mockImplementation(() => {});
       vm.searchText = 'index';
 
       waitForPromises()
         .then(() => {
-          vm.$el.querySelector('.dropdown-input-clear').click();
+          vm.clearSearchInput();
         })
         .then(waitForPromises)
         .then(() => {

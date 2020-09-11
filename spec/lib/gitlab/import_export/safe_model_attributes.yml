@@ -206,6 +206,7 @@ MergeRequest:
 - head_pipeline_id
 - discussion_locked
 - allow_maintainer_to_push
+- merge_ref_sha
 MergeRequestDiff:
 - id
 - state

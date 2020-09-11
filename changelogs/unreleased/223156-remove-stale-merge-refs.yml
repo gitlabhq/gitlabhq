@@ -1,0 +1,5 @@
+---
+title: Remove stale merge refs
+merge_request: 41572
+author:
+type: performance

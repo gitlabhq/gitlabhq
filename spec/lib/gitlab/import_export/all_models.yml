@@ -130,6 +130,7 @@ merge_requests:
 - resource_label_events
 - resource_milestone_events
 - resource_state_events
+- resource_iteration_events
 - label_links
 - labels
 - last_edited_by

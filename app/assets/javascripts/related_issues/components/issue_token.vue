@@ -109,7 +109,7 @@ export default {
       class="js-issue-token-remove-button"
       @click="onRemoveRequest"
     >
-      <i class="fa fa-times" aria-hidden="true"></i>
+      <gl-icon name="close" aria-hidden="true" />
     </button>
   </div>
 </template>

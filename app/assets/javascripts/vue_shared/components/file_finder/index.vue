@@ -2,6 +2,7 @@
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import Mousetrap from 'mousetrap';
 import VirtualList from 'vue-virtual-scroll-list';
+import { GlIcon } from '@gitlab/ui';
 import Item from './item.vue';
 import { UP_KEY_CODE, DOWN_KEY_CODE, ENTER_KEY_CODE, ESC_KEY_CODE } from '~/lib/utils/keycodes';
 
@@ -13,6 +14,7 @@ const originalStopCallback = Mousetrap.prototype.stopCallback;
 
 export default {
   components: {
+    GlIcon,
     Item,
     VirtualList,
   },
@@ -235,12 +237,13 @@ export default {
           aria-hidden="true"
           class="fa fa-search dropdown-input-search"
         ></i>
-        <i
-          :aria-label="__('Clear search input')"
+        <gl-icon
+          name="close"
+          class="dropdown-input-clear"
           role="button"
-          class="fa fa-times dropdown-input-clear"
+          :aria-label="__('Clear search input')"
           @click="clearSearchInput"
-        ></i>
+        />
       </div>
       <div>
         <virtual-list ref="virtualScrollList" :size="listHeight" :remain="listShowCount" wtag="ul">

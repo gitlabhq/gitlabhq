@@ -537,7 +537,7 @@ RSpec.describe "Admin::Users" do
 
     it 'allows group membership to be revoked', :js do
       page.within(first('.group_member')) do
-        accept_confirm { find('.btn-remove').click }
+        accept_confirm { find('.btn[data-testid="remove-user"]').click }
       end
       wait_for_requests
 

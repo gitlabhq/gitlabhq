@@ -1,14 +1,12 @@
 <script>
-import { GlIcon, GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
+/* eslint-disable vue/no-v-html */
+import { GlIcon } from '@gitlab/ui';
 import ViewerMixin from './mixins';
 import { HIGHLIGHT_CLASS_NAME } from './constants';
 
 export default {
   components: {
     GlIcon,
-  },
-  directives: {
-    SafeHtml,
   },
   mixins: [ViewerMixin],
   data() {
@@ -66,7 +64,7 @@ export default {
       </a>
     </div>
     <div class="blob-content">
-      <pre class="code highlight"><code id="blob-code-content" v-safe-html="content"></code></pre>
+      <pre class="code highlight"><code id="blob-code-content" v-html="content"></code></pre>
     </div>
   </div>
 </template>

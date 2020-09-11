@@ -195,7 +195,7 @@ describe('ServiceDeskRoot', () => {
       .$nextTick()
       .then(waitForPromises)
       .then(() => {
-        expect(wrapper.html()).toContain('Template was successfully saved.');
+        expect(wrapper.html()).toContain('Changes were successfully made.');
       });
   });
 

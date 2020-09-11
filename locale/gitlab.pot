@@ -4633,6 +4633,9 @@ msgstr ""
 msgid "Changes the title to \"%{title_param}\"."
 msgstr ""
 
+msgid "Changes were successfully made."
+msgstr ""
+
 msgid "Changes won't take place until the index is %{link_start}recreated%{link_end}."
 msgstr ""
 
@@ -7831,6 +7834,9 @@ msgstr ""
 msgid "DastProfiles|Are you sure you want to delete this profile?"
 msgstr ""
 
+msgid "DastProfiles|Could not create site validation token. Please refresh the page, or try again later."
+msgstr ""
+
 msgid "DastProfiles|Could not create the scanner profile. Please try again."
 msgstr ""
 
@@ -7853,6 +7859,9 @@ msgid "DastProfiles|Could not fetch scanner profiles. Please refresh the page, o
 msgstr ""
 
 msgid "DastProfiles|Could not fetch site profiles. Please refresh the page, or try again later."
+msgstr ""
+
+msgid "DastProfiles|Could not retrieve site validation status. Please refresh the page, or try again later."
 msgstr ""
 
 msgid "DastProfiles|Could not update the site profile. Please try again."
@@ -20950,6 +20959,9 @@ msgstr ""
 msgid "Remove user & report"
 msgstr ""
 
+msgid "Remove user from group"
+msgstr ""
+
 msgid "Removed"
 msgstr ""
 
@@ -21832,9 +21844,6 @@ msgid "Save pipeline schedule"
 msgstr ""
 
 msgid "Save space and find tags in the Container Registry more easily. Enable the cleanup policy to remove stale tags and keep only the ones you need."
-msgstr ""
-
-msgid "Save template"
 msgstr ""
 
 msgid "Save variables"
@@ -24658,9 +24667,6 @@ msgid "Template"
 msgstr ""
 
 msgid "Template to append to all Service Desk issues"
-msgstr ""
-
-msgid "Template was successfully saved."
 msgstr ""
 
 msgid "Templates"

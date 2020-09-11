@@ -243,7 +243,7 @@
     }
   }
 
-  .fa-times {
+  .clear-search-icon {
     right: 10px;
     color: $gray-darkest;
   }
@@ -255,7 +255,7 @@
     outline: none;
     z-index: 1;
 
-    &:hover .fa-times {
+    &:hover .clear-search-icon {
       color: $common-gray-dark;
     }
   }

@@ -165,7 +165,7 @@
               = render_if_exists 'shared/issuable/filter_epic', type: type
 
             %button.clear-search.hidden{ type: 'button' }
-              = icon('times')
+              = sprite_icon('close', size: 16, css_class: 'clear-search-icon')
     .filter-dropdown-container.d-flex.flex-column.flex-md-row
       - if type == :boards
         #js-board-labels-toggle

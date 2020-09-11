@@ -97,7 +97,7 @@
                 placeholder: _('Expiration date'),
                 id: "member_expires_at_#{member.id}",
                 data: { el_id: dom_id(member) }
-              %i.clear-icon.js-clear-input
+              = sprite_icon('close', size: 16, css_class: 'clear-icon js-clear-input gl-text-gray-200')
         - else
           %span.member-access-text.user-access-role= member.human_access
 

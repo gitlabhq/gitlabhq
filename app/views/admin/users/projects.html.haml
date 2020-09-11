@@ -16,8 +16,8 @@
           .float-right
             %span.light.vertical-align-middle= group_member.human_access
             - unless group_member.owner?
-              = link_to group_group_member_path(group, group_member), data: { confirm: remove_member_message(group_member) }, method: :delete, remote: true, class: "btn-sm btn btn-remove gl-ml-3", title: 'Remove user from group' do
-                %i.fa.fa-times.fa-inverse
+              = link_to group_group_member_path(group, group_member), data: { confirm: remove_member_message(group_member), testid: 'remove-user' }, method: :delete, remote: true, class: "btn btn-sm btn-danger gl-button btn-icon gl-ml-3", title: _('Remove user from group') do
+                = sprite_icon('close', size: 16, css_class: 'gl-icon')
 
 .row
   .col-md-6
@@ -46,5 +46,5 @@
                   %span.light.vertical-align-middle= member.human_access
 
                   - if member.respond_to? :project
-                    = link_to project_project_member_path(project, member), data: { confirm: remove_member_message(member) }, remote: true, method: :delete, class: "btn-sm btn btn-remove gl-ml-3", title: 'Remove user from project' do
-                      %i.fa.fa-times
+                    = link_to project_project_member_path(project, member), data: { confirm: remove_member_message(member) }, remote: true, method: :delete, class: "btn btn-sm btn-danger gl-button btn-icon gl-ml-3", title: 'Remove user from project' do
+                      = sprite_icon('close', size: 16, css_class: 'gl-icon')
