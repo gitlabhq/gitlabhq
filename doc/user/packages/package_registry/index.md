@@ -54,13 +54,11 @@ To download a package:
 You cannot edit a package after you publish it in the Package Registry. Instead, you
 must delete and recreate it.
 
-- You cannot delete packages from the group view. You must delete them from the project view instead.
-  See [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/227714) for details.
-- You must have suitable [permissions](../../permissions.md).
+To delete a package, you must have suitable [permissions](../../permissions.md).
 
 You can delete packages by using [the API](../../../api/packages.md#delete-a-project-package) or the UI.
 
-To delete a package in the UI:
+To delete a package in the UI, from your group or project:
 
 1. Go to **{package}** **Packages & Registries > Package Registry**.
 1. Find the name of the package you want to delete.

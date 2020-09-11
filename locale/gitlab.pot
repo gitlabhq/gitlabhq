@@ -29482,7 +29482,7 @@ msgstr ""
 msgid "ciReport|%{linkStartTag}Learn more about SAST %{linkEndTag}"
 msgstr ""
 
-msgid "ciReport|%{linkStartTag}Learn more about Secret Scanning %{linkEndTag}"
+msgid "ciReport|%{linkStartTag}Learn more about Secret Detection %{linkEndTag}"
 msgstr ""
 
 msgid "ciReport|%{linkStartTag}Learn more about codequality reports %{linkEndTag}"

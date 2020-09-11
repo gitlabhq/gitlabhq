@@ -1927,6 +1927,7 @@ Represents an asset link associated with a release
 
 | Name  | Type  | Description |
 | ---   |  ---- | ----------  |
+| `directAssetUrl` | String | Direct asset URL of the link |
 | `external` | Boolean | Indicates the link points to an external resource |
 | `id` | ID! | ID of the link |
 | `linkType` | ReleaseAssetLinkType | Type of the link: `other`, `runbook`, `image`, `package`; defaults to `other` |

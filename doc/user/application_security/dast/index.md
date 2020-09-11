@@ -607,6 +607,42 @@ security reports without requiring internet access.
 
 Alternatively, you can use the variable `SECURE_ANALYZERS_PREFIX` to override the base registry address of the `dast` image.
 
+## Site profile
+
+A site profile describes the attributes of a web site to scan on demand with DAST. A site profile is
+required for an on-demand DAST scan.
+
+A site profile contains the following:
+
+- **Profile name**: A name you assign to the site to be scanned.
+- **Target URL**: The URL that DAST runs against.
+
+### Create a site profile
+
+To create a site profile:
+
+1. From your project's home page, go to **Security & Compliance > Configuration**.
+1. Click **Manage** in the **DAST Profiles** row.
+1. Click **New Profile > Site Profile**.
+1. Type in a unique **Profile name** and **Target URL** then click **Save profile**.
+
+### Edit a site profile
+
+To edit an existing site profile:
+
+1. From your project's home page, go to **Security & Compliance > Configuration**.
+1. Click **Manage** in the **DAST Profiles** row.
+1. Click **Edit** in the row of the profile to edit.
+1. Edit the **Profile name** and **Target URL**, then click **Save profile**.
+
+### Delete a site profile
+
+To delete an existing site profile:
+
+1. From your project's home page, go to **Security & Compliance > Configuration**.
+1. Click **Manage** in the **DAST Profiles** row.
+1. Click **{remove}** in the row of the profile to delete.
+
 ## On-Demand Scans
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/218465) in GitLab 13.2.
@@ -616,16 +652,9 @@ Alternatively, you can use the variable `SECURE_ANALYZERS_PREFIX` to override th
 > - It's able to be enabled or disabled per-project.
 > - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-on-demand-scans).
 
-You can run a passive DAST scan against a target website, outside the DevOps lifecycle. These scans
+You can run a passive DAST scan against a target website, outside the DevOps life cycle. These scans
 are always associated with the default branch of your project and the results are available in the
-project dashboard.
-
-### Site profile
-
-An on-demand scan requires a site profile, which includes:
-
-- **Profile name**: A name you assign to the site to be scanned.
-- **Target URL**: The URL against which the DAST scan runs.
+project's dashboard. An on-demand DAST scan has a fixed timeout of 60 seconds.
 
 ### Run an on-demand scan
 
@@ -633,35 +662,14 @@ NOTE: **Note:**
 You must have permission to run an on-demand DAST scan against a protected branch.
 The default branch is automatically protected. For more details, see [Pipeline security on protected branches](../../../ci/pipelines/index.md#pipeline-security-on-protected-branches).
 
-Running an on-demand scan requires an existing site profile. If a site profile for the target URL
-doesn't exist, first [create a site profile](#create-a-site-profile). An on-demand DAST scan has
-a fixed timeout of 60 seconds.
+To run an on-demand scan, you need a site profile for the target URL.
 
-- From your project's home page, go to **Security & Compliance > On-demand Scans** in the left sidebar.
-- Click **Create new DAST scan**.
-- Select a site profile from the profiles dropdown.
-- Click **Run scan**.
+1. From your project's home page, go to **Security & Compliance > On-demand Scans** in the left sidebar.
+1. Click **Create new DAST scan**.
+1. Select a site profile from the profiles dropdown.
+1. Click **Run scan**.
 
-#### Create a site profile
-
-- From your project's home page, go to **Security & Compliance > Configuration** in the left sidebar.
-- Click **Manage** in the **DAST Profiles** row.
-- Click **New Profile > Site Profile**.
-- Type in a unique **Profile name** and **Target URL** then click **Save profile**.
-
-#### Edit a site profile
-
-- From your project's home page, go to **Security & Compliance > Configuration** in the left sidebar.
-- Click **Manage** in the **DAST Profiles** row.
-- Click **Edit** in the row of the profile to edit.
-- Edit the **Profile name** and **Target URL** then click **Save profile**.
-
-#### Delete a site profile
-
-- From your project's home page, go to **Security & Compliance > Configuration** in the left sidebar.
-- Click **Manage** in the **DAST Profiles** row.
-- Click **{remove}** in the row of the profile to delete.
-- Click **Delete**.
+The on-demand scan runs and the project's dashboard shows the results.
 
 ### Enable or disable On-demand Scans
 

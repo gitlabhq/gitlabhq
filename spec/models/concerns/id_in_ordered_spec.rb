@@ -14,7 +14,7 @@ RSpec.describe IdInOrdered do
 
         expect(Issue.id_in_ordered([issue3.id, issue1.id, issue4.id, issue5.id, issue2.id])).to eq([
           issue3, issue1, issue4, issue5, issue2
-])
+        ])
       end
 
       context 'when the ids are not an array of integers' do

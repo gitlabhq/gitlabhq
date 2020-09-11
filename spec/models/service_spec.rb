@@ -8,6 +8,7 @@ RSpec.describe Service do
 
   describe "Associations" do
     it { is_expected.to belong_to :project }
+    it { is_expected.to belong_to :group }
     it { is_expected.to have_one :service_hook }
     it { is_expected.to have_one :jira_tracker_data }
     it { is_expected.to have_one :issue_tracker_data }
@@ -419,29 +420,49 @@ RSpec.describe Service do
     end
   end
 
-  describe 'instance' do
-    describe '.instance_for' do
-      let_it_be(:jira_service) { create(:jira_service, :instance) }
-      let_it_be(:slack_service) { create(:slack_service, :instance) }
+  describe '.default_integration' do
+    context 'with an instance-level service' do
+      let_it_be(:instance_service) { create(:jira_service, :instance) }
 
-      subject { described_class.instance_for(type) }
-
-      context 'Hipchat serivce' do
-        let(:type) { 'HipchatService' }
-
-        it { is_expected.to eq(nil) }
+      it 'returns the instance service' do
+        expect(described_class.default_integration('JiraService', project)).to eq(instance_service)
       end
 
-      context 'Jira serivce' do
-        let(:type) { 'JiraService' }
-
-        it { is_expected.to eq(jira_service) }
+      it 'returns nil for nonexistent service type' do
+        expect(described_class.default_integration('HipchatService', project)).to eq(nil)
       end
 
-      context 'Slack serivce' do
-        let(:type) { 'SlackService' }
+      context 'with a group service' do
+        let_it_be(:group_service) { create(:jira_service, group_id: group.id, project_id: nil) }
 
-        it { is_expected.to eq(slack_service) }
+        it 'returns the group service for a project' do
+          expect(described_class.default_integration('JiraService', project)).to eq(group_service)
+        end
+
+        it 'returns the instance service for a group' do
+          expect(described_class.default_integration('JiraService', group)).to eq(instance_service)
+        end
+
+        context 'with a subgroup' do
+          let_it_be(:subgroup) { create(:group, parent: group) }
+          let!(:project) { create(:project, group: subgroup) }
+
+          it 'returns the closest group service for a project' do
+            expect(described_class.default_integration('JiraService', project)).to eq(group_service)
+          end
+
+          it 'returns the closest group service for a subgroup' do
+            expect(described_class.default_integration('JiraService', subgroup)).to eq(group_service)
+          end
+
+          context 'having a service' do
+            let!(:subgroup_service) { create(:jira_service, group_id: subgroup.id, project_id: nil) }
+
+            it 'returns the closest group service for a project' do
+              expect(described_class.default_integration('JiraService', project)).to eq(subgroup_service)
+            end
+          end
+        end
       end
     end
   end

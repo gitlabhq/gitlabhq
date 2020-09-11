@@ -41162,6 +41162,20 @@
           "description": "Represents an asset link associated with a release",
           "fields": [
             {
+              "name": "directAssetUrl",
+              "description": "Direct asset URL of the link",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "external",
               "description": "Indicates the link points to an external resource",
               "args": [

@@ -35,6 +35,7 @@ class Group < Namespace
 
   has_many :milestones
   has_many :iterations
+  has_many :services
   has_many :shared_group_links, foreign_key: :shared_with_group_id, class_name: 'GroupGroupLink'
   has_many :shared_with_group_links, foreign_key: :shared_group_id, class_name: 'GroupGroupLink'
   has_many :shared_groups, through: :shared_group_links, source: :shared_group

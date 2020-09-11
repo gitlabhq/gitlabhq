@@ -14143,6 +14143,11 @@ Represents an asset link associated with a release
 """
 type ReleaseAssetLink {
   """
+  Direct asset URL of the link
+  """
+  directAssetUrl: String
+
+  """
   Indicates the link points to an external resource
   """
   external: Boolean

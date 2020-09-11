@@ -12,7 +12,7 @@ module Groups
       end
 
       def edit
-        @admin_integration = Service.instance_for(integration.type)
+        @admin_integration = Service.default_integration(integration.type, group)
 
         super
       end
