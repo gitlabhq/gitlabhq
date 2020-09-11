@@ -83,7 +83,7 @@ export default {
           </div>
           <div
             v-if="$slots['left-secondary']"
-            class="gl-text-gray-500 gl-mt-1 gl-min-h-6 gl-min-w-0 gl-flex-fill-1"
+            class="gl-display-flex gl-align-items-center gl-text-gray-500 gl-mt-1 gl-min-h-6 gl-min-w-0 gl-flex-fill-1"
           >
             <slot name="left-secondary"></slot>
           </div>
@@ -93,11 +93,14 @@ export default {
         >
           <div
             v-if="$slots['right-primary']"
-            class="gl-sm-text-body gl-sm-font-weight-bold gl-min-h-6"
+            class="gl-display-flex gl-align-items-center gl-sm-text-body gl-sm-font-weight-bold gl-min-h-6"
           >
             <slot name="right-primary"></slot>
           </div>
-          <div v-if="$slots['right-secondary']" class="gl-mt-1 gl-min-h-6">
+          <div
+            v-if="$slots['right-secondary']"
+            class="gl-display-flex gl-align-items-center gl-mt-1 gl-min-h-6"
+          >
             <slot name="right-secondary"></slot>
           </div>
         </div>

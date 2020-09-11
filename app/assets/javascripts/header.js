@@ -14,7 +14,7 @@ import Tracking from '~/tracking';
 export default function initTodoToggle() {
   $(document).on('todo:toggle', (e, count) => {
     const updatedCount = count || e?.detail?.count || 0;
-    const $todoPendingCount = $('.todos-count');
+    const $todoPendingCount = $('.js-todos-count');
 
     $todoPendingCount.text(highCountTrim(updatedCount));
     $todoPendingCount.toggleClass('hidden', updatedCount === 0);

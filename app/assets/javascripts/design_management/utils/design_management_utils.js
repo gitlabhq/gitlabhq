@@ -32,6 +32,8 @@ export const findNoteId = id => (id.match('DiffNote/(.+$)') || [])[1];
 
 export const findIssueId = id => (id.match('Issue/(.+$)') || [])[1];
 
+export const findDesignId = id => (id.match('Design/(.+$)') || [])[1];
+
 export const extractDesigns = data => data.project.issue.designCollection.designs.nodes;
 
 export const extractDesign = data => (extractDesigns(data) || [])[0];

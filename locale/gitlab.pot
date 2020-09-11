@@ -16382,6 +16382,9 @@ msgstr ""
 msgid "Namespace"
 msgstr ""
 
+msgid "Namespace ID:"
+msgstr ""
+
 msgid "Namespace is empty"
 msgstr ""
 
@@ -16870,7 +16873,7 @@ msgstr ""
 msgid "No changes"
 msgstr ""
 
-msgid "No changes between %{ref_start}%{source_branch}%{ref_end} and %{ref_start}%{target_branch}%{ref_end}"
+msgid "No changes between %{sourceBranch} and %{targetBranch}"
 msgstr ""
 
 msgid "No child epics match applied filters"

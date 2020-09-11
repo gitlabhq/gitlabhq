@@ -44,6 +44,10 @@
           %span.light ID:
           %strong
             = @user.id
+        %li
+          %span.light= _('Namespace ID:')
+          %strong
+            = @user.namespace_id
 
         %li.two-factor-status
           %span.light Two-factor Authentication:

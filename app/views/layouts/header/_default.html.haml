@@ -66,7 +66,7 @@
                 track_property: 'navigation',
                 container: 'body' } do
                 = sprite_icon('todo-done')
-                %span.badge.badge-pill.todos-count{ class: ('hidden' if todos_pending_count == 0) }
+                %span.badge.badge-pill.todos-count.js-todos-count{ class: ('hidden' if todos_pending_count == 0) }
                   = todos_count_format(todos_pending_count)
           %li.nav-item.header-help.dropdown.d-none.d-md-block{ **tracking_attrs('main_navigation', 'click_question_mark_link', 'navigation') }
             = link_to help_path, class: 'header-help-dropdown-toggle', data: { toggle: "dropdown" } do

@@ -116,13 +116,15 @@ export default {
     </template>
 
     <template #right-secondary>
-      <gl-sprintf :message="__('Created %{timestamp}')">
-        <template #timestamp>
-          <span v-gl-tooltip :title="tooltipTitle(packageEntity.created_at)">
-            {{ timeFormatted(packageEntity.created_at) }}
-          </span>
-        </template>
-      </gl-sprintf>
+      <span>
+        <gl-sprintf :message="__('Created %{timestamp}')">
+          <template #timestamp>
+            <span v-gl-tooltip :title="tooltipTitle(packageEntity.created_at)">
+              {{ timeFormatted(packageEntity.created_at) }}
+            </span>
+          </template>
+        </gl-sprintf>
+      </span>
     </template>
 
     <template v-if="!disableDelete" #right-action>

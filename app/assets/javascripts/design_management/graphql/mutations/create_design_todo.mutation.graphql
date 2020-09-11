@@ -1,6 +1,7 @@
 mutation createDesignTodo(
   $projectPath: String!
   $issueId: String!
+  $designId: String!
   $issueIid: String!
   $filenames: [String]!
   $atVersion: String
@@ -8,6 +9,7 @@ mutation createDesignTodo(
   createDesignTodo(
     projectPath: $projectPath
     issueId: $issueId
+    designId: $designId
     issueIid: $issueIid
     filenames: $filenames
     atVersion: $atVersion

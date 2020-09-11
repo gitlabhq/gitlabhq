@@ -8555,7 +8555,12 @@ enum IssueType {
 """
 Represents an iteration object.
 """
-type Iteration {
+type Iteration implements TimeboxBurnupTimeSeriesInterface {
+  """
+  Daily scope and completed totals for burnup charts
+  """
+  burnupTimeSeries: [BurnupChartDailyTotals!]
+
   """
   Timestamp of iteration creation
   """
@@ -10398,7 +10403,7 @@ type MetricsDashboardAnnotationEdge {
 """
 Represents a milestone.
 """
-type Milestone {
+type Milestone implements TimeboxBurnupTimeSeriesInterface {
   """
   Daily scope and completed totals for burnup charts
   """
@@ -11334,6 +11339,11 @@ type Pipeline {
   beforeSha: String
 
   """
+  Specifies if a pipeline can be canceled
+  """
+  cancelable: Boolean!
+
+  """
   Timestamp of the pipeline's commit
   """
   committedAt: Time
@@ -11379,6 +11389,11 @@ type Pipeline {
   Internal ID of the pipeline
   """
   iid: String!
+
+  """
+  Specifies if a pipeline can be retried
+  """
+  retryable: Boolean!
 
   """
   Vulnerability and scanned resource counts for each security scanner of the pipeline
@@ -16503,6 +16518,13 @@ enum TestReportState {
 Time represented in ISO 8601
 """
 scalar Time
+
+interface TimeboxBurnupTimeSeriesInterface {
+  """
+  Daily scope and completed totals for burnup charts
+  """
+  burnupTimeSeries: [BurnupChartDailyTotals!]
+}
 
 type Timelog {
   """

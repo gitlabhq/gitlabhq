@@ -48,6 +48,14 @@ module Types
       field :user, Types::UserType, null: true,
             description: 'Pipeline user',
             resolve: -> (pipeline, _args, _context) { Gitlab::Graphql::Loaders::BatchModelLoader.new(User, pipeline.user_id).find }
+      field :retryable, GraphQL::BOOLEAN_TYPE,
+            description: 'Specifies if a pipeline can be retried',
+            method: :retryable?,
+            null: false
+      field :cancelable, GraphQL::BOOLEAN_TYPE,
+            description: 'Specifies if a pipeline can be canceled',
+            method: :cancelable?,
+            null: false
     end
   end
 end

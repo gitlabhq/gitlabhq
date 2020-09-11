@@ -1,0 +1,5 @@
+---
+title: 'GraphQL: Add retryable and cancelable to PipelineType'
+merge_request: 40780
+author:
+type: added

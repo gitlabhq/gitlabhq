@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import { toArray } from 'lodash';
 import Tooltips from './components/tooltips.vue';
 
 let app;
@@ -31,13 +32,13 @@ const tooltipsApp = () => {
     }).$mount(container);
   }
 
-  return app;
+  return app.$refs.tooltips;
 };
 
 const isTooltip = (node, selector) => node.matches && node.matches(selector);
 
 const addTooltips = (elements, config) => {
-  tooltipsApp().$refs.tooltips.addTooltips(Array.from(elements), config);
+  tooltipsApp().addTooltips(toArray(elements), config);
 };
 
 const handleTooltipEvent = (rootTarget, e, selector, config = {}) => {
@@ -63,9 +64,14 @@ export const initTooltips = (selector, config = {}) => {
   return tooltipsApp();
 };
 
-export const dispose = elements => {
-  return tooltipsApp().$refs.tooltips.dispose(elements);
-};
+const elementsIterator = handler => elements => toArray(elements).forEach(handler);
+
+export const dispose = elementsIterator(element => tooltipsApp().dispose(element));
+export const fixTitle = elementsIterator(element => tooltipsApp().fixTitle(element));
+export const enable = elementsIterator(element => tooltipsApp().triggerEvent(element, 'enable'));
+export const disable = elementsIterator(element => tooltipsApp().triggerEvent(element, 'disable'));
+export const hide = elementsIterator(element => tooltipsApp().triggerEvent(element, 'close'));
+export const show = elementsIterator(element => tooltipsApp().triggerEvent(element, 'open'));
 
 export const destroy = () => {
   tooltipsApp().$destroy();

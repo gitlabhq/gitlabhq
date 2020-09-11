@@ -39,7 +39,7 @@ export default {
   created() {
     this.observer = new MutationObserver(mutations => {
       mutations.forEach(mutation => {
-        this.dispose(mutation.removedNodes);
+        mutation.removedNodes.forEach(this.dispose);
       });
     });
   },
@@ -61,22 +61,36 @@ export default {
         childList: true,
       });
     },
-    dispose(elements) {
-      if (!elements) {
+    dispose(target) {
+      if (!target) {
         this.tooltips = [];
-        return;
-      }
-
-      elements.forEach(element => {
-        const index = this.tooltips.findIndex(tooltip => tooltip.target === element);
+      } else {
+        const index = this.tooltips.indexOf(this.findTooltipByTarget(target));
 
         if (index > -1) {
           this.tooltips.splice(index, 1);
         }
-      });
+      }
+    },
+    fixTitle(target) {
+      const tooltip = this.findTooltipByTarget(target);
+
+      if (tooltip) {
+        tooltip.title = target.getAttribute('title');
+      }
+    },
+    triggerEvent(target, event) {
+      const tooltip = this.findTooltipByTarget(target);
+
+      if (tooltip) {
+        this.$refs[tooltip.id][0].$emit(event);
+      }
     },
     tooltipExists(element) {
-      return this.tooltips.some(tooltip => tooltip.target === element);
+      return Boolean(this.findTooltipByTarget(element));
+    },
+    findTooltipByTarget(element) {
+      return this.tooltips.find(tooltip => tooltip.target === element);
     },
   },
 };
@@ -86,6 +100,7 @@ export default {
     <gl-tooltip
       v-for="(tooltip, index) in tooltips"
       :id="tooltip.id"
+      :ref="tooltip.id"
       :key="index"
       :target="tooltip.target"
       :triggers="tooltip.triggers"

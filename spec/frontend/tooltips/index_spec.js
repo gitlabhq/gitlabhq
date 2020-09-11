@@ -1,4 +1,4 @@
-import { initTooltips, dispose, destroy } from '~/tooltips';
+import { initTooltips, dispose, destroy, hide, show, enable, disable, fixTitle } from '~/tooltips';
 
 describe('tooltips/index.js', () => {
   let tooltipsApp;
@@ -79,5 +79,42 @@ describe('tooltips/index.js', () => {
 
       expect(document.querySelector('.gl-tooltip')).toBe(null);
     });
+  });
+
+  it.each`
+    methodName   | method     | event
+    ${'enable'}  | ${enable}  | ${'enable'}
+    ${'disable'} | ${disable} | ${'disable'}
+    ${'hide'}    | ${hide}    | ${'close'}
+    ${'show'}    | ${show}    | ${'open'}
+  `(
+    '$methodName calls triggerEvent in tooltip app with $event event',
+    async ({ method, event }) => {
+      const target = createTooltipTarget();
+
+      buildTooltipsApp();
+
+      await tooltipsApp.$nextTick();
+
+      jest.spyOn(tooltipsApp, 'triggerEvent');
+
+      method([target]);
+
+      expect(tooltipsApp.triggerEvent).toHaveBeenCalledWith(target, event);
+    },
+  );
+
+  it('fixTitle calls fixTitle in tooltip app with the target specified', async () => {
+    const target = createTooltipTarget();
+
+    buildTooltipsApp();
+
+    await tooltipsApp.$nextTick();
+
+    jest.spyOn(tooltipsApp, 'fixTitle');
+
+    fixTitle([target]);
+
+    expect(tooltipsApp.fixTitle).toHaveBeenCalledWith(target);
   });
 });

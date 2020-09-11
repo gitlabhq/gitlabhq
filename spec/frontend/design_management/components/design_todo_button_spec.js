@@ -52,6 +52,7 @@ describe('Design management design todo button', () => {
   afterEach(() => {
     wrapper.destroy();
     wrapper = null;
+    jest.clearAllMocks();
   });
 
   it('renders TodoButton component', () => {
@@ -68,7 +69,14 @@ describe('Design management design todo button', () => {
     });
 
     describe('when clicked', () => {
+      let dispatchEventSpy;
+
       beforeEach(() => {
+        dispatchEventSpy = jest.spyOn(document, 'dispatchEvent');
+        jest.spyOn(document, 'querySelector').mockReturnValue({
+          innerText: 2,
+        });
+
         createComponent({ design: mockDesignWithPendingTodos }, { mountFn: mount });
         wrapper.trigger('click');
         return wrapper.vm.$nextTick();
@@ -86,6 +94,14 @@ describe('Design management design todo button', () => {
         expect(mutate).toHaveBeenCalledTimes(1);
         expect(mutate).toHaveBeenCalledWith(todoMarkDoneMutationVariables);
       });
+
+      it('calls dispatchDocumentEvent to update global To-Do counter correctly', () => {
+        const dispatchedEvent = dispatchEventSpy.mock.calls[0][0];
+
+        expect(dispatchEventSpy).toHaveBeenCalledTimes(1);
+        expect(dispatchedEvent.detail).toEqual({ count: 1 });
+        expect(dispatchedEvent.type).toBe('todo:toggle');
+      });
     });
   });
 
@@ -99,7 +115,14 @@ describe('Design management design todo button', () => {
     });
 
     describe('when clicked', () => {
+      let dispatchEventSpy;
+
       beforeEach(() => {
+        dispatchEventSpy = jest.spyOn(document, 'dispatchEvent');
+        jest.spyOn(document, 'querySelector').mockReturnValue({
+          innerText: 2,
+        });
+
         createComponent({}, { mountFn: mount });
         wrapper.trigger('click');
         return wrapper.vm.$nextTick();
@@ -112,6 +135,7 @@ describe('Design management design todo button', () => {
           variables: {
             atVersion: null,
             filenames: ['my-design.jpg'],
+            designId: '1',
             issueId: '1',
             issueIid: '10',
             projectPath: 'project-path',
@@ -120,6 +144,14 @@ describe('Design management design todo button', () => {
 
         expect(mutate).toHaveBeenCalledTimes(1);
         expect(mutate).toHaveBeenCalledWith(createDesignTodoMutationVariables);
+      });
+
+      it('calls dispatchDocumentEvent to update global To-Do counter correctly', () => {
+        const dispatchedEvent = dispatchEventSpy.mock.calls[0][0];
+
+        expect(dispatchEventSpy).toHaveBeenCalledTimes(1);
+        expect(dispatchedEvent.detail).toEqual({ count: 3 });
+        expect(dispatchedEvent.type).toBe('todo:toggle');
       });
     });
   });

@@ -30,11 +30,15 @@ const resolvers = {
 
       cache.writeQuery({ query: activeDiscussionQuery, data });
     },
-    createDesignTodo: (_, { projectPath, issueId, issueIid, filenames, atVersion }, { cache }) => {
+    createDesignTodo: (
+      _,
+      { projectPath, issueId, designId, issueIid, filenames, atVersion },
+      { cache },
+    ) => {
       return axios
         .post(`/${projectPath}/todos`, {
           issue_id: issueId,
-          issuable_id: issueIid,
+          issuable_id: designId,
           issuable_type: 'design',
         })
         .then(({ data }) => {

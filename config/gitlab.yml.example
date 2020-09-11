@@ -456,6 +456,10 @@ production: &base
     schedule_migrate_external_diffs_worker:
       cron: "15 * * * *"
 
+    # Update CI Platform Metrics daily
+    ci_platform_metrics_update_cron_worker:
+      cron: "47 9 * * *"
+
   # GitLab EE only jobs. These jobs are automatically enabled for an EE
   # installation, and ignored for a CE installation.
   ee_cron_jobs:

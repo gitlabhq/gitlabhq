@@ -1,5 +1,0 @@
----
-title: Skip warning for file changed during backup instead of failing the backup operation
-merge_request: 40572
-author:
-type: fixed

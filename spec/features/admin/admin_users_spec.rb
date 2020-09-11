@@ -279,7 +279,8 @@ RSpec.describe "Admin::Users" do
 
       expect(page).to have_content(user.email)
       expect(page).to have_content(user.name)
-      expect(page).to have_content(user.id)
+      expect(page).to have_content("ID: #{user.id}")
+      expect(page).to have_content("Namespace ID: #{user.namespace_id}")
       expect(page).to have_button('Deactivate user')
       expect(page).to have_button('Block user')
       expect(page).to have_button('Delete user')

@@ -15,15 +15,45 @@
   CAUTION: **Caution:**
   Fields that are deprecated are marked with **{warning-solid}**.
 \
+
+:plain
+  ## Object types
+
+  Object types represent the resources that GitLab's GraphQL API can return.
+  They contain _fields_. Each field has its own type, which will either be one of the
+  basic GraphQL [scalar types](https://graphql.org/learn/schema/#scalar-types)
+  (e.g.: `String` or `Boolean`) or other object types.
+
+  For more information, see
+  [Object Types and Fields](https://graphql.org/learn/schema/#object-types-and-fields)
+  on `graphql.org`.
+\
+
 - objects.each do |type|
   - unless type[:fields].empty?
-    = "## #{type[:name]}"
-    - if type[:description]&.present?
-      \
-      = type[:description]
-    \
-    ~ "| Name  | Type  | Description |"
-    ~ "| ---   |  ---- | ----------  |"
-    - sorted_fields(type[:fields]).each do |field|
+    = render_name_and_description(type)
+    ~ "| Field | Type | Description |"
+    ~ "| ----- | ---- | ----------- |"
+    - sorted_by_name(type[:fields]).each do |field|
       = render_field(field)
+    \
+
+:plain
+  ## Enumeration types
+
+  Also called _Enums_, enumeration types are a special kind of scalar that
+  is restricted to a particular set of allowed values.
+
+  For more information, see
+  [Enumeration Types](https://graphql.org/learn/schema/#enumeration-types)
+  on `graphql.org`.
+\
+
+- enums.each do |enum|
+  - unless enum[:values].empty?
+    = render_name_and_description(enum)
+    ~ "| Value | Description |"
+    ~ "| ----- | ----------- |"
+    - sorted_by_name(enum[:values]).each do |value|
+      = render_enum_value(value)
     \

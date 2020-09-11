@@ -40,7 +40,7 @@ exports[`packages_list_row renders 1`] = `
         </div>
          
         <div
-          class="gl-text-gray-500 gl-mt-1 gl-min-h-6 gl-min-w-0 gl-flex-fill-1"
+          class="gl-display-flex gl-align-items-center gl-text-gray-500 gl-mt-1 gl-min-h-6 gl-min-w-0 gl-flex-fill-1"
         >
           <div
             class="gl-display-flex"
@@ -94,7 +94,7 @@ exports[`packages_list_row renders 1`] = `
         class="gl-display-flex gl-flex-direction-column gl-sm-align-items-flex-end gl-justify-content-space-between gl-text-gray-500 gl-flex-shrink-0"
       >
         <div
-          class="gl-sm-text-body gl-sm-font-weight-bold gl-min-h-6"
+          class="gl-display-flex gl-align-items-center gl-sm-text-body gl-sm-font-weight-bold gl-min-h-6"
         >
           <publish-method-stub
             packageentity="[object Object]"
@@ -102,11 +102,13 @@ exports[`packages_list_row renders 1`] = `
         </div>
          
         <div
-          class="gl-mt-1 gl-min-h-6"
+          class="gl-display-flex gl-align-items-center gl-mt-1 gl-min-h-6"
         >
-          <gl-sprintf-stub
-            message="Created %{timestamp}"
-          />
+          <span>
+            <gl-sprintf-stub
+              message="Created %{timestamp}"
+            />
+          </span>
         </div>
       </div>
     </div>
