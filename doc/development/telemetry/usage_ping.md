@@ -236,7 +236,7 @@ Implemented using Redis methods [PFADD](https://redis.io/commands/pfadd) and [PF
    - name: i_compliance_credential_inventory
      category: compliance
      redis_slot: compliance
-     expiry: 42 # 6 weeks
+     expiry: 42  # 6 weeks
      aggregation: weekly
    ```
 

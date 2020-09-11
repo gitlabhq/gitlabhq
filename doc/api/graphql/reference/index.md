@@ -2009,6 +2009,7 @@ Represents a requirement
 | `createdAt` | Time! | Timestamp of when the requirement was created |
 | `id` | ID! | ID of the requirement |
 | `iid` | ID! | Internal ID of the requirement |
+| `lastTestReportState` | TestReportState | Latest requirement test report state |
 | `project` | Project! | Project to which the requirement belongs |
 | `state` | RequirementState! | State of the requirement |
 | `title` | String | Title of the requirement |

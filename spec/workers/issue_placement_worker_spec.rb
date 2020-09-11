@@ -37,16 +37,38 @@ RSpec.describe IssuePlacementWorker do
       described_class.new.perform(issue.id)
     end
 
-    it 'limits the sweep to QUERY_LIMIT records' do
-      # Ensure there are more than N issues in this set
-      n = described_class::QUERY_LIMIT
-      create_list(:issue, n - 5, **unplaced)
+    context 'there are more than QUERY_LIMIT unplaced issues' do
+      before_all do
+        # Ensure there are more than N issues in this set
+        n = described_class::QUERY_LIMIT
+        create_list(:issue, n - 5, **unplaced)
+      end
 
-      expect(Issue).to receive(:move_nulls_to_end).with(have_attributes(count: n)).and_call_original
+      it 'limits the sweep to QUERY_LIMIT records, and reschedules placement' do
+        expect(Issue).to receive(:move_nulls_to_end)
+                           .with(have_attributes(count: described_class::QUERY_LIMIT))
+                           .and_call_original
 
-      described_class.new.perform(issue.id)
+        expect(described_class).to receive(:perform_async).with(issue_d.id)
 
-      expect(project.issues.where(relative_position: nil)).to exist
+        described_class.new.perform(issue.id)
+
+        expect(project.issues.where(relative_position: nil)).to exist
+      end
+
+      it 'is eventually correct' do
+        prefix = project.issues.where.not(relative_position: nil).order(:relative_position).to_a
+        moved = project.issues.where.not(id: prefix.map(&:id))
+
+        described_class.new.perform(issue.id)
+
+        expect(project.issues.where(relative_position: nil)).to exist
+
+        described_class.new.perform(issue.id)
+
+        expect(project.issues.where(relative_position: nil)).not_to exist
+        expect(project.issues.order(:relative_position)).to eq(prefix + moved.order(:created_at, :id))
+      end
     end
 
     it 'anticipates the failure to find the issue' do

@@ -20,6 +20,10 @@ module RuboCop
 
     TABLE_METHODS = %i(create_table create_table_if_not_exists change_table).freeze
 
+    def high_traffic_tables
+      @high_traffic_tables ||= rubocop_migrations_config.dig('Migration/UpdateLargeTable', 'DeniedTables')
+    end
+
     # Returns true if the given node originated from the db/migrate directory.
     def in_migration?(node)
       in_deployment_migration?(node) || in_post_deployment_migration?(node)
@@ -51,6 +55,14 @@ module RuboCop
 
     def dirname(node)
       File.dirname(node.location.expression.source_buffer.name)
+    end
+
+    def rubocop_migrations_config
+      @rubocop_migrations_config ||= YAML.load_file(File.join(rubocop_path, 'rubocop-migrations.yml'))
+    end
+
+    def rubocop_path
+      File.expand_path(__dir__)
     end
   end
 end

@@ -147,7 +147,7 @@ request must also include the SHA256 sum of the file. An example JWT
 payload looks like:
 
 ```yaml
-{ "data": { sha256: "31806bb23580caab78040f8c45d329f5016b0115" }, iat: "1234567890" }
+{"data": {sha256: "31806bb23580caab78040f8c45d329f5016b0115"}, iat: "1234567890"}
 ```
 
 If the requested file matches the requested SHA256 sum, then the Geo

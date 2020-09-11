@@ -14597,6 +14597,11 @@ type Requirement {
   iid: ID!
 
   """
+  Latest requirement test report state
+  """
+  lastTestReportState: TestReportState
+
+  """
   Project to which the requirement belongs
   """
   project: Project!
@@ -17655,6 +17660,11 @@ input UpdateRequirementInput {
   The iid of the requirement to update
   """
   iid: String!
+
+  """
+  Creates a test report for the requirement with the given state
+  """
+  lastTestReportState: TestReportState
 
   """
   The project full path the requirement is associated with

@@ -33,7 +33,7 @@ module SnowplowHelpers
   #   end
   def expect_snowplow_event(category:, action:, **kwargs)
     expect(Gitlab::Tracking).to have_received(:event)
-      .with(category, action, **kwargs)
+      .with(category, action, **kwargs).at_least(:once)
   end
 
   # Asserts that no call to `Gitlab::Tracking#event` was made.

@@ -2155,7 +2155,7 @@ We store our Table of Contents in the `default-nav.yaml` file, in the
 following line:
 
 ```yaml
-      - category_title: GraphQL
+- category_title: GraphQL
 ```
 
 Be aware that CI tests for that second MR will fail with a bad link until the

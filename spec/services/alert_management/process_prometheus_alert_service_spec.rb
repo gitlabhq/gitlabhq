@@ -10,7 +10,18 @@ RSpec.describe AlertManagement::ProcessPrometheusAlertService do
   end
 
   describe '#execute' do
-    subject(:execute) { described_class.new(project, nil, payload).execute }
+    let(:service) { described_class.new(project, nil, payload) }
+    let(:incident_management_setting) { double(auto_close_incident?: auto_close_incident, create_issue?: create_issue) }
+    let(:auto_close_incident) { true }
+    let(:create_issue) { true }
+
+    before do
+      allow(service)
+        .to receive(:incident_management_setting)
+        .and_return(incident_management_setting)
+    end
+
+    subject(:execute) { service.execute }
 
     context 'when alert payload is valid' do
       let(:parsed_payload) { Gitlab::AlertManagement::Payload.parse(project, payload, monitoring_tool: 'Prometheus') }
@@ -43,6 +54,7 @@ RSpec.describe AlertManagement::ProcessPrometheusAlertService do
           let!(:alert) { create(:alert_management_alert, project: project, fingerprint: fingerprint) }
 
           it_behaves_like 'adds an alert management alert event'
+          it_behaves_like 'processes incident issues'
 
           context 'existing alert is resolved' do
             let!(:alert) { create(:alert_management_alert, :resolved, project: project, fingerprint: fingerprint) }
@@ -79,6 +91,12 @@ RSpec.describe AlertManagement::ProcessPrometheusAlertService do
               execute
             end
           end
+
+          context 'when auto-alert creation is disabled' do
+            let(:create_issue) { false }
+
+            it_behaves_like 'does not process incident issues'
+          end
         end
 
         context 'when alert does not exist' do
@@ -89,13 +107,12 @@ RSpec.describe AlertManagement::ProcessPrometheusAlertService do
               expect { subject }.to change(Note, :count).by(1)
             end
 
-            it 'processes the incident alert' do
-              expect(IncidentManagement::ProcessAlertWorker)
-                .to receive(:perform_async)
-                .with(nil, nil, kind_of(Integer))
-                .once
+            it_behaves_like 'processes incident issues'
 
-              expect(subject).to be_success
+            context 'when auto-alert creation is disabled' do
+              let(:create_issue) { false }
+
+              it_behaves_like 'does not process incident issues'
             end
           end
 
@@ -114,12 +131,7 @@ RSpec.describe AlertManagement::ProcessPrometheusAlertService do
               execute
             end
 
-            it 'does not create incident issue' do
-              expect(IncidentManagement::ProcessAlertWorker)
-                .not_to receive(:perform_async)
-
-              expect(subject).to be_success
-            end
+            it_behaves_like 'does not process incident issues'
           end
 
           it { is_expected.to be_success }
@@ -131,8 +143,6 @@ RSpec.describe AlertManagement::ProcessPrometheusAlertService do
         let!(:alert) { create(:alert_management_alert, project: project, fingerprint: fingerprint) }
 
         context 'when auto_resolve_incident set to true' do
-          let_it_be(:operations_settings) { create(:project_incident_management_setting, project: project, auto_close_incident: true) }
-
           context 'when status can be changed' do
             it 'resolves an existing alert' do
               expect { execute }.to change { alert.reload.resolved? }.to(true)
@@ -185,7 +195,7 @@ RSpec.describe AlertManagement::ProcessPrometheusAlertService do
         end
 
         context 'when auto_resolve_incident set to false' do
-          let_it_be(:operations_settings) { create(:project_incident_management_setting, project: project, auto_close_incident: false) }
+          let(:auto_close_incident) { false }
 
           it 'does not resolve an existing alert' do
             expect { execute }.not_to change { alert.reload.resolved? }

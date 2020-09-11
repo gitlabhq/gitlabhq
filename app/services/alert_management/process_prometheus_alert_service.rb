@@ -31,7 +31,7 @@ module AlertManagement
         create_alert_management_alert
       end
 
-      process_incident_alert
+      process_incident_issues if process_issues?
     end
 
     def reset_alert_management_alert_status
@@ -84,7 +84,7 @@ module AlertManagement
       SystemNoteService.auto_resolve_prometheus_alert(issue, project, User.alert_bot) if issue.reset.closed?
     end
 
-    def process_incident_alert
+    def process_incident_issues
       return unless alert.persisted?
       return if alert.issue
 

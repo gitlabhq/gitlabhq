@@ -42462,6 +42462,20 @@
               "deprecationReason": null
             },
             {
+              "name": "lastTestReportState",
+              "description": "Latest requirement test report state",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "ENUM",
+                "name": "TestReportState",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "project",
               "description": "Project to which the requirement belongs",
               "args": [
@@ -51677,6 +51691,16 @@
                   "name": "ID",
                   "ofType": null
                 }
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "lastTestReportState",
+              "description": "Creates a test report for the requirement with the given state",
+              "type": {
+                "kind": "ENUM",
+                "name": "TestReportState",
+                "ofType": null
               },
               "defaultValue": null
             },
