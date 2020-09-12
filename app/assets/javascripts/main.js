@@ -111,18 +111,21 @@ function deferredInitialisation() {
   initPersistentUserCallouts();
   initDefaultTrackers();
 
-  document.querySelector('#search').addEventListener(
-    'focus',
-    () => {
-      import(/* webpackChunkName: 'globalSearch' */ './search_autocomplete')
-        .then(({ default: initSearchAutocomplete }) => {
-          const searchDropdown = initSearchAutocomplete();
-          searchDropdown.onSearchInputFocus();
-        })
-        .catch(() => {});
-    },
-    { once: true },
-  );
+  const search = document.querySelector('#search');
+  if (search) {
+    search.addEventListener(
+      'focus',
+      () => {
+        import(/* webpackChunkName: 'globalSearch' */ './search_autocomplete')
+          .then(({ default: initSearchAutocomplete }) => {
+            const searchDropdown = initSearchAutocomplete();
+            searchDropdown.onSearchInputFocus();
+          })
+          .catch(() => {});
+      },
+      { once: true },
+    );
+  }
 
   addSelectOnFocusBehaviour('.js-select-on-focus');
 
