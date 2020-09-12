@@ -3,6 +3,8 @@
 require "spec_helper"
 
 RSpec.describe Groups::GroupMembersHelper do
+  include MembersPresentation
+
   describe '.group_member_select_options' do
     let(:group) { create(:group) }
 
@@ -12,6 +14,52 @@ RSpec.describe Groups::GroupMembersHelper do
 
     it 'returns an options hash' do
       expect(helper.group_member_select_options).to include(multiple: true, scope: :all, email_user: true)
+    end
+  end
+
+  describe '#linked_groups_data_json' do
+    include_context 'group_group_link'
+
+    it 'matches json schema' do
+      json = helper.linked_groups_data_json(shared_group.shared_with_group_links)
+
+      expect(json).to match_schema('group_group_links')
+    end
+  end
+
+  describe '#members_data_json' do
+    let(:current_user) { create(:user) }
+    let(:group) { create(:group) }
+
+    before do
+      allow(helper).to receive(:can?).with(current_user, :owner_access, group).and_return(true)
+      allow(helper).to receive(:current_user).and_return(current_user)
+    end
+
+    shared_examples 'group_members.json' do
+      it 'matches json schema' do
+        json = helper.members_data_json(group, present_members([group_member]))
+
+        expect(json).to match_schema('group_members')
+      end
+    end
+
+    context 'for a group member' do
+      let(:group_member) { create(:group_member, group: group, created_by: current_user) }
+
+      it_behaves_like 'group_members.json'
+    end
+
+    context 'for an invited group member' do
+      let(:group_member) { create(:group_member, :invited, group: group, created_by: current_user) }
+
+      it_behaves_like 'group_members.json'
+    end
+
+    context 'for an access request' do
+      let(:group_member) { create(:group_member, :access_request, group: group, created_by: current_user) }
+
+      it_behaves_like 'group_members.json'
     end
   end
 end

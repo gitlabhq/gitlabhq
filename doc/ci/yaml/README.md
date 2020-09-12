@@ -1656,7 +1656,7 @@ job:
     - /^release/.*$/@gitlab-org/gitlab
 ```
 
-The above example will run `job` for all branches on `gitlab-org/gitlab`,
+The above example runs `job` for all branches on `gitlab-org/gitlab`,
 except `master` and those with names prefixed with `release/`.
 
 If a job does not have an `only` rule, `only: ['branches', 'tags']` is set by

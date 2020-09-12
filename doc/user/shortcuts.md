@@ -40,6 +40,13 @@ for example comments, replies, issue descriptions, and merge request description
 | ---------------------------------------------------------------------- | ----------- |
 | <kbd>↑</kbd>                                                           | Edit your last comment. You must be in a blank text field below a thread, and you must already have at least one comment in the thread. |
 | <kbd>⌘</kbd> (Mac) / <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>p</kbd> | Toggle Markdown preview, when editing text in a text field that has **Write** and **Preview** tabs at the top. |
+| <kbd>⌘</kbd> (Mac) / <kbd>Ctrl</kbd> + <kbd>b</kbd>                    | Bold the selected text (surround it with `**`). |
+| <kbd>⌘</kbd> (Mac) / <kbd>Ctrl</kbd> + <kbd>i</kbd>                    | Italicize the selected text (surround it with `_`). |
+| <kbd>⌘</kbd> (Mac) / <kbd>Ctrl</kbd> + <kbd>k</kbd>                    | Add a link (surround the selected text with `[]()`). |
+
+NOTE: **Note:**
+The shortcuts for editing in text fields are always enabled, even when
+other keyboard shortcuts are disabled as explained above.
 
 ## Project
 

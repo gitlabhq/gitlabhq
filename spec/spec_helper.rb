@@ -204,6 +204,10 @@ RSpec.configure do |config|
       # unified diff lines works as expected
       stub_feature_flags(unified_diff_lines: false)
 
+      # Merge request widget GraphQL requests are disabled in the tests
+      # for now whilst we migrate as much as we can over the GraphQL
+      stub_feature_flags(merge_request_widget_graphql: false)
+
       enable_rugged = example.metadata[:enable_rugged].present?
 
       # Disable Rugged features by default

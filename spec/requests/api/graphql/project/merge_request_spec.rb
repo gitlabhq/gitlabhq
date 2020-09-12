@@ -124,7 +124,8 @@ RSpec.describe 'getting merge request information nested in a project' do
         'removeSourceBranch' => false,
         'cherryPickOnCurrentMergeRequest' => false,
         'revertOnCurrentMergeRequest' => false,
-        'updateMergeRequest' => false
+        'updateMergeRequest' => false,
+        'canMerge' => false
       }
       post_graphql(query, current_user: current_user)
 

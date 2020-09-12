@@ -7,6 +7,8 @@ module Resolvers
     alias_method :merge_request, :object
 
     def resolve(**args)
+      return unless project
+
       resolve_pipelines(project, args)
         .merge(merge_request.all_pipelines)
     end

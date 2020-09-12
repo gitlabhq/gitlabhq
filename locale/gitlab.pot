@@ -14277,6 +14277,9 @@ msgstr ""
 msgid "Keyboard shortcuts"
 msgstr ""
 
+msgid "KeyboardKey|Ctrl+"
+msgstr ""
+
 msgid "Keys"
 msgstr ""
 
@@ -15167,6 +15170,24 @@ msgid "Markdown enabled"
 msgstr ""
 
 msgid "Markdown is supported"
+msgstr ""
+
+msgid "MarkdownEditor|Add a link (%{modifierKey}K)"
+msgstr ""
+
+msgid "MarkdownEditor|Add a link (%{modifier_key}K)"
+msgstr ""
+
+msgid "MarkdownEditor|Add bold text (%{modifierKey}B)"
+msgstr ""
+
+msgid "MarkdownEditor|Add bold text (%{modifier_key}B)"
+msgstr ""
+
+msgid "MarkdownEditor|Add italic text (%{modifierKey}I)"
+msgstr ""
+
+msgid "MarkdownEditor|Add italic text (%{modifier_key}I)"
 msgstr ""
 
 msgid "Marked For Deletion At - %{deletion_time}"

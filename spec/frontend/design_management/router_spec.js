@@ -35,11 +35,6 @@ function factory(routeArg) {
   });
 }
 
-jest.mock('mousetrap', () => ({
-  bind: jest.fn(),
-  unbind: jest.fn(),
-}));
-
 describe('Design management router', () => {
   afterEach(() => {
     window.location.hash = '';

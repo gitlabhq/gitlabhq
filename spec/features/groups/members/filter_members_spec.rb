@@ -10,6 +10,8 @@ RSpec.describe 'Groups > Members > Filter members' do
   let(:nested_group)      { create(:group, parent: group) }
 
   before do
+    stub_feature_flags(vue_group_members_list: false)
+
     group.add_owner(user)
     group.add_maintainer(user_with_2fa)
     nested_group.add_maintainer(nested_group_user)

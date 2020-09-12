@@ -11,6 +11,8 @@ RSpec.describe 'Admin Groups' do
   let!(:current_user) { create(:admin) }
 
   before do
+    stub_feature_flags(vue_group_members_list: false)
+
     sign_in(current_user)
     stub_application_setting(default_group_visibility: internal)
   end

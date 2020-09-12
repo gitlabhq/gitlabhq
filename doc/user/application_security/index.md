@@ -247,7 +247,9 @@ You can create an issue for a vulnerability by visiting the vulnerability's page
 This creates a [confidential issue](../project/issues/confidential_issues.md) in the project the
 vulnerability came from, and pre-populates it with some useful information taken from the vulnerability
 report. Once the issue is created, you are redirected to it so you can edit, assign, or comment on
-it.
+it. CVE identifiers can be requested from GitLab by clicking the
+[_CVE ID Request_ button](cve_id_request.md) that is enabled for maintainers of
+public projects on GitLab.com
 
 Upon returning to the group security dashboard, the vulnerability now has an associated issue next
 to the name.

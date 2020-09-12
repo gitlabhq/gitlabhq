@@ -11,6 +11,8 @@ RSpec.describe 'Groups > Members > Manage groups', :js do
   let(:shared_group) { create(:group) }
 
   before do
+    stub_feature_flags(vue_group_members_list: false)
+
     shared_group.add_owner(user)
     sign_in(user)
   end

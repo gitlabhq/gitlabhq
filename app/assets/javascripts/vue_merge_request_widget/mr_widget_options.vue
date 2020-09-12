@@ -96,12 +96,11 @@ export default {
       variables() {
         return this.mergeRequestQueryVariables;
       },
-      result({
-        data: {
-          project: { mergeRequest },
-        },
-      }) {
-        this.mr.setGraphqlData(mergeRequest);
+      result({ data: { project } }) {
+        if (project) {
+          this.mr.setGraphqlData(project);
+          this.loading = false;
+        }
       },
     },
   },
@@ -120,9 +119,17 @@ export default {
       mr: store,
       state: store && store.state,
       service: store && this.createService(store),
+      loading: true,
     };
   },
   computed: {
+    isLoaded() {
+      if (window.gon?.features?.mergeRequestWidgetGraphql) {
+        return !this.loading;
+      }
+
+      return this.mr;
+    },
     shouldRenderApprovals() {
       return this.mr.state !== 'nothingToMerge';
     },
@@ -409,7 +416,7 @@ export default {
 };
 </script>
 <template>
-  <div v-if="mr" class="mr-state-widget gl-mt-3">
+  <div v-if="isLoaded" class="mr-state-widget gl-mt-3">
     <mr-widget-header :mr="mr" />
     <mr-widget-suggest-pipeline
       v-if="shouldSuggestPipelines"

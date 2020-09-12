@@ -43,12 +43,10 @@ export default class MergeRequestStore {
     this.conflictsDocsPath = data.conflicts_docs_path;
     this.mergeRequestPipelinesHelpPath = data.merge_request_pipelines_docs_path;
     this.mergeTrainWhenPipelineSucceedsDocsPath = data.merge_train_when_pipeline_succeeds_docs_path;
-    this.mergeStatus = data.merge_status;
     this.commitMessage = data.default_merge_commit_message;
     this.shortMergeCommitSha = data.short_merged_commit_sha;
     this.mergeCommitSha = data.merged_commit_sha;
     this.commitMessageWithDescription = data.default_merge_commit_message_with_description;
-    this.commitsCount = data.commits_count;
     this.divergedCommitsCount = data.diverged_commits_count;
     this.pipeline = data.pipeline || {};
     this.pipelineCoverageDelta = data.pipeline_coverage_delta;
@@ -61,9 +59,6 @@ export default class MergeRequestStore {
     this.rebaseInProgress = data.rebase_in_progress;
     this.mergeRequestDiffsPath = data.diffs_path;
     this.approvalsWidgetType = data.approvals_widget_type;
-    this.projectArchived = data.project_archived;
-    this.branchMissing = data.branch_missing;
-    this.hasConflicts = data.has_conflicts;
 
     if (data.issues_links) {
       const links = data.issues_links;
@@ -81,25 +76,18 @@ export default class MergeRequestStore {
     this.setToAutoMergeBy = MergeRequestStore.formatUserObject(data.merge_user || {});
     this.mergeUserId = data.merge_user_id;
     this.currentUserId = gon.current_user_id;
-    this.mergeError = data.merge_error;
     this.sourceBranchRemoved = !data.source_branch_exists;
     this.shouldRemoveSourceBranch = data.remove_source_branch || false;
-    this.onlyAllowMergeIfPipelineSucceeds = data.only_allow_merge_if_pipeline_succeeds || false;
-    this.autoMergeEnabled = Boolean(data.auto_merge_enabled);
     this.autoMergeStrategy = data.auto_merge_strategy;
     this.availableAutoMergeStrategies = data.available_auto_merge_strategies;
     this.preferredAutoMergeStrategy = MergeRequestStore.getPreferredAutoMergeStrategy(
       this.availableAutoMergeStrategies,
     );
     this.ffOnlyEnabled = data.ff_only_enabled;
-    this.shouldBeRebased = Boolean(data.should_be_rebased);
     this.isRemovingSourceBranch = this.isRemovingSourceBranch || false;
     this.mergeRequestState = data.state;
     this.isOpen = this.mergeRequestState === 'opened';
-    this.hasMergeableDiscussionsState = data.mergeable_discussions_state === false;
-    this.isSHAMismatch = this.sha !== data.diff_head_sha;
     this.latestSHA = data.diff_head_sha;
-    this.canBeMerged = data.can_be_merged || false;
     this.isMergeAllowed = data.mergeable || false;
     this.mergeOngoing = data.merge_ongoing;
     this.allowCollaboration = data.allow_collaboration;
@@ -109,7 +97,6 @@ export default class MergeRequestStore {
     // CI related
     this.hasCI = data.has_ci;
     this.ciStatus = data.ci_status;
-    this.isPipelineFailed = this.ciStatus === 'failed' || this.ciStatus === 'canceled';
     this.isPipelinePassing =
       this.ciStatus === 'success' || this.ciStatus === 'success-with-warnings';
     this.isPipelineSkipped = this.ciStatus === 'skipped';
@@ -134,11 +121,24 @@ export default class MergeRequestStore {
     this.removeWIPPath = data.remove_wip_path;
     this.createIssueToResolveDiscussionsPath = data.create_issue_to_resolve_discussions_path;
     this.mergePath = data.merge_path;
-    this.canMerge = Boolean(data.merge_path);
     this.mergeCommitPath = data.merged_commit_path;
     this.canPushToSourceBranch = data.can_push_to_source_branch;
 
-    if (data.work_in_progress !== undefined) {
+    if (!window.gon?.features?.mergeRequestWidgetGraphql) {
+      this.autoMergeEnabled = Boolean(data.auto_merge_enabled);
+      this.canBeMerged = data.can_be_merged || false;
+      this.canMerge = Boolean(data.merge_path);
+      this.commitsCount = data.commits_count;
+      this.branchMissing = data.branch_missing;
+      this.hasConflicts = data.has_conflicts;
+      this.hasMergeableDiscussionsState = data.mergeable_discussions_state === false;
+      this.isPipelineFailed = this.ciStatus === 'failed' || this.ciStatus === 'canceled';
+      this.mergeError = data.merge_error;
+      this.mergeStatus = data.merge_status;
+      this.onlyAllowMergeIfPipelineSucceeds = data.only_allow_merge_if_pipeline_succeeds || false;
+      this.projectArchived = data.project_archived;
+      this.isSHAMismatch = this.sha !== data.diff_head_sha;
+      this.shouldBeRebased = Boolean(data.should_be_rebased);
       this.workInProgress = data.work_in_progress;
     }
 
@@ -155,8 +155,27 @@ export default class MergeRequestStore {
     this.setState();
   }
 
-  setGraphqlData(data) {
-    this.workInProgress = data.workInProgress;
+  setGraphqlData(project) {
+    const { mergeRequest } = project;
+    const pipeline = mergeRequest.pipelines?.nodes?.[0];
+
+    this.projectArchived = project.archived;
+    this.onlyAllowMergeIfPipelineSucceeds = project.onlyAllowMergeIfPipelineSucceeds;
+
+    this.autoMergeEnabled = mergeRequest.autoMergeEnabled;
+    this.canBeMerged = mergeRequest.mergeStatus === 'can_be_merged';
+    this.canMerge = mergeRequest.userPermissions.canMerge;
+    this.ciStatus = pipeline?.status.toLowerCase();
+    this.commitsCount = mergeRequest.commitCount;
+    this.branchMissing = !mergeRequest.sourceBranchExists || !mergeRequest.targetBranchExists;
+    this.hasConflicts = mergeRequest.conflicts;
+    this.hasMergeableDiscussionsState = mergeRequest.mergeableDiscussionsState === false;
+    this.mergeError = mergeRequest.mergeError;
+    this.mergeStatus = mergeRequest.mergeStatus;
+    this.isPipelineFailed = this.ciStatus === 'failed' || this.ciStatus === 'canceled';
+    this.isSHAMismatch = this.sha !== mergeRequest.diffHeadSha;
+    this.shouldBeRebased = mergeRequest.shouldBeRebased;
+    this.workInProgress = mergeRequest.workInProgress;
 
     this.setState();
   }

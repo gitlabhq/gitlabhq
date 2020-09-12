@@ -22,10 +22,6 @@ import mockResponseNoDesigns from '../../mock_data/no_designs';
 import mockAllVersions from '../../mock_data/all_versions';
 
 jest.mock('~/flash');
-jest.mock('mousetrap', () => ({
-  bind: jest.fn(),
-  unbind: jest.fn(),
-}));
 
 const focusInput = jest.fn();
 
