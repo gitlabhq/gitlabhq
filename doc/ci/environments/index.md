@@ -864,6 +864,38 @@ exist, you should see something like:
 
 ![Environment groups](../img/environments_dynamic_groups.png)
 
+### Environment incident management
+
+You have successfuly setup a Continous Delivery/Deployment workflow in your project.
+Production environments can go down unexpectedly, including for reasons outside
+of your own control. For example, issues with external dependencies, infrastructure,
+or human error can cause major issues with an environment. This could include:
+
+- A dependent cloud service goes down.
+- A 3rd party library is updated and it's not compatible with your application.
+- Someone performs a DDoS attack to a vulnerable endpoint in your server.
+- An operator misconfigures infrastructure.
+- A bug is introduced into the production application code.
+
+You can use [incident management](../../operations/incident_management/index.md)
+to get alerts when there are critical issues that need immediate attention.
+
+#### View the latest alerts for environments **(ULTIMATE)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214634) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.4.
+
+If you [set up alerts for Prometheus metrics](../../operations/metrics/alerts.md),
+alerts for environments are shown on the environments page. The alert with the highest
+severity is shown, so you can identify which environments need immediate attention.
+
+![Environment alert](img/alert_for_environment.png)
+
+When the issue that triggered the alert is resolved, it is removed and is no
+longer visible on the environment page.
+
+If the alert requires a [rollback](#retrying-and-rolling-back), you can select the
+deployment tab from the environment page and select which deployment to roll back to.
+
 ### Monitoring environments
 
 If you have enabled [Prometheus for monitoring system and response metrics](../../user/project/integrations/prometheus.md),
