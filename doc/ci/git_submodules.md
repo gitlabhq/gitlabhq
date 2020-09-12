@@ -94,10 +94,10 @@ correctly with your CI jobs:
    whether you have recursive submodules.
 
 The rationale to set the `sync` and `update` in `before_script` is because of
-the way Git submodules work. On a fresh Runner workspace, Git will set the
+the way Git submodules work. On a fresh runner workspace, Git will set the
 submodule URL including the token in `.git/config`
 (or `.git/modules/<submodule>/config`) based on `.gitmodules` and the current
-remote URL. On subsequent jobs on the same Runner, `.git/config` is cached
+remote URL. On subsequent jobs on the same runner, `.git/config` is cached
 and already contains a full URL for the submodule, corresponding to the previous
 job, and to **a token from a previous job**. `sync` allows to force updating
 the full URL.

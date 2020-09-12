@@ -530,8 +530,8 @@ That's a lot to take in, isn't it? Let's run through it step by step.
 
 #### Image and Services
 
-[GitLab Runners](../../runners/README.md) run the script defined by `.gitlab-ci.yml`.
-The `image` keyword tells the Runners which image to use.
+[Runners](../../runners/README.md) run the script defined by `.gitlab-ci.yml`.
+The `image` keyword tells the runners which image to use.
 The `services` keyword defines additional images [that are linked to the main image](../../docker/using_docker_images.md#what-is-a-service).
 Here we use the container image we created before as our main image and also use MySQL 5.7 as a service.
 
@@ -631,7 +631,7 @@ To do that, commit and push `.gitlab-ci.yml` to the `master` branch. It will tri
 
 Here we see our **Test** and **Deploy** stages.
 The **Test** stage has the `unit_test` build running.
-click on it to see the Runner's output.
+click on it to see the runner's output.
 
 ![pipeline page](img/pipeline_page.png)
 

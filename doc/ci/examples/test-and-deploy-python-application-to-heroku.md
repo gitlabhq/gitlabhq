@@ -71,7 +71,7 @@ Find your Heroku API key in [Manage Account](https://dashboard.heroku.com/accoun
 For each of your environments, you'll need to create a new Heroku application.
 You can do this through the [Dashboard](https://dashboard.heroku.com/).
 
-## Create Runner
+## Create a runner
 
 First install [Docker Engine](https://docs.docker.com/installation/).
 

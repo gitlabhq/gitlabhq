@@ -176,10 +176,10 @@ environment it can run. Since we will work with a single environment, we'll edit
 configuration file (`test.exs`).
 
 But, why do we need to adjust our configuration? Well, GitLab CI/CD builds and tests our code in one
-isolated virtual machine, called [Runner](../../runners/README.md), using Docker technology. In this Runner,
+isolated virtual machine, called a [runner](../../runners/README.md), using Docker technology. In this runner,
 GitLab CI/CD has access to everything our Phoenix application need to run, exactly as we have in our
 `localhost`, but we have to tell GitLab CI/CD where to create and find this database using system
-variables. This way, GitLab CI/CD will create our test database inside the Runner, just like we do
+variables. This way, GitLab CI/CD will create our test database inside the runner, just like we do
 when running our Phoenix in our `localhost`.
 
 - Open `hello_gitlab_ci/config/test.exs` on your favorite code editor
@@ -256,7 +256,7 @@ project.
 
 - The first line tells GitLab what Docker image will be used.
 
-  Remember when we learn about Runners, the isolated virtual machine where GitLab CI/CD build and test
+  Remember when we learned about runners, the isolated virtual machine where GitLab CI/CD builds and tests
   our application? This virtual machine must have all dependencies to run our application. This is
   where a Docker image is needed. The correct image will provide the entire system for us.
 
@@ -395,5 +395,5 @@ using GitLab CI/CD. The benefits to our teams will be huge!
 
 - [GitLab CI/CD introductory guide](https://about.gitlab.com/blog/2015/12/14/getting-started-with-gitlab-and-gitlab-ci/)
 - [GitLab CI/CD full Documentation](../../README.md)
-- [GitLab Runners documentation](../../runners/README.md)
+- [GitLab Runner documentation](../../runners/README.md)
 - [Using Docker images documentation](../../docker/using_docker_images.md)

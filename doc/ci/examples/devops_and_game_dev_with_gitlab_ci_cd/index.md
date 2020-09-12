@@ -429,7 +429,7 @@ fully understand [IAM Best Practices in AWS](https://docs.aws.amazon.com/IAM/lat
 ### Deploy your game with GitLab CI/CD
 
 To deploy our build artifacts, we need to install the [AWS CLI](https://aws.amazon.com/cli/) on
-the Shared Runner. The Shared Runner also needs to be able to authenticate with your AWS
+the shared runner. The shared runner also needs to be able to authenticate with your AWS
 account to deploy the artifacts. By convention, AWS CLI will look for `AWS_ACCESS_KEY_ID`
 and `AWS_SECRET_ACCESS_KEY`. GitLab's CI gives us a way to pass the variables we
 set up in the prior section using the `variables` portion of the `deploy` job. At the end,

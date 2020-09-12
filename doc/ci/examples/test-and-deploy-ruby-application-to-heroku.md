@@ -62,7 +62,7 @@ Find your Heroku API key in [Manage Account](https://dashboard.heroku.com/accoun
 For each of your environments, you'll need to create a new Heroku application.
 You can do this through the [Heroku Dashboard](https://dashboard.heroku.com/).
 
-## Create Runner
+## Create a runner
 
 First install [Docker Engine](https://docs.docker.com/installation/).
 
@@ -92,6 +92,6 @@ gitlab-runner register \
   --docker-image ruby:2.6
 ```
 
-With the command above, you create a Runner that uses the [`ruby:2.6`](https://hub.docker.com/_/ruby) image and uses a [PostgreSQL](https://hub.docker.com/_/postgres) database.
+With the command above, you create a runner that uses the [`ruby:2.6`](https://hub.docker.com/_/ruby) image and uses a [PostgreSQL](https://hub.docker.com/_/postgres) database.
 
 To access the PostgreSQL database, connect to `host: postgres` as user `postgres` with no password.
