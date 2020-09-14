@@ -13,6 +13,7 @@ module QA
       attr_writer :initialize_with_readme
       attr_writer :auto_devops_enabled
 
+      attribute :default_branch
       attribute :id
       attribute :name
       attribute :add_name_uuid

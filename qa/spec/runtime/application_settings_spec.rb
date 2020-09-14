@@ -16,12 +16,14 @@ describe QA::Runtime::ApplicationSettings do
         .with(api_client, '/application/settings')
         .and_return(request)
 
+      expect(described_class).to receive(:get_application_settings)
+
       expect(described_class)
         .to receive(:put)
         .with(request.url, { allow_local_requests_from_web_hooks_and_services: true })
         .and_return(Struct.new(:code).new(200))
 
-      subject.set_application_settings(allow_local_requests_from_web_hooks_and_services: true)
+      described_class.set_application_settings(allow_local_requests_from_web_hooks_and_services: true)
     end
   end
 
@@ -37,7 +39,7 @@ describe QA::Runtime::ApplicationSettings do
         .with(request.url)
         .and_return(get_response)
 
-      subject.get_application_settings
+      described_class.get_application_settings
     end
   end
 end

@@ -13,7 +13,8 @@ export default class GpgBadges {
 
     const badges = $('.js-loading-gpg-badge');
 
-    badges.html('<i class="fa fa-spinner fa-spin"></i>');
+    badges.html('<span class="gl-spinner gl-spinner-orange gl-spinner-sm"></span>');
+    badges.children().attr('aria-label', __('Loading'));
 
     const displayError = () => createFlash(__('An error occurred while loading commit signatures'));
 

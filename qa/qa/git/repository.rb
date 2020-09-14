@@ -118,6 +118,10 @@ module QA
         run(%Q{git config user.signingkey #{@gpg_key_id} && git config gpg.program $(command -v gpg) && git commit -S -m "#{message}"}).to_s
       end
 
+      def current_branch
+        run("git rev-parse --abbrev-ref HEAD").to_s
+      end
+
       def push_changes(branch = 'master')
         run("git push #{uri} #{branch}", max_attempts: 3).to_s
       end

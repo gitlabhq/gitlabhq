@@ -77,5 +77,3 @@ module Gitlab
     end
   end
 end
-
-::Gitlab::Ci::Features.prepend_if_ee('::EE::Gitlab::Ci::Features')
