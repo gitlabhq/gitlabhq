@@ -14085,7 +14085,9 @@ ALTER SEQUENCE public.packages_packages_id_seq OWNED BY public.packages_packages
 
 CREATE TABLE public.packages_pypi_metadata (
     package_id bigint NOT NULL,
-    required_python character varying(50) NOT NULL
+    required_python text,
+    CONSTRAINT check_0d9aed55b2 CHECK ((required_python IS NOT NULL)),
+    CONSTRAINT check_379019d5da CHECK ((char_length(required_python) <= 255))
 );
 
 CREATE TABLE public.packages_tags (
@@ -20327,6 +20329,8 @@ CREATE INDEX index_merge_requests_on_sprint_id ON public.merge_requests USING bt
 
 CREATE INDEX index_merge_requests_on_target_branch ON public.merge_requests USING btree (target_branch);
 
+CREATE INDEX index_merge_requests_on_target_project_id_and_created_at_and_id ON public.merge_requests USING btree (target_project_id, created_at, id);
+
 CREATE UNIQUE INDEX index_merge_requests_on_target_project_id_and_iid ON public.merge_requests USING btree (target_project_id, iid);
 
 CREATE INDEX index_merge_requests_on_target_project_id_and_target_branch ON public.merge_requests USING btree (target_project_id, target_branch) WHERE ((state_id = 1) AND (merge_when_pipeline_succeeds = true));
@@ -20338,8 +20342,6 @@ CREATE INDEX index_merge_requests_on_title_trigram ON public.merge_requests USIN
 CREATE INDEX index_merge_requests_on_tp_id_and_merge_commit_sha_and_id ON public.merge_requests USING btree (target_project_id, merge_commit_sha, id);
 
 CREATE INDEX index_merge_requests_on_updated_by_id ON public.merge_requests USING btree (updated_by_id) WHERE (updated_by_id IS NOT NULL);
-
-CREATE INDEX index_merge_requests_target_project_id_created_at ON public.merge_requests USING btree (target_project_id, created_at);
 
 CREATE UNIQUE INDEX index_merge_trains_on_merge_request_id ON public.merge_trains USING btree (merge_request_id);
 

@@ -5678,6 +5678,11 @@ type EpicHealthStatus {
 }
 
 """
+Identifier of Epic
+"""
+scalar EpicID
+
+"""
 Relationship between an epic and an issue
 """
 type EpicIssue implements CurrentUserTodos & Noteable {
@@ -8095,6 +8100,11 @@ input IssueMoveListInput {
   A unique identifier for the client performing the mutation.
   """
   clientMutationId: String
+
+  """
+  The ID of the parent epic. NULL when removing the association
+  """
+  epicId: EpicID
 
   """
   ID of the board list that the issue will be moved from

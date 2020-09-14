@@ -384,7 +384,7 @@ The current permissions on the Project Value Stream Analytics dashboard are:
 - Internal projects - any authenticated user can access.
 - Private projects - any member Guest and above can access.
 
-You can [read more about permissions](../../ci/yaml/README.md) in general.
+You can [read more about permissions](../../user/permissions.md) in general.
 
 For Value Stream Analytics functionality introduced in GitLab 12.3 and later:
 

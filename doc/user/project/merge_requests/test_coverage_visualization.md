@@ -8,13 +8,10 @@ type: reference, howto
 # Test Coverage Visualization **(CORE ONLY)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3708) in GitLab 12.9.
-> - It's [deployed behind a feature flag](../../../user/feature_flags.md), disabled by default.
-> - It's disabled on GitLab.com.
-> - It can be enabled or disabled per-project.
+> - [Feature flag enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/211410) in GitLab 13.4.
+> - It's enabled on GitLab.com.
+> - It can be disabled per-project.
 > - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enabling-the-feature). **(CORE ONLY)**
-
-CAUTION: **Caution:**
-This feature might not be available to you. Check the **version history** note above for details.
 
 With the help of [GitLab CI/CD](../../../ci/README.md), you can collect the test
 coverage information of your favorite testing or coverage-analysis tool, and visualize
@@ -79,11 +76,9 @@ test:
 
 ## Enabling the feature
 
-This feature comes with the `:coverage_report_view` feature flag disabled by
-default. It is disabled on GitLab.com. This feature is disabled due to some performance issues with very large
-data sets. When [the performance issue](https://gitlab.com/gitlab-org/gitlab/-/issues/211410)
-is resolved, the feature will be enabled by default. [GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
-can enable it for your instance. Test coverage visualization can be enabled or disabled per-project.
+This feature comes with the `:coverage_report_view` feature flag enabled by
+default. It is enabled on GitLab.com. [GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
+can disable it for your instance. Test coverage visualization can be enabled or disabled per-project.
 
 To enable it:
 

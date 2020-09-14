@@ -538,10 +538,10 @@ module Gitlab
       # table - The table containing the column.
       # column - The name of the column to change.
       # new_type - The new column type.
-      def change_column_type_concurrently(table, column, new_type, type_cast_function: nil)
+      def change_column_type_concurrently(table, column, new_type, type_cast_function: nil, batch_column_name: :id)
         temp_column = "#{column}_for_type_change"
 
-        rename_column_concurrently(table, column, temp_column, type: new_type, type_cast_function: type_cast_function)
+        rename_column_concurrently(table, column, temp_column, type: new_type, type_cast_function: type_cast_function, batch_column_name: batch_column_name)
       end
 
       # Performs cleanup of a concurrent type change.

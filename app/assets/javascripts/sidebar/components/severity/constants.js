@@ -32,8 +32,6 @@ export const ISSUABLE_TYPES = {
   INCIDENT: 'incident',
 };
 
-export const SIDEBAR_ANIMATION_DURATION = 300;
-
 export const I18N = {
   UPDATE_SEVERITY_ERROR: s__('SeverityWidget|There was an error while updating severity.'),
   TRY_AGAIN: __('Please try again'),

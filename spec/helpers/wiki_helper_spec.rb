@@ -53,6 +53,22 @@ RSpec.describe WikiHelper do
     end
   end
 
+  describe '#wiki_attachment_upload_url' do
+    it 'returns the upload endpoint for project wikis' do
+      @wiki = build_stubbed(:project_wiki)
+
+      expect(helper.wiki_attachment_upload_url).to end_with("/api/v4/projects/#{@wiki.project.id}/wikis/attachments")
+    end
+
+    it 'raises an exception for unsupported wiki containers' do
+      @wiki = Wiki.new(User.new)
+
+      expect do
+        helper.wiki_attachment_upload_url
+      end.to raise_error(TypeError)
+    end
+  end
+
   describe '#wiki_sort_controls' do
     let(:wiki) { create(:project_wiki) }
     let(:wiki_link) { helper.wiki_sort_controls(wiki, sort, direction) }

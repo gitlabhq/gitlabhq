@@ -413,7 +413,7 @@ and the following environment variables:
 
 | Setting                                    | GitLab.com | Default   |
 |--------                                    |----------- |--------   |
-| `SIDEKIQ_DAEMON_MEMORY_KILLER`             | -          | -         |
+| `SIDEKIQ_DAEMON_MEMORY_KILLER`             | -          | `1`       |
 | `SIDEKIQ_MEMORY_KILLER_MAX_RSS`            | `2000000`  | `2000000` |
 | `SIDEKIQ_MEMORY_KILLER_HARD_LIMIT_RSS`     | -          | -         |
 | `SIDEKIQ_MEMORY_KILLER_CHECK_INTERVAL`     | -          | `3`       |

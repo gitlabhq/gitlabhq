@@ -63,7 +63,7 @@ module Gitlab
       end
 
       def self.coverage_report_view?(project)
-        ::Feature.enabled?(:coverage_report_view, project)
+        ::Feature.enabled?(:coverage_report_view, project, default_enabled: true)
       end
 
       def self.child_of_child_pipeline_enabled?(project)

@@ -7,7 +7,7 @@ import {
   GlSprintf,
   GlLink,
 } from '@gitlab/ui';
-import { INCIDENT_SEVERITY, ISSUABLE_TYPES, SIDEBAR_ANIMATION_DURATION, I18N } from './constants';
+import { INCIDENT_SEVERITY, ISSUABLE_TYPES, I18N } from './constants';
 import updateIssuableSeverity from './graphql/mutations/update_issuable_severity.mutation.graphql';
 import SeverityToken from './severity.vue';
 import createFlash from '~/flash';
@@ -91,15 +91,8 @@ export default {
       const event = new Event('hidden.gl.dropdown');
       this.$el.dispatchEvent(event);
     },
-    toggleFormDropdown(collapsedSidebar) {
+    toggleFormDropdown() {
       this.isDropdownShowing = !this.isDropdownShowing;
-      const timeout = collapsedSidebar ? SIDEBAR_ANIMATION_DURATION : 0;
-      setTimeout(() => {
-        const { dropdown } = this.$refs;
-        if (dropdown && this.isDropdownShowing) {
-          dropdown.show();
-        }
-      }, timeout);
     },
     updateSeverity(value) {
       this.hideDropdown();
@@ -143,7 +136,7 @@ export default {
 
 <template>
   <div ref="sidebarSeverity" class="block">
-    <div ref="severity" class="sidebar-collapsed-icon" @click="toggleFormDropdown(true)">
+    <div ref="severity" class="sidebar-collapsed-icon" @click="toggleFormDropdown">
       <severity-token :severity="selectedItem" :icon-size="14" :icon-only="true" />
       <gl-tooltip :target="() => $refs.severity" boundary="viewport" placement="left">
         <gl-sprintf :message="$options.i18n.SEVERITY_VALUE">
@@ -168,7 +161,6 @@ export default {
       </p>
 
       <gl-dropdown
-        ref="dropdown"
         :class="dropdownClass"
         block
         :text="selectedItem.label"

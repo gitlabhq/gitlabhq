@@ -176,7 +176,7 @@ RSpec.describe API::PypiPackages do
     end
 
     context 'with required_python too big' do
-      let(:requires_python) { 'x' * 51 }
+      let(:requires_python) { 'x' * 256 }
       let(:token) { personal_access_token.token }
       let(:user_headers) { basic_auth_header(user.username, token) }
       let(:headers) { user_headers.merge(workhorse_header) }

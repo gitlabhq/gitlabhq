@@ -2354,10 +2354,44 @@ RSpec.describe API::MergeRequests do
       expect(json_response['squash']).to be_truthy
     end
 
-    it "returns merge_request with renamed target_branch" do
+    it "updates target_branch and returns merge_request" do
       put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}", user), params: { target_branch: "wiki" }
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['target_branch']).to eq('wiki')
+    end
+
+    context "forked projects" do
+      let_it_be(:user2) { create(:user) }
+      let(:project) { create(:project, :public, :repository) }
+      let!(:forked_project) { fork_project(project, user2, repository: true) }
+      let(:merge_request) do
+        create(:merge_request,
+               source_project: forked_project,
+               target_project: project,
+               source_branch: "fixes")
+      end
+
+      shared_examples "update of allow_collaboration and allow_maintainer_to_push" do |request_value, expected_value|
+        %w[allow_collaboration allow_maintainer_to_push].each do |attr|
+          it "attempts to update #{attr} to #{request_value} and returns #{expected_value} for `allow_collaboration`" do
+            put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}", user2), params: { attr => request_value }
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response["allow_collaboration"]).to eq(expected_value)
+            expect(json_response["allow_maintainer_to_push"]).to eq(expected_value)
+          end
+        end
+      end
+
+      context "when source project is public (i.e. MergeRequest#collaborative_push_possible? == true)" do
+        it_behaves_like "update of allow_collaboration and allow_maintainer_to_push", true, true
+      end
+
+      context "when source project is private (i.e. MergeRequest#collaborative_push_possible? == false)" do
+        let(:project) { create(:project, :private, :repository) }
+
+        it_behaves_like "update of allow_collaboration and allow_maintainer_to_push", true, false
+      end
     end
 
     it "returns merge_request that removes the source branch" do

@@ -26,6 +26,13 @@ class ProductAnalyticsEvent < ApplicationRecord
     group(graph).timerange(days).count
   end
 
+  def self.count_collector_tstamp_by_day(days)
+    group("DATE_TRUNC('day', collector_tstamp)")
+      .reorder('date_trunc_day_collector_tstamp')
+      .timerange(days)
+      .count
+  end
+
   def as_json_wo_empty
     as_json.compact
   end

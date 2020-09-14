@@ -71,12 +71,16 @@ module Boards
 
       # rubocop: disable CodeReuse/ActiveRecord
       def moving_from_list
+        return unless params[:from_list_id].present?
+
         @moving_from_list ||= board.lists.find_by(id: params[:from_list_id])
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
       # rubocop: disable CodeReuse/ActiveRecord
       def moving_to_list
+        return unless params[:to_list_id].present?
+
         @moving_to_list ||= board.lists.find_by(id: params[:to_list_id])
       end
       # rubocop: enable CodeReuse/ActiveRecord

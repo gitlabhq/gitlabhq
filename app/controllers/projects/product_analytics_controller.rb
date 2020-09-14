@@ -27,6 +27,10 @@ class Projects::ProductAnalyticsController < Projects::ApplicationController
         .new(project, { graph: graph, timerange: @timerange })
         .execute
     end
+
+    @activity_graph = ProductAnalytics::BuildActivityGraphService
+      .new(project, { timerange: @timerange })
+      .execute
   end
 
   private

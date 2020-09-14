@@ -15891,6 +15891,16 @@
           "possibleTypes": null
         },
         {
+          "kind": "SCALAR",
+          "name": "EpicID",
+          "description": "Identifier of Epic",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
           "kind": "OBJECT",
           "name": "EpicIssue",
           "description": "Relationship between an epic and an issue",
@@ -22407,6 +22417,16 @@
               "type": {
                 "kind": "SCALAR",
                 "name": "ID",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "epicId",
+              "description": "The ID of the parent epic. NULL when removing the association",
+              "type": {
+                "kind": "SCALAR",
+                "name": "EpicID",
                 "ofType": null
               },
               "defaultValue": null

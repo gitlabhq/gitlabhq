@@ -13,14 +13,18 @@ module ProductAnalytics
 
       results = product_analytics_events.count_by_graph(graph, timerange)
 
+      format_results(graph, results)
+    end
+
+    private
+
+    def format_results(name, results)
       {
-        id: graph,
+        id: name,
         keys: results.keys,
         values: results.values
       }
     end
-
-    private
 
     def product_analytics_events
       @project.product_analytics_events

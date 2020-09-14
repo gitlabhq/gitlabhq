@@ -18,7 +18,7 @@ queues_config_hash[:namespace] = Gitlab::Redis::Queues::SIDEKIQ_NAMESPACE
 
 enable_json_logs = Gitlab.config.sidekiq.log_format == 'json'
 enable_sidekiq_memory_killer = ENV['SIDEKIQ_MEMORY_KILLER_MAX_RSS'].to_i.nonzero?
-use_sidekiq_daemon_memory_killer = ENV["SIDEKIQ_DAEMON_MEMORY_KILLER"].to_i.nonzero?
+use_sidekiq_daemon_memory_killer = ENV.fetch("SIDEKIQ_DAEMON_MEMORY_KILLER", 1).to_i.nonzero?
 use_sidekiq_legacy_memory_killer = !use_sidekiq_daemon_memory_killer
 
 Sidekiq.configure_server do |config|

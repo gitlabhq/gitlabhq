@@ -50,6 +50,8 @@ module Mutations
         end
 
         def resolve(board:, **args)
+          Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab/-/issues/247861')
+
           raise_resource_not_available_error! unless board
           authorize_board!(board)
 
@@ -89,3 +91,5 @@ module Mutations
     end
   end
 end
+
+Mutations::Boards::Issues::IssueMoveList.prepend_if_ee('EE::Mutations::Boards::Issues::IssueMoveList')

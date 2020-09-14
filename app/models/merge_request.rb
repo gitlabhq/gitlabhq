@@ -1374,7 +1374,7 @@ class MergeRequest < ApplicationRecord
   end
 
   def has_coverage_reports?
-    return false unless Feature.enabled?(:coverage_report_view, project)
+    return false unless Feature.enabled?(:coverage_report_view, project, default_enabled: true)
 
     actual_head_pipeline&.has_coverage_reports?
   end
