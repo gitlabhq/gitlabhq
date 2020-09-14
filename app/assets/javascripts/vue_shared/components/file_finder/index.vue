@@ -128,7 +128,7 @@ export default {
       this.focusedIndex = 0;
     }
 
-    Mousetrap.bind(['t', 'command+p', 'ctrl+p'], e => {
+    Mousetrap.bind(['t', 'mod+p'], e => {
       if (e.preventDefault) {
         e.preventDefault();
       }
@@ -142,7 +142,7 @@ export default {
         el.classList.contains('inputarea')
       ) {
         return true;
-      } else if (combo === 'command+p' || combo === 'ctrl+p') {
+      } else if (combo === 'mod+p') {
         return false;
       }
 

@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
-import { GlDropdown, GlNewDropdownItem, GlSprintf } from '@gitlab/ui';
+import { GlDropdown, GlDropdownItem, GlSprintf } from '@gitlab/ui';
 import DesignVersionDropdown from '~/design_management/components/upload/design_version_dropdown.vue';
 import mockAllVersions from './mock_data/all_versions';
 
@@ -42,7 +42,7 @@ describe('Design management design version dropdown component', () => {
     wrapper.destroy();
   });
 
-  const findVersionLink = index => wrapper.findAll(GlNewDropdownItem).at(index);
+  const findVersionLink = index => wrapper.findAll(GlDropdownItem).at(index);
 
   it('renders design version dropdown button', () => {
     createComponent();
@@ -107,7 +107,7 @@ describe('Design management design version dropdown component', () => {
       createComponent();
 
       return wrapper.vm.$nextTick().then(() => {
-        expect(wrapper.findAll(GlNewDropdownItem)).toHaveLength(wrapper.vm.allVersions.length);
+        expect(wrapper.findAll(GlDropdownItem)).toHaveLength(wrapper.vm.allVersions.length);
       });
     });
   });

@@ -1,6 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
 import Visibility from 'visibilityjs';
-import { GlDropdown, GlNewDropdownItem, GlButton } from '@gitlab/ui';
+import { GlDropdown, GlDropdownItem, GlButton } from '@gitlab/ui';
 import { createStore } from '~/monitoring/stores';
 import RefreshButton from '~/monitoring/components/refresh_button.vue';
 
@@ -16,7 +16,7 @@ describe('RefreshButton', () => {
 
   const findRefreshBtn = () => wrapper.find(GlButton);
   const findDropdown = () => wrapper.find(GlDropdown);
-  const findOptions = () => findDropdown().findAll(GlNewDropdownItem);
+  const findOptions = () => findDropdown().findAll(GlDropdownItem);
   const findOptionAt = index => findOptions().at(index);
 
   const expectFetchDataToHaveBeenCalledTimes = times => {

@@ -1,0 +1,5 @@
+---
+title: Add the Query Apdex Prometheus metric to usage ping
+merge_request: 39256
+author:
+type: other

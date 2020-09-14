@@ -1,12 +1,12 @@
 <script>
-import { GlNewDropdownHeader, GlNewDropdownItem, GlBadge, GlIcon } from '@gitlab/ui';
+import { GlNewDropdownHeader, GlDropdownItem, GlBadge, GlIcon } from '@gitlab/ui';
 import { s__ } from '~/locale';
 
 export default {
   name: 'RefResultsSection',
   components: {
     GlNewDropdownHeader,
-    GlNewDropdownItem,
+    GlDropdownItem,
     GlBadge,
     GlIcon,
   },
@@ -97,7 +97,7 @@ export default {
       </div>
     </template>
     <template v-else>
-      <gl-new-dropdown-item
+      <gl-dropdown-item
         v-for="item in items"
         :key="item.name"
         @click="$emit('selected', item.value || item.name)"
@@ -118,7 +118,7 @@ export default {
             s__('DefaultBranchLabel|default')
           }}</gl-badge>
         </div>
-      </gl-new-dropdown-item>
+      </gl-dropdown-item>
     </template>
   </div>
 </template>

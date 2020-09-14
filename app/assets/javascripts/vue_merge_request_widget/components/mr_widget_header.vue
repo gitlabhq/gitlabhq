@@ -6,7 +6,7 @@ import {
   GlButton,
   GlDropdown,
   GlNewDropdownHeader as GlDropdownHeader,
-  GlNewDropdownItem as GlDropdownItem,
+  GlDropdownItem,
   GlTooltipDirective,
 } from '@gitlab/ui';
 import { n__, s__, sprintf } from '~/locale';

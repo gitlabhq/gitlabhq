@@ -2,7 +2,7 @@ import Vuex from 'vuex';
 import { shallowMount } from '@vue/test-utils';
 import AxiosMockAdapter from 'axios-mock-adapter';
 import { setTestTimeout } from 'helpers/timeout';
-import { GlNewDropdownItem as GlDropdownItem } from '@gitlab/ui';
+import { GlDropdownItem } from '@gitlab/ui';
 import invalidUrl from '~/lib/utils/invalid_url';
 import axios from '~/lib/utils/axios_utils';
 import AlertWidget from '~/monitoring/components/alert_widget.vue';

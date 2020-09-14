@@ -28,6 +28,8 @@ module Types
           description: 'Timestamp of when the release was created'
     field :released_at, Types::TimeType, null: true,
           description: 'Timestamp of when the release was released'
+    field :upcoming_release, GraphQL::BOOLEAN_TYPE, null: true, method: :upcoming_release?,
+          description: 'Indicates the release is an upcoming release'
     field :assets, Types::ReleaseAssetsType, null: true, method: :itself,
           description: 'Assets of the release'
     field :links, Types::ReleaseLinksType, null: true, method: :itself,

@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
-import { GlNewDropdownItem } from '@gitlab/ui';
+import { GlDropdownItem } from '@gitlab/ui';
 import { createStore } from '~/monitoring/stores';
 import { DASHBOARD_PAGE, PANEL_NEW_PAGE } from '~/monitoring/router/constants';
 import { setupAllDashboards, setupStoreWithData } from '../store_utils';
@@ -146,8 +146,8 @@ describe('Actions menu', () => {
   });
 
   describe('add panel item', () => {
-    const GlNewDropdownItemStub = {
-      extends: GlNewDropdownItem,
+    const GlDropdownItemStub = {
+      extends: GlDropdownItem,
       props: {
         to: [String, Object],
       },
@@ -164,7 +164,7 @@ describe('Actions menu', () => {
         },
         {
           mocks: { $route },
-          stubs: { GlNewDropdownItem: GlNewDropdownItemStub },
+          stubs: { GlDropdownItem: GlDropdownItemStub },
         },
       );
     });

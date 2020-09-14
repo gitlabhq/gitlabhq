@@ -39,6 +39,34 @@ RSpec.describe IncidentManagement::Incidents::CreateService do
         let(:issue) { new_issue }
       end
 
+      context 'with default severity' do
+        it 'sets the correct severity level to "unknown"' do
+          create_incident
+          expect(new_issue.severity).to eq(IssuableSeverity::DEFAULT)
+        end
+      end
+
+      context 'with severity' do
+        using RSpec::Parameterized::TableSyntax
+
+        subject(:create_incident) { described_class.new(project, user, title: title, description: description, severity: severity).execute }
+
+        where(:severity, :incident_severity) do
+          'critical' | 'critical'
+          'high'     | 'high'
+          'medium'   | 'medium'
+          'low'      | 'low'
+          'unknown'  | 'unknown'
+        end
+
+        with_them do
+          it 'sets the correct severity level' do
+            create_incident
+            expect(new_issue.severity).to eq(incident_severity)
+          end
+        end
+      end
+
       context 'when incident label does not exists' do
         it 'creates incident label' do
           expect { create_incident }.to change { project.labels.where(title: label_title).count }.by(1)

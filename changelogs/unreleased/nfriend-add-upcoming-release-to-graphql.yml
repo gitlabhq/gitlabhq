@@ -1,0 +1,5 @@
+---
+title: Add "upcomingRelease" field to GraphQL endpoint
+merge_request: 41183
+author:
+type: added

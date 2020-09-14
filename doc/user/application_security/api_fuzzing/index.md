@@ -107,7 +107,15 @@ Follow these steps to configure API fuzzing in GitLab with an OpenAPI specificat
    ```
 
 1. The target API instance's base URL is also required. Provide it by using the `FUZZAPI_TARGET_URL`
-   variable:
+   variable or an `environment_url.txt` file.
+
+   Adding the URL in an `environment_url.txt` file at your project's root is great for testing in
+   dynamic environments. To run API fuzzing against an app dynamically created during a GitLab CI/CD
+   pipeline, have the app persist its domain in an `environment_url.txt` file. API fuzzing
+   automatically parses that file to find its scan target. You can see an
+   [example of this in our Auto DevOps CI YAML](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Jobs/Deploy.gitlab-ci.yml).
+
+   Here's an example of using `FUZZAPI_TARGET_URL`:
 
    ```yaml
    include:
@@ -189,7 +197,16 @@ target API to test:
      FUZZAPI_HAR: test-api-specification.json
    ```
 
-1. Add the `FUZZAPI_TARGET_URL` variable and set it to the target API instance's base URL:
+1. The target API instance's base URL is also required. Provide it by using the `FUZZAPI_TARGET_URL`
+   variable or an `environment_url.txt` file.
+
+   Adding the URL in an `environment_url.txt` file at your project's root is great for testing in
+   dynamic environments. To run API fuzzing against an app dynamically created during a GitLab CI/CD
+   pipeline, have the app persist its domain in an `environment_url.txt` file. API fuzzing
+   automatically parses that file to find its scan target. You can see an
+   [example of this in our Auto DevOps CI YAML](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Jobs/Deploy.gitlab-ci.yml).
+
+   Here's an example of using `FUZZAPI_TARGET_URL`:
 
    ```yaml
    include:

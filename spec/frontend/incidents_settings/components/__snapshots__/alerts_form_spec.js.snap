@@ -55,7 +55,7 @@ exports[`Alert integration settings form default state should match the default 
         text="selecte_tmpl"
         variant="default"
       >
-        <gl-new-dropdown-item-stub
+        <gl-dropdown-item-stub
           avatarurl=""
           data-qa-selector="incident_templates_item"
           iconcolor=""
@@ -67,7 +67,7 @@ exports[`Alert integration settings form default state should match the default 
           
           No template selected
         
-        </gl-new-dropdown-item-stub>
+        </gl-dropdown-item-stub>
       </gl-dropdown-stub>
     </gl-form-group-stub>
      

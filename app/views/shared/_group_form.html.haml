@@ -34,10 +34,12 @@
     %p.validation-pending.gl-field-error-ignore.field-validation.hide= _('Checking group URL availability...')
 
     - if @group.persisted?
-      .alert.alert-warning.gl-mt-3
-        = _('Changing group URL can have unintended side effects.')
-        = succeed '.' do
-          = link_to _('Learn more'), help_page_path('user/group/index', anchor: 'changing-a-groups-path'), target: '_blank'
+      .gl-alert.gl-alert-warning.gl-mt-3.gl-mb-3
+        = sprite_icon('warning', size: 16, css_class: 'gl-icon gl-alert-icon gl-alert-icon-no-title')
+        .gl-alert-body
+          = _('Changing group URL can have unintended side effects.')
+          = succeed '.' do
+            = link_to _('Learn more'), help_page_path('user/group/index', anchor: 'changing-a-groups-path'), target: '_blank', class: 'gl-link'
 
 - if @group.persisted?
   .row

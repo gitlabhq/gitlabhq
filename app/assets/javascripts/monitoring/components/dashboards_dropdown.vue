@@ -3,9 +3,9 @@ import { mapState, mapGetters } from 'vuex';
 import {
   GlIcon,
   GlDropdown,
-  GlNewDropdownItem,
+  GlDropdownItem,
   GlNewDropdownHeader,
-  GlNewDropdownDivider,
+  GlDropdownDivider,
   GlSearchBoxByType,
   GlModalDirective,
 } from '@gitlab/ui';
@@ -18,9 +18,9 @@ export default {
   components: {
     GlIcon,
     GlDropdown,
-    GlNewDropdownItem,
+    GlDropdownItem,
     GlNewDropdownHeader,
-    GlNewDropdownDivider,
+    GlDropdownDivider,
     GlSearchBoxByType,
   },
   directives: {
@@ -87,7 +87,7 @@ export default {
       />
 
       <div class="flex-fill overflow-auto">
-        <gl-new-dropdown-item
+        <gl-dropdown-item
           v-for="dashboard in starredDashboards"
           :key="dashboard.path"
           :is-check-item="true"
@@ -100,13 +100,13 @@ export default {
             </span>
             <gl-icon class="text-muted gl-flex-shrink-0 gl-ml-3 gl-align-self-center" name="star" />
           </div>
-        </gl-new-dropdown-item>
-        <gl-new-dropdown-divider
+        </gl-dropdown-item>
+        <gl-dropdown-divider
           v-if="starredDashboards.length && nonStarredDashboards.length"
           ref="starredListDivider"
         />
 
-        <gl-new-dropdown-item
+        <gl-dropdown-item
           v-for="dashboard in nonStarredDashboards"
           :key="dashboard.path"
           :is-check-item="true"
@@ -116,7 +116,7 @@ export default {
           <span class="gl-overflow-hidden gl-overflow-wrap-break">
             {{ dashboardDisplayName(dashboard) }}
           </span>
-        </gl-new-dropdown-item>
+        </gl-dropdown-item>
       </div>
 
       <div

@@ -762,6 +762,7 @@ The following is example content of the Usage Ping payload.
   "topology": {
     "duration_s": 0.013836685999194742,
     "application_requests_per_hour": 4224,
+    "query_apdex_weekly_average": 0.996,
     "failures": [],
     "nodes": [
       {

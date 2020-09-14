@@ -82,6 +82,30 @@ RSpec.describe AlertManagement::CreateAlertIssueService do
         expect(user).to have_received(:can?).with(:create_issue, project)
       end
 
+      context 'with alert severity' do
+        using RSpec::Parameterized::TableSyntax
+
+        where(:alert_severity, :incident_severity) do
+          'critical' | 'critical'
+          'high'     | 'high'
+          'medium'   | 'medium'
+          'low'      | 'low'
+          'info'     | 'unknown'
+          'unknown'  | 'unknown'
+        end
+
+        with_them do
+          before do
+            alert.update!(severity: alert_severity)
+            execute
+          end
+
+          it 'sets the correct severity level' do
+            expect(created_issue.severity).to eq(incident_severity)
+          end
+        end
+      end
+
       context 'when the alert is prometheus alert' do
         let(:alert) { prometheus_alert }
         let(:issue) { subject.payload[:issue] }

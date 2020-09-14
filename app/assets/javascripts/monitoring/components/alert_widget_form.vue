@@ -8,7 +8,7 @@ import {
   GlFormGroup,
   GlFormInput,
   GlDropdown,
-  GlNewDropdownItem as GlDropdownItem,
+  GlDropdownItem,
   GlModal,
   GlTooltipDirective,
   GlIcon,

@@ -27,7 +27,7 @@ the [JSON Web Token](https://gitlab.com/gitlab-org/gitlab/-/issues/207125) (`CI_
 introduced in GitLab 12.10.
 
 You must [configure your Vault server](#configure-your-vault-server) before you
-can use [use Vault secrets in a CI job](#use-vault-secrets-in-a-ci-job-premium).
+can use [use Vault secrets in a CI job](#use-vault-secrets-in-a-ci-job).
 
 NOTE: **Note:**
 Read the [Authenticating and Reading Secrets With Hashicorp Vault](../examples/authenticating-with-hashicorp-vault/index.md)
@@ -104,7 +104,7 @@ The path to this file is stored in environment variable named `DATABASE_PASSWORD
 similar to [CI variables of type `file`](../variables/README.md#custom-environment-variables-of-type-file).
 
 For more information about the supported syntax, read the
-[`.gitlab-ci.yml` reference](../yaml/README.md#secretsvault-premium).
+[`.gitlab-ci.yml` reference](../yaml/README.md#secretsvault).
 
 ## Configure Vault server roles
 

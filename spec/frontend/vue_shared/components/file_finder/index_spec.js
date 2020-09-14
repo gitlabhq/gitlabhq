@@ -319,8 +319,8 @@ describe('File finder item spec', () => {
         .catch(done.fail);
     });
 
-    it('calls toggle on `command+p` key press', done => {
-      Mousetrap.trigger('command+p');
+    it('calls toggle on `mod+p` key press', done => {
+      Mousetrap.trigger('mod+p');
 
       vm.$nextTick()
         .then(() => {
@@ -330,33 +330,12 @@ describe('File finder item spec', () => {
         .catch(done.fail);
     });
 
-    it('calls toggle on `ctrl+p` key press', done => {
-      Mousetrap.trigger('ctrl+p');
-
-      vm.$nextTick()
-        .then(() => {
-          expect(vm.toggle).toHaveBeenCalled();
-        })
-        .then(done)
-        .catch(done.fail);
-    });
-
-    it('always allows `command+p` to trigger toggle', () => {
+    it('always allows `mod+p` to trigger toggle', () => {
       expect(
         Mousetrap.prototype.stopCallback(
           null,
           vm.$el.querySelector('.dropdown-input-field'),
-          'command+p',
-        ),
-      ).toBe(false);
-    });
-
-    it('always allows `ctrl+p` to trigger toggle', () => {
-      expect(
-        Mousetrap.prototype.stopCallback(
-          null,
-          vm.$el.querySelector('.dropdown-input-field'),
-          'ctrl+p',
+          'mod+p',
         ),
       ).toBe(false);
     });

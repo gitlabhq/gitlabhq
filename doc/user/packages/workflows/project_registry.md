@@ -89,3 +89,10 @@ is created, you are ready to [upload your package](../conan_repository/index.md#
 ```shell
 CONAN_LOGIN_USERNAME=<gitlab-username> CONAN_PASSWORD=<personal_access_token> conan upload MyPackage/1.0.0@foo+bar+my-proj/channel --all --remote=gitlab
 ```
+
+#### Composer
+
+It is currently not possible to publish a Composer package to a project that is different from where its code resides.
+
+If you attempt to publish a Composer package to a different project, you get a `404 Branch Not Found`
+or `404 Tag Not Found` error.

@@ -5,8 +5,8 @@ import {
   GlButtonGroup,
   GlButton,
   GlDropdown,
-  GlNewDropdownItem,
-  GlNewDropdownDivider,
+  GlDropdownItem,
+  GlDropdownDivider,
   GlTooltipDirective,
 } from '@gitlab/ui';
 import { n__, __ } from '~/locale';
@@ -49,8 +49,8 @@ export default {
     GlButtonGroup,
     GlButton,
     GlDropdown,
-    GlNewDropdownItem,
-    GlNewDropdownDivider,
+    GlDropdownItem,
+    GlDropdownDivider,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -158,20 +158,20 @@ export default {
       :title="s__('Metrics|Set refresh rate')"
       :text="dropdownText"
     >
-      <gl-new-dropdown-item
+      <gl-dropdown-item
         :is-check-item="true"
         :is-checked="refreshInterval === null"
         @click="removeRefreshInterval()"
-        >{{ __('Off') }}</gl-new-dropdown-item
+        >{{ __('Off') }}</gl-dropdown-item
       >
-      <gl-new-dropdown-divider />
-      <gl-new-dropdown-item
+      <gl-dropdown-divider />
+      <gl-dropdown-item
         v-for="(option, i) in $options.refreshIntervals"
         :key="i"
         :is-check-item="true"
         :is-checked="isChecked(option)"
         @click="setRefreshInterval(option)"
-        >{{ option.label }}</gl-new-dropdown-item
+        >{{ option.label }}</gl-dropdown-item
       >
     </gl-dropdown>
   </gl-button-group>

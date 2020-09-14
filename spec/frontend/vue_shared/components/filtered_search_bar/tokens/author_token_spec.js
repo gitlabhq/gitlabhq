@@ -3,7 +3,7 @@ import {
   GlFilteredSearchToken,
   GlFilteredSearchTokenSegment,
   GlFilteredSearchSuggestion,
-  GlNewDropdownDivider as GlDropdownDivider,
+  GlDropdownDivider,
 } from '@gitlab/ui';
 import MockAdapter from 'axios-mock-adapter';
 import waitForPromises from 'helpers/wait_for_promises';

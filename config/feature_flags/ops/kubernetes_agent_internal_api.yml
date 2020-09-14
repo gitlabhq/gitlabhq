@@ -1,0 +1,7 @@
+---
+name: kubernetes_agent_internal_api
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/41045
+rollout_issue_url:
+group: group::configure
+type: ops
+default_enabled: true

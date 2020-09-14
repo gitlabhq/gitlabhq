@@ -1,11 +1,5 @@
 import { shallowMount, mount } from '@vue/test-utils';
-import {
-  GlFilteredSearch,
-  GlButtonGroup,
-  GlButton,
-  GlDropdown,
-  GlNewDropdownItem as GlDropdownItem,
-} from '@gitlab/ui';
+import { GlFilteredSearch, GlButtonGroup, GlButton, GlDropdown, GlDropdownItem } from '@gitlab/ui';
 
 import FilteredSearchBarRoot from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
 import { uniqueTokens } from '~/vue_shared/components/filtered_search_bar/filtered_search_utils';

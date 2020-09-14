@@ -371,7 +371,23 @@ Example response:
 }
 ```
 
-## Kubernetes agent information
+## Kubernetes agent endpoints
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/41045) in GitLab 13.4.
+> - This feature is not deployed on GitLab.com
+> - It's not recommended for production use.
+
+The following endpoints are used by the GitLab Kubernetes Agent Server (kas)
+for various purposes.
+
+These endpoints are all authenticated using JWT. The JWT secret is stored in a file
+specified in `config/gitlab.yml`. By default, the location is in the root of the
+GitLab Rails app in a file called `.gitlab_kas_secret`.
+
+CAUTION: **Caution:**
+The Kubernetes agent is under development and is not recommended for production use.
+
+### Kubernetes agent information
 
 Called from GitLab Kubernetes Agent Server (kas) to retrieve agent
 information for the given agent token. This returns the Gitaly connection
@@ -388,7 +404,7 @@ Example Request:
 curl --request GET --header "Gitlab-Kas-Api-Request: <JWT token>" --header "Authorization: Bearer <agent token>" "http://localhost:3000/api/v4/internal/kubernetes/agent_info"
 ```
 
-## Kubernetes agent project information
+### Kubernetes agent project information
 
 Called from GitLab Kubernetes Agent Server (kas) to retrieve project
 information for the given agent token. This returns the Gitaly
@@ -413,7 +429,7 @@ Example Request:
 curl --request GET --header "Gitlab-Kas-Api-Request: <JWT token>" --header "Authorization: Bearer <agent token>" "http://localhost:3000/api/v4/internal/kubernetes/project_info?id=7"
 ```
 
-## Kubernetes agent usage metrics
+### Kubernetes agent usage metrics
 
 Called from GitLab Kubernetes Agent Server (kas) to increase the usage
 metric counters.

@@ -10,7 +10,7 @@ import {
   GlFormSelect,
   GlLink,
   GlDropdown,
-  GlNewDropdownItem,
+  GlDropdownItem,
   GlSearchBoxByType,
   GlSprintf,
 } from '@gitlab/ui';
@@ -38,7 +38,7 @@ export default {
     GlFormSelect,
     GlLink,
     GlDropdown,
-    GlNewDropdownItem,
+    GlDropdownItem,
     GlSearchBoxByType,
     GlSprintf,
   },
@@ -179,7 +179,7 @@ export default {
           :placeholder="__('Search branches and tags')"
           class="gl-p-2"
         />
-        <gl-new-dropdown-item
+        <gl-dropdown-item
           v-for="(ref, index) in filteredRefs"
           :key="index"
           class="gl-font-monospace"
@@ -188,7 +188,7 @@ export default {
           @click="setRefSelected(ref)"
         >
           {{ ref }}
-        </gl-new-dropdown-item>
+        </gl-dropdown-item>
       </gl-dropdown>
 
       <template #description>

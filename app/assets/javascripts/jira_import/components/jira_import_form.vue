@@ -3,7 +3,7 @@ import {
   GlAlert,
   GlButton,
   GlDropdown,
-  GlNewDropdownItem,
+  GlDropdownItem,
   GlDropdownText,
   GlFormGroup,
   GlFormSelect,
@@ -35,7 +35,7 @@ export default {
     GlAlert,
     GlButton,
     GlDropdown,
-    GlNewDropdownItem,
+    GlDropdownItem,
     GlDropdownText,
     GlFormGroup,
     GlFormSelect,
@@ -305,14 +305,14 @@ export default {
 
             <gl-loading-icon v-if="isFetching" />
 
-            <gl-new-dropdown-item
+            <gl-dropdown-item
               v-for="user in users"
               v-else
               :key="user.id"
               @click="updateMapping(data.item.jiraAccountId, user.id, user.username)"
             >
               {{ user.username }} ({{ user.name }})
-            </gl-new-dropdown-item>
+            </gl-dropdown-item>
 
             <gl-dropdown-text v-show="shouldShowNoMatchesFoundText" class="text-secondary">
               {{ __('No matches found') }}

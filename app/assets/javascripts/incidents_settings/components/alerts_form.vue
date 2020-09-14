@@ -7,7 +7,7 @@ import {
   GlFormGroup,
   GlFormCheckbox,
   GlDropdown,
-  GlNewDropdownItem,
+  GlDropdownItem,
 } from '@gitlab/ui';
 import {
   I18N_ALERT_SETTINGS_FORM,
@@ -25,7 +25,7 @@ export default {
     GlIcon,
     GlFormCheckbox,
     GlDropdown,
-    GlNewDropdownItem,
+    GlDropdownItem,
   },
   inject: ['service', 'alertSettings'],
   data() {
@@ -107,7 +107,7 @@ export default {
           :text="issueTemplateHeader"
           :block="true"
         >
-          <gl-new-dropdown-item
+          <gl-dropdown-item
             v-for="template in templates"
             :key="template.key"
             data-qa-selector="incident_templates_item"
@@ -116,7 +116,7 @@ export default {
             @click="selectIssueTemplate(template.key)"
           >
             {{ template.name }}
-          </gl-new-dropdown-item>
+          </gl-dropdown-item>
         </gl-dropdown>
       </gl-form-group>
 

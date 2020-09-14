@@ -2,7 +2,7 @@
 import { mapActions, mapGetters, mapState } from 'vuex';
 import {
   GlDropdown,
-  GlNewDropdownDivider,
+  GlDropdownDivider,
   GlNewDropdownHeader,
   GlSearchBoxByType,
   GlSprintf,
@@ -19,7 +19,7 @@ export default {
   store: createStore(),
   components: {
     GlDropdown,
-    GlNewDropdownDivider,
+    GlDropdownDivider,
     GlNewDropdownHeader,
     GlSearchBoxByType,
     GlSprintf,
@@ -134,7 +134,7 @@ export default {
         <span class="gl-text-center gl-display-block">{{ i18n.dropdownHeader }}</span>
       </gl-new-dropdown-header>
 
-      <gl-new-dropdown-divider />
+      <gl-dropdown-divider />
 
       <gl-search-box-by-type
         ref="searchBox"
@@ -175,7 +175,7 @@ export default {
               @selected="selectRef($event)"
             />
 
-            <gl-new-dropdown-divider v-if="showTagsSection || showCommitsSection" />
+            <gl-dropdown-divider v-if="showTagsSection || showCommitsSection" />
           </template>
 
           <template v-if="showTagsSection">
@@ -190,7 +190,7 @@ export default {
               @selected="selectRef($event)"
             />
 
-            <gl-new-dropdown-divider v-if="showCommitsSection" />
+            <gl-dropdown-divider v-if="showCommitsSection" />
           </template>
 
           <template v-if="showCommitsSection">

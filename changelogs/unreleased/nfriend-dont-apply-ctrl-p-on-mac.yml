@@ -1,0 +1,5 @@
+---
+title: Stop applying Ctrl+P shortcut on MR page on Mac
+merge_request: 42240
+author:
+type: fixed

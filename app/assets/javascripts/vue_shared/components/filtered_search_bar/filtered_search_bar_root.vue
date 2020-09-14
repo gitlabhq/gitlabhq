@@ -4,7 +4,7 @@ import {
   GlButtonGroup,
   GlButton,
   GlDropdown,
-  GlNewDropdownItem as GlDropdownItem,
+  GlDropdownItem,
   GlTooltipDirective,
 } from '@gitlab/ui';
 

@@ -1959,6 +1959,7 @@ Represents a release
 | `releasedAt` | Time | Timestamp of when the release was released |
 | `tagName` | String | Name of the tag associated with the release |
 | `tagPath` | String | Relative web path to the tag associated with the release |
+| `upcomingRelease` | Boolean | Indicates the release is an upcoming release |
 
 ### ReleaseAssetLink
 

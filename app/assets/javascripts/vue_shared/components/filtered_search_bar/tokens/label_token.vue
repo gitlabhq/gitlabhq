@@ -3,7 +3,7 @@ import {
   GlToken,
   GlFilteredSearchToken,
   GlFilteredSearchSuggestion,
-  GlNewDropdownDivider as GlDropdownDivider,
+  GlDropdownDivider,
   GlLoadingIcon,
 } from '@gitlab/ui';
 import { debounce } from 'lodash';
