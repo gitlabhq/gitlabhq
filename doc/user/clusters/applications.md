@@ -123,14 +123,14 @@ GitLab. It is used in conjunction with [GitLab
 CI/CD](../../ci/README.md), the open-source continuous integration
 service included with GitLab that coordinates the jobs.
 
-If the project is on GitLab.com, shared Runners are available
+If the project is on GitLab.com, shared runners are available
 (the first 2000 minutes are free, you can
 [buy more later](../../subscriptions/index.md#purchasing-additional-ci-minutes))
 and you do not have to deploy one if they are enough for your needs. If a
-project-specific Runner is desired, or there are no shared Runners, it is easy
+project-specific runner is desired, or there are no shared runners, it is easy
 to deploy one.
 
-Note that the deployed Runner will be set as **privileged**, which means it will essentially
+Note that the deployed runner will be set as **privileged**, which means it will essentially
 have root access to the underlying machine. This is required to build Docker images,
 so it is the default. Make sure you read the
 [security implications](../project/clusters/index.md#security-implications)
@@ -895,7 +895,7 @@ GitLab Runner is installed into the `gitlab-managed-apps` namespace of your clus
 In order for GitLab Runner to function, you **must** specify the following:
 
 - `gitlabUrl` - the GitLab server full URL (for example, `https://gitlab.example.com`) to register the Runner against.
-- `runnerRegistrationToken` - The registration token for adding new Runners to GitLab. This must be
+- `runnerRegistrationToken` - The registration token for adding new runners to GitLab. This must be
   [retrieved from your GitLab instance](../../ci/runners/README.md).
 
 These values can be specified using [CI variables](../../ci/variables/README.md):
@@ -910,7 +910,7 @@ management project. Refer to the
 available configuration options.
 
 NOTE: **Note:**
-Support for installing the Runner managed application is provided by the GitLab Runner group.
+Support for installing the GitLab Runner managed application is provided by the GitLab Runner group.
 If you run into unknown issues, please [open a new issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new) and ping at least 2 people from the [Runner group](https://about.gitlab.com/handbook/product/product-categories/#runner-group).
 
 ### Install Cilium using GitLab CI/CD
@@ -1488,7 +1488,7 @@ The applications below can be upgraded.
 
 | Application | GitLab version |
 | ----------- | -------------- |
-| Runner  | 11.8+          |
+| GitLab Runner  | 11.8+          |
 
 To upgrade an application:
 

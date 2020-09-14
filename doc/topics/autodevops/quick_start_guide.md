@@ -8,7 +8,7 @@ to create a Kubernetes cluster manually using the Google Cloud Platform console.
 You will create and deploy a simple application that you create from a GitLab template.
 
 These instructions will also work for a self-managed GitLab instance; you'll just
-need to ensure your own [Runners are configured](../../ci/runners/README.md) and
+need to ensure your own [runners are configured](../../ci/runners/README.md) and
 [Google OAuth is enabled](../../integration/google.md).
 
 ## Configure your Google account
@@ -110,7 +110,7 @@ In this guide, we will install Ingress and Prometheus:
 
 NOTE: **Note:**
 We won't install GitLab Runner in this quick start guide, as this guide uses the
-shared Runners provided by GitLab.com.
+shared runners provided by GitLab.com.
 
 To install the applications:
 

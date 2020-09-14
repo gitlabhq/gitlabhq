@@ -29,7 +29,7 @@ We assume [you have installed a new Laravel project](https://laravel.com/docs/ma
 
 ### Unit Test
 
-Every new installation of Laravel (currently 5.4) comes with two type of tests, 'Feature' and 'Unit', placed in the tests directory.
+Every new installation of Laravel (currently 8.0) comes with two type of tests, 'Feature' and 'Unit', placed in the tests directory.
 Here's a unit test from `test/Unit/ExampleTest.php`:
 
 ```php
@@ -405,7 +405,7 @@ Let's create a [Dockerfile](https://gitlab.com/mehranrasulian/laravel-sample/blo
 
 ```shell
 # Set the base image for subsequent instructions
-FROM php:7.1
+FROM php:7.4
 
 # Update packages
 RUN apt-get update
@@ -427,7 +427,7 @@ RUN curl --silent --show-error https://getcomposer.org/installer | php -- --inst
 RUN composer global require "laravel/envoy=~1.0"
 ```
 
-We added the [official PHP 7.1 Docker image](https://hub.docker.com/_/php), which consist of a minimum installation of Debian Jessie with PHP pre-installed, and works perfectly for our use case.
+We added the [official PHP 7.4 Docker image](https://hub.docker.com/_/php), which consist of a minimum installation of Debian buster with PHP pre-installed, and works perfectly for our use case.
 
 We used `docker-php-ext-install` (provided by the official PHP Docker image) to install the PHP extensions we need.
 

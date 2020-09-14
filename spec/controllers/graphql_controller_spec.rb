@@ -147,4 +147,22 @@ RSpec.describe GraphqlController do
       end
     end
   end
+
+  describe '#append_info_to_payload' do
+    let(:graphql_query) { graphql_query_for('project', { 'fullPath' => 'foo' }, %w(id name)) }
+    let(:log_payload) { {} }
+
+    before do
+      allow(controller).to receive(:append_info_to_payload).and_wrap_original do |method, *|
+        method.call(log_payload)
+      end
+    end
+
+    it 'appends metadata for logging' do
+      post :execute, params: { query: graphql_query, operationName: 'Foo' }
+
+      expect(controller).to have_received(:append_info_to_payload)
+      expect(log_payload.dig(:metadata, :graphql, :operation_name)).to eq('Foo')
+    end
+  end
 end

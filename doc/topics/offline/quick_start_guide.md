@@ -86,7 +86,7 @@ sudo cp /etc/gitlab/ssl/my-host.internal.crt /etc/docker/certs.d/my-host.interna
 ```
 
 Provide your GitLab Runner (to be installed next) with your certs by
-[following the steps for using trusted certificates with your Runner](https://docs.gitlab.com/runner/install/docker.html#installing-trusted-ssl-server-certificates):
+[following the steps for using trusted certificates with your runner](https://docs.gitlab.com/runner/install/docker.html#installing-trusted-ssl-server-certificates):
 
 ```shell
 sudo mkdir -p /etc/gitlab-runner/certs
@@ -97,7 +97,7 @@ sudo cp /etc/gitlab/ssl/my-host.internal.crt /etc/gitlab-runner/certs/ca.crt
 ## Enabling GitLab Runner
 
 [Following a similar process to the steps for installing our GitLab Runner as a
-Docker service](https://docs.gitlab.com/runner/install/docker.html#docker-image-installation), we must first register our Runner:
+Docker service](https://docs.gitlab.com/runner/install/docker.html#docker-image-installation), we must first register our runner:
 
 ```shell
 $ sudo docker run --rm -it -v /etc/gitlab-runner:/etc/gitlab-runner gitlab/gitlab-runner register
@@ -128,7 +128,7 @@ Make the following changes to `/etc/gitlab-runner/config.toml`:
 - Add Docker socket to volumes `volumes = ["/var/run/docker.sock:/var/run/docker.sock", "/cache"]`
 - Add `pull_policy = "if-not-present"` to the executor configuration
 
-Now we can start our Runner:
+Now we can start our runner:
 
 ```shell
 sudo docker run -d --restart always --name gitlab-runner -v /etc/gitlab-runner:/etc/gitlab-runner -v /var/run/docker.sock:/var/run/docker.sock gitlab/gitlab-runner:latest

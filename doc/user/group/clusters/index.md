@@ -162,10 +162,10 @@ For a consolidated view of which CI [environments](../../../ci/environments/inde
 are deployed to the Kubernetes cluster, see the documentation for
 [cluster environments](../../clusters/environments.md).
 
-## Security of Runners
+## Security of runners
 
-For important information about securely configuring GitLab Runners, see
-[Security of Runners](../../project/clusters/add_remove_clusters.md#security-of-gitlab-runners)
+For important information about securely configuring runners, see
+[Security of runners](../../project/clusters/add_remove_clusters.md#security-of-runners)
 documentation for project-level clusters.
 
 ## More information

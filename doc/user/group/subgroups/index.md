@@ -115,10 +115,10 @@ When you add a member to a subgroup, they inherit the membership and permission
 level from the parent group(s). This model allows access to nested groups if you
 have membership in one of its parents.
 
-Jobs for pipelines in subgroups can use [Runners](../../../ci/runners/README.md) registered to the parent group(s).
+Jobs for pipelines in subgroups can use [runners](../../../ci/runners/README.md) registered to the parent group(s).
 This means secrets configured for the parent group are available to subgroup jobs.
 
-In addition, maintainers of projects that belong to subgroups can see the details of Runners registered to parent group(s).
+In addition, maintainers of projects that belong to subgroups can see the details of runners registered to parent group(s).
 
 The group permissions for a member can be changed only by Owners, and only on
 the **Members** page of the group the member was added.

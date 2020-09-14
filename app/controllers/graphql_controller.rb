@@ -107,4 +107,12 @@ class GraphqlController < ApplicationController
 
     render json: error, status: status
   end
+
+  def append_info_to_payload(payload)
+    super
+
+    # Merging to :metadata will ensure these are logged as top level keys
+    payload[:metadata] ||= {}
+    payload[:metadata].merge!(graphql: { operation_name: params[:operationName] })
+  end
 end

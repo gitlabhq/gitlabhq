@@ -179,7 +179,7 @@ coming from a fork:
 
 Sometimes parent project members want the pipeline to run in the parent
 project. This could be to ensure that the post-merge pipeline passes in the parent project.
-For example, a fork project could try to use a corrupted Runner that doesn't execute
+For example, a fork project could try to use a corrupted runner that doesn't execute
 test scripts properly, but reports a passed pipeline. Reviewers in the parent project
 could mistakenly trust the merge request because it passed a faked pipeline.
 

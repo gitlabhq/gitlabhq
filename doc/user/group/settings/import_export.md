@@ -52,7 +52,7 @@ The following items are exported:
 The following items are **not** exported:
 
 - Projects
-- Runners token
+- Runner tokens
 - SAML discovery tokens
 
 NOTE: **Note:**

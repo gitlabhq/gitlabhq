@@ -123,7 +123,7 @@ class SearchController < ApplicationController
     super
 
     # Merging to :metadata will ensure these are logged as top level keys
-    payload[:metadata] || {}
+    payload[:metadata] ||= {}
     payload[:metadata]['meta.search.group_id'] = params[:group_id]
     payload[:metadata]['meta.search.project_id'] = params[:project_id]
     payload[:metadata]['meta.search.search'] = params[:search]

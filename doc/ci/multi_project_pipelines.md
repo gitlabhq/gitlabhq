@@ -124,7 +124,7 @@ gets created. If you want to display the downstream pipeline's status instead, s
 
 NOTE: **Note:**
 Bridge jobs do not support every configuration entry that a user can use
-in the case of regular jobs. Bridge jobs will not be picked by a Runner,
+in the case of regular jobs. Bridge jobs will not be picked by a runner,
 so there is no point in adding support for `script`, for example. If a user
 tries to use unsupported configuration syntax, YAML validation will fail upon
 pipeline creation.

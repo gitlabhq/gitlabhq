@@ -46,8 +46,8 @@ In this example, a branch was:
 
 After adding Review Apps to your workflow, you follow the branched Git flow. That is:
 
-1. Push a branch and let the Runner deploy the Review App based on the `script` definition of the dynamic environment job.
-1. Wait for the Runner to build and deploy your web application.
+1. Push a branch and let the runner deploy the Review App based on the `script` definition of the dynamic environment job.
+1. Wait for the runner to build and deploy your web application.
 1. Click on the link provided in the merge request related to the branch to see the changes live.
 
 ## Configuring Review Apps
@@ -57,7 +57,7 @@ Review Apps are built on [dynamic environments](../environments/index.md#configu
 The process of configuring Review Apps is as follows:
 
 1. Set up the infrastructure to host and deploy the Review Apps (check the [examples](#review-apps-examples) below).
-1. [Install](https://docs.gitlab.com/runner/install/) and [configure](https://docs.gitlab.com/runner/commands/) a Runner to do deployment.
+1. [Install](https://docs.gitlab.com/runner/install/) and [configure](https://docs.gitlab.com/runner/commands/) a runner to do deployment.
 1. Set up a job in `.gitlab-ci.yml` that uses the [predefined CI environment variable](../variables/README.md) `${CI_COMMIT_REF_NAME}`
    to create dynamic environments and restrict it to run only on branches.
    Alternatively, you can get a YML template for this job by [enabling review apps](#enable-review-apps-button) for your project.

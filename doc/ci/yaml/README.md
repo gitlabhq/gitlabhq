@@ -1739,12 +1739,13 @@ Four keys are available:
 If you use multiple keys under `only` or `except`, the keys will be evaluated as a
 single conjoined expression. That is:
 
-- `only:` means "include this job if all of the conditions match".
-- `except:` means "exclude this job if any of the conditions match".
+- `only:` includes the job if **all** of the keys have at least one condition that matches.
+- `except:` excludes the job if **any** of the keys have at least one condition that matches.
 
-With `only`, individual keys are logically joined by an AND:
+With `only`, individual keys are logically joined by an `AND`. A job is added to
+the pipeline if the following is true:
 
-> (any of refs) AND (any of variables) AND (any of changes) AND (if Kubernetes is active)
+- `(any listed refs are true) AND (any listed variables are true) AND (any listed changes are true) AND (any chosen Kubernetes status matches)`
 
 In the example below, the `test` job will `only` be created when **all** of the following are true:
 
@@ -1764,13 +1765,10 @@ test:
     kubernetes: active
 ```
 
-`except` is implemented as a negation of this complete expression:
+With `except`, individual keys are logically joined by an `OR`. A job is **not**
+added if the following is true:
 
-> NOT((any of refs) AND (any of variables) AND (any of changes) AND (if Kubernetes is active))
-
-This means the keys are treated as if joined by an OR. This relationship could be described as:
-
-> (any of refs) OR (any of variables) OR (any of changes) OR (if Kubernetes is active)
+- `(any listed refs are true) OR (any listed variables are true) OR (any listed changes are true) OR (a chosen Kubernetes status matches)`
 
 In the example below, the `test` job will **not** be created when **any** of the following are true:
 
