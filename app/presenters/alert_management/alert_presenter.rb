@@ -42,6 +42,10 @@ module AlertManagement
       details_project_alert_management_url(project, alert.iid)
     end
 
+    def details
+      Gitlab::Utils::InlineHash.merge_keys(payload)
+    end
+
     private
 
     attr_reader :alert, :project
@@ -81,7 +85,7 @@ module AlertManagement
     end
 
     def details_list
-      alert.details
+      details
         .map { |label, value| list_item(label, value) }
         .join(MARKDOWN_LINE_BREAK)
     end

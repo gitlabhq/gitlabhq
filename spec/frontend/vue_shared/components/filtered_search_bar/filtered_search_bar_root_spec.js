@@ -3,7 +3,7 @@ import {
   GlFilteredSearch,
   GlButtonGroup,
   GlButton,
-  GlNewDropdown as GlDropdown,
+  GlDropdown,
   GlNewDropdownItem as GlDropdownItem,
 } from '@gitlab/ui';
 

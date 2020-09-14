@@ -2,7 +2,7 @@
 import { mapState, mapGetters } from 'vuex';
 import {
   GlIcon,
-  GlNewDropdown,
+  GlDropdown,
   GlNewDropdownItem,
   GlNewDropdownHeader,
   GlNewDropdownDivider,
@@ -17,7 +17,7 @@ const events = {
 export default {
   components: {
     GlIcon,
-    GlNewDropdown,
+    GlDropdown,
     GlNewDropdownItem,
     GlNewDropdownHeader,
     GlNewDropdownDivider,
@@ -73,7 +73,7 @@ export default {
 };
 </script>
 <template>
-  <gl-new-dropdown
+  <gl-dropdown
     toggle-class="dropdown-menu-toggle"
     menu-class="monitor-dashboard-dropdown-menu"
     :text="selectedDashboardText"
@@ -127,5 +127,5 @@ export default {
         {{ __('No matching results') }}
       </div>
     </div>
-  </gl-new-dropdown>
+  </gl-dropdown>
 </template>

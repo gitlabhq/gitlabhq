@@ -1,6 +1,6 @@
 <script>
 import { mapState } from 'vuex';
-import { GlNewDropdown, GlNewDropdownItem, GlLink } from '@gitlab/ui';
+import { GlDropdown, GlNewDropdownItem, GlLink } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import { defaultIntegrationLevel, overrideDropdownDescriptions } from '../constants';
 
@@ -19,7 +19,7 @@ export default {
   dropdownOptions,
   name: 'OverrideDropdown',
   components: {
-    GlNewDropdown,
+    GlDropdown,
     GlNewDropdownItem,
     GlLink,
   },
@@ -73,7 +73,7 @@ export default {
       }}</gl-link>
     </span>
     <input name="service[inherit_from_id]" :value="override ? '' : inheritFromId" type="hidden" />
-    <gl-new-dropdown :text="selected.text">
+    <gl-dropdown :text="selected.text">
       <gl-new-dropdown-item
         v-for="option in $options.dropdownOptions"
         :key="option.value"
@@ -81,6 +81,6 @@ export default {
       >
         {{ option.text }}
       </gl-new-dropdown-item>
-    </gl-new-dropdown>
+    </gl-dropdown>
   </div>
 </template>

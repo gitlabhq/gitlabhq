@@ -1,11 +1,9 @@
 <script>
-import { mapGetters, mapActions } from 'vuex';
 import Sortable from 'sortablejs';
 import isWipLimitsOn from 'ee_else_ce/boards/mixins/is_wip_limits';
 import BoardListHeader from 'ee_else_ce/boards/components/board_list_header.vue';
 import Tooltip from '~/vue_shared/directives/tooltip';
 import EmptyComponent from '~/vue_shared/components/empty_component';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import BoardBlankState from './board_blank_state.vue';
 import BoardList from './board_list.vue';
 import boardsStore from '../stores/boards_store';
@@ -23,7 +21,7 @@ export default {
   directives: {
     Tooltip,
   },
-  mixins: [isWipLimitsOn, glFeatureFlagMixin()],
+  mixins: [isWipLimitsOn],
   props: {
     list: {
       type: Object,
@@ -64,7 +62,6 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(['getIssues']),
     showBoardListAndBoardInfo() {
       return this.list.type !== ListType.blank && this.list.type !== ListType.promotion;
     },
@@ -72,36 +69,19 @@ export default {
       // eslint-disable-next-line @gitlab/require-i18n-strings
       return `boards.${this.boardId}.${this.list.type}.${this.list.id}`;
     },
-    listIssues() {
-      if (!this.glFeatures.graphqlBoardLists) {
-        return this.list.issues;
-      }
-      return this.getIssues(this.list.id);
-    },
-    shouldFetchIssues() {
-      return this.glFeatures.graphqlBoardLists && this.list.type !== ListType.blank;
-    },
   },
   watch: {
     filter: {
       handler() {
-        if (this.shouldFetchIssues) {
-          this.fetchIssuesForList(this.list.id);
-        } else {
-          this.list.page = 1;
-          this.list.getIssues(true).catch(() => {
-            // TODO: handle request error
-          });
-        }
+        this.list.page = 1;
+        this.list.getIssues(true).catch(() => {
+          // TODO: handle request error
+        });
       },
       deep: true,
     },
   },
   mounted() {
-    if (this.shouldFetchIssues) {
-      this.fetchIssuesForList(this.list.id);
-    }
-
     const instance = this;
 
     const sortableOptions = getBoardSortableDefaultOptions({
@@ -128,7 +108,6 @@ export default {
     Sortable.create(this.$el.parentNode, sortableOptions);
   },
   methods: {
-    ...mapActions(['fetchIssuesForList']),
     showListNewIssueForm(listId) {
       eventHub.$emit('showForm', listId);
     },
@@ -163,7 +142,7 @@ export default {
         :disabled="disabled"
         :group-id="groupId || null"
         :issue-link-base="issueLinkBase"
-        :issues="listIssues"
+        :issues="list.issues"
         :list="list"
         :loading="list.loading"
         :root-path="rootPath"

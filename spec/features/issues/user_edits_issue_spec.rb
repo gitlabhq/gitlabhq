@@ -152,9 +152,7 @@ RSpec.describe "Issues > User edits issue", :js do
           visit project_issue_path(project, issue2)
 
           page.within '.assignee' do
-            page.within '.value .author' do
-              expect(page).to have_content user.name
-            end
+            expect(page).to have_content user.name
 
             click_link 'Edit'
             click_link user.name

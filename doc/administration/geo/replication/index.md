@@ -118,7 +118,6 @@ The following are required to run Geo:
   - [CentOS](https://www.centos.org) 7.4+
   - [Ubuntu](https://ubuntu.com) 16.04+
 - PostgreSQL 11+ with [Streaming Replication](https://wiki.postgresql.org/wiki/Streaming_Replication)
-- Git 2.9+
 - All nodes must run the same GitLab version.
 
 Additionally, check GitLab's [minimum requirements](../../../install/requirements.md),

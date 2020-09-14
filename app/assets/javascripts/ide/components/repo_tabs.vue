@@ -1,5 +1,5 @@
 <script>
-import { mapActions } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 import RepoTab from './repo_tab.vue';
 
 export default {
@@ -20,6 +20,9 @@ export default {
       required: true,
     },
   },
+  computed: {
+    ...mapGetters(['getUrlForPath']),
+  },
   methods: {
     ...mapActions(['updateViewer', 'removePendingTab']),
     openFileViewer(viewer) {
@@ -27,7 +30,7 @@ export default {
 
       if (this.activeFile.pending) {
         return this.removePendingTab(this.activeFile).then(() => {
-          this.$router.push(`/project${this.activeFile.url}`);
+          this.$router.push(this.getUrlForPath(this.activeFile.path));
         });
       }
 

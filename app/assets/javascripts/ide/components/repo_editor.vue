@@ -48,6 +48,7 @@ export default {
       'renderWhitespaceInCode',
       'editorTheme',
       'entries',
+      'currentProjectId',
     ]),
     ...mapGetters([
       'currentMergeRequest',
@@ -379,7 +380,7 @@ export default {
       :path="file.rawPath || file.path"
       :file-path="file.path"
       :file-size="file.size"
-      :project-path="file.projectId"
+      :project-path="currentProjectId"
       :commit-sha="currentBranchCommit"
       :type="fileType"
     />
@@ -390,7 +391,7 @@ export default {
       :new-sha="currentMergeRequest.sha"
       :old-path="file.mrChange.old_path"
       :old-sha="currentMergeRequest.baseCommitSha"
-      :project-path="file.projectId"
+      :project-path="currentProjectId"
     />
   </div>
 </template>

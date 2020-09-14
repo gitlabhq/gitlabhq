@@ -1,4 +1,3 @@
-import { TestStatus } from '~/pipelines/constants';
 import { __, sprintf } from '../../../locale';
 
 export function iconForTestStatus(status) {
@@ -25,18 +24,3 @@ export const addIconStatus = testCase => ({
   icon: iconForTestStatus(testCase.status),
   formattedTime: formattedTime(testCase.execution_time),
 });
-
-export const sortTestCases = (a, b) => {
-  if (a.status === b.status) {
-    return 0;
-  }
-
-  switch (b.status) {
-    case TestStatus.SUCCESS:
-      return -1;
-    case TestStatus.FAILED:
-      return 1;
-    default:
-      return 0;
-  }
-};

@@ -304,11 +304,7 @@ const boardsStore = {
   onNewListIssueResponse(list, issue, data) {
     issue.refreshData(data);
 
-    if (
-      !gon.features.boardsWithSwimlanes &&
-      !gon.features.graphqlBoardLists &&
-      list.issues.length > 1
-    ) {
+    if (!gon.features.boardsWithSwimlanes && list.issuesSize > 1) {
       const moveBeforeId = list.issues[1].id;
       this.moveIssue(issue.id, null, null, null, moveBeforeId);
     }
@@ -727,10 +723,6 @@ const boardsStore = {
   newListIssue(list, issue) {
     list.addIssue(issue, null, 0);
     list.issuesSize += 1;
-    let listId = list.id;
-    if (typeof listId === 'string') {
-      listId = getIdFromGraphQLId(listId);
-    }
 
     return this.newIssue(list.id, issue)
       .then(res => res.data)

@@ -35,7 +35,7 @@ module RuboCop
           )
         PATTERN
 
-        def_node_search :argument_name, <<~PATTERN
+        def_node_matcher :argument_name?, <<~PATTERN
           {(sym $...) (str $...)}
         PATTERN
 
@@ -87,7 +87,11 @@ module RuboCop
         end
 
         def arguments_to_table_names(arguments)
-          arguments.flat_map { |argument| argument_name(argument).to_a.flatten.first.to_s.pluralize.to_sym }
+          arguments.select { |argument| argument_name?(argument) }
+                   .map(&:value)
+                   .map(&:to_s)
+                   .map(&:pluralize)
+                   .map(&:to_sym)
         end
       end
     end

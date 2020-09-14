@@ -1,0 +1,10 @@
+= form.label :reviewer_id, "Reviewer", class: "col-form-label #{has_due_date ? "col-md-2 col-lg-4" : "col-sm-2"}"
+.col-sm-10{ class: ("col-md-8" if has_due_date) }
+  .issuable-form-select-holder.selectbox
+    - issuable.reviewers.each do |reviewer|
+      = hidden_field_tag "#{issuable.to_ability_name}[reviewer_ids][]", reviewer.id, id: nil, data: { meta: reviewer.name, avatar_url: reviewer.avatar_url, name: reviewer.name, username: reviewer.username }
+
+    - if issuable.reviewers.empty?
+      = hidden_field_tag "#{issuable.to_ability_name}[reviewer_ids][]", 0, id: nil, data: { meta: '' }
+
+    = dropdown_tag(users_dropdown_label(issuable.reviewers), options: reviewers_dropdown_options(issuable.to_ability_name))

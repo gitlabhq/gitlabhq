@@ -221,4 +221,4 @@ Feature.disable(:save_issuable_health_status)
 - [Export issues](csv_export.md)
 - [Issues API](../../../api/issues.md)
 - Configure an [external issue tracker](../../../integration/external-issue-tracker.md)
-  such as Jira, Redmine, or Bugzilla.
+  such as Jira, Redmine, Bugzilla, or EWM.

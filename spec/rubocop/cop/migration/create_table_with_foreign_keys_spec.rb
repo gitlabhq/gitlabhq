@@ -42,14 +42,28 @@ RSpec.describe RuboCop::Cop::Migration::CreateTableWithForeignKeys, type: :ruboc
     context 'with foreign key' do
       context 'with just one foreign key' do
         context 'when the foreign_key targets a high traffic table' do
-          it 'does not register any offenses' do
-            expect_no_offenses(<<~RUBY)
-              def up
-                create_table(:foo) do |t|
-                  t.references :project, "foreign_key" => { on_delete: 'cascade', to_table: 'projects' }
+          context 'when the foreign_key has to_table option set' do
+            it 'does not register any offenses' do
+              expect_no_offenses(<<~RUBY)
+                def up
+                  create_table(:foo) do |t|
+                    t.references :project, "foreign_key" => { on_delete: 'cascade', to_table: 'projects' }
+                  end
                 end
-              end
-            RUBY
+              RUBY
+            end
+          end
+
+          context 'when the foreign_key does not have to_table option set' do
+            it 'does not register any offenses' do
+              expect_no_offenses(<<~RUBY)
+                def up
+                  create_table(:foo) do |t|
+                    t.references :project, foreign_key: { on_delete: 'cascade' }
+                  end
+                end
+              RUBY
+            end
           end
         end
 

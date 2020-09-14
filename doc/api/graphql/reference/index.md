@@ -3373,6 +3373,7 @@ State of a Sentry error
 | `DISCORD_SERVICE` |  |
 | `DRONE_CI_SERVICE` |  |
 | `EMAILS_ON_PUSH_SERVICE` |  |
+| `EWM_SERVICE` |  |
 | `EXTERNAL_WIKI_SERVICE` |  |
 | `FLOWDOCK_SERVICE` |  |
 | `GITHUB_SERVICE` |  |

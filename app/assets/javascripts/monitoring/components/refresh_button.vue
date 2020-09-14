@@ -4,7 +4,7 @@ import { mapActions } from 'vuex';
 import {
   GlButtonGroup,
   GlButton,
-  GlNewDropdown,
+  GlDropdown,
   GlNewDropdownItem,
   GlNewDropdownDivider,
   GlTooltipDirective,
@@ -48,7 +48,7 @@ export default {
   components: {
     GlButtonGroup,
     GlButton,
-    GlNewDropdown,
+    GlDropdown,
     GlNewDropdownItem,
     GlNewDropdownDivider,
   },
@@ -152,7 +152,7 @@ export default {
       icon="retry"
       @click="refresh"
     />
-    <gl-new-dropdown
+    <gl-dropdown
       v-if="!disableMetricDashboardRefreshRate"
       v-gl-tooltip
       :title="s__('Metrics|Set refresh rate')"
@@ -173,6 +173,6 @@ export default {
         @click="setRefreshInterval(option)"
         >{{ option.label }}</gl-new-dropdown-item
       >
-    </gl-new-dropdown>
+    </gl-dropdown>
   </gl-button-group>
 </template>

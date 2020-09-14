@@ -6,7 +6,7 @@ import {
   GlIcon,
   GlLink,
   GlLoadingIcon,
-  GlNewDropdown as GlDropdown,
+  GlDropdown,
   GlNewDropdownItem as GlDropdownItem,
   GlNewDropdownDivider as GlDropdownDivider,
   GlModal,

@@ -9,7 +9,7 @@ import {
   GlFormInput,
   GlFormSelect,
   GlLink,
-  GlNewDropdown,
+  GlDropdown,
   GlNewDropdownItem,
   GlSearchBoxByType,
   GlSprintf,
@@ -37,7 +37,7 @@ export default {
     GlFormInput,
     GlFormSelect,
     GlLink,
-    GlNewDropdown,
+    GlDropdown,
     GlNewDropdownItem,
     GlSearchBoxByType,
     GlSprintf,
@@ -173,7 +173,7 @@ export default {
       >{{ error }}</gl-alert
     >
     <gl-form-group :label="s__('Pipeline|Run for')">
-      <gl-new-dropdown :text="refValue" block>
+      <gl-dropdown :text="refValue" block>
         <gl-search-box-by-type
           v-model.trim="searchTerm"
           :placeholder="__('Search branches and tags')"
@@ -189,7 +189,7 @@ export default {
         >
           {{ ref }}
         </gl-new-dropdown-item>
-      </gl-new-dropdown>
+      </gl-dropdown>
 
       <template #description>
         <div>

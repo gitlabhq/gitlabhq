@@ -27,6 +27,10 @@ describe('IDE store file actions', () => {
     };
 
     store = createStore();
+
+    store.state.currentProjectId = 'test/test';
+    store.state.currentBranchId = 'master';
+
     router = createRouter(store);
 
     jest.spyOn(store, 'commit');
@@ -72,10 +76,7 @@ describe('IDE store file actions', () => {
     });
 
     it('closes file & opens next available file', () => {
-      const f = {
-        ...file('newOpenFile'),
-        url: '/newOpenFile',
-      };
+      const f = file('newOpenFile');
 
       store.state.openFiles.push(f);
       store.state.entries[f.path] = f;
@@ -84,7 +85,7 @@ describe('IDE store file actions', () => {
         .dispatch('closeFile', localFile)
         .then(Vue.nextTick)
         .then(() => {
-          expect(router.push).toHaveBeenCalledWith(`/project${f.url}`);
+          expect(router.push).toHaveBeenCalledWith('/project/test/test/tree/master/-/newOpenFile/');
         });
     });
 
@@ -296,7 +297,6 @@ describe('IDE store file actions', () => {
     describe('Re-named success', () => {
       beforeEach(() => {
         localFile = file(`newCreate-${Math.random()}`);
-        localFile.url = `project/getFileDataURL`;
         localFile.prevPath = 'old-dull-file';
         localFile.path = 'new-shiny-file';
         store.state.entries[localFile.path] = localFile;
@@ -393,7 +393,11 @@ describe('IDE store file actions', () => {
         tmpFile.mrChange = { new_file: false };
 
         return store.dispatch('getRawFileData', { path: tmpFile.path }).then(() => {
-          expect(service.getBaseRawFileData).toHaveBeenCalledWith(tmpFile, 'SHA');
+          expect(service.getBaseRawFileData).toHaveBeenCalledWith(
+            tmpFile,
+            'gitlab-org/gitlab-ce',
+            'SHA',
+          );
           expect(tmpFile.baseRaw).toBe('baseraw');
         });
       });
@@ -660,7 +664,7 @@ describe('IDE store file actions', () => {
         });
 
         it('pushes route for active file', () => {
-          expect(router.push).toHaveBeenCalledWith(`/project${tmpFile.url}`);
+          expect(router.push).toHaveBeenCalledWith('/project/test/test/tree/master/-/tempFile/');
         });
       });
     });
@@ -735,10 +739,8 @@ describe('IDE store file actions', () => {
     });
 
     it('pushes router URL when added', () => {
-      store.state.currentBranchId = 'master';
-
       return store.dispatch('openPendingTab', { file: f, keyPrefix: 'pending' }).then(() => {
-        expect(router.push).toHaveBeenCalledWith('/project/123/tree/master/');
+        expect(router.push).toHaveBeenCalledWith('/project/test/test/tree/master/');
       });
     });
   });

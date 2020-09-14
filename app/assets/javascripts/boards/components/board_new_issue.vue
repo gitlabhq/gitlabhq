@@ -42,9 +42,6 @@ export default {
       }
       return this.title === '';
     },
-    shouldDisplaySwimlanes() {
-      return this.glFeatures.boardsWithSwimlanes && this.isSwimlanesOn;
-    },
   },
   mounted() {
     this.$refs.input.focus();
@@ -78,7 +75,7 @@ export default {
       eventHub.$emit(`scroll-board-list-${this.list.id}`);
       this.cancel();
 
-      if (this.shouldDisplaySwimlanes || this.glFeatures.graphqlBoardLists) {
+      if (this.glFeatures.boardsWithSwimlanes && this.isSwimlanesOn) {
         this.addListIssue({ list: this.list, issue, position: 0 });
       }
 
@@ -88,7 +85,7 @@ export default {
           // Need this because our jQuery very kindly disables buttons on ALL form submissions
           $(this.$refs.submitButton).enable();
 
-          if (!this.shouldDisplaySwimlanes && !this.glFeatures.graphqlBoardLists) {
+          if (!this.glFeatures.boardsWithSwimlanes || !this.isSwimlanesOn) {
             boardsStore.setIssueDetail(issue);
             boardsStore.setListDetail(this.list);
           }
@@ -98,7 +95,7 @@ export default {
           $(this.$refs.submitButton).enable();
 
           // Remove the issue
-          if (this.shouldDisplaySwimlanes || this.glFeatures.graphqlBoardLists) {
+          if (this.glFeatures.boardsWithSwimlanes && this.isSwimlanesOn) {
             this.addListIssueFailure({ list: this.list, issue });
           } else {
             this.list.removeIssue(issue);

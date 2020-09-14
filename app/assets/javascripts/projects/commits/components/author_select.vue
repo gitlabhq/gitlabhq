@@ -2,7 +2,7 @@
 import { debounce } from 'lodash';
 import { mapState, mapActions } from 'vuex';
 import {
-  GlNewDropdown,
+  GlDropdown,
   GlNewDropdownHeader,
   GlNewDropdownItem,
   GlSearchBoxByType,
@@ -18,7 +18,7 @@ const tooltipMessage = __('Searching by both author and message is currently not
 export default {
   name: 'AuthorSelect',
   components: {
-    GlNewDropdown,
+    GlDropdown,
     GlNewDropdownHeader,
     GlNewDropdownItem,
     GlSearchBoxByType,
@@ -107,7 +107,7 @@ export default {
 
 <template>
   <div ref="dropdownContainer" v-gl-tooltip :title="tooltipTitle" :disabled="!hasSearchParam">
-    <gl-new-dropdown
+    <gl-dropdown
       :text="dropdownText"
       :disabled="hasSearchParam"
       toggle-class="gl-py-3 gl-border-0"
@@ -137,6 +137,6 @@ export default {
       >
         {{ author.name }}
       </gl-new-dropdown-item>
-    </gl-new-dropdown>
+    </gl-dropdown>
   </div>
 </template>

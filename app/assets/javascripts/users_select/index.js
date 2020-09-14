@@ -55,6 +55,7 @@ function UsersSelect(currentUser, els, options = {}) {
     const defaultLabel = $dropdown.data('defaultLabel');
     const issueURL = $dropdown.data('issueUpdate');
     const $selectbox = $dropdown.closest('.selectbox');
+    const $assignToMeLink = $selectbox.next('.assign-to-me-link');
     let $block = $selectbox.closest('.block');
     const abilityName = $dropdown.data('abilityName');
     let $value = $block.find('.value');
@@ -161,7 +162,7 @@ function UsersSelect(currentUser, els, options = {}) {
       });
     };
 
-    $('.assign-to-me-link').on('click', e => {
+    $assignToMeLink.on('click', e => {
       e.preventDefault();
       $(e.currentTarget).hide();
 
@@ -451,9 +452,9 @@ function UsersSelect(currentUser, els, options = {}) {
           }
 
           if (getSelected().find(u => u === gon.current_user_id)) {
-            $('.assign-to-me-link').hide();
+            $assignToMeLink.hide();
           } else {
-            $('.assign-to-me-link').show();
+            $assignToMeLink.show();
           }
         }
 

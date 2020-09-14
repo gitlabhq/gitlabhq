@@ -2,9 +2,9 @@
 import {
   GlAlert,
   GlButton,
-  GlNewDropdown,
+  GlDropdown,
   GlNewDropdownItem,
-  GlNewDropdownText,
+  GlDropdownText,
   GlFormGroup,
   GlFormSelect,
   GlIcon,
@@ -34,9 +34,9 @@ export default {
   components: {
     GlAlert,
     GlButton,
-    GlNewDropdown,
+    GlDropdown,
     GlNewDropdownItem,
-    GlNewDropdownText,
+    GlDropdownText,
     GlFormGroup,
     GlFormSelect,
     GlIcon,
@@ -293,7 +293,7 @@ export default {
           <gl-icon name="arrow-right" :aria-label="__('Will be mapped to')" />
         </template>
         <template #cell(gitlabUsername)="data">
-          <gl-new-dropdown
+          <gl-dropdown
             :text="data.value || $options.currentUsername"
             class="w-100"
             :aria-label="
@@ -314,10 +314,10 @@ export default {
               {{ user.username }} ({{ user.name }})
             </gl-new-dropdown-item>
 
-            <gl-new-dropdown-text v-show="shouldShowNoMatchesFoundText" class="text-secondary">
+            <gl-dropdown-text v-show="shouldShowNoMatchesFoundText" class="text-secondary">
               {{ __('No matches found') }}
-            </gl-new-dropdown-text>
-          </gl-new-dropdown>
+            </gl-dropdown-text>
+          </gl-dropdown>
         </template>
       </gl-table>
 

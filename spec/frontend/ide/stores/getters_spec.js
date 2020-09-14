@@ -482,4 +482,15 @@ describe('IDE store getters', () => {
       expect(localStore.getters.getAvailableFileName('foo-bar1.jpg')).toBe('foo-bar1.jpg');
     });
   });
+
+  describe('getUrlForPath', () => {
+    it('returns a route url for the given path', () => {
+      localState.currentProjectId = 'test/test';
+      localState.currentBranchId = 'master';
+
+      expect(localStore.getters.getUrlForPath('path/to/foo/bar-1.jpg')).toBe(
+        `/project/test/test/tree/master/-/path/to/foo/bar-1.jpg/`,
+      );
+    });
+  });
 });

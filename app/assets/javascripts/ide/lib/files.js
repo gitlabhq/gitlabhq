@@ -15,8 +15,6 @@ export const splitParent = path => {
  */
 export const decorateFiles = ({
   data,
-  projectId,
-  branchId,
   tempFile = false,
   content = '',
   binary = false,
@@ -41,12 +39,9 @@ export const decorateFiles = ({
     parentPath = parentFolder && parentFolder.path;
 
     const tree = decorateData({
-      projectId,
-      branchId,
       id: path,
       name,
       path,
-      url: `/${projectId}/tree/${branchId}/-/${path}/`,
       type: 'tree',
       tempFile,
       changed: tempFile,
@@ -77,12 +72,9 @@ export const decorateFiles = ({
       parentPath = fileFolder && fileFolder.path;
 
       file = decorateData({
-        projectId,
-        branchId,
         id: path,
         name,
         path,
-        url: `/${projectId}/blob/${branchId}/-/${path}`,
         type: 'blob',
         tempFile,
         changed: tempFile,

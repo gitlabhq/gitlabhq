@@ -1,5 +1,5 @@
 import { mount, shallowMount } from '@vue/test-utils';
-import { GlNewDropdown, GlNewDropdownItem, GlForm } from '@gitlab/ui';
+import { GlDropdown, GlNewDropdownItem, GlForm } from '@gitlab/ui';
 import MockAdapter from 'axios-mock-adapter';
 import waitForPromises from 'helpers/wait_for_promises';
 import axios from '~/lib/utils/axios_utils';
@@ -23,7 +23,7 @@ describe('Pipeline New Form', () => {
   };
 
   const findForm = () => wrapper.find(GlForm);
-  const findDropdown = () => wrapper.find(GlNewDropdown);
+  const findDropdown = () => wrapper.find(GlDropdown);
   const findDropdownItems = () => wrapper.findAll(GlNewDropdownItem);
   const findVariableRows = () => wrapper.findAll('[data-testid="ci-variable-row"]');
   const findRemoveIcons = () => wrapper.findAll('[data-testid="remove-ci-variable-row"]');

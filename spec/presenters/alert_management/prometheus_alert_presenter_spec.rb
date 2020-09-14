@@ -38,7 +38,11 @@ RSpec.describe AlertManagement::PrometheusAlertPresenter do
 
           #### Alert Details
 
-          **custom annotation:** custom annotation value
+          **annotations.custom annotation:** custom annotation value#{markdown_line_break}
+          **annotations.gitlab_incident_markdown:** **`markdown example`**#{markdown_line_break}
+          **annotations.title:** Alert title#{markdown_line_break}
+          **startsAt:** 2020-04-27T10:10:22.265949279Z#{markdown_line_break}
+          **generatorURL:** http://8d467bd4607a:9090/graph?g0.expr=vector%281%29&g0.tab=1
 
           ---
 

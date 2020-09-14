@@ -332,33 +332,6 @@ RSpec.describe AlertManagement::Alert do
     end
   end
 
-  describe '#details' do
-    let(:payload) do
-      {
-        'title' => 'Details title',
-        'custom' => {
-          'alert' => {
-            'fields' => %w[one two]
-          }
-        },
-        'yet' => {
-          'another' => 'field'
-        }
-      }
-    end
-
-    let(:alert) { build(:alert_management_alert, project: project, title: 'Details title', payload: payload) }
-
-    subject { alert.details }
-
-    it 'renders the payload as inline hash' do
-      is_expected.to eq(
-        'custom.alert.fields' => %w[one two],
-        'yet.another' => 'field'
-      )
-    end
-  end
-
   describe '#to_reference' do
     it { expect(triggered_alert.to_reference).to eq('') }
   end

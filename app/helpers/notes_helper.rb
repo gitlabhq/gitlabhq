@@ -181,7 +181,7 @@ module NotesHelper
       reopenPath: reopen_issuable_path(issuable),
       notesPath: notes_url,
       prerenderedNotesCount: issuable.capped_notes_count(MAX_PRERENDERED_NOTES),
-      lastFetchedAt: Time.now.to_i
+      lastFetchedAt: Time.now.to_i * ::Gitlab::UpdatedNotesPaginator::MICROSECOND
     }
 
     if issuable.is_a?(MergeRequest)

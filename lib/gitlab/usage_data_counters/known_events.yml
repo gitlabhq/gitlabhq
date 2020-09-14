@@ -173,3 +173,24 @@
   redis_slot: incident_management
   category: incident_management
   aggregation: weekly
+# Project Management group
+- name: g_project_management_issue_title_changed
+  category: issues_edit
+  redis_slot: project_management
+  aggregation: daily
+- name: g_project_management_issue_description_changed
+  category: issues_edit
+  redis_slot: project_management
+  aggregation: daily
+- name: g_project_management_issue_assignee_changed
+  category: issues_edit
+  redis_slot: project_management
+  aggregation: daily
+- name: g_project_management_issue_made_confidential
+  category: issues_edit
+  redis_slot: project_management
+  aggregation: daily
+- name: g_project_management_issue_made_visible
+  category: issues_edit
+  redis_slot: project_management
+  aggregation: daily

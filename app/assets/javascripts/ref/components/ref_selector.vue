@@ -1,7 +1,7 @@
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex';
 import {
-  GlNewDropdown,
+  GlDropdown,
   GlNewDropdownDivider,
   GlNewDropdownHeader,
   GlSearchBoxByType,
@@ -18,7 +18,7 @@ export default {
   name: 'RefSelector',
   store: createStore(),
   components: {
-    GlNewDropdown,
+    GlDropdown,
     GlNewDropdownDivider,
     GlNewDropdownHeader,
     GlSearchBoxByType,
@@ -120,7 +120,7 @@ export default {
 </script>
 
 <template>
-  <gl-new-dropdown v-bind="$attrs" class="ref-selector" @shown="focusSearchBox">
+  <gl-dropdown v-bind="$attrs" class="ref-selector" @shown="focusSearchBox">
     <template slot="button-content">
       <span class="gl-flex-grow-1 gl-ml-2 gl-text-gray-400" data-testid="button-content">
         <span v-if="selectedRef" class="gl-font-monospace">{{ selectedRef }}</span>
@@ -208,5 +208,5 @@ export default {
         </template>
       </div>
     </div>
-  </gl-new-dropdown>
+  </gl-dropdown>
 </template>

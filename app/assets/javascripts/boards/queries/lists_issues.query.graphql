@@ -3,14 +3,13 @@
 query ListIssues(
   $fullPath: ID!
   $boardId: ID!
-  $id: ID
   $filters: BoardIssueInput
   $isGroup: Boolean = false
   $isProject: Boolean = false
 ) {
   group(fullPath: $fullPath) @include(if: $isGroup) {
     board(id: $boardId) {
-      lists(id: $id) {
+      lists {
         nodes {
           id
           issues(filters: $filters) {
@@ -24,7 +23,7 @@ query ListIssues(
   }
   project(fullPath: $fullPath) @include(if: $isProject) {
     board(id: $boardId) {
-      lists(id: $id) {
+      lists {
         nodes {
           id
           issues(filters: $filters) {

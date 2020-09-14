@@ -643,6 +643,16 @@ export const secondsToMilliseconds = seconds => seconds * 1000;
 export const secondsToDays = seconds => Math.round(seconds / 86400);
 
 /**
+ * Returns the date n days after the date provided
+ *
+ * @param {Date} date the initial date
+ * @param {Number} numberOfDays number of days after
+ * @return {Date} the date following the date provided
+ */
+export const nDaysAfter = (date, numberOfDays) =>
+  new Date(newDate(date)).setDate(date.getDate() + numberOfDays);
+
+/**
  * Returns the date after the date provided
  *
  * @param {Date} date the initial date

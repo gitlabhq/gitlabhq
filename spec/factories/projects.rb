@@ -392,6 +392,12 @@ FactoryBot.define do
     end
   end
 
+  factory :ewm_project, parent: :project do
+    has_external_issue_tracker { true }
+
+    ewm_service
+  end
+
   factory :project_with_design, parent: :project do
     after(:create) do |project|
       issue = create(:issue, project: project)

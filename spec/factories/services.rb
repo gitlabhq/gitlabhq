@@ -116,6 +116,12 @@ FactoryBot.define do
     issue_tracker
   end
 
+  factory :ewm_service do
+    project
+    active { true }
+    issue_tracker
+  end
+
   trait :issue_tracker do
     transient do
       create_data { true }

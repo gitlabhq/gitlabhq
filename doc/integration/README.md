@@ -15,6 +15,7 @@ GitLab can be integrated with the following external issue trackers:
 - Jira
 - Redmine
 - Bugzilla
+- EWM
 - YouTrack
 
 ## Authentication sources

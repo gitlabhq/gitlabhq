@@ -12,10 +12,7 @@ export const dataStructure = () => ({
   // it can also contain a prefix `pending-` for files opened in review mode
   key: '',
   type: '',
-  projectId: '',
-  branchId: '',
   name: '',
-  url: '',
   path: '',
   tempFile: false,
   tree: [],
@@ -44,10 +41,7 @@ export const dataStructure = () => ({
 export const decorateData = entity => {
   const {
     id,
-    projectId,
-    branchId,
     type,
-    url,
     name,
     path,
     content = '',
@@ -63,12 +57,9 @@ export const decorateData = entity => {
 
   return Object.assign(dataStructure(), {
     id,
-    projectId,
-    branchId,
     key: `${name}-${type}-${id}`,
     type,
     name,
-    url,
     path,
     tempFile,
     opened,
@@ -187,11 +178,6 @@ export const mergeTrees = (fromTree, toTree) => {
   }
 
   return toTree;
-};
-
-export const replaceFileUrl = (url, oldPath, newPath) => {
-  // Add `/-/` so that we don't accidentally replace project path
-  return url.replace(`/-/${oldPath}`, `/-/${newPath}`);
 };
 
 export const swapInStateArray = (state, arr, key, entryPath) =>

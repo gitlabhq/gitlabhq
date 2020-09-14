@@ -61,6 +61,7 @@ RSpec.describe Project do
     it { is_expected.to have_one(:youtrack_service) }
     it { is_expected.to have_one(:custom_issue_tracker_service) }
     it { is_expected.to have_one(:bugzilla_service) }
+    it { is_expected.to have_one(:ewm_service) }
     it { is_expected.to have_one(:external_wiki_service) }
     it { is_expected.to have_one(:confluence_service) }
     it { is_expected.to have_one(:project_feature) }

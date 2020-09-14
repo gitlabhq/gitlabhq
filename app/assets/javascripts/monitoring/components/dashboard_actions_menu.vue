@@ -2,7 +2,7 @@
 import { mapState, mapGetters, mapActions } from 'vuex';
 import {
   GlDeprecatedButton,
-  GlNewDropdown,
+  GlDropdown,
   GlNewDropdownDivider,
   GlNewDropdownItem,
   GlModal,
@@ -23,7 +23,7 @@ import { getAddMetricTrackingOptions } from '../utils';
 export default {
   components: {
     GlDeprecatedButton,
-    GlNewDropdown,
+    GlDropdown,
     GlNewDropdownDivider,
     GlNewDropdownItem,
     GlModal,
@@ -143,7 +143,7 @@ export default {
     as part of https://gitlab.com/gitlab-org/gitlab-ui/-/issues/936
     The variant will create a dropdown with an icon, no text and no caret    
   -->
-  <gl-new-dropdown
+  <gl-dropdown
     v-gl-tooltip
     data-testid="actions-menu"
     data-qa-selector="actions_menu_dropdown"
@@ -287,5 +287,5 @@ export default {
         :project-path="projectPath"
       />
     </template>
-  </gl-new-dropdown>
+  </gl-dropdown>
 </template>

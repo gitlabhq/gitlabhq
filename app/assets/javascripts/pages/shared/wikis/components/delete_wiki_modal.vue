@@ -1,11 +1,12 @@
 <script>
+import { GlButton, GlModal, GlModalDirective } from '@gitlab/ui';
 import { escape } from 'lodash';
-import { GlModal, GlModalDirective } from '@gitlab/ui';
 import { s__, sprintf } from '~/locale';
 
 export default {
   components: {
     GlModal,
+    GlButton,
   },
   directives: {
     'gl-modal': GlModalDirective,
@@ -55,14 +56,14 @@ export default {
 
 <template>
   <div class="d-inline-block">
-    <button
+    <gl-button
       v-gl-modal="modalId"
-      type="button"
-      class="btn btn-danger"
+      category="primary"
+      variant="danger"
       data-qa-selector="delete_button"
     >
       {{ __('Delete') }}
-    </button>
+    </gl-button>
     <gl-modal
       :title="title"
       :action-primary="{

@@ -3,7 +3,7 @@ import { debounce } from 'lodash';
 import { mapActions, mapState, mapGetters } from 'vuex';
 import {
   GlButton,
-  GlNewDropdown,
+  GlDropdown,
   GlLoadingIcon,
   GlNewDropdownItem,
   GlNewDropdownHeader,
@@ -28,7 +28,7 @@ export default {
   components: {
     GlIcon,
     GlButton,
-    GlNewDropdown,
+    GlDropdown,
     GlLoadingIcon,
     GlNewDropdownItem,
     GlNewDropdownHeader,
@@ -181,7 +181,7 @@ export default {
     <span aria-hidden="true" class="gl-pl-3 border-left gl-mb-3 d-none d-sm-block"></span>
 
     <div class="mb-2 pr-2 d-flex d-sm-block">
-      <gl-new-dropdown
+      <gl-dropdown
         id="monitor-environments-dropdown"
         ref="monitorEnvironmentsDropdown"
         class="flex-grow-1"
@@ -214,7 +214,7 @@ export default {
             {{ __('No matching results') }}
           </div>
         </div>
-      </gl-new-dropdown>
+      </gl-dropdown>
     </div>
 
     <div class="mb-2 pr-2 d-flex d-sm-block">

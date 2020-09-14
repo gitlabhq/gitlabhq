@@ -1,0 +1,5 @@
+---
+title: Use the correct start time when polling for updated notes
+merge_request: 42124
+author:
+type: fixed

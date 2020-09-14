@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Design management design version dropdown component renders design version dropdown button 1`] = `
-<gl-new-dropdown-stub
+<gl-dropdown-stub
   category="tertiary"
   headertext=""
   issueiid=""
@@ -35,11 +35,11 @@ exports[`Design management design version dropdown component renders design vers
         1
       
   </gl-new-dropdown-item-stub>
-</gl-new-dropdown-stub>
+</gl-dropdown-stub>
 `;
 
 exports[`Design management design version dropdown component renders design version list 1`] = `
-<gl-new-dropdown-stub
+<gl-dropdown-stub
   category="tertiary"
   headertext=""
   issueiid=""
@@ -73,5 +73,5 @@ exports[`Design management design version dropdown component renders design vers
         1
       
   </gl-new-dropdown-item-stub>
-</gl-new-dropdown-stub>
+</gl-dropdown-stub>
 `;

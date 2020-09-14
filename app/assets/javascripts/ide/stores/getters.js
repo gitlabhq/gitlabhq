@@ -174,3 +174,6 @@ export const getAvailableFileName = (state, getters) => path => {
 
   return newPath;
 };
+
+export const getUrlForPath = state => path =>
+  `/project/${state.currentProjectId}/tree/${state.currentBranchId}/-/${path}/`;

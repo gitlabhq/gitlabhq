@@ -84,6 +84,10 @@ export default () => {
     },
     store,
     apolloProvider,
+    provide: {
+      // TODO: Mv all non-reactive props from data/props to here.
+      rootPath: $boardApp.dataset.rootPath,
+    },
     data() {
       return {
         state: boardsStore.state,

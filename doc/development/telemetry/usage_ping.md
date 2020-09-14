@@ -243,6 +243,21 @@ Implemented using Redis methods [PFADD](https://redis.io/commands/pfadd) and [PF
    Keys:
 
    - `name`: unique event name.
+
+     Name format `<prefix>_<redis_slot>_name`.
+
+     Use one of the following prefixes for the event's name:
+
+        - `g_` for group, as an event which is tracked for group.
+        - `p_` for project, as an event which is tracked for project.
+        - `i_` for instance, as an event which is tracked for instance.
+        - `a_` for events encompassing all `g_`, `p_`, `i_`.
+        - `o_` for other.
+
+     Consider including in the event's name the Redis slot in order to be able to count totals for a specific category.
+
+     Example names: `i_compliance_credential_inventory`, `g_analytics_contribution`.
+
    - `category`: event category. Used for getting total counts for events in a category, for easier
      access to a group of events.
    - `redis_slot`: optional Redis slot; default value: event name. Used if needed to calculate totals

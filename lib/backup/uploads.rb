@@ -9,7 +9,7 @@ module Backup
     def initialize(progress)
       @progress = progress
 
-      super('uploads', File.join(Gitlab.config.uploads.storage_path, "uploads"))
+      super('uploads', File.join(Gitlab.config.uploads.storage_path, "uploads"), excludes: ['tmp'])
     end
   end
 end

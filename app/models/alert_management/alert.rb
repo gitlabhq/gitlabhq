@@ -32,8 +32,6 @@ module AlertManagement
       :acknowledged
     ].freeze
 
-    DETAILS_IGNORED_PARAMS = %w(start_time).freeze
-
     belongs_to :project
     belongs_to :issue, optional: true
     belongs_to :prometheus_alert, optional: true
@@ -119,7 +117,7 @@ module AlertManagement
     end
 
     delegate :iid, to: :issue, prefix: true, allow_nil: true
-    delegate :metrics_dashboard_url, :details_url, to: :present
+    delegate :metrics_dashboard_url, :details_url, :details, to: :present
 
     scope :for_iid, -> (iid) { where(iid: iid) }
     scope :for_status, -> (status) { where(status: status) }
@@ -170,12 +168,6 @@ module AlertManagement
     def self.last_prometheus_alert_by_project_id
       ids = select(arel_table[:id].maximum).group(:project_id)
       with_prometheus_alert.where(id: ids)
-    end
-
-    def details
-      details_payload = payload.except(*attributes.keys, *DETAILS_IGNORED_PARAMS)
-
-      Gitlab::Utils::InlineHash.merge_keys(details_payload)
     end
 
     def prometheus?

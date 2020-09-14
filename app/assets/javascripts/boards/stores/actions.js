@@ -79,10 +79,10 @@ export default {
         lists = lists.nodes.map(list =>
           boardStore.updateListPosition({
             ...list,
-            doNotFetchIssues: true,
+            id: getIdFromGraphQLId(list.id),
           }),
         );
-        commit(types.RECEIVE_BOARD_LISTS_SUCCESS, sortBy(lists, 'position'));
+        commit(types.RECEIVE_LISTS, sortBy(lists, 'position'));
         // Backlog list needs to be created if it doesn't exist
         if (!lists.find(l => l.type === ListType.backlog)) {
           dispatch('createList', { backlog: true });
@@ -113,7 +113,7 @@ export default {
           commit(types.CREATE_LIST_FAILURE);
         } else {
           const list = data.boardListCreate?.list;
-          dispatch('addList', list);
+          dispatch('addList', { ...list, id: getIdFromGraphQLId(list.id) });
         }
       })
       .catch(() => {
@@ -124,8 +124,8 @@ export default {
   addList: ({ state, commit }, list) => {
     const lists = state.boardLists;
     // Temporarily using positioning logic from boardStore
-    lists.push(boardStore.updateListPosition({ ...list, doNotFetchIssues: true }));
-    commit(types.RECEIVE_BOARD_LISTS_SUCCESS, sortBy(lists, 'position'));
+    lists.push(boardStore.updateListPosition(list));
+    commit(types.RECEIVE_LISTS, sortBy(lists, 'position'));
   },
 
   showWelcomeList: ({ state, dispatch }) => {
@@ -197,33 +197,8 @@ export default {
     notImplemented();
   },
 
-  fetchIssuesForList: ({ state, commit }, listId) => {
-    const { endpoints, boardType, filterParams } = state;
-    const { fullPath, boardId } = endpoints;
-
-    const variables = {
-      fullPath,
-      boardId: fullBoardId(boardId),
-      id: listId,
-      filters: filterParams,
-      isGroup: boardType === BoardType.group,
-      isProject: boardType === BoardType.project,
-    };
-
-    return gqlClient
-      .query({
-        query: listsIssuesQuery,
-        context: {
-          isSingleRequest: true,
-        },
-        variables,
-      })
-      .then(({ data }) => {
-        const { lists } = data[boardType]?.board;
-        const listIssues = formatListIssues(lists);
-        commit(types.RECEIVE_ISSUES_FOR_LIST_SUCCESS, { listIssues, listId });
-      })
-      .catch(() => commit(types.RECEIVE_ISSUES_FOR_LIST_FAILURE, listId));
+  fetchIssuesForList: () => {
+    notImplemented();
   },
 
   fetchIssuesForAllLists: ({ state, commit }) => {

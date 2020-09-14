@@ -15,13 +15,13 @@ export default {
   },
   computed: {
     ...mapState(['currentBranchId']),
-    ...mapGetters(['currentProject', 'currentTree', 'activeFile']),
+    ...mapGetters(['currentProject', 'currentTree', 'activeFile', 'getUrlForPath']),
   },
   mounted() {
     if (!this.activeFile) return;
 
     if (this.activeFile.pending && !this.activeFile.deleted) {
-      this.$router.push(`/project${this.activeFile.url}`, () => {
+      this.$router.push(this.getUrlForPath(this.activeFile.path), () => {
         this.updateViewer('editor');
       });
     } else if (this.activeFile.deleted) {

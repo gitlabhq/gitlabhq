@@ -65,32 +65,25 @@ RSpec.describe Projects::Prometheus::AlertPresenter do
           <<~MARKDOWN.chomp
             **Start time:** #{presenter.start_time}
 
-          MARKDOWN
-        )
-      end
-    end
-
-    context 'with annotations' do
-      before do
-        payload['annotations'] = { 'title' => 'Alert Title', 'foo' => 'value1', 'bar' => 'value2' }
-      end
-
-      it do
-        is_expected.to eq(
-          <<~MARKDOWN.chomp
-            **Start time:** #{presenter.start_time}
-
             #### Alert Details
 
-            **foo:** value1#{markdown_line_break}
-            **bar:** value2
+            **startsAt:** #{presenter.starts_at_raw}
           MARKDOWN
         )
       end
     end
 
-    context 'with full query' do
+    context 'with optional attributes' do
       before do
+        payload['annotations'] = {
+          'title' => 'Alert Title',
+          'foo' => 'value1',
+          'bar' => 'value2',
+          'description' => 'Alert Description',
+          'monitoring_tool' => 'monitoring_tool_name',
+          'service' => 'service_name',
+          'hosts' => ['http://localhost:3000', 'http://localhost:3001']
+        }
         payload['generatorURL'] = 'http://host?g0.expr=query'
       end
 
@@ -98,57 +91,44 @@ RSpec.describe Projects::Prometheus::AlertPresenter do
         is_expected.to eq(
           <<~MARKDOWN.chomp
             **Start time:** #{presenter.start_time}#{markdown_line_break}
-            **full_query:** `query`
-
-          MARKDOWN
-        )
-      end
-    end
-
-    context 'with the Generic Alert parameters' do
-      let(:generic_alert_params) do
-        {
-          'title' => 'The Generic Alert Title',
-          'description' => 'The Generic Alert Description',
-          'monitoring_tool' => 'monitoring_tool_name',
-          'service' => 'service_name',
-          'hosts' => ['http://localhost:3000', 'http://localhost:3001']
-        }
-      end
-
-      before do
-        payload['annotations'] = generic_alert_params
-      end
-
-      it do
-        is_expected.to eq(
-          <<~MARKDOWN.chomp
-            **Start time:** #{presenter.start_time}#{markdown_line_break}
+            **full_query:** `query`#{markdown_line_break}
             **Service:** service_name#{markdown_line_break}
             **Monitoring tool:** monitoring_tool_name#{markdown_line_break}
             **Hosts:** http://localhost:3000 http://localhost:3001
 
             #### Alert Details
 
-            **description:** The Generic Alert Description
+            **annotations.hosts:** ["http://localhost:3000", "http://localhost:3001"]#{markdown_line_break}
+            **annotations.service:** service_name#{markdown_line_break}
+            **annotations.monitoring_tool:** monitoring_tool_name#{markdown_line_break}
+            **annotations.description:** Alert Description#{markdown_line_break}
+            **annotations.bar:** value2#{markdown_line_break}
+            **annotations.foo:** value1#{markdown_line_break}
+            **annotations.title:** Alert Title#{markdown_line_break}
+            **generatorURL:** http://host?g0.expr=query#{markdown_line_break}
+            **startsAt:** #{presenter.starts_at_raw}
           MARKDOWN
         )
       end
+    end
 
-      context 'when hosts is a string' do
-        before do
-          payload['annotations'] = { 'hosts' => 'http://localhost:3000' }
-        end
+    context 'when hosts is a string' do
+      before do
+        payload['annotations'] = { 'hosts' => 'http://localhost:3000' }
+      end
 
-        it do
-          is_expected.to eq(
-            <<~MARKDOWN.chomp
-            **Start time:** #{presenter.start_time}#{markdown_line_break}
-            **Hosts:** http://localhost:3000
+      it do
+        is_expected.to eq(
+          <<~MARKDOWN.chomp
+          **Start time:** #{presenter.start_time}#{markdown_line_break}
+          **Hosts:** http://localhost:3000
 
-            MARKDOWN
-          )
-        end
+          #### Alert Details
+
+          **annotations.hosts:** http://localhost:3000#{markdown_line_break}
+          **startsAt:** #{presenter.starts_at_raw}
+          MARKDOWN
+        )
       end
     end
 
@@ -156,14 +136,7 @@ RSpec.describe Projects::Prometheus::AlertPresenter do
       let(:starts_at) { '2018-03-12T09:06:00Z' }
 
       shared_examples_for 'markdown with metrics embed' do
-        let(:expected_markdown) do
-          <<~MARKDOWN.chomp
-          **Start time:** #{presenter.start_time}#{markdown_line_break}
-          **full_query:** `avg(metric) > 1.0`
-
-          [](#{presenter.metrics_dashboard_url})
-          MARKDOWN
-        end
+        let(:embed_regex) { /\n\[\]\(#{Regexp.quote(presenter.metrics_dashboard_url)}\)\z/ }
 
         context 'without a starting time available' do
           around do |example|
@@ -174,11 +147,11 @@ RSpec.describe Projects::Prometheus::AlertPresenter do
             payload.delete('startsAt')
           end
 
-          it { is_expected.to eq(expected_markdown) }
+          it { is_expected.to match(embed_regex) }
         end
 
         context 'with a starting time available' do
-          it { is_expected.to eq(expected_markdown) }
+          it { is_expected.to match(embed_regex) }
         end
       end
 
@@ -208,12 +181,8 @@ RSpec.describe Projects::Prometheus::AlertPresenter do
         end
 
         context 'when not enough information is present for an embed' do
-          let(:expected_markdown) do
-            <<~MARKDOWN.chomp
-            **Start time:** #{presenter.start_time}#{markdown_line_break}
-            **full_query:** `avg(metric) > 1.0`
-
-            MARKDOWN
+          shared_examples_for 'does not include an embed' do
+            it { is_expected.not_to match(/\[\]\(.+\)/) }
           end
 
           context 'without title' do
@@ -221,7 +190,7 @@ RSpec.describe Projects::Prometheus::AlertPresenter do
               payload['annotations'].delete('title')
             end
 
-            it { is_expected.to eq(expected_markdown) }
+            it_behaves_like 'does not include an embed'
           end
 
           context 'without environment' do
@@ -229,22 +198,15 @@ RSpec.describe Projects::Prometheus::AlertPresenter do
               payload['labels'].delete('gitlab_environment_name')
             end
 
-            it { is_expected.to eq(expected_markdown) }
+            it_behaves_like 'does not include an embed'
           end
 
           context 'without full_query' do
-            let(:expected_markdown) do
-              <<~MARKDOWN.chomp
-              **Start time:** #{presenter.start_time}
-
-              MARKDOWN
-            end
-
             before do
               payload.delete('generatorURL')
             end
 
-            it { is_expected.to eq(expected_markdown) }
+            it_behaves_like 'does not include an embed'
           end
         end
       end

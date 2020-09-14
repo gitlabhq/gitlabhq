@@ -129,9 +129,6 @@ export default {
     collapsedTooltipTitle() {
       return this.listTitle || this.listAssignee;
     },
-    shouldDisplaySwimlanes() {
-      return this.glFeatures.boardsWithSwimlanes && this.isSwimlanesOn;
-    },
   },
   methods: {
     ...mapActions(['updateList']),
@@ -161,7 +158,7 @@ export default {
       }
     },
     updateListFunction() {
-      if (this.shouldDisplaySwimlanes || this.glFeatures.graphqlBoardLists) {
+      if (this.glFeatures.boardsWithSwimlanes && this.isSwimlanesHeader) {
         this.updateList({ listId: this.list.id, collapsed: !this.list.isExpanded });
       } else {
         this.list.update();
@@ -187,7 +184,7 @@ export default {
     <h3
       :class="{
         'user-can-drag': !disabled && !list.preset,
-        'gl-py-3 gl-h-full': !list.isExpanded && !isSwimlanesHeader,
+        'gl-py-3': !list.isExpanded && !isSwimlanesHeader,
         'gl-border-b-0': !list.isExpanded || isSwimlanesHeader,
         'gl-py-2': !list.isExpanded && isSwimlanesHeader,
       }"

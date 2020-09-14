@@ -9,7 +9,14 @@ RSpec.describe AlertManagement::AlertPresenter do
     {
       'title' => 'Alert title',
       'start_time' => '2020-04-27T10:10:22.265949279Z',
-      'custom' => { 'param' => 73 }
+      'custom' => {
+        'alert' => {
+          'fields' => %w[one two]
+        }
+      },
+      'yet' => {
+        'another' => 73
+      }
     }
   end
 
@@ -37,7 +44,10 @@ RSpec.describe AlertManagement::AlertPresenter do
 
           #### Alert Details
 
-          **custom.param:** 73
+          **title:** Alert title#{markdown_line_break}
+          **start_time:** 2020-04-27T10:10:22.265949279Z#{markdown_line_break}
+          **custom.alert.fields:** ["one", "two"]#{markdown_line_break}
+          **yet.another:** 73
         MARKDOWN
       )
     end
@@ -52,6 +62,19 @@ RSpec.describe AlertManagement::AlertPresenter do
   describe '#details_url' do
     it 'returns the details URL' do
       expect(presenter.details_url).to match(%r{#{project.web_url}/-/alert_management/#{alert.iid}/details})
+    end
+  end
+
+  describe '#details' do
+    subject { presenter.details }
+
+    it 'renders the payload as inline hash' do
+      is_expected.to eq(
+        'title' => 'Alert title',
+        'start_time' => '2020-04-27T10:10:22.265949279Z',
+        'custom.alert.fields' => %w[one two],
+        'yet.another' => 73
+      )
     end
   end
 end

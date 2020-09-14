@@ -1,7 +1,7 @@
 # External issue tracker
 
 GitLab has a great [issue tracker](../user/project/issues/index.md) but you can also use an external one
-such as Jira, Redmine, YouTrack, or Bugzilla. External issue trackers are configurable per GitLab project.
+such as Jira, Redmine, YouTrack, Bugzilla, or EWM. External issue trackers are configurable per GitLab project.
 
 Once configured, you can reference external issues using the format `CODE-123`, where:
 
@@ -26,6 +26,7 @@ Visit the links below for details:
 - [YouTrack](../user/project/integrations/youtrack.md)
 - [Jira](../user/project/integrations/jira.md)
 - [Bugzilla](../user/project/integrations/bugzilla.md)
+- [EWM](../user/project/integrations/ewm.md)
 - [Custom Issue Tracker](../user/project/integrations/custom_issue_tracker.md)
 
 ### Service Template

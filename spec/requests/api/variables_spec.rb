@@ -60,25 +60,10 @@ RSpec.describe API::Variables do
         let!(:var2) { create(:ci_variable, project: project, key: 'key1', environment_scope: 'production') }
 
         context 'when filter[environment_scope] is not passed' do
-          context 'FF ci_variables_api_filter_environment_scope is enabled' do
-            it 'returns 409' do
-              get api("/projects/#{project.id}/variables/key1", user)
+          it 'returns 409' do
+            get api("/projects/#{project.id}/variables/key1", user)
 
-              expect(response).to have_gitlab_http_status(:conflict)
-            end
-          end
-
-          context 'FF ci_variables_api_filter_environment_scope is disabled' do
-            before do
-              stub_feature_flags(ci_variables_api_filter_environment_scope: false)
-            end
-
-            it 'returns random one' do
-              get api("/projects/#{project.id}/variables/key1", user)
-
-              expect(response).to have_gitlab_http_status(:ok)
-              expect(json_response['key']).to eq('key1')
-            end
+            expect(response).to have_gitlab_http_status(:conflict)
           end
         end
 
@@ -232,25 +217,10 @@ RSpec.describe API::Variables do
         let!(:var2) { create(:ci_variable, project: project, key: 'key1', environment_scope: 'production') }
 
         context 'when filter[environment_scope] is not passed' do
-          context 'FF ci_variables_api_filter_environment_scope is enabled' do
-            it 'returns 409' do
-              get api("/projects/#{project.id}/variables/key1", user)
+          it 'returns 409' do
+            get api("/projects/#{project.id}/variables/key1", user)
 
-              expect(response).to have_gitlab_http_status(:conflict)
-            end
-          end
-
-          context 'FF ci_variables_api_filter_environment_scope is disabled' do
-            before do
-              stub_feature_flags(ci_variables_api_filter_environment_scope: false)
-            end
-
-            it 'updates random one' do
-              put api("/projects/#{project.id}/variables/key1", user), params: { value: 'new_val' }
-
-              expect(response).to have_gitlab_http_status(:ok)
-              expect(json_response['value']).to eq('new_val')
-            end
+            expect(response).to have_gitlab_http_status(:conflict)
           end
         end
 
@@ -312,26 +282,10 @@ RSpec.describe API::Variables do
         let!(:var2) { create(:ci_variable, project: project, key: 'key1', environment_scope: 'production') }
 
         context 'when filter[environment_scope] is not passed' do
-          context 'FF ci_variables_api_filter_environment_scope is enabled' do
-            it 'returns 409' do
-              get api("/projects/#{project.id}/variables/key1", user)
+          it 'returns 409' do
+            get api("/projects/#{project.id}/variables/key1", user)
 
-              expect(response).to have_gitlab_http_status(:conflict)
-            end
-          end
-
-          context 'FF ci_variables_api_filter_environment_scope is disabled' do
-            before do
-              stub_feature_flags(ci_variables_api_filter_environment_scope: false)
-            end
-
-            it 'deletes random one' do
-              expect do
-                delete api("/projects/#{project.id}/variables/key1", user), params: { 'filter[environment_scope]': 'production' }
-
-                expect(response).to have_gitlab_http_status(:no_content)
-              end.to change {project.variables.count}.by(-1)
-            end
+            expect(response).to have_gitlab_http_status(:conflict)
           end
         end
 

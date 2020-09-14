@@ -12,10 +12,6 @@ module AlertManagement
       alerting_alert.alert_markdown
     end
 
-    def details_list
-      alerting_alert.annotation_list
-    end
-
     def metric_embed_for_alert
       alerting_alert.metric_embed_for_alert
     end

@@ -3,7 +3,6 @@
 module Projects
   module Prometheus
     class AlertPresenter < Gitlab::View::Presenter::Delegated
-      RESERVED_ANNOTATIONS = %w(gitlab_incident_markdown gitlab_y_label title).freeze
       GENERIC_ALERT_SUMMARY_ANNOTATIONS = %w(monitoring_tool service hosts).freeze
       MARKDOWN_LINE_BREAK = "  \n".freeze
       INCIDENT_LABEL_NAME = ::IncidentManagement::CreateIncidentLabelService::LABEL_PROPERTIES[:title].freeze
@@ -56,11 +55,10 @@ module Projects
         MARKDOWN
       end
 
-      def annotation_list
-        strong_memoize(:annotation_list) do
-          annotations
-            .reject { |annotation| annotation.label.in?(RESERVED_ANNOTATIONS | GENERIC_ALERT_SUMMARY_ANNOTATIONS) }
-            .map { |annotation| list_item(annotation.label, annotation.value) }
+      def details_list
+        strong_memoize(:details_list) do
+          details
+            .map { |label, value| list_item(label, value) }
             .join(MARKDOWN_LINE_BREAK)
         end
       end
@@ -109,13 +107,17 @@ module Projects
         metadata.join(MARKDOWN_LINE_BREAK)
       end
 
+      def details
+        Gitlab::Utils::InlineHash.merge_keys(payload)
+      end
+
       def alert_details
-        if annotation_list.present?
+        if details.present?
           <<~MARKDOWN.chomp
 
             #### Alert Details
 
-            #{annotation_list}
+            #{details_list}
           MARKDOWN
         end
       end

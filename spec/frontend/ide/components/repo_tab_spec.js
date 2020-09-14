@@ -34,7 +34,7 @@ describe('RepoTab', () => {
     });
     vm.$store.state.openFiles.push(vm.tab);
     const close = vm.$el.querySelector('.multi-file-tab-close');
-    const name = vm.$el.querySelector(`[title="${vm.tab.url}"]`);
+    const name = vm.$el.querySelector(`[title]`);
 
     expect(close.innerHTML).toContain('#close');
     expect(name.textContent.trim()).toEqual(vm.tab.name);

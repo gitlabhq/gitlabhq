@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
-import { GlNewDropdown, GlLink } from '@gitlab/ui';
+import { GlDropdown, GlLink } from '@gitlab/ui';
 import { createStore } from '~/integrations/edit/store';
 
 import { integrationLevels, overrideDropdownDescriptions } from '~/integrations/edit/constants';
@@ -34,14 +34,14 @@ describe('OverrideDropdown', () => {
   });
 
   const findGlLink = () => wrapper.find(GlLink);
-  const findGlNewDropdown = () => wrapper.find(GlNewDropdown);
+  const findGlDropdown = () => wrapper.find(GlDropdown);
 
   describe('template', () => {
     describe('override prop is true', () => {
       it('renders GlToggle as disabled', () => {
         createComponent();
 
-        expect(findGlNewDropdown().props('text')).toBe('Use custom settings');
+        expect(findGlDropdown().props('text')).toBe('Use custom settings');
       });
     });
 
@@ -49,7 +49,7 @@ describe('OverrideDropdown', () => {
       it('renders GlToggle as disabled', () => {
         createComponent({ override: false });
 
-        expect(findGlNewDropdown().props('text')).toBe('Use default settings');
+        expect(findGlDropdown().props('text')).toBe('Use default settings');
       });
     });
 

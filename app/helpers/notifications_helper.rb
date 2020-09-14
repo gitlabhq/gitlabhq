@@ -6,15 +6,15 @@ module NotificationsHelper
   def notification_icon_class(level)
     case level.to_sym
     when :disabled, :owner_disabled
-      'microphone-slash'
+      'notifications-off'
     when :participating
-      'volume-up'
+      'notifications'
     when :watch
       'eye'
     when :mention
       'at'
     when :global
-      'globe'
+      'earth'
     end
   end
 
@@ -28,8 +28,8 @@ module NotificationsHelper
     end
   end
 
-  def notification_icon(level, text = nil)
-    icon("#{notification_icon_class(level)} fw", text: text)
+  def notification_icon(level)
+    sprite_icon("#{notification_icon_class(level)}")
   end
 
   def notification_title(level)

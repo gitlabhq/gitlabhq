@@ -47,6 +47,7 @@ export default {
       'emptyRepo',
       'currentTree',
       'editorTheme',
+      'getUrlForPath',
     ]),
     themeName() {
       return window.gon?.user_color_scheme;
@@ -71,7 +72,7 @@ export default {
       return returnValue;
     },
     openFile(file) {
-      this.$router.push(`/project${file.url}`);
+      this.$router.push(this.getUrlForPath(file.path));
     },
     createNewFile() {
       this.$refs.newModal.open(modalTypes.blob);

@@ -1,8 +1,7 @@
 <script>
-/* eslint-disable vue/no-v-html */
 import { mapActions, mapGetters, mapState } from 'vuex';
 import { escape } from 'lodash';
-import { GlLoadingIcon } from '@gitlab/ui';
+import { GlLoadingIcon, GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { __, sprintf } from '~/locale';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
@@ -17,6 +16,9 @@ export default {
     DiffFileHeader,
     DiffContent,
     GlLoadingIcon,
+  },
+  directives: {
+    SafeHtml,
   },
   mixins: [glFeatureFlagsMixin()],
   props: {
@@ -182,7 +184,7 @@ export default {
     />
 
     <div v-if="forkMessageVisible" class="js-file-fork-suggestion-section file-fork-suggestion">
-      <span class="file-fork-suggestion-note" v-html="forkMessage"></span>
+      <span v-safe-html="forkMessage" class="file-fork-suggestion-note"></span>
       <a
         :href="file.fork_path"
         class="js-fork-suggestion-button btn btn-grouped btn-inverted btn-success"
@@ -200,7 +202,7 @@ export default {
     <template v-else>
       <div :id="`diff-content-${file.file_hash}`">
         <div v-if="errorMessage" class="diff-viewer">
-          <div class="nothing-here-block" v-html="errorMessage"></div>
+          <div v-safe-html="errorMessage" class="nothing-here-block"></div>
         </div>
         <template v-else>
           <div v-show="isCollapsed" class="nothing-here-block diff-collapsed">

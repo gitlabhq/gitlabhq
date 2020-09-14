@@ -1,6 +1,6 @@
 <script>
 import {
-  GlNewDropdown,
+  GlDropdown,
   GlNewDropdownHeader,
   GlFormInputGroup,
   GlButton,
@@ -11,7 +11,7 @@ import { getHTTPProtocol } from '~/lib/utils/url_utility';
 
 export default {
   components: {
-    GlNewDropdown,
+    GlDropdown,
     GlNewDropdownHeader,
     GlFormInputGroup,
     GlButton,
@@ -45,7 +45,7 @@ export default {
 };
 </script>
 <template>
-  <gl-new-dropdown right :text="$options.labels.defaultLabel" category="primary" variant="info">
+  <gl-dropdown right :text="$options.labels.defaultLabel" category="primary" variant="info">
     <div class="pb-2 mx-1">
       <template v-if="sshLink">
         <gl-new-dropdown-header>{{ $options.labels.ssh }}</gl-new-dropdown-header>
@@ -85,5 +85,5 @@ export default {
         </div>
       </template>
     </div>
-  </gl-new-dropdown>
+  </gl-dropdown>
 </template>

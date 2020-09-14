@@ -1,4 +1,4 @@
-import { GlAlert, GlButton, GlNewDropdown, GlFormSelect, GlLabel, GlTable } from '@gitlab/ui';
+import { GlAlert, GlButton, GlDropdown, GlFormSelect, GlLabel, GlTable } from '@gitlab/ui';
 import { getByRole } from '@testing-library/dom';
 import { mount, shallowMount } from '@vue/test-utils';
 import AxiosMockAdapter from 'axios-mock-adapter';
@@ -35,7 +35,7 @@ describe('JiraImportForm', () => {
 
   const getTable = () => wrapper.find(GlTable);
 
-  const getUserDropdown = () => getTable().find(GlNewDropdown);
+  const getUserDropdown = () => getTable().find(GlDropdown);
 
   const getHeader = name => getByRole(wrapper.element, 'columnheader', { name });
 

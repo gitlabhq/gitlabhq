@@ -1,7 +1,7 @@
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import { shallowMount } from '@vue/test-utils';
-import { GlNewDropdown, GlLoadingIcon, GlSearchBoxByType } from '@gitlab/ui';
+import { GlDropdown, GlLoadingIcon, GlSearchBoxByType } from '@gitlab/ui';
 import { ENTER_KEY } from '~/lib/utils/keys';
 import MilestoneCombobox from '~/milestones/project_milestone_combobox.vue';
 import { milestones as projectMilestones } from './mock_data';
@@ -53,7 +53,7 @@ describe('Milestone selector', () => {
   });
 
   it('renders the dropdown', () => {
-    expect(wrapper.find(GlNewDropdown)).toExist();
+    expect(wrapper.find(GlDropdown)).toExist();
   });
 
   it('renders additional links', () => {

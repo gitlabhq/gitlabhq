@@ -1,6 +1,6 @@
 <script>
 import {
-  GlNewDropdown,
+  GlDropdown,
   GlNewDropdownDivider,
   GlNewDropdownHeader,
   GlNewDropdownItem,
@@ -17,7 +17,7 @@ const SEARCH_DEBOUNCE_MS = 250;
 
 export default {
   components: {
-    GlNewDropdown,
+    GlDropdown,
     GlNewDropdownDivider,
     GlNewDropdownHeader,
     GlNewDropdownItem,
@@ -188,7 +188,7 @@ export default {
 </script>
 
 <template>
-  <gl-new-dropdown v-bind="$attrs" class="project-milestone-combobox" @shown="focusSearchBox">
+  <gl-dropdown v-bind="$attrs" class="project-milestone-combobox" @shown="focusSearchBox">
     <template slot="button-content">
       <span ref="buttonText" class="flex-grow-1 ml-1 text-muted">{{
         selectedMilestonesLabel
@@ -246,5 +246,5 @@ export default {
     <gl-new-dropdown-item v-for="(item, idx) in extraLinks" :key="idx" :href="item.url">
       <span class="pl-4">{{ item.text }}</span>
     </gl-new-dropdown-item>
-  </gl-new-dropdown>
+  </gl-dropdown>
 </template>

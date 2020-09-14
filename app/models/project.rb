@@ -146,6 +146,7 @@ class Project < ApplicationRecord
   has_one :discord_service
   has_one :drone_ci_service
   has_one :emails_on_push_service
+  has_one :ewm_service
   has_one :pipelines_email_service
   has_one :irker_service
   has_one :pivotaltracker_service

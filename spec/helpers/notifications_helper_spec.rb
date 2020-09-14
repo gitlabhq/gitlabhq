@@ -4,12 +4,12 @@ require 'spec_helper'
 
 RSpec.describe NotificationsHelper do
   describe 'notification_icon' do
-    it { expect(notification_icon(:disabled)).to match('class="fa fa-microphone-slash fa-fw"') }
-    it { expect(notification_icon(:owner_disabled)).to match('class="fa fa-microphone-slash fa-fw"') }
-    it { expect(notification_icon(:participating)).to match('class="fa fa-volume-up fa-fw"') }
-    it { expect(notification_icon(:mention)).to match('class="fa fa-at fa-fw"') }
-    it { expect(notification_icon(:global)).to match('class="fa fa-globe fa-fw"') }
-    it { expect(notification_icon(:watch)).to match('class="fa fa-eye fa-fw"') }
+    it { expect(notification_icon(:disabled)).to match('data-testid="notifications-off-icon"') }
+    it { expect(notification_icon(:owner_disabled)).to match('data-testid="notifications-off-icon"') }
+    it { expect(notification_icon(:participating)).to match('data-testid="notifications-icon"') }
+    it { expect(notification_icon(:mention)).to match('data-testid="at-icon"') }
+    it { expect(notification_icon(:global)).to match('data-testid="earth-icon') }
+    it { expect(notification_icon(:watch)).to match('data-testid="eye-icon"') }
   end
 
   describe 'notification_title' do

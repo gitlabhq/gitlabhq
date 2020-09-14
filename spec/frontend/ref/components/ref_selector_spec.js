@@ -177,7 +177,7 @@ describe('Ref selector component', () => {
         return waitForRequests();
       });
 
-      it('adds the provided ID to the GlNewDropdown instance', () => {
+      it('adds the provided ID to the GlDropdown instance', () => {
         expect(wrapper.attributes().id).toBe(id);
       });
     });

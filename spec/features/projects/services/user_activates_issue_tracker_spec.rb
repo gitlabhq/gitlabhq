@@ -16,7 +16,7 @@ RSpec.describe 'User activates issue tracker', :js do
     fill_in 'service_new_issue_url', with: url unless skip_new_issue_url
   end
 
-  shared_examples 'external issue tracker activation' do |tracker:, skip_new_issue_url: false|
+  shared_examples 'external issue tracker activation' do |tracker:, skip_new_issue_url: false, skip_test: false|
     describe 'user sets and activates the Service' do
       context 'when the connection test succeeds' do
         before do
@@ -25,7 +25,11 @@ RSpec.describe 'User activates issue tracker', :js do
           visit_project_integration(tracker)
           fill_form(skip_new_issue_url: skip_new_issue_url)
 
-          click_test_integration
+          if skip_test
+            click_button('Save changes')
+          else
+            click_test_integration
+          end
         end
 
         it 'activates the service' do
@@ -47,7 +51,11 @@ RSpec.describe 'User activates issue tracker', :js do
           visit_project_integration(tracker)
           fill_form(skip_new_issue_url: skip_new_issue_url)
 
-          click_test_then_save_integration
+          if skip_test
+            click_button('Save changes')
+          else
+            click_test_then_save_integration
+          end
 
           expect(page).to have_content("#{tracker} activated.")
           expect(current_path).to eq(edit_project_service_path(project, tracker.parameterize(separator: '_')))
@@ -80,4 +88,5 @@ RSpec.describe 'User activates issue tracker', :js do
   it_behaves_like 'external issue tracker activation', tracker: 'YouTrack', skip_new_issue_url: true
   it_behaves_like 'external issue tracker activation', tracker: 'Bugzilla'
   it_behaves_like 'external issue tracker activation', tracker: 'Custom Issue Tracker'
+  it_behaves_like 'external issue tracker activation', tracker: 'EWM', skip_test: true
 end

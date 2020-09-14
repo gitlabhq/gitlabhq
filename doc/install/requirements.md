@@ -12,7 +12,7 @@ as the hardware requirements that are needed to install and use GitLab.
 ### Supported Linux distributions
 
 - Ubuntu (16.04/18.04/20.04)
-- Debian (8/9/10)
+- Debian (9/10)
 - CentOS (6/7/8)
 - openSUSE (Leap 15.1/Enterprise Server 12.2)
 - Red Hat Enterprise Linux (please use the CentOS packages and instructions)

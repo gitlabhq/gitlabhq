@@ -54,8 +54,6 @@ export const createTempEntry = (
 
   const data = decorateFiles({
     data: [fullName],
-    projectId: state.currentProjectId,
-    branchId: state.currentBranchId,
     type,
     tempFile: true,
     content,
@@ -64,11 +62,7 @@ export const createTempEntry = (
   });
   const { file, parentPath } = data;
 
-  commit(types.CREATE_TMP_ENTRY, {
-    data,
-    projectId: state.currentProjectId,
-    branchId: state.currentBranchId,
-  });
+  commit(types.CREATE_TMP_ENTRY, { data });
 
   if (type === 'blob') {
     if (openFile) commit(types.TOGGLE_FILE_OPEN, file.path);
@@ -254,7 +248,7 @@ export const renameEntry = ({ dispatch, commit, state, getters }, { path, name, 
     }
 
     if (newEntry.opened) {
-      dispatch('router/push', `/project${newEntry.url}`, { root: true });
+      dispatch('router/push', getters.getUrlForPath(newEntry.path), { root: true });
     }
   }
 

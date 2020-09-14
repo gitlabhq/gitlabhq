@@ -6,7 +6,6 @@ import boardCard from './board_card.vue';
 import eventHub from '../eventhub';
 import boardsStore from '../stores/boards_store';
 import { sprintf, __ } from '~/locale';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
 import {
   getBoardSortableDefaultOptions,
@@ -25,7 +24,6 @@ export default {
     boardNewIssue,
     GlLoadingIcon,
   },
-  mixins: [glFeatureFlagMixin()],
   props: {
     groupId: {
       type: Number,
@@ -85,7 +83,6 @@ export default {
       deep: true,
     },
     issues() {
-      if (this.glFeatures.graphqlBoardLists) return;
       this.$nextTick(() => {
         if (
           this.scrollHeight() <= this.listHeight() &&
@@ -416,8 +413,6 @@ export default {
       this.showIssueForm = !this.showIssueForm;
     },
     onScroll() {
-      if (this.glFeatures.graphqlBoardLists) return;
-
       if (!this.list.loadingMore && this.scrollTop() > this.scrollHeight() - this.scrollOffset) {
         this.loadNextPage();
       }

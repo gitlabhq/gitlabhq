@@ -4,7 +4,7 @@ import Mousetrap from 'mousetrap';
 import { escape } from 'lodash';
 import {
   GlButton,
-  GlNewDropdown as GlDropdown,
+  GlDropdown,
   GlNewDropdownHeader as GlDropdownHeader,
   GlNewDropdownItem as GlDropdownItem,
   GlTooltipDirective,

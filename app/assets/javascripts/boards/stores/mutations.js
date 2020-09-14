@@ -35,7 +35,7 @@ export default {
     state.showPromotion = showPromotion;
   },
 
-  [mutationTypes.RECEIVE_BOARD_LISTS_SUCCESS]: (state, lists) => {
+  [mutationTypes.RECEIVE_LISTS]: (state, lists) => {
     state.boardLists = lists;
   },
 
@@ -87,20 +87,6 @@ export default {
 
   [mutationTypes.RECEIVE_REMOVE_LIST_ERROR]: () => {
     notImplemented();
-  },
-
-  [mutationTypes.RECEIVE_ISSUES_FOR_LIST_SUCCESS]: (state, { listIssues, listId }) => {
-    const { listData, issues } = listIssues;
-    Vue.set(state, 'issues', { ...state.issues, ...issues });
-    Vue.set(state.issuesByListId, listId, listData[listId]);
-    const listIndex = state.boardLists.findIndex(l => l.id === listId);
-    Vue.set(state.boardLists[listIndex], 'loading', false);
-  },
-
-  [mutationTypes.RECEIVE_ISSUES_FOR_LIST_FAILURE]: (state, listId) => {
-    state.error = __('An error occurred while fetching the board issues. Please reload the page.');
-    const listIndex = state.boardLists.findIndex(l => l.id === listId);
-    Vue.set(state.boardLists[listIndex], 'loading', false);
   },
 
   [mutationTypes.REQUEST_ISSUES_FOR_ALL_LISTS]: state => {
