@@ -4042,6 +4042,53 @@ The YAML described above would be translated into a CLI command like this:
 release-cli create --name "Release $CI_COMMIT_SHA" --description "Created using the release-cli $EXTRA_DESCRIPTION" --tag-name "v${MAJOR}.${MINOR}.${REVISION}" --ref "$CI_COMMIT_SHA" --released-at "2020-07-15T08:00:00Z" --milestone "m1" --milestone "m2" --milestone "m3"
 ```
 
+### `secrets`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/33014) in GitLab 13.4.
+
+`secrets` indicates the [CI Secrets](../secrets/index.md) this job needs. It should be a hash,
+and the keys should be the names of the environment variables the job needs to access the secrets.
+
+#### `secrets:vault` **(PREMIUM)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/28321) in GitLab 13.4.
+
+`vault` keyword specifies secrets provided by [Hashicorp's Vault](https://www.vaultproject.io/).
+This syntax has multiple forms. The shortest form asssumes the use of the
+[KV-V2](https://www.vaultproject.io/docs/secrets/kv/kv-v2) secrets engine,
+mounted at the default path `kv-v2`. The last part of the secret's path is the
+field to fetch the value for:
+
+```yaml
+job:
+  secrets:
+    DATABASE_PASSWORD:
+      vault: production/db/password # translates to secret `kv-v2/data/production/db`, field `password`
+```
+
+You can specify a custom secrets engine path by adding a suffix starting with `@`:
+
+```yaml
+job:
+  secrets:
+    DATABASE_PASSWORD:
+      vault: production/db/password@ops # translates to secret `ops/data/production/db`, field `password`
+```
+
+In the detailed form of the syntax, you can specify all details explicitly:
+
+```yaml
+job:
+  secrets:
+    DATABASE_PASSWORD:      # translates to secret `ops/data/production/db`, field `password`
+      vault:
+        engine:
+          name: kv-v2
+          path: ops
+        path: production/db
+        field: password
+```
+
 ### `pages`
 
 `pages` is a special job that is used to upload static content to GitLab that

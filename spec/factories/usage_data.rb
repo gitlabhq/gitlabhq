@@ -51,12 +51,11 @@ FactoryBot.define do
       create(:protected_branch, name: 'main', project: projects[0])
 
       # Incident Labeled Issues
-      incident_label_attrs = IncidentManagement::CreateIncidentLabelService::LABEL_PROPERTIES
-      incident_label = create(:label, project: projects[0], **incident_label_attrs)
+      incident_label = create(:label, :incident, project: projects[0])
       create(:labeled_issue, project: projects[0], labels: [incident_label])
       incident_group = create(:group)
-      incident_label_scoped_to_project = create(:label, project: projects[1], **incident_label_attrs)
-      incident_label_scoped_to_group = create(:group_label, group: incident_group, **incident_label_attrs)
+      incident_label_scoped_to_project = create(:label, :incident, project: projects[1])
+      incident_label_scoped_to_group = create(:group_label, :incident, group: incident_group)
       create(:labeled_issue, project: projects[1], labels: [incident_label_scoped_to_project])
       create(:labeled_issue, project: projects[1], labels: [incident_label_scoped_to_group])
 

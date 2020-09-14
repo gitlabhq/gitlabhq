@@ -397,7 +397,7 @@ export default {
               :secondary-button-text="__('Cancel')"
               variant="warning"
               :dismissible="false"
-              @primaryAction="forceCloseIssue"
+              @primaryAction="toggleBlockedIssueWarning(false) && forceCloseIssue()"
               @secondaryAction="toggleBlockedIssueWarning(false) && enableButton()"
             >
               <p>

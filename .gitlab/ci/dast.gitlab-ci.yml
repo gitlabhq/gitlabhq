@@ -35,6 +35,8 @@
   stage: dast
   # Default job timeout set to 90m and dast rules needs 2h to so that it won't timeout.
   timeout: 2h
+  # Add retry because of intermittent connection problems. See https://gitlab.com/gitlab-org/gitlab/-/issues/244313
+  retry: 1
   artifacts:
     paths:
       - gl-dast-report.json  # GitLab-specific

@@ -80,6 +80,7 @@ class GroupPolicy < BasePolicy
     enable :read_list
     enable :read_label
     enable :read_board
+    enable :read_group_member
   end
 
   rule { ~can?(:read_group) }.policy do

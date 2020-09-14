@@ -24,9 +24,11 @@ module Gitlab
 
           return unless entry.is_a?(Hash)
 
+          exception_type = entry[:type]
           raw_message = entry[:value]
 
-          return unless raw_message.start_with?('GRPC::')
+          return unless exception_type&.start_with?('GRPC::')
+          return unless raw_message.present?
 
           message, debug_str = split_debug_error_string(raw_message)
 

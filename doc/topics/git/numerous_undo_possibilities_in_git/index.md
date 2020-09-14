@@ -1,14 +1,8 @@
 ---
 stage: Create
 group: Source Code
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers"
-author: Crt Mori
-author_gitlab: Letme
-level: intermediary
-article_type: tutorial
-date: 2017-05-15
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 type: howto
-last_updated: 2019-05-31
 ---
 
 # Numerous undo possibilities in Git

@@ -3,6 +3,7 @@
 module Types
   class BaseField < GraphQL::Schema::Field
     prepend Gitlab::Graphql::Authorize
+    include GitlabStyleDeprecations
 
     DEFAULT_COMPLEXITY = 1
 
@@ -12,7 +13,7 @@ module Types
       kwargs[:complexity] = field_complexity(kwargs[:resolver_class], kwargs[:complexity])
       @feature_flag = kwargs[:feature_flag]
       kwargs = check_feature_flag(kwargs)
-      kwargs = handle_deprecated(kwargs)
+      kwargs = gitlab_deprecation(kwargs)
 
       super(*args, **kwargs, &block)
     end
@@ -50,28 +51,6 @@ module Types
       args.delete(:feature_flag)
 
       args
-    end
-
-    def handle_deprecated(kwargs)
-      if kwargs[:deprecation_reason].present?
-        raise ArgumentError, 'Use `deprecated` property instead of `deprecation_reason`. ' \
-                             'See https://docs.gitlab.com/ee/development/api_graphql_styleguide.html#deprecating-fields'
-      end
-
-      deprecation = kwargs.delete(:deprecated)
-      return kwargs unless deprecation
-
-      milestone, reason = deprecation.values_at(:milestone, :reason).map(&:presence)
-
-      raise ArgumentError, 'Please provide a `milestone` within `deprecated`' unless milestone
-      raise ArgumentError, 'Please provide a `reason` within `deprecated`' unless reason
-      raise ArgumentError, '`milestone` must be a `String`' unless milestone.is_a?(String)
-
-      deprecated_in = "Deprecated in #{milestone}"
-      kwargs[:deprecation_reason] = "#{reason}. #{deprecated_in}"
-      kwargs[:description] += ". #{deprecated_in}: #{reason}" if kwargs[:description]
-
-      kwargs
     end
 
     def field_complexity(resolver_class, current)

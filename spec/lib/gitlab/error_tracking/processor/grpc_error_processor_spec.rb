@@ -20,7 +20,8 @@ RSpec.describe Gitlab::ErrorTracking::Processor::GrpcErrorProcessor do
           exception: {
             values: [
               {
-                value: "GRPC::DeadlineExceeded: 4:DeadlineExceeded. debug_error_string:{\"hello\":1}"
+                type: "GRPC::DeadlineExceeded",
+                value: "4:DeadlineExceeded. debug_error_string:{\"hello\":1}"
               }
             ]
           },
@@ -43,7 +44,8 @@ RSpec.describe Gitlab::ErrorTracking::Processor::GrpcErrorProcessor do
           exception: {
             values: [
               {
-                value: "GRPC::DeadlineExceeded: 4:DeadlineExceeded."
+                type: "GRPC::DeadlineExceeded",
+                value: "4:DeadlineExceeded."
               }
             ]
           },

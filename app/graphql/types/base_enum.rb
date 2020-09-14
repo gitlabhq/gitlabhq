@@ -2,9 +2,12 @@
 
 module Types
   class BaseEnum < GraphQL::Schema::Enum
+    extend GitlabStyleDeprecations
+
     class << self
       def value(*args, **kwargs, &block)
         enum[args[0].downcase] = kwargs[:value] || args[0]
+        kwargs = gitlab_deprecation(kwargs)
 
         super(*args, **kwargs, &block)
       end

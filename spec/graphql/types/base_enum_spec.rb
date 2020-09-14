@@ -21,4 +21,16 @@ RSpec.describe Types::BaseEnum do
       expect(enum.enum).to be_a(HashWithIndifferentAccess)
     end
   end
+
+  include_examples 'Gitlab-style deprecations' do
+    def subject(args = {})
+      enum = Class.new(described_class) do
+        graphql_name 'TestEnum'
+
+        value 'TEST_VALUE', **args
+      end
+
+      enum.to_graphql.values['TEST_VALUE']
+    end
+  end
 end

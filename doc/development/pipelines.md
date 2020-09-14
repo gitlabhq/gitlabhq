@@ -357,6 +357,65 @@ graph RL;
   end
 ```
 
+### Fail-fast pipeline in Merge Requests
+
+To provide faster feedback when a Merge Request breaks existing tests, we are experimenting with a
+fail-fast mechanism.
+
+An `rspec fail-fast` job is added in parallel to all other `rspec` jobs in a Merge
+Request pipeline. This job runs the tests that are directly related to the changes
+in the Merge Request.
+
+If any of these tests fail, the `rspec fail-fast` job fails, triggering a
+`fail-pipeline-early` job to run. The `fail-pipeline-early` job:
+
+- Cancels the currently running pipeline and all in-progress jobs.
+- Sets pipeline to have status `failed`.
+
+For example:
+
+```mermaid
+graph LR
+    subgraph "prepare stage";
+        A["detect-tests"]
+    end
+
+    subgraph "test stage";
+        B["jest"];
+        C["rspec migration"];
+        D["rspec unit"];
+        E["rspec integration"];
+        F["rspec system"];
+        G["rspec fail-fast"];
+    end
+
+    subgraph "post-test stage";
+        Z["fail-pipeline-early"];
+    end
+    
+    A --"artifact: list of test files"--> G
+    G --"on failure"--> Z
+```
+
+A Merge Request author may choose to opt-out of the fail fast mechanism by doing one of the following:
+
+- Including `[SKIP RSPEC FAIL-FAST]` in the Merge Request title.
+- Starting the `dont-interrupt-me` job found in the `sync` stage of a Merge Request pipeline.
+
+The `rspec fail-fast` is a no-op if there are more than 10 test files related to the
+Merge Request. This prevents `rspec fail-fast` duration from exceeding the average
+`rspec` job duration and defeating its purpose.
+
+This number can be overridden by setting a CI variable named `RSPEC_FAIL_FAST_TEST_FILE_COUNT_THRESHOLD`.
+
+NOTE: **Note:**
+This experiment is only enabled when the CI variable `RSPEC_FAIL_FAST_ENABLED=true` is set.
+
+#### Determining related test files in a Merge Request
+
+The test files related to the Merge Request are determined using the [`test_file_finder`](https://gitlab.com/gitlab-org/ci-cd/test_file_finder) gem.
+We are using a custom mapping between source file to test files, maintained in the `tests.yml` file.
+
 ### PostgreSQL versions testing
 
 #### Current versions testing

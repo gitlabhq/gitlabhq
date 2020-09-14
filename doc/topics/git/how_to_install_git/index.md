@@ -1,15 +1,9 @@
 ---
 stage: Create
 group: Source Code
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers"
-author: Sean Packham
-author_gitlab: SeanPackham
-level: beginner
-article_type: user guide
-date: 2017-05-15
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 description: 'This article describes how to install Git on macOS, Ubuntu Linux and Windows.'
 type: howto
-last_updated: 2020-04-22
 ---
 
 # Installing Git

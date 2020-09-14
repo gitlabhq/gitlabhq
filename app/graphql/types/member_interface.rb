@@ -23,8 +23,7 @@ module Types
           description: 'Date and time the membership expires'
 
     field :user, Types::UserType, null: false,
-          description: 'User that is associated with the member object',
-          resolve: -> (obj, _args, _ctx) { Gitlab::Graphql::Loaders::BatchModelLoader.new(User, obj.user_id).find }
+          description: 'User that is associated with the member object'
 
     definition_methods do
       def resolve_type(object, context)

@@ -9,7 +9,7 @@ module Gitlab
           include SelfMonitoring::Helpers
 
           VISIBILITY_LEVEL = Gitlab::VisibilityLevel::INTERNAL
-          PROJECT_NAME = 'GitLab self monitoring'
+          PROJECT_NAME = 'Monitoring'
 
           steps :validate_application_settings,
             :create_group,

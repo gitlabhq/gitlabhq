@@ -99,7 +99,7 @@ RSpec.describe Gitlab::Graphql::Docs::Renderer do
           graphql_name 'MyEnum'
 
           value 'BAZ', description: 'A description of BAZ'
-          value 'BAR', description: 'A description of BAR', deprecation_reason: 'This is deprecated'
+          value 'BAR', description: 'A description of BAR', deprecated: { reason: 'This is deprecated', milestone: '1.10' }
         end
 
         Class.new(Types::BaseObject) do
@@ -115,7 +115,7 @@ RSpec.describe Gitlab::Graphql::Docs::Renderer do
 
           | Value | Description |
           | ----- | ----------- |
-          | `BAR` **{warning-solid}** | **Deprecated:** This is deprecated |
+          | `BAR` **{warning-solid}** | **Deprecated:** This is deprecated. Deprecated in 1.10 |
           | `BAZ` | A description of BAZ |
         DOC
 

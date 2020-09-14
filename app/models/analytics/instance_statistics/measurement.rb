@@ -12,6 +12,15 @@ module Analytics
         pipelines: 6
       }
 
+      IDENTIFIER_QUERY_MAPPING = {
+        identifiers[:projects] => -> { Project },
+        identifiers[:users] => -> { User },
+        identifiers[:issues] => -> { Issue },
+        identifiers[:merge_requests] => -> { MergeRequest },
+        identifiers[:groups] => -> { Group },
+        identifiers[:pipelines] => -> { Ci::Pipeline }
+      }.freeze
+
       validates :recorded_at, :identifier, :count, presence: true
       validates :recorded_at, uniqueness: { scope: :identifier }
 

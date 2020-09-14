@@ -33,6 +33,9 @@ const setupAxiosStartupCalls = axios => {
             fetchHeaders[key] = val;
           });
 
+          // We can delete it as it anyhow should only be called once
+          delete startupCalls[fullUrl];
+
           // eslint-disable-next-line promise/no-nesting
           return res
             .clone()

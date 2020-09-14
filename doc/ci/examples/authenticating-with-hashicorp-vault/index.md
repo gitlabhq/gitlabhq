@@ -9,6 +9,12 @@ type: tutorial
 
 This tutorial demonstrates how to authenticate, configure, and read secrets with HashiCorp's Vault from GitLab CI/CD.
 
+NOTE: **Note:**
+[GitLab Premium](https://about.gitlab.com/pricing/) supports read access to a
+Hashicorp Vault, and enables you to
+[use Vault secrets in a CI job](../../secrets/index.md#use-vault-secrets-in-a-ci-job-premium).
+To learn more, read [Using external secrets in CI](../../secrets/index.md).
+
 ## Requirements
 
 This tutorial assumes you are familiar with GitLab CI/CD and Vault.

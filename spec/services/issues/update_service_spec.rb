@@ -78,6 +78,12 @@ RSpec.describe Issues::UpdateService, :mailer do
 
           expect(issue.severity).to eq(IssuableSeverity::DEFAULT)
         end
+
+        it_behaves_like 'not an incident issue' do
+          before do
+            update_issue(opts)
+          end
+        end
       end
 
       context 'when issue type is incident' do
@@ -87,6 +93,27 @@ RSpec.describe Issues::UpdateService, :mailer do
           update_issue(opts)
 
           expect(issue.severity).to eq('low')
+        end
+
+        it_behaves_like 'incident issue' do
+          before do
+            update_issue(opts)
+          end
+        end
+
+        context 'with existing incident label' do
+          let_it_be(:incident_label) { create(:label, :incident, project: project) }
+
+          before do
+            opts.delete(:label_ids) # don't override but retain existing labels
+            issue.labels << incident_label
+          end
+
+          it_behaves_like 'incident issue' do
+            before do
+              update_issue(opts)
+            end
+          end
         end
       end
 
@@ -113,15 +140,37 @@ RSpec.describe Issues::UpdateService, :mailer do
       end
 
       context 'issue in incident type' do
+        let(:current_user) { user }
+        let(:incident_label_attributes) { attributes_for(:label, :incident) }
+
         before do
-          opts[:issue_type] = 'incident'
+          opts.merge!(issue_type: 'incident', confidential: true)
         end
 
-        let(:current_user) { user }
-
-        subject { update_issue(confidential: true) }
+        subject { update_issue(opts) }
 
         it_behaves_like 'an incident management tracked event', :incident_management_incident_change_confidential
+
+        it_behaves_like 'incident issue' do
+          before do
+            subject
+          end
+        end
+
+        it 'does create an incident label' do
+          expect { subject }
+            .to change { Label.where(incident_label_attributes).count }.by(1)
+        end
+
+        context 'when invalid' do
+          before do
+            opts.merge!(title: '')
+          end
+
+          it 'does not create an incident label prematurely' do
+            expect { subject }.not_to change(Label, :count)
+          end
+        end
       end
 
       it 'updates open issue counter for assignees when issue is reassigned' do

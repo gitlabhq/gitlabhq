@@ -49,7 +49,8 @@ module Gitlab
                                      #{config.root}/app/models/members
                                      #{config.root}/app/models/project_services
                                      #{config.root}/app/graphql/resolvers/concerns
-                                     #{config.root}/app/graphql/mutations/concerns])
+                                     #{config.root}/app/graphql/mutations/concerns
+                                     #{config.root}/app/graphql/types/concerns])
 
     config.generators.templates.push("#{config.root}/generator_templates")
 

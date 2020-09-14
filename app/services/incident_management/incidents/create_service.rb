@@ -18,7 +18,6 @@ module IncidentManagement
           current_user,
           title: title,
           description: description,
-          label_ids: [find_or_create_incident_label.id],
           issue_type: ISSUE_TYPE
         ).execute
 
@@ -30,13 +29,6 @@ module IncidentManagement
       private
 
       attr_reader :title, :description
-
-      def find_or_create_incident_label
-        IncidentManagement::CreateIncidentLabelService
-          .new(project, current_user)
-          .execute
-          .payload[:label]
-      end
 
       def success(issue)
         ServiceResponse.success(payload: { issue: issue })

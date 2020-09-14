@@ -89,18 +89,13 @@ RSpec.describe 'getting group information', :do_not_mock_admin_mode do
       end
 
       it 'avoids N+1 queries' do
-        control_count = ActiveRecord::QueryRecorder.new do
-          post_graphql(group_query(group1), current_user: admin)
-        end.count
+        pending('See: https://gitlab.com/gitlab-org/gitlab/-/issues/245272')
 
         queries = [{ query: group_query(group1) },
                    { query: group_query(group2) }]
 
-        expect do
-          post_multiplex(queries, current_user: admin)
-        end.not_to exceed_query_limit(control_count)
-
-        expect(graphql_errors).to contain_exactly(nil, nil)
+        expect { post_multiplex(queries, current_user: admin) }
+          .to issue_same_number_of_queries_as { post_graphql(group_query(group1), current_user: admin) }
       end
     end
 

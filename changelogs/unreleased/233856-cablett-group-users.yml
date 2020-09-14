@@ -1,0 +1,5 @@
+---
+title: Expose group memberships under group via GraphQL
+merge_request: 39331
+author:
+type: added

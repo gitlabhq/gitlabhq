@@ -505,6 +505,22 @@ rspec-ee system pg12 geo:
 
 ##################################################
 # EE: Canonical MR pipelines
+rspec fail-fast:
+  extends:
+    - .rspec-base-pg11
+    - .rails:rules:rspec fail-fast
+  stage: test
+  needs: ["setup-test-env", "retrieve-tests-metadata", "compile-test-assets", "detect-tests"]
+  script:
+    - run_timed_command "scripts/gitaly-test-build"
+    - run_timed_command "scripts/gitaly-test-spawn"
+    - source scripts/rspec_helpers.sh
+    - rspec_fail_fast tmp/matching_tests.txt "--tag ~quarantine"
+  artifacts:
+    expire_in: 7d
+    paths:
+      - tmp/capybara/
+
 rspec foss-impact:
   extends:
     - .rspec-base-pg11-as-if-foss
@@ -520,5 +536,19 @@ rspec foss-impact:
     paths:
       - tmp/capybara/
 
+fail-pipeline-early:
+  extends:
+    - .rails:rules:fail-pipeline-early
+  stage: post-test
+  needs:
+    - job: rspec fail-fast
+      artifacts: false
+  variables:
+    GIT_DEPTH: 1
+  before_script:
+    - source scripts/utils.sh
+    - install_api_client_dependencies_with_apt
+  script:
+    - fail_pipeline_early
 # EE: Canonical MR pipelines
 ##################################################
