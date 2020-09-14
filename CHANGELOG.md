@@ -2,6 +2,14 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 13.3.6 (2020-09-14)
+
+### Fixed (2 changes)
+
+- Fixes Auto DevOps deploy script for multiple additional hosts separated by comma and space. !41404
+- Use 'read' method to get request body in Conan to fix uploads when using Unicorn. !41801
+
+
 ## 13.3.5 (2020-09-04)
 
 ### Fixed (6 changes)

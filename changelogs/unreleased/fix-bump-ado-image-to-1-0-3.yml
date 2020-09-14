@@ -1,6 +1,0 @@
----
-title: Fixes Auto DevOps deploy script for multiple additional hosts separated by
-  comma and space
-merge_request: 41404
-author:
-type: fixed
