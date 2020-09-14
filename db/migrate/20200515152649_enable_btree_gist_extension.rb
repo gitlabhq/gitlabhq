@@ -1,13 +1,15 @@
 # frozen_string_literal: true
 
 class EnableBtreeGistExtension < ActiveRecord::Migration[6.0]
+  include Gitlab::Database::MigrationHelpers
+
   DOWNTIME = false
 
   def up
-    execute 'CREATE EXTENSION IF NOT EXISTS btree_gist'
+    create_extension :btree_gist
   end
 
   def down
-    execute 'DROP EXTENSION IF EXISTS btree_gist'
+    drop_extension :btree_gist
   end
 end

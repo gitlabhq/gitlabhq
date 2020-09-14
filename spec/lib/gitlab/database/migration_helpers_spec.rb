@@ -2329,4 +2329,56 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
       end
     end
   end
+
+  describe '#create_extension' do
+    subject { model.create_extension(extension) }
+
+    let(:extension) { :btree_gist }
+
+    it 'executes CREATE EXTENSION statement' do
+      expect(model).to receive(:execute).with(/CREATE EXTENSION IF NOT EXISTS #{extension}/)
+
+      subject
+    end
+
+    context 'without proper permissions' do
+      before do
+        allow(model).to receive(:execute).with(/CREATE EXTENSION IF NOT EXISTS #{extension}/).and_raise(ActiveRecord::StatementInvalid, 'InsufficientPrivilege: permission denied')
+      end
+
+      it 'raises the exception' do
+        expect { subject }.to raise_error(ActiveRecord::StatementInvalid, /InsufficientPrivilege/)
+      end
+
+      it 'prints an error message' do
+        expect { subject }.to output(/user is not allowed/).to_stderr.and raise_error
+      end
+    end
+  end
+
+  describe '#drop_extension' do
+    subject { model.drop_extension(extension) }
+
+    let(:extension) { 'btree_gist' }
+
+    it 'executes CREATE EXTENSION statement' do
+      expect(model).to receive(:execute).with(/DROP EXTENSION IF EXISTS #{extension}/)
+
+      subject
+    end
+
+    context 'without proper permissions' do
+      before do
+        allow(model).to receive(:execute).with(/DROP EXTENSION IF EXISTS #{extension}/).and_raise(ActiveRecord::StatementInvalid, 'InsufficientPrivilege: permission denied')
+      end
+
+      it 'raises the exception' do
+        expect { subject }.to raise_error(ActiveRecord::StatementInvalid, /InsufficientPrivilege/)
+      end
+
+      it 'prints an error message' do
+        expect { subject }.to output(/user is not allowed/).to_stderr.and raise_error
+      end
+    end
+  end
 end

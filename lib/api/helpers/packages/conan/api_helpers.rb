@@ -139,7 +139,7 @@ module API
           end
 
           def file_names
-            json_payload = Gitlab::Json.parse(request.body.string)
+            json_payload = Gitlab::Json.parse(request.body.read)
 
             bad_request!(nil) unless json_payload.is_a?(Hash)
 

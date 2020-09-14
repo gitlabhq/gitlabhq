@@ -363,6 +363,16 @@ RSpec.describe API::ConanPackages do
       end
     end
 
+    shared_examples 'successful response when using Unicorn' do
+      context 'on Unicorn', :unicorn do
+        it 'returns successfully' do
+          subject
+
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+      end
+    end
+
     describe 'GET /api/v4/packages/conan/v1/conans/:package_name/package_version/:package_username/:package_channel' do
       let(:recipe_path) { package.conan_recipe_path }
 
@@ -458,6 +468,7 @@ RSpec.describe API::ConanPackages do
 
       it_behaves_like 'rejects invalid recipe'
       it_behaves_like 'rejects invalid upload_url params'
+      it_behaves_like 'successful response when using Unicorn'
 
       it 'returns a set of upload urls for the files requested' do
         subject
@@ -521,6 +532,7 @@ RSpec.describe API::ConanPackages do
 
       it_behaves_like 'rejects invalid recipe'
       it_behaves_like 'rejects invalid upload_url params'
+      it_behaves_like 'successful response when using Unicorn'
 
       it 'returns a set of upload urls for the files requested' do
         expected_response = {
