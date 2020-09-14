@@ -691,6 +691,38 @@ unit tests.
 Instead of `setImmediate`, use `jest.runAllTimers` or `jest.runOnlyPendingTimers` to run pending timers.
 The latter is useful when you have `setInterval` in the code. **Remember:** our Jest configuration uses fake timers.
 
+## Avoid non-deterministic specs
+
+Non-determinism is the breeding ground for flaky and brittle specs. Such specs end up breaking the CI pipeline, interrupting the work flow of other contributors.
+
+1. Make sure your test subject's collaborators (e.g., axios, apollo, lodash helpers) and test environment (e.g., Date) behave consistently across systems and over time.
+1. Make sure tests are focused and not doing "extra work" (e.g., needlessly creating the test subject more than once in an individual test)
+
+### Faking `Date` for determinism
+
+Consider using `useFakeDate` to ensure a consistent value is returned with every `new Date()` or `Date.now()`.
+
+```javascript
+import { useFakeDate } from 'helpers/fake_date';
+
+describe('cool/component', () => {
+  useFakeDate();
+
+  // ...
+});
+```
+
+### Faking `Math.random` for determinism
+
+Consider replacing `Math.random` with a fake when the test subject depends on it.
+
+```javascript
+beforeEach(() => {
+  // https://xkcd.com/221/
+  jest.spyOn(Math, 'random').mockReturnValue(0.4);
+});
+```
+
 ## Factories
 
 TBU
