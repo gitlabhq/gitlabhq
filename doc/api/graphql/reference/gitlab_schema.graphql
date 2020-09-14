@@ -3143,6 +3143,11 @@ Represents a DAST scanner profile.
 """
 type DastScannerProfile {
   """
+  Relative web path to the edit page of a scanner profile
+  """
+  editPath: String
+
+  """
   ID of the DAST scanner profile
   """
   globalId: DastScannerProfileID!

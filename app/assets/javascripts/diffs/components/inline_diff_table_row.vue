@@ -1,7 +1,6 @@
 <script>
-/* eslint-disable vue/no-v-html */
 import { mapActions, mapGetters, mapState } from 'vuex';
-import { GlTooltipDirective, GlIcon } from '@gitlab/ui';
+import { GlTooltipDirective, GlIcon, GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
 import {
   MATCH_LINE_TYPE,
   NEW_LINE_TYPE,
@@ -26,6 +25,7 @@ export default {
   },
   directives: {
     GlTooltip: GlTooltipDirective,
+    SafeHtml,
   },
   props: {
     fileHash: {
@@ -242,6 +242,7 @@ export default {
       class="line-coverage"
     ></td>
     <td
+      v-safe-html="line.rich_text"
       :class="[
         line.type,
         {
@@ -249,7 +250,6 @@ export default {
         },
       ]"
       class="line_content with-coverage"
-      v-html="line.rich_text"
     ></td>
   </tr>
 </template>

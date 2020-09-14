@@ -14,6 +14,11 @@ export default {
     return state.issues[id] || {};
   },
 
+  getIssues: (state, getters) => listId => {
+    const listIssueIds = state.issuesByListId[listId] || [];
+    return listIssueIds.map(id => getters.getIssueById(id));
+  },
+
   getActiveIssue: state => {
     return state.issues[state.activeId] || {};
   },

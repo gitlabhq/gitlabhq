@@ -14,7 +14,7 @@ $('input[type=submit]').enable()
 
 // Show flash messages
 <% if flash.notice %>
-  new Flash('<%= flash.discard(:notice) %>', 'notice')
+  new Flash({ message: '<%= flash.discard(:notice) %>', type: 'notice'})
 <% elsif flash.alert %>
-  new Flash('<%= flash.discard(:alert) %>', 'alert')
+  new Flash({ message: '<%= flash.discard(:alert) %>', type: 'alert'})
 <% end %>

@@ -980,6 +980,7 @@ They reflect configuration defined for this instance of Praefect.
 > - Introduced in GitLab 13.1 in [alpha](https://about.gitlab.com/handbook/product/gitlab-the-product/#alpha-beta-ga), disabled by default.
 > - Entered [beta](https://about.gitlab.com/handbook/product/gitlab-the-product/#alpha-beta-ga) in GitLab 13.2, disabled by default.
 > - From GitLab 13.3, disabled unless primary-wins reference transactions strategy is disabled.
+> - From GitLab 13.4, enabled by default.
 
 Praefect guarantees eventual consistency by replicating all writes to secondary nodes
 after the write to the primary Gitaly node has happened.
@@ -994,7 +995,8 @@ To enable strong consistency:
 
 - In GitLab 13.4 and later, the strong consistency voting strategy has been
   improved. Instead of requiring all nodes to agree, only the primary and half
-  of the secondaries need to agree. To enable this strategy, disable the
+  of the secondaries need to agree. This strategy is enabled by default. To
+  disable it and continue using the primary-wins strategy, enable the
   `:gitaly_reference_transactions_primary_wins` feature flag.
 - In GitLab 13.3, reference transactions are enabled by default with a
   primary-wins strategy. This strategy causes all transactions to succeed for

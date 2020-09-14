@@ -3,7 +3,6 @@ import {
   mockListsWithModel,
   mockLists,
   mockIssue,
-  mockIssue2,
   mockIssueWithModel,
   mockIssue2WithModel,
   rawIssue,
@@ -134,7 +133,7 @@ describe('createList', () => {
       { backlog: true },
       state,
       [],
-      [{ type: 'addList', payload: { ...backlogList, id: 1 } }],
+      [{ type: 'addList', payload: backlogList }],
       done,
     );
   });
@@ -232,19 +231,15 @@ describe('deleteList', () => {
   expectNotImplemented(actions.deleteList);
 });
 
-describe('fetchIssuesForList', () => {
-  expectNotImplemented(actions.fetchIssuesForList);
-});
-
 describe('moveIssue', () => {
   const listIssues = {
-    'gid://gitlab/List/1': [mockIssue.id, mockIssue2.id],
+    'gid://gitlab/List/1': [436, 437],
     'gid://gitlab/List/2': [],
   };
 
   const issues = {
-    '1': mockIssueWithModel,
-    '2': mockIssue2WithModel,
+    '436': mockIssueWithModel,
+    '437': mockIssue2WithModel,
   };
 
   const state = {
@@ -269,7 +264,7 @@ describe('moveIssue', () => {
     testAction(
       actions.moveIssue,
       {
-        issueId: mockIssue.id,
+        issueId: '436',
         issueIid: mockIssue.iid,
         issuePath: mockIssue.referencePath,
         fromListId: 'gid://gitlab/List/1',
@@ -308,7 +303,7 @@ describe('moveIssue', () => {
     testAction(
       actions.moveIssue,
       {
-        issueId: mockIssue.id,
+        issueId: '436',
         issueIid: mockIssue.iid,
         issuePath: mockIssue.referencePath,
         fromListId: 'gid://gitlab/List/1',

@@ -537,6 +537,7 @@ Represents a DAST scanner profile.
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
+| `editPath` | String | Relative web path to the edit page of a scanner profile |
 | `globalId` | DastScannerProfileID! | ID of the DAST scanner profile |
 | `id` **{warning-solid}** | ID! | **Deprecated:** Use `global_id`. Deprecated in 13.4 |
 | `profileName` | String | Name of the DAST scanner profile |

@@ -86,6 +86,8 @@ an email notifying the user to download the file, uploading the exported file to
 
 `regeneration_in_progress` is when an export file is available to download, and a request to generate a new export is in process.
 
+`none` is when there are no exports _queued_, _started_, _finished_, or _being regenerated_
+
 `_links` are only present when export has finished.
 
 `created_at` is the project create timestamp, not the export start time.

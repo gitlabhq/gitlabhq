@@ -107,6 +107,12 @@ The following metrics are available:
 | `auto_devops_pipelines_completed_total`                        | Counter   |                   12.7 | Counter of completed Auto DevOps pipelines, labeled by status                                       |                                                     |
 | `gitlab_metrics_dashboard_processing_time_ms`                  | Summary   |                  12.10 | Metrics dashboard processing time in milliseconds | service, stages |
 | `action_cable_active_connections`                              | Gauge     |                   13.4 | Number of ActionCable WS clients currently connected | `server_mode` |
+| `action_cable_pool_min_size`                                   | Gauge     |                   13.4 | Minimum number of worker threads in ActionCable thread pool | `server_mode` |
+| `action_cable_pool_max_size`                                   | Gauge     |                   13.4 | Maximum number of worker threads in ActionCable thread pool | `server_mode` |
+| `action_cable_pool_current_size`                               | Gauge     |                   13.4 | Current number of worker threads in ActionCable thread pool | `server_mode` |
+| `action_cable_pool_largest_size`                               | Gauge     |                   13.4 | Largest number of worker threads observed so far in ActionCable thread pool | `server_mode` |
+| `action_cable_pool_pending_tasks`                              | Gauge     |                   13.4 | Number of tasks waiting to be executed in ActionCable thread pool | `server_mode` |
+| `action_cable_pool_tasks_total`                                | Gauge     |                   13.4 | Total number of tasks executed in ActionCable thread pool | `server_mode` |
 
 ## Metrics controlled by a feature flag
 

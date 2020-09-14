@@ -216,12 +216,15 @@ A mutation written like this is harder to maintain and more error prone. We shou
 // Good
 export default {
   [types.MARK_AS_CLOSED](state, itemId) {
-    const item = state.items.find(i => i.id == itemId);
-    Vue.set(item, 'closed', true)
+    const item = state.items.find(x => x.id === itemId);
 
-    state.items.splice(index, 1, item)
-  }
-}
+    if (!item) {
+      return;
+    }
+
+    Vue.set(item, 'closed', true);
+  },
+};
 ```
 
 This approach is better because:

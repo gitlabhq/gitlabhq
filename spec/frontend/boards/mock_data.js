@@ -98,12 +98,35 @@ export const mockMilestone = {
   due_date: '2019-12-31',
 };
 
+const assignees = [
+  {
+    id: 'gid://gitlab/User/2',
+    username: 'angelina.herman',
+    name: 'Bernardina Bosco',
+    avatar: 'https://www.gravatar.com/avatar/eb7b664b13a30ad9f9ba4b61d7075470?s=80&d=identicon',
+    webUrl: 'http://127.0.0.1:3000/angelina.herman',
+  },
+];
+
+const labels = [
+  {
+    id: 'gid://gitlab/GroupLabel/5',
+    title: 'Cosync',
+    color: '#34ebec',
+    description: null,
+  },
+];
+
 export const rawIssue = {
-  title: 'Testing',
-  id: 'gid://gitlab/Issue/1',
-  iid: 1,
+  title: 'Issue 1',
+  id: 'gid://gitlab/Issue/436',
+  iid: 27,
+  dueDate: null,
+  timeEstimate: 0,
+  weight: null,
   confidential: false,
-  referencePath: 'gitlab-org/gitlab-test#1',
+  referencePath: 'gitlab-org/gitlab-test#27',
+  path: '/gitlab-org/gitlab-test/-/issues/27',
   labels: {
     nodes: [
       {
@@ -115,23 +138,24 @@ export const rawIssue = {
     ],
   },
   assignees: {
-    nodes: [
-      {
-        id: 1,
-        name: 'name',
-        username: 'username',
-        avatar_url: 'http://avatar_url',
-      },
-    ],
+    nodes: assignees,
+  },
+  epic: {
+    id: 'gid://gitlab/Epic/41',
   },
 };
 
 export const mockIssue = {
-  title: 'Testing',
-  id: 1,
-  iid: 1,
+  id: 'gid://gitlab/Issue/436',
+  iid: 27,
+  title: 'Issue 1',
+  dueDate: null,
+  timeEstimate: 0,
+  weight: null,
   confidential: false,
-  referencePath: 'gitlab-org/gitlab-test#1',
+  referencePath: 'gitlab-org/gitlab-test#27',
+  path: '/gitlab-org/gitlab-test/-/issues/27',
+  assignees,
   labels: [
     {
       id: 1,
@@ -140,43 +164,63 @@ export const mockIssue = {
       description: 'testing',
     },
   ],
-  assignees: [
-    {
-      id: 1,
-      name: 'name',
-      username: 'username',
-      avatar_url: 'http://avatar_url',
-    },
-  ],
+  epic: {
+    id: 'gid://gitlab/Epic/41',
+  },
 };
 
 export const mockIssueWithModel = new ListIssue(mockIssue);
 
 export const mockIssue2 = {
-  title: 'Planning',
-  id: 2,
-  iid: 2,
+  id: 'gid://gitlab/Issue/437',
+  iid: 28,
+  title: 'Issue 2',
+  dueDate: null,
+  timeEstimate: 0,
+  weight: null,
   confidential: false,
   referencePath: 'gitlab-org/gitlab-test#2',
-  labels: [
-    {
-      id: 1,
-      title: 'plan',
-      color: 'blue',
-      description: 'planning',
-    },
-  ],
-  assignees: [
-    {
-      id: 1,
-      name: 'name',
-      username: 'username',
-      avatar_url: 'http://avatar_url',
-    },
-  ],
+  path: '/gitlab-org/gitlab-test/-/issues/28',
+  assignees,
+  labels,
+  epic: {
+    id: 'gid://gitlab/Epic/40',
+  },
 };
 
 export const mockIssue2WithModel = new ListIssue(mockIssue2);
+
+export const mockIssue3 = {
+  id: 'gid://gitlab/Issue/438',
+  iid: 29,
+  title: 'Issue 3',
+  referencePath: '#29',
+  dueDate: null,
+  timeEstimate: 0,
+  weight: null,
+  confidential: false,
+  path: '/gitlab-org/gitlab-test/-/issues/28',
+  assignees,
+  labels,
+  epic: null,
+};
+
+export const mockIssue4 = {
+  id: 'gid://gitlab/Issue/439',
+  iid: 30,
+  title: 'Issue 4',
+  referencePath: '#30',
+  dueDate: null,
+  timeEstimate: 0,
+  weight: null,
+  confidential: false,
+  path: '/gitlab-org/gitlab-test/-/issues/28',
+  assignees,
+  labels,
+  epic: null,
+};
+
+export const mockIssues = [mockIssue, mockIssue2];
 
 export const BoardsMockData = {
   GET: {
@@ -239,6 +283,7 @@ export const mockLists = [
     label: null,
     assignee: null,
     milestone: null,
+    loading: false,
   },
   {
     id: 'gid://gitlab/List/2',
@@ -255,9 +300,22 @@ export const mockLists = [
     },
     assignee: null,
     milestone: null,
+    loading: false,
   },
 ];
 
 export const mockListsWithModel = mockLists.map(listMock =>
   Vue.observable(new List({ ...listMock, doNotFetchIssues: true })),
 );
+
+export const mockIssuesByListId = {
+  'gid://gitlab/List/1': [mockIssue.id, mockIssue3.id, mockIssue4.id],
+  'gid://gitlab/List/2': mockIssues.map(({ id }) => id),
+};
+
+export const issues = {
+  [mockIssue.id]: mockIssue,
+  [mockIssue2.id]: mockIssue2,
+  [mockIssue3.id]: mockIssue3,
+  [mockIssue4.id]: mockIssue4,
+};

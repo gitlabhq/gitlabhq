@@ -7864,6 +7864,9 @@ msgstr ""
 msgid "DastProfiles|Could not retrieve site validation status. Please refresh the page, or try again later."
 msgstr ""
 
+msgid "DastProfiles|Could not update the scanner profile. Please try again."
+msgstr ""
+
 msgid "DastProfiles|Could not update the site profile. Please try again."
 msgstr ""
 
@@ -7879,7 +7882,7 @@ msgstr ""
 msgid "DastProfiles|Download validation text file"
 msgstr ""
 
-msgid "DastProfiles|Edit feature will come soon. Please create a new profile if changes needed"
+msgid "DastProfiles|Edit scanner profile"
 msgstr ""
 
 msgid "DastProfiles|Edit site profile"
@@ -23209,9 +23212,6 @@ msgid "Side-by-side"
 msgstr ""
 
 msgid "Sidebar|Assign health status"
-msgstr ""
-
-msgid "Sidebar|Change weight"
 msgstr ""
 
 msgid "Sidebar|Health status"

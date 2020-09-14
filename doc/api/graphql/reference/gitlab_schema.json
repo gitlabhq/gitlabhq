@@ -8547,6 +8547,20 @@
           "description": "Represents a DAST scanner profile.",
           "fields": [
             {
+              "name": "editPath",
+              "description": "Relative web path to the edit page of a scanner profile",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "globalId",
               "description": "ID of the DAST scanner profile",
               "args": [
