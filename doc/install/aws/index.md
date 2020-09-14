@@ -718,10 +718,10 @@ For more information on how to set it up, visit the
 GitLab also has various [health check endpoints](../../user/admin_area/monitoring/health_check.md)
 that you can ping and get reports.
 
-## GitLab Runners
+## GitLab Runner
 
 If you want to take advantage of [GitLab CI/CD](../../ci/README.md), you have to
-set up at least one [GitLab Runner](https://docs.gitlab.com/runner/).
+set up at least one [runner](https://docs.gitlab.com/runner/).
 
 Read more on configuring an
 [autoscaling GitLab Runner on AWS](https://docs.gitlab.com/runner/configuration/runner_autoscale_aws/).

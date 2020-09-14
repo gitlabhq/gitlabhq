@@ -162,7 +162,7 @@ To return to the normal development mode:
 1. Open `gitlab.yaml` located in your `gitlab` installation folder, scroll down to the `webpack` section and change back `dev_server` to `enabled: true`.
 1. Run `yarn clean` to remove the production assets and free some space (optional).
 1. Start webpack again: `gdk start webpack`.
-1. Restart GDK: `gdk-restart rails-web`.
+1. Restart GDK: `gdk restart rails-web`.
 
 ### 8. Babel polyfills
 

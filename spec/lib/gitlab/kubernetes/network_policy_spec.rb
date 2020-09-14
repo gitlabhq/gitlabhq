@@ -7,21 +7,22 @@ RSpec.describe Gitlab::Kubernetes::NetworkPolicy do
     described_class.new(
       name: name,
       namespace: namespace,
-      creation_timestamp: '2020-04-14T00:08:30Z',
-      selector: pod_selector,
-      policy_types: %w(Ingress Egress),
+      selector: selector,
       ingress: ingress,
-      egress: egress
+      labels: labels
     )
   end
 
   let(:resource) do
     ::Kubeclient::Resource.new(
+      kind: Gitlab::Kubernetes::NetworkPolicy::KIND,
       metadata: { name: name, namespace: namespace },
       spec: { podSelector: pod_selector, policyTypes: %w(Ingress), ingress: ingress, egress: nil }
     )
   end
 
+  let(:selector) { pod_selector }
+  let(:labels) { nil }
   let(:name) { 'example-name' }
   let(:namespace) { 'example-namespace' }
   let(:pod_selector) { { matchLabels: { role: 'db' } } }
@@ -44,27 +45,7 @@ RSpec.describe Gitlab::Kubernetes::NetworkPolicy do
     ]
   end
 
-  include_examples 'network policy common specs' do
-    let(:selector) { pod_selector }
-    let(:policy) do
-      described_class.new(
-        name: name,
-        namespace: namespace,
-        selector: selector,
-        ingress: ingress,
-        labels: labels
-      )
-    end
-
-    let(:spec) { { podSelector: selector, policyTypes: ["Ingress"], ingress: ingress, egress: nil } }
-    let(:metadata) { { name: name, namespace: namespace } }
-  end
-
-  describe '#generate' do
-    subject { policy.generate }
-
-    it { is_expected.to eq(resource) }
-  end
+  include_examples 'network policy common specs'
 
   describe '.from_yaml' do
     let(:manifest) do
@@ -180,6 +161,7 @@ RSpec.describe Gitlab::Kubernetes::NetworkPolicy do
 
     let(:generated_resource) do
       ::Kubeclient::Resource.new(
+        kind: Gitlab::Kubernetes::NetworkPolicy::KIND,
         metadata: { name: name, namespace: namespace, labels: { app: 'foo' } },
         spec: { podSelector: pod_selector, policyTypes: %w(Ingress), ingress: ingress, egress: nil }
       )
@@ -213,6 +195,33 @@ RSpec.describe Gitlab::Kubernetes::NetworkPolicy do
       end
 
       it { is_expected.to be_nil }
+    end
+  end
+
+  describe '#resource' do
+    subject { policy.resource }
+
+    let(:resource) do
+      {
+        kind: Gitlab::Kubernetes::NetworkPolicy::KIND,
+        metadata: { name: name, namespace: namespace },
+        spec: { podSelector: pod_selector, policyTypes: %w(Ingress), ingress: ingress, egress: nil }
+      }
+    end
+
+    it { is_expected.to eq(resource) }
+
+    context 'with labels' do
+      let(:labels) { { app: 'foo' } }
+      let(:resource) do
+        {
+          kind: Gitlab::Kubernetes::NetworkPolicy::KIND,
+          metadata: { name: name, namespace: namespace, labels: { app: 'foo' } },
+          spec: { podSelector: pod_selector, policyTypes: %w(Ingress), ingress: ingress, egress: nil }
+        }
+      end
+
+      it { is_expected.to eq(resource) }
     end
   end
 end

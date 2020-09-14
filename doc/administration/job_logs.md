@@ -9,7 +9,7 @@ type: reference
 
 > [Renamed from job traces to job logs](https://gitlab.com/gitlab-org/gitlab/-/issues/29121) in GitLab 12.5.
 
-Job logs are sent by GitLab Runner while it's processing a job. You can see
+Job logs are sent by a runner while it's processing a job. You can see
 logs in job pages, pipelines, email notifications, etc.
 
 ## Data flow
@@ -19,8 +19,8 @@ In the following table you can see the phases a log goes through:
 
 | Phase          | State        | Condition               | Data flow                                | Stored path |
 | -------------- | ------------ | ----------------------- | -----------------------------------------| ----------- |
-| 1: patching    | log          | When a job is running   | GitLab Runner => Puma => file storage | `#{ROOT_PATH}/gitlab-ci/builds/#{YYYY_mm}/#{project_id}/#{job_id}.log` |
-| 2: overwriting | log          | When a job is finished  | GitLab Runner => Puma => file storage | `#{ROOT_PATH}/gitlab-ci/builds/#{YYYY_mm}/#{project_id}/#{job_id}.log` |
+| 1: patching    | log          | When a job is running   | Runner => Puma => file storage | `#{ROOT_PATH}/gitlab-ci/builds/#{YYYY_mm}/#{project_id}/#{job_id}.log` |
+| 2: overwriting | log          | When a job is finished  | Runner => Puma => file storage | `#{ROOT_PATH}/gitlab-ci/builds/#{YYYY_mm}/#{project_id}/#{job_id}.log` |
 | 3: archiving   | archived log | After a job is finished | Sidekiq moves log to artifacts folder    | `#{ROOT_PATH}/gitlab-rails/shared/artifacts/#{disk_hash}/#{YYYY_mm_dd}/#{job_id}/#{job_artifact_id}/job.log` |
 | 4: uploading   | archived log | After a log is archived | Sidekiq moves archived log to [object storage](#uploading-logs-to-object-storage) (if configured) | `#{bucket_name}/#{disk_hash}/#{YYYY_mm_dd}/#{job_id}/#{job_artifact_id}/job.log` |
 
@@ -102,8 +102,8 @@ The data are stored in the following Redis namespace: `Gitlab::Redis::SharedStat
 
 Here is the detailed data flow:
 
-1. GitLab Runner picks a job from GitLab
-1. GitLab Runner sends a piece of log to GitLab
+1. The runner picks a job from GitLab
+1. The runner sends a piece of log to GitLab
 1. GitLab appends the data to Redis
 1. Once the data in Redis reach 128KB, the data is flushed to a persistent store (object storage or the database).
 1. The above steps are repeated until the job is finished.
@@ -160,7 +160,7 @@ In some cases, having data stored on Redis could incur data loss:
 
 1. **Case 1: When all data in Redis are accidentally flushed**
    - On going incremental logs could be recovered by re-sending logs (this is
-     supported by all versions of the GitLab Runner).
+     supported by all versions of GitLab Runner).
    - Finished jobs which have not archived incremental logs will lose the last part
      (~128KB) of log data.
 

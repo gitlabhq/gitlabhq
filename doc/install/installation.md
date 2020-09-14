@@ -937,7 +937,7 @@ See the [OmniAuth integration documentation](../integration/omniauth.md).
 
 ### Build your projects
 
-GitLab can build your projects. To enable that feature, you need GitLab Runners to do that for you.
+GitLab can build your projects. To enable that feature, you need runners to do that for you.
 See the [GitLab Runner section](https://about.gitlab.com/stages-devops-lifecycle/continuous-integration/#gitlab-runner) to install it.
 
 ### Adding your Trusted Proxies

@@ -7,23 +7,27 @@ RSpec.describe Gitlab::Kubernetes::CiliumNetworkPolicy do
     described_class.new(
       name: name,
       namespace: namespace,
-      creation_timestamp: '2020-04-14T00:08:30Z',
-      endpoint_selector: endpoint_selector,
+      description: description,
+      selector: selector,
       ingress: ingress,
       egress: egress,
-      description: description
+      labels: labels,
+      resource_version: resource_version
     )
   end
 
   let(:resource) do
     ::Kubeclient::Resource.new(
-      kind: partial_class_name,
-      apiVersion: "cilium.io/v2",
+      apiVersion: Gitlab::Kubernetes::CiliumNetworkPolicy::API_VERSION,
+      kind: Gitlab::Kubernetes::CiliumNetworkPolicy::KIND,
       metadata: { name: name, namespace: namespace, resourceVersion: resource_version },
-      spec: { endpointSelector: endpoint_selector, ingress: ingress }
+      spec: { endpointSelector: endpoint_selector, ingress: ingress, egress: egress },
+      description: description
     )
   end
 
+  let(:selector) { endpoint_selector }
+  let(:labels) { nil }
   let(:name) { 'example-name' }
   let(:namespace) { 'example-namespace' }
   let(:endpoint_selector) { { matchLabels: { role: 'db' } } }
@@ -48,34 +52,14 @@ RSpec.describe Gitlab::Kubernetes::CiliumNetworkPolicy do
     ]
   end
 
-  include_examples 'network policy common specs' do
-    let(:selector) { endpoint_selector}
-    let(:policy) do
-      described_class.new(
-        name: name,
-        namespace: namespace,
-        selector: selector,
-        ingress: ingress,
-        labels: labels,
-        resource_version: resource_version
-      )
-    end
-
-    let(:spec) { { endpointSelector: selector, ingress: ingress } }
-    let(:metadata) { { name: name, namespace: namespace, resourceVersion: resource_version } }
-  end
-
-  describe '#generate' do
-    subject { policy.generate }
-
-    it { is_expected.to eq(resource) }
-  end
+  include_examples 'network policy common specs'
 
   describe '.from_yaml' do
     let(:manifest) do
       <<~POLICY
         apiVersion: cilium.io/v2
         kind: CiliumNetworkPolicy
+        description: example-description
         metadata:
           name: example-name
           namespace: example-namespace
@@ -88,6 +72,9 @@ RSpec.describe Gitlab::Kubernetes::CiliumNetworkPolicy do
           - fromEndpoints:
             - matchLabels:
                 project: myproject
+          egress:
+          - ports:
+            - port: 5978
       POLICY
     end
 
@@ -167,18 +154,20 @@ RSpec.describe Gitlab::Kubernetes::CiliumNetworkPolicy do
   describe '.from_resource' do
     let(:resource) do
       ::Kubeclient::Resource.new(
+        description: description,
         metadata: {
           name: name, namespace: namespace, creationTimestamp: '2020-04-14T00:08:30Z',
           labels: { app: 'foo' }, resourceVersion: resource_version
         },
-        spec: { endpointSelector: endpoint_selector, ingress: ingress, egress: nil, labels: nil, description: nil }
+        spec: { endpointSelector: endpoint_selector, ingress: ingress, egress: nil, labels: nil }
       )
     end
 
     let(:generated_resource) do
       ::Kubeclient::Resource.new(
-        kind: partial_class_name,
-        apiVersion: "cilium.io/v2",
+        apiVersion: Gitlab::Kubernetes::CiliumNetworkPolicy::API_VERSION,
+        kind: Gitlab::Kubernetes::CiliumNetworkPolicy::KIND,
+        description: description,
         metadata: { name: name, namespace: namespace, resourceVersion: resource_version, labels: { app: 'foo' } },
         spec: { endpointSelector: endpoint_selector, ingress: ingress }
       )
@@ -197,7 +186,7 @@ RSpec.describe Gitlab::Kubernetes::CiliumNetworkPolicy do
     context 'with resource without metadata' do
       let(:resource) do
         ::Kubeclient::Resource.new(
-          spec: { endpointSelector: endpoint_selector, ingress: ingress, egress: nil, labels: nil, description: nil }
+          spec: { endpointSelector: endpoint_selector, ingress: ingress, egress: nil, labels: nil }
         )
       end
 
@@ -212,6 +201,52 @@ RSpec.describe Gitlab::Kubernetes::CiliumNetworkPolicy do
       end
 
       it { is_expected.to be_nil }
+    end
+  end
+
+  describe '#resource' do
+    subject { policy.resource }
+
+    let(:resource) do
+      {
+        apiVersion: Gitlab::Kubernetes::CiliumNetworkPolicy::API_VERSION,
+        kind: Gitlab::Kubernetes::CiliumNetworkPolicy::KIND,
+        metadata: { name: name, namespace: namespace, resourceVersion: resource_version },
+        spec: { endpointSelector: endpoint_selector, ingress: ingress, egress: egress },
+        description: description
+      }
+    end
+
+    it { is_expected.to eq(resource) }
+
+    context 'with labels' do
+      let(:labels) { { app: 'foo' } }
+
+      before do
+        resource[:metadata][:labels] = { app: 'foo' }
+      end
+
+      it { is_expected.to eq(resource) }
+    end
+
+    context 'without resource_version' do
+      let(:resource_version) { nil }
+
+      before do
+        resource[:metadata].delete(:resourceVersion)
+      end
+
+      it { is_expected.to eq(resource) }
+    end
+
+    context 'with nil egress' do
+      let(:egress) { nil }
+
+      before do
+        resource[:spec].delete(:egress)
+      end
+
+      it { is_expected.to eq(resource) }
     end
   end
 end

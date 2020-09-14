@@ -6,14 +6,12 @@ type: reference
 
 You can use sign-up restrictions to:
 
-- Disable new signups.
+- Disable new sign-ups.
 - Require user email confirmation.
 - Denylist or allowlist email addresses belonging to specific domains.
 
 NOTE: **Note:**
-These restrictions are only applied during sign-up from an external user. An admin is
-able to add a user through the admin panel with a disallowed domain. Also
-note that the users can change their email addresses after signup to
+These restrictions are only applied during sign-up from an external user. An admin can add a user through the admin panel with a disallowed domain. Also, note that the users can change their email addresses after sign-up to
 disallowed domains.
 
 ## Disable new signups
@@ -26,8 +24,8 @@ You can restrict new users from signing up by themselves for an account in your 
 
 ### Recommendations
 
-For customers running public facing GitLab instances, we highly recommend that you
-consider disabling new signups if you do not expect public users to sign up for an
+For customers running public-facing GitLab instances, we highly recommend that you
+consider disabling new sign-ups if you do not expect public users to sign up for an
 account.
 
 Alternatively, you could also consider setting up a
@@ -52,7 +50,7 @@ the minimum number of characters a user must have in their password using the Gi
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/598) in GitLab 7.11.0
 
-You can restrict users to only sign up using email addresses matching the given
+You can restrict users only to sign up using email addresses matching the given
 domains list.
 
 ## Denylist email domains

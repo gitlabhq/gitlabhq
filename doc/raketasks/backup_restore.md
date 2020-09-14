@@ -781,7 +781,7 @@ from source). This file contains the database encryption key,
 [CI/CD variables](../ci/variables/README.md#gitlab-cicd-environment-variables), and
 variables used for [two-factor authentication](../user/profile/account/two_factor_authentication.md).
 If you fail to restore this encryption key file along with the application data
-backup, users with two-factor authentication enabled and GitLab Runners will
+backup, users with two-factor authentication enabled and GitLab Runner will
 lose access to your GitLab server.
 
 You may also want to restore any TLS keys, certificates, or [SSH host keys](https://superuser.com/questions/532040/copy-ssh-keys-from-one-server-to-another-server/532079#532079).
@@ -1061,14 +1061,14 @@ including (but not restricted to):
 - [Project mirroring](../user/project/repository/repository_mirroring.md)
 - [Web hooks](../user/project/integrations/webhooks.md)
 
-In cases like CI/CD variables and Runner authentication, you might
+In cases like CI/CD variables and runner authentication, you might
 experience some unexpected behavior such as:
 
 - Stuck jobs.
 - 500 errors.
 
 In this case, you are required to reset all the tokens for CI/CD variables
-and Runner Authentication, which is described in more detail below. After
+and runner authentication, which is described in more detail below. After
 resetting the tokens, you should be able to visit your project and the jobs
 will have started running again. Use the information in the following sections at your own risk.
 
@@ -1125,7 +1125,7 @@ and then users will have to reactivate 2FA from scratch.
 1. You may need to reconfigure or restart GitLab for the changes to take
    effect.
 
-#### Reset Runner registration tokens
+#### Reset runner registration tokens
 
 1. Enter the DB console:
 

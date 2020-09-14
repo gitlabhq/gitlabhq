@@ -318,7 +318,7 @@ Implemented using Redis methods [PFADD](https://redis.io/commands/pfadd) and [PF
 
    Tracking events using the `UsageData` API requires the `usage_data_api` feature flag to be enabled, which is disabled by default.
 
-   API requests are protected by checking of a valid CSRF token.
+   API requests are protected by checking for a valid CSRF token.
 
    In order to be able to increment the values the related feature `usage_data<event_name>` should be enabled.
 

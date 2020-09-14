@@ -46,7 +46,7 @@ For GitLab-managed Prometheus, you can set up [Auto DevOps](../../topics/autodev
 to quickly create a deployment:
 
 1. Navigate to your project's **Operations > Kubernetes** page.
-1. Ensure that, in addition to Prometheus, you also have Runner and Ingress
+1. Ensure that, in addition to Prometheus, you also have GitLab Runner and Ingress
    installed.
 1. After installing Ingress, copy its endpoint.
 1. Navigate to your project's **Settings > CI/CD** page. In the
