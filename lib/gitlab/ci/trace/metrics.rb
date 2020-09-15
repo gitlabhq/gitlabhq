@@ -6,7 +6,8 @@ module Gitlab
       class Metrics
         extend Gitlab::Utils::StrongMemoize
 
-        OPERATIONS = [:mutated].freeze
+        OPERATIONS = [:appended, :mutated, :overwrite, :accepted,
+                      :finalized, :discarded, :flaky].freeze
 
         def increment_trace_operation(operation: :unknown)
           unless OPERATIONS.include?(operation)

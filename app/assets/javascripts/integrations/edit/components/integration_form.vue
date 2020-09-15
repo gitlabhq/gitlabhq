@@ -1,6 +1,8 @@
 <script>
 import { mapState, mapActions, mapGetters } from 'vuex';
+import { GlButton } from '@gitlab/ui';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import eventHub from '../event_hub';
 
 import OverrideDropdown from './override_dropdown.vue';
 import ActiveCheckbox from './active_checkbox.vue';
@@ -18,11 +20,15 @@ export default {
     JiraIssuesFields,
     TriggerFields,
     DynamicField,
+    GlButton,
   },
   mixins: [glFeatureFlagsMixin()],
   computed: {
-    ...mapGetters(['currentKey', 'propsSource']),
-    ...mapState(['adminState', 'override']),
+    ...mapGetters(['currentKey', 'propsSource', 'isSavingOrTesting']),
+    ...mapState(['adminState', 'override', 'isSaving', 'isTesting']),
+    isEditable() {
+      return this.propsSource.editable;
+    },
     isJira() {
       return this.propsSource.type === 'jira';
     },
@@ -31,7 +37,15 @@ export default {
     },
   },
   methods: {
-    ...mapActions(['setOverride']),
+    ...mapActions(['setOverride', 'setIsSaving', 'setIsTesting']),
+    onSaveClick() {
+      this.setIsSaving(true);
+      eventHub.$emit('saveIntegration');
+    },
+    onTestClick() {
+      this.setIsTesting(true);
+      eventHub.$emit('testIntegration');
+    },
   },
 };
 </script>
@@ -67,5 +81,29 @@ export default {
       :key="`${currentKey}-jira-issues-fields`"
       v-bind="propsSource.jiraIssuesProps"
     />
+    <div v-if="isEditable" class="footer-block row-content-block">
+      <gl-button
+        category="primary"
+        variant="success"
+        type="submit"
+        :loading="isSaving"
+        :disabled="isSavingOrTesting"
+        data-qa-selector="save_changes_button"
+        @click.prevent="onSaveClick"
+      >
+        {{ __('Save changes') }}
+      </gl-button>
+      <gl-button
+        v-if="propsSource.canTest"
+        :loading="isTesting"
+        :disabled="isSavingOrTesting"
+        :href="propsSource.testPath"
+        @click.prevent="onTestClick"
+      >
+        {{ __('Test settings') }}
+      </gl-button>
+
+      <gl-button class="btn-cancel" :href="propsSource.cancelPath">{{ __('Cancel') }}</gl-button>
+    </div>
   </div>
 </template>

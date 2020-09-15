@@ -3,37 +3,43 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::PipelineObjectHierarchy do
-  let_it_be(:project) { create_default(:project, :repository) }
-  let_it_be(:pipeline) { create(:ci_empty_pipeline, status: :created, project: project) }
-  let_it_be(:ancestor) { create(:ci_pipeline, project: pipeline.project) }
-  let_it_be(:parent) { create(:ci_pipeline, project: pipeline.project) }
-  let_it_be(:child) { create(:ci_pipeline, project: pipeline.project) }
-  let_it_be(:cousin_parent) { create(:ci_pipeline, project: pipeline.project) }
-  let_it_be(:cousin) { create(:ci_pipeline, project: pipeline.project) }
+  include Ci::SourcePipelineHelpers
+
+  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:ancestor) { create(:ci_pipeline, project: project) }
+  let_it_be(:parent) { create(:ci_pipeline, project: project) }
+  let_it_be(:child) { create(:ci_pipeline, project: project) }
+  let_it_be(:cousin_parent) { create(:ci_pipeline, project: project) }
+  let_it_be(:cousin) { create(:ci_pipeline, project: project) }
+  let_it_be(:triggered_pipeline) { create(:ci_pipeline) }
 
   before_all do
-    create_source_relation(ancestor, parent)
-    create_source_relation(ancestor, cousin_parent)
-    create_source_relation(parent, child)
-    create_source_relation(cousin_parent, cousin)
+    create_source_pipeline(ancestor, parent)
+    create_source_pipeline(ancestor, cousin_parent)
+    create_source_pipeline(parent, child)
+    create_source_pipeline(cousin_parent, cousin)
+    create_source_pipeline(child, triggered_pipeline)
   end
 
   describe '#base_and_ancestors' do
     it 'includes the base and its ancestors' do
-      relation = described_class.new(::Ci::Pipeline.where(id: parent.id)).base_and_ancestors
+      relation = described_class.new(::Ci::Pipeline.where(id: parent.id),
+                                     options: { same_project: true }).base_and_ancestors
 
       expect(relation).to contain_exactly(ancestor, parent)
     end
 
     it 'can find ancestors upto a certain level' do
-      relation = described_class.new(::Ci::Pipeline.where(id: child.id)).base_and_ancestors(upto: ancestor.id)
+      relation = described_class.new(::Ci::Pipeline.where(id: child.id),
+                                     options: { same_project: true }).base_and_ancestors(upto: ancestor.id)
 
       expect(relation).to contain_exactly(parent, child)
     end
 
     describe 'hierarchy_order option' do
       let(:relation) do
-        described_class.new(::Ci::Pipeline.where(id: child.id)).base_and_ancestors(hierarchy_order: hierarchy_order)
+        described_class.new(::Ci::Pipeline.where(id: child.id),
+                            options: { same_project: true }).base_and_ancestors(hierarchy_order: hierarchy_order)
       end
 
       context ':asc' do
@@ -56,14 +62,16 @@ RSpec.describe Gitlab::Ci::PipelineObjectHierarchy do
 
   describe '#base_and_descendants' do
     it 'includes the base and its descendants' do
-      relation = described_class.new(::Ci::Pipeline.where(id: parent.id)).base_and_descendants
+      relation = described_class.new(::Ci::Pipeline.where(id: parent.id),
+                                     options: { same_project: true }).base_and_descendants
 
       expect(relation).to contain_exactly(parent, child)
     end
 
     context 'when with_depth is true' do
       let(:relation) do
-        described_class.new(::Ci::Pipeline.where(id: ancestor.id)).base_and_descendants(with_depth: true)
+        described_class.new(::Ci::Pipeline.where(id: ancestor.id),
+                            options: { same_project: true }).base_and_descendants(with_depth: true)
       end
 
       it 'includes depth in the results' do
@@ -84,7 +92,8 @@ RSpec.describe Gitlab::Ci::PipelineObjectHierarchy do
 
   describe '#all_objects' do
     it 'includes its ancestors and descendants' do
-      relation = described_class.new(::Ci::Pipeline.where(id: parent.id)).all_objects
+      relation = described_class.new(::Ci::Pipeline.where(id: parent.id),
+                                     options: { same_project: true }).all_objects
 
       expect(relation).to contain_exactly(ancestor, parent, child)
     end
@@ -92,20 +101,11 @@ RSpec.describe Gitlab::Ci::PipelineObjectHierarchy do
     it 'returns all family tree' do
       relation = described_class.new(
         ::Ci::Pipeline.where(id: child.id),
-        described_class.new(::Ci::Pipeline.where(id: child.id)).base_and_ancestors
+        described_class.new(::Ci::Pipeline.where(id: child.id), options: { same_project: true }).base_and_ancestors,
+        options: { same_project: true }
       ).all_objects
 
       expect(relation).to contain_exactly(ancestor, parent, cousin_parent, child, cousin)
     end
-  end
-
-  private
-
-  def create_source_relation(parent, child)
-    create(:ci_sources_pipeline,
-           source_job: create(:ci_build, pipeline: parent),
-           source_project: parent.project,
-           pipeline: child,
-           project: child.project)
   end
 end

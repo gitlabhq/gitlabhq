@@ -18,8 +18,8 @@ RSpec.describe 'User activates JetBrains TeamCity CI' do
     fill_in('Username', with: 'user')
     fill_in('Password', with: 'verySecret')
 
-    click_test_integration
+    click_test_then_save_integration(expect_test_to_fail: false)
 
-    expect(page).to have_content('JetBrains TeamCity CI activated.')
+    expect(page).to have_content('JetBrains TeamCity CI settings saved and active.')
   end
 end

@@ -15,7 +15,7 @@ RSpec.describe 'User activates Slack notifications', :js do
 
       click_test_then_save_integration
 
-      expect(page).to have_content('Slack notifications activated.')
+      expect(page).to have_content('Slack notifications settings saved and active.')
     end
   end
 

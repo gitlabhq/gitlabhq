@@ -5,6 +5,8 @@ describe('Integration form state factory', () => {
     expect(createState()).toEqual({
       adminState: null,
       customState: {},
+      isSaving: false,
+      isTesting: false,
       override: false,
     });
   });

@@ -626,6 +626,18 @@ For example:
 cp <your_source_directory> <your_destination_directory>
 ```
 
+### Keyboard commands
+
+Use the HTML `<kbd>` tag when referring to keystroke presses. For example:
+
+```plaintext
+To stop the command, press <kbd>Ctrl</kbd>+<kbd>C</kbd>.
+```
+
+When the docs are generated, the output is:
+
+To stop the command, press <kbd>Ctrl</kbd>+<kbd>C</kbd>.
+
 ## Lists
 
 - Always start list items with a capital letter, unless they are parameters or

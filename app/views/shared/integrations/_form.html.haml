@@ -6,10 +6,5 @@
       = integration.title
 
   .col-lg-8
-    = form_for integration, as: :service, url: scoped_integration_path(integration), method: :put, html: { class: 'gl-show-field-errors integration-settings-form js-integration-settings-form', data: { 'can-test' => integration.can_test?, 'test-url' => scoped_test_integration_path(integration) } } do |form|
+    = form_for integration, as: :service, url: scoped_integration_path(integration), method: :put, html: { class: 'gl-show-field-errors integration-settings-form js-integration-settings-form', data: { 'test-url' => scoped_test_integration_path(integration) } } do |form|
       = render 'shared/service_settings', form: form, integration: integration
-
-      - if integration.editable?
-        .footer-block.row-content-block
-          = service_save_button
-          = link_to _('Cancel'), scoped_integrations_path, class: 'btn btn-cancel'

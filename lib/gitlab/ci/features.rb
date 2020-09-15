@@ -69,6 +69,15 @@ module Gitlab
       def self.child_of_child_pipeline_enabled?(project)
         ::Feature.enabled?(:ci_child_of_child_pipeline, project, default_enabled: false)
       end
+
+      def self.trace_overwrite?
+        ::Feature.enabled?(:ci_trace_overwrite, type: :ops, default_enabled: false)
+      end
+
+      def self.accept_trace?(project)
+        ::Feature.enabled?(:ci_enable_live_trace, project) &&
+          ::Feature.enabled?(:ci_accept_trace, project, type: :ops, default_enabled: false)
+      end
     end
   end
 end

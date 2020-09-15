@@ -38,8 +38,9 @@ module Ci
 
     has_one :deployment, as: :deployable, class_name: 'Deployment'
     has_one :resource, class_name: 'Ci::Resource', inverse_of: :build
+    has_one :pending_state, class_name: 'Ci::BuildPendingState', inverse_of: :build
     has_many :trace_sections, class_name: 'Ci::BuildTraceSection'
-    has_many :trace_chunks, class_name: 'Ci::BuildTraceChunk', foreign_key: :build_id
+    has_many :trace_chunks, class_name: 'Ci::BuildTraceChunk', foreign_key: :build_id, inverse_of: :build
     has_many :report_results, class_name: 'Ci::BuildReportResult', inverse_of: :build
 
     has_many :job_artifacts, class_name: 'Ci::JobArtifact', foreign_key: :job_id, dependent: :destroy, inverse_of: :job # rubocop:disable Cop/ActiveRecordDependent
@@ -954,6 +955,10 @@ module Ci
     def degradation_threshold
       var = yaml_variables.find { |v| v[:key] == DEGRADATION_THRESHOLD_VARIABLE_NAME }
       var[:value]&.to_i if var
+    end
+
+    def remove_pending_state!
+      pending_state.try(:delete)
     end
 
     private

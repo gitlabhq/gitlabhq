@@ -29,20 +29,20 @@ RSpec.describe 'Set up Mattermost slash commands', :js do
 
         fill_in 'service_token', with: token
         click_active_checkbox
-        click_on 'Save changes'
+        click_save_integration
 
         expect(current_path).to eq(edit_project_service_path(project, :mattermost_slash_commands))
-        expect(page).to have_content('Mattermost slash commands settings saved, but not activated.')
+        expect(page).to have_content('Mattermost slash commands settings saved, but not active.')
       end
 
       it 'redirects to the integrations page after activating' do
         token = ('a'..'z').to_a.join
 
         fill_in 'service_token', with: token
-        click_on 'Save changes'
+        click_save_integration
 
         expect(current_path).to eq(edit_project_service_path(project, :mattermost_slash_commands))
-        expect(page).to have_content('Mattermost slash commands activated.')
+        expect(page).to have_content('Mattermost slash commands settings saved and active.')
       end
 
       it 'shows the add to mattermost button' do

@@ -1,16 +1,22 @@
 <script>
-import { GlLink } from '@gitlab/ui';
-import FilteredSearchDropdown from '~/vue_shared/components/filtered_search_dropdown.vue';
+import { GlButtonGroup, GlDropdown, GlDropdownItem, GlLink, GlSearchBoxByType } from '@gitlab/ui';
+import autofocusonshow from '~/vue_shared/directives/autofocusonshow';
 import ReviewAppLink from '../review_app_link.vue';
 
 export default {
   name: 'DeploymentViewButton',
   components: {
-    FilteredSearchDropdown,
+    GlButtonGroup,
+    GlDropdown,
+    GlDropdownItem,
     GlLink,
+    GlSearchBoxByType,
     ReviewAppLink,
     VisualReviewAppLink: () =>
       import('ee_component/vue_merge_request_widget/components/visual_review_app_link.vue'),
+  },
+  directives: {
+    autofocusonshow,
   },
   props: {
     appButtonText: {
@@ -37,6 +43,9 @@ export default {
       }),
     },
   },
+  data() {
+    return { searchTerm: '' };
+  },
   computed: {
     deploymentExternalUrl() {
       if (this.deployment.changes && this.deployment.changes.length === 1) {
@@ -47,44 +56,52 @@ export default {
     shouldRenderDropdown() {
       return this.deployment.changes && this.deployment.changes.length > 1;
     },
+    filteredChanges() {
+      return this.deployment?.changes?.filter(change => change.path.includes(this.searchTerm));
+    },
   },
 };
 </script>
-
 <template>
   <span>
-    <filtered-search-dropdown
-      v-if="shouldRenderDropdown"
-      class="js-mr-wigdet-deployment-dropdown inline"
-      :items="deployment.changes"
-      :main-action-link="deploymentExternalUrl"
-      filter-key="path"
-    >
-      <template #mainAction="{ className }">
-        <review-app-link
-          :display="appButtonText"
-          :link="deploymentExternalUrl"
-          :css-class="`deploy-link js-deploy-url inline ${className}`"
+    <gl-button-group v-if="shouldRenderDropdown" size="small">
+      <review-app-link
+        :display="appButtonText"
+        :link="deploymentExternalUrl"
+        size="small"
+        css-class="deploy-link js-deploy-url inline"
+      />
+      <gl-dropdown size="small" class="js-mr-wigdet-deployment-dropdown">
+        <gl-search-box-by-type
+          v-model.trim="searchTerm"
+          v-autofocusonshow
+          autofocus
+          class="gl-m-3"
         />
-      </template>
-
-      <template #result="{ result }">
-        <gl-link
-          :href="result.external_url"
-          target="_blank"
-          rel="noopener noreferrer nofollow"
-          class="js-deploy-url-menu-item menu-item"
+        <gl-dropdown-item
+          v-for="change in filteredChanges"
+          :key="change.path"
+          class="js-filtered-dropdown-result"
         >
-          <strong class="str-truncated-100 gl-mb-0 d-block">{{ result.path }}</strong>
-
-          <p class="text-secondary str-truncated-100 gl-mb-0 d-block">{{ result.external_url }}</p>
-        </gl-link>
-      </template>
-    </filtered-search-dropdown>
+          <gl-link
+            :href="change.external_url"
+            target="_blank"
+            rel="noopener noreferrer nofollow"
+            class="js-deploy-url-menu-item menu-item"
+          >
+            <strong class="str-truncated-100 gl-mb-0 gl-display-block">{{ change.path }}</strong>
+            <p class="text-secondary str-truncated-100 gl-mb-0 d-block">
+              {{ change.external_url }}
+            </p>
+          </gl-link>
+        </gl-dropdown-item>
+      </gl-dropdown>
+    </gl-button-group>
     <review-app-link
       v-else
       :display="appButtonText"
       :link="deploymentExternalUrl"
+      size="small"
       css-class="js-deploy-url deploy-link btn btn-default btn-sm inline"
     />
     <visual-review-app-link

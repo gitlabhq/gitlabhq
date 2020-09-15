@@ -47,7 +47,7 @@ The JWT's payload looks like this:
   "project_path": "mygroup/myproject",
   "user_id": "42",
   "user_login": "myuser",
-  "user_email": "myuser@example.com"
+  "user_email": "myuser@example.com",
   "pipeline_id": "1212",
   "job_id": "1212",
   "ref": "auto-deploy-2020-04-01",               # Git ref for this job

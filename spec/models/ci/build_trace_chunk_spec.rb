@@ -463,6 +463,8 @@ RSpec.describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
   end
 
   describe '#persist_data!' do
+    let(:build) { create(:ci_build, :running) }
+
     subject { build_trace_chunk.persist_data! }
 
     shared_examples_for 'Atomic operation' do
@@ -524,6 +526,18 @@ RSpec.describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
             expect(Ci::BuildTraceChunks::Database.new.data(build_trace_chunk)).to be_nil
             expect(Ci::BuildTraceChunks::Fog.new.data(build_trace_chunk)).to be_nil
           end
+
+          context 'when chunk is a final one' do
+            before do
+              create(:ci_build_pending_state, build: build)
+            end
+
+            it 'persists the data' do
+              subject
+
+              expect(build_trace_chunk.fog?).to be_truthy
+            end
+          end
         end
       end
 
@@ -573,6 +587,18 @@ RSpec.describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
             expect(Ci::BuildTraceChunks::Database.new.data(build_trace_chunk)).to eq(data)
             expect(Ci::BuildTraceChunks::Fog.new.data(build_trace_chunk)).to be_nil
           end
+
+          context 'when chunk is a final one' do
+            before do
+              create(:ci_build_pending_state, build: build)
+            end
+
+            it 'persists the data' do
+              subject
+
+              expect(build_trace_chunk.fog?).to be_truthy
+            end
+          end
         end
       end
 
@@ -617,6 +643,54 @@ RSpec.describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
           it 'does not raise error' do
             expect { subject }.not_to raise_error
           end
+        end
+      end
+    end
+  end
+
+  describe 'final?' do
+    let(:build) { create(:ci_build, :running) }
+
+    context 'when build pending state exists' do
+      before do
+        create(:ci_build_pending_state, build: build)
+      end
+
+      context 'when chunks is not the last one' do
+        before do
+          create(:ci_build_trace_chunk, chunk_index: 1, build: build)
+        end
+
+        it 'is not a final chunk' do
+          expect(build.reload.pending_state).to be_present
+          expect(build_trace_chunk).not_to be_final
+        end
+      end
+
+      context 'when chunks is the last one' do
+        it 'is a final chunk' do
+          expect(build.reload.pending_state).to be_present
+          expect(build_trace_chunk).to be_final
+        end
+      end
+    end
+
+    context 'when build pending state does not exist' do
+      context 'when chunks is not the last one' do
+        before do
+          create(:ci_build_trace_chunk, chunk_index: 1, build: build)
+        end
+
+        it 'is not a final chunk' do
+          expect(build.reload.pending_state).not_to be_present
+          expect(build_trace_chunk).not_to be_final
+        end
+      end
+
+      context 'when chunks is the last one' do
+        it 'is not a final chunk' do
+          expect(build.reload.pending_state).not_to be_present
+          expect(build_trace_chunk).not_to be_final
         end
       end
     end

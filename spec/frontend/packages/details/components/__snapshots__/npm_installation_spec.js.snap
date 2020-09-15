@@ -32,7 +32,7 @@ exports[`NpmInstallation renders all the messages 1`] = `
    
   <code-instruction-stub
     copytext="Copy npm setup command"
-    instruction="echo @Test:registry=undefined >> .npmrc"
+    instruction="echo @Test:registry=undefined/ >> .npmrc"
     label="npm command"
     trackingaction="copy_npm_setup_command"
     trackinglabel="code_instruction"
@@ -40,7 +40,7 @@ exports[`NpmInstallation renders all the messages 1`] = `
    
   <code-instruction-stub
     copytext="Copy yarn setup command"
-    instruction="echo \\\\\\"@Test:registry\\\\\\" \\\\\\"undefined\\\\\\" >> .yarnrc"
+    instruction="echo \\\\\\"@Test:registry\\\\\\" \\\\\\"undefined/\\\\\\" >> .yarnrc"
     label="yarn command"
     trackingaction="copy_yarn_setup_command"
     trackinglabel="code_instruction"

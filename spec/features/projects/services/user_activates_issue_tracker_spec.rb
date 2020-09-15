@@ -26,14 +26,14 @@ RSpec.describe 'User activates issue tracker', :js do
           fill_form(skip_new_issue_url: skip_new_issue_url)
 
           if skip_test
-            click_button('Save changes')
+            click_save_integration
           else
-            click_test_integration
+            click_test_then_save_integration(expect_test_to_fail: false)
           end
         end
 
         it 'activates the service' do
-          expect(page).to have_content("#{tracker} activated.")
+          expect(page).to have_content("#{tracker} settings saved and active.")
           expect(current_path).to eq(edit_project_service_path(project, tracker.parameterize(separator: '_')))
         end
 
@@ -57,7 +57,7 @@ RSpec.describe 'User activates issue tracker', :js do
             click_test_then_save_integration
           end
 
-          expect(page).to have_content("#{tracker} activated.")
+          expect(page).to have_content("#{tracker} settings saved and active.")
           expect(current_path).to eq(edit_project_service_path(project, tracker.parameterize(separator: '_')))
         end
       end
@@ -72,7 +72,7 @@ RSpec.describe 'User activates issue tracker', :js do
       end
 
       it 'saves but does not activate the service' do
-        expect(page).to have_content("#{tracker} settings saved, but not activated.")
+        expect(page).to have_content("#{tracker} settings saved, but not active.")
         expect(current_path).to eq(edit_project_service_path(project, tracker.parameterize(separator: '_')))
       end
 

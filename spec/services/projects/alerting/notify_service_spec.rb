@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Projects::Alerting::NotifyService do
-  let_it_be(:project, reload: true) { create(:project, :repository) }
+  let_it_be_with_reload(:project) { create(:project, :repository) }
 
   before do
     allow(ProjectServiceWorker).to receive(:perform_async)
@@ -14,6 +14,7 @@ RSpec.describe Projects::Alerting::NotifyService do
     let(:starts_at) { Time.current.change(usec: 0) }
     let(:fingerprint) { 'testing' }
     let(:service) { described_class.new(project, nil, payload) }
+    let_it_be(:environment) { create(:environment, project: project) }
     let(:environment) { create(:environment, project: project) }
     let(:ended_at) { nil }
     let(:payload_raw) do
@@ -36,7 +37,7 @@ RSpec.describe Projects::Alerting::NotifyService do
     subject { service.execute(token) }
 
     context 'with activated Alerts Service' do
-      let!(:alerts_service) { create(:alerts_service, project: project) }
+      let_it_be_with_reload(:alerts_service) { create(:alerts_service, project: project) }
 
       context 'with valid token' do
         let(:token) { alerts_service.token }
@@ -210,6 +211,18 @@ RSpec.describe Projects::Alerting::NotifyService do
           end
         end
 
+        context 'with overlong payload' do
+          let(:payload_raw) do
+            {
+              title: 'a' * Gitlab::Utils::DeepSize::DEFAULT_MAX_SIZE,
+              start_time: starts_at.rfc3339
+            }
+          end
+
+          it_behaves_like 'does not process incident issues due to error', http_status: :bad_request
+          it_behaves_like 'does not an create alert management alert'
+        end
+
         it_behaves_like 'does not process incident issues'
 
         context 'issue enabled' do
@@ -257,7 +270,9 @@ RSpec.describe Projects::Alerting::NotifyService do
       end
 
       context 'with deactivated Alerts Service' do
-        let!(:alerts_service) { create(:alerts_service, :inactive, project: project) }
+        before do
+          alerts_service.update!(active: false)
+        end
 
         it_behaves_like 'does not process incident issues due to error', http_status: :forbidden
         it_behaves_like 'does not an create alert management alert'

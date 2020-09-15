@@ -9853,8 +9853,8 @@ CREATE TABLE public.ci_build_pending_states (
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
     build_id bigint NOT NULL,
-    state integer,
-    failure_reason integer,
+    state smallint,
+    failure_reason smallint,
     trace_checksum bytea
 );
 
@@ -13238,7 +13238,8 @@ CREATE TABLE public.merge_request_diffs (
     external_diff character varying,
     external_diff_store integer DEFAULT 1,
     stored_externally boolean,
-    files_count smallint
+    files_count smallint,
+    CONSTRAINT check_93ee616ac9 CHECK ((external_diff_store IS NOT NULL))
 );
 
 CREATE SEQUENCE public.merge_request_diffs_id_seq
@@ -17976,9 +17977,6 @@ ALTER TABLE public.vulnerability_scanners
 ALTER TABLE public.packages_package_files
     ADD CONSTRAINT check_4c5e6bb0b3 CHECK ((file_store IS NOT NULL)) NOT VALID;
 
-ALTER TABLE public.merge_request_diffs
-    ADD CONSTRAINT check_93ee616ac9 CHECK ((external_diff_store IS NOT NULL)) NOT VALID;
-
 ALTER TABLE ONLY public.ci_build_needs
     ADD CONSTRAINT ci_build_needs_pkey PRIMARY KEY (id);
 
@@ -20300,8 +20298,6 @@ CREATE INDEX index_merge_request_diff_details_on_merge_request_diff_id ON public
 CREATE UNIQUE INDEX index_merge_request_diff_files_on_mr_diff_id_and_order ON public.merge_request_diff_files USING btree (merge_request_diff_id, relative_order);
 
 CREATE INDEX index_merge_request_diffs_by_id_partial ON public.merge_request_diffs USING btree (id) WHERE ((files_count > 0) AND ((NOT stored_externally) OR (stored_externally IS NULL)));
-
-CREATE INDEX index_merge_request_diffs_external_diff_store_is_null ON public.merge_request_diffs USING btree (id) WHERE (external_diff_store IS NULL);
 
 CREATE INDEX index_merge_request_diffs_on_external_diff_store ON public.merge_request_diffs USING btree (external_diff_store);
 

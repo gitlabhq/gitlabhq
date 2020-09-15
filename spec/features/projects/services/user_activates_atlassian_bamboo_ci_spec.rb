@@ -16,9 +16,9 @@ RSpec.describe 'User activates Atlassian Bamboo CI' do
     fill_in('Username', with: 'user')
     fill_in('Password', with: 'verySecret')
 
-    click_test_integration
+    click_test_then_save_integration(expect_test_to_fail: false)
 
-    expect(page).to have_content('Atlassian Bamboo CI activated.')
+    expect(page).to have_content('Atlassian Bamboo CI settings saved and active.')
 
     # Password field should not be filled in.
     click_link('Atlassian Bamboo CI')

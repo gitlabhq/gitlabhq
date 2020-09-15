@@ -1,21 +1,24 @@
-import Vue from 'vue';
+import { mount, createLocalVue } from '@vue/test-utils';
+import Vuex from 'vuex';
 import { createStore } from '~/ide/stores';
-import repoTab from '~/ide/components/repo_tab.vue';
+import RepoTab from '~/ide/components/repo_tab.vue';
 import { createRouter } from '~/ide/ide_router';
 import { file } from '../helpers';
 
+const localVue = createLocalVue();
+localVue.use(Vuex);
+
 describe('RepoTab', () => {
-  let vm;
+  let wrapper;
   let store;
   let router;
 
   function createComponent(propsData) {
-    const RepoTab = Vue.extend(repoTab);
-
-    return new RepoTab({
+    wrapper = mount(RepoTab, {
+      localVue,
       store,
       propsData,
-    }).$mount();
+    });
   }
 
   beforeEach(() => {
@@ -25,23 +28,24 @@ describe('RepoTab', () => {
   });
 
   afterEach(() => {
-    vm.$destroy();
+    wrapper.destroy();
+    wrapper = null;
   });
 
   it('renders a close link and a name link', () => {
-    vm = createComponent({
+    createComponent({
       tab: file(),
     });
-    vm.$store.state.openFiles.push(vm.tab);
-    const close = vm.$el.querySelector('.multi-file-tab-close');
-    const name = vm.$el.querySelector(`[title]`);
+    wrapper.vm.$store.state.openFiles.push(wrapper.vm.tab);
+    const close = wrapper.find('.multi-file-tab-close');
+    const name = wrapper.find(`[title]`);
 
-    expect(close.innerHTML).toContain('#close');
-    expect(name.textContent.trim()).toEqual(vm.tab.name);
+    expect(close.html()).toContain('#close');
+    expect(name.text().trim()).toEqual(wrapper.vm.tab.name);
   });
 
-  it('does not call openPendingTab when tab is active', done => {
-    vm = createComponent({
+  it('does not call openPendingTab when tab is active', async () => {
+    createComponent({
       tab: {
         ...file(),
         pending: true,
@@ -49,63 +53,51 @@ describe('RepoTab', () => {
       },
     });
 
-    jest.spyOn(vm, 'openPendingTab').mockImplementation(() => {});
+    jest.spyOn(wrapper.vm, 'openPendingTab').mockImplementation(() => {});
 
-    vm.$el.click();
+    await wrapper.trigger('click');
 
-    vm.$nextTick(() => {
-      expect(vm.openPendingTab).not.toHaveBeenCalled();
-
-      done();
-    });
+    expect(wrapper.vm.openPendingTab).not.toHaveBeenCalled();
   });
 
   it('fires clickFile when the link is clicked', () => {
-    vm = createComponent({
+    createComponent({
       tab: file(),
     });
 
-    jest.spyOn(vm, 'clickFile').mockImplementation(() => {});
+    jest.spyOn(wrapper.vm, 'clickFile').mockImplementation(() => {});
 
-    vm.$el.click();
+    wrapper.trigger('click');
 
-    expect(vm.clickFile).toHaveBeenCalledWith(vm.tab);
+    expect(wrapper.vm.clickFile).toHaveBeenCalledWith(wrapper.vm.tab);
   });
 
   it('calls closeFile when clicking close button', () => {
-    vm = createComponent({
+    createComponent({
       tab: file(),
     });
 
-    jest.spyOn(vm, 'closeFile').mockImplementation(() => {});
+    jest.spyOn(wrapper.vm, 'closeFile').mockImplementation(() => {});
 
-    vm.$el.querySelector('.multi-file-tab-close').click();
+    wrapper.find('.multi-file-tab-close').trigger('click');
 
-    expect(vm.closeFile).toHaveBeenCalledWith(vm.tab);
+    expect(wrapper.vm.closeFile).toHaveBeenCalledWith(wrapper.vm.tab);
   });
 
-  it('changes icon on hover', done => {
+  it('changes icon on hover', async () => {
     const tab = file();
     tab.changed = true;
-    vm = createComponent({
+    createComponent({
       tab,
     });
 
-    vm.$el.dispatchEvent(new Event('mouseover'));
+    await wrapper.trigger('mouseover');
 
-    Vue.nextTick()
-      .then(() => {
-        expect(vm.$el.querySelector('.file-modified')).toBeNull();
+    expect(wrapper.find('.file-modified').exists()).toBe(false);
 
-        vm.$el.dispatchEvent(new Event('mouseout'));
-      })
-      .then(Vue.nextTick)
-      .then(() => {
-        expect(vm.$el.querySelector('.file-modified')).not.toBeNull();
+    await wrapper.trigger('mouseout');
 
-        done();
-      })
-      .catch(done.fail);
+    expect(wrapper.find('.file-modified').exists()).toBe(true);
   });
 
   describe('locked file', () => {
@@ -120,21 +112,17 @@ describe('RepoTab', () => {
         },
       };
 
-      vm = createComponent({
+      createComponent({
         tab: f,
       });
     });
 
-    afterEach(() => {
-      vm.$destroy();
-    });
-
     it('renders lock icon', () => {
-      expect(vm.$el.querySelector('.file-status-icon')).not.toBeNull();
+      expect(wrapper.find('.file-status-icon')).not.toBeNull();
     });
 
     it('renders a tooltip', () => {
-      expect(vm.$el.querySelector('span:nth-child(2)').dataset.originalTitle).toContain(
+      expect(wrapper.find('span:nth-child(2)').attributes('data-original-title')).toContain(
         'Locked by testuser',
       );
     });
@@ -142,45 +130,37 @@ describe('RepoTab', () => {
 
   describe('methods', () => {
     describe('closeTab', () => {
-      it('closes tab if file has changed', done => {
+      it('closes tab if file has changed', async () => {
         const tab = file();
         tab.changed = true;
         tab.opened = true;
-        vm = createComponent({
+        createComponent({
           tab,
         });
-        vm.$store.state.openFiles.push(tab);
-        vm.$store.state.changedFiles.push(tab);
-        vm.$store.state.entries[tab.path] = tab;
-        vm.$store.dispatch('setFileActive', tab.path);
+        wrapper.vm.$store.state.openFiles.push(tab);
+        wrapper.vm.$store.state.changedFiles.push(tab);
+        wrapper.vm.$store.state.entries[tab.path] = tab;
+        wrapper.vm.$store.dispatch('setFileActive', tab.path);
 
-        vm.$el.querySelector('.multi-file-tab-close').click();
+        await wrapper.find('.multi-file-tab-close').trigger('click');
 
-        vm.$nextTick(() => {
-          expect(tab.opened).toBeFalsy();
-          expect(vm.$store.state.changedFiles.length).toBe(1);
-
-          done();
-        });
+        expect(tab.opened).toBeFalsy();
+        expect(wrapper.vm.$store.state.changedFiles).toHaveLength(1);
       });
 
-      it('closes tab when clicking close btn', done => {
+      it('closes tab when clicking close btn', async () => {
         const tab = file('lose');
         tab.opened = true;
-        vm = createComponent({
+        createComponent({
           tab,
         });
-        vm.$store.state.openFiles.push(tab);
-        vm.$store.state.entries[tab.path] = tab;
-        vm.$store.dispatch('setFileActive', tab.path);
+        wrapper.vm.$store.state.openFiles.push(tab);
+        wrapper.vm.$store.state.entries[tab.path] = tab;
+        wrapper.vm.$store.dispatch('setFileActive', tab.path);
 
-        vm.$el.querySelector('.multi-file-tab-close').click();
+        await wrapper.find('.multi-file-tab-close').trigger('click');
 
-        vm.$nextTick(() => {
-          expect(tab.opened).toBeFalsy();
-
-          done();
-        });
+        expect(tab.opened).toBeFalsy();
       });
     });
   });

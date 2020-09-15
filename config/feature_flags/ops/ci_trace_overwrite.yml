@@ -1,0 +1,7 @@
+---
+name: ci_trace_overwrite
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/41304
+rollout_issue_url: 
+group: group::continuous integration
+type: ops
+default_enabled: false

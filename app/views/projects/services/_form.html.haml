@@ -13,13 +13,9 @@
     - if @service.respond_to?(:detailed_description)
       %p= @service.detailed_description
   .col-lg-8
-    = form_for(@service, as: :service, url: scoped_integration_path(@service), method: :put, html: { class: 'gl-show-field-errors integration-settings-form js-integration-settings-form', data: { 'can-test' => @service.can_test?, 'test-url' => test_project_service_path(@project, @service) } }) do |form|
+    = form_for(@service, as: :service, url: scoped_integration_path(@service), method: :put, html: { class: 'gl-show-field-errors integration-settings-form js-integration-settings-form', data: { 'test-url' => test_project_service_path(@project, @service) } }) do |form|
       = render 'shared/service_settings', form: form, integration: @service
-      .footer-block.row-content-block{ :class => "#{'gl-display-none' if @service.is_a?(AlertsService)}" }
-        %input{ id: 'services_redirect_to', type: 'hidden', name: 'redirect_to', value: request.referrer }
-        = service_save_button(disabled: @service.is_a?(AlertsService))
-        &nbsp;
-        = link_to _('Cancel'), project_settings_integrations_path(@project), class: 'btn btn-cancel'
+      %input{ id: 'services_redirect_to', type: 'hidden', name: 'redirect_to', value: request.referrer }
 
 - if lookup_context.template_exists?('show', "projects/services/#{@service.to_param}", true)
   %hr

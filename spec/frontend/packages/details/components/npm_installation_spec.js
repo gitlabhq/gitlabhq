@@ -78,7 +78,7 @@ describe('NpmInstallation', () => {
           .at(2)
           .props(),
       ).toMatchObject({
-        instruction: 'echo @Test:registry=undefined >> .npmrc',
+        instruction: 'echo @Test:registry=undefined/ >> .npmrc',
         multiline: false,
         trackingAction: TrackingActions.COPY_NPM_SETUP_COMMAND,
       });
@@ -90,7 +90,7 @@ describe('NpmInstallation', () => {
           .at(3)
           .props(),
       ).toMatchObject({
-        instruction: 'echo \\"@Test:registry\\" \\"undefined\\" >> .yarnrc',
+        instruction: 'echo \\"@Test:registry\\" \\"undefined/\\" >> .yarnrc',
         multiline: false,
         trackingAction: TrackingActions.COPY_YARN_SETUP_COMMAND,
       });

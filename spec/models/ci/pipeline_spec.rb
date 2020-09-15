@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
   include ProjectForksHelper
   include StubRequests
+  include Ci::SourcePipelineHelpers
 
   let_it_be(:user) { create(:user) }
   let_it_be(:namespace) { create_default(:namespace) }
@@ -2629,17 +2630,8 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
       let(:sibling) { create(:ci_pipeline, project: pipeline.project) }
 
       before do
-        create(:ci_sources_pipeline,
-               source_job: create(:ci_build, pipeline: parent),
-               source_project: parent.project,
-               pipeline: pipeline,
-               project: pipeline.project)
-
-        create(:ci_sources_pipeline,
-               source_job: create(:ci_build, pipeline: parent),
-               source_project: parent.project,
-               pipeline: sibling,
-               project: sibling.project)
+        create_source_pipeline(parent, pipeline)
+        create_source_pipeline(parent, sibling)
       end
 
       it 'returns parent sibling and self ids' do
@@ -2651,11 +2643,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
       let(:child) { create(:ci_pipeline, project: pipeline.project) }
 
       before do
-        create(:ci_sources_pipeline,
-               source_job: create(:ci_build, pipeline: pipeline),
-               source_project: pipeline.project,
-               pipeline: child,
-               project: child.project)
+        create_source_pipeline(pipeline, child)
       end
 
       it 'returns self and child ids' do
@@ -2670,35 +2658,28 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
       let(:cousin) { create(:ci_pipeline, project: pipeline.project) }
 
       before do
-        create(:ci_sources_pipeline,
-               source_job: create(:ci_build, pipeline: ancestor),
-               source_project: ancestor.project,
-               pipeline: parent,
-               project: parent.project)
-
-        create(:ci_sources_pipeline,
-               source_job: create(:ci_build, pipeline: ancestor),
-               source_project: ancestor.project,
-               pipeline: cousin_parent,
-               project: cousin_parent.project)
-
-        create(:ci_sources_pipeline,
-               source_job: create(:ci_build, pipeline: parent),
-               source_project: parent.project,
-               pipeline: pipeline,
-               project: pipeline.project)
-
-        create(:ci_sources_pipeline,
-               source_job: create(:ci_build, pipeline: cousin_parent),
-               source_project: cousin_parent.project,
-               pipeline: cousin,
-               project: cousin.project)
+        create_source_pipeline(ancestor, parent)
+        create_source_pipeline(ancestor, cousin_parent)
+        create_source_pipeline(parent, pipeline)
+        create_source_pipeline(cousin_parent, cousin)
       end
 
       it 'returns all family ids' do
         expect(subject).to contain_exactly(
           ancestor.id, parent.id, cousin_parent.id, cousin.id, pipeline.id
         )
+      end
+    end
+
+    context 'when pipeline is a triggered pipeline' do
+      let(:upstream) { create(:ci_pipeline, project: create(:project)) }
+
+      before do
+        create_source_pipeline(upstream, pipeline)
+      end
+
+      it 'returns self id' do
+        expect(subject).to contain_exactly(pipeline.id)
       end
     end
   end
@@ -3554,6 +3535,80 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
 
       expect(builds).to include(rspec, jest)
       expect(builds).not_to include(karma)
+    end
+  end
+
+  describe '#base_and_ancestors' do
+    let(:same_project) { false }
+
+    subject { pipeline.base_and_ancestors(same_project: same_project) }
+
+    context 'when pipeline is not child nor parent' do
+      it 'returns just the pipeline itself' do
+        expect(subject).to contain_exactly(pipeline)
+      end
+    end
+
+    context 'when pipeline is child' do
+      let(:parent) { create(:ci_pipeline, project: pipeline.project) }
+      let(:sibling) { create(:ci_pipeline, project: pipeline.project) }
+
+      before do
+        create_source_pipeline(parent, pipeline)
+        create_source_pipeline(parent, sibling)
+      end
+
+      it 'returns parent and self' do
+        expect(subject).to contain_exactly(parent, pipeline)
+      end
+    end
+
+    context 'when pipeline is parent' do
+      let(:child) { create(:ci_pipeline, project: pipeline.project) }
+
+      before do
+        create_source_pipeline(pipeline, child)
+      end
+
+      it 'returns self' do
+        expect(subject).to contain_exactly(pipeline)
+      end
+    end
+
+    context 'when pipeline is a child of a child pipeline' do
+      let(:ancestor) { create(:ci_pipeline, project: pipeline.project) }
+      let(:parent) { create(:ci_pipeline, project: pipeline.project) }
+
+      before do
+        create_source_pipeline(ancestor, parent)
+        create_source_pipeline(parent, pipeline)
+      end
+
+      it 'returns self, parent and ancestor' do
+        expect(subject).to contain_exactly(ancestor, parent, pipeline)
+      end
+    end
+
+    context 'when pipeline is a triggered pipeline' do
+      let(:upstream) { create(:ci_pipeline, project: create(:project)) }
+
+      before do
+        create_source_pipeline(upstream, pipeline)
+      end
+
+      context 'same_project: false' do
+        it 'returns upstream and self' do
+          expect(subject).to contain_exactly(pipeline, upstream)
+        end
+      end
+
+      context 'same_project: true' do
+        let(:same_project) { true }
+
+        it 'returns self' do
+          expect(subject).to contain_exactly(pipeline)
+        end
+      end
     end
   end
 end

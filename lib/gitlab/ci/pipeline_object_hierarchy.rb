@@ -20,13 +20,25 @@ module Gitlab
       def ancestor_conditions(cte)
         middle_table[:source_pipeline_id].eq(objects_table[:id]).and(
           middle_table[:pipeline_id].eq(cte.table[:id])
+        ).and(
+          same_project_condition
         )
       end
 
       def descendant_conditions(cte)
         middle_table[:pipeline_id].eq(objects_table[:id]).and(
           middle_table[:source_pipeline_id].eq(cte.table[:id])
+        ).and(
+          same_project_condition
         )
+      end
+
+      def same_project_condition
+        if options[:same_project]
+          middle_table[:source_project_id].eq(middle_table[:project_id])
+        else
+          Arel.sql('TRUE')
+        end
       end
     end
   end

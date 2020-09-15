@@ -13,7 +13,7 @@ module QA
               element :service_jira_issue_transition_id_field, ':data-qa-selector="`${fieldId}_field`"' # rubocop:disable QA/ElementWithPattern
             end
 
-            view 'app/helpers/services_helper.rb' do
+            view 'app/assets/javascripts/integrations/edit/components/integration_form.vue' do
               element :save_changes_button
             end
 

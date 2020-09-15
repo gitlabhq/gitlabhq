@@ -10,6 +10,32 @@ const getFullUrl = req => {
   return mergeUrlParams(req.params || {}, url);
 };
 
+const handleStartupCall = async ({ fetchCall }, req) => {
+  const res = await fetchCall;
+  if (!res.ok) {
+    throw new Error(res.statusText);
+  }
+
+  const fetchHeaders = {};
+  res.headers.forEach((val, key) => {
+    fetchHeaders[key] = val;
+  });
+
+  const data = await res.clone().json();
+
+  Object.assign(req, {
+    adapter: () =>
+      Promise.resolve({
+        data,
+        status: res.status,
+        statusText: res.statusText,
+        headers: fetchHeaders,
+        config: req,
+        request: req,
+      }),
+  });
+};
+
 const setupAxiosStartupCalls = axios => {
   const { startup_calls: startupCalls } = window.gl || {};
 
@@ -17,38 +43,28 @@ const setupAxiosStartupCalls = axios => {
     return;
   }
 
-  // TODO: To save performance of future axios calls, we can
-  // remove this interceptor once the "startupCalls" have been loaded
-  axios.interceptors.request.use(req => {
+  const remainingCalls = new Map(Object.entries(startupCalls));
+
+  const interceptor = axios.interceptors.request.use(async req => {
     const fullUrl = getFullUrl(req);
 
-    const existing = startupCalls[fullUrl];
+    const startupCall = remainingCalls.get(fullUrl);
 
-    if (existing) {
-      // eslint-disable-next-line no-param-reassign
-      req.adapter = () =>
-        existing.fetchCall.then(res => {
-          const fetchHeaders = {};
-          res.headers.forEach((val, key) => {
-            fetchHeaders[key] = val;
-          });
+    if (!startupCall?.fetchCall) {
+      return req;
+    }
 
-          // We can delete it as it anyhow should only be called once
-          delete startupCalls[fullUrl];
+    try {
+      await handleStartupCall(startupCall, req);
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.warn(`[gitlab] Something went wrong with the startup call for "${fullUrl}"`, e);
+    }
 
-          // eslint-disable-next-line promise/no-nesting
-          return res
-            .clone()
-            .json()
-            .then(data => ({
-              data,
-              status: res.status,
-              statusText: res.statusText,
-              headers: fetchHeaders,
-              config: req,
-              request: req,
-            }));
-        });
+    remainingCalls.delete(fullUrl);
+
+    if (remainingCalls.size === 0) {
+      axios.interceptors.request.eject(interceptor);
     }
 
     return req;

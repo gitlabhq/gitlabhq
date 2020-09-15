@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'User activates HipChat', :js do
   include_context 'project service activation'
 
-  context 'with standart settings' do
+  context 'with standard settings' do
     before do
       stub_request(:post, /.*api.hipchat.com.*/)
     end
@@ -15,9 +15,9 @@ RSpec.describe 'User activates HipChat', :js do
       fill_in('Room', with: 'gitlab')
       fill_in('Token', with: 'verySecret')
 
-      click_test_integration
+      click_test_then_save_integration(expect_test_to_fail: false)
 
-      expect(page).to have_content('HipChat activated.')
+      expect(page).to have_content('HipChat settings saved and active.')
     end
   end
 
@@ -32,9 +32,9 @@ RSpec.describe 'User activates HipChat', :js do
       fill_in('Token', with: 'secretCustom')
       fill_in('Server', with: 'https://chat.example.com')
 
-      click_test_integration
+      click_test_then_save_integration(expect_test_to_fail: false)
 
-      expect(page).to have_content('HipChat activated.')
+      expect(page).to have_content('HipChat settings saved and active.')
     end
   end
 end

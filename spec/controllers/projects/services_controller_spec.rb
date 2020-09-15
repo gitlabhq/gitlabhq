@@ -123,7 +123,7 @@ RSpec.describe Projects::ServicesController do
         expect(response).to be_successful
         expect(json_response).to eq(
           'error' => true,
-          'message' => 'Test failed.',
+          'message' => 'Connection failed. Please check your settings.',
           'service_response' => '',
           'test_failed' => true
         )
@@ -136,7 +136,7 @@ RSpec.describe Projects::ServicesController do
       let(:service_params) { { active: true } }
       let(:params)         { project_params(service: service_params) }
 
-      let(:message) { 'Jira activated.' }
+      let(:message) { 'Jira settings saved and active.' }
       let(:redirect_url) { edit_project_service_path(project, service) }
 
       before do
@@ -175,7 +175,7 @@ RSpec.describe Projects::ServicesController do
 
       context 'when param `active` is set to false' do
         let(:service_params) { { active: false } }
-        let(:message)        { 'Jira settings saved, but not activated.' }
+        let(:message)        { 'Jira settings saved, but not active.' }
 
         it_behaves_like 'service update'
       end

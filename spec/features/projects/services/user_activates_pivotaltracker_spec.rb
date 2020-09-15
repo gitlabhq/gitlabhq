@@ -13,8 +13,8 @@ RSpec.describe 'User activates PivotalTracker' do
     visit_project_integration('PivotalTracker')
     fill_in('Token', with: 'verySecret')
 
-    click_test_integration
+    click_test_then_save_integration(expect_test_to_fail: false)
 
-    expect(page).to have_content('PivotalTracker activated.')
+    expect(page).to have_content('PivotalTracker settings saved and active.')
   end
 end

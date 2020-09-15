@@ -121,7 +121,7 @@ module Ci
     def has_max_descendants_depth?
       return false unless @bridge.triggers_child_pipeline?
 
-      ancestors_of_new_child = @bridge.pipeline.base_and_ancestors
+      ancestors_of_new_child = @bridge.pipeline.base_and_ancestors(same_project: true)
       ancestors_of_new_child.count > MAX_DESCENDANTS_DEPTH
     end
   end

@@ -13,7 +13,7 @@ RSpec.describe Gitlab::SearchResults do
   let(:merge_request) { create(:merge_request, source_project: project, title: 'foo') }
   let(:filters) { {} }
 
-  subject(:results) { described_class.new(user, 'foo', Project.all, filters: filters) }
+  subject(:results) { described_class.new(user, 'foo', Project.order(:id), filters: filters) }
 
   context 'as a user with access' do
     before do

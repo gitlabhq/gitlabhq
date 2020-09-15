@@ -15,8 +15,8 @@ RSpec.describe 'User activates Flowdock' do
     visit_project_integration('Flowdock')
     fill_in('Token', with: 'verySecret')
 
-    click_test_integration
+    click_test_then_save_integration(expect_test_to_fail: false)
 
-    expect(page).to have_content('Flowdock activated.')
+    expect(page).to have_content('Flowdock settings saved and active.')
   end
 end

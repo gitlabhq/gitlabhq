@@ -16,7 +16,7 @@ RSpec.describe 'Admin activates Prometheus', :js do
   it 'activates service' do
     check('Active')
     fill_in('API URL', with: 'http://prometheus.example.com')
-    click_button('Save')
+    click_button('Save changes')
 
     expect(page).to have_content('Application settings saved successfully')
   end

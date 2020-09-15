@@ -5,5 +5,7 @@ export default ({ adminState = null, customState = {} } = {}) => {
     override,
     adminState,
     customState,
+    isSaving: false,
+    isTesting: false,
   };
 };

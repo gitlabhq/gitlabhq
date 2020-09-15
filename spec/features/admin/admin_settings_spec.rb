@@ -232,7 +232,7 @@ RSpec.describe 'Admin updates settings', :clean_gitlab_redis_shared_state, :do_n
         page.select 'All branches', from: 'Branches to be notified'
 
         check_all_events
-        click_on 'Save'
+        click_button 'Save changes'
 
         expect(page).to have_content 'Application settings saved successfully'
 

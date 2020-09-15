@@ -56,9 +56,11 @@ module IntegrationsActions
   end
 
   def success_message
-    message = integration.active? ? _('activated') : _('settings saved, but not activated')
-
-    _('%{service_title} %{message}.') % { service_title: integration.title, message: message }
+    if integration.active?
+      s_('Integrations|%{integration} settings saved and active.') % { integration: integration.title }
+    else
+      s_('Integrations|%{integration} settings saved, but not active.') % { integration: integration.title }
+    end
   end
 
   def serialize_as_json

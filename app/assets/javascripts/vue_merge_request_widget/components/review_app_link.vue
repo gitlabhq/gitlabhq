@@ -1,8 +1,9 @@
 <script>
-import { GlTooltipDirective, GlIcon } from '@gitlab/ui';
+import { GlButton, GlTooltipDirective, GlIcon } from '@gitlab/ui';
 
 export default {
   components: {
+    GlButton,
     GlIcon,
   },
   directives: {
@@ -21,14 +22,20 @@ export default {
       type: String,
       required: true,
     },
+    size: {
+      type: String,
+      required: false,
+      default: 'medium',
+    },
   },
 };
 </script>
 <template>
-  <a
+  <gl-button
     v-gl-tooltip
     :title="display.tooltip"
     :href="link"
+    :size="size"
     target="_blank"
     rel="noopener noreferrer nofollow"
     :class="cssClass"
@@ -36,5 +43,5 @@ export default {
     data-track-label="review_app"
   >
     {{ display.text }} <gl-icon class="fgray" name="external-link" />
-  </a>
+  </gl-button>
 </template>

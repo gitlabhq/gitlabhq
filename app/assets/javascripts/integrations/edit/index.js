@@ -24,11 +24,15 @@ function parseDatasetToProps(data) {
     fields,
     inheritFromId,
     integrationLevel,
+    cancelPath,
+    testPath,
     ...booleanAttributes
   } = data;
   const {
     showActive,
     activated,
+    editable,
+    canTest,
     commitEvents,
     mergeRequestEvents,
     enableComments,
@@ -41,6 +45,10 @@ function parseDatasetToProps(data) {
     initialActivated: activated,
     showActive,
     type,
+    cancelPath,
+    editable,
+    canTest,
+    testPath,
     triggerFieldsProps: {
       initialTriggerCommit: commitEvents,
       initialTriggerMergeRequest: mergeRequestEvents,

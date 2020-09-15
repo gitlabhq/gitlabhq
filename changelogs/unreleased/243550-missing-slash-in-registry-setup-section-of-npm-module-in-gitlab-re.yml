@@ -1,0 +1,5 @@
+---
+title: Add Missing slash in 'Registry setup' section of npm packages
+merge_request: 42360
+author:
+type: changed

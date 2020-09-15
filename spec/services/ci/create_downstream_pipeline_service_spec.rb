@@ -179,7 +179,7 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute' do
       end
     end
 
-    context 'when downstream project is the same as the job project' do
+    context 'when downstream project is the same as the upstream project' do
       let(:trigger) do
         { trigger: { project: upstream_project.full_path } }
       end
@@ -311,16 +311,12 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute' do
           end
         end
 
-        context 'when upstream pipeline is a first descendant pipeline' do
-          let!(:pipeline_source) do
+        context 'when upstream pipeline has a parent pipeline' do
+          before do
             create(:ci_sources_pipeline,
               source_pipeline: create(:ci_pipeline, project: upstream_pipeline.project),
               pipeline: upstream_pipeline
             )
-          end
-
-          before do
-            upstream_pipeline.update!(source: :parent_pipeline)
           end
 
           it 'creates the pipeline' do
@@ -345,8 +341,8 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute' do
           end
         end
 
-        context 'when upstream pipeline is a second descendant pipeline' do
-          let!(:pipeline_source) do
+        context 'when upstream pipeline has a parent pipeline, which has a parent pipeline' do
+          before do
             parent_of_upstream_pipeline = create(:ci_pipeline, project: upstream_pipeline.project)
 
             create(:ci_sources_pipeline,
@@ -360,16 +356,33 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute' do
             )
           end
 
-          before do
-            upstream_pipeline.update!(source: :parent_pipeline)
-          end
-
           it 'does not create a second descendant pipeline' do
             expect { service.execute(bridge) }
               .not_to change { Ci::Pipeline.count }
 
             expect(bridge.reload).to be_failed
             expect(bridge.failure_reason).to eq 'reached_max_descendant_pipelines_depth'
+          end
+        end
+
+        context 'when upstream pipeline has two level upstream pipelines from different projects' do
+          before do
+            upstream_of_upstream_of_upstream_pipeline = create(:ci_pipeline)
+            upstream_of_upstream_pipeline = create(:ci_pipeline)
+
+            create(:ci_sources_pipeline,
+              source_pipeline: upstream_of_upstream_of_upstream_pipeline,
+              pipeline: upstream_of_upstream_pipeline
+            )
+
+            create(:ci_sources_pipeline,
+              source_pipeline: upstream_of_upstream_pipeline,
+              pipeline: upstream_pipeline
+            )
+          end
+
+          it 'create the pipeline' do
+            expect { service.execute(bridge) }.to change { Ci::Pipeline.count }.by(1)
           end
         end
       end

@@ -701,9 +701,6 @@ msgid_plural "%{securityScanner} results are not available because a pipeline ha
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "%{service_title} %{message}."
-msgstr ""
-
 msgid "%{size} GiB"
 msgstr ""
 
@@ -10357,9 +10354,6 @@ msgstr ""
 msgid "Expand approvers"
 msgstr ""
 
-msgid "Expand dropdown"
-msgstr ""
-
 msgid "Expand file"
 msgstr ""
 
@@ -13585,6 +13579,12 @@ msgstr ""
 msgid "Integrations"
 msgstr ""
 
+msgid "Integrations|%{integration} settings saved and active."
+msgstr ""
+
+msgid "Integrations|%{integration} settings saved, but not active."
+msgstr ""
+
 msgid "Integrations|All details"
 msgstr ""
 
@@ -13592,6 +13592,12 @@ msgid "Integrations|Comment detail:"
 msgstr ""
 
 msgid "Integrations|Comment settings:"
+msgstr ""
+
+msgid "Integrations|Connection failed. Please check your settings."
+msgstr ""
+
+msgid "Integrations|Connection successful."
 msgstr ""
 
 msgid "Integrations|Default settings are inherited from the group level."
@@ -24820,10 +24826,7 @@ msgid_plural "Test coverage: %d hits"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "Test failed."
-msgstr ""
-
-msgid "Test settings and save changes"
+msgid "Test settings"
 msgstr ""
 
 msgid "TestHooks|Ensure one of your projects has merge requests."
@@ -29462,9 +29465,6 @@ msgstr[1] ""
 msgid "access:"
 msgstr ""
 
-msgid "activated"
-msgstr ""
-
 msgid "added %{created_at_timeago}"
 msgstr ""
 
@@ -30675,9 +30675,6 @@ msgid "satisfied"
 msgstr ""
 
 msgid "security Reports|There was an error creating the merge request"
-msgstr ""
-
-msgid "settings saved, but not activated"
 msgstr ""
 
 msgid "severity|Critical"

@@ -337,22 +337,14 @@ Feature.disable(:value_stream_analytics_create_multiple_value_streams)
 
 ## Days to completion chart
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/21631) in GitLab 12.6.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/21631) in GitLab 12.6.
+> - [Chart median line removed](https://gitlab.com/gitlab-org/gitlab/-/issues/235455) in GitLab 13.4.
 
 This chart visually depicts the total number of days it takes for cycles to be completed.
 
 This chart uses the global page filters for displaying data based on the selected
 group, projects, and timeframe. In addition, specific stages can be selected
 from within the chart itself.
-
-### Chart median line
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/36675) in GitLab 12.7.
-
-The median line on the chart displays data that is offset by the number of days selected.
-For example, if 30 days worth of data has been selected (for example, 2019-12-16 to 2020-01-15) the
-median line will represent the previous 30 days worth of data (2019-11-16 to 2019-12-16)
-as a metric to compare against.
 
 ### Disabling chart
 
@@ -363,9 +355,9 @@ administrator can open a Rails console and disable it with the following command
 Feature.disable(:cycle_analytics_scatterplot_enabled)
 ```
 
-## Type of work - Tasks by type chart
+## Type of work - Tasks by type chart **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32421) in GitLab 12.10.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32421) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.10.
 
 This chart shows a cumulative count of issues and merge requests per day.
 
