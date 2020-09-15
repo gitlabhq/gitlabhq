@@ -12,6 +12,8 @@ module QA
       attr_accessor :repository_storage # requires admin access
       attr_writer :initialize_with_readme
       attr_writer :auto_devops_enabled
+      attr_writer :github_personal_access_token
+      attr_writer :github_repository_path
 
       attribute :default_branch
       attribute :id
@@ -22,6 +24,7 @@ module QA
       attribute :runners_token
       attribute :visibility
       attribute :template_name
+      attribute :import
 
       attribute :group do
         Group.fabricate!
@@ -57,6 +60,7 @@ module QA
         @auto_devops_enabled = false
         @visibility = :public
         @template_name = nil
+        @import = false
 
         self.name = "the_awesome_project"
       end
@@ -66,6 +70,8 @@ module QA
       end
 
       def fabricate!
+        return if @import
+
         unless @standalone
           group.visit!
           Page::Group::Show.perform(&:go_to_new_project)

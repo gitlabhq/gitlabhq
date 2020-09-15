@@ -83,9 +83,9 @@ We try to make sure that this token doesn't leak by:
 1. Masking the job token from job logs.
 1. Granting permissions to the job token **only** when the job is running.
 
-However, this brings a question about the Runners security. To make sure that
+However, this brings up a question about the runner's security. To make sure that
 this token doesn't leak, you should also make sure that you configure
-your Runners in the most possible secure way, by avoiding the following:
+your runners in the most possible secure way, by avoiding the following:
 
 1. Any usage of Docker's `privileged` mode is risky if the machines are re-used.
 1. Using the `shell` executor since jobs run on the same machine.
@@ -95,13 +95,13 @@ to steal the tokens of other jobs.
 
 ## Before GitLab 8.12
 
-In versions before GitLab 8.12, all CI jobs would use the CI Runner's token
+In versions before GitLab 8.12, all CI jobs would use the runner's token
 to checkout project sources.
 
-The project's Runner's token was a token that you could find under the
+The project's runner token was a token that you could find under the
 project's **Settings > Pipelines** and was limited to access only that
 project.
-It could be used for registering new specific Runners assigned to the project
+It could be used for registering new specific runners assigned to the project
 and to checkout project sources.
 It could also be used with the GitLab Container Registry for that project,
 allowing pulling and pushing Docker images from within the CI job.
@@ -123,7 +123,7 @@ Using single token had multiple security implications:
 
 - The token would be readable to anyone who had Developer access to a project
   that could run CI jobs, allowing the developer to register any specific
-  Runner for that project.
+  runner for that project.
 - The token would allow to access only the project's sources, forbidding from
   accessing any other projects.
 - The token was not expiring and was multi-purpose: used for checking out sources,
@@ -205,7 +205,7 @@ Container Registries for private projects.
 >
 > - GitLab Runner versions prior to 1.8 don't incorporate the introduced changes
 >   for permissions. This makes the `image:` directive not work with private
->   projects automatically and it needs to be configured manually on Runner's host
+>   projects automatically and it needs to be configured manually on the GitLab Runner host
 >   with a predefined account (for example administrator's personal account with
 >   access token created explicitly for this purpose). This issue is resolved with
 >   latest changes in GitLab Runner 1.8 which receives GitLab credentials with

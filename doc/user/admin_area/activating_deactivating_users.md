@@ -44,7 +44,7 @@ Please note that for the deactivation option to be visible to an admin, the user
 Users can also be deactivated using the [GitLab API](../../api/users.md#deactivate-user).
 
 NOTE: **Note:**
-A deactivated user does not consume a [seat](../../subscriptions/index.md#choosing-the-number-of-users).
+A deactivated user does not consume a [seat](../../subscriptions/self_managed/index.md#choose-the-number-of-users).
 
 ## Activating a user
 
@@ -63,7 +63,7 @@ Users can also be activated using the [GitLab API](../../api/users.md#activate-u
 
 NOTE: **Note:**
 Activating a user will change the user's state to active and it consumes a
-[seat](../../subscriptions/index.md#choosing-the-number-of-users).
+[seat](../../subscriptions/self_managed/index.md#choose-the-number-of-users).
 
 TIP: **Tip:**
 A deactivated user can also activate their account themselves by simply logging back in via the UI.

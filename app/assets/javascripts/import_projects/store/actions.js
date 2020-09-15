@@ -1,11 +1,7 @@
 import Visibility from 'visibilityjs';
 import * as types from './mutation_types';
 import { isProjectImportable } from '../utils';
-import {
-  convertObjectPropsToCamelCase,
-  normalizeHeaders,
-  parseIntPagination,
-} from '~/lib/utils/common_utils';
+import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import Poll from '~/lib/utils/poll';
 import { visitUrl, objectToQuery } from '~/lib/utils/url_utility';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
@@ -54,12 +50,9 @@ const importAll = ({ state, dispatch }) => {
   );
 };
 
-const fetchReposFactory = ({ reposPath = isRequired(), hasPagination }) => ({
-  state,
-  dispatch,
-  commit,
-}) => {
-  dispatch('stopJobsPolling');
+const fetchReposFactory = ({ reposPath = isRequired() }) => ({ state, commit }) => {
+  const nextPage = state.pageInfo.page + 1;
+  commit(types.SET_PAGE, nextPage);
   commit(types.REQUEST_REPOS);
 
   const { provider, filter } = state;
@@ -68,21 +61,16 @@ const fetchReposFactory = ({ reposPath = isRequired(), hasPagination }) => ({
     .get(
       pathWithParams({
         path: reposPath,
-        filter,
-        page: hasPagination ? state.pageInfo.page.toString() : '',
+        filter: filter ?? '',
+        page: nextPage === 1 ? '' : nextPage.toString(),
       }),
     )
-    .then(({ data, headers }) => {
-      const normalizedHeaders = normalizeHeaders(headers);
-
-      if ('X-PAGE' in normalizedHeaders) {
-        commit(types.SET_PAGE_INFO, parseIntPagination(normalizedHeaders));
-      }
-
+    .then(({ data }) => {
       commit(types.RECEIVE_REPOS_SUCCESS, convertObjectPropsToCamelCase(data, { deep: true }));
     })
-    .then(() => dispatch('fetchJobs'))
     .catch(e => {
+      commit(types.SET_PAGE, nextPage - 1);
+
       if (hasRedirectInError(e)) {
         redirectToUrlInError(e);
       } else {
@@ -136,8 +124,6 @@ const fetchImportFactory = (importPath = isRequired()) => ({ state, commit, gett
 };
 
 export const fetchJobsFactory = (jobsPath = isRequired()) => ({ state, commit, dispatch }) => {
-  const { filter } = state;
-
   if (eTagPoll) {
     stopJobsPolling();
     clearJobsEtagPoll();
@@ -145,7 +131,7 @@ export const fetchJobsFactory = (jobsPath = isRequired()) => ({ state, commit, d
 
   eTagPoll = new Poll({
     resource: {
-      fetchJobs: () => axios.get(pathWithParams({ path: jobsPath, filter })),
+      fetchJobs: () => axios.get(pathWithParams({ path: jobsPath, filter: state.filter })),
     },
     method: 'fetchJobs',
     successCallback: ({ data }) =>
@@ -157,7 +143,6 @@ export const fetchJobsFactory = (jobsPath = isRequired()) => ({ state, commit, d
         createFlash(s__('ImportProjects|Update of imported projects with realtime changes failed'));
       }
     },
-    data: { filter },
   });
 
   if (!Visibility.hidden()) {
@@ -196,7 +181,7 @@ const setPage = ({ state, commit, dispatch }, page) => {
   return dispatch('fetchRepos');
 };
 
-export default ({ endpoints = isRequired(), hasPagination }) => ({
+export default ({ endpoints = isRequired() }) => ({
   clearJobsEtagPoll,
   stopJobsPolling,
   restartJobsPolling,
@@ -204,7 +189,7 @@ export default ({ endpoints = isRequired(), hasPagination }) => ({
   setImportTarget,
   importAll,
   setPage,
-  fetchRepos: fetchReposFactory({ reposPath: endpoints.reposPath, hasPagination }),
+  fetchRepos: fetchReposFactory({ reposPath: endpoints.reposPath }),
   fetchImport: fetchImportFactory(endpoints.importPath),
   fetchJobs: fetchJobsFactory(endpoints.jobsPath),
   fetchNamespaces: fetchNamespacesFactory(endpoints.namespacesPath),

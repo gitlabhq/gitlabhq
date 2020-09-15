@@ -199,7 +199,7 @@ such as builds, logs, artifacts, and triggers. **This action cannot be undone.**
 ### Pipeline quotas
 
 Each user has a personal pipeline quota that tracks the usage of shared runners in all personal projects.
-Each group has a [usage quota](../../subscriptions/index.md#ci-pipeline-minutes) that tracks the usage of shared runners for all projects created within the group.
+Each group has a [usage quota](../../subscriptions/gitlab_com/index.md#ci-pipeline-minutes) that tracks the usage of shared runners for all projects created within the group.
 
 When a pipeline is triggered, regardless of who triggered it, the pipeline quota for the project owner's [namespace](../../user/group/index.md#namespaces) is used. In this case, the namespace can be the user or group that owns the project.
 

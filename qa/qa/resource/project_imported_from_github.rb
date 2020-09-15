@@ -4,27 +4,24 @@ require 'securerandom'
 
 module QA
   module Resource
-    class ProjectImportedFromGithub < Base
-      attr_accessor :name
-      attr_writer :personal_access_token, :github_repository_path
-
-      attribute :group do
-        Group.fabricate!
-      end
-
+    class ProjectImportedFromGithub < Resource::Project
       def fabricate!
+        super
+
         group.visit!
 
         Page::Group::Show.perform(&:go_to_new_project)
-
-        Page::Project::New.perform(&:click_import_project)
-
+        go_to_import_tab
         Page::Project::New.perform(&:click_github_link)
 
         Page::Project::Import::Github.perform do |import_page|
-          import_page.add_personal_access_token(@personal_access_token)
+          import_page.add_personal_access_token(@github_personal_access_token)
           import_page.import!(@github_repository_path, @name)
         end
+      end
+
+      def go_to_import_tab
+        Page::Project::New.perform(&:click_import_project)
       end
     end
   end

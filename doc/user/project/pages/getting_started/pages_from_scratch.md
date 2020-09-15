@@ -7,8 +7,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # Create a GitLab Pages website from scratch
 
 This tutorial shows you how to create a Pages site from scratch. You will start with
-a blank project and create your own CI file, which gives instruction to the
-[GitLab Runner](https://docs.gitlab.com/runner/). When your CI/CD
+a blank project and create your own CI file, which gives instruction to
+a [runner](https://docs.gitlab.com/runner/). When your CI/CD
 [pipeline](../../../../ci/pipelines/index.md) runs, the Pages site is created.
 
 This example uses the [Jekyll](https://jekyllrb.com/) Static Site Generator (SSG).
@@ -48,7 +48,7 @@ Create three files in the root (top-level) directory.
 
 ## Choose a Docker image
 
-In this example, the Runner uses a [Docker image](../../../../ci/docker/using_docker_images.md)
+In this example, the runner uses a [Docker image](../../../../ci/docker/using_docker_images.md)
 to run scripts and deploy the site.
 
 This specific Ruby image is maintained on [DockerHub](https://hub.docker.com/_/ruby).
@@ -93,7 +93,7 @@ job:
 ```
 
 For GitLab Pages, this `job` has a specific name, called `pages`.
-This setting tells the Runner you want the job to deploy your website
+This setting tells the runner you want the job to deploy your website
 with GitLab Pages:
 
 ```yaml
@@ -122,7 +122,7 @@ pages:
 ## Specify the `public` directory for artifacts
 
 Now that Jekyll has output the files to the `public` directory,
-the Runner needs to know where to get them. The artifacts are stored
+the runner needs to know where to get them. The artifacts are stored
 in the `public` directory:
 
 ```yaml

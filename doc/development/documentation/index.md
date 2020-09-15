@@ -455,7 +455,7 @@ If you want to know the in-depth details, here's what's really happening:
    [skips the test jobs](https://gitlab.com/gitlab-org/gitlab-docs/blob/8d5d5c750c602a835614b02f9db42ead1c4b2f5e/.gitlab-ci.yml#L50-55)
    to lower the build time.
 1. Once the docs site is built, the HTML files are uploaded as artifacts.
-1. A specific Runner tied only to the docs project, runs the Review App job
+1. A specific runner tied only to the docs project, runs the Review App job
    that downloads the artifacts and uses `rsync` to transfer the files over
    to a location where NGINX serves them.
 
@@ -465,7 +465,7 @@ The following GitLab features are used among others:
 - [Multi project pipelines](../../ci/multi_project_pipeline_graphs.md)
 - [Review Apps](../../ci/review_apps/index.md)
 - [Artifacts](../../ci/yaml/README.md#artifacts)
-- [Specific Runner](../../ci/runners/README.md#prevent-a-specific-runner-from-being-enabled-for-other-projects)
+- [Specific runner](../../ci/runners/README.md#prevent-a-specific-runner-from-being-enabled-for-other-projects)
 - [Pipelines for merge requests](../../ci/merge_request_pipelines/index.md)
 
 ## Testing

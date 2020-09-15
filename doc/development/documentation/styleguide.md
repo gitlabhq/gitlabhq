@@ -1391,14 +1391,14 @@ interface:
 ```markdown
 | Section                  | Description                                                                                                                 |
 |:-------------------------|:----------------------------------------------------------------------------------------------------------------------------|
-| **{overview}** Overview  | View your GitLab Dashboard, and administer projects, users, groups, jobs, Runners, and Gitaly servers.                      |
+| **{overview}** Overview  | View your GitLab Dashboard, and administer projects, users, groups, jobs, runners, and Gitaly servers.                      |
 | **{monitor}** Monitoring | View GitLab system information, and information on background jobs, logs, health checks, requests profiles, and audit logs. |
 | **{messages}** Messages  | Send and manage broadcast messages for your users.                                                                          |
 ```
 
 | Section                  | Description                                                                                                                 |
 |:-------------------------|:----------------------------------------------------------------------------------------------------------------------------|
-| **{overview}** Overview  | View your GitLab Dashboard, and administer projects, users, groups, jobs, Runners, and Gitaly servers.                      |
+| **{overview}** Overview  | View your GitLab Dashboard, and administer projects, users, groups, jobs, runners, and Gitaly servers.                      |
 | **{monitor}** Monitoring | View GitLab system information, and information on background jobs, logs, health checks, requests profiles, and audit logs. |
 | **{messages}** Messages  | Send and manage broadcast messages for your users.                                                                          |
 
@@ -1974,8 +1974,8 @@ You can use the following fake tokens as examples:
 | Application ID        | `2fcb195768c39e9a94cec2c2e32c59c0aad7a3365c10892e8116b5d83d4096b6` |
 | Application secret    | `04f294d1eaca42b8692017b426d53bbc8fe75f827734f0260710b83a556082df` |
 | CI/CD variable        | `Li8j-mLUVA3eZYjPfd_H`                                             |
-| Specific Runner token | `yrnZW46BrtBFqM7xDzE7dddd`                                         |
-| Shared Runner token   | `6Vk7ZsosqQyfreAxXTZr`                                             |
+| Specific runner token | `yrnZW46BrtBFqM7xDzE7dddd`                                         |
+| Shared runner token   | `6Vk7ZsosqQyfreAxXTZr`                                             |
 | Trigger token         | `be20d8dcc028677c931e04f3871a9b`                                   |
 | Webhook secret token  | `6XhDroRcYPM5by_h-HLY`                                             |
 | Health check token    | `Tu7BgjR9qeZTEyRzGG2P`                                             |

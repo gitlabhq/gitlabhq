@@ -392,7 +392,7 @@ graph LR
     subgraph "post-test stage";
         Z["fail-pipeline-early"];
     end
-    
+
     A --"artifact: list of test files"--> G
     G --"on failure"--> Z
 ```
@@ -460,8 +460,8 @@ of the `gitlab-org/gitlab-foss` project. These jobs are only created in the foll
 - Merge requests which include `RUN AS-IF-FOSS` in their title.
 - Merge requests that changes the CI configuration.
 
-The `* as-if-foss` jobs have the `FOSS_ONLY='1'` variable set and gets their EE-specific
-folders removed before the tests start running.
+The `* as-if-foss` jobs are run in addition to the regular EE-context jobs. They have the `FOSS_ONLY='1'` variable
+set and get their EE-specific folders removed before the tests start running.
 
 The intent is to ensure that a change won't introduce a failure once the `gitlab-org/gitlab` project will be synced to
 the `gitlab-org/gitlab-foss` project.

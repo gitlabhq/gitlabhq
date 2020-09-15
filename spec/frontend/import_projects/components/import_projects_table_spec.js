@@ -1,13 +1,12 @@
 import { nextTick } from 'vue';
 import Vuex from 'vuex';
 import { createLocalVue, shallowMount } from '@vue/test-utils';
-import { GlLoadingIcon, GlButton } from '@gitlab/ui';
+import { GlLoadingIcon, GlButton, GlIntersectionObserver } from '@gitlab/ui';
 import state from '~/import_projects/store/state';
 import * as getters from '~/import_projects/store/getters';
 import { STATUSES } from '~/import_projects/constants';
 import ImportProjectsTable from '~/import_projects/components/import_projects_table.vue';
 import ProviderRepoTableRow from '~/import_projects/components/provider_repo_table_row.vue';
-import PageQueryParamSync from '~/import_projects/components/page_query_param_sync.vue';
 
 describe('ImportProjectsTable', () => {
   let wrapper;
@@ -35,6 +34,7 @@ describe('ImportProjectsTable', () => {
   const importAllFn = jest.fn();
   const importAllModalShowFn = jest.fn();
   const setPageFn = jest.fn();
+  const fetchReposFn = jest.fn();
 
   function createComponent({
     state: initialState,
@@ -53,7 +53,7 @@ describe('ImportProjectsTable', () => {
         ...customGetters,
       },
       actions: {
-        fetchRepos: jest.fn(),
+        fetchRepos: fetchReposFn,
         fetchJobs: jest.fn(),
         fetchNamespaces: jest.fn(),
         importAll: importAllFn,
@@ -203,19 +203,27 @@ describe('ImportProjectsTable', () => {
       });
     });
 
-    it('passes current page to page-query-param-sync component', () => {
-      expect(wrapper.find(PageQueryParamSync).props().page).toBe(pageInfo.page);
+    it('does not call fetchRepos on mount', () => {
+      expect(fetchReposFn).not.toHaveBeenCalled();
     });
 
-    it('dispatches setPage when page-query-param-sync emits popstate', () => {
-      const NEW_PAGE = 2;
-      wrapper.find(PageQueryParamSync).vm.$emit('popstate', NEW_PAGE);
-
-      const { calls } = setPageFn.mock;
-
-      expect(calls).toHaveLength(1);
-      expect(calls[0][1]).toBe(NEW_PAGE);
+    it('renders intersection observer component', () => {
+      expect(wrapper.find(GlIntersectionObserver).exists()).toBe(true);
     });
+
+    it('calls fetchRepos when intersection observer appears', async () => {
+      wrapper.find(GlIntersectionObserver).vm.$emit('appear');
+
+      await nextTick();
+
+      expect(fetchReposFn).toHaveBeenCalled();
+    });
+  });
+
+  it('calls fetchRepos on mount', () => {
+    createComponent();
+
+    expect(fetchReposFn).toHaveBeenCalled();
   });
 
   it.each`

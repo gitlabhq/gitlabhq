@@ -193,7 +193,7 @@ Before diving into the details, some things you should be aware of:
   longer, but it means you don’t get stuck without security patches for base images.
 - Doing an explicit `docker pull` before each `docker run` fetches
   the latest image that was just built. This is especially important if you are
-  using multiple Runners that cache images locally. Using the Git SHA in your
+  using multiple runners that cache images locally. Using the Git SHA in your
   image tag makes this less necessary since each job is unique and you
   shouldn't ever have a stale image. However, it's still possible to have a
   stale image if you re-build a given commit after a dependency has changed.
@@ -240,8 +240,8 @@ There are three ways to authenticate to the Container Registry via
 
 ### Container Registry examples with GitLab CI/CD
 
-If you're using Docker-in-Docker on your Runners, this is how your `.gitlab-ci.yml`
-should look similar to this:
+If you're using Docker-in-Docker on your runners, this is how your `.gitlab-ci.yml`
+should look:
 
 ```yaml
 build:

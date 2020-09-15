@@ -125,7 +125,7 @@ before uploading your license.
 
 GitLab.com users cannot upload and use a self-managed license. If you
 wish to use paid features on GitLab.com, a separate subscription may be
-[purchased](../../subscriptions/index.md#subscribe-to-gitlabcom).
+[purchased](../../subscriptions/gitlab_com/index.md).
 
 ### Users exceed license limit upon renewal
 

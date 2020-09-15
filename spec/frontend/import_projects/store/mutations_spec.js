@@ -1,9 +1,11 @@
 import * as types from '~/import_projects/store/mutation_types';
 import mutations from '~/import_projects/store/mutations';
+import getInitialState from '~/import_projects/store/state';
 import { STATUSES } from '~/import_projects/constants';
 
 describe('import_projects store mutations', () => {
   let state;
+
   const SOURCE_PROJECT = {
     id: 1,
     full_name: 'full/name',
@@ -19,13 +21,23 @@ describe('import_projects store mutations', () => {
   };
 
   describe(`${types.SET_FILTER}`, () => {
-    it('overwrites current filter value', () => {
-      state = { filter: 'some-value' };
-      const NEW_VALUE = 'new-value';
+    const NEW_VALUE = 'new-value';
 
+    beforeEach(() => {
+      state = {
+        filter: 'some-value',
+        repositories: ['some', ' repositories'],
+        pageInfo: { page: 1 },
+      };
       mutations[types.SET_FILTER](state, NEW_VALUE);
+    });
 
-      expect(state.filter).toBe(NEW_VALUE);
+    it('removes current repositories list', () => {
+      expect(state.repositories.length).toBe(0);
+    });
+
+    it('resets current page to 0', () => {
+      expect(state.pageInfo.page).toBe(0);
     });
   });
 
@@ -48,7 +60,7 @@ describe('import_projects store mutations', () => {
         };
 
         it('recreates importSource from response', () => {
-          state = {};
+          state = getInitialState();
 
           mutations[types.RECEIVE_REPOS_SUCCESS](state, response);
 
@@ -62,7 +74,7 @@ describe('import_projects store mutations', () => {
         });
 
         it('passes project to importProject', () => {
-          state = {};
+          state = getInitialState();
 
           mutations[types.RECEIVE_REPOS_SUCCESS](state, response);
 
@@ -74,7 +86,8 @@ describe('import_projects store mutations', () => {
 
       describe('for importable projects', () => {
         beforeEach(() => {
-          state = {};
+          state = getInitialState();
+
           const response = {
             importedProjects: [],
             providerRepos: [SOURCE_PROJECT],
@@ -95,7 +108,7 @@ describe('import_projects store mutations', () => {
         };
 
         beforeEach(() => {
-          state = {};
+          state = getInitialState();
           mutations[types.RECEIVE_REPOS_SUCCESS](state, response);
         });
 
@@ -115,7 +128,8 @@ describe('import_projects store mutations', () => {
           importedProjects: [],
           providerRepos: [],
         };
-        state = {};
+
+        state = getInitialState();
 
         mutations[types.RECEIVE_REPOS_SUCCESS](state, response);
 
@@ -125,15 +139,17 @@ describe('import_projects store mutations', () => {
 
     it('passes response as it is', () => {
       const response = [];
-      state = {};
+      state = getInitialState();
 
       mutations[types.RECEIVE_REPOS_SUCCESS](state, response);
 
-      expect(state.repositories).toBe(response);
+      expect(state.repositories).toStrictEqual(response);
     });
 
     it('sets repos loading flag to false', () => {
       const response = [];
+
+      state = getInitialState();
 
       mutations[types.RECEIVE_REPOS_SUCCESS](state, response);
 
@@ -143,7 +159,7 @@ describe('import_projects store mutations', () => {
 
   describe(`${types.RECEIVE_REPOS_ERROR}`, () => {
     it('sets repos loading flag to false', () => {
-      state = {};
+      state = getInitialState();
 
       mutations[types.RECEIVE_REPOS_ERROR](state);
 
@@ -288,17 +304,6 @@ describe('import_projects store mutations', () => {
       });
 
       expect(state.customImportTargets[SOURCE_PROJECT.id]).toBeUndefined();
-    });
-  });
-
-  describe(`${types.SET_PAGE_INFO}`, () => {
-    it('sets passed page info', () => {
-      state = {};
-      const pageInfo = { page: 1, total: 10 };
-
-      mutations[types.SET_PAGE_INFO](state, pageInfo);
-
-      expect(state.pageInfo).toBe(pageInfo);
     });
   });
 

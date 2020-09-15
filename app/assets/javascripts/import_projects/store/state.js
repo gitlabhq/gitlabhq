@@ -8,6 +8,6 @@ export default () => ({
   ciCdOnly: false,
   filter: '',
   pageInfo: {
-    page: 1,
+    page: 0,
   },
 });

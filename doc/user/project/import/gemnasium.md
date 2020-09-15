@@ -83,7 +83,7 @@ back to both GitLab and GitHub when completed.
 
    ![click on connected project](img/gemnasium/project_connected.png)
 
-   Your project is now mirrored on GitLab, where the Runners will be able to access
+   Your project is now mirrored on GitLab, where the runners will be able to access
    your source code and run your tests.
 
    Optional step: If you set this up on GitLab.com, make sure the project is

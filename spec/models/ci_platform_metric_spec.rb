@@ -46,44 +46,45 @@ RSpec.describe CiPlatformMetric do
 
       it 'inserts platform target counts for that day' do
         Timecop.freeze(today) do
-          create(:ci_variable, key: described_class::CI_VARIABLE_KEY, value: 'aws')
-          create(:ci_variable, key: described_class::CI_VARIABLE_KEY, value: 'aws')
-          create(:ci_variable, key: described_class::CI_VARIABLE_KEY, value: 'fargate')
-          create(:ci_variable, key: described_class::CI_VARIABLE_KEY, value: 'fargate')
-          create(:ci_variable, key: described_class::CI_VARIABLE_KEY, value: 'fargate')
+          create(:ci_variable, key: described_class::CI_VARIABLE_KEY, value: 'ECS')
+          create(:ci_variable, key: described_class::CI_VARIABLE_KEY, value: 'ECS')
+          create(:ci_variable, key: described_class::CI_VARIABLE_KEY, value: 'FARGATE')
+          create(:ci_variable, key: described_class::CI_VARIABLE_KEY, value: 'FARGATE')
+          create(:ci_variable, key: described_class::CI_VARIABLE_KEY, value: 'FARGATE')
           described_class.insert_auto_devops_platform_targets!
         end
         Timecop.freeze(tomorrow) do
-          create(:ci_variable, key: described_class::CI_VARIABLE_KEY, value: 'fargate')
+          create(:ci_variable, key: described_class::CI_VARIABLE_KEY, value: 'FARGATE')
           described_class.insert_auto_devops_platform_targets!
         end
 
         expect(platform_target_counts_by_day).to eq({
-          today.to_date => { 'aws' => 2, 'fargate' => 3 },
-          tomorrow.to_date => { 'aws' => 2, 'fargate' => 4 }
+          today.to_date => { 'ECS' => 2, 'FARGATE' => 3 },
+          tomorrow.to_date => { 'ECS' => 2, 'FARGATE' => 4 }
         })
       end
     end
 
-    context 'when there are ci variable values too long for platform_target' do
+    context 'when there are invalid ci variable values for platform_target' do
       let(:today) { Time.zone.local(1982, 4, 24) }
 
-      it 'truncates those values' do
-        max = described_class::PLATFORM_TARGET_MAX_LENGTH
+      it 'ignores those values' do
         Timecop.freeze(today) do
-          create(:ci_variable, key: described_class::CI_VARIABLE_KEY, value: 'F' * (max + 1))
+          create(:ci_variable, key: described_class::CI_VARIABLE_KEY, value: 'ECS')
+          create(:ci_variable, key: described_class::CI_VARIABLE_KEY, value: 'FOO')
+          create(:ci_variable, key: described_class::CI_VARIABLE_KEY, value: 'BAR')
           described_class.insert_auto_devops_platform_targets!
         end
 
         expect(platform_target_counts_by_day).to eq({
-          today.to_date => { 'F' * max => 1 }
+          today.to_date => { 'ECS' => 1 }
         })
       end
     end
 
     context 'when there are no platform target variables' do
       it 'does not generate any new platform metrics' do
-        create(:ci_variable, key: 'KEY_WHATEVER', value: 'aws')
+        create(:ci_variable, key: 'KEY_WHATEVER', value: 'ECS')
         described_class.insert_auto_devops_platform_targets!
 
         expect(platform_target_counts_by_day).to eq({})

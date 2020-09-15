@@ -147,7 +147,7 @@ The following totals are also included:
 
 GitLab billing is based on the number of **Active users**, calculated as **Total users** -
 **Blocked users**. For details of active users, see
-[Choosing the number of users](../../subscriptions/index.md#choosing-the-number-of-users).
+[Choosing the number of users](../../subscriptions/self_managed/index.md#choose-the-number-of-users).
 
 NOTE: **Note:**
 Users statistics are calculated daily, so user changes made since the last update won't be

@@ -52,7 +52,7 @@ To run Knative on GitLab, you will need:
    The simplest way to get started is to add a cluster using GitLab's [GKE integration](../add_remove_clusters.md).
    The set of minimum recommended cluster specifications to run Knative is 3 nodes, 6 vCPUs, and 22.50 GB memory.
 1. **GitLab Runner:** A runner is required to run the CI jobs that will deploy serverless
-   applications or functions onto your cluster. You can install the GitLab Runner
+   applications or functions onto your cluster. You can install GitLab Runner
    onto the existing Kubernetes cluster. See [Installing Applications](../index.md#installing-applications) for more information.
 1. **Domain Name:** Knative will provide its own load balancer using Istio. It will provide an
    external IP address or hostname for all the applications served by Knative. You will be prompted to enter a

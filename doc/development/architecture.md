@@ -173,7 +173,7 @@ Table description links:
 | [Gitaly](#gitaly)                                     | Git RPC service for handling all Git calls made by GitLab            |       ✅        |      ✅       |        ✅         |     ✅      |   ⚙    |  ✅  | CE & EE |
 | [GitLab Exporter](#gitlab-exporter)                   | Generates a variety of GitLab metrics                                |       ✅        |      ✅       |        ✅         |     ✅      |   ❌    |  ❌  | CE & EE |
 | [GitLab Geo Node](#gitlab-geo)                        | Geographically distributed GitLab nodes |       ⚙        |       ⚙      |        ❌         |     ✅      |   ❌    |  ⚙  | EE Only |
-| [GitLab Managed Apps](#gitlab-managed-apps)           | Deploy Helm, Ingress, Cert-Manager, Prometheus, a Runner, JupyterHub, or Knative to a cluster |  ⤓  |  ⤓  |      ⤓       |     ⤓      |   ⤓    |  ⤓  | CE & EE |
+| [GitLab Managed Apps](#gitlab-managed-apps)           | Deploy Helm, Ingress, Cert-Manager, Prometheus, GitLab Runner, JupyterHub, or Knative to a cluster |  ⤓  |  ⤓  |      ⤓       |     ⤓      |   ⤓    |  ⤓  | CE & EE |
 | [GitLab Pages](#gitlab-pages)                         | Hosts static websites                                                |       ⚙        |      ❌       |        ❌         |     ✅      |   ⚙    |  ⚙  | CE & EE |
 | [GitLab self-monitoring: Alertmanager](#alertmanager) | Deduplicates, groups, and routes alerts from Prometheus              |       ⚙        |      ✅       |        ⚙         |     ✅      |   ❌    |  ❌  | CE & EE |
 | [GitLab self-monitoring: Grafana](#grafana)           | Metrics dashboard                                                    |       ✅        |      ⚙       |        ⤓         |     ✅      |   ❌    |  ❌  | CE & EE |
@@ -665,7 +665,7 @@ You can install them after you create a cluster. This includes:
 - [Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress/)
 - [Cert-Manager](https://cert-manager.io/docs/)
 - [Prometheus](https://prometheus.io/docs/introduction/overview/)
-- a [Runner](https://docs.gitlab.com/runner/)
+- [GitLab Runner](https://docs.gitlab.com/runner/)
 - [JupyterHub](https://jupyter.org)
 - [Knative](https://cloud.google.com/knative/)
 

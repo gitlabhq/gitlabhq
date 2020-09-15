@@ -419,6 +419,31 @@ variables:
   DAST_REQUEST_HEADERS: "Authorization: Bearer my.token"
 ```
 
+### URL scan
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214120) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.4.
+
+A URL scan allows you to specify which parts of a website are scanned by DAST.
+
+#### Define the URLs to scan
+
+To specify the paths to be scanned, add a comma-separated list of the paths to the `DAST_PATHS` environment variable. Note that you can only scan paths of a single host.
+
+```yaml
+include:
+  - template: DAST.gitlab-ci.yml
+
+variables:
+  DAST_PATHS=/page1.html,/category1/page1.html,/page3.html
+```
+
+NOTE: **Note:**
+`DAST_AUTH_EXCLUDE_URLS` are ignored when `DAST_PATHS` is set.
+
+#### Full Scan
+
+To perform a [full scan](#full-scan) on the listed paths, use the `DAST_FULL_SCAN_ENABLED` environment variable.
+
 ### Customizing the DAST settings
 
 CAUTION: **Deprecation:**
@@ -472,6 +497,7 @@ DAST can be [configured](#customizing-the-dast-settings) using environment varia
 | `DAST_XML_REPORT` | string | The filename of the XML report written at the end of a scan. |
 | `DAST_INCLUDE_ALPHA_VULNERABILITIES` | boolean | Set to `true` to include alpha passive and active scan rules. Default: `false` |
 | `DAST_USE_AJAX_SPIDER` | boolean | Set to `true` to use the AJAX spider in addition to the traditional spider, useful for crawling sites that require JavaScript. Default: `false` |
+| `DAST_PATHS` | string | Set to a comma-separated list of URLs for DAST to scan. For example, `/page1.html,/category1/page3.html,/page2.html` |
 | `DAST_ZAP_CLI_OPTIONS` | string | ZAP server command-line options. For example, `-Xmx3072m` would set the Java maximum memory allocation pool size. |
 | `DAST_ZAP_LOG_CONFIGURATION` | string | Set to a semicolon-separated list of additional log4j properties for the ZAP Server. For example, `log4j.logger.org.parosproxy.paros.network.HttpSender=DEBUG;log4j.logger.com.crawljax=DEBUG` |
 

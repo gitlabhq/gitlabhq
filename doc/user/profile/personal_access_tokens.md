@@ -85,7 +85,7 @@ token.save!
 ```
 
 This can be shortened into a single-line shell command using the
-[GitLab Rails Runner](../../administration/troubleshooting/debug.md#using-the-rails-runner):
+[Rails runner](../../administration/troubleshooting/debug.md#using-the-rails-runner):
 
 ```shell
 sudo gitlab-rails runner "token = User.find_by_username('automation-bot').personal_access_tokens.create(scopes: [:read_user, :read_repository], name: 'Automation token'); token.set_token('token-string-here123'); token.save!"
@@ -113,7 +113,7 @@ token.revoke!
 ```
 
 This can be shorted into a single-line shell command using the
-[GitLab Rails Runner](../../administration/troubleshooting/debug.md#using-the-rails-runner):
+[Rails runner](../../administration/troubleshooting/debug.md#using-the-rails-runner):
 
 ```shell
 sudo gitlab-rails runner "PersonalAccessToken.find_by_token('token-string-here123').revoke!"
