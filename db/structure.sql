@@ -9539,6 +9539,27 @@ CREATE SEQUENCE public.audit_events_id_seq
 
 ALTER SEQUENCE public.audit_events_id_seq OWNED BY public.audit_events.id;
 
+CREATE TABLE public.authentication_events (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    user_id bigint,
+    result smallint NOT NULL,
+    ip_address inet,
+    provider text NOT NULL,
+    user_name text NOT NULL,
+    CONSTRAINT check_45a6cc4e80 CHECK ((char_length(user_name) <= 255)),
+    CONSTRAINT check_c64f424630 CHECK ((char_length(provider) <= 64))
+);
+
+CREATE SEQUENCE public.authentication_events_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE public.authentication_events_id_seq OWNED BY public.authentication_events.id;
+
 CREATE TABLE public.award_emoji (
     id integer NOT NULL,
     name character varying,
@@ -16965,6 +16986,8 @@ ALTER TABLE ONLY public.atlassian_identities ALTER COLUMN user_id SET DEFAULT ne
 
 ALTER TABLE ONLY public.audit_events ALTER COLUMN id SET DEFAULT nextval('public.audit_events_id_seq'::regclass);
 
+ALTER TABLE ONLY public.authentication_events ALTER COLUMN id SET DEFAULT nextval('public.authentication_events_id_seq'::regclass);
+
 ALTER TABLE ONLY public.award_emoji ALTER COLUMN id SET DEFAULT nextval('public.award_emoji_id_seq'::regclass);
 
 ALTER TABLE ONLY public.background_migration_jobs ALTER COLUMN id SET DEFAULT nextval('public.background_migration_jobs_id_seq'::regclass);
@@ -17895,6 +17918,9 @@ ALTER TABLE ONLY public.audit_events_part_5fc467ac26
 
 ALTER TABLE ONLY public.audit_events
     ADD CONSTRAINT audit_events_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY public.authentication_events
+    ADD CONSTRAINT authentication_events_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY public.award_emoji
     ADD CONSTRAINT award_emoji_pkey PRIMARY KEY (id);
@@ -19332,6 +19358,10 @@ CREATE INDEX index_approvers_on_target_id_and_target_type ON public.approvers US
 CREATE INDEX index_approvers_on_user_id ON public.approvers USING btree (user_id);
 
 CREATE UNIQUE INDEX index_atlassian_identities_on_extern_uid ON public.atlassian_identities USING btree (extern_uid);
+
+CREATE INDEX index_authentication_events_on_provider ON public.authentication_events USING btree (provider);
+
+CREATE INDEX index_authentication_events_on_user_id ON public.authentication_events USING btree (user_id);
 
 CREATE INDEX index_award_emoji_on_awardable_type_and_awardable_id ON public.award_emoji USING btree (awardable_type, awardable_id);
 
@@ -23161,6 +23191,9 @@ ALTER TABLE ONLY public.webauthn_registrations
 
 ALTER TABLE ONLY public.packages_build_infos
     ADD CONSTRAINT fk_rails_b18868292d FOREIGN KEY (package_id) REFERENCES public.packages_packages(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY public.authentication_events
+    ADD CONSTRAINT fk_rails_b204656a54 FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY public.merge_trains
     ADD CONSTRAINT fk_rails_b29261ce31 FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;

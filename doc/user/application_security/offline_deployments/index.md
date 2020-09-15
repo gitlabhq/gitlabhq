@@ -96,7 +96,7 @@ above. You can find more information at each of the pages below:
 
 To use many GitLab features, including
 [security scans](../index.md#working-in-an-offline-environment)
-and [Auto DevOps](../../../topics/autodevops/index.md), the GitLab Runner must be able to fetch the
+and [Auto DevOps](../../../topics/autodevops/index.md), the runner must be able to fetch the
 relevant Docker images.
 
 The process for making these images available without direct access to the public internet
@@ -124,7 +124,7 @@ The pipeline downloads the Docker images needed for the Security Scanners and sa
 [job artifacts](../../../ci/pipelines/job_artifacts.md) or pushes them to the [Container Registry](../../packages/container_registry/index.md)
 of the project where the pipeline is executed. These archives can be transferred to another location
 and [loaded](https://docs.docker.com/engine/reference/commandline/load/) in a Docker daemon.
-This method requires a GitLab Runner with access to both `gitlab.com` (including
+This method requires a runner with access to both `gitlab.com` (including
 `registry.gitlab.com`) and the local offline instance. This runner must run in
 [privileged mode](https://docs.gitlab.com/runner/executors/docker.html#use-docker-in-docker-with-privileged-mode)
 to be able to use the `docker` command inside the jobs. This runner can be installed in a DMZ or on

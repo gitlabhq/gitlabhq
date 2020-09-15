@@ -1075,7 +1075,7 @@ recovery efforts by preventing writes that may conflict with the unreplicated wr
 To enable writes again, an administrator can:
 
 1. [Check](#check-for-data-loss) for data loss.
-1. Attempt to [recover](#recover-missing-data) missing data.
+1. Attempt to [recover](#data-recovery) missing data.
 1. Either [enable writes](#enable-writes-or-accept-data-loss) in the virtual storage or
    [accept data loss](#enable-writes-or-accept-data-loss) if necessary, depending on the version of
    GitLab.
@@ -1169,17 +1169,6 @@ Virtual storage: default
 To check a project's repository checksums across on all Gitaly nodes, run the
 [replicas Rake task](../raketasks/praefect.md#replica-checksums) on the main GitLab node.
 
-### Recover missing data
-
-The Praefect `reconcile` sub-command can be used to recover unreplicated changes from another replica.
-The source must be on a later version than the target storage.
-
-```shell
-sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml reconcile -virtual <virtual-storage> -reference <up-to-date-storage> -target <outdated-storage> -f
-```
-
-Refer to [Gitaly node recovery](#gitaly-node-recovery) section for more details on the `reconcile` sub-command.
-
 ### Enable writes or accept data loss
 
 Praefect provides the following subcommands to re-enable writes:
@@ -1203,31 +1192,53 @@ Praefect provides the following subcommands to re-enable writes:
 
 CAUTION: **Caution:**
 `accept-dataloss` causes permanent data loss by overwriting other versions of the repository. Data
-[recovery efforts](#recover-missing-data) must be performed before using it.
+[recovery efforts](#data-recovery) must be performed before using it.
 
-## Gitaly node recovery
+## Data recovery
 
-When a secondary Gitaly node fails and is no longer able to replicate changes, it starts
-to drift from the primary Gitaly node. If the failed Gitaly node eventually recovers,
-it needs to be reconciled with the primary Gitaly node. The primary Gitaly node is considered
-the single source of truth for the state of a shard.
+If a Gitaly node fails replication jobs for any reason, it ends up hosting outdated versions of
+the affected repositories. Praefect provides tools for automatically or manually reconciling
+the outdated repositories in order to bring them fully up to date again.
 
-The Praefect `reconcile` sub-command allows for the manual reconciliation between a secondary
-Gitaly node and the current primary Gitaly node.
+### Automatic reconciliation
 
-Run the following command on the Praefect server after all placeholders
-(`<virtual-storage>` and `<target-storage>`) have been replaced:
+> [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/2717) in GitLab 13.4.
+
+Praefect automatically reconciles repositories that are not up to date. By default, this is done every
+five minutes. For each outdated repository on a healthy Gitaly node, the Praefect picks a
+random, fully up to date replica of the repository on another healthy Gitaly node to replicate from. A
+replication job is scheduled only if there are no other replication jobs pending for the target
+repository.
+
+The reconciliation frequency can be changed via the configuration. The value can be any valid
+[Go duration value](https://golang.org/pkg/time/#ParseDuration). Values below 0 disable the feature.
+
+Examples:
+
+```ruby
+praefect['reconciliation_scheduling_interval'] = '5m' # the default value
+```
+
+```ruby
+praefect['reconciliation_scheduling_interval'] = '30s' # reconcile every 30 seconds
+```
+
+```ruby
+praefect['reconciliation_scheduling_interval'] = '0' # disable the feature
+```
+
+### Manual reconciliation
+
+The Praefect `reconcile` sub-command allows for the manual reconciliation between two Gitaly nodes. The
+command replicates every repository on a later version on the reference storage to the target storage.
 
 ```shell
-sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml reconcile -virtual <virtual-storage> -target <target-storage>
+sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml reconcile -virtual <virtual-storage> -reference <up-to-date-storage> -target <outdated-storage> -f
 ```
 
 - Replace the placeholder `<virtual-storage>` with the virtual storage containing the Gitaly node storage to be checked.
-- Replace the placeholder `<target-storage>` with the Gitaly storage name.
-
-The command will return a list of repositories that were found to be
-inconsistent against the current primary. Each of these inconsistencies will
-also be logged with an accompanying replication job ID.
+- Replace the placeholder `<up-to-date-storage>` with the Gitaly storage name containing up to date repositories.
+- Replace the placeholder `<outdated-storage>` with the Gitaly storage name containing outdated repositories.
 
 ## Migrate existing repositories to Gitaly Cluster
 

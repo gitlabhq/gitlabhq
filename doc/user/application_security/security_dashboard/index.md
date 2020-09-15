@@ -35,7 +35,7 @@ To use the instance, group, project, or pipeline security dashboard:
    the [supported reports](#supported-reports).
 1. The configured jobs must use the [new `reports` syntax](../../../ci/pipelines/job_artifacts.md#artifactsreports).
 1. [GitLab Runner](https://docs.gitlab.com/runner/) 11.5 or newer must be used.
-   If you're using the shared Runners on GitLab.com, this is already the case.
+   If you're using the shared runners on GitLab.com, this is already the case.
 
 ## Pipeline Security
 

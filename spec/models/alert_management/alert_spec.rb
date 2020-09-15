@@ -332,8 +332,39 @@ RSpec.describe AlertManagement::Alert do
     end
   end
 
+  describe '.reference_pattern' do
+    subject { described_class.reference_pattern }
+
+    it { is_expected.to match('gitlab-org/gitlab^alert#123') }
+  end
+
+  describe '.link_reference_pattern' do
+    subject { described_class.link_reference_pattern }
+
+    it { is_expected.to match(triggered_alert.details_url) }
+    it { is_expected.not_to match("#{Gitlab.config.gitlab.url}/gitlab-org/gitlab/alert_management/123") }
+    it { is_expected.not_to match("#{Gitlab.config.gitlab.url}/gitlab-org/gitlab/issues/123") }
+    it { is_expected.not_to match("gitlab-org/gitlab/-/alert_management/123") }
+  end
+
+  describe '.reference_valid?' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:ref, :result) do
+      '123456' | true
+      '1' | true
+      '-1' | false
+      nil | false
+      '123456891012345678901234567890' | false
+    end
+
+    with_them do
+      it { expect(described_class.reference_valid?(ref)).to eq(result) }
+    end
+  end
+
   describe '#to_reference' do
-    it { expect(triggered_alert.to_reference).to eq('') }
+    it { expect(triggered_alert.to_reference).to eq("^alert##{triggered_alert.iid}") }
   end
 
   describe '#trigger' do

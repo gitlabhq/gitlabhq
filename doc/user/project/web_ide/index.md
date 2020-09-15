@@ -236,12 +236,12 @@ below.
 
 CAUTION: **Warning:**
 Interactive Web Terminals for the Web IDE is currently in **Beta**.
-Shared Runners [do not yet support Interactive Web Terminals](https://gitlab.com/gitlab-org/gitlab/-/issues/24674),
-so you would need to use your own private Runner(s) to make use of this feature.
+Shared runners [do not yet support Interactive Web Terminals](https://gitlab.com/gitlab-org/gitlab/-/issues/24674),
+so you would need to use your own private runner to make use of this feature.
 
 [Interactive Web Terminals](../../../ci/interactive_web_terminal/index.md)
 give the project [Maintainers](../../permissions.md#project-members-permissions)
-user access to a terminal to interact with the Runner directly from
+user access to a terminal to interact with the runner directly from
 GitLab, including through the Web IDE.
 
 ### Runner configuration
@@ -249,7 +249,7 @@ GitLab, including through the Web IDE.
 Some things need to be configured in the runner for the interactive web terminal
 to work:
 
-- The Runner needs to have
+- The runner needs to have
   [`[session_server]` configured properly](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-session_server-section).
   This section requires at least a `session_timeout` value (which defaults to 1800
   seconds) and a `listen_address` value. If `advertise_address` is not defined, `listen_address` is used.
@@ -346,7 +346,7 @@ environment.
 NOTE: **Note:**
 Only file changes in the Web IDE are synced to the terminal.
 Changes made in the terminal are **not** synced to the Web IDE.
-This feature is only available for Kubernetes Runners.
+This feature is only available for Kubernetes runners.
 
 To enable file syncing to the web terminal, the `.gitlab/.gitlab-webide.yml`
 file needs to have a `webide-file-sync` service configured. Here is an example
@@ -373,7 +373,7 @@ terminal:
   more information.
 - `$CI_PROJECT_DIR` is a
   [predefined environment variable](../../../ci/variables/predefined_variables.md)
-  for GitLab Runners. This is where your project's repository will be.
+  for GitLab Runner. This is where your project's repository will be.
 
 Once you have configured the web terminal for file syncing, then when the web
 terminal is started, a **Terminal** status will be visible in the status bar.

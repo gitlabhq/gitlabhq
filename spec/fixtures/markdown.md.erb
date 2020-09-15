@@ -245,6 +245,15 @@ References should be parseable even inside _<%= merge_request.to_reference %>_ e
 - Group milestone by name in quotes: <%= group_milestone.to_reference(format: :name) %>
 - Group milestone by URL is ignore: <%= urls.milestone_url(group_milestone) %>
 
+##### AlertReferenceFilter
+- Alert: <%= alert.to_reference %>
+- Alert in another project: <%= xalert.to_reference(project) %>
+- Ignored in code: `<%= alert.to_reference %>`
+- Ignored in links: [Link to <%= alert.to_reference %>](#alert-link)
+- Alert by URL: <%= alert.details_url %>
+- Link to alert by reference: [Alert](<%= alert.to_reference %>)
+- Link to alert by URL: [Alert](<%= alert.details_url %>)
+
 ### Task Lists
 
 - [ ] Incomplete task 1

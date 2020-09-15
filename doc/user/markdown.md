@@ -438,6 +438,11 @@ GFM recognizes the following:
 | commit range comparison         | `9ba12248...b19a04f5`      | `namespace/project@9ba12248...b19a04f5` | `project@9ba12248...b19a04f5`  |
 | repository file references      | `[README](doc/README)`     |                                         |                                |
 | repository file line references | `[README](doc/README#L13)` |                                         |                                |
+| [alert](../operations/incident_management/alerts.md) | `^alert#123` | `namespace/project^alert#123`    | `project^alert#123`            |
+
+For example, referencing an issue by using `#123` will format the output as a link
+to issue number 123 with text `#123`. Likewise, a link to issue number 123 will be
+recognized and formatted with text `#123`.
 
 In addition to this, links to some objects are also recognized and formatted. Some examples of these are:
 

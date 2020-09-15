@@ -23,7 +23,8 @@ module Banzai
           Filter::MergeRequestReferenceFilter,
           Filter::SnippetReferenceFilter,
           Filter::CommitRangeReferenceFilter,
-          Filter::CommitReferenceFilter
+          Filter::CommitReferenceFilter,
+          Filter::AlertReferenceFilter
         ]
       end
 

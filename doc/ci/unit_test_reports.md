@@ -81,6 +81,8 @@ merge request widget.
 
 To make the Unit test report output files browsable, include them with the
 [`artifacts:paths`](yaml/README.md#artifactspaths) keyword as well, as shown in the [Ruby example](#ruby-example).
+To upload the report even if the job fails (for example if the tests do not pass), use the [`artifacts:when:always`](yaml/README.md#artifactswhen)
+keyword.
 
 NOTE: **Note:**
 You cannot have multiple tests with the same name and class in your JUnit report format XML file.

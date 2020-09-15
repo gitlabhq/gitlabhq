@@ -377,6 +377,56 @@ Recommendations:
 - Use a [feature flag](../../operations/feature_flags.md) to have a control over the impact when
   adding new metrics.
 
+##### Known events in usage data payload
+
+All events added in [`known_events.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data_counters/known_events.yml) are automatically added to usage data generation under the `redis_hll_counters` key. This column is stored in [version-app as a JSON](https://gitlab.com/gitlab-services/version-gitlab-com/-/blob/master/db/schema.rb#L209).
+For each event we add metrics for the weekly and monthly time frames, and totals for each where applicable:
+
+- `#{event_name}_weekly` data for 7 days for daily [aggregation](#adding-new-events) events and data for last complete week for weekly [aggregation](#adding-new-events) events.
+- `#{event_name}_monthly` data for 28 days for daily [aggregation](#adding-new-events) events and data for last 4 complete weeks for weekly [aggregation](#adding-new-events) events.
+- `#{category}_total_unique_counts_weekly` total unique counts for events in same category for last 7 days or last complete week, if events are in the same Redis slot and if we have more than one metric.
+- `#{event_name}_weekly` - Data for 7 days for daily [aggregation](#adding-new-events) events and data for the last complete week for weekly [aggregation](#adding-new-events) events.
+- `#{event_name}_monthly` - Data for 28 days for daily [aggregation](#adding-new-events) events and data for the last 4 complete weeks for weekly [aggregation](#adding-new-events) events.
+- `#{category}_total_unique_counts_weekly` - Total unique counts for events in the same category for the last 7 days or the last complete week, if events are in the same Redis slot and we have more than one metric.
+- `#{event_name}_weekly`: Data for 7 days for daily [aggregation](#adding-new-events) events and data for last complete week for weekly [aggregation](#adding-new-events) events.
+- `#{event_name}_monthly`: Data for 28 days for daily [aggregation](#adding-new-events) events and data for last 4 complete weeks for weekly [aggregation](#adding-new-events) events.
+- `#{category}_total_unique_counts_weekly` total unique counts for events in same category for last 7 days or last complete week, if events are in the same Redis slot and if we have more than one metric.
+- `#{event_name}_weekly`: Data for 7 days for daily [aggregation](#adding-new-events) events and data for the last complete week for weekly [aggregation](#adding-new-events) events.
+- `#{event_name}_monthly`: Data for 28 days for daily [aggregation](#adding-new-events) events and data for the last 4 complete weeks for weekly [aggregation](#adding-new-events) events.
+- `#{category}_total_unique_counts_weekly`: Total unique counts for events in the same category for the last 7 days or the last complete week, if events are in the same Redis slot and we have more than one metric.
+- `#{category}_total_unique_counts_monthly`: Total unique counts for events in same category for the last 28 days or the last 4 complete weeks, if events are in the same Redis slot and we have more than one metric.
+
+Example of `redis_hll_counters` data:
+
+```ruby
+{:redis_hll_counters=>
+  {"compliance"=>
+    {"g_compliance_dashboard_weekly"=>0,
+     "g_compliance_dashboard_monthly"=>0,
+     "g_compliance_audit_events_weekly"=>0,
+     "g_compliance_audit_events_monthly"=>0,
+     "compliance_total_unique_counts_weekly"=>0,
+     "compliance_total_unique_counts_monthly"=>0},
+   "analytics"=>
+    {"g_analytics_contribution_weekly"=>0,
+     "g_analytics_contribution_monthly"=>0,
+     "g_analytics_insights_weekly"=>0,
+     "g_analytics_insights_monthly"=>0,
+     "analytics_total_unique_counts_weekly"=>0,
+     "analytics_total_unique_counts_monthly"=>0},
+   "ide_edit"=>
+    {"g_edit_by_web_ide_weekly"=>0,
+     "g_edit_by_web_ide_monthly"=>0,
+     "g_edit_by_sfe_weekly"=>0,
+     "g_edit_by_sfe_monthly"=>0,
+     "ide_edit_total_unique_counts_weekly"=>0,
+     "ide_edit_total_unique_counts_monthly"=>0},
+   "search"=>
+    {"i_search_total_weekly"=>0, "i_search_total_monthly"=>0, "i_search_advanced_weekly"=>0, "i_search_advanced_monthly"=>0, "i_search_paid_weekly"=>0, "i_search_paid_monthly"=>0, "search_total_unique_counts_weekly"=>0, "search_total_unique_counts_monthly"=>0},
+   "source_code"=>{"wiki_action_weekly"=>0, "wiki_action_monthly"=>0}
+ }
+```
+
 Example usage:
 
 ```ruby

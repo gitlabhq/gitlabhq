@@ -42,10 +42,10 @@ information directly in the merge request.
 
 To enable Container Scanning in your pipeline, you need the following:
 
-- [GitLab Runner](https://docs.gitlab.com/runner/) with the [Docker](https://docs.gitlab.com/runner/executors/docker.html)
-  or [Kubernetes](https://docs.gitlab.com/runner/install/kubernetes.html) executor.
-- Docker `18.09.03` or higher installed on the same computer as the Runner. If you're using the
-  shared Runners on GitLab.com, then this is already the case.
+- [GitLab Runner](https://docs.gitlab.com/runner/) with the [`docker`](https://docs.gitlab.com/runner/executors/docker.html)
+  or [`kubernetes`](https://docs.gitlab.com/runner/install/kubernetes.html) executor.
+- Docker `18.09.03` or higher installed on the same computer as the runner. If you're using the
+  shared runners on GitLab.com, then this is already the case.
 - [Build and push](../../packages/container_registry/index.md#container-registry-examples-with-gitlab-cicd)
   your Docker image to your project's container registry. The name of the Docker image should use
   the following [predefined environment variables](../../../ci/variables/predefined_variables.md):
@@ -221,8 +221,8 @@ To use Container Scanning in an offline environment, you need:
 
 NOTE: **Note:**
 GitLab Runner has a [default `pull policy` of `always`](https://docs.gitlab.com/runner/executors/docker.html#using-the-always-pull-policy),
-meaning the Runner tries to pull Docker images from the GitLab container registry even if a local
-copy is available. GitLab Runner's [`pull_policy` can be set to `if-not-present`](https://docs.gitlab.com/runner/executors/docker.html#using-the-if-not-present-pull-policy)
+meaning the runner tries to pull Docker images from the GitLab container registry even if a local
+copy is available. The GitLab Runner [`pull_policy` can be set to `if-not-present`](https://docs.gitlab.com/runner/executors/docker.html#using-the-if-not-present-pull-policy)
 in an offline environment if you prefer using only locally available Docker images. However, we
 recommend keeping the pull policy setting to `always` if not in an offline environment, as this
 enables the use of updated scanners in your CI/CD pipelines.
@@ -421,7 +421,7 @@ Read more about the [solutions for vulnerabilities](../index.md#solutions-for-vu
 
 ### `docker: Error response from daemon: failed to copy xattrs`
 
-When the GitLab Runner uses the Docker executor and NFS is used
+When the runner uses the `docker` executor and NFS is used
 (for example, `/var/lib/docker` is on an NFS mount), Container Scanning might fail with
 an error like the following:
 
@@ -430,6 +430,6 @@ docker: Error response from daemon: failed to copy xattrs: failed to set xattr "
 ```
 
 This is a result of a bug in Docker which is now [fixed](https://github.com/containerd/continuity/pull/138 "fs: add WithAllowXAttrErrors CopyOpt").
-To prevent the error, ensure the Docker version that the Runner is using is
+To prevent the error, ensure the Docker version that the runner is using is
 `18.09.03` or higher. For more information, see
 [issue #10241](https://gitlab.com/gitlab-org/gitlab/-/issues/10241 "Investigate why Container Scanning is not working with NFS mounts").

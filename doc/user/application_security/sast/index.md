@@ -43,16 +43,16 @@ A pipeline consists of multiple jobs, including SAST and DAST scanning. If any j
 
 ## Requirements
 
-To run SAST jobs, by default, you need a GitLab Runner with the
+To run SAST jobs, by default, you need GitLab Runner with the
 [`docker`](https://docs.gitlab.com/runner/executors/docker.html) or
 [`kubernetes`](https://docs.gitlab.com/runner/install/kubernetes.html) executor.
-If you're using the shared Runners on GitLab.com, this is enabled by default.
+If you're using the shared runners on GitLab.com, this is enabled by default.
 
 CAUTION: **Caution:**
 Our SAST jobs require a Linux container type. Windows containers are not yet supported.
 
 CAUTION: **Caution:**
-If you use your own Runners, make sure the Docker version installed
+If you use your own runners, make sure the Docker version installed
 is **not** `19.03.0`. See [troubleshooting information](#error-response-from-daemon-error-processing-tar-file-docker-tar-relocation-error) for details.
 
 ## Supported languages and frameworks
@@ -476,14 +476,14 @@ run successfully. For more information, see [Offline environments](../offline_de
 
 To use SAST in an offline environment, you need:
 
-- A GitLab Runner with the [`docker` or `kubernetes` executor](#requirements).
+- GitLab Runner with the [`docker` or `kubernetes` executor](#requirements).
 - A Docker Container Registry with locally available copies of SAST [analyzer](https://gitlab.com/gitlab-org/security-products/analyzers) images.
 - Configure certificate checking of packages (optional).
 
 NOTE: **Note:**
 GitLab Runner has a [default `pull policy` of `always`](https://docs.gitlab.com/runner/executors/docker.html#using-the-always-pull-policy),
-meaning the Runner tries to pull Docker images from the GitLab container registry even if a local
-copy is available. GitLab Runner's [`pull_policy` can be set to `if-not-present`](https://docs.gitlab.com/runner/executors/docker.html#using-the-if-not-present-pull-policy)
+meaning the runner tries to pull Docker images from the GitLab container registry even if a local
+copy is available. The GitLab Runner [`pull_policy` can be set to `if-not-present`](https://docs.gitlab.com/runner/executors/docker.html#using-the-if-not-present-pull-policy)
 in an offline environment if you prefer using only locally available Docker images. However, we
 recommend keeping the pull policy setting to `always` if not in an offline environment, as this
 enables the use of updated scanners in your CI/CD pipelines.

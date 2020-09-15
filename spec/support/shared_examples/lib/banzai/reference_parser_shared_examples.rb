@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples "referenced feature visibility" do |*related_features|
+  let(:enable_user?) { false }
   let(:feature_fields) do
     related_features.map { |feature| (feature + "_access_level").to_sym }
   end
@@ -35,8 +36,11 @@ RSpec.shared_examples "referenced feature visibility" do |*related_features|
   end
 
   context "when feature is enabled" do
-    # The project is public
+    # Allows implementing specs to enable finer-tuned permissions
+    let(:enable_user?) { true }
+
     it "creates reference" do
+      # The project is public
       set_features_fields_to(ProjectFeature::ENABLED)
 
       expect(subject.nodes_visible_to_user(user, [link])).to eq([link])

@@ -47,6 +47,17 @@ RSpec.describe API::Search do
     end
   end
 
+  shared_examples 'filter by state' do |scope:, search:|
+    it 'respects scope filtering' do
+      get api(endpoint, user), params: { scope: scope, search: search, state: state }
+
+      documents = Gitlab::Json.parse(response.body)
+
+      expect(documents.count).to eq(1)
+      expect(documents.first['state']).to eq(state)
+    end
+  end
+
   describe 'GET /search' do
     let(:endpoint) { '/search' }
 
@@ -88,42 +99,84 @@ RSpec.describe API::Search do
       end
 
       context 'for issues scope' do
-        before do
-          create(:issue, project: project, title: 'awesome issue')
-
-          get api(endpoint, user), params: { scope: 'issues', search: 'awesome' }
-        end
-
-        it_behaves_like 'response is correct', schema: 'public_api/v4/issues'
-
-        it_behaves_like 'ping counters', scope: :issues
-
-        describe 'pagination' do
+        context 'without filtering by state' do
           before do
-            create(:issue, project: project, title: 'another issue')
+            create(:issue, project: project, title: 'awesome issue')
+
+            get api(endpoint, user), params: { scope: 'issues', search: 'awesome' }
           end
 
-          include_examples 'pagination', scope: :issues
+          it_behaves_like 'response is correct', schema: 'public_api/v4/issues'
+
+          it_behaves_like 'ping counters', scope: :issues
+
+          describe 'pagination' do
+            before do
+              create(:issue, project: project, title: 'another issue')
+            end
+
+            include_examples 'pagination', scope: :issues
+          end
+        end
+
+        context 'filter by state' do
+          before do
+            create(:issue, project: project, title: 'awesome opened issue')
+            create(:issue, :closed, project: project, title: 'awesome closed issue')
+          end
+
+          context 'state: opened' do
+            let(:state) { 'opened' }
+
+            include_examples 'filter by state', scope: :issues, search: 'awesome'
+          end
+
+          context 'state: closed' do
+            let(:state) { 'closed' }
+
+            include_examples 'filter by state', scope: :issues, search: 'awesome'
+          end
         end
       end
 
       context 'for merge_requests scope' do
-        before do
-          create(:merge_request, source_project: repo_project, title: 'awesome mr')
-
-          get api(endpoint, user), params: { scope: 'merge_requests', search: 'awesome' }
-        end
-
-        it_behaves_like 'response is correct', schema: 'public_api/v4/merge_requests'
-
-        it_behaves_like 'ping counters', scope: :merge_requests
-
-        describe 'pagination' do
+        context 'without filtering by state' do
           before do
-            create(:merge_request, source_project: repo_project, title: 'another mr', target_branch: 'another_branch')
+            create(:merge_request, source_project: repo_project, title: 'awesome mr')
+
+            get api(endpoint, user), params: { scope: 'merge_requests', search: 'awesome' }
           end
 
-          include_examples 'pagination', scope: :merge_requests
+          it_behaves_like 'response is correct', schema: 'public_api/v4/merge_requests'
+
+          it_behaves_like 'ping counters', scope: :merge_requests
+
+          describe 'pagination' do
+            before do
+              create(:merge_request, source_project: repo_project, title: 'another mr', target_branch: 'another_branch')
+            end
+
+            include_examples 'pagination', scope: :merge_requests
+          end
+        end
+
+        context 'filter by state' do
+          before do
+            create(:merge_request, source_project: project, title: 'awesome opened mr')
+            create(:merge_request, :closed, project: project, title: 'awesome closed mr')
+          end
+
+          context 'state: opened' do
+            let(:state) { 'opened' }
+
+            include_examples 'filter by state', scope: :merge_requests, search: 'awesome'
+          end
+
+          context 'state: closed' do
+            let(:state) { 'closed' }
+
+            include_examples 'filter by state', scope: :merge_requests, search: 'awesome'
+          end
         end
       end
 
