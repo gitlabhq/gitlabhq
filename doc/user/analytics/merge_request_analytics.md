@@ -15,7 +15,7 @@ Merge Request Analytics helps you understand the efficiency of your code review 
 
 Merge Request Analytics displays information that will help you evaluate the efficiency and productivity of your merge request process.
 
-The Throughput chart shows the number of completed merge requests, by month. Merge request throughput is
+The Throughput chart shows the number of merge requests merged, by month. Merge request throughput is
 a common measure of productivity in software engineering. Although imperfect, the average throughput can
 be a meaningful benchmark of your team's overall productivity.
 
@@ -40,7 +40,7 @@ The following visualizations and data are available, representing all merge requ
 
 ### Throughput chart
 
-The throughput chart shows the number of completed merge requests per month.
+The throughput chart shows the number of merge requests merged per month.
 
 ![Throughput chart](img/mr_throughput_chart_v13_3.png "Merge Request Analytics - Throughput chart showing merge requests merged in the past 12 months")
 

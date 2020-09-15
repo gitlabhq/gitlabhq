@@ -2,7 +2,7 @@
 import {
   GlDropdown,
   GlDropdownDivider,
-  GlNewDropdownHeader,
+  GlDropdownSectionHeader,
   GlDropdownItem,
   GlLoadingIcon,
   GlSearchBoxByType,
@@ -19,7 +19,7 @@ export default {
   components: {
     GlDropdown,
     GlDropdownDivider,
-    GlNewDropdownHeader,
+    GlDropdownSectionHeader,
     GlDropdownItem,
     GlLoadingIcon,
     GlSearchBoxByType,
@@ -196,9 +196,9 @@ export default {
       <gl-icon name="chevron-down" />
     </template>
 
-    <gl-new-dropdown-header>
+    <gl-dropdown-section-header>
       <span class="text-center d-block">{{ $options.translations.selectMilestone }}</span>
-    </gl-new-dropdown-header>
+    </gl-dropdown-section-header>
 
     <gl-dropdown-divider />
 

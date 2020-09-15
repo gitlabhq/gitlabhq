@@ -1,11 +1,11 @@
 <script>
-import { GlNewDropdownHeader, GlDropdownItem, GlBadge, GlIcon } from '@gitlab/ui';
+import { GlDropdownSectionHeader, GlDropdownItem, GlBadge, GlIcon } from '@gitlab/ui';
 import { s__ } from '~/locale';
 
 export default {
   name: 'RefResultsSection',
   components: {
-    GlNewDropdownHeader,
+    GlDropdownSectionHeader,
     GlDropdownItem,
     GlBadge,
     GlIcon,
@@ -84,12 +84,12 @@ export default {
 
 <template>
   <div>
-    <gl-new-dropdown-header>
+    <gl-dropdown-section-header>
       <div class="gl-display-flex align-items-center" data-testid="section-header">
         <span class="gl-mr-2 gl-mb-1">{{ sectionTitle }}</span>
         <gl-badge variant="neutral">{{ totalCountText }}</gl-badge>
       </div>
-    </gl-new-dropdown-header>
+    </gl-dropdown-section-header>
     <template v-if="error">
       <div class="gl-display-flex align-items-start text-danger gl-ml-4 gl-mr-4 gl-mb-3">
         <gl-icon name="error" class="gl-mr-2 gl-mt-2 gl-flex-shrink-0" />

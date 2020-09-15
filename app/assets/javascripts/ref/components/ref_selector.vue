@@ -3,7 +3,7 @@ import { mapActions, mapGetters, mapState } from 'vuex';
 import {
   GlDropdown,
   GlDropdownDivider,
-  GlNewDropdownHeader,
+  GlDropdownSectionHeader,
   GlSearchBoxByType,
   GlSprintf,
   GlIcon,
@@ -20,7 +20,7 @@ export default {
   components: {
     GlDropdown,
     GlDropdownDivider,
-    GlNewDropdownHeader,
+    GlDropdownSectionHeader,
     GlSearchBoxByType,
     GlSprintf,
     GlIcon,
@@ -130,9 +130,9 @@ export default {
     </template>
 
     <div class="gl-display-flex gl-flex-direction-column ref-selector-dropdown-content">
-      <gl-new-dropdown-header>
+      <gl-dropdown-section-header>
         <span class="gl-text-center gl-display-block">{{ i18n.dropdownHeader }}</span>
-      </gl-new-dropdown-header>
+      </gl-dropdown-section-header>
 
       <gl-dropdown-divider />
 

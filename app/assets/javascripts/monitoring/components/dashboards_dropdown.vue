@@ -4,7 +4,7 @@ import {
   GlIcon,
   GlDropdown,
   GlDropdownItem,
-  GlNewDropdownHeader,
+  GlDropdownSectionHeader,
   GlDropdownDivider,
   GlSearchBoxByType,
   GlModalDirective,
@@ -19,7 +19,7 @@ export default {
     GlIcon,
     GlDropdown,
     GlDropdownItem,
-    GlNewDropdownHeader,
+    GlDropdownSectionHeader,
     GlDropdownDivider,
     GlSearchBoxByType,
   },
@@ -79,7 +79,7 @@ export default {
     :text="selectedDashboardText"
   >
     <div class="d-flex flex-column overflow-hidden">
-      <gl-new-dropdown-header>{{ __('Dashboard') }}</gl-new-dropdown-header>
+      <gl-dropdown-section-header>{{ __('Dashboard') }}</gl-dropdown-section-header>
       <gl-search-box-by-type
         ref="monitorDashboardsDropdownSearch"
         v-model="searchTerm"

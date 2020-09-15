@@ -6,7 +6,7 @@ import {
   GlDropdown,
   GlLoadingIcon,
   GlDropdownItem,
-  GlNewDropdownHeader,
+  GlDropdownSectionHeader,
   GlSearchBoxByType,
   GlModalDirective,
   GlTooltipDirective,
@@ -31,7 +31,7 @@ export default {
     GlDropdown,
     GlLoadingIcon,
     GlDropdownItem,
-    GlNewDropdownHeader,
+    GlDropdownSectionHeader,
 
     GlSearchBoxByType,
 
@@ -191,7 +191,7 @@ export default {
         :text="environmentDropdownText"
       >
         <div class="d-flex flex-column overflow-hidden">
-          <gl-new-dropdown-header>{{ __('Environment') }}</gl-new-dropdown-header>
+          <gl-dropdown-section-header>{{ __('Environment') }}</gl-dropdown-section-header>
           <gl-search-box-by-type class="gl-m-3" @input="debouncedEnvironmentsSearch" />
 
           <gl-loading-icon v-if="environmentsLoading" :inline="true" />

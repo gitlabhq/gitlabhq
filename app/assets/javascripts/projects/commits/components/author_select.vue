@@ -3,7 +3,7 @@ import { debounce } from 'lodash';
 import { mapState, mapActions } from 'vuex';
 import {
   GlDropdown,
-  GlNewDropdownHeader,
+  GlDropdownSectionHeader,
   GlDropdownItem,
   GlSearchBoxByType,
   GlDropdownDivider,
@@ -19,7 +19,7 @@ export default {
   name: 'AuthorSelect',
   components: {
     GlDropdown,
-    GlNewDropdownHeader,
+    GlDropdownSectionHeader,
     GlDropdownItem,
     GlSearchBoxByType,
     GlDropdownDivider,
@@ -113,9 +113,9 @@ export default {
       toggle-class="gl-py-3 gl-border-0"
       class="w-100 mt-2 mt-sm-0"
     >
-      <gl-new-dropdown-header>
+      <gl-dropdown-section-header>
         {{ __('Search by author') }}
-      </gl-new-dropdown-header>
+      </gl-dropdown-section-header>
       <gl-dropdown-divider />
       <gl-search-box-by-type
         v-model.trim="authorInput"

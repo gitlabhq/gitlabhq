@@ -1,6 +1,6 @@
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import Vuex from 'vuex';
-import { GlDropdown, GlNewDropdownHeader, GlSearchBoxByType, GlDropdownItem } from '@gitlab/ui';
+import { GlDropdown, GlDropdownSectionHeader, GlSearchBoxByType, GlDropdownItem } from '@gitlab/ui';
 import * as urlUtility from '~/lib/utils/url_utility';
 import AuthorSelect from '~/projects/commits/components/author_select.vue';
 import { createStore } from '~/projects/commits/store';
@@ -59,7 +59,7 @@ describe('Author Select', () => {
 
   const findDropdownContainer = () => wrapper.find({ ref: 'dropdownContainer' });
   const findDropdown = () => wrapper.find(GlDropdown);
-  const findDropdownHeader = () => wrapper.find(GlNewDropdownHeader);
+  const findDropdownHeader = () => wrapper.find(GlDropdownSectionHeader);
   const findSearchBox = () => wrapper.find(GlSearchBoxByType);
   const findDropdownItems = () => wrapper.findAll(GlDropdownItem);
 

@@ -47,9 +47,9 @@ exports[`Dashboard template matches the default snapshot 1`] = `
         <div
           class="d-flex flex-column overflow-hidden"
         >
-          <gl-new-dropdown-header-stub>
+          <gl-dropdown-section-header-stub>
             Environment
-          </gl-new-dropdown-header-stub>
+          </gl-dropdown-section-header-stub>
            
           <gl-search-box-by-type-stub
             class="gl-m-3"

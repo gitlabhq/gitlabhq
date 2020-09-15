@@ -643,7 +643,72 @@ To delete an existing site profile:
 1. Click **Manage** in the **DAST Profiles** row.
 1. Click **{remove}** in the row of the profile to delete.
 
-## On-Demand Scans
+## Scanner profile
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/222767) in GitLab 13.4.
+> - [Deployed behind a feature flag](../../feature_flags.md), enabled by default.
+> - Enabled on GitLab.com.
+> - Can be enabled or disabled per-project.
+> - Recommended for production use.
+> - For GitLab self-managed instances, GitLab administrators can [disable this feature](#enable-or-disable-dast-scanner-profiles).
+
+A scanner profile defines the scanner settings used to run an on-demand scan:
+
+- **Profile name:** A name you give the scanner profile. For example, "Spider_15".
+- **Spider timeout:** The maximum number of minutes allowed for the spider to traverse the site.
+- **Target timeout:** The maximum number of seconds DAST waits for the site to be available before
+  starting the scan.
+
+### Create a scanner profile
+
+To create a scanner profile:
+
+1. From your project's home page, go to **Security & Compliance > Configuration**.
+1. Click **Manage** in the **DAST Profiles** row.
+1. Click **New Profile > Scanner Profile**.
+1. Enter a unique **Profile name**, the desired **Spider timeout**, and the **Target timeout**.
+1. Click **Save profile**.
+
+### Edit a scanner profile
+
+To edit a scanner profile:
+
+1. From your project's home page, go to **Security & Compliance > Configuration**.
+1. Click **Manage** in the **DAST Profiles** row.
+1. Click **Edit** in the scanner profile's row.
+
+### Delete a scanner profile
+
+To delete a scanner profile:
+
+1. From your project's home page, go to **Security & Compliance > Configuration**.
+1. Click **Manage** in the **DAST Profiles** row.
+1. Click **{remove}** in the scanner profile's row.
+
+### Enable or disable DAST scanner profiles
+
+The scanner profile feature is ready for production use. It's deployed behind a feature flag that
+is **enabled by default**. [GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md) can opt to disable it.
+
+To disable it:
+
+```ruby
+# Instance-wide
+Feature.disable(:security_on_demand_scans_scanner_profiles)
+# or by project
+Feature.disable(:security_on_demand_scans_scanner_profiles, Project.find(<project id>))
+```
+
+To enable it:
+
+```ruby
+# Instance-wide
+Feature.enable(:security_on_demand_scans_scanner_profiles)
+# or by project
+Feature.enable(:security_on_demand_scans_scanner_profiles, Project.find(<project ID>))
+```
+
+## On-demand scans
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/218465) in GitLab 13.2.
 > - [Improved](https://gitlab.com/gitlab-org/gitlab/-/issues/218465) in GitLab 13.3.
@@ -652,37 +717,46 @@ To delete an existing site profile:
 > - It's able to be enabled or disabled per-project.
 > - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-on-demand-scans).
 
-You can run a passive DAST scan against a target website, outside the DevOps life cycle. These scans
-are always associated with the default branch of your project and the results are available in the
-project's dashboard. An on-demand DAST scan has a fixed timeout of 60 seconds.
+An on-demand DAST scan runs outside the DevOps life cycle. Changes in your repository don't trigger
+the scan. You must start it manually.
 
-### Run an on-demand scan
+An on-demand DAST scan:
+
+- Uses settings in the site profile and scanner profile you select when you run the scan,
+  instead of those in the `.gitlab-ci.yml` file.
+- Is associated with your project's default branch.
+
+### Run an on-demand DAST scan
 
 NOTE: **Note:**
 You must have permission to run an on-demand DAST scan against a protected branch.
 The default branch is automatically protected. For more details, see [Pipeline security on protected branches](../../../ci/pipelines/index.md#pipeline-security-on-protected-branches).
 
-To run an on-demand scan, you need a site profile for the target URL.
+To run an on-demand DAST scan, you need:
+
+- A [scanner profile](#create-a-scanner-profile).
+- A [site profile](#create-a-site-profile).
 
 1. From your project's home page, go to **Security & Compliance > On-demand Scans** in the left sidebar.
 1. Click **Create new DAST scan**.
-1. Select a site profile from the profiles dropdown.
+1. In **Scanner settings**, select a scanner profile from the dropdown.
+1. In **Site profiles**, select a site profile from the dropdown.
 1. Click **Run scan**.
 
-The on-demand scan runs and the project's dashboard shows the results.
+The on-demand DAST scan runs and the project's dashboard shows the results.
 
 ### Enable or disable On-demand Scans
 
-On-demand Scans is enabled by default. You can disable On-demand Scans
+The On-demand DAST Scans feature is enabled by default. You can disable on-demand scans
 instance-wide, or disable it for specific projects if you prefer.
 
-Use of On-demand Scans requires the `security_on_demand_scans_feature_flag`
-feature flag enabled.
+To run on-demand DAST scans, an administrator must enable the
+`security_on_demand_scans_feature_flag` feature flag.
 
 [GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
 can disable or enable the feature flags.
 
-To disable On-demand Scans:
+To disable On-demand DAST Scans:
 
 ```ruby
 # Instance-wide
@@ -691,7 +765,7 @@ Feature.disable(:security_on_demand_scans_feature_flag)
 Feature.disable(:security_on_demand_scans_feature_flag, Project.find(<project id>))
 ```
 
-To enable On-demand Scans:
+To enable On-demand DAST Scans:
 
 ```ruby
 # Instance-wide

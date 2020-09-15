@@ -5,7 +5,7 @@ import { escape } from 'lodash';
 import {
   GlButton,
   GlDropdown,
-  GlNewDropdownHeader as GlDropdownHeader,
+  GlDropdownSectionHeader,
   GlDropdownItem,
   GlTooltipDirective,
 } from '@gitlab/ui';
@@ -23,7 +23,7 @@ export default {
     MrWidgetIcon,
     GlButton,
     GlDropdown,
-    GlDropdownHeader,
+    GlDropdownSectionHeader,
     GlDropdownItem,
   },
   directives: {
@@ -168,7 +168,7 @@ export default {
           right
           data-qa-selector="download_dropdown"
         >
-          <gl-dropdown-header>{{ s__('Download as') }}</gl-dropdown-header>
+          <gl-dropdown-section-header>{{ s__('Download as') }}</gl-dropdown-section-header>
           <gl-dropdown-item
             :href="mr.emailPatchesPath"
             class="js-download-email-patches"
