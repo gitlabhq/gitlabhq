@@ -7,6 +7,8 @@ import {
   parseIntPagination,
   convertObjectPropsToCamelCase,
 } from '~/lib/utils/common_utils';
+import allReleasesQuery from '~/releases/queries/all_releases.query.graphql';
+import { gqClient, convertGraphQLResponse } from '../../../util';
 
 /**
  * Commits a mutation to update the state while the main endpoint is being requested.
@@ -21,13 +23,31 @@ export const requestReleases = ({ commit }) => commit(types.REQUEST_RELEASES);
  *
  * @param {String} projectId
  */
-export const fetchReleases = ({ dispatch }, { page = '1', projectId }) => {
+export const fetchReleases = ({ dispatch, rootState }, { page = '1', projectId, projectPath }) => {
   dispatch('requestReleases');
 
-  api
-    .releases(projectId, { page })
-    .then(response => dispatch('receiveReleasesSuccess', response))
-    .catch(() => dispatch('receiveReleasesError'));
+  if (
+    rootState.featureFlags.graphqlReleaseData &&
+    rootState.featureFlags.graphqlReleasesPage &&
+    rootState.featureFlags.graphqlMilestoneStats
+  ) {
+    gqClient
+      .query({
+        query: allReleasesQuery,
+        variables: {
+          fullPath: projectPath,
+        },
+      })
+      .then(response => {
+        dispatch('receiveReleasesSuccess', convertGraphQLResponse(response));
+      })
+      .catch(() => dispatch('receiveReleasesError'));
+  } else {
+    api
+      .releases(projectId, { page })
+      .then(response => dispatch('receiveReleasesSuccess', response))
+      .catch(() => dispatch('receiveReleasesError'));
+  }
 };
 
 export const receiveReleasesSuccess = ({ commit }, { data, headers }) => {

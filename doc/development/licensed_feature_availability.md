@@ -22,7 +22,7 @@ project.feature_available?(:feature_symbol)
 
 ## Restricting global features (instance)
 
-However, for features such as [Geo](../administration/geo/replication/index.md) and
+However, for features such as [Geo](../administration/geo/index.md) and
 [Load balancing](../administration/database_load_balancing.md), which cannot be restricted
 to only a subset of projects or namespaces, the check will be made directly in
 the instance license.

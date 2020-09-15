@@ -11,7 +11,7 @@ Geo replicates your database, your Git repositories, and few other assets.
 We will support and replicate more data in the future, that will enable you to
 failover with minimal effort, in a disaster situation.
 
-See [Geo current limitations](../replication/index.md#current-limitations) for more information.
+See [Geo current limitations](../index.md#current-limitations) for more information.
 
 CAUTION: **Warning:**
 Disaster recovery for multi-secondary configurations is in **Alpha**.
@@ -330,7 +330,7 @@ secondary domain, like changing Git remotes and API URLs.
 Promoting a **secondary** node to **primary** node using the process above does not enable
 Geo on the new **primary** node.
 
-To bring a new **secondary** node online, follow the [Geo setup instructions](../replication/index.md#setup-instructions).
+To bring a new **secondary** node online, follow the [Geo setup instructions](../index.md#setup-instructions).
 
 ### Step 6. (Optional) Removing the secondary's tracking database
 
@@ -437,7 +437,7 @@ section to resolve the error. Otherwise, the secret is lost and you'll need to
 
 ### While Promoting the secondary, I got an error `ActiveRecord::RecordInvalid`
 
-If you disabled a secondary node, either with the [replication pause task](../replication/index.md#pausing-and-resuming-replication)
+If you disabled a secondary node, either with the [replication pause task](../index.md#pausing-and-resuming-replication)
 (13.2) or via the UI (13.1 and earlier), you must first re-enable the
 node before you can continue. This is fixed in 13.4.
 

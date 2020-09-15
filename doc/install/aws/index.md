@@ -799,7 +799,7 @@ to request additional material:
 
 - [Scaling GitLab](../../administration/reference_architectures/index.md):
   GitLab supports several different types of clustering.
-- [Geo replication](../../administration/geo/replication/index.md):
+- [Geo replication](../../administration/geo/index.md):
   Geo is the solution for widely distributed development teams.
 - [Omnibus GitLab](https://docs.gitlab.com/omnibus/) - Everything you need to know
   about administering your GitLab instance.

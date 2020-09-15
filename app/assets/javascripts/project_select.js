@@ -110,7 +110,10 @@ const projectSelect = () => {
   });
 };
 
-export default () =>
-  import(/* webpackChunkName: 'select2' */ 'select2/select2')
-    .then(projectSelect)
-    .catch(() => {});
+export default () => {
+  if ($('.ajax-project-select').length) {
+    import(/* webpackChunkName: 'select2' */ 'select2/select2')
+      .then(projectSelect)
+      .catch(() => {});
+  }
+};

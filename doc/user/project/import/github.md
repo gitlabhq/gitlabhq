@@ -36,6 +36,7 @@ The following aspects of a project are imported:
 - Release note descriptions (GitLab.com & 8.12+)
 - Pull request review comments (GitLab.com & 10.2+)
 - Regular issue and pull request comments
+- [Git Large File Storage (LFS) Objects](../../../topics/git/lfs/index.md)
 
 References to pull requests and issues are preserved (GitLab.com & 8.7+), and
 each imported repository maintains visibility level unless that [visibility

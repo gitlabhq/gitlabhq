@@ -1437,7 +1437,12 @@ the files changed by Git push events.
 
 `rules: changes` works exactly the same way as [`only: changes` and `except: changes`](#onlychangesexceptchanges),
 accepting an array of paths. Similarly, it always returns true if there is no
-Git push event, for example, when a new tag is created. It should only be used for branch pipelines or merge request pipelines.
+Git push event, for example, when a new tag is created. It's recommended to use it
+only with branch pipelines or merge request pipelines. For example, it's common to
+use `rules: changes` with one of the following `if` clauses:
+
+- `if: $CI_COMMIT_BRANCH`
+- `if: '$CI_PIPELINE_SOURCE == "merge_request_event"'`
 
 For example:
 
@@ -1869,16 +1874,18 @@ job1:
 Using the `changes` keyword with `only` or `except` makes it possible to define if
 a job should be created based on files modified by a Git push event.
 
-This means the `only:changes` policy is useful for pipelines where:
+The `only:changes` policy is only useful for pipelines triggered by the following
+refs:
 
-- `$CI_PIPELINE_SOURCE == 'push'`
-- `$CI_PIPELINE_SOURCE == 'merge_request_event'`
-- `$CI_PIPELINE_SOURCE == 'external_pull_request_event'`
+- `branches`
+- `external_pull_requests`
+- `merge_requests` (see additional details about [using `only:changes` with pipelines for merge requests](#using-onlychanges-with-pipelines-for-merge-requests))
 
-If there is no Git push event, such as for pipelines with
-[sources other than the three above](../variables/predefined_variables.md),
-`changes` can't determine if a given file is new or old, and will always
-return true.
+CAUTION: **Caution:**
+In pipelines with [sources other than the three above](../variables/predefined_variables.md)
+`changes` can't determine if a given file is new or old and always returns `true`.
+This includes pipelines triggered by pushing new tags. Configuring jobs to use `only: changes`
+with other `only: refs` keywords is possible, but not recommended.
 
 A basic example of using `only: changes`:
 
@@ -1886,6 +1893,8 @@ A basic example of using `only: changes`:
 docker build:
   script: docker build -t my-image:$CI_COMMIT_REF_SLUG .
   only:
+    refs:
+      - branches
     changes:
       - Dockerfile
       - docker/scripts/*
@@ -1914,6 +1923,8 @@ in double quotes or GitLab will fail to parse the `.gitlab-ci.yml`. For example:
 test:
   script: npm run test
   only:
+    refs:
+      - branches
     changes:
       - "*.json"
       - "**/*.sql"

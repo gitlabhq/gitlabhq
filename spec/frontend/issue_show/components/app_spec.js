@@ -78,6 +78,8 @@ describe('Issuable output', () => {
       });
 
     mountComponent();
+
+    jest.advanceTimersByTime(2);
   });
 
   afterEach(() => {

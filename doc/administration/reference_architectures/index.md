@@ -147,7 +147,7 @@ is recommended.
 > - Required domain knowledge: Storage replication
 > - Supported tiers: [GitLab Premium and Ultimate](https://about.gitlab.com/pricing/)
 
-[GitLab Geo](../geo/replication/index.md) allows you to replicate your GitLab
+[GitLab Geo](../geo/index.md) allows you to replicate your GitLab
 instance to other geographical locations as a read-only fully operational instance
 that can also be promoted in case of disaster.
 

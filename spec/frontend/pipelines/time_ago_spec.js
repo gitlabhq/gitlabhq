@@ -1,4 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
+import { GlIcon } from '@gitlab/ui';
 import TimeAgo from '~/pipelines/components/pipelines_list/time_ago.vue';
 
 describe('Timeago component', () => {
@@ -22,14 +23,19 @@ describe('Timeago component', () => {
     wrapper = null;
   });
 
+  const duration = () => wrapper.find('.duration');
+  const finishedAt = () => wrapper.find('.finished-at');
+
   describe('with duration', () => {
     beforeEach(() => {
       createComponent({ duration: 10, finishedTime: '' });
     });
 
     it('should render duration and timer svg', () => {
-      expect(wrapper.find('.duration').exists()).toBe(true);
-      expect(wrapper.find('.duration svg').exists()).toBe(true);
+      const icon = duration().find(GlIcon);
+
+      expect(duration().exists()).toBe(true);
+      expect(icon.props('name')).toBe('timer');
     });
   });
 
@@ -39,7 +45,7 @@ describe('Timeago component', () => {
     });
 
     it('should not render duration and timer svg', () => {
-      expect(wrapper.find('.duration').exists()).toBe(false);
+      expect(duration().exists()).toBe(false);
     });
   });
 
@@ -49,9 +55,12 @@ describe('Timeago component', () => {
     });
 
     it('should render time and calendar icon', () => {
-      expect(wrapper.find('.finished-at').exists()).toBe(true);
-      expect(wrapper.find('.finished-at i.fa-calendar').exists()).toBe(true);
-      expect(wrapper.find('.finished-at time').exists()).toBe(true);
+      const icon = finishedAt().find(GlIcon);
+      const time = finishedAt().find('time');
+
+      expect(finishedAt().exists()).toBe(true);
+      expect(icon.props('name')).toBe('calendar');
+      expect(time.exists()).toBe(true);
     });
   });
 
@@ -61,7 +70,7 @@ describe('Timeago component', () => {
     });
 
     it('should not render time and calendar icon', () => {
-      expect(wrapper.find('.finished-at').exists()).toBe(false);
+      expect(finishedAt().exists()).toBe(false);
     });
   });
 });

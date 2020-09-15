@@ -310,7 +310,7 @@ class Service < ApplicationRecord
   end
 
   def to_service_hash
-    as_json(methods: :type, except: %w[id template instance project_id])
+    as_json(methods: :type, except: %w[id template instance project_id group_id])
   end
 
   def to_data_fields_hash

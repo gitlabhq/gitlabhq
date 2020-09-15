@@ -773,7 +773,6 @@ Rails/SaveBang:
     - 'ee/spec/services/ee/merge_requests/update_service_spec.rb'
     - 'ee/spec/services/ee/notes/quick_actions_service_spec.rb'
     - 'ee/spec/services/ee/notification_service_spec.rb'
-    - 'ee/spec/services/ee/resource_events/change_weight_service_spec.rb'
     - 'ee/spec/services/epic_links/create_service_spec.rb'
     - 'ee/spec/services/epics/close_service_spec.rb'
     - 'ee/spec/services/epics/issue_promote_service_spec.rb'

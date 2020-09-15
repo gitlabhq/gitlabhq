@@ -171,7 +171,7 @@ We will note in the instructions below where these secrets are required.
 NOTE: **Note:**
 Do not store the GitLab application database and the Praefect
 database on the same PostgreSQL server if using
-[Geo](../geo/replication/index.md). The replication state is internal to each instance
+[Geo](../geo/index.md). The replication state is internal to each instance
 of GitLab and should not be replicated.
 
 These instructions help set up a single PostgreSQL database, which creates a single point of

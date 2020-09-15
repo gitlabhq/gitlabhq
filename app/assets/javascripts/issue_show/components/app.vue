@@ -247,7 +247,7 @@ export default {
     });
 
     if (!Visibility.hidden()) {
-      this.poll.makeRequest();
+      this.poll.makeDelayedRequest(2000);
     }
 
     Visibility.change(() => {

@@ -71,6 +71,8 @@ apifuzzer_fuzz:
             -e FUZZAPI_TIMEOUT \
             -e FUZZAPI_VERBOSE \
             -e FUZZAPI_SERVICE_START_TIMEOUT \
+            -e FUZZAPI_HTTP_USERNAME \
+            -e FUZZAPI_HTTP_PASSWORD \
             -e GITLAB_FEATURES \
             -v $CI_PROJECT_DIR:/app \
             -p 80:80 \

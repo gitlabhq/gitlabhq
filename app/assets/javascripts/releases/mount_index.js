@@ -12,6 +12,11 @@ export default () => {
       modules: {
         list: listModule,
       },
+      featureFlags: {
+        graphqlReleaseData: Boolean(gon.features?.graphqlReleaseData),
+        graphqlReleasesPage: Boolean(gon.features?.graphqlReleasesPage),
+        graphqlMilestoneStats: Boolean(gon.features?.graphqlMilestoneStats),
+      },
     }),
     render: h =>
       h(ReleaseListApp, {

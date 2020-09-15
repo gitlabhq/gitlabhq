@@ -1,6 +1,6 @@
 # Geo Rake Tasks **(PREMIUM ONLY)**
 
-The following Rake tasks are for [Geo installations](../geo/replication/index.md).
+The following Rake tasks are for [Geo installations](../geo/index.md).
 
 ## Git housekeeping
 

@@ -34,12 +34,25 @@ describe('SuggestionDiffRow', () => {
 
   const findOldLineWrapper = () => wrapper.find('.old_line');
   const findNewLineWrapper = () => wrapper.find('.new_line');
+  const findSuggestionContent = () => wrapper.find('[data-testid="suggestion-diff-content"]');
 
   afterEach(() => {
     wrapper.destroy();
   });
 
   describe('renders correctly', () => {
+    it('renders the correct base suggestion markup', () => {
+      factory({
+        propsData: {
+          line: oldLine,
+        },
+      });
+
+      expect(findSuggestionContent().html()).toBe(
+        '<td data-testid="suggestion-diff-content" class="line_content old"><span class="line">oldrichtext</span></td>',
+      );
+    });
+
     it('has the right classes on the wrapper', () => {
       factory({
         propsData: {
@@ -48,6 +61,11 @@ describe('SuggestionDiffRow', () => {
       });
 
       expect(wrapper.classes()).toContain('line_holder');
+      expect(
+        findSuggestionContent()
+          .find('span')
+          .classes(),
+      ).toContain('line');
     });
 
     it('renders the rich text when it is available', () => {

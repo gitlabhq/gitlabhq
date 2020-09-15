@@ -91,7 +91,7 @@ Examples of use cases on feature pages:
 
 - CE and EE: [Issues](../../user/project/issues/index.md#use-cases)
 - CE and EE: [Merge Requests](../../user/project/merge_requests/index.md)
-- EE-only: [Geo](../../administration/geo/replication/index.md)
+- EE-only: [Geo](../../administration/geo/index.md)
 - EE-only: [Jenkins integration](../../integration/jenkins.md)
 
 ## Prerequisites

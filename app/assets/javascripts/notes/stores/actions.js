@@ -475,7 +475,7 @@ export const poll = ({ commit, state, getters, dispatch }) => {
   });
 
   if (!Visibility.hidden()) {
-    eTagPoll.makeRequest();
+    eTagPoll.makeDelayedRequest(2500);
   } else {
     dispatch('fetchData');
   }

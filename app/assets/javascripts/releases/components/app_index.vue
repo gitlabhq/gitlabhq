@@ -30,6 +30,10 @@ export default {
       type: String,
       required: true,
     },
+    projectPath: {
+      type: String,
+      required: true,
+    },
     documentationPath: {
       type: String,
       required: true,
@@ -62,6 +66,7 @@ export default {
     this.fetchReleases({
       page: getParameterByName('page'),
       projectId: this.projectId,
+      projectPath: this.projectPath,
     });
   },
   methods: {

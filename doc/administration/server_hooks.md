@@ -37,7 +37,7 @@ Note the following about server hooks:
   - [GitLab CI/CD](../ci/README.md).
   - [Push Rules](../push_rules/push_rules.md), for a user-configurable Git hook
     interface. **(STARTER)**
-- Server hooks aren't replicated to [Geo](geo/replication/index.md) secondary nodes.
+- Server hooks aren't replicated to [Geo](geo/index.md) secondary nodes.
 
 ## Create a server hook for a repository
 

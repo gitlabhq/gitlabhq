@@ -10,8 +10,9 @@ RSpec.describe Admin::PropagateIntegrationService do
       stub_jira_service_test
     end
 
-    let(:excluded_attributes) { %w[id project_id inherit_from_id instance created_at updated_at default] }
+    let(:excluded_attributes) { %w[id project_id group_id inherit_from_id instance created_at updated_at default] }
     let!(:project) { create(:project) }
+    let!(:group) { create(:group) }
     let!(:instance_integration) do
       JiraService.create!(
         instance: true,
@@ -108,6 +109,10 @@ RSpec.describe Admin::PropagateIntegrationService do
 
       it_behaves_like 'inherits settings from integration' do
         let(:integration) { project.jira_service }
+      end
+
+      it_behaves_like 'inherits settings from integration' do
+        let(:integration) { Service.find_by(group_id: group.id) }
       end
     end
 

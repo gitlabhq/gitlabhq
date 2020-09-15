@@ -17,11 +17,11 @@ RSpec.describe 'User expands diff', :js do
 
   it 'allows user to expand diff' do
     page.within find('[id="19763941ab80e8c09871c0a425f0560d9053bcb3"]') do
-      click_link 'Click to expand it.'
+      find('[data-testid="expandButton"]').click
 
       wait_for_requests
 
-      expect(page).not_to have_content('Click to expand it.')
+      expect(page).not_to have_content('Expand File')
       expect(page).to have_selector('.code')
     end
   end

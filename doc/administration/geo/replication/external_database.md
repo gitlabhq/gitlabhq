@@ -135,7 +135,7 @@ has three main functions:
 
 1. Configure the replica database.
 1. Configure the tracking database.
-1. Enable the [Geo Log Cursor](index.md#geo-log-cursor) (not covered in this section).
+1. Enable the [Geo Log Cursor](../index.md#geo-log-cursor) (not covered in this section).
 
 To configure the connection to the external read-replica database and enable Log Cursor:
 

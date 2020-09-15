@@ -335,6 +335,9 @@ describe('Actions Notes Store', () => {
     it('calls service with last fetched state', done => {
       store
         .dispatch('poll')
+        .then(() => {
+          jest.advanceTimersByTime(2);
+        })
         .then(() => new Promise(resolve => requestAnimationFrame(resolve)))
         .then(() => {
           expect(store.state.lastFetchedAt).toBe('123456');

@@ -194,7 +194,7 @@ target API to test:
 
    variables:
      FUZZAPI_PROFILE: Quick-10
-     FUZZAPI_HAR: test-api-specification.json
+     FUZZAPI_HAR: test-api-recording.har
    ```
 
 1. The target API instance's base URL is also required. Provide it by using the `FUZZAPI_TARGET_URL`
@@ -214,7 +214,7 @@ target API to test:
 
    variables:
      FUZZAPI_PROFILE: Quick-10
-     FUZZAPI_HAR: test-api-specification.json
+     FUZZAPI_HAR: test-api-recording.har
      FUZZAPI_TARGET_URL: http://test-deployment/
    ```
 
@@ -237,47 +237,28 @@ provide a script that performs an authentication flow or calculates the token.
 #### HTTP Basic Authentication
 
 [HTTP basic authentication](https://en.wikipedia.org/wiki/Basic_access_authentication)
-works by setting the `Authorization` header with the Base64-encoded username and password. The
-resulting header looks like this:
+is an authentication method built into the HTTP protocol and used in-conjunction with
+[transport layer security (TLS)](https://en.wikipedia.org/wiki/Transport_Layer_Security).
+To use HTTP basic authentication, two variables are added to your `.gitlab-ci.yml` file:
 
-```http
-Authorization: Basic dXNlcm5hbWU6cGFzc3dvcmQ=
-```
+- `FUZZAPI_HTTP_USERNAME`: The username for authentication.
+- `FUZZAPI_HTTP_PASSWORD`: The password for authentication.
 
-To have API fuzzing include this header during a scan, set an overrides environment variable.
-Base64-encode your username and password, separated with a `:` (for example, `username:password`).
-
-On Linux, create a text file with the username and password separated by `:`. Make sure the file has
-a single line with no return at the end. Then use the command line tool `base64` to encode it.
-
-```shell
-$ base64 ~/test.txt
-dXNlcm5hbWU6cGFzc3dvcmQ=
-```
-
-The output `dXNlcm5hbWU6cGFzc3dvcmQ=` is the Base64-encoded credentials. 
-
-DANGER: **Warning:**
-Base64 is **not** encryption. This string can be easily decoded and should not be considered a safe
-way to protect or store credentials.
-
-[Next create a CI/CD variable](../../../ci/variables/README.md#create-a-custom-variable-in-the-ui),
-for example `TEST_API_BASICAUTH`, with the value
-`{"headers":{"Authorization":"Basic dXNlcm5hbWU6cGFzc3dvcmQ="}}` (substitute your Base64-encoded
-credential string). You can create CI/CD variables from the GitLab projects page at
-**Settings > CI/CD** in the **Variables** section.
-
-Set `FUZZAPI_OVERRIDES_ENV` in your `.gitlab-ci.yml` file:
+For the password, we recommended that you [create a CI/CD variable](../../../ci/variables/README.md#create-a-custom-variable-in-the-ui)
+(for example, `TEST_API_PASSWORD`) set to the password. You can create CI/CD variables from the
+GitLab projects page at **Settings > CI/CD**, in the **Variables** section.
 
 ```yaml
 include:
   - template: API-Fuzzing.gitlab-ci.yml
 
 variables:
-  FUZZAPI_PROFILE: Quick
-  FUZZAPI_OPENAPI: test-api-specification.json
+  FUZZAPI_PROFILE: Quick-10
+  FUZZAPI_HAR: test-api-recording.har
   FUZZAPI_TARGET_URL: http://test-deployment/
-  FUZZAPI_OVERRIDES_ENV: $TEST_API_BASICAUTH
+  FUZZAPI_HTTP_USERNAME: testuser
+  FUZZAPI_HTTP_PASSWORD: $TEST_API_PASSWORD
+
 ```
 
 #### Bearer Tokens
@@ -421,6 +402,8 @@ increases as the numbers go up. To use a configuration file, add it to your repo
 |[`FUZZAPI_OVERRIDES_ENV`](#overrides)      |JSON string containing headers to override. |
 |[`FUZZAPI_OVERRIDES_CMD`](#overrides)      |Overrides command. |
 |[`FUZZAPI_OVERRIDES_INTERVAL`](#overrides) |How often to run overrides command in seconds. Defaults to `0` (once). |
+|[`FUZZAPI_HTTP_USERNAME`](#http-basic-authentication) |Username for HTTP authentication. |
+|[`FUZZAPI_HTTP_PASSWORD`](#http-basic-authentication) |Password for HTTP authentication. |
 
 <!--|[`FUZZAPI_D_TARGET_IMAGE`](#target-container) |API target docker image |
 |[`FUZZAPI_D_TARGET_ENV`](#target-container)   |Docker environment options |

@@ -13,48 +13,54 @@ import initDeprecatedJQueryDropdown from '~/deprecated_jquery_dropdown';
 export default class Project {
   constructor() {
     const $cloneOptions = $('ul.clone-options-dropdown');
-    const $projectCloneField = $('#project_clone');
-    const $cloneBtnLabel = $('.js-git-clone-holder .js-clone-dropdown-label');
-    const mobileCloneField = document.querySelector(
-      '.js-mobile-git-clone .js-clone-dropdown-label',
-    );
+    if ($cloneOptions.length) {
+      const $projectCloneField = $('#project_clone');
+      const $cloneBtnLabel = $('.js-git-clone-holder .js-clone-dropdown-label');
+      const mobileCloneField = document.querySelector(
+        '.js-mobile-git-clone .js-clone-dropdown-label',
+      );
 
-    const selectedCloneOption = $cloneBtnLabel.text().trim();
-    if (selectedCloneOption.length > 0) {
-      $(`a:contains('${selectedCloneOption}')`, $cloneOptions).addClass('is-active');
+      const selectedCloneOption = $cloneBtnLabel.text().trim();
+      if (selectedCloneOption.length > 0) {
+        $(`a:contains('${selectedCloneOption}')`, $cloneOptions).addClass('is-active');
+      }
+
+      $('a', $cloneOptions).on('click', e => {
+        e.preventDefault();
+        const $this = $(e.currentTarget);
+        const url = $this.attr('href');
+        const cloneType = $this.data('cloneType');
+
+        $('.is-active', $cloneOptions).removeClass('is-active');
+        $(`a[data-clone-type="${cloneType}"]`).each(function() {
+          const $el = $(this);
+          const activeText = $el.find('.dropdown-menu-inner-title').text();
+          const $container = $el.closest('.project-clone-holder');
+          const $label = $container.find('.js-clone-dropdown-label');
+
+          $el.toggleClass('is-active');
+          $label.text(activeText);
+        });
+
+        if (mobileCloneField) {
+          mobileCloneField.dataset.clipboardText = url;
+        } else {
+          $projectCloneField.val(url);
+        }
+        $('.js-git-empty .js-clone').text(url);
+      });
     }
 
-    $('a', $cloneOptions).on('click', e => {
-      e.preventDefault();
-      const $this = $(e.currentTarget);
-      const url = $this.attr('href');
-      const cloneType = $this.data('cloneType');
-
-      $('.is-active', $cloneOptions).removeClass('is-active');
-      $(`a[data-clone-type="${cloneType}"]`).each(function() {
-        const $el = $(this);
-        const activeText = $el.find('.dropdown-menu-inner-title').text();
-        const $container = $el.closest('.project-clone-holder');
-        const $label = $container.find('.js-clone-dropdown-label');
-
-        $el.toggleClass('is-active');
-        $label.text(activeText);
-      });
-
-      if (mobileCloneField) {
-        mobileCloneField.dataset.clipboardText = url;
-      } else {
-        $projectCloneField.val(url);
-      }
-      $('.js-git-empty .js-clone').text(url);
-    });
     // Ref switcher
-    Project.initRefSwitcher();
-    $('.project-refs-select').on('change', function() {
-      return $(this)
-        .parents('form')
-        .submit();
-    });
+    if (document.querySelector('.js-project-refs-dropdown')) {
+      Project.initRefSwitcher();
+      $('.project-refs-select').on('change', function() {
+        return $(this)
+          .parents('form')
+          .submit();
+      });
+    }
+
     $('.hide-no-ssh-message').on('click', function(e) {
       Cookies.set('hide_no_ssh_message', 'false');
       $(this)
@@ -78,6 +84,7 @@ export default class Project {
         .remove();
       return e.preventDefault();
     });
+
     Project.projectSelectDropdown();
   }
 

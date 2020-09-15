@@ -110,7 +110,7 @@ If you find it necessary, you can run this migration script again to schedule mi
 Any error or warning will be logged in Sidekiq's log file.
 
 NOTE: **Note:**
-If [Geo](../geo/replication/index.md) is enabled, each project that is successfully migrated
+If [Geo](../geo/index.md) is enabled, each project that is successfully migrated
 generates an event to replicate the changes on any **secondary** nodes.
 
 You only need the `gitlab:storage:migrate_to_hashed` Rake task to migrate your repositories, but we have additional

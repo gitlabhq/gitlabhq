@@ -27,9 +27,14 @@ export default {
     <td class="diff-line-num new_line border-top-0 border-bottom-0" :class="lineType">
       {{ line.new_line }}
     </td>
-    <td class="line_content" :class="[{ 'd-table-cell': displayAsCell }, lineType]">
-      <span v-if="line.rich_text" v-html="line.rich_text"></span>
-      <span v-else-if="line.text">{{ line.text }}</span>
+    <td
+      class="line_content"
+      :class="[{ 'd-table-cell': displayAsCell }, lineType]"
+      data-testid="suggestion-diff-content"
+    >
+      <span v-if="line.rich_text" class="line" v-html="line.rich_text"></span>
+      <span v-else-if="line.text" class="line">{{ line.text }}</span>
+      <span v-else class="line"></span>
     </td>
   </tr>
 </template>

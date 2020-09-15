@@ -15,7 +15,7 @@ configuration steps. In this case,
 
 NOTE: **Note:**
 The stages of the setup process must be completed in the documented order.
-Before attempting the steps in this stage, [complete all prior stages](index.md#using-omnibus-gitlab).
+Before attempting the steps in this stage, [complete all prior stages](../setup/index.md#using-omnibus-gitlab).
 
 This document describes the minimal steps you have to take in order to
 replicate your **primary** GitLab database to a **secondary** node's database. You may

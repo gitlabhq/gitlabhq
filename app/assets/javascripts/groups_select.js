@@ -97,7 +97,10 @@ const groupsSelect = () => {
   });
 };
 
-export default () =>
-  import(/* webpackChunkName: 'select2' */ 'select2/select2')
-    .then(groupsSelect)
-    .catch(() => {});
+export default () => {
+  if ($('.ajax-groups-select').length) {
+    import(/* webpackChunkName: 'select2' */ 'select2/select2')
+      .then(groupsSelect)
+      .catch(() => {});
+  }
+};

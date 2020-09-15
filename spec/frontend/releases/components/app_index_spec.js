@@ -20,6 +20,7 @@ localVue.use(Vuex);
 
 describe('Releases App ', () => {
   let wrapper;
+  let fetchReleaseSpy;
 
   const releasesPagination = rge(21).map(index => ({
     ...convertObjectPropsToCamelCase(release, { deep: true }),
@@ -28,12 +29,22 @@ describe('Releases App ', () => {
 
   const defaultProps = {
     projectId: 'gitlab-ce',
+    projectPath: 'gitlab-org/gitlab-ce',
     documentationPath: 'help/releases',
     illustrationPath: 'illustration/path',
   };
 
   const createComponent = (propsData = defaultProps) => {
-    const store = createStore({ modules: { list: listModule } });
+    fetchReleaseSpy = jest.spyOn(listModule.actions, 'fetchReleases');
+
+    const store = createStore({
+      modules: { list: listModule },
+      featureFlags: {
+        graphqlReleaseData: true,
+        graphqlReleasesPage: false,
+        graphqlMilestoneStats: true,
+      },
+    });
 
     wrapper = shallowMount(ReleasesApp, {
       store,
@@ -44,6 +55,25 @@ describe('Releases App ', () => {
 
   afterEach(() => {
     wrapper.destroy();
+  });
+
+  describe('on startup', () => {
+    beforeEach(() => {
+      jest
+        .spyOn(api, 'releases')
+        .mockResolvedValue({ data: releases, headers: pageInfoHeadersWithoutPagination });
+
+      createComponent();
+    });
+
+    it('calls fetchRelease with the page, project ID, and project path', () => {
+      expect(fetchReleaseSpy).toHaveBeenCalledTimes(1);
+      expect(fetchReleaseSpy).toHaveBeenCalledWith(expect.anything(), {
+        page: null,
+        projectId: defaultProps.projectId,
+        projectPath: defaultProps.projectPath,
+      });
+    });
   });
 
   describe('while loading', () => {

@@ -3358,6 +3358,9 @@ msgstr ""
 msgid "Are you sure you want to regenerate the public key? You will have to update the public key on the remote server before mirroring will work again."
 msgstr ""
 
+msgid "Are you sure you want to reindex?"
+msgstr ""
+
 msgid "Are you sure you want to remove %{group_name}?"
 msgstr ""
 
@@ -10357,6 +10360,9 @@ msgstr ""
 msgid "Expand dropdown"
 msgstr ""
 
+msgid "Expand file"
+msgstr ""
+
 msgid "Expand milestones"
 msgstr ""
 
@@ -10565,6 +10571,9 @@ msgid "Failed to load assignees. Please try again."
 msgstr ""
 
 msgid "Failed to load authors. Please try again."
+msgstr ""
+
+msgid "Failed to load branches. Please try again."
 msgstr ""
 
 msgid "Failed to load emoji list."
@@ -10779,7 +10788,7 @@ msgstr ""
 msgid "FeatureFlags|Edit User List"
 msgstr ""
 
-msgid "FeatureFlags|Enable features for specific users and specific environments by defining feature flag strategies."
+msgid "FeatureFlags|Enable features for specific users and environments by configuring feature flag strategies."
 msgstr ""
 
 msgid "FeatureFlags|Environment Spec"
@@ -22665,7 +22674,7 @@ msgstr ""
 msgid "Select status"
 msgstr ""
 
-msgid "Select strategy activation method"
+msgid "Select strategy activation method."
 msgstr ""
 
 msgid "Select subscription"
@@ -22678,6 +22687,9 @@ msgid "Select the branch you want to set as the default for this project. All me
 msgstr ""
 
 msgid "Select the custom project template source group."
+msgstr ""
+
+msgid "Select the environment scope for this feature flag."
 msgstr ""
 
 msgid "Select timeframe"
@@ -23828,6 +23840,9 @@ msgid "Source"
 msgstr ""
 
 msgid "Source (branch or tag)"
+msgstr ""
+
+msgid "Source Branch"
 msgstr ""
 
 msgid "Source branch: %{source_branch_open}%{source_branch}%{source_branch_close}"
@@ -25391,6 +25406,9 @@ msgstr ""
 msgid "There was a problem communicating with your device."
 msgstr ""
 
+msgid "There was a problem fetching branches."
+msgstr ""
+
 msgid "There was a problem fetching groups."
 msgstr ""
 
@@ -25737,6 +25755,9 @@ msgid "This feature should be used with an index that was created after 13.0"
 msgstr ""
 
 msgid "This field is required."
+msgstr ""
+
+msgid "This file is collapsed."
 msgstr ""
 
 msgid "This group"
