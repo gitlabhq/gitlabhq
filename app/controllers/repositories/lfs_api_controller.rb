@@ -46,7 +46,7 @@ module Repositories
     end
 
     def download_objects!
-      existing_oids = project.all_lfs_objects_oids(oids: objects_oids)
+      existing_oids = project.lfs_objects_oids(oids: objects_oids)
 
       objects.each do |object|
         if existing_oids.include?(object[:oid])

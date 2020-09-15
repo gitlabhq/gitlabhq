@@ -118,7 +118,7 @@ module AlertManagement
     end
 
     delegate :iid, to: :issue, prefix: true, allow_nil: true
-    delegate :metrics_dashboard_url, :details_url, :details, to: :present
+    delegate :details_url, to: :present
 
     scope :for_iid, -> (iid) { where(iid: iid) }
     scope :for_status, -> (status) { where(status: status) }
@@ -216,12 +216,6 @@ module AlertManagement
       strong_memoize(:parsed_payload) do
         Gitlab::AlertManagement::Payload.parse(project, payload, monitoring_tool: monitoring_tool)
       end
-    end
-
-    def present
-      return super(presenter_class: AlertManagement::PrometheusAlertPresenter) if prometheus?
-
-      super
     end
 
     private

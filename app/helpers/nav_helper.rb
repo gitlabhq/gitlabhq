@@ -47,7 +47,7 @@ module NavHelper
   end
 
   def has_extra_nav_icons?
-    Gitlab::Sherlock.enabled? || can?(current_user, :read_instance_statistics) || current_user.admin?
+    Gitlab::Sherlock.enabled? || current_user.admin?
   end
 
   def page_has_markdown?

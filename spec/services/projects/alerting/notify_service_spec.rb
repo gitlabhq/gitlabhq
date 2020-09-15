@@ -15,10 +15,12 @@ RSpec.describe Projects::Alerting::NotifyService do
     let(:fingerprint) { 'testing' }
     let(:service) { described_class.new(project, nil, payload) }
     let(:environment) { create(:environment, project: project) }
+    let(:ended_at) { nil }
     let(:payload_raw) do
       {
         title: 'alert title',
         start_time: starts_at.rfc3339,
+        end_time: ended_at&.rfc3339,
         severity: 'low',
         monitoring_tool: 'GitLab RSpec',
         service: 'GitLab Test Suite',
@@ -38,9 +40,10 @@ RSpec.describe Projects::Alerting::NotifyService do
 
       context 'with valid token' do
         let(:token) { alerts_service.token }
-        let(:incident_management_setting) { double(send_email?: email_enabled, create_issue?: issue_enabled) }
+        let(:incident_management_setting) { double(send_email?: email_enabled, create_issue?: issue_enabled, auto_close_incident?: auto_close_enabled) }
         let(:email_enabled) { false }
         let(:issue_enabled) { false }
+        let(:auto_close_enabled) { false }
 
         before do
           allow(service)
@@ -93,6 +96,57 @@ RSpec.describe Projects::Alerting::NotifyService do
 
             it_behaves_like 'adds an alert management alert event'
 
+            context 'end time given' do
+              let(:ended_at) { Time.current.change(nsec: 0) }
+
+              it 'does not resolve the alert' do
+                expect { subject }.not_to change { alert.reload.status }
+              end
+
+              it 'does not set the ended at' do
+                subject
+
+                expect(alert.reload.ended_at).to be_nil
+              end
+
+              it_behaves_like 'does not an create alert management alert'
+
+              context 'auto_close_enabled setting enabled' do
+                let(:auto_close_enabled) { true }
+
+                it 'resolves the alert and sets the end time', :aggregate_failures do
+                  subject
+                  alert.reload
+
+                  expect(alert.resolved?).to eq(true)
+                  expect(alert.ended_at).to eql(ended_at)
+                end
+
+                context 'related issue exists' do
+                  let(:alert) { create(:alert_management_alert, :with_issue, project: project, fingerprint: fingerprint_sha) }
+                  let(:issue) { alert.issue }
+
+                  context 'state_tracking is enabled' do
+                    before do
+                      stub_feature_flags(track_resource_state_change_events: true)
+                    end
+
+                    it { expect { subject }.to change { issue.reload.state }.from('opened').to('closed') }
+                    it { expect { subject }.to change(ResourceStateEvent, :count).by(1) }
+                  end
+
+                  context 'state_tracking is disabled' do
+                    before do
+                      stub_feature_flags(track_resource_state_change_events: false)
+                    end
+
+                    it { expect { subject }.to change { issue.reload.state }.from('opened').to('closed') }
+                    it { expect { subject }.to change(Note, :count).by(1) }
+                  end
+                end
+              end
+            end
+
             context 'existing alert is resolved' do
               let!(:alert) { create(:alert_management_alert, :resolved, project: project, fingerprint: fingerprint_sha) }
 
@@ -112,6 +166,13 @@ RSpec.describe Projects::Alerting::NotifyService do
 
               it_behaves_like 'adds an alert management alert event'
             end
+          end
+
+          context 'end time given' do
+            let(:ended_at) { Time.current }
+
+            it_behaves_like 'creates an alert management alert'
+            it_behaves_like 'assigns the alert properties'
           end
 
           context 'with a minimal payload' do

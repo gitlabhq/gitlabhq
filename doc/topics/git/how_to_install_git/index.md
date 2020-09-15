@@ -18,14 +18,14 @@ is also available at the official Git website.
 
 ## Install Git on macOS using the Homebrew package manager
 
-Although it is easy to use the version of Git shipped with macOS
-or install the latest version of Git on macOS by downloading it from the project website,
-we recommend installing it via Homebrew to get access to
-an extensive selection of dependency managed libraries and applications.
+Although you can use the version of Git shipped with macOS or install the latest
+version of Git on macOS by downloading it from the project website, we recommend
+installing Git with Homebrew to get access to an extensive selection of
+dependency-managed libraries and applications.
 
-If you are sure you don't need access to any additional development libraries
-or don't have approximately 15gb of available disk space for Xcode and Homebrew,
-use one of the aforementioned methods.
+If you don't need access to any additional development libraries or don't have
+approximately 15 GB of available disk space for Xcode and Homebrew, use one of
+the previously mentioned methods.
 
 ### Installing Xcode
 

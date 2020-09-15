@@ -125,8 +125,8 @@ export const rawIssue = {
   timeEstimate: 0,
   weight: null,
   confidential: false,
-  referencePath: 'gitlab-org/gitlab-test#27',
-  path: '/gitlab-org/gitlab-test/-/issues/27',
+  referencePath: 'gitlab-org/test-subgroup/gitlab-test#27',
+  path: '/gitlab-org/test-subgroup/gitlab-test/-/issues/27',
   labels: {
     nodes: [
       {
@@ -153,8 +153,8 @@ export const mockIssue = {
   timeEstimate: 0,
   weight: null,
   confidential: false,
-  referencePath: 'gitlab-org/gitlab-test#27',
-  path: '/gitlab-org/gitlab-test/-/issues/27',
+  referencePath: 'gitlab-org/test-subgroup/gitlab-test#27',
+  path: '/gitlab-org/test-subgroup/gitlab-test/-/issues/27',
   assignees,
   labels: [
     {
@@ -179,8 +179,8 @@ export const mockIssue2 = {
   timeEstimate: 0,
   weight: null,
   confidential: false,
-  referencePath: 'gitlab-org/gitlab-test#2',
-  path: '/gitlab-org/gitlab-test/-/issues/28',
+  referencePath: 'gitlab-org/test-subgroup/gitlab-test#28',
+  path: '/gitlab-org/test-subgroup/gitlab-test/-/issues/28',
   assignees,
   labels,
   epic: {

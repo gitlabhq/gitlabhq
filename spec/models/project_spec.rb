@@ -2976,68 +2976,6 @@ RSpec.describe Project do
         expect(project.forks).to contain_exactly(forked_project)
       end
     end
-
-    describe '#lfs_storage_project' do
-      it 'returns self for non-forks' do
-        expect(project.lfs_storage_project).to eq project
-      end
-
-      it 'returns the fork network root for forks' do
-        second_fork = fork_project(forked_project)
-
-        expect(second_fork.lfs_storage_project).to eq project
-      end
-
-      it 'returns self when fork_source is nil' do
-        expect(forked_project).to receive(:fork_source).and_return(nil)
-
-        expect(forked_project.lfs_storage_project).to eq forked_project
-      end
-    end
-
-    describe '#all_lfs_objects' do
-      let(:lfs_object) { create(:lfs_object) }
-
-      context 'when LFS object is only associated to the source' do
-        before do
-          project.lfs_objects << lfs_object
-        end
-
-        it 'returns the lfs object for a project' do
-          expect(project.all_lfs_objects).to contain_exactly(lfs_object)
-        end
-
-        it 'returns the lfs object for a fork' do
-          expect(forked_project.all_lfs_objects).to contain_exactly(lfs_object)
-        end
-      end
-
-      context 'when LFS object is only associated to the fork' do
-        before do
-          forked_project.lfs_objects << lfs_object
-        end
-
-        it 'returns nothing' do
-          expect(project.all_lfs_objects).to be_empty
-        end
-
-        it 'returns the lfs object for a fork' do
-          expect(forked_project.all_lfs_objects).to contain_exactly(lfs_object)
-        end
-      end
-
-      context 'when LFS object is associated to both source and fork' do
-        before do
-          project.lfs_objects << lfs_object
-          forked_project.lfs_objects << lfs_object
-        end
-
-        it 'returns the lfs object for the source and fork' do
-          expect(project.all_lfs_objects).to contain_exactly(lfs_object)
-          expect(forked_project.all_lfs_objects).to contain_exactly(lfs_object)
-        end
-      end
-    end
   end
 
   describe '#set_repository_read_only!' do
@@ -6147,53 +6085,6 @@ RSpec.describe Project do
 
     it 'returns limited number of protected branches based on specified limit' do
       expect(subject.count).to eq(1)
-    end
-  end
-
-  describe '#all_lfs_objects_oids' do
-    let(:project) { create(:project) }
-    let(:lfs_object) { create(:lfs_object) }
-    let(:another_lfs_object) { create(:lfs_object) }
-
-    subject { project.all_lfs_objects_oids }
-
-    context 'when project has associated LFS objects' do
-      before do
-        create(:lfs_objects_project, lfs_object: lfs_object, project: project)
-        create(:lfs_objects_project, lfs_object: another_lfs_object, project: project)
-      end
-
-      it 'returns OIDs of LFS objects' do
-        expect(subject).to match_array([lfs_object.oid, another_lfs_object.oid])
-      end
-
-      context 'and there are specified oids' do
-        subject { project.all_lfs_objects_oids(oids: [lfs_object.oid]) }
-
-        it 'returns OIDs of LFS objects that match specified oids' do
-          expect(subject).to eq([lfs_object.oid])
-        end
-      end
-    end
-
-    context 'when fork has associated LFS objects to itself and source' do
-      let(:source) { create(:project) }
-      let(:project) { fork_project(source) }
-
-      before do
-        create(:lfs_objects_project, lfs_object: lfs_object, project: source)
-        create(:lfs_objects_project, lfs_object: another_lfs_object, project: project)
-      end
-
-      it 'returns OIDs of LFS objects' do
-        expect(subject).to match_array([lfs_object.oid, another_lfs_object.oid])
-      end
-    end
-
-    context 'when project has no associated LFS objects' do
-      it 'returns empty array' do
-        expect(subject).to be_empty
-      end
     end
   end
 

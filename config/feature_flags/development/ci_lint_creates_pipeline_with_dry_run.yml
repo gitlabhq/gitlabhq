@@ -1,0 +1,7 @@
+---
+name: ci_lint_creates_pipeline_with_dry_run
+introduced_by_url: 
+rollout_issue_url: 
+group: 
+type: development
+default_enabled: true

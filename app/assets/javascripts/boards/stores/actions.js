@@ -263,13 +263,13 @@ export default {
     commit(types.MOVE_ISSUE, { originalIssue, fromListId, toListId, moveBeforeId, moveAfterId });
 
     const { boardId } = state.endpoints;
-    const [groupPath, project] = issuePath.split(/[/#]/);
+    const [fullProjectPath] = issuePath.split(/[#]/);
 
     gqlClient
       .mutate({
         mutation: issueMoveListMutation,
         variables: {
-          projectPath: `${groupPath}/${project}`,
+          projectPath: fullProjectPath,
           boardId: fullBoardId(boardId),
           iid: issueIid,
           fromListId: getIdFromGraphQLId(fromListId),

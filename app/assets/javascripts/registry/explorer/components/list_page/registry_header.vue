@@ -1,7 +1,8 @@
 <script>
-import { GlSprintf, GlLink, GlIcon } from '@gitlab/ui';
+import { GlSprintf, GlLink } from '@gitlab/ui';
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';
-import { n__ } from '~/locale';
+import MetadataItem from '~/vue_shared/components/registry/metadata_item.vue';
+import { n__, sprintf } from '~/locale';
 import { approximateDuration, calculateRemainingMilliseconds } from '~/lib/utils/datetime_utility';
 
 import {
@@ -14,10 +15,10 @@ import {
 
 export default {
   components: {
-    GlIcon,
     GlSprintf,
     GlLink,
     TitleArea,
+    MetadataItem,
   },
   props: {
     expirationPolicy: {
@@ -58,11 +59,12 @@ export default {
   },
   computed: {
     imagesCountText() {
-      return n__(
+      const pluralisedString = n__(
         'ContainerRegistry|%{count} Image repository',
         'ContainerRegistry|%{count} Image repositories',
         this.imagesCount,
       );
+      return sprintf(pluralisedString, { count: this.imagesCount });
     },
     timeTillRun() {
       const difference = calculateRemainingMilliseconds(this.expirationPolicy?.next_run_at);
@@ -73,7 +75,7 @@ export default {
     },
     expirationPolicyText() {
       return this.expirationPolicyEnabled
-        ? EXPIRATION_POLICY_WILL_RUN_IN
+        ? sprintf(EXPIRATION_POLICY_WILL_RUN_IN, { time: this.timeTillRun })
         : EXPIRATION_POLICY_DISABLED_TEXT;
     },
     showExpirationPolicyTip() {
@@ -92,24 +94,21 @@ export default {
         <slot name="commands"></slot>
       </template>
       <template #metadata_count>
-        <span v-if="imagesCount" data-testid="images-count">
-          <gl-icon class="gl-mr-1" name="container-image" />
-          <gl-sprintf :message="imagesCountText">
-            <template #count>
-              {{ imagesCount }}
-            </template>
-          </gl-sprintf>
-        </span>
+        <metadata-item
+          v-if="imagesCount"
+          data-testid="images-count"
+          icon="container-image"
+          :text="imagesCountText"
+        />
       </template>
       <template #metadata_exp_policies>
-        <span v-if="!hideExpirationPolicyData" data-testid="expiration-policy">
-          <gl-icon class="gl-mr-1" name="expire" />
-          <gl-sprintf :message="expirationPolicyText">
-            <template #time>
-              {{ timeTillRun }}
-            </template>
-          </gl-sprintf>
-        </span>
+        <metadata-item
+          v-if="!hideExpirationPolicyData"
+          data-testid="expiration-policy"
+          icon="expire"
+          :text="expirationPolicyText"
+          size="xl"
+        />
       </template>
     </title-area>
 

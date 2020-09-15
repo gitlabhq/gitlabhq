@@ -66,7 +66,7 @@ RSpec.describe AlertManagement::CreateAlertIssueService do
       end
 
       it 'sets the issue description' do
-        expect(created_issue.description).to include(alert_presenter.issue_summary_markdown.strip)
+        expect(created_issue.description).to include(alert_presenter.send(:issue_summary_markdown).strip)
       end
     end
 

@@ -6,6 +6,9 @@ module Projects
     class LfsDownloadService < BaseService
       SizeError = Class.new(StandardError)
       OidError = Class.new(StandardError)
+      ResponseError = Class.new(StandardError)
+
+      LARGE_FILE_SIZE = 1.megabytes
 
       attr_reader :lfs_download_object
       delegate :oid, :size, :credentials, :sanitized_url, to: :lfs_download_object, prefix: :lfs
@@ -19,6 +22,7 @@ module Projects
       def execute
         return unless project&.lfs_enabled? && lfs_download_object
         return error("LFS file with oid #{lfs_oid} has invalid attributes") unless lfs_download_object.valid?
+        return link_existing_lfs_object! if Feature.enabled?(:lfs_link_existing_object, project, default_enabled: true) && lfs_size > LARGE_FILE_SIZE && lfs_object
 
         wrap_download_errors do
           download_lfs_file!
@@ -29,7 +33,7 @@ module Projects
 
       def wrap_download_errors(&block)
         yield
-      rescue SizeError, OidError, StandardError => e
+      rescue SizeError, OidError, ResponseError, StandardError => e
         error("LFS file with oid #{lfs_oid} could't be downloaded from #{lfs_sanitized_url}: #{e.message}")
       end
 
@@ -56,14 +60,12 @@ module Projects
 
       def download_and_save_file!(file)
         digester = Digest::SHA256.new
-        response = Gitlab::HTTP.get(lfs_sanitized_url, download_headers) do |fragment|
+        fetch_file do |fragment|
           digester << fragment
           file.write(fragment)
 
           raise_size_error! if file.size > lfs_size
         end
-
-        raise StandardError, "Received error code #{response.code}" unless response.success?
 
         raise_size_error! if file.size != lfs_size
         raise_oid_error! if digester.hexdigest != lfs_oid
@@ -76,6 +78,12 @@ module Projects
             headers[:basic_auth] = { username: lfs_credentials[:user], password: lfs_credentials[:password] }
           end
         end
+      end
+
+      def fetch_file(&block)
+        response = Gitlab::HTTP.get(lfs_sanitized_url, download_headers, &block)
+
+        raise ResponseError, "Received error code #{response.code}" unless response.success?
       end
 
       def with_tmp_file
@@ -122,6 +130,29 @@ module Projects
         log_error(message)
 
         super
+      end
+
+      def lfs_object
+        @lfs_object ||= LfsObject.find_by_oid(lfs_oid)
+      end
+
+      def link_existing_lfs_object!
+        existing_file = lfs_object.file.open
+        buffer_size = 0
+        result = fetch_file do |fragment|
+          unless fragment == existing_file.read(fragment.size)
+            break error("LFS file with oid #{lfs_oid} cannot be linked with an existing LFS object")
+          end
+
+          buffer_size += fragment.size
+          break success if buffer_size > LARGE_FILE_SIZE
+        end
+
+        project.lfs_objects << lfs_object
+
+        result
+      ensure
+        existing_file&.close
       end
     end
   end

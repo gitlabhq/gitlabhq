@@ -6,7 +6,10 @@ module AlertManagement
     include IncidentManagement::Settings
     include ActionView::Helpers::UrlHelper
 
-    MARKDOWN_LINE_BREAK = "  \n".freeze
+    MARKDOWN_LINE_BREAK = "  \n"
+    HORIZONTAL_LINE = "\n\n---\n\n"
+
+    delegate :metrics_dashboard_url, :runbook, to: :parsed_payload
 
     def initialize(alert, _attributes = {})
       super
@@ -16,27 +19,16 @@ module AlertManagement
     end
 
     def issue_description
-      horizontal_line = "\n\n---\n\n"
-
       [
         issue_summary_markdown,
         alert_markdown,
         incident_management_setting.issue_template_content
-      ].compact.join(horizontal_line)
+      ].compact.join(HORIZONTAL_LINE)
     end
 
     def start_time
       started_at&.strftime('%d %B %Y, %-l:%M%p (%Z)')
     end
-
-    def issue_summary_markdown
-      <<~MARKDOWN.chomp
-        #{metadata_list}
-        #{alert_details}#{metric_embed_for_alert}
-      MARKDOWN
-    end
-
-    def metrics_dashboard_url; end
 
     def details_url
       details_project_alert_management_url(project, alert.iid)
@@ -49,14 +41,14 @@ module AlertManagement
     private
 
     attr_reader :alert, :project
+    delegate :alert_markdown, :full_query, to: :parsed_payload
 
-    def alerting_alert
-      strong_memoize(:alerting_alert) do
-        Gitlab::Alerting::Alert.new(project: project, payload: alert.payload).present
-      end
+    def issue_summary_markdown
+      <<~MARKDOWN.chomp
+        #{metadata_list}
+        #{alert_details}#{metric_embed_for_alert}
+      MARKDOWN
     end
-
-    def alert_markdown; end
 
     def metadata_list
       metadata = []
@@ -90,9 +82,9 @@ module AlertManagement
         .join(MARKDOWN_LINE_BREAK)
     end
 
-    def metric_embed_for_alert; end
-
-    def full_query; end
+    def metric_embed_for_alert
+      "\n[](#{metrics_dashboard_url})" if metrics_dashboard_url
+    end
 
     def list_item(key, value)
       "**#{key}:** #{value}".strip

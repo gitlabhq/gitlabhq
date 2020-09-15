@@ -2214,9 +2214,6 @@ msgstr ""
 msgid "AlertManagement|Events"
 msgstr ""
 
-msgid "AlertManagement|Full Alert Payload"
-msgstr ""
-
 msgid "AlertManagement|High"
 msgstr ""
 
@@ -2224,6 +2221,9 @@ msgid "AlertManagement|Info"
 msgstr ""
 
 msgid "AlertManagement|Issue"
+msgstr ""
+
+msgid "AlertManagement|Key"
 msgstr ""
 
 msgid "AlertManagement|Low"
@@ -13413,6 +13413,15 @@ msgid "IncidentSettings|Set up integrations with external tools to help better m
 msgstr ""
 
 msgid "Incidents"
+msgstr ""
+
+msgid "Incident|Alert details"
+msgstr ""
+
+msgid "Incident|Summary"
+msgstr ""
+
+msgid "Incident|There was an issue loading alert data. Please try again."
 msgstr ""
 
 msgid "Include a Terms of Service agreement and Privacy Policy that all users must accept."

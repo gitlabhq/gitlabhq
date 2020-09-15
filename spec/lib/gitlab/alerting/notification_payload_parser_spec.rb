@@ -7,10 +7,12 @@ RSpec.describe Gitlab::Alerting::NotificationPayloadParser do
 
   describe '.call' do
     let(:starts_at) { Time.current.change(usec: 0) }
+    let(:ends_at) { Time.current.change(usec: 0) }
     let(:payload) do
       {
         'title' => 'alert title',
         'start_time' => starts_at.rfc3339,
+        'end_time' => ends_at.rfc3339,
         'description' => 'Description',
         'monitoring_tool' => 'Monitoring tool name',
         'service' => 'Service',
@@ -32,7 +34,8 @@ RSpec.describe Gitlab::Alerting::NotificationPayloadParser do
             'hosts' => ['gitlab.com'],
             'severity' => 'low'
           },
-          'startsAt' => starts_at.rfc3339
+          'startsAt' => starts_at.rfc3339,
+          'endsAt' => ends_at.rfc3339
         }
       )
     end
@@ -141,6 +144,7 @@ RSpec.describe Gitlab::Alerting::NotificationPayloadParser do
         {
           'title' => '',
           'start_time' => '',
+          'end_time' => '',
           'description' => '',
           'monitoring_tool' => '',
           'service' => '',

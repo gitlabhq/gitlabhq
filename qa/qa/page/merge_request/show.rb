@@ -53,10 +53,6 @@ module QA
           element :diffs_tab
         end
 
-        view 'app/assets/javascripts/diffs/components/diff_table_cell.vue' do
-          element :diff_comment
-        end
-
         view 'app/assets/javascripts/diffs/components/inline_diff_table_row.vue' do
           element :new_diff_line
         end

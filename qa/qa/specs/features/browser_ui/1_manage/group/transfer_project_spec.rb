@@ -11,14 +11,14 @@ module QA
 
       let(:target_group) do
         Resource::Group.fabricate_via_api! do |group|
-          group.path = 'target-group'
+          group.path = "target-group-for-transfer_#{SecureRandom.hex(8)}"
         end
       end
 
       let(:project) do
         Resource::Project.fabricate_via_api! do |project|
           project.group = source_group
-          project.name =  'transfer-project'
+          project.name = 'transfer-project'
           project.initialize_with_readme = true
         end
       end
@@ -44,12 +44,15 @@ module QA
       end
 
       it 'user transfers a project between groups', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/406' do
-        Page::File::Show.perform(&:go_to_general_settings)
+        # Retry is needed here as the target group is not avaliable for transfer right away.
+        QA::Support::Retrier.retry_on_exception(reload_page: page) do
+          Page::File::Show.perform(&:go_to_general_settings)
 
-        Page::Project::Settings::Main.perform(&:expand_advanced_settings)
+          Page::Project::Settings::Main.perform(&:expand_advanced_settings)
 
-        Page::Project::Settings::Advanced.perform do |advanced|
-          advanced.transfer_project!(project.name, target_group.full_path)
+          Page::Project::Settings::Advanced.perform do |advanced|
+            advanced.transfer_project!(project.name, target_group.full_path)
+          end
         end
 
         Page::Project::Settings::Main.perform(&:click_project)

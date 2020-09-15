@@ -17,14 +17,6 @@ module Gitlab
       end
 
       def run!
-        # If this project is an LFS storage project (e.g. is the root of a fork
-        # network), what it is safe to remove depends on the sum of its forks.
-        # For now, skip cleaning up LFS for this complicated case
-        if project.forks_count > 0 && project.lfs_storage_project == project
-          log_info("Skipping orphan LFS check for #{project.name_with_namespace} as it is a fork root")
-          return
-        end
-
         log_info("Looking for orphan LFS files for project #{project.name_with_namespace}")
 
         remove_orphan_references

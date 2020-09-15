@@ -1,10 +1,11 @@
 <script>
 import { mapState, mapGetters } from 'vuex';
-import { GlIcon, GlLink, GlSprintf, GlTooltipDirective } from '@gitlab/ui';
+import { GlIcon, GlSprintf, GlTooltipDirective } from '@gitlab/ui';
 import PackageTags from '../../shared/components/package_tags.vue';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';
+import MetadataItem from '~/vue_shared/components/registry/metadata_item.vue';
 import { __ } from '~/locale';
 
 export default {
@@ -12,9 +13,9 @@ export default {
   components: {
     TitleArea,
     GlIcon,
-    GlLink,
     GlSprintf,
     PackageTags,
+    MetadataItem,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -54,35 +55,24 @@ export default {
     </template>
 
     <template v-if="packageTypeDisplay" #metadata_type>
-      <gl-icon name="package" class="gl-text-gray-500 gl-mr-3" />
-      <span data-testid="package-type" class="gl-font-weight-bold">{{ packageTypeDisplay }}</span>
+      <metadata-item data-testid="package-type" icon="package" :text="packageTypeDisplay" />
     </template>
 
     <template #metadata_size>
-      <gl-icon name="disk" class="gl-text-gray-500 gl-mr-3" />
-      <span data-testid="package-size" class="gl-font-weight-bold">{{ totalSize }}</span>
+      <metadata-item data-testid="package-size" icon="disk" :text="totalSize" />
     </template>
 
     <template v-if="packagePipeline" #metadata_pipeline>
-      <gl-icon name="review-list" class="gl-text-gray-500 gl-mr-3" />
-      <gl-link
+      <metadata-item
         data-testid="pipeline-project"
-        :href="packagePipeline.project.web_url"
-        class="gl-font-weight-bold gl-str-truncated"
-      >
-        {{ packagePipeline.project.name }}
-      </gl-link>
+        icon="review-list"
+        :text="packagePipeline.project.name"
+        :link="packagePipeline.project.web_url"
+      />
     </template>
 
     <template v-if="packagePipeline" #metadata_ref>
-      <gl-icon name="branch" data-testid="package-ref-icon" class="gl-text-gray-500 gl-mr-3" />
-      <span
-        v-gl-tooltip
-        data-testid="package-ref"
-        class="gl-font-weight-bold gl-str-truncated mw-xs"
-        :title="packagePipeline.ref"
-        >{{ packagePipeline.ref }}</span
-      >
+      <metadata-item data-testid="package-ref" icon="branch" :text="packagePipeline.ref" />
     </template>
 
     <template v-if="hasTagsToDisplay" #metadata_tags>

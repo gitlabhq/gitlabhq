@@ -87,42 +87,4 @@ RSpec.describe Gitlab::Cleanup::OrphanLfsFileReferences do
       .to receive(:get_all_lfs_pointers)
       .and_return(oids.map { |oid| OpenStruct.new(lfs_oid: oid) })
   end
-
-  context 'LFS for forked projects' do
-    let!(:fork_root) { create(:project, :repository, lfs_enabled: true) }
-    let!(:fork_internal) { fork_project(fork_root, nil, repository: true) }
-    let!(:fork_leaf) { fork_project(fork_internal, nil, repository: true) }
-
-    let(:dry_run) { true }
-
-    context 'root node' do
-      let(:project) { fork_root }
-
-      it 'skips cleanup' do
-        expect(service).not_to receive(:remove_orphan_references)
-
-        service.run!
-      end
-    end
-
-    context 'internal node' do
-      let(:project) { fork_internal }
-
-      it 'runs cleanup' do
-        expect(service).to receive(:remove_orphan_references)
-
-        service.run!
-      end
-    end
-
-    context 'leaf node' do
-      let(:project) { fork_leaf }
-
-      it 'runs cleanup' do
-        expect(service).to receive(:remove_orphan_references)
-
-        service.run!
-      end
-    end
-  end
 end

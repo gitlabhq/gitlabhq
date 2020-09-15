@@ -20,7 +20,8 @@ module Gitlab
       def call
         {
           'annotations' => annotations,
-          'startsAt' => starts_at
+          'startsAt' => starts_at,
+          'endsAt' => ends_at
         }.compact
       end
 
@@ -74,6 +75,12 @@ module Gitlab
         current_time
       end
 
+      def ends_at
+        Time.parse(payload[:end_time].to_s).rfc3339
+      rescue ArgumentError
+        nil
+      end
+
       def environment
         environment_name = payload[:gitlab_environment_name]
 
@@ -85,7 +92,7 @@ module Gitlab
       end
 
       def secondary_params
-        payload.except(:start_time)
+        payload.except(:start_time, :end_time)
       end
 
       def flatten_secondary_params

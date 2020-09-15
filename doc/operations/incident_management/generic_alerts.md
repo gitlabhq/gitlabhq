@@ -43,6 +43,7 @@ You can customize the payload by sending the following parameters. All fields ot
 | `title` | String | The title of the incident. Required. |
 | `description` | String | A high-level summary of the problem. |
 | `start_time` | DateTime | The time of the incident. If none is provided, a timestamp of the issue will be used. |
+| `end_time` | DateTime | For existing alerts only. When provided, the alert is resolved and the associated incident is closed. |
 | `service` | String | The affected service. |
 | `monitoring_tool` | String |  The name of the associated monitoring tool. |
 | `hosts` | String or Array | One or more hosts, as to where this incident occurred. |

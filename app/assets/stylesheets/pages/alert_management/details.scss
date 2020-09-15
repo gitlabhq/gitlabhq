@@ -6,7 +6,10 @@
         @include gl-border-0;
         @include gl-p-5;
         border-color: transparent;
-        border-bottom: 1px solid $table-border-color;
+
+        &:not(:last-child) {
+          border-bottom: 1px solid $table-border-color;
+        }
 
         &:first-child {
           div {
@@ -29,6 +32,12 @@
           div {
             text-align: left !important;
           }
+        }
+      }
+
+      &:last-child {
+        &::after {
+          content: none !important;
         }
       }
     }

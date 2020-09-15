@@ -1469,46 +1469,6 @@ class Project < ApplicationRecord
     forked_from_project || fork_network&.root_project
   end
 
-  # TODO: Remove this method once all LfsObjectsProject records are backfilled
-  # for forks.
-  #
-  # See https://gitlab.com/gitlab-org/gitlab/issues/122002 for more info.
-  def lfs_storage_project
-    @lfs_storage_project ||= begin
-      result = self
-
-      # TODO: Make this go to the fork_network root immediately
-      # dependant on the discussion in: https://gitlab.com/gitlab-org/gitlab-foss/issues/39769
-      result = result.fork_source while result&.forked?
-
-      result || self
-    end
-  end
-
-  # This will return all `lfs_objects` that are accessible to the project and
-  # the fork source. This is needed since older forks won't have access to some
-  # LFS objects directly and have to get it from the fork source.
-  #
-  # TODO: Remove this method once all LfsObjectsProject records are backfilled
-  # for forks. At that point, projects can look at their own `lfs_objects`.
-  #
-  # See https://gitlab.com/gitlab-org/gitlab/issues/122002 for more info.
-  def all_lfs_objects
-    LfsObject
-      .distinct
-      .joins(:lfs_objects_projects)
-      .where(lfs_objects_projects: { project_id: [self, lfs_storage_project] })
-  end
-
-  # TODO: Remove this method once all LfsObjectsProject records are backfilled
-  # for forks. At that point, projects can look at their own `lfs_objects` so
-  # `lfs_objects_oids` can be used instead.
-  #
-  # See https://gitlab.com/gitlab-org/gitlab/issues/122002 for more info.
-  def all_lfs_objects_oids(oids: [])
-    oids(all_lfs_objects, oids: oids)
-  end
-
   def lfs_objects_oids(oids: [])
     oids(lfs_objects, oids: oids)
   end

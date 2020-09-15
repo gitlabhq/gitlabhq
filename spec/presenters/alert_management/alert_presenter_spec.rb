@@ -4,8 +4,7 @@ require 'spec_helper'
 
 RSpec.describe AlertManagement::AlertPresenter do
   let_it_be(:project) { create(:project) }
-
-  let_it_be(:generic_payload) do
+  let_it_be(:payload) do
     {
       'title' => 'Alert title',
       'start_time' => '2020-04-27T10:10:22.265949279Z',
@@ -20,42 +19,108 @@ RSpec.describe AlertManagement::AlertPresenter do
     }
   end
 
-  let_it_be(:alert) do
-    create(:alert_management_alert, :with_description, :with_host, :with_service, :with_monitoring_tool, project: project, payload: generic_payload)
-  end
-
+  let_it_be(:alert) { create(:alert_management_alert, project: project, payload: payload) }
   let(:alert_url) { "http://localhost/#{project.full_path}/-/alert_management/#{alert.iid}/details" }
 
   subject(:presenter) { described_class.new(alert) }
 
   describe '#issue_description' do
+    let_it_be(:alert) { create(:alert_management_alert, project: project, payload: {}) }
+
     let(:markdown_line_break) { '  ' }
 
-    it 'returns an alert issue description' do
-      expect(presenter.issue_description).to eq(
-        <<~MARKDOWN.chomp
-          **Start time:** #{presenter.start_time}#{markdown_line_break}
-          **Severity:** #{presenter.severity}#{markdown_line_break}
-          **Service:** #{alert.service}#{markdown_line_break}
-          **Monitoring tool:** #{alert.monitoring_tool}#{markdown_line_break}
-          **Hosts:** #{alert.hosts.join(' ')}#{markdown_line_break}
-          **Description:** #{alert.description}#{markdown_line_break}
-          **GitLab alert:** #{alert_url}
+    subject { presenter.issue_description }
 
-          #### Alert Details
+    context 'with an empty payload' do
+      it do
+        is_expected.to eq(
+          <<~MARKDOWN.chomp
+            **Start time:** #{presenter.start_time}#{markdown_line_break}
+            **Severity:** #{presenter.severity}#{markdown_line_break}
+            **GitLab alert:** #{alert_url}
 
-          **title:** Alert title#{markdown_line_break}
-          **start_time:** 2020-04-27T10:10:22.265949279Z#{markdown_line_break}
-          **custom.alert.fields:** ["one", "two"]#{markdown_line_break}
-          **yet.another:** 73
-        MARKDOWN
-      )
+          MARKDOWN
+        )
+      end
+    end
+
+    context 'with optional alert attributes' do
+      let_it_be(:alert) do
+        create(:alert_management_alert, :with_description, :with_host, :with_service, :with_monitoring_tool, project: project, payload: payload)
+      end
+
+      before do
+        allow(alert.parsed_payload).to receive(:full_query).and_return('metric > 1')
+      end
+
+      it do
+        is_expected.to eq(
+          <<~MARKDOWN.chomp
+            **Start time:** #{presenter.start_time}#{markdown_line_break}
+            **Severity:** #{presenter.severity}#{markdown_line_break}
+            **full_query:** `metric > 1`#{markdown_line_break}
+            **Service:** #{alert.service}#{markdown_line_break}
+            **Monitoring tool:** #{alert.monitoring_tool}#{markdown_line_break}
+            **Hosts:** #{alert.hosts.join(' ')}#{markdown_line_break}
+            **Description:** #{alert.description}#{markdown_line_break}
+            **GitLab alert:** #{alert_url}
+
+            #### Alert Details
+
+            **title:** Alert title#{markdown_line_break}
+            **start_time:** 2020-04-27T10:10:22.265949279Z#{markdown_line_break}
+            **custom.alert.fields:** ["one", "two"]#{markdown_line_break}
+            **yet.another:** 73
+          MARKDOWN
+        )
+      end
+    end
+
+    context 'with incident markdown' do
+      before do
+        allow(alert.parsed_payload).to receive(:alert_markdown).and_return('**`markdown example`**')
+      end
+
+      it do
+        is_expected.to eq(
+          <<~MARKDOWN.chomp
+            **Start time:** #{presenter.start_time}#{markdown_line_break}
+            **Severity:** #{presenter.severity}#{markdown_line_break}
+            **GitLab alert:** #{alert_url}
+
+
+            ---
+
+            **`markdown example`**
+          MARKDOWN
+        )
+      end
+    end
+
+    context 'with metrics_dashboard_url' do
+      before do
+        allow(alert.parsed_payload).to receive(:metrics_dashboard_url).and_return('https://gitlab.com/metrics')
+      end
+
+      it do
+        is_expected.to eq(
+          <<~MARKDOWN.chomp
+            **Start time:** #{presenter.start_time}#{markdown_line_break}
+            **Severity:** #{presenter.severity}#{markdown_line_break}
+            **GitLab alert:** #{alert_url}
+
+            [](https://gitlab.com/metrics)
+          MARKDOWN
+        )
+      end
     end
   end
 
-  describe '#metrics_dashboard_url' do
-    it 'is not defined' do
-      expect(presenter.metrics_dashboard_url).to be_nil
+  describe '#start_time' do
+    it 'formats the start time of the alert' do
+      alert.started_at = Time.utc(2019, 5, 5)
+
+      expect(presenter.start_time). to eq('05 May 2019, 12:00AM (UTC)')
     end
   end
 

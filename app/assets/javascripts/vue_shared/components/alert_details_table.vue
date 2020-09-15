@@ -19,7 +19,7 @@ export default {
     },
   },
   tableHeader: {
-    [s__('AlertManagement|Full Alert Payload')]: s__('AlertManagement|Value'),
+    [s__('AlertManagement|Key')]: s__('AlertManagement|Value'),
   },
   computed: {
     items() {
@@ -33,7 +33,7 @@ export default {
 </script>
 <template>
   <gl-table
-    class="alert-management-details-table"
+    class="alert-management-details-table gl-mb-0!"
     :busy="loading"
     :empty-text="s__('AlertManagement|No alert data to display.')"
     :items="items"

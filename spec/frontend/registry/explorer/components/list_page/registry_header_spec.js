@@ -7,7 +7,6 @@ import {
   LIST_INTRO_TEXT,
   EXPIRATION_POLICY_DISABLED_MESSAGE,
   EXPIRATION_POLICY_DISABLED_TEXT,
-  EXPIRATION_POLICY_WILL_RUN_IN,
 } from '~/registry/explorer/constants';
 
 jest.mock('~/lib/utils/datetime_utility', () => ({
@@ -68,13 +67,16 @@ describe('registry_header', () => {
         it('when there is one image', async () => {
           await mountComponent({ imagesCount: 1 });
 
-          expect(findImagesCountSubHeader().text()).toMatchInterpolatedText('1 Image repository');
+          expect(findImagesCountSubHeader().props()).toMatchObject({
+            text: '1 Image repository',
+            icon: 'container-image',
+          });
         });
 
         it('when there is more than one image', async () => {
           await mountComponent({ imagesCount: 3 });
 
-          expect(findImagesCountSubHeader().text()).toMatchInterpolatedText('3 Image repositories');
+          expect(findImagesCountSubHeader().props('text')).toBe('3 Image repositories');
         });
       });
 
@@ -88,7 +90,11 @@ describe('registry_header', () => {
 
           const text = findExpirationPolicySubHeader();
           expect(text.exists()).toBe(true);
-          expect(text.text()).toMatchInterpolatedText(EXPIRATION_POLICY_DISABLED_TEXT);
+          expect(text.props()).toMatchObject({
+            text: EXPIRATION_POLICY_DISABLED_TEXT,
+            icon: 'expire',
+            size: 'xl',
+          });
         });
 
         it('when is enabled', async () => {
@@ -100,7 +106,7 @@ describe('registry_header', () => {
 
           const text = findExpirationPolicySubHeader();
           expect(text.exists()).toBe(true);
-          expect(text.text()).toMatchInterpolatedText(EXPIRATION_POLICY_WILL_RUN_IN);
+          expect(text.props('text')).toBe('Expiration policy will run in ');
         });
         it('when the expiration policy is completely disabled', async () => {
           await mountComponent({

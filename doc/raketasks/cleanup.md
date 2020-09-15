@@ -10,10 +10,6 @@ DANGER: **Danger:**
 Do not run this within 12 hours of a GitLab upgrade. This is to ensure that all background migrations
 have finished, which otherwise may lead to data loss.
 
-CAUTION: **WARNING:**
-Removing LFS files from a project with forks is currently unsafe. The Rake task
-will refuse to run on projects with forks.
-
 When you remove LFS files from a repository's history, they become orphaned and continue to consume
 disk space. With this Rake task, you can remove invalid references from the database, which
 will allow garbage collection of LFS files.

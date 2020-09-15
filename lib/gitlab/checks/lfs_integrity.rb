@@ -17,7 +17,7 @@ module Gitlab
 
         return false unless new_lfs_pointers.present?
 
-        existing_count = @project.all_lfs_objects
+        existing_count = @project.lfs_objects
                                  .for_oids(new_lfs_pointers.map(&:lfs_oid))
                                  .count
 

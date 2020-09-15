@@ -13,7 +13,7 @@ class IssuePlacementWorker
   QUERY_LIMIT = 100
 
   # rubocop: disable CodeReuse/ActiveRecord
-  def perform(issue_id)
+  def perform(issue_id, project_id = nil)
     issue = Issue.id_in(issue_id).first
     return unless issue
 

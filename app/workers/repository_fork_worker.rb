@@ -52,7 +52,7 @@ class RepositoryForkWorker # rubocop:disable Scalability/IdempotentWorker
   def link_lfs_objects(source_project, target_project)
     Projects::LfsPointers::LfsLinkService
         .new(target_project)
-        .execute(source_project.all_lfs_objects_oids)
+        .execute(source_project.lfs_objects_oids)
   rescue Projects::LfsPointers::LfsLinkService::TooManyOidsError
     raise_fork_failure(
       source_project,

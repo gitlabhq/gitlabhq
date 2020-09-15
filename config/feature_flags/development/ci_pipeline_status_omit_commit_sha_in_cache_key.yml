@@ -1,0 +1,7 @@
+---
+name: ci_pipeline_status_omit_commit_sha_in_cache_key
+introduced_by_url: 
+rollout_issue_url: 
+group: 
+type: development
+default_enabled: true

@@ -1,0 +1,7 @@
+---
+name: ci_raise_job_rules_without_workflow_rules_warning
+introduced_by_url: 
+rollout_issue_url: 
+group: 
+type: development
+default_enabled: true

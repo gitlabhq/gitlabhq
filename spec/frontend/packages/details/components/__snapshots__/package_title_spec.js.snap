@@ -45,34 +45,24 @@ exports[`PackageTitle renders with tags 1`] = `
       <div
         class="gl-display-flex gl-align-items-center gl-mr-5"
       >
-        <gl-icon-stub
-          class="gl-text-gray-500 gl-mr-3"
-          name="package"
-          size="16"
-        />
-         
-        <span
-          class="gl-font-weight-bold"
+        <metadata-item-stub
           data-testid="package-type"
-        >
-          maven
-        </span>
+          icon="package"
+          link=""
+          size="s"
+          text="maven"
+        />
       </div>
       <div
         class="gl-display-flex gl-align-items-center gl-mr-5"
       >
-        <gl-icon-stub
-          class="gl-text-gray-500 gl-mr-3"
-          name="disk"
-          size="16"
-        />
-         
-        <span
-          class="gl-font-weight-bold"
+        <metadata-item-stub
           data-testid="package-size"
-        >
-          300 bytes
-        </span>
+          icon="disk"
+          link=""
+          size="s"
+          text="300 bytes"
+        />
       </div>
       <div
         class="gl-display-flex gl-align-items-center gl-mr-5"
@@ -135,34 +125,24 @@ exports[`PackageTitle renders without tags 1`] = `
       <div
         class="gl-display-flex gl-align-items-center gl-mr-5"
       >
-        <gl-icon-stub
-          class="gl-text-gray-500 gl-mr-3"
-          name="package"
-          size="16"
-        />
-         
-        <span
-          class="gl-font-weight-bold"
+        <metadata-item-stub
           data-testid="package-type"
-        >
-          maven
-        </span>
+          icon="package"
+          link=""
+          size="s"
+          text="maven"
+        />
       </div>
       <div
         class="gl-display-flex gl-align-items-center gl-mr-5"
       >
-        <gl-icon-stub
-          class="gl-text-gray-500 gl-mr-3"
-          name="disk"
-          size="16"
-        />
-         
-        <span
-          class="gl-font-weight-bold"
+        <metadata-item-stub
           data-testid="package-size"
-        >
-          300 bytes
-        </span>
+          icon="disk"
+          link=""
+          size="s"
+          text="300 bytes"
+        />
       </div>
     </div>
   </div>

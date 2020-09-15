@@ -1,6 +1,5 @@
 <script>
-/* eslint-disable vue/no-v-html */
-import { GlButton, GlTooltipDirective } from '@gitlab/ui';
+import { GlButton, GlTooltipDirective, GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
 import animateMixin from '../mixins/animate';
 import eventHub from '../event_hub';
 
@@ -10,6 +9,7 @@ export default {
   },
   directives: {
     GlTooltip: GlTooltipDirective,
+    SafeHtml,
   },
   mixins: [animateMixin],
   props: {
@@ -65,13 +65,13 @@ export default {
 <template>
   <div class="title-container">
     <h2
+      v-safe-html="titleHtml"
       :class="{
         'issue-realtime-pre-pulse': preAnimation,
         'issue-realtime-trigger-pulse': pulseAnimation,
       }"
       class="title qa-title"
       dir="auto"
-      v-html="titleHtml"
     ></h2>
     <gl-button
       v-if="showInlineEditButton && canUpdate"

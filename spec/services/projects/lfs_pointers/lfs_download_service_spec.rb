@@ -4,7 +4,8 @@ require 'spec_helper'
 RSpec.describe Projects::LfsPointers::LfsDownloadService do
   include StubRequests
 
-  let(:project) { create(:project) }
+  let_it_be(:project) { create(:project) }
+
   let(:lfs_content) { SecureRandom.random_bytes(10) }
   let(:oid) { Digest::SHA256.hexdigest(lfs_content) }
   let(:download_link) { "http://gitlab.com/#{oid}" }
@@ -14,9 +15,11 @@ RSpec.describe Projects::LfsPointers::LfsDownloadService do
 
   subject { described_class.new(project, lfs_object) }
 
-  before do
+  before_all do
     ApplicationSetting.create_from_defaults
+  end
 
+  before do
     stub_application_setting(allow_local_requests_from_web_hooks_and_services: local_request_setting)
     allow(project).to receive(:lfs_enabled?).and_return(true)
   end
@@ -224,6 +227,56 @@ RSpec.describe Projects::LfsPointers::LfsDownloadService do
         expect(subject).not_to receive(:download_lfs_file!)
 
         subject.execute
+      end
+    end
+
+    context 'when a large lfs object with the same oid already exists' do
+      let!(:existing_lfs_object) { create(:lfs_object, :with_file, :correct_oid) }
+
+      before do
+        stub_const("#{described_class}::LARGE_FILE_SIZE", 500)
+        stub_full_request(download_link).to_return(body: lfs_content)
+      end
+
+      context 'and first fragments are the same' do
+        let(:lfs_content) { existing_lfs_object.file.read }
+
+        context 'when lfs_link_existing_object feature flag disabled' do
+          before do
+            stub_feature_flags(lfs_link_existing_object: false)
+          end
+
+          it 'does not call link_existing_lfs_object!' do
+            expect(subject).not_to receive(:link_existing_lfs_object!)
+
+            subject.execute
+          end
+        end
+
+        it 'returns success' do
+          expect(subject.execute).to eq({ status: :success })
+        end
+
+        it 'links existing lfs object to the project' do
+          expect { subject.execute }
+            .to change { project.lfs_objects.include?(existing_lfs_object) }.from(false).to(true)
+        end
+      end
+
+      context 'and first fragments diverges' do
+        let(:lfs_content) { SecureRandom.random_bytes(1000) }
+        let(:oid) { existing_lfs_object.oid }
+
+        it 'raises oid mismatch error' do
+          expect(subject.execute).to eq({
+            status: :error,
+            message: "LFS file with oid #{oid} cannot be linked with an existing LFS object"
+          })
+        end
+
+        it 'does not change lfs objects' do
+          expect { subject.execute }.not_to change { project.lfs_objects }
+        end
       end
     end
   end
