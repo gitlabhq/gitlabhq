@@ -102,7 +102,8 @@ export default class MergeRequestStore {
     this.isPipelineSkipped = this.ciStatus === 'skipped';
     this.pipelineDetailedStatus = pipelineStatus;
     this.isPipelineActive = data.pipeline ? data.pipeline.active : false;
-    this.isPipelineBlocked = pipelineStatus ? pipelineStatus.group === 'manual' : false;
+    this.isPipelineBlocked =
+      data.only_allow_merge_if_pipeline_succeeds && pipelineStatus?.group === 'manual';
     this.ciStatusFaviconPath = pipelineStatus ? pipelineStatus.favicon : null;
     this.terraformReportsPath = data.terraform_reports_path;
     this.testResultsPath = data.test_reports_path;

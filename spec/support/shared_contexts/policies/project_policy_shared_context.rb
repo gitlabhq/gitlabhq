@@ -1,13 +1,17 @@
 # frozen_string_literal: true
 
 RSpec.shared_context 'ProjectPolicy context' do
+  let_it_be(:anonymous) { nil }
   let_it_be(:guest) { create(:user) }
   let_it_be(:reporter) { create(:user) }
   let_it_be(:developer) { create(:user) }
   let_it_be(:maintainer) { create(:user) }
   let_it_be(:owner) { create(:user) }
   let_it_be(:admin) { create(:admin) }
-  let(:project) { create(:project, :public, namespace: owner.namespace) }
+  let_it_be(:non_member) { create(:user) }
+  let_it_be_with_refind(:private_project) { create(:project, :private, namespace: owner.namespace) }
+  let_it_be_with_refind(:internal_project) { create(:project, :internal, namespace: owner.namespace) }
+  let_it_be_with_refind(:public_project) { create(:project, :public, namespace: owner.namespace) }
 
   let(:base_guest_permissions) do
     %i[
@@ -86,10 +90,12 @@ RSpec.shared_context 'ProjectPolicy context' do
   let(:maintainer_permissions) { base_maintainer_permissions + additional_maintainer_permissions }
   let(:owner_permissions) { base_owner_permissions + additional_owner_permissions }
 
-  before do
-    project.add_guest(guest)
-    project.add_maintainer(maintainer)
-    project.add_developer(developer)
-    project.add_reporter(reporter)
+  before_all do
+    [private_project, internal_project, public_project].each do |project|
+      project.add_guest(guest)
+      project.add_reporter(reporter)
+      project.add_developer(developer)
+      project.add_maintainer(maintainer)
+    end
   end
 end

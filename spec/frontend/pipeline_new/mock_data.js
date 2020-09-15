@@ -19,3 +19,15 @@ export const mockPostParams = {
     { key: 'test_file', value: 'test_file_val', variable_type: 'file' },
   ],
 };
+
+export const mockError = {
+  errors: [
+    'test job: chosen stage does not exist; available stages are .pre, build, test, deploy, .post',
+  ],
+  warnings: [
+    'jobs:build1 may allow multiple pipelines to run for a single action due to `rules:when` clause with no `workflow:rules` - read more: https://docs.gitlab.com/ee/ci/troubleshooting.html#pipeline-warnings',
+    'jobs:build2 may allow multiple pipelines to run for a single action due to `rules:when` clause with no `workflow:rules` - read more: https://docs.gitlab.com/ee/ci/troubleshooting.html#pipeline-warnings',
+    'jobs:build3 may allow multiple pipelines to run for a single action due to `rules:when` clause with no `workflow:rules` - read more: https://docs.gitlab.com/ee/ci/troubleshooting.html#pipeline-warnings',
+  ],
+  total_warnings: 7,
+};

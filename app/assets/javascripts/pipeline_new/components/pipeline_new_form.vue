@@ -14,7 +14,7 @@ import {
   GlSearchBoxByType,
   GlSprintf,
 } from '@gitlab/ui';
-import { s__, __ } from '~/locale';
+import { s__, __, n__ } from '~/locale';
 import axios from '~/lib/utils/axios_utils';
 import { redirectTo } from '~/lib/utils/url_utility';
 import { VARIABLE_TYPE, FILE_TYPE } from '../constants';
@@ -29,6 +29,8 @@ export default {
   ),
   formElementClasses: 'gl-mr-3 gl-mb-3 table-section section-15',
   errorTitle: __('The form contains the following error:'),
+  warningTitle: __('The form contains the following warning:'),
+  maxWarningsSummary: __('%{total} warnings found: showing first %{warningsDisplayed}'),
   components: {
     GlAlert,
     GlButton,
@@ -74,13 +76,20 @@ export default {
       required: false,
       default: () => ({}),
     },
+    maxWarnings: {
+      type: Number,
+      required: true,
+    },
   },
   data() {
     return {
       searchTerm: '',
       refValue: this.refParam,
       variables: {},
-      error: false,
+      error: null,
+      warnings: [],
+      totalWarnings: 0,
+      isWarningDismissed: false,
     };
   },
   computed: {
@@ -90,6 +99,18 @@ export default {
     },
     variablesLength() {
       return Object.keys(this.variables).length;
+    },
+    overMaxWarningsLimit() {
+      return this.totalWarnings > this.maxWarnings;
+    },
+    warningsSummary() {
+      return n__('%d warning found:', '%d warnings found:', this.warnings.length);
+    },
+    summaryMessage() {
+      return this.overMaxWarningsLimit ? this.$options.maxWarningsSummary : this.warningsSummary;
+    },
+    shouldShowWarning() {
+      return this.warnings.length > 0 && !this.isWarningDismissed;
     },
   },
   created() {
@@ -154,8 +175,11 @@ export default {
           redirectTo(`${this.pipelinesPath}/${data.id}`);
         })
         .catch(err => {
-          const [message] = err.response.data.base;
-          this.error = message;
+          const { errors, warnings, total_warnings: totalWarnings } = err.response.data;
+          const [error] = errors;
+          this.error = error;
+          this.warnings = warnings;
+          this.totalWarnings = totalWarnings;
         });
     },
   },
@@ -170,8 +194,37 @@ export default {
       :dismissible="false"
       variant="danger"
       class="gl-mb-4"
+      data-testid="run-pipeline-error-alert"
       >{{ error }}</gl-alert
     >
+    <gl-alert
+      v-if="shouldShowWarning"
+      :title="$options.warningTitle"
+      variant="warning"
+      class="gl-mb-4"
+      data-testid="run-pipeline-warning-alert"
+      @dismiss="isWarningDismissed = true"
+    >
+      <details>
+        <summary>
+          <gl-sprintf :message="summaryMessage">
+            <template #total>
+              {{ totalWarnings }}
+            </template>
+            <template #warningsDisplayed>
+              {{ maxWarnings }}
+            </template>
+          </gl-sprintf>
+        </summary>
+        <p
+          v-for="(warning, index) in warnings"
+          :key="`warning-${index}`"
+          data-testid="run-pipeline-warning"
+        >
+          {{ warning }}
+        </p>
+      </details>
+    </gl-alert>
     <gl-form-group :label="s__('Pipeline|Run for')">
       <gl-dropdown :text="refValue" block>
         <gl-search-box-by-type

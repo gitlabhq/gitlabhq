@@ -287,7 +287,7 @@ Note the following important points:
 - Our test fabricates only what it needs, when it needs it.
 - The issue is fabricated through the API to save time.
 - GitLab prefers `let()` over instance variables. See
-  [best practices](../best_practices.md#let-variables).
+  [best practices](../best_practices.md#subject-and-let-variables).
 - `be_closed` is not implemented in `page/project/issue/show.rb` yet, but will be
   implemented in the next step.
 

@@ -14,6 +14,7 @@ module Gitlab
         end
 
         def data
+          merge_requests_illustration_path = ActionController::Base.helpers.image_path('illustrations/merge_requests.svg')
           {
             branch: ref,
             path: path,
@@ -23,7 +24,8 @@ module Gitlab
             namespace: project.namespace.full_path,
             return_url: sanitize_url(return_url),
             is_supported_content: supported_content?.to_s,
-            base_url: Gitlab::Routing.url_helpers.project_show_sse_path(project, full_path)
+            base_url: Gitlab::Routing.url_helpers.project_show_sse_path(project, full_path),
+            merge_requests_illustration_path: merge_requests_illustration_path
           }
         end
 

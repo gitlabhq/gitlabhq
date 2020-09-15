@@ -89,7 +89,7 @@ Below are the current settings regarding [GitLab CI/CD](../../ci/README.md).
 | [Max number of instance level variables](../../administration/instance_limits.md#number-of-instance-level-variables) | `25` | `25` |
 | [Scheduled Job Archival](../../user/admin_area/settings/continuous_integration.md#archive-jobs) | 3 months | Never |
 
-## Repository size limit
+## Account and limit settings
 
 GitLab.com has the following [account limits](../admin_area/settings/account_and_limit_settings.md) enabled. If a setting is not listed, it is set to the default value.
 
@@ -99,6 +99,7 @@ or over the repository size limit, you can [reduce your repository size with Git
 | Setting                       | GitLab.com  | Default       |
 | -----------                   | ----------- | ------------- |
 | Repository size including LFS | 10 GB       | Unlimited     |
+| Maximum import size           | 5 GB        | 50 MB         |
 
 NOTE: **Note:**
 `git push` and GitLab project imports are limited to 5 GB per request through Cloudflare. Git LFS and imports other than a file upload are not affected by this limit.

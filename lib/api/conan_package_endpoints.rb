@@ -9,8 +9,8 @@
 #
 # Technical debt: https://gitlab.com/gitlab-org/gitlab/issues/35798
 module API
-  class ConanPackages < Grape::API::Instance
-    helpers ::API::Helpers::PackagesManagerClientsHelpers
+  module ConanPackageEndpoints
+    extend ActiveSupport::Concern
 
     PACKAGE_REQUIREMENTS = {
       package_name: API::NO_SLASH_URL_PART_REGEX,
@@ -28,15 +28,19 @@ module API
 
     CONAN_FILES = (Gitlab::Regex::Packages::CONAN_RECIPE_FILES + Gitlab::Regex::Packages::CONAN_PACKAGE_FILES).freeze
 
-    before do
-      require_packages_enabled!
+    included do
+      helpers ::API::Helpers::PackagesManagerClientsHelpers
+      helpers ::API::Helpers::Packages::Conan::ApiHelpers
+      helpers ::API::Helpers::RelatedResourcesHelpers
 
-      # Personal access token will be extracted from Bearer or Basic authorization
-      # in the overridden find_personal_access_token or find_user_from_job_token helpers
-      authenticate!
-    end
+      before do
+        require_packages_enabled!
 
-    namespace 'packages/conan/v1' do
+        # Personal access token will be extracted from Bearer or Basic authorization
+        # in the overridden find_personal_access_token or find_user_from_job_token helpers
+        authenticate!
+      end
+
       desc 'Ping the Conan API' do
         detail 'This feature was introduced in GitLab 12.2'
       end
@@ -242,7 +246,7 @@ module API
         delete do
           authorize!(:destroy_package, project)
 
-          package_event('delete_package')
+          package_event('delete_package', category: 'API::ConanPackages')
 
           package.destroy
         end
@@ -340,12 +344,6 @@ module API
           end
         end
       end
-    end
-
-    helpers do
-      include Gitlab::Utils::StrongMemoize
-      include ::API::Helpers::RelatedResourcesHelpers
-      include ::API::Helpers::Packages::Conan::ApiHelpers
     end
   end
 end

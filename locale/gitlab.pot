@@ -305,6 +305,11 @@ msgid_plural "%d vulnerabilities dismissed"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%d warning found:"
+msgid_plural "%d warnings found:"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%s additional commit has been omitted to prevent performance issues."
 msgid_plural "%s additional commits have been omitted to prevent performance issues."
 msgstr[0] ""
@@ -817,6 +822,9 @@ msgid "%{total_warnings} warning(s) found:"
 msgstr ""
 
 msgid "%{total} open issue weight"
+msgstr ""
+
+msgid "%{total} warnings found: showing first %{warningsDisplayed}"
 msgstr ""
 
 msgid "%{usage_ping_link_start}Learn more%{usage_ping_link_end} about what information is shared with GitLab Inc."
@@ -25062,6 +25070,9 @@ msgid "The fork relationship has been removed."
 msgstr ""
 
 msgid "The form contains the following error:"
+msgstr ""
+
+msgid "The form contains the following warning:"
 msgstr ""
 
 msgid "The global settings require you to enable Two-Factor Authentication for your account."

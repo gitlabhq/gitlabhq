@@ -427,9 +427,9 @@ spec itself, but the former is preferred.
 It takes around one second to load tests that are using `fast_spec_helper`
 instead of 30+ seconds in case of a regular `spec_helper`.
 
-### `let` variables
+### `subject` and `let` variables
 
-GitLab's RSpec suite has made extensive use of `let`(along with it strict, non-lazy
+GitLab's RSpec suite has made extensive use of `let`(along with its strict, non-lazy
 version `let!`) variables to reduce duplication. However, this sometimes [comes at the cost of clarity](https://thoughtbot.com/blog/lets-not),
 so we need to set some guidelines for their use going forward:
 
@@ -448,6 +448,7 @@ so we need to set some guidelines for their use going forward:
 - `let!` variables should be used only in case if strict evaluation with defined
   order is required, otherwise `let` will suffice. Remember that `let` is lazy and won't
   be evaluated until it is referenced.
+- Use named `subject(:name)` over un-named `subject` in examples, as this gives the subject a contextual name.
 
 ### Common test setup
 

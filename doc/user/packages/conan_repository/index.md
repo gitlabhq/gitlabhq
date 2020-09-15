@@ -83,21 +83,51 @@ conan new Hello/0.1 -t
 Next, create a package for that recipe by running `conan create` providing the Conan user and channel:
 
 ```shell
-conan create . my-org+my-group+my-project/beta
+conan create . mycompany/beta
 ```
 
 NOTE: **Note:**
-Current [naming restrictions](#package-recipe-naming-convention) require you to name the `user` value as the `+` separated path of your project on GitLab.
+If you are using the [instance level remote](#instance-level-remote), a specific [naming convention](#package-recipe-naming-convention-for-instance-level-remote) must be followed.
 
-The example above would create a package belonging to this project: `https://gitlab.com/my-org/my-group/my-project` with a channel of `beta`.
-
-These two example commands generate a final package with the recipe `Hello/0.1@my-org+my-group+my-project/beta`.
+These two example commands generate a final package with the recipe `Hello/0.1@mycompany/beta`.
 
 For more advanced details on creating and managing your packages, refer to the [Conan docs](https://docs.conan.io/en/latest/creating_packages.html).
 
 You are now ready to upload your package to the GitLab registry. To get started, first you need to set GitLab as a remote. Then you need to add a Conan user for that remote to authenticate your requests.
 
 ## Adding the GitLab Package Registry as a Conan remote
+
+You can add the GitLab Package Registry as a Conan remote at the project or instance level.
+
+### Project level remote
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/11679) in GitLab 13.4.
+
+The project level remote allows you to work with packages within a given project.
+The advantage of using the project level remote is there are no restrictions to your
+package name, however all GitLab Conan packages require a full recipe
+with the user and channel (`package_name/version@user/channel`).
+
+To add the remote:
+
+```shell
+conan remote add gitlab https://gitlab.example.com/api/v4/projects/<project_id>/packages/conan
+```
+
+Once the remote is set, you can use the remote when running Conan commands by adding `--remote=gitlab` to the end of your commands.
+
+For example:
+
+```shell
+conan search Hello* --all --remote=gitlab
+```
+
+### Instance level remote
+
+The instance level remote allows you to use a single remote to access packages accross your entire
+GitLab instance. However, when using this remote, there are certain
+[package naming restrictions](#package-recipe-naming-convention-for-instance-level-remote)
+that must be followed.
 
 Add a new remote to your Conan configuration:
 
@@ -112,6 +142,25 @@ For example:
 ```shell
 conan search 'Hello*' --remote=gitlab
 ```
+
+#### Package recipe naming convention for instance level remote
+
+The standard Conan recipe convention looks like `package_name/version@user/channel`,
+but if you're using the [instance level remote](#instance-level-remote), the recipe
+`user` must be the plus sign (`+`) separated project path.
+
+The following table shows some example recipes you can give your package based on
+the project name and path.
+
+| Project                            | Package                                         | Supported |
+| ---------------------------------- | ----------------------------------------------- | --------- |
+| `foo/bar`                          | `my-package/1.0.0@foo+bar/stable`               | Yes       |
+| `foo/bar-baz/buz`                  | `my-package/1.0.0@foo+bar-baz+buz/stable`       | Yes       |
+| `gitlab-org/gitlab-ce`             | `my-package/1.0.0@gitlab-org+gitlab-ce/stable`  | Yes       |
+| `gitlab-org/gitlab-ce`             | `my-package/1.0.0@foo/stable`                   | No        |
+
+NOTE: **Note:**
+[Project level remotes](#project-level-remote) allow for more flexible package names.
 
 ## Authenticating to the GitLab Conan Repository
 
@@ -142,7 +191,7 @@ Alternatively, you could explicitly include your credentials in any given comman
 For example:
 
 ```shell
-CONAN_LOGIN_USERNAME=<gitlab_username or deploy_token_username> CONAN_PASSWORD=<personal_access_token or deploy_token> conan upload Hello/0.1@my-group+my-project/beta --all --remote=gitlab
+CONAN_LOGIN_USERNAME=<gitlab_username or deploy_token_username> CONAN_PASSWORD=<personal_access_token or deploy_token> conan upload Hello/0.1@mycompany/beta --all --remote=gitlab
 ```
 
 ### Setting a default remote to your project (optional)
@@ -150,7 +199,7 @@ CONAN_LOGIN_USERNAME=<gitlab_username or deploy_token_username> CONAN_PASSWORD=<
 If you'd like Conan to always use GitLab as the registry for your package, you can tell Conan to always reference the GitLab remote for a given package recipe:
 
 ```shell
-conan remote add_ref Hello/0.1@my-group+my-project/beta gitlab
+conan remote add_ref Hello/0.1@mycompany/beta gitlab
 ```
 
 NOTE: **Note:**
@@ -165,33 +214,18 @@ The rest of the example commands in this documentation assume that you've added 
 
 ## Uploading a package
 
-First you need to [create your Conan package locally](https://docs.conan.io/en/latest/creating_packages/getting_started.html). In order to work with the GitLab Package Registry, a specific [naming convention](#package-recipe-naming-convention) must be followed.
+First you need to [create your Conan package locally](https://docs.conan.io/en/latest/creating_packages/getting_started.html).
+
+NOTE: **Note:**
+If you are using the [instance level remote](#instance-level-remote), a specific [naming convention](#package-recipe-naming-convention-for-instance-level-remote) must be followed.
 
 Ensure you have a project created on GitLab and that the personal access token you're using has the correct permissions for write access to the container registry by selecting the `api` [scope](../../../user/profile/personal_access_tokens.md#limiting-scopes-of-a-personal-access-token).
 
 You can upload your package to the GitLab Package Registry using the `conan upload` command:
 
 ```shell
-conan upload Hello/0.1@my-group+my-project/beta --all
+conan upload Hello/0.1@mycompany/beta --all
 ```
-
-### Package recipe naming convention
-
-Standard Conan recipe convention looks like `package_name/version@user/channel`.
-
-**The recipe user must be the `+` separated project path**. The package
-name may be anything, but it is preferred that the project name be used unless
-it's not possible due to a naming collision. For example:
-
-| Project                            | Package                                         | Supported |
-| ---------------------------------- | ----------------------------------------------- | --------- |
-| `foo/bar`                          | `my-package/1.0.0@foo+bar/stable`               | Yes       |
-| `foo/bar-baz/buz`                  | `my-package/1.0.0@foo+bar-baz+buz/stable`       | Yes       |
-| `gitlab-org/gitlab-ce`             | `my-package/1.0.0@gitlab-org+gitlab-ce/stable`  | Yes       |
-| `gitlab-org/gitlab-ce`             | `my-package/1.0.0@foo/stable`                   | No        |
-
-NOTE: **Note:**
-A future iteration will extend support to [project and group level](https://gitlab.com/gitlab-org/gitlab/-/issues/11679) remotes which allows for more flexible naming conventions.
 
 ## Installing a package
 
@@ -204,7 +238,7 @@ Add the Conan recipe to the `[requires]` section of the file:
 
 ```ini
  [requires]
- Hello/0.1@my-group+my-project/beta
+ Hello/0.1@mycompany/beta
 
  [generators]
  cmake
@@ -253,7 +287,7 @@ To search using a partial name, use the wildcard symbol `*`, which should be pla
 ```shell
 conan search Hello --all --remote=gitlab
 conan search He* --all --remote=gitlab
-conan search Hello/0.1@my-group+my-project/beta --all --remote=gitlab
+conan search Hello/0.1@mycompany/beta --all --remote=gitlab
 ```
 
 The scope of your search includes all projects you have permission to access, this includes your private projects as well as all public projects.
@@ -263,7 +297,7 @@ The scope of your search includes all projects you have permission to access, th
 The `conan info` command returns information about a given package:
 
 ```shell
-conan info Hello/0.1@my-group+my-project/beta
+conan info Hello/0.1@mycompany/beta
 ```
 
 ## List of supported CLI commands

@@ -1,10 +1,10 @@
 import { mount, shallowMount } from '@vue/test-utils';
-import { GlDropdown, GlDropdownItem, GlForm } from '@gitlab/ui';
+import { GlDropdown, GlDropdownItem, GlForm, GlSprintf } from '@gitlab/ui';
 import MockAdapter from 'axios-mock-adapter';
 import waitForPromises from 'helpers/wait_for_promises';
 import axios from '~/lib/utils/axios_utils';
 import PipelineNewForm from '~/pipeline_new/components/pipeline_new_form.vue';
-import { mockRefs, mockParams, mockPostParams, mockProjectId } from '../mock_data';
+import { mockRefs, mockParams, mockPostParams, mockProjectId, mockError } from '../mock_data';
 import { redirectTo } from '~/lib/utils/url_utility';
 
 jest.mock('~/lib/utils/url_utility', () => ({
@@ -28,6 +28,10 @@ describe('Pipeline New Form', () => {
   const findVariableRows = () => wrapper.findAll('[data-testid="ci-variable-row"]');
   const findRemoveIcons = () => wrapper.findAll('[data-testid="remove-ci-variable-row"]');
   const findKeyInputs = () => wrapper.findAll('[data-testid="pipeline-form-ci-variable-key"]');
+  const findErrorAlert = () => wrapper.find('[data-testid="run-pipeline-error-alert"]');
+  const findWarningAlert = () => wrapper.find('[data-testid="run-pipeline-warning-alert"]');
+  const findWarningAlertSummary = () => findWarningAlert().find(GlSprintf);
+  const findWarnings = () => wrapper.findAll('[data-testid="run-pipeline-warning"]');
   const getExpectedPostParams = () => JSON.parse(mock.history.post[0].data);
 
   const createComponent = (term = '', props = {}, method = shallowMount) => {
@@ -38,6 +42,7 @@ describe('Pipeline New Form', () => {
         refs: mockRefs,
         defaultBranch: 'master',
         settingsLink: '',
+        maxWarnings: 25,
         ...props,
       },
       data() {
@@ -50,8 +55,6 @@ describe('Pipeline New Form', () => {
 
   beforeEach(() => {
     mock = new MockAdapter(axios);
-
-    mock.onPost(pipelinesPath).reply(200, postResponse);
   });
 
   afterEach(() => {
@@ -62,6 +65,10 @@ describe('Pipeline New Form', () => {
   });
 
   describe('Dropdown with branches and tags', () => {
+    beforeEach(() => {
+      mock.onPost(pipelinesPath).reply(200, postResponse);
+    });
+
     it('displays dropdown with all branches and tags', () => {
       createComponent();
       expect(findDropdownItems()).toHaveLength(mockRefs.length);
@@ -82,6 +89,8 @@ describe('Pipeline New Form', () => {
   describe('Form', () => {
     beforeEach(() => {
       createComponent('', mockParams, mount);
+
+      mock.onPost(pipelinesPath).reply(200, postResponse);
     });
     it('displays the correct values for the provided query params', async () => {
       expect(findDropdown().props('text')).toBe('tag-1');
@@ -122,6 +131,36 @@ describe('Pipeline New Form', () => {
       await wrapper.vm.$nextTick();
 
       expect(findVariableRows()).toHaveLength(4);
+    });
+  });
+
+  describe('Form errors and warnings', () => {
+    beforeEach(() => {
+      createComponent();
+
+      mock.onPost(pipelinesPath).reply(400, mockError);
+
+      findForm().vm.$emit('submit', dummySubmitEvent);
+
+      return waitForPromises();
+    });
+
+    it('shows both error and warning', () => {
+      expect(findErrorAlert().exists()).toBe(true);
+      expect(findWarningAlert().exists()).toBe(true);
+    });
+
+    it('shows the correct error', () => {
+      expect(findErrorAlert().text()).toBe(mockError.errors[0]);
+    });
+
+    it('shows the correct warning title', () => {
+      const { length } = mockError.warnings;
+      expect(findWarningAlertSummary().attributes('message')).toBe(`${length} warnings found:`);
+    });
+
+    it('shows the correct amount of warnings', () => {
+      expect(findWarnings()).toHaveLength(mockError.warnings.length);
     });
   });
 });

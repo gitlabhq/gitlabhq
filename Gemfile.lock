@@ -822,7 +822,7 @@ GEM
     parslet (1.8.2)
     peek (1.1.0)
       railties (>= 4.0.0)
-    pg (1.2.2)
+    pg (1.2.3)
     png_quantizator (0.2.1)
     po_to_json (1.0.1)
       json (>= 1.6.0)

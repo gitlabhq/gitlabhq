@@ -5,6 +5,8 @@ module API
     module Packages
       module Conan
         module ApiHelpers
+          include Gitlab::Utils::StrongMemoize
+
           def present_download_urls(entity)
             authorize!(:read_package, project)
 
@@ -31,7 +33,7 @@ module API
           def recipe_upload_urls
             { upload_urls: Hash[
               file_names.select(&method(:recipe_file?)).map do |file_name|
-                [file_name, recipe_file_upload_url(file_name)]
+                [file_name, build_recipe_file_upload_url(file_name)]
               end
             ] }
           end
@@ -39,7 +41,7 @@ module API
           def package_upload_urls
             { upload_urls: Hash[
               file_names.select(&method(:package_file?)).map do |file_name|
-                [file_name, package_file_upload_url(file_name)]
+                [file_name, build_package_file_upload_url(file_name)]
               end
             ] }
           end
@@ -52,32 +54,58 @@ module API
             file_name.in?(::Packages::Conan::FileMetadatum::PACKAGE_FILES)
           end
 
-          def package_file_upload_url(file_name)
-            expose_url(
-              api_v4_packages_conan_v1_files_package_path(
-                package_name: params[:package_name],
-                package_version: params[:package_version],
-                package_username: params[:package_username],
-                package_channel: params[:package_channel],
-                recipe_revision: '0',
-                conan_package_reference: params[:conan_package_reference],
-                package_revision: '0',
-                file_name: file_name
-              )
+          def build_package_file_upload_url(file_name)
+            options = url_options(file_name).merge(
+              conan_package_reference: params[:conan_package_reference],
+              package_revision: ::Packages::Conan::FileMetadatum::DEFAULT_PACKAGE_REVISION
             )
+
+            package_file_url(options)
           end
 
-          def recipe_file_upload_url(file_name)
-            expose_url(
-              api_v4_packages_conan_v1_files_export_path(
-                package_name: params[:package_name],
-                package_version: params[:package_version],
-                package_username: params[:package_username],
-                package_channel: params[:package_channel],
-                recipe_revision: '0',
-                file_name: file_name
+          def build_recipe_file_upload_url(file_name)
+            recipe_file_url(url_options(file_name))
+          end
+
+          def url_options(file_name)
+            {
+              package_name: params[:package_name],
+              package_version: params[:package_version],
+              package_username: params[:package_username],
+              package_channel: params[:package_channel],
+              file_name: file_name,
+              recipe_revision: ::Packages::Conan::FileMetadatum::DEFAULT_RECIPE_REVISION
+            }
+          end
+
+          def package_file_url(options)
+            case package_scope
+            when :project
+              expose_url(
+                api_v4_projects_packages_conan_v1_files_package_path(
+                  options.merge(id: project.id)
+                )
               )
-            )
+            when :instance
+              expose_url(
+                api_v4_packages_conan_v1_files_package_path(options)
+              )
+            end
+          end
+
+          def recipe_file_url(options)
+            case package_scope
+            when :project
+              expose_url(
+                api_v4_projects_packages_conan_v1_files_export_path(
+                  options.merge(id: project.id)
+                )
+              )
+            when :instance
+              expose_url(
+                api_v4_packages_conan_v1_files_export_path(options)
+              )
+            end
           end
 
           def recipe
@@ -86,8 +114,13 @@ module API
 
           def project
             strong_memoize(:project) do
-              full_path = ::Packages::Conan::Metadatum.full_path_from(package_username: params[:package_username])
-              Project.find_by_full_path(full_path)
+              case package_scope
+              when :project
+                find_project!(params[:id])
+              when :instance
+                full_path = ::Packages::Conan::Metadatum.full_path_from(package_username: params[:package_username])
+                find_project!(full_path)
+              end
             end
           end
 
@@ -97,6 +130,7 @@ module API
                 .conan
                 .with_name(params[:package_name])
                 .with_version(params[:package_version])
+                .with_conan_username(params[:package_username])
                 .with_conan_channel(params[:package_channel])
                 .order_created
                 .last
@@ -124,7 +158,7 @@ module API
                 conan_package_reference: params[:conan_package_reference]
               ).execute!
 
-            package_event('pull_package') if params[:file_name] == ::Packages::Conan::FileMetadatum::PACKAGE_BINARY
+            package_event('pull_package', category: 'API::ConanPackages') if params[:file_name] == ::Packages::Conan::FileMetadatum::PACKAGE_BINARY
 
             present_carrierwave_file!(package_file.file)
           end
@@ -135,7 +169,7 @@ module API
 
           def track_push_package_event
             if params[:file_name] == ::Packages::Conan::FileMetadatum::PACKAGE_BINARY && params[:file].size > 0 # rubocop: disable Style/ZeroLengthPredicate
-              package_event('push_package')
+              package_event('push_package', category: 'API::ConanPackages')
             end
           end
 
@@ -235,6 +269,10 @@ module API
             return unless token && token.access_token_id && token.user_id
 
             token
+          end
+
+          def package_scope
+            params[:id].present? ? :project : :instance
           end
         end
       end

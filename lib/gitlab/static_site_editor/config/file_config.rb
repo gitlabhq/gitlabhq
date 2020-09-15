@@ -5,9 +5,8 @@ module Gitlab
     module Config
       class FileConfig
         def data
-          merge_requests_illustration_path = ActionController::Base.helpers.image_path('illustrations/merge_requests.svg')
           {
-            merge_requests_illustration_path: merge_requests_illustration_path
+            static_site_generator: 'middleman'
           }
         end
       end

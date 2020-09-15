@@ -668,6 +668,9 @@ To enable delayed deletion of projects:
 1. Expand the **Permissions, LFS, 2FA** section, and check **Enable delayed project removal**.
 1. Click **Save changes**.
 
+NOTE: **Note:**
+The group setting for delayed deletion is not inherited by sub-groups and has to be individually defined for each group.
+
 #### Prevent project forking outside group **(PREMIUM)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216987) in GitLab 13.3.

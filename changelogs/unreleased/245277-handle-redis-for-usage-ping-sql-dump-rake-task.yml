@@ -1,0 +1,5 @@
+---
+title: Updated gitlab:usage_data:dump_sql_in_yaml rake task with redis usage
+merge_request: 42189
+author:
+type: changed

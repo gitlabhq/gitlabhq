@@ -7,12 +7,6 @@ RSpec.describe Projects::StaticSiteEditorController do
   let_it_be(:user) { create(:user) }
   let(:data) { instance_double(Hash) }
 
-  before do
-    allow_next_instance_of(Gitlab::StaticSiteEditor::Config::CombinedConfig) do |config|
-      allow(config).to receive(:data) { data }
-    end
-  end
-
   describe 'GET show' do
     let(:default_params) do
       {
@@ -21,6 +15,16 @@ RSpec.describe Projects::StaticSiteEditorController do
         id: 'master/README.md',
         return_url: 'http://example.com'
       }
+    end
+
+    let(:service_response) do
+      ServiceResponse.success(payload: data)
+    end
+
+    before do
+      allow_next_instance_of(::StaticSiteEditor::ConfigService) do |instance|
+        allow(instance).to receive(:execute).and_return(service_response)
+      end
     end
 
     context 'User roles' do
@@ -72,6 +76,14 @@ RSpec.describe Projects::StaticSiteEditorController do
 
             it 'responds with 404 page' do
               expect(response).to have_gitlab_http_status(:not_found)
+            end
+          end
+
+          context 'when invalid config file' do
+            let(:service_response) { ServiceResponse.error(message: 'invalid') }
+
+            it 'returns 422' do
+              expect(response).to have_gitlab_http_status(:unprocessable_entity)
             end
           end
         end

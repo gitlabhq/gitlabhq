@@ -13,7 +13,11 @@ RSpec.describe 'Static Site Editor' do
     visit project_show_sse_path(project, 'master/README.md')
   end
 
-  it 'renders Static Site Editor page' do
-    expect(page).to have_selector('#static-site-editor')
+  it 'renders Static Site Editor page with generated and file attributes' do
+    # assert generated config value is present
+    expect(page).to have_css('#static-site-editor[data-branch="master"]')
+
+    # assert file config value is present
+    expect(page).to have_css('#static-site-editor[data-static-site-generator="middleman"]')
   end
 end

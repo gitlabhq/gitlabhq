@@ -14,8 +14,7 @@ RSpec.shared_examples 'custom attributes endpoints' do |attributable_name|
         get api("/#{attributable_name}", user), params: { custom_attributes: { foo: 'foo', bar: 'bar' } }
 
         expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response.size).to be 2
-        expect(json_response.map { |r| r['id'] }).to contain_exactly attributable.id, other_attributable.id
+        expect(json_response.map { |r| r['id'] }).to include(attributable.id, other_attributable.id)
       end
     end
 
@@ -40,7 +39,7 @@ RSpec.shared_examples 'custom attributes endpoints' do |attributable_name|
         get api("/#{attributable_name}", user), params: { with_custom_attributes: true }
 
         expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response.size).to be 2
+        expect(json_response).not_to be_empty
         expect(json_response.first).not_to include 'custom_attributes'
       end
     end
@@ -50,16 +49,15 @@ RSpec.shared_examples 'custom attributes endpoints' do |attributable_name|
         get api("/#{attributable_name}", admin)
 
         expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response.size).to be 2
+        expect(json_response).not_to be_empty
         expect(json_response.first).not_to include 'custom_attributes'
-        expect(json_response.second).not_to include 'custom_attributes'
       end
 
       it 'includes custom attributes if requested' do
         get api("/#{attributable_name}", admin), params: { with_custom_attributes: true }
 
         expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response.size).to be 2
+        expect(json_response).not_to be_empty
 
         attributable_response = json_response.find { |r| r['id'] == attributable.id }
         other_attributable_response = json_response.find { |r| r['id'] == other_attributable.id }

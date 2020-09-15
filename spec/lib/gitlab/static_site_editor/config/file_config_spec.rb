@@ -9,9 +9,7 @@ RSpec.describe Gitlab::StaticSiteEditor::Config::FileConfig do
     subject { config.data }
 
     it 'returns hardcoded data for now' do
-      is_expected.to match(
-        merge_requests_illustration_path: %r{illustrations/merge_requests}
-      )
+      is_expected.to match(static_site_generator: 'middleman')
     end
   end
 end

@@ -118,6 +118,9 @@ apifuzzer_fuzz:
         # Wait for testing to complete if api fuzzer is scanning
         - if [ "$FUZZAPI_HAR$FUZZAPI_OPENAPI" != "" ]; then echo "Waiting for API Fuzzer to exit"; docker wait apifuzzer; fi
         #
+        # Propagate exit code from api fuzzer (if any)
+        - if [[ $(docker inspect apifuzzer --format='{{.State.ExitCode}}') != "0" ]]; then echo "API Fuzzing exited with an error. Logs are available as job artifacts."; docker logs apifuzzer; exit 1; fi
+        #
         # Run user provided pre-script
         - sh -c "$FUZZAPI_POST_SCRIPT"
         #

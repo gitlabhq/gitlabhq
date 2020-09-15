@@ -5,7 +5,7 @@ module Gitlab
     module DuplicateJobs
       class Client
         def call(worker_class, job, queue, _redis_pool, &block)
-          DuplicateJob.new(job, queue).schedule(&block)
+          ::Gitlab::SidekiqMiddleware::DuplicateJobs::DuplicateJob.new(job, queue).schedule(&block)
         end
       end
     end

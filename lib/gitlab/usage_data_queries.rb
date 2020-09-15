@@ -11,6 +11,14 @@ module Gitlab
         raw_sql(relation, column, :distinct)
       end
 
+      def redis_usage_data(counter = nil, &block)
+        if block_given?
+          { redis_usage_data_block: block.to_s }
+        elsif counter.present?
+          { redis_usage_data_counter: counter }
+        end
+      end
+
       private
 
       def raw_sql(relation, column, distinct = nil)

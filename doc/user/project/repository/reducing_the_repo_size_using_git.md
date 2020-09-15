@@ -252,9 +252,9 @@ When using repository cleanup, note:
 
 Repository size limits:
 
-- Can [be set by an administrator](../../admin_area/settings/account_and_limit_settings.md#repository-size-limit)
+- Can [be set by an administrator](../../admin_area/settings/account_and_limit_settings.md#account-and-limit-settings)
   on self-managed instances. **(STARTER ONLY)**
-- Are [set for GitLab.com](../../gitlab_com/index.md#repository-size-limit).
+- Are [set for GitLab.com](../../gitlab_com/index.md#account-and-limit-settings).
 
 When a project has reached its size limit, you cannot:
 

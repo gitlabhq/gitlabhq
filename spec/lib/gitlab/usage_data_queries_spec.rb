@@ -18,4 +18,18 @@ RSpec.describe Gitlab::UsageDataQueries do
       expect(described_class.distinct_count(Issue, :author_id)).to eq('SELECT COUNT(DISTINCT "issues"."author_id") FROM "issues"')
     end
   end
+
+  describe '.redis_usage_data' do
+    subject(:redis_usage_data) { described_class.redis_usage_data { 42 } }
+
+    it 'returns a class for redis_usage_data with a counter call' do
+      expect(described_class.redis_usage_data(Gitlab::UsageDataCounters::WikiPageCounter))
+        .to eq(redis_usage_data_counter: Gitlab::UsageDataCounters::WikiPageCounter)
+    end
+
+    it 'returns a stringified block for redis_usage_data with a block' do
+      is_expected.to include(:redis_usage_data_block)
+      expect(redis_usage_data[:redis_usage_data_block]).to start_with('#<Proc:')
+    end
+  end
 end

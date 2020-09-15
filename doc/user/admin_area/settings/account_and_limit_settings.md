@@ -81,7 +81,7 @@ The repository size limit includes repository files and LFS, and does not includ
 For details on manually purging files, see [reducing the repository size using Git](../../project/repository/reducing_the_repo_size_using_git.md).
 
 NOTE: **Note:**
-GitLab.com repository size [is set by GitLab](../../gitlab_com/index.md#repository-size-limit).
+GitLab.com repository size [is set by GitLab](../../gitlab_com/index.md#account-and-limit-settings).
 
 ## Troubleshooting
 

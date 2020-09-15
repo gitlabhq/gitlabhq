@@ -20,17 +20,19 @@ RSpec.describe Gitlab::StaticSiteEditor::Config::GeneratedConfig do
     subject { config.data }
 
     it 'returns data for the frontend component' do
-      is_expected.to eq(
-        branch: 'master',
-        commit_id: repository.commit.id,
-        namespace: 'namespace',
-        path: 'README.md',
-        project: 'project',
-        project_id: project.id,
-        return_url: 'http://example.com',
-        is_supported_content: 'true',
-        base_url: '/namespace/project/-/sse/master%2FREADME.md'
-      )
+      is_expected
+        .to match({
+                    branch: 'master',
+                    commit_id: repository.commit.id,
+                    namespace: 'namespace',
+                    path: 'README.md',
+                    project: 'project',
+                    project_id: project.id,
+                    return_url: 'http://example.com',
+                    is_supported_content: 'true',
+                    base_url: '/namespace/project/-/sse/master%2FREADME.md',
+                    merge_requests_illustration_path: %r{illustrations/merge_requests}
+                  })
     end
 
     context 'when namespace is a subgroup' do

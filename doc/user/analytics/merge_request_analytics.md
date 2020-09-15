@@ -50,6 +50,23 @@ Data table displaying a maximum of the 100 most recent merge requests merged for
 
 ![Throughput table](img/mr_throughput_table_v13_3.png "Merge Request Analytics - Throughput table listing the 100 merge requests most recently merged")
 
+## Filter the data
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/229266) in GitLab 13.4
+
+You can filter the data that is presented on the page based on the following parameters:
+
+- Author
+- Assignees
+- Labels
+- Milestones
+
+To filter results:
+
+1. Click on the filter bar.
+1. Select a parameter to filter by.
+1. Select a value from the autocompleted results, or enter search text to refine the results.
+
 ## Permissions
 
 The **Merge Request Analytics** feature can be accessed only:

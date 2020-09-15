@@ -14,19 +14,27 @@ class Projects::StaticSiteEditorController < Projects::ApplicationController
   end
 
   def show
-    config = Gitlab::StaticSiteEditor::Config::CombinedConfig.new(
-      @repository,
-      @ref,
-      @path,
-      params[:return_url]
-    )
-    @data = config.data
+    service_response = ::StaticSiteEditor::ConfigService.new(
+      container: project,
+      current_user: current_user,
+      params: {
+        ref: @ref,
+        path: @path,
+        return_url: params[:return_url]
+      }
+    ).execute
+
+    if service_response.success?
+      @data = service_response.payload
+    else
+      respond_422
+    end
   end
 
   private
 
   def assign_ref_and_path
-    @ref, @path = extract_ref(params[:id])
+    @ref, @path = extract_ref(params.fetch(:id))
 
     render_404 if @ref.blank? || @path.blank?
   end

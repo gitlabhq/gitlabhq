@@ -19,15 +19,15 @@ module Gitlab
       GITLAB_PROJECTS_TIMEOUT = Gitlab.config.gitlab_shell.git_timeout
       EMPTY_REPOSITORY_CHECKSUM = '0000000000000000000000000000000000000000'
 
-      NoRepository = Class.new(StandardError)
-      InvalidRepository = Class.new(StandardError)
-      InvalidBlobName = Class.new(StandardError)
-      InvalidRef = Class.new(StandardError)
-      GitError = Class.new(StandardError)
-      DeleteBranchError = Class.new(StandardError)
-      TagExistsError = Class.new(StandardError)
-      ChecksumError = Class.new(StandardError)
-      class CreateTreeError < StandardError
+      NoRepository = Class.new(::Gitlab::Git::BaseError)
+      InvalidRepository = Class.new(::Gitlab::Git::BaseError)
+      InvalidBlobName = Class.new(::Gitlab::Git::BaseError)
+      InvalidRef = Class.new(::Gitlab::Git::BaseError)
+      GitError = Class.new(::Gitlab::Git::BaseError)
+      DeleteBranchError = Class.new(::Gitlab::Git::BaseError)
+      TagExistsError = Class.new(::Gitlab::Git::BaseError)
+      ChecksumError = Class.new(::Gitlab::Git::BaseError)
+      class CreateTreeError < ::Gitlab::Git::BaseError
         attr_reader :error_code
 
         def initialize(error_code)
