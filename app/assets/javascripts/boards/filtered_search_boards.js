@@ -27,7 +27,7 @@ export default class FilteredSearchBoards extends FilteredSearchManager {
   updateObject(path) {
     this.store.path = path.substr(1);
 
-    if (gon.features.boardsWithSwimlanes) {
+    if (gon.features.boardsWithSwimlanes || gon.features.graphqlBoardLists) {
       boardsStore.updateFiltersUrl();
       boardsStore.performSearch();
     }

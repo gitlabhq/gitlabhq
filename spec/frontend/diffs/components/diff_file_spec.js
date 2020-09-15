@@ -90,8 +90,8 @@ describe('DiffFile', () => {
         vm.isCollapsed = true;
 
         vm.$nextTick(() => {
-          expect(vm.$el.innerText).toContain('This file is collapsed.');
-          expect(vm.$el.querySelector('[data-testid="expandButton"]')).not.toBeFalsy();
+          expect(vm.$el.innerText).toContain('This diff is collapsed');
+          expect(vm.$el.querySelectorAll('.js-click-to-expand').length).toEqual(1);
 
           done();
         });
@@ -102,8 +102,8 @@ describe('DiffFile', () => {
         vm.isCollapsed = true;
 
         vm.$nextTick(() => {
-          expect(vm.$el.innerText).toContain('This file is collapsed.');
-          expect(vm.$el.querySelector('[data-testid="expandButton"]')).not.toBeFalsy();
+          expect(vm.$el.innerText).toContain('This diff is collapsed');
+          expect(vm.$el.querySelectorAll('.js-click-to-expand').length).toEqual(1);
 
           done();
         });
@@ -121,8 +121,8 @@ describe('DiffFile', () => {
         vm.isCollapsed = true;
 
         vm.$nextTick(() => {
-          expect(vm.$el.innerText).toContain('This file is collapsed.');
-          expect(vm.$el.querySelector('[data-testid="expandButton"]')).not.toBeFalsy();
+          expect(vm.$el.innerText).toContain('This diff is collapsed');
+          expect(vm.$el.querySelectorAll('.js-click-to-expand').length).toEqual(1);
 
           done();
         });
@@ -135,7 +135,7 @@ describe('DiffFile', () => {
         vm.file.viewer.name = diffViewerModes.renamed;
 
         vm.$nextTick(() => {
-          expect(vm.$el.innerText).not.toContain('This file is collapsed.');
+          expect(vm.$el.innerText).not.toContain('This diff is collapsed');
 
           done();
         });
@@ -148,7 +148,7 @@ describe('DiffFile', () => {
         vm.file.viewer.name = diffViewerModes.mode_changed;
 
         vm.$nextTick(() => {
-          expect(vm.$el.innerText).not.toContain('This file is collapsed.');
+          expect(vm.$el.innerText).not.toContain('This diff is collapsed');
 
           done();
         });

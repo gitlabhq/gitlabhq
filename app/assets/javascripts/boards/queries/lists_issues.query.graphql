@@ -1,15 +1,16 @@
-#import "./issue.fragment.graphql"
+#import "ee_else_ce/boards/queries/issue.fragment.graphql"
 
 query ListIssues(
   $fullPath: ID!
   $boardId: ID!
+  $id: ID
   $filters: BoardIssueInput
   $isGroup: Boolean = false
   $isProject: Boolean = false
 ) {
   group(fullPath: $fullPath) @include(if: $isGroup) {
     board(id: $boardId) {
-      lists {
+      lists(id: $id) {
         nodes {
           id
           issues(filters: $filters) {
@@ -23,7 +24,7 @@ query ListIssues(
   }
   project(fullPath: $fullPath) @include(if: $isProject) {
     board(id: $boardId) {
-      lists {
+      lists(id: $id) {
         nodes {
           id
           issues(filters: $filters) {
