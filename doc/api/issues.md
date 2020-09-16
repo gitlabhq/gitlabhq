@@ -1496,10 +1496,10 @@ Example response:
 }
 ```
 
-## Create a todo
+## Create a to-do
 
-Manually creates a todo for the current user on an issue. If
-there already exists a todo for the user on that issue, status code `304` is
+Manually creates a to-do for the current user on an issue. If
+there already exists a to-do for the user on that issue, status code `304` is
 returned.
 
 ```plaintext

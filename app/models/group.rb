@@ -410,10 +410,17 @@ class Group < Namespace
       .where(namespaces: { id: self_and_descendants.select(:id) })
   end
 
-  def max_member_access_for_user(user)
+  # Return the highest access level for a user
+  #
+  # A special case is handled here when the user is a GitLab admin
+  # which implies it has "OWNER" access everywhere, but should not
+  # officially appear as a member of a group unless specifically added to it
+  #
+  # @param user [User]
+  # @param only_concrete_membership [Bool] whether require admin concrete membership status
+  def max_member_access_for_user(user, only_concrete_membership: false)
     return GroupMember::NO_ACCESS unless user
-
-    return GroupMember::OWNER if user.admin?
+    return GroupMember::OWNER if user.admin? && !only_concrete_membership
 
     max_member_access = members_with_parents.where(user_id: user)
                                             .reorder(access_level: :desc)

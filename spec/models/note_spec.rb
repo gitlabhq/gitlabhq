@@ -286,6 +286,56 @@ RSpec.describe Note do
     end
   end
 
+  describe "noteable_author?" do
+    let(:user1) { create(:user) }
+    let(:user2) { create(:user) }
+    let(:project) { create(:project, :public, :repository) }
+
+    context 'when note is on commit' do
+      let(:noteable) { create(:commit, project: project, author: user1) }
+
+      context 'if user is the noteable author' do
+        let(:note) { create(:discussion_note_on_commit, commit_id: noteable.id, project: project, author: user1) }
+        let(:diff_note) { create(:diff_note_on_commit, commit_id: noteable.id, project: project, author: user1) }
+
+        it 'returns true' do
+          expect(note.noteable_author?(noteable)).to be true
+          expect(diff_note.noteable_author?(noteable)).to be true
+        end
+      end
+
+      context 'if user is not the noteable author' do
+        let(:note) { create(:discussion_note_on_commit, commit_id: noteable.id, project: project, author: user2) }
+        let(:diff_note) { create(:diff_note_on_commit, commit_id: noteable.id, project: project, author: user2) }
+
+        it 'returns false' do
+          expect(note.noteable_author?(noteable)).to be false
+          expect(diff_note.noteable_author?(noteable)).to be false
+        end
+      end
+    end
+
+    context 'when note is on issue' do
+      let(:noteable) { create(:issue, project: project, author: user1) }
+
+      context 'if user is the noteable author' do
+        let(:note) { create(:note, noteable: noteable, author: user1, project: project) }
+
+        it 'returns true' do
+          expect(note.noteable_author?(noteable)).to be true
+        end
+      end
+
+      context 'if user is not the noteable author' do
+        let(:note) { create(:note, noteable: noteable, author: user2, project: project) }
+
+        it 'returns false' do
+          expect(note.noteable_author?(noteable)).to be false
+        end
+      end
+    end
+  end
+
   describe "edited?" do
     let(:note) { build(:note, updated_by_id: nil, created_at: Time.current, updated_at: Time.current + 5.hours) }
 
@@ -1225,22 +1275,6 @@ RSpec.describe Note do
 
       it { is_expected.to include(comment) }
       it { is_expected.not_to include(system_note) }
-    end
-  end
-
-  describe '#special_role=' do
-    let(:role) { Note::SpecialRole::FIRST_TIME_CONTRIBUTOR }
-
-    it 'assigns role' do
-      subject.special_role = role
-
-      expect(subject.special_role).to eq(role)
-    end
-
-    it 'does not assign unknown role' do
-      expect { subject.special_role = :bogus }.to raise_error(/Role is undefined/)
-
-      expect(subject.special_role).to be_nil
     end
   end
 

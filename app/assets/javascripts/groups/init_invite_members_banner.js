@@ -8,7 +8,7 @@ export default function initInviteMembersBanner() {
     return false;
   }
 
-  const { svgPath, inviteMembersPath, isDismissedKey } = el.dataset;
+  const { svgPath, inviteMembersPath, isDismissedKey, trackLabel } = el.dataset;
 
   return new Vue({
     el,
@@ -16,6 +16,7 @@ export default function initInviteMembersBanner() {
       svgPath,
       inviteMembersPath,
       isDismissedKey,
+      trackLabel,
     },
     render: createElement => createElement(InviteMembersBanner),
   });

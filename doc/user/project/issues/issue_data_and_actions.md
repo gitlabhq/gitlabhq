@@ -196,7 +196,7 @@ allowing many formatting options.
 ### Mentions
 
 You can mention a user or a group present in your GitLab instance with `@username` or
-`@groupname` and they will be notified via todos and email, unless they have disabled
+`@groupname` and they will be notified via to-dos and email, unless they have disabled
 all notifications in their profile settings. This is controlled in the
 [notification settings](../../profile/notifications.md).
 

@@ -119,7 +119,7 @@ use:
 # Feature Name
 
 > - [Introduced](link-to-issue) in GitLab 12.0.
-> - It was deployed [deployed behind a feature flag](<replace with path to>/user/feature_flags.md), disabled by default.
+> - It was [deployed behind a feature flag](<replace with path to>/user/feature_flags.md), disabled by default.
 > - [Became enabled by default](link-to-issue) on GitLab 12.1.
 > - It's enabled on GitLab.com.
 > - It's recommended for production use.

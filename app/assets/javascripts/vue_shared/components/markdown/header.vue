@@ -143,7 +143,7 @@ export default {
             :button-title="
               sprintf(s__('MarkdownEditor|Add bold text (%{modifierKey}B)'), { modifierKey })
             "
-            :shortcuts="['command+b', 'ctrl+b']"
+            shortcuts="mod+b"
             icon="bold"
           />
           <toolbar-button
@@ -151,7 +151,7 @@ export default {
             :button-title="
               sprintf(s__('MarkdownEditor|Add italic text (%{modifierKey}I)'), { modifierKey })
             "
-            :shortcuts="['command+i', 'ctrl+i']"
+            shortcuts="mod+i"
             icon="italic"
           />
           <toolbar-button
@@ -207,7 +207,7 @@ export default {
             :button-title="
               sprintf(s__('MarkdownEditor|Add a link (%{modifierKey}K)'), { modifierKey })
             "
-            :shortcuts="['command+k', 'ctrl+k']"
+            shortcuts="mod+k"
             icon="link"
           />
         </div>

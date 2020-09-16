@@ -7005,6 +7005,9 @@ msgstr ""
 msgid "Contributions per group member"
 msgstr ""
 
+msgid "Contributor"
+msgstr ""
+
 msgid "Contributors"
 msgstr ""
 
@@ -25843,9 +25846,6 @@ msgstr ""
 msgid "This is a security log of important events involving your account."
 msgstr ""
 
-msgid "This is the author's first Merge Request to this project."
-msgstr ""
-
 msgid "This is the highest peak of users on your installation since the license started."
 msgstr ""
 
@@ -26081,6 +26081,15 @@ msgid "This user has no active %{type}."
 msgstr ""
 
 msgid "This user has no identities"
+msgstr ""
+
+msgid "This user has previously committed to the %{name} project."
+msgstr ""
+
+msgid "This user is a %{access} of the %{name} project."
+msgstr ""
+
+msgid "This user is the author of this %{noteable}."
 msgstr ""
 
 msgid "This user will be the author of all events in the activity feed that are the result of an update, like new branches being created or new commits being pushed to existing branches."

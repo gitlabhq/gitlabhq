@@ -1,12 +1,13 @@
 <script>
 import { mapGetters } from 'vuex';
 import { GlLoadingIcon, GlTooltipDirective, GlIcon } from '@gitlab/ui';
-import { __ } from '~/locale';
+import { __, sprintf } from '~/locale';
 import resolvedStatusMixin from '~/batch_comments/mixins/resolved_status';
 import ReplyButton from './note_actions/reply_button.vue';
 import eventHub from '~/sidebar/event_hub';
 import Api from '~/api';
 import { deprecatedCreateFlash as flash } from '~/flash';
+import { splitCamelCase } from '../../lib/utils/text_utility';
 
 export default {
   name: 'NoteActions',
@@ -46,6 +47,26 @@ export default {
       type: String,
       required: false,
       default: null,
+    },
+    isAuthor: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    isContributor: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    noteableType: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    projectName: {
+      type: String,
+      required: false,
+      default: '',
     },
     showReply: {
       type: Boolean,
@@ -121,6 +142,9 @@ export default {
     targetType() {
       return this.getNoteableData.targetType;
     },
+    noteableDisplayName() {
+      return splitCamelCase(this.noteableType).toLowerCase();
+    },
     assignees() {
       return this.getNoteableData.assignees || [];
     },
@@ -129,6 +153,22 @@ export default {
     },
     canAssign() {
       return this.getNoteableData.current_user?.can_update && this.isIssue;
+    },
+    displayAuthorBadgeText() {
+      return sprintf(__('This user is the author of this %{noteable}.'), {
+        noteable: this.noteableDisplayName,
+      });
+    },
+    displayMemberBadgeText() {
+      return sprintf(__('This user is a %{access} of the %{name} project.'), {
+        access: this.accessLevel.toLowerCase(),
+        name: this.projectName,
+      });
+    },
+    displayContributorBadgeText() {
+      return sprintf(__('This user has previously committed to the %{name} project.'), {
+        name: this.projectName,
+      });
     },
   },
   methods: {
@@ -175,7 +215,24 @@ export default {
 
 <template>
   <div class="note-actions">
-    <span v-if="accessLevel" class="note-role user-access-role">{{ accessLevel }}</span>
+    <span
+      v-if="isAuthor"
+      class="note-role user-access-role has-tooltip d-none d-md-inline-block"
+      :title="displayAuthorBadgeText"
+      >{{ __('Author') }}</span
+    >
+    <span
+      v-if="accessLevel"
+      class="note-role user-access-role has-tooltip"
+      :title="displayMemberBadgeText"
+      >{{ accessLevel }}</span
+    >
+    <span
+      v-else-if="isContributor"
+      class="note-role user-access-role has-tooltip"
+      :title="displayContributorBadgeText"
+      >{{ __('Contributor') }}</span
+    >
     <div v-if="canResolve" class="note-actions-item">
       <button
         ref="resolveButton"

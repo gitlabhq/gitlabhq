@@ -30,12 +30,12 @@ The **Overview** tab provides basic information about the alert:
 
 ![Alert Full Details](./img/alert_detail_full_v13_1.png)
 
-### Update an Alert's status
+### Update an alert's status
 
 The Alert detail view enables you to update the Alert Status.
 See [Create and manage alerts in GitLab](./alerts.md) for more details.
 
-### Create an Issue from an Alert
+### Create an issue from an alert
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/217745) in GitLab 13.1.
 
@@ -47,7 +47,7 @@ alert by clicking the **View Issue** button.
 Closing a GitLab issue associated with an alert changes the alert's status to Resolved.
 See [Create and manage alerts in GitLab](alerts.md) for more details about alert statuses.
 
-### Update an Alert's assignee
+### Update an alert's assignee
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3066) in GitLab 13.1.
 
@@ -73,7 +73,7 @@ GitLab currently only supports a single assignee per alert.
    **{angle-double-right}** **Expand sidebar** to expand it.
 1. In the right sidebar, locate the **Assignee** and click **Edit**. From the
    dropdown menu, select each user you want to assign to the alert. GitLab creates
-   a [To-Do list item](../../user/todos.md) for each user.
+   a [to-do list item](../../user/todos.md) for each user.
 
    ![Alert Details View Assignee(s)](./img/alert_todo_assignees_v13_1.png)
 
@@ -96,12 +96,12 @@ The following actions will result in a system note:
 
 ![Alert Details View System Notes](./img/alert_detail_system_notes_v13_1.png)
 
-### Create a To-Do from an Alert
+### Create a to-do from an alert
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3066) in GitLab 13.1.
 
 You can manually create [To-Do list items](../../user/todos.md) for yourself from the
-Alert details screen, and view them later on your **To-Do List**. To add a To-Do:
+Alert details screen, and view them later on your **To-Do List**. To add a to-do:
 
 1. To display the list of current alerts, click
    **{cloud-gear}** **Operations > Alerts**.
@@ -110,11 +110,11 @@ Alert details screen, and view them later on your **To-Do List**. To add a To-Do
 
    ![Alert Details Add A To Do](./img/alert_detail_add_todo_v13_1.png)
 
-Click the **To-Do** **{todo-done}** in the navigation bar to view your current To-Do list.
+Click the **To-Do** **{todo-done}** in the navigation bar to view your current to-do list.
 
 ![Alert Details Added to Do](./img/alert_detail_added_todo_v13_1.png)
 
-### View an Alert's metrics data
+### View an alert's metrics data
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/217768) in GitLab 13.2.
 
@@ -154,7 +154,7 @@ unassign their account from the alert when their role is complete.
 The alert status can be updated on the [Alert list](./alerts.md) to
 reflect if the alert has been resolved.
 
-## View an Alert's logs
+## View an alert's logs
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/217768) in GitLab 13.3.
 

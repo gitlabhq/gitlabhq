@@ -134,10 +134,10 @@ the best of GitLab Flavored Markdown in your threads, comments,
 issues and merge requests descriptions, and everywhere else GFM is
 supported.
 
-## Todos
+## To-Do List
 
-Never forget to reply to your collaborators. [GitLab Todos](todos.md)
-are a tool for working faster and more effectively with your team,
+Never forget to reply to your collaborators. [GitLab To-Do List](todos.md)
+is a tool for working faster and more effectively with your team,
 by listing all user or group mentions, as well as issues and merge
 requests you're assigned to.
 

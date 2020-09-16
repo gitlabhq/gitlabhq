@@ -128,6 +128,7 @@
   - "{,ee/}spec/**/*.rb"
   - ".gitlab-ci.yml"
   - ".gitlab/ci/**/*"
+  - "*_VERSION"
 
 .db-patterns: &db-patterns
   - "{,ee/}{,spec/}{db,migrations}/**/*"

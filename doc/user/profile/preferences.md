@@ -114,7 +114,7 @@ You have 8 options here that you can use for your default dashboard view:
 - Your projects' activity
 - Starred projects' activity
 - Your groups
-- Your [Todos](../todos.md)
+- Your [to-dos](../todos.md)
 - Assigned Issues
 - Assigned Merge Requests
 - Operations Dashboard **(PREMIUM)**

@@ -1,7 +1,8 @@
 import { shallowMount } from '@vue/test-utils';
 import { GlBanner } from '@gitlab/ui';
-import InviteMembersBanner from '~/groups/components/invite_members_banner.vue';
+import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import { setCookie, parseBoolean } from '~/lib/utils/common_utils';
+import InviteMembersBanner from '~/groups/components/invite_members_banner.vue';
 
 jest.mock('~/lib/utils/common_utils');
 
@@ -12,6 +13,7 @@ const body =
 const svgPath = '/illustrations/background';
 const inviteMembersPath = 'groups/members';
 const buttonText = 'Invite your colleagues';
+const trackLabel = 'invite_members_banner';
 
 const createComponent = (stubs = {}) => {
   return shallowMount(InviteMembersBanner, {
@@ -19,6 +21,7 @@ const createComponent = (stubs = {}) => {
       svgPath,
       inviteMembersPath,
       isDismissedKey,
+      trackLabel,
     },
     stubs,
   });
@@ -26,10 +29,51 @@ const createComponent = (stubs = {}) => {
 
 describe('InviteMembersBanner', () => {
   let wrapper;
+  let trackingSpy;
+
+  beforeEach(() => {
+    document.body.dataset.page = 'any:page';
+    trackingSpy = mockTracking('_category_', undefined, jest.spyOn);
+  });
 
   afterEach(() => {
     wrapper.destroy();
     wrapper = null;
+    unmockTracking();
+  });
+
+  describe('tracking', () => {
+    beforeEach(() => {
+      wrapper = createComponent({ GlBanner });
+    });
+
+    const trackCategory = undefined;
+    const displayEvent = 'invite_members_banner_displayed';
+    const buttonClickEvent = 'invite_members_banner_button_clicked';
+    const dismissEvent = 'invite_members_banner_dismissed';
+
+    it('sends the displayEvent when the banner is displayed', () => {
+      expect(trackingSpy).toHaveBeenCalledWith(trackCategory, displayEvent, {
+        label: trackLabel,
+      });
+    });
+
+    it('sets the button attributes for the buttonClickEvent', () => {
+      const button = wrapper.find(`[href='${wrapper.vm.inviteMembersPath}']`);
+
+      expect(button.attributes()).toMatchObject({
+        'data-track-event': buttonClickEvent,
+        'data-track-label': trackLabel,
+      });
+    });
+
+    it('sends the dismissEvent when the banner is dismissed', () => {
+      wrapper.find(GlBanner).vm.$emit('close');
+
+      expect(trackingSpy).toHaveBeenCalledWith(trackCategory, dismissEvent, {
+        label: trackLabel,
+      });
+    });
   });
 
   describe('rendering', () => {

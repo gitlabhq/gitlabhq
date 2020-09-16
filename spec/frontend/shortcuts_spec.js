@@ -63,9 +63,9 @@ describe('Shortcuts', () => {
       // Get all shortcuts specified with md-shortcuts attributes in the fixture.
       // `shortcuts` will look something like this:
       // [
-      //   [ 'command+b', 'ctrl+b' ],
-      //   [ 'command+i', 'ctrl+i' ],
-      //   [ 'command+k', 'ctrl+k' ]
+      //   [ 'mod+b' ],
+      //   [ 'mod+i' ],
+      //   [ 'mod+k' ]
       // ]
       shortcuts = $('.edit-note .js-md')
         .map(function getShortcutsFromToolbarBtn() {

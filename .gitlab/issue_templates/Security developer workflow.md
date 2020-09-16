@@ -27,7 +27,7 @@ After your merge request has been approved according to our [approval guidelines
    * At this point, it might be easy to squash the commits from the MR into one
    * You can use the script `bin/secpick` instead of the following steps, to help you cherry-picking. See the [secpick documentation]
 - [ ] Create each MR targeting the stable branch `X-Y-stable`, using the [Security Release merge request template].
-   * Every merge request will have its own set of TODOs, so make sure to complete those.
+   * Every merge request will have its own set of to-dos, so make sure to complete those.
 - [ ] On the "Related merge requests" section, ensure that `4` merge requests are associated: The one targeting `master` and the `3` backports.
 - [ ] If this issue requires less than `4` merge requests, post a message on the Security Release Tracking Issue and ping the Release Managers.
 

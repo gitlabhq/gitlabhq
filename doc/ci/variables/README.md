@@ -547,6 +547,7 @@ The order of precedence for variables is (from highest to lowest):
    and [manual pipeline run variables](#override-a-variable-by-manually-running-a-pipeline).
 1. Project-level [variables](#custom-environment-variables) or [protected variables](#protect-a-custom-variable).
 1. Group-level [variables](#group-level-environment-variables) or [protected variables](#protect-a-custom-variable).
+1. Instance-level [variables](#instance-level-cicd-environment-variables) or [protected variables](#protect-a-custom-variable).
 1. [Inherited environment variables](#inherit-environment-variables).
 1. YAML-defined [job-level variables](../yaml/README.md#variables).
 1. YAML-defined [global variables](../yaml/README.md#variables).

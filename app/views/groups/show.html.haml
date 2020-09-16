@@ -7,6 +7,7 @@
     .container-fluid.container-limited{ class: "gl-pb-2! gl-pt-6! #{@content_class}" }
       .js-group-invite-members-banner{ data: { svg_path: image_path('illustrations/merge_requests.svg'),
         is_dismissed_key: "invite_#{@group.id}_#{current_user.id}",
+        track_label: 'invite_members_banner',
         invite_members_path: group_group_members_path(@group) } }
 
 = content_for :meta_tags do

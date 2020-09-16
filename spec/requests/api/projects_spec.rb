@@ -490,6 +490,25 @@ RSpec.describe API::Projects do
           expect(json_response.first['name']).to eq(project4.name)
           expect(json_response.first['owner']['username']).to eq(user4.username)
         end
+
+        context 'when admin creates a project' do
+          before do
+            group = create(:group)
+            project_create_opts = {
+              name: 'GitLab',
+              namespace_id: group.id
+            }
+
+            Projects::CreateService.new(admin, project_create_opts).execute
+          end
+
+          it 'does not list as owned project for admin' do
+            get api('/projects', admin), params: { owned: true }
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response).to be_empty
+          end
+        end
       end
 
       context 'and with starred=true' do

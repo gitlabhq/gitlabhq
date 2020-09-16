@@ -4,13 +4,13 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 ---
 
-# Todos API
+# To-dos API
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/3188) in GitLab 8.10.
 
-## Get a list of todos
+## Get a list of to-dos
 
-Returns a list of todos. When no filter is applied, it returns all pending todos
+Returns a list of to-dos. When no filter is applied, it returns all pending to-dos
 for the current user. Different filters allow the user to precise the request.
 
 ```plaintext
@@ -25,8 +25,8 @@ Parameters:
 | `author_id` | integer | no | The ID of an author |
 | `project_id` | integer | no | The ID of a project |
 | `group_id` | integer | no | The ID of a group |
-| `state` | string | no | The state of the todo. Can be either `pending` or `done` |
-| `type` | string | no | The type of a todo. Can be either `Issue`, `MergeRequest`, `DesignManagement::Design` or `AlertManagement::Alert` |
+| `state` | string | no | The state of the to-do. Can be either `pending` or `done` |
+| `type` | string | no | The type of a to-do. Can be either `Issue`, `MergeRequest`, `DesignManagement::Design` or `AlertManagement::Alert` |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/todos"
@@ -187,10 +187,10 @@ Example Response:
 ]
 ```
 
-## Mark a todo as done
+## Mark a to-do as done
 
-Marks a single pending todo given by its ID for the current user as done. The
-todo marked as done is returned in the response.
+Marks a single pending to-do given by its ID for the current user as done. The
+to-do marked as done is returned in the response.
 
 ```plaintext
 POST /todos/:id/mark_as_done
@@ -200,7 +200,7 @@ Parameters:
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer | yes | The ID of a todo |
+| `id` | integer | yes | The ID of a to-do |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/todos/130/mark_as_done"
@@ -285,9 +285,9 @@ Example Response:
 }
 ```
 
-## Mark all todos as done
+## Mark all to-dos as done
 
-Marks all pending todos for the current user as done. It returns the HTTP status code `204` with an empty response.
+Marks all pending to-dos for the current user as done. It returns the HTTP status code `204` with an empty response.
 
 ```plaintext
 POST /todos/mark_as_done

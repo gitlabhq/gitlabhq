@@ -10,7 +10,7 @@ notify-update-gitaly:
   extends:
     - .notify-slack
   rules:
-    - if: '$CI_MERGE_REQUEST_IID && $CI_COMMIT_BRANCH == $GITALY_UPDATE_BRANCH'
+    - if: '$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME == $GITALY_UPDATE_BRANCH'
       when: on_failure
       allow_failure: true
   variables:

@@ -85,6 +85,10 @@ module NotesHelper
     note.project.team.max_member_access(note.author_id)
   end
 
+  def note_human_max_access(note)
+    note.project.team.human_max_access(note.author_id)
+  end
+
   def discussion_path(discussion)
     if discussion.for_merge_request?
       return unless discussion.diff_discussion?

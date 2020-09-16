@@ -88,8 +88,9 @@ investigate it for potential threats by
 
 The **Threat Monitoring** page's **Policy** tab displays deployed
 network policies for all available environments. You can check a
-network policy's `yaml` manifest and toggle the policy's enforcement
-status. This section has the following prerequisites:
+network policy's `yaml` manifest, toggle the policy's enforcement
+status, and create and edit deployed policies. This section has the
+following prerequisites:
 
 - Your project contains at least one [environment](../../../ci/environments/index.md)
 - You've [installed Cilium](../../clusters/applications.md#install-cilium-using-gitlab-cicd)
@@ -124,3 +125,47 @@ Disabled network policies have the
 `podSelector` block. This narrows the scope of such a policy and as a
 result it doesn't affect any pods. The policy itself is still deployed
 to the corresponding deployment namespace.
+
+### Container Network Policy editor
+
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3403) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.4.
+
+The policy editor allows you to create, edit, and delete policies. To
+create a new policy click the **New policy** button located in the
+**Policy** tab's header. To edit an existing policy, click**Edit
+policy** in the selected policy drawer.
+
+NOTE: **Note:**
+The policy editor only supports the
+[CiliumNetworkPolicy](https://docs.cilium.io/en/v1.8/policy/)specification. Regular
+Kubernetes
+[NetworkPolicy](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.19/#networkpolicy-v1-networking-k8s-io)
+resources aren't supported.
+
+The policy editor has two modes:
+
+- The visual _Rule_ mode allows you to construct and preview policy
+  rules using rule blocks and related controls.
+- YAML mode allows you to enter a policy definition in `.yaml` format
+  and is aimed at expert users and cases that the Rule mode doesn't
+  support.
+
+You can use both modes interchangeably and switch between them at any
+time. If a YAML resource is incorrect, Rule mode is automatically
+disabled. You must use YAML mode to fix your policy before Rule mode
+is available again.
+
+Rule mode supports the following rule types:
+
+- [Labels](https://docs.cilium.io/en/v1.8/policy/language/#labels-based).
+- [Entities](https://docs.cilium.io/en/v1.8/policy/language/#entities-based).
+- [IP/CIDR](https://docs.cilium.io/en/v1.8/policy/language/#ip-cidr-based). Only
+  the `toCIDR` block without `except` is supported.
+- [DNS](https://docs.cilium.io/en/v1.8/policy/language/#dns-based).
+- [Level 4](https://docs.cilium.io/en/v1.8/policy/language/#layer-4-examples)
+  can be added to all other rules.
+
+Once your policy is complete, save it by pressing the **Save policy**
+button at the bottom of the editor. Existing policies can also be
+removed from the editor interface by clicking the **Delete policy**
+button at the bottom of the editor.

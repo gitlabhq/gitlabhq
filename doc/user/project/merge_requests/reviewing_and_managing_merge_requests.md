@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: index, reference
 ---
 
-# Reviewing and managing merge requests
+# Reviewing and managing merge requests **(CORE)**
 
 Merge requests are the primary method of making changes to files in a GitLab project.
 Changes are proposed by [creating and submitting a merge request](creating_merge_requests.md),
@@ -202,6 +202,11 @@ you will be able to see:
 If there's an [environment](../../../ci/environments/index.md) and the application is
 successfully deployed to it, the deployed environment and the link to the
 Review App will be shown as well.
+
+NOTE: **Note:**
+When the default branch (for example, `main`) is red due to a failed CI pipeline, the `merge` button
+When the pipeline fails in a merge request but it can be merged nonetheless,
+the **Merge** button will be colored in red.
 
 ### Post-merge pipeline status
 
