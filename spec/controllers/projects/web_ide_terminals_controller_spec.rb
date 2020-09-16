@@ -113,7 +113,7 @@ RSpec.describe Projects::WebIdeTerminalsController do
     let(:result) { { status: :success } }
 
     before do
-      allow_next_instance_of(::Ci::WebIdeConfigService) do |instance|
+      allow_next_instance_of(::Ide::TerminalConfigService) do |instance|
         allow(instance).to receive(:execute).and_return(result)
       end
 

@@ -378,6 +378,11 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           post :reset_token
         end
         resources :feature_flags_user_lists, param: :iid, only: [:new, :edit, :show]
+
+        get '/schema/:branch/*filename',
+          to: 'web_ide_schemas#show',
+          format: false,
+          as: :schema
       end
       # End of the /-/ scope.
 

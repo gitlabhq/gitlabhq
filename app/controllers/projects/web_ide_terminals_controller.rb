@@ -11,7 +11,7 @@ class Projects::WebIdeTerminalsController < Projects::ApplicationController
   def check_config
     return respond_422 unless branch_sha
 
-    result = ::Ci::WebIdeConfigService.new(project, current_user, sha: branch_sha).execute
+    result = ::Ide::TerminalConfigService.new(project, current_user, sha: branch_sha).execute
 
     if result[:status] == :success
       head :ok

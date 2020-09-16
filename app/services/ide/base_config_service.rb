@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
-module Ci
-  class WebIdeConfigService < ::BaseService
-    include ::Gitlab::Utils::StrongMemoize
-
+module Ide
+  class BaseConfigService < ::BaseService
     ValidationError = Class.new(StandardError)
 
     WEBIDE_CONFIG_FILE = '.gitlab/.gitlab-webide.yml'.freeze
@@ -11,13 +9,19 @@ module Ci
     attr_reader :config, :config_content
 
     def execute
+      check_access_and_load_config!
+
+      success
+    rescue ValidationError => e
+      error(e.message)
+    end
+
+    protected
+
+    def check_access_and_load_config!
       check_access!
       load_config_content!
       load_config!
-
-      success(terminal: config.terminal_value)
-    rescue ValidationError => e
-      error(e.message)
     end
 
     private

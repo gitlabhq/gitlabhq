@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::WebIdeConfigService do
+RSpec.describe Ide::BaseConfigService do
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:user) { create(:user) }
   let(:sha) { 'sha' }
@@ -45,44 +45,6 @@ RSpec.describe Ci::WebIdeConfigService do
             is_expected.to include(
               status: :error,
               message: "Invalid configuration format")
-          end
-        end
-
-        context 'content is valid, but terminal not defined' do
-          let(:config_content) { '{}' }
-
-          it 'returns success' do
-            is_expected.to include(
-              status: :success,
-              terminal: nil)
-          end
-        end
-
-        context 'content is valid, with enabled terminal' do
-          let(:config_content) { 'terminal: {}' }
-
-          it 'returns success' do
-            is_expected.to include(
-              status: :success,
-              terminal: {
-                tag_list: [],
-                yaml_variables: [],
-                options: { script: ["sleep 60"] }
-              })
-          end
-        end
-
-        context 'content is valid, with custom terminal' do
-          let(:config_content) { 'terminal: { before_script: [ls] }' }
-
-          it 'returns success' do
-            is_expected.to include(
-              status: :success,
-              terminal: {
-                tag_list: [],
-                yaml_variables: [],
-                options: { before_script: ["ls"], script: ["sleep 60"] }
-              })
           end
         end
       end

@@ -141,6 +141,20 @@ fragment DesignItem on Design {
 More about fragments:
 [GraphQL Docs](https://graphql.org/learn/queries/#fragments)
 
+## Global IDs
+
+GitLab's GraphQL API expresses `id` fields as Global IDs rather than the PostgreSQL
+primary key `id`. Global ID is [a convention](https://graphql.org/learn/global-object-identification/)
+used for caching and fetching in client-side libraries.
+
+To convert a Global ID to the primary key `id`, you can use `getIdFromGraphQLId`:
+
+```javascript
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+
+const primaryKeyId = getIdFromGraphQLId(data.id);
+```
+
 ## Immutability and cache updates
 
 From Apollo version 3.0.0 all the cache updates need to be immutable; it needs to be replaced entirely

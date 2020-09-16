@@ -12,8 +12,7 @@ RSpec.describe Gitlab::WebIde::Config::Entry::Global do
 
     context 'when filtering all the entry/node names' do
       it 'contains the expected node names' do
-        expect(described_class.nodes.keys)
-          .to match_array(%i[terminal])
+        expect(described_class.nodes.keys).to match_array(described_class.allowed_keys)
       end
     end
   end
@@ -34,7 +33,7 @@ RSpec.describe Gitlab::WebIde::Config::Entry::Global do
         end
 
         it 'creates node object for each entry' do
-          expect(global.descendants.count).to eq 1
+          expect(global.descendants.count).to eq described_class.allowed_keys.length
         end
 
         it 'creates node object using valid class' do

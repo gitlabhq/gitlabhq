@@ -41,7 +41,7 @@ add a `HTTP_PRIVATE_TOKEN` header.
 GitLab's GraphQL API uses Global IDs (i.e: `"gid://gitlab/MyObject/123"`)
 and never database primary key IDs.
 
-Global ID is [a standard](https://graphql.org/learn/global-object-identification/)
+Global ID is [a convention](https://graphql.org/learn/global-object-identification/)
 used for caching and fetching in client-side libraries.
 
 See also:
