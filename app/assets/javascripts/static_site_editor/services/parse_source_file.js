@@ -17,33 +17,24 @@ const parseSourceFile = raw => {
 
   const content = (isBody = false) => (isBody ? editable.content.trim() : trimmedEditable()); // gray-matter internally adds an eof newline so we trim to bypass, open issue: https://github.com/jonschlinkert/gray-matter/issues/96
 
-  const matter = () => editable.matter;
+  const matter = () => editable.data;
 
-  const syncMatter = newMatter => {
-    const targetMatter = newMatter.replace(/---/gm, ''); // TODO dynamic delimiter removal vs. hard code
-    const currentMatter = matter();
-    const currentContent = content();
-    const newSource = currentContent.replace(currentMatter, targetMatter);
-    syncContent(newSource);
-    editable.matter = newMatter;
-  };
-
-  const matterObject = () => editable.data;
-
-  const syncMatterObject = obj => {
-    editable.data = obj;
+  const syncMatter = settings => {
+    const source = grayMatter.stringify(editable.content, settings);
+    syncContent(source);
   };
 
   const isModified = () => trimmedEditable() !== raw;
 
+  const hasMatter = () => editable.matter.length > 0;
+
   return {
     matter,
     syncMatter,
-    matterObject,
-    syncMatterObject,
     content,
     syncContent,
     isModified,
+    hasMatter,
   };
 };
 

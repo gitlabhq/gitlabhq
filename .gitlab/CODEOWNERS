@@ -10,13 +10,13 @@
 /doc/ @gl-docsteam
 /doc/administration/monitoring/ @aqualls
 /doc/development/ @marcia @mjang1
-/doc/development/documentation/ @mikelewis
+/doc/development/documentation/ @cnorris
 /doc/ci @marcel.amirault @sselhorn
 /doc/operations @aqualls @eread
 /doc/user/clusters @aqualls
 /doc/user/infrastructure @aqualls
 /doc/user/project/clusters @aqualls
-/doc/.vale/ @marcel.amirault @eread @aqualls @mikelewis
+/doc/.vale/ @marcel.amirault @eread @aqualls @cnorris
 
 [Docs Create]
 /doc/user/project/merge_requests/allow_collaboration.md @marcia

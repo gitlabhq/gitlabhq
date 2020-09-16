@@ -6,11 +6,13 @@ import { EDITOR_TYPES } from '~/vue_shared/components/rich_content_editor/consta
 import EditArea from '~/static_site_editor/components/edit_area.vue';
 import PublishToolbar from '~/static_site_editor/components/publish_toolbar.vue';
 import EditHeader from '~/static_site_editor/components/edit_header.vue';
+import EditDrawer from '~/static_site_editor/components/edit_drawer.vue';
 import UnsavedChangesConfirmDialog from '~/static_site_editor/components/unsaved_changes_confirm_dialog.vue';
 
 import {
   sourceContentTitle as title,
   sourceContentYAML as content,
+  sourceContentHeaderObjYAML as headerSettings,
   sourceContentBody as body,
   returnUrl,
 } from '../mock_data';
@@ -36,6 +38,7 @@ describe('~/static_site_editor/components/edit_area.vue', () => {
   };
 
   const findEditHeader = () => wrapper.find(EditHeader);
+  const findEditDrawer = () => wrapper.find(EditDrawer);
   const findRichContentEditor = () => wrapper.find(RichContentEditor);
   const findPublishToolbar = () => wrapper.find(PublishToolbar);
   const findUnsavedChangesConfirmDialog = () => wrapper.find(UnsavedChangesConfirmDialog);
@@ -46,11 +49,16 @@ describe('~/static_site_editor/components/edit_area.vue', () => {
 
   afterEach(() => {
     wrapper.destroy();
+    wrapper = null;
   });
 
   it('renders edit header', () => {
     expect(findEditHeader().exists()).toBe(true);
     expect(findEditHeader().props('title')).toBe(title);
+  });
+
+  it('renders edit drawer', () => {
+    expect(findEditDrawer().exists()).toBe(true);
   });
 
   it('renders rich content editor with a format pass', () => {
@@ -148,11 +156,88 @@ describe('~/static_site_editor/components/edit_area.vue', () => {
     });
   });
 
+  describe('when content has front matter', () => {
+    it('renders a closed edit drawer', () => {
+      expect(findEditDrawer().exists()).toBe(true);
+      expect(findEditDrawer().props('isOpen')).toBe(false);
+    });
+
+    it('opens the edit drawer', () => {
+      findPublishToolbar().vm.$emit('editSettings');
+
+      return wrapper.vm.$nextTick().then(() => {
+        expect(findEditDrawer().props('isOpen')).toBe(true);
+      });
+    });
+
+    it('closes the edit drawer', () => {
+      findEditDrawer().vm.$emit('close');
+
+      return wrapper.vm.$nextTick().then(() => {
+        expect(findEditDrawer().props('isOpen')).toBe(false);
+      });
+    });
+
+    it('forwards the matter settings when the drawer is open', () => {
+      findPublishToolbar().vm.$emit('editSettings');
+
+      jest.spyOn(wrapper.vm.parsedSource, 'matter').mockReturnValueOnce(headerSettings);
+
+      return wrapper.vm.$nextTick().then(() => {
+        expect(findEditDrawer().props('settings')).toEqual(headerSettings);
+      });
+    });
+
+    it('enables toolbar submit button', () => {
+      expect(findPublishToolbar().props('hasSettings')).toBe(true);
+    });
+
+    it('syncs matter changes regardless of edit mode', () => {
+      const newSettings = { title: 'test' };
+      const spySyncParsedSource = jest.spyOn(wrapper.vm.parsedSource, 'syncMatter');
+
+      findEditDrawer().vm.$emit('updateSettings', newSettings);
+
+      expect(spySyncParsedSource).toHaveBeenCalledWith(newSettings);
+    });
+
+    it('syncs matter changes to content in markdown mode', () => {
+      wrapper.setData({ editorMode: EDITOR_TYPES.markdown });
+
+      const newSettings = { title: 'test' };
+
+      findEditDrawer().vm.$emit('updateSettings', newSettings);
+
+      return wrapper.vm.$nextTick().then(() => {
+        expect(findRichContentEditor().props('content')).toContain('title: test');
+      });
+    });
+  });
+
+  describe('when content lacks front matter', () => {
+    beforeEach(() => {
+      buildWrapper({ content: body });
+    });
+
+    afterEach(() => {
+      wrapper.destroy();
+    });
+
+    it('does not render edit drawer', () => {
+      expect(findEditDrawer().exists()).toBe(false);
+    });
+
+    it('does not enable toolbar submit button', () => {
+      expect(findPublishToolbar().props('hasSettings')).toBe(false);
+    });
+  });
+
   describe('when content is submitted', () => {
     it('should format the content', () => {
       findPublishToolbar().vm.$emit('submit', content);
 
       expect(wrapper.emitted('submit')[0][0].content).toBe(`${content} format-pass format-pass`);
+      expect(wrapper.emitted('submit').length).toBe(1);
     });
   });
 });

@@ -465,13 +465,17 @@ class MyMigration < ActiveRecord::Migration[6.0]
   disable_ddl_transaction!
 
   def up
-    remove_concurrent_index :table_name, :column_name
+    remove_concurrent_index :table_name, :column_name, name: :index_name
   end
 end
 ```
 
 Note that it is not necessary to check if the index exists prior to
-removing it.
+removing it, however it is required to specify the name of the
+index that is being removed. This can be done either by passing the name
+as an option to the appropriate form of `remove_index` or `remove_concurrent_index`,
+or more simply by using the `remove_concurrent_index_by_name` method. Explicitly
+specifying the name is important to ensure the correct index is removed.
 
 For a small table (such as an empty one or one with less than `1,000` records),
 it is recommended to use `remove_index` in a single-transaction migration,
@@ -512,10 +516,15 @@ class MyMigration < ActiveRecord::Migration[6.0]
   end
 
   def down
-    remove_concurrent_index :table, :column
+    remove_concurrent_index :table, :column, name: index_name
   end
 end
 ```
+
+You must explicitly name indexes that are created with more complex
+definitions beyond table name, column name(s) and uniqueness constraint.
+Consult the [Adding Database Indexes](adding_database_indexes.md#requirements-for-naming-indexes)
+guide for more details.
 
 If you need to add a unique index, please keep in mind there is the possibility
 of existing duplicates being present in the database. This means that should
@@ -525,6 +534,42 @@ unique index.
 For a small table (such as an empty one or one with less than `1,000` records),
 it is recommended to use `add_index` in a single-transaction migration, combining it with other
 operations that don't require `disable_ddl_transaction!`.
+
+## Testing for existence of indexes
+
+If a migration requires conditional logic based on the absence or
+presence of an index, you must test for existence of that index using
+its name. This helps avoids problems with how Rails compares index definitions,
+which can lead to unexpected results. For more details, review the
+[Adding Database Indexes](adding_database_indexes.md#why-explicit-names-are-required)
+guide.
+
+The easiest way to test for existence of an index by name is to use the
+`index_name_exists?` method, but the `index_exists?` method can also
+be used with a name option. For example:
+
+```ruby
+class MyMigration < ActiveRecord::Migration[6.0]
+  include Gitlab::Database::MigrationHelpers
+
+  INDEX_NAME = 'index_name'
+
+  def up
+    # an index must be conditionally created due to schema inconsistency
+    unless index_exists?(:table_name, :column_name, name: INDEX_NAME)
+      add_index :table_name, :column_name, name: INDEX_NAME
+    end
+  end
+
+  def down
+    # no op
+  end
+end
+```
+
+Keep in mind that concurrent index helpers like `add_concurrent_index`,
+`remove_concurrent_index`, and `remove_concurrent_index_by_name` already
+perform existence checks internally.
 
 ## Adding foreign-key constraints
 

@@ -6,6 +6,11 @@ export default {
     GlButton,
   },
   props: {
+    hasSettings: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     returnUrl: {
       type: String,
       required: false,
@@ -31,12 +36,21 @@ export default {
         s__('StaticSiteEditor|Return to site')
       }}</gl-button>
       <gl-button
+        v-if="hasSettings"
+        ref="settings"
+        :disabled="savingChanges"
+        @click="$emit('editSettings')"
+      >
+        {{ __('Settings') }}
+      </gl-button>
+      <gl-button
+        ref="submit"
         variant="success"
         :disabled="!saveable"
         :loading="savingChanges"
         @click="$emit('submit')"
       >
-        <span>{{ __('Submit Changes') }}</span>
+        {{ __('Submit changes') }}
       </gl-button>
     </div>
   </div>

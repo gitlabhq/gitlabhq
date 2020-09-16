@@ -8,6 +8,7 @@ module QA
           include QA::Page::Settings::Common
           include Component::Select2
           include SubMenus::Project
+          include Component::Breadcrumbs
 
           view 'app/views/projects/edit.html.haml' do
             element :advanced_settings

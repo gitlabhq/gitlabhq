@@ -403,6 +403,7 @@ sanitization
 sbt
 scatterplot
 scatterplots
+Schemastore
 Sendmail
 Sentry
 serializer

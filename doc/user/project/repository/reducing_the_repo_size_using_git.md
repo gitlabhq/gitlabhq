@@ -35,7 +35,7 @@ other internal references (refs) that are automatically created by GitLab. These
 
 - `refs/merge-requests/*` for merge requests.
 - `refs/pipelines/*` for
-  [pipelines](../../../ci/pipelines/index.md#troubleshooting-fatal-reference-is-not-a-tree).
+  [pipelines](../../../ci/troubleshooting.md#fatal-reference-is-not-a-tree-error).
 - `refs/environments/*` for environments.
 
 Git doesn't usually download these refs to make cloning and fetch faster, but we can use the `--mirror` option to

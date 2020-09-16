@@ -18102,6 +18102,9 @@ msgstr ""
 msgid "Page not found"
 msgstr ""
 
+msgid "Page settings"
+msgstr ""
+
 msgid "Page was successfully deleted"
 msgstr ""
 
@@ -24336,13 +24339,13 @@ msgstr ""
 msgid "Submit %{humanized_resource_name}"
 msgstr ""
 
-msgid "Submit Changes"
-msgstr ""
-
 msgid "Submit a review"
 msgstr ""
 
 msgid "Submit as spam"
+msgstr ""
+
+msgid "Submit changes"
 msgstr ""
 
 msgid "Submit feedback"

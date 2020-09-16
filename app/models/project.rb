@@ -41,6 +41,10 @@ class Project < ApplicationRecord
 
   STATISTICS_ATTRIBUTE = 'repositories_count'
   UNKNOWN_IMPORT_URL = 'http://unknown.git'
+  # Hashed Storage versions handle rolling out new storage to project and dependents models:
+  # nil: legacy
+  # 1: repository
+  # 2: attachments
   LATEST_STORAGE_VERSION = 2
   HASHED_STORAGE_FEATURES = {
     repository: 1,
