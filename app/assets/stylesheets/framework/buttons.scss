@@ -542,3 +542,13 @@ fieldset[disabled] .btn,
 .btn-no-padding {
   padding: 0;
 }
+
+// This class helps convert `.gl-button` children so that they consistently
+// match the style of `.btn` elements which might be around them. Ideally we
+// wouldn't need this class.
+//
+// Remove by upgrading all buttons in a container to use the new `.gl-button` style.
+.gl-button-deprecated-adapter .gl-button {
+  box-shadow: none;
+  border-width: 1px;
+}

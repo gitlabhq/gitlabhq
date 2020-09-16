@@ -40,7 +40,7 @@ module Gitlab
       private
 
       def topology_fetch_all_data
-        with_prometheus_client(fallback: {}) do |client|
+        with_prometheus_client(fallback: {}, verify: false) do |client|
           {
             application_requests_per_hour: topology_app_requests_per_hour(client),
             query_apdex_weekly_average: topology_query_apdex_weekly_average(client),

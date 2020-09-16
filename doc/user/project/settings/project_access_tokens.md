@@ -15,10 +15,7 @@ type: reference, howto
 > - It's recommended for production use.
 > - For GitLab self-managed instances, GitLab administrators can [disable it](#enable-or-disable-project-access-tokens).
 
-Project access tokens are scoped to a project and can be used to authenticate with the [GitLab API](../../../api/README.md#personalproject-access-tokens).
-
-<!-- Commented out until https://gitlab.com/gitlab-org/gitlab/-/issues/219551 is fixed -->
-<!-- You can also use project access tokens with Git to authenticate over HTTP or SSH. -->
+Project access tokens are scoped to a project and can be used to authenticate with the [GitLab API](../../../api/README.md#personalproject-access-tokens). You can also use project access tokens with Git to authenticate over HTTP or SSH.
 
 Project access tokens expire on the date you define, at midnight UTC.
 

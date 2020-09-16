@@ -104,6 +104,7 @@ class ProfilesController < Profiles::ApplicationController
       :bio,
       :email,
       :role,
+      :gitpod_enabled,
       :hide_no_password,
       :hide_no_ssh_key,
       :hide_project_limit,

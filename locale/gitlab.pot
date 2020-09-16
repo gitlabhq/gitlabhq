@@ -9240,9 +9240,6 @@ msgstr ""
 msgid "Edit files in the editor and commit changes here"
 msgstr ""
 
-msgid "Edit fork in Web IDE"
-msgstr ""
-
 msgid "Edit group: %{group_name}"
 msgstr ""
 
@@ -9420,7 +9417,16 @@ msgstr ""
 msgid "Enable"
 msgstr ""
 
+msgid "Enable %{gitpod_link} integration to launch a development environment in your browser directly from GitLab."
+msgstr ""
+
 msgid "Enable Auto DevOps"
+msgstr ""
+
+msgid "Enable Gitpod"
+msgstr ""
+
+msgid "Enable Gitpod?"
 msgstr ""
 
 msgid "Enable HTML emails"
@@ -11994,6 +12000,21 @@ msgid "Gitea Import"
 msgstr ""
 
 msgid "Gitlab Pages"
+msgstr ""
+
+msgid "Gitpod"
+msgstr ""
+
+msgid "Gitpod|Add the URL to your Gitpod instance configured to read your GitLab projects."
+msgstr ""
+
+msgid "Gitpod|Enable Gitpod integration"
+msgstr ""
+
+msgid "Gitpod|Gitpod URL"
+msgstr ""
+
+msgid "Gitpod|e.g. https://gitpod.example.com"
 msgstr ""
 
 msgid "Given access %{time_ago}"
@@ -14592,6 +14613,9 @@ msgid "Latest changes"
 msgstr ""
 
 msgid "Latest pipeline for the most recent commit on this branch"
+msgstr ""
+
+msgid "Launch a ready-to-code development environment for your project."
 msgstr ""
 
 msgid "Lead"
@@ -20679,6 +20703,9 @@ msgstr ""
 msgid "Quick range"
 msgstr ""
 
+msgid "Quickly and easily edit multiple files in your project."
+msgstr ""
+
 msgid "README"
 msgstr ""
 
@@ -26561,6 +26588,9 @@ msgstr ""
 msgid "To update Snippets with multiple files, you must use the `files` parameter"
 msgstr ""
 
+msgid "To use Gitpod you must first enable the feature in the integrations section of your %{user_prefs}."
+msgstr ""
+
 msgid "To view all %{scannedResourcesCount} scanned URLs, please download the CSV file"
 msgstr ""
 
@@ -30890,6 +30920,9 @@ msgid "uploads"
 msgstr ""
 
 msgid "user avatar"
+msgstr ""
+
+msgid "user preferences"
 msgstr ""
 
 msgid "username"

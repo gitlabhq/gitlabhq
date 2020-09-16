@@ -120,6 +120,10 @@
 - name: merge_request_action
   category: source_code
   aggregation: daily
+- name: i_source_code_code_intelligence
+  redis_slot: source_code
+  category: source_code
+  aggregation: daily
 # Incident management
 - name: incident_management_alert_status_changed
   redis_slot: incident_management

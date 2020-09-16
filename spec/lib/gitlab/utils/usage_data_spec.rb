@@ -106,35 +106,11 @@ RSpec.describe Gitlab::Utils::UsageData do
       end
     end
 
-    context 'when Prometheus is available from settings' do
-      before do
-        expect(Gitlab::Prometheus::Internal).to receive(:prometheus_enabled?).and_return(true)
-        expect(Gitlab::Prometheus::Internal).to receive(:uri).and_return('http://prom:9090')
-      end
-
-      it_behaves_like 'query data from Prometheus'
-    end
-
-    context 'when Prometheus is available from Consul service discovery' do
-      before do
-        expect(Gitlab::Prometheus::Internal).to receive(:prometheus_enabled?).and_return(false)
-        expect(Gitlab::Consul::Internal).to receive(:api_url).and_return('http://localhost:8500')
-        expect(Gitlab::Consul::Internal).to receive(:discover_prometheus_uri).and_return('http://prom:9090')
-      end
-
-      it_behaves_like 'query data from Prometheus'
-    end
-
-    context 'when Prometheus is not available' do
-      before do
-        expect(Gitlab::Prometheus::Internal).to receive(:prometheus_enabled?).and_return(false)
-        expect(Gitlab::Consul::Internal).to receive(:api_url).and_return(nil)
-      end
-
+    shared_examples 'does not query data from Prometheus' do
       it 'returns nil by default' do
         result = described_class.with_prometheus_client { |client| client }
 
-        expect(result).to be nil
+        expect(result).to be_nil
       end
 
       it 'returns fallback if provided' do
@@ -142,6 +118,74 @@ RSpec.describe Gitlab::Utils::UsageData do
 
         expect(result).to eq([])
       end
+    end
+
+    shared_examples 'try to query Prometheus with given address' do
+      context 'Prometheus is ready' do
+        before do
+          stub_request(:get, /\/-\/ready/)
+              .to_return(status: 200, body: 'Prometheus is Ready.\n')
+        end
+
+        context 'Prometheus is reachable through HTTPS' do
+          it_behaves_like 'query data from Prometheus'
+        end
+
+        context 'Prometheus is not reachable through HTTPS' do
+          before do
+            stub_request(:get, /https:\/\/.*/).to_raise(Errno::ECONNREFUSED)
+          end
+
+          context 'Prometheus is reachable through HTTP' do
+            it_behaves_like 'query data from Prometheus'
+          end
+
+          context 'Prometheus is not reachable through HTTP' do
+            before do
+              stub_request(:get, /http:\/\/.*/).to_raise(Errno::ECONNREFUSED)
+            end
+
+            it_behaves_like 'does not query data from Prometheus'
+          end
+        end
+      end
+
+      context 'Prometheus is not ready' do
+        before do
+          stub_request(:get, /\/-\/ready/)
+              .to_return(status: 503, body: 'Service Unavailable')
+        end
+
+        it_behaves_like 'does not query data from Prometheus'
+      end
+    end
+
+    context 'when Prometheus server address is available from settings' do
+      before do
+        expect(Gitlab::Prometheus::Internal).to receive(:prometheus_enabled?).and_return(true)
+        expect(Gitlab::Prometheus::Internal).to receive(:server_address).and_return('prom:9090')
+      end
+
+      it_behaves_like 'try to query Prometheus with given address'
+    end
+
+    context 'when Prometheus server address is available from Consul service discovery' do
+      before do
+        expect(Gitlab::Prometheus::Internal).to receive(:prometheus_enabled?).and_return(false)
+        expect(Gitlab::Consul::Internal).to receive(:api_url).and_return('http://localhost:8500')
+        expect(Gitlab::Consul::Internal).to receive(:discover_prometheus_server_address).and_return('prom:9090')
+      end
+
+      it_behaves_like 'try to query Prometheus with given address'
+    end
+
+    context 'when Prometheus server address is not available' do
+      before do
+        expect(Gitlab::Prometheus::Internal).to receive(:prometheus_enabled?).and_return(false)
+        expect(Gitlab::Consul::Internal).to receive(:api_url).and_return(nil)
+      end
+
+      it_behaves_like 'does not query data from Prometheus'
     end
   end
 

@@ -242,6 +242,7 @@ request:
 1. The [GitLab Development Kit](https://gitlab.com/gitlab-org/gitlab-development-kit).
 1. The [CI environment preparation](https://gitlab.com/gitlab-org/gitlab/blob/master/scripts/prepare_build.sh).
 1. The [Omnibus package creator](https://gitlab.com/gitlab-org/omnibus-gitlab).
+1. The [Cloud Native GitLab Dockerfiles](https://gitlab.com/gitlab-org/build/CNG)
 
 ## Incremental improvements
 

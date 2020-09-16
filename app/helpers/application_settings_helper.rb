@@ -222,6 +222,8 @@ module ApplicationSettingsHelper
       :gitaly_timeout_default,
       :gitaly_timeout_medium,
       :gitaly_timeout_fast,
+      :gitpod_enabled,
+      :gitpod_url,
       :grafana_enabled,
       :grafana_url,
       :gravatar_enabled,

@@ -11,6 +11,8 @@ module Ci
 
     default_value_for :data_store, :redis
 
+    after_create { metrics.increment_trace_operation(operation: :chunked) }
+
     CHUNK_SIZE = 128.kilobytes
     WRITE_LOCK_RETRY = 10
     WRITE_LOCK_SLEEP = 0.01.seconds
@@ -182,6 +184,8 @@ module Ci
       end
 
       current_store.append_data(self, value, offset).then do |stored|
+        metrics.increment_trace_operation(operation: :appended)
+
         raise ArgumentError, 'Trace appended incorrectly' if stored != new_size
       end
 
@@ -204,6 +208,10 @@ module Ci
        { ttl: WRITE_LOCK_TTL,
          retries: WRITE_LOCK_RETRY,
          sleep_sec: WRITE_LOCK_SLEEP }]
+    end
+
+    def metrics
+      @metrics ||= ::Gitlab::Ci::Trace::Metrics.new
     end
   end
 end

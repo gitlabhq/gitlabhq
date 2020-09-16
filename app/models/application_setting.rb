@@ -132,6 +132,11 @@ class ApplicationSetting < ApplicationRecord
             presence: true,
             if: :sourcegraph_enabled
 
+  validates :gitpod_url,
+            presence: true,
+            addressable_url: { enforce_sanitization: true },
+            if: :gitpod_enabled
+
   validates :snowplow_collector_hostname,
             presence: true,
             hostname: true,

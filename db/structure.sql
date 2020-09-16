@@ -9272,6 +9272,9 @@ CREATE TABLE public.application_settings (
     enforce_namespace_storage_limit boolean DEFAULT false NOT NULL,
     container_registry_delete_tags_service_timeout integer DEFAULT 250 NOT NULL,
     elasticsearch_client_request_timeout integer DEFAULT 0 NOT NULL,
+    gitpod_enabled boolean DEFAULT false NOT NULL,
+    gitpod_url text DEFAULT 'https://gitpod.io/'::text,
+    CONSTRAINT check_2dba05b802 CHECK ((char_length(gitpod_url) <= 255)),
     CONSTRAINT check_51700b31b5 CHECK ((char_length(default_branch_name) <= 255)),
     CONSTRAINT check_9c6c447a13 CHECK ((char_length(maintenance_mode_message) <= 255)),
     CONSTRAINT check_d03919528d CHECK ((char_length(container_registry_vendor) <= 255)),
@@ -16277,7 +16280,8 @@ CREATE TABLE public.user_preferences (
     tab_width smallint,
     feature_filter_type bigint,
     experience_level smallint,
-    view_diffs_file_by_file boolean DEFAULT false NOT NULL
+    view_diffs_file_by_file boolean DEFAULT false NOT NULL,
+    gitpod_enabled boolean DEFAULT false NOT NULL
 );
 
 CREATE SEQUENCE public.user_preferences_id_seq

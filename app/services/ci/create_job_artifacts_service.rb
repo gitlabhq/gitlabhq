@@ -2,6 +2,8 @@
 
 module Ci
   class CreateJobArtifactsService < ::BaseService
+    include Gitlab::Utils::UsageData
+
     ArtifactsExistError = Class.new(StandardError)
 
     LSIF_ARTIFACT_TYPE = 'lsif'
@@ -22,7 +24,11 @@ module Ci
       return result unless result[:status] == :success
 
       headers = JobArtifactUploader.workhorse_authorize(has_length: false, maximum_size: max_size(artifact_type))
-      headers[:ProcessLsif] = lsif?(artifact_type)
+
+      if lsif?(artifact_type)
+        headers[:ProcessLsif] = true
+        track_usage_event('i_source_code_code_intelligence', project)
+      end
 
       success(headers: headers)
     end

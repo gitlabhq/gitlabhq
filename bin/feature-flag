@@ -60,11 +60,11 @@ class FeatureFlagOptionParser
           options.force = value
         end
 
-        opts.on('-m', '--introduced-by-url [string]', String, 'URL to Merge Request introducing Feature Flag') do |value|
+        opts.on('-m', '--introduced-by-url [string]', String, 'URL of Merge Request introducing the Feature Flag') do |value|
           options.introduced_by_url = value
         end
 
-        opts.on('-i', '--rollout-issue-url [string]', String, 'URL to Issue rolling out Feature Flag') do |value|
+        opts.on('-i', '--rollout-issue-url [string]', String, 'URL of Issue rolling out the Feature Flag') do |value|
           options.rollout_issue_url = value
         end
 
@@ -106,7 +106,7 @@ class FeatureFlagOptionParser
 
     def read_group
       $stdout.puts
-      $stdout.puts ">> Please specify the group introducing feature flag, like `group::apm`:"
+      $stdout.puts ">> Specify the group introducing the feature flag, like `group::apm`:"
 
       loop do
         $stdout.print "?> "
@@ -114,7 +114,7 @@ class FeatureFlagOptionParser
         group = nil if group.empty?
         return group if group.nil? || group.start_with?('group::')
 
-        $stderr.puts "Group needs to include `group::`"
+        $stderr.puts "The group needs to include `group::`"
       end
     end
 
@@ -123,7 +123,7 @@ class FeatureFlagOptionParser
       return TYPES.first.first if TYPES.one?
 
       $stdout.puts
-      $stdout.puts ">> Please specify the type of your feature flag:"
+      $stdout.puts ">> Specify the feature flag type:"
       $stdout.puts
       TYPES.each do |type, data|
         $stdout.puts "#{type.to_s.rjust(15)}#{' '*6}#{data[:description]}"
@@ -141,7 +141,7 @@ class FeatureFlagOptionParser
 
     def read_introduced_by_url
       $stdout.puts
-      $stdout.puts ">> If you have MR open, can you paste the URL here? (or enter to skip)"
+      $stdout.puts ">> URL of the MR introducing the feature flag (enter to skip):"
 
       loop do
         $stdout.print "?> "
@@ -166,11 +166,11 @@ class FeatureFlagOptionParser
       issue_new_url = url + "?" + URI.encode_www_form(params)
 
       $stdout.puts
-      $stdout.puts ">> Open this URL and fill the rest of details:"
+      $stdout.puts ">> Open this URL and fill in the rest of the details:"
       $stdout.puts issue_new_url
       $stdout.puts
 
-      $stdout.puts ">> Paste URL of `rollout issue` here, or enter to skip:"
+      $stdout.puts ">> URL of the rollout issue (enter to skip):"
 
       loop do
         $stdout.print "?> "

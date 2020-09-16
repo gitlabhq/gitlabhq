@@ -8,7 +8,7 @@ RSpec.describe Ci::UpdateBuildStateService do
   let(:build) { create(:ci_build, :running, pipeline: pipeline) }
   let(:metrics) { spy('metrics') }
 
-  subject { described_class.new(build, params, metrics) }
+  subject { described_class.new(build, params) }
 
   before do
     stub_feature_flags(ci_enable_live_trace: true)
@@ -31,7 +31,7 @@ RSpec.describe Ci::UpdateBuildStateService do
       end
 
       it 'does not increment finalized trace metric' do
-        subject.execute
+        execute_with_stubbed_metrics!
 
         expect(metrics)
           .not_to have_received(:increment_trace_operation)
@@ -50,11 +50,16 @@ RSpec.describe Ci::UpdateBuildStateService do
     context 'when request payload carries a trace' do
       let(:params) { { state: 'success', trace: 'overwritten' } }
 
-      it 'overwrites a trace and updates trace operation metric' do
+      it 'overwrites a trace' do
         result = subject.execute
 
         expect(build.trace.raw).to eq 'overwritten'
         expect(result.status).to eq 200
+      end
+
+      it 'updates overwrite operation metric' do
+        execute_with_stubbed_metrics!
+
         expect(metrics)
           .to have_received(:increment_trace_operation)
           .with(operation: :overwrite)
@@ -96,7 +101,7 @@ RSpec.describe Ci::UpdateBuildStateService do
       end
 
       it 'increments trace finalized operation metric' do
-        subject.execute
+        execute_with_stubbed_metrics!
 
         expect(metrics)
           .to have_received(:increment_trace_operation)
@@ -130,7 +135,7 @@ RSpec.describe Ci::UpdateBuildStateService do
       end
 
       it 'increments trace accepted operation metric' do
-        subject.execute
+        execute_with_stubbed_metrics!
 
         expect(metrics)
           .to have_received(:increment_trace_operation)
@@ -172,7 +177,7 @@ RSpec.describe Ci::UpdateBuildStateService do
         end
 
         it 'increments discarded traces metric' do
-          subject.execute
+          execute_with_stubbed_metrics!
 
           expect(metrics)
             .to have_received(:increment_trace_operation)
@@ -180,7 +185,7 @@ RSpec.describe Ci::UpdateBuildStateService do
         end
 
         it 'does not increment finalized trace metric' do
-          subject.execute
+          execute_with_stubbed_metrics!
 
           expect(metrics)
             .not_to have_received(:increment_trace_operation)
@@ -203,7 +208,7 @@ RSpec.describe Ci::UpdateBuildStateService do
         end
 
         it 'increments conflict trace metric' do
-          subject.execute
+          execute_with_stubbed_metrics!
 
           expect(metrics)
             .to have_received(:increment_trace_operation)
@@ -223,5 +228,11 @@ RSpec.describe Ci::UpdateBuildStateService do
         end
       end
     end
+  end
+
+  def execute_with_stubbed_metrics!
+    described_class
+      .new(build, params, metrics)
+      .execute
   end
 end

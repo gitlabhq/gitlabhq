@@ -191,14 +191,44 @@ module TreeHelper
 
   def vue_file_list_data(project, ref)
     {
-      can_push_code: current_user&.can?(:push_code, project) && "true",
       project_path: project.full_path,
       project_short_path: project.path,
-      fork_path: current_user&.fork_of(project)&.full_path,
       ref: ref,
       escaped_ref: ActionDispatch::Journey::Router::Utils.escape_path(ref),
       full_name: project.name_with_namespace
     }
+  end
+
+  def ide_base_path(project)
+    can_push_code = current_user&.can?(:push_code, project)
+    fork_path = current_user&.fork_of(project)&.full_path
+
+    if can_push_code
+      project.full_path
+    else
+      fork_path || project.full_path
+    end
+  end
+
+  def vue_ide_link_data(project, ref)
+    can_collaborate = can_collaborate_with_project?(project)
+    can_create_mr_from_fork = can?(current_user, :fork_project, project) && can?(current_user, :create_merge_request_in, project)
+    show_web_ide_button = (can_collaborate || current_user&.already_forked?(project) || can_create_mr_from_fork)
+
+    {
+      ide_base_path: ide_base_path(project),
+      needs_to_fork: !can_collaborate && !current_user&.already_forked?(project),
+      show_web_ide_button: show_web_ide_button,
+      show_gitpod_button: show_web_ide_button && Gitlab::Gitpod.feature_and_settings_enabled?(project),
+      gitpod_url: full_gitpod_url(project, ref),
+      gitpod_enabled: current_user&.gitpod_enabled
+    }
+  end
+
+  def full_gitpod_url(project, ref)
+    return "" unless Gitlab::Gitpod.feature_and_settings_enabled?(project)
+
+    "#{Gitlab::CurrentSettings.gitpod_url}##{project_tree_url(project, tree_join(ref, @path || ''))}"
   end
 
   def directory_download_links(project, ref, archive_prefix)

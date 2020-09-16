@@ -57,6 +57,7 @@ Complementary reads:
 - [Generate a changelog entry with `bin/changelog`](changelog.md)
 - [Requesting access to Chatops on GitLab.com](chatops_on_gitlabcom.md#requesting-access) (for GitLab team members)
 - [Patch release process for developers](https://gitlab.com/gitlab-org/release/docs/blob/master/general/patch/process.md#process-for-developers)
+- [Adding a new service component to GitLab](adding_service_component.md)
 
 ## UX and Frontend guides
 

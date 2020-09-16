@@ -815,11 +815,9 @@ module Gitlab
       end
 
       # rubocop: disable CodeReuse/ActiveRecord
-      # rubocop: disable UsageData/DistinctCountByLargeForeignKey
       def cluster_applications_user_distinct_count(applications, time_period)
         distinct_count(applications.where(time_period).available.joins(:cluster), 'clusters.user_id')
       end
-      # rubocop: enable UsageData/DistinctCountByLargeForeignKey
 
       def clusters_user_distinct_count(clusters, time_period)
         distinct_count(clusters.where(time_period), :user_id)

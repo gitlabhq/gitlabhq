@@ -42,6 +42,15 @@ module Gitlab
       response_body == HEALTHY_RESPONSE
     end
 
+    def ready?
+      response = get(ready_url, {})
+
+      # From Prometheus docs: This endpoint returns 200 when Prometheus is ready to serve traffic (i.e. respond to queries).
+      response.code == 200
+    rescue => e
+      raise PrometheusClient::UnexpectedResponseError, "#{e.message}"
+    end
+
     def proxy(type, args)
       path = api_path(type)
       get(path, args)
@@ -103,7 +112,11 @@ module Gitlab
     end
 
     def health_url
-      [api_url, '-/healthy'].join('/')
+      "#{api_url}/-/healthy"
+    end
+
+    def ready_url
+      "#{api_url}/-/ready"
     end
 
     private

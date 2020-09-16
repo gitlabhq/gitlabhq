@@ -12,8 +12,10 @@ RSpec.describe DesignManagement::Design do
   let_it_be(:deleted_design) { create(:design, :with_versions, deleted: true) }
 
   it_behaves_like 'a class that supports relative positioning' do
+    let_it_be(:relative_parent) { create(:issue) }
+
     let(:factory) { :design }
-    let(:default_params) { { issue: issue } }
+    let(:default_params) { { issue: relative_parent } }
   end
 
   describe 'relations' do

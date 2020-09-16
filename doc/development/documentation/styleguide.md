@@ -1120,16 +1120,14 @@ they need to interact with the application.
 When you take screenshots:
 
 - *Capture the most relevant area of the page.* Don't include unnecessary white
-  space or areas of the page that don't help illustrate your point. Also, don't
-  include the entire page if you don't have to, but also ensure the image
-  contains enough information to allow the user to determine where things are.
-- *Be consistent.* Find a browser window size that works for you that also
-  displays all areas of the product, including the left navigation (usually >
-  1200px wide). For consistency, use this browser window size for your
-  screenshots by installing a browser extension for setting a window to a
-  specific size (for example,
-  [Window Resizer](https://chrome.google.com/webstore/detail/window-resizer/kkelicaakdanhinjdeammmilcgefonfh/related?hl=en)
-  for Google Chrome).
+  space or areas of the page that don't help illustrate the point. The left
+  sidebar of the GitLab user interface can change, so don't include the sidebar
+  if it's not necessary.
+- *Keep it small.* If you don't need to show the full width of the screen, don't.
+  A value of 1000 pixels is a good maximum width for your screenshot image.
+- *Be consistent.* Coordinate screenshots with the other screenshots already on
+  a documentation page. For example, if other screenshots include the left
+  sidebar, include the sidebar in all screenshots.
 
 ### Save the image
 

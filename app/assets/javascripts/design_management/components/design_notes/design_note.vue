@@ -123,7 +123,7 @@ export default {
     </div>
     <template v-if="!isEditing">
       <div
-        class="note-text js-note-text"
+        class="note-text js-note-text md"
         data-qa-selector="note_content"
         v-html="note.bodyHtml"
       ></div>

@@ -21,6 +21,25 @@ RSpec.describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
     stub_artifacts_object_storage
   end
 
+  describe 'chunk creation' do
+    let(:metrics) { spy('metrics') }
+
+    before do
+      allow(::Gitlab::Ci::Trace::Metrics)
+        .to receive(:new)
+        .and_return(metrics)
+    end
+
+    it 'increments trace operation chunked metric' do
+      build_trace_chunk.save!
+
+      expect(metrics)
+        .to have_received(:increment_trace_operation)
+        .with(operation: :chunked)
+        .once
+    end
+  end
+
   context 'FastDestroyAll' do
     let(:parent) { create(:project) }
     let(:pipeline) { create(:ci_pipeline, project: parent) }
@@ -344,6 +363,24 @@ RSpec.describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
 
         it_behaves_like 'Appending correctly'
         it_behaves_like 'Scheduling no sidekiq worker'
+      end
+    end
+
+    describe 'append metrics' do
+      let(:metrics) { spy('metrics') }
+
+      before do
+        allow(::Gitlab::Ci::Trace::Metrics)
+          .to receive(:new)
+          .and_return(metrics)
+      end
+
+      it 'increments trace operation appended metric' do
+        build_trace_chunk.append('123456', 0)
+
+        expect(metrics)
+          .to have_received(:increment_trace_operation)
+          .with(operation: :appended)
       end
     end
   end

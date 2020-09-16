@@ -235,11 +235,10 @@ For example, to add support for files referenced by a `Widget` model with a
 `ee/lib/gitlab/geo.rb`:
 
    ```ruby
-   def self.replicator_classes
-     classes = [::Geo::PackageFileReplicator,
-                ::Geo::WidgetReplicator]
-
-     classes.select(&:enabled?)
+   REPLICATOR_CLASSES = [
+      ::Geo::PackageFileReplicator,
+      ::Geo::WidgetReplicator
+   ]
    end
    ```
 
@@ -314,10 +313,6 @@ For example, to add support for files referenced by a `Widget` model with a
      belongs_to :widget, class_name: 'Widget'
    end
    ```
-
-   The method `has_create_events?` should return `true` in most of the cases.
-   However, if the entity you add doesn't have the create event, don't add the
-   method at all.
 
 1. Update `REGISTRY_CLASSES` in `ee/app/workers/geo/secondary/registry_consistency_worker.rb`.
 
@@ -435,7 +430,7 @@ for verification state to the widgets table:
    ```
 
 1. Add a partial index on `verification_failure` and `verification_checksum` to ensure
-   re-verification can be performed efficiently. Add a migration in `ee/db/geo/migrate/`:
+   re-verification can be performed efficiently:
 
    ```ruby
    # frozen_string_literal: true
@@ -461,9 +456,9 @@ for verification state to the widgets table:
 
 ##### Option 2: Create a separate `widget_states` table with verification state fields
 
-1. Add a migration in `ee/db/geo/migrate/` to create a `widget_states` table and add a
-   partial index on `verification_failure` and `verification_checksum` to ensure
-   re-verification can be performed efficiently. Order the columns according to [our guidelines](../ordering_table_columns.md):
+1. Create a `widget_states` table and add a partial index on `verification_failure` and
+   `verification_checksum` to ensure re-verification can be performed efficiently. Order
+   the columns according to [our guidelines](../ordering_table_columns.md):
 
    ```ruby
    # frozen_string_literal: true

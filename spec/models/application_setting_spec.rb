@@ -638,6 +638,29 @@ RSpec.describe ApplicationSetting do
         is_expected.to be_invalid
       end
     end
+
+    context 'gitpod settings' do
+      it 'is invalid if gitpod is enabled and no url is provided' do
+        allow(subject).to receive(:gitpod_enabled).and_return(true)
+        allow(subject).to receive(:gitpod_url).and_return(nil)
+
+        is_expected.to be_invalid
+      end
+
+      it 'is invalid if gitpod is enabled and an empty url is provided' do
+        allow(subject).to receive(:gitpod_enabled).and_return(true)
+        allow(subject).to receive(:gitpod_url).and_return('')
+
+        is_expected.to be_invalid
+      end
+
+      it 'is invalid if gitpod is enabled and an invalid url is provided' do
+        allow(subject).to receive(:gitpod_enabled).and_return(true)
+        allow(subject).to receive(:gitpod_url).and_return('javascript:alert("test")//')
+
+        is_expected.to be_invalid
+      end
+    end
   end
 
   context 'restrict creating duplicates' do

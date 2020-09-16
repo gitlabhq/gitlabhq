@@ -1135,3 +1135,17 @@ header.header-content .dropdown-menu.frequent-items-dropdown-menu {
     width: $gl-dropdown-width-wide;
   }
 }
+
+.gl-dropdown-item-deprecated-adapter {
+  .dropdown-item {
+    align-items: flex-start;
+
+    .gl-new-dropdown-item-text-primary {
+      @include gl-font-weight-bold;
+    }
+
+    .gl-new-dropdown-item-text-secondary {
+      color: inherit;
+    }
+  }
+}

@@ -116,44 +116,16 @@ RSpec.describe Gitlab::Consul::Internal do
     it_behaves_like 'handles failure response'
   end
 
-  describe '.discover_prometheus_uri' do
-    subject { described_class.discover_prometheus_uri }
+  describe '.discover_prometheus_server_address' do
+    subject { described_class.discover_prometheus_server_address }
 
     before do
       stub_consul_discover_prometheus
         .to_return(status: 200, body: '[{"ServiceAddress":"prom.net","ServicePort":9090}]')
-      stub_request(:get, /\/-\/healthy/)
-        .to_return(status: 200, body: Gitlab::PrometheusClient::HEALTHY_RESPONSE)
     end
 
-    context 'both TLS and non-TLS connection are healthy' do
-      it 'returns https uri' do
-        is_expected.to eq('https://prom.net:9090')
-      end
-    end
-
-    context 'TLS connection is not healthy' do
-      before do
-        stub_request(:get, /https:\/\/.*\/-\/healthy/)
-            .to_return(status: 200, body: 'failed')
-      end
-
-      it 'returns http uri' do
-        is_expected.to eq('http://prom.net:9090')
-      end
-    end
-
-    context 'neither TLS nor non-TLS connection is healthy' do
-      before do
-        stub_request(:get, /https:\/\/.*\/-\/healthy/)
-            .to_return(status: 200, body: 'failed')
-        stub_request(:get, /http:\/\/.*\/-\/healthy/)
-          .to_return(status: 200, body: 'failed')
-      end
-
-      it 'returns nil' do
-        is_expected.to be_nil
-      end
+    it 'returns the server address' do
+      is_expected.to eq('prom.net:9090')
     end
 
     it_behaves_like 'returns nil given blank value of', :api_url

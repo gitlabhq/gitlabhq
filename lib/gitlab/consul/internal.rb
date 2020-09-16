@@ -35,19 +35,12 @@ module Gitlab
           [service_address, service_port]
         end
 
-        def discover_prometheus_uri
+        def discover_prometheus_server_address
           service_address, service_port = discover_service(service_name: 'prometheus')
 
           return unless service_address && service_port
 
-          # There really is not a way to discover whether a Prometheus connection is using TLS or not
-          # Try TLS first because HTTPS will return fast if failed.
-          %w[https http].find do |scheme|
-            connection_url = "#{scheme}://#{service_address}:#{service_port}"
-            break connection_url if Gitlab::PrometheusClient.new(connection_url, allow_local_requests: true).healthy?
-          rescue
-            nil
-          end
+          "#{service_address}:#{service_port}"
         end
 
         private

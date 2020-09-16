@@ -47,6 +47,9 @@ RSpec.describe User do
     it { is_expected.to delegate_method(:sourcegraph_enabled).to(:user_preference) }
     it { is_expected.to delegate_method(:sourcegraph_enabled=).to(:user_preference).with_arguments(:args) }
 
+    it { is_expected.to delegate_method(:gitpod_enabled).to(:user_preference) }
+    it { is_expected.to delegate_method(:gitpod_enabled=).to(:user_preference).with_arguments(:args) }
+
     it { is_expected.to delegate_method(:setup_for_company).to(:user_preference) }
     it { is_expected.to delegate_method(:setup_for_company=).to(:user_preference).with_arguments(:args) }
 

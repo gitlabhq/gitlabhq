@@ -289,6 +289,17 @@ the command line.
 NOTE: **Note:**
 This section might move in its own document in the future.
 
+### Copy the branch name for local checkout
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23767) in GitLab 13.4.
+
+The merge request sidebar contains the branch reference for the source branch
+used to contribute changes for this merge request.
+
+To copy the branch reference into your clipboard, click the **Copy branch name** button
+(**{copy-to-clipboard}**) in the right sidebar. You can then use it to checkout the branch locally
+via command line by running `git checkout <branch-name>`.
+
 ### Checkout merge requests locally through the `head` ref
 
 A merge request contains all the history from a repository, plus the additional

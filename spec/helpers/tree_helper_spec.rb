@@ -156,19 +156,34 @@ RSpec.describe TreeHelper do
   end
 
   describe '#vue_file_list_data' do
-    before do
-      allow(helper).to receive(:current_user).and_return(nil)
-    end
-
     it 'returns a list of attributes related to the project' do
       expect(helper.vue_file_list_data(project, sha)).to include(
-        can_push_code: nil,
-        fork_path: nil,
-        escaped_ref: sha,
-        ref: sha,
         project_path: project.full_path,
         project_short_path: project.path,
+        ref: sha,
+        escaped_ref: sha,
         full_name: project.name_with_namespace
+      )
+    end
+  end
+
+  describe '#vue_ide_link_data' do
+    before do
+      allow(helper).to receive(:current_user).and_return(nil)
+      allow(helper).to receive(:can_collaborate_with_project?).and_return(true)
+      allow(helper).to receive(:can?).and_return(true)
+    end
+
+    subject { helper.vue_ide_link_data(project, sha) }
+
+    it 'returns a list of attributes related to the project' do
+      expect(subject).to include(
+        ide_base_path: project.full_path,
+        needs_to_fork: false,
+        show_web_ide_button: true,
+        show_gitpod_button: false,
+        gitpod_url: "",
+        gitpod_enabled: nil
       )
     end
 
@@ -185,9 +200,9 @@ RSpec.describe TreeHelper do
         allow(helper).to receive(:current_user).and_return(user)
       end
 
-      it 'includes fork_path too' do
-        expect(helper.vue_file_list_data(project, sha)).to include(
-          fork_path: forked_project.full_path
+      it 'includes ide_base_path: forked_project.full_path' do
+        expect(subject).to include(
+          ide_base_path: forked_project.full_path
         )
       end
     end
@@ -201,9 +216,54 @@ RSpec.describe TreeHelper do
         allow(helper).to receive(:current_user).and_return(user)
       end
 
-      it 'includes can_push_code: true' do
-        expect(helper.vue_file_list_data(project, sha)).to include(
-          can_push_code: "true"
+      it 'includes ide_base_path: project.full_path' do
+        expect(subject).to include(
+          ide_base_path: project.full_path
+        )
+      end
+    end
+
+    context 'gitpod feature is enabled' do
+      let_it_be(:user) { create(:user) }
+
+      before do
+        stub_feature_flags(gitpod: true)
+        allow(Gitlab::CurrentSettings)
+          .to receive(:gitpod_enabled)
+          .and_return(true)
+
+        allow(helper).to receive(:current_user).and_return(user)
+      end
+
+      it 'has show_gitpod_button: true' do
+        expect(subject).to include(
+          show_gitpod_button: true
+        )
+      end
+
+      it 'has gitpod_enabled: true when user has enabled gitpod' do
+        user.gitpod_enabled = true
+
+        expect(subject).to include(
+          gitpod_enabled: true
+        )
+      end
+
+      it 'has gitpod_enabled: false when user has not enabled gitpod' do
+        user.gitpod_enabled = false
+
+        expect(subject).to include(
+          gitpod_enabled: false
+        )
+      end
+
+      it 'has show_gitpod_button: false when web ide button is not shown' do
+        allow(helper).to receive(:can_collaborate_with_project?).and_return(false)
+        allow(helper).to receive(:can?).and_return(false)
+
+        expect(subject).to include(
+          show_web_ide_button: false,
+          show_gitpod_button: false
         )
       end
     end

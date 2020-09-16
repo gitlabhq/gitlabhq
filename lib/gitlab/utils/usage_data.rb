@@ -83,11 +83,11 @@ module Gitlab
         end
       end
 
-      def with_prometheus_client(fallback: nil)
-        api_url = prometheus_api_url
-        return fallback unless api_url
+      def with_prometheus_client(fallback: nil, verify: true)
+        client = prometheus_client(verify: verify)
+        return fallback unless client
 
-        yield Gitlab::PrometheusClient.new(api_url, allow_local_requests: true)
+        yield client
       end
 
       def measure_duration
@@ -111,11 +111,27 @@ module Gitlab
 
       private
 
-      def prometheus_api_url
+      def prometheus_client(verify:)
+        server_address = prometheus_server_address
+
+        return unless server_address
+
+        # There really is not a way to discover whether a Prometheus connection is using TLS or not
+        # Try TLS first because HTTPS will return fast if failed.
+        %w[https http].find do |scheme|
+          api_url = "#{scheme}://#{server_address}"
+          client = Gitlab::PrometheusClient.new(api_url, allow_local_requests: true, verify: verify)
+          break client if client.ready?
+        rescue
+          nil
+        end
+      end
+
+      def prometheus_server_address
         if Gitlab::Prometheus::Internal.prometheus_enabled?
-          Gitlab::Prometheus::Internal.uri
+          Gitlab::Prometheus::Internal.server_address
         elsif Gitlab::Consul::Internal.api_url
-          Gitlab::Consul::Internal.discover_prometheus_uri
+          Gitlab::Consul::Internal.discover_prometheus_server_address
         end
       end
 

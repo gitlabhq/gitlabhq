@@ -182,6 +182,12 @@ Manage the availability of integrated code intelligence features powered by
 Sourcegraph. View [the Sourcegraph feature documentation](../../integration/sourcegraph.md#enable-sourcegraph-in-user-preferences)
 for more information.
 
+### Gitpod
+
+Enable and disable the [GitLab-Gitpod integration](../../integration/gitpod.md). This is only
+visible after the integration is configured by a GitLab administrator. View
+[the Gitpod feature documentation](../../integration/gitpod.md) for more information.
+
 <!-- ## Troubleshooting
 
 Include any troubleshooting steps that you can foresee. If you know beforehand what issues

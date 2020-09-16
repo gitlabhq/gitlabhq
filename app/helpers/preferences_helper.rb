@@ -80,6 +80,13 @@ module PreferencesHelper
     )
   end
 
+  def integration_views
+    [].tap do |views|
+      views << 'gitpod' if Gitlab::Gitpod.feature_and_settings_enabled?
+      views << 'sourcegraph' if Gitlab::Sourcegraph.feature_available? && Gitlab::CurrentSettings.sourcegraph_enabled
+    end
+  end
+
   private
 
   # Ensure that anyone adding new options updates `DASHBOARD_CHOICES` too

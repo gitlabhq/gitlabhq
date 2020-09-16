@@ -135,7 +135,7 @@ RSpec.describe 'bin/feature-flag' do
           expect($stdin).to receive(:gets).and_return(type)
           expect do
             expect(described_class.read_type).to eq(:development)
-          end.to output(/specify the type/).to_stdout
+          end.to output(/Specify the feature flag type/).to_stdout
         end
 
         context 'when invalid type is given' do
@@ -147,7 +147,7 @@ RSpec.describe 'bin/feature-flag' do
 
             expect do
               expect { described_class.read_type }.to raise_error(/EOF/)
-            end.to output(/specify the type/).to_stdout
+            end.to output(/Specify the feature flag type/).to_stdout
               .and output(/Invalid type specified/).to_stderr
           end
         end
@@ -161,7 +161,7 @@ RSpec.describe 'bin/feature-flag' do
         expect($stdin).to receive(:gets).and_return(group)
         expect do
           expect(described_class.read_group).to eq('group::memory')
-        end.to output(/specify the group/).to_stdout
+        end.to output(/Specify the group introducing the feature flag/).to_stdout
       end
 
       context 'invalid group given' do
@@ -173,8 +173,8 @@ RSpec.describe 'bin/feature-flag' do
 
           expect do
             expect { described_class.read_group }.to raise_error(/EOF/)
-          end.to output(/specify the group/).to_stdout
-            .and output(/Group needs to include/).to_stderr
+          end.to output(/Specify the group introducing the feature flag/).to_stdout
+            .and output(/The group needs to include/).to_stderr
         end
       end
     end
@@ -186,7 +186,7 @@ RSpec.describe 'bin/feature-flag' do
         expect($stdin).to receive(:gets).and_return(url)
         expect do
           expect(described_class.read_introduced_by_url).to eq('https://merge-request')
-        end.to output(/can you paste the URL here/).to_stdout
+        end.to output(/URL of the MR introducing the feature flag/).to_stdout
       end
 
       context 'empty URL given' do
@@ -196,7 +196,7 @@ RSpec.describe 'bin/feature-flag' do
           expect($stdin).to receive(:gets).and_return(url)
           expect do
             expect(described_class.read_introduced_by_url).to be_nil
-          end.to output(/can you paste the URL here/).to_stdout
+          end.to output(/URL of the MR introducing the feature flag/).to_stdout
         end
       end
 
@@ -209,7 +209,7 @@ RSpec.describe 'bin/feature-flag' do
 
           expect do
             expect { described_class.read_introduced_by_url }.to raise_error(/EOF/)
-          end.to output(/can you paste the URL here/).to_stdout
+          end.to output(/URL of the MR introducing the feature flag/).to_stdout
             .and output(/URL needs to start with/).to_stderr
         end
       end
@@ -223,7 +223,7 @@ RSpec.describe 'bin/feature-flag' do
         expect($stdin).to receive(:gets).and_return(url)
         expect do
           expect(described_class.read_rollout_issue_url(options)).to eq('https://issue')
-        end.to output(/Paste URL of `rollout issue` here/).to_stdout
+        end.to output(/URL of the rollout issue/).to_stdout
       end
 
       context 'invalid URL given' do
@@ -235,7 +235,7 @@ RSpec.describe 'bin/feature-flag' do
 
           expect do
             expect { described_class.read_rollout_issue_url(options) }.to raise_error(/EOF/)
-          end.to output(/Paste URL of `rollout issue` here/).to_stdout
+          end.to output(/URL of the rollout issue/).to_stdout
             .and output(/URL needs to start/).to_stderr
         end
       end

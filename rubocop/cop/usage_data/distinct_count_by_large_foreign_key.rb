@@ -31,11 +31,11 @@ module RuboCop
         private
 
         def allowed_foreign_key?(key)
-          [:sym, :str].include?(key.type) && allowed_foreign_keys.include?(key.value.to_sym)
+          [:sym, :str].include?(key.type) && allowed_foreign_keys.include?(key.value.to_s)
         end
 
         def allowed_foreign_keys
-          cop_config['AllowedForeignKeys'] || []
+          (cop_config['AllowedForeignKeys'] || []).map(&:to_s)
         end
       end
     end

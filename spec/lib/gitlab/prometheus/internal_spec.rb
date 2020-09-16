@@ -48,7 +48,7 @@ RSpec.describe Gitlab::Prometheus::Internal do
       let(:listen_address) { nil }
 
       it 'does not fail' do
-        expect(described_class.uri).to eq(nil)
+        expect(described_class.uri).to be_nil
       end
     end
 
@@ -56,7 +56,27 @@ RSpec.describe Gitlab::Prometheus::Internal do
       let(:listen_address) { '' }
 
       it 'does not configure prometheus' do
-        expect(described_class.uri).to eq(nil)
+        expect(described_class.uri).to be_nil
+      end
+    end
+  end
+
+  describe '.server_address' do
+    context 'self.uri returns valid uri' do
+      ['http://localhost:9090', 'https://localhost:9090 '].each do |valid_uri|
+        it 'returns correct server address' do
+          expect(described_class).to receive(:uri).and_return(valid_uri)
+
+          expect(described_class.server_address).to eq('localhost:9090')
+        end
+      end
+    end
+
+    context 'self.uri returns nil' do
+      it 'returns nil' do
+        expect(described_class).to receive(:uri).and_return(nil)
+
+        expect(described_class.server_address).to be_nil
       end
     end
   end
@@ -101,7 +121,7 @@ RSpec.describe Gitlab::Prometheus::Internal do
       end
 
       it 'does not fail' do
-        expect(described_class.listen_address).to eq(nil)
+        expect(described_class.listen_address).to be_nil
       end
     end
   end

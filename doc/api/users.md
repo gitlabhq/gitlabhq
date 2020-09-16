@@ -2,8 +2,6 @@
 
 ## List users
 
-Active users = Total accounts - Blocked users
-
 Get a list of users.
 
 This function takes pagination parameters `page` and `per_page` to restrict the list of users.
@@ -49,9 +47,9 @@ For example:
 GET /users?username=jack_smith
 ```
 
-In addition, you can filter users based on states eg. `blocked`, `active`
-This works only to filter users who are `blocked` or `active`.
-It does not support `active=false` or `blocked=false`.
+In addition, you can filter users based on the states `blocked` and `active`.
+It does not support `active=false` or `blocked=false`. The list of active users
+is the total number of users minus the blocked users.
 
 ```plaintext
 GET /users?active=true
