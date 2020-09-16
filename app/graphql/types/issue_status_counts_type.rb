@@ -3,7 +3,7 @@
 module Types
   class IssueStatusCountsType < BaseObject
     graphql_name 'IssueStatusCountsType'
-    description "Represents total number of issues for the represented statuses."
+    description 'Represents total number of issues for the represented statuses'
 
     authorize :read_issue
 

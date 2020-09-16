@@ -32,4 +32,10 @@ RSpec.describe Gitlab::UsageDataQueries do
       expect(redis_usage_data[:redis_usage_data_block]).to start_with('#<Proc:')
     end
   end
+
+  describe '.sum' do
+    it 'returns the raw SQL' do
+      expect(described_class.sum(Issue, :weight)).to eq('SELECT SUM("issues"."weight") FROM "issues"')
+    end
+  end
 end

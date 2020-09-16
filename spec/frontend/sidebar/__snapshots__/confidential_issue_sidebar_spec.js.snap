@@ -7,11 +7,7 @@ exports[`Confidential Issue Sidebar Block renders for confidential = false and i
 >
   <div
     class="sidebar-collapsed-icon"
-    data-boundary="viewport"
-    data-container="body"
-    data-original-title="Not confidential"
-    data-placement="left"
-    title=""
+    title="Not confidential"
   >
     <gl-icon-stub
       aria-hidden="true"
@@ -59,11 +55,7 @@ exports[`Confidential Issue Sidebar Block renders for confidential = false and i
 >
   <div
     class="sidebar-collapsed-icon"
-    data-boundary="viewport"
-    data-container="body"
-    data-original-title="Not confidential"
-    data-placement="left"
-    title=""
+    title="Not confidential"
   >
     <gl-icon-stub
       aria-hidden="true"
@@ -119,11 +111,7 @@ exports[`Confidential Issue Sidebar Block renders for confidential = true and is
 >
   <div
     class="sidebar-collapsed-icon"
-    data-boundary="viewport"
-    data-container="body"
-    data-original-title="Confidential"
-    data-placement="left"
-    title=""
+    title="Confidential"
   >
     <gl-icon-stub
       aria-hidden="true"
@@ -170,11 +158,7 @@ exports[`Confidential Issue Sidebar Block renders for confidential = true and is
 >
   <div
     class="sidebar-collapsed-icon"
-    data-boundary="viewport"
-    data-container="body"
-    data-original-title="Confidential"
-    data-placement="left"
-    title=""
+    title="Confidential"
   >
     <gl-icon-stub
       aria-hidden="true"

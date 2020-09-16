@@ -37,6 +37,28 @@ RSpec.describe Gitlab::Utils::UsageData do
     end
   end
 
+  describe '#sum' do
+    let(:relation) { double(:relation) }
+
+    it 'returns the count when counting succeeds' do
+      allow(Gitlab::Database::BatchCount)
+        .to receive(:batch_sum)
+        .with(relation, :column, batch_size: 100, start: 2, finish: 3)
+        .and_return(1)
+
+      expect(described_class.sum(relation, :column, batch_size: 100, start: 2, finish: 3)).to eq(1)
+    end
+
+    it 'returns the fallback value when counting fails' do
+      stub_const("Gitlab::Utils::UsageData::FALLBACK", 15)
+      allow(Gitlab::Database::BatchCount)
+        .to receive(:batch_sum)
+        .and_raise(ActiveRecord::StatementInvalid.new(''))
+
+      expect(described_class.sum(relation, :column)).to eq(15)
+    end
+  end
+
   describe '#alt_usage_data' do
     it 'returns the fallback when it gets an error' do
       expect(described_class.alt_usage_data { raise StandardError } ).to eq(-1)

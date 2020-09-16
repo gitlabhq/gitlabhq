@@ -8,10 +8,6 @@ RSpec.describe ::Gitlab::Search::RecentIssues, :clean_gitlab_redis_shared_state 
   let(:recent_issues) { described_class.new(user: user, items_limit: 5) }
   let(:project) { create(:project, :public) }
 
-  before do
-    stub_feature_flags(recent_items_search: true)
-  end
-
   describe '#log_viewing' do
     it 'adds the item to the recent items' do
       recent_issues.log_view(issue)
@@ -51,24 +47,6 @@ RSpec.describe ::Gitlab::Search::RecentIssues, :clean_gitlab_redis_shared_state 
 
       expect(results).to eq([issue])
     end
-
-    context 'when recent_items_search feature flag is disabled' do
-      before do
-        stub_feature_flags(recent_items_search: false)
-      end
-
-      it 'does not store anything' do
-        recent_issues.log_view(issue)
-
-        # Re-enable before searching to prove that the `log_view` call did
-        # not persist it
-        stub_feature_flags(recent_items_search: true)
-
-        results = recent_issues.search('hello')
-
-        expect(results).to be_empty
-      end
-    end
   end
 
   describe '#search' do
@@ -104,20 +82,6 @@ RSpec.describe ::Gitlab::Search::RecentIssues, :clean_gitlab_redis_shared_state 
       private_project.update!(visibility_level: Project::PRIVATE)
 
       expect(recent_issues.search('matching')).not_to include(private_issue)
-    end
-
-    context 'when recent_items_search feature flag is disabled' do
-      it 'does not return anything' do
-        recent_issues.log_view(issue)
-
-        # Disable after persisting to prove that the `search` is not searching
-        # anything
-        stub_feature_flags(recent_items_search: false)
-
-        results = recent_issues.search('hello')
-
-        expect(results).to be_empty
-      end
     end
   end
 end

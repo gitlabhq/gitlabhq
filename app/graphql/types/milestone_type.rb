@@ -3,7 +3,7 @@
 module Types
   class MilestoneType < BaseObject
     graphql_name 'Milestone'
-    description 'Represents a milestone.'
+    description 'Represents a milestone'
 
     present_using MilestonePresenter
 

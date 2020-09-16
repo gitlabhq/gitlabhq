@@ -1,4 +1,4 @@
-.form-group.row.js-template-warning.mb-0.hidden.js-issuable-template-warning
+.form-group.row.js-template-warning.mb-0.hidden.js-issuable-template-warning{ :class => ("gl-mb-5!" if issuable.supports_issue_type? && can?(current_user, :admin_issue, @project)) }
   .offset-sm-2.col-sm-10
 
     .warning_message.mb-0{ role: 'alert' }

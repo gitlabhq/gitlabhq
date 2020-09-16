@@ -3,7 +3,7 @@
 module Types
   class MutationOperationModeEnum < BaseEnum
     graphql_name 'MutationOperationMode'
-    description 'Different toggles for changing mutator behavior.'
+    description 'Different toggles for changing mutator behavior'
 
     # Suggested param name for the enum: `operation_mode`
 

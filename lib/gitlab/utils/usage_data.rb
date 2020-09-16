@@ -59,6 +59,12 @@ module Gitlab
         FALLBACK
       end
 
+      def sum(relation, column, batch_size: nil, start: nil, finish: nil)
+        Gitlab::Database::BatchCount.batch_sum(relation, column, batch_size: batch_size, start: start, finish: finish)
+      rescue ActiveRecord::StatementInvalid
+        FALLBACK
+      end
+
       def alt_usage_data(value = nil, fallback: FALLBACK, &block)
         if block_given?
           yield

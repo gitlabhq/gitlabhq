@@ -378,7 +378,7 @@ RSpec.describe 'Pipeline', :js do
           find('.js-tests-tab-link').click
 
           expect(page).to have_content('Jobs')
-          expect(page).to have_selector('.js-tests-detail', visible: :all)
+          expect(page).to have_selector('[data-testid="tests-detail"]', visible: :all)
         end
       end
 

@@ -428,7 +428,7 @@ module Gitlab
         {
           jira_imports_total_imported_count: count(finished_jira_imports),
           jira_imports_projects_count: distinct_count(finished_jira_imports, :project_id),
-          jira_imports_total_imported_issues_count: alt_usage_data { JiraImportState.finished_imports_count }
+          jira_imports_total_imported_issues_count: sum(JiraImportState.finished, :imported_issues_count)
         }
         # rubocop: enable UsageData/LargeTable
       end

@@ -507,7 +507,7 @@ rspec-ee system pg12 geo:
 # EE: Canonical MR pipelines
 rspec fail-fast:
   extends:
-    - .rspec-base-pg11
+    - .rspec-ee-base-pg11 # This job also runs EE spec which needs elasticsearch
     - .rails:rules:rspec fail-fast
   stage: test
   needs: ["setup-test-env", "retrieve-tests-metadata", "compile-test-assets", "detect-tests"]

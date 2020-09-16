@@ -25,7 +25,7 @@ module Gitlab
           content = "### #{object[:name]}\n"
 
           if object[:description].present?
-            content += "\n#{object[:description]}\n"
+            content += "\n#{object[:description]}.\n"
           end
 
           content

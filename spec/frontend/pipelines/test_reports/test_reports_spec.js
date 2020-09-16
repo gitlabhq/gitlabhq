@@ -1,4 +1,5 @@
 import Vuex from 'vuex';
+import { GlLoadingIcon } from '@gitlab/ui';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import { getJSONFixture } from 'helpers/fixtures';
 import TestReports from '~/pipelines/components/test_reports/test_reports.vue';
@@ -15,9 +16,9 @@ describe('Test reports app', () => {
 
   const testReports = getJSONFixture('pipelines/test_report.json');
 
-  const loadingSpinner = () => wrapper.find('.js-loading-spinner');
-  const testsDetail = () => wrapper.find('.js-tests-detail');
-  const noTestsToShow = () => wrapper.find('.js-no-tests-to-show');
+  const loadingSpinner = () => wrapper.find(GlLoadingIcon);
+  const testsDetail = () => wrapper.find('[data-testid="tests-detail"]');
+  const noTestsToShow = () => wrapper.find('[data-testid="no-tests-to-show"]');
   const testSummary = () => wrapper.find(TestSummary);
   const testSummaryTable = () => wrapper.find(TestSummaryTable);
 
@@ -87,6 +88,10 @@ describe('Test reports app', () => {
     it('sets testReports and shows tests', () => {
       expect(wrapper.vm.testReports).toBeTruthy();
       expect(wrapper.vm.showTests).toBeTruthy();
+    });
+
+    it('shows tests details', () => {
+      expect(testsDetail().exists()).toBe(true);
     });
   });
 

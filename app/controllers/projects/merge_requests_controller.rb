@@ -41,6 +41,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     push_frontend_feature_flag(:merge_request_widget_graphql, @project)
     push_frontend_feature_flag(:unified_diff_lines, @project)
     push_frontend_feature_flag(:highlight_current_diff_row, @project)
+    push_frontend_feature_flag(:default_merge_ref_for_diffs, @project)
   end
 
   before_action do
@@ -456,6 +457,10 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   def endpoint_metadata_url(project, merge_request)
     params = request.query_parameters
     params[:view] = cookies[:diff_view] if params[:view].blank? && cookies[:diff_view].present?
+
+    if Feature.enabled?(:default_merge_ref_for_diffs, project)
+      params = params.merge(diff_head: true)
+    end
 
     diffs_metadata_project_json_merge_request_path(project, merge_request, 'json', params)
   end

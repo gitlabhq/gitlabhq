@@ -87,6 +87,22 @@ RSpec.describe Projects::MergeRequestsController do
         end
       end
 
+      context 'with `default_merge_ref_for_diffs` feature flag enabled' do
+        before do
+          stub_feature_flags(default_merge_ref_for_diffs: true)
+          go
+        end
+
+        it 'adds the diff_head parameter' do
+          expect(assigns["endpoint_metadata_url"]).to eq(
+            diffs_metadata_project_json_merge_request_path(
+              project,
+              merge_request,
+              'json',
+              diff_head: true))
+        end
+      end
+
       context 'when diff is missing' do
         render_views
 

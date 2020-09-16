@@ -4,7 +4,7 @@ module Types
   module ErrorTracking
     class SentryDetailedErrorType < ::Types::BaseObject
       graphql_name 'SentryDetailedError'
-      description 'A Sentry error.'
+      description 'A Sentry error'
 
       present_using SentryErrorPresenter
 

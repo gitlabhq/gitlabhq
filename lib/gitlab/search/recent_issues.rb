@@ -13,8 +13,6 @@ module Gitlab
       end
 
       def log_view(issue)
-        return unless recent_items_enabled?
-
         with_redis do |redis|
           redis.zadd(key, Time.now.to_f, issue.id)
           redis.expire(key, @expires_after)
@@ -29,8 +27,6 @@ module Gitlab
       end
 
       def search(term)
-        return Issue.none unless recent_items_enabled?
-
         ids = with_redis do |redis|
           redis.zrevrange(key, 0, @items_limit - 1)
         end.map(&:to_i)
@@ -50,10 +46,6 @@ module Gitlab
 
       def type
         Issue
-      end
-
-      def recent_items_enabled?
-        Feature.enabled?(:recent_items_search, @user)
       end
     end
   end

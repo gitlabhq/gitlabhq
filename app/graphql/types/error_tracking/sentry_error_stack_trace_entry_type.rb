@@ -5,7 +5,7 @@ module Types
     # rubocop: disable Graphql/AuthorizeTypes
     class SentryErrorStackTraceEntryType < ::Types::BaseObject
       graphql_name 'SentryErrorStackTraceEntry'
-      description 'An object containing a stack trace entry for a Sentry error.'
+      description 'An object containing a stack trace entry for a Sentry error'
 
       field :function, GraphQL::STRING_TYPE,
             null: true,

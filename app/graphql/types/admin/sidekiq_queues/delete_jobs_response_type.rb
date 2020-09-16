@@ -7,7 +7,7 @@ module Types
       # a plain hash.
       class DeleteJobsResponseType < BaseObject # rubocop:disable Graphql/AuthorizeTypes
         graphql_name 'DeleteJobsResponse'
-        description 'The response from the AdminSidekiqQueuesDeleteJobs mutation.'
+        description 'The response from the AdminSidekiqQueuesDeleteJobs mutation'
 
         field :completed,
               GraphQL::BOOLEAN_TYPE,

@@ -1,7 +1,0 @@
----
-name: recent_items_search
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/40669
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/244277
-group: group::global search
-type: development
-default_enabled: false

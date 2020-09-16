@@ -110,10 +110,6 @@ class JiraImportState < ApplicationRecord
     )
   end
 
-  def self.finished_imports_count
-    finished.sum(:imported_issues_count)
-  end
-
   def mark_as_failed(error_message)
     sanitized_message = Gitlab::UrlSanitizer.sanitize(error_message)
 

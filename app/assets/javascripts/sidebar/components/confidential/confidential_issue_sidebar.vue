@@ -1,8 +1,7 @@
 <script>
 import { mapState } from 'vuex';
-import { GlIcon } from '@gitlab/ui';
+import { GlIcon, GlTooltipDirective } from '@gitlab/ui';
 import { __, sprintf } from '~/locale';
-import tooltip from '~/vue_shared/directives/tooltip';
 import eventHub from '~/sidebar/event_hub';
 import EditForm from './edit_form.vue';
 
@@ -12,7 +11,7 @@ export default {
     GlIcon,
   },
   directives: {
-    tooltip,
+    GlTooltip: GlTooltipDirective,
   },
   props: {
     fullPath: {
@@ -73,12 +72,9 @@ export default {
   <div class="block issuable-sidebar-item confidentiality">
     <div
       ref="collapseIcon"
-      v-tooltip
+      v-gl-tooltip.viewport.left
       :title="tooltipLabel"
       class="sidebar-collapsed-icon"
-      data-container="body"
-      data-placement="left"
-      data-boundary="viewport"
       @click="toggleForm"
     >
       <gl-icon :name="confidentialityIcon" aria-hidden="true" />
