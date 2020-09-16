@@ -1,7 +1,7 @@
 <script>
 /* eslint-disable vue/no-v-html */
 import { escape } from 'lodash';
-import { GlModal, GlButton, GlDeprecatedButton, GlFormInput, GlSprintf } from '@gitlab/ui';
+import { GlModal, GlButton, GlFormInput, GlSprintf } from '@gitlab/ui';
 import SplitButton from '~/vue_shared/components/split_button.vue';
 import { s__, sprintf } from '~/locale';
 import csrf from '~/lib/utils/csrf';
@@ -29,7 +29,6 @@ export default {
     SplitButton,
     GlModal,
     GlButton,
-    GlDeprecatedButton,
     GlFormInput,
     GlSprintf,
   },
@@ -175,24 +174,31 @@ export default {
         }}</span>
       </template>
       <template #modal-footer>
-        <gl-deprecated-button variant="secondary" @click="handleCancel">{{
-          s__('Cancel')
-        }}</gl-deprecated-button>
+        <gl-button variant="secondary" @click="handleCancel">{{ s__('Cancel') }}</gl-button>
         <template v-if="confirmCleanup">
-          <gl-deprecated-button :disabled="!canSubmit" variant="warning" @click="handleSubmit">{{
-            s__('ClusterIntegration|Remove integration')
-          }}</gl-deprecated-button>
-          <gl-deprecated-button
+          <gl-button
+            :disabled="!canSubmit"
+            variant="warning"
+            category="primary"
+            @click="handleSubmit"
+            >{{ s__('ClusterIntegration|Remove integration') }}</gl-button
+          >
+          <gl-button
             :disabled="!canSubmit"
             variant="danger"
+            category="primary"
             @click="handleSubmit(true)"
-            >{{ s__('ClusterIntegration|Remove integration and resources') }}</gl-deprecated-button
+            >{{ s__('ClusterIntegration|Remove integration and resources') }}</gl-button
           >
         </template>
         <template v-else>
-          <gl-deprecated-button :disabled="!canSubmit" variant="danger" @click="handleSubmit">{{
-            s__('ClusterIntegration|Remove integration')
-          }}</gl-deprecated-button>
+          <gl-button
+            :disabled="!canSubmit"
+            variant="danger"
+            category="primary"
+            @click="handleSubmit"
+            >{{ s__('ClusterIntegration|Remove integration') }}</gl-button
+          >
         </template>
       </template>
     </gl-modal>

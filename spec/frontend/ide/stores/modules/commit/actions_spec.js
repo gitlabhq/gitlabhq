@@ -9,6 +9,7 @@ import eventHub from '~/ide/eventhub';
 import consts from '~/ide/stores/modules/commit/constants';
 import * as mutationTypes from '~/ide/stores/modules/commit/mutation_types';
 import * as actions from '~/ide/stores/modules/commit/actions';
+import { createUnexpectedCommitError } from '~/ide/lib/errors';
 import { commitActionTypes, PERMISSION_CREATE_MR } from '~/ide/constants';
 import testAction from '../../../../helpers/vuex_action_helper';
 
@@ -510,7 +511,7 @@ describe('IDE commit module actions', () => {
       });
     });
 
-    describe('failed', () => {
+    describe('success response with failed message', () => {
       beforeEach(() => {
         jest.spyOn(service, 'commit').mockResolvedValue({
           data: {
@@ -530,6 +531,25 @@ describe('IDE commit module actions', () => {
             done();
           })
           .catch(done.fail);
+      });
+    });
+
+    describe('failed response', () => {
+      beforeEach(() => {
+        jest.spyOn(service, 'commit').mockRejectedValue({});
+      });
+
+      it('commits error updates', async () => {
+        jest.spyOn(store, 'commit');
+
+        await store.dispatch('commit/commitChanges').catch(() => {});
+
+        expect(store.commit.mock.calls).toEqual([
+          ['commit/CLEAR_ERROR', undefined, undefined],
+          ['commit/UPDATE_LOADING', true, undefined],
+          ['commit/UPDATE_LOADING', false, undefined],
+          ['commit/SET_ERROR', createUnexpectedCommitError(), undefined],
+        ]);
       });
     });
 

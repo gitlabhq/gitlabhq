@@ -18,6 +18,17 @@ RSpec.describe Gitlab::Ci::ArtifactFileReader do
         expect(YAML.safe_load(subject).keys).to contain_exactly('rspec', 'time', 'custom')
       end
 
+      context 'when FF ci_new_artifact_file_reader is disabled' do
+        before do
+          stub_feature_flags(ci_new_artifact_file_reader: false)
+        end
+
+        it 'returns the content at the path' do
+          is_expected.to be_present
+          expect(YAML.safe_load(subject).keys).to contain_exactly('rspec', 'time', 'custom')
+        end
+      end
+
       context 'when path does not exist' do
         let(:path) { 'file/does/not/exist.txt' }
         let(:expected_error) do

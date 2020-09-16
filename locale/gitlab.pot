@@ -2678,9 +2678,6 @@ msgstr ""
 msgid "An error occurred while checking group path. Please refresh and try again."
 msgstr ""
 
-msgid "An error occurred while committing your changes."
-msgstr ""
-
 msgid "An error occurred while creating the issue. Please try again."
 msgstr ""
 
@@ -4114,7 +4111,7 @@ msgstr ""
 msgid "Branch %{branch_name} was created. To set up auto deploy, choose a GitLab CI Yaml template and commit your changes. %{link_to_autodeploy_doc}"
 msgstr ""
 
-msgid "Branch has changed"
+msgid "Branch changed"
 msgstr ""
 
 msgid "Branch is already taken"
@@ -4418,6 +4415,9 @@ msgid "CLOSED"
 msgstr ""
 
 msgid "CLOSED (MOVED)"
+msgstr ""
+
+msgid "CODEOWNERS rule violation"
 msgstr ""
 
 msgid "CONTRIBUTING"
@@ -7132,6 +7132,9 @@ msgid "Could not authorize chat nickname. Try again!"
 msgstr ""
 
 msgid "Could not change HEAD: branch '%{branch}' does not exist"
+msgstr ""
+
+msgid "Could not commit. An unexpected error occurred."
 msgstr ""
 
 msgid "Could not connect to FogBugz, check your URL"
@@ -13324,9 +13327,6 @@ msgstr ""
 msgid "In order to enable Service Desk for your instance, you must first set up incoming email."
 msgstr ""
 
-msgid "In order to gather accurate feature usage data, it can take 1 to 2 weeks to see your index."
-msgstr ""
-
 msgid "In order to personalize your experience with GitLab%{br_tag}we would like to know a bit more about you."
 msgstr ""
 
@@ -14011,6 +14011,9 @@ msgid "Issue|Title"
 msgstr ""
 
 msgid "It looks like you have some draft commits in this branch."
+msgstr ""
+
+msgid "It may be several days before you see feature usage data."
 msgstr ""
 
 msgid "It must have a header row and at least two columns: the first column is the issue title and the second column is the issue description. The separator is automatically detected."
@@ -17755,6 +17758,9 @@ msgid "Other versions"
 msgstr ""
 
 msgid "Other visibility settings have been disabled by the administrator."
+msgstr ""
+
+msgid "Our documentation includes an example DevOps Score report."
 msgstr ""
 
 msgid "Out-of-compliance with this project's policies and should be removed"
@@ -25705,9 +25711,6 @@ msgstr ""
 msgid "This board's scope is reduced"
 msgstr ""
 
-msgid "This branch has changed since you started editing. Would you like to create a new branch?"
-msgstr ""
-
 msgid "This chart could not be displayed"
 msgstr ""
 
@@ -27054,6 +27057,9 @@ msgid "Undo Ignore"
 msgstr ""
 
 msgid "Undo ignore"
+msgstr ""
+
+msgid "Unexpected error"
 msgstr ""
 
 msgid "Unfortunately, your email message to GitLab could not be processed."
@@ -28713,6 +28719,9 @@ msgid "Work in progress Limit"
 msgstr ""
 
 msgid "Workflow Help"
+msgstr ""
+
+msgid "Would you like to create a new branch?"
 msgstr ""
 
 msgid "Write"

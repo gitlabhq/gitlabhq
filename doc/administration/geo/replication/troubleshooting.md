@@ -632,6 +632,23 @@ To double check this, you can do the following:
   UPDATE geo_nodes SET enabled = 't' WHERE id = ID_FROM_ABOVE;
   ```
 
+### While Promoting the secondary, I got an error `ActiveRecord::RecordInvalid`
+
+If you disabled a secondary node, either with the [replication pause task](../index.md#pausing-and-resuming-replication)
+(13.2) or via the UI (13.1 and earlier), you must first re-enable the
+node before you can continue. This is fixed in 13.4.
+
+From `gitlab-psql`, execute the following, replacing  `<your secondary url>`
+with the URL for your secondary server starting with `http` or `https` and ending with a `/`.
+
+```shell
+SECONDARY_URL="https://<secondary url>/"
+DATABASE_NAME="gitlabhq_production"
+sudo gitlab-psql -d "$DATABASE_NAME" -c "UPDATE geo_nodes SET enabled = true WHERE url = '$SECONDARY_URL';"
+```
+
+This should update 1 row.
+
 ### Message: ``NoMethodError: undefined method `secondary?' for nil:NilClass``
 
 When [promoting a **secondary** node](../disaster_recovery/index.md#step-3-promoting-a-secondary-node),
@@ -673,6 +690,20 @@ sudo /opt/gitlab/embedded/bin/gitlab-pg-ctl promote
 ```
 
 GitLab 12.9 and later are [unaffected by this error](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5147).
+
+### Two-factor authentication is broken after a failover
+
+The setup instructions for Geo prior to 10.5 failed to replicate the
+`otp_key_base` secret, which is used to encrypt the two-factor authentication
+secrets stored in the database. If it differs between **primary** and **secondary**
+nodes, users with two-factor authentication enabled won't be able to log in
+after a failover.
+
+If you still have access to the old **primary** node, you can follow the
+instructions in the
+[Upgrading to GitLab 10.5](../replication/version_specific_updates.md#updating-to-gitlab-105)
+section to resolve the error. Otherwise, the secret is lost and you'll need to
+[reset two-factor authentication for all users](../../../security/two_factor_authentication.md#disabling-2fa-for-everyone).
 
 ## Expired artifacts
 

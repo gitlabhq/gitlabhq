@@ -1,4 +1,4 @@
-#import "./issue.fragment.graphql"
+#import "ee_else_ce/boards/queries/issue.fragment.graphql"
 
 mutation IssueMoveList(
   $projectPath: ID!

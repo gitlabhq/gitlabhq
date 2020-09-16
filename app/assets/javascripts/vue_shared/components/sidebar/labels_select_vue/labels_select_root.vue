@@ -166,7 +166,11 @@ export default {
         !state.showDropdownButton &&
         !state.showDropdownContents
       ) {
-        this.handleDropdownClose(state.labels.filter(label => label.touched));
+        let filterFn = label => label.touched;
+        if (this.isDropdownVariantEmbedded) {
+          filterFn = label => label.set;
+        }
+        this.handleDropdownClose(state.labels.filter(filterFn));
       }
     },
     /**
@@ -186,7 +190,7 @@ export default {
       ].some(
         className =>
           target?.classList.contains(className) ||
-          target?.parentElement.classList.contains(className),
+          target?.parentElement?.classList.contains(className),
       );
 
       const hadExceptionParent = ['.js-btn-back', '.js-labels-list'].some(

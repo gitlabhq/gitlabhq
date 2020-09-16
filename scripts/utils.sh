@@ -110,7 +110,7 @@ function get_job_id() {
     let "page++"
   done
 
-  if [[ "${job_id}" == "" ]]; then
+  if [[ "${job_id}" == "null" ]]; then # jq prints "null" for non-existent attribute
     echoerr "The '${job_name}' job ID couldn't be retrieved!"
   else
     echoinfo "The '${job_name}' job ID is ${job_id}"
@@ -142,7 +142,7 @@ function fail_pipeline_early() {
   local dont_interrupt_me_job_id
   dont_interrupt_me_job_id=$(get_job_id 'dont-interrupt-me' 'scope=success')
 
-  if [[ "${dont_interrupt_me_job_id}" != "" ]]; then
+  if [[ -n "${dont_interrupt_me_job_id}" ]]; then
     echoinfo "This pipeline cannot be interrupted due to \`dont-interrupt-me\` job ${dont_interrupt_me_job_id}"
   else
     echoinfo "Failing pipeline early for fast feedback due to test failures in rspec fail-fast."

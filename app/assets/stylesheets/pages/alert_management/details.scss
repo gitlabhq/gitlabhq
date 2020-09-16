@@ -1,48 +1,4 @@
 .alert-management-details {
-  // these styles need to be deleted once GlTable component looks in GitLab same as in @gitlab/ui
-  table {
-    tr {
-      td {
-        @include gl-border-0;
-        @include gl-p-5;
-        border-color: transparent;
-
-        &:not(:last-child) {
-          border-bottom: 1px solid $table-border-color;
-        }
-
-        &:first-child {
-          div {
-            font-weight: bold;
-          }
-        }
-
-        &:not(:first-child) {
-          &::before {
-            color: $gray-500;
-            font-weight: normal !important;
-          }
-
-          div {
-            color: $gray-500;
-          }
-        }
-
-        @include media-breakpoint-up(sm) {
-          div {
-            text-align: left !important;
-          }
-        }
-      }
-
-      &:last-child {
-        &::after {
-          content: none !important;
-        }
-      }
-    }
-  }
-
   @include media-breakpoint-down(xs) {
     .alert-details-incident-button {
       width: 100%;

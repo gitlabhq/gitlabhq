@@ -210,6 +210,20 @@ module ObjectStorage
       end
     end
 
+    class OpenFile
+      extend Forwardable
+
+      # Explicitly exclude :path, because rubyzip uses that to detect "real" files.
+      def_delegators :@file, *(Zip::File::IO_METHODS - [:path])
+
+      # Even though :size is not in IO_METHODS, we do need it.
+      def_delegators :@file, :size
+
+      def initialize(file)
+        @file = file
+      end
+    end
+
     # allow to configure and overwrite the filename
     def filename
       @filename || super || file&.filename # rubocop:disable Gitlab/ModuleWithInstanceVariables
@@ -256,6 +270,24 @@ module ObjectStorage
     def use_file(&blk)
       with_exclusive_lease do
         unsafe_use_file(&blk)
+      end
+    end
+
+    def use_open_file(&blk)
+      Tempfile.open(path) do |file|
+        file.unlink
+        file.binmode
+
+        if file_storage?
+          IO.copy_stream(path, file)
+        else
+          streamer = lambda { |chunk, _, _| file.write(chunk) }
+          Excon.get(url, response_block: streamer)
+        end
+
+        file.seek(0, IO::SEEK_SET)
+
+        yield OpenFile.new(file)
       end
     end
 

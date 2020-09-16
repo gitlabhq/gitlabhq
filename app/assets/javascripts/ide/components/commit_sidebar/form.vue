@@ -1,6 +1,6 @@
 <script>
 import { mapState, mapActions, mapGetters } from 'vuex';
-import { GlModal } from '@gitlab/ui';
+import { GlModal, GlSafeHtmlDirective } from '@gitlab/ui';
 import { n__, __ } from '~/locale';
 import LoadingButton from '~/vue_shared/components/loading_button.vue';
 import CommitMessageField from './message_field.vue';
@@ -8,6 +8,7 @@ import Actions from './actions.vue';
 import SuccessMessage from './success_message.vue';
 import { leftSidebarViews, MAX_WINDOW_HEIGHT_COMPACT } from '../../constants';
 import consts from '../../stores/modules/commit/constants';
+import { createUnexpectedCommitError } from '../../lib/errors';
 
 export default {
   components: {
@@ -17,15 +18,20 @@ export default {
     SuccessMessage,
     GlModal,
   },
+  directives: {
+    SafeHtml: GlSafeHtmlDirective,
+  },
   data() {
     return {
       isCompact: true,
       componentHeight: null,
+      // Keep track of "lastCommitError" so we hold onto the value even when "commitError" is cleared.
+      lastCommitError: createUnexpectedCommitError(),
     };
   },
   computed: {
     ...mapState(['changedFiles', 'stagedFiles', 'currentActivityView', 'lastCommitMsg']),
-    ...mapState('commit', ['commitMessage', 'submitCommitLoading']),
+    ...mapState('commit', ['commitMessage', 'submitCommitLoading', 'commitError']),
     ...mapGetters(['someUncommittedChanges']),
     ...mapGetters('commit', ['discardDraftButtonDisabled', 'preBuiltCommitMessage']),
     overviewText() {
@@ -38,11 +44,28 @@ export default {
     currentViewIsCommitView() {
       return this.currentActivityView === leftSidebarViews.commit.name;
     },
+    commitErrorPrimaryAction() {
+      if (!this.lastCommitError?.canCreateBranch) {
+        return undefined;
+      }
+
+      return {
+        text: __('Create new branch'),
+      };
+    },
   },
   watch: {
     currentActivityView: 'handleCompactState',
     someUncommittedChanges: 'handleCompactState',
     lastCommitMsg: 'handleCompactState',
+    commitError(val) {
+      if (!val) {
+        return;
+      }
+
+      this.lastCommitError = val;
+      this.$refs.commitErrorModal.show();
+    },
   },
   methods: {
     ...mapActions(['updateActivityBarView']),
@@ -53,9 +76,7 @@ export default {
       'updateCommitAction',
     ]),
     commit() {
-      return this.commitChanges().catch(() => {
-        this.$refs.createBranchModal.show();
-      });
+      return this.commitChanges();
     },
     forceCreateNewBranch() {
       return this.updateCommitAction(consts.COMMIT_TO_NEW_BRANCH).then(() => this.commit());
@@ -164,17 +185,14 @@ export default {
           </button>
         </div>
         <gl-modal
-          ref="createBranchModal"
-          modal-id="ide-create-branch-modal"
-          :ok-title="__('Create new branch')"
-          :title="__('Branch has changed')"
-          ok-variant="success"
+          ref="commitErrorModal"
+          modal-id="ide-commit-error-modal"
+          :title="lastCommitError.title"
+          :action-primary="commitErrorPrimaryAction"
+          :action-cancel="{ text: __('Cancel') }"
           @ok="forceCreateNewBranch"
         >
-          {{
-            __(`This branch has changed since you started editing.
-                Would you like to create a new branch?`)
-          }}
+          <div v-safe-html="lastCommitError.messageHTML"></div>
         </gl-modal>
       </form>
     </transition>

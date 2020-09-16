@@ -24,4 +24,10 @@ export default {
       shouldCreateMR: shouldCreateMR === undefined ? !state.shouldCreateMR : shouldCreateMR,
     });
   },
+  [types.CLEAR_ERROR](state) {
+    state.commitError = null;
+  },
+  [types.SET_ERROR](state, error) {
+    state.commitError = error;
+  },
 };

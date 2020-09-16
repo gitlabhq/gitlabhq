@@ -1,10 +1,13 @@
 import Vue from 'vue';
+import { getByText } from '@testing-library/dom';
 import { createComponentWithStore } from 'helpers/vue_mount_component_helper';
 import { projectData } from 'jest/ide/mock_data';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createStore } from '~/ide/stores';
+import consts from '~/ide/stores/modules/commit/constants';
 import CommitForm from '~/ide/components/commit_sidebar/form.vue';
 import { leftSidebarViews } from '~/ide/constants';
+import { createCodeownersCommitError, createUnexpectedCommitError } from '~/ide/lib/errors';
 
 describe('IDE commit form', () => {
   const Component = Vue.extend(CommitForm);
@@ -259,21 +262,47 @@ describe('IDE commit form', () => {
         });
       });
 
-      it('opens new branch modal if commitChanges throws an error', () => {
-        vm.commitChanges.mockRejectedValue({ success: false });
+      it.each`
+        createError                                          | props
+        ${() => createCodeownersCommitError('test message')} | ${{ actionPrimary: { text: 'Create new branch' } }}
+        ${createUnexpectedCommitError}                       | ${{ actionPrimary: null }}
+      `('opens error modal if commitError with $error', async ({ createError, props }) => {
+        jest.spyOn(vm.$refs.commitErrorModal, 'show');
 
-        jest.spyOn(vm.$refs.createBranchModal, 'show').mockImplementation();
+        const error = createError();
+        store.state.commit.commitError = error;
 
-        return vm
-          .$nextTick()
-          .then(() => {
-            vm.$el.querySelector('.btn-success').click();
+        await vm.$nextTick();
 
-            return vm.$nextTick();
-          })
-          .then(() => {
-            expect(vm.$refs.createBranchModal.show).toHaveBeenCalled();
-          });
+        expect(vm.$refs.commitErrorModal.show).toHaveBeenCalled();
+        expect(vm.$refs.commitErrorModal).toMatchObject({
+          actionCancel: { text: 'Cancel' },
+          ...props,
+        });
+        // Because of the legacy 'mountComponent' approach here, the only way to
+        // test the text of the modal is by viewing the content of the modal added to the document.
+        expect(document.body).toHaveText(error.messageHTML);
+      });
+    });
+
+    describe('with error modal with primary', () => {
+      beforeEach(() => {
+        jest.spyOn(vm.$store, 'dispatch').mockReturnValue(Promise.resolve());
+      });
+
+      it('updates commit action and commits', async () => {
+        store.state.commit.commitError = createCodeownersCommitError('test message');
+
+        await vm.$nextTick();
+
+        getByText(document.body, 'Create new branch').click();
+
+        await waitForPromises();
+
+        expect(vm.$store.dispatch.mock.calls).toEqual([
+          ['commit/updateCommitAction', consts.COMMIT_TO_NEW_BRANCH],
+          ['commit/commitChanges', undefined],
+        ]);
       });
     });
   });
