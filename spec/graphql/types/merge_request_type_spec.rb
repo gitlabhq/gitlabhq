@@ -32,6 +32,8 @@ RSpec.describe GitlabSchema.types['MergeRequest'] do
 
     if Gitlab.ee?
       expected_fields << 'approved'
+      expected_fields << 'approvals_left'
+      expected_fields << 'approvals_required'
       expected_fields << 'approved_by'
     end
 

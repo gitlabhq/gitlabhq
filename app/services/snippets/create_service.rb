@@ -82,7 +82,7 @@ module Snippets
 
     def create_commit
       commit_attrs = {
-        branch_name: 'master',
+        branch_name: @snippet.default_branch,
         message: 'Initial commit'
       }
 

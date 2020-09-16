@@ -119,7 +119,7 @@ RSpec.describe Issues::CreateService do
       end
 
       it 'moves the issue to the end, in an asynchronous worker' do
-        expect(IssuePlacementWorker).to receive(:perform_async).with(Integer)
+        expect(IssuePlacementWorker).to receive(:perform_async).with(be_nil, Integer)
 
         described_class.new(project, user, opts).execute
       end

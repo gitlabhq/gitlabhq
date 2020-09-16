@@ -5,7 +5,7 @@ import { trimText } from 'helpers/text_helper';
 import initUserPopovers from '~/user_popovers';
 import { formatDate } from '~/lib/utils/datetime_utility';
 import { mergeUrlParams } from '~/lib/utils/url_utility';
-import Issuable from '~/issuables_list/components/issuable.vue';
+import Issuable from '~/issues_list/components/issuable.vue';
 import IssueAssignees from '~/vue_shared/components/issue/issue_assignees.vue';
 import { simpleIssue, testAssignees, testLabels } from '../issuable_list_test_data';
 import { isScopedLabel } from '~/lib/utils/common_utils';

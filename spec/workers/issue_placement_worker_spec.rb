@@ -9,83 +9,124 @@ RSpec.describe IssuePlacementWorker do
     let_it_be(:author) { create(:user) }
     let_it_be(:common_attrs) { { author: author, project: project } }
     let_it_be(:unplaced) { common_attrs.merge(relative_position: nil) }
-    let_it_be(:issue) { create(:issue, **unplaced, created_at: time) }
-    let_it_be(:issue_a) { create(:issue, **unplaced, created_at: time - 1.minute) }
-    let_it_be(:issue_b) { create(:issue, **unplaced, created_at: time - 2.minutes) }
-    let_it_be(:issue_c) { create(:issue, **unplaced, created_at: time + 1.minute) }
-    let_it_be(:issue_d) { create(:issue, **unplaced, created_at: time + 2.minutes) }
-    let_it_be(:issue_e) { create(:issue, **common_attrs, relative_position: 10, created_at: time + 1.minute) }
-    let_it_be(:issue_f) { create(:issue, **unplaced, created_at: time + 1.minute) }
+    let_it_be_with_reload(:issue) { create(:issue, **unplaced, created_at: time) }
+    let_it_be_with_reload(:issue_a) { create(:issue, **unplaced, created_at: time - 1.minute) }
+    let_it_be_with_reload(:issue_b) { create(:issue, **unplaced, created_at: time - 2.minutes) }
+    let_it_be_with_reload(:issue_c) { create(:issue, **unplaced, created_at: time + 1.minute) }
+    let_it_be_with_reload(:issue_d) { create(:issue, **unplaced, created_at: time + 2.minutes) }
+    let_it_be_with_reload(:issue_e) { create(:issue, **common_attrs, relative_position: 10, created_at: time + 1.minute) }
+    let_it_be_with_reload(:issue_f) { create(:issue, **unplaced, created_at: time + 1.minute) }
 
     let_it_be(:irrelevant) { create(:issue, relative_position: nil, created_at: time) }
 
-    it 'places all issues created at most 5 minutes before this one at the end, most recent last' do
-      expect do
-        described_class.new.perform(issue.id)
-      end.not_to change { irrelevant.reset.relative_position }
+    shared_examples 'running the issue placement worker' do
+      let(:issue_id) { issue.id }
+      let(:project_id) { project.id }
 
-      expect(project.issues.order_relative_position_asc)
-        .to eq([issue_e, issue_b, issue_a, issue, issue_c, issue_f, issue_d])
-      expect(project.issues.where(relative_position: nil)).not_to exist
-    end
+      it 'places all issues created at most 5 minutes before this one at the end, most recent last' do
+        expect { run_worker }.not_to change { irrelevant.reset.relative_position }
 
-    it 'schedules rebalancing if needed' do
-      issue_a.update!(relative_position: RelativePositioning::MAX_POSITION)
-
-      expect(IssueRebalancingWorker).to receive(:perform_async).with(nil, project.id)
-
-      described_class.new.perform(issue.id)
-    end
-
-    context 'there are more than QUERY_LIMIT unplaced issues' do
-      before_all do
-        # Ensure there are more than N issues in this set
-        n = described_class::QUERY_LIMIT
-        create_list(:issue, n - 5, **unplaced)
-      end
-
-      it 'limits the sweep to QUERY_LIMIT records, and reschedules placement' do
-        expect(Issue).to receive(:move_nulls_to_end)
-                           .with(have_attributes(count: described_class::QUERY_LIMIT))
-                           .and_call_original
-
-        expect(described_class).to receive(:perform_async).with(issue_d.id)
-
-        described_class.new.perform(issue.id)
-
-        expect(project.issues.where(relative_position: nil)).to exist
-      end
-
-      it 'is eventually correct' do
-        prefix = project.issues.where.not(relative_position: nil).order(:relative_position).to_a
-        moved = project.issues.where.not(id: prefix.map(&:id))
-
-        described_class.new.perform(issue.id)
-
-        expect(project.issues.where(relative_position: nil)).to exist
-
-        described_class.new.perform(issue.id)
-
+        expect(project.issues.order_relative_position_asc)
+          .to eq([issue_e, issue_b, issue_a, issue, issue_c, issue_f, issue_d])
         expect(project.issues.where(relative_position: nil)).not_to exist
-        expect(project.issues.order(:relative_position)).to eq(prefix + moved.order(:created_at, :id))
+      end
+
+      it 'schedules rebalancing if needed' do
+        issue_a.update!(relative_position: RelativePositioning::MAX_POSITION)
+
+        expect(IssueRebalancingWorker).to receive(:perform_async).with(nil, project.id)
+
+        run_worker
+      end
+
+      context 'there are more than QUERY_LIMIT unplaced issues' do
+        before_all do
+          # Ensure there are more than N issues in this set
+          n = described_class::QUERY_LIMIT
+          create_list(:issue, n - 5, **unplaced)
+        end
+
+        it 'limits the sweep to QUERY_LIMIT records, and reschedules placement' do
+          expect(Issue).to receive(:move_nulls_to_end)
+                             .with(have_attributes(count: described_class::QUERY_LIMIT))
+                             .and_call_original
+
+          expect(described_class).to receive(:perform_async).with(nil, project.id)
+
+          run_worker
+
+          expect(project.issues.where(relative_position: nil)).to exist
+        end
+
+        it 'is eventually correct' do
+          prefix = project.issues.where.not(relative_position: nil).order(:relative_position).to_a
+          moved = project.issues.where.not(id: prefix.map(&:id))
+
+          run_worker
+
+          expect(project.issues.where(relative_position: nil)).to exist
+
+          run_worker
+
+          expect(project.issues.where(relative_position: nil)).not_to exist
+          expect(project.issues.order(:relative_position)).to eq(prefix + moved.order(:created_at, :id))
+        end
+      end
+
+      context 'we are passed bad IDs' do
+        let(:issue_id) { non_existing_record_id }
+        let(:project_id) { non_existing_record_id }
+
+        def max_positions_by_project
+          Issue
+            .group(:project_id)
+            .pluck(:project_id, Issue.arel_table[:relative_position].maximum.as('max_relative_position'))
+            .to_h
+        end
+
+        it 'does move any issues to the end' do
+          expect { run_worker }.not_to change { max_positions_by_project }
+        end
+
+        context 'the project_id refers to an empty project' do
+          let!(:project_id) { create(:project).id }
+
+          it 'does move any issues to the end' do
+            expect { run_worker }.not_to change { max_positions_by_project }
+          end
+        end
+      end
+
+      it 'anticipates the failure to place the issues, and schedules rebalancing' do
+        allow(Issue).to receive(:move_nulls_to_end) { raise RelativePositioning::NoSpaceLeft }
+
+        expect(IssueRebalancingWorker).to receive(:perform_async).with(nil, project.id)
+        expect(Gitlab::ErrorTracking)
+          .to receive(:log_exception)
+          .with(RelativePositioning::NoSpaceLeft, worker_arguments)
+
+        run_worker
       end
     end
 
-    it 'anticipates the failure to find the issue' do
-      id = non_existing_record_id
+    context 'passing an issue ID' do
+      def run_worker
+        described_class.new.perform(issue_id)
+      end
 
-      expect { described_class.new.perform(id) }.not_to raise_error
+      let(:worker_arguments) { { issue_id: issue_id, project_id: nil } }
+
+      it_behaves_like 'running the issue placement worker'
     end
 
-    it 'anticipates the failure to place the issues, and schedules rebalancing' do
-      allow(Issue).to receive(:move_nulls_to_end) { raise RelativePositioning::NoSpaceLeft }
+    context 'passing a project ID' do
+      def run_worker
+        described_class.new.perform(nil, project_id)
+      end
 
-      expect(IssueRebalancingWorker).to receive(:perform_async).with(nil, project.id)
-      expect(Gitlab::ErrorTracking)
-        .to receive(:log_exception)
-        .with(RelativePositioning::NoSpaceLeft, issue_id: issue.id)
+      let(:worker_arguments) { { issue_id: nil, project_id: project_id } }
 
-      described_class.new.perform(issue.id)
+      it_behaves_like 'running the issue placement worker'
     end
   end
 end

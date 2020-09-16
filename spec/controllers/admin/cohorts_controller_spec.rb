@@ -18,7 +18,6 @@ RSpec.describe Admin::CohortsController do
 
     describe 'GET #index' do
       it_behaves_like 'tracking unique visits', :index do
-        let(:request_params) { {} }
         let(:target_id) { 'i_analytics_cohorts' }
       end
     end

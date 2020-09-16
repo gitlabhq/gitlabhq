@@ -77,6 +77,10 @@
   category: analytics
   redis_slot: analytics
   aggregation: weekly
+- name: i_analytics_instance_statistics
+  category: analytics
+  redis_slot: analytics
+  aggregation: weekly
 - name: g_edit_by_web_ide
   category: ide_edit
   redis_slot: edit

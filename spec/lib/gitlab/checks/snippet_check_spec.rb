@@ -5,10 +5,12 @@ require 'spec_helper'
 RSpec.describe Gitlab::Checks::SnippetCheck do
   include_context 'change access checks context'
 
-  let(:snippet) { create(:personal_snippet, :repository) }
-  let(:user_access) { Gitlab::UserAccessSnippet.new(user, snippet: snippet) }
+  let_it_be(:snippet) { create(:personal_snippet, :repository) }
 
-  subject { Gitlab::Checks::SnippetCheck.new(changes, logger: logger) }
+  let(:user_access) { Gitlab::UserAccessSnippet.new(user, snippet: snippet) }
+  let(:default_branch) { snippet.default_branch }
+
+  subject { Gitlab::Checks::SnippetCheck.new(changes, default_branch: default_branch, logger: logger) }
 
   describe '#validate!' do
     it 'does not raise any error' do
@@ -37,6 +39,14 @@ RSpec.describe Gitlab::Checks::SnippetCheck do
         it "allows the operation" do
           expect { subject.validate! }.not_to raise_error
         end
+      end
+    end
+
+    context 'when default_branch is nil' do
+      let(:default_branch) { nil }
+
+      it 'raises an error' do
+        expect { subject.validate! }.to raise_error(Gitlab::GitAccess::ForbiddenError, 'You can not create or delete branches.')
       end
     end
   end

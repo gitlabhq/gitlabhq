@@ -93,7 +93,7 @@ class SnippetRepository < ApplicationRecord
   end
 
   def get_last_empty_file_index
-    repository.ls_files(nil).inject(0) do |max, file|
+    repository.ls_files(snippet.default_branch).inject(0) do |max, file|
       idx = file[EMPTY_FILE_PATTERN, 1].to_i
       [idx, max].max
     end

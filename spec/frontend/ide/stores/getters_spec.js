@@ -1,3 +1,4 @@
+import { TEST_HOST } from 'helpers/test_constants';
 import * as getters from '~/ide/stores/getters';
 import { createStore } from '~/ide/stores';
 import { file } from '../helpers';
@@ -491,6 +492,39 @@ describe('IDE store getters', () => {
       expect(localStore.getters.getUrlForPath('path/to/foo/bar-1.jpg')).toBe(
         `/project/test/test/tree/master/-/path/to/foo/bar-1.jpg/`,
       );
+    });
+  });
+
+  describe('getJsonSchemaForPath', () => {
+    beforeEach(() => {
+      localState.currentProjectId = 'path/to/some/project';
+      localState.currentBranchId = 'master';
+    });
+
+    it('returns a json schema uri and match config for a json/yaml file that can be loaded by monaco', () => {
+      expect(localStore.getters.getJsonSchemaForPath('.gitlab-ci.yml')).toEqual({
+        fileMatch: ['*.gitlab-ci.yml'],
+        uri: `${TEST_HOST}/path/to/some/project/-/schema/master/.gitlab-ci.yml`,
+      });
+    });
+
+    it('returns a path containing sha if branch details are present in state', () => {
+      localState.projects['path/to/some/project'] = {
+        name: 'project',
+        branches: {
+          master: {
+            name: 'master',
+            commit: {
+              id: 'abcdef123456',
+            },
+          },
+        },
+      };
+
+      expect(localStore.getters.getJsonSchemaForPath('.gitlab-ci.yml')).toEqual({
+        fileMatch: ['*.gitlab-ci.yml'],
+        uri: `${TEST_HOST}/path/to/some/project/-/schema/abcdef123456/.gitlab-ci.yml`,
+      });
     });
   });
 });

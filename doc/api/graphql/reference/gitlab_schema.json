@@ -26109,6 +26109,34 @@
               "deprecationReason": null
             },
             {
+              "name": "approvalsLeft",
+              "description": "Number of approvals left",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "approvalsRequired",
+              "description": "Number of approvals required",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "approved",
               "description": "Indicates if the merge request has all the required approvals. Returns true if no required approvals are configured.",
               "args": [

@@ -14,11 +14,9 @@ Git repositories become larger over time. When large files are added to a Git re
 - Git repository storage limits [can be reached](#storage-limits).
 
 Rewriting a repository can remove unwanted history to make the repository smaller.
-[`git filter-repo`](https://github.com/newren/git-filter-repo) is a tool for quickly rewriting Git
-repository history, and is recommended over both:
-
-- [`git filter-branch`](https://git-scm.com/docs/git-filter-branch).
-- [BFG](https://rtyley.github.io/bfg-repo-cleaner/).
+We **recommend [`git filter-repo`](https://github.com/newren/git-filter-repo/blob/main/README.md)**
+over [`git filter-branch`](https://git-scm.com/docs/git-filter-branch) and
+[BFG](https://rtyley.github.io/bfg-repo-cleaner/).
 
 DANGER: **Danger:**
 Rewriting repository history is a destructive operation. Make sure to backup your repository before

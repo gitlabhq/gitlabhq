@@ -5,6 +5,8 @@ import axios from '~/lib/utils/axios_utils';
 import PerformanceBarService from './services/performance_bar_service';
 import PerformanceBarStore from './stores/performance_bar_store';
 
+import initPerformanceBarLog from './performance_bar_log';
+
 const initPerformanceBar = el => {
   const performanceBarData = el.dataset;
 
@@ -127,5 +129,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initPerformanceBar(jsPeek);
   }
 });
+
+initPerformanceBarLog();
 
 export default initPerformanceBar;

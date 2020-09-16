@@ -100,7 +100,7 @@ module NotesActions
   # the finder. Here, we select between returning all notes since then, or a
   # page's worth of notes.
   def gather_notes
-    if Feature.enabled?(:paginated_notes, project)
+    if Feature.enabled?(:paginated_notes, noteable.try(:resource_parent))
       gather_some_notes
     else
       gather_all_notes

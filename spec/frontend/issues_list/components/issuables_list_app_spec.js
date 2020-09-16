@@ -9,14 +9,14 @@ import {
 import waitForPromises from 'helpers/wait_for_promises';
 import { TEST_HOST } from 'helpers/test_constants';
 import { deprecatedCreateFlash as flash } from '~/flash';
-import IssuablesListApp from '~/issuables_list/components/issuables_list_app.vue';
-import Issuable from '~/issuables_list/components/issuable.vue';
+import IssuablesListApp from '~/issues_list/components/issuables_list_app.vue';
+import Issuable from '~/issues_list/components/issuable.vue';
 import FilteredSearchBar from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
-import issueablesEventBus from '~/issuables_list/eventhub';
-import { PAGE_SIZE, PAGE_SIZE_MANUAL, RELATIVE_POSITION } from '~/issuables_list/constants';
+import issueablesEventBus from '~/issues_list/eventhub';
+import { PAGE_SIZE, PAGE_SIZE_MANUAL, RELATIVE_POSITION } from '~/issues_list/constants';
 
 jest.mock('~/flash');
-jest.mock('~/issuables_list/eventhub');
+jest.mock('~/issues_list/eventhub');
 jest.mock('~/lib/utils/common_utils', () => ({
   ...jest.requireActual('~/lib/utils/common_utils'),
   scrollToElement: () => {},

@@ -39,7 +39,7 @@ module Snippets
     def check_branch_name_default!
       branches = repository.branch_names
 
-      return if branches.first == Gitlab::Checks::SnippetCheck::DEFAULT_BRANCH
+      return if branches.first == snippet.default_branch
 
       raise RepositoryValidationError, _('Repository has an invalid default branch name.')
     end
@@ -51,7 +51,7 @@ module Snippets
     end
 
     def check_file_count!
-      file_count = repository.ls_files(nil).size
+      file_count = repository.ls_files(snippet.default_branch).size
       limit = Snippet.max_file_limit(current_user)
 
       if file_count > limit

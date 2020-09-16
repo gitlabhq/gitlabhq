@@ -75,17 +75,17 @@ export function registerLanguages(def, ...defs) {
   languages.setLanguageConfiguration(languageId, def.conf);
 }
 
-export function registerSchemas({ language, options }, ...schemas) {
-  schemas.forEach(schema => registerSchemas(schema));
-
-  const defaults = {
-    json: languages.json.jsonDefaults,
-    yaml: languages.yaml.yamlDefaults,
-  };
-
-  if (defaults[language]) {
-    defaults[language].setDiagnosticsOptions(options);
-  }
+export function registerSchema(schema) {
+  const defaults = [languages.json.jsonDefaults, languages.yaml.yamlDefaults];
+  defaults.forEach(d =>
+    d.setDiagnosticsOptions({
+      validate: true,
+      enableSchemaRequest: true,
+      hover: true,
+      completion: true,
+      schemas: [schema],
+    }),
+  );
 }
 
 export const otherSide = side => (side === SIDE_RIGHT ? SIDE_LEFT : SIDE_RIGHT);

@@ -6,6 +6,33 @@ import GpgBadges from '~/gpg_badges';
 import '~/sourcegraph/load';
 import PipelineTourSuccessModal from '~/blob/pipeline_tour_success_modal.vue';
 
+const createGitlabCiYmlVisualization = (containerId = '#js-blob-toggle-graph-preview') => {
+  const el = document.querySelector(containerId);
+  const { filename, blobData } = el?.dataset;
+
+  const nameRegexp = /\.gitlab-ci.yml/;
+
+  if (!el || !nameRegexp.test(filename)) {
+    return;
+  }
+
+  // eslint-disable-next-line no-new
+  new Vue({
+    el,
+    components: {
+      GitlabCiYamlVisualization: () =>
+        import('~/pipelines/components/pipeline_graph/gitlab_ci_yaml_visualization.vue'),
+    },
+    render(createElement) {
+      return createElement('gitlabCiYamlVisualization', {
+        props: {
+          blobData,
+        },
+      });
+    },
+  });
+};
+
 document.addEventListener('DOMContentLoaded', () => {
   new BlobViewer(); // eslint-disable-line no-new
   initBlob();
@@ -62,5 +89,9 @@ document.addEventListener('DOMContentLoaded', () => {
         },
       });
     }
+  }
+
+  if (gon?.features?.gitlabCiYmlPreview) {
+    createGitlabCiYmlVisualization();
   }
 });

@@ -65,9 +65,6 @@ RSpec.describe Projects::Prometheus::AlertPresenter do
           <<~MARKDOWN.chomp
             **Start time:** #{presenter.start_time}
 
-            #### Alert Details
-
-            **startsAt:** #{presenter.starts_at_raw}
           MARKDOWN
         )
       end
@@ -96,17 +93,6 @@ RSpec.describe Projects::Prometheus::AlertPresenter do
             **Monitoring tool:** monitoring_tool_name#{markdown_line_break}
             **Hosts:** http://localhost:3000 http://localhost:3001
 
-            #### Alert Details
-
-            **annotations.hosts:** ["http://localhost:3000", "http://localhost:3001"]#{markdown_line_break}
-            **annotations.service:** service_name#{markdown_line_break}
-            **annotations.monitoring_tool:** monitoring_tool_name#{markdown_line_break}
-            **annotations.description:** Alert Description#{markdown_line_break}
-            **annotations.bar:** value2#{markdown_line_break}
-            **annotations.foo:** value1#{markdown_line_break}
-            **annotations.title:** Alert Title#{markdown_line_break}
-            **generatorURL:** http://host?g0.expr=query#{markdown_line_break}
-            **startsAt:** #{presenter.starts_at_raw}
           MARKDOWN
         )
       end
@@ -123,10 +109,6 @@ RSpec.describe Projects::Prometheus::AlertPresenter do
           **Start time:** #{presenter.start_time}#{markdown_line_break}
           **Hosts:** http://localhost:3000
 
-          #### Alert Details
-
-          **annotations.hosts:** http://localhost:3000#{markdown_line_break}
-          **startsAt:** #{presenter.starts_at_raw}
           MARKDOWN
         )
       end

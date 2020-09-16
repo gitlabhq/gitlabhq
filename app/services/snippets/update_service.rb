@@ -93,7 +93,7 @@ module Snippets
       raise UpdateError unless snippet.snippet_repository
 
       commit_attrs = {
-        branch_name: 'master',
+        branch_name: snippet.default_branch,
         message: 'Update snippet'
       }
 

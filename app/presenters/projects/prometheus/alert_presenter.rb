@@ -51,16 +51,8 @@ module Projects
       def issue_summary_markdown
         <<~MARKDOWN.chomp
           #{metadata_list}
-          #{alert_details}#{metric_embed_for_alert}
+          #{metric_embed_for_alert}
         MARKDOWN
-      end
-
-      def details_list
-        strong_memoize(:details_list) do
-          details
-            .map { |label, value| list_item(label, value) }
-            .join(MARKDOWN_LINE_BREAK)
-        end
       end
 
       def metric_embed_for_alert
@@ -109,17 +101,6 @@ module Projects
 
       def details
         Gitlab::Utils::InlineHash.merge_keys(payload)
-      end
-
-      def alert_details
-        if details.present?
-          <<~MARKDOWN.chomp
-
-            #### Alert Details
-
-            #{details_list}
-          MARKDOWN
-        end
       end
 
       def list_item(key, value)

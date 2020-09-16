@@ -10,11 +10,11 @@ exports[`Design management list item component when item appears in view after i
 
 exports[`Design management list item component with notes renders item with multiple comments 1`] = `
 <router-link-stub
-  class="card cursor-pointer text-plain js-design-list-item design-list-item design-list-item-new"
+  class="card gl-cursor-pointer text-plain js-design-list-item design-list-item design-list-item-new"
   to="[object Object]"
 >
   <div
-    class="card-body p-0 d-flex-center overflow-hidden position-relative"
+    class="card-body gl-p-0 gl-display-flex gl-align-items-center gl-justify-content-center gl-overflow-hidden gl-relative"
   >
     <!---->
      
@@ -23,7 +23,7 @@ exports[`Design management list item component with notes renders item with mult
        
       <img
         alt="test"
-        class="block mx-auto mw-100 mh-100 design-img"
+        class="gl-display-block gl-mx-auto gl-max-w-full mh-100 design-img"
         data-qa-selector="design_image"
         src=""
       />
@@ -31,13 +31,13 @@ exports[`Design management list item component with notes renders item with mult
   </div>
    
   <div
-    class="card-footer d-flex w-100"
+    class="card-footer gl-display-flex gl-w-full"
   >
     <div
-      class="d-flex flex-column str-truncated-100"
+      class="gl-display-flex gl-flex-direction-column str-truncated-100"
     >
       <span
-        class="bold str-truncated-100"
+        class="gl-font-weight-bold str-truncated-100"
         data-qa-selector="design_file_name"
       >
         test
@@ -57,17 +57,17 @@ exports[`Design management list item component with notes renders item with mult
     </div>
      
     <div
-      class="ml-auto d-flex align-items-center text-secondary"
+      class="gl-ml-auto gl-display-flex gl-align-items-center gl-text-gray-500"
     >
       <gl-icon-stub
-        class="ml-1"
+        class="gl-ml-2"
         name="comments"
         size="16"
       />
        
       <span
         aria-label="2 comments"
-        class="ml-1"
+        class="gl-ml-2"
       >
         
         2
@@ -80,11 +80,11 @@ exports[`Design management list item component with notes renders item with mult
 
 exports[`Design management list item component with notes renders item with single comment 1`] = `
 <router-link-stub
-  class="card cursor-pointer text-plain js-design-list-item design-list-item design-list-item-new"
+  class="card gl-cursor-pointer text-plain js-design-list-item design-list-item design-list-item-new"
   to="[object Object]"
 >
   <div
-    class="card-body p-0 d-flex-center overflow-hidden position-relative"
+    class="card-body gl-p-0 gl-display-flex gl-align-items-center gl-justify-content-center gl-overflow-hidden gl-relative"
   >
     <!---->
      
@@ -93,7 +93,7 @@ exports[`Design management list item component with notes renders item with sing
        
       <img
         alt="test"
-        class="block mx-auto mw-100 mh-100 design-img"
+        class="gl-display-block gl-mx-auto gl-max-w-full mh-100 design-img"
         data-qa-selector="design_image"
         src=""
       />
@@ -101,13 +101,13 @@ exports[`Design management list item component with notes renders item with sing
   </div>
    
   <div
-    class="card-footer d-flex w-100"
+    class="card-footer gl-display-flex gl-w-full"
   >
     <div
-      class="d-flex flex-column str-truncated-100"
+      class="gl-display-flex gl-flex-direction-column str-truncated-100"
     >
       <span
-        class="bold str-truncated-100"
+        class="gl-font-weight-bold str-truncated-100"
         data-qa-selector="design_file_name"
       >
         test
@@ -127,17 +127,17 @@ exports[`Design management list item component with notes renders item with sing
     </div>
      
     <div
-      class="ml-auto d-flex align-items-center text-secondary"
+      class="gl-ml-auto gl-display-flex gl-align-items-center gl-text-gray-500"
     >
       <gl-icon-stub
-        class="ml-1"
+        class="gl-ml-2"
         name="comments"
         size="16"
       />
        
       <span
         aria-label="1 comment"
-        class="ml-1"
+        class="gl-ml-2"
       >
         
         1

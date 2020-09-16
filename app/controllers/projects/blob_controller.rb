@@ -35,6 +35,7 @@ class Projects::BlobController < Projects::ApplicationController
   before_action only: :show do
     push_frontend_feature_flag(:code_navigation, @project, default_enabled: true)
     push_frontend_feature_flag(:suggest_pipeline) if experiment_enabled?(:suggest_pipeline)
+    push_frontend_feature_flag(:gitlab_ci_yml_preview, @project, default_enabled: false)
   end
 
   track_redis_hll_event :create, :update, name: 'g_edit_by_sfe', feature: :track_editor_edit_actions, feature_default_enabled: true

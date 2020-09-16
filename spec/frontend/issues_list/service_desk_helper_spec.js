@@ -1,4 +1,4 @@
-import { emptyStateHelper, generateMessages } from '~/issuables_list/service_desk_helper';
+import { emptyStateHelper, generateMessages } from '~/issues_list/service_desk_helper';
 
 describe('service desk helper', () => {
   const emptyStateMessages = generateMessages({});

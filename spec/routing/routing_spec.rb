@@ -32,13 +32,6 @@ RSpec.describe UsersController, "routing" do
     expect(get("/users/User/snippets")).to route_to('users#snippets', username: 'User')
   end
 
-  # get all the ssh-keys of a user
-  it "to #get_keys" do
-    allow_any_instance_of(::Constraints::UserUrlConstrainer).to receive(:matches?).and_return(true)
-
-    expect(get("/User.keys")).to route_to('users#ssh_keys', username: 'User')
-  end
-
   it "to #calendar" do
     expect(get("/users/User/calendar")).to route_to('users#calendar', username: 'User')
   end
@@ -192,6 +185,12 @@ RSpec.describe Profiles::KeysController, "routing" do
 
   it "to #destroy" do
     expect(delete("/profile/keys/1")).to route_to('profiles/keys#destroy', id: '1')
+  end
+
+  it "to #get_keys" do
+    allow_any_instance_of(::Constraints::UserUrlConstrainer).to receive(:matches?).and_return(true)
+
+    expect(get("/foo.keys")).to route_to('profiles/keys#get_keys', username: 'foo')
   end
 end
 

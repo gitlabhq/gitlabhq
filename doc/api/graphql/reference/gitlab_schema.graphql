@@ -9408,6 +9408,16 @@ type MergeRequest implements CurrentUserTodos & Noteable {
   allowCollaboration: Boolean
 
   """
+  Number of approvals left
+  """
+  approvalsLeft: Int
+
+  """
+  Number of approvals required
+  """
+  approvalsRequired: Int
+
+  """
   Indicates if the merge request has all the required approvals. Returns true if no required approvals are configured.
   """
   approved: Boolean!

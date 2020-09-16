@@ -1,0 +1,7 @@
+---
+name: gitlab_ci_yml_preview
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/40880
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/244905
+group: group::ci
+type: development
+default_enabled: false

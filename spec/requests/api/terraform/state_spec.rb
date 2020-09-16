@@ -9,7 +9,7 @@ RSpec.describe API::Terraform::State do
   let_it_be(:developer) { create(:user, developer_projects: [project]) }
   let_it_be(:maintainer) { create(:user, maintainer_projects: [project]) }
 
-  let!(:state) { create(:terraform_state, :with_file, project: project) }
+  let!(:state) { create(:terraform_state, :with_version, project: project) }
 
   let(:current_user) { maintainer }
   let(:auth_header) { user_basic_auth_header(current_user) }
@@ -42,7 +42,7 @@ RSpec.describe API::Terraform::State do
           request
 
           expect(response).to have_gitlab_http_status(:ok)
-          expect(response.body).to eq(state.file.read)
+          expect(response.body).to eq(state.reload.latest_file.read)
         end
 
         context 'for a project that does not exist' do
@@ -63,7 +63,7 @@ RSpec.describe API::Terraform::State do
           request
 
           expect(response).to have_gitlab_http_status(:ok)
-          expect(response.body).to eq(state.file.read)
+          expect(response.body).to eq(state.reload.latest_file.read)
         end
       end
     end
@@ -78,7 +78,7 @@ RSpec.describe API::Terraform::State do
           request
 
           expect(response).to have_gitlab_http_status(:ok)
-          expect(response.body).to eq(state.file.read)
+          expect(response.body).to eq(state.reload.latest_file.read)
         end
 
         it 'returns unauthorized if the the job is not running' do
@@ -106,14 +106,14 @@ RSpec.describe API::Terraform::State do
           request
 
           expect(response).to have_gitlab_http_status(:ok)
-          expect(response.body).to eq(state.file.read)
+          expect(response.body).to eq(state.reload.latest_file.read)
         end
       end
     end
   end
 
   describe 'POST /projects/:id/terraform/state/:name' do
-    let(:params) { { 'instance': 'example-instance' } }
+    let(:params) { { 'instance': 'example-instance', 'serial': '1' } }
 
     subject(:request) { post api(state_path), headers: auth_header, as: :json, params: params }
 

@@ -7,6 +7,7 @@ FactoryBot.define do
     sequence(:name) { |n| "state-#{n}" }
 
     trait :with_file do
+      versioning_enabled { false }
       file { fixture_file_upload('spec/fixtures/terraform/terraform.tfstate', 'application/json') }
     end
 
@@ -25,5 +26,14 @@ FactoryBot.define do
       with_file
       verification_failure { 'Could not calculate the checksum' }
     end
+
+    trait :with_version do
+      after(:create) do |state|
+        create(:terraform_state_version, :with_file, terraform_state: state)
+      end
+    end
+
+    # Remove with https://gitlab.com/gitlab-org/gitlab/-/issues/235108
+    factory :legacy_terraform_state, parent: :terraform_state, traits: [:with_file]
   end
 end

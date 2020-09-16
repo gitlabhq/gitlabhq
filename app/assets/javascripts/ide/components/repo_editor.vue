@@ -14,7 +14,7 @@ import Editor from '../lib/editor';
 import FileTemplatesBar from './file_templates/bar.vue';
 import { __ } from '~/locale';
 import { extractMarkdownImagesFromEntries } from '../stores/utils';
-import { getPathParent, readFileAsDataURL } from '../utils';
+import { getPathParent, readFileAsDataURL, registerSchema } from '../utils';
 import { getRulesWithTraversal } from '../lib/editorconfig/parser';
 import mapRulesToMonaco from '../lib/editorconfig/rules_mapper';
 
@@ -56,6 +56,7 @@ export default {
       'isEditModeActive',
       'isCommitModeActive',
       'currentBranch',
+      'getJsonSchemaForPath',
     ]),
     ...mapGetters('fileTemplates', ['showFileTemplatesBar']),
     shouldHideEditor() {
@@ -197,6 +198,8 @@ export default {
 
       this.editor.clearEditor();
 
+      this.registerSchemaForFile();
+
       Promise.all([this.fetchFileData(), this.fetchEditorconfigRules()])
         .then(() => {
           this.createEditorInstance();
@@ -329,6 +332,10 @@ export default {
 
       // do nothing if no image is found in the clipboard
       return Promise.resolve();
+    },
+    registerSchemaForFile() {
+      const schema = this.getJsonSchemaForPath(this.file.path);
+      registerSchema(schema);
     },
   },
   viewerTypes,

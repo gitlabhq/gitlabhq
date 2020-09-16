@@ -14,7 +14,7 @@ class IssuePlacementWorker
 
   # rubocop: disable CodeReuse/ActiveRecord
   def perform(issue_id, project_id = nil)
-    issue = Issue.id_in(issue_id).first
+    issue = find_issue(issue_id, project_id)
     return unless issue
 
     # Move the oldest 100 unpositioned items to the end.
@@ -31,10 +31,19 @@ class IssuePlacementWorker
 
     Issue.move_nulls_to_end(to_place)
     Issues::BaseService.new(nil).rebalance_if_needed(to_place.max_by(&:relative_position))
-    IssuePlacementWorker.perform_async(leftover.id) if leftover.present?
+    IssuePlacementWorker.perform_async(nil, leftover.project_id) if leftover.present?
   rescue RelativePositioning::NoSpaceLeft => e
-    Gitlab::ErrorTracking.log_exception(e, issue_id: issue_id)
-    IssueRebalancingWorker.perform_async(nil, issue.project_id)
+    Gitlab::ErrorTracking.log_exception(e, issue_id: issue_id, project_id: project_id)
+    IssueRebalancingWorker.perform_async(nil, project_id.presence || issue.project_id)
   end
   # rubocop: enable CodeReuse/ActiveRecord
+
+  def find_issue(issue_id, project_id)
+    return Issue.id_in(issue_id).first if issue_id
+
+    project = Project.id_in(project_id).first
+    return unless project
+
+    project.issues.first
+  end
 end

@@ -744,6 +744,16 @@ RSpec.describe Snippet do
 
         subject
       end
+
+      context 'when ref is nil' do
+        let(:ref) { nil }
+
+        it 'lists files from the repository from the deafult_branch' do
+          expect(snippet.repository).to receive(:ls_files).with(snippet.default_branch)
+
+          subject
+        end
+      end
     end
 
     context 'when snippet does not have a repository' do

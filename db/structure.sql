@@ -15994,6 +15994,27 @@ CREATE SEQUENCE public.term_agreements_id_seq
 
 ALTER SEQUENCE public.term_agreements_id_seq OWNED BY public.term_agreements.id;
 
+CREATE TABLE public.terraform_state_versions (
+    id bigint NOT NULL,
+    terraform_state_id bigint NOT NULL,
+    created_by_user_id bigint,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    version integer NOT NULL,
+    file_store smallint NOT NULL,
+    file text NOT NULL,
+    CONSTRAINT check_0824bb7bbd CHECK ((char_length(file) <= 255))
+);
+
+CREATE SEQUENCE public.terraform_state_versions_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE public.terraform_state_versions_id_seq OWNED BY public.terraform_state_versions.id;
+
 CREATE TABLE public.terraform_states (
     id bigint NOT NULL,
     project_id bigint NOT NULL,
@@ -16011,6 +16032,7 @@ CREATE TABLE public.terraform_states (
     verification_retry_count smallint,
     verification_checksum bytea,
     verification_failure text,
+    versioning_enabled boolean DEFAULT false NOT NULL,
     CONSTRAINT check_21a47163ea CHECK ((char_length(verification_failure) <= 255))
 );
 
@@ -17563,6 +17585,8 @@ ALTER TABLE ONLY public.tags ALTER COLUMN id SET DEFAULT nextval('public.tags_id
 
 ALTER TABLE ONLY public.term_agreements ALTER COLUMN id SET DEFAULT nextval('public.term_agreements_id_seq'::regclass);
 
+ALTER TABLE ONLY public.terraform_state_versions ALTER COLUMN id SET DEFAULT nextval('public.terraform_state_versions_id_seq'::regclass);
+
 ALTER TABLE ONLY public.terraform_states ALTER COLUMN id SET DEFAULT nextval('public.terraform_states_id_seq'::regclass);
 
 ALTER TABLE ONLY public.timelogs ALTER COLUMN id SET DEFAULT nextval('public.timelogs_id_seq'::regclass);
@@ -18870,6 +18894,9 @@ ALTER TABLE ONLY public.tags
 
 ALTER TABLE ONLY public.term_agreements
     ADD CONSTRAINT term_agreements_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY public.terraform_state_versions
+    ADD CONSTRAINT terraform_state_versions_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY public.terraform_states
     ADD CONSTRAINT terraform_states_pkey PRIMARY KEY (id);
@@ -21115,6 +21142,10 @@ CREATE INDEX index_term_agreements_on_term_id ON public.term_agreements USING bt
 
 CREATE INDEX index_term_agreements_on_user_id ON public.term_agreements USING btree (user_id);
 
+CREATE INDEX index_terraform_state_versions_on_created_by_user_id ON public.terraform_state_versions USING btree (created_by_user_id);
+
+CREATE UNIQUE INDEX index_terraform_state_versions_on_state_id_and_version ON public.terraform_state_versions USING btree (terraform_state_id, version);
+
 CREATE INDEX index_terraform_states_on_file_store ON public.terraform_states USING btree (file_store);
 
 CREATE INDEX index_terraform_states_on_locked_by_user_id ON public.terraform_states USING btree (locked_by_user_id);
@@ -21913,6 +21944,9 @@ ALTER TABLE ONLY public.geo_event_log
 ALTER TABLE ONLY public.projects
     ADD CONSTRAINT fk_6e5c14658a FOREIGN KEY (pool_repository_id) REFERENCES public.pool_repositories(id) ON DELETE SET NULL;
 
+ALTER TABLE ONLY public.terraform_state_versions
+    ADD CONSTRAINT fk_6e81384d7f FOREIGN KEY (created_by_user_id) REFERENCES public.users(id) ON DELETE SET NULL;
+
 ALTER TABLE ONLY public.protected_branch_push_access_levels
     ADD CONSTRAINT fk_7111b68cdb FOREIGN KEY (group_id) REFERENCES public.namespaces(id) ON DELETE CASCADE;
 
@@ -22335,6 +22369,9 @@ ALTER TABLE ONLY public.events
 
 ALTER TABLE ONLY public.ip_restrictions
     ADD CONSTRAINT fk_rails_04a93778d5 FOREIGN KEY (group_id) REFERENCES public.namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY public.terraform_state_versions
+    ADD CONSTRAINT fk_rails_04f176e239 FOREIGN KEY (terraform_state_id) REFERENCES public.terraform_states(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY public.ci_build_report_results
     ADD CONSTRAINT fk_rails_056d298d48 FOREIGN KEY (project_id) REFERENCES public.projects(id) ON DELETE CASCADE;

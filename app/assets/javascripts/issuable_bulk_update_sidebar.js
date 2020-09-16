@@ -7,7 +7,7 @@ import MilestoneSelect from './milestone_select';
 import issueStatusSelect from './issue_status_select';
 import subscriptionSelect from './subscription_select';
 import LabelsSelect from './labels_select';
-import issueableEventHub from './issuables_list/eventhub';
+import issueableEventHub from './issues_list/eventhub';
 
 const HIDDEN_CLASS = 'hidden';
 const DISABLED_CONTENT_CLASS = 'disabled-content';

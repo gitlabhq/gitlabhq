@@ -65,12 +65,6 @@ RSpec.describe AlertManagement::AlertPresenter do
             **Description:** #{alert.description}#{markdown_line_break}
             **GitLab alert:** #{alert_url}
 
-            #### Alert Details
-
-            **title:** Alert title#{markdown_line_break}
-            **start_time:** 2020-04-27T10:10:22.265949279Z#{markdown_line_break}
-            **custom.alert.fields:** ["one", "two"]#{markdown_line_break}
-            **yet.another:** 73
           MARKDOWN
         )
       end

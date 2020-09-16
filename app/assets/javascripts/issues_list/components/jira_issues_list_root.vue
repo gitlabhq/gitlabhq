@@ -11,7 +11,7 @@ import {
 } from '~/jira_import/utils/jira_import_utils';
 
 export default {
-  name: 'IssuableListRoot',
+  name: 'JiraIssuesList',
   components: {
     GlAlert,
     GlLabel,

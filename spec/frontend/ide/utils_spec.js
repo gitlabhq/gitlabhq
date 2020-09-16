@@ -2,7 +2,7 @@ import { languages } from 'monaco-editor';
 import {
   isTextFile,
   registerLanguages,
-  registerSchemas,
+  registerSchema,
   trimPathComponents,
   insertFinalNewline,
   trimTrailingWhitespace,
@@ -159,55 +159,37 @@ describe('WebIDE utils', () => {
     });
   });
 
-  describe('registerSchemas', () => {
-    let options;
+  describe('registerSchema', () => {
+    let schema;
 
     beforeEach(() => {
-      options = {
-        validate: true,
-        enableSchemaRequest: true,
-        hover: true,
-        completion: true,
-        schemas: [
-          {
-            uri: 'http://myserver/foo-schema.json',
-            fileMatch: ['*'],
-            schema: {
-              id: 'http://myserver/foo-schema.json',
-              type: 'object',
-              properties: {
-                p1: { enum: ['v1', 'v2'] },
-                p2: { $ref: 'http://myserver/bar-schema.json' },
-              },
-            },
+      schema = {
+        uri: 'http://myserver/foo-schema.json',
+        fileMatch: ['*'],
+        schema: {
+          id: 'http://myserver/foo-schema.json',
+          type: 'object',
+          properties: {
+            p1: { enum: ['v1', 'v2'] },
+            p2: { $ref: 'http://myserver/bar-schema.json' },
           },
-          {
-            uri: 'http://myserver/bar-schema.json',
-            schema: {
-              id: 'http://myserver/bar-schema.json',
-              type: 'object',
-              properties: { q1: { enum: ['x1', 'x2'] } },
-            },
-          },
-        ],
+        },
       };
 
       jest.spyOn(languages.json.jsonDefaults, 'setDiagnosticsOptions');
       jest.spyOn(languages.yaml.yamlDefaults, 'setDiagnosticsOptions');
     });
 
-    it.each`
-      language  | defaultsObj
-      ${'json'} | ${languages.json.jsonDefaults}
-      ${'yaml'} | ${languages.yaml.yamlDefaults}
-    `(
-      'registers the given schemas with monaco for lang: $language',
-      ({ language, defaultsObj }) => {
-        registerSchemas({ language, options });
+    it('registers the given schemas with monaco for both json and yaml languages', () => {
+      registerSchema(schema);
 
-        expect(defaultsObj.setDiagnosticsOptions).toHaveBeenCalledWith(options);
-      },
-    );
+      expect(languages.json.jsonDefaults.setDiagnosticsOptions).toHaveBeenCalledWith(
+        expect.objectContaining({ schemas: [schema] }),
+      );
+      expect(languages.yaml.yamlDefaults.setDiagnosticsOptions).toHaveBeenCalledWith(
+        expect.objectContaining({ schemas: [schema] }),
+      );
+    });
   });
 
   describe('trimTrailingWhitespace', () => {

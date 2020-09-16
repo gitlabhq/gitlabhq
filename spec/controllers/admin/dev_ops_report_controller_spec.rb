@@ -18,7 +18,6 @@ RSpec.describe Admin::DevOpsReportController do
       end
 
       it_behaves_like 'tracking unique visits', :show do
-        let(:request_params) { {} }
         let(:target_id) { 'i_analytics_dev_ops_score' }
       end
     end

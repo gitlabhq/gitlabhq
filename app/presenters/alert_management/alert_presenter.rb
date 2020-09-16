@@ -46,7 +46,7 @@ module AlertManagement
     def issue_summary_markdown
       <<~MARKDOWN.chomp
         #{metadata_list}
-        #{alert_details}#{metric_embed_for_alert}
+        #{metric_embed_for_alert}
       MARKDOWN
     end
 
@@ -63,23 +63,6 @@ module AlertManagement
       metadata << list_item('GitLab alert', details_url) if details_url.present?
 
       metadata.join(MARKDOWN_LINE_BREAK)
-    end
-
-    def alert_details
-      if details.present?
-        <<~MARKDOWN.chomp
-
-          #### Alert Details
-
-          #{details_list}
-        MARKDOWN
-      end
-    end
-
-    def details_list
-      details
-        .map { |label, value| list_item(label, value) }
-        .join(MARKDOWN_LINE_BREAK)
     end
 
     def metric_embed_for_alert

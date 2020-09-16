@@ -214,7 +214,7 @@ class Snippet < ApplicationRecord
   def blobs
     return [] unless repository_exists?
 
-    repository.ls_files(repository.root_ref).map { |file| Blob.lazy(repository, repository.root_ref, file) }
+    repository.ls_files(default_branch).map { |file| Blob.lazy(repository, default_branch, file) }
   end
 
   def hook_attrs
@@ -309,6 +309,11 @@ class Snippet < ApplicationRecord
     end
   end
 
+  override :default_branch
+  def default_branch
+    super || 'master'
+  end
+
   def repository_storage
     snippet_repository&.shard_name || self.class.pick_repository_storage
   end
@@ -336,17 +341,17 @@ class Snippet < ApplicationRecord
   def file_name_on_repo
     return if repository.empty?
 
-    list_files(repository.root_ref).first
+    list_files(default_branch).first
   end
 
   def list_files(ref = nil)
     return [] if repository.empty?
 
-    repository.ls_files(ref)
+    repository.ls_files(ref || default_branch)
   end
 
   def multiple_files?
-    list_files(repository.root_ref).size > 1
+    list_files.size > 1
   end
 
   class << self
