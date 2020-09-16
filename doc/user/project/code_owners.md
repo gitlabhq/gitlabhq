@@ -157,12 +157,8 @@ file.md @group-x @group-x/subgroup-y
 
 ### Code Owners Sections **(PREMIUM)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12137) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.2.
-> - It's deployed behind a feature flag, enabled by default.
-> - It's enabled on GitLab.com.
-> - It can be enabled or disabled per-project.
-> - It's recommended for production use.
-> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-code-owner-sections). **(CORE ONLY)**
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12137) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.2 behind a feature flag, enabled by default.
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/42389) in GitLab 13.4. 
 
 Code Owner rules can be grouped into named sections. This allows for better
 organization of broader categories of Code Owner rules to be applied.
@@ -223,28 +219,6 @@ widget is sorted under a "section" label. In the screenshot below, we can see
 the rules for "Groups" and "Documentation" sections:
 
 ![MR widget - Sectional Code Owners](img/sectional_code_owners_v13.2.png)
-
-#### Enable or disable Code Owner Sections **(CORE ONLY)**
-
-Sections is under development but ready for production use.
-It is deployed behind a feature flag that is **enabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
-can opt to disable it for your instance.
-
-To disable it:
-
-```ruby
-Feature.disable(:sectional_codeowners)
-```
-
-To enable it:
-
-```ruby
-Feature.enable(:sectional_codeowners)
-```
-
-CAUTION: **Caution:**
-Disabling Sections will **not** refresh Code Owner Approval Rules on existing merge requests.
 
 ## Example `CODEOWNERS` file
 

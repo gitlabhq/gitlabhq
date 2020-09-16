@@ -152,7 +152,6 @@ RSpec.shared_examples 'Signup' do
             fill_in 'new_user_last_name', with: new_user.last_name
           else
             fill_in 'new_user_name', with: new_user.name
-            fill_in 'new_user_email_confirmation', with: new_user.email
           end
 
           fill_in 'new_user_password', with: new_user.password
@@ -180,7 +179,6 @@ RSpec.shared_examples 'Signup' do
             fill_in 'new_user_last_name', with: new_user.last_name
           else
             fill_in 'new_user_name', with: new_user.name
-            fill_in 'new_user_email_confirmation', with: new_user.email
           end
 
           fill_in 'new_user_password', with: new_user.password
@@ -204,7 +202,6 @@ RSpec.shared_examples 'Signup' do
           fill_in 'new_user_last_name', with: new_user.last_name
         else
           fill_in 'new_user_name', with: new_user.name
-          fill_in 'new_user_email_confirmation', with: new_user.email.capitalize
         end
 
         fill_in 'new_user_password', with: new_user.password
@@ -230,7 +227,6 @@ RSpec.shared_examples 'Signup' do
           fill_in 'new_user_last_name', with: new_user.last_name
         else
           fill_in 'new_user_name', with: new_user.name
-          fill_in 'new_user_email_confirmation', with: new_user.email
         end
 
         fill_in 'new_user_password', with: new_user.password
@@ -260,14 +256,7 @@ RSpec.shared_examples 'Signup' do
       click_button "Register"
 
       expect(current_path).to eq user_registration_path
-
-      if Gitlab::Experimentation.enabled?(:signup_flow)
-        expect(page).to have_content("error prohibited this user from being saved")
-      else
-        expect(page).to have_content("errors prohibited this user from being saved")
-        expect(page).to have_content("Email confirmation doesn't match")
-      end
-
+      expect(page).to have_content("error prohibited this user from being saved")
       expect(page).to have_content("Email has already been taken")
     end
 
@@ -309,7 +298,6 @@ RSpec.shared_examples 'Signup' do
         fill_in 'new_user_last_name', with: new_user.last_name
       else
         fill_in 'new_user_name', with: new_user.name
-        fill_in 'new_user_email_confirmation', with: new_user.email
       end
 
       fill_in 'new_user_password', with: new_user.password
@@ -331,7 +319,6 @@ RSpec.shared_examples 'Signup' do
         fill_in 'new_user_last_name', with: new_user.last_name
       else
         fill_in 'new_user_name', with: new_user.name
-        fill_in 'new_user_email_confirmation', with: new_user.email
       end
 
       fill_in 'new_user_password', with: new_user.password
@@ -374,7 +361,6 @@ RSpec.shared_examples 'Signup' do
           fill_in 'new_user_last_name', with: new_user.last_name
         else
           fill_in 'new_user_name', with: new_user.name
-          fill_in 'new_user_email_confirmation', with: new_user.email
         end
 
         fill_in 'new_user_password', with: new_user.password
@@ -396,7 +382,6 @@ RSpec.shared_examples 'Signup' do
           fill_in 'new_user_last_name', with: new_user.last_name
         else
           fill_in 'new_user_name', with: new_user.name
-          fill_in 'new_user_email_confirmation', with: new_user.email
         end
 
         fill_in 'new_user_password', with: new_user.password
@@ -419,7 +404,6 @@ RSpec.shared_examples 'Signup' do
       fill_in 'new_user_last_name', with: new_user.last_name
     else
       fill_in 'new_user_name', with: new_user.name
-      fill_in 'new_user_email_confirmation', with: new_user.email
     end
 
     fill_in 'new_user_password', with: new_user.password

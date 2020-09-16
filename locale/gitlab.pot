@@ -8035,6 +8035,9 @@ msgstr ""
 msgid "Date picker"
 msgstr ""
 
+msgid "Date range"
+msgstr ""
+
 msgid "Date range cannot exceed %{maxDateRange} days."
 msgstr ""
 
@@ -14480,6 +14483,18 @@ msgstr[1] ""
 msgid "Last %{days} days"
 msgstr ""
 
+msgid "Last 2 weeks"
+msgstr ""
+
+msgid "Last 30 days"
+msgstr ""
+
+msgid "Last 60 days"
+msgstr ""
+
+msgid "Last 90 days"
+msgstr ""
+
 msgid "Last Accessed On"
 msgstr ""
 
@@ -14553,6 +14568,9 @@ msgid "Last used"
 msgstr ""
 
 msgid "Last used on:"
+msgstr ""
+
+msgid "Last week"
 msgstr ""
 
 msgid "LastCommit|authored"
@@ -18735,9 +18753,6 @@ msgstr ""
 msgid "Please refer to %{docs_url}"
 msgstr ""
 
-msgid "Please retype the email address."
-msgstr ""
-
 msgid "Please select"
 msgstr ""
 
@@ -21303,7 +21318,16 @@ msgstr ""
 msgid "Repositories Analytics"
 msgstr ""
 
+msgid "RepositoriesAnalytics|Download Historic Test Coverage Data"
+msgstr ""
+
 msgid "RepositoriesAnalytics|Download historic test coverage data (.csv)"
+msgstr ""
+
+msgid "RepositoriesAnalytics|Download test coverage data (.csv)"
+msgstr ""
+
+msgid "RepositoriesAnalytics|Historic Test Coverage Data is available in raw format (.csv) for further analysis."
 msgstr ""
 
 msgid "RepositoriesAnalytics|Test Code Coverage"

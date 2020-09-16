@@ -26,7 +26,6 @@ RSpec.describe 'Invites', :aggregate_failures do
     fill_in 'new_user_name', with: new_user.name
     fill_in 'new_user_username', with: new_user.username
     fill_in 'new_user_email', with: new_user.email
-    fill_in 'new_user_email_confirmation', with: new_user.email
     fill_in 'new_user_password', with: new_user.password
     click_button 'Register'
   end

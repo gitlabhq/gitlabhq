@@ -639,7 +639,7 @@ follows:
 
 ## Unknown route
 
-When you try to access an API URL that does not exist you will receive 404 Not Found.
+When you try to access an API URL that does not exist, you will receive 404 Not Found.
 
 ```http
 HTTP/1.1 404 Not Found

@@ -8,7 +8,6 @@ module QA
           element :new_user_name_field
           element :new_user_username_field
           element :new_user_email_field
-          element :new_user_email_confirmation_field
           element :new_user_password_field
           element :new_user_register_button
           element :new_user_accept_terms_checkbox
@@ -18,7 +17,6 @@ module QA
           fill_element :new_user_name_field, user.name
           fill_element :new_user_username_field, user.username
           fill_element :new_user_email_field, user.email
-          fill_element :new_user_email_confirmation_field, user.email
           fill_element :new_user_password_field, user.password
 
           check_element :new_user_accept_terms_checkbox if has_element?(:new_user_accept_terms_checkbox)

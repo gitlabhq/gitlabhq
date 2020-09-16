@@ -6,6 +6,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Set up alerts for Prometheus metrics **(CORE)**
 
+> [Moved from Ultimate to Core](https://gitlab.com/gitlab-org/gitlab/-/issues/42640) in GitLab 12.10.
+
 After [configuring metrics for your CI/CD environment](index.md), you can set up
 alerting for Prometheus metrics depending on the location of your instances, and
 [trigger actions from alerts](#trigger-actions-from-alerts) to notify
@@ -13,7 +15,7 @@ your team when environment performance falls outside of the boundaries you set.
 
 ## Managed Prometheus instances
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/6590) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.2 for [custom metrics](index.md#adding-custom-metrics), and GitLab 11.3 for [library metrics](../../user/project/integrations/prometheus_library/metrics.md).
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/6590) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.2 for [custom metrics](index.md#adding-custom-metrics), and GitLab 11.3 for [library metrics](../../user/project/integrations/prometheus_library/metrics.md).
 
 For managed Prometheus instances using auto configuration, you can
 [configure alerts for metrics](index.md#adding-custom-metrics) directly in the
@@ -33,7 +35,7 @@ To remove the alert, click back on the alert icon for the desired metric, and cl
 
 ### Link runbooks to alerts
 
-> - Runbook URLs [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/39315) in GitLab 13.3.
+> Runbook URLs [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/39315) in GitLab 13.3.
 
 When creating alerts from the metrics dashboard for [managed Prometheus instances](#managed-prometheus-instances),
 you can also link a runbook. When the alert triggers, the
@@ -45,8 +47,8 @@ as soon as the alert fires:
 
 ## External Prometheus instances
 
->- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9258) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.8.
->- [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/42640) to [GitLab Core](https://about.gitlab.com/pricing/) in 12.10.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9258) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.8.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/42640) to [GitLab Core](https://about.gitlab.com/pricing/) in 12.10.
 
 For manually configured Prometheus servers, GitLab provides a notify endpoint for
 use with Prometheus webhooks. If you have manual configuration enabled, an
@@ -82,8 +84,8 @@ Prometheus server to use the
 
 ## Trigger actions from alerts **(ULTIMATE)**
 
->- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/4925) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.11.
->- [From GitLab Ultimate 12.5](https://gitlab.com/gitlab-org/gitlab/-/issues/13401), when GitLab receives a recovery alert, it will automatically close the associated issue.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/4925) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.11.
+> - [From GitLab Ultimate 12.5](https://gitlab.com/gitlab-org/gitlab/-/issues/13401), when GitLab receives a recovery alert, it will automatically close the associated issue.
 
 Alerts can be used to trigger actions, like opening an issue automatically
 (disabled by default since `13.1`). To configure the actions:
