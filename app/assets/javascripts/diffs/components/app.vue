@@ -18,6 +18,7 @@ import TreeList from './tree_list.vue';
 
 import HiddenFilesWarning from './hidden_files_warning.vue';
 import MergeConflictWarning from './merge_conflict_warning.vue';
+import CollapsedFilesWarning from './collapsed_files_warning.vue';
 
 import {
   TREE_LIST_WIDTH_STORAGE_KEY,
@@ -27,6 +28,9 @@ import {
   TREE_HIDE_STATS_WIDTH,
   MR_TREE_SHOW_KEY,
   CENTERED_LIMITED_CONTAINER_CLASSES,
+  ALERT_OVERFLOW_HIDDEN,
+  ALERT_MERGE_CONFLICT,
+  ALERT_COLLAPSED_FILES,
 } from '../constants';
 
 export default {
@@ -37,6 +41,7 @@ export default {
     NoChanges,
     HiddenFilesWarning,
     MergeConflictWarning,
+    CollapsedFilesWarning,
     CommitWidget,
     TreeList,
     GlLoadingIcon,
@@ -45,6 +50,11 @@ export default {
     GlSprintf,
   },
   mixins: [glFeatureFlagsMixin()],
+  alerts: {
+    ALERT_OVERFLOW_HIDDEN,
+    ALERT_MERGE_CONFLICT,
+    ALERT_COLLAPSED_FILES,
+  },
   props: {
     endpoint: {
       type: String,
@@ -114,6 +124,7 @@ export default {
     return {
       treeWidth,
       diffFilesLength: 0,
+      collapsedWarningDismissed: false,
     };
   },
   computed: {
@@ -142,7 +153,7 @@ export default {
       'canMerge',
       'hasConflicts',
     ]),
-    ...mapGetters('diffs', ['isParallelView', 'currentDiffIndex']),
+    ...mapGetters('diffs', ['hasCollapsedFile', 'isParallelView', 'currentDiffIndex']),
     ...mapGetters(['isNotesFetched', 'getNoteableData']),
     diffs() {
       if (!this.viewDiffsFileByFile) {
@@ -187,6 +198,23 @@ export default {
       const { currentFileNumber, diffFiles } = this;
 
       return currentFileNumber < diffFiles.length ? currentFileNumber + 1 : null;
+    },
+    visibleWarning() {
+      let visible = false;
+
+      if (this.renderOverflowWarning) {
+        visible = this.$options.alerts.ALERT_OVERFLOW_HIDDEN;
+      } else if (this.isDiffHead && this.hasConflicts) {
+        visible = this.$options.alerts.ALERT_MERGE_CONFLICT;
+      } else if (
+        this.hasCollapsedFile &&
+        !this.collapsedWarningDismissed &&
+        !this.viewDiffsFileByFile
+      ) {
+        visible = this.$options.alerts.ALERT_COLLAPSED_FILES;
+      }
+
+      return visible;
     },
   },
   watch: {
@@ -401,6 +429,9 @@ export default {
         this.toggleShowTreeList(false);
       }
     },
+    dismissCollapsedWarning() {
+      this.collapsedWarningDismissed = true;
+    },
   },
   minTreeWidth: MIN_TREE_WIDTH,
   maxTreeWidth: MAX_TREE_WIDTH,
@@ -418,17 +449,22 @@ export default {
       />
 
       <hidden-files-warning
-        v-if="renderOverflowWarning"
+        v-if="visibleWarning == $options.alerts.ALERT_OVERFLOW_HIDDEN"
         :visible="numVisibleFiles"
         :total="numTotalFiles"
         :plain-diff-path="plainDiffPath"
         :email-patch-path="emailPatchPath"
       />
       <merge-conflict-warning
-        v-if="isDiffHead && hasConflicts"
+        v-if="visibleWarning == $options.alerts.ALERT_MERGE_CONFLICT"
         :limited="isLimitedContainer"
         :resolution-path="conflictResolutionPath"
         :mergeable="canMerge"
+      />
+      <collapsed-files-warning
+        v-if="visibleWarning == $options.alerts.ALERT_COLLAPSED_FILES"
+        :limited="isLimitedContainer"
+        @dismiss="dismissCollapsedWarning"
       />
 
       <div

@@ -350,15 +350,8 @@ function mergeTwoFiles(target, source) {
 }
 
 function ensureBasicDiffFileLines(file) {
-  if (window.gon?.features?.unifiedDiffLines) {
-    return Object.assign(file, {
-      highlighted_diff_lines: [],
-      parallel_diff_lines: parallelizeDiffLines(file.highlighted_diff_lines || []),
-    });
-  }
-
   const missingInline = !file.highlighted_diff_lines;
-  const missingParallel = !file.parallel_diff_lines;
+  const missingParallel = !file.parallel_diff_lines || window.gon?.features?.unifiedDiffLines;
 
   Object.assign(file, {
     highlighted_diff_lines: missingInline ? [] : file.highlighted_diff_lines,

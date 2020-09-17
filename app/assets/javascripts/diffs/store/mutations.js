@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
-import { PARALLEL_DIFF_VIEW_TYPE } from '../constants';
+import { INLINE_DIFF_VIEW_TYPE } from '../constants';
 import {
   findDiffFile,
   addLineReferences,
@@ -152,7 +152,7 @@ export default {
       inlineLines: diffFile.highlighted_diff_lines,
       parallelLines: diffFile.parallel_diff_lines,
       diffViewType: window.gon?.features?.unifiedDiffLines
-        ? PARALLEL_DIFF_VIEW_TYPE
+        ? INLINE_DIFF_VIEW_TYPE
         : state.diffViewType,
       contextLines: lines,
       bottom,

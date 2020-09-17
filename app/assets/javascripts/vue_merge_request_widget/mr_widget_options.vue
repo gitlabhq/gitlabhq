@@ -7,6 +7,7 @@ import stateMaps from 'ee_else_ce/vue_merge_request_widget/stores/state_maps';
 import { sprintf, s__, __ } from '~/locale';
 import Project from '~/pages/projects/project';
 import SmartInterval from '~/smart_interval';
+import { secondsToMilliseconds } from '~/lib/utils/datetime_utility';
 import { deprecatedCreateFlash as createFlash } from '../flash';
 import mergeRequestQueryVariablesMixin from './mixins/merge_request_query_variables';
 import Loading from './components/loading.vue';
@@ -202,7 +203,10 @@ export default {
   },
   mounted() {
     MRWidgetService.fetchInitialData()
-      .then(({ data }) => this.initWidget(data))
+      .then(({ data, headers }) => {
+        this.startingPollInterval = Number(headers['POLL-INTERVAL']);
+        this.initWidget(data);
+      })
       .catch(() =>
         createFlash(__('Unable to load the merge request widget. Try reloading the page.')),
       );
@@ -292,9 +296,10 @@ export default {
     initPolling() {
       this.pollingInterval = new SmartInterval({
         callback: this.checkStatus,
-        startingInterval: 10 * 1000,
-        maxInterval: 240 * 1000,
-        hiddenInterval: window.gon?.features?.widgetVisibilityPolling && 360 * 1000,
+        startingInterval: this.startingPollInterval,
+        maxInterval: this.startingPollInterval + secondsToMilliseconds(4 * 60),
+        hiddenInterval:
+          window.gon?.features?.widgetVisibilityPolling && secondsToMilliseconds(6 * 60),
         incrementByFactorOf: 2,
       });
     },

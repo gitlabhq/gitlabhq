@@ -35,6 +35,10 @@ module Ci
         end
       end
 
+      event :pending do
+        transition all => :pending
+      end
+
       event :manual do
         transition all => :manual
       end

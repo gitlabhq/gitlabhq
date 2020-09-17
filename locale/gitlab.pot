@@ -10374,6 +10374,9 @@ msgstr ""
 msgid "Expand all"
 msgstr ""
 
+msgid "Expand all files"
+msgstr ""
+
 msgid "Expand approvers"
 msgstr ""
 
@@ -11214,6 +11217,9 @@ msgid "Font Color"
 msgstr ""
 
 msgid "Footer message"
+msgstr ""
+
+msgid "For a faster browsing experience, some files are collapsed by default."
 msgstr ""
 
 msgid "For help setting up the Service Desk for your instance, please contact an administrator."
@@ -15383,6 +15389,9 @@ msgid "Max access level"
 msgstr ""
 
 msgid "Max seats used"
+msgstr ""
+
+msgid "Max size 15 MB"
 msgstr ""
 
 msgid "Maximum Users:"
@@ -21456,6 +21465,9 @@ msgstr ""
 msgid "Request parameter %{param} is missing."
 msgstr ""
 
+msgid "Request review from"
+msgstr ""
+
 msgid "Request to link SAML account must be authorized"
 msgstr ""
 
@@ -21724,6 +21736,9 @@ msgid "Review time is defined as the time it takes from first comment until merg
 msgstr ""
 
 msgid "ReviewApp|Enable Review App"
+msgstr ""
+
+msgid "Reviewer"
 msgstr ""
 
 msgid "Reviewing"
@@ -23557,6 +23572,9 @@ msgid "Snowplow"
 msgstr ""
 
 msgid "Solution"
+msgstr ""
+
+msgid "Some changes are not shown"
 msgstr ""
 
 msgid "Some child epics may be hidden due to applied filters"

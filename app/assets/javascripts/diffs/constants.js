@@ -68,6 +68,11 @@ export const DIFFS_PER_PAGE = 20;
 export const DIFF_COMPARE_BASE_VERSION_INDEX = -1;
 export const DIFF_COMPARE_HEAD_VERSION_INDEX = -2;
 
+// Diff View Alerts
+export const ALERT_OVERFLOW_HIDDEN = 'overflow';
+export const ALERT_MERGE_CONFLICT = 'merge-conflict';
+export const ALERT_COLLAPSED_FILES = 'collapsed';
+
 // State machine states
 export const STATE_IDLING = 'idle';
 export const STATE_LOADING = 'loading';

@@ -58,5 +58,9 @@ FactoryBot.define do
       started
       status { 'skipped' }
     end
+
+    trait :strategy_depend do
+      options { { trigger: { strategy: 'depend' } } }
+    end
   end
 end

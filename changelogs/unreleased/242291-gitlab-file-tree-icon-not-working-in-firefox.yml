@@ -1,0 +1,5 @@
+---
+title: Fix GitLab file icon in Firefox
+merge_request: 40786
+author:
+type: fixed

@@ -9,6 +9,7 @@ import NoChanges from '~/diffs/components/no_changes.vue';
 import DiffFile from '~/diffs/components/diff_file.vue';
 import CompareVersions from '~/diffs/components/compare_versions.vue';
 import HiddenFilesWarning from '~/diffs/components/hidden_files_warning.vue';
+import CollapsedFilesWarning from '~/diffs/components/collapsed_files_warning.vue';
 import CommitWidget from '~/diffs/components/commit_widget.vue';
 import TreeList from '~/diffs/components/tree_list.vue';
 import { INLINE_DIFF_VIEW_TYPE, PARALLEL_DIFF_VIEW_TYPE } from '~/diffs/constants';
@@ -21,6 +22,10 @@ const mergeRequestDiff = { version_index: 1 };
 const TEST_ENDPOINT = `${TEST_HOST}/diff/endpoint`;
 const COMMIT_URL = '[BASE URL]/OLD';
 const UPDATED_COMMIT_URL = '[BASE URL]/NEW';
+
+function getCollapsedFilesWarning(wrapper) {
+  return wrapper.find(CollapsedFilesWarning);
+}
 
 describe('diffs/components/app', () => {
   const oldMrTabs = window.mrTabs;
@@ -668,24 +673,51 @@ describe('diffs/components/app', () => {
       );
     });
 
-    it('should render hidden files warning if render overflow warning is present', () => {
-      createComponent({}, ({ state }) => {
-        state.diffs.renderOverflowWarning = true;
-        state.diffs.realSize = '5';
-        state.diffs.plainDiffPath = 'plain diff path';
-        state.diffs.emailPatchPath = 'email patch path';
-        state.diffs.size = 1;
+    describe('warnings', () => {
+      describe('hidden files', () => {
+        it('should render hidden files warning if render overflow warning is present', () => {
+          createComponent({}, ({ state }) => {
+            state.diffs.renderOverflowWarning = true;
+            state.diffs.realSize = '5';
+            state.diffs.plainDiffPath = 'plain diff path';
+            state.diffs.emailPatchPath = 'email patch path';
+            state.diffs.size = 1;
+          });
+
+          expect(wrapper.find(HiddenFilesWarning).exists()).toBe(true);
+          expect(wrapper.find(HiddenFilesWarning).props()).toEqual(
+            expect.objectContaining({
+              total: '5',
+              plainDiffPath: 'plain diff path',
+              emailPatchPath: 'email patch path',
+              visible: 1,
+            }),
+          );
+        });
       });
 
-      expect(wrapper.find(HiddenFilesWarning).exists()).toBe(true);
-      expect(wrapper.find(HiddenFilesWarning).props()).toEqual(
-        expect.objectContaining({
-          total: '5',
-          plainDiffPath: 'plain diff path',
-          emailPatchPath: 'email patch path',
-          visible: 1,
-        }),
-      );
+      describe('collapsed files', () => {
+        it('should render the collapsed files warning if there are any collapsed files', () => {
+          createComponent({}, ({ state }) => {
+            state.diffs.diffFiles = [{ viewer: { collapsed: true } }];
+          });
+
+          expect(getCollapsedFilesWarning(wrapper).exists()).toBe(true);
+        });
+
+        it('should not render the collapsed files warning if the user has dismissed the alert already', async () => {
+          createComponent({}, ({ state }) => {
+            state.diffs.diffFiles = [{ viewer: { collapsed: true } }];
+          });
+
+          expect(getCollapsedFilesWarning(wrapper).exists()).toBe(true);
+
+          wrapper.vm.collapsedWarningDismissed = true;
+          await wrapper.vm.$nextTick();
+
+          expect(getCollapsedFilesWarning(wrapper).exists()).toBe(false);
+        });
+      });
     });
 
     it('should display commit widget if store has a commit', () => {

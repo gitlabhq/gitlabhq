@@ -386,6 +386,12 @@ module IssuablesHelper
     end
   end
 
+  def reviewer_sidebar_data(reviewer, merge_request: nil)
+    { avatar_url: reviewer.avatar_url, name: reviewer.name, username: reviewer.username }.tap do |data|
+      data[:can_merge] = merge_request.can_be_merged_by?(reviewer) if merge_request
+    end
+  end
+
   def issuable_squash_option?(issuable, project)
     if issuable.persisted?
       issuable.squash

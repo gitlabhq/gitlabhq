@@ -11,8 +11,6 @@ RSpec.shared_examples_for 'snippet editor' do
 
   before do
     stub_feature_flags(allow_possible_spam: false)
-    stub_feature_flags(snippets_vue: false)
-    stub_feature_flags(snippets_edit_vue: false)
     stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
 
     Gitlab::CurrentSettings.update!(
@@ -125,5 +123,20 @@ end
 RSpec.describe 'User creates snippet', :js do
   let_it_be(:user) { create(:user) }
 
-  it_behaves_like "snippet editor"
+  context 'Vue application' do
+    before do
+      stub_feature_flags(snippets_edit_vue: false)
+    end
+
+    it_behaves_like "snippet editor"
+  end
+
+  context 'non-Vue application' do
+    before do
+      stub_feature_flags(snippets_vue: false)
+      stub_feature_flags(snippets_edit_vue: false)
+    end
+
+    it_behaves_like "snippet editor"
+  end
 end

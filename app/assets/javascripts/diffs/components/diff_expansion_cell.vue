@@ -67,9 +67,7 @@ export default {
   computed: {
     ...mapState({
       diffViewType(state) {
-        return this.glFeatures.unifiedDiffLines
-          ? PARALLEL_DIFF_VIEW_TYPE
-          : state.diffs.diffViewType;
+        return this.glFeatures.unifiedDiffLines ? INLINE_DIFF_VIEW_TYPE : state.diffs.diffViewType;
       },
       diffFiles: state => state.diffs.diffFiles,
     }),

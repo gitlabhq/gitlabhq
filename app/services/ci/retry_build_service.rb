@@ -15,6 +15,7 @@ module Ci
 
       reprocess!(build).tap do |new_build|
         mark_subsequent_stages_as_processable(build)
+        build.pipeline.reset_ancestor_bridges!
 
         Gitlab::OptimisticLocking.retry_lock(new_build, &:enqueue)
 

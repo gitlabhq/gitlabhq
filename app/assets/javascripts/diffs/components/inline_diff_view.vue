@@ -64,99 +64,37 @@ export default {
       <col />
     </colgroup>
     <tbody>
-      <template v-if="glFeatures.unifiedDiffLines">
-        <template v-for="({ left, right }, index) in diffLines">
-          <inline-diff-expansion-row
-            :key="`expand-${index}`"
-            :file-hash="diffFile.file_hash"
-            :context-lines-path="diffFile.context_lines_path"
-            :line="left || right"
-            :is-top="index === 0"
-            :is-bottom="index + 1 === diffLinesLength"
-          />
-          <template v-if="left">
-            <inline-diff-table-row
-              :key="`${left.line_code || index}`"
-              :file-hash="diffFile.file_hash"
-              :file-path="diffFile.file_path"
-              :line="left"
-              :is-bottom="index + 1 === diffLinesLength"
-              :is-commented="index >= commentedLines.startLine && index <= commentedLines.endLine"
-            />
-            <inline-diff-comment-row
-              :key="`icr-${left.line_code || index}`"
-              :diff-file-hash="diffFile.file_hash"
-              :line="left"
-              :help-page-path="helpPagePath"
-              :has-draft="shouldRenderDraftRow(diffFile.file_hash, left) || false"
-            />
-            <inline-draft-comment-row
-              v-if="shouldRenderDraftRow(diffFile.file_hash, left)"
-              :key="`draft_${index}`"
-              :draft="draftForLine(diffFile.file_hash, left)"
-              :diff-file="diffFile"
-              :line="left"
-            />
-          </template>
-          <template v-if="right && right.type === 'new'">
-            <inline-diff-table-row
-              :key="`new-${right.line_code || index}`"
-              :file-hash="diffFile.file_hash"
-              :file-path="diffFile.file_path"
-              :line="right"
-              :is-bottom="index + 1 === diffLinesLength"
-              :is-commented="index >= commentedLines.startLine && index <= commentedLines.endLine"
-            />
-            <inline-diff-comment-row
-              :key="`new-icr-${right.line_code || index}`"
-              :diff-file-hash="diffFile.file_hash"
-              :line="right"
-              :help-page-path="helpPagePath"
-              :has-draft="shouldRenderDraftRow(diffFile.file_hash, right) || false"
-            />
-            <inline-draft-comment-row
-              v-if="shouldRenderDraftRow(diffFile.file_hash, right)"
-              :key="`new-draft_${index}`"
-              :draft="draftForLine(diffFile.file_hash, right)"
-              :diff-file="diffFile"
-              :line="right"
-            />
-          </template>
-        </template>
-      </template>
-      <template v-else>
-        <template v-for="(line, index) in diffLines">
-          <inline-diff-expansion-row
-            :key="`expand-${index}`"
-            :file-hash="diffFile.file_hash"
-            :context-lines-path="diffFile.context_lines_path"
-            :line="line"
-            :is-top="index === 0"
-            :is-bottom="index + 1 === diffLinesLength"
-          />
-          <inline-diff-table-row
-            :key="`${line.line_code || index}`"
-            :file-hash="diffFile.file_hash"
-            :file-path="diffFile.file_path"
-            :line="line"
-            :is-bottom="index + 1 === diffLinesLength"
-            :is-commented="index >= commentedLines.startLine && index <= commentedLines.endLine"
-          />
-          <inline-diff-comment-row
-            :key="`icr-${line.line_code || index}`"
-            :diff-file-hash="diffFile.file_hash"
-            :line="line"
-            :help-page-path="helpPagePath"
-            :has-draft="shouldRenderDraftRow(diffFile.file_hash, line) || false"
-          />
-          <inline-draft-comment-row
-            v-if="shouldRenderDraftRow(diffFile.file_hash, line)"
-            :key="`draft_${index}`"
-            :draft="draftForLine(diffFile.file_hash, line)"
-            :diff-file="diffFile"
-            :line="line"
-          />
-        </template>
+      <template v-for="(line, index) in diffLines">
+        <inline-diff-expansion-row
+          :key="`expand-${index}`"
+          :file-hash="diffFile.file_hash"
+          :context-lines-path="diffFile.context_lines_path"
+          :line="line"
+          :is-top="index === 0"
+          :is-bottom="index + 1 === diffLinesLength"
+        />
+        <inline-diff-table-row
+          :key="`${line.line_code || index}`"
+          :file-hash="diffFile.file_hash"
+          :file-path="diffFile.file_path"
+          :line="line"
+          :is-bottom="index + 1 === diffLinesLength"
+          :is-commented="index >= commentedLines.startLine && index <= commentedLines.endLine"
+        />
+        <inline-diff-comment-row
+          :key="`icr-${line.line_code || index}`"
+          :diff-file-hash="diffFile.file_hash"
+          :line="line"
+          :help-page-path="helpPagePath"
+          :has-draft="shouldRenderDraftRow(diffFile.file_hash, line) || false"
+        />
+        <inline-draft-comment-row
+          v-if="shouldRenderDraftRow(diffFile.file_hash, line)"
+          :key="`draft_${index}`"
+          :draft="draftForLine(diffFile.file_hash, line)"
+          :diff-file="diffFile"
+          :line="line"
+        />
       </template>
     </tbody>
   </table>

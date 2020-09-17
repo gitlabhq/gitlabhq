@@ -232,6 +232,19 @@ RSpec.describe Ci::RetryBuildService do
           end
         end
       end
+
+      context 'when the pipeline is a child pipeline and the bridge is depended' do
+        let!(:parent_pipeline) { create(:ci_pipeline, project: project) }
+        let!(:pipeline) { create(:ci_pipeline, project: project) }
+        let!(:bridge) { create(:ci_bridge, :strategy_depend, pipeline: parent_pipeline, status: 'success') }
+        let!(:source_pipeline) { create(:ci_sources_pipeline, pipeline: pipeline, source_job: bridge) }
+
+        it 'marks source bridge as pending' do
+          service.execute(build)
+
+          expect(bridge.reload).to be_pending
+        end
+      end
     end
 
     context 'when user does not have ability to execute build' do
