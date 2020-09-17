@@ -34,27 +34,15 @@ export default {
       type: Boolean,
       required: true,
     },
-    issueLinkBase: {
-      type: String,
-      required: true,
-    },
-    rootPath: {
-      type: String,
-      required: true,
-    },
-    boardId: {
-      type: String,
-      required: true,
-    },
     canAdminList: {
       type: Boolean,
       required: false,
       default: false,
     },
-    groupId: {
-      type: Number,
-      required: false,
-      default: null,
+  },
+  inject: {
+    boardId: {
+      type: String,
     },
   },
   data() {
@@ -151,22 +139,14 @@ export default {
     <div
       class="board-inner gl-display-flex gl-flex-direction-column gl-relative gl-h-full gl-rounded-base"
     >
-      <board-list-header
-        :can-admin-list="canAdminList"
-        :list="list"
-        :disabled="disabled"
-        :board-id="boardId"
-      />
+      <board-list-header :can-admin-list="canAdminList" :list="list" :disabled="disabled" />
       <board-list
         v-if="showBoardListAndBoardInfo"
         ref="board-list"
         :disabled="disabled"
-        :group-id="groupId || null"
-        :issue-link-base="issueLinkBase"
         :issues="listIssues"
         :list="list"
         :loading="list.loading"
-        :root-path="rootPath"
       />
       <board-blank-state v-if="canAdminList && list.id === 'blank'" />
 

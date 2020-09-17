@@ -2,7 +2,7 @@
 import { mapGetters } from 'vuex';
 import { GlLink, GlTooltipDirective } from '@gitlab/ui';
 import TerminalSyncStatusSafe from './terminal_sync/terminal_sync_status_safe.vue';
-import { getFileEOL } from '../utils';
+import { isTextFile, getFileEOL } from '~/ide/utils';
 
 export default {
   components: {
@@ -17,6 +17,9 @@ export default {
     activeFileEOL() {
       return getFileEOL(this.activeFile.content);
     },
+    activeFileIsText() {
+      return isTextFile(this.activeFile);
+    },
   },
 };
 </script>
@@ -30,7 +33,7 @@ export default {
         </gl-link>
       </div>
       <div>{{ activeFileEOL }}</div>
-      <div v-if="!activeFile.binary">{{ activeFile.editorRow }}:{{ activeFile.editorColumn }}</div>
+      <div v-if="activeFileIsText">{{ activeFile.editorRow }}:{{ activeFile.editorColumn }}</div>
       <div>{{ activeFile.fileLanguage }}</div>
     </template>
     <terminal-sync-status-safe />

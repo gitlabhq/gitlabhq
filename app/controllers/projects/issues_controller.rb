@@ -344,10 +344,12 @@ class Projects::IssuesController < Projects::ApplicationController
   def finder_options
     options = super
 
-    return options unless service_desk?
+    options[:issue_types] = Issue::TYPES_FOR_LIST
 
-    options.reject! { |key| key == 'author_username' || key == 'author_id' }
-    options[:author_id] = User.support_bot
+    if service_desk?
+      options.reject! { |key| key == 'author_username' || key == 'author_id' }
+      options[:author_id] = User.support_bot
+    end
 
     options
   end

@@ -1,6 +1,7 @@
 /* global List */
 
 import Vue from 'vue';
+import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
 import boardNewIssue from '~/boards/components/board_new_issue.vue';
@@ -10,6 +11,7 @@ import '~/boards/models/list';
 import { listObj, boardsMockInterceptor } from './mock_data';
 
 describe('Issue boards new issue form', () => {
+  let wrapper;
   let vm;
   let list;
   let mock;
@@ -24,13 +26,11 @@ describe('Issue boards new issue form', () => {
     const dummySubmitEvent = {
       preventDefault() {},
     };
-    vm.$refs.submitButton = vm.$el.querySelector('.btn-success');
-    return vm.submit(dummySubmitEvent);
+    wrapper.vm.$refs.submitButton = wrapper.find({ ref: 'submitButton' });
+    return wrapper.vm.submit(dummySubmitEvent);
   };
 
   beforeEach(() => {
-    setFixtures('<div class="test-container"></div>');
-
     const BoardNewIssueComp = Vue.extend(boardNewIssue);
 
     mock = new MockAdapter(axios);
@@ -43,46 +43,52 @@ describe('Issue boards new issue form', () => {
     newIssueMock = Promise.resolve(promiseReturn);
     jest.spyOn(list, 'newIssue').mockImplementation(() => newIssueMock);
 
-    vm = new BoardNewIssueComp({
+    wrapper = mount(BoardNewIssueComp, {
       propsData: {
+        disabled: false,
         list,
       },
-    }).$mount(document.querySelector('.test-container'));
+      provide: {
+        groupId: null,
+      },
+    });
+
+    vm = wrapper.vm;
 
     return Vue.nextTick();
   });
 
   afterEach(() => {
-    vm.$destroy();
+    wrapper.destroy();
     mock.restore();
   });
 
   it('calls submit if submit button is clicked', () => {
-    jest.spyOn(vm, 'submit').mockImplementation(e => e.preventDefault());
+    jest.spyOn(wrapper.vm, 'submit').mockImplementation();
     vm.title = 'Testing Title';
 
-    return Vue.nextTick().then(() => {
-      vm.$el.querySelector('.btn-success').click();
-
-      expect(vm.submit.mock.calls.length).toBe(1);
-    });
+    return Vue.nextTick()
+      .then(submitIssue)
+      .then(() => {
+        expect(wrapper.vm.submit).toHaveBeenCalled();
+      });
   });
 
   it('disables submit button if title is empty', () => {
-    expect(vm.$el.querySelector('.btn-success').disabled).toBe(true);
+    expect(wrapper.find({ ref: 'submitButton' }).props().disabled).toBe(true);
   });
 
   it('enables submit button if title is not empty', () => {
-    vm.title = 'Testing Title';
+    wrapper.setData({ title: 'Testing Title' });
 
     return Vue.nextTick().then(() => {
-      expect(vm.$el.querySelector('.form-control').value).toBe('Testing Title');
-      expect(vm.$el.querySelector('.btn-success').disabled).not.toBe(true);
+      expect(wrapper.find({ ref: 'input' }).element.value).toBe('Testing Title');
+      expect(wrapper.find({ ref: 'submitButton' }).props().disabled).toBe(false);
     });
   });
 
   it('clears title after clicking cancel', () => {
-    vm.$el.querySelector('.btn-default').click();
+    wrapper.find({ ref: 'cancelButton' }).trigger('click');
 
     return Vue.nextTick().then(() => {
       expect(vm.title).toBe('');
@@ -97,7 +103,7 @@ describe('Issue boards new issue form', () => {
 
   describe('submit success', () => {
     it('creates new issue', () => {
-      vm.title = 'submit title';
+      wrapper.setData({ title: 'submit issue' });
 
       return Vue.nextTick()
         .then(submitIssue)
@@ -107,17 +113,18 @@ describe('Issue boards new issue form', () => {
     });
 
     it('enables button after submit', () => {
-      vm.title = 'submit issue';
+      jest.spyOn(wrapper.vm, 'submit').mockImplementation();
+      wrapper.setData({ title: 'submit issue' });
 
       return Vue.nextTick()
         .then(submitIssue)
         .then(() => {
-          expect(vm.$el.querySelector('.btn-success').disabled).toBe(false);
+          expect(wrapper.vm.$refs.submitButton.props().disabled).toBe(false);
         });
     });
 
     it('clears title after submit', () => {
-      vm.title = 'submit issue';
+      wrapper.setData({ title: 'submit issue' });
 
       return Vue.nextTick()
         .then(submitIssue)
@@ -128,7 +135,7 @@ describe('Issue boards new issue form', () => {
 
     it('sets detail issue after submit', () => {
       expect(boardsStore.detail.issue.title).toBe(undefined);
-      vm.title = 'submit issue';
+      wrapper.setData({ title: 'submit issue' });
 
       return Vue.nextTick()
         .then(submitIssue)
@@ -138,7 +145,7 @@ describe('Issue boards new issue form', () => {
     });
 
     it('sets detail list after submit', () => {
-      vm.title = 'submit issue';
+      wrapper.setData({ title: 'submit issue' });
 
       return Vue.nextTick()
         .then(submitIssue)
@@ -149,7 +156,7 @@ describe('Issue boards new issue form', () => {
 
     it('sets detail weight after submit', () => {
       boardsStore.weightFeatureAvailable = true;
-      vm.title = 'submit issue';
+      wrapper.setData({ title: 'submit issue' });
 
       return Vue.nextTick()
         .then(submitIssue)
@@ -160,7 +167,7 @@ describe('Issue boards new issue form', () => {
 
     it('does not set detail weight after submit', () => {
       boardsStore.weightFeatureAvailable = false;
-      vm.title = 'submit issue';
+      wrapper.setData({ title: 'submit issue' });
 
       return Vue.nextTick()
         .then(submitIssue)

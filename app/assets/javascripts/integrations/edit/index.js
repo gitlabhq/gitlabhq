@@ -72,7 +72,7 @@ function parseDatasetToProps(data) {
   };
 }
 
-export default (el, adminEl) => {
+export default (el, defaultEl) => {
   if (!el) {
     return null;
   }
@@ -80,12 +80,12 @@ export default (el, adminEl) => {
   const props = parseDatasetToProps(el.dataset);
 
   const initialState = {
-    adminState: null,
+    defaultState: null,
     customState: props,
   };
 
-  if (adminEl) {
-    initialState.adminState = Object.freeze(parseDatasetToProps(adminEl.dataset));
+  if (defaultEl) {
+    initialState.defaultState = Object.freeze(parseDatasetToProps(defaultEl.dataset));
   }
 
   return new Vue({

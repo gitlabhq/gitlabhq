@@ -26,14 +26,6 @@ export default {
       type: String,
       required: true,
     },
-    issueLinkBase: {
-      type: String,
-      required: true,
-    },
-    rootPath: {
-      type: String,
-      required: true,
-    },
     projectId: {
       type: Number,
       required: true,
@@ -146,12 +138,7 @@ export default {
   >
     <div class="add-issues-container d-flex flex-column m-auto rounded">
       <modal-header :project-id="projectId" :label-path="labelPath" />
-      <modal-list
-        v-if="!loading && showList && !filterLoading"
-        :issue-link-base="issueLinkBase"
-        :root-path="rootPath"
-        :empty-state-svg="emptyStateSvg"
-      />
+      <modal-list v-if="!loading && showList && !filterLoading" :empty-state-svg="emptyStateSvg" />
       <empty-state
         v-if="showEmptyState"
         :new-issue-path="newIssuePath"

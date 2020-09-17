@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Plan', :reliable do
+  RSpec.describe 'Plan' do
     describe 'Related issues' do
       let(:project) do
         Resource::Project.fabricate_via_api! do |project|
@@ -30,19 +30,14 @@ module QA
 
         Page::Project::Issue::Show.perform do |show|
           max_wait = 60
-          wait_interval = 1
 
           show.relate_issue(issue_2)
 
-          show.wait_until(reload: false, max_duration: max_wait, sleep_interval: wait_interval) do
-            expect(show.related_issuable_item).to have_content(issue_2.title)
-          end
+          expect(show.related_issuable_item).to have_text(issue_2.title, wait: max_wait)
 
           show.click_remove_related_issue_button
 
-          show.wait_until(reload: false, max_duration: max_wait, sleep_interval: wait_interval) do
-            expect(show).not_to have_content(issue_2.title)
-          end
+          expect(show).to have_no_text(issue_2.title, wait: max_wait)
         end
       end
     end

@@ -1,0 +1,5 @@
+---
+title: Preload projects to prevent N+1 when populating project name
+merge_request: 40769
+author:
+type: performance

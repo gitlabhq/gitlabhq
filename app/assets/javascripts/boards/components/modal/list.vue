@@ -10,14 +10,6 @@ export default {
     GlIcon,
   },
   props: {
-    issueLinkBase: {
-      type: String,
-      required: true,
-    },
-    rootPath: {
-      type: String,
-      required: true,
-    },
     emptyStateSvg: {
       type: String,
       required: true,
@@ -134,7 +126,7 @@ export default {
           class="board-card position-relative p-3 rounded"
           @click="toggleIssue($event, issue)"
         >
-          <issue-card-inner :issue="issue" :issue-link-base="issueLinkBase" :root-path="rootPath" />
+          <issue-card-inner :issue="issue" />
           <gl-icon
             v-if="issue.selected"
             :aria-label="'Issue #' + issue.id + ' selected'"

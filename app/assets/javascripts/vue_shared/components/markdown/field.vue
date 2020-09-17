@@ -174,6 +174,7 @@ export default {
       milestones: this.enableAutocomplete,
       labels: this.enableAutocomplete && !this.glFeatures.tributeAutocomplete,
       snippets: this.enableAutocomplete,
+      vulnerabilities: this.enableAutocomplete,
     });
   },
   beforeDestroy() {

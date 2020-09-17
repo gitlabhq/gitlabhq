@@ -25,15 +25,7 @@ export const setResizingStatus = ({ commit }, resizing) => {
 
 export const createTempEntry = (
   { state, commit, dispatch, getters },
-  {
-    name,
-    type,
-    content = '',
-    binary = false,
-    rawPath = '',
-    openFile = true,
-    makeFileActive = true,
-  },
+  { name, type, content = '', rawPath = '', openFile = true, makeFileActive = true },
 ) => {
   const fullName = name.slice(-1) !== '/' && type === 'tree' ? `${name}/` : name;
 
@@ -57,7 +49,6 @@ export const createTempEntry = (
     type,
     tempFile: true,
     content,
-    binary,
     rawPath,
   });
   const { file, parentPath } = data;
@@ -84,7 +75,6 @@ export const addTempImage = ({ dispatch, getters }, { name, rawPath = '' }) =>
     name: getters.getAvailableFileName(name),
     type: 'blob',
     content: rawPath.split('base64,')[1],
-    binary: true,
     rawPath,
     openFile: false,
     makeFileActive: false,

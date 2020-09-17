@@ -45,7 +45,7 @@ describe('RepoEditor', () => {
 
   const createOpenFile = path => {
     const origFile = store.state.openFiles[0];
-    const newFile = { ...origFile, path, key: path };
+    const newFile = { ...origFile, path, key: path, name: 'myfile.txt', content: 'hello world' };
 
     store.state.entries[path] = newFile;
 
@@ -54,8 +54,9 @@ describe('RepoEditor', () => {
 
   beforeEach(() => {
     const f = {
-      ...file(),
+      ...file('file.txt'),
       viewMode: FILE_VIEW_MODE_EDITOR,
+      content: 'hello world',
     };
 
     const storeOptions = createStoreOptions();
@@ -142,6 +143,7 @@ describe('RepoEditor', () => {
           ...vm.file,
           projectId: 'namespace/project',
           path: 'sample.md',
+          name: 'sample.md',
           content: 'testing 123',
         });
 
@@ -200,7 +202,8 @@ describe('RepoEditor', () => {
 
     describe('when open file is binary and not raw', () => {
       beforeEach(done => {
-        vm.file.binary = true;
+        vm.file.name = 'file.dat';
+        vm.file.content = '🐱'; // non-ascii binary content
 
         vm.$nextTick(done);
       });
@@ -407,6 +410,9 @@ describe('RepoEditor', () => {
       beforeEach(done => {
         jest.spyOn(vm.editor, 'updateDimensions').mockImplementation();
         vm.file.viewMode = FILE_VIEW_MODE_PREVIEW;
+        vm.file.name = 'myfile.md';
+        vm.file.content = 'hello world';
+
         vm.$nextTick(done);
       });
 
@@ -650,7 +656,6 @@ describe('RepoEditor', () => {
             path: 'foo/foo.png',
             type: 'blob',
             content: 'Zm9v',
-            binary: true,
             rawPath: 'data:image/png;base64,Zm9v',
           });
         });

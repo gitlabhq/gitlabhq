@@ -57,11 +57,11 @@ describe('Board List Header Component', () => {
 
     wrapper = shallowMount(BoardListHeader, {
       propsData: {
-        boardId,
         disabled: false,
-        issueLinkBase: '/',
-        rootPath: '/',
         list,
+      },
+      provide: {
+        boardId,
       },
     });
   };

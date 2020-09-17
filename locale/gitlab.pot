@@ -8800,7 +8800,7 @@ msgstr ""
 msgid "DesignManagement|The maximum number of designs allowed to be uploaded is %{upload_limit}. Please try again."
 msgstr ""
 
-msgid "DesignManagement|To upload designs, you'll need to enable LFS. %{requirements_link_start}More information%{requirements_link_end}"
+msgid "DesignManagement|To upload designs, you'll need to enable LFS and have admin enable hashed storage. %{requirements_link_start}More information%{requirements_link_end}"
 msgstr ""
 
 msgid "DesignManagement|Unresolve thread"
@@ -16843,6 +16843,9 @@ msgstr ""
 msgid "New Snippet"
 msgstr ""
 
+msgid "New Test Case"
+msgstr ""
+
 msgid "New User"
 msgstr ""
 
@@ -23622,6 +23625,9 @@ msgstr ""
 msgid "Something went wrong while creating a requirement."
 msgstr ""
 
+msgid "Something went wrong while creating a test case."
+msgstr ""
+
 msgid "Something went wrong while deleting description changes. Please try again."
 msgstr ""
 
@@ -24358,6 +24364,9 @@ msgid "Submit review"
 msgstr ""
 
 msgid "Submit search"
+msgstr ""
+
+msgid "Submit test case"
 msgstr ""
 
 msgid "Submit the current review."
@@ -26696,6 +26705,9 @@ msgstr ""
 msgid "Too many projects enabled. You will need to manage them via the console or the API."
 msgstr ""
 
+msgid "Too much data"
+msgstr ""
+
 msgid "Topics (optional)"
 msgstr ""
 
@@ -27870,6 +27882,9 @@ msgid "Value Stream Analytics gives an overview of how much time it takes to go 
 msgstr ""
 
 msgid "Value Stream Name"
+msgstr ""
+
+msgid "ValueStreamAnalyticsStage|We don't have enough data to show this stage."
 msgstr ""
 
 msgid "ValueStreamAnalytics|%{days}d"

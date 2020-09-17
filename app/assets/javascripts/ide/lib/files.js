@@ -1,4 +1,3 @@
-import { viewerInformationForPath } from '~/vue_shared/components/content_viewer/lib/viewer_utils';
 import { decorateData, sortTree } from '../stores/utils';
 
 export const splitParent = path => {
@@ -13,13 +12,7 @@ export const splitParent = path => {
 /**
  * Create file objects from a list of file paths.
  */
-export const decorateFiles = ({
-  data,
-  tempFile = false,
-  content = '',
-  binary = false,
-  rawPath = '',
-}) => {
+export const decorateFiles = ({ data, tempFile = false, content = '', rawPath = '' }) => {
   const treeList = [];
   const entries = {};
 
@@ -68,7 +61,6 @@ export const decorateFiles = ({
     const fileFolder = parent && insertParent(parent);
 
     if (name) {
-      const previewMode = viewerInformationForPath(name);
       parentPath = fileFolder && fileFolder.path;
 
       file = decorateData({
@@ -79,7 +71,6 @@ export const decorateFiles = ({
         tempFile,
         changed: tempFile,
         content,
-        binary: (previewMode && previewMode.binary) || binary,
         rawPath,
         parentPath,
       });

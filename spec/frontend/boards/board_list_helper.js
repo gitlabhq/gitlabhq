@@ -52,9 +52,11 @@ export default function createComponent({
       list,
       issues: list.issues,
       loading: false,
-      issueLinkBase: '/issues',
-      rootPath: '/',
       ...componentProps,
+    },
+    provide: {
+      groupId: null,
+      rootPath: '/',
     },
   }).$mount();
 

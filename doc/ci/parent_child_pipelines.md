@@ -150,12 +150,36 @@ We also have an [example project using Dynamic Child Pipelines with Jsonnet](htt
 In GitLab 12.9, the child pipeline could fail to be created in certain cases, causing the parent pipeline to fail.
 This is [resolved in GitLab 12.10](https://gitlab.com/gitlab-org/gitlab/-/issues/209070).
 
-## Limitations
+## Nested child pipelines
 
-In GitLab 13.3 and older, a parent pipeline can trigger many child pipelines, but
-those child pipeline cannot trigger further child pipelines.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/29651) in GitLab 13.4.
+> - It's [deployed behind a feature flag](../user/feature_flags.md), disabled by default.
+> - It's disabled on GitLab.com.
+> - It's not recommended for production use.
+> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-nested-child-pipelines). **(CORE ONLY)**
 
-In GitLab 13.4 and newer, the [maximum depth of child pipelines was increased to 2](https://gitlab.com/gitlab-org/gitlab/-/issues/29651).
-A parent pipeline can trigger many child pipelines. These child pipelines can trigger
-their own child pipelines. This second layer of child pipelines cannot trigger further
-child pipelines.
+Parent and child pipelines were introduced with a maximum depth of one level of child
+pipelines, which was later increased to two. A parent pipeline can trigger many child
+pipelines, and these child pipelines can trigger their own child pipelines. It's not
+possible to trigger another level of child pipelines.
+
+### Enable or disable nested child pipelines **(CORE ONLY)**
+
+Nested child pipelines with a depth of two are under development and not ready for
+production use. This feature is deployed behind a feature flag that is **disabled by default**.
+Enabling this feature allows child pipelines to trigger one more level of child pipelines.
+The second level of child pipelines cannot trigger any further child pipelines.
+[GitLab administrators with access to the GitLab Rails console](../administration/feature_flags.md)
+can enable it.
+
+To enable it:
+
+```ruby
+Feature.enable(:ci_child_of_child_pipeline)
+```
+
+To disable it:
+
+```ruby
+Feature.disable(:ci_child_of_child_pipeline)
+```

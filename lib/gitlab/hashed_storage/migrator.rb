@@ -93,6 +93,14 @@ module Gitlab
         any_non_empty_queue?(::HashedStorage::RollbackerWorker, ::HashedStorage::ProjectRollbackWorker)
       end
 
+      # Remove all remaining scheduled rollback operations
+      #
+      def abort_rollback!
+        [::HashedStorage::RollbackerWorker, ::HashedStorage::ProjectRollbackWorker].each do |worker|
+          Sidekiq::Queue.new(worker.queue).clear
+        end
+      end
+
       private
 
       def any_non_empty_queue?(*workers)

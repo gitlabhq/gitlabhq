@@ -1,5 +1,4 @@
 <script>
-/* eslint-disable vue/require-default-prop */
 import IssueCardInner from './issue_card_inner.vue';
 import boardsStore from '../stores/boards_store';
 
@@ -19,11 +18,6 @@ export default {
       default: () => ({}),
       required: false,
     },
-    issueLinkBase: {
-      type: String,
-      default: '',
-      required: false,
-    },
     disabled: {
       type: Boolean,
       default: false,
@@ -32,15 +26,6 @@ export default {
     index: {
       type: Number,
       default: 0,
-      required: false,
-    },
-    rootPath: {
-      type: String,
-      default: '',
-      required: false,
-    },
-    groupId: {
-      type: Number,
       required: false,
     },
     isActive: {
@@ -103,13 +88,6 @@ export default {
     @mousemove="mouseMove"
     @mouseup="showIssue($event)"
   >
-    <issue-card-inner
-      :list="list"
-      :issue="issue"
-      :issue-link-base="issueLinkBase"
-      :group-id="groupId"
-      :root-path="rootPath"
-      :update-filters="true"
-    />
+    <issue-card-inner :list="list" :issue="issue" :update-filters="true" />
   </li>
 </template>

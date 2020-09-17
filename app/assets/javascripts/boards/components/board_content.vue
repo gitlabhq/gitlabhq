@@ -21,25 +21,8 @@ export default {
       type: Boolean,
       required: true,
     },
-    groupId: {
-      type: Number,
-      required: false,
-      default: null,
-    },
     disabled: {
       type: Boolean,
-      required: true,
-    },
-    issueLinkBase: {
-      type: String,
-      required: true,
-    },
-    rootPath: {
-      type: String,
-      required: true,
-    },
-    boardId: {
-      type: String,
       required: true,
     },
   },
@@ -77,12 +60,8 @@ export default {
         :key="list.id"
         ref="board"
         :can-admin-list="canAdminList"
-        :group-id="groupId"
         :list="list"
         :disabled="disabled"
-        :issue-link-base="issueLinkBase"
-        :root-path="rootPath"
-        :board-id="boardId"
       />
     </div>
 
@@ -92,9 +71,6 @@ export default {
         :lists="boardLists"
         :can-admin-list="canAdminList"
         :disabled="disabled"
-        :board-id="boardId"
-        :group-id="groupId"
-        :root-path="rootPath"
       />
       <board-content-sidebar />
     </template>

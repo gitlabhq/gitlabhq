@@ -13,15 +13,15 @@ describe('OverrideDropdown', () => {
     override: true,
   };
 
-  const defaultAdminStateProps = {
+  const defaultDefaultStateProps = {
     integrationLevel: 'group',
   };
 
-  const createComponent = (props = {}, adminStateProps = {}) => {
+  const createComponent = (props = {}, defaultStateProps = {}) => {
     wrapper = shallowMount(OverrideDropdown, {
       propsData: { ...defaultProps, ...props },
       store: createStore({
-        adminState: { ...defaultAdminStateProps, ...adminStateProps },
+        defaultState: { ...defaultDefaultStateProps, ...defaultStateProps },
       }),
     });
   };

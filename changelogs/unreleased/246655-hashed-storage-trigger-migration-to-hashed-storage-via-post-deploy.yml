@@ -1,0 +1,5 @@
+---
+title: 'Hashed Storage: forced automatic migration of legacy projects via background jobs'
+merge_request: 42313
+author:
+type: changed

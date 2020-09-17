@@ -52,6 +52,7 @@ export const defaultAutocompleteConfig = {
   milestones: true,
   labels: true,
   snippets: true,
+  vulnerabilities: true,
 };
 
 class GfmAutoComplete {
@@ -647,7 +648,8 @@ class GfmAutoComplete {
     // https://github.com/ichord/At.js
     const atSymbolsWithBar = Object.keys(controllers)
       .join('|')
-      .replace(/[$]/, '\\$&');
+      .replace(/[$]/, '\\$&')
+      .replace(/[+]/, '\\+');
     const atSymbolsWithoutBar = Object.keys(controllers).join('');
     const targetSubtext = subtext.split(GfmAutoComplete.regexSubtext).pop();
     const resultantFlag = flag.replace(/[-[\]/{}()*+?.\\^$|]/g, '\\$&');
@@ -678,6 +680,7 @@ GfmAutoComplete.atTypeMap = {
   '~': 'labels',
   '%': 'milestones',
   '/': 'commands',
+  '+': 'vulnerabilities',
   $: 'snippets',
 };
 

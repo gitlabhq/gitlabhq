@@ -82,6 +82,16 @@ RSpec.describe Projects::IssuesController do
         expect(response).to have_gitlab_http_status(:ok)
       end
 
+      it 'returns only list type issues' do
+        issue = create(:issue, project: project)
+        incident = create(:issue, project: project, issue_type: 'incident')
+        create(:issue, project: project, issue_type: 'test_case')
+
+        get :index, params: { namespace_id: project.namespace, project_id: project }
+
+        expect(assigns(:issues)).to contain_exactly(issue, incident)
+      end
+
       it "returns 301 if request path doesn't match project path" do
         get :index, params: { namespace_id: project.namespace, project_id: project.path.upcase }
 

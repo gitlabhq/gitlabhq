@@ -85,7 +85,6 @@ describe('new dropdown upload', () => {
             name: textFile.name,
             type: 'blob',
             content: 'plain text',
-            binary: false,
             rawPath: '',
           });
         })
@@ -102,7 +101,6 @@ describe('new dropdown upload', () => {
         name: binaryFile.name,
         type: 'blob',
         content: binaryTarget.result.split('base64,')[1],
-        binary: true,
         rawPath: binaryTarget.result,
       });
     });

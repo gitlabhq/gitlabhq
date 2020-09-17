@@ -30,28 +30,23 @@ export default {
       type: Object,
       required: true,
     },
-    issueLinkBase: {
-      type: String,
-      required: true,
-    },
     list: {
       type: Object,
       required: false,
       default: () => ({}),
-    },
-    rootPath: {
-      type: String,
-      required: true,
     },
     updateFilters: {
       type: Boolean,
       required: false,
       default: false,
     },
+  },
+  inject: {
     groupId: {
       type: Number,
-      required: false,
-      default: null,
+    },
+    rootPath: {
+      type: String,
     },
   },
   data() {

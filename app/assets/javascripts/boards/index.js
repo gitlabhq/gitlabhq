@@ -82,12 +82,13 @@ export default () => {
       BoardAddIssuesModal,
       BoardSettingsSidebar: () => import('~/boards/components/board_settings_sidebar.vue'),
     },
-    store,
-    apolloProvider,
     provide: {
-      // TODO: Mv all non-reactive props from data/props to here.
+      boardId: $boardApp.dataset.boardId,
+      groupId: Number($boardApp.dataset.groupId) || null,
       rootPath: $boardApp.dataset.rootPath,
     },
+    store,
+    apolloProvider,
     data() {
       return {
         state: boardsStore.state,
@@ -95,10 +96,7 @@ export default () => {
         boardsEndpoint: $boardApp.dataset.boardsEndpoint,
         recentBoardsEndpoint: $boardApp.dataset.recentBoardsEndpoint,
         listsEndpoint: $boardApp.dataset.listsEndpoint,
-        boardId: $boardApp.dataset.boardId,
         disabled: parseBoolean($boardApp.dataset.disabled),
-        issueLinkBase: $boardApp.dataset.issueLinkBase,
-        rootPath: $boardApp.dataset.rootPath,
         bulkUpdatePath: $boardApp.dataset.bulkUpdatePath,
         detailIssue: boardsStore.detail,
         parent: $boardApp.dataset.parent,
@@ -116,7 +114,7 @@ export default () => {
         recentBoardsEndpoint: this.recentBoardsEndpoint,
         listsEndpoint: this.listsEndpoint,
         bulkUpdatePath: this.bulkUpdatePath,
-        boardId: this.boardId,
+        boardId: $boardApp.dataset.boardId,
         fullPath: $boardApp.dataset.fullPath,
       };
       this.setInitialBoardData({

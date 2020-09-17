@@ -119,7 +119,7 @@ describe('GfmAutoComplete', () => {
     const defaultMatcher = (context, flag, subtext) =>
       gfmAutoCompleteCallbacks.matcher.call(context, flag, subtext);
 
-    const flagsUseDefaultMatcher = ['@', '#', '!', '~', '%', '$'];
+    const flagsUseDefaultMatcher = ['@', '#', '!', '~', '%', '$', '+'];
     const otherFlags = ['/', ':'];
     const flags = flagsUseDefaultMatcher.concat(otherFlags);
 
@@ -153,7 +153,6 @@ describe('GfmAutoComplete', () => {
       'я',
       '.',
       "'",
-      '+',
       '-',
       '_',
     ];

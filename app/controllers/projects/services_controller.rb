@@ -20,7 +20,7 @@ class Projects::ServicesController < Projects::ApplicationController
   layout "project_settings"
 
   def edit
-    @admin_integration = Service.default_integration(service.type, project)
+    @default_integration = Service.default_integration(service.type, project)
   end
 
   def update

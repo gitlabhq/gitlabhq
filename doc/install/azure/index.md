@@ -1,15 +1,23 @@
 ---
+stage: Enablement
+group: Distribution
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 description: 'Learn how to spin up a pre-configured GitLab VM on Microsoft Azure.'
 type: howto
 ---
 
 # Install GitLab on Microsoft Azure
 
-Azure is Microsoft's business cloud and GitLab is a pre-configured offering on the Azure Marketplace.
-Hopefully, you aren't surprised to hear that Microsoft and Azure have embraced open source software
-like Ubuntu, Red Hat Enterprise Linux, and of course - GitLab! This means that you can spin up a
-pre-configured GitLab VM and have your very own private GitLab up and running in around 30 minutes.
-Let's get started.
+CAUTION: **Deprecated:**
+The GitLab image in the Azure Marketplace is deprecated. You can track GitLab's
+efforts to [post a new image](https://gitlab.com/gitlab-com/alliances/microsoft/gitlab-tracker/-/issues/2).
+
+Azure is Microsoft's business cloud and GitLab is a pre-configured offering on
+the Azure Marketplace. Hopefully, you aren't surprised to hear that Microsoft
+and Azure have embraced open source software like Ubuntu, Red Hat Enterprise Linux,
+and of course - GitLab! This means that you can spin up a pre-configured
+GitLab VM and have your very own private GitLab up and running in around 30
+minutes. Let's get started.
 
 ## Getting started
 

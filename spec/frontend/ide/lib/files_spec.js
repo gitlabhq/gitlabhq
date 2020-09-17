@@ -1,11 +1,9 @@
-import { viewerInformationForPath } from '~/vue_shared/components/content_viewer/lib/viewer_utils';
 import { decorateFiles, splitParent } from '~/ide/lib/files';
 import { decorateData } from '~/ide/stores/utils';
 
 const createEntries = paths => {
   const createEntry = (acc, { path, type, children }) => {
     const { name, parent } = splitParent(path);
-    const previewMode = viewerInformationForPath(name);
 
     acc[path] = {
       ...decorateData({
@@ -13,8 +11,6 @@ const createEntries = paths => {
         name,
         path,
         type,
-        previewMode,
-        binary: (previewMode && previewMode.binary) || false,
         parentPath: parent,
       }),
       tree: children.map(childName => expect.objectContaining({ name: childName })),

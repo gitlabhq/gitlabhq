@@ -25,7 +25,7 @@ export default {
   mixins: [glFeatureFlagsMixin()],
   computed: {
     ...mapGetters(['currentKey', 'propsSource', 'isSavingOrTesting']),
-    ...mapState(['adminState', 'override', 'isSaving', 'isTesting']),
+    ...mapState(['defaultState', 'override', 'isSaving', 'isTesting']),
     isEditable() {
       return this.propsSource.editable;
     },
@@ -53,8 +53,8 @@ export default {
 <template>
   <div>
     <override-dropdown
-      v-if="adminState !== null"
-      :inherit-from-id="adminState.id"
+      v-if="defaultState !== null"
+      :inherit-from-id="defaultState.id"
       :override="override"
       :learn-more-path="propsSource.learnMorePath"
       @change="setOverride"

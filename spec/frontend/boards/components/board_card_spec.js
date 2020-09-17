@@ -38,11 +38,13 @@ describe('BoardCard', () => {
       propsData: {
         list,
         issue: list.issues[0],
-        issueLinkBase: '/',
         disabled: false,
         index: 0,
-        rootPath: '/',
         ...propsData,
+      },
+      provide: {
+        groupId: null,
+        rootPath: '/',
       },
     });
   };

@@ -65,6 +65,7 @@ describe('IssuableForm', () => {
       expect(titleFieldEl.find('label').text()).toBe('Title');
       expect(titleFieldEl.find(GlFormInput).exists()).toBe(true);
       expect(titleFieldEl.find(GlFormInput).attributes('placeholder')).toBe('Title');
+      expect(titleFieldEl.find(GlFormInput).attributes('autofocus')).toBe('true');
     });
 
     it('renders issuable description input field', () => {

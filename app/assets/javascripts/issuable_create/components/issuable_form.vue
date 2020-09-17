@@ -53,7 +53,12 @@ export default {
     <div data-testid="issuable-title" class="form-group row">
       <label for="issuable-title" class="col-form-label col-sm-2">{{ __('Title') }}</label>
       <div class="col-sm-10">
-        <gl-form-input id="issuable-title" v-model="issuableTitle" :placeholder="__('Title')" />
+        <gl-form-input
+          id="issuable-title"
+          v-model="issuableTitle"
+          :autofocus="true"
+          :placeholder="__('Title')"
+        />
       </div>
     </div>
     <div data-testid="issuable-description" class="form-group row">

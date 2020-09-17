@@ -13,7 +13,7 @@
       npm_help_path: help_page_path('user/packages/npm_registry/index'),
       maven_path: package_registry_project_url(@project.id, :maven),
       maven_help_path: help_page_path('user/packages/maven_repository/index'),
-      conan_path: package_registry_instance_url(:conan),
+      conan_path: package_registry_project_url(@project.id, :conan),
       conan_help_path: help_page_path('user/packages/conan_repository/index'),
       nuget_path: nuget_package_registry_url(@project.id),
       nuget_help_path: help_page_path('user/packages/nuget_repository/index'),

@@ -44,9 +44,9 @@ export default {
     };
   },
   computed: {
-    ...mapState(['adminState']),
+    ...mapState(['defaultState']),
     description() {
-      const level = this.adminState.integrationLevel;
+      const level = this.defaultState.integrationLevel;
 
       return (
         overrideDropdownDescriptions[level] || overrideDropdownDescriptions[defaultIntegrationLevel]

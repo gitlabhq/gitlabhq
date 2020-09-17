@@ -299,6 +299,7 @@ protected_branches:
 - merge_access_levels
 - push_access_levels
 - unprotect_access_levels
+- approval_project_rules
 protected_tags:
 - project
 - create_access_levels

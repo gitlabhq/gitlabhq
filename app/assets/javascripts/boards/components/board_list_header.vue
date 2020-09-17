@@ -45,10 +45,6 @@ export default {
       type: Boolean,
       required: true,
     },
-    boardId: {
-      type: String,
-      required: true,
-    },
     canAdminList: {
       type: Boolean,
       required: false,
@@ -58,6 +54,11 @@ export default {
       type: Boolean,
       required: false,
       default: false,
+    },
+  },
+  inject: {
+    boardId: {
+      type: String,
     },
   },
   data() {

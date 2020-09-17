@@ -241,7 +241,6 @@ describe('IDE store file actions', () => {
           200,
           {
             raw_path: 'raw_path',
-            binary: false,
           },
           {
             'page-title': 'testing getFileData',
@@ -305,7 +304,6 @@ describe('IDE store file actions', () => {
           200,
           {
             raw_path: 'raw_path',
-            binary: false,
           },
           {
             'page-title': 'testing old-dull-file',

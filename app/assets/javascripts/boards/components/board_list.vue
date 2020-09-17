@@ -27,11 +27,6 @@ export default {
   },
   mixins: [glFeatureFlagMixin()],
   props: {
-    groupId: {
-      type: Number,
-      required: false,
-      default: 0,
-    },
     disabled: {
       type: Boolean,
       required: true,
@@ -46,14 +41,6 @@ export default {
     },
     loading: {
       type: Boolean,
-      required: true,
-    },
-    issueLinkBase: {
-      type: String,
-      required: true,
-    },
-    rootPath: {
-      type: String,
       required: true,
     },
   },
@@ -435,11 +422,7 @@ export default {
     <div v-if="loading" class="board-list-loading text-center" :aria-label="__('Loading issues')">
       <gl-loading-icon />
     </div>
-    <board-new-issue
-      v-if="list.type !== 'closed' && showIssueForm"
-      :group-id="groupId"
-      :list="list"
-    />
+    <board-new-issue v-if="list.type !== 'closed' && showIssueForm" :list="list" />
     <ul
       v-show="!loading"
       ref="list"
@@ -455,9 +438,6 @@ export default {
         :index="index"
         :list="list"
         :issue="issue"
-        :issue-link-base="issueLinkBase"
-        :group-id="groupId"
-        :root-path="rootPath"
         :disabled="disabled"
       />
       <li v-if="showCount" class="board-list-count text-center" data-issue-id="-1">

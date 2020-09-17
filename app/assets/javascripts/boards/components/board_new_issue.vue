@@ -17,14 +17,14 @@ export default {
   },
   mixins: [glFeatureFlagMixin()],
   props: {
-    groupId: {
-      type: Number,
-      required: false,
-      default: 0,
-    },
     list: {
       type: Object,
       required: true,
+    },
+  },
+  inject: {
+    groupId: {
+      type: Number,
     },
   },
   data() {
@@ -139,7 +139,7 @@ export default {
         <project-select v-if="groupId" :group-id="groupId" :list="list" />
         <div class="clearfix gl-mt-3">
           <gl-button
-            ref="submit-button"
+            ref="submitButton"
             :disabled="disabled"
             class="float-left"
             variant="success"
@@ -147,9 +147,14 @@ export default {
             type="submit"
             >{{ __('Submit issue') }}</gl-button
           >
-          <gl-button class="float-right" type="button" variant="default" @click="cancel">{{
-            __('Cancel')
-          }}</gl-button>
+          <gl-button
+            ref="cancelButton"
+            class="float-right"
+            type="button"
+            variant="default"
+            @click="cancel"
+            >{{ __('Cancel') }}</gl-button
+          >
         </div>
       </form>
     </div>

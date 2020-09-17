@@ -70,7 +70,10 @@ module QA
           end
 
           def click_remove_related_issue_button
-            click_element(:remove_related_issue_button)
+            retry_until(sleep_interval: 5) do
+              click_element(:remove_related_issue_button)
+              has_no_element?(:remove_related_issue_button, wait: QA::Support::Repeater::DEFAULT_MAX_WAIT_TIME)
+            end
           end
 
           def click_close_issue_button

@@ -5,22 +5,22 @@ import { mockIntegrationProps } from '../mock_data';
 describe('Integration form store getters', () => {
   let state;
   const customState = { ...mockIntegrationProps, type: 'CustomState' };
-  const adminState = { ...mockIntegrationProps, type: 'AdminState' };
+  const defaultState = { ...mockIntegrationProps, type: 'DefaultState' };
 
   beforeEach(() => {
     state = createState({ customState });
   });
 
   describe('isInheriting', () => {
-    describe('when adminState is null', () => {
+    describe('when defaultState is null', () => {
       it('returns false', () => {
         expect(isInheriting(state)).toBe(false);
       });
     });
 
-    describe('when adminState is an object', () => {
+    describe('when defaultState is an object', () => {
       beforeEach(() => {
-        state.adminState = adminState;
+        state.defaultState = defaultState;
       });
 
       describe('when override is false', () => {
@@ -47,11 +47,11 @@ describe('Integration form store getters', () => {
 
   describe('propsSource', () => {
     beforeEach(() => {
-      state.adminState = adminState;
+      state.defaultState = defaultState;
     });
 
-    it('equals adminState if inheriting', () => {
-      expect(propsSource(state, { isInheriting: true })).toEqual(adminState);
+    it('equals defaultState if inheriting', () => {
+      expect(propsSource(state, { isInheriting: true })).toEqual(defaultState);
     });
 
     it('equals customState if not inheriting', () => {

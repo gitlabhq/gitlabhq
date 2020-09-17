@@ -39,11 +39,7 @@ describe('BoardContent', () => {
       propsData: {
         lists: mockListsWithModel,
         canAdminList: true,
-        groupId: 1,
         disabled: false,
-        issueLinkBase: '/',
-        rootPath: '/',
-        boardId: '1',
       },
       store,
     });

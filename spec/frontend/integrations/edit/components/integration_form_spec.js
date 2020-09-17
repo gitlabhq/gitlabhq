@@ -137,13 +137,13 @@ describe('IntegrationForm', () => {
       });
     });
 
-    describe('adminState state is null', () => {
+    describe('defaultState state is null', () => {
       it('does not render OverrideDropdown', () => {
         createComponent(
           {},
           {},
           {
-            adminState: null,
+            defaultState: null,
           },
         );
 
@@ -151,13 +151,13 @@ describe('IntegrationForm', () => {
       });
     });
 
-    describe('adminState state is an object', () => {
+    describe('defaultState state is an object', () => {
       it('renders OverrideDropdown', () => {
         createComponent(
           {},
           {},
           {
-            adminState: {
+            defaultState: {
               ...mockIntegrationProps,
             },
           },
