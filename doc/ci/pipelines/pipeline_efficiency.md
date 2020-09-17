@@ -28,17 +28,17 @@ The easiest indicators to check for inefficient pipelines are the runtimes of th
 stages, and the total runtime of the pipeline itself. The total pipeline duration is
 heavily influenced by the:
 
-- Total number of stages and jobs
-- Dependencies between jobs
+- Total number of stages and jobs.
+- Dependencies between jobs.
 - The ["critical path"](#directed-acyclic-graphs-dag-visualization), which represents
-  the minimum and maximum pipeline duration
+  the minimum and maximum pipeline duration.
 
 Additional points to pay attention relate to [GitLab Runners](../runners/README.md):
 
-- Availability of the runners and the resources they are provisioned with
-- Build dependencies and their installation time
-- [Container image size](#docker-images)
-- Network latency and slow connections
+- Availability of the runners and the resources they are provisioned with.
+- Build dependencies and their installation time.
+- [Container image size](#docker-images).
+- Network latency and slow connections.
 
 Pipelines frequently failing unnecessarily also causes slowdowns in the development
 lifecycle. You should look for problematic patterns with failed jobs:
@@ -54,9 +54,9 @@ lifecycle. You should look for problematic patterns with failed jobs:
 Analyze the performance of your pipeline to find ways to improve efficiency. Analysis
 can help identify possible blockers in the CI/CD infrastructure. This includes analyzing:
 
-- Job workloads
-- Bottlenecks in the execution times
-- The overall pipeline architecture
+- Job workloads.
+- Bottlenecks in the execution times.
+- The overall pipeline architecture.
 
 It's important to understand and document the pipeline workflows, and discuss possible
 actions and changes. Refactoring pipelines may need careful interaction between teams
@@ -212,7 +212,8 @@ that download and run faster.
 
 Try to use custom Docker images with the software pre-installed. It's usually much
 faster to download a larger pre-configured image than to use a common image and install
-software on it each time.
+software on it each time. Docker's [Best practices for writing Dockerfiles](https://docs.docker.com/develop/develop-images/dockerfile_best-practices/)
+has more information about building efficient Docker images.
 
 Methods to reduce Docker image size:
 

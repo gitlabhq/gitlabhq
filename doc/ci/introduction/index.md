@@ -237,3 +237,6 @@ existing one) for any application.
 
 For a deep view of GitLab's CI/CD configuration options, check the
 [`.gitlab-ci.yml` full reference](../yaml/README.md).
+
+For help making your pipelines faster and more efficient, see the
+[pipeline efficiency documentation](../pipelines/pipeline_efficiency.md).

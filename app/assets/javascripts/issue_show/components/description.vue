@@ -25,7 +25,8 @@ export default {
     },
     descriptionText: {
       type: String,
-      required: true,
+      required: false,
+      default: '',
     },
     taskStatus: {
       type: String,

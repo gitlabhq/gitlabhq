@@ -901,4 +901,44 @@ RSpec.describe ProjectPolicy do
       it { is_expected.to be_allowed(:read_package) }
     end
   end
+
+  describe 'read_feature_flag' do
+    subject { described_class.new(current_user, project) }
+
+    context 'with maintainer' do
+      let(:current_user) { maintainer }
+
+      context 'when repository is available' do
+        it { is_expected.to be_allowed(:read_feature_flag) }
+      end
+
+      context 'when repository is disabled' do
+        before do
+          project.project_feature.update!(
+            merge_requests_access_level: ProjectFeature::DISABLED,
+            builds_access_level: ProjectFeature::DISABLED,
+            repository_access_level: ProjectFeature::DISABLED
+          )
+        end
+
+        it { is_expected.to be_disallowed(:read_feature_flag) }
+      end
+    end
+
+    context 'with developer' do
+      let(:current_user) { developer }
+
+      context 'when repository is available' do
+        it { is_expected.to be_allowed(:read_feature_flag) }
+      end
+    end
+
+    context 'with reporter' do
+      let(:current_user) { reporter }
+
+      context 'when repository is available' do
+        it { is_expected.to be_disallowed(:read_feature_flag) }
+      end
+    end
+  end
 end

@@ -26,6 +26,8 @@ that were able to quickly complete this migration:
    1. Migrate the deployment jobs using [cloud deployment templates](../cloud_deployment/index.md), adding [environments](../environments/index.md), and [deploy boards](../..//user/project/deploy_boards.md).
    1. Work to unwrap any jobs still running with the use of the Jenkins wrapper.
 1. Take stock of any common CI/CD job definitions then create and share [templates](#templates) for them.
+1. Check the [pipeline efficiency documentation](../pipelines/pipeline_efficiency.md)
+   to learn how to make your GitLab CI/CD pipelines faster and more efficient.
 
 For an example of how to convert a Jenkins pipeline into a GitLab CI/CD pipeline,
 or how to use Auto DevOps to test your code automatically, watch the
@@ -354,3 +356,8 @@ our very powerful [`only/except` rules system](../yaml/README.md#onlyexcept-basi
 my_job:
   only: [branches]
 ```
+
+## Additional resources
+
+For help making your pipelines faster and more efficient, see the
+[pipeline efficiency documentation](../pipelines/pipeline_efficiency.md).

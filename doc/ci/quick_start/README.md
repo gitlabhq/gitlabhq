@@ -216,7 +216,10 @@ you expected.
 You are also able to view the status of any commit in the various pages in
 GitLab, such as **Commits** and **Merge requests**.
 
-## Examples
+## Additional resources
 
 Visit the [examples README](../examples/README.md) to see a list of examples using GitLab
 CI with various languages.
+
+For help making your new pipelines faster and more efficient, see the
+[pipeline efficiency documentation](../pipelines/pipeline_efficiency.md).
