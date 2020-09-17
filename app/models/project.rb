@@ -245,7 +245,6 @@ class Project < ApplicationRecord
   has_many :lfs_file_locks
   has_many :project_group_links
   has_many :invited_groups, through: :project_group_links, source: :group
-  has_many :pages_domains
   has_many :todos
   has_many :notification_settings, as: :source, dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
 
@@ -327,8 +326,6 @@ class Project < ApplicationRecord
   has_many :sourced_pipelines, class_name: 'Ci::Sources::Pipeline', foreign_key: :source_project_id
   has_many :source_pipelines, class_name: 'Ci::Sources::Pipeline', foreign_key: :project_id
 
-  has_one :pages_metadatum, class_name: 'ProjectPagesMetadatum', inverse_of: :project
-
   has_many :import_failures, inverse_of: :project
   has_many :jira_imports, -> { order 'jira_imports.created_at' }, class_name: 'JiraImportState', inverse_of: :project
 
@@ -338,6 +335,11 @@ class Project < ApplicationRecord
 
   has_many :webide_pipelines, -> { webide_source }, class_name: 'Ci::Pipeline', inverse_of: :project
   has_many :reviews, inverse_of: :project
+
+  # GitLab Pages
+  has_many :pages_domains
+  has_one  :pages_metadatum, class_name: 'ProjectPagesMetadatum', inverse_of: :project
+  has_many :pages_deployments
 
   # Can be too many records. We need to implement delete_all in batches.
   # Issue https://gitlab.com/gitlab-org/gitlab/-/issues/228637

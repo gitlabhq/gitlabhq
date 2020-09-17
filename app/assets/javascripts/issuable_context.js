@@ -6,7 +6,6 @@ import UsersSelect from './users_select';
 export default class IssuableContext {
   constructor(currentUser) {
     this.userSelect = new UsersSelect(currentUser);
-    this.reviewersSelect = new UsersSelect(currentUser, '.js-reviewer-search');
 
     import(/* webpackChunkName: 'select2' */ 'select2/select2')
       .then(() => {

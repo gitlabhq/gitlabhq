@@ -40,7 +40,8 @@ For each project access token created, a bot user will also be created and added
 For the bot:
 
 - The name is set to the name of the token.
-- The username is set to `project_{project_id}_bot`, such as `project_123_bot`.
+- The username is set to `project_{project_id}_bot` for the first access token, such as `project_123_bot`.
+- The username is set to `project_{project_id}_bot{bot_count}` for further access tokens, such as `project_123_bot1`.
 
 API calls made with a project access token are associated with the corresponding bot user.
 

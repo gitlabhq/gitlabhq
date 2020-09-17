@@ -10,11 +10,6 @@ module Ci
     include FileStoreMounter
     include Presentable
 
-    FILE_STORE_SUPPORTED = [
-      ObjectStorage::Store::LOCAL,
-      ObjectStorage::Store::REMOTE
-    ].freeze
-
     FILE_SIZE_LIMIT = 10.megabytes.freeze
     EXPIRATION_DATE = 1.week.freeze
 
@@ -26,7 +21,7 @@ module Ci
     belongs_to :pipeline, class_name: "Ci::Pipeline", inverse_of: :pipeline_artifacts
 
     validates :pipeline, :project, :file_format, :file, presence: true
-    validates :file_store, presence: true, inclusion: { in: FILE_STORE_SUPPORTED }
+    validates :file_store, presence: true, inclusion: { in: ObjectStorage::SUPPORTED_STORES }
     validates :size, presence: true, numericality: { less_than_or_equal_to: FILE_SIZE_LIMIT }
     validates :file_type, presence: true
 

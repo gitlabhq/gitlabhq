@@ -18,10 +18,8 @@ export default class SidebarStore {
     this.humanTimeSpent = '';
     this.timeTrackingLimitToHours = timeTrackingLimitToHours;
     this.assignees = [];
-    this.reviewers = [];
     this.isFetching = {
       assignees: true,
-      reviewers: true,
       participants: true,
       subscriptions: true,
     };
@@ -41,13 +39,6 @@ export default class SidebarStore {
     this.isFetching.assignees = false;
     if (data.assignees) {
       this.assignees = data.assignees;
-    }
-  }
-
-  setReviewerData(data) {
-    this.isFetching.reviewers = false;
-    if (data.reviewers) {
-      this.reviewers = data.reviewers;
     }
   }
 
@@ -84,18 +75,8 @@ export default class SidebarStore {
     }
   }
 
-  addReviewer(reviewer) {
-    if (!this.findReviewer(reviewer)) {
-      this.reviewers.push(reviewer);
-    }
-  }
-
   findAssignee(findAssignee) {
     return this.assignees.find(assignee => assignee.id === findAssignee.id);
-  }
-
-  findReviewer(findReviewer) {
-    return this.reviewers.find(reviewer => reviewer.id === findReviewer.id);
   }
 
   removeAssignee(removeAssignee) {
@@ -104,18 +85,8 @@ export default class SidebarStore {
     }
   }
 
-  removeReviewer(removeReviewer) {
-    if (removeReviewer) {
-      this.reviewers = this.reviewers.filter(reviewer => reviewer.id !== removeReviewer.id);
-    }
-  }
-
   removeAllAssignees() {
     this.assignees = [];
-  }
-
-  removeAllReviewers() {
-    this.reviewers = [];
   }
 
   setAssigneesFromRealtime(data) {

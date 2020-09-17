@@ -6,7 +6,7 @@ FactoryBot.define do
     project { pipeline.project }
     file_type { :code_coverage }
     file_format { :raw }
-    file_store { Ci::PipelineArtifact::FILE_STORE_SUPPORTED.first }
+    file_store { ObjectStorage::SUPPORTED_STORES.first }
     size { 1.megabytes }
 
     after(:build) do |artifact, _evaluator|

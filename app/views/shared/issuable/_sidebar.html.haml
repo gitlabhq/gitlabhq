@@ -5,7 +5,6 @@
 - signed_in = !!issuable_sidebar.dig(:current_user, :id)
 - can_edit_issuable = issuable_sidebar.dig(:current_user, :can_edit)
 - add_page_startup_api_call "#{issuable_sidebar[:issuable_json_path]}?serializer=sidebar_extras"
-- reviewers = local_assigns.fetch(:reviewers, nil)
 
 - if Feature.enabled?(:vue_issuable_sidebar, @project.group)
   %aside#js-vue-issuable-sidebar{ data: { signed_in: signed_in,
@@ -28,10 +27,6 @@
             = render "shared/issuable/sidebar_todo", issuable_sidebar: issuable_sidebar, is_collapsed: true
         .block.assignee.qa-assignee-block
           = render "shared/issuable/sidebar_assignees", issuable_sidebar: issuable_sidebar, assignees: assignees
-
-        - if reviewers
-          .block.reviewer.qa-reviewer-block
-            = render "shared/issuable/sidebar_reviewers", issuable_sidebar: issuable_sidebar, reviewers: reviewers
 
         = render_if_exists 'shared/issuable/sidebar_item_epic', issuable_sidebar: issuable_sidebar
 

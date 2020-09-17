@@ -419,6 +419,8 @@ project:
 - project_feature
 - auto_devops
 - pages_domains
+- pages_metadatum
+- pages_deployments
 - authorized_users
 - project_authorizations
 - remote_mirrors
@@ -465,7 +467,6 @@ project:
 - approval_merge_request_rules
 - approvers
 - approver_users
-- pages_domains
 - audit_events
 - path_locks
 - approver_groups
@@ -505,7 +506,6 @@ project:
 - designs
 - project_aliases
 - external_pull_requests
-- pages_metadatum
 - alerts_service
 - grafana_integration
 - remove_source_branch_after_merge

@@ -4,4 +4,4 @@ introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/41102
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/243747
 group: 'group::continuous integration'
 type: development
-default_enabled: false
+default_enabled: true

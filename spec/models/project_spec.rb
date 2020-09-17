@@ -85,7 +85,6 @@ RSpec.describe Project do
     it { is_expected.to have_many(:runners) }
     it { is_expected.to have_many(:variables) }
     it { is_expected.to have_many(:triggers) }
-    it { is_expected.to have_many(:pages_domains) }
     it { is_expected.to have_many(:labels).class_name('ProjectLabel') }
     it { is_expected.to have_many(:users_star_projects) }
     it { is_expected.to have_many(:repository_languages) }
@@ -124,6 +123,11 @@ RSpec.describe Project do
     it { is_expected.to have_many(:packages).class_name('Packages::Package') }
     it { is_expected.to have_many(:package_files).class_name('Packages::PackageFile') }
     it { is_expected.to have_many(:pipeline_artifacts) }
+
+    # GitLab Pages
+    it { is_expected.to have_many(:pages_domains) }
+    it { is_expected.to have_one(:pages_metadatum) }
+    it { is_expected.to have_many(:pages_deployments) }
 
     it_behaves_like 'model with repository' do
       let_it_be(:container) { create(:project, :repository, path: 'somewhere') }

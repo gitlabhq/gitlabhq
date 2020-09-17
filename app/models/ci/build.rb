@@ -47,6 +47,8 @@ module Ci
     has_many :job_variables, class_name: 'Ci::JobVariable', foreign_key: :job_id
     has_many :sourced_pipelines, class_name: 'Ci::Sources::Pipeline', foreign_key: :source_job_id
 
+    has_many :pages_deployments, inverse_of: :ci_build
+
     Ci::JobArtifact.file_types.each do |key, value|
       has_one :"job_artifacts_#{key}", -> { where(file_type: value) }, class_name: 'Ci::JobArtifact', inverse_of: :job, foreign_key: :job_id
     end

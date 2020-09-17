@@ -133,6 +133,21 @@ confirm that a GitLab issue is created from the incident.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/230847) in GitLab 13.4.
 
+### Summary
+
+The summary section for incidents provides both critical details about and the
+contents of the issue template (if one was used). The highlighted bar at the top
+of the incident displays from left to right: the link to the original alert, the
+alert start time, and the event count. Beneath the highlight bar, GitLab
+displays a summary that includes the following fields:
+
+- Start time
+- Severity
+- `full_query`
+- Monitoring tool
+
+### Alert details
+
 Incidents show the details of linked alerts in a separate tab. To populate this
 tab, the incident must have been created with a linked alert. Incidents
 [created automatically](#configure-incidents) from alerts will have this

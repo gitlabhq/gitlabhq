@@ -32,6 +32,59 @@ RSpec.describe Iteration do
     end
   end
 
+  describe '.filter_by_state' do
+    let_it_be(:closed_iteration) { create(:iteration, :closed, :skip_future_date_validation, group: group, start_date: 8.days.ago, due_date: 2.days.ago) }
+    let_it_be(:started_iteration) { create(:iteration, :started, :skip_future_date_validation, group: group, start_date: 1.day.ago, due_date: 6.days.from_now) }
+    let_it_be(:upcoming_iteration) { create(:iteration, :upcoming, group: group, start_date: 1.week.from_now, due_date: 2.weeks.from_now) }
+
+    shared_examples_for 'filter_by_state' do
+      it 'filters by the given state' do
+        expect(described_class.filter_by_state(Iteration.all, state)).to match(expected_iterations)
+      end
+    end
+
+    context 'filtering by closed iterations' do
+      it_behaves_like 'filter_by_state' do
+        let(:state) { 'closed' }
+        let(:expected_iterations) { [closed_iteration] }
+      end
+    end
+
+    context 'filtering by started iterations' do
+      it_behaves_like 'filter_by_state' do
+        let(:state) { 'started' }
+        let(:expected_iterations) { [started_iteration] }
+      end
+    end
+
+    context 'filtering by opened iterations' do
+      it_behaves_like 'filter_by_state' do
+        let(:state) { 'opened' }
+        let(:expected_iterations) { [started_iteration, upcoming_iteration] }
+      end
+    end
+
+    context 'filtering by upcoming iterations' do
+      it_behaves_like 'filter_by_state' do
+        let(:state) { 'upcoming' }
+        let(:expected_iterations) { [upcoming_iteration] }
+      end
+    end
+
+    context 'filtering by "all"' do
+      it_behaves_like 'filter_by_state' do
+        let(:state) { 'all' }
+        let(:expected_iterations) { [closed_iteration, started_iteration, upcoming_iteration] }
+      end
+    end
+
+    context 'filtering by nonexistent filter' do
+      it 'raises ArgumentError' do
+        expect { described_class.filter_by_state(Iteration.none, 'unknown') }.to raise_error(ArgumentError, 'Unknown state filter: unknown')
+      end
+    end
+  end
+
   context 'Validations' do
     subject { build(:iteration, group: group, start_date: start_date, due_date: due_date) }
 

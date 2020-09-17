@@ -30,6 +30,8 @@ module ObjectStorage
     REMOTE = 2
   end
 
+  SUPPORTED_STORES = [Store::LOCAL, Store::REMOTE].freeze
+
   module Extension
     # this extension is the glue between the ObjectStorage::Concern and RecordsUploads::Concern
     module RecordsUploads

@@ -14179,6 +14179,27 @@ CREATE SEQUENCE public.packages_tags_id_seq
 
 ALTER SEQUENCE public.packages_tags_id_seq OWNED BY public.packages_tags.id;
 
+CREATE TABLE public.pages_deployments (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    project_id bigint NOT NULL,
+    ci_build_id bigint,
+    file_store smallint NOT NULL,
+    size integer NOT NULL,
+    file text NOT NULL,
+    CONSTRAINT check_f0fe8032dd CHECK ((char_length(file) <= 255))
+);
+
+CREATE SEQUENCE public.pages_deployments_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE public.pages_deployments_id_seq OWNED BY public.pages_deployments.id;
+
 CREATE TABLE public.pages_domain_acme_orders (
     id bigint NOT NULL,
     pages_domain_id integer NOT NULL,
@@ -17477,6 +17498,8 @@ ALTER TABLE ONLY public.packages_packages ALTER COLUMN id SET DEFAULT nextval('p
 
 ALTER TABLE ONLY public.packages_tags ALTER COLUMN id SET DEFAULT nextval('public.packages_tags_id_seq'::regclass);
 
+ALTER TABLE ONLY public.pages_deployments ALTER COLUMN id SET DEFAULT nextval('public.pages_deployments_id_seq'::regclass);
+
 ALTER TABLE ONLY public.pages_domain_acme_orders ALTER COLUMN id SET DEFAULT nextval('public.pages_domain_acme_orders_id_seq'::regclass);
 
 ALTER TABLE ONLY public.pages_domains ALTER COLUMN id SET DEFAULT nextval('public.pages_domains_id_seq'::regclass);
@@ -18680,6 +18703,9 @@ ALTER TABLE ONLY public.packages_pypi_metadata
 
 ALTER TABLE ONLY public.packages_tags
     ADD CONSTRAINT packages_tags_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY public.pages_deployments
+    ADD CONSTRAINT pages_deployments_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY public.pages_domain_acme_orders
     ADD CONSTRAINT pages_domain_acme_orders_pkey PRIMARY KEY (id);
@@ -20665,6 +20691,10 @@ CREATE INDEX index_packages_project_id_name_partial_for_nuget ON public.packages
 CREATE INDEX index_packages_tags_on_package_id ON public.packages_tags USING btree (package_id);
 
 CREATE INDEX index_packages_tags_on_package_id_and_updated_at ON public.packages_tags USING btree (package_id, updated_at DESC);
+
+CREATE INDEX index_pages_deployments_on_ci_build_id ON public.pages_deployments USING btree (ci_build_id);
+
+CREATE INDEX index_pages_deployments_on_project_id ON public.pages_deployments USING btree (project_id);
 
 CREATE INDEX index_pages_domain_acme_orders_on_challenge_token ON public.pages_domain_acme_orders USING btree (challenge_token);
 
@@ -23184,6 +23214,9 @@ ALTER TABLE ONLY public.board_project_recent_visits
 ALTER TABLE ONLY public.clusters_kubernetes_namespaces
     ADD CONSTRAINT fk_rails_98fe21e486 FOREIGN KEY (project_id) REFERENCES public.projects(id) ON DELETE SET NULL;
 
+ALTER TABLE ONLY public.pages_deployments
+    ADD CONSTRAINT fk_rails_993b88f59a FOREIGN KEY (project_id) REFERENCES public.projects(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY public.vulnerability_exports
     ADD CONSTRAINT fk_rails_9aff2c3b45 FOREIGN KEY (project_id) REFERENCES public.projects(id) ON DELETE CASCADE;
 
@@ -23390,6 +23423,9 @@ ALTER TABLE ONLY public.packages_nuget_dependency_link_metadata
 
 ALTER TABLE ONLY public.group_deploy_keys_groups
     ADD CONSTRAINT fk_rails_c3854f19f5 FOREIGN KEY (group_deploy_key_id) REFERENCES public.group_deploy_keys(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY public.pages_deployments
+    ADD CONSTRAINT fk_rails_c3a90cf29b FOREIGN KEY (ci_build_id) REFERENCES public.ci_builds(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY public.merge_request_user_mentions
     ADD CONSTRAINT fk_rails_c440b9ea31 FOREIGN KEY (note_id) REFERENCES public.notes(id) ON DELETE CASCADE;
