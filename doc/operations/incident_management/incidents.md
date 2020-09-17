@@ -128,3 +128,14 @@ in both PagerDuty and GitLab:
 
 To confirm the integration is successful, trigger a test incident from PagerDuty to
 confirm that a GitLab issue is created from the incident.
+
+## Incident details
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/230847) in GitLab 13.4.
+
+Incidents show the details of linked alerts in a separate tab. To populate this
+tab, the incident must have been created with a linked alert. Incidents
+[created automatically](#configure-incidents) from alerts will have this
+field populated.
+
+![Incident alert details](./img/incident_alert_details_v13_4.png)
