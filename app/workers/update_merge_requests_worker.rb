@@ -9,8 +9,6 @@ class UpdateMergeRequestsWorker # rubocop:disable Scalability/IdempotentWorker
   weight 3
   loggable_arguments 2, 3, 4
 
-  LOG_TIME_THRESHOLD = 90 # seconds
-
   # rubocop: disable CodeReuse/ActiveRecord
   def perform(project_id, user_id, oldrev, newrev, ref)
     project = Project.find_by(id: project_id)

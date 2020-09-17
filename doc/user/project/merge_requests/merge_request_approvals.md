@@ -121,6 +121,29 @@ indistinguishably.
 Alternatively, you can **require**
 [Code Owner's approvals for Protected Branches](../protected_branches.md#protected-branches-approval-by-code-owners). **(PREMIUM)**
 
+#### Merge Request approval segregation of duties
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/40491) in [GitLab Starter](https://about.gitlab.com/pricing/) 13.4.
+
+Managers or operators with [Reporter permissions](../../permissions.md#project-members-permissions)
+to a project sometimes need to be required approvers of a merge request,
+before a merge to a protected branch begins. These approvers aren't allowed
+to push or merge code to any branches.
+
+To enable this access:
+
+1. [Create a new group](../../group/index.md#create-a-new-group), and then
+   [add the user to the group](../../group/index.md#add-users-to-a-group),
+   ensuring you select the Reporter role for the user.
+1. [Share the project with your group](../members/share_project_with_groups.md#sharing-a-project-with-a-group-of-users),
+   based on the Reporter role.
+1. Navigate to your project's **Settings > General**, and in the
+   **Merge request approvals** section, click **Expand**.
+1. [Add the group](../../group/index.md#create-a-new-group) to the permission list
+   for the protected branch.
+
+![Update approval rule](img/update_approval_rule_v13_4.png)
+
 #### Adding / editing a default approval rule
 
 To add or edit the default merge request approval rule:

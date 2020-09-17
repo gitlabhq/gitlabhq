@@ -2901,6 +2901,20 @@ RSpec.describe Project do
     end
   end
 
+  describe '#lfs_objects_for_repository_types' do
+    let(:project) { create(:project) }
+
+    it 'returns LFS objects of the specified type only' do
+      none, design, wiki = *[nil, :design, :wiki].map do |type|
+        create(:lfs_objects_project, project: project, repository_type: type).lfs_object
+      end
+
+      expect(project.lfs_objects_for_repository_types(nil)).to contain_exactly(none)
+      expect(project.lfs_objects_for_repository_types(nil, :wiki)).to contain_exactly(none, wiki)
+      expect(project.lfs_objects_for_repository_types(:design)).to contain_exactly(design)
+    end
+  end
+
   context 'forks' do
     include ProjectForksHelper
 

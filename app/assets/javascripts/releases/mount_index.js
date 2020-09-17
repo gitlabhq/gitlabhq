@@ -1,7 +1,10 @@
 import Vue from 'vue';
+import Vuex from 'vuex';
 import ReleaseListApp from './components/app_index.vue';
 import createStore from './stores';
-import listModule from './stores/modules/list';
+import createListModule from './stores/modules/list';
+
+Vue.use(Vuex);
 
 export default () => {
   const el = document.getElementById('js-releases-page');
@@ -10,7 +13,7 @@ export default () => {
     el,
     store: createStore({
       modules: {
-        list: listModule,
+        list: createListModule(el.dataset),
       },
       featureFlags: {
         graphqlReleaseData: Boolean(gon.features?.graphqlReleaseData),

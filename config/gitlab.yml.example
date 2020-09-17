@@ -1136,6 +1136,7 @@ production: &base
     # Sidekiq exporter is webserver built in to Sidekiq to expose Prometheus metrics
     sidekiq_exporter:
     #  enabled: true
+    #  log_enabled: false
     #  address: localhost
     #  port: 8082
 

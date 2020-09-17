@@ -142,6 +142,20 @@ RSpec.describe RemoteMirror, :mailer do
     end
   end
 
+  describe '#bare_url' do
+    it 'returns the URL without any credentials' do
+      remote_mirror = build(:remote_mirror, url: 'http://user:pass@example.com/foo')
+
+      expect(remote_mirror.bare_url).to eq('http://example.com/foo')
+    end
+
+    it 'returns an empty string when the URL is nil' do
+      remote_mirror = build(:remote_mirror, url: nil)
+
+      expect(remote_mirror.bare_url).to eq('')
+    end
+  end
+
   describe '#update_repository' do
     it 'performs update including options' do
       git_remote_mirror = stub_const('Gitlab::Git::RemoteMirror', spy)

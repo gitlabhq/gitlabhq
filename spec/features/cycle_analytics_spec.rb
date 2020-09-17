@@ -76,9 +76,6 @@ RSpec.describe 'Value Stream Analytics', :js do
 
         click_stage('Staging')
         expect_build_to_be_present
-
-        click_stage('Total')
-        expect_issue_to_be_present
       end
 
       context "when I change the time period observed" do

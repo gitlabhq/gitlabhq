@@ -71,6 +71,14 @@ RSpec.describe Resolvers::ProjectsResolver do
             is_expected.to contain_exactly(project, private_project)
           end
         end
+
+        context 'when ids filter is provided' do
+          let(:filters) { { ids: [project.to_global_id.to_s] } }
+
+          it 'returns matching project' do
+            is_expected.to contain_exactly(project)
+          end
+        end
       end
     end
   end

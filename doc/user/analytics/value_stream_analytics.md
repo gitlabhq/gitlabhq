@@ -45,8 +45,6 @@ There are seven stages that are tracked as part of the Value Stream Analytics ca
   - Time spent on code review
 - **Staging** (Continuous Deployment)
   - Time between merging and deploying to production
-- **Total** (Total)
-  - Total lifecycle time. That is, the velocity of the project or team. [Previously known](https://gitlab.com/gitlab-org/gitlab/-/issues/38317) as **Production**.
 
 ## Filter the analytics data
 
@@ -95,7 +93,7 @@ Note: A commit is associated with an issue by [crosslinking](../project/issues/c
 ## How the stages are measured
 
 Value Stream Analytics records stage time and data based on the project issues with the
-exception of the staging and total stages, where only data deployed to
+exception of the staging stage, where only data deployed to
 production are measured.
 
 Specifically, if your CI is not set up and you have not defined a `production`
@@ -112,7 +110,6 @@ Each stage of Value Stream Analytics is further described in the table below.
 | Test      | Measures the median time to run the entire pipeline for that project. It's related to the time GitLab CI/CD takes to run every job for the commits pushed to that merge request defined in the previous stage. It is basically the start->finish time for all pipelines. |
 | Review    | Measures the median time taken to review the merge request that has a closing issue pattern, between its creation and until it's merged. |
 | Staging   | Measures the median time between merging the merge request with a closing issue pattern until the very first deployment to production. It's tracked by the environment set to `production` or matching `production/*` (case-sensitive, `Production` won't work) in your GitLab CI/CD configuration. If there isn't a production environment, this is not tracked. |
-| Total | The sum of all time (medians) taken to run the entire process, from issue creation to deploying the code to production. [Previously known](https://gitlab.com/gitlab-org/gitlab/-/issues/38317) as **Production**. |
 
 How this works, behind the scenes:
 
@@ -131,7 +128,7 @@ Value Stream Analytics dashboard will not present any data for:
 
 - Merge requests that do not close an issue.
 - Issues not labeled with a label present in the Issue Board or for issues not assigned a milestone.
-- Staging and production stages, if the project has no `production` or `production/*`
+- Staging stage, if the project has no `production` or `production/*`
   environment.
 
 ## Example workflow
@@ -158,9 +155,6 @@ environments is configured.
    request at 19:00. (stop of **Review** stage / start of **Staging** stage).
 1. Now that the merge request is merged, a deployment to the `production`
    environment starts and finishes at 19:30 (stop of **Staging** stage).
-1. The cycle completes and the sum of the median times of the previous stages
-   is recorded to the **Total** stage. That is the time between creating an
-   issue and deploying its relevant merge request to production.
 
 From the above example you can conclude the time it took each stage to complete
 as long as their total time:
@@ -171,10 +165,6 @@ as long as their total time:
 - **Test**: 5min
 - **Review**: 5h (19:00 - 14:00)
 - **Staging**: 30min (19:30 - 19:00)
-- **Total**: Since this stage measures the sum of median time of all
-  previous stages, we cannot calculate it if we don't know the status of the
-  stages before. In case this is the very first cycle that is run in the project,
-  then the **Total** time is 10h 30min (19:30 - 09:00)
 
 A few notes:
 

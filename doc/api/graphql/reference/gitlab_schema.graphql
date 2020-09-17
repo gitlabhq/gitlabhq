@@ -13982,6 +13982,11 @@ type Query {
     first: Int
 
     """
+    Filter projects by IDs
+    """
+    ids: [ID!]
+
+    """
     Returns the last _n_ elements from the list.
     """
     last: Int

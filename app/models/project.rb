@@ -1469,6 +1469,12 @@ class Project < ApplicationRecord
     forked_from_project || fork_network&.root_project
   end
 
+  def lfs_objects_for_repository_types(*types)
+    LfsObject
+      .joins(:lfs_objects_projects)
+      .where(lfs_objects_projects: { project: self, repository_type: types })
+  end
+
   def lfs_objects_oids(oids: [])
     oids(lfs_objects, oids: oids)
   end

@@ -210,6 +210,10 @@ class RemoteMirror < ApplicationRecord
     super(usernames_whitelist: %w[git])
   end
 
+  def bare_url
+    Gitlab::UrlSanitizer.new(read_attribute(:url)).full_url
+  end
+
   def ensure_remote!
     return unless project
     return unless remote_name && remote_url

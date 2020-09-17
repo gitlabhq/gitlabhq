@@ -6,7 +6,7 @@ import {
   receiveReleasesSuccess,
   receiveReleasesError,
 } from '~/releases/stores/modules/list/actions';
-import state from '~/releases/stores/modules/list/state';
+import createState from '~/releases/stores/modules/list/state';
 import * as types from '~/releases/stores/modules/list/mutation_types';
 import api from '~/api';
 import { gqClient, convertGraphQLResponse } from '~/releases/util';
@@ -27,7 +27,7 @@ describe('Releases State actions', () => {
 
   beforeEach(() => {
     mockedState = {
-      ...state(),
+      ...createState({}),
       featureFlags: {
         graphqlReleaseData: true,
         graphqlReleasesPage: true,

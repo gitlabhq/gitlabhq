@@ -723,10 +723,15 @@ was initiated, such as `1509705644.log`
 
 ## `sidekiq_exporter.log` and `web_exporter.log`
 
-If Prometheus metrics and the Sidekiq Exporter are both enabled, Sidekiq will
-start a Web server and listen to the defined port (default: `8082`). Access logs
-will be generated in `/var/log/gitlab/gitlab-rails/sidekiq_exporter.log` for
-Omnibus GitLab packages or in `/home/git/gitlab/log/sidekiq_exporter.log` for
+If Prometheus metrics and the Sidekiq Exporter are both enabled, Sidekiq
+will start a Web server and listen to the defined port (default:
+`8082`). By default, Sidekiq Exporter access logs are disabled but can
+be enabled via the `sidekiq['exporter_log_enabled'] = true` option in `/etc/gitlab/gitlab.rb`
+for Omnibus installations, or via the `sidekiq_exporter.log_enabled` option
+in `gitlab.yml` for installations from source. When enabled,
+access logs will be generated in
+`/var/log/gitlab/gitlab-rails/sidekiq_exporter.log` for Omnibus GitLab
+packages or in `/home/git/gitlab/log/sidekiq_exporter.log` for
 installations from source.
 
 If Prometheus metrics and the Web Exporter are both enabled, Puma/Unicorn will

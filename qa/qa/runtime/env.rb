@@ -368,6 +368,15 @@ module QA
         ENV['MAILHOG_HOSTNAME']
       end
 
+      # Get the version of GitLab currently being tested against
+      # @return String Version
+      # @example
+      #   > Env.deploy_version
+      #   #=> 13.3.4-ee.0
+      def deploy_version
+        ENV['DEPLOY_VERSION']
+      end
+
       private
 
       def remote_grid_credentials

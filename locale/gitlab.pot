@@ -13905,7 +13905,7 @@ msgstr ""
 msgid "Issue events"
 msgstr ""
 
-msgid "Issue first depoloyed to production"
+msgid "Issue first deployed to production"
 msgstr ""
 
 msgid "Issue label"
@@ -25306,9 +25306,6 @@ msgstr ""
 msgid "The private key to use when a client certificate is provided. This value is encrypted at rest."
 msgstr ""
 
-msgid "The production stage shows the total time it takes between creating an issue and deploying the code to production. The data will be automatically added once you have completed the full idea to production cycle."
-msgstr ""
-
 msgid "The project can be accessed by any logged in user."
 msgstr ""
 
@@ -25397,9 +25394,6 @@ msgid "The testing stage shows the time GitLab CI takes to run every pipeline fo
 msgstr ""
 
 msgid "The time taken by each data entry gathered by that stage."
-msgstr ""
-
-msgid "The total stage shows the time it takes between creating an issue and deploying the code to production. The data will be automatically added once you have completed the full idea to production cycle."
 msgstr ""
 
 msgid "The update action will time out after %{number_of_minutes} minutes. For big repositories, use a clone/push combination."

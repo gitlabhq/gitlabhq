@@ -4,7 +4,7 @@ import { shallowMount, createLocalVue } from '@vue/test-utils';
 import waitForPromises from 'helpers/wait_for_promises';
 import ReleasesApp from '~/releases/components/app_index.vue';
 import createStore from '~/releases/stores';
-import listModule from '~/releases/stores/modules/list';
+import createListModule from '~/releases/stores/modules/list';
 import api from '~/api';
 import {
   pageInfoHeadersWithoutPagination,
@@ -35,6 +35,8 @@ describe('Releases App ', () => {
   };
 
   const createComponent = (propsData = defaultProps) => {
+    const listModule = createListModule({});
+
     fetchReleaseSpy = jest.spyOn(listModule.actions, 'fetchReleases');
 
     const store = createStore({

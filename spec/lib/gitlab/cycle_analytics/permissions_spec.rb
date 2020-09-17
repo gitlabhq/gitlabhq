@@ -21,10 +21,6 @@ RSpec.describe Gitlab::CycleAnalytics::Permissions do
       expect(subject[:staging]).to eq(false)
     end
 
-    it 'has no permissions to production stage' do
-      expect(subject[:production]).to eq(false)
-    end
-
     it 'has no permissions to code stage' do
       expect(subject[:code]).to eq(false)
     end
@@ -53,10 +49,6 @@ RSpec.describe Gitlab::CycleAnalytics::Permissions do
 
     it 'has permissions to staging stage' do
       expect(subject[:staging]).to eq(true)
-    end
-
-    it 'has permissions to production stage' do
-      expect(subject[:production]).to eq(true)
     end
 
     it 'has permissions to code stage' do
@@ -120,10 +112,6 @@ RSpec.describe Gitlab::CycleAnalytics::Permissions do
 
     it 'has no permissions to issue stage' do
       expect(subject[:issue]).to eq(false)
-    end
-
-    it 'has no permissions to production stage' do
-      expect(subject[:production]).to eq(false)
     end
   end
 end

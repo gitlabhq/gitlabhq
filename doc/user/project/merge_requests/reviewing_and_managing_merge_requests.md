@@ -67,6 +67,14 @@ list.
 
 ![Merge request diff file navigation](img/merge_request_diff_file_navigation.png)
 
+### Collapsed files in the Changes view
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/232820) in GitLab 13.4.
+
+When you review changes in the **Changes** tab, files with a large number of changes are collapsed
+to improve performance. When files are collapsed, a warning appears at the top of the changes.
+Click **Expand file** on any file to view the changes for that file.
+
 ### File-by-file diff navigation
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/222790) in GitLab 13.2.
