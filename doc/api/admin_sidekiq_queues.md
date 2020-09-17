@@ -1,4 +1,4 @@
-# Admin Sidekiq queues API
+# Sidekiq queues administration API **(CORE ONLY)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/25998) in GitLab 12.9
 
@@ -15,7 +15,7 @@ The response has three fields:
    delete further jobs (including those added after the first request
    was issued).
 
-This API endpoint is only available to admin users.
+This API endpoint is only available to administrators.
 
 ```plaintext
 DELETE /admin/sidekiq/queues/:queue_name

@@ -33,7 +33,7 @@ describe('DropdownHeaderComponent', () => {
       );
 
       expect(closeBtnEl).not.toBeNull();
-      expect(closeBtnEl.querySelector('.fa-times.dropdown-menu-close-icon')).not.toBeNull();
+      expect(closeBtnEl.querySelector('.dropdown-menu-close-icon')).not.toBeNull();
     });
   });
 });

@@ -10,10 +10,11 @@
             = issuable.issue_type.capitalize || _("Select type")
           = icon('chevron-down')
         .dropdown-menu.dropdown-menu-selectable.dropdown-select
-          .dropdown-title
-            = _("Select type")
-          %button.dropdown-title-button.dropdown-menu-close.gl-mt-3
-            = icon('times', class: 'dropdown-menu-close-icon', 'aria-hidden' => 'true')
+          .dropdown-title.gl-display-flex
+            %span.gl-ml-auto
+              = _("Select type")
+            %button.dropdown-title-button.dropdown-menu-close.gl-ml-auto{ "aria-label" => _('Close') }
+              = sprite_icon('close', size: 16, css_class: 'dropdown-menu-close-icon')
           .dropdown-content
             %ul
               %li.js-filter-issuable-type

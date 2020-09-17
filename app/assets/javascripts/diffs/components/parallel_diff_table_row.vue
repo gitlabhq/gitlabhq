@@ -199,10 +199,10 @@ export default {
       );
     },
     hasDiscussionsLeft() {
-      return this.line.left.discussions && this.line.left.discussions.length > 0;
+      return this.line.left?.discussions?.length > 0;
     },
     hasDiscussionsRight() {
-      return this.line.right.discussions && this.line.right.discussions.length > 0;
+      return this.line.right?.discussions?.length > 0;
     },
     lineHrefOld() {
       return `#${this.line.left.line_code || ''}`;
@@ -217,14 +217,14 @@ export default {
       );
     },
     isMetaLineLeft() {
-      const { type } = this.line.left;
+      const type = this.line.left?.type;
 
       return (
         type === OLD_NO_NEW_LINE_TYPE || type === NEW_NO_NEW_LINE_TYPE || type === EMPTY_CELL_TYPE
       );
     },
     isMetaLineRight() {
-      const { type } = this.line.right;
+      const type = this.line.right?.type;
 
       return (
         type === OLD_NO_NEW_LINE_TYPE || type === NEW_NO_NEW_LINE_TYPE || type === EMPTY_CELL_TYPE

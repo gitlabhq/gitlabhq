@@ -1,6 +1,6 @@
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex';
-import { GlLoadingIcon, GlButton, GlIcon } from '@gitlab/ui';
+import { GlButton, GlLoadingIcon, GlIcon } from '@gitlab/ui';
 import { sprintf, n__ } from '~/locale';
 import DraftsCount from './drafts_count.vue';
 import PublishButton from './publish_button.vue';
@@ -8,8 +8,8 @@ import PreviewItem from './preview_item.vue';
 
 export default {
   components: {
-    GlLoadingIcon,
     GlButton,
+    GlLoadingIcon,
     GlIcon,
     DraftsCount,
     PublishButton,
@@ -81,16 +81,17 @@ export default {
         show: showPreviewDropdown,
       }"
     >
-      <div class="dropdown-title">
-        {{ dropdownTitle }}
-        <button
+      <div class="dropdown-title gl-display-flex gl-align-items-center">
+        <span class="gl-ml-auto">{{ dropdownTitle }}</span>
+        <gl-button
           :aria-label="__('Close')"
           type="button"
-          class="dropdown-title-button dropdown-menu-close"
+          category="tertiary"
+          size="small"
+          class="dropdown-title-button gl-ml-auto gl-p-0!"
+          icon="close"
           @click="toggleReviewDropdown"
-        >
-          <gl-icon name="close" />
-        </button>
+        />
       </div>
       <div class="dropdown-content">
         <ul v-if="isNotesFetched">

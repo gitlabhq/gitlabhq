@@ -225,12 +225,12 @@ export default {
           @keydown.esc.native="hideDropdown"
           @hide="hideDropdown"
         >
-          <div class="dropdown-title">
-            <span class="alert-title">{{ __('Assign To') }}</span>
+          <div class="dropdown-title gl-display-flex">
+            <span class="alert-title gl-ml-auto">{{ __('Assign To') }}</span>
             <gl-button
               :aria-label="__('Close')"
               variant="link"
-              class="dropdown-title-button dropdown-menu-close"
+              class="dropdown-title-button dropdown-menu-close gl-ml-auto gl-text-black-normal!"
               icon="close"
               @click="hideDropdown"
             />

@@ -92,16 +92,6 @@ FactoryBot.define do
       target_branch { "feature_two" }
     end
 
-    trait(:without_merge_request_diff) do
-      after(:build) do |_|
-        MergeRequest.skip_callback(:create, :after, :ensure_merge_request_diff)
-      end
-
-      after(:create) do |_|
-        MergeRequest.set_callback(:create, :after, :ensure_merge_request_diff)
-      end
-    end
-
     trait :locked do
       state_id { MergeRequest.available_states[:locked] }
     end

@@ -1,9 +1,13 @@
 <script>
 /* eslint-disable @gitlab/vue-require-i18n-strings */
 import $ from 'jquery';
+import { GlIcon } from '@gitlab/ui';
 import IssuableTemplateSelectors from '../../../templates/issuable_template_selectors';
 
 export default {
+  components: {
+    GlIcon,
+  },
   props: {
     formState: {
       type: Object,
@@ -61,14 +65,14 @@ export default {
       <i aria-hidden="true" class="fa fa-chevron-down"> </i>
     </button>
     <div class="dropdown-menu dropdown-select">
-      <div class="dropdown-title">
-        Choose a template
+      <div class="dropdown-title gl-display-flex gl-justify-content-center">
+        <span class="gl-ml-auto">Choose a template</span>
         <button
-          class="dropdown-title-button dropdown-menu-close"
+          class="dropdown-title-button dropdown-menu-close gl-ml-auto"
           :aria-label="__('Close')"
           type="button"
         >
-          <i aria-hidden="true" class="fa fa-times dropdown-menu-close-icon"> </i>
+          <gl-icon name="close" class="dropdown-menu-close-icon" :aria-hidden="true" />
         </button>
       </div>
       <div class="dropdown-input">
@@ -79,12 +83,11 @@ export default {
           autocomplete="off"
         />
         <i aria-hidden="true" class="fa fa-search dropdown-input-search"> </i>
-        <i
-          role="button"
+        <gl-icon
+          name="close"
+          class="dropdown-input-clear js-dropdown-input-clear"
           :aria-label="__('Clear templates search input')"
-          class="fa fa-times dropdown-input-clear js-dropdown-input-clear"
-        >
-        </i>
+        />
       </div>
       <div class="dropdown-content"></div>
       <div class="dropdown-footer">

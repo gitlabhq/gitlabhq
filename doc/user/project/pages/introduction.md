@@ -60,14 +60,8 @@ If the case of `404.html`, there are different scenarios. For example:
 
 ## Redirects in GitLab Pages
 
-Since you cannot use any custom server configuration files, like `.htaccess` or
-any `.conf` file, if you want to redirect a page to another
-location, you can use the [HTTP meta refresh tag](https://en.wikipedia.org/wiki/Meta_refresh).
-
-Some static site generators provide plugins for that functionality so that you
-don't have to create and edit HTML files manually. For example, Jekyll has the
-[redirect-from plugin](https://github.com/jekyll/jekyll-redirect-from), Sphinx
-has the [sphinx-reredirects](https://gitlab.com/documatt/sphinx-reredirects) extension.
+You can configure redirects for your site using a `_redirects` file. To learn more, read
+the [redirects documentation](redirects.md).
 
 ## GitLab Pages Access Control **(CORE)**
 

@@ -1,4 +1,4 @@
-# Sidekiq Metrics API
+# Sidekiq Metrics API **(CORE ONLY)**
 
 > Introduced in GitLab 8.9.
 

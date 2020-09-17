@@ -2107,10 +2107,10 @@ Represents an analyzer entity in SAST CI configuration.
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
-| `description` | String | Analyzer description that is displayed on the form. |
-| `enabled` | Boolean | Indicates whether an analyzer is enabled. |
-| `label` | String | Analyzer label used in the config UI. |
-| `name` | String | Name of the analyzer. |
+| `description` | String | Analyzer description that is displayed on the form |
+| `enabled` | Boolean | Indicates whether an analyzer is enabled |
+| `label` | String | Analyzer label used in the config UI |
+| `name` | String | Name of the analyzer |
 
 ### SastCiConfigurationEntity
 

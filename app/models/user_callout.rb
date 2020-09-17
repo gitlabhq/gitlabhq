@@ -3,9 +3,30 @@
 class UserCallout < ApplicationRecord
   belongs_to :user
 
-  # We use `Enums::UserCallout.feature_names` here so that EE can more easily
-  # extend this `Hash` with new values.
-  enum feature_name: Enums::UserCallout.feature_names
+  enum feature_name: {
+    gke_cluster_integration: 1,
+    gcp_signup_offer: 2,
+    cluster_security_warning: 3,
+    gold_trial: 4,                    # EE-only
+    geo_enable_hashed_storage: 5,     # EE-only
+    geo_migrate_hashed_storage: 6,    # EE-only
+    canary_deployment: 7,             # EE-only
+    gold_trial_billings: 8,           # EE-only
+    suggest_popover_dismissed: 9,
+    tabs_position_highlight: 10,
+    threat_monitoring_info: 11,         # EE-only
+    account_recovery_regular_check: 12, # EE-only
+    webhooks_moved: 13,
+    service_templates_deprecated: 14,
+    admin_integrations_moved: 15,
+    web_ide_alert_dismissed: 16,
+    active_user_count_threshold: 18,           # EE-only
+    buy_pipeline_minutes_notification_dot: 19, # EE-only
+    personal_access_token_expiry: 21,          # EE-only
+    suggest_pipeline: 22,
+    customize_homepage: 23,
+    feature_flags_new_version: 24
+  }
 
   validates :user, presence: true
   validates :feature_name,

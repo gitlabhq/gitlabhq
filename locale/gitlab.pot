@@ -2139,6 +2139,12 @@ msgstr ""
 msgid "Advanced"
 msgstr ""
 
+msgid "Advanced Search"
+msgstr ""
+
+msgid "Advanced Search with Elasticsearch"
+msgstr ""
+
 msgid "Advanced Settings"
 msgstr ""
 
@@ -9273,9 +9279,6 @@ msgstr ""
 msgid "Editing"
 msgstr ""
 
-msgid "Elasticsearch"
-msgstr ""
-
 msgid "Elasticsearch AWS IAM credentials"
 msgstr ""
 
@@ -9286,9 +9289,6 @@ msgid "Elasticsearch indexing restrictions"
 msgstr ""
 
 msgid "Elasticsearch indexing started"
-msgstr ""
-
-msgid "Elasticsearch integration. Elasticsearch AWS IAM."
 msgstr ""
 
 msgid "Elasticsearch reindexing is already in progress"

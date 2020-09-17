@@ -1,3 +1,4 @@
+import jQuery from 'jquery';
 import { initTooltips, dispose, destroy, hide, show, enable, disable, fixTitle } from '~/tooltips';
 
 describe('tooltips/index.js', () => {
@@ -21,7 +22,7 @@ describe('tooltips/index.js', () => {
   };
 
   const buildTooltipsApp = () => {
-    tooltipsApp = initTooltips('.has-tooltip');
+    tooltipsApp = initTooltips({ selector: '.has-tooltip' });
   };
 
   const triggerEvent = (target, eventName = 'mouseenter') => {
@@ -29,6 +30,10 @@ describe('tooltips/index.js', () => {
 
     target.dispatchEvent(event);
   };
+
+  beforeEach(() => {
+    window.gon.glTooltipsEnabled = true;
+  });
 
   afterEach(() => {
     document.body.childNodes.forEach(node => node.remove());
@@ -116,5 +121,29 @@ describe('tooltips/index.js', () => {
     fixTitle([target]);
 
     expect(tooltipsApp.fixTitle).toHaveBeenCalledWith(target);
+  });
+
+  describe('when glTooltipsEnabled feature flag is disabled', () => {
+    beforeEach(() => {
+      window.gon.glTooltipsEnabled = false;
+    });
+
+    it.each`
+      method      | methodName    | bootstrapParams
+      ${dispose}  | ${'dispose'}  | ${'dispose'}
+      ${fixTitle} | ${'fixTitle'} | ${'_fixTitle'}
+      ${enable}   | ${'enable'}   | ${'enable'}
+      ${disable}  | ${'disable'}  | ${'disable'}
+      ${hide}     | ${'hide'}     | ${'hide'}
+      ${show}     | ${'show'}     | ${'show'}
+    `('delegates $methodName to bootstrap tooltip API', ({ method, bootstrapParams }) => {
+      const elements = jQuery(createTooltipTarget());
+
+      jest.spyOn(jQuery.fn, 'tooltip');
+
+      method(elements);
+
+      expect(elements.tooltip).toHaveBeenCalledWith(bootstrapParams);
+    });
   });
 });

@@ -100,7 +100,7 @@ To edit the details of a release:
 1. Click **Save changes**.
 
 You can edit the release title, notes, associated milestones, and asset links.
-To change other release information, such as the tag or release date, use the
+To change the release date use the
 [Releases API](../../../api/releases/index.md#update-a-release).
 
 ## Add release notes to Git tags

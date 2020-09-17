@@ -347,6 +347,10 @@ world. Custom domains and TLS are supported.
 1. Restart NGINX
 1. [Restart GitLab](../restart_gitlab.md#installations-from-source)
 
+## Enable redirects
+
+In GitLab Pages, you can [enable the redirects feature](../../user/project/pages/redirects.md#enable-or-disable-redirects) to configure rules to forward one URL to another using HTTP redirects.
+
 ## NGINX caveats
 
 NOTE: **Note:**

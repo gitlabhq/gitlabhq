@@ -116,7 +116,7 @@ The following API resources are available outside of project and group contexts 
 | Resource                                           | Available endpoints                                                     |
 |:---------------------------------------------------|:------------------------------------------------------------------------|
 | [Instance-level CI/CD variables](instance_level_ci_variables.md) | `/admin/ci/variables`                                     |
-| [Admin Sidekiq queues](admin_sidekiq_queues.md)    | `/admin/sidekiq/queues/:queue_name`                                     |
+| [Sidekiq queues administration](admin_sidekiq_queues.md) **(CORE ONLY)** | `/admin/sidekiq/queues/:queue_name`               |
 | [Appearance](appearance.md) **(CORE ONLY)**        | `/application/appearance`                                               |
 | [Applications](applications.md)                    | `/applications`                                                         |
 | [Audit Events](audit_events.md) **(PREMIUM ONLY)** | `/audit_events`                                                         |
@@ -148,7 +148,7 @@ The following API resources are available outside of project and group contexts 
 | [Search](search.md)                                | `/search` (also available for groups and projects)                      |
 | [Settings](settings.md) **(CORE ONLY)**            | `/application/settings`                                                 |
 | [Statistics](statistics.md)                        | `/application/statistics`                                               |
-| [Sidekiq metrics](sidekiq_metrics.md)              | `/sidekiq`                                                              |
+| [Sidekiq metrics](sidekiq_metrics.md) **(CORE ONLY)** | `/sidekiq`                                                           |
 | [Suggestions](suggestions.md)                      | `/suggestions`                                                          |
 | [System hooks](system_hooks.md)                    | `/hooks`                                                                |
 | [To-dos](todos.md)                                  | `/todos`                                                                |
