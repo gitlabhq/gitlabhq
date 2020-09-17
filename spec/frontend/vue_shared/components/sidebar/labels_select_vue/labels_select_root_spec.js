@@ -150,11 +150,10 @@ describe('LabelsSelectRoot', () => {
       expect(wrapper.find(DropdownTitle).exists()).toBe(true);
     });
 
-    it('renders `dropdown-value` component with slot when `showDropdownButton` prop is `false`', () => {
+    it('renders `dropdown-value` component', () => {
       const wrapperDropdownValue = createComponent(mockConfig, {
         default: 'None',
       });
-      wrapperDropdownValue.vm.$store.state.showDropdownButton = false;
 
       return wrapperDropdownValue.vm.$nextTick(() => {
         const valueComp = wrapperDropdownValue.find(DropdownValue);

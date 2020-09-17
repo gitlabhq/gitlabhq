@@ -57,6 +57,10 @@ export default {
     state.labelCreateInProgress = false;
   },
 
+  [types.REPLACE_SELECTED_LABELS](state, selectedLabels = []) {
+    state.selectedLabels = selectedLabels;
+  },
+
   [types.UPDATE_SELECTED_LABELS](state, { labels }) {
     // Find the label to update from all the labels
     // and change `set` prop value to represent their current state.

@@ -252,10 +252,10 @@ export default {
         :allow-label-edit="allowLabelEdit"
         :labels-select-in-progress="labelsSelectInProgress"
       />
-      <dropdown-value v-show="!showDropdownButton">
+      <dropdown-value>
         <slot></slot>
       </dropdown-value>
-      <dropdown-button v-show="dropdownButtonVisible" />
+      <dropdown-button v-show="dropdownButtonVisible" class="gl-mt-2" />
       <dropdown-contents
         v-if="dropdownButtonVisible && showDropdownContents"
         ref="dropdownContents"

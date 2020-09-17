@@ -95,11 +95,12 @@ RSpec.describe "Issues > User edits issue", :js do
     describe 'update labels' do
       it 'will not send ajax request when no data is changed' do
         page.within '.labels' do
-          click_link 'Edit'
+          click_on 'Edit'
 
-          find('.dropdown-menu-close', match: :first).click
+          find('.dropdown-title button').click
 
           expect(page).not_to have_selector('.block-loading')
+          expect(page).not_to have_selector('.gl-spinner')
         end
       end
     end

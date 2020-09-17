@@ -145,6 +145,13 @@
   .value.dont-hide ~ .selectbox {
     padding-top: $gl-padding-8;
   }
+
+  // This is for sidebar components using gl-button for the Edit button to be consistent with the
+  // rest of the sidebar, and could be removed once the sidebar has been fully converted to use
+  // gitlab-ui components.
+  .title .gl-button {
+    color: $gl-text-color;
+  }
 }
 
 .pikaday-container {

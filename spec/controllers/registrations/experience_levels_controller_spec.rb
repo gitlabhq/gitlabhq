@@ -59,8 +59,6 @@ RSpec.describe Registrations::ExperienceLevelsController do
       end
 
       context 'when user is successfully updated' do
-        it { is_expected.to set_flash[:message].to('Welcome! You have signed up successfully.') }
-
         context 'when no experience_level is sent' do
           before do
             user.user_preference.update_attribute(:experience_level, :novice)

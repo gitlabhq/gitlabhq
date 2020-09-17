@@ -419,7 +419,6 @@ RSpec.shared_examples 'Signup' do
     expect(new_user.software_developer_role?).to be_truthy
     expect(new_user.setup_for_company).to be_nil
     expect(page).to have_current_path(new_project_path)
-    expect(page).to have_content("Welcome! You have signed up successfully.")
   end
 end
 

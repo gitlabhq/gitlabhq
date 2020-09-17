@@ -39,19 +39,11 @@ module Gitlab
         ::Feature.enabled?(:ci_bulk_insert_on_create, project, default_enabled: true)
       end
 
-      def self.ci_if_parenthesis_enabled?
-        ::Feature.enabled?(:ci_if_parenthesis_enabled, default_enabled: true)
-      end
-
       # NOTE: The feature flag `disallow_to_create_merge_request_pipelines_in_target_project`
       # is a safe switch to disable the feature for a parituclar project when something went wrong,
       # therefore it's not supposed to be enabled by default.
       def self.disallow_to_create_merge_request_pipelines_in_target_project?(target_project)
         ::Feature.enabled?(:ci_disallow_to_create_merge_request_pipelines_in_target_project, target_project)
-      end
-
-      def self.ci_plan_needs_size_limit?(project)
-        ::Feature.enabled?(:ci_plan_needs_size_limit, project, default_enabled: true)
       end
 
       def self.lint_creates_pipeline_with_dry_run?(project)

@@ -43,5 +43,4 @@
       = f.submit s_('Pipeline|Run Pipeline'), class: 'btn btn-success js-variables-save-button', tabindex: 3
       = link_to _('Cancel'), project_pipelines_path(@project), class: 'btn btn-default float-right'
 
-  -# haml-lint:disable InlineJavaScript
   %script#availableRefs{ type: "application/json" }= @project.repository.ref_names.to_json.html_safe

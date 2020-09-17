@@ -20,7 +20,7 @@ export default {
 };
 </script>
 <template>
-  <gl-drawer class="pt-6" :open="isOpen" @close="$emit('close')">
+  <gl-drawer class="gl-pt-8" :open="isOpen" @close="$emit('close')">
     <template #header>{{ __('Page settings') }}</template>
     <template>
       <front-matter-controls

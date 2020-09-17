@@ -36,7 +36,7 @@ class RegistrationsController < Devise::RegistrationsController
     end
 
     # Devise sets a flash message on `create` for a successful signup,
-    # we want to show this message after the welcome page.
+    # which we don't want to show.
     flash[:notice] = nil
   rescue Gitlab::Access::AccessDeniedError
     redirect_to(new_user_session_path)
@@ -69,7 +69,6 @@ class RegistrationsController < Devise::RegistrationsController
 
       return redirect_to new_users_sign_up_group_path if experiment_enabled?(:onboarding_issues) && show_onboarding_issues_experiment?
 
-      set_flash_message! :notice, :signed_up
       redirect_to path_for_signed_in_user(current_user)
     else
       render :welcome

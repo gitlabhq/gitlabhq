@@ -1424,13 +1424,15 @@ Example:
 | cell 1   | cell 2   | cell 3   |
 | cell 4 | cell 5 is longer | cell 6 is much longer than the others, but that's ok. It eventually wraps the text when the cell is too large for the display size. |
 | cell 7   |          | cell <br> 9 |
+| cell 10  | <ul><li> - [ ] Task One </li></ul> | <ul><li> - [ ] Task Two </li><li> - [ ] Task Three </li></ul> |
 ```
 
 | header 1 | header 2 | header 3 |
 | ---      |  ------  |---------:|
 | cell 1   | cell 2   | cell 3   |
-| cell 4 | cell 5 is longer | cell 6 is much longer than the others, but that's okay. It eventually wraps the text when the cell is too large for the display size. |
+| cell 4 | cell 5 is longer | cell 6 is much longer than the others, but that's ok. It eventually wraps the text when the cell is too large for the display size. |
 | cell 7   |          | cell <br> 9 |
+| cell 10  | <ul><li> - [ ] Task One </li></ul> | <ul><li> - [ ] Task Two </li><li> - [ ] Task Three </li></ul> |
 
 Additionally, you can choose the alignment of text within columns by adding colons (`:`)
 to the sides of the "dash" lines in the second row. This affects every cell in the column.

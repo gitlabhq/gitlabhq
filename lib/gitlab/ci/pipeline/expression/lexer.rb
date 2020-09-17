@@ -24,26 +24,8 @@ module Gitlab
             Expression::Lexeme::Or
           ].freeze
 
-          # To be removed with `ci_if_parenthesis_enabled`
-          LEGACY_LEXEMES = [
-            Expression::Lexeme::Variable,
-            Expression::Lexeme::String,
-            Expression::Lexeme::Pattern,
-            Expression::Lexeme::Null,
-            Expression::Lexeme::Equals,
-            Expression::Lexeme::Matches,
-            Expression::Lexeme::NotEquals,
-            Expression::Lexeme::NotMatches,
-            Expression::Lexeme::And,
-            Expression::Lexeme::Or
-          ].freeze
-
           def self.lexemes
-            if ::Gitlab::Ci::Features.ci_if_parenthesis_enabled?
-              LEXEMES
-            else
-              LEGACY_LEXEMES
-            end
+            LEXEMES
           end
 
           MAX_TOKENS = 100

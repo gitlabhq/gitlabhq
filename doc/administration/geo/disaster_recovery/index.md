@@ -375,7 +375,7 @@ and after that you also need two extra steps.
    gitlab_rails['auto_migrate'] = false
    ```
 
-   (For more details about these settings you can read [Configure the primary server](../replication/database.md#step-1-configure-the-primary-server))
+   (For more details about these settings you can read [Configure the primary server](../setup/database.md#step-1-configure-the-primary-server))
 
 1. Save the file and reconfigure GitLab for the database listen changes and
    the replication slot changes to be applied.
@@ -408,7 +408,7 @@ and after that you also need two extra steps.
 ### Step 2. Initiate the replication process
 
 Now we need to make each **secondary** node listen to changes on the new **primary** node. To do that you need
-to [initiate the replication process](../replication/database.md#step-3-initiate-the-replication-process) again but this time
+to [initiate the replication process](../setup/database.md#step-3-initiate-the-replication-process) again but this time
 for another **primary** node. All the old replication settings will be overwritten.
 
 ## Troubleshooting

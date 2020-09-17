@@ -15,12 +15,7 @@ module Gitlab
           def tree
             results = []
 
-            tokens =
-              if ::Gitlab::Ci::Features.ci_if_parenthesis_enabled?
-                tokens_rpn
-              else
-                legacy_tokens_rpn
-              end
+            tokens = tokens_rpn
 
             tokens.each do |token|
               case token.type
@@ -73,27 +68,6 @@ module Gitlab
                 raise ParseError, 'Unmatched parenthesis' unless operators.last
 
                 operators.pop if operators.last.lexeme.type == :parenthesis_open
-              end
-            end
-
-            output.concat(operators.reverse)
-          end
-
-          # To be removed with `ci_if_parenthesis_enabled`
-          def legacy_tokens_rpn
-            output = []
-            operators = []
-
-            @tokens.each do |token|
-              case token.type
-              when :value
-                output.push(token)
-              when :logical_operator
-                if operators.any? && token.lexeme.precedence >= operators.last.lexeme.precedence
-                  output.push(operators.pop)
-                end
-
-                operators.push(token)
               end
             end
 

@@ -168,7 +168,7 @@ RSpec.describe 'Issue Sidebar' do
 
       it 'escapes XSS when viewing issue labels' do
         page.within('.block.labels') do
-          find('.edit-link').click
+          click_on 'Edit'
 
           expect(page).to have_content '<script>alert("xss");</script>'
         end
@@ -179,7 +179,7 @@ RSpec.describe 'Issue Sidebar' do
       before do
         issue.update(labels: [label])
         page.within('.block.labels') do
-          find('.edit-link').click
+          click_on 'Edit'
         end
       end
 
@@ -286,7 +286,7 @@ RSpec.describe 'Issue Sidebar' do
     end
 
     it 'does not have a option to edit labels' do
-      expect(page).not_to have_selector('.block.labels .edit-link')
+      expect(page).not_to have_selector('.block.labels .js-sidebar-dropdown-toggle')
     end
 
     context 'interacting with collapsed sidebar', :js do

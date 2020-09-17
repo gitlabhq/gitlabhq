@@ -251,7 +251,7 @@ sudo gitlab-rake gitlab:geo:check
 
    When performing a PostgreSQL major version (9 > 10) update this is expected. Follow:
 
-   - [initiate-the-replication-process](database.md#step-3-initiate-the-replication-process)
+   - [initiate-the-replication-process](../setup/database.md#step-3-initiate-the-replication-process)
 
 ## Fixing replication errors
 
@@ -268,7 +268,7 @@ default to 1. You may need to increase this value if you have more
 
 Be sure to restart PostgreSQL for this to take
 effect. See the [PostgreSQL replication
-setup](database.md#postgresql-replication) guide for more details.
+setup](../setup/database.md#postgresql-replication) guide for more details.
 
 ### Message: `FATAL:  could not start WAL streaming: ERROR:  replication slot "geo_secondary_my_domain_com" does not exist`?
 
@@ -276,11 +276,11 @@ This occurs when PostgreSQL does not have a replication slot for the
 **secondary** node by that name.
 
 You may want to rerun the [replication
-process](database.md) on the **secondary** node .
+process](../setup/database.md) on the **secondary** node .
 
 ### Message: "Command exceeded allowed execution time" when setting up replication?
 
-This may happen while [initiating the replication process](database.md#step-3-initiate-the-replication-process) on the **secondary** node,
+This may happen while [initiating the replication process](../setup/database.md#step-3-initiate-the-replication-process) on the **secondary** node,
 and indicates that your initial dataset is too large to be replicated in the default timeout (30 minutes).
 
 Re-run `gitlab-ctl replicate-geo-database`, but include a larger value for
@@ -754,7 +754,7 @@ This error refers to a problem with the database replica on a **secondary** node
 which Geo expects to have access to. It usually means, either:
 
 - An unsupported replication method was used (for example, logical replication).
-- The instructions to setup a [Geo database replication](database.md) were not followed correctly.
+- The instructions to setup a [Geo database replication](../setup/database.md) were not followed correctly.
 - Your database connection details are incorrect, that is you have specified the wrong
   user in your `/etc/gitlab/gitlab.rb` file.
 
@@ -774,7 +774,7 @@ The most common problems that prevent the database from replicating correctly ar
 - Database replication slot is misconfigured.
 - Database is not using a replication slot or another alternative and cannot catch-up because WAL files were purged.
 
-Make sure you follow the [Geo database replication](database.md) instructions for supported configuration.
+Make sure you follow the [Geo database replication](../setup/database.md) instructions for supported configuration.
 
 ### Geo database version (...) does not match latest migration (...)
 

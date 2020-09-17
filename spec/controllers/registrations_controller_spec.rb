@@ -493,10 +493,6 @@ RSpec.describe RegistrationsController do
       sign_in(create(:user))
     end
 
-    it 'sets flash message' do
-      subject
-
-      expect(flash[:notice]).to eq(I18n.t('devise.registrations.signed_up'))
-    end
+    it { is_expected.to redirect_to(dashboard_projects_path)}
   end
 end

@@ -259,6 +259,21 @@ describe('LabelsSelect Actions', () => {
     });
   });
 
+  describe('replaceSelectedLabels', () => {
+    it('replaces `state.selectedLabels`', done => {
+      const selectedLabels = [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }];
+
+      testAction(
+        actions.replaceSelectedLabels,
+        selectedLabels,
+        state,
+        [{ type: types.REPLACE_SELECTED_LABELS, payload: selectedLabels }],
+        [],
+        done,
+      );
+    });
+  });
+
   describe('updateSelectedLabels', () => {
     it('updates `state.labels` based on provided `labels` param', done => {
       const labels = [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }];

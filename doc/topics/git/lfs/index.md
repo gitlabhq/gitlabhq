@@ -42,6 +42,7 @@ Documentation for GitLab instance administrators is under [LFS administration do
   credentials store is recommended
 - Git LFS always assumes HTTPS so if you have GitLab server on HTTP you will have
   to add the URL to Git configuration manually (see [troubleshooting](#troubleshooting))
+- Files added using Git LFS are [not included in the archives created using "download zip" functionality](https://gitlab.com/gitlab-org/gitlab/-/issues/15079)
 
 NOTE: **Note:**
 With 8.12 GitLab added LFS support to SSH. The Git LFS communication

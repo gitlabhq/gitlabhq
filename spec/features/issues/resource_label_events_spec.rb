@@ -35,12 +35,12 @@ RSpec.describe 'List issue resource label events', :js do
   context 'when user adds label to the issue' do
     def toggle_labels(labels)
       page.within '.labels' do
-        click_link 'Edit'
+        click_on 'Edit'
         wait_for_requests
 
         labels.each { |label| click_link label }
 
-        click_link 'Edit'
+        click_on 'Edit'
         wait_for_requests
       end
     end

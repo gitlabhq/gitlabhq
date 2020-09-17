@@ -1,8 +1,10 @@
 import $ from 'jquery';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import Vuex from 'vuex';
 import SidebarTimeTracking from './components/time_tracking/sidebar_time_tracking.vue';
 import SidebarAssignees from './components/assignees/sidebar_assignees.vue';
+import SidebarLabels from './components/labels/sidebar_labels.vue';
 import ConfidentialIssueSidebar from './components/confidential/confidential_issue_sidebar.vue';
 import SidebarMoveIssue from './lib/sidebar_move_issue';
 import IssuableLockForm from './components/lock/issuable_lock_form.vue';
@@ -12,11 +14,13 @@ import SidebarSeverity from './components/severity/sidebar_severity.vue';
 import Translate from '../vue_shared/translate';
 import createDefaultClient from '~/lib/graphql';
 import { store } from '~/notes/stores';
-import { isInIssuePage } from '~/lib/utils/common_utils';
+import { isInIssuePage, parseBoolean } from '~/lib/utils/common_utils';
 import mergeRequestStore from '~/mr_notes/stores';
+import labelsSelectModule from '~/vue_shared/components/sidebar/labels_select_vue/store';
 
 Vue.use(Translate);
 Vue.use(VueApollo);
+Vue.use(Vuex);
 
 function getSidebarOptions() {
   return JSON.parse(document.querySelector('.js-sidebar-options').innerHTML);
@@ -49,6 +53,29 @@ function mountAssigneesComponent(mediator) {
           issuableType: isInIssuePage() ? 'issue' : 'merge_request',
         },
       }),
+  });
+}
+
+export function mountSidebarLabels() {
+  const el = document.querySelector('.js-sidebar-labels');
+
+  if (!el) {
+    return false;
+  }
+
+  const labelsStore = new Vuex.Store(labelsSelectModule());
+
+  return new Vue({
+    el,
+    provide: {
+      ...el.dataset,
+      allowLabelCreate: parseBoolean(el.dataset.allowLabelCreate),
+      allowLabelEdit: parseBoolean(el.dataset.canEdit),
+      allowScopedLabels: parseBoolean(el.dataset.allowScopedLabels),
+      initiallySelectedLabels: JSON.parse(el.dataset.selectedLabels),
+    },
+    store: labelsStore,
+    render: createElement => createElement(SidebarLabels),
   });
 }
 

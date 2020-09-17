@@ -1,4 +1,5 @@
 fragment Author on User {
+  id
   avatarUrl
   name
   username

@@ -45,7 +45,7 @@ To bring the former **primary** node up to date:
    all the writes to this node](planned_failover.md#prevent-updates-to-the-primary-node)
    during this procedure.
 
-1. [Setup database replication](../replication/database.md). Note that in this
+1. [Setup database replication](../setup/database.md). Note that in this
    case, **primary** node refers to the current **primary** node, and **secondary** node refers to the
    former **primary** node.
 
