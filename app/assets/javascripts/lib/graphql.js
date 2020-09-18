@@ -31,6 +31,7 @@ export default (resolvers = {}, config = {}) => {
     // We set to `same-origin` which is default value in modern browsers.
     // See https://github.com/whatwg/fetch/pull/585 for more information.
     credentials: 'same-origin',
+    batchMax: config.batchMax || 10,
   };
 
   const uploadsLink = ApolloLink.split(

@@ -1,7 +1,6 @@
 import Vuex from 'vuex';
 import { createLocalVue, shallowMount } from '@vue/test-utils';
-import { GlFormInput } from '@gitlab/ui';
-import LoadingButton from '~/vue_shared/components/loading_button.vue';
+import { GlFormInput, GlButton } from '@gitlab/ui';
 import ErrorTrackingForm from '~/error_tracking_settings/components/error_tracking_form.vue';
 import createStore from '~/error_tracking_settings/store';
 import { defaultProps } from '../mock';
@@ -43,7 +42,7 @@ describe('error tracking settings form', () => {
           .attributes('id'),
       ).toBe('error-tracking-token');
 
-      expect(wrapper.findAll(LoadingButton).exists()).toBe(true);
+      expect(wrapper.findAll(GlButton).exists()).toBe(true);
     });
 
     it('is rendered with labels and placeholders', () => {
@@ -72,9 +71,10 @@ describe('error tracking settings form', () => {
     });
 
     it('shows loading spinner', () => {
-      const { label, loading } = wrapper.find(LoadingButton).props();
-      expect(loading).toBe(true);
-      expect(label).toBe('Connecting');
+      const buttonEl = wrapper.find(GlButton);
+
+      expect(buttonEl.props('loading')).toBe(true);
+      expect(buttonEl.text()).toBe('Connecting');
     });
   });
 

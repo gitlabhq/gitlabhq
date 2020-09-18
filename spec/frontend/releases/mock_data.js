@@ -346,6 +346,14 @@ export const graphqlReleasesResponse = {
             },
           },
         ],
+        pageInfo: {
+          startCursor:
+            'eyJpZCI6IjQ0IiwicmVsZWFzZWRfYXQiOiIyMDMwLTAzLTE1IDA4OjAwOjAwLjAwMDAwMDAwMCBVVEMifQ',
+          hasPreviousPage: false,
+          hasNextPage: true,
+          endCursor:
+            'eyJpZCI6IjMiLCJyZWxlYXNlZF9hdCI6IjIwMjAtMDctMDkgMjA6MTE6MzMuODA0OTYxMDAwIFVUQyJ9',
+        },
       },
     },
   },

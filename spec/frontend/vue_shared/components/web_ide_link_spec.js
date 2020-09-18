@@ -60,6 +60,7 @@ describe('Web IDE link component', () => {
   it.each`
     props                                                                        | expectedActions
     ${{}}                                                                        | ${[ACTION_WEB_IDE]}
+    ${{ webIdeIsFork: true }}                                                    | ${[{ ...ACTION_WEB_IDE, text: 'Edit fork in Web IDE' }]}
     ${{ needsToFork: true }}                                                     | ${[ACTION_WEB_IDE_FORK]}
     ${{ showWebIdeButton: false, showGitpodButton: true, gitpodEnabled: true }}  | ${[ACTION_GITPOD]}
     ${{ showWebIdeButton: false, showGitpodButton: true, gitpodEnabled: false }} | ${[ACTION_GITPOD_ENABLE]}

@@ -113,9 +113,10 @@ export default function setupVueRepositoryList() {
   const webIdeLinkEl = document.getElementById('js-tree-web-ide-link');
 
   if (webIdeLinkEl) {
-    const { ideBasePath, ...options } = convertObjectPropsToCamelCase(
-      JSON.parse(webIdeLinkEl.dataset.options),
-    );
+    const {
+      webIdeUrlData: { path: ideBasePath, isFork: webIdeIsFork },
+      ...options
+    } = convertObjectPropsToCamelCase(JSON.parse(webIdeLinkEl.dataset.options), { deep: true });
 
     // eslint-disable-next-line no-new
     new Vue({
@@ -127,6 +128,7 @@ export default function setupVueRepositoryList() {
             webIdeUrl: webIDEUrl(
               joinPaths('/', ideBasePath, 'edit', ref, '-', this.$route.params.path || '', '/'),
             ),
+            webIdeIsFork,
             ...options,
           },
         });

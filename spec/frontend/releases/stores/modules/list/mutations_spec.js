@@ -2,15 +2,22 @@ import createState from '~/releases/stores/modules/list/state';
 import mutations from '~/releases/stores/modules/list/mutations';
 import * as types from '~/releases/stores/modules/list/mutation_types';
 import { parseIntPagination } from '~/lib/utils/common_utils';
-import { pageInfoHeadersWithoutPagination, releases } from '../../../mock_data';
+import {
+  pageInfoHeadersWithoutPagination,
+  releases,
+  graphqlReleasesResponse,
+} from '../../../mock_data';
+import { convertGraphQLResponse } from '~/releases/util';
 
 describe('Releases Store Mutations', () => {
   let stateCopy;
-  let pageInfo;
+  let restPageInfo;
+  let graphQlPageInfo;
 
   beforeEach(() => {
     stateCopy = createState({});
-    pageInfo = parseIntPagination(pageInfoHeadersWithoutPagination);
+    restPageInfo = parseIntPagination(pageInfoHeadersWithoutPagination);
+    graphQlPageInfo = convertGraphQLResponse(graphqlReleasesResponse).paginationInfo;
   });
 
   describe('REQUEST_RELEASES', () => {
@@ -23,7 +30,11 @@ describe('Releases Store Mutations', () => {
 
   describe('RECEIVE_RELEASES_SUCCESS', () => {
     beforeEach(() => {
-      mutations[types.RECEIVE_RELEASES_SUCCESS](stateCopy, { pageInfo, data: releases });
+      mutations[types.RECEIVE_RELEASES_SUCCESS](stateCopy, {
+        restPageInfo,
+        graphQlPageInfo,
+        data: releases,
+      });
     });
 
     it('sets is loading to false', () => {
@@ -38,18 +49,29 @@ describe('Releases Store Mutations', () => {
       expect(stateCopy.releases).toEqual(releases);
     });
 
-    it('sets pageInfo', () => {
-      expect(stateCopy.pageInfo).toEqual(pageInfo);
+    it('sets restPageInfo', () => {
+      expect(stateCopy.restPageInfo).toEqual(restPageInfo);
+    });
+
+    it('sets graphQlPageInfo', () => {
+      expect(stateCopy.graphQlPageInfo).toEqual(graphQlPageInfo);
     });
   });
 
   describe('RECEIVE_RELEASES_ERROR', () => {
     it('resets data', () => {
+      mutations[types.RECEIVE_RELEASES_SUCCESS](stateCopy, {
+        restPageInfo,
+        graphQlPageInfo,
+        data: releases,
+      });
+
       mutations[types.RECEIVE_RELEASES_ERROR](stateCopy);
 
       expect(stateCopy.isLoading).toEqual(false);
       expect(stateCopy.releases).toEqual([]);
-      expect(stateCopy.pageInfo).toEqual({});
+      expect(stateCopy.restPageInfo).toEqual({});
+      expect(stateCopy.graphQlPageInfo).toEqual({});
     });
   });
 });

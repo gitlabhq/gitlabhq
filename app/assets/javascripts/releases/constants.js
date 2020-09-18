@@ -10,3 +10,5 @@ export const ASSET_LINK_TYPE = Object.freeze({
 });
 
 export const DEFAULT_ASSET_LINK_TYPE = ASSET_LINK_TYPE.OTHER;
+
+export const PAGE_SIZE = 20;

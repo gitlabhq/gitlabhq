@@ -15,7 +15,13 @@ export default {
   props: {
     webIdeUrl: {
       type: String,
-      required: true,
+      required: false,
+      default: '',
+    },
+    webIdeIsFork: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
     needsToFork: {
       type: Boolean,
@@ -61,9 +67,11 @@ export default {
         ? { href: '#modal-confirm-fork', handle: () => this.showModal('#modal-confirm-fork') }
         : { href: this.webIdeUrl };
 
+      const text = this.webIdeIsFork ? __('Edit fork in Web IDE') : __('Web IDE');
+
       return {
         key: KEY_WEB_IDE,
-        text: __('Web IDE'),
+        text,
         secondaryText: __('Quickly and easily edit multiple files in your project.'),
         tooltip: '',
         attrs: {

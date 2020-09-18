@@ -1,0 +1,7 @@
+---
+name: database_reindexing
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/42705
+rollout_issue_url:
+group: group::database
+type: ops
+default_enabled: false

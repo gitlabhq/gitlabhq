@@ -9233,6 +9233,9 @@ msgstr ""
 msgid "Edit files in the editor and commit changes here"
 msgstr ""
 
+msgid "Edit fork in Web IDE"
+msgstr ""
+
 msgid "Edit group: %{group_name}"
 msgstr ""
 

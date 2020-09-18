@@ -162,7 +162,7 @@ module Projects
 
         if @project.save
           unless @project.gitlab_project_import?
-            create_services_from_active_instances_or_templates(@project)
+            create_services_from_active_default_integrations_or_templates(@project)
             @project.create_labels
           end
 
@@ -229,13 +229,24 @@ module Projects
     private
 
     # rubocop: disable CodeReuse/ActiveRecord
-    def create_services_from_active_instances_or_templates(project)
-      Service.active.where(instance: true).or(Service.active.where(template: true)).group_by(&:type).each do |type, records|
-        service = records.find(&:instance?) || records.find(&:template?)
-        Service.build_from_integration(project.id, service).save!
+    def create_services_from_active_default_integrations_or_templates(project)
+      group_ids = project.ancestors.select(:id)
+
+      Service.from_union([
+        Service.active.where(instance: true),
+        Service.active.where(template: true),
+        Service.active.where(group_id: group_ids)
+      ]).order(by_type_group_ids_and_instance(group_ids)).group_by(&:type).each do |type, records|
+        Service.build_from_integration(project.id, records.first).save!
       end
     end
     # rubocop: enable CodeReuse/ActiveRecord
+
+    def by_type_group_ids_and_instance(group_ids)
+      array = group_ids.to_sql.present? ? "array(#{group_ids.to_sql})" : 'ARRAY[]'
+
+      Arel.sql("type ASC, array_position(#{array}::bigint[], services.group_id), instance DESC")
+    end
 
     def project_namespace
       @project_namespace ||= Namespace.find_by_id(@params[:namespace_id]) || current_user.namespace

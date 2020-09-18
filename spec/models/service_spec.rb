@@ -327,8 +327,18 @@ RSpec.describe Service do
         end
       end
 
-      context 'when integration is an instance' do
+      context 'when integration is an instance-level integration' do
         let(:integration) { create(:jira_service, :instance) }
+
+        it 'sets inherit_from_id from integration' do
+          service = described_class.build_from_integration(project.id, integration)
+
+          expect(service.inherit_from_id).to eq(integration.id)
+        end
+      end
+
+      context 'when integration is a group-level integration' do
+        let(:integration) { create(:jira_service, group: group, project: nil) }
 
         it 'sets inherit_from_id from integration' do
           service = described_class.build_from_integration(project.id, integration)
@@ -360,6 +370,8 @@ RSpec.describe Service do
             expect(service.password).to eq(password)
             expect(service.template).to eq(false)
             expect(service.instance).to eq(false)
+            expect(service.project).to eq(project)
+            expect(service.group).to eq(nil)
           end
         end
 

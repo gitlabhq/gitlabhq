@@ -20,9 +20,9 @@ describe('~/releases/components/releases_pagination_rest.vue', () => {
   const createComponent = pageInfo => {
     listModule = createListModule({ projectId });
 
-    listModule.state.pageInfo = pageInfo;
+    listModule.state.restPageInfo = pageInfo;
 
-    listModule.actions.fetchReleasesRest = jest.fn();
+    listModule.actions.fetchReleases = jest.fn();
 
     wrapper = mount(ReleasesPaginationRest, {
       store: createStore({
@@ -57,8 +57,8 @@ describe('~/releases/components/releases_pagination_rest.vue', () => {
       findGlPagination().vm.$emit('input', newPage);
     });
 
-    it('calls fetchReleasesRest with the correct page', () => {
-      expect(listModule.actions.fetchReleasesRest.mock.calls).toEqual([
+    it('calls fetchReleases with the correct page', () => {
+      expect(listModule.actions.fetchReleases.mock.calls).toEqual([
         [expect.anything(), { page: newPage }],
       ]);
     });

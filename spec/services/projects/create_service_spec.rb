@@ -487,24 +487,67 @@ RSpec.describe Projects::CreateService, '#execute' do
   describe 'create service for the project' do
     subject(:project) { create_project(user, opts) }
 
-    context 'when there is an active instance-level and an active template integration' do
-      let!(:template_integration) { create(:prometheus_service, :template, api_url: 'https://prometheus.template.com/') }
-      let!(:instance_integration) { create(:prometheus_service, :instance, api_url: 'https://prometheus.instance.com/') }
-
-      it 'creates a service from the instance-level integration' do
-        expect(project.services.count).to eq(1)
-        expect(project.services.first.api_url).to eq(instance_integration.api_url)
-        expect(project.services.first.inherit_from_id).to eq(instance_integration.id)
-      end
-    end
-
-    context 'when there is an active service template' do
+    context 'with an active service template' do
       let!(:template_integration) { create(:prometheus_service, :template, api_url: 'https://prometheus.template.com/') }
 
       it 'creates a service from the template' do
         expect(project.services.count).to eq(1)
         expect(project.services.first.api_url).to eq(template_integration.api_url)
         expect(project.services.first.inherit_from_id).to be_nil
+      end
+
+      context 'with an active instance-level integration' do
+        let!(:instance_integration) { create(:prometheus_service, :instance, api_url: 'https://prometheus.instance.com/') }
+
+        it 'creates a service from the instance-level integration' do
+          expect(project.services.count).to eq(1)
+          expect(project.services.first.api_url).to eq(instance_integration.api_url)
+          expect(project.services.first.inherit_from_id).to eq(instance_integration.id)
+        end
+
+        context 'with an active group-level integration' do
+          let!(:group_integration) { create(:prometheus_service, group: group, project: nil, api_url: 'https://prometheus.group.com/') }
+          let!(:group) do
+            create(:group).tap do |group|
+              group.add_owner(user)
+            end
+          end
+
+          let(:opts) do
+            {
+              name: 'GitLab',
+              namespace_id: group.id
+            }
+          end
+
+          it 'creates a service from the group-level integration' do
+            expect(project.services.count).to eq(1)
+            expect(project.services.first.api_url).to eq(group_integration.api_url)
+            expect(project.services.first.inherit_from_id).to eq(group_integration.id)
+          end
+
+          context 'with an active subgroup' do
+            let!(:subgroup_integration) { create(:prometheus_service, group: subgroup, project: nil, api_url: 'https://prometheus.subgroup.com/') }
+            let!(:subgroup) do
+              create(:group, parent: group).tap do |subgroup|
+                subgroup.add_owner(user)
+              end
+            end
+
+            let(:opts) do
+              {
+                name: 'GitLab',
+                namespace_id: subgroup.id
+              }
+            end
+
+            it 'creates a service from the group-level integration' do
+              expect(project.services.count).to eq(1)
+              expect(project.services.first.api_url).to eq(subgroup_integration.api_url)
+              expect(project.services.first.inherit_from_id).to eq(subgroup_integration.id)
+            end
+          end
+        end
       end
     end
 
