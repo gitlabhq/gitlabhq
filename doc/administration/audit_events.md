@@ -183,6 +183,7 @@ the steps bellow.
 
 CAUTION: **Warning:**
 This feature might not be available to you. Check the **version history** note above for details.
+If available, you can enable it with a [feature flag](#enable-or-disable-audit-log-export-to-csv).
 
 Export to CSV allows customers to export the current filter view of your audit log as a
 CSV file,

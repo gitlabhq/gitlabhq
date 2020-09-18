@@ -8,8 +8,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/223061) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.4.
 
-## Goals
-
 The [GitLab Kubernetes Agent](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent) is an active in-cluster component for solving GitLab and Kubernetes integration tasks in a secure and cloud native way.
 
 Features:

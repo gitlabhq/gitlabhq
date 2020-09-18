@@ -39,6 +39,7 @@ exports[`User Operation confirmation modal renders modal with form included 1`] 
     />
   </form>
   <gl-button-stub
+    buttontextclasses=""
     category="primary"
     icon=""
     size="medium"
@@ -48,6 +49,7 @@ exports[`User Operation confirmation modal renders modal with form included 1`] 
   </gl-button-stub>
    
   <gl-button-stub
+    buttontextclasses=""
     category="primary"
     disabled="true"
     icon=""
@@ -60,6 +62,7 @@ exports[`User Operation confirmation modal renders modal with form included 1`] 
   </gl-button-stub>
    
   <gl-button-stub
+    buttontextclasses=""
     category="primary"
     disabled="true"
     icon=""

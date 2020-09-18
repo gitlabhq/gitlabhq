@@ -44,7 +44,7 @@ best place to integrate your own product and its results into GitLab.
 - If certain policies (such as [merge request approvals](../../user/project/merge_requests/merge_request_approvals.md))
   are in place for a project, developers must resolve specific findings or get
   an approval from a specific list of people.
-- The [security dashboard](../../user/application_security/security_dashboard/index.md#gitlab-security-dashboard)
+- The [security dashboard](../../user/application_security/security_dashboard/index.md)
   also shows results which can developers can use to quickly see all the
   vulnerabilities that need to be addressed in the code.
 - When the developer reads the details about a vulnerability, they are

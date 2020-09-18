@@ -159,6 +159,7 @@ The following table depicts the various user permission levels in a project.
 | Remove fork relationship                          |         |            |             |          | ✓      |
 | Delete project                                    |         |            |             |          | ✓      |
 | Archive project                                   |         |            |             |          | ✓      |
+| Export project                                    |         |            |             | ✓        | ✓      |
 | Delete issues                                     |         |            |             |          | ✓      |
 | Delete pipelines                                  |         |            |             |          | ✓      |
 | Delete merge request                              |         |            |             |          | ✓      |

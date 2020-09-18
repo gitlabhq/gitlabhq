@@ -76,6 +76,7 @@ describe('DiffFileHeader component', () => {
   const findReplacedFileButton = () => wrapper.find({ ref: 'replacedFileButton' });
   const findViewFileButton = () => wrapper.find({ ref: 'viewButton' });
   const findCollapseIcon = () => wrapper.find({ ref: 'collapseIcon' });
+  const hasZDropdownMenuClass = () => wrapper.classes('gl-z-dropdown-menu!');
 
   const findIconByName = iconName => {
     const icons = wrapper.findAll(GlIcon).filter(w => w.props('name') === iconName);
@@ -149,6 +150,10 @@ describe('DiffFileHeader component', () => {
   it('displays a copy to clipboard button', () => {
     createComponent();
     expect(wrapper.find(ClipboardButton).exists()).toBe(true);
+  });
+
+  it('should not have z dropdown menu class', () => {
+    expect(hasZDropdownMenuClass()).toBe(false);
   });
 
   describe('for submodule', () => {
@@ -301,6 +306,27 @@ describe('DiffFileHeader component', () => {
           addMergeRequestButtons: true,
         });
         expect(wrapper.find(EditButton).exists()).toBe(true);
+      });
+
+      describe('when edit button opens', () => {
+        beforeEach(async () => {
+          createComponent({ addMergeRequestButtons: true });
+          wrapper.find(EditButton).vm.$emit('open');
+
+          await wrapper.vm.$nextTick();
+        });
+
+        it('should add z dropdown menu class when edit button opens', async () => {
+          expect(hasZDropdownMenuClass()).toBe(true);
+        });
+
+        it('when closes again, should remove class', async () => {
+          wrapper.find(EditButton).vm.$emit('close');
+
+          await wrapper.vm.$nextTick();
+
+          expect(hasZDropdownMenuClass()).toBe(false);
+        });
       });
 
       describe('view on environment button', () => {

@@ -18,6 +18,7 @@ exports[`IncidentsSettingTabs should render the component 1`] = `
     </h4>
      
     <gl-button-stub
+      buttontextclasses=""
       category="primary"
       class="js-settings-toggle"
       icon=""

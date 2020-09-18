@@ -164,18 +164,18 @@ describe('Clusters', () => {
       });
 
       it.each`
-        nodeSize     | lineNumber
-        ${'Unknown'} | ${0}
-        ${'1'}       | ${1}
-        ${'2'}       | ${2}
-        ${'1'}       | ${3}
-        ${'1'}       | ${4}
-        ${'Unknown'} | ${5}
-      `('renders node size for each cluster', ({ nodeSize, lineNumber }) => {
+        nodeText                    | lineNumber
+        ${'Unable to Authenticate'} | ${0}
+        ${'1'}                      | ${1}
+        ${'2'}                      | ${2}
+        ${'1'}                      | ${3}
+        ${'1'}                      | ${4}
+        ${'Unknown Error'}          | ${5}
+      `('renders node size for each cluster', ({ nodeText, lineNumber }) => {
         const sizes = findTable().findAll('td:nth-child(3)');
         const size = sizes.at(lineNumber);
 
-        expect(size.text()).toBe(nodeSize);
+        expect(size.text()).toContain(nodeText);
         expect(size.find(GlSkeletonLoading).exists()).toBe(false);
       });
     });

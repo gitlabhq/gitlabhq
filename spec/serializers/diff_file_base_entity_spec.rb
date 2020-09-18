@@ -3,9 +3,23 @@
 require 'spec_helper'
 
 RSpec.describe DiffFileBaseEntity do
-  let(:project) { create(:project, :repository) }
+  include ProjectForksHelper
+
+  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:user) { create(:user) }
+
   let(:repository) { project.repository }
   let(:entity) { described_class.new(diff_file, options).as_json }
+
+  shared_examples 'nil if removed source branch' do |key|
+    before do
+      allow(merge_request).to receive(:source_branch_exists?).and_return(false)
+    end
+
+    specify do
+      expect(entity[key]).to eq(nil)
+    end
+  end
 
   context 'submodule information for a' do
     let(:commit_sha) { "" }
@@ -67,7 +81,7 @@ RSpec.describe DiffFileBaseEntity do
 
   context 'edit_path' do
     let(:diff_file) { merge_request.diffs.diff_files.to_a.last }
-    let(:options) { { request: EntityRequest.new(current_user: create(:user)), merge_request: merge_request } }
+    let(:options) { { request: EntityRequest.new(current_user: user), merge_request: merge_request } }
     let(:params) { {} }
 
     shared_examples 'a diff file edit path to the source branch' do
@@ -81,16 +95,7 @@ RSpec.describe DiffFileBaseEntity do
       let(:params) { { from_merge_request_iid: merge_request.iid } }
 
       it_behaves_like 'a diff file edit path to the source branch'
-
-      context 'removed source branch' do
-        before do
-          allow(merge_request).to receive(:source_branch_exists?).and_return(false)
-        end
-
-        it do
-          expect(entity[:edit_path]).to eq(nil)
-        end
-      end
+      it_behaves_like 'nil if removed source branch', :edit_path
     end
 
     context 'closed' do
@@ -115,6 +120,32 @@ RSpec.describe DiffFileBaseEntity do
 
       it do
         expect(entity[:edit_path]).to eq(Gitlab::Routing.url_helpers.project_edit_blob_path(project, File.join(merge_request.target_branch, diff_file.new_path), {}))
+      end
+    end
+  end
+
+  context 'ide_edit_path' do
+    let(:source_project) { project }
+    let(:merge_request) { create(:merge_request, iid: 123, target_project: target_project, source_project: source_project) }
+    let(:diff_file) { merge_request.diffs.diff_files.to_a.last }
+    let(:options) { { request: EntityRequest.new(current_user: user), merge_request: merge_request } }
+    let(:expected_merge_request_path) { "/-/ide/project/#{source_project.full_path}/merge_requests/#{merge_request.iid}" }
+
+    context 'when source_project and target_project are the same' do
+      let(:target_project) { source_project }
+
+      it_behaves_like 'nil if removed source branch', :ide_edit_path
+
+      it 'returns the merge_request ide route' do
+        expect(entity[:ide_edit_path]).to eq expected_merge_request_path
+      end
+    end
+
+    context 'when source_project and target_project are different' do
+      let(:target_project) { fork_project(source_project, source_project.owner, repository: true) }
+
+      it 'returns the merge_request ide route with the target_project as param' do
+        expect(entity[:ide_edit_path]).to eq("#{expected_merge_request_path}?target_project=#{ERB::Util.url_encode(target_project.full_path)}")
       end
     end
   end

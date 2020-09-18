@@ -69,6 +69,11 @@ export default {
       default: false,
     },
   },
+  data() {
+    return {
+      hasDropdownOpen: false,
+    };
+  },
   computed: {
     ...mapGetters('diffs', ['diffHasExpandedDiscussions', 'diffHasDiscussions']),
     diffContentIDSelector() {
@@ -179,6 +184,9 @@ export default {
         }
       }
     },
+    setDropdownOpen(val) {
+      this.hasDropdownOpen = val;
+    },
   },
 };
 </script>
@@ -187,6 +195,7 @@ export default {
   <div
     ref="header"
     class="js-file-title file-title file-title-flex-parent"
+    :class="{ 'gl-z-dropdown-menu!': hasDropdownOpen }"
     @click.self="handleToggleFile"
   >
     <div class="file-header-content">
@@ -273,11 +282,14 @@ export default {
             v-if="!diffFile.deleted_file"
             :can-current-user-fork="canCurrentUserFork"
             :edit-path="diffFile.edit_path"
+            :ide-edit-path="diffFile.ide_edit_path"
             :can-modify-blob="diffFile.can_modify_blob"
             data-track-event="click_toggle_edit_button"
             data-track-label="diff_toggle_edit_button"
             data-track-property="diff_toggle_edit"
             @showForkMessage="showForkMessage"
+            @open="setDropdownOpen(true)"
+            @close="setDropdownOpen(false)"
           />
         </template>
 

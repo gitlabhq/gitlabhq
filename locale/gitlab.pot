@@ -5374,6 +5374,9 @@ msgstr ""
 msgid "ClusterIntegration|An error occurred while trying to fetch zone machine types: %{error}"
 msgstr ""
 
+msgid "ClusterIntegration|An unknown error occurred while attempting to connect to Kubernetes."
+msgstr ""
+
 msgid "ClusterIntegration|Any project namespaces"
 msgstr ""
 
@@ -5387,6 +5390,9 @@ msgid "ClusterIntegration|Authenticate with AWS"
 msgstr ""
 
 msgid "ClusterIntegration|Authenticate with Amazon Web Services"
+msgstr ""
+
+msgid "ClusterIntegration|Authentication Error"
 msgstr ""
 
 msgid "ClusterIntegration|Base domain"
@@ -5405,6 +5411,15 @@ msgid "ClusterIntegration|Cert-Manager is a native Kubernetes certificate manage
 msgstr ""
 
 msgid "ClusterIntegration|Certificate Authority bundle (PEM format)"
+msgstr ""
+
+msgid "ClusterIntegration|Check your CA certificate"
+msgstr ""
+
+msgid "ClusterIntegration|Check your cluster status"
+msgstr ""
+
+msgid "ClusterIntegration|Check your token"
 msgstr ""
 
 msgid "ClusterIntegration|Choose the %{startLink}security group %{externalLinkIcon} %{endLink} to apply to the EKS-managed Elastic Network Interfaces that are created in your worker node subnets."
@@ -5447,6 +5462,9 @@ msgid "ClusterIntegration|Clusters are utilized by selecting the nearest ancesto
 msgstr ""
 
 msgid "ClusterIntegration|Connect existing cluster"
+msgstr ""
+
+msgid "ClusterIntegration|Connection Error"
 msgstr ""
 
 msgid "ClusterIntegration|Copy API URL"
@@ -5605,6 +5623,12 @@ msgstr ""
 msgid "ClusterIntegration|GitLab Runner connects to the repository and executes CI/CD jobs, pushing results back and deploying applications to production."
 msgstr ""
 
+msgid "ClusterIntegration|GitLab failed to authenticate."
+msgstr ""
+
+msgid "ClusterIntegration|GitLab failed to connect to the cluster."
+msgstr ""
+
 msgid "ClusterIntegration|GitLab-managed cluster"
 msgstr ""
 
@@ -5624,6 +5648,9 @@ msgid "ClusterIntegration|Google Kubernetes Engine project"
 msgstr ""
 
 msgid "ClusterIntegration|Group cluster"
+msgstr ""
+
+msgid "ClusterIntegration|HTTP Error"
 msgstr ""
 
 msgid "ClusterIntegration|Helm Tiller"
@@ -5770,6 +5797,9 @@ msgstr ""
 msgid "ClusterIntegration|Machine type"
 msgstr ""
 
+msgid "ClusterIntegration|Make sure your API endpoint is correct"
+msgstr ""
+
 msgid "ClusterIntegration|Make sure your account %{link_to_requirements} to create Kubernetes clusters"
 msgstr ""
 
@@ -5819,6 +5849,9 @@ msgid "ClusterIntegration|No subnetworks found"
 msgstr ""
 
 msgid "ClusterIntegration|No zones matched your search"
+msgstr ""
+
+msgid "ClusterIntegration|Node calculations use the Kubernetes Metrics API. Make sure your cluster has metrics installed"
 msgstr ""
 
 msgid "ClusterIntegration|Number of nodes"
@@ -6088,6 +6121,9 @@ msgstr ""
 msgid "ClusterIntegration|There was a problem authenticating with your cluster. Please ensure your CA Certificate and Token are valid."
 msgstr ""
 
+msgid "ClusterIntegration|There was an HTTP error when connecting to your cluster."
+msgstr ""
+
 msgid "ClusterIntegration|This account must have permissions to create a Kubernetes cluster in the %{link_to_container_project} specified below"
 msgstr ""
 
@@ -6115,7 +6151,19 @@ msgstr ""
 msgid "ClusterIntegration|To use a new project, first create one on %{docsLinkStart}Google Cloud Platform%{docsLinkEnd}."
 msgstr ""
 
+msgid "ClusterIntegration|Troubleshooting tips:"
+msgstr ""
+
+msgid "ClusterIntegration|Unable to Authenticate"
+msgstr ""
+
+msgid "ClusterIntegration|Unable to Connect"
+msgstr ""
+
 msgid "ClusterIntegration|Uninstall %{appTitle}"
+msgstr ""
+
+msgid "ClusterIntegration|Unknown Error"
 msgstr ""
 
 msgid "ClusterIntegration|Update %{appTitle}"
@@ -9228,7 +9276,7 @@ msgstr ""
 msgid "Edit environment"
 msgstr ""
 
-msgid "Edit file"
+msgid "Edit file in..."
 msgstr ""
 
 msgid "Edit files in the editor and commit changes here"
@@ -9241,6 +9289,12 @@ msgid "Edit group: %{group_name}"
 msgstr ""
 
 msgid "Edit identity for %{user_name}"
+msgstr ""
+
+msgid "Edit in Web IDE"
+msgstr ""
+
+msgid "Edit in single-file editor"
 msgstr ""
 
 msgid "Edit issues"

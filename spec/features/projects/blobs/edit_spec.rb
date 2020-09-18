@@ -23,6 +23,19 @@ RSpec.describe 'Editing file blob', :js do
     def edit_and_commit(commit_changes: true)
       wait_for_requests
       find('.js-edit-blob').click
+
+      fill_and_commit(commit_changes)
+    end
+
+    def mr_edit_and_commit(commit_changes: true)
+      wait_for_requests
+      find('[data-testid="edit_file"]').click
+      click_link 'Edit in single-file editor'
+
+      fill_and_commit(commit_changes)
+    end
+
+    def fill_and_commit(commit_changes)
       fill_editor(content: 'class NextFeature\\nend\\n')
 
       if commit_changes
@@ -38,7 +51,7 @@ RSpec.describe 'Editing file blob', :js do
     context 'from MR diff' do
       before do
         visit diffs_project_merge_request_path(project, merge_request)
-        edit_and_commit
+        mr_edit_and_commit
       end
 
       it 'returns me to the mr' do

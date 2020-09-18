@@ -110,6 +110,7 @@ exports[`Design management index page designs renders designs list and header wi
         class="qa-selector-toolbar gl-display-flex gl-align-items-center"
       >
         <gl-button-stub
+          buttontextclasses=""
           category="primary"
           class="gl-mr-4 js-select-all"
           icon=""

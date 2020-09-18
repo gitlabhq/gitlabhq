@@ -84,7 +84,37 @@ export default {
       required: false,
       default: false,
     },
-    // This prop is used as a fallback in case if textarea.elm is undefined
+
+    /**
+     * This prop is used as a fallback if the value of the textarea can't be
+     * retreived using `this.$slots.textarea[0]?.elm?`.
+     *
+     * This happens when the `textarea` slot is defined like this:
+     *
+     * ```html
+     * <markdown-field>
+     *    <template #textarea>
+     *      <textarea></textarea>
+     *    </template>
+     *  </markdown-field>
+     * ```
+     *
+     * ... as opposed to this:
+     *
+     * ```html
+     * <markdown-field>
+     *   <textarea slot="textarea">
+     * </markdown-field>
+     * ```
+     *
+     * When using `<template #textarea>` as shown above in example #1,
+     * it's important to **always** provide a value to this prop.
+     * If `textareaValue` isn't provided, this component will not
+     * show a preview when the "Preview" tab is clicked - it
+     * will always show "Nothing to preview."
+     *
+     * For more info, see https://github.com/vuejs/vue/issues/10450.
+     */
     textareaValue: {
       type: String,
       required: false,

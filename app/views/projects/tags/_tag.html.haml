@@ -24,7 +24,7 @@
       .text-secondary
         = sprite_icon("rocket", size: 12)
         = _("Release")
-        = link_to release.name, project_releases_path(@project, anchor: release.tag), class: 'tag-release-link'
+        = link_to release.name, project_releases_path(@project, anchor: release.tag), class: 'gl-text-blue-600!'
       - if release.description.present?
         .md.gl-mt-3
           = markdown_field(release, :description)

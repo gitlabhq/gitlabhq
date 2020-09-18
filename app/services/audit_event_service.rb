@@ -53,7 +53,6 @@ class AuditEventService
 
   private
 
-  attr_accessor :authentication_event
   attr_reader :ip_address
 
   def build_author(author)
@@ -99,11 +98,11 @@ class AuditEventService
   end
 
   def mark_as_authentication_event!
-    self.authentication_event = true
+    @authentication_event = true
   end
 
   def authentication_event?
-    authentication_event
+    @authentication_event
   end
 
   def log_security_event_to_database

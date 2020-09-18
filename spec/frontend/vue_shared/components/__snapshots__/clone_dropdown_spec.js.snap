@@ -39,6 +39,7 @@ exports[`Clone Dropdown Button rendering matches the snapshot 1`] = `
             tag="div"
           >
             <gl-button-stub
+              buttontextclasses=""
               category="primary"
               class="d-inline-flex"
               data-clipboard-text="ssh://foo.bar"
@@ -80,6 +81,7 @@ exports[`Clone Dropdown Button rendering matches the snapshot 1`] = `
             tag="div"
           >
             <gl-button-stub
+              buttontextclasses=""
               category="primary"
               class="d-inline-flex"
               data-clipboard-text="http://foo.bar"

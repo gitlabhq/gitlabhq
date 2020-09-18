@@ -26,7 +26,10 @@ RSpec.describe 'a maintainer edits files on a source-branch of an MR from a fork
     visit project_merge_request_path(target_project, merge_request)
     click_link 'Changes'
     wait_for_requests
-    first('.js-file-title').find('.js-edit-blob').click
+    within first('.js-file-title') do
+      find('[data-testid="edit_file"]').click
+      click_link 'Edit in single-file editor'
+    end
     wait_for_requests
   end
 

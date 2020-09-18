@@ -108,6 +108,24 @@ RSpec.describe 'User creates release', :js do
     end
   end
 
+  context 'when the release notes "Preview" tab is clicked' do
+    before do
+      find_field('Release notes').click
+
+      fill_release_notes('**some** _markdown_ [content](https://example.com)')
+
+      click_on 'Preview'
+
+      wait_for_all_requests
+    end
+
+    it 'renders a preview of the release notes markdown' do
+      within('[data-testid="release-notes"]') do
+        expect(page).to have_text('some markdown content')
+      end
+    end
+  end
+
   def fill_out_form_and_submit
     fill_tag_name(tag_name)
 
