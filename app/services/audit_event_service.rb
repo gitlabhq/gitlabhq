@@ -25,6 +25,8 @@ class AuditEventService
   #
   # @return [AuditEventService]
   def for_authentication
+    mark_as_authentication_event!
+
     @details = {
       with: @details[:with],
       target_id: @author.id,
@@ -40,6 +42,7 @@ class AuditEventService
   # @return [AuditEvent] persited if saves and non-persisted if fails
   def security_event
     log_security_event_to_file
+    log_authentication_event_to_database
     log_security_event_to_database
   end
 
@@ -50,6 +53,7 @@ class AuditEventService
 
   private
 
+  attr_accessor :authentication_event
   attr_reader :ip_address
 
   def build_author(author)
@@ -70,6 +74,22 @@ class AuditEventService
     }
   end
 
+  def authentication_event_payload
+    {
+      # @author can be a User or various Gitlab::Audit authors.
+      # Only capture real users for successful authentication events.
+      user: author_if_user,
+      user_name: @author.name,
+      ip_address: ip_address,
+      result: AuthenticationEvent.results[:success],
+      provider: @details[:with]
+    }
+  end
+
+  def author_if_user
+    @author if @author.is_a?(User)
+  end
+
   def file_logger
     @file_logger ||= Gitlab::AuditJsonLogger.build
   end
@@ -78,10 +98,24 @@ class AuditEventService
     @details.merge(@details.slice(:from, :to).transform_values(&:to_s))
   end
 
+  def mark_as_authentication_event!
+    self.authentication_event = true
+  end
+
+  def authentication_event?
+    authentication_event
+  end
+
   def log_security_event_to_database
     return if Gitlab::Database.read_only?
 
     AuditEvent.create(base_payload.merge(details: @details))
+  end
+
+  def log_authentication_event_to_database
+    return unless Gitlab::Database.read_write? && authentication_event?
+
+    AuthenticationEvent.create(authentication_event_payload)
   end
 end
 

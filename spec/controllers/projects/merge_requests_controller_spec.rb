@@ -123,6 +123,16 @@ RSpec.describe Projects::MergeRequestsController do
         expect(response).to be_successful
       end
 
+      it 'logs the view with Gitlab::Search::RecentMergeRequests' do
+        recent_merge_requests_double = instance_double(::Gitlab::Search::RecentMergeRequests, log_view: nil)
+        expect(::Gitlab::Search::RecentMergeRequests).to receive(:new).with(user: user).and_return(recent_merge_requests_double)
+
+        go(format: :html)
+
+        expect(response).to be_successful
+        expect(recent_merge_requests_double).to have_received(:log_view).with(merge_request)
+      end
+
       context "that is invalid" do
         let(:merge_request) { create(:invalid_merge_request, target_project: project, source_project: project) }
 

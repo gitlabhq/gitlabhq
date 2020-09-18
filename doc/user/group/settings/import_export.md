@@ -94,7 +94,7 @@ on an existing group's page.
 
 1. On the New Group page, select the **Import group** tab.
 
-   ![Fill in group details](img/import_panel_v13_1.png)
+   ![Fill in group details](img/import_panel_v13_4.png)
 
 1. Enter your group name.
 

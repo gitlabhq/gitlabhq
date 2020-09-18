@@ -32,7 +32,7 @@ RSpec.describe 'Import/Export - Group Import', :js do
         fill_in :group_name, with: group_name
         find('#import-group-tab').click
 
-        expect(page).to have_content 'GitLab group export'
+        expect(page).to have_content 'Import a GitLab group export file'
         attach_file(file) do
           find('.js-filepicker-button').click
         end

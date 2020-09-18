@@ -7,6 +7,7 @@ module SearchHelper
     return unless current_user
 
     resources_results = [
+      recent_merge_requests_autocomplete(term),
       recent_issues_autocomplete(term),
       groups_autocomplete(term),
       projects_autocomplete(term)
@@ -176,6 +177,20 @@ module SearchHelper
         label: "#{search_result_sanitize(p.full_name)}",
         url: project_path(p),
         avatar_url: p.avatar_url || ''
+      }
+    end
+  end
+
+  def recent_merge_requests_autocomplete(term, limit = 5)
+    return [] unless current_user
+
+    ::Gitlab::Search::RecentMergeRequests.new(user: current_user).search(term).limit(limit).map do |mr|
+      {
+        category: "Recent merge requests",
+        id: mr.id,
+        label: search_result_sanitize(mr.title),
+        url: merge_request_path(mr),
+        avatar_url: mr.project.avatar_url || ''
       }
     end
   end

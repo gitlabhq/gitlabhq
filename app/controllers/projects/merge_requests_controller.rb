@@ -50,6 +50,8 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
   around_action :allow_gitaly_ref_name_caching, only: [:index, :show, :discussions]
 
+  after_action :log_merge_request_show, only: [:show]
+
   feature_category :source_code_management,
                    unless: -> (action) { action.ends_with?("_reports") }
   feature_category :code_testing,
@@ -448,6 +450,12 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     else
       raise "Failed to build comparison response as comparison yielded unknown status '#{report_comparison[:status]}'"
     end
+  end
+
+  def log_merge_request_show
+    return unless current_user && @merge_request
+
+    ::Gitlab::Search::RecentMergeRequests.new(user: current_user).log_view(@merge_request)
   end
 
   def authorize_read_actual_head_pipeline!

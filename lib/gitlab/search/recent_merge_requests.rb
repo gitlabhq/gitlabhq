@@ -2,15 +2,15 @@
 
 module Gitlab
   module Search
-    class RecentIssues < RecentItems
+    class RecentMergeRequests < RecentItems
       private
 
       def type
-        Issue
+        MergeRequest
       end
 
       def finder
-        IssuesFinder
+        MergeRequestsFinder
       end
     end
   end

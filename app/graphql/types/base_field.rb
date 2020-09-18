@@ -18,6 +18,34 @@ module Types
       super(*args, **kwargs, &block)
     end
 
+    # Based on https://github.com/rmosolgo/graphql-ruby/blob/v1.11.4/lib/graphql/schema/field.rb#L538-L563
+    # Modified to fix https://github.com/rmosolgo/graphql-ruby/issues/3113
+    def resolve_field(obj, args, ctx)
+      ctx.schema.after_lazy(obj) do |after_obj|
+        query_ctx = ctx.query.context
+        inner_obj = after_obj && after_obj.object
+
+        ctx.schema.after_lazy(to_ruby_args(after_obj, args, ctx)) do |ruby_args|
+          if authorized?(inner_obj, ruby_args, query_ctx)
+            if @resolve_proc
+              # We pass `after_obj` here instead of `inner_obj` because extensions expect a GraphQL::Schema::Object
+              with_extensions(after_obj, ruby_args, query_ctx) do |extended_obj, extended_args|
+                # Since `extended_obj` is now a GraphQL::Schema::Object, we need to get the inner object and pass that to `@resolve_proc`
+                extended_obj = extended_obj.object if extended_obj.is_a?(GraphQL::Schema::Object)
+
+                @resolve_proc.call(extended_obj, args, ctx)
+              end
+            else
+              public_send_field(after_obj, ruby_args, query_ctx)
+            end
+          else
+            err = GraphQL::UnauthorizedFieldError.new(object: inner_obj, type: obj.class, context: ctx, field: self)
+            query_ctx.schema.unauthorized_field(err)
+          end
+        end
+      end
+    end
+
     def base_complexity
       complexity = DEFAULT_COMPLEXITY
       complexity += 1 if calls_gitaly?

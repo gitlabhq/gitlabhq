@@ -1029,7 +1029,8 @@ RSpec.describe Projects::IssuesController do
 
         go(id: issue.to_param)
 
-        expect(recent_issues_double).to have_received(:log_view)
+        expect(response).to be_successful
+        expect(recent_issues_double).to have_received(:log_view).with(issue)
       end
 
       context 'when not logged in' do

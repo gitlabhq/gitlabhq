@@ -12755,10 +12755,10 @@ msgstr ""
 msgid "GroupsNew|Create group"
 msgstr ""
 
-msgid "GroupsNew|GitLab group export"
+msgid "GroupsNew|Import"
 msgstr ""
 
-msgid "GroupsNew|Import"
+msgid "GroupsNew|Import a GitLab group export file"
 msgstr ""
 
 msgid "GroupsNew|Import group"

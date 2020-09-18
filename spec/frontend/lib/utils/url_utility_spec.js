@@ -161,6 +161,15 @@ describe('URL utility', () => {
       );
     });
 
+    it('sorts params in alphabetical order with sort option', () => {
+      expect(mergeUrlParams({ c: 'c', b: 'b', a: 'a' }, 'https://host/path', { sort: true })).toBe(
+        'https://host/path?a=a&b=b&c=c',
+      );
+      expect(
+        mergeUrlParams({ alpha: 'alpha' }, 'https://host/path?op=/&foo=bar', { sort: true }),
+      ).toBe('https://host/path?alpha=alpha&foo=bar&op=%2F');
+    });
+
     describe('with spread array option', () => {
       const spreadArrayOptions = { spreadArrays: true };
 

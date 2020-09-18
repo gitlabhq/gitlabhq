@@ -1,0 +1,5 @@
+---
+title: Log authentication events alongside existing audit events
+merge_request: 42033
+author:
+type: added

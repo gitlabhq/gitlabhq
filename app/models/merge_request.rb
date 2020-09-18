@@ -21,6 +21,7 @@ class MergeRequest < ApplicationRecord
   include MilestoneEventable
   include StateEventable
   include ApprovableBase
+  include IdInOrdered
 
   extend ::Gitlab::Utils::Override
 

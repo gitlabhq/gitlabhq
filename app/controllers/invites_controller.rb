@@ -76,8 +76,10 @@ class InvitesController < ApplicationController
     notice << "or create an account" if Gitlab::CurrentSettings.allow_signup?
     notice = notice.join(' ') + "."
 
+    # this is temporary finder instead of using member method due to render_404 possibility
+    # will be resolved via https://gitlab.com/gitlab-org/gitlab/-/issues/245325
     initial_member = Member.find_by_invite_token(params[:id])
-    redirect_params = initial_member ? { invite_email: member.invite_email } : {}
+    redirect_params = initial_member ? { invite_email: initial_member.invite_email } : {}
 
     store_location_for :user, request.fullpath
 

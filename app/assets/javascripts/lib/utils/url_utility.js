@@ -75,7 +75,7 @@ export function getParameterValues(sParam, url = window.location) {
  * @param {Boolean} options.spreadArrays - split array values into separate key/value-pairs
  */
 export function mergeUrlParams(params, url, options = {}) {
-  const { spreadArrays = false } = options;
+  const { spreadArrays = false, sort = false } = options;
   const re = /^([^?#]*)(\?[^#]*)?(.*)/;
   let merged = {};
   const [, fullpath, query, fragment] = url.match(re);
@@ -108,7 +108,9 @@ export function mergeUrlParams(params, url, options = {}) {
 
   Object.assign(merged, params);
 
-  const newQuery = Object.keys(merged)
+  const mergedKeys = sort ? Object.keys(merged).sort() : Object.keys(merged);
+
+  const newQuery = mergedKeys
     .filter(key => merged[key] !== null)
     .map(key => {
       let value = merged[key];
