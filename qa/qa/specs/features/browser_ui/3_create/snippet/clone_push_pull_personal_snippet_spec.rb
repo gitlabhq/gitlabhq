@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Create' do
+  RSpec.describe 'Create', quarantine: { only: { subdomain: :staging }, issue: 'https://gitlab.com/gitlab-org/gitaly/-/issues/3143', type: :bug } do
     describe 'Version control for personal snippets' do
       let(:new_file) { 'new_snippet_file' }
       let(:changed_content) { 'changes' }

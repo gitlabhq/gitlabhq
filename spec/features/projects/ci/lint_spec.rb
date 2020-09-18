@@ -12,6 +12,7 @@ RSpec.describe 'CI Lint', :js do
     describe 'YAML parsing' do
       shared_examples 'validates the YAML' do
         before do
+          stub_feature_flags(ci_lint_vue: false)
           click_on 'Validate'
         end
 
@@ -86,6 +87,7 @@ RSpec.describe 'CI Lint', :js do
 
       before do
         stub_feature_flags(monaco_ci: false)
+        stub_feature_flags(ci_lint_vue: false)
         project.add_developer(user)
         sign_in(user)
 
@@ -107,6 +109,7 @@ RSpec.describe 'CI Lint', :js do
 
       before do
         stub_feature_flags(monaco_ci: true)
+        stub_feature_flags(ci_lint_vue: false)
         project.add_developer(user)
         sign_in(user)
 

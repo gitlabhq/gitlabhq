@@ -2,6 +2,9 @@
 
 class Projects::Ci::LintsController < Projects::ApplicationController
   before_action :authorize_create_pipeline!
+  before_action do
+    push_frontend_feature_flag(:ci_lint_vue, project)
+  end
 
   def show
   end

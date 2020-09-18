@@ -166,5 +166,12 @@ namespace :gitlab do
     Rake::Task['db:test:load'].enhance do
       Rake::Task['gitlab:db:create_dynamic_partitions'].invoke
     end
+
+    desc 'reindex a regular (non-unique) index without downtime to eliminate bloat'
+    task :reindex, [:index_name] => :environment do |_, args|
+      raise ArgumentError, 'must give the index name to reindex' unless args[:index_name]
+
+      Gitlab::Database::ConcurrentReindex.new(args[:index_name], logger: Logger.new(STDOUT)).execute
+    end
   end
 end

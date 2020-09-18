@@ -16075,7 +16075,13 @@ CREATE TABLE public.terraform_state_versions (
     version integer NOT NULL,
     file_store smallint NOT NULL,
     file text NOT NULL,
-    CONSTRAINT check_0824bb7bbd CHECK ((char_length(file) <= 255))
+    verification_retry_count smallint,
+    verification_retry_at timestamp with time zone,
+    verified_at timestamp with time zone,
+    verification_checksum bytea,
+    verification_failure text,
+    CONSTRAINT check_0824bb7bbd CHECK ((char_length(file) <= 255)),
+    CONSTRAINT tf_state_versions_verification_failure_text_limit CHECK ((char_length(verification_failure) <= 255))
 );
 
 CREATE SEQUENCE public.terraform_state_versions_id_seq
@@ -21551,6 +21557,10 @@ CREATE UNIQUE INDEX snippet_user_mentions_on_snippet_id_index ON public.snippet_
 CREATE UNIQUE INDEX taggings_idx ON public.taggings USING btree (tag_id, taggable_id, taggable_type, context, tagger_id, tagger_type);
 
 CREATE UNIQUE INDEX term_agreements_unique_index ON public.term_agreements USING btree (user_id, term_id);
+
+CREATE INDEX terraform_state_versions_verification_checksum_partial ON public.terraform_state_versions USING btree (verification_checksum) WHERE (verification_checksum IS NOT NULL);
+
+CREATE INDEX terraform_state_versions_verification_failure_partial ON public.terraform_state_versions USING btree (verification_failure) WHERE (verification_failure IS NOT NULL);
 
 CREATE INDEX terraform_states_verification_checksum_partial ON public.terraform_states USING btree (verification_checksum) WHERE (verification_checksum IS NOT NULL);
 

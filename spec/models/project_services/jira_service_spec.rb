@@ -254,6 +254,16 @@ RSpec.describe JiraService do
           end
         end
 
+        context 'when not allowed to test an instance or group' do
+          it 'does not update deployment type' do
+            allow(service).to receive(:can_test?).and_return(false)
+
+            service.update!(url: 'http://first.url')
+
+            expect(WebMock).not_to have_requested(:get, /serverInfo/)
+          end
+        end
+
         context 'stored password invalidation' do
           context 'when a password was previously set' do
             context 'when only web url present' do

@@ -4,7 +4,7 @@ module WikiHelpers
   extend self
 
   def stub_group_wikis(enabled)
-    stub_feature_flags(group_wikis_feature_flag: enabled)
+    stub_feature_flags(group_wikis: enabled)
     stub_licensed_features(group_wikis: enabled)
   end
 

@@ -439,7 +439,8 @@ class JiraService < IssueTrackerService
   end
 
   def update_deployment_type?
-    api_url_changed? || url_changed? || username_changed? || password_changed?
+    (api_url_changed? || url_changed? || username_changed? || password_changed?) &&
+      can_test?
   end
 
   def update_deployment_type

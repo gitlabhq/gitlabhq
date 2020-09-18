@@ -13,6 +13,7 @@ RSpec.describe 'projects/ci/lints/show' do
     before do
       assign(:project, project)
       assign(:result, result)
+      stub_feature_flags(ci_lint_vue: false)
     end
 
     context 'when builds attrbiutes contain HTML nodes' do
@@ -66,6 +67,7 @@ RSpec.describe 'projects/ci/lints/show' do
     before do
       assign(:project, project)
       assign(:result, result)
+      stub_feature_flags(ci_lint_vue: false)
     end
 
     it 'shows the correct values' do
@@ -103,6 +105,7 @@ RSpec.describe 'projects/ci/lints/show' do
 
       assign(:project, project)
       assign(:result, result)
+      stub_feature_flags(ci_lint_vue: false)
     end
 
     it 'shows error message' do

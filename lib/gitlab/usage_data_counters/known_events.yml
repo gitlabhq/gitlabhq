@@ -16,6 +16,10 @@
   category: compliance
   redis_slot: compliance
   aggregation: weekly
+- name: a_compliance_audit_events_api
+  category: compliance
+  redis_slot: compliance
+  aggregation: weekly
 # Analytics category
 - name: g_analytics_contribution
   category: analytics
