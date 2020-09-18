@@ -86,8 +86,9 @@ You can also dismiss vulnerabilities in the table:
 
 The group Security Dashboard gives an overview of the vulnerabilities in the default branches of the
 projects in a group and its subgroups. Access it by navigating to **Security > Security Dashboard**
-for your group. By default, the Security Dashboard displays all detected and confirmed
-vulnerabilities.
+after selecting your group. By default, the Security Dashboard displays all detected and confirmed
+vulnerabilities. If you don't see the vulnerabilities over time graph, the likely cause is that you
+have not selected a group.
 
 NOTE: **Note:**
 The Security Dashboard only shows projects with [security reports](#supported-reports) enabled in a
@@ -96,20 +97,20 @@ group.
 ![Dashboard with action buttons and metrics](img/group_security_dashboard_v13_3.png)
 
 There is a timeline chart that shows how many open
-vulnerabilities your projects had at various points in time. You can filter among 30, 60, and
-90 days, with the default being 90. Hover over the chart to get more details about
-the open vulnerabilities at a specific time.
+vulnerabilities your projects had at various points in time. You can display the vulnerability
+trends over a 30, 60, or 90-day time frame (the default is 90 days). Hover over the chart to get
+more details about the open vulnerabilities at a specific time.
 
 Next to the timeline chart is a list of projects, grouped and sorted by the severity of the vulnerability found:
 
-- F: 1 or more "critical"
-- D: 1 or more "high" or "unknown"
-- C: 1 or more "medium"
-- B: 1 or more "low"
-- A: 0 vulnerabilities
+- F: One or more "critical"
+- D: One or more "high" or "unknown"
+- C: One or more "medium"
+- B: One or more "low"
+- A: Zero vulnerabilities
 
 Projects with no vulnerability tests configured will not appear in the list. Additionally, dismissed
-vulnerabilities are not included either.
+vulnerabilities are excluded.
 
 Navigate to the group's [Vulnerability Report](#vulnerability-list) to view the vulnerabilities found.
 

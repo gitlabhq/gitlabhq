@@ -161,8 +161,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         resources :milestones, constraints: { id: /\d+/ } do
           member do
             post :promote
-            put :sort_issues
-            put :sort_merge_requests
+            get :issues
             get :merge_requests
             get :participants
             get :labels

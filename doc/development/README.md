@@ -43,6 +43,7 @@ For information on how to install, configure, update, and upgrade your own GitLa
 
 **Must-reads:**
 
+- [Guide on adapting existing and introducing new components](architecture.md#adapting-existing-and-introducing-new-components)
 - [Code review guidelines](code_review.md) for reviewing code and having code reviewed
 - [Database review guidelines](database_review.md) for reviewing database-related changes and complex SQL queries, and having them reviewed
 - [Secure coding guidelines](secure_coding_guidelines.md)

@@ -9,7 +9,6 @@ RSpec.describe Groups::MilestonesController do
   let(:user)    { create(:user) }
   let(:title) { '肯定不是中文的问题' }
   let(:milestone) { create(:milestone, project: project) }
-  let(:milestone_path) { group_milestone_path(group, milestone.safe_title, title: milestone.title) }
 
   let(:milestone_params) do
     {
@@ -23,6 +22,12 @@ RSpec.describe Groups::MilestonesController do
     sign_in(user)
     group.add_owner(user)
     project.add_maintainer(user)
+  end
+
+  it_behaves_like 'milestone tabs' do
+    let(:milestone) { create(:milestone, group: group) }
+    let(:milestone_path) { group_milestone_path(group, milestone.iid) }
+    let(:request_params) { { group_id: group, id: milestone.iid } }
   end
 
   describe '#index' do

@@ -1,0 +1,32 @@
+query getInstanceCounts {
+  projects: instanceStatisticsMeasurements(identifier: PROJECTS, first: 1) {
+    nodes {
+      count
+    }
+  }
+  groups: instanceStatisticsMeasurements(identifier: GROUPS, first: 1) {
+    nodes {
+      count
+    }
+  }
+  users: instanceStatisticsMeasurements(identifier: USERS, first: 1) {
+    nodes {
+      count
+    }
+  }
+  issues: instanceStatisticsMeasurements(identifier: ISSUES, first: 1) {
+    nodes {
+      count
+    }
+  }
+  mergeRequests: instanceStatisticsMeasurements(identifier: MERGE_REQUESTS, first: 1) {
+    nodes {
+      count
+    }
+  }
+  pipelines: instanceStatisticsMeasurements(identifier: PIPELINES, first: 1) {
+    nodes {
+      count
+    }
+  }
+}

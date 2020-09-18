@@ -547,6 +547,7 @@ runtime.
   at least version **1.8** if you want to use private registries.
 - Available for [Kubernetes executor](https://docs.gitlab.com/runner/executors/kubernetes.html)
   in GitLab Runner 13.1 and later.
+- [Credentials Store](#using-credentials-store) and [Credential Helpers](#using-credential-helpers) require binaries to be added to the GitLab Runner's `$PATH`, and require access to do so. Therefore, these features are not available on shared runners or any other runner where the user does not have access to the environment where the runner is installed.
 
 ### Using statically-defined credentials
 

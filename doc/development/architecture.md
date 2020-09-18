@@ -1,32 +1,91 @@
-# GitLab Architecture Overview
+# GitLab architecture overview
 
 ## Software delivery
 
-There are two software distributions of GitLab: the open source [Community Edition](https://gitlab.com/gitlab-org/gitlab-foss/) (CE), and the open core [Enterprise Edition](https://gitlab.com/gitlab-org/gitlab/) (EE). GitLab is available under [different subscriptions](https://about.gitlab.com/pricing/).
+There are two software distributions of GitLab:
 
-New versions of GitLab are released in stable branches and the master branch is for bleeding edge development.
+- The open source [Community Edition](https://gitlab.com/gitlab-org/gitlab-foss/) (CE).
+- The open core [Enterprise Edition](https://gitlab.com/gitlab-org/gitlab/) (EE).
 
-For information, see the [GitLab Release Process](https://gitlab.com/gitlab-org/release/docs/-/tree/master#gitlab-release-process).
+GitLab is available under [different subscriptions](https://about.gitlab.com/pricing/).
 
-Both EE and CE require some add-on components called GitLab Shell and Gitaly. These components are available from the [GitLab Shell](https://gitlab.com/gitlab-org/gitlab-shell/-/tree/master) and [Gitaly](https://gitlab.com/gitlab-org/gitaly/-/tree/master) repositories respectively. New versions are usually tags but staying on the master branch will give you the latest stable version. New releases are generally around the same time as GitLab CE releases with the exception of informal security updates deemed critical.
+New versions of GitLab are released from stable branches, and the `master` branch is used for
+bleeding-edge development.
+
+For more information, visit the [GitLab Release Process](https://about.gitlab.com/handbook/engineering/releases/).
+
+Both distributions require additional components. These components are described in the
+[Component details](#components) section, and all have their own repositories.
+New versions of each dependent component are usually tags, but staying on the `master` branch of the
+GitLab codebase gives you the latest stable version of those components. New versions are
+generally released around the same time as GitLab releases, with the exception of informal security
+updates deemed critical.
 
 ## Components
 
-A typical install of GitLab will be on GNU/Linux. It uses NGINX or Apache as a web front end to proxypass the Unicorn web server. By default, communication between Unicorn and the front end is via a Unix domain socket but forwarding requests via TCP is also supported. The web front end accesses `/home/git/gitlab/public` bypassing the Unicorn server to serve static pages, uploads (e.g. avatar images or attachments), and pre-compiled assets. GitLab serves web pages and the [GitLab API](../api/README.md) using the Unicorn web server. It uses Sidekiq as a job queue which, in turn, uses Redis as a non-persistent database backend for job information, meta data, and incoming jobs.
+A typical install of GitLab is on GNU/Linux, but growing number of deployments also use the
+Kubernetes platform. The largest known GitLab instance is on GitLab.com, which is deployed using our
+[official GitLab Helm chart](https://docs.gitlab.com/charts/) and the [official Linux package](https://about.gitlab.com/install/).
 
-We also support deploying GitLab on Kubernetes using our [GitLab Helm chart](https://docs.gitlab.com/charts/).
+A typical installation uses NGINX or Apache as a web server to proxy through
+[GitLab Workhorse](https://gitlab.com/gitlab-org/gitlab-workhorse) and into the [Puma](https://puma.io)
+application server. GitLab serves web pages and the [GitLab API](../api/README.md) using the Puma
+application server. It uses Sidekiq as a job queue which, in turn, uses Redis as a non-persistent
+database backend for job information, metadata, and incoming jobs.
 
-The GitLab web app uses PostgreSQL for persistent database information (e.g. users, permissions, issues, other meta data). GitLab stores the bare Git repositories it serves in `/home/git/repositories` by default. It also keeps default branch and hook information with the bare repository.
+By default, communication between Puma and Workhorse is via a Unix domain socket, but forwarding
+requests via TCP is also supported. Workhorse accesses the `gitlab/public` directory, bypassing the
+Puma application server to serve static pages, uploads (for example, avatar images or attachments),
+and pre-compiled assets.
 
-When serving repositories over HTTP/HTTPS GitLab utilizes the GitLab API to resolve authorization and access as well as serving Git objects.
+The GitLab application uses PostgreSQL for persistent database information (for example, users,
+permissions, issues, or other metadata). GitLab stores the bare Git repositories in the location
+defined in [the configuration file, `repositories:` section](https://gitlab.com/gitlab-org/gitlab/blob/master/config/gitlab.yml.example).
+It also keeps default branch and hook information with the bare repository.
 
-The add-on component GitLab Shell serves repositories over SSH. It manages the SSH keys within `/home/git/.ssh/authorized_keys` which should not be manually edited. GitLab Shell accesses the bare repositories through Gitaly to serve Git objects and communicates with Redis to submit jobs to Sidekiq for GitLab to process. GitLab Shell queries the GitLab API to determine authorization and access.
+When serving repositories over HTTP/HTTPS GitLab uses the GitLab API to resolve authorization and
+access and to serve Git objects.
 
-Gitaly executes Git operations from GitLab Shell and the GitLab web app, and provides an API to the GitLab web app to get attributes from Git (e.g. title, branches, tags, other meta data), and to get blobs (e.g. diffs, commits, files).
+The add-on component GitLab Shell serves repositories over SSH. It manages the SSH keys within the
+location defined in [the configuration file, `GitLab Shell` section](https://gitlab.com/gitlab-org/gitlab/blob/master/config/gitlab.yml.example).
+The file in that location should never be manually edited. GitLab Shell accesses the bare
+repositories through Gitaly to serve Git objects, and communicates with Redis to submit jobs to
+Sidekiq for GitLab to process. GitLab Shell queries the GitLab API to determine authorization and access.
+
+Gitaly executes Git operations from GitLab Shell and the GitLab web app, and provides an API to the
+GitLab web app to get attributes from Git (for example, title, branches, tags, or other metadata),
+and to get blobs (for example, diffs, commits, or files).
 
 You may also be interested in the [production architecture of GitLab.com](https://about.gitlab.com/handbook/engineering/infrastructure/production/architecture/).
 
-### Simplified Component Overview
+## Adapting existing and introducing new components
+
+There are fundamental differences in how the application behaves when it is installed on a
+traditional Linux machine compared to a containerized platform, such as Kubernetes.
+
+Compared to [our official installation methods](https://about.gitlab.com/install/), some of the
+notable differences are:
+
+- Official Linux packages can access files on the same file system with different services.
+  [Shared files](shared_files.md) are not an option for the application running on the Kubernetes
+  platform.
+- Official Linux packages by default have services that have access to the shared configuration and
+  network. This is not the case for services running in Kubernetes, where services might be running
+  in complete isolation, or only accessible through specific ports.
+
+In other words, the shared state between services needs to be carefully considered when
+architecting new features and adding new components. Services that need to have access to the same
+files, need to be able to exchange information through the appropriate APIs. Whenever possible,
+this should not be done with files.
+
+Since components written with the API-first philosophy in mind are compatible with both methods, all
+new features and services must be written to consider Kubernetes compatibility **first**.
+
+The simplest way to ensure this, is to add support for your feature or service to
+[the official GitLab Helm chart](https://docs.gitlab.com/charts/) or reach out to
+[the Distribution team](https://about.gitlab.com/handbook/engineering/development/enablement/distribution/#how-to-work-with-distribution).
+
+### Simplified component overview
 
 This is a simplified architecture diagram that can be used to
 understand GitLab's architecture.
@@ -411,7 +470,8 @@ For monitoring deployed apps, see [Jaeger tracing documentation](../operations/t
 - Layer: Core Service
 - Process: `logrotate`
 
-GitLab is comprised of a large number of services that all log. We started bundling our own logrotate as of 7.4 to make sure we were logging responsibly. This is just a packaged version of the common open source offering.
+GitLab is comprised of a large number of services that all log. We started bundling our own Logrotate
+as of GitLab 7.4 to make sure we were logging responsibly. This is just a packaged version of the common open source offering.
 
 #### Mattermost
 
@@ -669,7 +729,7 @@ You can install them after you create a cluster. This includes:
 - [JupyterHub](https://jupyter.org)
 - [Knative](https://cloud.google.com/knative/)
 
-## GitLab by Request Type
+## GitLab by request type
 
 GitLab provides two "interfaces" for end users to access the service:
 
@@ -678,7 +738,7 @@ GitLab provides two "interfaces" for end users to access the service:
 
 It's important to understand the distinction as some processes are used in both and others are exclusive to a specific request type.
 
-### GitLab Web HTTP Request Cycle
+### GitLab Web HTTP request cycle
 
 When making a request to an HTTP Endpoint (think `/users/sign_in`) the request will take the following path through the GitLab Service:
 
@@ -687,11 +747,11 @@ When making a request to an HTTP Endpoint (think `/users/sign_in`) the request w
 - Unicorn - Since this is a web request, and it needs to access the application it will go to Unicorn.
 - PostgreSQL/Gitaly/Redis - Depending on the type of request, it may hit these services to store or retrieve data.
 
-### GitLab Git Request Cycle
+### GitLab Git request cycle
 
 Below we describe the different paths that HTTP vs. SSH Git requests will take. There is some overlap with the Web Request Cycle but also some differences.
 
-### Web Request (80/443)
+### Web request (80/443)
 
 Git operations over HTTP use the stateless "smart" protocol described in the
 [Git documentation](https://git-scm.com/docs/http-protocol), but responsibility
@@ -736,7 +796,7 @@ sequenceDiagram
 The sequence is similar for `git push`, except `git-receive-pack` is used
 instead of `git-upload-pack`.
 
-### SSH Request (22)
+### SSH request (22)
 
 Git operations over SSH can use the stateful protocol described in the
 [Git documentation](https://git-scm.com/docs/pack-protocol#_ssh_transport), but
@@ -801,7 +861,7 @@ except there is no round-trip into Gitaly - Rails performs the action as part
 of the [internal API](internal_api.md) call, and GitLab Shell streams the
 response back to the user directly.
 
-## System Layout
+## System layout
 
 When referring to `~git` in the pictures it means the home directory of the Git user which is typically `/home/git`.
 
@@ -811,7 +871,7 @@ The bare repositories are located in `/home/git/repositories`. GitLab is a Ruby 
 
 To serve repositories over SSH there's an add-on application called GitLab Shell which is installed in `/home/git/gitlab-shell`.
 
-### Installation Folder Summary
+### Installation folder summary
 
 To summarize here's the [directory structure of the `git` user home directory](../install/structure.md).
 
@@ -824,7 +884,7 @@ ps aux | grep '^git'
 GitLab has several components to operate. It requires a persistent database
 (PostgreSQL) and Redis database, and uses Apache `httpd` or NGINX to proxypass
 Unicorn. All these components should run as different system users to GitLab
-(e.g., `postgres`, `redis` and `www-data`, instead of `git`).
+(for example, `postgres`, `redis`, and `www-data`, instead of `git`).
 
 As the `git` user it starts Sidekiq and Unicorn (a simple Ruby HTTP server
 running on port `8080` by default). Under the GitLab user there are normally 4
@@ -914,15 +974,16 @@ PostgreSQL:
 
 ### GitLab specific configuration files
 
-GitLab has configuration files located in `/home/git/gitlab/config/*`. Commonly referenced config files include:
+GitLab has configuration files located in `/home/git/gitlab/config/*`. Commonly referenced
+configuration files include:
 
-- `gitlab.yml` - GitLab configuration.
-- `unicorn.rb` - Unicorn web server settings.
-- `database.yml` - Database connection settings.
+- `gitlab.yml` - GitLab configuration
+- `unicorn.rb` - Unicorn web server settings
+- `database.yml` - Database connection settings
 
 GitLab Shell has a configuration file at `/home/git/gitlab-shell/config.yml`.
 
-### Maintenance Tasks
+### Maintenance tasks
 
 [GitLab](https://gitlab.com/gitlab-org/gitlab/tree/master) provides Rake tasks with which you see version information and run a quick check on your configuration to ensure it is configured properly within the application. See [maintenance Rake tasks](../raketasks/maintenance.md).
 In a nutshell, do the following:
@@ -934,7 +995,8 @@ bundle exec rake gitlab:env:info RAILS_ENV=production
 bundle exec rake gitlab:check RAILS_ENV=production
 ```
 
-Note: It is recommended to log into the `git` user using `sudo -i -u git` or `sudo su - git`. While the sudo commands provided by GitLab work in Ubuntu they do not always work in RHEL.
+Note: It is recommended to log into the `git` user using `sudo -i -u git` or `sudo su - git`. While
+the `sudo` commands provided by GitLab work in Ubuntu they do not always work in RHEL.
 
 ## GitLab.com
 

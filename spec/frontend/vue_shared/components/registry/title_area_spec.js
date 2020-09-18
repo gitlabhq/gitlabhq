@@ -1,4 +1,4 @@
-import { GlAvatar } from '@gitlab/ui';
+import { GlAvatar, GlSprintf, GlLink } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import component from '~/vue_shared/components/registry/title_area.vue';
 
@@ -10,10 +10,12 @@ describe('title area', () => {
   const findMetadataSlot = name => wrapper.find(`[data-testid="${name}"]`);
   const findTitle = () => wrapper.find('[data-testid="title"]');
   const findAvatar = () => wrapper.find(GlAvatar);
+  const findInfoMessages = () => wrapper.findAll('[data-testid="info-message"]');
 
   const mountComponent = ({ propsData = { title: 'foo' }, slots } = {}) => {
     wrapper = shallowMount(component, {
       propsData,
+      stubs: { GlSprintf },
       slots: {
         'sub-header': '<div data-testid="sub-header" />',
         'right-actions': '<div data-testid="right-actions" />',
@@ -93,6 +95,35 @@ describe('title area', () => {
       slotNames.forEach(name => {
         expect(findMetadataSlot(name).exists()).toBe(true);
       });
+    });
+  });
+
+  describe('info-messages', () => {
+    it('shows a message when the props contains one', () => {
+      mountComponent({ propsData: { infoMessages: [{ text: 'foo foo bar bar' }] } });
+
+      const messages = findInfoMessages();
+      expect(messages).toHaveLength(1);
+      expect(messages.at(0).text()).toBe('foo foo bar bar');
+    });
+
+    it('shows a link when the props contains one', () => {
+      mountComponent({
+        propsData: {
+          infoMessages: [{ text: 'foo %{docLinkStart}link%{docLinkEnd}', link: 'bar' }],
+        },
+      });
+
+      const message = findInfoMessages().at(0);
+
+      expect(message.find(GlLink).attributes('href')).toBe('bar');
+      expect(message.text()).toBe('foo link');
+    });
+
+    it('multiple messages generates multiple spans', () => {
+      mountComponent({ propsData: { infoMessages: [{ text: 'foo' }, { text: 'bar' }] } });
+
+      expect(findInfoMessages()).toHaveLength(2);
     });
   });
 });

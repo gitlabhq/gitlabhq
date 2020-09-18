@@ -124,6 +124,7 @@ RSpec.configure do |config|
   config.include LoginHelpers, type: :feature
   config.include SearchHelpers, type: :feature
   config.include WaitHelpers, type: :feature
+  config.include WaitForRequests, type: :feature
   config.include EmailHelpers, :mailer, type: :mailer
   config.include Warden::Test::Helpers, type: :request
   config.include Gitlab::Routing, type: :routing
@@ -133,7 +134,6 @@ RSpec.configure do |config|
   config.include InputHelper, :js
   config.include SelectionHelper, :js
   config.include InspectRequests, :js
-  config.include WaitForRequests, :js
   config.include LiveDebugger, :js
   config.include MigrationsHelpers, :migration
   config.include RedisHelpers

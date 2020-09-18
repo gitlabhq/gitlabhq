@@ -61,6 +61,7 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
 
     resources :milestones, constraints: { id: %r{[^/]+} } do
       member do
+        get :issues
         get :merge_requests
         get :participants
         get :labels
