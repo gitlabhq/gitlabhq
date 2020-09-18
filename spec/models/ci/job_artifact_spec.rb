@@ -19,7 +19,7 @@ RSpec.describe Ci::JobArtifact do
 
   it_behaves_like 'having unique enum values'
 
-  it_behaves_like 'UpdateProjectStatistics' do
+  it_behaves_like 'UpdateProjectStatistics', :with_counter_attribute do
     let_it_be(:job, reload: true) { create(:ci_build) }
 
     subject { build(:ci_job_artifact, :archive, job: job, size: 107464) }

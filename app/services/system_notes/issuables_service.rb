@@ -242,19 +242,7 @@ module SystemNotes
     #
     # Returns the created Note object
     def change_status(status, source = nil)
-      body = status.dup
-      body << " via #{source.gfm_reference(project)}" if source
-
-      action = status == 'reopened' ? 'opened' : status
-
-      # A state event which results in a synthetic note will be
-      # created by EventCreateService if change event tracking
-      # is enabled.
-      if state_change_tracking_enabled?
-        create_resource_state_event(status: status, mentionable_source: source)
-      else
-        create_note(NoteSummary.new(noteable, project, author, body, action: action))
-      end
+      create_resource_state_event(status: status, mentionable_source: source)
     end
 
     # Check if a cross reference to a noteable from a mentioner already exists
@@ -312,23 +300,11 @@ module SystemNotes
     end
 
     def close_after_error_tracking_resolve
-      if state_change_tracking_enabled?
-        create_resource_state_event(status: 'closed', close_after_error_tracking_resolve: true)
-      else
-        body = 'resolved the corresponding error and closed the issue.'
-
-        create_note(NoteSummary.new(noteable, project, author, body, action: 'closed'))
-      end
+      create_resource_state_event(status: 'closed', close_after_error_tracking_resolve: true)
     end
 
     def auto_resolve_prometheus_alert
-      if state_change_tracking_enabled?
-        create_resource_state_event(status: 'closed', close_auto_resolve_prometheus_alert: true)
-      else
-        body = 'automatically closed this issue because the alert resolved.'
-
-        create_note(NoteSummary.new(noteable, project, author, body, action: 'closed'))
-      end
+      create_resource_state_event(status: 'closed', close_auto_resolve_prometheus_alert: true)
     end
 
     private
@@ -359,11 +335,6 @@ module SystemNotes
     def create_resource_state_event(params)
       ResourceEvents::ChangeStateService.new(resource: noteable, user: author)
         .execute(params)
-    end
-
-    def state_change_tracking_enabled?
-      noteable.respond_to?(:resource_state_events) &&
-        ::Feature.enabled?(:track_resource_state_change_events, noteable.project, default_enabled: true)
     end
 
     def issue_activity_counter

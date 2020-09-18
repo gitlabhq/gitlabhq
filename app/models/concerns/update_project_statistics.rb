@@ -80,10 +80,7 @@ module UpdateProjectStatistics
 
       run_after_commit do
         ProjectStatistics.increment_statistic(
-          project_id, self.class.project_statistics_name, delta)
-
-        Namespaces::ScheduleAggregationWorker.perform_async(
-          project.namespace_id)
+          project, self.class.project_statistics_name, delta)
       end
     end
   end

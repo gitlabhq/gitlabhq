@@ -9,7 +9,6 @@ RSpec.describe Gitlab::Database::CustomStructure do
     <<~DATA
       -- this file tracks custom GitLab data, such as foreign keys referencing partitioned tables
       -- more details can be found in the issue: https://gitlab.com/gitlab-org/gitlab/-/issues/201872
-      SET search_path=public;
     DATA
   end
 

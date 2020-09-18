@@ -12,6 +12,36 @@ RSpec.describe CounterAttribute, :counter_attribute, :clean_gitlab_redis_shared_
     let(:model) { CounterAttributeModel.find(project_statistics.id) }
   end
 
+  describe 'after_flush callbacks' do
+    let(:attribute) { model.class.counter_attributes.first}
+
+    subject { model.flush_increments_to_database!(attribute) }
+
+    it 'has registered callbacks' do # defined in :counter_attribute RSpec tag
+      expect(model.class.after_flush_callbacks.size).to eq(1)
+    end
+
+    context 'when there are increments to flush' do
+      before do
+        model.delayed_increment_counter(attribute, 10)
+      end
+
+      it 'executes the callbacks' do
+        subject
+
+        expect(model.flushed).to be_truthy
+      end
+    end
+
+    context 'when there are no increments to flush' do
+      it 'does not execute the callbacks' do
+        subject
+
+        expect(model.flushed).to be_nil
+      end
+    end
+  end
+
   describe '.steal_increments' do
     let(:increment_key) { 'counters:Model:123:attribute' }
     let(:flushed_key) { 'counter:Model:123:attribute:flushed' }

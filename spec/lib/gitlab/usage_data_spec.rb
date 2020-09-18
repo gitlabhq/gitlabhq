@@ -628,6 +628,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
         expect(subject[:gitlab_shared_runners_enabled]).to eq(Gitlab.config.gitlab_ci.shared_runners_enabled)
         expect(subject[:web_ide_clientside_preview_enabled]).to eq(Gitlab::CurrentSettings.web_ide_clientside_preview_enabled?)
         expect(subject[:grafana_link_enabled]).to eq(Gitlab::CurrentSettings.grafana_enabled?)
+        expect(subject[:gitpod_enabled]).to eq(Gitlab::CurrentSettings.gitpod_enabled?)
       end
 
       context 'with embedded Prometheus' do
@@ -655,6 +656,20 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
           stub_application_setting(grafana_enabled: false)
 
           expect(subject[:grafana_link_enabled]).to eq(false)
+        end
+      end
+
+      context 'with Gitpod' do
+        it 'returns true when is enabled' do
+          stub_application_setting(gitpod_enabled: true)
+
+          expect(subject[:gitpod_enabled]).to eq(true)
+        end
+
+        it 'returns false when is disabled' do
+          stub_application_setting(gitpod_enabled: false)
+
+          expect(subject[:gitpod_enabled]).to eq(false)
         end
       end
     end

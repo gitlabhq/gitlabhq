@@ -20,11 +20,7 @@ RSpec.describe MergeRequests::MergeService do
     end
 
     context 'valid params' do
-      let(:state_tracking) { true }
-
       before do
-        stub_feature_flags(track_resource_state_change_events: state_tracking)
-
         allow(service).to receive(:execute_hooks)
 
         perform_enqueued_jobs do
@@ -47,20 +43,9 @@ RSpec.describe MergeRequests::MergeService do
       end
 
       context 'note creation' do
-        context 'when resource state event tracking is disabled' do
-          let(:state_tracking) { false }
-
-          it 'creates system note about merge_request merge' do
-            note = merge_request.notes.last
-            expect(note.note).to include 'merged'
-          end
-        end
-
-        context 'when resource state event tracking is enabled' do
-          it 'creates resource state event about merge_request merge' do
-            event = merge_request.resource_state_events.last
-            expect(event.state).to eq('merged')
-          end
+        it 'creates resource state event about merge_request merge' do
+          event = merge_request.resource_state_events.last
+          expect(event.state).to eq('merged')
         end
       end
 

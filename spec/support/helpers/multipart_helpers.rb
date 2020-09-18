@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 module MultipartHelpers
+  include WorkhorseHelpers
+
   def post_env(rewritten_fields:, params:, secret:, issuer:)
     token = JWT.encode({ 'iss' => issuer, 'rewritten_fields' => rewritten_fields }, secret, 'HS256')
     Rack::MockRequest.env_for(
@@ -29,7 +31,14 @@ module MultipartHelpers
       raise ArgumentError, "can't handle #{mode} mode"
     end
 
-    result
+    return result if ::Feature.disabled?(:upload_middleware_jwt_params_handler)
+
+    # the HandlerForJWTParams expects a jwt token with the upload parameters
+    # *without* the "#{key}." prefix
+    result.deep_transform_keys! { |k| k.remove("#{key}.") }
+    {
+      "#{key}.gitlab-workhorse-upload" => jwt_token('upload' => result)
+    }
   end
 
   # This function assumes a `mode` variable to be set

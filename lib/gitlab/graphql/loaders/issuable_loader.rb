@@ -15,6 +15,7 @@ module Gitlab
 
         def batching_find_all(&with_query)
           if issuable_finder.params.keys == ['iids']
+            issuable_finder.parent = parent
             batch_load_issuables(issuable_finder.params[:iids], with_query)
           else
             post_process(find_all, with_query)
@@ -22,23 +23,11 @@ module Gitlab
         end
 
         def find_all
-          issuable_finder.params[parent_param] = parent if parent
-
+          issuable_finder.parent_param = parent if parent
           issuable_finder.execute
         end
 
         private
-
-        def parent_param
-          case parent
-          when Project
-            :project_id
-          when Group
-            :group_id
-          else
-            raise "Unexpected parent: #{parent.class}"
-          end
-        end
 
         def post_process(query, with_query)
           if with_query
@@ -56,7 +45,7 @@ module Gitlab
           return if parent.nil?
 
           BatchLoader::GraphQL
-            .for([parent_param, iid.to_s])
+            .for([issuable_finder.parent_param, iid.to_s])
             .batch(key: batch_key) do |params, loader, args|
               batch_key = args[:key]
               user = batch_key.current_user

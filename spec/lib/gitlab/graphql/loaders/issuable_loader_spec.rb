@@ -6,9 +6,26 @@ RSpec.describe Gitlab::Graphql::Loaders::IssuableLoader do
   subject { described_class.new(parent, finder) }
 
   let(:params) { HashWithIndifferentAccess.new }
+  let(:finder_params) { finder.params.to_h.with_indifferent_access }
+
+  # Dumb finder class, that only implements what we need, and has
+  # predictable query counts.
+  let(:finder_class) do
+    Class.new(IssuesFinder) do
+      def execute
+        params[:project_id].issues.where(iid: params[:iids])
+      end
+
+      private
+
+      def params_class
+        IssuesFinder::Params
+      end
+    end
+  end
 
   describe '#find_all' do
-    let(:finder) { double(:finder, params: params, execute: %i[x y z]) }
+    let(:finder) { issuable_finder(params: params, result: [:x, :y, :z]) }
 
     where(:factory, :param_name) do
       %i[project group].map { |thing| [thing, :"#{thing}_id"] }
@@ -19,7 +36,7 @@ RSpec.describe Gitlab::Graphql::Loaders::IssuableLoader do
 
       it 'assignes the parent parameter, and batching_find_alls the finder' do
         expect(subject.find_all).to contain_exactly(:x, :y, :z)
-        expect(params).to include(param_name => parent)
+        expect(finder_params).to include(param_name => parent)
       end
     end
 
@@ -34,12 +51,12 @@ RSpec.describe Gitlab::Graphql::Loaders::IssuableLoader do
 
   describe '#batching_find_all' do
     context 'the finder params are anything other than [iids]' do
-      let(:finder) { double(:finder, params: params, execute: [:foo]) }
+      let(:finder) { issuable_finder(params: params, result: [:foo]) }
       let(:parent) { build_stubbed(:project) }
 
       it 'batching_find_alls the finder, setting the correct parent parameter' do
         expect(subject.batching_find_all).to eq([:foo])
-        expect(params[:project_id]).to eq(parent)
+        expect(finder_params[:project_id]).to eq(parent)
       end
 
       it 'allows a post-process block' do
@@ -48,23 +65,6 @@ RSpec.describe Gitlab::Graphql::Loaders::IssuableLoader do
     end
 
     context 'the finder params are exactly [iids]' do
-      # Dumb finder class, that only implements what we need, and has
-      # predictable query counts.
-      let(:finder_class) do
-        Class.new do
-          attr_reader :current_user, :params
-
-          def initialize(user, args)
-            @current_user = user
-            @params = HashWithIndifferentAccess.new(args.to_h)
-          end
-
-          def execute
-            params[:project_id].issues.where(iid: params[:iids])
-          end
-        end
-      end
-
       it 'batches requests' do
         issue_a = create(:issue)
         issue_b = create(:issue)
@@ -92,5 +92,14 @@ RSpec.describe Gitlab::Graphql::Loaders::IssuableLoader do
         expect(results).to contain_exactly(issue_a, issue_b, issue_c)
       end
     end
+  end
+
+  private
+
+  def issuable_finder(user: double(:user), params: {}, result: nil)
+    new_finder = finder_class.new(user, params)
+    allow(new_finder).to receive(:execute).and_return(result) if result
+
+    new_finder
   end
 end

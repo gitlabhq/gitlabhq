@@ -131,43 +131,11 @@ RSpec.describe ::SystemNotes::IssuablesService do
   describe '#change_status' do
     subject { service.change_status(status, source) }
 
-    context 'when resource state event tracking is enabled' do
-      let(:status) { 'reopened' }
-      let(:source) { nil }
+    let(:status) { 'reopened' }
+    let(:source) { nil }
 
-      it 'does not change note count' do
-        expect { subject }.not_to change { Note.count }
-      end
-    end
-
-    context 'with status reopened' do
-      before do
-        stub_feature_flags(track_resource_state_change_events: false)
-      end
-
-      let(:status) { 'reopened' }
-      let(:source) { nil }
-
-      it_behaves_like 'a note with overridable created_at'
-
-      it_behaves_like 'a system note' do
-        let(:action) { 'opened' }
-      end
-    end
-
-    context 'with a source' do
-      before do
-        stub_feature_flags(track_resource_state_change_events: false)
-      end
-
-      let(:status) { 'opened' }
-      let(:source) { double('commit', gfm_reference: 'commit 123456') }
-
-      it_behaves_like 'a note with overridable created_at'
-
-      it 'sets the note text' do
-        expect(subject.note).to eq "#{status} via commit 123456"
-      end
+    it 'creates a resource state event' do
+      expect { subject }.to change { ResourceStateEvent.count }.by(1)
     end
   end
 
@@ -636,67 +604,26 @@ RSpec.describe ::SystemNotes::IssuablesService do
   describe '#close_after_error_tracking_resolve' do
     subject { service.close_after_error_tracking_resolve }
 
-    context 'when state tracking is enabled' do
-      before do
-        stub_feature_flags(track_resource_state_change_events: true)
-      end
+    it 'creates the expected state event' do
+      subject
 
-      it 'creates the expected state event' do
-        subject
+      event = ResourceStateEvent.last
 
-        event = ResourceStateEvent.last
-
-        expect(event.close_after_error_tracking_resolve).to eq(true)
-        expect(event.state).to eq('closed')
-      end
-    end
-
-    context 'when state tracking is disabled' do
-      before do
-        stub_feature_flags(track_resource_state_change_events: false)
-      end
-
-      it_behaves_like 'a system note' do
-        let(:action) { 'closed' }
-      end
-
-      it 'creates the expected system note' do
-        expect(subject.note)
-          .to eq('resolved the corresponding error and closed the issue.')
-      end
+      expect(event.close_after_error_tracking_resolve).to eq(true)
+      expect(event.state).to eq('closed')
     end
   end
 
   describe '#auto_resolve_prometheus_alert' do
     subject { service.auto_resolve_prometheus_alert }
 
-    context 'when state tracking is enabled' do
-      before do
-        stub_feature_flags(track_resource_state_change_events: true)
-      end
+    it 'creates the expected state event' do
+      subject
 
-      it 'creates the expected state event' do
-        subject
+      event = ResourceStateEvent.last
 
-        event = ResourceStateEvent.last
-
-        expect(event.close_auto_resolve_prometheus_alert).to eq(true)
-        expect(event.state).to eq('closed')
-      end
-    end
-
-    context 'when state tracking is disabled' do
-      before do
-        stub_feature_flags(track_resource_state_change_events: false)
-      end
-
-      it_behaves_like 'a system note' do
-        let(:action) { 'closed' }
-      end
-
-      it 'creates the expected system note' do
-        expect(subject.note).to eq('automatically closed this issue because the alert resolved.')
-      end
+      expect(event.close_auto_resolve_prometheus_alert).to eq(true)
+      expect(event.state).to eq('closed')
     end
   end
 end

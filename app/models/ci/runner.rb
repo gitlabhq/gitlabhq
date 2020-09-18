@@ -10,7 +10,7 @@ module Ci
     include TokenAuthenticatable
     include IgnorableColumns
 
-    add_authentication_token_field :token, encrypted: -> { Feature.enabled?(:ci_runners_tokens_optional_encryption) ? :optional : :required }
+    add_authentication_token_field :token, encrypted: -> { Feature.enabled?(:ci_runners_tokens_optional_encryption, default_enabled: true) ? :optional : :required }
 
     enum access_level: {
       not_protected: 0,

@@ -127,23 +127,8 @@ RSpec.describe Projects::Alerting::NotifyService do
                   let(:alert) { create(:alert_management_alert, :with_issue, project: project, fingerprint: fingerprint_sha) }
                   let(:issue) { alert.issue }
 
-                  context 'state_tracking is enabled' do
-                    before do
-                      stub_feature_flags(track_resource_state_change_events: true)
-                    end
-
-                    it { expect { subject }.to change { issue.reload.state }.from('opened').to('closed') }
-                    it { expect { subject }.to change(ResourceStateEvent, :count).by(1) }
-                  end
-
-                  context 'state_tracking is disabled' do
-                    before do
-                      stub_feature_flags(track_resource_state_change_events: false)
-                    end
-
-                    it { expect { subject }.to change { issue.reload.state }.from('opened').to('closed') }
-                    it { expect { subject }.to change(Note, :count).by(1) }
-                  end
+                  it { expect { subject }.to change { issue.reload.state }.from('opened').to('closed') }
+                  it { expect { subject }.to change(ResourceStateEvent, :count).by(1) }
                 end
               end
             end

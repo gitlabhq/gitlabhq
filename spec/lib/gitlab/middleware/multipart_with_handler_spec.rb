@@ -21,7 +21,11 @@ RSpec.describe Gitlab::Middleware::Multipart do
       middleware.call(env)
     end
 
-    context 'with remote file mode params' do
+    before do
+      stub_feature_flags(upload_middleware_jwt_params_handler: false)
+    end
+
+    context 'remote file mode' do
       let(:mode) { :remote }
 
       it_behaves_like 'handling all upload parameters conditions'
@@ -58,10 +62,10 @@ RSpec.describe Gitlab::Middleware::Multipart do
 
         context 'in allowed paths' do
           let(:rewritten_fields) { rewritten_fields_hash('file' => uploaded_filepath) }
-          let(:params) { upload_parameters_for(filepath: uploaded_filepath, key: 'file', filename: filename, remote_id: remote_id) }
+          let(:params) { upload_parameters_for(filepath: uploaded_filepath, key: 'file', filename: filename) }
 
           it 'builds an UploadedFile' do
-            expect_uploaded_files(filepath: uploaded_filepath, original_filename: filename, remote_id: remote_id, size: uploaded_file.size, params_path: %w(file))
+            expect_uploaded_files(filepath: uploaded_filepath, original_filename: filename, size: uploaded_file.size, params_path: %w(file))
 
             subject
           end

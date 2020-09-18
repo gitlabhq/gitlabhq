@@ -2,7 +2,7 @@
 
 module Resolvers
   class IssuesResolver < BaseResolver
-    prepend IssueResolverFields
+    prepend IssueResolverArguments
 
     argument :state, Types::IssuableStateEnum,
               required: false,

@@ -1,7 +1,6 @@
 <script>
-/* eslint-disable vue/no-v-html */
 import { ApolloMutation } from 'vue-apollo';
-import { GlTooltipDirective, GlIcon, GlLink } from '@gitlab/ui';
+import { GlTooltipDirective, GlIcon, GlLink, GlSafeHtmlDirective } from '@gitlab/ui';
 import updateNoteMutation from '../../graphql/mutations/update_note.mutation.graphql';
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
@@ -22,6 +21,7 @@ export default {
   },
   directives: {
     GlTooltip: GlTooltipDirective,
+    SafeHtml: GlSafeHtmlDirective,
   },
   props: {
     note: {
@@ -94,7 +94,7 @@ export default {
           :data-username="author.username"
         >
           <span class="note-header-author-name gl-font-weight-bold">{{ author.name }}</span>
-          <span v-if="author.status_tooltip_html" v-html="author.status_tooltip_html"></span>
+          <span v-if="author.status_tooltip_html" v-safe-html="author.status_tooltip_html"></span>
           <span class="note-headline-light">@{{ author.username }}</span>
         </gl-link>
         <span class="note-headline-light note-headline-meta">
@@ -107,7 +107,7 @@ export default {
           </gl-link>
         </span>
       </div>
-      <div class="gl-display-flex">
+      <div class="gl-display-flex gl-align-items-baseline">
         <slot name="resolveDiscussion"></slot>
         <button
           v-if="isEditButtonVisible"
@@ -123,9 +123,9 @@ export default {
     </div>
     <template v-if="!isEditing">
       <div
+        v-safe-html="note.bodyHtml"
         class="note-text js-note-text md"
         data-qa-selector="note_content"
-        v-html="note.bodyHtml"
       ></div>
       <slot name="resolvedStatus"></slot>
     </template>

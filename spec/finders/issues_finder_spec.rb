@@ -3,6 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe IssuesFinder do
+  using RSpec::Parameterized::TableSyntax
   include_context 'IssuesFinder context'
 
   describe '#execute' do
@@ -1019,6 +1020,35 @@ RSpec.describe IssuesFinder do
         it 'returns true' do
           expect(finder.use_cte_for_search?).to be_truthy
         end
+      end
+    end
+  end
+
+  describe '#parent_param=' do
+    let(:finder) { described_class.new(nil) }
+
+    subject { finder.parent_param = obj }
+
+    where(:klass, :param) do
+      :Project | :project_id
+      :Group   | :group_id
+    end
+
+    with_them do
+      let(:obj) { Object.const_get(klass, false).new }
+
+      it 'sets the params' do
+        subject
+
+        expect(finder.params[param]).to eq(obj)
+      end
+    end
+
+    context 'unexpected parent' do
+      let(:obj) { MergeRequest.new }
+
+      it 'raises an error' do
+        expect { subject }.to raise_error('Unexpected parent: MergeRequest')
       end
     end
   end

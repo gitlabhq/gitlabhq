@@ -8,6 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-09-17 11:26-0400\n"
+"PO-Revision-Date: 2020-09-17 11:26-0400\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -1615,9 +1617,6 @@ msgid "Add key"
 msgstr ""
 
 msgid "Add label(s)"
-msgstr ""
-
-msgid "Add license"
 msgstr ""
 
 msgid "Add list"
@@ -3361,9 +3360,6 @@ msgid "Are you sure you want to lose your issue information?"
 msgstr ""
 
 msgid "Are you sure you want to merge immediately?"
-msgstr ""
-
-msgid "Are you sure you want to permanently delete this license?"
 msgstr ""
 
 msgid "Are you sure you want to re-deploy this environment?"
@@ -6456,9 +6452,6 @@ msgstr ""
 msgid "Community forum"
 msgstr ""
 
-msgid "Company"
-msgstr ""
-
 msgid "Company name"
 msgstr ""
 
@@ -8224,9 +8217,6 @@ msgstr ""
 msgid "Delete label: %{label_name} ?"
 msgstr ""
 
-msgid "Delete license"
-msgstr ""
-
 msgid "Delete list"
 msgstr ""
 
@@ -8300,15 +8290,6 @@ msgid "Deleting"
 msgstr ""
 
 msgid "Deleting a project places it into a read-only state until %{date}, at which point the project will be permanently deleted. Are you ABSOLUTELY sure?"
-msgstr ""
-
-msgid "Deleting the license failed."
-msgstr ""
-
-msgid "Deleting the license failed. The license was not found."
-msgstr ""
-
-msgid "Deleting the license failed. You are not permitted to perform this action."
 msgstr ""
 
 msgid "Deleting the project will delete its repository and all related resources including issues, merge requests etc."
@@ -9324,9 +9305,6 @@ msgstr ""
 msgid "Email Notification"
 msgstr ""
 
-msgid "Email address"
-msgstr ""
-
 msgid "Email could not be sent"
 msgstr ""
 
@@ -9562,9 +9540,6 @@ msgid "Enabling this will only make licensed EE features available to projects i
 msgstr ""
 
 msgid "Encountered an error while rendering: %{err}"
-msgstr ""
-
-msgid "End date"
 msgstr ""
 
 msgid "Ends at (UTC)"
@@ -10985,15 +10960,6 @@ msgstr ""
 msgid "Fetching incoming email"
 msgstr ""
 
-msgid "Fetching licenses failed."
-msgstr ""
-
-msgid "Fetching licenses failed. The request endpoint was not found."
-msgstr ""
-
-msgid "Fetching licenses failed. You are not permitted to perform this action."
-msgstr ""
-
 msgid "File"
 msgstr ""
 
@@ -11819,9 +11785,6 @@ msgstr ""
 msgid "GitLab API"
 msgstr ""
 
-msgid "GitLab Enterprise Edition %{plan}"
-msgstr ""
-
 msgid "GitLab Group Runners can execute code for all the projects in this group."
 msgstr ""
 
@@ -11853,9 +11816,6 @@ msgid "GitLab User"
 msgstr ""
 
 msgid "GitLab Workhorse"
-msgstr ""
-
-msgid "GitLab allows you to continue using your license even if you exceed the number of seats you purchased. You will be required to pay for these seats when you renew your license."
 msgstr ""
 
 msgid "GitLab commit"
@@ -13621,9 +13581,6 @@ msgid "Instance Statistics"
 msgstr ""
 
 msgid "Instance administrators group already exists"
-msgstr ""
-
-msgid "Instance license"
 msgstr ""
 
 msgid "Integration"
@@ -15403,9 +15360,6 @@ msgstr ""
 msgid "Max access level"
 msgstr ""
 
-msgid "Max seats used"
-msgstr ""
-
 msgid "Max size 15 MB"
 msgstr ""
 
@@ -17150,9 +17104,6 @@ msgid "No labels with such name or description"
 msgstr ""
 
 msgid "No license. All rights reserved"
-msgstr ""
-
-msgid "No licenses found."
 msgstr ""
 
 msgid "No matches found"
@@ -20900,9 +20851,6 @@ msgstr ""
 msgid "Register with two-factor app"
 msgstr ""
 
-msgid "Registration"
-msgstr ""
-
 msgid "Registration|Checkout"
 msgstr ""
 
@@ -21227,9 +21175,6 @@ msgid "Removes the due date."
 msgstr ""
 
 msgid "Removes time estimate."
-msgstr ""
-
-msgid "Removing license…"
 msgstr ""
 
 msgid "Removing this group also removes all child projects, including archived projects, and their resources."
@@ -22335,12 +22280,6 @@ msgid "Seat Link"
 msgstr ""
 
 msgid "Seat Link is disabled, and cannot be configured through this form."
-msgstr ""
-
-msgid "Seats currently in use"
-msgstr ""
-
-msgid "Seats in license"
 msgstr ""
 
 msgid "Secondary"
@@ -25954,9 +25893,6 @@ msgstr ""
 msgid "This is the highest peak of users on your installation since the license started."
 msgstr ""
 
-msgid "This is the maximum number of users that have existed at the same time since the license started. This is the minimum number of seats you will need to buy when you renew your license."
-msgstr ""
-
 msgid "This is the number of currently active users on your installation, and this is the minimum number you need to purchase when you renew your license."
 msgstr ""
 
@@ -27869,9 +27805,6 @@ msgstr ""
 msgid "Users or groups set as approvers in the project's or merge request's settings."
 msgstr ""
 
-msgid "Users outside of license"
-msgstr ""
-
 msgid "Users over License:"
 msgstr ""
 
@@ -27885,9 +27818,6 @@ msgid "Users were successfully added."
 msgstr ""
 
 msgid "Users with a Guest role or those who don't belong to a Project or Group will not use a seat from your license."
-msgstr ""
-
-msgid "Users with a Guest role or those who don't belong to any projects or groups don't count towards seats in use."
 msgstr ""
 
 msgid "UsersSelect|%{name} + %{length} more"
@@ -27927,9 +27857,6 @@ msgid "Validate your GitLab CI configuration file"
 msgstr ""
 
 msgid "Validations failed."
-msgstr ""
-
-msgid "Validity"
 msgstr ""
 
 msgid "Value"

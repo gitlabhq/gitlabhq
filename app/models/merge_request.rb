@@ -1511,6 +1511,7 @@ class MergeRequest < ApplicationRecord
 
       metrics&.merged_at ||
         merge_event&.created_at ||
+        resource_state_events.find_by(state: :merged)&.created_at ||
         notes.system.reorder(nil).find_by(note: 'merged')&.created_at
     end
   end
