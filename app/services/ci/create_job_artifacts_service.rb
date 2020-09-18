@@ -27,7 +27,7 @@ module Ci
 
       if lsif?(artifact_type)
         headers[:ProcessLsif] = true
-        track_usage_event('i_source_code_code_intelligence', project)
+        track_usage_event('i_source_code_code_intelligence', project.id)
       end
 
       success(headers: headers)

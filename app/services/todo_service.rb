@@ -356,7 +356,7 @@ class TodoService
   def track_todo_creation(user, issue_type)
     return unless issue_type == 'incident'
 
-    track_usage_event(:incident_management_incident_todo, user)
+    track_usage_event(:incident_management_incident_todo, user.id)
   end
 end
 

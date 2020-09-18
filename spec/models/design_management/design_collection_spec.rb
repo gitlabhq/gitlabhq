@@ -3,8 +3,9 @@ require 'spec_helper'
 
 RSpec.describe DesignManagement::DesignCollection do
   include DesignManagementTestHelpers
+  using RSpec::Parameterized::TableSyntax
 
-  let_it_be(:issue, reload: true) { create(:issue) }
+  let_it_be(:issue, refind: true) { create(:issue) }
 
   subject(:collection) { described_class.new(issue) }
 
@@ -42,6 +43,61 @@ RSpec.describe DesignManagement::DesignCollection do
       design2 = collection.find_or_create_design!(filename: 'design2.jpg')
 
       expect(collection.designs.ordered).to eq([design1, design2])
+    end
+  end
+
+  describe "#copy_state", :clean_gitlab_redis_shared_state do
+    it "defaults to ready" do
+      expect(collection).to be_copy_ready
+    end
+
+    it "persists its state changes between initializations" do
+      collection.start_copy!
+
+      expect(described_class.new(issue)).to be_copy_in_progress
+    end
+
+    where(:state, :can_start, :can_end, :can_error, :can_reset) do
+      "ready"       | true  | false | true  | true
+      "in_progress" | false | true  | true  | true
+      "error"       | false | false | false | true
+    end
+
+    with_them do
+      it "maintains state machine transition rules", :aggregate_failures do
+        collection.copy_state = state
+
+        expect(collection.can_start_copy?).to eq(can_start)
+        expect(collection.can_end_copy?).to eq(can_end)
+      end
+    end
+
+    describe "clearing the redis cached state when state changes back to ready" do
+      def redis_copy_state
+        Gitlab::Redis::SharedState.with do |redis|
+          redis.get(collection.send(:copy_state_cache_key))
+        end
+      end
+
+      def fire_state_events(*events)
+        events.each do |event|
+          collection.fire_copy_state_event(event)
+        end
+      end
+
+      it "clears the cached state on end_copy!", :aggregate_failures do
+        fire_state_events(:start)
+
+        expect { collection.end_copy! }.to change { redis_copy_state }.from("in_progress").to(nil)
+        expect(collection).to be_copy_ready
+      end
+
+      it "clears the cached state on reset_copy!", :aggregate_failures do
+        fire_state_events(:start, :error)
+
+        expect { collection.reset_copy! }.to change { redis_copy_state }.from("error").to(nil)
+        expect(collection).to be_copy_ready
+      end
     end
   end
 

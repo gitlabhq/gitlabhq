@@ -111,7 +111,7 @@ module Notes
     def track_event(note, user)
       return unless note.noteable.is_a?(Issue) && note.noteable.incident?
 
-      track_usage_event(:incident_management_incident_comment, user)
+      track_usage_event(:incident_management_incident_comment, user.id)
     end
   end
 end

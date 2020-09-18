@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Invites', :aggregate_failures do
+RSpec.describe 'Group or Project invitations', :aggregate_failures do
   let(:user) { create(:user, email: 'user@example.com') }
   let(:owner) { create(:user, name: 'John Doe') }
   let(:group) { create(:group, name: 'Owned') }

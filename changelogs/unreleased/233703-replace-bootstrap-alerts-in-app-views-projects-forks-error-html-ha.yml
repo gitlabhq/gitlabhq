@@ -1,0 +1,5 @@
+---
+title: Replace bootstrap alerts in app/views/projects/forks/error.html.haml
+merge_request: 41292
+author: Gilang Gumilar
+type: changed

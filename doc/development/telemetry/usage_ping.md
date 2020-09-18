@@ -327,6 +327,20 @@ Implemented using Redis methods [PFADD](https://redis.io/commands/pfadd) and [PF
    end
    ```
 
+1. Track event using `track_usage_event(event_name, values) in services and graphql
+
+   Increment unique values count using Redis HLL, for given event name.
+
+   Example:
+
+   [Track usage event for incident created in service](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/services/issues/update_service.rb)
+
+   [Track usage event for incident created in graphql](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/graphql/mutations/alert_management/update_alert_status.rb)
+
+   ```ruby
+     track_usage_event(:incident_management_incident_created, current_user.id)
+   ```
+
 1. Track event using `UsageData` API
 
    Increment unique users count using Redis HLL, for given event name.
@@ -849,4 +863,25 @@ The following is example content of the Usage Ping payload.
     ]
   }
 }
+```
+
+## Exporting Usage Ping SQL queries and definitions
+
+Two Rake tasks exist to export Usage Ping definitions. 
+
+- The Rake tasks export the raw SQL queries for `count`, `distinct_count`, `sum`.
+- The Rake tasks export the Redis counter class or the line of the Redis block for `redis_usage_data`.
+- The Rake tasks calculate the `alt_usage_data` metrics.
+
+In the home directory of your local GitLab installation run the following Rake tasks for the YAML and JSON versions respectively:
+
+```shell
+# for YAML export
+bin/rake gitlab:usage_data:dump_sql_in_yaml
+
+# for JSON export
+bin/rake gitlab:usage_data:dump_sql_in_json
+
+# You may pipe the output into a file
+bin/rake gitlab:usage_data:dump_sql_in_yaml > ~/Desktop/usage-metrics-2020-09-02.yaml
 ```
