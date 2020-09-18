@@ -1,0 +1,50 @@
+- if Gitlab.config.packages.enabled
+  %section.settings.as-package.no-animate#js-package-settings{ class: ('expanded' if expanded_by_default?) }
+    .settings-header
+      %h4
+        = _('Package Registry')
+      %button.btn.btn-default.js-settings-toggle{ type: 'button' }
+        = expanded_by_default? ? _('Collapse') : _('Expand')
+      %p
+        = _("Settings related to the use and experience of using GitLab's Package Registry.")
+
+    = render_if_exists 'admin/application_settings/ee_package_registry'
+
+    .settings-content
+      %h4
+        = _('Package file size limits')
+      %p
+        = _('Set limit to 0 to allow any file size.')
+      .scrolling-tabs-container.inner-page-scroll-tabs
+        - if @plans.size > 1
+          %ul.nav-links.scrolling-tabs.mobile-separator.nav.nav-tabs.mb-3
+            - @plans.each_with_index do |plan, index|
+              %li
+                = link_to admin_plan_limits_path(anchor: 'js-package-settings'), data: { target: "div#plan#{index}", action: "plan#{index}", toggle: 'tab'}, class: index == 0 ? 'active': '' do
+                  = plan.name.capitalize
+        .tab-content
+          - @plans.each_with_index do |plan, index|
+            .tab-pane{ :id => "plan#{index}", class: index == 0 ? 'active': '' }
+              = form_for plan.actual_limits, url: admin_plan_limits_path(anchor: 'js-package-settings'), html: { class: 'fieldset-form' }, method: :post do |f|
+                = form_errors(plan)
+                %fieldset
+                  = f.hidden_field(:plan_id, value: plan.id)
+                  .form-group
+                    = f.label :conan_max_file_size, _('Maximum Conan package file size in bytes'), class: 'label-bold'
+                    = f.number_field :conan_max_file_size, class: 'form-control'
+                  .form-group
+                    = f.label :maven_max_file_size, _('Maximum Maven package file size in bytes'), class: 'label-bold'
+                    = f.number_field :maven_max_file_size, class: 'form-control'
+                  .form-group
+                    = f.label :npm_max_file_size, _('Maximum NPM package file size in bytes'), class: 'label-bold'
+                    = f.number_field :npm_max_file_size, class: 'form-control'
+                  .form-group
+                    = f.label :nuget_max_file_size, _('Maximum NuGet package file size in bytes'), class: 'label-bold'
+                    = f.number_field :nuget_max_file_size, class: 'form-control'
+                  .form-group
+                    = f.label :pypi_max_file_size, _('Maximum PyPI package file size in bytes'), class: 'label-bold'
+                    = f.number_field :pypi_max_file_size, class: 'form-control'
+                  .form-group
+                    = f.label :generic_packages_max_file_size, _('Generic package file size in bytes'), class: 'label-bold'
+                    = f.number_field :generic_packages_max_file_size, class: 'form-control'
+                  = f.submit _('Save %{name} size limits').html_safe % { name: plan.name.capitalize }, class: 'btn gl-button btn-success'

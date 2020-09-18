@@ -7,13 +7,13 @@ export default {
   name: 'ReleasesPaginationRest',
   components: { TablePagination },
   computed: {
-    ...mapState('list', ['projectId', 'pageInfo']),
+    ...mapState('list', ['pageInfo']),
   },
   methods: {
     ...mapActions('list', ['fetchReleasesRest']),
     onChangePage(page) {
       historyPushState(buildUrlWithCurrentLocation(`?page=${page}`));
-      this.fetchReleasesRest({ page, projectId: this.projectId });
+      this.fetchReleasesRest({ page });
     },
   },
 };

@@ -3101,6 +3101,9 @@ msgstr ""
 msgid "Application ID"
 msgstr ""
 
+msgid "Application limits saved successfully"
+msgstr ""
+
 msgid "Application settings saved successfully"
 msgstr ""
 
@@ -11378,6 +11381,9 @@ msgstr ""
 msgid "Generate new token"
 msgstr ""
 
+msgid "Generic package file size in bytes"
+msgstr ""
+
 msgid "Geo"
 msgstr ""
 
@@ -15403,6 +15409,21 @@ msgstr ""
 msgid "Max size 15 MB"
 msgstr ""
 
+msgid "Maximum Conan package file size in bytes"
+msgstr ""
+
+msgid "Maximum Maven package file size in bytes"
+msgstr ""
+
+msgid "Maximum NPM package file size in bytes"
+msgstr ""
+
+msgid "Maximum NuGet package file size in bytes"
+msgstr ""
+
+msgid "Maximum PyPI package file size in bytes"
+msgstr ""
+
 msgid "Maximum Users:"
 msgstr ""
 
@@ -17860,6 +17881,9 @@ msgid "Package already exists"
 msgstr ""
 
 msgid "Package deleted successfully"
+msgstr ""
+
+msgid "Package file size limits"
 msgstr ""
 
 msgid "Package recipe already exists"
@@ -21987,6 +22011,9 @@ msgstr ""
 msgid "Save"
 msgstr ""
 
+msgid "Save %{name} size limits"
+msgstr ""
+
 msgid "Save Changes"
 msgstr ""
 
@@ -23046,6 +23073,9 @@ msgid "Set instance-wide template repository"
 msgstr ""
 
 msgid "Set iteration"
+msgstr ""
+
+msgid "Set limit to 0 to allow any file size."
 msgstr ""
 
 msgid "Set max session time for web terminal."

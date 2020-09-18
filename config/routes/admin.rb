@@ -141,6 +141,8 @@ namespace :admin do
     get :status_delete_self_monitoring_project
   end
 
+  resources :plan_limits, only: :create
+
   resources :labels
 
   resources :runners, only: [:index, :show, :update, :destroy] do

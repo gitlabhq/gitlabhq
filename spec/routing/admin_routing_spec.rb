@@ -178,3 +178,9 @@ RSpec.describe Admin::SessionsController, "routing" do
     expect(post("/admin/session/destroy")).to route_to('admin/sessions#destroy')
   end
 end
+
+RSpec.describe Admin::PlanLimitsController, "routing" do
+  it "to #create" do
+    expect(post("/admin/plan_limits")).to route_to('admin/plan_limits#create')
+  end
+end

@@ -7,11 +7,6 @@ RSpec.describe 'Expand and collapse diffs', :js do
   let(:project) { create(:project, :repository) }
 
   before do
-    # Set the limits to those when these specs were written, to avoid having to
-    # update the test repo every time we change them.
-    allow(Gitlab::Git::Diff).to receive(:size_limit).and_return(100.kilobytes)
-    allow(Gitlab::Git::Diff).to receive(:collapse_limit).and_return(10.kilobytes)
-
     sign_in(create(:admin))
 
     # Ensure that undiffable.md is in .gitattributes

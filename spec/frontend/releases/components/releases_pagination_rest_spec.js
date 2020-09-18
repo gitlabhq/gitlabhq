@@ -59,7 +59,7 @@ describe('~/releases/components/releases_pagination_rest.vue', () => {
 
     it('calls fetchReleasesRest with the correct page', () => {
       expect(listModule.actions.fetchReleasesRest.mock.calls).toEqual([
-        [expect.anything(), { projectId, page: newPage }],
+        [expect.anything(), { page: newPage }],
       ]);
     });
 

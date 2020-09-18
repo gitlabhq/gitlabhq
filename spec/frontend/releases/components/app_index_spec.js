@@ -27,15 +27,18 @@ describe('Releases App ', () => {
     tagName: `${index}.00`,
   }));
 
-  const defaultProps = {
+  const defaultInitialState = {
     projectId: 'gitlab-ce',
     projectPath: 'gitlab-org/gitlab-ce',
     documentationPath: 'help/releases',
     illustrationPath: 'illustration/path',
   };
 
-  const createComponent = (propsData = defaultProps) => {
-    const listModule = createListModule({});
+  const createComponent = (stateUpdates = {}) => {
+    const listModule = createListModule({
+      ...defaultInitialState,
+      ...stateUpdates,
+    });
 
     fetchReleaseSpy = jest.spyOn(listModule.actions, 'fetchReleases');
 
@@ -51,7 +54,6 @@ describe('Releases App ', () => {
     wrapper = shallowMount(ReleasesApp, {
       store,
       localVue,
-      propsData,
     });
   };
 
@@ -68,13 +70,9 @@ describe('Releases App ', () => {
       createComponent();
     });
 
-    it('calls fetchRelease with the page, project ID, and project path', () => {
+    it('calls fetchRelease with the page parameter', () => {
       expect(fetchReleaseSpy).toHaveBeenCalledTimes(1);
-      expect(fetchReleaseSpy).toHaveBeenCalledWith(expect.anything(), {
-        page: null,
-        projectId: defaultProps.projectId,
-        projectPath: defaultProps.projectPath,
-      });
+      expect(fetchReleaseSpy).toHaveBeenCalledWith(expect.anything(), { page: null });
     });
   });
 
@@ -156,7 +154,7 @@ describe('Releases App ', () => {
       const newReleasePath = 'path/to/new/release';
 
       beforeEach(() => {
-        createComponent({ ...defaultProps, newReleasePath });
+        createComponent({ ...defaultInitialState, newReleasePath });
       });
 
       it('renders the "New release" button', () => {

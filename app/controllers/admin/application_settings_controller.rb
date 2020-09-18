@@ -170,6 +170,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
 
   def set_application_setting
     @application_setting = ApplicationSetting.current_without_cache
+    @plans = Plan.all
   end
 
   def whitelist_query_limiting

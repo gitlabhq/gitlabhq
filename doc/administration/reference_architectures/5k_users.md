@@ -162,6 +162,14 @@ added to GitLab to configure SSL certificates. See
 [NGINX HTTPS documentation](https://docs.gitlab.com/omnibus/settings/nginx.html#enable-https)
 for details on managing SSL certificates and configuring NGINX.
 
+### Readiness checks
+
+Ensure the external load balancer only routes to working services with built
+in monitoring endpoints. The [readiness checks](../../user/admin_area/monitoring/health_check.md)
+all require [additional configuration](../monitoring/ip_whitelist.md)
+on the nodes being checked, otherwise, the external load balancer will not be able to
+connect.
+
 ### Ports
 
 The basic ports to be used are shown in the table below.

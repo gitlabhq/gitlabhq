@@ -42,7 +42,7 @@ doesn't require you to provision and maintain a node.
 
 To set up GitLab and its components to accommodate up to 2,000 users:
 
-1. [Configure the external load balancing node](#configure-the-load-balancer)
+1. [Configure the external load balancing node](#configure-the-external-load-balancer)
    to handle the load balancing of the two GitLab application services nodes.
 1. [Configure PostgreSQL](#configure-postgresql), the database for GitLab.
 1. [Configure Redis](#configure-redis).
@@ -60,7 +60,7 @@ To set up GitLab and its components to accommodate up to 2,000 users:
    storage. You can skip this step if you're not using GitLab Pages (which
    requires NFS).
 
-## Configure the load balancer
+## Configure the external load balancer
 
 NOTE: **Note:**
 This architecture has been tested and validated with [HAProxy](https://www.haproxy.org/).
@@ -114,6 +114,14 @@ and there's no need to add a configuration for proxied SSL. However, you'll
 need to add a configuration to GitLab to configure SSL certificates. For
 details about managing SSL certificates and configuring NGINX, see the
 [NGINX HTTPS documentation](https://docs.gitlab.com/omnibus/settings/nginx.html#enable-https).
+
+### Readiness checks
+
+Ensure the external load balancer only routes to working services with built
+in monitoring endpoints. The [readiness checks](../../user/admin_area/monitoring/health_check.md)
+all require [additional configuration](../monitoring/ip_whitelist.md)
+on the nodes being checked, otherwise, the external load balancer will not be able to
+connect.
 
 ### Ports
 
@@ -568,7 +576,7 @@ On each node perform the following:
 1. Create/edit `/etc/gitlab/gitlab.rb` and use the following configuration.
    To maintain uniformity of links across nodes, the `external_url`
    on the application server should point to the external URL that users will use
-   to access GitLab. This would be the URL of the [load balancer](#configure-the-load-balancer)
+   to access GitLab. This would be the URL of the [load balancer](#configure-the-external-load-balancer)
    which will route traffic to the GitLab application server:
 
    ```ruby

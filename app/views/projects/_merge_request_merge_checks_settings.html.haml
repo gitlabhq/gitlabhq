@@ -21,6 +21,6 @@
         .text-secondary
           = s_('ProjectSettings|This introduces the risk of merging changes that will not pass the pipeline.')
   .form-check.mb-2
-    = form.check_box :only_allow_merge_if_all_discussions_are_resolved, class: 'form-check-input'
+    = form.check_box :only_allow_merge_if_all_discussions_are_resolved, class: 'form-check-input', data: { qa_selector: 'allow_merge_if_all_discussions_are_resolved_checkbox' }
     = form.label :only_allow_merge_if_all_discussions_are_resolved, class: 'form-check-label' do
       = s_('ProjectSettings|All discussions must be resolved')

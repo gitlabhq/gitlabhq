@@ -7,9 +7,6 @@ RSpec.describe 'User expands diff', :js do
   let(:merge_request) { create(:merge_request, source_branch: 'expand-collapse-files', source_project: project, target_project: project) }
 
   before do
-    allow(Gitlab::Git::Diff).to receive(:size_limit).and_return(100.kilobytes)
-    allow(Gitlab::Git::Diff).to receive(:collapse_limit).and_return(10.kilobytes)
-
     visit(diffs_project_merge_request_path(project, merge_request))
 
     wait_for_requests

@@ -143,7 +143,7 @@ describe('~/releases/components/releases_pagination_graphql.vue', () => {
 
       it('calls fetchReleasesGraphQl with the correct after cursor', () => {
         expect(listModule.actions.fetchReleasesGraphQl.mock.calls).toEqual([
-          [expect.anything(), { projectPath, after: cursors.endCursor }],
+          [expect.anything(), { after: cursors.endCursor }],
         ]);
       });
 
@@ -161,7 +161,7 @@ describe('~/releases/components/releases_pagination_graphql.vue', () => {
 
       it('calls fetchReleasesGraphQl with the correct before cursor', () => {
         expect(listModule.actions.fetchReleasesGraphQl.mock.calls).toEqual([
-          [expect.anything(), { projectPath, before: cursors.startCursor }],
+          [expect.anything(), { before: cursors.startCursor }],
         ]);
       });
 

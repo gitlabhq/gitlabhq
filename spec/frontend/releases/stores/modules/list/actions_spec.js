@@ -23,11 +23,16 @@ describe('Releases State actions', () => {
   let pageInfo;
   let releases;
   let graphqlReleasesResponse;
-  let projectPath;
+
+  const projectPath = 'root/test-project';
+  const projectId = 19;
 
   beforeEach(() => {
     mockedState = {
-      ...createState({}),
+      ...createState({
+        projectId,
+        projectPath,
+      }),
       featureFlags: {
         graphqlReleaseData: true,
         graphqlReleasesPage: true,
@@ -38,7 +43,6 @@ describe('Releases State actions', () => {
     pageInfo = parseIntPagination(pageInfoHeadersWithoutPagination);
     releases = convertObjectPropsToCamelCase(originalReleases, { deep: true });
     graphqlReleasesResponse = cloneDeep(originalGraphqlReleasesResponse);
-    projectPath = 'root/test-project';
   });
 
   describe('requestReleases', () => {
@@ -51,7 +55,7 @@ describe('Releases State actions', () => {
     describe('success', () => {
       it('dispatches requestReleases and receiveReleasesSuccess', done => {
         jest.spyOn(gqClient, 'query').mockImplementation(({ query, variables }) => {
-          expect(query).toEqual(allReleasesQuery);
+          expect(query).toBe(allReleasesQuery);
           expect(variables).toEqual({
             fullPath: projectPath,
           });
@@ -60,7 +64,7 @@ describe('Releases State actions', () => {
 
         testAction(
           fetchReleases,
-          { projectPath },
+          {},
           mockedState,
           [],
           [
@@ -83,7 +87,7 @@ describe('Releases State actions', () => {
 
         testAction(
           fetchReleases,
-          { projectPath },
+          {},
           mockedState,
           [],
           [
@@ -107,14 +111,14 @@ describe('Releases State actions', () => {
       describe('success', () => {
         it('dispatches requestReleases and receiveReleasesSuccess', done => {
           jest.spyOn(api, 'releases').mockImplementation((id, options) => {
-            expect(id).toEqual(1);
-            expect(options.page).toEqual('1');
+            expect(id).toBe(projectId);
+            expect(options.page).toBe('1');
             return Promise.resolve({ data: releases, headers: pageInfoHeadersWithoutPagination });
           });
 
           testAction(
             fetchReleases,
-            { projectId: 1 },
+            {},
             mockedState,
             [],
             [
@@ -132,13 +136,13 @@ describe('Releases State actions', () => {
 
         it('dispatches requestReleases and receiveReleasesSuccess on page two', done => {
           jest.spyOn(api, 'releases').mockImplementation((_, options) => {
-            expect(options.page).toEqual('2');
+            expect(options.page).toBe('2');
             return Promise.resolve({ data: releases, headers: pageInfoHeadersWithoutPagination });
           });
 
           testAction(
             fetchReleases,
-            { page: '2', projectId: 1 },
+            { page: '2' },
             mockedState,
             [],
             [
@@ -161,7 +165,7 @@ describe('Releases State actions', () => {
 
           testAction(
             fetchReleases,
-            { projectId: null },
+            {},
             mockedState,
             [],
             [

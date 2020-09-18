@@ -1,0 +1,5 @@
+---
+title: Remove an extra spacing from Dashboard Issues
+merge_request: 42459
+author: Takuya Noguchi
+type: fixed

@@ -23,7 +23,7 @@ export const requestReleases = ({ commit }) => commit(types.REQUEST_RELEASES);
  *
  * @param {String} projectId
  */
-export const fetchReleases = ({ dispatch, rootState }, { page = '1', projectId, projectPath }) => {
+export const fetchReleases = ({ dispatch, rootState, state }, { page = '1' }) => {
   dispatch('requestReleases');
 
   if (
@@ -35,7 +35,7 @@ export const fetchReleases = ({ dispatch, rootState }, { page = '1', projectId, 
       .query({
         query: allReleasesQuery,
         variables: {
-          fullPath: projectPath,
+          fullPath: state.projectPath,
         },
       })
       .then(response => {
@@ -44,7 +44,7 @@ export const fetchReleases = ({ dispatch, rootState }, { page = '1', projectId, 
       .catch(() => dispatch('receiveReleasesError'));
   } else {
     api
-      .releases(projectId, { page })
+      .releases(state.projectId, { page })
       .then(response => dispatch('receiveReleasesSuccess', response))
       .catch(() => dispatch('receiveReleasesError'));
   }

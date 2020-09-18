@@ -196,7 +196,9 @@ To set required pipeline configuration:
 
 ![Required pipeline](img/admin_required_pipeline.png)
 
-## Package Registry configuration **(PREMIUM ONLY)**
+## Package Registry configuration
+
+### NPM Forwarding **(PREMIUM ONLY)**
 
 GitLab administrators can disable the forwarding of NPM requests to [npmjs.com](https://www.npmjs.com/).
 
@@ -208,3 +210,15 @@ To disable it:
 1. Click **Save changes**.
 
 ![NPM package requests forwarding](img/admin_package_registry_npm_package_requests_forward.png)
+
+### Package file size limits
+
+GitLab administrators can adjust the maximum allowed file size for each package type.
+
+To set the maximum file size:
+
+1. Go to **Admin Area > Settings > CI/CD**.
+1. Expand the **Package Registry** section.
+1. Find the package type you would like to adjust.
+1. Enter the maximum file size, in bytes.
+1. Click **Save size limits**.

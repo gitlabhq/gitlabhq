@@ -25,31 +25,16 @@ export default {
     GlLink,
     GlButton,
   },
-  props: {
-    projectId: {
-      type: String,
-      required: true,
-    },
-    projectPath: {
-      type: String,
-      required: true,
-    },
-    documentationPath: {
-      type: String,
-      required: true,
-    },
-    illustrationPath: {
-      type: String,
-      required: true,
-    },
-    newReleasePath: {
-      type: String,
-      required: false,
-      default: '',
-    },
-  },
   computed: {
-    ...mapState('list', ['isLoading', 'releases', 'hasError', 'pageInfo']),
+    ...mapState('list', [
+      'documentationPath',
+      'illustrationPath',
+      'newReleasePath',
+      'isLoading',
+      'releases',
+      'hasError',
+      'pageInfo',
+    ]),
     shouldRenderEmptyState() {
       return !this.releases.length && !this.hasError && !this.isLoading;
     },
@@ -65,15 +50,13 @@ export default {
   created() {
     this.fetchReleases({
       page: getParameterByName('page'),
-      projectId: this.projectId,
-      projectPath: this.projectPath,
     });
   },
   methods: {
     ...mapActions('list', ['fetchReleases']),
     onChangePage(page) {
       historyPushState(buildUrlWithCurrentLocation(`?page=${page}`));
-      this.fetchReleases({ page, projectId: this.projectId });
+      this.fetchReleases({ page });
     },
   },
 };

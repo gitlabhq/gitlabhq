@@ -22,6 +22,7 @@ module RuboCop
         def on_send(node)
           distinct_count?(node) do |method_name, method_arguments|
             next unless method_arguments && method_arguments.length >= 2
+            next if batch_set_to_false?(method_arguments[2])
             next if allowed_foreign_key?(method_arguments[1])
 
             add_offense(node, location: :selector, message: format(MSG, method_name))
@@ -36,6 +37,21 @@ module RuboCop
 
         def allowed_foreign_keys
           (cop_config['AllowedForeignKeys'] || []).map(&:to_s)
+        end
+
+        def batch_set_to_false?(options)
+          return false unless options.is_a?(RuboCop::AST::HashNode)
+
+          batch_set_to_false = false
+          options.each_pair do |key, value|
+            next unless value.boolean_type? && value.falsey_literal?
+            next unless key.type == :sym && key.value == :batch
+
+            batch_set_to_false = true
+            break
+          end
+
+          batch_set_to_false
         end
       end
     end

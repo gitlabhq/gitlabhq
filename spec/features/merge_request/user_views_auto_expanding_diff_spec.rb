@@ -11,9 +11,6 @@ RSpec.describe 'User views diffs file-by-file', :js do
   let(:user) { create(:user, view_diffs_file_by_file: true) }
 
   before do
-    allow(Gitlab::Git::Diff).to receive(:size_limit).and_return(100.kilobytes)
-    allow(Gitlab::Git::Diff).to receive(:collapse_limit).and_return(10.kilobytes)
-
     project.add_developer(user)
 
     sign_in(user)

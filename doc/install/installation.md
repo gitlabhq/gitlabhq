@@ -311,12 +311,19 @@ sudo adduser --disabled-login --gecos 'GitLab' git
 ## 6. Database
 
 NOTE: **Note:**
-Starting from GitLab 12.1, only PostgreSQL is supported. Since GitLab 13.0, we require PostgreSQL 11+.
+Starting from GitLab 12.1, only PostgreSQL is supported. Since GitLab 13.0, we [require PostgreSQL 11+](requirements.md#postgresql-requirements).
 
 1. Install the database packages:
 
    ```shell
    sudo apt-get install -y postgresql postgresql-client libpq-dev postgresql-contrib
+   ```
+   
+1. Verify the PostgreSQL version you have is supported by the version of GitLab you're
+   installing:
+
+   ```shell
+   psql --version
    ```
 
 1. Start the PostgreSQL service and confirm that the service is running:

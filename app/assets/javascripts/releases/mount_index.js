@@ -21,9 +21,6 @@ export default () => {
         graphqlMilestoneStats: Boolean(gon.features?.graphqlMilestoneStats),
       },
     }),
-    render: h =>
-      h(ReleaseListApp, {
-        props: el.dataset,
-      }),
+    render: h => h(ReleaseListApp),
   });
 };
