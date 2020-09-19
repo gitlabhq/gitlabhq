@@ -37,6 +37,8 @@ class ProjectStatistics < ApplicationRecord
   end
 
   def refresh!(only: [])
+    return if Gitlab::Database.read_only?
+
     COLUMNS_TO_REFRESH.each do |column, generator|
       if only.empty? || only.include?(column)
         public_send("update_#{column}") # rubocop:disable GitlabSecurity/PublicSend

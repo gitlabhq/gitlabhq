@@ -201,6 +201,23 @@ RSpec.describe ProjectStatistics do
         statistics.refresh!(only: [:commit_count])
       end
     end
+
+    context 'when the database is read-only' do
+      it 'does nothing' do
+        allow(Gitlab::Database).to receive(:read_only?) { true }
+
+        expect(statistics).not_to receive(:update_commit_count)
+        expect(statistics).not_to receive(:update_repository_size)
+        expect(statistics).not_to receive(:update_wiki_size)
+        expect(statistics).not_to receive(:update_lfs_objects_size)
+        expect(statistics).not_to receive(:update_snippets_size)
+        expect(statistics).not_to receive(:save!)
+        expect(Namespaces::ScheduleAggregationWorker)
+          .not_to receive(:perform_async)
+
+        statistics.refresh!
+      end
+    end
   end
 
   describe '#update_commit_count' do
