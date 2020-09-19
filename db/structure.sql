@@ -19478,6 +19478,8 @@ CREATE UNIQUE INDEX index_atlassian_identities_on_extern_uid ON atlassian_identi
 
 CREATE INDEX index_authentication_events_on_provider ON authentication_events USING btree (provider);
 
+CREATE INDEX index_authentication_events_on_provider_user_id_created_at ON authentication_events USING btree (provider, user_id, created_at) WHERE (result = 1);
+
 CREATE INDEX index_authentication_events_on_user_id ON authentication_events USING btree (user_id);
 
 CREATE INDEX index_award_emoji_on_awardable_type_and_awardable_id ON award_emoji USING btree (awardable_type, awardable_id);

@@ -1,8 +1,11 @@
-# Issue links API **(STARTER)**
+# Issue links API **(CORE)**
+
+> The simple "relates to" relationship [moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212329) to [GitLab Core](https://about.gitlab.com/pricing/) in 13.4.
 
 ## List issue relations
 
-Get a list of related issues of a given issue, sorted by the relationship creation datetime (ascending).
+Get a list of a given issue's [related issues](../user/project/issues/related_issues.md),
+sorted by the relationship creation datetime (ascending).
 Issues will be filtered according to the user authorizations.
 
 ```plaintext
