@@ -700,7 +700,6 @@ Rails/SaveBang:
     - 'ee/spec/models/application_setting_spec.rb'
     - 'ee/spec/models/approval_merge_request_rule_spec.rb'
     - 'ee/spec/models/approval_project_rule_spec.rb'
-    - 'ee/spec/models/approval_state_spec.rb'
     - 'ee/spec/models/burndown_spec.rb'
     - 'ee/spec/models/ci/pipeline_spec.rb'
     - 'ee/spec/models/ci/subscriptions/project_spec.rb'
