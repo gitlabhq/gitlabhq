@@ -36,7 +36,7 @@ At a high level, the required steps include the following:
 Minimum requirements (depending on the GitLab Manage Application you want to install):
 
 - Your cluster is connected to GitLab (ModSecurity, Cilium, and Falco).
-- At least one GitLab Runner is installed (Cilium and Falco only).
+- At least one runner is installed (Cilium and Falco only).
 
 ### Understanding how GitLab Managed Apps are installed
 
@@ -62,7 +62,7 @@ deployment logs. The Web Application Firewall feature uses this installation met
 
 However, the next generation of GitLab Managed Apps V2 ([CI/CD-based GitLab Managed Apps](https://gitlab.com/groups/gitlab-org/-/epics/2103))
 don't use Sidekiq to deploy. All the applications are deployed using a GitLab CI/CD pipeline and
-therefore GitLab Runners.
+therefore, by runners.
 
 ```mermaid
 sequenceDiagram
@@ -91,14 +91,14 @@ the Web Application Firewall from the project or group Kubernetes page.
 Note that your project doesn't have to be hosted or deployed through GitLab. You can manage a
 cluster independent of the applications that use the cluster.
 
-## Set up a GitLab Runner
+## Set up a runner
 
-To install CI/CD-based GitLab Managed Apps, a pipeline using a GitLab Runner must be running in
-GitLab. You can [install a GitLab Runner](../../clusters/applications.md#gitlab-runner)
+To install CI/CD-based GitLab Managed Apps, a pipeline using a runner must be running in
+GitLab. You can [install a runner](../../clusters/applications.md#gitlab-runner)
 in the Kubernetes cluster added in the previous step, or use one of the shared runners provided by
 GitLab if you're using GitLab.com.
 
-With your cluster connected to GitLab and a GitLab Runner in place, you can proceed to the next
+With your cluster connected to GitLab and a runner in place, you can proceed to the next
 steps and start installing the Cilium and Falco GitLab Managed Apps to secure your applications
 hosted on this cluster.
 

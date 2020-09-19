@@ -101,12 +101,12 @@ export default {
       @keydown.esc.native="$emit('hide-dropdown')"
       @hide="$emit('hide-dropdown')"
     >
-      <div v-if="isSidebar" class="dropdown-title text-center">
-        <span class="alert-title">{{ s__('AlertManagement|Assign status') }}</span>
+      <div v-if="isSidebar" class="dropdown-title gl-display-flex">
+        <span class="alert-title gl-ml-auto">{{ s__('AlertManagement|Assign status') }}</span>
         <gl-button
           :aria-label="__('Close')"
           variant="link"
-          class="dropdown-title-button dropdown-menu-close"
+          class="dropdown-title-button dropdown-menu-close gl-ml-auto gl-text-black-normal!"
           icon="close"
           @click="$emit('hide-dropdown')"
         />

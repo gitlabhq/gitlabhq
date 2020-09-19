@@ -1,6 +1,3 @@
-/* eslint-disable import/prefer-default-export */
-/* https://gitlab.com/gitlab-org/frontend/rfcs/-/issues/20 */
-
 export const diffMetadata = {
   real_size: '1',
   size: 1,

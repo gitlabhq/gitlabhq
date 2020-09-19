@@ -48,7 +48,7 @@ $item-remove-button-space: 42px;
   }
 
   .confidential-icon {
-    color: $orange-600;
+    color: $orange-500;
   }
 
   .item-title-wrapper {
@@ -123,20 +123,10 @@ $item-remove-button-space: 42px;
   .item-milestone {
     text-decoration: none;
     max-width: $item-milestone-max-width;
-
-    .ic-clock {
-      margin-right: $gl-padding-4;
-    }
   }
 
   .item-weight {
     max-width: $item-weight-max-width;
-  }
-
-  .item-milestone .ic-clock,
-  .item-weight .ic-weight,
-  .item-due-date .ic-calendar {
-    color: $gl-text-color-secondary;
   }
 }
 

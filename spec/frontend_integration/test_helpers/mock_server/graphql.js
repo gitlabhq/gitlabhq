@@ -16,6 +16,5 @@ const graphqlResolvers = {
   },
 };
 
-// eslint-disable-next-line import/prefer-default-export
 export const graphqlQuery = (query, variables, schema) =>
   graphql(graphqlSchema, query, graphqlResolvers, schema, variables);

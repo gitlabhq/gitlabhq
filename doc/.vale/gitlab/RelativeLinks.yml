@@ -10,4 +10,4 @@ link: https://docs.gitlab.com/ee/development/documentation/styleguide.html#links
 level: error
 scope: raw
 raw:
-  - '\[.+\]\(https?:\/\/docs\.gitlab\.com\/ee.*\)'
+  - '\[.+\]\(https?:\/\/docs\.gitlab\.com\/[ce]e.*\)'

@@ -15,7 +15,7 @@ RSpec.describe Gitlab::UpdatedNotesPaginator do
   let(:page_1_boundary) { page_1.last.updated_at + NotesFinder::FETCH_OVERLAP }
 
   around do |example|
-    Timecop.freeze do
+    freeze_time do
       example.run
     end
   end

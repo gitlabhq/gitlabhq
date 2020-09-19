@@ -13,7 +13,7 @@ RSpec.describe IncidentManagement::Incidents::CreateService do
     context 'when incident has title and description' do
       let(:title) { 'Incident title' }
       let(:new_issue) { Issue.last! }
-      let(:label_title) { IncidentManagement::CreateIncidentLabelService::LABEL_PROPERTIES[:title] }
+      let(:label_title) { attributes_for(:label, :incident)[:title] }
 
       it 'responds with success' do
         expect(create_incident).to be_success
@@ -23,14 +23,47 @@ RSpec.describe IncidentManagement::Incidents::CreateService do
         expect { create_incident }.to change(Issue, :count).by(1)
       end
 
-      it 'created issue has correct attributes' do
+      it 'created issue has correct attributes', :aggregate_failures do
         create_incident
-        aggregate_failures do
-          expect(new_issue.title).to eq(title)
-          expect(new_issue.description).to eq(description)
-          expect(new_issue.author).to eq(user)
-          expect(new_issue.issue_type).to eq('incident')
-          expect(new_issue.labels.map(&:title)).to eq([label_title])
+
+        expect(new_issue.title).to eq(title)
+        expect(new_issue.description).to eq(description)
+        expect(new_issue.author).to eq(user)
+      end
+
+      it_behaves_like 'incident issue' do
+        before do
+          create_incident
+        end
+
+        let(:issue) { new_issue }
+      end
+
+      context 'with default severity' do
+        it 'sets the correct severity level to "unknown"' do
+          create_incident
+          expect(new_issue.severity).to eq(IssuableSeverity::DEFAULT)
+        end
+      end
+
+      context 'with severity' do
+        using RSpec::Parameterized::TableSyntax
+
+        subject(:create_incident) { described_class.new(project, user, title: title, description: description, severity: severity).execute }
+
+        where(:severity, :incident_severity) do
+          'critical' | 'critical'
+          'high'     | 'high'
+          'medium'   | 'medium'
+          'low'      | 'low'
+          'unknown'  | 'unknown'
+        end
+
+        with_them do
+          it 'sets the correct severity level' do
+            create_incident
+            expect(new_issue.severity).to eq(incident_severity)
+          end
         end
       end
 

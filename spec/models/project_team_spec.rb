@@ -3,6 +3,8 @@
 require "spec_helper"
 
 RSpec.describe ProjectTeam do
+  include ProjectForksHelper
+
   let(:maintainer) { create(:user) }
   let(:reporter) { create(:user) }
   let(:guest) { create(:user) }
@@ -237,6 +239,35 @@ RSpec.describe ProjectTeam do
     end
   end
 
+  describe '#contributor?' do
+    let(:project) { create(:project, :public, :repository) }
+
+    context 'when user is a member of project' do
+      before do
+        project.add_maintainer(maintainer)
+        project.add_reporter(reporter)
+        project.add_guest(guest)
+      end
+
+      it { expect(project.team.contributor?(maintainer.id)).to be false }
+      it { expect(project.team.contributor?(reporter.id)).to be false }
+      it { expect(project.team.contributor?(guest.id)).to be false }
+    end
+
+    context 'when user has at least one merge request merged into default_branch' do
+      let(:contributor) { create(:user) }
+      let(:user_without_access) { create(:user) }
+      let(:first_fork_project) { fork_project(project, contributor, repository: true) }
+
+      before do
+        create(:merge_request, :merged, author: contributor, target_project: project, source_project: first_fork_project, target_branch: project.default_branch.to_s)
+      end
+
+      it { expect(project.team.contributor?(contributor.id)).to be true }
+      it { expect(project.team.contributor?(user_without_access.id)).to be false }
+    end
+  end
+
   describe '#max_member_access' do
     let(:requester) { create(:user) }
 
@@ -366,6 +397,66 @@ RSpec.describe ProjectTeam do
     end
   end
 
+  describe '#contribution_check_for_user_ids', :request_store do
+    let(:project) { create(:project, :public, :repository) }
+    let(:contributor) { create(:user) }
+    let(:second_contributor) { create(:user) }
+    let(:user_without_access) { create(:user) }
+    let(:first_fork_project) { fork_project(project, contributor, repository: true) }
+    let(:second_fork_project) { fork_project(project, second_contributor, repository: true) }
+
+    let(:users) do
+      [contributor, second_contributor, user_without_access].map(&:id)
+    end
+
+    let(:expected) do
+      {
+        contributor.id => true,
+        second_contributor.id => true,
+        user_without_access.id => false
+      }
+    end
+
+    before do
+      create(:merge_request, :merged, author: contributor, target_project: project, source_project: first_fork_project, target_branch: project.default_branch.to_s)
+      create(:merge_request, :merged, author: second_contributor, target_project: project, source_project: second_fork_project, target_branch: project.default_branch.to_s)
+    end
+
+    def contributors(users)
+      project.team.contribution_check_for_user_ids(users)
+    end
+
+    it 'does not perform extra queries when asked for users who have already been found' do
+      contributors(users)
+
+      expect { contributors([contributor.id]) }.not_to exceed_query_limit(0)
+
+      expect(contributors([contributor.id])).to eq(expected)
+    end
+
+    it 'only requests the extra users when uncached users are passed' do
+      new_contributor = create(:user)
+      new_fork_project = fork_project(project, new_contributor, repository: true)
+      second_new_user = create(:user)
+      all_users = users + [new_contributor.id, second_new_user.id]
+      create(:merge_request, :merged, author: new_contributor, target_project: project, source_project: new_fork_project, target_branch: project.default_branch.to_s)
+
+      expected_all = expected.merge(new_contributor.id => true,
+                                    second_new_user.id => false)
+
+      contributors(users)
+
+      queries = ActiveRecord::QueryRecorder.new { contributors(all_users) }
+
+      expect(queries.count).to eq(1)
+      expect(contributors([new_contributor.id])).to eq(expected_all)
+    end
+
+    it 'returns correct contributors' do
+      expect(contributors(users)).to eq(expected)
+    end
+  end
+
   shared_examples 'max member access for users' do
     let(:project) { create(:project) }
     let(:group) { create(:group) }
@@ -438,9 +529,9 @@ RSpec.describe ProjectTeam do
       it 'does not perform extra queries when asked for users who have already been found' do
         access_levels(users)
 
-        expect { access_levels(users) }.not_to exceed_query_limit(0)
+        expect { access_levels([maintainer.id]) }.not_to exceed_query_limit(0)
 
-        expect(access_levels(users)).to eq(expected)
+        expect(access_levels([maintainer.id])).to eq(expected)
       end
 
       it 'only requests the extra users when uncached users are passed' do

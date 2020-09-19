@@ -1,4 +1,5 @@
 <script>
+/* eslint-disable vue/no-v-html */
 import { sanitize } from 'dompurify';
 import Prompt from '../prompt.vue';
 

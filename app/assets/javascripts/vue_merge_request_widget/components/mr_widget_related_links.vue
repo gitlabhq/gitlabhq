@@ -1,4 +1,5 @@
 <script>
+/* eslint-disable vue/no-v-html */
 import { s__ } from '~/locale';
 
 export default {

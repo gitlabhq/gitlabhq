@@ -5,7 +5,7 @@ module QA
     module Project
       module Issue
         class Index < Page::Base
-          view 'app/assets/javascripts/issuables_list/components/issuable.vue' do
+          view 'app/assets/javascripts/issues_list/components/issuable.vue' do
             element :issue_container
             element :issue_link
           end

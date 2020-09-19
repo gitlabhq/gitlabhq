@@ -25,7 +25,7 @@ RSpec.describe PrometheusAdapter, :use_clean_rails_memory_store_caching do
       let(:validation_respone) { { data: { valid: true } } }
 
       around do |example|
-        Timecop.freeze { example.run }
+        freeze_time { example.run }
       end
 
       context 'with valid data' do
@@ -45,7 +45,7 @@ RSpec.describe PrometheusAdapter, :use_clean_rails_memory_store_caching do
       let(:environment) { build_stubbed(:environment, slug: 'env-slug') }
 
       around do |example|
-        Timecop.freeze { example.run }
+        freeze_time { example.run }
       end
 
       context 'with valid data' do
@@ -85,7 +85,7 @@ RSpec.describe PrometheusAdapter, :use_clean_rails_memory_store_caching do
       let(:deployment_query) { Gitlab::Prometheus::Queries::DeploymentQuery }
 
       around do |example|
-        Timecop.freeze { example.run }
+        freeze_time { example.run }
       end
 
       context 'with valid data' do
@@ -107,7 +107,7 @@ RSpec.describe PrometheusAdapter, :use_clean_rails_memory_store_caching do
       let(:time_window) { [1552642245.067, 1552642095.831] }
 
       around do |example|
-        Timecop.freeze { example.run }
+        freeze_time { example.run }
       end
 
       context 'with valid data' do
@@ -137,7 +137,7 @@ RSpec.describe PrometheusAdapter, :use_clean_rails_memory_store_caching do
     end
 
     around do |example|
-      Timecop.freeze { example.run }
+      freeze_time { example.run }
     end
 
     context 'when service is inactive' do

@@ -26,7 +26,7 @@ To have:
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10586) in GitLab 12.4.
 
 CAUTION: **Caution:**
-This is a [**beta** feature](https://about.gitlab.com/handbook/product/#beta) and is not ready yet for production use at any scale.
+This is a [**beta** feature](https://about.gitlab.com/handbook/product/#beta) and is not ready yet for production use at any scale. The main limitations are a lack of testing at scale and no verification of any replicated data.
 
 **Secondary** nodes can replicate files stored on the **primary** node regardless of
 whether they are stored on the local filesystem or in object storage.
@@ -44,7 +44,7 @@ For LFS, follow the documentation to
 For CI job artifacts, there is similar documentation to configure
 [jobs artifact object storage](../../job_artifacts.md#using-object-storage)
 
-For user uploads, there is similar documentation to configure [upload object storage](../../uploads.md#using-object-storage-core-only)
+For user uploads, there is similar documentation to configure [upload object storage](../../uploads.md#using-object-storage)
 
 If you want to migrate the **primary** node's files to object storage, you can
 configure the **secondary** in a few ways:

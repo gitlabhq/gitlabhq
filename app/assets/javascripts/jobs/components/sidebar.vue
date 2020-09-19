@@ -1,11 +1,11 @@
 <script>
 import { isEmpty } from 'lodash';
 import { mapActions, mapState } from 'vuex';
-import { GlLink, GlDeprecatedButton } from '@gitlab/ui';
+import { GlLink, GlDeprecatedButton, GlIcon } from '@gitlab/ui';
 import { __, sprintf } from '~/locale';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
+import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate.vue';
 import { timeIntervalInWords } from '~/lib/utils/datetime_utility';
-import Icon from '~/vue_shared/components/icon.vue';
 import DetailRow from './sidebar_detail_row.vue';
 import ArtifactsBlock from './artifacts_block.vue';
 import TriggerBlock from './trigger_block.vue';
@@ -19,15 +19,21 @@ export default {
     ArtifactsBlock,
     CommitBlock,
     DetailRow,
-    Icon,
+    GlIcon,
     TriggerBlock,
     StagesDropdown,
     JobsContainer,
     GlLink,
     GlDeprecatedButton,
+    TooltipOnTruncate,
   },
   mixins: [timeagoMixin],
   props: {
+    artifactHelpUrl: {
+      type: String,
+      required: false,
+      default: '',
+    },
     runnerHelpUrl: {
       type: String,
       required: false,
@@ -112,7 +118,11 @@ export default {
     <div class="sidebar-container">
       <div class="blocks-container">
         <div class="block d-flex flex-nowrap align-items-center">
-          <h4 class="my-0 mr-2 text-break-word">{{ job.name }}</h4>
+          <tooltip-on-truncate :title="job.name" truncate-target="child"
+            ><h4 class="my-0 mr-2 gl-text-truncate">
+              {{ job.name }}
+            </h4>
+          </tooltip-on-truncate>
           <div class="flex-grow-1 flex-shrink-0 text-right">
             <gl-link
               v-if="job.retry_path"
@@ -157,7 +167,7 @@ export default {
             class="js-terminal-link btn btn-primary btn-inverted visible-md-block visible-lg-block float-left"
             target="_blank"
           >
-            {{ __('Debug') }} <icon name="external-link" :size="14" />
+            {{ __('Debug') }} <gl-icon name="external-link" :size="14" />
           </gl-link>
         </div>
 
@@ -203,7 +213,7 @@ export default {
           </p>
         </div>
 
-        <artifacts-block v-if="hasArtifact" :artifact="job.artifact" />
+        <artifacts-block v-if="hasArtifact" :artifact="job.artifact" :help-url="artifactHelpUrl" />
         <trigger-block v-if="hasTriggers" :trigger="job.trigger" />
         <commit-block
           :is-last-block="hasStages"

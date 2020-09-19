@@ -16,7 +16,7 @@ remember to enable backups with your object storage provider if desired.
 
 ## Requirements
 
-In order to be able to backup and restore, you need two essential tools
+In order to be able to backup and restore, you need one essential tool
 installed on your system.
 
 - **Rsync**: If you installed GitLab:
@@ -295,6 +295,24 @@ For installations from source:
 sudo -u git -H bundle exec rake gitlab:backup:create SKIP=tar RAILS_ENV=production
 ```
 
+#### Disabling prompts during restore
+
+During a restore from backup, the restore script may ask for confirmation before
+proceeding. If you wish to disable these prompts, you can set the `GITLAB_ASSUME_YES`
+environment variable to `1`.
+
+For Omnibus GitLab packages:
+
+```shell
+sudo GITLAB_ASSUME_YES=1 gitlab-backup restore
+```
+
+For installations from source:
+
+```shell
+sudo -u git -H GITLAB_ASSUME_YES=1 bundle exec rake gitlab:backup:restore RAILS_ENV=production
+```
+
 #### Back up Git repositories concurrently
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/37158) in GitLab 13.3.
@@ -516,6 +534,44 @@ For installations from source:
 
 1. [Restart GitLab](../administration/restart_gitlab.md#installations-from-source) for the changes to take effect
 
+##### Using Azure Blob storage
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/25877) in GitLab 13.4.
+
+For Omnibus GitLab packages:
+
+1. Edit `/etc/gitlab/gitlab.rb`:
+
+   ```ruby
+   gitlab_rails['backup_upload_connection'] = {
+    'provider' => 'AzureRM',
+    'azure_storage_account_name' => '<AZURE STORAGE ACCOUNT NAME>',
+    'azure_storage_access_key' => '<AZURE STORAGE ACCESS KEY>',
+    'azure_storage_domain' => 'blob.core.windows.net', # Optional
+   }
+   gitlab_rails['backup_upload_remote_directory'] = '<AZURE BLOB CONTAINER>'
+   ```
+
+1. [Reconfigure GitLab](../administration/restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect
+
+For installations from source:
+
+1. Edit `home/git/gitlab/config/gitlab.yml`:
+
+   ```yaml
+     backup:
+       upload:
+         connection:
+           provider: 'AzureRM'
+           azure_storage_account_name: '<AZURE STORAGE ACCOUNT NAME>'
+           azure_storage_access_key: '<AZURE STORAGE ACCESS KEY>'
+         remote_directory: '<AZURE BLOB CONTAINER>'
+   ```
+
+1. [Restart GitLab](../administration/restart_gitlab.md#installations-from-source) for the changes to take effect
+
+See [the table of Azure parameters](../administration/object_storage.md#azure-blob-storage) for more details.
+
 ##### Specifying a custom directory for backups
 
 Note: This option only works for remote storage. If you want to group your backups
@@ -725,7 +781,7 @@ from source). This file contains the database encryption key,
 [CI/CD variables](../ci/variables/README.md#gitlab-cicd-environment-variables), and
 variables used for [two-factor authentication](../user/profile/account/two_factor_authentication.md).
 If you fail to restore this encryption key file along with the application data
-backup, users with two-factor authentication enabled and GitLab Runners will
+backup, users with two-factor authentication enabled and GitLab Runner will
 lose access to your GitLab server.
 
 You may also want to restore any TLS keys, certificates, or [SSH host keys](https://superuser.com/questions/532040/copy-ssh-keys-from-one-server-to-another-server/532079#532079).
@@ -1005,14 +1061,14 @@ including (but not restricted to):
 - [Project mirroring](../user/project/repository/repository_mirroring.md)
 - [Web hooks](../user/project/integrations/webhooks.md)
 
-In cases like CI/CD variables and Runner authentication, you might
+In cases like CI/CD variables and runner authentication, you might
 experience some unexpected behavior such as:
 
 - Stuck jobs.
 - 500 errors.
 
 In this case, you are required to reset all the tokens for CI/CD variables
-and Runner Authentication, which is described in more detail below. After
+and runner authentication, which is described in more detail below. After
 resetting the tokens, you should be able to visit your project and the jobs
 will have started running again. Use the information in the following sections at your own risk.
 
@@ -1069,7 +1125,7 @@ and then users will have to reactivate 2FA from scratch.
 1. You may need to reconfigure or restart GitLab for the changes to take
    effect.
 
-#### Reset Runner registration tokens
+#### Reset runner registration tokens
 
 1. Enter the DB console:
 

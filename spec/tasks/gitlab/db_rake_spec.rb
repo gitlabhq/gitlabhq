@@ -164,9 +164,31 @@ RSpec.describe 'gitlab:db namespace rake task' do
     end
   end
 
-  def run_rake_task(task_name)
+  describe 'reindex' do
+    context 'when no index_name is given' do
+      it 'raises an error' do
+        expect do
+          run_rake_task('gitlab:db:reindex', '')
+        end.to raise_error(ArgumentError, /must give the index name/)
+      end
+    end
+
+    it 'calls the index rebuilder with the proper arguments' do
+      reindex = double('rebuilder')
+
+      expect(Gitlab::Database::ConcurrentReindex).to receive(:new)
+        .with('some_index_name', logger: instance_of(Logger))
+        .and_return(reindex)
+
+      expect(reindex).to receive(:execute)
+
+      run_rake_task('gitlab:db:reindex', '[some_index_name]')
+    end
+  end
+
+  def run_rake_task(task_name, arguments = '')
     Rake::Task[task_name].reenable
-    Rake.application.invoke_task task_name
+    Rake.application.invoke_task("#{task_name}#{arguments}")
   end
 
   def expect_multiple_executions_of_task(test_task_name, task_to_invoke, count: 2)

@@ -11,15 +11,15 @@ RSpec.describe NewMergeRequestWorker do
         expect(EventCreateService).not_to receive(:new)
         expect(NotificationService).not_to receive(:new)
 
-        worker.perform(99, create(:user).id)
+        worker.perform(non_existing_record_id, create(:user).id)
       end
 
       it 'logs an error' do
         user = create(:user)
 
-        expect(Rails.logger).to receive(:error).with('NewMergeRequestWorker: couldn\'t find MergeRequest with ID=99, skipping job')
+        expect(Gitlab::AppLogger).to receive(:error).with("NewMergeRequestWorker: couldn't find MergeRequest with ID=#{non_existing_record_id}, skipping job")
 
-        worker.perform(99, user.id)
+        worker.perform(non_existing_record_id, user.id)
       end
     end
 
@@ -28,15 +28,15 @@ RSpec.describe NewMergeRequestWorker do
         expect(EventCreateService).not_to receive(:new)
         expect(NotificationService).not_to receive(:new)
 
-        worker.perform(create(:merge_request).id, 99)
+        worker.perform(create(:merge_request).id, non_existing_record_id)
       end
 
       it 'logs an error' do
         merge_request = create(:merge_request)
 
-        expect(Rails.logger).to receive(:error).with('NewMergeRequestWorker: couldn\'t find User with ID=99, skipping job')
+        expect(Gitlab::AppLogger).to receive(:error).with("NewMergeRequestWorker: couldn't find User with ID=#{non_existing_record_id}, skipping job")
 
-        worker.perform(merge_request.id, 99)
+        worker.perform(merge_request.id, non_existing_record_id)
       end
     end
 
@@ -54,8 +54,8 @@ RSpec.describe NewMergeRequestWorker do
 
       it 'creates a notification for the mentioned user' do
         expect(Notify).to receive(:new_merge_request_email)
-                            .with(mentioned.id, merge_request.id, NotificationReason::MENTIONED)
-                            .and_return(double(deliver_later: true))
+          .with(mentioned.id, merge_request.id, NotificationReason::MENTIONED)
+          .and_return(double(deliver_later: true))
 
         worker.perform(merge_request.id, user.id)
       end

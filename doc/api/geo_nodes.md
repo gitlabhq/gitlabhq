@@ -371,7 +371,13 @@ Example response:
     "package_files_checksum_failed_count": 0,
     "package_files_registry_count": 10,
     "package_files_synced_count": 6,
-    "package_files_failed_count": 3
+    "package_files_failed_count": 3,
+    "snippet_repositories_count": 10,
+    "snippet_repositories_checksummed_count": 10,
+    "snippet_repositories_checksum_failed_count": 0,
+    "snippet_repositories_registry_count": 10,
+    "snippet_repositories_synced_count": 6,
+    "snippet_repositories_failed_count": 3
   },
   {
     "geo_node_id": 2,
@@ -442,12 +448,30 @@ Example response:
     "last_successful_status_check_timestamp": 1510125024,
     "version": "10.3.0",
     "revision": "33d33a096a",
+    "merge_request_diffs_count": 12,
+    "merge_request_diffs_checksummed_count": 8,
+    "merge_request_diffs_checksum_failed_count": 0,
+    "merge_request_diffs_registry_count": 12,
+    "merge_request_diffs_synced_count": 9,
+    "merge_request_diffs_failed_count": 3,
     "package_files_count": 10,
     "package_files_checksummed_count": 10,
     "package_files_checksum_failed_count": 0,
     "package_files_registry_count": 10,
     "package_files_synced_count": 6,
-    "package_files_failed_count": 3
+    "package_files_failed_count": 3,
+    "terraform_states_count": 10,
+    "terraform_states_checksummed_count": 10,
+    "terraform_states_checksum_failed_count": 0,
+    "terraform_states_registry_count": 10,
+    "terraform_states_synced_count": 6,
+    "terraform_states_failed_count": 3
+    "snippet_repositories_count": 10,
+    "snippet_repositories_checksummed_count": 10,
+    "snippet_repositories_checksum_failed_count": 0,
+    "snippet_repositories_registry_count": 10,
+    "snippet_repositories_synced_count": 6,
+    "snippet_repositories_failed_count": 3
   }
 ]
 ```

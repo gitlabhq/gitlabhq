@@ -2,7 +2,6 @@ import { trimText } from 'helpers/text_helper';
 import { mount, createLocalVue } from '@vue/test-utils';
 import Vuex from 'vuex';
 import CompareVersionsComponent from '~/diffs/components/compare_versions.vue';
-import Icon from '~/vue_shared/components/icon.vue';
 import { createStore } from '~/mr_notes/stores';
 import diffsMockData from '../mock_data/merge_request_diffs';
 import getDiffWithCommit from '../mock_data/diff_with_commit';
@@ -51,7 +50,7 @@ describe('CompareVersions', () => {
 
       expect(treeListBtn.exists()).toBe(true);
       expect(treeListBtn.attributes('title')).toBe('Hide file browser');
-      expect(treeListBtn.find(Icon).props('name')).toBe('file-tree');
+      expect(treeListBtn.props('icon')).toBe('file-tree');
     });
 
     it('should render comparison dropdowns with correct values', () => {

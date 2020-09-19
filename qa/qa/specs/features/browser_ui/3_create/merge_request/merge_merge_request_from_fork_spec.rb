@@ -9,7 +9,7 @@ module QA
         end
       end
 
-      it 'can merge feature branch fork to mainline' do
+      it 'can merge feature branch fork to mainline', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/928' do
         Flow::Login.sign_in
 
         merge_request.visit!

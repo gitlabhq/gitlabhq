@@ -12,7 +12,7 @@ exports[`JumpToNextDiscussionButton matches the snapshot 1`] = `
     data-track-property="click_next_unresolved_thread"
     title="Jump to next unresolved thread"
   >
-    <icon-stub
+    <gl-icon-stub
       name="comment-next"
       size="16"
     />

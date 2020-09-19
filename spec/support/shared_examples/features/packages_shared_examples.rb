@@ -14,7 +14,7 @@ RSpec.shared_examples 'packages list' do |check_project_name: false|
   end
 
   def package_table_row(index)
-    page.all("#{packages_table_selector} > [data-qa-selector=\"packages-row\"]")[index].text
+    page.all("#{packages_table_selector} > [data-qa-selector=\"package_row\"]")[index].text
   end
 end
 
@@ -32,7 +32,7 @@ RSpec.shared_examples 'package details link' do |property|
 
     expect(page).to have_current_path(project_package_path(package.project, package))
 
-    page.within('.detail-page-header') do
+    page.within('[data-qa-selector="package_title"]') do
       expect(page).to have_content(package.name)
     end
 

@@ -42,6 +42,8 @@ describe('Job Log', () => {
     wrapper.destroy();
   });
 
+  const findCollapsibleLine = () => wrapper.find('.collapsible-line');
+
   describe('line numbers', () => {
     it('renders a line number for each open line', () => {
       expect(wrapper.find('#L1').text()).toBe('1');
@@ -56,18 +58,22 @@ describe('Job Log', () => {
 
   describe('collapsible sections', () => {
     it('renders a clickable header section', () => {
-      expect(wrapper.find('.collapsible-line').attributes('role')).toBe('button');
+      expect(findCollapsibleLine().attributes('role')).toBe('button');
     });
 
     it('renders an icon with the open state', () => {
-      expect(wrapper.find('.collapsible-line svg').classes()).toContain('ic-angle-down');
+      expect(
+        findCollapsibleLine()
+          .find('[data-testid="angle-down-icon"]')
+          .exists(),
+      ).toBe(true);
     });
 
     describe('on click header section', () => {
       it('calls toggleCollapsibleLine', () => {
         jest.spyOn(wrapper.vm, 'toggleCollapsibleLine');
 
-        wrapper.find('.collapsible-line').trigger('click');
+        findCollapsibleLine().trigger('click');
 
         expect(wrapper.vm.toggleCollapsibleLine).toHaveBeenCalled();
       });

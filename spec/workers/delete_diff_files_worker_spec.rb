@@ -19,6 +19,12 @@ RSpec.describe DeleteDiffFilesWorker do
         .from('collected').to('without_files')
     end
 
+    it 'resets the files_count of the diff' do
+      expect { described_class.new.perform(merge_request_diff.id) }
+        .to change { merge_request_diff.reload.files_count }
+        .from(20).to(0)
+    end
+
     it 'does nothing if diff was already marked as "without_files"' do
       merge_request_diff.clean!
 

@@ -1,9 +1,10 @@
-- access = note_max_access_for_user(note)
-- if note.has_special_role?(Note::SpecialRole::FIRST_TIME_CONTRIBUTOR)
-  %span.note-role.note-role-special.has-tooltip{ title: _("This is the author's first Merge Request to this project.") }
-    = sprite_icon('first-contribution', css_class: 'gl-icon gl-vertical-align-top')
-- if access.nonzero?
-  %span.note-role.user-access-role= Gitlab::Access.human_access(access)
+- access = note_human_max_access(note)
+- if note.noteable_author?(@noteable)
+  %span{ class: 'note-role user-access-role has-tooltip d-none d-md-inline-block', title: _("This user is the author of this %{noteable}.") % { noteable: @noteable.human_class_name } }= _("Author")
+- if access
+  %span{ class: 'note-role user-access-role has-tooltip', title: _("This user is a %{access} of the %{name} project.") % { access: access.downcase, name: note.project_name } }= access
+- elsif note.contributor?
+  %span{ class: 'note-role user-access-role has-tooltip', title: _("This user has previously committed to the %{name} project.") % { name: note.project_name } }= _("Contributor")
 
 - if note.resolvable?
   - can_resolve = can?(current_user, :resolve_note, note)

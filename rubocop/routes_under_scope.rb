@@ -12,6 +12,7 @@ module RuboCop
     def on_send(node)
       return unless route_method?(node)
       return unless outside_scope?(node)
+      return if root_route?(node)
 
       add_offense(node)
     end
@@ -24,6 +25,14 @@ module RuboCop
 
     def route_method?(node)
       ROUTE_METHODS.include?(node.method_name)
+    end
+
+    def root_route?(node)
+      first_argument = node.arguments.first
+
+      if first_argument.respond_to?(:value)
+        first_argument.value == '/'
+      end
     end
   end
 end

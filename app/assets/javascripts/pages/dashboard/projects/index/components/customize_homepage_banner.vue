@@ -2,11 +2,15 @@
 import { GlBanner } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import axios from '~/lib/utils/axios_utils';
+import Tracking from '~/tracking';
+
+const trackingMixin = Tracking.mixin();
 
 export default {
   components: {
     GlBanner,
   },
+  mixins: [trackingMixin],
   inject: {
     svgPath: {
       default: '',
@@ -20,6 +24,9 @@ export default {
     calloutsFeatureId: {
       default: '',
     },
+    trackLabel: {
+      default: '',
+    },
   },
   i18n: {
     title: s__('CustomizeHomepageBanner|Do you want to customize this page?'),
@@ -31,7 +38,18 @@ export default {
   data() {
     return {
       visible: true,
+      tracking: {
+        label: this.trackLabel,
+      },
     };
+  },
+  created() {
+    this.$nextTick(() => {
+      this.addTrackingAttributesToButton();
+    });
+  },
+  mounted() {
+    this.trackOnShow();
   },
   methods: {
     handleClose() {
@@ -45,6 +63,23 @@ export default {
         });
 
       this.visible = false;
+      this.track('click_dismiss');
+    },
+    trackOnShow() {
+      if (this.visible) this.track('show_home_page_banner');
+    },
+    addTrackingAttributesToButton() {
+      // we can't directly add these on the button like we need to due to
+      // button not being modifiable currently
+      // https://gitlab.com/gitlab-org/gitlab-ui/-/blob/9209ec424e5cca14bc8a1b5c9fa12636d8c83dad/src/components/base/banner/banner.vue#L60
+      const button = this.$refs.banner.$el.querySelector(
+        `[href='${this.preferencesBehaviorPath}']`,
+      );
+
+      if (button) {
+        button.setAttribute('data-track-event', 'click_go_to_preferences');
+        button.setAttribute('data-track-label', this.trackLabel);
+      }
     },
   },
 };
@@ -53,6 +88,7 @@ export default {
 <template>
   <gl-banner
     v-if="visible"
+    ref="banner"
     :title="$options.i18n.title"
     :button-text="$options.i18n.button_text"
     :button-link="preferencesBehaviorPath"

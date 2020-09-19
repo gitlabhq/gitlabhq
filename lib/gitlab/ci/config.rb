@@ -62,6 +62,10 @@ module Gitlab
         root.jobs_value
       end
 
+      def normalized_jobs
+        @normalized_jobs ||= Ci::Config::Normalizer.new(jobs).normalize_jobs
+      end
+
       private
 
       def expand_config(config)

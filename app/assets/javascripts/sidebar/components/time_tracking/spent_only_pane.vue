@@ -1,4 +1,5 @@
 <script>
+/* eslint-disable vue/no-v-html */
 import { sprintf, s__ } from '~/locale';
 
 export default {

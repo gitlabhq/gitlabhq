@@ -3,10 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Pipeline::Expression::Parser do
-  before do
-    stub_feature_flags(ci_if_parenthesis_enabled: true)
-  end
-
   describe '#tree' do
     context 'validates simple operators' do
       using RSpec::Parameterized::TableSyntax
@@ -31,35 +27,14 @@ RSpec.describe Gitlab::Ci::Pipeline::Expression::Parser do
     context 'when combining && and OR operators' do
       subject { described_class.seed('$VAR1 == "a" || $VAR2 == "b" && $VAR3 == "c" || $VAR4 == "d" && $VAR5 == "e"').tree }
 
-      context 'when parenthesis engine is enabled' do
-        before do
-          stub_feature_flags(ci_if_parenthesis_enabled: true)
-        end
-
-        it 'returns operations in a correct order' do
-          expect(subject.inspect)
-            .to eq('or(or(equals($VAR1, "a"), and(equals($VAR2, "b"), equals($VAR3, "c"))), and(equals($VAR4, "d"), equals($VAR5, "e")))')
-        end
-      end
-
-      context 'when parenthesis engine is disabled (legacy)' do
-        before do
-          stub_feature_flags(ci_if_parenthesis_enabled: false)
-        end
-
-        it 'returns operations in a invalid order' do
-          expect(subject.inspect)
-            .to eq('or(equals($VAR1, "a"), and(equals($VAR2, "b"), or(equals($VAR3, "c"), and(equals($VAR4, "d"), equals($VAR5, "e")))))')
-        end
+      it 'returns operations in a correct order' do
+        expect(subject.inspect)
+          .to eq('or(or(equals($VAR1, "a"), and(equals($VAR2, "b"), equals($VAR3, "c"))), and(equals($VAR4, "d"), equals($VAR5, "e")))')
       end
     end
 
     context 'when using parenthesis' do
       subject { described_class.seed('(($VAR1 == "a" || $VAR2 == "b") && $VAR3 == "c" || $VAR4 == "d") && $VAR5 == "e"').tree }
-
-      before do
-        stub_feature_flags(ci_if_parenthesis_enabled: true)
-      end
 
       it 'returns operations in a correct order' do
         expect(subject.inspect)
@@ -96,38 +71,21 @@ RSpec.describe Gitlab::Ci::Pipeline::Expression::Parser do
     end
 
     context 'when parenthesis are unmatched' do
-      context 'when parenthesis engine is enabled' do
-        before do
-          stub_feature_flags(ci_if_parenthesis_enabled: true)
-        end
-
-        where(:expression) do
-          [
-            '$VAR == (',
-            '$VAR2 == ("aa"',
-            '$VAR2 == ("aa"))',
-            '$VAR2 == "aa")',
-            '(($VAR2 == "aa")',
-            '($VAR2 == "aa"))'
-          ]
-        end
-
-        with_them do
-          it 'raises a ParseError' do
-            expect { described_class.seed(expression).tree }
-              .to raise_error Gitlab::Ci::Pipeline::Expression::Parser::ParseError
-          end
-        end
+      where(:expression) do
+        [
+          '$VAR == (',
+          '$VAR2 == ("aa"',
+          '$VAR2 == ("aa"))',
+          '$VAR2 == "aa")',
+          '(($VAR2 == "aa")',
+          '($VAR2 == "aa"))'
+        ]
       end
 
-      context 'when parenthesis engine is disabled' do
-        before do
-          stub_feature_flags(ci_if_parenthesis_enabled: false)
-        end
-
-        it 'raises an SyntaxError' do
-          expect { described_class.seed('$VAR == (').tree }
-            .to raise_error Gitlab::Ci::Pipeline::Expression::Lexer::SyntaxError
+      with_them do
+        it 'raises a ParseError' do
+          expect { described_class.seed(expression).tree }
+            .to raise_error Gitlab::Ci::Pipeline::Expression::Parser::ParseError
         end
       end
     end

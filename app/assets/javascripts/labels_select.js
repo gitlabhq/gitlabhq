@@ -12,6 +12,7 @@ import { deprecatedCreateFlash as flash } from './flash';
 import ModalStore from './boards/stores/modal_store';
 import boardsStore from './boards/stores/boards_store';
 import { isScopedLabel } from '~/lib/utils/common_utils';
+import initDeprecatedJQueryDropdown from '~/deprecated_jquery_dropdown';
 
 export default class LabelsSelect {
   constructor(els, options = {}) {
@@ -173,7 +174,7 @@ export default class LabelsSelect {
           })
           .catch(() => flash(__('Error saving label update.')));
       };
-      $dropdown.glDropdown({
+      initDeprecatedJQueryDropdown($dropdown, {
         showMenuAbove,
         data(term, callback) {
           const labelUrl = $dropdown.attr('data-labels');
@@ -203,7 +204,7 @@ export default class LabelsSelect {
 
               callback(data);
               if (showMenuAbove) {
-                $dropdown.data('glDropdown').positionMenuAbove();
+                $dropdown.data('deprecatedJQueryDropdown').positionMenuAbove();
               }
             })
             .catch(() => flash(__('Error fetching labels.')));
@@ -348,7 +349,7 @@ export default class LabelsSelect {
             } else {
               if (!$dropdown.hasClass('js-filter-bulk-update')) {
                 saveLabelData();
-                $dropdown.data('glDropdown').clearMenu();
+                $dropdown.data('deprecatedJQueryDropdown').clearMenu();
               }
             }
           }
@@ -455,7 +456,7 @@ export default class LabelsSelect {
           if ($dropdown.hasClass('js-issue-board-sidebar')) {
             const previousSelection = $dropdown.attr('data-selected');
             this.selected = previousSelection ? previousSelection.split(',') : [];
-            $dropdown.data('glDropdown').updateLabel();
+            $dropdown.data('deprecatedJQueryDropdown').updateLabel();
           }
         },
         preserveContext: true,

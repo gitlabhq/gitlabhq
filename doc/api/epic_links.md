@@ -2,7 +2,7 @@
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/9188) in GitLab 11.8.
 
-Manages parent-child [epic relationships](../user/group/epics/index.md#multi-level-child-epics-ultimate).
+Manages parent-child [epic relationships](../user/group/epics/index.md#multi-level-child-epics).
 
 Every API call to `epic_links` must be authenticated.
 
@@ -131,6 +131,7 @@ POST /groups/:id/epics/:epic_iid/epics
 | `id`            | integer/string | yes      | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user      |
 | `epic_iid`      | integer        | yes      | The internal ID of the (future parent) epic.                                                                                       |
 | `title`         | string         | yes      | The title of a newly created epic. |
+| `confidential`  | boolean        | no       | Whether the epic should be confidential. Will be ignored if `confidential_epics` feature flag is disabled. Defaults to the confidentiality state of the parent epic.  |
 
 ```shell
 curl --request POST --header  "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/1/epics/5/epics?title=Newpic"

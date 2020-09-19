@@ -265,7 +265,7 @@ module Banzai
         extras = []
 
         if matches.names.include?("anchor") && matches[:anchor] && matches[:anchor] =~ /\A\#note_(\d+)\z/
-          extras << "comment #{$1}"
+          extras << "comment #{Regexp.last_match(1)}"
         end
 
         extension = matches[:extension] if matches.names.include?("extension")
@@ -436,7 +436,7 @@ module Banzai
         escaped = escape_html_entities(text)
 
         escaped.gsub(REFERENCE_PLACEHOLDER_PATTERN) do |match|
-          placeholder_data[$1.to_i]
+          placeholder_data[Regexp.last_match(1).to_i]
         end
       end
     end

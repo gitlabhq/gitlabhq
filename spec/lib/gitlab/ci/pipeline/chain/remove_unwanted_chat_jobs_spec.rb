@@ -11,7 +11,7 @@ RSpec.describe ::Gitlab::Ci::Pipeline::Chain::RemoveUnwantedChatJobs do
 
   let(:command) do
     double(:command,
-      config_processor: double(:processor,
+      yaml_processor_result: double(:processor,
         jobs: { echo: double(:job_echo), rspec: double(:job_rspec) }),
       project: project,
       chat_data: { command: 'echo' })
@@ -25,7 +25,7 @@ RSpec.describe ::Gitlab::Ci::Pipeline::Chain::RemoveUnwantedChatJobs do
 
       subject
 
-      expect(command.config_processor.jobs.keys).to eq([:echo])
+      expect(command.yaml_processor_result.jobs.keys).to eq([:echo])
     end
 
     it 'does not remove any jobs for non chat-pipelines' do
@@ -33,7 +33,7 @@ RSpec.describe ::Gitlab::Ci::Pipeline::Chain::RemoveUnwantedChatJobs do
 
       subject
 
-      expect(command.config_processor.jobs.keys).to eq([:echo, :rspec])
+      expect(command.yaml_processor_result.jobs.keys).to eq([:echo, :rspec])
     end
   end
 end

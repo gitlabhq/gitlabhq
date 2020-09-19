@@ -511,7 +511,7 @@ RSpec.describe 'Login' do
 
         context 'within the grace period' do
           it 'redirects to two-factor configuration page' do
-            Timecop.freeze do
+            freeze_time do
               expect(authentication_metrics)
                 .to increment(:user_authenticated_counter)
 

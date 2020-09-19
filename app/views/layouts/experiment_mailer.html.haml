@@ -1,0 +1,48 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+%html{ lang: "en" }
+  %head
+    %meta{ content: "text/html; charset=UTF-8", "http-equiv" => "Content-Type" }/
+    %meta{ content: "width=device-width, initial-scale=1", name: "viewport" }/
+    %meta{ content: "IE=edge", "http-equiv" => "X-UA-Compatible" }/
+    %title= message.subject
+
+    -# Avoid premailer processing of client-specific styles (@media tag not supported)
+    -# We need to inline the contents here because mail clients (e.g. iOS Mail, Outlook)
+    -# do not support linked stylesheets.
+    %style{ type: 'text/css', 'data-premailer': 'ignore' }
+      = asset_to_string('mailer_client_specific.css').html_safe
+
+    = stylesheet_link_tag 'mailer.css'
+  %body
+    %table#body{ border: "0", cellpadding: "0", cellspacing: "0" }
+      %tbody
+        %tr.line
+          %td
+        %tr.header
+          %td
+            = html_header_message
+            = header_logo
+        %tr
+          %td
+            %table.wrapper{ border: "0", cellpadding: "0", cellspacing: "0" }
+              %tbody
+                %tr
+                  %td.wrapper-cell{ style: "padding: 0" }
+                    %table.content{ border: "0", cellpadding: "0", cellspacing: "0" }
+                      %tbody
+                        = yield
+
+        = render_if_exists 'layouts/mailer/additional_text'
+
+        %tr.footer
+          %td{ style: "padding: 24px 0" }
+            %img{ alt: "GitLab", height: "33", width: "90", src: image_url('mailers/gitlab_footer_logo.gif') }
+            %p{ style: "color: #949ba5; max-width: 640px; margin: 0 auto; text-align: left; font-size: 12px;" }
+              GitLab is a complete DevOps platform, delivered as a single application, fundamentally changing the way
+              %br
+              Development, Security, and Ops teams collaborate.
+
+        = yield :additional_footer
+        %tr
+          %td.footer-message
+            = html_footer_message

@@ -51,6 +51,7 @@ class Profiles::PreferencesController < Profiles::ApplicationController
       :view_diffs_file_by_file,
       :tab_width,
       :sourcegraph_enabled,
+      :gitpod_enabled,
       :render_whitespace_in_code
     ]
   end

@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Clone Dropdown Button rendering matches the snapshot 1`] = `
-<gl-new-dropdown-stub
+<gl-dropdown-stub
   category="primary"
   headertext=""
   right=""
@@ -12,9 +12,9 @@ exports[`Clone Dropdown Button rendering matches the snapshot 1`] = `
   <div
     class="pb-2 mx-1"
   >
-    <gl-new-dropdown-header-stub>
+    <gl-dropdown-section-header-stub>
       Clone with SSH
-    </gl-new-dropdown-header-stub>
+    </gl-dropdown-section-header-stub>
      
     <div
       class="mx-3"
@@ -53,9 +53,9 @@ exports[`Clone Dropdown Button rendering matches the snapshot 1`] = `
       </div>
     </div>
      
-    <gl-new-dropdown-header-stub>
+    <gl-dropdown-section-header-stub>
       Clone with HTTP
-    </gl-new-dropdown-header-stub>
+    </gl-dropdown-section-header-stub>
      
     <div
       class="mx-3"
@@ -94,5 +94,5 @@ exports[`Clone Dropdown Button rendering matches the snapshot 1`] = `
       </div>
     </div>
   </div>
-</gl-new-dropdown-stub>
+</gl-dropdown-stub>
 `;

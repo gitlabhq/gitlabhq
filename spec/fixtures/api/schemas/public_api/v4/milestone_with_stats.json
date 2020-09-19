@@ -12,6 +12,7 @@
     "updated_at": { "type": "date" },
     "start_date": { "type": "date" },
     "due_date": { "type": "date" },
+    "expired": { "type": ["boolean", "null"] },
     "web_url": { "type": "string" },
     "issue_stats": {
       "required": ["total", "closed"],
@@ -24,7 +25,8 @@
   },
   "required": [
     "id", "iid", "title", "description", "state",
-    "state", "created_at", "updated_at", "start_date", "due_date", "issue_stats"
+    "state", "created_at", "updated_at", "start_date",
+    "due_date", "expired", "issue_stats"
   ],
   "additionalProperties": false
 }

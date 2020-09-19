@@ -1,56 +1,55 @@
-import $ from 'jquery';
 import NamespaceSelect from '~/namespace_select';
+import initDeprecatedJQueryDropdown from '~/deprecated_jquery_dropdown';
+
+jest.mock('~/deprecated_jquery_dropdown');
 
 describe('NamespaceSelect', () => {
-  beforeEach(() => {
-    jest.spyOn($.fn, 'glDropdown').mockImplementation(() => {});
-  });
-
-  it('initializes glDropdown', () => {
+  it('initializes deprecatedJQueryDropdown', () => {
     const dropdown = document.createElement('div');
 
     // eslint-disable-next-line no-new
     new NamespaceSelect({ dropdown });
 
-    expect($.fn.glDropdown).toHaveBeenCalled();
+    expect(initDeprecatedJQueryDropdown).toHaveBeenCalled();
   });
 
   describe('as input', () => {
-    let glDropdownOptions;
+    let deprecatedJQueryDropdownOptions;
 
     beforeEach(() => {
       const dropdown = document.createElement('div');
       // eslint-disable-next-line no-new
       new NamespaceSelect({ dropdown });
-      [[glDropdownOptions]] = $.fn.glDropdown.mock.calls;
+      [[, deprecatedJQueryDropdownOptions]] = initDeprecatedJQueryDropdown.mock.calls;
     });
 
     it('prevents click events', () => {
       const dummyEvent = new Event('dummy');
       jest.spyOn(dummyEvent, 'preventDefault').mockImplementation(() => {});
 
-      glDropdownOptions.clicked({ e: dummyEvent });
+      // expect(foo).toContain('test');
+      deprecatedJQueryDropdownOptions.clicked({ e: dummyEvent });
 
       expect(dummyEvent.preventDefault).toHaveBeenCalled();
     });
   });
 
   describe('as filter', () => {
-    let glDropdownOptions;
+    let deprecatedJQueryDropdownOptions;
 
     beforeEach(() => {
       const dropdown = document.createElement('div');
       dropdown.dataset.isFilter = 'true';
       // eslint-disable-next-line no-new
       new NamespaceSelect({ dropdown });
-      [[glDropdownOptions]] = $.fn.glDropdown.mock.calls;
+      [[, deprecatedJQueryDropdownOptions]] = initDeprecatedJQueryDropdown.mock.calls;
     });
 
     it('does not prevent click events', () => {
       const dummyEvent = new Event('dummy');
       jest.spyOn(dummyEvent, 'preventDefault').mockImplementation(() => {});
 
-      glDropdownOptions.clicked({ e: dummyEvent });
+      deprecatedJQueryDropdownOptions.clicked({ e: dummyEvent });
 
       expect(dummyEvent.preventDefault).not.toHaveBeenCalled();
     });
@@ -58,7 +57,7 @@ describe('NamespaceSelect', () => {
     it('sets URL of dropdown items', () => {
       const dummyNamespace = { id: 'eal' };
 
-      const itemUrl = glDropdownOptions.url(dummyNamespace);
+      const itemUrl = deprecatedJQueryDropdownOptions.url(dummyNamespace);
 
       expect(itemUrl).toContain(`namespace_id=${dummyNamespace.id}`);
     });

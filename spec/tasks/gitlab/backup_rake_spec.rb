@@ -160,7 +160,8 @@ RSpec.describe 'gitlab:app namespace rake task', :delete do
         expect(raw_repo.empty?).to be(false)
       end
     end
-  end # backup_restore task
+  end
+  # backup_restore task
 
   describe 'backup' do
     before do
@@ -391,7 +392,8 @@ RSpec.describe 'gitlab:app namespace rake task', :delete do
         expect { run_rake_task('gitlab:backup:create') }.to output.to_stdout
       end
     end
-  end # backup_create task
+  end
+  # backup_create task
 
   describe "Skipping items" do
     before do
@@ -486,4 +488,5 @@ RSpec.describe 'gitlab:app namespace rake task', :delete do
       expect(backup_tar).to match(/\d+_\d{4}_\d{2}_\d{2}_\d+\.\d+\.\d+.*_gitlab_backup.tar$/)
     end
   end
-end # gitlab:app namespace
+end
+# gitlab:app namespace

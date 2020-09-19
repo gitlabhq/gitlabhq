@@ -15,10 +15,7 @@ type: reference, howto
 > - It's recommended for production use.
 > - For GitLab self-managed instances, GitLab administrators can [disable it](#enable-or-disable-project-access-tokens).
 
-Project access tokens are scoped to a project and can be used to authenticate with the [GitLab API](../../../api/README.md#personalproject-access-tokens).
-
-<!-- Commented out until https://gitlab.com/gitlab-org/gitlab/-/issues/219551 is fixed -->
-<!-- You can also use project access tokens with Git to authenticate over HTTP or SSH. -->
+Project access tokens are scoped to a project and can be used to authenticate with the [GitLab API](../../../api/README.md#personalproject-access-tokens). You can also use project access tokens with Git to authenticate over HTTP or SSH.
 
 Project access tokens expire on the date you define, at midnight UTC.
 
@@ -43,7 +40,8 @@ For each project access token created, a bot user will also be created and added
 For the bot:
 
 - The name is set to the name of the token.
-- The username is set to `project_{project_id}_bot`, such as `project_123_bot`.
+- The username is set to `project_{project_id}_bot` for the first access token, such as `project_123_bot`.
+- The username is set to `project_{project_id}_bot{bot_count}` for further access tokens, such as `project_123_bot1`.
 
 API calls made with a project access token are associated with the corresponding bot user.
 
@@ -54,7 +52,8 @@ When the project access token is [revoked](#revoking-a-project-access-token) the
 records will be moved to a system-wide user with the username "Ghost User". For more information,
 see [Associated Records](../../profile/account/delete_account.md#associated-records).
 
-Project bot users are a [GitLab-created service account](../../../subscriptions/index.md#self-managed) and do not count as a licensed seat.
+Project bot users are a [GitLab-created service account](../../../subscriptions/self_managed/index.md#choose-the-number-of-users), but count as a licensed seat.
+These users will not count against your licensed seat in the future when [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/223695) is resolved.
 
 ## Revoking a project access token
 

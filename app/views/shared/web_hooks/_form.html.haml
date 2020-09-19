@@ -1,77 +1,77 @@
 = form_errors(hook)
 
 .form-group
-  = form.label :url, 'URL', class: 'label-bold'
+  = form.label :url, s_('Webhooks|URL'), class: 'label-bold'
   = form.text_field :url, class: 'form-control', placeholder: 'http://example.com/trigger-ci.json'
 .form-group
-  = form.label :token, 'Secret Token', class: 'label-bold'
+  = form.label :token, s_('Webhooks|Secret Token'), class: 'label-bold'
   = form.text_field :token, class: 'form-control', placeholder: ''
   %p.form-text.text-muted
-    Use this token to validate received payloads. It will be sent with the request in the X-Gitlab-Token HTTP header.
+  = s_('Webhooks|Use this token to validate received payloads. It will be sent with the request in the X-Gitlab-Token HTTP header.')
 .form-group
-  = form.label :url, 'Trigger', class: 'label-bold'
+  = form.label :url, s_('Webhooks|Trigger'), class: 'label-bold'
   %ul.list-unstyled.prepend-left-20
     %li
       = form.check_box :push_events, class: 'form-check-input'
       = form.label :push_events, class: 'list-label form-check-label ml-1' do
-        %strong Push events
+        %strong= s_('Webhooks|Push events')
       = form.text_field :push_events_branch_filter, class: 'form-control', placeholder: 'Branch name or wildcard pattern to trigger on (leave blank for all)'
       %p.text-muted.ml-1
-        This URL will be triggered by a push to the repository
+        = s_('Webhooks|This URL will be triggered by a push to the repository')
     %li
       = form.check_box :tag_push_events, class: 'form-check-input'
       = form.label :tag_push_events, class: 'list-label form-check-label ml-1' do
-        %strong Tag push events
+        %strong= s_('Webhooks|Tag push events')
       %p.text-muted.ml-1
-        This URL will be triggered when a new tag is pushed to the repository
+        = s_('Webhooks|This URL will be triggered when a new tag is pushed to the repository')
     %li
       = form.check_box :note_events, class: 'form-check-input'
       = form.label :note_events, class: 'list-label form-check-label ml-1' do
-        %strong Comments
+        %strong= s_('Webhooks|Comments')
       %p.text-muted.ml-1
-        This URL will be triggered when someone adds a comment
+        = s_('Webhooks|This URL will be triggered when someone adds a comment')
     %li
       = form.check_box :confidential_note_events, class: 'form-check-input'
       = form.label :confidential_note_events, class: 'list-label form-check-label ml-1' do
-        %strong Confidential Comments
+        %strong= s_('Webhooks|Confidential Comments')
       %p.text-muted.ml-1
-        This URL will be triggered when someone adds a comment on a confidential issue
+        = s_('Webhooks|This URL will be triggered when someone adds a comment on a confidential issue')
     %li
       = form.check_box :issues_events, class: 'form-check-input'
       = form.label :issues_events, class: 'list-label form-check-label ml-1' do
-        %strong Issues events
+        %strong= s_('Webhooks|Issues events')
       %p.text-muted.ml-1
-        This URL will be triggered when an issue is created/updated/merged
+        = s_('Webhooks|This URL will be triggered when an issue is created/updated/merged')
     %li
       = form.check_box :confidential_issues_events, class: 'form-check-input'
       = form.label :confidential_issues_events, class: 'list-label form-check-label ml-1' do
-        %strong Confidential Issues events
+        %strong= s_('Webhooks|Confidential Issues events')
       %p.text-muted.ml-1
-        This URL will be triggered when a confidential issue is created/updated/merged
+        = s_('Webhooks|This URL will be triggered when a confidential issue is created/updated/merged')
     %li
       = form.check_box :merge_requests_events, class: 'form-check-input'
       = form.label :merge_requests_events, class: 'list-label form-check-label ml-1' do
-        %strong Merge request events
+        %strong= s_('Webhooks|Merge request events')
       %p.text-muted.ml-1
-        This URL will be triggered when a merge request is created/updated/merged
+        = s_('Webhooks|This URL will be triggered when a merge request is created/updated/merged')
     %li
       = form.check_box :job_events, class: 'form-check-input'
       = form.label :job_events, class: 'list-label form-check-label ml-1' do
-        %strong Job events
+        %strong= s_('Webhooks|Job events')
       %p.text-muted.ml-1
-        This URL will be triggered when the job status changes
+        = s_('Webhooks|This URL will be triggered when the job status changes')
     %li
       = form.check_box :pipeline_events, class: 'form-check-input'
       = form.label :pipeline_events, class: 'list-label form-check-label ml-1' do
-        %strong Pipeline events
+        %strong= s_('Webhooks|Pipeline events')
       %p.text-muted.ml-1
-        This URL will be triggered when the pipeline status changes
+        = s_('Webhooks|This URL will be triggered when the pipeline status changes')
     %li
       = form.check_box :wiki_page_events, class: 'form-check-input'
       = form.label :wiki_page_events, class: 'list-label form-check-label ml-1' do
-        %strong Wiki Page events
+        %strong= s_('Webhooks|Wiki Page events')
       %p.text-muted.ml-1
-        This URL will be triggered when a wiki page is created/updated
+        = s_('Webhooks|This URL will be triggered when a wiki page is created/updated')
     %li
       = form.check_box :deployment_events, class: 'form-check-input'
       = form.label :deployment_events, class: 'list-label form-check-label ml-1' do
@@ -79,8 +79,8 @@
       %p.text-muted.ml-1
         = s_('Webhooks|This URL will be triggered when a deployment is finished/failed/canceled')
 .form-group
-  = form.label :enable_ssl_verification, 'SSL verification', class: 'label-bold checkbox'
+  = form.label :enable_ssl_verification, s_('Webhooks|SSL verification'), class: 'label-bold checkbox'
   .form-check
     = form.check_box :enable_ssl_verification, class: 'form-check-input'
     = form.label :enable_ssl_verification, class: 'form-check-label ml-1' do
-      %strong Enable SSL verification
+      %strong= s_('Webhooks|Enable SSL verification')

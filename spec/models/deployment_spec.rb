@@ -44,10 +44,14 @@ RSpec.describe Deployment do
 
   describe 'modules' do
     it_behaves_like 'AtomicInternalId' do
+      let_it_be(:project) { create(:project, :repository) }
+      let_it_be(:deployable) { create(:ci_build, project: project) }
+      let_it_be(:environment) { create(:environment, project: project) }
+
       let(:internal_id_attribute) { :iid }
-      let(:instance) { build(:deployment) }
+      let(:instance) { build(:deployment, deployable: deployable, environment: environment) }
       let(:scope) { :project }
-      let(:scope_attrs) { { project: instance.project } }
+      let(:scope_attrs) { { project: project } }
       let(:usage) { :deployments }
     end
   end
@@ -99,7 +103,7 @@ RSpec.describe Deployment do
       end
 
       it 'starts running' do
-        Timecop.freeze do
+        freeze_time do
           expect(deployment).to be_running
           expect(deployment.finished_at).to be_nil
         end
@@ -110,7 +114,7 @@ RSpec.describe Deployment do
       let(:deployment) { create(:deployment, :running) }
 
       it 'has correct status' do
-        Timecop.freeze do
+        freeze_time do
           deployment.succeed!
 
           expect(deployment).to be_success
@@ -137,7 +141,7 @@ RSpec.describe Deployment do
       let(:deployment) { create(:deployment, :running) }
 
       it 'has correct status' do
-        Timecop.freeze do
+        freeze_time do
           deployment.drop!
 
           expect(deployment).to be_failed
@@ -157,7 +161,7 @@ RSpec.describe Deployment do
       let(:deployment) { create(:deployment, :running) }
 
       it 'has correct status' do
-        Timecop.freeze do
+        freeze_time do
           deployment.cancel!
 
           expect(deployment).to be_canceled
@@ -584,7 +588,7 @@ RSpec.describe Deployment do
     end
 
     it 'updates finished_at when transitioning to a finished status' do
-      Timecop.freeze do
+      freeze_time do
         deploy.update_status('success')
 
         expect(deploy.read_attribute(:finished_at)).to eq(Time.current)

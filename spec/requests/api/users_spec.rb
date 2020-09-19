@@ -348,6 +348,26 @@ RSpec.describe API::Users, :do_not_mock_admin_mode do
         expect(response).to match_response_schema('public_api/v4/user/basics')
         expect(json_response.first.keys).not_to include 'is_admin'
       end
+
+      context 'exclude_internal param' do
+        let_it_be(:internal_user) { User.alert_bot }
+
+        it 'returns all users when it is not set' do
+          get api("/users?exclude_internal=false", user)
+
+          expect(response).to match_response_schema('public_api/v4/user/basics')
+          expect(response).to include_pagination_headers
+          expect(json_response.map { |u| u['id'] }).to include(internal_user.id)
+        end
+
+        it 'returns all non internal users when it is set' do
+          get api("/users?exclude_internal=true", user)
+
+          expect(response).to match_response_schema('public_api/v4/user/basics')
+          expect(response).to include_pagination_headers
+          expect(json_response.map { |u| u['id'] }).not_to include(internal_user.id)
+        end
+      end
     end
 
     context "when admin" do
@@ -894,6 +914,50 @@ RSpec.describe API::Users, :do_not_mock_admin_mode do
       expect(response).to have_gitlab_http_status(:ok)
     end
 
+    context 'updating password' do
+      def update_password(user, admin, password = User.random_password)
+        put api("/users/#{user.id}", admin), params: { password: password }
+      end
+
+      context 'admin updates their own password' do
+        it 'does not force reset on next login' do
+          update_password(admin, admin)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(user.reload.password_expired?).to eq(false)
+        end
+
+        it 'does not enqueue the `admin changed your password` email' do
+          expect { update_password(admin, admin) }
+            .not_to have_enqueued_mail(DeviseMailer, :password_change_by_admin)
+        end
+
+        it 'enqueues the `password changed` email' do
+          expect { update_password(admin, admin) }
+            .to have_enqueued_mail(DeviseMailer, :password_change)
+        end
+      end
+
+      context 'admin updates the password of another user' do
+        it 'forces reset on next login' do
+          update_password(user, admin)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(user.reload.password_expired?).to eq(true)
+        end
+
+        it 'enqueues the `admin changed your password` email' do
+          expect { update_password(user, admin) }
+            .to have_enqueued_mail(DeviseMailer, :password_change_by_admin)
+        end
+
+        it 'does not enqueue the `password changed` email' do
+          expect { update_password(user, admin) }
+            .not_to have_enqueued_mail(DeviseMailer, :password_change)
+        end
+      end
+    end
+
     it "updates user with new bio" do
       put api("/users/#{user.id}", admin), params: { bio: 'new test bio' }
 
@@ -918,13 +982,6 @@ RSpec.describe API::Users, :do_not_mock_admin_mode do
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['bio']).to eq('')
       expect(user.reload.bio).to eq('')
-    end
-
-    it "updates user with new password and forces reset on next login" do
-      put api("/users/#{user.id}", admin), params: { password: '12345678' }
-
-      expect(response).to have_gitlab_http_status(:ok)
-      expect(user.reload.password_expires_at).to be <= Time.now
     end
 
     it "updates user with organization" do
@@ -1377,7 +1434,7 @@ RSpec.describe API::Users, :do_not_mock_admin_mode do
     end
   end
 
-  describe 'POST /users/:id/keys' do
+  describe 'POST /users/:id/gpg_keys' do
     it 'does not create invalid GPG key' do
       post api("/users/#{user.id}/gpg_keys", admin)
 

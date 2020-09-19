@@ -100,6 +100,13 @@ export default class Issue {
   initIssueBtnEventListeners() {
     const issueFailMessage = __('Unable to update this issue at this time.');
 
+    $('.report-abuse-link').on('click', e => {
+      // this is needed because of the implementation of
+      // the dropdown toggle and Report Abuse needing to be
+      // linked to another page.
+      e.stopPropagation();
+    });
+
     // NOTE: data attribute seems unnecessary but is actually necessary
     return $('.js-issuable-buttons[data-action="close-reopen"]').on(
       'click',
@@ -173,11 +180,15 @@ export default class Issue {
   }
 
   initIssueWarningBtnEventListener() {
-    return $(document).on('click', '.js-close-blocked-issue-warning button.btn-secondary', e => {
-      e.preventDefault();
-      e.stopImmediatePropagation();
-      this.toggleWarningAndCloseButton();
-    });
+    return $(document).on(
+      'click',
+      '.js-close-blocked-issue-warning .js-cancel-blocked-issue-warning',
+      e => {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        this.toggleWarningAndCloseButton();
+      },
+    );
   }
 
   initIssueMovedFromServiceDeskDismissHandler() {

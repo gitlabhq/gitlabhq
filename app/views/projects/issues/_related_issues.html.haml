@@ -1,0 +1,6 @@
+- if can?(current_user, :read_issue_link, @project)
+  .js-related-issues-root{ data: { endpoint: project_issue_links_path(@project, @issue),
+    can_add_related_issues: "#{can?(current_user, :admin_issue_link, @issue)}",
+    help_path: help_page_path('user/project/issues/related_issues'),
+    show_categorized_issues: "false" } }
+    - render('projects/issues/related_issues_block')

@@ -1,5 +1,5 @@
 import { escape } from 'lodash';
-import '~/gl_dropdown';
+import initDeprecatedJQueryDropdown from '~/deprecated_jquery_dropdown';
 
 export default class CreateItemDropdown {
   /**
@@ -28,7 +28,7 @@ export default class CreateItemDropdown {
   }
 
   buildDropdown() {
-    this.$dropdown.glDropdown({
+    initDeprecatedJQueryDropdown(this.$dropdown, {
       data: this.getData.bind(this),
       filterable: true,
       filterRemote: this.getDataRemote,
@@ -67,12 +67,12 @@ export default class CreateItemDropdown {
     e.preventDefault();
 
     this.refreshData();
-    this.$dropdown.data('glDropdown').selectRowAtIndex();
+    this.$dropdown.data('deprecatedJQueryDropdown').selectRowAtIndex();
   }
 
   refreshData() {
     // Refresh the dropdown's data, which ends up calling `getData`
-    this.$dropdown.data('glDropdown').remote.execute();
+    this.$dropdown.data('deprecatedJQueryDropdown').remote.execute();
   }
 
   getData(term, callback) {

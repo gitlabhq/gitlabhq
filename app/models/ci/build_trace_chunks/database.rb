@@ -29,7 +29,7 @@ module Ci
           new_data = truncated_data + new_data
         end
 
-        model.raw_data = new_data
+        set_data(model, new_data)
         model.raw_data.to_s.bytesize
       end
 

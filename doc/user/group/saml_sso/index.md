@@ -274,10 +274,10 @@ Group SAML on a self-managed instance is limited when compared to the recommende
 [instance-wide SAML](../../../integration/saml.md). The recommended solution allows you to take advantage of:
 
 - [LDAP compatibility](../../../administration/auth/ldap/index.md).
-- [LDAP Group Sync](../index.md#manage-group-memberships-via-ldap-starter-only).
-- [Required groups](../../../integration/saml.md#required-groups-starter-only).
-- [Admin groups](../../../integration/saml.md#admin-groups-starter-only).
-- [Auditor groups](../../../integration/saml.md#auditor-groups-starter-only).
+- [LDAP Group Sync](../index.md#manage-group-memberships-via-ldap).
+- [Required groups](../../../integration/saml.md#required-groups).
+- [Admin groups](../../../integration/saml.md#admin-groups).
+- [Auditor groups](../../../integration/saml.md#auditor-groups).
 
 ### Omnibus installations
 
@@ -361,7 +361,7 @@ Here are possible causes and solutions:
 
 Getting both of these errors at the same time suggests the NameID capitalization provided by the Identity Provider didn't exactly match the previous value for that user.
 
-This can be prevented by configuring the [NameID](#nameid) to return a consistent value. Fixing this for an individual user involves [unlinking SAML in the GitLab account](#unlinking-accounts), although this will cause group membership and Todos to be lost.
+This can be prevented by configuring the [NameID](#nameid) to return a consistent value. Fixing this for an individual user involves [unlinking SAML in the GitLab account](#unlinking-accounts), although this will cause group membership and to-dos to be lost.
 
 ### Message: "Request to link SAML account must be authorized"
 
@@ -377,7 +377,7 @@ Alternatively, when users need to [link SAML to their existing GitLab.com accoun
 
 | Cause                                                                                                                                                                                     | Solution                                                                                                                                                                                                                                           |
 |-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| As mentioned in the [NameID](#nameid) section, if the NameID changes for any user, the user can be locked out. This is a common problem when an email address is used as the identifier. | Follow the steps outlined in the ["SAML authentication failed: User has already been taken"](#message-saml-authentication-failed-user-has-already-been-taken) section. If many users are affected, we recommend that you use the appropriate API. |
+| As mentioned in the [NameID](#nameid) section, if the NameID changes for any user, the user can be locked out. This is a common problem when an email address is used as the identifier. | Follow the steps outlined in the ["SAML authentication failed: User has already been taken"](#message-saml-authentication-failed-user-has-already-been-taken) section. |
 
 ### I need to change my SAML app
 

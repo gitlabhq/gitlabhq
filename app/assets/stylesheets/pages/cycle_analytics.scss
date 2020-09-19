@@ -41,15 +41,6 @@
       width: 20%;
     }
 
-    .fa,
-    svg {
-      color: $cycle-analytics-light-gray;
-
-      &:hover {
-        color: $gl-text-color;
-      }
-    }
-
     .stage-header {
       width: 20.5%;
     }
@@ -357,26 +348,6 @@
       width: 78px;
       display: inline-block;
       margin-bottom: 20px;
-    }
-  }
-}
-
-.cycle-analytics-overview {
-  padding-top: 100px;
-
-  .overview-details {
-    display: flex;
-    align-items: center;
-  }
-
-  .overview-image {
-    text-align: right;
-  }
-
-  .overview-icon {
-    svg {
-      width: 365px;
-      height: 227px;
     }
   }
 }

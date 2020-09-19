@@ -112,7 +112,7 @@
 }
 
 @mixin btn-orange {
-  @include btn-color($orange-500, $orange-600, $orange-600, $orange-700, $orange-700, $orange-800, $white);
+  @include btn-color($orange-500, $orange-600, $orange-500, $orange-600, $orange-600, $orange-800, $white);
 }
 
 @mixin btn-red {
@@ -182,7 +182,7 @@
     }
 
     &.btn-warning {
-      @include btn-outline($white, $orange-500, $orange-500, $orange-100, $orange-700, $orange-500, $orange-200, $orange-600, $orange-800);
+      @include btn-outline($white, $orange-500, $orange-500, $orange-50, $orange-600, $orange-600, $orange-100, $orange-700, $orange-700);
     }
 
     &.btn-primary,
@@ -202,7 +202,7 @@
 
   &.btn-close,
   &.btn-close-color {
-    @include btn-outline($white, $orange-600, $orange-500, $orange-100, $orange-700, $orange-500, $orange-200, $orange-600, $orange-800);
+    @include btn-outline($white, $orange-500, $orange-500, $orange-50, $orange-600, $orange-600, $orange-100, $orange-700, $orange-700);
   }
 
   &.btn-spam {
@@ -229,7 +229,7 @@
   }
 
   &.btn-icon {
-    color: $gl-gray-700;
+    color: $gray-700;
   }
 
   .fa-caret-down,
@@ -394,7 +394,7 @@
 }
 
 .clone-dropdown-btn a {
-  color: $gl-gray-700;
+  color: $gray-700;
 
   &:hover {
     text-decoration: none;
@@ -541,4 +541,14 @@ fieldset[disabled] .btn,
 
 .btn-no-padding {
   padding: 0;
+}
+
+// This class helps convert `.gl-button` children so that they consistently
+// match the style of `.btn` elements which might be around them. Ideally we
+// wouldn't need this class.
+//
+// Remove by upgrading all buttons in a container to use the new `.gl-button` style.
+.gl-button-deprecated-adapter .gl-button {
+  box-shadow: none;
+  border-width: 1px;
 }

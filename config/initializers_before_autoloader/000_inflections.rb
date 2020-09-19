@@ -28,6 +28,7 @@ ActiveSupport::Inflector.inflections do |inflect|
     terraform_state_registry
     vulnerabilities_feedback
     vulnerability_feedback
+    snippet_repository_registry
   )
   inflect.acronym 'EE'
   inflect.acronym 'CSP'

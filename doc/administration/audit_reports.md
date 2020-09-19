@@ -1,6 +1,7 @@
 ---
 stage: Manage
 group: Compliance
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 description: 'Learn how to create evidence artifacts typically requested by a 3rd party auditor.'
 ---
 
@@ -8,7 +9,7 @@ description: 'Learn how to create evidence artifacts typically requested by a 3r
 
 GitLab can help owners and administrators respond to auditors by generating
 comprehensive reports. These **Audit Reports** vary in scope, depending on the
-need:
+needs.
 
 ## Use cases
 
@@ -26,6 +27,3 @@ need:
 
 - `https://docs.gitlab.com/ee/administration/audit_events.html`
 - `https://docs.gitlab.com/ee/administration/logs.html`
-
-We plan on making Audit Events [downloadable as a CSV](https://gitlab.com/gitlab-org/gitlab/-/issues/1449)
-in the near future.

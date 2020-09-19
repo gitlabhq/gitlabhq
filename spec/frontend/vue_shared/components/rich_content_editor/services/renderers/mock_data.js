@@ -1,12 +1,6 @@
 // Node spec helpers
 
-export const buildMockTextNode = literal => {
-  return {
-    firstChild: null,
-    literal,
-    type: 'text',
-  };
-};
+export const buildMockTextNode = literal => ({ literal, type: 'text' });
 
 export const normalTextNode = buildMockTextNode('This is just normal text.');
 
@@ -23,17 +17,20 @@ const buildMockUneditableOpenToken = type => {
   };
 };
 
-const buildMockUneditableCloseToken = type => {
-  return { type: 'closeTag', tagName: type };
+const buildMockTextToken = content => {
+  return {
+    type: 'text',
+    tagName: null,
+    content,
+  };
 };
 
-export const originToken = {
-  type: 'text',
-  tagName: null,
-  content: '{:.no_toc .hidden-md .hidden-lg}',
-};
+const buildMockUneditableCloseToken = type => ({ type: 'closeTag', tagName: type });
+
+export const originToken = buildMockTextToken('{:.no_toc .hidden-md .hidden-lg}');
+const uneditableOpenToken = buildMockUneditableOpenToken('div');
+export const uneditableOpenTokens = [uneditableOpenToken, originToken];
 export const uneditableCloseToken = buildMockUneditableCloseToken('div');
-export const uneditableOpenTokens = [buildMockUneditableOpenToken('div'), originToken];
 export const uneditableCloseTokens = [originToken, uneditableCloseToken];
 export const uneditableTokens = [...uneditableOpenTokens, uneditableCloseToken];
 
@@ -41,6 +38,7 @@ export const originInlineToken = {
   type: 'text',
   content: '<i>Inline</i> content',
 };
+
 export const uneditableInlineTokens = [
   buildMockUneditableOpenToken('a'),
   originInlineToken,
@@ -48,11 +46,9 @@ export const uneditableInlineTokens = [
 ];
 
 export const uneditableBlockTokens = [
-  buildMockUneditableOpenToken('div'),
-  {
-    type: 'text',
-    tagName: null,
-    content: '<div><h1>Some header</h1><p>Some paragraph</p></div>',
-  },
-  buildMockUneditableCloseToken('div'),
+  uneditableOpenToken,
+  buildMockTextToken('<div><h1>Some header</h1><p>Some paragraph</p></div>'),
+  uneditableCloseToken,
 ];
+
+export const attributeDefinition = '{:.no_toc .hidden-md .hidden-lg}';

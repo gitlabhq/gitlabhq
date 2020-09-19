@@ -42,6 +42,9 @@
     "project_labels_path": { "type": "string" },
     "toggle_subscription_path": { "type": "string" },
     "move_issue_path": { "type": "string" },
-    "projects_autocomplete_path": { "type": "string" }
+    "projects_autocomplete_path": { "type": "string" },
+    "supports_time_tracking": { "type": "boolean" },
+    "supports_milestone": { "type": "boolean" },
+    "supports_severity": { "type": "boolean" }
   }
 }

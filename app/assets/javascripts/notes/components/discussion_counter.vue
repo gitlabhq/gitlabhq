@@ -1,7 +1,6 @@
 <script>
 import { mapGetters, mapActions } from 'vuex';
-import { GlTooltipDirective } from '@gitlab/ui';
-import Icon from '~/vue_shared/components/icon.vue';
+import { GlTooltipDirective, GlIcon } from '@gitlab/ui';
 import discussionNavigation from '../mixins/discussion_navigation';
 
 export default {
@@ -9,7 +8,7 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   components: {
-    Icon,
+    GlIcon,
   },
   mixins: [discussionNavigation],
   computed: {
@@ -60,7 +59,7 @@ export default {
           :class="{ 'line-resolve-btn is-active': allResolved, 'line-resolve-text': !allResolved }"
         >
           <template v-if="allResolved">
-            <icon name="check-circle-filled" />
+            <gl-icon name="check-circle-filled" />
             {{ __('All threads resolved') }}
           </template>
           <template v-else>
@@ -79,7 +78,7 @@ export default {
           :title="s__('Resolve all threads in new issue')"
           class="new-issue-for-discussion btn btn-default discussion-create-issue-btn"
         >
-          <icon name="issue-new" />
+          <gl-icon name="issue-new" />
         </a>
       </div>
       <div v-if="isLoggedIn && !allResolved" class="btn-group btn-group-sm" role="group">
@@ -92,7 +91,7 @@ export default {
           data-track-property="click_next_unresolved_thread_top"
           @click="jumpToNextDiscussion"
         >
-          <icon name="comment-next" />
+          <gl-icon name="comment-next" />
         </button>
       </div>
       <div class="btn-group btn-group-sm" role="group">
@@ -102,7 +101,7 @@ export default {
           class="btn btn-default toggle-all-discussions-btn"
           @click="handleExpandDiscussions"
         >
-          <icon :name="allExpanded ? 'angle-up' : 'angle-down'" />
+          <gl-icon :name="allExpanded ? 'angle-up' : 'angle-down'" />
         </button>
       </div>
     </div>

@@ -5,7 +5,8 @@ require 'spec_helper'
 RSpec.describe 'getting project information' do
   include GraphqlHelpers
 
-  let(:project) { create(:project, :repository) }
+  let(:group) { create(:group) }
+  let(:project) { create(:project, :repository, group: group) }
   let(:current_user) { create(:user) }
 
   let(:query) do
@@ -59,6 +60,51 @@ RSpec.describe 'getting project information' do
 
         expect(graphql_data['project']['pipelines']['edges'].size).to eq(1)
       end
+    end
+
+    it 'includes inherited members in project_members' do
+      group_member = create(:group_member, group: group)
+      project_member = create(:project_member, project: project)
+      member_query = <<~GQL
+        query {
+          project(fullPath: "#{project.full_path}") {
+            projectMembers {
+              nodes {
+                id
+                user {
+                  username
+                }
+                ... on ProjectMember {
+                  project {
+                    id
+                  }
+                }
+                ... on GroupMember {
+                  group {
+                    id
+                  }
+                }
+              }
+            }
+          }
+        }
+      GQL
+
+      post_graphql(member_query, current_user: current_user)
+
+      member_ids = graphql_data.dig('project', 'projectMembers', 'nodes')
+      expect(member_ids).to include(
+        a_hash_including(
+          'id' => group_member.to_global_id.to_s,
+          'group' => { 'id' => group.to_global_id.to_s }
+        )
+      )
+      expect(member_ids).to include(
+        a_hash_including(
+          'id' => project_member.to_global_id.to_s,
+          'project' => { 'id' => project.to_global_id.to_s }
+        )
+      )
     end
   end
 

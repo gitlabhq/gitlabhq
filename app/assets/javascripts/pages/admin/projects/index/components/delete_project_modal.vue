@@ -1,11 +1,14 @@
 <script>
+import { GlSafeHtmlDirective as SafeHtml, GlModal } from '@gitlab/ui';
 import { escape } from 'lodash';
-import DeprecatedModal from '~/vue_shared/components/deprecated_modal.vue';
-import { s__, sprintf } from '~/locale';
+import { __, s__, sprintf } from '~/locale';
 
 export default {
   components: {
-    DeprecatedModal,
+    GlModal,
+  },
+  directives: {
+    SafeHtml,
   },
   props: {
     deleteProjectUrl: {
@@ -62,11 +65,14 @@ export default {
         false,
       );
     },
-    primaryButtonLabel() {
-      return s__('AdminProjects|Delete project');
-    },
     canSubmit() {
       return this.enteredProjectName === this.projectName;
+    },
+    primaryProps() {
+      return {
+        text: s__('Delete project'),
+        attributes: [{ variant: 'danger' }, { category: 'primary' }, { disabled: !this.canSubmit }],
+      };
     },
   },
   methods: {
@@ -74,39 +80,42 @@ export default {
       this.enteredProjectName = '';
     },
     onSubmit() {
+      if (!this.canSubmit) {
+        return;
+      }
       this.$refs.form.submit();
       this.enteredProjectName = '';
     },
+  },
+  cancelProps: {
+    text: __('Cancel'),
   },
 };
 </script>
 
 <template>
-  <deprecated-modal
-    id="delete-project-modal"
+  <gl-modal
+    modal-id="delete-project-modal"
     :title="title"
-    :text="text"
-    :primary-button-label="primaryButtonLabel"
-    :submit-disabled="!canSubmit"
-    kind="danger"
-    @submit="onSubmit"
+    :action-primary="primaryProps"
+    :action-cancel="$options.cancelProps"
+    :ok-disabled="!canSubmit"
+    @primary="onSubmit"
     @cancel="onCancel"
   >
-    <template #body="props">
-      <p v-html="props.text"></p>
-      <p v-html="confirmationTextLabel"></p>
-      <form ref="form" :action="deleteProjectUrl" method="post">
-        <input ref="method" type="hidden" name="_method" value="delete" />
-        <input :value="csrfToken" type="hidden" name="authenticity_token" />
-        <input
-          v-model="enteredProjectName"
-          name="projectName"
-          class="form-control"
-          type="text"
-          aria-labelledby="input-label"
-          autocomplete="off"
-        />
-      </form>
-    </template>
-  </deprecated-modal>
+    <p v-safe-html="text"></p>
+    <p v-safe-html="confirmationTextLabel"></p>
+    <form ref="form" :action="deleteProjectUrl" method="post">
+      <input ref="method" type="hidden" name="_method" value="delete" />
+      <input :value="csrfToken" type="hidden" name="authenticity_token" />
+      <input
+        v-model="enteredProjectName"
+        name="projectName"
+        class="form-control"
+        type="text"
+        aria-labelledby="input-label"
+        autocomplete="off"
+      />
+    </form>
+  </gl-modal>
 </template>

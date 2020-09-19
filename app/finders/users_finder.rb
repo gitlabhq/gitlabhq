@@ -17,6 +17,7 @@
 #     without_projects: boolean
 #     sort: string
 #     id: integer
+#     non_internal: boolean
 #
 class UsersFinder
   include CreatedAtFilter
@@ -42,6 +43,7 @@ class UsersFinder
     users = by_created_at(users)
     users = by_without_projects(users)
     users = by_custom_attributes(users)
+    users = by_non_internal(users)
 
     order(users)
   end
@@ -110,6 +112,12 @@ class UsersFinder
     return users unless params[:without_projects]
 
     users.without_projects
+  end
+
+  def by_non_internal(users)
+    return users unless params[:non_internal]
+
+    users.non_internal
   end
 
   # rubocop: disable CodeReuse/ActiveRecord

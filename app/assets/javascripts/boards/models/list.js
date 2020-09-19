@@ -47,7 +47,7 @@ class List {
     this.loading = true;
     this.loadingMore = false;
     this.issues = obj.issues || [];
-    this.issuesSize = obj.issuesSize ? obj.issuesSize : 0;
+    this.issuesSize = obj.issuesSize || obj.issuesCount || 0;
     this.maxIssueCount = obj.maxIssueCount || obj.max_issue_count || 0;
 
     if (obj.label) {

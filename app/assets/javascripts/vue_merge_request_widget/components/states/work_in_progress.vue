@@ -55,13 +55,15 @@ export default {
   },
   methods: {
     removeWipMutation() {
+      const { mergeRequestQueryVariables } = this;
+
       this.isMakingRequest = true;
 
       this.$apollo
         .mutate({
           mutation: removeWipMutation,
           variables: {
-            ...this.mergeRequestQueryVariables,
+            ...mergeRequestQueryVariables,
             wip: false,
           },
           update(
@@ -83,14 +85,14 @@ export default {
 
             const data = store.readQuery({
               query: getStateQuery,
-              variables: this.mergeRequestQueryVariables,
+              variables: mergeRequestQueryVariables,
             });
             data.project.mergeRequest.workInProgress = workInProgress;
             data.project.mergeRequest.title = title;
             store.writeQuery({
               query: getStateQuery,
               data,
-              variables: this.mergeRequestQueryVariables,
+              variables: mergeRequestQueryVariables,
             });
           },
           optimisticResponse: {

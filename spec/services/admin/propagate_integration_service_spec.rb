@@ -4,8 +4,15 @@ require 'spec_helper'
 
 RSpec.describe Admin::PropagateIntegrationService do
   describe '.propagate' do
-    let(:excluded_attributes) { %w[id project_id inherit_from_id instance created_at updated_at default] }
+    include JiraServiceHelper
+
+    before do
+      stub_jira_service_test
+    end
+
+    let(:excluded_attributes) { %w[id project_id group_id inherit_from_id instance created_at updated_at default] }
     let!(:project) { create(:project) }
+    let!(:group) { create(:group) }
     let!(:instance_integration) do
       JiraService.create!(
         instance: true,
@@ -43,7 +50,7 @@ RSpec.describe Admin::PropagateIntegrationService do
       )
     end
 
-    let!(:another_inherited_integration) do
+    let!(:different_type_inherited_integration) do
       BambooService.create!(
         project: create(:project),
         inherit_from_id: instance_integration.id,
@@ -59,7 +66,7 @@ RSpec.describe Admin::PropagateIntegrationService do
 
     shared_examples 'inherits settings from integration' do
       it 'updates the inherited integrations' do
-        described_class.propagate(integration: instance_integration, overwrite: overwrite)
+        described_class.propagate(instance_integration)
 
         expect(integration.reload.inherit_from_id).to eq(instance_integration.id)
         expect(integration.attributes.except(*excluded_attributes))
@@ -70,7 +77,7 @@ RSpec.describe Admin::PropagateIntegrationService do
         let(:excluded_attributes) { %w[id service_id created_at updated_at] }
 
         it 'updates the data fields from inherited integrations' do
-          described_class.propagate(integration: instance_integration, overwrite: overwrite)
+          described_class.propagate(instance_integration)
 
           expect(integration.reload.data_fields.attributes.except(*excluded_attributes))
             .to eq(instance_integration.data_fields.attributes.except(*excluded_attributes))
@@ -80,7 +87,7 @@ RSpec.describe Admin::PropagateIntegrationService do
 
     shared_examples 'does not inherit settings from integration' do
       it 'does not update the not inherited integrations' do
-        described_class.propagate(integration: instance_integration, overwrite: overwrite)
+        described_class.propagate(instance_integration)
 
         expect(integration.reload.attributes.except(*excluded_attributes))
           .not_to eq(instance_integration.attributes.except(*excluded_attributes))
@@ -88,8 +95,6 @@ RSpec.describe Admin::PropagateIntegrationService do
     end
 
     context 'update only inherited integrations' do
-      let(:overwrite) { false }
-
       it_behaves_like 'inherits settings from integration' do
         let(:integration) { inherited_integration }
       end
@@ -99,36 +104,20 @@ RSpec.describe Admin::PropagateIntegrationService do
       end
 
       it_behaves_like 'does not inherit settings from integration' do
-        let(:integration) { another_inherited_integration }
+        let(:integration) { different_type_inherited_integration }
       end
 
       it_behaves_like 'inherits settings from integration' do
         let(:integration) { project.jira_service }
       end
-    end
-
-    context 'update all integrations' do
-      let(:overwrite) { true }
 
       it_behaves_like 'inherits settings from integration' do
-        let(:integration) { inherited_integration }
-      end
-
-      it_behaves_like 'inherits settings from integration' do
-        let(:integration) { not_inherited_integration }
-      end
-
-      it_behaves_like 'does not inherit settings from integration' do
-        let(:integration) { another_inherited_integration }
-      end
-
-      it_behaves_like 'inherits settings from integration' do
-        let(:integration) { project.jira_service }
+        let(:integration) { Service.find_by(group_id: group.id) }
       end
     end
 
     it 'updates project#has_external_issue_tracker for issue tracker services' do
-      described_class.propagate(integration: instance_integration, overwrite: true)
+      described_class.propagate(instance_integration)
 
       expect(project.reload.has_external_issue_tracker).to eq(true)
     end
@@ -141,7 +130,7 @@ RSpec.describe Admin::PropagateIntegrationService do
         external_wiki_url: 'http://external-wiki-url.com'
       )
 
-      described_class.propagate(integration: instance_integration, overwrite: true)
+      described_class.propagate(instance_integration)
 
       expect(project.reload.has_external_wiki).to eq(true)
     end

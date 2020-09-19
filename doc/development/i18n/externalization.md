@@ -7,6 +7,9 @@ For working with internationalization (i18n),
 used tool for this task and there are a lot of applications that will help us to
 work with it.
 
+TIP: **Tip:**
+All `rake` commands described on this page must be run on a GitLab instance, usually GDK.
+
 ## Setting up GitLab Development Kit (GDK)
 
 In order to be able to work on the [GitLab Community Edition](https://gitlab.com/gitlab-org/gitlab-foss)
@@ -138,7 +141,90 @@ const label = __('Subscribe');
 ```
 
 In order to test JavaScript translations you have to change the GitLab
-localization to other language than English and you have to generate JSON files
+localization to another language than English and you have to generate JSON files
+using `bin/rake gettext:po_to_json` or `bin/rake gettext:compile`.
+
+### Vue files
+
+In Vue files we make both the `__()` (double underscore parenthesis) function and the `s__()` (namespaced double underscore parenthesis) function available that you can import from the `~/locale` file. For instance:
+
+```javascript
+import { __, s__ } from '~/locale';
+const label = __('Subscribe');
+const nameSpacedlabel = __('Plan|Subscribe');
+```
+
+For the static text strings we suggest two patterns for using these translations in Vue files:
+
+- External constants file:
+
+  ```javascript
+  javascripts
+  │
+  └───alert_settings
+  │   │   constants.js
+  │   └───components
+  │       │   alert_settings_form.vue
+
+
+  // constants.js
+
+  import { s__ } from '~/locale';
+
+  /* Integration constants */
+
+  export const I18N_ALERT_SETTINGS_FORM = {
+    saveBtnLabel: __('Save changes'),
+  };
+
+
+  // alert_settings_form.vue
+
+  import {
+    I18N_ALERT_SETTINGS_FORM,
+  } from '../constants';
+
+  <script>
+    export default {
+      i18n: {
+        I18N_ALERT_SETTINGS_FORM,
+      }
+    }
+  </script>
+
+  <template>
+    <gl-button
+      ref="submitBtn"
+      variant="success"
+      type="submit"
+    >
+      {{ $options.i18n.I18N_ALERT_SETTINGS_FORM }}
+    </gl-button>
+  </template>
+  ```
+
+  When possible, you should opt for this pattern, as this allows you to import these strings directly into your component specs for re-use during testing.
+
+- Internal component `$options` object `:
+
+  ```javascript
+  <script>
+    export default {
+      i18n: {
+        buttonLabel: s__('Plan|Button Label')
+      }
+    },
+  </script>
+
+  <template>
+    <gl-button :aria-label="$options.i18n.buttonLabel">
+      {{ $options.i18n.buttonLabel }}
+    </gl-button>
+  </template>
+  ```
+
+In order to visually test the Vue translations you have to change the GitLab
+localization to another language than English and you have to generate JSON files
 using `bin/rake gettext:po_to_json` or `bin/rake gettext:compile`.
 
 ### Dynamic translations
@@ -346,9 +432,9 @@ To avoid this error, use the applicable HTML entity code (`&lt;` or `&gt;`) inst
 - In JavaScript:
 
   ```javascript
-  import sanitize from 'sanitize-html';
+  import { sanitize } from 'dompurify';
 
-  const i18n = { LESS_THAN_ONE_HOUR: sanitize(__('In &lt; 1 hours'), { allowedTags: [] }) };
+  const i18n = { LESS_THAN_ONE_HOUR: sanitize(__('In &lt; 1 hour'), { ALLOWED_TAGS: [] }) };
 
   // ... using the string
   element.innerHTML = i18n.LESS_THAN_ONE_HOUR;

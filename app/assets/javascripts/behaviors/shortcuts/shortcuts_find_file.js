@@ -5,12 +5,11 @@ export default class ShortcutsFindFile extends ShortcutsNavigation {
   constructor(projectFindFile) {
     super();
 
-    const oldStopCallback = Mousetrap.stopCallback;
-    this.projectFindFile = projectFindFile;
+    const oldStopCallback = Mousetrap.prototype.stopCallback;
 
-    Mousetrap.stopCallback = (e, element, combo) => {
+    Mousetrap.prototype.stopCallback = function customStopCallback(e, element, combo) {
       if (
-        element === this.projectFindFile.inputElement[0] &&
+        element === projectFindFile.inputElement[0] &&
         (combo === 'up' || combo === 'down' || combo === 'esc' || combo === 'enter')
       ) {
         // when press up/down key in textbox, cursor prevent to move to home/end
@@ -18,12 +17,12 @@ export default class ShortcutsFindFile extends ShortcutsNavigation {
         return false;
       }
 
-      return oldStopCallback(e, element, combo);
+      return oldStopCallback.call(this, e, element, combo);
     };
 
-    Mousetrap.bind('up', this.projectFindFile.selectRowUp);
-    Mousetrap.bind('down', this.projectFindFile.selectRowDown);
-    Mousetrap.bind('esc', this.projectFindFile.goToTree);
-    Mousetrap.bind('enter', this.projectFindFile.goToBlob);
+    Mousetrap.bind('up', projectFindFile.selectRowUp);
+    Mousetrap.bind('down', projectFindFile.selectRowDown);
+    Mousetrap.bind('esc', projectFindFile.goToTree);
+    Mousetrap.bind('enter', projectFindFile.goToBlob);
   }
 }

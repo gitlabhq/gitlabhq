@@ -2,7 +2,7 @@
 # You must either commit your compiled binary into source control (not recommended)
 # or build the binary first as part of a CI/CD pipeline.
 
-FROM buildpack-deps:jessie
+FROM buildpack-deps:buster
 
 WORKDIR /usr/local/bin
 

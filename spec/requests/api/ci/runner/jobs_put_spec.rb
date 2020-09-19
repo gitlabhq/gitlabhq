@@ -105,6 +105,67 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
 
           it { expect(job).to be_unmet_prerequisites }
         end
+
+        context 'when unmigrated live trace chunks exist' do
+          context 'when accepting trace feature is enabled' do
+            before do
+              stub_feature_flags(ci_accept_trace: true)
+            end
+
+            context 'when checksum is present' do
+              context 'when live trace chunk is still live' do
+                it 'responds with 202' do
+                  update_job(state: 'success', checksum: 'crc32:12345678')
+
+                  expect(job.pending_state).to be_present
+                  expect(response).to have_gitlab_http_status(:accepted)
+                end
+              end
+
+              context 'when runner retries request after receiving 202' do
+                it 'responds with 202 and then with 200', :sidekiq_inline do
+                  perform_enqueued_jobs do
+                    update_job(state: 'success', checksum: 'crc32:12345678')
+                  end
+
+                  expect(job.reload.pending_state).to be_present
+                  expect(response).to have_gitlab_http_status(:accepted)
+
+                  perform_enqueued_jobs do
+                    update_job(state: 'success', checksum: 'crc32:12345678')
+                  end
+
+                  expect(job.reload.pending_state).not_to be_present
+                  expect(response).to have_gitlab_http_status(:ok)
+                end
+              end
+
+              context 'when live trace chunk has been migrated' do
+                before do
+                  job.trace_chunks.first.update!(data_store: :database)
+                end
+
+                it 'responds with 200' do
+                  update_job(state: 'success', checksum: 'crc:12345678')
+
+                  expect(job.reload).to be_success
+                  expect(job.pending_state).not_to be_present
+                  expect(response).to have_gitlab_http_status(:ok)
+                end
+              end
+            end
+
+            context 'when checksum is not present' do
+              it 'responds with 200' do
+                update_job(state: 'success')
+
+                expect(job.reload).to be_success
+                expect(job.pending_state).not_to be_present
+                expect(response).to have_gitlab_http_status(:ok)
+              end
+            end
+          end
+        end
       end
 
       context 'when trace is given' do

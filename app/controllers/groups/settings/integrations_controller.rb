@@ -8,15 +8,19 @@ module Groups
       before_action :authorize_admin_group!
 
       def index
-        @integrations = []
+        @integrations = Service.find_or_initialize_all(Service.for_group(group)).sort_by(&:title)
+      end
+
+      def edit
+        @default_integration = Service.default_integration(integration.type, group)
+
+        super
       end
 
       private
 
-      # TODO: Make this compatible with group-level integration
-      # https://gitlab.com/groups/gitlab-org/-/epics/2543
       def find_or_initialize_integration(name)
-        Project.first.find_or_initialize_service(name)
+        Service.find_or_initialize_integration(name, group_id: group.id)
       end
 
       def integrations_enabled?

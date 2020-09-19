@@ -295,6 +295,19 @@ RSpec.describe Gitlab::Experimentation do
         end
       end
     end
+
+    describe '#experiment_tracking_category_and_group' do
+      let_it_be(:experiment_key) { :test_something }
+
+      subject { controller.experiment_tracking_category_and_group(experiment_key) }
+
+      it 'returns a string with the experiment tracking category & group joined with a ":"' do
+        expect(controller).to receive(:tracking_category).with(experiment_key).and_return('Experiment::Category')
+        expect(controller).to receive(:tracking_group).with(experiment_key, '_group').and_return('experimental_group')
+
+        expect(subject).to eq('Experiment::Category:experimental_group')
+      end
+    end
   end
 
   describe '.enabled?' do

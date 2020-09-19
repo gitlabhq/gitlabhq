@@ -1,0 +1,43 @@
+dashboard: 'Pod metrics'
+priority: 10
+templating:
+  variables:
+    pod_name:
+      label: 'CPU POD'
+      type: custom
+      options:
+        values:
+          - value: 'runner-gitlab-runner-.*'
+            text: 'GitLab Runner'
+          - value: 'Option1'
+            text: 'Option'
+          - value: 'Option2'
+            text: 'Option'
+          - value: 'Option3'
+            text: 'Option'
+    pod_name2:
+      label: 'Memory POD'
+      type: custom
+      options:
+        values:
+          - value: 'production-postgresql-.*'
+            text: 'Postgresql'
+panel_groups:
+  - group: CPU metrics
+    panels:
+      - title: "CPU usage GitLab Runner"
+        type: "line-chart"
+        y_label: "Cores per pod"
+        metrics:
+          - id: pod_cpu_usage_seconds_total
+            query_range: 'rate(container_cpu_usage_seconds_total{pod_name=~"{{pod_name}}"}[5m])'
+            unit: "cores"
+            label: pod_name
+      - title: "Memory usage Postgresql"
+        type: "line-chart"
+        y_label: "Working set memory (MiB)"
+        metrics:
+          - id: pod_memory_working_set1
+            query_range: 'container_memory_working_set_bytes{pod_name=~"{{pod_name2}}"}/1024/1024'
+            unit: "MiB"
+            label: pod_name

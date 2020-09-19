@@ -11,6 +11,7 @@ export default () => {
     fileParam,
     refNames,
     settingsLink,
+    maxWarnings,
   } = el?.dataset;
 
   const variableParams = JSON.parse(varParam);
@@ -29,6 +30,7 @@ export default () => {
           fileParams,
           refs,
           settingsLink,
+          maxWarnings: Number(maxWarnings),
         },
       });
     },

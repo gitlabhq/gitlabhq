@@ -1,0 +1,5 @@
+---
+title: Add ability to update only Snippet descriptions via REST endpoint
+merge_request: 41581
+author:
+type: changed

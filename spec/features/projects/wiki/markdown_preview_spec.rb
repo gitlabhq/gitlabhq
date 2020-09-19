@@ -8,6 +8,7 @@ RSpec.describe 'Projects > Wiki > User previews markdown changes', :js do
   let(:wiki_page) { create(:wiki_page, wiki: project.wiki, title: 'home', content: '[some link](other-page)') }
   let(:wiki_content) do
     <<-HEREDOC
+Some text so key event for [ does not trigger an incorrect replacement.
 [regular link](regular)
 [relative link 1](../relative)
 [relative link 2](./relative)

@@ -81,7 +81,7 @@ The `ApprovalState` model get these records when approval rules are not
 overwritten.
 
 The `protected_branches` attribute is set and used when a rule is scoped to
-protected branches. See [Scoped to Protected Branch doc](../user/project/merge_requests/merge_request_approvals.md#scoped-to-protected-branch-premium)
+protected branches. See [Scoped to Protected Branch doc](../user/project/merge_requests/merge_request_approvals.md#scoped-to-protected-branch)
 for more information about the feature.
 
 ### `ApprovalMergeRequestRule`

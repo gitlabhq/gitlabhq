@@ -11,6 +11,7 @@
 - commit        = commit.present(current_user: current_user)
 - commit_status = commit.status_for(ref)
 - collapsible = local_assigns.fetch(:collapsible, true)
+- link_data_attrs = local_assigns.fetch(:link_data_attrs, {})
 
 - link = commit_path(project, commit, merge_request: merge_request)
 
@@ -26,7 +27,7 @@
       - if view_details && merge_request
         = link_to commit.title, project_commit_path(project, commit.id, merge_request_iid: merge_request.iid), class: ["commit-row-message item-title js-onboarding-commit-item", ("font-italic" if commit.message.empty?)]
       - else
-        = link_to_markdown_field(commit, :title, link, class: "commit-row-message item-title js-onboarding-commit-item #{"font-italic" if commit.message.empty?}")
+        = link_to_markdown_field(commit, :title, link, class: "commit-row-message item-title js-onboarding-commit-item #{"font-italic" if commit.message.empty?}", data: link_data_attrs)
       %span.commit-row-message.d-inline.d-sm-none
         &middot;
         = commit.short_id

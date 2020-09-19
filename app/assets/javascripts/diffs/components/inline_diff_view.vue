@@ -1,5 +1,6 @@
 <script>
 import { mapGetters, mapState } from 'vuex';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import draftCommentsMixin from '~/diffs/mixins/draft_comments';
 import InlineDraftCommentRow from '~/batch_comments/components/inline_draft_comment_row.vue';
 import inlineDiffTableRow from './inline_diff_table_row.vue';
@@ -14,7 +15,7 @@ export default {
     InlineDraftCommentRow,
     inlineDiffExpansionRow,
   },
-  mixins: [draftCommentsMixin],
+  mixins: [draftCommentsMixin, glFeatureFlagsMixin()],
   props: {
     diffFile: {
       type: Object,

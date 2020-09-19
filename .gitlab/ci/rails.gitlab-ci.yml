@@ -296,6 +296,21 @@ gitlab:setup:
     paths:
       - log/*.log
 
+db:backup_and_restore:
+  extends: .db-job-base
+  variables:
+    SETUP_DB: "false"
+    GITLAB_ASSUME_YES: "1"
+  script:
+    - . scripts/prepare_build.sh
+    - bundle exec rake db:drop db:create db:structure:load db:seed_fu
+    - mkdir -p tmp/tests/public/uploads tmp/tests/{artifacts,pages,lfs-objects,registry}
+    - bundle exec rake gitlab:backup:create
+    - date
+    - bundle exec rake gitlab:backup:restore
+  rules:
+    - changes: ["lib/backup/**/*"]
+
 rspec:coverage:
   extends:
     - .rails-job-base
@@ -490,21 +505,50 @@ rspec-ee system pg12 geo:
 
 ##################################################
 # EE: Canonical MR pipelines
-rspec foss-impact:
+rspec fail-fast:
   extends:
-    - .rspec-base-pg11-as-if-foss
-    - .rails:rules:ee-mr-only
+    - .rspec-ee-base-pg11 # This job also runs EE spec which needs elasticsearch
+    - .rails:rules:rspec fail-fast
+  stage: test
+  needs: ["setup-test-env", "retrieve-tests-metadata", "compile-test-assets", "detect-tests"]
   script:
-    - install_gitlab_gem
     - run_timed_command "scripts/gitaly-test-build"
     - run_timed_command "scripts/gitaly-test-spawn"
     - source scripts/rspec_helpers.sh
-    - tooling/bin/find_foss_tests tmp/matching_foss_tests.txt
-    - rspec_matched_tests tmp/matching_foss_tests.txt "--tag ~quarantine"
+    - rspec_fail_fast tmp/matching_tests.txt "--tag ~quarantine"
   artifacts:
     expire_in: 7d
     paths:
-      - tmp/matching_foss_tests.txt
       - tmp/capybara/
+
+rspec foss-impact:
+  extends:
+    - .rspec-base-pg11-as-if-foss
+    - .rails:rules:rspec-foss-impact
+  needs: ["setup-test-env", "retrieve-tests-metadata", "compile-test-assets as-if-foss", "detect-tests as-if-foss"]
+  script:
+    - run_timed_command "scripts/gitaly-test-build"
+    - run_timed_command "scripts/gitaly-test-spawn"
+    - source scripts/rspec_helpers.sh
+    - rspec_matched_foss_tests tmp/matching_foss_tests.txt "--tag ~quarantine"
+  artifacts:
+    expire_in: 7d
+    paths:
+      - tmp/capybara/
+
+fail-pipeline-early:
+  extends:
+    - .rails:rules:fail-pipeline-early
+  stage: post-test
+  needs:
+    - job: rspec fail-fast
+      artifacts: false
+  variables:
+    GIT_DEPTH: 1
+  before_script:
+    - source scripts/utils.sh
+    - install_api_client_dependencies_with_apt
+  script:
+    - fail_pipeline_early
 # EE: Canonical MR pipelines
 ##################################################

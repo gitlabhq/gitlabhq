@@ -38,20 +38,16 @@ module QA
             click_element :change_path_button
           end
 
-          def select_transfer_option(namespace)
-            search_and_select(namespace)
-          end
-
           def transfer_project!(project_name, namespace)
-            # Retry added here due to seldom seen inconsistent UI state issue:
-            # https://gitlab.com/gitlab-org/gitlab/-/issues/231242
-            retry_on_exception do
-              click_element_coordinates(:archive_project_content)
-              expand_select_list
-              # Workaround for a failure to search when there are no spaces around the /
-              # https://gitlab.com/gitlab-org/gitlab/-/issues/218965
-              select_transfer_option(namespace.gsub(/([^\s])\/([^\s])/, '\1 / \2'))
-            end
+            QA::Runtime::Logger.info "Transferring project: #{project_name} to namespace: #{namespace}"
+
+            click_element_coordinates(:archive_project_content)
+
+            expand_select_list
+
+            # Workaround for a failure to search when there are no spaces around the /
+            # https://gitlab.com/gitlab-org/gitlab/-/issues/218965
+            search_and_select(namespace.gsub(/([^\s])\/([^\s])/, '\1 / \2'))
 
             click_element(:transfer_button)
             fill_confirmation_text(project_name)

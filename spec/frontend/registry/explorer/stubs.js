@@ -1,5 +1,5 @@
 import RealDeleteModal from '~/registry/explorer/components/details_page/delete_modal.vue';
-import RealListItem from '~/registry/explorer/components/list_item.vue';
+import RealListItem from '~/vue_shared/components/registry/list_item.vue';
 
 export const GlModal = {
   template: '<div><slot name="modal-title"></slot><slot></slot><slot name="modal-ok"></slot></div>',

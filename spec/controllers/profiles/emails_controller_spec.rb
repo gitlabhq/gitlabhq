@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Profiles::EmailsController do
-  let(:user) { create(:user) }
+  let_it_be(:user) { create(:user) }
 
   before do
     sign_in(user)
@@ -16,36 +16,43 @@ RSpec.describe Profiles::EmailsController do
   end
 
   describe '#create' do
-    context 'when email address is valid' do
-      let(:email_params) { { email: "add_email@example.com" } }
+    let(:email) { 'add_email@example.com' }
+    let(:params) { { email: { email: email } } }
 
-      it 'sends an email confirmation' do
-        expect { post(:create, params: { email: email_params }) }.to change { ActionMailer::Base.deliveries.size }
-      end
+    subject { post(:create, params: params) }
+
+    it 'sends an email confirmation' do
+      expect { subject }.to change { ActionMailer::Base.deliveries.size }
     end
 
     context 'when email address is invalid' do
-      let(:email_params) { { email: "test.@example.com" } }
+      let(:email) { 'invalid.@example.com' }
 
       it 'does not send an email confirmation' do
-        expect { post(:create, params: { email: email_params }) }.not_to change { ActionMailer::Base.deliveries.size }
+        expect { subject }.not_to change { ActionMailer::Base.deliveries.size }
       end
     end
   end
 
   describe '#resend_confirmation_instructions' do
-    let(:email_params) { { email: "add_email@example.com" } }
+    let_it_be(:email) { create(:email, user: user) }
+    let(:params) { { id: email.id } }
+
+    subject { put(:resend_confirmation_instructions, params: params) }
 
     it 'resends an email confirmation' do
-      email = user.emails.create(email: 'add_email@example.com')
+      expect { subject }.to change { ActionMailer::Base.deliveries.size }
 
-      expect { put(:resend_confirmation_instructions, params: { id: email }) }.to change { ActionMailer::Base.deliveries.size }
-      expect(ActionMailer::Base.deliveries.last.to).to eq [email_params[:email]]
-      expect(ActionMailer::Base.deliveries.last.subject).to match "Confirmation instructions"
+      expect(ActionMailer::Base.deliveries.last.to).to eq [email.email]
+      expect(ActionMailer::Base.deliveries.last.subject).to match 'Confirmation instructions'
     end
 
-    it 'unable to resend an email confirmation' do
-      expect { put(:resend_confirmation_instructions, params: { id: 1 }) }.not_to change { ActionMailer::Base.deliveries.size }
+    context 'email does not exist' do
+      let(:params) { { id: non_existing_record_id } }
+
+      it 'does not send an email confirmation' do
+        expect { subject }.not_to change { ActionMailer::Base.deliveries.size }
+      end
     end
   end
 end

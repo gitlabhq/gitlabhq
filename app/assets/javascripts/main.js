@@ -20,25 +20,22 @@ import { localTimeAgo } from './lib/utils/datetime_utility';
 import { getLocationHash, visitUrl } from './lib/utils/url_utility';
 
 // everything else
-import loadAwardsHandler from './awards_handler';
 import { deprecatedCreateFlash as Flash, removeFlashClickListener } from './flash';
-import './gl_dropdown';
 import initTodoToggle from './header';
 import initImporterStatus from './importer_status';
 import initLayoutNav from './layout_nav';
+import initAlertHandler from './alert_handler';
 import './feature_highlight/feature_highlight_options';
 import LazyLoader from './lazy_loader';
 import initLogoAnimation from './logo';
 import initFrequentItemDropdowns from './frequent_items';
 import initBreadcrumbs from './breadcrumb';
 import initUsagePingConsent from './usage_ping_consent';
-import initPerformanceBar from './performance_bar';
-import initSearchAutocomplete from './search_autocomplete';
 import GlFieldErrors from './gl_field_errors';
 import initUserPopovers from './user_popovers';
 import initBroadcastNotifications from './broadcast_notification';
 import initPersistentUserCallouts from './persistent_user_callouts';
-import { initUserTracking } from './tracking';
+import { initUserTracking, initDefaultTrackers } from './tracking';
 import { __ } from './locale';
 
 import 'ee_else_ce/main_ee';
@@ -112,8 +109,23 @@ function deferredInitialisation() {
   initBroadcastNotifications();
   initFrequentItemDropdowns();
   initPersistentUserCallouts();
+  initDefaultTrackers();
 
-  if (document.querySelector('.search')) initSearchAutocomplete();
+  const search = document.querySelector('#search');
+  if (search) {
+    search.addEventListener(
+      'focus',
+      () => {
+        import(/* webpackChunkName: 'globalSearch' */ './search_autocomplete')
+          .then(({ default: initSearchAutocomplete }) => {
+            const searchDropdown = initSearchAutocomplete();
+            searchDropdown.onSearchInputFocus();
+          })
+          .catch(() => {});
+      },
+      { once: true },
+    );
+  }
 
   addSelectOnFocusBehaviour('.js-select-on-focus');
 
@@ -155,8 +167,6 @@ function deferredInitialisation() {
     viewport: '.layout-page',
   });
 
-  loadAwardsHandler();
-
   // Adding a helper class to activate animations only after all is rendered
   setTimeout(() => $body.addClass('page-initialised'), 1000);
 }
@@ -166,10 +176,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const $document = $(document);
   const bootstrapBreakpoint = bp.getBreakpointSize();
 
-  if (document.querySelector('#js-peek')) initPerformanceBar({ container: '#js-peek' });
-
   initUserTracking();
   initLayoutNav();
+  initAlertHandler();
 
   // Set the default path for all cookies to GitLab's root directory
   Cookies.defaults.path = gon.relative_url_root || '/';

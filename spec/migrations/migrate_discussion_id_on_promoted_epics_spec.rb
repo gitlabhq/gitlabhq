@@ -53,7 +53,7 @@ RSpec.describe MigrateDiscussionIdOnPromotedEpics do
       stub_const("#{described_class.name}::BATCH_SIZE", 2)
 
       Sidekiq::Testing.fake! do
-        Timecop.freeze do
+        freeze_time do
           migrate!
 
           expect(migration_name).to be_scheduled_delayed_migration(2.minutes, %w(id1 id2))
@@ -69,7 +69,7 @@ RSpec.describe MigrateDiscussionIdOnPromotedEpics do
       create_note(create_epic, 'id3')
 
       Sidekiq::Testing.fake! do
-        Timecop.freeze do
+        freeze_time do
           migrate!
 
           expect(migration_name).to be_scheduled_delayed_migration(2.minutes, %w(id1))

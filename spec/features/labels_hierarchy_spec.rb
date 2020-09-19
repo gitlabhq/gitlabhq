@@ -42,12 +42,12 @@ RSpec.describe 'Labels Hierarchy', :js do
 
     it 'does not find child group labels on dropdown' do
       page.within('.block.labels') do
-        find('.edit-link').click
+        click_on 'Edit'
+
+        wait_for_requests
+
+        expect(page).not_to have_text(child_group_label.title)
       end
-
-      wait_for_requests
-
-      expect(page).not_to have_selector('.badge', text: child_group_label.title)
     end
   end
 
@@ -296,6 +296,7 @@ RSpec.describe 'Labels Hierarchy', :js do
       let(:board) { create(:board, group: parent) }
 
       before do
+        stub_feature_flags(graphql_board_lists: false)
         parent.add_developer(user)
         visit group_board_path(parent, board)
         find('.js-new-board-list').click

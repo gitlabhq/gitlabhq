@@ -221,7 +221,7 @@ without it immediately leading to errors being presented to the users.
 ## Logging
 
 The load balancer logs various events in
-[`database_load_balancing.log`](logs.md#database_load_balancinglog-premium-only), such as
+[`database_load_balancing.log`](logs.md#database_load_balancinglog), such as
 
 - When a host is marked as offline
 - When a host comes back online

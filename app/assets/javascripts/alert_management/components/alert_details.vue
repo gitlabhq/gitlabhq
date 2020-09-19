@@ -1,4 +1,5 @@
 <script>
+/* eslint-disable vue/no-v-html */
 import * as Sentry from '@sentry/browser';
 import {
   GlAlert,
@@ -9,7 +10,6 @@ import {
   GlTabs,
   GlTab,
   GlButton,
-  GlTable,
 } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import alertQuery from '../graphql/queries/details.query.graphql';
@@ -27,6 +27,7 @@ import { toggleContainerClasses } from '~/lib/utils/dom_utils';
 import SystemNote from './system_notes/system_note.vue';
 import AlertSidebar from './alert_sidebar.vue';
 import AlertMetrics from './alert_metrics.vue';
+import AlertDetailsTable from '~/vue_shared/components/alert_details_table.vue';
 
 const containerEl = document.querySelector('.page-with-contextual-sidebar');
 
@@ -42,18 +43,19 @@ export default {
   tabsConfig: [
     {
       id: 'overview',
-      title: s__('AlertManagement|Overview'),
-    },
-    {
-      id: 'fullDetails',
       title: s__('AlertManagement|Alert details'),
     },
     {
       id: 'metrics',
       title: s__('AlertManagement|Metrics'),
     },
+    {
+      id: 'activity',
+      title: s__('AlertManagement|Activity feed'),
+    },
   ],
   components: {
+    AlertDetailsTable,
     GlBadge,
     GlAlert,
     GlIcon,
@@ -62,7 +64,6 @@ export default {
     GlTab,
     GlTabs,
     GlButton,
-    GlTable,
     TimeAgoTooltip,
     AlertSidebar,
     SystemNote,
@@ -330,32 +331,17 @@ export default {
             </div>
             <div class="gl-pl-2" data-testid="runbook">{{ alert.runbook }}</div>
           </div>
-          <template>
-            <div v-if="alert.notes.nodes" class="issuable-discussion py-5">
-              <ul class="notes main-notes-list timeline">
-                <system-note v-for="note in alert.notes.nodes" :key="note.id" :note="note" />
-              </ul>
-            </div>
-          </template>
+          <alert-details-table :alert="alert" :loading="loading" />
         </gl-tab>
         <gl-tab :data-testid="$options.tabsConfig[1].id" :title="$options.tabsConfig[1].title">
-          <gl-table
-            class="alert-management-details-table"
-            :items="[{ key: 'Value', ...alert }]"
-            :show-empty="true"
-            :busy="loading"
-            stacked
-          >
-            <template #empty>
-              {{ s__('AlertManagement|No alert data to display.') }}
-            </template>
-            <template #table-busy>
-              <gl-loading-icon size="lg" color="dark" class="mt-3" />
-            </template>
-          </gl-table>
+          <alert-metrics :dashboard-url="alert.metricsDashboardUrl" />
         </gl-tab>
         <gl-tab :data-testid="$options.tabsConfig[2].id" :title="$options.tabsConfig[2].title">
-          <alert-metrics :dashboard-url="alert.metricsDashboardUrl" />
+          <div v-if="alert.notes.nodes.length > 0" class="issuable-discussion">
+            <ul class="notes main-notes-list timeline">
+              <system-note v-for="note in alert.notes.nodes" :key="note.id" :note="note" />
+            </ul>
+          </div>
         </gl-tab>
       </gl-tabs>
       <alert-sidebar

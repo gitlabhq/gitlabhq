@@ -5,67 +5,75 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 ---
 
-# GitLab To-Do List
+# GitLab To-Do List **(CORE)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/2817) in GitLab 8.5.
 
-When you log into GitLab, you normally want to see where you should spend your
-time, take some action, or know what you need to keep an eye on without
-a huge pile of e-mail notifications. GitLab is where you do your work,
-so being able to get started quickly is important.
+When you sign in to GitLab, you normally want to determine where you should
+spend your time. This can include taking an action, or keeping track of things
+(without having to read lots of email notifications). Because GitLab is where you
+do your work, being able to get started quickly is important.
 
-Your To-Do List offers a chronological list of items that are waiting for your input, all
-in a simple dashboard.
+Your *To-Do List* offers a chronological list of items waiting for your input
+(known as *to-dos*) in a single dashboard.
 
-![To Do screenshot showing a list of items to check on](img/todos_index.png)
+The To-Do List supports tracking [actions](#what-triggers-a-to-do) related to
+the following:
 
-You can quickly access your To-Do List by clicking the checkmark icon next to the
-search bar in the top navigation. If the count is:
+- Issues
+- Merge Requests
+- Epics **(ULTIMATE)**
 
-- Less than 100, the number in blue is the number of To-Do items.
-- 100 or more, the number displays as 99+. The exact number displays
-  on the To-Do List.
-you still have open. Otherwise, the number displays as 99+. The exact number
-displays on the To-Do List.
+![to-do screenshot showing a list of items to check on](img/todos_index.png)
+
+You can access your To-Do List by clicking the **{task-done}** To-Do List icon
+next to the search bar in the top navigation. If the to-do item count is:
+
+- *Less than 100*, the number in blue is the number of to-do items.
+- *100 or more*, the number displays as 99+. The exact number displays in the
+  To-Do List.
 
 ![To Do icon](img/todos_icon.png)
 
-## What triggers a To Do
+## What triggers a to-do
 
-A To Do appears on your To-Do List when:
+A to-do item appears on your To-Do List when:
 
-- An issue or merge request is assigned to you
-- You are `@mentioned` in the description or comment of an:
-  - Issue
-  - Merge Request
-  - Epic **(ULTIMATE)**
+- An issue or merge request is assigned to you.
+- You're `@mentioned` in the description or comment of an issue or merge request
+  (or epic **(ULTIMATE)**).
 - You are `@mentioned` in a comment on a:
   - Commit
   - Design
-- The CI/CD pipeline for your merge request failed
-- An open merge request becomes unmergeable due to conflict, and one of the following is true:
-  - You are the author
-  - You are the user that set it to automatically merge once the pipeline succeeds
-- [Since GitLab 13.2](https://gitlab.com/gitlab-org/gitlab/-/issues/12136), a merge request
-  is removed from a [merge train](../ci/merge_request_pipelines/pipelines_for_merged_results/merge_trains/index.md)
-  and you are the user that added it. **(PREMIUM)**
+- The CI/CD pipeline for your merge request failed.
+- An open merge request becomes unmergeable due to conflict, and one of the
+  following is true:
+  - You're the author.
+  - You're the user that set the merge request to automatically merge after a
+    pipeline succeeds.
+- [Since GitLab 13.2](https://gitlab.com/gitlab-org/gitlab/-/issues/12136), a
+  merge request is removed from a
+  [merge train](../ci/merge_request_pipelines/pipelines_for_merged_results/merge_trains/index.md),
+  and you're the user that added it. **(PREMIUM)**
 
-When multiple trigger actions occur for the same user on the same object (for example, an issue)
-only the first is displayed as a single to-do on their To-Do List.
+When several trigger actions occur for the same user on the same object (for
+example, an issue), GitLab displays only the first action as a single to-do
+item.
 
-To-do triggers are not affected by [GitLab Notification Email settings](profile/notifications.md).
+To-do triggers aren't affected by [GitLab notification email settings](profile/notifications.md).
 
 NOTE: **Note:**
-When a user no longer has access to a resource related to a To Do (like an issue, merge request,
-project, or group) the related To-Do items are deleted within the next hour for security reasons.
-The delete is delayed to prevent data loss, in case the user's access was revoked by mistake.
+When a user no longer has access to a resource related to a to-do (such as an
+issue, merge request, project, or group), for security reasons GitLab deletes
+any related to-do items within the next hour. Deletion is delayed to prevent
+data loss, in the case where a user's access is accidentally revoked.
 
-### Directly addressing a To Do
+### Directly addressing a to-do
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/7926) in GitLab 9.0.
 
-If you are mentioned at the start of a line, the To Do you receive will be listed
-as 'directly addressed'. For example, in this comment:
+If you're mentioned at the start of a line, the to-do you receive will be listed
+as *directly addressed*. For example, in the following comment:
 
 ```markdown
 @alice What do you think? cc: @bob
@@ -79,81 +87,71 @@ as 'directly addressed'. For example, in this comment:
 @erin @frank thank you!
 ```
 
-The people receiving directly addressed To-Do items are `@alice`, `@erin`, and
-`@frank`. Directly addressed To-Do items only differ from mentions in their type
+The people receiving directly addressed to-do items are `@alice`, `@erin`, and
+`@frank`. Directly addressed to-do items only differ from mentions in their type
 for filtering purposes; otherwise, they appear as normal.
 
-### Manually creating a To Do
+### Manually creating a to-do
 
-You can also add the following to your To-Do List by clicking the **Add a To Do** button on an:
-
-- Issue
-- Merge Request
-- Epic **(ULTIMATE)**
+You can add an issue or merge request (or epic **(ULTIMATE)**) to your
+To-Do List by clicking its **Add a To Do** button.
 
 ![Adding a To Do from the issuable sidebar](img/todos_add_todo_sidebar.png)
 
-## Marking a To Do as done
+## Marking a to-do as done
 
-Any action to the following will mark the corresponding To Do as done:
+Any action to an issue or merge request (or epic **(ULTIMATE)**) will mark its
+corresponding to-do as done.
 
-- Issue
-- Merge Request
-- Epic **(ULTIMATE)**
-
-Actions that dismiss To-Do items include:
+Actions that dismiss to-do items include:
 
 - Changing the assignee
 - Changing the milestone
 - Adding/removing a label
 - Commenting on the issue
 
-Your To-Do List is personal, and items are only marked as done if the action comes from
-you. If you close the issue or merge request, your To Do is automatically
-marked as done.
+Your To-Do List is personal, and items are only marked as done if you take
+action. If you close the issue or merge request, your to-do is marked as done.
 
-To prevent other users from closing issues without you being notified, if someone else closes, merges, or takes action on the any of the following, your To Do will remain pending:
+To prevent other users from closing issues without you being notified, if
+someone else closes, merges, or takes action on an issue or merge request (or
+epic **(ULTIMATE)**), your to-do will remain pending.
 
-- Issue
-- Merge request
-- Epic **(ULTIMATE)**
+There's just one to-do for each of these, so mentioning a user many times in an
+issue will only trigger one to-do item.
 
-There is just one To Do for each of these, so mentioning a user a hundred times in an issue will only trigger one To Do.
+If no action is needed, you can manually mark the to-do as done by clicking its
+corresponding **Done** button to have GitLab remove the item from your
+To-Do List.
 
-If no action is needed, you can manually mark the To Do as done by clicking the
-corresponding **Done** button, and it will disappear from your To-Do List.
+![A to-do in the To-Do List](img/todos_todo_list_item.png)
 
-![A To Do in the To-Do List](img/todos_todo_list_item.png)
-
-You can also mark a To Do as done by clicking the **Mark as done** button in the sidebar of the following:
-
-- Issue
-- Merge Request
-- Epic **(ULTIMATE)**
+You can also mark a to-do as done by clicking the **Mark as done** button in the
+sidebar of an issue or merge request (or epic **(ULTIMATE)**).
 
 ![Mark as done from the issuable sidebar](img/todos_mark_done_sidebar.png)
 
-You can mark all your To-Do items as done at once by clicking the **Mark all as
-done** button.
+You can mark all your to-do items as done at once by clicking the
+**Mark all as done** button.
 
 ## Filtering your To-Do List
 
-There are four kinds of filters you can use on your To-Do List.
+You can use the following types of filters with your To-Do List:
 
-| Filter  | Description |
-| ------- | ----------- |
-| Project | Filter by project |
-| Group   | Filter by group |
-| Author  | Filter by the author that triggered the To Do |
-| Type    | Filter by issue, merge request, design, or epic **(ULTIMATE)** |
-| Action  | Filter by the action that triggered the To Do |
+| Filter  | Description                                                      |
+| ------- | ---------------------------------------------------------------- |
+| Project | Filter by project.                                               |
+| Group   | Filter by group.                                                 |
+| Author  | Filter by the author that triggered the To Do.                   |
+| Type    | Filter by issue, merge request, design, or epic. **(ULTIMATE)**  |
+| Action  | Filter by the action that triggered the To Do.                   |
 
-You can also filter by more than one of these at the same time. The possible Actions are
-[described above](#what-triggers-a-to-do) and include:
+You can also filter by more than one of these at the same time. The previously
+described [triggering actions](#what-triggers-a-to-do) include:
 
-- Any Action
+- Any action
 - Assigned
 - Mentioned
 - Added
 - Pipelines
-- Directly Addressed
+- Directly addressed

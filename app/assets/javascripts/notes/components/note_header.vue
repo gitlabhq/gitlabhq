@@ -1,6 +1,7 @@
 <script>
+/* eslint-disable vue/no-v-html */
 import { mapActions } from 'vuex';
-import { GlIcon, GlTooltipDirective } from '@gitlab/ui';
+import { GlIcon, GlLoadingIcon, GlTooltipDirective } from '@gitlab/ui';
 import timeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 
 export default {
@@ -9,6 +10,7 @@ export default {
     GitlabTeamMemberBadge: () =>
       import('ee_component/vue_shared/components/user_avatar/badges/gitlab_team_member_badge.vue'),
     GlIcon,
+    GlLoadingIcon,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -194,13 +196,12 @@ export default {
         class="gl-ml-1 gl-text-gray-700 align-middle"
       />
       <slot name="extra-controls"></slot>
-      <i
+      <gl-loading-icon
         v-if="showSpinner"
         ref="spinner"
-        class="fa fa-spinner fa-spin editing-spinner"
-        :aria-label="__('Comment is being updated')"
-        aria-hidden="true"
-      ></i>
+        class="editing-spinner"
+        :label="__('Comment is being updated')"
+      />
     </span>
   </div>
 </template>

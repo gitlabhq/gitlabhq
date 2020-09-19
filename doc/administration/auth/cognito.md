@@ -37,7 +37,7 @@ The following steps enable AWS Cognito as an authentication provider:
 
 1. Save changes for the app client settings.
 1. Under **Domain name** include the AWS domain name for your AWS Cognito application.
-1. Under **App Clients**, find your **App client id** and **App client secret**. These values correspond to the OAuth2 Client ID and Client Secret. Save these values.
+1. Under **App Clients**, find your app client ID and app client secret. These values correspond to the OAuth2 Client ID and Client Secret. Save these values.
 
 ## Configure GitLab
 

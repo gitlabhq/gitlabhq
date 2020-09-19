@@ -41,7 +41,7 @@ module QA
         end
       end
 
-      it 'closes an issue via pushing a commit' do
+      it 'closes an issue via pushing a commit', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/827' do
         issue_key = Vendor::Jira::JiraAPI.perform do |jira_api|
           jira_api.create_issue(jira_project_key)
         end
@@ -51,7 +51,7 @@ module QA
         expect_issue_done(issue_key)
       end
 
-      it 'closes an issue via a merge request' do
+      it 'closes an issue via a merge request', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/828' do
         issue_key = Vendor::Jira::JiraAPI.perform do |jira_api|
           jira_api.create_issue(jira_project_key)
         end

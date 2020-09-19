@@ -304,56 +304,10 @@ RSpec.describe API::ProjectSnippets do
     let(:visibility_level) { Snippet::PUBLIC }
     let(:snippet) { create(:project_snippet, :repository, author: admin, visibility_level: visibility_level, project: project) }
 
-    it 'updates snippet' do
-      new_content = 'New content'
-      new_description = 'New description'
-
-      update_snippet(params: { content: new_content, description: new_description, visibility: 'private' })
-
-      expect(response).to have_gitlab_http_status(:ok)
-      snippet.reload
-      expect(snippet.content).to eq(new_content)
-      expect(snippet.description).to eq(new_description)
-      expect(snippet.visibility).to eq('private')
-    end
-
-    it 'updates snippet with content parameter' do
-      new_content = 'New content'
-      new_description = 'New description'
-
-      update_snippet(params: { content: new_content, description: new_description })
-
-      expect(response).to have_gitlab_http_status(:ok)
-      snippet.reload
-      expect(snippet.content).to eq(new_content)
-      expect(snippet.description).to eq(new_description)
-    end
-
-    it 'returns 404 for invalid snippet id' do
-      update_snippet(snippet_id: non_existing_record_id, params: { title: 'foo' })
-
-      expect(response).to have_gitlab_http_status(:not_found)
-      expect(json_response['message']).to eq('404 Snippet Not Found')
-    end
-
-    it 'returns 400 for missing parameters' do
-      update_snippet
-
-      expect(response).to have_gitlab_http_status(:bad_request)
-    end
-
-    it 'returns 400 if content is blank' do
-      update_snippet(params: { content: '' })
-
-      expect(response).to have_gitlab_http_status(:bad_request)
-    end
-
-    it 'returns 400 if title is blank' do
-      update_snippet(params: { title: '' })
-
-      expect(response).to have_gitlab_http_status(:bad_request)
-      expect(json_response['error']).to eq 'title is empty'
-    end
+    it_behaves_like 'snippet file updates'
+    it_behaves_like 'snippet non-file updates'
+    it_behaves_like 'snippet individual non-file updates'
+    it_behaves_like 'invalid snippet updates'
 
     it_behaves_like 'update with repository actions' do
       let(:snippet_without_repo) { create(:project_snippet, author: admin, project: project, visibility_level: visibility_level) }

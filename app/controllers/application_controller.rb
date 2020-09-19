@@ -551,13 +551,9 @@ class ApplicationController < ActionController::Base
     "#{self.class.name}##{action_name}"
   end
 
-  # A user requires a role and have the setup_for_company attribute set when they are part of the experimental signup
-  # flow (executed by the Growth team). Users are redirected to the welcome page when their role is required and the
-  # experiment is enabled for the current user.
   def required_signup_info
     return unless current_user
     return unless current_user.role_required?
-    return unless experiment_enabled?(:signup_flow)
 
     store_location_for :user, request.fullpath
 

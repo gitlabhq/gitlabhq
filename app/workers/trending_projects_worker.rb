@@ -11,7 +11,7 @@ class TrendingProjectsWorker # rubocop:disable Scalability/IdempotentWorker
   feature_category :source_code_management
 
   def perform
-    Rails.logger.info('Refreshing trending projects') # rubocop:disable Gitlab/RailsLogger
+    Gitlab::AppLogger.info('Refreshing trending projects')
 
     TrendingProject.refresh!
   end

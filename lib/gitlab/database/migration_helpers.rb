@@ -87,7 +87,7 @@ module Gitlab
         options = options.merge({ algorithm: :concurrently })
 
         if index_exists?(table_name, column_name, options)
-          Rails.logger.warn "Index not created because it already exists (this may be due to an aborted migration or similar): table_name: #{table_name}, column_name: #{column_name}" # rubocop:disable Gitlab/RailsLogger
+          Gitlab::AppLogger.warn "Index not created because it already exists (this may be due to an aborted migration or similar): table_name: #{table_name}, column_name: #{column_name}"
           return
         end
 
@@ -113,7 +113,7 @@ module Gitlab
         options = options.merge({ algorithm: :concurrently })
 
         unless index_exists?(table_name, column_name, options)
-          Rails.logger.warn "Index not removed because it does not exist (this may be due to an aborted migration or similar): table_name: #{table_name}, column_name: #{column_name}" # rubocop:disable Gitlab/RailsLogger
+          Gitlab::AppLogger.warn "Index not removed because it does not exist (this may be due to an aborted migration or similar): table_name: #{table_name}, column_name: #{column_name}"
           return
         end
 
@@ -143,7 +143,7 @@ module Gitlab
         options = options.merge({ algorithm: :concurrently })
 
         unless index_exists_by_name?(table_name, index_name)
-          Rails.logger.warn "Index not removed because it does not exist (this may be due to an aborted migration or similar): table_name: #{table_name}, index_name: #{index_name}" # rubocop:disable Gitlab/RailsLogger
+          Gitlab::AppLogger.warn "Index not removed because it does not exist (this may be due to an aborted migration or similar): table_name: #{table_name}, index_name: #{index_name}"
           return
         end
 
@@ -163,7 +163,6 @@ module Gitlab
       #             defaults to "CASCADE".
       # name - The name of the foreign key.
       #
-      # rubocop:disable Gitlab/RailsLogger
       def add_concurrent_foreign_key(source, target, column:, on_delete: :cascade, name: nil, validate: true)
         # Transactions would result in ALTER TABLE locks being held for the
         # duration of the transaction, defeating the purpose of this method.
@@ -183,7 +182,7 @@ module Gitlab
             "source: #{source}, target: #{target}, column: #{options[:column]}, "\
             "name: #{options[:name]}, on_delete: #{options[:on_delete]}"
 
-          Rails.logger.warn warning_message
+          Gitlab::AppLogger.warn warning_message
         else
           # Using NOT VALID allows us to create a key without immediately
           # validating it. This means we keep the ALTER TABLE lock only for a
@@ -217,7 +216,6 @@ module Gitlab
           end
         end
       end
-      # rubocop:enable Gitlab/RailsLogger
 
       def validate_foreign_key(source, column, name: nil)
         fk_name = name || concurrent_foreign_key_name(source, column)
@@ -540,10 +538,10 @@ module Gitlab
       # table - The table containing the column.
       # column - The name of the column to change.
       # new_type - The new column type.
-      def change_column_type_concurrently(table, column, new_type, type_cast_function: nil)
+      def change_column_type_concurrently(table, column, new_type, type_cast_function: nil, batch_column_name: :id)
         temp_column = "#{column}_for_type_change"
 
-        rename_column_concurrently(table, column, temp_column, type: new_type, type_cast_function: type_cast_function)
+        rename_column_concurrently(table, column, temp_column, type: new_type, type_cast_function: type_cast_function, batch_column_name: batch_column_name)
       end
 
       # Performs cleanup of a concurrent type change.
@@ -1085,7 +1083,6 @@ into similar problems in the future (e.g. when new tables are created).
       #                   Should be unique per table (not per column)
       # validate - Whether to validate the constraint in this call
       #
-      # rubocop:disable Gitlab/RailsLogger
       def add_check_constraint(table, check, constraint_name, validate: true)
         validate_check_constraint_name!(constraint_name)
 
@@ -1102,7 +1099,7 @@ into similar problems in the future (e.g. when new tables are created).
             table: #{table}, check: #{check}, constraint name: #{constraint_name}
           MESSAGE
 
-          Rails.logger.warn warning_message
+          Gitlab::AppLogger.warn warning_message
         else
           # Only add the constraint without validating it
           # Even though it is fast, ADD CONSTRAINT requires an EXCLUSIVE lock
@@ -1187,7 +1184,7 @@ into similar problems in the future (e.g. when new tables are created).
             column #{table}.#{column} is already defined as `NOT NULL`
           MESSAGE
 
-          Rails.logger.warn warning_message
+          Gitlab::AppLogger.warn warning_message
         end
       end
 

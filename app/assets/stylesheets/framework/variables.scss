@@ -104,15 +104,6 @@ $t-gray-a-04: rgba($black, 0.04) !default;
 $t-gray-a-06: rgba($black, 0.06) !default;
 $t-gray-a-08: rgba($black, 0.08) !default;
 
-$gl-gray-100: #ddd !default;
-$gl-gray-200: #ccc !default;
-$gl-gray-350: #aaa !default;
-$gl-gray-400: #999 !default;
-$gl-gray-500: #777 !default;
-$gl-gray-600: #666 !default;
-$gl-gray-700: #555 !default;
-$gl-gray-800: #333 !default;
-
 $green-50: #ecf4ee !default;
 $green-100: #c3e6cd !default;
 $green-200: #91d4a8 !default;
@@ -137,17 +128,17 @@ $blue-800: #064787 !default;
 $blue-900: #033464 !default;
 $blue-950: #002850 !default;
 
-$orange-50: #fffaf4 !default;
-$orange-100: #fff1de !default;
-$orange-200: #fed69f !default;
-$orange-300: #fdbc60 !default;
-$orange-400: #fca429 !default;
-$orange-500: #fc9403 !default;
-$orange-600: #de7e00 !default;
-$orange-700: #c26700 !default;
-$orange-800: #a35200 !default;
-$orange-900: #853c00 !default;
-$orange-950: #592800 !default;
+$orange-50: #fdf1dd !default;
+$orange-100: #f5d9a8 !default;
+$orange-200: #e9be74 !default;
+$orange-300: #d99530 !default;
+$orange-400: #c17d10 !default;
+$orange-500: #ab6100 !default;
+$orange-600: #9e5400 !default;
+$orange-700: #8f4700 !default;
+$orange-800: #703800 !default;
+$orange-900: #5c2900 !default;
+$orange-950: #421f00 !default;
 
 $red-50: #fcf1ef !default;
 $red-100: #fdd4cd !default;
@@ -160,6 +151,18 @@ $red-700: #ae1800 !default;
 $red-800: #8d1300 !default;
 $red-900: #660e00 !default;
 $red-950: #4d0a00 !default;
+
+$purple-50: #f4f0ff !default;
+$purple-100: #e1d8f9 !default;
+$purple-200: #cbbbf2 !default;
+$purple-300: #ac93e6 !default;
+$purple-400: #9475db !default;
+$purple-500: #7b58cf !default;
+$purple-600: #694cc0 !default;
+$purple-700: #5943b6 !default;
+$purple-800: #453894 !default;
+$purple-900: #2f2a6b !default;
+$purple-950: #232150 !default;
 
 $gray-10: #fafafa !default;
 $gray-50: #f0f0f0 !default;
@@ -228,6 +231,20 @@ $reds: (
   '800': $red-800,
   '900': $red-900,
   '950': $red-950
+);
+
+$purples: (
+  '50': $purple-50,
+  '100': $purple-100,
+  '200': $purple-200,
+  '300': $purple-300,
+  '400': $purple-400,
+  '500': $purple-500,
+  '600': $purple-600,
+  '700': $purple-700,
+  '800': $purple-800,
+  '900': $purple-900,
+  '950': $purple-950
 );
 
 $grays: (
@@ -357,13 +374,10 @@ $gl-text-color-inverted: $white;
 $gl-text-color-secondary-inverted: rgba($white, 0.85);
 $gl-text-color-disabled: $gray-400;
 $gl-grayish-blue: #7f8fa4;
-$gl-gray-dark: #313236;
-$gl-gray-light: #5c5c5c;
 $gl-header-color: #4c4e54;
 $gl-font-size-12: 12px;
 $gl-font-size-14: 14px;
 $gl-font-size-16: 16px;
-$gl-font-size-20: 20px;
 $gl-font-size-28: 28px;
 $gl-font-size-42: 42px;
 
@@ -484,6 +498,22 @@ $line-added: #ecfdf0;
 $line-added-dark: #c7f0d2 !default;
 $line-removed: #fbe9eb;
 $line-removed-dark: #fac5cd !default;
+/*
+ * The transparent colors are used in Monaco editor. Using full opacity colors
+ * would hide other layers (selected text, matching brackets).
+ *
+ * When the transparent colors get layered on white background, they create their
+ * full opacity counterparts (computed with https://stackoverflow.com/a/12228643/606571):
+ *
+ *  - white + $line-added-transparent = $line-added
+ *  - white + $line-added-transparent + $line-added-dark-transparent = $line-added-dark
+ *
+ * More details: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/41553
+ */
+$line-added-transparent: rgba(160, 245, 180, 0.2);
+$line-added-dark-transparent: rgba(51, 188, 90, 0.2);
+$line-removed-transparent: rgba(235, 145, 155, 0.2);
+$line-removed-dark-transparent: rgba(246, 53, 85, 0.2);
 $line-number-old: #f9d7dc;
 $line-number-new: #ddfbe6;
 $line-number-select: #fbf2da;
@@ -588,7 +618,6 @@ $award-emoji-width-xs: 90%;
 $search-input-border-color: rgba($blue-400, 0.8);
 $search-input-width: 200px;
 $search-input-xl-width: 320px;
-$location-icon-color: #e7e9ed;
 
 /*
  *  Notes
@@ -894,8 +923,3 @@ $compare-branches-sticky-header-height: 68px;
  - Issue: https://gitlab.com/gitlab-org/design.gitlab.com/issues/242
  */
 $enable-validation-icons: false;
-
-/*
-Licenses
-*/
-$license-header-cell-width: 150px;

@@ -40,6 +40,17 @@ RSpec.describe RuboCop::Cop::StaticTranslationDefinition, type: :rubocop do
         ['C = n_("c")', 'n_("c")', 1],
         [
           <<~CODE,
+            class MyClass
+              def self.translations
+                @cache ||= { hello: _("hello") }
+              end
+            end
+          CODE
+          '_("hello")',
+          3
+        ],
+        [
+          <<~CODE,
             module MyModule
               A = {
                 b: {
@@ -78,6 +89,20 @@ RSpec.describe RuboCop::Cop::StaticTranslationDefinition, type: :rubocop do
         'CONSTANT_1 = __("a")',
         'CONSTANT_2 = s__("a")',
         'CONSTANT_3 = n__("a")',
+        <<~CODE,
+          class MyClass
+            def self.method
+              @cache ||= { hello: -> { _("hello") } }
+            end
+          end
+        CODE
+        <<~CODE,
+          class MyClass
+            def method
+              @cache ||= { hello: _("hello") }
+            end
+          end
+        CODE
         <<~CODE,
           def method
             s_('a')

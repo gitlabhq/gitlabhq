@@ -15,6 +15,8 @@ the [Elasticsearch integration documentation](../integration/elasticsearch.md#en
 
 In June 2019, Mario de la Ossa hosted a Deep Dive (GitLab team members only: `https://gitlab.com/gitlab-org/create-stage/issues/1`) on GitLab's [Elasticsearch integration](../integration/elasticsearch.md) to share his domain specific knowledge with anyone who may work in this part of the code base in the future. You can find the [recording on YouTube](https://www.youtube.com/watch?v=vrvl-tN2EaA), and the slides on [Google Slides](https://docs.google.com/presentation/d/1H-pCzI_LNrgrL5pJAIQgvLX8Ji0-jIKOg1QeJQzChug/edit) and in [PDF](https://gitlab.com/gitlab-org/create-stage/uploads/c5aa32b6b07476fa8b597004899ec538/Elasticsearch_Deep_Dive.pdf). Everything covered in this deep dive was accurate as of GitLab 12.0, and while specific details may have changed since then, it should still serve as a good introduction.
 
+In August 2020, a second Deep Dive was hosted, focusing on [GitLab's specific architecture for multi-indices support](#zero-downtime-reindexing-with-multiple-indices). The [recording on YouTube](https://www.youtube.com/watch?v=0WdPR9oB2fg) and the [slides](https://lulalala.gitlab.io/gitlab-elasticsearch-deepdive) are available. Everything covered in this deep dive was accurate as of GitLab 13.3.
+
 ## Supported Versions
 
 See [Version Requirements](../integration/elasticsearch.md#version-requirements).
@@ -218,7 +220,7 @@ logs will also include the time spent on Database and Gitaly requests, which
 may help to diagnose which part of the search is performing poorly.
 
 There are additional logs specific to Elasticsearch that are sent to
-[`elasticsearch.log`](../administration/logs.md#elasticsearchlog-starter-only)
+[`elasticsearch.log`](../administration/logs.md#elasticsearchlog)
 that may contain information to help diagnose performance issues.
 
 ### Performance Bar
@@ -229,7 +231,7 @@ be used both locally in development and on any deployed GitLab instance to
 diagnose poor search performance. This will show the exact queries being made,
 which is useful to diagnose why a search might be slow.
 
-### Correlation ID and X-Opaque-Id
+### Correlation ID and `X-Opaque-Id`
 
 Our [correlation
 ID](./distributed_tracing.md#developer-guidelines-for-working-with-correlation-ids)

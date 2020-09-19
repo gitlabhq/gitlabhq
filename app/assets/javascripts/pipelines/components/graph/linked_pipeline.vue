@@ -1,5 +1,5 @@
 <script>
-import { GlTooltipDirective, GlButton } from '@gitlab/ui';
+import { GlTooltipDirective, GlButton, GlLink, GlLoadingIcon } from '@gitlab/ui';
 import CiStatus from '~/vue_shared/components/ci_icon.vue';
 import { __, sprintf } from '~/locale';
 
@@ -10,6 +10,8 @@ export default {
   components: {
     CiStatus,
     GlButton,
+    GlLink,
+    GlLoadingIcon,
   },
   props: {
     pipeline: {
@@ -24,6 +26,11 @@ export default {
       type: String,
       required: true,
     },
+  },
+  data() {
+    return {
+      expanded: false,
+    };
   },
   computed: {
     tooltipText() {
@@ -66,11 +73,22 @@ export default {
         ? sprintf(__('Created by %{job}'), { job: this.pipeline.source_job.name })
         : '';
     },
+    expandedIcon() {
+      if (this.parentPipeline) {
+        return this.expanded ? 'angle-right' : 'angle-left';
+      }
+      return this.expanded ? 'angle-left' : 'angle-right';
+    },
+    expandButtonPosition() {
+      return this.parentPipeline ? 'gl-left-0 gl-border-r-1!' : 'gl-right-0 gl-border-l-1!';
+    },
   },
   methods: {
     onClickLinkedPipeline() {
       this.$root.$emit('bv::hide::tooltip', this.buttonId);
+      this.expanded = !this.expanded;
       this.$emit('pipelineClicked', this.$refs.linkedPipeline);
+      this.$emit('pipelineExpandToggle', this.pipeline.source_job.name, this.expanded);
     },
     hideTooltips() {
       this.$root.$emit('bv::hide::tooltip');
@@ -88,27 +106,48 @@ export default {
 <template>
   <li
     ref="linkedPipeline"
+    v-gl-tooltip
     class="linked-pipeline build"
+    :title="tooltipText"
     :class="{ 'downstream-pipeline': isDownstream }"
     data-qa-selector="child_pipeline"
     @mouseover="onDownstreamHovered"
     @mouseleave="onDownstreamHoverLeave"
   >
-    <gl-button
-      :id="buttonId"
-      v-gl-tooltip
-      :title="tooltipText"
-      class="linked-pipeline-content"
-      data-qa-selector="linked_pipeline_button"
-      :class="`js-pipeline-expand-${pipeline.id}`"
-      :loading="pipeline.isLoading"
-      @click="onClickLinkedPipeline"
+    <div
+      class="gl-relative gl-bg-white gl-p-3 gl-border-solid gl-border-gray-100 gl-border-1"
+      :class="{ 'gl-pl-9': parentPipeline }"
     >
-      <ci-status v-if="!pipeline.isLoading" :status="pipelineStatus" css-classes="gl-top-0" />
-      <span class="str-truncated"> {{ downstreamTitle }} &#8226; #{{ pipeline.id }} </span>
+      <div class="gl-display-flex">
+        <ci-status
+          v-if="!pipeline.isLoading"
+          :status="pipelineStatus"
+          css-classes="gl-top-0 gl-pr-2"
+        />
+        <div v-else class="gl-pr-2"><gl-loading-icon inline /></div>
+        <div class="gl-display-flex gl-flex-direction-column gl-w-13">
+          <span class="gl-text-truncate">
+            {{ downstreamTitle }}
+          </span>
+          <div class="gl-text-truncate">
+            <gl-link class="gl-text-blue-500!" :href="pipeline.path" data-testid="pipelineLink"
+              >#{{ pipeline.id }}</gl-link
+            >
+          </div>
+        </div>
+      </div>
       <div class="gl-pt-2">
         <span class="badge badge-primary" data-testid="downstream-pipeline-label">{{ label }}</span>
       </div>
-    </gl-button>
+      <gl-button
+        :id="buttonId"
+        class="gl-absolute gl-top-0 gl-bottom-0 gl-shadow-none! gl-rounded-0!"
+        :class="`js-pipeline-expand-${pipeline.id} ${expandButtonPosition}`"
+        :icon="expandedIcon"
+        data-testid="expandPipelineButton"
+        data-qa-selector="expand_pipeline_button"
+        @click="onClickLinkedPipeline"
+      />
+    </div>
   </li>
 </template>

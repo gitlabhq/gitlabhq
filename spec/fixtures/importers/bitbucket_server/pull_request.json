@@ -5,8 +5,9 @@
       "status":"UNAPPROVED",
       "user":{
          "active":true,
-         "displayName":"root",
+         "displayName":"displayName",
          "emailAddress":"joe.montana@49ers.com",
+         "username": "username",
          "id":1,
          "links":{
             "self":[
@@ -16,7 +17,7 @@
             ]
          },
          "name":"root",
-         "slug":"root",
+         "slug":"slug",
          "type":"NORMAL"
       }
    },

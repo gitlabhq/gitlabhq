@@ -49,7 +49,7 @@ RSpec.describe Gitlab::SidekiqDaemon::MemoryKiller do
         expect { subject }.not_to raise_exception
       end
 
-      it 'logs exception message once and raise execption and log stop message' do
+      it 'logs exception message once and raise exception and log stop message' do
         expect(Sidekiq.logger).to receive(:warn).once
           .with(
             class: described_class.to_s,
@@ -68,7 +68,7 @@ RSpec.describe Gitlab::SidekiqDaemon::MemoryKiller do
             pid: pid,
             message: 'Stopping Gitlab::SidekiqDaemon::MemoryKiller Daemon')
 
-        expect { subject }.to raise_exception
+        expect { subject }.to raise_exception(Exception, 'My Exception')
       end
 
       it 'logs stop message once' do
@@ -402,12 +402,14 @@ RSpec.describe Gitlab::SidekiqDaemon::MemoryKiller do
     subject { memory_killer.send(:rss_increase_by_jobs) }
 
     it 'adds up individual rss_increase_by_job' do
+      allow(Gitlab::SidekiqDaemon::Monitor).to receive_message_chain(:instance, :jobs_mutex, :synchronize).and_yield
       expect(Gitlab::SidekiqDaemon::Monitor).to receive_message_chain(:instance, :jobs).and_return(running_jobs)
       expect(memory_killer).to receive(:rss_increase_by_job).and_return(11, 22)
       expect(subject).to eq(33)
     end
 
     it 'return 0 if no job' do
+      allow(Gitlab::SidekiqDaemon::Monitor).to receive_message_chain(:instance, :jobs_mutex, :synchronize).and_yield
       expect(Gitlab::SidekiqDaemon::Monitor).to receive_message_chain(:instance, :jobs).and_return({})
       expect(subject).to eq(0)
     end

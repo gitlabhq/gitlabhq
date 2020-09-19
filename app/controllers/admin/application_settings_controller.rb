@@ -32,7 +32,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
   end
 
   def integrations
-    @integrations = Service.find_or_initialize_instances.sort_by(&:title)
+    @integrations = Service.find_or_initialize_all(Service.for_instance).sort_by(&:title)
   end
 
   def update
@@ -170,6 +170,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
 
   def set_application_setting
     @application_setting = ApplicationSetting.current_without_cache
+    @plans = Plan.all
   end
 
   def whitelist_query_limiting

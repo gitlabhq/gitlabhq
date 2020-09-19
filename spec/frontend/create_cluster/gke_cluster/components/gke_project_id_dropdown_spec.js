@@ -130,7 +130,6 @@ describe('GkeProjectIdDropdown', () => {
         expect(setProject).toHaveBeenCalledWith(
           expect.anything(),
           gapiProjectsResponseMock.projects[0],
-          undefined,
         );
       });
     });

@@ -35,7 +35,7 @@ module Gitlab
     def self.perform_request(http_method, path, options, &block)
       log_info = options.delete(:extra_log_info)
       options_with_timeouts =
-        if !options.has_key?(:timeout) && Feature.enabled?(:http_default_timeouts)
+        if !options.has_key?(:timeout)
           options.with_defaults(DEFAULT_TIMEOUT_OPTIONS)
         else
           options

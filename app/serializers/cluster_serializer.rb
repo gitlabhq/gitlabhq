@@ -11,6 +11,7 @@ class ClusterSerializer < BaseSerializer
         :enabled,
         :environment_scope,
         :gitlab_managed_apps_logs_path,
+        :enable_advanced_logs_querying,
         :kubernetes_errors,
         :name,
         :nodes,

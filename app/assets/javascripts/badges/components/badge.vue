@@ -1,13 +1,12 @@
 <script>
-import { GlLoadingIcon, GlTooltipDirective } from '@gitlab/ui';
-import Icon from '~/vue_shared/components/icon.vue';
+import { GlLoadingIcon, GlTooltipDirective, GlIcon } from '@gitlab/ui';
 
 export default {
   // name: 'Badge' is a false positive: https://gitlab.com/gitlab-org/frontend/eslint-plugin-i18n/issues/25
   // eslint-disable-next-line @gitlab/require-i18n-strings
   name: 'Badge',
   components: {
-    Icon,
+    GlIcon,
     GlLoadingIcon,
   },
   directives: {
@@ -84,7 +83,7 @@ export default {
 
     <div v-show="hasError" class="btn-group">
       <div class="btn btn-default btn-sm disabled">
-        <icon :size="16" class="gl-ml-3 gl-mr-3" name="doc-image" aria-hidden="true" />
+        <gl-icon :size="16" class="gl-ml-3 gl-mr-3" name="doc-image" aria-hidden="true" />
       </div>
       <div class="btn btn-default btn-sm disabled">
         <span class="gl-ml-3 gl-mr-3">{{ s__('Badges|No badge image') }}</span>
@@ -99,7 +98,7 @@ export default {
       type="button"
       @click="reloadImage"
     >
-      <icon :size="16" name="retry" />
+      <gl-icon :size="16" name="retry" />
     </button>
   </div>
 </template>

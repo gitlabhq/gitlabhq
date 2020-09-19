@@ -26,19 +26,19 @@ For information on how to create and upload a package, view the GitLab documenta
 ## Use GitLab CI/CD to build packages
 
 You can use [GitLab CI/CD](../../../ci/README.md) to build packages.
-For Maven, NuGet and NPM packages, and Composer dependencies, you can
+For Maven, NuGet, NPM, Conan, and PyPI packages, and Composer dependencies, you can
 authenticate with GitLab by using the `CI_JOB_TOKEN`.
 
 CI/CD templates, which you can use to get started, are in [this repo](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/ci/templates).
 
-Learn more about [using CI/CD to build Maven packages](../maven_repository/index.md#creating-maven-packages-with-gitlab-cicd), [NPM packages](../npm_registry/index.md#publishing-a-package-with-cicd) and [NuGet Packages](../nuget_repository/index.md#publishing-a-nuget-package-with-cicd).
+Learn more about [using CI/CD to build Maven packages](../maven_repository/index.md#creating-maven-packages-with-gitlab-cicd), [NPM packages](../npm_registry/index.md#publishing-a-package-with-cicd), [Composer packages](../composer_repository/index.md#publishing-the-package-with-cicd), [NuGet Packages](../nuget_repository/index.md#publishing-a-nuget-package-with-cicd), [Conan Packages](../conan_repository/index.md#using-gitlab-ci-with-conan-packages), and [PyPI packages](../pypi_repository/index.md#using-gitlab-ci-with-pypi-packages).
 
 If you use CI/CD to build a package, extended activity
 information is displayed when you view the package details:
 
 ![Package CI/CD activity](img/package_activity_v12_10.png)
 
-You can view which pipeline published the package, as well as the commit and
+When using Maven and NPM, you can view which pipeline published the package, as well as the commit and
 user who triggered it.
 
 ## Download a package
@@ -54,13 +54,11 @@ To download a package:
 You cannot edit a package after you publish it in the Package Registry. Instead, you
 must delete and recreate it.
 
-- You cannot delete packages from the group view. You must delete them from the project view instead.
-  See [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/227714) for details.
-- You must have suitable [permissions](../../permissions.md).
+To delete a package, you must have suitable [permissions](../../permissions.md).
 
 You can delete packages by using [the API](../../../api/packages.md#delete-a-project-package) or the UI.
 
-To delete a package in the UI:
+To delete a package in the UI, from your group or project:
 
 1. Go to **{package}** **Packages & Registries > Package Registry**.
 1. Find the name of the package you want to delete.

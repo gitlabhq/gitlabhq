@@ -1,8 +1,7 @@
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex';
-import { GlTooltipDirective } from '@gitlab/ui';
+import { GlTooltipDirective, GlIcon } from '@gitlab/ui';
 import { s__, sprintf } from '~/locale';
-import Icon from '~/vue_shared/components/icon.vue';
 import FileTree from '~/vue_shared/components/file_tree.vue';
 import DiffFileRow from './diff_file_row.vue';
 
@@ -11,7 +10,7 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   components: {
-    Icon,
+    GlIcon,
     FileTree,
   },
   props: {
@@ -26,7 +25,7 @@ export default {
     };
   },
   computed: {
-    ...mapState('diffs', ['tree', 'renderTreeList', 'currentDiffFileId']),
+    ...mapState('diffs', ['tree', 'renderTreeList', 'currentDiffFileId', 'viewedDiffFileIds']),
     ...mapGetters('diffs', ['allBlobs']),
     filteredTreeList() {
       const search = this.search.toLowerCase().trim();
@@ -66,7 +65,7 @@ export default {
   <div class="tree-list-holder d-flex flex-column">
     <div class="gl-mb-3 position-relative tree-list-search d-flex">
       <div class="flex-fill d-flex">
-        <icon name="search" class="position-absolute tree-list-icon" />
+        <gl-icon name="search" class="position-absolute tree-list-icon" />
         <label for="diff-tree-search" class="sr-only">{{ $options.searchPlaceholder }}</label>
         <input
           id="diff-tree-search"
@@ -83,7 +82,7 @@ export default {
           class="position-absolute bg-transparent tree-list-icon tree-list-clear-icon border-0 p-0"
           @click="clearSearch"
         >
-          <icon name="close" />
+          <gl-icon name="close" />
         </button>
       </div>
     </div>
@@ -94,6 +93,7 @@ export default {
           :key="file.key"
           :file="file"
           :level="0"
+          :viewed-files="viewedDiffFileIds"
           :hide-file-stats="hideFileStats"
           :file-row-component="$options.DiffFileRow"
           :current-diff-file-id="currentDiffFileId"

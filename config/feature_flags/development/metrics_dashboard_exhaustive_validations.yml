@@ -1,0 +1,7 @@
+---
+name: metrics_dashboard_exhaustive_validations
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/40103
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/241697
+group: group::apm
+type: development
+default_enabled: false

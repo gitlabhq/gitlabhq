@@ -22,5 +22,5 @@
         = label_tag :expires_at, _('Access expiration date'), class: 'label-bold'
         .clearable-input
           = text_field_tag :expires_at, nil, class: 'form-control js-access-expiration-date-groups', placeholder: _('Expiration date'), id: 'expires_at_groups'
-          %i.clear-icon.js-clear-input
+          = sprite_icon('close', size: 16, css_class: 'clear-icon js-clear-input gl-text-gray-200')
       = submit_tag _("Invite"), class: "btn btn-success", data: { qa_selector: 'invite_group_button' }

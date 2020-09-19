@@ -12,8 +12,8 @@ module EnvironmentsHelper
   def environments_folder_list_view_data
     {
       "endpoint" => folder_project_environments_path(@project, @folder, format: :json),
-      "folder-name" => @folder,
-      "can-read-environment" => can?(current_user, :read_environment, @project).to_s
+      "folder_name" => @folder,
+      "can_read_environment" => can?(current_user, :read_environment, @project).to_s
     }
   end
 
@@ -33,11 +33,11 @@ module EnvironmentsHelper
 
   def environment_logs_data(project, environment)
     {
-      "environment-name": environment.name,
-      "environments-path": project_environments_path(project, format: :json),
-      "environment-id": environment.id,
-      "cluster-applications-documentation-path" => help_page_path('user/clusters/applications.md', anchor: 'elastic-stack'),
-      "clusters-path": project_clusters_path(project, format: :json)
+      "environment_name": environment.name,
+      "environments_path": project_environments_path(project, format: :json),
+      "environment_id": environment.id,
+      "cluster_applications_documentation_path" => help_page_path('user/clusters/applications.md', anchor: 'elastic-stack'),
+      "clusters_path": project_clusters_path(project, format: :json)
     }
   end
 
@@ -51,18 +51,18 @@ module EnvironmentsHelper
     return {} unless project
 
     {
-      'settings-path'               => edit_project_service_path(project, 'prometheus'),
-      'clusters-path'               => project_clusters_path(project),
-      'dashboards-endpoint'         => project_performance_monitoring_dashboards_path(project, format: :json),
-      'default-branch'              => project.default_branch,
-      'project-path'                => project_path(project),
-      'tags-path'                   => project_tags_path(project),
-      'external-dashboard-url'      => project.metrics_setting_external_dashboard_url,
-      'custom-metrics-path'         => project_prometheus_metrics_path(project),
-      'validate-query-path'         => validate_query_project_prometheus_metrics_path(project),
-      'custom-metrics-available'    => "#{custom_metrics_available?(project)}",
-      'prometheus-alerts-available' => "#{can?(current_user, :read_prometheus_alerts, project)}",
-      'dashboard-timezone'          => project.metrics_setting_dashboard_timezone.to_s.upcase
+      'settings_path'               => edit_project_service_path(project, 'prometheus'),
+      'clusters_path'               => project_clusters_path(project),
+      'dashboards_endpoint'         => project_performance_monitoring_dashboards_path(project, format: :json),
+      'default_branch'              => project.default_branch,
+      'project_path'                => project_path(project),
+      'tags_path'                   => project_tags_path(project),
+      'external_dashboard_url'      => project.metrics_setting_external_dashboard_url,
+      'custom_metrics_path'         => project_prometheus_metrics_path(project),
+      'validate_query_path'         => validate_query_project_prometheus_metrics_path(project),
+      'custom_metrics_available'    => "#{custom_metrics_available?(project)}",
+      'prometheus_alerts_available' => "#{can?(current_user, :read_prometheus_alerts, project)}",
+      'dashboard_timezone'          => project.metrics_setting_dashboard_timezone.to_s.upcase
     }
   end
 
@@ -70,11 +70,11 @@ module EnvironmentsHelper
     return {} unless environment
 
     {
-      'metrics-dashboard-base-path' => metrics_dashboard_base_path(environment, project),
-      'current-environment-name'    => environment.name,
-      'has-metrics'                 => "#{environment.has_metrics?}",
-      'prometheus-status'           => "#{environment.prometheus_status}",
-      'environment-state'           => "#{environment.state}"
+      'metrics_dashboard_base_path' => metrics_dashboard_base_path(environment, project),
+      'current_environment_name'    => environment.name,
+      'has_metrics'                 => "#{environment.has_metrics?}",
+      'prometheus_status'           => "#{environment.prometheus_status}",
+      'environment_state'           => "#{environment.state}"
     }
   end
 
@@ -93,26 +93,26 @@ module EnvironmentsHelper
     return {} unless project && environment
 
     {
-      'metrics-endpoint'     => additional_metrics_project_environment_path(project, environment, format: :json),
-      'dashboard-endpoint'   => metrics_dashboard_project_environment_path(project, environment, format: :json),
-      'deployments-endpoint' => project_environment_deployments_path(project, environment, format: :json),
-      'alerts-endpoint'      => project_prometheus_alerts_path(project, environment_id: environment.id, format: :json),
-      'operations-settings-path' => project_settings_operations_path(project),
-      'can-access-operations-settings' => can?(current_user, :admin_operations, project).to_s,
-      'panel-preview-endpoint' => project_metrics_dashboards_builder_path(project, format: :json)
+      'metrics_endpoint'     => additional_metrics_project_environment_path(project, environment, format: :json),
+      'dashboard_endpoint'   => metrics_dashboard_project_environment_path(project, environment, format: :json),
+      'deployments_endpoint' => project_environment_deployments_path(project, environment, format: :json),
+      'alerts_endpoint'      => project_prometheus_alerts_path(project, environment_id: environment.id, format: :json),
+      'operations_settings_path' => project_settings_operations_path(project),
+      'can_access_operations_settings' => can?(current_user, :admin_operations, project).to_s,
+      'panel_preview_endpoint' => project_metrics_dashboards_builder_path(project, format: :json)
     }
   end
 
   def static_metrics_data
     {
-      'documentation-path'               => help_page_path('administration/monitoring/prometheus/index.md'),
-      'add-dashboard-documentation-path' => help_page_path('operations/metrics/dashboards/index.md', anchor: 'add-a-new-dashboard-to-your-project'),
-      'empty-getting-started-svg-path'   => image_path('illustrations/monitoring/getting_started.svg'),
-      'empty-loading-svg-path'           => image_path('illustrations/monitoring/loading.svg'),
-      'empty-no-data-svg-path'           => image_path('illustrations/monitoring/no_data.svg'),
-      'empty-no-data-small-svg-path'     => image_path('illustrations/chart-empty-state-small.svg'),
-      'empty-unable-to-connect-svg-path' => image_path('illustrations/monitoring/unable_to_connect.svg'),
-      'custom-dashboard-base-path'       => Gitlab::Metrics::Dashboard::RepoDashboardFinder::DASHBOARD_ROOT
+      'documentation_path'               => help_page_path('administration/monitoring/prometheus/index.md'),
+      'add_dashboard_documentation_path' => help_page_path('operations/metrics/dashboards/index.md', anchor: 'add-a-new-dashboard-to-your-project'),
+      'empty_getting_started_svg_path'   => image_path('illustrations/monitoring/getting_started.svg'),
+      'empty_loading_svg_path'           => image_path('illustrations/monitoring/loading.svg'),
+      'empty_no_data_svg_path'           => image_path('illustrations/monitoring/no_data.svg'),
+      'empty_no_data_small_svg_path'     => image_path('illustrations/chart-empty-state-small.svg'),
+      'empty_unable_to_connect_svg_path' => image_path('illustrations/monitoring/unable_to_connect.svg'),
+      'custom_dashboard_base_path'       => Gitlab::Metrics::Dashboard::RepoDashboardFinder::DASHBOARD_ROOT
     }
   end
 end

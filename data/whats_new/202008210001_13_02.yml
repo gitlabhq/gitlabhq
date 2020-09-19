@@ -1,0 +1,41 @@
+---
+- title: Assign Issues to Iterations
+  body: Prior to this release, there was no way to associate an issue with more than one timebox in GitLab. This has been particularly problematic for teams that follow Scrum or XP. Such teams often need to associate issues with iterations/sprints, while also rolling that issue up to longer-running milestones, such as program increments. Instead of having to decide whether to use milestones for sprints or program increments and track the other in a spreadsheet, you can now assign issues to iterations, milestones, or both.
+  stage: Plan
+  self-managed: true
+  gitlab-com: true
+  packages: [Starter, Premium, Ultimate]
+  url: https://www.youtube.com/watch?v=31pNKjenlJY&feature=emb_title
+  image_url: http://i3.ytimg.com/vi/31pNKjenlJY/maxresdefault.jpg
+  published_at: 2020-07-22
+  release: 13.2
+- title: Container Host Monitoring and Blocking
+  body: We’re pleased to announce the first release of Container Host Security. This initial feature, container host monitoring and blocking, allows security administrators to secure their running containers at the host level by monitoring and optionally blocking unexpected activity. Such activity includes process starts, file changes, or opened network ports. This feature uses Falco to provide the monitoring functionality and AppArmor and Pod Security Policies for the blocking functionality.
+  stage: Defend
+  self-managed: true
+  gitlab-com: true
+  packages: [All]
+  url: https://www.youtube.com/watch?v=WxBzBz76FxU&feature=youtu.be
+  image_url: http://i3.ytimg.com/vi/WxBzBz76FxU/hqdefault.jpg
+  published_at: 2020-07-22
+  release: 13.2
+- title: Official GitLab-Figma Plugin
+  body: Recently, the GitLab product design team and our open source Pajamas Design System switched over to Figma. We decided to build a new Figma plugin, which allows for easy uploads from Figma to issues on GitLab.com. This makes it quick and easy to collaborate on Designs. Connect your design environment with your source code management in a seamless workflow.
+  stage: Create
+  self-managed: false
+  gitlab-com: true
+  packages: [All]
+  url: https://docs.gitlab.com/ee/user/project/issues/design_management.html#gitlab-figma-plugin
+  image_url: https://about.gitlab.com/images/13_2/figma-plugin.png
+  published_at: 2020-07-22
+  release: 13.2
+- title: Cluster health monitoring now available in Core
+  body: To understand system performance, your development team must monitor the health and performance of the underlying infrastructure. We want our metrics solution to be available to all GitLab users, so as part of our 2020 gift, we’ve moved cluster health in the Monitor stage from GitLab Ultimate to GitLab Core. Beginning with GitLab 13.2, all users can connect a cluster and monitor its health in the GitLab user interface.
+  stage: Monitor
+  self-managed: true
+  gitlab-com: true
+  packages: [All]
+  url: https://docs.gitlab.com/ee/user/project/clusters/#visualizing-cluster-health
+  image_url: https://about.gitlab.com/images/13_2/k8s_cluster_monitoring.png
+  published_at: 2020-07-22
+  release: 13.2

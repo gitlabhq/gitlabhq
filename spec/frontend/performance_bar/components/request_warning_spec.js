@@ -27,7 +27,7 @@ describe('request warning', () => {
     });
 
     it('does nothing', () => {
-      expect(wrapper.isEmpty()).toBe(true);
+      expect(wrapper.html()).toBe('');
     });
   });
 });

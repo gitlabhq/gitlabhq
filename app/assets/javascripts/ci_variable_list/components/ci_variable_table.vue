@@ -46,6 +46,7 @@ export default {
     {
       key: 'actions',
       label: '',
+      tdClass: 'text-right',
       customStyle: { width: '35px' },
     },
   ],

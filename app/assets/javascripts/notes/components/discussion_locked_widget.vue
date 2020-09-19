@@ -1,13 +1,12 @@
 <script>
-import { GlLink } from '@gitlab/ui';
-import Icon from '~/vue_shared/components/icon.vue';
+import { GlLink, GlIcon } from '@gitlab/ui';
 import { __, sprintf } from '~/locale';
 import Issuable from '~/vue_shared/mixins/issuable';
 import issuableStateMixin from '../mixins/issuable_state';
 
 export default {
   components: {
-    Icon,
+    GlIcon,
     GlLink,
   },
   mixins: [Issuable, issuableStateMixin],
@@ -28,7 +27,7 @@ export default {
 <template>
   <div class="disabled-comment text-center">
     <span class="issuable-note-warning inline">
-      <icon :size="16" name="lock" class="icon" />
+      <gl-icon :size="16" name="lock" class="icon" />
       <span v-if="isProjectArchived">
         {{ projectArchivedWarning }}
         <gl-link :href="archivedProjectDocsPath" target="_blank" class="learn-more">

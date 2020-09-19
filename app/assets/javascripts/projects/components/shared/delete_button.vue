@@ -86,7 +86,7 @@ export default {
         <slot name="modal-body"></slot>
         <p class="gl-mb-1">{{ $options.strings.confirmText }}</p>
         <p>
-          <code>{{ confirmPhrase }}</code>
+          <code class="gl-white-space-pre-wrap">{{ confirmPhrase }}</code>
         </p>
         <gl-form-input
           id="confirm_name_input"

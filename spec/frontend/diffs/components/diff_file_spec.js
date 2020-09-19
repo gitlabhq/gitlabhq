@@ -45,7 +45,7 @@ describe('DiffFile', () => {
 
       vm.$nextTick()
         .then(() => {
-          expect(el.querySelectorAll('.line_content').length).toBe(5);
+          expect(el.querySelectorAll('.line_content').length).toBe(8);
           expect(el.querySelectorAll('.js-line-expansion-content').length).toBe(1);
           triggerEvent('.btn-clipboard');
         })
@@ -90,8 +90,8 @@ describe('DiffFile', () => {
         vm.isCollapsed = true;
 
         vm.$nextTick(() => {
-          expect(vm.$el.innerText).toContain('This diff is collapsed');
-          expect(vm.$el.querySelectorAll('.js-click-to-expand').length).toEqual(1);
+          expect(vm.$el.innerText).toContain('This file is collapsed.');
+          expect(vm.$el.querySelector('[data-testid="expandButton"]')).not.toBeFalsy();
 
           done();
         });
@@ -102,8 +102,8 @@ describe('DiffFile', () => {
         vm.isCollapsed = true;
 
         vm.$nextTick(() => {
-          expect(vm.$el.innerText).toContain('This diff is collapsed');
-          expect(vm.$el.querySelectorAll('.js-click-to-expand').length).toEqual(1);
+          expect(vm.$el.innerText).toContain('This file is collapsed.');
+          expect(vm.$el.querySelector('[data-testid="expandButton"]')).not.toBeFalsy();
 
           done();
         });
@@ -121,28 +121,8 @@ describe('DiffFile', () => {
         vm.isCollapsed = true;
 
         vm.$nextTick(() => {
-          expect(vm.$el.innerText).toContain('This diff is collapsed');
-          expect(vm.$el.querySelectorAll('.js-click-to-expand').length).toEqual(1);
-
-          done();
-        });
-      });
-
-      it('should auto-expand collapsed files when viewDiffsFileByFile is true', done => {
-        vm.$destroy();
-        window.gon = {
-          features: { autoExpandCollapsedDiffs: true },
-        };
-        vm = createComponentWithStore(Vue.extend(DiffFileComponent), createStore(), {
-          file: JSON.parse(JSON.stringify(diffFileMockDataUnreadable)),
-          canCurrentUserFork: false,
-          viewDiffsFileByFile: true,
-        }).$mount();
-
-        vm.$nextTick(() => {
-          expect(vm.$el.innerText).not.toContain('This diff is collapsed');
-
-          window.gon = {};
+          expect(vm.$el.innerText).toContain('This file is collapsed.');
+          expect(vm.$el.querySelector('[data-testid="expandButton"]')).not.toBeFalsy();
 
           done();
         });
@@ -155,7 +135,7 @@ describe('DiffFile', () => {
         vm.file.viewer.name = diffViewerModes.renamed;
 
         vm.$nextTick(() => {
-          expect(vm.$el.innerText).not.toContain('This diff is collapsed');
+          expect(vm.$el.innerText).not.toContain('This file is collapsed.');
 
           done();
         });
@@ -168,7 +148,7 @@ describe('DiffFile', () => {
         vm.file.viewer.name = diffViewerModes.mode_changed;
 
         vm.$nextTick(() => {
-          expect(vm.$el.innerText).not.toContain('This diff is collapsed');
+          expect(vm.$el.innerText).not.toContain('This file is collapsed.');
 
           done();
         });
@@ -235,7 +215,7 @@ describe('DiffFile', () => {
     it('calls handleLoadCollapsedDiff if collapsed changed & file has no lines', done => {
       jest.spyOn(vm, 'handleLoadCollapsedDiff').mockImplementation(() => {});
 
-      vm.file.highlighted_diff_lines = undefined;
+      vm.file.highlighted_diff_lines = [];
       vm.file.parallel_diff_lines = [];
       vm.isCollapsed = true;
 
@@ -262,8 +242,8 @@ describe('DiffFile', () => {
 
       jest.spyOn(vm, 'handleLoadCollapsedDiff').mockImplementation(() => {});
 
-      vm.file.highlighted_diff_lines = undefined;
-      vm.file.parallel_diff_lines = [];
+      vm.file.highlighted_diff_lines = [];
+      vm.file.parallel_diff_lines = undefined;
       vm.isCollapsed = true;
 
       vm.$nextTick()

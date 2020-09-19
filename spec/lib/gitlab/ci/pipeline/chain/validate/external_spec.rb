@@ -31,20 +31,20 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Validate::External do
     CI_YAML
   end
 
-  let(:yaml_processor) do
+  let(:yaml_processor_result) do
     ::Gitlab::Ci::YamlProcessor.new(
       ci_yaml, {
         project: project,
         sha: pipeline.sha,
         user: user
       }
-    )
+    ).execute
   end
 
   let(:save_incompleted) { true }
   let(:command) do
     Gitlab::Ci::Pipeline::Chain::Command.new(
-      project: project, current_user: user, config_processor: yaml_processor, save_incompleted: save_incompleted
+      project: project, current_user: user, yaml_processor_result: yaml_processor_result, save_incompleted: save_incompleted
     )
   end
 
@@ -128,7 +128,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Validate::External do
   end
 
   describe '#validation_service_payload' do
-    subject(:validation_service_payload) { step.send(:validation_service_payload, pipeline, command.config_processor.stages_attributes) }
+    subject(:validation_service_payload) { step.send(:validation_service_payload, pipeline, command.yaml_processor_result.stages_attributes) }
 
     it 'respects the defined schema' do
       expect(validation_service_payload).to match_schema('/external_validation')

@@ -3,6 +3,8 @@
 module Gitlab
   module DiscussionsDiff
     class HighlightCache
+      extend Gitlab::Utils::Gzip
+
       class << self
         VERSION = 1
         EXPIRATION = 1.week
@@ -17,7 +19,7 @@ module Gitlab
               mapping.each do |raw_key, value|
                 key = cache_key_for(raw_key)
 
-                multi.set(key, value.to_json, ex: EXPIRATION)
+                multi.set(key, gzip_compress(value.to_json), ex: EXPIRATION)
               end
             end
           end
@@ -44,7 +46,7 @@ module Gitlab
           content.map! do |lines|
             next unless lines
 
-            Gitlab::Json.parse(lines).map! do |line|
+            Gitlab::Json.parse(gzip_decompress(lines)).map! do |line|
               Gitlab::Diff::Line.safe_init_from_hash(line)
             end
           end

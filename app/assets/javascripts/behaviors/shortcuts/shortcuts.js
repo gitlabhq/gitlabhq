@@ -2,6 +2,7 @@ import $ from 'jquery';
 import Cookies from 'js-cookie';
 import Mousetrap from 'mousetrap';
 import Vue from 'vue';
+import { flatten } from 'lodash';
 import { disableShortcuts, shouldDisableShortcuts } from './shortcuts_toggle';
 import ShortcutsToggle from './shortcuts_toggle.vue';
 import axios from '../../lib/utils/axios_utils';
@@ -9,13 +10,13 @@ import { refreshCurrentPage, visitUrl } from '../../lib/utils/url_utility';
 import findAndFollowLink from '../../lib/utils/navigation_utility';
 import { parseBoolean, getCspNonceValue } from '~/lib/utils/common_utils';
 
-const defaultStopCallback = Mousetrap.stopCallback;
-Mousetrap.stopCallback = (e, element, combo) => {
+const defaultStopCallback = Mousetrap.prototype.stopCallback;
+Mousetrap.prototype.stopCallback = function customStopCallback(e, element, combo) {
   if (['ctrl+shift+p', 'command+shift+p'].indexOf(combo) !== -1) {
     return false;
   }
 
-  return defaultStopCallback(e, element, combo);
+  return defaultStopCallback.call(this, e, element, combo);
 };
 
 function initToggleButton() {
@@ -27,6 +28,39 @@ function initToggleButton() {
   });
 }
 
+/**
+ * The key used to save and fetch the local Mousetrap instance
+ * attached to a `<textarea>` element using `jQuery.data`
+ */
+const LOCAL_MOUSETRAP_DATA_KEY = 'local-mousetrap-instance';
+
+/**
+ * Gets a mapping of toolbar button => keyboard shortcuts
+ * associated to the given markdown editor `<textarea>` element
+ *
+ * @param {HTMLTextAreaElement} $textarea The jQuery-wrapped `<textarea>`
+ * element to extract keyboard shortcuts from
+ *
+ * @returns A Map with keys that are jQuery-wrapped toolbar buttons
+ * (i.e. `$toolbarBtn`) and values that are arrays of string
+ * keyboard shortcuts (e.g. `['command+k', 'ctrl+k]`).
+ */
+function getToolbarBtnToShortcutsMap($textarea) {
+  const $allToolbarBtns = $textarea.closest('.md-area').find('.js-md');
+  const map = new Map();
+
+  $allToolbarBtns.each(function attachToolbarBtnHandler() {
+    const $toolbarBtn = $(this);
+    const keyboardShortcuts = $toolbarBtn.data('md-shortcuts');
+
+    if (keyboardShortcuts?.length) {
+      map.set($toolbarBtn, keyboardShortcuts);
+    }
+  });
+
+  return map;
+}
+
 export default class Shortcuts {
   constructor() {
     this.onToggleHelp = this.onToggleHelp.bind(this);
@@ -34,6 +68,7 @@ export default class Shortcuts {
 
     Mousetrap.bind('?', this.onToggleHelp);
     Mousetrap.bind('s', Shortcuts.focusSearch);
+    Mousetrap.bind('/', Shortcuts.focusSearch);
     Mousetrap.bind('f', this.focusFilter.bind(this));
     Mousetrap.bind('p b', Shortcuts.onTogglePerfBar);
 
@@ -141,6 +176,64 @@ export default class Shortcuts {
 
     if (e.preventDefault) {
       e.preventDefault();
+    }
+  }
+
+  /**
+   * Initializes markdown editor shortcuts on the provided `<textarea>` element
+   *
+   * @param {JQuery} $textarea The jQuery-wrapped `<textarea>` element
+   * where markdown shortcuts should be enabled
+   * @param {Function} handler The handler to call when a
+   * keyboard shortcut is pressed inside the markdown `<textarea>`
+   */
+  static initMarkdownEditorShortcuts($textarea, handler) {
+    const toolbarBtnToShortcutsMap = getToolbarBtnToShortcutsMap($textarea);
+
+    const localMousetrap = new Mousetrap($textarea[0]);
+
+    // Save a reference to the local mousetrap instance on the <textarea>
+    // so that it can be retrieved when unbinding shortcut handlers
+    $textarea.data(LOCAL_MOUSETRAP_DATA_KEY, localMousetrap);
+
+    toolbarBtnToShortcutsMap.forEach((keyboardShortcuts, $toolbarBtn) => {
+      localMousetrap.bind(keyboardShortcuts, e => {
+        e.preventDefault();
+
+        handler($toolbarBtn);
+      });
+    });
+
+    // Get an array of all shortcut strings that have been added above
+    const allShortcuts = flatten([...toolbarBtnToShortcutsMap.values()]);
+
+    const originalStopCallback = Mousetrap.prototype.stopCallback;
+    localMousetrap.stopCallback = function newStopCallback(e, element, combo) {
+      if (allShortcuts.includes(combo)) {
+        return false;
+      }
+
+      return originalStopCallback.call(this, e, element, combo);
+    };
+  }
+
+  /**
+   * Removes markdown editor shortcut handlers originally attached
+   * with `initMarkdownEditorShortcuts`.
+   *
+   * Note: it is safe to call this function even if `initMarkdownEditorShortcuts`
+   * has _not_ yet been called on the given `<textarea>`.
+   *
+   * @param {JQuery} $textarea The jQuery-wrapped `<textarea>`
+   * to remove shortcut handlers from
+   */
+  static removeMarkdownEditorShortcuts($textarea) {
+    const localMousetrap = $textarea.data(LOCAL_MOUSETRAP_DATA_KEY);
+
+    if (localMousetrap) {
+      getToolbarBtnToShortcutsMap($textarea).forEach(keyboardShortcuts => {
+        localMousetrap.unbind(keyboardShortcuts);
+      });
     }
   }
 }

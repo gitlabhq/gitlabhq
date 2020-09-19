@@ -35,8 +35,12 @@ describe('noteActions', () => {
       canEdit: true,
       canAwardEmoji: true,
       canReportAsAbuse: true,
+      isAuthor: true,
+      isContributor: false,
+      noteableType: 'MergeRequest',
       noteId: '539',
       noteUrl: `${TEST_HOST}/group/project/-/merge_requests/1#note_1`,
+      projectName: 'project',
       reportAbusePath: `${TEST_HOST}/abuse_reports/new?ref_url=http%3A%2F%2Flocalhost%3A3000%2Fgitlab-org%2Fgitlab-ce%2Fissues%2F7%23note_539&user_id=26`,
       showReply: false,
     };
@@ -60,13 +64,41 @@ describe('noteActions', () => {
       wrapper = shallowMountNoteActions(props);
     });
 
+    it('should render noteable author badge', () => {
+      expect(
+        wrapper
+          .findAll('.note-role')
+          .at(0)
+          .text()
+          .trim(),
+      ).toEqual('Author');
+    });
+
     it('should render access level badge', () => {
       expect(
         wrapper
-          .find('.note-role')
+          .findAll('.note-role')
+          .at(1)
           .text()
           .trim(),
       ).toEqual(props.accessLevel);
+    });
+
+    it('should render contributor badge', () => {
+      wrapper.setProps({
+        accessLevel: null,
+        isContributor: true,
+      });
+
+      return wrapper.vm.$nextTick().then(() => {
+        expect(
+          wrapper
+            .findAll('.note-role')
+            .at(1)
+            .text()
+            .trim(),
+        ).toBe('Contributor');
+      });
     });
 
     it('should render emoji link', () => {

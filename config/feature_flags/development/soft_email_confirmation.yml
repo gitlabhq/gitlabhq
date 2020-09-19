@@ -1,0 +1,7 @@
+---
+name: soft_email_confirmation
+introduced_by_url: 
+rollout_issue_url: 
+group: 
+type: development
+default_enabled: false

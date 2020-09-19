@@ -136,7 +136,10 @@ module API
         if result[:status] == :success
           commit_detail = user_project.repository.commit(result[:result])
 
-          Gitlab::UsageDataCounters::WebIdeCounter.increment_commits_count if find_user_from_warden
+          if find_user_from_warden
+            Gitlab::UsageDataCounters::WebIdeCounter.increment_commits_count
+            Gitlab::UsageDataCounters::EditorUniqueCounter.track_web_ide_edit_action(author: current_user)
+          end
 
           present commit_detail, with: Entities::CommitDetail, stats: params[:stats]
         else

@@ -1,7 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
-import { GlButton } from '@gitlab/ui';
 import TreeContent, { INITIAL_FETCH_COUNT } from '~/repository/components/tree_content.vue';
 import FilePreview from '~/repository/components/preview/index.vue';
+import FileTable from '~/repository/components/table/index.vue';
 
 let vm;
 let $apollo;
@@ -82,41 +82,36 @@ describe('Repository table component', () => {
     });
   });
 
-  describe('Show more button', () => {
-    const showMoreButton = () => vm.find(GlButton);
-
+  describe('FileTable showMore', () => {
     describe('when is present', () => {
+      const fileTable = () => vm.find(FileTable);
+
       beforeEach(async () => {
         factory('/');
+      });
 
-        vm.setData({ fetchCounter: 10, clickedShowMore: false });
+      it('is changes hasShowMore to false when "showMore" event is emitted', async () => {
+        fileTable().vm.$emit('showMore');
 
         await vm.vm.$nextTick();
+
+        expect(vm.vm.hasShowMore).toBe(false);
       });
 
-      it('is not rendered once it is clicked', async () => {
-        showMoreButton().vm.$emit('click');
+      it('changes clickedShowMore when "showMore" event is emitted', async () => {
+        fileTable().vm.$emit('showMore');
+
         await vm.vm.$nextTick();
-
-        expect(showMoreButton().exists()).toBe(false);
-      });
-
-      it('is rendered', async () => {
-        expect(showMoreButton().exists()).toBe(true);
-      });
-
-      it('changes clickedShowMore when show more button is clicked', async () => {
-        showMoreButton().vm.$emit('click');
 
         expect(vm.vm.clickedShowMore).toBe(true);
       });
 
-      it('triggers fetchFiles when show more button is clicked', async () => {
+      it('triggers fetchFiles when "showMore" event is emitted', () => {
         jest.spyOn(vm.vm, 'fetchFiles');
 
-        showMoreButton().vm.$emit('click');
+        fileTable().vm.$emit('showMore');
 
-        expect(vm.vm.fetchFiles).toBeCalled();
+        expect(vm.vm.fetchFiles).toHaveBeenCalled();
       });
     });
 
@@ -127,7 +122,7 @@ describe('Repository table component', () => {
 
       await vm.vm.$nextTick();
 
-      expect(showMoreButton().exists()).toBe(false);
+      expect(vm.vm.hasShowMore).toBe(false);
     });
 
     it('has limit of 1000 files on initial load', () => {

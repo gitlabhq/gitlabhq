@@ -6,12 +6,12 @@ RSpec.describe Projects::SnippetsController do
   include Gitlab::Routing
 
   let_it_be(:user) { create(:user) }
-  let_it_be(:user2) { create(:user) }
-  let(:project) { create(:project_empty_repo, :public) }
+  let_it_be(:other_user) { create(:user) }
+  let_it_be(:project) { create(:project_empty_repo, :public) }
 
   before do
     project.add_maintainer(user)
-    project.add_maintainer(user2)
+    project.add_developer(other_user)
   end
 
   describe 'GET #index' do
@@ -47,7 +47,7 @@ RSpec.describe Projects::SnippetsController do
     end
 
     context 'when the project snippet is private' do
-      let!(:project_snippet) { create(:project_snippet, :private, project: project, author: user) }
+      let_it_be(:project_snippet) { create(:project_snippet, :private, project: project, author: user) }
 
       context 'when anonymous' do
         it 'does not include the private snippet' do
@@ -59,11 +59,9 @@ RSpec.describe Projects::SnippetsController do
       end
 
       context 'when signed in as the author' do
-        before do
-          sign_in(user)
-        end
-
         it 'renders the snippet' do
+          sign_in(user)
+
           subject
 
           expect(assigns(:snippets)).to include(project_snippet)
@@ -72,11 +70,9 @@ RSpec.describe Projects::SnippetsController do
       end
 
       context 'when signed in as a project member' do
-        before do
-          sign_in(user2)
-        end
-
         it 'renders the snippet' do
+          sign_in(other_user)
+
           subject
 
           expect(assigns(:snippets)).to include(project_snippet)
@@ -171,7 +167,6 @@ RSpec.describe Projects::SnippetsController do
   end
 
   describe 'PUT #update' do
-    let(:project) { create :project, :public }
     let(:visibility_level) { Snippet::PUBLIC }
     let(:snippet) { create :project_snippet, author: user, project: project, visibility_level: visibility_level }
 
@@ -188,20 +183,6 @@ RSpec.describe Projects::SnippetsController do
       }.merge(additional_params)
 
       snippet.reload
-    end
-
-    it_behaves_like 'updating snippet checks blob is binary' do
-      let_it_be(:title) { 'Foo' }
-      let(:params) do
-        {
-          namespace_id: project.namespace.to_param,
-          project_id: project,
-          id: snippet.id,
-          project_snippet: { title: title }
-        }
-      end
-
-      subject { put :update, params: params }
     end
 
     context 'when the snippet is spam' do
@@ -311,7 +292,7 @@ RSpec.describe Projects::SnippetsController do
   end
 
   describe 'POST #mark_as_spam' do
-    let(:snippet) { create(:project_snippet, :private, project: project, author: user) }
+    let_it_be(:snippet) { create(:project_snippet, :private, project: project, author: user) }
 
     before do
       allow_next_instance_of(Spam::AkismetService) do |instance|
@@ -359,7 +340,7 @@ RSpec.describe Projects::SnippetsController do
   %w[show raw].each do |action|
     describe "GET ##{action}" do
       context 'when the project snippet is private' do
-        let(:project_snippet) { create(:project_snippet, :private, :repository, project: project, author: user) }
+        let_it_be(:project_snippet) { create(:project_snippet, :private, :repository, project: project, author: user) }
 
         subject { get action, params: { namespace_id: project.namespace, project_id: project, id: project_snippet.to_param } }
 
@@ -381,7 +362,7 @@ RSpec.describe Projects::SnippetsController do
 
         context 'when signed in as a project member' do
           before do
-            sign_in(user2)
+            sign_in(other_user)
           end
 
           it_behaves_like 'successful response'
@@ -494,9 +475,8 @@ RSpec.describe Projects::SnippetsController do
     subject { get :raw, params: params }
 
     context 'when repository is empty' do
-      let(:content) { "first line\r\nsecond line\r\nthird line" }
-      let(:formatted_content) { content.gsub(/\r\n/, "\n") }
-      let(:project_snippet) do
+      let_it_be(:content) { "first line\r\nsecond line\r\nthird line" }
+      let_it_be(:project_snippet) do
         create(
           :project_snippet, :public, :empty_repo,
           project: project,
@@ -504,6 +484,8 @@ RSpec.describe Projects::SnippetsController do
           content: content
         )
       end
+
+      let(:formatted_content) { content.gsub(/\r\n/, "\n") }
 
       context 'CRLF line ending' do
         before do
@@ -531,7 +513,7 @@ RSpec.describe Projects::SnippetsController do
     end
 
     context 'when repository is not empty' do
-      let(:project_snippet) do
+      let_it_be(:project_snippet) do
         create(
           :project_snippet, :public, :repository,
           project: project,
@@ -553,7 +535,7 @@ RSpec.describe Projects::SnippetsController do
   end
 
   describe 'DELETE #destroy' do
-    let!(:snippet) { create(:project_snippet, :private, project: project, author: user) }
+    let_it_be(:snippet) { create(:project_snippet, :private, project: project, author: user) }
 
     let(:params) do
       {
@@ -563,20 +545,22 @@ RSpec.describe Projects::SnippetsController do
       }
     end
 
+    subject { delete :destroy, params: params }
+
     context 'when current user has ability to destroy the snippet' do
       before do
         sign_in(user)
       end
 
       it 'removes the snippet' do
-        delete :destroy, params: params
+        subject
 
         expect { snippet.reload }.to raise_error(ActiveRecord::RecordNotFound)
       end
 
       context 'when snippet is succesfuly destroyed' do
         it 'redirects to the project snippets page' do
-          delete :destroy, params: params
+          subject
 
           expect(response).to redirect_to(project_snippets_path(project))
         end
@@ -589,7 +573,7 @@ RSpec.describe Projects::SnippetsController do
         end
 
         it 'renders the snippet page with errors' do
-          delete :destroy, params: params
+          subject
 
           expect(flash[:alert]).to eq('Failed to remove snippet.')
           expect(response).to redirect_to(project_snippet_path(project, snippet))
@@ -598,32 +582,13 @@ RSpec.describe Projects::SnippetsController do
     end
 
     context 'when current_user does not have ability to destroy the snippet' do
-      let(:another_user) { create(:user) }
-
-      before do
-        sign_in(another_user)
-      end
-
       it 'responds with status 404' do
-        delete :destroy, params: params
+        sign_in(other_user)
+
+        subject
 
         expect(response).to have_gitlab_http_status(:not_found)
       end
-    end
-  end
-
-  describe 'GET #edit' do
-    it_behaves_like 'editing snippet checks blob is binary' do
-      let(:snippet) { create(:project_snippet, :private, project: project, author: user) }
-      let(:params) do
-        {
-          namespace_id: project.namespace,
-          project_id: project,
-          id: snippet
-        }
-      end
-
-      subject { get :edit, params: params }
     end
   end
 end

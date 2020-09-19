@@ -193,7 +193,6 @@
 
   .icon-container {
     display: inline-block;
-    width: 10px;
 
     &.commit-icon {
       width: 15px;
@@ -782,7 +781,7 @@
   &.ci-status-icon-pending,
   &.ci-status-icon-waiting-for-resource,
   &.ci-status-icon-success-with-warnings {
-    @include mini-pipeline-graph-color($white, $orange-100, $orange-200, $orange-500, $orange-600, $orange-700);
+    @include mini-pipeline-graph-color($white, $orange-50, $orange-100, $orange-500, $orange-600, $orange-700);
   }
 
   &.ci-status-icon-preparing,
@@ -1081,4 +1080,20 @@ button.mini-pipeline-graph-dropdown-toggle {
 
 .progress-bar.bg-primary {
   background-color: $blue-500 !important;
+}
+
+.pipeline-stage-pill {
+  width: 10rem;
+}
+
+.pipeline-job-pill {
+  width: 8rem;
+}
+
+.stage-left-rounded {
+  border-radius: 2rem 0 0 2rem;
+}
+
+.stage-right-rounded {
+  border-radius: 0 2rem 2rem 0;
 }

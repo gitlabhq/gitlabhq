@@ -42,12 +42,39 @@ module Projects
       end
 
       def process_existing_alert(alert)
-        alert.register_new_event!
+        if am_alert_params[:ended_at].present?
+          process_resolved_alert(alert)
+        else
+          alert.register_new_event!
+        end
+
+        alert
+      end
+
+      def process_resolved_alert(alert)
+        return unless auto_close_incident?
+
+        if alert.resolve(am_alert_params[:ended_at])
+          close_issue(alert.issue)
+        end
+
+        alert
+      end
+
+      def close_issue(issue)
+        return if issue.blank? || issue.closed?
+
+        ::Issues::CloseService
+          .new(project, User.alert_bot)
+          .execute(issue, system_note: false)
+
+        SystemNoteService.auto_resolve_prometheus_alert(issue, project, User.alert_bot) if issue.reset.closed?
       end
 
       def create_alert
-        alert = AlertManagement::Alert.create(am_alert_params)
+        alert = AlertManagement::Alert.create(am_alert_params.except(:ended_at))
         alert.execute_services if alert.persisted?
+        SystemNoteService.create_new_alert(alert, 'Generic Alert Endpoint')
 
         alert
       end

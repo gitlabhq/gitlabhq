@@ -1,4 +1,5 @@
 import { __, n__ } from '~/locale';
+import { parallelizeDiffLines } from './utils';
 import { PARALLEL_DIFF_VIEW_TYPE, INLINE_DIFF_VIEW_TYPE } from '../constants';
 
 export * from './getters_versions_dropdowns';
@@ -129,3 +130,11 @@ export const fileLineCoverage = state => (file, line) => {
  */
 export const currentDiffIndex = state =>
   Math.max(0, state.diffFiles.findIndex(diff => diff.file_hash === state.currentDiffFileId));
+
+export const diffLines = state => file => {
+  if (state.diffViewType === INLINE_DIFF_VIEW_TYPE) {
+    return null;
+  }
+
+  return parallelizeDiffLines(file.highlighted_diff_lines || []);
+};

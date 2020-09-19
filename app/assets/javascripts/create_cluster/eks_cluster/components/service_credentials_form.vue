@@ -1,15 +1,15 @@
 <script>
-import { GlFormInput } from '@gitlab/ui';
+/* eslint-disable vue/no-v-html */
+import { GlFormInput, GlButton } from '@gitlab/ui';
 import { escape } from 'lodash';
 import { mapState, mapActions } from 'vuex';
 import { sprintf, s__, __ } from '~/locale';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
-import LoadingButton from '~/vue_shared/components/loading_button.vue';
 
 export default {
   components: {
     GlFormInput,
-    LoadingButton,
+    GlButton,
     ClipboardButton,
   },
   props: {
@@ -130,13 +130,15 @@ export default {
       <gl-form-input id="eks-provision-role-arn" v-model="roleArn" />
       <p class="form-text text-muted" v-html="provisionRoleArnHelpText"></p>
     </div>
-    <loading-button
-      class="js-submit-service-credentials btn-success"
+    <gl-button
+      variant="success"
+      category="primary"
       type="submit"
       :disabled="submitButtonDisabled"
       :loading="isCreatingRole"
-      :label="submitButtonLabel"
       @click.prevent="createRole({ roleArn, externalId })"
-    />
+    >
+      {{ submitButtonLabel }}
+    </gl-button>
   </form>
 </template>

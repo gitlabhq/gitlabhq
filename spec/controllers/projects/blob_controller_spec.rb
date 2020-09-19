@@ -347,6 +347,13 @@ RSpec.describe Projects::BlobController do
         end
       end
     end
+
+    it_behaves_like 'tracking unique hll events', :track_editor_edit_actions do
+      subject { put :update, params: default_params, format: format }
+
+      let(:target_id) { 'g_edit_by_sfe' }
+      let(:expected_type) { instance_of(Integer) }
+    end
   end
 
   describe 'DELETE destroy' do
@@ -434,6 +441,34 @@ RSpec.describe Projects::BlobController do
           expect(response).to redirect_to(after_delete_path)
         end
       end
+    end
+  end
+
+  describe 'POST create' do
+    let(:user) { create(:user) }
+    let(:default_params) do
+      {
+        namespace_id: project.namespace,
+        project_id: project,
+        id: 'master',
+        branch_name: 'master',
+        file_name: 'docs/EXAMPLE_FILE',
+        content: 'Added changes',
+        commit_message: 'Create CHANGELOG'
+      }
+    end
+
+    before do
+      project.add_developer(user)
+
+      sign_in(user)
+    end
+
+    it_behaves_like 'tracking unique hll events', :track_editor_edit_actions do
+      subject { post :create, params: default_params, format: format }
+
+      let(:target_id) { 'g_edit_by_sfe' }
+      let(:expected_type) { instance_of(Integer) }
     end
   end
 end

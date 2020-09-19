@@ -1,6 +1,6 @@
 <script>
-import { GlButton } from '@gitlab/ui';
-import Icon from '~/vue_shared/components/icon.vue';
+/* eslint-disable vue/no-v-html */
+import { GlButton, GlIcon } from '@gitlab/ui';
 import { __, sprintf } from '~/locale';
 
 import notesEventHub from '../event_hub';
@@ -8,7 +8,7 @@ import notesEventHub from '../event_hub';
 export default {
   components: {
     GlButton,
-    Icon,
+    GlIcon,
   },
   computed: {
     timelineContent() {
@@ -35,7 +35,7 @@ export default {
 <template>
   <li class="timeline-entry note note-wrapper discussion-filter-note js-discussion-filter-note">
     <div class="timeline-icon d-none d-lg-flex">
-      <icon name="comment" />
+      <gl-icon name="comment" />
     </div>
     <div class="timeline-content">
       <div ref="timelineContent" v-html="timelineContent"></div>

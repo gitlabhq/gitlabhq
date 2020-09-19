@@ -1,7 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
-import { GlDeprecatedDropdownItem } from '@gitlab/ui';
+import { GlDeprecatedDropdownItem, GlButton } from '@gitlab/ui';
 import KnativeDomainEditor from '~/clusters/components/knative_domain_editor.vue';
-import LoadingButton from '~/vue_shared/components/loading_button.vue';
 import { APPLICATION_STATUS } from '~/clusters/constants';
 
 const { UPDATING } = APPLICATION_STATUS;
@@ -79,7 +78,7 @@ describe('KnativeDomainEditor', () => {
     });
 
     it('triggers save event and pass current knative hostname', () => {
-      wrapper.find(LoadingButton).vm.$emit('click');
+      wrapper.find(GlButton).vm.$emit('click');
       return wrapper.vm.$nextTick().then(() => {
         expect(wrapper.emitted('save').length).toEqual(1);
       });
@@ -166,15 +165,15 @@ describe('KnativeDomainEditor', () => {
     });
 
     it('renders loading spinner in save button', () => {
-      expect(wrapper.find(LoadingButton).props('loading')).toBe(true);
+      expect(wrapper.find(GlButton).props('loading')).toBe(true);
     });
 
     it('renders disabled save button', () => {
-      expect(wrapper.find(LoadingButton).props('disabled')).toBe(true);
+      expect(wrapper.find(GlButton).props('disabled')).toBe(true);
     });
 
     it('renders save button with "Saving" label', () => {
-      expect(wrapper.find(LoadingButton).props('label')).toBe('Saving');
+      expect(wrapper.find(GlButton).text()).toBe('Saving');
     });
   });
 });

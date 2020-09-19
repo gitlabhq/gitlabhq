@@ -1,4 +1,5 @@
 <script>
+/* eslint-disable vue/no-v-html */
 import { isEmpty } from 'lodash';
 import $ from 'jquery';
 import { slugify } from '~/lib/utils/text_utility';

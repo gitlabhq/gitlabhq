@@ -16,6 +16,7 @@ const commitTrackLabel = 'suggest_commit_first_project_gitlab_ci_yml';
 
 const dismissCookie = 'suggest_gitlab_ci_yml_99';
 const humanAccess = 'owner';
+const mergeRequestPath = '/some/path';
 
 describe('Suggest gitlab-ci.yml Popover', () => {
   let wrapper;
@@ -26,10 +27,11 @@ describe('Suggest gitlab-ci.yml Popover', () => {
         target,
         trackLabel,
         dismissKey,
+        mergeRequestPath,
         humanAccess,
       },
       stubs: {
-        'gl-popover': '<div><slot name="title"></slot><slot></slot></div>',
+        'gl-popover': { template: '<div><slot name="title"></slot><slot></slot></div>' },
       },
     });
   }

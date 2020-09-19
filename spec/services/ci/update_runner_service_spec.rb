@@ -50,7 +50,7 @@ RSpec.describe Ci::UpdateRunnerService do
     end
 
     def update
-      described_class.new(runner).update(params)
+      described_class.new(runner).update(params) # rubocop: disable Rails/SaveBang
     end
   end
 end

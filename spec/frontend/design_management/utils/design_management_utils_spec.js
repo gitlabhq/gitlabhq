@@ -6,6 +6,7 @@ import {
   updateImageDiffNoteOptimisticResponse,
   isValidDesignFile,
   extractDesign,
+  extractDesignNoteId,
 } from '~/design_management/utils/design_management_utils';
 import mockResponseNoDesigns from '../mock_data/no_designs';
 import mockResponseWithDesigns from '../mock_data/designs';
@@ -169,5 +170,21 @@ describe('extractDesign', () => {
     it('returns the first design available', () => {
       expect(extractDesign(mockResponseWithDesigns)).toEqual(mockDesign);
     });
+  });
+});
+
+describe('extractDesignNoteId', () => {
+  it.each`
+    hash            | expectedNoteId
+    ${'#note_0'}    | ${'0'}
+    ${'#note_1'}    | ${'1'}
+    ${'#note_23'}   | ${'23'}
+    ${'#note_456'}  | ${'456'}
+    ${'note_1'}     | ${null}
+    ${'#note_'}     | ${null}
+    ${'#note_asd'}  | ${null}
+    ${'#note_1asd'} | ${null}
+  `('returns $expectedNoteId when hash is $hash', ({ hash, expectedNoteId }) => {
+    expect(extractDesignNoteId(hash)).toBe(expectedNoteId);
   });
 });

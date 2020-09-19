@@ -279,7 +279,8 @@ RSpec.describe "Admin::Users" do
 
       expect(page).to have_content(user.email)
       expect(page).to have_content(user.name)
-      expect(page).to have_content(user.id)
+      expect(page).to have_content("ID: #{user.id}")
+      expect(page).to have_content("Namespace ID: #{user.namespace_id}")
       expect(page).to have_button('Deactivate user')
       expect(page).to have_button('Block user')
       expect(page).to have_button('Delete user')
@@ -353,7 +354,7 @@ RSpec.describe "Admin::Users" do
         it 'sees impersonation log out icon' do
           subject
 
-          icon = first('.fa.fa-user-secret')
+          icon = first('[data-testid="incognito-icon"]')
           expect(icon).not_to be nil
         end
 
@@ -536,7 +537,7 @@ RSpec.describe "Admin::Users" do
 
     it 'allows group membership to be revoked', :js do
       page.within(first('.group_member')) do
-        accept_confirm { find('.btn-remove').click }
+        accept_confirm { find('.btn[data-testid="remove-user"]').click }
       end
       wait_for_requests
 

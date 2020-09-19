@@ -3,14 +3,17 @@
 require 'spec_helper'
 
 RSpec.describe UserInteractedProject do
+  let_it_be(:project) { create(:project) }
+  let_it_be(:author) { project.creator }
+
   describe '.track' do
     subject { described_class.track(event) }
 
-    let(:event) { build(:event) }
+    let(:event) { build(:event, project: project, author: author) }
 
     Event.actions.each_key do |action|
       context "for all actions (event types)" do
-        let(:event) { build(:event, action: action) }
+        let(:event) { build(:event, project: project, author: author, action: action) }
 
         it 'creates a record' do
           expect { subject }.to change { described_class.count }.from(0).to(1)

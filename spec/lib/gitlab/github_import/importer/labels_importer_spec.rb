@@ -85,13 +85,13 @@ RSpec.describe Gitlab::GithubImport::Importer::LabelsImporter, :clean_gitlab_red
       end
 
       it 'includes the created timestamp' do
-        Timecop.freeze do
+        freeze_time do
           expect(label_hash[:created_at]).to eq(Time.zone.now)
         end
       end
 
       it 'includes the updated timestamp' do
-        Timecop.freeze do
+        freeze_time do
           expect(label_hash[:updated_at]).to eq(Time.zone.now)
         end
       end

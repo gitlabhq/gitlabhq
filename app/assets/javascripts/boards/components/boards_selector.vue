@@ -36,10 +36,6 @@ export default {
       type: Object,
       required: true,
     },
-    milestonePath: {
-      type: String,
-      required: true,
-    },
     throttleDuration: {
       type: Number,
       default: 200,
@@ -62,6 +58,10 @@ export default {
       required: true,
     },
     labelsPath: {
+      type: String,
+      required: true,
+    },
+    labelsWebUrl: {
       type: String,
       required: true,
     },
@@ -335,8 +335,8 @@ export default {
 
       <board-form
         v-if="currentPage"
-        :milestone-path="milestonePath"
         :labels-path="labelsPath"
+        :labels-web-url="labelsWebUrl"
         :project-id="projectId"
         :group-id="groupId"
         :can-admin-board="canAdminBoard"

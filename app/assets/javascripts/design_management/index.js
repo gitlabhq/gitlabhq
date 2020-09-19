@@ -4,7 +4,7 @@ import App from './components/app.vue';
 import apolloProvider from './graphql';
 
 export default () => {
-  const el = document.querySelector('.js-design-management-new');
+  const el = document.querySelector('.js-design-management');
   const { issueIid, projectPath, issuePath } = el.dataset;
   const router = createRouter(issuePath);
 

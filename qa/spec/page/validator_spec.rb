@@ -32,7 +32,7 @@ describe QA::Page::Validator do
     let(:view) { spy('view') }
 
     before do
-      allow(QA::Page::Admin::Settings::Repository)
+      allow(QA::Page::Admin::Settings::Network)
         .to receive(:views).and_return([view])
     end
 

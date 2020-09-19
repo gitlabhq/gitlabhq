@@ -8,28 +8,20 @@ exports[`NpmInstallation renders all the messages 1`] = `
     Installation
   </h3>
    
-  <h4
-    class="gl-font-base"
-  >
-    npm command
-  </h4>
-   
   <code-instruction-stub
     copytext="Copy npm command"
     instruction="npm i @Test/package"
+    label="npm command"
     trackingaction="copy_npm_install_command"
+    trackinglabel="code_instruction"
   />
-   
-  <h4
-    class="gl-font-base"
-  >
-    yarn command
-  </h4>
    
   <code-instruction-stub
     copytext="Copy yarn command"
     instruction="yarn add @Test/package"
+    label="yarn command"
     trackingaction="copy_yarn_install_command"
+    trackinglabel="code_instruction"
   />
    
   <h3
@@ -38,28 +30,20 @@ exports[`NpmInstallation renders all the messages 1`] = `
     Registry setup
   </h3>
    
-  <h4
-    class="gl-font-base"
-  >
-    npm command
-  </h4>
-   
   <code-instruction-stub
     copytext="Copy npm setup command"
-    instruction="echo @Test:registry=undefined >> .npmrc"
+    instruction="echo @Test:registry=undefined/ >> .npmrc"
+    label="npm command"
     trackingaction="copy_npm_setup_command"
+    trackinglabel="code_instruction"
   />
-   
-  <h4
-    class="gl-font-base"
-  >
-    yarn command
-  </h4>
    
   <code-instruction-stub
     copytext="Copy yarn setup command"
-    instruction="echo \\\\\\"@Test:registry\\\\\\" \\\\\\"undefined\\\\\\" >> .yarnrc"
+    instruction="echo \\\\\\"@Test:registry\\\\\\" \\\\\\"undefined/\\\\\\" >> .yarnrc"
+    label="yarn command"
     trackingaction="copy_yarn_setup_command"
+    trackinglabel="code_instruction"
   />
    
   <gl-sprintf-stub

@@ -96,6 +96,8 @@ module QA
             click_boards_config_button
             click_element(:labels_edit_button)
             find_element(:labels_dropdown_content).find('li', text: label).click
+            # Clicking the edit button again closes the dropdown and allows the save button to be clicked
+            click_element(:labels_edit_button)
             click_element(:save_changes_button)
             wait_boards_list_finish_loading
           end

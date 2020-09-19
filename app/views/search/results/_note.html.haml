@@ -18,8 +18,13 @@
     - else
       %span #{note.noteable_type.titleize} ##{noteable_identifier}
       &middot;
-      = link_to note.noteable.title, note_url
+      = link_to note.noteable.title, note_url, data: {track_event: 'click_text', track_label: 'noteable_title', track_property: 'search_result'}
+
+    %span.note-headline-light.note-headline-meta
+      %span.system-note-separator
+        &middot;
+      %span.system-note-separator= time_ago_with_tooltip(note.created_at, placement: 'bottom', html_class: 'note-created-ago')
 
   .note-search-result
     .term
-      = search_md_sanitize(note, :note)
+      = search_md_sanitize(note.note)

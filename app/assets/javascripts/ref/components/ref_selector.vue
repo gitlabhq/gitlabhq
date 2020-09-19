@@ -1,9 +1,9 @@
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex';
 import {
-  GlNewDropdown,
-  GlNewDropdownDivider,
-  GlNewDropdownHeader,
+  GlDropdown,
+  GlDropdownDivider,
+  GlDropdownSectionHeader,
   GlSearchBoxByType,
   GlSprintf,
   GlIcon,
@@ -18,9 +18,9 @@ export default {
   name: 'RefSelector',
   store: createStore(),
   components: {
-    GlNewDropdown,
-    GlNewDropdownDivider,
-    GlNewDropdownHeader,
+    GlDropdown,
+    GlDropdownDivider,
+    GlDropdownSectionHeader,
     GlSearchBoxByType,
     GlSprintf,
     GlIcon,
@@ -87,6 +87,15 @@ export default {
     },
   },
   created() {
+    // This method is defined here instead of in `methods`
+    // because we need to access the .cancel() method
+    // lodash attaches to the function, which is
+    // made inaccessible by Vue. More info:
+    // https://stackoverflow.com/a/52988020/1063392
+    this.debouncedSearch = debounce(function search() {
+      this.search(this.query);
+    }, SEARCH_DEBOUNCE_MS);
+
     this.setProjectId(this.projectId);
     this.search(this.query);
   },
@@ -95,9 +104,13 @@ export default {
     focusSearchBox() {
       this.$refs.searchBox.$el.querySelector('input').focus();
     },
-    onSearchBoxInput: debounce(function search() {
+    onSearchBoxEnter() {
+      this.debouncedSearch.cancel();
       this.search(this.query);
-    }, SEARCH_DEBOUNCE_MS),
+    },
+    onSearchBoxInput() {
+      this.debouncedSearch();
+    },
     selectRef(ref) {
       this.setSelectedRef(ref);
       this.$emit('input', this.selectedRef);
@@ -107,7 +120,7 @@ export default {
 </script>
 
 <template>
-  <gl-new-dropdown v-bind="$attrs" class="ref-selector" @shown="focusSearchBox">
+  <gl-dropdown v-bind="$attrs" class="ref-selector" @shown="focusSearchBox">
     <template slot="button-content">
       <span class="gl-flex-grow-1 gl-ml-2 gl-text-gray-400" data-testid="button-content">
         <span v-if="selectedRef" class="gl-font-monospace">{{ selectedRef }}</span>
@@ -117,11 +130,11 @@ export default {
     </template>
 
     <div class="gl-display-flex gl-flex-direction-column ref-selector-dropdown-content">
-      <gl-new-dropdown-header>
+      <gl-dropdown-section-header>
         <span class="gl-text-center gl-display-block">{{ i18n.dropdownHeader }}</span>
-      </gl-new-dropdown-header>
+      </gl-dropdown-section-header>
 
-      <gl-new-dropdown-divider />
+      <gl-dropdown-divider />
 
       <gl-search-box-by-type
         ref="searchBox"
@@ -129,6 +142,7 @@ export default {
         class="gl-m-3"
         :placeholder="i18n.searchPlaceholder"
         @input="onSearchBoxInput"
+        @keydown.enter.prevent="onSearchBoxEnter"
       />
 
       <div class="gl-flex-grow-1 gl-overflow-y-auto">
@@ -161,7 +175,7 @@ export default {
               @selected="selectRef($event)"
             />
 
-            <gl-new-dropdown-divider v-if="showTagsSection || showCommitsSection" />
+            <gl-dropdown-divider v-if="showTagsSection || showCommitsSection" />
           </template>
 
           <template v-if="showTagsSection">
@@ -176,7 +190,7 @@ export default {
               @selected="selectRef($event)"
             />
 
-            <gl-new-dropdown-divider v-if="showCommitsSection" />
+            <gl-dropdown-divider v-if="showCommitsSection" />
           </template>
 
           <template v-if="showCommitsSection">
@@ -194,5 +208,5 @@ export default {
         </template>
       </div>
     </div>
-  </gl-new-dropdown>
+  </gl-dropdown>
 </template>

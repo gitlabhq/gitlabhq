@@ -1,16 +1,26 @@
 import Vuex from 'vuex';
-import { mount, createLocalVue } from '@vue/test-utils';
+import { shallowMount, mount, createLocalVue } from '@vue/test-utils';
 import TreeList from '~/diffs/components/tree_list.vue';
 import createStore from '~/diffs/store/modules';
+import FileTree from '~/vue_shared/components/file_tree.vue';
 
 describe('Diffs tree list component', () => {
   let wrapper;
+  let store;
   const getFileRows = () => wrapper.findAll('.file-row');
   const localVue = createLocalVue();
   localVue.use(Vuex);
 
-  const createComponent = state => {
-    const store = new Vuex.Store({
+  const createComponent = (mountFn = mount) => {
+    wrapper = mountFn(TreeList, {
+      store,
+      localVue,
+      propsData: { hideFileStats: false },
+    });
+  };
+
+  beforeEach(() => {
+    store = new Vuex.Store({
       modules: {
         diffs: createStore(),
       },
@@ -23,61 +33,57 @@ describe('Diffs tree list component', () => {
       addedLines: 10,
       removedLines: 20,
       ...store.state.diffs,
-      ...state,
+    };
+  });
+
+  const setupFilesInState = () => {
+    const treeEntries = {
+      'index.js': {
+        addedLines: 0,
+        changed: true,
+        deleted: false,
+        fileHash: 'test',
+        key: 'index.js',
+        name: 'index.js',
+        path: 'app/index.js',
+        removedLines: 0,
+        tempFile: true,
+        type: 'blob',
+        parentPath: 'app',
+      },
+      app: {
+        key: 'app',
+        path: 'app',
+        name: 'app',
+        type: 'tree',
+        tree: [],
+      },
     };
 
-    wrapper = mount(TreeList, {
-      store,
-      localVue,
-      propsData: { hideFileStats: false },
+    Object.assign(store.state.diffs, {
+      treeEntries,
+      tree: [treeEntries['index.js'], treeEntries.app],
     });
   };
-
-  beforeEach(() => {
-    localStorage.removeItem('mr_diff_tree_list');
-
-    createComponent();
-  });
 
   afterEach(() => {
     wrapper.destroy();
   });
 
-  it('renders empty text', () => {
-    expect(wrapper.text()).toContain('No files found');
+  describe('default', () => {
+    beforeEach(() => {
+      createComponent();
+    });
+
+    it('renders empty text', () => {
+      expect(wrapper.text()).toContain('No files found');
+    });
   });
 
   describe('with files', () => {
     beforeEach(() => {
-      const treeEntries = {
-        'index.js': {
-          addedLines: 0,
-          changed: true,
-          deleted: false,
-          fileHash: 'test',
-          key: 'index.js',
-          name: 'index.js',
-          path: 'app/index.js',
-          removedLines: 0,
-          tempFile: true,
-          type: 'blob',
-          parentPath: 'app',
-        },
-        app: {
-          key: 'app',
-          path: 'app',
-          name: 'app',
-          type: 'tree',
-          tree: [],
-        },
-      };
-
-      createComponent({
-        treeEntries,
-        tree: [treeEntries['index.js'], treeEntries.app],
-      });
-
-      return wrapper.vm.$nextTick();
+      setupFilesInState();
+      createComponent();
     });
 
     it('renders tree', () => {
@@ -133,6 +139,25 @@ describe('Diffs tree list component', () => {
 
       return wrapper.vm.$nextTick().then(() => {
         expect(wrapper.find('.file-row').text()).toContain('index.js');
+      });
+    });
+  });
+
+  describe('with viewedDiffFileIds', () => {
+    const viewedDiffFileIds = { fileId: '#12345' };
+
+    beforeEach(() => {
+      setupFilesInState();
+      store.state.diffs.viewedDiffFileIds = viewedDiffFileIds;
+    });
+
+    it('passes the viewedDiffFileIds to the FileTree', () => {
+      createComponent(shallowMount);
+
+      return wrapper.vm.$nextTick().then(() => {
+        // Have to use $attrs['viewed-files'] because we are passing down an object
+        // and attributes('') stringifies values (e.g. [object])...
+        expect(wrapper.find(FileTree).vm.$attrs['viewed-files']).toBe(viewedDiffFileIds);
       });
     });
   });

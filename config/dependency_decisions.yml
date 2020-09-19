@@ -313,3 +313,9 @@
     :why: "https://github.com/cure53/DOMPurify/blob/main/LICENSE and https://gitlab.com/gitlab-org/gitlab/-/merge_requests/31928#note_346604841"
     :versions: []
     :when: 2020-08-13 13:42:46.508082000 Z
+- - :whitelist
+  - Apache-2.0 WITH LLVM-exception
+  - :who: Nathan Friend
+    :why: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/40670#note_403946372
+    :versions: []
+    :when: 2020-08-28 15:01:59.329048917 Z

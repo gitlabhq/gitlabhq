@@ -1,0 +1,5 @@
+---
+title: Replace fa-times with GitLab SVG close icon in dropdowns
+merge_request: 40585
+author:
+type: performance

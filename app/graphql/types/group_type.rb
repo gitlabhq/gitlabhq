@@ -75,6 +75,12 @@ module Types
               description: 'Title of the label'
           end
 
+    field :group_members,
+          Types::GroupMemberType.connection_type,
+          description: 'A membership of a user within this group',
+          extras: [:lookahead],
+          resolver: Resolvers::GroupMembersResolver
+
     def label(title:)
       BatchLoader::GraphQL.for(title).batch(key: group) do |titles, loader, args|
         LabelsFinder

@@ -1,0 +1,13 @@
+%html{ lang: "en" }
+  %head
+    %meta{ content: "text/html; charset=utf-8", "http-equiv" => "Content-Type" }
+    %title
+      GitLab
+    = stylesheet_link_tag 'https://unpkg.com/@atlaskit/css-reset@3.0.6/dist/bundle.css'
+    = stylesheet_link_tag 'https://unpkg.com/@atlaskit/reduced-ui-pack@10.5.5/dist/bundle.css'
+    = javascript_include_tag 'https://connect-cdn.atl-paas.net/all.js'
+    = javascript_include_tag 'https://unpkg.com/jquery@3.3.1/dist/jquery.min.js'
+    = yield :head
+  %body
+    .ac-content
+      = yield

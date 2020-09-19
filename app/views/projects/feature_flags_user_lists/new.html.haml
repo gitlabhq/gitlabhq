@@ -1,0 +1,8 @@
+- @breadcrumb_link = new_project_feature_flags_user_list_path(@project)
+- add_to_breadcrumbs s_('FeatureFlags|Feature Flags'), project_feature_flags_path(@project)
+- breadcrumb_title s_('FeatureFlags|New User List')
+- page_title s_('FeatureFlags|New User List')
+
+#js-new-user-list{ data: { 'user-lists-docs-path' => help_page_path('operations/feature_flags.md', anchor: 'user-list'),
+  'feature-flags-path' => project_feature_flags_path(@project),
+  'project-id' => @project.id } }

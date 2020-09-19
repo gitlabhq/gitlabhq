@@ -8,7 +8,7 @@
 #   current_user - which user use
 #   params:
 #     scope: 'created_by_me' or 'assigned_to_me' or 'all'
-#     state: 'open' or 'closed' or 'all'
+#     state: 'opened' or 'closed' or 'all'
 #     group_id: integer
 #     project_id: integer
 #     milestone_title: string
@@ -41,7 +41,7 @@ class IssuesFinder < IssuableFinder
   # rubocop: enable CodeReuse/ActiveRecord
 
   def params_class
-    IssuesFinder::Params
+    self.class.const_get(:Params, false)
   end
 
   # rubocop: disable CodeReuse/ActiveRecord

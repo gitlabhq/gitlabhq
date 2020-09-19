@@ -1,14 +1,13 @@
 <script>
 import { mapActions, mapState } from 'vuex';
 import { debounce } from 'lodash';
-import { GlLoadingIcon } from '@gitlab/ui';
-import Icon from '~/vue_shared/components/icon.vue';
+import { GlLoadingIcon, GlIcon } from '@gitlab/ui';
 import Item from './item.vue';
 
 export default {
   components: {
     Item,
-    Icon,
+    GlIcon,
     GlLoadingIcon,
   },
   data() {
@@ -67,7 +66,7 @@ export default {
         class="form-control dropdown-input-field"
         @input="searchBranches"
       />
-      <icon :size="18" name="search" class="ml-3 input-icon" />
+      <gl-icon :size="18" name="search" class="ml-3 input-icon" />
     </label>
     <div class="dropdown-content ide-merge-requests-dropdown-content d-flex">
       <gl-loading-icon

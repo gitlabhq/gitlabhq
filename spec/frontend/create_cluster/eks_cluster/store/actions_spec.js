@@ -47,7 +47,7 @@ describe('EKS Cluster Store Actions', () => {
   beforeEach(() => {
     clusterName = 'my cluster';
     environmentScope = 'production';
-    kubernetesVersion = '11.1';
+    kubernetesVersion = '1.16';
     region = 'regions-1';
     vpc = 'vpc-1';
     subnet = 'subnet-1';
@@ -180,6 +180,7 @@ describe('EKS Cluster Store Actions', () => {
         environment_scope: environmentScope,
         managed: gitlabManagedCluster,
         provider_aws_attributes: {
+          kubernetes_version: kubernetesVersion,
           region,
           vpc_id: vpc,
           subnet_ids: subnet,

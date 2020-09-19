@@ -6,6 +6,10 @@ import Participants from '~/sidebar/components/participants/participants.vue';
 import DesignDiscussion from '~/design_management/components/design_notes/design_discussion.vue';
 import design from '../mock_data/design';
 import updateActiveDiscussionMutation from '~/design_management/graphql/mutations/update_active_discussion.mutation.graphql';
+import DesignTodoButton from '~/design_management/components/design_todo_button.vue';
+
+const scrollIntoViewMock = jest.fn();
+HTMLElement.prototype.scrollIntoView = scrollIntoViewMock;
 
 const updateActiveDiscussionMutationVariables = {
   mutation: updateActiveDiscussionMutation,
@@ -39,7 +43,7 @@ describe('Design management design sidebar component', () => {
   const findNewDiscussionDisclaimer = () =>
     wrapper.find('[data-testid="new-discussion-disclaimer"]');
 
-  function createComponent(props = {}) {
+  function createComponent(props = {}, { enableTodoButton } = {}) {
     wrapper = shallowMount(DesignSidebar, {
       propsData: {
         design,
@@ -52,6 +56,10 @@ describe('Design management design sidebar component', () => {
         $apollo: {
           mutate,
         },
+      },
+      stubs: { GlPopover },
+      provide: {
+        glFeatures: { designManagementTodoButton: enableTodoButton },
       },
     });
   }
@@ -146,22 +154,22 @@ describe('Design management design sidebar component', () => {
     });
 
     it('emits correct event on discussion create note error', () => {
-      findFirstDiscussion().vm.$emit('createNoteError', 'payload');
+      findFirstDiscussion().vm.$emit('create-note-error', 'payload');
       expect(wrapper.emitted('onDesignDiscussionError')).toEqual([['payload']]);
     });
 
     it('emits correct event on discussion update note error', () => {
-      findFirstDiscussion().vm.$emit('updateNoteError', 'payload');
+      findFirstDiscussion().vm.$emit('update-note-error', 'payload');
       expect(wrapper.emitted('updateNoteError')).toEqual([['payload']]);
     });
 
     it('emits correct event on discussion resolve error', () => {
-      findFirstDiscussion().vm.$emit('resolveDiscussionError', 'payload');
+      findFirstDiscussion().vm.$emit('resolve-discussion-error', 'payload');
       expect(wrapper.emitted('resolveDiscussionError')).toEqual([['payload']]);
     });
 
     it('changes prop correctly on opening discussion form', () => {
-      findFirstDiscussion().vm.$emit('openForm', 'some-id');
+      findFirstDiscussion().vm.$emit('open-form', 'some-id');
 
       return wrapper.vm.$nextTick().then(() => {
         expect(findFirstDiscussion().props('discussionWithOpenForm')).toBe('some-id');
@@ -220,6 +228,10 @@ describe('Design management design sidebar component', () => {
       expect(findPopover().exists()).toBe(true);
     });
 
+    it('scrolls to resolved threads link', () => {
+      expect(scrollIntoViewMock).toHaveBeenCalled();
+    });
+
     it('dismisses a popover on the outside click', () => {
       wrapper.trigger('click');
       return wrapper.vm.$nextTick(() => {
@@ -231,6 +243,25 @@ describe('Design management design sidebar component', () => {
       jest.spyOn(Cookies, 'set');
       wrapper.trigger('click');
       expect(Cookies.set).toHaveBeenCalledWith(cookieKey, 'true', { expires: 365 * 10 });
+    });
+  });
+
+  it('does not render To-Do button by default', () => {
+    createComponent();
+    expect(wrapper.find(DesignTodoButton).exists()).toBe(false);
+  });
+
+  describe('when `design_management_todo_button` feature flag is enabled', () => {
+    beforeEach(() => {
+      createComponent({}, { enableTodoButton: true });
+    });
+
+    it('renders sidebar root element with no top padding', () => {
+      expect(wrapper.classes()).toContain('gl-pt-0');
+    });
+
+    it('renders To-Do button', () => {
+      expect(wrapper.find(DesignTodoButton).exists()).toBe(true);
     });
   });
 });

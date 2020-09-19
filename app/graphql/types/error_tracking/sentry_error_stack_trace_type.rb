@@ -4,7 +4,7 @@ module Types
   module ErrorTracking
     class SentryErrorStackTraceType < ::Types::BaseObject
       graphql_name 'SentryErrorStackTrace'
-      description 'An object containing a stack trace entry for a Sentry error.'
+      description 'An object containing a stack trace entry for a Sentry error'
 
       authorize :read_sentry_issue
 

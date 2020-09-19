@@ -1,9 +1,9 @@
 <script>
 import {
-  GlNewDropdown,
-  GlNewDropdownDivider,
-  GlNewDropdownHeader,
-  GlNewDropdownItem,
+  GlDropdown,
+  GlDropdownDivider,
+  GlDropdownSectionHeader,
+  GlDropdownItem,
   GlLoadingIcon,
   GlSearchBoxByType,
   GlIcon,
@@ -13,12 +13,14 @@ import { __, sprintf } from '~/locale';
 import Api from '~/api';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
 
+const SEARCH_DEBOUNCE_MS = 250;
+
 export default {
   components: {
-    GlNewDropdown,
-    GlNewDropdownDivider,
-    GlNewDropdownHeader,
-    GlNewDropdownItem,
+    GlDropdown,
+    GlDropdownDivider,
+    GlDropdownSectionHeader,
+    GlDropdownItem,
     GlLoadingIcon,
     GlSearchBoxByType,
     GlIcon,
@@ -89,10 +91,21 @@ export default {
       return this.requestCount !== 0;
     },
   },
+  created() {
+    // This method is defined here instead of in `methods`
+    // because we need to access the .cancel() method
+    // lodash attaches to the function, which is
+    // made inaccessible by Vue. More info:
+    // https://stackoverflow.com/a/52988020/1063392
+    this.debouncedSearchMilestones = debounce(this.searchMilestones, SEARCH_DEBOUNCE_MS);
+  },
   mounted() {
     this.fetchMilestones();
   },
   methods: {
+    focusSearchBox() {
+      this.$refs.searchBox.$el.querySelector('input').focus();
+    },
     fetchMilestones() {
       this.requestCount += 1;
 
@@ -108,7 +121,7 @@ export default {
           this.requestCount -= 1;
         });
     },
-    searchMilestones: debounce(function searchMilestones() {
+    searchMilestones() {
       this.requestCount += 1;
       const options = {
         search: this.searchQuery,
@@ -133,7 +146,14 @@ export default {
         .finally(() => {
           this.requestCount -= 1;
         });
-    }, 100),
+    },
+    onSearchBoxInput() {
+      this.debouncedSearchMilestones();
+    },
+    onSearchBoxEnter() {
+      this.debouncedSearchMilestones.cancel();
+      this.searchMilestones();
+    },
     toggleMilestoneSelection(clickedMilestone) {
       if (!clickedMilestone) return [];
 
@@ -168,7 +188,7 @@ export default {
 </script>
 
 <template>
-  <gl-new-dropdown>
+  <gl-dropdown v-bind="$attrs" class="project-milestone-combobox" @shown="focusSearchBox">
     <template slot="button-content">
       <span ref="buttonText" class="flex-grow-1 ml-1 text-muted">{{
         selectedMilestonesLabel
@@ -176,39 +196,41 @@ export default {
       <gl-icon name="chevron-down" />
     </template>
 
-    <gl-new-dropdown-header>
+    <gl-dropdown-section-header>
       <span class="text-center d-block">{{ $options.translations.selectMilestone }}</span>
-    </gl-new-dropdown-header>
+    </gl-dropdown-section-header>
 
-    <gl-new-dropdown-divider />
+    <gl-dropdown-divider />
 
     <gl-search-box-by-type
+      ref="searchBox"
       v-model.trim="searchQuery"
-      class="m-2"
+      class="gl-m-3"
       :placeholder="this.$options.translations.searchMilestones"
-      @input="searchMilestones"
+      @input="onSearchBoxInput"
+      @keydown.enter.prevent="onSearchBoxEnter"
     />
 
-    <gl-new-dropdown-item @click="onMilestoneClicked(null)">
+    <gl-dropdown-item @click="onMilestoneClicked(null)">
       <span :class="{ 'pl-4': true, 'selected-item': selectedMilestones.length === 0 }">
         {{ $options.translations.noMilestone }}
       </span>
-    </gl-new-dropdown-item>
+    </gl-dropdown-item>
 
-    <gl-new-dropdown-divider />
+    <gl-dropdown-divider />
 
     <template v-if="isLoading">
       <gl-loading-icon />
-      <gl-new-dropdown-divider />
+      <gl-dropdown-divider />
     </template>
     <template v-else-if="noResults">
       <div class="dropdown-item-space">
         <span ref="noResults" class="pl-4">{{ $options.translations.noResultsLabel }}</span>
       </div>
-      <gl-new-dropdown-divider />
+      <gl-dropdown-divider />
     </template>
     <template v-else-if="dropdownItems.length">
-      <gl-new-dropdown-item
+      <gl-dropdown-item
         v-for="item in dropdownItems"
         :key="item"
         role="milestone option"
@@ -217,12 +239,12 @@ export default {
         <span :class="{ 'pl-4': true, 'selected-item': isSelectedMilestone(item) }">
           {{ item }}
         </span>
-      </gl-new-dropdown-item>
-      <gl-new-dropdown-divider />
+      </gl-dropdown-item>
+      <gl-dropdown-divider />
     </template>
 
-    <gl-new-dropdown-item v-for="(item, idx) in extraLinks" :key="idx" :href="item.url">
+    <gl-dropdown-item v-for="(item, idx) in extraLinks" :key="idx" :href="item.url">
       <span class="pl-4">{{ item.text }}</span>
-    </gl-new-dropdown-item>
-  </gl-new-dropdown>
+    </gl-dropdown-item>
+  </gl-dropdown>
 </template>

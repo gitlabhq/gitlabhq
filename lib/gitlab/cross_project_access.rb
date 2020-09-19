@@ -18,7 +18,7 @@ module Gitlab
     end
 
     def add_check(
-          klass,
+      klass,
           actions: {},
           positive_condition: nil,
           negative_condition: nil,

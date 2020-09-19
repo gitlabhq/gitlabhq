@@ -1,9 +1,11 @@
-export default ({ adminState = null, customState = {} } = {}) => {
-  const override = adminState !== null ? adminState.id !== customState.inheritFromId : false;
+export default ({ defaultState = null, customState = {} } = {}) => {
+  const override = defaultState !== null ? defaultState.id !== customState.inheritFromId : false;
 
   return {
     override,
-    adminState,
+    defaultState,
     customState,
+    isSaving: false,
+    isTesting: false,
   };
 };

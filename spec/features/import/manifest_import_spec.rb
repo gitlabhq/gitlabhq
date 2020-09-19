@@ -20,7 +20,7 @@ RSpec.describe 'Import multiple repositories by uploading a manifest file', :js 
     attach_file('manifest', Rails.root.join('spec/fixtures/aosp_manifest.xml'))
     click_on 'List available repositories'
 
-    expect(page).to have_button('Import all repositories')
+    expect(page).to have_button('Import 660 repositories')
     expect(page).to have_content('https://android-review.googlesource.com/platform/build/blueprint')
   end
 

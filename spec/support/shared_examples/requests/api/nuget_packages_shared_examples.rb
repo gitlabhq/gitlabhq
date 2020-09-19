@@ -175,7 +175,7 @@ RSpec.shared_examples 'process nuget upload' do |user_type, status, add_member =
 
     context 'with object storage enabled' do
       let(:tmp_object) do
-        fog_connection.directories.new(key: 'packages').files.create(
+        fog_connection.directories.new(key: 'packages').files.create( # rubocop:disable Rails/SaveBang
           key: "tmp/uploads/#{file_name}",
           body: 'content'
         )

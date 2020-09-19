@@ -100,6 +100,14 @@ RSpec.describe Milestoneable do
         expect(merge_request.supports_milestone?).to be_truthy
       end
     end
+
+    context "for incidents" do
+      let(:incident) { build(:incident) }
+
+      it 'returns false' do
+        expect(incident.supports_milestone?).to be_falsy
+      end
+    end
   end
 
   describe 'release scopes' do

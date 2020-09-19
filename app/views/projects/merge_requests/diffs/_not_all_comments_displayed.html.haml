@@ -1,7 +1,7 @@
 - if @commit || @start_version || (@merge_request_diff && !@merge_request_diff.latest?)
   .mr-version-controls
     .content-block.comments-disabled-notif.clearfix
-      = icon('info-circle')
+      = sprite_icon('information-o')
       = succeed '.' do
         - if @commit
           Only comments from the following commit are shown below

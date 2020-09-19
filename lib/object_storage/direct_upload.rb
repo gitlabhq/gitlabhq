@@ -99,10 +99,16 @@ module ObjectStorage
         ObjectStorage: {
           Provider: 'AzureRM',
           GoCloudConfig: {
-            URL: "azblob://#{bucket_name}"
+            URL: azure_gocloud_url
           }
         }
       }
+    end
+
+    def azure_gocloud_url
+      url = "azblob://#{bucket_name}"
+      url += "?domain=#{config.azure_storage_domain}" if config.azure_storage_domain.present?
+      url
     end
 
     def use_workhorse_s3_client?

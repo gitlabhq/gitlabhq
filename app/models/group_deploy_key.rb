@@ -8,6 +8,10 @@ class GroupDeployKey < Key
 
   validates :user, presence: true
 
+  scope :for_groups, ->(group_ids) do
+    joins(:group_deploy_keys_groups).where(group_deploy_keys_groups: { group_id: group_ids }).uniq
+  end
+
   def type
     'DeployKey'
   end

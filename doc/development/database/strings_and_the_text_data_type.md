@@ -38,6 +38,8 @@ For example, consider a migration that creates a table with two text columns,
 
 ```ruby
 class CreateDbGuides < ActiveRecord::Migration[6.0]
+  include Gitlab::Database::MigrationHelpers
+
   DOWNTIME = false
 
   disable_ddl_transaction!
@@ -179,6 +181,7 @@ in a post-deployment migration,
 ```ruby
 class AddTextLimitMigration < ActiveRecord::Migration[6.0]
   include Gitlab::Database::MigrationHelpers
+
   DOWNTIME = false
 
   disable_ddl_transaction!

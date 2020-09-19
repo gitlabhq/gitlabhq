@@ -27,7 +27,7 @@ class GroupMembersFinder < UnionFinder
     relations << group_members if include_relations.include?(:direct)
 
     if include_relations.include?(:inherited) && group.parent
-      parents_members = GroupMember.non_request
+      parents_members = GroupMember.non_request.non_minimal_access
         .where(source_id: group.ancestors.select(:id))
         .where.not(user_id: group.users.select(:id))
 
@@ -35,7 +35,7 @@ class GroupMembersFinder < UnionFinder
     end
 
     if include_relations.include?(:descendants)
-      descendant_members = GroupMember.non_request
+      descendant_members = GroupMember.non_request.non_minimal_access
         .where(source_id: group.descendants.select(:id))
         .where.not(user_id: group.users.select(:id))
 

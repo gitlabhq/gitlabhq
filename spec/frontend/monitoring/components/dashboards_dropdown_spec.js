@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
-import { GlNewDropdownItem, GlIcon } from '@gitlab/ui';
+import { GlDropdownItem, GlIcon } from '@gitlab/ui';
 
 import DashboardsDropdown from '~/monitoring/components/dashboards_dropdown.vue';
 
@@ -33,8 +33,8 @@ describe('DashboardsDropdown', () => {
     });
   }
 
-  const findItems = () => wrapper.findAll(GlNewDropdownItem);
-  const findItemAt = i => wrapper.findAll(GlNewDropdownItem).at(i);
+  const findItems = () => wrapper.findAll(GlDropdownItem);
+  const findItemAt = i => wrapper.findAll(GlDropdownItem).at(i);
   const findSearchInput = () => wrapper.find({ ref: 'monitorDashboardsDropdownSearch' });
   const findNoItemsMsg = () => wrapper.find({ ref: 'monitorDashboardsDropdownMsg' });
   const findStarredListDivider = () => wrapper.find({ ref: 'starredListDivider' });

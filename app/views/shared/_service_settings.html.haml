@@ -8,6 +8,6 @@
       = markdown integration.help
 
 .service-settings
-  - if @admin_integration
-    .js-vue-admin-integration-settings{ data: integration_form_data(@admin_integration) }
+  - if @default_integration
+    .js-vue-default-integration-settings{ data: integration_form_data(@default_integration) }
   .js-vue-integration-settings{ data: integration_form_data(integration) }

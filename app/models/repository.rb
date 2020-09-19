@@ -214,7 +214,7 @@ class Repository
     return false if with_slash.empty?
 
     prefixes = no_slash.map { |ref| Regexp.escape(ref) }.join('|')
-    prefix_regex = %r{^#{prefixes}/}
+    prefix_regex = %r{^(#{prefixes})/}
 
     with_slash.any? do |ref|
       prefix_regex.match?(ref)

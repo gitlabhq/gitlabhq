@@ -27,7 +27,7 @@ RSpec.describe Resolvers::NamespaceProjectsResolver do
       end
 
       it 'finds all projects including the subgroups' do
-        expect(resolve_projects(include_subgroups: true)).to contain_exactly(project1, project2, nested_project)
+        expect(resolve_projects(include_subgroups: true, sort: nil, search: nil)).to contain_exactly(project1, project2, nested_project)
       end
 
       context 'with an user namespace' do
@@ -38,7 +38,52 @@ RSpec.describe Resolvers::NamespaceProjectsResolver do
         end
 
         it 'finds all projects including the subgroups' do
-          expect(resolve_projects(include_subgroups: true)).to contain_exactly(project1, project2)
+          expect(resolve_projects(include_subgroups: true, sort: nil, search: nil)).to contain_exactly(project1, project2)
+        end
+      end
+    end
+
+    context 'search and similarity sorting' do
+      let(:project_1) { create(:project, name: 'Project', path: 'project', namespace: namespace) }
+      let(:project_2) { create(:project, name: 'Test Project', path: 'test-project', namespace: namespace) }
+      let(:project_3) { create(:project, name: 'Test', path: 'test', namespace: namespace) }
+
+      before do
+        project_1.add_developer(current_user)
+        project_2.add_developer(current_user)
+        project_3.add_developer(current_user)
+      end
+
+      it 'returns projects ordered by similarity to the search input' do
+        projects = resolve_projects(include_subgroups: true, sort: :similarity, search: 'test')
+
+        project_names = projects.map { |proj| proj['name'] }
+        expect(project_names.first).to eq('Test')
+        expect(project_names.second).to eq('Test Project')
+      end
+
+      it 'filters out result that do not match the search input' do
+        projects = resolve_projects(include_subgroups: true, sort: :similarity, search: 'test')
+
+        project_names = projects.map { |proj| proj['name'] }
+        expect(project_names).not_to include('Project')
+      end
+
+      context 'when `search` parameter is not given' do
+        it 'returns projects not ordered by similarity' do
+          projects = resolve_projects(include_subgroups: true, sort: :similarity, search: nil)
+
+          project_names = projects.map { |proj| proj['name'] }
+          expect(project_names.first).not_to eq('Test')
+        end
+      end
+
+      context 'when only search term is given' do
+        it 'filters out result that do not match the search input, but does not sort them' do
+          projects = resolve_projects(include_subgroups: true, sort: :nil, search: 'test')
+
+          project_names = projects.map { |proj| proj['name'] }
+          expect(project_names).to contain_exactly('Test', 'Test Project')
         end
       end
     end
@@ -63,7 +108,7 @@ RSpec.describe Resolvers::NamespaceProjectsResolver do
     expect(field.to_graphql.complexity.call({}, { include_subgroups: true }, 1)).to eq 24
   end
 
-  def resolve_projects(args = { include_subgroups: false }, context = { current_user: current_user })
+  def resolve_projects(args = { include_subgroups: false, sort: nil, search: nil }, context = { current_user: current_user })
     resolve(described_class, obj: namespace, args: args, ctx: context)
   end
 end

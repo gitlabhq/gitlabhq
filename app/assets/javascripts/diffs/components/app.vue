@@ -1,6 +1,6 @@
 <script>
 import { mapState, mapGetters, mapActions } from 'vuex';
-import { GlLoadingIcon, GlButtonGroup, GlButton, GlAlert } from '@gitlab/ui';
+import { GlLoadingIcon, GlPagination, GlSprintf } from '@gitlab/ui';
 import Mousetrap from 'mousetrap';
 import { __ } from '~/locale';
 import { getParameterByName, parseBoolean } from '~/lib/utils/common_utils';
@@ -13,9 +13,13 @@ import eventHub from '../../notes/event_hub';
 import CompareVersions from './compare_versions.vue';
 import DiffFile from './diff_file.vue';
 import NoChanges from './no_changes.vue';
-import HiddenFilesWarning from './hidden_files_warning.vue';
 import CommitWidget from './commit_widget.vue';
 import TreeList from './tree_list.vue';
+
+import HiddenFilesWarning from './hidden_files_warning.vue';
+import MergeConflictWarning from './merge_conflict_warning.vue';
+import CollapsedFilesWarning from './collapsed_files_warning.vue';
+
 import {
   TREE_LIST_WIDTH_STORAGE_KEY,
   INITIAL_TREE_WIDTH,
@@ -24,6 +28,9 @@ import {
   TREE_HIDE_STATS_WIDTH,
   MR_TREE_SHOW_KEY,
   CENTERED_LIMITED_CONTAINER_CLASSES,
+  ALERT_OVERFLOW_HIDDEN,
+  ALERT_MERGE_CONFLICT,
+  ALERT_COLLAPSED_FILES,
 } from '../constants';
 
 export default {
@@ -33,15 +40,21 @@ export default {
     DiffFile,
     NoChanges,
     HiddenFilesWarning,
+    MergeConflictWarning,
+    CollapsedFilesWarning,
     CommitWidget,
     TreeList,
     GlLoadingIcon,
     PanelResizer,
-    GlButtonGroup,
-    GlButton,
-    GlAlert,
+    GlPagination,
+    GlSprintf,
   },
   mixins: [glFeatureFlagsMixin()],
+  alerts: {
+    ALERT_OVERFLOW_HIDDEN,
+    ALERT_MERGE_CONFLICT,
+    ALERT_COLLAPSED_FILES,
+  },
   props: {
     endpoint: {
       type: String,
@@ -111,6 +124,7 @@ export default {
     return {
       treeWidth,
       diffFilesLength: 0,
+      collapsedWarningDismissed: false,
     };
   },
   computed: {
@@ -139,7 +153,7 @@ export default {
       'canMerge',
       'hasConflicts',
     ]),
-    ...mapGetters('diffs', ['isParallelView', 'currentDiffIndex']),
+    ...mapGetters('diffs', ['hasCollapsedFile', 'isParallelView', 'currentDiffIndex']),
     ...mapGetters(['isNotesFetched', 'getNoteableData']),
     diffs() {
       if (!this.viewDiffsFileByFile) {
@@ -169,6 +183,39 @@ export default {
     isDiffHead() {
       return parseBoolean(getParameterByName('diff_head'));
     },
+    showFileByFileNavigation() {
+      return this.diffFiles.length > 1 && this.viewDiffsFileByFile;
+    },
+    currentFileNumber() {
+      return this.currentDiffIndex + 1;
+    },
+    previousFileNumber() {
+      const { currentDiffIndex } = this;
+
+      return currentDiffIndex >= 1 ? currentDiffIndex : null;
+    },
+    nextFileNumber() {
+      const { currentFileNumber, diffFiles } = this;
+
+      return currentFileNumber < diffFiles.length ? currentFileNumber + 1 : null;
+    },
+    visibleWarning() {
+      let visible = false;
+
+      if (this.renderOverflowWarning) {
+        visible = this.$options.alerts.ALERT_OVERFLOW_HIDDEN;
+      } else if (this.isDiffHead && this.hasConflicts) {
+        visible = this.$options.alerts.ALERT_MERGE_CONFLICT;
+      } else if (
+        this.hasCollapsedFile &&
+        !this.collapsedWarningDismissed &&
+        !this.viewDiffsFileByFile
+      ) {
+        visible = this.$options.alerts.ALERT_COLLAPSED_FILES;
+      }
+
+      return visible;
+    },
   },
   watch: {
     commit(newCommit, oldCommit) {
@@ -186,7 +233,7 @@ export default {
       }
     },
     diffViewType() {
-      if (this.needsReload() || this.needsFirstLoad()) {
+      if (!this.glFeatures.unifiedDiffLines && (this.needsReload() || this.needsFirstLoad())) {
         this.refetchDiffData();
       }
       this.adjustView();
@@ -212,7 +259,6 @@ export default {
       projectPath: this.projectPath,
       dismissEndpoint: this.dismissEndpoint,
       showSuggestPopover: this.showSuggestPopover,
-      useSingleDiffStyle: this.glFeatures.singleMrDiffView,
       viewDiffsFileByFile: this.viewDiffsFileByFile,
     });
 
@@ -262,7 +308,6 @@ export default {
     ...mapActions('diffs', [
       'moveToNeighboringCommit',
       'setBaseConfig',
-      'fetchDiffFiles',
       'fetchDiffFilesMeta',
       'fetchDiffFilesBatch',
       'fetchCoverageFiles',
@@ -274,6 +319,9 @@ export default {
       'toggleShowTreeList',
       'navigateToDiffFileIndex',
     ]),
+    navigateToDiffFileNumber(number) {
+      this.navigateToDiffFileIndex(number - 1);
+    },
     refetchDiffData() {
       this.fetchData(false);
     },
@@ -286,60 +334,35 @@ export default {
       );
     },
     needsReload() {
-      return (
-        this.glFeatures.singleMrDiffView &&
-        this.diffFiles.length &&
-        isSingleViewStyle(this.diffFiles[0])
-      );
+      return this.diffFiles.length && isSingleViewStyle(this.diffFiles[0]);
     },
     needsFirstLoad() {
-      return this.glFeatures.singleMrDiffView && !this.diffFiles.length;
+      return !this.diffFiles.length;
     },
     fetchData(toggleTree = true) {
-      if (this.glFeatures.diffsBatchLoad) {
-        this.fetchDiffFilesMeta()
-          .then(({ real_size }) => {
-            this.diffFilesLength = parseInt(real_size, 10);
-            if (toggleTree) this.hideTreeListIfJustOneFile();
+      this.fetchDiffFilesMeta()
+        .then(({ real_size }) => {
+          this.diffFilesLength = parseInt(real_size, 10);
+          if (toggleTree) this.hideTreeListIfJustOneFile();
 
-            this.startDiffRendering();
-          })
-          .catch(() => {
-            createFlash(__('Something went wrong on our end. Please try again!'));
-          });
+          this.startDiffRendering();
+        })
+        .catch(() => {
+          createFlash(__('Something went wrong on our end. Please try again!'));
+        });
 
-        this.fetchDiffFilesBatch()
-          .then(() => {
-            // Guarantee the discussions are assigned after the batch finishes.
-            // Just watching the length of the discussions or the diff files
-            // isn't enough, because with split diff loading, neither will
-            // change when loading the other half of the diff files.
-            this.setDiscussions();
-          })
-          .then(() => this.startDiffRendering())
-          .catch(() => {
-            createFlash(__('Something went wrong on our end. Please try again!'));
-          });
-      } else {
-        this.fetchDiffFiles()
-          .then(({ real_size }) => {
-            this.diffFilesLength = parseInt(real_size, 10);
-            if (toggleTree) {
-              this.hideTreeListIfJustOneFile();
-            }
-
-            requestIdleCallback(
-              () => {
-                this.setDiscussions();
-                this.startRenderDiffsQueue();
-              },
-              { timeout: 1000 },
-            );
-          })
-          .catch(() => {
-            createFlash(__('Something went wrong on our end. Please try again!'));
-          });
-      }
+      this.fetchDiffFilesBatch()
+        .then(() => {
+          // Guarantee the discussions are assigned after the batch finishes.
+          // Just watching the length of the discussions or the diff files
+          // isn't enough, because with split diff loading, neither will
+          // change when loading the other half of the diff files.
+          this.setDiscussions();
+        })
+        .then(() => this.startDiffRendering())
+        .catch(() => {
+          createFlash(__('Something went wrong on our end. Please try again!'));
+        });
 
       if (this.endpointCoverage) {
         this.fetchCoverageFiles();
@@ -406,6 +429,9 @@ export default {
         this.toggleShowTreeList(false);
       }
     },
+    dismissCollapsedWarning() {
+      this.collapsedWarningDismissed = true;
+    },
   },
   minTreeWidth: MIN_TREE_WIDTH,
   maxTreeWidth: MAX_TREE_WIDTH,
@@ -423,59 +449,27 @@ export default {
       />
 
       <hidden-files-warning
-        v-if="renderOverflowWarning"
+        v-if="visibleWarning == $options.alerts.ALERT_OVERFLOW_HIDDEN"
         :visible="numVisibleFiles"
         :total="numTotalFiles"
         :plain-diff-path="plainDiffPath"
         :email-patch-path="emailPatchPath"
       />
-
-      <div
-        v-if="isDiffHead && hasConflicts"
-        :class="{
-          [CENTERED_LIMITED_CONTAINER_CLASSES]: isLimitedContainer,
-        }"
-      >
-        <gl-alert
-          :dismissible="false"
-          :title="__('There are merge conflicts')"
-          variant="warning"
-          class="w-100 mb-3"
-        >
-          <p class="mb-1">
-            {{ __('The comparison view may be inaccurate due to merge conflicts.') }}
-          </p>
-          <p class="mb-0">
-            {{
-              __(
-                'Resolve these conflicts or ask someone with write access to this repository to merge it locally.',
-              )
-            }}
-          </p>
-          <template #actions>
-            <gl-button
-              v-if="conflictResolutionPath"
-              :href="conflictResolutionPath"
-              variant="info"
-              class="mr-3 gl-alert-action"
-            >
-              {{ __('Resolve conflicts') }}
-            </gl-button>
-            <gl-button
-              v-if="canMerge"
-              class="gl-alert-action"
-              data-toggle="modal"
-              data-target="#modal_merge_info"
-            >
-              {{ __('Merge locally') }}
-            </gl-button>
-          </template>
-        </gl-alert>
-      </div>
+      <merge-conflict-warning
+        v-if="visibleWarning == $options.alerts.ALERT_MERGE_CONFLICT"
+        :limited="isLimitedContainer"
+        :resolution-path="conflictResolutionPath"
+        :mergeable="canMerge"
+      />
+      <collapsed-files-warning
+        v-if="visibleWarning == $options.alerts.ALERT_COLLAPSED_FILES"
+        :limited="isLimitedContainer"
+        @dismiss="dismissCollapsedWarning"
+      />
 
       <div
         :data-can-create-note="getNoteableData.current_user.can_create_note"
-        class="files d-flex"
+        class="files d-flex gl-mt-2"
       >
         <div
           v-if="showTreeList"
@@ -509,23 +503,22 @@ export default {
               :can-current-user-fork="canCurrentUserFork"
               :view-diffs-file-by-file="viewDiffsFileByFile"
             />
-            <div v-if="viewDiffsFileByFile" class="d-flex gl-justify-content-center">
-              <gl-button-group>
-                <gl-button
-                  :disabled="currentDiffIndex === 0"
-                  data-testid="singleFilePrevious"
-                  @click="navigateToDiffFileIndex(currentDiffIndex - 1)"
-                >
-                  {{ __('Prev') }}
-                </gl-button>
-                <gl-button
-                  :disabled="currentDiffIndex === diffFiles.length - 1"
-                  data-testid="singleFileNext"
-                  @click="navigateToDiffFileIndex(currentDiffIndex + 1)"
-                >
-                  {{ __('Next') }}
-                </gl-button>
-              </gl-button-group>
+            <div
+              v-if="showFileByFileNavigation"
+              data-testid="file-by-file-navigation"
+              class="gl-display-grid gl-text-center"
+            >
+              <gl-pagination
+                class="gl-mx-auto"
+                :value="currentFileNumber"
+                :prev-page="previousFileNumber"
+                :next-page="nextFileNumber"
+                @input="navigateToDiffFileNumber"
+              />
+              <gl-sprintf :message="__('File %{current} of %{total}')">
+                <template #current>{{ currentFileNumber }}</template>
+                <template #total>{{ diffFiles.length }}</template>
+              </gl-sprintf>
             </div>
           </template>
           <no-changes v-else :changes-empty-state-illustration="changesEmptyStateIllustration" />

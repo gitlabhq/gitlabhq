@@ -18,6 +18,7 @@ class Issue < ApplicationRecord
   include MilestoneEventable
   include WhereComposite
   include StateEventable
+  include IdInOrdered
 
   DueDateStruct                   = Struct.new(:title, :name).freeze
   NoDueDate                       = DueDateStruct.new('No Due Date', '0').freeze
@@ -28,6 +29,11 @@ class Issue < ApplicationRecord
   DueNextMonthAndPreviousTwoWeeks = DueDateStruct.new('Due Next Month And Previous Two Weeks', 'next_month_and_previous_two_weeks').freeze
 
   SORTING_PREFERENCE_FIELD = :issues_sort
+
+  # Types of issues that should be displayed on lists across the app
+  # for example, project issues list, group issues list and issue boards.
+  # Some issue types, like test cases, should be hidden by default.
+  TYPES_FOR_LIST = %w(issue incident).freeze
 
   belongs_to :project
   has_one :namespace, through: :project
@@ -59,6 +65,7 @@ class Issue < ApplicationRecord
     end
   end
 
+  has_one :issuable_severity
   has_one :sentry_issue
   has_one :alert_management_alert, class_name: 'AlertManagement::Alert'
   has_and_belongs_to_many :self_managed_prometheus_alert_events, join_table: :issues_self_managed_prometheus_alert_events # rubocop: disable Rails/HasAndBelongsToMany
@@ -72,7 +79,8 @@ class Issue < ApplicationRecord
 
   enum issue_type: {
     issue: 0,
-    incident: 1
+    incident: 1,
+    test_case: 2 ## EE-only
   }
 
   alias_attribute :parent_ids, :project_id
@@ -305,6 +313,24 @@ class Issue < ApplicationRecord
     end
   end
 
+  def related_issues(current_user, preload: nil)
+    related_issues = ::Issue
+                       .select(['issues.*', 'issue_links.id AS issue_link_id',
+                                'issue_links.link_type as issue_link_type_value',
+                                'issue_links.target_id as issue_link_source_id'])
+                       .joins("INNER JOIN issue_links ON
+	                             (issue_links.source_id = issues.id AND issue_links.target_id = #{id})
+	                             OR
+	                             (issue_links.target_id = issues.id AND issue_links.source_id = #{id})")
+                       .preload(preload)
+                       .reorder('issue_link_id')
+
+    cross_project_filter = -> (issues) { issues.where(project: project) }
+    Ability.issues_readable_by_user(related_issues,
+      current_user,
+      filters: { read_cross_project: cross_project_filter })
+  end
+
   def can_be_worked_on?
     !self.closed? && !self.project.forked?
   end
@@ -378,6 +404,15 @@ class Issue < ApplicationRecord
     author.id == User.support_bot.id
   end
 
+  def issue_link_type
+    return unless respond_to?(:issue_link_type_value) && respond_to?(:issue_link_source_id)
+
+    type = IssueLink.link_types.key(issue_link_type_value) || IssueLink::TYPE_RELATES_TO
+    return type if issue_link_source_id == id
+
+    IssueLink.inverse_link_type(type)
+  end
+
   private
 
   def ensure_metrics
@@ -412,6 +447,11 @@ class Issue < ApplicationRecord
   def expire_etag_cache
     key = Gitlab::Routing.url_helpers.realtime_changes_project_issue_path(project, self)
     Gitlab::EtagCaching::Store.new.touch(key)
+  end
+
+  def could_not_move(exception)
+    # Symptom of running out of space - schedule rebalancing
+    IssueRebalancingWorker.perform_async(nil, project_id)
   end
 end
 

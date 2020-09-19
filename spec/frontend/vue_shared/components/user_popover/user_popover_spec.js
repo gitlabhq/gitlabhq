@@ -1,7 +1,6 @@
-import { GlSkeletonLoading, GlSprintf } from '@gitlab/ui';
+import { GlDeprecatedSkeletonLoading as GlSkeletonLoading, GlSprintf, GlIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import UserPopover from '~/vue_shared/components/user_popover/user_popover.vue';
-import Icon from '~/vue_shared/components/icon.vue';
 
 const DEFAULT_PROPS = {
   user: {
@@ -74,7 +73,7 @@ describe('User Popover Component', () => {
     });
 
     it('shows icon for location', () => {
-      const iconEl = wrapper.find(Icon);
+      const iconEl = wrapper.find(GlIcon);
 
       expect(iconEl.props('name')).toEqual('location');
     });
@@ -139,9 +138,9 @@ describe('User Popover Component', () => {
 
       createWrapper({ user });
 
-      expect(wrapper.findAll(Icon).filter(icon => icon.props('name') === 'profile').length).toEqual(
-        1,
-      );
+      expect(
+        wrapper.findAll(GlIcon).filter(icon => icon.props('name') === 'profile').length,
+      ).toEqual(1);
     });
 
     it('shows icon for work information', () => {
@@ -152,7 +151,9 @@ describe('User Popover Component', () => {
 
       createWrapper({ user });
 
-      expect(wrapper.findAll(Icon).filter(icon => icon.props('name') === 'work').length).toEqual(1);
+      expect(wrapper.findAll(GlIcon).filter(icon => icon.props('name') === 'work').length).toEqual(
+        1,
+      );
     });
   });
 

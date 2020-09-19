@@ -10,20 +10,23 @@ module Gitlab
 
           QUERY_PATTERN = '(?<query>\?[a-zA-Z0-9%.()+_=-]+(&[a-zA-Z0-9%.()+_=-]+)*)?'
           ANCHOR_PATTERN = '(?<anchor>\#[a-z0-9_-]+)?'
-          OPTIONAL_DASH_PATTERN = '(?:/-)?'
+          DASH_PATTERN = '(?:/-)'
 
-          # Matches urls for a metrics dashboard. This could be
-          # either the /metrics endpoint or the /metrics_dashboard
-          # endpoint.
+          # Matches urls for a metrics dashboard.
+          # This regex needs to match the old metrics URL, the new metrics URL,
+          # and the dashboard URL (inline_metrics_redactor_filter.rb
+          # uses this regex to match against the dashboard URL.)
           #
-          # EX - https://<host>/<namespace>/<project>/environments/<env_id>/metrics
+          # EX - Old URL: https://<host>/<namespace>/<project>/environments/<env_id>/metrics
+          # OR
+          # New URL: https://<host>/<namespace>/<project>/-/metrics?environment=<env_id>
+          # OR
+          # dashboard URL: https://<host>/<namespace>/<project>/environments/<env_id>/metrics_dashboard
           def metrics_regex
             strong_memoize(:metrics_regex) do
               regex_for_project_metrics(
                 %r{
-                    /environments
-                    /(?<environment>\d+)
-                    /(metrics_dashboard|metrics)
+                    ( #{environment_metrics_regex} ) | ( #{non_environment_metrics_regex} )
                 }x
               )
             end
@@ -36,6 +39,7 @@ module Gitlab
             strong_memoize(:grafana_regex) do
               regex_for_project_metrics(
                 %r{
+                  #{DASH_PATTERN}?
                   /grafana
                   /metrics_dashboard
                 }x
@@ -44,16 +48,22 @@ module Gitlab
           end
 
           # Matches dashboard urls for a metric chart embed
-          # for cluster metrics
+          # for cluster metrics.
+          # This regex needs to match the dashboard URL as well, not just the trigger URL.
+          # The inline_metrics_redactor_filter.rb uses this regex to match against
+          # the dashboard URL.
           #
           # EX - https://<host>/<namespace>/<project>/-/clusters/<cluster_id>/?group=Cluster%20Health&title=Memory%20Usage&y_label=Memory%20(GiB)
+          # dashboard URL - https://<host>/<namespace>/<project>/-/clusters/<cluster_id>/metrics_dashboard?group=Cluster%20Health&title=Memory%20Usage&y_label=Memory%20(GiB)
           def clusters_regex
             strong_memoize(:clusters_regex) do
               regex_for_project_metrics(
                 %r{
+                  #{DASH_PATTERN}?
                   /clusters
                   /(?<cluster_id>\d+)
                   /?
+                  ( (/metrics) | ( /metrics_dashboard\.json ) )?
                 }x
               )
             end
@@ -67,10 +77,11 @@ module Gitlab
             strong_memoize(:alert_regex) do
               regex_for_project_metrics(
                 %r{
+                  #{DASH_PATTERN}?
                   /prometheus
                   /alerts
                   /(?<alert>\d+)
-                  /metrics_dashboard
+                  /metrics_dashboard(\.json)?
                 }x
               )
             end
@@ -95,16 +106,37 @@ module Gitlab
 
           private
 
+          def environment_metrics_regex
+            %r{
+              #{DASH_PATTERN}?
+              /environments
+              /(?<environment>\d+)
+              /(metrics_dashboard|metrics)
+            }x
+          end
+
+          def non_environment_metrics_regex
+            %r{
+              #{DASH_PATTERN}
+              /metrics
+              (?=                             # Lookahead to ensure there is an environment query param
+                \?
+                .*
+                environment=(?<environment>\d+)
+                .*
+              )
+            }x
+          end
+
           def regex_for_project_metrics(path_suffix_pattern)
             %r{
-              (?<url>
+              ^(?<url>
                 #{gitlab_host_pattern}
                 #{project_path_pattern}
-                #{OPTIONAL_DASH_PATTERN}
                 #{path_suffix_pattern}
                 #{QUERY_PATTERN}
                 #{ANCHOR_PATTERN}
-              )
+              )$
             }x
           end
 

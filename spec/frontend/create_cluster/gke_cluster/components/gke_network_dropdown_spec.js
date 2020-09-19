@@ -121,23 +121,19 @@ describe('GkeNetworkDropdown', () => {
     });
 
     it('cleans selected subnetwork', () => {
-      expect(setSubnetwork).toHaveBeenCalledWith(expect.anything(), '', undefined);
+      expect(setSubnetwork).toHaveBeenCalledWith(expect.anything(), '');
     });
 
     it('dispatches the setNetwork action', () => {
-      expect(setNetwork).toHaveBeenCalledWith(expect.anything(), selectedNetwork, undefined);
+      expect(setNetwork).toHaveBeenCalledWith(expect.anything(), selectedNetwork);
     });
 
     it('fetches subnetworks for the selected project, region, and network', () => {
-      expect(fetchSubnetworks).toHaveBeenCalledWith(
-        expect.anything(),
-        {
-          project: projectId,
-          region,
-          network: selectedNetwork.selfLink,
-        },
-        undefined,
-      );
+      expect(fetchSubnetworks).toHaveBeenCalledWith(expect.anything(), {
+        project: projectId,
+        region,
+        network: selectedNetwork.selfLink,
+      });
     });
   });
 });

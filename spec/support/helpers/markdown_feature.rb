@@ -87,6 +87,10 @@ class MarkdownFeature
     @group_milestone ||= create(:milestone, name: 'group-milestone', group: group)
   end
 
+  def alert
+    @alert ||= create(:alert_management_alert, project: project)
+  end
+
   # Cross-references -----------------------------------------------------------
 
   def xproject
@@ -123,6 +127,10 @@ class MarkdownFeature
 
   def xmilestone
     @xmilestone ||= create(:milestone, project: xproject)
+  end
+
+  def xalert
+    @xalert ||= create(:alert_management_alert, project: xproject)
   end
 
   def urls

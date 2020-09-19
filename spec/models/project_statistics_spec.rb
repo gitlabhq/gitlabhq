@@ -32,8 +32,9 @@ RSpec.describe ProjectStatistics do
         repository_size: 2.exabytes,
         wiki_size: 1.exabytes,
         lfs_objects_size: 2.exabytes,
-        build_artifacts_size: 2.exabytes - 1,
-        snippets_size: 1.exabyte
+        build_artifacts_size: 1.exabyte,
+        snippets_size: 1.exabyte,
+        pipeline_artifacts_size: 1.exabyte - 1
       )
 
       statistics.reload
@@ -42,9 +43,10 @@ RSpec.describe ProjectStatistics do
       expect(statistics.repository_size).to eq(2.exabytes)
       expect(statistics.wiki_size).to eq(1.exabytes)
       expect(statistics.lfs_objects_size).to eq(2.exabytes)
-      expect(statistics.build_artifacts_size).to eq(2.exabytes - 1)
+      expect(statistics.build_artifacts_size).to eq(1.exabyte)
       expect(statistics.storage_size).to eq(8.exabytes - 1)
       expect(statistics.snippets_size).to eq(1.exabyte)
+      expect(statistics.pipeline_artifacts_size).to eq(1.exabyte - 1)
     end
   end
 
@@ -282,12 +284,13 @@ RSpec.describe ProjectStatistics do
         repository_size: 2,
         wiki_size: 4,
         lfs_objects_size: 3,
-        snippets_size: 2
+        snippets_size: 2,
+        pipeline_artifacts_size: 3
       )
 
       statistics.reload
 
-      expect(statistics.storage_size).to eq 11
+      expect(statistics.storage_size).to eq 14
     end
 
     it 'works during wiki_size backfill' do
@@ -335,6 +338,12 @@ RSpec.describe ProjectStatistics do
 
     context 'when adjusting :build_artifacts_size' do
       let(:stat) { :build_artifacts_size }
+
+      it_behaves_like 'a statistic that increases storage_size'
+    end
+
+    context 'when adjusting :pipeline_artifacts_size' do
+      let(:stat) { :pipeline_artifacts_size }
 
       it_behaves_like 'a statistic that increases storage_size'
     end

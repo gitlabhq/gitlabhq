@@ -20,8 +20,8 @@ describe('MrWidgetContainer', () => {
   it('has layout', () => {
     factory();
 
-    expect(wrapper.is('.mr-widget-heading')).toBe(true);
-    expect(wrapper.contains('.mr-widget-content')).toBe(true);
+    expect(wrapper.classes()).toContain('mr-widget-heading');
+    expect(wrapper.find('.mr-widget-content').exists()).toBe(true);
   });
 
   it('accepts default slot', () => {
@@ -31,7 +31,7 @@ describe('MrWidgetContainer', () => {
       },
     });
 
-    expect(wrapper.contains('.mr-widget-content .test-body')).toBe(true);
+    expect(wrapper.find('.mr-widget-content .test-body').exists()).toBe(true);
   });
 
   it('accepts footer slot', () => {
@@ -42,7 +42,7 @@ describe('MrWidgetContainer', () => {
       },
     });
 
-    expect(wrapper.contains('.mr-widget-content .test-body')).toBe(true);
-    expect(wrapper.contains('.test-footer')).toBe(true);
+    expect(wrapper.find('.mr-widget-content .test-body').exists()).toBe(true);
+    expect(wrapper.find('.test-footer').exists()).toBe(true);
   });
 });

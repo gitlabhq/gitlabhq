@@ -37,7 +37,7 @@ Consider the following workflow:
 ## How browser performance testing works
 
 First, define a job in your `.gitlab-ci.yml` file that generates the
-[Browser Performance report artifact](../../../ci/pipelines/job_artifacts.md#artifactsreportsperformance-premium).
+[Browser Performance report artifact](../../../ci/pipelines/job_artifacts.md#artifactsreportsperformance).
 GitLab then checks this report, compares key performance metrics for each page
 between the source and target branches, and shows the information in the merge request.
 
@@ -85,7 +85,7 @@ The example uses a CI/CD template that is included in all GitLab installations s
 or older, you must [add the configuration manually](#gitlab-versions-123-and-older)
 
 The template uses the [GitLab plugin for sitespeed.io](https://gitlab.com/gitlab-org/gl-performance),
-and it saves the full HTML sitespeed.io report as a [Browser Performance report artifact](../../../ci/pipelines/job_artifacts.md#artifactsreportsperformance-premium)
+and it saves the full HTML sitespeed.io report as a [Browser Performance report artifact](../../../ci/pipelines/job_artifacts.md#artifactsreportsperformance)
 that you can later download and analyze. This implementation always takes the latest
 Browser Performance artifact available. If [GitLab Pages](../pages/index.md) is enabled,
 you can view the report directly in your browser.
@@ -93,7 +93,7 @@ you can view the report directly in your browser.
 You can also customize the jobs with environment variables:
 
 - `SITESPEED_IMAGE`: Configure the Docker image to use for the job (default `sitespeedio/sitespeed.io`), but not the image version.
-- `SITESPEED_VERSION`: Configure the version of the Docker image to use for the job (default `13.3.0`).
+- `SITESPEED_VERSION`: Configure the version of the Docker image to use for the job (default `14.1.0`).
 - `SITESPEED_OPTIONS`: Configure any additional sitespeed.io options as required (default `nil`). Refer to the [sitespeed.io documentation](https://www.sitespeed.io/documentation/sitespeed.io/configuration/) for more details.
 
 For example, you can override the number of runs sitespeed.io
@@ -196,13 +196,13 @@ performance:
   image: docker:git
   variables:
     URL: https://example.com
-    SITESPEED_VERSION: 13.3.0
+    SITESPEED_VERSION: 14.1.0
     SITESPEED_OPTIONS: ''
   services:
     - docker:stable-dind
   script:
     - mkdir gitlab-exporter
-    - wget -O ./gitlab-exporter/index.js https://gitlab.com/gitlab-org/gl-performance/raw/master/index.js
+    - wget -O ./gitlab-exporter/index.js https://gitlab.com/gitlab-org/gl-performance/raw/1.1.0/index.js
     - mkdir sitespeed-results
     - docker run --shm-size=1g --rm -v "$(pwd)":/sitespeed.io sitespeedio/sitespeed.io:$SITESPEED_VERSION --plugins.add ./gitlab-exporter --outputFolder sitespeed-results $URL $SITESPEED_OPTIONS
     - mv sitespeed-results/data/performance.json performance.json
@@ -226,7 +226,7 @@ performance:
     - docker:stable-dind
   script:
     - mkdir gitlab-exporter
-    - wget -O ./gitlab-exporter/index.js https://gitlab.com/gitlab-org/gl-performance/raw/master/index.js
+    - wget -O ./gitlab-exporter/index.js https://gitlab.com/gitlab-org/gl-performance/raw/1.1.0/index.js
     - mkdir sitespeed-results
     - docker run --shm-size=1g --rm -v "$(pwd)":/sitespeed.io sitespeedio/sitespeed.io:6.3.1 --plugins.add ./gitlab-exporter --outputFolder sitespeed-results $URL
     - mv sitespeed-results/data/performance.json performance.json

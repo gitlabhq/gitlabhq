@@ -3,10 +3,43 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::GroupSearchResults do
-  let(:user) { create(:user) }
+  # group creation calls GroupFinder, so need to create the group
+  # before so expect(GroupsFinder) check works
+  let_it_be(:group) { create(:group) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:project) { create(:project, :public, group: group) }
+  let(:filters) { {} }
+  let(:limit_projects) { Project.all }
+  let(:query) { 'gob' }
+
+  subject(:results) { described_class.new(user, query, limit_projects, group: group, filters: filters) }
+
+  describe 'issues search' do
+    let_it_be(:opened_result) { create(:issue, :opened, project: project, title: 'foo opened') }
+    let_it_be(:closed_result) { create(:issue, :closed, project: project, title: 'foo closed') }
+    let(:query) { 'foo' }
+    let(:scope) { 'issues' }
+
+    include_examples 'search results filtered by state'
+  end
+
+  describe 'merge_requests search' do
+    let(:opened_result) { create(:merge_request, :opened, source_project: project, title: 'foo opened') }
+    let(:closed_result) { create(:merge_request, :closed, source_project: project, title: 'foo closed') }
+    let(:query) { 'foo' }
+    let(:scope) { 'merge_requests' }
+
+    before do
+      # we're creating those instances in before block because otherwise factory for MRs will fail on after(:build)
+      opened_result
+      closed_result
+    end
+
+    include_examples 'search results filtered by state'
+  end
 
   describe 'user search' do
-    let(:group) { create(:group) }
+    subject(:objects) { results.objects('users') }
 
     it 'returns the users belonging to the group matching the search query' do
       user1 = create(:user, username: 'gob_bluth')
@@ -17,9 +50,7 @@ RSpec.describe Gitlab::GroupSearchResults do
 
       create(:user, username: 'gob_2018')
 
-      result = described_class.new(user, anything, group, 'gob').objects('users')
-
-      expect(result).to eq [user1]
+      is_expected.to eq [user1]
     end
 
     it 'returns the user belonging to the subgroup matching the search query' do
@@ -29,9 +60,7 @@ RSpec.describe Gitlab::GroupSearchResults do
 
       create(:user, username: 'gob_2018')
 
-      result = described_class.new(user, anything, group, 'gob').objects('users')
-
-      expect(result).to eq [user1]
+      is_expected.to eq [user1]
     end
 
     it 'returns the user belonging to the parent group matching the search query' do
@@ -41,9 +70,7 @@ RSpec.describe Gitlab::GroupSearchResults do
 
       create(:user, username: 'gob_2018')
 
-      result = described_class.new(user, anything, group, 'gob').objects('users')
-
-      expect(result).to eq [user1]
+      is_expected.to eq [user1]
     end
 
     it 'does not return the user belonging to the private subgroup' do
@@ -53,9 +80,7 @@ RSpec.describe Gitlab::GroupSearchResults do
 
       create(:user, username: 'gob_2018')
 
-      result = described_class.new(user, anything, group, 'gob').objects('users')
-
-      expect(result).to eq []
+      is_expected.to be_empty
     end
 
     it 'does not return the user belonging to an unrelated group' do
@@ -63,15 +88,26 @@ RSpec.describe Gitlab::GroupSearchResults do
       unrelated_group = create(:group)
       create(:group_member, :developer, user: user, group: unrelated_group)
 
-      result = described_class.new(user, anything, group, 'gob').objects('users')
-
-      expect(result).to eq []
+      is_expected.to be_empty
     end
 
-    it 'sets include_subgroups flag by default' do
-      result = described_class.new(user, anything, group, 'gob')
+    it 'does not return the user invited to the group' do
+      user = create(:user, username: 'gob_bluth')
+      create(:group_member, :invited, :developer, user: user, group: group)
 
-      expect(result.issuable_params[:include_subgroups]).to eq(true)
+      is_expected.to be_empty
+    end
+
+    it 'calls GroupFinder during execution' do
+      expect(GroupsFinder).to receive(:new).with(user).and_call_original
+
+      subject
+    end
+  end
+
+  describe "#issuable_params" do
+    it 'sets include_subgroups flag by default' do
+      expect(results.issuable_params[:include_subgroups]).to eq(true)
     end
   end
 end

@@ -25,7 +25,6 @@ class Member < ApplicationRecord
   validates :user_id, uniqueness: { scope: [:source_type, :source_id],
                                     message: "already exists in source",
                                     allow_nil: true }
-  validates :access_level, inclusion: { in: Gitlab::Access.all_values }, presence: true
   validate :higher_access_level_than_group, unless: :importing?
   validates :invite_email,
     presence: {
@@ -60,6 +59,7 @@ class Member < ApplicationRecord
     left_join_users
       .where(user_ok)
       .where(requested_at: nil)
+      .non_minimal_access
       .reorder(nil)
   end
 
@@ -68,6 +68,8 @@ class Member < ApplicationRecord
     left_join_users
       .where(users: { state: 'active' })
       .non_request
+      .non_invite
+      .non_minimal_access
       .reorder(nil)
   end
 
@@ -85,6 +87,7 @@ class Member < ApplicationRecord
   scope :developers, -> { active.where(access_level: DEVELOPER) }
   scope :maintainers, -> { active.where(access_level: MAINTAINER) }
   scope :non_guests, -> { where('members.access_level > ?', GUEST) }
+  scope :non_minimal_access, -> { where('members.access_level > ?', MINIMAL_ACCESS) }
   scope :owners, -> { active.where(access_level: OWNER) }
   scope :owners_and_maintainers, -> { active.where(access_level: [OWNER, MAINTAINER]) }
   scope :with_user, -> (user) { where(user: user) }
@@ -161,8 +164,8 @@ class Member < ApplicationRecord
       where(user_id: user_ids).has_access.pluck(:user_id, :access_level).to_h
     end
 
-    def find_by_invite_token(invite_token)
-      invite_token = Devise.token_generator.digest(self, :invite_token, invite_token)
+    def find_by_invite_token(raw_invite_token)
+      invite_token = Devise.token_generator.digest(self, :invite_token, raw_invite_token)
       find_by(invite_token: invite_token)
     end
 
@@ -395,6 +398,10 @@ class Member < ApplicationRecord
 
       GroupMember.where(source: source.ancestors, user_id: user_id).order(:access_level).last
     end
+  end
+
+  def invite_to_unknown_user?
+    invite? && user_id.nil?
   end
 
   private

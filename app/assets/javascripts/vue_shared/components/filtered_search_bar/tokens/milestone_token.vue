@@ -2,7 +2,7 @@
 import {
   GlFilteredSearchToken,
   GlFilteredSearchSuggestion,
-  GlNewDropdownDivider as GlDropdownDivider,
+  GlDropdownDivider,
   GlLoadingIcon,
 } from '@gitlab/ui';
 import { debounce } from 'lodash';
@@ -11,10 +11,9 @@ import createFlash from '~/flash';
 import { __ } from '~/locale';
 
 import { stripQuotes } from '../filtered_search_utils';
-import { defaultMilestones, DEBOUNCE_DELAY } from '../constants';
+import { DEFAULT_MILESTONES, DEBOUNCE_DELAY } from '../constants';
 
 export default {
-  defaultMilestones,
   components: {
     GlFilteredSearchToken,
     GlFilteredSearchSuggestion,
@@ -34,6 +33,7 @@ export default {
   data() {
     return {
       milestones: this.config.initialMilestones || [],
+      defaultMilestones: this.config.defaultMilestones || DEFAULT_MILESTONES,
       loading: true,
     };
   },
@@ -89,12 +89,13 @@ export default {
     </template>
     <template #suggestions>
       <gl-filtered-search-suggestion
-        v-for="milestone in $options.defaultMilestones"
+        v-for="milestone in defaultMilestones"
         :key="milestone.value"
         :value="milestone.value"
-        >{{ milestone.text }}</gl-filtered-search-suggestion
       >
-      <gl-dropdown-divider />
+        {{ milestone.text }}
+      </gl-filtered-search-suggestion>
+      <gl-dropdown-divider v-if="defaultMilestones.length" />
       <gl-loading-icon v-if="loading" />
       <template v-else>
         <gl-filtered-search-suggestion

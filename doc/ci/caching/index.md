@@ -60,7 +60,7 @@ Caches:
 - Are disabled if not defined globally or per job (using `cache:`).
 - Are available for all jobs in your `.gitlab-ci.yml` if enabled globally.
 - Can be used in subsequent pipelines by the same job in which the cache was created (if not defined globally).
-- Are stored where the Runner is installed **and** uploaded to S3 if [distributed cache is enabled](https://docs.gitlab.com/runner/configuration/autoscale.html#distributed-runners-caching).
+- Are stored where GitLab Runner is installed **and** uploaded to S3 if [distributed cache is enabled](https://docs.gitlab.com/runner/configuration/autoscale.html#distributed-runners-caching).
 - If defined per job, are used:
   - By the same job in a subsequent pipeline.
   - By subsequent jobs in the same pipeline, if they have identical dependencies.
@@ -80,33 +80,33 @@ can't link to files outside it.
 ## Good caching practices
 
 We have the cache from the perspective of the developers (who consume a cache
-within the job) and the cache from the perspective of the Runner. Depending on
-which type of Runner you are using, cache can act differently.
+within the job) and the cache from the perspective of the runner. Depending on
+which type of runner you are using, cache can act differently.
 
 From the perspective of the developer, to ensure maximum availability of the
 cache, when declaring `cache` in your jobs, use one or a mix of the following:
 
-- [Tag your Runners](../runners/README.md#use-tags-to-limit-the-number-of-jobs-using-the-runner) and use the tag on jobs
+- [Tag your runners](../runners/README.md#use-tags-to-limit-the-number-of-jobs-using-the-runner) and use the tag on jobs
   that share their cache.
-- [Use sticky Runners](../runners/README.md#prevent-a-specific-runner-from-being-enabled-for-other-projects)
+- [Use sticky runners](../runners/README.md#prevent-a-specific-runner-from-being-enabled-for-other-projects)
   that will be only available to a particular project.
 - [Use a `key`](../yaml/README.md#cachekey) that fits your workflow (for example,
   different caches on each branch). For that, you can take advantage of the
   [CI/CD predefined variables](../variables/README.md#predefined-environment-variables).
 
 TIP: **Tip:**
-Using the same Runner for your pipeline, is the most simple and efficient way to
+Using the same runner for your pipeline, is the most simple and efficient way to
 cache files in one stage or pipeline, and pass this cache to subsequent stages
 or pipelines in a guaranteed manner.
 
-From the perspective of the Runner, in order for cache to work effectively, one
+From the perspective of the runner, in order for cache to work effectively, one
 of the following must be true:
 
-- Use a single Runner for all your jobs.
-- Use multiple Runners (in autoscale mode or not) that use
+- Use a single runner for all your jobs.
+- Use multiple runners (in autoscale mode or not) that use
   [distributed caching](https://docs.gitlab.com/runner/configuration/autoscale.html#distributed-runners-caching),
-  where the cache is stored in S3 buckets (like shared Runners on GitLab.com).
-- Use multiple Runners (not in autoscale mode) of the same architecture that
+  where the cache is stored in S3 buckets (like shared runners on GitLab.com).
+- Use multiple runners (not in autoscale mode) of the same architecture that
   share a common network-mounted directory (using NFS or something similar)
   where the cache will be stored.
 
@@ -179,12 +179,12 @@ You can override cache settings without overwriting the global cache by using
 
 ```yaml
 cache: &global_cache
-    key: ${CI_COMMIT_REF_SLUG}
-    paths:
-      - node_modules/
-      - public/
-      - vendor/
-    policy: pull-push
+  key: ${CI_COMMIT_REF_SLUG}
+  paths:
+    - node_modules/
+    - public/
+    - vendor/
+  policy: pull-push
 
 job:
   cache:
@@ -281,7 +281,7 @@ image: python:latest
 # Change pip's cache directory to be inside the project directory since we can
 # only cache local items.
 variables:
-    PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
+  PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
 
 # Pip's cache doesn't store the python packages
 # https://pip.pypa.io/en/stable/reference/pip_install/#caching
@@ -364,27 +364,27 @@ be prepared to regenerate any cached files in each job that needs them.
 
 Assuming you have properly [defined `cache` in `.gitlab-ci.yml`](../yaml/README.md#cache)
 according to your workflow, the availability of the cache ultimately depends on
-how the Runner has been configured (the executor type and whether different
-Runners are used for passing the cache between jobs).
+how the runner has been configured (the executor type and whether different
+runners are used for passing the cache between jobs).
 
 ### Where the caches are stored
 
-Since the Runner is the one responsible for storing the cache, it's essential
+Since the runner is the one responsible for storing the cache, it's essential
 to know **where** it's stored. All the cache paths defined under a job in
 `.gitlab-ci.yml` are archived in a single `cache.zip` file and stored in the
-Runner's configured cache location. By default, they are stored locally in the
-machine where the Runner is installed and depends on the type of the executor.
+runner's configured cache location. By default, they are stored locally in the
+machine where the runner is installed and depends on the type of the executor.
 
 | GitLab Runner executor | Default path of the cache |
 | ---------------------- | ------------------------- |
 | [Shell](https://docs.gitlab.com/runner/executors/shell.html) | Locally, stored under the `gitlab-runner` user's home directory: `/home/gitlab-runner/cache/<user>/<project>/<cache-key>/cache.zip`. |
 | [Docker](https://docs.gitlab.com/runner/executors/docker.html) | Locally, stored under [Docker volumes](https://docs.gitlab.com/runner/executors/docker.html#the-builds-and-cache-storage): `/var/lib/docker/volumes/<volume-id>/_data/<user>/<project>/<cache-key>/cache.zip`. |
-| [Docker machine](https://docs.gitlab.com/runner/executors/docker_machine.html) (autoscale Runners) | Behaves the same as the Docker executor. |
+| [Docker machine](https://docs.gitlab.com/runner/executors/docker_machine.html) (autoscale runners) | Behaves the same as the Docker executor. |
 
 ### How archiving and extracting works
 
 In the most simple scenario, consider that you use only one machine where the
-Runner is installed, and all jobs of your project run on the same host.
+runner is installed, and all jobs of your project run on the same host.
 
 Let's see the following example of two jobs that belong to two consecutive
 stages:
@@ -426,17 +426,17 @@ Here's what happens behind the scenes:
 1. `after_script` is executed.
 1. `cache` runs and the `vendor/` directory is zipped into `cache.zip`.
    This file is then saved in the directory based on the
-   [Runner's setting](#where-the-caches-are-stored) and the `cache: key`.
+   [runner's setting](#where-the-caches-are-stored) and the `cache: key`.
 1. `job B` runs.
 1. The cache is extracted (if found).
 1. `before_script` is executed.
 1. `script` is executed.
 1. Pipeline finishes.
 
-By using a single Runner on a single machine, you'll not have the issue where
-`job B` might execute on a Runner different from `job A`, thus guaranteeing the
+By using a single runner on a single machine, you'll not have the issue where
+`job B` might execute on a runner different from `job A`, thus guaranteeing the
 cache between stages. That will only work if the build goes from stage `build`
-to `test` in the same Runner/machine, otherwise, you [might not have the cache
+to `test` in the same runner/machine, otherwise, you [might not have the cache
 available](#cache-mismatch).
 
 During the caching process, there's also a couple of things to consider:
@@ -448,13 +448,13 @@ During the caching process, there's also a couple of things to consider:
   their cache.
 - When extracting the cache from `cache.zip`, everything in the zip file is
   extracted in the job's working directory (usually the repository which is
-  pulled down), and the Runner doesn't mind if the archive of `job A` overwrites
+  pulled down), and the runner doesn't mind if the archive of `job A` overwrites
   things in the archive of `job B`.
 
-The reason why it works this way is because the cache created for one Runner
+The reason why it works this way is because the cache created for one runner
 often will not be valid when used by a different one which can run on a
 **different architecture** (e.g., when the cache includes binary files). And
-since the different steps might be executed by Runners running on different
+since the different steps might be executed by runners running on different
 machines, it is a safe default.
 
 ### Cache mismatch
@@ -464,17 +464,17 @@ mismatch and a few ideas how to fix it.
 
 | Reason of a cache mismatch | How to fix it |
 | -------------------------- | ------------- |
-| You use multiple standalone Runners (not in autoscale mode) attached to one project without a shared cache | Use only one Runner for your project or use multiple Runners with distributed cache enabled |
-| You use Runners in autoscale mode without a distributed cache enabled | Configure the autoscale Runner to use a distributed cache |
-| The machine the Runner is installed on is low on disk space or, if you've set up distributed cache, the S3 bucket where the cache is stored doesn't have enough space | Make sure you clear some space to allow new caches to be stored. Currently, there's no automatic way to do this. |
+| You use multiple standalone runners (not in autoscale mode) attached to one project without a shared cache | Use only one runner for your project or use multiple runners with distributed cache enabled |
+| You use runners in autoscale mode without a distributed cache enabled | Configure the autoscale runner to use a distributed cache |
+| The machine the runner is installed on is low on disk space or, if you've set up distributed cache, the S3 bucket where the cache is stored doesn't have enough space | Make sure you clear some space to allow new caches to be stored. Currently, there's no automatic way to do this. |
 | You use the same `key` for jobs where they cache different paths. | Use different cache keys to that the cache archive is stored to a different location and doesn't overwrite wrong caches. |
 
 Let's explore some examples.
 
 #### Examples
 
-Let's assume you have only one Runner assigned to your project, so the cache
-will be stored in the Runner's machine by default. If two jobs, A and B,
+Let's assume you have only one runner assigned to your project, so the cache
+will be stored in the runner's machine by default. If two jobs, A and B,
 have the same cache key, but they cache different paths, cache B would overwrite
 cache A, even if their `paths` don't match:
 
@@ -513,7 +513,7 @@ job B:
 
 To fix that, use different `keys` for each job.
 
-In another case, let's assume you have more than one Runners assigned to your
+In another case, let's assume you have more than one runner assigned to your
 project, but the distributed cache is not enabled. The second time the
 pipeline is run, we want `job A` and `job B` to re-use their cache (which in this case
 will be different):
@@ -542,11 +542,11 @@ job B:
 
 In that case, even if the `key` is different (no fear of overwriting), you
 might experience that the cached files "get cleaned" before each stage if the
-jobs run on different Runners in the subsequent pipelines.
+jobs run on different runners in the subsequent pipelines.
 
 ## Clearing the cache
 
-GitLab Runners use [cache](../yaml/README.md#cache) to speed up the execution
+Runners use [cache](../yaml/README.md#cache) to speed up the execution
 of your jobs by reusing existing data. This however, can sometimes lead to an
 inconsistent behavior.
 
@@ -565,9 +565,9 @@ If you want to avoid editing `.gitlab-ci.yml`, you can easily clear the cache
 via GitLab's UI:
 
 1. Navigate to your project's **CI/CD > Pipelines** page.
-1. Click on the **Clear Runner caches** button to clean up the cache.
+1. Click on the **Clear runner caches** button to clean up the cache.
 
-   ![Clear Runners cache](img/clear_runners_cache.png)
+   ![Clear runner caches](img/clear_runners_cache.png)
 
 1. On the next push, your CI/CD job will use a new cache.
 

@@ -22,6 +22,7 @@ RSpec.describe Clusters::Aws::ProvisionService do
       [
         { parameter_key: 'ClusterName', parameter_value: provider.cluster.name },
         { parameter_key: 'ClusterRole', parameter_value: provider.role_arn },
+        { parameter_key: 'KubernetesVersion', parameter_value: provider.kubernetes_version },
         { parameter_key: 'ClusterControlPlaneSecurityGroup', parameter_value: provider.security_group_id },
         { parameter_key: 'VpcId', parameter_value: provider.vpc_id },
         { parameter_key: 'Subnets', parameter_value: provider.subnet_ids.join(',') },

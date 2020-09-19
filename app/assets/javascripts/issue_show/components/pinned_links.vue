@@ -20,20 +20,25 @@ export default {
   },
   computed: {
     pinnedLinks() {
-      return [
-        {
+      const links = [];
+      if (this.publishedIncidentUrl) {
+        links.push({
           id: 'publishedIncidentUrl',
           url: this.publishedIncidentUrl,
           text: STATUS_PAGE_PUBLISHED,
           icon: 'tanuki',
-        },
-        {
+        });
+      }
+      if (this.zoomMeetingUrl) {
+        links.push({
           id: 'zoomMeetingUrl',
           url: this.zoomMeetingUrl,
           text: JOIN_ZOOM_MEETING,
           icon: 'brand-zoom',
-        },
-      ];
+        });
+      }
+
+      return links;
     },
   },
   methods: {
@@ -45,7 +50,7 @@ export default {
 </script>
 
 <template>
-  <div class="border-bottom gl-mb-6 gl-display-flex gl-justify-content-start">
+  <div v-if="pinnedLinks && pinnedLinks.length" class="gl-display-flex gl-justify-content-start">
     <template v-for="(link, i) in pinnedLinks">
       <div v-if="link.url" :key="link.id" :class="{ 'gl-pr-3': needsPaddingClass(i) }">
         <gl-button

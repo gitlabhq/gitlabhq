@@ -12,7 +12,7 @@ as the hardware requirements that are needed to install and use GitLab.
 ### Supported Linux distributions
 
 - Ubuntu (16.04/18.04/20.04)
-- Debian (8/9/10)
+- Debian (9/10)
 - CentOS (6/7/8)
 - openSUSE (Leap 15.1/Enterprise Server 12.2)
 - Red Hat Enterprise Linux (please use the CentOS packages and instructions)
@@ -61,8 +61,8 @@ From GitLab 13.1:
 
 ### Node.js versions
 
-Beginning in GitLab 12.9, we only support node.js 10.13.0 or higher, and we have dropped
-support for node.js 8. (node.js 6 support was dropped in GitLab 11.8)
+Beginning in GitLab 12.9, we only support Node.js 10.13.0 or higher, and we have dropped
+support for Node.js 8. (Node.js 6 support was dropped in GitLab 11.8)
 
 We recommend Node 12.x, as it's faster.
 
@@ -74,9 +74,12 @@ a version older than `v10.13.0`, you need to update it to a newer version. You
 can find instructions to install from community maintained packages or compile
 from source at the [Node.js website](https://nodejs.org/en/download/).
 
-## Redis versions
+### Redis versions
 
-GitLab requires Redis 5.0+. Beginning in GitLab 13.0, lower versions are not supported.
+GitLab 13.0 and later requires Redis version 4.0 or higher.
+
+Redis version 5.0 or higher is recommended, as this is what ships with
+[Omnibus GitLab](https://docs.gitlab.com/omnibus/) packages starting with GitLab 12.7.
 
 ## Hardware requirements
 
@@ -137,7 +140,6 @@ We highly recommend users to use the minimum PostgreSQL versions specified below
 GitLab version | Minimum PostgreSQL version
 -|-
 10.0 | 9.6
-12.10 | 11
 13.0 | 11
 
 You must also ensure the `pg_trgm` and `btree_gist` extensions are [loaded into every
@@ -148,7 +150,7 @@ Support for [PostgreSQL 9.6 and 10 has been removed in GitLab 13.0](https://abou
 
 #### Additional requirements for GitLab Geo
 
-If you're using [GitLab Geo](../administration/geo/replication/index.md):
+If you're using [GitLab Geo](../administration/geo/index.md):
 
 - We strongly recommend running Omnibus-managed instances as they are actively
   developed and tested. We aim to be compatible with most external (not managed
@@ -180,7 +182,7 @@ optimal settings for your infrastructure.
 ### Puma threads
 
 The recommended number of threads is dependent on several factors, including total memory, and use
-of [legacy Rugged code](../development/gitaly.md#legacy-rugged-code).
+of [legacy Rugged code](../administration/gitaly/index.md#direct-access-to-git-in-gitlab).
 
 - If the operating system has a maximum 2 GB of memory, the recommended number of threads is `1`.
   A higher value will result in excess swapping, and decrease performance.
@@ -257,8 +259,6 @@ For reference, GitLab.com's [auto-scaling shared runner](../user/gitlab_com/inde
 
 CAUTION: **Caution:**
 With GitLab 13.0 (May 2020) we have removed official support for Internet Explorer 11.
-With the release of GitLab 13.4 (September 2020) we will remove all code that supports Internet Explorer 11.
-You can provide feedback [on this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/197987) or via your usual support channels.
 
 GitLab supports the following web browsers:
 
@@ -270,7 +270,7 @@ GitLab supports the following web browsers:
 
 For the listed web browsers, GitLab supports:
 
-- The current and previous major versions of browsers except Internet Explorer.
+- The current and previous major versions of browsers.
 - The current minor version of a supported major version.
 
 NOTE: **Note:**

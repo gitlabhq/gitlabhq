@@ -14,11 +14,9 @@ Git repositories become larger over time. When large files are added to a Git re
 - Git repository storage limits [can be reached](#storage-limits).
 
 Rewriting a repository can remove unwanted history to make the repository smaller.
-[`git filter-repo`](https://github.com/newren/git-filter-repo) is a tool for quickly rewriting Git
-repository history, and is recommended over both:
-
-- [`git filter-branch`](https://git-scm.com/docs/git-filter-branch).
-- [BFG](https://rtyley.github.io/bfg-repo-cleaner/).
+We **recommend [`git filter-repo`](https://github.com/newren/git-filter-repo/blob/main/README.md)**
+over [`git filter-branch`](https://git-scm.com/docs/git-filter-branch) and
+[BFG](https://rtyley.github.io/bfg-repo-cleaner/).
 
 DANGER: **Danger:**
 Rewriting repository history is a destructive operation. Make sure to backup your repository before
@@ -37,7 +35,7 @@ other internal references (refs) that are automatically created by GitLab. These
 
 - `refs/merge-requests/*` for merge requests.
 - `refs/pipelines/*` for
-  [pipelines](../../../ci/pipelines/index.md#troubleshooting-fatal-reference-is-not-a-tree).
+  [pipelines](../../../ci/troubleshooting.md#fatal-reference-is-not-a-tree-error).
 - `refs/environments/*` for environments.
 
 Git doesn't usually download these refs to make cloning and fetch faster, but we can use the `--mirror` option to
@@ -49,7 +47,7 @@ download all the advertised refs.
 1. Clone a fresh copy of the repository using `--bare` and `--mirror`:
 
    ```shell
-   git clone --bare --mirror https://example.gitlab.com/my/project.git
+   git clone --bare --mirror https://gitlab.example.com/my/project.git
    ```
 
 1. Using `git filter-repo`, purge any files from the history of your repository.
@@ -252,9 +250,9 @@ When using repository cleanup, note:
 
 Repository size limits:
 
-- Can [be set by an administrator](../../admin_area/settings/account_and_limit_settings.md#repository-size-limit-starter-only)
+- Can [be set by an administrator](../../admin_area/settings/account_and_limit_settings.md#account-and-limit-settings)
   on self-managed instances. **(STARTER ONLY)**
-- Are [set for GitLab.com](../../gitlab_com/index.md#repository-size-limit).
+- Are [set for GitLab.com](../../gitlab_com/index.md#account-and-limit-settings).
 
 When a project has reached its size limit, you cannot:
 
@@ -303,14 +301,9 @@ This process is not suitable for removing sensitive data like password or keys f
 Information about commits, including file content, is cached in the database, and will remain
 visible even after they have been removed from the repository.
 
-<!-- ## Troubleshooting
+## Troubleshooting
 
-Include any troubleshooting steps that you can foresee. If you know beforehand what issues
-one might have when setting this up, or when something is changed, or on upgrading, it's
-important to describe those, too. Think of things that may go wrong and include them here.
-This is important to minimize requests for support, and to avoid doc comments with
-questions that you know someone might ask.
+### Incorrect repository statistics shown in the GUI
 
-Each scenario can be a third-level heading, e.g. `### Getting error message X`.
-If you have none to add when creating a doc, leave this section in place
-but commented out to help encourage others to add to it in the future. -->
+If the displayed size or commit number is different from the exported `.tar.gz` or local repository,
+you can ask a GitLab administrator to [force an update](../../../administration/troubleshooting/gitlab_rails_cheat_sheet.md#incorrect-repository-statistics-shown-in-the-gui).

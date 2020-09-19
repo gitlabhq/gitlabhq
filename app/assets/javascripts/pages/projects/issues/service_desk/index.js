@@ -1,5 +1,5 @@
 import FilteredSearchServiceDesk from './filtered_search';
-import initIssuablesList from '~/issuables_list';
+import initIssuablesList from '~/issues_list';
 
 document.addEventListener('DOMContentLoaded', () => {
   const supportBotData = JSON.parse(

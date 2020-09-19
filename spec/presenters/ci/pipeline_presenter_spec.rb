@@ -65,7 +65,7 @@ RSpec.describe Ci::PipelinePresenter do
 
   describe '#failure_reason' do
     context 'when pipeline has a failure reason' do
-      ::Ci::PipelineEnums.failure_reasons.keys.each do |failure_reason|
+      Enums::Ci::Pipeline.failure_reasons.keys.each do |failure_reason|
         context "when failure reason is #{failure_reason}" do
           before do
             pipeline.failure_reason = failure_reason

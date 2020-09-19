@@ -78,5 +78,26 @@ RSpec.describe ClusterEntity do
         expect(subject[:gitlab_managed_apps_logs_path]).to eq(log_explorer_path)
       end
     end
+
+    context 'enable_advanced_logs_querying' do
+      let(:cluster) { create(:cluster, :project) }
+      let(:user) { create(:user) }
+
+      subject { described_class.new(cluster, request: request).as_json }
+
+      context 'elastic stack is not installed on cluster' do
+        it 'returns false' do
+          expect(subject[:enable_advanced_logs_querying]).to be false
+        end
+      end
+
+      context 'elastic stack is installed on cluster' do
+        it 'returns true' do
+          create(:clusters_applications_elastic_stack, :installed, cluster: cluster)
+
+          expect(subject[:enable_advanced_logs_querying]).to be true
+        end
+      end
+    end
   end
 end

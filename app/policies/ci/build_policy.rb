@@ -20,6 +20,11 @@ module Ci
       end
     end
 
+    # overridden in EE
+    condition(:protected_environment_access) do
+      false
+    end
+
     condition(:owner_of_job) do
       @subject.triggered_by?(@user)
     end
@@ -40,7 +45,7 @@ module Ci
       @subject.pipeline.webide?
     end
 
-    rule { protected_ref | archived }.policy do
+    rule { ~protected_environment_access & (protected_ref | archived) }.policy do
       prevent :update_build
       prevent :update_commit_status
       prevent :erase_build

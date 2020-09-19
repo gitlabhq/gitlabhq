@@ -81,9 +81,10 @@ Example response:
 
 ## List all members of a group or project including inherited members
 
-Gets a list of group or project members viewable by the authenticated user, including inherited members through ancestor groups.
-When a user is a member of the project/group and of one or more ancestor groups the user is returned only once with the project `access_level` (if exists)
-or the `access_level` for the user in the first group which they belong to in the project groups ancestors chain.
+Gets a list of group or project members viewable by the authenticated user, including inherited members and permissions through ancestor groups.
+
+CAUTION: **Caution:**
+Due to [an issue](https://gitlab.com/gitlab-org/gitlab/-/issues/249523), the users effective `access_level` may actually be higher than returned value when listing group members.
 
 This function takes pagination parameters `page` and `per_page` to restrict the list of users.
 

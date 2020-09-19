@@ -87,6 +87,46 @@ RSpec.describe API::Issues do
     end
   end
 
+  describe 'GET /issues/:id' do
+    context 'when unauthorized' do
+      it 'returns unauthorized' do
+        get api("/issues/#{issue.id}" )
+
+        expect(response).to have_gitlab_http_status(:unauthorized)
+      end
+    end
+
+    context 'when authorized' do
+      context 'as a normal user' do
+        it 'returns forbidden' do
+          get api("/issues/#{issue.id}", user )
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end
+      end
+
+      context 'as an admin' do
+        context 'when issue exists' do
+          it 'returns the issue' do
+            get api("/issues/#{issue.id}", admin)
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response.dig('author', 'id')).to eq(issue.author.id)
+            expect(json_response['description']).to eq(issue.description)
+          end
+        end
+
+        context 'when issue does not exist' do
+          it 'returns 404' do
+            get api("/issues/0", admin)
+
+            expect(response).to have_gitlab_http_status(:not_found)
+          end
+        end
+      end
+    end
+  end
+
   describe 'GET /issues' do
     context 'when unauthenticated' do
       it 'returns an array of all issues' do
@@ -126,6 +166,11 @@ RSpec.describe API::Issues do
 
         expect(response).to have_gitlab_http_status(:ok)
         expect_paginated_array_response([issue.id, closed_issue.id])
+      end
+
+      it 'responds with a 401 instead of the specified issue' do
+        get api("/issues/#{issue.id}")
+        expect(response).to have_gitlab_http_status(:unauthorized)
       end
 
       context 'issues_statistics' do

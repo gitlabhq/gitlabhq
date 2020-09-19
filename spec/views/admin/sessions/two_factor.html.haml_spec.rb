@@ -32,6 +32,10 @@ RSpec.describe 'admin/sessions/two_factor.html.haml' do
   context 'user has u2f active' do
     let(:user) { create(:admin, :two_factor_via_u2f) }
 
+    before do
+      stub_feature_flags(webauthn: false)
+    end
+
     it 'shows enter u2f form' do
       render
 

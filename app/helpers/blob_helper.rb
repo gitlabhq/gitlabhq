@@ -41,7 +41,7 @@ module BlobHelper
   end
 
   def encode_ide_path(path)
-    url_encode(path).gsub('%2F', '/')
+    ERB::Util.url_encode(path).gsub('%2F', '/')
   end
 
   def edit_blob_button(project = @project, ref = @ref, path = @path, options = {})
@@ -374,5 +374,10 @@ module BlobHelper
 
   def human_access
     @project.team.human_max_access(current_user&.id).try(:downcase)
+  end
+
+  def editing_ci_config?
+    @path.to_s.end_with?(Ci::Pipeline::CONFIG_EXTENSION) ||
+      @path.to_s == @project.ci_config_path_or_default
   end
 end

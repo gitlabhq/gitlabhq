@@ -22,8 +22,7 @@ RSpec.describe 'Updating a Note' do
   context 'when the user does not have permission' do
     let_it_be(:current_user) { create(:user) }
 
-    it_behaves_like 'a mutation that returns top-level errors',
-                    errors: ['The resource that you are attempting to access does not exist or you don\'t have permission to perform this action']
+    it_behaves_like 'a mutation that returns a top-level access error'
 
     it 'does not update the Note' do
       post_graphql_mutation(mutation, current_user: current_user)

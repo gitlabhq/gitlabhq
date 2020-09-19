@@ -17,14 +17,6 @@ RSpec.describe PagesUpdateConfigurationWorker do
       subject.perform(project.id)
     end
 
-    it "raises an exception if the service returned an error" do
-      allow_next_instance_of(Projects::UpdatePagesConfigurationService) do |service|
-        allow(service).to receive(:execute).and_return({ exception: ":boom:" })
-      end
-
-      expect { subject.perform(project.id) }.to raise_error(":boom:")
-    end
-
     it_behaves_like "an idempotent worker" do
       let(:job_args) { [project.id] }
       let(:pages_dir) { Dir.mktmpdir }

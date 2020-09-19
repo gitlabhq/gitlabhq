@@ -50,10 +50,16 @@ RSpec.describe NewNoteWorker do
     end
   end
 
-  context 'when note is with review' do
-    it 'does not create a new note notification' do
-      note = create(:note, :with_review)
+  context 'when note does not require notification' do
+    let(:note) { create(:note) }
 
+    before do
+      allow_next_found_instance_of(Note) do |note|
+        allow(note).to receive(:skip_notification?).and_return(true)
+      end
+    end
+
+    it 'does not create a new note notification' do
       expect_any_instance_of(NotificationService).not_to receive(:new_note)
 
       subject.perform(note.id)

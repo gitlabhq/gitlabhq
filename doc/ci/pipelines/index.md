@@ -22,7 +22,7 @@ Pipelines comprise:
 - Jobs, which define *what* to do. For example, jobs that compile or test code.
 - Stages, which define *when* to run the jobs. For example, stages that run tests after stages that compile the code.
 
-Jobs are executed by [Runners](../runners/README.md). Multiple jobs in the same stage are executed in parallel,
+Jobs are executed by [runners](../runners/README.md). Multiple jobs in the same stage are executed in parallel,
 if there are enough concurrent runners.
 
 If *all* jobs in a stage succeed, the pipeline moves on to the next stage.
@@ -40,7 +40,7 @@ A typical pipeline might consist of four stages, executed in the following order
 - A `production` stage, with a job called `deploy-to-prod`.
 
 NOTE: **Note:**
-If you have a [mirrored repository that GitLab pulls from](../../user/project/repository/repository_mirroring.md#pulling-from-a-remote-repository-starter),
+If you have a [mirrored repository that GitLab pulls from](../../user/project/repository/repository_mirroring.md#pulling-from-a-remote-repository),
 you may need to enable pipeline triggering in your project's
 **Settings > Repository > Pull from a remote repository > Trigger pipelines for mirror updates**.
 
@@ -199,7 +199,7 @@ such as builds, logs, artifacts, and triggers. **This action cannot be undone.**
 ### Pipeline quotas
 
 Each user has a personal pipeline quota that tracks the usage of shared runners in all personal projects.
-Each group has a [usage quota](../../subscriptions/index.md#ci-pipeline-minutes) that tracks the usage of shared runners for all projects created within the group.
+Each group has a [usage quota](../../subscriptions/gitlab_com/index.md#ci-pipeline-minutes) that tracks the usage of shared runners for all projects created within the group.
 
 When a pipeline is triggered, regardless of who triggered it, the pipeline quota for the project owner's [namespace](../../user/group/index.md#namespaces) is used. In this case, the namespace can be the user or group that owns the project.
 
@@ -483,7 +483,7 @@ be found when you are on a [single pipeline page](#view-pipelines). For example:
 
 ![Pipelines example](img/pipelines.png)
 
-[Multi-project pipeline graphs](../multi_project_pipelines.md#multi-project-pipeline-visualization-premium) help
+[Multi-project pipeline graphs](../multi_project_pipelines.md#multi-project-pipeline-visualization) help
 you visualize the entire pipeline, including all cross-project inter-dependencies. **(PREMIUM)**
 
 ### Pipeline mini graphs
@@ -535,32 +535,3 @@ GitLab provides API endpoints to:
 - Trigger pipeline runs. For more information, see:
   - [Triggering pipelines through the API](../triggers/README.md).
   - [Pipeline triggers API](../../api/pipeline_triggers.md).
-
-## Troubleshooting `fatal: reference is not a tree:`
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/17043) in GitLab 12.4.
-
-Previously, you'd have encountered unexpected pipeline failures when you force-pushed
-a branch to its remote repository. To illustrate the problem, suppose you've had the current workflow:
-
-1. A user creates a feature branch named `example` and pushes it to a remote repository.
-1. A new pipeline starts running on the `example` branch.
-1. A user rebases the `example` branch on the latest `master` branch and force-pushes it to its remote repository.
-1. A new pipeline starts running on the `example` branch again, however,
-   the previous pipeline (2) fails because of `fatal: reference is not a tree:` error.
-
-This is because the previous pipeline cannot find a checkout-SHA (which associated with the pipeline record)
-from the `example` branch that the commit history has already been overwritten by the force-push.
-Similarly, [Pipelines for merged results](../merge_request_pipelines/pipelines_for_merged_results/index.md)
-might have failed intermittently due to [the same reason](../merge_request_pipelines/pipelines_for_merged_results/index.md#intermittently-pipelines-fail-by-fatal-reference-is-not-a-tree-error).
-
-As of GitLab 12.4, we've improved this behavior by persisting pipeline refs exclusively.
-To illustrate its life cycle:
-
-1. A pipeline is created on a feature branch named `example`.
-1. A persistent pipeline ref is created at `refs/pipelines/<pipeline-id>`,
-   which retains the checkout-SHA of the associated pipeline record.
-   This persistent ref stays intact during the pipeline execution,
-   even if the commit history of the `example` branch has been overwritten by force-push.
-1. GitLab Runner fetches the persistent pipeline ref and gets source code from the checkout-SHA.
-1. When the pipeline finished, its persistent ref is cleaned up in a background process.

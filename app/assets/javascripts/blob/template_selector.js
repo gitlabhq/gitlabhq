@@ -1,7 +1,7 @@
 /* eslint-disable class-methods-use-this */
 
 import $ from 'jquery';
-import '~/gl_dropdown';
+import initDeprecatedJQueryDropdown from '~/deprecated_jquery_dropdown';
 
 export default class TemplateSelector {
   constructor({ dropdown, data, pattern, wrapper, editor, $input } = {}) {
@@ -19,7 +19,7 @@ export default class TemplateSelector {
   }
 
   initDropdown(dropdown, data) {
-    return $(dropdown).glDropdown({
+    return initDeprecatedJQueryDropdown($(dropdown), {
       data,
       filterable: true,
       selectable: true,

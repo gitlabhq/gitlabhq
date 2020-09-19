@@ -2,6 +2,7 @@
 /* global Flash */
 
 import $ from 'jquery';
+import 'vendor/jquery.scrollTo';
 import { GlLoadingIcon } from '@gitlab/ui';
 import { s__, sprintf } from '~/locale';
 import DeprecatedModal from '~/vue_shared/components/deprecated_modal.vue';

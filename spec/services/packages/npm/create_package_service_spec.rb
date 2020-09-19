@@ -27,6 +27,10 @@ RSpec.describe Packages::Npm::CreatePackageService do
         .and change { Packages::Tag.count }.by(1)
     end
 
+    it_behaves_like 'assigns the package creator' do
+      let(:package) { subject }
+    end
+
     it { is_expected.to be_valid }
 
     it 'creates a package with name and version' do
@@ -59,6 +63,15 @@ RSpec.describe Packages::Npm::CreatePackageService do
 
       it { expect(subject[:http_status]).to eq 403 }
       it { expect(subject[:message]).to be 'Package already exists.' }
+    end
+
+    context 'file size above maximum limit' do
+      before do
+        params['_attachments']["#{package_name}-#{version}.tgz"]['length'] = project.actual_limits.npm_max_file_size + 1
+      end
+
+      it { expect(subject[:http_status]).to eq 400 }
+      it { expect(subject[:message]).to be 'File is too large.' }
     end
 
     context 'with incorrect namespace' do

@@ -1,9 +1,11 @@
 import * as types from '~/import_projects/store/mutation_types';
 import mutations from '~/import_projects/store/mutations';
+import getInitialState from '~/import_projects/store/state';
 import { STATUSES } from '~/import_projects/constants';
 
 describe('import_projects store mutations', () => {
   let state;
+
   const SOURCE_PROJECT = {
     id: 1,
     full_name: 'full/name',
@@ -19,13 +21,23 @@ describe('import_projects store mutations', () => {
   };
 
   describe(`${types.SET_FILTER}`, () => {
-    it('overwrites current filter value', () => {
-      state = { filter: 'some-value' };
-      const NEW_VALUE = 'new-value';
+    const NEW_VALUE = 'new-value';
 
+    beforeEach(() => {
+      state = {
+        filter: 'some-value',
+        repositories: ['some', ' repositories'],
+        pageInfo: { page: 1 },
+      };
       mutations[types.SET_FILTER](state, NEW_VALUE);
+    });
 
-      expect(state.filter).toBe(NEW_VALUE);
+    it('removes current repositories list', () => {
+      expect(state.repositories.length).toBe(0);
+    });
+
+    it('resets current page to 0', () => {
+      expect(state.pageInfo.page).toBe(0);
     });
   });
 
@@ -40,93 +52,104 @@ describe('import_projects store mutations', () => {
   });
 
   describe(`${types.RECEIVE_REPOS_SUCCESS}`, () => {
-    describe('for imported projects', () => {
-      const response = {
-        importedProjects: [IMPORTED_PROJECT],
-        providerRepos: [],
-      };
+    describe('with legacy response format', () => {
+      describe('for imported projects', () => {
+        const response = {
+          importedProjects: [IMPORTED_PROJECT],
+          providerRepos: [],
+        };
 
-      it('picks import status from response', () => {
-        state = {};
+        it('recreates importSource from response', () => {
+          state = getInitialState();
 
-        mutations[types.RECEIVE_REPOS_SUCCESS](state, response);
+          mutations[types.RECEIVE_REPOS_SUCCESS](state, response);
 
-        expect(state.repositories[0].importStatus).toBe(IMPORTED_PROJECT.importStatus);
+          expect(state.repositories[0].importSource).toStrictEqual(
+            expect.objectContaining({
+              fullName: IMPORTED_PROJECT.importSource,
+              sanitizedName: IMPORTED_PROJECT.name,
+              providerLink: IMPORTED_PROJECT.providerLink,
+            }),
+          );
+        });
+
+        it('passes project to importProject', () => {
+          state = getInitialState();
+
+          mutations[types.RECEIVE_REPOS_SUCCESS](state, response);
+
+          expect(IMPORTED_PROJECT).toStrictEqual(
+            expect.objectContaining(state.repositories[0].importedProject),
+          );
+        });
       });
 
-      it('recreates importSource from response', () => {
-        state = {};
+      describe('for importable projects', () => {
+        beforeEach(() => {
+          state = getInitialState();
 
-        mutations[types.RECEIVE_REPOS_SUCCESS](state, response);
+          const response = {
+            importedProjects: [],
+            providerRepos: [SOURCE_PROJECT],
+          };
+          mutations[types.RECEIVE_REPOS_SUCCESS](state, response);
+        });
 
-        expect(state.repositories[0].importSource).toStrictEqual(
-          expect.objectContaining({
-            fullName: IMPORTED_PROJECT.importSource,
-            sanitizedName: IMPORTED_PROJECT.name,
-            providerLink: IMPORTED_PROJECT.providerLink,
-          }),
-        );
+        it('sets importSource to project', () => {
+          expect(state.repositories[0].importSource).toBe(SOURCE_PROJECT);
+        });
       });
 
-      it('passes project to importProject', () => {
-        state = {};
-
-        mutations[types.RECEIVE_REPOS_SUCCESS](state, response);
-
-        expect(IMPORTED_PROJECT).toStrictEqual(
-          expect.objectContaining(state.repositories[0].importedProject),
-        );
-      });
-    });
-
-    describe('for importable projects', () => {
-      beforeEach(() => {
-        state = {};
+      describe('for incompatible projects', () => {
         const response = {
           importedProjects: [],
-          providerRepos: [SOURCE_PROJECT],
+          providerRepos: [],
+          incompatibleRepos: [SOURCE_PROJECT],
         };
+
+        beforeEach(() => {
+          state = getInitialState();
+          mutations[types.RECEIVE_REPOS_SUCCESS](state, response);
+        });
+
+        it('sets incompatible flag', () => {
+          expect(state.repositories[0].importSource.incompatible).toBe(true);
+        });
+
+        it('sets importSource to project', () => {
+          expect(state.repositories[0].importSource).toStrictEqual(
+            expect.objectContaining(SOURCE_PROJECT),
+          );
+        });
+      });
+
+      it('sets repos loading flag to false', () => {
+        const response = {
+          importedProjects: [],
+          providerRepos: [],
+        };
+
+        state = getInitialState();
+
         mutations[types.RECEIVE_REPOS_SUCCESS](state, response);
-      });
 
-      it('sets import status to none', () => {
-        expect(state.repositories[0].importStatus).toBe(STATUSES.NONE);
-      });
-
-      it('sets importSource to project', () => {
-        expect(state.repositories[0].importSource).toBe(SOURCE_PROJECT);
+        expect(state.isLoadingRepos).toBe(false);
       });
     });
 
-    describe('for incompatible projects', () => {
-      const response = {
-        importedProjects: [],
-        providerRepos: [],
-        incompatibleRepos: [SOURCE_PROJECT],
-      };
+    it('passes response as it is', () => {
+      const response = [];
+      state = getInitialState();
 
-      beforeEach(() => {
-        state = {};
-        mutations[types.RECEIVE_REPOS_SUCCESS](state, response);
-      });
+      mutations[types.RECEIVE_REPOS_SUCCESS](state, response);
 
-      it('sets incompatible flag', () => {
-        expect(state.repositories[0].importSource.incompatible).toBe(true);
-      });
-
-      it('sets importSource to project', () => {
-        expect(state.repositories[0].importSource).toStrictEqual(
-          expect.objectContaining(SOURCE_PROJECT),
-        );
-      });
+      expect(state.repositories).toStrictEqual(response);
     });
 
     it('sets repos loading flag to false', () => {
-      const response = {
-        importedProjects: [],
-        providerRepos: [],
-      };
-      state = {};
+      const response = [];
+
+      state = getInitialState();
 
       mutations[types.RECEIVE_REPOS_SUCCESS](state, response);
 
@@ -136,7 +159,7 @@ describe('import_projects store mutations', () => {
 
   describe(`${types.RECEIVE_REPOS_ERROR}`, () => {
     it('sets repos loading flag to false', () => {
-      state = {};
+      state = getInitialState();
 
       mutations[types.RECEIVE_REPOS_ERROR](state);
 
@@ -154,7 +177,7 @@ describe('import_projects store mutations', () => {
     });
 
     it(`sets status to ${STATUSES.SCHEDULING}`, () => {
-      expect(state.repositories[0].importStatus).toBe(STATUSES.SCHEDULING);
+      expect(state.repositories[0].importedProject.importStatus).toBe(STATUSES.SCHEDULING);
     });
   });
 
@@ -170,7 +193,9 @@ describe('import_projects store mutations', () => {
     });
 
     it('sets import status', () => {
-      expect(state.repositories[0].importStatus).toBe(IMPORTED_PROJECT.importStatus);
+      expect(state.repositories[0].importedProject.importStatus).toBe(
+        IMPORTED_PROJECT.importStatus,
+      );
     });
 
     it('sets imported project', () => {
@@ -188,8 +213,8 @@ describe('import_projects store mutations', () => {
       mutations[types.RECEIVE_IMPORT_ERROR](state, REPO_ID);
     });
 
-    it(`resets import status to ${STATUSES.NONE}`, () => {
-      expect(state.repositories[0].importStatus).toBe(STATUSES.NONE);
+    it(`removes importedProject entry`, () => {
+      expect(state.repositories[0].importedProject).toBeNull();
     });
   });
 
@@ -203,7 +228,9 @@ describe('import_projects store mutations', () => {
 
       mutations[types.RECEIVE_JOBS_SUCCESS](state, updatedProjects);
 
-      expect(state.repositories[0].importStatus).toBe(updatedProjects[0].importStatus);
+      expect(state.repositories[0].importedProject.importStatus).toBe(
+        updatedProjects[0].importStatus,
+      );
     });
   });
 
@@ -277,17 +304,6 @@ describe('import_projects store mutations', () => {
       });
 
       expect(state.customImportTargets[SOURCE_PROJECT.id]).toBeUndefined();
-    });
-  });
-
-  describe(`${types.SET_PAGE_INFO}`, () => {
-    it('sets passed page info', () => {
-      state = {};
-      const pageInfo = { page: 1, total: 10 };
-
-      mutations[types.SET_PAGE_INFO](state, pageInfo);
-
-      expect(state.pageInfo).toBe(pageInfo);
     });
   });
 

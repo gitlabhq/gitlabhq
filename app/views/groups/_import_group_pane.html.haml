@@ -41,7 +41,7 @@
       = s_('GroupsNew|To copy a GitLab group between installations, navigate to the group settings page for the original installation, generate an export file, and upload it here.')
   .row
     .form-group.col-sm-12
-      = f.label :file, s_('GroupsNew|GitLab group export'), class: 'label-bold'
+      = f.label :file, s_('GroupsNew|Import a GitLab group export file'), class: 'label-bold'
       %div
         = render 'shared/file_picker_button', f: f, field: :file, help_text: nil
 

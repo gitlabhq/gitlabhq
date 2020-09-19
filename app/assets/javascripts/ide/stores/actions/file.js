@@ -6,7 +6,7 @@ import * as types from '../mutation_types';
 import { setPageTitleForFile } from '../utils';
 import { viewerTypes, stageKeys } from '../../constants';
 
-export const closeFile = ({ commit, state, dispatch }, file) => {
+export const closeFile = ({ commit, state, dispatch, getters }, file) => {
   const { path } = file;
   const indexOfClosedFile = state.openFiles.findIndex(f => f.key === file.key);
   const fileWasActive = file.active;
@@ -29,10 +29,12 @@ export const closeFile = ({ commit, state, dispatch }, file) => {
         keyPrefix: nextFileToOpen.staged ? 'staged' : 'unstaged',
       });
     } else {
-      dispatch('router/push', `/project${nextFileToOpen.url}`, { root: true });
+      dispatch('router/push', getters.getUrlForPath(nextFileToOpen.path), { root: true });
     }
   } else if (!state.openFiles.length) {
-    dispatch('router/push', `/project/${file.projectId}/tree/${file.branchId}/`, { root: true });
+    dispatch('router/push', `/project/${state.currentProjectId}/tree/${state.currentBranchId}/`, {
+      root: true,
+    });
   }
 
   eventHub.$emit(`editor.update.model.dispose.${file.key}`);
@@ -121,7 +123,7 @@ export const getRawFileData = ({ state, commit, dispatch, getters }, { path }) =
         const baseSha =
           (getters.currentMergeRequest && getters.currentMergeRequest.baseCommitSha) || '';
 
-        return service.getBaseRawFileData(file, baseSha).then(baseRaw => {
+        return service.getBaseRawFileData(file, state.currentProjectId, baseSha).then(baseRaw => {
           commit(types.SET_FILE_BASE_RAW_DATA, {
             file,
             baseRaw,
@@ -218,7 +220,7 @@ export const discardFileChanges = ({ dispatch, state, commit, getters }, path) =
   if (!isDestructiveDiscard && file.path === getters.activeFile?.path) {
     dispatch('updateDelayViewerUpdated', true)
       .then(() => {
-        dispatch('router/push', `/project${file.url}`, { root: true });
+        dispatch('router/push', getters.getUrlForPath(file.path), { root: true });
       })
       .catch(e => {
         throw e;
@@ -274,7 +276,7 @@ export const openPendingTab = ({ commit, dispatch, getters, state }, { file, key
 
   commit(types.ADD_PENDING_TAB, { file, keyPrefix });
 
-  dispatch('router/push', `/project/${file.projectId}/tree/${state.currentBranchId}/`, {
+  dispatch('router/push', `/project/${state.currentProjectId}/tree/${state.currentBranchId}/`, {
     root: true,
   });
 

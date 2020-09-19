@@ -45,7 +45,7 @@ exports[`Alert integration settings form default state should match the default 
         </gl-link-stub>
       </label>
        
-      <gl-new-dropdown-stub
+      <gl-dropdown-stub
         block="true"
         category="tertiary"
         data-qa-selector="incident_templates_dropdown"
@@ -55,7 +55,7 @@ exports[`Alert integration settings form default state should match the default 
         text="selecte_tmpl"
         variant="default"
       >
-        <gl-new-dropdown-item-stub
+        <gl-dropdown-item-stub
           avatarurl=""
           data-qa-selector="incident_templates_item"
           iconcolor=""
@@ -67,8 +67,8 @@ exports[`Alert integration settings form default state should match the default 
           
           No template selected
         
-        </gl-new-dropdown-item-stub>
-      </gl-new-dropdown-stub>
+        </gl-dropdown-item-stub>
+      </gl-dropdown-stub>
     </gl-form-group-stub>
      
     <gl-form-group-stub
@@ -77,6 +77,18 @@ exports[`Alert integration settings form default state should match the default 
       <gl-form-checkbox-stub>
         <span>
           Send a separate email notification to Developers.
+        </span>
+      </gl-form-checkbox-stub>
+    </gl-form-group-stub>
+     
+    <gl-form-group-stub
+      class="gl-pl-0 gl-mb-5"
+    >
+      <gl-form-checkbox-stub
+        checked="true"
+      >
+        <span>
+          Automatically close incident issues when the associated Prometheus alert resolves.
         </span>
       </gl-form-checkbox-stub>
     </gl-form-group-stub>

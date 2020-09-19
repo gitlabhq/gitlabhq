@@ -30,49 +30,51 @@ RSpec.describe ApplicationRecord do
     end
   end
 
-  describe '.safe_find_or_create_by' do
-    it 'creates the user avoiding race conditions' do
-      expect(Suggestion).to receive(:find_or_create_by).and_raise(ActiveRecord::RecordNotUnique)
-      allow(Suggestion).to receive(:find_or_create_by).and_call_original
+  context 'safe find or create methods' do
+    let_it_be(:note) { create(:diff_note_on_merge_request) }
 
-      expect { Suggestion.safe_find_or_create_by(build(:suggestion).attributes) }
-        .to change { Suggestion.count }.by(1)
+    let(:suggestion_attributes) { attributes_for(:suggestion).merge!(note_id: note.id) }
+
+    describe '.safe_find_or_create_by' do
+      it 'creates the suggestion avoiding race conditions' do
+        expect(Suggestion).to receive(:find_or_create_by).and_raise(ActiveRecord::RecordNotUnique)
+        allow(Suggestion).to receive(:find_or_create_by).and_call_original
+
+        expect { Suggestion.safe_find_or_create_by(suggestion_attributes) }
+          .to change { Suggestion.count }.by(1)
+      end
+
+      it 'passes a block to find_or_create_by' do
+        expect do |block|
+          Suggestion.safe_find_or_create_by(suggestion_attributes, &block)
+        end.to yield_with_args(an_object_having_attributes(suggestion_attributes))
+      end
+
+      it 'does not create a record when is not valid' do
+        raw_usage_data = RawUsageData.safe_find_or_create_by({ recorded_at: nil })
+
+        expect(raw_usage_data.id).to be_nil
+        expect(raw_usage_data).not_to be_valid
+      end
     end
 
-    it 'passes a block to find_or_create_by' do
-      attributes = build(:suggestion).attributes
+    describe '.safe_find_or_create_by!' do
+      it 'creates a record using safe_find_or_create_by' do
+        expect(Suggestion).to receive(:find_or_create_by).and_call_original
 
-      expect do |block|
-        Suggestion.safe_find_or_create_by(attributes, &block)
-      end.to yield_with_args(an_object_having_attributes(attributes))
-    end
+        expect(Suggestion.safe_find_or_create_by!(suggestion_attributes))
+          .to be_a(Suggestion)
+      end
 
-    it 'does not create a record when is not valid' do
-      raw_usage_data = RawUsageData.safe_find_or_create_by({ recorded_at: nil })
+      it 'raises a validation error if the record was not persisted' do
+        expect { Suggestion.find_or_create_by!(note: nil) }.to raise_error(ActiveRecord::RecordInvalid)
+      end
 
-      expect(raw_usage_data.id).to be_nil
-      expect(raw_usage_data).not_to be_valid
-    end
-  end
-
-  describe '.safe_find_or_create_by!' do
-    it 'creates a record using safe_find_or_create_by' do
-      expect(Suggestion).to receive(:find_or_create_by).and_call_original
-
-      expect(Suggestion.safe_find_or_create_by!(build(:suggestion).attributes))
-        .to be_a(Suggestion)
-    end
-
-    it 'raises a validation error if the record was not persisted' do
-      expect { Suggestion.find_or_create_by!(note: nil) }.to raise_error(ActiveRecord::RecordInvalid)
-    end
-
-    it 'passes a block to find_or_create_by' do
-      attributes = build(:suggestion).attributes
-
-      expect do |block|
-        Suggestion.safe_find_or_create_by!(attributes, &block)
-      end.to yield_with_args(an_object_having_attributes(attributes))
+      it 'passes a block to find_or_create_by' do
+        expect do |block|
+          Suggestion.safe_find_or_create_by!(suggestion_attributes, &block)
+        end.to yield_with_args(an_object_having_attributes(suggestion_attributes))
+      end
     end
   end
 

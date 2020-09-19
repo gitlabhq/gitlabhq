@@ -1,3 +1,11 @@
+---
+type: reference, dev
+stage: none
+group: Development
+info: "See the Technical Writers assigned to Development Guidelines: https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments-to-development-guidelines"
+description: "GitLab development guidelines - testing best practices."
+---
+
 # Testing best practices
 
 ## Test Design
@@ -14,21 +22,6 @@ Test heuristics can help solve this problem. They concisely address many of the 
 manifest themselves within our code. When designing our tests, take time to review known test heuristics to inform
 our test design. We can find some helpful heuristics documented in the Handbook in the
 [Test Engineering](https://about.gitlab.com/handbook/engineering/quality/test-engineering/#test-heuristics) section.
-
-## Test speed
-
-GitLab has a massive test suite that, without [parallelization](ci.md#test-suite-parallelization-on-the-ci), can take hours
-to run. It's important that we make an effort to write tests that are accurate
-and effective _as well as_ fast.
-
-Here are some things to keep in mind regarding test performance:
-
-- `instance_double` and `spy` are faster than `FactoryBot.build(...)`
-- `FactoryBot.build(...)` and `.build_stubbed` are faster than `.create`.
-- Don't `create` an object when `build`, `build_stubbed`, `attributes_for`,
-  `spy`, or `instance_double` will do. Database persistence is slow!
-- Don't mark a feature as requiring JavaScript (through `:js` in RSpec) unless it's _actually_ required for the test
-  to be valid. Headless browser testing is slow!
 
 ## RSpec
 
@@ -57,12 +50,217 @@ bundle exec guard
 
 When using spring and guard together, use `SPRING=1 bundle exec guard` instead to make use of spring.
 
-Use [Factory Doctor](https://test-prof.evilmartians.io/#/profilers/factory_doctor) to find cases on un-necessary database manipulation, which can cause slow tests.
+### Test speed
+
+GitLab has a massive test suite that, without [parallelization](ci.md#test-suite-parallelization-on-the-ci), can take hours
+to run. It's important that we make an effort to write tests that are accurate
+and effective _as well as_ fast.
+
+Test performance is important to maintaining quality and velocity, and has a
+direct impact on CI build times and thus fixed costs. We want thorough, correct,
+and fast tests. Here you can find some information about tools and techniques
+available to you to achieve that.
+
+#### Don't request capabilities you don't need
+
+We make it easy to add capabilities to our examples by annotating the example or
+a parent context. Examples of these are:
+
+- `:js` in feature specs, which runs a full JavaScript capable headless browser.
+- `:clean_gitlab_redis_cache` which provides a clean Redis cache to the examples.
+- `:request_store` which provides a request store to the examples.
+
+Obviously we should reduce test dependencies, and avoiding
+capabilities also reduces the amount of set-up needed.
+
+`:js` is particularly important to avoid. This must only be used if the feature
+test requires JavaScript reactivity in the browser, since using a headless
+browser is much slower than parsing the HTML response from the app.
+
+#### Optimize factory usage
+
+A common cause of slow tests is excessive creation of objects, and thus
+computation and DB time. Factories are essential to development, but they can
+make inserting data into the DB so easy that we may be able to optimize. 
+
+The two basic techniques to bear in mind here are:
+
+- **Reduce**: avoid creating objects, and avoid persisting them.
+- **Reuse**: shared objects, especially nested ones we do not examine, can generally be shared.
+
+To avoid creation, it is worth bearing in mind that:
+
+- `instance_double` and `spy` are faster than `FactoryBot.build(...)`.
+- `FactoryBot.build(...)` and `.build_stubbed` are faster than `.create`.
+- Don't `create` an object when `build`, `build_stubbed`, `attributes_for`,
+  `spy`, or `instance_double` will do. Database persistence is slow!
+
+Use [Factory Doctor](https://test-prof.evilmartians.io/#/profilers/factory_doctor) to find cases where database persistence is not needed in a given test.
 
 ```shell
 # run test for path
 FDOC=1 bin/rspec spec/[path]/[to]/[spec].rb
 ```
+
+A common change is to use `build` or `build_stubbed` instead of `create`:
+
+```ruby
+# Old
+let(:project) { create(:project) }
+
+# New
+let(:project) { build(:project) }
+```
+
+[Factory Profiler](https://test-prof.evilmartians.io/#/profilers/factory_prof) can help to identify repetitive database persistence via factories.
+
+```shell
+# run test for path
+FPROF=1 bin/rspec spec/[path]/[to]/[spec].rb
+
+# to visualize with a flamegraph
+FPROF=flamegraph bin/rspec spec/[path]/[to]/[spec].rb
+```
+
+A common change is to use [`let_it_be`](#common-test-setup):
+
+```ruby
+# Old
+let(:project) { create(:project) }
+
+# New
+let_it_be(:project) { create(:project) }
+```
+
+A common cause of a large number of created factories is [factory cascades](https://github.com/test-prof/test-prof/blob/master/docs/profilers/factory_prof.md#factory-flamegraph), which result when factories create and recreate associations.
+They can be identified by a noticeable difference between `total time` and `top-level time` numbers:
+
+```plaintext
+   total   top-level     total time      time per call      top-level time               name
+
+     208           0        9.5812s            0.0461s             0.0000s          namespace
+     208          76       37.4214s            0.1799s            13.8749s            project
+```
+
+The table above shows us that we never create any `namespace` objects explicitly
+(`top-level == 0`) - they are all created implicitly for us. But we still end up
+with 208 of them (one for each project) and this takes 9.5 seconds.
+
+In order to reuse a single object for all calls to a named factory in implicit parent associations,
+[`FactoryDefault`](https://github.com/test-prof/test-prof/blob/master/docs/recipes/factory_default.md)
+can be used:
+
+```ruby
+  let_it_be(:namespace) { create_default(:namespace) }
+```
+
+Then every project we create will use this `namespace`, without us having to pass
+it as `namespace: namespace`.
+
+Maybe we don't need to create 208 different projects - we
+can create one and reuse it. In addition, we can see that only about 1/3 of the
+projects we create are ones we ask for (76/208), so there is benefit in setting
+a default value for projects as well:
+
+```ruby
+  let_it_be(:project) { create_default(:project) }
+```
+
+In this case, the `total time` and `top-level time` numbers match more closely:
+
+```plaintext
+   total   top-level     total time      time per call      top-level time               name
+
+      31          30        4.6378s            0.1496s             4.5366s            project
+       8           8        0.0477s            0.0477s             0.0477s          namespace
+```
+
+#### Identify slow tests
+
+Running a spec with profiling is a good way to start optimizing a spec. This can
+be done with:
+
+```shell
+bundle exec rspec --profile -- path/to/spec_file.rb
+```
+
+Which includes information like the following:
+
+```plaintext
+Top 10 slowest examples (10.69 seconds, 7.7% of total time):
+  Issue behaves like an editable mentionable creates new cross-reference notes when the mentionable text is edited
+    1.62 seconds ./spec/support/shared_examples/models/mentionable_shared_examples.rb:164
+  Issue relative positioning behaves like a class that supports relative positioning .move_nulls_to_end manages to move nulls to the end, stacking if we cannot create enough space
+    1.39 seconds ./spec/support/shared_examples/models/relative_positioning_shared_examples.rb:88
+  Issue relative positioning behaves like a class that supports relative positioning .move_nulls_to_start manages to move nulls to the end, stacking if we cannot create enough space
+    1.27 seconds ./spec/support/shared_examples/models/relative_positioning_shared_examples.rb:180
+  Issue behaves like an editable mentionable behaves like a mentionable extracts references from its reference property
+    0.99253 seconds ./spec/support/shared_examples/models/mentionable_shared_examples.rb:69
+  Issue behaves like an editable mentionable behaves like a mentionable creates cross-reference notes
+    0.94987 seconds ./spec/support/shared_examples/models/mentionable_shared_examples.rb:101
+  Issue behaves like an editable mentionable behaves like a mentionable when there are cached markdown fields sends in cached markdown fields when appropriate
+    0.94148 seconds ./spec/support/shared_examples/models/mentionable_shared_examples.rb:86
+  Issue behaves like an editable mentionable when there are cached markdown fields when the markdown cache is stale persists the refreshed cache so that it does not have to be refreshed every time
+    0.92833 seconds ./spec/support/shared_examples/models/mentionable_shared_examples.rb:153
+  Issue behaves like an editable mentionable when there are cached markdown fields refreshes markdown cache if necessary
+    0.88153 seconds ./spec/support/shared_examples/models/mentionable_shared_examples.rb:130
+  Issue behaves like an editable mentionable behaves like a mentionable generates a descriptive back-reference
+    0.86914 seconds ./spec/support/shared_examples/models/mentionable_shared_examples.rb:65
+  Issue#related_issues returns only authorized related issues for given user
+    0.84242 seconds ./spec/models/issue_spec.rb:335
+
+Finished in 2 minutes 19 seconds (files took 1 minute 4.42 seconds to load)
+277 examples, 0 failures, 1 pending
+```
+
+From this result, we can see the most expensive examples in our spec, giving us
+a place to start. The fact that the most expensive examples here are in
+shared examples means that any reductions are likely to have a larger impact as
+they are called in multiple places.
+
+#### Avoid repeating expensive actions
+
+While isolated examples are very clear, and help serve the purpose of specs as
+specification, the following example shows how we can combine expensive
+actions:
+
+```ruby
+subject { described_class.new(arg_0, arg_1) }
+
+it 'creates an event' do
+  expect { subject.execute }.to change(Event, :count).by(1)
+end
+
+it 'sets the frobulance' do
+  expect { subject.execute }.to change { arg_0.reset.frobulance }.to('wibble')
+end
+
+it 'schedules a background job' do
+  expect(BackgroundJob).to receive(:perform_async)
+  
+  subject.execute
+end
+```
+
+If the call to `subject.execute` is expensive, then we are repeating the same
+action just to make different assertions. We can reduce this repetition by
+combining the examples:
+
+```ruby
+it 'performs the expected side-effects' do
+  expect(BackgroundJob).to receive(:perform_async)
+  
+  expect { subject.execute }
+    .to change(Event, :count).by(1)
+    .and change { arg_0.frobulance }.to('wibble')
+end
+```
+
+Be careful doing this, as this sacrifices clarity and test independence for
+performance gains.
+
+When combining tests, consider using `:aggregate_failures`, so that the full
+results are available, and not just the first failure.
 
 ### General guidelines
 
@@ -229,9 +427,9 @@ spec itself, but the former is preferred.
 It takes around one second to load tests that are using `fast_spec_helper`
 instead of 30+ seconds in case of a regular `spec_helper`.
 
-### `let` variables
+### `subject` and `let` variables
 
-GitLab's RSpec suite has made extensive use of `let`(along with it strict, non-lazy
+GitLab's RSpec suite has made extensive use of `let`(along with its strict, non-lazy
 version `let!`) variables to reduce duplication. However, this sometimes [comes at the cost of clarity](https://thoughtbot.com/blog/lets-not),
 so we need to set some guidelines for their use going forward:
 
@@ -250,6 +448,9 @@ so we need to set some guidelines for their use going forward:
 - `let!` variables should be used only in case if strict evaluation with defined
   order is required, otherwise `let` will suffice. Remember that `let` is lazy and won't
   be evaluated until it is referenced.
+- Avoid referencing `subject` in examples. Use a named subject `subject(:name)`, or a `let` variable instead, so
+  the variable has a contextual name.
+- If the `subject` is never referenced inside examples, then it's acceptable to define the `subject` without a name.
 
 ### Common test setup
 
@@ -467,6 +668,48 @@ using expectations, or dependency injection along with stubs, to avoid the need
 for modifications. If you have no other choice, an `around` block similar to the
 example for global variables, above, can be used, but this should be avoided if
 at all possible.
+
+#### Test Snowplow events
+
+CAUTION: **Warning:**
+Snowplow performs **runtime type checks** by using the [contracts gem](https://rubygems.org/gems/contracts).
+Since Snowplow is **by default disabled in tests and development**, it can be hard to
+**catch exceptions** when mocking `Gitlab::Tracking`.
+
+To catch runtime errors due to type checks, you can enable Snowplow in tests by marking the spec with
+`:snowplow` and use the `expect_snowplow_event` helper which will check for
+calls to `Gitlab::Tracking#event`.
+
+```ruby
+describe '#show', :snowplow do
+  it 'tracks snowplow events' do
+    get :show
+
+    expect_snowplow_event(
+      category: 'Experiment',
+      action: 'start',
+    )
+    expect_snowplow_event(
+      category: 'Experiment',
+      action: 'sent',
+      property: 'property',
+      label: 'label'
+    )
+  end
+end
+```
+
+When you want to ensure that no event got called, you can use `expect_no_snowplow_event`.
+
+```ruby
+  describe '#show', :snowplow do
+    it 'does not track any snowplow events' do
+      get :show
+
+      expect_no_snowplow_event
+    end
+  end
+```
 
 ### Table-based / Parameterized tests
 

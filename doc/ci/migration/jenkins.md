@@ -17,7 +17,7 @@ that were able to quickly complete this migration:
 
 1. Start by reading the GitLab CI/CD [Quick Start Guide](../quick_start/README.md) and [important product differences](#important-product-differences).
 1. Learn the importance of [managing the organizational transition](#managing-the-organizational-transition).
-1. [Add Runners](../runners/README.md) to your GitLab instance.
+1. [Add runners](../runners/README.md) to your GitLab instance.
 1. Educate and enable your developers to independently perform the following steps in their projects:
    1. Review the [Quick Start Guide](../quick_start/README.md) and [Pipeline Configuration Reference](../yaml/README.md).
    1. Use the [Jenkins Wrapper](#jenkinsfile-wrapper) to temporarily maintain fragile Jenkins jobs.
@@ -26,6 +26,8 @@ that were able to quickly complete this migration:
    1. Migrate the deployment jobs using [cloud deployment templates](../cloud_deployment/index.md), adding [environments](../environments/index.md), and [deploy boards](../..//user/project/deploy_boards.md).
    1. Work to unwrap any jobs still running with the use of the Jenkins wrapper.
 1. Take stock of any common CI/CD job definitions then create and share [templates](#templates) for them.
+1. Check the [pipeline efficiency documentation](../pipelines/pipeline_efficiency.md)
+   to learn how to make your GitLab CI/CD pipelines faster and more efficient.
 
 For an example of how to convert a Jenkins pipeline into a GitLab CI/CD pipeline,
 or how to use Auto DevOps to test your code automatically, watch the
@@ -107,7 +109,7 @@ There are some high level differences between the products worth mentioning:
   is in the YAML format (see [complete reference](../yaml/README.md)) instead of a Groovy DSL. It's most
   analogous to the declarative Jenkinsfile format.
 - Manual approvals or gates can be set up as [`when:manual` jobs](../yaml/README.md#whenmanual). These can
-  also leverage [`protected environments`](../yaml/README.md#protecting-manual-jobs-premium)
+  also leverage [`protected environments`](../yaml/README.md#protecting-manual-jobs)
   to control who is able to approve them.
 - GitLab comes with a [container registry](../../user/packages/container_registry/index.md), and we recommend using
   container images to set up your build environment. For example, set up one pipeline that builds your build environment
@@ -117,26 +119,26 @@ There are some high level differences between the products worth mentioning:
   or other manual jobs that function like utilities. Jenkins installations tend to
   have a few of these.
 
-## Agents vs. Runners
+## Agents vs. runners
 
-Both Jenkins agents and GitLab Runners are the hosts that run jobs. To convert the
+Both Jenkins agents and GitLab runners are the hosts that run jobs. To convert the
 Jenkins agent, simply uninstall it and then [install and register the runner](../runners/README.md).
 Runners do not require much overhead, so you can size them similarly to the Jenkins
 agents you were using.
 
-There are some important differences in the way Runners work in comparison to agents:
+There are some important differences in the way runners work in comparison to agents:
 
 - Runners can be set up as [shared across an instance, be added at the group level, or set up at the project level](../runners/README.md#types-of-runners).
   They will self-select jobs from the scopes you've defined automatically.
 - You can also [use tags](../runners/README.md#use-tags-to-limit-the-number-of-jobs-using-the-runner) for finer control, and
   associate runners with specific jobs. For example, you can use a tag for jobs that
   require dedicated, more powerful, or specific hardware.
-- GitLab has [autoscaling for Runners](https://docs.gitlab.com/runner/configuration/autoscale.html)
+- GitLab has [autoscaling for runners](https://docs.gitlab.com/runner/configuration/autoscale.html)
   which will let you configure them to be provisioned as needed, and scaled down when not.
   This is similar to ephemeral agents in Jenkins.
 
-If you are using `gitlab.com`, you can take advantage of our [shared Runner fleet](../../user/gitlab_com/index.md#shared-runners)
-to run jobs without provisioning your own Runners. We are investigating making them
+If you are using `gitlab.com`, you can take advantage of our [shared runner fleet](../../user/gitlab_com/index.md#shared-runners)
+to run jobs without provisioning your own runners. We are investigating making them
 [available for self-managed instances](https://gitlab.com/groups/gitlab-org/-/epics/835)
 as well.
 
@@ -225,11 +227,11 @@ and is meant to be a mapping of concepts there to concepts in GitLab.
 
 #### `agent`
 
-The agent section is used to define how a pipeline will be executed. For GitLab, we use the [GitLab Runner](../runners/README.md)
+The agent section is used to define how a pipeline will be executed. For GitLab, we use [runners](../runners/README.md)
 to provide this capability. You can configure your own runners in Kubernetes or on any host, or take advantage
 of our shared runner fleet (note that the shared runner fleet is only available for GitLab.com users.) The link above will bring you to the documentation which will describe how to get
 up and running quickly. We also support using [tags](../runners/README.md#use-tags-to-limit-the-number-of-jobs-using-the-runner) to direct different jobs
-to different Runners (execution agents).
+to different runners (execution agents).
 
 The `agent` section also allows you to define which Docker images should be used for execution, for which we use
 the [`image`](../yaml/README.md#image) keyword. The `image` can be set on a single job or at the top level, in which
@@ -238,7 +240,6 @@ case it will apply to all jobs in the pipeline:
 ```yaml
 my_job:
   image: alpine
-  ...
 ```
 
 #### `post`
@@ -284,7 +285,6 @@ stages:
 
 my_job:
   stage: build
-  ...
 ```
 
 #### `steps`
@@ -297,7 +297,6 @@ my_job:
   script:
     - echo "hello! the current time is:"
     - time
-  ...
 ```
 
 ### Directives
@@ -357,3 +356,8 @@ our very powerful [`only/except` rules system](../yaml/README.md#onlyexcept-basi
 my_job:
   only: [branches]
 ```
+
+## Additional resources
+
+For help making your pipelines faster and more efficient, see the
+[pipeline efficiency documentation](../pipelines/pipeline_efficiency.md).

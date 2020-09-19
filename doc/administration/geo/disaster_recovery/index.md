@@ -11,11 +11,13 @@ Geo replicates your database, your Git repositories, and few other assets.
 We will support and replicate more data in the future, that will enable you to
 failover with minimal effort, in a disaster situation.
 
-See [Geo current limitations](../replication/index.md#current-limitations) for more information.
+See [Geo current limitations](../index.md#current-limitations) for more information.
 
 CAUTION: **Warning:**
 Disaster recovery for multi-secondary configurations is in **Alpha**.
-For the latest updates, check the multi-secondary [Disaster Recovery epic](https://gitlab.com/groups/gitlab-org/-/epics/65).
+For the latest updates, check the [Disaster Recovery epic for complete maturity](https://gitlab.com/groups/gitlab-org/-/epics/590). 
+Multi-secondary configurations require the complete re-synchronization and re-configuration of all non-promoted secondaries and
+will cause downtime.
 
 ## Promoting a **secondary** Geo node in single-secondary configurations
 
@@ -96,6 +98,10 @@ must disable the **primary** node.
 
 Note the following when promoting a secondary:
 
+- If replication was paused on the secondary node, for example as a part of upgrading,
+  while you were running a version of GitLab lower than 13.4, you _must_
+  [enable the node via the database](../replication/troubleshooting.md#while-promoting-the-secondary-i-got-an-error-activerecordrecordinvalid)
+  before proceeding.
 - A new **secondary** should not be added at this time. If you want to add a new
   **secondary**, do this after you have completed the entire process of promoting
   the **secondary** to the **primary**.
@@ -123,28 +129,23 @@ Note the following when promoting a secondary:
    ```
 
 1. Promote the **secondary** node to the **primary** node.
-
-   Before promoting a secondary node to primary, preflight checks should be run. They can be run separately or along with the promotion script.
-
+   
    To promote the secondary node to primary along with preflight checks:
 
    ```shell
    gitlab-ctl promote-to-primary-node
    ```
 
-   CAUTION: **Warning:**
-   Skipping preflight checks will promote the secondary to a primary without any further confirmation!
-
-   If you have already run the [preflight checks](planned_failover.md#preflight-checks) or don't want to run them, you can skip preflight checks with:
+   If you have already run the [preflight checks](planned_failover.md#preflight-checks) separately or don't want to run them, you can skip preflight checks with:
 
    ```shell
    gitlab-ctl promote-to-primary-node --skip-preflight-check
    ```
 
-   You can also run preflight checks separately:
+   You can also promote the secondary node to primary **without any further confirmation**, even when preflight checks fail:
 
    ```shell
-   gitlab-ctl promotion-preflight-checks
+   gitlab-ctl promote-to-primary-node --force
    ```
 
 1. Verify you can connect to the newly promoted **primary** node using the URL used
@@ -321,7 +322,7 @@ secondary domain, like changing Git remotes and API URLs.
 Promoting a **secondary** node to **primary** node using the process above does not enable
 Geo on the new **primary** node.
 
-To bring a new **secondary** node online, follow the [Geo setup instructions](../replication/index.md#setup-instructions).
+To bring a new **secondary** node online, follow the [Geo setup instructions](../index.md#setup-instructions).
 
 ### Step 6. (Optional) Removing the secondary's tracking database
 
@@ -374,7 +375,7 @@ and after that you also need two extra steps.
    gitlab_rails['auto_migrate'] = false
    ```
 
-   (For more details about these settings you can read [Configure the primary server](../replication/database.md#step-1-configure-the-primary-server))
+   (For more details about these settings you can read [Configure the primary server](../setup/database.md#step-1-configure-the-primary-server))
 
 1. Save the file and reconfigure GitLab for the database listen changes and
    the replication slot changes to be applied.
@@ -407,21 +408,9 @@ and after that you also need two extra steps.
 ### Step 2. Initiate the replication process
 
 Now we need to make each **secondary** node listen to changes on the new **primary** node. To do that you need
-to [initiate the replication process](../replication/database.md#step-3-initiate-the-replication-process) again but this time
+to [initiate the replication process](../setup/database.md#step-3-initiate-the-replication-process) again but this time
 for another **primary** node. All the old replication settings will be overwritten.
 
 ## Troubleshooting
 
-### I followed the disaster recovery instructions and now two-factor auth is broken
-
-The setup instructions for Geo prior to 10.5 failed to replicate the
-`otp_key_base` secret, which is used to encrypt the two-factor authentication
-secrets stored in the database. If it differs between **primary** and **secondary**
-nodes, users with two-factor authentication enabled won't be able to log in
-after a failover.
-
-If you still have access to the old **primary** node, you can follow the
-instructions in the
-[Upgrading to GitLab 10.5](../replication/version_specific_updates.md#updating-to-gitlab-105)
-section to resolve the error. Otherwise, the secret is lost and you'll need to
-[reset two-factor authentication for all users](../../../security/two_factor_authentication.md#disabling-2fa-for-everyone).
+This section was moved to [another location](../replication/troubleshooting.md#fixing-errors-during-a-failover-or-when-promoting-a-secondary-to-a-primary-node).

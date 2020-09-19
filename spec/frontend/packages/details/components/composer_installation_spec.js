@@ -4,7 +4,7 @@ import { GlSprintf, GlLink } from '@gitlab/ui';
 import { registryUrl as composerHelpPath } from 'jest/packages/details/mock_data';
 import { composerPackage as packageEntity } from 'jest/packages/mock_data';
 import ComposerInstallation from '~/packages/details/components/composer_installation.vue';
-import CodeInstructions from '~/packages/details/components/code_instruction.vue';
+
 import { TrackingActions } from '~/packages/details/constants';
 
 const localVue = createLocalVue();
@@ -27,9 +27,8 @@ describe('ComposerInstallation', () => {
     },
   });
 
-  const findCodeInstructions = () => wrapper.findAll(CodeInstructions);
-  const findRegistryIncludeTitle = () => wrapper.find('[data-testid="registry-include-title"]');
-  const findPackageIncludeTitle = () => wrapper.find('[data-testid="package-include-title"]');
+  const findRegistryInclude = () => wrapper.find('[data-testid="registry-include"]');
+  const findPackageInclude = () => wrapper.find('[data-testid="package-include"]');
   const findHelpText = () => wrapper.find('[data-testid="help-text"]');
   const findHelpLink = () => wrapper.find(GlLink);
 
@@ -53,7 +52,7 @@ describe('ComposerInstallation', () => {
 
   describe('registry include command', () => {
     it('uses code_instructions', () => {
-      const registryIncludeCommand = findCodeInstructions().at(0);
+      const registryIncludeCommand = findRegistryInclude();
       expect(registryIncludeCommand.exists()).toBe(true);
       expect(registryIncludeCommand.props()).toMatchObject({
         instruction: composerRegistryIncludeStr,
@@ -63,13 +62,13 @@ describe('ComposerInstallation', () => {
     });
 
     it('has the correct title', () => {
-      expect(findRegistryIncludeTitle().text()).toBe('composer.json registry include');
+      expect(findRegistryInclude().props('label')).toBe('composer.json registry include');
     });
   });
 
   describe('package include command', () => {
     it('uses code_instructions', () => {
-      const registryIncludeCommand = findCodeInstructions().at(1);
+      const registryIncludeCommand = findPackageInclude();
       expect(registryIncludeCommand.exists()).toBe(true);
       expect(registryIncludeCommand.props()).toMatchObject({
         instruction: composerPackageIncludeStr,
@@ -79,7 +78,7 @@ describe('ComposerInstallation', () => {
     });
 
     it('has the correct title', () => {
-      expect(findPackageIncludeTitle().text()).toBe('composer.json require package include');
+      expect(findPackageInclude().props('label')).toBe('composer.json require package include');
     });
 
     it('has the correct help text', () => {

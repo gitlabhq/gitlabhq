@@ -3,7 +3,7 @@ import {
   GlToken,
   GlFilteredSearchToken,
   GlFilteredSearchSuggestion,
-  GlNewDropdownDivider as GlDropdownDivider,
+  GlDropdownDivider,
   GlLoadingIcon,
 } from '@gitlab/ui';
 import { debounce } from 'lodash';
@@ -14,10 +14,9 @@ import { __ } from '~/locale';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 
 import { stripQuotes } from '../filtered_search_utils';
-import { NO_LABEL, DEBOUNCE_DELAY } from '../constants';
+import { DEFAULT_LABELS, DEBOUNCE_DELAY } from '../constants';
 
 export default {
-  noLabel: NO_LABEL,
   components: {
     GlToken,
     GlFilteredSearchToken,
@@ -38,6 +37,7 @@ export default {
   data() {
     return {
       labels: this.config.initialLabels || [],
+      defaultLabels: this.config.defaultLabels || DEFAULT_LABELS,
       loading: true,
     };
   },
@@ -105,10 +105,14 @@ export default {
       >
     </template>
     <template #suggestions>
-      <gl-filtered-search-suggestion :value="$options.noLabel">{{
-        __('No label')
-      }}</gl-filtered-search-suggestion>
-      <gl-dropdown-divider />
+      <gl-filtered-search-suggestion
+        v-for="label in defaultLabels"
+        :key="label.value"
+        :value="label.value"
+      >
+        {{ label.text }}
+      </gl-filtered-search-suggestion>
+      <gl-dropdown-divider v-if="defaultLabels.length" />
       <gl-loading-icon v-if="loading" />
       <template v-else>
         <gl-filtered-search-suggestion v-for="label in labels" :key="label.id" :value="label.title">

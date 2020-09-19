@@ -258,8 +258,8 @@ RSpec.describe API::Members do
         it 'does not create the member if group level is higher' do
           parent = create(:group)
 
-          group.update(parent: parent)
-          project.update(group: group)
+          group.update!(parent: parent)
+          project.update!(group: group)
           parent.add_developer(stranger)
 
           post api("/#{source_type.pluralize}/#{source.id}/members", maintainer),
@@ -272,8 +272,8 @@ RSpec.describe API::Members do
         it 'creates the member if group level is lower' do
           parent = create(:group)
 
-          group.update(parent: parent)
-          project.update(group: group)
+          group.update!(parent: parent)
+          project.update!(group: group)
           parent.add_developer(stranger)
 
           post api("/#{source_type.pluralize}/#{source.id}/members", maintainer),

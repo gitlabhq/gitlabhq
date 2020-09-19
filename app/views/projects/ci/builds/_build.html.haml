@@ -102,7 +102,7 @@
       - if can?(current_user, :update_build, job)
         - if job.active?
           = link_to cancel_project_job_path(job.project, job, continue: { to: request.fullpath }), method: :post, title: _('Cancel'), class: 'btn btn-build' do
-            = icon('remove', class: 'cred')
+            = sprite_icon('close')
         - elsif job.scheduled?
           .btn-group
             .btn.btn-default{ disabled: true }

@@ -33,7 +33,7 @@ For requirements, see [Requirements for Auto DevOps](requirements.md) for more i
 
 Auto DevOps is enabled by default for all projects and attempts to run on all pipelines
 in each project. An instance administrator can enable or disable this default in the
-[Auto DevOps settings](../../user/admin_area/settings/continuous_integration.md#auto-devops-core-only).
+[Auto DevOps settings](../../user/admin_area/settings/continuous_integration.md#auto-devops).
 Auto DevOps automatically disables in individual projects on their first pipeline failure,
 if it has not been explicitly enabled for the project.
 
@@ -83,16 +83,16 @@ project in a simple and automatic way:
 
 1. [Auto Build](stages.md#auto-build)
 1. [Auto Test](stages.md#auto-test)
-1. [Auto Code Quality](stages.md#auto-code-quality-starter) **(STARTER)**
-1. [Auto SAST (Static Application Security Testing)](stages.md#auto-sast-ultimate) **(ULTIMATE)**
-1. [Auto Secret Detection](stages.md#auto-secret-detection-ultimate) **(ULTIMATE)**
-1. [Auto Dependency Scanning](stages.md#auto-dependency-scanning-ultimate) **(ULTIMATE)**
-1. [Auto License Compliance](stages.md#auto-license-compliance-ultimate) **(ULTIMATE)**
-1. [Auto Container Scanning](stages.md#auto-container-scanning-ultimate) **(ULTIMATE)**
+1. [Auto Code Quality](stages.md#auto-code-quality) **(STARTER)**
+1. [Auto SAST (Static Application Security Testing)](stages.md#auto-sast) **(ULTIMATE)**
+1. [Auto Secret Detection](stages.md#auto-secret-detection) **(ULTIMATE)**
+1. [Auto Dependency Scanning](stages.md#auto-dependency-scanning) **(ULTIMATE)**
+1. [Auto License Compliance](stages.md#auto-license-compliance) **(ULTIMATE)**
+1. [Auto Container Scanning](stages.md#auto-container-scanning) **(ULTIMATE)**
 1. [Auto Review Apps](stages.md#auto-review-apps)
-1. [Auto DAST (Dynamic Application Security Testing)](stages.md#auto-dast-ultimate) **(ULTIMATE)**
+1. [Auto DAST (Dynamic Application Security Testing)](stages.md#auto-dast) **(ULTIMATE)**
 1. [Auto Deploy](stages.md#auto-deploy)
-1. [Auto Browser Performance Testing](stages.md#auto-browser-performance-testing-premium) **(PREMIUM)**
+1. [Auto Browser Performance Testing](stages.md#auto-browser-performance-testing) **(PREMIUM)**
 1. [Auto Monitoring](stages.md#auto-monitoring)
 
 As Auto DevOps relies on many different components, you should have a basic
@@ -235,12 +235,12 @@ are available:
 - **Continuous deployment to production**: Enables [Auto Deploy](stages.md#auto-deploy)
   with `master` branch directly deployed to production.
 - **Continuous deployment to production using timed incremental rollout**: Sets the
-  [`INCREMENTAL_ROLLOUT_MODE`](customize.md#timed-incremental-rollout-to-production-premium) variable
+  [`INCREMENTAL_ROLLOUT_MODE`](customize.md#timed-incremental-rollout-to-production) variable
   to `timed`. Production deployments execute with a 5 minute delay between
   each increment in rollout.
 - **Automatic deployment to staging, manual deployment to production**: Sets the
   [`STAGING_ENABLED`](customize.md#deploy-policy-for-staging-and-production-environments) and
-  [`INCREMENTAL_ROLLOUT_MODE`](customize.md#incremental-rollout-to-production-premium) variables
+  [`INCREMENTAL_ROLLOUT_MODE`](customize.md#incremental-rollout-to-production) variables
   to `1` and `manual`. This means:
 
   - `master` branch is directly deployed to staging.
@@ -274,7 +274,7 @@ The following table is an example of how to configure the three different cluste
 |--------------|---------------------------|-------------------------------------------|----------------------------|---|
 | review       | `review/*`                | `review.example.com`                      | `review/*`                 | The review cluster which runs all [Review Apps](../../ci/review_apps/index.md). `*` is a wildcard, used by every environment name starting with `review/`. |
 | staging      | `staging`                 | `staging.example.com`                     | `staging`                  | (Optional) The staging cluster which runs the deployments of the staging environments. You must [enable it first](customize.md#deploy-policy-for-staging-and-production-environments). |
-| production   | `production`              | `example.com`                             | `production`               | The production cluster which runs the production environment deployments. You can use [incremental rollouts](customize.md#incremental-rollout-to-production-premium). |
+| production   | `production`              | `example.com`                             | `production`               | The production cluster which runs the production environment deployments. You can use [incremental rollouts](customize.md#incremental-rollout-to-production). |
 
 To add a different cluster for each environment:
 

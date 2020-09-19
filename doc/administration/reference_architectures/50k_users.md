@@ -167,6 +167,14 @@ added to GitLab to configure SSL certificates. See
 [NGINX HTTPS documentation](https://docs.gitlab.com/omnibus/settings/nginx.html#enable-https)
 for details on managing SSL certificates and configuring NGINX.
 
+### Readiness checks
+
+Ensure the external load balancer only routes to working services with built
+in monitoring endpoints. The [readiness checks](../../user/admin_area/monitoring/health_check.md)
+all require [additional configuration](../monitoring/ip_whitelist.md)
+on the nodes being checked, otherwise, the external load balancer will not be able to
+connect.
+
 ### Ports
 
 The basic ports to be used are shown in the table below.
@@ -324,6 +332,9 @@ If you use a cloud-managed service, or provide your own PostgreSQL:
    needs privileges to create the `gitlabhq_production` database.
 1. Configure the GitLab application servers with the appropriate details.
    This step is covered in [Configuring the GitLab Rails application](#configure-gitlab-rails).
+
+See [Configure GitLab using an external PostgreSQL service](../postgresql/external.md) for
+further configuration steps.
 
 ### Standalone PostgreSQL using Omnibus GitLab
 
@@ -1435,7 +1446,7 @@ On each node:
    gitlab_workhorse['enable'] = false
    grafana['enable'] = false
 
-   # If you run a seperate monitoring node you can disable these services
+   # If you run a separate monitoring node you can disable these services
    alertmanager['enable'] = false
    prometheus['enable'] = false
 
@@ -1990,15 +2001,15 @@ based on what features you intend to use:
 1. Configure [object storage for job artifacts](../job_artifacts.md#using-object-storage)
    including [incremental logging](../job_logs.md#new-incremental-logging-architecture).
 1. Configure [object storage for LFS objects](../lfs/index.md#storing-lfs-objects-in-remote-object-storage).
-1. Configure [object storage for uploads](../uploads.md#using-object-storage-core-only).
+1. Configure [object storage for uploads](../uploads.md#using-object-storage).
 1. Configure [object storage for merge request diffs](../merge_request_diffs.md#using-object-storage).
 1. Configure [object storage for Container Registry](../packages/container_registry.md#use-object-storage) (optional feature).
 1. Configure [object storage for Mattermost](https://docs.mattermost.com/administration/config-settings.html#file-storage) (optional feature).
 1. Configure [object storage for packages](../packages/index.md#using-object-storage) (optional feature). **(PREMIUM ONLY)**
 1. Configure [object storage for Dependency Proxy](../packages/dependency_proxy.md#using-object-storage) (optional feature). **(PREMIUM ONLY)**
 1. Configure [object storage for Pseudonymizer](../pseudonymizer.md#configuration) (optional feature). **(ULTIMATE ONLY)**
-1. Configure [object storage for autoscale Runner caching](https://docs.gitlab.com/runner/configuration/autoscale.html#distributed-runners-caching) (optional - for improved performance).
-1. Configure [object storage for Terraform state files](../terraform_state.md#using-object-storage-core-only).
+1. Configure [object storage for autoscale runner caching](https://docs.gitlab.com/runner/configuration/autoscale.html#distributed-runners-caching) (optional - for improved performance).
+1. Configure [object storage for Terraform state files](../terraform_state.md#using-object-storage).
 
 Using separate buckets for each data type is the recommended approach for GitLab.
 

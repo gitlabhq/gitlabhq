@@ -1,10 +1,10 @@
 <script>
-import icon from '~/vue_shared/components/icon.vue';
+import { GlIcon } from '@gitlab/ui';
 import { ITEM_TYPE } from '../constants';
 
 export default {
   components: {
-    icon,
+    GlIcon,
   },
   props: {
     itemType: {
@@ -29,5 +29,5 @@ export default {
 </script>
 
 <template>
-  <span class="item-type-icon"> <icon :name="iconClass" /> </span>
+  <span class="item-type-icon"> <gl-icon :name="iconClass" /> </span>
 </template>

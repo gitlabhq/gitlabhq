@@ -22,7 +22,7 @@ class Gitlab::Seeder::Users
   private
 
   def create_mass_users!
-    encrypted_password = Devise::Encryptor.digest(User, '12345678')
+    encrypted_password = Devise::Encryptor.digest(User, random_password)
 
     Gitlab::Seeder.with_mass_insert(MASS_USERS_COUNT, User) do
       ActiveRecord::Base.connection.execute <<~SQL
@@ -49,6 +49,10 @@ class Gitlab::Seeder::Users
         FROM users WHERE NOT admin
       SQL
     end
+
+    puts '==========================================================='
+    puts "INFO: Password for newly created users is: #{random_password}"
+    puts '==========================================================='
   end
 
   def create_random_users!
@@ -59,7 +63,7 @@ class Gitlab::Seeder::Users
           name: FFaker::Name.name,
           email: FFaker::Internet.email,
           confirmed_at: DateTime.now,
-          password: '12345678'
+          password: random_password
         )
 
         print '.'
@@ -67,6 +71,10 @@ class Gitlab::Seeder::Users
         print 'F'
       end
     end
+  end
+
+  def random_password
+    @random_password ||= SecureRandom.hex.slice(0,16)
   end
 end
 

@@ -7,12 +7,14 @@ import BlobFileDropzone from '../blob/blob_file_dropzone';
 import initPopover from '~/blob/suggest_gitlab_ci_yml';
 import { disableButtonIfEmptyField, setCookie } from '~/lib/utils/common_utils';
 import Tracking from '~/tracking';
+import initWebIdeAlert from '~/blob/suggest_web_ide_ci';
 
 export default () => {
   const editBlobForm = $('.js-edit-blob-form');
   const uploadBlobForm = $('.js-upload-blob-form');
   const deleteBlobForm = $('.js-delete-blob-form');
   const suggestEl = document.querySelector('.js-suggest-gitlab-ci-yml');
+  const alertEl = document.getElementById('js-suggest-web-ide-ci');
 
   if (editBlobForm.length) {
     const urlRoot = editBlobForm.data('relativeUrlRoot');
@@ -65,12 +67,15 @@ export default () => {
 
     if (commitButton) {
       const { dismissKey, humanAccess } = suggestEl.dataset;
+      const urlParams = new URLSearchParams(window.location.search);
+      const mergeRequestPath = urlParams.get('mr_path') || true;
+
       const commitCookieName = `suggest_gitlab_ci_yml_commit_${dismissKey}`;
       const commitTrackLabel = 'suggest_gitlab_ci_yml_commit_changes';
       const commitTrackValue = '20';
 
       commitButton.addEventListener('click', () => {
-        setCookie(commitCookieName, true);
+        setCookie(commitCookieName, mergeRequestPath);
 
         Tracking.event(undefined, 'click_button', {
           label: commitTrackLabel,
@@ -79,5 +84,9 @@ export default () => {
         });
       });
     }
+  }
+
+  if (alertEl) {
+    initWebIdeAlert(alertEl);
   }
 };

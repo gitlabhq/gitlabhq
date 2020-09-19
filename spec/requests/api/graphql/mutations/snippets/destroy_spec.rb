@@ -56,7 +56,7 @@ RSpec.describe 'Destroying a Snippet' do
           post_graphql_mutation(mutation, current_user: current_user)
 
           expect(graphql_errors)
-            .to include(a_hash_including('message' => "#{snippet_gid} is not a valid id for Snippet."))
+            .to include(a_hash_including('message' => "#{snippet_gid} is not a valid ID for Snippet."))
         end
 
         it 'does not destroy the Snippet' do

@@ -69,7 +69,12 @@ module WikiHelper
   end
 
   def wiki_attachment_upload_url
-    expose_url(api_v4_projects_wikis_attachments_path(id: @wiki.container.id))
+    case @wiki.container
+    when Project
+      expose_url(api_v4_projects_wikis_attachments_path(id: @wiki.container.id))
+    else
+      raise TypeError, "Unsupported wiki container #{@wiki.container.class}"
+    end
   end
 
   def wiki_sort_controls(wiki, sort, direction)
@@ -147,3 +152,5 @@ module WikiHelper
       !container.has_confluence?
   end
 end
+
+WikiHelper.prepend_if_ee('EE::WikiHelper')

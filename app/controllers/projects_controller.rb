@@ -42,10 +42,7 @@ class ProjectsController < Projects::ApplicationController
 
   before_action only: [:edit] do
     push_frontend_feature_flag(:service_desk_custom_address, @project)
-  end
-
-  before_action only: [:edit] do
-    push_frontend_feature_flag(:approval_suggestions, @project)
+    push_frontend_feature_flag(:approval_suggestions, @project, default_enabled: true)
   end
 
   layout :determine_layout
@@ -98,6 +95,7 @@ class ProjectsController < Projects::ApplicationController
         end
       else
         flash.now[:alert] = result[:message]
+        @project.reset
 
         format.html { render_edit }
       end

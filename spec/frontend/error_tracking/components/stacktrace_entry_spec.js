@@ -1,10 +1,9 @@
 import { shallowMount } from '@vue/test-utils';
-import { GlSprintf } from '@gitlab/ui';
+import { GlSprintf, GlIcon } from '@gitlab/ui';
 import { trimText } from 'helpers/text_helper';
 import StackTraceEntry from '~/error_tracking/components/stacktrace_entry.vue';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import FileIcon from '~/vue_shared/components/file_icon.vue';
-import Icon from '~/vue_shared/components/icon.vue';
 
 describe('Stacktrace Entry', () => {
   let wrapper;
@@ -39,7 +38,7 @@ describe('Stacktrace Entry', () => {
     mountComponent({ lines });
     expect(wrapper.find(StackTraceEntry).exists()).toBe(true);
     expect(wrapper.find(ClipboardButton).exists()).toBe(true);
-    expect(wrapper.find(Icon).exists()).toBe(true);
+    expect(wrapper.find(GlIcon).exists()).toBe(true);
     expect(wrapper.find(FileIcon).exists()).toBe(true);
     expect(wrapper.find('table').exists()).toBe(false);
   });
@@ -57,7 +56,7 @@ describe('Stacktrace Entry', () => {
     it('should hide collapse icon and render error fn name and error line when there is no code block', () => {
       const extraInfo = { errorLine: 34, errorFn: 'errorFn', errorColumn: 77 };
       mountComponent({ expanded: false, lines: [], ...extraInfo });
-      expect(wrapper.find(Icon).exists()).toBe(false);
+      expect(wrapper.find(GlIcon).exists()).toBe(false);
       expect(trimText(findFileHeaderContent())).toContain(
         `in ${extraInfo.errorFn} at line ${extraInfo.errorLine}:${extraInfo.errorColumn}`,
       );

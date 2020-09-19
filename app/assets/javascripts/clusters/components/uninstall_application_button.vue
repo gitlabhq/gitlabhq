@@ -1,5 +1,5 @@
 <script>
-import LoadingButton from '~/vue_shared/components/loading_button.vue';
+import { GlButton } from '@gitlab/ui';
 import { APPLICATION_STATUS } from '~/clusters/constants';
 import { __ } from '~/locale';
 
@@ -7,7 +7,7 @@ const { UPDATING, UNINSTALLING } = APPLICATION_STATUS;
 
 export default {
   components: {
-    LoadingButton,
+    GlButton,
   },
   props: {
     status: {
@@ -30,5 +30,7 @@ export default {
 </script>
 
 <template>
-  <loading-button :label="label" :disabled="disabled" :loading="loading" />
+  <gl-button :disabled="disabled" variant="default" :loading="loading">
+    {{ label }}
+  </gl-button>
 </template>

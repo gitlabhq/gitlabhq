@@ -36,6 +36,6 @@ RSpec.describe 'Issue markdown toolbar', :js do
 
     all('.toolbar-btn')[1].click
 
-    expect(find('#note-body')[:value]).to eq("test\n*underline*\n")
+    expect(find('#note-body')[:value]).to eq("test\n_underline_\n")
   end
 end

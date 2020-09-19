@@ -52,19 +52,19 @@ export default {
 
 <style>
 .pdf-page {
-  margin: 8px auto 0 auto;
+  margin: 8px auto 0;
   border-top: 1px #ddd solid;
   border-bottom: 1px #ddd solid;
   width: 100%;
 }
 
 .pdf-page:first-child {
-  margin-top: 0px;
-  border-top: 0px;
+  margin-top: 0;
+  border-top: 0;
 }
 
 .pdf-page:last-child {
-  margin-bottom: 0px;
-  border-bottom: 0px;
+  margin-bottom: 0;
+  border-bottom: 0;
 }
 </style>

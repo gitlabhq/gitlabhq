@@ -1,23 +1,15 @@
 <script>
 import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
-import Icon from '~/vue_shared/components/icon.vue';
+import { GlIcon } from '@gitlab/ui';
 import ModalStore from '../../stores/modal_store';
 import IssueCardInner from '../issue_card_inner.vue';
 
 export default {
   components: {
     IssueCardInner,
-    Icon,
+    GlIcon,
   },
   props: {
-    issueLinkBase: {
-      type: String,
-      required: true,
-    },
-    rootPath: {
-      type: String,
-      required: true,
-    },
     emptyStateSvg: {
       type: String,
       required: true,
@@ -134,8 +126,8 @@ export default {
           class="board-card position-relative p-3 rounded"
           @click="toggleIssue($event, issue)"
         >
-          <issue-card-inner :issue="issue" :issue-link-base="issueLinkBase" :root-path="rootPath" />
-          <icon
+          <issue-card-inner :issue="issue" />
+          <gl-icon
             v-if="issue.selected"
             :aria-label="'Issue #' + issue.id + ' selected'"
             name="mobile-issue-close"

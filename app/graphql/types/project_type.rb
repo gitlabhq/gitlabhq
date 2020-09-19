@@ -54,7 +54,7 @@ module Types
     field :container_registry_enabled, GraphQL::BOOLEAN_TYPE, null: true,
           description: 'Indicates if the project stores Docker container images in a container registry'
     field :shared_runners_enabled, GraphQL::BOOLEAN_TYPE, null: true,
-          description: 'Indicates if Shared Runners are enabled for the project'
+          description: 'Indicates if shared runners are enabled for the project'
     field :lfs_enabled, GraphQL::BOOLEAN_TYPE, null: true,
           description: 'Indicates if the project has Large File Storage (LFS) enabled'
     field :merge_requests_ff_only_enabled, GraphQL::BOOLEAN_TYPE, null: true,
@@ -134,7 +134,7 @@ module Types
           null: true,
           description: 'Merge requests of the project',
           extras: [:lookahead],
-          resolver: Resolvers::MergeRequestsResolver
+          resolver: Resolvers::ProjectMergeRequestsResolver
 
     field :merge_request,
           Types::MergeRequestType,
@@ -146,12 +146,14 @@ module Types
           Types::IssueType.connection_type,
           null: true,
           description: 'Issues of the project',
+          extras: [:lookahead],
           resolver: Resolvers::IssuesResolver
 
     field :issue_status_counts,
           Types::IssueStatusCountsType,
           null: true,
           description: 'Counts of issues by status for the project',
+          extras: [:lookahead],
           resolver: Resolvers::IssueStatusCountsResolver
 
     field :milestones, Types::MilestoneType.connection_type, null: true,
@@ -159,7 +161,7 @@ module Types
           resolver: Resolvers::ProjectMilestonesResolver
 
     field :project_members,
-          Types::ProjectMemberType.connection_type,
+          Types::MemberInterface.connection_type,
           description: 'Members of the project',
           resolver: Resolvers::ProjectMembersResolver
 

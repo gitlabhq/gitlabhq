@@ -1167,4 +1167,59 @@ describe('DiffsStoreUtils', () => {
       expect(utils.getDefaultWhitespace(undefined, '0')).toBe(true);
     });
   });
+
+  describe('isAdded', () => {
+    it.each`
+      type               | expected
+      ${'new'}           | ${true}
+      ${'new-nonewline'} | ${true}
+      ${'old'}           | ${false}
+    `('returns $expected when type is $type', ({ type, expected }) => {
+      expect(utils.isAdded({ type })).toBe(expected);
+    });
+  });
+
+  describe('isRemoved', () => {
+    it.each`
+      type               | expected
+      ${'old'}           | ${true}
+      ${'old-nonewline'} | ${true}
+      ${'new'}           | ${false}
+    `('returns $expected when type is $type', ({ type, expected }) => {
+      expect(utils.isRemoved({ type })).toBe(expected);
+    });
+  });
+
+  describe('isUnchanged', () => {
+    it.each`
+      type     | expected
+      ${null}  | ${true}
+      ${'new'} | ${false}
+      ${'old'} | ${false}
+    `('returns $expected when type is $type', ({ type, expected }) => {
+      expect(utils.isUnchanged({ type })).toBe(expected);
+    });
+  });
+
+  describe('isMeta', () => {
+    it.each`
+      type               | expected
+      ${'match'}         | ${true}
+      ${'new-nonewline'} | ${true}
+      ${'old-nonewline'} | ${true}
+      ${'new'}           | ${false}
+    `('returns $expected when type is $type', ({ type, expected }) => {
+      expect(utils.isMeta({ type })).toBe(expected);
+    });
+  });
+
+  describe('parallelizeDiffLines', () => {
+    it('converts inline diff lines to parallel diff lines', () => {
+      const file = getDiffFileMock();
+
+      expect(utils.parallelizeDiffLines(file.highlighted_diff_lines)).toEqual(
+        file.parallel_diff_lines,
+      );
+    });
+  });
 });

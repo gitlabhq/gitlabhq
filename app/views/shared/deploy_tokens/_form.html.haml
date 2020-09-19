@@ -35,6 +35,7 @@
         = label_tag ("deploy_token_write_registry"), 'write_registry', class: 'label-bold form-check-label'
         .text-secondary= s_('DeployTokens|Allows write access to the registry images')
 
+    - if packages_registry_enabled?(group_or_project)
       %fieldset.form-group.form-check
         = f.check_box :read_package_registry, class: 'form-check-input'
         = label_tag ("deploy_token_read_package_registry"), 'read_package_registry', class: 'label-bold form-check-label'

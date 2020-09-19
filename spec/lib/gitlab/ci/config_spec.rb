@@ -312,7 +312,7 @@ RSpec.describe Gitlab::Ci::Config do
         HEREDOC
       end
 
-      it 'raises error YamlProcessor validationError' do
+      it 'raises ConfigError' do
         expect { config }.to raise_error(
           described_class::ConfigError,
           "Included file `invalid` does not have YAML extension!"
@@ -329,7 +329,7 @@ RSpec.describe Gitlab::Ci::Config do
         HEREDOC
       end
 
-      it 'raises error YamlProcessor validationError' do
+      it 'raises ConfigError' do
         expect { config }.to raise_error(
           described_class::ConfigError,
           'Include `{"remote":"http://url","local":"/local/file.yml"}` needs to match exactly one accessor!'

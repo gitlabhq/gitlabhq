@@ -1,5 +1,5 @@
 import { setHTMLFixture } from './helpers/fixtures';
-import Tracking, { initUserTracking } from '~/tracking';
+import Tracking, { initUserTracking, initDefaultTrackers } from '~/tracking';
 
 describe('Tracking', () => {
   let snowplowSpy;
@@ -17,11 +17,6 @@ describe('Tracking', () => {
   });
 
   describe('initUserTracking', () => {
-    beforeEach(() => {
-      bindDocumentSpy = jest.spyOn(Tracking, 'bindDocument').mockImplementation(() => null);
-      trackLoadEventsSpy = jest.spyOn(Tracking, 'trackLoadEvents').mockImplementation(() => null);
-    });
-
     it('calls through to get a new tracker with the expected options', () => {
       initUserTracking();
       expect(snowplowSpy).toHaveBeenCalledWith('newTracker', '_namespace_', 'app.gitfoo.com', {
@@ -38,9 +33,16 @@ describe('Tracking', () => {
         linkClickTracking: false,
       });
     });
+  });
+
+  describe('initDefaultTrackers', () => {
+    beforeEach(() => {
+      bindDocumentSpy = jest.spyOn(Tracking, 'bindDocument').mockImplementation(() => null);
+      trackLoadEventsSpy = jest.spyOn(Tracking, 'trackLoadEvents').mockImplementation(() => null);
+    });
 
     it('should activate features based on what has been enabled', () => {
-      initUserTracking();
+      initDefaultTrackers();
       expect(snowplowSpy).toHaveBeenCalledWith('enableActivityTracking', 30, 30);
       expect(snowplowSpy).toHaveBeenCalledWith('trackPageView');
       expect(snowplowSpy).not.toHaveBeenCalledWith('enableFormTracking');
@@ -52,18 +54,18 @@ describe('Tracking', () => {
         linkClickTracking: true,
       };
 
-      initUserTracking();
+      initDefaultTrackers();
       expect(snowplowSpy).toHaveBeenCalledWith('enableFormTracking');
       expect(snowplowSpy).toHaveBeenCalledWith('enableLinkClickTracking');
     });
 
     it('binds the document event handling', () => {
-      initUserTracking();
+      initDefaultTrackers();
       expect(bindDocumentSpy).toHaveBeenCalled();
     });
 
     it('tracks page loaded events', () => {
-      initUserTracking();
+      initDefaultTrackers();
       expect(trackLoadEventsSpy).toHaveBeenCalled();
     });
   });

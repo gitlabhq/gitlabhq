@@ -1,5 +1,5 @@
 import { languages } from 'monaco-editor';
-import { flatten } from 'lodash';
+import { flatten, isString } from 'lodash';
 import { SIDE_LEFT, SIDE_RIGHT } from './constants';
 
 const toLowerCase = x => x.toLowerCase();
@@ -42,15 +42,16 @@ const KNOWN_TYPES = [
   },
 ];
 
-export function isTextFile(content, mimeType, fileName) {
-  const knownType = KNOWN_TYPES.find(type => type.isMatch(mimeType, fileName));
+export function isTextFile({ name, content, mimeType = '' }) {
+  const knownType = KNOWN_TYPES.find(type => type.isMatch(mimeType, name));
 
   if (knownType) return knownType.isText;
 
   // does the string contain ascii characters only (ranges from space to tilde, tabs and new lines)
   const asciiRegex = /^[ -~\t\n\r]+$/;
+
   // for unknown types, determine the type by evaluating the file contents
-  return asciiRegex.test(content);
+  return isString(content) && (content === '' || asciiRegex.test(content));
 }
 
 export const createPathWithExt = p => {
@@ -75,17 +76,17 @@ export function registerLanguages(def, ...defs) {
   languages.setLanguageConfiguration(languageId, def.conf);
 }
 
-export function registerSchemas({ language, options }, ...schemas) {
-  schemas.forEach(schema => registerSchemas(schema));
-
-  const defaults = {
-    json: languages.json.jsonDefaults,
-    yaml: languages.yaml.yamlDefaults,
-  };
-
-  if (defaults[language]) {
-    defaults[language].setDiagnosticsOptions(options);
-  }
+export function registerSchema(schema) {
+  const defaults = [languages.json.jsonDefaults, languages.yaml.yamlDefaults];
+  defaults.forEach(d =>
+    d.setDiagnosticsOptions({
+      validate: true,
+      enableSchemaRequest: true,
+      hover: true,
+      completion: true,
+      schemas: [schema],
+    }),
+  );
 }
 
 export const otherSide = side => (side === SIDE_RIGHT ? SIDE_LEFT : SIDE_RIGHT);

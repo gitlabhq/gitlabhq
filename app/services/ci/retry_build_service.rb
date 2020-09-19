@@ -2,17 +2,20 @@
 
 module Ci
   class RetryBuildService < ::BaseService
-    CLONE_ACCESSORS = %i[pipeline project ref tag options name
-                         allow_failure stage stage_id stage_idx trigger_request
-                         yaml_variables when environment coverage_regex
-                         description tag_list protected needs_attributes
-                         resource_group scheduling_type].freeze
+    def self.clone_accessors
+      %i[pipeline project ref tag options name
+         allow_failure stage stage_id stage_idx trigger_request
+         yaml_variables when environment coverage_regex
+         description tag_list protected needs_attributes
+         resource_group scheduling_type].freeze
+    end
 
     def execute(build)
       build.ensure_scheduling_type!
 
       reprocess!(build).tap do |new_build|
-        build.pipeline.mark_as_processable_after_stage(build.stage_idx)
+        mark_subsequent_stages_as_processable(build)
+        build.pipeline.reset_ancestor_bridges!
 
         Gitlab::OptimisticLocking.retry_lock(new_build, &:enqueue)
 
@@ -28,7 +31,7 @@ module Ci
         raise Gitlab::Access::AccessDeniedError
       end
 
-      attributes = CLONE_ACCESSORS.map do |attribute|
+      attributes = self.class.clone_accessors.map do |attribute|
         [attribute, build.public_send(attribute)] # rubocop:disable GitlabSecurity/PublicSend
       end.to_h
 
@@ -60,5 +63,13 @@ module Ci
       end
       build
     end
+
+    def mark_subsequent_stages_as_processable(build)
+      build.pipeline.processables.skipped.after_stage(build.stage_idx).find_each do |processable|
+        Gitlab::OptimisticLocking.retry_lock(processable, &:process)
+      end
+    end
   end
 end
+
+Ci::RetryBuildService.prepend_if_ee('EE::Ci::RetryBuildService')

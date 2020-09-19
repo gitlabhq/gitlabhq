@@ -1,5 +1,10 @@
 import { mount } from '@vue/test-utils';
-import { GlFilteredSearchToken, GlFilteredSearchTokenSegment } from '@gitlab/ui';
+import {
+  GlFilteredSearchToken,
+  GlFilteredSearchSuggestion,
+  GlFilteredSearchTokenSegment,
+  GlDropdownDivider,
+} from '@gitlab/ui';
 import MockAdapter from 'axios-mock-adapter';
 import waitForPromises from 'helpers/wait_for_promises';
 import {
@@ -9,14 +14,34 @@ import {
 import axios from '~/lib/utils/axios_utils';
 
 import { deprecatedCreateFlash as createFlash } from '~/flash';
+import {
+  DEFAULT_LABELS,
+  DEFAULT_LABEL_NONE,
+  DEFAULT_LABEL_ANY,
+} from '~/vue_shared/components/filtered_search_bar/constants';
 import LabelToken from '~/vue_shared/components/filtered_search_bar/tokens/label_token.vue';
 
 import { mockLabelToken } from '../mock_data';
 
 jest.mock('~/flash');
+const defaultStubs = {
+  Portal: true,
+  GlFilteredSearchSuggestionList: {
+    template: '<div></div>',
+    methods: {
+      getValue: () => '=',
+    },
+  },
+};
 
-const createComponent = ({ config = mockLabelToken, value = { data: '' }, active = false } = {}) =>
-  mount(LabelToken, {
+function createComponent(options = {}) {
+  const {
+    config = mockLabelToken,
+    value = { data: '' },
+    active = false,
+    stubs = defaultStubs,
+  } = options;
+  return mount(LabelToken, {
     propsData: {
       config,
       value,
@@ -26,18 +51,9 @@ const createComponent = ({ config = mockLabelToken, value = { data: '' }, active
       portalName: 'fake target',
       alignSuggestions: function fakeAlignSuggestions() {},
     },
-    stubs: {
-      Portal: {
-        template: '<div><slot></slot></div>',
-      },
-      GlFilteredSearchSuggestionList: {
-        template: '<div></div>',
-        methods: {
-          getValue: () => '=',
-        },
-      },
-    },
+    stubs,
   });
+}
 
 describe('LabelToken', () => {
   let mock;
@@ -45,7 +61,6 @@ describe('LabelToken', () => {
 
   beforeEach(() => {
     mock = new MockAdapter(axios);
-    wrapper = createComponent();
   });
 
   afterEach(() => {
@@ -98,6 +113,10 @@ describe('LabelToken', () => {
   });
 
   describe('methods', () => {
+    beforeEach(() => {
+      wrapper = createComponent();
+    });
+
     describe('fetchLabelBySearchTerm', () => {
       it('calls `config.fetchLabels` with provided searchTerm param', () => {
         jest.spyOn(wrapper.vm.config, 'fetchLabels');
@@ -140,6 +159,8 @@ describe('LabelToken', () => {
   });
 
   describe('template', () => {
+    const defaultLabels = [DEFAULT_LABEL_NONE, DEFAULT_LABEL_ANY];
+
     beforeEach(async () => {
       wrapper = createComponent({ value: { data: `"${mockRegularLabel.title}"` } });
 
@@ -165,6 +186,59 @@ describe('LabelToken', () => {
           .find('.gl-token')
           .attributes('style'),
       ).toBe('background-color: rgb(186, 218, 85); color: rgb(255, 255, 255);');
+    });
+
+    it('renders provided defaultLabels as suggestions', async () => {
+      wrapper = createComponent({
+        active: true,
+        config: { ...mockLabelToken, defaultLabels },
+        stubs: { Portal: true },
+      });
+      const tokenSegments = wrapper.findAll(GlFilteredSearchTokenSegment);
+      const suggestionsSegment = tokenSegments.at(2);
+      suggestionsSegment.vm.$emit('activate');
+      await wrapper.vm.$nextTick();
+
+      const suggestions = wrapper.findAll(GlFilteredSearchSuggestion);
+
+      expect(suggestions).toHaveLength(defaultLabels.length);
+      defaultLabels.forEach((label, index) => {
+        expect(suggestions.at(index).text()).toBe(label.text);
+      });
+    });
+
+    it('does not render divider when no defaultLabels', async () => {
+      wrapper = createComponent({
+        active: true,
+        config: { ...mockLabelToken, defaultLabels: [] },
+        stubs: { Portal: true },
+      });
+      const tokenSegments = wrapper.findAll(GlFilteredSearchTokenSegment);
+      const suggestionsSegment = tokenSegments.at(2);
+      suggestionsSegment.vm.$emit('activate');
+      await wrapper.vm.$nextTick();
+
+      expect(wrapper.contains(GlFilteredSearchSuggestion)).toBe(false);
+      expect(wrapper.contains(GlDropdownDivider)).toBe(false);
+    });
+
+    it('renders `DEFAULT_LABELS` as default suggestions', async () => {
+      wrapper = createComponent({
+        active: true,
+        config: { ...mockLabelToken },
+        stubs: { Portal: true },
+      });
+      const tokenSegments = wrapper.findAll(GlFilteredSearchTokenSegment);
+      const suggestionsSegment = tokenSegments.at(2);
+      suggestionsSegment.vm.$emit('activate');
+      await wrapper.vm.$nextTick();
+
+      const suggestions = wrapper.findAll(GlFilteredSearchSuggestion);
+
+      expect(suggestions).toHaveLength(DEFAULT_LABELS.length);
+      DEFAULT_LABELS.forEach((label, index) => {
+        expect(suggestions.at(index).text()).toBe(label.text);
+      });
     });
   });
 });

@@ -1,15 +1,12 @@
 import { nextTick } from 'vue';
 import Vuex from 'vuex';
 import { createLocalVue, shallowMount } from '@vue/test-utils';
-import { GlLoadingIcon, GlButton } from '@gitlab/ui';
+import { GlLoadingIcon, GlButton, GlIntersectionObserver } from '@gitlab/ui';
 import state from '~/import_projects/store/state';
 import * as getters from '~/import_projects/store/getters';
 import { STATUSES } from '~/import_projects/constants';
 import ImportProjectsTable from '~/import_projects/components/import_projects_table.vue';
-import ImportedProjectTableRow from '~/import_projects/components/imported_project_table_row.vue';
 import ProviderRepoTableRow from '~/import_projects/components/provider_repo_table_row.vue';
-import IncompatibleRepoTableRow from '~/import_projects/components/incompatible_repo_table_row.vue';
-import PageQueryParamSync from '~/import_projects/components/page_query_param_sync.vue';
 
 describe('ImportProjectsTable', () => {
   let wrapper;
@@ -18,16 +15,26 @@ describe('ImportProjectsTable', () => {
     wrapper.find('input[data-qa-selector="githubish_import_filter_field"]');
 
   const providerTitle = 'THE PROVIDER';
-  const providerRepo = { id: 10, sanitizedName: 'sanitizedName', fullName: 'fullName' };
+  const providerRepo = {
+    importSource: {
+      id: 10,
+      sanitizedName: 'sanitizedName',
+      fullName: 'fullName',
+    },
+    importedProject: null,
+  };
 
   const findImportAllButton = () =>
     wrapper
       .findAll(GlButton)
       .filter(w => w.props().variant === 'success')
       .at(0);
+  const findImportAllModal = () => wrapper.find({ ref: 'importAllModal' });
 
   const importAllFn = jest.fn();
+  const importAllModalShowFn = jest.fn();
   const setPageFn = jest.fn();
+  const fetchReposFn = jest.fn();
 
   function createComponent({
     state: initialState,
@@ -46,7 +53,7 @@ describe('ImportProjectsTable', () => {
         ...customGetters,
       },
       actions: {
-        fetchRepos: jest.fn(),
+        fetchRepos: fetchReposFn,
         fetchJobs: jest.fn(),
         fetchNamespaces: jest.fn(),
         importAll: importAllFn,
@@ -66,6 +73,9 @@ describe('ImportProjectsTable', () => {
         paginatable,
       },
       slots,
+      stubs: {
+        GlModal: { template: '<div>Modal!</div>', methods: { show: importAllModalShowFn } },
+      },
     });
   }
 
@@ -79,58 +89,54 @@ describe('ImportProjectsTable', () => {
   it('renders a loading icon while repos are loading', () => {
     createComponent({ state: { isLoadingRepos: true } });
 
-    expect(wrapper.contains(GlLoadingIcon)).toBe(true);
+    expect(wrapper.find(GlLoadingIcon).exists()).toBe(true);
   });
 
   it('renders a loading icon while namespaces are loading', () => {
     createComponent({ state: { isLoadingNamespaces: true } });
 
-    expect(wrapper.contains(GlLoadingIcon)).toBe(true);
+    expect(wrapper.find(GlLoadingIcon).exists()).toBe(true);
   });
 
-  it('renders a table with imported projects and provider repos', () => {
+  it('renders a table with provider repos', () => {
+    const repositories = [
+      { importSource: { id: 1 }, importedProject: null },
+      { importSource: { id: 2 }, importedProject: { importStatus: STATUSES.FINISHED } },
+      { importSource: { id: 3, incompatible: true }, importedProject: {} },
+    ];
+
     createComponent({
-      state: {
-        namespaces: [{ fullPath: 'path' }],
-        repositories: [
-          { importSource: { id: 1 }, importedProject: null, importStatus: STATUSES.NONE },
-          { importSource: { id: 2 }, importedProject: {}, importStatus: STATUSES.FINISHED },
-          {
-            importSource: { id: 3, incompatible: true },
-            importedProject: {},
-            importStatus: STATUSES.NONE,
-          },
-        ],
-      },
+      state: { namespaces: [{ fullPath: 'path' }], repositories },
     });
 
-    expect(wrapper.contains(GlLoadingIcon)).toBe(false);
-    expect(wrapper.contains('table')).toBe(true);
+    expect(wrapper.find(GlLoadingIcon).exists()).toBe(false);
+    expect(wrapper.find('table').exists()).toBe(true);
     expect(
       wrapper
         .findAll('th')
         .filter(w => w.text() === `From ${providerTitle}`)
-        .isEmpty(),
-    ).toBe(false);
+        .exists(),
+    ).toBe(true);
 
-    expect(wrapper.contains(ProviderRepoTableRow)).toBe(true);
-    expect(wrapper.contains(ImportedProjectTableRow)).toBe(true);
-    expect(wrapper.contains(IncompatibleRepoTableRow)).toBe(true);
+    expect(wrapper.findAll(ProviderRepoTableRow)).toHaveLength(repositories.length);
   });
 
   it.each`
-    hasIncompatibleRepos | buttonText
-    ${false}             | ${'Import all repositories'}
-    ${true}              | ${'Import all compatible repositories'}
+    hasIncompatibleRepos | count | buttonText
+    ${false}             | ${1}  | ${'Import 1 repository'}
+    ${true}              | ${1}  | ${'Import 1 compatible repository'}
+    ${false}             | ${5}  | ${'Import 5 repositories'}
+    ${true}              | ${5}  | ${'Import 5 compatible repositories'}
   `(
-    'import all button has "$buttonText" text when hasIncompatibleRepos is $hasIncompatibleRepos',
-    ({ hasIncompatibleRepos, buttonText }) => {
+    'import all button has "$buttonText" text when hasIncompatibleRepos is $hasIncompatibleRepos and repos count is $count',
+    ({ hasIncompatibleRepos, buttonText, count }) => {
       createComponent({
         state: {
           providerRepos: [providerRepo],
         },
         getters: {
           hasIncompatibleRepos: () => hasIncompatibleRepos,
+          importAllCount: () => count,
         },
       });
 
@@ -138,18 +144,26 @@ describe('ImportProjectsTable', () => {
     },
   );
 
-  it('renders an empty state if there are no projects available', () => {
+  it('renders an empty state if there are no repositories available', () => {
     createComponent({ state: { repositories: [] } });
 
-    expect(wrapper.contains(ProviderRepoTableRow)).toBe(false);
-    expect(wrapper.contains(ImportedProjectTableRow)).toBe(false);
+    expect(wrapper.find(ProviderRepoTableRow).exists()).toBe(false);
     expect(wrapper.text()).toContain(`No ${providerTitle} repositories found`);
   });
 
-  it('sends importAll event when import button is clicked', async () => {
-    createComponent({ state: { providerRepos: [providerRepo] } });
+  it('opens confirmation modal when import all button is clicked', async () => {
+    createComponent({ state: { repositories: [providerRepo] } });
 
     findImportAllButton().vm.$emit('click');
+    await nextTick();
+
+    expect(importAllModalShowFn).toHaveBeenCalled();
+  });
+
+  it('triggers importAll action when modal is confirmed', async () => {
+    createComponent({ state: { providerRepos: [providerRepo] } });
+
+    findImportAllModal().vm.$emit('ok');
     await nextTick();
 
     expect(importAllFn).toHaveBeenCalled();
@@ -189,19 +203,27 @@ describe('ImportProjectsTable', () => {
       });
     });
 
-    it('passes current page to page-query-param-sync component', () => {
-      expect(wrapper.find(PageQueryParamSync).props().page).toBe(pageInfo.page);
+    it('does not call fetchRepos on mount', () => {
+      expect(fetchReposFn).not.toHaveBeenCalled();
     });
 
-    it('dispatches setPage when page-query-param-sync emits popstate', () => {
-      const NEW_PAGE = 2;
-      wrapper.find(PageQueryParamSync).vm.$emit('popstate', NEW_PAGE);
-
-      const { calls } = setPageFn.mock;
-
-      expect(calls).toHaveLength(1);
-      expect(calls[0][1]).toBe(NEW_PAGE);
+    it('renders intersection observer component', () => {
+      expect(wrapper.find(GlIntersectionObserver).exists()).toBe(true);
     });
+
+    it('calls fetchRepos when intersection observer appears', async () => {
+      wrapper.find(GlIntersectionObserver).vm.$emit('appear');
+
+      await nextTick();
+
+      expect(fetchReposFn).toHaveBeenCalled();
+    });
+  });
+
+  it('calls fetchRepos on mount', () => {
+    createComponent();
+
+    expect(fetchReposFn).toHaveBeenCalled();
   });
 
   it.each`

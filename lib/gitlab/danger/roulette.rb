@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require_relative 'teammate'
-require_relative 'request_helper'
+require_relative 'request_helper' unless defined?(Gitlab::Danger::RequestHelper)
 
 module Gitlab
   module Danger

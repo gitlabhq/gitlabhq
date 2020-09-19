@@ -22,11 +22,12 @@ RSpec.describe StorageHelper do
   end
 
   describe "#storage_counters_details" do
-    let(:namespace) { create :namespace }
-    let(:project) do
+    let_it_be(:namespace) { create(:namespace) }
+    let_it_be(:project) do
       create(:project,
              namespace: namespace,
              statistics: build(:project_statistics,
+                               namespace:            namespace,
                                repository_size:      10.kilobytes,
                                wiki_size:            10.bytes,
                                lfs_objects_size:     20.gigabytes,

@@ -16,8 +16,11 @@ RSpec.shared_examples 'Composer package index' do |user_type, status, add_member
       subject
 
       expect(response).to have_gitlab_http_status(status)
-      expect(response).to match_response_schema('public_api/v4/packages/composer/index')
-      expect(json_response).to eq presenter.root
+
+      if status == :success
+        expect(response).to match_response_schema('public_api/v4/packages/composer/index')
+        expect(json_response).to eq presenter.root
+      end
     end
   end
 end
@@ -87,13 +90,22 @@ RSpec.shared_examples 'process Composer api request' do |user_type, status, add_
   end
 end
 
-RSpec.shared_context 'Composer auth headers' do |user_role, user_token|
+RSpec.shared_context 'Composer auth headers' do |user_role, user_token, auth_method = :token|
   let(:token) { user_token ? personal_access_token.token : 'wrong' }
-  let(:headers) { user_role == :anonymous ? {} : basic_auth_header(user.username, token) }
+
+  let(:headers) do
+    if user_role == :anonymous
+      {}
+    elsif auth_method == :token
+      { 'Private-Token' => token }
+    else
+      basic_auth_header(user.username, token)
+    end
+  end
 end
 
-RSpec.shared_context 'Composer api project access' do |project_visibility_level, user_role, user_token|
-  include_context 'Composer auth headers', user_role, user_token do
+RSpec.shared_context 'Composer api project access' do |project_visibility_level, user_role, user_token, auth_method|
+  include_context 'Composer auth headers', user_role, user_token, auth_method do
     before do
       project.update!(visibility_level: Gitlab::VisibilityLevel.const_get(project_visibility_level, false))
     end

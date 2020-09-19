@@ -61,13 +61,11 @@ describe('IDE store file mutations', () => {
       mutations.SET_FILE_DATA(localState, {
         data: {
           raw_path: 'raw',
-          binary: true,
         },
         file: localFile,
       });
 
       expect(localFile.rawPath).toBe('raw');
-      expect(localFile.binary).toBeTruthy();
       expect(localFile.raw).toBeNull();
       expect(localFile.baseRaw).toBeNull();
     });

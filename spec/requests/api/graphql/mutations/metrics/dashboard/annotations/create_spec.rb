@@ -101,7 +101,7 @@ RSpec.describe Mutations::Metrics::Dashboard::Annotations::Create do
           graphql_mutation(:create_annotation, variables)
         end
 
-        it_behaves_like 'a mutation that returns top-level errors', errors: ['invalid_id is not a valid GitLab id.']
+        it_behaves_like 'a mutation that returns top-level errors', errors: ['invalid_id is not a valid GitLab ID.']
       end
     end
   end
@@ -188,7 +188,7 @@ RSpec.describe Mutations::Metrics::Dashboard::Annotations::Create do
         graphql_mutation(:create_annotation, variables)
       end
 
-      it_behaves_like 'a mutation that returns top-level errors', errors: ['invalid_id is not a valid GitLab id.']
+      it_behaves_like 'a mutation that returns top-level errors', errors: ['invalid_id is not a valid GitLab ID.']
     end
   end
 

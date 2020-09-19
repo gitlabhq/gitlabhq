@@ -7,24 +7,21 @@ import DesignIndex from '~/design_management/pages/design/index.vue';
 import DesignSidebar from '~/design_management/components/design_sidebar.vue';
 import DesignPresentation from '~/design_management/components/design_presentation.vue';
 import createImageDiffNoteMutation from '~/design_management/graphql/mutations/create_image_diff_note.mutation.graphql';
-import design from '../../mock_data/design';
-import mockResponseWithDesigns from '../../mock_data/designs';
-import mockResponseNoDesigns from '../../mock_data/no_designs';
-import mockAllVersions from '../../mock_data/all_versions';
+import updateActiveDiscussion from '~/design_management/graphql/mutations/update_active_discussion.mutation.graphql';
 import {
   DESIGN_NOT_FOUND_ERROR,
   DESIGN_VERSION_NOT_EXIST_ERROR,
 } from '~/design_management/utils/error_messages';
-import { DESIGNS_ROUTE_NAME } from '~/design_management/router/constants';
+import { DESIGNS_ROUTE_NAME, DESIGN_ROUTE_NAME } from '~/design_management/router/constants';
 import createRouter from '~/design_management/router';
 import * as utils from '~/design_management/utils/design_management_utils';
 import { DESIGN_DETAIL_LAYOUT_CLASSLIST } from '~/design_management/constants';
+import design from '../../mock_data/design';
+import mockResponseWithDesigns from '../../mock_data/designs';
+import mockResponseNoDesigns from '../../mock_data/no_designs';
+import mockAllVersions from '../../mock_data/all_versions';
 
 jest.mock('~/flash');
-jest.mock('mousetrap', () => ({
-  bind: jest.fn(),
-  unbind: jest.fn(),
-}));
 
 const focusInput = jest.fn();
 
@@ -32,6 +29,12 @@ const DesignReplyForm = {
   template: '<div><textarea ref="textarea"></textarea></div>',
   methods: {
     focusInput,
+  },
+};
+const mockDesignNoDiscussions = {
+  ...design,
+  discussions: {
+    nodes: [],
   },
 };
 
@@ -75,7 +78,7 @@ describe('Design management design index page', () => {
   const findSidebar = () => wrapper.find(DesignSidebar);
   const findDesignPresentation = () => wrapper.find(DesignPresentation);
 
-  function createComponent(loading = false, data = {}) {
+  function createComponent({ loading = false } = {}, { data = {}, intialRouteOptions = {} } = {}) {
     const $apollo = {
       queries: {
         design: {
@@ -86,6 +89,8 @@ describe('Design management design index page', () => {
     };
 
     router = createRouter();
+
+    router.push({ name: DESIGN_ROUTE_NAME, params: { id: design.id }, ...intialRouteOptions });
 
     wrapper = shallowMount(DesignIndex, {
       propsData: { id: '1' },
@@ -126,29 +131,28 @@ describe('Design management design index page', () => {
         },
       };
       jest.spyOn(utils, 'getPageLayoutElement').mockReturnValue(mockEl);
-      createComponent(true);
+      createComponent({ loading: true });
 
-      wrapper.vm.$router.push('/designs/test');
       expect(mockEl.classList.add).toHaveBeenCalledTimes(1);
       expect(mockEl.classList.add).toHaveBeenCalledWith(...DESIGN_DETAIL_LAYOUT_CLASSLIST);
     });
   });
 
   it('sets loading state', () => {
-    createComponent(true);
+    createComponent({ loading: true });
 
     expect(wrapper.element).toMatchSnapshot();
   });
 
   it('renders design index', () => {
-    createComponent(false, { design });
+    createComponent({ loading: false }, { data: { design } });
 
     expect(wrapper.element).toMatchSnapshot();
     expect(wrapper.find(GlAlert).exists()).toBe(false);
   });
 
   it('passes correct props to sidebar component', () => {
-    createComponent(false, { design });
+    createComponent({ loading: false }, { data: { design } });
 
     expect(findSidebar().props()).toEqual({
       design,
@@ -158,14 +162,14 @@ describe('Design management design index page', () => {
   });
 
   it('opens a new discussion form', () => {
-    createComponent(false, {
-      design: {
-        ...design,
-        discussions: {
-          nodes: [],
+    createComponent(
+      { loading: false },
+      {
+        data: {
+          design,
         },
       },
-    });
+    );
 
     findDesignPresentation().vm.$emit('openCommentForm', { x: 0, y: 0 });
 
@@ -175,15 +179,15 @@ describe('Design management design index page', () => {
   });
 
   it('keeps new discussion form focused', () => {
-    createComponent(false, {
-      design: {
-        ...design,
-        discussions: {
-          nodes: [],
+    createComponent(
+      { loading: false },
+      {
+        data: {
+          design,
+          annotationCoordinates,
         },
       },
-      annotationCoordinates,
-    });
+    );
 
     findDesignPresentation().vm.$emit('openCommentForm', { x: 10, y: 10 });
 
@@ -191,18 +195,18 @@ describe('Design management design index page', () => {
   });
 
   it('sends a mutation on submitting form and closes form', () => {
-    createComponent(false, {
-      design: {
-        ...design,
-        discussions: {
-          nodes: [],
+    createComponent(
+      { loading: false },
+      {
+        data: {
+          design,
+          annotationCoordinates,
+          comment: newComment,
         },
       },
-      annotationCoordinates,
-      comment: newComment,
-    });
+    );
 
-    findDiscussionForm().vm.$emit('submitForm');
+    findDiscussionForm().vm.$emit('submit-form');
     expect(mutate).toHaveBeenCalledWith(createDiscussionMutationVariables);
 
     return wrapper.vm
@@ -216,18 +220,18 @@ describe('Design management design index page', () => {
   });
 
   it('closes the form and clears the comment on canceling form', () => {
-    createComponent(false, {
-      design: {
-        ...design,
-        discussions: {
-          nodes: [],
+    createComponent(
+      { loading: false },
+      {
+        data: {
+          design,
+          annotationCoordinates,
+          comment: newComment,
         },
       },
-      annotationCoordinates,
-      comment: newComment,
-    });
+    );
 
-    findDiscussionForm().vm.$emit('cancelForm');
+    findDiscussionForm().vm.$emit('cancel-form');
 
     expect(wrapper.vm.comment).toBe('');
 
@@ -238,15 +242,15 @@ describe('Design management design index page', () => {
 
   describe('with error', () => {
     beforeEach(() => {
-      createComponent(false, {
-        design: {
-          ...design,
-          discussions: {
-            nodes: [],
+      createComponent(
+        { loading: false },
+        {
+          data: {
+            design: mockDesignNoDiscussions,
+            errorMessage: 'woops',
           },
         },
-        errorMessage: 'woops',
-      });
+      );
     });
 
     it('GlAlert is rendered in correct position with correct content', () => {
@@ -257,7 +261,7 @@ describe('Design management design index page', () => {
   describe('onDesignQueryResult', () => {
     describe('with no designs', () => {
       it('redirects to /designs', () => {
-        createComponent(true);
+        createComponent({ loading: true });
         router.push = jest.fn();
 
         wrapper.vm.onDesignQueryResult({ data: mockResponseNoDesigns, loading: false });
@@ -272,7 +276,7 @@ describe('Design management design index page', () => {
 
     describe('when no design exists for given version', () => {
       it('redirects to /designs', () => {
-        createComponent(true);
+        createComponent({ loading: true });
         wrapper.setData({
           allVersions: mockAllVersions,
         });
@@ -288,6 +292,26 @@ describe('Design management design index page', () => {
           expect(router.push).toHaveBeenCalledTimes(1);
           expect(router.push).toHaveBeenCalledWith({ name: DESIGNS_ROUTE_NAME });
         });
+      });
+    });
+  });
+
+  describe('when hash present in current route', () => {
+    it('calls updateActiveDiscussion mutation', () => {
+      createComponent(
+        { loading: false },
+        {
+          data: {
+            design,
+          },
+          intialRouteOptions: { hash: '#note_123' },
+        },
+      );
+
+      expect(mutate).toHaveBeenCalledTimes(1);
+      expect(mutate).toHaveBeenCalledWith({
+        mutation: updateActiveDiscussion,
+        variables: { id: 'gid://gitlab/DiffNote/123', source: 'url' },
       });
     });
   });

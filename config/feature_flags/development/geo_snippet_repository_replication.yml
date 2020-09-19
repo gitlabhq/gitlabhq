@@ -1,0 +1,7 @@
+---
+name: geo_snippet_repository_replication
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/38688
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/224168
+group: group::geo
+type: development
+default_enabled: false

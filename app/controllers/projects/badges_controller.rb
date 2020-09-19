@@ -9,6 +9,7 @@ class Projects::BadgesController < Projects::ApplicationController
   def pipeline
     pipeline_status = Gitlab::Badge::Pipeline::Status
       .new(project, params[:ref], opts: {
+        ignore_skipped: params[:ignore_skipped],
         key_text: params[:key_text],
         key_width: params[:key_width]
       })

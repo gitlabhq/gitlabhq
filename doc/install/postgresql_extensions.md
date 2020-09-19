@@ -1,7 +1,3 @@
----
-last_updated: 2020-09-01
----
-
 # Managing PostgreSQL extensions
 
 This guide documents how to manage PostgreSQL extensions for installations with an external

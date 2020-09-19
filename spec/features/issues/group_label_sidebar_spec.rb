@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'Group label on issue' do
-  it 'renders link to the project issues page' do
+  it 'renders link to the project issues page', :js do
     group = create(:group)
     project = create(:project, :public, namespace: group)
     feature = create(:group_label, group: group, title: 'feature')
@@ -14,6 +14,6 @@ RSpec.describe 'Group label on issue' do
 
     link = find('.issuable-show-labels a')
 
-    expect(link[:href]).to eq(label_link)
+    expect(CGI.unescape(link[:href])).to include(CGI.unescape(label_link))
   end
 end

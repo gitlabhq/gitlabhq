@@ -34,5 +34,5 @@ variables:
   rules:
     - if: $COVFUZZ_DISABLED
       when: never
-    - if: $GITLAB_FEATURES =~ /\bcoverage_fuzzing\b/
+    - if: $CI_COMMIT_BRANCH && $GITLAB_FEATURES =~ /\bcoverage_fuzzing\b/
     - if: $CI_RUNNER_EXECUTABLE_ARCH == "linux"

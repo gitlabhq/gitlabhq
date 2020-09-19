@@ -97,13 +97,9 @@ class PrometheusService < MonitoringService
   def prometheus_client
     return unless should_return_client?
 
-    options = {
-      allow_local_requests: allow_local_api_url?,
-      # We should choose more conservative timeouts, but some queries we run are now busting our
-      # default timeouts, which are stricter. We should make those queries faster instead.
-      # See https://gitlab.com/gitlab-org/gitlab/-/issues/233109
-      timeout: 60
-    }
+    options = prometheus_client_default_options.merge(
+      allow_local_requests: allow_local_api_url?
+    )
 
     if behind_iap?
       # Adds the Authorization header

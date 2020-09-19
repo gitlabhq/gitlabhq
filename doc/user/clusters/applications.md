@@ -123,14 +123,14 @@ GitLab. It is used in conjunction with [GitLab
 CI/CD](../../ci/README.md), the open-source continuous integration
 service included with GitLab that coordinates the jobs.
 
-If the project is on GitLab.com, shared Runners are available
+If the project is on GitLab.com, shared runners are available
 (the first 2000 minutes are free, you can
-[buy more later](../../subscriptions/index.md#purchasing-additional-ci-minutes))
+[buy more later](../../subscriptions/gitlab_com/index.md#purchase-additional-ci-minutes))
 and you do not have to deploy one if they are enough for your needs. If a
-project-specific Runner is desired, or there are no shared Runners, it is easy
+project-specific runner is desired, or there are no shared runners, it is easy
 to deploy one.
 
-Note that the deployed Runner will be set as **privileged**, which means it will essentially
+Note that the deployed runner will be set as **privileged**, which means it will essentially
 have root access to the underlying machine. This is required to build Docker images,
 so it is the default. Make sure you read the
 [security implications](../project/clusters/index.md#security-implications)
@@ -529,7 +529,7 @@ fewer than 3 nodes or consisting of `f1-micro`, `g1-small`, `n1-standard-1`, or
 
 NOTE: **Note:**
 The Elastic Stack cluster application is intended as a log aggregation solution and is not related to our
-[Advanced Global Search](../search/advanced_global_search.md) functionality, which uses a separate
+[Advanced Search](../search/advanced_global_search.md) functionality, which uses a separate
 Elasticsearch cluster.
 
 #### Optional: deploy Kibana to perform advanced queries
@@ -894,8 +894,8 @@ GitLab Runner is installed into the `gitlab-managed-apps` namespace of your clus
 
 In order for GitLab Runner to function, you **must** specify the following:
 
-- `gitlabUrl` - the GitLab server full URL (for example, `https://example.gitlab.com`) to register the Runner against.
-- `runnerRegistrationToken` - The registration token for adding new Runners to GitLab. This must be
+- `gitlabUrl` - the GitLab server full URL (for example, `https://gitlab.example.com`) to register the Runner against.
+- `runnerRegistrationToken` - The registration token for adding new runners to GitLab. This must be
   [retrieved from your GitLab instance](../../ci/runners/README.md).
 
 These values can be specified using [CI variables](../../ci/variables/README.md):
@@ -910,7 +910,7 @@ management project. Refer to the
 available configuration options.
 
 NOTE: **Note:**
-Support for installing the Runner managed application is provided by the GitLab Runner group.
+Support for installing the GitLab Runner managed application is provided by the GitLab Runner group.
 If you run into unknown issues, please [open a new issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new) and ping at least 2 people from the [Runner group](https://about.gitlab.com/handbook/product/product-categories/#runner-group).
 
 ### Install Cilium using GitLab CI/CD
@@ -1421,7 +1421,7 @@ Refer to the [AppArmor chart](https://gitlab.com/gitlab-org/charts/apparmor) for
 
 After installing AppAmor, you can use profiles by adding Pod Annotations. If you're using Auto
 DevOps, you can [customize `auto-deploy-values.yaml`](../../topics/autodevops/customize.md#customize-values-for-helm-chart)
-to annotate your pods. Although it's helpful to be aware of the [list of custom attributes](https://gitlab.com/gitlab-org/charts/auto-deploy-app#gitlabs-auto-deploy-helm-chart), you're only required to set
+to annotate your pods. Although it's helpful to be aware of the [list of custom attributes](https://gitlab.com/gitlab-org/cluster-integration/auto-deploy-image/-/tree/master/assets/auto-deploy-app#gitlabs-auto-deploy-helm-chart), you're only required to set
 `podAnnotations` as follows:
 
 ```yaml
@@ -1488,7 +1488,7 @@ The applications below can be upgraded.
 
 | Application | GitLab version |
 | ----------- | -------------- |
-| Runner  | 11.8+          |
+| GitLab Runner  | 11.8+          |
 
 To upgrade an application:
 

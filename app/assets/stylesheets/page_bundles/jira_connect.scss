@@ -1,0 +1,33 @@
+@import 'framework/variables';
+
+$atlaskit-border-color: #dfe1e6;
+
+.ac-content {
+  margin: 20px;
+
+  .subscription-form {
+    margin-bottom: 20px;
+
+    .field-group-input {
+      display: flex;
+      padding-top: $gl-padding-4;
+
+      .ak-button {
+        height: auto;
+        margin-left: $btn-margin-5;
+      }
+    }
+  }
+}
+
+.subscriptions {
+  tbody {
+    tr {
+      border-bottom: 1px solid $atlaskit-border-color;
+    }
+
+    td {
+      padding: $gl-padding-8;
+    }
+  }
+}

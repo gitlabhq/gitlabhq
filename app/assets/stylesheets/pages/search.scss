@@ -105,7 +105,7 @@ input[type='checkbox']:hover {
     }
 
     .dropdown-header {
-      // Necessary because glDropdown doesn't support a second style of headers
+      // Necessary because deprecatedJQueryDropdown doesn't support a second style of headers
       font-weight: $gl-font-weight-bold;
       color: $gl-text-color;
       font-size: $gl-font-size;

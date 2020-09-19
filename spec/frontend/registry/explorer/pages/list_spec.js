@@ -8,6 +8,7 @@ import GroupEmptyState from '~/registry/explorer/components/list_page/group_empt
 import ProjectEmptyState from '~/registry/explorer/components/list_page/project_empty_state.vue';
 import RegistryHeader from '~/registry/explorer/components/list_page/registry_header.vue';
 import ImageList from '~/registry/explorer/components/list_page/image_list.vue';
+import TitleArea from '~/vue_shared/components/registry/title_area.vue';
 import { createStore } from '~/registry/explorer/stores/';
 import {
   SET_MAIN_LOADING,
@@ -54,6 +55,7 @@ describe('List Page', () => {
         GlEmptyState,
         GlSprintf,
         RegistryHeader,
+        TitleArea,
       },
       mocks: {
         $toast,

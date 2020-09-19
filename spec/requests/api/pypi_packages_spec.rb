@@ -11,6 +11,7 @@ RSpec.describe API::PypiPackages do
   let_it_be(:personal_access_token) { create(:personal_access_token, user: user) }
   let_it_be(:deploy_token) { create(:deploy_token, read_package_registry: true, write_package_registry: true) }
   let_it_be(:project_deploy_token) { create(:project_deploy_token, deploy_token: deploy_token, project: project) }
+  let_it_be(:job) { create(:ci_build, :running, user: user) }
 
   describe 'GET /api/v4/projects/:id/packages/pypi/simple/:package_name' do
     let_it_be(:package) { create(:pypi_package, project: project) }
@@ -57,6 +58,8 @@ RSpec.describe API::PypiPackages do
     end
 
     it_behaves_like 'deploy token for package GET requests'
+
+    it_behaves_like 'job token for package GET requests'
 
     it_behaves_like 'rejects PyPI access with unknown project id'
   end
@@ -108,6 +111,8 @@ RSpec.describe API::PypiPackages do
 
     it_behaves_like 'deploy token for package uploads'
 
+    it_behaves_like 'job token for package uploads'
+
     it_behaves_like 'rejects PyPI access with unknown project id'
   end
 
@@ -117,7 +122,8 @@ RSpec.describe API::PypiPackages do
     let_it_be(:file_name) { 'package.whl' }
     let(:url) { "/projects/#{project.id}/packages/pypi" }
     let(:headers) { {} }
-    let(:base_params) { { requires_python: '>=3.7', version: '1.0.0', name: 'sample-project', sha256_digest: '123' } }
+    let(:requires_python) { '>=3.7' }
+    let(:base_params) { { requires_python: requires_python, version: '1.0.0', name: 'sample-project', sha256_digest: '123' } }
     let(:params) { base_params.merge(content: temp_file(file_name)) }
     let(:send_rewritten_field) { true }
 
@@ -169,6 +175,19 @@ RSpec.describe API::PypiPackages do
       end
     end
 
+    context 'with required_python too big' do
+      let(:requires_python) { 'x' * 256 }
+      let(:token) { personal_access_token.token }
+      let(:user_headers) { basic_auth_header(user.username, token) }
+      let(:headers) { user_headers.merge(workhorse_header) }
+
+      before do
+        project.update!(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
+      end
+
+      it_behaves_like 'process PyPi api request', :developer, :bad_request, true
+    end
+
     context 'with an invalid package' do
       let(:token) { personal_access_token.token }
       let(:user_headers) { basic_auth_header(user.username, token) }
@@ -184,7 +203,21 @@ RSpec.describe API::PypiPackages do
 
     it_behaves_like 'deploy token for package uploads'
 
+    it_behaves_like 'job token for package uploads'
+
     it_behaves_like 'rejects PyPI access with unknown project id'
+
+    context 'file size above maximum limit' do
+      let(:headers) { basic_auth_header(deploy_token.username, deploy_token.token).merge(workhorse_header) }
+
+      before do
+        allow_next_instance_of(UploadedFile) do |uploaded_file|
+          allow(uploaded_file).to receive(:size).and_return(project.actual_limits.pypi_max_file_size + 1)
+        end
+      end
+
+      it_behaves_like 'returning response status', :bad_request
+    end
   end
 
   describe 'GET /api/v4/projects/:id/packages/pypi/files/:sha256/*file_identifier' do
@@ -242,6 +275,26 @@ RSpec.describe API::PypiPackages do
 
       context 'invalid token' do
         let(:headers) { basic_auth_header('foo', 'bar') }
+
+        it_behaves_like 'returning response status', :success
+      end
+    end
+
+    context 'with job token headers' do
+      let(:headers) { basic_auth_header(::Gitlab::Auth::CI_JOB_USER, job.token) }
+
+      context 'valid token' do
+        it_behaves_like 'returning response status', :success
+      end
+
+      context 'invalid token' do
+        let(:headers) { basic_auth_header(::Gitlab::Auth::CI_JOB_USER, 'bar') }
+
+        it_behaves_like 'returning response status', :success
+      end
+
+      context 'invalid user' do
+        let(:headers) { basic_auth_header('foo', job.token) }
 
         it_behaves_like 'returning response status', :success
       end

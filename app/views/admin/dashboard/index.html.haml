@@ -7,47 +7,44 @@
       dismissible: true.to_s } }
       = notice[:message].html_safe
 
-- if show_license_breakdown?
-  = render_if_exists 'admin/licenses/breakdown', license: @license
+- if @license.present? && show_license_breakdown?
+  = render_if_exists 'admin/licenses/breakdown'
 
 .admin-dashboard.gl-mt-3
   .row
     .col-sm-4
-      .info-well.dark-well
+      .info-well.dark-well.flex-fill
         .well-segment.well-centered
           = link_to admin_projects_path do
             %h3.text-center
-              Projects:
-              = approximate_count_with_delimiters(@counts, Project)
+              = s_('AdminArea|Projects: %{number_of_projects}') % { number_of_projects: approximate_count_with_delimiters(@counts, Project) }
           %hr
-          = link_to('New project', new_project_path, class: "btn btn-success")
+          = link_to(s_('AdminArea|New project'), new_project_path, class: "btn btn-success gl-w-full")
     .col-sm-4
       .info-well.dark-well
         .well-segment.well-centered
           = link_to admin_users_path do
             %h3.text-center
-              Users:
-              = approximate_count_with_delimiters(@counts, User)
+              = s_('AdminArea|Users: %{number_of_users}') % { number_of_users: approximate_count_with_delimiters(@counts, User) }
           %hr
           .btn-group.d-flex{ role: 'group' }
-            = link_to 'New user', new_admin_user_path, class: "btn btn-success"
-            = link_to s_('AdminArea|Users statistics'), admin_dashboard_stats_path, class: 'btn btn-primary'
+            = link_to s_('AdminArea|New user'), new_admin_user_path, class: "btn btn-success gl-w-full"
+            = link_to s_('AdminArea|Users statistics'), admin_dashboard_stats_path, class: 'btn btn-primary gl-w-full'
     .col-sm-4
       .info-well.dark-well
         .well-segment.well-centered
           = link_to admin_groups_path do
             %h3.text-center
-              Groups:
-              = approximate_count_with_delimiters(@counts, Group)
+              = s_('AdminArea|Groups: %{number_of_groups}') % { number_of_groups: approximate_count_with_delimiters(@counts, Group) }
           %hr
-          = link_to 'New group', new_admin_group_path, class: "btn btn-success"
+          = link_to s_('AdminArea|New group'), new_admin_group_path, class: "btn btn-success gl-w-full"
   .row
     .col-md-4
       #js-admin-statistics-container
     .col-md-4
       .info-well
         .well-segment.admin-well.admin-well-features
-          %h4 Features
+          %h4= s_('AdminArea|Features')
           = feature_entry(_('Sign up'),
             href: general_admin_application_settings_path(anchor: 'js-signup-settings'),
             enabled: allow_signup?)
@@ -87,42 +84,41 @@
       .info-well
         .well-segment.admin-well
           %h4
-            Components
+            = s_('AdminArea|Components')
             - if Gitlab::CurrentSettings.version_check_enabled
               .float-right
                 = version_status_badge
           %p
-            %a{ href: general_admin_application_settings_path }
-              GitLab
+            = link_to _('GitLab'), general_admin_application_settings_path
             %span.float-right
               = Gitlab::VERSION
               = "(#{Gitlab.revision})"
           %p
-            GitLab Shell
+            = _('GitLab Shell')
             %span.float-right
               = Gitlab::Shell.version
           %p
-            GitLab Workhorse
+            = _('GitLab Workhorse')
             %span.float-right
               = gitlab_workhorse_version
           %p
-            GitLab API
+            = _('GitLab API')
             %span.float-right
               = API::API::version
           - if Gitlab.config.pages.enabled
             %p
-              GitLab Pages
+              = _('GitLab Pages')
               %span.float-right
                 = Gitlab::Pages::VERSION
 
           = render_if_exists 'admin/dashboard/geo'
 
           %p
-            Ruby
+            = _('Ruby')
             %span.float-right
               #{RUBY_VERSION}p#{RUBY_PATCHLEVEL}
           %p
-            Rails
+            = _('Rails')
             %span.float-right
               #{Rails::VERSION::STRING}
           %p
@@ -130,12 +126,12 @@
             %span.float-right
               = Gitlab::Database.version
           %p
-            = link_to "Gitaly Servers", admin_gitaly_servers_path
+            = link_to _("Gitaly Servers"), admin_gitaly_servers_path
   .row
     .col-md-4
       .info-well
         .well-segment.admin-well
-          %h4 Latest projects
+          %h4= s_('AdminArea|Latest projects')
           - @projects.each do |project|
             %p
               = link_to project.full_name, admin_project_path(project), class: 'str-truncated-60'
@@ -144,7 +140,7 @@
     .col-md-4
       .info-well
         .well-segment.admin-well
-          %h4 Latest users
+          %h4= s_('AdminArea|Latest users')
           - @users.each do |user|
             %p
               = link_to [:admin, user], class: 'str-truncated-60' do
@@ -154,7 +150,7 @@
     .col-md-4
       .info-well
         .well-segment.admin-well
-          %h4 Latest groups
+          %h4= s_('AdminArea|Latest groups')
           - @groups.each do |group|
             %p
               = link_to [:admin, group], class: 'str-truncated-60' do

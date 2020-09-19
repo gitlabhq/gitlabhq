@@ -14,8 +14,6 @@ RSpec.describe 'Getting designs related to an issue' do
 
   before do
     enable_design_management
-
-    note
   end
 
   it_behaves_like 'a working graphql query' do

@@ -34,6 +34,7 @@ export default () => ({
   showTreeList: true,
   currentDiffFileId: '',
   projectPath: '',
+  viewedDiffFileIds: {},
   commentForms: [],
   highlightedRow: null,
   renderTreeList: true,
@@ -41,5 +42,4 @@ export default () => ({
   fileFinderVisible: false,
   dismissEndpoint: '',
   showSuggestPopover: true,
-  useSingleDiffStyle: false,
 });

@@ -19,8 +19,10 @@ RSpec.shared_examples 'WikiPages::UpdateService#execute' do |container_type|
   subject(:service) { described_class.new(container: container, current_user: user, params: opts) }
 
   it 'updates the wiki page' do
-    updated_page = service.execute(page)
+    response = service.execute(page)
+    updated_page = response.payload[:page]
 
+    expect(response).to be_success
     expect(updated_page).to be_valid
     expect(updated_page.message).to eq(opts[:message])
     expect(updated_page.content).to eq(opts[:content])
@@ -81,7 +83,11 @@ RSpec.shared_examples 'WikiPages::UpdateService#execute' do |container_type|
     end
 
     it 'reports the error' do
-      expect(service.execute(page)).to be_invalid
+      response = service.execute(page)
+      page = response.payload[:page]
+
+      expect(response).to be_error
+      expect(page).to be_invalid
         .and have_attributes(errors: be_present)
     end
   end

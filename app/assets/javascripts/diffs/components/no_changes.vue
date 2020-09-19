@@ -1,12 +1,11 @@
 <script>
 import { mapGetters } from 'vuex';
-import { escape } from 'lodash';
-import { GlButton } from '@gitlab/ui';
-import { __, sprintf } from '~/locale';
+import { GlButton, GlSprintf } from '@gitlab/ui';
 
 export default {
   components: {
     GlButton,
+    GlSprintf,
   },
   props: {
     changesEmptyStateIllustration: {
@@ -16,20 +15,6 @@ export default {
   },
   computed: {
     ...mapGetters(['getNoteableData']),
-    emptyStateText() {
-      return sprintf(
-        __(
-          'No changes between %{ref_start}%{source_branch}%{ref_end} and %{ref_start}%{target_branch}%{ref_end}',
-        ),
-        {
-          ref_start: '<span class="ref-name">',
-          ref_end: '</span>',
-          source_branch: escape(this.getNoteableData.source_branch),
-          target_branch: escape(this.getNoteableData.target_branch),
-        },
-        false,
-      );
-    },
   },
 };
 </script>
@@ -41,7 +26,14 @@ export default {
     </div>
     <div class="col-12">
       <div class="text-content text-center">
-        <span v-html="emptyStateText"></span>
+        <gl-sprintf :message="__('No changes between %{sourceBranch} and %{targetBranch}')">
+          <template #sourceBranch>
+            <span class="ref-name">{{ getNoteableData.source_branch }}</span>
+          </template>
+          <template #targetBranch>
+            <span class="ref-name">{{ getNoteableData.target_branch }}</span>
+          </template>
+        </gl-sprintf>
         <div class="text-center">
           <gl-button :href="getNoteableData.new_blob_path" variant="success" category="primary">{{
             __('Create commit')

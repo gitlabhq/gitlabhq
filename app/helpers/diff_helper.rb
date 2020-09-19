@@ -100,18 +100,41 @@ module DiffHelper
   end
 
   def submodule_link(blob, ref, repository = @repository)
-    project_url, tree_url = submodule_links(blob, ref, repository)
-    commit_id = if tree_url.nil?
-                  Commit.truncate_sha(blob.id)
-                else
-                  link_to Commit.truncate_sha(blob.id), tree_url
-                end
+    urls = submodule_links(blob, ref, repository)
+
+    folder_name = truncate(blob.name, length: 40)
+    folder_name = link_to(folder_name, urls.web) if urls&.web
+
+    commit_id = Commit.truncate_sha(blob.id)
+    commit_id = link_to(commit_id, urls.tree) if urls&.tree
 
     [
-      content_tag(:span, link_to(truncate(blob.name, length: 40), project_url)),
+      content_tag(:span, folder_name),
       '@',
       content_tag(:span, commit_id, class: 'commit-sha')
     ].join(' ').html_safe
+  end
+
+  def submodule_diff_compare_link(diff_file)
+    compare_url = submodule_links(diff_file.blob, diff_file.content_sha, diff_file.repository, diff_file)&.compare
+
+    link = ""
+
+    if compare_url
+
+      link_text = [
+          _('Compare'),
+          ' ',
+          content_tag(:span, Commit.truncate_sha(diff_file.old_blob.id), class: 'commit-sha'),
+          '...',
+          content_tag(:span, Commit.truncate_sha(diff_file.blob.id), class: 'commit-sha')
+        ].join('').html_safe
+
+      tooltip = _('Compare submodule commit revisions')
+      link = content_tag(:span, link_to(link_text, compare_url, class: 'btn has-tooltip', title: tooltip), class: 'submodule-compare')
+    end
+
+    link
   end
 
   def diff_file_blob_raw_url(diff_file, only_path: false)

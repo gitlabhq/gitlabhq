@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Design management design version dropdown component renders design version dropdown button 1`] = `
-<gl-new-dropdown-stub
+<gl-dropdown-stub
   category="tertiary"
   headertext=""
   issueiid=""
@@ -10,7 +10,7 @@ exports[`Design management design version dropdown component renders design vers
   text="Showing latest version"
   variant="default"
 >
-  <gl-new-dropdown-item-stub
+  <gl-dropdown-item-stub
     avatarurl=""
     iconcolor=""
     iconname=""
@@ -22,8 +22,8 @@ exports[`Design management design version dropdown component renders design vers
     Version 
         2
        (latest)
-  </gl-new-dropdown-item-stub>
-  <gl-new-dropdown-item-stub
+  </gl-dropdown-item-stub>
+  <gl-dropdown-item-stub
     avatarurl=""
     iconcolor=""
     iconname=""
@@ -34,12 +34,12 @@ exports[`Design management design version dropdown component renders design vers
     Version 
         1
       
-  </gl-new-dropdown-item-stub>
-</gl-new-dropdown-stub>
+  </gl-dropdown-item-stub>
+</gl-dropdown-stub>
 `;
 
 exports[`Design management design version dropdown component renders design version list 1`] = `
-<gl-new-dropdown-stub
+<gl-dropdown-stub
   category="tertiary"
   headertext=""
   issueiid=""
@@ -48,7 +48,7 @@ exports[`Design management design version dropdown component renders design vers
   text="Showing latest version"
   variant="default"
 >
-  <gl-new-dropdown-item-stub
+  <gl-dropdown-item-stub
     avatarurl=""
     iconcolor=""
     iconname=""
@@ -60,8 +60,8 @@ exports[`Design management design version dropdown component renders design vers
     Version 
         2
        (latest)
-  </gl-new-dropdown-item-stub>
-  <gl-new-dropdown-item-stub
+  </gl-dropdown-item-stub>
+  <gl-dropdown-item-stub
     avatarurl=""
     iconcolor=""
     iconname=""
@@ -72,6 +72,6 @@ exports[`Design management design version dropdown component renders design vers
     Version 
         1
       
-  </gl-new-dropdown-item-stub>
-</gl-new-dropdown-stub>
+  </gl-dropdown-item-stub>
+</gl-dropdown-stub>
 `;

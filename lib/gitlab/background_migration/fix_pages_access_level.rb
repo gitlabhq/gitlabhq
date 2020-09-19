@@ -103,8 +103,8 @@ module Gitlab
       end
 
       # Private projects are not allowed to have enabled access level, only `private` and `public`
-      # If access control is enabled, these projects currently behave as if the have `private` pages_access_level
-      # if access control is disabled, these projects currently behave as if the have `public` pages_access_level
+      # If access control is enabled, these projects currently behave as if they have `private` pages_access_level
+      # if access control is disabled, these projects currently behave as if they have `public` pages_access_level
       # so we preserve this behaviour for projects with pages already deployed
       # for project without pages we always set `private` access_level
       def fix_private_access_level(start_id, stop_id)

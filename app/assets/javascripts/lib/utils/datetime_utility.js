@@ -216,8 +216,9 @@ export const timeFor = (time, expiredLabel) => {
   return timeago.format(time, `${timeagoLanguageCode}-remaining`).trim();
 };
 
+export const millisecondsPerDay = 1000 * 60 * 60 * 24;
+
 export const getDayDifference = (a, b) => {
-  const millisecondsPerDay = 1000 * 60 * 60 * 24;
   const date1 = Date.UTC(a.getFullYear(), a.getMonth(), a.getDate());
   const date2 = Date.UTC(b.getFullYear(), b.getMonth(), b.getDate());
 
@@ -642,6 +643,16 @@ export const secondsToMilliseconds = seconds => seconds * 1000;
 export const secondsToDays = seconds => Math.round(seconds / 86400);
 
 /**
+ * Returns the date n days after the date provided
+ *
+ * @param {Date} date the initial date
+ * @param {Number} numberOfDays number of days after
+ * @return {Date} the date following the date provided
+ */
+export const nDaysAfter = (date, numberOfDays) =>
+  new Date(newDate(date)).setDate(date.getDate() + numberOfDays);
+
+/**
  * Returns the date after the date provided
  *
  * @param {Date} date the initial date
@@ -702,24 +713,33 @@ export const approximateDuration = (seconds = 0) => {
  * @return {Date} the date object from the params
  */
 export const dateFromParams = (year, month, day) => {
-  const date = new Date();
-
-  date.setFullYear(year);
-  date.setMonth(month);
-  date.setDate(day);
-
-  return date;
+  return new Date(year, month, day);
 };
 
 /**
  * A utility function which computes the difference in seconds
  * between 2 dates.
  *
- * @param {Date} startDate the start sate
+ * @param {Date} startDate the start date
  * @param {Date} endDate the end date
  *
  * @return {Int} the difference in seconds
  */
 export const differenceInSeconds = (startDate, endDate) => {
   return (endDate.getTime() - startDate.getTime()) / 1000;
+};
+
+/**
+ * A utility function which computes the difference in milliseconds
+ * between 2 dates.
+ *
+ * @param {Date|Int} startDate the start date. Can be either a date object or a unix timestamp.
+ * @param {Date|Int} endDate the end date. Can be either a date object or a unix timestamp. Defaults to now.
+ *
+ * @return {Int} the difference in milliseconds
+ */
+export const differenceInMilliseconds = (startDate, endDate = Date.now()) => {
+  const startDateInMS = startDate instanceof Date ? startDate.getTime() : startDate;
+  const endDateInMS = endDate instanceof Date ? endDate.getTime() : endDate;
+  return endDateInMS - startDateInMS;
 };

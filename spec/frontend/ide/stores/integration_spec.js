@@ -36,8 +36,6 @@ describe('IDE store integration', () => {
     beforeEach(() => {
       const { entries, treeList } = decorateFiles({
         data: [`${TEST_PATH_DIR}/`, TEST_PATH, 'README.md'],
-        projectId: TEST_PROJECT_ID,
-        branchId: TEST_BRANCH,
       });
 
       Object.assign(entries[TEST_PATH], {

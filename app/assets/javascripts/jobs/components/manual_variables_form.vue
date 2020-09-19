@@ -1,15 +1,14 @@
 <script>
+/* eslint-disable vue/no-v-html */
 import { uniqueId } from 'lodash';
 import { mapActions } from 'vuex';
-import { GlDeprecatedButton } from '@gitlab/ui';
+import { GlButton } from '@gitlab/ui';
 import { s__, sprintf } from '~/locale';
-import Icon from '~/vue_shared/components/icon.vue';
 
 export default {
   name: 'ManualVariablesForm',
   components: {
-    GlDeprecatedButton,
-    Icon,
+    GlButton,
   },
   props: {
     action: {
@@ -137,12 +136,12 @@ export default {
         <div class="table-section section-10">
           <div class="table-mobile-header" role="rowheader"></div>
           <div class="table-mobile-content justify-content-end">
-            <gl-deprecated-button
-              class="btn-transparent btn-blank w-25"
+            <gl-button
+              category="tertiary"
+              icon="clear"
+              :aria-label="__('Delete variable')"
               @click="deleteVariable(variable.id)"
-            >
-              <icon name="clear" />
-            </gl-deprecated-button>
+            />
           </div>
         </div>
       </div>
@@ -176,9 +175,14 @@ export default {
       <p class="text-muted" v-html="helpText"></p>
     </div>
     <div class="d-flex justify-content-center">
-      <gl-deprecated-button variant="primary" @click="triggerManualJob(variables)">
+      <gl-button
+        variant="info"
+        category="primary"
+        :aria-label="__('Trigger manual job')"
+        @click="triggerManualJob(variables)"
+      >
         {{ action.button_title }}
-      </gl-deprecated-button>
+      </gl-button>
     </div>
   </div>
 </template>

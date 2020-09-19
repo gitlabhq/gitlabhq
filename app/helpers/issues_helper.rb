@@ -4,7 +4,7 @@ module IssuesHelper
   def issue_css_classes(issue)
     classes = ["issue"]
     classes << "closed" if issue.closed?
-    classes << "today" if issue.today?
+    classes << "today" if issue.new?
     classes << "user-can-drag" if @sort == 'relative_position'
     classes.join(' ')
   end

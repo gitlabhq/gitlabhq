@@ -1,13 +1,12 @@
 <script>
-import { GlButton, GlLoadingIcon } from '@gitlab/ui';
+import { GlButton, GlLoadingIcon, GlIcon } from '@gitlab/ui';
 import { __ } from '~/locale';
-import Icon from '~/vue_shared/components/icon.vue';
 
 export default {
   components: {
     GlButton,
     GlLoadingIcon,
-    Icon,
+    GlIcon,
   },
   props: {
     title: {
@@ -66,7 +65,7 @@ export default {
           @click="toggleCollapsed"
         >
           <gl-loading-icon v-if="isLoading" />
-          <icon v-else :name="arrowIconName" class="js-icon" />
+          <gl-icon v-else :name="arrowIconName" class="js-icon" />
         </button>
         <gl-button
           variant="link"

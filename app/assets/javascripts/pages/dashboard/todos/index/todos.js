@@ -1,7 +1,7 @@
 /* eslint-disable class-methods-use-this, no-unneeded-ternary */
 
 import $ from 'jquery';
-import '~/gl_dropdown';
+import initDeprecatedJQueryDropdown from '~/deprecated_jquery_dropdown';
 import { visitUrl } from '~/lib/utils/url_utility';
 import UsersSelect from '~/users_select';
 import { isMetaClick } from '~/lib/utils/common_utils';
@@ -50,7 +50,7 @@ export default class Todos {
   }
 
   initFilterDropdown($dropdown, fieldName, searchFields) {
-    $dropdown.glDropdown({
+    initDeprecatedJQueryDropdown($dropdown, {
       fieldName,
       selectable: true,
       filterable: searchFields ? true : false,

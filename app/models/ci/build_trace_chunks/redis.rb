@@ -41,9 +41,9 @@ module Ci
         end
       end
 
-      def set_data(model, data)
+      def set_data(model, new_data)
         Gitlab::Redis::SharedState.with do |redis|
-          redis.set(key(model), data, ex: CHUNK_REDIS_TTL)
+          redis.set(key(model), new_data, ex: CHUNK_REDIS_TTL)
         end
       end
 

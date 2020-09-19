@@ -8,9 +8,13 @@ module WikiPages
 
       if page.update(@params)
         execute_hooks(page)
+        ServiceResponse.success(payload: { page: page })
+      else
+        ServiceResponse.error(
+          message: _('Could not update wiki page'),
+          payload: { page: page }
+        )
       end
-
-      page
     end
 
     def usage_counter_action

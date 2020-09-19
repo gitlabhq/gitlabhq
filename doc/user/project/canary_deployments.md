@@ -48,9 +48,9 @@ Canary deployments require that you properly configure Deploy Boards:
    template for canary deployments that GitLab provides.
 
 Depending on the deploy, the label should be either `stable` or `canary`.
-Usually, `stable` and blank or missing label means the same thing, and `canary`
-or any other track means canary/temporary.
-This allows GitLab to discover whether deployment is stable or canary (temporary).
+GitLab assumes the track label is `stable` if the label is blank or missing.
+Any other track label is considered `canary` (temporary).
+This allows GitLab to discover whether a deployment is stable or canary (temporary).
 
 Once all of the above are set up and the pipeline has run at least once,
 navigate to the environments page under **Pipelines > Environments**.

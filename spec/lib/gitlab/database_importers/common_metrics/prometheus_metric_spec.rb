@@ -8,7 +8,7 @@ RSpec.describe Gitlab::DatabaseImporters::CommonMetrics::PrometheusMetric do
   end
 
   it '.group_titles equals ::PrometheusMetric' do
-    existing_group_titles = ::PrometheusMetricEnums.group_details.transform_values do |value|
+    existing_group_titles = Enums::PrometheusMetric.group_details.transform_values do |value|
       value[:group_title]
     end
     expect(Gitlab::DatabaseImporters::CommonMetrics::PrometheusMetricEnums.group_titles).to eq(existing_group_titles)

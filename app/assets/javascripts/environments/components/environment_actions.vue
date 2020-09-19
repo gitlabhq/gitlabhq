@@ -1,8 +1,7 @@
 <script>
-import { GlLoadingIcon } from '@gitlab/ui';
+import { GlButton, GlIcon, GlLoadingIcon } from '@gitlab/ui';
 import { __, s__, sprintf } from '~/locale';
 import { formatTime } from '~/lib/utils/datetime_utility';
-import Icon from '~/vue_shared/components/icon.vue';
 import eventHub from '../event_hub';
 import tooltip from '../../vue_shared/directives/tooltip';
 
@@ -11,7 +10,8 @@ export default {
     tooltip,
   },
   components: {
-    Icon,
+    GlButton,
+    GlIcon,
     GlLoadingIcon,
   },
   props: {
@@ -69,38 +69,37 @@ export default {
 </script>
 <template>
   <div class="btn-group" role="group">
-    <button
+    <gl-button
       v-tooltip
       :title="title"
       :aria-label="title"
       :disabled="isLoading"
-      type="button"
-      class="dropdown btn btn-default dropdown-new js-environment-actions-dropdown"
+      class="dropdown dropdown-new js-environment-actions-dropdown"
       data-container="body"
       data-toggle="dropdown"
     >
       <span>
-        <icon name="play" />
-        <icon name="chevron-down" />
+        <gl-icon name="play" />
+        <gl-icon name="chevron-down" />
         <gl-loading-icon v-if="isLoading" />
       </span>
-    </button>
+    </gl-button>
 
     <ul class="dropdown-menu dropdown-menu-right">
-      <li v-for="(action, i) in actions" :key="i">
-        <button
+      <li v-for="(action, i) in actions" :key="i" class="gl-display-flex">
+        <gl-button
           :class="{ disabled: isActionDisabled(action) }"
           :disabled="isActionDisabled(action)"
-          type="button"
-          class="js-manual-action-link no-btn btn d-flex align-items-center"
+          variant="link"
+          class="js-manual-action-link gl-flex-fill-1"
           @click="onClickAction(action)"
         >
-          <span class="flex-fill">{{ action.name }}</span>
-          <span v-if="action.scheduledAt" class="text-secondary">
-            <icon name="clock" />
+          <span class="gl-flex-fill-1">{{ action.name }}</span>
+          <span v-if="action.scheduledAt" class="text-secondary float-right">
+            <gl-icon name="clock" />
             {{ remainingTime(action) }}
           </span>
-        </button>
+        </gl-button>
       </li>
     </ul>
   </div>

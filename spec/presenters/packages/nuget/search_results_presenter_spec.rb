@@ -37,7 +37,7 @@ RSpec.describe Packages::Nuget::SearchResultsPresenter do
       expect(package_json[:summary]).to be_blank
       expect(package_json[:total_downloads]).to eq 0
       expect(package_json[:verified]).to be
-      expect(package_json[:version]).to eq VersionSorter.sort(versions).last # rubocop: disable Style/UnneededSort
+      expect(package_json[:version]).to eq VersionSorter.sort(versions).last # rubocop: disable Style/RedundantSort
       versions.zip(package_json[:versions]).each do |version, version_json|
         expect(version_json[:json_url]).to end_with("#{version}.json")
         expect(version_json[:downloads]).to eq 0

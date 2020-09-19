@@ -62,20 +62,37 @@ module DropdownsHelper
   end
 
   def dropdown_title(title, options: {})
-    content_tag :div, class: "dropdown-title" do
+    has_back = options.fetch(:back, false)
+    has_close = options.fetch(:close, true)
+
+    container_class = %w[dropdown-title gl-display-flex]
+    margin_class = []
+
+    if has_back && has_close
+      container_class << 'gl-justify-content-space-between'
+    elsif has_back
+      margin_class << 'gl-mr-auto'
+    elsif has_close
+      margin_class << 'gl-ml-auto'
+    end
+
+    container_class = container_class.join(' ')
+    margin_class = margin_class.join(' ')
+
+    content_tag :div, class: container_class do
       title_output = []
 
-      if options.fetch(:back, false)
-        title_output << content_tag(:button, class: "dropdown-title-button dropdown-menu-back", aria: { label: "Go back" }, type: "button") do
-          icon('arrow-left')
+      if has_back
+        title_output << content_tag(:button, class: "dropdown-title-button dropdown-menu-back " + margin_class, aria: { label: "Go back" }, type: "button") do
+          sprite_icon('arrow-left')
         end
       end
 
-      title_output << content_tag(:span, title)
+      title_output << content_tag(:span, title, class: margin_class)
 
-      if options.fetch(:close, true)
-        title_output << content_tag(:button, class: "dropdown-title-button dropdown-menu-close", aria: { label: "Close" }, type: "button") do
-          icon('times', class: 'dropdown-menu-close-icon')
+      if has_close
+        title_output << content_tag(:button, class: "dropdown-title-button dropdown-menu-close " + margin_class, aria: { label: "Close" }, type: "button") do
+          sprite_icon('close', size: 16, css_class: 'dropdown-menu-close-icon')
         end
       end
 
@@ -83,20 +100,11 @@ module DropdownsHelper
     end
   end
 
-  def dropdown_input(placeholder, input_id: nil)
-    content_tag :div, class: "dropdown-input" do
-      filter_output = text_field_tag input_id, nil, class: "dropdown-input-field dropdown-no-filter", placeholder: placeholder, autocomplete: 'off'
-      filter_output << icon('times', class: "dropdown-input-clear js-dropdown-input-clear", role: "button")
-
-      filter_output.html_safe
-    end
-  end
-
   def dropdown_filter(placeholder, search_id: nil)
     content_tag :div, class: "dropdown-input" do
       filter_output = search_field_tag search_id, nil, class: "dropdown-input-field qa-dropdown-input-field", placeholder: placeholder, autocomplete: 'off'
       filter_output << icon('search', class: "dropdown-input-search")
-      filter_output << icon('times', class: "dropdown-input-clear js-dropdown-input-clear", role: "button")
+      filter_output << sprite_icon('close', size: 16, css_class: 'dropdown-input-clear js-dropdown-input-clear')
 
       filter_output.html_safe
     end

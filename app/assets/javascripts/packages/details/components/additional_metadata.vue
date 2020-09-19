@@ -1,7 +1,7 @@
 <script>
 import { GlLink, GlSprintf } from '@gitlab/ui';
 import { s__ } from '~/locale';
-import DetailsRow from '~/registry/shared/components/details_row.vue';
+import DetailsRow from '~/vue_shared/components/registry/details_row.vue';
 import { generateConanRecipe } from '../utils';
 import { PackageType } from '../../shared/constants';
 

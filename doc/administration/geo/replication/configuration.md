@@ -12,7 +12,7 @@ type: howto
 NOTE: **Note:**
 This is the final step in setting up a **secondary** Geo node. Stages of the
 setup process must be completed in the documented order.
-Before attempting the steps in this stage, [complete all prior stages](index.md#using-omnibus-gitlab).
+Before attempting the steps in this stage, [complete all prior stages](../setup/index.md#using-omnibus-gitlab).
 
 The basic steps of configuring a **secondary** node are to:
 

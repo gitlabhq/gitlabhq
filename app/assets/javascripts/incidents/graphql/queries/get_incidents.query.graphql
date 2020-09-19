@@ -1,3 +1,5 @@
+#import "ee_else_ce/incidents/graphql/fragments/incident_fields.fragment.graphql"
+
 query getIncidents(
   $projectPath: ID!
   $issueTypes: [IssueType!]
@@ -39,7 +41,7 @@ query getIncidents(
             webUrl
           }
         }
-        statusPagePublishedIncident
+        ...IncidentFields
       }
       pageInfo {
         hasNextPage

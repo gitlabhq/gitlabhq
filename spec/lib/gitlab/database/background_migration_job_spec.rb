@@ -71,6 +71,15 @@ RSpec.describe Gitlab::Database::BackgroundMigrationJob do
       expect(job4.reload).to be_pending
     end
 
+    it 'returns the number of jobs updated' do
+      expect(described_class.succeeded.count).to eq(0)
+
+      jobs_updated = described_class.mark_all_as_succeeded('::TestJob', [1, 100])
+
+      expect(jobs_updated).to eq(2)
+      expect(described_class.succeeded.count).to eq(2)
+    end
+
     context 'when previous matching jobs have already succeeded' do
       let(:initial_time) { Time.now.round }
       let!(:job1) { create(:background_migration_job, :succeeded, created_at: initial_time, updated_at: initial_time) }

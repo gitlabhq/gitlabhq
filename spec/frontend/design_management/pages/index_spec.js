@@ -1,13 +1,15 @@
 import { createLocalVue, shallowMount } from '@vue/test-utils';
-import { ApolloMutation } from 'vue-apollo';
+import VueApollo, { ApolloMutation } from 'vue-apollo';
 import VueDraggable from 'vuedraggable';
 import VueRouter from 'vue-router';
 import { GlEmptyState } from '@gitlab/ui';
+import createMockApollo from 'jest/helpers/mock_apollo_helper';
 import Index from '~/design_management/pages/index.vue';
 import uploadDesignQuery from '~/design_management/graphql/mutations/upload_design.mutation.graphql';
 import DesignDestroyer from '~/design_management/components/design_destroyer.vue';
 import DesignDropzone from '~/design_management/components/upload/design_dropzone.vue';
 import DeleteButton from '~/design_management/components/delete_button.vue';
+import Design from '~/design_management/components/list/item.vue';
 import { DESIGNS_ROUTE_NAME } from '~/design_management/router/constants';
 import {
   EXISTING_DESIGN_DROP_MANY_FILES_MESSAGE,
@@ -17,6 +19,16 @@ import { deprecatedCreateFlash as createFlash } from '~/flash';
 import createRouter from '~/design_management/router';
 import * as utils from '~/design_management/utils/design_management_utils';
 import { DESIGN_DETAIL_LAYOUT_CLASSLIST } from '~/design_management/constants';
+import {
+  designListQueryResponse,
+  permissionsQueryResponse,
+  moveDesignMutationResponse,
+  reorderedDesigns,
+  moveDesignMutationResponseWithErrors,
+} from '../mock_data/apollo_mock';
+import getDesignListQuery from '~/design_management/graphql/queries/get_design_list.query.graphql';
+import permissionsQuery from '~/design_management/graphql/queries/design_permissions.query.graphql';
+import moveDesignMutation from '~/design_management/graphql/mutations/move_design.mutation.graphql';
 
 jest.mock('~/flash.js');
 const mockPageEl = {
@@ -61,9 +73,21 @@ const mockVersion = {
   id: 'gid://gitlab/DesignManagement::Version/1',
 };
 
+const designToMove = {
+  __typename: 'Design',
+  id: '2',
+  event: 'NONE',
+  filename: 'fox_2.jpg',
+  notesCount: 2,
+  image: 'image-2',
+  imageV432x230: 'image-2',
+};
+
 describe('Design management index page', () => {
   let mutate;
   let wrapper;
+  let fakeApollo;
+  let moveDesignHandler;
 
   const findDesignCheckboxes = () => wrapper.findAll('.design-checkbox');
   const findSelectAllButton = () => wrapper.find('.js-select-all');
@@ -74,6 +98,20 @@ describe('Design management index page', () => {
   const findDropzoneWrapper = () => wrapper.find('[data-testid="design-dropzone-wrapper"]');
   const findFirstDropzoneWithDesign = () => wrapper.findAll(DesignDropzone).at(1);
   const findDesignsWrapper = () => wrapper.find('[data-testid="designs-root"]');
+  const findDesigns = () => wrapper.findAll(Design);
+
+  async function moveDesigns(localWrapper) {
+    await jest.runOnlyPendingTimers();
+    await localWrapper.vm.$nextTick();
+
+    localWrapper.find(VueDraggable).vm.$emit('input', reorderedDesigns);
+    localWrapper.find(VueDraggable).vm.$emit('change', {
+      moved: {
+        newIndex: 0,
+        element: designToMove,
+      },
+    });
+  }
 
   function createComponent({
     loading = false,
@@ -118,8 +156,30 @@ describe('Design management index page', () => {
     });
   }
 
+  function createComponentWithApollo({
+    moveHandler = jest.fn().mockResolvedValue(moveDesignMutationResponse),
+  }) {
+    localVue.use(VueApollo);
+    moveDesignHandler = moveHandler;
+
+    const requestHandlers = [
+      [getDesignListQuery, jest.fn().mockResolvedValue(designListQueryResponse)],
+      [permissionsQuery, jest.fn().mockResolvedValue(permissionsQueryResponse)],
+      [moveDesignMutation, moveDesignHandler],
+    ];
+
+    fakeApollo = createMockApollo(requestHandlers);
+    wrapper = shallowMount(Index, {
+      localVue,
+      apolloProvider: fakeApollo,
+      router,
+      stubs: { VueDraggable },
+    });
+  }
+
   afterEach(() => {
     wrapper.destroy();
+    wrapper = null;
   });
 
   describe('designs', () => {
@@ -478,16 +538,15 @@ describe('Design management index page', () => {
   describe('on non-latest version', () => {
     beforeEach(() => {
       createComponent({ designs: mockDesigns, allVersions: [mockVersion] });
+    });
 
-      router.replace({
+    it('does not render design checkboxes', async () => {
+      await router.replace({
         name: DESIGNS_ROUTE_NAME,
         query: {
           version: '2',
         },
       });
-    });
-
-    it('does not render design checkboxes', () => {
       expect(findDesignCheckboxes()).toHaveLength(0);
     });
 
@@ -514,13 +573,6 @@ describe('Design management index page', () => {
         files: [{ name: 'image.png', type: 'image/png' }],
         getData: () => 'test.png',
       };
-
-      router.replace({
-        name: DESIGNS_ROUTE_NAME,
-        query: {
-          version: '2',
-        },
-      });
     });
 
     it('does not call paste event if designs wrapper is not hovered', () => {
@@ -587,7 +639,69 @@ describe('Design management index page', () => {
       });
       createComponent(true);
 
-      expect(scrollIntoViewMock).toHaveBeenCalled();
+      return wrapper.vm.$nextTick().then(() => {
+        expect(scrollIntoViewMock).toHaveBeenCalled();
+      });
+    });
+  });
+
+  describe('with mocked Apollo client', () => {
+    it('has a design with id 1 as a first one', async () => {
+      createComponentWithApollo({});
+
+      await jest.runOnlyPendingTimers();
+      await wrapper.vm.$nextTick();
+
+      expect(findDesigns()).toHaveLength(3);
+      expect(
+        findDesigns()
+          .at(0)
+          .props('id'),
+      ).toBe('1');
+    });
+
+    it('calls a mutation with correct parameters and reorders designs', async () => {
+      createComponentWithApollo({});
+
+      await moveDesigns(wrapper);
+
+      expect(moveDesignHandler).toHaveBeenCalled();
+
+      await wrapper.vm.$nextTick();
+
+      expect(
+        findDesigns()
+          .at(0)
+          .props('id'),
+      ).toBe('2');
+    });
+
+    it('displays flash if mutation had a recoverable error', async () => {
+      createComponentWithApollo({
+        moveHandler: jest.fn().mockResolvedValue(moveDesignMutationResponseWithErrors),
+      });
+
+      await moveDesigns(wrapper);
+
+      await wrapper.vm.$nextTick();
+
+      expect(createFlash).toHaveBeenCalledWith('Houston, we have a problem');
+    });
+
+    it('displays flash if mutation had a non-recoverable error', async () => {
+      createComponentWithApollo({
+        moveHandler: jest.fn().mockRejectedValue('Error'),
+      });
+
+      await moveDesigns(wrapper);
+
+      await wrapper.vm.$nextTick(); // kick off the DOM update
+      await jest.runOnlyPendingTimers(); // kick off the mocked GQL stuff (promises)
+      await wrapper.vm.$nextTick(); // kick off the DOM update for flash
+
+      expect(createFlash).toHaveBeenCalledWith(
+        'Something went wrong when reordering designs. Please try again',
+      );
     });
   });
 });

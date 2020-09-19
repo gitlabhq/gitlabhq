@@ -13,14 +13,12 @@ module DiscussionOnDiff
               :diff_line,
               :active?,
               :created_at_diff?,
-
               to: :first_note
 
     delegate  :file_path,
               :blob,
               :highlighted_diff_lines,
               :diff_lines,
-
               to: :diff_file,
               allow_nil: true
   end

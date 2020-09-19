@@ -121,6 +121,12 @@ FactoryBot.define do
         end
       end
 
+      trait :with_coverage_report_artifact do
+        after(:build) do |pipeline, evaluator|
+          pipeline.pipeline_artifacts << build(:ci_pipeline_artifact, pipeline: pipeline, project: pipeline.project)
+        end
+      end
+
       trait :with_terraform_reports do
         status { :success }
 

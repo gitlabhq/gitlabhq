@@ -1,0 +1,5 @@
+---
+title: Update MR index to include id
+merge_request: 42222
+author:
+type: performance

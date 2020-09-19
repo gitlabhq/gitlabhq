@@ -3,6 +3,10 @@ Doorkeeper.configure do
   # Currently supported options are :active_record, :mongoid2, :mongoid3, :mongo_mapper
   orm :active_record
 
+  # Restore to pre-5.1 generator due to breaking change.
+  # See https://gitlab.com/gitlab-org/gitlab/-/issues/244371
+  default_generator_method :hex
+
   # This block will be called to check whether the resource owner is authenticated or not.
   resource_owner_authenticator do
     # Put your resource owner authentication logic here.
@@ -78,13 +82,6 @@ Doorkeeper.configure do
   # falls back to the `:access_token` or `:bearer_token` params from the `params` object.
   # Check out the wiki for more information on customization
   access_token_methods :from_access_token_param, :from_bearer_authorization, :from_bearer_param
-
-  # Change the native redirect uri for client apps
-  # When clients register with the following redirect uri, they won't be redirected to any server and the authorization code will be displayed within the provider
-  # The value can be any string. Use nil to disable this feature. When disabled, clients must provide a valid URL
-  # (Similar behaviour: https://developers.google.com/accounts/docs/OAuth2InstalledApp#choosingredirecturi)
-  #
-  native_redirect_uri nil # 'urn:ietf:wg:oauth:2.0:oob'
 
   # Specify what grant flows are enabled in array of Strings. The valid
   # strings and the flows they enable are:

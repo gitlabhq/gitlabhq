@@ -147,13 +147,12 @@ function disable_sign_ups() {
   run_task "${ruby_cmd}"
 
   # Disable sign-ups
-  retry 'curl --silent --show-error --request PUT --header "PRIVATE-TOKEN: ${REVIEW_APPS_ROOT_TOKEN}" "${CI_ENVIRONMENT_URL}/api/v4/application/settings?signup_enabled=false"'
+  local signup_enabled=$(retry 'curl --silent --show-error --request PUT --header "PRIVATE-TOKEN: ${REVIEW_APPS_ROOT_TOKEN}" "${CI_ENVIRONMENT_URL}/api/v4/application/settings?signup_enabled=false" | jq ".signup_enabled"')
 
-  local signup_enabled=$(retry 'curl --silent --show-error --request GET --header "PRIVATE-TOKEN: ${REVIEW_APPS_ROOT_TOKEN}" "${CI_ENVIRONMENT_URL}/api/v4/application/settings" | jq ".signup_enabled"')
   if [[ "${signup_enabled}" == "false" ]]; then
     echoinfo "Sign-ups have been disabled successfully."
   else
-    echoerr "Sign-ups should be disabled but are still enabled!"
+    echoerr "Sign-ups are still enabled!"
     false
   fi
 }

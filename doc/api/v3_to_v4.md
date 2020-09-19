@@ -74,8 +74,8 @@ Below are the changes made between V3 and V4.
   - `POST /projects/:id/trigger/builds` to `POST /projects/:id/trigger/pipeline`
   - Require description when creating a new trigger `POST /projects/:id/triggers`
 - Simplify project payload exposed on Environment endpoints [!9675](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/9675)
-- API uses merge request `IID`s (internal ID, as in the web UI) rather than `ID`s. This affects the merge requests, award emoji, todos, and time tracking APIs. [!9530](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/9530)
-- API uses issue `IID`s (internal ID, as in the web UI) rather than `ID`s. This affects the issues, award emoji, todos, and time tracking APIs. [!9530](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/9530)
+- API uses merge request `IID`s (internal ID, as in the web UI) rather than `ID`s. This affects the merge requests, award emoji, to-dos, and time tracking APIs. [!9530](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/9530)
+- API uses issue `IID`s (internal ID, as in the web UI) rather than `ID`s. This affects the issues, award emoji, to-dos, and time tracking APIs. [!9530](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/9530)
 - Change initial page from `0` to `1` on `GET /projects/:id/repository/commits` (like on the rest of the API) [!9679](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/9679)
 - Return correct `Link` header data for `GET /projects/:id/repository/commits` [!9679](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/9679)
 - Update endpoints for repository files [!9637](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/9637)

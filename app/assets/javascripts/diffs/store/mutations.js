@@ -1,4 +1,6 @@
+import Vue from 'vue';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
+import { INLINE_DIFF_VIEW_TYPE } from '../constants';
 import {
   findDiffFile,
   addLineReferences,
@@ -24,7 +26,6 @@ export default {
       projectPath,
       dismissEndpoint,
       showSuggestPopover,
-      useSingleDiffStyle,
     } = options;
     Object.assign(state, {
       endpoint,
@@ -34,7 +35,6 @@ export default {
       projectPath,
       dismissEndpoint,
       showSuggestPopover,
-      useSingleDiffStyle,
     });
   },
 
@@ -57,10 +57,7 @@ export default {
   [types.SET_DIFF_DATA](state, data) {
     let files = state.diffFiles;
 
-    if (
-      !(gon?.features?.diffsBatchLoad && window.location.search.indexOf('diff_id') === -1) &&
-      data.diff_files
-    ) {
+    if (window.location.search.indexOf('diff_id') !== -1 && data.diff_files) {
       files = prepareDiffData(data, files);
     }
 
@@ -154,7 +151,9 @@ export default {
     addContextLines({
       inlineLines: diffFile.highlighted_diff_lines,
       parallelLines: diffFile.parallel_diff_lines,
-      diffViewType: state.diffViewType,
+      diffViewType: window.gon?.features?.unifiedDiffLines
+        ? INLINE_DIFF_VIEW_TYPE
+        : state.diffViewType,
       contextLines: lines,
       bottom,
       lineNumbers,
@@ -249,7 +248,7 @@ export default {
           });
         }
 
-        if (!file.parallel_diff_lines || !file.highlighted_diff_lines) {
+        if (!file.parallel_diff_lines.length || !file.highlighted_diff_lines.length) {
           const newDiscussions = (file.discussions || [])
             .filter(d => d.id !== discussion.id)
             .concat(discussion);
@@ -293,8 +292,9 @@ export default {
   [types.TOGGLE_SHOW_TREE_LIST](state) {
     state.showTreeList = !state.showTreeList;
   },
-  [types.UPDATE_CURRENT_DIFF_FILE_ID](state, fileId) {
+  [types.VIEW_DIFF_FILE](state, fileId) {
     state.currentDiffFileId = fileId;
+    Vue.set(state.viewedDiffFileIds, fileId, true);
   },
   [types.OPEN_DIFF_FILE_COMMENT_FORM](state, formData) {
     state.commentForms.push({

@@ -28,5 +28,4 @@ const isPlainReadme = file => {
   return re.test(file.name);
 };
 
-// eslint-disable-next-line import/prefer-default-export
 export const readmeFile = blobs => blobs.find(isRichReadme) || blobs.find(isPlainReadme);

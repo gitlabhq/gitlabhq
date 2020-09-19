@@ -2,12 +2,14 @@ import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import BlobEditContent from '~/blob/components/blob_edit_content.vue';
 import * as utils from '~/blob/utils';
-import Editor from '~/editor/editor_lite';
 
 jest.mock('~/editor/editor_lite');
 
 describe('Blob Header Editing', () => {
   let wrapper;
+  const onDidChangeModelContent = jest.fn();
+  const updateModelLanguage = jest.fn();
+  const getValue = jest.fn();
   const value = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.';
   const fileName = 'lorem.txt';
   const fileGlobalId = 'snippet_777';
@@ -24,7 +26,12 @@ describe('Blob Header Editing', () => {
   }
 
   beforeEach(() => {
-    jest.spyOn(utils, 'initEditorLite');
+    jest.spyOn(utils, 'initEditorLite').mockImplementation(() => ({
+      onDidChangeModelContent,
+      updateModelLanguage,
+      getValue,
+      dispose: jest.fn(),
+    }));
 
     createComponent();
   });
@@ -34,8 +41,8 @@ describe('Blob Header Editing', () => {
   });
 
   const triggerChangeContent = val => {
-    jest.spyOn(Editor.prototype, 'getValue').mockReturnValue(val);
-    const [cb] = Editor.prototype.onChangeContent.mock.calls[0];
+    getValue.mockReturnValue(val);
+    const [cb] = onDidChangeModelContent.mock.calls[0];
 
     cb();
 
@@ -58,7 +65,7 @@ describe('Blob Header Editing', () => {
       createComponent({ value: undefined });
 
       expect(spy).not.toHaveBeenCalled();
-      expect(wrapper.contains('#editor')).toBe(true);
+      expect(wrapper.find('#editor').exists()).toBe(true);
     });
 
     it('initialises Editor Lite', () => {
@@ -79,12 +86,12 @@ describe('Blob Header Editing', () => {
       });
 
       return nextTick().then(() => {
-        expect(Editor.prototype.updateModelLanguage).toHaveBeenCalledWith(newFileName);
+        expect(updateModelLanguage).toHaveBeenCalledWith(newFileName);
       });
     });
 
     it('registers callback with editor onChangeContent', () => {
-      expect(Editor.prototype.onChangeContent).toHaveBeenCalledWith(expect.any(Function));
+      expect(onDidChangeModelContent).toHaveBeenCalledWith(expect.any(Function));
     });
 
     it('emits input event when the blob content is changed', () => {

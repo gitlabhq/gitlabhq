@@ -18,44 +18,6 @@ Capybara/CurrentPathExpectation:
 Layout/ArgumentAlignment:
   Enabled: false
 
-# Offense count: 13
-# Cop supports --auto-correct.
-Layout/ClosingHeredocIndentation:
-  Exclude:
-    - 'app/graphql/mutations/merge_requests/set_wip.rb'
-    - 'ee/db/geo/migrate/20180322062741_migrate_ci_job_artifacts_to_separate_registry.rb'
-    - 'ee/lib/gitlab/geo/health_check.rb'
-    - 'spec/features/merge_request/user_sees_diff_spec.rb'
-    - 'spec/lib/gitlab/asciidoc_spec.rb'
-    - 'spec/lib/gitlab/checks/project_moved_spec.rb'
-    - 'spec/rubocop/cop/active_record_association_reload_spec.rb'
-    - 'spec/services/task_list_toggle_service_spec.rb'
-
-# Offense count: 13
-# Cop supports --auto-correct.
-Layout/ClosingParenthesisIndentation:
-  Exclude:
-    - 'db/post_migrate/20180704145007_update_project_indexes.rb'
-    - 'ee/db/geo/migrate/20180405074130_add_partial_index_project_repository_verification.rb'
-    - 'spec/services/issues/resolve_discussions_spec.rb'
-    - 'spec/services/projects/update_service_spec.rb'
-    - 'spec/support/helpers/stub_object_storage.rb'
-    - 'spec/workers/remove_unreferenced_lfs_objects_worker_spec.rb'
-
-# Offense count: 72
-# Cop supports --auto-correct.
-Layout/EmptyLinesAroundArguments:
-  Exclude:
-    - 'app/models/concerns/discussion_on_diff.rb'
-    - 'app/models/concerns/resolvable_discussion.rb'
-    - 'app/models/diff_discussion.rb'
-    - 'app/models/discussion.rb'
-    - 'ee/spec/models/geo/project_registry_spec.rb'
-    - 'lib/banzai/pipeline/broadcast_message_pipeline.rb'
-    - 'lib/banzai/pipeline/gfm_pipeline.rb'
-    - 'lib/banzai/pipeline/single_line_pipeline.rb'
-    - 'spec/features/markdown/copy_as_gfm_spec.rb'
-
 # Offense count: 413
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle, IndentationWidth.
@@ -69,17 +31,6 @@ Layout/FirstArrayElementIndentation:
 # SupportedStyles: special_inside_parentheses, consistent, align_braces
 Layout/FirstHashElementIndentation:
   Enabled: false
-
-# Offense count: 4
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, IndentationWidth.
-# SupportedStyles: consistent, align_parentheses
-Layout/FirstParameterIndentation:
-  Exclude:
-    - 'lib/gitlab/cross_project_access.rb'
-    - 'lib/gitlab/data_builder/push.rb'
-    - 'spec/support/helpers/repo_helpers.rb'
-    - 'spec/support/helpers/stub_object_storage.rb'
 
 # Offense count: 2164
 # Cop supports --auto-correct.
@@ -104,32 +55,10 @@ Layout/LineLength:
 Layout/MultilineOperationIndentation:
   Enabled: false
 
-# Offense count: 9
-# Cop supports --auto-correct.
-Layout/RescueEnsureAlignment:
-  Exclude:
-    - 'app/models/blob_viewer/dependency_manager.rb'
-    - 'app/models/project.rb'
-    - 'app/services/prometheus/proxy_service.rb'
-    - 'app/workers/delete_stored_files_worker.rb'
-    - 'config/initializers/1_settings.rb'
-    - 'config/initializers/trusted_proxies.rb'
-    - 'lib/gitlab/background_migration/archive_legacy_traces.rb'
-    - 'lib/gitlab/highlight.rb'
-    - 'lib/tasks/gitlab/lfs/migrate.rake'
-
 # Offense count: 36
 # Cop supports --auto-correct.
 Layout/SpaceAroundMethodCallOperator:
   Enabled: false
-
-# Offense count: 2
-# Cop supports --auto-correct.
-# Configuration parameters: AllowForAlignment.
-Layout/SpaceBeforeFirstArg:
-  Exclude:
-    - 'spec/requests/api/runner_spec.rb'
-    - 'spec/support/shared_examples/requests/api/custom_attributes_shared_examples.rb'
 
 # Offense count: 642
 # Cop supports --auto-correct.
@@ -158,23 +87,6 @@ Layout/SpaceInsideParens:
 Lint/MissingCopEnableDirective:
   Enabled: false
 
-# Offense count: 11
-# Cop supports --auto-correct.
-Lint/NonDeterministicRequireOrder:
-  Exclude:
-    - 'ee/spec/spec_helper.rb'
-    - 'qa/spec/spec_helper.rb'
-    - 'spec/spec_helper.rb'
-
-# Offense count: 3
-# Configuration parameters: AllowedImplicitNamespaces.
-# AllowedImplicitNamespaces: Gem
-Lint/RaiseException:
-  Exclude:
-    - 'db/migrate/20190402150158_backport_enterprise_schema.rb'
-    - 'ee/spec/requests/api/helpers_spec.rb'
-    - 'spec/requests/api/helpers_spec.rb'
-
 # Offense count: 27
 # Cop supports --auto-correct.
 Lint/RedundantCopDisableDirective:
@@ -200,14 +112,6 @@ Lint/UriEscapeUnescape:
     - 'app/models/project_services/drone_ci_service.rb'
     - 'spec/lib/google_api/auth_spec.rb'
     - 'spec/requests/api/files_spec.rb'
-
-# Offense count: 3
-# Cop supports --auto-correct.
-Lint/UriRegexp:
-  Exclude:
-    - 'app/models/concerns/mentionable/reference_regexes.rb'
-    - 'app/services/projects/download_service.rb'
-    - 'lib/gitlab/ci/pipeline/chain/config/content/remote.rb'
 
 # Offense count: 65
 # Cop supports --auto-correct.
@@ -294,30 +198,6 @@ RSpec/ExpectChange:
 # Offense count: 751
 RSpec/ExpectInHook:
   Enabled: false
-
-# Offense count: 9
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: it_behaves_like, it_should_behave_like
-RSpec/ItBehavesLike:
-  Exclude:
-    - 'spec/lib/gitlab/git/commit_spec.rb'
-    - 'spec/services/notification_service_spec.rb'
-
-# Offense count: 68
-# Cop supports --auto-correct.
-RSpec/LetBeforeExamples:
-  Exclude:
-    - 'spec/lib/banzai/filter/issue_reference_filter_spec.rb'
-    - 'spec/lib/banzai/filter/user_reference_filter_spec.rb'
-    - 'spec/lib/gitlab/email/handler/create_issue_handler_spec.rb'
-    - 'spec/lib/gitlab/email/handler/create_merge_request_handler_spec.rb'
-    - 'spec/lib/gitlab/email/handler/create_note_handler_spec.rb'
-    - 'spec/models/commit_range_spec.rb'
-    - 'spec/models/milestone_spec.rb'
-    - 'spec/models/project_services/packagist_service_spec.rb'
-    - 'spec/rubocop/cop/migration/update_column_in_batches_spec.rb'
-    - 'spec/serializers/pipeline_details_entity_spec.rb'
 
 # Offense count: 2188
 # Cop supports --auto-correct.
@@ -618,29 +498,12 @@ Security/YAMLLoad:
     - 'spec/initializers/secret_token_spec.rb'
     - 'spec/lib/gitlab/prometheus/additional_metrics_parser_spec.rb'
 
-# Offense count: 10
-# Configuration parameters: EnforcedStyle, AllowModifiersOnSymbols.
-# SupportedStyles: inline, group
-Style/AccessModifierDeclarations:
-  Exclude:
-    - 'app/helpers/issues_helper.rb'
-    - 'app/helpers/lazy_image_tag_helper.rb'
-    - 'lib/gitlab/cache/request_cache.rb'
-    - 'lib/gitlab/request_profiler.rb'
-    - 'spec/support/forgery_protection.rb'
-
 # Offense count: 148
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle.
 # SupportedStyles: percent_q, bare_percent
 Style/BarePercentLiterals:
   Enabled: false
-
-# Offense count: 5
-Style/CommentedKeyword:
-  Exclude:
-    - 'lib/tasks/gitlab/backup.rake'
-    - 'spec/tasks/gitlab/backup_rake_spec.rb'
 
 # Offense count: 5
 # Cop supports --auto-correct.
@@ -658,24 +521,6 @@ Style/EachWithObject:
 # SupportedStyles: empty, nil, both
 Style/EmptyElse:
   Enabled: false
-
-# Offense count: 11
-# Cop supports --auto-correct.
-Style/EmptyLambdaParameter:
-  Exclude:
-    - 'app/models/ci/build.rb'
-    - 'app/models/ci/runner.rb'
-
-# Offense count: 7
-# Cop supports --auto-correct.
-Style/EmptyLiteral:
-  Exclude:
-    - 'lib/gitlab/fogbugz_import/importer.rb'
-    - 'lib/gitlab/git/diff_collection.rb'
-    - 'lib/gitlab/gitaly_client.rb'
-    - 'spec/helpers/merge_requests_helper_spec.rb'
-    - 'spec/lib/gitlab/workhorse_spec.rb'
-    - 'spec/requests/api/jobs_spec.rb'
 
 # Offense count: 170
 # Cop supports --auto-correct.
@@ -735,13 +580,6 @@ Style/MixinUsage:
     - 'spec/factories/notes.rb'
     - 'spec/lib/gitlab/import_export/version_checker_spec.rb'
 
-# Offense count: 2
-# Cop supports --auto-correct.
-Style/MultilineIfModifier:
-  Exclude:
-    - 'app/services/ci/process_pipeline_service.rb'
-    - 'lib/api/commit_statuses.rb'
-
 # Offense count: 29
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle, MinBodyLength.
@@ -767,22 +605,6 @@ Style/ParallelAssignment:
 Style/PercentLiteralDelimiters:
   Enabled: false
 
-# Offense count: 15
-# Cop supports --auto-correct.
-Style/PerlBackrefs:
-  Exclude:
-    - 'app/controllers/projects/application_controller.rb'
-    - 'app/helpers/submodule_helper.rb'
-    - 'lib/backup/manager.rb'
-    - 'lib/banzai/filter/abstract_reference_filter.rb'
-    - 'lib/banzai/filter/autolink_filter.rb'
-    - 'lib/banzai/filter/emoji_filter.rb'
-    - 'lib/banzai/filter/gollum_tags_filter.rb'
-    - 'lib/expand_variables.rb'
-    - 'lib/gitlab/diff/highlight.rb'
-    - 'lib/gitlab/search_results.rb'
-    - 'lib/gitlab/sherlock/query.rb'
-
 # Offense count: 200
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle.
@@ -805,13 +627,6 @@ Style/RedundantInterpolation:
 Style/RedundantSelf:
   Enabled: false
 
-# Offense count: 2
-# Cop supports --auto-correct.
-Style/RedundantSort:
-  Exclude:
-    - 'app/presenters/packages/nuget/search_results_presenter.rb'
-    - 'spec/presenters/packages/nuget/search_results_presenter_spec.rb'
-
 # Offense count: 120
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle, AllowInnerSlashes.
@@ -830,21 +645,6 @@ Style/RescueModifier:
 # SupportedStyles: implicit, explicit
 Style/RescueStandardError:
   Enabled: false
-
-# Offense count: 4
-# Cop supports --auto-correct.
-Style/SelfAssignment:
-  Exclude:
-    - 'app/models/concerns/bulk_member_access_load.rb'
-    - 'app/serializers/base_serializer.rb'
-    - 'spec/support/import_export/configuration_helper.rb'
-
-# Offense count: 50
-# Cop supports --auto-correct.
-# Configuration parameters: AllowIfMethodIsEmpty.
-Style/SingleLineMethods:
-  Exclude:
-    - 'lib/gitlab/ci/ansi2html.rb'
 
 # Offense count: 102
 # Cop supports --auto-correct.
@@ -879,11 +679,6 @@ Rails/SaveBang:
     - 'ee/spec/initializers/fog_google_https_private_urls_spec.rb'
     - 'ee/spec/lib/analytics/merge_request_metrics_calculator_spec.rb'
     - 'ee/spec/lib/ee/gitlab/auth/ldap/sync/group_spec.rb'
-    - 'ee/spec/lib/ee/gitlab/background_migration/migrate_approver_to_approval_rules_spec.rb'
-    - 'ee/spec/lib/ee/gitlab/background_migration/move_epic_issues_after_epics_spec.rb'
-    - 'ee/spec/lib/ee/gitlab/background_migration/populate_any_approval_rule_for_merge_requests_spec.rb'
-    - 'ee/spec/lib/ee/gitlab/background_migration/populate_any_approval_rule_for_projects_spec.rb'
-    - 'ee/spec/lib/ee/gitlab/background_migration/prune_orphaned_geo_events_spec.rb'
     - 'ee/spec/lib/ee/gitlab/checks/push_rules/commit_check_spec.rb'
     - 'ee/spec/lib/ee/gitlab/ci/pipeline/quota/activity_spec.rb'
     - 'ee/spec/lib/gitlab/auth/ldap/access_spec.rb'
@@ -892,9 +687,6 @@ Rails/SaveBang:
     - 'ee/spec/lib/gitlab/background_migration/fix_orphan_promoted_issues_spec.rb'
     - 'ee/spec/lib/gitlab/elastic/search_results_spec.rb'
     - 'ee/spec/lib/gitlab/email/handler/ee/service_desk_handler_spec.rb'
-    - 'ee/spec/lib/gitlab/geo/cron_manager_spec.rb'
-    - 'ee/spec/lib/gitlab/geo/jwt_request_decoder_spec.rb'
-    - 'ee/spec/lib/gitlab/geo/oauth/session_spec.rb'
     - 'ee/spec/lib/gitlab/geo_spec.rb'
     - 'ee/spec/lib/gitlab/git_access_spec.rb'
     - 'ee/spec/lib/gitlab/import_export/group/relation_factory_spec.rb'
@@ -910,7 +702,6 @@ Rails/SaveBang:
     - 'ee/spec/models/approval_project_rule_spec.rb'
     - 'ee/spec/models/approval_state_spec.rb'
     - 'ee/spec/models/burndown_spec.rb'
-    - 'ee/spec/models/ci/build_spec.rb'
     - 'ee/spec/models/ci/pipeline_spec.rb'
     - 'ee/spec/models/ci/subscriptions/project_spec.rb'
     - 'ee/spec/models/concerns/approver_migrate_hook_spec.rb'
@@ -935,14 +726,8 @@ Rails/SaveBang:
     - 'ee/spec/models/license_spec.rb'
     - 'ee/spec/models/merge_request_spec.rb'
     - 'ee/spec/models/merge_train_spec.rb'
-    - 'ee/spec/models/operations/feature_flag_scope_spec.rb'
-    - 'ee/spec/models/operations/feature_flag_spec.rb'
-    - 'ee/spec/models/operations/feature_flags/strategy_spec.rb'
-    - 'ee/spec/models/operations/feature_flags/user_list_spec.rb'
     - 'spec/models/packages/package_spec.rb'
     - 'ee/spec/models/project_ci_cd_setting_spec.rb'
-    - 'ee/spec/models/project_services/github_service_spec.rb'
-    - 'ee/spec/models/project_services/jenkins_service_spec.rb'
     - 'ee/spec/models/project_spec.rb'
     - 'ee/spec/models/protected_environment_spec.rb'
     - 'ee/spec/models/repository_spec.rb'
@@ -978,9 +763,6 @@ Rails/SaveBang:
     - 'ee/spec/requests/lfs_http_spec.rb'
     - 'ee/spec/services/approval_rules/finalize_service_spec.rb'
     - 'ee/spec/services/approval_rules/update_service_spec.rb'
-    - 'ee/spec/services/ci/minutes/email_notification_service_spec.rb'
-    - 'ee/spec/services/ci/process_build_service_spec.rb'
-    - 'ee/spec/services/ci/register_job_service_spec.rb'
     - 'ee/spec/services/ee/boards/issues/create_service_spec.rb'
     - 'ee/spec/services/ee/boards/issues/list_service_spec.rb'
     - 'ee/spec/services/ee/boards/lists/list_service_spec.rb'
@@ -991,7 +773,6 @@ Rails/SaveBang:
     - 'ee/spec/services/ee/merge_requests/update_service_spec.rb'
     - 'ee/spec/services/ee/notes/quick_actions_service_spec.rb'
     - 'ee/spec/services/ee/notification_service_spec.rb'
-    - 'ee/spec/services/ee/resource_events/change_weight_service_spec.rb'
     - 'ee/spec/services/epic_links/create_service_spec.rb'
     - 'ee/spec/services/epics/close_service_spec.rb'
     - 'ee/spec/services/epics/issue_promote_service_spec.rb'
@@ -1007,14 +788,7 @@ Rails/SaveBang:
     - 'ee/spec/services/groups/autocomplete_service_spec.rb'
     - 'ee/spec/services/ldap_group_reset_service_spec.rb'
     - 'ee/spec/services/lfs/unlock_file_service_spec.rb'
-    - 'ee/spec/services/merge_requests/approval_service_spec.rb'
-    - 'ee/spec/services/merge_requests/remove_approval_service_spec.rb'
-    - 'ee/spec/services/merge_requests/update_blocks_service_spec.rb'
     - 'ee/spec/services/merge_trains/refresh_merge_request_service_spec.rb'
-    - 'ee/spec/services/projects/after_rename_service_spec.rb'
-    - 'ee/spec/services/projects/import_export/export_service_spec.rb'
-    - 'ee/spec/services/projects/update_mirror_service_spec.rb'
-    - 'ee/spec/services/projects/update_service_spec.rb'
     - 'ee/spec/services/quick_actions/interpret_service_spec.rb'
     - 'ee/spec/services/slash_commands/global_slack_handler_spec.rb'
     - 'ee/spec/services/start_pull_mirroring_service_spec.rb'
@@ -1027,16 +801,7 @@ Rails/SaveBang:
     - 'ee/spec/support/shared_examples/finders/geo/framework_registry_finder_shared_examples.rb'
     - 'ee/spec/support/shared_examples/graphql/geo/geo_registries_resolver_shared_examples.rb'
     - 'ee/spec/support/shared_examples/lib/analytics/common_merge_request_metrics_refresh_shared_examples.rb'
-    - 'ee/spec/support/shared_examples/models/concerns/replicator_shared_examples.rb'
-    - 'ee/spec/support/shared_examples/models/elasticsearch_indexed_container_shared_examples.rb'
-    - 'ee/spec/support/shared_examples/models/geo_framework_registry_shared_examples.rb'
-    - 'ee/spec/support/shared_examples/models/member_shared_examples.rb'
-    - 'ee/spec/support/shared_examples/models/mentionable_shared_examples.rb'
     - 'ee/spec/support/shared_examples/policies/protected_environments_shared_examples.rb'
-    - 'ee/spec/support/shared_examples/requests/api/graphql/geo/registries_shared_examples.rb'
-    - 'ee/spec/support/shared_examples/requests/api/project_approval_rules_api_shared_examples.rb'
-    - 'ee/spec/support/shared_examples/services/build_execute_shared_examples.rb'
-    - 'ee/spec/support/shared_examples/services/issue_epic_shared_examples.rb'
     - 'ee/spec/workers/adjourned_project_deletion_worker_spec.rb'
     - 'ee/spec/workers/clear_shared_runners_minutes_worker_spec.rb'
     - 'ee/spec/workers/create_github_webhook_worker_spec.rb'
@@ -1049,6 +814,7 @@ Rails/SaveBang:
     - 'ee/spec/workers/repository_import_worker_spec.rb'
     - 'ee/spec/workers/update_all_mirrors_worker_spec.rb'
     - 'qa/qa/specs/features/browser_ui/3_create/repository/push_mirroring_over_http_spec.rb'
+    - 'qa/qa/specs/features/browser_ui/3_create/repository/push_mirroring_lfs_over_http_spec.rb'
     - 'qa/qa/specs/features/ee/browser_ui/3_create/repository/pull_mirroring_over_http_spec.rb'
     - 'qa/qa/specs/features/ee/browser_ui/3_create/repository/pull_mirroring_over_ssh_with_key_spec.rb'
     - 'spec/controllers/abuse_reports_controller_spec.rb'
@@ -1273,14 +1039,6 @@ Rails/SaveBang:
     - 'spec/models/appearance_spec.rb'
     - 'spec/models/application_record_spec.rb'
     - 'spec/models/application_setting_spec.rb'
-    - 'spec/models/ci/build_metadata_spec.rb'
-    - 'spec/models/ci/build_spec.rb'
-    - 'spec/models/ci/build_trace_chunk_spec.rb'
-    - 'spec/models/ci/instance_variable_spec.rb'
-    - 'spec/models/ci/legacy_stage_spec.rb'
-    - 'spec/models/ci/persistent_ref_spec.rb'
-    - 'spec/models/ci/pipeline_spec.rb'
-    - 'spec/models/ci/runner_spec.rb'
     - 'spec/models/clusters/applications/helm_spec.rb'
     - 'spec/models/commit_spec.rb'
     - 'spec/models/commit_status_spec.rb'
@@ -1297,9 +1055,6 @@ Rails/SaveBang:
     - 'spec/models/concerns/subscribable_spec.rb'
     - 'spec/models/concerns/token_authenticatable_spec.rb'
     - 'spec/models/container_repository_spec.rb'
-    - 'spec/models/cycle_analytics/issue_spec.rb'
-    - 'spec/models/cycle_analytics/plan_spec.rb'
-    - 'spec/models/cycle_analytics/production_spec.rb'
     - 'spec/models/deploy_keys_project_spec.rb'
     - 'spec/models/deploy_token_spec.rb'
     - 'spec/models/deployment_spec.rb'
@@ -1329,15 +1084,13 @@ Rails/SaveBang:
     - 'spec/models/namespace_spec.rb'
     - 'spec/models/note_spec.rb'
     - 'spec/models/notification_setting_spec.rb'
+    - 'spec/models/operations/feature_flag_scope_spec.rb'
+    - 'spec/models/operations/feature_flag_spec.rb'
+    - 'spec/models/operations/feature_flags/strategy_spec.rb'
+    - 'spec/models/operations/feature_flags/user_list_spec.rb'
     - 'spec/models/pages_domain_spec.rb'
     - 'spec/models/project_auto_devops_spec.rb'
     - 'spec/models/project_feature_spec.rb'
-    - 'spec/models/project_services/bamboo_service_spec.rb'
-    - 'spec/models/project_services/buildkite_service_spec.rb'
-    - 'spec/models/project_services/jira_service_spec.rb'
-    - 'spec/models/project_services/packagist_service_spec.rb'
-    - 'spec/models/project_services/pipelines_email_service_spec.rb'
-    - 'spec/models/project_services/teamcity_service_spec.rb'
     - 'spec/models/project_spec.rb'
     - 'spec/models/project_team_spec.rb'
     - 'spec/models/protectable_dropdown_spec.rb'
@@ -1358,9 +1111,6 @@ Rails/SaveBang:
     - 'spec/presenters/ci/build_runner_presenter_spec.rb'
     - 'spec/presenters/ci/trigger_presenter_spec.rb'
     - 'spec/presenters/packages/conan/package_presenter_spec.rb'
-    - 'spec/requests/api/access_requests_spec.rb'
-    - 'spec/requests/api/boards_spec.rb'
-    - 'spec/requests/api/branches_spec.rb'
     - 'spec/requests/api/ci/runner_spec.rb'
     - 'spec/requests/api/commit_statuses_spec.rb'
     - 'spec/requests/api/conan_packages_spec.rb'
@@ -1377,36 +1127,11 @@ Rails/SaveBang:
     - 'spec/requests/api/issues/post_projects_issues_spec.rb'
     - 'spec/requests/api/jobs_spec.rb'
     - 'spec/requests/api/labels_spec.rb'
-    - 'spec/requests/api/maven_packages_spec.rb'
-    - 'spec/requests/api/members_spec.rb'
-    - 'spec/requests/api/merge_request_diffs_spec.rb'
-    - 'spec/requests/api/merge_requests_spec.rb'
-    - 'spec/requests/api/notes_spec.rb'
-    - 'spec/requests/api/pages/internal_access_spec.rb'
-    - 'spec/requests/api/pages/private_access_spec.rb'
-    - 'spec/requests/api/pages/public_access_spec.rb'
-    - 'spec/requests/api/pipeline_schedules_spec.rb'
     - 'spec/requests/api/project_import_spec.rb'
-    - 'spec/requests/api/project_milestones_spec.rb'
-    - 'spec/requests/api/projects_spec.rb'
-    - 'spec/requests/api/snippets_spec.rb'
-    - 'spec/requests/git_http_spec.rb'
-    - 'spec/requests/lfs_http_spec.rb'
-    - 'spec/requests/profiles/notifications_controller_spec.rb'
     - 'spec/requests/projects/cycle_analytics_events_spec.rb'
-    - 'spec/serializers/environment_status_entity_spec.rb'
-    - 'spec/serializers/issue_entity_spec.rb'
-    - 'spec/serializers/job_entity_spec.rb'
-    - 'spec/serializers/merge_request_poll_widget_entity_spec.rb'
-    - 'spec/serializers/merge_request_widget_entity_spec.rb'
     - 'spec/services/auth/container_registry_authentication_service_spec.rb'
     - 'spec/services/auto_merge/base_service_spec.rb'
     - 'spec/services/auto_merge_service_spec.rb'
-    - 'spec/services/ci/create_cross_project_pipeline_service_spec.rb'
-    - 'spec/services/ci/create_pipeline_service_spec.rb'
-    - 'spec/services/ci/register_job_service_spec.rb'
-    - 'spec/services/ci/retry_build_service_spec.rb'
-    - 'spec/services/ci/update_runner_service_spec.rb'
     - 'spec/services/clusters/update_service_spec.rb'
     - 'spec/services/deployments/after_create_service_spec.rb'
     - 'spec/services/design_management/generate_image_versions_service_spec.rb'
@@ -1418,20 +1143,7 @@ Rails/SaveBang:
     - 'spec/services/issuable/bulk_update_service_spec.rb'
     - 'spec/services/issuable/clone/attributes_rewriter_spec.rb'
     - 'spec/services/issuable/common_system_notes_service_spec.rb'
-    - 'spec/services/issues/close_service_spec.rb'
-    - 'spec/services/issues/create_service_spec.rb'
-    - 'spec/services/issues/export_csv_service_spec.rb'
-    - 'spec/services/issues/reopen_service_spec.rb'
-    - 'spec/services/issues/update_service_spec.rb'
     - 'spec/services/labels/promote_service_spec.rb'
-    - 'spec/services/members/destroy_service_spec.rb'
-    - 'spec/services/merge_requests/build_service_spec.rb'
-    - 'spec/services/merge_requests/conflicts/list_service_spec.rb'
-    - 'spec/services/merge_requests/create_service_spec.rb'
-    - 'spec/services/merge_requests/merge_service_spec.rb'
-    - 'spec/services/merge_requests/post_merge_service_spec.rb'
-    - 'spec/services/merge_requests/refresh_service_spec.rb'
-    - 'spec/services/merge_requests/update_service_spec.rb'
     - 'spec/services/milestones/destroy_service_spec.rb'
     - 'spec/services/milestones/promote_service_spec.rb'
     - 'spec/services/milestones/transfer_service_spec.rb'
@@ -1474,30 +1186,10 @@ Rails/SaveBang:
     - 'spec/support/shared_examples/controllers/sessionless_auth_controller_shared_examples.rb'
     - 'spec/support/shared_examples/features/editable_merge_request_shared_examples.rb'
     - 'spec/support/shared_examples/lib/gitlab/ci/ci_trace_shared_examples.rb'
-    - 'spec/support/shared_examples/models/chat_slash_commands_shared_examples.rb'
-    - 'spec/support/shared_examples/models/cluster_application_helm_cert_shared_examples.rb'
-    - 'spec/support/shared_examples/models/concerns/limitable_shared_examples.rb'
-    - 'spec/support/shared_examples/models/concerns/timebox_shared_examples.rb'
-    - 'spec/support/shared_examples/models/diff_note_after_commit_shared_examples.rb'
-    - 'spec/support/shared_examples/models/member_shared_examples.rb'
-    - 'spec/support/shared_examples/models/members_notifications_shared_example.rb'
-    - 'spec/support/shared_examples/models/mentionable_shared_examples.rb'
-    - 'spec/support/shared_examples/models/project_latest_successful_build_for_shared_examples.rb'
-    - 'spec/support/shared_examples/models/slack_mattermost_notifications_shared_examples.rb'
-    - 'spec/support/shared_examples/models/update_project_statistics_shared_examples.rb'
-    - 'spec/support/shared_examples/models/with_uploads_shared_examples.rb'
     - 'spec/support/shared_examples/policies/project_policy_shared_examples.rb'
     - 'spec/support/shared_examples/quick_actions/issuable/issuable_quick_actions_shared_examples.rb'
     - 'spec/support/shared_examples/quick_actions/merge_request/merge_quick_action_shared_examples.rb'
-    - 'spec/support/shared_examples/requests/api/award_emoji_todo_shared_examples.rb'
-    - 'spec/support/shared_examples/requests/api/boards_shared_examples.rb'
-    - 'spec/support/shared_examples/requests/api/custom_attributes_shared_examples.rb'
-    - 'spec/support/shared_examples/requests/api/nuget_packages_shared_examples.rb'
-    - 'spec/support/shared_examples/requests/api/pypi_packages_shared_examples.rb'
     - 'spec/support/shared_examples/serializers/note_entity_shared_examples.rb'
-    - 'spec/support/shared_examples/services/common_system_notes_shared_examples.rb'
-    - 'spec/support/shared_examples/services/issuable_shared_examples.rb'
-    - 'spec/support/shared_examples/services/wiki_pages/destroy_service_shared_examples.rb'
     - 'spec/tasks/gitlab/web_hook_rake_spec.rb'
     - 'spec/uploaders/file_uploader_spec.rb'
     - 'spec/uploaders/object_storage_spec.rb'

@@ -61,9 +61,9 @@ export default {
     v-tooltip
     :title="title"
     :data-placement="placement"
-    class="js-show-tooltip"
+    class="js-show-tooltip gl-min-w-0"
   >
     <slot></slot>
   </span>
-  <span v-else> <slot></slot> </span>
+  <span v-else class="gl-min-w-0"> <slot></slot> </span>
 </template>

@@ -7,7 +7,7 @@
       = expanded ? _('Collapse') : _('Expand')
     %p
       = _("Clean up after running %{filter_repo} on the repository" % { filter_repo: link_to_filter_repo }).html_safe
-      = link_to icon('question-circle'),
+      = link_to sprite_icon('question-o'),
           help_page_path('user/project/repository/reducing_the_repo_size_using_git.md'),
           target: '_blank', rel: 'noopener noreferrer'
 
@@ -28,4 +28,3 @@
 
       .gl-display-flex.gl-justify-content-end
         = f.submit _('Start cleanup'), class: 'btn btn-success'
-

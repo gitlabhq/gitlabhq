@@ -41,7 +41,7 @@ RSpec.describe Notes::CreateService do
       end
 
       it 'TodoService#new_note is called' do
-        note = build(:note, project: project)
+        note = build(:note, project: project, noteable: issue)
         allow(Note).to receive(:new).with(opts) { note }
 
         expect_any_instance_of(TodoService).to receive(:new_note).with(note, user)
@@ -50,12 +50,22 @@ RSpec.describe Notes::CreateService do
       end
 
       it 'enqueues NewNoteWorker' do
-        note = build(:note, id: non_existing_record_id, project: project)
+        note = build(:note, id: non_existing_record_id, project: project, noteable: issue)
         allow(Note).to receive(:new).with(opts) { note }
 
         expect(NewNoteWorker).to receive(:perform_async).with(note.id)
 
         described_class.new(project, user, opts).execute
+      end
+
+      context 'issue is an incident' do
+        subject { described_class.new(project, user, opts).execute }
+
+        let(:issue) { create(:incident, project: project) }
+
+        it_behaves_like 'an incident management tracked event', :incident_management_incident_comment do
+          let(:current_user) { user }
+        end
       end
     end
 

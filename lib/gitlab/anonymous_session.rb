@@ -2,35 +2,34 @@
 
 module Gitlab
   class AnonymousSession
-    def initialize(remote_ip, session_id: nil)
+    def initialize(remote_ip)
       @remote_ip = remote_ip
-      @session_id = session_id
     end
 
-    def store_session_id_per_ip
+    def count_session_ip
       Gitlab::Redis::SharedState.with do |redis|
         redis.pipelined do
-          redis.sadd(session_lookup_name, session_id)
+          redis.incr(session_lookup_name)
           redis.expire(session_lookup_name, 24.hours)
         end
       end
     end
 
-    def stored_sessions
+    def session_count
       Gitlab::Redis::SharedState.with do |redis|
-        redis.scard(session_lookup_name)
+        redis.get(session_lookup_name).to_i
       end
     end
 
-    def cleanup_session_per_ip_entries
+    def cleanup_session_per_ip_count
       Gitlab::Redis::SharedState.with do |redis|
-        redis.srem(session_lookup_name, session_id)
+        redis.del(session_lookup_name)
       end
     end
 
     private
 
-    attr_reader :remote_ip, :session_id
+    attr_reader :remote_ip
 
     def session_lookup_name
       @session_lookup_name ||= "#{Gitlab::Redis::SharedState::IP_SESSIONS_LOOKUP_NAMESPACE}:#{remote_ip}"

@@ -35,13 +35,29 @@ module FromUnion
     # alias_as - The alias to use for the sub query. Defaults to the name of the
     #            table of the current model.
     # rubocop: disable Gitlab/Union
+    extend FromSetOperator
+    define_set_operator Gitlab::SQL::Union
+
+    alias_method :from_union_set_operator, :from_union
     def from_union(members, remove_duplicates: true, alias_as: table_name)
+      if Feature.enabled?(:sql_set_operators)
+        from_union_set_operator(members, remove_duplicates: remove_duplicates, alias_as: alias_as)
+      else
+        # The original from_union method.
+        standard_from_union(members, remove_duplicates: remove_duplicates, alias_as: alias_as)
+      end
+    end
+
+    private
+
+    def standard_from_union(members, remove_duplicates: true, alias_as: table_name)
       union = Gitlab::SQL::Union
         .new(members, remove_duplicates: remove_duplicates)
         .to_sql
 
       from(Arel.sql("(#{union}) #{alias_as}"))
     end
+
     # rubocop: enable Gitlab/Union
   end
 end

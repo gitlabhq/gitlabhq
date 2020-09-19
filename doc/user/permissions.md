@@ -55,7 +55,7 @@ The following table depicts the various user permission levels in a project.
 | View [Design Management](project/issues/design_management.md) pages | ✓ | ✓ | ✓        | ✓        | ✓      |
 | View project code                                 | ✓ (*1*) | ✓          | ✓           | ✓        | ✓      |
 | Pull project code                                 | ✓ (*1*) | ✓          | ✓           | ✓        | ✓      |
-| View GitLab Pages protected by [access control](project/pages/introduction.md#gitlab-pages-access-control-core) | ✓       | ✓          | ✓           | ✓        | ✓      |
+| View GitLab Pages protected by [access control](project/pages/introduction.md#gitlab-pages-access-control) | ✓       | ✓          | ✓           | ✓        | ✓      |
 | View wiki pages                                   | ✓       | ✓          | ✓           | ✓        | ✓      |
 | See a list of jobs                                | ✓ (*3*) | ✓          | ✓           | ✓        | ✓      |
 | See a job log                                     | ✓ (*3*) | ✓          | ✓           | ✓        | ✓      |
@@ -122,6 +122,7 @@ The following table depicts the various user permission levels in a project.
 | Manage Feature Flags **(PREMIUM)**                |         |            | ✓           | ✓        | ✓      |
 | Create/edit/delete metrics dashboard annotations  |         |            | ✓           | ✓        | ✓      |
 | Run CI/CD pipeline against a protected branch     |         |            | ✓ (*5*)     | ✓        | ✓      |
+| Request a CVE ID **(FREE ONLY)**                  |         |            |             | ✓        | ✓      |
 | Use environment terminals                         |         |            |             | ✓        | ✓      |
 | Run Web IDE's Interactive Web Terminals **(ULTIMATE ONLY)** |     |      |             | ✓        | ✓      |
 | Add new team members                              |         |            |             | ✓        | ✓      |
@@ -134,7 +135,7 @@ The following table depicts the various user permission levels in a project.
 | Share (invite) projects with groups               |         |            |             | ✓ (*8*)  | ✓ (*8*)|
 | Add deploy keys to project                        |         |            |             | ✓        | ✓      |
 | Configure project hooks                           |         |            |             | ✓        | ✓      |
-| Manage Runners                                    |         |            |             | ✓        | ✓      |
+| Manage runners                                    |         |            |             | ✓        | ✓      |
 | Manage job triggers                               |         |            |             | ✓        | ✓      |
 | Manage CI/CD variables                            |         |            |             | ✓        | ✓      |
 | Manage GitLab Pages                               |         |            |             | ✓        | ✓      |
@@ -212,17 +213,14 @@ Find the current permissions on the Value Stream Analytics dashboard, as describ
 
 ### Issue Board permissions
 
-Developers and users with higher permission level can use all
-the functionality of the Issue Board, that is create/delete lists
-and drag issues around. Read through the
-[documentation on Issue Boards permissions](project/issue_board.md#permissions)
-to learn more.
+Find the current permissions for interacting with the Issue Board feature in the
+[Issue Boards permissions page](project/issue_board.md#permissions).
 
 ### File Locking permissions **(PREMIUM)**
 
 The user that locks a file or directory is the only one that can edit and push their changes back to the repository where the locked objects are located.
 
-Read through the documentation on [permissions for File Locking](project/file_lock.md#permissions-on-file-locking) to learn more.
+Read through the documentation on [permissions for File Locking](project/file_lock.md#permissions) to learn more.
 
 ### Confidential Issues permissions
 
@@ -250,7 +248,7 @@ group.
 | Pull [packages](packages/index.md)                     |       | ✓        | ✓         | ✓          | ✓     |
 | Publish [packages](packages/index.md)                  |       |          | ✓         | ✓          | ✓     |
 | View metrics dashboard annotations                     |       | ✓        | ✓         | ✓          | ✓     |
-| Create project in group                                |       |          | ✓ (3)     | ✓ (3)      | ✓ (3) |
+| Create project in group                                |       |          | ✓ (3)(5)  | ✓ (3)      | ✓ (3) |
 | Share (invite) groups with groups                      |       |          |           |            | ✓     |
 | Create/edit/delete group milestones                    |       |          | ✓         | ✓          | ✓     |
 | Create/edit/delete iterations                          |       |          | ✓         | ✓          | ✓     |
@@ -285,6 +283,7 @@ group.
    - The [instance level](admin_area/settings/visibility_and_access_controls.md#default-project-creation-protection).
    - The [group level](group/index.md#default-project-creation-level).
 1. Does not apply to subgroups.
+1. Developers can push commits to the default branch of a new project only if the [default branch protection](group/index.md#changing-the-default-branch-protection-of-a-group) is set to "Partially protected" or "Not protected". 
 
 ### Subgroup permissions
 
@@ -368,7 +367,7 @@ are unable to browse the project's repository, for example).
 
 TIP: **Tip:**
 To prevent a guest user from creating projects, as an admin, you can edit the
-user's profile to mark the user as [external](#external-users-core-only).
+user's profile to mark the user as [external](#external-users).
 Beware though that even if a user is external, if they already have Reporter or
 higher permissions in any project or group, they are **not** counted as a
 free guest user.
@@ -475,9 +474,9 @@ for details about the pipelines security model.
 ## LDAP users permissions
 
 Since GitLab 8.15, LDAP user permissions can now be manually overridden by an admin user.
-Read through the documentation on [LDAP users permissions](group/index.md#manage-group-memberships-via-ldap-starter-only) to learn more.
+Read through the documentation on [LDAP users permissions](group/index.md#manage-group-memberships-via-ldap) to learn more.
 
 ## Project aliases
 
 Project aliases can only be read, created and deleted by a GitLab administrator.
-Read through the documentation on [Project aliases](../user/project/index.md#project-aliases-premium-only) to learn more.
+Read through the documentation on [Project aliases](../user/project/index.md#project-aliases) to learn more.

@@ -4,7 +4,7 @@ module Types
   module AwardEmojis
     class AwardEmojiType < BaseObject
       graphql_name 'AwardEmoji'
-      description 'An emoji awarded by a user.'
+      description 'An emoji awarded by a user'
 
       authorize :read_emoji
 

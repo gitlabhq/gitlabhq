@@ -18,7 +18,7 @@ module QA
 
       attr_reader :api_resource, :api_response
       attr_writer :api_client
-      attr_accessor :user
+      attr_accessor :api_user
 
       def api_support?
         respond_to?(:api_get_path) &&
@@ -120,7 +120,7 @@ module QA
 
       def api_client
         @api_client ||= begin
-          Runtime::API::Client.new(:gitlab, is_new_session: !current_url.start_with?('http'), user: user)
+          Runtime::API::Client.new(:gitlab, is_new_session: !current_url.start_with?('http'), user: api_user)
         end
       end
 

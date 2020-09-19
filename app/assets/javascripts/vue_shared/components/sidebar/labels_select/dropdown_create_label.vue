@@ -1,7 +1,14 @@
 <script>
+import { GlButton, GlTooltipDirective } from '@gitlab/ui';
 import { __ } from '~/locale';
 
 export default {
+  components: {
+    GlButton,
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
+  },
   props: {
     headerTitle: {
       type: String,
@@ -10,29 +17,35 @@ export default {
     },
   },
   created() {
-    this.suggestedColors = gon.suggested_label_colors;
+    const rawLabelsColors = gon.suggested_label_colors;
+    this.suggestedColors = Object.keys(rawLabelsColors).map(colorCode => ({
+      colorCode,
+      title: rawLabelsColors[colorCode],
+    }));
   },
 };
 </script>
 
 <template>
   <div class="dropdown-page-two dropdown-new-label">
-    <div class="dropdown-title">
-      <button
+    <div
+      class="dropdown-title gl-display-flex gl-justify-content-space-between gl-align-items-center"
+    >
+      <gl-button
         :aria-label="__('Go back')"
-        type="button"
-        class="dropdown-title-button dropdown-menu-back"
-      >
-        <i aria-hidden="true" class="fa fa-arrow-left" data-hidden="true"> </i>
-      </button>
+        category="tertiary"
+        class="dropdown-menu-back"
+        icon="arrow-left"
+        size="small"
+      />
       {{ headerTitle }}
-      <button
+      <gl-button
         :aria-label="__('Close')"
-        type="button"
-        class="dropdown-title-button dropdown-menu-close"
-      >
-        <i aria-hidden="true" class="fa fa-times dropdown-menu-close-icon" data-hidden="true"> </i>
-      </button>
+        category="tertiary"
+        class="dropdown-menu-close"
+        icon="close"
+        size="small"
+      />
     </div>
     <div class="dropdown-content">
       <div class="dropdown-labels-error js-label-error"></div>
@@ -46,10 +59,12 @@ export default {
         <a
           v-for="(color, index) in suggestedColors"
           :key="index"
-          :data-color="color"
+          v-gl-tooltip
+          :data-color="color.colorCode"
           :style="{
-            backgroundColor: color,
+            backgroundColor: color.colorCode,
           }"
+          :title="color.title"
           href="#"
         >
           &nbsp;
@@ -65,12 +80,12 @@ export default {
         />
       </div>
       <div class="clearfix">
-        <button type="button" class="btn btn-primary float-left js-new-label-btn disabled">
+        <gl-button category="secondary" class="float-left js-new-label-btn disabled">
           {{ __('Create') }}
-        </button>
-        <button type="button" class="btn btn-default float-right js-cancel-label-btn">
+        </gl-button>
+        <gl-button category="secondary" class="float-right js-cancel-label-btn">
           {{ __('Cancel') }}
-        </button>
+        </gl-button>
       </div>
     </div>
   </div>

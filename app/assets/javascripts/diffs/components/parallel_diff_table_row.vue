@@ -1,8 +1,7 @@
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex';
 import $ from 'jquery';
-import { GlTooltipDirective } from '@gitlab/ui';
-import DiffTableCell from './diff_table_cell.vue';
+import { GlTooltipDirective, GlIcon, GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
 import {
   MATCH_LINE_TYPE,
   NEW_LINE_TYPE,
@@ -13,14 +12,20 @@ import {
   PARALLEL_DIFF_VIEW_TYPE,
   NEW_NO_NEW_LINE_TYPE,
   EMPTY_CELL_TYPE,
+  LINE_HOVER_CLASS_NAME,
 } from '../constants';
+import { __ } from '~/locale';
+import { getParameterByName, parseBoolean } from '~/lib/utils/common_utils';
+import DiffGutterAvatars from './diff_gutter_avatars.vue';
 
 export default {
   components: {
-    DiffTableCell,
+    GlIcon,
+    DiffGutterAvatars,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
+    SafeHtml,
   },
   props: {
     fileHash: {
@@ -50,10 +55,12 @@ export default {
     return {
       isLeftHover: false,
       isRightHover: false,
+      isCommentButtonRendered: false,
     };
   },
   computed: {
     ...mapGetters('diffs', ['fileLineCoverage']),
+    ...mapGetters(['isLoggedIn']),
     ...mapState({
       isHighlighted(state) {
         if (this.isCommented) return true;
@@ -65,12 +72,15 @@ export default {
         return lineCode ? lineCode === state.diffs.highlightedRow : false;
       },
     }),
-    isContextLine() {
+    isContextLineLeft() {
       return this.line.left && this.line.left.type === CONTEXT_LINE_TYPE;
+    },
+    isContextLineRight() {
+      return this.line.right && this.line.right.type === CONTEXT_LINE_TYPE;
     },
     classNameMap() {
       return {
-        [CONTEXT_LINE_CLASS_NAME]: this.isContextLine,
+        [CONTEXT_LINE_CLASS_NAME]: this.isContextLineLeft,
         [PARALLEL_DIFF_VIEW_TYPE]: true,
       };
     },
@@ -97,6 +107,129 @@ export default {
     coverageState() {
       return this.fileLineCoverage(this.filePath, this.line.right.new_line);
     },
+    classNameMapCellLeft() {
+      const { type } = this.line.left;
+
+      return [
+        type,
+        {
+          hll: this.isHighlighted,
+          [LINE_HOVER_CLASS_NAME]:
+            this.isLoggedIn && this.isLeftHover && !this.isContextLineLeft && !this.isMetaLineLeft,
+        },
+      ];
+    },
+    classNameMapCellRight() {
+      const { type } = this.line.right;
+
+      return [
+        type,
+        {
+          hll: this.isHighlighted,
+          [LINE_HOVER_CLASS_NAME]:
+            this.isLoggedIn &&
+            this.isRightHover &&
+            !this.isContextLineRight &&
+            !this.isMetaLineRight,
+        },
+      ];
+    },
+    addCommentTooltipLeft() {
+      const brokenSymlinks = this.line.left.commentsDisabled;
+      let tooltip = __('Add a comment to this line');
+
+      if (brokenSymlinks) {
+        if (brokenSymlinks.wasSymbolic || brokenSymlinks.isSymbolic) {
+          tooltip = __(
+            'Commenting on symbolic links that replace or are replaced by files is currently not supported.',
+          );
+        } else if (brokenSymlinks.wasReal || brokenSymlinks.isReal) {
+          tooltip = __(
+            'Commenting on files that replace or are replaced by symbolic links is currently not supported.',
+          );
+        }
+      }
+
+      return tooltip;
+    },
+    addCommentTooltipRight() {
+      const brokenSymlinks = this.line.right.commentsDisabled;
+      let tooltip = __('Add a comment to this line');
+
+      if (brokenSymlinks) {
+        if (brokenSymlinks.wasSymbolic || brokenSymlinks.isSymbolic) {
+          tooltip = __(
+            'Commenting on symbolic links that replace or are replaced by files is currently not supported.',
+          );
+        } else if (brokenSymlinks.wasReal || brokenSymlinks.isReal) {
+          tooltip = __(
+            'Commenting on files that replace or are replaced by symbolic links is currently not supported.',
+          );
+        }
+      }
+
+      return tooltip;
+    },
+    shouldRenderCommentButton() {
+      if (!this.isCommentButtonRendered) {
+        return false;
+      }
+
+      if (this.isLoggedIn) {
+        const isDiffHead = parseBoolean(getParameterByName('diff_head'));
+        return !isDiffHead || gon.features?.mergeRefHeadComments;
+      }
+
+      return false;
+    },
+    shouldShowCommentButtonLeft() {
+      return (
+        this.isLeftHover &&
+        !this.isContextLineLeft &&
+        !this.isMetaLineLeft &&
+        !this.hasDiscussionsLeft
+      );
+    },
+    shouldShowCommentButtonRight() {
+      return (
+        this.isRightHover &&
+        !this.isContextLineRight &&
+        !this.isMetaLineRight &&
+        !this.hasDiscussionsRight
+      );
+    },
+    hasDiscussionsLeft() {
+      return this.line.left?.discussions?.length > 0;
+    },
+    hasDiscussionsRight() {
+      return this.line.right?.discussions?.length > 0;
+    },
+    lineHrefOld() {
+      return `#${this.line.left.line_code || ''}`;
+    },
+    lineHrefNew() {
+      return `#${this.line.right.line_code || ''}`;
+    },
+    lineCode() {
+      return (
+        (this.line.left && this.line.left.line_code) ||
+        (this.line.right && this.line.right.line_code)
+      );
+    },
+    isMetaLineLeft() {
+      const type = this.line.left?.type;
+
+      return (
+        type === OLD_NO_NEW_LINE_TYPE || type === NEW_NO_NEW_LINE_TYPE || type === EMPTY_CELL_TYPE
+      );
+    },
+    isMetaLineRight() {
+      const type = this.line.right?.type;
+
+      return (
+        type === OLD_NO_NEW_LINE_TYPE || type === NEW_NO_NEW_LINE_TYPE || type === EMPTY_CELL_TYPE
+      );
+    },
   },
   created() {
     this.newLineType = NEW_LINE_TYPE;
@@ -105,9 +238,26 @@ export default {
   },
   mounted() {
     this.scrollToLineIfNeededParallel(this.line);
+    this.unwatchShouldShowCommentButton = this.$watch(
+      vm => [vm.shouldShowCommentButtonLeft, vm.shouldShowCommentButtonRight].join(),
+      newVal => {
+        if (newVal) {
+          this.isCommentButtonRendered = true;
+          this.unwatchShouldShowCommentButton();
+        }
+      },
+    );
+  },
+  beforeDestroy() {
+    this.unwatchShouldShowCommentButton();
   },
   methods: {
-    ...mapActions('diffs', ['scrollToLineIfNeededParallel']),
+    ...mapActions('diffs', [
+      'scrollToLineIfNeededParallel',
+      'showCommentForm',
+      'setHighlightedRow',
+      'toggleLineDiscussions',
+    ]),
     handleMouseMove(e) {
       const isHover = e.type === 'mouseover';
       const hoveringCell = e.target.closest('td');
@@ -133,6 +283,9 @@ export default {
         table.addClass(`${lineClass}-selected`);
       }
     },
+    handleCommentButton(line) {
+      this.showCommentForm({ lineCode: line.line_code, fileHash: this.fileHash });
+    },
   },
 };
 </script>
@@ -145,25 +298,53 @@ export default {
     @mouseout="handleMouseMove"
   >
     <template v-if="line.left && !isMatchLineLeft">
-      <diff-table-cell
-        :file-hash="fileHash"
-        :line="line.left"
-        :line-type="oldLineType"
-        :is-bottom="isBottom"
-        :is-hover="isLeftHover"
-        :is-highlighted="isHighlighted"
-        :show-comment-button="true"
-        :diff-view-type="parallelDiffViewType"
-        line-position="left"
-        class="diff-line-num old_line"
-      />
+      <td ref="oldTd" :class="classNameMapCellLeft" class="diff-line-num old_line">
+        <span
+          v-if="shouldRenderCommentButton"
+          ref="addNoteTooltipLeft"
+          v-gl-tooltip
+          class="add-diff-note tooltip-wrapper"
+          :title="addCommentTooltipLeft"
+        >
+          <button
+            v-show="shouldShowCommentButtonLeft"
+            ref="addDiffNoteButtonLeft"
+            type="button"
+            class="add-diff-note note-button js-add-diff-note-button qa-diff-comment"
+            :disabled="line.left.commentsDisabled"
+            @click="handleCommentButton(line.left)"
+          >
+            <gl-icon :size="12" name="comment" />
+          </button>
+        </span>
+        <a
+          v-if="line.left.old_line"
+          ref="lineNumberRefOld"
+          :data-linenumber="line.left.old_line"
+          :href="lineHrefOld"
+          @click="setHighlightedRow(lineCode)"
+        >
+        </a>
+        <diff-gutter-avatars
+          v-if="hasDiscussionsLeft"
+          :discussions="line.left.discussions"
+          :discussions-expanded="line.left.discussionsExpanded"
+          @toggleLineDiscussions="
+            toggleLineDiscussions({
+              lineCode: line.left.line_code,
+              fileHash,
+              expanded: !line.left.discussionsExpanded,
+            })
+          "
+        />
+      </td>
       <td :class="parallelViewLeftLineType" class="line-coverage left-side"></td>
       <td
         :id="line.left.line_code"
+        v-safe-html="line.left.rich_text"
         :class="parallelViewLeftLineType"
         class="line_content with-coverage parallel left-side"
         @mousedown="handleParallelLineMouseDown"
-        v-html="line.left.rich_text"
       ></td>
     </template>
     <template v-else>
@@ -172,18 +353,46 @@ export default {
       <td class="line_content with-coverage parallel left-side empty-cell"></td>
     </template>
     <template v-if="line.right && !isMatchLineRight">
-      <diff-table-cell
-        :file-hash="fileHash"
-        :line="line.right"
-        :line-type="newLineType"
-        :is-bottom="isBottom"
-        :is-hover="isRightHover"
-        :is-highlighted="isHighlighted"
-        :show-comment-button="true"
-        :diff-view-type="parallelDiffViewType"
-        line-position="right"
-        class="diff-line-num new_line"
-      />
+      <td ref="newTd" :class="classNameMapCellRight" class="diff-line-num new_line">
+        <span
+          v-if="shouldRenderCommentButton"
+          ref="addNoteTooltipRight"
+          v-gl-tooltip
+          class="add-diff-note tooltip-wrapper"
+          :title="addCommentTooltipRight"
+        >
+          <button
+            v-show="shouldShowCommentButtonRight"
+            ref="addDiffNoteButtonRight"
+            type="button"
+            class="add-diff-note note-button js-add-diff-note-button qa-diff-comment"
+            :disabled="line.right.commentsDisabled"
+            @click="handleCommentButton(line.right)"
+          >
+            <gl-icon :size="12" name="comment" />
+          </button>
+        </span>
+        <a
+          v-if="line.right.new_line"
+          ref="lineNumberRefNew"
+          :data-linenumber="line.right.new_line"
+          :href="lineHrefNew"
+          @click="setHighlightedRow(lineCode)"
+        >
+        </a>
+        <diff-gutter-avatars
+          v-if="hasDiscussionsRight"
+          :discussions="line.right.discussions"
+          :discussions-expanded="line.right.discussionsExpanded"
+          @toggleLineDiscussions="
+            toggleLineDiscussions({
+              lineCode: line.right.line_code,
+              fileHash,
+              expanded: !line.right.discussionsExpanded,
+            })
+          "
+        />
+      </td>
       <td
         v-gl-tooltip.hover
         :title="coverageState.text"
@@ -192,6 +401,7 @@ export default {
       ></td>
       <td
         :id="line.right.line_code"
+        v-safe-html="line.right.rich_text"
         :class="[
           line.right.type,
           {
@@ -200,7 +410,6 @@ export default {
         ]"
         class="line_content with-coverage parallel right-side"
         @mousedown="handleParallelLineMouseDown"
-        v-html="line.right.rich_text"
       ></td>
     </template>
     <template v-else>

@@ -115,7 +115,6 @@ describe('Tags List', () => {
 
       // The list has only two tags and for some reasons .at(-1) does not work
       expect(rows.at(1).attributes()).toMatchObject({
-        last: 'true',
         isdesktop: 'true',
       });
     });

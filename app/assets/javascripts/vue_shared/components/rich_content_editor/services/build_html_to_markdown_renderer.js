@@ -28,6 +28,8 @@ const buildHTMLToMarkdownRender = (baseRenderer, formattingPreferences = {}) => 
   const orderedListItemNode = 'OL LI';
   const emphasisNode = 'EM, I';
   const strongNode = 'STRONG, B';
+  const headingNode = 'H1, H2, H3, H4, H5, H6';
+  const preCodeNode = 'PRE CODE';
 
   return {
     TEXT_NODE(node) {
@@ -63,8 +65,10 @@ const buildHTMLToMarkdownRender = (baseRenderer, formattingPreferences = {}) => 
     },
     [unorderedListItemNode](node, subContent) {
       const baseResult = baseRenderer.convert(node, subContent);
+      const formatted = baseResult.replace(/^(\s*)([*|-])/, `$1${unorderedListBulletChar}`);
+      const { attributeDefinition } = node.dataset;
 
-      return baseResult.replace(/^(\s*)([*|-])/, `$1${unorderedListBulletChar}`);
+      return attributeDefinition ? `${formatted.trimRight()}\n${attributeDefinition}\n` : formatted;
     },
     [orderedListItemNode](node, subContent) {
       const baseResult = baseRenderer.convert(node, subContent);
@@ -81,6 +85,19 @@ const buildHTMLToMarkdownRender = (baseRenderer, formattingPreferences = {}) => 
       const strongSyntax = repeat(strong, 2);
 
       return result.replace(/^[*_]{2}/, strongSyntax).replace(/[*_]{2}$/, strongSyntax);
+    },
+    [headingNode](node, subContent) {
+      const result = baseRenderer.convert(node, subContent);
+      const { attributeDefinition } = node.dataset;
+
+      return attributeDefinition ? `${result.trimRight()}\n${attributeDefinition}\n\n` : result;
+    },
+    [preCodeNode](node, subContent) {
+      const isReferenceDefinition = Boolean(node.dataset.sseReferenceDefinition);
+
+      return isReferenceDefinition
+        ? `\n\n${node.innerText}\n\n`
+        : baseRenderer.convert(node, subContent);
     },
   };
 };

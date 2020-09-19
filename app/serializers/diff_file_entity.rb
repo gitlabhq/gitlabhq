@@ -71,15 +71,11 @@ class DiffFileEntity < DiffFileBaseEntity
   private
 
   def parallel_diff_view?(options, diff_file)
-    return true unless Feature.enabled?(:single_mr_diff_view, diff_file.repository.project, default_enabled: true)
-
     # If we're not rendering inline, we must be rendering parallel
     !inline_diff_view?(options, diff_file)
   end
 
   def inline_diff_view?(options, diff_file)
-    return true unless Feature.enabled?(:single_mr_diff_view, diff_file.repository.project, default_enabled: true)
-
     # If nothing is present, inline will be the default.
     options.fetch(:diff_view, :inline).to_sym == :inline
   end

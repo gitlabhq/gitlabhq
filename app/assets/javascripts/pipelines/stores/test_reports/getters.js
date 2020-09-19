@@ -1,4 +1,4 @@
-import { addIconStatus, formattedTime, sortTestCases } from './utils';
+import { addIconStatus, formattedTime } from './utils';
 
 export const getTestSuites = state => {
   const { test_suites: testSuites = [] } = state.testReports;
@@ -14,5 +14,5 @@ export const getSelectedSuite = state =>
 
 export const getSuiteTests = state => {
   const { test_cases: testCases = [] } = getSelectedSuite(state);
-  return testCases.sort(sortTestCases).map(addIconStatus);
+  return testCases.map(addIconStatus);
 };

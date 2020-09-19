@@ -97,7 +97,7 @@ RSpec.describe 'Branches' do
     end
 
     describe 'Delete unprotected branch on Overview' do
-      it 'removes branch after confirmation', :js do
+      it 'removes branch after confirmation', :js, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/239019' do
         visit project_branches_filtered_path(project, state: 'all')
 
         expect(all('.all-branches').last).to have_selector('li', count: 20)

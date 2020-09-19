@@ -1,0 +1,10 @@
+<% project_and_role = s_('InviteEmail|to join the %{project_or_group_name} %{project_or_group} as a %{role}') \
+  % { project_or_group_name: member_source.human_name, project_or_group: member_source.model_name.singular, role: member.human_access.downcase } %>
+
+<% if member.created_by %>
+<%= s_('InviteEmail|%{inviter} invited you') % { inviter: sanitize_name(member.created_by.name) } %> <%= project_and_role %>
+<% else %>
+<%= s_('InviteEmail|You have been invited') %> <%= project_and_role %>
+<% end %>
+
+Join now: <%= invite_url(@token, @invite_url_params) %>

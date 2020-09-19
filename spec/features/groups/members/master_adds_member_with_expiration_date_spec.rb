@@ -11,6 +11,8 @@ RSpec.describe 'Groups > Members > Owner adds member with expiration date', :js 
   let(:group) { create(:group) }
 
   before do
+    stub_feature_flags(vue_group_members_list: false)
+
     group.add_owner(user1)
     sign_in(user1)
   end

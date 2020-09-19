@@ -19,3 +19,5 @@ class ResourceStateEvent < ResourceEvent
     issue || merge_request
   end
 end
+
+ResourceStateEvent.prepend_if_ee('EE::ResourceStateEvent')

@@ -23,7 +23,7 @@ export default class ProtectedTagCreate {
     });
 
     // Select default
-    $allowedToCreateDropdown.data('glDropdown').selectRowAtIndex(0);
+    $allowedToCreateDropdown.data('deprecatedJQueryDropdown').selectRowAtIndex(0);
 
     // Protected tag dropdown
     this.createItemDropdown = new CreateItemDropdown({

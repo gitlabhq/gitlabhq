@@ -1,14 +1,23 @@
 import $ from 'jquery';
 import initU2F from './u2f';
+import initWebauthn from './webauthn';
 import U2FRegister from './u2f/register';
+import WebAuthnRegister from './webauthn/register';
 
 export const mount2faAuthentication = () => {
-  // Soon this will conditionally mount a webauthn app (see https://gitlab.com/gitlab-org/gitlab/-/merge_requests/26692)
-  initU2F();
+  if (gon.webauthn) {
+    initWebauthn();
+  } else {
+    initU2F();
+  }
 };
 
 export const mount2faRegistration = () => {
-  // Soon this will conditionally mount a webauthn app (see https://gitlab.com/gitlab-org/gitlab/-/merge_requests/26692)
-  const u2fRegister = new U2FRegister($('#js-register-u2f'), gon.u2f);
-  u2fRegister.start();
+  if (gon.webauthn) {
+    const webauthnRegister = new WebAuthnRegister($('#js-register-token-2fa'), gon.webauthn);
+    webauthnRegister.start();
+  } else {
+    const u2fRegister = new U2FRegister($('#js-register-token-2fa'), gon.u2f);
+    u2fRegister.start();
+  }
 };

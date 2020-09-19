@@ -17,7 +17,7 @@ class StuckCiJobsWorker # rubocop:disable Scalability/IdempotentWorker
   def perform
     return unless try_obtain_lease
 
-    Rails.logger.info "#{self.class}: Cleaning stuck builds" # rubocop:disable Gitlab/RailsLogger
+    Gitlab::AppLogger.info "#{self.class}: Cleaning stuck builds" # rubocop:disable Gitlab/RailsLogger
 
     drop :running, BUILD_RUNNING_OUTDATED_TIMEOUT, 'ci_builds.updated_at < ?', :stuck_or_timeout_failure
     drop :pending, BUILD_PENDING_OUTDATED_TIMEOUT, 'ci_builds.updated_at < ?', :stuck_or_timeout_failure
@@ -69,7 +69,7 @@ class StuckCiJobsWorker # rubocop:disable Scalability/IdempotentWorker
   # rubocop: enable CodeReuse/ActiveRecord
 
   def drop_build(type, build, status, timeout, reason)
-    Rails.logger.info "#{self.class}: Dropping #{type} build #{build.id} for runner #{build.runner_id} (status: #{status}, timeout: #{timeout}, reason: #{reason})" # rubocop:disable Gitlab/RailsLogger
+    Gitlab::AppLogger.info "#{self.class}: Dropping #{type} build #{build.id} for runner #{build.runner_id} (status: #{status}, timeout: #{timeout}, reason: #{reason})"
     Gitlab::OptimisticLocking.retry_lock(build, 3) do |b|
       b.drop(reason)
     end

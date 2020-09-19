@@ -1,5 +1,5 @@
 .issuable-warning-icon {
-  background-color: $orange-100;
+  background-color: $orange-50;
   border-radius: $border-radius-default;
   width: $issuable-warning-size;
   height: $issuable-warning-size;
@@ -50,6 +50,7 @@
 
   .title-container {
     display: flex;
+    align-items: flex-start;
   }
 
   .title {
@@ -65,7 +66,6 @@
 
   .btn-edit {
     margin-left: auto;
-    height: $gl-padding * 2;
   }
 
   .emoji-block {
@@ -119,11 +119,11 @@
 
 .assignee {
   .merge-icon {
-    color: $orange-500;
+    color: $orange-400;
     position: absolute;
     bottom: 0;
     right: 0;
-    text-shadow: -1px -1px 0 $white, 1px -1px 0 $white, -1px 1px 0 $white, 1px 1px 0 $white;
+    text-shadow: -1px -1px 2px $white, 1px -1px 2px $white, -1px 1px 2px $white, 1px 1px 2px $white;
   }
 }
 
@@ -234,8 +234,8 @@
 
   .title {
     color: $gl-text-color;
-    margin-bottom: $gl-padding-8;
-    line-height: 1;
+    margin-bottom: $gl-padding-4;
+    line-height: $gl-line-height-20;
 
     .avatar {
       margin-left: 0;
@@ -252,7 +252,8 @@
     }
   }
 
-  .cross-project-reference {
+  .cross-project-reference,
+  .sidebar-mr-source-branch {
     color: inherit;
 
     span {
@@ -360,13 +361,6 @@
       margin: 0;
     }
 
-    .username {
-      display: block;
-      margin-top: 4px;
-      font-size: 13px;
-      font-weight: $gl-font-weight-normal;
-    }
-
     .hide-expanded {
       display: none;
     }
@@ -389,7 +383,8 @@
       border-bottom: 0;
       overflow: hidden;
 
-      &:hover {
+      &.with-sub-blocks .sub-block:hover,
+      &:not(.with-sub-blocks):hover {
         background-color: $gray-100;
       }
 
@@ -442,11 +437,6 @@
         svg {
           fill: $gl-text-color;
         }
-      }
-
-      span {
-        display: block;
-        margin-top: 0;
       }
 
       .sidebar-avatar-counter {
@@ -741,7 +731,6 @@
     .issuable-info-container {
       flex: 1;
       display: flex;
-      padding-right: $gl-padding;
 
       .issuable-main-info {
         flex: 1 auto;
@@ -919,12 +908,12 @@
 }
 
 .issuable-todo-btn {
-  .fa-spinner {
+  .gl-spinner {
     display: none;
   }
 
   &.is-loading {
-    .fa-spinner {
+    .gl-spinner {
       display: inline-block;
     }
 
@@ -982,7 +971,7 @@
 }
 
 .suggestion-confidential {
-  color: $orange-600;
+  color: $orange-500;
 }
 
 .suggestion-state-open {
@@ -1004,5 +993,17 @@
   .avatar {
     margin-top: -3px;
     border: 0;
+  }
+}
+
+@include media-breakpoint-down(sm) {
+  // Overriding the following rule with the negative margin
+  // https://gitlab.com/gitlab-org/gitlab/-/blob/146c43c931c3743a140529307aea616e4aa9ff21/app/assets/stylesheets/framework/sidebar.scss#L1-5
+  .container-fluid {
+    .issuable-list,
+    .issues-filters,
+    .epics-filters {
+      margin: 0 (-$gl-padding);
+    }
   }
 }

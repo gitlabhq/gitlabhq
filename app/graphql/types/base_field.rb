@@ -3,6 +3,7 @@
 module Types
   class BaseField < GraphQL::Schema::Field
     prepend Gitlab::Graphql::Authorize
+    include GitlabStyleDeprecations
 
     DEFAULT_COMPLEXITY = 1
 
@@ -12,9 +13,37 @@ module Types
       kwargs[:complexity] = field_complexity(kwargs[:resolver_class], kwargs[:complexity])
       @feature_flag = kwargs[:feature_flag]
       kwargs = check_feature_flag(kwargs)
-      kwargs = handle_deprecated(kwargs)
+      kwargs = gitlab_deprecation(kwargs)
 
       super(*args, **kwargs, &block)
+    end
+
+    # Based on https://github.com/rmosolgo/graphql-ruby/blob/v1.11.4/lib/graphql/schema/field.rb#L538-L563
+    # Modified to fix https://github.com/rmosolgo/graphql-ruby/issues/3113
+    def resolve_field(obj, args, ctx)
+      ctx.schema.after_lazy(obj) do |after_obj|
+        query_ctx = ctx.query.context
+        inner_obj = after_obj && after_obj.object
+
+        ctx.schema.after_lazy(to_ruby_args(after_obj, args, ctx)) do |ruby_args|
+          if authorized?(inner_obj, ruby_args, query_ctx)
+            if @resolve_proc
+              # We pass `after_obj` here instead of `inner_obj` because extensions expect a GraphQL::Schema::Object
+              with_extensions(after_obj, ruby_args, query_ctx) do |extended_obj, extended_args|
+                # Since `extended_obj` is now a GraphQL::Schema::Object, we need to get the inner object and pass that to `@resolve_proc`
+                extended_obj = extended_obj.object if extended_obj.is_a?(GraphQL::Schema::Object)
+
+                @resolve_proc.call(extended_obj, args, ctx)
+              end
+            else
+              public_send_field(after_obj, ruby_args, query_ctx)
+            end
+          else
+            err = GraphQL::UnauthorizedFieldError.new(object: inner_obj, type: obj.class, context: ctx, field: self)
+            query_ctx.schema.unauthorized_field(err)
+          end
+        end
+      end
     end
 
     def base_complexity
@@ -50,28 +79,6 @@ module Types
       args.delete(:feature_flag)
 
       args
-    end
-
-    def handle_deprecated(kwargs)
-      if kwargs[:deprecation_reason].present?
-        raise ArgumentError, 'Use `deprecated` property instead of `deprecation_reason`. ' \
-                             'See https://docs.gitlab.com/ee/development/api_graphql_styleguide.html#deprecating-fields'
-      end
-
-      deprecation = kwargs.delete(:deprecated)
-      return kwargs unless deprecation
-
-      milestone, reason = deprecation.values_at(:milestone, :reason).map(&:presence)
-
-      raise ArgumentError, 'Please provide a `milestone` within `deprecated`' unless milestone
-      raise ArgumentError, 'Please provide a `reason` within `deprecated`' unless reason
-      raise ArgumentError, '`milestone` must be a `String`' unless milestone.is_a?(String)
-
-      deprecated_in = "Deprecated in #{milestone}"
-      kwargs[:deprecation_reason] = "#{reason}. #{deprecated_in}"
-      kwargs[:description] += ". #{deprecated_in}: #{reason}" if kwargs[:description]
-
-      kwargs
     end
 
     def field_complexity(resolver_class, current)

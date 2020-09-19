@@ -32,9 +32,7 @@ RSpec.describe 'Adding an AwardEmoji' do
 
   context 'when the user does not have permission' do
     it_behaves_like 'a mutation that does not create an AwardEmoji'
-
-    it_behaves_like 'a mutation that returns top-level errors',
-                    errors: ['The resource that you are attempting to access does not exist or you don\'t have permission to perform this action']
+    it_behaves_like 'a mutation that returns a top-level access error'
   end
 
   context 'when the user has permission' do

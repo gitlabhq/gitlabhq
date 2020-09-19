@@ -36,20 +36,20 @@ describe('Blob Content component', () => {
   describe('rendering', () => {
     it('renders loader if `loading: true`', () => {
       createComponent({ loading: true });
-      expect(wrapper.contains(GlLoadingIcon)).toBe(true);
-      expect(wrapper.contains(BlobContentError)).toBe(false);
-      expect(wrapper.contains(RichViewer)).toBe(false);
-      expect(wrapper.contains(SimpleViewer)).toBe(false);
+      expect(wrapper.find(GlLoadingIcon).exists()).toBe(true);
+      expect(wrapper.find(BlobContentError).exists()).toBe(false);
+      expect(wrapper.find(RichViewer).exists()).toBe(false);
+      expect(wrapper.find(SimpleViewer).exists()).toBe(false);
     });
 
     it('renders error if there is any in the viewer', () => {
       const renderError = 'Oops';
       const viewer = { ...SimpleViewerMock, renderError };
       createComponent({}, viewer);
-      expect(wrapper.contains(GlLoadingIcon)).toBe(false);
-      expect(wrapper.contains(BlobContentError)).toBe(true);
-      expect(wrapper.contains(RichViewer)).toBe(false);
-      expect(wrapper.contains(SimpleViewer)).toBe(false);
+      expect(wrapper.find(GlLoadingIcon).exists()).toBe(false);
+      expect(wrapper.find(BlobContentError).exists()).toBe(true);
+      expect(wrapper.find(RichViewer).exists()).toBe(false);
+      expect(wrapper.find(SimpleViewer).exists()).toBe(false);
     });
 
     it.each`
@@ -60,7 +60,7 @@ describe('Blob Content component', () => {
       'renders $type viewer when activeViewer is $type and no loading or error detected',
       ({ mock, viewer }) => {
         createComponent({}, mock);
-        expect(wrapper.contains(viewer)).toBe(true);
+        expect(wrapper.find(viewer).exists()).toBe(true);
       },
     );
 

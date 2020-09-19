@@ -7,7 +7,6 @@ module Banzai
         @filters ||= FilterArray[
           Filter::MarkdownFilter,
           Filter::BroadcastMessageSanitizationFilter,
-
           Filter::EmojiFilter,
           Filter::ColorFilter,
           Filter::AutolinkFilter,

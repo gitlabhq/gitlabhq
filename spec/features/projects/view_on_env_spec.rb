@@ -9,8 +9,6 @@ RSpec.describe 'View on environment', :js do
   let(:user) { project.creator }
 
   before do
-    stub_feature_flags(diffs_batch_load: false)
-
     project.add_maintainer(user)
   end
 

@@ -241,6 +241,39 @@ module GraphqlHelpers
     post_graphql(mutation.query, current_user: current_user, variables: mutation.variables)
   end
 
+  def post_graphql_mutation_with_uploads(mutation, current_user: nil)
+    file_paths = file_paths_in_mutation(mutation)
+    params = mutation_to_apollo_uploads_param(mutation, files: file_paths)
+
+    workhorse_post_with_file(api('/', current_user, version: 'graphql'),
+                             params: params,
+                             file_key: '1'
+                            )
+  end
+
+  def file_paths_in_mutation(mutation)
+    paths = []
+    find_uploads(paths, [], mutation.variables)
+
+    paths
+  end
+
+  # Depth first search for UploadedFile values
+  def find_uploads(paths, path, value)
+    case value
+    when Rack::Test::UploadedFile
+      paths << path
+    when Hash
+      value.each do |k, v|
+        find_uploads(paths, path + [k], v)
+      end
+    when Array
+      value.each_with_index do |v, i|
+        find_uploads(paths, path + [i], v)
+      end
+    end
+  end
+
   # this implements GraphQL multipart request v2
   # https://github.com/jaydenseric/graphql-multipart-request-spec/tree/v2.0.0-alpha.2
   # this is simplified and do not support file deduplication

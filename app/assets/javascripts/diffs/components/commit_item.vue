@@ -1,11 +1,11 @@
 <script>
+/* eslint-disable vue/no-v-html */
 import { mapActions } from 'vuex';
 import { GlButtonGroup, GlButton, GlIcon, GlTooltipDirective } from '@gitlab/ui';
 
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
-import Icon from '~/vue_shared/components/icon.vue';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 
@@ -39,7 +39,6 @@ import { setUrlParams } from '../../lib/utils/url_utility';
 export default {
   components: {
     UserAvatarLink,
-    Icon,
     ClipboardButton,
     TimeAgoTooltip,
     CommitPipelineStatus,
@@ -150,14 +149,13 @@ export default {
 
         <span class="commit-row-message d-block d-sm-none">&middot; {{ commit.short_id }}</span>
 
-        <button
+        <gl-button
           v-if="commit.description_html && collapsible"
-          class="text-expander js-toggle-button"
-          type="button"
+          class="js-toggle-button"
+          size="small"
+          icon="ellipsis_h"
           :aria-label="__('Toggle commit description')"
-        >
-          <icon :size="12" name="ellipsis_h" />
-        </button>
+        />
 
         <div class="committer">
           <a

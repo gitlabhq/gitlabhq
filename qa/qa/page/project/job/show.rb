@@ -19,6 +19,10 @@ module QA
             element :retry_button
           end
 
+          view 'app/assets/javascripts/jobs/components/artifacts_block.vue' do
+            element :browse_artifacts_button
+          end
+
           def successful?(timeout: 60)
             raise "Timed out waiting for the build trace to load" unless loaded?
             raise "Timed out waiting for the status to be a valid completed state" unless completed?(timeout: timeout)
@@ -40,6 +44,14 @@ module QA
             end
 
             result
+          end
+
+          def has_browse_button?
+            has_element? :browse_artifacts_button
+          end
+
+          def click_browse_button
+            click_element :browse_artifacts_button
           end
 
           def retry!

@@ -107,7 +107,7 @@ module API
       when 'sha1'
         package_file.file_sha1
       else
-        track_event('pull_package') if jar_file?(format)
+        package_event('pull_package') if jar_file?(format)
         present_carrierwave_file_with_head_support!(package_file.file)
       end
     end
@@ -145,7 +145,7 @@ module API
         when 'sha1'
           package_file.file_sha1
         else
-          track_event('pull_package') if jar_file?(format)
+          package_event('pull_package') if jar_file?(format)
 
           present_carrierwave_file_with_head_support!(package_file.file)
         end
@@ -181,7 +181,7 @@ module API
         when 'sha1'
           package_file.file_sha1
         else
-          track_event('pull_package') if jar_file?(format)
+          package_event('pull_package') if jar_file?(format)
 
           present_carrierwave_file_with_head_support!(package_file.file)
         end
@@ -200,7 +200,7 @@ module API
 
         status 200
         content_type Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE
-        ::Packages::PackageFileUploader.workhorse_authorize(has_length: true)
+        ::Packages::PackageFileUploader.workhorse_authorize(has_length: true, maximum_size: user_project.actual_limits.maven_max_file_size)
       end
 
       desc 'Upload the maven package file' do
@@ -214,6 +214,7 @@ module API
       route_setting :authentication, job_token_allowed: true, deploy_token_allowed: true
       put ':id/packages/maven/*path/:file_name', requirements: MAVEN_ENDPOINT_REQUIREMENTS do
         authorize_upload!
+        bad_request!('File is too large') if user_project.actual_limits.exceeded?(:maven_max_file_size, params[:file].size)
 
         file_name, format = extract_format(params[:file_name])
 
@@ -232,7 +233,7 @@ module API
         when 'md5'
           nil
         else
-          track_event('push_package') if jar_file?(format)
+          package_event('push_package') if jar_file?(format)
 
           file_params = {
             file:      params[:file],

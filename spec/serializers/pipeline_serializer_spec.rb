@@ -155,7 +155,7 @@ RSpec.describe PipelineSerializer do
 
         it 'verifies number of queries', :request_store do
           recorded = ActiveRecord::QueryRecorder.new { subject }
-          expected_queries = Gitlab.ee? ? 46 : 43
+          expected_queries = Gitlab.ee? ? 43 : 40
 
           expect(recorded.count).to be_within(2).of(expected_queries)
           expect(recorded.cached_count).to eq(0)

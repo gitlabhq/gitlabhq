@@ -1,0 +1,28 @@
+# Markdown documentation: https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/api/version.md
+
+get:
+  tags:
+    - version
+  summary: "Retrieve version information for this GitLab instance."
+  operationId: "getVersion"
+  responses:
+    "401":
+      description: "unauthorized operation"
+    "200":
+      description: "successful operation"
+      content:
+        "application/json":
+          schema:
+            title: "VersionResponse"
+            type: "object"
+            properties:
+              version:
+                type: "string"
+              revision:
+                type: "string"
+          examples:
+            Example:
+              value:
+                version: "13.3.0-pre"
+                revision: "f2b05afebb0"
+

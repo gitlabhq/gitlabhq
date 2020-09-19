@@ -25,15 +25,7 @@ export const setResizingStatus = ({ commit }, resizing) => {
 
 export const createTempEntry = (
   { state, commit, dispatch, getters },
-  {
-    name,
-    type,
-    content = '',
-    binary = false,
-    rawPath = '',
-    openFile = true,
-    makeFileActive = true,
-  },
+  { name, type, content = '', rawPath = '', openFile = true, makeFileActive = true },
 ) => {
   const fullName = name.slice(-1) !== '/' && type === 'tree' ? `${name}/` : name;
 
@@ -54,21 +46,14 @@ export const createTempEntry = (
 
   const data = decorateFiles({
     data: [fullName],
-    projectId: state.currentProjectId,
-    branchId: state.currentBranchId,
     type,
     tempFile: true,
     content,
-    binary,
     rawPath,
   });
   const { file, parentPath } = data;
 
-  commit(types.CREATE_TMP_ENTRY, {
-    data,
-    projectId: state.currentProjectId,
-    branchId: state.currentBranchId,
-  });
+  commit(types.CREATE_TMP_ENTRY, { data });
 
   if (type === 'blob') {
     if (openFile) commit(types.TOGGLE_FILE_OPEN, file.path);
@@ -90,7 +75,6 @@ export const addTempImage = ({ dispatch, getters }, { name, rawPath = '' }) =>
     name: getters.getAvailableFileName(name),
     type: 'blob',
     content: rawPath.split('base64,')[1],
-    binary: true,
     rawPath,
     openFile: false,
     makeFileActive: false,
@@ -254,7 +238,7 @@ export const renameEntry = ({ dispatch, commit, state, getters }, { path, name, 
     }
 
     if (newEntry.opened) {
-      dispatch('router/push', `/project${newEntry.url}`, { root: true });
+      dispatch('router/push', getters.getUrlForPath(newEntry.path), { root: true });
     }
   }
 

@@ -17,7 +17,10 @@ RSpec.describe 'Admin updates settings', :clean_gitlab_redis_shared_state, :do_n
     end
 
     context 'General page' do
+      let(:gitpod_feature_enabled) { true }
+
       before do
+        stub_feature_flags(gitpod: gitpod_feature_enabled)
         visit general_admin_application_settings_path
       end
 
@@ -205,6 +208,32 @@ RSpec.describe 'Admin updates settings', :clean_gitlab_redis_shared_state, :do_n
         expect(page).to have_content "Application settings saved successfully"
         expect(current_settings.terminal_max_session_time).to eq(15)
       end
+
+      context 'Configure Gitpod' do
+        context 'with feature disabled' do
+          let(:gitpod_feature_enabled) { false }
+
+          it 'do not show settings' do
+            expect(page).not_to have_selector('#js-gitpod-settings')
+          end
+        end
+
+        context 'with feature enabled' do
+          let(:gitpod_feature_enabled) { true }
+
+          it 'changes gitpod settings' do
+            page.within('#js-gitpod-settings') do
+              check 'Enable Gitpod integration'
+              fill_in 'Gitpod URL', with: 'https://gitpod.test/'
+              click_button 'Save changes'
+            end
+
+            expect(page).to have_content 'Application settings saved successfully'
+            expect(current_settings.gitpod_url).to eq('https://gitpod.test/')
+            expect(current_settings.gitpod_enabled).to be(true)
+          end
+        end
+      end
     end
 
     context 'Integrations page' do
@@ -232,7 +261,7 @@ RSpec.describe 'Admin updates settings', :clean_gitlab_redis_shared_state, :do_n
         page.select 'All branches', from: 'Branches to be notified'
 
         check_all_events
-        click_on 'Save'
+        click_button 'Save changes'
 
         expect(page).to have_content 'Application settings saved successfully'
 
@@ -284,6 +313,55 @@ RSpec.describe 'Admin updates settings', :clean_gitlab_redis_shared_state, :do_n
         expect(current_settings.auto_devops_enabled?).to be true
         expect(current_settings.auto_devops_domain).to eq('domain.com')
         expect(page).to have_content "Application settings saved successfully"
+      end
+
+      context 'Container Registry' do
+        context 'delete tags service execution timeout' do
+          let(:feature_flag_enabled) { true }
+          let(:client_support) { true }
+
+          before do
+            stub_container_registry_config(enabled: true)
+            stub_feature_flags(container_registry_expiration_policies_throttling: feature_flag_enabled)
+            allow(ContainerRegistry::Client).to receive(:supports_tag_delete?).and_return(client_support)
+          end
+
+          RSpec.shared_examples 'not having service timeout settings' do
+            it 'lacks the timeout settings' do
+              visit ci_cd_admin_application_settings_path
+
+              expect(page).not_to have_content "Container Registry delete tags service execution timeout"
+            end
+          end
+
+          context 'with feature flag enabled' do
+            context 'with client supporting tag delete' do
+              it 'changes the timeout' do
+                visit ci_cd_admin_application_settings_path
+
+                page.within('.as-registry') do
+                  fill_in 'application_setting_container_registry_delete_tags_service_timeout', with: 400
+                  click_button 'Save changes'
+                end
+
+                expect(current_settings.container_registry_delete_tags_service_timeout).to eq(400)
+                expect(page).to have_content "Application settings saved successfully"
+              end
+            end
+
+            context 'with client not supporting tag delete' do
+              let(:client_support) { false }
+
+              it_behaves_like 'not having service timeout settings'
+            end
+          end
+
+          context 'with feature flag disabled' do
+            let(:feature_flag_enabled) { false }
+
+            it_behaves_like 'not having service timeout settings'
+          end
+        end
       end
     end
 
@@ -525,6 +603,7 @@ RSpec.describe 'Admin updates settings', :clean_gitlab_redis_shared_state, :do_n
   end
 
   def check_all_events
+    page.check('Active')
     page.check('Push')
     page.check('Issue')
     page.check('Confidential Issue')

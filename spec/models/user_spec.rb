@@ -47,6 +47,9 @@ RSpec.describe User do
     it { is_expected.to delegate_method(:sourcegraph_enabled).to(:user_preference) }
     it { is_expected.to delegate_method(:sourcegraph_enabled=).to(:user_preference).with_arguments(:args) }
 
+    it { is_expected.to delegate_method(:gitpod_enabled).to(:user_preference) }
+    it { is_expected.to delegate_method(:gitpod_enabled=).to(:user_preference).with_arguments(:args) }
+
     it { is_expected.to delegate_method(:setup_for_company).to(:user_preference) }
     it { is_expected.to delegate_method(:setup_for_company=).to(:user_preference).with_arguments(:args) }
 
@@ -68,6 +71,7 @@ RSpec.describe User do
     it { is_expected.to have_one(:namespace) }
     it { is_expected.to have_one(:status) }
     it { is_expected.to have_one(:user_detail) }
+    it { is_expected.to have_one(:atlassian_identity) }
     it { is_expected.to have_one(:user_highest_role) }
     it { is_expected.to have_many(:snippets).dependent(:destroy) }
     it { is_expected.to have_many(:members) }
@@ -177,6 +181,58 @@ RSpec.describe User do
         expect do
           user.update!(email: 'hello@hello.com')
         end.to have_enqueued_job.on_queue('mailers').exactly(:twice)
+      end
+    end
+
+    context 'emails sent on changing password' do
+      context 'when password is updated' do
+        context 'default behaviour' do
+          it 'enqueues the `password changed` email' do
+            user.password = User.random_password
+
+            expect { user.save! }.to have_enqueued_mail(DeviseMailer, :password_change)
+          end
+
+          it 'does not enqueue the `admin changed your password` email' do
+            user.password = User.random_password
+
+            expect { user.save! }.not_to have_enqueued_mail(DeviseMailer, :password_change_by_admin)
+          end
+        end
+
+        context '`admin changed your password` email' do
+          it 'is enqueued only when explicitly allowed' do
+            user.password = User.random_password
+            user.send_only_admin_changed_your_password_notification!
+
+            expect { user.save! }.to have_enqueued_mail(DeviseMailer, :password_change_by_admin)
+          end
+
+          it '`password changed` email is not enqueued if it is explicitly allowed' do
+            user.password = User.random_password
+            user.send_only_admin_changed_your_password_notification!
+
+            expect { user.save! }.not_to have_enqueued_mail(DeviseMailer, :password_changed)
+          end
+
+          it 'is not enqueued if sending notifications on password updates is turned off as per Devise config' do
+            user.password = User.random_password
+            user.send_only_admin_changed_your_password_notification!
+
+            allow(Devise).to receive(:send_password_change_notification).and_return(false)
+
+            expect { user.save! }.not_to have_enqueued_mail(DeviseMailer, :password_change_by_admin)
+          end
+        end
+      end
+
+      context 'when password is not updated' do
+        it 'does not enqueue the `admin changed your password` email even if explicitly allowed' do
+          user.name = 'John'
+          user.send_only_admin_changed_your_password_notification!
+
+          expect { user.save! }.not_to have_enqueued_mail(DeviseMailer, :password_change_by_admin)
+        end
       end
     end
   end
@@ -659,30 +715,40 @@ RSpec.describe User do
         expect(users_with_two_factor).not_to include(user_without_2fa.id)
       end
 
-      it "returns users with 2fa enabled via U2F" do
-        user_with_2fa = create(:user, :two_factor_via_u2f)
-        user_without_2fa = create(:user)
-        users_with_two_factor = described_class.with_two_factor.pluck(:id)
+      shared_examples "returns the right users" do |trait|
+        it "returns users with 2fa enabled via hardware token" do
+          user_with_2fa = create(:user, trait)
+          user_without_2fa = create(:user)
+          users_with_two_factor = described_class.with_two_factor.pluck(:id)
 
-        expect(users_with_two_factor).to include(user_with_2fa.id)
-        expect(users_with_two_factor).not_to include(user_without_2fa.id)
+          expect(users_with_two_factor).to include(user_with_2fa.id)
+          expect(users_with_two_factor).not_to include(user_without_2fa.id)
+        end
+
+        it "returns users with 2fa enabled via OTP and hardware token" do
+          user_with_2fa = create(:user, :two_factor_via_otp, trait)
+          user_without_2fa = create(:user)
+          users_with_two_factor = described_class.with_two_factor.pluck(:id)
+
+          expect(users_with_two_factor).to eq([user_with_2fa.id])
+          expect(users_with_two_factor).not_to include(user_without_2fa.id)
+        end
+
+        it 'works with ORDER BY' do
+          user_with_2fa = create(:user, :two_factor_via_otp, trait)
+
+          expect(described_class
+                     .with_two_factor
+                     .reorder_by_name).to eq([user_with_2fa])
+        end
       end
 
-      it "returns users with 2fa enabled via OTP and U2F" do
-        user_with_2fa = create(:user, :two_factor_via_otp, :two_factor_via_u2f)
-        user_without_2fa = create(:user)
-        users_with_two_factor = described_class.with_two_factor.pluck(:id)
-
-        expect(users_with_two_factor).to eq([user_with_2fa.id])
-        expect(users_with_two_factor).not_to include(user_without_2fa.id)
+      describe "and U2F" do
+        it_behaves_like "returns the right users", :two_factor_via_u2f
       end
 
-      it 'works with ORDER BY' do
-        user_with_2fa = create(:user, :two_factor_via_otp, :two_factor_via_u2f)
-
-        expect(described_class
-          .with_two_factor
-          .reorder_by_name).to eq([user_with_2fa])
+      describe "and WebAuthn" do
+        it_behaves_like "returns the right users", :two_factor_via_webauthn
       end
     end
 
@@ -696,22 +762,44 @@ RSpec.describe User do
         expect(users_without_two_factor).not_to include(user_with_2fa.id)
       end
 
-      it "excludes users with 2fa enabled via U2F" do
-        user_with_2fa = create(:user, :two_factor_via_u2f)
-        user_without_2fa = create(:user)
-        users_without_two_factor = described_class.without_two_factor.pluck(:id)
+      describe "and u2f" do
+        it "excludes users with 2fa enabled via U2F" do
+          user_with_2fa = create(:user, :two_factor_via_u2f)
+          user_without_2fa = create(:user)
+          users_without_two_factor = described_class.without_two_factor.pluck(:id)
 
-        expect(users_without_two_factor).to include(user_without_2fa.id)
-        expect(users_without_two_factor).not_to include(user_with_2fa.id)
+          expect(users_without_two_factor).to include(user_without_2fa.id)
+          expect(users_without_two_factor).not_to include(user_with_2fa.id)
+        end
+
+        it "excludes users with 2fa enabled via OTP and U2F" do
+          user_with_2fa = create(:user, :two_factor_via_otp, :two_factor_via_u2f)
+          user_without_2fa = create(:user)
+          users_without_two_factor = described_class.without_two_factor.pluck(:id)
+
+          expect(users_without_two_factor).to include(user_without_2fa.id)
+          expect(users_without_two_factor).not_to include(user_with_2fa.id)
+        end
       end
 
-      it "excludes users with 2fa enabled via OTP and U2F" do
-        user_with_2fa = create(:user, :two_factor_via_otp, :two_factor_via_u2f)
-        user_without_2fa = create(:user)
-        users_without_two_factor = described_class.without_two_factor.pluck(:id)
+      describe "and webauthn" do
+        it "excludes users with 2fa enabled via WebAuthn" do
+          user_with_2fa = create(:user, :two_factor_via_webauthn)
+          user_without_2fa = create(:user)
+          users_without_two_factor = described_class.without_two_factor.pluck(:id)
 
-        expect(users_without_two_factor).to include(user_without_2fa.id)
-        expect(users_without_two_factor).not_to include(user_with_2fa.id)
+          expect(users_without_two_factor).to include(user_without_2fa.id)
+          expect(users_without_two_factor).not_to include(user_with_2fa.id)
+        end
+
+        it "excludes users with 2fa enabled via OTP and WebAuthn" do
+          user_with_2fa = create(:user, :two_factor_via_otp, :two_factor_via_webauthn)
+          user_without_2fa = create(:user)
+          users_without_two_factor = described_class.without_two_factor.pluck(:id)
+
+          expect(users_without_two_factor).to include(user_without_2fa.id)
+          expect(users_without_two_factor).not_to include(user_with_2fa.id)
+        end
       end
     end
 
@@ -1662,7 +1750,7 @@ RSpec.describe User do
       # add user to project
       project.add_maintainer(user)
 
-      # create invite to projet
+      # create invite to project
       create(:project_member, :developer, project: project, invite_token: '1234', invite_email: 'inviteduser1@example.com')
 
       # create request to join project
@@ -4487,6 +4575,44 @@ RSpec.describe User do
           end
         end
       end
+    end
+  end
+
+  describe '#notification_settings_for_groups' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:groups) { create_list(:group, 2) }
+
+    subject { user.notification_settings_for_groups(arg) }
+
+    before do
+      groups.each do |group|
+        group.add_maintainer(user)
+      end
+    end
+
+    shared_examples_for 'notification_settings_for_groups method' do
+      it 'returns NotificationSetting objects for provided groups', :aggregate_failures do
+        expect(subject.count).to eq(groups.count)
+        expect(subject.map(&:source_id)).to match_array(groups.map(&:id))
+      end
+    end
+
+    context 'when given an ActiveRecord relationship' do
+      let_it_be(:arg) { Group.where(id: groups.map(&:id)) }
+
+      it_behaves_like 'notification_settings_for_groups method'
+
+      it 'uses #select to maintain lazy querying behavior' do
+        expect(arg).to receive(:select).and_call_original
+
+        subject
+      end
+    end
+
+    context 'when given an Array of Groups' do
+      let_it_be(:arg) { groups }
+
+      it_behaves_like 'notification_settings_for_groups method'
     end
   end
 

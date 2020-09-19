@@ -84,7 +84,8 @@
     color: var(--ide-input-border, $gl-text-color-tertiary);
   }
 
-  .dropdown-input .fa {
+  .dropdown-input .fa,
+  .dropdown-input .dropdown-input-clear {
     color: var(--ide-input-border, $dropdown-input-fa-color);
   }
 

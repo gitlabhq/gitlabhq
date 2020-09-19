@@ -1,64 +1,40 @@
+import grayMatter from 'gray-matter';
+
 const parseSourceFile = raw => {
-  const frontMatterRegex = /(^---$[\s\S]*?^---$)/m;
-  const preGroupedRegex = /([\s\S]*?)(^---$[\s\S]*?^---$)(\s*)([\s\S]*)/m; // preFrontMatter, frontMatter, spacing, and content
-  let initial;
-  let editable;
+  const remake = source => grayMatter(source, {});
 
-  const hasFrontMatter = source => frontMatterRegex.test(source);
+  let editable = remake(raw);
 
-  const buildPayload = (source, header, spacing, body) => {
-    return { raw: source, header, spacing, body };
-  };
-
-  const parse = source => {
-    if (hasFrontMatter(source)) {
-      const match = source.match(preGroupedRegex);
-      const [, preFrontMatter, frontMatter, spacing, content] = match;
-      const header = preFrontMatter + frontMatter;
-
-      return buildPayload(source, header, spacing, content);
+  const syncContent = (newVal, isBody) => {
+    if (isBody) {
+      editable.content = newVal;
+    } else {
+      editable = remake(newVal);
     }
-
-    return buildPayload(source, '', '', source);
   };
 
-  const syncEditable = () => {
-    /*
-    We re-parse as markdown editing could have added non-body changes (preFrontMatter, frontMatter, or spacing).
-    Re-parsing additionally gets us the desired body that was extracted from the potentially mutated editable.raw
-    */
-    editable = parse(editable.raw);
+  const trimmedEditable = () => grayMatter.stringify(editable).trim();
+
+  const content = (isBody = false) => (isBody ? editable.content.trim() : trimmedEditable()); // gray-matter internally adds an eof newline so we trim to bypass, open issue: https://github.com/jonschlinkert/gray-matter/issues/96
+
+  const matter = () => editable.data;
+
+  const syncMatter = settings => {
+    const source = grayMatter.stringify(editable.content, settings);
+    syncContent(source);
   };
 
-  const syncBodyToRaw = () => {
-    editable.raw = `${editable.header}${editable.spacing}${editable.body}`;
-  };
+  const isModified = () => trimmedEditable() !== raw;
 
-  const sync = (newVal, isBodyToRaw) => {
-    const editableKey = isBodyToRaw ? 'body' : 'raw';
-    editable[editableKey] = newVal;
-
-    if (isBodyToRaw) {
-      syncBodyToRaw();
-    }
-
-    syncEditable();
-  };
-
-  const content = (isBody = false) => {
-    const editableKey = isBody ? 'body' : 'raw';
-    return editable[editableKey];
-  };
-
-  const isModified = () => initial.raw !== editable.raw;
-
-  initial = parse(raw);
-  editable = parse(raw);
+  const hasMatter = () => editable.matter.length > 0;
 
   return {
+    matter,
+    syncMatter,
     content,
+    syncContent,
     isModified,
-    sync,
+    hasMatter,
   };
 };
 

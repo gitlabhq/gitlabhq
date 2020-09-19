@@ -21,7 +21,7 @@ exports[`DependencyRow renders full dependency 1`] = `
   </div>
    
   <div
-    class="table-section section-50 gl-display-flex justify-content-md-end"
+    class="table-section section-50 gl-display-flex gl-md-justify-content-end"
     data-testid="version-pattern"
   >
     <span

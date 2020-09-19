@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  factory :audit_event, class: 'SecurityEvent', aliases: [:user_audit_event] do
+  factory :audit_event, class: 'AuditEvent', aliases: [:user_audit_event] do
     user
 
     transient { target_user { create(:user) } }
@@ -36,7 +36,7 @@ FactoryBot.define do
       ip_address { IPAddr.new '127.0.0.1' }
       details do
         {
-          change: 'packges_enabled',
+          change: 'packages_enabled',
           from: true,
           to: false,
           author_name: user.name,

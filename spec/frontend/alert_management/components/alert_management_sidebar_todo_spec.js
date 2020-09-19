@@ -1,6 +1,7 @@
 import { mount } from '@vue/test-utils';
 import SidebarTodo from '~/alert_management/components/sidebar/sidebar_todo.vue';
-import AlertMarkTodo from '~/alert_management/graphql/mutations/alert_todo_create.mutation.graphql';
+import createAlertTodoMutation from '~/alert_management/graphql/mutations/alert_todo_create.mutation.graphql';
+import todoMarkDoneMutation from '~/graphql_shared/mutations/todo_mark_done.mutation.graphql';
 import mockAlerts from '../mocks/alerts.json';
 
 const mockAlert = mockAlerts[0];
@@ -61,14 +62,14 @@ describe('Alert Details Sidebar To Do', () => {
         expect(findToDoButton().text()).toBe('Add a To-Do');
       });
 
-      it('calls `$apollo.mutate` with `AlertMarkTodo` mutation and variables containing `iid`, `todoEvent`, & `projectPath`', async () => {
+      it('calls `$apollo.mutate` with `createAlertTodoMutation` mutation and variables containing `iid`, `todoEvent`, & `projectPath`', async () => {
         jest.spyOn(wrapper.vm.$apollo, 'mutate').mockResolvedValue(mockUpdatedMutationResult);
 
         findToDoButton().trigger('click');
         await wrapper.vm.$nextTick();
 
         expect(wrapper.vm.$apollo.mutate).toHaveBeenCalledWith({
-          mutation: AlertMarkTodo,
+          mutation: createAlertTodoMutation,
           variables: {
             iid: '1527542',
             projectPath: 'projectPath',
@@ -76,6 +77,7 @@ describe('Alert Details Sidebar To Do', () => {
         });
       });
     });
+
     describe('removing a todo', () => {
       beforeEach(() => {
         mountComponent({
@@ -91,12 +93,19 @@ describe('Alert Details Sidebar To Do', () => {
         expect(findToDoButton().text()).toBe('Mark as done');
       });
 
-      it('calls `$apollo.mutate` with `AlertMarkTodoDone` mutation and variables containing `id`', async () => {
+      it('calls `$apollo.mutate` with `todoMarkDoneMutation` mutation and variables containing `id`', async () => {
         jest.spyOn(wrapper.vm.$apollo, 'mutate').mockResolvedValue(mockUpdatedMutationResult);
 
         findToDoButton().trigger('click');
         await wrapper.vm.$nextTick();
-        expect(wrapper.vm.$apollo.mutate).toHaveBeenCalledTimes(1);
+
+        expect(wrapper.vm.$apollo.mutate).toHaveBeenCalledWith({
+          mutation: todoMarkDoneMutation,
+          update: expect.anything(),
+          variables: {
+            id: '1234',
+          },
+        });
       });
     });
   });

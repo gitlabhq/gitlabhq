@@ -12,11 +12,23 @@ class DiffFileBaseEntity < Grape::Entity
   expose :submodule?, as: :submodule
 
   expose :submodule_link do |diff_file, options|
-    memoized_submodule_links(diff_file, options).first
+    memoized_submodule_links(diff_file, options)&.web
   end
 
   expose :submodule_tree_url do |diff_file|
-    memoized_submodule_links(diff_file, options).last
+    memoized_submodule_links(diff_file, options)&.tree
+  end
+
+  expose :submodule_compare do |diff_file|
+    url = memoized_submodule_links(diff_file, options)&.compare
+
+    next unless url
+
+    {
+      url: url,
+      old_sha: diff_file.old_blob&.id,
+      new_sha: diff_file.blob&.id
+    }
   end
 
   expose :edit_path, if: -> (_, options) { options[:merge_request] } do |diff_file|
@@ -96,11 +108,9 @@ class DiffFileBaseEntity < Grape::Entity
 
   def memoized_submodule_links(diff_file, options)
     strong_memoize(:submodule_links) do
-      if diff_file.submodule?
-        options[:submodule_links].for(diff_file.blob, diff_file.content_sha)
-      else
-        []
-      end
+      next unless diff_file.submodule?
+
+      options[:submodule_links].for(diff_file.blob, diff_file.content_sha, diff_file)
     end
   end
 

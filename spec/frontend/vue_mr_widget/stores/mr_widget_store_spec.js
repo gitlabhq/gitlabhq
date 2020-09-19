@@ -69,6 +69,38 @@ describe('MergeRequestStore', () => {
       });
     });
 
+    describe('isPipelineBlocked', () => {
+      const pipelineWaitingForManualAction = {
+        details: {
+          status: {
+            group: 'manual',
+          },
+        },
+      };
+
+      it('should be `false` when the pipeline status is missing', () => {
+        store.setData({ ...mockData, pipeline: undefined });
+
+        expect(store.isPipelineBlocked).toBe(false);
+      });
+
+      it('should be `false` when the pipeline is waiting for manual action', () => {
+        store.setData({ ...mockData, pipeline: pipelineWaitingForManualAction });
+
+        expect(store.isPipelineBlocked).toBe(false);
+      });
+
+      it('should be `true` when the pipeline is waiting for manual action and the pipeline must succeed', () => {
+        store.setData({
+          ...mockData,
+          pipeline: pipelineWaitingForManualAction,
+          only_allow_merge_if_pipeline_succeeds: true,
+        });
+
+        expect(store.isPipelineBlocked).toBe(true);
+      });
+    });
+
     describe('isNothingToMergeState', () => {
       it('returns true when nothingToMerge', () => {
         store.state = stateKey.nothingToMerge;

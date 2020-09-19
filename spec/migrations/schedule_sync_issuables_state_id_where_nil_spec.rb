@@ -20,7 +20,7 @@ RSpec.describe ScheduleSyncIssuablesStateIdWhereNil do
 
     it 'correctly schedules issuable sync background migration' do
       Sidekiq::Testing.fake! do
-        Timecop.freeze do
+        freeze_time do
           migrate!
 
           expect(migration).to be_scheduled_delayed_migration(120.seconds, resource_1.id, resource_3.id)

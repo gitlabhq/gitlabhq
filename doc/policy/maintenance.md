@@ -76,6 +76,9 @@ Version specific changes in Omnibus GitLab Linux packages can be found in [the O
 NOTE: **Note:**
 Instructions are available for downloading an Omnibus GitLab Linux package locally and [manually installing](https://docs.gitlab.com/omnibus/manual_install.html) it.
 
+NOTE: **Note:**
+A step-by-step guide to [upgrading the Omnibus-bundled PostgreSQL is documented separately](https://docs.gitlab.com/omnibus/settings/database.html#upgrade-packaged-postgresql-server).
+
 ### Upgrading major versions
 
 Upgrading the *major* version requires more attention.
@@ -90,8 +93,8 @@ It's also important to ensure that any background migrations have been fully com
 before upgrading to a new major version. To see the current size of the `background_migration` queue,
 [Check for background migrations before upgrading](../update/README.md#checking-for-background-migrations-before-upgrading).
 
-If your GitLab instance has any GitLab Runners associated with it, it is very
-important to upgrade the GitLab Runners to match the GitLab minor version that was
+If your GitLab instance has any runners associated with it, it is very
+important to upgrade GitLab Runner to match the GitLab minor version that was
 upgraded to. This is to ensure [compatibility with GitLab versions](https://docs.gitlab.com/runner/#compatibility-with-gitlab-versions).
 
 ### Version 12 onward: Extra step for major upgrades

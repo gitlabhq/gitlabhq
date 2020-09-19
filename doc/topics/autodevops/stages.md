@@ -19,7 +19,7 @@ If you're also using Auto Review Apps and Auto Deploy, and you choose to provide
 your own `Dockerfile`, you must either:
 
 - Expose your application to port `5000`, as the
-  [default Helm chart](https://gitlab.com/gitlab-org/charts/auto-deploy-app)
+  [default Helm chart](https://gitlab.com/gitlab-org/cluster-integration/auto-deploy-image/-/tree/master/assets/auto-deploy-app)
   assumes this port is available.
 - Override the default values by
   [customizing the Auto Deploy Helm chart](customize.md#custom-helm-chart).
@@ -237,7 +237,7 @@ a link to the Review App for easy discovery. When the branch or tag is deleted,
 such as after merging a merge request, the Review App is also deleted.
 
 Review apps are deployed using the
-[auto-deploy-app](https://gitlab.com/gitlab-org/charts/auto-deploy-app) chart with
+[auto-deploy-app](https://gitlab.com/gitlab-org/cluster-integration/auto-deploy-image/-/tree/master/assets/auto-deploy-app) chart with
 Helm, which you can [customize](customize.md#custom-helm-chart). The application deploys
 into the [Kubernetes namespace](../../user/project/clusters/index.md#deployment-variables)
 for the environment.
@@ -355,7 +355,7 @@ scale your pod replicas, and to apply custom arguments to the Auto DevOps `helm 
 commands. This is an easy way to
 [customize the Auto Deploy Helm chart](customize.md#custom-helm-chart).
 
-Helm uses the [auto-deploy-app](https://gitlab.com/gitlab-org/charts/auto-deploy-app)
+Helm uses the [auto-deploy-app](https://gitlab.com/gitlab-org/cluster-integration/auto-deploy-image/-/tree/master/assets/auto-deploy-app)
 chart to deploy the application into the
 [Kubernetes namespace](../../user/project/clusters/index.md#deployment-variables)
 for the environment.
@@ -474,7 +474,7 @@ Some web applications must run extra deployments for "worker processes". For
 example, Rails applications commonly use separate worker processes
 to run background tasks like sending emails.
 
-The [default Helm chart](https://gitlab.com/gitlab-org/charts/auto-deploy-app)
+The [default Helm chart](https://gitlab.com/gitlab-org/cluster-integration/auto-deploy-image/-/tree/master/assets/auto-deploy-app)
 used in Auto Deploy
 [has support for running worker processes](https://gitlab.com/gitlab-org/charts/auto-deploy-app/-/merge_requests/9).
 

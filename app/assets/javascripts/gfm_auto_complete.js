@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import '@gitlab/at.js';
+import '~/lib/utils/jquery_at_who';
 import { escape, template } from 'lodash';
 import SidebarMediator from '~/sidebar/sidebar_mediator';
 import glRegexp from './lib/utils/regexp';
@@ -52,6 +52,7 @@ export const defaultAutocompleteConfig = {
   milestones: true,
   labels: true,
   snippets: true,
+  vulnerabilities: true,
 };
 
 class GfmAutoComplete {
@@ -71,12 +72,15 @@ class GfmAutoComplete {
   setupLifecycle() {
     this.input.each((i, input) => {
       const $input = $(input);
-      $input.off('focus.setupAtWho').on('focus.setupAtWho', this.setupAtWho.bind(this, $input));
-      $input.on('change.atwho', () => input.dispatchEvent(new Event('input')));
-      // This triggers at.js again
-      // Needed for quick actions with suffixes (ex: /label ~)
-      $input.on('inserted-commands.atwho', $input.trigger.bind($input, 'keyup'));
-      $input.on('clear-commands-cache.atwho', () => this.clearCache());
+      if (!$input.hasClass('js-gfm-input-initialized')) {
+        $input.off('focus.setupAtWho').on('focus.setupAtWho', this.setupAtWho.bind(this, $input));
+        $input.on('change.atwho', () => input.dispatchEvent(new Event('input')));
+        // This triggers at.js again
+        // Needed for quick actions with suffixes (ex: /label ~)
+        $input.on('inserted-commands.atwho', $input.trigger.bind($input, 'keyup'));
+        $input.on('clear-commands-cache.atwho', () => this.clearCache());
+        $input.addClass('js-gfm-input-initialized');
+      }
     });
   }
 
@@ -644,7 +648,8 @@ class GfmAutoComplete {
     // https://github.com/ichord/At.js
     const atSymbolsWithBar = Object.keys(controllers)
       .join('|')
-      .replace(/[$]/, '\\$&');
+      .replace(/[$]/, '\\$&')
+      .replace(/[+]/, '\\+');
     const atSymbolsWithoutBar = Object.keys(controllers).join('');
     const targetSubtext = subtext.split(GfmAutoComplete.regexSubtext).pop();
     const resultantFlag = flag.replace(/[-[\]/{}()*+?.\\^$|]/g, '\\$&');
@@ -675,6 +680,7 @@ GfmAutoComplete.atTypeMap = {
   '~': 'labels',
   '%': 'milestones',
   '/': 'commands',
+  '+': 'vulnerabilities',
   $: 'snippets',
 };
 

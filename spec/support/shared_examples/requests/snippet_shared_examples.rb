@@ -2,6 +2,10 @@
 
 RSpec.shared_examples 'update with repository actions' do
   context 'when the repository exists' do
+    before do
+      allow_any_instance_of(Snippet).to receive(:multiple_files?).and_return(false)
+    end
+
     it 'commits the changes to the repository' do
       existing_blob = snippet.blobs.first
       new_file_name = existing_blob.path + '_new'

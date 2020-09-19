@@ -13,18 +13,17 @@
  */
 
 import $ from 'jquery';
-import { GlLoadingIcon, GlTooltipDirective } from '@gitlab/ui';
+import { GlLoadingIcon, GlTooltipDirective, GlIcon } from '@gitlab/ui';
 import { __ } from '~/locale';
 import { deprecatedCreateFlash as Flash } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import eventHub from '../../event_hub';
-import Icon from '~/vue_shared/components/icon.vue';
 import JobItem from '../graph/job_item.vue';
 import { PIPELINES_TABLE } from '../../constants';
 
 export default {
   components: {
-    Icon,
+    GlIcon,
     JobItem,
     GlLoadingIcon,
   },
@@ -170,7 +169,7 @@ export default {
       @click="onClickStage"
     >
       <span :aria-label="stage.title" aria-hidden="true" class="no-pointer-events">
-        <icon :name="borderlessIcon" />
+        <gl-icon :name="borderlessIcon" />
       </span>
     </button>
 

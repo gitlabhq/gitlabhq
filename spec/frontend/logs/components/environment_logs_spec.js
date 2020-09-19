@@ -39,13 +39,22 @@ describe('EnvironmentLogs', () => {
   };
 
   const updateControlBtnsMock = jest.fn();
+  const LogControlButtonsStub = {
+    template: '<div/>',
+    methods: {
+      update: updateControlBtnsMock,
+    },
+    props: {
+      scrollDownButtonDisabled: false,
+    },
+  };
 
   const findEnvironmentsDropdown = () => wrapper.find('.js-environments-dropdown');
 
   const findSimpleFilters = () => wrapper.find({ ref: 'log-simple-filters' });
   const findAdvancedFilters = () => wrapper.find({ ref: 'log-advanced-filters' });
   const findElasticsearchNotice = () => wrapper.find({ ref: 'elasticsearchNotice' });
-  const findLogControlButtons = () => wrapper.find({ name: 'log-control-buttons-stub' });
+  const findLogControlButtons = () => wrapper.find(LogControlButtonsStub);
 
   const findInfiniteScroll = () => wrapper.find({ ref: 'infiniteScroll' });
   const findLogTrace = () => wrapper.find({ ref: 'logTrace' });
@@ -76,16 +85,7 @@ describe('EnvironmentLogs', () => {
       propsData,
       store,
       stubs: {
-        LogControlButtons: {
-          name: 'log-control-buttons-stub',
-          template: '<div/>',
-          methods: {
-            update: updateControlBtnsMock,
-          },
-          props: {
-            scrollDownButtonDisabled: false,
-          },
-        },
+        LogControlButtons: LogControlButtonsStub,
         GlInfiniteScroll: {
           name: 'gl-infinite-scroll',
           template: `
@@ -120,9 +120,6 @@ describe('EnvironmentLogs', () => {
 
   it('displays UI elements', () => {
     initWrapper();
-
-    expect(wrapper.isVueInstance()).toBe(true);
-    expect(wrapper.isEmpty()).toBe(false);
 
     expect(findEnvironmentsDropdown().is(GlDeprecatedDropdown)).toBe(true);
     expect(findSimpleFilters().exists()).toBe(true);

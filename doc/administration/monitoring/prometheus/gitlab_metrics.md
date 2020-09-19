@@ -106,6 +106,13 @@ The following metrics are available:
 | `successful_login_captcha_total`                               | Gauge     |                   11.0 | Counter of successful CAPTCHA attempts during login                                                 |                                                     |
 | `auto_devops_pipelines_completed_total`                        | Counter   |                   12.7 | Counter of completed Auto DevOps pipelines, labeled by status                                       |                                                     |
 | `gitlab_metrics_dashboard_processing_time_ms`                  | Summary   |                  12.10 | Metrics dashboard processing time in milliseconds | service, stages |
+| `action_cable_active_connections`                              | Gauge     |                   13.4 | Number of ActionCable WS clients currently connected | `server_mode` |
+| `action_cable_pool_min_size`                                   | Gauge     |                   13.4 | Minimum number of worker threads in ActionCable thread pool | `server_mode` |
+| `action_cable_pool_max_size`                                   | Gauge     |                   13.4 | Maximum number of worker threads in ActionCable thread pool | `server_mode` |
+| `action_cable_pool_current_size`                               | Gauge     |                   13.4 | Current number of worker threads in ActionCable thread pool | `server_mode` |
+| `action_cable_pool_largest_size`                               | Gauge     |                   13.4 | Largest number of worker threads observed so far in ActionCable thread pool | `server_mode` |
+| `action_cable_pool_pending_tasks`                              | Gauge     |                   13.4 | Number of tasks waiting to be executed in ActionCable thread pool | `server_mode` |
+| `action_cable_pool_tasks_total`                                | Gauge     |                   13.4 | Total number of tasks executed in ActionCable thread pool | `server_mode` |
 
 ## Metrics controlled by a feature flag
 
@@ -157,25 +164,46 @@ configuration option in `gitlab.yml`. These metrics are served from the
 | `geo_lfs_objects_synced_missing_on_primary`    | Gauge   | 10.7  | Number of LFS objects marked as synced due to the file missing on the primary | `url` |
 | `geo_job_artifacts_synced_missing_on_primary`  | Gauge   | 10.7  | Number of job artifacts marked as synced due to the file missing on the primary | `url` |
 | `geo_attachments_synced_missing_on_primary`    | Gauge   | 10.7  | Number of attachments marked as synced due to the file missing on the primary | `url` |
-| `geo_repositories_checksummed_count`           | Gauge   | 10.7  | Number of repositories checksummed on primary | `url` |
-| `geo_repositories_checksum_failed_count`       | Gauge   | 10.7  | Number of repositories failed to calculate the checksum on primary | `url` |
-| `geo_wikis_checksummed_count`                  | Gauge   | 10.7  | Number of wikis checksummed on primary | `url` |
-| `geo_wikis_checksum_failed_count`              | Gauge   | 10.7  | Number of wikis failed to calculate the checksum on primary | `url` |
-| `geo_repositories_verified_count`              | Gauge   | 10.7  | Number of repositories verified on secondary | `url` |
-| `geo_repositories_verification_failed_count`   | Gauge   | 10.7  | Number of repositories failed to verify on secondary | `url` |
-| `geo_repositories_checksum_mismatch_count`     | Gauge   | 10.7  | Number of repositories that checksum mismatch on secondary | `url` |
-| `geo_wikis_verified_count`                     | Gauge   | 10.7  | Number of wikis verified on secondary | `url` |
-| `geo_wikis_verification_failed_count`          | Gauge   | 10.7  | Number of wikis failed to verify on secondary | `url` |
-| `geo_wikis_checksum_mismatch_count`            | Gauge   | 10.7  | Number of wikis that checksum mismatch on secondary | `url` |
-| `geo_repositories_checked_count`               | Gauge   | 11.1  | Number of repositories that have been checked via `git fsck` | `url` |
-| `geo_repositories_checked_failed_count`        | Gauge   | 11.1  | Number of repositories that have a failure from `git fsck` | `url` |
-| `geo_repositories_retrying_verification_count` | Gauge   | 11.2  | Number of repositories verification failures that Geo is actively trying to correct on secondary  | `url` |
-| `geo_wikis_retrying_verification_count`        | Gauge   | 11.2  | Number of wikis verification failures that Geo is actively trying to correct on secondary | `url` |
+| `geo_repositories_checksummed`                 | Gauge   | 10.7  | Number of repositories checksummed on primary | `url` |
+| `geo_repositories_checksum_failed`             | Gauge   | 10.7  | Number of repositories failed to calculate the checksum on primary | `url` |
+| `geo_wikis_checksummed`                        | Gauge   | 10.7  | Number of wikis checksummed on primary | `url` |
+| `geo_wikis_checksum_failed`                    | Gauge   | 10.7  | Number of wikis failed to calculate the checksum on primary | `url` |
+| `geo_repositories_verified`                    | Gauge   | 10.7  | Number of repositories verified on secondary | `url` |
+| `geo_repositories_verification_failed`         | Gauge   | 10.7  | Number of repositories failed to verify on secondary | `url` |
+| `geo_repositories_checksum_mismatch`           | Gauge   | 10.7  | Number of repositories that checksum mismatch on secondary | `url` |
+| `geo_wikis_verified`                           | Gauge   | 10.7  | Number of wikis verified on secondary | `url` |
+| `geo_wikis_verification_failed`                | Gauge   | 10.7  | Number of wikis failed to verify on secondary | `url` |
+| `geo_wikis_checksum_mismatch`                  | Gauge   | 10.7  | Number of wikis that checksum mismatch on secondary | `url` |
+| `geo_repositories_checked`                     | Gauge   | 11.1  | Number of repositories that have been checked via `git fsck` | `url` |
+| `geo_repositories_checked_failed`              | Gauge   | 11.1  | Number of repositories that have a failure from `git fsck` | `url` |
+| `geo_repositories_retrying_verification`       | Gauge   | 11.2  | Number of repositories verification failures that Geo is actively trying to correct on secondary  | `url` |
+| `geo_wikis_retrying_verification`              | Gauge   | 11.2  | Number of wikis verification failures that Geo is actively trying to correct on secondary | `url` |
+| `geo_package_files`                            | Gauge   | 13.0  | Number of package files on primary | `url` |
+| `geo_package_files_checksummed`                | Gauge   | 13.0  | Number of package files checksummed on primary | `url` |
+| `geo_package_files_checksum_failed`            | Gauge   | 13.0  | Number of package files failed to calculate the checksum on primary | `url` |
+| `geo_package_files_synced`                     | Gauge   | 13.3  | Number of syncable package files synced on secondary | `url` |
+| `geo_package_files_failed`                     | Gauge   | 13.3  | Number of syncable package files failed to sync on secondary | `url` |
+| `geo_package_files_registry`                   | Gauge   | 13.3  | Number of package files in the registry | `url` |
+| `geo_terraform_states`                         | Gauge   | 13.3  | Number of terraform states on primary | `url` |
+| `geo_terraform_states_checksummed`             | Gauge   | 13.3  | Number of terraform states checksummed on primary | `url` |
+| `geo_terraform_states_checksum_failed`         | Gauge   | 13.3  | Number of terraform states failed to calculate the checksum on primary | `url` |
+| `geo_terraform_states_synced`                  | Gauge   | 13.3  | Number of syncable terraform states synced on secondary | `url` |
+| `geo_terraform_states_failed`                  | Gauge   | 13.3  | Number of syncable terraform states failed to sync on secondary | `url` |
+| `geo_terraform_states_registry`                | Gauge   | 13.3  | Number of terraform states in the registry | `url` |
 | `global_search_bulk_cron_queue_size`           | Gauge   | 12.10 | Number of database records waiting to be synchronized to Elasticsearch | |
 | `global_search_awaiting_indexing_queue_size`   | Gauge   | 13.2  | Number of database updates waiting to be synchronized to Elasticsearch while indexing is paused | |
-| `package_files_count`                          | Gauge   | 13.0  | Number of package files on primary | `url` |
-| `package_files_checksummed_count`              | Gauge   | 13.0  | Number of package files checksummed on primary | `url` |
-| `package_files_checksum_failed_count`          | Gauge   | 13.0  | Number of package files failed to calculate the checksum on primary
+| `geo_merge_request_diffs`                      | Gauge   | 13.4  | Number of merge request diffs on primary | `url` |
+| `geo_merge_request_diffs_checksummed`          | Gauge   | 13.4  | Number of merge request diffs checksummed on primary | `url` |
+| `geo_merge_request_diffs_checksum_failed`      | Gauge   | 13.4  | Number of merge request diffs failed to calculate the checksum on primary | `url` |
+| `geo_merge_request_diffs_synced`               | Gauge   | 13.4  | Number of syncable merge request diffs synced on secondary | `url` |
+| `geo_merge_request_diffs_failed`               | Gauge   | 13.4  | Number of syncable merge request diffs failed to sync on secondary | `url` |
+| `geo_merge_request_diffs_registry`             | Gauge   | 13.4  | Number of merge request diffs in the registry | `url` |
+| `geo_snippet_repositories`                     | Gauge   | 13.4  | Number of snippets on primary | `url` |
+| `geo_snippet_repositories_checksummed`         | Gauge   | 13.4  | Number of snippets checksummed on primary | `url` |
+| `geo_snippet_repositories_checksum_failed`     | Gauge   | 13.4  | Number of snippets failed to calculate the checksum on primary | `url` |
+| `geo_snippet_repositories_synced`              | Gauge   | 13.4  | Number of syncable snippets synced on secondary | `url` |
+| `geo_snippet_repositories_failed`              | Gauge   | 13.4  | Number of syncable snippets failed on secondary | `url` |
+| `geo_snippet_repositories_registry`            | Gauge   | 13.4  | Number of syncable snippets in the registry | `url` |
 
 ## Database load balancing metrics **(PREMIUM ONLY)**
 
@@ -184,6 +212,15 @@ The following metrics are available:
 | Metric                            | Type      | Since                                                         | Description                            |
 |:--------------------------------- |:--------- |:------------------------------------------------------------- |:-------------------------------------- |
 | `db_load_balancing_hosts`         | Gauge     | [12.3](https://gitlab.com/gitlab-org/gitlab/-/issues/13630)     | Current number of load balancing hosts |
+
+## Database partitioning metrics **(PREMIUM ONLY)**
+
+The following metrics are available:
+
+| Metric                            | Type      | Since                                                         | Description                                                       |
+|:--------------------------------- |:--------- |:------------------------------------------------------------- |:----------------------------------------------------------------- |
+| `db_partitions_present`           | Gauge     | [13.4](https://gitlab.com/gitlab-org/gitlab/-/issues/227353)  | Number of database partitions present                             |
+| `db_partitions_missing`           | Gauge     | [13.4](https://gitlab.com/gitlab-org/gitlab/-/issues/227353)  | Number of database partitions currently expected, but not present |
 
 ## Connection pool metrics
 

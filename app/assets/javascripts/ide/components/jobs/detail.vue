@@ -1,9 +1,10 @@
 <script>
+/* eslint-disable vue/no-v-html */
 import { mapActions, mapState } from 'vuex';
 import { throttle } from 'lodash';
+import { GlIcon } from '@gitlab/ui';
 import { __ } from '../../../locale';
 import tooltip from '../../../vue_shared/directives/tooltip';
-import Icon from '../../../vue_shared/components/icon.vue';
 import ScrollButton from './detail/scroll_button.vue';
 import JobDescription from './detail/description.vue';
 
@@ -17,7 +18,7 @@ export default {
     tooltip,
   },
   components: {
-    Icon,
+    GlIcon,
     ScrollButton,
     JobDescription,
   },
@@ -39,10 +40,10 @@ export default {
     },
   },
   mounted() {
-    this.getTrace();
+    this.getLogs();
   },
   methods: {
-    ...mapActions('pipelines', ['fetchJobTrace', 'setDetailJob']),
+    ...mapActions('pipelines', ['fetchJobLogs', 'setDetailJob']),
     scrollDown() {
       if (this.$refs.buildTrace) {
         this.$refs.buildTrace.scrollTo(0, this.$refs.buildTrace.scrollHeight);
@@ -65,8 +66,8 @@ export default {
         this.scrollPos = '';
       }
     }),
-    getTrace() {
-      return this.fetchJobTrace().then(() => this.scrollDown());
+    getLogs() {
+      return this.fetchJobLogs().then(() => this.scrollDown());
     },
   },
 };
@@ -76,7 +77,7 @@ export default {
   <div class="ide-pipeline build-page d-flex flex-column flex-fill">
     <header class="ide-job-header d-flex align-items-center">
       <button class="btn btn-default btn-sm d-flex" @click="setDetailJob(null)">
-        <icon name="chevron-left" /> {{ __('View jobs') }}
+        <gl-icon name="chevron-left" /> {{ __('View jobs') }}
       </button>
     </header>
     <div class="top-bar d-flex border-left-0 mr-3">

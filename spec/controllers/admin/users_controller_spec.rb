@@ -218,28 +218,44 @@ RSpec.describe Admin::UsersController do
   end
 
   describe 'PATCH disable_two_factor' do
-    it 'disables 2FA for the user' do
-      expect(user).to receive(:disable_two_factor!)
-      allow(subject).to receive(:user).and_return(user)
+    subject { patch :disable_two_factor, params: { id: user.to_param } }
 
-      go
+    context 'for a user that has 2FA enabled' do
+      let(:user) { create(:user, :two_factor) }
+
+      it 'disables 2FA for the user' do
+        subject
+
+        expect(user.reload.two_factor_enabled?).to eq(false)
+      end
+
+      it 'redirects back' do
+        subject
+
+        expect(response).to redirect_to(admin_user_path(user))
+      end
+
+      it 'displays a notice on success' do
+        subject
+
+        expect(flash[:notice])
+          .to eq _('Two-factor authentication has been disabled for this user')
+      end
     end
 
-    it 'redirects back' do
-      go
+    context 'for a user that does not have 2FA enabled' do
+      it 'redirects back' do
+        subject
 
-      expect(response).to redirect_to(admin_user_path(user))
-    end
+        expect(response).to redirect_to(admin_user_path(user))
+      end
 
-    it 'displays an alert' do
-      go
+      it 'displays an alert on failure' do
+        subject
 
-      expect(flash[:notice])
-        .to eq _('Two-factor Authentication has been disabled for this user')
-    end
-
-    def go
-      patch :disable_two_factor, params: { id: user.to_param }
+        expect(flash[:alert])
+          .to eq _('Two-factor authentication is not enabled for this user')
+      end
     end
   end
 
@@ -270,82 +286,111 @@ RSpec.describe Admin::UsersController do
 
   describe 'POST update' do
     context 'when the password has changed' do
-      def update_password(user, password, password_confirmation = nil)
+      def update_password(user, password = User.random_password, password_confirmation = password)
         params = {
           id: user.to_param,
           user: {
             password: password,
-            password_confirmation: password_confirmation || password
+            password_confirmation: password_confirmation
           }
         }
 
         post :update, params: params
       end
 
-      context 'when the admin changes their own password' do
-        it 'updates the password' do
-          expect { update_password(admin, 'AValidPassword1') }
-            .to change { admin.reload.encrypted_password }
-        end
+      context 'when admin changes their own password' do
+        context 'when password is valid' do
+          it 'updates the password' do
+            expect { update_password(admin) }
+              .to change { admin.reload.encrypted_password }
+          end
 
-        it 'does not set the new password to expire immediately' do
-          expect { update_password(admin, 'AValidPassword1') }
-            .not_to change { admin.reload.password_expires_at }
+          it 'does not set the new password to expire immediately' do
+            expect { update_password(admin) }
+              .not_to change { admin.reload.password_expired? }
+          end
+
+          it 'does not enqueue the `admin changed your password` email' do
+            expect { update_password(admin) }
+              .not_to have_enqueued_mail(DeviseMailer, :password_change_by_admin)
+          end
+
+          it 'enqueues the `password changed` email' do
+            expect { update_password(admin) }
+              .to have_enqueued_mail(DeviseMailer, :password_change)
+          end
         end
       end
 
-      context 'when the new password is valid' do
-        it 'redirects to the user' do
-          update_password(user, 'AValidPassword1')
+      context 'when admin changes the password of another user' do
+        context 'when the new password is valid' do
+          it 'redirects to the user' do
+            update_password(user)
 
-          expect(response).to redirect_to(admin_user_path(user))
-        end
+            expect(response).to redirect_to(admin_user_path(user))
+          end
 
-        it 'updates the password' do
-          expect { update_password(user, 'AValidPassword1') }
-            .to change { user.reload.encrypted_password }
-        end
+          it 'updates the password' do
+            expect { update_password(user) }
+              .to change { user.reload.encrypted_password }
+          end
 
-        it 'sets the new password to expire immediately' do
-          expect { update_password(user, 'AValidPassword1') }
-            .to change { user.reload.password_expires_at }.to be_within(2.seconds).of(Time.current)
+          it 'sets the new password to expire immediately' do
+            expect { update_password(user) }
+              .to change { user.reload.password_expired? }.from(false).to(true)
+          end
+
+          it 'enqueues the `admin changed your password` email' do
+            expect { update_password(user) }
+              .to have_enqueued_mail(DeviseMailer, :password_change_by_admin)
+          end
+
+          it 'does not enqueue the `password changed` email' do
+            expect { update_password(user) }
+              .not_to have_enqueued_mail(DeviseMailer, :password_change)
+          end
         end
       end
 
       context 'when the new password is invalid' do
+        let(:password) { 'invalid' }
+
         it 'shows the edit page again' do
-          update_password(user, 'invalid')
+          update_password(user, password)
 
           expect(response).to render_template(:edit)
         end
 
         it 'returns the error message' do
-          update_password(user, 'invalid')
+          update_password(user, password)
 
           expect(assigns[:user].errors).to contain_exactly(a_string_matching(/too short/))
         end
 
         it 'does not update the password' do
-          expect { update_password(user, 'invalid') }
+          expect { update_password(user, password) }
             .not_to change { user.reload.encrypted_password }
         end
       end
 
       context 'when the new password does not match the password confirmation' do
+        let(:password) { 'some_password' }
+        let(:password_confirmation) { 'not_same_as_password' }
+
         it 'shows the edit page again' do
-          update_password(user, 'AValidPassword1', 'AValidPassword2')
+          update_password(user, password, password_confirmation)
 
           expect(response).to render_template(:edit)
         end
 
         it 'returns the error message' do
-          update_password(user, 'AValidPassword1', 'AValidPassword2')
+          update_password(user, password, password_confirmation)
 
           expect(assigns[:user].errors).to contain_exactly(a_string_matching(/doesn't match/))
         end
 
         it 'does not update the password' do
-          expect { update_password(user, 'AValidPassword1', 'AValidPassword2') }
+          expect { update_password(user, password, password_confirmation) }
             .not_to change { user.reload.encrypted_password }
         end
       end

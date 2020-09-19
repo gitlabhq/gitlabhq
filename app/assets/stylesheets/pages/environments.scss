@@ -83,7 +83,7 @@
 
 .x-axis path,
 .y-axis path {
-  stroke: $gl-gray-350;
+  stroke: $gray-300;
 }
 
 .label-x-axis-line,
@@ -93,7 +93,7 @@
 
 .y-axis {
   line {
-    stroke: $gl-gray-350;
+    stroke: $gray-300;
     stroke-width: 1;
   }
 }
@@ -117,7 +117,7 @@
 }
 
 .selected-metric-line {
-  stroke: $gl-gray-dark;
+  stroke: $gray-900;
   stroke-width: 1;
 }
 

@@ -3,7 +3,7 @@
 module QA
   RSpec.describe 'Manage' do
     describe 'Project activity' do
-      it 'user creates an event in the activity page upon Git push' do
+      it 'user creates an event in the activity page upon Git push', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/407' do
         Flow::Login.sign_in
 
         Resource::Repository::ProjectPush.fabricate! do |push|

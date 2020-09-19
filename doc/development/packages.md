@@ -67,7 +67,7 @@ The current state of existing package registries availability is:
 | Repository Type | Project Level | Group Level | Instance Level |
 |-----------------|---------------|-------------|----------------|
 | Maven           | Yes           | Yes         | Yes            |
-| Conan           | No - [open issue](https://gitlab.com/gitlab-org/gitlab/-/issues/11679) | No - [open issue](https://gitlab.com/gitlab-org/gitlab/-/issues/11679) | Yes |
+| Conan           | Yes           | No - [open issue](https://gitlab.com/gitlab-org/gitlab/-/issues/11679) | Yes |
 | NPM             | No - [open issue](https://gitlab.com/gitlab-org/gitlab/-/issues/36853) | Yes | No - [open issue](https://gitlab.com/gitlab-org/gitlab/-/issues/36853) |
 | NuGet           | Yes | No - [open issue](https://gitlab.com/gitlab-org/gitlab/-/issues/36423) | No |
 | PyPI            | Yes | No | No |
@@ -87,7 +87,7 @@ Composer package naming scope is Instance Level.
 To avoid name conflict for instance-level endpoints you will need to define a package naming convention
 that gives a way to identify the project that the package belongs to. This generally involves using the project
 ID or full project path in the package name. See
-[Conan's naming convention](../user/packages/conan_repository/index.md#package-recipe-naming-convention) as an example.
+[Conan's naming convention](../user/packages/conan_repository/index.md#package-recipe-naming-convention-for-instance-level-remote) as an example.
 
 For group and project-level endpoints, naming can be less constrained and it will be up to the group and project
 members to be certain that there is no conflict between two package names. However, the system should prevent

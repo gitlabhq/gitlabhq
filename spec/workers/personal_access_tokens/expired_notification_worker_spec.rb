@@ -9,32 +9,16 @@ RSpec.describe PersonalAccessTokens::ExpiredNotificationWorker, type: :worker do
     context 'when a token has expired' do
       let(:expired_today) { create(:personal_access_token, expires_at: Date.current) }
 
-      context 'when feature is enabled' do
-        it 'uses notification service to send email to the user' do
-          expect_next_instance_of(NotificationService) do |notification_service|
-            expect(notification_service).to receive(:access_token_expired).with(expired_today.user)
-          end
-
-          worker.perform
+      it 'uses notification service to send email to the user' do
+        expect_next_instance_of(NotificationService) do |notification_service|
+          expect(notification_service).to receive(:access_token_expired).with(expired_today.user)
         end
 
-        it 'updates notified column' do
-          expect { worker.perform }.to change { expired_today.reload.after_expiry_notification_delivered }.from(false).to(true)
-        end
+        worker.perform
       end
 
-      context 'when feature is disabled' do
-        before do
-          stub_feature_flags(expired_pat_email_notification: false)
-        end
-
-        it 'does not update notified column' do
-          expect { worker.perform }.not_to change { expired_today.reload.after_expiry_notification_delivered }
-        end
-
-        it 'does not trigger email' do
-          expect { worker.perform }.not_to change { ActionMailer::Base.deliveries.count }
-        end
+      it 'updates notified column' do
+        expect { worker.perform }.to change { expired_today.reload.after_expiry_notification_delivered }.from(false).to(true)
       end
     end
 

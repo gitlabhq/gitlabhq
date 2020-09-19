@@ -5,10 +5,7 @@
         = visibility_level_label(@snippet.visibility_level)
       = visibility_level_icon(@snippet.visibility_level)
     %span.creator
-      Authored
-      = time_ago_with_tooltip(@snippet.created_at, placement: 'bottom', html_class: 'snippet_updated_ago')
-      by #{link_to_member(@project, @snippet.author, size: 24, author_class: "author item-title", avatar_class: "d-none d-sm-inline")}
-      = user_status(@snippet.author)
+      = s_('Snippets|Authored %{time_ago} by %{author}').html_safe % { time_ago: time_ago_with_tooltip(@snippet.created_at, placement: 'bottom', html_class: 'snippet_updated_ago'), author: link_to_member(@project, @snippet.author, size: 24, author_class: "author item-title", avatar_class: "d-none d-sm-inline") + user_status(@snippet.author) }
 
   .detail-page-header-actions
     - if @snippet.project_id?

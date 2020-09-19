@@ -18,7 +18,7 @@ Although you can [migrate](../../../user/project/import/jira.md) your Jira issue
 The following Jira integrations allow different types of cross-referencing between GitLab activity and Jira issues, with additional features:
 
 - [**Jira integration**](jira.md) - This is built in to GitLab. In a given GitLab project, it can be configured to connect to any Jira instance, self-managed or Cloud.
-- [**Jira development panel integration**](../../../integration/jira_development_panel.md) **(PREMIUM)** - This connects all GitLab projects under a specified group or personal namespace.
+- [**Jira development panel integration**](../../../integration/jira_development_panel.md) - This connects all GitLab projects under a specified group or personal namespace.
   - If you're using Jira Cloud and GitLab.com, install the [GitLab for Jira](https://marketplace.atlassian.com/apps/1221011/gitlab-for-jira) app in the Atlassian Marketplace and see its [documentation](../../../integration/jira_development_panel.md#gitlab-for-jira-app).
   - For all other environments, use the [Jira DVCS Connector configuration instructions](../../../integration/jira_development_panel.md#configuration).
 

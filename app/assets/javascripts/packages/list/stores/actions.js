@@ -1,10 +1,10 @@
 import Api from '~/api';
 import axios from '~/lib/utils/axios_utils';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
+import { DELETE_PACKAGE_ERROR_MESSAGE } from '~/packages/shared/constants';
 import * as types from './mutation_types';
 import {
   FETCH_PACKAGES_LIST_ERROR_MESSAGE,
-  DELETE_PACKAGE_ERROR_MESSAGE,
   DELETE_PACKAGE_SUCCESS_MESSAGE,
   DEFAULT_PAGE,
   DEFAULT_PAGE_SIZE,

@@ -4,10 +4,11 @@
 
 import $ from 'jquery';
 import { template, escape } from 'lodash';
-import { __ } from '~/locale';
-import '~/gl_dropdown';
+import { __, sprintf } from '~/locale';
+import initDeprecatedJQueryDropdown from '~/deprecated_jquery_dropdown';
+import Api from '~/api';
 import axios from './lib/utils/axios_utils';
-import { timeFor } from './lib/utils/datetime_utility';
+import { timeFor, parsePikadayDate, dateInWords } from './lib/utils/datetime_utility';
 import ModalStore from './boards/stores/modal_store';
 import boardsStore, {
   boardStoreIssueSet,
@@ -34,10 +35,10 @@ export default class MilestoneSelect {
     $els.each((i, dropdown) => {
       let milestoneLinkNoneTemplate,
         milestoneLinkTemplate,
+        milestoneExpiredLinkTemplate,
         selectedMilestone,
         selectedMilestoneDefault;
       const $dropdown = $(dropdown);
-      const milestonesUrl = $dropdown.data('milestones');
       const issueUpdateURL = $dropdown.data('issueUpdate');
       const showNo = $dropdown.data('showNo');
       const showAny = $dropdown.data('showAny');
@@ -63,59 +64,109 @@ export default class MilestoneSelect {
         milestoneLinkTemplate = template(
           '<a href="<%- web_url %>" class="bold has-tooltip" data-container="body" title="<%- remaining %>"><%- title %></a>',
         );
+        milestoneExpiredLinkTemplate = template(
+          '<a href="<%- web_url %>" class="bold has-tooltip" data-container="body" title="<%- remaining %>"><%- title %> (Past due)</a>',
+        );
         milestoneLinkNoneTemplate = `<span class="no-value">${__('None')}</span>`;
       }
-      return $dropdown.glDropdown({
+      return initDeprecatedJQueryDropdown($dropdown, {
         showMenuAbove,
-        data: (term, callback) =>
-          axios.get(milestonesUrl).then(({ data }) => {
-            const extraOptions = [];
-            if (showAny) {
-              extraOptions.push({
-                id: null,
-                name: null,
-                title: __('Any milestone'),
-              });
-            }
-            if (showNo) {
-              extraOptions.push({
-                id: -1,
-                name: __('No milestone'),
-                title: __('No milestone'),
-              });
-            }
-            if (showUpcoming) {
-              extraOptions.push({
-                id: -2,
-                name: '#upcoming',
-                title: __('Upcoming'),
-              });
-            }
-            if (showStarted) {
-              extraOptions.push({
-                id: -3,
-                name: '#started',
-                title: __('Started'),
-              });
-            }
-            if (extraOptions.length) {
-              extraOptions.push({ type: 'divider' });
-            }
+        data: (term, callback) => {
+          let contextId = parseInt($dropdown.get(0).dataset.projectId, 10);
+          let getMilestones = Api.projectMilestones.bind(Api);
+          const reqParams = { state: 'active', include_parent_milestones: true };
 
-            callback(extraOptions.concat(data));
-            if (showMenuAbove) {
-              $dropdown.data('glDropdown').positionMenuAbove();
-            }
-            $(`[data-milestone-id="${escape(selectedMilestone)}"] > a`).addClass('is-active');
-          }),
-        renderRow: milestone => `
-          <li data-milestone-id="${escape(milestone.name)}">
+          if (term) {
+            reqParams.search = term.trim();
+          }
+
+          if (!contextId) {
+            contextId = $dropdown.get(0).dataset.groupId;
+            delete reqParams.include_parent_milestones;
+            getMilestones = Api.groupMilestones.bind(Api);
+          }
+
+          // We don't use $.data() as it caches initial value and never updates!
+          return getMilestones(contextId, reqParams)
+            .then(({ data }) =>
+              data
+                .map(m => ({
+                  ...m,
+                  // Public API includes `title` instead of `name`.
+                  name: m.title,
+                }))
+                .sort((mA, mB) => {
+                  // Move all expired milestones to the bottom.
+                  if (mA.expired) {
+                    return 1;
+                  }
+                  if (mB.expired) {
+                    return -1;
+                  }
+                  return 0;
+                }),
+            )
+            .then(data => {
+              const extraOptions = [];
+              if (showAny) {
+                extraOptions.push({
+                  id: null,
+                  name: null,
+                  title: __('Any milestone'),
+                });
+              }
+              if (showNo) {
+                extraOptions.push({
+                  id: -1,
+                  name: __('No milestone'),
+                  title: __('No milestone'),
+                });
+              }
+              if (showUpcoming) {
+                extraOptions.push({
+                  id: -2,
+                  name: '#upcoming',
+                  title: __('Upcoming'),
+                });
+              }
+              if (showStarted) {
+                extraOptions.push({
+                  id: -3,
+                  name: '#started',
+                  title: __('Started'),
+                });
+              }
+              if (extraOptions.length) {
+                extraOptions.push({ type: 'divider' });
+              }
+
+              callback(extraOptions.concat(data));
+              if (showMenuAbove) {
+                $dropdown.data('deprecatedJQueryDropdown').positionMenuAbove();
+              }
+              $(`[data-milestone-id="${selectedMilestone}"] > a`).addClass('is-active');
+            });
+        },
+        renderRow: milestone => {
+          const milestoneName = milestone.title || milestone.name;
+          let milestoneDisplayName = escape(milestoneName);
+
+          if (milestone.expired) {
+            milestoneDisplayName = sprintf(__('%{milestone} (expired)'), {
+              milestone: milestoneDisplayName,
+            });
+          }
+
+          return `
+          <li data-milestone-id="${escape(milestoneName)}">
             <a href='#' class='dropdown-menu-milestone-link'>
-              ${escape(milestone.title)}
+              ${milestoneDisplayName}
             </a>
           </li>
-        `,
+        `;
+        },
         filterable: true,
+        filterRemote: true,
         search: {
           fields: ['title'],
         },
@@ -149,7 +200,7 @@ export default class MilestoneSelect {
             selectedMilestone = $dropdown[0].dataset.selected || selectedMilestoneDefault;
           }
           $('a.is-active', $el).removeClass('is-active');
-          $(`[data-milestone-id="${escape(selectedMilestone)}"] > a`, $el).addClass('is-active');
+          $(`[data-milestone-id="${selectedMilestone}"] > a`, $el).addClass('is-active');
         },
         vue: $dropdown.hasClass('js-issue-board-sidebar'),
         clicked: clickEvent => {
@@ -237,7 +288,16 @@ export default class MilestoneSelect {
                 if (data.milestone != null) {
                   data.milestone.remaining = timeFor(data.milestone.due_date);
                   data.milestone.name = data.milestone.title;
-                  $value.html(milestoneLinkTemplate(data.milestone));
+                  $value.html(
+                    data.milestone.expired
+                      ? milestoneExpiredLinkTemplate({
+                          ...data.milestone,
+                          remaining: sprintf(__('%{due_date} (Past due)'), {
+                            due_date: dateInWords(parsePikadayDate(data.milestone.due_date)),
+                          }),
+                        })
+                      : milestoneLinkTemplate(data.milestone),
+                  );
                   return $sidebarCollapsedValue
                     .attr(
                       'data-original-title',

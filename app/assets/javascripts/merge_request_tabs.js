@@ -1,6 +1,7 @@
 /* eslint-disable no-new, class-methods-use-this */
 
 import $ from 'jquery';
+import 'vendor/jquery.scrollTo';
 import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
 import Cookies from 'js-cookie';
 import createEventHub from '~/helpers/event_hub_factory';

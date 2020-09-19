@@ -330,6 +330,8 @@ describe('note_app', () => {
 
       wrapper.vm.$parent.$el.dispatchEvent(toggleAwardEvent);
 
+      jest.advanceTimersByTime(2);
+
       expect(toggleAwardAction).toHaveBeenCalledTimes(1);
       const [, payload] = toggleAwardAction.mock.calls[0];
 

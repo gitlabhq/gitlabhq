@@ -6,6 +6,7 @@ module Gitlab
       module TableManagementHelpers
         include ::Gitlab::Database::SchemaHelpers
         include ::Gitlab::Database::DynamicModelHelpers
+        include ::Gitlab::Database::MigrationHelpers
         include ::Gitlab::Database::Migrations::BackgroundMigrationHelpers
 
         ALLOWED_TABLES = %w[audit_events].freeze
@@ -14,6 +15,12 @@ module Gitlab
         MIGRATION_CLASS_NAME = "::#{module_parent_name}::BackfillPartitionedTable"
         BATCH_INTERVAL = 2.minutes.freeze
         BATCH_SIZE = 50_000
+
+        JobArguments = Struct.new(:start_id, :stop_id, :source_table_name, :partitioned_table_name, :source_column) do
+          def self.from_array(arguments)
+            self.new(*arguments)
+          end
+        end
 
         # Creates a partitioned copy of an existing table, using a RANGE partitioning strategy on a timestamp column.
         # One partition is created per month between the given `min_date` and `max_date`. Also installs a trigger on
@@ -134,6 +141,42 @@ module Gitlab
           end
         end
 
+        # Executes cleanup tasks from a previous BackgroundMigration to backfill a partitioned table by finishing
+        # pending jobs and performing a final data synchronization.
+        # This performs two steps:
+        #   1. Wait to finish any pending BackgroundMigration jobs that have not succeeded
+        #   2. Inline copy any missed rows from the original table to the partitioned table
+        #
+        # **NOTE** Migrations using this method cannot be scheduled in the same release as the migration that
+        # schedules the background migration using the `enqueue_background_migration` helper, or else the
+        # background migration jobs will be force-executed.
+        #
+        # Example:
+        #
+        #   finalize_backfilling_partitioned_table :audit_events
+        #
+        def finalize_backfilling_partitioned_table(table_name)
+          assert_table_is_allowed(table_name)
+          assert_not_in_transaction_block(scope: ERROR_SCOPE)
+
+          partitioned_table_name = make_partitioned_table_name(table_name)
+          unless table_exists?(partitioned_table_name)
+            raise "could not find partitioned table for #{table_name}, " \
+              "this could indicate the previous partitioning migration has been rolled back."
+          end
+
+          Gitlab::BackgroundMigration.steal(MIGRATION_CLASS_NAME) do |raw_arguments|
+            JobArguments.from_array(raw_arguments).source_table_name == table_name.to_s
+          end
+
+          primary_key = connection.primary_key(table_name)
+          copy_missed_records(table_name, partitioned_table_name, primary_key)
+
+          disable_statement_timeout do
+            execute("VACUUM FREEZE ANALYZE #{partitioned_table_name}")
+          end
+        end
+
         private
 
         def assert_table_is_allowed(table_name)
@@ -161,10 +204,8 @@ module Gitlab
 
         def create_range_partitioned_copy(source_table_name, partitioned_table_name, partition_column, primary_key)
           if table_exists?(partitioned_table_name)
-            # rubocop:disable Gitlab/RailsLogger
-            Rails.logger.warn "Partitioned table not created because it already exists" \
+            Gitlab::AppLogger.warn "Partitioned table not created because it already exists" \
               " (this may be due to an aborted migration or similar): table_name: #{partitioned_table_name} "
-            # rubocop:enable Gitlab/RailsLogger
             return
           end
 
@@ -217,10 +258,8 @@ module Gitlab
 
         def create_range_partition_safely(partition_name, table_name, lower_bound, upper_bound)
           if table_exists?(table_for_range_partition(partition_name))
-            # rubocop:disable Gitlab/RailsLogger
-            Rails.logger.warn "Partition not created because it already exists" \
+            Gitlab::AppLogger.warn "Partition not created because it already exists" \
               " (this may be due to an aborted migration or similar): partition_name: #{partition_name}"
-            # rubocop:enable Gitlab/RailsLogger
             return
           end
 
@@ -241,10 +280,8 @@ module Gitlab
 
         def create_sync_function(name, partitioned_table_name, unique_key)
           if function_exists?(name)
-            # rubocop:disable Gitlab/RailsLogger
-            Rails.logger.warn "Partitioning sync function not created because it already exists" \
+            Gitlab::AppLogger.warn "Partitioning sync function not created because it already exists" \
               " (this may be due to an aborted migration or similar): function name: #{name}"
-            # rubocop:enable Gitlab/RailsLogger
             return
           end
 
@@ -276,17 +313,15 @@ module Gitlab
 
         def create_sync_trigger(table_name, trigger_name, function_name)
           if trigger_exists?(table_name, trigger_name)
-            # rubocop:disable Gitlab/RailsLogger
-            Rails.logger.warn "Partitioning sync trigger not created because it already exists" \
+            Gitlab::AppLogger.warn "Partitioning sync trigger not created because it already exists" \
               " (this may be due to an aborted migration or similar): trigger name: #{trigger_name}"
-            # rubocop:enable Gitlab/RailsLogger
             return
           end
 
           create_trigger(table_name, trigger_name, function_name, fires: 'AFTER INSERT OR UPDATE OR DELETE')
         end
 
-        def enqueue_background_migration(source_table_name, partitioned_table_name, source_key)
+        def enqueue_background_migration(source_table_name, partitioned_table_name, source_column)
           source_model = define_batchable_model(source_table_name)
 
           queue_background_migration_jobs_by_range_at_intervals(
@@ -294,12 +329,34 @@ module Gitlab
             MIGRATION_CLASS_NAME,
             BATCH_INTERVAL,
             batch_size: BATCH_SIZE,
-            other_job_arguments: [source_table_name.to_s, partitioned_table_name, source_key],
+            other_job_arguments: [source_table_name.to_s, partitioned_table_name, source_column],
             track_jobs: true)
         end
 
         def cleanup_migration_jobs(table_name)
           ::Gitlab::Database::BackgroundMigrationJob.for_partitioning_migration(MIGRATION_CLASS_NAME, table_name).delete_all
+        end
+
+        def copy_missed_records(source_table_name, partitioned_table_name, source_column)
+          backfill_table = BackfillPartitionedTable.new
+          relation = ::Gitlab::Database::BackgroundMigrationJob.pending
+            .for_partitioning_migration(MIGRATION_CLASS_NAME, source_table_name)
+
+          relation.each_batch do |batch|
+            batch.each do |pending_migration_job|
+              job_arguments = JobArguments.from_array(pending_migration_job.arguments)
+              start_id = job_arguments.start_id
+              stop_id = job_arguments.stop_id
+
+              say("Backfilling data into partitioned table for ids from #{start_id} to #{stop_id}")
+              job_updated_count = backfill_table.perform(start_id, stop_id, source_table_name,
+                partitioned_table_name, source_column)
+
+              unless job_updated_count > 0
+                raise "failed to update tracking record for ids from #{start_id} to #{stop_id}"
+              end
+            end
+          end
         end
       end
     end

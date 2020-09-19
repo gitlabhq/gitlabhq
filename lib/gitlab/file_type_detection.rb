@@ -20,6 +20,8 @@
 module Gitlab
   module FileTypeDetection
     SAFE_IMAGE_EXT = %w[png jpg jpeg gif bmp tiff ico].freeze
+    SAFE_IMAGE_FOR_SCALING_EXT = %w[png jpg jpeg].freeze
+
     PDF_EXT = 'pdf'
     # We recommend using the .mp4 format over .mov. Videos in .mov format can
     # still be used but you really need to make sure they are served with the
@@ -44,6 +46,12 @@ module Gitlab
 
     def image?
       extension_match?(SAFE_IMAGE_EXT)
+    end
+
+    # For the time being, we restrict image scaling requests to the most popular and safest formats only,
+    # which are JPGs and PNGs. See https://gitlab.com/gitlab-org/gitlab/-/issues/237848 for more info.
+    def image_safe_for_scaling?
+      extension_match?(SAFE_IMAGE_FOR_SCALING_EXT)
     end
 
     def video?

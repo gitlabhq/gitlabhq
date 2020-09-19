@@ -232,4 +232,16 @@ RSpec.describe Gitlab::HashedStorage::Migrator, :redis do
       expect(subject.rollback_pending?).to be_falsey
     end
   end
+
+  describe 'abort_rollback!' do
+    let_it_be(:project) { create(:project, :empty_repo) }
+
+    it 'removes any rollback related scheduled job' do
+      Sidekiq::Testing.disable! do
+        ::HashedStorage::RollbackerWorker.perform_async(1, 5)
+
+        expect { subject.abort_rollback! }.to change { subject.rollback_pending? }.from(true).to(false)
+      end
+    end
+  end
 end

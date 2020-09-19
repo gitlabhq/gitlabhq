@@ -1,8 +1,9 @@
 <script>
+import produce from 'immer';
 import { s__ } from '~/locale';
 import Todo from '~/sidebar/components/todo_toggle/todo.vue';
-import createAlertTodo from '../../graphql/mutations/alert_todo_create.mutation.graphql';
-import todoMarkDone from '../../graphql/mutations/alert_todo_mark_done.mutation.graphql';
+import createAlertTodoMutation from '../../graphql/mutations/alert_todo_create.mutation.graphql';
+import todoMarkDoneMutation from '~/graphql_shared/mutations/todo_mark_done.mutation.graphql';
 import alertQuery from '../../graphql/queries/details.query.graphql';
 
 export default {
@@ -52,7 +53,7 @@ export default {
   },
   methods: {
     updateToDoCount(add) {
-      const oldCount = parseInt(document.querySelector('.todos-count').innerText, 10);
+      const oldCount = parseInt(document.querySelector('.js-todos-count').innerText, 10);
       const count = add ? oldCount + 1 : oldCount - 1;
       const headerTodoEvent = new CustomEvent('todo:toggle', {
         detail: {
@@ -66,7 +67,7 @@ export default {
       this.isUpdating = true;
       return this.$apollo
         .mutate({
-          mutation: createAlertTodo,
+          mutation: createAlertTodoMutation,
           variables: {
             iid: this.alert.iid,
             projectPath: this.projectPath,
@@ -89,7 +90,7 @@ export default {
       this.isUpdating = true;
       return this.$apollo
         .mutate({
-          mutation: todoMarkDone,
+          mutation: todoMarkDoneMutation,
           variables: {
             id: this.firstToDoId,
           },
@@ -109,12 +110,15 @@ export default {
         });
     },
     updateCache(store) {
-      const data = store.readQuery({
+      const sourceData = store.readQuery({
         query: alertQuery,
         variables: this.getAlertQueryVariables,
       });
 
-      data.project.alertManagementAlerts.nodes[0].todos.nodes.shift();
+      const data = produce(sourceData, draftData => {
+        // eslint-disable-next-line no-param-reassign
+        draftData.project.alertManagementAlerts.nodes[0].todos.nodes = [];
+      });
 
       store.writeQuery({
         query: alertQuery,

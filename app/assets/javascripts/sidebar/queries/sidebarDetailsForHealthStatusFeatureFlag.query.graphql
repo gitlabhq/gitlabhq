@@ -1,7 +1,0 @@
-query($fullPath: ID!, $iid: String!) {
-  project(fullPath: $fullPath) {
-    issue(iid: $iid) {
-      iid
-    }
-  }
-}

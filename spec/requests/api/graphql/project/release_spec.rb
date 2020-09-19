@@ -10,6 +10,8 @@ RSpec.describe 'Query.project(fullPath).release(tagName)' do
   let_it_be(:guest) { create(:user) }
   let_it_be(:reporter) { create(:user) }
   let_it_be(:stranger) { create(:user) }
+  let_it_be(:link_filepath) { '/direct/asset/link/path' }
+  let_it_be(:released_at) { Time.now - 1.day }
 
   let(:params_for_issues_and_mrs) { { scope: 'all', state: 'opened', release_tag: release.tag } }
   let(:post_query) { post_graphql(query, current_user: current_user) }
@@ -38,6 +40,7 @@ RSpec.describe 'Query.project(fullPath).release(tagName)' do
           name
           createdAt
           releasedAt
+          upcomingRelease
         })
       end
 
@@ -53,7 +56,8 @@ RSpec.describe 'Query.project(fullPath).release(tagName)' do
           'descriptionHtml' => release.description_html,
           'name' => release.name,
           'createdAt' => release.created_at.iso8601,
-          'releasedAt' => release.released_at.iso8601
+          'releasedAt' => release.released_at.iso8601,
+          'upcomingRelease' => false
         })
       end
     end
@@ -127,7 +131,7 @@ RSpec.describe 'Query.project(fullPath).release(tagName)' do
 
         let(:release_fields) do
           query_graphql_field(:assets, nil,
-            query_graphql_field(:links, nil, 'nodes { id name url external }'))
+            query_graphql_field(:links, nil, 'nodes { id name url external, directAssetUrl }'))
         end
 
         it 'finds all release links' do
@@ -138,7 +142,8 @@ RSpec.describe 'Query.project(fullPath).release(tagName)' do
               'id' => global_id_of(link),
               'name' => link.name,
               'url' => link.url,
-              'external' => link.external?
+              'external' => link.external?,
+              'directAssetUrl' => link.filepath ? Gitlab::Routing.url_helpers.project_release_url(project, release) << link.filepath : link.url
             }
           end
 
@@ -268,9 +273,9 @@ RSpec.describe 'Query.project(fullPath).release(tagName)' do
       let_it_be(:project) { create(:project, :repository, :private) }
       let_it_be(:milestone_1) { create(:milestone, project: project) }
       let_it_be(:milestone_2) { create(:milestone, project: project) }
-      let_it_be(:release) { create(:release, :with_evidence, project: project, milestones: [milestone_1, milestone_2]) }
+      let_it_be(:release) { create(:release, :with_evidence, project: project, milestones: [milestone_1, milestone_2], released_at: released_at) }
       let_it_be(:release_link_1) { create(:release_link, release: release) }
-      let_it_be(:release_link_2) { create(:release_link, release: release) }
+      let_it_be(:release_link_2) { create(:release_link, release: release, filepath: link_filepath) }
 
       before_all do
         project.add_developer(developer)
@@ -309,9 +314,9 @@ RSpec.describe 'Query.project(fullPath).release(tagName)' do
       let_it_be(:project) { create(:project, :repository, :public) }
       let_it_be(:milestone_1) { create(:milestone, project: project) }
       let_it_be(:milestone_2) { create(:milestone, project: project) }
-      let_it_be(:release) { create(:release, :with_evidence, project: project, milestones: [milestone_1, milestone_2]) }
+      let_it_be(:release) { create(:release, :with_evidence, project: project, milestones: [milestone_1, milestone_2], released_at: released_at) }
       let_it_be(:release_link_1) { create(:release_link, release: release) }
-      let_it_be(:release_link_2) { create(:release_link, release: release) }
+      let_it_be(:release_link_2) { create(:release_link, release: release, filepath: link_filepath) }
 
       before_all do
         project.add_developer(developer)
@@ -369,6 +374,47 @@ RSpec.describe 'Query.project(fullPath).release(tagName)' do
       end
 
       it_behaves_like 'no access to the release field'
+    end
+  end
+
+  describe 'upcoming release' do
+    let(:path) { path_prefix }
+    let(:project) { create(:project, :repository, :private) }
+    let(:release) { create(:release, :with_evidence, project: project, released_at: released_at) }
+    let(:current_user) { developer }
+
+    let(:release_fields) do
+      query_graphql_field(%{
+        releasedAt
+        upcomingRelease
+      })
+    end
+
+    before do
+      project.add_developer(developer)
+      post_query
+    end
+
+    context 'future release' do
+      let(:released_at) { Time.now + 1.day }
+
+      it 'finds all release data' do
+        expect(data).to eq({
+          'releasedAt' => release.released_at.iso8601,
+          'upcomingRelease' => true
+        })
+      end
+    end
+
+    context 'past release' do
+      let(:released_at) { Time.now - 1.day }
+
+      it 'finds all release data' do
+        expect(data).to eq({
+          'releasedAt' => release.released_at.iso8601,
+          'upcomingRelease' => false
+        })
+      end
     end
   end
 end

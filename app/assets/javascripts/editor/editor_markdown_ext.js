@@ -1,7 +1,7 @@
 export default {
   getSelectedText(selection = this.getSelection()) {
     const { startLineNumber, endLineNumber, startColumn, endColumn } = selection;
-    const valArray = this.instance.getValue().split('\n');
+    const valArray = this.getValue().split('\n');
     let text = '';
     if (startLineNumber === endLineNumber) {
       text = valArray[startLineNumber - 1].slice(startColumn - 1, endColumn - 1);
@@ -20,20 +20,16 @@ export default {
     return text;
   },
 
-  getSelection() {
-    return this.instance.getSelection();
-  },
-
   replaceSelectedText(text, select = undefined) {
     const forceMoveMarkers = !select;
-    this.instance.executeEdits('', [{ range: this.getSelection(), text, forceMoveMarkers }]);
+    this.executeEdits('', [{ range: this.getSelection(), text, forceMoveMarkers }]);
   },
 
   moveCursor(dx = 0, dy = 0) {
-    const pos = this.instance.getPosition();
+    const pos = this.getPosition();
     pos.column += dx;
     pos.lineNumber += dy;
-    this.instance.setPosition(pos);
+    this.setPosition(pos);
   },
 
   /**
@@ -94,6 +90,6 @@ export default {
       .setStartPosition(newStartLineNumber, newStartColumn)
       .setEndPosition(newEndLineNumber, newEndColumn);
 
-    this.instance.setSelection(newSelection);
+    this.setSelection(newSelection);
   },
 };

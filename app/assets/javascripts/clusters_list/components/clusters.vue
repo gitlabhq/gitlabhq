@@ -5,7 +5,7 @@ import {
   GlLink,
   GlLoadingIcon,
   GlPagination,
-  GlSkeletonLoading,
+  GlDeprecatedSkeletonLoading as GlSkeletonLoading,
   GlSprintf,
   GlTable,
 } from '@gitlab/ui';

@@ -151,6 +151,28 @@ RSpec.describe Gitlab::Ci::Trace::Stream, :clean_gitlab_redis_cache do
 
       it_behaves_like 'appends'
     end
+
+    describe 'metrics' do
+      let(:metrics) { spy('metrics') }
+      let(:io) { StringIO.new }
+      let(:stream) { described_class.new(metrics) { io } }
+
+      it 'increments trace streamed operation' do
+        stream.append(+'123456', 0)
+
+        expect(metrics)
+          .to have_received(:increment_trace_operation)
+          .with(operation: :streamed)
+      end
+
+      it 'increments trace bytes counter' do
+        stream.append(+'123456', 0)
+
+        expect(metrics)
+          .to have_received(:increment_trace_bytes)
+          .with(6)
+      end
+    end
   end
 
   describe '#set' do

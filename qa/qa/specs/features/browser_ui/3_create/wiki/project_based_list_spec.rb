@@ -15,7 +15,7 @@ module QA
       end
 
       context 'Sidebar' do
-        it 'has all expected links that work' do
+        it 'has all expected links that work', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/903' do
           small_wiki.visit!
 
           small_number_of_pages.times do |index|
@@ -35,7 +35,7 @@ module QA
       end
 
       context 'Page List' do
-        it 'has all expected links that work' do
+        it 'has all expected links that work', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/902' do
           large_wiki.visit!
 
           Page::Project::Wiki::Show.perform(&:click_view_all_pages)

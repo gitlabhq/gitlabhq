@@ -55,13 +55,14 @@ export default {
 
 <template>
   <div v-if="isLoading">
-    <gl-loading-icon size="lg" class="gl-mt-3 js-loading-spinner" />
+    <gl-loading-icon size="lg" class="gl-mt-3" />
   </div>
 
   <div
     v-else-if="!isLoading && showTests"
     ref="container"
-    class="tests-detail position-relative js-tests-detail"
+    class="tests-detail position-relative"
+    data-testid="tests-detail"
   >
     <transition
       name="slide"
@@ -85,7 +86,7 @@ export default {
   <div v-else>
     <div class="row gl-mt-3">
       <div class="col-12">
-        <p class="js-no-tests-to-show">{{ s__('TestReports|There are no tests to show.') }}</p>
+        <p data-testid="no-tests-to-show">{{ s__('TestReports|There are no tests to show.') }}</p>
       </div>
     </div>
   </div>

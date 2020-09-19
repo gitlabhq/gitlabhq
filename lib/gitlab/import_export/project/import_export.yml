@@ -190,8 +190,20 @@ excluded_attributes:
     - :stored_externally
     - :external_diff_store
     - :merge_request_id
+    - :verification_retry_at
+    - :verified_at
+    - :verification_retry_count
+    - :verification_checksum
+    - :verification_failure
   merge_request_diff_commits:
     - :merge_request_diff_id
+  merge_request_diff_detail:
+    - :merge_request_diff_id
+    - :verification_retry_at
+    - :verified_at
+    - :verification_retry_count
+    - :verification_checksum
+    - :verification_failure
   merge_request_diff_files:
     - :diff
     - :external_diff_offset

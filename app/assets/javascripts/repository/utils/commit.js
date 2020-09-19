@@ -1,4 +1,3 @@
-// eslint-disable-next-line import/prefer-default-export
 export function normalizeData(data, path, extra = () => {}) {
   return data.map(d => ({
     sha: d.commit.id,

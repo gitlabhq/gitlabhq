@@ -10,7 +10,7 @@ module QA
       end
 
       context 'Page deletion' do
-        it 'has removed the deleted page correctly' do
+        it 'has removed the deleted page correctly', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/921' do
           initial_wiki.visit!
 
           Page::Project::Wiki::Show.perform(&:click_edit)

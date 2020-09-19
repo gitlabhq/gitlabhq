@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
     milestones: false,
     labels: false,
     snippets: false,
+    vulnerabilities: false,
   };
   const projectSnippetOptions = {};
 

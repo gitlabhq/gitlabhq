@@ -16,6 +16,7 @@ describe('Alert integration settings form', () => {
           createIssue: true,
           sendEmail: false,
           templates: [],
+          autoCloseIncident: true,
         },
       },
     });
@@ -42,6 +43,7 @@ describe('Alert integration settings form', () => {
           create_issue: wrapper.vm.createIssueEnabled,
           issue_template_key: wrapper.vm.issueTemplate,
           send_email: wrapper.vm.sendEmailEnabled,
+          auto_close_incident: wrapper.vm.autoCloseIncident,
         }),
       );
     });

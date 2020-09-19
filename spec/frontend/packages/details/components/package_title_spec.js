@@ -2,6 +2,7 @@ import Vuex from 'vuex';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import PackageTitle from '~/packages/details/components/package_title.vue';
 import PackageTags from '~/packages/shared/components/package_tags.vue';
+import TitleArea from '~/vue_shared/components/registry/title_area.vue';
 import {
   conanPackage,
   mavenFiles,
@@ -39,10 +40,14 @@ describe('PackageTitle', () => {
     wrapper = shallowMount(PackageTitle, {
       localVue,
       store,
+      stubs: {
+        TitleArea,
+      },
     });
+    return wrapper.vm.$nextTick();
   }
 
-  const packageIcon = () => wrapper.find('[data-testid="package-icon"]');
+  const findTitleArea = () => wrapper.find(TitleArea);
   const packageType = () => wrapper.find('[data-testid="package-type"]');
   const packageSize = () => wrapper.find('[data-testid="package-size"]');
   const pipelineProject = () => wrapper.find('[data-testid="pipeline-project"]');
@@ -54,72 +59,74 @@ describe('PackageTitle', () => {
   });
 
   describe('renders', () => {
-    it('without tags', () => {
-      createComponent();
+    it('without tags', async () => {
+      await createComponent();
 
       expect(wrapper.element).toMatchSnapshot();
     });
 
-    it('with tags', () => {
-      createComponent({ packageEntity: { ...mavenPackage, tags: mockTags } });
+    it('with tags', async () => {
+      await createComponent({ packageEntity: { ...mavenPackage, tags: mockTags } });
 
       expect(wrapper.element).toMatchSnapshot();
+    });
+  });
+
+  describe('package title', () => {
+    it('is correctly bound', async () => {
+      await createComponent();
+
+      expect(findTitleArea().props('title')).toBe('Test package');
     });
   });
 
   describe('package icon', () => {
     const fakeSrc = 'a-fake-src';
 
-    it('shows an icon when provided one from vuex', () => {
-      createComponent({ icon: fakeSrc });
+    it('binds an icon when provided one from vuex', async () => {
+      await createComponent({ icon: fakeSrc });
 
-      expect(packageIcon().exists()).toBe(true);
+      expect(findTitleArea().props('avatar')).toBe(fakeSrc);
     });
 
-    it('has the correct src attribute', () => {
-      createComponent({ icon: fakeSrc });
+    it('do not binds an icon when not provided one', async () => {
+      await createComponent();
 
-      expect(packageIcon().props('src')).toBe(fakeSrc);
-    });
-
-    it('does not show an icon when not provided one', () => {
-      createComponent();
-
-      expect(packageIcon().exists()).toBe(false);
+      expect(findTitleArea().props('avatar')).toBe(null);
     });
   });
 
   describe.each`
-    packageEntity   | expectedResult
+    packageEntity   | text
     ${conanPackage} | ${'conan'}
     ${mavenPackage} | ${'maven'}
     ${npmPackage}   | ${'npm'}
     ${nugetPackage} | ${'nuget'}
-  `(`package type`, ({ packageEntity, expectedResult }) => {
+  `(`package type`, ({ packageEntity, text }) => {
     beforeEach(() => createComponent({ packageEntity }));
 
-    it(`${packageEntity.package_type} should render from Vuex getters ${expectedResult}`, () => {
-      expect(packageType().text()).toBe(expectedResult);
+    it(`${packageEntity.package_type} should render from Vuex getters ${text}`, () => {
+      expect(packageType().props()).toEqual(expect.objectContaining({ text, icon: 'package' }));
     });
   });
 
   describe('calculates the package size', () => {
-    it('correctly calulates when there is only 1 file', () => {
-      createComponent({ packageEntity: npmPackage, packageFiles: npmFiles });
+    it('correctly calculates when there is only 1 file', async () => {
+      await createComponent({ packageEntity: npmPackage, packageFiles: npmFiles });
 
-      expect(packageSize().text()).toBe('200 bytes');
+      expect(packageSize().props()).toMatchObject({ text: '200 bytes', icon: 'disk' });
     });
 
-    it('correctly calulates when there are multiple files', () => {
-      createComponent();
+    it('correctly calulates when there are multiple files', async () => {
+      await createComponent();
 
-      expect(packageSize().text()).toBe('300 bytes');
+      expect(packageSize().props('text')).toBe('300 bytes');
     });
   });
 
   describe('package tags', () => {
-    it('displays the package-tags component when the package has tags', () => {
-      createComponent({
+    it('displays the package-tags component when the package has tags', async () => {
+      await createComponent({
         packageEntity: {
           ...npmPackage,
           tags: mockTags,
@@ -129,40 +136,44 @@ describe('PackageTitle', () => {
       expect(packageTags().exists()).toBe(true);
     });
 
-    it('does not display the package-tags component when there are no tags', () => {
-      createComponent();
+    it('does not display the package-tags component when there are no tags', async () => {
+      await createComponent();
 
       expect(packageTags().exists()).toBe(false);
     });
   });
 
   describe('package ref', () => {
-    it('does not display the ref if missing', () => {
-      createComponent();
+    it('does not display the ref if missing', async () => {
+      await createComponent();
 
       expect(packageRef().exists()).toBe(false);
     });
 
-    it('correctly shows the package ref if there is one', () => {
-      createComponent({ packageEntity: npmPackage });
-
-      expect(packageRef().contains('gl-icon-stub')).toBe(true);
-      expect(packageRef().text()).toBe(npmPackage.pipeline.ref);
+    it('correctly shows the package ref if there is one', async () => {
+      await createComponent({ packageEntity: npmPackage });
+      expect(packageRef().props()).toMatchObject({
+        text: npmPackage.pipeline.ref,
+        icon: 'branch',
+      });
     });
   });
 
   describe('pipeline project', () => {
-    it('does not display the project if missing', () => {
-      createComponent();
+    it('does not display the project if missing', async () => {
+      await createComponent();
 
       expect(pipelineProject().exists()).toBe(false);
     });
 
-    it('correctly shows the pipeline project if there is one', () => {
-      createComponent({ packageEntity: npmPackage });
+    it('correctly shows the pipeline project if there is one', async () => {
+      await createComponent({ packageEntity: npmPackage });
 
-      expect(pipelineProject().text()).toBe(npmPackage.pipeline.project.name);
-      expect(pipelineProject().attributes('href')).toBe(npmPackage.pipeline.project.web_url);
+      expect(pipelineProject().props()).toMatchObject({
+        text: npmPackage.pipeline.project.name,
+        icon: 'review-list',
+        link: npmPackage.pipeline.project.web_url,
+      });
     });
   });
 });

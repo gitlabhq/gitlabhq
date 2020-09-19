@@ -25,7 +25,7 @@ RSpec.describe 'User views diffs file-by-file', :js do
       expect(page).to have_selector('.file-holder', count: 1)
       expect(page).to have_selector('.diff-file .file-title', text: '.DS_Store')
 
-      click_button 'Next'
+      find('.page-link.next-page-item').click
 
       expect(page).to have_selector('.file-holder', count: 1)
       expect(page).to have_selector('.diff-file .file-title', text: '.gitignore')

@@ -1,9 +1,14 @@
 <script>
+/* eslint-disable vue/no-v-html */
+import { GlButton } from '@gitlab/ui';
 import { __, sprintf } from '~/locale';
 import ModalStore from '../../stores/modal_store';
 import modalMixin from '../../mixins/modal_mixins';
 
 export default {
+  components: {
+    GlButton,
+  },
   mixins: [modalMixin],
   props: {
     newIssuePath: {
@@ -53,17 +58,22 @@ export default {
         <div class="text-content">
           <h4>{{ contents.title }}</h4>
           <p v-html="contents.content"></p>
-          <a v-if="activeTab === 'all'" :href="newIssuePath" class="btn btn-success btn-inverted">{{
-            __('New issue')
-          }}</a>
-          <button
+          <gl-button
+            v-if="activeTab === 'all'"
+            :href="newIssuePath"
+            category="secondary"
+            variant="success"
+          >
+            {{ __('New issue') }}
+          </gl-button>
+          <gl-button
             v-if="activeTab === 'selected'"
-            class="btn btn-default"
-            type="button"
+            category="primary"
+            variant="default"
             @click="changeTab('all')"
           >
             {{ __('Open issues') }}
-          </button>
+          </gl-button>
         </div>
       </div>
     </div>

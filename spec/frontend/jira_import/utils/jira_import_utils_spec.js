@@ -8,7 +8,7 @@ import {
   setFinishedAlertHideMap,
   shouldShowFinishedAlert,
 } from '~/jira_import/utils/jira_import_utils';
-import { JIRA_IMPORT_SUCCESS_ALERT_HIDE_MAP_KEY } from '~/issuables_list/constants';
+import { JIRA_IMPORT_SUCCESS_ALERT_HIDE_MAP_KEY } from '~/issues_list/constants';
 
 useLocalStorageSpy();
 

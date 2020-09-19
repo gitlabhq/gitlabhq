@@ -37,7 +37,7 @@ module RuboCop
           table, _, type = matched.to_a.take(3).map(&:children).map(&:first)
           opts = matched[3]
 
-          return unless WHITELISTED_TABLES.include?(table) && type == :boolean
+          return unless SMALL_TABLES.include?(table) && type == :boolean
 
           no_default = no_default?(opts)
           nulls_allowed = nulls_allowed?(opts)

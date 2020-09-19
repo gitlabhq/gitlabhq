@@ -80,6 +80,7 @@ export default {
       data-testid="tagBadge"
       :class="tagBadgeClass(index)"
       variant="info"
+      size="sm"
       >{{ tag.name }}</gl-badge
     >
 
@@ -89,7 +90,8 @@ export default {
       data-testid="moreBadge"
       variant="muted"
       :title="moreTagsTooltip"
-      class="gl-display-none d-md-flex gl-ml-2"
+      size="sm"
+      class="gl-display-none gl-display-md-flex gl-ml-2"
       ><gl-sprintf :message="__('+%{tags} more')">
         <template #tags>
           {{ moreTagsDisplay }}
@@ -101,7 +103,7 @@ export default {
       v-if="moreTagsDisplay && hideLabel"
       data-testid="moreBadge"
       variant="muted"
-      class="d-md-none gl-ml-2"
+      class="gl-display-md-none gl-ml-2"
       >{{ tagsDisplay }}</gl-badge
     >
   </div>

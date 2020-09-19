@@ -22,6 +22,9 @@ module Packages
 
     def packages_for_group_projects
       packages = ::Packages::Package
+        .including_build_info
+        .including_project_route
+        .including_tags
         .for_projects(group_projects_visible_to_current_user)
         .processed
         .has_version

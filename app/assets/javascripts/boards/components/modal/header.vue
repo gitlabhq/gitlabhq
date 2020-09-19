@@ -1,5 +1,6 @@
 <script>
 /* eslint-disable @gitlab/vue-require-i18n-strings */
+import { GlButton } from '@gitlab/ui';
 import { __ } from '~/locale';
 import ModalFilters from './filters';
 import ModalTabs from './tabs.vue';
@@ -10,15 +11,12 @@ export default {
   components: {
     ModalTabs,
     ModalFilters,
+    GlButton,
   },
   mixins: [modalMixin],
   props: {
     projectId: {
       type: Number,
-      required: true,
-    },
-    milestonePath: {
-      type: String,
       required: true,
     },
     labelPath: {
@@ -43,7 +41,7 @@ export default {
   },
   methods: {
     toggleAll() {
-      this.$refs.selectAllBtn.blur();
+      this.$refs.selectAllBtn.$el.blur();
 
       ModalStore.toggleAll();
     },
@@ -55,28 +53,28 @@ export default {
     <header class="add-issues-header border-top-0 form-actions">
       <h2 class="m-0">
         Add issues
-        <button
-          type="button"
+        <gl-button
+          category="tertiary"
+          icon="close"
           class="close"
           data-dismiss="modal"
           :aria-label="__('Close')"
           @click="toggleModal(false)"
-        >
-          <span aria-hidden="true">×</span>
-        </button>
+        />
       </h2>
     </header>
     <modal-tabs v-if="!loading && issuesCount > 0" />
     <div v-if="showSearch" class="d-flex gl-mb-3">
       <modal-filters :store="filter" />
-      <button
+      <gl-button
         ref="selectAllBtn"
-        type="button"
-        class="btn btn-success btn-inverted gl-ml-3"
+        category="secondary"
+        variant="success"
+        class="gl-ml-3"
         @click="toggleAll"
       >
         {{ selectAllText }}
-      </button>
+      </gl-button>
     </div>
   </div>
 </template>

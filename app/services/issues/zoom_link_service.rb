@@ -60,6 +60,7 @@ module Issues
         if @issue.persisted?
           # Save the meeting directly since we only want to update one meeting, not all
           zoom_meeting.save
+          track_incident_action(current_user, issue, :incident_zoom_meeting)
           success(message: _('Zoom meeting added'))
         else
           success(message: _('Zoom meeting added'), payload: { zoom_meetings: [zoom_meeting] })

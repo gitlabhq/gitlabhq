@@ -86,7 +86,7 @@ RSpec.describe Gitlab::Database::Migrations::BackgroundMigrationHelpers do
       let!(:id3) { create(:user).id }
 
       around do |example|
-        Timecop.freeze { example.run }
+        freeze_time { example.run }
       end
 
       before do

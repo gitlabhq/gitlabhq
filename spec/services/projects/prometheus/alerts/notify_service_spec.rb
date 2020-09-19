@@ -16,11 +16,6 @@ RSpec.describe Projects::Prometheus::Alerts::NotifyService do
 
   let(:subject) { service.execute(token_input) }
 
-  before do
-    # We use `let_it_be(:project)` so we make sure to clear caches
-    project.clear_memoization(:licensed_feature_available)
-  end
-
   context 'with valid payload' do
     let_it_be(:alert_firing) { create(:prometheus_alert, project: project) }
     let_it_be(:alert_resolved) { create(:prometheus_alert, project: project) }

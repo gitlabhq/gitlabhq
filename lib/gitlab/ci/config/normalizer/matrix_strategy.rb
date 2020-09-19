@@ -48,14 +48,13 @@ module Gitlab
             }
           end
 
-          def name_with_details
-            vars = variables.map { |key, value| "#{key}=#{value}"}.join('; ')
-
-            "#{job_name} (#{vars})"
-          end
-
           def name
-            "#{job_name} #{instance}/#{total}"
+            vars = variables
+              .values
+              .compact
+              .join(', ')
+
+            "#{job_name}: [#{vars}]"
           end
 
           private

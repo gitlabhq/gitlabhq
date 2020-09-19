@@ -88,7 +88,6 @@ const fileTypeIcons = [
   },
 ];
 
-// eslint-disable-next-line import/prefer-default-export
 export const getIconName = (type, path) => {
   if (entryTypeIcons[type]) return entryTypeIcons[type];
 

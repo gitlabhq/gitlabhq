@@ -15,11 +15,11 @@
   - if @incompatible_repos.any?
     = button_tag class: "btn btn-import btn-success js-import-all" do
       = _("Import all compatible projects")
-      = icon("spinner spin", class: "loading-icon")
+      = loading_icon(css_class: 'loading-icon')
   - else
     = button_tag class: "btn btn-import btn-success js-import-all" do
       = _("Import all projects")
-      = icon("spinner spin", class: "loading-icon")
+      = loading_icon(css_class: 'loading-icon')
 
 .table-responsive
   %table.table.import-jobs
@@ -45,7 +45,7 @@
                 %i.fa.fa-check
                 = _("done")
             - when 'started'
-              %i.fa.fa-spinner.fa-spin
+              = loading_icon
               = _("started")
             - else
               = project.human_import_status_name
@@ -59,7 +59,7 @@
           %td.import-actions.job-status
             = button_tag class: "btn btn-import js-add-to-import" do
               = _("Import")
-              = icon("spinner spin", class: "loading-icon")
+              = loading_icon(css_class: 'loading-icon')
       - @incompatible_repos.each do |repo|
         %tr{ id: "repo_#{repo.id}" }
           %td

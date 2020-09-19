@@ -178,8 +178,8 @@ RSpec.describe Gitlab::Ci::Config::Normalizer do
         {
           matrix: [
             {
-              VAR_1: [1],
-              VAR_2: [2, 3]
+              VAR_1: ['A'],
+              VAR_2: %w[B C]
             }
           ]
         }
@@ -187,17 +187,13 @@ RSpec.describe Gitlab::Ci::Config::Normalizer do
 
       let(:expanded_job_names) do
         [
-          'rspec 1/2',
-          'rspec 2/2'
+          'rspec: [A, B]',
+          'rspec: [A, C]'
         ]
       end
 
       it 'does not have original job' do
         is_expected.not_to include(job_name)
-      end
-
-      it 'has parallelized jobs' do
-        is_expected.to include(*expanded_job_names.map(&:to_sym))
       end
 
       it 'sets job instance in options' do
@@ -206,11 +202,11 @@ RSpec.describe Gitlab::Ci::Config::Normalizer do
 
       it 'sets job variables', :aggregate_failures do
         expect(subject.values[0]).to match(
-          a_hash_including(variables: { VAR_1: 1, VAR_2: 2, USER_VARIABLE: 'user value' })
+          a_hash_including(variables: { VAR_1: 'A', VAR_2: 'B', USER_VARIABLE: 'user value' })
         )
 
         expect(subject.values[1]).to match(
-          a_hash_including(variables: { VAR_1: 1, VAR_2: 3, USER_VARIABLE: 'user value' })
+          a_hash_including(variables: { VAR_1: 'A', VAR_2: 'C', USER_VARIABLE: 'user value' })
         )
       end
 
@@ -226,6 +222,10 @@ RSpec.describe Gitlab::Ci::Config::Normalizer do
         expect(configs).to all(match(a_hash_including(original_config)))
       end
 
+      it 'has parallelized jobs' do
+        is_expected.to include(*expanded_job_names.map(&:to_sym))
+      end
+
       it_behaves_like 'parallel dependencies'
       it_behaves_like 'parallel needs'
     end
@@ -237,6 +237,12 @@ RSpec.describe Gitlab::Ci::Config::Normalizer do
       it 'does not alter the job config' do
         is_expected.to match(config)
       end
+    end
+
+    context 'when jobs config is nil' do
+      let(:config) { nil }
+
+      it { is_expected.to eq({}) }
     end
   end
 end

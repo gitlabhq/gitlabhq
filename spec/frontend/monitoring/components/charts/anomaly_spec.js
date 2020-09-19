@@ -46,9 +46,8 @@ describe('Anomaly chart component', () => {
       });
     });
 
-    it('is a Vue instance', () => {
+    it('renders correctly', () => {
       expect(findTimeSeries().exists()).toBe(true);
-      expect(findTimeSeries().isVueInstance()).toBe(true);
     });
 
     describe('receives props correctly', () => {

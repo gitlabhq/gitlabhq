@@ -6,6 +6,8 @@
     %li
       = link_to _("Support"), support_url
     %li
+      = render 'shared/help_dropdown_forum_link'
+    %li
       %button.js-shortcuts-modal-trigger{ type: "button" }
         = _("Keyboard shortcuts")
         %span.text-secondary.float-right{ "aria-hidden": true }= '?'.html_safe

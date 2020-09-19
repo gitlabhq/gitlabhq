@@ -102,11 +102,6 @@ class ProjectPolicy < BasePolicy
   end
 
   with_scope :subject
-  condition(:moving_designs_disabled) do
-    !::Feature.enabled?(:reorder_designs, @subject, default_enabled: true)
-  end
-
-  with_scope :subject
   condition(:service_desk_enabled) { @subject.service_desk_enabled? }
 
   # We aren't checking `:read_issue` or `:read_merge_request` in this case
@@ -330,6 +325,12 @@ class ProjectPolicy < BasePolicy
     enable :destroy_design
     enable :read_terraform_state
     enable :read_pod_logs
+    enable :read_feature_flag
+    enable :create_feature_flag
+    enable :update_feature_flag
+    enable :destroy_feature_flag
+    enable :admin_feature_flag
+    enable :admin_feature_flags_user_lists
   end
 
   rule { can?(:developer_access) & user_confirmed? }.policy do
@@ -376,6 +377,7 @@ class ProjectPolicy < BasePolicy
     enable :read_freeze_period
     enable :update_freeze_period
     enable :destroy_freeze_period
+    enable :admin_feature_flags_client
   end
 
   rule { public_project & metrics_dashboard_allowed }.policy do
@@ -452,6 +454,8 @@ class ProjectPolicy < BasePolicy
     prevent :read_pipeline
     prevent :read_pipeline_schedule
     prevent(*create_read_update_admin_destroy(:release))
+    prevent(*create_read_update_admin_destroy(:feature_flag))
+    prevent(:admin_feature_flags_user_lists)
   end
 
   rule { container_registry_disabled }.policy do
@@ -554,10 +558,6 @@ class ProjectPolicy < BasePolicy
     prevent :read_design_activity
     prevent :create_design
     prevent :destroy_design
-    prevent :move_design
-  end
-
-  rule { moving_designs_disabled }.policy do
     prevent :move_design
   end
 

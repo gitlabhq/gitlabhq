@@ -55,20 +55,20 @@ describe('Deploy keys key', () => {
     it('shows pencil button for editing', () => {
       createComponent({ deployKey });
 
-      expect(wrapper.find('.btn .ic-pencil')).toExist();
+      expect(wrapper.find('.btn [data-testid="pencil-icon"]')).toExist();
     });
 
     it('shows disable button when the project is not deletable', () => {
       createComponent({ deployKey });
 
-      expect(wrapper.find('.btn .ic-cancel')).toExist();
+      expect(wrapper.find('.btn [data-testid="cancel-icon"]')).toExist();
     });
 
     it('shows remove button when the project is deletable', () => {
       createComponent({
         deployKey: { ...deployKey, destroyed_when_orphaned: true, almost_orphaned: true },
       });
-      expect(wrapper.find('.btn .ic-remove')).toExist();
+      expect(wrapper.find('.btn [data-testid="remove-icon"]')).toExist();
     });
   });
 
@@ -147,7 +147,7 @@ describe('Deploy keys key', () => {
 
     it('shows pencil button for editing', () => {
       createComponent({ deployKey });
-      expect(wrapper.find('.btn .ic-pencil')).toExist();
+      expect(wrapper.find('.btn [data-testid="pencil-icon"]')).toExist();
     });
 
     it('shows disable button when key is enabled', () => {
@@ -155,7 +155,7 @@ describe('Deploy keys key', () => {
 
       createComponent({ deployKey });
 
-      expect(wrapper.find('.btn .ic-cancel')).toExist();
+      expect(wrapper.find('.btn [data-testid="cancel-icon"]')).toExist();
     });
   });
 });

@@ -83,7 +83,7 @@ export default Vue.extend({
 
           $('.js-issue-board-sidebar', this.$el).each((i, el) => {
             $(el)
-              .data('glDropdown')
+              .data('deprecatedJQueryDropdown')
               .clearMenu();
           });
         }
@@ -95,7 +95,7 @@ export default Vue.extend({
     },
   },
   created() {
-    // Get events from glDropdown
+    // Get events from deprecatedJQueryDropdown
     eventHub.$on('sidebar.removeAssignee', this.removeAssignee);
     eventHub.$on('sidebar.addAssignee', this.addAssignee);
     eventHub.$on('sidebar.removeAllAssignees', this.removeAllAssignees);

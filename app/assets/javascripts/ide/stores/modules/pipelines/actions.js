@@ -118,31 +118,31 @@ export const setDetailJob = ({ commit, dispatch }, job) => {
   });
 };
 
-export const requestJobTrace = ({ commit }) => commit(types.REQUEST_JOB_TRACE);
-export const receiveJobTraceError = ({ commit, dispatch }) => {
+export const requestJobLogs = ({ commit }) => commit(types.REQUEST_JOB_LOGS);
+export const receiveJobLogsError = ({ commit, dispatch }) => {
   dispatch(
     'setErrorMessage',
     {
-      text: __('An error occurred while fetching the job trace.'),
+      text: __('An error occurred while fetching the job logs.'),
       action: () =>
-        dispatch('fetchJobTrace').then(() => dispatch('setErrorMessage', null, { root: true })),
+        dispatch('fetchJobLogs').then(() => dispatch('setErrorMessage', null, { root: true })),
       actionText: __('Please try again'),
       actionPayload: null,
     },
     { root: true },
   );
-  commit(types.RECEIVE_JOB_TRACE_ERROR);
+  commit(types.RECEIVE_JOB_LOGS_ERROR);
 };
-export const receiveJobTraceSuccess = ({ commit }, data) =>
-  commit(types.RECEIVE_JOB_TRACE_SUCCESS, data);
+export const receiveJobLogsSuccess = ({ commit }, data) =>
+  commit(types.RECEIVE_JOB_LOGS_SUCCESS, data);
 
-export const fetchJobTrace = ({ dispatch, state }) => {
-  dispatch('requestJobTrace');
+export const fetchJobLogs = ({ dispatch, state }) => {
+  dispatch('requestJobLogs');
 
   return axios
     .get(`${state.detailJob.path}/trace`, { params: { format: 'json' } })
-    .then(({ data }) => dispatch('receiveJobTraceSuccess', data))
-    .catch(() => dispatch('receiveJobTraceError'));
+    .then(({ data }) => dispatch('receiveJobLogsSuccess', data))
+    .catch(() => dispatch('receiveJobLogsError'));
 };
 
 export const resetLatestPipeline = ({ commit }) => {

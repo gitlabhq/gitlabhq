@@ -44,9 +44,9 @@ the icon and the date colored red. You can sort issues by those that are
 
 ![Issues with due dates in the issues index page](img/due_dates_issues_index_page.png)
 
-Due dates also appear in your [todos list](../../todos.md).
+Due dates also appear in your [to-do list](../../todos.md).
 
-![Issues with due dates in the todos](img/due_dates_todos.png)
+![Issues with due dates in the to-dos](img/due_dates_todos.png)
 
 The day before an open issue is due, an email will be sent to all participants
 of the issue. Like the due date, the "day before the due date" is determined by the

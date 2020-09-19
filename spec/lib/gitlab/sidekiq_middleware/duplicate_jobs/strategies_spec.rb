@@ -8,6 +8,10 @@ RSpec.describe Gitlab::SidekiqMiddleware::DuplicateJobs::Strategies do
       expect(described_class.for(:until_executing)).to eq(described_class::UntilExecuting)
     end
 
+    it 'returns the right class for `none`' do
+      expect(described_class.for(:none)).to eq(described_class::None)
+    end
+
     it 'raises an UnknownStrategyError when passing an unknown key' do
       expect { described_class.for(:unknown) }.to raise_error(described_class::UnknownStrategyError)
     end

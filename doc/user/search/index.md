@@ -49,7 +49,7 @@ groups:
    - My-reaction
    - Confidential
    - Epic ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/195704) in GitLab 12.9),
-     including [child epic](../group/epics/index.md#multi-level-child-epics-ultimate)
+     including [child epic](../group/epics/index.md#multi-level-child-epics)
      ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9029) in
      [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.0)
    - Search for this text
@@ -129,6 +129,14 @@ characters to begin your search. For example, if you want to search for
 issues that have the assignee "Simone Presley", you'll need to type at
 least "Sim" before autocomplete gives any relevant results.
 
+## Code search
+
+To search through code or other documents in a single project, you can use
+the search field on the top-right of your screen while the project page is open.
+
+![code search dropdown](img/project_search_dropdown.png)
+![code search results](img/project_code_search.png)
+
 ## Search history
 
 You can view recent searches by clicking on the little arrow-clock icon, which is to the left of the search input. Click the search entry to run that search again. This feature is available for issues and merge requests. Searches are stored locally in your browser.
@@ -153,6 +161,17 @@ You'll also find a shortcut on the search field on the top-right of the project'
 quickly access issues and merge requests created or assigned to you within that project:
 
 ![search per project - shortcut](img/project_search.png)
+
+### Autocomplete suggestions
+
+You can also type in this search bar to see autocomplete suggestions for:
+
+- Projects and groups
+- Various help pages (try and type **API help**)
+- Project feature pages (try and type **milestones**)
+- Various settings pages (try and type **user settings**)
+- Recently viewed issues (try and type some word from the title of a recently viewed issue)
+- Recently viewed merge requests (try and type some word from the title of a recently merge request)
 
 ## To-Do List
 
@@ -200,15 +219,15 @@ and **Labels**, select multiple issues to add to a list of your choice:
 
 ![search and select issues to add to board](img/search_issues_board.png)
 
-## Advanced Global Search **(STARTER)**
+## Advanced Search **(STARTER)**
 
 Leverage Elasticsearch for faster, more advanced code search across your entire
 GitLab instance.
 
-[Learn how to use the Advanced Global Search.](advanced_global_search.md)
+[Learn how to use the Advanced Search.](advanced_global_search.md)
 
-## Advanced Syntax Search **(STARTER)**
+## Advanced Search Syntax **(STARTER)**
 
 Use advanced queries for more targeted search results.
 
-[Learn how to use the Advanced Syntax Search.](advanced_search_syntax.md)
+[Learn how to use the Advanced Search Syntax.](advanced_search_syntax.md)

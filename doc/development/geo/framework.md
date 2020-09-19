@@ -128,7 +128,7 @@ When this is set in place, it's easy to access the replicator through
 the model:
 
 ```ruby
-package_file = Packages::PackageFile.find(4) # just a random id as example
+package_file = Packages::PackageFile.find(4) # just a random ID as example
 replicator = package_file.replicator
 ```
 
@@ -235,11 +235,10 @@ For example, to add support for files referenced by a `Widget` model with a
 `ee/lib/gitlab/geo.rb`:
 
    ```ruby
-   def self.replicator_classes
-     classes = [::Geo::PackageFileReplicator,
-                ::Geo::WidgetReplicator]
-
-     classes.select(&:enabled?)
+   REPLICATOR_CLASSES = [
+      ::Geo::PackageFileReplicator,
+      ::Geo::WidgetReplicator
+   ]
    end
    ```
 
@@ -314,10 +313,6 @@ For example, to add support for files referenced by a `Widget` model with a
      belongs_to :widget, class_name: 'Widget'
    end
    ```
-
-   The method `has_create_events?` should return `true` in most of the cases.
-   However, if the entity you add doesn't have the create event, don't add the
-   method at all.
 
 1. Update `REGISTRY_CLASSES` in `ee/app/workers/geo/secondary/registry_consistency_worker.rb`.
 
@@ -416,18 +411,26 @@ for verification state to the widgets table:
    # frozen_string_literal: true
 
    class AddVerificationFailureLimitToWidgets < ActiveRecord::Migration[6.0]
+     include Gitlab::Database::MigrationHelpers
+
      DOWNTIME = false
 
      disable_ddl_transaction!
 
-     def change
-       add_text_limit :widgets, :verification_failure, 255
+     CONSTRAINT_NAME = 'widget_verification_failure_text_limit'
+
+     def up
+       add_text_limit :widget, :verification_failure, 255, constraint_name: CONSTRAINT_NAME
+     end
+
+     def down
+       remove_check_constraint(:widget, CONSTRAINT_NAME)
      end
    end
    ```
 
 1. Add a partial index on `verification_failure` and `verification_checksum` to ensure
-   re-verification can be performed efficiently. Add a migration in `ee/db/geo/migrate/`:
+   re-verification can be performed efficiently:
 
    ```ruby
    # frozen_string_literal: true
@@ -453,9 +456,9 @@ for verification state to the widgets table:
 
 ##### Option 2: Create a separate `widget_states` table with verification state fields
 
-1. Add a migration in `ee/db/geo/migrate/` to create a `widget_states` table and add a
-   partial index on `verification_failure` and `verification_checksum` to ensure
-   re-verification can be performed efficiently. Order the columns according to [our guidelines](../ordering_table_columns.md):
+1. Create a `widget_states` table and add a partial index on `verification_failure` and
+   `verification_checksum` to ensure re-verification can be performed efficiently. Order
+   the columns according to [our guidelines](../ordering_table_columns.md):
 
    ```ruby
    # frozen_string_literal: true
@@ -520,44 +523,37 @@ Widgets should now be verified by Geo!
 Metrics are gathered by `Geo::MetricsUpdateWorker`, persisted in
 `GeoNodeStatus` for display in the UI, and sent to Prometheus.
 
-1. Add fields `widget_count`, `widget_checksummed_count`,
-   `widget_checksum_failed_count`, `widget_synced_count`,
-   `widget_failed_count`, and `widget_registry_count` to
-   `GeoNodeStatus#RESOURCE_STATUS_FIELDS` array in
-   `ee/app/models/geo_node_status.rb`.
-1. Add the same fields to `GeoNodeStatus#PROMETHEUS_METRICS` hash in
-   `ee/app/models/geo_node_status.rb`.
-1. Add the same fields to `Sidekiq metrics` table in
-   `doc/administration/monitoring/prometheus/gitlab_metrics.md`.
-1. Add the same fields to `GET /geo_nodes/status` example response in
+1. Add fields `widgets_count`, `widgets_checksummed_count`,
+   `widgets_checksum_failed_count`, `widgets_synced_count`,
+   `widgets_failed_count`, and `widgets_registry_count` to
+   `GET /geo_nodes/status` example response in
    `doc/api/geo_nodes.md`.
-1. Add the same fields to `ee/spec/models/geo_node_status_spec.rb` and
-   `ee/spec/factories/geo_node_statuses.rb`.
-1. Set `widget_count` in `GeoNodeStatus#load_data_from_current_node`:
+1. Add the same fields to `GET /geo_nodes/status` example response in
+   `ee/spec/fixtures/api/schemas/public_api/v4/geo_node_status.json`.
+1. Add fields `geo_widgets`, `geo_widgets_checksummed`,
+   `geo_widgets_checksum_failed`, `geo_widgets_synced`,
+   `geo_widgets_failed`, and `geo_widgets_registry` to
+   `Sidekiq metrics` table in
+   `doc/administration/monitoring/prometheus/gitlab_metrics.md`.
+1. Add the following to the parameterized table in
+   `ee/spec/models/geo_node_status_spec.rb`:
 
    ```ruby
-   self.widget_count = Geo::WidgetReplicator.primary_total_count
+   Geo::WidgetReplicator | :widget | :geo_widget_registry
    ```
 
-1. Add `GeoNodeStatus#load_widgets_data` to set `widget_synced_count`,
-   `widget_failed_count`, and `widget_registry_count`:
+1. Add the following to `spec/factories/widgets.rb`:
 
    ```ruby
-   def load_widget_data
-     self.widget_synced_count = Geo::WidgetReplicator.synced_count
-     self.widget_failed_count = Geo::WidgetReplicator.failed_count
-     self.widget_registry_count = Geo::WidgetReplicator.registry_count
+   trait(:checksummed) do
+     with_file
+     verification_checksum { 'abc' }
    end
-   ```
 
-1. Call `GeoNodeStatus#load_widgets_data` in
-   `GeoNodeStatus#load_secondary_data`.
-
-1. Set `widget_checksummed_count` and `widget_checksum_failed_count` in
-   `GeoNodeStatus#load_verification_data`:
-
-   ```ruby
-   self.widget_checksummed_count = Geo::WidgetReplicator.checksummed_count   self.widget_checksum_failed_count = Geo::WidgetReplicator.checksum_failed_count
+   trait(:checksum_failure) do
+     with_file
+     verification_failure { 'Could not calculate the checksum' }
+   end
    ```
 
 Widget replication and verification metrics should now be available in the API,
@@ -573,7 +569,7 @@ the Admin Area UI, and Prometheus!
          null: true,
          resolver: ::Resolvers::Geo::WidgetRegistriesResolver,
          description: 'Find widget registries on this Geo node',
-         feature_flag: :geo_self_service_framework
+         feature_flag: :geo_widget_replication
    ```
 
 1. Add the new `widget_registries` field name to the `expected_fields` array in

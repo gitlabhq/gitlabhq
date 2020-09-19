@@ -70,7 +70,7 @@ describe('Design reply form component', () => {
       });
 
       return wrapper.vm.$nextTick().then(() => {
-        expect(wrapper.emitted('submitForm')).toBeFalsy();
+        expect(wrapper.emitted('submit-form')).toBeFalsy();
       });
     });
 
@@ -80,20 +80,20 @@ describe('Design reply form component', () => {
       });
 
       return wrapper.vm.$nextTick().then(() => {
-        expect(wrapper.emitted('submitForm')).toBeFalsy();
+        expect(wrapper.emitted('submit-form')).toBeFalsy();
       });
     });
 
     it('emits cancelForm event on pressing escape button on textarea', () => {
       findTextarea().trigger('keyup.esc');
 
-      expect(wrapper.emitted('cancelForm')).toBeTruthy();
+      expect(wrapper.emitted('cancel-form')).toBeTruthy();
     });
 
     it('emits cancelForm event on clicking Cancel button', () => {
       findCancelButton().vm.$emit('click');
 
-      expect(wrapper.emitted('cancelForm')).toHaveLength(1);
+      expect(wrapper.emitted('cancel-form')).toHaveLength(1);
     });
   });
 
@@ -112,7 +112,7 @@ describe('Design reply form component', () => {
       findSubmitButton().vm.$emit('click');
 
       return wrapper.vm.$nextTick().then(() => {
-        expect(wrapper.emitted('submitForm')).toBeTruthy();
+        expect(wrapper.emitted('submit-form')).toBeTruthy();
       });
     });
 
@@ -122,7 +122,7 @@ describe('Design reply form component', () => {
       });
 
       return wrapper.vm.$nextTick().then(() => {
-        expect(wrapper.emitted('submitForm')).toBeTruthy();
+        expect(wrapper.emitted('submit-form')).toBeTruthy();
       });
     });
 
@@ -132,7 +132,7 @@ describe('Design reply form component', () => {
       });
 
       return wrapper.vm.$nextTick().then(() => {
-        expect(wrapper.emitted('submitForm')).toBeTruthy();
+        expect(wrapper.emitted('submit-form')).toBeTruthy();
       });
     });
 
@@ -147,7 +147,7 @@ describe('Design reply form component', () => {
     it('emits cancelForm event on Escape key if text was not changed', () => {
       findTextarea().trigger('keyup.esc');
 
-      expect(wrapper.emitted('cancelForm')).toBeTruthy();
+      expect(wrapper.emitted('cancel-form')).toBeTruthy();
     });
 
     it('opens confirmation modal on Escape key when text has changed', () => {
@@ -162,7 +162,7 @@ describe('Design reply form component', () => {
     it('emits cancelForm event on Cancel button click if text was not changed', () => {
       findCancelButton().trigger('click');
 
-      expect(wrapper.emitted('cancelForm')).toBeTruthy();
+      expect(wrapper.emitted('cancel-form')).toBeTruthy();
     });
 
     it('opens confirmation modal on Cancel button click when text has changed', () => {
@@ -178,7 +178,7 @@ describe('Design reply form component', () => {
       findTextarea().trigger('keyup.esc');
       findModal().vm.$emit('ok');
 
-      expect(wrapper.emitted('cancelForm')).toBeTruthy();
+      expect(wrapper.emitted('cancel-form')).toBeTruthy();
     });
   });
 });

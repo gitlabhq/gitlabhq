@@ -1,0 +1,12 @@
+#modal-enable-gitpod.modal.qa-enable-gitpod-modal
+  .modal-dialog
+    .modal-content
+      .modal-header
+        %h3.page-title= _('Enable Gitpod?')
+        %button.close{ type: "button", "data-dismiss": "modal", "aria-label" => _('Close') }
+          %span{ "aria-hidden": true } &times;
+      .modal-body.p-3
+        %p= (_("To use Gitpod you must first enable the feature in the integrations section of your %{user_prefs}.") % { user_prefs: link_to(_('user preferences'), profile_preferences_path(anchor: 'gitpod')) }).html_safe
+      .modal-footer
+        = link_to _('Cancel'), '#', class: "btn btn-cancel", "data-dismiss" => "modal"
+        = link_to _('Enable Gitpod'), profile_path(user: { gitpod_enabled: true}), class: 'btn btn-success', method: :put

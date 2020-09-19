@@ -1,0 +1,79 @@
+<script>
+import { GlButton, GlLoadingIcon } from '@gitlab/ui';
+
+export default {
+  components: { GlButton, GlLoadingIcon },
+  props: {
+    title: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    loading: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+  },
+  inject: ['canUpdate'],
+  data() {
+    return {
+      edit: false,
+    };
+  },
+  destroyed() {
+    window.removeEventListener('click', this.collapseWhenOffClick);
+  },
+  methods: {
+    collapseWhenOffClick({ target }) {
+      if (!this.$el.contains(target)) {
+        this.collapse();
+      }
+    },
+    expand() {
+      if (this.edit) {
+        return;
+      }
+
+      this.edit = true;
+      this.$emit('changed', this.edit);
+      window.addEventListener('click', this.collapseWhenOffClick);
+    },
+    collapse() {
+      if (!this.edit) {
+        return;
+      }
+
+      this.edit = false;
+      this.$emit('changed', this.edit);
+      window.removeEventListener('click', this.collapseWhenOffClick);
+    },
+  },
+};
+</script>
+
+<template>
+  <div>
+    <div class="gl-display-flex gl-justify-content-space-between gl-mb-3">
+      <span class="gl-vertical-align-middle">
+        <span data-testid="title">{{ title }}</span>
+        <gl-loading-icon v-if="loading" inline class="gl-ml-2" />
+      </span>
+      <gl-button
+        v-if="canUpdate"
+        variant="link"
+        class="gl-text-gray-900!"
+        data-testid="edit-button"
+        @click="expand()"
+      >
+        {{ __('Edit') }}
+      </gl-button>
+    </div>
+    <div v-show="!edit" class="gl-text-gray-400" data-testid="collapsed-content">
+      <slot name="collapsed">{{ __('None') }}</slot>
+    </div>
+    <div v-show="edit" data-testid="expanded-content">
+      <slot></slot>
+    </div>
+  </div>
+</template>

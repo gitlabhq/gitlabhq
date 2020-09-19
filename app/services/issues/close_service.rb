@@ -37,6 +37,7 @@ module Issues
         execute_hooks(issue, 'close')
         invalidate_cache_counts(issue, users: issue.assignees)
         issue.update_project_counter_caches
+        track_incident_action(current_user, issue, :incident_closed)
 
         store_first_mentioned_in_commit_at(issue, closed_via) if closed_via.is_a?(MergeRequest)
 

@@ -453,11 +453,9 @@ describe('IDE store merge request actions', () => {
 
     it('updates activity bar view and gets file data, if changes are found', done => {
       store.state.entries.foo = {
-        url: 'test',
         type: 'blob',
       };
       store.state.entries.bar = {
-        url: 'test',
         type: 'blob',
       };
 

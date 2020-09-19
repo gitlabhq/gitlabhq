@@ -1,4 +1,6 @@
-- if Feature.enabled?(:vue_issuables_list, @project)
+- is_project_overview = local_assigns.fetch(:is_project_overview, false)
+
+- if Feature.enabled?(:vue_issuables_list, @project) && !is_project_overview
   - data_endpoint = local_assigns.fetch(:data_endpoint, expose_path(api_v4_projects_issues_path(id: @project.id)))
   - default_empty_state_meta = { create_issue_path: new_project_issue_path(@project), svg_path: image_path('illustrations/issues.svg') }
   - data_empty_state_meta = local_assigns.fetch(:data_empty_state_meta, default_empty_state_meta)

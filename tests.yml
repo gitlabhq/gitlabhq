@@ -1,0 +1,54 @@
+mapping:
+  # EE code should map to respective spec
+  - source: ee/app/(.+)\.rb
+    test: ee/spec/%s_spec.rb
+  # FOSS code should map to respective spec
+  - source: app/(.+)\.rb
+    test: spec/%s_spec.rb
+
+  # EE extension should also map to its FOSS class spec
+  - source: ee/app/(.*/)ee/(.+)\.rb
+    test: spec/%s%s_spec.rb
+
+  # Some EE extensions also map to its EE class spec, but this is not recommended:
+  # https://docs.gitlab.com/ee/development/ee_features.html#testing-ee-features-based-on-ce-features
+  - source: ee/app/(.*/)ee/(.+)\.rb
+    test: ee/spec/%s%s_spec.rb
+
+  # EE lib should map to respective spec
+  - source: ee/lib/(.+)\.rb
+    test: ee/spec/lib/%s_spec.rb
+
+  # FOSS lib & tooling should map to respective spec
+  - source: (tooling/)?lib/(.+)\.rb
+    test: spec/%slib/%s_spec.rb
+
+  # Initializers should map to respective spec
+  - source: config/initializers/(.+)\.rb
+    test: spec/initializers/%s_spec.rb
+
+  # DB structure should map to schema spec
+  - source: db/structure.sql
+    test: spec/db/schema_spec.rb
+
+  # Migration should map to either timestamped or non-timestamped spec
+  - source: db/(?:post_)?migrate/(?:[0-9]+)_(.+)\.rb
+    test: spec/migrations/%s_spec.rb
+  - source: db/(?:post_)?migrate/([0-9]+)_(.+)\.rb
+    test: spec/migrations/%s_%s_spec.rb
+
+  # EE/FOSS views should map to respective spec
+  - source: (ee/)?app/views/(.+)\.haml
+    test: '%sspec/views/%s.haml_spec.rb'
+
+  # EE/FOSS spec code should map to itself
+  - source: (ee/)?spec/(.+)_spec\.rb
+    test: '%sspec/%s_spec.rb'
+
+  # EE extension spec should map to its FOSS class spec
+  - source: ee/spec/(.*/)ee/(.+)\.rb
+    test: spec/%s%s.rb
+
+  # EE/FOSS factory should map to factories spec
+  - source: (ee/)?spec/factories/.+\.rb
+    test: spec/factories_spec.rb

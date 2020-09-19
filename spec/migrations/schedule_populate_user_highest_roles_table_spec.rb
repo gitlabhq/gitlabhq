@@ -32,7 +32,7 @@ RSpec.describe SchedulePopulateUserHighestRolesTable do
     stub_const("#{described_class.name}::BATCH_SIZE", 2)
 
     Sidekiq::Testing.fake! do
-      Timecop.freeze do
+      freeze_time do
         migrate!
 
         expect(described_class::MIGRATION).to be_scheduled_delayed_migration(5.minutes, 1, 4)

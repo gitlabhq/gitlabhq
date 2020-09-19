@@ -4,7 +4,7 @@ module Types
   module DesignManagement
     class DesignCollectionType < BaseObject
       graphql_name 'DesignCollection'
-      description 'A collection of designs.'
+      description 'A collection of designs'
 
       authorize :read_design
 

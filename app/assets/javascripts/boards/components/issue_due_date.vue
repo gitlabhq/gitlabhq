@@ -1,7 +1,6 @@
 <script>
 import dateFormat from 'dateformat';
-import { GlTooltip } from '@gitlab/ui';
-import Icon from '~/vue_shared/components/icon.vue';
+import { GlTooltip, GlIcon } from '@gitlab/ui';
 import { __ } from '~/locale';
 import {
   getDayDifference,
@@ -12,7 +11,7 @@ import {
 
 export default {
   components: {
-    Icon,
+    GlIcon,
     GlTooltip,
   },
   props: {
@@ -87,7 +86,7 @@ export default {
 <template>
   <span>
     <span ref="issueDueDate" :class="cssClass" class="board-card-info card-number">
-      <icon :class="{ 'text-danger': isPastDue }" class="board-card-info-icon" name="calendar" />
+      <gl-icon :class="{ 'text-danger': isPastDue }" class="board-card-info-icon" name="calendar" />
       <time :class="{ 'text-danger': isPastDue }" datetime="date" class="board-card-info-text">{{
         body
       }}</time>

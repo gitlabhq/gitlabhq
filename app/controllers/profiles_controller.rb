@@ -6,6 +6,9 @@ class ProfilesController < Profiles::ApplicationController
   before_action :user
   before_action :authorize_change_username!, only: :update_username
   skip_before_action :require_email, only: [:show, :update]
+  before_action do
+    push_frontend_feature_flag(:webauthn)
+  end
 
   def show
   end
@@ -101,6 +104,7 @@ class ProfilesController < Profiles::ApplicationController
       :bio,
       :email,
       :role,
+      :gitpod_enabled,
       :hide_no_password,
       :hide_no_ssh_key,
       :hide_project_limit,

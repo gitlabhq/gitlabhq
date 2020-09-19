@@ -44,7 +44,7 @@ describe('performance bar wrapper', () => {
       {},
     );
 
-    vm = performanceBar({ container: '#js-peek' });
+    vm = performanceBar(peekWrapper);
   });
 
   afterEach(() => {

@@ -2,20 +2,12 @@
 
 module Projects
   class UnlinkForkService < BaseService
-    # If a fork is given, it:
-    #
-    # - Saves LFS objects to the root project
-    # - Close existing MRs coming from it
-    # - Is removed from the fork network
-    #
-    # If a root of fork(s) is given, it does the same,
-    # but not updating LFS objects (there'll be no related root to cache it).
+    # Close existing MRs coming from the project and remove it from the fork network
     def execute
       fork_network = @project.fork_network
+      forked_from = @project.forked_from_project
 
       return unless fork_network
-
-      save_lfs_objects
 
       merge_requests = fork_network
                          .merge_requests
@@ -41,7 +33,7 @@ module Projects
 
       # When the project getting out of the network is a node with parent
       # and children, both the parent and the node needs a cache refresh.
-      [@project.forked_from_project, @project].compact.each do |project|
+      [forked_from, @project].compact.each do |project|
         refresh_forks_count(project)
       end
     end
@@ -50,23 +42,6 @@ module Projects
 
     def refresh_forks_count(project)
       Projects::ForksCountService.new(project).refresh_cache
-    end
-
-    # TODO: Remove this method once all LfsObjectsProject records are backfilled
-    # for forks.
-    #
-    # See https://gitlab.com/gitlab-org/gitlab/issues/122002 for more info.
-    def save_lfs_objects
-      return unless @project.forked?
-
-      lfs_storage_project = @project.lfs_storage_project
-
-      return unless lfs_storage_project
-      return if lfs_storage_project == @project # that project is being unlinked
-
-      lfs_storage_project.lfs_objects.find_each do |lfs_object|
-        lfs_object.projects << @project unless lfs_object.projects.include?(@project)
-      end
     end
   end
 end

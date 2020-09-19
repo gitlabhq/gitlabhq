@@ -1,6 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
+import { GlIcon } from '@gitlab/ui';
 import ChangedFileIcon from '~/vue_shared/components/changed_file_icon.vue';
-import Icon from '~/vue_shared/components/icon.vue';
 
 const changedFile = () => ({ changed: true });
 const stagedFile = () => ({ changed: true, staged: true });
@@ -25,7 +25,7 @@ describe('Changed file icon', () => {
     wrapper.destroy();
   });
 
-  const findIcon = () => wrapper.find(Icon);
+  const findIcon = () => wrapper.find(GlIcon);
   const findIconName = () => findIcon().props('name');
   const findIconClasses = () => findIcon().classes();
   const findTooltipText = () => wrapper.attributes('title');

@@ -24,7 +24,7 @@ RSpec.describe Ci::PersistentRef do
 
     context 'when a persistent ref exists' do
       before do
-        pipeline.persistent_ref.create
+        pipeline.persistent_ref.create # rubocop: disable Rails/SaveBang
       end
 
       it { is_expected.to eq(true) }
@@ -32,7 +32,7 @@ RSpec.describe Ci::PersistentRef do
   end
 
   describe '#create' do
-    subject { pipeline.persistent_ref.create }
+    subject { pipeline.persistent_ref.create } # rubocop: disable Rails/SaveBang
 
     let(:pipeline) { create(:ci_pipeline, sha: sha, project: project) }
     let(:project) { create(:project, :repository) }
@@ -58,7 +58,7 @@ RSpec.describe Ci::PersistentRef do
 
     context 'when a persistent ref already exists' do
       before do
-        pipeline.persistent_ref.create
+        pipeline.persistent_ref.create # rubocop: disable Rails/SaveBang
       end
 
       it 'overwrites a persistent ref' do
@@ -78,7 +78,7 @@ RSpec.describe Ci::PersistentRef do
 
     context 'when a persistent ref exists' do
       before do
-        pipeline.persistent_ref.create
+        pipeline.persistent_ref.create # rubocop: disable Rails/SaveBang
       end
 
       it 'deletes the ref' do

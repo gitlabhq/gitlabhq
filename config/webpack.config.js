@@ -79,6 +79,7 @@ function generateEntries() {
   const manualEntries = {
     default: defaultEntries,
     sentry: './sentry/index.js',
+    performance_bar: './performance_bar/index.js',
     chrome_84_icon_fix: './lib/chrome_84_icon_fix.js',
   };
 
@@ -327,6 +328,8 @@ module.exports = {
           chunks: false,
           modules: false,
           assets: true,
+          errors: !IS_PRODUCTION,
+          warnings: !IS_PRODUCTION,
         });
 
         // tell our rails helper where to find the DLL files
@@ -545,6 +548,7 @@ module.exports = {
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Headers': '*',
     },
+    contentBase: false,
     stats: 'errors-only',
     hot: DEV_SERVER_LIVERELOAD,
     inline: DEV_SERVER_LIVERELOAD,

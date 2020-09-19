@@ -18,8 +18,16 @@ jest.mock('@gitlab/ui/dist/directives/tooltip.js', () => ({
 }));
 
 jest.mock('@gitlab/ui/dist/components/base/tooltip/tooltip.js', () => ({
+  props: ['target', 'id', 'triggers', 'placement', 'container', 'boundary', 'disabled'],
   render(h) {
-    return h('div', this.$attrs, this.$slots.default);
+    return h(
+      'div',
+      {
+        class: 'gl-tooltip',
+        ...this.$attrs,
+      },
+      this.$slots.default,
+    );
   },
 }));
 

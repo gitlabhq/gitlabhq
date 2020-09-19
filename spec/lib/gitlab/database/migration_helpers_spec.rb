@@ -903,15 +903,22 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
   describe '#change_column_type_concurrently' do
     it 'changes the column type' do
       expect(model).to receive(:rename_column_concurrently)
-        .with('users', 'username', 'username_for_type_change', type: :text, type_cast_function: nil)
+        .with('users', 'username', 'username_for_type_change', type: :text, type_cast_function: nil, batch_column_name: :id)
 
       model.change_column_type_concurrently('users', 'username', :text)
+    end
+
+    it 'passed the batch column name' do
+      expect(model).to receive(:rename_column_concurrently)
+        .with('users', 'username', 'username_for_type_change', type: :text, type_cast_function: nil, batch_column_name: :user_id)
+
+      model.change_column_type_concurrently('users', 'username', :text, batch_column_name: :user_id)
     end
 
     context 'with type cast' do
       it 'changes the column type with casting the value to the new type' do
         expect(model).to receive(:rename_column_concurrently)
-          .with('users', 'username', 'username_for_type_change', type: :text, type_cast_function: 'JSON')
+          .with('users', 'username', 'username_for_type_change', type: :text, type_cast_function: 'JSON', batch_column_name: :id)
 
         model.change_column_type_concurrently('users', 'username', :text, type_cast_function: 'JSON')
       end

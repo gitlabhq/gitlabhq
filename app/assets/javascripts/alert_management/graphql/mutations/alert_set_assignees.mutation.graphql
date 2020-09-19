@@ -10,6 +10,9 @@ mutation alertSetAssignees($projectPath: ID!, $assigneeUsernames: [String!]!, $i
       assignees {
         nodes {
           username
+          name
+          avatarUrl
+          webUrl
         }
       }
       notes {

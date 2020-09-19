@@ -29,10 +29,8 @@ RSpec.describe Ci::RefDeleteUnlockArtifactsWorker do
       context 'when user exists' do
         let(:user_id) { project.creator.id }
 
-        context 'when ci ref exists' do
-          before do
-            create(:ci_ref, ref_path: ref)
-          end
+        context 'when ci ref exists for project' do
+          let!(:ci_ref) { create(:ci_ref, ref_path: ref, project: project) }
 
           it 'calls the service' do
             service = spy(Ci::UnlockArtifactsService)
@@ -40,15 +38,31 @@ RSpec.describe Ci::RefDeleteUnlockArtifactsWorker do
 
             perform
 
-            expect(service).to have_received(:execute)
+            expect(service).to have_received(:execute).with(ci_ref)
           end
         end
 
-        context 'when ci ref does not exist' do
+        context 'when ci ref does not exist for the given project' do
+          let!(:another_ci_ref) { create(:ci_ref, ref_path: ref) }
+
           it 'does not call the service' do
             expect(Ci::UnlockArtifactsService).not_to receive(:new)
 
             perform
+          end
+        end
+
+        context 'when same ref path exists for a different project' do
+          let!(:another_ci_ref) { create(:ci_ref, ref_path: ref) }
+          let!(:ci_ref) { create(:ci_ref, ref_path: ref, project: project) }
+
+          it 'calls the service with the correct ref_id' do
+            service = spy(Ci::UnlockArtifactsService)
+            expect(Ci::UnlockArtifactsService).to receive(:new).and_return(service)
+
+            perform
+
+            expect(service).to have_received(:execute).with(ci_ref)
           end
         end
       end

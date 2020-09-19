@@ -1,0 +1,5 @@
+---
+title: Fix Style/AccessModifierDeclarations co cop
+merge_request: 41252
+author: Rajendra Kadam
+type: fixed

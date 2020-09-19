@@ -376,7 +376,11 @@ module QA
         wait_until_shell_command("docker exec #{@gitlab} bash -c 'tail -n 50 /var/log/gitlab/gitaly/current'") do |line|
           log = JSON.parse(line)
 
-          break log['grpc.request.repoPath'] if log['grpc.method'] == 'RenameRepository' && log['grpc.request.repoStorage'] == storage && !log['grpc.request.repoPath'].include?('wiki')
+          if (log['grpc.method'] == 'RenameRepository' || log['grpc.method'] == 'RemoveRepository') &&
+              log['grpc.request.repoStorage'] == storage &&
+              !log['grpc.request.repoPath'].include?('wiki')
+            break log['grpc.request.repoPath']
+          end
         rescue JSON::ParserError
           # Ignore lines that can't be parsed as JSON
         end

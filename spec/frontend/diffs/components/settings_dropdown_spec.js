@@ -7,7 +7,7 @@ import { PARALLEL_DIFF_VIEW_TYPE, INLINE_DIFF_VIEW_TYPE } from '~/diffs/constant
 const localVue = createLocalVue();
 localVue.use(Vuex);
 
-describe('Diff settiings dropdown component', () => {
+describe('Diff settings dropdown component', () => {
   let vm;
   let actions;
 
@@ -50,7 +50,7 @@ describe('Diff settiings dropdown component', () => {
 
       vm.find('.js-list-view').trigger('click');
 
-      expect(actions.setRenderTreeList).toHaveBeenCalledWith(expect.anything(), false, undefined);
+      expect(actions.setRenderTreeList).toHaveBeenCalledWith(expect.anything(), false);
     });
 
     it('tree view button dispatches setRenderTreeList with true', () => {
@@ -58,53 +58,53 @@ describe('Diff settiings dropdown component', () => {
 
       vm.find('.js-tree-view').trigger('click');
 
-      expect(actions.setRenderTreeList).toHaveBeenCalledWith(expect.anything(), true, undefined);
+      expect(actions.setRenderTreeList).toHaveBeenCalledWith(expect.anything(), true);
     });
 
-    it('sets list button as active when renderTreeList is false', () => {
+    it('sets list button as selected when renderTreeList is false', () => {
       createComponent(store => {
         Object.assign(store.state.diffs, {
           renderTreeList: false,
         });
       });
 
-      expect(vm.find('.js-list-view').classes('active')).toBe(true);
-      expect(vm.find('.js-tree-view').classes('active')).toBe(false);
+      expect(vm.find('.js-list-view').classes('selected')).toBe(true);
+      expect(vm.find('.js-tree-view').classes('selected')).toBe(false);
     });
 
-    it('sets tree button as active when renderTreeList is true', () => {
+    it('sets tree button as selected when renderTreeList is true', () => {
       createComponent(store => {
         Object.assign(store.state.diffs, {
           renderTreeList: true,
         });
       });
 
-      expect(vm.find('.js-list-view').classes('active')).toBe(false);
-      expect(vm.find('.js-tree-view').classes('active')).toBe(true);
+      expect(vm.find('.js-list-view').classes('selected')).toBe(false);
+      expect(vm.find('.js-tree-view').classes('selected')).toBe(true);
     });
   });
 
   describe('compare changes', () => {
-    it('sets inline button as active', () => {
+    it('sets inline button as selected', () => {
       createComponent(store => {
         Object.assign(store.state.diffs, {
           diffViewType: INLINE_DIFF_VIEW_TYPE,
         });
       });
 
-      expect(vm.find('.js-inline-diff-button').classes('active')).toBe(true);
-      expect(vm.find('.js-parallel-diff-button').classes('active')).toBe(false);
+      expect(vm.find('.js-inline-diff-button').classes('selected')).toBe(true);
+      expect(vm.find('.js-parallel-diff-button').classes('selected')).toBe(false);
     });
 
-    it('sets parallel button as active', () => {
+    it('sets parallel button as selected', () => {
       createComponent(store => {
         Object.assign(store.state.diffs, {
           diffViewType: PARALLEL_DIFF_VIEW_TYPE,
         });
       });
 
-      expect(vm.find('.js-inline-diff-button').classes('active')).toBe(false);
-      expect(vm.find('.js-parallel-diff-button').classes('active')).toBe(true);
+      expect(vm.find('.js-inline-diff-button').classes('selected')).toBe(false);
+      expect(vm.find('.js-parallel-diff-button').classes('selected')).toBe(true);
     });
 
     it('calls setInlineDiffViewType when clicking inline button', () => {
@@ -153,14 +153,10 @@ describe('Diff settiings dropdown component', () => {
       checkbox.element.checked = true;
       checkbox.trigger('change');
 
-      expect(actions.setShowWhitespace).toHaveBeenCalledWith(
-        expect.anything(),
-        {
-          showWhitespace: true,
-          pushState: true,
-        },
-        undefined,
-      );
+      expect(actions.setShowWhitespace).toHaveBeenCalledWith(expect.anything(), {
+        showWhitespace: true,
+        pushState: true,
+      });
     });
   });
 });

@@ -125,7 +125,11 @@ describe('MRWidgetFailedToMerge', () => {
     });
 
     it('renders refresh button', () => {
-      expect(vm.$el.querySelector('.js-refresh-button').textContent.trim()).toEqual('Refresh now');
+      expect(
+        vm.$el
+          .querySelector('[data-testid="merge-request-failed-refresh-button"]')
+          .textContent.trim(),
+      ).toEqual('Refresh now');
     });
 
     it('renders remaining time', () => {

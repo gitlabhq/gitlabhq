@@ -67,6 +67,12 @@
 .if-cache-credentials-schedule: &if-cache-credentials-schedule
   if: '$CI_REPO_CACHE_CREDENTIALS && $CI_PIPELINE_SOURCE == "schedule"'
 
+.if-rspec-fail-fast-disabled: &if-rspec-fail-fast-disabled
+  if: '$RSPEC_FAIL_FAST_ENABLED != "true"'
+
+.if-rspec-fail-fast-skipped: &if-rspec-fail-fast-skipped
+  if: '$CI_MERGE_REQUEST_TITLE =~ /SKIP RSPEC FAIL-FAST/'
+
 ####################
 # Changes patterns #
 ####################
@@ -83,6 +89,7 @@
   - ".gitlab/ci/frontend.gitlab-ci.yml"
   - ".gitlab/ci/build-images.gitlab-ci.yml"
   - ".gitlab/ci/review.gitlab-ci.yml"
+  - "scripts/trigger-build"
 
 .ci-qa-patterns: &ci-qa-patterns
   - ".gitlab-ci.yml"
@@ -121,11 +128,13 @@
   - "{,ee/}spec/**/*.rb"
   - ".gitlab-ci.yml"
   - ".gitlab/ci/**/*"
+  - "*_VERSION"
 
 .db-patterns: &db-patterns
   - "{,ee/}{,spec/}{db,migrations}/**/*"
   - "{,ee/}{,spec/}lib/{,ee/}gitlab/background_migration/**/*"
   - "config/prometheus/common_metrics.yml" # Used by Gitlab::DatabaseImporters::CommonMetrics::Importer
+  - "{,ee/}app/models/project_statistics.rb" # Used to calculate sizes in migration specs
 
 .backstage-patterns: &backstage-patterns
   - "Dangerfile"
@@ -147,6 +156,7 @@
   - "*_VERSION"
   - "Gemfile{,.lock}"
   - "Rakefile"
+  - "tests.yml"
   - "config.ru"
   - "{,ee/}{app,bin,config,db,haml_lint,lib,locale,public,scripts,symbol,vendor}/**/*"
   - "doc/api/graphql/reference/*"  # Files in this folder are auto-generated
@@ -168,6 +178,7 @@
   - "*_VERSION"
   - "Gemfile{,.lock}"
   - "Rakefile"
+  - "tests.yml"
   - "config.ru"
   - "{,ee/}{app,bin,config,db,haml_lint,lib,locale,public,scripts,symbol,vendor}/**/*"
   - "doc/api/graphql/reference/*"  # Files in this folder are auto-generated
@@ -191,6 +202,7 @@
   - "*_VERSION"
   - "Gemfile{,.lock}"
   - "Rakefile"
+  - "tests.yml"
   - "config.ru"
   - "{,ee/}{app,bin,config,db,haml_lint,lib,locale,public,scripts,symbol,vendor}/**/*"
   - "doc/api/graphql/reference/*"  # Files in this folder are auto-generated
@@ -211,6 +223,7 @@
   - "*_VERSION"
   - "Gemfile{,.lock}"
   - "Rakefile"
+  - "tests.yml"
   - "config.ru"
   - "{,ee/}{app,bin,config,db,haml_lint,lib,locale,public,scripts,symbol,vendor}/**/*"
   - "doc/api/graphql/reference/*"  # Files in this folder are auto-generated
@@ -506,6 +519,7 @@
     - <<: *if-security-merge-request
       changes: *db-patterns
     - <<: *if-merge-request-title-as-if-foss
+      changes: *db-patterns
     - <<: *if-merge-request
       changes: *ci-patterns
 
@@ -516,6 +530,7 @@
     - <<: *if-security-merge-request
       changes: *backend-patterns
     - <<: *if-merge-request-title-as-if-foss
+      changes: *backend-patterns
     - <<: *if-merge-request
       changes: *ci-patterns
 
@@ -526,6 +541,7 @@
     - <<: *if-security-merge-request
       changes: *backend-patterns
     - <<: *if-merge-request-title-as-if-foss
+      changes: *backend-patterns
     - <<: *if-merge-request
       changes: *ci-patterns
 
@@ -536,6 +552,7 @@
     - <<: *if-security-merge-request
       changes: *code-backstage-patterns
     - <<: *if-merge-request-title-as-if-foss
+      changes: *code-backstage-patterns
     - <<: *if-merge-request
       changes: *ci-patterns
 
@@ -549,7 +566,16 @@
     - <<: *if-master-refs
       changes: *code-backstage-patterns
 
-.rails:rules:ee-mr-only:
+.rails:rules:detect-tests:
+  rules:
+    - <<: *if-not-ee
+      when: never
+    - <<: *if-security-merge-request
+      changes: *code-backstage-patterns
+    - <<: *if-dot-com-gitlab-org-merge-request
+      changes: *code-backstage-patterns
+
+.rails:rules:rspec-foss-impact:
   rules:
     - <<: *if-not-ee
       when: never
@@ -560,6 +586,34 @@
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *code-backstage-patterns
 
+.rails:rules:rspec fail-fast:
+  rules:
+    - <<: *if-rspec-fail-fast-disabled
+      when: never
+    - <<: *if-rspec-fail-fast-skipped
+      when: never
+    - <<: *if-not-ee
+      when: never
+    - <<: *if-security-merge-request
+      changes: *code-backstage-patterns
+    - <<: *if-dot-com-gitlab-org-merge-request
+      changes: *code-backstage-patterns
+
+.rails:rules:fail-pipeline-early:
+  rules:
+    - <<: *if-rspec-fail-fast-disabled
+      when: never
+    - <<: *if-rspec-fail-fast-skipped
+      when: never
+    - <<: *if-not-ee
+      when: never
+    - <<: *if-security-merge-request
+      changes: *code-backstage-patterns
+      when: on_failure
+    - <<: *if-dot-com-gitlab-org-merge-request
+      changes: *code-backstage-patterns
+      when: on_failure
+
 .rails:rules:downtime_check:
   rules:
     - <<: *if-merge-request
@@ -569,6 +623,8 @@
   rules:
     - <<: *if-not-ee
       when: never
+    - <<: *if-merge-request
+      changes: *code-backstage-patterns
     - <<: *if-master-schedule-2-hourly
     - <<: *if-merge-request-title-run-all-rspec
 
@@ -643,7 +699,8 @@
   rules:
     - if: '$DAST_DISABLED || $GITLAB_FEATURES !~ /\bdast\b/'
       when: never
-    - <<: *if-dot-com-gitlab-org-schedule
+    - <<: *if-master-schedule-nightly
+      allow_failure: true
 
 ################
 # Review rules #
@@ -662,8 +719,26 @@
       allow_failure: true
     - <<: *if-dot-com-gitlab-org-schedule
 
-.review:rules:mr-and-schedule-auto-if-frontend-manual-otherwise:
+.review:rules:review-deploy:
   rules:
+    - <<: *if-not-ee
+      when: never
+    - <<: *if-dot-com-gitlab-org-merge-request
+      changes: *ci-review-patterns
+    - <<: *if-dot-com-gitlab-org-merge-request
+      changes: *frontend-patterns
+      allow_failure: true
+    - <<: *if-dot-com-gitlab-org-merge-request
+      changes: *code-qa-patterns
+      when: manual
+      allow_failure: true
+    - <<: *if-dot-com-gitlab-org-schedule
+      allow_failure: true
+
+.review:rules:review-performance:
+  rules:
+    - if: '$DAST_RUN == "true"' # Skip this job when DAST is run
+      when: never
     - <<: *if-not-ee
       when: never
     - <<: *if-dot-com-gitlab-org-merge-request
@@ -719,6 +794,17 @@
     - <<: *if-dot-com-gitlab-org-schedule
       allow_failure: true
 
+.review:rules:review-stop:
+  rules:
+    - <<: *if-not-ee
+      when: never
+    - <<: *if-dot-com-gitlab-org-merge-request
+      changes: *code-qa-patterns
+      when: manual
+      allow_failure: true
+    - <<: *if-dot-com-gitlab-org-schedule
+      allow_failure: true
+
 .review:rules:danger:
   rules:
     - if: '$DANGER_GITLAB_API_TOKEN && $CI_MERGE_REQUEST_IID'
@@ -752,6 +838,14 @@
 .setup:rules:no_ee_check:
   rules:
     - <<: *if-not-foss
+      when: never
+    - <<: *if-default-refs
+      changes: *code-backstage-patterns
+      when: on_success
+
+.setup:rules:verify-tests-yml:
+  rules:
+    - <<: *if-not-ee
       when: never
     - <<: *if-default-refs
       changes: *code-backstage-patterns

@@ -110,7 +110,9 @@ class MergeRequestsFinder < IssuableFinder
         .or(table[:title].matches('WIP %'))
         .or(table[:title].matches('[WIP]%'))
 
-    return items unless Feature.enabled?(:merge_request_draft_filter)
+    # Let's keep this FF around until https://gitlab.com/gitlab-org/gitlab/-/issues/232999
+    # is implemented
+    return items unless Feature.enabled?(:merge_request_draft_filter, default_enabled: true)
 
     items
       .or(table[:title].matches('Draft - %'))

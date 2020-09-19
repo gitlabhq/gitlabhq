@@ -3,7 +3,7 @@
 FactoryBot.define do
   factory :group_member do
     access_level { GroupMember::OWNER }
-    group
+    source { association(:group) }
     user
 
     trait(:guest)     { access_level { GroupMember::GUEST } }
@@ -27,6 +27,12 @@ FactoryBot.define do
 
     trait :blocked do
       after(:build) { |group_member, _| group_member.user.block! }
+    end
+
+    trait :minimal_access do
+      to_create { |instance| instance.save!(validate: false) }
+
+      access_level { GroupMember::MINIMAL_ACCESS }
     end
   end
 end

@@ -7,6 +7,7 @@ class Timelog < ApplicationRecord
   belongs_to :issue, touch: true
   belongs_to :merge_request, touch: true
   belongs_to :user
+  belongs_to :note
 
   scope :for_issues_in_group, -> (group) do
     joins(:issue).where(

@@ -14,7 +14,11 @@
   %li.divider
   - if can?(current_user, :update_user_status, current_user)
     %li
-      .js-set-status-modal-trigger{ data: { has_status: current_user.status.present? ? 'true' : 'false' } }
+      %button.btn.menu-item.js-set-status-modal-trigger{ type: 'button' }
+        - if current_user.status.present?
+          = s_('SetStatusModal|Edit status')
+        - else
+          = s_('SetStatusModal|Set status')
   - if current_user_menu?(:profile)
     %li
       = link_to s_("CurrentUser|Profile"), current_user, class: 'profile-link', data: { user: current_user.username }
@@ -35,6 +39,8 @@
       = link_to _("Help"), help_path
     %li.d-md-none
       = link_to _("Support"), support_url
+    %li.d-md-none
+      = render 'shared/help_dropdown_forum_link'
   %li.d-md-none
     = link_to _("Submit feedback"), "https://about.gitlab.com/submit-feedback"
   - if current_user_menu?(:help) || current_user_menu?(:settings) || current_user_menu?(:profile)

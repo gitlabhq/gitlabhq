@@ -5,7 +5,6 @@ module RendersNotes
   def prepare_notes_for_rendering(notes, noteable = nil)
     preload_noteable_for_regular_notes(notes)
     preload_max_access_for_authors(notes, @project)
-    preload_first_time_contribution_for_authors(noteable, notes)
     preload_author_status(notes)
     Notes::RenderService.new(current_user).execute(notes)
 
@@ -19,7 +18,8 @@ module RendersNotes
     return unless project
 
     user_ids = notes.map(&:author_id)
-    project.team.max_member_access_for_user_ids(user_ids)
+    access = project.team.max_member_access_for_user_ids(user_ids).select { |k, v| v == Gitlab::Access::NO_ACCESS }.keys
+    project.team.contribution_check_for_user_ids(access)
   end
 
   # rubocop: disable CodeReuse/ActiveRecord
@@ -27,12 +27,6 @@ module RendersNotes
     ActiveRecord::Associations::Preloader.new.preload(notes.reject(&:for_commit?), :noteable)
   end
   # rubocop: enable CodeReuse/ActiveRecord
-
-  def preload_first_time_contribution_for_authors(noteable, notes)
-    return unless noteable.is_a?(Issuable) && noteable.first_contribution?
-
-    notes.each {|n| n.specialize_for_first_contribution!(noteable)}
-  end
 
   # rubocop: disable CodeReuse/ActiveRecord
   def preload_author_status(notes)

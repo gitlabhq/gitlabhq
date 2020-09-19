@@ -7,9 +7,9 @@
   .nav-controls
     - if can?(current_user, :update_build, @project)
       - unless @repository.gitlab_ci_yml
-        = link_to 'Get started with Pipelines', help_page_path('ci/quick_start/README'), class: 'btn btn-info'
+        = link_to 'Get started with Pipelines', help_page_path('ci/quick_start/README'), class: 'btn gl-button btn-info'
 
-      = link_to project_ci_lint_path(@project), class: 'btn btn-default' do
+      = link_to project_ci_lint_path(@project), class: 'btn gl-button btn-default' do
         %span CI lint
 
 .content-list.builds-content-list

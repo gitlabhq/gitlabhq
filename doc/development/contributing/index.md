@@ -67,6 +67,11 @@ we credit the original author by adding a changelog entry crediting the author
 and optionally include the original author on at least one of the commits
 within the MR.
 
+## Closing policy for inactive bugs
+
+GitLab values the time spent by contributors on reporting bugs. However, if a bug remains inactive for a very long period,
+it will qualify for auto-closure. Please refer to the [auto-close inactive bugs](https://about.gitlab.com/handbook/engineering/quality/triage-operations/#auto-close-inactive-bugs) section in our handbook to understand the complete workflow.
+
 ## Helping others
 
 Help other GitLab users when you can.
@@ -81,6 +86,11 @@ If you would like to contribute to GitLab:
 - Issues with the
   [`~Accepting merge requests` label](issue_workflow.md#label-for-community-contributors)
   are a great place to start.
+- Optimizing our tests is another great opportunity to contribute. You can use
+  [RSpec profiling statistics](https://gitlab-org.gitlab.io/rspec_profiling_stats/) to identify
+  slowest tests. These tests are good candidates for improving and checking if any of
+  [best practices](../testing_guide/best_practices.md)
+  could speed them up.
 - Consult the [Contribution Flow](#contribution-flow) section to learn the process.
 
 If you have any questions or need help visit [Getting Help](https://about.gitlab.com/get-help/) to

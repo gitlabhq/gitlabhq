@@ -9,6 +9,9 @@ module Packages
     def execute
       @project
         .packages
+        .including_build_info
+        .including_project_route
+        .including_tags
         .processed
         .find(@package_id)
     end

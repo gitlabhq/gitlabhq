@@ -111,7 +111,28 @@ function rspec_paralellized_job() {
   date
 }
 
-function rspec_matched_tests() {
+function rspec_fail_fast() {
+  local test_file_count_threshold=${RSPEC_FAIL_FAST_TEST_FILE_COUNT_THRESHOLD:-10}
+  local matching_tests_file=${1}
+  local rspec_opts=${2}
+  local test_files="$(cat "${matching_tests_file}")"
+  local test_file_count=$(wc -w "${matching_tests_file}" | awk {'print $1'})
+
+  if [[ "${test_file_count}" -gt "${test_file_count_threshold}" ]]; then
+    echo "This job is intentionally skipped because there are more than ${test_file_count_threshold} test files matched,"
+    echo "which would take too long to run in this job."
+    echo "All the tests would be run in other rspec jobs."
+    exit 0
+  fi
+
+  if [[ -n $test_files ]]; then
+    rspec_simple_job "${rspec_opts} ${test_files}"
+  else
+    echo "No rspec fail-fast tests to run"
+  fi
+}
+
+function rspec_matched_foss_tests() {
   local test_file_count_threshold=20
   local matching_tests_file=${1}
   local rspec_opts=${2}
@@ -131,6 +152,6 @@ function rspec_matched_tests() {
   if [[ -n $test_files ]]; then
     rspec_simple_job "${rspec_opts} ${test_files}"
   else
-    echo "No test files to run"
+    echo "No impacted FOSS rspec tests to run"
   fi
 }

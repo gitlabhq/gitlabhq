@@ -13,14 +13,14 @@ module ResourceEvents
 
       ResourceStateEvent.create(
         user: user,
-        issue: issue,
-        merge_request: merge_request,
+        resource.class.underscore => resource,
         source_commit: commit_id_of(mentionable_source),
         source_merge_request_id: merge_request_id_of(mentionable_source),
         state: ResourceStateEvent.states[state],
         close_after_error_tracking_resolve: close_after_error_tracking_resolve,
         close_auto_resolve_prometheus_alert: close_auto_resolve_prometheus_alert,
-        created_at: Time.zone.now)
+        created_at: Time.zone.now
+      )
 
       resource.expire_note_etag_cache
     end
@@ -55,18 +55,6 @@ module ResourceEvents
       return unless mentionable_source.is_a?(MergeRequest)
 
       mentionable_source.id
-    end
-
-    def issue
-      return unless resource.is_a?(Issue)
-
-      resource
-    end
-
-    def merge_request
-      return unless resource.is_a?(MergeRequest)
-
-      resource
     end
   end
 end

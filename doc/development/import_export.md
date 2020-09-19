@@ -244,7 +244,7 @@ project_tree:
       - :push_event_payload
   - issues:
     - events:
-    - ...
+    # ...
 ```
 
 Only include the following attributes for the models specified:
@@ -254,8 +254,7 @@ included_attributes:
   user:
     - :id
     - :email
-  ...
-
+  # ...
 ```
 
 Do not include the following attributes for the models specified:

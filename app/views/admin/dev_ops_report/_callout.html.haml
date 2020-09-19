@@ -1,0 +1,13 @@
+.gl-mt-3
+.user-callout{ data: { uid: 'dev_ops_report_intro_callout_dismissed' } }
+  .bordered-box.landing.content-block
+    %button.btn.btn-default.close.js-close-callout{ type: 'button',
+      'aria-label' => _('Dismiss DevOps Report introduction') }
+      = sprite_icon('close', size: 16, css_class: 'dismiss-icon')
+    .user-callout-copy
+      %h4
+        = _('Introducing Your DevOps Report')
+      %p
+        = _('Your DevOps Report gives an overview of how you are using GitLab from a feature perspective. View how you compare with other organizations, discover features you are not using, and learn best practices through blog posts and white papers.')
+    .svg-container.devops
+      = custom_icon('dev_ops_report_overview')

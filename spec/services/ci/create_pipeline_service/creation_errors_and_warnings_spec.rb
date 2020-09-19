@@ -101,7 +101,7 @@ RSpec.describe Ci::CreatePipelineService do
         end
 
         it 'contains only errors' do
-          error_message = 'root config contains unknown keys: invalid'
+          error_message = 'jobs invalid config should implement a script: or a trigger: keyword'
           expect(pipeline.yaml_errors).to eq(error_message)
           expect(pipeline.error_messages.map(&:content)).to contain_exactly(error_message)
           expect(pipeline.errors.full_messages).to contain_exactly(error_message)

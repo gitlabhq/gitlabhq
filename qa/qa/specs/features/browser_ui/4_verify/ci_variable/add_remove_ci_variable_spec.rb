@@ -16,7 +16,7 @@ module QA
         open_ci_cd_settings
       end
 
-      it 'user adds a CI variable' do
+      it 'user adds a CI variable', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/395' do
         Page::Project::Settings::CICD.perform do |settings|
           settings.expand_ci_variables do |page|
             expect(page).to have_text('VARIABLE_KEY')
@@ -29,7 +29,7 @@ module QA
         end
       end
 
-      it 'user removes a CI variable' do
+      it 'user removes a CI variable', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/394' do
         Page::Project::Settings::CICD.perform do |settings|
           settings.expand_ci_variables do |page|
             page.click_edit_ci_variable

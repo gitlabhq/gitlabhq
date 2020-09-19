@@ -6,14 +6,12 @@ type: reference
 
 You can use sign-up restrictions to:
 
-- Disable new signups.
+- Disable new sign-ups.
 - Require user email confirmation.
-- Blacklist or whitelist email addresses belonging to specific domains.
+- Denylist or allowlist email addresses belonging to specific domains.
 
 NOTE: **Note:**
-These restrictions are only applied during sign-up from an external user. An admin is
-able to add a user through the admin panel with a disallowed domain. Also
-note that the users can change their email addresses after signup to
+These restrictions are only applied during sign-up from an external user. An admin can add a user through the admin panel with a disallowed domain. Also, note that the users can change their email addresses after sign-up to
 disallowed domains.
 
 ## Disable new signups
@@ -26,12 +24,12 @@ You can restrict new users from signing up by themselves for an account in your 
 
 ### Recommendations
 
-For customers running public facing GitLab instances, we highly recommend that you
-consider disabling new signups if you do not expect public users to sign up for an
+For customers running public-facing GitLab instances, we highly recommend that you
+consider disabling new sign-ups if you do not expect public users to sign up for an
 account.
 
 Alternatively, you could also consider setting up a
-[whitelist](#whitelist-email-domains) or [blacklist](#blacklist-email-domains) on
+[allowlist](#allowlist-email-domains) or [denylist](#denylist-email-domains) on
 email domains to prevent malicious users from creating accounts.
 
 ## Require email confirmation
@@ -48,14 +46,14 @@ their email address before they are allowed to sign in.
 You can [change](../../../security/password_length_limits.md#modify-minimum-password-length-using-gitlab-ui)
 the minimum number of characters a user must have in their password using the GitLab UI.
 
-## Whitelist email domains
+## Allowlist email domains
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/598) in GitLab 7.11.0
 
-You can restrict users to only sign up using email addresses matching the given
+You can restrict users only to sign up using email addresses matching the given
 domains list.
 
-## Blacklist email domains
+## Denylist email domains
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/5259) in GitLab 8.10.
 
@@ -71,17 +69,17 @@ To access this feature:
 1. Navigate to the **Admin Area > Settings > General**.
 1. Expand the **Sign-up restrictions** section.
 
-For the blacklist, you can enter the list manually or upload a `.txt` file that
+For the denylist, you can enter the list manually or upload a `.txt` file that
 contains list entries.
 
-For the whitelist, you must enter the list manually.
+For the allowlist, you must enter the list manually.
 
-Both the whitelist and blacklist accept wildcards. For example, you can use
+Both the allowlist and denylist accept wildcards. For example, you can use
 `*.company.com` to accept every `company.com` subdomain, or `*.io` to block all
 domains ending in `.io`. Domains should be separated by a whitespace,
 semicolon, comma, or a new line.
 
-![Domain Blacklist](img/domain_blacklist.png)
+![Domain Denylist](img/domain_denylist.png)
 
 <!-- ## Troubleshooting
 

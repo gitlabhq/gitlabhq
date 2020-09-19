@@ -28,14 +28,13 @@ export default {
       const { name } = file;
       const encodedContent = target.result.split('base64,')[1];
       const rawContent = encodedContent ? atob(encodedContent) : '';
-      const isText = isTextFile(rawContent, file.type, name);
+      const isText = isTextFile({ content: rawContent, mimeType: file.type, name });
 
       const emitCreateEvent = content =>
         this.$emit('create', {
           name: `${this.path ? `${this.path}/` : ''}${name}`,
           type: 'blob',
           content,
-          binary: !isText,
           rawPath: !isText ? target.result : '',
         });
 

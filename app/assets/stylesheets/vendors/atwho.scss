@@ -24,8 +24,8 @@
 
   .has-warning {
     .description {
-      color: $orange-700;
-      background-color: $orange-100;
+      color: $gray-900;
+      background-color: $orange-50;
     }
   }
 
@@ -58,7 +58,7 @@
         }
 
         &.has-warning {
-          color: $orange-700;
+          color: $orange-500;
         }
       }
 

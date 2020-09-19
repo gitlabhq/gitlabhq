@@ -10,7 +10,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/33422) in GitLab 11.5.
 > - Available on GitLab.com in GitLab 12.4.
 
-You can enable Pages access control on your project, so that only
+You can enable Pages access control on your project
+if your administrator has [enabled the access control feature](../../../administration/pages/index.md#access-control)
+on your GitLab instance. When enabled, only
 [members of your project](../../permissions.md#project-members-permissions)
 (at least Guest) can access your website:
 

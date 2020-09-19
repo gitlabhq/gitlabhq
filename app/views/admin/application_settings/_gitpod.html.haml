@@ -1,0 +1,30 @@
+- return unless Gitlab::Gitpod.feature_available?
+- expanded = integration_expanded?('gitpod_')
+- gitpod_link = link_to("Gitpod#{sprite_icon('external-link', size: 12, css_class: 'ml-1 vertical-align-center')}".html_safe, 'https://gitpod.io/', target: '_blank', rel: 'noopener noreferrer')
+
+%section.settings.no-animate#js-gitpod-settings{ class: ('expanded' if expanded) }
+  .settings-header
+    %h4
+      = _('Gitpod')
+    %button.btn.btn-default.js-settings-toggle{ type: 'button' }
+      = expanded ? _('Collapse') : _('Expand')
+    %p
+      = s_('Enable %{gitpod_link} integration to launch a development environment in your browser directly from GitLab.').html_safe % { gitpod_link: gitpod_link }
+      = link_to sprite_icon('question-o'), help_page_path('integration/gitpod.md'), target: '_blank', class: 'has-tooltip', title: _('More information')
+
+
+  .settings-content
+    = form_for @application_setting, url: general_admin_application_settings_path(anchor: 'js-gitpod-settings'), html: { class: 'fieldset-form' } do |f|
+      = form_errors(@application_setting)
+
+      %fieldset
+        .form-group
+          .form-check
+            = f.check_box :gitpod_enabled, class: 'form-check-input'
+            = f.label :gitpod_enabled, s_('Gitpod|Enable Gitpod integration'), class: 'form-check-label'
+        .form-group
+          = f.label :gitpod_url, s_('Gitpod|Gitpod URL'), class: 'label-bold'
+          = f.text_field :gitpod_url, class: 'form-control', placeholder: s_('Gitpod|e.g. https://gitpod.example.com')
+          .form-text.text-muted
+            = s_('Gitpod|Add the URL to your Gitpod instance configured to read your GitLab projects.')
+      = f.submit s_('Save changes'), class: 'btn btn-success'

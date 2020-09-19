@@ -10,9 +10,10 @@ RSpec.describe IncidentManagement::CreateIncidentLabelService do
   subject(:execute) { service.execute }
 
   describe 'execute' do
-    let(:title) { described_class::LABEL_PROPERTIES[:title] }
-    let(:color) { described_class::LABEL_PROPERTIES[:color] }
-    let(:description) { described_class::LABEL_PROPERTIES[:description] }
+    let(:incident_label_attributes) { attributes_for(:label, :incident) }
+    let(:title) { incident_label_attributes[:title] }
+    let(:color) { incident_label_attributes[:color] }
+    let(:description) { incident_label_attributes[:description] }
 
     shared_examples 'existing label' do
       it 'returns the existing label' do

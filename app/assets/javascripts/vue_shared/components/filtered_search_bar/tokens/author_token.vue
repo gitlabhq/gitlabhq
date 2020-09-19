@@ -3,7 +3,7 @@ import {
   GlFilteredSearchToken,
   GlAvatar,
   GlFilteredSearchSuggestion,
-  GlDeprecatedDropdownDivider,
+  GlDropdownDivider,
   GlLoadingIcon,
 } from '@gitlab/ui';
 import { debounce } from 'lodash';
@@ -11,15 +11,14 @@ import { debounce } from 'lodash';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
 import { __ } from '~/locale';
 
-import { ANY_AUTHOR, DEBOUNCE_DELAY } from '../constants';
+import { DEFAULT_LABEL_ANY, DEBOUNCE_DELAY } from '../constants';
 
 export default {
-  anyAuthor: ANY_AUTHOR,
   components: {
     GlFilteredSearchToken,
     GlAvatar,
     GlFilteredSearchSuggestion,
-    GlDeprecatedDropdownDivider,
+    GlDropdownDivider,
     GlLoadingIcon,
   },
   props: {
@@ -35,6 +34,7 @@ export default {
   data() {
     return {
       authors: this.config.initialAuthors || [],
+      defaultAuthors: this.config.defaultAuthors || [DEFAULT_LABEL_ANY],
       loading: true,
     };
   },
@@ -99,10 +99,14 @@ export default {
       <span>{{ activeAuthor ? activeAuthor.name : inputValue }}</span>
     </template>
     <template #suggestions>
-      <gl-filtered-search-suggestion :value="$options.anyAuthor">
-        {{ __('Any') }}
+      <gl-filtered-search-suggestion
+        v-for="author in defaultAuthors"
+        :key="author.value"
+        :value="author.value"
+      >
+        {{ author.text }}
       </gl-filtered-search-suggestion>
-      <gl-deprecated-dropdown-divider />
+      <gl-dropdown-divider v-if="defaultAuthors.length" />
       <gl-loading-icon v-if="loading" />
       <template v-else>
         <gl-filtered-search-suggestion

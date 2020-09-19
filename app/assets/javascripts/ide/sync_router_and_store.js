@@ -1,4 +1,3 @@
-/* eslint-disable import/prefer-default-export */
 /**
  * This method adds listeners to the given router and store and syncs their state with eachother
  *

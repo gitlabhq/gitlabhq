@@ -28,7 +28,7 @@ RSpec.describe 'User uses header search field', :js do
 
     context 'when using the keyboard shortcut' do
       before do
-        find('#search.js-autocomplete-disabled')
+        find('#search')
         find('body').native.send_keys('s')
       end
 
@@ -39,7 +39,7 @@ RSpec.describe 'User uses header search field', :js do
 
     context 'when clicking the search field' do
       before do
-        page.find('#search.js-autocomplete-disabled').click
+        page.find('#search').click
       end
 
       it 'shows category search dropdown' do

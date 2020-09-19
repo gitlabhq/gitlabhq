@@ -33,6 +33,7 @@ describe('Job App', () => {
   };
 
   const props = {
+    artifactHelpUrl: 'help/artifact',
     runnerHelpUrl: 'help/runner',
     deploymentHelpUrl: 'help/deployment',
     runnerSettingsUrl: 'settings/ci-cd/runners',

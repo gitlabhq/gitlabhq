@@ -13,6 +13,10 @@ class ApplicationRecord < ActiveRecord::Base
     where(id: ids)
   end
 
+  def self.primary_key_in(values)
+    where(primary_key => values)
+  end
+
   def self.iid_in(iids)
     where(iid: iids)
   end

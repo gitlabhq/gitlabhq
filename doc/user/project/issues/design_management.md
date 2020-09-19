@@ -1,3 +1,9 @@
+---
+stage: Create
+group: Knowledge
+info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers"
+---
+
 # Design Management
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/660) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.2.
@@ -72,38 +78,11 @@ and connect to GitLab through a personal access token. The details are explained
 ## The Design Management section
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/223193) in GitLab 13.2, Designs are displayed directly on the issue description rather than on a separate tab.
-> - The new display is deployed behind a feature flag, enabled by default.
-> - It's enabled on GitLab.com.
-> - It cannot be enabled or disabled per-project.
-> - It's recommended for production use.
-> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-displaying-designs-on-the-issue-description-core-only). If disabled, it will move Designs back to the **Designs** tab.
+> - New display's feature flag [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/223197) in GitLab 13.4.
 
 You can find to the **Design Management** section in the issue description:
 
 ![Designs section](img/design_management_v13_2.png)
-
-### Enable or disable displaying Designs on the issue description **(CORE ONLY)**
-
-Displaying Designs on the issue description is under development but ready for
-production use. It is deployed behind a feature flag that is **enabled by
-default**.
-[GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
-can opt to disable it for your instance.
-
-To disable it:
-
-```ruby
-Feature.disable(:design_management_moved)
-```
-
-To enable it:
-
-```ruby
-Feature.enable(:design_management_moved)
-```
-
-By disabling this feature, designs will be displayed on the **Designs** tab
-instead of directly on the issue description.
 
 ## Adding designs
 
@@ -252,13 +231,47 @@ Note that your resolved comment pins will disappear from the Design to free up s
 However, if you need to revisit or find a resolved discussion, all of your resolved threads will be
 available in the **Resolved Comment** area at the bottom of the right sidebar.
 
+## Add To-Do for Designs
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/198439) in GitLab 13.4.
+> - It's [deployed behind a feature flag](../../feature_flags.md), enabled by default.
+> - It's enabled on GitLab.com.
+> - It's recommended for production use.
+> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-the-design-to-do-button). **(CORE ONLY)**
+
+CAUTION: **Warning:**
+This feature might not be available to you. Check the **version history** note above for details.
+
+Add a to-do for a design by clicking **Add a To-Do** on the design sidebar:
+
+![To-Do button](img/design_todo_button_v13_4.png)
+
+### Enable or disable the design To-Do button **(CORE ONLY)**
+
+The **Add a To-Do** button for Designs is under development but ready for production use. It is
+deployed behind a feature flag that is **enabled by default**.
+[GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
+can enable it.
+
+To enable it:
+
+```ruby
+Feature.enable(:design_management_todo_button)
+```
+
+To disable it:
+
+```ruby
+Feature.disable(:design_management_todo_button)
+```
+
 ## Referring to designs in Markdown
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/217160) in **GitLab 13.1**.
 > - It is deployed behind a feature flag, disabled by default.
 > - It is disabled on GitLab.com.
 > - It is not recommended for production use.
-> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-design-references-core-only). **(CORE ONLY)**
+> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-design-references). **(CORE ONLY)**
 
 We support referring to designs in [Markdown](../../markdown.md), which is available
 throughout the application, including in merge request and issue descriptions, in discussions and comments, and in wiki pages.

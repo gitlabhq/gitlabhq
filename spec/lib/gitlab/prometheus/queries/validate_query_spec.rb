@@ -28,7 +28,7 @@ RSpec.describe Gitlab::Prometheus::Queries::ValidateQuery do
     let(:error_message) { "invalid parameter 'query': 1:9: parse error: unexpected identifier \"query\"" }
 
     it 'returns invalid' do
-      Timecop.freeze do
+      freeze_time do
         stub_prometheus_query_error(
           prometheus_query_with_time_url(query, Time.now),
           error_message
@@ -53,7 +53,7 @@ RSpec.describe Gitlab::Prometheus::Queries::ValidateQuery do
       end
 
       it 'catches exception and returns invalid' do
-        Timecop.freeze do
+        freeze_time do
           expect(subject.query(query)).to eq(valid: false, error: message)
         end
       end

@@ -2,6 +2,8 @@
 
 module Issues
   class BaseService < ::IssuableBaseService
+    include IncidentManagement::UsageData
+
     def hook_data(issue, action, old_associations: {})
       hook_data = issue.to_hook_data(current_user, old_associations: old_associations)
       hook_data[:object_attributes][:action] = action
@@ -15,6 +17,19 @@ module Issues
 
     def close_service
       Issues::CloseService
+    end
+
+    NO_REBALANCING_NEEDED = ((RelativePositioning::MIN_POSITION * 0.9999)..(RelativePositioning::MAX_POSITION * 0.9999)).freeze
+
+    def rebalance_if_needed(issue)
+      return unless issue
+      return if issue.relative_position.nil?
+      return if NO_REBALANCING_NEEDED.cover?(issue.relative_position)
+
+      gates = [issue.project, issue.project.group].compact
+      return unless gates.any? { |gate| Feature.enabled?(:rebalance_issues, gate) }
+
+      IssueRebalancingWorker.perform_async(nil, issue.project_id)
     end
 
     private
@@ -45,6 +60,22 @@ module Issues
       return unless milestone
 
       Milestones::IssuesCountService.new(milestone).delete_cache
+    end
+
+    # Applies label "incident" (creates it if missing) to incident issues.
+    # Please use in "after" hooks only to ensure we are not appyling
+    # labels prematurely.
+    def add_incident_label(issue)
+      return unless issue.incident?
+
+      label = ::IncidentManagement::CreateIncidentLabelService
+        .new(project, current_user)
+        .execute
+        .payload[:label]
+
+      return if issue.label_ids.include?(label.id)
+
+      issue.labels << label
     end
   end
 end

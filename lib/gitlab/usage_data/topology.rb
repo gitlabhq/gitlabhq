@@ -40,9 +40,10 @@ module Gitlab
       private
 
       def topology_fetch_all_data
-        with_prometheus_client(fallback: {}) do |client|
+        with_prometheus_client(fallback: {}, verify: false) do |client|
           {
             application_requests_per_hour: topology_app_requests_per_hour(client),
+            query_apdex_weekly_average: topology_query_apdex_weekly_average(client),
             nodes: topology_node_data(client)
           }.compact
         end
@@ -61,6 +62,16 @@ module Gitlab
 
         # the metric is recorded as a per-second rate
         (result['value'].last.to_f * 1.hour).to_i
+      end
+
+      def topology_query_apdex_weekly_average(client)
+        result = query_safely('gitlab_usage_ping:sql_duration_apdex:ratio_rate5m', 'query_apdex', fallback: nil) do |query|
+          client.query(aggregate_one_week(query)).first
+        end
+
+        return unless result
+
+        result['value'].last.to_f
       end
 
       def topology_node_data(client)

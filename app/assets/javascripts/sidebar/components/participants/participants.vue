@@ -1,5 +1,5 @@
 <script>
-import { GlLoadingIcon } from '@gitlab/ui';
+import { GlIcon, GlLoadingIcon } from '@gitlab/ui';
 import { __, n__, sprintf } from '~/locale';
 import tooltip from '~/vue_shared/directives/tooltip';
 import userAvatarImage from '~/vue_shared/components/user_avatar/user_avatar_image.vue';
@@ -10,6 +10,7 @@ export default {
   },
   components: {
     userAvatarImage,
+    GlIcon,
     GlLoadingIcon,
   },
   props: {
@@ -94,7 +95,7 @@ export default {
       data-boundary="viewport"
       @click="onClickCollapsedIcon"
     >
-      <i class="fa fa-users" aria-hidden="true"> </i>
+      <gl-icon name="users" />
       <gl-loading-icon v-if="loading" />
       <span v-else data-testid="collapsed-count"> {{ participantCount }} </span>
     </div>

@@ -2,11 +2,11 @@
 import { debounce } from 'lodash';
 import { mapState, mapActions } from 'vuex';
 import {
-  GlNewDropdown,
-  GlNewDropdownHeader,
-  GlNewDropdownItem,
+  GlDropdown,
+  GlDropdownSectionHeader,
+  GlDropdownItem,
   GlSearchBoxByType,
-  GlNewDropdownDivider,
+  GlDropdownDivider,
   GlTooltipDirective,
 } from '@gitlab/ui';
 import { redirectTo } from '~/lib/utils/url_utility';
@@ -18,11 +18,11 @@ const tooltipMessage = __('Searching by both author and message is currently not
 export default {
   name: 'AuthorSelect',
   components: {
-    GlNewDropdown,
-    GlNewDropdownHeader,
-    GlNewDropdownItem,
+    GlDropdown,
+    GlDropdownSectionHeader,
+    GlDropdownItem,
     GlSearchBoxByType,
-    GlNewDropdownDivider,
+    GlDropdownDivider,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -107,27 +107,27 @@ export default {
 
 <template>
   <div ref="dropdownContainer" v-gl-tooltip :title="tooltipTitle" :disabled="!hasSearchParam">
-    <gl-new-dropdown
+    <gl-dropdown
       :text="dropdownText"
       :disabled="hasSearchParam"
       toggle-class="gl-py-3 gl-border-0"
       class="w-100 mt-2 mt-sm-0"
     >
-      <gl-new-dropdown-header>
+      <gl-dropdown-section-header>
         {{ __('Search by author') }}
-      </gl-new-dropdown-header>
-      <gl-new-dropdown-divider />
+      </gl-dropdown-section-header>
+      <gl-dropdown-divider />
       <gl-search-box-by-type
         v-model.trim="authorInput"
-        class="m-2"
+        class="gl-m-3"
         :placeholder="__('Search')"
         @input="searchAuthors"
       />
-      <gl-new-dropdown-item :is-checked="!currentAuthor" @click="selectAuthor(null)">
+      <gl-dropdown-item :is-checked="!currentAuthor" @click="selectAuthor(null)">
         {{ __('Any Author') }}
-      </gl-new-dropdown-item>
-      <gl-new-dropdown-divider />
-      <gl-new-dropdown-item
+      </gl-dropdown-item>
+      <gl-dropdown-divider />
+      <gl-dropdown-item
         v-for="author in commitsAuthors"
         :key="author.id"
         :is-checked="author.name === currentAuthor"
@@ -136,7 +136,7 @@ export default {
         @click="selectAuthor(author)"
       >
         {{ author.name }}
-      </gl-new-dropdown-item>
-    </gl-new-dropdown>
+      </gl-dropdown-item>
+    </gl-dropdown>
   </div>
 </template>

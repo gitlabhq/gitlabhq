@@ -23,7 +23,7 @@ Code Quality:
   Quality](https://gitlab.com/gitlab-org/ci-cd/codequality) project using [default Code Climate configurations](https://gitlab.com/gitlab-org/ci-cd/codequality/-/tree/master/codeclimate_defaults).
 - Can make use of a [template](#example-configuration).
 - Is available with [Auto
-  DevOps](../../../topics/autodevops/stages.md#auto-code-quality-starter).
+  DevOps](../../../topics/autodevops/stages.md#auto-code-quality).
 - Can be extended through [Analysis Plugins](https://docs.codeclimate.com/docs/list-of-engines) or a [custom tool](#implementing-a-custom-tool).
 
 ## Code Quality Widget
@@ -69,7 +69,7 @@ For instance, consider the following workflow:
 
 This example shows how to run Code Quality on your code by using GitLab CI/CD and Docker.
 It requires GitLab 11.11 or later, and GitLab Runner 11.5 or later. If you are using
-GitLab 11.4 or ealier, you can view the deprecated job definitions in the
+GitLab 11.4 or earlier, you can view the deprecated job definitions in the
 [documentation archive](https://docs.gitlab.com/12.10/ee/user/project/merge_requests/code_quality.html#previous-job-definitions).
 
 First, you need GitLab Runner configured:
@@ -77,7 +77,7 @@ First, you need GitLab Runner configured:
 - For the [Docker-in-Docker workflow](../../../ci/docker/using_docker_build.md#use-docker-in-docker-workflow-with-docker-executor).
 - With enough disk space to handle generated Code Quality files. For example on the [GitLab project](https://gitlab.com/gitlab-org/gitlab) the files are approximately 7 GB.
 
-Once you set up the Runner, include the Code Quality template in your CI configuration:
+Once you set up GitLab Runner, include the Code Quality template in your CI configuration:
 
 ```yaml
 include:
@@ -100,6 +100,16 @@ include:
 code_quality:
   variables:
     CODE_QUALITY_IMAGE: "registry.example.com/codequality-fork:latest"
+```
+
+In [GitLab 13.4 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/11100), you can override the [Code Quality environment variables](https://gitlab.com/gitlab-org/ci-cd/codequality#environment-variables):
+
+```yaml
+variables:
+  TIMEOUT_SECONDS: 1
+
+include:
+  - template: Code-Quality.gitlab-ci.yml
 ```
 
 By default, report artifacts are not downloadable. If you need them downloadable on the
@@ -126,7 +136,7 @@ This information will be automatically extracted and shown right in the merge re
 
 CAUTION: **Caution:**
 On self-managed instances, if a malicious actor compromises the Code Quality job
-definition they will be able to execute privileged Docker commands on the Runner
+definition they will be able to execute privileged Docker commands on the runner
 host. Having proper access control policies mitigates this attack vector by
 allowing access only to trusted actors.
 
@@ -276,7 +286,7 @@ This adds SonarJava to the `plugins:` section of the [default `.codeclimate.yml`
 included in your project.
 
 Changes to the `plugins:` section do not affect the `exclude_patterns` section of the
-defeault `.codeclimate.yml`. See the Code Climate documentation for
+default `.codeclimate.yml`. See the Code Climate documentation for
 [excluding files and folders](https://docs.codeclimate.com/docs/excluding-files-and-folders)
 for more details.
 

@@ -1,0 +1,204 @@
+@import '../page_bundles/mixins_and_variables_and_functions';
+/**
+ * Styles the GitLab application with a specific color theme
+ */
+@mixin gitlab-theme(
+  $search-and-nav-links,
+  $active-tab-border,
+  $border-and-box-shadow,
+  $sidebar-text,
+  $nav-svg-color,
+  $color-alternate
+) {
+  // Header
+
+  .navbar-gitlab {
+    background-color: $nav-svg-color;
+
+    .navbar-collapse {
+      color: $search-and-nav-links;
+    }
+
+    .container-fluid {
+      .navbar-toggler {
+        border-left: 1px solid lighten($border-and-box-shadow, 10%);
+
+        svg {
+          fill: $search-and-nav-links;
+        }
+      }
+    }
+
+    .navbar-sub-nav,
+    .navbar-nav {
+      > li {
+        > a,
+        > button {
+          &:hover,
+          &:focus {
+            background-color: rgba($search-and-nav-links, 0.2);
+          }
+        }
+
+        &.active,
+        &.dropdown.show {
+          > a,
+          > button {
+            color: $nav-svg-color;
+            background-color: $color-alternate;
+          }
+        }
+
+        &.line-separator {
+          border-left: 1px solid rgba($search-and-nav-links, 0.2);
+        }
+      }
+    }
+
+    .navbar-sub-nav {
+      color: $search-and-nav-links;
+    }
+
+    .nav {
+      > li {
+        color: $search-and-nav-links;
+
+        > a {
+          &.header-user-dropdown-toggle {
+            .header-user-avatar {
+              border-color: $search-and-nav-links;
+            }
+
+            .header-user-notification-dot {
+              border: 2px solid $nav-svg-color;
+            }
+          }
+
+          &:hover,
+          &:focus {
+            @include media-breakpoint-up(sm) {
+              background-color: rgba($search-and-nav-links, 0.2);
+            }
+
+            svg {
+              fill: currentColor;
+            }
+
+            &.header-user-dropdown-toggle .header-user-notification-dot {
+              border-color: $nav-svg-color + 33;
+            }
+          }
+        }
+
+        &.active > a,
+        &.dropdown.show > a {
+          color: $nav-svg-color;
+          background-color: $color-alternate;
+
+          &:hover {
+            svg {
+              fill: $nav-svg-color;
+            }
+          }
+
+          &.header-user-dropdown-toggle .header-user-notification-dot {
+            border-color: $white;
+          }
+        }
+
+        .impersonated-user,
+        .impersonated-user:hover {
+          svg {
+            fill: $nav-svg-color;
+          }
+        }
+      }
+    }
+  }
+
+  .navbar .title {
+    > a {
+      &:hover,
+      &:focus {
+        background-color: rgba($search-and-nav-links, 0.2);
+      }
+    }
+  }
+
+  .search {
+    form {
+      background-color: rgba($search-and-nav-links, 0.2);
+
+      &:hover {
+        background-color: rgba($search-and-nav-links, 0.3);
+      }
+    }
+
+    .search-input::placeholder {
+      color: rgba($search-and-nav-links, 0.8);
+    }
+
+    .search-input-wrap {
+      .search-icon,
+      .clear-icon {
+        fill: rgba($search-and-nav-links, 0.8);
+      }
+    }
+
+    &.search-active {
+      form {
+        background-color: $white;
+      }
+
+      .search-input-wrap {
+        .search-icon {
+          fill: rgba($search-and-nav-links, 0.8);
+        }
+      }
+    }
+  }
+
+  // Sidebar
+  .nav-sidebar li.active {
+    box-shadow: inset 4px 0 0 $border-and-box-shadow;
+
+    > a {
+      color: $sidebar-text;
+    }
+
+    .nav-icon-container svg {
+      fill: $sidebar-text;
+    }
+  }
+
+  .sidebar-top-level-items > li.active .badge.badge-pill {
+    color: $sidebar-text;
+  }
+
+  .nav-links li {
+    &.active a,
+    &.md-header-tab.active button,
+    a.active {
+      border-bottom: 2px solid $active-tab-border;
+
+      .badge.badge-pill {
+        font-weight: $gl-font-weight-bold;
+      }
+    }
+  }
+
+  .branch-header-title {
+    color: $border-and-box-shadow;
+  }
+
+  .ide-sidebar-link {
+    &.active {
+      color: $border-and-box-shadow;
+      box-shadow: inset 3px 0 $border-and-box-shadow;
+
+      &.is-right {
+        box-shadow: inset -3px 0 $border-and-box-shadow;
+      }
+    }
+  }
+}

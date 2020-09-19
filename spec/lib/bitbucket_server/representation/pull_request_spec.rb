@@ -15,6 +15,33 @@ RSpec.describe BitbucketServer::Representation::PullRequest do
     it { expect(subject.author_email).to eq('joe.montana@49ers.com') }
   end
 
+  describe '#author_username' do
+    it 'returns username' do
+      expect(subject.author_username).to eq('username')
+    end
+
+    context 'when username is absent' do
+      before do
+        sample_data['author']['user'].delete('username')
+      end
+
+      it 'returns slug' do
+        expect(subject.author_username).to eq('slug')
+      end
+    end
+
+    context 'when slug and username are absent' do
+      before do
+        sample_data['author']['user'].delete('username')
+        sample_data['author']['user'].delete('slug')
+      end
+
+      it 'returns displayName' do
+        expect(subject.author_username).to eq('displayName')
+      end
+    end
+  end
+
   describe '#description' do
     it { expect(subject.description).to eq('Test') }
   end

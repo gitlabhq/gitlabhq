@@ -70,8 +70,23 @@ module Types
           description: 'Text to echo back',
           resolver: Resolvers::EchoResolver
 
+    field :issue, Types::IssueType,
+          null: true,
+          description: 'Find an issue' do
+            argument :id, ::Types::GlobalIDType[::Issue], required: true, description: 'The global ID of the Issue'
+          end
+
+    field :instance_statistics_measurements, Types::Admin::Analytics::InstanceStatistics::MeasurementType.connection_type,
+          null: true,
+          description: 'Get statistics on the instance',
+          resolver: Resolvers::Admin::Analytics::InstanceStatistics::MeasurementsResolver
+
     def design_management
       DesignManagementObject.new(nil)
+    end
+
+    def issue(id:)
+      GitlabSchema.object_from_id(id, expected_type: ::Issue)
     end
   end
 end

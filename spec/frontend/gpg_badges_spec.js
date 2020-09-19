@@ -68,7 +68,7 @@ describe('GpgBadges', () => {
     GpgBadges.fetch()
       .then(() => {
         expect(document.querySelector('.js-loading-gpg-badge:empty')).toBe(null);
-        const spinners = document.querySelectorAll('.js-loading-gpg-badge i.fa.fa-spinner.fa-spin');
+        const spinners = document.querySelectorAll('.js-loading-gpg-badge span.gl-spinner');
 
         expect(spinners.length).toBe(1);
         done();

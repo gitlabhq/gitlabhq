@@ -10,7 +10,7 @@ export default {
     EditorModeDropdown,
   },
   computed: {
-    ...mapGetters(['currentMergeRequest', 'activeFile']),
+    ...mapGetters(['currentMergeRequest', 'activeFile', 'getUrlForPath']),
     ...mapState(['viewer', 'currentMergeRequestId']),
     showLatestChangesText() {
       return !this.currentMergeRequestId || this.viewer === viewerTypes.diff;
@@ -24,7 +24,7 @@ export default {
   },
   mounted() {
     if (this.activeFile && this.activeFile.pending && !this.activeFile.deleted) {
-      this.$router.push(`/project${this.activeFile.url}`, () => {
+      this.$router.push(this.getUrlForPath(this.activeFile.path), () => {
         this.updateViewer('editor');
       });
     } else if (this.activeFile && this.activeFile.deleted) {

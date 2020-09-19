@@ -1,0 +1,5 @@
+---
+title: Expose Instance Statistics measurements (object counts) via GraphQL
+merge_request: 40871
+author:
+type: added

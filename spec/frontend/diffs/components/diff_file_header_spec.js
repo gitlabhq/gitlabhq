@@ -1,9 +1,10 @@
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import Vuex from 'vuex';
+import { GlIcon } from '@gitlab/ui';
+import { cloneDeep } from 'lodash';
 import DiffFileHeader from '~/diffs/components/diff_file_header.vue';
 import EditButton from '~/diffs/components/edit_button.vue';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
-import Icon from '~/vue_shared/components/icon.vue';
 import diffDiscussionsMockData from '../mock_data/diff_discussions';
 import { truncateSha } from '~/lib/utils/text_utility';
 import { diffViewerModes } from '~/ide/constants';
@@ -26,12 +27,16 @@ const diffFile = Object.freeze(
   }),
 );
 
+const localVue = createLocalVue();
+localVue.use(Vuex);
+
 describe('DiffFileHeader component', () => {
   let wrapper;
+  let mockStoreConfig;
 
   const diffHasExpandedDiscussionsResultMock = jest.fn();
   const diffHasDiscussionsResultMock = jest.fn();
-  const mockStoreConfig = {
+  const defaultMockStoreConfig = {
     state: {},
     modules: {
       diffs: {
@@ -44,6 +49,7 @@ describe('DiffFileHeader component', () => {
           toggleFileDiscussions: jest.fn(),
           toggleFileDiscussionWrappers: jest.fn(),
           toggleFullDiff: jest.fn(),
+          toggleActiveFileByHash: jest.fn(),
         },
       },
     },
@@ -55,6 +61,8 @@ describe('DiffFileHeader component', () => {
       diffHasExpandedDiscussionsResultMock,
       ...Object.values(mockStoreConfig.modules.diffs.actions),
     ].forEach(mock => mock.mockReset());
+
+    wrapper.destroy();
   });
 
   const findHeader = () => wrapper.find({ ref: 'header' });
@@ -70,7 +78,7 @@ describe('DiffFileHeader component', () => {
   const findCollapseIcon = () => wrapper.find({ ref: 'collapseIcon' });
 
   const findIconByName = iconName => {
-    const icons = wrapper.findAll(Icon).filter(w => w.props('name') === iconName);
+    const icons = wrapper.findAll(GlIcon).filter(w => w.props('name') === iconName);
     if (icons.length === 0) return icons;
     if (icons.length > 1) {
       throw new Error(`Multiple icons found for ${iconName}`);
@@ -79,8 +87,7 @@ describe('DiffFileHeader component', () => {
   };
 
   const createComponent = props => {
-    const localVue = createLocalVue();
-    localVue.use(Vuex);
+    mockStoreConfig = cloneDeep(defaultMockStoreConfig);
     const store = new Vuex.Store(mockStoreConfig);
 
     wrapper = shallowMount(DiffFileHeader, {
@@ -285,7 +292,7 @@ describe('DiffFileHeader component', () => {
           findToggleDiscussionsButton().vm.$emit('click');
           expect(
             mockStoreConfig.modules.diffs.actions.toggleFileDiscussionWrappers,
-          ).toHaveBeenCalledWith(expect.any(Object), diffFile, undefined);
+          ).toHaveBeenCalledWith(expect.any(Object), diffFile);
         });
       });
 

@@ -107,6 +107,20 @@ class Feature
         end
       end
 
+      def register_hot_reloader!
+        # Reload feature flags on change of this file or any `.yml`
+        file_watcher = Rails.configuration.file_watcher.new(reload_files, reload_directories) do
+          # We use `Feature::Definition` as on Ruby code-reload
+          # a new class definition is created
+          Feature::Definition.load_all!
+        end
+
+        Rails.application.reloaders << file_watcher
+        Rails.application.reloader.to_run { file_watcher.execute_if_updated }
+
+        file_watcher
+      end
+
       private
 
       def load_from_file(path)
@@ -128,6 +142,19 @@ class Feature
           end
 
           definitions[definition.key] = definition
+        end
+      end
+
+      def reload_files
+        [File.expand_path(__FILE__)]
+      end
+
+      def reload_directories
+        paths.each_with_object({}) do |path, result|
+          path = File.dirname(path)
+          Dir.glob(path).each do |matching_dir|
+            result[matching_dir] = 'yml'
+          end
         end
       end
     end

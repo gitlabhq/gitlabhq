@@ -18,7 +18,6 @@ function fileSymlinkInformation(file, fileList) {
   );
 }
 
-/* eslint-disable-next-line import/prefer-default-export */
 export function prepareRawDiffFile({ file, allFiles }) {
   Object.assign(file, {
     brokenSymlink: fileSymlinkInformation(file, allFiles),

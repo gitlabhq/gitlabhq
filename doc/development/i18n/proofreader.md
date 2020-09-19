@@ -77,7 +77,7 @@ are very appreciative of the work done by translators and proofreaders!
 - Mongolian
   - Proofreaders needed.
 - Norwegian Bokmal
-  - Proofreaders needed.
+  - Imre Kristoffer Eilertsen - [GitLab](https://gitlab.com/DandelionSprout), [CrowdIn](https://crowdin.com/profile/DandelionSprout)
 - Polish
   - Filip Mech - [GitLab](https://gitlab.com/mehenz), [CrowdIn](https://crowdin.com/profile/mehenz)
   - Maksymilian Roman - [GitLab](https://gitlab.com/villaincandle), [CrowdIn](https://crowdin.com/profile/villaincandle)

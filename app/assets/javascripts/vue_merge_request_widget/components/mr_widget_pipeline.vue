@@ -1,8 +1,15 @@
 <script>
-/* eslint-disable vue/require-default-prop */
-import { GlIcon, GlLink, GlLoadingIcon, GlSprintf, GlTooltipDirective } from '@gitlab/ui';
+/* eslint-disable vue/require-default-prop, vue/no-v-html */
+import {
+  GlIcon,
+  GlLink,
+  GlLoadingIcon,
+  GlSprintf,
+  GlTooltip,
+  GlTooltipDirective,
+} from '@gitlab/ui';
 import mrWidgetPipelineMixin from 'ee_else_ce/vue_merge_request_widget/mixins/mr_widget_pipeline';
-import { s__ } from '~/locale';
+import { s__, n__ } from '~/locale';
 import PipelineStage from '~/pipelines/components/pipelines_list/stage.vue';
 import CiIcon from '~/vue_shared/components/ci_icon.vue';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate.vue';
@@ -15,6 +22,7 @@ export default {
     GlLoadingIcon,
     GlIcon,
     GlSprintf,
+    GlTooltip,
     PipelineStage,
     TooltipOnTruncate,
     LinkedPipelinesMiniList: () =>
@@ -32,6 +40,11 @@ export default {
     pipelineCoverageDelta: {
       type: String,
       required: false,
+    },
+    buildsWithCoverage: {
+      type: Array,
+      required: false,
+      default: () => [],
     },
     // This prop needs to be camelCase, html attributes are case insensive
     // https://vuejs.org/v2/guide/components.html#camelCase-vs-kebab-case
@@ -100,6 +113,16 @@ export default {
       }
       return '';
     },
+    pipelineCoverageJobNumberText() {
+      return n__('from %d job', 'from %d jobs', this.buildsWithCoverage.length);
+    },
+    pipelineCoverageTooltipDescription() {
+      return n__(
+        'Coverage value for this pipeline was calculated by the coverage value of %d job.',
+        'Coverage value for this pipeline was calculated by averaging the resulting coverage values of %d jobs.',
+        this.buildsWithCoverage.length,
+      );
+    },
   },
   errorText: s__(
     'Pipeline|Could not retrieve the pipeline status. For troubleshooting steps, read the %{linkStart}documentation%{linkEnd}.',
@@ -139,7 +162,7 @@ export default {
         >
           <gl-icon
             name="question"
-            :small="12"
+            :size="12"
             tabindex="0"
             role="text"
             :aria-label="__('Link to go to GitLab pipeline documentation')"
@@ -189,14 +212,30 @@ export default {
             </div>
             <div v-if="pipeline.coverage" class="coverage" data-testid="pipeline-coverage">
               {{ s__('Pipeline|Coverage') }} {{ pipeline.coverage }}%
-
               <span
                 v-if="pipelineCoverageDelta"
                 :class="coverageDeltaClass"
                 data-testid="pipeline-coverage-delta"
+                >({{ pipelineCoverageDelta }}%)</span
               >
-                ({{ pipelineCoverageDelta }}%)
+
+              {{ pipelineCoverageJobNumberText }}
+              <span ref="pipelineCoverageQuestion">
+                <gl-icon name="question" :size="12" />
               </span>
+              <gl-tooltip
+                :target="() => $refs.pipelineCoverageQuestion"
+                data-testid="pipeline-coverage-tooltip"
+              >
+                {{ pipelineCoverageTooltipDescription }}
+                <div
+                  v-for="(build, index) in buildsWithCoverage"
+                  :key="`${build.name}-${index}`"
+                  class="gl-mt-3 gl-text-left gl-px-4"
+                >
+                  {{ build.name }} ({{ build.coverage }}%)
+                </div>
+              </gl-tooltip>
             </div>
           </div>
         </div>

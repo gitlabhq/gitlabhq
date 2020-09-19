@@ -1,0 +1,5 @@
+---
+title: NotificationsController - Handle mising parent notificationsetting
+merge_request: 41612
+author:
+type: fixed

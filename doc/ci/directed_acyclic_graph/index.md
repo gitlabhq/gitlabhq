@@ -86,7 +86,7 @@ are certain use cases that you may need to work around. For more information:
 > - It became [enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/36802) in 13.2.
 > - It became a [standard feature](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/38517) in 13.3.
 > - It's enabled on GitLab.com.
-> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-dag-visualization-core-only).
+> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-dag-visualization).
 
 The DAG visualization makes it easier to visualize the relationships between dependent jobs in a DAG. This graph will display all the jobs in a pipeline that need or are needed by other jobs. Jobs with no relationships are not displayed in this view.
 
@@ -106,5 +106,5 @@ can opt to disable it for your instance:
 # Instance-wide
 Feature.disable(:dag_pipeline_tab)
 # or by project
-Feature.disable(:dag_pipeline_tab, Project.find(<project id>))
+Feature.disable(:dag_pipeline_tab, Project.find(<project ID>))
 ```

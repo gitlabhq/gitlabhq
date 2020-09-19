@@ -197,7 +197,9 @@ RSpec.describe IssuablesHelper do
         initialTitleText: issue.title,
         initialDescriptionHtml: '<p dir="auto">issue text</p>',
         initialDescriptionText: 'issue text',
-        initialTaskStatus: '0 of 0 tasks completed'
+        initialTaskStatus: '0 of 0 tasks completed',
+        issueType: 'issue',
+        iid: issue.iid.to_s
       }
       expect(helper.issuable_initial_data(issue)).to match(hash_including(expected_data))
     end

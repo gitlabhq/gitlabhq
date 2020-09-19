@@ -52,6 +52,7 @@ RSpec.describe MergeRequests::UpdateService, :mailer do
           title: 'New title',
           description: 'Also please fix',
           assignee_ids: [user.id],
+          reviewer_ids: [user.id],
           state_event: 'close',
           label_ids: [label.id],
           target_branch: 'target',
@@ -75,6 +76,7 @@ RSpec.describe MergeRequests::UpdateService, :mailer do
         expect(@merge_request).to be_valid
         expect(@merge_request.title).to eq('New title')
         expect(@merge_request.assignees).to match_array([user])
+        expect(@merge_request.reviewers).to match_array([user])
         expect(@merge_request).to be_closed
         expect(@merge_request.labels.count).to eq(1)
         expect(@merge_request.labels.first.title).to eq(label.name)
@@ -159,6 +161,29 @@ RSpec.describe MergeRequests::UpdateService, :mailer do
           update_merge_request(opts)
 
           expect(@merge_request.merge_params["force_remove_source_branch"]).to eq("1")
+        end
+      end
+
+      it_behaves_like 'reviewer_ids filter' do
+        let(:opts) { {} }
+        let(:execute) { update_merge_request(opts) }
+      end
+
+      context 'with an existing reviewer' do
+        let(:merge_request) do
+          create(:merge_request, :simple, source_project: project, reviewer_ids: [user2.id])
+        end
+
+        context 'when merge_request_reviewer feature is enabled' do
+          before do
+            stub_feature_flags(merge_request_reviewer: true)
+          end
+
+          let(:opts) { { reviewer_ids: [IssuableFinder::Params::NONE] } }
+
+          it 'removes reviewers' do
+            expect(update_merge_request(opts).reviewers).to eq []
+          end
         end
       end
     end
@@ -379,11 +404,31 @@ RSpec.describe MergeRequests::UpdateService, :mailer do
         end
       end
 
-      context 'when the milestone is removed' do
+      context 'when reviewers gets changed' do
         before do
-          stub_feature_flags(track_resource_milestone_change_events: false)
+          update_merge_request({ reviewer_ids: [user2.id] })
         end
 
+        it 'marks pending todo as done' do
+          expect(pending_todo.reload).to be_done
+        end
+
+        it 'creates a pending todo for new review request' do
+          attributes = {
+            project: project,
+            author: user,
+            user: user2,
+            target_id: merge_request.id,
+            target_type: merge_request.class.name,
+            action: Todo::REVIEW_REQUESTED,
+            state: :pending
+          }
+
+          expect(Todo.where(attributes).count).to eq 1
+        end
+      end
+
+      context 'when the milestone is removed' do
         let!(:non_subscriber) { create(:user) }
 
         let!(:subscriber) do
@@ -393,12 +438,10 @@ RSpec.describe MergeRequests::UpdateService, :mailer do
           end
         end
 
-        it_behaves_like 'system notes for milestones'
-
         it 'sends notifications for subscribers of changed milestone', :sidekiq_might_not_need_inline do
           merge_request.milestone = create(:milestone, project: project)
 
-          merge_request.save
+          merge_request.save!
 
           perform_enqueued_jobs do
             update_merge_request(milestone_id: "")
@@ -410,10 +453,6 @@ RSpec.describe MergeRequests::UpdateService, :mailer do
       end
 
       context 'when the milestone is changed' do
-        before do
-          stub_feature_flags(track_resource_milestone_change_events: false)
-        end
-
         let!(:non_subscriber) { create(:user) }
 
         let!(:subscriber) do
@@ -428,8 +467,6 @@ RSpec.describe MergeRequests::UpdateService, :mailer do
 
           expect(pending_todo.reload).to be_done
         end
-
-        it_behaves_like 'system notes for milestones'
 
         it 'sends notifications for subscribers of changed milestone', :sidekiq_might_not_need_inline do
           perform_enqueued_jobs do
@@ -628,7 +665,7 @@ RSpec.describe MergeRequests::UpdateService, :mailer do
 
     context 'updating asssignee_ids' do
       it 'does not update assignee when assignee_id is invalid' do
-        merge_request.update(assignee_ids: [user.id])
+        merge_request.update!(assignee_ids: [user.id])
 
         update_merge_request(assignee_ids: [-1])
 
@@ -636,7 +673,7 @@ RSpec.describe MergeRequests::UpdateService, :mailer do
       end
 
       it 'unassigns assignee when user id is 0' do
-        merge_request.update(assignee_ids: [user.id])
+        merge_request.update!(assignee_ids: [user.id])
 
         update_merge_request(assignee_ids: [0])
 
@@ -664,7 +701,7 @@ RSpec.describe MergeRequests::UpdateService, :mailer do
         levels.each do |level|
           it "does not update with unauthorized assignee when project is #{Gitlab::VisibilityLevel.level_name(level)}" do
             assignee = create(:user)
-            project.update(visibility_level: level)
+            project.update!(visibility_level: level)
             feature_visibility_attr = :"#{merge_request.model_name.plural}_access_level"
             project.project_feature.update_attribute(feature_visibility_attr, ProjectFeature::PRIVATE)
 

@@ -20,7 +20,7 @@
     "startedAt": "2020-04-17T23:18:14.996Z",
     "endedAt": "2020-04-17T23:18:14.996Z",
     "status": "ACKNOWLEDGED",
-    "assignees": { "nodes": [{ "username": "root" }] },
+    "assignees": { "nodes": [{ "username": "root", "avatarUrl": "/url", "name": "root" }] },
     "issueIid": "1",
     "notes": {
       "nodes": [
@@ -49,7 +49,7 @@
     "startedAt": "2020-04-17T23:18:14.996Z",
     "endedAt": "2020-04-17T23:18:14.996Z",
     "status": "RESOLVED",
-    "assignees": { "nodes": [{ "username": "root" }] },
+    "assignees": { "nodes": [{ "username": "root", "avatarUrl": "/url", "name": "root" }] },
     "notes": {
       "nodes": [
         {

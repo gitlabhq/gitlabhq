@@ -1,0 +1,7 @@
+---
+name: gitpod
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/37985
+rollout_issue_url:
+group: group::editor
+type: development
+default_enabled: false

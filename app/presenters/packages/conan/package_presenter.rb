@@ -3,13 +3,14 @@
 module Packages
   module Conan
     class PackagePresenter
+      include API::Helpers::Packages::Conan::ApiHelpers
       include API::Helpers::RelatedResourcesHelpers
       include Gitlab::Utils::StrongMemoize
 
       attr_reader :params
 
-      def initialize(recipe, user, project, params = {})
-        @recipe = recipe
+      def initialize(package, user, project, params = {})
+        @package = package
         @user = user
         @project = project
         @params = params
@@ -17,7 +18,10 @@ module Packages
 
       def recipe_urls
         map_package_files do |package_file|
-          build_recipe_file_url(package_file) if package_file.conan_file_metadatum.recipe_file?
+          next unless package_file.conan_file_metadatum.recipe_file?
+
+          options = url_options(package_file)
+          recipe_file_url(options)
         end
       end
 
@@ -31,7 +35,12 @@ module Packages
         map_package_files do |package_file|
           next unless package_file.conan_file_metadatum.package_file? && matching_reference?(package_file)
 
-          build_package_file_url(package_file)
+          options = url_options(package_file).merge(
+            conan_package_reference: package_file.conan_file_metadatum.conan_package_reference,
+            package_revision: package_file.conan_file_metadatum.package_revision
+          )
+
+          package_file_url(options)
         end
       end
 
@@ -45,36 +54,21 @@ module Packages
 
       private
 
-      def build_recipe_file_url(package_file)
-        expose_url(
-          api_v4_packages_conan_v1_files_export_path(
-            package_name: package.name,
-            package_version: package.version,
-            package_username: package.conan_metadatum.package_username,
-            package_channel: package.conan_metadatum.package_channel,
-            recipe_revision: package_file.conan_file_metadatum.recipe_revision,
-            file_name: package_file.file_name
-          )
-        )
-      end
-
-      def build_package_file_url(package_file)
-        expose_url(
-          api_v4_packages_conan_v1_files_package_path(
-            package_name: package.name,
-            package_version: package.version,
-            package_username: package.conan_metadatum.package_username,
-            package_channel: package.conan_metadatum.package_channel,
-            recipe_revision: package_file.conan_file_metadatum.recipe_revision,
-            conan_package_reference: package_file.conan_file_metadatum.conan_package_reference,
-            package_revision: package_file.conan_file_metadatum.package_revision,
-            file_name: package_file.file_name
-          )
-        )
+      def url_options(package_file)
+        {
+          package_name: @package.name,
+          package_version: @package.version,
+          package_username: @package.conan_metadatum.package_username,
+          package_channel: @package.conan_metadatum.package_channel,
+          file_name: package_file.file_name,
+          recipe_revision: package_file.conan_file_metadatum.recipe_revision.presence || ::Packages::Conan::FileMetadatum::DEFAULT_RECIPE_REVISION
+        }
       end
 
       def map_package_files
         package_files.to_a.map do |package_file|
+          next unless package_file.conan_file_metadatum
+
           key = package_file.file_name
           value = yield(package_file)
           next unless key && value
@@ -84,22 +78,9 @@ module Packages
       end
 
       def package_files
-        return unless package
+        return unless @package
 
-        @package_files ||= package.package_files.preload_conan_file_metadata
-      end
-
-      def package
-        strong_memoize(:package) do
-          name, version = @recipe.split('@')[0].split('/')
-
-          @project.packages
-                  .conan
-                  .with_name(name)
-                  .with_version(version)
-                  .order_created
-                  .last
-        end
+        @package_files ||= @package.package_files.preload_conan_file_metadata
       end
 
       def matching_reference?(package_file)

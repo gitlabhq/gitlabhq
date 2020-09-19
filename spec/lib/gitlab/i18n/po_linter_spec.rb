@@ -140,7 +140,7 @@ RSpec.describe Gitlab::I18n::PoLinter do
       let(:po_path) { 'spec/fixtures/unescaped_chars.po' }
 
       it 'contains an error' do
-        message_id = 'You are going to transfer %{project_name_with_namespace} to another owner. Are you ABSOLUTELY sure?'
+        message_id = 'You are going to transfer %{project_name_with_namespace} to another namespace. Are you ABSOLUTELY sure?'
         expected_error = 'translation contains unescaped `%`, escape it using `%%`'
 
         expect(errors[message_id]).to include(expected_error)

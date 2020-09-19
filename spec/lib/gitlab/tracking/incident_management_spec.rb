@@ -11,7 +11,7 @@ RSpec.describe Gitlab::Tracking::IncidentManagement do
           .with(
             'IncidentManagement::Settings',
             label,
-            value || kind_of(Hash)
+            value || any_args
           )
       end
     end

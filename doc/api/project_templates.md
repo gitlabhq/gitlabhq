@@ -21,7 +21,7 @@ It deprecates these endpoints, which will be removed for API version 5.
 In addition to templates common to the entire instance, project-specific
 templates are also available from this API endpoint.
 
-Support for [Group-level file templates](../user/group/index.md#group-file-templates-premium)
+Support for [Group-level file templates](../user/group/index.md#group-file-templates)
 **(PREMIUM)** was [added](https://gitlab.com/gitlab-org/gitlab/-/issues/5987)
 in GitLab 11.5
 
@@ -110,7 +110,7 @@ Example response (Dockerfile):
 ```json
 {
   "name": "Binary",
-  "content": "# This file is a template, and might need editing before it works on your project.\n# This Dockerfile installs a compiled binary into a bare system.\n# You must either commit your compiled binary into source control (not recommended)\n# or build the binary first as part of a CI/CD pipeline.\n\nFROM buildpack-deps:jessie\n\nWORKDIR /usr/local/bin\n\n# Change `app` to whatever your binary is called\nAdd app .\nCMD [\"./app\"]\n"
+  "content": "# This file is a template, and might need editing before it works on your project.\n# This Dockerfile installs a compiled binary into a bare system.\n# You must either commit your compiled binary into source control (not recommended)\n# or build the binary first as part of a CI/CD pipeline.\n\nFROM buildpack-deps:buster\n\nWORKDIR /usr/local/bin\n\n# Change `app` to whatever your binary is called\nAdd app .\nCMD [\"./app\"]\n"
 }
 ```
 

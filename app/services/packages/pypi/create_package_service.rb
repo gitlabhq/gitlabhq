@@ -2,15 +2,21 @@
 
 module Packages
   module Pypi
-    class CreatePackageService < BaseService
+    class CreatePackageService < ::Packages::CreatePackageService
       include ::Gitlab::Utils::StrongMemoize
 
       def execute
         ::Packages::Package.transaction do
-          Packages::Pypi::Metadatum.upsert(
-            package_id: created_package.id,
+          meta = Packages::Pypi::Metadatum.new(
+            package: created_package,
             required_python: params[:requires_python]
           )
+
+          unless meta.valid?
+            raise ActiveRecord::RecordInvalid.new(meta)
+          end
+
+          Packages::Pypi::Metadatum.upsert(meta.attributes)
 
           ::Packages::CreatePackageFileService.new(created_package, file_params).execute
         end
@@ -20,10 +26,7 @@ module Packages
 
       def created_package
         strong_memoize(:created_package) do
-          project
-            .packages
-            .pypi
-            .safe_find_or_create_by!(name: params[:name], version: params[:version])
+          find_or_create_package!(:pypi)
         end
       end
 

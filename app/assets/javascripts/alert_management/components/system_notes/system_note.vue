@@ -1,4 +1,5 @@
 <script>
+/* eslint-disable vue/no-v-html */
 import NoteHeader from '~/notes/components/note_header.vue';
 import { spriteIcon } from '~/lib/utils/common_utils';
 
@@ -31,7 +32,7 @@ export default {
 </script>
 
 <template>
-  <li :id="noteAnchorId" class="timeline-entry note system-note note-wrapper">
+  <li :id="noteAnchorId" class="timeline-entry note system-note note-wrapper gl-px-0!">
     <div class="timeline-entry-inner">
       <div class="timeline-icon" v-html="iconHtml"></div>
       <div class="timeline-content">

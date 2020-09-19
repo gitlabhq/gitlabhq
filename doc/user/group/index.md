@@ -227,7 +227,7 @@ To change this setting for a specific group:
 To change this setting globally, see [Default branch protection](../admin_area/settings/visibility_and_access_controls.md#default-branch-protection).
 
 NOTE: **Note:**
-In [GitLab Premium or higher](https://about.gitlab.com/pricing/), GitLab administrators can choose to [disable group owners from updating the default branch protection](../admin_area/settings/visibility_and_access_controls.md#disable-group-owners-from-updating-default-branch-protection-premium-only).
+In [GitLab Premium or higher](https://about.gitlab.com/pricing/), GitLab administrators can choose to [disable group owners from updating the default branch protection](../admin_area/settings/visibility_and_access_controls.md#disable-group-owners-from-updating-default-branch-protection).
 
 ## Add projects to a group
 
@@ -340,7 +340,7 @@ Group syncing allows LDAP groups to be mapped to GitLab groups. This provides mo
 
 Group links can be created using either a CN or a filter. These group links are created on the **Group Settings -> LDAP Synchronization** page. After configuring the link, it may take over an hour for the users to sync with the GitLab group.
 
-For more information on the administration of LDAP and group sync, refer to the [main LDAP documentation](../../administration/auth/ldap/index.md#group-sync-starter-only).
+For more information on the administration of LDAP and group sync, refer to the [main LDAP documentation](../../administration/auth/ldap/index.md#group-sync).
 
 NOTE: **Note:**
 If an LDAP user is a group member when LDAP Synchronization is added, and they are not part of the LDAP group, they will be removed from the group.
@@ -363,7 +363,7 @@ To create group links via filter:
 
 1. Select the **LDAP Server** for the link.
 1. Select `LDAP user filter` as the **Sync method**.
-1. Input your filter in the **LDAP User filter** box. Follow the [documentation on user filters](../../administration/auth/ldap/index.md#set-up-ldap-user-filter-core-only).
+1. Input your filter in the **LDAP User filter** box. Follow the [documentation on user filters](../../administration/auth/ldap/index.md#set-up-ldap-user-filter).
 1. In the **LDAP Access** section, select the [permission level](../permissions.md) for users synced in this group.
 1. Click the `Add Synchronization` button to save this group link.
 
@@ -480,7 +480,7 @@ To remove a group and its contents:
 This action either:
 
 - Removes the group, and also queues a background job to delete all projects in that group.
-- Since [GitLab 12.8](https://gitlab.com/gitlab-org/gitlab/-/issues/33257), on [Premium or Silver](https://about.gitlab.com/pricing/premium/) or higher tiers, marks a group for deletion. The deletion will happen 7 days later by default, but this can be changed in the [instance settings](../admin_area/settings/visibility_and_access_controls.md#default-deletion-delay-premium-only).
+- Since [GitLab 12.8](https://gitlab.com/gitlab-org/gitlab/-/issues/33257), on [Premium or Silver](https://about.gitlab.com/pricing/premium/) or higher tiers, marks a group for deletion. The deletion will happen 7 days later by default, but this can be changed in the [instance settings](../admin_area/settings/visibility_and_access_controls.md#default-deletion-delay).
 
 ### Restore a group **(PREMIUM)**
 
@@ -660,13 +660,16 @@ Optionally, on [Premium or Silver](https://about.gitlab.com/pricing/) or higher 
 you can configure the projects within a group to be deleted after a delayed interval.
 
 During this interval period, the projects will be in a read-only state and can be restored, if required.
-The interval period defaults to 7 days, and can be modified by an admin in the [instance settings](../admin_area/settings/visibility_and_access_controls.md#default-deletion-delay-premium-only).
+The interval period defaults to 7 days, and can be modified by an admin in the [instance settings](../admin_area/settings/visibility_and_access_controls.md#default-deletion-delay).
 
 To enable delayed deletion of projects:
 
 1. Navigate to the group's **Settings > General** page.
 1. Expand the **Permissions, LFS, 2FA** section, and check **Enable delayed project removal**.
 1. Click **Save changes**.
+
+NOTE: **Note:**
+The group setting for delayed deletion is not inherited by sub-groups and has to be individually defined for each group.
 
 #### Prevent project forking outside group **(PREMIUM)**
 
@@ -711,7 +714,8 @@ If your namespace shows `N/A` as the total storage usage, you can trigger a reca
 
 #### Group push rules **(STARTER)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/34370) in [GitLab Starter](https://about.gitlab.com/pricing/) 12.8.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/34370) in [GitLab Starter](https://about.gitlab.com/pricing/) 12.8.
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/224129) in GitLab 13.4.
 
 Group push rules allow group maintainers to set
 [push rules](../../push_rules/push_rules.md) for newly created projects within the specific group.
@@ -724,18 +728,10 @@ When set, new subgroups have push rules set for them based on either:
 - The closest parent group with push rules defined.
 - Push rules set at the instance level, if no parent groups have push rules defined.
 
-##### Enabling the feature
-
-This feature comes with the `:group_push_rules` feature flag disabled by default. It can be enabled for specific group using feature flag [API endpoint](../../api/features.md#set-or-create-a-feature) or by GitLab administrator with Rails console access by running:
-
-```ruby
-Feature.enable(:group_push_rules)
-```
-
 ### Maximum artifacts size **(CORE ONLY)**
 
 For information about setting a maximum artifact size for a group, see
-[Maximum artifacts size](../admin_area/settings/continuous_integration.md#maximum-artifacts-size-core-only).
+[Maximum artifacts size](../admin_area/settings/continuous_integration.md#maximum-artifacts-size).
 
 ## User contribution analysis **(STARTER)**
 
@@ -746,6 +742,12 @@ and issues) performed by your group members.
 ## Issue analytics **(PREMIUM)**
 
 With [GitLab Issue Analytics](issues_analytics/index.md), you can see a bar chart of the number of issues created each month in your groups.
+
+## Repositories analytics **(PREMIUM)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/215104) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.4.
+
+With [GitLab Repositories Analytics](repositories_analytics/index.md), you can download a CSV of the latest coverage data for all the projects in your group.
 
 ## Dependency Proxy **(PREMIUM)**
 

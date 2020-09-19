@@ -358,6 +358,29 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching do
           .to eq(Gitlab::Auth::Result.new(nil, nil, nil, nil))
         end
       end
+
+      context 'when using a project access token' do
+        let_it_be(:project_bot_user) { create(:user, :project_bot) }
+        let_it_be(:project_access_token) { create(:personal_access_token, user: project_bot_user) }
+
+        context 'with valid project access token' do
+          before_all do
+            project.add_maintainer(project_bot_user)
+          end
+
+          it 'succeeds' do
+            expect(gl_auth.find_for_git_client(project_bot_user.username, project_access_token.token, project: project, ip: 'ip'))
+              .to eq(Gitlab::Auth::Result.new(project_bot_user, nil, :personal_access_token, described_class.full_authentication_abilities))
+          end
+        end
+
+        context 'with invalid project access token' do
+          it 'fails' do
+            expect(gl_auth.find_for_git_client(project_bot_user.username, project_access_token.token, project: project, ip: 'ip'))
+              .to eq(Gitlab::Auth::Result.new(nil, nil, nil, nil))
+          end
+        end
+      end
     end
 
     context 'while using regular user and password' do

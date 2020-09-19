@@ -112,7 +112,7 @@ RSpec.describe 'Project > Members > Invite group', :js do
     let!(:group) { create(:group) }
 
     around do |example|
-      Timecop.freeze { example.run }
+      freeze_time { example.run }
     end
 
     before do

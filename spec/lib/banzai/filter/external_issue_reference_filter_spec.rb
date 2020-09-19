@@ -208,4 +208,47 @@ RSpec.describe Banzai::Filter::ExternalIssueReferenceFilter do
       end
     end
   end
+
+  context "ewm project" do
+    let_it_be(:project) { create(:ewm_project) }
+
+    before do
+      project.update!(issues_enabled: false)
+    end
+
+    context "rtcwi keyword" do
+      let(:issue) { ExternalIssue.new("rtcwi 123", project) }
+      let(:reference) { issue.to_reference }
+
+      it_behaves_like "external issue tracker"
+    end
+
+    context "workitem keyword" do
+      let(:issue) { ExternalIssue.new("workitem 123", project) }
+      let(:reference) { issue.to_reference }
+
+      it_behaves_like "external issue tracker"
+    end
+
+    context "defect keyword" do
+      let(:issue) { ExternalIssue.new("defect 123", project) }
+      let(:reference) { issue.to_reference }
+
+      it_behaves_like "external issue tracker"
+    end
+
+    context "task keyword" do
+      let(:issue) { ExternalIssue.new("task 123", project) }
+      let(:reference) { issue.to_reference }
+
+      it_behaves_like "external issue tracker"
+    end
+
+    context "bug keyword" do
+      let(:issue) { ExternalIssue.new("bug 123", project) }
+      let(:reference) { issue.to_reference }
+
+      it_behaves_like "external issue tracker"
+    end
+  end
 end

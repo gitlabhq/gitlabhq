@@ -19,7 +19,7 @@ module MicrosoftTeams
 
         result = true if response
       rescue Gitlab::HTTP::Error, StandardError => error
-        Rails.logger.info("#{self.class.name}: Error while connecting to #{@webhook}: #{error.message}") # rubocop:disable Gitlab/RailsLogger
+        Gitlab::AppLogger.info("#{self.class.name}: Error while connecting to #{@webhook}: #{error.message}")
       end
 
       result

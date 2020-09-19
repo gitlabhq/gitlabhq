@@ -1,6 +1,6 @@
 .tribute-container {
   background: $white;
-  border: 1px solid $gl-gray-100;
+  border: 1px solid $gray-100;
   border-radius: $border-radius-base;
   box-shadow: 0 0 5px $issue-boards-card-shadow;
   color: $black;
@@ -22,7 +22,7 @@
     white-space: nowrap;
 
     small {
-      color: $gl-gray-500;
+      color: $gray-500;
     }
 
     &.highlight {

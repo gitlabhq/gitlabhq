@@ -48,12 +48,30 @@ RSpec.describe Projects::MergeRequests::ContentController do
         expect(merge_request).to receive(:check_mergeability)
 
         do_request(:widget)
+
+        expect(response).to match_response_schema('entities/merge_request_poll_widget')
+        expect(response.headers['Poll-Interval']).to eq('10000')
       end
 
       context 'merged merge request' do
         let(:merge_request) do
           create(:merged_merge_request, :with_test_reports, target_project: project, source_project: project)
         end
+
+        it 'renders widget MR entity as json' do
+          do_request(:widget)
+
+          expect(response).to match_response_schema('entities/merge_request_poll_widget')
+          expect(response.headers['Poll-Interval']).to eq('300000')
+        end
+      end
+
+      context 'with coverage data' do
+        let(:merge_request) { create(:merge_request, target_project: project, source_project: project, head_pipeline: head_pipeline) }
+        let!(:base_pipeline) { create(:ci_empty_pipeline, project: project, ref: merge_request.target_branch, sha: merge_request.diff_base_sha) }
+        let!(:head_pipeline) { create(:ci_empty_pipeline, project: project) }
+        let!(:rspec_base) { create(:ci_build, name: 'rspec', coverage: 93.1, pipeline: base_pipeline) }
+        let!(:rspec_head) { create(:ci_build, name: 'rspec', coverage: 97.1, pipeline: head_pipeline) }
 
         it 'renders widget MR entity as json' do
           do_request(:widget)

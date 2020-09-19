@@ -3,6 +3,7 @@
 module DesignManagement
   class DesignsFinder
     include Gitlab::Allowable
+    include FinderMethods
 
     # Params:
     # ids: integer[]
@@ -21,10 +22,7 @@ module DesignManagement
       items = by_visible_at_version(items)
       items = by_filename(items)
       items = by_id(items)
-
-      # TODO: We don't need to pass the project anymore after the feature flag is removed
-      # https://gitlab.com/gitlab-org/gitlab/-/issues/34382
-      items.ordered(issue.project)
+      items.ordered
     end
 
     private

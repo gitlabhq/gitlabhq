@@ -66,6 +66,7 @@ export default class IssuableForm {
       gl.GfmAutoComplete && gl.GfmAutoComplete.dataSources,
     ).setup();
     this.usersSelect = new UsersSelect();
+    this.reviewersSelect = new UsersSelect(undefined, '.js-reviewer-search');
     this.zenMode = new ZenMode();
 
     this.titleField = this.form.find('input[name*="[title]"]');

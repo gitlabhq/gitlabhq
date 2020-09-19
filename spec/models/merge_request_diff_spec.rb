@@ -293,6 +293,7 @@ RSpec.describe MergeRequestDiff do
     it 'does nothing with an empty diff' do
       stub_external_diffs_setting(enabled: true)
       MergeRequestDiffFile.where(merge_request_diff_id: diff.id).delete_all
+      diff.save! # update files_count
 
       expect(diff).not_to receive(:update!)
 
@@ -675,8 +676,39 @@ RSpec.describe MergeRequestDiff do
   end
 
   describe '#files_count' do
-    it 'returns number of diff files' do
-      expect(diff_with_commits.files_count).to eq(diff_with_commits.merge_request_diff_files.count)
+    let_it_be(:merge_request) { create(:merge_request) }
+
+    let(:diff) { merge_request.merge_request_diff }
+    let(:actual_count) { diff.merge_request_diff_files.count }
+
+    it 'is set by default' do
+      expect(diff.read_attribute(:files_count)).to eq(actual_count)
+    end
+
+    it 'is set to the sentinel value if the actual value exceeds it' do
+      stub_const("#{described_class}::FILES_COUNT_SENTINEL", actual_count - 1)
+
+      diff.save! # update the files_count column with the stub in place
+
+      expect(diff.read_attribute(:files_count)).to eq(described_class::FILES_COUNT_SENTINEL)
+    end
+
+    it 'uses the cached count if present' do
+      diff.update_columns(files_count: actual_count + 1)
+
+      expect(diff.files_count).to eq(actual_count + 1)
+    end
+
+    it 'uses the actual count if nil' do
+      diff.update_columns(files_count: nil)
+
+      expect(diff.files_count).to eq(actual_count)
+    end
+
+    it 'uses the actual count if overflown' do
+      diff.update_columns(files_count: described_class::FILES_COUNT_SENTINEL)
+
+      expect(diff.files_count).to eq(actual_count)
     end
   end
 

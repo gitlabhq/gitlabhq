@@ -1,6 +1,6 @@
 import Vuex from 'vuex';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
-import { GlLoadingIcon } from '@gitlab/ui';
+import { GlLoadingIcon, GlPagination } from '@gitlab/ui';
 import MockAdapter from 'axios-mock-adapter';
 import { TEST_HOST } from 'spec/test_constants';
 import Mousetrap from 'mousetrap';
@@ -9,6 +9,7 @@ import NoChanges from '~/diffs/components/no_changes.vue';
 import DiffFile from '~/diffs/components/diff_file.vue';
 import CompareVersions from '~/diffs/components/compare_versions.vue';
 import HiddenFilesWarning from '~/diffs/components/hidden_files_warning.vue';
+import CollapsedFilesWarning from '~/diffs/components/collapsed_files_warning.vue';
 import CommitWidget from '~/diffs/components/commit_widget.vue';
 import TreeList from '~/diffs/components/tree_list.vue';
 import { INLINE_DIFF_VIEW_TYPE, PARALLEL_DIFF_VIEW_TYPE } from '~/diffs/constants';
@@ -21,6 +22,10 @@ const mergeRequestDiff = { version_index: 1 };
 const TEST_ENDPOINT = `${TEST_HOST}/diff/endpoint`;
 const COMMIT_URL = '[BASE URL]/OLD';
 const UPDATED_COMMIT_URL = '[BASE URL]/NEW';
+
+function getCollapsedFilesWarning(wrapper) {
+  return wrapper.find(CollapsedFilesWarning);
+}
 
 describe('diffs/components/app', () => {
   const oldMrTabs = window.mrTabs;
@@ -108,7 +113,6 @@ describe('diffs/components/app', () => {
       };
       jest.spyOn(window, 'requestIdleCallback').mockImplementation(fn => fn());
       createComponent();
-      jest.spyOn(wrapper.vm, 'fetchDiffFiles').mockImplementation(fetchResolver);
       jest.spyOn(wrapper.vm, 'fetchDiffFilesMeta').mockImplementation(fetchResolver);
       jest.spyOn(wrapper.vm, 'fetchDiffFilesBatch').mockImplementation(fetchResolver);
       jest.spyOn(wrapper.vm, 'fetchCoverageFiles').mockImplementation(fetchResolver);
@@ -139,37 +143,21 @@ describe('diffs/components/app', () => {
         parallel_diff_lines: ['line'],
       };
 
-      function expectFetchToOccur({
-        vueInstance,
-        done = () => {},
-        batch = false,
-        existingFiles = 1,
-      } = {}) {
+      function expectFetchToOccur({ vueInstance, done = () => {}, existingFiles = 1 } = {}) {
         vueInstance.$nextTick(() => {
           expect(vueInstance.diffFiles.length).toEqual(existingFiles);
-
-          if (!batch) {
-            expect(vueInstance.fetchDiffFiles).toHaveBeenCalled();
-            expect(vueInstance.fetchDiffFilesBatch).not.toHaveBeenCalled();
-          } else {
-            expect(vueInstance.fetchDiffFiles).not.toHaveBeenCalled();
-            expect(vueInstance.fetchDiffFilesBatch).toHaveBeenCalled();
-          }
+          expect(vueInstance.fetchDiffFilesBatch).toHaveBeenCalled();
 
           done();
         });
       }
-
-      beforeEach(() => {
-        wrapper.vm.glFeatures.singleMrDiffView = true;
-      });
 
       it('fetches diffs if it has none', done => {
         wrapper.vm.isLatestVersion = () => false;
 
         store.state.diffs.diffViewType = getOppositeViewType(wrapper.vm.diffViewType);
 
-        expectFetchToOccur({ vueInstance: wrapper.vm, batch: false, existingFiles: 0, done });
+        expectFetchToOccur({ vueInstance: wrapper.vm, existingFiles: 0, done });
       });
 
       it('fetches diffs if it has both view styles, but no lines in either', done => {
@@ -200,89 +188,46 @@ describe('diffs/components/app', () => {
       });
 
       it('fetches batch diffs if it has none', done => {
-        wrapper.vm.glFeatures.diffsBatchLoad = true;
-
         store.state.diffs.diffViewType = getOppositeViewType(wrapper.vm.diffViewType);
 
-        expectFetchToOccur({ vueInstance: wrapper.vm, batch: true, existingFiles: 0, done });
+        expectFetchToOccur({ vueInstance: wrapper.vm, existingFiles: 0, done });
       });
 
       it('fetches batch diffs if it has both view styles, but no lines in either', done => {
-        wrapper.vm.glFeatures.diffsBatchLoad = true;
-
         store.state.diffs.diffFiles.push(noLinesDiff);
         store.state.diffs.diffViewType = getOppositeViewType(wrapper.vm.diffViewType);
 
-        expectFetchToOccur({ vueInstance: wrapper.vm, batch: true, done });
+        expectFetchToOccur({ vueInstance: wrapper.vm, done });
       });
 
       it('fetches batch diffs if it only has inline view style', done => {
-        wrapper.vm.glFeatures.diffsBatchLoad = true;
-
         store.state.diffs.diffFiles.push(inlineLinesDiff);
         store.state.diffs.diffViewType = getOppositeViewType(wrapper.vm.diffViewType);
 
-        expectFetchToOccur({ vueInstance: wrapper.vm, batch: true, done });
+        expectFetchToOccur({ vueInstance: wrapper.vm, done });
       });
 
       it('fetches batch diffs if it only has parallel view style', done => {
-        wrapper.vm.glFeatures.diffsBatchLoad = true;
-
         store.state.diffs.diffFiles.push(parallelLinesDiff);
         store.state.diffs.diffViewType = getOppositeViewType(wrapper.vm.diffViewType);
 
-        expectFetchToOccur({ vueInstance: wrapper.vm, batch: true, done });
-      });
-
-      it('does not fetch diffs if it has already fetched both styles of diff', () => {
-        wrapper.vm.glFeatures.diffsBatchLoad = false;
-
-        store.state.diffs.diffFiles.push(fullDiff);
-        store.state.diffs.diffViewType = getOppositeViewType(wrapper.vm.diffViewType);
-
-        expect(wrapper.vm.diffFiles.length).toEqual(1);
-        expect(wrapper.vm.fetchDiffFiles).not.toHaveBeenCalled();
-        expect(wrapper.vm.fetchDiffFilesBatch).not.toHaveBeenCalled();
+        expectFetchToOccur({ vueInstance: wrapper.vm, done });
       });
 
       it('does not fetch batch diffs if it has already fetched both styles of diff', () => {
-        wrapper.vm.glFeatures.diffsBatchLoad = true;
-
         store.state.diffs.diffFiles.push(fullDiff);
         store.state.diffs.diffViewType = getOppositeViewType(wrapper.vm.diffViewType);
 
         expect(wrapper.vm.diffFiles.length).toEqual(1);
-        expect(wrapper.vm.fetchDiffFiles).not.toHaveBeenCalled();
         expect(wrapper.vm.fetchDiffFilesBatch).not.toHaveBeenCalled();
-      });
-    });
-
-    it('calls fetchDiffFiles if diffsBatchLoad is not enabled', done => {
-      expect(wrapper.vm.diffFilesLength).toEqual(0);
-      wrapper.vm.glFeatures.diffsBatchLoad = false;
-      wrapper.vm.fetchData(false);
-
-      expect(wrapper.vm.fetchDiffFiles).toHaveBeenCalled();
-      setImmediate(() => {
-        expect(wrapper.vm.startRenderDiffsQueue).toHaveBeenCalled();
-        expect(wrapper.vm.fetchDiffFilesMeta).not.toHaveBeenCalled();
-        expect(wrapper.vm.fetchDiffFilesBatch).not.toHaveBeenCalled();
-        expect(wrapper.vm.fetchCoverageFiles).toHaveBeenCalled();
-        expect(wrapper.vm.unwatchDiscussions).toHaveBeenCalled();
-        expect(wrapper.vm.diffFilesLength).toEqual(100);
-        expect(wrapper.vm.unwatchRetrievingBatches).toHaveBeenCalled();
-
-        done();
       });
     });
 
     it('calls batch methods if diffsBatchLoad is enabled, and not latest version', done => {
       expect(wrapper.vm.diffFilesLength).toEqual(0);
-      wrapper.vm.glFeatures.diffsBatchLoad = true;
       wrapper.vm.isLatestVersion = () => false;
       wrapper.vm.fetchData(false);
 
-      expect(wrapper.vm.fetchDiffFiles).not.toHaveBeenCalled();
       setImmediate(() => {
         expect(wrapper.vm.startRenderDiffsQueue).toHaveBeenCalled();
         expect(wrapper.vm.fetchDiffFilesMeta).toHaveBeenCalled();
@@ -297,10 +242,8 @@ describe('diffs/components/app', () => {
 
     it('calls batch methods if diffsBatchLoad is enabled, and latest version', done => {
       expect(wrapper.vm.diffFilesLength).toEqual(0);
-      wrapper.vm.glFeatures.diffsBatchLoad = true;
       wrapper.vm.fetchData(false);
 
-      expect(wrapper.vm.fetchDiffFiles).not.toHaveBeenCalled();
       setImmediate(() => {
         expect(wrapper.vm.startRenderDiffsQueue).toHaveBeenCalled();
         expect(wrapper.vm.fetchDiffFilesMeta).toHaveBeenCalled();
@@ -320,7 +263,7 @@ describe('diffs/components/app', () => {
       state.diffs.isParallelView = false;
     });
 
-    expect(wrapper.contains('.container-limited.limit-container-width')).toBe(true);
+    expect(wrapper.find('.container-limited.limit-container-width').exists()).toBe(true);
   });
 
   it('does not add container-limiting classes when showFileTree is false with inline diffs', () => {
@@ -329,7 +272,7 @@ describe('diffs/components/app', () => {
       state.diffs.isParallelView = false;
     });
 
-    expect(wrapper.contains('.container-limited.limit-container-width')).toBe(false);
+    expect(wrapper.find('.container-limited.limit-container-width').exists()).toBe(false);
   });
 
   it('does not add container-limiting classes when isFluidLayout', () => {
@@ -337,7 +280,7 @@ describe('diffs/components/app', () => {
       state.diffs.isParallelView = false;
     });
 
-    expect(wrapper.contains('.container-limited.limit-container-width')).toBe(false);
+    expect(wrapper.find('.container-limited.limit-container-width').exists()).toBe(false);
   });
 
   it('displays loading icon on loading', () => {
@@ -345,7 +288,7 @@ describe('diffs/components/app', () => {
       state.diffs.isLoading = true;
     });
 
-    expect(wrapper.contains(GlLoadingIcon)).toBe(true);
+    expect(wrapper.find(GlLoadingIcon).exists()).toBe(true);
   });
 
   it('displays loading icon on batch loading', () => {
@@ -353,20 +296,20 @@ describe('diffs/components/app', () => {
       state.diffs.isBatchLoading = true;
     });
 
-    expect(wrapper.contains(GlLoadingIcon)).toBe(true);
+    expect(wrapper.find(GlLoadingIcon).exists()).toBe(true);
   });
 
   it('displays diffs container when not loading', () => {
     createComponent();
 
-    expect(wrapper.contains(GlLoadingIcon)).toBe(false);
-    expect(wrapper.contains('#diffs')).toBe(true);
+    expect(wrapper.find(GlLoadingIcon).exists()).toBe(false);
+    expect(wrapper.find('#diffs').exists()).toBe(true);
   });
 
   it('does not show commit info', () => {
     createComponent();
 
-    expect(wrapper.contains('.blob-commit-info')).toBe(false);
+    expect(wrapper.find('.blob-commit-info').exists()).toBe(false);
   });
 
   describe('row highlighting', () => {
@@ -442,7 +385,7 @@ describe('diffs/components/app', () => {
     it('renders empty state when no diff files exist', () => {
       createComponent();
 
-      expect(wrapper.contains(NoChanges)).toBe(true);
+      expect(wrapper.find(NoChanges).exists()).toBe(true);
     });
 
     it('does not render empty state when diff files exist', () => {
@@ -452,7 +395,7 @@ describe('diffs/components/app', () => {
         });
       });
 
-      expect(wrapper.contains(NoChanges)).toBe(false);
+      expect(wrapper.find(NoChanges).exists()).toBe(false);
       expect(wrapper.findAll(DiffFile).length).toBe(1);
     });
 
@@ -462,7 +405,7 @@ describe('diffs/components/app', () => {
         state.diffs.mergeRequestDiff = mergeRequestDiff;
       });
 
-      expect(wrapper.contains(NoChanges)).toBe(false);
+      expect(wrapper.find(NoChanges).exists()).toBe(false);
     });
   });
 
@@ -722,7 +665,7 @@ describe('diffs/components/app', () => {
         state.diffs.mergeRequestDiff = mergeRequestDiff;
       });
 
-      expect(wrapper.contains(CompareVersions)).toBe(true);
+      expect(wrapper.find(CompareVersions).exists()).toBe(true);
       expect(wrapper.find(CompareVersions).props()).toEqual(
         expect.objectContaining({
           mergeRequestDiffs: diffsMockData,
@@ -730,24 +673,51 @@ describe('diffs/components/app', () => {
       );
     });
 
-    it('should render hidden files warning if render overflow warning is present', () => {
-      createComponent({}, ({ state }) => {
-        state.diffs.renderOverflowWarning = true;
-        state.diffs.realSize = '5';
-        state.diffs.plainDiffPath = 'plain diff path';
-        state.diffs.emailPatchPath = 'email patch path';
-        state.diffs.size = 1;
+    describe('warnings', () => {
+      describe('hidden files', () => {
+        it('should render hidden files warning if render overflow warning is present', () => {
+          createComponent({}, ({ state }) => {
+            state.diffs.renderOverflowWarning = true;
+            state.diffs.realSize = '5';
+            state.diffs.plainDiffPath = 'plain diff path';
+            state.diffs.emailPatchPath = 'email patch path';
+            state.diffs.size = 1;
+          });
+
+          expect(wrapper.find(HiddenFilesWarning).exists()).toBe(true);
+          expect(wrapper.find(HiddenFilesWarning).props()).toEqual(
+            expect.objectContaining({
+              total: '5',
+              plainDiffPath: 'plain diff path',
+              emailPatchPath: 'email patch path',
+              visible: 1,
+            }),
+          );
+        });
       });
 
-      expect(wrapper.contains(HiddenFilesWarning)).toBe(true);
-      expect(wrapper.find(HiddenFilesWarning).props()).toEqual(
-        expect.objectContaining({
-          total: '5',
-          plainDiffPath: 'plain diff path',
-          emailPatchPath: 'email patch path',
-          visible: 1,
-        }),
-      );
+      describe('collapsed files', () => {
+        it('should render the collapsed files warning if there are any collapsed files', () => {
+          createComponent({}, ({ state }) => {
+            state.diffs.diffFiles = [{ viewer: { collapsed: true } }];
+          });
+
+          expect(getCollapsedFilesWarning(wrapper).exists()).toBe(true);
+        });
+
+        it('should not render the collapsed files warning if the user has dismissed the alert already', async () => {
+          createComponent({}, ({ state }) => {
+            state.diffs.diffFiles = [{ viewer: { collapsed: true } }];
+          });
+
+          expect(getCollapsedFilesWarning(wrapper).exists()).toBe(true);
+
+          wrapper.vm.collapsedWarningDismissed = true;
+          await wrapper.vm.$nextTick();
+
+          expect(getCollapsedFilesWarning(wrapper).exists()).toBe(false);
+        });
+      });
     });
 
     it('should display commit widget if store has a commit', () => {
@@ -757,7 +727,7 @@ describe('diffs/components/app', () => {
         };
       });
 
-      expect(wrapper.contains(CommitWidget)).toBe(true);
+      expect(wrapper.find(CommitWidget).exists()).toBe(true);
     });
 
     it('should display diff file if there are diff files', () => {
@@ -765,7 +735,7 @@ describe('diffs/components/app', () => {
         state.diffs.diffFiles.push({ sha: '123' });
       });
 
-      expect(wrapper.contains(DiffFile)).toBe(true);
+      expect(wrapper.find(DiffFile).exists()).toBe(true);
     });
 
     it('should render tree list', () => {
@@ -843,13 +813,16 @@ describe('diffs/components/app', () => {
     });
 
     describe('pagination', () => {
+      const fileByFileNav = () => wrapper.find('[data-testid="file-by-file-navigation"]');
+      const paginator = () => fileByFileNav().find(GlPagination);
+
       it('sets previous button as disabled', () => {
         createComponent({ viewDiffsFileByFile: true }, ({ state }) => {
           state.diffs.diffFiles.push({ file_hash: '123' }, { file_hash: '312' });
         });
 
-        expect(wrapper.find('[data-testid="singleFilePrevious"]').props('disabled')).toBe(true);
-        expect(wrapper.find('[data-testid="singleFileNext"]').props('disabled')).toBe(false);
+        expect(paginator().attributes('prevpage')).toBe(undefined);
+        expect(paginator().attributes('nextpage')).toBe('2');
       });
 
       it('sets next button as disabled', () => {
@@ -858,17 +831,26 @@ describe('diffs/components/app', () => {
           state.diffs.currentDiffFileId = '312';
         });
 
-        expect(wrapper.find('[data-testid="singleFilePrevious"]').props('disabled')).toBe(false);
-        expect(wrapper.find('[data-testid="singleFileNext"]').props('disabled')).toBe(true);
+        expect(paginator().attributes('prevpage')).toBe('1');
+        expect(paginator().attributes('nextpage')).toBe(undefined);
+      });
+
+      it("doesn't display when there's fewer than 2 files", () => {
+        createComponent({ viewDiffsFileByFile: true }, ({ state }) => {
+          state.diffs.diffFiles.push({ file_hash: '123' });
+          state.diffs.currentDiffFileId = '123';
+        });
+
+        expect(fileByFileNav().exists()).toBe(false);
       });
 
       it.each`
-        currentDiffFileId | button                  | index
-        ${'123'}          | ${'singleFileNext'}     | ${1}
-        ${'312'}          | ${'singleFilePrevious'} | ${0}
+        currentDiffFileId | targetFile
+        ${'123'}          | ${2}
+        ${'312'}          | ${1}
       `(
-        'it calls navigateToDiffFileIndex with $index when $button is clicked',
-        ({ currentDiffFileId, button, index }) => {
+        'it calls navigateToDiffFileIndex with $index when $link is clicked',
+        async ({ currentDiffFileId, targetFile }) => {
           createComponent({ viewDiffsFileByFile: true }, ({ state }) => {
             state.diffs.diffFiles.push({ file_hash: '123' }, { file_hash: '312' });
             state.diffs.currentDiffFileId = currentDiffFileId;
@@ -876,11 +858,11 @@ describe('diffs/components/app', () => {
 
           jest.spyOn(wrapper.vm, 'navigateToDiffFileIndex');
 
-          wrapper.find(`[data-testid="${button}"]`).vm.$emit('click');
+          paginator().vm.$emit('input', targetFile);
 
-          return wrapper.vm.$nextTick().then(() => {
-            expect(wrapper.vm.navigateToDiffFileIndex).toHaveBeenCalledWith(index);
-          });
+          await wrapper.vm.$nextTick();
+
+          expect(wrapper.vm.navigateToDiffFileIndex).toHaveBeenCalledWith(targetFile - 1);
         },
       );
     });

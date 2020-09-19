@@ -1,10 +1,10 @@
 <script>
-import { GlTooltipDirective } from '@gitlab/ui';
-import Icon from '~/vue_shared/components/icon.vue';
+import { GlButton, GlTooltipDirective, GlIcon } from '@gitlab/ui';
 
 export default {
   components: {
-    Icon,
+    GlButton,
+    GlIcon,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -22,20 +22,26 @@ export default {
       type: String,
       required: true,
     },
+    size: {
+      type: String,
+      required: false,
+      default: 'medium',
+    },
   },
 };
 </script>
 <template>
-  <a
+  <gl-button
     v-gl-tooltip
     :title="display.tooltip"
     :href="link"
+    :size="size"
     target="_blank"
     rel="noopener noreferrer nofollow"
     :class="cssClass"
     data-track-event="open_review_app"
     data-track-label="review_app"
   >
-    {{ display.text }} <icon class="fgray" name="external-link" />
-  </a>
+    {{ display.text }} <gl-icon class="fgray" name="external-link" />
+  </gl-button>
 </template>

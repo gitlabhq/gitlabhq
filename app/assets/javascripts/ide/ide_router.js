@@ -33,7 +33,6 @@ const EmptyRouterComponent = {
   },
 };
 
-// eslint-disable-next-line import/prefer-default-export
 export const createRouter = store => {
   const router = new IdeRouter({
     mode: 'history',

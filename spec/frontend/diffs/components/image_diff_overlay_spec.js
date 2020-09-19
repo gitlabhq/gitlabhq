@@ -1,8 +1,8 @@
 import { shallowMount } from '@vue/test-utils';
+import { GlIcon } from '@gitlab/ui';
 import ImageDiffOverlay from '~/diffs/components/image_diff_overlay.vue';
 import { createStore } from '~/mr_notes/stores';
 import { imageDiffDiscussions } from '../mock_data/diff_discussions';
-import Icon from '~/vue_shared/components/icon.vue';
 
 describe('Diffs image diff overlay component', () => {
   const dimensions = {
@@ -64,7 +64,7 @@ describe('Diffs image diff overlay component', () => {
   it('renders icon when showCommentIcon is true', () => {
     createComponent({ showCommentIcon: true });
 
-    expect(wrapper.find(Icon).exists()).toBe(true);
+    expect(wrapper.find(GlIcon).exists()).toBe(true);
   });
 
   it('sets badge comment positions', () => {

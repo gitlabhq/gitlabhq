@@ -1,4 +1,5 @@
 <script>
+import { GlButton } from '@gitlab/ui';
 import eventHub from '../../event_hub';
 import PipelinesActionsComponent from './pipelines_actions.vue';
 import PipelinesArtifactsComponent from './pipelines_artifacts.vue';
@@ -8,8 +9,6 @@ import PipelineUrl from './pipeline_url.vue';
 import PipelineTriggerer from './pipeline_triggerer.vue';
 import PipelinesTimeago from './time_ago.vue';
 import CommitComponent from '~/vue_shared/components/commit.vue';
-import LoadingButton from '~/vue_shared/components/loading_button.vue';
-import Icon from '~/vue_shared/components/icon.vue';
 import { PIPELINES_TABLE } from '../../constants';
 
 /**
@@ -27,8 +26,7 @@ export default {
     PipelineTriggerer,
     CiBadge,
     PipelinesTimeago,
-    LoadingButton,
-    Icon,
+    GlButton,
   },
   props: {
     pipeline: {
@@ -274,6 +272,7 @@ export default {
         <ci-badge
           :status="pipelineStatus"
           :show-text="!isChildView"
+          :icon-classes="'gl-vertical-align-middle!'"
           data-qa-selector="pipeline_commit_status"
         />
       </div>
@@ -337,28 +336,30 @@ export default {
           class="d-md-block"
         />
 
-        <loading-button
+        <gl-button
           v-if="pipeline.flags.retryable"
           :loading="isRetrying"
           :disabled="isRetrying"
-          container-class="js-pipelines-retry-button btn btn-default btn-retry"
+          class="js-pipelines-retry-button btn-retry"
           data-qa-selector="pipeline_retry_button"
+          icon="repeat"
+          variant="default"
+          category="secondary"
           @click="handleRetryClick"
-        >
-          <icon name="repeat" />
-        </loading-button>
+        />
 
-        <loading-button
+        <gl-button
           v-if="pipeline.flags.cancelable"
           :loading="isCancelling"
           :disabled="isCancelling"
           data-toggle="modal"
           data-target="#confirmation-modal"
-          container-class="js-pipelines-cancel-button btn btn-remove"
+          icon="close"
+          variant="danger"
+          category="primary"
+          class="js-pipelines-cancel-button"
           @click="handleCancelClick"
-        >
-          <icon name="close" />
-        </loading-button>
+        />
       </div>
     </div>
   </div>

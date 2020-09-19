@@ -7,10 +7,10 @@ module RuboCop
     #
     # @example
     #   # bad
-    #   root to: redirect('/-/instance/statistics/dev_ops_score')
+    #   root to: redirect('/-/autocomplete/users')
     #
     #   # good
-    #   root to: redirect('-/instance/statistics/dev_ops_score')
+    #   root to: redirect('-/autocomplete/users')
     #
 
     class AvoidRouteRedirectLeadingSlash < RuboCop::Cop::Cop

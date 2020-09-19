@@ -1,11 +1,10 @@
 <script>
 import { mapActions, mapState } from 'vuex';
-import { GlFormInput } from '@gitlab/ui';
-import Icon from '~/vue_shared/components/icon.vue';
+import { GlFormInput, GlIcon } from '@gitlab/ui';
 import LoadingButton from '~/vue_shared/components/loading_button.vue';
 
 export default {
-  components: { GlFormInput, Icon, LoadingButton },
+  components: { GlFormInput, GlIcon, LoadingButton },
   computed: {
     ...mapState(['apiHost', 'connectError', 'connectSuccessful', 'isLoadingProjects', 'token']),
     tokenInputState() {
@@ -64,7 +63,7 @@ export default {
             :loading="isLoadingProjects"
             @click="fetchProjects"
           />
-          <icon
+          <gl-icon
             v-show="connectSuccessful"
             class="js-error-tracking-connect-success gl-ml-2 text-success align-middle"
             :aria-label="__('Projects Successfully Retrieved')"

@@ -66,13 +66,13 @@ export default {
   [types.SET_DETAIL_JOB](state, job) {
     state.detailJob = { ...job };
   },
-  [types.REQUEST_JOB_TRACE](state) {
+  [types.REQUEST_JOB_LOGS](state) {
     state.detailJob.isLoading = true;
   },
-  [types.RECEIVE_JOB_TRACE_ERROR](state) {
+  [types.RECEIVE_JOB_LOGS_ERROR](state) {
     state.detailJob.isLoading = false;
   },
-  [types.RECEIVE_JOB_TRACE_SUCCESS](state, data) {
+  [types.RECEIVE_JOB_LOGS_SUCCESS](state, data) {
     state.detailJob.isLoading = false;
     state.detailJob.output = data.html;
   },

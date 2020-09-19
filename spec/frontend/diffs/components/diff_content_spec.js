@@ -177,23 +177,19 @@ describe('DiffContent', () => {
       });
 
       wrapper.find(NoteForm).vm.$emit('handleFormUpdate', noteStub);
-      expect(saveDiffDiscussionMock).toHaveBeenCalledWith(
-        expect.any(Object),
-        {
-          note: noteStub,
-          formData: {
-            noteableData: expect.any(Object),
-            diffFile: currentDiffFile,
-            positionType: IMAGE_DIFF_POSITION_TYPE,
-            x: undefined,
-            y: undefined,
-            width: undefined,
-            height: undefined,
-            noteableType: undefined,
-          },
+      expect(saveDiffDiscussionMock).toHaveBeenCalledWith(expect.any(Object), {
+        note: noteStub,
+        formData: {
+          noteableData: expect.any(Object),
+          diffFile: currentDiffFile,
+          positionType: IMAGE_DIFF_POSITION_TYPE,
+          x: undefined,
+          y: undefined,
+          width: undefined,
+          height: undefined,
+          noteableType: undefined,
         },
-        undefined,
-      );
+      });
     });
   });
 });

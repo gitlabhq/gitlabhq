@@ -1,8 +1,6 @@
-SET search_path=public;
+CREATE EXTENSION IF NOT EXISTS pg_trgm;
 
-CREATE EXTENSION IF NOT EXISTS pg_trgm WITH SCHEMA public;
-
-CREATE TABLE public.abuse_reports (
+CREATE TABLE abuse_reports (
     id integer NOT NULL,
     reporter_id integer,
     user_id integer,
@@ -13,20 +11,18 @@ CREATE TABLE public.abuse_reports (
     cached_markdown_version integer
 );
 
-CREATE SEQUENCE public.abuse_reports_id_seq
+CREATE SEQUENCE abuse_reports_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
     NO MAXVALUE
     CACHE 1;
 
-ALTER TABLE ONLY public.abuse_reports ALTER COLUMN id SET DEFAULT nextval('public.abuse_reports_id_seq'::regclass);
+ALTER TABLE ONLY abuse_reports ALTER COLUMN id SET DEFAULT nextval('abuse_reports_id_seq'::regclass);
 
-ALTER TABLE ONLY public.abuse_reports
+ALTER TABLE ONLY abuse_reports
     ADD CONSTRAINT abuse_reports_pkey PRIMARY KEY (id);
 
-CREATE INDEX index_abuse_reports_on_user_id ON public.abuse_reports USING btree (user_id);
-
--- schema_migrations.version information is no longer stored in this file,
+CREATE INDEX index_abuse_reports_on_user_id ON abuse_reports USING btree (user_id);-- schema_migrations.version information is no longer stored in this file,
 -- but instead tracked in the db/schema_migrations directory
 -- see https://gitlab.com/gitlab-org/gitlab/-/issues/218590 for details

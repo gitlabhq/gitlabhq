@@ -69,8 +69,8 @@ describe('FrequentItemsSearchInputComponent', () => {
   describe('template', () => {
     it('should render component element', () => {
       expect(wrapper.classes()).toContain('search-input-container');
-      expect(wrapper.contains('input.form-control')).toBe(true);
-      expect(wrapper.contains('.search-icon')).toBe(true);
+      expect(wrapper.find('input.form-control').exists()).toBe(true);
+      expect(wrapper.find('.search-icon').exists()).toBe(true);
       expect(wrapper.find('input.form-control').attributes('placeholder')).toBe(
         'Search your projects',
       );

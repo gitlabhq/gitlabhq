@@ -8,6 +8,8 @@ class ApplicationSetting < ApplicationRecord
   include IgnorableColumns
 
   ignore_column :namespace_storage_size_limit, remove_with: '13.5', remove_after: '2020-09-22'
+  ignore_column :instance_statistics_visibility_private, remove_with: '13.6', remove_after: '2020-10-22'
+  ignore_column :snowplow_iglu_registry_url, remove_with: '13.6', remove_after: '2020-11-22'
 
   GRAFANA_URL_ERROR_MESSAGE = 'Please check your Grafana URL setting in ' \
     'Admin Area > Settings > Metrics and profiling > Metrics - Grafana'
@@ -20,7 +22,9 @@ class ApplicationSetting < ApplicationRecord
   belongs_to :push_rule
   alias_attribute :self_monitoring_project_id, :instance_administration_project_id
 
-  belongs_to :instance_administrators_group, class_name: "Group"
+  belongs_to :instance_group, class_name: "Group", foreign_key: 'instance_administrators_group_id'
+  alias_attribute :instance_group_id, :instance_administrators_group_id
+  alias_attribute :instance_administrators_group, :instance_group
 
   def self.repository_storages_weighted_attributes
     @repository_storages_weighted_atributes ||= Gitlab.config.repositories.storages.keys.map { |k| "repository_storages_weighted_#{k}".to_sym }.freeze
@@ -128,14 +132,14 @@ class ApplicationSetting < ApplicationRecord
             presence: true,
             if: :sourcegraph_enabled
 
+  validates :gitpod_url,
+            presence: true,
+            addressable_url: { enforce_sanitization: true },
+            if: :gitpod_enabled
+
   validates :snowplow_collector_hostname,
             presence: true,
             hostname: true,
-            if: :snowplow_enabled
-
-  validates :snowplow_iglu_registry_url,
-            addressable_url: true,
-            allow_blank: true,
             if: :snowplow_enabled
 
   validates :max_attachment_size,
@@ -280,6 +284,9 @@ class ApplicationSetting < ApplicationRecord
   validates :email_restrictions, untrusted_regexp: true
 
   validates :hashed_storage_enabled, inclusion: { in: [true], message: _("Hashed storage can't be disabled anymore for new projects") }
+
+  validates :container_registry_delete_tags_service_timeout,
+            numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
   SUPPORTED_KEY_TYPES.each do |type|
     validates :"#{type}_key_restriction", presence: true, key_restriction: { type: type }

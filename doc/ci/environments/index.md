@@ -59,7 +59,7 @@ The rest of this section illustrates how to configure environments and deploymen
 an example scenario. It assumes you have already:
 
 - Created a [project](../../gitlab-basics/create-project.md) in GitLab.
-- Set up [a Runner](../runners/README.md).
+- Set up [a runner](../runners/README.md).
 
 In the scenario:
 
@@ -138,9 +138,9 @@ In summary, with the above `.gitlab-ci.yml` we have achieved the following:
   job will deploy our code to a staging server while the deployment
   will be recorded in an environment named `staging`.
 
-#### Environment variables and Runner
+#### Environment variables and runners
 
-Starting with GitLab 8.15, the environment name is exposed to the Runner in
+Starting with GitLab 8.15, the environment name is exposed to the runner in
 two forms:
 
 - `$CI_ENVIRONMENT_NAME`. The name given in `.gitlab-ci.yml` (with any variables
@@ -154,7 +154,7 @@ If you change the name of an existing environment, the:
 - `$CI_ENVIRONMENT_SLUG` variable will remain unchanged to prevent unintended side
   effects.
 
-Starting with GitLab 9.3, the environment URL is exposed to the Runner via
+Starting with GitLab 9.3, the environment URL is exposed to the runner via
 `$CI_ENVIRONMENT_URL`. The URL is expanded from either:
 
 - `.gitlab-ci.yml`.
@@ -317,14 +317,14 @@ including:
 However, you cannot use variables defined:
 
 - Under `script`.
-- On the Runner's side.
+- On the runner's side.
 
 There are also other variables that are unsupported in the context of `environment:name`.
 For more information, see [Where variables can be used](../variables/where_variables_can_be_used.md).
 
 #### Example configuration
 
-GitLab Runner exposes various [environment variables](../variables/README.md) when a job runs, so
+Runners expose various [environment variables](../variables/README.md) when a job runs, so
 you can use them as environment names.
 
 In the following example, the job will deploy to all branches except `master`:
@@ -525,7 +525,7 @@ The complete example provides the following workflow to developers:
 - Push the branch to GitLab.
 - Create a merge request.
 
-Behind the scenes, GitLab Runner will:
+Behind the scenes, the runner will:
 
 - Pick up the changes and start running the jobs.
 - Run the jobs sequentially as defined in `stages`:
@@ -700,7 +700,7 @@ stop_review:
 ```
 
 Setting the [`GIT_STRATEGY`](../yaml/README.md#git-strategy) to `none` is necessary in the
-`stop_review` job so that the [GitLab Runner](https://docs.gitlab.com/runner/) won't
+`stop_review` job so that the [runner](https://docs.gitlab.com/runner/) won't
 try to check out the code after the branch is deleted.
 
 When you have an environment that has a stop action defined (typically when
@@ -863,6 +863,38 @@ In this case, if you visit the **Environments** page and the branches
 exist, you should see something like:
 
 ![Environment groups](../img/environments_dynamic_groups.png)
+
+### Environment incident management
+
+You have successfuly setup a Continous Delivery/Deployment workflow in your project.
+Production environments can go down unexpectedly, including for reasons outside
+of your own control. For example, issues with external dependencies, infrastructure,
+or human error can cause major issues with an environment. This could include:
+
+- A dependent cloud service goes down.
+- A 3rd party library is updated and it's not compatible with your application.
+- Someone performs a DDoS attack to a vulnerable endpoint in your server.
+- An operator misconfigures infrastructure.
+- A bug is introduced into the production application code.
+
+You can use [incident management](../../operations/incident_management/index.md)
+to get alerts when there are critical issues that need immediate attention.
+
+#### View the latest alerts for environments **(ULTIMATE)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214634) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.4.
+
+If you [set up alerts for Prometheus metrics](../../operations/metrics/alerts.md),
+alerts for environments are shown on the environments page. The alert with the highest
+severity is shown, so you can identify which environments need immediate attention.
+
+![Environment alert](img/alert_for_environment.png)
+
+When the issue that triggered the alert is resolved, it is removed and is no
+longer visible on the environment page.
+
+If the alert requires a [rollback](#retrying-and-rolling-back), you can select the
+deployment tab from the environment page and select which deployment to roll back to.
 
 ### Monitoring environments
 

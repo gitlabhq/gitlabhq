@@ -48,21 +48,21 @@ To make full use of Auto DevOps with Kubernetes, you need:
 
 - **GitLab Runner** (for all stages)
 
-  Your Runner must be configured to run Docker, usually with either the
+  Your runner must be configured to run Docker, usually with either the
   [Docker](https://docs.gitlab.com/runner/executors/docker.html)
   or [Kubernetes](https://docs.gitlab.com/runner/executors/kubernetes.html) executors, with
   [privileged mode enabled](https://docs.gitlab.com/runner/executors/docker.html#use-docker-in-docker-with-privileged-mode).
-  The Runners don't need to be installed in the Kubernetes cluster, but the
+  The runners don't need to be installed in the Kubernetes cluster, but the
   Kubernetes executor is easy to use and automatically autoscales.
-  You can configure Docker-based Runners to autoscale as well, using
+  You can configure Docker-based runners to autoscale as well, using
   [Docker Machine](https://docs.gitlab.com/runner/install/autoscaling.html).
 
   If you've configured GitLab's Kubernetes integration in the first step, you
   can deploy it to your cluster by installing the
   [GitLab-managed app for GitLab Runner](../../user/clusters/applications.md#gitlab-runner).
 
-  Runners should be registered as [shared Runners](../../ci/runners/README.md#shared-runners)
-  for the entire GitLab instance, or [specific Runners](../../ci/runners/README.md#specific-runners)
+  Runners should be registered as [shared runners](../../ci/runners/README.md#shared-runners)
+  for the entire GitLab instance, or [specific runners](../../ci/runners/README.md#specific-runners)
   that are assigned to specific projects (the default if you've installed the
   GitLab Runner managed application).
 

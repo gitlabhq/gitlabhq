@@ -17,6 +17,10 @@ module API
         # This is a separate method so that EE can redefine it.
         %w(issues merge_requests milestones notes wiki_blobs commits blobs users)
       end
+
+      def self.search_states
+        %w(all opened closed merged)
+      end
     end
   end
 end

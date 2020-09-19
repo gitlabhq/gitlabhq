@@ -16,14 +16,6 @@ module Mutations
                required: true,
                description: 'Title of the snippet'
 
-      argument :file_name, GraphQL::STRING_TYPE,
-               required: false,
-               description: 'File name of the snippet'
-
-      argument :content, GraphQL::STRING_TYPE,
-               required: false,
-               description: 'Content of the snippet'
-
       argument :description, GraphQL::STRING_TYPE,
                required: false,
                description: 'Description of the snippet'
@@ -58,6 +50,11 @@ module Mutations
                                                          create_params(args)).execute
 
         snippet = service_response.payload[:snippet]
+
+        # Only when the user is not an api user and the operation was successful
+        if !api_user? && service_response.success?
+          ::Gitlab::UsageDataCounters::EditorUniqueCounter.track_snippet_editor_edit_action(author: current_user)
+        end
 
         {
           snippet: service_response.success? ? snippet : nil,

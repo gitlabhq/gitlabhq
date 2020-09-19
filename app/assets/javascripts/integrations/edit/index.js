@@ -19,27 +19,36 @@ function parseDatasetToProps(data) {
     projectKey,
     upgradePlanPath,
     editProjectPath,
+    learnMorePath,
     triggerEvents,
     fields,
     inheritFromId,
+    integrationLevel,
+    cancelPath,
+    testPath,
     ...booleanAttributes
   } = data;
   const {
     showActive,
     activated,
+    editable,
+    canTest,
     commitEvents,
     mergeRequestEvents,
     enableComments,
     showJiraIssuesIntegration,
     enableJiraIssues,
+    gitlabIssuesEnabled,
   } = parseBooleanInData(booleanAttributes);
 
   return {
-    activeToggleProps: {
-      initialActivated: activated,
-    },
+    initialActivated: activated,
     showActive,
     type,
+    cancelPath,
+    editable,
+    canTest,
+    testPath,
     triggerFieldsProps: {
       initialTriggerCommit: commitEvents,
       initialTriggerMergeRequest: mergeRequestEvents,
@@ -50,17 +59,20 @@ function parseDatasetToProps(data) {
       showJiraIssuesIntegration,
       initialEnableJiraIssues: enableJiraIssues,
       initialProjectKey: projectKey,
+      gitlabIssuesEnabled,
       upgradePlanPath,
       editProjectPath,
     },
+    learnMorePath,
     triggerEvents: JSON.parse(triggerEvents),
     fields: JSON.parse(fields),
     inheritFromId: parseInt(inheritFromId, 10),
+    integrationLevel,
     id: parseInt(id, 10),
   };
 }
 
-export default (el, adminEl) => {
+export default (el, defaultEl) => {
   if (!el) {
     return null;
   }
@@ -68,12 +80,12 @@ export default (el, adminEl) => {
   const props = parseDatasetToProps(el.dataset);
 
   const initialState = {
-    adminState: null,
+    defaultState: null,
     customState: props,
   };
 
-  if (adminEl) {
-    initialState.adminState = Object.freeze(parseDatasetToProps(adminEl.dataset));
+  if (defaultEl) {
+    initialState.defaultState = Object.freeze(parseDatasetToProps(defaultEl.dataset));
   }
 
   return new Vue({

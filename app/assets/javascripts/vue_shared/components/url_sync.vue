@@ -1,6 +1,6 @@
 <script>
 import { historyPushState } from '~/lib/utils/common_utils';
-import { setUrlParams } from '~/lib/utils/url_utility';
+import { mergeUrlParams } from '~/lib/utils/url_utility';
 
 export default {
   props: {
@@ -14,7 +14,7 @@ export default {
       immediate: true,
       deep: true,
       handler(newQuery) {
-        historyPushState(setUrlParams(newQuery, window.location.href, true));
+        historyPushState(mergeUrlParams(newQuery, window.location.href, { spreadArrays: true }));
       },
     },
   },

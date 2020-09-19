@@ -2,33 +2,30 @@
 - user = abuse_report.user
 %tr
   %th.d-block.d-sm-none.d-md-none
-    %strong User
+    %strong= _('User')
   %td
     - if user
       = link_to user.name, user
       .light.small
-        Joined #{time_ago_with_tooltip(user.created_at)}
+        = _('Joined %{time_ago}').html_safe % { time_ago: time_ago_with_tooltip(user.created_at) }
     - else
-      (removed)
+      = _('(removed)')
   %td
-    %strong.subheading.d-block.d-sm-none.d-md-none Reported by
-    - if reporter
-      = link_to reporter.name, reporter
-    - else
-      (removed)
+    %strong.subheading.d-block.d-sm-none.d-md-none
+      = _('Reported by %{reporter}') % { reporter: reporter ? link_to(reporter.name, reporter) : _('(removed)') }
     .light.small
       = time_ago_with_tooltip(abuse_report.created_at)
   %td
-    %strong.subheading.d-block.d-sm-none.d-md-none Message
+    %strong.subheading.d-block.d-sm-none.d-md-none= _('Message')
     .message
       = markdown_field(abuse_report, :message)
   %td
     - if user
-      = link_to 'Remove user & report', admin_abuse_report_path(abuse_report, remove_user: true),
-        data: { confirm: "USER #{user.name} WILL BE REMOVED! Are you sure?" }, remote: true, method: :delete, class: "btn btn-sm btn-block btn-remove js-remove-tr"
+      = link_to _('Remove user & report'), admin_abuse_report_path(abuse_report, remove_user: true),
+        data: { confirm: _("USER %{user} WILL BE REMOVED! Are you sure?") % { user: user.name } }, remote: true, method: :delete, class: "btn btn-sm btn-block btn-remove js-remove-tr"
     - if user && !user.blocked?
-      = link_to 'Block user', block_admin_user_path(user), data: {confirm: 'USER WILL BE BLOCKED! Are you sure?'}, method: :put, class: "btn btn-sm btn-block"
+      = link_to _('Block user'), block_admin_user_path(user), data: {confirm: _('USER WILL BE BLOCKED! Are you sure?')}, method: :put, class: "btn btn-sm btn-block"
     - else
       .btn.btn-sm.disabled.btn-block
-        Already blocked
-    = link_to 'Remove report', [:admin, abuse_report], remote: true, method: :delete, class: "btn btn-sm btn-block btn-close js-remove-tr"
+        = _('Already blocked')
+    = link_to _('Remove report'), [:admin, abuse_report], remote: true, method: :delete, class: "btn btn-sm btn-block btn-close js-remove-tr"

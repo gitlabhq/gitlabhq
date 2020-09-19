@@ -1,7 +1,0 @@
----
-name: ci_plan_needs_size_limit
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/37568
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/238173
-group: group::ci
-type: development
-default_enabled: true

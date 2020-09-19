@@ -12,6 +12,11 @@ RSpec.describe Gitlab::Metrics::Instrumentation do
         text
       end
 
+      def self.wat(text = 'wat')
+        text
+      end
+      private_class_method :wat
+
       class << self
         def buzz(text = 'buzz')
           text
@@ -242,6 +247,7 @@ RSpec.describe Gitlab::Metrics::Instrumentation do
 
       expect(described_class.instrumented?(@dummy.singleton_class)).to eq(true)
       expect(@dummy.method(:foo).source_location.first).to match(/instrumentation\.rb/)
+      expect(@dummy.public_methods).to include(:foo)
     end
 
     it 'instruments all protected class methods' do
@@ -249,13 +255,16 @@ RSpec.describe Gitlab::Metrics::Instrumentation do
 
       expect(described_class.instrumented?(@dummy.singleton_class)).to eq(true)
       expect(@dummy.method(:flaky).source_location.first).to match(/instrumentation\.rb/)
+      expect(@dummy.protected_methods).to include(:flaky)
     end
 
-    it 'instruments all private instance methods' do
+    it 'instruments all private class methods' do
       described_class.instrument_methods(@dummy)
 
       expect(described_class.instrumented?(@dummy.singleton_class)).to eq(true)
       expect(@dummy.method(:buzz).source_location.first).to match(/instrumentation\.rb/)
+      expect(@dummy.private_methods).to include(:buzz)
+      expect(@dummy.private_methods).to include(:wat)
     end
 
     it 'only instruments methods directly defined in the module' do
@@ -290,6 +299,7 @@ RSpec.describe Gitlab::Metrics::Instrumentation do
 
       expect(described_class.instrumented?(@dummy)).to eq(true)
       expect(@dummy.new.method(:bar).source_location.first).to match(/instrumentation\.rb/)
+      expect(@dummy.public_instance_methods).to include(:bar)
     end
 
     it 'instruments all protected instance methods' do
@@ -297,6 +307,7 @@ RSpec.describe Gitlab::Metrics::Instrumentation do
 
       expect(described_class.instrumented?(@dummy)).to eq(true)
       expect(@dummy.new.method(:chaf).source_location.first).to match(/instrumentation\.rb/)
+      expect(@dummy.protected_instance_methods).to include(:chaf)
     end
 
     it 'instruments all private instance methods' do
@@ -304,6 +315,7 @@ RSpec.describe Gitlab::Metrics::Instrumentation do
 
       expect(described_class.instrumented?(@dummy)).to eq(true)
       expect(@dummy.new.method(:wadus).source_location.first).to match(/instrumentation\.rb/)
+      expect(@dummy.private_instance_methods).to include(:wadus)
     end
 
     it 'only instruments methods directly defined in the module' do

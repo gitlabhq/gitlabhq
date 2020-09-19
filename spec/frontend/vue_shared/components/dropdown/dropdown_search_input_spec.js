@@ -32,12 +32,6 @@ describe('DropdownSearchInputComponent', () => {
       expect(wrapper.find('.fa-search.dropdown-input-search').exists()).toBe(true);
     });
 
-    it('renders clear search icon element', () => {
-      expect(wrapper.find('.fa-times.dropdown-input-clear.js-dropdown-input-clear').exists()).toBe(
-        true,
-      );
-    });
-
     it('displays custom placeholder text', () => {
       expect(findInputEl().attributes('placeholder')).toBe(defaultProps.placeholderText);
     });

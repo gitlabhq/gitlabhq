@@ -1,11 +1,15 @@
+import Vuex from 'vuex';
 import { GlFormInput } from '@gitlab/ui';
-import { shallowMount, mount } from '@vue/test-utils';
+import { shallowMount, mount, createLocalVue } from '@vue/test-utils';
 import TagFieldExisting from '~/releases/components/tag_field_existing.vue';
 import createStore from '~/releases/stores';
 import createDetailModule from '~/releases/stores/modules/detail';
 
 const TEST_TAG_NAME = 'test-tag-name';
 const TEST_DOCS_PATH = '/help/test/docs/path';
+
+const localVue = createLocalVue();
+localVue.use(Vuex);
 
 describe('releases/components/tag_field_existing', () => {
   let store;
@@ -14,6 +18,7 @@ describe('releases/components/tag_field_existing', () => {
   const createComponent = (mountFn = shallowMount) => {
     wrapper = mountFn(TagFieldExisting, {
       store,
+      localVue,
     });
   };
 

@@ -77,15 +77,8 @@ module Ci
         private
 
         def status_for_array(statuses, dag:)
-          # TODO: This is hack to support
-          # the same exact behaviour for Atomic and Legacy processing
-          # that DAG is blocked from executing if dependent is not "complete"
-          if dag && statuses.any? { |status| Ci::HasStatus::COMPLETED_STATUSES.exclude?(status[:status]) }
-            return 'pending'
-          end
-
           result = Gitlab::Ci::Status::Composite
-            .new(statuses)
+            .new(statuses, dag: dag)
             .status
           result || 'success'
         end

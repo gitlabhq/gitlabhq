@@ -37,7 +37,12 @@ Import your projects from Bitbucket Server to GitLab with minimal effort.
    empty changes.
 1. Attachments in Markdown are currently not imported.
 1. Task lists are not imported.
-1. Emoji reactions are not imported
+1. Emoji reactions are not imported.
+1. [LFS objects](../../../topics/git/lfs/index.md) are not imported.
+
+   NOTE: **Note:**
+   To import a repository including LFS objects from a Bitbucket server repository, use the [Repo by URL](../import/repo_by_url.md) importer.
+
 1. Project filtering does not support fuzzy search (only `starts with` or `full
    match strings` are currently supported)
 
@@ -62,6 +67,25 @@ The importer will create any new namespaces (groups) if they don't exist or in
 the case the namespace is taken, the repository will be imported under the user's
 namespace that started the import process.
 
+#### User assignment by username
+
+Alternatively, user assignment by username is available behind a `bitbucket_server_user_mapping_by_username` feature flag.
+The importer will try to find a user in the GitLab user database using author's `username` or `slug` or `displayName`.
+Falls back to author's `email` if user is not found by username.
+Similarly to user assignment by email, if no such user is available, the project creator is set as the author.
+
+To enable or disable user assignment by username:
+
+Start a [Rails console](../../../administration/troubleshooting/debug.md#starting-a-rails-console-session).
+
+```ruby
+# Enable
+Feature.enable(:bitbucket_server_user_mapping_by_username)
+
+# Disable
+Feature.disable(:bitbucket_server_user_mapping_by_username)
+```
+
 ## Importing your Bitbucket repositories
 
 1. Sign in to GitLab and go to your dashboard.
@@ -82,5 +106,10 @@ namespace that started the import process.
    ![Import projects](img/bitbucket_server_import_select_project_v12_3.png)
 
 ## Troubleshooting
+
+If the GUI-based import tool does not work, you can try to:
+
+- Use the [GitLab Import API](../../../api/import.md#import-repository-from-bitbucket-server) Bitbucket server endpoint.
+- Set up [Repository Mirroring](../repository/repository_mirroring.md), which provides verbose error output.
 
 See the [troubleshooting](bitbucket.md#troubleshooting) section for [Bitbucket](bitbucket.md).

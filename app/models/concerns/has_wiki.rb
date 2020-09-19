@@ -25,10 +25,6 @@ module HasWiki
     wiki.repository_exists?
   end
 
-  def after_wiki_activity
-    true
-  end
-
   private
 
   def check_wiki_path_conflict

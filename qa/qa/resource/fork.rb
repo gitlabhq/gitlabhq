@@ -56,6 +56,8 @@ module QA
       def fabricate_via_api!
         populate(:upstream, :user)
 
+        @api_client = Runtime::API::Client.new(:gitlab, is_new_session: false, user: user)
+
         Runtime::Logger.debug("Forking project #{upstream.name} to namespace #{user.username}...")
         super
         wait_until_forked
@@ -73,7 +75,7 @@ module QA
 
       def api_post_body
         {
-          namespace: user.username,
+          namespace_path: user.username,
           name: name,
           path: name
         }

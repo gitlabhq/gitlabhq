@@ -31,7 +31,6 @@
  *
  * @param {Number} boost
  */
-// eslint-disable-next-line import/prefer-default-export
 export const useOverclockTimers = (boost = 50) => {
   if (boost <= 0) {
     throw new Error(`[overclock_timers] boost (${boost}) cannot be <= 0`);

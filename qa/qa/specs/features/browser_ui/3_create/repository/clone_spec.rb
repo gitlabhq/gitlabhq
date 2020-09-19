@@ -26,7 +26,7 @@ module QA
         project.wait_for_push_new_branch
       end
 
-      it 'user performs a deep clone' do
+      it 'user performs a deep clone', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/475' do
         Git::Repository.perform do |repository|
           repository.uri = project.repository_http_location.uri
           repository.use_default_credentials
@@ -37,7 +37,7 @@ module QA
         end
       end
 
-      it 'user performs a shallow clone' do
+      it 'user performs a shallow clone', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/411' do
         Git::Repository.perform do |repository|
           repository.uri = project.repository_http_location.uri
           repository.use_default_credentials

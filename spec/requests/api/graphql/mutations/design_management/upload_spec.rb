@@ -12,11 +12,11 @@ RSpec.describe "uploading designs" do
   let(:files) { [fixture_file_upload("spec/fixtures/dk.png")] }
   let(:variables) { {} }
 
-  let(:mutation) do
+  def mutation
     input = {
       project_path: project.full_path,
       iid: issue.iid,
-      files: files
+      files: files.dup
     }.merge(variables)
     graphql_mutation(:design_management_upload, input)
   end
@@ -30,31 +30,15 @@ RSpec.describe "uploading designs" do
   end
 
   it "returns an error if the user is not allowed to upload designs" do
-    post_graphql_mutation(mutation, current_user: create(:user))
+    post_graphql_mutation_with_uploads(mutation, current_user: create(:user))
 
     expect(graphql_errors).to be_present
   end
 
-  it "succeeds (backward compatibility)" do
-    post_graphql_mutation(mutation, current_user: current_user)
+  it "succeeds, and responds with the created designs" do
+    post_graphql_mutation_with_uploads(mutation, current_user: current_user)
 
     expect(graphql_errors).not_to be_present
-  end
-
-  it 'succeeds' do
-    file_path_in_params = ['designManagementUploadInput', 'files', 0]
-    params = mutation_to_apollo_uploads_param(mutation, files: [file_path_in_params])
-
-    workhorse_post_with_file(api('/', current_user, version: 'graphql'),
-                             params: params,
-                             file_key: '1'
-                            )
-
-    expect(graphql_errors).not_to be_present
-  end
-
-  it "responds with the created designs" do
-    post_graphql_mutation(mutation, current_user: current_user)
 
     expect(mutation_response).to include(
       "designs" => a_collection_containing_exactly(
@@ -65,7 +49,7 @@ RSpec.describe "uploading designs" do
 
   it "can respond with skipped designs" do
     2.times do
-      post_graphql_mutation(mutation, current_user: current_user)
+      post_graphql_mutation_with_uploads(mutation, current_user: current_user)
       files.each(&:rewind)
     end
 
@@ -80,7 +64,7 @@ RSpec.describe "uploading designs" do
     let(:variables) { { iid: "123" } }
 
     it "returns an error" do
-      post_graphql_mutation(mutation, current_user: create(:user))
+      post_graphql_mutation_with_uploads(mutation, current_user: create(:user))
 
       expect(graphql_errors).not_to be_empty
     end
@@ -92,7 +76,7 @@ RSpec.describe "uploading designs" do
         expect(service).to receive(:execute).and_return({ status: :error, message: "Something went wrong" })
       end
 
-      post_graphql_mutation(mutation, current_user: current_user)
+      post_graphql_mutation_with_uploads(mutation, current_user: current_user)
       expect(mutation_response["errors"].first).to eq("Something went wrong")
     end
   end

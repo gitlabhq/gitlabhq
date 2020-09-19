@@ -2,43 +2,39 @@
 
 module QA
   module Runtime
-    module ApplicationSettings
-      extend self
-      extend Support::Api
+    class ApplicationSettings
+      class << self
+        include Support::Api
 
-      APPLICATION_SETTINGS_PATH = '/application/settings'
+        APPLICATION_SETTINGS_PATH = '/application/settings'
 
-      # Set a GitLab application setting
-      # Example:
-      #   #set({ allow_local_requests_from_web_hooks_and_services: true })
-      #   #set(allow_local_requests_from_web_hooks_and_services: true)
-      # https://docs.gitlab.com/ee/api/settings.html
-      def set_application_settings(**application_settings)
-        QA::Runtime::Logger.info("Setting application settings: #{application_settings}")
-        r = put(Runtime::API::Request.new(api_client, APPLICATION_SETTINGS_PATH).url, **application_settings)
-        raise "Couldn't set application settings #{application_settings.inspect}" unless r.code == QA::Support::Api::HTTP_STATUS_OK
-      end
+        # Set a GitLab application setting
+        # Example:
+        #   #set({ allow_local_requests_from_web_hooks_and_services: true })
+        #   #set(allow_local_requests_from_web_hooks_and_services: true)
+        # https://docs.gitlab.com/ee/api/settings.html
+        def set_application_settings(**application_settings)
+          @original_application_settings = get_application_settings
 
-      def get_application_settings
-        parse_body(get(Runtime::API::Request.new(api_client, APPLICATION_SETTINGS_PATH).url))
-      end
+          QA::Runtime::Logger.info("Setting application settings: #{application_settings}")
+          r = put(Runtime::API::Request.new(api_client, APPLICATION_SETTINGS_PATH).url, **application_settings)
+          raise "Couldn't set application settings #{application_settings.inspect}" unless r.code == QA::Support::Api::HTTP_STATUS_OK
+        end
 
-      private
+        def get_application_settings
+          parse_body(get(Runtime::API::Request.new(api_client, APPLICATION_SETTINGS_PATH).url))
+        end
 
-      def api_client
-        @api_client ||= begin
-          return Runtime::API::Client.new(:gitlab, personal_access_token: Runtime::Env.admin_personal_access_token) if Runtime::Env.admin_personal_access_token
+        def restore_application_settings(*application_settings_keys)
+          set_application_settings(@original_application_settings.slice(*application_settings_keys))
+        end
 
-          user = Resource::User.fabricate_via_api! do |user|
-            user.username = Runtime::User.admin_username
-            user.password = Runtime::User.admin_password
-          end
+        private
 
-          unless user.admin?
-            raise "Administrator access is required to set application settings. User '#{user.username}' is not an administrator."
-          end
-
-          Runtime::API::Client.new(:gitlab, user: user)
+        def api_client
+          @api_client ||= Runtime::API::Client.as_admin
+        rescue AuthorizationError => e
+          raise "Administrator access is required to set application settings. #{e.message}"
         end
       end
     end

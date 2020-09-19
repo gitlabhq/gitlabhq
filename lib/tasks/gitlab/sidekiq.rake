@@ -5,7 +5,7 @@ return if Rails.env.production?
 namespace :gitlab do
   namespace :sidekiq do
     def write_yaml(path, banner, object)
-      File.write(path, banner + YAML.dump(object))
+      File.write(path, banner + YAML.dump(object).gsub(/ *$/m, ''))
     end
 
     namespace :all_queues_yml do

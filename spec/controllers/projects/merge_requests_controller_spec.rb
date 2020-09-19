@@ -44,6 +44,16 @@ RSpec.describe Projects::MergeRequestsController do
       get :show, params: params.merge(extra_params)
     end
 
+    context 'with view param' do
+      before do
+        go(view: 'parallel')
+      end
+
+      it 'saves the preferred diff view in a cookie' do
+        expect(response.cookies['diff_view']).to eq('parallel')
+      end
+    end
+
     context 'when merge request is unchecked' do
       before do
         merge_request.mark_as_unchecked!
@@ -77,6 +87,22 @@ RSpec.describe Projects::MergeRequestsController do
         end
       end
 
+      context 'with `default_merge_ref_for_diffs` feature flag enabled' do
+        before do
+          stub_feature_flags(default_merge_ref_for_diffs: true)
+          go
+        end
+
+        it 'adds the diff_head parameter' do
+          expect(assigns["endpoint_metadata_url"]).to eq(
+            diffs_metadata_project_json_merge_request_path(
+              project,
+              merge_request,
+              'json',
+              diff_head: true))
+        end
+      end
+
       context 'when diff is missing' do
         render_views
 
@@ -95,6 +121,16 @@ RSpec.describe Projects::MergeRequestsController do
         go(format: :html)
 
         expect(response).to be_successful
+      end
+
+      it 'logs the view with Gitlab::Search::RecentMergeRequests' do
+        recent_merge_requests_double = instance_double(::Gitlab::Search::RecentMergeRequests, log_view: nil)
+        expect(::Gitlab::Search::RecentMergeRequests).to receive(:new).with(user: user).and_return(recent_merge_requests_double)
+
+        go(format: :html)
+
+        expect(response).to be_successful
+        expect(recent_merge_requests_double).to have_received(:log_view).with(merge_request)
       end
 
       context "that is invalid" do

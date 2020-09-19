@@ -7,7 +7,8 @@ Gitlab::Seeder.quiet do
     username: 'root',
     password: '5iveL!fe',
     admin: true,
-    confirmed_at: DateTime.now
+    confirmed_at: DateTime.now,
+    password_expires_at: DateTime.now
   )
 
   print '.'

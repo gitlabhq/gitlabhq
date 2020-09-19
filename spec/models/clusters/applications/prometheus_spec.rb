@@ -46,7 +46,7 @@ RSpec.describe Clusters::Applications::Prometheus do
     subject { create(:clusters_applications_prometheus, :installed, cluster: cluster) }
 
     it 'sets last_update_started_at to now' do
-      Timecop.freeze do
+      freeze_time do
         expect { subject.make_updating }.to change { subject.reload.last_update_started_at }.to be_within(1.second).of(Time.current)
       end
     end
@@ -109,10 +109,13 @@ RSpec.describe Clusters::Applications::Prometheus do
         expect(subject.prometheus_client).to be_instance_of(Gitlab::PrometheusClient)
       end
 
-      it 'copies proxy_url, options and headers from kube client to prometheus_client' do
+      it 'merges proxy_url, options and headers from kube client with prometheus_client options' do
         expect(Gitlab::PrometheusClient)
           .to(receive(:new))
-          .with(a_valid_url, kube_client.rest_client.options.merge(headers: kube_client.headers))
+          .with(a_valid_url, kube_client.rest_client.options.merge({
+            headers: kube_client.headers,
+            timeout: PrometheusAdapter::DEFAULT_PROMETHEUS_REQUEST_TIMEOUT_SEC
+          }))
         subject.prometheus_client
       end
 
@@ -150,7 +153,7 @@ RSpec.describe Clusters::Applications::Prometheus do
     it 'is initialized with 3 arguments' do
       expect(subject.name).to eq('prometheus')
       expect(subject.chart).to eq('stable/prometheus')
-      expect(subject.version).to eq('9.5.2')
+      expect(subject.version).to eq('10.4.1')
       expect(subject).to be_rbac
       expect(subject.files).to eq(prometheus.files)
     end
@@ -167,7 +170,7 @@ RSpec.describe Clusters::Applications::Prometheus do
       let(:prometheus) { create(:clusters_applications_prometheus, :errored, version: '2.0.0') }
 
       it 'is initialized with the locked version' do
-        expect(subject.version).to eq('9.5.2')
+        expect(subject.version).to eq('10.4.1')
       end
     end
 
@@ -238,7 +241,7 @@ RSpec.describe Clusters::Applications::Prometheus do
     it 'is initialized with 3 arguments' do
       expect(patch_command.name).to eq('prometheus')
       expect(patch_command.chart).to eq('stable/prometheus')
-      expect(patch_command.version).to eq('9.5.2')
+      expect(patch_command.version).to eq('10.4.1')
       expect(patch_command.files).to eq(prometheus.files)
     end
   end
@@ -350,7 +353,7 @@ RSpec.describe Clusters::Applications::Prometheus do
     let(:timestamp) { Time.current - 5.minutes }
 
     around do |example|
-      Timecop.freeze { example.run }
+      freeze_time { example.run }
     end
 
     before do

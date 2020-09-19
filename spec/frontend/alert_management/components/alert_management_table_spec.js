@@ -11,6 +11,7 @@ import {
   GlBadge,
   GlPagination,
   GlSearchBoxByType,
+  GlAvatar,
 } from '@gitlab/ui';
 import waitForPromises from 'helpers/wait_for_promises';
 import { visitUrl } from '~/lib/utils/url_utility';
@@ -39,19 +40,21 @@ describe('AlertManagementTable', () => {
   const findStatusFilterBadge = () => wrapper.findAll(GlBadge);
   const findDateFields = () => wrapper.findAll(TimeAgo);
   const findFirstStatusOption = () => findStatusDropdown().find(GlDeprecatedDropdownItem);
-  const findAssignees = () => wrapper.findAll('[data-testid="assigneesField"]');
-  const findSeverityFields = () => wrapper.findAll('[data-testid="severityField"]');
-  const findSeverityColumnHeader = () => wrapper.findAll('th').at(0);
   const findPagination = () => wrapper.find(GlPagination);
   const findSearch = () => wrapper.find(GlSearchBoxByType);
+  const findSeverityColumnHeader = () =>
+    wrapper.find('[data-testid="alert-management-severity-sort"]');
+  const findFirstIDField = () => wrapper.findAll('[data-testid="idField"]').at(0);
+  const findAssignees = () => wrapper.findAll('[data-testid="assigneesField"]');
+  const findSeverityFields = () => wrapper.findAll('[data-testid="severityField"]');
   const findIssueFields = () => wrapper.findAll('[data-testid="issueField"]');
   const findAlertError = () => wrapper.find('[data-testid="alert-error"]');
   const alertsCount = {
-    open: 14,
-    triggered: 10,
-    acknowledged: 6,
-    resolved: 1,
-    all: 16,
+    open: 24,
+    triggered: 20,
+    acknowledged: 16,
+    resolved: 11,
+    all: 26,
   };
   const selectFirstStatusOption = () => {
     findFirstStatusOption().vm.$emit('click');
@@ -92,13 +95,10 @@ describe('AlertManagementTable', () => {
     });
   }
 
-  beforeEach(() => {
-    mountComponent({ data: { alerts: mockAlerts, alertsCount } });
-  });
-
   afterEach(() => {
     if (wrapper) {
       wrapper.destroy();
+      wrapper = null;
     }
   });
 
@@ -192,6 +192,17 @@ describe('AlertManagementTable', () => {
       ).toContain('gl-hover-bg-blue-50');
     });
 
+    it('displays the alert ID and title formatted correctly', () => {
+      mountComponent({
+        props: { alertManagementEnabled: true, userCanEnableAlertManagement: true },
+        data: { alerts: { list: mockAlerts }, alertsCount, hasError: false },
+        loading: false,
+      });
+
+      expect(findFirstIDField().exists()).toBe(true);
+      expect(findFirstIDField().text()).toBe(`#${mockAlerts[0].iid} ${mockAlerts[0].title}`);
+    });
+
     it('displays status dropdown', () => {
       mountComponent({
         props: { alertManagementEnabled: true, userCanEnableAlertManagement: true },
@@ -207,7 +218,11 @@ describe('AlertManagementTable', () => {
         data: { alerts: { list: mockAlerts }, alertsCount, hasError: false },
         loading: false,
       });
-      expect(findStatusDropdown().contains('.dropdown-title')).toBe(false);
+      expect(
+        findStatusDropdown()
+          .find('.dropdown-title')
+          .exists(),
+      ).toBe(false);
     });
 
     it('shows correct severity icons', () => {
@@ -255,18 +270,22 @@ describe('AlertManagementTable', () => {
       ).toBe('Unassigned');
     });
 
-    it('renders username(s) when assignee(s) present', () => {
+    it('renders user avatar when assignee present', () => {
       mountComponent({
         props: { alertManagementEnabled: true, userCanEnableAlertManagement: true },
         data: { alerts: { list: mockAlerts }, alertsCount, hasError: false },
         loading: false,
       });
 
-      expect(
-        findAssignees()
-          .at(1)
-          .text(),
-      ).toBe(mockAlerts[1].assignees.nodes[0].username);
+      const avatar = findAssignees()
+        .at(1)
+        .find(GlAvatar);
+      const { src, label } = avatar.attributes();
+      const { name, avatarUrl } = mockAlerts[1].assignees.nodes[0];
+
+      expect(avatar.exists()).toBe(true);
+      expect(label).toBe(name);
+      expect(src).toBe(avatarUrl);
     });
 
     it('navigates to the detail page when alert row is clicked', () => {
@@ -502,7 +521,11 @@ describe('AlertManagementTable', () => {
       await selectFirstStatusOption();
 
       expect(findAlertError().exists()).toBe(true);
-      expect(findAlertError().contains('[data-testid="htmlError"]')).toBe(true);
+      expect(
+        findAlertError()
+          .find('[data-testid="htmlError"]')
+          .exists(),
+      ).toBe(true);
     });
   });
 

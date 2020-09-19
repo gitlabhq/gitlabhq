@@ -1,5 +1,5 @@
 <script>
-import { GlModal, GlSprintf, GlLink } from '@gitlab/ui';
+import { GlModal, GlSprintf, GlLink, GlButton } from '@gitlab/ui';
 import Cookies from 'js-cookie';
 import { sprintf, s__, __ } from '~/locale';
 import { glEmojiTag } from '~/emoji';
@@ -18,6 +18,8 @@ export default {
   helpMessage: s__(
     `MR widget|Take a look at our %{beginnerLinkStart}Beginner's Guide to Continuous Integration%{beginnerLinkEnd} and our %{exampleLinkStart}examples of GitLab CI/CD%{exampleLinkEnd} to learn more.`,
   ),
+  pipelinesButton: s__('MR widget|See your pipeline in action'),
+  mergeRequestButton: s__('MR widget|Back to the Merge request'),
   modalTitle: sprintf(
     __("That's it, well done!%{celebrate}"),
     {
@@ -25,11 +27,13 @@ export default {
     },
     false,
   ),
-  goToTrackValue: 10,
+  goToTrackValuePipelines: 10,
+  goToTrackValueMergeRequest: 20,
   trackEvent: 'click_button',
   components: {
     GlModal,
     GlSprintf,
+    GlButton,
     GlLink,
   },
   mixins: [trackingMixin],
@@ -37,6 +41,11 @@ export default {
     goToPipelinesPath: {
       type: String,
       required: true,
+    },
+    projectMergeRequestsPath: {
+      type: String,
+      required: false,
+      default: '',
     },
     commitCookie: {
       type: String,
@@ -58,6 +67,15 @@ export default {
         label: this.trackLabel,
         property: this.humanAccess,
       };
+    },
+    goToMergeRequestPath() {
+      return this.commitCookiePath || this.projectMergeRequestsPath;
+    },
+    commitCookiePath() {
+      const cookieVal = Cookies.get(this.commitCookie);
+
+      if (cookieVal !== 'true') return cookieVal;
+      return '';
     },
   },
   mounted() {
@@ -100,17 +118,28 @@ export default {
       </template>
     </gl-sprintf>
     <template #modal-footer>
-      <a
-        ref="goto"
-        :href="goToPipelinesPath"
-        class="btn btn-success"
+      <gl-button
+        v-if="projectMergeRequestsPath"
+        ref="goToMergeRequest"
+        :href="goToMergeRequestPath"
         :data-track-property="humanAccess"
-        :data-track-value="$options.goToTrackValue"
+        :data-track-value="$options.goToTrackValueMergeRequest"
         :data-track-event="$options.trackEvent"
         :data-track-label="trackLabel"
       >
-        {{ __('See your pipeline in action') }}
-      </a>
+        {{ $options.mergeRequestButton }}
+      </gl-button>
+      <gl-button
+        ref="goToPipelines"
+        :href="goToPipelinesPath"
+        variant="success"
+        :data-track-property="humanAccess"
+        :data-track-value="$options.goToTrackValuePipelines"
+        :data-track-event="$options.trackEvent"
+        :data-track-label="trackLabel"
+      >
+        {{ $options.pipelinesButton }}
+      </gl-button>
     </template>
   </gl-modal>
 </template>

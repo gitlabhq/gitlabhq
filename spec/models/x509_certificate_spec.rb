@@ -68,6 +68,8 @@ RSpec.describe X509Certificate do
   end
 
   describe 'validators' do
+    let_it_be(:issuer) { create(:x509_issuer) }
+
     it 'accepts correct subject_key_identifier' do
       subject_key_identifiers = [
         'AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB',
@@ -75,7 +77,7 @@ RSpec.describe X509Certificate do
       ]
 
       subject_key_identifiers.each do |identifier|
-        expect(build(:x509_certificate, subject_key_identifier: identifier)).to be_valid
+        expect(build(:x509_certificate, x509_issuer: issuer, subject_key_identifier: identifier)).to be_valid
       end
     end
 
@@ -88,7 +90,7 @@ RSpec.describe X509Certificate do
       ]
 
       subject_key_identifiers.each do |identifier|
-        expect(build(:x509_certificate, subject_key_identifier: identifier)).to be_invalid
+        expect(build(:x509_certificate, x509_issuer: issuer, subject_key_identifier: identifier)).to be_invalid
       end
     end
 
@@ -99,7 +101,7 @@ RSpec.describe X509Certificate do
       ]
 
       emails.each do |email|
-        expect(build(:x509_certificate, email: email)).to be_valid
+        expect(build(:x509_certificate, x509_issuer: issuer, email: email)).to be_valid
       end
     end
 
@@ -110,20 +112,20 @@ RSpec.describe X509Certificate do
       ]
 
       emails.each do |email|
-        expect(build(:x509_certificate, email: email)).to be_invalid
+        expect(build(:x509_certificate, x509_issuer: issuer, email: email)).to be_invalid
       end
     end
 
     it 'accepts valid serial_number' do
-      expect(build(:x509_certificate, serial_number: 123412341234)).to be_valid
+      expect(build(:x509_certificate, x509_issuer: issuer, serial_number: 123412341234)).to be_valid
 
       # rfc 5280 - 4.1.2.2  Serial number (20 octets is the maximum)
-      expect(build(:x509_certificate, serial_number: 1461501637330902918203684832716283019655932542975)).to be_valid
-      expect(build(:x509_certificate, serial_number: 'ffffffffffffffffffffffffffffffffffffffff'.to_i(16))).to be_valid
+      expect(build(:x509_certificate, x509_issuer: issuer, serial_number: 1461501637330902918203684832716283019655932542975)).to be_valid
+      expect(build(:x509_certificate, x509_issuer: issuer, serial_number: 'ffffffffffffffffffffffffffffffffffffffff'.to_i(16))).to be_valid
     end
 
     it 'rejects invalid serial_number' do
-      expect(build(:x509_certificate, serial_number: "sgsgfsdgdsfg")).to be_invalid
+      expect(build(:x509_certificate, x509_issuer: issuer, serial_number: "sgsgfsdgdsfg")).to be_invalid
     end
   end
 end

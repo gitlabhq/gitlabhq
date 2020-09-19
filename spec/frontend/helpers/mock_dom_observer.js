@@ -84,7 +84,9 @@ const useMockObserver = (key, createMock) => {
     mockObserver.$_triggerObserve(...args);
   };
 
-  return { trigger };
+  const observersCount = () => mockObserver.$_observers.length;
+
+  return { trigger, observersCount };
 };
 
 export const useMockIntersectionObserver = () =>

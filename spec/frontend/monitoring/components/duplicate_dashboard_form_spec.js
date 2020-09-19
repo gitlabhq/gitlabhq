@@ -50,7 +50,7 @@ describe('DuplicateDashboardForm', () => {
     it('when is empty', () => {
       setValue('fileName', '');
       return wrapper.vm.$nextTick(() => {
-        expect(findByRef('fileNameFormGroup').is('.is-valid')).toBe(true);
+        expect(findByRef('fileNameFormGroup').classes()).toContain('is-valid');
         expect(findInvalidFeedback().exists()).toBe(false);
       });
     });
@@ -58,7 +58,7 @@ describe('DuplicateDashboardForm', () => {
     it('when is valid', () => {
       setValue('fileName', 'my_dashboard.yml');
       return wrapper.vm.$nextTick(() => {
-        expect(findByRef('fileNameFormGroup').is('.is-valid')).toBe(true);
+        expect(findByRef('fileNameFormGroup').classes()).toContain('is-valid');
         expect(findInvalidFeedback().exists()).toBe(false);
       });
     });
@@ -66,7 +66,7 @@ describe('DuplicateDashboardForm', () => {
     it('when is not valid', () => {
       setValue('fileName', 'my_dashboard.exe');
       return wrapper.vm.$nextTick(() => {
-        expect(findByRef('fileNameFormGroup').is('.is-invalid')).toBe(true);
+        expect(findByRef('fileNameFormGroup').classes()).toContain('is-invalid');
         expect(findInvalidFeedback().text()).toBeTruthy();
       });
     });
@@ -144,7 +144,7 @@ describe('DuplicateDashboardForm', () => {
 
       return wrapper.vm.$nextTick().then(() => {
         wrapper.find('form').trigger('change');
-        expect(findByRef('branchName').is(':focus')).toBe(true);
+        expect(document.activeElement).toBe(findByRef('branchName').element);
       });
     });
   });

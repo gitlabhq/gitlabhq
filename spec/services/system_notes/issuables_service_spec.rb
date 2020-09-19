@@ -13,6 +13,38 @@ RSpec.describe ::SystemNotes::IssuablesService do
 
   let(:service) { described_class.new(noteable: noteable, project: project, author: author) }
 
+  describe '#relate_issue' do
+    let(:noteable_ref) { create(:issue) }
+
+    subject { service.relate_issue(noteable_ref) }
+
+    it_behaves_like 'a system note' do
+      let(:action) { 'relate' }
+    end
+
+    context 'when issue marks another as related' do
+      it 'sets the note text' do
+        expect(subject.note).to eq "marked this issue as related to #{noteable_ref.to_reference(project)}"
+      end
+    end
+  end
+
+  describe '#unrelate_issue' do
+    let(:noteable_ref) { create(:issue) }
+
+    subject { service.unrelate_issue(noteable_ref) }
+
+    it_behaves_like 'a system note' do
+      let(:action) { 'unrelate' }
+    end
+
+    context 'when issue relation is removed' do
+      it 'sets the note text' do
+        expect(subject.note).to eq "removed the relation with #{noteable_ref.to_reference(project)}"
+      end
+    end
+  end
+
   describe '#change_assignee' do
     subject { service.change_assignee(assignee) }
 
@@ -92,64 +124,6 @@ RSpec.describe ::SystemNotes::IssuablesService do
       Gitlab::I18n.with_locale('pt-BR') do
         expect(build_note([assignee, assignee1, assignee2], [assignee3])).to eq \
           "assigned to @#{assignee3.username} and unassigned @#{assignee.username}, @#{assignee1.username}, and @#{assignee2.username}"
-      end
-    end
-  end
-
-  describe '#change_milestone' do
-    subject { service.change_milestone(milestone) }
-
-    context 'for a project milestone' do
-      let(:milestone) { create(:milestone, project: project) }
-
-      it_behaves_like 'a system note' do
-        let(:action) { 'milestone' }
-      end
-
-      context 'when milestone added' do
-        it 'sets the note text' do
-          reference = milestone.to_reference(format: :iid)
-
-          expect(subject.note).to eq "changed milestone to #{reference}"
-        end
-
-        it_behaves_like 'a note with overridable created_at'
-      end
-
-      context 'when milestone removed' do
-        let(:milestone) { nil }
-
-        it 'sets the note text' do
-          expect(subject.note).to eq 'removed milestone'
-        end
-
-        it_behaves_like 'a note with overridable created_at'
-      end
-    end
-
-    context 'for a group milestone' do
-      let(:milestone) { create(:milestone, group: group) }
-
-      it_behaves_like 'a system note' do
-        let(:action) { 'milestone' }
-      end
-
-      context 'when milestone added' do
-        it 'sets the note text to use the milestone name' do
-          expect(subject.note).to eq "changed milestone to #{milestone.to_reference(format: :name)}"
-        end
-
-        it_behaves_like 'a note with overridable created_at'
-      end
-
-      context 'when milestone removed' do
-        let(:milestone) { nil }
-
-        it 'sets the note text' do
-          expect(subject.note).to eq 'removed milestone'
-        end
-
-        it_behaves_like 'a note with overridable created_at'
       end
     end
   end

@@ -106,7 +106,7 @@ RSpec.describe 'Environments page', :js do
 
           expect(page).to have_css('.environments-container')
           expect(page.all('.environment-name').length).to eq(1)
-          expect(page.all('.ic-stop').length).to eq(0)
+          expect(page.all('[data-testid="stop-icon"]').length).to eq(0)
         end
       end
     end
@@ -301,7 +301,7 @@ RSpec.describe 'Environments page', :js do
         end
 
         it 'has a dropdown for actionable jobs' do
-          expect(page).to have_selector('.dropdown-new.btn.btn-default .ic-play')
+          expect(page).to have_selector('.dropdown-new.btn.btn-default [data-testid="play-icon"]')
         end
 
         it "has link to the delayed job's action" do

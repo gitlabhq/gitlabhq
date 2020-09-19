@@ -12,18 +12,6 @@ your self-managed GitLab instance.
 
 ## Overview
 
-NOTE: **Note:**
-These instructions work for users on GitLab.com, but if you are an
-administrator of a self-managed GitLab instance or if you are importing from GitHub Enterprise,
-you must enable [GitHub integration](../../../integration/github.md). GitHub integration is the only method for
-importing from GitHub Enterprise. If you are using GitLab.com, you can alternatively import
-GitHub repositories using a [personal access token](#using-a-github-token),
-but this method is not recommended because it cannot associate all user activity
-(such as issues and pull requests) with matching GitLab users.
-If you are an administrator of a self-managed GitLab instance, you can also use the
-[GitHub Rake task](../../../administration/raketasks/github_import.md) to import projects from
-GitHub without the constraints of a Sidekiq worker.
-
 The following aspects of a project are imported:
 
 - Repository description (GitLab.com & 7.7+)
@@ -36,11 +24,36 @@ The following aspects of a project are imported:
 - Release note descriptions (GitLab.com & 8.12+)
 - Pull request review comments (GitLab.com & 10.2+)
 - Regular issue and pull request comments
+- [Git Large File Storage (LFS) Objects](../../../topics/git/lfs/index.md)
 
 References to pull requests and issues are preserved (GitLab.com & 8.7+), and
 each imported repository maintains visibility level unless that [visibility
 level is restricted](../../../public_access/public_access.md#restricting-the-use-of-public-or-internal-projects),
 in which case it defaults to the default project visibility.
+
+The namespace is a user or group in GitLab, such as `gitlab.com/janedoe` or `gitlab.com/customer-success`. You can do some bulk actions to move projects to different namespaces in the rails console.
+
+This process does not migrate or import any types of groups or organizations from GitHub to GitLab.
+
+### If you're using GitLab.com
+
+If you're using GitLab.com, you can alternatively import
+GitHub repositories using a [personal access token](#using-a-github-token),
+but we don't recommend this method because it can't associate all user activity
+(such as issues and pull requests) with matching GitLab users.
+
+### If you're importing from GitLab Enterprise
+
+If you're importing from GitHub Enterprise, you must enable [GitHub integration][gh-import].
+
+### If you're using a self-managed GitLab instance
+
+If you're an administrator of a self-managed GitLab instance, you must enable
+[GitHub integration][gh-import].
+
+If you're an administrator of a self-managed GitLab instance, you can also use the
+[GitHub Rake task](../../../administration/raketasks/github_import.md) to import projects from
+GitHub without the constraints of a Sidekiq worker.
 
 ## How it works
 
@@ -135,8 +148,8 @@ your GitHub repositories are listed.
 
 ## Mirroring and pipeline status sharing
 
-Depending your GitLab tier, [project mirroring](../repository/repository_mirroring.md) can be set up to keep
-your imported project in sync with its GitHub copy.
+Depending on your GitLab tier, [repository mirroring](../repository/repository_mirroring.md) can be set up to keep
+your imported repository in sync with its GitHub copy.
 
 Additionally, you can configure GitLab to send pipeline status updates back GitHub with the
 [GitHub Project Integration](../integrations/github.md). **(PREMIUM)**

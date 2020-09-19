@@ -6,8 +6,8 @@ import {
   GlIcon,
   GlFormGroup,
   GlFormCheckbox,
-  GlNewDropdown,
-  GlNewDropdownItem,
+  GlDropdown,
+  GlDropdownItem,
 } from '@gitlab/ui';
 import {
   I18N_ALERT_SETTINGS_FORM,
@@ -24,8 +24,8 @@ export default {
     GlFormGroup,
     GlIcon,
     GlFormCheckbox,
-    GlNewDropdown,
-    GlNewDropdownItem,
+    GlDropdown,
+    GlDropdownItem,
   },
   inject: ['service', 'alertSettings'],
   data() {
@@ -34,6 +34,7 @@ export default {
       createIssueEnabled: this.alertSettings.createIssue,
       issueTemplate: this.alertSettings.issueTemplateKey,
       sendEmailEnabled: this.alertSettings.sendEmail,
+      autoCloseIncident: this.alertSettings.autoCloseIncident,
       loading: false,
     };
   },
@@ -49,6 +50,7 @@ export default {
         create_issue: this.createIssueEnabled,
         issue_template_key: this.issueTemplate,
         send_email: this.sendEmailEnabled,
+        auto_close_incident: this.autoCloseIncident,
       };
     },
   },
@@ -99,13 +101,13 @@ export default {
             <gl-icon name="question" :size="12" />
           </gl-link>
         </label>
-        <gl-new-dropdown
+        <gl-dropdown
           id="alert-integration-settings-issue-template"
           data-qa-selector="incident_templates_dropdown"
           :text="issueTemplateHeader"
           :block="true"
         >
-          <gl-new-dropdown-item
+          <gl-dropdown-item
             v-for="template in templates"
             :key="template.key"
             data-qa-selector="incident_templates_item"
@@ -114,13 +116,18 @@ export default {
             @click="selectIssueTemplate(template.key)"
           >
             {{ template.name }}
-          </gl-new-dropdown-item>
-        </gl-new-dropdown>
+          </gl-dropdown-item>
+        </gl-dropdown>
       </gl-form-group>
 
       <gl-form-group class="gl-pl-0 gl-mb-5">
         <gl-form-checkbox v-model="sendEmailEnabled">
           <span>{{ $options.i18n.sendEmail.label }}</span>
+        </gl-form-checkbox>
+      </gl-form-group>
+      <gl-form-group class="gl-pl-0 gl-mb-5">
+        <gl-form-checkbox v-model="autoCloseIncident">
+          <span>{{ $options.i18n.autoCloseIncidents.label }}</span>
         </gl-form-checkbox>
       </gl-form-group>
       <div class="gl-display-flex gl-justify-content-end">

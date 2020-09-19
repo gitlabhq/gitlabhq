@@ -1,5 +1,4 @@
 import { shallowMount } from '@vue/test-utils';
-import { GlButton } from '@gitlab/ui';
 
 import PublishToolbar from '~/static_site_editor/components/publish_toolbar.vue';
 
@@ -11,6 +10,7 @@ describe('Static Site Editor Toolbar', () => {
   const buildWrapper = (propsData = {}) => {
     wrapper = shallowMount(PublishToolbar, {
       propsData: {
+        hasSettings: false,
         saveable: false,
         ...propsData,
       },
@@ -18,7 +18,8 @@ describe('Static Site Editor Toolbar', () => {
   };
 
   const findReturnUrlLink = () => wrapper.find({ ref: 'returnUrlLink' });
-  const findSaveChangesButton = () => wrapper.find(GlButton);
+  const findSaveChangesButton = () => wrapper.find({ ref: 'submit' });
+  const findEditSettingsButton = () => wrapper.find({ ref: 'settings' });
 
   beforeEach(() => {
     buildWrapper();
@@ -26,6 +27,10 @@ describe('Static Site Editor Toolbar', () => {
 
   afterEach(() => {
     wrapper.destroy();
+  });
+
+  it('does not render Settings button', () => {
+    expect(findEditSettingsButton().exists()).toBe(false);
   });
 
   it('renders Submit Changes button', () => {
@@ -49,6 +54,14 @@ describe('Static Site Editor Toolbar', () => {
 
     expect(findReturnUrlLink().exists()).toBe(true);
     expect(findReturnUrlLink().attributes('href')).toBe(returnUrl);
+  });
+
+  describe('when providing settings CTA', () => {
+    it('enables Submit Changes button', () => {
+      buildWrapper({ hasSettings: true });
+
+      expect(findEditSettingsButton().exists()).toBe(true);
+    });
   });
 
   describe('when saveable', () => {

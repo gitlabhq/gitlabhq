@@ -7,7 +7,7 @@ class StuckMergeJobsWorker # rubocop:disable Scalability/IdempotentWorker
   feature_category :source_code_management
 
   def self.logger
-    Rails.logger # rubocop:disable Gitlab/RailsLogger
+    Gitlab::AppLogger
   end
 
   # rubocop: disable CodeReuse/ActiveRecord

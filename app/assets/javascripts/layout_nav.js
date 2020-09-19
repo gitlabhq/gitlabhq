@@ -1,7 +1,6 @@
 import $ from 'jquery';
 import ContextualSidebar from './contextual_sidebar';
 import initFlyOutNav from './fly_out_nav';
-import initWhatsNew from '~/whats_new';
 
 function hideEndFade($scrollingTabs) {
   $scrollingTabs.each(function scrollTabsLoop() {
@@ -14,6 +13,17 @@ function hideEndFade($scrollingTabs) {
 
 function initDeferred() {
   $(document).trigger('init.scrolling-tabs');
+
+  const whatsNewTriggerEl = document.querySelector('.js-whats-new-trigger');
+  if (whatsNewTriggerEl) {
+    whatsNewTriggerEl.addEventListener('click', () => {
+      import(/* webpackChunkName: 'whatsNewApp' */ '~/whats_new')
+        .then(({ default: initWhatsNew }) => {
+          initWhatsNew();
+        })
+        .catch(() => {});
+    });
+  }
 }
 
 export default function initLayoutNav() {
@@ -21,7 +31,6 @@ export default function initLayoutNav() {
   contextualSidebar.bindEvents();
 
   initFlyOutNav();
-  initWhatsNew();
 
   // We need to init it on DomContentLoaded as others could also call it
   $(document).on('init.scrolling-tabs', () => {

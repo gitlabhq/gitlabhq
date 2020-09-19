@@ -314,7 +314,7 @@ sudo gitlab-ctl reconfigure
 ```
 
 If you do not perform this step, you may find that two-factor authentication
-[is broken following DR](../disaster_recovery/index.md#i-followed-the-disaster-recovery-instructions-and-now-two-factor-auth-is-broken).
+[is broken following DR](troubleshooting.md#two-factor-authentication-is-broken-after-a-failover).
 
 To prevent SSH requests to the newly promoted **primary** node from failing
 due to SSH host key mismatch when updating the **primary** node domain's DNS record
@@ -343,7 +343,7 @@ Support for TLS-secured PostgreSQL replication has been added. If you are
 currently using PostgreSQL replication across the open internet without an
 external means of securing the connection (e.g., a site-to-site VPN), then you
 should immediately reconfigure your **primary** and **secondary** PostgreSQL instances
-according to the [updated instructions](database.md).
+according to the [updated instructions](../setup/database.md).
 
 If you *are* securing the connections externally and wish to continue doing so,
 ensure you include the new option `--sslmode=prefer` in future invocations of
@@ -441,7 +441,7 @@ Omnibus is the following:
 1. Check the steps about defining `postgresql['sql_user_password']`, `gitlab_rails['db_password']`.
 1. Make sure `postgresql['max_replication_slots']` matches the number of **secondary** Geo nodes locations.
 1. Install GitLab on the **secondary** server.
-1. Re-run the [database replication process](database.md#step-3-initiate-the-replication-process).
+1. Re-run the [database replication process](../setup/database.md#step-3-initiate-the-replication-process).
 
 ## Updating to GitLab 9.0
 

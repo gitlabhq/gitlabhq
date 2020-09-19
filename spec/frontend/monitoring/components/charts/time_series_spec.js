@@ -632,9 +632,8 @@ describe('Time series component', () => {
             return wrapper.vm.$nextTick();
           });
 
-          it('is a Vue instance', () => {
+          it('exists', () => {
             expect(findChartComponent().exists()).toBe(true);
-            expect(findChartComponent().isVueInstance()).toBe(true);
           });
 
           it('receives data properties needed for proper chart render', () => {

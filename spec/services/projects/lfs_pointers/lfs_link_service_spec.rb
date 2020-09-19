@@ -24,11 +24,11 @@ RSpec.describe Projects::LfsPointers::LfsLinkService do
     end
 
     it 'links existing lfs objects to the project' do
-      expect(project.all_lfs_objects.count).to eq 2
+      expect(project.lfs_objects.count).to eq 2
 
       linked = subject.execute(new_oid_list.keys)
 
-      expect(project.all_lfs_objects.count).to eq 3
+      expect(project.lfs_objects.count).to eq 3
       expect(linked.size).to eq 3
     end
 
@@ -52,7 +52,7 @@ RSpec.describe Projects::LfsPointers::LfsLinkService do
       lfs_objects = create_list(:lfs_object, 7)
       linked = subject.execute(lfs_objects.pluck(:oid))
 
-      expect(project.all_lfs_objects.count).to eq 9
+      expect(project.lfs_objects.count).to eq 9
       expect(linked.size).to eq 7
     end
 

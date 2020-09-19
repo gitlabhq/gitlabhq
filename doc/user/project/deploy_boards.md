@@ -81,8 +81,8 @@ To display the Deploy Boards for a specific [environment](../../ci/environments/
    [OpenShift docs](https://docs.openshift.com/container-platform/3.7/dev_guide/deployments/kubernetes_deployments.html#kubernetes-deployments-vs-deployment-configurations)
    and [GitLab issue #4584](https://gitlab.com/gitlab-org/gitlab/-/issues/4584).
 
-1. [Configure GitLab Runner](../../ci/runners/README.md) with the [Docker](https://docs.gitlab.com/runner/executors/docker.html) or
-   [Kubernetes](https://docs.gitlab.com/runner/executors/kubernetes.html) executor.
+1. [Configure GitLab Runner](../../ci/runners/README.md) with the [`docker`](https://docs.gitlab.com/runner/executors/docker.html) or
+   [`kubernetes`](https://docs.gitlab.com/runner/executors/kubernetes.html) executor.
 1. Configure the [Kubernetes integration](clusters/index.md) in your project for the
    cluster. The Kubernetes namespace is of particular note as you will need it
    for your deployment scripts (exposed by the `KUBE_NAMESPACE` env variable).
@@ -105,6 +105,8 @@ To display the Deploy Boards for a specific [environment](../../ci/environments/
    re-deploy your application. If you are using Auto DevOps, this will
    be done automatically and no action is necessary.
 
+   If you are using GCP to manage clusters, you can see the deployment details in GCP itself by going to **Workloads > deployment name > Details**:
+   
    ![Deploy Boards Kubernetes Label](img/deploy_boards_kubernetes_label.png)
 
 Once all of the above are set up and the pipeline has run at least once,

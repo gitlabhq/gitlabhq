@@ -43,7 +43,8 @@ describe('BlobBundle', () => {
           data-target="#target"
           data-track-label="suggest_gitlab_ci_yml"
           data-dismiss-key="1"
-          data-human-access="owner">
+          data-human-access="owner"
+          data-merge-request-path="path/to/mr">
           <button id='commit-changes' class="js-commit-button"></button>
           <a class="btn btn-cancel" href="#"></a>
         </div>

@@ -49,7 +49,7 @@ module Packages
 
       def latest_version(packages)
         versions = packages.map(&:version).compact
-        VersionSorter.sort(versions).last # rubocop: disable Style/UnneededSort
+        VersionSorter.sort(versions).last # rubocop: disable Style/RedundantSort
       end
     end
   end

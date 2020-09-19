@@ -1,12 +1,10 @@
 <script>
-import { GlDeprecatedButton } from '@gitlab/ui';
-import LoadingButton from '~/vue_shared/components/loading_button.vue';
+import { GlButton } from '@gitlab/ui';
 
 export default {
   name: 'PipelineNavControls',
   components: {
-    LoadingButton,
-    GlDeprecatedButton,
+    GlButton,
   },
   props: {
     newPipelinePath: {
@@ -42,25 +40,27 @@ export default {
 </script>
 <template>
   <div class="nav-controls">
-    <gl-deprecated-button
+    <gl-button
       v-if="newPipelinePath"
       :href="newPipelinePath"
       variant="success"
+      category="primary"
       class="js-run-pipeline"
     >
       {{ s__('Pipelines|Run Pipeline') }}
-    </gl-deprecated-button>
+    </gl-button>
 
-    <loading-button
+    <gl-button
       v-if="resetCachePath"
       :loading="isResetCacheButtonLoading"
-      :label="s__('Pipelines|Clear Runner Caches')"
       class="js-clear-cache"
       @click="onClickResetCache"
-    />
+    >
+      {{ s__('Pipelines|Clear Runner Caches') }}
+    </gl-button>
 
-    <gl-deprecated-button v-if="ciLintPath" :href="ciLintPath" class="js-ci-lint">
+    <gl-button v-if="ciLintPath" :href="ciLintPath" class="js-ci-lint">
       {{ s__('Pipelines|CI Lint') }}
-    </gl-deprecated-button>
+    </gl-button>
   </div>
 </template>

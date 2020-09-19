@@ -1,0 +1,5 @@
+---
+title: Fix Rails/SaveBang offenses for */spec/models/ci/*
+merge_request: 41329
+author: Rajendra Kadam
+type: other

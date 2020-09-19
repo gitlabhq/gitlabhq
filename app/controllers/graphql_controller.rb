@@ -81,7 +81,7 @@ class GraphqlController < ApplicationController
   end
 
   def context
-    @context ||= { current_user: current_user }
+    @context ||= { current_user: current_user, is_sessionless_user: !!sessionless_user? }
   end
 
   def build_variables(variable_info)
@@ -106,5 +106,13 @@ class GraphqlController < ApplicationController
     error = { errors: [message: message] }
 
     render json: error, status: status
+  end
+
+  def append_info_to_payload(payload)
+    super
+
+    # Merging to :metadata will ensure these are logged as top level keys
+    payload[:metadata] ||= {}
+    payload[:metadata].merge!(graphql: { operation_name: params[:operationName] })
   end
 end

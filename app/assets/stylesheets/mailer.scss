@@ -48,6 +48,22 @@ a {
   font-weight: 500;
 }
 
+.invite-header {
+  margin-top: 0;
+}
+
+.invite-actions {
+  margin-top: 24px;
+}
+
+.invite-btn-join {
+  border-radius: $border-radius-default;
+  padding: $gl-btn-vert-padding $gl-btn-horz-padding;
+  cursor: pointer;
+  background-color: $purple;
+  color: $white;
+}
+
 tr td {
   font-family: $mailer-font;
 }

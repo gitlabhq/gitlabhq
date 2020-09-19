@@ -12,13 +12,19 @@
     .form-group.row.merge-request-assignee
       = render "shared/issuable/form/metadata_issuable_assignee", issuable: issuable, form: form, has_due_date: has_due_date
 
+    - if issuable.allows_reviewers?
+      .form-group.row.merge-request-reviewer
+        = render "shared/issuable/form/metadata_issuable_reviewer", issuable: issuable, form: form, has_due_date: has_due_date
+
     = render_if_exists "shared/issuable/form/epic", issuable: issuable, form: form, project: project
 
-    .form-group.row.issue-milestone
-      = form.label :milestone_id, "Milestone", class: "col-form-label #{has_due_date ? "col-md-2 col-lg-4" : "col-sm-2"}"
-      .col-sm-10{ class: ("col-md-8" if has_due_date) }
-        .issuable-form-select-holder
-          = render "shared/issuable/milestone_dropdown", selected: issuable.milestone, name: "#{issuable.class.model_name.param_key}[milestone_id]", show_any: false, show_upcoming: false, show_started: false, extra_class: "qa-issuable-milestone-dropdown js-issuable-form-dropdown js-dropdown-keep-input", dropdown_title: "Select milestone"
+    - if issuable.supports_milestone?
+      .form-group.row.issue-milestone
+        = form.label :milestone_id, "Milestone", class: "col-form-label #{has_due_date ? "col-md-2 col-lg-4" : "col-sm-2"}"
+        .col-sm-10{ class: ("col-md-8" if has_due_date) }
+          .issuable-form-select-holder
+            = render "shared/issuable/milestone_dropdown", selected: issuable.milestone, name: "#{issuable.class.model_name.param_key}[milestone_id]", show_any: false, show_upcoming: false, show_started: false, extra_class: "qa-issuable-milestone-dropdown js-issuable-form-dropdown js-dropdown-keep-input", dropdown_title: "Select milestone"
+
     .form-group.row
       = form.label :label_ids, "Labels", class: "col-form-label #{has_due_date ? "col-md-2 col-lg-4" : "col-sm-2"}"
       = form.hidden_field :label_ids, multiple: true, value: ''
@@ -28,7 +34,7 @@
 
     = render_if_exists "shared/issuable/form/merge_request_blocks", issuable: issuable, form: form
 
-  - if has_due_date || issuable.supports_weight?
+  - if has_due_date
     .col-lg-6
       = render_if_exists "shared/issuable/form/weight", issuable: issuable, form: form
       .form-group.row

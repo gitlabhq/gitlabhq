@@ -21,11 +21,21 @@ module RuboCop
         method_name = node.children[1]
         return unless TRANSLATION_METHODS.include?(method_name)
 
+        translation_memoized = false
+
         node.each_ancestor do |ancestor|
           receiver, _ = *ancestor
           break if lambda_node?(receiver) # translations defined in lambda nodes should be allowed
 
           if constant_assignment?(ancestor)
+            add_offense(node, location: :expression)
+
+            break
+          end
+
+          translation_memoized = true if memoization?(ancestor)
+
+          if translation_memoized && class_method_definition?(ancestor)
             add_offense(node, location: :expression)
 
             break
@@ -37,6 +47,14 @@ module RuboCop
 
       def constant_assignment?(node)
         node.type == :casgn
+      end
+
+      def memoization?(node)
+        node.type == :or_asgn
+      end
+
+      def class_method_definition?(node)
+        node.type == :defs
       end
     end
   end

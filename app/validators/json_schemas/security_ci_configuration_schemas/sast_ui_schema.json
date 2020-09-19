@@ -52,67 +52,126 @@
         {
             "name": "brakeman",
             "label": "Brakeman",
-            "enabled" : true
+            "enabled" : true,
+            "description": "Ruby on Rails",
+            "variables": [
+                {
+                    "field" : "SAST_BRAKEMAN_LEVEL",
+                    "label" : "Brakeman confidence level.",
+                    "type": "string",
+                    "default_value": "1",
+                    "value": "",
+                    "size": "SMALL",
+                    "description": "Ignore Brakeman vulnerabilities under given confidence level. Integer, 1=Low, 2=Medium, 3=High."
+                }
+            ]
         },
         {
             "name": "bandit",
             "label": "Bandit",
-            "enabled" : true
+            "enabled" : true,
+            "description": "Python",
+            "variables": [
+                {
+                    "field" : "SAST_BANDIT_EXCLUDED_PATHS",
+                    "label" : "Paths to exclude from scan.",
+                    "type": "string",
+                    "default_value": "",
+                    "value": "",
+                    "size": "SMALL",
+                    "description": "Comma-separated list of paths to exclude from scan. Uses Python’s 'fnmatch' syntax; For example: '*/tests/*, */venv/*'"
+                }
+            ]
         },
         {
             "name": "eslint",
             "label": "ESLint",
-            "enabled" : true
+            "enabled" : true,
+            "description": "JavaScript, TypeScript, React",
+            "variables": []
         },
         {
             "name": "flawfinder",
             "label": "Flawfinder",
-            "enabled" : true
+            "enabled" : true,
+            "description": "C, C++",
+            "variables": [
+                {
+                    "field" : "SAST_FLAWFINDER_LEVEL",
+                    "label" : "Flawfinder risk level",
+                    "type": "string",
+                    "default_value": "1",
+                    "value": "",
+                    "size": "SMALL",
+                    "description": "Ignore Flawfinder vulnerabilities under given risk level. Integer, 0=No risk, 5=High risk."
+                }
+            ]
         },
         {
             "name": "kubesec",
             "label": "kubesec",
-            "enabled" : true
+            "enabled" : true,
+            "description": "Kubernetes manifests, Helm Charts",
+            "variables": []
         },
         {
-            "name": "nodejsscan",
+            "name": "nodejs-scan",
             "label": "Node.js Scan",
-            "enabled" : true
+            "enabled" : true,
+            "description": "Node.js",
+            "variables": []
         },
         {
             "name": "gosec",
             "label": "Golang Security Checker",
-            "enabled" : true
+            "enabled" : true,
+            "description": "Go",
+            "variables": [
+                {
+                    "field" : "SAST_GOSEC_LEVEL",
+                    "label" : "Gosec confidence level",
+                    "type": "string",
+                    "default_value": "0",
+                    "value": "",
+                    "size": "SMALL",
+                    "description": "Ignore Gosec vulnerabilities under given confidence level. Integer, 0=Undefined, 1=Low, 2=Medium, 3=High."
+                }
+            ]
         },
         {
             "name": "phpcs-security-audit",
             "label": "PHP Security Audit",
-            "enabled" : true
+            "enabled" : true,
+            "description": "PHP",
+            "variables": []
         },
         {
             "name": "pmd-apex",
             "label": "PMD APEX",
-            "enabled" : true
+            "enabled" : true,
+            "description": "Apex (Salesforce)",
+            "variables": []
         },
         {
             "name": "security-code-scan",
             "label": "Security Code Scan",
-            "enabled" : true
+            "enabled" : true,
+            "description": ".NET Core, .NET Framework",
+            "variables": []
         },
         {
             "name": "sobelow",
             "label": "Sobelow",
-            "enabled" : true
+            "enabled" : true,
+            "description": "Elixir (Phoenix)",
+            "variables": []
         },
         {
             "name": "spotbugs",
             "label": "Spotbugs",
-            "enabled" : true
-        },
-        {
-            "name": "secrets",
-            "label": "Secrets",
-            "enabled" : true
+            "enabled" : true,
+            "description": "Groovy, Java, Scala",
+            "variables": []
         }
     ]
 }

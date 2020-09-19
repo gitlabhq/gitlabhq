@@ -11,6 +11,11 @@ RSpec.describe Ldap::OmniauthCallbacksController do
     expect(request.env['warden']).to be_authenticated
   end
 
+  it 'creates an authentication event record' do
+    expect { post provider }.to change { AuthenticationEvent.count }.by(1)
+    expect(AuthenticationEvent.last.provider).to eq(provider.to_s)
+  end
+
   context 'with sign in prevented' do
     let(:ldap_settings) { ldap_setting_defaults.merge(prevent_ldap_sign_in: true) }
 

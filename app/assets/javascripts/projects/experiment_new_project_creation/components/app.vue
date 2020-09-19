@@ -1,4 +1,5 @@
 <script>
+/* eslint-disable vue/no-v-html */
 import { GlBreadcrumb, GlIcon } from '@gitlab/ui';
 import WelcomePage from './welcome.vue';
 import LegacyContainer from './legacy_container.vue';

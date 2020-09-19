@@ -92,6 +92,7 @@ module API
 
         put do
           authorize_upload!(authorized_user_project)
+          bad_request!('File is too large') if authorized_user_project.actual_limits.exceeded?(:nuget_max_file_size, params[:package].size)
 
           file_params = params.merge(
             file: params[:package],
@@ -104,7 +105,7 @@ module API
           package_file = ::Packages::CreatePackageFileService.new(package, file_params)
                                                              .execute
 
-          track_event('push_package')
+          package_event('push_package')
 
           ::Packages::Nuget::ExtractionWorker.perform_async(package_file.id) # rubocop:disable CodeReuse/Worker
 
@@ -118,7 +119,11 @@ module API
         route_setting :authentication, deploy_token_allowed: true, job_token_allowed: :basic_auth, basic_auth_personal_access_token: true
 
         put 'authorize' do
-          authorize_workhorse!(subject: authorized_user_project, has_length: false)
+          authorize_workhorse!(
+            subject: authorized_user_project,
+            has_length: false,
+            maximum_size: authorized_user_project.actual_limits.nuget_max_file_size
+          )
         end
 
         params do
@@ -193,7 +198,7 @@ module API
 
             not_found!('Package') unless package_file
 
-            track_event('pull_package')
+            package_event('pull_package')
 
             # nuget and dotnet don't support 302 Moved status codes, supports_direct_download has to be set to false
             present_carrierwave_file!(package_file.file, supports_direct_download: false)
@@ -228,7 +233,7 @@ module API
               .new(authorized_user_project, params[:q], search_options)
               .execute
 
-            track_event('search_package')
+            package_event('search_package')
 
             present ::Packages::Nuget::SearchResultsPresenter.new(search),
               with: ::API::Entities::Nuget::SearchResults

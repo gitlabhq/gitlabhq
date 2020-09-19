@@ -12,18 +12,22 @@ module Gitlab
           include ::Gitlab::Config::Entry::Configurable
           include ::Gitlab::Config::Entry::Attributable
 
-          ALLOWED_KEYS = %i[terminal].freeze
+          def self.allowed_keys
+            %i[terminal].freeze
+          end
 
           validations do
-            validates :config, allowed_keys: ALLOWED_KEYS
+            validates :config, allowed_keys: Global.allowed_keys
           end
+
+          attributes allowed_keys
 
           entry :terminal, Entry::Terminal,
             description: 'Configuration of the webide terminal.'
-
-          attributes :terminal
         end
       end
     end
   end
 end
+
+::Gitlab::WebIde::Config::Entry::Global.prepend_if_ee('EE::Gitlab::WebIde::Config::Entry::Global')

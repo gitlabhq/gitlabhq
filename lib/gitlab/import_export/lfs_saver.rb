@@ -16,7 +16,7 @@ module Gitlab
       end
 
       def save
-        project.all_lfs_objects.find_in_batches(batch_size: BATCH_SIZE) do |batch|
+        project.lfs_objects.find_in_batches(batch_size: BATCH_SIZE) do |batch|
           batch.each do |lfs_object|
             save_lfs_object(lfs_object)
           end

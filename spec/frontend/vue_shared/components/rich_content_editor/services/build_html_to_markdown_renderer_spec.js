@@ -1,9 +1,10 @@
 import buildHTMLToMarkdownRenderer from '~/vue_shared/components/rich_content_editor/services/build_html_to_markdown_renderer';
+import { attributeDefinition } from './renderers/mock_data';
 
-describe('HTMLToMarkdownRenderer', () => {
+describe('rich_content_editor/services/html_to_markdown_renderer', () => {
   let baseRenderer;
   let htmlToMarkdownRenderer;
-  const NODE = { nodeValue: 'mock_node' };
+  let fakeNode;
 
   beforeEach(() => {
     baseRenderer = {
@@ -12,14 +13,20 @@ describe('HTMLToMarkdownRenderer', () => {
       getSpaceControlled: jest.fn(input => `space controlled ${input}`),
       convert: jest.fn(),
     };
+
+    fakeNode = { nodeValue: 'mock_node', dataset: {} };
+  });
+
+  afterEach(() => {
+    htmlToMarkdownRenderer = null;
   });
 
   describe('TEXT_NODE visitor', () => {
     it('composes getSpaceControlled, getSpaceCollapsedText, and trim services', () => {
       htmlToMarkdownRenderer = buildHTMLToMarkdownRenderer(baseRenderer);
 
-      expect(htmlToMarkdownRenderer.TEXT_NODE(NODE)).toBe(
-        `space controlled trimmed space collapsed ${NODE.nodeValue}`,
+      expect(htmlToMarkdownRenderer.TEXT_NODE(fakeNode)).toBe(
+        `space controlled trimmed space collapsed ${fakeNode.nodeValue}`,
       );
     });
   });
@@ -43,8 +50,8 @@ describe('HTMLToMarkdownRenderer', () => {
 
       baseRenderer.convert.mockReturnValueOnce(list);
 
-      expect(htmlToMarkdownRenderer['LI OL, LI UL'](NODE, list)).toBe(result);
-      expect(baseRenderer.convert).toHaveBeenCalledWith(NODE, list);
+      expect(htmlToMarkdownRenderer['LI OL, LI UL'](fakeNode, list)).toBe(result);
+      expect(baseRenderer.convert).toHaveBeenCalledWith(fakeNode, list);
     });
   });
 
@@ -62,10 +69,21 @@ describe('HTMLToMarkdownRenderer', () => {
         });
         baseRenderer.convert.mockReturnValueOnce(listItem);
 
-        expect(htmlToMarkdownRenderer['UL LI'](NODE, listItem)).toBe(result);
-        expect(baseRenderer.convert).toHaveBeenCalledWith(NODE, listItem);
+        expect(htmlToMarkdownRenderer['UL LI'](fakeNode, listItem)).toBe(result);
+        expect(baseRenderer.convert).toHaveBeenCalledWith(fakeNode, listItem);
       },
     );
+
+    it('detects attribute definitions and attaches them to the list item', () => {
+      const listItem = '- list item';
+      const result = `${listItem}\n${attributeDefinition}\n`;
+
+      fakeNode.dataset.attributeDefinition = attributeDefinition;
+      htmlToMarkdownRenderer = buildHTMLToMarkdownRenderer(baseRenderer);
+      baseRenderer.convert.mockReturnValueOnce(`${listItem}\n`);
+
+      expect(htmlToMarkdownRenderer['UL LI'](fakeNode, listItem)).toBe(result);
+    });
   });
 
   describe('OL LI visitor', () => {
@@ -85,8 +103,8 @@ describe('HTMLToMarkdownRenderer', () => {
         });
         baseRenderer.convert.mockReturnValueOnce(listItem);
 
-        expect(htmlToMarkdownRenderer['OL LI'](NODE, subContent)).toBe(result);
-        expect(baseRenderer.convert).toHaveBeenCalledWith(NODE, subContent);
+        expect(htmlToMarkdownRenderer['OL LI'](fakeNode, subContent)).toBe(result);
+        expect(baseRenderer.convert).toHaveBeenCalledWith(fakeNode, subContent);
       },
     );
   });
@@ -105,8 +123,8 @@ describe('HTMLToMarkdownRenderer', () => {
 
         baseRenderer.convert.mockReturnValueOnce(input);
 
-        expect(htmlToMarkdownRenderer['STRONG, B'](NODE, input)).toBe(result);
-        expect(baseRenderer.convert).toHaveBeenCalledWith(NODE, input);
+        expect(htmlToMarkdownRenderer['STRONG, B'](fakeNode, input)).toBe(result);
+        expect(baseRenderer.convert).toHaveBeenCalledWith(fakeNode, input);
       },
     );
   });
@@ -125,9 +143,50 @@ describe('HTMLToMarkdownRenderer', () => {
 
         baseRenderer.convert.mockReturnValueOnce(input);
 
-        expect(htmlToMarkdownRenderer['EM, I'](NODE, input)).toBe(result);
-        expect(baseRenderer.convert).toHaveBeenCalledWith(NODE, input);
+        expect(htmlToMarkdownRenderer['EM, I'](fakeNode, input)).toBe(result);
+        expect(baseRenderer.convert).toHaveBeenCalledWith(fakeNode, input);
       },
     );
+  });
+
+  describe('H1, H2, H3, H4, H5, H6 visitor', () => {
+    it('detects attribute definitions and attaches them to the heading', () => {
+      const heading = 'heading text';
+      const result = `${heading.trimRight()}\n${attributeDefinition}\n\n`;
+
+      fakeNode.dataset.attributeDefinition = attributeDefinition;
+      htmlToMarkdownRenderer = buildHTMLToMarkdownRenderer(baseRenderer);
+      baseRenderer.convert.mockReturnValueOnce(`${heading}\n\n`);
+
+      expect(htmlToMarkdownRenderer['H1, H2, H3, H4, H5, H6'](fakeNode, heading)).toBe(result);
+    });
+  });
+
+  describe('PRE CODE', () => {
+    let node;
+    const subContent = 'sub content';
+    const originalConverterResult = 'base result';
+
+    beforeEach(() => {
+      node = document.createElement('PRE');
+
+      node.innerText = 'reference definition content';
+      node.dataset.sseReferenceDefinition = true;
+
+      baseRenderer.convert.mockReturnValueOnce(originalConverterResult);
+      htmlToMarkdownRenderer = buildHTMLToMarkdownRenderer(baseRenderer);
+    });
+
+    it('returns raw text when pre node has sse-reference-definitions class', () => {
+      expect(htmlToMarkdownRenderer['PRE CODE'](node, subContent)).toBe(
+        `\n\n${node.innerText}\n\n`,
+      );
+    });
+
+    it('returns base result when pre node does not have sse-reference-definitions class', () => {
+      delete node.dataset.sseReferenceDefinition;
+
+      expect(htmlToMarkdownRenderer['PRE CODE'](node, subContent)).toBe(originalConverterResult);
+    });
   });
 });

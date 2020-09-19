@@ -1,5 +1,6 @@
 import Vuex from 'vuex';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { GlIcon } from '@gitlab/ui';
 import notesModule from '~/notes/stores/modules';
 import DiscussionCounter from '~/notes/components/discussion_counter.vue';
 import { noteableDataMock, discussionMock, notesDataMock, userDataMock } from '../mock_data';
@@ -112,13 +113,13 @@ describe('DiscussionCounter component', () => {
       updateStoreWithExpanded(true);
 
       expect(wrapper.vm.allExpanded).toBe(true);
-      expect(toggleAllButton.find({ name: 'angle-up' }).exists()).toBe(true);
+      expect(toggleAllButton.find(GlIcon).props().name).toBe('angle-up');
 
       toggleAllButton.trigger('click');
 
       return wrapper.vm.$nextTick().then(() => {
         expect(wrapper.vm.allExpanded).toBe(false);
-        expect(toggleAllButton.find({ name: 'angle-down' }).exists()).toBe(true);
+        expect(toggleAllButton.find(GlIcon).props().name).toBe('angle-down');
       });
     });
 
@@ -126,13 +127,13 @@ describe('DiscussionCounter component', () => {
       updateStoreWithExpanded(false);
 
       expect(wrapper.vm.allExpanded).toBe(false);
-      expect(toggleAllButton.find({ name: 'angle-down' }).exists()).toBe(true);
+      expect(toggleAllButton.find(GlIcon).props().name).toBe('angle-down');
 
       toggleAllButton.trigger('click');
 
       return wrapper.vm.$nextTick().then(() => {
         expect(wrapper.vm.allExpanded).toBe(true);
-        expect(toggleAllButton.find({ name: 'angle-up' }).exists()).toBe(true);
+        expect(toggleAllButton.find(GlIcon).props().name).toBe('angle-up');
       });
     });
   });

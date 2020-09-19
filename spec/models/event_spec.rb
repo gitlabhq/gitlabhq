@@ -81,6 +81,8 @@ RSpec.describe Event do
   describe 'validations' do
     describe 'action' do
       context 'for a design' do
+        let_it_be(:author) { create(:user) }
+
         where(:action, :valid) do
           valid = described_class::DESIGN_ACTIONS.map(&:to_s).to_set
 
@@ -90,7 +92,7 @@ RSpec.describe Event do
         end
 
         with_them do
-          let(:event) { build(:design_event, action: action) }
+          let(:event) { build(:design_event, author: author, action: action) }
 
           specify { expect(event.valid?).to eq(valid) }
         end
@@ -722,9 +724,17 @@ RSpec.describe Event do
         note_on_commit: true
       }
       valid_target_factories.map do |kind, needs_project|
-        extra_data = needs_project ? { project: project } : {}
+        extra_data = if kind == :merge_request
+                       { source_project: project }
+                     elsif needs_project
+                       { project: project }
+                     else
+                       {}
+                     end
+
         target = kind == :project ? nil : build(kind, **extra_data)
-        [kind, build(:event, :created, project: project, target: target)]
+
+        [kind, build(:event, :created, author: project.owner, project: project, target: target)]
       end.to_h
     end
 

@@ -17,7 +17,7 @@ RSpec.describe BackfillNamespaceSettings, :sidekiq, schema: 20200703124823 do
 
     it 'schedules BackfillNamespaceSettings background jobs' do
       Sidekiq::Testing.fake! do
-        Timecop.freeze do
+        freeze_time do
           migrate!
 
           expect(described_class::MIGRATION).to be_scheduled_delayed_migration(2.minutes, 1, 2)

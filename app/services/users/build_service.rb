@@ -91,7 +91,6 @@ module Users
     def signup_params
       [
         :email,
-        :email_confirmation,
         :password_automatically_set,
         :name,
         :first_name,

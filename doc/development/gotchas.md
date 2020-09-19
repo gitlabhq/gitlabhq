@@ -106,7 +106,7 @@ end
        Using `any_instance` to stub a method (elasticsearch_indexing) that has been defined on a prepended module (EE::ApplicationSetting) is not supported.
   ```
 
-### Alternative: `expect_next_instance_of` or `allow_next_instance_of`
+### Alternative: `expect_next_instance_of`, `allow_next_instance_of`, `expect_next_found_instance_of` or `allow_next_found_instance_of`
 
 Instead of writing:
 
@@ -130,7 +130,20 @@ end
 allow_next_instance_of(Project) do |project|
   allow(project).to receive(:add_import_job)
 end
+
+# Do this:
+expect_next_found_instance_of(Project) do |project|
+  expect(project).to receive(:add_import_job)
+end
+
+# Do this:
+allow_next_found_instance_of(Project) do |project|
+  allow(project).to receive(:add_import_job)
+end
 ```
+
+_**Note:** Since Active Record is not calling the `.new` method on model classes to instantiate the objects,
+you should use `expect_next_found_instance_of` or `allow_next_found_instance_of` mock helpers to setup mock on objects returned by Active Record query & finder methods._
 
 If we also want to initialize the instance with some particular arguments, we
 could also pass it like:

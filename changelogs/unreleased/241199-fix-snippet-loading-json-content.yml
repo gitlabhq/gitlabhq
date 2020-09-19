@@ -1,0 +1,5 @@
+---
+title: Fix snippets edit not loading JSON values
+merge_request: 40417
+author:
+type: fixed

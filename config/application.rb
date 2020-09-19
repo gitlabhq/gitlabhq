@@ -49,7 +49,8 @@ module Gitlab
                                      #{config.root}/app/models/members
                                      #{config.root}/app/models/project_services
                                      #{config.root}/app/graphql/resolvers/concerns
-                                     #{config.root}/app/graphql/mutations/concerns])
+                                     #{config.root}/app/graphql/mutations/concerns
+                                     #{config.root}/app/graphql/types/concerns])
 
     config.generators.templates.push("#{config.root}/generator_templates")
 
@@ -176,7 +177,10 @@ module Gitlab
     config.assets.precompile << "mailer_client_specific.css"
     config.assets.precompile << "notify.css"
     config.assets.precompile << "mailers/*.css"
+    config.assets.precompile << "page_bundles/_mixins_and_variables_and_functions.css"
     config.assets.precompile << "page_bundles/ide.css"
+    config.assets.precompile << "page_bundles/jira_connect.css"
+    config.assets.precompile << "page_bundles/todos.css"
     config.assets.precompile << "page_bundles/xterm.css"
     config.assets.precompile << "performance_bar.css"
     config.assets.precompile << "lib/ace.js"
@@ -185,6 +189,9 @@ module Gitlab
     config.assets.precompile << "locale/**/app.js"
     config.assets.precompile << "emoji_sprites.css"
     config.assets.precompile << "errors.css"
+    config.assets.precompile << "jira_connect.js"
+
+    config.assets.precompile << "themes/*.css"
 
     config.assets.precompile << "highlight/themes/*.css"
 
@@ -203,11 +210,10 @@ module Gitlab
     config.assets.paths << "#{config.root}/node_modules/xterm/src/"
     config.assets.precompile << "xterm.css"
 
+    # Add EE assets
     if Gitlab.ee?
       %w[images javascripts stylesheets].each do |path|
         config.assets.paths << "#{config.root}/ee/app/assets/#{path}"
-        config.assets.precompile << "jira_connect.js"
-        config.assets.precompile << "pages/jira_connect.css"
       end
     end
 

@@ -281,13 +281,8 @@ export default {
         .mutate({
           mutation: moveDesignMutation,
           variables: this.designMoveVariables(newIndex, element),
-          update: (store, { data: { designManagementMove } }) => {
-            return updateDesignsOnStoreAfterReorder(
-              store,
-              designManagementMove,
-              this.projectQueryBody,
-            );
-          },
+          update: (store, { data: { designManagementMove } }) =>
+            updateDesignsOnStoreAfterReorder(store, designManagementMove, this.projectQueryBody),
           optimisticResponse: moveDesignOptimisticResponse(this.reorderedDesigns),
         })
         .catch(() => {
@@ -327,7 +322,7 @@ export default {
             v-if="isLatestVersion"
             variant="link"
             size="small"
-            class="gl-mr-3 js-select-all"
+            class="gl-mr-4 js-select-all"
             @click="toggleDesignsSelection"
             >{{ selectAllButtonText }}
           </gl-button>

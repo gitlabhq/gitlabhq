@@ -66,7 +66,7 @@
                 track_property: 'navigation',
                 container: 'body' } do
                 = sprite_icon('todo-done')
-                %span.badge.badge-pill.todos-count{ class: ('hidden' if todos_pending_count == 0) }
+                %span.badge.badge-pill.todos-count.js-todos-count{ class: ('hidden' if todos_pending_count == 0) }
                   = todos_count_format(todos_pending_count)
           %li.nav-item.header-help.dropdown.d-none.d-md-block{ **tracking_attrs('main_navigation', 'click_question_mark_link', 'navigation') }
             = link_to help_path, class: 'header-help-dropdown-toggle', data: { toggle: "dropdown" } do
@@ -87,7 +87,7 @@
           - if has_impersonation_link
             %li.nav-item.impersonation.ml-0
               = link_to admin_impersonation_path, class: 'nav-link impersonation-btn', method: :delete, title: _('Stop impersonation'), aria: { label: _('Stop impersonation') }, data: { toggle: 'tooltip', placement: 'bottom', container: 'body', qa_selector: 'stop_impersonation_link' } do
-                = icon('user-secret')
+                = sprite_icon('incognito', size: 18)
           - if header_link?(:sign_in)
             %li.nav-item
               %div
@@ -100,7 +100,7 @@
         = sprite_icon('close', size: 12, css_class: 'close-icon js-navbar-toggle-left')
 
 - if ::Feature.enabled?(:whats_new_drawer)
-  #whats-new-app
+  #whats-new-app{ data: { features: whats_new_most_recent_release_items } }
 
 - if can?(current_user, :update_user_status, current_user)
   .js-set-status-modal-wrapper{ data: { current_emoji: current_user.status.present? ? current_user.status.emoji : '', current_message: current_user.status.present? ? current_user.status.message : '' } }

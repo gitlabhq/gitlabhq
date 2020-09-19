@@ -68,7 +68,7 @@ describe('dashboard invalid url parameters', () => {
     it('form exists and can be submitted', () => {
       expect(findForm().exists()).toBe(true);
       expect(findSubmitBtn().exists()).toBe(true);
-      expect(findSubmitBtn().is('[disabled]')).toBe(false);
+      expect(findSubmitBtn().props('disabled')).toBe(false);
     });
 
     it('form has a text area with a default value', () => {
@@ -109,7 +109,7 @@ describe('dashboard invalid url parameters', () => {
       });
 
       it('submit button is disabled', () => {
-        expect(findSubmitBtn().is('[disabled]')).toBe(true);
+        expect(findSubmitBtn().props('disabled')).toBe(true);
       });
     });
   });

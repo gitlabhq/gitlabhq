@@ -52,7 +52,7 @@ module Projects
 
     def success
       @status.success
-      @project.mark_pages_as_deployed
+      @project.mark_pages_as_deployed(artifacts_archive: build.job_artifacts_archive)
       super
     end
 

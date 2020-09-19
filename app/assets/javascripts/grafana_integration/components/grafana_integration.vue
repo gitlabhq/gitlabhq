@@ -1,7 +1,6 @@
 <script>
-import { GlButton, GlFormGroup, GlFormInput, GlFormCheckbox } from '@gitlab/ui';
+import { GlButton, GlFormGroup, GlFormInput, GlFormCheckbox, GlIcon } from '@gitlab/ui';
 import { mapState, mapActions } from 'vuex';
-import Icon from '~/vue_shared/components/icon.vue';
 
 export default {
   components: {
@@ -9,7 +8,7 @@ export default {
     GlFormCheckbox,
     GlFormGroup,
     GlFormInput,
-    Icon,
+    GlIcon,
   },
   data() {
     return { placeholderUrl: 'https://my-url.grafana.net/' };
@@ -89,7 +88,7 @@ export default {
               rel="noopener noreferrer"
             >
               {{ __('More information') }}
-              <icon name="external-link" class="vertical-align-middle" />
+              <gl-icon name="external-link" class="vertical-align-middle" />
             </a>
           </p>
         </gl-form-group>

@@ -16,6 +16,6 @@ RSpec.describe 'User activates Packagist' do
 
     click_test_then_save_integration
 
-    expect(page).to have_content('Packagist activated.')
+    expect(page).to have_content('Packagist settings saved and active.')
   end
 end

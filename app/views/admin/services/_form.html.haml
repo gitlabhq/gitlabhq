@@ -3,8 +3,5 @@
 
 %p #{@service.description} template.
 
-= form_for :service, url: admin_application_settings_service_path, method: :put, html: { class: 'fieldset-form' } do |form|
+= form_for :service, url: admin_application_settings_service_path, method: :put, html: { class: 'fieldset-form js-integration-settings-form' } do |form|
   = render 'shared/service_settings', form: form, integration: @service
-
-  .footer-block.row-content-block
-    = form.submit 'Save', class: 'btn btn-success'

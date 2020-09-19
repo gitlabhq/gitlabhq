@@ -25,10 +25,14 @@ describe('MRWidgetHeader', () => {
     const downloadEmailPatchesEl = vm.$el.querySelector('.js-download-email-patches');
     const downloadPlainDiffEl = vm.$el.querySelector('.js-download-plain-diff');
 
-    expect(downloadEmailPatchesEl.textContent.trim()).toEqual('Email patches');
-    expect(downloadEmailPatchesEl.getAttribute('href')).toEqual('/mr/email-patches');
-    expect(downloadPlainDiffEl.textContent.trim()).toEqual('Plain diff');
-    expect(downloadPlainDiffEl.getAttribute('href')).toEqual('/mr/plainDiffPath');
+    expect(downloadEmailPatchesEl.innerText.trim()).toEqual('Email patches');
+    expect(downloadEmailPatchesEl.querySelector('a').getAttribute('href')).toEqual(
+      '/mr/email-patches',
+    );
+    expect(downloadPlainDiffEl.innerText.trim()).toEqual('Plain diff');
+    expect(downloadPlainDiffEl.querySelector('a').getAttribute('href')).toEqual(
+      '/mr/plainDiffPath',
+    );
   };
 
   describe('computed', () => {

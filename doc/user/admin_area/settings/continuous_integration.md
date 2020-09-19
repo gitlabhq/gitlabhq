@@ -7,7 +7,7 @@ type: reference
 
 # Continuous Integration and Deployment Admin settings **(CORE ONLY)**
 
-In this area, you will find settings for Auto DevOps, Runners, and job artifacts.
+In this area, you will find settings for Auto DevOps, runners, and job artifacts.
 You can find it in the **Admin Area > Settings > CI/CD**.
 
 ![Admin Area settings button](../img/admin_area_settings_button.png)
@@ -86,13 +86,13 @@ be updated for artifacts created before this setting was changed.
 The administrator may need to manually search for and expire previously-created
 artifacts, as described in the [troubleshooting documentation](../../../administration/troubleshooting/gitlab_rails_cheat_sheet.md#remove-artifacts-more-than-a-week-old).
 
-## Shared Runners pipeline minutes quota **(STARTER ONLY)**
+## Shared runners pipeline minutes quota **(STARTER ONLY)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/1078) in GitLab Starter 8.16.
 
-If you have enabled shared Runners for your GitLab instance, you can limit their
+If you have enabled shared runners for your GitLab instance, you can limit their
 usage by setting a maximum number of pipeline minutes that a group can use on
-shared Runners per month. Setting this to `0` (default value) will grant
+shared runners per month. Setting this to `0` (default value) will grant
 unlimited pipeline minutes. While build limits are stored as minutes, the
 counting is done in seconds. Usage resets on the first day of each month.
 On GitLab.com, the quota is calculated based on your
@@ -116,7 +116,7 @@ also change each group's pipeline minutes quota to override the global value.
 1. Click **Save changes** for the changes to take effect.
 
 Once saved, you can see the build quota in the group admin view.
-The quota can also be viewed in the project admin view if shared Runners
+The quota can also be viewed in the project admin view if shared runners
 are enabled.
 
 ![Project admin information](img/admin_project_quota_view.png)
@@ -196,7 +196,9 @@ To set required pipeline configuration:
 
 ![Required pipeline](img/admin_required_pipeline.png)
 
-## Package Registry configuration **(PREMIUM ONLY)**
+## Package Registry configuration
+
+### NPM Forwarding **(PREMIUM ONLY)**
 
 GitLab administrators can disable the forwarding of NPM requests to [npmjs.com](https://www.npmjs.com/).
 
@@ -208,3 +210,15 @@ To disable it:
 1. Click **Save changes**.
 
 ![NPM package requests forwarding](img/admin_package_registry_npm_package_requests_forward.png)
+
+### Package file size limits
+
+GitLab administrators can adjust the maximum allowed file size for each package type.
+
+To set the maximum file size:
+
+1. Go to **Admin Area > Settings > CI/CD**.
+1. Expand the **Package Registry** section.
+1. Find the package type you would like to adjust.
+1. Enter the maximum file size, in bytes.
+1. Click **Save size limits**.

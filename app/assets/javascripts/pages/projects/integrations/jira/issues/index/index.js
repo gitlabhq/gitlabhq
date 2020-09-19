@@ -1,4 +1,4 @@
-import initIssuablesList from '~/issuables_list';
+import initIssuablesList from '~/issues_list';
 
 document.addEventListener('DOMContentLoaded', () => {
   initIssuablesList();

@@ -1,15 +1,14 @@
 <script>
 import { mapState, mapActions } from 'vuex';
-import { GlLink, GlLoadingIcon } from '@gitlab/ui';
+import { GlLink, GlLoadingIcon, GlIcon } from '@gitlab/ui';
 import { sprintf, n__, s__ } from '~/locale';
-import Icon from '~/vue_shared/components/icon.vue';
 import RelatedIssuableItem from '~/vue_shared/components/issue/related_issuable_item.vue';
 import { parseIssuableData } from '../../issue_show/utils/parse_data';
 
 export default {
   name: 'RelatedMergeRequests',
   components: {
-    Icon,
+    GlIcon,
     GlLink,
     GlLoadingIcon,
     RelatedIssuableItem,
@@ -85,7 +84,7 @@ export default {
             <div class="mr-count-badge gl-display-inline-flex">
               <div class="mr-count-badge-count">
                 <svg class="s16 mr-1 text-secondary">
-                  <icon name="merge-request" class="mr-1 text-secondary" />
+                  <gl-icon name="merge-request" class="mr-1 text-secondary" />
                 </svg>
                 <span class="js-items-count">{{ totalCount }}</span>
               </div>

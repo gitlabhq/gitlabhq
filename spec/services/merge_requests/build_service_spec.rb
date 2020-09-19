@@ -88,6 +88,10 @@ RSpec.describe MergeRequests::BuildService do
       let(:source_project) { fork_project(project, user) }
       let(:merge_request) { described_class.new(project, user, mr_params).execute }
 
+      before do
+        project.add_reporter(user)
+      end
+
       it 'assigns force_remove_source_branch' do
         expect(merge_request.force_remove_source_branch?).to be_truthy
       end
@@ -510,7 +514,7 @@ RSpec.describe MergeRequests::BuildService do
       let(:target_project) { create(:project, :public, :repository) }
 
       before do
-        target_project.update(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
+        target_project.update!(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
       end
 
       it 'sets the target_project correctly' do

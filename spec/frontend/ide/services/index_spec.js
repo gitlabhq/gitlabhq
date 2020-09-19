@@ -146,7 +146,7 @@ describe('IDE services', () => {
     it('gives back file.baseRaw for files with that property present', () => {
       file.baseRaw = TEST_FILE_CONTENTS;
 
-      return services.getBaseRawFileData(file, TEST_COMMIT_SHA).then(content => {
+      return services.getBaseRawFileData(file, TEST_PROJECT_ID, TEST_COMMIT_SHA).then(content => {
         expect(content).toEqual(TEST_FILE_CONTENTS);
       });
     });
@@ -155,7 +155,7 @@ describe('IDE services', () => {
       file.tempFile = true;
       file.baseRaw = TEST_FILE_CONTENTS;
 
-      return services.getBaseRawFileData(file, TEST_COMMIT_SHA).then(content => {
+      return services.getBaseRawFileData(file, TEST_PROJECT_ID, TEST_COMMIT_SHA).then(content => {
         expect(content).toEqual(TEST_FILE_CONTENTS);
       });
     });
@@ -192,7 +192,7 @@ describe('IDE services', () => {
         });
 
         it('fetches file content', () =>
-          services.getBaseRawFileData(file, TEST_COMMIT_SHA).then(content => {
+          services.getBaseRawFileData(file, TEST_PROJECT_ID, TEST_COMMIT_SHA).then(content => {
             expect(content).toEqual(TEST_FILE_CONTENTS);
           }));
       },

@@ -1,7 +1,3 @@
----
-last_updated: 2019-06-18
----
-
 # Migrating from MySQL to PostgreSQL
 
 This guide documents how to take a working GitLab instance that uses MySQL and

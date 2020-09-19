@@ -136,9 +136,22 @@ RSpec.describe MergeRequestWidgetEntity do
         let(:role) { :developer }
 
         it 'has add ci config path' do
-          expected_path = "/#{resource.project.full_path}/-/new/#{resource.source_branch}?commit_message=Add+.gitlab-ci.yml&file_name=.gitlab-ci.yml&suggest_gitlab_ci_yml=true"
+          expected_path = "/#{resource.project.full_path}/-/new/#{resource.source_branch}"
 
-          expect(subject[:merge_request_add_ci_config_path]).to eq(expected_path)
+          expect(subject[:merge_request_add_ci_config_path]).to include(expected_path)
+        end
+
+        it 'has expected params' do
+          expected_params = {
+            commit_message: 'Add .gitlab-ci.yml',
+            file_name: '.gitlab-ci.yml',
+            suggest_gitlab_ci_yml: 'true',
+            mr_path: "/#{resource.project.full_path}/-/merge_requests/#{resource.iid}"
+          }.with_indifferent_access
+
+          uri = Addressable::URI.parse(subject[:merge_request_add_ci_config_path])
+
+          expect(uri.query_values).to match(expected_params)
         end
 
         context 'when auto devops is enabled' do
@@ -197,7 +210,7 @@ RSpec.describe MergeRequestWidgetEntity do
 
         context 'when build feature is disabled' do
           before do
-            project.project_feature.update(builds_access_level: ProjectFeature::DISABLED)
+            project.project_feature.update!(builds_access_level: ProjectFeature::DISABLED)
           end
 
           it 'has no path' do
@@ -333,7 +346,7 @@ RSpec.describe MergeRequestWidgetEntity do
 
     it 'returns a blank rebase_path' do
       allow(merge_request).to receive(:should_be_rebased?).and_return(true)
-      forked_project.destroy
+      forked_project.destroy!
       merge_request.reload
 
       entity = described_class.new(merge_request, request: request).as_json

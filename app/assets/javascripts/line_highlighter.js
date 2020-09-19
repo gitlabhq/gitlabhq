@@ -1,6 +1,7 @@
 /* eslint-disable func-names, no-underscore-dangle, no-param-reassign, consistent-return */
 
 import $ from 'jquery';
+import 'vendor/jquery.scrollTo';
 
 // LineHighlighter
 //

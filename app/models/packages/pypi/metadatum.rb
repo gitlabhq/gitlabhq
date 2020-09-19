@@ -6,6 +6,7 @@ class Packages::Pypi::Metadatum < ApplicationRecord
   belongs_to :package, -> { where(package_type: :pypi) }, inverse_of: :pypi_metadatum
 
   validates :package, presence: true
+  validates :required_python, length: { maximum: 255 }, allow_blank: true
 
   validate :pypi_package_type
 

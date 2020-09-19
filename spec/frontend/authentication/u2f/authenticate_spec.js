@@ -76,7 +76,7 @@ describe('U2FAuthenticate', () => {
 
     describe('errors', () => {
       it('displays an error message', () => {
-        const setupButton = container.find('#js-login-u2f-device');
+        const setupButton = container.find('#js-login-2fa-device');
         setupButton.trigger('click');
         u2fDevice.respondToAuthenticateRequest({
           errorCode: 'error!',
@@ -87,14 +87,14 @@ describe('U2FAuthenticate', () => {
       });
 
       it('allows retrying authentication after an error', () => {
-        let setupButton = container.find('#js-login-u2f-device');
+        let setupButton = container.find('#js-login-2fa-device');
         setupButton.trigger('click');
         u2fDevice.respondToAuthenticateRequest({
           errorCode: 'error!',
         });
         const retryButton = container.find('#js-token-2fa-try-again');
         retryButton.trigger('click');
-        setupButton = container.find('#js-login-u2f-device');
+        setupButton = container.find('#js-login-2fa-device');
         setupButton.trigger('click');
         u2fDevice.respondToAuthenticateRequest({
           deviceData: 'this is data from the device',

@@ -5,8 +5,13 @@ describe('Build Custom Renderer Service', () => {
     it('should return an object with the default renderer functions when lacking arguments', () => {
       expect(buildCustomHTMLRenderer()).toEqual(
         expect.objectContaining({
-          list: expect.any(Function),
+          htmlBlock: expect.any(Function),
+          htmlInline: expect.any(Function),
+          heading: expect.any(Function),
+          item: expect.any(Function),
+          paragraph: expect.any(Function),
           text: expect.any(Function),
+          softbreak: expect.any(Function),
         }),
       );
     });
@@ -20,8 +25,6 @@ describe('Build Custom Renderer Service', () => {
       expect(buildCustomHTMLRenderer(customRenderers)).toEqual(
         expect.objectContaining({
           html: expect.any(Function),
-          list: expect.any(Function),
-          text: expect.any(Function),
         }),
       );
     });

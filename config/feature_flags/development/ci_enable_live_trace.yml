@@ -1,0 +1,7 @@
+---
+name: ci_enable_live_trace
+introduced_by_url: 
+rollout_issue_url: 
+group: 
+type: development
+default_enabled: false

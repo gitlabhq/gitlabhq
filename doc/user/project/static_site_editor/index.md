@@ -82,7 +82,7 @@ or [create a new project from a template](../../../gitlab-basics/create-project.
 1. Visit your website and look at the bottom-left corner of the screen to see the new **Edit this page** button.
 
 Anyone satisfying the [requirements](#requirements) will be able to edit the
-content of the pages without prior knowledge of Git nor of your site's
+content of the pages without prior knowledge of Git or of your site's
 codebase.
 
 NOTE: **Note:**

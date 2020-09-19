@@ -34,12 +34,15 @@ describe('PackagesApp', () => {
   let wrapper;
   let store;
   const fetchPackageVersions = jest.fn();
+  const deletePackage = jest.fn();
+  const defaultProjectName = 'bar';
+  const { location } = window;
 
   function createComponent({
     packageEntity = mavenPackage,
     packageFiles = mavenFiles,
     isLoading = false,
-    oneColumnView = false,
+    projectName = defaultProjectName,
   } = {}) {
     store = new Vuex.Store({
       state: {
@@ -47,14 +50,15 @@ describe('PackagesApp', () => {
         packageEntity,
         packageFiles,
         canDelete: true,
-        destroyPath: 'destroy-package-path',
         emptySvgPath: 'empty-illustration',
         npmPath: 'foo',
         npmHelpPath: 'foo',
-        projectName: 'bar',
-        oneColumnView,
+        projectName,
+        projectListUrl: 'project_url',
+        groupListUrl: 'group_url',
       },
       actions: {
+        deletePackage,
         fetchPackageVersions,
       },
       getters,
@@ -65,6 +69,8 @@ describe('PackagesApp', () => {
       store,
       stubs: {
         ...stubChildren(PackagesApp),
+        PackageTitle: false,
+        TitleArea: false,
         GlButton: false,
         GlModal: false,
         GlTab: false,
@@ -93,8 +99,14 @@ describe('PackagesApp', () => {
   const findAdditionalMetadata = () => wrapper.find(AdditionalMetadata);
   const findInstallationCommands = () => wrapper.find(InstallationCommands);
 
+  beforeEach(() => {
+    delete window.location;
+    window.location = { replace: jest.fn() };
+  });
+
   afterEach(() => {
     wrapper.destroy();
+    window.location = location;
   });
 
   it('renders the app and displays the package title', () => {
@@ -238,44 +250,94 @@ describe('PackagesApp', () => {
     });
   });
 
-  describe('tracking', () => {
-    let eventSpy;
-    let utilSpy;
-    const category = 'foo';
-
-    beforeEach(() => {
-      eventSpy = jest.spyOn(Tracking, 'event');
-      utilSpy = jest.spyOn(SharedUtils, 'packageTypeToTrackCategory').mockReturnValue(category);
-    });
-
-    it('tracking category calls packageTypeToTrackCategory', () => {
-      createComponent({ packageEntity: conanPackage });
-      expect(wrapper.vm.tracking.category).toBe(category);
-      expect(utilSpy).toHaveBeenCalledWith('conan');
-    });
-
-    it(`delete button on delete modal call event with ${TrackingActions.DELETE_PACKAGE}`, () => {
-      createComponent({ packageEntity: conanPackage });
+  describe('tracking and delete', () => {
+    const doDelete = async () => {
       deleteButton().trigger('click');
-      return wrapper.vm.$nextTick().then(() => {
-        modalDeleteButton().trigger('click');
+      await wrapper.vm.$nextTick();
+      modalDeleteButton().trigger('click');
+    };
+
+    describe('delete', () => {
+      const originalReferrer = document.referrer;
+      const setReferrer = (value = defaultProjectName) => {
+        Object.defineProperty(document, 'referrer', {
+          value,
+          configurable: true,
+        });
+      };
+
+      afterEach(() => {
+        Object.defineProperty(document, 'referrer', {
+          value: originalReferrer,
+          configurable: true,
+        });
+      });
+
+      it('calls the proper vuex action', async () => {
+        createComponent({ packageEntity: npmPackage });
+        await doDelete();
+        expect(deletePackage).toHaveBeenCalled();
+      });
+
+      it('when referrer contains project name calls window.replace with project url', async () => {
+        setReferrer();
+        deletePackage.mockResolvedValue();
+        createComponent({ packageEntity: npmPackage });
+        await doDelete();
+        await deletePackage();
+        expect(window.location.replace).toHaveBeenCalledWith(
+          'project_url?showSuccessDeleteAlert=true',
+        );
+      });
+
+      it('when referrer does not contain project name calls window.replace with group url', async () => {
+        setReferrer('baz');
+        deletePackage.mockResolvedValue();
+        createComponent({ packageEntity: npmPackage });
+        await doDelete();
+        await deletePackage();
+        expect(window.location.replace).toHaveBeenCalledWith(
+          'group_url?showSuccessDeleteAlert=true',
+        );
+      });
+    });
+
+    describe('tracking', () => {
+      let eventSpy;
+      let utilSpy;
+      const category = 'foo';
+
+      beforeEach(() => {
+        eventSpy = jest.spyOn(Tracking, 'event');
+        utilSpy = jest.spyOn(SharedUtils, 'packageTypeToTrackCategory').mockReturnValue(category);
+      });
+
+      it('tracking category calls packageTypeToTrackCategory', () => {
+        createComponent({ packageEntity: conanPackage });
+        expect(wrapper.vm.tracking.category).toBe(category);
+        expect(utilSpy).toHaveBeenCalledWith('conan');
+      });
+
+      it(`delete button on delete modal call event with ${TrackingActions.DELETE_PACKAGE}`, async () => {
+        createComponent({ packageEntity: npmPackage });
+        await doDelete();
         expect(eventSpy).toHaveBeenCalledWith(
           category,
           TrackingActions.DELETE_PACKAGE,
           expect.any(Object),
         );
       });
-    });
 
-    it(`file download link call event with ${TrackingActions.PULL_PACKAGE}`, () => {
-      createComponent({ packageEntity: conanPackage });
+      it(`file download link call event with ${TrackingActions.PULL_PACKAGE}`, () => {
+        createComponent({ packageEntity: conanPackage });
 
-      firstFileDownloadLink().vm.$emit('click');
-      expect(eventSpy).toHaveBeenCalledWith(
-        category,
-        TrackingActions.PULL_PACKAGE,
-        expect.any(Object),
-      );
+        firstFileDownloadLink().vm.$emit('click');
+        expect(eventSpy).toHaveBeenCalledWith(
+          category,
+          TrackingActions.PULL_PACKAGE,
+          expect.any(Object),
+        );
+      });
     });
   });
 });

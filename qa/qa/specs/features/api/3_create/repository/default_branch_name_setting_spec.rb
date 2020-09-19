@@ -1,0 +1,62 @@
+# frozen_string_literal: true
+
+require 'securerandom'
+
+module QA
+  RSpec.describe 'Create' do
+    describe 'Default branch name instance setting', :requires_admin, :skip_live_env do
+      before(:context) do
+        Runtime::ApplicationSettings.set_application_settings(default_branch_name: 'main')
+      end
+
+      after(:context) do
+        Runtime::ApplicationSettings.restore_application_settings(:default_branch_name)
+      end
+
+      it 'sets the default branch name for a new project' do
+        project = Resource::Project.fabricate_via_api! do |project|
+          project.name = "default-branch-name"
+          project.initialize_with_readme = true
+        end
+
+        # It takes a moment to create the project. We wait until we
+        # know it exists before we try to clone it
+        Support::Waiter.wait_until { project.has_file?('README.md') }
+
+        Git::Repository.perform do |repository|
+          repository.uri = project.repository_http_location.uri
+          repository.use_default_credentials
+          repository.clone
+
+          expect(repository.current_branch).to eq('main')
+        end
+      end
+
+      it 'allows a project to be created via the CLI with a different default branch name' do
+        project_name = "default-branch-name-via-cli-#{SecureRandom.hex(8)}"
+        group = Resource::Group.fabricate_via_api!
+
+        Git::Repository.perform do |repository|
+          repository.init_repository
+          repository.uri = "#{Runtime::Scenario.gitlab_address}/#{group.full_path}/#{project_name}"
+          repository.use_default_credentials
+          repository.configure_identity('GitLab QA', 'root@gitlab.com')
+          repository.checkout('trunk', new_branch: true)
+          repository.commit_file('README.md', 'Created via the CLI', 'initial commit via CLI')
+          repository.push_changes('trunk')
+        end
+
+        project = Resource::Project.fabricate_via_api! do |project|
+          project.add_name_uuid = false
+          project.name = project_name
+          project.group = group
+        end
+
+        expect(project.default_branch).to eq('trunk')
+        expect(project).to have_file('README.md')
+        expect(project.commits.map { |commit| commit[:message].chomp })
+          .to include('initial commit via CLI')
+      end
+    end
+  end
+end

@@ -1,11 +1,13 @@
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import { shallowMount } from '@vue/test-utils';
-import { GlNewDropdown, GlLoadingIcon, GlSearchBoxByType } from '@gitlab/ui';
+import { GlDropdown, GlLoadingIcon, GlSearchBoxByType } from '@gitlab/ui';
+import { ENTER_KEY } from '~/lib/utils/keys';
 import MilestoneCombobox from '~/milestones/project_milestone_combobox.vue';
 import { milestones as projectMilestones } from './mock_data';
 
 const TEST_SEARCH_ENDPOINT = '/api/v4/projects/8/search';
+const TEST_SEARCH = 'TEST_SEARCH';
 
 const extraLinks = [
   { text: 'Create new', url: 'http://127.0.0.1:3000/h5bp/html5-boilerplate/-/milestones/new' },
@@ -20,6 +22,8 @@ describe('Milestone selector', () => {
   let mock;
 
   const findNoResultsMessage = () => wrapper.find({ ref: 'noResults' });
+
+  const findSearchBox = () => wrapper.find(GlSearchBoxByType);
 
   const factory = (options = {}) => {
     wrapper = shallowMount(MilestoneCombobox, {
@@ -49,7 +53,7 @@ describe('Milestone selector', () => {
   });
 
   it('renders the dropdown', () => {
-    expect(wrapper.find(GlNewDropdown)).toExist();
+    expect(wrapper.find(GlDropdown)).toExist();
   });
 
   it('renders additional links', () => {
@@ -63,7 +67,7 @@ describe('Milestone selector', () => {
   describe('before results', () => {
     it('should show a loading icon', () => {
       const request = mock.onGet(TEST_SEARCH_ENDPOINT, {
-        params: { search: 'TEST_SEARCH', scope: 'milestones' },
+        params: { search: TEST_SEARCH, scope: 'milestones' },
       });
 
       expect(wrapper.find(GlLoadingIcon).exists()).toBe(true);
@@ -85,9 +89,9 @@ describe('Milestone selector', () => {
   describe('with empty results', () => {
     beforeEach(() => {
       mock
-        .onGet(TEST_SEARCH_ENDPOINT, { params: { search: 'TEST_SEARCH', scope: 'milestones' } })
+        .onGet(TEST_SEARCH_ENDPOINT, { params: { search: TEST_SEARCH, scope: 'milestones' } })
         .reply(200, []);
-      wrapper.find(GlSearchBoxByType).vm.$emit('input', 'TEST_SEARCH');
+      findSearchBox().vm.$emit('input', TEST_SEARCH);
       return axios.waitForAll();
     });
 
@@ -116,7 +120,7 @@ describe('Milestone selector', () => {
             web_url: 'http://127.0.0.1:3000/h5bp/html5-boilerplate/-/milestones/6',
           },
         ]);
-      wrapper.find(GlSearchBoxByType).vm.$emit('input', 'v0.1');
+      findSearchBox().vm.$emit('input', 'v0.1');
       return axios.waitForAll().then(() => {
         items = wrapper.findAll('[role="milestone option"]');
       });
@@ -145,6 +149,38 @@ describe('Milestone selector', () => {
 
     it('should not display a message about no results', () => {
       expect(findNoResultsMessage().exists()).toBe(false);
+    });
+  });
+
+  describe('when Enter is pressed', () => {
+    beforeEach(() => {
+      factory({
+        propsData: {
+          projectId,
+          preselectedMilestones,
+          extraLinks,
+        },
+        data() {
+          return {
+            searchQuery: 'TEST_SEARCH',
+          };
+        },
+      });
+
+      mock
+        .onGet(TEST_SEARCH_ENDPOINT, { params: { search: 'TEST_SEARCH', scope: 'milestones' } })
+        .reply(200, []);
+    });
+
+    it('should trigger a search', async () => {
+      mock.resetHistory();
+
+      findSearchBox().vm.$emit('keydown', new KeyboardEvent({ key: ENTER_KEY }));
+
+      await axios.waitForAll();
+
+      expect(mock.history.get.length).toBe(1);
+      expect(mock.history.get[0].url).toBe(TEST_SEARCH_ENDPOINT);
     });
   });
 });

@@ -1,9 +1,10 @@
 import testAction from 'helpers/vuex_action_helper';
 import Api from '~/api';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
-import fetchPackageVersions from '~/packages/details/store/actions';
+import { fetchPackageVersions, deletePackage } from '~/packages/details/store/actions';
 import * as types from '~/packages/details/store/mutation_types';
 import { FETCH_PACKAGE_VERSIONS_ERROR } from '~/packages/details/constants';
+import { DELETE_PACKAGE_ERROR_MESSAGE } from '~/packages/shared/constants';
 import { npmPackage as packageEntity } from '../../mock_data';
 
 jest.mock('~/flash.js');
@@ -71,6 +72,27 @@ describe('Actions Package details store', () => {
           done();
         },
       );
+    });
+  });
+
+  describe('deletePackage', () => {
+    it('should call Api.deleteProjectPackage', done => {
+      Api.deleteProjectPackage = jest.fn().mockResolvedValue();
+      testAction(deletePackage, undefined, { packageEntity }, [], [], () => {
+        expect(Api.deleteProjectPackage).toHaveBeenCalledWith(
+          packageEntity.project_id,
+          packageEntity.id,
+        );
+        done();
+      });
+    });
+    it('should create flash on API error', done => {
+      Api.deleteProjectPackage = jest.fn().mockRejectedValue();
+
+      testAction(deletePackage, undefined, { packageEntity }, [], [], () => {
+        expect(createFlash).toHaveBeenCalledWith(DELETE_PACKAGE_ERROR_MESSAGE);
+        done();
+      });
     });
   });
 });

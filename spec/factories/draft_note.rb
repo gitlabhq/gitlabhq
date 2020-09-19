@@ -25,7 +25,7 @@ FactoryBot.define do
     factory :draft_note_on_discussion, traits: [:on_discussion]
 
     trait :on_discussion do
-      discussion_id { create(:discussion_note_on_merge_request, noteable: merge_request, project: project).discussion_id }
+      discussion_id { association(:discussion_note_on_merge_request, noteable: merge_request, project: project).discussion_id }
     end
   end
 end

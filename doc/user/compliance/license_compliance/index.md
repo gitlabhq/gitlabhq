@@ -16,7 +16,7 @@ is incompatible with yours, then you can deny the use of that license.
 
 You can take advantage of License Compliance by either [including the job](#configuration)
 in your existing `.gitlab-ci.yml` file or by implicitly using
-[Auto License Compliance](../../../topics/autodevops/stages.md#auto-license-compliance-ultimate)
+[Auto License Compliance](../../../topics/autodevops/stages.md#auto-license-compliance)
 that is provided by [Auto DevOps](../../../topics/autodevops/index.md).
 
 GitLab checks the License Compliance report, compares the licenses between the
@@ -118,7 +118,7 @@ the `license_management` job, so you must migrate to the `license_scanning` job 
 `License-Scanning.gitlab-ci.yml` template.
 
 The results will be saved as a
-[License Compliance report artifact](../../../ci/pipelines/job_artifacts.md#artifactsreportslicense_scanning-ultimate)
+[License Compliance report artifact](../../../ci/pipelines/job_artifacts.md#artifactsreportslicense_scanning)
 that you can later download and analyze. Due to implementation limitations, we
 always take the latest License Compliance artifact available. Behind the scenes, the
 [GitLab License Compliance Docker image](https://gitlab.com/gitlab-org/security-products/license-management)
@@ -265,37 +265,10 @@ license_scanning:
 You can supply a custom root certificate to complete TLS verification by using the
 `ADDITIONAL_CA_CERT_BUNDLE` [environment variable](#available-variables).
 
-To bypass TLS verification, you can use a custom [`pip.conf`](https://pip.pypa.io/en/stable/user_guide/#config-file)
-file to configure trusted hosts.
-
-The following `gitlab-ci.yml` file uses a [`before_script`](../../../ci/yaml/README.md#before_script-and-after_script)
-to inject a custom [`pip.conf`](https://pip.pypa.io/en/stable/user_guide/#config-file):
-
-```yaml
-include:
-  - template: Security/License-Scanning.gitlab-ci.yml
-
-license_scanning:
-  variables:
-    PIP_INDEX_URL: 'https://pypi.example.com/simple/'
-  before_script:
-    - mkdir -p ~/.config/pip/
-    - cp pip.conf ~/.config/pip/pip.conf
-```
-
-The [`pip.conf`](https://pip.pypa.io/en/stable/reference/pip/) allows you to specify a list of
-[trusted hosts](https://pip.pypa.io/en/stable/reference/pip/#cmdoption-trusted-host):
-
-```plaintext
-[global]
-trusted-host = pypi.example.com
-```
-
 #### Using private Python repos
 
 If you have a private Python repository you can use the `PIP_INDEX_URL` [environment variable](#available-variables)
-to specify its location. It's also possible to provide a custom `pip.conf` for
-[additional configuration](#custom-root-certificates-for-python).
+to specify its location.
 
 ### Configuring NPM projects
 
@@ -643,8 +616,8 @@ To use License Compliance in an offline environment, you need:
 
 NOTE: **Note:**
 GitLab Runner has a [default `pull policy` of `always`](https://docs.gitlab.com/runner/executors/docker.html#using-the-always-pull-policy),
-meaning the Runner tries to pull Docker images from the GitLab container registry even if a local
-copy is available. GitLab Runner's [`pull_policy` can be set to `if-not-present`](https://docs.gitlab.com/runner/executors/docker.html#using-the-if-not-present-pull-policy)
+meaning the runner tries to pull Docker images from the GitLab container registry even if a local
+copy is available. The GitLab Runner [`pull_policy` can be set to `if-not-present`](https://docs.gitlab.com/runner/executors/docker.html#using-the-if-not-present-pull-policy)
 in an offline environment if you prefer using only locally available Docker images. However, we
 recommend keeping the pull policy setting to `always` if not in an offline environment, as this
 enables the use of updated scanners in your CI/CD pipelines.
@@ -705,9 +678,6 @@ with identifiers from the [SPDX license list](https://spdx.org/licenses/).
 A local copy of the SPDX license list is distributed with the GitLab instance. If needed, the GitLab
 instance's administrator can manually update it with a [Rake task](../../../raketasks/spdx.md).
 
-Exact name matches are required for [project policies](#policies)
-when running in an offline environment ([see related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/212388)).
-
 ## License list
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13582) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.7.
@@ -753,17 +723,21 @@ Developers of the project can view the policies configured in a project.
 
 ![View Policies](img/policies_v13_0.png)
 
-### Enabling License Approvals within a project
+## Enabling License Approvals within a project
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13067) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.3.
 
-`License-Check` is an approval rule you can enable to allow an approver, individual, or group to
-approve a merge request that contains a `denied` license.
+`License-Check` is a [security approval](../../application_security/index.md#enabling-security-approvals-within-a-project) rule you can enable to allow an individual or group to approve a
+merge request that contains a `denied` license.
 
 You can enable `License-Check` one of two ways:
 
-- Create a [project approval rule](../../project/merge_requests/merge_request_approvals.md#multiple-approval-rules-premium)
-  with the case-sensitive name `License-Check`.
+1. Navigate to your project's **Settings > General** and expand **Merge request approvals**.
+1. Click **Enable** or **Edit**.
+1. Add or change the **Rule name** to `License-Check` (case sensitive).
+
+![License Check Approver Rule](img/license-check_v13_4.png)
+
 - Create an approval group in the [project policies section for License Compliance](#policies).
   You must set this approval group's number of approvals required to greater than zero. Once you
   enable this group in your project, the approval rule is enabled for all merge requests.

@@ -1,177 +1,141 @@
 # frozen_string_literal: true
+require_relative 'cluster_with_prometheus.rb'
 
 module QA
-  RSpec.describe 'Monitor' do
-    describe 'with Prometheus in a Gitlab-managed cluster', :orchestrated, :kubernetes, :requires_admin do
-      before :all do
-        @cluster = Service::KubernetesCluster.new(provider_class: Service::ClusterProvider::K3s).create!
-        @project = Resource::Project.fabricate_via_api! do |project|
-          project.name = 'monitoring-project'
-          project.auto_devops_enabled = true
-          project.template_name = 'express'
-        end
+  RSpec.describe 'Monitor', :orchestrated, :kubernetes, :requires_admin, quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/241448', type: :investigating } do
+    include_context "cluster with Prometheus installed"
 
-        deploy_project_with_prometheus
+    before do
+      Flow::Login.sign_in_unless_signed_in
+      @project.visit!
+    end
+
+    it 'configures custom metrics', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/872' do
+      verify_add_custom_metric
+      verify_edit_custom_metric
+      verify_delete_custom_metric
+    end
+
+    it 'duplicates to create dashboard to custom', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/871' do
+      Page::Project::Menu.perform(&:go_to_operations_metrics)
+
+      Page::Project::Operations::Metrics::Show.perform do |on_dashboard|
+        on_dashboard.duplicate_dashboard
+
+        expect(on_dashboard).to have_metrics
+        expect(on_dashboard).to have_edit_dashboard_enabled
+      end
+    end
+
+    it 'verifies data on filtered deployed environment', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/874' do
+      Page::Project::Menu.perform(&:go_to_operations_metrics)
+
+      Page::Project::Operations::Metrics::Show.perform do |on_dashboard|
+        on_dashboard.filter_environment
+
+        expect(on_dashboard).to have_metrics
+      end
+    end
+
+    it 'filters using the quick range', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/873' do
+      Page::Project::Menu.perform(&:go_to_operations_metrics)
+
+      Page::Project::Operations::Metrics::Show.perform do |on_dashboard|
+        on_dashboard.show_last('30 minutes')
+        expect(on_dashboard).to have_metrics
+
+        on_dashboard.show_last('3 hours')
+        expect(on_dashboard).to have_metrics
+
+        on_dashboard.show_last('1 day')
+        expect(on_dashboard).to have_metrics
+      end
+    end
+
+    it 'observes cluster health graph', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/920' do
+      Page::Project::Menu.perform(&:go_to_operations_kubernetes)
+
+      Page::Project::Operations::Kubernetes::Index.perform do |cluster_list|
+        cluster_list.click_on_cluster(@cluster)
       end
 
-      before do
-        Flow::Login.sign_in_unless_signed_in
-        @project.visit!
+      Page::Project::Operations::Kubernetes::Show.perform do |cluster_panel|
+        cluster_panel.open_health
+        cluster_panel.wait_for_cluster_health
+      end
+    end
+
+    it 'uses templating variables for metrics dashboards' do
+      templating_dashboard_yml = Pathname
+                                     .new(__dir__)
+                                     .join('../../../../fixtures/metrics_dashboards/templating.yml')
+
+      Resource::Repository::ProjectPush.fabricate! do |push|
+        push.project = @project
+        push.file_name = '.gitlab/dashboards/templating.yml'
+        push.file_content = File.read(templating_dashboard_yml)
+        push.commit_message = 'Add templating in dashboard file'
+        push.new_branch = false
       end
 
-      after :all do
-        @cluster.remove!
+      Page::Project::Menu.perform(&:go_to_operations_metrics)
+
+      Page::Project::Operations::Metrics::Show.perform do |dashboard|
+        dashboard.select_dashboard('templating.yml')
+
+        expect(dashboard).to have_template_metric('CPU usage GitLab Runner')
+        expect(dashboard).to have_template_metric('Memory usage Postgresql')
+        expect(dashboard).to have_templating_variable('GitLab Runner')
+        expect(dashboard).to have_templating_variable('Postgresql')
+      end
+    end
+
+    private
+
+    def verify_add_custom_metric
+      Page::Project::Menu.perform(&:go_to_integrations_settings)
+      Page::Project::Settings::Integrations.perform(&:click_on_prometheus_integration)
+
+      Page::Project::Settings::Services::Prometheus.perform do |metrics_panel|
+        metrics_panel.click_on_new_metric
+        metrics_panel.add_custom_metric
       end
 
-      it 'configures custom metrics' do
-        verify_add_custom_metric
-        verify_edit_custom_metric
-        verify_delete_custom_metric
+      Page::Project::Menu.perform(&:go_to_operations_metrics)
+
+      Page::Project::Operations::Metrics::Show.perform do |on_dashboard|
+        expect(on_dashboard).to have_custom_metric('HTTP Requests Total')
+      end
+    end
+
+    def verify_edit_custom_metric
+      Page::Project::Menu.perform(&:go_to_integrations_settings)
+      Page::Project::Settings::Integrations.perform(&:click_on_prometheus_integration)
+      Page::Project::Settings::Services::Prometheus.perform do |metrics_panel|
+        metrics_panel.click_on_custom_metric('Business / HTTP Requests Total (req/sec)')
+        metrics_panel.edit_custom_metric
       end
 
-      it 'duplicates to create dashboard to custom' do
-        Page::Project::Menu.perform(&:go_to_operations_metrics)
+      Page::Project::Menu.perform(&:go_to_operations_metrics)
 
-        Page::Project::Operations::Metrics::Show.perform do |on_dashboard|
-          on_dashboard.duplicate_dashboard
+      Page::Project::Operations::Metrics::Show.perform do |on_dashboard|
+        expect(on_dashboard).to have_custom_metric('Throughput')
+      end
+    end
 
-          expect(on_dashboard).to have_metrics
-          expect(on_dashboard).to have_edit_dashboard_enabled
-        end
+    def verify_delete_custom_metric
+      Page::Project::Menu.perform(&:go_to_integrations_settings)
+      Page::Project::Settings::Integrations.perform(&:click_on_prometheus_integration)
+
+      Page::Project::Settings::Services::Prometheus.perform do |metrics_panel|
+        metrics_panel.click_on_custom_metric('Business / Throughput (req/sec)')
+        metrics_panel.delete_custom_metric
       end
 
-      it 'verifies data on filtered deployed environment' do
-        Page::Project::Menu.perform(&:go_to_operations_metrics)
+      Page::Project::Menu.perform(&:go_to_operations_metrics)
 
-        Page::Project::Operations::Metrics::Show.perform do |on_dashboard|
-          on_dashboard.filter_environment
-
-          expect(on_dashboard).to have_metrics
-        end
-      end
-
-      it 'filters using the quick range' do
-        Page::Project::Menu.perform(&:go_to_operations_metrics)
-
-        Page::Project::Operations::Metrics::Show.perform do |on_dashboard|
-          on_dashboard.show_last('30 minutes')
-          expect(on_dashboard).to have_metrics
-
-          on_dashboard.show_last('3 hours')
-          expect(on_dashboard).to have_metrics
-
-          on_dashboard.show_last('1 day')
-          expect(on_dashboard).to have_metrics
-        end
-      end
-
-      it 'observes cluster health graph' do
-        Page::Project::Menu.perform(&:go_to_operations_kubernetes)
-
-        Page::Project::Operations::Kubernetes::Index.perform do |cluster_list|
-          cluster_list.click_on_cluster(@cluster)
-        end
-
-        Page::Project::Operations::Kubernetes::Show.perform do |cluster_panel|
-          cluster_panel.open_health
-          cluster_panel.wait_for_cluster_health
-        end
-      end
-
-      private
-
-      def deploy_project_with_prometheus
-        %w[
-          CODE_QUALITY_DISABLED TEST_DISABLED LICENSE_MANAGEMENT_DISABLED
-          SAST_DISABLED DAST_DISABLED DEPENDENCY_SCANNING_DISABLED
-          CONTAINER_SCANNING_DISABLED PERFORMANCE_DISABLED SECRET_DETECTION_DISABLED
-        ].each do |key|
-          Resource::CiVariable.fabricate_via_api! do |resource|
-            resource.project = @project
-            resource.key = key
-            resource.value = '1'
-            resource.masked = false
-          end
-        end
-
-        Flow::Login.sign_in
-
-        Resource::KubernetesCluster::ProjectCluster.fabricate! do |cluster_settings|
-          cluster_settings.project = @project
-          cluster_settings.cluster = @cluster
-          cluster_settings.install_runner = true
-          cluster_settings.install_ingress = true
-          cluster_settings.install_prometheus = true
-        end
-
-        Resource::Pipeline.fabricate_via_api! do |pipeline|
-          pipeline.project = @project
-        end.visit!
-
-        Page::Project::Pipeline::Show.perform do |pipeline|
-          pipeline.click_job('build')
-        end
-        Page::Project::Job::Show.perform do |job|
-          expect(job).to be_successful(timeout: 600)
-
-          job.click_element(:pipeline_path)
-        end
-
-        Page::Project::Pipeline::Show.perform do |pipeline|
-          pipeline.click_job('production')
-        end
-        Page::Project::Job::Show.perform do |job|
-          expect(job).to be_successful(timeout: 1200)
-
-          job.click_element(:pipeline_path)
-        end
-      end
-
-      def verify_add_custom_metric
-        Page::Project::Menu.perform(&:go_to_integrations_settings)
-        Page::Project::Settings::Integrations.perform(&:click_on_prometheus_integration)
-
-        Page::Project::Settings::Services::Prometheus.perform do |metrics_panel|
-          metrics_panel.click_on_new_metric
-          metrics_panel.add_custom_metric
-        end
-
-        Page::Project::Menu.perform(&:go_to_operations_metrics)
-
-        Page::Project::Operations::Metrics::Show.perform do |on_dashboard|
-          expect(on_dashboard).to have_custom_metric('HTTP Requests Total')
-        end
-      end
-
-      def verify_edit_custom_metric
-        Page::Project::Menu.perform(&:go_to_integrations_settings)
-        Page::Project::Settings::Integrations.perform(&:click_on_prometheus_integration)
-        Page::Project::Settings::Services::Prometheus.perform do |metrics_panel|
-          metrics_panel.click_on_custom_metric('Business / HTTP Requests Total (req/sec)')
-          metrics_panel.edit_custom_metric
-        end
-
-        Page::Project::Menu.perform(&:go_to_operations_metrics)
-
-        Page::Project::Operations::Metrics::Show.perform do |on_dashboard|
-          expect(on_dashboard).to have_custom_metric('Throughput')
-        end
-      end
-
-      def verify_delete_custom_metric
-        Page::Project::Menu.perform(&:go_to_integrations_settings)
-        Page::Project::Settings::Integrations.perform(&:click_on_prometheus_integration)
-
-        Page::Project::Settings::Services::Prometheus.perform do |metrics_panel|
-          metrics_panel.click_on_custom_metric('Business / Throughput (req/sec)')
-          metrics_panel.delete_custom_metric
-        end
-
-        Page::Project::Menu.perform(&:go_to_operations_metrics)
-
-        Page::Project::Operations::Metrics::Show.perform do |on_dashboard|
-          expect(on_dashboard).not_to have_custom_metric('Throughput')
-        end
+      Page::Project::Operations::Metrics::Show.perform do |on_dashboard|
+        expect(on_dashboard).not_to have_custom_metric('Throughput')
       end
     end
   end

@@ -1,7 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import { TEST_HOST } from 'spec/test_constants';
-import { GlDeprecatedButton } from '@gitlab/ui';
+import { GlButton } from '@gitlab/ui';
 import waitForPromises from 'helpers/wait_for_promises';
 import axios from '~/lib/utils/axios_utils';
 import PipelinesActions from '~/pipelines/components/pipelines_list/pipelines_actions.vue';
@@ -19,7 +19,7 @@ describe('Pipelines Actions dropdown', () => {
     });
   };
 
-  const findAllDropdownItems = () => wrapper.findAll(GlDeprecatedButton);
+  const findAllDropdownItems = () => wrapper.findAll(GlButton);
   const findAllCountdowns = () => wrapper.findAll(GlCountdown);
 
   beforeEach(() => {
@@ -66,7 +66,7 @@ describe('Pipelines Actions dropdown', () => {
       it('makes a request and toggles the loading state', () => {
         mock.onPost(mockActions.path).reply(200);
 
-        wrapper.find(GlDeprecatedButton).vm.$emit('click');
+        wrapper.find(GlButton).vm.$emit('click');
 
         expect(wrapper.vm.isLoading).toBe(true);
 

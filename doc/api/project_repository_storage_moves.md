@@ -9,8 +9,22 @@ type: reference
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/31285) in GitLab 13.0.
 
-Project repository storage can be moved. To retrieve project repository storage moves using the API,
-you must [authenticate yourself](README.md#authentication) as an administrator.
+Project repositories can be moved between storages. This can be useful when
+[migrating to Gitaly Cluster](../administration/gitaly/praefect.md#migrate-existing-repositories-to-gitaly-cluster),
+for example.
+
+As project repository storage moves are processed, they transition through different states. Values
+of `state` are:
+
+- `initial`
+- `scheduled`
+- `started`
+- `finished`
+- `failed`
+- `replicated`
+- `cleanup_failed`
+
+This API requires you to [authenticate yourself](README.md#authentication) as an administrator.
 
 ## Retrieve all project repository storage moves
 

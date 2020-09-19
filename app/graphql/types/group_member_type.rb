@@ -8,7 +8,7 @@ module Types
     implements MemberInterface
 
     graphql_name 'GroupMember'
-    description 'Represents a Group Member'
+    description 'Represents a Group Membership'
 
     field :group, Types::GroupType, null: true,
           description: 'Group that a User is a member of',

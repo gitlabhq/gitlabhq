@@ -1,4 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
+import { GlIcon } from '@gitlab/ui';
 import UsersMockHelper from 'helpers/user_mock_data_helper';
 import CollapsedAssigneeList from '~/sidebar/components/assignees/collapsed_assignee_list.vue';
 import CollapsedAssignee from '~/sidebar/components/assignees/collapsed_assignee.vue';
@@ -20,7 +21,7 @@ describe('CollapsedAssigneeList component', () => {
     });
   }
 
-  const findNoUsersIcon = () => wrapper.find('i[aria-label=None]');
+  const findNoUsersIcon = () => wrapper.find(GlIcon);
   const findAvatarCounter = () => wrapper.find('.avatar-counter');
   const findAssignees = () => wrapper.findAll(CollapsedAssignee);
   const getTooltipTitle = () => wrapper.attributes('title');
@@ -38,6 +39,7 @@ describe('CollapsedAssigneeList component', () => {
 
     it('has no users', () => {
       expect(findNoUsersIcon().exists()).toBe(true);
+      expect(findNoUsersIcon().props('name')).toBe('user');
     });
   });
 

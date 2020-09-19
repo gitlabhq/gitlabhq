@@ -2,12 +2,11 @@
 
 module Packages
   module Conan
-    class CreatePackageService < BaseService
+    class CreatePackageService < ::Packages::CreatePackageService
       def execute
-        project.packages.create!(
+        create_package!(:conan,
           name: params[:package_name],
           version: params[:package_version],
-          package_type: :conan,
           conan_metadatum_attributes: {
             package_username: params[:package_username],
             package_channel: params[:package_channel]

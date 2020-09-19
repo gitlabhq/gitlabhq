@@ -55,6 +55,7 @@ RSpec.describe Mutations::AlertManagement::Alerts::SetAssignees do
 
     context 'when operation mode is not specified' do
       it_behaves_like 'successful resolution'
+      it_behaves_like 'an incident management tracked event', :incident_management_alert_assigned
     end
 
     context 'when user does not have permission to update alerts' do

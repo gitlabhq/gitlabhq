@@ -41,7 +41,7 @@ module Mattermost
         begin
           yield self
         rescue Errno::ECONNREFUSED => e
-          Rails.logger.error(e.message + "\n" + e.backtrace.join("\n")) # rubocop:disable Gitlab/RailsLogger
+          Gitlab::AppLogger.error(e.message + "\n" + e.backtrace.join("\n"))
           raise Mattermost::NoSessionError
         ensure
           destroy
@@ -52,7 +52,7 @@ module Mattermost
     # Next methods are needed for Doorkeeper
     def pre_auth
       @pre_auth ||= Doorkeeper::OAuth::PreAuthorization.new(
-        Doorkeeper.configuration, server.client_via_uid, params)
+        Doorkeeper.configuration, params)
     end
 
     def authorization

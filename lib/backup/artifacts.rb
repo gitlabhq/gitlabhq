@@ -9,7 +9,7 @@ module Backup
     def initialize(progress)
       @progress = progress
 
-      super('artifacts', JobArtifactUploader.root)
+      super('artifacts', JobArtifactUploader.root, excludes: ['tmp'])
     end
   end
 end

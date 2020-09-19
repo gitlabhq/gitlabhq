@@ -3,7 +3,7 @@ import $ from 'jquery';
 import { mapActions, mapGetters, mapState } from 'vuex';
 import { isEmpty } from 'lodash';
 import Autosize from 'autosize';
-import { GlAlert, GlIntersperse, GlLink, GlSprintf } from '@gitlab/ui';
+import { GlAlert, GlIntersperse, GlLink, GlSprintf, GlButton } from '@gitlab/ui';
 import { __, sprintf } from '~/locale';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
 import { deprecatedCreateFlash as Flash } from '../../flash';
@@ -20,7 +20,6 @@ import eventHub from '../event_hub';
 import NoteableWarning from '../../vue_shared/components/notes/noteable_warning.vue';
 import markdownField from '../../vue_shared/components/markdown/field.vue';
 import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
-import loadingButton from '../../vue_shared/components/loading_button.vue';
 import noteSignedOutWidget from './note_signed_out_widget.vue';
 import discussionLockedWidget from './discussion_locked_widget.vue';
 import issuableStateMixin from '../mixins/issuable_state';
@@ -33,7 +32,7 @@ export default {
     discussionLockedWidget,
     markdownField,
     userAvatarLink,
-    loadingButton,
+    GlButton,
     TimelineEntryItem,
     GlAlert,
     GlIntersperse,
@@ -101,6 +100,9 @@ export default {
         openOrClose: capitalizeFirstCharacter(openOrClose),
         noteable: this.noteableDisplayName,
       });
+    },
+    buttonVariant() {
+      return this.isOpen ? 'warning' : 'default';
     },
     actionButtonClassNames() {
       return {
@@ -378,7 +380,7 @@ export default {
                 dir="auto"
                 :disabled="isSubmitting"
                 name="note[note]"
-                class="note-textarea js-vue-comment-form js-note-text js-gfm-input js-autosize markdown-area js-vue-textarea qa-comment-input"
+                class="note-textarea js-vue-comment-form js-note-text js-gfm-input js-autosize markdown-area qa-comment-input"
                 data-supports-quick-actions="true"
                 :aria-label="__('Description')"
                 :placeholder="__('Write a comment or drag your files here…')"
@@ -395,7 +397,7 @@ export default {
               :secondary-button-text="__('Cancel')"
               variant="warning"
               :dismissible="false"
-              @primaryAction="forceCloseIssue"
+              @primaryAction="toggleBlockedIssueWarning(false) && forceCloseIssue()"
               @secondaryAction="toggleBlockedIssueWarning(false) && enableButton()"
             >
               <p>
@@ -421,27 +423,28 @@ export default {
               <div
                 class="btn-group gl-mr-3 comment-type-dropdown js-comment-type-dropdown droplab-dropdown"
               >
-                <button
+                <gl-button
                   :disabled="isSubmitButtonDisabled"
-                  class="btn btn-success js-comment-button js-comment-submit-button qa-comment-button"
+                  class="js-comment-button js-comment-submit-button qa-comment-button"
                   type="submit"
+                  category="primary"
+                  variant="success"
                   :data-track-label="trackingLabel"
                   data-track-event="click_button"
                   @click.prevent="handleSave()"
+                  >{{ commentButtonTitle }}</gl-button
                 >
-                  {{ commentButtonTitle }}
-                </button>
-                <button
+                <gl-button
                   :disabled="isSubmitButtonDisabled"
                   name="button"
-                  type="button"
-                  class="btn btn-success note-type-toggle js-note-new-discussion dropdown-toggle qa-note-dropdown"
+                  category="primary"
+                  variant="success"
+                  class="note-type-toggle js-note-new-discussion dropdown-toggle qa-note-dropdown"
                   data-display="static"
                   data-toggle="dropdown"
+                  icon="chevron-down"
                   :aria-label="__('Open comment type dropdown')"
-                >
-                  <i aria-hidden="true" class="fa fa-caret-down toggle-icon"></i>
-                </button>
+                />
 
                 <ul class="note-type-dropdown dropdown-open-top dropdown-menu">
                   <li :class="{ 'droplab-item-selected': noteType === 'comment' }">
@@ -465,11 +468,7 @@ export default {
                   </li>
                   <li class="divider droplab-item-ignore"></li>
                   <li :class="{ 'droplab-item-selected': noteType === 'discussion' }">
-                    <button
-                      type="button"
-                      class="btn btn-transparent qa-discussion-option"
-                      @click.prevent="setNoteType('discussion')"
-                    >
+                    <button class="qa-discussion-option" @click.prevent="setNoteType('discussion')">
                       <i aria-hidden="true" class="fa fa-check icon"></i>
                       <div class="description">
                         <strong>{{ __('Start thread') }}</strong>
@@ -480,17 +479,19 @@ export default {
                 </ul>
               </div>
 
-              <loading-button
+              <gl-button
                 v-if="canToggleIssueState && !isToggleBlockedIssueWarning"
                 :loading="isToggleStateButtonLoading"
-                :container-class="[
+                category="secondary"
+                :variant="buttonVariant"
+                :class="[
                   actionButtonClassNames,
-                  'btn btn-comment btn-comment-and-close js-action-button',
+                  'btn-comment btn-comment-and-close js-action-button',
                 ]"
                 :disabled="isToggleStateButtonLoading || isSubmitting"
-                :label="issueActionButtonTitle"
                 @click="handleSave(true)"
-              />
+                >{{ issueActionButtonTitle }}</gl-button
+              >
             </div>
           </form>
         </div>

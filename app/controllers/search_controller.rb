@@ -4,14 +4,18 @@ class SearchController < ApplicationController
   include ControllerWithCrossProjectAccessCheck
   include SearchHelper
   include RendersCommits
+  include RedisTracking
 
   SCOPE_PRELOAD_METHOD = {
     projects: :with_web_entity_associations,
     issues: :with_web_entity_associations
   }.freeze
 
+  track_redis_hll_event :show, name: 'i_search_total', feature: :search_track_unique_users, feature_default_enabled: true
+
   around_action :allow_gitaly_ref_name_caching
 
+  before_action :block_anonymous_global_searches
   skip_before_action :authenticate_user!
   requires_cross_project_access if: -> do
     search_term_present = params[:search].present? || params[:term].present?
@@ -119,10 +123,22 @@ class SearchController < ApplicationController
     super
 
     # Merging to :metadata will ensure these are logged as top level keys
-    payload[:metadata] || {}
+    payload[:metadata] ||= {}
     payload[:metadata]['meta.search.group_id'] = params[:group_id]
     payload[:metadata]['meta.search.project_id'] = params[:project_id]
     payload[:metadata]['meta.search.search'] = params[:search]
     payload[:metadata]['meta.search.scope'] = params[:scope]
   end
+
+  def block_anonymous_global_searches
+    return if params[:project_id].present? || params[:group_id].present?
+    return if current_user
+    return unless ::Feature.enabled?(:block_anonymous_global_searches)
+
+    store_location_for(:user, request.fullpath)
+
+    redirect_to new_user_session_path, alert: _('You must be logged in to search across all of GitLab')
+  end
 end
+
+SearchController.prepend_if_ee('EE::SearchController')

@@ -1,4 +1,5 @@
 <script>
+/* eslint-disable vue/no-v-html */
 import { createNamespacedHelpers, mapState, mapActions, mapGetters } from 'vuex';
 import { escape } from 'lodash';
 import { GlFormInput, GlFormCheckbox } from '@gitlab/ui';

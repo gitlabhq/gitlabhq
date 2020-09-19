@@ -96,9 +96,19 @@ module Projects
           .rename_project(path_before, project_path, namespace_full_path)
       end
 
-      Gitlab::PagesTransfer
-        .new
-        .rename_project(path_before, project_path, namespace_full_path)
+      if project.pages_deployed?
+        # Block will be evaluated in the context of project so we need
+        # to bind to a local variable to capture it, as the instance
+        # variable and method aren't available on Project
+        path_before_local = @path_before
+
+        project.run_after_commit_or_now do
+          Gitlab::PagesTransfer
+            .new
+            .async
+            .rename_project(path_before_local, path, namespace.full_path)
+        end
+      end
     end
 
     def log_completion
@@ -110,8 +120,7 @@ module Projects
 
     def migrate_to_hashed_storage?
       Gitlab::CurrentSettings.hashed_storage_enabled? &&
-        project.storage_upgradable? &&
-        Feature.disabled?(:skip_hashed_storage_upgrade)
+        project.storage_upgradable?
     end
 
     def send_move_instructions?

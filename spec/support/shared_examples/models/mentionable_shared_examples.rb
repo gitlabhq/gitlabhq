@@ -162,7 +162,7 @@ RSpec.shared_examples 'an editable mentionable' do
   end
 
   it 'creates new cross-reference notes when the mentionable text is edited' do
-    subject.save
+    subject.save!
     subject.create_cross_references!
 
     new_text = <<-MSG.strip_heredoc
@@ -270,7 +270,7 @@ RSpec.shared_examples 'mentions in notes' do |mentionable_type|
     let!(:mentionable) { note.noteable }
 
     before do
-      note.update(note: note_desc)
+      note.update!(note: note_desc)
       note.store_mentions!
       add_member(user)
     end
@@ -292,7 +292,7 @@ RSpec.shared_examples 'load mentions from DB' do |mentionable_type|
     let_it_be(:note_desc) { "#{mentioned_user.to_reference} and #{group.to_reference(full: true)} and @all" }
 
     before do
-      note.update(note: note_desc)
+      note.update!(note: note_desc)
       note.store_mentions!
       add_member(user)
     end
@@ -305,7 +305,7 @@ RSpec.shared_examples 'load mentions from DB' do |mentionable_type|
           mentioned_projects_ids: user_mention.mentioned_projects_ids.to_a << non_existing_record_id,
           mentioned_groups_ids: user_mention.mentioned_groups_ids.to_a << non_existing_record_id
         }
-        user_mention.update(mention_ids)
+        user_mention.update!(mention_ids)
       end
 
       it 'filters out inexistent mentions' do
@@ -328,7 +328,7 @@ RSpec.shared_examples 'load mentions from DB' do |mentionable_type|
           mentioned_projects_ids: user_mention.mentioned_projects_ids.to_a << private_project.id,
           mentioned_groups_ids: user_mention.mentioned_groups_ids.to_a << private_group.id
         }
-        user_mention.update(mention_ids)
+        user_mention.update!(mention_ids)
 
         add_member(mega_user)
         private_project.add_developer(mega_user)

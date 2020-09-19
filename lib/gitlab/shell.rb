@@ -116,7 +116,7 @@ module Gitlab
 
       true
     rescue => e
-      Rails.logger.warn("Repository does not exist: #{e} at: #{disk_path}.git") # rubocop:disable Gitlab/RailsLogger
+      Gitlab::AppLogger.warn("Repository does not exist: #{e} at: #{disk_path}.git")
       Gitlab::ErrorTracking.track_exception(e, path: disk_path, storage: storage)
 
       false

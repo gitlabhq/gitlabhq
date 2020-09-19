@@ -1,23 +1,12 @@
+- return if @issue.incident?
+
 - requirements_link_url = help_page_path('user/project/issues/design_management', anchor: 'requirements')
 - requirements_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: requirements_link_url }
 - link_end = '</a>'.html_safe
-- enable_lfs_message = s_("DesignManagement|To upload designs, you'll need to enable LFS. %{requirements_link_start}More information%{requirements_link_end}").html_safe % { requirements_link_start: requirements_link_start, requirements_link_end: link_end }
+- enable_lfs_message = s_("DesignManagement|To upload designs, you'll need to enable LFS and have admin enable hashed storage. %{requirements_link_start}More information%{requirements_link_end}").html_safe % { requirements_link_start: requirements_link_start, requirements_link_end: link_end }
 
 - if @project.design_management_enabled?
-  - if Feature.enabled?(:design_management_moved, @project, default_enabled: true)
-    .js-design-management-new{ data: { project_path: @project.full_path, issue_iid: @issue.iid, issue_path: project_issue_path(@project, @issue) } }
-  - else
-    .js-design-management{ data: { project_path: @project.full_path, issue_iid: @issue.iid, issue_path: project_issue_path(@project, @issue) } }
+  .js-design-management{ data: { project_path: @project.full_path, issue_iid: @issue.iid, issue_path: project_issue_path(@project, @issue) } }
 - else
-  - if Feature.enabled?(:design_management_moved, @project, default_enabled: true)
-    .gl-border-solid.gl-border-1.gl-border-gray-100.gl-rounded-base.gl-mt-5.gl-p-3.gl-text-center
-      = enable_lfs_message
-  - else
-    .mt-4
-      .row.empty-state
-        .col-12
-          .text-content
-            %h4.center
-              = _('The one place for your designs')
-            %p.center
-              = enable_lfs_message
+  .gl-border-solid.gl-border-1.gl-border-gray-100.gl-rounded-base.gl-mt-5.gl-p-3.gl-text-center
+    = enable_lfs_message

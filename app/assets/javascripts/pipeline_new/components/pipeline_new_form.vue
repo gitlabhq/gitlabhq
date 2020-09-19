@@ -9,13 +9,13 @@ import {
   GlFormInput,
   GlFormSelect,
   GlLink,
-  GlNewDropdown,
-  GlNewDropdownItem,
+  GlDropdown,
+  GlDropdownItem,
   GlSearchBoxByType,
   GlSprintf,
 } from '@gitlab/ui';
-import { s__, __ } from '~/locale';
-import Api from '~/api';
+import { s__, __, n__ } from '~/locale';
+import axios from '~/lib/utils/axios_utils';
 import { redirectTo } from '~/lib/utils/url_utility';
 import { VARIABLE_TYPE, FILE_TYPE } from '../constants';
 
@@ -29,6 +29,8 @@ export default {
   ),
   formElementClasses: 'gl-mr-3 gl-mb-3 table-section section-15',
   errorTitle: __('The form contains the following error:'),
+  warningTitle: __('The form contains the following warning:'),
+  maxWarningsSummary: __('%{total} warnings found: showing first %{warningsDisplayed}'),
   components: {
     GlAlert,
     GlButton,
@@ -37,8 +39,8 @@ export default {
     GlFormInput,
     GlFormSelect,
     GlLink,
-    GlNewDropdown,
-    GlNewDropdownItem,
+    GlDropdown,
+    GlDropdownItem,
     GlSearchBoxByType,
     GlSprintf,
   },
@@ -74,13 +76,20 @@ export default {
       required: false,
       default: () => ({}),
     },
+    maxWarnings: {
+      type: Number,
+      required: true,
+    },
   },
   data() {
     return {
       searchTerm: '',
       refValue: this.refParam,
       variables: {},
-      error: false,
+      error: null,
+      warnings: [],
+      totalWarnings: 0,
+      isWarningDismissed: false,
     };
   },
   computed: {
@@ -90,6 +99,18 @@ export default {
     },
     variablesLength() {
       return Object.keys(this.variables).length;
+    },
+    overMaxWarningsLimit() {
+      return this.totalWarnings > this.maxWarnings;
+    },
+    warningsSummary() {
+      return n__('%d warning found:', '%d warnings found:', this.warnings.length);
+    },
+    summaryMessage() {
+      return this.overMaxWarningsLimit ? this.$options.maxWarningsSummary : this.warningsSummary;
+    },
+    shouldShowWarning() {
+      return this.warnings.length > 0 && !this.isWarningDismissed;
     },
   },
   created() {
@@ -145,13 +166,20 @@ export default {
         ({ key, value }) => key !== '' && value !== '',
       );
 
-      return Api.createPipeline(this.projectId, {
-        ref: this.refValue,
-        variables: filteredVariables,
-      })
-        .then(({ data }) => redirectTo(data.web_url))
+      return axios
+        .post(this.pipelinesPath, {
+          ref: this.refValue,
+          variables: filteredVariables,
+        })
+        .then(({ data }) => {
+          redirectTo(`${this.pipelinesPath}/${data.id}`);
+        })
         .catch(err => {
-          this.error = err.response.data.message.base;
+          const { errors, warnings, total_warnings: totalWarnings } = err.response.data;
+          const [error] = errors;
+          this.error = error;
+          this.warnings = warnings;
+          this.totalWarnings = totalWarnings;
         });
     },
   },
@@ -166,16 +194,45 @@ export default {
       :dismissible="false"
       variant="danger"
       class="gl-mb-4"
+      data-testid="run-pipeline-error-alert"
       >{{ error }}</gl-alert
     >
+    <gl-alert
+      v-if="shouldShowWarning"
+      :title="$options.warningTitle"
+      variant="warning"
+      class="gl-mb-4"
+      data-testid="run-pipeline-warning-alert"
+      @dismiss="isWarningDismissed = true"
+    >
+      <details>
+        <summary>
+          <gl-sprintf :message="summaryMessage">
+            <template #total>
+              {{ totalWarnings }}
+            </template>
+            <template #warningsDisplayed>
+              {{ maxWarnings }}
+            </template>
+          </gl-sprintf>
+        </summary>
+        <p
+          v-for="(warning, index) in warnings"
+          :key="`warning-${index}`"
+          data-testid="run-pipeline-warning"
+        >
+          {{ warning }}
+        </p>
+      </details>
+    </gl-alert>
     <gl-form-group :label="s__('Pipeline|Run for')">
-      <gl-new-dropdown :text="refValue" block>
+      <gl-dropdown :text="refValue" block>
         <gl-search-box-by-type
           v-model.trim="searchTerm"
           :placeholder="__('Search branches and tags')"
           class="gl-p-2"
         />
-        <gl-new-dropdown-item
+        <gl-dropdown-item
           v-for="(ref, index) in filteredRefs"
           :key="index"
           class="gl-font-monospace"
@@ -184,8 +241,8 @@ export default {
           @click="setRefSelected(ref)"
         >
           {{ ref }}
-        </gl-new-dropdown-item>
-      </gl-new-dropdown>
+        </gl-dropdown-item>
+      </gl-dropdown>
 
       <template #description>
         <div>

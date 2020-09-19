@@ -327,6 +327,6 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillSnippetRepositories, :migrat
   end
 
   def ls_files(snippet)
-    raw_repository(snippet).ls_files(nil)
+    raw_repository(snippet).ls_files(snippet.default_branch)
   end
 end

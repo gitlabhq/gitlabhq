@@ -90,24 +90,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Expression::Lexer do
         end
 
         with_them do
-          context 'when ci_if_parenthesis_enabled is enabled' do
-            before do
-              stub_feature_flags(ci_if_parenthesis_enabled: true)
-            end
-
-            it { is_expected.to eq(tokens) }
-          end
-
-          context 'when ci_if_parenthesis_enabled is disabled' do
-            before do
-              stub_feature_flags(ci_if_parenthesis_enabled: false)
-            end
-
-            it do
-              expect { subject }
-                .to raise_error described_class::SyntaxError
-            end
-          end
+          it { is_expected.to eq(tokens) }
         end
       end
     end

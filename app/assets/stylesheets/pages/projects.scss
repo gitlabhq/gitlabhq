@@ -353,7 +353,7 @@
 .save-project-loader {
   margin-top: 50px;
   margin-bottom: 50px;
-  color: $gl-gray-700;
+  color: $gray-700;
 }
 
 .transfer-project .select2-container {
@@ -429,7 +429,7 @@
 
   > li + li::before {
     padding: 0 3px;
-    color: $gl-gray-400;
+    color: $gray-300;
   }
 
   a {
@@ -1268,18 +1268,10 @@ pre.light-well {
   position: relative;
 
   .clear-icon {
-    @extend .fa-times;
     display: none;
     position: absolute;
-    right: 7px;
-    top: 7px;
-    color: $location-icon-color;
-
-    &::before {
-      font-family: FontAwesome;
-      font-weight: $gl-font-weight-normal;
-      font-style: normal;
-    }
+    right: 9px;
+    top: 9px;
   }
 
   &.has-value {
@@ -1444,7 +1436,7 @@ pre.light-well {
 
 .project-filters {
   .btn svg {
-    color: $gl-gray-700;
+    color: $gray-700;
   }
 
   .button-filter-group {

@@ -152,7 +152,6 @@ RSpec.shared_examples 'Signup' do
             fill_in 'new_user_last_name', with: new_user.last_name
           else
             fill_in 'new_user_name', with: new_user.name
-            fill_in 'new_user_email_confirmation', with: new_user.email
           end
 
           fill_in 'new_user_password', with: new_user.password
@@ -180,19 +179,13 @@ RSpec.shared_examples 'Signup' do
             fill_in 'new_user_last_name', with: new_user.last_name
           else
             fill_in 'new_user_name', with: new_user.name
-            fill_in 'new_user_email_confirmation', with: new_user.email
           end
 
           fill_in 'new_user_password', with: new_user.password
 
           expect { click_button 'Register' }.to change { User.count }.by(1)
 
-          if Gitlab::Experimentation.enabled?(:signup_flow)
-            expect(current_path).to eq users_sign_up_welcome_path
-          else
-            expect(current_path).to eq dashboard_projects_path
-            expect(page).to have_content("Please check your email (#{new_user.email}) to verify that you own this address and unlock the power of CI/CD.")
-          end
+          expect(current_path).to eq users_sign_up_welcome_path
         end
       end
     end
@@ -209,18 +202,12 @@ RSpec.shared_examples 'Signup' do
           fill_in 'new_user_last_name', with: new_user.last_name
         else
           fill_in 'new_user_name', with: new_user.name
-          fill_in 'new_user_email_confirmation', with: new_user.email.capitalize
         end
 
         fill_in 'new_user_password', with: new_user.password
         click_button "Register"
 
-        if Gitlab::Experimentation.enabled?(:signup_flow)
-          expect(current_path).to eq users_sign_up_welcome_path
-        else
-          expect(current_path).to eq dashboard_projects_path
-          expect(page).to have_content("Welcome! You have signed up successfully.")
-        end
+        expect(current_path).to eq users_sign_up_welcome_path
       end
     end
 
@@ -240,18 +227,12 @@ RSpec.shared_examples 'Signup' do
           fill_in 'new_user_last_name', with: new_user.last_name
         else
           fill_in 'new_user_name', with: new_user.name
-          fill_in 'new_user_email_confirmation', with: new_user.email
         end
 
         fill_in 'new_user_password', with: new_user.password
         click_button "Register"
 
-        if Gitlab::Experimentation.enabled?(:signup_flow)
-          expect(current_path).to eq users_sign_up_welcome_path
-        else
-          expect(current_path).to eq dashboard_projects_path
-          expect(page).to have_content("Welcome! You have signed up successfully.")
-        end
+        expect(current_path).to eq users_sign_up_welcome_path
       end
     end
   end
@@ -275,14 +256,7 @@ RSpec.shared_examples 'Signup' do
       click_button "Register"
 
       expect(current_path).to eq user_registration_path
-
-      if Gitlab::Experimentation.enabled?(:signup_flow)
-        expect(page).to have_content("error prohibited this user from being saved")
-      else
-        expect(page).to have_content("errors prohibited this user from being saved")
-        expect(page).to have_content("Email confirmation doesn't match")
-      end
-
+      expect(page).to have_content("error prohibited this user from being saved")
       expect(page).to have_content("Email has already been taken")
     end
 
@@ -324,7 +298,6 @@ RSpec.shared_examples 'Signup' do
         fill_in 'new_user_last_name', with: new_user.last_name
       else
         fill_in 'new_user_name', with: new_user.name
-        fill_in 'new_user_email_confirmation', with: new_user.email
       end
 
       fill_in 'new_user_password', with: new_user.password
@@ -346,7 +319,6 @@ RSpec.shared_examples 'Signup' do
         fill_in 'new_user_last_name', with: new_user.last_name
       else
         fill_in 'new_user_name', with: new_user.name
-        fill_in 'new_user_email_confirmation', with: new_user.email
       end
 
       fill_in 'new_user_password', with: new_user.password
@@ -354,11 +326,7 @@ RSpec.shared_examples 'Signup' do
 
       click_button "Register"
 
-      if Gitlab::Experimentation.enabled?(:signup_flow)
-        expect(current_path).to eq users_sign_up_welcome_path
-      else
-        expect(current_path).to eq dashboard_projects_path
-      end
+      expect(current_path).to eq users_sign_up_welcome_path
     end
   end
 
@@ -393,7 +361,6 @@ RSpec.shared_examples 'Signup' do
           fill_in 'new_user_last_name', with: new_user.last_name
         else
           fill_in 'new_user_name', with: new_user.name
-          fill_in 'new_user_email_confirmation', with: new_user.email
         end
 
         fill_in 'new_user_password', with: new_user.password
@@ -415,7 +382,6 @@ RSpec.shared_examples 'Signup' do
           fill_in 'new_user_last_name', with: new_user.last_name
         else
           fill_in 'new_user_name', with: new_user.name
-          fill_in 'new_user_email_confirmation', with: new_user.email
         end
 
         fill_in 'new_user_password', with: new_user.password
@@ -424,6 +390,35 @@ RSpec.shared_examples 'Signup' do
         expect(page).to have_content('That was a bit too quick! Please resubmit.')
       end
     end
+  end
+
+  it 'redirects to step 2 of the signup process, sets the role and redirects back' do
+    new_user = build_stubbed(:user)
+    visit new_user_registration_path
+
+    fill_in 'new_user_username', with: new_user.username
+    fill_in 'new_user_email', with: new_user.email
+
+    if Gitlab::Experimentation.enabled?(:signup_flow)
+      fill_in 'new_user_first_name', with: new_user.first_name
+      fill_in 'new_user_last_name', with: new_user.last_name
+    else
+      fill_in 'new_user_name', with: new_user.name
+    end
+
+    fill_in 'new_user_password', with: new_user.password
+    click_button 'Register'
+    visit new_project_path
+
+    expect(page).to have_current_path(users_sign_up_welcome_path)
+
+    select 'Software Developer', from: 'user_role'
+    click_button 'Get started!'
+    new_user = User.find_by_username(new_user.username)
+
+    expect(new_user.software_developer_role?).to be_truthy
+    expect(new_user.setup_for_company).to be_nil
+    expect(page).to have_current_path(new_project_path)
   end
 end
 
@@ -485,31 +480,6 @@ RSpec.describe 'With experimental flow' do
   it_behaves_like 'Signup name validation', 'new_user_first_name', 127
   it_behaves_like 'Signup name validation', 'new_user_last_name', 127
 
-  describe 'when role is required' do
-    it 'after registering, it redirects to step 2 of the signup process, sets the name and role and then redirects to the original requested url' do
-      new_user = build_stubbed(:user)
-      visit new_user_registration_path
-      fill_in 'new_user_first_name', with: new_user.first_name
-      fill_in 'new_user_last_name', with: new_user.last_name
-      fill_in 'new_user_username', with: new_user.username
-      fill_in 'new_user_email', with: new_user.email
-      fill_in 'new_user_password', with: new_user.password
-      click_button 'Register'
-      visit new_project_path
-
-      expect(page).to have_current_path(users_sign_up_welcome_path)
-
-      select 'Software Developer', from: 'user_role'
-      choose 'user_setup_for_company_true'
-      click_button 'Get started!'
-      new_user = User.find_by_username(new_user.username)
-
-      expect(new_user.software_developer_role?).to be_truthy
-      expect(new_user.setup_for_company).to be_truthy
-      expect(page).to have_current_path(new_project_path)
-    end
-  end
-
   context 'when terms_opt_in experimental is enabled' do
     include TermsHelper
 
@@ -521,14 +491,13 @@ RSpec.describe 'With experimental flow' do
 
     it 'terms are checked by default' do
       new_user = build_stubbed(:user)
-      visit new_user_registration_path
 
-      fill_in 'new_user_username', with: new_user.username
-      fill_in 'new_user_email', with: new_user.email
+      visit new_user_registration_path
       fill_in 'new_user_first_name', with: new_user.first_name
       fill_in 'new_user_last_name', with: new_user.last_name
+      fill_in 'new_user_username', with: new_user.username
+      fill_in 'new_user_email', with: new_user.email
       fill_in 'new_user_password', with: new_user.password
-
       click_button 'Register'
 
       expect(current_path).to eq users_sign_up_welcome_path

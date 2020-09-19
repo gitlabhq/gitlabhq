@@ -12,7 +12,6 @@ module Registrations
 
       if current_user.save
         hide_advanced_issues
-        flash[:message] = I18n.t('devise.registrations.signed_up')
         redirect_to group_path(params[:namespace_path])
       else
         render :show

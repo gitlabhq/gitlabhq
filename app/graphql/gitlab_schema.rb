@@ -116,11 +116,11 @@ class GitlabSchema < GraphQL::Schema
       expected_type = ctx[:expected_type]
       gid = GlobalID.parse(global_id)
 
-      raise Gitlab::Graphql::Errors::ArgumentError, "#{global_id} is not a valid GitLab id." unless gid
+      raise Gitlab::Graphql::Errors::ArgumentError, "#{global_id} is not a valid GitLab ID." unless gid
 
       if expected_type && !gid.model_class.ancestors.include?(expected_type)
         vars = { global_id: global_id, expected_type: expected_type }
-        msg = _('%{global_id} is not a valid id for %{expected_type}.') % vars
+        msg = _('%{global_id} is not a valid ID for %{expected_type}.') % vars
         raise Gitlab::Graphql::Errors::ArgumentError, msg
       end
 

@@ -1,6 +1,7 @@
 import { nextTick } from 'vue';
 import Vuex from 'vuex';
 import { createLocalVue, shallowMount } from '@vue/test-utils';
+import { GlBadge } from '@gitlab/ui';
 import ProviderRepoTableRow from '~/import_projects/components/provider_repo_table_row.vue';
 import ImportStatus from '~/import_projects/components/import_status.vue';
 import { STATUSES } from '~/import_projects/constants';
@@ -13,20 +14,6 @@ describe('ProviderRepoTableRow', () => {
   const fakeImportTarget = {
     targetNamespace: 'target',
     newName: 'newName',
-  };
-  const ciCdOnly = false;
-  const repo = {
-    importSource: {
-      id: 'remote-1',
-      fullName: 'fullName',
-      providerLink: 'providerLink',
-    },
-    importedProject: {
-      id: 1,
-      fullPath: 'fullPath',
-      importSource: 'importSource',
-    },
-    importStatus: STATUSES.FINISHED,
   };
 
   const availableNamespaces = [
@@ -46,55 +33,137 @@ describe('ProviderRepoTableRow', () => {
     return store;
   }
 
-  const findImportButton = () =>
-    wrapper
-      .findAll('button')
-      .filter(node => node.text() === 'Import')
-      .at(0);
+  const findImportButton = () => {
+    const buttons = wrapper.findAll('button').filter(node => node.text() === 'Import');
 
-  function mountComponent(initialState) {
+    return buttons.length ? buttons.at(0) : buttons;
+  };
+
+  function mountComponent(props) {
     const localVue = createLocalVue();
     localVue.use(Vuex);
 
-    const store = initStore({ ciCdOnly, ...initialState });
+    const store = initStore();
 
     wrapper = shallowMount(ProviderRepoTableRow, {
       localVue,
       store,
-      propsData: { repo, availableNamespaces },
+      propsData: { availableNamespaces, ...props },
     });
   }
 
-  beforeEach(() => {
-    mountComponent();
-  });
-
   afterEach(() => {
     wrapper.destroy();
+    wrapper = null;
   });
 
-  it('renders a provider repo table row', () => {
-    const providerLink = wrapper.find('[data-testid=providerLink]');
+  describe('when rendering importable project', () => {
+    const repo = {
+      importSource: {
+        id: 'remote-1',
+        fullName: 'fullName',
+        providerLink: 'providerLink',
+      },
+    };
 
-    expect(providerLink.attributes().href).toMatch(repo.importSource.providerLink);
-    expect(providerLink.text()).toMatch(repo.importSource.fullName);
-    expect(wrapper.find(ImportStatus).props().status).toBe(repo.importStatus);
-    expect(wrapper.contains('button')).toBe(true);
+    beforeEach(() => {
+      mountComponent({ repo });
+    });
+
+    it('renders project information', () => {
+      const providerLink = wrapper.find('[data-testid=providerLink]');
+
+      expect(providerLink.attributes().href).toMatch(repo.importSource.providerLink);
+      expect(providerLink.text()).toMatch(repo.importSource.fullName);
+    });
+
+    it('renders empty import status', () => {
+      expect(wrapper.find(ImportStatus).props().status).toBe(STATUSES.NONE);
+    });
+
+    it('renders a select2 namespace select', () => {
+      expect(wrapper.find(Select2Select).exists()).toBe(true);
+      expect(wrapper.find(Select2Select).props().options.data).toBe(availableNamespaces);
+    });
+
+    it('renders import button', () => {
+      expect(findImportButton().exists()).toBe(true);
+    });
+
+    it('imports repo when clicking import button', async () => {
+      findImportButton().trigger('click');
+
+      await nextTick();
+
+      const { calls } = fetchImport.mock;
+
+      expect(calls).toHaveLength(1);
+      expect(calls[0][1]).toBe(repo.importSource.id);
+    });
   });
 
-  it('renders a select2 namespace select', () => {
-    expect(wrapper.contains(Select2Select)).toBe(true);
-    expect(wrapper.find(Select2Select).props().options.data).toBe(availableNamespaces);
+  describe('when rendering imported project', () => {
+    const repo = {
+      importSource: {
+        id: 'remote-1',
+        fullName: 'fullName',
+        providerLink: 'providerLink',
+      },
+      importedProject: {
+        id: 1,
+        fullPath: 'fullPath',
+        importSource: 'importSource',
+        importStatus: STATUSES.FINISHED,
+      },
+    };
+
+    beforeEach(() => {
+      mountComponent({ repo });
+    });
+
+    it('renders project information', () => {
+      const providerLink = wrapper.find('[data-testid=providerLink]');
+
+      expect(providerLink.attributes().href).toMatch(repo.importSource.providerLink);
+      expect(providerLink.text()).toMatch(repo.importSource.fullName);
+    });
+
+    it('renders proper import status', () => {
+      expect(wrapper.find(ImportStatus).props().status).toBe(repo.importedProject.importStatus);
+    });
+
+    it('does not renders a namespace select', () => {
+      expect(wrapper.find(Select2Select).exists()).toBe(false);
+    });
+
+    it('does not render import button', () => {
+      expect(findImportButton().exists()).toBe(false);
+    });
   });
 
-  it('imports repo when clicking import button', async () => {
-    findImportButton().trigger('click');
+  describe('when rendering incompatible project', () => {
+    const repo = {
+      importSource: {
+        id: 'remote-1',
+        fullName: 'fullName',
+        providerLink: 'providerLink',
+        incompatible: true,
+      },
+    };
 
-    await nextTick();
+    beforeEach(() => {
+      mountComponent({ repo });
+    });
 
-    const { calls } = fetchImport.mock;
+    it('renders project information', () => {
+      const providerLink = wrapper.find('[data-testid=providerLink]');
 
-    expect(calls).toHaveLength(1);
-    expect(calls[0][1]).toBe(repo.importSource.id);
+      expect(providerLink.attributes().href).toMatch(repo.importSource.providerLink);
+      expect(providerLink.text()).toMatch(repo.importSource.fullName);
+    });
+
+    it('renders badge with error', () => {
+      expect(wrapper.find(GlBadge).text()).toBe('Incompatible project');
+    });
   });
 });

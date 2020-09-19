@@ -8,7 +8,7 @@ RSpec.describe 'Group milestones' do
   let_it_be(:user) { create(:group_member, :maintainer, user: create(:user), group: group ).user }
 
   around do |example|
-    Timecop.freeze { example.run }
+    freeze_time { example.run }
   end
 
   before do

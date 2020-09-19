@@ -3,6 +3,9 @@
 class Packages::Conan::FileMetadatum < ApplicationRecord
   belongs_to :package_file, inverse_of: :conan_file_metadatum
 
+  DEFAULT_PACKAGE_REVISION = '0'.freeze
+  DEFAULT_RECIPE_REVISION = '0'.freeze
+
   validates :package_file, presence: true
 
   validates :recipe_revision,

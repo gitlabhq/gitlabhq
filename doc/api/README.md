@@ -4,6 +4,8 @@ Automate GitLab via a simple and powerful API.
 
 The main GitLab API is a [REST](https://en.wikipedia.org/wiki/Representational_state_transfer) API. Therefore, documentation in this section assumes knowledge of REST concepts.
 
+There is also a partial [OpenAPI definition](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/api/openapi/openapi.yaml), which allows you to test the API directly from the GitLab user interface. Contributions are welcome.
+
 ## Available API resources
 
 For a list of the available resources and their endpoints, see
@@ -121,7 +123,7 @@ Read more about [GitLab as an OAuth2 provider](oauth2.md).
 ### Personal/project access tokens
 
 Access tokens can be used to authenticate with the API by passing it in either the `private_token` parameter
-or the `Private-Token` header.
+or the `PRIVATE-TOKEN` header.
 
 Example of using the personal/project access token in a parameter:
 
@@ -132,7 +134,7 @@ curl "https://gitlab.example.com/api/v4/projects?private_token=<your_access_toke
 Example of using the personal/project access token in a header:
 
 ```shell
-curl --header "Private-Token: <your_access_token>" "https://gitlab.example.com/api/v4/projects"
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects"
 ```
 
 You can also use personal/project access tokens with OAuth-compliant headers:
@@ -176,7 +178,7 @@ For more information, refer to the
 [users API](users.md#create-an-impersonation-token) docs.
 
 Impersonation tokens are used exactly like regular personal access tokens, and can be passed in either the
-`private_token` parameter or the `Private-Token` header.
+`private_token` parameter or the `PRIVATE-TOKEN` header.
 
 #### Disable impersonation
 
@@ -264,7 +266,7 @@ GET /projects?private_token=<your_access_token>&sudo=username
 ```
 
 ```shell
-curl --header "Private-Token: <your_access_token>" --header "Sudo: username" "https://gitlab.example.com/api/v4/projects"
+curl --header "PRIVATE-TOKEN: <your_access_token>" --header "Sudo: username" "https://gitlab.example.com/api/v4/projects"
 ```
 
 Example of a valid API call and a request using cURL with sudo request,
@@ -275,7 +277,7 @@ GET /projects?private_token=<your_access_token>&sudo=23
 ```
 
 ```shell
-curl --header "Private-Token: <your_access_token>" --header "Sudo: 23" "https://gitlab.example.com/api/v4/projects"
+curl --header "PRIVATE-TOKEN: <your_access_token>" --header "Sudo: 23" "https://gitlab.example.com/api/v4/projects"
 ```
 
 ## Status codes
@@ -340,16 +342,19 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab
 
 #### Pagination `Link` header
 
-[`Link` headers](https://www.w3.org/wiki/LinkHeader) are sent back with each
-response. They have `rel` set to `prev`/`next`/`first`/`last` and contain the relevant
-URL. Please use these links instead of generating your own URLs.
+[`Link` headers](https://www.w3.org/wiki/LinkHeader) are returned with each
+response. They have `rel` set to `prev`/`next`/`first`/`last` and contain the
+relevant URL. Be sure to use these links instead of generating your own URLs.
+
+NOTE: **Note:**
+For GitLab.com users, [some pagination headers may not be returned](../user/gitlab_com/index.md#pagination-response-headers).
 
 In the cURL example below, we limit the output to 3 items per page (`per_page=3`)
 and we request the second page (`page=2`) of [comments](notes.md) of the issue
-with ID `8` which belongs to the project with ID `8`:
+with ID `8` which belongs to the project with ID `9`:
 
 ```shell
-curl --head --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/8/issues/8/notes?per_page=3&page=2"
+curl --head --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/9/issues/8/notes?per_page=3&page=2"
 ```
 
 The response will then be:
@@ -375,24 +380,19 @@ X-Total-Pages: 3
 
 #### Other pagination headers
 
-Additional pagination headers are also sent back.
+GitLab also returns the following additional pagination headers:
 
-| Header | Description |
-| ------ | ----------- |
-| `X-Total`       | The total number of items |
-| `X-Total-Pages` | The total number of pages |
-| `X-Per-Page`    | The number of items per page |
+| Header          | Description                                   |
+| --------------- | --------------------------------------------- |
+| `X-Total`       | The total number of items                     |
+| `X-Total-Pages` | The total number of pages                     |
+| `X-Per-Page`    | The number of items per page                  |
 | `X-Page`        | The index of the current page (starting at 1) |
-| `X-Next-Page`   | The index of the next page |
-| `X-Prev-Page`   | The index of the previous page |
+| `X-Next-Page`   | The index of the next page                    |
+| `X-Prev-Page`   | The index of the previous page                |
 
-CAUTION: **Caution:**
-For performance reasons since
-[GitLab 11.8](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/23931)
-and **behind the `api_kaminari_count_with_limit`
-[feature flag](../development/feature_flags/index.md)**, if the number of resources is
-more than 10,000, the `X-Total` and `X-Total-Pages` headers as well as the
-`rel="last"` `Link` are not present in the response headers.
+NOTE: **Note:**
+For GitLab.com users, [some pagination headers may not be returned](../user/gitlab_com/index.md#pagination-response-headers).
 
 ### Keyset-based pagination
 
@@ -639,7 +639,7 @@ follows:
 
 ## Unknown route
 
-When you try to access an API URL that does not exist you will receive 404 Not Found.
+When you try to access an API URL that does not exist, you will receive 404 Not Found.
 
 ```http
 HTTP/1.1 404 Not Found

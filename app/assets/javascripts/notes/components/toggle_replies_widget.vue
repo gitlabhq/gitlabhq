@@ -1,12 +1,12 @@
 <script>
 import { uniqBy } from 'lodash';
-import Icon from '~/vue_shared/components/icon.vue';
+import { GlIcon } from '@gitlab/ui';
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 
 export default {
   components: {
-    Icon,
+    GlIcon,
     UserAvatarLink,
     TimeAgoTooltip,
   },
@@ -44,7 +44,7 @@ export default {
 <template>
   <li :class="className" class="replies-toggle js-toggle-replies">
     <template v-if="collapsed">
-      <icon name="chevron-right" @click.native="toggle" />
+      <gl-icon name="chevron-right" @click.native="toggle" />
       <div>
         <user-avatar-link
           v-for="author in uniqueAuthors"
@@ -71,7 +71,7 @@ export default {
       class="collapse-replies-btn js-collapse-replies qa-collapse-replies"
       @click="toggle"
     >
-      <icon name="chevron-down" /> {{ s__('Notes|Collapse replies') }}
+      <gl-icon name="chevron-down" /> {{ s__('Notes|Collapse replies') }}
     </span>
   </li>
 </template>

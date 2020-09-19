@@ -111,6 +111,11 @@ module LoginHelpers
     FakeU2fDevice.new(page, nil).fake_u2f_authentication
   end
 
+  def fake_successful_webauthn_authentication
+    allow_any_instance_of(Webauthn::AuthenticateService).to receive(:execute).and_return(true)
+    FakeWebauthnDevice.new(page, nil).fake_webauthn_authentication
+  end
+
   def mock_auth_hash_with_saml_xml(provider, uid, email, saml_response)
     response_object = { document: saml_xml(saml_response) }
     mock_auth_hash(provider, uid, email, response_object: response_object)

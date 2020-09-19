@@ -54,7 +54,7 @@ module Ci
     end
 
     def scan_line!(line)
-      result = line.scan(/^(.*)=(.*)$/).last
+      result = line.scan(/^(.*?)=(.*)$/).last
 
       raise ParserError, 'Invalid Format' if result.nil?
 

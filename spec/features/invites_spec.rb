@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Invites', :aggregate_failures do
+RSpec.describe 'Group or Project invitations', :aggregate_failures do
   let(:user) { create(:user, email: 'user@example.com') }
   let(:owner) { create(:user, name: 'John Doe') }
   let(:group) { create(:group, name: 'Owned') }
@@ -26,7 +26,6 @@ RSpec.describe 'Invites', :aggregate_failures do
     fill_in 'new_user_name', with: new_user.name
     fill_in 'new_user_username', with: new_user.username
     fill_in 'new_user_email', with: new_user.email
-    fill_in 'new_user_email_confirmation', with: new_user.email
     fill_in 'new_user_password', with: new_user.password
     click_button 'Register'
   end
@@ -36,6 +35,11 @@ RSpec.describe 'Invites', :aggregate_failures do
     fill_in 'user_password', with: user.password
     check 'user_remember_me'
     click_button 'Sign in'
+  end
+
+  def fill_in_welcome_form
+    select 'Software Developer', from: 'user_role'
+    click_button 'Get started!'
   end
 
   context 'when signed out' do
@@ -94,6 +98,7 @@ RSpec.describe 'Invites', :aggregate_failures do
 
         it 'signs up and redirects to the dashboard page with all the projects/groups invitations automatically accepted' do
           fill_in_sign_up_form(new_user)
+          fill_in_welcome_form
 
           expect(current_path).to eq(dashboard_projects_path)
           expect(page).to have_content(project.full_name)
@@ -108,6 +113,7 @@ RSpec.describe 'Invites', :aggregate_failures do
 
           it 'signs up and redirects to the invitation page' do
             fill_in_sign_up_form(new_user)
+            fill_in_welcome_form
 
             expect(current_path).to eq(invite_path(group_invite.raw_invite_token))
           end
@@ -126,6 +132,7 @@ RSpec.describe 'Invites', :aggregate_failures do
             fill_in_sign_up_form(new_user)
             confirm_email(new_user)
             fill_in_sign_in_form(new_user)
+            fill_in_welcome_form
 
             expect(current_path).to eq(root_path)
             expect(page).to have_content(project.full_name)
@@ -143,6 +150,7 @@ RSpec.describe 'Invites', :aggregate_failures do
 
           it 'signs up and redirects to root page with all the project/groups invitation automatically accepted' do
             fill_in_sign_up_form(new_user)
+            fill_in_welcome_form
             confirm_email(new_user)
 
             expect(current_path).to eq(root_path)
@@ -156,6 +164,7 @@ RSpec.describe 'Invites', :aggregate_failures do
 
         it "doesn't accept invitations until the user confirms their email" do
           fill_in_sign_up_form(new_user)
+          fill_in_welcome_form
           sign_in(owner)
 
           visit project_project_members_path(project)
@@ -175,6 +184,7 @@ RSpec.describe 'Invites', :aggregate_failures do
               fill_in_sign_up_form(new_user)
               confirm_email(new_user)
               fill_in_sign_in_form(new_user)
+              fill_in_welcome_form
 
               expect(current_path).to eq(invite_path(group_invite.raw_invite_token))
             end
@@ -188,6 +198,7 @@ RSpec.describe 'Invites', :aggregate_failures do
 
             it 'signs up and redirects to the invitation page' do
               fill_in_sign_up_form(new_user)
+              fill_in_welcome_form
 
               expect(current_path).to eq(invite_path(group_invite.raw_invite_token))
             end

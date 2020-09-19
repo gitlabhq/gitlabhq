@@ -81,7 +81,7 @@ RSpec.describe PipelinesEmailService, :mailer do
     context 'when pipeline is succeeded' do
       before do
         data[:object_attributes][:status] = 'success'
-        pipeline.update(status: 'success')
+        pipeline.update!(status: 'success')
       end
 
       it_behaves_like 'sending email'
@@ -91,7 +91,7 @@ RSpec.describe PipelinesEmailService, :mailer do
       context 'on default branch' do
         before do
           data[:object_attributes][:ref] = project.default_branch
-          pipeline.update(ref: project.default_branch)
+          pipeline.update!(ref: project.default_branch)
         end
 
         context 'notifications are enabled only for default branch' do
@@ -115,7 +115,7 @@ RSpec.describe PipelinesEmailService, :mailer do
         before do
           create(:protected_branch, project: project, name: 'a-protected-branch')
           data[:object_attributes][:ref] = 'a-protected-branch'
-          pipeline.update(ref: 'a-protected-branch')
+          pipeline.update!(ref: 'a-protected-branch')
         end
 
         context 'notifications are enabled only for default branch' do
@@ -138,7 +138,7 @@ RSpec.describe PipelinesEmailService, :mailer do
       context 'on a neither protected nor default branch' do
         before do
           data[:object_attributes][:ref] = 'a-random-branch'
-          pipeline.update(ref: 'a-random-branch')
+          pipeline.update!(ref: 'a-random-branch')
         end
 
         context 'notifications are enabled only for default branch' do
@@ -177,7 +177,7 @@ RSpec.describe PipelinesEmailService, :mailer do
       context 'with succeeded pipeline' do
         before do
           data[:object_attributes][:status] = 'success'
-          pipeline.update(status: 'success')
+          pipeline.update!(status: 'success')
         end
 
         it_behaves_like 'not sending email'
@@ -195,7 +195,7 @@ RSpec.describe PipelinesEmailService, :mailer do
         context 'with succeeded pipeline' do
           before do
             data[:object_attributes][:status] = 'success'
-            pipeline.update(status: 'success')
+            pipeline.update!(status: 'success')
           end
 
           it_behaves_like 'not sending email'
@@ -206,7 +206,7 @@ RSpec.describe PipelinesEmailService, :mailer do
         context 'on default branch' do
           before do
             data[:object_attributes][:ref] = project.default_branch
-            pipeline.update(ref: project.default_branch)
+            pipeline.update!(ref: project.default_branch)
           end
 
           context 'notifications are enabled only for default branch' do
@@ -230,7 +230,7 @@ RSpec.describe PipelinesEmailService, :mailer do
           before do
             create(:protected_branch, project: project, name: 'a-protected-branch')
             data[:object_attributes][:ref] = 'a-protected-branch'
-            pipeline.update(ref: 'a-protected-branch')
+            pipeline.update!(ref: 'a-protected-branch')
           end
 
           context 'notifications are enabled only for default branch' do
@@ -253,7 +253,7 @@ RSpec.describe PipelinesEmailService, :mailer do
         context 'on a neither protected nor default branch' do
           before do
             data[:object_attributes][:ref] = 'a-random-branch'
-            pipeline.update(ref: 'a-random-branch')
+            pipeline.update!(ref: 'a-random-branch')
           end
 
           context 'notifications are enabled only for default branch' do
@@ -281,7 +281,7 @@ RSpec.describe PipelinesEmailService, :mailer do
       context 'with failed pipeline' do
         before do
           data[:object_attributes][:status] = 'failed'
-          pipeline.update(status: 'failed')
+          pipeline.update!(status: 'failed')
         end
 
         it_behaves_like 'not sending email'
@@ -295,7 +295,7 @@ RSpec.describe PipelinesEmailService, :mailer do
       context 'with failed pipeline' do
         before do
           data[:object_attributes][:status] = 'failed'
-          pipeline.update(status: 'failed')
+          pipeline.update!(status: 'failed')
         end
 
         it_behaves_like 'sending email'

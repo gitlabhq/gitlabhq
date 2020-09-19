@@ -15,9 +15,9 @@ RSpec.describe Gitlab::Template::Finders::GlobalTemplateFinder do
     FileUtils.rm_rf(base_dir)
   end
 
-  subject(:finder) { described_class.new(base_dir, '', { 'General' => '', 'Bar' => 'Bar' }, exclusions: exclusions) }
+  subject(:finder) { described_class.new(base_dir, '', { 'General' => '', 'Bar' => 'Bar' }, excluded_patterns: excluded_patterns) }
 
-  let(:exclusions) { [] }
+  let(:excluded_patterns) { [] }
 
   describe '.find' do
     context 'with a non-prefixed General template' do
@@ -38,7 +38,7 @@ RSpec.describe Gitlab::Template::Finders::GlobalTemplateFinder do
       end
 
       context 'while listed as an exclusion' do
-        let(:exclusions) { %w[test-template] }
+        let(:excluded_patterns) { [%r{^test-template$}] }
 
         it 'does not find the template without a prefix' do
           expect(finder.find('test-template')).to be_nil
@@ -77,7 +77,7 @@ RSpec.describe Gitlab::Template::Finders::GlobalTemplateFinder do
       end
 
       context 'while listed as an exclusion' do
-        let(:exclusions) { %w[Bar/test-template] }
+        let(:excluded_patterns) { [%r{^Bar/test-template$}] }
 
         it 'does not find the template with a prefix' do
           expect(finder.find('Bar/test-template')).to be_nil
@@ -94,6 +94,17 @@ RSpec.describe Gitlab::Template::Finders::GlobalTemplateFinder do
 
           expect(finder.find('test-template')).to be_present
           expect(finder.find('Bar/test-template')).to be_nil
+        end
+      end
+
+      context 'while listed as an exclusion' do
+        let(:excluded_patterns) { [%r{\.latest$}] }
+
+        it 'excludes the template matched the pattern' do
+          create_template!('test-template.latest')
+
+          expect(finder.find('test-template')).to be_present
+          expect(finder.find('test-template.latest')).to be_nil
         end
       end
     end

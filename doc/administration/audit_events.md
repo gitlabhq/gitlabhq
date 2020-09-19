@@ -68,7 +68,7 @@ From there, you can see the following actions:
 - Roles allowed to create project changed.
 - Group CI/CD variable added, removed, or protected status changed. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30857) in GitLab 13.3.
 
-Group events can also be accessed via the [Group Audit Events API](../api/audit_events.md#group-audit-events-starter)
+Group events can also be accessed via the [Group Audit Events API](../api/audit_events.md#group-audit-events)
 
 ### Project events **(STARTER)**
 
@@ -96,8 +96,9 @@ From there, you can see the following actions:
 - Permission to approve merge requests by authors was updated ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7531) in GitLab 12.9)
 - Number of required approvals was updated ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7531) in GitLab 12.9)
 - Added or removed users and groups from project approval groups ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/213603) in GitLab 13.2)
+- Project CI/CD variable added, removed, or protected status changed. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30857) in GitLab 13.4.
 
-Project events can also be accessed via the [Project Audit Events API](../api/audit_events.md#project-audit-events-starter)
+Project events can also be accessed via the [Project Audit Events API](../api/audit_events.md#project-audit-events)
 
 ### Instance events **(PREMIUM ONLY)**
 
@@ -132,7 +133,7 @@ the filter dropdown box. You can further filter by specific group, project, or u
 
 ![audit log](img/audit_log.png)
 
-Instance events can also be accessed via the [Instance Audit Events API](../api/audit_events.md#instance-audit-events-premium-only)
+Instance events can also be accessed via the [Instance Audit Events API](../api/audit_events.md#instance-audit-events)
 
 ### Missing events
 
@@ -171,4 +172,77 @@ the steps bellow.
 
    ```ruby
    Feature.enable(:repository_push_audit_event)
-   ```
+
+## Export to CSV **(PREMIUM ONLY)**
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/1449) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.4.
+> - It's [deployed behind a feature flag](../user/feature_flags.md), disabled by default.
+> - It's disabled on GitLab.com.
+> - It's not recommended for production use.
+> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-audit-log-export-to-csv). **(PREMIUM ONLY)**
+
+CAUTION: **Warning:**
+This feature might not be available to you. Check the **version history** note above for details.
+
+Export to CSV allows customers to export the current filter view of your audit log as a
+CSV file,
+which stores tabular data in plain text. The data provides a comprehensive view with respect to
+audit events.
+
+To export the Audit Log to CSV, navigate to
+**{monitor}** **Admin Area > Monitoring > Audit Log**
+
+1. Click in the field **Search**.
+1. In the dropdown menu that appears, select the event type that you want to filter by.
+1. Select the preferred date range.
+1. Click **Export as CSV**.
+
+![Export Audit Log](img/export_audit_log_v13_4.png)
+
+### Sort
+
+Exported events are always sorted by `ID` in ascending order.
+
+### Format
+
+Data is encoded with a comma as the column delimiter, with `"` used to quote fields if needed, and newlines to separate rows.
+The first row contains the headers, which are listed in the following table along with a description of the values:
+
+| Column  | Description |
+|---------|-------------|
+| ID | Audit event `id` |
+| Author ID | ID of the author |
+| Author Name | Full name of the author |
+| Entity ID | ID of the scope |
+| Entity Type | Type of the entity (`Project`/`Group`/`User`) |
+| Entity Path | Path of the entity |
+| Target ID | ID of the target |
+| Target Type | Type of the target |
+| Target Details | Details of the target |
+| Action | Description of the action |
+| IP Address | IP address of the author who performed the action |
+| Created At (UTC) | Formatted as `YYYY-MM-DD HH:MM:SS` |
+
+### Limitation
+
+The Audit Log CSV file size is limited to a maximum of `15 MB`.
+The remaining records are truncated when this limit is reached.
+
+### Enable or disable Audit Log Export to CSV
+
+The Audit Log Export to CSV is under development and not ready for production use. It is
+deployed behind a feature flag that is **disabled by default**.
+[GitLab administrators with access to the GitLab Rails console](../administration/feature_flags.md)
+can enable it.
+
+To enable it:
+
+```ruby
+Feature.enable(:audit_log_export_csv)
+```
+
+To disable it:
+
+```ruby
+Feature.disable(:audit_log_export_csv)
+```

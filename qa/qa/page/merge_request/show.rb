@@ -8,7 +8,7 @@ module QA
         include Page::Component::Issuable::Sidebar
 
         view 'app/assets/javascripts/vue_merge_request_widget/components/mr_widget_header.vue' do
-          element :dropdown_toggle
+          element :download_dropdown
           element :download_email_patches
           element :download_plain_diff
           element :open_in_web_ide_button
@@ -51,10 +51,6 @@ module QA
         view 'app/views/projects/merge_requests/show.html.haml' do
           element :notes_tab
           element :diffs_tab
-        end
-
-        view 'app/assets/javascripts/diffs/components/diff_table_cell.vue' do
-          element :diff_comment
         end
 
         view 'app/assets/javascripts/diffs/components/inline_diff_table_row.vue' do
@@ -131,7 +127,7 @@ module QA
 
         def add_comment_to_diff(text)
           wait_until(sleep_interval: 5) do
-            has_text?("No newline at end of file")
+            has_css?('a[data-linenumber="1"]')
           end
           all_elements(:new_diff_line, minimum: 1).first.hover
           click_element(:diff_comment)
@@ -255,12 +251,12 @@ module QA
         end
 
         def view_email_patches
-          click_element :dropdown_toggle
+          click_element :download_dropdown
           visit_link_in_element(:download_email_patches)
         end
 
         def view_plain_diff
-          click_element :dropdown_toggle
+          click_element :download_dropdown
           visit_link_in_element(:download_plain_diff)
         end
 
@@ -275,7 +271,8 @@ module QA
         end
 
         def click_open_in_web_ide
-          click_element :open_in_web_ide_button
+          click_element(:open_in_web_ide_button)
+          wait_for_requests
         end
       end
     end

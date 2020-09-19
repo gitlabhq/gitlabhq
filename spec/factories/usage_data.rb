@@ -51,12 +51,11 @@ FactoryBot.define do
       create(:protected_branch, name: 'main', project: projects[0])
 
       # Incident Labeled Issues
-      incident_label_attrs = IncidentManagement::CreateIncidentLabelService::LABEL_PROPERTIES
-      incident_label = create(:label, project: projects[0], **incident_label_attrs)
+      incident_label = create(:label, :incident, project: projects[0])
       create(:labeled_issue, project: projects[0], labels: [incident_label])
       incident_group = create(:group)
-      incident_label_scoped_to_project = create(:label, project: projects[1], **incident_label_attrs)
-      incident_label_scoped_to_group = create(:group_label, group: incident_group, **incident_label_attrs)
+      incident_label_scoped_to_project = create(:label, :incident, project: projects[1])
+      incident_label_scoped_to_group = create(:group_label, :incident, group: incident_group)
       create(:labeled_issue, project: projects[1], labels: [incident_label_scoped_to_project])
       create(:labeled_issue, project: projects[1], labels: [incident_label_scoped_to_group])
 
@@ -64,6 +63,10 @@ FactoryBot.define do
       create(:alert_management_alert, issue: issues[0], project: projects[0])
       create(:alert_management_alert, issue: alert_bot_issues[0], project: projects[0])
       create(:self_managed_prometheus_alert_event, related_issues: [issues[1]], project: projects[0])
+
+      # Kubernetes agents
+      create(:cluster_agent, project: projects[0])
+      create(:cluster_agent_token, agent: create(:cluster_agent, project: projects[1]) )
 
       # Enabled clusters
       gcp_cluster = create(:cluster_provider_gcp, :created).cluster
@@ -93,6 +96,11 @@ FactoryBot.define do
       create(:grafana_integration, project: projects[0], enabled: true)
       create(:grafana_integration, project: projects[1], enabled: true)
       create(:grafana_integration, project: projects[2], enabled: false)
+
+      create(:package, project: projects[0])
+      create(:package, project: projects[0])
+      create(:package, project: projects[1])
+      create(:package, created_at: 2.months.ago, project: projects[1])
 
       ProjectFeature.first.update_attribute('repository_access_level', 0)
 

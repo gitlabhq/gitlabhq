@@ -90,7 +90,7 @@ RSpec.describe API::AccessRequests do
       context 'when authenticated as a stranger' do
         context "when access request is disabled for the #{source_type}" do
           before do
-            source.update(request_access_enabled: false)
+            source.update!(request_access_enabled: false)
           end
 
           it 'returns 403' do

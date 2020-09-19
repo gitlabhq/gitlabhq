@@ -73,15 +73,6 @@ RSpec.describe 'value stream analytics events' do
       expect(json_response['events'].first['date']).not_to be_empty
     end
 
-    it 'lists the production events', :sidekiq_might_not_need_inline do
-      get project_cycle_analytics_production_path(project, format: :json)
-
-      first_issue_iid = project.issues.sort_by_attribute(:created_desc).pluck(:iid).first.to_s
-
-      expect(json_response['events']).not_to be_empty
-      expect(json_response['events'].first['iid']).to eq(first_issue_iid)
-    end
-
     context 'specific branch' do
       it 'lists the test events', :sidekiq_might_not_need_inline do
         branch = project.merge_requests.first.source_branch

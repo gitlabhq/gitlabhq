@@ -14,10 +14,20 @@ import createTestReportsStore from './stores/test_reports';
 
 Vue.use(Translate);
 
+const SELECTORS = {
+  PIPELINE_DETAILS: '.js-pipeline-details-vue',
+  PIPELINE_GRAPH: '#js-pipeline-graph-vue',
+  PIPELINE_HEADER: '#js-pipeline-header-vue',
+  PIPELINE_TESTS: '#js-pipeline-tests-detail',
+};
+
 const createPipelinesDetailApp = mediator => {
+  if (!document.querySelector(SELECTORS.PIPELINE_GRAPH)) {
+    return;
+  }
   // eslint-disable-next-line no-new
   new Vue({
-    el: '#js-pipeline-graph-vue',
+    el: SELECTORS.PIPELINE_GRAPH,
     components: {
       pipelineGraph,
     },
@@ -47,9 +57,12 @@ const createPipelinesDetailApp = mediator => {
 };
 
 const createPipelineHeaderApp = mediator => {
+  if (!document.querySelector(SELECTORS.PIPELINE_HEADER)) {
+    return;
+  }
   // eslint-disable-next-line no-new
   new Vue({
-    el: '#js-pipeline-header-vue',
+    el: SELECTORS.PIPELINE_HEADER,
     components: {
       pipelineHeader,
     },
@@ -93,9 +106,8 @@ const createPipelineHeaderApp = mediator => {
 };
 
 const createTestDetails = () => {
-  const el = document.querySelector('#js-pipeline-tests-detail');
+  const el = document.querySelector(SELECTORS.PIPELINE_TESTS);
   const { summaryEndpoint, suiteEndpoint } = el?.dataset || {};
-
   const testReportsStore = createTestReportsStore({
     summaryEndpoint,
     suiteEndpoint,
@@ -115,7 +127,7 @@ const createTestDetails = () => {
 };
 
 export default () => {
-  const { dataset } = document.querySelector('.js-pipeline-details-vue');
+  const { dataset } = document.querySelector(SELECTORS.PIPELINE_DETAILS);
   const mediator = new PipelinesMediator({ endpoint: dataset.endpoint });
   mediator.fetchPipeline();
 

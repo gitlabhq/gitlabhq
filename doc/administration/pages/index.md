@@ -235,6 +235,7 @@ control over how the Pages daemon runs and serves content in your environment.
 | `pages_path` | The directory on disk where pages are stored, defaults to `GITLAB-RAILS/shared/pages`.
 | `pages_nginx[]` | |
 | `enable` | Include a virtual host `server{}` block for Pages inside NGINX. Needed for NGINX to proxy traffic back to the Pages daemon. Set to `false` if the Pages daemon should directly receive all requests, for example, when using [custom domains](index.md#custom-domains).
+| `FF_ENABLE_REDIRECTS` | Feature flag to enable redirects. See the [redirects documentation](../../user/project/pages/redirects.md#enable-or-disable-redirects) for more info. |
 
 ---
 
@@ -424,6 +425,10 @@ Authority (CA) in the system certificate store.
 
 For Omnibus, this is fixed by [installing a custom CA in Omnibus GitLab](https://docs.gitlab.com/omnibus/settings/ssl.html#install-custom-public-certificates).
 
+## Enable redirects
+
+In GitLab Pages, you can [enable the redirects feature](../../user/project/pages/redirects.md#enable-or-disable-redirects) to configure rules to forward one URL to another using HTTP redirects.
+
 ## Activate verbose logging for daemon
 
 Verbose logging was [introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/2533) in
@@ -588,8 +593,9 @@ database encryption. Proceed with caution.
 1. On the **GitLab server**, make the following changes to `/etc/gitlab/gitlab.rb`:
 
    ```ruby
-   gitlab_pages['enable'] = false
    pages_external_url "http://<pages_server_URL>"
+   gitlab_pages['enable'] = false
+   gitlab_rails['pages_enabled']=false
    gitlab_rails['pages_path'] = "/mnt/pages"
    ```
 
@@ -622,7 +628,7 @@ For more details see this [blog post](https://about.gitlab.com/blog/2020/08/03/h
 GitLab Pages can use an API-based configuration. This replaces disk source configuration, which
 was used prior to GitLab 13.0. Follow these steps to enable it:
 
-1. Add the following to your `/etc/gitlab/gitlab.erb` file:
+1. Add the following to your `/etc/gitlab/gitlab.rb` file:
 
    ```ruby
    gitlab_pages['domain_config_source'] = "gitlab"
@@ -718,6 +724,24 @@ sudo mkdir -p /var/opt/gitlab/gitlab-rails/shared/pages/opt/gitlab/embedded/ssl/
 sudo cp /etc/resolv.conf /var/opt/gitlab/gitlab-rails/shared/pages/etc
 sudo cp /opt/gitlab/embedded/ssl/certs/cacert.pem /var/opt/gitlab/gitlab-rails/shared/pages/opt/gitlab/embedded/ssl/certs/
 sudo cp /opt/gitlab/embedded/ssl/certs/cacert.pem /var/opt/gitlab/gitlab-rails/shared/pages/etc/ssl/ca-bundle.pem
+```
+
+### 502 error when connecting to GitLab Pages proxy when server does not listen over IPv6
+
+In some cases, NGINX might default to using IPv6 to connect to the GitLab Pages
+service even when the server does not listen over IPv6. You can identify when
+this is happening if you see something similar to the log entry below in the
+`gitlab_pages_error.log`:
+
+```plaintext
+2020/02/24 16:32:05 [error] 112654#0: *4982804 connect() failed (111: Connection refused) while connecting to upstream, client: 123.123.123.123, server: ~^(?<group>.*)\.pages\.example\.com$, request: "GET /-/group/project/-/jobs/1234/artifacts/artifact.txt HTTP/1.1", upstream: "http://[::1]:8090//-/group/project/-/jobs/1234/artifacts/artifact.txt", host: "group.example.com"
+```
+
+To resolve this, set an explicit IP and port for the GitLab Pages `listen_proxy` setting
+to define the explicit address that the GitLab Pages daemon should listen on:
+
+```ruby
+gitlab_pages['listen_proxy'] = '127.0.0.1:8090'
 ```
 
 ### 404 error after transferring project to a different group or user

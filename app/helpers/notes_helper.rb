@@ -85,6 +85,10 @@ module NotesHelper
     note.project.team.max_member_access(note.author_id)
   end
 
+  def note_human_max_access(note)
+    note.project.team.human_max_access(note.author_id)
+  end
+
   def discussion_path(discussion)
     if discussion.for_merge_request?
       return unless discussion.diff_discussion?
@@ -181,7 +185,7 @@ module NotesHelper
       reopenPath: reopen_issuable_path(issuable),
       notesPath: notes_url,
       prerenderedNotesCount: issuable.capped_notes_count(MAX_PRERENDERED_NOTES),
-      lastFetchedAt: Time.now.to_i
+      lastFetchedAt: Time.now.to_i * ::Gitlab::UpdatedNotesPaginator::MICROSECOND
     }
 
     if issuable.is_a?(MergeRequest)

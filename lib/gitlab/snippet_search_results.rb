@@ -4,11 +4,8 @@ module Gitlab
   class SnippetSearchResults < SearchResults
     include SnippetsHelper
 
-    attr_reader :current_user
-
     def initialize(current_user, query)
-      @current_user = current_user
-      @query = query
+      super(current_user, query)
     end
 
     def objects(scope, page: nil, per_page: DEFAULT_PER_PAGE, preload_method: nil)

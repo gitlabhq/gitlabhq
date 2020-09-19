@@ -262,6 +262,22 @@ RSpec.describe Gitlab::Graphql::Pagination::Keyset::Connection do
       end
     end
 
+    context 'when ordering by similarity' do
+      let!(:project1) { create(:project, name: 'test') }
+      let!(:project2) { create(:project, name: 'testing') }
+      let!(:project3) { create(:project, name: 'tests') }
+      let!(:project4) { create(:project, name: 'testing stuff') }
+      let!(:project5) { create(:project, name: 'test') }
+
+      let(:nodes) do
+        Project.sorted_by_similarity_desc('test', include_in_select: true)
+      end
+
+      let(:descending_nodes) { nodes.to_a }
+
+      it_behaves_like 'nodes are in descending order'
+    end
+
     context 'when an invalid cursor is provided' do
       let(:arguments) { { before: Base64Bp.urlsafe_encode64('invalidcursor', padding: false) } }
 
@@ -350,15 +366,6 @@ RSpec.describe Gitlab::Graphql::Pagination::Keyset::Connection do
       end
 
       context 'when before and last specified' do
-        let(:arguments) { { before: encoded_cursor(project_list.last), last: 2 } }
-
-        it 'has a previous and a next' do
-          expect(subject.has_previous_page).to be_truthy
-          expect(subject.has_next_page).to be_truthy
-        end
-      end
-
-      context 'when before and last does not request all remaining nodes' do
         let(:arguments) { { before: encoded_cursor(project_list.last), last: 2 } }
 
         it 'has a previous and a next' do

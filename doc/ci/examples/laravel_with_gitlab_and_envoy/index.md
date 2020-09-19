@@ -2,14 +2,7 @@
 stage: Verify
 group: Continuous Integration
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
-disqus_identifier: 'https://docs.gitlab.com/ee/articles/laravel_with_gitlab_and_envoy/index.html'
-author: Mehran Rasulian
-author_gitlab: mehranrasulian
-level: intermediate
-article_type: tutorial
 type: tutorial
-date: 2017-08-31
-last_updated: 2019-03-06
 ---
 
 # Test and deploy Laravel applications with GitLab CI/CD and Envoy
@@ -36,7 +29,7 @@ We assume [you have installed a new Laravel project](https://laravel.com/docs/ma
 
 ### Unit Test
 
-Every new installation of Laravel (currently 5.4) comes with two type of tests, 'Feature' and 'Unit', placed in the tests directory.
+Every new installation of Laravel (currently 8.0) comes with two type of tests, 'Feature' and 'Unit', placed in the tests directory.
 Here's a unit test from `test/Unit/ExampleTest.php`:
 
 ```php
@@ -412,7 +405,7 @@ Let's create a [Dockerfile](https://gitlab.com/mehranrasulian/laravel-sample/blo
 
 ```shell
 # Set the base image for subsequent instructions
-FROM php:7.1
+FROM php:7.4
 
 # Update packages
 RUN apt-get update
@@ -434,7 +427,7 @@ RUN curl --silent --show-error https://getcomposer.org/installer | php -- --inst
 RUN composer global require "laravel/envoy=~1.0"
 ```
 
-We added the [official PHP 7.1 Docker image](https://hub.docker.com/_/php), which consist of a minimum installation of Debian Jessie with PHP pre-installed, and works perfectly for our use case.
+We added the [official PHP 7.4 Docker image](https://hub.docker.com/_/php), which consist of a minimum installation of Debian buster with PHP pre-installed, and works perfectly for our use case.
 
 We used `docker-php-ext-install` (provided by the official PHP Docker image) to install the PHP extensions we need.
 
@@ -537,8 +530,8 @@ That's a lot to take in, isn't it? Let's run through it step by step.
 
 #### Image and Services
 
-[GitLab Runners](../../runners/README.md) run the script defined by `.gitlab-ci.yml`.
-The `image` keyword tells the Runners which image to use.
+[Runners](../../runners/README.md) run the script defined by `.gitlab-ci.yml`.
+The `image` keyword tells the runners which image to use.
 The `services` keyword defines additional images [that are linked to the main image](../../docker/using_docker_images.md#what-is-a-service).
 Here we use the container image we created before as our main image and also use MySQL 5.7 as a service.
 
@@ -566,15 +559,11 @@ Also set the variables `DB_HOST` to `mysql` and `DB_USERNAME` to `root`, which a
 We define `DB_HOST` as `mysql` instead of `127.0.0.1`, as we use MySQL Docker image as a service which [is linked to the main Docker image](../../docker/using_docker_images.md#how-services-are-linked-to-the-job).
 
 ```yaml
-...
-
 variables:
   MYSQL_DATABASE: homestead
   MYSQL_ROOT_PASSWORD: secret
   DB_HOST: mysql
   DB_USERNAME: root
-
-...
 ```
 
 #### Unit Test as the first job
@@ -584,8 +573,6 @@ We defined the required shell scripts as an array of the [script](../../yaml/REA
 These scripts are some Artisan commands to prepare the Laravel, and, at the end of the script, we'll run the tests by `PHPUnit`.
 
 ```yaml
-...
-
 unit_test:
   script:
     # Install app dependencies
@@ -598,8 +585,6 @@ unit_test:
     - php artisan migrate
     # Run tests
     - vendor/bin/phpunit
-
-...
 ```
 
 #### Deploy to production
@@ -615,8 +600,6 @@ The `only` keyword tells GitLab CI/CD that the job should be executed only when 
 Lastly, `when: manual` is used to turn the job from running automatically to a manual action.
 
 ```yaml
-...
-
 deploy_production:
   script:
     # Add the private SSH key to the build environment
@@ -648,7 +631,7 @@ To do that, commit and push `.gitlab-ci.yml` to the `master` branch. It will tri
 
 Here we see our **Test** and **Deploy** stages.
 The **Test** stage has the `unit_test` build running.
-click on it to see the Runner's output.
+click on it to see the runner's output.
 
 ![pipeline page](img/pipeline_page.png)
 

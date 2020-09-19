@@ -78,7 +78,7 @@ describe('AddContextCommitsModal', () => {
       findSearch().vm.$emit('input', searchText);
       expect(searchCommits).not.toBeCalled();
       jest.advanceTimersByTime(500);
-      expect(searchCommits).toHaveBeenCalledWith(expect.anything(), searchText, undefined);
+      expect(searchCommits).toHaveBeenCalledWith(expect.anything(), searchText);
     });
 
     it('disabled ok button when no row is selected', () => {
@@ -119,18 +119,17 @@ describe('AddContextCommitsModal', () => {
       wrapper.vm.$store.state.selectedCommits = [{ ...commit, isSelected: true }];
       findModal().vm.$emit('ok');
       return wrapper.vm.$nextTick().then(() => {
-        expect(createContextCommits).toHaveBeenCalledWith(
-          expect.anything(),
-          { commits: [{ ...commit, isSelected: true }], forceReload: true },
-          undefined,
-        );
+        expect(createContextCommits).toHaveBeenCalledWith(expect.anything(), {
+          commits: [{ ...commit, isSelected: true }],
+          forceReload: true,
+        });
       });
     });
     it('"removeContextCommits" when only added commits are to be removed ', () => {
       wrapper.vm.$store.state.toRemoveCommits = [commit.short_id];
       findModal().vm.$emit('ok');
       return wrapper.vm.$nextTick().then(() => {
-        expect(removeContextCommits).toHaveBeenCalledWith(expect.anything(), true, undefined);
+        expect(removeContextCommits).toHaveBeenCalledWith(expect.anything(), true);
       });
     });
     it('"createContextCommits" and "removeContextCommits" when new commits are to be added and old commits are to be removed', () => {
@@ -138,12 +137,10 @@ describe('AddContextCommitsModal', () => {
       wrapper.vm.$store.state.toRemoveCommits = [commit.short_id];
       findModal().vm.$emit('ok');
       return wrapper.vm.$nextTick().then(() => {
-        expect(createContextCommits).toHaveBeenCalledWith(
-          expect.anything(),
-          { commits: [{ ...commit, isSelected: true }] },
-          undefined,
-        );
-        expect(removeContextCommits).toHaveBeenCalledWith(expect.anything(), undefined, undefined);
+        expect(createContextCommits).toHaveBeenCalledWith(expect.anything(), {
+          commits: [{ ...commit, isSelected: true }],
+        });
+        expect(removeContextCommits).toHaveBeenCalledWith(expect.anything(), undefined);
       });
     });
   });
@@ -156,7 +153,7 @@ describe('AddContextCommitsModal', () => {
     });
     it('"resetModalState" to reset all the modal state', () => {
       findModal().vm.$emit('cancel');
-      expect(resetModalState).toHaveBeenCalledWith(expect.anything(), undefined, undefined);
+      expect(resetModalState).toHaveBeenCalledWith(expect.anything(), undefined);
     });
   });
 
@@ -168,7 +165,7 @@ describe('AddContextCommitsModal', () => {
     });
     it('"resetModalState" to reset all the modal state', () => {
       findModal().vm.$emit('close');
-      expect(resetModalState).toHaveBeenCalledWith(expect.anything(), undefined, undefined);
+      expect(resetModalState).toHaveBeenCalledWith(expect.anything(), undefined);
     });
   });
 });

@@ -11,6 +11,7 @@ module Gitlab
         end
 
         def normalize_jobs
+          return {} unless @jobs_config
           return @jobs_config if parallelized_jobs.empty?
 
           expand_parallelize_jobs do |job_name, config|

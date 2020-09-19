@@ -35,6 +35,10 @@ function install_gitlab_gem() {
   gem install gitlab --no-document --version 4.13.0
 }
 
+function install_tff_gem() {
+  gem install test_file_finder --version 0.1.0
+}
+
 function run_timed_command() {
   local cmd="${1}"
   local start=$(date +%s)
@@ -106,7 +110,7 @@ function get_job_id() {
     let "page++"
   done
 
-  if [[ "${job_id}" == "" ]]; then
+  if [[ "${job_id}" == "null" ]]; then # jq prints "null" for non-existent attribute
     echoerr "The '${job_name}' job ID couldn't be retrieved!"
   else
     echoinfo "The '${job_name}' job ID is ${job_id}"
@@ -132,4 +136,16 @@ function play_job() {
   local job_url
   job_url=$(curl --silent --show-error --request POST --header "PRIVATE-TOKEN: ${api_token}" "${url}" | jq ".web_url")
   echoinfo "Manual job '${job_name}' started at: ${job_url}"
+}
+
+function fail_pipeline_early() {
+  local dont_interrupt_me_job_id
+  dont_interrupt_me_job_id=$(get_job_id 'dont-interrupt-me' 'scope=success')
+
+  if [[ -n "${dont_interrupt_me_job_id}" ]]; then
+    echoinfo "This pipeline cannot be interrupted due to \`dont-interrupt-me\` job ${dont_interrupt_me_job_id}"
+  else
+    echoinfo "Failing pipeline early for fast feedback due to test failures in rspec fail-fast."
+    curl --request POST --header "PRIVATE-TOKEN: ${GITLAB_BOT_MULTI_PROJECT_PIPELINE_POLLING_TOKEN}" "https://${CI_SERVER_HOST}/api/v4/projects/${CI_PROJECT_ID}/pipelines/${CI_PIPELINE_ID}/cancel"
+  fi
 }

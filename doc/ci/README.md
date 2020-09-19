@@ -80,36 +80,37 @@ Once you're familiar with how GitLab CI/CD works, see the
 for all the attributes you can set and use.
 
 NOTE: **Note:**
-GitLab CI/CD and [shared runners](runners/README.md#shared-runners) are enabled in GitLab.com and available for all users, limited only to the [user's pipelines quota](../user/gitlab_com/index.md#shared-runners).
+GitLab CI/CD and [shared runners](runners/README.md#shared-runners) are enabled on GitLab.com and available for all users, limited only by the [pipeline quota](../user/gitlab_com/index.md#shared-runners).
 
 ## Concepts
 
 GitLab CI/CD uses a number of concepts to describe and run your build and deploy.
 
-| Concept | Description  |
-|:--------------|:-------------|
-| [Pipelines](pipelines/index.md) | Structure your CI/CD process through pipelines. |
-| [Environment variables](variables/README.md) | Reuse values based on a variable/value key pair. |
-| [Environments](environments/index.md) | Deploy your application to different environments (e.g., staging, production). |
-| [Job artifacts](pipelines/job_artifacts.md) | Output, use, and reuse job artifacts. |
-| [Cache dependencies](caching/index.md) | Cache your dependencies for a faster execution. |
-| [GitLab Runner](https://docs.gitlab.com/runner/) | Configure your own GitLab Runners to execute your scripts. |
+| Concept                                                 | Description                                                                    |
+|:--------------------------------------------------------|:-------------------------------------------------------------------------------|
+| [Pipelines](pipelines/index.md)                         | Structure your CI/CD process through pipelines.                                |
+| [Environment variables](variables/README.md)            | Reuse values based on a variable/value key pair.                               |
+| [Environments](environments/index.md)                   | Deploy your application to different environments (e.g., staging, production). |
+| [Job artifacts](pipelines/job_artifacts.md)             | Output, use, and reuse job artifacts.                                          |
+| [Cache dependencies](caching/index.md)                  | Cache your dependencies for a faster execution.                                |
+| [GitLab Runner](https://docs.gitlab.com/runner/)        | Configure your own runners to execute your scripts.                            |
+| [Pipeline efficiency](pipelines/pipeline_efficiency.md) | Configure your pipelines to run quickly and effienctly.                        |
 
 ## Configuration
 
 GitLab CI/CD supports numerous configuration options:
 
-| Configuration | Description  |
-|:--------------|:-------------|
-| [Schedule pipelines](pipelines/schedules.md) | Schedule pipelines to run as often as you need. |
-| [Custom path for `.gitlab-ci.yml`](pipelines/settings.md#custom-ci-configuration-path) | Define a custom path for the CI/CD configuration file. |
-| [Git submodules for CI/CD](git_submodules.md) | Configure jobs for using Git submodules.|
-| [SSH keys for CI/CD](ssh_keys/README.md) | Using SSH keys in your CI pipelines. |
-| [Pipeline triggers](triggers/README.md) | Trigger pipelines through the API. |
-| [Pipelines for Merge Requests](merge_request_pipelines/index.md) | Design a pipeline structure for running a pipeline in merge requests. |
-| [Integrate with Kubernetes clusters](../user/project/clusters/index.md) | Connect your project to Google Kubernetes Engine (GKE) or an existing Kubernetes cluster. |
-| [Optimize GitLab and Runner for large repositories](large_repositories/index.md) | Recommended strategies for handling large repositories. |
-| [`.gitlab-ci.yml` full reference](yaml/README.md) | All the attributes you can use with GitLab CI/CD. |
+| Configuration                                                                           | Description                                                                               |
+|:----------------------------------------------------------------------------------------|:------------------------------------------------------------------------------------------|
+| [Schedule pipelines](pipelines/schedules.md)                                            | Schedule pipelines to run as often as you need.                                           |
+| [Custom path for `.gitlab-ci.yml`](pipelines/settings.md#custom-ci-configuration-path)  | Define a custom path for the CI/CD configuration file.                                    |
+| [Git submodules for CI/CD](git_submodules.md)                                           | Configure jobs for using Git submodules.                                                  |
+| [SSH keys for CI/CD](ssh_keys/README.md)                                                | Using SSH keys in your CI pipelines.                                                      |
+| [Pipeline triggers](triggers/README.md)                                                 | Trigger pipelines through the API.                                                        |
+| [Pipelines for Merge Requests](merge_request_pipelines/index.md)                        | Design a pipeline structure for running a pipeline in merge requests.                     |
+| [Integrate with Kubernetes clusters](../user/project/clusters/index.md)                 | Connect your project to Google Kubernetes Engine (GKE) or an existing Kubernetes cluster. |
+| [Optimize GitLab and GitLab Runner for large repositories](large_repositories/index.md) | Recommended strategies for handling large repositories.                                   |
+| [`.gitlab-ci.yml` full reference](yaml/README.md)                                       | All the attributes you can use with GitLab CI/CD.                                         |
 
 Note that certain operations can only be performed according to the
 [user](../user/permissions.md#gitlab-cicd-permissions) and [job](../user/permissions.md#job-permissions) permissions.
@@ -132,7 +133,7 @@ Its feature set is listed on the table below according to DevOps stages.
 | [Code Quality](../user/project/merge_requests/code_quality.md) | Analyze your source code quality. |
 | [GitLab CI/CD for external repositories](ci_cd_for_external_repos/index.md) **(PREMIUM)** | Get the benefits of GitLab CI/CD combined with repositories in GitHub and Bitbucket Cloud. |
 | [Interactive Web Terminals](interactive_web_terminal/index.md) **(CORE ONLY)** | Open an interactive web terminal to debug the running jobs. |
-| [JUnit tests](junit_test_reports.md) | Identify script failures directly on merge requests. |
+| [Unit test reports](unit_test_reports.md) | Identify script failures directly on merge requests. |
 | [Using Docker images](docker/using_docker_images.md) | Use GitLab and GitLab Runner with Docker to build and test applications. |
 |---+---|
 | **Release** ||
@@ -191,41 +192,25 @@ been necessary. These are:
 
 #### 13.0
 
-- [Remove Backported
-  `os.Expand`](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/4915)
-- [Remove Fedora 29 package
-  support](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/16158)
-- [Remove macOS 32-bit
-  support](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/25466)
-- [Removed `debug/jobs/list?v=1`
-  endpoint](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/6361)
-- [Remove support for array of strings when defining services for Docker
-  executor](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/4922)
-- [Remove `--docker-services` flag on register
-  command](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/6404)
-- [Remove legacy build directory
-  caching](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/4180)
-- [Remove `FF_USE_LEGACY_VOLUMES_MOUNTING_ORDER` feature
-  flag](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/6581)
-- [Remove support for Windows Server
-  1803](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/6553)
+- [Remove Backported `os.Expand`](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/4915).
+- [Remove Fedora 29 package support](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/16158).
+- [Remove macOS 32-bit support](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/25466).
+- [Removed `debug/jobs/list?v=1` endpoint](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/6361).
+- [Remove support for array of strings when defining services for Docker executor](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/4922).
+- [Remove `--docker-services` flag on register command](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/6404).
+- [Remove legacy build directory caching](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/4180).
+- [Remove `FF_USE_LEGACY_VOLUMES_MOUNTING_ORDER` feature flag](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/6581).
+- [Remove support for Windows Server 1803](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/6553).
 
 #### 12.0
 
-- [Use refspec to clone/fetch Git
-  repository](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/4069).
-- [Old cache
-  configuration](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/4070).
-- [Old metrics server
-  configuration](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/4072).
-- [Remove
-  `FF_K8S_USE_ENTRYPOINT_OVER_COMMAND`](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/4073).
-- [Remove Linux distributions that reach
-  EOL](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/1130).
-- [Update command line API for helper
-  images](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/4013).
-- [Remove old `git clean`
-  flow](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/4175).
+- [Use refspec to clone/fetch Git repository](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/4069).
+- [Old cache configuration](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/4070).
+- [Old metrics server configuration](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/4072).
+- [Remove `FF_K8S_USE_ENTRYPOINT_OVER_COMMAND`](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/4073).
+- [Remove Linux distributions that reach EOL](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/1130).
+- [Update command line API for helper images](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/4013).
+- [Remove old `git clean` flow](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/4175).
 
 #### 11.0
 

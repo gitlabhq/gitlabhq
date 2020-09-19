@@ -53,7 +53,10 @@ FactoryBot.define do
     factory :image_diff_position do
       position_type { 'image' }
       x { 1 }
-      y { 1 }
+      # Fix:
+      # NoMethodError: undefined method `end_line=' for nil:NilClass
+      # from /usr/lib/ruby/2.6.0/psych/tree_builder.rb:133:in `set_end_location'
+      add_attribute(:y) { 1 }
       width { 10 }
       height { 10 }
     end

@@ -1,12 +1,12 @@
 <script>
 import { ApolloMutation } from 'vue-apollo';
-import { GlTooltipDirective, GlIcon } from '@gitlab/ui';
+import { GlTooltipDirective, GlIcon, GlLink, GlSafeHtmlDirective } from '@gitlab/ui';
 import updateNoteMutation from '../../graphql/mutations/update_note.mutation.graphql';
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import DesignReplyForm from './design_reply_form.vue';
-import { findNoteId } from '../../utils/design_management_utils';
+import { findNoteId, extractDesignNoteId } from '../../utils/design_management_utils';
 import { hasErrors } from '../../utils/cache_update';
 
 export default {
@@ -17,9 +17,11 @@ export default {
     DesignReplyForm,
     ApolloMutation,
     GlIcon,
+    GlLink,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
+    SafeHtml: GlSafeHtmlDirective,
   },
   props: {
     note: {
@@ -46,7 +48,7 @@ export default {
       return findNoteId(this.note.id);
     },
     isNoteLinked() {
-      return this.$route.hash === `#note_${this.noteAnchorId}`;
+      return extractDesignNoteId(this.$route.hash) === this.noteAnchorId;
     },
     mutationPayload() {
       return {
@@ -57,11 +59,6 @@ export default {
     isEditButtonVisible() {
       return !this.isEditing && this.note.userPermissions.adminNote;
     },
-  },
-  mounted() {
-    if (this.isNoteLinked) {
-      this.$el.scrollIntoView({ behavior: 'smooth', inline: 'start' });
-    }
   },
   methods: {
     hideForm() {
@@ -87,30 +84,30 @@ export default {
       :img-alt="author.username"
       :img-size="40"
     />
-    <div class="d-flex justify-content-between">
+    <div class="gl-display-flex gl-justify-content-space-between">
       <div>
-        <a
+        <gl-link
           v-once
           :href="author.webUrl"
           class="js-user-link"
           :data-user-id="author.id"
           :data-username="author.username"
         >
-          <span class="note-header-author-name bold">{{ author.name }}</span>
-          <span v-if="author.status_tooltip_html" v-html="author.status_tooltip_html"></span>
+          <span class="note-header-author-name gl-font-weight-bold">{{ author.name }}</span>
+          <span v-if="author.status_tooltip_html" v-safe-html="author.status_tooltip_html"></span>
           <span class="note-headline-light">@{{ author.username }}</span>
-        </a>
+        </gl-link>
         <span class="note-headline-light note-headline-meta">
           <span class="system-note-message"> <slot></slot> </span>
-          <template v-if="note.createdAt">
-            <span class="system-note-separator"></span>
-            <a class="note-timestamp system-note-separator" :href="`#note_${noteAnchorId}`">
-              <time-ago-tooltip :time="note.createdAt" tooltip-placement="bottom" />
-            </a>
-          </template>
+          <gl-link
+            class="note-timestamp system-note-separator gl-display-block gl-mb-2"
+            :href="`#note_${noteAnchorId}`"
+          >
+            <time-ago-tooltip :time="note.createdAt" tooltip-placement="bottom" />
+          </gl-link>
         </span>
       </div>
-      <div class="gl-display-flex">
+      <div class="gl-display-flex gl-align-items-baseline">
         <slot name="resolveDiscussion"></slot>
         <button
           v-if="isEditButtonVisible"
@@ -126,9 +123,9 @@ export default {
     </div>
     <template v-if="!isEditing">
       <div
+        v-safe-html="note.bodyHtml"
         class="note-text js-note-text md"
         data-qa-selector="note_content"
-        v-html="note.bodyHtml"
       ></div>
       <slot name="resolvedStatus"></slot>
     </template>
@@ -147,9 +144,9 @@ export default {
         :is-saving="loading"
         :markdown-preview-path="markdownPreviewPath"
         :is-new-comment="false"
-        class="mt-5"
-        @submitForm="mutate"
-        @cancelForm="hideForm"
+        class="gl-mt-5"
+        @submit-form="mutate"
+        @cancel-form="hideForm"
       />
     </apollo-mutation>
   </timeline-entry-item>

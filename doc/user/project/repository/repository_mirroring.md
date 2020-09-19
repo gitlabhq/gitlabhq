@@ -11,7 +11,8 @@ Repository mirroring allows for mirroring of repositories to and from external s
 used to mirror branches, tags, and commits between repositories.
 
 A repository mirror at GitLab will be updated automatically. You can also manually trigger an update
-at most once every 5 minutes.
+at most once every 5 minutes. Follow [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/237891)
+for discussions on how to potentially reduce the delay.
 
 ## Overview
 
@@ -45,6 +46,11 @@ The following are some possible use cases for repository mirroring:
 - You have old projects in another source that you don't use actively anymore, but don't want to
   remove for archiving purposes. In that case, you can create a push mirror so that your active
   GitLab repository can push its changes to the old location.
+- You are a GitLab self-managed user for privacy reasons and your instance is closed to the public,
+  but you still have certain software components that you want open sourced. In this case, utilizing
+  GitLab to be your primary repository which is closed from the public, and using push mirroring to a
+  GitLab.com repository that's public, allows you to open source specific projects and contribute back
+  to the open source community.
 
 ## Pushing to a remote repository **(CORE)**
 
@@ -67,7 +73,7 @@ When push mirroring is enabled, only push commits directly to the mirrored repos
 mirror diverging. All changes will end up in the mirrored repository whenever:
 
 - Commits are pushed to GitLab.
-- A [forced update](#forcing-an-update-core) is initiated.
+- A [forced update](#forcing-an-update) is initiated.
 
 Changes pushed to files in the repository are automatically pushed to the remote mirror at least:
 
@@ -247,7 +253,7 @@ directly to the repository on GitLab. Instead, any commits should be pushed to t
 Changes pushed to the upstream repository will be pulled into the GitLab repository, either:
 
 - Automatically within a certain period of time.
-- When a [forced update](#forcing-an-update-core) is initiated.
+- When a [forced update](#forcing-an-update) is initiated.
 
 CAUTION: **Caution:**
 If you do manually update a branch in the GitLab repository, the branch will become diverged from
@@ -393,17 +399,17 @@ failed. This will become visible in either the:
 - Pull mirror settings page.
 
 When a project is hard failed, it will no longer get picked up for mirroring. A user can resume the
-project mirroring again by [Forcing an update](#forcing-an-update-core).
+project mirroring again by [Forcing an update](#forcing-an-update).
 
 ### Trigger update using API **(STARTER)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/3453) in [GitLab Starter](https://about.gitlab.com/pricing/) 10.3.
 
 Pull mirroring uses polling to detect new branches and commits added upstream, often minutes
-afterwards. If you notify GitLab by [API](../../../api/projects.md#start-the-pull-mirroring-process-for-a-project-starter),
+afterwards. If you notify GitLab by [API](../../../api/projects.md#start-the-pull-mirroring-process-for-a-project),
 updates will be pulled immediately.
 
-For more information, see [Start the pull mirroring process for a Project](../../../api/projects.md#start-the-pull-mirroring-process-for-a-project-starter).
+For more information, see [Start the pull mirroring process for a Project](../../../api/projects.md#start-the-pull-mirroring-process-for-a-project).
 
 ## Forcing an update **(CORE)**
 
@@ -425,8 +431,8 @@ them and how they will be resolved.
 Rewriting any mirrored commit on either remote will cause conflicts and mirroring to fail. This can
 be prevented by:
 
-- [Pulling only protected branches](#only-mirror-protected-branches-starter).
-- [Pushing only protected branches](#push-only-protected-branches-core).
+- [Pulling only protected branches](#only-mirror-protected-branches).
+- [Pushing only protected branches](#push-only-protected-branches).
 
 You should [protect the branches](../protected_branches.md) you wish to mirror on both
 remotes to prevent conflicts caused by rewriting history.
@@ -439,13 +445,13 @@ protected branches.
 
 ### Configure a webhook to trigger an immediate pull to GitLab
 
-Assuming you have already configured the [push](#setting-up-a-push-mirror-to-another-gitlab-instance-with-2fa-activated) and [pull](#pulling-from-a-remote-repository-starter) mirrors in the upstream GitLab instance, to trigger an immediate pull as suggested above, you will need to configure a [Push Event Web Hook](../integrations/webhooks.md#push-events) in the downstream instance.
+Assuming you have already configured the [push](#setting-up-a-push-mirror-to-another-gitlab-instance-with-2fa-activated) and [pull](#pulling-from-a-remote-repository) mirrors in the upstream GitLab instance, to trigger an immediate pull as suggested above, you will need to configure a [Push Event Web Hook](../integrations/webhooks.md#push-events) in the downstream instance.
 
 To do this:
 
 - Create a [personal access token](../../profile/personal_access_tokens.md) with `API` scope.
 - Navigate to **Settings > Webhooks**
-- Add the webhook URL which in this case will use the [Pull Mirror API](../../../api/projects.md#start-the-pull-mirroring-process-for-a-project-starter) request to trigger an immediate pull after updates to the repository.
+- Add the webhook URL which in this case will use the [Pull Mirror API](../../../api/projects.md#start-the-pull-mirroring-process-for-a-project) request to trigger an immediate pull after updates to the repository.
 
   ```plaintext
   https://gitlab.example.com/api/v4/projects/:id/mirror/pull?private_token=<your_access_token>

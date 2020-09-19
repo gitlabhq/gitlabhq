@@ -1,6 +1,8 @@
 <script>
-import { GlSprintf, GlLink, GlIcon } from '@gitlab/ui';
-import { n__ } from '~/locale';
+import { GlSprintf, GlLink } from '@gitlab/ui';
+import TitleArea from '~/vue_shared/components/registry/title_area.vue';
+import MetadataItem from '~/vue_shared/components/registry/metadata_item.vue';
+import { n__, sprintf } from '~/locale';
 import { approximateDuration, calculateRemainingMilliseconds } from '~/lib/utils/datetime_utility';
 
 import {
@@ -13,9 +15,10 @@ import {
 
 export default {
   components: {
-    GlIcon,
     GlSprintf,
     GlLink,
+    TitleArea,
+    MetadataItem,
   },
   props: {
     expirationPolicy: {
@@ -56,11 +59,12 @@ export default {
   },
   computed: {
     imagesCountText() {
-      return n__(
+      const pluralisedString = n__(
         'ContainerRegistry|%{count} Image repository',
         'ContainerRegistry|%{count} Image repositories',
         this.imagesCount,
       );
+      return sprintf(pluralisedString, { count: this.imagesCount });
     },
     timeTillRun() {
       const difference = calculateRemainingMilliseconds(this.expirationPolicy?.next_run_at);
@@ -71,7 +75,7 @@ export default {
     },
     expirationPolicyText() {
       return this.expirationPolicyEnabled
-        ? EXPIRATION_POLICY_WILL_RUN_IN
+        ? sprintf(EXPIRATION_POLICY_WILL_RUN_IN, { time: this.timeTillRun })
         : EXPIRATION_POLICY_DISABLED_TEXT;
     },
     showExpirationPolicyTip() {
@@ -85,37 +89,29 @@ export default {
 
 <template>
   <div>
-    <div
-      class="gl-display-flex gl-justify-content-space-between gl-align-items-center"
-      data-testid="header"
-    >
-      <h4 data-testid="title">{{ $options.i18n.CONTAINER_REGISTRY_TITLE }}</h4>
-      <div class="gl-display-none d-sm-block" data-testid="commands-slot">
+    <title-area :title="$options.i18n.CONTAINER_REGISTRY_TITLE">
+      <template #right-actions>
         <slot name="commands"></slot>
-      </div>
-    </div>
-    <div
-      v-if="imagesCount"
-      class="gl-display-flex gl-align-items-center gl-mt-1 gl-mb-3 gl-text-gray-500"
-      data-testid="subheader"
-    >
-      <span class="gl-mr-3" data-testid="images-count">
-        <gl-icon class="gl-mr-1" name="container-image" />
-        <gl-sprintf :message="imagesCountText">
-          <template #count>
-            {{ imagesCount }}
-          </template>
-        </gl-sprintf>
-      </span>
-      <span v-if="!hideExpirationPolicyData" data-testid="expiration-policy">
-        <gl-icon class="gl-mr-1" name="expire" />
-        <gl-sprintf :message="expirationPolicyText">
-          <template #time>
-            {{ timeTillRun }}
-          </template>
-        </gl-sprintf>
-      </span>
-    </div>
+      </template>
+      <template #metadata_count>
+        <metadata-item
+          v-if="imagesCount"
+          data-testid="images-count"
+          icon="container-image"
+          :text="imagesCountText"
+        />
+      </template>
+      <template #metadata_exp_policies>
+        <metadata-item
+          v-if="!hideExpirationPolicyData"
+          data-testid="expiration-policy"
+          icon="expire"
+          :text="expirationPolicyText"
+          size="xl"
+        />
+      </template>
+    </title-area>
+
     <div data-testid="info-area">
       <p>
         <span data-testid="default-intro">

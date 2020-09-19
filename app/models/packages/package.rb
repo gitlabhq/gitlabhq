@@ -5,6 +5,8 @@ class Packages::Package < ApplicationRecord
   include UsageStatistics
 
   belongs_to :project
+  belongs_to :creator, class_name: 'User'
+
   # package_files must be destroyed by ruby code in order to properly remove carrierwave uploads and update project statistics
   has_many :package_files, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :dependency_links, inverse_of: :package, class_name: 'Packages::DependencyLink'
@@ -37,8 +39,13 @@ class Packages::Package < ApplicationRecord
   validates :name, format: { with: Gitlab::Regex.conan_recipe_component_regex }, if: :conan?
   validates :version, format: { with: Gitlab::Regex.conan_recipe_component_regex }, if: :conan?
   validates :version, format: { with: Gitlab::Regex.maven_version_regex }, if: -> { version? && maven? }
+  validates :version, format: { with: Gitlab::Regex.pypi_version_regex }, if: :pypi?
+  validates :version,
+    presence: true,
+    format: { with: Gitlab::Regex.generic_package_version_regex },
+    if: :generic?
 
-  enum package_type: { maven: 1, npm: 2, conan: 3, nuget: 4, pypi: 5, composer: 6 }
+  enum package_type: { maven: 1, npm: 2, conan: 3, nuget: 4, pypi: 5, composer: 6, generic: 7 }
 
   scope :with_name, ->(name) { where(name: name) }
   scope :with_name_like, ->(name) { where(arel_table[:name].matches(name)) }
@@ -46,6 +53,9 @@ class Packages::Package < ApplicationRecord
   scope :with_version, ->(version) { where(version: version) }
   scope :without_version_like, -> (version) { where.not(arel_table[:version].matches(version)) }
   scope :with_package_type, ->(package_type) { where(package_type: package_type) }
+  scope :including_build_info, -> { includes(build_info: { pipeline: :user }) }
+  scope :including_project_route, -> { includes(project: { namespace: :route }) }
+  scope :including_tags, -> { includes(:tags) }
 
   scope :with_conan_channel, ->(package_channel) do
     joins(:conan_metadatum).where(packages_conan_metadata: { package_channel: package_channel })
@@ -138,6 +148,8 @@ class Packages::Package < ApplicationRecord
 
   def versions
     project.packages
+           .including_build_info
+           .including_tags
            .with_name(name)
            .where.not(version: version)
            .with_package_type(package_type)

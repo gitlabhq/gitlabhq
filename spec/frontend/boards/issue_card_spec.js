@@ -47,12 +47,14 @@ describe('Issue card component', () => {
       propsData: {
         list,
         issue,
-        issueLinkBase: '/test',
-        rootPath: '/',
       },
       store,
       stubs: {
         GlLabel: true,
+      },
+      provide: {
+        groupId: null,
+        rootPath: '/',
       },
     });
   });

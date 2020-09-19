@@ -71,6 +71,8 @@ RSpec.describe ApplicationSetting do
     it { is_expected.not_to allow_value('three').for(:push_event_activities_limit) }
     it { is_expected.not_to allow_value(nil).for(:push_event_activities_limit) }
 
+    it { is_expected.to validate_numericality_of(:container_registry_delete_tags_service_timeout).only_integer.is_greater_than_or_equal_to(0) }
+
     it { is_expected.to validate_numericality_of(:snippet_size_limit).only_integer.is_greater_than(0) }
     it { is_expected.to validate_numericality_of(:wiki_page_max_content_bytes).only_integer.is_greater_than_or_equal_to(1024) }
     it { is_expected.to validate_presence_of(:max_artifacts_size) }
@@ -189,14 +191,10 @@ RSpec.describe ApplicationSetting do
       it { is_expected.not_to allow_value(nil).for(:snowplow_collector_hostname) }
       it { is_expected.to allow_value("snowplow.gitlab.com").for(:snowplow_collector_hostname) }
       it { is_expected.not_to allow_value('/example').for(:snowplow_collector_hostname) }
-      it { is_expected.to allow_value('https://example.org').for(:snowplow_iglu_registry_url) }
-      it { is_expected.not_to allow_value('not-a-url').for(:snowplow_iglu_registry_url) }
-      it { is_expected.to allow_value(nil).for(:snowplow_iglu_registry_url) }
     end
 
     context 'when snowplow is not enabled' do
       it { is_expected.to allow_value(nil).for(:snowplow_collector_hostname) }
-      it { is_expected.to allow_value(nil).for(:snowplow_iglu_registry_url) }
     end
 
     context "when user accepted let's encrypt terms of service" do
@@ -637,6 +635,29 @@ RSpec.describe ApplicationSetting do
         allow(subject).to receive(:sourcegraph_enabled).and_return(true)
 
         expect(subject.sourcegraph_url).to be_nil
+        is_expected.to be_invalid
+      end
+    end
+
+    context 'gitpod settings' do
+      it 'is invalid if gitpod is enabled and no url is provided' do
+        allow(subject).to receive(:gitpod_enabled).and_return(true)
+        allow(subject).to receive(:gitpod_url).and_return(nil)
+
+        is_expected.to be_invalid
+      end
+
+      it 'is invalid if gitpod is enabled and an empty url is provided' do
+        allow(subject).to receive(:gitpod_enabled).and_return(true)
+        allow(subject).to receive(:gitpod_url).and_return('')
+
+        is_expected.to be_invalid
+      end
+
+      it 'is invalid if gitpod is enabled and an invalid url is provided' do
+        allow(subject).to receive(:gitpod_enabled).and_return(true)
+        allow(subject).to receive(:gitpod_url).and_return('javascript:alert("test")//')
+
         is_expected.to be_invalid
       end
     end

@@ -53,7 +53,10 @@ export default {
       const url = joinPaths(baseUrl, this.blob.rawPath);
 
       axios
-        .get(url)
+        .get(url, {
+          // This prevents axios from automatically JSON.parse response
+          transformResponse: [f => f],
+        })
         .then(res => {
           this.notifyAboutUpdates({ content: res.data });
         })
@@ -80,7 +83,7 @@ export default {
       v-if="!blob.isLoaded"
       :label="__('Loading snippet')"
       size="lg"
-      class="loading-animation prepend-top-20 append-bottom-20"
+      class="loading-animation prepend-top-20 gl-mb-6"
     />
     <blob-content-edit
       v-else

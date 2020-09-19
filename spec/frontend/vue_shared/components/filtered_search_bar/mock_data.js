@@ -1,6 +1,7 @@
 import { mockLabels } from 'jest/vue_shared/components/sidebar/labels_select_vue/mock_data';
 import Api from '~/api';
 import AuthorToken from '~/vue_shared/components/filtered_search_bar/tokens/author_token.vue';
+import BranchToken from '~/vue_shared/components/filtered_search_bar/tokens/branch_token.vue';
 import LabelToken from '~/vue_shared/components/filtered_search_bar/tokens/label_token.vue';
 import MilestoneToken from '~/vue_shared/components/filtered_search_bar/tokens/milestone_token.vue';
 
@@ -33,6 +34,8 @@ export const mockAuthor3 = {
 
 export const mockAuthors = [mockAuthor1, mockAuthor2, mockAuthor3];
 
+export const mockBranches = [{ name: 'Master' }, { name: 'v1.x' }, { name: 'my-Branch' }];
+
 export const mockRegularMilestone = {
   id: 1,
   name: '4.0',
@@ -54,6 +57,16 @@ export const mockMilestones = [
   mockRegularMilestone,
   mockEscapedMilestone,
 ];
+
+export const mockBranchToken = {
+  type: 'source_branch',
+  icon: 'branch',
+  title: 'Source Branch',
+  unique: true,
+  token: BranchToken,
+  operators: [{ value: '=', description: 'is', default: 'true' }],
+  fetchBranches: Api.branches.bind(Api),
+};
 
 export const mockAuthorToken = {
   type: 'author_username',
@@ -89,36 +102,40 @@ export const mockMilestoneToken = {
   fetchMilestones: () => Promise.resolve({ data: mockMilestones }),
 };
 
-export const mockAvailableTokens = [mockAuthorToken, mockLabelToken];
+export const mockAvailableTokens = [mockAuthorToken, mockLabelToken, mockMilestoneToken];
+
+export const tokenValueAuthor = {
+  type: 'author_username',
+  value: {
+    data: 'root',
+    operator: '=',
+  },
+};
+
+export const tokenValueLabel = {
+  type: 'label_name',
+  value: {
+    operator: '=',
+    data: 'bug',
+  },
+};
+
+export const tokenValueMilestone = {
+  type: 'milestone_title',
+  value: {
+    operator: '=',
+    data: 'v1.0',
+  },
+};
+
+export const tokenValuePlain = {
+  type: 'filtered-search-term',
+  value: { data: 'foo' },
+};
 
 export const mockHistoryItems = [
-  [
-    {
-      type: 'author_username',
-      value: {
-        data: 'toby',
-        operator: '=',
-      },
-    },
-    {
-      type: 'label_name',
-      value: {
-        data: 'Bug',
-        operator: '=',
-      },
-    },
-    'duo',
-  ],
-  [
-    {
-      type: 'author_username',
-      value: {
-        data: 'root',
-        operator: '=',
-      },
-    },
-    'si',
-  ],
+  [tokenValueAuthor, tokenValueLabel, tokenValueMilestone, 'duo'],
+  [tokenValueAuthor, 'si'],
 ];
 
 export const mockSortOptions = [

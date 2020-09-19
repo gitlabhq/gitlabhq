@@ -1,6 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
+import { GlIcon } from '@gitlab/ui';
 import DiffStats from '~/diffs/components/diff_stats.vue';
-import Icon from '~/vue_shared/components/icon.vue';
 
 const TEST_ADDED_LINES = 100;
 const TEST_REMOVED_LINES = 200;
@@ -53,7 +53,7 @@ describe('diff_stats', () => {
   describe('files changes', () => {
     const findIcon = name =>
       wrapper
-        .findAll(Icon)
+        .findAll(GlIcon)
         .filter(c => c.attributes('name') === name)
         .at(0).element.parentNode;
 

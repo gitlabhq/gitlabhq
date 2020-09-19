@@ -1,0 +1,5 @@
+---
+title: Refuse to perform an LFS clean on projects that are fork roots
+merge_request: 41703
+author:
+type: fixed

@@ -4,10 +4,10 @@ import {
   GlDeprecatedDropdownDivider,
   GlDeprecatedDropdownHeader,
   GlDeprecatedDropdownItem,
+  GlIcon,
 } from '@gitlab/ui';
 import { joinPaths, escapeFileUrl } from '~/lib/utils/url_utility';
 import { __ } from '../../locale';
-import Icon from '../../vue_shared/components/icon.vue';
 import getRefMixin from '../mixins/get_ref';
 import projectShortPathQuery from '../queries/project_short_path.query.graphql';
 import projectPathQuery from '../queries/project_path.query.graphql';
@@ -24,7 +24,7 @@ export default {
     GlDeprecatedDropdownDivider,
     GlDeprecatedDropdownHeader,
     GlDeprecatedDropdownItem,
-    Icon,
+    GlIcon,
   },
   apollo: {
     projectShortPath: {
@@ -249,8 +249,8 @@ export default {
         <gl-deprecated-dropdown toggle-class="add-to-tree qa-add-to-tree ml-1">
           <template #button-content>
             <span class="sr-only">{{ __('Add to tree') }}</span>
-            <icon name="plus" :size="16" class="float-left" />
-            <icon name="chevron-down" :size="16" class="float-left" />
+            <gl-icon name="plus" :size="16" class="float-left" />
+            <gl-icon name="chevron-down" :size="16" class="float-left" />
           </template>
           <template v-for="(item, i) in dropdownItems">
             <component :is="getComponent(item.type)" :key="i" v-bind="item.attrs">

@@ -1,0 +1,5 @@
+---
+title: Fix RSpec/ItBehavesLike cop
+merge_request: 41111
+author: Rajendra Kadam
+type: fixed

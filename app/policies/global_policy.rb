@@ -15,13 +15,8 @@ class GlobalPolicy < BasePolicy
     @user&.required_terms_not_accepted?
   end
 
-  condition(:private_instance_statistics, score: 0) { Gitlab::CurrentSettings.instance_statistics_visibility_private? }
-
   condition(:project_bot, scope: :user) { @user&.project_bot? }
   condition(:migration_bot, scope: :user) { @user&.migration_bot? }
-
-  rule { admin | (~private_instance_statistics & ~anonymous) }
-    .enable :read_instance_statistics
 
   rule { anonymous }.policy do
     prevent :log_in

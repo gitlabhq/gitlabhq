@@ -72,7 +72,7 @@ RSpec.describe "Private Project Pages Access" do
 
       with_them do
         before do
-          project.project_feature.update(pages_access_level: pages_access_level)
+          project.project_feature.update!(pages_access_level: pages_access_level)
         end
         it "correct return value" do
           if !with_user.nil?

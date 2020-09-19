@@ -14,7 +14,7 @@ which is exposed as an API endpoint at `/api/graphql`.
 
 In March 2019, Nick Thomas hosted a Deep Dive (GitLab team members only: `https://gitlab.com/gitlab-org/create-stage/issues/1`)
 on GitLab's [GraphQL API](../api/graphql/index.md) to share his domain specific knowledge
-with anyone who may work in this part of the code base in the future. You can find the
+with anyone who may work in this part of the codebase in the future. You can find the
 [recording on YouTube](https://www.youtube.com/watch?v=-9L_1MWrjkg), and the slides on
 [Google Slides](https://docs.google.com/presentation/d/1qOTxpkTdHIp1CRjuTvO-aXg0_rUtzE3ETfLUdnBB5uQ/edit)
 and in [PDF](https://gitlab.com/gitlab-org/create-stage/uploads/8e78ea7f326b2ef649e7d7d569c26d56/GraphQL_Deep_Dive__Create_.pdf).
@@ -33,7 +33,7 @@ Authentication happens through the `GraphqlController`, right now this
 uses the same authentication as the Rails application. So the session
 can be shared.
 
-It is also possible to add a `private_token` to the querystring, or
+It's also possible to add a `private_token` to the query string, or
 add a `HTTP_PRIVATE_TOKEN` header.
 
 ## Global IDs
@@ -41,7 +41,7 @@ add a `HTTP_PRIVATE_TOKEN` header.
 GitLab's GraphQL API uses Global IDs (i.e: `"gid://gitlab/MyObject/123"`)
 and never database primary key IDs.
 
-Global ID is [a standard](https://graphql.org/learn/global-object-identification/)
+Global ID is [a convention](https://graphql.org/learn/global-object-identification/)
 used for caching and fetching in client-side libraries.
 
 See also:
@@ -75,7 +75,7 @@ The `iid`, `title` and `description` are _scalar_ GraphQL types.
 
 When exposing a model through the GraphQL API, we do so by creating a
 new type in `app/graphql/types`. You can also declare custom GraphQL data types
-for scalar data types (e.g. `TimeType`).
+for scalar data types (for example `TimeType`).
 
 When exposing properties in a type, make sure to keep the logic inside
 the definition as minimal as possible. Instead, consider moving any
@@ -142,7 +142,10 @@ def reply_id
 end
 ```
 
-### Connection Types
+### Connection types
+
+TIP: **Tip:**
+For specifics on implementation, see [Pagination implementation](#pagination-implementation).
 
 GraphQL uses [cursor based
 pagination](https://graphql.org/learn/pagination/#pagination-and-edges)
@@ -363,16 +366,16 @@ def foo
 end
 ```
 
-## Deprecating fields
+## Deprecating fields and enum values
 
 GitLab's GraphQL API is versionless, which means we maintain backwards
 compatibility with older versions of the API with every change. Rather
-than removing a field, we need to _deprecate_ the field instead. In
-future, GitLab
-[may remove deprecated fields](https://gitlab.com/gitlab-org/gitlab/-/issues/32292).
+than removing a field or [enum value](#enums), we need to _deprecate_ it instead.
+In future, GitLab
+[may remove deprecated parts of the schema](https://gitlab.com/gitlab-org/gitlab/-/issues/32292).
 
-Fields are deprecated using the `deprecated` property. The value
-of the property is a `Hash` of:
+Fields and enum values are deprecated using the `deprecated` property.
+The value of the property is a `Hash` of:
 
 - `reason` - Reason for the deprecation.
 - `milestone` - Milestone that the field was deprecated.
@@ -385,13 +388,14 @@ field :token, GraphQL::STRING_TYPE, null: true,
       description: 'Token for login'
 ```
 
-The original `description:` of the field should be maintained, and should
-_not_ be updated to mention the deprecation.
+The original `description` of the things being deprecated should be maintained,
+and should _not_ be updated to mention the deprecation. Instead, the `reason` will
+be appended to the `description`.
 
 ### Deprecation reason style guide
 
-Where the reason for deprecation is due to the field being replaced
-with another field, the `reason` must be:
+Where the reason for deprecation is due to the field or enum value being
+replaced, the `reason` must be:
 
 ```plaintext
 Use `otherFieldName`
@@ -405,8 +409,21 @@ field :designs, ::Types::DesignManagement::DesignCollectionType, null: true,
       description: 'The designs associated with this issue',
 ```
 
+```ruby
+module Types
+  class TodoStateEnum < BaseEnum
+    value 'pending', deprecated: { reason: 'Use PENDING', milestone: '10.0' }
+    value 'done', deprecated: { reason: 'Use DONE', milestone: '10.0' }
+    value 'PENDING', value: 'pending'
+    value 'DONE', value: 'done'
+  end
+end
+```
+
 If the field is not being replaced by another field, a descriptive
 deprecation `reason` should be given.
+
+See also [Aliasing and deprecating mutations](#aliasing-and-deprecating-mutations).
 
 ## Enums
 
@@ -451,6 +468,9 @@ module Types
   end
 end
 ```
+
+Enum values can be deprecated using the
+[`deprecated` keyword](#deprecating-fields-and-enum-values).
 
 ## JSON
 
@@ -759,6 +779,44 @@ to advertise the need for lookahead:
 
 For an example of real world use, please
 see [`ResolvesMergeRequests`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/graphql/resolvers/concerns/resolves_merge_requests.rb).
+
+## Pass a parent object into a child Presenter
+
+Sometimes you need to access the resolved query parent in a child context to compute fields. Usually the parent is only
+available in the `Resolver` class as `parent`.
+
+To find the parent object in your `Presenter` class:
+
+1. Add the parent object to the GraphQL `context` from within your resolver's `resolve` method:
+
+   ```ruby
+     def resolve(**args)
+       context[:parent_object] = parent
+     end
+   ```
+
+1. Declare that your fields require the `parent` field context. For example:
+
+   ```ruby
+     # in ChildType
+     field :computed_field, SomeType, null: true,
+           method: :my_computing_method,
+           extras: [:parent], # Necessary
+           description: 'My field description'
+   ```
+
+1. Declare your field's method in your Presenter class and have it accept the `parent` keyword argument.
+This argument contains the parent **GraphQL context**, so you have to access the parent object with
+`parent[:parent_object]` or whatever key you used in your `Resolver`:
+
+   ```ruby
+     # in ChildPresenter
+     def my_computing_method(parent:)
+       # do something with `parent[:parent_object]` here
+     end
+   ```
+
+For an example of real-world use, check [this MR that added `scopedPath` and `scopedUrl` to `IterationPresenter`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/39543)
 
 ## Mutations
 
@@ -1114,7 +1172,8 @@ mount_aliased_mutation 'BarMutation', Mutations::FooMutation
 ```
 
 This allows us to rename a mutation and continue to support the old name,
-when coupled with the [`deprecated`](#deprecating-fields) argument.
+when coupled with the [`deprecated`](#deprecating-fields-and-enum-values)
+argument.
 
 Example:
 
@@ -1129,6 +1188,10 @@ tested for within the unit test of `Types::MutationType`. The merge request
 [!34798](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/34798)
 can be referred to as an example of this, including the method of testing
 deprecated aliased mutations.
+
+## Pagination implementation
+
+To learn more, visit [GraphQL pagination](graphql_guide/pagination.md).
 
 ## Validating arguments
 
@@ -1198,6 +1261,9 @@ be used to test if the query renders valid results.
 Using the `GraphqlHelpers#all_graphql_fields_for`-helper, a query
 including all available fields can be constructed. This makes it easy
 to add a test rendering all possible fields for a query.
+
+If you're adding a field to a query that supports pagination and sorting,
+visit [Testing](graphql_guide/pagination.md#testing) for details.
 
 To test GraphQL mutation requests, `GraphqlHelpers` provides 2
 helpers: `graphql_mutation` which takes the name of the mutation, and
@@ -1285,7 +1351,7 @@ end
 More about complexity:
 [GraphQL Ruby documentation](https://graphql-ruby.org/queries/complexity_and_depth.html).
 
-## Documentation and Schema
+## Documentation and schema
 
 Our schema is located at `app/graphql/gitlab_schema.rb`.
 See the [schema reference](../api/graphql/reference/index.md) for details.

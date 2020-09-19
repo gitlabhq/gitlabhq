@@ -26,7 +26,7 @@ RSpec.describe 'User Cluster', :js do
       visit project_clusters_path(project)
 
       click_link 'Add Kubernetes cluster'
-      click_link 'Add existing cluster'
+      click_link 'Connect existing cluster'
     end
 
     context 'when user filled form with valid parameters' do

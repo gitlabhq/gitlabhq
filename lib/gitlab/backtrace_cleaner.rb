@@ -31,7 +31,7 @@ module Gitlab
       return unless backtrace
 
       Array(Rails.backtrace_cleaner.clean(backtrace)).reject do |line|
-        line.match(IGNORED_BACKTRACES_REGEXP)
+        IGNORED_BACKTRACES_REGEXP.match?(line)
       end
     end
   end

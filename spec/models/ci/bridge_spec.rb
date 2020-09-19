@@ -50,6 +50,7 @@ RSpec.describe Ci::Bridge do
         CI_PROJECT_PATH_SLUG CI_PROJECT_NAMESPACE CI_PROJECT_ROOT_NAMESPACE
         CI_PIPELINE_IID CI_CONFIG_PATH CI_PIPELINE_SOURCE CI_COMMIT_MESSAGE
         CI_COMMIT_TITLE CI_COMMIT_DESCRIPTION CI_COMMIT_REF_PROTECTED
+        CI_COMMIT_TIMESTAMP
       ]
 
       expect(bridge.scoped_variables_hash.keys).to include(*variables)

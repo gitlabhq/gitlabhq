@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
-import { GlNewDropdownItem, GlSearchBoxByType, GlLoadingIcon, GlButton } from '@gitlab/ui';
+import { GlDropdownItem, GlSearchBoxByType, GlLoadingIcon, GlButton } from '@gitlab/ui';
 import { createStore } from '~/monitoring/stores';
 import * as types from '~/monitoring/stores/mutation_types';
 import DateTimePicker from '~/vue_shared/components/date_time_picker/date_time_picker.vue';
@@ -31,7 +31,7 @@ describe('Dashboard header', () => {
   const findDashboardDropdown = () => wrapper.find(DashboardsDropdown);
 
   const findEnvsDropdown = () => wrapper.find({ ref: 'monitorEnvironmentsDropdown' });
-  const findEnvsDropdownItems = () => findEnvsDropdown().findAll(GlNewDropdownItem);
+  const findEnvsDropdownItems = () => findEnvsDropdown().findAll(GlDropdownItem);
   const findEnvsDropdownSearch = () => findEnvsDropdown().find(GlSearchBoxByType);
   const findEnvsDropdownSearchMsg = () => wrapper.find({ ref: 'monitorEnvironmentsDropdownMsg' });
   const findEnvsDropdownLoadingIcon = () => findEnvsDropdown().find(GlLoadingIcon);

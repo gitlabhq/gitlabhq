@@ -1,13 +1,12 @@
 <script>
-import { GlLink } from '@gitlab/ui';
-import Icon from '~/vue_shared/components/icon.vue';
+import { GlLink, GlIcon } from '@gitlab/ui';
 import ModalStore from '../../stores/modal_store';
 import boardsStore from '../../stores/boards_store';
 
 export default {
   components: {
     GlLink,
-    Icon,
+    GlIcon,
   },
   data() {
     return {
@@ -29,7 +28,7 @@ export default {
   <div class="dropdown inline">
     <button class="dropdown-menu-toggle" type="button" data-toggle="dropdown" aria-expanded="false">
       <span :style="{ backgroundColor: selected.label.color }" class="dropdown-label-box"> </span>
-      {{ selected.title }} <icon name="chevron-down" />
+      {{ selected.title }} <gl-icon name="chevron-down" class="dropdown-menu-toggle-icon" />
     </button>
     <div class="dropdown-menu dropdown-menu-selectable dropdown-menu-drop-up">
       <ul>

@@ -9,7 +9,6 @@ module QA
 
       attribute :sandbox do
         Sandbox.fabricate_via_api! do |sandbox|
-          sandbox.user = user
           sandbox.api_client = api_client
         end
       end

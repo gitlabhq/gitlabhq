@@ -8,7 +8,7 @@ RSpec.describe 'getting merge request listings nested in a project' do
   let_it_be(:project) { create(:project, :repository, :public) }
   let_it_be(:current_user) { create(:user) }
 
-  let_it_be(:label) { create(:label) }
+  let_it_be(:label) { create(:label, project: project) }
   let_it_be(:merge_request_a) { create(:labeled_merge_request, :unique_branches, source_project: project, labels: [label]) }
   let_it_be(:merge_request_b) { create(:merge_request, :closed, :unique_branches, source_project: project) }
   let_it_be(:merge_request_c) { create(:labeled_merge_request, :closed, :unique_branches, source_project: project, labels: [label]) }
@@ -208,6 +208,50 @@ RSpec.describe 'getting merge request listings nested in a project' do
       end
 
       include_examples 'N+1 query check'
+    end
+  end
+  describe 'sorting and pagination' do
+    let(:data_path) { [:project, :mergeRequests] }
+
+    def pagination_query(params, page_info)
+      graphql_query_for(
+        :project,
+        { full_path: project.full_path },
+        <<~QUERY
+        mergeRequests(#{params}) {
+          #{page_info} edges {
+            node {
+              id
+            }
+          }
+        }
+        QUERY
+      )
+    end
+
+    def pagination_results_data(data)
+      data.map { |project| project.dig('node', 'id') }
+    end
+
+    context 'when sorting by merged_at DESC' do
+      it_behaves_like 'sorted paginated query' do
+        let(:sort_param) { 'MERGED_AT_DESC' }
+        let(:first_param) { 2 }
+
+        let(:expected_results) do
+          [
+            merge_request_b,
+            merge_request_c,
+            merge_request_d,
+            merge_request_a
+          ].map(&:to_gid).map(&:to_s)
+        end
+
+        before do
+          merge_request_c.metrics.update!(merged_at: 5.days.ago)
+          merge_request_b.metrics.update!(merged_at: 1.day.ago)
+        end
+      end
     end
   end
 end

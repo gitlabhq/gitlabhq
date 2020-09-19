@@ -46,24 +46,4 @@ EOF
       end
     end
   end
-
-  describe '#match' do
-    it 'checks the content for the command' do
-      expect(subject.match(content)).to be_truthy
-    end
-
-    it 'returns the match data' do
-      data = subject.match(content)
-      expect(data).to be_a(MatchData)
-      expect(data[1]).to eq('I like this stuff')
-    end
-
-    it 'is nil if content does not have the command' do
-      expect(subject.match('blah')).to be_falsey
-    end
-
-    it 'is nil if content contains the command as prefix' do
-      expect(subject.match('/sub_namex')).to be_falsey
-    end
-  end
 end

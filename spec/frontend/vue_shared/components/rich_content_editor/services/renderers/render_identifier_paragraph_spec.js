@@ -1,5 +1,4 @@
 import renderer from '~/vue_shared/components/rich_content_editor/services/renderers/render_identifier_paragraph';
-import { renderUneditableBranch } from '~/vue_shared/components/rich_content_editor/services/renderers/render_utils';
 
 import { buildMockTextNode } from './mock_data';
 
@@ -17,7 +16,7 @@ const identifierParagraphNode = buildMockParagraphNode(
   `[another-identifier]: https://example.com "This example has a title" [identifier]: http://example1.com [this link]: http://example2.com`,
 );
 
-describe('Render Identifier Paragraph renderer', () => {
+describe('rich_content_editor/renderers_render_identifier_paragraph', () => {
   describe('canRender', () => {
     it.each`
       node                       | paragraph                                          | target
@@ -37,8 +36,49 @@ describe('Render Identifier Paragraph renderer', () => {
   });
 
   describe('render', () => {
-    it('should delegate rendering to the renderUneditableBranch util', () => {
-      expect(renderer.render).toBe(renderUneditableBranch);
+    let context;
+    let result;
+
+    beforeEach(() => {
+      const node = {
+        firstChild: {
+          type: 'text',
+          literal: '[Some text]: https://link.com',
+          next: {
+            type: 'linebreak',
+            next: {
+              type: 'text',
+              literal: '[identifier]: http://example1.com "title"',
+            },
+          },
+        },
+      };
+      context = { skipChildren: jest.fn() };
+      result = renderer.render(node, context);
+    });
+
+    it('renders the reference definitions as a code block', () => {
+      expect(result).toEqual([
+        {
+          type: 'openTag',
+          tagName: 'pre',
+          classNames: ['code-block', 'language-markdown'],
+          attributes: {
+            'data-sse-reference-definition': true,
+          },
+        },
+        { type: 'openTag', tagName: 'code' },
+        {
+          type: 'text',
+          content: '[Some text]: https://link.com\n[identifier]: http://example1.com "title"',
+        },
+        { type: 'closeTag', tagName: 'code' },
+        { type: 'closeTag', tagName: 'pre' },
+      ]);
+    });
+
+    it('skips the reference definition node children from rendering', () => {
+      expect(context.skipChildren).toHaveBeenCalled();
     });
   });
 });

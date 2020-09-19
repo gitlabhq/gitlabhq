@@ -1,0 +1,5 @@
+---
+title: Fix composer 404 issues with http auth
+merge_request: 38641
+author:
+type: fixed

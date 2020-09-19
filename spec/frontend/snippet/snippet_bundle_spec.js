@@ -15,11 +15,13 @@ describe('Snippet editor', () => {
   const updatedMockContent = 'New Foo Bar';
 
   const mockEditor = {
-    createInstance: jest.fn(),
     updateModelLanguage: jest.fn(),
     getValue: jest.fn().mockReturnValueOnce(updatedMockContent),
   };
-  Editor.mockImplementation(() => mockEditor);
+  const createInstance = jest.fn().mockImplementation(() => ({ ...mockEditor }));
+  Editor.mockImplementation(() => ({
+    createInstance,
+  }));
 
   function setUpFixture(name, content) {
     setHTMLFixture(`
@@ -56,7 +58,7 @@ describe('Snippet editor', () => {
   });
 
   it('correctly initializes Editor', () => {
-    expect(mockEditor.createInstance).toHaveBeenCalledWith({
+    expect(createInstance).toHaveBeenCalledWith({
       el: editorEl,
       blobPath: mockName,
       blobContent: mockContent,

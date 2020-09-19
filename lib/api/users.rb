@@ -84,6 +84,7 @@ module API
         optional :created_after, type: DateTime, desc: 'Return users created after the specified time'
         optional :created_before, type: DateTime, desc: 'Return users created before the specified time'
         optional :without_projects, type: Boolean, default: false, desc: 'Filters only users without projects'
+        optional :exclude_internal, as: :non_internal, type: Boolean, default: false, desc: 'Filters only non internal users'
         all_or_none_of :extern_uid, :provider
 
         use :sort_params
@@ -115,6 +116,7 @@ module API
 
         entity = current_user&.admin? ? Entities::UserWithAdmin : Entities::UserBasic
         users = users.preload(:identities, :u2f_registrations) if entity == Entities::UserWithAdmin
+        users = users.preload(:identities, :webauthn_registrations) if entity == Entities::UserWithAdmin
         users, options = with_custom_attributes(users, { with: entity, current_user: current_user })
 
         users = users.preload(:user_detail)
@@ -217,9 +219,15 @@ module API
                 .where.not(id: user.id).exists?
 
         user_params = declared_params(include_missing: false)
+        admin_making_changes_for_another_user = (current_user != user)
 
-        user_params[:password_expires_at] = Time.current if user_params[:password].present?
-        result = ::Users::UpdateService.new(current_user, user_params.merge(user: user)).execute
+        if user_params[:password].present?
+          user_params[:password_expires_at] = Time.current if admin_making_changes_for_another_user
+        end
+
+        result = ::Users::UpdateService.new(current_user, user_params.merge(user: user)).execute do |user|
+          user.send_only_admin_changed_your_password_notification! if admin_making_changes_for_another_user
+        end
 
         if result[:status] == :success
           present user, with: Entities::UserWithAdmin, current_user: current_user

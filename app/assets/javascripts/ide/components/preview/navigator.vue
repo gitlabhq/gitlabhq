@@ -1,11 +1,10 @@
 <script>
 import { listen } from 'codesandbox-api';
-import { GlLoadingIcon } from '@gitlab/ui';
-import Icon from '~/vue_shared/components/icon.vue';
+import { GlLoadingIcon, GlIcon } from '@gitlab/ui';
 
 export default {
   components: {
-    Icon,
+    GlIcon,
     GlLoadingIcon,
   },
   props: {
@@ -97,7 +96,7 @@ export default {
       class="ide-navigator-btn d-flex align-items-center d-transparent border-0 bg-transparent"
       @click="back"
     >
-      <icon :size="24" name="chevron-left" class="m-auto" />
+      <gl-icon :size="24" name="chevron-left" class="m-auto" />
     </button>
     <button
       :aria-label="s__('IDE|Back')"
@@ -109,7 +108,7 @@ export default {
       class="ide-navigator-btn d-flex align-items-center d-transparent border-0 bg-transparent"
       @click="forward"
     >
-      <icon :size="24" name="chevron-right" class="m-auto" />
+      <gl-icon :size="24" name="chevron-right" class="m-auto" />
     </button>
     <button
       :aria-label="s__('IDE|Refresh preview')"
@@ -117,7 +116,7 @@ export default {
       class="ide-navigator-btn d-flex align-items-center d-transparent border-0 bg-transparent"
       @click="refresh"
     >
-      <icon :size="18" name="retry" class="m-auto" />
+      <gl-icon :size="18" name="retry" class="m-auto" />
     </button>
     <div class="position-relative w-100 gl-ml-2">
       <input

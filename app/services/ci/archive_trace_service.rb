@@ -13,6 +13,7 @@ module Ci
       end
 
       job.trace.archive!
+      job.remove_pending_state!
 
       # TODO: Remove this logging once we confirmed new live trace architecture is functional.
       # See https://gitlab.com/gitlab-com/gl-infra/infrastructure/issues/4667.

@@ -118,7 +118,10 @@ export default {
       this.isTemplateSaving = true;
       this.service
         .updateTemplate({ selectedTemplate, outgoingName, projectKey }, this.isEnabled)
-        .then(() => this.showAlert(__('Template was successfully saved.'), 'success'))
+        .then(({ data }) => {
+          this.incomingEmail = data?.service_desk_address;
+          this.showAlert(__('Changes were successfully made.'), 'success');
+        })
         .catch(() =>
           this.showAlert(
             __('An error occurred while saving the template. Please check if the template exists.'),

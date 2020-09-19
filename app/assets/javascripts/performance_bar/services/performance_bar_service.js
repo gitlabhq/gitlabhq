@@ -2,12 +2,14 @@ import axios from '../../lib/utils/axios_utils';
 import { parseBoolean } from '~/lib/utils/common_utils';
 
 export default class PerformanceBarService {
+  static interceptor = null;
+
   static fetchRequestDetails(peekUrl, requestId) {
     return axios.get(peekUrl, { params: { request_id: requestId } });
   }
 
   static registerInterceptor(peekUrl, callback) {
-    const interceptor = response => {
+    PerformanceBarService.interceptor = response => {
       const [fireCallback, requestId, requestUrl] = PerformanceBarService.callbackParams(
         response,
         peekUrl,
@@ -20,22 +22,20 @@ export default class PerformanceBarService {
       return response;
     };
 
-    return axios.interceptors.response.use(interceptor);
+    return axios.interceptors.response.use(PerformanceBarService.interceptor);
   }
 
-  static removeInterceptor(interceptor) {
-    axios.interceptors.response.eject(interceptor);
+  static removeInterceptor() {
+    axios.interceptors.response.eject(PerformanceBarService.interceptor);
+    PerformanceBarService.interceptor = null;
   }
 
   static callbackParams(response, peekUrl) {
     const requestId = response.headers && response.headers['x-request-id'];
-    // Get the request URL from response.config for Axios, and response for
-    // Vue Resource.
-    const requestUrl = (response.config || response).url;
-    const apiRequest = requestUrl && requestUrl.match(/^\/api\//);
+    const requestUrl = response.config?.url;
     const cachedResponse =
       response.headers && parseBoolean(response.headers['x-gitlab-from-cache']);
-    const fireCallback = requestUrl !== peekUrl && requestId && !apiRequest && !cachedResponse;
+    const fireCallback = requestUrl !== peekUrl && Boolean(requestId) && !cachedResponse;
 
     return [fireCallback, requestId, requestUrl];
   }

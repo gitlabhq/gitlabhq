@@ -68,10 +68,12 @@ module Projects
     # Check https://gitlab.com/gitlab-org/gitlab-foss/issues/38418 description.
     # rubocop: disable CodeReuse/ActiveRecord
     def self.query(projects, public_only: true)
+      issues_filtered_by_type = Issue.opened.with_issue_type(Issue::TYPES_FOR_LIST)
+
       if public_only
-        Issue.opened.public_only.where(project: projects)
+        issues_filtered_by_type.public_only.where(project: projects)
       else
-        Issue.opened.where(project: projects)
+        issues_filtered_by_type.where(project: projects)
       end
     end
     # rubocop: enable CodeReuse/ActiveRecord

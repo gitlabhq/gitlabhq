@@ -3,6 +3,11 @@
 module PrometheusAdapter
   extend ActiveSupport::Concern
 
+  # We should choose more conservative timeouts, but some queries we run are now busting our
+  # default timeouts, which are stricter. We should make those queries faster instead.
+  # See https://gitlab.com/gitlab-org/gitlab/-/issues/232786
+  DEFAULT_PROMETHEUS_REQUEST_TIMEOUT_SEC = 60.seconds
+
   included do
     include ReactiveCaching
 
@@ -13,6 +18,12 @@ module PrometheusAdapter
 
     def prometheus_client
       raise NotImplementedError
+    end
+
+    def prometheus_client_default_options
+      {
+        timeout: DEFAULT_PROMETHEUS_REQUEST_TIMEOUT_SEC
+      }
     end
 
     # This is a light-weight check if a prometheus client is properly configured.

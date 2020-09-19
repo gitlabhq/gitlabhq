@@ -14,7 +14,7 @@ module StubObjectStorage
   end
 
   def stub_object_storage_uploader(
-        config:,
+    config:,
         uploader:,
         remote_directory:,
         enabled: true,

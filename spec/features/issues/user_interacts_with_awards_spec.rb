@@ -184,6 +184,31 @@ RSpec.describe 'User interacts with awards' do
         wait_for_requests
       end
 
+      context 'when the issue is locked' do
+        before do
+          create(:award_emoji, awardable: issue, name: '100')
+          issue.update!(discussion_locked: true)
+
+          visit project_issue_path(project, issue)
+          wait_for_requests
+        end
+
+        it 'hides the add award button' do
+          page.within('.awards') do
+            expect(page).not_to have_css('.js-add-award')
+          end
+        end
+
+        it 'does not allow toggling existing emoji' do
+          page.within('.awards') do
+            find('gl-emoji[data-name="100"]').click
+          end
+          wait_for_requests
+
+          expect(issue.reload.award_emoji.size).to eq(1)
+        end
+      end
+
       it 'adds award to issue' do
         first('.js-emoji-btn').click
 

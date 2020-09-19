@@ -60,6 +60,9 @@ Style/MutableConstant:
 Style/SafeNavigation:
   Enabled: false
 
+Style/AccessModifierDeclarations:
+  AllowModifiersOnSymbols: true
+
 # Frozen String Literal
 Style/FrozenStringLiteralComment:
   Enabled: true
@@ -243,6 +246,13 @@ Gitlab/Json:
     - 'lib/quality/**/*'
     - 'lib/gitlab/danger/**/*'
 
+Gitlab/AvoidUploadedFileFromParams:
+  Enabled: true
+  Exclude:
+    - 'lib/gitlab/middleware/multipart.rb'
+    - 'spec/**/*'
+    - 'ee/spec/**/*'
+
 GitlabSecurity/PublicSend:
   Enabled: true
   Exclude:
@@ -281,6 +291,14 @@ Cop/ActiveRecordAssociationReload:
 
 Gitlab/AvoidFeatureGet:
   Enabled: true
+
+RSpec/TimecopFreeze:
+  Enabled: false
+  AutoCorrect: true
+  Include:
+    - 'spec/**/*.rb'
+    - 'ee/spec/**/*.rb'
+    - 'qa/spec/**/*.rb'
 
 Naming/PredicateName:
   Enabled: true
@@ -509,3 +527,24 @@ Cop/PutGroupRoutesUnderScope:
   Include:
     - 'config/routes/group.rb'
     - 'ee/config/routes/group.rb'
+
+Migration/ComplexIndexesRequireName:
+  Exclude:
+    - !ruby/regexp /\Adb\/(post_)?migrate\/201.*\.rb\z/
+    - !ruby/regexp /\Adb\/(post_)?migrate\/20200[1-7].*\.rb\z/
+
+Migration/ReferToIndexByName:
+  Exclude:
+    - !ruby/regexp /\Adb\/(post_)?migrate\/201.*\.rb\z/
+    - !ruby/regexp /\Adb\/(post_)?migrate\/20200[1-7].*\.rb\z/
+    - !ruby/regexp /\Aee\/db\/geo\/(post_)?migrate\/201.*\.rb\z/
+
+Migration/CreateTableWithForeignKeys:
+  # Disable this cop for all the existing migrations
+  Exclude:
+    - !ruby/regexp /\Adb\/(?:post_)?migrate\/(?:201[0-9]\d+|20200[0-8][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9])_.+\.rb\z/
+
+Gitlab/RailsLogger:
+  Exclude:
+    - 'spec/**/*.rb'
+    - 'ee/spec/**/*.rb'

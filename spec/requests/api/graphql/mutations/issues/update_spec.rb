@@ -20,8 +20,7 @@ RSpec.describe 'Update of an existing issue' do
   let(:mutation_response) { graphql_mutation_response(:update_issue) }
 
   context 'the user is not allowed to update issue' do
-    it_behaves_like 'a mutation that returns top-level errors',
-      errors: ['The resource that you are attempting to access does not exist or you don\'t have permission to perform this action']
+    it_behaves_like 'a mutation that returns a top-level access error'
   end
 
   context 'when user has permissions to update issue' do

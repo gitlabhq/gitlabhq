@@ -1,0 +1,5 @@
+---
+title: Migrate '.fa-spinner' to '.spinner' for 'app/assets/javascripts/notes/components/note_header.vue'
+merge_request: 41140
+author: Gilang Gumilar
+type: changed

@@ -25,7 +25,7 @@ class SnippetStatistics < ApplicationRecord
 
   def update_file_count
     count = if snippet.repository_exists?
-              repository.ls_files(repository.root_ref).size
+              repository.ls_files(snippet.default_branch).size
             else
               0
             end

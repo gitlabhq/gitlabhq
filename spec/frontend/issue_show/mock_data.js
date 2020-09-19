@@ -1,3 +1,5 @@
+import { TEST_HOST } from 'helpers/test_constants';
+
 export const initialRequest = {
   title: '<p>this is a title</p>',
   title_text: 'this is a title',
@@ -20,4 +22,37 @@ export const secondRequest = {
   updated_by_name: 'Other User',
   updated_by_path: '/other_user',
   lock_version: 2,
+};
+
+export const descriptionProps = {
+  canUpdate: true,
+  descriptionHtml: 'test',
+  descriptionText: 'test',
+  taskStatus: '',
+  updateUrl: TEST_HOST,
+};
+
+export const publishedIncidentUrl = 'https://status.com/';
+
+export const zoomMeetingUrl = 'https://gitlab.zoom.us/j/95919234811';
+
+export const appProps = {
+  canUpdate: true,
+  canDestroy: true,
+  endpoint: '/gitlab-org/gitlab-shell/-/issues/9/realtime_changes',
+  updateEndpoint: TEST_HOST,
+  issuableRef: '#1',
+  issuableStatus: 'opened',
+  initialTitleHtml: '',
+  initialTitleText: '',
+  initialDescriptionHtml: 'test',
+  initialDescriptionText: 'test',
+  lockVersion: 1,
+  markdownPreviewPath: '/',
+  markdownDocsPath: '/',
+  projectNamespace: '/',
+  projectPath: '/',
+  issuableTemplateNamesPath: '/issuable-templates-path',
+  zoomMeetingUrl,
+  publishedIncidentUrl,
 };

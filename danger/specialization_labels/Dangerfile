@@ -1,0 +1,26 @@
+# frozen_string_literal: true
+
+gitlab_danger = GitlabDanger.new(helper.gitlab_helper)
+
+return unless gitlab_danger.ci?
+
+SPECIALIZATIONS = {
+  database: 'database',
+  backend: 'backend',
+  frontend: 'frontend',
+  docs: 'documentation',
+  qa: 'QA',
+  engineering_productivity: 'Engineering Productivity'
+}.freeze
+
+labels_to_add = helper.changes_by_category.each_with_object([]) do |(category, _changes), memo|
+  label = SPECIALIZATIONS[category]
+
+  memo << label if label && !gitlab.mr_labels.include?(label)
+end
+
+if labels_to_add.any?
+  gitlab.api.update_merge_request(gitlab.mr_json['project_id'],
+                                  gitlab.mr_json['iid'],
+                                  add_labels: labels_to_add.join(','))
+end

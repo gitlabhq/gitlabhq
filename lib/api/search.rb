@@ -32,6 +32,7 @@ module API
         search_params = {
           scope: params[:scope],
           search: params[:search],
+          state: params[:state],
           snippets: snippets?,
           page: params[:page],
           per_page: params[:per_page]
@@ -79,6 +80,7 @@ module API
           type: String,
           desc: 'The scope of the search',
           values: Helpers::SearchHelpers.global_search_scopes
+        optional :state, type: String, desc: 'Filter results by state', values: Helpers::SearchHelpers.search_states
         use :pagination
       end
       get do
@@ -100,6 +102,7 @@ module API
           type: String,
           desc: 'The scope of the search',
           values: Helpers::SearchHelpers.group_search_scopes
+        optional :state, type: String, desc: 'Filter results by state', values: Helpers::SearchHelpers.search_states
         use :pagination
       end
       get ':id/(-/)search' do
@@ -122,6 +125,7 @@ module API
           desc: 'The scope of the search',
           values: Helpers::SearchHelpers.project_search_scopes
         optional :ref, type: String, desc: 'The name of a repository branch or tag. If not given, the default branch is used'
+        optional :state, type: String, desc: 'Filter results by state', values: Helpers::SearchHelpers.search_states
         use :pagination
       end
       get ':id/(-/)search' do

@@ -1,0 +1,7 @@
+fragment Label on Label {
+  id
+  title
+  description
+  color
+  textColor
+}

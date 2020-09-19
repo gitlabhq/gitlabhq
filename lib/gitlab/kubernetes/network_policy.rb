@@ -6,6 +6,8 @@ module Gitlab
       include NetworkPolicyCommon
       extend ::Gitlab::Utils::Override
 
+      KIND = 'NetworkPolicy'
+
       def initialize(name:, namespace:, selector:, ingress:, labels: nil, creation_timestamp: nil, policy_types: ["Ingress"], egress: nil)
         @name = name
         @namespace = namespace
@@ -15,13 +17,6 @@ module Gitlab
         @policy_types = policy_types
         @ingress = ingress
         @egress = egress
-      end
-
-      def generate
-        ::Kubeclient::Resource.new.tap do |resource|
-          resource.metadata = metadata
-          resource.spec = spec
-        end
       end
 
       def self.from_yaml(manifest)
@@ -63,6 +58,15 @@ module Gitlab
         )
       end
 
+      override :resource
+      def resource
+        {
+          kind: KIND,
+          metadata: metadata,
+          spec: spec
+        }
+      end
+
       private
 
       attr_reader :name, :namespace, :labels, :creation_timestamp, :policy_types, :ingress, :egress
@@ -71,7 +75,12 @@ module Gitlab
         @selector ||= {}
       end
 
-      override :spec
+      def metadata
+        meta = { name: name, namespace: namespace }
+        meta[:labels] = labels if labels
+        meta
+      end
+
       def spec
         {
           podSelector: selector,

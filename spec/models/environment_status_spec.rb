@@ -90,22 +90,6 @@ RSpec.describe EnvironmentStatus do
     end
   end
 
-  describe '.after_merge_request' do
-    let(:admin)    { create(:admin) }
-    let(:pipeline) { create(:ci_pipeline, sha: sha) }
-
-    before do
-      merge_request.mark_as_merged!
-    end
-
-    it 'is based on merge_request.merge_commit_sha' do
-      expect(merge_request).to receive(:merge_commit_sha)
-      expect(merge_request).not_to receive(:diff_head_sha)
-
-      described_class.after_merge_request(merge_request, admin)
-    end
-  end
-
   describe '.for_deployed_merge_request' do
     context 'when a merge request has no explicitly linked deployments' do
       it 'returns the statuses based on the CI pipelines' do
@@ -191,7 +175,7 @@ RSpec.describe EnvironmentStatus do
     let(:environment) { build.deployment.environment }
     let(:user) { project.owner }
 
-    context 'when environment is created on a forked project' do
+    context 'when environment is created on a forked project', :sidekiq_inline do
       let(:project) { create(:project, :repository) }
       let(:forked) { fork_project(project, user, repository: true) }
       let(:sha) { forked.commit.sha }
@@ -205,7 +189,7 @@ RSpec.describe EnvironmentStatus do
                head_pipeline: pipeline)
       end
 
-      it 'returns environment status', :sidekiq_might_not_need_inline do
+      it 'returns environment status' do
         expect(subject.count).to eq(1)
         expect(subject[0].environment).to eq(environment)
         expect(subject[0].merge_request).to eq(merge_request)

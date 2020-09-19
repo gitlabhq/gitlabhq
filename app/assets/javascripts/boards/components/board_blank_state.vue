@@ -1,10 +1,14 @@
 <script>
+import { GlButton } from '@gitlab/ui';
 import Cookies from 'js-cookie';
 import { __ } from '~/locale';
 import ListLabel from '~/boards/models/label';
 import boardsStore from '../stores/boards_store';
 
 export default {
+  components: {
+    GlButton,
+  },
   data() {
     return {
       predefinedLabels: [
@@ -84,15 +88,17 @@ export default {
         )
       }}
     </p>
-    <button
-      class="btn btn-success btn-inverted btn-block"
-      type="button"
+    <gl-button
+      category="secondary"
+      variant="success"
+      block="block"
+      class="gl-mb-0"
       @click.stop="addDefaultLists"
     >
       {{ s__('BoardBlankState|Add default lists') }}
-    </button>
-    <button class="btn btn-default btn-block" type="button" @click.stop="clearBlankState">
+    </gl-button>
+    <gl-button category="secondary" variant="default" block="block" @click.stop="clearBlankState">
       {{ s__("BoardBlankState|Nevermind, I'll use my own") }}
-    </button>
+    </gl-button>
   </div>
 </template>

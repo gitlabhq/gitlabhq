@@ -4,7 +4,7 @@ import initTodoToggle, { initNavUserDropdownTracking } from '~/header';
 
 describe('Header', () => {
   describe('Todos notification', () => {
-    const todosPendingCount = '.todos-count';
+    const todosPendingCount = '.js-todos-count';
     const fixtureTemplate = 'issues/open-issue.html';
 
     function isTodosCountHidden() {

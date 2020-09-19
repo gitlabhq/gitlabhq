@@ -9,12 +9,16 @@ RSpec.describe Gitlab::Database::BatchCount do
   let(:column) { :author_id }
 
   let(:in_transaction) { false }
-  let(:user) { create(:user) }
-  let(:another_user) { create(:user) }
 
-  before do
+  let_it_be(:user) { create(:user) }
+  let_it_be(:another_user) { create(:user) }
+
+  before_all do
     create_list(:issue, 3, author: user)
     create_list(:issue, 2, author: another_user)
+  end
+
+  before do
     allow(ActiveRecord::Base.connection).to receive(:transaction_open?).and_return(in_transaction)
   end
 

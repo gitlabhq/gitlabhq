@@ -5,15 +5,14 @@
  */
 
 import $ from 'jquery';
-import { GlTooltipDirective } from '@gitlab/ui';
-import Icon from '~/vue_shared/components/icon.vue';
+import { GlTooltipDirective, GlIcon } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import eventHub from '../event_hub';
 import LoadingButton from '../../vue_shared/components/loading_button.vue';
 
 export default {
   components: {
-    Icon,
+    GlIcon,
     LoadingButton,
   },
   directives: {
@@ -65,6 +64,6 @@ export default {
     data-target="#delete-environment-modal"
     @click="onClick"
   >
-    <icon name="remove" />
+    <gl-icon name="remove" />
   </loading-button>
 </template>

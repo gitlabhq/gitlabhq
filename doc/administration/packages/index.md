@@ -109,7 +109,6 @@ We recommend using the [consolidated object storage settings](../object_storage.
 
    ```ruby
    gitlab_rails['packages_enabled'] = true
-   gitlab_rails['packages_storage_path'] = "/var/opt/gitlab/gitlab-rails/shared/packages"
    gitlab_rails['packages_object_store_enabled'] = true
    gitlab_rails['packages_object_store_remote_directory'] = "packages" # The bucket name.
    gitlab_rails['packages_object_store_direct_upload'] = false         # Use Object Storage directly for uploads instead of background uploads if enabled (Default: false).
@@ -123,6 +122,8 @@ We recommend using the [consolidated object storage settings](../object_storage.
      #'region' => 'eu-west-1',
      #'aws_access_key_id' => 'AWS_ACCESS_KEY_ID',
      #'aws_secret_access_key' => 'AWS_SECRET_ACCESS_KEY',
+     ## If an IAM profile is being used with AWS, omit the aws_access_key_id and aws_secret_access_key and uncomment
+     #'use_iam_profile' => true,
      ##
      ## If the provider is other than AWS (an S3-compatible one), uncomment the following
      ##

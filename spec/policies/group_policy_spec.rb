@@ -768,4 +768,48 @@ RSpec.describe GroupPolicy do
       end
     end
   end
+
+  describe 'create_jira_connect_subscription' do
+    context 'admin' do
+      let(:current_user) { admin }
+
+      it { is_expected.to be_allowed(:create_jira_connect_subscription) }
+    end
+
+    context 'with owner' do
+      let(:current_user) { owner }
+
+      it { is_expected.to be_allowed(:create_jira_connect_subscription) }
+    end
+
+    context 'with maintainer' do
+      let(:current_user) { maintainer }
+
+      it { is_expected.to be_allowed(:create_jira_connect_subscription) }
+    end
+
+    context 'with reporter' do
+      let(:current_user) { reporter }
+
+      it { is_expected.to be_disallowed(:create_jira_connect_subscription) }
+    end
+
+    context 'with guest' do
+      let(:current_user) { guest }
+
+      it { is_expected.to be_disallowed(:create_jira_connect_subscription) }
+    end
+
+    context 'with non member' do
+      let(:current_user) { create(:user) }
+
+      it { is_expected.to be_disallowed(:create_jira_connect_subscription) }
+    end
+
+    context 'with anonymous' do
+      let(:current_user) { nil }
+
+      it { is_expected.to be_disallowed(:create_jira_connect_subscription) }
+    end
+  end
 end

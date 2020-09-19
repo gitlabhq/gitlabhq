@@ -30,9 +30,24 @@ export const findVersionId = id => (id.match('::Version/(.+$)') || [])[1];
 
 export const findNoteId = id => (id.match('DiffNote/(.+$)') || [])[1];
 
+export const findIssueId = id => (id.match('Issue/(.+$)') || [])[1];
+
+export const findDesignId = id => (id.match('Design/(.+$)') || [])[1];
+
 export const extractDesigns = data => data.project.issue.designCollection.designs.nodes;
 
 export const extractDesign = data => (extractDesigns(data) || [])[0];
+
+export const toDiffNoteGid = noteId => `gid://gitlab/DiffNote/${noteId}`;
+
+/**
+ * Return the note ID from a URL hash parameter
+ * @param {String} urlHash URL hash, including `#` prefix
+ */
+export const extractDesignNoteId = urlHash => {
+  const [, noteId] = urlHash.match('#note_([0-9]+$)') || [];
+  return noteId || null;
+};
 
 /**
  * Generates optimistic response for a design upload mutation
@@ -135,3 +150,22 @@ const normalizeAuthor = author => ({
 export const extractParticipants = users => users.map(node => normalizeAuthor(node));
 
 export const getPageLayoutElement = () => document.querySelector('.layout-page');
+
+/**
+ * Extract the ID of the To-Do for a given 'delete' path
+ * Example of todoDeletePath: /delete/1234
+ * @param {String} todoDeletePath delete_path from REST API response
+ */
+export const extractTodoIdFromDeletePath = todoDeletePath =>
+  (todoDeletePath.match('todos/([0-9]+$)') || [])[1];
+
+const createTodoGid = todoId => {
+  return `gid://gitlab/Todo/${todoId}`;
+};
+
+export const createPendingTodo = todoId => {
+  return {
+    __typename: 'Todo', // eslint-disable-line @gitlab/require-i18n-strings
+    id: createTodoGid(todoId),
+  };
+};

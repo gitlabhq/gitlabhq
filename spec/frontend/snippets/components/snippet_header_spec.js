@@ -5,6 +5,7 @@ import { Blob, BinaryBlob } from 'jest/blob/components/mock_data';
 import waitForPromises from 'helpers/wait_for_promises';
 import DeleteSnippetMutation from '~/snippets/mutations/deleteSnippet.mutation.graphql';
 import SnippetHeader from '~/snippets/components/snippet_header.vue';
+import { differenceInMilliseconds } from '~/lib/utils/datetime_utility';
 
 describe('Snippet header component', () => {
   let wrapper;
@@ -14,6 +15,7 @@ describe('Snippet header component', () => {
 
   let errorMsg;
   let err;
+  const originalRelativeUrlRoot = gon.relative_url_root;
 
   function createComponent({
     loading = false,
@@ -50,6 +52,7 @@ describe('Snippet header component', () => {
   }
 
   beforeEach(() => {
+    gon.relative_url_root = '/foo/';
     snippet = {
       id: 'gid://gitlab/PersonalSnippet/50',
       title: 'The property of Thor',
@@ -65,7 +68,7 @@ describe('Snippet header component', () => {
         name: 'Thor Odinson',
       },
       blobs: [Blob],
-      createdAt: new Date(Date.now() - 32 * 24 * 3600 * 1000).toISOString(),
+      createdAt: new Date(differenceInMilliseconds(32 * 24 * 3600 * 1000)).toISOString(),
     };
 
     mutationVariables = {
@@ -86,6 +89,7 @@ describe('Snippet header component', () => {
 
   afterEach(() => {
     wrapper.destroy();
+    gon.relative_url_root = originalRelativeUrlRoot;
   });
 
   it('renders itself', () => {
@@ -213,7 +217,7 @@ describe('Snippet header component', () => {
       it('redirects to dashboard/snippets for personal snippet', () => {
         return createDeleteSnippet().then(() => {
           expect(wrapper.vm.closeDeleteModal).toHaveBeenCalled();
-          expect(window.location.pathname).toBe('dashboard/snippets');
+          expect(window.location.pathname).toBe(`${gon.relative_url_root}dashboard/snippets`);
         });
       });
 

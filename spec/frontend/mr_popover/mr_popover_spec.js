@@ -61,7 +61,7 @@ describe('MR Popover', () => {
       });
 
       return wrapper.vm.$nextTick().then(() => {
-        expect(wrapper.contains(CiIcon)).toBe(false);
+        expect(wrapper.find(CiIcon).exists()).toBe(false);
       });
     });
   });

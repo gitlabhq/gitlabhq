@@ -47,6 +47,8 @@ const createTestSnippet = () => ({
 
 describe('Snippet Edit app', () => {
   let wrapper;
+  const relativeUrlRoot = '/foo/';
+  const originalRelativeUrlRoot = gon.relative_url_root;
 
   const mutationTypes = {
     RESOLVE: jest.fn().mockResolvedValue({
@@ -100,16 +102,25 @@ describe('Snippet Edit app', () => {
         markdownDocsPath: 'http://docs.foo.bar',
         ...props,
       },
+      data() {
+        return {
+          snippet: {
+            visibilityLevel: SNIPPET_VISIBILITY_PRIVATE,
+          },
+        };
+      },
     });
   }
 
   beforeEach(() => {
+    gon.relative_url_root = relativeUrlRoot;
     jest.spyOn(urlUtils, 'redirectTo').mockImplementation();
   });
 
   afterEach(() => {
     wrapper.destroy();
     wrapper = null;
+    gon.relative_url_root = originalRelativeUrlRoot;
   });
 
   const findBlobActions = () => wrapper.find(SnippetBlobActionsEdit);
@@ -164,10 +175,10 @@ describe('Snippet Edit app', () => {
       props => {
         createComponent(props);
 
-        expect(wrapper.contains(TitleField)).toBe(true);
-        expect(wrapper.contains(SnippetDescriptionEdit)).toBe(true);
-        expect(wrapper.contains(SnippetVisibilityEdit)).toBe(true);
-        expect(wrapper.contains(FormFooterActions)).toBe(true);
+        expect(wrapper.find(TitleField).exists()).toBe(true);
+        expect(wrapper.find(SnippetDescriptionEdit).exists()).toBe(true);
+        expect(wrapper.find(SnippetVisibilityEdit).exists()).toBe(true);
+        expect(wrapper.find(FormFooterActions).exists()).toBe(true);
         expect(findBlobActions().exists()).toBe(true);
       },
     );
@@ -196,8 +207,8 @@ describe('Snippet Edit app', () => {
 
     it.each`
       projectPath       | snippetArg               | expectation
-      ${''}             | ${[]}                    | ${'/-/snippets'}
-      ${'project/path'} | ${[]}                    | ${'/project/path/-/snippets'}
+      ${''}             | ${[]}                    | ${urlUtils.joinPaths('/', relativeUrlRoot, '-', 'snippets')}
+      ${'project/path'} | ${[]}                    | ${urlUtils.joinPaths('/', relativeUrlRoot, 'project/path/-', 'snippets')}
       ${''}             | ${[createTestSnippet()]} | ${TEST_WEB_URL}
       ${'project/path'} | ${[createTestSnippet()]} | ${TEST_WEB_URL}
     `(

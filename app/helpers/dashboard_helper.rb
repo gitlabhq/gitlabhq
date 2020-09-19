@@ -58,10 +58,6 @@ module DashboardHelper
       links += [:activity, :milestones]
     end
 
-    if can?(current_user, :read_instance_statistics)
-      links << :analytics
-    end
-
     links
   end
 end

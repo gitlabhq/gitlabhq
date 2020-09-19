@@ -65,7 +65,7 @@ shell check:
   before_script:
     - shellcheck --version
   script:
-    - shellcheck scripts/**/*.sh # path to your shell scripts
+    - shellcheck scripts/**/*.sh  # path to your shell scripts
 ```
 
 TIP: **Tip:**
@@ -93,7 +93,7 @@ shfmt:
   before_script:
     - shfmt -version
   script:
-    - shfmt -i 2 -ci -d scripts # path to your shell scripts
+    - shfmt -i 2 -ci -d scripts  # path to your shell scripts
 ```
 
 TIP: **Tip:**

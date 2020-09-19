@@ -786,7 +786,7 @@ RSpec.describe 'Git LFS API and storage' do
           let(:authorization) { authorize_deploy_key }
 
           let(:update_user_permissions) do
-            project.deploy_keys_projects.create(deploy_key: key, can_push: true)
+            project.deploy_keys_projects.create!(deploy_key: key, can_push: true)
           end
 
           it_behaves_like 'pushes new LFS objects', renew_authorization: false
@@ -991,7 +991,7 @@ RSpec.describe 'Git LFS API and storage' do
 
           context 'and workhorse requests upload finalize for a new LFS object' do
             before do
-              lfs_object.destroy
+              lfs_object.destroy!
             end
 
             context 'with object storage disabled' do
@@ -1009,7 +1009,7 @@ RSpec.describe 'Git LFS API and storage' do
                 end
 
                 let(:tmp_object) do
-                  fog_connection.directories.new(key: 'lfs-objects').files.create(
+                  fog_connection.directories.new(key: 'lfs-objects').files.create( # rubocop: disable Rails/SaveBang
                     key: 'tmp/uploads/12312300',
                     body: 'content'
                   )
@@ -1080,7 +1080,7 @@ RSpec.describe 'Git LFS API and storage' do
 
           context 'without the lfs object' do
             before do
-              lfs_object.destroy
+              lfs_object.destroy!
             end
 
             it 'rejects slashes in the tempfile name (path traversal)' do

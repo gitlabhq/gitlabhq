@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'WikiPages::DestroyService#execute' do |container_type|
-  let(:container) { create(container_type) }
+  let(:container) { create(container_type) } # rubocop:disable Rails/SaveBang
 
   let(:user) { create(:user) }
   let(:page) { create(:wiki_page) }
@@ -32,9 +32,19 @@ RSpec.shared_examples 'WikiPages::DestroyService#execute' do |container_type|
     )
   end
 
-  it 'does not increment the delete count if the deletion failed' do
-    counter = Gitlab::UsageDataCounters::WikiPageCounter
+  context 'when the deletion fails' do
+    before do
+      expect(page).to receive(:delete).and_return(false)
+    end
 
-    expect { service.execute(nil) }.not_to change { counter.read(:delete) }
+    it 'returns an error response' do
+      response = service.execute(page)
+      expect(response).to be_error
+    end
+
+    it 'does not increment the delete count if the deletion failed' do
+      counter = Gitlab::UsageDataCounters::WikiPageCounter
+      expect { service.execute(page) }.not_to change { counter.read(:delete) }
+    end
   end
 end

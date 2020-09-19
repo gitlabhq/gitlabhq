@@ -8,7 +8,7 @@ to create a Kubernetes cluster manually using the Google Cloud Platform console.
 You will create and deploy a simple application that you create from a GitLab template.
 
 These instructions will also work for a self-managed GitLab instance; you'll just
-need to ensure your own [Runners are configured](../../ci/runners/README.md) and
+need to ensure your own [runners are configured](../../ci/runners/README.md) and
 [Google OAuth is enabled](../../integration/google.md).
 
 ## Configure your Google account
@@ -110,7 +110,7 @@ In this guide, we will install Ingress and Prometheus:
 
 NOTE: **Note:**
 We won't install GitLab Runner in this quick start guide, as this guide uses the
-shared Runners provided by GitLab.com.
+shared runners provided by GitLab.com.
 
 To install the applications:
 
@@ -160,18 +160,18 @@ The jobs are separated into stages:
   - The `test` job runs unit and integration tests by detecting the language and
     framework ([Auto Test](stages.md#auto-test))
   - The `code_quality` job checks the code quality and is allowed to fail
-    ([Auto Code Quality](stages.md#auto-code-quality-starter)) **(STARTER)**
+    ([Auto Code Quality](stages.md#auto-code-quality)) **(STARTER)**
   - The `container_scanning` job checks the Docker container if it has any
-    vulnerabilities and is allowed to fail ([Auto Container Scanning](stages.md#auto-container-scanning-ultimate))
+    vulnerabilities and is allowed to fail ([Auto Container Scanning](stages.md#auto-container-scanning))
   - The `dependency_scanning` job checks if the application has any dependencies
     susceptible to vulnerabilities and is allowed to fail
-    ([Auto Dependency Scanning](stages.md#auto-dependency-scanning-ultimate)) **(ULTIMATE)**
+    ([Auto Dependency Scanning](stages.md#auto-dependency-scanning)) **(ULTIMATE)**
   - Jobs suffixed with `-sast` run static analysis on the current code to check for potential
-    security issues, and are allowed to fail ([Auto SAST](stages.md#auto-sast-ultimate)) **(ULTIMATE)**
-  - The `secret-detection` job checks for leaked secrets and is allowed to fail ([Auto Secret Detection](stages.md#auto-secret-detection-ultimate)) **(ULTIMATE)**
+    security issues, and are allowed to fail ([Auto SAST](stages.md#auto-sast)) **(ULTIMATE)**
+  - The `secret-detection` job checks for leaked secrets and is allowed to fail ([Auto Secret Detection](stages.md#auto-secret-detection)) **(ULTIMATE)**
   - The `license_management` job searches the application's dependencies to determine each of their
     licenses and is allowed to fail
-    ([Auto License Compliance](stages.md#auto-license-compliance-ultimate)) **(ULTIMATE)**
+    ([Auto License Compliance](stages.md#auto-license-compliance)) **(ULTIMATE)**
 
    NOTE: **Note:**
    All jobs except `test` are allowed to fail in the test stage.
@@ -183,7 +183,7 @@ The jobs are separated into stages:
   Kubernetes ([Auto Deploy](stages.md#auto-deploy)).
 
 - **Performance** - Performance tests are run on the deployed application
-  ([Auto Browser Performance Testing](stages.md#auto-browser-performance-testing-premium)). **(PREMIUM)**
+  ([Auto Browser Performance Testing](stages.md#auto-browser-performance-testing)). **(PREMIUM)**
 
 - **Cleanup** - Pipelines on `master` include this stage with a `stop_dast_environment` job.
 
@@ -292,7 +292,7 @@ and customized to fit your workflow. Here are some helpful resources for further
 
 1. [Auto DevOps](index.md)
 1. [Multiple Kubernetes clusters](index.md#using-multiple-kubernetes-clusters)
-1. [Incremental rollout to production](customize.md#incremental-rollout-to-production-premium) **(PREMIUM)**
+1. [Incremental rollout to production](customize.md#incremental-rollout-to-production) **(PREMIUM)**
 1. [Disable jobs you don't need with environment variables](customize.md#environment-variables)
 1. [Use a static IP for your cluster](../../user/clusters/applications.md#using-a-static-ip)
 1. [Use your own buildpacks to build your application](customize.md#custom-buildpacks)

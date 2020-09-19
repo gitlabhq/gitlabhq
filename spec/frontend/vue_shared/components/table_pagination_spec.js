@@ -34,7 +34,7 @@ describe('Pagination component', () => {
         change: spy,
       });
 
-      expect(wrapper.isEmpty()).toBe(true);
+      expect(wrapper.html()).toBe('');
     });
 
     it('renders if there is a next page', () => {
@@ -50,7 +50,7 @@ describe('Pagination component', () => {
         change: spy,
       });
 
-      expect(wrapper.isEmpty()).toBe(false);
+      expect(wrapper.find(GlPagination).exists()).toBe(true);
     });
 
     it('renders if there is a prev page', () => {
@@ -66,7 +66,7 @@ describe('Pagination component', () => {
         change: spy,
       });
 
-      expect(wrapper.isEmpty()).toBe(false);
+      expect(wrapper.find(GlPagination).exists()).toBe(true);
     });
   });
 

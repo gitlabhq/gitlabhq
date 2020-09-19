@@ -25,6 +25,10 @@ module Gitlab
         end
       end
 
+      def self.server_address
+        uri&.strip&.sub(/^http[s]?:\/\//, '')
+      end
+
       def self.listen_address
         Gitlab.config.prometheus.listen_address.to_s if Gitlab.config.prometheus
       rescue Settingslogic::MissingSetting

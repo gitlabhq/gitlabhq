@@ -8,18 +8,12 @@ exports[`ConanInstallation renders all the messages 1`] = `
     Installation
   </h3>
    
-  <h4
-    class="gl-font-base"
-  >
-    
-    Conan Command
-  
-  </h4>
-   
   <code-instruction-stub
     copytext="Copy Conan Command"
     instruction="foo/command"
+    label="Conan Command"
     trackingaction="copy_conan_command"
+    trackinglabel="code_instruction"
   />
    
   <h3
@@ -28,18 +22,12 @@ exports[`ConanInstallation renders all the messages 1`] = `
     Registry setup
   </h3>
    
-  <h4
-    class="gl-font-base"
-  >
-    
-    Add Conan Remote
-  
-  </h4>
-   
   <code-instruction-stub
     copytext="Copy Conan Setup Command"
     instruction="foo/setup"
+    label="Add Conan Remote"
     trackingaction="copy_conan_setup_command"
+    trackinglabel="code_instruction"
   />
    
   <gl-sprintf-stub

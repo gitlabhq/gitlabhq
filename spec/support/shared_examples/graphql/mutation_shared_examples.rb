@@ -19,6 +19,13 @@ RSpec.shared_examples 'a mutation that returns top-level errors' do |errors: []|
   end
 end
 
+# There must be a method or let called `mutation` defined that executes
+# the mutation.
+RSpec.shared_examples 'a mutation that returns a top-level access error' do
+  include_examples 'a mutation that returns top-level errors',
+                   errors: [Gitlab::Graphql::Authorize::AuthorizeResource::RESOURCE_ACCESS_ERROR]
+end
+
 RSpec.shared_examples 'an invalid argument to the mutation' do |argument_name:|
   it_behaves_like 'a mutation that returns top-level errors' do
     let(:match_errors) do

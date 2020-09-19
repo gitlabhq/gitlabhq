@@ -1,9 +1,16 @@
 <script>
+/* eslint-disable vue/no-v-html */
 import { escape } from 'lodash';
 import { mapActions, mapGetters } from 'vuex';
-import { GlDeprecatedButton, GlTooltipDirective, GlLoadingIcon } from '@gitlab/ui';
+import {
+  GlDeprecatedButton,
+  GlTooltipDirective,
+  GlSafeHtmlDirective,
+  GlLoadingIcon,
+  GlIcon,
+  GlButton,
+} from '@gitlab/ui';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
-import Icon from '~/vue_shared/components/icon.vue';
 import FileIcon from '~/vue_shared/components/file_icon.vue';
 import { truncateSha } from '~/lib/utils/text_utility';
 import { __, s__, sprintf } from '~/locale';
@@ -18,12 +25,14 @@ export default {
     GlDeprecatedButton,
     ClipboardButton,
     EditButton,
-    Icon,
+    GlIcon,
     FileIcon,
     DiffStats,
+    GlButton,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
+    SafeHtml: GlSafeHtmlDirective,
   },
   props: {
     discussionPath: {
@@ -76,6 +85,21 @@ export default {
       }
 
       return this.discussionPath;
+    },
+    submoduleDiffCompareLinkText() {
+      if (this.diffFile.submodule_compare) {
+        const truncatedOldSha = escape(truncateSha(this.diffFile.submodule_compare.old_sha));
+        const truncatedNewSha = escape(truncateSha(this.diffFile.submodule_compare.new_sha));
+        return sprintf(
+          s__('Compare %{oldCommitId}...%{newCommitId}'),
+          {
+            oldCommitId: `<span class="commit-sha">${truncatedOldSha}</span>`,
+            newCommitId: `<span class="commit-sha">${truncatedNewSha}</span>`,
+          },
+          false,
+        );
+      }
+      return null;
     },
     filePath() {
       if (this.diffFile.submodule) {
@@ -133,6 +157,7 @@ export default {
       'toggleFileDiscussions',
       'toggleFileDiscussionWrappers',
       'toggleFullDiff',
+      'toggleActiveFileByHash',
     ]),
     handleToggleFile() {
       this.$emit('toggleFile');
@@ -149,6 +174,9 @@ export default {
         const selector = this.diffContentIDSelector;
         scrollToElement(document.querySelector(selector));
         window.location.hash = selector;
+        if (!this.viewDiffsFileByFile) {
+          this.toggleActiveFileByHash(this.diffFile.file_hash);
+        }
       }
     },
   },
@@ -162,7 +190,7 @@ export default {
     @click.self="handleToggleFile"
   >
     <div class="file-header-content">
-      <icon
+      <gl-icon
         v-if="collapsible"
         ref="collapseIcon"
         :name="collapseIcon"
@@ -237,7 +265,7 @@ export default {
               type="button"
               @click="toggleFileDiscussionWrappers(diffFile)"
             >
-              <icon name="comment" />
+              <gl-icon name="comment" />
             </gl-deprecated-button>
           </span>
 
@@ -273,8 +301,8 @@ export default {
           @click="toggleFullDiff(diffFile.file_path)"
         >
           <gl-loading-icon v-if="diffFile.isLoadingFullFile" color="dark" inline />
-          <icon v-else-if="diffFile.isShowingFullFile" name="doc-changes" />
-          <icon v-else name="doc-expand" />
+          <gl-icon v-else-if="diffFile.isShowingFullFile" name="doc-changes" />
+          <gl-icon v-else name="doc-expand" />
         </gl-deprecated-button>
         <gl-deprecated-button
           ref="viewButton"
@@ -287,7 +315,7 @@ export default {
           data-track-property="diff_toggle_view_sha"
           :title="viewFileButtonText"
         >
-          <icon name="doc-text" />
+          <gl-icon name="doc-text" />
         </gl-deprecated-button>
 
         <a
@@ -303,9 +331,22 @@ export default {
           data-track-property="diff_toggle_external"
           class="btn btn-file-option"
         >
-          <icon name="external-link" />
+          <gl-icon name="external-link" />
         </a>
       </div>
+    </div>
+
+    <div
+      v-if="diffFile.submodule_compare"
+      class="file-actions d-none d-sm-flex align-items-center flex-wrap"
+    >
+      <gl-button
+        v-gl-tooltip.hover
+        v-safe-html="submoduleDiffCompareLinkText"
+        class="submodule-compare"
+        :title="s__('Compare submodule commit revisions')"
+        :href="diffFile.submodule_compare.url"
+      />
     </div>
   </div>
 </template>

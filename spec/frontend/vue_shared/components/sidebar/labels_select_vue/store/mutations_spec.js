@@ -152,6 +152,19 @@ describe('LabelsSelect Mutations', () => {
     });
   });
 
+  describe(`${types.REPLACE_SELECTED_LABELS}`, () => {
+    it('replaces `state.selectedLabels`', () => {
+      const state = {
+        selectedLabels: [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }],
+      };
+      const newSelectedLabels = [{ id: 2 }, { id: 5 }];
+
+      mutations[types.REPLACE_SELECTED_LABELS](state, newSelectedLabels);
+
+      expect(state.selectedLabels).toEqual(newSelectedLabels);
+    });
+  });
+
   describe(`${types.UPDATE_SELECTED_LABELS}`, () => {
     const labels = [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }];
 

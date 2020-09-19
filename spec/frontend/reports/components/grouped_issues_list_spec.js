@@ -42,7 +42,7 @@ describe('Grouped Issues List', () => {
     });
 
     it.each('resolved', 'unresolved')('does not render report items for %s issues', () => {
-      expect(wrapper.contains(ReportItem)).toBe(false);
+      expect(wrapper.find(ReportItem).exists()).toBe(false);
     });
   });
 

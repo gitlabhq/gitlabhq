@@ -72,7 +72,7 @@ describe('ItemStatsValueComponent', () => {
     });
 
     it('renders element icon correctly', () => {
-      expect(vm.$el.querySelector('svg use').getAttribute('xlink:href')).toContain('folder');
+      expect(vm.$el.querySelector('svg').getAttribute('data-testid')).toBe('folder-icon');
     });
 
     it('renders value count correctly', () => {

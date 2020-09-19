@@ -4,7 +4,6 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
   include DiffHelper
   include RendersNotes
 
-  before_action :apply_diff_view_cookie!
   before_action :commit
   before_action :define_diff_vars
   before_action :define_diff_comment_vars, except: [:diffs_batch, :diffs_metadata]
@@ -21,15 +20,15 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
   end
 
   def diffs_batch
-    return render_404 unless Feature.enabled?(:diffs_batch_load, @merge_request.project, default_enabled: true)
-
     diffs = @compare.diffs_in_batch(params[:page], params[:per_page], diff_options: diff_options)
     positions = @merge_request.note_positions_for_paths(diffs.diff_file_paths, current_user)
+    environment = @merge_request.environments_for(current_user, latest: true).last
 
     diffs.unfold_diff_files(positions.unfoldable)
     diffs.write_cache
 
     options = {
+      environment: environment,
       merge_request: @merge_request,
       diff_view: diff_view,
       pagination_data: diffs.pagination_data
@@ -65,7 +64,7 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
       render: ->(partial, locals) { view_to_html_string(partial, locals) }
     }
 
-    options = additional_attributes.merge(diff_view: diff_view)
+    options = additional_attributes.merge(diff_view: Feature.enabled?(:unified_diff_lines, @merge_request.project) ? "inline" : diff_view)
 
     if @merge_request.project.context_commits_enabled?
       options[:context_commits] = @merge_request.recent_context_commits

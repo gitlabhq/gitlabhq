@@ -116,7 +116,6 @@
 
     .board-title {
       flex-direction: column;
-      height: 100%;
     }
 
     .board-title-caret {
@@ -284,7 +283,7 @@
   }
 
   .confidential-icon {
-    color: $orange-600;
+    color: $orange-500;
     cursor: help;
   }
 

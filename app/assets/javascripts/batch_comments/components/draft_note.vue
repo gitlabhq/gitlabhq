@@ -1,4 +1,5 @@
 <script>
+/* eslint-disable vue/no-v-html */
 import { mapActions, mapGetters, mapState } from 'vuex';
 import { GlButton } from '@gitlab/ui';
 import NoteableNote from '~/notes/components/noteable_note.vue';

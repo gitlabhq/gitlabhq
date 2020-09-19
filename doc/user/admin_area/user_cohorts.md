@@ -1,5 +1,5 @@
 ---
-redirect_to: '../instance_statistics/user_cohorts.md'
+redirect_to: 'analytics/user_cohorts.md'
 ---
 
-This document was moved to [another location](../instance_statistics/user_cohorts.md).
+This document was moved to [another location](analytics/user_cohorts.md).

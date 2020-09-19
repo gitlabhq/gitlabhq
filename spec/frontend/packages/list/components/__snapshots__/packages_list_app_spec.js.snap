@@ -444,7 +444,7 @@ exports[`packages_list_app renders 1`] = `
   </template>
   <template>
     <div
-      class="d-flex align-self-center ml-md-auto py-1 py-md-0"
+      class="gl-display-flex gl-align-self-center gl-py-2 gl-flex-grow-1 gl-justify-content-end"
     >
       <package-filter-stub
         class="mr-1"

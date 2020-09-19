@@ -13,7 +13,12 @@ module Packages
     end
 
     def execute
-      packages = project.packages.processed.has_version
+      packages = project.packages
+                        .including_build_info
+                        .including_project_route
+                        .including_tags
+                        .processed
+                        .has_version
       packages = filter_by_package_type(packages)
       packages = filter_by_package_name(packages)
       packages = order_packages(packages)

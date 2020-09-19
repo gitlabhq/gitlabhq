@@ -37,9 +37,9 @@
           = render 'by_email_description'
         %p
           This is a private email address
-
-          %a{ href: 'https://docs.gitlab.com/ee/development/emails.html#email-namespace', target: "_blank", rel: "noopener" }
-            %i.fa.fa-question-circle{ 'aria-label': "Learn more about incoming email addresses" }
+          %span<
+            = link_to help_page_path('development/emails', anchor: 'email-namespace'), target: '_blank', rel: 'noopener', aria: { label: 'Learn more about incoming email addresses' } do
+              = sprite_icon('question-o')
 
           generated just for you.
 

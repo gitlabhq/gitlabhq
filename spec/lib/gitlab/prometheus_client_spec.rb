@@ -36,6 +36,28 @@ RSpec.describe Gitlab::PrometheusClient do
     end
   end
 
+  describe '#ready?' do
+    it 'returns true when status code is 200' do
+      stub_request(:get, subject.ready_url).to_return(status: 200, body: 'Prometheus is Ready.\n')
+
+      expect(subject.ready?).to eq(true)
+    end
+
+    it 'returns false when status code is not 200' do
+      [503, 500].each do |code|
+        stub_request(:get, subject.ready_url).to_return(status: code, body: 'Service Unavailable')
+
+        expect(subject.ready?).to eq(false)
+      end
+    end
+
+    it 'raises error when ready api throws exception' do
+      stub_request(:get, subject.ready_url).to_raise(Net::OpenTimeout)
+
+      expect { subject.ready? }.to raise_error(Gitlab::PrometheusClient::UnexpectedResponseError)
+    end
+  end
+
   # This shared examples expect:
   # - query_url: A query URL
   # - execute_query: A query call
@@ -136,7 +158,7 @@ RSpec.describe Gitlab::PrometheusClient do
     let(:query_url) { prometheus_query_with_time_url(prometheus_query, Time.now.utc) }
 
     around do |example|
-      Timecop.freeze { example.run }
+      freeze_time { example.run }
     end
 
     context 'when request returns vector results' do
@@ -195,7 +217,7 @@ RSpec.describe Gitlab::PrometheusClient do
     let(:query_url) { prometheus_query_with_time_url(query, Time.now.utc) }
 
     around do |example|
-      Timecop.freeze { example.run }
+      freeze_time { example.run }
     end
 
     context 'when request returns vector results' do
@@ -228,7 +250,7 @@ RSpec.describe Gitlab::PrometheusClient do
     let(:query_url) { prometheus_series_url('series_name', 'other_service') }
 
     around do |example|
-      Timecop.freeze { example.run }
+      freeze_time { example.run }
     end
 
     it 'calls endpoint and returns list of series' do
@@ -259,7 +281,7 @@ RSpec.describe Gitlab::PrometheusClient do
     let(:query_url) { prometheus_query_range_url(prometheus_query) }
 
     around do |example|
-      Timecop.freeze { example.run }
+      freeze_time { example.run }
     end
 
     context 'when non utc time is passed' do
@@ -358,7 +380,7 @@ RSpec.describe Gitlab::PrometheusClient do
       let(:query_url) { prometheus_query_url(prometheus_query) }
 
       around do |example|
-        Timecop.freeze { example.run }
+        freeze_time { example.run }
       end
 
       context 'when response status code is 200' do

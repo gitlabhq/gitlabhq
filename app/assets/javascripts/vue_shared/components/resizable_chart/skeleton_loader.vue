@@ -61,35 +61,37 @@ export default {
 };
 </script>
 <template>
-  <gl-skeleton-loader :unique-key="uniqueKey">
-    <rect
-      v-for="(y, index) in $options.GRID_YS"
-      :key="`grid-${index}`"
-      data-testid="skeleton-chart-grid"
-      x="0"
-      :y="`${y}%`"
-      width="100%"
-      height="1px"
-    />
-    <rect
-      v-for="(height, index) in $options.BAR_HEIGHTS"
-      :key="`bar-${index}`"
-      data-testid="skeleton-chart-bar"
-      :x="`${getBarXPosition(index)}%`"
-      :y="`${90 - height}%`"
-      :width="`${barWidth}%`"
-      :height="`${height}%`"
-      :rx="`${rx}%`"
-    />
-    <rect
-      v-for="(height, index) in $options.BAR_HEIGHTS"
-      :key="`label-${index}`"
-      data-testid="skeleton-chart-label"
-      :x="`${labelCentering + getBarXPosition(index)}%`"
-      :y="`${100 - labelHeight}%`"
-      :width="`${labelWidth}%`"
-      :height="`${labelHeight}%`"
-      :rx="`${rx}%`"
-    />
-  </gl-skeleton-loader>
+  <div class="gl-px-8">
+    <gl-skeleton-loader :unique-key="uniqueKey" class="gl-p-8">
+      <rect
+        v-for="(y, index) in $options.GRID_YS"
+        :key="`grid-${index}`"
+        data-testid="skeleton-chart-grid"
+        x="0"
+        :y="`${y}%`"
+        width="100%"
+        height="1px"
+      />
+      <rect
+        v-for="(height, index) in $options.BAR_HEIGHTS"
+        :key="`bar-${index}`"
+        data-testid="skeleton-chart-bar"
+        :x="`${getBarXPosition(index)}%`"
+        :y="`${90 - height}%`"
+        :width="`${barWidth}%`"
+        :height="`${height}%`"
+        :rx="`${rx}%`"
+      />
+      <rect
+        v-for="(height, index) in $options.BAR_HEIGHTS"
+        :key="`label-${index}`"
+        data-testid="skeleton-chart-label"
+        :x="`${labelCentering + getBarXPosition(index)}%`"
+        :y="`${100 - labelHeight}%`"
+        :width="`${labelWidth}%`"
+        :height="`${labelHeight}%`"
+        :rx="`${rx}%`"
+      />
+    </gl-skeleton-loader>
+  </div>
 </template>

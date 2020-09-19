@@ -1,0 +1,5 @@
+---
+title: Fixed image comments not showing on the changes tab
+merge_request: 41683
+author:
+type: fixed

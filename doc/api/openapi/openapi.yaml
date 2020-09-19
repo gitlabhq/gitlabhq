@@ -1,0 +1,26 @@
+openapi: "3.0.0"
+info:
+  description: |
+    An OpenAPI definition for the GitLab REST API.
+    Only one API resource/endpoint is currently included.
+    The intent is to expand this to match the entire Markdown documentation of the API:
+    <https://docs.gitlab.com/ee/api/>. Contributions are welcome.
+
+    When viewing this on gitlab.com, you can test API calls directly from the browser
+    against the `gitlab.com` instance, if you are logged in.
+    The feature uses the current [GitLab session cookie](https://docs.gitlab.com/ee/api/README.html#session-cookie),
+    so each request is made using your account. 
+
+    Read more at <https://docs.gitlab.com/ee/development/documentation/styleguide.html#restful-api>.
+  version: "v4"
+  title: "GitLab API"
+  termsOfService: "https://about.gitlab.com/terms/"
+  license:
+    name: "CC BY-SA 4.0"
+    url: "https://gitlab.com/gitlab-org/gitlab/-/blob/master/LICENSE"
+servers:
+  - url: "https://gitlab.com/api/"
+
+paths:
+  /v4/version:
+    $ref: "v4/version.yaml"

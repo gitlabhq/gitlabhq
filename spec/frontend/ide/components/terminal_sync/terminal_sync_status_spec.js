@@ -1,13 +1,12 @@
 import Vuex from 'vuex';
 import { createLocalVue, shallowMount } from '@vue/test-utils';
-import { GlLoadingIcon } from '@gitlab/ui';
+import { GlLoadingIcon, GlIcon } from '@gitlab/ui';
 import TerminalSyncStatus from '~/ide/components/terminal_sync/terminal_sync_status.vue';
 import {
   MSG_TERMINAL_SYNC_CONNECTING,
   MSG_TERMINAL_SYNC_UPLOADING,
   MSG_TERMINAL_SYNC_RUNNING,
 } from '~/ide/stores/modules/terminal_sync/messages';
-import Icon from '~/vue_shared/components/icon.vue';
 
 const TEST_MESSAGE = 'lorem ipsum dolar sit';
 const START_LOADING = 'START_LOADING';
@@ -58,7 +57,7 @@ describe('ide/components/terminal_sync/terminal_sync_status', () => {
     it('shows nothing', () => {
       createComponent();
 
-      expect(wrapper.isEmpty()).toBe(true);
+      expect(wrapper.html()).toBe('');
     });
   });
 
@@ -80,7 +79,7 @@ describe('ide/components/terminal_sync/terminal_sync_status', () => {
 
     if (!icon) {
       it('does not render icon', () => {
-        expect(wrapper.find(Icon).exists()).toBe(false);
+        expect(wrapper.find(GlIcon).exists()).toBe(false);
       });
 
       it('renders loading icon', () => {
@@ -88,7 +87,7 @@ describe('ide/components/terminal_sync/terminal_sync_status', () => {
       });
     } else {
       it('renders icon', () => {
-        expect(wrapper.find(Icon).props('name')).toEqual(icon);
+        expect(wrapper.find(GlIcon).props('name')).toEqual(icon);
       });
 
       it('does not render loading icon', () => {

@@ -24,8 +24,9 @@ module MergeRequests
       old_labels = old_associations.fetch(:labels, [])
       old_mentioned_users = old_associations.fetch(:mentioned_users, [])
       old_assignees = old_associations.fetch(:assignees, [])
+      old_reviewers = old_associations.fetch(:reviewers, [])
 
-      if has_changes?(merge_request, old_labels: old_labels, old_assignees: old_assignees)
+      if has_changes?(merge_request, old_labels: old_labels, old_assignees: old_assignees, old_reviewers: old_reviewers)
         todo_service.resolve_todos_for_target(merge_request, current_user)
       end
 
@@ -43,6 +44,8 @@ module MergeRequests
       end
 
       handle_assignees_change(merge_request, old_assignees) if merge_request.assignees != old_assignees
+
+      handle_reviewers_change(merge_request, old_reviewers) if merge_request.reviewers != old_reviewers
 
       if merge_request.previous_changes.include?('target_branch') ||
           merge_request.previous_changes.include?('source_branch')
@@ -106,6 +109,10 @@ module MergeRequests
       create_assignee_note(merge_request, old_assignees)
       notification_service.async.reassigned_merge_request(merge_request, current_user, old_assignees)
       todo_service.reassigned_assignable(merge_request, current_user, old_assignees)
+    end
+
+    def handle_reviewers_change(merge_request, old_reviewers)
+      todo_service.reassigned_reviewable(merge_request, current_user, old_reviewers)
     end
 
     def create_branch_change_note(issuable, branch_type, old_branch, new_branch)

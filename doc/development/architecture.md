@@ -173,7 +173,7 @@ Table description links:
 | [Gitaly](#gitaly)                                     | Git RPC service for handling all Git calls made by GitLab            |       ✅        |      ✅       |        ✅         |     ✅      |   ⚙    |  ✅  | CE & EE |
 | [GitLab Exporter](#gitlab-exporter)                   | Generates a variety of GitLab metrics                                |       ✅        |      ✅       |        ✅         |     ✅      |   ❌    |  ❌  | CE & EE |
 | [GitLab Geo Node](#gitlab-geo)                        | Geographically distributed GitLab nodes |       ⚙        |       ⚙      |        ❌         |     ✅      |   ❌    |  ⚙  | EE Only |
-| [GitLab Managed Apps](#gitlab-managed-apps)           | Deploy Helm, Ingress, Cert-Manager, Prometheus, a Runner, JupyterHub, or Knative to a cluster |  ⤓  |  ⤓  |      ⤓       |     ⤓      |   ⤓    |  ⤓  | CE & EE |
+| [GitLab Managed Apps](#gitlab-managed-apps)           | Deploy Helm, Ingress, Cert-Manager, Prometheus, GitLab Runner, JupyterHub, or Knative to a cluster |  ⤓  |  ⤓  |      ⤓       |     ⤓      |   ⤓    |  ⤓  | CE & EE |
 | [GitLab Pages](#gitlab-pages)                         | Hosts static websites                                                |       ⚙        |      ❌       |        ❌         |     ✅      |   ⚙    |  ⚙  | CE & EE |
 | [GitLab self-monitoring: Alertmanager](#alertmanager) | Deduplicates, groups, and routes alerts from Prometheus              |       ⚙        |      ✅       |        ⚙         |     ✅      |   ❌    |  ❌  | CE & EE |
 | [GitLab self-monitoring: Grafana](#grafana)           | Metrics dashboard                                                    |       ✅        |      ⚙       |        ⤓         |     ✅      |   ❌    |  ❌  | CE & EE |
@@ -259,7 +259,7 @@ Consul is a tool for service discovery and configuration. Consul is distributed,
 - Configuration:
   - [Omnibus](https://docs.gitlab.com/omnibus/settings/database.html#disabling-automatic-database-migration)
   - [Charts](https://docs.gitlab.com/charts/charts/gitlab/migrations/)
-  - [Source](../update/upgrading_from_source.md#13-install-libraries-migrations-etc)
+  - [Source](../update/upgrading_from_source.md#14-install-libraries-migrations-etc)
 - Layer: Core Service (Data)
 
 #### Elasticsearch
@@ -304,7 +304,7 @@ repository updates to secondary nodes.
 #### GitLab Geo
 
 - Configuration:
-  - [Omnibus](../administration/geo/replication/index.md#setup-instructions)
+  - [Omnibus](../administration/geo/setup/index.md)
   - [Charts](https://docs.gitlab.com/charts/advanced/geo/)
   - [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/master/doc/howto/geo.md)
 - Layer: Core Service (Processor)
@@ -555,7 +555,7 @@ Redis is packaged to provide a place to store:
 
 - [Project page](https://github.com/docker/distribution/blob/master/README.md)
 - Configuration:
-  - [Omnibus](../update/upgrading_from_source.md#13-install-libraries-migrations-etc)
+  - [Omnibus](../update/upgrading_from_source.md#14-install-libraries-migrations-etc)
   - [Charts](https://docs.gitlab.com/charts/charts/registry/)
   - [Source](../administration/packages/container_registry.md#enable-the-container-registry)
   - [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/master/doc/howto/registry.md)
@@ -665,7 +665,7 @@ You can install them after you create a cluster. This includes:
 - [Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress/)
 - [Cert-Manager](https://cert-manager.io/docs/)
 - [Prometheus](https://prometheus.io/docs/introduction/overview/)
-- a [Runner](https://docs.gitlab.com/runner/)
+- [GitLab Runner](https://docs.gitlab.com/runner/)
 - [JupyterHub](https://jupyter.org)
 - [Knative](https://cloud.google.com/knative/)
 

@@ -15,6 +15,7 @@ module ReleasesHelper
   def data_for_releases_page
     {
       project_id: @project.id,
+      project_path: @project.full_path,
       illustration_path: illustration,
       documentation_path: help_page
     }.tap do |data|

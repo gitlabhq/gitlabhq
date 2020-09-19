@@ -1,10 +1,10 @@
 <script>
 import { isNumber } from 'lodash';
-import Icon from '~/vue_shared/components/icon.vue';
+import { GlIcon } from '@gitlab/ui';
 import { n__ } from '~/locale';
 
 export default {
-  components: { Icon },
+  components: { GlIcon },
   props: {
     addedLines: {
       type: Number,
@@ -46,7 +46,7 @@ export default {
     }"
   >
     <div v-if="hasDiffFiles" class="diff-stats-group">
-      <icon name="doc-code" class="diff-stats-icon text-secondary" />
+      <gl-icon name="doc-code" class="diff-stats-icon text-secondary" />
       <span class="text-secondary bold">{{ diffFilesCountText }} {{ filesText }}</span>
     </div>
     <div

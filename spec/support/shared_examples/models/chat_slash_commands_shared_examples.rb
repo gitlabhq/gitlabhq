@@ -85,7 +85,7 @@ RSpec.shared_examples 'chat slash commands service' do
         let(:params) { { token: 'token', team_id: chat_name.team_id, user_id: chat_name.chat_id } }
 
         subject do
-          described_class.create(project: project, properties: { token: 'token' })
+          described_class.create!(project: project, properties: { token: 'token' })
         end
 
         it 'triggers the command' do

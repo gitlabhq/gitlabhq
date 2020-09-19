@@ -1,4 +1,5 @@
 import FileTemplateSelector from '../file_template_selector';
+import initDeprecatedJQueryDropdown from '~/deprecated_jquery_dropdown';
 
 export default class BlobCiYamlSelector extends FileTemplateSelector {
   constructor({ mediator }) {
@@ -15,7 +16,7 @@ export default class BlobCiYamlSelector extends FileTemplateSelector {
 
   initDropdown() {
     // maybe move to super class as well
-    this.$dropdown.glDropdown({
+    initDeprecatedJQueryDropdown(this.$dropdown, {
       data: this.$dropdown.data('data'),
       filterable: true,
       selectable: true,

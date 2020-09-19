@@ -26,7 +26,7 @@ module QA
         Flow::Login.sign_in
       end
 
-      it 'pushes code to the repository via SSH', :smoke do
+      it 'pushes code to the repository via SSH', :smoke, testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/969' do
         Resource::Repository::ProjectPush.fabricate! do |push|
           push.project = project
           push.ssh_key = @key
@@ -41,7 +41,7 @@ module QA
         end
       end
 
-      it 'pushes multiple branches and tags together', :smoke do
+      it 'pushes multiple branches and tags together', :smoke, testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/970' do
         branches = []
         tags = []
         Git::Repository.perform do |repository|

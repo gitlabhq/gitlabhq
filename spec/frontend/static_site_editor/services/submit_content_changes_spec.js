@@ -20,7 +20,7 @@ import {
   commitMultipleResponse,
   createMergeRequestResponse,
   sourcePath,
-  sourceContent as content,
+  sourceContentYAML as content,
   trackingCategory,
   images,
 } from '../mock_data';

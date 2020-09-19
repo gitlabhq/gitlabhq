@@ -11,7 +11,6 @@ import {
   OLD_LINE_TYPE,
   MATCH_LINE_TYPE,
   LINES_TO_BE_RENDERED_DIRECTLY,
-  MAX_LINES_TO_BE_RENDERED,
   TREE_TYPE,
   INLINE_DIFF_VIEW_TYPE,
   PARALLEL_DIFF_VIEW_TYPE,
@@ -19,6 +18,77 @@ import {
   NO_SHOW_WHITESPACE,
 } from '../constants';
 import { prepareRawDiffFile } from '../diff_file';
+
+export const isAdded = line => ['new', 'new-nonewline'].includes(line.type);
+export const isRemoved = line => ['old', 'old-nonewline'].includes(line.type);
+export const isUnchanged = line => !line.type;
+export const isMeta = line => ['match', 'new-nonewline', 'old-nonewline'].includes(line.type);
+
+/**
+ * Pass in the inline diff lines array which gets converted
+ * to the parallel diff lines.
+ * This allows for us to convert inline diff lines to parallel
+ * on the frontend without needing to send any requests
+ * to the API.
+ *
+ * This method has been taken from the already existing backend
+ * implementation at lib/gitlab/diff/parallel_diff.rb
+ *
+ * @param {Object[]} diffLines - inline diff lines
+ *
+ * @returns {Object[]} parallel lines
+ */
+export const parallelizeDiffLines = (diffLines = []) => {
+  let freeRightIndex = null;
+  const lines = [];
+
+  for (let i = 0, diffLinesLength = diffLines.length, index = 0; i < diffLinesLength; i += 1) {
+    const line = diffLines[i];
+
+    if (isRemoved(line)) {
+      lines.push({
+        [LINE_POSITION_LEFT]: line,
+        [LINE_POSITION_RIGHT]: null,
+      });
+
+      if (freeRightIndex === null) {
+        // Once we come upon a new line it can be put on the right of this old line
+        freeRightIndex = index;
+      }
+      index += 1;
+    } else if (isAdded(line)) {
+      if (freeRightIndex !== null) {
+        // If an old line came before this without a line on the right, this
+        // line can be put to the right of it.
+        lines[freeRightIndex].right = line;
+
+        // If there are any other old lines on the left that don't yet have
+        // a new counterpart on the right, update the free_right_index
+        const nextFreeRightIndex = freeRightIndex + 1;
+        freeRightIndex = nextFreeRightIndex < index ? nextFreeRightIndex : null;
+      } else {
+        lines.push({
+          [LINE_POSITION_LEFT]: null,
+          [LINE_POSITION_RIGHT]: line,
+        });
+
+        freeRightIndex = null;
+        index += 1;
+      }
+    } else if (isMeta(line) || isUnchanged(line)) {
+      // line in the right panel is the same as in the left one
+      lines.push({
+        [LINE_POSITION_LEFT]: line,
+        [LINE_POSITION_RIGHT]: line,
+      });
+
+      freeRightIndex = null;
+      index += 1;
+    }
+  }
+
+  return lines;
+};
 
 export function findDiffFile(files, match, matchKey = 'file_hash') {
   return files.find(file => file[matchKey] === match);
@@ -281,7 +351,7 @@ function mergeTwoFiles(target, source) {
 
 function ensureBasicDiffFileLines(file) {
   const missingInline = !file.highlighted_diff_lines;
-  const missingParallel = !file.parallel_diff_lines;
+  const missingParallel = !file.parallel_diff_lines || window.gon?.features?.unifiedDiffLines;
 
   Object.assign(file, {
     highlighted_diff_lines: missingInline ? [] : file.highlighted_diff_lines,
@@ -379,12 +449,10 @@ function getVisibleDiffLines(file) {
 }
 
 function finalizeDiffFile(file) {
-  const name = (file.viewer && file.viewer.name) || diffViewerModes.text;
   const lines = getVisibleDiffLines(file);
 
   Object.assign(file, {
     renderIt: lines < LINES_TO_BE_RENDERED_DIRECTLY,
-    collapsed: name === diffViewerModes.text && lines > MAX_LINES_TO_BE_RENDERED,
     isShowingFullFile: false,
     isLoadingFullFile: false,
     discussions: [],
@@ -417,11 +485,11 @@ export function prepareDiffData(diff, priorFiles = []) {
   return deduplicateFilesList([...priorFiles, ...cleanedFiles]);
 }
 
-export function getDiffPositionByLineCode(diffFiles, useSingleDiffStyle) {
+export function getDiffPositionByLineCode(diffFiles) {
   let lines = [];
   const hasInlineDiffs = diffFiles.some(file => file.highlighted_diff_lines.length > 0);
 
-  if (!useSingleDiffStyle || hasInlineDiffs) {
+  if (hasInlineDiffs) {
     // In either of these cases, we can use `highlighted_diff_lines` because
     // that will include all of the parallel diff lines, too
 

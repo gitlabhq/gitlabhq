@@ -234,7 +234,8 @@ describe('DateTimePicker', () => {
     });
 
     it('unchecks quick range when text is input is clicked', () => {
-      const findActiveItems = () => findQuickRangeItems().filter(w => w.is('.active'));
+      const findActiveItems = () =>
+        findQuickRangeItems().filter(w => w.classes().includes('active'));
 
       expect(findActiveItems().length).toBe(1);
 
@@ -332,13 +333,13 @@ describe('DateTimePicker', () => {
 
         expect(items.length).toBe(Object.keys(otherTimeRanges).length);
         expect(items.at(0).text()).toBe('1 minute');
-        expect(items.at(0).is('.active')).toBe(false);
+        expect(items.at(0).classes()).not.toContain('active');
 
         expect(items.at(1).text()).toBe('2 minutes');
-        expect(items.at(1).is('.active')).toBe(true);
+        expect(items.at(1).classes()).toContain('active');
 
         expect(items.at(2).text()).toBe('5 minutes');
-        expect(items.at(2).is('.active')).toBe(false);
+        expect(items.at(2).classes()).not.toContain('active');
       });
     });
 

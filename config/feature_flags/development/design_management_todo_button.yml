@@ -1,0 +1,7 @@
+---
+name: design_management_todo_button
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/39935
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/245074
+group: group::knowledge
+type: development
+default_enabled: true

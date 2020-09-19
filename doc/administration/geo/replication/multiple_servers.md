@@ -147,7 +147,7 @@ The following documentation assumes the database will be run on
 a single node only. Multi-node PostgreSQL on **secondary** nodes is
 [not currently supported](https://gitlab.com/groups/gitlab-org/-/epics/2536).
 
-Configure the [**secondary** database](database.md) as a read-only replica of
+Configure the [**secondary** database](../setup/database.md) as a read-only replica of
 the **primary** database. Use the following as a guide.
 
 1. Generate an MD5 hash of the desired password for the database user that the
@@ -222,7 +222,7 @@ the **primary** database. Use the following as a guide.
 After making these changes, [reconfigure GitLab](../../restart_gitlab.md#omnibus-gitlab-reconfigure) so the changes take effect.
 
 If using an external PostgreSQL instance, refer also to
-[Geo with external PostgreSQL instances](external_database.md).
+[Geo with external PostgreSQL instances](../setup/external_database.md).
 
 ### Step 3: Configure the tracking database on the **secondary** node
 
@@ -294,7 +294,7 @@ Configure the tracking database.
 After making these changes, [reconfigure GitLab](../../restart_gitlab.md#omnibus-gitlab-reconfigure) so the changes take effect.
 
 If using an external PostgreSQL instance, refer also to
-[Geo with external PostgreSQL instances](external_database.md).
+[Geo with external PostgreSQL instances](../setup/external_database.md).
 
 ### Step 4: Configure the frontend application servers on the **secondary** node
 

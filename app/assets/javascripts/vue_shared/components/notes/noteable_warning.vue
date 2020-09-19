@@ -1,8 +1,8 @@
 <script>
-import { GlLink } from '@gitlab/ui';
+/* eslint-disable vue/no-v-html */
+import { GlLink, GlIcon } from '@gitlab/ui';
 import { escape } from 'lodash';
 import { __, sprintf } from '~/locale';
-import icon from '../icon.vue';
 
 function buildDocsLinkStart(path) {
   return `<a href="${escape(path)}" target="_blank" rel="noopener noreferrer">`;
@@ -16,7 +16,7 @@ const NoteableTypeText = {
 
 export default {
   components: {
-    icon,
+    GlIcon,
     GlLink,
   },
   props: {
@@ -89,7 +89,7 @@ export default {
 </script>
 <template>
   <div class="issuable-note-warning">
-    <icon v-if="!isLockedAndConfidential" :name="warningIcon" :size="16" class="icon inline" />
+    <gl-icon v-if="!isLockedAndConfidential" :name="warningIcon" :size="16" class="icon inline" />
 
     <span v-if="isLockedAndConfidential" ref="lockedAndConfidential">
       <span v-html="confidentialAndLockedDiscussionText"></span>

@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'tracking unique visits' do |method|
+  let(:request_params) { {} }
+
   it 'tracks unique visit if the format is HTML' do
     expect_any_instance_of(Gitlab::Analytics::UniqueVisits).to receive(:track_visit).with(instance_of(String), target_id)
 

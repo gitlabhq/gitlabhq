@@ -2,7 +2,7 @@
 import { GlLink, GlSprintf } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
-import HistoryElement from './history_element.vue';
+import HistoryItem from '~/vue_shared/components/registry/history_item.vue';
 
 export default {
   name: 'PackageHistory',
@@ -16,7 +16,7 @@ export default {
   components: {
     GlLink,
     GlSprintf,
-    HistoryElement,
+    HistoryItem,
     TimeAgoTooltip,
   },
   props: {
@@ -46,7 +46,7 @@ export default {
   <div class="issuable-discussion">
     <h3 class="gl-font-lg" data-testid="title">{{ __('History') }}</h3>
     <ul class="timeline main-notes-list notes gl-mb-4" data-testid="timeline">
-      <history-element icon="clock" data-testid="created-on">
+      <history-item icon="clock" data-testid="created-on">
         <gl-sprintf :message="$options.i18n.createdOn">
           <template #name>
             <strong>{{ packageEntity.name }}</strong>
@@ -58,8 +58,8 @@ export default {
             <time-ago-tooltip :time="packageEntity.created_at" />
           </template>
         </gl-sprintf>
-      </history-element>
-      <history-element icon="pencil" data-testid="updated-at">
+      </history-item>
+      <history-item icon="pencil" data-testid="updated-at">
         <gl-sprintf :message="$options.i18n.updatedAtText">
           <template #name>
             <strong>{{ packageEntity.name }}</strong>
@@ -71,9 +71,9 @@ export default {
             <time-ago-tooltip :time="packageEntity.updated_at" />
           </template>
         </gl-sprintf>
-      </history-element>
+      </history-item>
       <template v-if="packagePipeline">
-        <history-element icon="commit" data-testid="commit">
+        <history-item icon="commit" data-testid="commit">
           <gl-sprintf :message="$options.i18n.commitText">
             <template #link>
               <gl-link :href="packagePipeline.project.commit_url">{{
@@ -84,8 +84,8 @@ export default {
               <strong>{{ packagePipeline.ref }}</strong>
             </template>
           </gl-sprintf>
-        </history-element>
-        <history-element icon="pipeline" data-testid="pipeline">
+        </history-item>
+        <history-item icon="pipeline" data-testid="pipeline">
           <gl-sprintf :message="$options.i18n.pipelineText">
             <template #link>
               <gl-link :href="packagePipeline.project.pipeline_url"
@@ -97,9 +97,9 @@ export default {
             </template>
             <template #author>{{ packagePipeline.user.name }}</template>
           </gl-sprintf>
-        </history-element>
+        </history-item>
       </template>
-      <history-element icon="package" data-testid="published">
+      <history-item icon="package" data-testid="published">
         <gl-sprintf :message="$options.i18n.publishText">
           <template #project>
             <strong>{{ projectName }}</strong>
@@ -108,7 +108,7 @@ export default {
             <time-ago-tooltip :time="packageEntity.created_at" />
           </template>
         </gl-sprintf>
-      </history-element>
+      </history-item>
     </ul>
   </div>
 </template>

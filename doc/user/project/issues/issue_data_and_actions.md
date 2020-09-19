@@ -21,13 +21,13 @@ You can find all the information for that issue on one screen.
 - **1.** [New Issue, close issue (reopen issue, report issue)](#new-issue-close-issue-reopen-issue-report-issue)
 - **2.** [To Do](#to-do)
 - **3.** [Assignee](#assignee)
-  - **3.1.** [Multiple Assignees **(STARTER)**](#multiple-assignees-starter)
-- **4.** [Epic **(PREMIUM)**](#epic-premium)
+  - **3.1.** [Multiple Assignees **(STARTER)**](#multiple-assignees)
+- **4.** [Epic **(PREMIUM)**](#epic)
 - **5.** [Milestone](#milestone)
 - **6.** [Time tracking](#time-tracking)
 - **7.** [Due date](#due-date)
 - **8.** [Labels](#labels)
-- **9.** [Weight **(STARTER)**](#weight-starter)
+- **9.** [Weight **(STARTER)**](#weight)
 - **10.** [Confidentiality](#confidentiality)
 - **11.** [Lock issue](#lock-issue)
 - **12.** [Participants](#participants)
@@ -36,7 +36,7 @@ You can find all the information for that issue on one screen.
 - **15.** [Edit](#edit)
 - **16.** [Description](#description)
 - **17.** [Mentions](#mentions)
-- **18.** [Related Issues **(STARTER)**](#related-issues-starter)
+- **18.** [Related Issues **(STARTER)**](#related-issues)
 - **19.** [Related Merge Requests](#related-merge-requests)
 - **20.** [Award emoji](#award-emoji)
 - **21.** [Show all activity](#show-all-activity)
@@ -88,7 +88,7 @@ An issue can be assigned to:
 
 - Yourself.
 - Another person.
-- [Many people](#multiple-assignees-starter). **(STARTER)**
+- [Many people](#multiple-assignees). **(STARTER)**
 
 The assignee(s) can be changed as often as needed. The idea is that the assignees are
 responsible for that issue until it's reassigned to someone else to take it from there.
@@ -196,7 +196,7 @@ allowing many formatting options.
 ### Mentions
 
 You can mention a user or a group present in your GitLab instance with `@username` or
-`@groupname` and they will be notified via todos and email, unless they have disabled
+`@groupname` and they will be notified via to-dos and email, unless they have disabled
 all notifications in their profile settings. This is controlled in the
 [notification settings](../../profile/notifications.md).
 

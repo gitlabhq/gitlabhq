@@ -36,10 +36,10 @@ RSpec.describe Gitlab::Graphql::Docs::Renderer do
 
       specify do
         expectation = <<~DOC
-          ## ArrayTest
+          ### ArrayTest
 
-          | Name  | Type  | Description |
-          | ---   |  ---- | ----------  |
+          | Field | Type | Description |
+          | ----- | ---- | ----------- |
           | `foo` | String! => Array | A description |
         DOC
 
@@ -59,10 +59,10 @@ RSpec.describe Gitlab::Graphql::Docs::Renderer do
 
       specify do
         expectation = <<~DOC
-          ## OrderingTest
+          ### OrderingTest
 
-          | Name  | Type  | Description |
-          | ---   |  ---- | ----------  |
+          | Field | Type | Description |
+          | ----- | ---- | ----------- |
           | `bar` | String! | A description of bar field |
           | `foo` | String! | A description of foo field |
         DOC
@@ -82,11 +82,41 @@ RSpec.describe Gitlab::Graphql::Docs::Renderer do
 
       specify do
         expectation = <<~DOC
-          ## DeprecatedTest
+          ### DeprecatedTest
 
-          | Name  | Type  | Description |
-          | ---   |  ---- | ----------  |
+          | Field | Type | Description |
+          | ----- | ---- | ----------- |
           | `foo` **{warning-solid}** | String! | **Deprecated:** This is deprecated. Deprecated in 1.10 |
+        DOC
+
+        is_expected.to include(expectation)
+      end
+    end
+
+    context 'A type with an emum field' do
+      let(:type) do
+        enum_type = Class.new(Types::BaseEnum) do
+          graphql_name 'MyEnum'
+
+          value 'BAZ', description: 'A description of BAZ'
+          value 'BAR', description: 'A description of BAR', deprecated: { reason: 'This is deprecated', milestone: '1.10' }
+        end
+
+        Class.new(Types::BaseObject) do
+          graphql_name 'EnumTest'
+
+          field :foo, enum_type, null: false, description: 'A description of foo field'
+        end
+      end
+
+      specify do
+        expectation = <<~DOC
+          ### MyEnum
+
+          | Value | Description |
+          | ----- | ----------- |
+          | `BAR` **{warning-solid}** | **Deprecated:** This is deprecated. Deprecated in 1.10 |
+          | `BAZ` | A description of BAZ |
         DOC
 
         is_expected.to include(expectation)

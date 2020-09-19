@@ -20,7 +20,8 @@ class CommitStatusPresenter < Gitlab::View::Presenter::Delegated
     insufficient_bridge_permissions: 'This job could not be executed because of insufficient permissions to create a downstream pipeline',
     bridge_pipeline_is_child_pipeline: 'This job belongs to a child pipeline and cannot create further child pipelines',
     downstream_pipeline_creation_failed: 'The downstream pipeline could not be created',
-    secrets_provider_not_found: 'The secrets provider can not be found'
+    secrets_provider_not_found: 'The secrets provider can not be found',
+    reached_max_descendant_pipelines_depth: 'Maximum child pipeline depth has been reached'
   }.freeze
 
   private_constant :CALLOUT_FAILURE_MESSAGES

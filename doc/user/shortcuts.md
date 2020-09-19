@@ -27,7 +27,7 @@ These shortcuts are available in most areas of GitLab
 | <kbd>Shift</kbd> + <kbd>a</kbd> | Go to your Activity page. |
 | <kbd>Shift</kbd> + <kbd>l</kbd> | Go to your Milestones page. |
 | <kbd>Shift</kbd> + <kbd>s</kbd> | Go to your Snippets page. |
-| <kbd>s</kbd>                    | Put cursor in the issues/merge requests search. |
+| <kbd>s</kbd> / <kbd>/</kbd>     | Put cursor in the search bar. |
 | <kbd>Shift</kbd> + <kbd>i</kbd> | Go to your Issues page. |
 | <kbd>Shift</kbd> + <kbd>m</kbd> | Go to your Merge requests page.|
 | <kbd>Shift</kbd> + <kbd>t</kbd> | Go to your To-Do List page. |
@@ -40,6 +40,13 @@ for example comments, replies, issue descriptions, and merge request description
 | ---------------------------------------------------------------------- | ----------- |
 | <kbd>↑</kbd>                                                           | Edit your last comment. You must be in a blank text field below a thread, and you must already have at least one comment in the thread. |
 | <kbd>⌘</kbd> (Mac) / <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>p</kbd> | Toggle Markdown preview, when editing text in a text field that has **Write** and **Preview** tabs at the top. |
+| <kbd>⌘</kbd> (Mac) / <kbd>Ctrl</kbd> + <kbd>b</kbd>                    | Bold the selected text (surround it with `**`). |
+| <kbd>⌘</kbd> (Mac) / <kbd>Ctrl</kbd> + <kbd>i</kbd>                    | Italicize the selected text (surround it with `_`). |
+| <kbd>⌘</kbd> (Mac) / <kbd>Ctrl</kbd> + <kbd>k</kbd>                    | Add a link (surround the selected text with `[]()`). |
+
+NOTE: **Note:**
+The shortcuts for editing in text fields are always enabled, even when
+other keyboard shortcuts are disabled as explained above.
 
 ## Project
 

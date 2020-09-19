@@ -3,3 +3,4 @@
 
 Feature.register_feature_groups
 Feature.register_definitions
+Feature.register_hot_reloader unless Rails.configuration.cache_classes

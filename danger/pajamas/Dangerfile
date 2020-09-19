@@ -1,0 +1,43 @@
+# frozen_string_literal: true
+
+PATTERNS = %w[
+  createFlash
+  gl-deprecated-button
+  loading-button
+  pagination-button
+  gl-deprecated-dropdown
+  gl-deprecated-dropdown-divider
+  gl-deprecated-dropdown-header
+  gl-deprecated-dropdown-item
+  initDeprecatedJQueryDropdown
+].freeze
+
+def get_added_lines(files)
+  lines = []
+  files.each do |file|
+    lines += helper.changed_lines(file).select { |line| %r{^[+]}.match?(line) }
+  end
+  lines
+end
+
+changed_vue_haml_files = helper.changed_files(/.vue$|.haml$/)
+
+return if changed_vue_haml_files.empty?
+
+changed_lines_in_mr = get_added_lines(changed_vue_haml_files)
+has_deprecated_components = changed_lines_in_mr.select { |i| i[/#{PATTERNS.join("|")}/] }
+deprecated_components_in_mr = PATTERNS.select { |s| has_deprecated_components.join(" ")[s] }
+
+return if deprecated_components_in_mr.empty?
+
+warn "This merge request contains deprecated components. Please consider using Pajamas components instead."
+
+markdown(<<~MARKDOWN)
+  ## Deprecated components
+
+  The following components are deprecated:
+
+  * #{deprecated_components_in_mr.join("\n* ")}
+
+  Please consider using [Pajamas components](https://design.gitlab.com/components/status/) instead.
+MARKDOWN

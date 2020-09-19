@@ -40,9 +40,10 @@ export default class EditBlob {
     const MarkdownExtensionPromise = this.options.isMarkdown
       ? import('~/editor/editor_markdown_ext')
       : Promise.resolve(false);
+    const FileTemplateExtensionPromise = import('~/editor/editor_file_template_ext');
 
-    return Promise.all([EditorPromise, MarkdownExtensionPromise])
-      .then(([EditorModule, MarkdownExtension]) => {
+    return Promise.all([EditorPromise, MarkdownExtensionPromise, FileTemplateExtensionPromise])
+      .then(([EditorModule, MarkdownExtension, FileTemplateExtension]) => {
         const EditorLite = EditorModule.default;
         const editorEl = document.getElementById('editor');
         const fileNameEl =
@@ -50,17 +51,15 @@ export default class EditBlob {
         const fileContentEl = document.getElementById('file-content');
         const form = document.querySelector('.js-edit-blob-form');
 
-        this.editor = new EditorLite();
+        const rootEditor = new EditorLite();
 
-        if (MarkdownExtension) {
-          this.editor.use(MarkdownExtension.default);
-        }
-
-        this.editor.createInstance({
+        this.editor = rootEditor.createInstance({
           el: editorEl,
           blobPath: fileNameEl.value,
           blobContent: editorEl.innerText,
         });
+
+        rootEditor.use([MarkdownExtension.default, FileTemplateExtension.default], this.editor);
 
         fileNameEl.addEventListener('change', () => {
           this.editor.updateModelLanguage(fileNameEl.value);

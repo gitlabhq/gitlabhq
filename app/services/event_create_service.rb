@@ -23,11 +23,15 @@ class EventCreateService
   end
 
   def open_mr(merge_request, current_user)
-    create_record_event(merge_request, current_user, :created)
+    create_record_event(merge_request, current_user, :created).tap do
+      track_event(event_action: :created, event_target: MergeRequest, author_id: current_user.id)
+    end
   end
 
   def close_mr(merge_request, current_user)
-    create_record_event(merge_request, current_user, :closed)
+    create_record_event(merge_request, current_user, :closed).tap do
+      track_event(event_action: :closed, event_target: MergeRequest, author_id: current_user.id)
+    end
   end
 
   def reopen_mr(merge_request, current_user)
@@ -35,7 +39,9 @@ class EventCreateService
   end
 
   def merge_mr(merge_request, current_user)
-    create_record_event(merge_request, current_user, :merged)
+    create_record_event(merge_request, current_user, :merged).tap do
+      track_event(event_action: :merged, event_target: MergeRequest, author_id: current_user.id)
+    end
   end
 
   def open_milestone(milestone, current_user)
@@ -55,7 +61,11 @@ class EventCreateService
   end
 
   def leave_note(note, current_user)
-    create_record_event(note, current_user, :commented)
+    create_record_event(note, current_user, :commented).tap do
+      if note.is_a?(DiffNote) && note.for_merge_request?
+        track_event(event_action: :commented, event_target: MergeRequest, author_id: current_user.id)
+      end
+    end
   end
 
   def join_project(project, current_user)
@@ -109,7 +119,7 @@ class EventCreateService
   def wiki_event(wiki_page_meta, author, action, fingerprint)
     raise IllegalActionError, action unless Event::WIKI_ACTIONS.include?(action)
 
-    Gitlab::UsageDataCounters::TrackUniqueActions.track_event(event_action: action, event_target: wiki_page_meta.class, author_id: author.id)
+    track_event(event_action: action, event_target: wiki_page_meta.class, author_id: author.id)
 
     duplicate = Event.for_wiki_meta(wiki_page_meta).for_fingerprint(fingerprint).first
     return duplicate if duplicate.present?
@@ -154,7 +164,7 @@ class EventCreateService
     result = Event.insert_all(attribute_sets, returning: %w[id])
 
     tuples.each do |record, status, _|
-      Gitlab::UsageDataCounters::TrackUniqueActions.track_event(event_action: status, event_target: record.class, author_id: current_user.id)
+      track_event(event_action: status, event_target: record.class, author_id: current_user.id)
     end
 
     result
@@ -172,7 +182,7 @@ class EventCreateService
       new_event
     end
 
-    Gitlab::UsageDataCounters::TrackUniqueActions.track_event(event_action: :pushed, event_target: Project, author_id: current_user.id)
+    track_event(event_action: :pushed, event_target: Project, author_id: current_user.id)
 
     Users::LastPushEventService.new(current_user)
       .cache_last_push_event(event)
@@ -205,6 +215,10 @@ class EventCreateService
     return {} unless resource_parent_attr
 
     { resource_parent_attr => resource_parent.id }
+  end
+
+  def track_event(**params)
+    Gitlab::UsageDataCounters::TrackUniqueEvents.track_event(**params)
   end
 end
 

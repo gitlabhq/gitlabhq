@@ -2,9 +2,6 @@ import $ from 'jquery';
 import Vue from 'vue';
 import Translate from '~/vue_shared/translate';
 import { highCountTrim } from '~/lib/utils/text_utility';
-import SetStatusModalTrigger from './set_status_modal/set_status_modal_trigger.vue';
-import SetStatusModalWrapper from './set_status_modal/set_status_modal_wrapper.vue';
-import { parseBoolean } from '~/lib/utils/common_utils';
 import Tracking from '~/tracking';
 
 /**
@@ -17,7 +14,7 @@ import Tracking from '~/tracking';
 export default function initTodoToggle() {
   $(document).on('todo:toggle', (e, count) => {
     const updatedCount = count || e?.detail?.count || 0;
-    const $todoPendingCount = $('.todos-count');
+    const $todoPendingCount = $('.js-todos-count');
 
     $todoPendingCount.text(highCountTrim(updatedCount));
     $todoPendingCount.toggleClass('hidden', updatedCount === 0);
@@ -26,51 +23,43 @@ export default function initTodoToggle() {
 
 function initStatusTriggers() {
   const setStatusModalTriggerEl = document.querySelector('.js-set-status-modal-trigger');
-  const setStatusModalWrapperEl = document.querySelector('.js-set-status-modal-wrapper');
 
-  if (setStatusModalTriggerEl || setStatusModalWrapperEl) {
-    Vue.use(Translate);
+  if (setStatusModalTriggerEl) {
+    setStatusModalTriggerEl.addEventListener('click', () => {
+      import(
+        /* webpackChunkName: 'statusModalBundle' */ './set_status_modal/set_status_modal_wrapper.vue'
+      )
+        .then(({ default: SetStatusModalWrapper }) => {
+          const setStatusModalWrapperEl = document.querySelector('.js-set-status-modal-wrapper');
+          const statusModalElement = document.createElement('div');
+          setStatusModalWrapperEl.appendChild(statusModalElement);
 
-    // eslint-disable-next-line no-new
-    new Vue({
-      el: setStatusModalTriggerEl,
-      data() {
-        const { hasStatus } = this.$options.el.dataset;
+          Vue.use(Translate);
 
-        return {
-          hasStatus: parseBoolean(hasStatus),
-        };
-      },
-      render(createElement) {
-        return createElement(SetStatusModalTrigger, {
-          props: {
-            hasStatus: this.hasStatus,
-          },
-        });
-      },
-    });
+          // eslint-disable-next-line no-new
+          new Vue({
+            el: statusModalElement,
+            data() {
+              const { currentEmoji, currentMessage } = setStatusModalWrapperEl.dataset;
 
-    // eslint-disable-next-line no-new
-    new Vue({
-      el: setStatusModalWrapperEl,
-      data() {
-        const { currentEmoji, currentMessage } = this.$options.el.dataset;
+              return {
+                currentEmoji,
+                currentMessage,
+              };
+            },
+            render(createElement) {
+              const { currentEmoji, currentMessage } = this;
 
-        return {
-          currentEmoji,
-          currentMessage,
-        };
-      },
-      render(createElement) {
-        const { currentEmoji, currentMessage } = this;
-
-        return createElement(SetStatusModalWrapper, {
-          props: {
-            currentEmoji,
-            currentMessage,
-          },
-        });
-      },
+              return createElement(SetStatusModalWrapper, {
+                props: {
+                  currentEmoji,
+                  currentMessage,
+                },
+              });
+            },
+          });
+        })
+        .catch(() => {});
     });
   }
 }
@@ -101,5 +90,5 @@ export function initNavUserDropdownTracking() {
 
 document.addEventListener('DOMContentLoaded', () => {
   requestIdleCallback(initStatusTriggers);
-  initNavUserDropdownTracking();
+  requestIdleCallback(initNavUserDropdownTracking);
 });

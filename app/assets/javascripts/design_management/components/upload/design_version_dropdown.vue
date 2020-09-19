@@ -1,13 +1,13 @@
 <script>
-import { GlNewDropdown, GlNewDropdownItem, GlSprintf } from '@gitlab/ui';
+import { GlDropdown, GlDropdownItem, GlSprintf } from '@gitlab/ui';
 import { __, sprintf } from '~/locale';
 import allVersionsMixin from '../../mixins/all_versions';
 import { findVersionId } from '../../utils/design_management_utils';
 
 export default {
   components: {
-    GlNewDropdown,
-    GlNewDropdownItem,
+    GlDropdown,
+    GlDropdownItem,
     GlSprintf,
   },
   mixins: [allVersionsMixin],
@@ -63,8 +63,8 @@ export default {
 </script>
 
 <template>
-  <gl-new-dropdown :text="dropdownText" size="small">
-    <gl-new-dropdown-item
+  <gl-dropdown :text="dropdownText" size="small">
+    <gl-dropdown-item
       v-for="(version, index) in allVersions"
       :key="version.id"
       :is-check-item="true"
@@ -76,6 +76,6 @@ export default {
           {{ allVersions.length - index }}
         </template>
       </gl-sprintf>
-    </gl-new-dropdown-item>
-  </gl-new-dropdown>
+    </gl-dropdown-item>
+  </gl-dropdown>
 </template>

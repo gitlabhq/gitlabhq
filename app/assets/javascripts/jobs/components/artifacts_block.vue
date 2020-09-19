@@ -1,17 +1,22 @@
 <script>
-import { GlLink } from '@gitlab/ui';
+import { GlIcon, GlLink } from '@gitlab/ui';
 import TimeagoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
 
 export default {
   components: {
     TimeagoTooltip,
+    GlIcon,
     GlLink,
   },
   mixins: [timeagoMixin],
   props: {
     artifact: {
       type: Object,
+      required: true,
+    },
+    helpUrl: {
+      type: String,
       required: true,
     },
   },
@@ -40,6 +45,14 @@ export default {
       <span v-if="isExpired">{{ s__('Job|The artifacts were removed') }}</span>
       <span v-if="willExpire">{{ s__('Job|The artifacts will be removed') }}</span>
       <timeago-tooltip v-if="artifact.expire_at" :time="artifact.expire_at" />
+      <gl-link
+        :href="helpUrl"
+        target="_blank"
+        rel="noopener noreferrer nofollow"
+        data-testid="artifact-expired-help-link"
+      >
+        <gl-icon name="question" />
+      </gl-link>
     </p>
     <p v-else-if="isLocked" class="build-detail-row">
       <span data-testid="job-locked-message">{{
@@ -71,6 +84,7 @@ export default {
         :href="artifact.browse_path"
         class="btn btn-sm btn-default"
         data-testid="browse-artifacts"
+        data-qa-selector="browse_artifacts_button"
         >{{ s__('Job|Browse') }}</gl-link
       >
     </div>

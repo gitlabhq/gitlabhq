@@ -24,7 +24,11 @@ RSpec.describe SubmoduleHelper do
         allow(Gitlab.config.gitlab_shell).to receive(:ssh_port).and_return(22) # set this just to be sure
         allow(Gitlab.config.gitlab_shell).to receive(:ssh_path_prefix).and_return(Settings.send(:build_gitlab_shell_ssh_path_prefix))
         stub_url([config.ssh_user, '@', config.host, ':gitlab-org/gitlab-foss.git'].join(''))
-        expect(subject).to eq([namespace_project_path('gitlab-org', 'gitlab-foss'), namespace_project_tree_path('gitlab-org', 'gitlab-foss', 'hash')])
+        aggregate_failures do
+          expect(subject.web).to eq(namespace_project_path('gitlab-org', 'gitlab-foss'))
+          expect(subject.tree).to eq(namespace_project_tree_path('gitlab-org', 'gitlab-foss', 'hash'))
+          expect(subject.compare).to be_nil
+        end
       end
 
       it 'detects ssh on standard port without a username' do
@@ -32,14 +36,22 @@ RSpec.describe SubmoduleHelper do
         allow(Gitlab.config.gitlab_shell).to receive(:ssh_user).and_return('')
         allow(Gitlab.config.gitlab_shell).to receive(:ssh_path_prefix).and_return(Settings.send(:build_gitlab_shell_ssh_path_prefix))
         stub_url([config.host, ':gitlab-org/gitlab-foss.git'].join(''))
-        expect(subject).to eq([namespace_project_path('gitlab-org', 'gitlab-foss'), namespace_project_tree_path('gitlab-org', 'gitlab-foss', 'hash')])
+        aggregate_failures do
+          expect(subject.web).to eq(namespace_project_path('gitlab-org', 'gitlab-foss'))
+          expect(subject.tree).to eq(namespace_project_tree_path('gitlab-org', 'gitlab-foss', 'hash'))
+          expect(subject.compare).to be_nil
+        end
       end
 
       it 'detects ssh on non-standard port' do
         allow(Gitlab.config.gitlab_shell).to receive(:ssh_port).and_return(2222)
         allow(Gitlab.config.gitlab_shell).to receive(:ssh_path_prefix).and_return(Settings.send(:build_gitlab_shell_ssh_path_prefix))
         stub_url(['ssh://', config.ssh_user, '@', config.host, ':2222/gitlab-org/gitlab-foss.git'].join(''))
-        expect(subject).to eq([namespace_project_path('gitlab-org', 'gitlab-foss'), namespace_project_tree_path('gitlab-org', 'gitlab-foss', 'hash')])
+        aggregate_failures do
+          expect(subject.web).to eq(namespace_project_path('gitlab-org', 'gitlab-foss'))
+          expect(subject.tree).to eq(namespace_project_tree_path('gitlab-org', 'gitlab-foss', 'hash'))
+          expect(subject.compare).to be_nil
+        end
       end
 
       it 'detects ssh on non-standard port without a username' do
@@ -47,21 +59,33 @@ RSpec.describe SubmoduleHelper do
         allow(Gitlab.config.gitlab_shell).to receive(:ssh_user).and_return('')
         allow(Gitlab.config.gitlab_shell).to receive(:ssh_path_prefix).and_return(Settings.send(:build_gitlab_shell_ssh_path_prefix))
         stub_url(['ssh://', config.host, ':2222/gitlab-org/gitlab-foss.git'].join(''))
-        expect(subject).to eq([namespace_project_path('gitlab-org', 'gitlab-foss'), namespace_project_tree_path('gitlab-org', 'gitlab-foss', 'hash')])
+        aggregate_failures do
+          expect(subject.web).to eq(namespace_project_path('gitlab-org', 'gitlab-foss'))
+          expect(subject.tree).to eq(namespace_project_tree_path('gitlab-org', 'gitlab-foss', 'hash'))
+          expect(subject.compare).to be_nil
+        end
       end
 
       it 'detects http on standard port' do
         allow(Gitlab.config.gitlab).to receive(:port).and_return(80)
         allow(Gitlab.config.gitlab).to receive(:url).and_return(Settings.send(:build_gitlab_url))
         stub_url(['http://', config.host, '/gitlab-org/gitlab-foss.git'].join(''))
-        expect(subject).to eq([namespace_project_path('gitlab-org', 'gitlab-foss'), namespace_project_tree_path('gitlab-org', 'gitlab-foss', 'hash')])
+        aggregate_failures do
+          expect(subject.web).to eq(namespace_project_path('gitlab-org', 'gitlab-foss'))
+          expect(subject.tree).to eq(namespace_project_tree_path('gitlab-org', 'gitlab-foss', 'hash'))
+          expect(subject.compare).to be_nil
+        end
       end
 
       it 'detects http on non-standard port' do
         allow(Gitlab.config.gitlab).to receive(:port).and_return(3000)
         allow(Gitlab.config.gitlab).to receive(:url).and_return(Settings.send(:build_gitlab_url))
         stub_url(['http://', config.host, ':3000/gitlab-org/gitlab-foss.git'].join(''))
-        expect(subject).to eq([namespace_project_path('gitlab-org', 'gitlab-foss'), namespace_project_tree_path('gitlab-org', 'gitlab-foss', 'hash')])
+        aggregate_failures do
+          expect(subject.web).to eq(namespace_project_path('gitlab-org', 'gitlab-foss'))
+          expect(subject.tree).to eq(namespace_project_tree_path('gitlab-org', 'gitlab-foss', 'hash'))
+          expect(subject.compare).to be_nil
+        end
       end
 
       it 'works with relative_url_root' do
@@ -69,7 +93,11 @@ RSpec.describe SubmoduleHelper do
         allow(Gitlab.config.gitlab).to receive(:relative_url_root).and_return('/gitlab/root')
         allow(Gitlab.config.gitlab).to receive(:url).and_return(Settings.send(:build_gitlab_url))
         stub_url(['http://', config.host, '/gitlab/root/gitlab-org/gitlab-foss.git'].join(''))
-        expect(subject).to eq([namespace_project_path('gitlab-org', 'gitlab-foss'), namespace_project_tree_path('gitlab-org', 'gitlab-foss', 'hash')])
+        aggregate_failures do
+          expect(subject.web).to eq(namespace_project_path('gitlab-org', 'gitlab-foss'))
+          expect(subject.tree).to eq(namespace_project_tree_path('gitlab-org', 'gitlab-foss', 'hash'))
+          expect(subject.compare).to be_nil
+        end
       end
 
       it 'works with subgroups' do
@@ -77,61 +105,105 @@ RSpec.describe SubmoduleHelper do
         allow(Gitlab.config.gitlab).to receive(:relative_url_root).and_return('/gitlab/root')
         allow(Gitlab.config.gitlab).to receive(:url).and_return(Settings.send(:build_gitlab_url))
         stub_url(['http://', config.host, '/gitlab/root/gitlab-org/sub/gitlab-foss.git'].join(''))
-        expect(subject).to eq([namespace_project_path('gitlab-org/sub', 'gitlab-foss'), namespace_project_tree_path('gitlab-org/sub', 'gitlab-foss', 'hash')])
+        aggregate_failures do
+          expect(subject.web).to eq(namespace_project_path('gitlab-org/sub', 'gitlab-foss'))
+          expect(subject.tree).to eq(namespace_project_tree_path('gitlab-org/sub', 'gitlab-foss', 'hash'))
+          expect(subject.compare).to be_nil
+        end
       end
     end
 
     context 'submodule on gist.github.com' do
       it 'detects ssh' do
         stub_url('git@gist.github.com:gitlab-org/gitlab-foss.git')
-        is_expected.to eq(['https://gist.github.com/gitlab-org/gitlab-foss', 'https://gist.github.com/gitlab-org/gitlab-foss/hash'])
+        aggregate_failures do
+          expect(subject.web).to eq('https://gist.github.com/gitlab-org/gitlab-foss')
+          expect(subject.tree).to eq('https://gist.github.com/gitlab-org/gitlab-foss/hash')
+          expect(subject.compare).to be_nil
+        end
       end
 
       it 'detects http' do
         stub_url('http://gist.github.com/gitlab-org/gitlab-foss.git')
-        is_expected.to eq(['https://gist.github.com/gitlab-org/gitlab-foss', 'https://gist.github.com/gitlab-org/gitlab-foss/hash'])
+        aggregate_failures do
+          expect(subject.web).to eq('https://gist.github.com/gitlab-org/gitlab-foss')
+          expect(subject.tree).to eq('https://gist.github.com/gitlab-org/gitlab-foss/hash')
+          expect(subject.compare).to be_nil
+        end
       end
 
       it 'detects https' do
         stub_url('https://gist.github.com/gitlab-org/gitlab-foss.git')
-        is_expected.to eq(['https://gist.github.com/gitlab-org/gitlab-foss', 'https://gist.github.com/gitlab-org/gitlab-foss/hash'])
+        aggregate_failures do
+          expect(subject.web).to eq('https://gist.github.com/gitlab-org/gitlab-foss')
+          expect(subject.tree).to eq('https://gist.github.com/gitlab-org/gitlab-foss/hash')
+          expect(subject.compare).to be_nil
+        end
       end
 
       it 'handles urls with no .git on the end' do
         stub_url('http://gist.github.com/gitlab-org/gitlab-foss')
-        is_expected.to eq(['https://gist.github.com/gitlab-org/gitlab-foss', 'https://gist.github.com/gitlab-org/gitlab-foss/hash'])
+        aggregate_failures do
+          expect(subject.web).to eq('https://gist.github.com/gitlab-org/gitlab-foss')
+          expect(subject.tree).to eq('https://gist.github.com/gitlab-org/gitlab-foss/hash')
+          expect(subject.compare).to be_nil
+        end
       end
 
       it 'returns original with non-standard url' do
         stub_url('http://gist.github.com/another/gitlab-org/gitlab-foss.git')
-        is_expected.to eq([repo.submodule_url_for, nil])
+        aggregate_failures do
+          expect(subject.web).to eq(repo.submodule_url_for)
+          expect(subject.tree).to be_nil
+          expect(subject.compare).to be_nil
+        end
       end
     end
 
     context 'submodule on github.com' do
       it 'detects ssh' do
         stub_url('git@github.com:gitlab-org/gitlab-foss.git')
-        expect(subject).to eq(['https://github.com/gitlab-org/gitlab-foss', 'https://github.com/gitlab-org/gitlab-foss/tree/hash'])
+        aggregate_failures do
+          expect(subject.web).to eq('https://github.com/gitlab-org/gitlab-foss')
+          expect(subject.tree).to eq('https://github.com/gitlab-org/gitlab-foss/tree/hash')
+          expect(subject.compare).to be_nil
+        end
       end
 
       it 'detects http' do
         stub_url('http://github.com/gitlab-org/gitlab-foss.git')
-        expect(subject).to eq(['https://github.com/gitlab-org/gitlab-foss', 'https://github.com/gitlab-org/gitlab-foss/tree/hash'])
+        aggregate_failures do
+          expect(subject.web).to eq('https://github.com/gitlab-org/gitlab-foss')
+          expect(subject.tree).to eq('https://github.com/gitlab-org/gitlab-foss/tree/hash')
+          expect(subject.compare).to be_nil
+        end
       end
 
       it 'detects https' do
         stub_url('https://github.com/gitlab-org/gitlab-foss.git')
-        expect(subject).to eq(['https://github.com/gitlab-org/gitlab-foss', 'https://github.com/gitlab-org/gitlab-foss/tree/hash'])
+        aggregate_failures do
+          expect(subject.web).to eq('https://github.com/gitlab-org/gitlab-foss')
+          expect(subject.tree).to eq('https://github.com/gitlab-org/gitlab-foss/tree/hash')
+          expect(subject.compare).to be_nil
+        end
       end
 
       it 'handles urls with no .git on the end' do
         stub_url('http://github.com/gitlab-org/gitlab-foss')
-        expect(subject).to eq(['https://github.com/gitlab-org/gitlab-foss', 'https://github.com/gitlab-org/gitlab-foss/tree/hash'])
+        aggregate_failures do
+          expect(subject.web).to eq('https://github.com/gitlab-org/gitlab-foss')
+          expect(subject.tree).to eq('https://github.com/gitlab-org/gitlab-foss/tree/hash')
+          expect(subject.compare).to be_nil
+        end
       end
 
       it 'returns original with non-standard url' do
         stub_url('http://github.com/another/gitlab-org/gitlab-foss.git')
-        expect(subject).to eq([repo.submodule_url_for, nil])
+        aggregate_failures do
+          expect(subject.web).to eq(repo.submodule_url_for)
+          expect(subject.tree).to be_nil
+          expect(subject.compare).to be_nil
+        end
       end
     end
 
@@ -143,39 +215,67 @@ RSpec.describe SubmoduleHelper do
         allow(repo).to receive(:project).and_return(project)
 
         stub_url('./')
-        expect(subject).to eq(["/master-project/#{project.path}", "/master-project/#{project.path}/-/tree/hash"])
+        aggregate_failures do
+          expect(subject.web).to eq("/master-project/#{project.path}")
+          expect(subject.tree).to eq("/master-project/#{project.path}/-/tree/hash")
+          expect(subject.compare).to be_nil
+        end
       end
     end
 
     context 'submodule on gitlab.com' do
       it 'detects ssh' do
         stub_url('git@gitlab.com:gitlab-org/gitlab-foss.git')
-        expect(subject).to eq(['https://gitlab.com/gitlab-org/gitlab-foss', 'https://gitlab.com/gitlab-org/gitlab-foss/-/tree/hash'])
+        aggregate_failures do
+          expect(subject.web).to eq('https://gitlab.com/gitlab-org/gitlab-foss')
+          expect(subject.tree).to eq('https://gitlab.com/gitlab-org/gitlab-foss/-/tree/hash')
+          expect(subject.compare).to be_nil
+        end
       end
 
       it 'detects http' do
         stub_url('http://gitlab.com/gitlab-org/gitlab-foss.git')
-        expect(subject).to eq(['https://gitlab.com/gitlab-org/gitlab-foss', 'https://gitlab.com/gitlab-org/gitlab-foss/-/tree/hash'])
+        aggregate_failures do
+          expect(subject.web).to eq('https://gitlab.com/gitlab-org/gitlab-foss')
+          expect(subject.tree).to eq('https://gitlab.com/gitlab-org/gitlab-foss/-/tree/hash')
+          expect(subject.compare).to be_nil
+        end
       end
 
       it 'detects https' do
         stub_url('https://gitlab.com/gitlab-org/gitlab-foss.git')
-        expect(subject).to eq(['https://gitlab.com/gitlab-org/gitlab-foss', 'https://gitlab.com/gitlab-org/gitlab-foss/-/tree/hash'])
+        aggregate_failures do
+          expect(subject.web).to eq('https://gitlab.com/gitlab-org/gitlab-foss')
+          expect(subject.tree).to eq('https://gitlab.com/gitlab-org/gitlab-foss/-/tree/hash')
+          expect(subject.compare).to be_nil
+        end
       end
 
       it 'handles urls with no .git on the end' do
         stub_url('http://gitlab.com/gitlab-org/gitlab-foss')
-        expect(subject).to eq(['https://gitlab.com/gitlab-org/gitlab-foss', 'https://gitlab.com/gitlab-org/gitlab-foss/-/tree/hash'])
+        aggregate_failures do
+          expect(subject.web).to eq('https://gitlab.com/gitlab-org/gitlab-foss')
+          expect(subject.tree).to eq('https://gitlab.com/gitlab-org/gitlab-foss/-/tree/hash')
+          expect(subject.compare).to be_nil
+        end
       end
 
       it 'handles urls with trailing whitespace' do
         stub_url('http://gitlab.com/gitlab-org/gitlab-foss.git  ')
-        expect(subject).to eq(['https://gitlab.com/gitlab-org/gitlab-foss', 'https://gitlab.com/gitlab-org/gitlab-foss/-/tree/hash'])
+        aggregate_failures do
+          expect(subject.web).to eq('https://gitlab.com/gitlab-org/gitlab-foss')
+          expect(subject.tree).to eq('https://gitlab.com/gitlab-org/gitlab-foss/-/tree/hash')
+          expect(subject.compare).to be_nil
+        end
       end
 
       it 'returns original with non-standard url' do
         stub_url('http://gitlab.com/another/gitlab-org/gitlab-foss.git')
-        expect(subject).to eq([repo.submodule_url_for, nil])
+        aggregate_failures do
+          expect(subject.web).to eq(repo.submodule_url_for)
+          expect(subject.tree).to be_nil
+          expect(subject.compare).to be_nil
+        end
       end
     end
 
@@ -183,25 +283,29 @@ RSpec.describe SubmoduleHelper do
       it 'sanitizes unsupported protocols' do
         stub_url('javascript:alert("XSS");')
 
-        expect(subject).to eq([nil, nil])
+        expect(subject).to be_nil
       end
 
       it 'sanitizes unsupported protocols disguised as a repository URL' do
         stub_url('javascript:alert("XSS");foo/bar.git')
 
-        expect(subject).to eq([nil, nil])
+        expect(subject).to be_nil
       end
 
       it 'sanitizes invalid URL with extended ASCII' do
         stub_url('é')
 
-        expect(subject).to eq([nil, nil])
+        expect(subject).to be_nil
       end
 
       it 'returns original' do
         stub_url('http://mygitserver.com/gitlab-org/gitlab-foss')
 
-        expect(subject).to eq([repo.submodule_url_for, nil])
+        aggregate_failures do
+          expect(subject.web).to eq(repo.submodule_url_for)
+          expect(subject.tree).to be_nil
+          expect(subject.compare).to be_nil
+        end
       end
     end
 
@@ -214,7 +318,11 @@ RSpec.describe SubmoduleHelper do
         stub_url(relative_path)
         result = subject
 
-        expect(result).to eq([expected_path, "#{expected_path}/-/tree/#{submodule_item.id}"])
+        aggregate_failures do
+          expect(result.web).to eq(expected_path)
+          expect(result.tree).to eq("#{expected_path}/-/tree/#{submodule_item.id}")
+          expect(result.compare).to be_nil
+        end
       end
 
       it 'handles project under same group' do
@@ -235,7 +343,7 @@ RSpec.describe SubmoduleHelper do
 
           result = subject
 
-          expect(result).to eq([nil, nil])
+          expect(result).to be_nil
         end
       end
 
@@ -245,7 +353,7 @@ RSpec.describe SubmoduleHelper do
 
           result = subject
 
-          expect(result).to eq([nil, nil])
+          expect(result).to be_nil
         end
       end
 
@@ -289,7 +397,7 @@ RSpec.describe SubmoduleHelper do
       end
 
       it 'returns no links' do
-        expect(subject).to eq([nil, nil])
+        expect(subject).to be_nil
       end
     end
   end

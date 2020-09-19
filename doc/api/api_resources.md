@@ -44,6 +44,7 @@ The following API resources are available in the project context:
 | [Members](members.md)                                               | `/projects/:id/members` (also available for groups)                                                                                                                                                   |
 | [Merge request approvals](merge_request_approvals.md) **(STARTER)** | `/projects/:id/approvals`, `/projects/:id/merge_requests/.../approvals`                                                                                                                               |
 | [Merge requests](merge_requests.md)                                 | `/projects/:id/merge_requests` (also available for groups and standalone)                                                                                                                             |
+| [Merge trains](merge_trains.md)                                     | `/projects/:id/merge_trains`                                                                                                                                                                          |
 | [Notes](notes.md) (comments)                                        | `/projects/:id/issues/.../notes`, `/projects/:id/snippets/.../notes`, `/projects/:id/merge_requests/.../notes` (also available for groups)                                                            |
 | [Notification settings](notification_settings.md)                   | `/projects/:id/notification_settings` (also available for groups and standalone)                                                                                                                      |
 | [Packages](packages.md)                                             | `/projects/:id/packages`                                                                                                                                                                              |
@@ -115,7 +116,7 @@ The following API resources are available outside of project and group contexts 
 | Resource                                           | Available endpoints                                                     |
 |:---------------------------------------------------|:------------------------------------------------------------------------|
 | [Instance-level CI/CD variables](instance_level_ci_variables.md) | `/admin/ci/variables`                                     |
-| [Admin Sidekiq queues](admin_sidekiq_queues.md)    | `/admin/sidekiq/queues/:queue_name`                                     |
+| [Sidekiq queues administration](admin_sidekiq_queues.md) **(CORE ONLY)** | `/admin/sidekiq/queues/:queue_name`               |
 | [Appearance](appearance.md) **(CORE ONLY)**        | `/application/appearance`                                               |
 | [Applications](applications.md)                    | `/applications`                                                         |
 | [Audit Events](audit_events.md) **(PREMIUM ONLY)** | `/audit_events`                                                         |
@@ -147,10 +148,10 @@ The following API resources are available outside of project and group contexts 
 | [Search](search.md)                                | `/search` (also available for groups and projects)                      |
 | [Settings](settings.md) **(CORE ONLY)**            | `/application/settings`                                                 |
 | [Statistics](statistics.md)                        | `/application/statistics`                                               |
-| [Sidekiq metrics](sidekiq_metrics.md)              | `/sidekiq`                                                              |
+| [Sidekiq metrics](sidekiq_metrics.md) **(CORE ONLY)** | `/sidekiq`                                                           |
 | [Suggestions](suggestions.md)                      | `/suggestions`                                                          |
 | [System hooks](system_hooks.md)                    | `/hooks`                                                                |
-| [Todos](todos.md)                                  | `/todos`                                                                |
+| [To-dos](todos.md)                                  | `/todos`                                                                |
 | [Users](users.md)                                  | `/users`                                                                |
 | [Validate `.gitlab-ci.yml` file](lint.md)          | `/lint`                                                                 |
 | [Version](version.md)                              | `/version`                                                              |

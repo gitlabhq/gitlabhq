@@ -12,6 +12,6 @@ RSpec.describe 'User activates Asana' do
 
     click_test_then_save_integration
 
-    expect(page).to have_content('Asana activated.')
+    expect(page).to have_content('Asana settings saved and active.')
   end
 end

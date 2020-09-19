@@ -1,6 +1,6 @@
 import Vuex from 'vuex';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
-import { GlDeprecatedDropdownItem, GlNewDropdown } from '@gitlab/ui';
+import { GlDeprecatedDropdownItem, GlDropdown } from '@gitlab/ui';
 import TimezoneDropdown from '~/vue_shared/components/timezone_dropdown.vue';
 import createStore from '~/deploy_freeze/store';
 
@@ -92,7 +92,7 @@ describe('Deploy freeze timezone dropdown', () => {
     });
 
     it('renders selected time zone as dropdown label', () => {
-      expect(wrapper.find(GlNewDropdown).vm.text).toBe('Alaska');
+      expect(wrapper.find(GlDropdown).vm.text).toBe('Alaska');
     });
   });
 });

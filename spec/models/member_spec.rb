@@ -16,14 +16,14 @@ RSpec.describe Member do
 
     it { is_expected.to validate_presence_of(:user) }
     it { is_expected.to validate_presence_of(:source) }
-    it { is_expected.to validate_inclusion_of(:access_level).in_array(Gitlab::Access.all_values) }
 
     it_behaves_like 'an object with email-formated attributes', :invite_email do
       subject { build(:project_member) }
     end
 
     context "when an invite email is provided" do
-      let(:member) { build(:project_member, invite_email: "user@example.com", user: nil) }
+      let_it_be(:project) { create(:project) }
+      let(:member) { build(:project_member, source: project, invite_email: "user@example.com", user: nil) }
 
       it "doesn't require a user" do
         expect(member).to be_valid
@@ -149,6 +149,7 @@ RSpec.describe Member do
 
       accepted_request_user = create(:user).tap { |u| project.request_access(u) }
       @accepted_request_member = project.requesters.find_by(user_id: accepted_request_user.id).tap { |m| m.accept_request }
+      @member_with_minimal_access = create(:group_member, :minimal_access, source: group)
     end
 
     describe '.access_for_user_ids' do
@@ -177,6 +178,15 @@ RSpec.describe Member do
       it { expect(described_class.non_invite).to include @accepted_invite_member }
       it { expect(described_class.non_invite).to include @requested_member }
       it { expect(described_class.non_invite).to include @accepted_request_member }
+    end
+
+    describe '.non_minimal_access' do
+      it { expect(described_class.non_minimal_access).to include @maintainer }
+      it { expect(described_class.non_minimal_access).to include @invited_member }
+      it { expect(described_class.non_minimal_access).to include @accepted_invite_member }
+      it { expect(described_class.non_minimal_access).to include @requested_member }
+      it { expect(described_class.non_minimal_access).to include @accepted_request_member }
+      it { expect(described_class.non_minimal_access).not_to include @member_with_minimal_access }
     end
 
     describe '.request' do
@@ -255,6 +265,34 @@ RSpec.describe Member do
       it { is_expected.to include @accepted_request_member }
       it { is_expected.not_to include @blocked_maintainer }
       it { is_expected.not_to include @blocked_developer }
+    end
+
+    describe '.active' do
+      subject { described_class.active.to_a }
+
+      it { is_expected.to include @owner }
+      it { is_expected.to include @maintainer }
+      it { is_expected.to include @invited_member }
+      it { is_expected.to include @accepted_invite_member }
+      it { is_expected.not_to include @requested_member }
+      it { is_expected.to include @accepted_request_member }
+      it { is_expected.not_to include @blocked_maintainer }
+      it { is_expected.not_to include @blocked_developer }
+      it { is_expected.not_to include @member_with_minimal_access }
+    end
+
+    describe '.active_without_invites_and_requests' do
+      subject { described_class.active_without_invites_and_requests.to_a }
+
+      it { is_expected.to include @owner }
+      it { is_expected.to include @maintainer }
+      it { is_expected.not_to include @invited_member }
+      it { is_expected.to include @accepted_invite_member }
+      it { is_expected.not_to include @requested_member }
+      it { is_expected.to include @accepted_request_member }
+      it { is_expected.not_to include @blocked_maintainer }
+      it { is_expected.not_to include @blocked_developer }
+      it { is_expected.not_to include @member_with_minimal_access }
     end
   end
 
@@ -630,6 +668,32 @@ RSpec.describe Member do
     end
   end
 
+  describe '.find_by_invite_token' do
+    let!(:member) { create(:project_member, invite_email: "user@example.com", user: nil) }
+
+    it 'finds the member' do
+      expect(described_class.find_by_invite_token(member.raw_invite_token)).to eq member
+    end
+  end
+
+  describe "#invite_to_unknown_user?" do
+    subject { member.invite_to_unknown_user? }
+
+    let(:member) { create(:project_member, invite_email: "user@example.com", invite_token: '1234', user: user) }
+
+    context 'when user is nil' do
+      let(:user) { nil }
+
+      it { is_expected.to eq(true) }
+    end
+
+    context 'when user is set' do
+      let(:user) { build(:user) }
+
+      it { is_expected.to eq(false) }
+    end
+  end
+
   describe "destroying a record", :delete do
     it "refreshes user's authorized projects" do
       project = create(:project, :private)
@@ -655,7 +719,7 @@ RSpec.describe Member do
       describe 'create member' do
         let!(:source) { create(source_type) }
 
-        subject { create(member_type, :guest, user: user, source_type => source) }
+        subject { create(member_type, :guest, user: user, source: source) }
 
         include_examples 'update highest role with exclusive lease'
       end

@@ -176,7 +176,7 @@ the contribution acceptance criteria below:
    exposing a bug in existing code). Every new class should have corresponding
    unit tests, even if the class is exercised at a higher level, such as a feature test.
    - If a failing CI build seems to be unrelated to your contribution, you can try
-     restarting the failing CI job, rebasing from master to bring in updates that
+     restarting the failing CI job, rebasing from `master` to bring in updates that
      may resolve the failure, or if it has not been fixed yet, ask a developer to
      help you fix the test.
 1. The MR initially contains a few logically organized commits.
@@ -242,6 +242,7 @@ request:
 1. The [GitLab Development Kit](https://gitlab.com/gitlab-org/gitlab-development-kit).
 1. The [CI environment preparation](https://gitlab.com/gitlab-org/gitlab/blob/master/scripts/prepare_build.sh).
 1. The [Omnibus package creator](https://gitlab.com/gitlab-org/omnibus-gitlab).
+1. The [Cloud Native GitLab Dockerfiles](https://gitlab.com/gitlab-org/build/CNG)
 
 ## Incremental improvements
 

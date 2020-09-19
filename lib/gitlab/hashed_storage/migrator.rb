@@ -62,28 +62,24 @@ module Gitlab
       # Flag a project to be migrated to Hashed Storage
       #
       # @param [Project] project that will be migrated
-      # rubocop:disable Gitlab/RailsLogger
       def migrate(project)
-        Rails.logger.info "Starting storage migration of #{project.full_path} (ID=#{project.id})..."
+        Gitlab::AppLogger.info "Starting storage migration of #{project.full_path} (ID=#{project.id})..."
 
         project.migrate_to_hashed_storage!
       rescue => err
-        Rails.logger.error("#{err.message} migrating storage of #{project.full_path} (ID=#{project.id}), trace - #{err.backtrace}")
+        Gitlab::AppLogger.error("#{err.message} migrating storage of #{project.full_path} (ID=#{project.id}), trace - #{err.backtrace}")
       end
-      # rubocop:enable Gitlab/RailsLogger
 
       # Flag a project to be rolled-back to Legacy Storage
       #
       # @param [Project] project that will be rolled-back
-      # rubocop:disable Gitlab/RailsLogger
       def rollback(project)
-        Rails.logger.info "Starting storage rollback of #{project.full_path} (ID=#{project.id})..."
+        Gitlab::AppLogger.info "Starting storage rollback of #{project.full_path} (ID=#{project.id})..."
 
         project.rollback_to_legacy_storage!
       rescue => err
-        Rails.logger.error("#{err.message} rolling-back storage of #{project.full_path} (ID=#{project.id}), trace - #{err.backtrace}")
+        Gitlab::AppLogger.error("#{err.message} rolling-back storage of #{project.full_path} (ID=#{project.id}), trace - #{err.backtrace}")
       end
-      # rubocop:enable Gitlab/RailsLogger
 
       # Returns whether we have any pending storage migration
       #
@@ -95,6 +91,14 @@ module Gitlab
       #
       def rollback_pending?
         any_non_empty_queue?(::HashedStorage::RollbackerWorker, ::HashedStorage::ProjectRollbackWorker)
+      end
+
+      # Remove all remaining scheduled rollback operations
+      #
+      def abort_rollback!
+        [::HashedStorage::RollbackerWorker, ::HashedStorage::ProjectRollbackWorker].each do |worker|
+          Sidekiq::Queue.new(worker.queue).clear
+        end
       end
 
       private

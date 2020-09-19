@@ -1,0 +1,5 @@
+---
+title: Fix package API query performance when pipelines and multiple versions are present
+merge_request: 40770
+author:
+type: performance

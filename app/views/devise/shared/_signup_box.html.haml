@@ -20,9 +20,6 @@
       .form-group
         = f.label :email, class: 'label-bold'
         = f.email_field :email, value: @invite_email, class: "form-control middle", data: { qa_selector: 'new_user_email_field' }, required: true, title: _("Please provide a valid email address.")
-      .form-group
-        = f.label :email_confirmation, class: 'label-bold'
-        = f.email_field :email_confirmation, class: "form-control middle", data: { qa_selector: 'new_user_email_confirmation_field' }, required: true, title: _("Please retype the email address.")
       .form-group.append-bottom-20#password-strength
         = f.label :password, class: 'label-bold'
         = f.password_field :password, class: "form-control bottom", data: { qa_selector: 'new_user_password_field' }, required: true, pattern: ".{#{@minimum_password_length},}", title: _("Minimum length is %{minimum_password_length} characters.") % { minimum_password_length: @minimum_password_length }

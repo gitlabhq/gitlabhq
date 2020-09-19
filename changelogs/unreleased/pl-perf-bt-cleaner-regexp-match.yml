@@ -1,0 +1,5 @@
+---
+title: Improve performance of Gitlab::BacktraceCleaner
+merge_request: 40180
+author:
+type: performance

@@ -3,7 +3,7 @@ import { GlIcon, GlSprintf } from '@gitlab/ui';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import Component from '~/registry/explorer/components/list_page/image_list_row.vue';
-import ListItem from '~/registry/explorer/components/list_item.vue';
+import ListItem from '~/vue_shared/components/registry/list_item.vue';
 import DeleteButton from '~/registry/explorer/components/delete_button.vue';
 import {
   ROW_SCHEDULED_FOR_DELETION,

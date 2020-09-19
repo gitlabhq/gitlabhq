@@ -1,6 +1,7 @@
 import { mount } from '@vue/test-utils';
 import { getJSONFixture } from 'helpers/fixtures';
 import Summary from '~/pipelines/components/test_reports/test_summary.vue';
+import { formattedTime } from '~/pipelines/stores/test_reports/utils';
 
 describe('Test reports summary', () => {
   let wrapper;
@@ -76,7 +77,7 @@ describe('Test reports summary', () => {
     });
 
     it('displays the correctly formatted duration', () => {
-      expect(duration().text()).toBe('00:00:00');
+      expect(duration().text()).toBe(formattedTime(testSuite.total_time));
     });
   });
 

@@ -1,4 +1,6 @@
-import { releaseToApiJson, apiJsonToRelease } from '~/releases/util';
+import { cloneDeep } from 'lodash';
+import { releaseToApiJson, apiJsonToRelease, convertGraphQLResponse } from '~/releases/util';
+import { graphqlReleasesResponse as originalGraphqlReleasesResponse } from './mock_data';
 
 describe('releases/util.js', () => {
   describe('releaseToApiJson', () => {
@@ -98,6 +100,57 @@ describe('releases/util.js', () => {
       };
 
       expect(apiJsonToRelease(json)).toEqual(expectedRelease);
+    });
+  });
+
+  describe('convertGraphQLResponse', () => {
+    let graphqlReleasesResponse;
+    let converted;
+
+    beforeEach(() => {
+      graphqlReleasesResponse = cloneDeep(originalGraphqlReleasesResponse);
+      converted = convertGraphQLResponse(graphqlReleasesResponse);
+    });
+
+    it('matches snapshot', () => {
+      expect(converted).toMatchSnapshot();
+    });
+
+    describe('assets', () => {
+      it("handles asset links that don't have a linkType", () => {
+        expect(converted.data[0].assets.links[0].linkType).not.toBeUndefined();
+
+        delete graphqlReleasesResponse.data.project.releases.nodes[0].assets.links.nodes[0]
+          .linkType;
+
+        converted = convertGraphQLResponse(graphqlReleasesResponse);
+
+        expect(converted.data[0].assets.links[0].linkType).toBeUndefined();
+      });
+    });
+
+    describe('_links', () => {
+      it("handles releases that don't have any links", () => {
+        expect(converted.data[0]._links.selfUrl).not.toBeUndefined();
+
+        delete graphqlReleasesResponse.data.project.releases.nodes[0].links;
+
+        converted = convertGraphQLResponse(graphqlReleasesResponse);
+
+        expect(converted.data[0]._links.selfUrl).toBeUndefined();
+      });
+    });
+
+    describe('commit', () => {
+      it("handles releases that don't have any commit info", () => {
+        expect(converted.data[0].commit).not.toBeUndefined();
+
+        delete graphqlReleasesResponse.data.project.releases.nodes[0].commit;
+
+        converted = convertGraphQLResponse(graphqlReleasesResponse);
+
+        expect(converted.data[0].commit).toBeUndefined();
+      });
     });
   });
 });

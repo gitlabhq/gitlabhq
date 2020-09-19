@@ -4,4 +4,5 @@ export default () => ({
   newBranchName: '',
   submitCommitLoading: false,
   shouldCreateMR: true,
+  commitError: null,
 });

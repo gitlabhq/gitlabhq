@@ -26,7 +26,7 @@ test them on a dedicated CI server.
 
 ## Register Docker Runner
 
-To use GitLab Runner with Docker you need to [register a new Runner](https://docs.gitlab.com/runner/register/)
+To use GitLab Runner with Docker you need to [register a new runner](https://docs.gitlab.com/runner/register/)
 to use the `docker` executor.
 
 An example can be seen below. First we set up a temporary template to supply the services:
@@ -112,7 +112,7 @@ It may be a database like MySQL, or Redis, and even `docker:stable-dind` which
 allows you to use Docker in Docker. It can be practically anything that's
 required for the CI/CD job to proceed and is accessed by network.
 
-To make sure this works, the Runner:
+To make sure this works, the runner:
 
 1. Checks which ports are exposed from the container by default.
 1. Starts a special container that waits for these ports to be accessible.
@@ -382,7 +382,7 @@ services:
   - mysql:latest
 ```
 
-The Runner would start two containers using the `mysql:latest` image, but both
+The runner would start two containers using the `mysql:latest` image, but both
 of them would be added to the job's container with the `mysql` alias based on
 the [default hostname naming](#accessing-the-services). This would end with one
 of the services not being accessible.
@@ -398,7 +398,7 @@ services:
     alias: mysql-2
 ```
 
-The Runner still starts two containers using the `mysql:latest` image,
+The runner still starts two containers using the `mysql:latest` image,
 however now each of them are also accessible with the alias configured
 in `.gitlab-ci.yml` file.
 
@@ -448,23 +448,23 @@ As you can see, the syntax of `command` is similar to [Dockerfile's `CMD`](https
 > Introduced in GitLab and GitLab Runner 9.4. Read more about the [extended configuration options](#extended-docker-configuration-options).
 
 Before showing the available entrypoint override methods, let's describe shortly
-how the Runner starts and uses a Docker image for the containers used in the
+how the runner starts and uses a Docker image for the containers used in the
 CI jobs:
 
-1. The Runner starts a Docker container using the defined entrypoint (default
+1. The runner starts a Docker container using the defined entrypoint (default
    from `Dockerfile` that may be overridden in `.gitlab-ci.yml`)
-1. The Runner attaches itself to a running container.
-1. The Runner prepares a script (the combination of
+1. The runner attaches itself to a running container.
+1. The runner prepares a script (the combination of
    [`before_script`](../yaml/README.md#before_script-and-after_script),
    [`script`](../yaml/README.md#script),
    and [`after_script`](../yaml/README.md#before_script-and-after_script)).
-1. The Runner sends the script to the container's shell STDIN and receives the
+1. The runner sends the script to the container's shell STDIN and receives the
    output.
 
 To override the entrypoint of a Docker image, the recommended solution is to
-define an empty `entrypoint` in `.gitlab-ci.yml`, so the Runner does not start
+define an empty `entrypoint` in `.gitlab-ci.yml`, so the runner does not start
 a useless shell layer. However, that does not work for all Docker versions, and
-you should check which one your Runner is using. Specifically:
+you should check which one your runner is using. Specifically:
 
 - If Docker 17.06 or later is used, the `entrypoint` can be set to an empty value.
 - If Docker 17.03 or previous versions are used, the `entrypoint` can be set to
@@ -477,7 +477,7 @@ inside it and you would like to use it as a base image for your job because you
 want to execute some tests with this database binary. Let's also assume that
 this image is configured with `/usr/bin/super-sql run` as an entrypoint. That
 means that when starting the container without additional options, it runs
-the database's process, while Runner expects that the image has no
+the database's process, while the runner expects that the image has no
 entrypoint or that the entrypoint is prepared to start a shell command.
 
 With the extended Docker configuration options, instead of creating your
@@ -527,7 +527,7 @@ To define which should be used, the GitLab Runner process reads the configuratio
 - `DOCKER_AUTH_CONFIG` variable provided as either:
   - A [variable](../variables/README.md#gitlab-cicd-environment-variables) in `.gitlab-ci.yml`.
   - A project's variables stored on the projects **Settings > CI/CD** page.
-- `DOCKER_AUTH_CONFIG` variable provided as environment variable in `config.toml` of the Runner.
+- `DOCKER_AUTH_CONFIG` variable provided as environment variable in `config.toml` of the runner.
 - `config.json` file placed in `$HOME/.docker` directory of the user running GitLab Runner process.
   If the `--user` flag is provided to run the GitLab Runner child processes as unprivileged user,
   the home directory of the main GitLab Runner process user is used.
@@ -543,7 +543,7 @@ runtime.
 - This feature requires GitLab Runner **1.8** or higher.
 - For GitLab Runner versions **>= 0.6, <1.8** there was a partial
   support for using private registries, which required manual configuration
-  of credentials on runner's host. We recommend to upgrade your Runner to
+  of credentials on runner's host. We recommend to upgrade your runner to
   at least version **1.8** if you want to use private registries.
 - Available for [Kubernetes executor](https://docs.gitlab.com/runner/executors/kubernetes.html)
   in GitLab Runner 13.1 and later.
@@ -556,9 +556,9 @@ private registry. Both require setting the environment variable
 
 1. Per-job: To configure one job to access a private registry, add
    `DOCKER_AUTH_CONFIG` as a job variable.
-1. Per-runner: To configure a Runner so all its jobs can access a
+1. Per-runner: To configure a runner so all its jobs can access a
    private registry, add `DOCKER_AUTH_CONFIG` to the environment in the
-   Runner's configuration.
+   runner's configuration.
 
 See below for examples of each.
 
@@ -652,12 +652,12 @@ registries to the `"auths"` hash as described above.
 
 NOTE: **Note:**
 The full `hostname:port` combination is required everywhere
-for the Runner to match the `DOCKER_AUTH_CONFIG`. For example, if
+for the runner to match the `DOCKER_AUTH_CONFIG`. For example, if
 `registry.example.com:5000/namespace/image:tag` is specified in `.gitlab-ci.yml`,
 then the `DOCKER_AUTH_CONFIG` must also specify `registry.example.com:5000`.
 Specifying only `registry.example.com` does not work.
 
-### Configuring a Runner
+### Configuring a runner
 
 If you have many pipelines that access the same registry, it is
 probably better to set up registry access at the runner level. This
@@ -670,16 +670,16 @@ registry with the same privilege, even across projects. If you need to
 control access to the registry, you need to be sure to control
 access to the runner.
 
-To add `DOCKER_AUTH_CONFIG` to a Runner:
+To add `DOCKER_AUTH_CONFIG` to a runner:
 
-1. Modify the Runner's `config.toml` file as follows:
+1. Modify the runner's `config.toml` file as follows:
 
    ```toml
    [[runners]]
      environment = ["DOCKER_AUTH_CONFIG={\"auths\":{\"registry.example.com:5000\":{\"auth\":\"bXlfdXNlcm5hbWU6bXlfcGFzc3dvcmQ=\"}}}"]
    ```
 
-1. Restart the Runner service.
+1. Restart the runner service.
 
 NOTE: **Note:**
 The double quotes included in the `DOCKER_AUTH_CONFIG`
@@ -687,7 +687,7 @@ data must be escaped with backslashes. This prevents them from being
 interpreted as TOML.
 
 NOTE: **Note:**
-The `environment` option is a list. So your Runner may
+The `environment` option is a list. So your runner may
 have existing entries and you should add this to the list, not replace
 it.
 
@@ -713,7 +713,7 @@ To configure credentials store, follow these steps:
        }
      ```
 
-   - Or, if you're running self-managed Runners, add the above JSON to
+   - Or, if you're running self-managed runners, add the above JSON to
      `${GITLAB_RUNNER_HOME}/.docker/config.json`. GitLab Runner reads this configuration file
      and uses the needed helper for this specific repository.
 
@@ -762,7 +762,7 @@ To configure access for `aws_account_id.dkr.ecr.region.amazonaws.com`, follow th
 
      This configures Docker to use the credential helper for all Amazon ECR registries.
 
-   - Or, if you're running self-managed Runners,
+   - Or, if you're running self-managed runners,
      add the above JSON to `${GITLAB_RUNNER_HOME}/.docker/config.json`.
      GitLab Runner reads this configuration file and uses the needed helper for this
      specific repository.

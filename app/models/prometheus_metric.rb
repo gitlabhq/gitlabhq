@@ -4,7 +4,7 @@ class PrometheusMetric < ApplicationRecord
   belongs_to :project, validate: true, inverse_of: :prometheus_metrics
   has_many :prometheus_alerts, inverse_of: :prometheus_metric
 
-  enum group: PrometheusMetricEnums.groups
+  enum group: Enums::PrometheusMetric.groups
 
   validates :title, presence: true
   validates :query, presence: true
@@ -16,11 +16,13 @@ class PrometheusMetric < ApplicationRecord
   validates :project, presence: true, unless: :common?
   validates :project, absence: true, if: :common?
 
+  scope :for_dashboard_path, -> (dashboard_path) { where(dashboard_path: dashboard_path) }
   scope :for_project, -> (project) { where(project: project) }
   scope :for_group, -> (group) { where(group: group) }
   scope :for_title, -> (title) { where(title: title) }
   scope :for_y_label, -> (y_label) { where(y_label: y_label) }
   scope :for_identifier, -> (identifier) { where(identifier: identifier) }
+  scope :not_identifier, -> (identifier) { where.not(identifier: identifier) }
   scope :common, -> { where(common: true) }
   scope :ordered, -> { reorder(created_at: :asc) }
 
@@ -72,6 +74,6 @@ class PrometheusMetric < ApplicationRecord
   private
 
   def group_details(group)
-    PrometheusMetricEnums.group_details.fetch(group.to_sym)
+    Enums::PrometheusMetric.group_details.fetch(group.to_sym)
   end
 end

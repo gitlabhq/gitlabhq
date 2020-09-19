@@ -11,11 +11,13 @@ RSpec.describe GitlabSchema.types['Issue'] do
 
   specify { expect(described_class.interfaces).to include(Types::Notes::NoteableType) }
 
+  specify { expect(described_class.interfaces).to include(Types::CurrentUserTodos) }
+
   it 'has specific fields' do
     fields = %i[id iid title description state reference author assignees participants labels milestone due_date
                 confidential discussion_locked upvotes downvotes user_notes_count web_path web_url relative_position
                 subscribed time_estimate total_time_spent closed_at created_at updated_at task_completion_status
-                designs design_collection]
+                designs design_collection alert_management_alert severity current_user_todos]
 
     fields.each do |field_name|
       expect(described_class).to have_graphql_field(field_name)

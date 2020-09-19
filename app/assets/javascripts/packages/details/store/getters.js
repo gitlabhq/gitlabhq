@@ -84,10 +84,10 @@ export const npmSetupCommand = ({ packageEntity, npmPath }) => (type = NpmManage
   const scope = packageEntity.name.substring(0, packageEntity.name.indexOf('/'));
 
   if (type === NpmManager.NPM) {
-    return `echo ${scope}:registry=${npmPath} >> .npmrc`;
+    return `echo ${scope}:registry=${npmPath}/ >> .npmrc`;
   }
 
-  return `echo \\"${scope}:registry\\" \\"${npmPath}\\" >> .yarnrc`;
+  return `echo \\"${scope}:registry\\" \\"${npmPath}/\\" >> .yarnrc`;
 };
 
 export const nugetInstallationCommand = ({ packageEntity }) =>

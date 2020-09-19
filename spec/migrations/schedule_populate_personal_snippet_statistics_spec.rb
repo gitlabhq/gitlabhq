@@ -38,7 +38,7 @@ RSpec.describe SchedulePopulatePersonalSnippetStatistics do
     stub_const("#{described_class}::BATCH_SIZE", 4)
 
     Sidekiq::Testing.fake! do
-      Timecop.freeze do
+      freeze_time do
         migrate!
 
         aggregate_failures do

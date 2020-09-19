@@ -3,8 +3,12 @@
 require 'spec_helper'
 
 RSpec.describe Service do
+  let_it_be(:group) { create(:group) }
+  let_it_be(:project) { create(:project, group: group) }
+
   describe "Associations" do
     it { is_expected.to belong_to :project }
+    it { is_expected.to belong_to :group }
     it { is_expected.to have_one :service_hook }
     it { is_expected.to have_one :jira_tracker_data }
     it { is_expected.to have_one :issue_tracker_data }
@@ -12,9 +16,6 @@ RSpec.describe Service do
 
   describe 'validations' do
     using RSpec::Parameterized::TableSyntax
-
-    let(:group) { create(:group) }
-    let(:project) { create(:project) }
 
     it { is_expected.to validate_presence_of(:type) }
 
@@ -91,17 +92,12 @@ RSpec.describe Service do
       end
     end
 
-    describe '#operating?' do
-      it 'is false when the service is not active' do
-        expect(build(:service).operating?).to eq(false)
-      end
+    describe '.for_group' do
+      let!(:service1) { create(:jira_service, project_id: nil, group_id: group.id) }
+      let!(:service2) { create(:jira_service) }
 
-      it 'is false when the service is not persisted' do
-        expect(build(:service, active: true).operating?).to eq(false)
-      end
-
-      it 'is true when the service is active and persisted' do
-        expect(create(:service, active: true).operating?).to eq(true)
+      it 'returns the right group service' do
+        expect(described_class.for_group(group)).to match_array([service1])
       end
     end
 
@@ -134,20 +130,34 @@ RSpec.describe Service do
     end
   end
 
+  describe '#operating?' do
+    it 'is false when the service is not active' do
+      expect(build(:service).operating?).to eq(false)
+    end
+
+    it 'is false when the service is not persisted' do
+      expect(build(:service, active: true).operating?).to eq(false)
+    end
+
+    it 'is true when the service is active and persisted' do
+      expect(create(:service, active: true).operating?).to eq(true)
+    end
+  end
+
   describe "Test Button" do
+    let(:service) { build(:service, project: project) }
+
     describe '#can_test?' do
       subject { service.can_test? }
 
-      let(:service) { create(:service, project: project) }
-
       context 'when repository is not empty' do
-        let(:project) { create(:project, :repository) }
+        let(:project) { build(:project, :repository) }
 
         it { is_expected.to be true }
       end
 
       context 'when repository is empty' do
-        let(:project) { create(:project) }
+        let(:project) { build(:project) }
 
         it { is_expected.to be true }
       end
@@ -161,14 +171,23 @@ RSpec.describe Service do
           it { is_expected.to be_falsey }
         end
       end
+
+      context 'when group-level service' do
+        Service.available_services_types.each do |service_type|
+          let(:service) do
+            service_type.constantize.new(group_id: group.id)
+          end
+
+          it { is_expected.to be_falsey }
+        end
+      end
     end
 
     describe '#test' do
       let(:data) { 'test' }
-      let(:service) { create(:service, project: project) }
 
       context 'when repository is not empty' do
-        let(:project) { create(:project, :repository) }
+        let(:project) { build(:project, :repository) }
 
         it 'test runs execute' do
           expect(service).to receive(:execute).with(data)
@@ -178,7 +197,7 @@ RSpec.describe Service do
       end
 
       context 'when repository is empty' do
-        let(:project) { create(:project) }
+        let(:project) { build(:project) }
 
         it 'test runs execute' do
           expect(service).to receive(:execute).with(data)
@@ -189,14 +208,27 @@ RSpec.describe Service do
     end
   end
 
-  describe '.find_or_initialize_instances' do
+  describe '.find_or_initialize_integration' do
+    let!(:service1) { create(:jira_service, project_id: nil, group_id: group.id) }
+    let!(:service2) { create(:jira_service) }
+
+    it 'returns the right service' do
+      expect(Service.find_or_initialize_integration('jira', group_id: group)).to eq(service1)
+    end
+
+    it 'does not create a new service' do
+      expect { Service.find_or_initialize_integration('redmine', group_id: group) }.not_to change { Service.count }
+    end
+  end
+
+  describe '.find_or_initialize_all' do
     shared_examples 'service instances' do
       it 'returns the available service instances' do
-        expect(Service.find_or_initialize_instances.pluck(:type)).to match_array(Service.available_services_types)
+        expect(Service.find_or_initialize_all(Service.for_instance).pluck(:type)).to match_array(Service.available_services_types)
       end
 
       it 'does not create service instances' do
-        expect { Service.find_or_initialize_instances }.not_to change { Service.count }
+        expect { Service.find_or_initialize_all(Service.for_instance) }.not_to change { Service.count }
       end
     end
 
@@ -211,9 +243,9 @@ RSpec.describe Service do
 
       it_behaves_like 'service instances'
 
-      context 'with a previous existing service (Previous) and a new service (Asana)' do
+      context 'with a previous existing service (MockCiService) and a new service (Asana)' do
         before do
-          Service.insert(type: 'PreviousService', instance: true)
+          Service.insert(type: 'MockCiService', instance: true)
           Service.delete_by(type: 'AsanaService', instance: true)
         end
 
@@ -231,8 +263,6 @@ RSpec.describe Service do
   end
 
   describe 'template' do
-    let(:project) { create(:project) }
-
     shared_examples 'retrieves service templates' do
       it 'returns the available service templates' do
         expect(Service.find_or_create_templates.pluck(:type)).to match_array(Service.available_services_types)
@@ -390,29 +420,49 @@ RSpec.describe Service do
     end
   end
 
-  describe 'instance' do
-    describe '.instance_for' do
-      let_it_be(:jira_service) { create(:jira_service, :instance) }
-      let_it_be(:slack_service) { create(:slack_service, :instance) }
+  describe '.default_integration' do
+    context 'with an instance-level service' do
+      let_it_be(:instance_service) { create(:jira_service, :instance) }
 
-      subject { described_class.instance_for(type) }
-
-      context 'Hipchat serivce' do
-        let(:type) { 'HipchatService' }
-
-        it { is_expected.to eq(nil) }
+      it 'returns the instance service' do
+        expect(described_class.default_integration('JiraService', project)).to eq(instance_service)
       end
 
-      context 'Jira serivce' do
-        let(:type) { 'JiraService' }
-
-        it { is_expected.to eq(jira_service) }
+      it 'returns nil for nonexistent service type' do
+        expect(described_class.default_integration('HipchatService', project)).to eq(nil)
       end
 
-      context 'Slack serivce' do
-        let(:type) { 'SlackService' }
+      context 'with a group service' do
+        let_it_be(:group_service) { create(:jira_service, group_id: group.id, project_id: nil) }
 
-        it { is_expected.to eq(slack_service) }
+        it 'returns the group service for a project' do
+          expect(described_class.default_integration('JiraService', project)).to eq(group_service)
+        end
+
+        it 'returns the instance service for a group' do
+          expect(described_class.default_integration('JiraService', group)).to eq(instance_service)
+        end
+
+        context 'with a subgroup' do
+          let_it_be(:subgroup) { create(:group, parent: group) }
+          let!(:project) { create(:project, group: subgroup) }
+
+          it 'returns the closest group service for a project' do
+            expect(described_class.default_integration('JiraService', project)).to eq(group_service)
+          end
+
+          it 'returns the closest group service for a subgroup' do
+            expect(described_class.default_integration('JiraService', subgroup)).to eq(group_service)
+          end
+
+          context 'having a service' do
+            let!(:subgroup_service) { create(:jira_service, group_id: subgroup.id, project_id: nil) }
+
+            it 'returns the closest group service for a project' do
+              expect(described_class.default_integration('JiraService', project)).to eq(subgroup_service)
+            end
+          end
+        end
       end
     end
   end
@@ -420,7 +470,7 @@ RSpec.describe Service do
   describe "{property}_changed?" do
     let(:service) do
       BambooService.create(
-        project: create(:project),
+        project: project,
         properties: {
           bamboo_url: 'http://gitlab.com',
           username: 'mic',
@@ -460,7 +510,7 @@ RSpec.describe Service do
   describe "{property}_touched?" do
     let(:service) do
       BambooService.create(
-        project: create(:project),
+        project: project,
         properties: {
           bamboo_url: 'http://gitlab.com',
           username: 'mic',
@@ -500,7 +550,7 @@ RSpec.describe Service do
   describe "{property}_was" do
     let(:service) do
       BambooService.create(
-        project: create(:project),
+        project: project,
         properties: {
           bamboo_url: 'http://gitlab.com',
           username: 'mic',
@@ -540,7 +590,7 @@ RSpec.describe Service do
   describe 'initialize service with no properties' do
     let(:service) do
       BugzillaService.create(
-        project: create(:project),
+        project: project,
         project_url: 'http://gitlab.example.com'
       )
     end
@@ -555,7 +605,6 @@ RSpec.describe Service do
   end
 
   describe "callbacks" do
-    let(:project) { create(:project) }
     let!(:service) do
       RedmineService.new(
         project: project,
@@ -622,8 +671,7 @@ RSpec.describe Service do
   end
 
   context 'logging' do
-    let(:project) { create(:project) }
-    let(:service) { create(:service, project: project) }
+    let(:service) { build(:service, project: project) }
     let(:test_message) { "test message" }
     let(:arguments) do
       {

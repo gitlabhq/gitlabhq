@@ -114,7 +114,7 @@ You have 8 options here that you can use for your default dashboard view:
 - Your projects' activity
 - Starred projects' activity
 - Your groups
-- Your [Todos](../todos.md)
+- Your [to-dos](../todos.md)
 - Assigned Issues
 - Assigned Merge Requests
 - Operations Dashboard **(PREMIUM)**
@@ -181,6 +181,12 @@ This setting is only visible if Sourcegraph has been enabled by a GitLab adminis
 Manage the availability of integrated code intelligence features powered by
 Sourcegraph. View [the Sourcegraph feature documentation](../../integration/sourcegraph.md#enable-sourcegraph-in-user-preferences)
 for more information.
+
+### Gitpod
+
+Enable and disable the [GitLab-Gitpod integration](../../integration/gitpod.md). This is only
+visible after the integration is configured by a GitLab administrator. View
+[the Gitpod feature documentation](../../integration/gitpod.md) for more information.
 
 <!-- ## Troubleshooting
 

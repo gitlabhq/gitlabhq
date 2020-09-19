@@ -18,8 +18,6 @@ RSpec.shared_examples 'a valid diff positionable note' do |factory_on_commit|
       )
     end
 
-    subject { build(factory_on_commit, commit_id: commit_id, position: position) }
-
     context 'position diff refs matches commit diff refs' do
       it 'is valid' do
         expect(subject).to be_valid

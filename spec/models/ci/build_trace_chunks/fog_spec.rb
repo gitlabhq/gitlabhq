@@ -46,9 +46,7 @@ RSpec.describe Ci::BuildTraceChunks::Fog do
   end
 
   describe '#set_data' do
-    subject { data_store.set_data(model, data) }
-
-    let(:data) { 'abc123' }
+    let(:new_data) { 'abc123' }
 
     context 'when data exists' do
       let(:model) { create(:ci_build_trace_chunk, :fog_with_data, initial_data: 'sample data in fog') }
@@ -56,9 +54,9 @@ RSpec.describe Ci::BuildTraceChunks::Fog do
       it 'overwrites data' do
         expect(data_store.data(model)).to eq('sample data in fog')
 
-        subject
+        data_store.set_data(model, new_data)
 
-        expect(data_store.data(model)).to eq('abc123')
+        expect(data_store.data(model)).to eq new_data
       end
     end
 
@@ -68,9 +66,9 @@ RSpec.describe Ci::BuildTraceChunks::Fog do
       it 'sets new data' do
         expect(data_store.data(model)).to be_nil
 
-        subject
+        data_store.set_data(model, new_data)
 
-        expect(data_store.data(model)).to eq('abc123')
+        expect(data_store.data(model)).to eq new_data
       end
     end
   end

@@ -64,10 +64,10 @@ easy to copy and save for future reference, you can run:
 puts Readline::HISTORY.to_a
 ```
 
-## Using the Rails Runner
+## Using the Rails runner
 
 If you need to run some Ruby code in the context of your GitLab production
-environment, you can do so using the [Rails Runner](https://guides.rubyonrails.org/command_line.html#rails-runner). When executing a script file, the script must be accessible by the `git` user.
+environment, you can do so using the [Rails runner](https://guides.rubyonrails.org/command_line.html#rails-runner). When executing a script file, the script must be accessible by the `git` user.
 
 **For Omnibus installations**
 

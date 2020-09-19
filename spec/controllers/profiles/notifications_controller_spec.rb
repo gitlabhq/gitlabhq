@@ -37,7 +37,7 @@ RSpec.describe Profiles::NotificationsController do
         expect(assigns(:group_notifications).map(&:source_id)).to include(subgroup.id)
       end
 
-      it 'has an N+1 (but should not)' do
+      it 'does not have an N+1' do
         sign_in(user)
 
         control = ActiveRecord::QueryRecorder.new do
@@ -46,10 +46,42 @@ RSpec.describe Profiles::NotificationsController do
 
         create_list(:group, 2, parent: group)
 
-        # We currently have an N + 1, switch to `not_to` once fixed
         expect do
           get :show
-        end.to exceed_query_limit(control)
+        end.not_to exceed_query_limit(control)
+      end
+    end
+
+    context 'with group notifications' do
+      let(:notifications_per_page) { 5 }
+
+      let_it_be(:group) { create(:group) }
+      let_it_be(:subgroups) { create_list(:group, 10, parent: group) }
+
+      before do
+        group.add_developer(user)
+        sign_in(user)
+        allow(Kaminari.config).to receive(:default_per_page).and_return(notifications_per_page)
+      end
+
+      it 'paginates the groups' do
+        get :show
+
+        expect(assigns(:group_notifications).count).to eq(5)
+      end
+
+      context 'when the user is not a member' do
+        let(:notifications_per_page) { 20 }
+
+        let_it_be(:public_group) { create(:group, :public) }
+
+        it 'does not show public groups', :aggregate_failures do
+          get :show
+
+          # Let's make sure we're grabbing all groups in one page, just in case
+          expect(assigns(:user_groups).count).to eq(11)
+          expect(assigns(:user_groups)).not_to include(public_group)
+        end
       end
     end
 

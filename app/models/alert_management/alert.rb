@@ -11,6 +11,8 @@ module AlertManagement
     include Noteable
     include Gitlab::SQL::Pattern
     include Presentable
+    include Gitlab::Utils::StrongMemoize
+    include Referable
 
     STATUSES = {
       triggered: 0,
@@ -30,8 +32,6 @@ module AlertManagement
       :triggered,
       :acknowledged
     ].freeze
-
-    DETAILS_IGNORED_PARAMS = %w(start_time).freeze
 
     belongs_to :project
     belongs_to :issue, optional: true
@@ -118,7 +118,7 @@ module AlertManagement
     end
 
     delegate :iid, to: :issue, prefix: true, allow_nil: true
-    delegate :metrics_dashboard_url, :runbook, :details_url, to: :present
+    delegate :details_url, to: :present
 
     scope :for_iid, -> (iid) { where(iid: iid) }
     scope :for_status, -> (status) { where(status: status) }
@@ -171,10 +171,23 @@ module AlertManagement
       with_prometheus_alert.where(id: ids)
     end
 
-    def details
-      details_payload = payload.except(*attributes.keys, *DETAILS_IGNORED_PARAMS)
+    def self.reference_prefix
+      '^alert#'
+    end
 
-      Gitlab::Utils::InlineHash.merge_keys(details_payload)
+    def self.reference_pattern
+      @reference_pattern ||= %r{
+        (#{Project.reference_pattern})?
+        #{Regexp.escape(reference_prefix)}(?<alert>\d+)
+      }x
+    end
+
+    def self.link_reference_pattern
+      @link_reference_pattern ||= super("alert_management", /(?<alert>\d+)\/details(\#)?/)
+    end
+
+    def self.reference_valid?(reference)
+      reference.to_i > 0 && reference.to_i <= Gitlab::Database::MAX_INT_VALUE
     end
 
     def prometheus?
@@ -185,10 +198,10 @@ module AlertManagement
       increment!(:events)
     end
 
-    # required for todos (typically contains an identifier like issue iid)
-    #  no-op; we could use iid, but we don't have a reference prefix
-    def to_reference(_from = nil, full: false)
-      ''
+    def to_reference(from = nil, full: false)
+      reference = "#{self.class.reference_prefix}#{iid}"
+
+      "#{project.to_reference_base(from, full: full)}#{reference}"
     end
 
     def execute_services
@@ -197,10 +210,12 @@ module AlertManagement
       project.execute_services(hook_data, :alert_hooks)
     end
 
-    def present
-      return super(presenter_class: AlertManagement::PrometheusAlertPresenter) if prometheus?
-
-      super
+    # Representation of the alert's payload. Avoid accessing
+    # #payload attribute directly.
+    def parsed_payload
+      strong_memoize(:parsed_payload) do
+        Gitlab::AlertManagement::Payload.parse(project, payload, monitoring_tool: monitoring_tool)
+      end
     end
 
     private

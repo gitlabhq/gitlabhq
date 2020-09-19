@@ -67,6 +67,7 @@ GitLab uses the following tools to scan and report known vulnerabilities found i
 | [Dependency List](dependency_list/index.md) **(ULTIMATE)**                   | View your project's dependencies and their known vulnerabilities.      |
 | [Dependency Scanning](dependency_scanning/index.md) **(ULTIMATE)**           | Analyze your dependencies for known vulnerabilities.                   |
 | [Dynamic Application Security Testing (DAST)](dast/index.md) **(ULTIMATE)**  | Analyze running web applications for known vulnerabilities.            |
+| [API fuzzing](api_fuzzing/index.md) **(ULTIMATE)**                 | Find unknown bugs and vulnerabilities in web APIs with fuzzing.    |
 | [Secret Detection](secret_detection/index.md) **(ULTIMATE)**                 | Analyze Git history for leaked secrets.                                |
 | [Security Dashboard](security_dashboard/index.md) **(ULTIMATE)**             | View vulnerabilities in all your projects and groups.                  |
 | [Static Application Security Testing (SAST)](sast/index.md)                  | Analyze source code for known vulnerabilities.                         |
@@ -76,12 +77,12 @@ GitLab uses the following tools to scan and report known vulnerabilities found i
 
 When [Auto DevOps](../../topics/autodevops/) is enabled, all GitLab Security scanning tools will be configured using default settings.
 
-- [Auto SAST](../../topics/autodevops/stages.md#auto-sast-ultimate)
-- [Auto Secret Detection](../../topics/autodevops/stages.md#auto-secret-detection-ultimate)
-- [Auto DAST](../../topics/autodevops/stages.md#auto-dast-ultimate)
-- [Auto Dependency Scanning](../../topics/autodevops/stages.md#auto-dependency-scanning-ultimate)
-- [Auto License Compliance](../../topics/autodevops/stages.md#auto-license-compliance-ultimate)
-- [Auto Container Scanning](../../topics/autodevops/stages.md#auto-container-scanning-ultimate)
+- [Auto SAST](../../topics/autodevops/stages.md#auto-sast)
+- [Auto Secret Detection](../../topics/autodevops/stages.md#auto-secret-detection)
+- [Auto DAST](../../topics/autodevops/stages.md#auto-dast)
+- [Auto Dependency Scanning](../../topics/autodevops/stages.md#auto-dependency-scanning)
+- [Auto License Compliance](../../topics/autodevops/stages.md#auto-license-compliance)
+- [Auto Container Scanning](../../topics/autodevops/stages.md#auto-container-scanning)
 
 While you cannot directly customize Auto DevOps, you can [include the Auto DevOps template in your project's `.gitlab-ci.yml` file](../../topics/autodevops/customize.md#customizing-gitlab-ciyml).
 
@@ -121,7 +122,7 @@ information with several options:
 - [Solution](#solutions-for-vulnerabilities-auto-remediation): For some vulnerabilities,
   a solution is provided for how to fix the vulnerability.
 
-![Interacting with security reports](img/interacting_with_vulnerability_v13_0.png)
+![Interacting with security reports](img/interacting_with_vulnerability_v13_3.png)
 
 ### View details of a DAST vulnerability
 
@@ -165,7 +166,8 @@ reports. You can specify the list of all headers to be masked. For details, see
 
 ### Dismissing a vulnerability
 
-To dismiss a vulnerability, you must set its status to Dismissed. Follow these steps to do so:
+To dismiss a vulnerability, you must set its status to Dismissed. This dismisses the vulnerability
+for the entire project. Follow these steps to do so:
 
 1. Select the vulnerability in the Security Dashboard.
 1. Select **Dismissed** from the **Status** selector menu at the top-right.
@@ -181,7 +183,7 @@ vulnerability's status to Dismissed, a text box appears for you to add a comment
 dismissal. Once added, you can edit or delete it. This allows you to add and update context for a
 vulnerability as you learn more over time.
 
-![Dismissed vulnerability comment](img/adding_a_dismissal_reason_v13_0.png)
+![Dismissed vulnerability comment](img/adding_a_dismissal_reason_v13_4.png)
 
 #### Dismissing multiple vulnerabilities
 
@@ -195,22 +197,6 @@ Once you have selected some vulnerabilities, a menu appears at the top of the ta
 Pressing the "Dismiss Selected" button will dismiss all the selected vulnerabilities at once, with the reason you chose.
 
 ![Multiple vulnerability dismissal](img/multi_select_v12_9.png)
-
-### Creating an issue for a vulnerability
-
-You can create an issue for a vulnerability by selecting the **Create issue**
-button from within the vulnerability modal, or by using the action buttons to the right of
-a vulnerability row in the group security dashboard.
-
-This creates a [confidential issue](../project/issues/confidential_issues.md) in the project the
-vulnerability came from, and pre-populates it with some useful information taken from the vulnerability
-report. Once the issue is created, you are redirected to it so you can edit, assign, or comment on
-it.
-
-Upon returning to the group security dashboard, the vulnerability now has an associated issue next
-to the name.
-
-![Linked issue in the group security dashboard](img/issue.png)
 
 ### Solutions for vulnerabilities (auto-remediation)
 
@@ -246,10 +232,29 @@ vulnerability. Any vulnerability that has a
 [solution](#solutions-for-vulnerabilities-auto-remediation) can have a merge
 request created to automatically solve the issue.
 
-If this action is available, the vulnerability modal contains a **Create merge request** button.
+If this action is available, the vulnerability page or modal contains a **Create merge request** button.
 Click this button to create a merge request to apply the solution onto the source branch.
 
-![Create merge request from vulnerability](img/create_issue_with_list_hover.png)
+![Create merge request from vulnerability](img/create_mr_from_vulnerability_v13_4.png)
+
+### Creating an issue for a vulnerability
+
+You can create an issue for a vulnerability by visiting the vulnerability's page and clicking
+**Create issue**, which you can find in the **Related issues** section.
+
+![Create issue from vulnerability](img/create_issue_from_vulnerability_v13_3.png)
+
+This creates a [confidential issue](../project/issues/confidential_issues.md) in the project the
+vulnerability came from, and pre-populates it with some useful information taken from the vulnerability
+report. Once the issue is created, you are redirected to it so you can edit, assign, or comment on
+it. CVE identifiers can be requested from GitLab by clicking the
+[_CVE ID Request_ button](cve_id_request.md) that is enabled for maintainers of
+public projects on GitLab.com
+
+Upon returning to the group security dashboard, the vulnerability now has an associated issue next
+to the name.
+
+![Linked issue in the group security dashboard](img/issue.png)
 
 ### Managing related issues for a vulnerability
 
@@ -307,15 +312,29 @@ rating.
 
 ### Enabling Security Approvals within a project
 
-To enable Security Approvals, a [project approval rule](../project/merge_requests/merge_request_approvals.md#adding--editing-a-default-approval-rule)
-must be created with the case-sensitive name `Vulnerability-Check`. This approval group must be set
-with the number of approvals required greater than zero. You must have Maintainer or Owner [permissions](../permissions.md#project-members-permissions) to manage approval rules.
+To enable the `Vulnerability-Check` or `License-Check` Security Approvals, a [project approval rule](../project/merge_requests/merge_request_approvals.md#adding--editing-a-default-approval-rule)
+must be created. A [security scanner job](#security-scanning-tools) must be enabled for
+`Vulnerability-Check`, and a [license scanning](../compliance/license_compliance/index.md#configuration)
+job must be enabled for `License-Check`. When the proper jobs aren't configured, the following
+appears:
+
+![Unconfigured Approval Rules](img/unconfigured_security_approval_rules_and_jobs_v13_4.png)
+
+If at least one security scanner is enabled, you will be able to enable the `Vulnerability-Check` approval rule. If a license scanning job is enabled, you will be able to enable the `License-Check` rule.
+
+![Unconfigured Approval Rules with valid pipeline jobs](img/unconfigured_security_approval_rules_and_enabled_jobs_v13_4.png)
+
+For this approval group, you must set the number of approvals required to greater than zero. You
+must have Maintainer or Owner [permissions](../permissions.md#project-members-permissions)
+to manage approval rules.
+
+Follow these steps to enable `Vulnerability-Check`:
 
 1. Navigate to your project's **Settings > General** and expand **Merge request approvals**.
-1. Click **Add approval rule**, or **Edit**.
-   - Add or change the **Rule name** to `Vulnerability-Check` (case sensitive).
+1. Click **Enable**, or **Edit**.
+1. Add or change the **Rule name** to `Vulnerability-Check` (case sensitive).
 
-![Vulnerability Check Approver Rule](img/vulnerability-check_v13_0.png)
+![Vulnerability Check Approver Rule](img/vulnerability-check_v13_4.png)
 
 Once this group is added to your project, the approval rule is enabled for all merge requests.
 
@@ -332,32 +351,14 @@ An approval is optional when the security report:
 - Contains no new vulnerabilities when compared to the target branch.
 - Contains only new vulnerabilities of `low` or `medium` severity.
 
-## Enabling License Approvals within a project
+### Enabling License Approvals within a project
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13067) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.3.
 
-`License-Check` is an approval rule you can enable to allow an individual or group to approve a
-merge request that contains a `denied` license.
-
-You can enable `License-Check` one of two ways:
-
-- Create a [project approval rule](../project/merge_requests/merge_request_approvals.md#multiple-approval-rules-premium)
-  with the case-sensitive name `License-Check`.
-- Create an approval group in the [project policies section for License Compliance](../compliance/license_compliance/index.md#policies).
-  You must set this approval group's number of approvals required to greater than zero. Once you
-  enable this group in your project, the approval rule is enabled for all merge requests.
-
-Any code changes cause the approvals required to reset.
-
-An approval is required when a license report:
-
-- Contains a dependency that includes a software license that is `denied`.
-- Is not generated during pipeline execution.
-
-An approval is optional when a license report:
-
-- Contains no software license violations.
-- Contains only new licenses that are `allowed` or unknown.
+`License-Check` is a [security approval rule](#enabling-security-approvals-within-a-project)
+you can enable to allow an individual or group to approve a merge request that contains a `denied`
+license. For instructions on enabling this rule, see
+[Enabling license approvals within a project](../compliance/license_compliance/index.md#enabling-license-approvals-within-a-project).
 
 ## Working in an offline environment
 

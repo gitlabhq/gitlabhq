@@ -10,7 +10,7 @@
   .nav-text
     .title
       %span.item-title.ref-name{ data: { qa_selector: 'tag_name_content' } }
-        = icon('tag')
+        = sprite_icon('tag')
         = @tag.name
       - if protected_tag?(@project, @tag)
         %span.badge.badge-success

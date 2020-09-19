@@ -55,11 +55,10 @@ const emojiFixtureMap = {
 
 describe('gl_emoji', () => {
   let mock;
-  const emojiData = getJSONFixture('emojis/emojis.json');
 
   beforeEach(() => {
     mock = new MockAdapter(axios);
-    mock.onGet(`/-/emojis/${EMOJI_VERSION}/emojis.json`).reply(200, emojiData);
+    mock.onGet(`/-/emojis/${EMOJI_VERSION}/emojis.json`).reply(200);
 
     return initEmojiMap().catch(() => {});
   });

@@ -4,9 +4,10 @@ group: Progressive Delivery
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 ---
 
-# Feature Flags **(PREMIUM)**
+# Feature Flags **(STARTER)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/7433) in GitLab 11.4.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/7433) in GitLab 11.4.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212318) to [GitLab Starter](https://about.gitlab.com/pricing/) in 13.4
 
 With Feature Flags, you can deploy your application's new features to production in smaller batches.
 You can toggle a feature on and off to subsets of users, helping you achieve Continuous Delivery.
@@ -15,6 +16,10 @@ delivery from customer launch.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For an example of feature flags in action, see [GitLab for Deploys, Feature Flags, and Error Tracking](https://www.youtube.com/embed/5tw2p6lwXxo).
+
+NOTE: **Note:**
+The Feature Flags GitLab offer as a feature (described in this document) is not the same method
+used for the [development of GitLab](../development/feature_flags/index.md).
 
 ## How it works
 
@@ -49,22 +54,6 @@ To create and enable a feature flag:
 
 You can change these settings by clicking the **{pencil}** (edit) button
 next to any feature flag in the list.
-
-## Rollout strategy (legacy)
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/8240) in GitLab 12.2.
-
-In GitLab 13.0 and earlier, the **Rollout strategy** setting affects which users will experience
-the feature as enabled. Choose the percentage of users that the feature will be enabled
-for. The rollout strategy will have no effect if the environment spec is disabled.
-
-It can be set to:
-
-- All users
-- [Percent of users](#percent-of-users)
-  - Optionally, you can click the **Include additional user IDs** checkbox and add a list
-    of specific users IDs to enable the feature for.
-- [User IDs](#user-ids)
 
 ## Feature flag strategies
 
@@ -204,6 +193,23 @@ To enable it:
 Feature.enable(:feature_flags_new_version)
 ```
 
+## Rollout strategy (legacy)
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/8240) in GitLab 12.2.
+> - [Made read-only](https://gitlab.com/gitlab-org/gitlab/-/issues/220228) in GitLab 13.4.
+
+In GitLab 13.0 and earlier, the **Rollout strategy** setting affects which users will experience
+the feature as enabled. Choose the percentage of users that the feature will be enabled
+for. The rollout strategy will have no effect if the environment spec is disabled.
+
+It can be set to:
+
+- All users
+- [Percent of users](#percent-of-users)
+  - Optionally, you can click the **Include additional user IDs** checkbox and add a list
+    of specific users IDs to enable the feature for.
+- [User IDs](#user-ids)
+
 ## Disable a feature flag for a specific environment
 
 In [GitLab 13.0 and earlier](https://gitlab.com/gitlab-org/gitlab/-/issues/8621),
@@ -332,8 +338,8 @@ unleash = Unleash::Client.new({
 })
 
 unleash_context = Unleash::Context.new
-# Replace "123" with the id of an authenticated user.
-# Note that the context's user id must be a string:
+# Replace "123" with the ID of an authenticated user.
+# Note that the context's user ID must be a string:
 # https://unleash.github.io/docs/unleash_context
 unleash_context.user_id = "123"
 
@@ -344,7 +350,7 @@ else
 end
 ```
 
-## Feature Flag Related Issues
+## Feature Flag Related Issues **(PREMIUM)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/36617) in GitLab 13.2.
 > - It's deployed behind a feature flag, enabled by default.

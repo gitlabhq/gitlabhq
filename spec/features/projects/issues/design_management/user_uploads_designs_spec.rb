@@ -11,81 +11,34 @@ RSpec.describe 'User uploads new design', :js do
 
   before do
     sign_in(user)
+    enable_design_management(feature_enabled)
+    visit project_issue_path(project, issue)
   end
 
-  context 'design_management_moved flag disabled' do
-    before do
-      enable_design_management(feature_enabled)
-      stub_feature_flags(design_management_moved: false)
-      visit project_issue_path(project, issue)
+  context "when the feature is available" do
+    let(:feature_enabled) { true }
 
-      click_link 'Designs'
+    it 'uploads designs' do
+      upload_design(logo_fixture, count: 1)
 
-      wait_for_requests
-    end
+      expect(page).to have_selector('.js-design-list-item', count: 1)
 
-    context "when the feature is available" do
-      let(:feature_enabled) { true }
-
-      it 'uploads designs' do
-        upload_design(logo_fixture, count: 1)
-
-        expect(page).to have_selector('.js-design-list-item', count: 1)
-
-        within first('#designs-tab .js-design-list-item') do
-          expect(page).to have_content('dk.png')
-        end
-
-        upload_design(gif_fixture, count: 2)
-
-        # Known bug in the legacy implementation: new designs are inserted
-        # in the beginning on the frontend.
-        expect(page).to have_selector('.js-design-list-item', count: 2)
-        expect(page.all('.js-design-list-item').map(&:text)).to eq(['banana_sample.gif', 'dk.png'])
+      within first('[data-testid="designs-root"] .js-design-list-item') do
+        expect(page).to have_content('dk.png')
       end
-    end
 
-    context 'when the feature is not available' do
-      let(:feature_enabled) { false }
+      upload_design(gif_fixture, count: 2)
 
-      it 'shows the message about requirements' do
-        expect(page).to have_content("To upload designs, you'll need to enable LFS.")
-      end
+      expect(page).to have_selector('.js-design-list-item', count: 2)
+      expect(page.all('.js-design-list-item').map(&:text)).to eq(['dk.png', 'banana_sample.gif'])
     end
   end
 
-  context 'design_management_moved flag enabled' do
-    before do
-      enable_design_management(feature_enabled)
-      stub_feature_flags(design_management_moved: true)
-      visit project_issue_path(project, issue)
-    end
+  context 'when the feature is not available' do
+    let(:feature_enabled) { false }
 
-    context "when the feature is available" do
-      let(:feature_enabled) { true }
-
-      it 'uploads designs' do
-        upload_design(logo_fixture, count: 1)
-
-        expect(page).to have_selector('.js-design-list-item', count: 1)
-
-        within first('[data-testid="designs-root"] .js-design-list-item') do
-          expect(page).to have_content('dk.png')
-        end
-
-        upload_design(gif_fixture, count: 2)
-
-        expect(page).to have_selector('.js-design-list-item', count: 2)
-        expect(page.all('.js-design-list-item').map(&:text)).to eq(['dk.png', 'banana_sample.gif'])
-      end
-    end
-
-    context 'when the feature is not available' do
-      let(:feature_enabled) { false }
-
-      it 'shows the message about requirements' do
-        expect(page).to have_content("To upload designs, you'll need to enable LFS.")
-      end
+    it 'shows the message about requirements' do
+      expect(page).to have_content("To upload designs, you'll need to enable LFS and have admin enable hashed storage.")
     end
   end
 

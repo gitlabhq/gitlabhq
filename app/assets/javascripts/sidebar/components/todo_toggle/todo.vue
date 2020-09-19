@@ -1,9 +1,7 @@
 <script>
-import { GlLoadingIcon } from '@gitlab/ui';
+import { GlLoadingIcon, GlIcon } from '@gitlab/ui';
 import { __ } from '~/locale';
 import tooltip from '~/vue_shared/directives/tooltip';
-
-import Icon from '~/vue_shared/components/icon.vue';
 
 const MARK_TEXT = __('Mark as done');
 const TODO_TEXT = __('Add a To-Do');
@@ -13,7 +11,7 @@ export default {
     tooltip,
   },
   components: {
-    Icon,
+    GlIcon,
     GlLoadingIcon,
   },
   props: {
@@ -85,7 +83,7 @@ export default {
     data-boundary="viewport"
     @click="handleButtonClick"
   >
-    <icon
+    <gl-icon
       v-show="collapsedButtonIconVisible"
       :class="collapsedButtonIconClasses"
       :name="collapsedButtonIcon"

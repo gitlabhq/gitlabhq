@@ -5,11 +5,13 @@ require 'spec_helper'
 RSpec.describe DraftNote do
   include RepoHelpers
 
-  let(:project)       { create(:project, :repository) }
-  let(:merge_request) { create(:merge_request_with_diffs, target_project: project, source_project: project) }
+  let_it_be(:project)       { create(:project, :repository) }
+  let_it_be(:merge_request) { create(:merge_request_with_diffs, target_project: project, source_project: project) }
 
   describe 'validations' do
-    it_behaves_like 'a valid diff positionable note', :draft_note
+    it_behaves_like 'a valid diff positionable note' do
+      subject { build(:draft_note, merge_request: merge_request, commit_id: commit_id, position: position) }
+    end
   end
 
   describe 'delegations' do

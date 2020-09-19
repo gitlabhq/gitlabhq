@@ -6,7 +6,7 @@
     = link_to(destroy_all_sherlock_transactions_path,
       class: 'btn btn-danger',
       method: :delete) do
-      %i.fa.fa-trash
+      = sprite_icon('remove')
       = t('sherlock.delete_all_transactions')
   .oneline= t('sherlock.introduction')
 

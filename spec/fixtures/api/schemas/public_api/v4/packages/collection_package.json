@@ -1,0 +1,34 @@
+{
+  "type": "object",
+  "required": [
+    "name",
+    "version",
+    "package_type",
+    "_links"
+  ],
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "version": {
+      "type": "string"
+    },
+    "package_type": {
+      "type": "string"
+    },
+    "_links": {
+      "type": "object",
+      "required": [
+        "web_path"
+      ],
+      "properties": {
+        "details": {
+          "type": "string"
+        }
+      }
+    },
+    "created_at": {
+      "type": "string"
+    }
+  }
+}

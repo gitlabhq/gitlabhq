@@ -46,6 +46,21 @@ module Gitlab
         maven_app_name_regex
       end
 
+      def pypi_version_regex
+        # See the official regex: https://github.com/pypa/packaging/blob/16.7/packaging/version.py#L159
+
+        @pypi_version_regex ||= %r{
+          \A(?:
+            v?
+            (?:([0-9]+)!)?                                                 (?# epoch)
+            ([0-9]+(?:\.[0-9]+)*)                                          (?# release segment)
+            ([-_\.]?((a|b|c|rc|alpha|beta|pre|preview))[-_\.]?([0-9]+)?)?  (?# pre-release)
+            ((?:-([0-9]+))|(?:[-_\.]?(post|rev|r)[-_\.]?([0-9]+)?))?       (?# post release)
+            ([-_\.]?(dev)[-_\.]?([0-9]+)?)?                                (?# dev release)
+            (?:\+([a-z0-9]+(?:[-_\.][a-z0-9]+)*))?                         (?# local version)
+            )\z}xi.freeze
+      end
+
       def unbounded_semver_regex
         # See the official regex: https://semver.org/#is-there-a-suggested-regular-expression-regex-to-check-a-semver-string
 
@@ -84,6 +99,10 @@ module Gitlab
           \b (?# word boundary)
         /ix.freeze
       end
+
+      def generic_package_version_regex
+        /\A\d+\.\d+\.\d+\z/
+      end
     end
 
     extend self
@@ -102,7 +121,11 @@ module Gitlab
     end
 
     def group_name_regex
-      @group_name_regex ||= /\A[\p{Alnum}\u{00A9}-\u{1f9ff}_][\p{Alnum}\p{Pd}\u{00A9}-\u{1f9ff}_()\. ]*\z/.freeze
+      @group_name_regex ||= /\A#{group_name_regex_chars}\z/.freeze
+    end
+
+    def group_name_regex_chars
+      @group_name_regex_chars ||= /[\p{Alnum}\u{00A9}-\u{1f9ff}_][\p{Alnum}\p{Pd}\u{00A9}-\u{1f9ff}_()\. ]*/.freeze
     end
 
     def group_name_regex_message
@@ -269,7 +292,14 @@ module Gitlab
     def base64_regex
       @base64_regex ||= /(?:[A-Za-z0-9+\/]{4})*(?:[A-Za-z0-9+\/]{2}==|[A-Za-z0-9+\/]{3}=)?/.freeze
     end
+
+    def feature_flag_regex
+      /\A[a-z]([-_a-z0-9]*[a-z0-9])?\z/
+    end
+
+    def feature_flag_regex_message
+      "can contain only lowercase letters, digits, '_' and '-'. " \
+      "Must start with a letter, and cannot end with '-' or '_'"
+    end
   end
 end
-
-Gitlab::Regex.prepend_if_ee('EE::Gitlab::Regex')

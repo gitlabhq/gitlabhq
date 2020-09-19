@@ -164,7 +164,7 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequestsImporter do
         .to receive(:increment)
         .and_call_original
 
-      Timecop.freeze do
+      freeze_time do
         importer.update_repository
 
         expect(project.last_repository_updated_at).to be_like_time(Time.zone.now)

@@ -1,19 +1,20 @@
 <script>
 import { ApolloMutation } from 'vue-apollo';
-import { GlTooltipDirective, GlIcon, GlLoadingIcon, GlLink } from '@gitlab/ui';
+import { GlTooltipDirective, GlIcon, GlLoadingIcon, GlLink, GlBadge } from '@gitlab/ui';
 import { s__ } from '~/locale';
+import createFlash from '~/flash';
 import ReplyPlaceholder from '~/notes/components/discussion_reply_placeholder.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import allVersionsMixin from '../../mixins/all_versions';
 import createNoteMutation from '../../graphql/mutations/create_note.mutation.graphql';
 import toggleResolveDiscussionMutation from '../../graphql/mutations/toggle_resolve_discussion.mutation.graphql';
-import getDesignQuery from '../../graphql/queries/get_design.query.graphql';
 import activeDiscussionQuery from '../../graphql/queries/active_discussion.query.graphql';
 import DesignNote from './design_note.vue';
 import DesignReplyForm from './design_reply_form.vue';
-import { updateStoreAfterAddDiscussionComment } from '../../utils/cache_update';
 import { ACTIVE_DISCUSSION_SOURCE_TYPES } from '../../constants';
 import ToggleRepliesWidget from './toggle_replies_widget.vue';
+import { hasErrors } from '../../utils/cache_update';
+import { ADD_DISCUSSION_COMMENT_ERROR } from '../../utils/error_messages';
 
 export default {
   components: {
@@ -26,6 +27,7 @@ export default {
     GlLink,
     ToggleRepliesWidget,
     TimeAgoTooltip,
+    GlBadge,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -62,22 +64,20 @@ export default {
     activeDiscussion: {
       query: activeDiscussionQuery,
       result({ data }) {
-        const discussionId = data.activeDiscussion.id;
         if (this.discussion.resolved && !this.resolvedDiscussionsExpanded) {
           return;
         }
-        // We watch any changes to the active discussion from the design pins and scroll to this discussion if it exists
-        // We don't want scrollIntoView to be triggered from the discussion click itself
-        if (
-          discussionId &&
-          data.activeDiscussion.source === ACTIVE_DISCUSSION_SOURCE_TYPES.pin &&
-          discussionId === this.discussion.notes[0].id
-        ) {
-          this.$el.scrollIntoView({
-            behavior: 'smooth',
-            inline: 'start',
-          });
-        }
+
+        this.$nextTick(() => {
+          // We watch any changes to the active discussion from the design pins and scroll to this discussion if it exists.
+          // We don't want scrollIntoView to be triggered from the discussion click itself.
+          if (this.$el && this.shouldScrollToDiscussion(data.activeDiscussion)) {
+            this.$el.scrollIntoView({
+              behavior: 'smooth',
+              inline: 'start',
+            });
+          }
+        });
       },
     },
   },
@@ -107,8 +107,8 @@ export default {
         atVersion: this.designsVersion,
       };
     },
-    isDiscussionHighlighted() {
-      return this.discussion.notes[0].id === this.activeDiscussion.id;
+    isDiscussionActive() {
+      return this.discussion.notes.some(({ id }) => id === this.activeDiscussion.id);
     },
     resolveCheckboxText() {
       return this.discussion.resolved
@@ -138,21 +138,10 @@ export default {
     },
   },
   methods: {
-    addDiscussionComment(
-      store,
-      {
-        data: { createNote },
-      },
-    ) {
-      updateStoreAfterAddDiscussionComment(
-        store,
-        createNote,
-        getDesignQuery,
-        this.designVariables,
-        this.discussion.id,
-      );
-    },
-    onDone() {
+    onDone({ data: { createNote } }) {
+      if (hasErrors(createNote)) {
+        createFlash({ message: ADD_DISCUSSION_COMMENT_ERROR });
+      }
       this.discussionComment = '';
       this.hideForm();
       if (this.shouldChangeResolvedStatus) {
@@ -160,14 +149,14 @@ export default {
       }
     },
     onCreateNoteError(err) {
-      this.$emit('createNoteError', err);
+      this.$emit('create-note-error', err);
     },
     hideForm() {
       this.isFormRendered = false;
       this.discussionComment = '';
     },
     showForm() {
-      this.$emit('openForm', this.discussion.id);
+      this.$emit('open-form', this.discussion.id);
       this.isFormRendered = true;
     },
     toggleResolvedStatus() {
@@ -179,15 +168,23 @@ export default {
         })
         .then(({ data }) => {
           if (data.errors?.length > 0) {
-            this.$emit('resolveDiscussionError', data.errors[0]);
+            this.$emit('resolve-discussion-error', data.errors[0]);
           }
         })
         .catch(err => {
-          this.$emit('resolveDiscussionError', err);
+          this.$emit('resolve-discussion-error', err);
         })
         .finally(() => {
           this.isResolving = false;
         });
+    },
+    shouldScrollToDiscussion(activeDiscussion) {
+      const ALLOWED_ACTIVE_DISCUSSION_SOURCES = [
+        ACTIVE_DISCUSSION_SOURCE_TYPES.pin,
+        ACTIVE_DISCUSSION_SOURCE_TYPES.url,
+      ];
+      const { source } = activeDiscussion;
+      return ALLOWED_ACTIVE_DISCUSSION_SOURCES.includes(source) && this.isDiscussionActive;
     },
   },
   createNoteMutation,
@@ -196,13 +193,12 @@ export default {
 
 <template>
   <div class="design-discussion-wrapper">
-    <div
-      class="badge badge-pill gl-display-flex gl-align-items-center gl-justify-content-center"
+    <gl-badge
+      class="gl-display-flex gl-align-items-center gl-justify-content-center gl-cursor-pointer"
       :class="{ resolved: discussion.resolved }"
-      type="button"
     >
       {{ discussion.index }}
-    </div>
+    </gl-badge>
     <ul
       class="design-discussion bordered-box gl-relative gl-p-0 gl-list-style-none"
       data-qa-selector="design_discussion_content"
@@ -211,8 +207,8 @@ export default {
         :note="firstNote"
         :markdown-preview-path="markdownPreviewPath"
         :is-resolving="isResolving"
-        :class="{ 'gl-bg-blue-50': isDiscussionHighlighted }"
-        @error="$emit('updateNoteError', $event)"
+        :class="{ 'gl-bg-blue-50': isDiscussionActive }"
+        @error="$emit('update-note-error', $event)"
       >
         <template v-if="discussion.resolvable" #resolveDiscussion>
           <button
@@ -220,7 +216,6 @@ export default {
             :class="{ 'is-active': discussion.resolved }"
             :title="resolveCheckboxText"
             :aria-label="resolveCheckboxText"
-            type="button"
             class="line-resolve-btn note-action-button gl-mr-3"
             data-testid="resolve-button"
             @click.stop="toggleResolvedStatus"
@@ -255,8 +250,8 @@ export default {
         :note="note"
         :markdown-preview-path="markdownPreviewPath"
         :is-resolving="isResolving"
-        :class="{ 'gl-bg-blue-50': isDiscussionHighlighted }"
-        @error="$emit('updateNoteError', $event)"
+        :class="{ 'gl-bg-blue-50': isDiscussionActive }"
+        @error="$emit('update-note-error', $event)"
       />
       <li v-show="isReplyPlaceholderVisible" class="reply-wrapper">
         <reply-placeholder
@@ -272,7 +267,6 @@ export default {
           :variables="{
             input: mutationPayload,
           }"
-          :update="addDiscussionComment"
           @done="onDone"
           @error="onCreateNoteError"
         >
@@ -280,8 +274,8 @@ export default {
             v-model="discussionComment"
             :is-saving="loading"
             :markdown-preview-path="markdownPreviewPath"
-            @submitForm="mutate"
-            @cancelForm="hideForm"
+            @submit-form="mutate"
+            @cancel-form="hideForm"
           >
             <template v-if="discussion.resolvable" #resolveCheckbox>
               <label data-testid="resolve-checkbox">

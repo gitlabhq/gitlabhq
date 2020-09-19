@@ -1,0 +1,7 @@
+---
+name: ci_bridge_pipeline_details
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/41263
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/250683
+group: group::memory
+type: development
+default_enabled: true

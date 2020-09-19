@@ -8,37 +8,6 @@ RSpec.shared_examples 'cache counters invalidator' do
   end
 end
 
-RSpec.shared_examples 'system notes for milestones' do
-  def update_issuable(opts)
-    issuable = try(:issue) || try(:merge_request)
-    described_class.new(project, user, opts).execute(issuable)
-  end
-
-  context 'group milestones' do
-    let(:group) { create(:group) }
-    let(:group_milestone) { create(:milestone, group: group) }
-
-    before do
-      project.update(namespace: group)
-      create(:group_member, group: group, user: user)
-    end
-
-    it 'creates a system note' do
-      expect do
-        update_issuable(milestone: group_milestone)
-      end.to change { Note.system.count }.by(1)
-    end
-  end
-
-  context 'project milestones' do
-    it 'creates a system note' do
-      expect do
-        update_issuable(milestone: create(:milestone, project: project))
-      end.to change { Note.system.count }.by(1)
-    end
-  end
-end
-
 RSpec.shared_examples 'updating a single task' do
   def update_issuable(opts)
     issuable = try(:issue) || try(:merge_request)

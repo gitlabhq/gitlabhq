@@ -78,6 +78,34 @@ RSpec.describe Gitlab::Badge::Pipeline::Status do
         expect(badge.status).to eq 'success'
       end
     end
+
+    context 'when ignored_skipped is set to true' do
+      let(:new_badge) { described_class.new(project, branch, opts: { ignore_skipped: true }) }
+
+      before do
+        pipeline.skip!
+      end
+
+      describe '#status' do
+        it 'uses latest non-skipped status' do
+          expect(new_badge.status).not_to eq 'skipped'
+        end
+      end
+    end
+
+    context 'when ignored_skipped is set to false' do
+      let(:new_badge) { described_class.new(project, branch, opts: { ignore_skipped: false }) }
+
+      before do
+        pipeline.skip!
+      end
+
+      describe '#status' do
+        it 'uses latest status' do
+          expect(new_badge.status).to eq 'skipped'
+        end
+      end
+    end
   end
 
   context 'build does not exist' do

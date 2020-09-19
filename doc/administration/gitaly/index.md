@@ -988,9 +988,12 @@ When GitLab calls a function that has a "Rugged patch", it performs two checks:
 - Is the feature flag for this patch set in the database? If so, the feature flag setting controls
   GitLab's use of "Rugged patch" code.
 - If the feature flag is not set, GitLab tries accessing the filesystem underneath the
-  Gitaly server directly. If it can, it will use the "Rugged patch".
+  Gitaly server directly. If it can, it will use the "Rugged patch":
+  - If using Unicorn.
+  - If using Puma and [thread count](../../install/requirements.md#puma-threads) is set
+    to `1`.
 
-The result of both of these checks is cached.
+The result of these checks is cached.
 
 To see if GitLab can access the repository filesystem directly, we use the following heuristic:
 
@@ -1071,6 +1074,24 @@ You can run a gRPC trace with:
 ```shell
 sudo GRPC_TRACE=all GRPC_VERBOSITY=DEBUG gitlab-rake gitlab:gitaly:check
 ```
+
+### Correlating Git processes with RPCs
+
+Sometimes you need to find out which Gitaly RPC created a particular Git process.
+
+One method for doing this is via `DEBUG` logging. However, this needs to be enabled
+ahead of time and the logs produced are quite verbose.
+
+A lightweight method for doing this correlation is by inspecting the environment
+of the Git process (using its `PID`) and looking at the `CORRELATION_ID` variable:
+
+```shell
+PID=<Git process ID>
+sudo cat /proc/$PID/environ | tr '\0' '\n' | grep ^CORRELATION_ID=
+```
+
+Please note that this method is not reliable for `git cat-file` processes because Gitaly
+internally pools and re-uses those across RPCs.
 
 ### Observing `gitaly-ruby` traffic
 

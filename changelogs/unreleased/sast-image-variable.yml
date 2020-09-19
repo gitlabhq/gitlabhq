@@ -1,0 +1,5 @@
+---
+title: Add dedicated SAST and DS CI image variables
+merge_request: 39875
+author:
+type: added

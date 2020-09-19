@@ -2,7 +2,12 @@ import Api from '~/api';
 
 import loadSourceContent from '~/static_site_editor/services/load_source_content';
 
-import { sourceContent, sourceContentTitle, projectId, sourcePath } from '../mock_data';
+import {
+  sourceContentYAML as sourceContent,
+  sourceContentTitle,
+  projectId,
+  sourcePath,
+} from '../mock_data';
 
 describe('loadSourceContent', () => {
   describe('requesting source content succeeds', () => {

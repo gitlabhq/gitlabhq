@@ -27,7 +27,7 @@ have a high degree of confidence in being able to perform them accurately.
 
 ## Not all data is automatically replicated
 
-If you are using any GitLab features that Geo [doesn't support](../replication/index.md#current-limitations),
+If you are using any GitLab features that Geo [doesn't support](../index.md#current-limitations),
 you must make separate provisions to ensure that the **secondary** node has an
 up-to-date copy of any data associated with that feature. This may extend the
 required scheduled maintenance period significantly.
@@ -49,12 +49,6 @@ Run this command to list out all preflight checks and automatically check if rep
 
 ```shell
 gitlab-ctl promotion-preflight-checks
-```
-
-You can run this command in `force` mode to promote to primary even if preflight checks fail:
-
-```shell
-sudo gitlab-ctl promotion-preflight-checks --force
 ```
 
 Each step is described in more detail below.

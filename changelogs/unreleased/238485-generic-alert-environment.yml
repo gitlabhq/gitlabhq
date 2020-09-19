@@ -1,0 +1,5 @@
+---
+title: Add ability to associate Environment with Alert with gitlab_environment_name payload key
+merge_request: 39785
+author:
+type: added

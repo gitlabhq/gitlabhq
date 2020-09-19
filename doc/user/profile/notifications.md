@@ -143,7 +143,9 @@ Users will be notified of the following events:
 | New SSH key added            | User                | Security email, always sent. |
 | New email added              | User                | Security email, always sent. |
 | Email changed                | User                | Security email, always sent. |
-| Password changed             | User                | Security email, always sent. |
+| Password changed             | User                | Security email, always sent when user changes their own password |
+| Password changed by administrator | User | Security email, always sent when an administrator changes the password of another user |
+| Two-factor authentication disabled | User          | Security email, always sent. |
 | New user created             | User                | Sent on user creation, except for OmniAuth (LDAP)|
 | User added to project        | User                | Sent when user is added to project |
 | Project access level changed | User                | Sent when user project access level is changed |
@@ -183,6 +185,7 @@ To minimize the number of notifications that do not require any action, from [Gi
 | Close merge request    |         |
 | Reopen merge request   |         |
 | Merge merge request    |         |
+| Merge when pipeline succeeds ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/211961) in GitLab 13.4) |     |
 | Change milestone merge request | Subscribers, participants mentioned, and Custom notification level with this event selected |
 | Remove milestone merge request | Subscribers, participants mentioned, and Custom notification level with this event selected |
 | New comment            | The above, plus anyone mentioned by `@username` in the comment, with notification level "Mention" or higher |

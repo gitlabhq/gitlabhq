@@ -14,7 +14,7 @@ module QA
         end
       end
 
-      it 'imports issues from Jira' do
+      it 'imports issues from Jira', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/896' do
         set_up_jira_integration
         import_jira_issues
 
@@ -58,7 +58,7 @@ module QA
           end
 
           expect(page).not_to have_text("Url is blocked")
-          expect(page).to have_text("Jira activated")
+          expect(page).to have_text("Jira settings saved and active.")
         end
       end
 

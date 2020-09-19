@@ -1,0 +1,5 @@
+---
+title: Replace v-html with v-safe-html in fork_groups_list_item.vue
+merge_request: 41143
+author: Kev @KevSlashNull
+type: other

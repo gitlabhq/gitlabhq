@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'custom attributes endpoints' do |attributable_name|
-  let!(:custom_attribute1) { attributable.custom_attributes.create key: 'foo', value: 'foo' }
-  let!(:custom_attribute2) { attributable.custom_attributes.create key: 'bar', value: 'bar' }
+  let!(:custom_attribute1) { attributable.custom_attributes.create! key: 'foo', value: 'foo' }
+  let!(:custom_attribute2) { attributable.custom_attributes.create! key: 'bar', value: 'bar' }
 
   describe "GET /#{attributable_name} with custom attributes filter" do
     before do
@@ -14,8 +14,7 @@ RSpec.shared_examples 'custom attributes endpoints' do |attributable_name|
         get api("/#{attributable_name}", user), params: { custom_attributes: { foo: 'foo', bar: 'bar' } }
 
         expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response.size).to be 2
-        expect(json_response.map { |r| r['id'] }).to contain_exactly attributable.id, other_attributable.id
+        expect(json_response.map { |r| r['id'] }).to include(attributable.id, other_attributable.id)
       end
     end
 
@@ -40,7 +39,7 @@ RSpec.shared_examples 'custom attributes endpoints' do |attributable_name|
         get api("/#{attributable_name}", user), params: { with_custom_attributes: true }
 
         expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response.size).to be 2
+        expect(json_response).not_to be_empty
         expect(json_response.first).not_to include 'custom_attributes'
       end
     end
@@ -50,16 +49,15 @@ RSpec.shared_examples 'custom attributes endpoints' do |attributable_name|
         get api("/#{attributable_name}", admin)
 
         expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response.size).to be 2
+        expect(json_response).not_to be_empty
         expect(json_response.first).not_to include 'custom_attributes'
-        expect(json_response.second).not_to include 'custom_attributes'
       end
 
       it 'includes custom attributes if requested' do
         get api("/#{attributable_name}", admin), params: { with_custom_attributes: true }
 
         expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response.size).to be 2
+        expect(json_response).not_to be_empty
 
         attributable_response = json_response.find { |r| r['id'] == attributable.id }
         other_attributable_response = json_response.find { |r| r['id'] == other_attributable.id }
@@ -132,7 +130,7 @@ RSpec.shared_examples 'custom attributes endpoints' do |attributable_name|
     end
 
     context 'with an authorized user' do
-      it'returns a single custom attribute' do
+      it 'returns a single custom attribute' do
         get api("/#{attributable_name}/#{attributable.id}/custom_attributes/foo", admin)
 
         expect(response).to have_gitlab_http_status(:ok)

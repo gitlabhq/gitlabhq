@@ -29,7 +29,6 @@ const getMockFiles = root => readdir.sync(root, { deep: MAX_DEPTH, filter: mockF
 const defaultSetMock = (srcPath, mockPath) =>
   jest.mock(srcPath, () => jest.requireActual(mockPath));
 
-// eslint-disable-next-line import/prefer-default-export
 export const setupManualMocks = function setupManualMocks(setMock = defaultSetMock) {
   prefixMap.forEach(({ mocksRoot, requirePrefix }) => {
     const mocksRootAbsolute = path.join(__dirname, mocksRoot);

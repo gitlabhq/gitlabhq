@@ -1,0 +1,5 @@
+---
+title: Prevent duplicate system notes and events when an issue is moved
+merge_request: 41087
+author:
+type: fixed

@@ -7,18 +7,19 @@ module Gitlab
   class ObjectHierarchy
     DEPTH_COLUMN = :depth
 
-    attr_reader :ancestors_base, :descendants_base, :model
+    attr_reader :ancestors_base, :descendants_base, :model, :options
 
     # ancestors_base - An instance of ActiveRecord::Relation for which to
     #                  get parent objects.
     # descendants_base - An instance of ActiveRecord::Relation for which to
     #                    get child objects. If omitted, ancestors_base is used.
-    def initialize(ancestors_base, descendants_base = ancestors_base)
+    def initialize(ancestors_base, descendants_base = ancestors_base, options: {})
       raise ArgumentError.new("Model of ancestors_base does not match model of descendants_base") if ancestors_base.model != descendants_base.model
 
       @ancestors_base = ancestors_base
       @descendants_base = descendants_base
       @model = ancestors_base.model
+      @options = options
     end
 
     # Returns the set of descendants of a given relation, but excluding the given
@@ -133,8 +134,8 @@ module Gitlab
 
       # Recursively get all the ancestors of the base set.
       parent_query = model
-        .from([objects_table, cte.table])
-        .where(objects_table[:id].eq(cte.table[:parent_id]))
+        .from(from_tables(cte))
+        .where(ancestor_conditions(cte))
         .except(:order)
 
       if hierarchy_order
@@ -148,7 +149,7 @@ module Gitlab
         ).where(cte.table[:tree_cycle].eq(false))
       end
 
-      parent_query = parent_query.where(cte.table[:parent_id].not_eq(stop_id)) if stop_id
+      parent_query = parent_query.where(parent_id_column(cte).not_eq(stop_id)) if stop_id
 
       cte << parent_query
       cte
@@ -166,8 +167,8 @@ module Gitlab
 
       # Recursively get all the descendants of the base set.
       descendants_query = model
-        .from([objects_table, cte.table])
-        .where(objects_table[:parent_id].eq(cte.table[:id]))
+        .from(from_tables(cte))
+        .where(descendant_conditions(cte))
         .except(:order)
 
       if with_depth
@@ -188,6 +189,22 @@ module Gitlab
 
     def objects_table
       model.arel_table
+    end
+
+    def parent_id_column(cte)
+      cte.table[:parent_id]
+    end
+
+    def from_tables(cte)
+      [objects_table, cte.table]
+    end
+
+    def ancestor_conditions(cte)
+      objects_table[:id].eq(cte.table[:parent_id])
+    end
+
+    def descendant_conditions(cte)
+      objects_table[:parent_id].eq(cte.table[:id])
     end
 
     def read_only(relation)

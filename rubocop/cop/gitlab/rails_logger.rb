@@ -8,7 +8,7 @@ module RuboCop
       class RailsLogger < ::RuboCop::Cop::Cop
         include CodeReuseHelpers
 
-        # This cop checks for the Rails.logger in the codebase
+        # This cop checks for the Rails.logger log methods in the codebase
         #
         # @example
         #
@@ -17,33 +17,28 @@ module RuboCop
         #
         #   # good
         #   Gitlab::AppLogger.error("Project %{project_path} could not be saved" % { project_path: project.full_path })
+        #
+        #   # OK
+        #   Rails.logger.level
         MSG = 'Use a structured JSON logger instead of `Rails.logger`. ' \
           'https://docs.gitlab.com/ee/development/logging.html'.freeze
 
-        def_node_matcher :rails_logger?, <<~PATTERN
-          (send (const nil? :Rails) :logger ... )
+        # See supported log methods:
+        # https://ruby-doc.org/stdlib-2.6.6/libdoc/logger/rdoc/Logger.html
+        LOG_METHODS = %i[debug error fatal info warn].freeze
+        LOG_METHODS_PATTERN = LOG_METHODS.map(&:inspect).join(' ').freeze
+
+        def_node_matcher :rails_logger_log?, <<~PATTERN
+          (send
+            (send (const nil? :Rails) :logger)
+            {#{LOG_METHODS_PATTERN}} ...
+          )
         PATTERN
 
-        WHITELISTED_DIRECTORIES = %w[
-          spec
-        ].freeze
-
         def on_send(node)
-          return if in_whitelisted_directory?(node)
-          return unless rails_logger?(node)
+          return unless rails_logger_log?(node)
 
           add_offense(node, location: :expression)
-        end
-
-        def in_whitelisted_directory?(node)
-          path = file_path_for_node(node)
-
-          WHITELISTED_DIRECTORIES.any? do |directory|
-            path.start_with?(
-              File.join(rails_root, directory),
-              File.join(rails_root, 'ee', directory)
-            )
-          end
         end
       end
     end

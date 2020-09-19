@@ -1,12 +1,13 @@
 # frozen_string_literal: true
 
-# Shared examples to that test code that creates AwardEmoji also mark Todos
-# as done.
+# Shared examples to test that the code that creates AwardEmoji also marks
+# ToDos as done.
 #
 # The examples expect these to be defined in the calling spec:
 # - `subject` the callable code that executes the creation of an AwardEmoji
 # - `user`
 # - `project`
+#
 RSpec.shared_examples 'creating award emojis marks Todos as done' do
   using RSpec::Parameterized::TableSyntax
 
@@ -22,7 +23,7 @@ RSpec.shared_examples 'creating award emojis marks Todos as done' do
 
   with_them do
     let(:project) { awardable.project }
-    let(:awardable) { create(type) }
+    let(:awardable) { create(type) } # rubocop:disable Rails/SaveBang
     let!(:todo) { create(:todo, target: awardable, project: project, user: user) }
 
     specify do

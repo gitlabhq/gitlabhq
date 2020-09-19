@@ -60,14 +60,11 @@ sequenceDiagram
 
 See [Usage Ping guide](../../../development/telemetry/usage_ping.md).
 
-## Instance statistics visibility **(CORE ONLY)**
+## Instance-level statistics **(CORE ONLY)**
 
 Once usage ping is enabled, GitLab will gather data from other instances and
-will be able to show [usage statistics](../../instance_statistics/index.md)
-of your instance to your users.
-
-To make this visible only to admins, go to **Admin Area > Settings > Metrics and profiling**, expand
-**Usage statistics**, and set the **Instance Statistics visibility** option to **Only admins**.
+will be able to show [usage statistics](../analytics/index.md)
+of your instance to your admins in **Admin Area > Analytics**.
 
 <!-- ## Troubleshooting
 

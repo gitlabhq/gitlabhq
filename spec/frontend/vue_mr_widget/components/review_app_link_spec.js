@@ -30,7 +30,7 @@ describe('review app link', () => {
   });
 
   it('renders provided cssClass as class attribute', () => {
-    expect(el.getAttribute('class')).toEqual(props.cssClass);
+    expect(el.getAttribute('class')).toContain(props.cssClass);
   });
 
   it('renders View app text', () => {

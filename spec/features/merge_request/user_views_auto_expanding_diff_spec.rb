@@ -11,9 +11,6 @@ RSpec.describe 'User views diffs file-by-file', :js do
   let(:user) { create(:user, view_diffs_file_by_file: true) }
 
   before do
-    allow(Gitlab::Git::Diff).to receive(:size_limit).and_return(100.kilobytes)
-    allow(Gitlab::Git::Diff).to receive(:collapse_limit).and_return(10.kilobytes)
-
     project.add_developer(user)
 
     sign_in(user)
@@ -27,9 +24,10 @@ RSpec.describe 'User views diffs file-by-file', :js do
     page.within('#diffs') do
       expect(page).not_to have_content('This diff is collapsed')
 
-      click_button 'Next'
+      find('.page-link.next-page-item').click
 
       expect(page).not_to have_content('This diff is collapsed')
+      expect(page).to have_selector('.diff-file .file-title', text: 'large_diff_renamed.md')
     end
   end
 end

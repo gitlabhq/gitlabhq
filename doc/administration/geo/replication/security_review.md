@@ -37,7 +37,7 @@ from [owasp.org](https://owasp.org/).
   private projects. Geo replicates them all indiscriminately. “Selective sync”
   exists for files and repositories (but not database content), which would permit
   only less-sensitive projects to be replicated to a **secondary** node if desired.
-- See also: [GitLab data classification policy](https://about.gitlab.com/handbook/engineering/security/data-classification-policy.html).
+- See also: [GitLab data classification policy](https://about.gitlab.com/handbook/engineering/security/data-classification-standard.html).
 
 ### What data backup and retention requirements have been defined for the application?
 
@@ -123,7 +123,7 @@ from [owasp.org](https://owasp.org/).
 
 - Geo imposes no additional restrictions on operating system (see the
   [GitLab installation](https://about.gitlab.com/install/) page for more
-  details), however we recommend using the operating systems listed in the [Geo documentation](index.md#requirements-for-running-geo).
+  details), however we recommend using the operating systems listed in the [Geo documentation](../index.md#requirements-for-running-geo).
 
 ### What details regarding required OS components and lock‐down needs have been defined?
 

@@ -16,7 +16,7 @@ module QA
         Flow::Login.sign_in
       end
 
-      it 'creates a basic merge request', :smoke do
+      it 'creates a basic merge request', :smoke, testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/409' do
         Resource::MergeRequest.fabricate_via_browser_ui! do |merge_request|
           merge_request.project = project
           merge_request.title = merge_request_title
@@ -29,7 +29,7 @@ module QA
         end
       end
 
-      it 'creates a merge request with a milestone and label' do
+      it 'creates a merge request with a milestone and label', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/514' do
         gitlab_account_username = "@#{Runtime::User.username}"
 
         milestone = Resource::ProjectMilestone.fabricate_via_api! do |milestone|

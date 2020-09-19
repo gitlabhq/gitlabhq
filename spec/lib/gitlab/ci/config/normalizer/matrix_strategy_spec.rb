@@ -43,7 +43,7 @@ RSpec.describe Gitlab::Ci::Config::Normalizer::MatrixStrategy do
       expect(subject.map(&:attributes)).to match_array(
         [
           {
-            name: 'test 1/4',
+            name: 'test: [aws, app1]',
             instance: 1,
             parallel: { total: 4 },
             variables: {
@@ -52,7 +52,7 @@ RSpec.describe Gitlab::Ci::Config::Normalizer::MatrixStrategy do
             }
           },
           {
-            name: 'test 2/4',
+            name: 'test: [aws, app2]',
             instance: 2,
             parallel: { total: 4 },
             variables: {
@@ -61,7 +61,7 @@ RSpec.describe Gitlab::Ci::Config::Normalizer::MatrixStrategy do
             }
           },
           {
-            name: 'test 3/4',
+            name: 'test: [ovh, app]',
             instance: 3,
             parallel: { total: 4 },
             variables: {
@@ -70,7 +70,7 @@ RSpec.describe Gitlab::Ci::Config::Normalizer::MatrixStrategy do
             }
           },
           {
-            name: 'test 4/4',
+            name: 'test: [gcp, app]',
             instance: 4,
             parallel: { total: 4 },
             variables: {
@@ -84,18 +84,7 @@ RSpec.describe Gitlab::Ci::Config::Normalizer::MatrixStrategy do
 
     it 'has parallelized name' do
       expect(subject.map(&:name)).to match_array(
-        ['test 1/4', 'test 2/4', 'test 3/4', 'test 4/4']
-      )
-    end
-
-    it 'has details' do
-      expect(subject.map(&:name_with_details)).to match_array(
-        [
-          'test (PROVIDER=aws; STACK=app1)',
-          'test (PROVIDER=aws; STACK=app2)',
-          'test (PROVIDER=gcp; STACK=app)',
-          'test (PROVIDER=ovh; STACK=app)'
-        ]
+        ['test: [aws, app1]', 'test: [aws, app2]', 'test: [gcp, app]', 'test: [ovh, app]']
       )
     end
   end

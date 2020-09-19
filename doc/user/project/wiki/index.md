@@ -165,7 +165,7 @@ Similar to versioned diff file views, you can see the changes made in a given Wi
 > - Git events were [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216014) in **GitLab 13.0.**
 > - It's enabled on GitLab.com.
 > - Git access activity creation is managed by a feature flag.
-> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-wiki-events-in-git-core-only). **(CORE ONLY)**
+> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-wiki-events-in-git). **(CORE ONLY)**
 
 Wiki events (creation, deletion, and updates) are tracked by GitLab and
 displayed on the [user profile](../../profile/index.md#user-profile),

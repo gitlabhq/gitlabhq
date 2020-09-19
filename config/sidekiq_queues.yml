@@ -30,6 +30,8 @@
   - 1
 - - analytics_code_review_metrics
   - 1
+- - analytics_instance_statistics_counter_job
+  - 1
 - - authorized_keys
   - 2
 - - authorized_project_update
@@ -138,6 +140,10 @@
   - 2
 - - irker
   - 1
+- - issue_placement
+  - 2
+- - issue_rebalancing
+  - 1
 - - jira_connect
   - 1
 - - jira_importer
@@ -150,7 +156,11 @@
   - 2
 - - merge
   - 5
+- - merge_request_cleanup_refs
+  - 1
 - - merge_request_mergeability_check
+  - 1
+- - merge_request_reset_approvals
   - 1
 - - metrics_dashboard_prune_old_annotations
   - 1
@@ -177,6 +187,10 @@
 - - pages_domain_ssl_renewal
   - 1
 - - pages_domain_verification
+  - 1
+- - pages_remove
+  - 1
+- - pages_transfer
   - 1
 - - pages_update_configuration
   - 1

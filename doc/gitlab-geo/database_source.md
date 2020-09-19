@@ -1,5 +1,5 @@
 ---
-redirect_to: '../administration/geo/replication/database.md'
+redirect_to: '../administration/geo/setup/database.md'
 ---
 
-This document was moved to [another location](../administration/geo/replication/database.md).
+This document was moved to [another location](../administration/geo/setup/database.md).

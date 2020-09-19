@@ -40,9 +40,9 @@ RSpec.describe Banzai::Filter::UserReferenceFilter do
   end
 
   context 'mentioning @all' do
-    it_behaves_like 'a reference containing an element node'
-
     let(:reference) { User.reference_prefix + 'all' }
+
+    it_behaves_like 'a reference containing an element node'
 
     before do
       project.add_developer(project.creator)
@@ -78,10 +78,10 @@ RSpec.describe Banzai::Filter::UserReferenceFilter do
   end
 
   context 'mentioning a group' do
-    it_behaves_like 'a reference containing an element node'
-
-    let(:group)     { create(:group) }
     let(:reference) { group.to_reference }
+    let(:group)     { create(:group) }
+
+    it_behaves_like 'a reference containing an element node'
 
     it 'links to the Group' do
       doc = reference_filter("Hey #{reference}")
@@ -98,10 +98,10 @@ RSpec.describe Banzai::Filter::UserReferenceFilter do
   end
 
   context 'mentioning a nested group' do
-    it_behaves_like 'a reference containing an element node'
-
-    let(:group)     { create(:group, :nested) }
     let(:reference) { group.to_reference }
+    let(:group)     { create(:group, :nested) }
+
+    it_behaves_like 'a reference containing an element node'
 
     it 'links to the nested group' do
       doc = reference_filter("Hey #{reference}")

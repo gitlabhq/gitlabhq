@@ -227,11 +227,12 @@ for its search function. This is how it works:
    there's a JavaScript snippet which initiates DocSearch by using an API key
    and an index name (`gitlab`) that are needed for Algolia to show the results.
 
-NOTE: **For GitLab employees:**
-The credentials to access the Algolia dashboard are stored in 1Password. If you
-want to receive weekly reports of the search usage, search the Google doc with
+NOTE: **For GitLab Team Members:**
+If you’re a GitLab Team Member, find credentials for the Algolia dashboard
+in the shared [GitLab 1Password account](https://about.gitlab.com/handbook/security/#1password-for-teams).
+To receive weekly reports of the search usage, search the Google doc with
 title `Email, Slack, and GitLab Groups and Aliases`, search for `docsearch`,
-and add a comment with your email to be added to the alias that gets the weekly
+and add a comment with your email. You'll be added to the alias that gets the weekly
 reports.
 
 ## Monthly release process (versions)

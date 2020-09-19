@@ -44,6 +44,10 @@ export default {
     return {
       downstreamMarginTop: null,
       jobName: null,
+      pipelineExpanded: {
+        jobName: '',
+        expanded: false,
+      },
     };
   },
   computed: {
@@ -120,6 +124,19 @@ export default {
     setJob(jobName) {
       this.jobName = jobName;
     },
+    setPipelineExpanded(jobName, expanded) {
+      if (expanded) {
+        this.pipelineExpanded = {
+          jobName,
+          expanded,
+        };
+      } else {
+        this.pipelineExpanded = {
+          expanded,
+          jobName: '',
+        };
+      }
+    },
   },
 };
 </script>
@@ -181,6 +198,7 @@ export default {
             :has-triggered-by="hasTriggeredBy"
             :action="stage.status.action"
             :job-hovered="jobName"
+            :pipeline-expanded="pipelineExpanded"
             @refreshPipelineGraph="refreshPipelineGraph"
           />
         </ul>
@@ -193,6 +211,7 @@ export default {
           graph-position="right"
           @linkedPipelineClick="handleClickedDownstream"
           @downstreamHovered="setJob"
+          @pipelineExpandToggle="setPipelineExpanded"
         />
 
         <pipeline-graph

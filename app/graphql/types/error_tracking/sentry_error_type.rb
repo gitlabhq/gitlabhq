@@ -5,7 +5,7 @@ module Types
     # rubocop: disable Graphql/AuthorizeTypes
     class SentryErrorType < ::Types::BaseObject
       graphql_name 'SentryError'
-      description 'A Sentry error. A simplified version of SentryDetailedError.'
+      description 'A Sentry error. A simplified version of SentryDetailedError'
 
       present_using SentryErrorPresenter
 

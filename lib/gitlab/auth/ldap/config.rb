@@ -248,7 +248,7 @@ module Gitlab
             begin
               custom_options[:cert] = OpenSSL::X509::Certificate.new(custom_options[:cert])
             rescue OpenSSL::X509::CertificateError => e
-              Rails.logger.error "LDAP TLS Options 'cert' is invalid for provider #{provider}: #{e.message}" # rubocop:disable Gitlab/RailsLogger
+              Gitlab::AppLogger.error "LDAP TLS Options 'cert' is invalid for provider #{provider}: #{e.message}"
             end
           end
 
@@ -256,7 +256,7 @@ module Gitlab
             begin
               custom_options[:key] = OpenSSL::PKey.read(custom_options[:key])
             rescue OpenSSL::PKey::PKeyError => e
-              Rails.logger.error "LDAP TLS Options 'key' is invalid for provider #{provider}: #{e.message}" # rubocop:disable Gitlab/RailsLogger
+              Gitlab::AppLogger.error "LDAP TLS Options 'key' is invalid for provider #{provider}: #{e.message}"
             end
           end
 

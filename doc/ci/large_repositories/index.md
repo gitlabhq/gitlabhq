@@ -28,9 +28,8 @@ Each guideline is described in more detail in the sections below:
 
 > Introduced in GitLab Runner 8.9.
 
-GitLab and GitLab Runner always perform a full clone by default.
-While it means that all changes from GitLab are received,
-it often results in receiving extra commit logs.
+GitLab and GitLab Runner perform a [shallow clone](../pipelines/settings.md#git-shallow-clone)
+by default.
 
 Ideally, you should always use `GIT_DEPTH` with a small number
 like 10. This will instruct GitLab Runner to perform shallow clones.
@@ -41,7 +40,7 @@ This significantly speeds up fetching of changes from Git repositories,
 especially if the repository has a very long backlog consisting of number
 of big files as we effectively reduce amount of data transfer.
 
-The following example makes GitLab Runner shallow clone to fetch only a given branch;
+The following example makes the runner shallow clone to fetch only a given branch;
 it does not fetch any other branches nor tags.
 
 ```yaml
@@ -226,15 +225,15 @@ with other concurrent jobs running.
 ### Store custom clone options in `config.toml`
 
 Ideally, all job-related configuration should be stored in `.gitlab-ci.yml`.
-However, sometimes it is desirable to make these schemes part of Runner configuration.
+However, sometimes it is desirable to make these schemes part of the runner's configuration.
 
 In the above example of Forks, making this configuration discoverable for users may be preferred,
 but this brings administrative overhead as the `.gitlab-ci.yml` needs to be updated for each branch.
 In such cases, it might be desirable to keep the `.gitlab-ci.yml` clone path agnostic, but make it
-a configuration of Runner.
+a configuration of the runner.
 
 We can extend our [`config.toml`](https://docs.gitlab.com/runner/configuration/advanced-configuration.html)
-with the following specification that will be used by Runner if `.gitlab-ci.yml` will not override it:
+with the following specification that will be used by the runner if `.gitlab-ci.yml` will not override it:
 
 ```toml
 concurrent = 4
@@ -255,7 +254,7 @@ concurrent = 4
     volumes = ["/builds:/builds", "/cache:/cache"]
 ```
 
-This makes the cloning configuration to be part of given Runner
+This makes the cloning configuration to be part of the given runner
 and does not require us to update each `.gitlab-ci.yml`.
 
 ## Pre-clone step

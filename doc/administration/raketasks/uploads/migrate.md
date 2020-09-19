@@ -1,10 +1,13 @@
 # Uploads migrate Rake tasks **(CORE ONLY)**
 
-`gitlab:uploads:migrate` migrates uploads between different storage types.
+There is a Rake task for migrating uploads between different storage types.
+
+- Migrate all uploads with [`gitlab:uploads:migrate:all`](#all-in-one-rake-task) or
+- To only migrate specific upload types, use [`gitlab:uploads:migrate`](#individual-rake-tasks).
 
 ## Migrate to object storage
 
-After [configuring the object storage](../../uploads.md#using-object-storage-core-only) for GitLab's
+After [configuring the object storage](../../uploads.md#using-object-storage) for GitLab's
 uploads, use this task to migrate existing uploads from the local storage to the remote storage.
 
 Read more about using [object storage with GitLab](../../object_storage.md).
@@ -165,4 +168,4 @@ To migrate uploads from object storage to local storage:
    ```
 
 After running the Rake task, you can disable object storage by undoing the changes described
-in the instructions to [configure object storage](../../uploads.md#using-object-storage-core-only).
+in the instructions to [configure object storage](../../uploads.md#using-object-storage).

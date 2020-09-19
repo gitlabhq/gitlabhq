@@ -1,0 +1,13 @@
+{
+  "type": "object",
+  "required": ["id", "login", "url", "avatar_url"],
+  "properties" : {
+    "id": { "type": "integer" },
+    "login": { "type": "string" },
+    "url": { "type": "string" },
+    "avatar_url": { "type": "string" },
+    "html_url": { "type":  "string" }
+  },
+  "additionalProperties": false
+}
+

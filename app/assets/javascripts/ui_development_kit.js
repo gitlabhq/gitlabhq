@@ -1,8 +1,9 @@
 import $ from 'jquery';
 import Api from './api';
+import initDeprecatedJQueryDropdown from '~/deprecated_jquery_dropdown';
 
 export default () => {
-  $('#js-project-dropdown').glDropdown({
+  initDeprecatedJQueryDropdown($('#js-project-dropdown'), {
     data: (term, callback) => {
       Api.projects(
         term,

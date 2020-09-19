@@ -15,10 +15,10 @@ import {
   fetchJobs,
   toggleStageCollapsed,
   setDetailJob,
-  requestJobTrace,
-  receiveJobTraceError,
-  receiveJobTraceSuccess,
-  fetchJobTrace,
+  requestJobLogs,
+  receiveJobLogsError,
+  receiveJobLogsSuccess,
+  fetchJobLogs,
   resetLatestPipeline,
 } from '~/ide/stores/modules/pipelines/actions';
 import state from '~/ide/stores/modules/pipelines/state';
@@ -324,24 +324,24 @@ describe('IDE pipelines actions', () => {
     });
   });
 
-  describe('requestJobTrace', () => {
+  describe('requestJobLogs', () => {
     it('commits request', done => {
-      testAction(requestJobTrace, null, mockedState, [{ type: types.REQUEST_JOB_TRACE }], [], done);
+      testAction(requestJobLogs, null, mockedState, [{ type: types.REQUEST_JOB_LOGS }], [], done);
     });
   });
 
-  describe('receiveJobTraceError', () => {
+  describe('receiveJobLogsError', () => {
     it('commits error', done => {
       testAction(
-        receiveJobTraceError,
+        receiveJobLogsError,
         null,
         mockedState,
-        [{ type: types.RECEIVE_JOB_TRACE_ERROR }],
+        [{ type: types.RECEIVE_JOB_LOGS_ERROR }],
         [
           {
             type: 'setErrorMessage',
             payload: {
-              text: 'An error occurred while fetching the job trace.',
+              text: 'An error occurred while fetching the job logs.',
               action: expect.any(Function),
               actionText: 'Please try again',
               actionPayload: null,
@@ -353,20 +353,20 @@ describe('IDE pipelines actions', () => {
     });
   });
 
-  describe('receiveJobTraceSuccess', () => {
+  describe('receiveJobLogsSuccess', () => {
     it('commits data', done => {
       testAction(
-        receiveJobTraceSuccess,
+        receiveJobLogsSuccess,
         'data',
         mockedState,
-        [{ type: types.RECEIVE_JOB_TRACE_SUCCESS, payload: 'data' }],
+        [{ type: types.RECEIVE_JOB_LOGS_SUCCESS, payload: 'data' }],
         [],
         done,
       );
     });
   });
 
-  describe('fetchJobTrace', () => {
+  describe('fetchJobLogs', () => {
     beforeEach(() => {
       mockedState.detailJob = { path: `${TEST_HOST}/project/builds` };
     });
@@ -379,20 +379,20 @@ describe('IDE pipelines actions', () => {
 
       it('dispatches request', done => {
         testAction(
-          fetchJobTrace,
+          fetchJobLogs,
           null,
           mockedState,
           [],
           [
-            { type: 'requestJobTrace' },
-            { type: 'receiveJobTraceSuccess', payload: { html: 'html' } },
+            { type: 'requestJobLogs' },
+            { type: 'receiveJobLogsSuccess', payload: { html: 'html' } },
           ],
           done,
         );
       });
 
       it('sends get request to correct URL', () => {
-        fetchJobTrace({
+        fetchJobLogs({
           state: mockedState,
 
           dispatch() {},
@@ -410,11 +410,11 @@ describe('IDE pipelines actions', () => {
 
       it('dispatches error', done => {
         testAction(
-          fetchJobTrace,
+          fetchJobLogs,
           null,
           mockedState,
           [],
-          [{ type: 'requestJobTrace' }, { type: 'receiveJobTraceError' }],
+          [{ type: 'requestJobLogs' }, { type: 'receiveJobLogsError' }],
           done,
         );
       });

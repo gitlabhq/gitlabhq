@@ -308,7 +308,7 @@ stages:
 deploy:
   stage: deploy
   script:
-    - echo '//gitlab.com/api/v4/projects/${CI_PROJECT_ID}/packages/npm/:_authToken=${CI_JOB_TOKEN}'>.npmrc
+    - echo "//gitlab.com/api/v4/projects/${CI_PROJECT_ID}/packages/npm/:_authToken=${CI_JOB_TOKEN}">.npmrc
     - npm publish
 ```
 
@@ -316,9 +316,9 @@ Learn more about [using `CI_JOB_TOKEN` to authenticate to the GitLab NPM registr
 
 ## Troubleshooting
 
-### Error running yarn with NPM registry
+### Error running Yarn with NPM registry
 
-If you are using [yarn](https://classic.yarnpkg.com/en/) with the NPM registry, you may get
+If you are using [Yarn](https://classic.yarnpkg.com/en/) with the NPM registry, you may get
 an error message like:
 
 ```shell
@@ -377,6 +377,7 @@ NPM_TOKEN=<your_token> npm install
 ### `npm install` returns `npm ERR! 403 Forbidden`
 
 - Check that your token is not expired and has appropriate permissions.
+- Check that [your token does not begin with `-`](https://gitlab.com/gitlab-org/gitlab/-/issues/235473).
 - Check if you have attempted to publish a package with a name that already exists within a given scope.
 - Ensure the scoped packages URL includes a trailing slash:
   - Correct: `//gitlab.com/api/v4/packages/npm/`

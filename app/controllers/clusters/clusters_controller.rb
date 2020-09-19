@@ -237,6 +237,7 @@ class Clusters::ClustersController < Clusters::BaseController
       :environment_scope,
       :managed,
       provider_aws_attributes: [
+        :kubernetes_version,
         :key_name,
         :role_arn,
         :region,

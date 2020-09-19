@@ -24,6 +24,7 @@
 #     last_activity_after: datetime
 #     last_activity_before: datetime
 #     repository_storage: string
+#     without_deleted: boolean
 #
 class ProjectsFinder < UnionFinder
   include CustomAttributesFilter

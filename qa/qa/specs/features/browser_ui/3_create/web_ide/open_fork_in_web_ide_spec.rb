@@ -14,7 +14,7 @@ module QA
         let(:user) { Resource::User.fabricate_or_use(Runtime::Env.gitlab_qa_username_1, Runtime::Env.gitlab_qa_password_1) }
 
         context 'when no fork is present' do
-          it 'suggests to create a fork when a user clicks Web IDE in the main project' do
+          it 'suggests to create a fork when a user clicks Web IDE in the main project', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/959' do
             Flow::Login.sign_in(as: user)
 
             parent_project.visit!
@@ -34,7 +34,7 @@ module QA
             end
           end
 
-          it 'opens the fork when a user clicks Web IDE in the main project' do
+          it 'opens the fork when a user clicks Web IDE in the main project', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/960' do
             Flow::Login.sign_in(as: user)
             fork_project.upstream.visit!
             Page::Project::Show.perform do |project_page|

@@ -5,6 +5,6 @@
     = button_tag type: "submit", class: "btn btn-transparent", data: { confirm: _("Are you sure?") } do
       %span.sr-only
         = _('Destroy')
-      = icon('trash')
+      = sprite_icon('remove')
   - else
     = submit_tag _('Destroy'), data: { confirm: _("Are you sure?") }, class: submit_btn_css

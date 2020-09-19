@@ -1,0 +1,5 @@
+---
+title: Reduce storage requirements for keeping track of pre-logged-in sessions
+merge_request: 40336
+author:
+type: performance

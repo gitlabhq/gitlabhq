@@ -12,6 +12,8 @@ module QA
         end
 
         def within_sidebar
+          wait_for_requests
+
           within_element(sidebar_element) do
             yield
           end

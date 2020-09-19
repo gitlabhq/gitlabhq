@@ -1,10 +1,9 @@
 <script>
 import { mapActions, mapGetters } from 'vuex';
-import { GlTooltipDirective } from '@gitlab/ui';
+import { GlTooltipDirective, GlIcon } from '@gitlab/ui';
 import diffLineNoteFormMixin from '~/notes/mixins/diff_line_note_form';
 import { s__, __ } from '~/locale';
 import { clearDraft, getDiscussionReplyKey } from '~/lib/utils/autosave';
-import icon from '~/vue_shared/components/icon.vue';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
 import DraftNote from '~/batch_comments/components/draft_note.vue';
 import { deprecatedCreateFlash as Flash } from '../../flash';
@@ -22,7 +21,7 @@ import DiscussionActions from './discussion_actions.vue';
 export default {
   name: 'NoteableDiscussion',
   components: {
-    icon,
+    GlIcon,
     userAvatarLink,
     diffDiscussionHeader,
     noteSignedOutWidget,

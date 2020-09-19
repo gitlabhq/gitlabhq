@@ -237,7 +237,7 @@ RSpec.describe GitlabSchema do
 
       it 'raises an error' do
         expect { described_class.parse_gid(global_id) }
-          .to raise_error(Gitlab::Graphql::Errors::ArgumentError, "#{global_id} is not a valid GitLab id.")
+          .to raise_error(Gitlab::Graphql::Errors::ArgumentError, "#{global_id} is not a valid GitLab ID.")
       end
     end
 
@@ -256,7 +256,7 @@ RSpec.describe GitlabSchema do
 
       it 'rejects an unknown type' do
         expect { described_class.parse_gid(global_id, expected_type: TestTwo) }
-          .to raise_error(Gitlab::Graphql::Errors::ArgumentError, "#{global_id} is not a valid id for TestTwo.")
+          .to raise_error(Gitlab::Graphql::Errors::ArgumentError, "#{global_id} is not a valid ID for TestTwo.")
       end
     end
   end

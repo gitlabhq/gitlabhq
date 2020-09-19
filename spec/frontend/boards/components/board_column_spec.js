@@ -59,9 +59,10 @@ describe('Board Column Component', () => {
       propsData: {
         boardId,
         disabled: false,
-        issueLinkBase: '/',
-        rootPath: '/',
         list,
+      },
+      provide: {
+        boardId,
       },
     });
   };

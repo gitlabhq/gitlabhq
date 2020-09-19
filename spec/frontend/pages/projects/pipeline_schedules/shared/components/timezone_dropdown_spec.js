@@ -1,5 +1,4 @@
 import $ from 'jquery';
-import '~/gl_dropdown';
 import TimezoneDropdown, {
   formatUtcOffset,
   formatTimezone,

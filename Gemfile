@@ -21,13 +21,13 @@ gem 'pg', '~> 1.1'
 gem 'rugged', '~> 0.28'
 gem 'grape-path-helpers', '~> 1.3'
 
-gem 'faraday', '~> 0.12'
-gem 'marginalia', '~> 1.8.0'
+gem 'faraday', '~> 1.0'
+gem 'marginalia', '~> 1.9.0'
 
 # Authentication libraries
 gem 'devise', '~> 4.6'
-gem 'doorkeeper', '~> 5.0.3'
-gem 'doorkeeper-openid_connect', '~> 1.6.3'
+gem 'doorkeeper', '~> 5.3.0'
+gem 'doorkeeper-openid_connect', '~> 1.7.4'
 gem 'omniauth', '~> 1.8'
 gem 'omniauth-auth0', '~> 2.0.0'
 gem 'omniauth-azure-oauth2', '~> 0.0.9'
@@ -45,6 +45,7 @@ gem 'omniauth_crowd', '~> 2.4.0'
 gem 'omniauth-authentiq', '~> 0.3.3'
 gem 'omniauth_openid_connect', '~> 0.3.5'
 gem 'omniauth-salesforce', '~> 1.0.5'
+gem 'omniauth-atlassian-oauth2', '~> 0.2.0'
 gem 'rack-oauth2', '~> 1.9.3'
 gem 'jwt', '~> 2.1.0'
 
@@ -88,12 +89,12 @@ gem 'grape-entity', '~> 0.7.1'
 gem 'rack-cors', '~> 1.0.6', require: 'rack/cors'
 
 # GraphQL API
-gem 'graphql', '~> 1.10.5'
+gem 'graphql', '~> 1.11.4'
 # NOTE: graphiql-rails v1.5+ doesn't work: https://gitlab.com/gitlab-org/gitlab/issues/31771
 # TODO: remove app/views/graphiql/rails/editors/show.html.erb when https://github.com/rmosolgo/graphiql-rails/pull/71 is released:
 # https://gitlab.com/gitlab-org/gitlab/issues/31747
 gem 'graphiql-rails', '~> 1.4.10'
-gem 'apollo_upload_server', '~> 2.0.0.beta3'
+gem 'apollo_upload_server', '~> 2.0.2'
 gem 'graphql-docs', '~> 1.6.0', group: [:development, :test]
 
 # Disable strong_params so that Mash does not respond to :permitted?
@@ -119,7 +120,7 @@ gem 'fog-local', '~> 0.6'
 gem 'fog-openstack', '~> 1.0'
 gem 'fog-rackspace', '~> 0.1.1'
 gem 'fog-aliyun', '~> 0.3'
-gem 'gitlab-fog-azure-rm', '~> 0.7', require: false
+gem 'gitlab-fog-azure-rm', '~> 0.9', require: false
 
 # for Google storage
 gem 'google-api-client', '~> 0.33'
@@ -133,7 +134,7 @@ gem 'seed-fu', '~> 2.3.7'
 # Search
 gem 'elasticsearch-model', '~> 6.1'
 gem 'elasticsearch-rails', '~> 6.1', require: 'elasticsearch/rails/instrumentation'
-gem 'elasticsearch-api',   '~> 6.8'
+gem 'elasticsearch-api',   '~> 6.8.2'
 gem 'aws-sdk-core', '~> 3'
 gem 'aws-sdk-cloudformation', '~> 1'
 gem 'aws-sdk-s3', '~> 1'
@@ -249,9 +250,7 @@ gem 'slack-messenger', '~> 2.3.3'
 gem 'hangouts-chat', '~> 0.0.5'
 
 # Asana integration
-# asana 0.10.1 needs faraday 1.0
-# https://gitlab.com/gitlab-org/gitlab/-/issues/224296
-gem 'asana', '0.10.0'
+gem 'asana', '0.10.2'
 
 # FogBugz integration
 gem 'ruby-fogbugz', '~> 0.2.1'
@@ -260,7 +259,7 @@ gem 'ruby-fogbugz', '~> 0.2.1'
 gem 'kubeclient', '~> 4.6.0'
 
 # Sanitize user input
-gem 'sanitize', '~> 4.6'
+gem 'sanitize', '~> 5.2.1'
 gem 'babosa', '~> 1.0.2'
 
 # Sanitizes SVG input
@@ -304,7 +303,7 @@ gem "gitlab-license", "~> 1.0"
 gem 'rack-attack', '~> 6.3.0'
 
 # Sentry integration
-gem 'sentry-raven', '~> 2.9'
+gem 'sentry-raven', '~> 3.0'
 
 gem 'premailer-rails', '~> 1.10.3'
 
@@ -316,7 +315,7 @@ gem 'ruby_parser', '~> 3.8', require: false
 gem 'rails-i18n', '~> 6.0'
 gem 'gettext_i18n_rails', '~> 1.8.0'
 gem 'gettext_i18n_rails_js', '~> 1.3'
-gem 'gettext', '~> 3.2.2', require: false, group: :development
+gem 'gettext', '~> 3.3', require: false, group: :development
 
 gem 'batch-loader', '~> 1.4.0'
 
@@ -328,7 +327,7 @@ gem 'snowplow-tracker', '~> 0.6.1'
 
 # Metrics
 group :metrics do
-  gem 'method_source', '~> 0.8', require: false
+  gem 'method_source', '~> 1.0', require: false
 
   # Prometheus
   gem 'prometheus-client-mmap', '~> 0.11.0'
@@ -337,21 +336,20 @@ end
 
 group :development do
   gem 'brakeman', '~> 4.2', require: false
-  gem 'danger', '~> 6.0', require: false
+  gem 'danger', '~> 8.0', require: false
 
   gem 'letter_opener_web', '~> 1.3.4'
 
   # Better errors handler
   gem 'better_errors', '~> 2.7.1'
-  gem 'binding_of_caller', '~> 0.8.0'
 
   # thin instead webrick
   gem 'thin', '~> 1.7.0'
 end
 
 group :development, :test do
-  gem 'bullet', '~> 6.0.2'
-  gem 'pry-byebug', '~> 3.5.1', platform: :mri
+  gem 'bullet', '~> 6.1.0'
+  gem 'pry-byebug', '~> 3.9.0', platform: :mri
   gem 'pry-rails', '~> 0.3.9'
 
   gem 'awesome_print', require: false
@@ -512,3 +510,5 @@ gem 'json_schemer', '~> 0.2.12'
 gem 'oj', '~> 3.10.6'
 gem 'multi_json', '~> 1.14.1'
 gem 'yajl-ruby', '~> 1.4.1', require: 'yajl'
+
+gem 'webauthn', '~> 2.3'

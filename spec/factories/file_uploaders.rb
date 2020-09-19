@@ -14,7 +14,7 @@ FactoryBot.define do
     end
 
     after(:build) do |uploader, evaluator|
-      uploader.store!(evaluator.file)
+      uploader.store!(evaluator.file) if evaluator.project&.persisted?
     end
 
     initialize_with do

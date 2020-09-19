@@ -3,17 +3,17 @@ import { debounce } from 'lodash';
 import { mapActions, mapState, mapGetters } from 'vuex';
 import {
   GlButton,
-  GlNewDropdown,
+  GlDropdown,
   GlLoadingIcon,
-  GlNewDropdownItem,
-  GlNewDropdownHeader,
+  GlDropdownItem,
+  GlDropdownSectionHeader,
   GlSearchBoxByType,
   GlModalDirective,
   GlTooltipDirective,
+  GlIcon,
 } from '@gitlab/ui';
 import { mergeUrlParams, redirectTo } from '~/lib/utils/url_utility';
 import invalidUrl from '~/lib/utils/invalid_url';
-import Icon from '~/vue_shared/components/icon.vue';
 import DateTimePicker from '~/vue_shared/components/date_time_picker/date_time_picker.vue';
 
 import DashboardsDropdown from './dashboards_dropdown.vue';
@@ -26,12 +26,12 @@ import { timezones } from '../format_date';
 
 export default {
   components: {
-    Icon,
+    GlIcon,
     GlButton,
-    GlNewDropdown,
+    GlDropdown,
     GlLoadingIcon,
-    GlNewDropdownItem,
-    GlNewDropdownHeader,
+    GlDropdownItem,
+    GlDropdownSectionHeader,
 
     GlSearchBoxByType,
 
@@ -181,7 +181,7 @@ export default {
     <span aria-hidden="true" class="gl-pl-3 border-left gl-mb-3 d-none d-sm-block"></span>
 
     <div class="mb-2 pr-2 d-flex d-sm-block">
-      <gl-new-dropdown
+      <gl-dropdown
         id="monitor-environments-dropdown"
         ref="monitorEnvironmentsDropdown"
         class="flex-grow-1"
@@ -191,12 +191,12 @@ export default {
         :text="environmentDropdownText"
       >
         <div class="d-flex flex-column overflow-hidden">
-          <gl-new-dropdown-header>{{ __('Environment') }}</gl-new-dropdown-header>
-          <gl-search-box-by-type class="m-2" @input="debouncedEnvironmentsSearch" />
+          <gl-dropdown-section-header>{{ __('Environment') }}</gl-dropdown-section-header>
+          <gl-search-box-by-type class="gl-m-3" @input="debouncedEnvironmentsSearch" />
 
           <gl-loading-icon v-if="environmentsLoading" :inline="true" />
           <div v-else class="flex-fill overflow-auto">
-            <gl-new-dropdown-item
+            <gl-dropdown-item
               v-for="environment in filteredEnvironments"
               :key="environment.id"
               :is-check-item="true"
@@ -204,7 +204,7 @@ export default {
               :href="getEnvironmentPath(environment.id)"
             >
               {{ environment.name }}
-            </gl-new-dropdown-item>
+            </gl-dropdown-item>
           </div>
           <div
             v-show="shouldShowEnvironmentsDropdownNoMatchedMsg"
@@ -214,7 +214,7 @@ export default {
             {{ __('No matching results') }}
           </div>
         </div>
-      </gl-new-dropdown>
+      </gl-dropdown>
     </div>
 
     <div class="mb-2 pr-2 d-flex d-sm-block">
@@ -260,7 +260,7 @@ export default {
           target="_blank"
           rel="noopener noreferrer"
         >
-          {{ __('View full dashboard') }} <icon name="external-link" />
+          {{ __('View full dashboard') }} <gl-icon name="external-link" />
         </gl-button>
       </div>
 

@@ -61,11 +61,7 @@ export const getFiles = ({ state, commit, dispatch }, payload = {}) =>
       service
         .getFiles(selectedProject.path_with_namespace, ref)
         .then(({ data }) => {
-          const { entries, treeList } = decorateFiles({
-            data,
-            projectId,
-            branchId,
-          });
+          const { entries, treeList } = decorateFiles({ data });
 
           commit(types.SET_ENTRIES, entries);
 

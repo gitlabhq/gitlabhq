@@ -18,11 +18,18 @@ module Gitlab
         structure.gsub!(/^SELECT pg_catalog\.set_config\('search_path'.+/, '')
         structure.gsub!(/^--.*/, "\n")
 
-        structure = "SET search_path=public;\n" + structure
+        # We typically don't assume we're working with the public schema.
+        # pg_dump uses fully qualified object names though, since we have multiple schemas
+        # in the database.
+        #
+        # The intention here is to not introduce an assumption about the standard schema,
+        # unless we have a good reason to do so.
+        structure.gsub!(/public\.(\w+)/, '\1')
+        structure.gsub!(/CREATE EXTENSION IF NOT EXISTS (\w+) WITH SCHEMA public;/, 'CREATE EXTENSION IF NOT EXISTS \1;')
 
         structure.gsub!(/\n{3,}/, "\n\n")
 
-        io << structure
+        io << structure.strip
         io << <<~MSG
           -- schema_migrations.version information is no longer stored in this file,
           -- but instead tracked in the db/schema_migrations directory

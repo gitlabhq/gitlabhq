@@ -47,10 +47,10 @@ that may lead to security problems and unintended use. This can be achieved by m
 which inform security teams and developers if there is something to consider changing in their apps
 before it is too late to create a preventative fix. The following features are included:
 
-- [Auto SAST (Static Application Security Testing)](../autodevops/stages.md#auto-sast-ultimate)
-- [Auto Dependency Scanning](../autodevops/stages.md#auto-dependency-scanning-ultimate)
-- [Auto Container Scanning](../autodevops/stages.md#auto-container-scanning-ultimate)
-- [Auto DAST (Dynamic Application Security Testing)](../autodevops/stages.md#auto-dast-ultimate)
+- [Auto SAST (Static Application Security Testing)](../autodevops/stages.md#auto-sast)
+- [Auto Dependency Scanning](../autodevops/stages.md#auto-dependency-scanning)
+- [Auto Container Scanning](../autodevops/stages.md#auto-container-scanning)
+- [Auto DAST (Dynamic Application Security Testing)](../autodevops/stages.md#auto-dast)
 
 ### Observability
 

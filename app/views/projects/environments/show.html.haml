@@ -69,7 +69,7 @@
           .text-center
             = link_to _("Read more"), help_page_path("ci/environments"), class: "btn btn-success"
     - else
-      .table-holder
+      .table-holder.gl-overflow-visible
         .ci-table.environments{ role: 'grid' }
           .gl-responsive-table-row.table-row-header{ role: 'row' }
             .table-section.section-15{ role: 'columnheader' }= _('Status')

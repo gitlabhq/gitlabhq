@@ -36,6 +36,12 @@ RSpec.describe Gitlab::Email::Receiver do
       it_behaves_like 'correctly finds the mail key'
     end
 
+    context 'when in an X-Envelope-To header' do
+      let(:email_raw) { fixture_file('emails/x_envelope_to_header.eml') }
+
+      it_behaves_like 'correctly finds the mail key'
+    end
+
     context 'when enclosed with angle brackets in an Envelope-To header' do
       let(:email_raw) { fixture_file('emails/envelope_to_header_with_angle_brackets.eml') }
 

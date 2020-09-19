@@ -501,7 +501,7 @@ introduced by [#25381](https://gitlab.com/gitlab-org/gitlab/-/issues/25381).
 > - It was deployed behind a feature flag, disabled by default.
 > - [Became enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/227799) on GitLab 13.2.
 > - It's enabled on GitLab.com.
-> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-batch-suggestions-core-only).
+> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-batch-suggestions).
 
 You can apply multiple suggestions at once to reduce the number of commits added
 to your branch to address your reviewers' requests.

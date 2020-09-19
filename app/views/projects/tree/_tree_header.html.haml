@@ -1,5 +1,6 @@
 - can_collaborate = can_collaborate_with_project?(@project)
 - can_create_mr_from_fork = can?(current_user, :fork_project, @project) && can?(current_user, :create_merge_request_in, @project)
+- can_visit_ide = can_collaborate || current_user&.already_forked?(@project)
 
 .tree-ref-container
   .tree-ref-holder
@@ -14,12 +15,12 @@
 
     = render 'projects/find_file_link'
 
-    - if can_collaborate || current_user&.already_forked?(@project)
-      #js-tree-web-ide-link.d-inline-block
-    - elsif can_create_mr_from_fork
-      = link_to '#modal-confirm-fork', class: 'btn btn-default qa-web-ide-button', data: { target: '#modal-confirm-fork', toggle: 'modal'} do
-        = _('Web IDE')
-      = render 'shared/confirm_fork_modal', fork_path: ide_fork_and_edit_path(@project, @ref, @path)
+    - if can_visit_ide || can_create_mr_from_fork
+      #js-tree-web-ide-link.d-inline-block{ data: { options: vue_ide_link_data(@project, @ref).to_json } }
+      - if !can_visit_ide
+        = render 'shared/confirm_fork_modal', fork_path: ide_fork_and_edit_path(@project, @ref, @path)
+      - unless current_user&.gitpod_enabled
+        = render 'shared/gitpod/enable_gitpod_modal'
 
     - if show_xcode_link?(@project)
       .project-action-button.project-xcode.inline<

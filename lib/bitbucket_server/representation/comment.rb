@@ -38,7 +38,9 @@ module BitbucketServer
       end
 
       def author_username
-        author['displayName']
+        author['username'] ||
+          author['slug'] ||
+          author['displayName']
       end
 
       def author_email

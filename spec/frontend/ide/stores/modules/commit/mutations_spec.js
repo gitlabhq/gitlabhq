@@ -1,5 +1,6 @@
 import commitState from '~/ide/stores/modules/commit/state';
 import mutations from '~/ide/stores/modules/commit/mutations';
+import * as types from '~/ide/stores/modules/commit/mutation_types';
 
 describe('IDE commit module mutations', () => {
   let state;
@@ -60,6 +61,26 @@ describe('IDE commit module mutations', () => {
       mutations.TOGGLE_SHOULD_CREATE_MR(state, false);
 
       expect(state.shouldCreateMR).toBe(false);
+    });
+  });
+
+  describe(types.CLEAR_ERROR, () => {
+    it('should clear commitError', () => {
+      state.commitError = {};
+
+      mutations[types.CLEAR_ERROR](state);
+
+      expect(state.commitError).toBeNull();
+    });
+  });
+
+  describe(types.SET_ERROR, () => {
+    it('should set commitError', () => {
+      const error = { title: 'foo' };
+
+      mutations[types.SET_ERROR](state, error);
+
+      expect(state.commitError).toBe(error);
     });
   });
 });

@@ -9,10 +9,6 @@ module Gitlab
         true
       end
 
-      def match(content)
-        content.match %r{^/#{all_names.join('|')}(?![\S]) ?(.*)$}
-      end
-
       def perform_substitution(context, content)
         return unless content
 

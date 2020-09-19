@@ -6,6 +6,7 @@ import {
   PERMISSION_CREATE_MR,
   PERMISSION_PUSH_CODE,
 } from '../constants';
+import Api from '~/api';
 
 export const activeFile = state => state.openFiles.find(file => file.active) || null;
 
@@ -173,4 +174,22 @@ export const getAvailableFileName = (state, getters) => path => {
   }
 
   return newPath;
+};
+
+export const getUrlForPath = state => path =>
+  `/project/${state.currentProjectId}/tree/${state.currentBranchId}/-/${path}/`;
+
+export const getJsonSchemaForPath = (state, getters) => path => {
+  const [namespace, ...project] = state.currentProjectId.split('/');
+  return {
+    uri:
+      // eslint-disable-next-line no-restricted-globals
+      location.origin +
+      Api.buildUrl(Api.projectFileSchemaPath)
+        .replace(':namespace_path', namespace)
+        .replace(':project_path', project.join('/'))
+        .replace(':ref', getters.currentBranch?.commit.id || state.currentBranchId)
+        .replace(':filename', path),
+    fileMatch: [`*${path}`],
+  };
 };

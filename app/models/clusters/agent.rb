@@ -8,6 +8,8 @@ module Clusters
 
     has_many :agent_tokens, class_name: 'Clusters::AgentToken'
 
+    scope :with_name, -> (name) { where(name: name) }
+
     validates :name,
       presence: true,
       length: { maximum: 63 },

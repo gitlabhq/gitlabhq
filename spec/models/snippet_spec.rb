@@ -133,10 +133,10 @@ RSpec.describe Snippet do
   end
 
   describe '#file_name' do
-    let(:project) { create(:project) }
+    let(:snippet) { build(:snippet, file_name: file_name) }
 
     context 'file_name is nil' do
-      let(:snippet) { create(:snippet, project: project, file_name: nil) }
+      let(:file_name) { nil }
 
       it 'returns an empty string' do
         expect(snippet.file_name).to eq ''
@@ -144,10 +144,10 @@ RSpec.describe Snippet do
     end
 
     context 'file_name is not nil' do
-      let(:snippet) { create(:snippet, project: project, file_name: 'foo.txt') }
+      let(:file_name) { 'foo.txt' }
 
       it 'returns the file_name' do
-        expect(snippet.file_name).to eq 'foo.txt'
+        expect(snippet.file_name).to eq file_name
       end
     end
   end
@@ -161,7 +161,7 @@ RSpec.describe Snippet do
   end
 
   describe '.search' do
-    let(:snippet) { create(:snippet, title: 'test snippet', description: 'description') }
+    let_it_be(:snippet) { create(:snippet, title: 'test snippet', description: 'description') }
 
     it 'returns snippets with a matching title' do
       expect(described_class.search(snippet.title)).to eq([snippet])
@@ -219,25 +219,23 @@ RSpec.describe Snippet do
   end
 
   describe '.with_optional_visibility' do
+    let_it_be(:public_snippet) { create(:snippet, :public) }
+    let_it_be(:private_snippet) { create(:snippet, :private) }
+
     context 'when a visibility level is provided' do
       it 'returns snippets with the given visibility' do
-        create(:snippet, :private)
-
-        snippet = create(:snippet, :public)
         snippets = described_class
           .with_optional_visibility(Gitlab::VisibilityLevel::PUBLIC)
 
-        expect(snippets).to eq([snippet])
+        expect(snippets).to eq([public_snippet])
       end
     end
 
     context 'when a visibility level is not provided' do
       it 'returns all snippets' do
-        snippet1 = create(:snippet, :public)
-        snippet2 = create(:snippet, :private)
         snippets = described_class.with_optional_visibility
 
-        expect(snippets).to include(snippet1, snippet2)
+        expect(snippets).to include(public_snippet, private_snippet)
       end
     end
   end
@@ -254,12 +252,13 @@ RSpec.describe Snippet do
   end
 
   describe '.only_include_projects_visible_to' do
-    let!(:project1) { create(:project, :public) }
-    let!(:project2) { create(:project, :internal) }
-    let!(:project3) { create(:project, :private) }
-    let!(:snippet1) { create(:project_snippet, project: project1) }
-    let!(:snippet2) { create(:project_snippet, project: project2) }
-    let!(:snippet3) { create(:project_snippet, project: project3) }
+    let_it_be(:author)   { create(:user) }
+    let_it_be(:project1) { create(:project_empty_repo, :public, namespace: author.namespace) }
+    let_it_be(:project2) { create(:project_empty_repo, :internal, namespace: author.namespace) }
+    let_it_be(:project3) { create(:project_empty_repo, :private, namespace: author.namespace) }
+    let_it_be(:snippet1) { create(:project_snippet, project: project1, author: author) }
+    let_it_be(:snippet2) { create(:project_snippet, project: project2, author: author) }
+    let_it_be(:snippet3) { create(:project_snippet, project: project3, author: author) }
 
     context 'when a user is provided' do
       it 'returns snippets visible to the user' do
@@ -283,55 +282,47 @@ RSpec.describe Snippet do
   end
 
   describe 'only_include_projects_with_snippets_enabled' do
-    context 'when the include_private option is enabled' do
-      it 'includes snippets for projects with snippets set to private' do
-        project = create(:project)
+    let_it_be(:project, reload: true) { create(:project_empty_repo) }
+    let_it_be(:snippet) { create(:project_snippet, project: project) }
 
-        project.project_feature
-          .update(snippets_access_level: ProjectFeature::PRIVATE)
+    let(:access_level) { ProjectFeature::ENABLED }
 
-        snippet = create(:project_snippet, project: project)
-
-        snippets = described_class
-          .only_include_projects_with_snippets_enabled(include_private: true)
-
-        expect(snippets).to eq([snippet])
-      end
-    end
-
-    context 'when the include_private option is not enabled' do
-      it 'does not include snippets for projects that have snippets set to private' do
-        project = create(:project)
-
-        project.project_feature
-          .update(snippets_access_level: ProjectFeature::PRIVATE)
-
-        create(:project_snippet, project: project)
-
-        snippets = described_class.only_include_projects_with_snippets_enabled
-
-        expect(snippets).to be_empty
-      end
+    before do
+      project.project_feature.update(snippets_access_level: access_level)
     end
 
     it 'includes snippets for projects with snippets enabled' do
-      project = create(:project)
-
-      project.project_feature
-        .update(snippets_access_level: ProjectFeature::ENABLED)
-
-      snippet = create(:project_snippet, project: project)
       snippets = described_class.only_include_projects_with_snippets_enabled
 
       expect(snippets).to eq([snippet])
+    end
+
+    context 'when snippet_access_level is private' do
+      let(:access_level) { ProjectFeature::PRIVATE }
+
+      context 'when the include_private option is enabled' do
+        it 'includes snippets for projects with snippets set to private' do
+          snippets = described_class.only_include_projects_with_snippets_enabled(include_private: true)
+
+          expect(snippets).to eq([snippet])
+        end
+      end
+
+      context 'when the include_private option is not enabled' do
+        it 'does not include snippets for projects that have snippets set to private' do
+          snippets = described_class.only_include_projects_with_snippets_enabled
+
+          expect(snippets).to be_empty
+        end
+      end
     end
   end
 
   describe '.only_include_authorized_projects' do
     it 'only includes snippets for projects the user is authorized to see' do
       user = create(:user)
-      project1 = create(:project, :private)
-      project2 = create(:project, :private)
+      project1 = create(:project_empty_repo, :private)
+      project2 = create(:project_empty_repo, :private)
 
       project1.team.add_developer(user)
 
@@ -345,43 +336,34 @@ RSpec.describe Snippet do
   end
 
   describe '.for_project_with_user' do
+    let_it_be(:public_project) { create(:project_empty_repo, :public) }
+    let_it_be(:private_project) { create(:project_empty_repo, :private) }
+
     context 'when a user is provided' do
+      let_it_be(:user) { create(:user) }
+
       it 'returns an empty collection if the user can not view the snippets' do
-        project = create(:project, :private)
-        user = create(:user)
+        create(:project_snippet, :public, project: private_project)
 
-        project.project_feature
-          .update(snippets_access_level: ProjectFeature::ENABLED)
-
-        create(:project_snippet, :public, project: project)
-
-        expect(described_class.for_project_with_user(project, user)).to be_empty
+        expect(described_class.for_project_with_user(private_project, user)).to be_empty
       end
 
       it 'returns the snippets if the user is a member of the project' do
-        project = create(:project, :private)
-        user = create(:user)
-        snippet = create(:project_snippet, project: project)
+        snippet = create(:project_snippet, project: private_project)
 
-        project.team.add_developer(user)
+        private_project.team.add_developer(user)
 
-        snippets = described_class.for_project_with_user(project, user)
+        snippets = described_class.for_project_with_user(private_project, user)
 
         expect(snippets).to eq([snippet])
       end
 
       it 'returns public snippets for a public project the user is not a member of' do
-        project = create(:project, :public)
+        snippet = create(:project_snippet, :public, project: public_project)
 
-        project.project_feature
-          .update(snippets_access_level: ProjectFeature::ENABLED)
+        create(:project_snippet, :private, project: public_project)
 
-        user = create(:user)
-        snippet = create(:project_snippet, :public, project: project)
-
-        create(:project_snippet, :private, project: project)
-
-        snippets = described_class.for_project_with_user(project, user)
+        snippets = described_class.for_project_with_user(public_project, user)
 
         expect(snippets).to eq([snippet])
       end
@@ -389,26 +371,17 @@ RSpec.describe Snippet do
 
     context 'when a user is not provided' do
       it 'returns an empty collection for a private project' do
-        project = create(:project, :private)
+        create(:project_snippet, :public, project: private_project)
 
-        project.project_feature
-          .update(snippets_access_level: ProjectFeature::ENABLED)
-
-        create(:project_snippet, :public, project: project)
-
-        expect(described_class.for_project_with_user(project)).to be_empty
+        expect(described_class.for_project_with_user(private_project)).to be_empty
       end
 
       it 'returns public snippets for a public project' do
-        project = create(:project, :public)
-        snippet = create(:project_snippet, :public, project: project)
+        snippet = create(:project_snippet, :public, project: public_project)
 
-        project.project_feature
-          .update(snippets_access_level: ProjectFeature::PUBLIC)
+        create(:project_snippet, :private, project: public_project)
 
-        create(:project_snippet, :private, project: project)
-
-        snippets = described_class.for_project_with_user(project)
+        snippets = described_class.for_project_with_user(public_project)
 
         expect(snippets).to eq([snippet])
       end
@@ -430,34 +403,30 @@ RSpec.describe Snippet do
   end
 
   describe '#participants' do
-    let(:project) { create(:project, :public) }
-    let(:snippet) { create(:snippet, content: 'foo', project: project) }
+    let_it_be(:project) { create(:project, :public) }
+    let_it_be(:snippet) { create(:snippet, content: 'foo', project: project) }
 
-    let!(:note1) do
+    let_it_be(:note1) do
       create(:note_on_project_snippet,
              noteable: snippet,
              project: project,
              note: 'a')
     end
 
-    let!(:note2) do
+    let_it_be(:note2) do
       create(:note_on_project_snippet,
              noteable: snippet,
              project: project,
              note: 'b')
     end
 
-    it 'includes the snippet author' do
-      expect(snippet.participants).to include(snippet.author)
-    end
-
-    it 'includes the note authors' do
-      expect(snippet.participants).to include(note1.author, note2.author)
+    it 'includes the snippet author and note authors' do
+      expect(snippet.participants).to include(snippet.author, note1.author, note2.author)
     end
   end
 
   describe '#check_for_spam' do
-    let(:snippet) { create :snippet, visibility_level: visibility_level }
+    let(:snippet) { create(:snippet, visibility_level: visibility_level) }
 
     subject do
       snippet.assign_attributes(title: title)
@@ -500,7 +469,7 @@ RSpec.describe Snippet do
   end
 
   describe '#blob' do
-    let(:snippet) { create(:snippet) }
+    let(:snippet) { build(:snippet) }
 
     it 'returns a blob representing the snippet data' do
       blob = snippet.blob
@@ -514,6 +483,14 @@ RSpec.describe Snippet do
   describe '#blobs' do
     let(:snippet) { create(:snippet) }
 
+    it 'returns a blob representing the snippet data' do
+      blob = snippet.blob
+
+      expect(blob).to be_a(Blob)
+      expect(blob.path).to eq(snippet.file_name)
+      expect(blob.data).to eq(snippet.content)
+    end
+
     context 'when repository does not exist' do
       it 'returns empty array' do
         expect(snippet.blobs).to be_empty
@@ -526,14 +503,6 @@ RSpec.describe Snippet do
       it 'returns array of blobs' do
         expect(snippet.blobs).to all(be_a(Blob))
       end
-    end
-
-    it 'returns a blob representing the snippet data' do
-      blob = snippet.blob
-
-      expect(blob).to be_a(Blob)
-      expect(blob.path).to eq(snippet.file_name)
-      expect(blob.data).to eq(snippet.content)
     end
   end
 
@@ -554,7 +523,7 @@ RSpec.describe Snippet do
   end
 
   describe '#storage' do
-    let(:snippet) { create(:snippet) }
+    let(:snippet) { build(:snippet, id: 1) }
 
     it "stores snippet in #{Storage::Hashed::SNIPPET_REPOSITORY_PATH_PREFIX} dir" do
       expect(snippet.storage.disk_path).to start_with Storage::Hashed::SNIPPET_REPOSITORY_PATH_PREFIX
@@ -775,6 +744,16 @@ RSpec.describe Snippet do
 
         subject
       end
+
+      context 'when ref is nil' do
+        let(:ref) { nil }
+
+        it 'lists files from the repository from the deafult_branch' do
+          expect(snippet.repository).to receive(:ls_files).with(snippet.default_branch)
+
+          subject
+        end
+      end
     end
 
     context 'when snippet does not have a repository' do
@@ -785,6 +764,28 @@ RSpec.describe Snippet do
       it 'returns an empty array' do
         expect(subject).to eq []
       end
+    end
+  end
+
+  describe '#multiple_files?' do
+    subject { snippet.multiple_files? }
+
+    context 'when snippet has multiple files' do
+      let(:snippet) { create(:snippet, :repository) }
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when snippet does not have multiple files' do
+      let(:snippet) { create(:snippet, :empty_repo) }
+
+      it { is_expected.to be_falsey }
+    end
+
+    context 'when the snippet does not have a repository' do
+      let(:snippet) { build(:snippet) }
+
+      it { is_expected.to be_falsey }
     end
   end
 end

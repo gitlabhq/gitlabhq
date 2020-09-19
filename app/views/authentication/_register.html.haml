@@ -1,0 +1,36 @@
+#js-register-token-2fa
+
+%script#js-register-2fa-message{ type: "text/template" }
+  %p <%= message %>
+
+%script#js-register-token-2fa-setup{ type: "text/template" }
+  - if current_user.two_factor_otp_enabled?
+    .row.gl-mb-3
+      .col-md-5
+        %button#js-setup-token-2fa-device.btn.btn-info= _("Set up new device")
+      .col-md-7
+        %p= _("Your device needs to be set up. Plug it in (if needed) and click the button on the left.")
+  - else
+    .row.gl-mb-3
+      .col-md-4
+        %button#js-setup-token-2fa-device.btn.btn-info.btn-block{ disabled: true }= _("Set up new device")
+      .col-md-8
+        %p= _("You need to register a two-factor authentication app before you can set up a device.")
+
+%script#js-register-token-2fa-error{ type: "text/template" }
+  %div
+    %p
+      %span <%= error_message %> (<%= error_name %>)
+    %a.btn.btn-warning#js-token-2fa-try-again= _("Try again?")
+
+%script#js-register-token-2fa-registered{ type: "text/template" }
+  .row.gl-mb-3
+    .col-md-12
+      %p= _("Your device was successfully set up! Give it a name and register it with the GitLab server.")
+      = form_tag(target_path, method: :post) do
+        .row.gl-mb-3
+          .col-md-3
+            = text_field_tag 'device_registration[name]', nil, class: 'form-control', placeholder: _("Pick a name")
+          .col-md-3
+            = hidden_field_tag 'device_registration[device_response]', nil, class: 'form-control', required: true, id: "js-device-response"
+            = submit_tag _("Register device"), class: "btn btn-success"

@@ -22,7 +22,7 @@ module QA
         end
       end
 
-      it 'publishes a maven package and deletes it' do
+      it 'publishes a maven package and deletes it', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/943' do
         uri = URI.parse(Runtime::Scenario.gitlab_address)
         gitlab_address_with_port = "#{uri.scheme}://#{uri.host}:#{uri.port}"
         pom_xml = {
@@ -95,7 +95,7 @@ module QA
         end
 
         Page::Project::Packages::Index.perform do |index|
-          expect(index).to have_content("Package was removed")
+          expect(index).to have_content("Package deleted successfully")
           expect(index).to have_no_package(package_name)
         end
       end

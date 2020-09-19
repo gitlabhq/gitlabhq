@@ -6,7 +6,7 @@ module Gitlab
       module StageEvents
         class ProductionStageEnd < StageEvent
           def self.name
-            _("Issue first depoloyed to production")
+            _("Issue first deployed to production")
           end
 
           def self.identifier

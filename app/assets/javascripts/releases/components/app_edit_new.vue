@@ -1,4 +1,5 @@
 <script>
+/* eslint-disable vue/no-v-html */
 import { mapState, mapActions, mapGetters } from 'vuex';
 import { GlButton, GlFormInput, GlFormGroup } from '@gitlab/ui';
 import { __, sprintf } from '~/locale';
@@ -139,7 +140,7 @@ export default {
           class="form-control"
         />
       </gl-form-group>
-      <gl-form-group class="w-50" @keydown.enter.prevent.capture>
+      <gl-form-group class="w-50" data-testid="milestones-field">
         <label>{{ __('Milestones') }}</label>
         <div class="d-flex flex-column col-md-6 col-sm-10 pl-0">
           <milestone-combobox

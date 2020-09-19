@@ -28,8 +28,8 @@ export default function initFrequentItemDropdowns() {
       return;
     }
 
-    $(navEl).on('shown.bs.dropdown', () =>
-      import('./components/app.vue').then(({ default: FrequentItems }) => {
+    import('./components/app.vue')
+      .then(({ default: FrequentItems }) => {
         // eslint-disable-next-line no-new
         new Vue({
           el,
@@ -59,9 +59,11 @@ export default function initFrequentItemDropdowns() {
             });
           },
         });
+      })
+      .catch(() => {});
 
-        eventHub.$emit(`${namespace}-dropdownOpen`);
-      }),
-    );
+    $(navEl).on('shown.bs.dropdown', () => {
+      eventHub.$emit(`${namespace}-dropdownOpen`);
+    });
   });
 }

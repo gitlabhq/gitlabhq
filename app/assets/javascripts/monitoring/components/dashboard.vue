@@ -2,7 +2,7 @@
 import { mapActions, mapState, mapGetters } from 'vuex';
 import VueDraggable from 'vuedraggable';
 import Mousetrap from 'mousetrap';
-import { GlButton, GlModalDirective, GlTooltipDirective } from '@gitlab/ui';
+import { GlButton, GlModalDirective, GlTooltipDirective, GlIcon } from '@gitlab/ui';
 import DashboardHeader from './dashboard_header.vue';
 import DashboardPanel from './dashboard_panel.vue';
 import { s__ } from '~/locale';
@@ -10,7 +10,6 @@ import { deprecatedCreateFlash as createFlash } from '~/flash';
 import { ESC_KEY } from '~/lib/utils/keys';
 import { mergeUrlParams, updateHistory } from '~/lib/utils/url_utility';
 import invalidUrl from '~/lib/utils/invalid_url';
-import Icon from '~/vue_shared/components/icon.vue';
 
 import GraphGroup from './graph_group.vue';
 import EmptyState from './empty_state.vue';
@@ -33,7 +32,7 @@ export default {
     VueDraggable,
     DashboardHeader,
     DashboardPanel,
-    Icon,
+    GlIcon,
     GlButton,
     GraphGroup,
     EmptyState,
@@ -473,7 +472,7 @@ export default {
                   @click="removePanel(groupData.key, groupData.panels, graphIndex)"
                 >
                   <a class="mx-2 p-2 draggable-remove-link" :aria-label="__('Remove')">
-                    <icon name="close" />
+                    <gl-icon name="close" />
                   </a>
                 </div>
 

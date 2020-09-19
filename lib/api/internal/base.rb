@@ -241,13 +241,15 @@ module API
             break { success: false, message: "Invalid token expiry date: '#{params[:expires_at]}'" }
           end
 
-          access_token = nil
+          result = ::PersonalAccessTokens::CreateService.new(
+            user, name: params[:name], scopes: params[:scopes], expires_at: expires_at
+          ).execute
 
-          ::Users::UpdateService.new(current_user, user: user).execute! do |user|
-            access_token = user.personal_access_tokens.create!(
-              name: params[:name], scopes: params[:scopes], expires_at: expires_at
-            )
+          unless result.status == :success
+            break { success: false, message: "Failed to create token: #{result.message}" }
           end
+
+          access_token = result.payload[:personal_access_token]
 
           { success: true, token: access_token.token, scopes: access_token.scopes, expires_at: access_token.expires_at }
         end

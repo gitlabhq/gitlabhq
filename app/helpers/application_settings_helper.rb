@@ -222,6 +222,8 @@ module ApplicationSettingsHelper
       :gitaly_timeout_default,
       :gitaly_timeout_medium,
       :gitaly_timeout_fast,
+      :gitpod_enabled,
+      :gitpod_url,
       :grafana_enabled,
       :grafana_url,
       :gravatar_enabled,
@@ -298,7 +300,6 @@ module ApplicationSettingsHelper
       :unique_ips_limit_per_user,
       :unique_ips_limit_time_window,
       :usage_ping_enabled,
-      :instance_statistics_visibility_private,
       :user_default_external,
       :user_show_add_ssh_key_message,
       :user_default_internal_regex,
@@ -313,7 +314,6 @@ module ApplicationSettingsHelper
       :snowplow_cookie_domain,
       :snowplow_enabled,
       :snowplow_app_id,
-      :snowplow_iglu_registry_url,
       :push_event_hooks_limit,
       :push_event_activities_limit,
       :custom_http_clone_url_root,
@@ -328,7 +328,8 @@ module ApplicationSettingsHelper
       :group_import_limit,
       :group_export_limit,
       :group_download_export_limit,
-      :wiki_page_max_content_bytes
+      :wiki_page_max_content_bytes,
+      :container_registry_delete_tags_service_timeout
     ]
   end
 

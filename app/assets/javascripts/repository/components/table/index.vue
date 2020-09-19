@@ -1,5 +1,5 @@
 <script>
-import { GlSkeletonLoading } from '@gitlab/ui';
+import { GlDeprecatedSkeletonLoading as GlSkeletonLoading, GlButton } from '@gitlab/ui';
 import { sprintf, __ } from '../../../locale';
 import getRefMixin from '../../mixins/get_ref';
 import projectPathQuery from '../../queries/project_path.query.graphql';
@@ -13,6 +13,7 @@ export default {
     TableHeader,
     TableRow,
     ParentRow,
+    GlButton,
   },
   mixins: [getRefMixin],
   apollo: {
@@ -39,6 +40,10 @@ export default {
       required: false,
       default: '',
     },
+    hasMore: {
+      type: Boolean,
+      required: true,
+    },
   },
   data() {
     return {
@@ -63,6 +68,11 @@ export default {
     },
     showParentRow() {
       return !this.isLoading && ['', '/'].indexOf(this.path) === -1;
+    },
+  },
+  methods: {
+    showMore() {
+      this.$emit('showMore');
     },
   },
 };
@@ -108,6 +118,20 @@ export default {
               <td><gl-skeleton-loading :lines="1" class="h-auto" /></td>
               <td><gl-skeleton-loading :lines="1" class="h-auto" /></td>
               <td><gl-skeleton-loading :lines="1" class="ml-auto h-auto w-50" /></td>
+            </tr>
+          </template>
+          <template v-if="hasMore">
+            <tr>
+              <td align="center" colspan="3" class="gl-p-0!">
+                <gl-button
+                  variant="link"
+                  class="gl-display-flex gl-w-full gl-py-4!"
+                  :loading="isLoading"
+                  @click="showMore"
+                >
+                  {{ s__('ProjectFileTree|Show more') }}
+                </gl-button>
+              </td>
             </tr>
           </template>
         </tbody>

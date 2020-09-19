@@ -5,13 +5,14 @@ require 'spec_helper'
 RSpec.describe MergeRequests::CreatePipelineService do
   include ProjectForksHelper
 
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project, reload: true) { create(:project, :repository) }
   let_it_be(:user) { create(:user) }
   let(:service) { described_class.new(project, actor, params) }
   let(:actor) { user }
   let(:params) { {} }
 
   before do
+    stub_feature_flags(ci_disallow_to_create_merge_request_pipelines_in_target_project: false)
     project.add_developer(user)
   end
 
@@ -58,9 +59,27 @@ RSpec.describe MergeRequests::CreatePipelineService do
           expect(subject.project).to eq(project)
         end
 
-        context 'when ci_allow_to_create_merge_request_pipelines_in_target_project feature flag is disabled' do
+        context 'when source branch is protected' do
+          context 'when actor does not have permission to update the protected branch in target project' do
+            let!(:protected_branch) { create(:protected_branch, name: '*', project: project) }
+
+            it 'creates a pipeline in the source project' do
+              expect(subject.project).to eq(source_project)
+            end
+          end
+
+          context 'when actor has permission to update the protected branch in target project' do
+            let!(:protected_branch) { create(:protected_branch, :developers_can_merge, name: '*', project: project) }
+
+            it 'creates a pipeline in the target project' do
+              expect(subject.project).to eq(project)
+            end
+          end
+        end
+
+        context 'when ci_disallow_to_create_merge_request_pipelines_in_target_project feature flag is enabled' do
           before do
-            stub_feature_flags(ci_allow_to_create_merge_request_pipelines_in_target_project: false)
+            stub_feature_flags(ci_disallow_to_create_merge_request_pipelines_in_target_project: true)
           end
 
           it 'creates a pipeline in the source project' do

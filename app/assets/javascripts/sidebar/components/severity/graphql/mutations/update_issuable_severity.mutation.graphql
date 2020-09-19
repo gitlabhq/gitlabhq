@@ -1,0 +1,9 @@
+mutation updateIssuableSeverity($projectPath: ID!, $severity: IssuableSeverity!, $iid: String!) {
+  issueSetSeverity(input: { iid: $iid, severity: $severity, projectPath: $projectPath }) {
+    errors
+    issue {
+      iid
+      severity
+    }
+  }
+}

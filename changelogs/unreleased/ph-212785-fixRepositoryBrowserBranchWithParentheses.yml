@@ -1,0 +1,5 @@
+---
+title: Fixed repository browser not working with parentheses in branch name
+merge_request: 41591
+author:
+type: fixed

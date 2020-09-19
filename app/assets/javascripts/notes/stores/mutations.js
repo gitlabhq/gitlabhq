@@ -379,4 +379,7 @@ export default {
   [types.UPDATE_ASSIGNEES](state, assignees) {
     state.noteableData.assignees = assignees;
   },
+  [types.SET_FETCHING_DISCUSSIONS](state, value) {
+    state.currentlyFetchingDiscussions = value;
+  },
 };

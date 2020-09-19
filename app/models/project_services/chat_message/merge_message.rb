@@ -5,6 +5,7 @@ module ChatMessage
     attr_reader :merge_request_iid
     attr_reader :source_branch
     attr_reader :target_branch
+    attr_reader :action
     attr_reader :state
     attr_reader :title
 
@@ -16,6 +17,7 @@ module ChatMessage
       @merge_request_iid = obj_attr[:iid]
       @source_branch = obj_attr[:source_branch]
       @target_branch = obj_attr[:target_branch]
+      @action = obj_attr[:action]
       @state = obj_attr[:state]
       @title = format_title(obj_attr[:title])
     end
@@ -63,11 +65,17 @@ module ChatMessage
       "#{project_url}/-/merge_requests/#{merge_request_iid}"
     end
 
-    # overridden in EE
     def state_or_action_text
-      state
+      case action
+      when 'approved', 'unapproved'
+        action
+      when 'approval'
+        'added their approval to'
+      when 'unapproval'
+        'removed their approval from'
+      else
+        state
+      end
     end
   end
 end
-
-ChatMessage::MergeMessage.prepend_if_ee('::EE::ChatMessage::MergeMessage')

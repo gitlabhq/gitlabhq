@@ -19,7 +19,7 @@
               = _('Enable classification control using an external service')
           %span.form-text.text-muted
             = external_authorization_description
-            = link_to icon('question-circle'), help_page_path('user/admin_area/settings/external_authorization')
+            = link_to sprite_icon('question-o'), help_page_path('user/admin_area/settings/external_authorization')
         .form-group
           = f.label :external_authorization_service_url, _('Service URL'), class: 'label-bold'
           = f.text_field :external_authorization_service_url, class: 'form-control'

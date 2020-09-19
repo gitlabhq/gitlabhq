@@ -1,0 +1,7 @@
+- breadcrumb_title _("Cohorts")
+- page_title _("Cohorts")
+
+- if @cohorts
+  = render 'cohorts_table'
+- else
+  #js-cohorts-empty-state{ data: { empty_state_svg_path: image_path('illustrations/convdev/convdev_no_index.svg'), enable_usage_ping_link: metrics_and_profiling_admin_application_settings_path(anchor: 'js-usage-settings'), docs_link: help_page_path('user/admin_area/analytics/user_cohorts') } }

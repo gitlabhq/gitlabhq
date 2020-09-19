@@ -12,7 +12,7 @@ Actionable insights always have a follow-up action that needs to take place as a
 
 #### Description
 
-- [ ] Provide some brief detials on the actionable insight and the action to take
+- [ ] Provide some brief details on the actionable insight and the action to take
 
 -------------------------------------------------------------------------------
 
@@ -28,4 +28,4 @@ Actionable insights always have a follow-up action that needs to take place as a
 
 
 
- ~"Actionable Insight" 
+ /label ~"Actionable Insight" 

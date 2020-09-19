@@ -161,6 +161,15 @@ describe('URL utility', () => {
       );
     });
 
+    it('sorts params in alphabetical order with sort option', () => {
+      expect(mergeUrlParams({ c: 'c', b: 'b', a: 'a' }, 'https://host/path', { sort: true })).toBe(
+        'https://host/path?a=a&b=b&c=c',
+      );
+      expect(
+        mergeUrlParams({ alpha: 'alpha' }, 'https://host/path?op=/&foo=bar', { sort: true }),
+      ).toBe('https://host/path?alpha=alpha&foo=bar&op=%2F');
+    });
+
     describe('with spread array option', () => {
       const spreadArrayOptions = { spreadArrays: true };
 
@@ -615,6 +624,35 @@ describe('URL utility', () => {
       const searchQuery = '?one=1&two=2&three';
 
       expect(urlUtils.queryToObject(searchQuery)).toEqual({ one: '1', two: '2' });
+    });
+
+    describe('with gatherArrays=false', () => {
+      it('overwrites values with the same array-key and does not change the key', () => {
+        const searchQuery = '?one[]=1&one[]=2&two=2&two=3';
+
+        expect(urlUtils.queryToObject(searchQuery)).toEqual({ 'one[]': '2', two: '3' });
+      });
+    });
+
+    describe('with gatherArrays=true', () => {
+      const options = { gatherArrays: true };
+      it('gathers only values with the same array-key and strips `[]` from the key', () => {
+        const searchQuery = '?one[]=1&one[]=2&two=2&two=3';
+
+        expect(urlUtils.queryToObject(searchQuery, options)).toEqual({ one: ['1', '2'], two: '3' });
+      });
+
+      it('overwrites values with the same array-key name', () => {
+        const searchQuery = '?one=1&one[]=2&two=2&two=3';
+
+        expect(urlUtils.queryToObject(searchQuery, options)).toEqual({ one: ['2'], two: '3' });
+      });
+
+      it('overwrites values with the same key name', () => {
+        const searchQuery = '?one[]=1&one=2&two=2&two=3';
+
+        expect(urlUtils.queryToObject(searchQuery, options)).toEqual({ one: '2', two: '3' });
+      });
     });
   });
 

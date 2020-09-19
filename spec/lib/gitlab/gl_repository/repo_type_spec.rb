@@ -17,7 +17,7 @@ RSpec.describe Gitlab::GlRepository::RepoType do
       let(:expected_identifier) { "project-#{expected_id}" }
       let(:expected_suffix) { '' }
       let(:expected_container) { project }
-      let(:expected_repository) { expected_container.repository }
+      let(:expected_repository) { ::Repository.new(project.full_path, project, shard: project.repository_storage, disk_path: project.disk_path, repo_type: Gitlab::GlRepository::PROJECT) }
     end
 
     it 'knows its type' do
@@ -46,7 +46,7 @@ RSpec.describe Gitlab::GlRepository::RepoType do
       let(:expected_identifier) { "wiki-#{expected_id}" }
       let(:expected_suffix) { '.wiki' }
       let(:expected_container) { project }
-      let(:expected_repository) { expected_container.wiki.repository }
+      let(:expected_repository) { ::Repository.new(project.wiki.full_path, project, shard: project.wiki.repository_storage, disk_path: project.wiki.disk_path, repo_type: Gitlab::GlRepository::WIKI) }
     end
 
     it 'knows its type' do
@@ -75,7 +75,7 @@ RSpec.describe Gitlab::GlRepository::RepoType do
         let(:expected_id) { personal_snippet.id }
         let(:expected_identifier) { "snippet-#{expected_id}" }
         let(:expected_suffix) { '' }
-        let(:expected_repository) { personal_snippet.repository }
+        let(:expected_repository) { ::Repository.new(personal_snippet.full_path, personal_snippet, shard: personal_snippet.repository_storage, disk_path: personal_snippet.disk_path, repo_type: Gitlab::GlRepository::SNIPPET) }
         let(:expected_container) { personal_snippet }
       end
 
@@ -104,7 +104,7 @@ RSpec.describe Gitlab::GlRepository::RepoType do
         let(:expected_id) { project_snippet.id }
         let(:expected_identifier) { "snippet-#{expected_id}" }
         let(:expected_suffix) { '' }
-        let(:expected_repository) { project_snippet.repository }
+        let(:expected_repository) { ::Repository.new(project_snippet.full_path, project_snippet, shard: project_snippet.repository_storage, disk_path: project_snippet.disk_path, repo_type: Gitlab::GlRepository::SNIPPET) }
         let(:expected_container) { project_snippet }
       end
 
@@ -133,8 +133,12 @@ RSpec.describe Gitlab::GlRepository::RepoType do
       let(:expected_identifier) { "design-#{project.id}" }
       let(:expected_id) { project.id }
       let(:expected_suffix) { '.design' }
-      let(:expected_repository) { project.design_repository }
+      let(:expected_repository) { ::DesignManagement::Repository.new(project) }
       let(:expected_container) { project }
+    end
+
+    it 'uses the design access checker' do
+      expect(described_class.access_checker_class).to eq(::Gitlab::GitAccessDesign)
     end
 
     it 'knows its type' do

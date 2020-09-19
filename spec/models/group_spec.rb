@@ -27,6 +27,7 @@ RSpec.describe Group do
     it { is_expected.to have_many(:milestones) }
     it { is_expected.to have_many(:iterations) }
     it { is_expected.to have_many(:group_deploy_keys) }
+    it { is_expected.to have_many(:services) }
 
     describe '#members & #requesters' do
       let(:requester) { create(:user) }
@@ -652,6 +653,19 @@ RSpec.describe Group do
         expect(shared_group.max_member_access_for_user(user)).to eq(Gitlab::Access::MAINTAINER)
       end
     end
+
+    context 'evaluating admin access level' do
+      let_it_be(:admin) { create(:admin) }
+
+      it 'returns OWNER by default' do
+        expect(group.max_member_access_for_user(admin)).to eq(Gitlab::Access::OWNER)
+      end
+
+      it 'returns NO_ACCESS when only concrete membership should be considered' do
+        expect(group.max_member_access_for_user(admin, only_concrete_membership: true))
+          .to eq(Gitlab::Access::NO_ACCESS)
+      end
+    end
   end
 
   describe '#members_with_parents' do
@@ -692,6 +706,7 @@ RSpec.describe Group do
     before do
       create(:group_member, user: user, group: group_parent, access_level: parent_group_access_level)
       create(:group_member, user: user, group: group, access_level: group_access_level)
+      create(:group_member, :minimal_access, user: create(:user), source: group)
       create(:group_member, user: user, group: group_child, access_level: child_group_access_level)
     end
 

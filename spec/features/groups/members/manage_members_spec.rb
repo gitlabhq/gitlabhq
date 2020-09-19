@@ -11,6 +11,8 @@ RSpec.describe 'Groups > Members > Manage members' do
   let(:group) { create(:group) }
 
   before do
+    stub_feature_flags(vue_group_members_list: false)
+
     sign_in(user1)
   end
 

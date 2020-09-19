@@ -3,7 +3,7 @@ import { shallowMount, createLocalVue } from '@vue/test-utils';
 import { npmPackage as packageEntity } from 'jest/packages/mock_data';
 import { registryUrl as nugetPath } from 'jest/packages/details/mock_data';
 import NpmInstallation from '~/packages/details/components/npm_installation.vue';
-import CodeInstructions from '~/packages/details/components/code_instruction.vue';
+import CodeInstructions from '~/vue_shared/components/registry/code_instruction.vue';
 import { TrackingActions } from '~/packages/details/constants';
 import { npmInstallationCommand, npmSetupCommand } from '~/packages/details/store/getters';
 
@@ -78,7 +78,7 @@ describe('NpmInstallation', () => {
           .at(2)
           .props(),
       ).toMatchObject({
-        instruction: 'echo @Test:registry=undefined >> .npmrc',
+        instruction: 'echo @Test:registry=undefined/ >> .npmrc',
         multiline: false,
         trackingAction: TrackingActions.COPY_NPM_SETUP_COMMAND,
       });
@@ -90,7 +90,7 @@ describe('NpmInstallation', () => {
           .at(3)
           .props(),
       ).toMatchObject({
-        instruction: 'echo \\"@Test:registry\\" \\"undefined\\" >> .yarnrc',
+        instruction: 'echo \\"@Test:registry\\" \\"undefined/\\" >> .yarnrc',
         multiline: false,
         trackingAction: TrackingActions.COPY_YARN_SETUP_COMMAND,
       });

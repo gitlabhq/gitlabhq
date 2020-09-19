@@ -108,7 +108,7 @@
                     {{name}}
 
           = button_tag class: %w[clear-search hidden] do
-            = icon('times')
+            = sprite_icon('close', size: 16, css_class: 'clear-search-icon')
         .filter-dropdown-container
           = render 'sort_dropdown'
 

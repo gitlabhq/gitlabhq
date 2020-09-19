@@ -37,13 +37,13 @@ GitLab displays identified secrets visibly in a few places:
 To run Secret Detection jobs, by default, you need GitLab Runner with the
 [`docker`](https://docs.gitlab.com/runner/executors/docker.html) or
 [`kubernetes`](https://docs.gitlab.com/runner/install/kubernetes.html) executor.
-If you're using the shared Runners on GitLab.com, this is enabled by default.
+If you're using the shared runners on GitLab.com, this is enabled by default.
 
 CAUTION: **Caution:**
 Our Secret Detection jobs currently expect a Linux container type. Windows containers are not yet supported.
 
 CAUTION: **Caution:**
-If you use your own Runners, make sure the Docker version installed
+If you use your own runners, make sure the Docker version installed
 is **not** `19.03.0`. See [troubleshooting information](../sast#error-response-from-daemon-error-processing-tar-file-docker-tar-relocation-error) for details.
 
 ### Making Secret Detection available to all GitLab tiers
@@ -83,7 +83,7 @@ variable. For example, `https://username:$password@example.com/path/to/repo` won
 detected, whereas `https://username:password@example.com/path/to/repo` would be detected.
 
 NOTE: **Note:**
-You don't have to configure Secret Detection manually as shown in this section if you're using [Auto Secret Detection](../../../topics/autodevops/stages.md#auto-secret-detection-ultimate)
+You don't have to configure Secret Detection manually as shown in this section if you're using [Auto Secret Detection](../../../topics/autodevops/stages.md#auto-secret-detection)
 provided by [Auto DevOps](../../../topics/autodevops/index.md).
 
 To enable Secret Detection for GitLab 13.1 and later, you must include the `Secret-Detection.gitlab-ci.yml` template that’s provided as a part of your GitLab installation. For GitLab versions earlier than 11.9, you can copy and use the job as defined in that template.
@@ -99,7 +99,7 @@ The included template creates Secret Detection jobs in your CI/CD pipeline and s
 your project's source code for secrets.
 
 The results are saved as a
-[Secret Detection report artifact](../../../ci/pipelines/job_artifacts.md#artifactsreportssecret_detection-ultimate)
+[Secret Detection report artifact](../../../ci/pipelines/job_artifacts.md#artifactsreportssecret_detection)
 that you can later download and analyze. Due to implementation limitations, we
 always take the latest Secret Detection artifact available.
 

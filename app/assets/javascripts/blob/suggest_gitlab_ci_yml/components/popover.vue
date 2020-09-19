@@ -49,6 +49,10 @@ export default {
       type: String,
       required: true,
     },
+    mergeRequestPath: {
+      type: String,
+      required: true,
+    },
   },
   data() {
     return {
@@ -109,7 +113,7 @@ export default {
     :css-classes="['suggest-gitlab-ci-yml', 'ml-4']"
   >
     <template #title>
-      <span v-html="suggestTitle"></span>
+      <span>{{ suggestTitle }}</span>
       <span class="ml-auto">
         <gl-button
           :aria-label="__('Close')"

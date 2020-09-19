@@ -54,5 +54,8 @@ export const createLabel = ({ state, dispatch }, label) => {
     });
 };
 
+export const replaceSelectedLabels = ({ commit }, selectedLabels) =>
+  commit(types.REPLACE_SELECTED_LABELS, selectedLabels);
+
 export const updateSelectedLabels = ({ commit }, labels) =>
   commit(types.UPDATE_SELECTED_LABELS, { labels });

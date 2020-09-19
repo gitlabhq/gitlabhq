@@ -181,7 +181,7 @@ RSpec.describe API::Branches do
 
     context 'when unauthenticated', 'and project is public' do
       before do
-        project.update(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
+        project.update!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
       end
 
       it_behaves_like 'repository branches'
@@ -289,7 +289,7 @@ RSpec.describe API::Branches do
 
     context 'when unauthenticated', 'and project is public' do
       before do
-        project.update(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
+        project.update!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
       end
 
       it_behaves_like 'repository branch'

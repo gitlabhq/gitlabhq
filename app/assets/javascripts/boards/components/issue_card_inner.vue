@@ -1,10 +1,9 @@
 <script>
 import { sortBy } from 'lodash';
 import { mapState } from 'vuex';
-import { GlLabel, GlTooltipDirective } from '@gitlab/ui';
+import { GlLabel, GlTooltipDirective, GlIcon } from '@gitlab/ui';
 import issueCardInner from 'ee_else_ce/boards/mixins/issue_card_inner';
 import { sprintf, __ } from '~/locale';
-import Icon from '~/vue_shared/components/icon.vue';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate.vue';
 import UserAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
 import IssueDueDate from './issue_due_date.vue';
@@ -15,7 +14,7 @@ import { isScopedLabel } from '~/lib/utils/common_utils';
 export default {
   components: {
     GlLabel,
-    Icon,
+    GlIcon,
     UserAvatarLink,
     TooltipOnTruncate,
     IssueDueDate,
@@ -31,28 +30,23 @@ export default {
       type: Object,
       required: true,
     },
-    issueLinkBase: {
-      type: String,
-      required: true,
-    },
     list: {
       type: Object,
       required: false,
       default: () => ({}),
-    },
-    rootPath: {
-      type: String,
-      required: true,
     },
     updateFilters: {
       type: Boolean,
       required: false,
       default: false,
     },
+  },
+  inject: {
     groupId: {
       type: Number,
-      required: false,
-      default: null,
+    },
+    rootPath: {
+      type: String,
     },
   },
   data() {
@@ -148,7 +142,7 @@ export default {
   <div>
     <div class="d-flex board-card-header" dir="auto">
       <h4 class="board-card-title gl-mb-0 gl-mt-0">
-        <icon
+        <gl-icon
           v-if="issue.blocked"
           v-gl-tooltip
           name="issue-block"
@@ -156,7 +150,7 @@ export default {
           class="issue-blocked-icon gl-mr-2"
           :aria-label="__('Blocked issue')"
         />
-        <icon
+        <gl-icon
           v-if="issue.confidential"
           v-gl-tooltip
           name="eye-slash"

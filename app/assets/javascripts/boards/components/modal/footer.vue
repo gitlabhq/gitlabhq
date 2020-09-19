@@ -1,4 +1,5 @@
 <script>
+import { GlButton } from '@gitlab/ui';
 import footerEEMixin from 'ee_else_ce/boards/mixins/modal_footer';
 import { deprecatedCreateFlash as Flash } from '../../../flash';
 import { __, n__ } from '../../../locale';
@@ -10,6 +11,7 @@ import boardsStore from '../../stores/boards_store';
 export default {
   components: {
     ListsDropdown,
+    GlButton,
   },
   mixins: [modalMixin, footerEEMixin],
   data() {
@@ -65,14 +67,14 @@ export default {
 <template>
   <footer class="form-actions add-issues-footer">
     <div class="float-left">
-      <button :disabled="submitDisabled" class="btn btn-success" type="button" @click="addIssues">
+      <gl-button :disabled="submitDisabled" category="primary" variant="success" @click="addIssues">
         {{ submitText }}
-      </button>
+      </gl-button>
       <span class="inline add-issues-footer-to-list">{{ __('to list') }}</span>
       <lists-dropdown />
     </div>
-    <button class="btn btn-default float-right" type="button" @click="toggleModal(false)">
+    <gl-button class="float-right" @click="toggleModal(false)">
       {{ __('Cancel') }}
-    </button>
+    </gl-button>
   </footer>
 </template>

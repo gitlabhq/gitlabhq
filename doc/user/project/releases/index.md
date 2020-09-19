@@ -100,7 +100,7 @@ To edit the details of a release:
 1. Click **Save changes**.
 
 You can edit the release title, notes, associated milestones, and asset links.
-To change other release information, such as the tag or release date, use the
+To change the release date use the
 [Releases API](../../../api/releases/index.md#update-a-release).
 
 ## Add release notes to Git tags
@@ -322,13 +322,14 @@ The four types of links are "Runbook," "Package," "Image," and "Other."
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/26019) in GitLab 12.6.
 
 Each time a release is created, GitLab takes a snapshot of data that's related to it.
-This data is saved in a JSON file and called *release evidence*. It includes linked milestones
-and issues and can facilitate internal processes like external audits.
+This data is saved in a JSON file and called *release evidence*. The feature currently
+includes test artifacts and linked milestones (and will include issues) to facilitate
+internal processes, like external audits.
 
 To access the release evidence, on the Releases page, click the link to the JSON file that's listed
 under the **Evidence collection** heading.
 
-You can also [use the API](../../../api/releases/index.md#collect-release-evidence-premium-only) to
+You can also [use the API](../../../api/releases/index.md#collect-release-evidence) to
 generate release evidence for an existing release. Because of this, each release
 can have multiple release evidence snapshots. You can view the release evidence and
 its details on the Releases page.
@@ -400,7 +401,7 @@ Here is an example of a release evidence object:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/199065) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.10.
 
-When a release is created, release evidence is automatically collected. To initiate evidence collection any other time, use an [API call](../../../api/releases/index.md#collect-release-evidence-premium-only). You can collect release evidence multiple times for one release.
+When a release is created, release evidence is automatically collected. To initiate evidence collection any other time, use an [API call](../../../api/releases/index.md#collect-release-evidence). You can collect release evidence multiple times for one release.
 
 Evidence collection snapshots are visible on the Releases page, along with the timestamp the evidence was collected.
 

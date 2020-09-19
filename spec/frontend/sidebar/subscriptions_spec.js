@@ -100,7 +100,7 @@ describe('Subscriptions', () => {
     });
 
     it('does not render the toggle button', () => {
-      expect(wrapper.contains('.js-issuable-subscribe-button')).toBe(false);
+      expect(wrapper.find('.js-issuable-subscribe-button').exists()).toBe(false);
     });
   });
 });

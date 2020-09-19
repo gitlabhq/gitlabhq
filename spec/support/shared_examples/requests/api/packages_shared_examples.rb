@@ -41,3 +41,88 @@ RSpec.shared_examples 'deploy token for package uploads' do
     end
   end
 end
+
+RSpec.shared_examples 'does not cause n^2 queries' do
+  it 'avoids N^2 database queries' do
+    # we create a package to set the baseline for expected queries from 1 package
+    create(
+      :npm_package,
+      name: "@#{project.root_namespace.path}/my-package",
+      project: project,
+      version: "0.0.1"
+    )
+
+    control = ActiveRecord::QueryRecorder.new do
+      get api(url)
+    end
+
+    5.times do |n|
+      create(
+        :npm_package,
+        name: "@#{project.root_namespace.path}/my-package",
+        project: project,
+        version: "#{n}.0.0"
+      )
+    end
+
+    expect do
+      get api(url)
+    end.not_to exceed_query_limit(control)
+  end
+end
+
+RSpec.shared_examples 'job token for package GET requests' do
+  context 'with job token headers' do
+    let(:headers) { basic_auth_header(::Gitlab::Auth::CI_JOB_USER, job.token) }
+
+    subject { get api(url), headers: headers }
+
+    before do
+      project.update!(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
+      project.add_developer(user)
+    end
+
+    context 'valid token' do
+      it_behaves_like 'returning response status', :success
+    end
+
+    context 'invalid token' do
+      let(:headers) { basic_auth_header(::Gitlab::Auth::CI_JOB_USER, 'bar') }
+
+      it_behaves_like 'returning response status', :unauthorized
+    end
+
+    context 'invalid user' do
+      let(:headers) { basic_auth_header('foo', job.token) }
+
+      it_behaves_like 'returning response status', :unauthorized
+    end
+  end
+end
+
+RSpec.shared_examples 'job token for package uploads' do
+  context 'with job token headers' do
+    let(:headers) { basic_auth_header(::Gitlab::Auth::CI_JOB_USER, job.token).merge(workhorse_header) }
+
+    before do
+      project.update!(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
+      project.add_developer(user)
+    end
+
+    context 'valid token' do
+      it_behaves_like 'returning response status', :success
+    end
+
+    context 'invalid token' do
+      let(:headers) { basic_auth_header(::Gitlab::Auth::CI_JOB_USER, 'bar').merge(workhorse_header) }
+
+      it_behaves_like 'returning response status', :unauthorized
+    end
+
+    context 'invalid user' do
+      let(:headers) { basic_auth_header('foo', job.token).merge(workhorse_header) }
+
+      it_behaves_like 'returning response status', :unauthorized
+    end
+  end
+end

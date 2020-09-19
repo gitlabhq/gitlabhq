@@ -1,6 +1,5 @@
 import { sprintf, __ } from '~/locale';
 import { deprecatedCreateFlash as flash } from '~/flash';
-import httpStatusCodes from '~/lib/utils/http_status';
 import * as rootTypes from '../../mutation_types';
 import { createCommitPayload, createNewMergeRequestUrl } from '../../utils';
 import service from '../../../services';
@@ -8,6 +7,7 @@ import * as types from './mutation_types';
 import consts from './constants';
 import { leftSidebarViews } from '../../../constants';
 import eventHub from '../../../eventhub';
+import { parseCommitError } from '../../../lib/errors';
 
 export const updateCommitMessage = ({ commit }, message) => {
   commit(types.UPDATE_COMMIT_MESSAGE, message);
@@ -113,6 +113,7 @@ export const commitChanges = ({ commit, state, getters, dispatch, rootState, roo
     ? Promise.resolve()
     : dispatch('stageAllChanges', null, { root: true });
 
+  commit(types.CLEAR_ERROR);
   commit(types.UPDATE_LOADING, true);
 
   return stageFilesPromise
@@ -127,6 +128,12 @@ export const commitChanges = ({ commit, state, getters, dispatch, rootState, roo
       });
 
       return service.commit(rootState.currentProjectId, payload);
+    })
+    .catch(e => {
+      commit(types.UPDATE_LOADING, false);
+      commit(types.SET_ERROR, parseCommitError(e));
+
+      throw e;
     })
     .then(({ data }) => {
       commit(types.UPDATE_LOADING, false);
@@ -214,24 +221,5 @@ export const commitChanges = ({ commit, state, getters, dispatch, rootState, roo
             { root: true },
           ),
         );
-    })
-    .catch(err => {
-      commit(types.UPDATE_LOADING, false);
-
-      // don't catch bad request errors, let the view handle them
-      if (err.response.status === httpStatusCodes.BAD_REQUEST) throw err;
-
-      dispatch(
-        'setErrorMessage',
-        {
-          text: __('An error occurred while committing your changes.'),
-          action: () =>
-            dispatch('commitChanges').then(() => dispatch('setErrorMessage', null, { root: true })),
-          actionText: __('Please try again'),
-        },
-        { root: true },
-      );
-
-      window.dispatchEvent(new Event('resize'));
     });
 };

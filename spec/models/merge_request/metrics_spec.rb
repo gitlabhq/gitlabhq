@@ -9,17 +9,6 @@ RSpec.describe MergeRequest::Metrics do
     it { is_expected.to belong_to(:merged_by).class_name('User') }
   end
 
-  it 'sets `target_project_id` before save' do
-    merge_request = create(:merge_request)
-    metrics = merge_request.metrics
-
-    metrics.update_column(:target_project_id, nil)
-
-    metrics.save!
-
-    expect(metrics.target_project_id).to eq(merge_request.target_project_id)
-  end
-
   describe 'scopes' do
     let_it_be(:metrics_1) { create(:merge_request).metrics.tap { |m| m.update!(merged_at: 10.days.ago) } }
     let_it_be(:metrics_2) { create(:merge_request).metrics.tap { |m| m.update!(merged_at: 5.days.ago) } }

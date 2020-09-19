@@ -1,0 +1,5 @@
+---
+title: Add emails user_id foreign key with cascade delete
+merge_request: 39899
+author:
+type: other

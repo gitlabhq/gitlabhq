@@ -479,6 +479,22 @@ RSpec.describe Snippets::UpdateService do
               expect(blob.data).to eq content
             end
           end
+
+          context 'when the file_path is not present' do
+            let(:snippet_actions) { [{ action: :move, previous_path: file_path }] }
+
+            it 'generates the name for the renamed file' do
+              old_blob = blob(file_path)
+
+              expect(blob('snippetfile1.txt')).to be_nil
+              expect(subject).to be_success
+
+              new_blob = blob('snippetfile1.txt')
+
+              expect(new_blob).to be_present
+              expect(new_blob.data).to eq old_blob.data
+            end
+          end
         end
 
         context 'delete action' do
@@ -682,6 +698,7 @@ RSpec.describe Snippets::UpdateService do
       it_behaves_like 'when snippet_actions param is present'
       it_behaves_like 'only file_name is present'
       it_behaves_like 'only content is present'
+      it_behaves_like 'invalid params error response'
       it_behaves_like 'snippets spam check is performed' do
         before do
           subject
@@ -709,6 +726,7 @@ RSpec.describe Snippets::UpdateService do
       it_behaves_like 'when snippet_actions param is present'
       it_behaves_like 'only file_name is present'
       it_behaves_like 'only content is present'
+      it_behaves_like 'invalid params error response'
       it_behaves_like 'snippets spam check is performed' do
         before do
           subject

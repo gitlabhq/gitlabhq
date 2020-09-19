@@ -36,7 +36,7 @@ describe('Diff no changes empty state', () => {
       };
     });
 
-    expect(vm.contains('script')).toBe(false);
+    expect(vm.find('script').exists()).toBe(false);
   });
 
   describe('Renders', () => {

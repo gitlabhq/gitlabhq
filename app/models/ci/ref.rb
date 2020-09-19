@@ -33,8 +33,6 @@ module Ci
       state :still_failing, value: 5
 
       after_transition any => [:fixed, :success] do |ci_ref|
-        next unless ::Gitlab::Ci::Features.keep_latest_artifacts_for_ref_enabled?(ci_ref.project)
-
         ci_ref.run_after_commit do
           Ci::PipelineSuccessUnlockArtifactsWorker.perform_async(ci_ref.last_finished_pipeline_id)
         end

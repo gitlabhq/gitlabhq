@@ -5,7 +5,7 @@ RSpec.shared_examples 'system note creation' do |update_params, note_text|
 
   before do
     issuable.assign_attributes(update_params)
-    issuable.save
+    issuable.save!
   end
 
   it 'creates 1 system note with the correct content' do

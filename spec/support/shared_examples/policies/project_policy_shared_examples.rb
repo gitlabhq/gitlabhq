@@ -59,8 +59,7 @@ RSpec.shared_examples 'project policies as anonymous' do
       let(:project) { create(:project, :public, namespace: group) }
       let(:user_permissions) { [:create_merge_request_in, :create_project, :create_issue, :create_note, :upload_file, :award_emoji] }
       let(:anonymous_permissions) { guest_permissions - user_permissions }
-
-      subject { described_class.new(nil, project) }
+      let(:current_user) { anonymous }
 
       before do
         create(:group_member, :invited, group: group)
@@ -78,9 +77,8 @@ RSpec.shared_examples 'project policies as anonymous' do
   end
 
   context 'abilities for non-public projects' do
-    let(:project) { create(:project, namespace: owner.namespace) }
-
-    subject { described_class.new(nil, project) }
+    let(:project) { private_project }
+    let(:current_user) { anonymous }
 
     it { is_expected.to be_banned }
   end
@@ -109,10 +107,10 @@ RSpec.shared_examples 'deploy token does not get confused with user' do
 end
 
 RSpec.shared_examples 'project policies as guest' do
-  subject { described_class.new(guest, project) }
-
   context 'abilities for non-public projects' do
-    let(:project) { create(:project, namespace: owner.namespace) }
+    let(:project) { private_project }
+    let(:current_user) { guest }
+
     let(:reporter_public_build_permissions) do
       reporter_permissions - [:read_build, :read_pipeline]
     end
@@ -167,9 +165,8 @@ end
 
 RSpec.shared_examples 'project policies as reporter' do
   context 'abilities for non-public projects' do
-    let(:project) { create(:project, namespace: owner.namespace) }
-
-    subject { described_class.new(reporter, project) }
+    let(:project) { private_project }
+    let(:current_user) { reporter }
 
     it do
       expect_allowed(*guest_permissions)
@@ -192,9 +189,8 @@ end
 
 RSpec.shared_examples 'project policies as developer' do
   context 'abilities for non-public projects' do
-    let(:project) { create(:project, namespace: owner.namespace) }
-
-    subject { described_class.new(developer, project) }
+    let(:project) { private_project }
+    let(:current_user) { developer }
 
     it do
       expect_allowed(*guest_permissions)
@@ -217,9 +213,8 @@ end
 
 RSpec.shared_examples 'project policies as maintainer' do
   context 'abilities for non-public projects' do
-    let(:project) { create(:project, namespace: owner.namespace) }
-
-    subject { described_class.new(maintainer, project) }
+    let(:project) { private_project }
+    let(:current_user) { maintainer }
 
     it do
       expect_allowed(*guest_permissions)
@@ -242,9 +237,8 @@ end
 
 RSpec.shared_examples 'project policies as owner' do
   context 'abilities for non-public projects' do
-    let(:project) { create(:project, namespace: owner.namespace) }
-
-    subject { described_class.new(owner, project) }
+    let(:project) { private_project }
+    let(:current_user) { owner }
 
     it do
       expect_allowed(*guest_permissions)
@@ -267,9 +261,8 @@ end
 
 RSpec.shared_examples 'project policies as admin with admin mode' do
   context 'abilities for non-public projects', :enable_admin_mode do
-    let(:project) { create(:project, namespace: owner.namespace) }
-
-    subject { described_class.new(admin, project) }
+    let(:project) { private_project }
+    let(:current_user) { admin }
 
     it do
       expect_allowed(*guest_permissions)
@@ -316,9 +309,8 @@ end
 
 RSpec.shared_examples 'project policies as admin without admin mode' do
   context 'abilities for non-public projects' do
-    let(:project) { create(:project, namespace: owner.namespace) }
-
-    subject { described_class.new(admin, project) }
+    let(:project) { private_project }
+    let(:current_user) { admin }
 
     it { is_expected.to be_banned }
 

@@ -4,13 +4,17 @@ require "spec_helper"
 
 RSpec.describe "Issues > User edits issue", :js do
   let_it_be(:project) { create(:project_empty_repo, :public) }
+  let_it_be(:project_with_milestones) { create(:project_empty_repo, :public) }
   let_it_be(:user) { create(:user) }
   let_it_be(:issue) { create(:issue, project: project, author: user, assignees: [user]) }
+  let_it_be(:issue_with_milestones) { create(:issue, project: project_with_milestones, author: user, assignees: [user]) }
   let_it_be(:label) { create(:label, project: project) }
   let_it_be(:milestone) { create(:milestone, project: project) }
+  let_it_be(:milestones) { create_list(:milestone, 25, project: project_with_milestones) }
 
   before do
     project.add_developer(user)
+    project_with_milestones.add_developer(user)
     sign_in(user)
   end
 
@@ -91,11 +95,12 @@ RSpec.describe "Issues > User edits issue", :js do
     describe 'update labels' do
       it 'will not send ajax request when no data is changed' do
         page.within '.labels' do
-          click_link 'Edit'
+          click_on 'Edit'
 
-          find('.dropdown-menu-close', match: :first).click
+          find('.dropdown-title button').click
 
           expect(page).not_to have_selector('.block-loading')
+          expect(page).not_to have_selector('.gl-spinner')
         end
       end
     end
@@ -148,9 +153,7 @@ RSpec.describe "Issues > User edits issue", :js do
           visit project_issue_path(project, issue2)
 
           page.within '.assignee' do
-            page.within '.value .author' do
-              expect(page).to have_content user.name
-            end
+            expect(page).to have_content user.name
 
             click_link 'Edit'
             click_link user.name
@@ -215,6 +218,23 @@ RSpec.describe "Issues > User edits issue", :js do
 
             page.within '.value' do
               expect(page).to have_content 'None'
+            end
+          end
+        end
+
+        it 'allows user to search milestone' do
+          visit project_issue_path(project_with_milestones, issue_with_milestones)
+
+          page.within('.milestone') do
+            click_link 'Edit'
+            wait_for_requests
+            # We need to enclose search string in quotes for exact match as all the milestone titles
+            # within tests are prefixed with `My title`.
+            find('.dropdown-input-field', visible: true).send_keys "\"#{milestones[0].title}\""
+            wait_for_requests
+
+            page.within '.dropdown-content' do
+              expect(page).to have_content milestones[0].title
             end
           end
         end

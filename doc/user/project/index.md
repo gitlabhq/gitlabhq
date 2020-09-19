@@ -37,6 +37,8 @@ When you create a project in GitLab, you'll have access to a large number of
   - [Signing commits](gpg_signed_commits/index.md): use GPG to sign your commits
   - [Deploy tokens](deploy_tokens/index.md): Manage project-based deploy tokens that allow permanent access to the repository and Container Registry.
 - [Web IDE](web_ide/index.md)
+- [CVE ID Requests](../application_security/cve_id_request.md): Request a CVE identifier to track a
+  vulnerability in your project.
 
 **Issues and merge requests:**
 
@@ -192,11 +194,15 @@ To delete a project, first navigate to the home page for that project.
 
 ### Delayed deletion **(PREMIUM)**
 
-By default, clicking to delete a project is followed by a seven day delay. Admins can restore the project during this period of time.
-This delay [may be changed by an admin](../admin_area/settings/visibility_and_access_controls.md#default-deletion-delay-premium-only).
+By default, projects in a personal namespace are deleted after a seven day delay.
+
+Admins can restore the project during this period of time.
+This delay [may be changed by an admin](../admin_area/settings/visibility_and_access_controls.md#default-deletion-delay).
 
 Admins can view all projects pending deletion. If you're an administrator, go to the top navigation bar, click **Projects > Your projects**, and then select the **Deleted projects** tab.
 From this tab an admin can restore any project.
+
+For information on delay deletion of projects within a group, please see [Enabling delayed Project removal](../group/index.md#enabling-delayed-project-removal)
 
 ## CI/CD for external repositories **(PREMIUM)**
 
@@ -318,7 +324,7 @@ through Git.
 For example:
 
 ```plaintext
-machine example.gitlab.com
+machine gitlab.example.com
 login <gitlab_user_name>
 password <personal_access_token>
 ```

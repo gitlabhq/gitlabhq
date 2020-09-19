@@ -1,0 +1,5 @@
+---
+title: Set incident severity when it is created from an alert.
+merge_request: 42072
+author:
+type: added

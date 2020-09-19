@@ -57,11 +57,11 @@ describe('Board List Header Component', () => {
 
     wrapper = shallowMount(BoardListHeader, {
       propsData: {
-        boardId,
         disabled: false,
-        issueLinkBase: '/',
-        rootPath: '/',
         list,
+      },
+      provide: {
+        boardId,
       },
     });
   };
@@ -106,7 +106,7 @@ describe('Board List Header Component', () => {
       createComponent();
 
       expect(isCollapsed()).toBe(false);
-      wrapper.find('[data-testid="board-list-header"]').vm.$emit('click');
+      wrapper.find('[data-testid="board-list-header"]').trigger('click');
 
       return wrapper.vm.$nextTick().then(() => {
         expect(isCollapsed()).toBe(false);

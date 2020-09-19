@@ -1,7 +1,7 @@
 <script>
+import { GlIcon } from '@gitlab/ui';
 import { __ } from '~/locale';
 import Tracking from '~/tracking';
-import icon from '~/vue_shared/components/icon.vue';
 import toggleButton from '~/vue_shared/components/toggle_button.vue';
 import tooltip from '~/vue_shared/directives/tooltip';
 import eventHub from '../../event_hub';
@@ -16,7 +16,7 @@ export default {
     tooltip,
   },
   components: {
-    icon,
+    GlIcon,
     toggleButton,
   },
   mixins: [Tracking.mixin({ label: 'right_sidebar' })],
@@ -118,7 +118,7 @@ export default {
       data-boundary="viewport"
       @click="onClickCollapsedIcon"
     >
-      <icon
+      <gl-icon
         :name="notificationIcon"
         :size="16"
         aria-hidden="true"

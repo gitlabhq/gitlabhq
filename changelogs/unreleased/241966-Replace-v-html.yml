@@ -1,0 +1,5 @@
+---
+title: Replace v-html with v-safe-html in suggestions.vue
+merge_request: 41200
+author: Kev @KevSlashNull
+type: other

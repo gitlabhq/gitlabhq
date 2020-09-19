@@ -1,9 +1,9 @@
 <script>
-import icon from '~/vue_shared/components/icon.vue';
+import { GlIcon } from '@gitlab/ui';
 
 export default {
   components: {
-    icon,
+    GlIcon,
   },
   props: {
     isGroupOpen: {
@@ -21,5 +21,5 @@ export default {
 </script>
 
 <template>
-  <span class="folder-caret gl-mr-2"> <icon :size="10" :name="iconClass" /> </span>
+  <span class="folder-caret gl-mr-2"> <gl-icon :size="10" :name="iconClass" /> </span>
 </template>

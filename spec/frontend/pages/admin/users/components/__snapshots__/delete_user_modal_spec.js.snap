@@ -3,14 +3,15 @@
 exports[`User Operation confirmation modal renders modal with form included 1`] = `
 <div>
   <p>
-    content
+    <gl-sprintf-stub
+      message="content"
+    />
   </p>
    
   <p>
-    To confirm, type 
-    <code>
-      username
-    </code>
+    <gl-sprintf-stub
+      message="To confirm, type %{username}"
+    />
   </p>
    
   <form

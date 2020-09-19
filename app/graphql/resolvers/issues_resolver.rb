@@ -2,7 +2,7 @@
 
 module Resolvers
   class IssuesResolver < BaseResolver
-    prepend IssueResolverFields
+    prepend IssueResolverArguments
 
     argument :state, Types::IssuableStateEnum,
               required: false,
@@ -19,7 +19,7 @@ module Resolvers
                                  milestone_due_asc milestone_due_desc].freeze
 
     def continue_issue_resolve(parent, finder, **args)
-      issues = Gitlab::Graphql::Loaders::IssuableLoader.new(parent, finder).batching_find_all
+      issues = apply_lookahead(Gitlab::Graphql::Loaders::IssuableLoader.new(parent, finder).batching_find_all)
 
       if non_stable_cursor_sort?(args[:sort])
         # Certain complex sorts are not supported by the stable cursor pagination yet.
@@ -28,6 +28,16 @@ module Resolvers
       else
         issues
       end
+    end
+
+    private
+
+    def preloads
+      {
+        alert_management_alert: [:alert_management_alert],
+        labels: [:labels],
+        assignees: [:assignees]
+      }
     end
 
     def non_stable_cursor_sort?(sort)

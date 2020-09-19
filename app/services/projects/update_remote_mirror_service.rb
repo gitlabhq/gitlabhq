@@ -31,6 +31,9 @@ module Projects
       remote_mirror.update_start!
       remote_mirror.ensure_remote!
 
+      # LFS objects must be sent first, or the push has dangling pointers
+      send_lfs_objects!(remote_mirror)
+
       response = remote_mirror.update_repository
 
       if response.divergent_refs.any?
@@ -41,6 +44,23 @@ module Projects
       else
         remote_mirror.update_finish!
       end
+    end
+
+    def send_lfs_objects!(remote_mirror)
+      return unless Feature.enabled?(:push_mirror_syncs_lfs, project)
+      return unless project.lfs_enabled?
+
+      # TODO: Support LFS sync over SSH
+      # https://gitlab.com/gitlab-org/gitlab/-/issues/249587
+      return unless remote_mirror.url =~ /\Ahttps?:\/\//i
+      return unless remote_mirror.password_auth?
+
+      Lfs::PushService.new(
+        project,
+        current_user,
+        url: remote_mirror.bare_url,
+        credentials: remote_mirror.credentials
+      ).execute
     end
 
     def retry_or_fail(mirror, message, tries)

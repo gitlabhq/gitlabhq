@@ -914,7 +914,7 @@ class BackportEnterpriseSchema < ActiveRecord::Migration[5.0]
         MSG
       end
 
-    raise Exception.new(message)
+    raise StandardError.new(message)
   end
 
   def create_missing_tables

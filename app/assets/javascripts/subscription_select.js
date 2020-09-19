@@ -1,11 +1,12 @@
 import $ from 'jquery';
 import { __ } from './locale';
+import initDeprecatedJQueryDropdown from '~/deprecated_jquery_dropdown';
 
 export default function subscriptionSelect() {
   $('.js-subscription-event').each((i, element) => {
     const fieldName = $(element).data('fieldName');
 
-    return $(element).glDropdown({
+    return initDeprecatedJQueryDropdown($(element), {
       selectable: true,
       fieldName,
       toggleLabel(selected, el, instance) {

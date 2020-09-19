@@ -14,23 +14,23 @@ module Gitlab
       # @param [ActiveSupport::TimeWithZone] end_date end of time frame
       # @return [Integer] number of unique visitors
       def unique_visits_for(targets:, start_date: 7.days.ago, end_date: start_date + 1.week)
-        target_ids = if targets == :analytics
-                       self.class.analytics_ids
-                     elsif targets == :compliance
-                       self.class.compliance_ids
-                     else
-                       Array(targets)
-                     end
+        events = if targets == :analytics
+                   self.class.analytics_events
+                 elsif targets == :compliance
+                   self.class.compliance_events
+                 else
+                   Array(targets)
+                 end
 
-        Gitlab::UsageDataCounters::HLLRedisCounter.unique_events(event_names: target_ids, start_date: start_date, end_date: end_date)
+        Gitlab::UsageDataCounters::HLLRedisCounter.unique_events(event_names: events, start_date: start_date, end_date: end_date)
       end
 
       class << self
-        def analytics_ids
+        def analytics_events
           Gitlab::UsageDataCounters::HLLRedisCounter.events_for_category('analytics')
         end
 
-        def compliance_ids
+        def compliance_events
           Gitlab::UsageDataCounters::HLLRedisCounter.events_for_category('compliance')
         end
       end

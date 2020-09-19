@@ -6,7 +6,7 @@ COPY . .
 RUN go-wrapper download
 RUN go build -v
 
-FROM buildpack-deps:jessie
+FROM buildpack-deps:buster
 
 WORKDIR /usr/local/bin
 

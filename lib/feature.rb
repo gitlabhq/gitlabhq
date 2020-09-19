@@ -18,6 +18,10 @@ class Feature
     superclass.table_name = 'feature_gates'
   end
 
+  class ActiveSupportCacheStoreAdapter < Flipper::Adapters::ActiveSupportCacheStore
+    # overrides methods in EE
+  end
+
   InvalidFeatureFlagError = Class.new(Exception) # rubocop:disable Lint/InheritException
 
   class << self
@@ -137,6 +141,12 @@ class Feature
       Feature::Definition.load_all!
     end
 
+    def register_hot_reloader
+      return unless check_feature_flags_definition?
+
+      Feature::Definition.register_hot_reloader!
+    end
+
     private
 
     def flipper
@@ -154,7 +164,7 @@ class Feature
 
       # Redis L2 cache
       redis_cache_adapter =
-        Flipper::Adapters::ActiveSupportCacheStore.new(
+        ActiveSupportCacheStoreAdapter.new(
           active_record_adapter,
           l2_cache_backend,
           expires_in: 1.hour)
@@ -231,4 +241,4 @@ class Feature
   end
 end
 
-Feature.prepend_if_ee('EE::Feature')
+Feature::ActiveSupportCacheStoreAdapter.prepend_if_ee('EE::Feature::ActiveSupportCacheStoreAdapter')

@@ -1,0 +1,12 @@
+%tr
+  %td.text-content
+    %h2.invite-header
+      = s_('InviteEmail|You are invited!')
+    %p
+      - if member.created_by
+        = html_escape(s_("InviteEmail|%{inviter} invited you")) % { inviter: (link_to member.created_by.name, user_url(member.created_by)).html_safe }
+      = html_escape(s_("InviteEmail|to join the %{strong_start}%{project_or_group_name}%{strong_end}")) % { strong_start: '<strong>'.html_safe, strong_end: '</strong>'.html_safe, project_or_group_name: member_source.human_name }
+      %br
+      = s_("InviteEmail|%{project_or_group} as a %{role}") % { project_or_group: member_source.model_name.singular, role: member.human_access.downcase }
+    %p.invite-actions
+      = link_to s_('InviteEmail|Join now'), invite_url(@token, @invite_url_params), class: 'invite-btn-join'

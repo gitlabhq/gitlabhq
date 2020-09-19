@@ -86,7 +86,7 @@ module Banzai
         # outside the link element. The entity must be marked HTML safe in
         # order to be output literally rather than escaped.
         match.gsub!(/((?:&[\w#]+;)+)\z/, '')
-        dropped = ($1 || '').html_safe
+        dropped = (Regexp.last_match(1) || '').html_safe
 
         # To match the behaviour of Rinku, if the matched link ends with a
         # closing part of a matched pair of punctuation, we remove that trailing

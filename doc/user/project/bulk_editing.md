@@ -14,6 +14,9 @@ For more details, see
 If you want to update attributes across multiple issues or merge requests, you can do it
 by bulk editing them, that is, editing them together.
 
+NOTE: **Note:**
+Only the items visible on the current page are selected for bulk editing (up to 20).
+
 ![Bulk editing](img/bulk-editing_v13_2.png)
 
 ## Bulk edit issues at the project level

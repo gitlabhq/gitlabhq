@@ -210,6 +210,27 @@ RSpec.describe ObjectStorage do
         end
       end
 
+      describe '#use_open_file' do
+        context 'when file is stored locally' do
+          it "returns the file" do
+            expect { |b| uploader.use_open_file(&b) }.to yield_with_args(an_instance_of(ObjectStorage::Concern::OpenFile))
+          end
+        end
+
+        context 'when file is stored remotely' do
+          let(:store) { described_class::Store::REMOTE }
+
+          before do
+            stub_artifacts_object_storage
+            stub_request(:get, %r{s3.amazonaws.com/#{uploader.path}}).to_return(status: 200, body: '')
+          end
+
+          it "returns the file" do
+            expect { |b| uploader.use_open_file(&b) }.to yield_with_args(an_instance_of(ObjectStorage::Concern::OpenFile))
+          end
+        end
+      end
+
       describe '#migrate!' do
         subject { uploader.migrate!(new_store) }
 
@@ -414,28 +435,38 @@ RSpec.describe ObjectStorage do
 
     subject { uploader_class.workhorse_authorize(has_length: has_length, maximum_size: maximum_size) }
 
-    shared_examples 'uses local storage' do
+    shared_examples 'returns the maximum size given' do
       it "returns temporary path" do
-        is_expected.to have_key(:TempPath)
+        expect(subject[:MaximumSize]).to eq(maximum_size)
+      end
+    end
 
-        expect(subject[:TempPath]).to start_with(uploader_class.root)
-        expect(subject[:TempPath]).to include(described_class::TMP_UPLOAD_PATH)
+    shared_examples 'uses local storage' do
+      it_behaves_like 'returns the maximum size given' do
+        it "returns temporary path" do
+          is_expected.to have_key(:TempPath)
+
+          expect(subject[:TempPath]).to start_with(uploader_class.root)
+          expect(subject[:TempPath]).to include(described_class::TMP_UPLOAD_PATH)
+        end
       end
     end
 
     shared_examples 'uses remote storage' do
-      it "returns remote store" do
-        is_expected.to have_key(:RemoteObject)
+      it_behaves_like 'returns the maximum size given' do
+        it "returns remote store" do
+          is_expected.to have_key(:RemoteObject)
 
-        expect(subject[:RemoteObject]).to have_key(:ID)
-        expect(subject[:RemoteObject]).to include(Timeout: a_kind_of(Integer))
-        expect(subject[:RemoteObject][:Timeout]).to be(ObjectStorage::DirectUpload::TIMEOUT)
-        expect(subject[:RemoteObject]).to have_key(:GetURL)
-        expect(subject[:RemoteObject]).to have_key(:DeleteURL)
-        expect(subject[:RemoteObject]).to have_key(:StoreURL)
-        expect(subject[:RemoteObject][:GetURL]).to include(described_class::TMP_UPLOAD_PATH)
-        expect(subject[:RemoteObject][:DeleteURL]).to include(described_class::TMP_UPLOAD_PATH)
-        expect(subject[:RemoteObject][:StoreURL]).to include(described_class::TMP_UPLOAD_PATH)
+          expect(subject[:RemoteObject]).to have_key(:ID)
+          expect(subject[:RemoteObject]).to include(Timeout: a_kind_of(Integer))
+          expect(subject[:RemoteObject][:Timeout]).to be(ObjectStorage::DirectUpload::TIMEOUT)
+          expect(subject[:RemoteObject]).to have_key(:GetURL)
+          expect(subject[:RemoteObject]).to have_key(:DeleteURL)
+          expect(subject[:RemoteObject]).to have_key(:StoreURL)
+          expect(subject[:RemoteObject][:GetURL]).to include(described_class::TMP_UPLOAD_PATH)
+          expect(subject[:RemoteObject][:DeleteURL]).to include(described_class::TMP_UPLOAD_PATH)
+          expect(subject[:RemoteObject][:StoreURL]).to include(described_class::TMP_UPLOAD_PATH)
+        end
       end
     end
 
@@ -832,6 +863,21 @@ RSpec.describe ObjectStorage do
           expect(avatars.map(&:upload).uniq).to eq(avatars.map(&:upload))
         end
       end
+    end
+  end
+
+  describe 'OpenFile' do
+    subject { ObjectStorage::Concern::OpenFile.new(file) }
+
+    let(:file) { double(read: true, size: true, path: true) }
+
+    it 'delegates read and size methods' do
+      expect(subject.read).to eq(true)
+      expect(subject.size).to eq(true)
+    end
+
+    it 'does not delegate path method' do
+      expect { subject.path }.to raise_error(NoMethodError)
     end
   end
 end

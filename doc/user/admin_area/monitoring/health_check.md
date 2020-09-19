@@ -153,7 +153,7 @@ https://gitlab.example.com/-/readiness?token=ACCESS_TOKEN
 ```
 
 NOTE: **Note:**
-In case the database or Redis service are unaccessible, the probe endpoints response is not guaranteed to be correct.
+In case the database or Redis service are inaccessible, the probe endpoints response is not guaranteed to be correct.
 You should switch to [IP whitelist](#ip-whitelist) from deprecated access token to avoid it.
 
 <!-- ## Troubleshooting

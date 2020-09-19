@@ -205,6 +205,12 @@ module IssuablesHelper
       author_output
     end
 
+    if access = project.team.human_max_access(issuable.author_id)
+      output << content_tag(:span, access, class: "user-access-role has-tooltip d-none d-xl-inline-block gl-ml-3 ", title: _("This user is a %{access} of the %{name} project.") % { access: access.downcase, name: project.name })
+    elsif project.team.contributor?(issuable.author_id)
+      output << content_tag(:span, _("Contributor"), class: "user-access-role has-tooltip d-none d-xl-inline-block gl-ml-3", title: _("This user has previously committed to the %{name} project.") % { name: project.name })
+    end
+
     output << content_tag(:span, (sprite_icon('first-contribution', css_class: 'gl-icon gl-vertical-align-middle') if issuable.first_contribution?), class: 'has-tooltip gl-ml-2', title: _('1st contribution!'))
 
     output << content_tag(:span, (issuable.task_status if issuable.tasks?), id: "task_status", class: "d-none d-sm-none d-md-inline-block gl-ml-3")
@@ -292,8 +298,10 @@ module IssuablesHelper
 
     {
       hasClosingMergeRequest: issuable.merge_requests_count(current_user) != 0,
+      issueType: issuable.issue_type,
       zoomMeetingUrl: ZoomMeeting.canonical_meeting_url(issuable),
-      sentryIssueIdentifier: SentryIssue.find_by(issue: issuable)&.sentry_issue_identifier # rubocop:disable CodeReuse/ActiveRecord
+      sentryIssueIdentifier: SentryIssue.find_by(issue: issuable)&.sentry_issue_identifier, # rubocop:disable CodeReuse/ActiveRecord
+      iid: issuable.iid.to_s
     }
   end
 
@@ -301,8 +309,8 @@ module IssuablesHelper
     return { groupPath: parent.path } if parent.is_a?(Group)
 
     {
-        projectPath: ref_project.path,
-        projectNamespace: ref_project.namespace.full_path
+      projectPath: ref_project.path,
+      projectNamespace: ref_project.namespace.full_path
     }
   end
 
@@ -464,6 +472,7 @@ module IssuablesHelper
       rootPath: root_path,
       fullPath: issuable[:project_full_path],
       iid: issuable[:iid],
+      severity: issuable[:severity],
       timeTrackingLimitToHours: Gitlab::CurrentSettings.time_tracking_limit_to_hours
     }
   end

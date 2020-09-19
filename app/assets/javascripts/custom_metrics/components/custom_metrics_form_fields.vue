@@ -1,8 +1,14 @@
 <script>
-import { GlFormInput, GlLink, GlFormGroup, GlFormRadioGroup, GlLoadingIcon } from '@gitlab/ui';
+import {
+  GlFormInput,
+  GlLink,
+  GlFormGroup,
+  GlFormRadioGroup,
+  GlLoadingIcon,
+  GlIcon,
+} from '@gitlab/ui';
 import { debounce } from 'lodash';
 import { __, s__ } from '~/locale';
-import Icon from '~/vue_shared/components/icon.vue';
 import csrf from '~/lib/utils/csrf';
 import axios from '~/lib/utils/axios_utils';
 import statusCodes from '~/lib/utils/http_status';
@@ -37,7 +43,7 @@ export default {
     GlFormGroup,
     GlFormRadioGroup,
     GlLoadingIcon,
-    Icon,
+    GlIcon,
   },
   props: {
     formOperation: {
@@ -229,7 +235,7 @@ export default {
         {{ s__('Metrics|Must be a valid PromQL query.') }}
         <gl-link href="https://prometheus.io/docs/prometheus/latest/querying/basics/" tabindex="-1">
           {{ s__('Metrics|Prometheus Query Documentation') }}
-          <icon name="external-link" :size="12" />
+          <gl-icon name="external-link" :size="12" />
         </gl-link>
       </span>
     </gl-form-group>

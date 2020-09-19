@@ -14,7 +14,7 @@ import Editor from '../lib/editor';
 import FileTemplatesBar from './file_templates/bar.vue';
 import { __ } from '~/locale';
 import { extractMarkdownImagesFromEntries } from '../stores/utils';
-import { getPathParent, readFileAsDataURL } from '../utils';
+import { getPathParent, readFileAsDataURL, registerSchema, isTextFile } from '../utils';
 import { getRulesWithTraversal } from '../lib/editorconfig/parser';
 import mapRulesToMonaco from '../lib/editorconfig/rules_mapper';
 
@@ -48,6 +48,7 @@ export default {
       'renderWhitespaceInCode',
       'editorTheme',
       'entries',
+      'currentProjectId',
     ]),
     ...mapGetters([
       'currentMergeRequest',
@@ -55,10 +56,11 @@ export default {
       'isEditModeActive',
       'isCommitModeActive',
       'currentBranch',
+      'getJsonSchemaForPath',
     ]),
     ...mapGetters('fileTemplates', ['showFileTemplatesBar']),
     shouldHideEditor() {
-      return this.file && this.file.binary;
+      return this.file && !isTextFile(this.file);
     },
     showContentViewer() {
       return (
@@ -196,6 +198,8 @@ export default {
 
       this.editor.clearEditor();
 
+      this.registerSchemaForFile();
+
       Promise.all([this.fetchFileData(), this.fetchEditorconfigRules()])
         .then(() => {
           this.createEditorInstance();
@@ -329,6 +333,10 @@ export default {
       // do nothing if no image is found in the clipboard
       return Promise.resolve();
     },
+    registerSchemaForFile() {
+      const schema = this.getJsonSchemaForPath(this.file.path);
+      registerSchema(schema);
+    },
   },
   viewerTypes,
   FILE_VIEW_MODE_EDITOR,
@@ -379,7 +387,7 @@ export default {
       :path="file.rawPath || file.path"
       :file-path="file.path"
       :file-size="file.size"
-      :project-path="file.projectId"
+      :project-path="currentProjectId"
       :commit-sha="currentBranchCommit"
       :type="fileType"
     />
@@ -390,7 +398,7 @@ export default {
       :new-sha="currentMergeRequest.sha"
       :old-path="file.mrChange.old_path"
       :old-sha="currentMergeRequest.baseCommitSha"
-      :project-path="file.projectId"
+      :project-path="currentProjectId"
     />
   </div>
 </template>

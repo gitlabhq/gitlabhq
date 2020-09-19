@@ -671,7 +671,7 @@ X-Gitlab-Event: System Hook
     "homepage":"http://example.com/jsmith/example",
     "url":"git@example.com:jsmith/example.git",
     "ssh_url":"git@example.com:jsmith/example.git",
-    "http_url":"http://example.com/jsmith/example.git",
+    "http_url":"http://example.com/jsmith/example.git"
   },
   "changes": [
     {

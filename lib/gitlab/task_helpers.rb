@@ -24,6 +24,8 @@ module Gitlab
     # Returns "yes" the user chose to continue
     # Raises Gitlab::TaskAbortedByUserError if the user chose *not* to continue
     def ask_to_continue
+      return if Gitlab::Utils.to_boolean(ENV['GITLAB_ASSUME_YES'])
+
       answer = prompt("Do you want to continue (yes/no)? ".color(:blue), %w{yes no})
       raise Gitlab::TaskAbortedByUserError unless answer == "yes"
     end

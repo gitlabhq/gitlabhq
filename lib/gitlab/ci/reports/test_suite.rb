@@ -78,10 +78,26 @@ module Gitlab
           end
         end
 
+        def sorted
+          sort_by_status
+          sort_by_execution_time_desc
+          self
+        end
+
         private
 
         def existing_key?(test_case)
           @test_cases[test_case.status]&.key?(test_case.key)
+        end
+
+        def sort_by_status
+          @test_cases = @test_cases.sort_by { |status, _| Gitlab::Ci::Reports::TestCase::STATUS_TYPES.index(status) }.to_h
+        end
+
+        def sort_by_execution_time_desc
+          @test_cases = @test_cases.keys.each_with_object({}) do |key, hash|
+            hash[key] = @test_cases[key].sort_by { |_key, test_case| -test_case.execution_time }.to_h
+          end
         end
       end
     end

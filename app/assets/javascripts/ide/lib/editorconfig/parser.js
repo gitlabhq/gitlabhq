@@ -42,7 +42,6 @@ function getRulesWithConfigs(filePath, configFiles = [], rules = {}) {
   return isRoot ? result : getRulesWithConfigs(filePath, nextConfigs, result);
 }
 
-// eslint-disable-next-line import/prefer-default-export
 export function getRulesWithTraversal(filePath, getFileContent) {
   const editorconfigPaths = [
     ...getPathParents(filePath).map(x => `${x}/.editorconfig`),

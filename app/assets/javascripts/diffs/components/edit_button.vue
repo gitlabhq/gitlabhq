@@ -1,12 +1,11 @@
 <script>
-import { GlTooltipDirective, GlDeprecatedButton } from '@gitlab/ui';
+import { GlTooltipDirective, GlDeprecatedButton, GlIcon } from '@gitlab/ui';
 import { __ } from '~/locale';
-import Icon from '~/vue_shared/components/icon.vue';
 
 export default {
   components: {
     GlDeprecatedButton,
-    Icon,
+    GlIcon,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -59,7 +58,7 @@ export default {
       class="rounded-0 js-edit-blob"
       @click.native="handleEditClick"
     >
-      <icon name="pencil" />
+      <gl-icon name="pencil" />
     </gl-deprecated-button>
   </span>
 </template>

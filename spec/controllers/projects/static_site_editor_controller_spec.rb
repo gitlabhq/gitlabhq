@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe Projects::StaticSiteEditorController do
   let_it_be(:project) { create(:project, :public, :repository) }
   let_it_be(:user) { create(:user) }
+  let(:data) { instance_double(Hash) }
 
   describe 'GET show' do
     let(:default_params) do
@@ -14,6 +15,16 @@ RSpec.describe Projects::StaticSiteEditorController do
         id: 'master/README.md',
         return_url: 'http://example.com'
       }
+    end
+
+    let(:service_response) do
+      ServiceResponse.success(payload: data)
+    end
+
+    before do
+      allow_next_instance_of(::StaticSiteEditor::ConfigService) do |instance|
+        allow(instance).to receive(:execute).and_return(service_response)
+      end
     end
 
     context 'User roles' do
@@ -55,16 +66,24 @@ RSpec.describe Projects::StaticSiteEditorController do
           end
 
           it 'assigns a required variables' do
-            expect(assigns(:config)).to be_a(Gitlab::StaticSiteEditor::Config)
+            expect(assigns(:data)).to eq(data)
             expect(assigns(:ref)).to eq('master')
             expect(assigns(:path)).to eq('README.md')
           end
 
-          context 'when combination of ref and file path is incorrect' do
+          context 'when combination of ref and path is incorrect' do
             let(:default_params) { super().merge(id: 'unknown') }
 
             it 'responds with 404 page' do
               expect(response).to have_gitlab_http_status(:not_found)
+            end
+          end
+
+          context 'when invalid config file' do
+            let(:service_response) { ServiceResponse.error(message: 'invalid') }
+
+            it 'returns 422' do
+              expect(response).to have_gitlab_http_status(:unprocessable_entity)
             end
           end
         end

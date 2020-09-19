@@ -35,6 +35,10 @@ module Ci
         end
       end
 
+      event :pending do
+        transition all => :pending
+      end
+
       event :manual do
         transition all => :manual
       end
@@ -46,6 +50,14 @@ module Ci
 
     def self.retry(bridge, current_user)
       raise NotImplementedError
+    end
+
+    def self.with_preloads
+      preload(
+        :metadata,
+        downstream_pipeline: [project: [:route, { namespace: :route }]],
+        project: [:namespace]
+      )
     end
 
     def schedule_downstream_pipeline!

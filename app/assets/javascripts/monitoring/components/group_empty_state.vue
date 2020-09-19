@@ -1,4 +1,5 @@
 <script>
+/* eslint-disable vue/no-v-html */
 import { GlEmptyState } from '@gitlab/ui';
 import { __, sprintf } from '~/locale';
 import { metricStates } from '../constants';

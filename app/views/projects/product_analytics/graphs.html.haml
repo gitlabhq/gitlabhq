@@ -5,6 +5,10 @@
 %p
   = _('Showing graphs based on events of the last %{timerange} days.') % { timerange: @timerange }
 
+
+.gl-mb-3
+  = render 'graph', graph: @activity_graph
+
 - @graphs.each_slice(2) do |pair|
   .row.append-bottom-10
     - pair.each do |graph|

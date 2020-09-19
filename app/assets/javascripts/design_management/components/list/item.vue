@@ -1,6 +1,5 @@
 <script>
 import { GlLoadingIcon, GlIcon, GlIntersectionObserver } from '@gitlab/ui';
-import Icon from '~/vue_shared/components/icon.vue';
 import Timeago from '~/vue_shared/components/time_ago_tooltip.vue';
 import { n__, __ } from '~/locale';
 import { DESIGN_ROUTE_NAME } from '../../router/constants';
@@ -10,7 +9,6 @@ export default {
     GlLoadingIcon,
     GlIntersectionObserver,
     GlIcon,
-    Icon,
     Timeago,
   },
   props: {
@@ -127,12 +125,14 @@ export default {
       params: { id: filename },
       query: $route.query,
     }"
-    class="card cursor-pointer text-plain js-design-list-item design-list-item design-list-item-new"
+    class="card gl-cursor-pointer text-plain js-design-list-item design-list-item design-list-item-new"
   >
-    <div class="card-body p-0 d-flex-center overflow-hidden position-relative">
-      <div v-if="icon.name" data-testid="designEvent" class="design-event position-absolute">
+    <div
+      class="card-body gl-p-0 gl-display-flex gl-align-items-center gl-justify-content-center gl-overflow-hidden gl-relative"
+    >
+      <div v-if="icon.name" data-testid="designEvent" class="design-event gl-absolute">
         <span :title="icon.tooltip" :aria-label="icon.tooltip">
-          <icon :name="icon.name" :size="18" :class="icon.classes" />
+          <gl-icon :name="icon.name" :size="18" :class="icon.classes" />
         </span>
       </div>
       <gl-intersection-observer @appear="onAppear">
@@ -147,25 +147,28 @@ export default {
           v-show="showImage"
           :src="imageLink"
           :alt="filename"
-          class="block mx-auto mw-100 mh-100 design-img"
+          class="gl-display-block gl-mx-auto gl-max-w-full mh-100 design-img"
           data-qa-selector="design_image"
           @load="onImageLoad"
           @error="onImageError"
         />
       </gl-intersection-observer>
     </div>
-    <div class="card-footer d-flex w-100">
-      <div class="d-flex flex-column str-truncated-100">
-        <span class="bold str-truncated-100" data-qa-selector="design_file_name">{{
+    <div class="card-footer gl-display-flex gl-w-full">
+      <div class="gl-display-flex gl-flex-direction-column str-truncated-100">
+        <span class="gl-font-weight-bold str-truncated-100" data-qa-selector="design_file_name">{{
           filename
         }}</span>
         <span v-if="updatedAt" class="str-truncated-100">
           {{ __('Updated') }} <timeago :time="updatedAt" tooltip-placement="bottom" />
         </span>
       </div>
-      <div v-if="notesCount" class="ml-auto d-flex align-items-center text-secondary">
-        <icon name="comments" class="ml-1" />
-        <span :aria-label="notesLabel" class="ml-1">
+      <div
+        v-if="notesCount"
+        class="gl-ml-auto gl-display-flex gl-align-items-center gl-text-gray-500"
+      >
+        <gl-icon name="comments" class="gl-ml-2" />
+        <span :aria-label="notesLabel" class="gl-ml-2">
           {{ notesCount }}
         </span>
       </div>

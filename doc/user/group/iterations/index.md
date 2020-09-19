@@ -13,7 +13,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - It's enabled on GitLab.com.
 > - It's able to be enabled or disabled per-group.
 > - It's recommended for production use.
-> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#disable-iterations-core-only). **(CORE ONLY)**
+> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#disable-iterations). **(CORE ONLY)**
 
 Iterations are a way to track issues over a period of time. This allows teams
 to track velocity and volatility metrics. Iterations can be used with [milestones](../../project/milestones/index.md)
@@ -62,7 +62,7 @@ To edit an iteration, click the three-dot menu (**{ellipsis_v}**) > **Edit itera
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216158) in [GitLab Starter](https://about.gitlab.com/pricing/) 13.2.
 
 To learn how to add an issue to an iteration, see the steps in
-[Managing issues](../../project/issues/managing_issues.md#add-an-issue-to-an-iteration-starter).
+[Managing issues](../../project/issues/managing_issues.md#add-an-issue-to-an-iteration).
 
 ## Disable Iterations **(CORE ONLY)**
 
@@ -76,7 +76,7 @@ To enable it:
 # Instance-wide
 Feature.enable(:group_iterations)
 # or by group
-Feature.enable(:group_iterations, Group.find(<group id>))
+Feature.enable(:group_iterations, Group.find(<group ID>))
 ```
 
 To disable it:
@@ -85,7 +85,7 @@ To disable it:
 # Instance-wide
 Feature.disable(:group_iterations)
 # or by group
-Feature.disable(:group_iterations, Group.find(<group id>))
+Feature.disable(:group_iterations, Group.find(<group ID>))
 ```
 
 <!-- ## Troubleshooting

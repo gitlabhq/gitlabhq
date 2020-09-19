@@ -26,16 +26,16 @@ describe('ServiceDeskSetting', () => {
         });
 
         it('should see activation checkbox', () => {
-          expect(wrapper.contains('#service-desk-checkbox')).toBe(true);
+          expect(wrapper.find('#service-desk-checkbox').exists()).toBe(true);
         });
 
         it('should see main panel with the email info', () => {
-          expect(wrapper.contains('#incoming-email-describer')).toBe(true);
+          expect(wrapper.find('#incoming-email-describer').exists()).toBe(true);
         });
 
         it('should see loading spinner and not the incoming email', () => {
           expect(wrapper.find(GlLoadingIcon).exists()).toBe(true);
-          expect(wrapper.contains('.incoming-email')).toBe(false);
+          expect(wrapper.find('.incoming-email').exists()).toBe(false);
         });
       });
     });
@@ -78,7 +78,7 @@ describe('ServiceDeskSetting', () => {
       });
 
       it('renders a copy to clipboard button', () => {
-        expect(wrapper.contains('.qa-clipboard-button')).toBe(true);
+        expect(wrapper.find('.qa-clipboard-button').exists()).toBe(true);
         expect(wrapper.find('.qa-clipboard-button').element.dataset.clipboardText).toBe(
           incomingEmail,
         );
@@ -93,7 +93,7 @@ describe('ServiceDeskSetting', () => {
           },
         });
 
-        expect(wrapper.contains('#service-desk-template-select')).toBe(true);
+        expect(wrapper.find('#service-desk-template-select').exists()).toBe(true);
       });
 
       it('renders a dropdown with a default value of ""', () => {
@@ -163,7 +163,7 @@ describe('ServiceDeskSetting', () => {
         },
       });
 
-      expect(wrapper.find('button.btn-success').text()).toContain('Save template');
+      expect(wrapper.find('button.btn-success').text()).toContain('Save changes');
     });
 
     it('emits a save event with the chosen template when the save button is clicked', () => {
@@ -202,15 +202,15 @@ describe('ServiceDeskSetting', () => {
     });
 
     it('does not render email panel', () => {
-      expect(wrapper.contains('#incoming-email-describer')).toBe(false);
+      expect(wrapper.find('#incoming-email-describer').exists()).toBe(false);
     });
 
     it('does not render template dropdown', () => {
-      expect(wrapper.contains('#service-desk-template-select')).toBe(false);
+      expect(wrapper.find('#service-desk-template-select').exists()).toBe(false);
     });
 
     it('does not render template save button', () => {
-      expect(wrapper.contains('button.btn-success')).toBe(false);
+      expect(wrapper.find('button.btn-success').exists()).toBe(false);
     });
 
     it('emits an event to turn on Service Desk when the toggle is clicked', () => {

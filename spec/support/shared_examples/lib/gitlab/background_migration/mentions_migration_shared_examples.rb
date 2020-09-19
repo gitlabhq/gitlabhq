@@ -63,7 +63,7 @@ RSpec.shared_examples 'schedules resource mentions migration' do |resource_class
 
   it 'schedules background migrations' do
     Sidekiq::Testing.fake! do
-      Timecop.freeze do
+      freeze_time do
         resource_count = is_for_notes ? Note.count : resource_class.count
         expect(resource_count).to eq 5
 

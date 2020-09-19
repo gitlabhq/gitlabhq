@@ -26,6 +26,16 @@ setting the [`FOSS_ONLY` environment variable](https://gitlab.com/gitlab-org/git
 to something that evaluates as `true`. The same works for running tests
 (for example `FOSS_ONLY=1 yarn jest`).
 
+## CI pipelines in a FOSS context
+
+By default, merge request pipelines for development run in an EE-context only. If you are
+developing features that differ between FOSS and EE, you may wish to run pipelines in a
+FOSS context as well.
+
+To run pipelines in both contexts, include `RUN AS-IF-FOSS` in the merge request title.
+
+See the [As-if-FOSS jobs](pipelines.md#as-if-foss-jobs) pipelines documentation for more information.
+
 ## Separation of EE code
 
 All EE code should be put inside the `ee/` top-level directory. The
@@ -929,7 +939,7 @@ export default {
 
 - We can use slots and/or scoped slots to achieve the same thing as we did with mixins. If you only need an EE component there is no need to create the CE component.
 
-1. First, we have a CE component that can render a slot incase we need EE template and functionality to be decorated on top of the CE base.
+1. First, we have a CE component that can render a slot in case we need EE template and functionality to be decorated on top of the CE base.
 
 ```vue
 // ./ce/my_component.vue
@@ -1030,7 +1040,7 @@ separate SCSS file in an appropriate directory within `app/assets/stylesheets`.
 
 In some cases, this is not entirely possible or creating dedicated SCSS file is an overkill,
 e.g. a text style of some component is different for EE. In such cases,
-styles are usually kept in stylesheet that is common for both CE and EE, and it is wise
+styles are usually kept in a stylesheet that is common for both CE and EE, and it is wise
 to isolate such ruleset from rest of CE rules (along with adding comment describing the same)
 to avoid conflicts during CE to EE merge.
 

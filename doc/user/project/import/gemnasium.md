@@ -83,7 +83,7 @@ back to both GitLab and GitHub when completed.
 
    ![click on connected project](img/gemnasium/project_connected.png)
 
-   Your project is now mirrored on GitLab, where the Runners will be able to access
+   Your project is now mirrored on GitLab, where the runners will be able to access
    your source code and run your tests.
 
    Optional step: If you set this up on GitLab.com, make sure the project is
@@ -105,7 +105,7 @@ back to both GitLab and GitHub when completed.
 
 1. The result of the job will be visible directly from the pipeline view:
 
-   ![Security Dashboard](../../application_security/security_dashboard/img/pipeline_security_dashboard_v13_2.png)
+   ![Security Dashboard](../../application_security/security_dashboard/img/pipeline_security_dashboard_v13_3.png)
 
 NOTE: **Note:**
 If you don't commit very often to your project, you may want to use

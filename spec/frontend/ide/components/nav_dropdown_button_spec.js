@@ -23,7 +23,7 @@ describe('NavDropdown', () => {
     vm.$mount();
   };
 
-  const findIcon = name => vm.$el.querySelector(`.ic-${name}`);
+  const findIcon = name => vm.$el.querySelector(`[data-testid="${name}-icon"]`);
   const findMRIcon = () => findIcon('merge-request');
   const findBranchIcon = () => findIcon('branch');
 

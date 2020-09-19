@@ -1,5 +1,6 @@
 <script>
 import $ from 'jquery';
+import { GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
 import { s__, sprintf } from '~/locale';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
 import animateMixin from '../mixins/animate';
@@ -7,6 +8,10 @@ import TaskList from '../../task_list';
 import recaptchaModalImplementor from '../../vue_shared/mixins/recaptcha_modal_implementor';
 
 export default {
+  directives: {
+    SafeHtml,
+  },
+
   mixins: [animateMixin, recaptchaModalImplementor],
 
   props: {
@@ -20,7 +25,8 @@ export default {
     },
     descriptionText: {
       type: String,
-      required: true,
+      required: false,
+      default: '',
     },
     taskStatus: {
       type: String,
@@ -47,11 +53,16 @@ export default {
     return {
       preAnimation: false,
       pulseAnimation: false,
+      initialUpdate: true,
     };
   },
   watch: {
-    descriptionHtml() {
-      this.animateChange();
+    descriptionHtml(newDescription, oldDescription) {
+      if (!this.initialUpdate && newDescription !== oldDescription) {
+        this.animateChange();
+      } else {
+        this.initialUpdate = false;
+      }
 
       this.$nextTick(() => {
         this.renderGFM();
@@ -136,12 +147,12 @@ export default {
   >
     <div
       ref="gfm-content"
+      v-safe-html="descriptionHtml"
       :class="{
         'issue-realtime-pre-pulse': preAnimation,
         'issue-realtime-trigger-pulse': pulseAnimation,
       }"
       class="md"
-      v-html="descriptionHtml"
     ></div>
     <textarea
       v-if="descriptionText"

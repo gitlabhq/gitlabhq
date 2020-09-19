@@ -46,7 +46,7 @@ module Gitlab
 
           def validate_against_schema
             schemer.validate(content).map do |error|
-              Errors::SchemaValidationError.new(error)
+              ::Gitlab::Metrics::Dashboard::Validator::Errors::SchemaValidationError.new(error)
             end
           end
         end

@@ -1071,7 +1071,7 @@ msgstr "Va a eliminar %{project_name_with_namespace}. ¡El proyecto eliminado NO
 msgid "You are going to remove the fork relationship to source project %{forked_from_project}. Are you ABSOLUTELY sure?"
 msgstr "Vas a eliminar el enlace de la bifurcación con el proyecto original %{forked_from_project}. ¿Estás TOTALMENTE seguro?"
 
-msgid "You are going to transfer %{project_name_with_namespace} to another owner. Are you ABSOLUTELY sure?"
+msgid "You are going to transfer %{project_name_with_namespace} to another namespace. Are you ABSOLUTELY sure?"
 msgstr "Vas a transferir %{project_name_with_namespace} a otro propietario. ¿Estás TOTALMENTE seguro?"
 
 msgid "You can only add files when you are on a branch"

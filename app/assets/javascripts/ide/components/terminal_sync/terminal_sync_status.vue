@@ -1,8 +1,7 @@
 <script>
 import { throttle } from 'lodash';
-import { GlTooltipDirective, GlLoadingIcon } from '@gitlab/ui';
+import { GlTooltipDirective, GlLoadingIcon, GlIcon } from '@gitlab/ui';
 import { mapState } from 'vuex';
-import Icon from '~/vue_shared/components/icon.vue';
 import {
   MSG_TERMINAL_SYNC_CONNECTING,
   MSG_TERMINAL_SYNC_UPLOADING,
@@ -11,7 +10,7 @@ import {
 
 export default {
   components: {
-    Icon,
+    GlIcon,
     GlLoadingIcon,
   },
   directives: {
@@ -70,7 +69,7 @@ export default {
     <span>{{ __('Terminal') }}:</span>
     <span class="square s16 d-flex-center ml-1" :aria-label="status.text">
       <gl-loading-icon v-if="isLoading" inline size="sm" class="d-flex-center" />
-      <icon v-else-if="status.icon" :name="status.icon" :size="16" />
+      <gl-icon v-else-if="status.icon" :name="status.icon" :size="16" />
     </span>
   </div>
 </template>

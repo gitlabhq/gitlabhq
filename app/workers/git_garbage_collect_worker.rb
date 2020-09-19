@@ -37,10 +37,7 @@ class GitGarbageCollectWorker # rubocop:disable Scalability/IdempotentWorker
     # Refresh the branch cache in case garbage collection caused a ref lookup to fail
     flush_ref_caches(project) if task == :gc
 
-    if task != :pack_refs
-      project.repository.expire_statistics_caches
-      Projects::UpdateStatisticsService.new(project, nil, statistics: [:repository_size, :lfs_objects_size]).execute
-    end
+    update_repository_statistics(project) if task != :pack_refs
 
     # In case pack files are deleted, release libgit2 cache and open file
     # descriptors ASAP instead of waiting for Ruby garbage collection
@@ -104,6 +101,13 @@ class GitGarbageCollectWorker # rubocop:disable Scalability/IdempotentWorker
     project.repository.after_create_branch
     project.repository.branch_names
     project.repository.has_visible_content?
+  end
+
+  def update_repository_statistics(project)
+    project.repository.expire_statistics_caches
+    return if Gitlab::Database.read_only? # GitGarbageCollectWorker may be run on a Geo secondary
+
+    Projects::UpdateStatisticsService.new(project, nil, statistics: [:repository_size, :lfs_objects_size]).execute
   end
 
   def bitmaps_enabled?

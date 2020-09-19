@@ -42,7 +42,7 @@ doesn't require you to provision and maintain a node.
 
 To set up GitLab and its components to accommodate up to 2,000 users:
 
-1. [Configure the external load balancing node](#configure-the-load-balancer)
+1. [Configure the external load balancing node](#configure-the-external-load-balancer)
    to handle the load balancing of the two GitLab application services nodes.
 1. [Configure PostgreSQL](#configure-postgresql), the database for GitLab.
 1. [Configure Redis](#configure-redis).
@@ -60,7 +60,7 @@ To set up GitLab and its components to accommodate up to 2,000 users:
    storage. You can skip this step if you're not using GitLab Pages (which
    requires NFS).
 
-## Configure the load balancer
+## Configure the external load balancer
 
 NOTE: **Note:**
 This architecture has been tested and validated with [HAProxy](https://www.haproxy.org/).
@@ -114,6 +114,14 @@ and there's no need to add a configuration for proxied SSL. However, you'll
 need to add a configuration to GitLab to configure SSL certificates. For
 details about managing SSL certificates and configuring NGINX, see the
 [NGINX HTTPS documentation](https://docs.gitlab.com/omnibus/settings/nginx.html#enable-https).
+
+### Readiness checks
+
+Ensure the external load balancer only routes to working services with built
+in monitoring endpoints. The [readiness checks](../../user/admin_area/monitoring/health_check.md)
+all require [additional configuration](../monitoring/ip_whitelist.md)
+on the nodes being checked, otherwise, the external load balancer will not be able to
+connect.
 
 ### Ports
 
@@ -192,6 +200,9 @@ If you use a cloud-managed service, or provide your own PostgreSQL:
    needs privileges to create the `gitlabhq_production` database.
 1. Configure the GitLab application servers with the appropriate details.
    This step is covered in [Configuring the GitLab Rails application](#configure-gitlab-rails).
+
+See [Configure GitLab using an external PostgreSQL service](../postgresql/external.md) for
+further configuration steps.
 
 ### Standalone PostgreSQL using Omnibus GitLab
 
@@ -345,50 +356,51 @@ are supported and can be added if needed.
 
 ## Configure Gitaly
 
-Deploying Gitaly in its own server can benefit GitLab installations that are
-larger than a single machine. Gitaly node requirements are dependent on data,
-specifically the number of projects and their sizes. It's recommended that each
-Gitaly node store no more than 5TB of data. Your 2K setup may require one or more
-nodes depending on your repository storage requirements.
+[Gitaly](../gitaly/index.md) server node requirements are dependent on data,
+specifically the number of projects and those projects' sizes. It's recommended
+that a Gitaly server node stores no more than 5TB of data. Although this
+reference architecture includes a single Gitaly server node, you may require
+additional nodes depending on your repository storage requirements.
 
-We strongly recommend that all Gitaly nodes should be set up with SSD disks with a throughput of at least
-8,000 IOPS for read operations and 2,000 IOPS for write, as Gitaly has heavy I/O.
-These IOPS values are recommended only as a starter as with time they may be
-adjusted higher or lower depending on the scale of your environment's workload.
-If you're running the environment on a Cloud provider
-you may need to refer to their documentation on how configure IOPS correctly.
+Due to Gitaly having notable input and output requirements, we strongly
+recommend that all Gitaly nodes use solid-state drives (SSDs). These SSDs
+should have a throughput of at least 8,000
+input/output operations per second (IOPS) for read operations and 2,000 IOPS
+for write operations. These IOPS values are initial recommendations, and may be
+adjusted to greater or lesser values depending on the scale of your
+environment's workload. If you're running the environment on a Cloud provider,
+refer to their documentation about how to configure IOPS correctly.
 
-Some things to note:
+Be sure to note the following items:
 
-- The GitLab Rails application shards repositories into [repository storages](../repository_storage_paths.md).
-- A Gitaly server can host one or more storages.
-- A GitLab server can use one or more Gitaly servers.
-- Gitaly addresses must be specified in such a way that they resolve
-  correctly for ALL Gitaly clients.
+- The GitLab Rails application shards repositories into
+  [repository storage paths](../repository_storage_paths.md).
+- A Gitaly server can host one or more storage paths.
+- A GitLab server can use one or more Gitaly server nodes.
+- Gitaly addresses must be specified to be correctly resolvable for *all*
+  Gitaly clients.
 - Gitaly servers must not be exposed to the public internet, as Gitaly's network
   traffic is unencrypted by default. The use of a firewall is highly recommended
   to restrict access to the Gitaly server. Another option is to
   [use TLS](#gitaly-tls-support).
 
-TIP: **Tip:**
-For more information about Gitaly's history and network architecture see the
-[standalone Gitaly documentation](../gitaly/index.md).
+NOTE: **Note:**
+The token referred to throughout the Gitaly documentation is an arbitrary
+password selected by the administrator. This token is unrelated to tokens
+created for the GitLab API or other similar web API tokens.
 
-Note: **Note:** The token referred to throughout the Gitaly documentation is
-just an arbitrary password selected by the administrator. It is unrelated to
-tokens created for the GitLab API or other similar web API tokens.
-
-Below we describe how to configure one Gitaly server `gitaly1.internal` with
-secret token `gitalysecret`. We assume your GitLab installation has two
-repository storages: `default` and `storage1`.
+The following procedure describes how to configure a single Gitaly server named
+`gitaly1.internal` with the secret token `gitalysecret`. We assume your GitLab
+installation has two repository storages: `default` and `storage1`.
 
 To configure the Gitaly server:
 
-1. [Download/Install](https://about.gitlab.com/install/) the Omnibus GitLab
-   package you want using **steps 1 and 2** from the GitLab downloads page but
-   **without** providing the `EXTERNAL_URL` value.
-1. Edit `/etc/gitlab/gitlab.rb` to configure storage paths, enable
-   the network listener and configure the token:
+1. On the server node you want to use for Gitaly,
+   [download and install](https://about.gitlab.com/install/) your selected
+   Omnibus GitLab package using *steps 1 and 2* from the GitLab downloads page,
+   but *without* providing the `EXTERNAL_URL` value.
+1. Edit the Gitaly server node's `/etc/gitlab/gitlab.rb` file to configure
+   storage paths, enable the network listener, and to configure the token:
 
    <!--
    updates to following example must also be made at
@@ -402,7 +414,7 @@ To configure the Gitaly server:
    # to Gitaly, and a second for authentication callbacks from GitLab-Shell to the GitLab internal API.
    # The following two values must be the same as their respective values
    # of the GitLab Rails application setup
-   gitaly['auth_token'] = 'gitlaysecret'
+   gitaly['auth_token'] = 'gitalysecret'
    gitlab_shell['secret_token'] = 'shellsecret'
 
    # Avoid running unnecessary services on the Gitaly server
@@ -415,7 +427,7 @@ To configure the Gitaly server:
    gitlab_workhorse['enable'] = false
    grafana['enable'] = false
 
-   # If you run a seperate monitoring node you can disable these services
+   # If you run a separate monitoring node you can disable these services
    alertmanager['enable'] = false
    prometheus['enable'] = false
 
@@ -437,11 +449,7 @@ To configure the Gitaly server:
 
    # Set the network addresses that the exporters used for monitoring will listen on
    node_exporter['listen_address'] = '0.0.0.0:9100'
-   ```
 
-1. Append the following to `/etc/gitlab/gitlab.rb` on `gitaly1.internal`:
-
-   ```ruby
    git_data_dirs({
      'default' => {
        'path' => '/var/opt/gitlab/git-data'
@@ -452,12 +460,7 @@ To configure the Gitaly server:
    })
    ```
 
-   <!--
-   updates to following example must also be made at
-   https://gitlab.com/gitlab-org/charts/gitlab/blob/master/doc/advanced/external-gitaly/external-omnibus-gitaly.md#configure-omnibus-gitlab
-   -->
-
-1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
+1. Save the file, and then [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
 1. Confirm that Gitaly can perform callbacks to the internal API:
 
    ```shell
@@ -573,7 +576,7 @@ On each node perform the following:
 1. Create/edit `/etc/gitlab/gitlab.rb` and use the following configuration.
    To maintain uniformity of links across nodes, the `external_url`
    on the application server should point to the external URL that users will use
-   to access GitLab. This would be the URL of the [load balancer](#configure-the-load-balancer)
+   to access GitLab. This would be the URL of the [load balancer](#configure-the-external-load-balancer)
    which will route traffic to the GitLab application server:
 
    ```ruby
@@ -583,7 +586,7 @@ On each node perform the following:
    # to Gitaly, and a second for authentication callbacks from GitLab-Shell to the GitLab internal API.
    # The following two values must be the same as their respective values
    # of the Gitaly setup
-   gitlab_rails['gitaly_token'] = 'gitalyecret'
+   gitlab_rails['gitaly_token'] = 'gitalysecret'
    gitlab_shell['secret_token'] = 'shellsecret'
 
    git_data_dirs({
@@ -818,15 +821,15 @@ on the features you intend to use:
 1. [Object storage for job artifacts](../job_artifacts.md#using-object-storage)
    including [incremental logging](../job_logs.md#new-incremental-logging-architecture).
 1. [Object storage for LFS objects](../lfs/index.md#storing-lfs-objects-in-remote-object-storage).
-1. [Object storage for uploads](../uploads.md#using-object-storage-core-only).
+1. [Object storage for uploads](../uploads.md#using-object-storage).
 1. [Object storage for merge request diffs](../merge_request_diffs.md#using-object-storage).
 1. [Object storage for Container Registry](../packages/container_registry.md#use-object-storage) (optional feature).
 1. [Object storage for Mattermost](https://docs.mattermost.com/administration/config-settings.html#file-storage) (optional feature).
 1. [Object storage for packages](../packages/index.md#using-object-storage) (optional feature). **(PREMIUM ONLY)**
 1. [Object storage for Dependency Proxy](../packages/dependency_proxy.md#using-object-storage) (optional feature). **(PREMIUM ONLY)**
 1. [Object storage for Pseudonymizer](../pseudonymizer.md#configuration) (optional feature). **(ULTIMATE ONLY)**
-1. [Object storage for autoscale Runner caching](https://docs.gitlab.com/runner/configuration/autoscale.html#distributed-runners-caching) (optional, for improved performance).
-1. [Object storage for Terraform state files](../terraform_state.md#using-object-storage-core-only).
+1. [Object storage for autoscale runner caching](https://docs.gitlab.com/runner/configuration/autoscale.html#distributed-runners-caching) (optional, for improved performance).
+1. [Object storage for Terraform state files](../terraform_state.md#using-object-storage).
 
 Using separate buckets for each data type is the recommended approach for GitLab.
 

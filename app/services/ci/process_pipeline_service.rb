@@ -37,10 +37,12 @@ module Ci
         .pluck(Arel.sql('MAX(id)'), 'name')
 
       # mark builds that are retried
-      pipeline.statuses.latest
-        .where(name: latest_statuses.map(&:second))
-        .where.not(id: latest_statuses.map(&:first))
-        .update_all(retried: true) if latest_statuses.any?
+      if latest_statuses.any?
+        pipeline.statuses.latest
+          .where(name: latest_statuses.map(&:second))
+          .where.not(id: latest_statuses.map(&:first))
+          .update_all(retried: true)
+      end
     end
     # rubocop: enable CodeReuse/ActiveRecord
 

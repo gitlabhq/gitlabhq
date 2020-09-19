@@ -53,7 +53,7 @@ RSpec.describe RescheduleMigrateIssueTrackersData do
   describe "#up" do
     it 'schedules background migrations at correct time' do
       Sidekiq::Testing.fake! do
-        Timecop.freeze do
+        freeze_time do
           migrate!
 
           expect(migration_name).to be_scheduled_delayed_migration(3.minutes, jira_service.id, bugzilla_service.id)

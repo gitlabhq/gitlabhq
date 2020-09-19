@@ -110,10 +110,10 @@ GitLab creates the following resources for ABAC clusters.
 | Environment namespace | `ServiceAccount`     | Uses namespace of environment               | Deploying to a cluster |
 | Environment namespace | `Secret`             | Token for environment ServiceAccount        | Deploying to a cluster |
 
-### Security of GitLab Runners
+### Security of runners
 
-GitLab Runners have the [privileged mode](https://docs.gitlab.com/runner/executors/docker.html#the-privileged-mode)
-enabled by default, which allows them to execute special commands and running
+Runners have the [privileged mode](https://docs.gitlab.com/runner/executors/docker.html#the-privileged-mode)
+enabled by default, which allows them to execute special commands and run
 Docker in Docker. This functionality is needed to run some of the
 [Auto DevOps](../../../topics/autodevops/index.md)
 jobs. This implies the containers are running in privileged mode and you should,
@@ -124,14 +124,14 @@ turn can do almost everything that the host can do. Be aware of the
 inherent security risk associated with performing `docker run` operations on
 arbitrary images as they effectively have root access.
 
-If you don't want to use GitLab Runner in privileged mode, either:
+If you don't want to use a runner in privileged mode, either:
 
-- Use shared Runners on GitLab.com. They don't have this security issue.
-- Set up your own Runners using the configuration described at
-  [Shared Runners](../../gitlab_com/index.md#shared-runners). This involves:
+- Use shared runners on GitLab.com. They don't have this security issue.
+- Set up your own runners using the configuration described at
+  [shared runners](../../gitlab_com/index.md#shared-runners). This involves:
   1. Making sure that you don't have it installed via
      [the applications](index.md#installing-applications).
-  1. Installing a Runner
+  1. Installing a runner
      [using `docker+machine`](https://docs.gitlab.com/runner/executors/docker_machine.html).
 
 ## Create new cluster
@@ -206,7 +206,7 @@ To add a Kubernetes cluster to your project, group, or instance:
          apiVersion: v1
          kind: ServiceAccount
          metadata:
-           name: gitlab-admin
+           name: gitlab
            namespace: kube-system
          ---
          apiVersion: rbac.authorization.k8s.io/v1beta1
@@ -219,7 +219,7 @@ To add a Kubernetes cluster to your project, group, or instance:
            name: cluster-admin
          subjects:
            - kind: ServiceAccount
-             name: gitlab-admin
+             name: gitlab
              namespace: kube-system
          ```
 
@@ -245,23 +245,23 @@ To add a Kubernetes cluster to your project, group, or instance:
          Output:
 
          ```shell
-         serviceaccount "gitlab-admin" created
+         serviceaccount "gitlab" created
          clusterrolebinding "gitlab-admin" created
          ```
 
-      1. Retrieve the token for the `gitlab-admin` service account:
+      1. Retrieve the token for the `gitlab` service account:
 
          ```shell
-         kubectl -n kube-system describe secret $(kubectl -n kube-system get secret | grep gitlab-admin | awk '{print $1}')
+         kubectl -n kube-system describe secret $(kubectl -n kube-system get secret | grep gitlab | awk '{print $1}')
          ```
 
          Copy the `<authentication_token>` value from the output:
 
          ```yaml
-         Name:         gitlab-admin-token-b5zv4
+         Name:         gitlab-token-b5zv4
          Namespace:    kube-system
          Labels:       <none>
-         Annotations:  kubernetes.io/service-account.name=gitlab-admin
+         Annotations:  kubernetes.io/service-account.name=gitlab
                       kubernetes.io/service-account.uid=bcfe66ac-39be-11e8-97e8-026dce96b6e8
 
          Type:  kubernetes.io/service-account-token

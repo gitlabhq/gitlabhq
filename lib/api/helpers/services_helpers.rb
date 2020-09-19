@@ -631,12 +631,26 @@ module API
               name: :issues_url,
               type: String,
               desc: 'The issues URL'
+            }
+          ],
+          'ewm' => [
+            {
+              required: true,
+              name: :new_issue_url,
+              type: String,
+              desc: 'New Issue URL'
             },
             {
-              required: false,
-              name: :description,
+              required: true,
+              name: :project_url,
               type: String,
-              desc: 'The description of the tracker'
+              desc: 'Project URL'
+            },
+            {
+              required: true,
+              name: :issues_url,
+              type: String,
+              desc: 'Issues URL'
             }
           ],
           'youtrack' => [
@@ -651,12 +665,6 @@ module API
               name: :issues_url,
               type: String,
               desc: 'The issues URL'
-            },
-            {
-              required: false,
-              name: :description,
-              type: String,
-              desc: 'The description of the tracker'
             }
           ],
           'slack' => [
@@ -747,6 +755,7 @@ module API
           ::DiscordService,
           ::DroneCiService,
           ::EmailsOnPushService,
+          ::EwmService,
           ::ExternalWikiService,
           ::FlowdockService,
           ::HangoutsChatService,

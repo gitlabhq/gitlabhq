@@ -415,7 +415,7 @@ RSpec.describe API::Internal::Base do
       let(:env) { {} }
 
       around do |example|
-        Timecop.freeze { example.run }
+        freeze_time { example.run }
       end
 
       before do
@@ -1179,7 +1179,7 @@ RSpec.describe API::Internal::Base do
         let(:gl_repository) { "snippet-#{personal_snippet.id}" }
 
         it 'does not try to notify that project moved' do
-          allow(Gitlab::GlRepository).to receive(:parse).and_return([personal_snippet, nil, Gitlab::GlRepository::PROJECT])
+          allow(Gitlab::GlRepository).to receive(:parse).and_return([personal_snippet, nil, Gitlab::GlRepository::SNIPPET])
 
           expect(Gitlab::Checks::ProjectMoved).not_to receive(:fetch_message)
 

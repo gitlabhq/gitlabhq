@@ -35,6 +35,7 @@ export const mockManagedApps = [
     status: 'connected',
     path: '/root/autodevops-deploy/-/clusters/15',
     gitlab_managed_apps_logs_path: '/root/autodevops-deploy/-/logs?cluster_id=15',
+    enable_advanced_logs_querying: true,
   },
   {
     cluster_type: 'project_type',
@@ -45,6 +46,7 @@ export const mockManagedApps = [
     status: 'connected',
     path: '/root/autodevops-deploy/-/clusters/16',
     gitlab_managed_apps_logs_path: null,
+    enable_advanced_logs_querying: false,
   },
 ];
 

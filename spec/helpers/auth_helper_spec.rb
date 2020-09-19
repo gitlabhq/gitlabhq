@@ -220,4 +220,44 @@ RSpec.describe AuthHelper do
       it { is_expected.to be(false) }
     end
   end
+
+  describe '#auth_active?' do
+    let(:user) { create(:user) }
+
+    def auth_active?
+      helper.auth_active?(provider)
+    end
+
+    before do
+      allow(helper).to receive(:current_user).and_return(user)
+    end
+
+    context 'for atlassian_oauth2 provider' do
+      let_it_be(:provider) { :atlassian_oauth2 }
+
+      it 'returns true when present' do
+        create(:atlassian_identity, user: user)
+
+        expect(auth_active?).to be true
+      end
+
+      it 'returns false when not present' do
+        expect(auth_active?).to be false
+      end
+    end
+
+    context 'for other omniauth providers' do
+      let_it_be(:provider) { 'google_oauth2' }
+
+      it 'returns true when present' do
+        create(:identity, provider: provider, user: user)
+
+        expect(auth_active?).to be true
+      end
+
+      it 'returns false when not present' do
+        expect(auth_active?).to be false
+      end
+    end
+  end
 end

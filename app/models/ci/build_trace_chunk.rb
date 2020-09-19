@@ -2,13 +2,16 @@
 
 module Ci
   class BuildTraceChunk < ApplicationRecord
-    include FastDestroyAll
+    extend ::Gitlab::Ci::Model
+    include ::FastDestroyAll
+    include ::Checksummable
     include ::Gitlab::ExclusiveLeaseHelpers
-    extend Gitlab::Ci::Model
 
     belongs_to :build, class_name: "Ci::Build", foreign_key: :build_id
 
     default_value_for :data_store, :redis
+
+    after_create { metrics.increment_trace_operation(operation: :chunked) }
 
     CHUNK_SIZE = 128.kilobytes
     WRITE_LOCK_RETRY = 10
@@ -24,6 +27,8 @@ module Ci
       database: 2,
       fog: 3
     }
+
+    scope :live, -> { redis }
 
     class << self
       def all_stores
@@ -60,8 +65,6 @@ module Ci
       end
     end
 
-    ##
-    # Data is memoized for optimizing #size and #end_offset
     def data
       @data ||= get_data.to_s
     end
@@ -80,11 +83,11 @@ module Ci
 
       in_lock(*lock_params) { unsafe_append_data!(new_data, offset) }
 
-      schedule_to_persist if full?
+      schedule_to_persist! if full?
     end
 
     def size
-      @size ||= current_store.size(self) || data&.bytesize
+      @size ||= @data&.bytesize || current_store.size(self) || data&.bytesize
     end
 
     def start_offset
@@ -100,33 +103,66 @@ module Ci
     end
 
     def persist_data!
-      in_lock(*lock_params) do # Write operation is atomic
-        unsafe_persist_to!(self.class.persistable_store)
-      end
+      in_lock(*lock_params) { unsafe_persist_data! }
+    end
+
+    def schedule_to_persist!
+      return if persisted?
+
+      Ci::BuildTraceChunkFlushWorker.perform_async(id)
+    end
+
+    def persisted?
+      !redis?
+    end
+
+    def live?
+      redis?
+    end
+
+    ##
+    # Build trace chunk is final (the last one that we do not expect to ever
+    # become full) when a runner submitted a build pending state and there is
+    # no chunk with higher index in the database.
+    #
+    def final?
+      build.pending_state.present? &&
+        build.trace_chunks.maximum(:chunk_index).to_i == chunk_index
     end
 
     private
 
-    def unsafe_persist_to!(new_store)
+    def get_data
+      # Redis / database return UTF-8 encoded string by default
+      current_store.data(self)&.force_encoding(Encoding::BINARY)
+    end
+
+    def unsafe_persist_data!(new_store = self.class.persistable_store)
       return if data_store == new_store.to_s
 
-      current_data = get_data
+      current_data = data
+      old_store_class = current_store
+      current_size = current_data&.bytesize.to_i
 
-      unless current_data&.bytesize.to_i == CHUNK_SIZE
+      unless current_size == CHUNK_SIZE || final?
         raise FailedToPersistDataError, 'Data is not fulfilled in a bucket'
       end
 
-      old_store_class = current_store
-
       self.raw_data = nil
       self.data_store = new_store
+      self.checksum = crc32(current_data)
+
+      ##
+      # We need to so persist data then save a new store identifier before we
+      # remove data from the previous store to make this operation
+      # trasnaction-safe. `unsafe_set_data! calls `save!` because of this
+      # reason.
+      #
+      # TODO consider using callbacks and state machine to remove old data
+      #
       unsafe_set_data!(current_data)
 
       old_store_class.delete_data(self)
-    end
-
-    def get_data
-      current_store.data(self)&.force_encoding(Encoding::BINARY) # Redis/Database return UTF-8 string as default
     end
 
     def unsafe_set_data!(value)
@@ -148,6 +184,8 @@ module Ci
       end
 
       current_store.append_data(self, value, offset).then do |stored|
+        metrics.increment_trace_operation(operation: :appended)
+
         raise ArgumentError, 'Trace appended incorrectly' if stored != new_size
       end
 
@@ -155,16 +193,6 @@ module Ci
       @size = new_size
 
       save! if changed?
-    end
-
-    def schedule_to_persist
-      return if data_persisted?
-
-      Ci::BuildTraceChunkFlushWorker.perform_async(id)
-    end
-
-    def data_persisted?
-      !redis?
     end
 
     def full?
@@ -180,6 +208,10 @@ module Ci
        { ttl: WRITE_LOCK_TTL,
          retries: WRITE_LOCK_RETRY,
          sleep_sec: WRITE_LOCK_SLEEP }]
+    end
+
+    def metrics
+      @metrics ||= ::Gitlab::Ci::Trace::Metrics.new
     end
   end
 end

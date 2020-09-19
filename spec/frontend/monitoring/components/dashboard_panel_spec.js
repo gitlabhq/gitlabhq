@@ -2,7 +2,7 @@ import Vuex from 'vuex';
 import { shallowMount } from '@vue/test-utils';
 import AxiosMockAdapter from 'axios-mock-adapter';
 import { setTestTimeout } from 'helpers/timeout';
-import { GlNewDropdownItem as GlDropdownItem } from '@gitlab/ui';
+import { GlDropdownItem } from '@gitlab/ui';
 import invalidUrl from '~/lib/utils/invalid_url';
 import axios from '~/lib/utils/axios_utils';
 import AlertWidget from '~/monitoring/components/alert_widget.vue';
@@ -15,10 +15,14 @@ import {
   mockNamespace,
   mockNamespacedData,
   mockTimeRange,
-  barMockData,
 } from '../mock_data';
 import { dashboardProps, graphData, graphDataEmpty } from '../fixture_data';
-import { anomalyGraphData, singleStatGraphData, heatmapGraphData } from '../graph_data';
+import {
+  anomalyGraphData,
+  singleStatGraphData,
+  heatmapGraphData,
+  barGraphData,
+} from '../graph_data';
 
 import { panelTypes } from '~/monitoring/constants';
 
@@ -137,7 +141,6 @@ describe('Dashboard Panel', () => {
 
     it('The Empty Chart component is rendered and is a Vue instance', () => {
       expect(wrapper.find(MonitorEmptyChart).exists()).toBe(true);
-      expect(wrapper.find(MonitorEmptyChart).isVueInstance()).toBe(true);
     });
   });
 
@@ -166,7 +169,6 @@ describe('Dashboard Panel', () => {
 
     it('The Empty Chart component is rendered and is a Vue instance', () => {
       expect(wrapper.find(MonitorEmptyChart).exists()).toBe(true);
-      expect(wrapper.find(MonitorEmptyChart).isVueInstance()).toBe(true);
     });
   });
 
@@ -222,13 +224,11 @@ describe('Dashboard Panel', () => {
       it('empty chart is rendered for empty results', () => {
         createWrapper({ graphData: graphDataEmpty });
         expect(wrapper.find(MonitorEmptyChart).exists()).toBe(true);
-        expect(wrapper.find(MonitorEmptyChart).isVueInstance()).toBe(true);
       });
 
       it('area chart is rendered by default', () => {
         createWrapper();
         expect(wrapper.find(MonitorTimeSeriesChart).exists()).toBe(true);
-        expect(wrapper.find(MonitorTimeSeriesChart).isVueInstance()).toBe(true);
       });
 
       describe.each`
@@ -240,7 +240,7 @@ describe('Dashboard Panel', () => {
         ${dataWithType(panelTypes.COLUMN)}         | ${MonitorColumnChart}        | ${false}
         ${dataWithType(panelTypes.STACKED_COLUMN)} | ${MonitorStackedColumnChart} | ${false}
         ${heatmapGraphData()}                      | ${MonitorHeatmapChart}       | ${false}
-        ${barMockData}                             | ${MonitorBarChart}           | ${false}
+        ${barGraphData()}                          | ${MonitorBarChart}           | ${false}
       `('when $data.type data is provided', ({ data, component, hasCtxMenu }) => {
         const attrs = { attr1: 'attr1Value', attr2: 'attr2Value' };
 
@@ -250,7 +250,6 @@ describe('Dashboard Panel', () => {
 
         it(`renders the chart component and binds attributes`, () => {
           expect(wrapper.find(component).exists()).toBe(true);
-          expect(wrapper.find(component).isVueInstance()).toBe(true);
           expect(wrapper.find(component).attributes()).toMatchObject(attrs);
         });
 
@@ -544,7 +543,6 @@ describe('Dashboard Panel', () => {
     });
 
     it('it renders a time series chart with no errors', () => {
-      expect(wrapper.find(MonitorTimeSeriesChart).isVueInstance()).toBe(true);
       expect(wrapper.find(MonitorTimeSeriesChart).exists()).toBe(true);
     });
   });

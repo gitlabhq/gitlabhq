@@ -43,10 +43,13 @@ instance_of_object.method(:foo).source_location
 project.method(:private?).source_location
 ```
 
-## Query an object
+## Query the database using an ActiveRecord Model
 
 ```ruby
-o = Object.where('attribute like ?', 'ex')
+m = Model.where('attribute like ?', 'ex%')
+
+# for example to query the projects
+projects = Project.where('path like ?', 'Oumua%')
 ```
 
 ## View all keys in cache
@@ -215,6 +218,17 @@ namespace = Namespace.find_by_full_path("")
 ::Projects::TransferService.new(p, current_user).execute(namespace)
 ```
 
+### For Removing webhooks that is getting timeout due to large webhook logs
+
+```ruby
+# ID will be the webhook_id
+WebHookLog.where(web_hook_id: ID).each_slice(ID) do |slice|
+  slice.each(&:destroy)
+end
+
+WebHook.find(ID).destroy
+```
+
 ### Bulk update service integration password for _all_ projects
 
 For example, change the Jira user's password for all projects that have the Jira
@@ -240,6 +254,18 @@ p = Project.find_by_sql("SELECT p.id FROM projects p LEFT JOIN services s ON p.i
 p.each do |project|
   project.slack_service.update_attribute(:active, false)
 end
+```
+
+### Incorrect repository statistics shown in the GUI
+
+After [reducing a repository size with third-party tools](../../user/project/repository/reducing_the_repo_size_using_git.md)
+the displayed size may still show old sizes or commit numbers. To force an update, do:
+
+```ruby
+p = Project.find_by_full_path('<namespace>/<project>')
+pp p.statistics
+p.statistics.refresh!
+pp p.statistics  # compare with earlier values
 ```
 
 ## Wikis

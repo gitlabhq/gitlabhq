@@ -8,7 +8,7 @@
       .gl-mb-2
         %strong{ data: { qa_selector: "milestone_link", qa_milestone_title: milestone.title } }
           = link_to truncate(milestone.title, length: 100), milestone_path(milestone)
-        - if @group
+        - if @group || dashboard
           = " - #{milestone_type}"
 
       - if milestone.due_date || milestone.start_date
@@ -62,7 +62,3 @@
             = link_to s_('Milestones|Reopen Milestone'), milestone_path(milestone, milestone: { state_event: :activate }), method: :put, class: "btn btn-sm btn-grouped btn-reopen"
           - else
             = link_to s_('Milestones|Close Milestone'), milestone_path(milestone, milestone: { state_event: :close }), method: :put, class: "btn btn-sm btn-grouped btn-close"
-
-        - if dashboard
-          .label-badge.label-badge-gray
-            = milestone_type

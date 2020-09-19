@@ -19,7 +19,7 @@ RSpec.describe BackfillProjectSettings, :sidekiq, schema: 20200114113341 do
 
     it 'schedules BackfillProjectSettings background jobs' do
       Sidekiq::Testing.fake! do
-        Timecop.freeze do
+        freeze_time do
           migrate!
 
           expect(described_class::MIGRATION).to be_scheduled_delayed_migration(2.minutes, 1, 2)

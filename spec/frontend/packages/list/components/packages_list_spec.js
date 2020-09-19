@@ -18,13 +18,12 @@ describe('packages_list', () => {
   let wrapper;
   let store;
 
-  const GlSortingItem = { name: 'sorting-item-stub', template: '<div><slot></slot></div>' };
   const EmptySlotStub = { name: 'empty-slot-stub', template: '<div>bar</div>' };
 
   const findPackagesListLoader = () => wrapper.find(PackagesListLoader);
   const findPackageListPagination = () => wrapper.find(GlPagination);
   const findPackageListDeleteModal = () => wrapper.find(GlModal);
-  const findEmptySlot = () => wrapper.find({ name: 'empty-slot-stub' });
+  const findEmptySlot = () => wrapper.find(EmptySlotStub);
   const findPackagesListRow = () => wrapper.find(PackagesListRow);
 
   const createStore = (isGroupPage, packages, isLoading) => {
@@ -67,7 +66,6 @@ describe('packages_list', () => {
       stubs: {
         ...stubChildren(PackagesList),
         GlTable,
-        GlSortingItem,
         GlModal,
       },
       ...options,

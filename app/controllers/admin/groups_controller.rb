@@ -19,7 +19,7 @@ class Admin::GroupsController < Admin::ApplicationController
     # the Group with statistics).
     @group = Group.with_statistics.find(group&.id)
     @members = present_members(
-      @group.members.order("access_level DESC").page(params[:members_page]))
+      group_members.order("access_level DESC").page(params[:members_page]))
     @requesters = present_members(
       AccessRequestsFinder.new(@group).execute(current_user))
     @projects = @group.projects.with_statistics.page(params[:projects_page])
@@ -80,6 +80,10 @@ class Admin::GroupsController < Admin::ApplicationController
 
   def group
     @group ||= Group.find_by_full_path(params[:id])
+  end
+
+  def group_members
+    @group.members
   end
 
   def group_params

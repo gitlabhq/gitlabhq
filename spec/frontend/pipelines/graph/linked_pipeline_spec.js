@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils';
-import { GlButton } from '@gitlab/ui';
+import { GlButton, GlLoadingIcon } from '@gitlab/ui';
 import LinkedPipelineComponent from '~/pipelines/components/graph/linked_pipeline.vue';
 import CiStatus from '~/vue_shared/components/ci_icon.vue';
 
@@ -16,10 +16,18 @@ describe('Linked pipeline', () => {
   const findButton = () => wrapper.find(GlButton);
   const findPipelineLabel = () => wrapper.find('[data-testid="downstream-pipeline-label"]');
   const findLinkedPipeline = () => wrapper.find({ ref: 'linkedPipeline' });
+  const findLoadingIcon = () => wrapper.find(GlLoadingIcon);
+  const findPipelineLink = () => wrapper.find('[data-testid="pipelineLink"]');
+  const findExpandButton = () => wrapper.find('[data-testid="expandPipelineButton"]');
 
-  const createWrapper = propsData => {
+  const createWrapper = (propsData, data = []) => {
     wrapper = mount(LinkedPipelineComponent, {
       propsData,
+      data() {
+        return {
+          ...data,
+        };
+      },
     });
   };
 
@@ -39,7 +47,7 @@ describe('Linked pipeline', () => {
     });
 
     it('should render a list item as the containing element', () => {
-      expect(wrapper.is('li')).toBe(true);
+      expect(wrapper.element.tagName).toBe('LI');
     });
 
     it('should render a button', () => {
@@ -76,7 +84,7 @@ describe('Linked pipeline', () => {
     });
 
     it('should render the tooltip text as the title attribute', () => {
-      const titleAttr = findButton().attributes('title');
+      const titleAttr = findLinkedPipeline().attributes('title');
 
       expect(titleAttr).toContain(mockPipeline.project.name);
       expect(titleAttr).toContain(mockPipeline.details.status.label);
@@ -117,6 +125,56 @@ describe('Linked pipeline', () => {
       createWrapper(upstreamProps);
       expect(findPipelineLabel().exists()).toBe(true);
     });
+
+    it('downstream pipeline should contain the correct link', () => {
+      createWrapper(downstreamProps);
+      expect(findPipelineLink().attributes('href')).toBe(mockData.triggered_by.path);
+    });
+
+    it('upstream pipeline should contain the correct link', () => {
+      createWrapper(upstreamProps);
+      expect(findPipelineLink().attributes('href')).toBe(mockData.triggered_by.path);
+    });
+
+    it.each`
+      presentClass        | missingClass
+      ${'gl-right-0'}     | ${'gl-left-0'}
+      ${'gl-border-l-1!'} | ${'gl-border-r-1!'}
+    `(
+      'pipeline expand button should be postioned right when child pipeline',
+      ({ presentClass, missingClass }) => {
+        createWrapper(downstreamProps);
+        expect(findExpandButton().classes()).toContain(presentClass);
+        expect(findExpandButton().classes()).not.toContain(missingClass);
+      },
+    );
+
+    it.each`
+      presentClass        | missingClass
+      ${'gl-left-0'}      | ${'gl-right-0'}
+      ${'gl-border-r-1!'} | ${'gl-border-l-1!'}
+    `(
+      'pipeline expand button should be postioned left when parent pipeline',
+      ({ presentClass, missingClass }) => {
+        createWrapper(upstreamProps);
+        expect(findExpandButton().classes()).toContain(presentClass);
+        expect(findExpandButton().classes()).not.toContain(missingClass);
+      },
+    );
+
+    it.each`
+      pipelineType       | anglePosition    | expanded
+      ${downstreamProps} | ${'angle-right'} | ${false}
+      ${downstreamProps} | ${'angle-left'}  | ${true}
+      ${upstreamProps}   | ${'angle-left'}  | ${false}
+      ${upstreamProps}   | ${'angle-right'} | ${true}
+    `(
+      '$pipelineType.columnTitle pipeline button icon should be $anglePosition if expanded state is $expanded',
+      ({ pipelineType, anglePosition, expanded }) => {
+        createWrapper(pipelineType, { expanded });
+        expect(findExpandButton().props('icon')).toBe(anglePosition);
+      },
+    );
   });
 
   describe('when isLoading is true', () => {
@@ -130,8 +188,8 @@ describe('Linked pipeline', () => {
       createWrapper(props);
     });
 
-    it('sets the loading prop to true', () => {
-      expect(findButton().props('loading')).toBe(true);
+    it('loading icon is visible', () => {
+      expect(findLoadingIcon().exists()).toBe(true);
     });
   });
 
@@ -171,6 +229,11 @@ describe('Linked pipeline', () => {
     it('should emit downstreamHovered with empty string on mouseleave', () => {
       findLinkedPipeline().trigger('mouseleave');
       expect(wrapper.emitted().downstreamHovered).toStrictEqual([['']]);
+    });
+
+    it('should emit pipelineExpanded with job name and expanded state on click', () => {
+      findExpandButton().trigger('click');
+      expect(wrapper.emitted().pipelineExpandToggle).toStrictEqual([['trigger_job', true]]);
     });
   });
 });

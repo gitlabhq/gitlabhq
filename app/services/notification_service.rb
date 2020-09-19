@@ -35,6 +35,12 @@ class NotificationService
     @async ||= Async.new(self)
   end
 
+  def disabled_two_factor(user)
+    return unless user.can?(:receive_notifications)
+
+    mailer.disabled_two_factor_email(user).deliver_later
+  end
+
   # Always notify user about ssh key added
   # only if ssh key is not deploy key
   #

@@ -29,6 +29,7 @@ class Iteration < ApplicationRecord
 
   scope :upcoming, -> { with_state(:upcoming) }
   scope :started, -> { with_state(:started) }
+  scope :closed, -> { with_state(:closed) }
 
   scope :within_timeframe, -> (start_date, end_date) do
     where('start_date is not NULL or due_date is not NULL')
@@ -36,8 +37,8 @@ class Iteration < ApplicationRecord
       .where('due_date is NULL or due_date >= ?', start_date)
   end
 
-  scope :start_date_passed, -> { where('start_date <= ?', Date.current).where('due_date > ?', Date.current) }
-  scope :due_date_passed, -> { where('due_date <= ?', Date.current) }
+  scope :start_date_passed, -> { where('start_date <= ?', Date.current).where('due_date >= ?', Date.current) }
+  scope :due_date_passed, -> { where('due_date < ?', Date.current) }
 
   state_machine :state_enum, initial: :upcoming do
     event :start do
@@ -63,9 +64,10 @@ class Iteration < ApplicationRecord
       case state
       when 'closed' then iterations.closed
       when 'started' then iterations.started
+      when 'upcoming' then iterations.upcoming
       when 'opened' then iterations.started.or(iterations.upcoming)
       when 'all' then iterations
-      else iterations.upcoming
+      else raise ArgumentError, "Unknown state filter: #{state}"
       end
     end
 

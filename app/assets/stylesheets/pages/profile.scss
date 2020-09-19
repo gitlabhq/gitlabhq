@@ -257,7 +257,8 @@
   }
 }
 
-table.u2f-registrations {
+table.u2f-registrations,
+.webauthn-registrations {
   th:not(:last-child),
   td:not(:last-child) {
     border-right: solid 1px transparent;

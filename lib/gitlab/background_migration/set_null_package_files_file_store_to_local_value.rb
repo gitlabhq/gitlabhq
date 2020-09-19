@@ -11,9 +11,11 @@ module Gitlab
     class SetNullPackageFilesFileStoreToLocalValue
       LOCAL_STORE = 1 # equal to ObjectStorage::Store::LOCAL
 
-      # Temporary AR class for package files
-      class PackageFile < ActiveRecord::Base
-        self.table_name = 'packages_package_files'
+      module Packages
+        # Temporary AR class for package files
+        class PackageFile < ActiveRecord::Base
+          self.table_name = 'packages_package_files'
+        end
       end
 
       def perform(start_id, stop_id)

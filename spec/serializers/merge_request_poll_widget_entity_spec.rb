@@ -265,7 +265,7 @@ RSpec.describe MergeRequestPollWidgetEntity do
 
       context 'when is not up to date' do
         it 'returns nil' do
-          pipeline.update(sha: "not up to date")
+          pipeline.update!(sha: "not up to date")
 
           expect(subject[:pipeline]).to eq(nil)
         end
@@ -283,6 +283,22 @@ RSpec.describe MergeRequestPollWidgetEntity do
       it 'does not return ci_status' do
         expect(subject[:ci_status]).to eq(nil)
       end
+    end
+  end
+
+  describe '#builds_with_coverage' do
+    it 'serializes the builds with coverage' do
+      allow(resource).to receive(:head_pipeline_builds_with_coverage).and_return([
+        double(name: 'rspec', coverage: 91.5),
+        double(name: 'jest', coverage: 94.1)
+      ])
+
+      result = subject[:builds_with_coverage]
+
+      expect(result).to eq([
+        { name: 'rspec', coverage: 91.5 },
+        { name: 'jest', coverage: 94.1 }
+      ])
     end
   end
 end

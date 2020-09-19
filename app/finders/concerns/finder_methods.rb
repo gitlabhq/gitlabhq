@@ -30,7 +30,7 @@ module FinderMethods
   def if_authorized(result)
     # Return the result if the finder does not perform authorization checks.
     # this is currently the case in the `MilestoneFinder`
-    return result unless respond_to?(:current_user)
+    return result unless respond_to?(:current_user, true)
 
     if can_read_object?(result)
       result
@@ -44,9 +44,14 @@ module FinderMethods
     # for Todos
     return true unless DeclarativePolicy.has_policy?(object)
 
-    model_name = object&.model_name || model.model_name
+    Ability.allowed?(current_user, :"read_#{to_ability_name(object)}", object)
+  end
 
-    Ability.allowed?(current_user, :"read_#{model_name.singular}", object)
+  def to_ability_name(object)
+    return object.to_ability_name if object.respond_to?(:to_ability_name)
+
+    # Not all objects define `#to_ability_name`, so attempt to derive it:
+    object.model_name.singular
   end
 
   # This fetches the model from the `ActiveRecord::Relation` but does not

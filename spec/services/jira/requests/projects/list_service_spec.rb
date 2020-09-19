@@ -69,7 +69,7 @@ RSpec.describe Jira::Requests::Projects::ListService do
             expect(client).to receive(:get).and_return([{ 'key' => 'pr1', 'name' => 'First Project' }, { 'key' => 'pr2', 'name' => 'Second Project' }])
           end
 
-          it 'returns a paylod with Jira projets' do
+          it 'returns a paylod with Jira projects' do
             payload = subject.payload
 
             expect(subject.success?).to be_truthy
@@ -80,7 +80,7 @@ RSpec.describe Jira::Requests::Projects::ListService do
           context 'when filtering projects by name' do
             let(:params) { { query: 'first' } }
 
-            it 'returns a paylod with Jira projets' do
+            it 'returns a paylod with Jira procjets' do
               payload = subject.payload
 
               expect(subject.success?).to be_truthy

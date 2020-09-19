@@ -16,51 +16,33 @@ RSpec.describe Ci::Ref do
         stub_const('Ci::PipelineSuccessUnlockArtifactsWorker', unlock_artifacts_worker_spy)
       end
 
-      context 'when keep latest artifact feature is enabled' do
-        before do
-          stub_feature_flags(keep_latest_artifacts_for_ref: true)
-        end
-
-        where(:initial_state, :action, :count) do
-          :unknown | :succeed! | 1
-          :unknown | :do_fail! | 0
-          :success | :succeed! | 1
-          :success | :do_fail! | 0
-          :failed | :succeed! | 1
-          :failed | :do_fail! | 0
-          :fixed | :succeed! | 1
-          :fixed | :do_fail! | 0
-          :broken | :succeed! | 1
-          :broken | :do_fail! | 0
-          :still_failing | :succeed | 1
-          :still_failing | :do_fail | 0
-        end
-
-        with_them do
-          context "when transitioning states" do
-            before do
-              status_value = Ci::Ref.state_machines[:status].states[initial_state].value
-              ci_ref.update!(status: status_value)
-            end
-
-            it 'calls unlock artifacts service' do
-              ci_ref.send(action)
-
-              expect(unlock_artifacts_worker_spy).to have_received(:perform_async).exactly(count).times
-            end
-          end
-        end
+      where(:initial_state, :action, :count) do
+        :unknown | :succeed! | 1
+        :unknown | :do_fail! | 0
+        :success | :succeed! | 1
+        :success | :do_fail! | 0
+        :failed | :succeed! | 1
+        :failed | :do_fail! | 0
+        :fixed | :succeed! | 1
+        :fixed | :do_fail! | 0
+        :broken | :succeed! | 1
+        :broken | :do_fail! | 0
+        :still_failing | :succeed | 1
+        :still_failing | :do_fail | 0
       end
 
-      context 'when keep latest artifact feature is not enabled' do
-        before do
-          stub_feature_flags(keep_latest_artifacts_for_ref: false)
-        end
+      with_them do
+        context "when transitioning states" do
+          before do
+            status_value = Ci::Ref.state_machines[:status].states[initial_state].value
+            ci_ref.update!(status: status_value)
+          end
 
-        it 'does not call unlock artifacts service' do
-          ci_ref.succeed!
+          it 'calls unlock artifacts service' do
+            ci_ref.send(action)
 
-          expect(unlock_artifacts_worker_spy).not_to have_received(:perform_async)
+            expect(unlock_artifacts_worker_spy).to have_received(:perform_async).exactly(count).times
+          end
         end
       end
     end
@@ -125,8 +107,8 @@ RSpec.describe Ci::Ref do
 
   describe '#last_finished_pipeline_id' do
     let(:pipeline_status) { :running }
-    let(:config_source) { Ci::PipelineEnums.config_sources[:repository_source] }
-    let(:pipeline) { create(:ci_pipeline, pipeline_status, config_source: config_source) }
+    let(:pipeline_source) { Enums::Ci::Pipeline.sources[:push] }
+    let(:pipeline) { create(:ci_pipeline, pipeline_status, source: pipeline_source) }
     let(:ci_ref) { pipeline.ci_ref }
 
     context 'when there are no finished pipelines' do
@@ -142,8 +124,8 @@ RSpec.describe Ci::Ref do
         expect(ci_ref.last_finished_pipeline_id).to eq(pipeline.id)
       end
 
-      context 'when the pipeline is not a ci_source' do
-        let(:config_source) { Ci::PipelineEnums.config_sources[:parameter_source] }
+      context 'when the pipeline a dangling pipeline' do
+        let(:pipeline_source) { Enums::Ci::Pipeline.sources[:ondemand_dast_scan] }
 
         it 'returns nil' do
           expect(ci_ref.last_finished_pipeline_id).to be_nil

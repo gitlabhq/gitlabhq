@@ -21,7 +21,7 @@ If you have any doubts about the consistency of the data on this node, we recomm
 Since the former **primary** node will be out of sync with the current **primary** node, the first step is to bring the former **primary** node up to date. Note, deletion of data stored on disk like
 repositories and uploads will not be replayed when bringing the former **primary** node back
 into sync, which may result in increased disk usage.
-Alternatively, you can [set up a new **secondary** GitLab instance](../replication/index.md#setup-instructions) to avoid this.
+Alternatively, you can [set up a new **secondary** GitLab instance](../setup/index.md) to avoid this.
 
 To bring the former **primary** node up to date:
 
@@ -37,7 +37,7 @@ To bring the former **primary** node up to date:
    you need to undo those steps now. For Debian/Ubuntu you just need to run
    `sudo systemctl enable gitlab-runsvdir`. For CentOS 6, you need to install
    the GitLab instance from scratch and set it up as a **secondary** node by
-   following [Setup instructions](../replication/index.md#setup-instructions). In this case, you don't need to follow the next step.
+   following [Setup instructions](../setup/index.md). In this case, you don't need to follow the next step.
 
    NOTE: **Note:**
    If you [changed the DNS records](index.md#step-4-optional-updating-the-primary-domain-dns-record)
@@ -45,12 +45,12 @@ To bring the former **primary** node up to date:
    all the writes to this node](planned_failover.md#prevent-updates-to-the-primary-node)
    during this procedure.
 
-1. [Setup database replication](../replication/database.md). Note that in this
+1. [Setup database replication](../setup/database.md). Note that in this
    case, **primary** node refers to the current **primary** node, and **secondary** node refers to the
    former **primary** node.
 
 If you have lost your original **primary** node, follow the
-[setup instructions](../replication/index.md#setup-instructions) to set up a new **secondary** node.
+[setup instructions](../setup/index.md) to set up a new **secondary** node.
 
 ## Promote the **secondary** node to **primary** node
 

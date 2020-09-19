@@ -1,7 +1,13 @@
 import { STATUSES } from './constants';
 
-// Will be expanded in future
-// eslint-disable-next-line import/prefer-default-export
+export function isIncompatible(project) {
+  return project.importSource.incompatible;
+}
+
+export function getImportStatus(project) {
+  return project.importedProject?.importStatus ?? STATUSES.NONE;
+}
+
 export function isProjectImportable(project) {
-  return project.importStatus === STATUSES.NONE && !project.importSource.incompatible;
+  return !isIncompatible(project) && getImportStatus(project) === STATUSES.NONE;
 }

@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
-import { GlSkeletonLoading } from '@gitlab/ui';
+import { GlDeprecatedSkeletonLoading as GlSkeletonLoading, GlButton } from '@gitlab/ui';
 import Table from '~/repository/components/table/index.vue';
 import TableRow from '~/repository/components/table/row.vue';
 
@@ -34,12 +34,13 @@ const MOCK_BLOBS = [
   },
 ];
 
-function factory({ path, isLoading = false, entries = {} }) {
+function factory({ path, isLoading = false, hasMore = true, entries = {} }) {
   vm = shallowMount(Table, {
     propsData: {
       path,
       isLoading,
       entries,
+      hasMore,
     },
     mocks: {
       $apollo,
@@ -87,5 +88,28 @@ describe('Repository table component', () => {
 
     expect(rows.length).toEqual(3);
     expect(rows.at(2).attributes().mode).toEqual('120000');
+  });
+
+  describe('Show more button', () => {
+    const showMoreButton = () => vm.find(GlButton);
+
+    it.each`
+      hasMore  | expectButtonToExist
+      ${true}  | ${true}
+      ${false} | ${false}
+    `('renders correctly', ({ hasMore, expectButtonToExist }) => {
+      factory({ path: '/', hasMore });
+      expect(showMoreButton().exists()).toBe(expectButtonToExist);
+    });
+
+    it('when is clicked, emits showMore event', async () => {
+      factory({ path: '/' });
+
+      showMoreButton().vm.$emit('click');
+
+      await vm.vm.$nextTick();
+
+      expect(vm.emitted('showMore')).toHaveLength(1);
+    });
   });
 });

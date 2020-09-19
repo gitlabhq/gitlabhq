@@ -41,7 +41,8 @@ module AlertManagement
         project,
         user,
         title: alert_presenter.title,
-        description: alert_presenter.issue_description
+        description: alert_presenter.issue_description,
+        severity: alert.severity
       ).execute
     end
 

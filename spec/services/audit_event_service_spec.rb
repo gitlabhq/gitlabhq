@@ -22,7 +22,7 @@ RSpec.describe AuditEventService do
                                             entity_type: "Project",
                                             action: :destroy)
 
-      expect { service.security_event }.to change(SecurityEvent, :count).by(1)
+      expect { service.security_event }.to change(AuditEvent, :count).by(1)
     end
 
     it 'formats from and to fields' do
@@ -44,13 +44,29 @@ RSpec.describe AuditEventService do
                                             action: :create,
                                             target_id: 1)
 
-      expect { service.security_event }.to change(SecurityEvent, :count).by(1)
+      expect { service.security_event }.to change(AuditEvent, :count).by(1)
 
-      details = SecurityEvent.last.details
+      details = AuditEvent.last.details
       expect(details[:from]).to be true
       expect(details[:to]).to be false
       expect(details[:action]).to eq(:create)
       expect(details[:target_id]).to eq(1)
+    end
+
+    context 'authentication event' do
+      let(:audit_service) { described_class.new(user, user, with: 'standard') }
+
+      it 'creates an authentication event' do
+        expect(AuthenticationEvent).to receive(:create).with(
+          user: user,
+          user_name: user.name,
+          ip_address: user.current_sign_in_ip,
+          result: AuthenticationEvent.results[:success],
+          provider: 'standard'
+        )
+
+        audit_service.for_authentication.security_event
+      end
     end
   end
 

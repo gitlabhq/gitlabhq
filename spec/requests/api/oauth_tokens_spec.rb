@@ -20,7 +20,7 @@ RSpec.describe 'OAuth tokens' do
 
         request_oauth_token(user, client_basic_auth_header(client))
 
-        expect(response).to have_gitlab_http_status(:unauthorized)
+        expect(response).to have_gitlab_http_status(:bad_request)
         expect(json_response['error']).to eq('invalid_grant')
       end
     end
@@ -62,7 +62,7 @@ RSpec.describe 'OAuth tokens' do
 
             request_oauth_token(user, basic_auth_header(client.uid, 'invalid secret'))
 
-            expect(response).to have_gitlab_http_status(:unauthorized)
+            expect(response).to have_gitlab_http_status(:bad_request)
             expect(json_response['error']).to eq('invalid_client')
           end
         end
@@ -72,7 +72,7 @@ RSpec.describe 'OAuth tokens' do
     shared_examples 'does not create an access token' do
       let(:user) { create(:user) }
 
-      it { expect(response).to have_gitlab_http_status(:unauthorized) }
+      it { expect(response).to have_gitlab_http_status(:bad_request) }
     end
 
     context 'when user is blocked' do

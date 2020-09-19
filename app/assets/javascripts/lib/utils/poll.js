@@ -88,7 +88,11 @@ export default class Poll {
   }
 
   makeDelayedRequest(delay = 0) {
-    this.timeoutID = setTimeout(() => this.makeRequest(), delay);
+    // So we don't make our specs artificially slower
+    this.timeoutID = setTimeout(
+      () => this.makeRequest(),
+      process.env.NODE_ENV !== 'test' ? delay : 1,
+    );
   }
 
   makeRequest() {

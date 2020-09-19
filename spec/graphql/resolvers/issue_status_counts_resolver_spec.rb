@@ -41,6 +41,12 @@ RSpec.describe Resolvers::IssueStatusCountsResolver do
 
     it_behaves_like 'returns expected results'
 
+    context 'project used as parent' do
+      let(:parent) { project }
+
+      it_behaves_like 'returns expected results'
+    end
+
     context 'group used as parent' do
       let(:parent) { project.group }
 

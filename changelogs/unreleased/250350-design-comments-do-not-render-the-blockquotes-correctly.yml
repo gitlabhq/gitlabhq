@@ -1,0 +1,5 @@
+---
+title: Resolve Design comments do not render the blockquotes correctly
+merge_request: 42498
+author:
+type: fixed

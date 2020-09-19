@@ -3,89 +3,122 @@
 require 'spec_helper'
 
 RSpec.describe 'CI Lint', :js do
+  include Spec::Support::Helpers::Features::EditorLiteSpecHelpers
+
   let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
 
-  before do
-    project.add_developer(user)
-    sign_in(user)
-
-    visit project_ci_lint_path(project)
-    find('#ci-editor')
-    execute_script("ace.edit('ci-editor').setValue(#{yaml_content.to_json});")
-
-    # Ace editor updates a hidden textarea and it happens asynchronously
-    wait_for('YAML content') do
-      find('.ace_content').text.present?
-    end
-  end
-
-  describe 'YAML parsing' do
-    shared_examples 'validates the YAML' do
-      before do
-        click_on 'Validate'
-      end
-
-      context 'YAML is correct' do
-        let(:yaml_content) do
-          File.read(Rails.root.join('spec/support/gitlab_stubs/gitlab_ci.yml'))
+  shared_examples 'correct ci linting process' do
+    describe 'YAML parsing' do
+      shared_examples 'validates the YAML' do
+        before do
+          stub_feature_flags(ci_lint_vue: false)
+          click_on 'Validate'
         end
 
-        it 'parses Yaml and displays the jobs' do
-          expect(page).to have_content('Status: syntax is correct')
+        context 'YAML is correct' do
+          let(:yaml_content) do
+            File.read(Rails.root.join('spec/support/gitlab_stubs/gitlab_ci.yml'))
+          end
 
-          within "table" do
-            aggregate_failures do
-              expect(page).to have_content('Job - rspec')
-              expect(page).to have_content('Job - spinach')
-              expect(page).to have_content('Deploy Job - staging')
-              expect(page).to have_content('Deploy Job - production')
+          it 'parses Yaml and displays the jobs' do
+            expect(page).to have_content('Status: syntax is correct')
+
+            within "table" do
+              aggregate_failures do
+                expect(page).to have_content('Job - rspec')
+                expect(page).to have_content('Job - spinach')
+                expect(page).to have_content('Deploy Job - staging')
+                expect(page).to have_content('Deploy Job - production')
+              end
             end
+          end
+        end
+
+        context 'YAML is incorrect' do
+          let(:yaml_content) { 'value: cannot have :' }
+
+          it 'displays information about an error' do
+            expect(page).to have_content('Status: syntax is incorrect')
+            expect(page).to have_selector(content_selector, text: yaml_content)
           end
         end
       end
 
-      context 'YAML is incorrect' do
-        let(:yaml_content) { 'value: cannot have :' }
+      it_behaves_like 'validates the YAML'
 
-        it 'displays information about an error' do
-          expect(page).to have_content('Status: syntax is incorrect')
-          expect(page).to have_selector('.ace_content', text: yaml_content)
+      context 'when Dry Run is checked' do
+        before do
+          check 'Simulate a pipeline created for the default branch'
+        end
+
+        it_behaves_like 'validates the YAML'
+      end
+
+      describe 'YAML revalidate' do
+        let(:yaml_content) { 'my yaml content' }
+
+        it 'loads previous YAML content after validation' do
+          expect(page).to have_field('content', with: 'my yaml content', visible: false, type: 'textarea')
         end
       end
     end
 
-    it_behaves_like 'validates the YAML'
-
-    context 'when Dry Run is checked' do
+    describe 'YAML clearing' do
       before do
-        check 'Simulate a pipeline created for the default branch'
+        click_on 'Clear'
       end
 
-      it_behaves_like 'validates the YAML'
-    end
+      context 'YAML is present' do
+        let(:yaml_content) do
+          File.read(Rails.root.join('spec/support/gitlab_stubs/gitlab_ci.yml'))
+        end
 
-    describe 'YAML revalidate' do
-      let(:yaml_content) { 'my yaml content' }
-
-      it 'loads previous YAML content after validation' do
-        expect(page).to have_field('content', with: 'my yaml content', visible: false, type: 'textarea')
+        it 'YAML content is cleared' do
+          expect(page).to have_field('content', with: '', visible: false, type: 'textarea')
+        end
       end
     end
   end
 
-  describe 'YAML clearing' do
-    before do
-      click_on 'Clear'
-    end
+  context 'with ACE editor' do
+    it_behaves_like 'correct ci linting process' do
+      let(:content_selector) { '.ace_content' }
 
-    context 'YAML is present' do
-      let(:yaml_content) do
-        File.read(Rails.root.join('spec/support/gitlab_stubs/gitlab_ci.yml'))
+      before do
+        stub_feature_flags(monaco_ci: false)
+        stub_feature_flags(ci_lint_vue: false)
+        project.add_developer(user)
+        sign_in(user)
+
+        visit project_ci_lint_path(project)
+        find('#ci-editor')
+        execute_script("ace.edit('ci-editor').setValue(#{yaml_content.to_json});")
+
+        # Ace editor updates a hidden textarea and it happens asynchronously
+        wait_for('YAML content') do
+          find(content_selector).text.present?
+        end
       end
+    end
+  end
 
-      it 'YAML content is cleared' do
-        expect(page).to have_field('content', with: '', visible: false, type: 'textarea')
+  context 'with Editor Lite' do
+    it_behaves_like 'correct ci linting process' do
+      let(:content_selector) { '.content .view-lines' }
+
+      before do
+        stub_feature_flags(monaco_ci: true)
+        stub_feature_flags(ci_lint_vue: false)
+        project.add_developer(user)
+        sign_in(user)
+
+        visit project_ci_lint_path(project)
+        editor_set_value(yaml_content)
+
+        wait_for('YAML content') do
+          find(content_selector).text.present?
+        end
       end
     end
   end

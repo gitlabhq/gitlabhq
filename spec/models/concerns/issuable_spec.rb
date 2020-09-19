@@ -295,20 +295,14 @@ RSpec.describe Issuable do
   end
 
   describe "#new?" do
-    it "returns true when created today and record hasn't been updated" do
-      allow(issue).to receive(:today?).and_return(true)
+    it "returns false when created 30 hours ago" do
+      allow(issue).to receive(:created_at).and_return(Time.current - 30.hours)
+      expect(issue.new?).to be_falsey
+    end
+
+    it "returns true when created 20 hours ago" do
+      allow(issue).to receive(:created_at).and_return(Time.current - 20.hours)
       expect(issue.new?).to be_truthy
-    end
-
-    it "returns false when not created today" do
-      allow(issue).to receive(:today?).and_return(false)
-      expect(issue.new?).to be_falsey
-    end
-
-    it "returns false when record has been updated" do
-      allow(issue).to receive(:today?).and_return(true)
-      issue.update_attribute(:updated_at, 1.hour.ago)
-      expect(issue.new?).to be_falsey
     end
   end
 
@@ -822,6 +816,168 @@ RSpec.describe Issuable do
       end
 
       it_behaves_like 'matches_cross_reference_regex? fails fast'
+    end
+  end
+
+  describe '#supports_time_tracking?' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:issuable_type, :supports_time_tracking) do
+      :issue         | true
+      :incident      | false
+      :merge_request | true
+    end
+
+    with_them do
+      let(:issuable) { build_stubbed(issuable_type) }
+
+      subject { issuable.supports_time_tracking? }
+
+      it { is_expected.to eq(supports_time_tracking) }
+    end
+  end
+
+  describe '#supports_severity?' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:issuable_type, :supports_severity) do
+      :issue         | false
+      :incident      | true
+      :merge_request | false
+    end
+
+    with_them do
+      let(:issuable) { build_stubbed(issuable_type) }
+
+      subject { issuable.supports_severity? }
+
+      it { is_expected.to eq(supports_severity) }
+    end
+  end
+
+  describe '#incident?' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:issuable_type, :incident) do
+      :issue         | false
+      :incident      | true
+      :merge_request | false
+    end
+
+    with_them do
+      let(:issuable) { build_stubbed(issuable_type) }
+
+      subject { issuable.incident? }
+
+      it { is_expected.to eq(incident) }
+    end
+  end
+
+  describe '#supports_issue_type?' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:issuable_type, :supports_issue_type) do
+      :issue         | true
+      :merge_request | false
+    end
+
+    with_them do
+      let(:issuable) { build_stubbed(issuable_type) }
+
+      subject { issuable.supports_issue_type? }
+
+      it { is_expected.to eq(supports_issue_type) }
+    end
+  end
+
+  describe '#severity' do
+    subject { issuable.severity }
+
+    context 'when issuable is not an incident' do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:issuable_type, :severity) do
+        :issue         | 'unknown'
+        :merge_request | 'unknown'
+      end
+
+      with_them do
+        let(:issuable) { build_stubbed(issuable_type) }
+
+        it { is_expected.to eq(severity) }
+      end
+    end
+
+    context 'when issuable type is an incident' do
+      let!(:issuable) { build_stubbed(:incident) }
+
+      context 'when incident does not have issuable_severity' do
+        it 'returns default serverity' do
+          is_expected.to eq(IssuableSeverity::DEFAULT)
+        end
+      end
+
+      context 'when incident has issuable_severity' do
+        let!(:issuable_severity) { build_stubbed(:issuable_severity, issue: issuable, severity: 'critical') }
+
+        it 'returns issuable serverity' do
+          is_expected.to eq('critical')
+        end
+      end
+    end
+  end
+
+  describe '#update_severity' do
+    let(:severity) { 'low' }
+
+    subject(:update_severity) { issuable.update_severity(severity) }
+
+    context 'when issuable not an incident' do
+      %i(issue merge_request).each do |issuable_type|
+        let(:issuable) { build_stubbed(issuable_type) }
+
+        it { is_expected.to be_nil }
+
+        it 'does not set severity' do
+          expect { subject }.not_to change(IssuableSeverity, :count)
+        end
+      end
+    end
+
+    context 'when issuable is an incident' do
+      let!(:issuable) { create(:incident) }
+
+      context 'when issuable does not have issuable severity yet' do
+        it 'creates new record' do
+          expect { update_severity }.to change { IssuableSeverity.where(issue: issuable).count }.to(1)
+        end
+
+        it 'sets severity to specified value' do
+          expect { update_severity }.to change { issuable.severity }.to('low')
+        end
+      end
+
+      context 'when issuable has an issuable severity' do
+        let!(:issuable_severity) { create(:issuable_severity, issue: issuable, severity: 'medium') }
+
+        it 'does not create new record' do
+          expect { update_severity }.not_to change(IssuableSeverity, :count)
+        end
+
+        it 'updates existing issuable severity' do
+          expect { update_severity }.to change { issuable_severity.severity }.to(severity)
+        end
+      end
+
+      context 'when severity value is unsupported' do
+        let(:severity) { 'unsupported-severity' }
+
+        it 'sets the severity to default value' do
+          update_severity
+
+          expect(issuable.issuable_severity.severity).to eq(IssuableSeverity::DEFAULT)
+        end
+      end
     end
   end
 end

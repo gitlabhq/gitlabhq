@@ -10,7 +10,7 @@
  */
 const useLocalStorage = fn => {
   const origLocalStorage = window.localStorage;
-  let currentLocalStorage;
+  let currentLocalStorage = origLocalStorage;
 
   Object.defineProperty(window, 'localStorage', {
     get: () => currentLocalStorage,

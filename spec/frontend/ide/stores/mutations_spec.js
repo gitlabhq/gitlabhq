@@ -113,8 +113,6 @@ describe('Multi-file store mutations', () => {
           },
           treeList: [tmpFile],
         },
-        projectId: 'gitlab-ce',
-        branchId: 'master',
       });
 
       expect(localState.trees['gitlab-ce/master'].tree.length).toEqual(1);
@@ -272,7 +270,6 @@ describe('Multi-file store mutations', () => {
           prevId: undefined,
           prevPath: undefined,
           prevName: undefined,
-          prevUrl: undefined,
           prevKey: undefined,
         }),
       );
@@ -337,7 +334,6 @@ describe('Multi-file store mutations', () => {
       };
       Object.assign(localState.entries['root-folder/oldPath'], {
         parentPath: 'root-folder',
-        url: 'root-folder/oldPath-blob-root-folder/oldPath',
       });
 
       mutations.RENAME_ENTRY(localState, {
@@ -366,9 +362,6 @@ describe('Multi-file store mutations', () => {
     });
 
     it('renames entry, preserving old parameters', () => {
-      Object.assign(localState.entries.oldPath, {
-        url: `project/-/oldPath`,
-      });
       const oldPathData = localState.entries.oldPath;
 
       mutations.RENAME_ENTRY(localState, {
@@ -382,12 +375,10 @@ describe('Multi-file store mutations', () => {
         id: 'newPath',
         path: 'newPath',
         name: 'newPath',
-        url: `project/-/newPath`,
         key: expect.stringMatching('newPath'),
         prevId: 'oldPath',
         prevName: 'oldPath',
         prevPath: 'oldPath',
-        prevUrl: `project/-/oldPath`,
         prevKey: oldPathData.key,
         prevParentPath: oldPathData.parentPath,
       });
@@ -409,7 +400,6 @@ describe('Multi-file store mutations', () => {
           prevId: expect.anything(),
           prevName: expect.anything(),
           prevPath: expect.anything(),
-          prevUrl: expect.anything(),
           prevKey: expect.anything(),
           prevParentPath: expect.anything(),
         }),
@@ -419,7 +409,7 @@ describe('Multi-file store mutations', () => {
     it('properly handles files with spaces in name', () => {
       const path = 'my fancy path';
       const newPath = 'new path';
-      const oldEntry = { ...file(path, path, 'blob'), url: `project/-/${path}` };
+      const oldEntry = file(path, path, 'blob');
 
       localState.entries[path] = oldEntry;
 
@@ -435,12 +425,10 @@ describe('Multi-file store mutations', () => {
         id: newPath,
         path: newPath,
         name: newPath,
-        url: `project/-/new path`,
         key: expect.stringMatching(newPath),
         prevId: path,
         prevName: path,
         prevPath: path,
-        prevUrl: `project/-/my fancy path`,
         prevKey: oldEntry.key,
         prevParentPath: oldEntry.parentPath,
       });
@@ -549,7 +537,7 @@ describe('Multi-file store mutations', () => {
 
     it('correctly saves original values if an entry is renamed multiple times', () => {
       const original = { ...localState.entries.oldPath };
-      const paramsToCheck = ['prevId', 'prevPath', 'prevName', 'prevUrl'];
+      const paramsToCheck = ['prevId', 'prevPath', 'prevName'];
       const expectedObj = paramsToCheck.reduce(
         (o, param) => ({ ...o, [param]: original[param.replace('prev', '').toLowerCase()] }),
         {},
@@ -577,7 +565,6 @@ describe('Multi-file store mutations', () => {
           prevId: 'lorem/orig',
           prevPath: 'lorem/orig',
           prevName: 'orig',
-          prevUrl: 'project/-/loren/orig',
           prevKey: 'lorem/orig',
           prevParentPath: 'lorem',
         };
@@ -602,7 +589,6 @@ describe('Multi-file store mutations', () => {
             prevId: undefined,
             prevPath: undefined,
             prevName: undefined,
-            prevUrl: undefined,
             prevKey: undefined,
             prevParentPath: undefined,
           }),

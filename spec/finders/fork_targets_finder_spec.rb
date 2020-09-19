@@ -35,5 +35,13 @@ RSpec.describe ForkTargetsFinder do
     it 'returns all user manageable namespaces' do
       expect(finder.execute).to match_array([user.namespace, maintained_group, owned_group, project.namespace])
     end
+
+    it 'returns only groups when only_groups option is passed' do
+      expect(finder.execute(only_groups: true)).to match_array([maintained_group, owned_group, project.namespace])
+    end
+
+    it 'returns groups relation when only_groups option is passed' do
+      expect(finder.execute(only_groups: true)).to include(a_kind_of(Group))
+    end
   end
 end

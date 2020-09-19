@@ -1,3 +1,5 @@
+import initDeprecatedJQueryDropdown from '~/deprecated_jquery_dropdown';
+
 const defaultTimezone = { name: 'UTC', offset: 0 };
 const defaults = {
   $inputEl: null,
@@ -42,7 +44,7 @@ export default class TimezoneDropdown {
   }
 
   initDropdown() {
-    this.$dropdown.glDropdown({
+    initDeprecatedJQueryDropdown(this.$dropdown, {
       data: this.timezoneData,
       filterable: true,
       selectable: true,

@@ -19,14 +19,6 @@
     display: none;
   }
 
-  .monaco-editor .selected-text {
-    z-index: 1;
-  }
-
-  .monaco-editor .view-lines {
-    z-index: 2;
-  }
-
   .is-readonly .editor.original {
     .view-lines {
       cursor: default;
@@ -98,11 +90,11 @@
     }
 
     .char-insert {
-      background-color: $line-added-dark;
+      background-color: $line-added-dark-transparent;
     }
 
     .char-delete {
-      background-color: $line-removed-dark;
+      background-color: $line-removed-dark-transparent;
     }
 
     .line-numbers {
@@ -111,11 +103,11 @@
 
     .view-overlays {
       .line-insert {
-        background-color: $line-added;
+        background-color: $line-added-transparent;
       }
 
       .line-delete {
-        background-color: $line-removed;
+        background-color: $line-removed-transparent;
       }
     }
 

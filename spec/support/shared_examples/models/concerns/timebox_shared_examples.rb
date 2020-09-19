@@ -102,7 +102,7 @@ RSpec.shared_examples 'a timebox' do |timebox_type|
         let(:timebox) { create(timebox_type, *timebox_args, group: group) }
 
         before do
-          project.update(group: group)
+          project.update!(group: group)
         end
 
         it "does not accept the same title in a group twice" do

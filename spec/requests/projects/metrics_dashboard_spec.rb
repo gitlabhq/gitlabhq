@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'metrics dashboard page' do
+RSpec.describe 'Projects::MetricsDashboardController' do
   let_it_be(:project) { create(:project) }
   let_it_be(:environment) { create(:environment, project: project) }
   let_it_be(:environment2) { create(:environment, project: project) }
@@ -14,28 +14,42 @@ RSpec.describe 'metrics dashboard page' do
   end
 
   describe 'GET /:namespace/:project/-/metrics' do
-    it 'returns 200' do
+    it "redirects to default environment's metrics dashboard" do
       send_request
-      expect(response).to have_gitlab_http_status(:ok)
+      expect(response).to redirect_to(dashboard_route(environment: environment))
     end
 
-    it 'assigns environment' do
+    it 'assigns default_environment' do
       send_request
-      expect(assigns(:environment).id).to eq(environment.id)
+      expect(assigns(:default_environment).id).to eq(environment.id)
+    end
+
+    it 'retains existing parameters when redirecting' do
+      params = {
+        dashboard_path: '.gitlab/dashboards/dashboard_path.yml',
+        page: 'panel/new',
+        group: 'System metrics (Kubernetes)',
+        title: 'Memory Usage (Pod average)',
+        y_label: 'Memory Used per Pod (MB)'
+      }
+      send_request(params)
+
+      expect(response).to redirect_to(dashboard_route(params.merge(environment: environment.id)))
     end
 
     context 'with anonymous user and public dashboard visibility' do
       let(:anonymous_user) { create(:user) }
-      let(:project) do
-        create(:project, :public, metrics_dashboard_access_level: 'enabled')
-      end
+      let(:project) { create(:project, :public) }
 
       before do
+        project.update!(metrics_dashboard_access_level: 'enabled')
+
         login_as(anonymous_user)
       end
 
       it 'returns 200' do
         send_request
+
         expect(response).to have_gitlab_http_status(:ok)
       end
     end
@@ -64,12 +78,12 @@ RSpec.describe 'metrics dashboard page' do
     let(:dashboard_path) { '.gitlab/dashboards/dashboard_path.yml' }
 
     it 'returns 200' do
-      send_request(dashboard_path: dashboard_path)
+      send_request(dashboard_path: dashboard_path, environment: environment.id)
       expect(response).to have_gitlab_http_status(:ok)
     end
 
     it 'assigns environment' do
-      send_request(dashboard_path: dashboard_path)
+      send_request(dashboard_path: dashboard_path, environment: environment.id)
       expect(assigns(:environment).id).to eq(environment.id)
     end
   end
@@ -97,15 +111,13 @@ RSpec.describe 'metrics dashboard page' do
 
   describe 'GET :/namespace/:project/-/metrics/:page' do
     it 'returns 200 with path param page' do
-      # send_request(page: 'panel/new') cannot be used because it encodes '/'
-      get "#{dashboard_route}/panel/new"
+      send_request(page: 'panel/new', environment: environment.id)
 
       expect(response).to have_gitlab_http_status(:ok)
     end
 
     it 'returns 200 with dashboard and path param page' do
-      # send_request(page: 'panel/new') cannot be used because it encodes '/'
-      get "#{dashboard_route(dashboard_path: 'dashboard.yml')}/panel/new"
+      send_request(dashboard_path: 'dashboard.yml', page: 'panel/new', environment: environment.id)
 
       expect(response).to have_gitlab_http_status(:ok)
     end

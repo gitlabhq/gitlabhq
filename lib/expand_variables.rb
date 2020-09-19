@@ -7,7 +7,7 @@ module ExpandVariables
 
       value.gsub(/\$([a-zA-Z_][a-zA-Z0-9_]*)|\${\g<1>}|%\g<1>%/) do
         variables_hash ||= transform_variables(variables)
-        variables_hash[$1 || $2]
+        variables_hash[Regexp.last_match(1) || Regexp.last_match(2)]
       end
     end
 

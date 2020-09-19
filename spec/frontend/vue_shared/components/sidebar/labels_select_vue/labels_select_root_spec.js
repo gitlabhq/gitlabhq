@@ -65,6 +65,33 @@ describe('LabelsSelectRoot', () => {
           ]),
         );
       });
+
+      it('calls `handleDropdownClose` with state.labels filterd using `set` prop when dropdown variant is `embedded`', () => {
+        wrapper = createComponent({
+          ...mockConfig,
+          variant: 'embedded',
+        });
+
+        jest.spyOn(wrapper.vm, 'handleDropdownClose').mockImplementation();
+
+        wrapper.vm.handleVuexActionDispatch(
+          { type: 'toggleDropdownContents' },
+          {
+            showDropdownButton: false,
+            showDropdownContents: false,
+            labels: [{ id: 1 }, { id: 2, set: true }],
+          },
+        );
+
+        expect(wrapper.vm.handleDropdownClose).toHaveBeenCalledWith(
+          expect.arrayContaining([
+            {
+              id: 2,
+              set: true,
+            },
+          ]),
+        );
+      });
     });
 
     describe('handleDropdownClose', () => {
@@ -123,11 +150,10 @@ describe('LabelsSelectRoot', () => {
       expect(wrapper.find(DropdownTitle).exists()).toBe(true);
     });
 
-    it('renders `dropdown-value` component with slot when `showDropdownButton` prop is `false`', () => {
+    it('renders `dropdown-value` component', () => {
       const wrapperDropdownValue = createComponent(mockConfig, {
         default: 'None',
       });
-      wrapperDropdownValue.vm.$store.state.showDropdownButton = false;
 
       return wrapperDropdownValue.vm.$nextTick(() => {
         const valueComp = wrapperDropdownValue.find(DropdownValue);

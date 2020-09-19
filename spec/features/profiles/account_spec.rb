@@ -9,6 +9,39 @@ RSpec.describe 'Profile > Account', :js do
     sign_in(user)
   end
 
+  describe 'Social sign-in' do
+    context 'when an identity does not exist' do
+      before do
+        allow(Devise).to receive_messages(omniauth_configs: { google_oauth2: {} })
+      end
+
+      it 'allows the user to connect' do
+        visit profile_account_path
+
+        expect(page).to have_link('Connect Google', href: '/users/auth/google_oauth2')
+      end
+    end
+
+    context 'when an identity already exists' do
+      before do
+        allow(Devise).to receive_messages(omniauth_configs: { twitter: {}, saml: {} })
+
+        create(:identity, user: user, provider: :twitter)
+        create(:identity, user: user, provider: :saml)
+
+        visit profile_account_path
+      end
+
+      it 'allows the user to disconnect when there is an existing identity' do
+        expect(page).to have_link('Disconnect Twitter', href: '/profile/account/unlink?provider=twitter')
+      end
+
+      it 'shows active for a provider that is not allowed to unlink' do
+        expect(page).to have_content('Saml Active')
+      end
+    end
+  end
+
   describe 'Change username' do
     let(:new_username) { 'bar' }
     let(:new_user_path) { "/#{new_username}" }

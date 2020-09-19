@@ -85,10 +85,6 @@ class PipelineEntity < Grape::Entity
     pipeline.failed_builds
   end
 
-  expose :tests_total_count do |pipeline|
-    pipeline.test_report_summary.total[:count]
-  end
-
   private
 
   alias_method :pipeline, :object

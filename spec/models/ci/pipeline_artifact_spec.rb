@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Ci::PipelineArtifact, type: :model do
-  let_it_be(:coverage_report) { create(:ci_pipeline_artifact) }
+  let(:coverage_report) { create(:ci_pipeline_artifact) }
 
   describe 'associations' do
     it { is_expected.to belong_to(:pipeline) }
@@ -11,6 +11,12 @@ RSpec.describe Ci::PipelineArtifact, type: :model do
   end
 
   it_behaves_like 'having unique enum values'
+
+  it_behaves_like 'UpdateProjectStatistics' do
+    let_it_be(:pipeline, reload: true) { create(:ci_pipeline) }
+
+    subject { build(:ci_pipeline_artifact, pipeline: pipeline) }
+  end
 
   describe 'validations' do
     it { is_expected.to validate_presence_of(:pipeline) }
@@ -44,24 +50,6 @@ RSpec.describe Ci::PipelineArtifact, type: :model do
     end
   end
 
-  describe '#set_size' do
-    subject { create(:ci_pipeline_artifact) }
-
-    context 'when file is being created' do
-      it 'sets the size' do
-        expect(subject.size).to eq(85)
-      end
-    end
-
-    context 'when file is being updated' do
-      it 'updates the size' do
-        subject.update!(file: fixture_file_upload('spec/fixtures/dk.png'))
-
-        expect(subject.size).to eq(1062)
-      end
-    end
-  end
-
   describe 'file is being stored' do
     subject { create(:ci_pipeline_artifact) }
 
@@ -76,6 +64,60 @@ RSpec.describe Ci::PipelineArtifact, type: :model do
 
       context 'when file is stored' do
         it_behaves_like 'mounted file in object store'
+      end
+    end
+
+    context 'when file contains multi-byte characters' do
+      let(:coverage_report_multibyte) { create(:ci_pipeline_artifact, :with_multibyte_characters) }
+
+      it 'sets the size in bytesize' do
+        expect(coverage_report_multibyte.size).to eq(14)
+      end
+    end
+  end
+
+  describe '.has_code_coverage?' do
+    subject { Ci::PipelineArtifact.has_code_coverage? }
+
+    context 'when pipeline artifact has a code coverage' do
+      let!(:pipeline_artifact) { create(:ci_pipeline_artifact) }
+
+      it 'returns true' do
+        expect(subject).to be_truthy
+      end
+    end
+
+    context 'when pipeline artifact does not have a code coverage' do
+      it 'returns false' do
+        expect(subject).to be_falsey
+      end
+    end
+  end
+
+  describe '.find_with_code_coverage' do
+    subject { Ci::PipelineArtifact.find_with_code_coverage }
+
+    context 'when pipeline artifact has a coverage report' do
+      let!(:coverage_report) { create(:ci_pipeline_artifact) }
+
+      it 'returns a pipeline artifact with a code coverage' do
+        expect(subject.file_type).to eq('code_coverage')
+      end
+    end
+
+    context 'when pipeline artifact does not have a coverage report' do
+      it 'returns nil' do
+        expect(subject).to be_nil
+      end
+    end
+  end
+
+  describe '#present' do
+    subject { coverage_report.present }
+
+    context 'when file_type is code_coverage' do
+      it 'uses code coverage presenter' do
+        expect(subject.present).to be_kind_of(Ci::PipelineArtifacts::CodeCoveragePresenter)
       end
     end
   end

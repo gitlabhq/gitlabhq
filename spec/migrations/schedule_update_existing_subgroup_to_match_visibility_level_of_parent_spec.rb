@@ -14,7 +14,7 @@ RSpec.describe ScheduleUpdateExistingSubgroupToMatchVisibilityLevelOfParent do
       create_namespace('child', Gitlab::VisibilityLevel::PUBLIC, parent_id: parent.id)
 
       Sidekiq::Testing.fake! do
-        Timecop.freeze do
+        freeze_time do
           migrate!
 
           expect(BackgroundMigrationWorker.jobs.size).to eq(1)
@@ -30,7 +30,7 @@ RSpec.describe ScheduleUpdateExistingSubgroupToMatchVisibilityLevelOfParent do
       create_namespace('child', Gitlab::VisibilityLevel::PUBLIC, parent_id: middle_group.id)
 
       Sidekiq::Testing.fake! do
-        Timecop.freeze do
+        freeze_time do
           migrate!
 
           expect(BackgroundMigrationWorker.jobs.size).to eq(1)
@@ -47,7 +47,7 @@ RSpec.describe ScheduleUpdateExistingSubgroupToMatchVisibilityLevelOfParent do
       create_namespace('child', Gitlab::VisibilityLevel::PUBLIC, parent_id: middle_group.id)
 
       Sidekiq::Testing.fake! do
-        Timecop.freeze do
+        freeze_time do
           migrate!
 
           expect(BackgroundMigrationWorker.jobs.size).to eq(1)
@@ -66,7 +66,7 @@ RSpec.describe ScheduleUpdateExistingSubgroupToMatchVisibilityLevelOfParent do
       create_namespace('child', Gitlab::VisibilityLevel::PUBLIC, parent_id: middle_group.id)
 
       Sidekiq::Testing.fake! do
-        Timecop.freeze do
+        freeze_time do
           migrate!
 
           expect(BackgroundMigrationWorker.jobs.size).to eq(2)

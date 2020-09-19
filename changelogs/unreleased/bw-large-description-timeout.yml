@@ -1,0 +1,5 @@
+---
+title: Increase performance of rendering large amounts of markdown data
+merge_request: 40448
+author:
+type: performance

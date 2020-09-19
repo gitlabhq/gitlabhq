@@ -38,9 +38,9 @@ class ProtectedBranch < ApplicationRecord
     project.protected_branches
   end
 
+  # overridden in EE
   def self.branch_requires_code_owner_approval?(project, branch_name)
-    # NOOP
-    #
+    false
   end
 
   def self.by_name(query)

@@ -169,7 +169,7 @@ RSpec.shared_examples 'group and project boards' do |route_definition, ee = fals
 
       before do
         if board_parent.try(:namespace)
-          board_parent.update(namespace: owner.namespace)
+          board_parent.update!(namespace: owner.namespace)
         else
           board.resource_parent.add_owner(owner)
         end

@@ -40,9 +40,9 @@ RSpec.describe Banzai::Filter::IssueReferenceFilter do
   end
 
   context 'internal reference' do
-    it_behaves_like 'a reference containing an element node'
-
     let(:reference) { "##{issue.iid}" }
+
+    it_behaves_like 'a reference containing an element node'
 
     it 'links to a valid reference' do
       doc = reference_filter("Fixed #{reference}")
@@ -134,11 +134,11 @@ RSpec.describe Banzai::Filter::IssueReferenceFilter do
   end
 
   context 'cross-project / cross-namespace complete reference' do
-    it_behaves_like 'a reference containing an element node'
-
-    let(:project2)  { create(:project, :public) }
-    let(:issue)     { create(:issue, project: project2) }
     let(:reference) { "#{project2.full_path}##{issue.iid}" }
+    let(:issue)     { create(:issue, project: project2) }
+    let(:project2)  { create(:project, :public) }
+
+    it_behaves_like 'a reference containing an element node'
 
     it 'ignores valid references when cross-reference project uses external tracker' do
       expect_any_instance_of(described_class).to receive(:find_object)
@@ -182,13 +182,13 @@ RSpec.describe Banzai::Filter::IssueReferenceFilter do
   end
 
   context 'cross-project / same-namespace complete reference' do
-    it_behaves_like 'a reference containing an element node'
-
-    let(:namespace) { create(:namespace) }
-    let(:project)   { create(:project, :public, namespace: namespace) }
-    let(:project2)  { create(:project, :public, namespace: namespace) }
-    let(:issue)     { create(:issue, project: project2) }
     let(:reference) { "#{project2.full_path}##{issue.iid}" }
+    let(:issue)     { create(:issue, project: project2) }
+    let(:project2)  { create(:project, :public, namespace: namespace) }
+    let(:project)   { create(:project, :public, namespace: namespace) }
+    let(:namespace) { create(:namespace) }
+
+    it_behaves_like 'a reference containing an element node'
 
     it 'ignores valid references when cross-reference project uses external tracker' do
       expect_any_instance_of(described_class).to receive(:find_object)
@@ -232,13 +232,13 @@ RSpec.describe Banzai::Filter::IssueReferenceFilter do
   end
 
   context 'cross-project shorthand reference' do
-    it_behaves_like 'a reference containing an element node'
-
-    let(:namespace) { create(:namespace) }
-    let(:project)   { create(:project, :public, namespace: namespace) }
-    let(:project2)  { create(:project, :public, namespace: namespace) }
-    let(:issue)     { create(:issue, project: project2) }
     let(:reference) { "#{project2.path}##{issue.iid}" }
+    let(:issue)     { create(:issue, project: project2) }
+    let(:project2)  { create(:project, :public, namespace: namespace) }
+    let(:project)   { create(:project, :public, namespace: namespace) }
+    let(:namespace) { create(:namespace) }
+
+    it_behaves_like 'a reference containing an element node'
 
     it 'ignores valid references when cross-reference project uses external tracker' do
       expect_any_instance_of(described_class).to receive(:find_object)
@@ -282,12 +282,12 @@ RSpec.describe Banzai::Filter::IssueReferenceFilter do
   end
 
   context 'cross-project URL reference' do
-    it_behaves_like 'a reference containing an element node'
-
-    let(:namespace) { create(:namespace, name: 'cross-reference') }
-    let(:project2)  { create(:project, :public, namespace: namespace) }
-    let(:issue)     { create(:issue, project: project2) }
     let(:reference) { issue_url + "#note_123" }
+    let(:issue)     { create(:issue, project: project2) }
+    let(:project2)  { create(:project, :public, namespace: namespace) }
+    let(:namespace) { create(:namespace, name: 'cross-reference') }
+
+    it_behaves_like 'a reference containing an element node'
 
     it 'links to a valid reference' do
       doc = reference_filter("See #{reference}")
@@ -310,13 +310,13 @@ RSpec.describe Banzai::Filter::IssueReferenceFilter do
   end
 
   context 'cross-project reference in link href' do
-    it_behaves_like 'a reference containing an element node'
-
-    let(:namespace) { create(:namespace, name: 'cross-reference') }
-    let(:project2)  { create(:project, :public, namespace: namespace) }
-    let(:issue)     { create(:issue, project: project2) }
-    let(:reference) { issue.to_reference(project) }
     let(:reference_link) { %{<a href="#{reference}">Reference</a>} }
+    let(:reference) { issue.to_reference(project) }
+    let(:issue)     { create(:issue, project: project2) }
+    let(:project2)  { create(:project, :public, namespace: namespace) }
+    let(:namespace) { create(:namespace, name: 'cross-reference') }
+
+    it_behaves_like 'a reference containing an element node'
 
     it 'links to a valid reference' do
       doc = reference_filter("See #{reference_link}")
@@ -339,13 +339,13 @@ RSpec.describe Banzai::Filter::IssueReferenceFilter do
   end
 
   context 'cross-project URL in link href' do
-    it_behaves_like 'a reference containing an element node'
-
-    let(:namespace) { create(:namespace, name: 'cross-reference') }
-    let(:project2)  { create(:project, :public, namespace: namespace) }
-    let(:issue)     { create(:issue, project: project2) }
-    let(:reference) { "#{issue_url + "#note_123"}" }
     let(:reference_link) { %{<a href="#{reference}">Reference</a>} }
+    let(:reference) { "#{issue_url + "#note_123"}" }
+    let(:issue)     { create(:issue, project: project2) }
+    let(:project2)  { create(:project, :public, namespace: namespace) }
+    let(:namespace) { create(:namespace, name: 'cross-reference') }
+
+    it_behaves_like 'a reference containing an element node'
 
     it 'links to a valid reference' do
       doc = reference_filter("See #{reference_link}")

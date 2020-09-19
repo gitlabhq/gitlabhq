@@ -20,18 +20,18 @@ module Ci
     def execute
       in_lock(EXCLUSIVE_LOCK_KEY, ttl: LOCK_TIMEOUT, retries: 1) do
         loop_until(timeout: LOOP_TIMEOUT, limit: LOOP_LIMIT) do
-          destroy_batch
+          destroy_batch(Ci::JobArtifact) || destroy_batch(Ci::PipelineArtifact)
         end
       end
     end
 
     private
 
-    def destroy_batch
-      artifact_batch = if Gitlab::Ci::Features.destroy_only_unlocked_expired_artifacts_enabled?
-                         Ci::JobArtifact.expired(BATCH_SIZE).unlocked
+    def destroy_batch(klass)
+      artifact_batch = if klass == Ci::JobArtifact
+                         klass.expired(BATCH_SIZE).unlocked
                        else
-                         Ci::JobArtifact.expired(BATCH_SIZE)
+                         klass.expired(BATCH_SIZE)
                        end
 
       artifacts = artifact_batch.to_a

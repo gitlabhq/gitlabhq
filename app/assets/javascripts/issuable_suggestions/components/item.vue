@@ -1,9 +1,8 @@
 <script>
 /* eslint-disable @gitlab/vue-require-i18n-strings */
 import { uniqueId } from 'lodash';
-import { GlLink, GlTooltip, GlTooltipDirective } from '@gitlab/ui';
+import { GlLink, GlTooltip, GlTooltipDirective, GlIcon } from '@gitlab/ui';
 import { __ } from '~/locale';
-import Icon from '~/vue_shared/components/icon.vue';
 import UserAvatarImage from '~/vue_shared/components/user_avatar/user_avatar_image.vue';
 import TimeagoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import timeago from '~/vue_shared/mixins/timeago';
@@ -12,7 +11,7 @@ export default {
   components: {
     GlTooltip,
     GlLink,
-    Icon,
+    GlIcon,
     UserAvatarImage,
     TimeagoTooltip,
   },
@@ -68,7 +67,7 @@ export default {
 <template>
   <div class="suggestion-item">
     <div class="d-flex align-items-center">
-      <icon
+      <gl-icon
         v-if="suggestion.confidential"
         v-gl-tooltip.bottom
         :title="__('Confidential')"
@@ -84,7 +83,7 @@ export default {
       </gl-link>
     </div>
     <div class="text-secondary suggestion-footer">
-      <icon
+      <gl-icon
         ref="state"
         :name="stateIcon"
         :class="{
@@ -134,7 +133,7 @@ export default {
           :title="tooltipTitle"
           class="suggestion-help-hover gl-ml-3 text-tertiary"
         >
-          <icon :name="icon" /> {{ count }}
+          <gl-icon :name="icon" /> {{ count }}
         </span>
       </span>
     </div>

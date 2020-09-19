@@ -21,6 +21,17 @@ module ContainerRegistry
     # Taken from: FaradayMiddleware::FollowRedirects
     REDIRECT_CODES = Set.new [301, 302, 303, 307]
 
+    def self.supports_tag_delete?
+      registry_config = Gitlab.config.registry
+      return false unless registry_config.enabled && registry_config.api_url.present?
+
+      return true if ::Gitlab.com?
+
+      token = Auth::ContainerRegistryAuthenticationService.access_token([], [])
+      client = new(registry_config.api_url, token: token)
+      client.supports_tag_delete?
+    end
+
     def initialize(base_uri, options = {})
       @base_uri = base_uri
       @options = options

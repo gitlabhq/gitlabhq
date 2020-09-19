@@ -23,12 +23,15 @@ RSpec.describe Admin::IntegrationsController do
   end
 
   describe '#update' do
+    include JiraServiceHelper
+
     let(:integration) { create(:jira_service, :instance) }
 
     before do
+      stub_jira_service_test
       allow(PropagateIntegrationWorker).to receive(:perform_async)
 
-      put :update, params: { id: integration.class.to_param, overwrite: true, service: { url: url } }
+      put :update, params: { id: integration.class.to_param, service: { url: url } }
     end
 
     context 'valid params' do
@@ -40,7 +43,7 @@ RSpec.describe Admin::IntegrationsController do
       end
 
       it 'calls to PropagateIntegrationWorker' do
-        expect(PropagateIntegrationWorker).to have_received(:perform_async).with(integration.id, true)
+        expect(PropagateIntegrationWorker).to have_received(:perform_async).with(integration.id, false)
       end
     end
 

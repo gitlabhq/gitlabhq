@@ -34,7 +34,7 @@ class RepositoryForkWorker # rubocop:disable Scalability/IdempotentWorker
   def start_fork(project)
     return true if start(project.import_state)
 
-    Rails.logger.info("Project #{project.full_path} was in inconsistent state (#{project.import_status}) while forking.") # rubocop:disable Gitlab/RailsLogger
+    Gitlab::AppLogger.info("Project #{project.full_path} was in inconsistent state (#{project.import_status}) while forking.")
     false
   end
 
@@ -52,7 +52,7 @@ class RepositoryForkWorker # rubocop:disable Scalability/IdempotentWorker
   def link_lfs_objects(source_project, target_project)
     Projects::LfsPointers::LfsLinkService
         .new(target_project)
-        .execute(source_project.all_lfs_objects_oids)
+        .execute(source_project.lfs_objects_oids)
   rescue Projects::LfsPointers::LfsLinkService::TooManyOidsError
     raise_fork_failure(
       source_project,

@@ -117,7 +117,7 @@ We also use two secure variables:
 
 Secure Variables can added by going to your project's
 **Settings ➔ CI / CD ➔ Variables**. The variables that are defined
-in the project settings are sent along with the build script to the Runner.
+in the project settings are sent along with the build script to the runner.
 The secure variables are stored out of the repository. Never store secrets in
 your project's `.gitlab-ci.yml`. It is also important that the secret's value
 is hidden in the job log.

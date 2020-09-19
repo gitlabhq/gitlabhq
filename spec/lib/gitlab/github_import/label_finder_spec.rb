@@ -3,10 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::GithubImport::LabelFinder, :clean_gitlab_redis_cache do
-  let(:project) { create(:project) }
-  let(:finder) { described_class.new(project) }
-  let!(:bug) { create(:label, project: project, name: 'Bug') }
-  let!(:feature) { create(:label, project: project, name: 'Feature') }
+  let_it_be(:project) { create(:project) }
+  let_it_be(:finder) { described_class.new(project) }
+  let_it_be(:bug) { create(:label, project: project, name: 'Bug') }
+  let_it_be(:feature) { create(:label, project: project, name: 'Feature') }
 
   describe '#id_for' do
     context 'with a cache in place' do

@@ -65,6 +65,40 @@ RSpec.describe TodoService do
     end
   end
 
+  shared_examples 'reassigned reviewable target' do
+    context 'with no existing reviewers' do
+      let(:assigned_reviewers) { [] }
+
+      it 'creates a pending todo for new reviewer' do
+        target.reviewers = [john_doe]
+        service.send(described_method, target, author)
+
+        should_create_todo(user: john_doe, target: target, action: Todo::REVIEW_REQUESTED)
+      end
+    end
+
+    context 'with an existing reviewer' do
+      let(:assigned_reviewers) { [john_doe] }
+
+      it 'does not create a todo if unassigned' do
+        target.reviewers = []
+
+        should_not_create_any_todo { service.send(described_method, target, author) }
+      end
+
+      it 'creates a todo if new reviewer is the current user' do
+        target.reviewers = [john_doe]
+        service.send(described_method, target, john_doe)
+
+        should_create_todo(user: john_doe, target: target, author: john_doe, action: Todo::REVIEW_REQUESTED)
+      end
+
+      it 'does not create a todo if already assigned' do
+        should_not_create_any_todo { service.send(described_method, target, author, [john_doe]) }
+      end
+    end
+  end
+
   describe 'Issues' do
     let(:issue) { create(:issue, project: project, assignees: [john_doe], author: author, description: "- [ ] Task 1\n- [ ] Task 2 #{mentions}") }
     let(:addressed_issue) { create(:issue, project: project, assignees: [john_doe], author: author, description: "#{directly_addressed}\n- [ ] Task 1\n- [ ] Task 2") }
@@ -158,6 +192,19 @@ RSpec.describe TodoService do
         it 'creates a todo for group members' do
           should_create_todo(user: member, target: issue)
           should_create_todo(user: john_doe, target: issue)
+        end
+      end
+
+      context 'issue is an incident' do
+        let(:issue) { create(:incident, project: project, assignees: [john_doe], author: author) }
+
+        subject do
+          service.new_issue(issue, author)
+          should_create_todo(user: john_doe, target: issue, action: Todo::ASSIGNED)
+        end
+
+        it_behaves_like 'an incident management tracked event', :incident_management_incident_todo do
+          let(:current_user) { john_doe}
         end
       end
     end
@@ -601,6 +648,17 @@ RSpec.describe TodoService do
         let(:target_assigned) { create(:alert_management_alert, project: project, assignees: [john_doe]) }
         let(:addressed_target_assigned) { create(:alert_management_alert, project: project, assignees: [john_doe]) }
         let(:target_unassigned) { create(:alert_management_alert, project: project, assignees: []) }
+      end
+    end
+  end
+
+  describe '#reassigned_reviewable' do
+    let(:described_method) { :reassigned_reviewable }
+
+    context 'reviewable is a merge request' do
+      it_behaves_like 'reassigned reviewable target' do
+        let(:assigned_reviewers) { [] }
+        let(:target) { create(:merge_request, source_project: project, author: author, reviewers: assigned_reviewers) }
       end
     end
   end

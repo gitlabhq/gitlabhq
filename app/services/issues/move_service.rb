@@ -38,6 +38,7 @@ module Issues
     def update_old_entity
       super
 
+      rewrite_related_issues
       mark_as_moved
     end
 
@@ -51,11 +52,22 @@ module Issues
                    }
 
       new_params = original_entity.serializable_hash.symbolize_keys.merge(new_params)
-      CreateService.new(@target_project, @current_user, new_params).execute
+
+      # Skip creation of system notes for existing attributes of the issue. The system notes of the old
+      # issue are copied over so we don't want to end up with duplicate notes.
+      CreateService.new(@target_project, @current_user, new_params).execute(skip_system_notes: true)
     end
 
     def mark_as_moved
       original_entity.update(moved_to: new_entity)
+    end
+
+    def rewrite_related_issues
+      source_issue_links = IssueLink.for_source_issue(original_entity)
+      source_issue_links.update_all(source_id: new_entity.id)
+
+      target_issue_links = IssueLink.for_target_issue(original_entity)
+      target_issue_links.update_all(target_id: new_entity.id)
     end
 
     def notify_participants

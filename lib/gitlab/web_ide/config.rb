@@ -34,6 +34,10 @@ module Gitlab
         @global.terminal_value
       end
 
+      def schemas_value
+        @global.schemas_value
+      end
+
       private
 
       def build_config(config, opts = {})

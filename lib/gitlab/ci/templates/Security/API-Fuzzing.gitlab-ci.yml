@@ -37,9 +37,6 @@ apifuzzer_fuzz:
               $FUZZAPI_OPENAPI == null &&
               $FUZZAPI_D_WORKER_IMAGE == null
           when: never
-        - if: $FUZZAPI_D_WORKER_IMAGE == null &&
-              $FUZZAPI_TARGET_URL == null
-          when: never
         - if: $GITLAB_FEATURES =~ /\bapi_fuzzing\b/
     services:
         - docker:19.03.12-dind
@@ -74,13 +71,15 @@ apifuzzer_fuzz:
             -e FUZZAPI_TIMEOUT \
             -e FUZZAPI_VERBOSE \
             -e FUZZAPI_SERVICE_START_TIMEOUT \
+            -e FUZZAPI_HTTP_USERNAME \
+            -e FUZZAPI_HTTP_PASSWORD \
             -e GITLAB_FEATURES \
             -v $CI_PROJECT_DIR:/app \
             -p 80:80 \
             -p 8000:8000 \
             -p 514:514 \
             --restart=no \
-            registry.gitlab.com/gitlab-org/security-products/analyzers/api-fuzzing-src:${FUZZAPI_VERSION}-engine
+            registry.gitlab.com/gitlab-org/security-products/analyzers/api-fuzzing:${FUZZAPI_VERSION}-engine
         #
         # Start target container
         - |
@@ -118,6 +117,9 @@ apifuzzer_fuzz:
         #
         # Wait for testing to complete if api fuzzer is scanning
         - if [ "$FUZZAPI_HAR$FUZZAPI_OPENAPI" != "" ]; then echo "Waiting for API Fuzzer to exit"; docker wait apifuzzer; fi
+        #
+        # Propagate exit code from api fuzzer (if any)
+        - if [[ $(docker inspect apifuzzer --format='{{.State.ExitCode}}') != "0" ]]; then echo "API Fuzzing exited with an error. Logs are available as job artifacts."; docker logs apifuzzer; exit 1; fi
         #
         # Run user provided pre-script
         - sh -c "$FUZZAPI_POST_SCRIPT"

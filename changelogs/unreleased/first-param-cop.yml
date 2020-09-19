@@ -1,0 +1,5 @@
+---
+title: Fix Layout/FirstParameterIndentation cop
+merge_request: 41089
+author:
+type: fixed

@@ -29,7 +29,7 @@ RSpec.describe FixWrongPagesAccessLevel, :sidekiq_might_not_need_inline, schema:
 
   it 'correctly schedules background migrations' do
     Sidekiq::Testing.fake! do
-      Timecop.freeze do
+      freeze_time do
         first_id = create_project_feature("project1", project_class::PRIVATE, feature_class::PRIVATE).id
         last_id = create_project_feature("project2", project_class::PRIVATE, feature_class::PUBLIC).id
 

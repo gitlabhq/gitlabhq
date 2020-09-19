@@ -1,0 +1,28 @@
+%h1
+  GitLab for Jira Configuration
+
+%form#add-subscription-form.subscription-form{ action: jira_connect_subscriptions_path }
+  .ak-field-group
+    %label
+      Namespace
+
+  .ak-field-group.field-group-input
+    %input#namespace-input.ak-field-text{ type: 'text', required: true }
+    %button.ak-button.ak-button__appearance-primary{ type: 'submit' }
+      Link namespace to Jira
+
+%table.subscriptions
+  %thead
+    %tr
+      %th Namespace
+      %th Added
+      %th
+  %tbody
+    - @subscriptions.each do |subscription|
+      %tr
+        %td= subscription.namespace.full_path
+        %td= subscription.created_at
+        %td= link_to 'Remove', jira_connect_subscription_path(subscription), class: 'remove-subscription'
+
+= page_specific_javascript_tag('jira_connect.js')
+= stylesheet_link_tag 'page_bundles/jira_connect'

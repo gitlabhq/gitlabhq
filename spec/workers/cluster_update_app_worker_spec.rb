@@ -12,7 +12,7 @@ RSpec.describe ClusterUpdateAppWorker do
   subject { described_class.new }
 
   around do |example|
-    Timecop.freeze(Time.current) { example.run }
+    freeze_time { example.run }
   end
 
   before do

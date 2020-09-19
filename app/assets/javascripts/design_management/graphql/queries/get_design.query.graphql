@@ -10,6 +10,7 @@ query getDesign($fullPath: ID!, $iid: String!, $atVersion: ID, $filenames: [Stri
           nodes {
             ...DesignItem
             issue {
+              id
               title
               webPath
               webUrl

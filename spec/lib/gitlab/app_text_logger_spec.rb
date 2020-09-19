@@ -17,7 +17,7 @@ RSpec.describe Gitlab::AppTextLogger do
   end
 
   it 'logs time in UTC with ISO8601.3 standard' do
-    Timecop.freeze do
+    freeze_time do
       expect(subject.format_message('INFO', Time.now, nil, string_message))
         .to include(Time.now.utc.iso8601(3))
     end

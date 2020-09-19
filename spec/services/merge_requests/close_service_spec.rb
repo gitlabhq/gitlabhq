@@ -99,6 +99,12 @@ RSpec.describe MergeRequests::CloseService do
       described_class.new(project, user).execute(merge_request)
     end
 
+    it 'schedules CleanupRefsService' do
+      expect(MergeRequests::CleanupRefsService).to receive(:schedule).with(merge_request)
+
+      described_class.new(project, user).execute(merge_request)
+    end
+
     context 'current user is not authorized to close merge request' do
       before do
         perform_enqueued_jobs do

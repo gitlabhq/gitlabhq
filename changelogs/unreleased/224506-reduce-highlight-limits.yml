@@ -1,0 +1,5 @@
+---
+title: Make highlighting limits stricter
+merge_request: 39934
+author:
+type: performance

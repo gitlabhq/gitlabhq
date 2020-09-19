@@ -41,7 +41,7 @@ module Types
         list = self.object
         user = context[:current_user]
 
-        Boards::Issues::ListService
+        ::Boards::Issues::ListService
           .new(list.board.resource_parent, user, board_id: list.board_id, id: list.id)
           .metadata
       end

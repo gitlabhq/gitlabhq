@@ -10,13 +10,13 @@
 /doc/ @gl-docsteam
 /doc/administration/monitoring/ @aqualls
 /doc/development/ @marcia @mjang1
-/doc/development/documentation/ @mikelewis
+/doc/development/documentation/ @cnorris
 /doc/ci @marcel.amirault @sselhorn
 /doc/operations @aqualls @eread
 /doc/user/clusters @aqualls
 /doc/user/infrastructure @aqualls
 /doc/user/project/clusters @aqualls
-/doc/.vale/ @marcel.amirault @eread @aqualls @mikelewis
+/doc/.vale/ @marcel.amirault @eread @aqualls @cnorris
 
 [Docs Create]
 /doc/user/project/merge_requests/allow_collaboration.md @marcia
@@ -165,12 +165,15 @@
 /.gitlab/ci/ @gl-quality/eng-prod
 /.gitlab/ci/docs.gitlab-ci.yml @gl-quality/eng-prod @gl-docsteam
 /.gitlab/ci/releases.gitlab-ci.yml @gl-quality/eng-prod @gitlab-org/delivery
+/.gitlab/ci/dast.gitlab-ci.yml @dappelt @ngeorge1 @gl-quality/eng-prod
+/.gitlab/ci/reports.gitlab-ci.yml @gitlab-com/gl-security/appsec @gl-quality/eng-prod
 /.gitlab/CODEOWNERS @gl-quality/eng-prod
 Dangerfile @gl-quality/eng-prod
 /danger/ @gl-quality/eng-prod
 /lib/gitlab/danger/ @gl-quality/eng-prod
 /scripts/ @gl-quality/eng-prod
 /scripts/frontend/ @gl-quality/eng-prod @gitlab-org/maintainers/frontend
+/scripts/review_apps/seed-dast-test-data.sh @dappelt @ngeorge1 @gl-quality/eng-prod
 .editorconfig @gl-quality/eng-prod
 
 [End-to-end]
@@ -192,9 +195,11 @@ Dangerfile @gl-quality/eng-prod
 # Secure & Threat Management ownership delineation
 # https://about.gitlab.com/handbook/engineering/development/threat-management/delineate-secure-threat-management.html#technical-boundaries
 [Secure]
-/ee/app/models/vulnerability.rb @gitlab-org/secure/threat-insights-backend-team
+/ee/app/finders/security/ @gitlab-org/secure/threat-insights-backend-team
 /ee/app/models/security/ @gitlab-org/secure/threat-insights-backend-team
 /ee/app/models/vulnerabilities/ @gitlab-org/secure/threat-insights-backend-team
+/ee/app/models/vulnerability.rb @gitlab-org/secure/threat-insights-backend-team
+/ee/lib/api/vulnerabilit*.rb @gitlab-org/secure/threat-insights-backend-team
 /ee/lib/gitlab/ci/parsers/license_compliance/ @gitlab-org/secure/composition-analysis-be
 /ee/lib/gitlab/ci/parsers/security/ @gitlab-org/secure/composition-analysis-be @gitlab-org/secure/dynamic-analysis-be @gitlab-org/secure/static-analysis-be @gitlab-org/secure/fuzzing-be
 /ee/lib/gitlab/ci/reports/coverage_fuzzing/ @gitlab-org/secure/fuzzing-be

@@ -1,0 +1,5 @@
+---
+title: Add target_id column to audit_events table
+merge_request: 40954
+author:
+type: other

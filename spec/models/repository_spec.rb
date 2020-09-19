@@ -1263,6 +1263,7 @@ RSpec.describe Repository do
       %w(a b c/z) | %w(c d) | true
       %w(a/b/z) | %w(a/b) | false # we only consider refs ambiguous before the first slash
       %w(a/b/z) | %w(a/b a) | true
+      %w(ab) | %w(abc/d a b) | false
     end
 
     with_them do

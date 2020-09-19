@@ -1,0 +1,122 @@
+.review-bar-component {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: $white;
+  z-index: 300;
+  padding: 7px 0 6px; // to keep aligned with "collapse sidebar" button on the left sidebar
+  border-top: 1px solid $border-color;
+  padding-left: $contextual-sidebar-width;
+  padding-right: $gutter_collapsed_width;
+  transition: padding $sidebar-transition-duration;
+
+  .page-with-icon-sidebar & {
+    padding-left: $contextual-sidebar-collapsed-width;
+  }
+
+  .right-sidebar-expanded & {
+    padding-right: $gutter_width;
+  }
+
+  @media (max-width: map-get($grid-breakpoints, sm)-1) {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .dropdown {
+    margin-left: $grid-size;
+  }
+}
+
+.review-bar-content {
+  max-width: $limited-layout-width;
+  padding: 0 $gl-padding;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.review-preview-dropdown {
+  .review-preview-item.menu-item {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 8px 16px;
+    cursor: pointer;
+
+    &:not(.is-last) {
+      border-bottom: 1px solid $list-border;
+    }
+  }
+
+  .dropdown-menu {
+    top: auto;
+    bottom: 36px;
+
+    &.show {
+      max-height: 400px;
+
+      @include media-breakpoint-down(xs) {
+        width: calc(100vw - 32px);
+      }
+    }
+  }
+
+  .dropdown-content {
+    max-height: 300px;
+  }
+
+  .dropdown-title {
+    padding: $grid-size 25px $gl-padding;
+    margin-bottom: 0;
+  }
+
+  .dropdown-footer {
+    margin-top: 0;
+  }
+
+  .dropdown-menu-close {
+    top: 6px;
+  }
+}
+
+.review-preview-dropdown-toggle {
+  svg.s16 {
+    width: 15px;
+    height: 15px;
+    margin-top: -1px;
+    top: 3px;
+    margin-left: 4px;
+  }
+}
+
+.review-preview-item-header {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 4px;
+
+  > .bold {
+    display: flex;
+    min-width: 0;
+    line-height: 16px;
+  }
+}
+
+.review-preview-item-footer {
+  display: flex;
+  align-items: center;
+  margin-top: 4px;
+}
+
+.review-preview-item-content {
+  width: 100%;
+
+  p {
+    display: block;
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin-bottom: 0;
+  }
+}

@@ -8,7 +8,7 @@
             = _("Git strategy for pipelines")
           %p
             = html_escape(_("Choose between %{code_open}clone%{code_close} or %{code_open}fetch%{code_close} to get the recent application code")) % { code_open: '<code>'.html_safe, code_close: '</code>'.html_safe }
-            = link_to icon('question-circle'), help_page_path('ci/pipelines/settings', anchor: 'git-strategy'), target: '_blank'
+            = link_to sprite_icon('question-o'), help_page_path('ci/pipelines/settings', anchor: 'git-strategy'), target: '_blank'
           .form-check
             = f.radio_button :build_allow_git_fetch, 'false', { class: 'form-check-input' }
             = f.label :build_allow_git_fetch_false, class: 'form-check-label' do
@@ -38,7 +38,7 @@
           = f.text_field :build_timeout_human_readable, class: 'form-control'
           %p.form-text.text-muted
             = _('If any job surpasses this timeout threshold, it will be marked as failed. Human readable time input language is accepted like "1 hour". Values without specification represent seconds.')
-            = link_to icon('question-circle'), help_page_path('ci/pipelines/settings', anchor: 'timeout'), target: '_blank'
+            = link_to sprite_icon('question-o'), help_page_path('ci/pipelines/settings', anchor: 'timeout'), target: '_blank'
 
         - if can?(current_user, :update_max_artifacts_size, @project)
           %hr
@@ -47,7 +47,7 @@
             = f.number_field :max_artifacts_size, class: 'form-control'
             %p.form-text.text-muted
               = _("Set the maximum file size for each job's artifacts")
-              = link_to icon('question-circle'), help_page_path('user/admin_area/settings/continuous_integration', anchor: 'maximum-artifacts-size-core-only'), target: '_blank'
+              = link_to sprite_icon('question-o'), help_page_path('user/admin_area/settings/continuous_integration', anchor: 'maximum-artifacts-size'), target: '_blank'
 
         %hr
         .form-group
@@ -55,7 +55,7 @@
           = f.text_field :ci_config_path, class: 'form-control', placeholder: '.gitlab-ci.yml'
           %p.form-text.text-muted
             = html_escape(_("The path to the CI configuration file. Defaults to %{code_open}.gitlab-ci.yml%{code_close}")) % { code_open: '<code>'.html_safe, code_close: '</code>'.html_safe }
-            = link_to icon('question-circle'), help_page_path('ci/pipelines/settings', anchor: 'custom-ci-configuration-path'), target: '_blank'
+            = link_to sprite_icon('question-o'), help_page_path('ci/pipelines/settings', anchor: 'custom-ci-configuration-path'), target: '_blank'
 
         %hr
         .form-group
@@ -65,7 +65,7 @@
               %strong= _("Public pipelines")
             .form-text.text-muted
               = _("Allow public access to pipelines and job details, including output logs and artifacts")
-              = link_to icon('question-circle'), help_page_path('ci/pipelines/settings', anchor: 'visibility-of-pipelines'), target: '_blank'
+              = link_to sprite_icon('question-o'), help_page_path('ci/pipelines/settings', anchor: 'visibility-of-pipelines'), target: '_blank'
             .bs-callout.bs-callout-info
               %p #{_("If enabled")}:
               %ul
@@ -86,7 +86,7 @@
               %strong= _("Auto-cancel redundant, pending pipelines")
             .form-text.text-muted
               = _("New pipelines will cancel older, pending pipelines on the same branch")
-              = link_to icon('question-circle'), help_page_path('ci/pipelines/settings', anchor: 'auto-cancel-pending-pipelines'), target: '_blank'
+              = link_to sprite_icon('question-o'), help_page_path('ci/pipelines/settings', anchor: 'auto-cancel-pending-pipelines'), target: '_blank'
 
         .form-group
           .form-check
@@ -95,7 +95,7 @@
               %strong= _("Skip outdated deployment jobs")
             .form-text.text-muted
               = _("When a deployment job is successful, skip older deployment jobs that are still pending")
-              = link_to icon('question-circle'), help_page_path('ci/pipelines/settings', anchor: 'skip-outdated-deployment-jobs'), target: '_blank'
+              = link_to sprite_icon('question-o'), help_page_path('ci/pipelines/settings', anchor: 'skip-outdated-deployment-jobs'), target: '_blank'
 
         %hr
         .form-group
@@ -108,7 +108,7 @@
               .input-group-text /
           %p.form-text.text-muted
             = _("A regular expression that will be used to find the test coverage output in the job log. Leave blank to disable")
-            = link_to icon('question-circle'), help_page_path('ci/pipelines/settings', anchor: 'test-coverage-parsing'), target: '_blank'
+            = link_to sprite_icon('question-o'), help_page_path('ci/pipelines/settings', anchor: 'test-coverage-parsing'), target: '_blank'
           .bs-callout.bs-callout-info
             %p= _("Below are examples of regex for existing tools:")
             %ul

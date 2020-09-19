@@ -183,7 +183,7 @@
 
         &.line-numbers {
           float: none;
-          border-left: 1px solid $gl-gray-100;
+          border-left: 1px solid $gray-100;
 
           i {
             float: none;
@@ -300,7 +300,7 @@ span.idiff {
 
   .renamed-file {
     a {
-      color: $orange-600;
+      color: $orange-500;
     }
   }
 
@@ -495,9 +495,12 @@ span.idiff {
   max-height: 20rem;
 }
 
-#js-openapi-viewer pre.version {
-  background-color: transparent;
-  border: transparent;
+#js-openapi-viewer {
+  pre.version,
+  code {
+    background-color: transparent;
+    border: transparent;
+  }
 }
 
 .code-navigation-line:hover {

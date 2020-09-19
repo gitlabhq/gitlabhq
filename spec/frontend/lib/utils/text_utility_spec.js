@@ -205,6 +205,27 @@ describe('text_utility', () => {
     });
   });
 
+  describe('convertUnicodeToAscii', () => {
+    it('does nothing on an empty string', () => {
+      expect(textUtils.convertUnicodeToAscii('')).toBe('');
+    });
+
+    it('does nothing on an already ascii string', () => {
+      expect(textUtils.convertUnicodeToAscii('The quick brown fox jumps over the lazy dog.')).toBe(
+        'The quick brown fox jumps over the lazy dog.',
+      );
+    });
+
+    it('replaces Unicode characters', () => {
+      expect(textUtils.convertUnicodeToAscii('Dĭd söméònê äšk fœŕ Ůnĭċődę?')).toBe(
+        'Did soemeone aesk foer Unicode?',
+      );
+
+      expect(textUtils.convertUnicodeToAscii("Jürgen's Projekt")).toBe("Juergen's Projekt");
+      expect(textUtils.convertUnicodeToAscii('öäüÖÄÜ')).toBe('oeaeueOeAeUe');
+    });
+  });
+
   describe('splitCamelCase', () => {
     it('separates a PascalCase word to two', () => {
       expect(textUtils.splitCamelCase('HelloWorld')).toBe('Hello World');

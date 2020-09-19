@@ -27,7 +27,7 @@ module QA
         end.visit!
       end
 
-      it 'mentions a user in a comment' do
+      it 'mentions a user in a comment', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/452' do
         Page::Project::Issue::Show.perform do |show|
           show.select_all_activities_filter
           show.comment("cc-ing you here @#{user.username}")

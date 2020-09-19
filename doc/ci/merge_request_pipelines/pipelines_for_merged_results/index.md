@@ -66,7 +66,7 @@ unresolved state or your pipelines may be dropped.
 
 ## Using Merge Trains
 
-When you enable [Pipelines for merged results](#pipelines-for-merged-results-premium),
+When you enable [Pipelines for merged results](#pipelines-for-merged-results),
 GitLab [automatically displays](merge_trains/index.md#add-a-merge-request-to-a-merge-train)
 a **Start/Add Merge Train button**.
 
@@ -127,5 +127,5 @@ unexpected timing. For example, when a source or target branch is advanced.
 In this case, the pipeline fails because of `fatal: reference is not a tree:` error,
 which indicates that the checkout-SHA is not found in the merge ref.
 
-This behavior was improved at GitLab 12.4 by introducing [Persistent pipeline refs](../../pipelines/index.md#troubleshooting-fatal-reference-is-not-a-tree).
+This behavior was improved at GitLab 12.4 by introducing [Persistent pipeline refs](../../troubleshooting.md#fatal-reference-is-not-a-tree-error).
 You should be able to create pipelines at any timings without concerning the error.

@@ -11,6 +11,7 @@ export const VALID_DATA_TRANSFER_TYPE = 'Files';
 export const ACTIVE_DISCUSSION_SOURCE_TYPES = {
   pin: 'pin',
   discussion: 'discussion',
+  url: 'url',
 };
 
 export const DESIGN_DETAIL_LAYOUT_CLASSLIST = ['design-detail-layout', 'overflow-hidden', 'm-0'];

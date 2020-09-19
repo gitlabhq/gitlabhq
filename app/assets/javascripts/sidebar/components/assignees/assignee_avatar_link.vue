@@ -59,7 +59,7 @@ export default {
       };
     },
     assigneeUrl() {
-      return this.user.web_url;
+      return this.user.web_url || this.user.webUrl;
     },
   },
 };

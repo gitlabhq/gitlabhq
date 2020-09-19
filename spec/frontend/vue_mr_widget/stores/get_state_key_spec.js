@@ -30,6 +30,7 @@ describe('getStateKey', () => {
     expect(bound()).toEqual('notAllowedToMerge');
 
     context.autoMergeEnabled = true;
+    context.hasMergeableDiscussionsState = true;
 
     expect(bound()).toEqual('autoMergeEnabled');
 
@@ -44,6 +45,7 @@ describe('getStateKey', () => {
     expect(bound()).toEqual('pipelineBlocked');
 
     context.hasMergeableDiscussionsState = true;
+    context.autoMergeEnabled = false;
 
     expect(bound()).toEqual('unresolvedDiscussions');
 

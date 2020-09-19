@@ -1,15 +1,15 @@
 <script>
 import $ from 'jquery';
-import { GlPopover, GlButton, GlTooltipDirective } from '@gitlab/ui';
+import { GlPopover, GlButton, GlTooltipDirective, GlIcon } from '@gitlab/ui';
+import { s__ } from '~/locale';
 import { getSelectedFragment } from '~/lib/utils/common_utils';
 import { CopyAsGFM } from '../../../behaviors/markdown/copy_as_gfm';
 import ToolbarButton from './toolbar_button.vue';
-import Icon from '../icon.vue';
 
 export default {
   components: {
     ToolbarButton,
-    Icon,
+    GlIcon,
     GlPopover,
     GlButton,
   },
@@ -54,6 +54,15 @@ export default {
     },
     mdSuggestion() {
       return ['```suggestion:-0+0', `{text}`, '```'].join('\n');
+    },
+    isMac() {
+      // Accessing properties using ?. to allow tests to use
+      // this component without setting up window.gl.client.
+      // In production, window.gl.client should always be present.
+      return Boolean(window.gl?.client?.isMac);
+    },
+    modifierKey() {
+      return this.isMac ? '⌘' : s__('KeyboardKey|Ctrl+');
     },
   },
   mounted() {
@@ -129,8 +138,22 @@ export default {
       </li>
       <li :class="{ active: !previewMarkdown }" class="md-header-toolbar">
         <div class="d-inline-block">
-          <toolbar-button tag="**" :button-title="__('Add bold text')" icon="bold" />
-          <toolbar-button tag="*" :button-title="__('Add italic text')" icon="italic" />
+          <toolbar-button
+            tag="**"
+            :button-title="
+              sprintf(s__('MarkdownEditor|Add bold text (%{modifierKey}B)'), { modifierKey })
+            "
+            shortcuts="mod+b"
+            icon="bold"
+          />
+          <toolbar-button
+            tag="_"
+            :button-title="
+              sprintf(s__('MarkdownEditor|Add italic text (%{modifierKey}I)'), { modifierKey })
+            "
+            shortcuts="mod+i"
+            icon="italic"
+          />
           <toolbar-button
             :prepend="true"
             :tag="tag"
@@ -181,7 +204,10 @@ export default {
           <toolbar-button
             tag="[{text}](url)"
             tag-select="url"
-            :button-title="__('Add a link')"
+            :button-title="
+              sprintf(s__('MarkdownEditor|Add a link (%{modifierKey}K)'), { modifierKey })
+            "
+            shortcuts="mod+k"
             icon="link"
           />
         </div>
@@ -221,7 +247,7 @@ export default {
             :title="__('Go full screen')"
             type="button"
           >
-            <icon name="screen-full" />
+            <gl-icon name="maximize" />
           </button>
         </div>
       </li>

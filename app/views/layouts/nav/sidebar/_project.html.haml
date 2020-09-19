@@ -167,7 +167,7 @@
       = render_if_exists "layouts/nav/requirements_link", project: @project
 
       - if project_nav_tab? :pipelines
-        = nav_link(controller: [:pipelines, :builds, :jobs, :pipeline_schedules, :artifacts], unless: -> { current_path?('projects/pipelines#charts') }) do
+        = nav_link(controller: [:pipelines, :builds, :jobs, :pipeline_schedules, :artifacts, :test_cases], unless: -> { current_path?('projects/pipelines#charts') }) do
           = link_to project_pipelines_path(@project), class: 'shortcuts-pipelines qa-link-pipelines rspec-link-pipelines', data: { qa_selector: 'ci_cd_link' } do
             .nav-icon-container
               = sprite_icon('rocket')
@@ -175,7 +175,7 @@
               = _('CI / CD')
 
           %ul.sidebar-sub-level-items
-            = nav_link(controller: [:pipelines, :builds, :jobs, :pipeline_schedules, :artifacts], html_options: { class: "fly-out-top-item" }) do
+            = nav_link(controller: [:pipelines, :builds, :jobs, :pipeline_schedules, :artifacts, :test_cases], html_options: { class: "fly-out-top-item" }) do
               = link_to project_pipelines_path(@project) do
                 %strong.fly-out-top-item-name
                   =  _('CI / CD')
@@ -203,6 +203,8 @@
                 = link_to pipeline_schedules_path(@project), title: _('Schedules'), class: 'shortcuts-builds' do
                   %span
                     = _('Schedules')
+
+            = render_if_exists "layouts/nav/test_cases_link", project: @project
 
       = render_if_exists 'layouts/nav/sidebar/project_security_link' # EE-specific
 

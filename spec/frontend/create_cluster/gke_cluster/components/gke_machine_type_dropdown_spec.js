@@ -124,11 +124,7 @@ describe('GkeMachineTypeDropdown', () => {
       wrapper.find('.dropdown-content button').trigger('click');
 
       return wrapper.vm.$nextTick().then(() => {
-        expect(setMachineType).toHaveBeenCalledWith(
-          expect.anything(),
-          selectedMachineTypeMock,
-          undefined,
-        );
+        expect(setMachineType).toHaveBeenCalledWith(expect.anything(), selectedMachineTypeMock);
       });
     });
   });

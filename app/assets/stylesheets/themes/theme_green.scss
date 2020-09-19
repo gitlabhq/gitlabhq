@@ -1,0 +1,14 @@
+@import './theme_helper';
+
+body {
+  &.ui-green {
+    @include gitlab-theme(
+      $theme-green-200,
+      $theme-green-500,
+      $theme-green-700,
+      $theme-green-800,
+      $theme-green-900,
+      $white
+    );
+  }
+}

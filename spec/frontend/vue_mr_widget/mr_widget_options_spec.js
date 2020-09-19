@@ -530,7 +530,7 @@ describe('mrWidgetOptions', () => {
         vm.mr.state = 'readyToMerge';
 
         vm.$nextTick(() => {
-          const tooltip = vm.$el.querySelector('.fa-question-circle');
+          const tooltip = vm.$el.querySelector('[data-testid="question-o-icon"]');
 
           expect(vm.$el.textContent).toContain('Deletes source branch');
           expect(tooltip.getAttribute('data-original-title')).toBe(

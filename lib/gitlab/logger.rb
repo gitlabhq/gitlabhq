@@ -32,7 +32,8 @@ module Gitlab
     end
 
     def self.build
-      Gitlab::SafeRequestStore[self.cache_key] ||= new(self.full_log_path)
+      Gitlab::SafeRequestStore[self.cache_key] ||=
+        new(self.full_log_path, level: ::Logger::DEBUG)
     end
 
     def self.full_log_path

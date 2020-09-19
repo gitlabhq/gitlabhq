@@ -32,12 +32,7 @@ RSpec.describe 'Setting an issue as locked' do
   end
 
   context 'when the user is not allowed to update the issue' do
-    it 'returns an error' do
-      error = "The resource that you are attempting to access does not exist or you don't have permission to perform this action"
-      post_graphql_mutation(mutation, current_user: current_user)
-
-      expect(graphql_errors).to include(a_hash_including('message' => error))
-    end
+    it_behaves_like 'a mutation that returns a top-level access error'
   end
 
   context 'when user is allowed to update the issue' do

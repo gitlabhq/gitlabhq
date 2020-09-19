@@ -13,6 +13,7 @@ import {
 } from '@gitlab/ui';
 import { visitUrl, joinPaths, mergeUrlParams } from '~/lib/utils/url_utility';
 import IncidentsList from '~/incidents/components/incidents_list.vue';
+import SeverityToken from '~/sidebar/components/severity/severity.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import { I18N, INCIDENT_STATUS_TABS } from '~/incidents/constants';
 import mockIncidents from '../mocks/incidents.json';
@@ -30,9 +31,9 @@ describe('Incidents List', () => {
   const incidentTemplateName = 'incident';
   const incidentType = 'incident';
   const incidentsCount = {
-    opened: 14,
-    closed: 1,
-    all: 16,
+    opened: 24,
+    closed: 10,
+    all: 26,
   };
 
   const findTable = () => wrapper.find(GlTable);
@@ -51,6 +52,7 @@ describe('Incidents List', () => {
   const findStatusFilterBadge = () => wrapper.findAll(GlBadge);
   const findStatusTabs = () => wrapper.find(GlTabs);
   const findEmptyState = () => wrapper.find(GlEmptyState);
+  const findSeverity = () => wrapper.findAll(SeverityToken);
 
   function mountComponent({ data = { incidents: [], incidentsCount: {} }, loading = false }) {
     wrapper = mount(IncidentsList, {
@@ -78,6 +80,7 @@ describe('Incidents List', () => {
       stubs: {
         GlButton: true,
         GlAvatar: true,
+        GlEmptyState: true,
       },
     });
   }
@@ -96,12 +99,30 @@ describe('Incidents List', () => {
     expect(findLoader().exists()).toBe(true);
   });
 
-  it('shows empty state', () => {
-    mountComponent({
-      data: { incidents: { list: [] }, incidentsCount: {} },
-      loading: false,
-    });
-    expect(findEmptyState().exists()).toBe(true);
+  describe('empty state', () => {
+    const {
+      emptyState: { title, emptyClosedTabTitle, description },
+    } = I18N;
+
+    it.each`
+      statusFilter | all  | closed | expectedTitle          | expectedDescription
+      ${'all'}     | ${2} | ${1}   | ${title}               | ${description}
+      ${'open'}    | ${2} | ${0}   | ${title}               | ${description}
+      ${'closed'}  | ${0} | ${0}   | ${title}               | ${description}
+      ${'closed'}  | ${2} | ${0}   | ${emptyClosedTabTitle} | ${undefined}
+    `(
+      `when active tab is $statusFilter and there are $all incidents in total and $closed closed incidents, the empty state
+      has title: $expectedTitle and description: $expectedDescription`,
+      ({ statusFilter, all, closed, expectedTitle, expectedDescription }) => {
+        mountComponent({
+          data: { incidents: { list: [] }, incidentsCount: { all, closed }, statusFilter },
+          loading: false,
+        });
+        expect(findEmptyState().exists()).toBe(true);
+        expect(findEmptyState().attributes('title')).toBe(expectedTitle);
+        expect(findEmptyState().attributes('description')).toBe(expectedDescription);
+      },
+    );
   });
 
   it('shows error state', () => {
@@ -163,6 +184,10 @@ describe('Incidents List', () => {
         );
       });
     });
+
+    it('renders severity per row', () => {
+      expect(findSeverity().length).toBe(mockIncidents.length);
+    });
   });
 
   describe('Create Incident', () => {
@@ -187,6 +212,14 @@ describe('Incidents List', () => {
       return wrapper.vm.$nextTick().then(() => {
         expect(findCreateIncidentBtn().attributes('loading')).toBe('true');
       });
+    });
+
+    it("doesn't show the button when list is empty", () => {
+      mountComponent({
+        data: { incidents: { list: [] }, incidentsCount: {} },
+        loading: false,
+      });
+      expect(findCreateIncidentBtn().exists()).toBe(false);
     });
   });
 
@@ -313,7 +346,7 @@ describe('Incidents List', () => {
     describe('Status Filter Tabs', () => {
       beforeEach(() => {
         mountComponent({
-          data: { incidents: mockIncidents, incidentsCount },
+          data: { incidents: { list: mockIncidents }, incidentsCount },
           loading: false,
           stubs: {
             GlTab: true,
@@ -345,7 +378,7 @@ describe('Incidents List', () => {
   describe('sorting the incident list by column', () => {
     beforeEach(() => {
       mountComponent({
-        data: { incidents: mockIncidents, incidentsCount },
+        data: { incidents: { list: mockIncidents }, incidentsCount },
         loading: false,
       });
     });

@@ -1,0 +1,14 @@
+@import './theme_helper';
+
+body {
+  &.ui-indigo {
+    @include gitlab-theme(
+      $indigo-200,
+      $indigo-500,
+      $indigo-700,
+      $indigo-800,
+      $indigo-900,
+      $white
+    );
+  }
+}

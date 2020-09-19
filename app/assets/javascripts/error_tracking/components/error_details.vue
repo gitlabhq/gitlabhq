@@ -11,10 +11,10 @@ import {
   GlDeprecatedDropdown,
   GlDeprecatedDropdownItem,
   GlDeprecatedDropdownDivider,
+  GlIcon,
 } from '@gitlab/ui';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
 import { __, sprintf, n__ } from '~/locale';
-import Icon from '~/vue_shared/components/icon.vue';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate.vue';
 import Stacktrace from './stacktrace.vue';
 import TrackEventDirective from '~/vue_shared/directives/track_event';
@@ -38,7 +38,7 @@ export default {
     GlLink,
     GlLoadingIcon,
     TooltipOnTruncate,
-    Icon,
+    GlIcon,
     Stacktrace,
     GlBadge,
     GlAlert,
@@ -397,7 +397,7 @@ export default {
               data-testid="external-url-link"
             >
               <span class="text-truncate">{{ error.externalUrl }}</span>
-              <icon name="external-link" class="ml-1 flex-shrink-0" />
+              <gl-icon name="external-link" class="ml-1 flex-shrink-0" />
             </gl-link>
           </li>
           <li v-if="error.firstReleaseVersion">

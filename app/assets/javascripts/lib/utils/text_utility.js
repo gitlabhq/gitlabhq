@@ -275,6 +275,81 @@ export const convertToSentenceCase = string => {
  */
 export const convertToTitleCase = string => string.replace(/\b[a-z]/g, s => s.toUpperCase());
 
+const unicodeConversion = [
+  [/[ÀÁÂÃÅĀĂĄ]/g, 'A'],
+  [/[Æ]/g, 'AE'],
+  [/[ÇĆĈĊČ]/g, 'C'],
+  [/[ÈÉÊËĒĔĖĘĚ]/g, 'E'],
+  [/[ÌÍÎÏĨĪĬĮİ]/g, 'I'],
+  [/[Ððĥħ]/g, 'h'],
+  [/[ÑŃŅŇŉ]/g, 'N'],
+  [/[ÒÓÔÕØŌŎŐ]/g, 'O'],
+  [/[ÙÚÛŨŪŬŮŰŲ]/g, 'U'],
+  [/[ÝŶŸ]/g, 'Y'],
+  [/[Þñþńņň]/g, 'n'],
+  [/[ßŚŜŞŠ]/g, 'S'],
+  [/[àáâãåāăąĸ]/g, 'a'],
+  [/[æ]/g, 'ae'],
+  [/[çćĉċč]/g, 'c'],
+  [/[èéêëēĕėęě]/g, 'e'],
+  [/[ìíîïĩīĭį]/g, 'i'],
+  [/[òóôõøōŏő]/g, 'o'],
+  [/[ùúûũūŭůűų]/g, 'u'],
+  [/[ýÿŷ]/g, 'y'],
+  [/[ĎĐ]/g, 'D'],
+  [/[ďđ]/g, 'd'],
+  [/[ĜĞĠĢ]/g, 'G'],
+  [/[ĝğġģŊŋſ]/g, 'g'],
+  [/[ĤĦ]/g, 'H'],
+  [/[ıśŝşš]/g, 's'],
+  [/[Ĳ]/g, 'IJ'],
+  [/[ĳ]/g, 'ij'],
+  [/[Ĵ]/g, 'J'],
+  [/[ĵ]/g, 'j'],
+  [/[Ķ]/g, 'K'],
+  [/[ķ]/g, 'k'],
+  [/[ĹĻĽĿŁ]/g, 'L'],
+  [/[ĺļľŀł]/g, 'l'],
+  [/[Œ]/g, 'OE'],
+  [/[œ]/g, 'oe'],
+  [/[ŔŖŘ]/g, 'R'],
+  [/[ŕŗř]/g, 'r'],
+  [/[ŢŤŦ]/g, 'T'],
+  [/[ţťŧ]/g, 't'],
+  [/[Ŵ]/g, 'W'],
+  [/[ŵ]/g, 'w'],
+  [/[ŹŻŽ]/g, 'Z'],
+  [/[źżž]/g, 'z'],
+  [/ö/g, 'oe'],
+  [/ü/g, 'ue'],
+  [/ä/g, 'ae'],
+  // eslint-disable-next-line @gitlab/require-i18n-strings
+  [/Ö/g, 'Oe'],
+  // eslint-disable-next-line @gitlab/require-i18n-strings
+  [/Ü/g, 'Ue'],
+  // eslint-disable-next-line @gitlab/require-i18n-strings
+  [/Ä/g, 'Ae'],
+];
+
+/**
+ * Converts each non-ascii character in a string to
+ * it's ascii equivalent (if defined).
+ *
+ * e.g. "Dĭd söméònê äšk fœŕ Ůnĭċődę?" => "Did someone aesk foer Unicode?"
+ *
+ * @param {String} string
+ * @returns {String}
+ */
+export const convertUnicodeToAscii = string => {
+  let convertedString = string;
+
+  unicodeConversion.forEach(([regex, replacer]) => {
+    convertedString = convertedString.replace(regex, replacer);
+  });
+
+  return convertedString;
+};
+
 /**
  * Splits camelCase or PascalCase words
  * e.g. HelloWorld => Hello World

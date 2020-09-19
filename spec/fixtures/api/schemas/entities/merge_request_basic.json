@@ -15,6 +15,13 @@
         "$ref": "../public_api/v4/user/basic.json"
       }
     },
+    "reviewers": {
+      "type": ["array"],
+      "items": {
+        "type": "object",
+        "$ref": "../public_api/v4/user/basic.json"
+      }
+    },
     "milestone": {
       "type": [ "object", "null" ]
     },

@@ -5,9 +5,9 @@ require 'spec_helper'
 RSpec.describe 'Task Lists' do
   include Warden::Test::Helpers
 
-  let(:project) { create(:project, :public, :repository) }
-  let(:user)    { create(:user) }
-  let(:user2)   { create(:user) }
+  let_it_be(:project) { create(:project, :public, :repository) }
+  let_it_be(:user)    { create(:user) }
+  let_it_be(:user2)   { create(:user) }
 
   let(:markdown) do
     <<-MARKDOWN.strip_heredoc
@@ -72,12 +72,12 @@ RSpec.describe 'Task Lists' do
     EOT
   end
 
-  before do
-    Warden.test_mode!
-
+  before(:all) do
     project.add_maintainer(user)
     project.add_guest(user2)
+  end
 
+  before do
     login_as(user)
   end
 

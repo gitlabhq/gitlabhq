@@ -22,7 +22,7 @@ RSpec.describe ScheduleFillValidTimeForPagesDomainCertificates do
 
   it 'correctly schedules background migrations' do
     Sidekiq::Testing.fake! do
-      Timecop.freeze do
+      freeze_time do
         migrate!
 
         first_id = domains_table.find_by_domain("domain3.example.com").id

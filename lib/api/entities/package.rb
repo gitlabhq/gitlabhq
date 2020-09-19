@@ -28,7 +28,7 @@ module API
 
       expose :pipeline, if: ->(package) { package.build_info }, using: Package::Pipeline
 
-      expose :versions, using: ::API::Entities::PackageVersion
+      expose :versions, using: ::API::Entities::PackageVersion, unless: ->(_, opts) { opts[:collection] }
 
       private
 

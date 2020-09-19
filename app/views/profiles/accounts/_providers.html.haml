@@ -11,11 +11,11 @@
         - if auth_active?(provider)
           - if unlink_allowed
             = link_to unlink_profile_account_path(provider: provider), method: :delete, class: 'provider-btn' do
-              = s_('Profiles|Disconnect')
+              = s_('Profiles|Disconnect %{provider}') % { provider: label_for_provider(provider) }
           - else
             %a.provider-btn
-              = s_('Profiles|Active')
+              = s_('Profiles|%{provider} Active') % { provider: label_for_provider(provider) }
         - elsif link_allowed
           = link_to omniauth_authorize_path(:user, provider), method: :post, class: 'provider-btn gl-text-blue-500' do
-            = s_('Profiles|Connect')
+            = s_('Profiles|Connect %{provider}') % { provider: label_for_provider(provider) }
   = render_if_exists 'profiles/accounts/group_saml_unlink_buttons', group_saml_identities: group_saml_identities

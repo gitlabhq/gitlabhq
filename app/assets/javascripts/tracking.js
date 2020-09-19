@@ -126,14 +126,18 @@ export function initUserTracking() {
   const opts = { ...DEFAULT_SNOWPLOW_OPTIONS, ...window.snowplowOptions };
   window.snowplow('newTracker', opts.namespace, opts.hostname, opts);
 
+  document.dispatchEvent(new Event('SnowplowInitialized'));
+}
+
+export function initDefaultTrackers() {
+  if (!Tracking.enabled()) return;
+
   window.snowplow('enableActivityTracking', 30, 30);
   window.snowplow('trackPageView'); // must be after enableActivityTracking
 
-  if (opts.formTracking) window.snowplow('enableFormTracking');
-  if (opts.linkClickTracking) window.snowplow('enableLinkClickTracking');
+  if (window.snowplowOptions.formTracking) window.snowplow('enableFormTracking');
+  if (window.snowplowOptions.linkClickTracking) window.snowplow('enableLinkClickTracking');
 
   Tracking.bindDocument();
   Tracking.trackLoadEvents();
-
-  document.dispatchEvent(new Event('SnowplowInitialized'));
 }

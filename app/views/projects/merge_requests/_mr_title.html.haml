@@ -4,8 +4,10 @@
 - state_human_name, state_icon_name = state_name_with_icon(@merge_request)
 
 - if @merge_request.closed_without_fork?
-  .alert.alert-danger
-    The source project of this merge request has been removed.
+  .gl-alert.gl-alert-danger.gl-mb-5
+    = sprite_icon('error', size: 16, css_class: 'gl-icon gl-alert-icon gl-alert-icon-no-title')
+    .gl-alert-body
+      The source project of this merge request has been removed.
 
 .detail-page-header.border-bottom-0.pt-0.pb-0
   .detail-page-header-body

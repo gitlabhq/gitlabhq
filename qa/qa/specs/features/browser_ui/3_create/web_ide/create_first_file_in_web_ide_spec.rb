@@ -17,7 +17,7 @@ module QA
         Flow::Login.sign_in
       end
 
-      it "creates the first file in an empty project via Web IDE" do
+      it "creates the first file in an empty project via Web IDE", testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/847' do
         # In the first iteration, the test opens Web IDE by modifying the URL to address past regressions.
         # Once the Web IDE button is introduced for empty projects, the test will be modified to go through UI.
         # See https://gitlab.com/gitlab-org/gitlab/-/issues/27915 and https://gitlab.com/gitlab-org/gitlab/-/issues/27535.

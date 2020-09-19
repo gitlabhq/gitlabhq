@@ -57,16 +57,6 @@ RSpec.shared_examples 'diff file entity' do
         expect(subject).to include(:highlighted_diff_lines)
       end
     end
-
-    context 'when the `single_mr_diff_view` feature is disabled' do
-      before do
-        stub_feature_flags(single_mr_diff_view: false)
-      end
-
-      it 'contains both kinds of diffs' do
-        expect(subject).to include(:highlighted_diff_lines, :parallel_diff_lines)
-      end
-    end
   end
 end
 

@@ -99,11 +99,7 @@ describe('IDE stages list', () => {
     it('calls toggleStageCollapsed when clicking stage header', () => {
       findCardHeader().trigger('click');
 
-      expect(storeActions.toggleStageCollapsed).toHaveBeenCalledWith(
-        expect.any(Object),
-        0,
-        undefined,
-      );
+      expect(storeActions.toggleStageCollapsed).toHaveBeenCalledWith(expect.any(Object), 0);
     });
 
     it('calls fetchJobs when stage is mounted', () => {

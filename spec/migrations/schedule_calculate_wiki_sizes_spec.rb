@@ -16,12 +16,12 @@ RSpec.describe ScheduleCalculateWikiSizes do
   let(:project3) { projects.create!(name: 'wiki-project-3', path: 'wiki-project-3', namespace_id: namespace.id) }
 
   context 'when missing wiki sizes exist' do
-    let!(:project_statistic1) { project_statistics.create!(id: 1, project_id: project1.id, namespace_id: namespace.id, wiki_size: 1000) }
-    let!(:project_statistic2) { project_statistics.create!(id: 2, project_id: project2.id, namespace_id: namespace.id, wiki_size: nil) }
-    let!(:project_statistic3) { project_statistics.create!(id: 3, project_id: project3.id, namespace_id: namespace.id, wiki_size: nil) }
+    let!(:project_statistic1) { project_statistics.create!(project_id: project1.id, namespace_id: namespace.id, wiki_size: 1000) }
+    let!(:project_statistic2) { project_statistics.create!(project_id: project2.id, namespace_id: namespace.id, wiki_size: nil) }
+    let!(:project_statistic3) { project_statistics.create!(project_id: project3.id, namespace_id: namespace.id, wiki_size: nil) }
 
     it 'schedules a background migration' do
-      Timecop.freeze do
+      freeze_time do
         migrate!
 
         expect(migration_name).to be_scheduled_delayed_migration(5.minutes, project_statistic2.id, project_statistic3.id)
@@ -44,12 +44,12 @@ RSpec.describe ScheduleCalculateWikiSizes do
     before do
       namespace = namespaces.create!(name: 'wiki-migration', path: 'wiki-migration')
       project = projects.create!(name: 'wiki-project-1', path: 'wiki-project-1', namespace_id: namespace.id)
-      project_statistics.create!(project_id: project.id, namespace_id: 1, wiki_size: 1000)
+      project_statistics.create!(project_id: project.id, namespace_id: namespace.id, wiki_size: 1000)
     end
 
     it 'does not schedule a background migration' do
       Sidekiq::Testing.fake! do
-        Timecop.freeze do
+        freeze_time do
           migrate!
 
           expect(BackgroundMigrationWorker.jobs.size).to eq 0

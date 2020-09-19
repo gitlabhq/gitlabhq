@@ -83,6 +83,17 @@ RSpec.describe Issues::DuplicateService do
 
         expect(duplicate_issue.reload.duplicated_to).to eq(canonical_issue)
       end
+
+      it 'relates the duplicate issues' do
+        canonical_project.add_reporter(user)
+        duplicate_project.add_reporter(user)
+
+        subject.execute(duplicate_issue, canonical_issue)
+
+        issue_link = IssueLink.last
+        expect(issue_link.source).to eq(duplicate_issue)
+        expect(issue_link.target).to eq(canonical_issue)
+      end
     end
   end
 end

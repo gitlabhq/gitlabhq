@@ -10,7 +10,20 @@ jest.mock('~/emoji/support');
 
 describe('gl_emoji', () => {
   let mock;
-  const emojiData = getJSONFixture('emojis/emojis.json');
+  const emojiData = {
+    grey_question: {
+      c: 'symbols',
+      e: '❔',
+      d: 'white question mark ornament',
+      u: '6.0',
+    },
+    bomb: {
+      c: 'objects',
+      e: '💣',
+      d: 'bomb',
+      u: '6.0',
+    },
+  };
 
   beforeAll(() => {
     jest.spyOn(EmojiUnicodeSupport, 'default').mockReturnValue(true);

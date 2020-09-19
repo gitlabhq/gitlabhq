@@ -20,8 +20,6 @@ RSpec.describe 'Merge request > Batch comments', :js do
 
   context 'Feature is enabled' do
     before do
-      stub_feature_flags(diffs_batch_load: false)
-
       visit_diffs
     end
 

@@ -13,7 +13,7 @@ GitLab has several features based on receiving incoming emails:
 - [New issue by email](../user/project/issues/managing_issues.md#new-issue-via-email):
   allow GitLab users to create a new issue by sending an email to a
   user-specific email address.
-- [New merge request by email](../user/project/merge_requests/creating_merge_requests.md#new-merge-request-by-email-core-only):
+- [New merge request by email](../user/project/merge_requests/creating_merge_requests.md#new-merge-request-by-email):
   allow GitLab users to create a new merge request by sending an email to a
   user-specific email address.
 - [Service Desk](../user/project/service_desk.md): provide e-mail support to
@@ -84,8 +84,8 @@ To set up a basic Postfix mail server with IMAP access on Ubuntu, follow the
 
 ### Security Concerns
 
-**WARNING:** Be careful when choosing the domain used for receiving incoming
-email.
+WARNING: **WARNING:**
+Be careful when choosing the domain used for receiving incoming email.
 
 For the sake of example, suppose your top-level company domain is `hooli.com`.
 All employees in your company have an email address at that domain via Google
@@ -95,7 +95,7 @@ email address in order to sign up.
 If you also host a public-facing GitLab instance at `hooli.com` and set your
 incoming email domain to `hooli.com`, an attacker could abuse the "Create new
 issue by email" or
-"[Create new merge request by email](../user/project/merge_requests/creating_merge_requests.md#new-merge-request-by-email-core-only)"
+"[Create new merge request by email](../user/project/merge_requests/creating_merge_requests.md#new-merge-request-by-email)"
 features by using a project's unique address as the email when signing up for
 Slack. This would send a confirmation email, which would create a new issue or
 merge request on the project owned by the attacker, allowing them to click the
@@ -111,7 +111,7 @@ Alternatively, use a dedicated domain for GitLab email communications such as
 See GitLab issue [#30366](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/30366)
 for a real-world example of this exploit.
 
-CAUTION:**Caution:**
+CAUTION: **Caution:**
 Be sure to use a mail server that has been configured to reduce
 spam.
 A Postfix mail server that is running on a default configuration, for example,

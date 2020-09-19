@@ -1,9 +1,10 @@
 import Api from '~/api';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
 import { FETCH_PACKAGE_VERSIONS_ERROR } from '../constants';
+import { DELETE_PACKAGE_ERROR_MESSAGE } from '~/packages/shared/constants';
 import * as types from './mutation_types';
 
-export default ({ commit, state }) => {
+export const fetchPackageVersions = ({ commit, state }) => {
   commit(types.SET_LOADING, true);
 
   const { project_id, id } = state.packageEntity;
@@ -20,4 +21,14 @@ export default ({ commit, state }) => {
     .finally(() => {
       commit(types.SET_LOADING, false);
     });
+};
+
+export const deletePackage = ({
+  state: {
+    packageEntity: { project_id, id },
+  },
+}) => {
+  return Api.deleteProjectPackage(project_id, id).catch(() => {
+    createFlash(DELETE_PACKAGE_ERROR_MESSAGE);
+  });
 };

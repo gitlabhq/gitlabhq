@@ -18,19 +18,27 @@ RSpec.shared_context 'project service activation' do
     click_link(name)
   end
 
-  def click_active_toggle
-    find('input[name="service[active]"] + button').click
+  def click_active_checkbox
+    find('input[name="service[active]"]').click
+  end
+
+  def click_save_integration
+    click_button('Save changes')
   end
 
   def click_test_integration
-    click_button('Test settings and save changes')
+    click_link('Test settings')
   end
 
-  def click_test_then_save_integration
+  def click_test_then_save_integration(expect_test_to_fail: true)
     click_test_integration
 
-    expect(page).to have_content('Test failed.')
+    if expect_test_to_fail
+      expect(page).to have_content('Connection failed.')
+    else
+      expect(page).to have_content('Connection successful.')
+    end
 
-    click_link('Save anyway')
+    click_save_integration
   end
 end

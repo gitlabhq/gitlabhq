@@ -8,6 +8,8 @@ RSpec.describe 'Groups > Members > Leave group' do
   let(:group) { create(:group) }
 
   before do
+    stub_feature_flags(vue_group_members_list: false)
+
     gitlab_sign_in(user)
   end
 

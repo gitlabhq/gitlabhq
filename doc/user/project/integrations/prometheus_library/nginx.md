@@ -18,6 +18,8 @@ The [Prometheus service](../prometheus.md) must be enabled.
 
 NGINX server metrics are detected, which tracks the pages and content directly served by NGINX.
 
+[`environment_filter`](../../../../operations/metrics/dashboards/variables.md#environment_filter) is one of the predefined variables that metrics dashboards support.
+
 | Name | Query |
 | ---- | ----- |
 | Throughput (req/sec) | `sum(rate(nginx_server_requests{server_zone!="*", server_zone!="_", %{environment_filter}}[2m])) by (code)` |

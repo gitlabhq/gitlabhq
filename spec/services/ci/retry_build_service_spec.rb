@@ -22,7 +22,7 @@ RSpec.describe Ci::RetryBuildService do
     described_class.new(project, user)
   end
 
-  clone_accessors = described_class::CLONE_ACCESSORS
+  clone_accessors = described_class.clone_accessors
 
   reject_accessors =
     %i[id status user token token_encrypted coverage trace runner
@@ -50,7 +50,7 @@ RSpec.describe Ci::RetryBuildService do
        metadata runner_session trace_chunks upstream_pipeline_id
        artifacts_file artifacts_metadata artifacts_size commands
        resource resource_group_id processed security_scans author
-       pipeline_id report_results].freeze
+       pipeline_id report_results pending_state pages_deployments].freeze
 
   shared_examples 'build duplication' do
     let(:another_pipeline) { create(:ci_empty_pipeline, project: project) }
@@ -70,7 +70,7 @@ RSpec.describe Ci::RetryBuildService do
       # Make sure that build has both `stage_id` and `stage` because FactoryBot
       # can reset one of the fields when assigning another. We plan to deprecate
       # and remove legacy `stage` column in the future.
-      build.update(stage: 'test', stage_id: stage.id)
+      build.update!(stage: 'test', stage_id: stage.id)
 
       # Make sure we have one instance for every possible job_artifact_X
       # associations to check they are correctly rejected on build duplication.
@@ -143,6 +143,8 @@ RSpec.describe Ci::RetryBuildService do
         Ci::Build.reflect_on_all_associations.map(&:name) +
         [:tag_list, :needs_attributes]
 
+      current_accessors << :secrets if Gitlab.ee?
+
       current_accessors.uniq!
 
       expect(current_accessors).to include(*processed_accessors)
@@ -181,17 +183,24 @@ RSpec.describe Ci::RetryBuildService do
         service.execute(build)
       end
 
-      context 'when there are subsequent builds that are skipped' do
+      context 'when there are subsequent processables that are skipped' do
         let!(:subsequent_build) do
           create(:ci_build, :skipped, stage_idx: 2,
                                       pipeline: pipeline,
                                       stage: 'deploy')
         end
 
-        it 'resumes pipeline processing in a subsequent stage' do
+        let!(:subsequent_bridge) do
+          create(:ci_bridge, :skipped, stage_idx: 2,
+                                       pipeline: pipeline,
+                                       stage: 'deploy')
+        end
+
+        it 'resumes pipeline processing in the subsequent stage' do
           service.execute(build)
 
           expect(subsequent_build.reload).to be_created
+          expect(subsequent_bridge.reload).to be_created
         end
       end
 
@@ -221,6 +230,19 @@ RSpec.describe Ci::RetryBuildService do
 
             expect(new_build.scheduling_type).to eq('stage')
           end
+        end
+      end
+
+      context 'when the pipeline is a child pipeline and the bridge is depended' do
+        let!(:parent_pipeline) { create(:ci_pipeline, project: project) }
+        let!(:pipeline) { create(:ci_pipeline, project: project) }
+        let!(:bridge) { create(:ci_bridge, :strategy_depend, pipeline: parent_pipeline, status: 'success') }
+        let!(:source_pipeline) { create(:ci_sources_pipeline, pipeline: pipeline, source_job: bridge) }
+
+        it 'marks source bridge as pending' do
+          service.execute(build)
+
+          expect(bridge.reload).to be_pending
         end
       end
     end

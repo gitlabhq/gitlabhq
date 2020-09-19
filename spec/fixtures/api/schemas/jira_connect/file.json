@@ -1,0 +1,14 @@
+{
+  "type": "object",
+  "properties": {
+    "path": { "type": "string" },
+    "changeType": { "type": "string" },
+    "linesAdded": { "type": "integer" },
+    "linesRemoved": { "type": "integer" },
+    "url": { "type": "uri" }
+  },
+  "required": [
+    "path", "changeType", "linesAdded", "linesRemoved", "url"
+  ],
+  "additionalProperties": false
+}

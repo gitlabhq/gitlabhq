@@ -1,5 +1,6 @@
-- if Feature.enabled?(:snippets_edit_vue)
-  #js-snippet-edit.snippet-form{ data: {'project_path': @snippet.project&.full_path, 'snippet-gid': @snippet.new_record? ? '' : @snippet.to_global_id, 'markdown-preview-path': preview_markdown_path(parent), 'markdown-docs-path': help_page_path('user/markdown'), 'visibility-help-link': help_page_path("public_access/public_access") } }
+- if Feature.enabled?(:snippets_edit_vue, default_enabled: true)
+  - available_visibility_levels = available_visibility_levels(@snippet)
+  #js-snippet-edit.snippet-form{ data: {'project_path': @snippet.project&.full_path, 'snippet-gid': @snippet.new_record? ? '' : @snippet.to_global_id, 'markdown-preview-path': preview_markdown_path(parent), 'markdown-docs-path': help_page_path('user/markdown'), 'visibility-help-link': help_page_path("public_access/public_access"), 'visibility_levels': available_visibility_levels, 'selected_level': snippets_selected_visibility_level(available_visibility_levels, @snippet.visibility_level), 'multiple_levels_restricted': multiple_visibility_levels_restricted? } }
 - else
   .snippet-form-holder
     = form_for @snippet, url: url,
@@ -36,7 +37,7 @@
       .form-group
         .font-weight-bold
           = _('Visibility level')
-          = link_to icon('question-circle'), help_page_path("public_access/public_access"), target: '_blank'
+          = link_to sprite_icon('question-o'), help_page_path('public_access/public_access'), target: '_blank'
         = render 'shared/visibility_level', f: f, visibility_level: @snippet.visibility_level, can_change_visibility_level: true, form_model: @snippet, with_label: false
 
       - if params[:files]

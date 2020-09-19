@@ -133,8 +133,9 @@ class Wiki
     commit = commit_details(:created, message, title)
 
     wiki.write_page(title, format.to_sym, content, commit)
+    after_wiki_activity
 
-    update_container_activity
+    true
   rescue Gitlab::Git::Wiki::DuplicatePageError => e
     @error_message = "Duplicate page: #{e.message}"
     false
@@ -144,16 +145,18 @@ class Wiki
     commit = commit_details(:updated, message, page.title)
 
     wiki.update_page(page.path, title || page.name, format.to_sym, content, commit)
+    after_wiki_activity
 
-    update_container_activity
+    true
   end
 
   def delete_page(page, message = nil)
     return unless page
 
     wiki.delete_page(page.path, commit_details(:deleted, message, page.title))
+    after_wiki_activity
 
-    update_container_activity
+    true
   end
 
   def page_title_and_dir(title)
@@ -180,7 +183,7 @@ class Wiki
 
   override :repository
   def repository
-    @repository ||= Repository.new(full_path, container, shard: repository_storage, disk_path: disk_path, repo_type: Gitlab::GlRepository::WIKI)
+    @repository ||= Gitlab::GlRepository::WIKI.repository_for(container)
   end
 
   def repository_storage
@@ -209,6 +212,17 @@ class Wiki
     web_url(only_path: true).sub(%r{/#{Wiki::HOMEPAGE}\z}, '')
   end
 
+  # Callbacks for synchronous processing after wiki changes.
+  # These will be executed after any change made through GitLab itself (web UI and API),
+  # but not for Git pushes.
+  def after_wiki_activity
+  end
+
+  # Callbacks for background processing after wiki changes.
+  # These will be executed after any change to the wiki repository.
+  def after_post_receive
+  end
+
   private
 
   def commit_details(action, message = nil, title = nil)
@@ -224,10 +238,6 @@ class Wiki
 
   def default_message(action, title)
     "#{user.username} #{action} page: #{title}"
-  end
-
-  def update_container_activity
-    container.after_wiki_activity
   end
 end
 

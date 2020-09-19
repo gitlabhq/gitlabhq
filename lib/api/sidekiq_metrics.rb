@@ -17,7 +17,7 @@ module API
       end
 
       def process_metrics
-        Sidekiq::ProcessSet.new.map do |process|
+        Sidekiq::ProcessSet.new(false).map do |process|
           {
             hostname:    process['hostname'],
             pid:         process['pid'],

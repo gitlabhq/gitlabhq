@@ -12,81 +12,24 @@ variables:
   DS_DEFAULT_ANALYZERS: "bundler-audit, retire.js, gemnasium, gemnasium-maven, gemnasium-python"
   DS_EXCLUDED_PATHS: "spec, test, tests, tmp"
   DS_MAJOR_VERSION: 2
-  DS_DISABLE_DIND: "true"
 
 dependency_scanning:
   stage: test
-  image: docker:stable
-  variables:
-    DOCKER_DRIVER: overlay2
-    DOCKER_TLS_CERTDIR: ""
-  allow_failure: true
-  services:
-    - docker:stable-dind
   script:
-    - |
-      if ! docker info &>/dev/null; then
-        if [ -z "$DOCKER_HOST" -a "$KUBERNETES_PORT" ]; then
-          export DOCKER_HOST='tcp://localhost:2375'
-        fi
-      fi
-    - | # this is required to avoid undesirable reset of Docker image ENV variables being set on build stage
-      function propagate_env_vars() {
-        CURRENT_ENV=$(printenv)
-
-        for VAR_NAME; do
-          echo $CURRENT_ENV | grep "${VAR_NAME}=" > /dev/null && echo "--env $VAR_NAME "
-        done
-      }
-    - |
-      docker run \
-        $(propagate_env_vars \
-          DS_ANALYZER_IMAGES \
-          SECURE_ANALYZERS_PREFIX \
-          DS_ANALYZER_IMAGE_TAG \
-          DS_DEFAULT_ANALYZERS \
-          DS_EXCLUDED_PATHS \
-          DS_DOCKER_CLIENT_NEGOTIATION_TIMEOUT \
-          DS_PULL_ANALYZER_IMAGE_TIMEOUT \
-          DS_RUN_ANALYZER_TIMEOUT \
-          DS_PYTHON_VERSION \
-          DS_PIP_VERSION \
-          DS_PIP_DEPENDENCY_PATH \
-          DS_JAVA_VERSION \
-          GEMNASIUM_DB_LOCAL_PATH \
-          GEMNASIUM_DB_REMOTE_URL \
-          GEMNASIUM_DB_REF_NAME \
-          PIP_INDEX_URL \
-          PIP_EXTRA_INDEX_URL \
-          PIP_REQUIREMENTS_FILE \
-          MAVEN_CLI_OPTS \
-          GRADLE_CLI_OPTS \
-          SBT_CLI_OPTS \
-          BUNDLER_AUDIT_UPDATE_DISABLED \
-          BUNDLER_AUDIT_ADVISORY_DB_URL \
-          BUNDLER_AUDIT_ADVISORY_DB_REF_NAME \
-          RETIREJS_JS_ADVISORY_DB \
-          RETIREJS_NODE_ADVISORY_DB \
-          DS_REMEDIATE \
-        ) \
-        --volume "$PWD:/code" \
-        --volume /var/run/docker.sock:/var/run/docker.sock \
-        "registry.gitlab.com/gitlab-org/security-products/dependency-scanning:$DS_MAJOR_VERSION" /code
+    - echo "$CI_JOB_NAME is used for configuration only, and its script should not be executed"
+    - exit 1
   artifacts:
     reports:
       dependency_scanning: gl-dependency-scanning-report.json
   dependencies: []
   rules:
-    - if: $DEPENDENCY_SCANNING_DISABLED || $DS_DISABLE_DIND == 'true'
-      when: never
-    - if: $CI_COMMIT_BRANCH &&
-          $GITLAB_FEATURES =~ /\bdependency_scanning\b/
+    - when: never
 
 .ds-analyzer:
   extends: dependency_scanning
-  services: []
+  allow_failure: true
   rules:
-    - if: $DEPENDENCY_SCANNING_DISABLED || $DS_DISABLE_DIND == 'false'
+    - if: $DEPENDENCY_SCANNING_DISABLED
       when: never
     - if: $CI_COMMIT_BRANCH &&
           $GITLAB_FEATURES =~ /\bdependency_scanning\b/
@@ -96,9 +39,11 @@ dependency_scanning:
 gemnasium-dependency_scanning:
   extends: .ds-analyzer
   image:
-    name: "$SECURE_ANALYZERS_PREFIX/gemnasium:$DS_MAJOR_VERSION"
+    name: "$DS_ANALYZER_IMAGE"
+  variables:
+    DS_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/gemnasium:$DS_MAJOR_VERSION"
   rules:
-    - if: $DEPENDENCY_SCANNING_DISABLED || $DS_DISABLE_DIND == 'false'
+    - if: $DEPENDENCY_SCANNING_DISABLED
       when: never
     - if: $CI_COMMIT_BRANCH &&
           $GITLAB_FEATURES =~ /\bdependency_scanning\b/ &&
@@ -112,13 +57,16 @@ gemnasium-dependency_scanning:
         - '{package-lock.json,*/package-lock.json,*/*/package-lock.json}'
         - '{yarn.lock,*/yarn.lock,*/*/yarn.lock}'
         - '{packages.lock.json,*/packages.lock.json,*/*/packages.lock.json}'
+        - '{conan.lock,*/conan.lock,*/*/conan.lock}'
 
 gemnasium-maven-dependency_scanning:
   extends: .ds-analyzer
   image:
-    name: "$SECURE_ANALYZERS_PREFIX/gemnasium-maven:$DS_MAJOR_VERSION"
+    name: "$DS_ANALYZER_IMAGE"
+  variables:
+    DS_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/gemnasium-maven:$DS_MAJOR_VERSION"
   rules:
-    - if: $DEPENDENCY_SCANNING_DISABLED || $DS_DISABLE_DIND == 'false'
+    - if: $DEPENDENCY_SCANNING_DISABLED
       when: never
     - if: $CI_COMMIT_BRANCH &&
           $GITLAB_FEATURES =~ /\bdependency_scanning\b/ &&
@@ -132,9 +80,11 @@ gemnasium-maven-dependency_scanning:
 gemnasium-python-dependency_scanning:
   extends: .ds-analyzer
   image:
-    name: "$SECURE_ANALYZERS_PREFIX/gemnasium-python:$DS_MAJOR_VERSION"
+    name: "$DS_ANALYZER_IMAGE"
+  variables:
+    DS_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/gemnasium-python:$DS_MAJOR_VERSION"
   rules:
-    - if: $DEPENDENCY_SCANNING_DISABLED || $DS_DISABLE_DIND == 'false'
+    - if: $DEPENDENCY_SCANNING_DISABLED
       when: never
     - if: $CI_COMMIT_BRANCH &&
           $GITLAB_FEATURES =~ /\bdependency_scanning\b/ &&
@@ -155,9 +105,11 @@ gemnasium-python-dependency_scanning:
 bundler-audit-dependency_scanning:
   extends: .ds-analyzer
   image:
-    name: "$SECURE_ANALYZERS_PREFIX/bundler-audit:$DS_MAJOR_VERSION"
+    name: "$DS_ANALYZER_IMAGE"
+  variables:
+    DS_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/bundler-audit:$DS_MAJOR_VERSION"
   rules:
-    - if: $DEPENDENCY_SCANNING_DISABLED || $DS_DISABLE_DIND == 'false'
+    - if: $DEPENDENCY_SCANNING_DISABLED
       when: never
     - if: $CI_COMMIT_BRANCH &&
           $GITLAB_FEATURES =~ /\bdependency_scanning\b/ &&
@@ -168,9 +120,11 @@ bundler-audit-dependency_scanning:
 retire-js-dependency_scanning:
   extends: .ds-analyzer
   image:
-    name: "$SECURE_ANALYZERS_PREFIX/retire.js:$DS_MAJOR_VERSION"
+    name: "$DS_ANALYZER_IMAGE"
+  variables:
+    DS_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/retire.js:$DS_MAJOR_VERSION"
   rules:
-    - if: $DEPENDENCY_SCANNING_DISABLED || $DS_DISABLE_DIND == 'false'
+    - if: $DEPENDENCY_SCANNING_DISABLED
       when: never
     - if: $CI_COMMIT_BRANCH &&
           $GITLAB_FEATURES =~ /\bdependency_scanning\b/ &&

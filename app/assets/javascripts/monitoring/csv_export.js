@@ -125,7 +125,6 @@ const csvData = (metricHeaders, metricValues) => {
  * @param {Object} graphData - Panel contents
  * @returns {String}
  */
-// eslint-disable-next-line import/prefer-default-export
 export const graphDataToCsv = graphData => {
   const delimiter = ',';
   const br = '\r\n';

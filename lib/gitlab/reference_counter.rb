@@ -51,10 +51,8 @@ module Gitlab
       redis_cmd do |redis|
         current_value = redis.decr(key)
         if current_value < 0
-          # rubocop:disable Gitlab/RailsLogger
-          Rails.logger.warn("Reference counter for #{gl_repository} decreased" \
+          Gitlab::AppLogger.warn("Reference counter for #{gl_repository} decreased" \
             " when its value was less than 1. Resetting the counter.")
-          # rubocop:enable Gitlab/RailsLogger
           redis.del(key)
         end
       end
@@ -87,7 +85,7 @@ module Gitlab
 
       true
     rescue => e
-      Rails.logger.warn("GitLab: An unexpected error occurred in writing to Redis: #{e}") # rubocop:disable Gitlab/RailsLogger
+      Gitlab::AppLogger.warn("GitLab: An unexpected error occurred in writing to Redis: #{e}")
 
       false
     end

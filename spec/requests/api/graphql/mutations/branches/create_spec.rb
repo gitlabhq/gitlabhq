@@ -15,8 +15,7 @@ RSpec.describe 'Creation of a new branch' do
   let(:mutation_response) { graphql_mutation_response(:create_branch) }
 
   context 'the user is not allowed to create a branch' do
-    it_behaves_like 'a mutation that returns top-level errors',
-      errors: ['The resource that you are attempting to access does not exist or you don\'t have permission to perform this action']
+    it_behaves_like 'a mutation that returns a top-level access error'
   end
 
   context 'when user has permissions to create a branch' do

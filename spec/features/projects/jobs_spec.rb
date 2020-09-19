@@ -373,13 +373,29 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state do
         let(:expire_at) { Time.now + 7.days }
 
         context 'when user has ability to update job' do
-          it 'keeps artifacts when keep button is clicked' do
-            expect(page).to have_content 'The artifacts will be removed in'
+          context 'when artifacts are unlocked' do
+            before do
+              job.pipeline.unlocked!
+            end
 
-            click_link 'Keep'
+            it 'keeps artifacts when keep button is clicked' do
+              expect(page).to have_content 'The artifacts will be removed in'
 
-            expect(page).to have_no_link 'Keep'
-            expect(page).to have_no_content 'The artifacts will be removed in'
+              click_link 'Keep'
+
+              expect(page).to have_no_link 'Keep'
+              expect(page).to have_no_content 'The artifacts will be removed in'
+            end
+          end
+
+          context 'when artifacts are locked' do
+            before do
+              job.pipeline.artifacts_locked!
+            end
+
+            it 'shows the keep button' do
+              expect(page).to have_link 'Keep'
+            end
           end
         end
 
@@ -395,9 +411,26 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state do
       context 'when artifacts expired' do
         let(:expire_at) { Time.now - 7.days }
 
-        it 'does not have the Keep button' do
-          expect(page).to have_content 'The artifacts were removed'
-          expect(page).not_to have_link 'Keep'
+        context 'when artifacts are unlocked' do
+          before do
+            job.pipeline.unlocked!
+          end
+
+          it 'does not have the Keep button' do
+            expect(page).to have_content 'The artifacts were removed'
+            expect(page).not_to have_link 'Keep'
+          end
+        end
+
+        context 'when artifacts are locked' do
+          before do
+            job.pipeline.artifacts_locked!
+          end
+
+          it 'has the Keep button' do
+            expect(page).not_to have_content 'The artifacts were removed'
+            expect(page).to have_link 'Keep'
+          end
         end
       end
     end

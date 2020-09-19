@@ -4,9 +4,9 @@ import { mapActions } from 'vuex';
 import {
   GlButtonGroup,
   GlButton,
-  GlNewDropdown,
-  GlNewDropdownItem,
-  GlNewDropdownDivider,
+  GlDropdown,
+  GlDropdownItem,
+  GlDropdownDivider,
   GlTooltipDirective,
 } from '@gitlab/ui';
 import { n__, __ } from '~/locale';
@@ -48,9 +48,9 @@ export default {
   components: {
     GlButtonGroup,
     GlButton,
-    GlNewDropdown,
-    GlNewDropdownItem,
-    GlNewDropdownDivider,
+    GlDropdown,
+    GlDropdownItem,
+    GlDropdownDivider,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -152,27 +152,27 @@ export default {
       icon="retry"
       @click="refresh"
     />
-    <gl-new-dropdown
+    <gl-dropdown
       v-if="!disableMetricDashboardRefreshRate"
       v-gl-tooltip
       :title="s__('Metrics|Set refresh rate')"
       :text="dropdownText"
     >
-      <gl-new-dropdown-item
+      <gl-dropdown-item
         :is-check-item="true"
         :is-checked="refreshInterval === null"
         @click="removeRefreshInterval()"
-        >{{ __('Off') }}</gl-new-dropdown-item
+        >{{ __('Off') }}</gl-dropdown-item
       >
-      <gl-new-dropdown-divider />
-      <gl-new-dropdown-item
+      <gl-dropdown-divider />
+      <gl-dropdown-item
         v-for="(option, i) in $options.refreshIntervals"
         :key="i"
         :is-check-item="true"
         :is-checked="isChecked(option)"
         @click="setRefreshInterval(option)"
-        >{{ option.label }}</gl-new-dropdown-item
+        >{{ option.label }}</gl-dropdown-item
       >
-    </gl-new-dropdown>
+    </gl-dropdown>
   </gl-button-group>
 </template>

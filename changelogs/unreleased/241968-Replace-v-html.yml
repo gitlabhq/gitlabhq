@@ -1,0 +1,5 @@
+---
+title: Replace v-html with GlSprintf in memory_usage.vue
+merge_request: 41204
+author: Kev @KevSlashNull
+type: other

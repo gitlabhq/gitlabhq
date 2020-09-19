@@ -19,7 +19,7 @@ module QA
         Flow::Login.sign_in
       end
 
-      it 'is received by a user for project invitation' do
+      it 'is received by a user for project invitation', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/676' do
         Flow::Project.add_member(project: project, username: user.username)
 
         expect(page).to have_content(/@#{user.username}(\n| )?Given access/)

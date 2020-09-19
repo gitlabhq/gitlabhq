@@ -22,7 +22,7 @@ RSpec.describe 'Project deploy keys', :js do
       page.within(find('.qa-deploy-keys-settings')) do
         expect(page).to have_selector('.deploy-key', count: 1)
 
-        accept_confirm { find('.ic-remove').click }
+        accept_confirm { find('[data-testid="remove-icon"]').click }
 
         wait_for_requests
 

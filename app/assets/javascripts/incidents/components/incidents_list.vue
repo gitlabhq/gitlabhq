@@ -23,6 +23,8 @@ import { s__ } from '~/locale';
 import { mergeUrlParams, joinPaths, visitUrl } from '~/lib/utils/url_utility';
 import getIncidents from '../graphql/queries/get_incidents.query.graphql';
 import getIncidentsCountByStatus from '../graphql/queries/get_count_by_status.query.graphql';
+import SeverityToken from '~/sidebar/components/severity/severity.vue';
+import { INCIDENT_SEVERITY } from '~/sidebar/components/severity/constants';
 import { I18N, DEFAULT_PAGE_SIZE, INCIDENT_SEARCH_DELAY, INCIDENT_STATUS_TABS } from '../constants';
 
 const TH_TEST_ID = { 'data-testid': 'incident-management-created-at-sort' };
@@ -44,6 +46,12 @@ export default {
   i18n: I18N,
   statusTabs: INCIDENT_STATUS_TABS,
   fields: [
+    {
+      key: 'severity',
+      label: s__('IncidentManagement|Severity'),
+      thClass: `gl-pointer-events-none`,
+      tdClass,
+    },
     {
       key: 'title',
       label: s__('IncidentManagement|Incident'),
@@ -82,6 +90,7 @@ export default {
     PublishedCell: () => import('ee_component/incidents/components/published_cell.vue'),
     GlBadge,
     GlEmptyState,
+    SeverityToken,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -208,6 +217,31 @@ export default {
     isEmpty() {
       return !this.incidents.list?.length;
     },
+    showList() {
+      return !this.isEmpty || this.errored || this.loading;
+    },
+    activeClosedTabHasNoIncidents() {
+      const { all, closed } = this.incidentsCount || {};
+      const isClosedTabActive = this.statusFilter === this.$options.statusTabs[1].filters;
+
+      return isClosedTabActive && all && !closed;
+    },
+    emptyStateData() {
+      const {
+        emptyState: { title, emptyClosedTabTitle, description },
+        createIncidentBtnLabel,
+      } = this.$options.i18n;
+
+      if (this.activeClosedTabHasNoIncidents) {
+        return { title: emptyClosedTabTitle };
+      }
+      return {
+        title,
+        description,
+        btnLink: this.newIncidentPath,
+        btnText: createIncidentBtnLabel,
+      };
+    },
   },
   methods: {
     onInputChange: debounce(function debounceSearch(input) {
@@ -255,6 +289,9 @@ export default {
 
       this.sort = `${sortingColumn}_${sortingDirection}`;
     },
+    getSeverity(severity) {
+      return INCIDENT_SEVERITY[severity];
+    },
   },
 };
 </script>
@@ -279,7 +316,7 @@ export default {
       </gl-tabs>
 
       <gl-button
-        v-if="!isEmpty"
+        v-if="!isEmpty || activeClosedTabHasNoIncidents"
         class="gl-my-3 gl-mr-5 create-incident-button"
         data-testid="createIncidentBtn"
         data-qa-selector="create_incident_button"
@@ -307,6 +344,7 @@ export default {
       {{ s__('IncidentManagement|Incidents') }}
     </h4>
     <gl-table
+      v-if="showList"
       :items="incidents.list || []"
       :fields="availableFields"
       :show-empty="true"
@@ -322,6 +360,10 @@ export default {
       @row-clicked="navigateToIncidentDetails"
       @sort-changed="fetchSortedData"
     >
+      <template #cell(severity)="{ item }">
+        <severity-token :severity="getSeverity(item.severity)" />
+      </template>
+
       <template #cell(title)="{ item }">
         <div :class="{ 'gl-display-flex gl-align-items-center': item.state === 'closed' }">
           <div class="gl-max-w-full text-truncate" :title="item.title">{{ item.title }}</div>
@@ -379,20 +421,19 @@ export default {
         <gl-loading-icon size="lg" color="dark" class="mt-3" />
       </template>
 
-      <template #empty>
-        <gl-empty-state
-          v-if="!errored"
-          :title="$options.i18n.emptyState.title"
-          :svg-path="emptyListSvgPath"
-          :description="$options.i18n.emptyState.description"
-          :primary-button-link="newIncidentPath"
-          :primary-button-text="$options.i18n.createIncidentBtnLabel"
-        />
-        <span v-else>
-          {{ $options.i18n.noIncidents }}
-        </span>
+      <template v-if="errored" #empty>
+        {{ $options.i18n.noIncidents }}
       </template>
     </gl-table>
+
+    <gl-empty-state
+      v-else
+      :title="emptyStateData.title"
+      :svg-path="emptyListSvgPath"
+      :description="emptyStateData.description"
+      :primary-button-link="emptyStateData.btnLink"
+      :primary-button-text="emptyStateData.btnText"
+    />
 
     <gl-pagination
       v-if="showPaginationControls"

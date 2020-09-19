@@ -1,4 +1,4 @@
-import state from '~/releases/stores/modules/list/state';
+import createState from '~/releases/stores/modules/list/state';
 import mutations from '~/releases/stores/modules/list/mutations';
 import * as types from '~/releases/stores/modules/list/mutation_types';
 import { parseIntPagination } from '~/lib/utils/common_utils';
@@ -9,7 +9,7 @@ describe('Releases Store Mutations', () => {
   let pageInfo;
 
   beforeEach(() => {
-    stateCopy = state();
+    stateCopy = createState({});
     pageInfo = parseIntPagination(pageInfoHeadersWithoutPagination);
   });
 

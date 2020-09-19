@@ -1,5 +1,3 @@
-/* eslint-disable import/prefer-default-export */
-
 function trimFirstCharOfLineContent(text) {
   if (!text) {
     return text;

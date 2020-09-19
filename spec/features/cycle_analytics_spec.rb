@@ -3,9 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe 'Value Stream Analytics', :js do
-  let(:user) { create(:user) }
-  let(:guest) { create(:user) }
-  let(:project) { create(:project, :repository) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:guest) { create(:user) }
+  let_it_be(:project) { create(:project, :repository) }
   let(:issue) { create(:issue, project: project, created_at: 2.days.ago) }
   let(:milestone) { create(:milestone, project: project) }
   let(:mr) { create_merge_request_closing_issue(user, project, issue, commit_message: "References #{issue.to_reference}") }
@@ -13,9 +13,11 @@ RSpec.describe 'Value Stream Analytics', :js do
 
   context 'as an allowed user' do
     context 'when project is new' do
-      before do
+      before(:all) do
         project.add_maintainer(user)
+      end
 
+      before do
         sign_in(user)
 
         visit project_cycle_analytics_path(project)
@@ -74,9 +76,6 @@ RSpec.describe 'Value Stream Analytics', :js do
 
         click_stage('Staging')
         expect_build_to_be_present
-
-        click_stage('Total')
-        expect_issue_to_be_present
       end
 
       context "when I change the time period observed" do

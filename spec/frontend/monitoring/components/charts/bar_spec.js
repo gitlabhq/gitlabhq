@@ -1,7 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
 import { GlBarChart } from '@gitlab/ui/dist/charts';
 import Bar from '~/monitoring/components/charts/bar.vue';
-import { barMockData } from '../../mock_data';
+import { barGraphData } from '../../graph_data';
 
 jest.mock('~/lib/utils/icon_utils', () => ({
   getSvgIconPathContent: jest.fn().mockResolvedValue('mockSvgPathContent'),
@@ -10,11 +10,14 @@ jest.mock('~/lib/utils/icon_utils', () => ({
 describe('Bar component', () => {
   let barChart;
   let store;
+  let graphData;
 
   beforeEach(() => {
+    graphData = barGraphData();
+
     barChart = shallowMount(Bar, {
       propsData: {
-        graphData: barMockData,
+        graphData,
       },
       store,
     });
@@ -31,15 +34,11 @@ describe('Bar component', () => {
 
       beforeEach(() => {
         glbarChart = barChart.find(GlBarChart);
-        chartData = barChart.vm.chartData[barMockData.metrics[0].label];
-      });
-
-      it('is a Vue instance', () => {
-        expect(glbarChart.isVueInstance()).toBe(true);
+        chartData = barChart.vm.chartData[graphData.metrics[0].label];
       });
 
       it('should display a label on the x axis', () => {
-        expect(glbarChart.vm.xAxisTitle).toBe(barMockData.xLabel);
+        expect(glbarChart.props('xAxisTitle')).toBe(graphData.xLabel);
       });
 
       it('should return chartData as array of arrays', () => {

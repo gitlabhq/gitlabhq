@@ -96,6 +96,13 @@ If you want to import it to a new group or subgroup then create it first.
 
 The specified project export file in `archive_path` is missing.
 
+##### `Exception: Permission denied @ rb_sysopen - (filename)`
+
+The specified project export file can not be accessed by the `git` user.
+
+Setting the file owner to `git:git`, changing the file permissions to `0400`, and moving it to a
+public folder (for example `/tmp/`) fixes the issue.
+
 ##### `Name can contain only letters, digits, emojis ...`
 
 ```plaintext

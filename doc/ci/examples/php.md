@@ -26,7 +26,7 @@ As with every job, you need to create a valid `.gitlab-ci.yml` describing the
 build environment.
 
 Let's first specify the PHP image that will be used for the job process
-(you can read more about what an image means in the Runner's lingo reading
+(you can read more about what an image means in the runner's lingo reading
 about [Using Docker images](../docker/using_docker_images.md#what-is-an-image)).
 
 Start by adding the image to your `.gitlab-ci.yml`:
@@ -73,24 +73,16 @@ Now that we created the script that contains all prerequisites for our build
 environment, let's add it in `.gitlab-ci.yml`:
 
 ```yaml
-...
-
 before_script:
   - bash ci/docker_install.sh > /dev/null
-
-...
 ```
 
 Last step, run the actual tests using `phpunit`:
 
 ```yaml
-...
-
 test:app:
   script:
     - phpunit --configuration phpunit_myapp.xml
-
-...
 ```
 
 Finally, commit your files and push them to GitLab to see your build succeeding
@@ -103,7 +95,7 @@ The final `.gitlab-ci.yml` should look similar to this:
 image: php:5.6
 
 before_script:
-# Install dependencies
+  # Install dependencies
   - bash ci/docker_install.sh > /dev/null
 
 test:app:
@@ -118,7 +110,7 @@ with a different Docker image version and the runner will do the rest:
 
 ```yaml
 before_script:
-# Install dependencies
+  # Install dependencies
   - bash ci/docker_install.sh > /dev/null
 
 # We test PHP5.6
@@ -231,8 +223,6 @@ In order to execute Composer before running your tests, simply add the
 following in your `.gitlab-ci.yml`:
 
 ```yaml
-...
-
 # Composer stores all downloaded packages in the vendor/ directory.
 # Do not use the following if the vendor/ directory is committed to
 # your git repository.
@@ -241,15 +231,13 @@ cache:
     - vendor/
 
 before_script:
-# Install composer dependencies
+  # Install composer dependencies
   - wget https://composer.github.io/installer.sig -O - -q | tr -d '\n' > installer.sig
   - php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
   - php -r "if (hash_file('SHA384', 'composer-setup.php') === file_get_contents('installer.sig')) { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
   - php composer-setup.php
   - php -r "unlink('composer-setup.php'); unlink('installer.sig');"
   - php composer.phar install
-
-...
 ```
 
 ## Access private packages or dependencies

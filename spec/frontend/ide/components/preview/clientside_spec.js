@@ -279,24 +279,16 @@ describe('IDE clientside preview', () => {
       });
 
       it('calls getFileData', () => {
-        expect(storeActions.getFileData).toHaveBeenCalledWith(
-          expect.any(Object),
-          {
-            path: 'package.json',
-            makeFileActive: false,
-          },
-          undefined, // vuex callback
-        );
+        expect(storeActions.getFileData).toHaveBeenCalledWith(expect.any(Object), {
+          path: 'package.json',
+          makeFileActive: false,
+        });
       });
 
       it('calls getRawFileData', () => {
-        expect(storeActions.getRawFileData).toHaveBeenCalledWith(
-          expect.any(Object),
-          {
-            path: 'package.json',
-          },
-          undefined, // vuex callback
-        );
+        expect(storeActions.getRawFileData).toHaveBeenCalledWith(expect.any(Object), {
+          path: 'package.json',
+        });
       });
     });
 

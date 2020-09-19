@@ -1,0 +1,5 @@
+---
+title: Clean up stale merge request HEAD ref
+merge_request: 41555
+author:
+type: performance

@@ -6,12 +6,14 @@ RSpec.describe Packages::Pypi::CreatePackageService do
 
   let_it_be(:project) { create(:project) }
   let_it_be(:user) { create(:user) }
-  let_it_be(:params) do
+
+  let(:requires_python) { '>=2.7' }
+  let(:params) do
     {
       name: 'foo',
       version: '1.0',
       content: temp_file('foo.tgz'),
-      requires_python: '>=2.7',
+      requires_python: requires_python,
       sha256_digest: '123',
       md5_digest: '567'
     }
@@ -35,6 +37,18 @@ RSpec.describe Packages::Pypi::CreatePackageService do
         expect(created_package.package_files.first.file_sha256).to eq '123'
         expect(created_package.package_files.first.file_md5).to eq '567'
       end
+    end
+
+    context 'with an invalid metadata' do
+      let(:requires_python) { 'x' * 256 }
+
+      it 'raises an error' do
+        expect { subject }.to raise_error(ActiveRecord::RecordInvalid)
+      end
+    end
+
+    it_behaves_like 'assigns the package creator' do
+      let(:package) { created_package }
     end
 
     context 'with an existing package' do

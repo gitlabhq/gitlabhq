@@ -8,19 +8,13 @@ exports[`PypiInstallation renders all the messages 1`] = `
     Installation
   </h3>
    
-  <h4
-    class="gl-font-base"
-  >
-    
-    Pip Command
-  
-  </h4>
-   
   <code-instruction-stub
     copytext="Copy Pip command"
     data-testid="pip-command"
     instruction="pip install"
+    label="Pip Command"
     trackingaction="copy_pip_install_command"
+    trackinglabel="code_instruction"
   />
    
   <h3
@@ -39,8 +33,10 @@ exports[`PypiInstallation renders all the messages 1`] = `
     copytext="Copy .pypirc content"
     data-testid="pypi-setup-content"
     instruction="python setup"
+    label=""
     multiline="true"
     trackingaction="copy_pypi_setup_command"
+    trackinglabel="code_instruction"
   />
    
   <gl-sprintf-stub

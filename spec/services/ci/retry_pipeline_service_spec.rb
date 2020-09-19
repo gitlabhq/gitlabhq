@@ -280,6 +280,20 @@ RSpec.describe Ci::RetryPipelineService, '#execute' do
         expect(build3.reload.scheduling_type).to eq('dag')
       end
     end
+
+    context 'when the pipeline is a downstream pipeline and the bridge is depended' do
+      let!(:bridge) { create(:ci_bridge, :strategy_depend, status: 'success') }
+
+      before do
+        create(:ci_sources_pipeline, pipeline: pipeline, source_job: bridge)
+      end
+
+      it 'marks source bridge as pending' do
+        service.execute(pipeline)
+
+        expect(bridge.reload).to be_pending
+      end
+    end
   end
 
   context 'when user is not allowed to retry pipeline' do

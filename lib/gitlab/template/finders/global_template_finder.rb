@@ -5,10 +5,10 @@ module Gitlab
   module Template
     module Finders
       class GlobalTemplateFinder < BaseTemplateFinder
-        def initialize(base_dir, extension, categories = {}, exclusions: [])
+        def initialize(base_dir, extension, categories = {}, excluded_patterns: [])
           @categories = categories
           @extension  = extension
-          @exclusions = exclusions
+          @excluded_patterns = excluded_patterns
 
           super(base_dir)
         end
@@ -43,7 +43,7 @@ module Gitlab
         private
 
         def excluded?(file_name)
-          @exclusions.include?(file_name)
+          @excluded_patterns.any? { |pattern| pattern.match?(file_name) }
         end
 
         def select_directory(file_name)

@@ -114,8 +114,13 @@ module Projects
     # completes), and any other affected users in the background
     def setup_authorizations
       if @project.group
-        current_user.project_authorizations.create!(project: @project,
-                                                    access_level: @project.group.max_member_access_for_user(current_user))
+        group_access_level = @project.group.max_member_access_for_user(current_user,
+                                                                       only_concrete_membership: true)
+
+        if group_access_level > GroupMember::NO_ACCESS
+          current_user.project_authorizations.create!(project: @project,
+                                                      access_level: group_access_level)
+        end
 
         if Feature.enabled?(:specialized_project_authorization_workers)
           AuthorizedProjectUpdate::ProjectCreateWorker.perform_async(@project.id)

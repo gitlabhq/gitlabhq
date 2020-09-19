@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'fast_spec_helper'
-require 'timecop'
 
 RSpec.describe Gitlab::SidekiqMiddleware::DuplicateJobs::Strategies::UntilExecuting do
   let(:fake_duplicate_job) do
@@ -77,7 +76,7 @@ RSpec.describe Gitlab::SidekiqMiddleware::DuplicateJobs::Strategies::UntilExecut
 
         context 'scheduled in the future' do
           it 'adds the jid of the existing job to the job hash' do
-            Timecop.freeze do
+            freeze_time do
               allow(fake_duplicate_job).to receive(:scheduled?).twice.and_return(true)
               allow(fake_duplicate_job).to receive(:scheduled_at).and_return(Time.now + time_diff)
               allow(fake_duplicate_job).to receive(:options).and_return({ including_scheduled: true })

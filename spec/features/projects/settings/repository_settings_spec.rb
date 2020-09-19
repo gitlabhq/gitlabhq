@@ -70,7 +70,7 @@ RSpec.describe 'Projects > Settings > Repository settings' do
         project.deploy_keys << private_deploy_key
         visit project_settings_repository_path(project)
 
-        find('.deploy-key', text: private_deploy_key.title).find('.ic-pencil').click
+        find('.deploy-key', text: private_deploy_key.title).find('[data-testid="pencil-icon"]').click
 
         fill_in 'deploy_key_title', with: 'updated_deploy_key'
         check 'deploy_key_deploy_keys_projects_attributes_0_can_push'
@@ -84,7 +84,7 @@ RSpec.describe 'Projects > Settings > Repository settings' do
         project.deploy_keys << public_deploy_key
         visit project_settings_repository_path(project)
 
-        find('.deploy-key', text: public_deploy_key.title).find('.ic-pencil').click
+        find('.deploy-key', text: public_deploy_key.title).find('[data-testid="pencil-icon"]').click
 
         check 'deploy_key_deploy_keys_projects_attributes_0_can_push'
         click_button 'Save changes'
@@ -102,7 +102,7 @@ RSpec.describe 'Projects > Settings > Repository settings' do
 
         find('.js-deployKeys-tab-available_project_keys').click
 
-        find('.deploy-key', text: private_deploy_key.title).find('.ic-pencil').click
+        find('.deploy-key', text: private_deploy_key.title).find('[data-testid="pencil-icon"]').click
 
         fill_in 'deploy_key_title', with: 'updated_deploy_key'
         click_button 'Save changes'
@@ -116,7 +116,7 @@ RSpec.describe 'Projects > Settings > Repository settings' do
         project.deploy_keys << private_deploy_key
         visit project_settings_repository_path(project)
 
-        accept_confirm { find('.deploy-key', text: private_deploy_key.title).find('.ic-remove').click }
+        accept_confirm { find('.deploy-key', text: private_deploy_key.title).find('[data-testid="remove-icon"]').click }
 
         expect(page).not_to have_content(private_deploy_key.title)
       end

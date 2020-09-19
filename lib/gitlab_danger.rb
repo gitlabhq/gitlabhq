@@ -13,6 +13,7 @@ class GitlabDanger
     commit_messages
     telemetry
     utility_css
+    pajamas
   ].freeze
 
   CI_ONLY_RULES ||= %w[
@@ -22,6 +23,7 @@ class GitlabDanger
     roulette
     ce_ee_vue_templates
     sidekiq_queues
+    specialization_labels
   ].freeze
 
   MESSAGE_PREFIX = '==>'.freeze

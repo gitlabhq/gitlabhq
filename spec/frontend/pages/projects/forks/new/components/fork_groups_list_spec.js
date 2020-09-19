@@ -70,7 +70,7 @@ describe('Fork groups list component', () => {
     replyWith(() => new Promise(() => {}));
     createWrapper();
 
-    expect(wrapper.contains(GlLoadingIcon)).toBe(true);
+    expect(wrapper.find(GlLoadingIcon).exists()).toBe(true);
   });
 
   it('displays empty text if no groups are available', async () => {
@@ -89,7 +89,7 @@ describe('Fork groups list component', () => {
 
     await waitForPromises();
 
-    expect(wrapper.contains(GlSearchBoxByType)).toBe(true);
+    expect(wrapper.find(GlSearchBoxByType).exists()).toBe(true);
   });
 
   it('renders list items for each available group', async () => {

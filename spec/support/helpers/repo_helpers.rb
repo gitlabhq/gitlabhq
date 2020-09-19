@@ -125,7 +125,7 @@ eos
   end
 
   def create_file_in_repo(
-        project, start_branch, branch_name, filename, content,
+    project, start_branch, branch_name, filename, content,
         commit_message: 'Add new content')
     Files::CreateService.new(
       project,

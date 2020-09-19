@@ -1,6 +1,0 @@
-- if warnings.any?
-  - warnings.map(&:content).each do |warning|
-    .bs-callout.bs-callout-warning
-      %p
-        %b= _("Warning:")
-        = markdown(warning)

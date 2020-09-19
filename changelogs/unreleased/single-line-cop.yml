@@ -1,0 +1,5 @@
+---
+title: Fix Style/SingleLineMethods cop
+merge_request: 41247
+author: Rajendra Kadam
+type: fixed

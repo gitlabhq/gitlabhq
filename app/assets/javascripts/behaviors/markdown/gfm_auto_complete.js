@@ -2,8 +2,8 @@ import $ from 'jquery';
 import GfmAutoComplete from 'ee_else_ce/gfm_auto_complete';
 import { parseBoolean } from '~/lib/utils/common_utils';
 
-export default function initGFMInput() {
-  $('.js-gfm-input:not(.js-vue-textarea)').each((i, el) => {
+export default function initGFMInput($els) {
+  $els.each((i, el) => {
     const gfm = new GfmAutoComplete(gl.GfmAutoComplete && gl.GfmAutoComplete.dataSources);
     const enableGFM = parseBoolean(el.dataset.supportsAutocomplete);
 
@@ -14,6 +14,7 @@ export default function initGFMInput() {
       milestones: enableGFM,
       mergeRequests: enableGFM,
       labels: enableGFM,
+      vulnerabilities: enableGFM,
     });
   });
 }

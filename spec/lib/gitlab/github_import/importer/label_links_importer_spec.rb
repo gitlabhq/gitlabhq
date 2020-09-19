@@ -38,7 +38,7 @@ RSpec.describe Gitlab::GithubImport::Importer::LabelLinksImporter do
         .to receive(:find_target_id)
         .and_return(1)
 
-      Timecop.freeze do
+      freeze_time do
         expect(Gitlab::Database)
           .to receive(:bulk_insert)
           .with(

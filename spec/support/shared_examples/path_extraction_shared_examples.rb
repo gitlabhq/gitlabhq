@@ -146,20 +146,6 @@ RSpec.shared_examples 'extracts refs' do
 
           expect(extract_ref('release/app/doc/README.md')).to eq(['release/app', 'doc/README.md'])
         end
-
-        context 'when the extracts_path_optimization feature flag is disabled' do
-          before do
-            stub_feature_flags(extracts_path_optimization: false)
-          end
-
-          it 'always fetches all ref names' do
-            expect(self).to receive(:ref_names).and_call_original
-            expect(container.repository).not_to receive(:branch_names_include?)
-            expect(container.repository).not_to receive(:tag_names_include?)
-
-            expect(extract_ref('v1.0.0/doc/README.md')).to eq(['v1.0.0', 'doc/README.md'])
-          end
-        end
       end
 
       context 'when the repository has ambiguous refs' do

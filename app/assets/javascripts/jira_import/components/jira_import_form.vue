@@ -2,9 +2,9 @@
 import {
   GlAlert,
   GlButton,
-  GlNewDropdown,
-  GlNewDropdownItem,
-  GlNewDropdownText,
+  GlDropdown,
+  GlDropdownItem,
+  GlDropdownText,
   GlFormGroup,
   GlFormSelect,
   GlIcon,
@@ -34,9 +34,9 @@ export default {
   components: {
     GlAlert,
     GlButton,
-    GlNewDropdown,
-    GlNewDropdownItem,
-    GlNewDropdownText,
+    GlDropdown,
+    GlDropdownItem,
+    GlDropdownText,
     GlFormGroup,
     GlFormSelect,
     GlIcon,
@@ -293,7 +293,7 @@ export default {
           <gl-icon name="arrow-right" :aria-label="__('Will be mapped to')" />
         </template>
         <template #cell(gitlabUsername)="data">
-          <gl-new-dropdown
+          <gl-dropdown
             :text="data.value || $options.currentUsername"
             class="w-100"
             :aria-label="
@@ -301,23 +301,23 @@ export default {
             "
             @hide="resetDropdown"
           >
-            <gl-search-box-by-type v-model.trim="searchTerm" class="m-2" />
+            <gl-search-box-by-type v-model.trim="searchTerm" class="gl-m-3" />
 
             <gl-loading-icon v-if="isFetching" />
 
-            <gl-new-dropdown-item
+            <gl-dropdown-item
               v-for="user in users"
               v-else
               :key="user.id"
               @click="updateMapping(data.item.jiraAccountId, user.id, user.username)"
             >
               {{ user.username }} ({{ user.name }})
-            </gl-new-dropdown-item>
+            </gl-dropdown-item>
 
-            <gl-new-dropdown-text v-show="shouldShowNoMatchesFoundText" class="text-secondary">
+            <gl-dropdown-text v-show="shouldShowNoMatchesFoundText" class="text-secondary">
               {{ __('No matches found') }}
-            </gl-new-dropdown-text>
-          </gl-new-dropdown>
+            </gl-dropdown-text>
+          </gl-dropdown>
         </template>
       </gl-table>
 

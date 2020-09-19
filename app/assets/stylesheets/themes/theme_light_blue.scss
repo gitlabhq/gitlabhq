@@ -1,0 +1,14 @@
+@import './theme_helper';
+
+body {
+  &.ui-light-blue {
+    @include gitlab-theme(
+      $theme-light-blue-200,
+      $theme-light-blue-500,
+      $theme-light-blue-500,
+      $theme-light-blue-700,
+      $theme-light-blue-700,
+      $white
+    );
+  }
+}

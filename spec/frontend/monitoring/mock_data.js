@@ -245,51 +245,6 @@ export const metricsResult = [
   },
 ];
 
-export const stackedColumnMockedData = {
-  title: 'memories',
-  type: 'stacked-column',
-  x_label: 'x label',
-  y_label: 'y label',
-  metrics: [
-    {
-      label: 'memory_1024',
-      unit: 'count',
-      series_name: 'group 1',
-      prometheus_endpoint_path:
-        '/root/autodevops-deploy-6/-/environments/24/prometheus/api/v1/query_range?query=avg%28sum%28container_memory_usage_bytes%7Bcontainer_name%21%3D%22POD%22%2Cpod_name%3D~%22%5E%25%7Bci_environment_slug%7D-%28%5B%5Ec%5D.%2A%7Cc%28%5B%5Ea%5D%7Ca%28%5B%5En%5D%7Cn%28%5B%5Ea%5D%7Ca%28%5B%5Er%5D%7Cr%5B%5Ey%5D%29%29%29%29.%2A%7C%29-%28.%2A%29%22%2Cnamespace%3D%22%25%7Bkube_namespace%7D%22%7D%29+by+%28job%29%29+without+%28job%29+%2F+count%28avg%28container_memory_usage_bytes%7Bcontainer_name%21%3D%22POD%22%2Cpod_name%3D~%22%5E%25%7Bci_environment_slug%7D-%28%5B%5Ec%5D.%2A%7Cc%28%5B%5Ea%5D%7Ca%28%5B%5En%5D%7Cn%28%5B%5Ea%5D%7Ca%28%5B%5Er%5D%7Cr%5B%5Ey%5D%29%29%29%29.%2A%7C%29-%28.%2A%29%22%2Cnamespace%3D%22%25%7Bkube_namespace%7D%22%7D%29+without+%28job%29%29+%2F1024%2F1024',
-      metricId: 'NO_DB_metric_of_ages_1024',
-      result: [
-        {
-          metric: {},
-          values: [
-            ['2020-01-30T12:00:00.000Z', '5'],
-            ['2020-01-30T12:01:00.000Z', '10'],
-            ['2020-01-30T12:02:00.000Z', '15'],
-          ],
-        },
-      ],
-    },
-    {
-      label: 'memory_1000',
-      unit: 'count',
-      series_name: 'group 2',
-      prometheus_endpoint_path:
-        '/root/autodevops-deploy-6/-/environments/24/prometheus/api/v1/query_range?query=avg%28sum%28container_memory_usage_bytes%7Bcontainer_name%21%3D%22POD%22%2Cpod_name%3D~%22%5E%25%7Bci_environment_slug%7D-%28%5B%5Ec%5D.%2A%7Cc%28%5B%5Ea%5D%7Ca%28%5B%5En%5D%7Cn%28%5B%5Ea%5D%7Ca%28%5B%5Er%5D%7Cr%5B%5Ey%5D%29%29%29%29.%2A%7C%29-%28.%2A%29%22%2Cnamespace%3D%22%25%7Bkube_namespace%7D%22%7D%29+by+%28job%29%29+without+%28job%29+%2F+count%28avg%28container_memory_usage_bytes%7Bcontainer_name%21%3D%22POD%22%2Cpod_name%3D~%22%5E%25%7Bci_environment_slug%7D-%28%5B%5Ec%5D.%2A%7Cc%28%5B%5Ea%5D%7Ca%28%5B%5En%5D%7Cn%28%5B%5Ea%5D%7Ca%28%5B%5Er%5D%7Cr%5B%5Ey%5D%29%29%29%29.%2A%7C%29-%28.%2A%29%22%2Cnamespace%3D%22%25%7Bkube_namespace%7D%22%7D%29+without+%28job%29%29+%2F1024%2F1024',
-      metricId: 'NO_DB_metric_of_ages_1000',
-      result: [
-        {
-          metric: {},
-          values: [
-            ['2020-01-30T12:00:00.000Z', '20'],
-            ['2020-01-30T12:01:00.000Z', '25'],
-            ['2020-01-30T12:02:00.000Z', '30'],
-          ],
-        },
-      ],
-    },
-  ],
-};
-
 export const barMockData = {
   title: 'SLA Trends - Primary Services',
   type: 'bar',

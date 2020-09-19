@@ -71,24 +71,42 @@ module Gitlab
           def extract_nulls_last_order(order_value)
             tokens = order_value.downcase.split
 
-            [tokens.first, (tokens[1] == 'asc' ? :asc : :desc), nil]
+            column_reference = tokens.first
+            sort_direction = tokens[1] == 'asc' ? :asc : :desc
+
+            # Handles the case when the order value is coming from another table.
+            # Example: table_name.column_name
+            # Query the value using the fully qualified column name: pass table_name.column_name as the named_function
+            if fully_qualified_column_reference?(column_reference)
+              [column_reference, sort_direction, Arel.sql(column_reference)]
+            else
+              [column_reference, sort_direction, nil]
+            end
+          end
+
+          # Example: table_name.column_name
+          def fully_qualified_column_reference?(attribute)
+            attribute.to_s.count('.') == 1
           end
 
           def extract_attribute_values(order_value)
-            named = nil
-            name  = if ordering_by_lower?(order_value)
-                      named = order_value.expr
-                      named.expressions[0].name.to_s
-                    else
-                      order_value.expr.name
-                    end
-
-            [name, order_value.direction, named]
+            if ordering_by_lower?(order_value)
+              [order_value.expr.expressions[0].name.to_s, order_value.direction, order_value.expr]
+            elsif ordering_by_similarity?(order_value)
+              ['similarity', order_value.direction, order_value.expr]
+            else
+              [order_value.expr.name, order_value.direction, nil]
+            end
           end
 
           # determine if ordering using LOWER, eg. "ORDER BY LOWER(boards.name)"
           def ordering_by_lower?(order_value)
             order_value.expr.is_a?(Arel::Nodes::NamedFunction) && order_value.expr&.name&.downcase == 'lower'
+          end
+
+          # determine if ordering using SIMILARITY scoring based on Gitlab::Database::SimilarityScore
+          def ordering_by_similarity?(order_value)
+            order_value.to_sql.match?(/SIMILARITY\(.+\*/)
           end
         end
       end

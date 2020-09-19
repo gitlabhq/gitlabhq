@@ -35,10 +35,10 @@ module API
           route_setting :authentication, basic_auth_personal_access_token: true, job_token_allowed: :basic_auth
           get do
             remote_state_handler.find_with_lock do |state|
-              no_content! unless state.file.exists?
+              no_content! unless state.latest_file && state.latest_file.exists?
 
               env['api.format'] = :binary # this bypasses json serialization
-              body state.file.read
+              body state.latest_file.read
               status :ok
             end
           end
@@ -52,8 +52,7 @@ module API
             no_content! if data.empty?
 
             remote_state_handler.handle_with_lock do |state|
-              state.file = CarrierWaveStringFile.new(data)
-              state.save!
+              state.update_file!(CarrierWaveStringFile.new(data), version: params[:serial])
               status :ok
             end
           end

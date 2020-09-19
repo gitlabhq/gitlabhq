@@ -11,11 +11,11 @@ describe('Design overlay component', () => {
 
   const mockDimensions = { width: 100, height: 100 };
 
-  const findOverlay = () => wrapper.find('.image-diff-overlay');
   const findAllNotes = () => wrapper.findAll('.js-image-badge');
   const findCommentBadge = () => wrapper.find('.comment-indicator');
-  const findFirstBadge = () => findAllNotes().at(0);
-  const findSecondBadge = () => findAllNotes().at(1);
+  const findBadgeAtIndex = noteIndex => findAllNotes().at(noteIndex);
+  const findFirstBadge = () => findBadgeAtIndex(0);
+  const findSecondBadge = () => findBadgeAtIndex(1);
 
   const clickAndDragBadge = (elem, fromPoint, toPoint) => {
     elem.trigger('mousedown', { clientX: fromPoint.x, clientY: fromPoint.y });
@@ -56,9 +56,7 @@ describe('Design overlay component', () => {
   it('should have correct inline style', () => {
     createComponent();
 
-    expect(wrapper.find('.image-diff-overlay').attributes().style).toBe(
-      'width: 100px; height: 100px; top: 0px; left: 0px;',
-    );
+    expect(wrapper.attributes().style).toBe('width: 100px; height: 100px; top: 0px; left: 0px;');
   });
 
   it('should emit `openCommentForm` when clicking on overlay', () => {
@@ -69,7 +67,7 @@ describe('Design overlay component', () => {
     };
 
     wrapper
-      .find('.image-diff-overlay-add-comment')
+      .find('[data-qa-selector="design_image_button"]')
       .trigger('mouseup', { offsetX: newCoordinates.x, offsetY: newCoordinates.y });
     return wrapper.vm.$nextTick().then(() => {
       expect(wrapper.emitted('openCommentForm')).toEqual([
@@ -107,16 +105,43 @@ describe('Design overlay component', () => {
         expect(findSecondBadge().classes()).toContain('resolved');
       });
 
-      it('when there is an active discussion, should apply inactive class to all pins besides the active one', () => {
-        wrapper.setData({
-          activeDiscussion: {
-            id: notes[0].id,
-            source: 'discussion',
-          },
+      describe('when no discussion is active', () => {
+        it('should not apply inactive class to any pins', () => {
+          expect(
+            findAllNotes(0).wrappers.every(designNote => designNote.classes('gl-bg-blue-50')),
+          ).toBe(false);
         });
+      });
 
-        return wrapper.vm.$nextTick().then(() => {
-          expect(findSecondBadge().classes()).toContain('inactive');
+      describe('when a discussion is active', () => {
+        it.each([notes[0].discussion.notes.nodes[1], notes[0].discussion.notes.nodes[0]])(
+          'should not apply inactive class to the pin for the active discussion',
+          note => {
+            wrapper.setData({
+              activeDiscussion: {
+                id: note.id,
+                source: 'discussion',
+              },
+            });
+
+            return wrapper.vm.$nextTick().then(() => {
+              expect(findBadgeAtIndex(0).classes()).not.toContain('inactive');
+            });
+          },
+        );
+
+        it('should apply inactive class to all pins besides the active one', () => {
+          wrapper.setData({
+            activeDiscussion: {
+              id: notes[0].id,
+              source: 'discussion',
+            },
+          });
+
+          return wrapper.vm.$nextTick().then(() => {
+            expect(findSecondBadge().classes()).toContain('inactive');
+            expect(findFirstBadge().classes()).not.toContain('inactive');
+          });
         });
       });
     });
@@ -309,7 +334,7 @@ describe('Design overlay component', () => {
 
       it.each`
         element            | getElementFunc      | event
-        ${'overlay'}       | ${findOverlay}      | ${'mouseleave'}
+        ${'overlay'}       | ${() => wrapper}    | ${'mouseleave'}
         ${'comment badge'} | ${findCommentBadge} | ${'mouseup'}
       `(
         'should emit `openCommentForm` event when $event fired on $element element',

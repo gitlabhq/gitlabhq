@@ -7,9 +7,12 @@ import ChangedFileIcon from '~/vue_shared/components/changed_file_icon.vue';
 describe('Diff File Row component', () => {
   let wrapper;
 
-  const createComponent = (props = {}) => {
+  const createComponent = (props = {}, highlightCurrentDiffRow = false) => {
     wrapper = shallowMount(DiffFileRow, {
       propsData: { ...props },
+      provide: {
+        glFeatures: { highlightCurrentDiffRow },
+      },
     });
   };
 
@@ -55,6 +58,31 @@ describe('Diff File Row component', () => {
       }),
     );
   });
+
+  it.each`
+    features                             | fileType  | isViewed | expected
+    ${{ highlightCurrentDiffRow: true }} | ${'blob'} | ${false} | ${'gl-font-weight-bold'}
+    ${{}}                                | ${'blob'} | ${true}  | ${''}
+    ${{}}                                | ${'tree'} | ${false} | ${''}
+    ${{}}                                | ${'tree'} | ${true}  | ${''}
+  `(
+    'with (features="$features", fileType="$fileType", isViewed=$isViewed), sets fileClasses="$expected"',
+    ({ features, fileType, isViewed, expected }) => {
+      createComponent(
+        {
+          file: {
+            type: fileType,
+            fileHash: '#123456789',
+          },
+          level: 0,
+          hideFileStats: false,
+          viewedFiles: isViewed ? { '#123456789': true } : {},
+        },
+        features.highlightCurrentDiffRow,
+      );
+      expect(wrapper.find(FileRow).props('fileClasses')).toBe(expected);
+    },
+  );
 
   describe('FileRowStats components', () => {
     it.each`

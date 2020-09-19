@@ -1,7 +1,9 @@
 <script>
 import { initial, first, last } from 'lodash';
+import { GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
 
 export default {
+  directives: { SafeHtml },
   props: {
     crumbs: {
       type: Array,
@@ -41,14 +43,14 @@ export default {
     <li
       v-for="(crumb, index) in rootCrumbs"
       :key="index"
+      v-safe-html="crumb.innerHTML"
       :class="crumb.className"
-      v-html="crumb.innerHTML"
     ></li>
     <li v-if="!isRootRoute">
       <router-link ref="rootRouteLink" :to="rootRoute.path">
         {{ rootRoute.meta.nameGenerator(rootRoute) }}
       </router-link>
-      <component :is="divider.tagName" :class="divider.classList" v-html="divider.innerHTML" />
+      <component :is="divider.tagName" v-safe-html="divider.innerHTML" :class="divider.classList" />
     </li>
     <li>
       <component :is="lastCrumb.tagName" ref="lastCrumb" :class="lastCrumb.className">

@@ -14,6 +14,7 @@ RSpec.describe 'Query.project(fullPath).releases()' do
     graphql_query_for(:project, { fullPath: project.full_path },
     %{
       releases {
+        count
         nodes {
           tagName
           tagPath
@@ -51,6 +52,20 @@ RSpec.describe 'Query.project(fullPath).releases()' do
 
   before do
     stub_default_url_options(host: 'www.example.com')
+  end
+
+  shared_examples 'correct total count' do
+    let(:data) { graphql_data.dig('project', 'releases') }
+
+    before do
+      create_list(:release, 2, project: project)
+
+      post_query
+    end
+
+    it 'returns the total count' do
+      expect(data['count']).to eq(project.releases.count)
+    end
   end
 
   shared_examples 'full access to all repository-related fields' do
@@ -92,6 +107,8 @@ RSpec.describe 'Query.project(fullPath).releases()' do
         )
       end
     end
+
+    it_behaves_like 'correct total count'
   end
 
   shared_examples 'no access to any repository-related fields' do
@@ -119,6 +136,8 @@ RSpec.describe 'Query.project(fullPath).releases()' do
         )
       end
     end
+
+    it_behaves_like 'correct total count'
   end
 
   # editUrl is tested separately becuase its permissions

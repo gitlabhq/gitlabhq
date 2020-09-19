@@ -73,6 +73,8 @@ class MergeRequestPollWidgetEntity < Grape::Entity
     presenter(merge_request).pipeline_coverage_delta
   end
 
+  expose :head_pipeline_builds_with_coverage, as: :builds_with_coverage, using: BuildCoverageEntity
+
   expose :cancel_auto_merge_path do |merge_request|
     presenter(merge_request).cancel_auto_merge_path
   end

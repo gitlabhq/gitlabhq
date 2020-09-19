@@ -6,7 +6,7 @@
 = form_errors(issuable)
 
 - if @conflict
-  .alert.alert-danger
+  .gl-alert.gl-alert-danger.gl-mb-5
     Someone edited the #{issuable.class.model_name.human.downcase} the same time you did.
     Please check out
     = link_to "the #{issuable.class.model_name.human.downcase}", polymorphic_path([@project, issuable]), target: "_blank", rel: 'noopener noreferrer'
@@ -20,7 +20,10 @@
   = render 'shared/issuable/form/title', issuable: issuable, form: form, has_wip_commits: commits && commits.detect(&:work_in_progress?)
 #js-suggestions{ data: { project_path: @project.full_path } }
 
-= render 'shared/form_elements/apply_template_warning'
+= render 'shared/form_elements/apply_template_warning', issuable: issuable
+
+= render 'shared/issuable/form/type_selector', issuable: issuable, form: form
+
 = render 'shared/form_elements/description', model: issuable, form: form, project: project
 
 - if issuable.respond_to?(:confidential)
@@ -42,7 +45,7 @@
 - if @merge_request_to_resolve_discussions_of
   .form-group.row
     .col-sm-10.offset-sm-2
-      = icon('info-circle')
+      = sprite_icon('information-o')
       - if @merge_request_to_resolve_discussions_of.discussions_can_be_resolved_by?(current_user)
         = hidden_field_tag 'merge_request_to_resolve_discussions_of', @merge_request_to_resolve_discussions_of.iid
         - if @discussion_to_resolve

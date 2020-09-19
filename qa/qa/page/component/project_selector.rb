@@ -20,6 +20,9 @@ module QA
         end
 
         def select_project
+          wait_until(sleep_interval: 2, reload: false) do
+            has_element? :project_list_item
+          end
           click_element :project_list_item
         end
       end

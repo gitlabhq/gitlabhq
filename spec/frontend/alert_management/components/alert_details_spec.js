@@ -1,7 +1,8 @@
 import { mount, shallowMount } from '@vue/test-utils';
-import { GlAlert, GlLoadingIcon, GlTable } from '@gitlab/ui';
+import { GlAlert, GlLoadingIcon } from '@gitlab/ui';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
+import AlertDetailsTable from '~/vue_shared/components/alert_details_table.vue';
 import AlertDetails from '~/alert_management/components/alert_details.vue';
 import createIssueMutation from '~/alert_management/graphql/mutations/create_issue_from_alert.mutation.graphql';
 import { joinPaths } from '~/lib/utils/url_utility';
@@ -21,8 +22,6 @@ describe('AlertDetails', () => {
   const projectIssuesPath = 'root/alerts/-/issues';
   const projectId = '1';
   const $router = { replace: jest.fn() };
-
-  const findDetailsTable = () => wrapper.find(GlTable);
 
   function mountComponent({ data, loading = false, mountMethod = shallowMount, stubs = {} } = {}) {
     wrapper = mountMethod(AlertDetails, {
@@ -66,6 +65,7 @@ describe('AlertDetails', () => {
   const findCreateIncidentBtn = () => wrapper.find('[data-testid="createIncidentBtn"]');
   const findViewIncidentBtn = () => wrapper.find('[data-testid="viewIncidentBtn"]');
   const findIncidentCreationAlert = () => wrapper.find('[data-testid="incidentCreationError"]');
+  const findDetailsTable = () => wrapper.find(AlertDetailsTable);
 
   describe('Alert details', () => {
     describe('when alert is null', () => {
@@ -87,8 +87,8 @@ describe('AlertDetails', () => {
         expect(wrapper.find('[data-testid="overview"]').exists()).toBe(true);
       });
 
-      it('renders a tab with full alert information', () => {
-        expect(wrapper.find('[data-testid="fullDetails"]').exists()).toBe(true);
+      it('renders a tab with an activity feed', () => {
+        expect(wrapper.find('[data-testid="activity"]').exists()).toBe(true);
       });
 
       it('renders severity', () => {
@@ -198,7 +198,6 @@ describe('AlertDetails', () => {
         mountComponent({ data: { alert: mockAlert } });
       });
       it('should display a table of raw alert details data', () => {
-        wrapper.find('[data-testid="fullDetails"]').trigger('click');
         expect(findDetailsTable().exists()).toBe(true);
       });
     });
@@ -234,7 +233,7 @@ describe('AlertDetails', () => {
 
     describe('header', () => {
       const findHeader = () => wrapper.find('[data-testid="alert-header"]');
-      const stubs = { TimeAgoTooltip: '<span>now</span>' };
+      const stubs = { TimeAgoTooltip: { template: '<span>now</span>' } };
 
       describe('individual header fields', () => {
         describe.each`
@@ -268,8 +267,8 @@ describe('AlertDetails', () => {
       it.each`
         index | tabId
         ${0}  | ${'overview'}
-        ${1}  | ${'fullDetails'}
-        ${2}  | ${'metrics'}
+        ${1}  | ${'metrics'}
+        ${2}  | ${'activity'}
       `('will navigate to the correct tab via $tabId', ({ index, tabId }) => {
         wrapper.setData({ currentTabIndex: index });
         expect($router.replace).toHaveBeenCalledWith({ name: 'tab', params: { tabId } });

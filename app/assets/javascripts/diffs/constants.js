@@ -34,7 +34,6 @@ export const COUNT_OF_AVATARS_IN_GUTTER = 3;
 export const LENGTH_OF_AVATAR_TOOLTIP = 17;
 
 export const LINES_TO_BE_RENDERED_DIRECTLY = 100;
-export const MAX_LINES_TO_BE_RENDERED = 2000;
 
 export const DIFF_FILE_SYMLINK_MODE = '120000';
 export const DIFF_FILE_DELETED_MODE = '0';
@@ -68,6 +67,11 @@ export const DIFFS_PER_PAGE = 20;
 
 export const DIFF_COMPARE_BASE_VERSION_INDEX = -1;
 export const DIFF_COMPARE_HEAD_VERSION_INDEX = -2;
+
+// Diff View Alerts
+export const ALERT_OVERFLOW_HIDDEN = 'overflow';
+export const ALERT_MERGE_CONFLICT = 'merge-conflict';
+export const ALERT_COLLAPSED_FILES = 'collapsed';
 
 // State machine states
 export const STATE_IDLING = 'idle';

@@ -1,0 +1,7 @@
+---
+name: rebalance_issues
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/40124 
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/239344
+group: 'group::project management'
+type: development
+default_enabled: false

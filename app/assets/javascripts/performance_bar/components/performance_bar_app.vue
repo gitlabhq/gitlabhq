@@ -1,4 +1,5 @@
 <script>
+/* eslint-disable vue/no-v-html */
 import { glEmojiTag } from '~/emoji';
 
 import AddRequest from './add_request.vue';

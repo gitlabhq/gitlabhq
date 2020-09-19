@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Dashboard::ProjectsController do
+RSpec.describe Dashboard::ProjectsController, :aggregate_failures do
   include ExternalAuthorizationServiceHelpers
 
   let_it_be(:user) { create(:user) }
@@ -15,6 +15,7 @@ RSpec.describe Dashboard::ProjectsController do
     context 'user logged in' do
       let_it_be(:project) { create(:project) }
       let_it_be(:project2) { create(:project) }
+      let(:projects) { [project, project2] }
 
       before_all do
         project.add_developer(user)
@@ -41,7 +42,7 @@ RSpec.describe Dashboard::ProjectsController do
 
         get :index
 
-        expect(assigns(:projects)).to eq([project, project2])
+        expect(assigns(:projects)).to eq(projects)
       end
 
       context 'project sorting' do
@@ -64,6 +65,20 @@ RSpec.describe Dashboard::ProjectsController do
 
         %w[latest_activity_desc latest_activity_asc stars_desc stars_asc created_desc].each do |sort|
           it_behaves_like 'search and sort parameters', sort
+        end
+      end
+
+      context 'with deleted project' do
+        let!(:pending_delete_project) do
+          project.tap { |p| p.update!(pending_delete: true) }
+        end
+
+        it 'does not display deleted project' do
+          get :index
+          projects_result = assigns(:projects)
+
+          expect(projects_result).not_to include(pending_delete_project)
+          expect(projects_result).to include(project2)
         end
       end
     end
@@ -153,7 +168,7 @@ RSpec.describe Dashboard::ProjectsController do
           project.add_developer(user)
         end
 
-        it 'renders all kinds of event without error', :aggregate_failures do
+        it 'renders all kinds of event without error' do
           get :index, format: :atom
 
           expect(assigns(:events)).to include(design_event, wiki_page_event, issue_event)
@@ -164,6 +179,21 @@ RSpec.describe Dashboard::ProjectsController do
             "joined project #{project.full_name}",
             "closed issue #{issue.to_reference}"
           )
+        end
+
+        context 'with deleted project' do
+          let(:pending_deleted_project) { projects.last.tap { |p| p.update!(pending_delete: true) } }
+
+          before do
+            pending_deleted_project.add_developer(user)
+          end
+
+          it 'does not display deleted project' do
+            get :index, format: :atom
+
+            expect(response.body).not_to include(pending_deleted_project.full_name)
+            expect(response.body).to include(project.full_name)
+          end
         end
       end
     end

@@ -37,7 +37,7 @@ More useful links:
 
 - The main purpose of Usage Ping is to build a better GitLab. Data about how GitLab is used is collected to better understand feature/stage adoption and usage, which helps us understand how GitLab is adding value and helps our team better understand the reasons why people use GitLab and with this knowledge we're able to make better product decisions.
 - As a benefit of having the usage ping active, GitLab lets you analyze the users’ activities over time of your GitLab installation.
-- As a benefit of having the usage ping active, GitLab provides you with The DevOps Score,which gives you an overview of your entire instance’s adoption of Concurrent DevOps from planning to monitoring.
+- As a benefit of having the usage ping active, GitLab provides you with The DevOps Report,which gives you an overview of your entire instance’s adoption of Concurrent DevOps from planning to monitoring.
 - You will get better, more proactive support. (assuming that our TAMs and support organization used the data to deliver more value)
 - You will get insight and advice into how to get the most value out of your investment in GitLab. Wouldn't you want to know that a number of features or values are not being adopted in your organization?
 - You get a report that illustrates how you compare against other similar organizations (anonymized), with specific advice and recommendations on how to improve your DevOps processes.
@@ -108,7 +108,7 @@ sequenceDiagram
     S3 Bucket->>Snowflake DW: Import data
     Snowflake DW->>Snowflake DW: Transform data using dbt
     Snowflake DW->>Sisense Dashboards: Data available for querying
-    Versions Application->>GitLab Instance: DevOps Score (Conversational Development Index)
+    Versions Application->>GitLab Instance: DevOps Report (Conversational Development Index)
 ```
 
 ## How Usage Ping works
@@ -222,38 +222,239 @@ Examples of implementation:
 
 #### Redis HLL Counters
 
-With `Gitlab::Redis::HLL` we have available data structures used to count unique values.
+With `Gitlab::UsageDataCounters::HLLRedisCounter` we have available data structures used to count unique values.
 
 Implemented using Redis methods [PFADD](https://redis.io/commands/pfadd) and [PFCOUNT](https://redis.io/commands/pfcount).
 
+##### Adding new events
+
+1. Define events in [`known_events.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data_counters/known_events.yml).
+
+   Example event:
+
+   ```yaml
+   - name: i_compliance_credential_inventory
+     category: compliance
+     redis_slot: compliance
+     expiry: 42  # 6 weeks
+     aggregation: weekly
+   ```
+
+   Keys:
+
+   - `name`: unique event name.
+
+     Name format `<prefix>_<redis_slot>_name`.
+
+     Use one of the following prefixes for the event's name:
+
+        - `g_` for group, as an event which is tracked for group.
+        - `p_` for project, as an event which is tracked for project.
+        - `i_` for instance, as an event which is tracked for instance.
+        - `a_` for events encompassing all `g_`, `p_`, `i_`.
+        - `o_` for other.
+
+     Consider including in the event's name the Redis slot in order to be able to count totals for a specific category.
+
+     Example names: `i_compliance_credential_inventory`, `g_analytics_contribution`.
+
+   - `category`: event category. Used for getting total counts for events in a category, for easier
+     access to a group of events.
+   - `redis_slot`: optional Redis slot; default value: event name. Used if needed to calculate totals
+     for a group of metrics. Ensure keys are in the same slot. For example:
+     `i_compliance_credential_inventory` with `redis_slot: 'compliance'` will build Redis key
+     `i_{compliance}_credential_inventory-2020-34`. If `redis_slot` is not defined the Redis key will
+     be `{i_compliance_credential_inventory}-2020-34`.
+   - `expiry`: expiry time in days. Default: 29 days for daily aggregation and 6 weeks for weekly
+     aggregation.
+   - `aggregation`: aggregation `:daily` or `:weekly`. The argument defines how we build the Redis
+     keys for data storage. For `daily` we keep a key for metric per day of the year, for `weekly` we
+     keep a key for metric per week of the year.
+
+1. Track event in controller using `RedisTracking` module with `track_redis_hll_event(*controller_actions, name:, feature:, feature_default_enabled: false)`.
+
+   Arguments:
+
+   - `controller_actions`: controller actions we want to track.
+   - `name`: event name.
+   - `feature`: feature name, all metrics we track should be under feature flag.
+   - `feature_default_enabled`: feature flag is disabled by default, set to `true` for it to be enabled by default.
+
+   Example usage:
+
+   ```ruby
+   # controller
+   class ProjectsController < Projects::ApplicationController
+     include RedisTracking
+
+     skip_before_action :authenticate_user!, only: :show
+     track_redis_hll_event :index, :show, name: 'i_analytics_dev_ops_score', feature: :g_compliance_dashboard_feature, feature_default_enabled: true
+
+     def index
+       render html: 'index'
+     end
+
+    def new
+      render html: 'new'
+    end
+
+    def show
+      render html: 'show'
+    end
+   end
+   ```
+
+1. Track event in API using `increment_unique_values(event_name, values)` helper method.
+
+   In order to be able to track the event, Usage Ping must be enabled and the event feature `usage_data_<event_name>` must be enabled.
+
+   Arguments:
+
+   - `event_name`: event name.
+   - `values`: values counted, one value or array of values.
+
+   Example usage:
+
+   ```ruby
+   get ':id/registry/repositories' do
+     repositories = ContainerRepositoriesFinder.new(
+       user: current_user, subject: user_group
+     ).execute
+
+     increment_unique_values('i_list_repositories', current_user.id)
+
+     present paginate(repositories), with: Entities::ContainerRegistry::Repository, tags: params[:tags], tags_count: params[:tags_count]
+   end
+   ```
+
+1. Track event using `track_usage_event(event_name, values) in services and graphql
+
+   Increment unique values count using Redis HLL, for given event name.
+
+   Example:
+
+   [Track usage event for incident created in service](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/services/issues/update_service.rb)
+
+   [Track usage event for incident created in graphql](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/graphql/mutations/alert_management/update_alert_status.rb)
+
+   ```ruby
+     track_usage_event(:incident_management_incident_created, current_user.id)
+   ```
+
+1. Track event using `UsageData` API
+
+   Increment unique users count using Redis HLL, for given event name.
+
+   Tracking events using the `UsageData` API requires the `usage_data_api` feature flag to be enabled, which is disabled by default.
+
+   API requests are protected by checking for a valid CSRF token.
+
+   In order to be able to increment the values the related feature `usage_data<event_name>` should be enabled.
+
+   ```plaintext
+   POST /usage_data/increment_unique_users
+   ```
+
+   | Attribute | Type | Required | Description |
+   | :-------- | :--- | :------- | :---------- |
+   | `event` | string | yes | The event name it should be tracked |
+
+   Response
+
+   Return 200 if tracking failed for any reason.
+
+   - `200` if event was tracked or any errors
+   - `400 Bad request` if event parameter is missing
+   - `401 Unauthorized` if user is not authenticated
+   - `403 Forbidden` for invalid CSRF token provided
+
+1. Track event using base module `Gitlab::UsageDataCounters::HLLRedisCounter.track_event(entity_id, event_name)`.
+
+   Arguments:
+
+   - `entity_id`: value we count. For example: user_id, visitor_id.
+   - `event_name`: event name.
+
+1. Get event data using `Gitlab::UsageDataCounters::HLLRedisCounter.unique_events(event_names:, start_date:, end_date)`.
+
+   Arguments:
+
+   - `event_names`: the list of event names.
+   - `start_date`: start date of the period for which we want to get event data.
+   - `end_date`: end date of the period for which we want to get event data.
+
 Recommendations:
 
-- Key should expire in 29 days.
-- If possible, data granularity should be a week. For example a key could be composed from the metric's name and week of the year, `2020-33-{metric_name}`.
-- Use a [feature flag](../../operations/feature_flags.md) in order to have a control over the impact when adding new metrics.
-- If possible, data granularity should be week, for example a key could be composed from metric name and week of the year, 2020-33-{metric_name}
-- Use a [feature flag](../../operations/feature_flags.md) in order to have a control over the impact when adding new metrics
+- Key should expire in 29 days for daily and 42 days for weekly.
+- If possible, data granularity should be a week. For example a key could be composed from the
+  metric's name and week of the year, `2020-33-{metric_name}`.
+- Use a [feature flag](../../operations/feature_flags.md) to have a control over the impact when
+  adding new metrics.
 
-Examples of implementation:
+##### Known events in usage data payload
 
-- [`Gitlab::UsageDataCounters::TrackUniqueActions`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data_counters/track_unique_actions.rb)
-- [`Gitlab::Analytics::UniqueVisits`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/analytics/unique_visits.rb)
+All events added in [`known_events.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data_counters/known_events.yml) are automatically added to usage data generation under the `redis_hll_counters` key. This column is stored in [version-app as a JSON](https://gitlab.com/gitlab-services/version-gitlab-com/-/blob/master/db/schema.rb#L209).
+For each event we add metrics for the weekly and monthly time frames, and totals for each where applicable:
 
-Example of usage:
+- `#{event_name}_weekly` data for 7 days for daily [aggregation](#adding-new-events) events and data for last complete week for weekly [aggregation](#adding-new-events) events.
+- `#{event_name}_monthly` data for 28 days for daily [aggregation](#adding-new-events) events and data for last 4 complete weeks for weekly [aggregation](#adding-new-events) events.
+- `#{category}_total_unique_counts_weekly` total unique counts for events in same category for last 7 days or last complete week, if events are in the same Redis slot and if we have more than one metric.
+- `#{event_name}_weekly` - Data for 7 days for daily [aggregation](#adding-new-events) events and data for the last complete week for weekly [aggregation](#adding-new-events) events.
+- `#{event_name}_monthly` - Data for 28 days for daily [aggregation](#adding-new-events) events and data for the last 4 complete weeks for weekly [aggregation](#adding-new-events) events.
+- `#{category}_total_unique_counts_weekly` - Total unique counts for events in the same category for the last 7 days or the last complete week, if events are in the same Redis slot and we have more than one metric.
+- `#{event_name}_weekly`: Data for 7 days for daily [aggregation](#adding-new-events) events and data for last complete week for weekly [aggregation](#adding-new-events) events.
+- `#{event_name}_monthly`: Data for 28 days for daily [aggregation](#adding-new-events) events and data for last 4 complete weeks for weekly [aggregation](#adding-new-events) events.
+- `#{category}_total_unique_counts_weekly` total unique counts for events in same category for last 7 days or last complete week, if events are in the same Redis slot and if we have more than one metric.
+- `#{event_name}_weekly`: Data for 7 days for daily [aggregation](#adding-new-events) events and data for the last complete week for weekly [aggregation](#adding-new-events) events.
+- `#{event_name}_monthly`: Data for 28 days for daily [aggregation](#adding-new-events) events and data for the last 4 complete weeks for weekly [aggregation](#adding-new-events) events.
+- `#{category}_total_unique_counts_weekly`: Total unique counts for events in the same category for the last 7 days or the last complete week, if events are in the same Redis slot and we have more than one metric.
+- `#{category}_total_unique_counts_monthly`: Total unique counts for events in same category for the last 28 days or the last 4 complete weeks, if events are in the same Redis slot and we have more than one metric.
+
+Example of `redis_hll_counters` data:
+
+```ruby
+{:redis_hll_counters=>
+  {"compliance"=>
+    {"g_compliance_dashboard_weekly"=>0,
+     "g_compliance_dashboard_monthly"=>0,
+     "g_compliance_audit_events_weekly"=>0,
+     "g_compliance_audit_events_monthly"=>0,
+     "compliance_total_unique_counts_weekly"=>0,
+     "compliance_total_unique_counts_monthly"=>0},
+   "analytics"=>
+    {"g_analytics_contribution_weekly"=>0,
+     "g_analytics_contribution_monthly"=>0,
+     "g_analytics_insights_weekly"=>0,
+     "g_analytics_insights_monthly"=>0,
+     "analytics_total_unique_counts_weekly"=>0,
+     "analytics_total_unique_counts_monthly"=>0},
+   "ide_edit"=>
+    {"g_edit_by_web_ide_weekly"=>0,
+     "g_edit_by_web_ide_monthly"=>0,
+     "g_edit_by_sfe_weekly"=>0,
+     "g_edit_by_sfe_monthly"=>0,
+     "ide_edit_total_unique_counts_weekly"=>0,
+     "ide_edit_total_unique_counts_monthly"=>0},
+   "search"=>
+    {"i_search_total_weekly"=>0, "i_search_total_monthly"=>0, "i_search_advanced_weekly"=>0, "i_search_advanced_monthly"=>0, "i_search_paid_weekly"=>0, "i_search_paid_monthly"=>0, "search_total_unique_counts_weekly"=>0, "search_total_unique_counts_monthly"=>0},
+   "source_code"=>{"wiki_action_weekly"=>0, "wiki_action_monthly"=>0}
+ }
+```
+
+Example usage:
 
 ```ruby
 # Redis Counters
 redis_usage_data(Gitlab::UsageDataCounters::WikiPageCounter)
 redis_usage_data { ::Gitlab::UsageCounters::PodLogs.usage_totals[:total] }
 
-# Redis HLL counter
-counter = Gitlab::UsageDataCounters::TrackUniqueActions
-redis_usage_data do
-          counter.count_unique_events(
-            event_action: Gitlab::UsageDataCounters::TrackUniqueActions::PUSH_ACTION,
-            date_from: time_period[:created_at].first,
-            date_to: time_period[:created_at].last
-          )
+# Define events in known_events.yml https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data_counters/known_events.yml
+
+# Tracking events
+Gitlab::UsageDataCounters::HLLRedisCounter.track_event(visitor_id, 'expand_vulnerabilities')
+
+# Get unique events for metric
+redis_usage_data { Gitlab::UsageDataCounters::HLLRedisCounter.unique_events(event_names: 'expand_vulnerabilities', start_date: 28.days.ago, end_date: Date.current) }
 ```
 
 ### Alternative Counters
@@ -362,8 +563,6 @@ When adding, changing, or updating metrics, please update the [Event Dictionary'
 ### 5. Add new metric to Versions Application
 
 Check if new metrics need to be added to the Versions Application. See `usage_data` [schema](https://gitlab.com/gitlab-services/version-gitlab-com/-/blob/master/db/schema.rb#L147) and usage data [parameters accepted](https://gitlab.com/gitlab-services/version-gitlab-com/-/blob/master/app/services/usage_ping.rb). Any metrics added under the `counts` key are saved in the `counts` column.
-
-For further details, see the [Process to add additional instrumentation to the Usage Ping](https://about.gitlab.com/handbook/product/product-processes/#process-to-add-additional-instrumentation-to-the-usage-ping).
 
 ### 6. Add the feature label
 
@@ -627,6 +826,7 @@ The following is example content of the Usage Ping payload.
   "topology": {
     "duration_s": 0.013836685999194742,
     "application_requests_per_hour": 4224,
+    "query_apdex_weekly_average": 0.996,
     "failures": [],
     "nodes": [
       {
@@ -663,4 +863,25 @@ The following is example content of the Usage Ping payload.
     ]
   }
 }
+```
+
+## Exporting Usage Ping SQL queries and definitions
+
+Two Rake tasks exist to export Usage Ping definitions. 
+
+- The Rake tasks export the raw SQL queries for `count`, `distinct_count`, `sum`.
+- The Rake tasks export the Redis counter class or the line of the Redis block for `redis_usage_data`.
+- The Rake tasks calculate the `alt_usage_data` metrics.
+
+In the home directory of your local GitLab installation run the following Rake tasks for the YAML and JSON versions respectively:
+
+```shell
+# for YAML export
+bin/rake gitlab:usage_data:dump_sql_in_yaml
+
+# for JSON export
+bin/rake gitlab:usage_data:dump_sql_in_json
+
+# You may pipe the output into a file
+bin/rake gitlab:usage_data:dump_sql_in_yaml > ~/Desktop/usage-metrics-2020-09-02.yaml
 ```

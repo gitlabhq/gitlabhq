@@ -1,6 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
 import { GlLink, GlSprintf } from '@gitlab/ui';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
+import HistoryItem from '~/vue_shared/components/registry/history_item.vue';
 import component from '~/packages/details/components/package_history.vue';
 
 import { mavenPackage, mockPipelineInfo } from '../../mock_data';
@@ -16,7 +17,10 @@ describe('Package History', () => {
     wrapper = shallowMount(component, {
       propsData: { ...defaultProps, ...props },
       stubs: {
-        HistoryElement: '<div data-testid="history-element"><slot></slot></div>',
+        HistoryItem: {
+          props: HistoryItem.props,
+          template: '<div data-testid="history-element"><slot></slot></div>',
+        },
         GlSprintf,
       },
     });

@@ -1,11 +1,12 @@
 <script>
-import DeprecatedModal from '~/vue_shared/components/deprecated_modal.vue';
+/* eslint-disable vue/no-v-html */
+import { GlModal } from '@gitlab/ui';
 import { __, s__, sprintf } from '~/locale';
 import csrf from '~/lib/utils/csrf';
 
 export default {
   components: {
-    DeprecatedModal,
+    GlModal,
   },
   props: {
     actionUrl: {
@@ -54,21 +55,38 @@ You are about to permanently delete %{yourAccount}, and all of the issues, merge
 Once you confirm %{deleteAccount}, it cannot be undone or recovered.`),
         {
           yourAccount: `<strong>${s__('Profiles|your account')}</strong>`,
-          deleteAccount: `<strong>${s__('Profiles|Delete Account')}</strong>`,
+          deleteAccount: `<strong>${s__('Profiles|Delete account')}</strong>`,
         },
         false,
       );
     },
-  },
-  methods: {
+    primaryProps() {
+      return {
+        text: s__('Delete account'),
+        attributes: [
+          { variant: 'danger', 'data-qa-selector': 'confirm_delete_account_button' },
+          { category: 'primary' },
+          { disabled: !this.canSubmit },
+        ],
+      };
+    },
+    cancelProps() {
+      return {
+        text: s__('Cancel'),
+      };
+    },
     canSubmit() {
       if (this.confirmWithPassword) {
         return this.enteredPassword !== '';
       }
-
       return this.enteredUsername === this.username;
     },
+  },
+  methods: {
     onSubmit() {
+      if (!this.canSubmit) {
+        return;
+      }
       this.$refs.form.submit();
     },
   },
@@ -76,42 +94,39 @@ Once you confirm %{deleteAccount}, it cannot be undone or recovered.`),
 </script>
 
 <template>
-  <deprecated-modal
-    id="delete-account-modal"
-    :title="s__('Profiles|Delete your account?')"
-    :text="text"
-    :primary-button-label="s__('Profiles|Delete account')"
-    :submit-disabled="!canSubmit()"
-    kind="danger"
-    @submit="onSubmit"
+  <gl-modal
+    modal-id="delete-account-modal"
+    title="Profiles"
+    :action-primary="primaryProps"
+    :action-cancel="cancelProps"
+    :ok-disabled="!canSubmit"
+    @primary="onSubmit"
   >
-    <template #body="props">
-      <p v-html="props.text"></p>
+    <p v-html="text"></p>
 
-      <form ref="form" :action="actionUrl" method="post">
-        <input type="hidden" name="_method" value="delete" />
-        <input :value="csrfToken" type="hidden" name="authenticity_token" />
+    <form ref="form" :action="actionUrl" method="post">
+      <input type="hidden" name="_method" value="delete" />
+      <input :value="csrfToken" type="hidden" name="authenticity_token" />
 
-        <p id="input-label" v-html="inputLabel"></p>
+      <p id="input-label" v-html="inputLabel"></p>
 
-        <input
-          v-if="confirmWithPassword"
-          v-model="enteredPassword"
-          name="password"
-          class="form-control"
-          type="password"
-          data-qa-selector="password_confirmation_field"
-          aria-labelledby="input-label"
-        />
-        <input
-          v-else
-          v-model="enteredUsername"
-          name="username"
-          class="form-control"
-          type="text"
-          aria-labelledby="input-label"
-        />
-      </form>
-    </template>
-  </deprecated-modal>
+      <input
+        v-if="confirmWithPassword"
+        v-model="enteredPassword"
+        name="password"
+        class="form-control"
+        type="password"
+        data-qa-selector="password_confirmation_field"
+        aria-labelledby="input-label"
+      />
+      <input
+        v-else
+        v-model="enteredUsername"
+        name="username"
+        class="form-control"
+        type="text"
+        aria-labelledby="input-label"
+      />
+    </form>
+  </gl-modal>
 </template>

@@ -150,8 +150,35 @@ We also have an [example project using Dynamic Child Pipelines with Jsonnet](htt
 In GitLab 12.9, the child pipeline could fail to be created in certain cases, causing the parent pipeline to fail.
 This is [resolved in GitLab 12.10](https://gitlab.com/gitlab-org/gitlab/-/issues/209070).
 
-## Limitations
+## Nested child pipelines
 
-A parent pipeline can trigger many child pipelines, but a child pipeline cannot trigger
-further child pipelines. See the [related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/29651)
-for discussion on possible future improvements.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/29651) in GitLab 13.4.
+> - It's [deployed behind a feature flag](../user/feature_flags.md), enabled by default.
+> - It's enabled on GitLab.com.
+> - It's recommended for production use.
+> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-nested-child-pipelines). **(CORE ONLY)**
+
+Parent and child pipelines were introduced with a maximum depth of one level of child
+pipelines, which was later increased to two. A parent pipeline can trigger many child
+pipelines, and these child pipelines can trigger their own child pipelines. It's not
+possible to trigger another level of child pipelines.
+
+### Enable or disable nested child pipelines **(CORE ONLY)**
+
+Nested child pipelines with a depth of two are under development but ready for
+production use. This feature is deployed behind a feature flag that is **enabled by default**.
+
+[GitLab administrators with access to the GitLab Rails console](../administration/feature_flags.md)
+can opt to disable it.
+
+To enable it:
+
+```ruby
+Feature.enable(:ci_child_of_child_pipeline)
+```
+
+To disable it:
+
+```ruby
+Feature.disable(:ci_child_of_child_pipeline)
+```

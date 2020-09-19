@@ -1,10 +1,9 @@
 <script>
-import { GlDeprecatedButton } from '@gitlab/ui';
-import Icon from './icon.vue';
+import { GlDeprecatedButton, GlIcon } from '@gitlab/ui';
 
 export default {
   components: {
-    Icon,
+    GlIcon,
     GlDeprecatedButton,
   },
   props: {
@@ -73,7 +72,7 @@ export default {
       data-display="static"
       data-toggle="dropdown"
     >
-      <icon name="chevron-down" :aria-label="__('toggle dropdown')" />
+      <gl-icon name="chevron-down" :aria-label="__('toggle dropdown')" />
     </button>
     <ul :class="dropdownClass" class="dropdown-menu dropdown-open-top">
       <template v-for="(action, index) in actions">

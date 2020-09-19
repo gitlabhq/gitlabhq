@@ -26,7 +26,7 @@ export default {
 
     <div
       v-if="showVersion"
-      class="table-section section-50 gl-display-flex justify-content-md-end"
+      class="table-section section-50 gl-display-flex gl-md-justify-content-end"
       data-testid="version-pattern"
     >
       <span class="gl-text-body">{{ dependency.version_pattern }}</span>

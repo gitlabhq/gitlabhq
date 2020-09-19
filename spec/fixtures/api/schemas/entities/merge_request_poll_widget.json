@@ -22,6 +22,14 @@
     "only_allow_merge_if_pipeline_succeeds": { "type": "boolean" },
     "has_ci": { "type": "boolean" },
     "ci_status": { "type": ["string", "null"] },
+    "pipeline_coverage_delta": { "type": ["float", "null"] },
+    "builds_with_coverage": {
+      "type": ["array", "null"],
+      "items": {
+        "type": "object",
+        "required": ["name", "coverage"]
+      }
+    },
     "cancel_auto_merge_path": { "type": ["string", "null"] },
     "test_reports_path": { "type": ["string", "null"] },
     "create_issue_to_resolve_discussions_path": { "type": ["string", "null"] },

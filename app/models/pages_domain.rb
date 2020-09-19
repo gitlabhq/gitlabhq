@@ -249,11 +249,7 @@ class PagesDomain < ApplicationRecord
     return if usage_serverless?
     return unless pages_deployed?
 
-    if Feature.enabled?(:async_update_pages_config, project)
-      run_after_commit { PagesUpdateConfigurationWorker.perform_async(project_id) }
-    else
-      Projects::UpdatePagesConfigurationService.new(project).execute
-    end
+    run_after_commit { PagesUpdateConfigurationWorker.perform_async(project_id) }
   end
   # rubocop: enable CodeReuse/ServiceClass
 

@@ -166,7 +166,11 @@ export default {
         !state.showDropdownButton &&
         !state.showDropdownContents
       ) {
-        this.handleDropdownClose(state.labels.filter(label => label.touched));
+        let filterFn = label => label.touched;
+        if (this.isDropdownVariantEmbedded) {
+          filterFn = label => label.set;
+        }
+        this.handleDropdownClose(state.labels.filter(filterFn));
       }
     },
     /**
@@ -186,7 +190,7 @@ export default {
       ].some(
         className =>
           target?.classList.contains(className) ||
-          target?.parentElement.classList.contains(className),
+          target?.parentElement?.classList.contains(className),
       );
 
       const hadExceptionParent = ['.js-btn-back', '.js-labels-list'].some(
@@ -248,10 +252,10 @@ export default {
         :allow-label-edit="allowLabelEdit"
         :labels-select-in-progress="labelsSelectInProgress"
       />
-      <dropdown-value v-show="!showDropdownButton">
+      <dropdown-value>
         <slot></slot>
       </dropdown-value>
-      <dropdown-button v-show="dropdownButtonVisible" />
+      <dropdown-button v-show="dropdownButtonVisible" class="gl-mt-2" />
       <dropdown-contents
         v-if="dropdownButtonVisible && showDropdownContents"
         ref="dropdownContents"

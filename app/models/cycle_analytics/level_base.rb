@@ -2,7 +2,7 @@
 
 module CycleAnalytics
   module LevelBase
-    STAGES = %i[issue plan code test review staging production].freeze
+    STAGES = %i[issue plan code test review staging].freeze
 
     def all_medians_by_stage
       STAGES.each_with_object({}) do |stage_name, medians_per_stage|

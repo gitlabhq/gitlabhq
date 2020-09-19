@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # Group Managed Accounts **(PREMIUM)**
 
 CAUTION: **Caution:**
-This [Closed Beta](https://about.gitlab.com/handbook/product/#closed-beta) feature is being re-evaluated in favor of a different
+This [Closed Beta](https://about.gitlab.com/handbook/product/gitlab-the-product/#sts=Closed%20Beta) feature is being re-evaluated in favor of a different
 [identity model](https://gitlab.com/gitlab-org/gitlab/-/issues/218631) that does not require separate accounts.
 We recommend that group administrators who haven't yet implemented this feature wait for
 the new solution.
@@ -76,7 +76,8 @@ This restriction also applies to projects forked from or to those groups.
 
 Groups with group-managed accounts can disallow forking of projects to destinations outside the group.
 To do so, enable the "Prohibit outer forks" option in **Settings > SAML SSO**.
-When enabled, projects within the group can only be forked to other destinations within the group (including its subgroups).
+When enabled **at the parent group level**, projects within the group can be forked
+only to other destinations within the group (including its subgroups).
 
 ## Credentials inventory for Group-managed accounts **(ULTIMATE)**
 
@@ -104,7 +105,7 @@ Since personal access tokens are the only token needed for programmatic access t
 
 ### Setting a limit
 
-Only a GitLab administrator or an owner of a group-managed account can set a limit. When this field is left empty, the [instance-level restriction](../../admin_area/settings/account_and_limit_settings.md#limiting-lifetime-of-personal-access-tokens-ultimate-only) on the lifetime of personal access tokens apply.
+Only a GitLab administrator or an owner of a group-managed account can set a limit. When this field is left empty, the [instance-level restriction](../../admin_area/settings/account_and_limit_settings.md#limiting-lifetime-of-personal-access-tokens) on the lifetime of personal access tokens apply.
 
 To set a limit on how long personal access tokens are valid for users in a group managed account:
 

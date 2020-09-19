@@ -34,8 +34,4 @@ had <%= failed.size %> failed <%= 'build'.pluralize(failed.size) %>.
 <%= render "notify/links/#{build.to_partial_path}", pipeline: @pipeline, build: build %>
 Stage: <%= build.stage %>
 Name: <%= build.name %>
-<% if build.has_trace? -%>
-Trace: <%= build.trace.raw(last_lines: 30) %>
-<% end -%>
-
 <% end -%>

@@ -1,0 +1,5 @@
+---
+title: Exposes Incident's severity via GraphQL
+merge_request: 40945
+author:
+type: added

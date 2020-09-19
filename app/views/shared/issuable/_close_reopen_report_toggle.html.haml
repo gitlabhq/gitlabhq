@@ -9,7 +9,7 @@
   - add_blocked_class = !issuable.closed? && warn_before_close
 
 .float-left.btn-group.gl-ml-3.issuable-close-dropdown.droplab-dropdown.js-issuable-close-dropdown
-  %button{ class: "#{button_class} btn-#{button_action} #{(add_blocked_class ? 'btn-issue-blocked' : '')}", data: { qa_selector: 'close_issue_button', endpoint: close_reopen_issuable_path(issuable) } }
+  %button{ class: "#{button_class} btn-#{button_action} #{(add_blocked_class ? 'btn-issue-blocked' : '')}", data: { testid: 'close-issue-button', qa_selector: 'close_issue_button', endpoint: close_reopen_issuable_path(issuable) } }
     #{display_button_action} #{display_issuable_type}
 
   = button_tag type: 'button', class: "#{toggle_class} btn-#{button_action}-color",
@@ -39,10 +39,8 @@
 
       %li.divider.droplab-item-ignore
 
-      %li.report-item{ data: { text: _('Report abuse'), url: new_abuse_report_path(user_id: issuable.author.id, ref_url: issuable_url(issuable)),
-                       button_class: "#{button_class} btn-close-color", toggle_class: "#{toggle_class} btn-close-color", method: '' } }
-        %button.btn.btn-transparent
-          = icon('check', class: 'icon')
+      %li.report-item{ data: { text: _('Report abuse'), button_class: "#{button_class} btn-close-color", toggle_class: "#{toggle_class} btn-close-color", method: '' } }
+        %a.report-abuse-link{ :href =>  new_abuse_report_path(user_id: issuable.author.id, ref_url: issuable_url(issuable)) }
           .description
             %strong.title= _('Report abuse')
             %p.text

@@ -28,7 +28,7 @@ describe('ClustersAncestorNotice', () => {
     });
 
     it('displays no notice', () => {
-      expect(wrapper.isEmpty()).toBe(true);
+      expect(wrapper.html()).toBe('');
     });
   });
 
@@ -45,7 +45,7 @@ describe('ClustersAncestorNotice', () => {
     });
 
     it('displays link', () => {
-      expect(wrapper.contains(GlLink)).toBe(true);
+      expect(wrapper.find(GlLink).exists()).toBe(true);
     });
   });
 });

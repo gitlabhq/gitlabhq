@@ -247,8 +247,9 @@ module TestEnv
       'GitLab Workhorse',
       install_dir: workhorse_dir,
       version: Gitlab::Workhorse.version,
-      task: "gitlab:workhorse:install[#{install_workhorse_args}]"
-    )
+      task: "gitlab:workhorse:install[#{install_workhorse_args}]") do
+        Gitlab::SetupHelper::Workhorse.create_configuration(workhorse_dir, nil)
+      end
   end
 
   def workhorse_dir
@@ -259,16 +260,22 @@ module TestEnv
     host = "[#{host}]" if host.include?(':')
     listen_addr = [host, port].join(':')
 
+    config_path = Gitlab::SetupHelper::Workhorse.get_config_path(workhorse_dir)
+
+    # This should be set up in setup_workhorse, but since
+    # component_needs_update? only checks that versions are consistent,
+    # we need to ensure the config file exists. This line can be removed
+    # later after a new Workhorse version is updated.
+    Gitlab::SetupHelper::Workhorse.create_configuration(workhorse_dir, nil) unless File.exist?(config_path)
+
     workhorse_pid = spawn(
+      { 'PATH' => "#{ENV['PATH']}:#{workhorse_dir}" },
       File.join(workhorse_dir, 'gitlab-workhorse'),
       '-authSocket', upstream,
       '-documentRoot', Rails.root.join('public').to_s,
       '-listenAddr', listen_addr,
       '-secretPath', Gitlab::Workhorse.secret_path.to_s,
-      # TODO: Needed for workhorse + redis features.
-      # https://gitlab.com/gitlab-org/gitlab/-/issues/209245
-      #
-      # '-config', '',
+      '-config', config_path,
       '-logFile', 'log/workhorse-test.log',
       '-logFormat', 'structured',
       '-developmentMode' # to serve assets and rich error messages

@@ -24,11 +24,11 @@ module Gitlab
         end
 
         def web_url
-          @submodule_links.first
+          @submodule_links&.web
         end
 
         def tree_url
-          @submodule_links.last
+          @submodule_links&.tree
         end
       end
     end

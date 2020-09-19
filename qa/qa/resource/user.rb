@@ -148,7 +148,7 @@ module QA
       end
 
       def fetching_own_data?
-        user&.username == username || Runtime::User.username == username
+        api_user&.username == username || Runtime::User.username == username
       end
     end
   end

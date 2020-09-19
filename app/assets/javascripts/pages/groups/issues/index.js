@@ -1,5 +1,5 @@
 import IssuableFilteredSearchTokenKeys from 'ee_else_ce/filtered_search/issuable_filtered_search_token_keys';
-import initIssuablesList from '~/issuables_list';
+import initIssuablesList from '~/issues_list';
 import projectSelect from '~/project_select';
 import initFilteredSearch from '~/pages/search/init_filtered_search';
 import issuableInitBulkUpdateSidebar from '~/issuable_init_bulk_update_sidebar';

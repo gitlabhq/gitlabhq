@@ -4,7 +4,16 @@ module API
   # Kubernetes Internal API
   module Internal
     class Kubernetes < Grape::API::Instance
+      before do
+        check_feature_enabled
+        authenticate_gitlab_kas_request!
+      end
+
       helpers do
+        def authenticate_gitlab_kas_request!
+          unauthorized! unless Gitlab::Kas.verify_api_request(headers)
+        end
+
         def agent_token
           @agent_token ||= cluster_agent_token_from_authorization_token
         end
@@ -36,7 +45,7 @@ module API
         end
 
         def check_feature_enabled
-          not_found! unless Feature.enabled?(:kubernetes_agent_internal_api)
+          not_found! unless Feature.enabled?(:kubernetes_agent_internal_api, default_enabled: true, type: :ops)
         end
 
         def check_agent_token
@@ -47,7 +56,6 @@ module API
       namespace 'internal' do
         namespace 'kubernetes' do
           before do
-            check_feature_enabled
             check_agent_token
           end
 
@@ -87,6 +95,26 @@ module API
               gitaly_info: gitaly_info(project),
               gitaly_repository: gitaly_repository(project)
             }
+          end
+        end
+
+        namespace 'kubernetes/usage_metrics' do
+          desc 'POST usage metrics' do
+            detail 'Updates usage metrics for agent'
+          end
+          params do
+            requires :gitops_sync_count, type: Integer, desc: 'The count to increment the gitops_sync metric by'
+          end
+          post '/' do
+            gitops_sync_count = params[:gitops_sync_count]
+
+            if gitops_sync_count < 0
+              bad_request!('gitops_sync_count must be greater than or equal to zero')
+            else
+              Gitlab::UsageDataCounters::KubernetesAgentCounter.increment_gitops_sync(gitops_sync_count)
+
+              no_content!
+            end
           end
         end
       end

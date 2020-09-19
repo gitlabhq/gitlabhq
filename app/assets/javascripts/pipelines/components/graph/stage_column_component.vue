@@ -41,6 +41,11 @@ export default {
       required: false,
       default: '',
     },
+    pipelineExpanded: {
+      type: Object,
+      required: false,
+      default: () => ({}),
+    },
   },
   computed: {
     hasAction() {
@@ -86,6 +91,7 @@ export default {
             v-if="group.size === 1"
             :job="group.jobs[0]"
             :job-hovered="jobHovered"
+            :pipeline-expanded="pipelineExpanded"
             css-class-job-name="build-content"
             @pipelineActionRequestComplete="pipelineActionRequestComplete"
           />

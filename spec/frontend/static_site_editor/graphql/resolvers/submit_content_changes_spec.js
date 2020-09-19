@@ -6,7 +6,7 @@ import {
   projectId as project,
   sourcePath,
   username,
-  sourceContent as content,
+  sourceContentYAML as content,
   savedContentMeta,
 } from '../../mock_data';
 

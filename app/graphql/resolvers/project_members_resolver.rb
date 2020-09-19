@@ -1,21 +1,15 @@
 # frozen_string_literal: true
 
 module Resolvers
-  class ProjectMembersResolver < BaseResolver
-    argument :search, GraphQL::STRING_TYPE,
-              required: false,
-              description: 'Search query'
+  class ProjectMembersResolver < MembersResolver
+    type Types::MemberInterface, null: true
 
-    type Types::ProjectMemberType, null: true
+    authorize :read_project_member
 
-    alias_method :project, :object
+    private
 
-    def resolve(**args)
-      return Member.none unless project.present?
-
+    def finder_class
       MembersFinder
-        .new(project, context[:current_user], params: args)
-        .execute
     end
   end
 end

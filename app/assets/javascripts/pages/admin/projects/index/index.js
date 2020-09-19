@@ -1,4 +1,3 @@
-import $ from 'jquery';
 import Vue from 'vue';
 
 import Translate from '~/vue_shared/translate';
@@ -17,6 +16,18 @@ document.addEventListener('DOMContentLoaded', () => {
       deleteProjectUrl: '',
       projectName: '',
     },
+    mounted() {
+      const deleteProjectButtons = document.querySelectorAll('.delete-project-button');
+      deleteProjectButtons.forEach(button => {
+        button.addEventListener('click', () => {
+          const buttonProps = button.dataset;
+          deleteModal.deleteProjectUrl = buttonProps.deleteProjectUrl;
+          deleteModal.projectName = buttonProps.projectName;
+
+          this.$root.$emit('bv::show::modal', 'delete-project-modal');
+        });
+      });
+    },
     render(createElement) {
       return createElement(deleteProjectModal, {
         props: {
@@ -26,13 +37,5 @@ document.addEventListener('DOMContentLoaded', () => {
         },
       });
     },
-  });
-
-  $(document).on('shown.bs.modal', event => {
-    if (event.relatedTarget.classList.contains('delete-project-button')) {
-      const buttonProps = event.relatedTarget.dataset;
-      deleteModal.deleteProjectUrl = buttonProps.deleteProjectUrl;
-      deleteModal.projectName = buttonProps.projectName;
-    }
   });
 });

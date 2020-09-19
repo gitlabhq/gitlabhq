@@ -13,24 +13,24 @@
   .cover-block.user-cover-block{ class: [('border-bottom' if profile_tabs.empty?)] }
     = render layout: 'users/cover_controls' do
       - if @user == current_user
-        = link_to profile_path, class: link_classes + 'btn btn-default has-tooltip', title: s_('UserProfile|Edit profile'), 'aria-label': 'Edit profile' do
+        = link_to profile_path, class: link_classes + 'btn gl-button btn-default has-tooltip', title: s_('UserProfile|Edit profile'), 'aria-label': 'Edit profile' do
           = sprite_icon('pencil')
       - elsif current_user
         - if @user.abuse_report
-          %button{ class: link_classes + 'btn btn-danger mr-1', title: s_('UserProfile|Already reported for abuse'),
-            data: { toggle: 'tooltip', placement: 'bottom', container: 'body' } }
-            = icon('exclamation-circle')
+          %button{ class: link_classes + 'btn gl-button btn-danger', title: s_('UserProfile|Already reported for abuse'),
+            data: { toggle: 'tooltip', placement: 'bottom', container: 'body' } }>
+            = sprite_icon('error')
         - else
-          = link_to new_abuse_report_path(user_id: @user.id, ref_url: request.referrer), class: link_classes + 'btn',
+          = link_to new_abuse_report_path(user_id: @user.id, ref_url: request.referrer), class: link_classes + 'btn gl-button',
             title: s_('UserProfile|Report abuse'), data: { toggle: 'tooltip', placement: 'bottom', container: 'body' } do
-            = icon('exclamation-circle')
+            = sprite_icon('error')
       - if can?(current_user, :read_user_profile, @user)
-        = link_to user_path(@user, rss_url_options), class: link_classes + 'btn btn-svg btn-default has-tooltip', title: s_('UserProfile|Subscribe'), 'aria-label': 'Subscribe' do
+        = link_to user_path(@user, rss_url_options), class: link_classes + 'btn gl-button btn-svg btn-default has-tooltip', title: s_('UserProfile|Subscribe'), 'aria-label': 'Subscribe' do
           = sprite_icon('rss', css_class: 'qa-rss-icon')
       - if current_user && current_user.admin?
-        = link_to [:admin, @user], class: link_classes + 'btn btn-default', title: s_('UserProfile|View user in admin area'),
+        = link_to [:admin, @user], class: link_classes + 'btn gl-button btn-default', title: s_('UserProfile|View user in admin area'),
           data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
-          = icon('users')
+          = sprite_icon('user')
 
     .profile-header{ class: [('with-no-profile-tabs' if profile_tabs.empty?)] }
       .avatar-holder

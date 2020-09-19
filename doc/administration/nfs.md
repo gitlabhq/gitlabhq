@@ -31,10 +31,10 @@ bug](https://bugzilla.redhat.com/show_bug.cgi?id=1783554) that causes
 following GitLab versions include a fix to work properly with that
 kernel version:
 
-1. [12.10.12](https://about.gitlab.com/releases/2020/06/25/gitlab-12-10-12-released/)
-1. [13.0.7](https://about.gitlab.com/releases/2020/06/25/gitlab-13-0-7-released/)
-1. [13.1.1](https://about.gitlab.com/releases/2020/06/24/gitlab-13-1-1-released/)
-1. 13.2 and up
+- [12.10.12](https://about.gitlab.com/releases/2020/06/25/gitlab-12-10-12-released/)
+- [13.0.7](https://about.gitlab.com/releases/2020/06/25/gitlab-13-0-7-released/)
+- [13.1.1](https://about.gitlab.com/releases/2020/06/24/gitlab-13-1-1-released/)
+- 13.2 and up
 
 If you are using that kernel version, be sure to upgrade GitLab to avoid
 errors.
@@ -127,7 +127,9 @@ administrators to keep NFS server delegation disabled.
 
 ### Improving NFS performance with GitLab
 
-#### Improving NFS performance with Unicorn
+NFS performance with GitLab can in some cases be improved with
+[direct Git access](gitaly/index.md#direct-access-to-git-in-gitlab) using
+[Rugged](https://github.com/libgit2/rugged).
 
 NOTE: **Note:**
 From GitLab 12.1, it will automatically be detected if Rugged can and should be used per storage.
@@ -138,18 +140,16 @@ If you previously enabled Rugged using the feature flag, you will need to unset 
 sudo gitlab-rake gitlab:features:unset_rugged
 ```
 
-If the Rugged feature flag is explicitly set to either true or false, GitLab will use the value explicitly set.
+If the Rugged feature flag is explicitly set to either `true` or `false`, GitLab will use the value explicitly set.
 
 #### Improving NFS performance with Puma
 
 NOTE: **Note:**
-From GitLab 12.7, Rugged auto-detection is disabled if Puma thread count is greater than 1.
+From GitLab 12.7, Rugged is not automatically enabled if Puma thread count is greater than `1`.
 
-If you want to use Rugged with Puma, it is recommended to [set Puma thread count to 1](https://docs.gitlab.com/omnibus/settings/puma.html#puma-settings).
+If you want to use Rugged with Puma, [set Puma thread count to `1`](https://docs.gitlab.com/omnibus/settings/puma.html#puma-settings).
 
-If you want to use Rugged with Puma thread count more than 1, Rugged can be enabled using the [feature flag](../development/gitaly.md#legacy-rugged-code)
-
-If the Rugged feature flag is explicitly set to either true or false, GitLab will use the value explicitly set.
+If you want to use Rugged with Puma thread count more than `1`, Rugged can be enabled using the [feature flag](../development/gitaly.md#legacy-rugged-code).
 
 ## NFS client
 
@@ -172,6 +172,9 @@ Here is an example snippet to add to `/etc/fstab`:
 10.1.0.1:/var/opt/gitlab/gitlab-ci/builds /var/opt/gitlab/gitlab-ci/builds nfs4 defaults,vers=4.1,hard,rsize=1048576,wsize=1048576,noatime,nofail,lookupcache=positive 0 2
 10.1.0.1:/var/opt/gitlab/git-data /var/opt/gitlab/git-data nfs4 defaults,vers=4.1,hard,rsize=1048576,wsize=1048576,noatime,nofail,lookupcache=positive 0 2
 ```
+
+You can view information and options set for each of the mounted NFS file
+systems by running `nfsstat -m` and `cat /etc/fstab`.
 
 Note there are several options that you should consider using:
 
@@ -270,9 +273,6 @@ NFS mount point is `/gitlab-nfs`. Then, add the following bind mounts in
 Using bind mounts will require manually making sure the data directories
 are empty before attempting a restore. Read more about the
 [restore prerequisites](../raketasks/backup_restore.md).
-
-You can view information and options set for each of the mounted NFS file
-systems by running `nfsstat -m` and `cat /etc/fstab`.
 
 ### Multiple NFS mounts
 

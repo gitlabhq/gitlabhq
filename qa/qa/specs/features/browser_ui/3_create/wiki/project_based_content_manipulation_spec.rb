@@ -14,7 +14,7 @@ module QA
           Flow::Login.sign_in
         end
 
-        it 'by manipulating content on the page' do
+        it 'by manipulating content on the page', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/857' do
           wiki.visit!
 
           Page::Project::Wiki::Show.perform(&:click_edit)
@@ -33,7 +33,7 @@ module QA
           end
         end
 
-        it 'by manipulating content on the page using git push' do
+        it 'by manipulating content on the page using git push', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/858' do
           Resource::Repository::WikiPush.fabricate! do |push|
             push.file_content = new_wiki_content
             push.commit_message = commit_message

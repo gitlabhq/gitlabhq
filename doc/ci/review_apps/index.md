@@ -46,8 +46,8 @@ In this example, a branch was:
 
 After adding Review Apps to your workflow, you follow the branched Git flow. That is:
 
-1. Push a branch and let the Runner deploy the Review App based on the `script` definition of the dynamic environment job.
-1. Wait for the Runner to build and deploy your web application.
+1. Push a branch and let the runner deploy the Review App based on the `script` definition of the dynamic environment job.
+1. Wait for the runner to build and deploy your web application.
 1. Click on the link provided in the merge request related to the branch to see the changes live.
 
 ## Configuring Review Apps
@@ -57,7 +57,7 @@ Review Apps are built on [dynamic environments](../environments/index.md#configu
 The process of configuring Review Apps is as follows:
 
 1. Set up the infrastructure to host and deploy the Review Apps (check the [examples](#review-apps-examples) below).
-1. [Install](https://docs.gitlab.com/runner/install/) and [configure](https://docs.gitlab.com/runner/commands/) a Runner to do deployment.
+1. [Install](https://docs.gitlab.com/runner/install/) and [configure](https://docs.gitlab.com/runner/commands/) a runner to do deployment.
 1. Set up a job in `.gitlab-ci.yml` that uses the [predefined CI environment variable](../variables/README.md) `${CI_COMMIT_REF_NAME}`
    to create dynamic environments and restrict it to run only on branches.
    Alternatively, you can get a YML template for this job by [enabling review apps](#enable-review-apps-button) for your project.
@@ -130,20 +130,20 @@ deployed from its [project on GitLab.com](https://gitlab.com/gitlab-com/www-gitl
 
 ```yaml
 # Team data
-- source: 'data/team.yml' # data/team.yml
-  public: 'team/' # team/
+- source: 'data/team.yml'  # data/team.yml
+  public: 'team/'  # team/
 
 # Blogposts
-- source: /source\/posts\/([0-9]{4})-([0-9]{2})-([0-9]{2})-(.+?)\..*/ # source/posts/2017-01-30-around-the-world-in-6-releases.html.md.erb
-  public: '\1/\2/\3/\4/' # 2017/01/30/around-the-world-in-6-releases/
+- source: /source\/posts\/([0-9]{4})-([0-9]{2})-([0-9]{2})-(.+?)\..*/  # source/posts/2017-01-30-around-the-world-in-6-releases.html.md.erb
+  public: '\1/\2/\3/\4/'  # 2017/01/30/around-the-world-in-6-releases/
 
 # HTML files
-- source: /source\/(.+?\.html).*/ # source/index.html.haml
-  public: '\1' # index.html
+- source: /source\/(.+?\.html).*/  # source/index.html.haml
+  public: '\1'  # index.html
 
 # Other files
-- source: /source\/(.*)/ # source/images/blogimages/around-the-world-in-6-releases-cover.png
-  public: '\1' # images/blogimages/around-the-world-in-6-releases-cover.png
+- source: /source\/(.*)/  # source/images/blogimages/around-the-world-in-6-releases-cover.png
+  public: '\1'  # images/blogimages/around-the-world-in-6-releases-cover.png
 ```
 
 Mappings are defined as entries in the root YAML array, and are identified by a `-` prefix. Within an entry, there is a hash map with two keys:

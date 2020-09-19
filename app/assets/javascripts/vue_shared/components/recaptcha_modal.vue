@@ -1,4 +1,5 @@
 <script>
+/* eslint-disable vue/no-v-html */
 import DeprecatedModal from './deprecated_modal.vue';
 import { eventHub } from './recaptcha_eventhub';
 

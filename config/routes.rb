@@ -32,13 +32,10 @@ Rails.application.routes.draw do
   # This prefixless path is required because Jira gets confused if we set it up with a path
   # More information: https://gitlab.com/gitlab-org/gitlab/issues/6752
   scope path: '/login/oauth', controller: 'oauth/jira/authorizations', as: :oauth_jira do
-    Gitlab.ee do
-      get :authorize, action: :new
-      get :callback
-      post :access_token
-    end
+    get :authorize, action: :new
+    get :callback
+    post :access_token
 
-    # This helps minimize merge conflicts with CE for this scope block
     match '*all', via: [:get, :post], to: proc { [404, {}, ['']] }
   end
 
@@ -72,6 +69,10 @@ Rails.application.routes.draw do
   # Begin of the /-/ scope.
   # Use this scope for all new global routes.
   scope path: '-' do
+    # remove in 13.5
+    get '/instance_statistics', to: redirect('admin/dev_ops_report')
+    get '/instance_statistics/dev_ops_score', to: redirect('admin/dev_ops_report')
+    get '/instance_statistics/cohorts', to: redirect('admin/cohorts')
     # Autocomplete
     get '/autocomplete/users' => 'autocomplete#users'
     get '/autocomplete/users/:id' => 'autocomplete#user'
@@ -123,19 +124,17 @@ Rails.application.routes.draw do
     get 'ide/*vueroute' => 'ide#index', format: false
 
     draw :operations
-    draw :instance_statistics
+    draw :jira_connect
 
     Gitlab.ee do
       draw :security
       draw :smartcard
-      draw :jira_connect
       draw :username
       draw :trial
       draw :trial_registration
       draw :country
       draw :country_state
       draw :subscription
-      draw :analytics
 
       scope '/push_from_secondary/:geo_node_id' do
         draw :git_http

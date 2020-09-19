@@ -87,7 +87,7 @@ describe('DropdownValueCollapsedComponent', () => {
     });
 
     it('renders tags icon element', () => {
-      expect(vm.$el.querySelector('.fa-tags')).not.toBeNull();
+      expect(vm.$el.querySelector('[data-testid="labels-icon"]')).not.toBeNull();
     });
 
     it('renders labels count', () => {

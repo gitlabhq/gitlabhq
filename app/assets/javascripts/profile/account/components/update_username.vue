@@ -1,4 +1,5 @@
 <script>
+/* eslint-disable vue/no-v-html */
 import { escape } from 'lodash';
 import axios from '~/lib/utils/axios_utils';
 import DeprecatedModal2 from '~/vue_shared/components/deprecated_modal_2.vue';

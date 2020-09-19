@@ -1,0 +1,5 @@
+---
+title: Replace v-html with v-safe-html in note_signed_out_widget_spec.js
+merge_request: 41219
+author: Kev @KevSlashNull
+type: other

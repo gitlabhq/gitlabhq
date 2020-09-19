@@ -1,15 +1,16 @@
 <script>
+/* eslint-disable vue/no-v-html */
+import { GlIcon } from '@gitlab/ui';
 import iconBuildStatus from '../svg/icon_build_status.svg';
 import iconBranch from '../svg/icon_branch.svg';
 import limitWarning from './limit_warning_component.vue';
 import totalTime from './total_time_component.vue';
-import icon from '../../vue_shared/components/icon.vue';
 
 export default {
   components: {
     totalTime,
     limitWarning,
-    icon,
+    GlIcon,
   },
   props: {
     items: {
@@ -46,7 +47,7 @@ export default {
             <span class="icon-build-status" v-html="iconBuildStatus"> </span>
             <a :href="build.url" class="item-build-name"> {{ build.name }} </a> &middot;
             <a :href="build.url" class="pipeline-id"> #{{ build.id }} </a>
-            <icon :size="16" name="fork" />
+            <gl-icon :size="16" name="fork" />
             <a :href="build.branch.url" class="ref-name"> {{ build.branch.name }} </a>
             <span class="icon-branch" v-html="iconBranch"> </span>
             <a :href="build.commitUrl" class="commit-sha"> {{ build.shortSha }} </a>

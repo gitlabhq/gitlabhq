@@ -1,11 +1,10 @@
 <script>
-import { GlTooltipDirective, GlLink } from '@gitlab/ui';
-import Icon from '~/vue_shared/components/icon.vue';
+import { GlTooltipDirective, GlLink, GlIcon } from '@gitlab/ui';
 
 export default {
   components: {
     GlLink,
-    Icon,
+    GlIcon,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -35,7 +34,7 @@ export default {
       target="_blank"
       class="d-flex-center pl-1"
     >
-      <icon name="question" />
+      <gl-icon name="question" />
     </gl-link>
   </div>
 </template>

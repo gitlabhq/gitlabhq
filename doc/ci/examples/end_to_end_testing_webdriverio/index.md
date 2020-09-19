@@ -2,13 +2,7 @@
 stage: Verify
 group: Testing
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
-author: Vincent Tunru
-author_gitlab: Vinnl
-level: advanced
-article_type: user guide
 type: tutorial
-date: 2019-02-18
-description: 'Confidence checking your entire app every time a new feature is added can quickly become repetitive. Learn how to automate it with GitLab CI/CD.'
 ---
 
 # End-to-end testing with GitLab CI/CD and WebdriverIO
@@ -228,6 +222,7 @@ deploy_terraform:
   stage: deploy
   script:
     # Your Review App deployment scripts - for a working example please check https://gitlab.com/Flockademic/Flockademic/blob/5a45f1c2412e93810fab50e2dab8949e2d0633c7/.gitlab-ci.yml#L315
+    - echo
 e2e:firefox:
   stage: confidence-check
   services:

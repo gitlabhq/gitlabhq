@@ -20,6 +20,7 @@ RSpec.describe 'projects/merge_requests/edit.html.haml' do
       target_project: project,
       author: user,
       assignees: [user],
+      reviewers: [user],
       milestone: milestone)
   end
 

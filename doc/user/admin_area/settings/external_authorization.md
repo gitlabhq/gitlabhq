@@ -22,11 +22,11 @@ known response, the result is cached for 6 hours.
 If the external authorization is enabled, GitLab will further block pages and
 functionality that render cross-project data. That includes:
 
-- most pages under Dashboard (Activity, Milestones, Snippets, Assigned merge
-  requests, Assigned issues, Todos)
-- under a specific group (Activity, Contribution analytics, Issues, Issue boards,
-  Labels, Milestones, Merge requests)
-- Global and Group search will be disabled
+- Most pages under Dashboard (Activity, Milestones, Snippets, Assigned merge
+  requests, Assigned issues, To-Do List).
+- Under a specific group (Activity, Contribution analytics, Issues, Issue boards,
+  Labels, Milestones, Merge requests).
+- Global and Group search will be disabled.
 
 This is to prevent performing to many requests at once to the external
 authorization service.

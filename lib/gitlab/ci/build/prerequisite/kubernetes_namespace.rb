@@ -33,7 +33,7 @@ module Gitlab
 
           def kubernetes_namespace
             strong_memoize(:kubernetes_namespace) do
-              Clusters::KubernetesNamespaceFinder.new(
+              ::Clusters::KubernetesNamespaceFinder.new(
                 deployment_cluster,
                 project: environment.project,
                 environment_name: environment.name,
@@ -47,7 +47,7 @@ module Gitlab
 
             return if conflicting_ci_namespace_requested?(namespace)
 
-            Clusters::Kubernetes::CreateOrUpdateNamespaceService.new(
+            ::Clusters::Kubernetes::CreateOrUpdateNamespaceService.new(
               cluster: deployment_cluster,
               kubernetes_namespace: namespace
             ).execute
@@ -71,7 +71,7 @@ module Gitlab
           end
 
           def build_namespace_record
-            Clusters::BuildKubernetesNamespaceService.new(
+            ::Clusters::BuildKubernetesNamespaceService.new(
               deployment_cluster,
               environment: environment
             ).execute

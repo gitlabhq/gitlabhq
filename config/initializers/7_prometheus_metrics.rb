@@ -16,7 +16,7 @@ def prometheus_default_multiproc_dir
 end
 
 Prometheus::Client.configure do |config|
-  config.logger = Rails.logger # rubocop:disable Gitlab/RailsLogger
+  config.logger = Gitlab::AppLogger
 
   config.initial_mmap_file_size = 4 * 1024
 
@@ -45,6 +45,10 @@ if !Rails.env.test? && Gitlab::Metrics.prometheus_metrics_enabled?
     Gitlab::Metrics::Samplers::RubySampler.initialize_instance.start
     Gitlab::Metrics::Samplers::DatabaseSampler.initialize_instance.start
     Gitlab::Metrics::Samplers::ThreadsSampler.initialize_instance.start
+
+    if Gitlab::Runtime.action_cable?
+      Gitlab::Metrics::Samplers::ActionCableSampler.instance.start
+    end
 
     if Gitlab.ee? && Gitlab::Runtime.sidekiq?
       Gitlab::Metrics::Samplers::GlobalSearchSampler.instance.start

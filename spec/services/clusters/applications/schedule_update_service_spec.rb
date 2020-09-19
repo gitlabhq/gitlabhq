@@ -7,7 +7,7 @@ RSpec.describe Clusters::Applications::ScheduleUpdateService do
     let(:project) { create(:project) }
 
     around do |example|
-      Timecop.freeze { example.run }
+      freeze_time { example.run }
     end
 
     context 'when application is able to be updated' do

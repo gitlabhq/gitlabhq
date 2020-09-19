@@ -45,11 +45,15 @@ export default class FileTemplateSelector {
   }
 
   renderLoading() {
-    this.$loadingIcon.addClass('fa-spinner fa-spin').removeClass('fa-chevron-down');
+    this.$loadingIcon
+      .addClass('gl-spinner gl-spinner-orange gl-spinner-sm')
+      .removeClass('fa-chevron-down');
   }
 
   renderLoaded() {
-    this.$loadingIcon.addClass('fa-chevron-down').removeClass('fa-spinner fa-spin');
+    this.$loadingIcon
+      .addClass('fa-chevron-down')
+      .removeClass('gl-spinner gl-spinner-orange gl-spinner-sm');
   }
 
   reportSelection(options) {

@@ -1,3 +1,4 @@
+import { sanitize } from 'dompurify';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import updateDescription from '../utils/update_description';
 
@@ -27,8 +28,8 @@ export default class Store {
     const details =
       descriptionSection != null && descriptionSection.getElementsByTagName('details');
 
-    this.state.descriptionHtml = updateDescription(data.description, details);
-    this.state.titleHtml = data.title;
+    this.state.descriptionHtml = updateDescription(sanitize(data.description), details);
+    this.state.titleHtml = sanitize(data.title);
     this.state.lock_version = data.lock_version;
   }
 

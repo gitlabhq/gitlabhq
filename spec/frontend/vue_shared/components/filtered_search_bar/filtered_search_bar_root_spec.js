@@ -1,19 +1,28 @@
 import { shallowMount, mount } from '@vue/test-utils';
-import {
-  GlFilteredSearch,
-  GlButtonGroup,
-  GlButton,
-  GlNewDropdown as GlDropdown,
-  GlNewDropdownItem as GlDropdownItem,
-} from '@gitlab/ui';
+import { GlFilteredSearch, GlButtonGroup, GlButton, GlDropdown, GlDropdownItem } from '@gitlab/ui';
 
 import FilteredSearchBarRoot from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
+import { uniqueTokens } from '~/vue_shared/components/filtered_search_bar/filtered_search_utils';
 import { SortDirection } from '~/vue_shared/components/filtered_search_bar/constants';
 
 import RecentSearchesStore from '~/filtered_search/stores/recent_searches_store';
 import RecentSearchesService from '~/filtered_search/services/recent_searches_service';
 
-import { mockAvailableTokens, mockSortOptions, mockHistoryItems } from './mock_data';
+import {
+  mockAvailableTokens,
+  mockSortOptions,
+  mockHistoryItems,
+  tokenValueAuthor,
+  tokenValueLabel,
+  tokenValueMilestone,
+} from './mock_data';
+
+jest.mock('~/vue_shared/components/filtered_search_bar/filtered_search_utils', () => ({
+  uniqueTokens: jest.fn().mockImplementation(tokens => tokens),
+  stripQuotes: jest.requireActual(
+    '~/vue_shared/components/filtered_search_bar/filtered_search_utils',
+  ).stripQuotes,
+}));
 
 const createComponent = ({
   shallow = true,
@@ -52,10 +61,10 @@ describe('FilteredSearchBarRoot', () => {
       expect(wrapper.vm.filterValue).toEqual([]);
       expect(wrapper.vm.selectedSortOption).toBe(mockSortOptions[0].sortDirection.descending);
       expect(wrapper.vm.selectedSortDirection).toBe(SortDirection.descending);
-      expect(wrapper.contains(GlButtonGroup)).toBe(true);
-      expect(wrapper.contains(GlButton)).toBe(true);
-      expect(wrapper.contains(GlDropdown)).toBe(true);
-      expect(wrapper.contains(GlDropdownItem)).toBe(true);
+      expect(wrapper.find(GlButtonGroup).exists()).toBe(true);
+      expect(wrapper.find(GlButton).exists()).toBe(true);
+      expect(wrapper.find(GlDropdown).exists()).toBe(true);
+      expect(wrapper.find(GlDropdownItem).exists()).toBe(true);
     });
 
     it('does not initialize `selectedSortOption` and `selectedSortDirection` when `sortOptions` is not applied and hides the sort dropdown', () => {
@@ -63,23 +72,31 @@ describe('FilteredSearchBarRoot', () => {
 
       expect(wrapperNoSort.vm.filterValue).toEqual([]);
       expect(wrapperNoSort.vm.selectedSortOption).toBe(undefined);
-      expect(wrapperNoSort.contains(GlButtonGroup)).toBe(false);
-      expect(wrapperNoSort.contains(GlButton)).toBe(false);
-      expect(wrapperNoSort.contains(GlDropdown)).toBe(false);
-      expect(wrapperNoSort.contains(GlDropdownItem)).toBe(false);
+      expect(wrapperNoSort.find(GlButtonGroup).exists()).toBe(false);
+      expect(wrapperNoSort.find(GlButton).exists()).toBe(false);
+      expect(wrapperNoSort.find(GlDropdown).exists()).toBe(false);
+      expect(wrapperNoSort.find(GlDropdownItem).exists()).toBe(false);
     });
   });
 
   describe('computed', () => {
     describe('tokenSymbols', () => {
       it('returns a map containing type and symbols from `tokens` prop', () => {
-        expect(wrapper.vm.tokenSymbols).toEqual({ author_username: '@', label_name: '~' });
+        expect(wrapper.vm.tokenSymbols).toEqual({
+          author_username: '@',
+          label_name: '~',
+          milestone_title: '%',
+        });
       });
     });
 
     describe('tokenTitles', () => {
       it('returns a map containing type and title from `tokens` prop', () => {
-        expect(wrapper.vm.tokenTitles).toEqual({ author_username: 'Author', label_name: 'Label' });
+        expect(wrapper.vm.tokenTitles).toEqual({
+          author_username: 'Author',
+          label_name: 'Label',
+          milestone_title: 'Milestone',
+        });
       });
     });
 
@@ -129,6 +146,20 @@ describe('FilteredSearchBarRoot', () => {
 
         expect(wrapper.vm.filteredRecentSearches).toHaveLength(1);
         expect(wrapper.vm.filteredRecentSearches[0]).toEqual({ foo: 'bar' });
+      });
+
+      it('returns array of recent searches sanitizing any duplicate token values', async () => {
+        wrapper.setData({
+          recentSearches: [
+            [tokenValueAuthor, tokenValueLabel, tokenValueMilestone, tokenValueLabel],
+            [tokenValueAuthor, tokenValueMilestone],
+          ],
+        });
+
+        await wrapper.vm.$nextTick();
+
+        expect(wrapper.vm.filteredRecentSearches).toHaveLength(2);
+        expect(uniqueTokens).toHaveBeenCalled();
       });
 
       it('returns undefined when recentSearchesStorageKey prop is not set on component', async () => {
@@ -182,40 +213,12 @@ describe('FilteredSearchBarRoot', () => {
     });
 
     describe('removeQuotesEnclosure', () => {
-      const mockFilters = [
-        {
-          type: 'author_username',
-          value: {
-            data: 'root',
-            operator: '=',
-          },
-        },
-        {
-          type: 'label_name',
-          value: {
-            data: '"Documentation Update"',
-            operator: '=',
-          },
-        },
-        'foo',
-      ];
+      const mockFilters = [tokenValueAuthor, tokenValueLabel, 'foo'];
 
       it('returns filter array with unescaped strings for values which have spaces', () => {
         expect(wrapper.vm.removeQuotesEnclosure(mockFilters)).toEqual([
-          {
-            type: 'author_username',
-            value: {
-              data: 'root',
-              operator: '=',
-            },
-          },
-          {
-            type: 'label_name',
-            value: {
-              data: 'Documentation Update',
-              operator: '=',
-            },
-          },
+          tokenValueAuthor,
+          tokenValueLabel,
           'foo',
         ]);
       });
@@ -277,21 +280,26 @@ describe('FilteredSearchBarRoot', () => {
     });
 
     describe('handleFilterSubmit', () => {
-      const mockFilters = [
-        {
-          type: 'author_username',
-          value: {
-            data: 'root',
-            operator: '=',
-          },
-        },
-        'foo',
-      ];
+      const mockFilters = [tokenValueAuthor, 'foo'];
+
+      beforeEach(async () => {
+        wrapper.setData({
+          filterValue: mockFilters,
+        });
+
+        await wrapper.vm.$nextTick();
+      });
+
+      it('calls `uniqueTokens` on `filterValue` prop to remove duplicates', () => {
+        wrapper.vm.handleFilterSubmit();
+
+        expect(uniqueTokens).toHaveBeenCalledWith(wrapper.vm.filterValue);
+      });
 
       it('calls `recentSearchesStore.addRecentSearch` with serialized value of provided `filters` param', () => {
         jest.spyOn(wrapper.vm.recentSearchesStore, 'addRecentSearch');
 
-        wrapper.vm.handleFilterSubmit(mockFilters);
+        wrapper.vm.handleFilterSubmit();
 
         return wrapper.vm.recentSearchesPromise.then(() => {
           expect(wrapper.vm.recentSearchesStore.addRecentSearch).toHaveBeenCalledWith(mockFilters);
@@ -301,7 +309,7 @@ describe('FilteredSearchBarRoot', () => {
       it('calls `recentSearchesService.save` with array of searches', () => {
         jest.spyOn(wrapper.vm.recentSearchesService, 'save');
 
-        wrapper.vm.handleFilterSubmit(mockFilters);
+        wrapper.vm.handleFilterSubmit();
 
         return wrapper.vm.recentSearchesPromise.then(() => {
           expect(wrapper.vm.recentSearchesService.save).toHaveBeenCalledWith([mockFilters]);
@@ -311,7 +319,7 @@ describe('FilteredSearchBarRoot', () => {
       it('sets `recentSearches` data prop with array of searches', () => {
         jest.spyOn(wrapper.vm.recentSearchesService, 'save');
 
-        wrapper.vm.handleFilterSubmit(mockFilters);
+        wrapper.vm.handleFilterSubmit();
 
         return wrapper.vm.recentSearchesPromise.then(() => {
           expect(wrapper.vm.recentSearches).toEqual([mockFilters]);
@@ -329,7 +337,7 @@ describe('FilteredSearchBarRoot', () => {
       it('emits component event `onFilter` with provided filters param', () => {
         jest.spyOn(wrapper.vm, 'removeQuotesEnclosure');
 
-        wrapper.vm.handleFilterSubmit(mockFilters);
+        wrapper.vm.handleFilterSubmit();
 
         expect(wrapper.emitted('onFilter')[0]).toEqual([mockFilters]);
         expect(wrapper.vm.removeQuotesEnclosure).toHaveBeenCalledWith(mockFilters);
@@ -366,7 +374,9 @@ describe('FilteredSearchBarRoot', () => {
         '.gl-search-box-by-click-menu .gl-search-box-by-click-history-item',
       );
 
-      expect(searchHistoryItemsEl.at(0).text()).toBe('Author := @tobyLabel := ~Bug"duo"');
+      expect(searchHistoryItemsEl.at(0).text()).toBe(
+        'Author := @rootLabel := ~bugMilestone := %v1.0"duo"',
+      );
 
       wrapperFullMount.destroy();
     });

@@ -15,21 +15,25 @@ RSpec.describe Ci::GenerateCoverageReportsService do
       let!(:head_pipeline) { merge_request.head_pipeline }
       let!(:base_pipeline) { nil }
 
-      it 'returns status and data' do
+      it 'returns status and data', :aggregate_failures do
+        expect_any_instance_of(Ci::PipelineArtifact) do |instance|
+          expect(instance).to receive(:present)
+          expect(instance).to receive(:for_files).with(merge_request.new_paths).and_call_original
+        end
+
         expect(subject[:status]).to eq(:parsed)
         expect(subject[:data]).to eq(files: {})
       end
     end
 
-    context 'when head pipeline has corrupted coverage reports' do
+    context 'when head pipeline does not have a coverage report artifact' do
       let!(:merge_request) { create(:merge_request, :with_coverage_reports, source_project: project) }
       let!(:service) { described_class.new(project, nil, id: merge_request.id) }
       let!(:head_pipeline) { merge_request.head_pipeline }
       let!(:base_pipeline) { nil }
 
       before do
-        build = create(:ci_build, pipeline: head_pipeline, project: head_pipeline.project)
-        create(:ci_job_artifact, :coverage_with_corrupted_data, job: build, project: project)
+        head_pipeline.pipeline_artifacts.destroy_all # rubocop: disable Cop/DestroyAll
       end
 
       it 'returns status and error message' do

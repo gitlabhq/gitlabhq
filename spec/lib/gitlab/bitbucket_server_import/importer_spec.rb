@@ -6,9 +6,10 @@ RSpec.describe Gitlab::BitbucketServerImport::Importer do
   include ImportSpecHelper
 
   let(:import_url) { 'http://my-bitbucket' }
-  let(:user) { 'bitbucket' }
+  let(:bitbucket_user) { 'bitbucket' }
+  let(:project_creator) { create(:user, username: 'project_creator', email: 'project_creator@example.org') }
   let(:password) { 'test' }
-  let(:project) { create(:project, :repository, import_url: import_url) }
+  let(:project) { create(:project, :repository, import_url: import_url, creator: project_creator) }
   let(:now) { Time.now.utc.change(usec: 0) }
   let(:project_key) { 'TEST' }
   let(:repo_slug) { 'rouge' }
@@ -19,7 +20,7 @@ RSpec.describe Gitlab::BitbucketServerImport::Importer do
   before do
     data = project.create_or_update_import_data(
       data: { project_key: project_key, repo_slug: repo_slug },
-      credentials: { base_uri: import_url, user: user, password: password }
+      credentials: { base_uri: import_url, user: bitbucket_user, password: password }
     )
     data.save
     project.save
@@ -51,12 +52,11 @@ RSpec.describe Gitlab::BitbucketServerImport::Importer do
   end
 
   describe '#import_pull_requests' do
-    before do
-      allow(subject).to receive(:import_repository)
-      allow(subject).to receive(:delete_temp_branches)
-      allow(subject).to receive(:restore_branches)
+    let(:pull_request_author) { create(:user, username: 'pull_request_author', email: 'pull_request_author@example.org') }
+    let(:note_author) { create(:user, username: 'note_author', email: 'note_author@example.org') }
 
-      pull_request = instance_double(
+    let(:pull_request) do
+      instance_double(
         BitbucketServer::Representation::PullRequest,
         iid: 10,
         source_branch_sha: sample.commits.last,
@@ -67,65 +67,172 @@ RSpec.describe Gitlab::BitbucketServerImport::Importer do
         description: 'This is a test pull request',
         state: 'merged',
         author: 'Test Author',
-        author_email: project.owner.email,
+        author_email: pull_request_author.email,
+        author_username: pull_request_author.username,
         created_at: Time.now,
         updated_at: Time.now,
         raw: {},
         merged?: true)
+    end
 
-      allow(subject.client).to receive(:pull_requests).and_return([pull_request])
-
-      @merge_event = instance_double(
+    let(:merge_event) do
+      instance_double(
         BitbucketServer::Representation::Activity,
         comment?: false,
         merge_event?: true,
-        committer_email: project.owner.email,
+        committer_email: pull_request_author.email,
         merge_timestamp: now,
         merge_commit: '12345678'
       )
+    end
 
-      @pr_note = instance_double(
+    let(:pr_note) do
+      instance_double(
         BitbucketServer::Representation::Comment,
         note: 'Hello world',
-        author_email: 'unknown@gmail.com',
-        author_username: 'The Flash',
+        author_email: note_author.email,
+        author_username: note_author.username,
         comments: [],
         created_at: now,
         updated_at: now,
         parent_comment: nil)
+    end
 
-      @pr_comment = instance_double(
+    let(:pr_comment) do
+      instance_double(
         BitbucketServer::Representation::Activity,
         comment?: true,
         inline_comment?: false,
         merge_event?: false,
-        comment: @pr_note)
+        comment: pr_note)
+    end
+
+    before do
+      allow(subject).to receive(:import_repository)
+      allow(subject).to receive(:delete_temp_branches)
+      allow(subject).to receive(:restore_branches)
+
+      allow(subject.client).to receive(:pull_requests).and_return([pull_request])
     end
 
     it 'imports merge event' do
-      expect(subject.client).to receive(:activities).and_return([@merge_event])
+      expect(subject.client).to receive(:activities).and_return([merge_event])
 
       expect { subject.execute }.to change { MergeRequest.count }.by(1)
 
       merge_request = MergeRequest.first
-      expect(merge_request.metrics.merged_by).to eq(project.owner)
-      expect(merge_request.metrics.merged_at).to eq(@merge_event.merge_timestamp)
+      expect(merge_request.metrics.merged_by).to eq(pull_request_author)
+      expect(merge_request.metrics.merged_at).to eq(merge_event.merge_timestamp)
       expect(merge_request.merge_commit_sha).to eq('12345678')
       expect(merge_request.state_id).to eq(3)
     end
 
-    it 'imports comments' do
-      expect(subject.client).to receive(:activities).and_return([@pr_comment])
+    describe 'pull request author user mapping' do
+      before do
+        allow(subject.client).to receive(:activities).and_return([merge_event])
+      end
 
-      expect { subject.execute }.to change { MergeRequest.count }.by(1)
+      shared_examples 'imports pull requests' do
+        it 'maps user' do
+          expect { subject.execute }.to change { MergeRequest.count }.by(1)
 
-      merge_request = MergeRequest.first
-      expect(merge_request.notes.count).to eq(1)
-      note = merge_request.notes.first
-      expect(note.note).to end_with(@pr_note.note)
-      expect(note.author).to eq(project.owner)
-      expect(note.created_at).to eq(@pr_note.created_at)
-      expect(note.updated_at).to eq(@pr_note.created_at)
+          merge_request = MergeRequest.first
+          expect(merge_request.author).to eq(pull_request_author)
+        end
+      end
+
+      context 'when bitbucket_server_user_mapping_by_username feature flag is disabled' do
+        before do
+          stub_feature_flags(bitbucket_server_user_mapping_by_username: false)
+        end
+
+        include_examples 'imports pull requests'
+      end
+
+      context 'when bitbucket_server_user_mapping_by_username feature flag is enabled' do
+        before do
+          stub_feature_flags(bitbucket_server_user_mapping_by_username: true)
+        end
+
+        include_examples 'imports pull requests' do
+          context 'when username is not present' do
+            before do
+              allow(pull_request).to receive(:author_username).and_return(nil)
+            end
+
+            it 'maps by email' do
+              expect { subject.execute }.to change { MergeRequest.count }.by(1)
+
+              merge_request = MergeRequest.first
+              expect(merge_request.author).to eq(pull_request_author)
+            end
+          end
+        end
+      end
+
+      context 'when user is not found' do
+        before do
+          allow(pull_request).to receive(:author_username).and_return(nil)
+          allow(pull_request).to receive(:author_email).and_return(nil)
+        end
+
+        it 'maps importer user' do
+          expect { subject.execute }.to change { MergeRequest.count }.by(1)
+
+          merge_request = MergeRequest.first
+          expect(merge_request.author).to eq(project_creator)
+        end
+      end
+    end
+
+    describe 'comments' do
+      shared_examples 'imports comments' do
+        it 'imports comments' do
+          expect(subject.client).to receive(:activities).and_return([pr_comment])
+
+          expect { subject.execute }.to change { MergeRequest.count }.by(1)
+
+          merge_request = MergeRequest.first
+          expect(merge_request.notes.count).to eq(1)
+          note = merge_request.notes.first
+          expect(note.note).to end_with(pr_note.note)
+          expect(note.author).to eq(note_author)
+          expect(note.created_at).to eq(pr_note.created_at)
+          expect(note.updated_at).to eq(pr_note.created_at)
+        end
+      end
+
+      context 'when bitbucket_server_user_mapping_by_username feature flag is disabled' do
+        before do
+          stub_feature_flags(bitbucket_server_user_mapping_by_username: false)
+        end
+
+        include_examples 'imports comments'
+      end
+
+      context 'when bitbucket_server_user_mapping_by_username feature flag is enabled' do
+        before do
+          stub_feature_flags(bitbucket_server_user_mapping_by_username: true)
+        end
+
+        include_examples 'imports comments'
+
+        context 'when username is not present' do
+          before do
+            allow(pr_note).to receive(:author_username).and_return(nil)
+            allow(subject.client).to receive(:activities).and_return([pr_comment])
+          end
+
+          it 'maps by email' do
+            expect { subject.execute }.to change { MergeRequest.count }.by(1)
+
+            merge_request = MergeRequest.first
+            expect(merge_request.notes.count).to eq(1)
+            note = merge_request.notes.first
+            expect(note.author).to eq(note_author)
+          end
+        end
+      end
     end
 
     context 'metrics' do
@@ -135,7 +242,7 @@ RSpec.describe Gitlab::BitbucketServerImport::Importer do
       before do
         allow(Gitlab::Metrics).to receive(:counter) { counter }
         allow(Gitlab::Metrics).to receive(:histogram) { histogram }
-        allow(subject.client).to receive(:activities).and_return([@merge_event])
+        allow(subject.client).to receive(:activities).and_return([merge_event])
       end
 
       it 'counts and measures duration of imported projects' do
@@ -170,73 +277,137 @@ RSpec.describe Gitlab::BitbucketServerImport::Importer do
       end
     end
 
-    it 'imports threaded discussions' do
-      reply = instance_double(
-        BitbucketServer::Representation::PullRequestComment,
-        author_email: 'someuser@gitlab.com',
-        author_username: 'Batman',
-        note: 'I agree',
-        created_at: now,
-        updated_at: now)
+    describe 'threaded discussions' do
+      let(:reply_author) { create(:user, username: 'reply_author', email: 'reply_author@example.org') }
+      let(:inline_note_author) { create(:user, username: 'inline_note_author', email: 'inline_note_author@example.org') }
+
+      let(:reply) do
+        instance_double(
+          BitbucketServer::Representation::PullRequestComment,
+          author_email: reply_author.email,
+          author_username: reply_author.username,
+          note: 'I agree',
+          created_at: now,
+          updated_at: now)
+      end
 
       # https://gitlab.com/gitlab-org/gitlab-test/compare/c1acaa58bbcbc3eafe538cb8274ba387047b69f8...5937ac0a7beb003549fc5fd26fc247ad
-      inline_note = instance_double(
-        BitbucketServer::Representation::PullRequestComment,
-        file_type: 'ADDED',
-        from_sha: sample.commits.first,
-        to_sha: sample.commits.last,
-        file_path: '.gitmodules',
-        old_pos: nil,
-        new_pos: 4,
-        note: 'Hello world',
-        author_email: 'unknown@gmail.com',
-        author_username: 'Superman',
-        comments: [reply],
-        created_at: now,
-        updated_at: now,
-        parent_comment: nil)
+      let(:inline_note) do
+        instance_double(
+          BitbucketServer::Representation::PullRequestComment,
+          file_type: 'ADDED',
+          from_sha: sample.commits.first,
+          to_sha: sample.commits.last,
+          file_path: '.gitmodules',
+          old_pos: nil,
+          new_pos: 4,
+          note: 'Hello world',
+          author_email: inline_note_author.email,
+          author_username: inline_note_author.username,
+          comments: [reply],
+          created_at: now,
+          updated_at: now,
+          parent_comment: nil)
+      end
 
-      allow(reply).to receive(:parent_comment).and_return(inline_note)
+      let(:inline_comment) do
+        instance_double(
+          BitbucketServer::Representation::Activity,
+          comment?: true,
+          inline_comment?: true,
+          merge_event?: false,
+          comment: inline_note)
+      end
 
-      inline_comment = instance_double(
-        BitbucketServer::Representation::Activity,
-        comment?: true,
-        inline_comment?: true,
-        merge_event?: false,
-        comment: inline_note)
+      before do
+        allow(reply).to receive(:parent_comment).and_return(inline_note)
+        allow(subject.client).to receive(:activities).and_return([inline_comment])
+      end
 
-      expect(subject.client).to receive(:activities).and_return([inline_comment])
+      shared_examples 'imports threaded discussions' do
+        it 'imports threaded discussions' do
+          expect { subject.execute }.to change { MergeRequest.count }.by(1)
 
-      expect { subject.execute }.to change { MergeRequest.count }.by(1)
+          merge_request = MergeRequest.first
+          expect(merge_request.notes.count).to eq(2)
+          expect(merge_request.notes.map(&:discussion_id).uniq.count).to eq(1)
 
-      merge_request = MergeRequest.first
-      expect(merge_request.notes.count).to eq(2)
-      expect(merge_request.notes.map(&:discussion_id).uniq.count).to eq(1)
+          notes = merge_request.notes.order(:id).to_a
+          start_note = notes.first
+          expect(start_note.type).to eq('DiffNote')
+          expect(start_note.note).to end_with(inline_note.note)
+          expect(start_note.created_at).to eq(inline_note.created_at)
+          expect(start_note.updated_at).to eq(inline_note.updated_at)
+          expect(start_note.position.base_sha).to eq(inline_note.from_sha)
+          expect(start_note.position.start_sha).to eq(inline_note.from_sha)
+          expect(start_note.position.head_sha).to eq(inline_note.to_sha)
+          expect(start_note.position.old_line).to be_nil
+          expect(start_note.position.new_line).to eq(inline_note.new_pos)
+          expect(start_note.author).to eq(inline_note_author)
 
-      notes = merge_request.notes.order(:id).to_a
-      start_note = notes.first
-      expect(start_note.type).to eq('DiffNote')
-      expect(start_note.note).to end_with(inline_note.note)
-      expect(start_note.created_at).to eq(inline_note.created_at)
-      expect(start_note.updated_at).to eq(inline_note.updated_at)
-      expect(start_note.position.base_sha).to eq(inline_note.from_sha)
-      expect(start_note.position.start_sha).to eq(inline_note.from_sha)
-      expect(start_note.position.head_sha).to eq(inline_note.to_sha)
-      expect(start_note.position.old_line).to be_nil
-      expect(start_note.position.new_line).to eq(inline_note.new_pos)
+          reply_note = notes.last
+          # Make sure author and reply context is included
+          expect(reply_note.note).to start_with("> #{inline_note.note}\n\n#{reply.note}")
+          expect(reply_note.author).to eq(reply_author)
+          expect(reply_note.created_at).to eq(reply.created_at)
+          expect(reply_note.updated_at).to eq(reply.created_at)
+          expect(reply_note.position.base_sha).to eq(inline_note.from_sha)
+          expect(reply_note.position.start_sha).to eq(inline_note.from_sha)
+          expect(reply_note.position.head_sha).to eq(inline_note.to_sha)
+          expect(reply_note.position.old_line).to be_nil
+          expect(reply_note.position.new_line).to eq(inline_note.new_pos)
+        end
+      end
 
-      reply_note = notes.last
-      # Make sure author and reply context is included
-      expect(reply_note.note).to start_with("*By #{reply.author_username} (#{reply.author_email})*\n\n")
-      expect(reply_note.note).to end_with("> #{inline_note.note}\n\n#{reply.note}")
-      expect(reply_note.author).to eq(project.owner)
-      expect(reply_note.created_at).to eq(reply.created_at)
-      expect(reply_note.updated_at).to eq(reply.created_at)
-      expect(reply_note.position.base_sha).to eq(inline_note.from_sha)
-      expect(reply_note.position.start_sha).to eq(inline_note.from_sha)
-      expect(reply_note.position.head_sha).to eq(inline_note.to_sha)
-      expect(reply_note.position.old_line).to be_nil
-      expect(reply_note.position.new_line).to eq(inline_note.new_pos)
+      context 'when bitbucket_server_user_mapping_by_username feature flag is disabled' do
+        before do
+          stub_feature_flags(bitbucket_server_user_mapping_by_username: false)
+        end
+
+        include_examples 'imports threaded discussions'
+      end
+
+      context 'when bitbucket_server_user_mapping_by_username feature flag is enabled' do
+        before do
+          stub_feature_flags(bitbucket_server_user_mapping_by_username: true)
+        end
+
+        include_examples 'imports threaded discussions' do
+          context 'when username is not present' do
+            before do
+              allow(reply).to receive(:author_username).and_return(nil)
+              allow(inline_note).to receive(:author_username).and_return(nil)
+            end
+
+            it 'maps by email' do
+              expect { subject.execute }.to change { MergeRequest.count }.by(1)
+
+              notes = MergeRequest.first.notes.order(:id).to_a
+
+              expect(notes.first.author).to eq(inline_note_author)
+              expect(notes.last.author).to eq(reply_author)
+            end
+          end
+        end
+      end
+
+      context 'when user is not found' do
+        before do
+          allow(reply).to receive(:author_username).and_return(nil)
+          allow(reply).to receive(:author_email).and_return(nil)
+          allow(inline_note).to receive(:author_username).and_return(nil)
+          allow(inline_note).to receive(:author_email).and_return(nil)
+        end
+
+        it 'maps importer user' do
+          expect { subject.execute }.to change { MergeRequest.count }.by(1)
+
+          notes = MergeRequest.first.notes.order(:id).to_a
+
+          expect(notes.first.author).to eq(project_creator)
+          expect(notes.last.author).to eq(project_creator)
+        end
+      end
     end
 
     it 'falls back to comments if diff comments fail to validate' do
@@ -312,6 +483,7 @@ RSpec.describe Gitlab::BitbucketServerImport::Importer do
         state: 'merged',
         author: 'Test Author',
         author_email: project.owner.email,
+        author_username: 'author',
         created_at: Time.now,
         updated_at: Time.now,
         merged?: true)

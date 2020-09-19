@@ -23,7 +23,6 @@ See [the general developer security release guidelines](https://gitlab.com/gitla
   - [ ] Ensure it's approved by an AppSec engineer.
     - If you're unsure who should approve, find the AppSec engineer associated to the issue in the [Canonical repository], or ask #sec-appsec on Slack.
     - Trigger the [`package-and-qa` build]. The docker image generated will be used by the AppSec engineer to validate the security vulnerability has been remediated.
-  - [ ] Merge request _must_ close the corresponding security issue.
 - [ ] For a backport MR targeting a versioned stable branch (`X-Y-stable-ee`)
   - [ ] Ensure it's approved by a maintainer.
 

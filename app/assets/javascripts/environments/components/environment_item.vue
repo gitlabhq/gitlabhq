@@ -1,13 +1,12 @@
 <script>
 /* eslint-disable @gitlab/vue-require-i18n-strings */
 import { isEmpty } from 'lodash';
-import { GlTooltipDirective } from '@gitlab/ui';
+import { GlTooltipDirective, GlIcon } from '@gitlab/ui';
 import { __, sprintf } from '~/locale';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 import CommitComponent from '~/vue_shared/components/commit.vue';
-import Icon from '~/vue_shared/components/icon.vue';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate.vue';
 import eventHub from '../event_hub';
 import ActionsComponent from './environment_actions.vue';
@@ -30,7 +29,7 @@ export default {
     ActionsComponent,
     CommitComponent,
     ExternalUrlComponent,
-    Icon,
+    GlIcon,
     MonitoringButtonComponent,
     PinComponent,
     DeleteComponent,
@@ -535,7 +534,7 @@ export default {
       </div>
 
       <span v-if="shouldRenderDeployBoard" class="deploy-board-icon" @click="toggleDeployBoard">
-        <icon :name="deployIconName" />
+        <gl-icon :name="deployIconName" />
       </span>
 
       <span
@@ -560,9 +559,9 @@ export default {
         role="button"
         @click="onClickFolder"
       >
-        <icon :name="folderIconName" class="folder-icon" />
+        <gl-icon :name="folderIconName" class="folder-icon" />
 
-        <icon name="folder" class="folder-icon" />
+        <gl-icon name="folder" class="folder-icon" />
 
         <span> {{ model.folderName }} </span>
 

@@ -9,48 +9,29 @@ variables:
   # (SAST, Dependency Scanning, ...)
   SECURE_ANALYZERS_PREFIX: "registry.gitlab.com/gitlab-org/security-products/analyzers"
 
-  SAST_DEFAULT_ANALYZERS: "bandit, brakeman, gosec, spotbugs, flawfinder, phpcs-security-audit, security-code-scan, nodejs-scan, eslint, secrets, sobelow, pmd-apex, kubesec"
+  SAST_DEFAULT_ANALYZERS: "bandit, brakeman, gosec, spotbugs, flawfinder, phpcs-security-audit, security-code-scan, nodejs-scan, eslint, sobelow, pmd-apex, kubesec"
   SAST_EXCLUDED_PATHS: "spec, test, tests, tmp"
   SAST_ANALYZER_IMAGE_TAG: 2
-  SAST_DISABLE_DIND: "true"
   SCAN_KUBERNETES_MANIFESTS: "false"
 
 sast:
   stage: test
-  allow_failure: true
   artifacts:
     reports:
       sast: gl-sast-report.json
   rules:
-    - if: $SAST_DISABLED || $SAST_DISABLE_DIND == 'true'
-      when: never
-    - if: $CI_COMMIT_BRANCH && $GITLAB_FEATURES =~ /\bsast\b/
-  image: docker:stable
+    - when: never
   variables:
     SEARCH_MAX_DEPTH: 4
-    DOCKER_DRIVER: overlay2
-    DOCKER_TLS_CERTDIR: ""
-  services:
-    - docker:stable-dind
   script:
-    - |
-      if ! docker info &>/dev/null; then
-        if [ -z "$DOCKER_HOST" -a "$KUBERNETES_PORT" ]; then
-          export DOCKER_HOST='tcp://localhost:2375'
-        fi
-      fi
-    - |
-      docker run \
-        $(awk 'BEGIN{for(v in ENVIRON) print v}' | grep -v -E '^(DOCKER_|CI|GITLAB_|FF_|HOME|PWD|OLDPWD|PATH|SHLVL|HOSTNAME)' | awk '{printf " -e %s", $0}') \
-        --volume "$PWD:/code" \
-        --volume /var/run/docker.sock:/var/run/docker.sock \
-        "registry.gitlab.com/gitlab-org/security-products/sast:$SAST_ANALYZER_IMAGE_TAG" /app/bin/run /code
+    - echo "$CI_JOB_NAME is used for configuration only, and its script should not be executed"
+    - exit 1
 
 .sast-analyzer:
   extends: sast
-  services: []
+  allow_failure: true
   rules:
-    - if: $SAST_DISABLED || $SAST_DISABLE_DIND == 'false'
+    - if: $SAST_DISABLED
       when: never
     - if: $CI_COMMIT_BRANCH
   script:
@@ -59,9 +40,11 @@ sast:
 bandit-sast:
   extends: .sast-analyzer
   image:
-    name: "$SECURE_ANALYZERS_PREFIX/bandit:$SAST_ANALYZER_IMAGE_TAG"
+    name: "$SAST_ANALYZER_IMAGE"
+  variables:
+    SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/bandit:$SAST_ANALYZER_IMAGE_TAG"
   rules:
-    - if: $SAST_DISABLED || $SAST_DISABLE_DIND == 'false'
+    - if: $SAST_DISABLED
       when: never
     - if: $CI_COMMIT_BRANCH &&
           $SAST_DEFAULT_ANALYZERS =~ /bandit/
@@ -71,9 +54,11 @@ bandit-sast:
 brakeman-sast:
   extends: .sast-analyzer
   image:
-    name: "$SECURE_ANALYZERS_PREFIX/brakeman:$SAST_ANALYZER_IMAGE_TAG"
+    name: "$SAST_ANALYZER_IMAGE"
+  variables:
+    SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/brakeman:$SAST_ANALYZER_IMAGE_TAG"
   rules:
-    - if: $SAST_DISABLED || $SAST_DISABLE_DIND == 'false'
+    - if: $SAST_DISABLED
       when: never
     - if: $CI_COMMIT_BRANCH &&
           $SAST_DEFAULT_ANALYZERS =~ /brakeman/
@@ -83,9 +68,11 @@ brakeman-sast:
 eslint-sast:
   extends: .sast-analyzer
   image:
-    name: "$SECURE_ANALYZERS_PREFIX/eslint:$SAST_ANALYZER_IMAGE_TAG"
+    name: "$SAST_ANALYZER_IMAGE"
+  variables:
+    SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/eslint:$SAST_ANALYZER_IMAGE_TAG"
   rules:
-    - if: $SAST_DISABLED || $SAST_DISABLE_DIND == 'false'
+    - if: $SAST_DISABLED
       when: never
     - if: $CI_COMMIT_BRANCH &&
           $SAST_DEFAULT_ANALYZERS =~ /eslint/
@@ -99,9 +86,11 @@ eslint-sast:
 flawfinder-sast:
   extends: .sast-analyzer
   image:
-    name: "$SECURE_ANALYZERS_PREFIX/flawfinder:$SAST_ANALYZER_IMAGE_TAG"
+    name: "$SAST_ANALYZER_IMAGE"
+  variables:
+    SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/flawfinder:$SAST_ANALYZER_IMAGE_TAG"
   rules:
-    - if: $SAST_DISABLED || $SAST_DISABLE_DIND == 'false'
+    - if: $SAST_DISABLED
       when: never
     - if: $CI_COMMIT_BRANCH &&
           $SAST_DEFAULT_ANALYZERS =~ /flawfinder/
@@ -112,9 +101,11 @@ flawfinder-sast:
 kubesec-sast:
   extends: .sast-analyzer
   image:
-    name: "$SECURE_ANALYZERS_PREFIX/kubesec:$SAST_ANALYZER_IMAGE_TAG"
+    name: "$SAST_ANALYZER_IMAGE"
+  variables:
+    SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/kubesec:$SAST_ANALYZER_IMAGE_TAG"
   rules:
-    - if: $SAST_DISABLED || $SAST_DISABLE_DIND == 'false'
+    - if: $SAST_DISABLED
       when: never
     - if: $CI_COMMIT_BRANCH &&
           $SAST_DEFAULT_ANALYZERS =~ /kubesec/ &&
@@ -123,9 +114,11 @@ kubesec-sast:
 gosec-sast:
   extends: .sast-analyzer
   image:
-    name: "$SECURE_ANALYZERS_PREFIX/gosec:$SAST_ANALYZER_IMAGE_TAG"
+    name: "$SAST_ANALYZER_IMAGE"
+  variables:
+    SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/gosec:$SAST_ANALYZER_IMAGE_TAG"
   rules:
-    - if: $SAST_DISABLED || $SAST_DISABLE_DIND == 'false'
+    - if: $SAST_DISABLED
       when: never
     - if: $CI_COMMIT_BRANCH &&
           $SAST_DEFAULT_ANALYZERS =~ /gosec/
@@ -135,9 +128,11 @@ gosec-sast:
 nodejs-scan-sast:
   extends: .sast-analyzer
   image:
-    name: "$SECURE_ANALYZERS_PREFIX/nodejs-scan:$SAST_ANALYZER_IMAGE_TAG"
+    name: "$SAST_ANALYZER_IMAGE"
+  variables:
+    SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/nodejs-scan:$SAST_ANALYZER_IMAGE_TAG"
   rules:
-    - if: $SAST_DISABLED || $SAST_DISABLE_DIND == 'false'
+    - if: $SAST_DISABLED
       when: never
     - if: $CI_COMMIT_BRANCH &&
           $SAST_DEFAULT_ANALYZERS =~ /nodejs-scan/
@@ -147,9 +142,11 @@ nodejs-scan-sast:
 phpcs-security-audit-sast:
   extends: .sast-analyzer
   image:
-    name: "$SECURE_ANALYZERS_PREFIX/phpcs-security-audit:$SAST_ANALYZER_IMAGE_TAG"
+    name: "$SAST_ANALYZER_IMAGE"
+  variables:
+    SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/phpcs-security-audit:$SAST_ANALYZER_IMAGE_TAG"
   rules:
-    - if: $SAST_DISABLED || $SAST_DISABLE_DIND == 'false'
+    - if: $SAST_DISABLED
       when: never
     - if: $CI_COMMIT_BRANCH &&
           $SAST_DEFAULT_ANALYZERS =~ /phpcs-security-audit/
@@ -159,31 +156,25 @@ phpcs-security-audit-sast:
 pmd-apex-sast:
   extends: .sast-analyzer
   image:
-    name: "$SECURE_ANALYZERS_PREFIX/pmd-apex:$SAST_ANALYZER_IMAGE_TAG"
+    name: "$SAST_ANALYZER_IMAGE"
+  variables:
+    SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/pmd-apex:$SAST_ANALYZER_IMAGE_TAG"
   rules:
-    - if: $SAST_DISABLED || $SAST_DISABLE_DIND == 'false'
+    - if: $SAST_DISABLED
       when: never
     - if: $CI_COMMIT_BRANCH &&
           $SAST_DEFAULT_ANALYZERS =~ /pmd-apex/
       exists:
         - '**/*.cls'
 
-secrets-sast:
-  extends: .sast-analyzer
-  image:
-    name: "$SECURE_ANALYZERS_PREFIX/secrets:$SAST_ANALYZER_IMAGE_TAG"
-  rules:
-    - if: $SAST_DISABLED || $SAST_DISABLE_DIND == 'false'
-      when: never
-    - if: $CI_COMMIT_BRANCH &&
-          $SAST_DEFAULT_ANALYZERS =~ /secrets/
-
 security-code-scan-sast:
   extends: .sast-analyzer
   image:
-    name: "$SECURE_ANALYZERS_PREFIX/security-code-scan:$SAST_ANALYZER_IMAGE_TAG"
+    name: "$SAST_ANALYZER_IMAGE"
+  variables:
+    SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/security-code-scan:$SAST_ANALYZER_IMAGE_TAG"
   rules:
-    - if: $SAST_DISABLED || $SAST_DISABLE_DIND == 'false'
+    - if: $SAST_DISABLED
       when: never
     - if: $CI_COMMIT_BRANCH &&
           $SAST_DEFAULT_ANALYZERS =~ /security-code-scan/
@@ -194,9 +185,11 @@ security-code-scan-sast:
 sobelow-sast:
   extends: .sast-analyzer
   image:
-    name: "$SECURE_ANALYZERS_PREFIX/sobelow:$SAST_ANALYZER_IMAGE_TAG"
+    name: "$SAST_ANALYZER_IMAGE"
+  variables:
+    SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/sobelow:$SAST_ANALYZER_IMAGE_TAG"
   rules:
-    - if: $SAST_DISABLED || $SAST_DISABLE_DIND == 'false'
+    - if: $SAST_DISABLED
       when: never
     - if: $CI_COMMIT_BRANCH &&
           $SAST_DEFAULT_ANALYZERS =~ /sobelow/
@@ -206,9 +199,11 @@ sobelow-sast:
 spotbugs-sast:
   extends: .sast-analyzer
   image:
-    name: "$SECURE_ANALYZERS_PREFIX/spotbugs:$SAST_ANALYZER_IMAGE_TAG"
+    name: "$SAST_ANALYZER_IMAGE"
+  variables:
+    SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/spotbugs:$SAST_ANALYZER_IMAGE_TAG"
   rules:
-    - if: $SAST_DISABLED || $SAST_DISABLE_DIND == 'false'
+    - if: $SAST_DISABLED
       when: never
     - if: $CI_COMMIT_BRANCH &&
           $SAST_DEFAULT_ANALYZERS =~ /spotbugs/

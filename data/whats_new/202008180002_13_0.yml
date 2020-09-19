@@ -4,7 +4,7 @@
   stage: Create
   self-managed: true
   gitlab-com: false
-  packages: core, starter, premium, ultimate
+  packages: [Core, Starter, Premium, Ultimate]
   url: https://docs.gitlab.com/ee/administration/gitaly/praefect.html
   image_url: https://about.gitlab.com/images/13_0/praefect-architecture.png
   published_at: 2020-05-22
@@ -14,7 +14,7 @@
   stage: Release
   self-managed: true
   gitlab-com: true
-  packages: All
+  packages: [All]
   url: https://docs.gitlab.com/ee/topics/autodevops/index.html#aws-ecs
   image_url:
   published_at: 2020-05-22
@@ -24,7 +24,7 @@
   stage: Plan
   self-managed: true
   gitlab-com: true
-  packages: ultimate, gold
+  packages: [Ultimate, Gold]
   url: https://docs.gitlab.com/ee/user/group/roadmap/
   image_url: https://about.gitlab.com/images/13_0/Expand-Epic-Hierarchy-Roadmap_roadmap.png
   published_at: 2020-05-22
@@ -34,7 +34,7 @@
   stage: Create
   self-managed: true
   gitlab-com: true
-  packages: All
+  packages: [All]
   url: https://docs.gitlab.com/ee/user/snippets.html#versioned-snippets
   image_url: https://about.gitlab.com/images/13_0/phikai-versioned-snippets.png
   published_at: 2020-05-22
@@ -44,7 +44,7 @@
   stage: Create
   self-managed: true
   gitlab-com: true
-  packages: All
+  packages: [All]
   url: https://docs.gitlab.com/ee/user/project/web_ide/#themes
   image_url: https://about.gitlab.com/images/13_0/phikai-web-ide-dark-theme.png
   published_at: 2020-05-22

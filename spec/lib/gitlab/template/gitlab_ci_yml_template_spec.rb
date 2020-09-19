@@ -13,6 +13,12 @@ RSpec.describe Gitlab::Template::GitlabCiYmlTemplate do
       expect(all).to include('Docker')
       expect(all).to include('Ruby')
     end
+
+    it 'does not include Browser-Performance template in FOSS' do
+      all = subject.all.map(&:name)
+
+      expect(all).not_to include('Browser-Performance') unless Gitlab.ee?
+    end
   end
 
   describe '#content' do

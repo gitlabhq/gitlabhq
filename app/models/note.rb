@@ -20,20 +20,6 @@ class Note < ApplicationRecord
   include ThrottledTouch
   include FromUnion
 
-  module SpecialRole
-    FIRST_TIME_CONTRIBUTOR = :first_time_contributor
-
-    class << self
-      def values
-        constants.map {|const| self.const_get(const, false)}
-      end
-
-      def value?(val)
-        values.include?(val)
-      end
-    end
-  end
-
   cache_markdown_field :note, pipeline: :note, issuable_state_filter_enabled: true
 
   redact_field :note
@@ -59,9 +45,6 @@ class Note < ApplicationRecord
 
   # Attribute used to store the attributes that have been changed by quick actions.
   attr_accessor :commands_changes
-
-  # A special role that may be displayed on issuable's discussions
-  attr_reader :special_role
 
   default_value_for :system, false
 
@@ -220,10 +203,6 @@ class Note < ApplicationRecord
         .where(noteable_type: type, noteable_id: ids)
     end
 
-    def has_special_role?(role, note)
-      note.special_role == role
-    end
-
     def search(query)
       fuzzy_search(query, [:note])
     end
@@ -342,20 +321,20 @@ class Note < ApplicationRecord
     noteable.author_id == user.id
   end
 
-  def special_role=(role)
-    raise "Role is undefined, #{role} not found in #{SpecialRole.values}" unless SpecialRole.value?(role)
+  def contributor?
+    return false unless ::Feature.enabled?(:show_contributor_on_note, project)
 
-    @special_role = role
+    project&.team&.contributor?(self.author_id)
   end
 
-  def has_special_role?(role)
-    self.class.has_special_role?(role, self)
+  def noteable_author?(noteable)
+    return false unless ::Feature.enabled?(:show_author_on_note, project)
+
+    noteable.author == self.author
   end
 
-  def specialize_for_first_contribution!(noteable)
-    return unless noteable.author_id == self.author_id
-
-    self.special_role = Note::SpecialRole::FIRST_TIME_CONTRIBUTOR
+  def project_name
+    project&.name
   end
 
   def confidential?(include_noteable: false)
@@ -556,11 +535,17 @@ class Note < ApplicationRecord
   end
 
   def system_note_with_references_visible_for?(user)
+    return true unless system?
+
     (!system_note_with_references? || all_referenced_mentionables_allowed?(user)) && system_note_viewable_by?(user)
   end
 
   def parent_user
     noteable.author if for_personal_snippet?
+  end
+
+  def skip_notification?
+    review.present?
   end
 
   private

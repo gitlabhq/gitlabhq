@@ -57,8 +57,8 @@ describe('ItemActionsComponent', () => {
       expect(editBtn.getAttribute('href')).toBe(group.editPath);
       expect(editBtn.getAttribute('aria-label')).toBe('Edit group');
       expect(editBtn.dataset.originalTitle).toBe('Edit group');
-      expect(editBtn.querySelectorAll('svg use').length).not.toBe(0);
-      expect(editBtn.querySelector('svg use').getAttribute('xlink:href')).toContain('#settings');
+      expect(editBtn.querySelectorAll('svg').length).not.toBe(0);
+      expect(editBtn.querySelector('svg').getAttribute('data-testid')).toBe('settings-icon');
 
       newVm.$destroy();
     });
@@ -75,8 +75,8 @@ describe('ItemActionsComponent', () => {
       expect(leaveBtn.getAttribute('href')).toBe(group.leavePath);
       expect(leaveBtn.getAttribute('aria-label')).toBe('Leave this group');
       expect(leaveBtn.dataset.originalTitle).toBe('Leave this group');
-      expect(leaveBtn.querySelectorAll('svg use').length).not.toBe(0);
-      expect(leaveBtn.querySelector('svg use').getAttribute('xlink:href')).toContain('#leave');
+      expect(leaveBtn.querySelectorAll('svg').length).not.toBe(0);
+      expect(leaveBtn.querySelector('svg').getAttribute('data-testid')).toBe('leave-icon');
 
       newVm.$destroy();
     });

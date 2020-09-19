@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Projects::ServicesController do
+  include JiraServiceHelper
+
   let(:project) { create(:project, :repository) }
   let(:user)    { create(:user) }
   let(:service) { create(:jira_service, project: project) }
@@ -54,8 +56,7 @@ RSpec.describe Projects::ServicesController do
         end
 
         it 'returns success' do
-          stub_request(:get, 'http://example.com/rest/api/2/serverInfo')
-            .to_return(status: 200, body: '{}')
+          stub_jira_service_test
 
           expect(Gitlab::HTTP).to receive(:get).with('/rest/api/2/serverInfo', any_args).and_call_original
 
@@ -66,8 +67,7 @@ RSpec.describe Projects::ServicesController do
       end
 
       it 'returns success' do
-        stub_request(:get, 'http://example.com/rest/api/2/serverInfo')
-          .to_return(status: 200, body: '{}')
+        stub_jira_service_test
 
         expect(Gitlab::HTTP).to receive(:get).with('/rest/api/2/serverInfo', any_args).and_call_original
 
@@ -123,7 +123,7 @@ RSpec.describe Projects::ServicesController do
         expect(response).to be_successful
         expect(json_response).to eq(
           'error' => true,
-          'message' => 'Test failed.',
+          'message' => 'Connection failed. Please check your settings.',
           'service_response' => '',
           'test_failed' => true
         )
@@ -136,7 +136,7 @@ RSpec.describe Projects::ServicesController do
       let(:service_params) { { active: true } }
       let(:params)         { project_params(service: service_params) }
 
-      let(:message) { 'Jira activated.' }
+      let(:message) { 'Jira settings saved and active.' }
       let(:redirect_url) { edit_project_service_path(project, service) }
 
       before do
@@ -175,7 +175,7 @@ RSpec.describe Projects::ServicesController do
 
       context 'when param `active` is set to false' do
         let(:service_params) { { active: false } }
-        let(:message)        { 'Jira settings saved, but not activated.' }
+        let(:message)        { 'Jira settings saved, but not active.' }
 
         it_behaves_like 'service update'
       end
@@ -200,6 +200,7 @@ RSpec.describe Projects::ServicesController do
 
     describe 'as JSON' do
       before do
+        stub_jira_service_test
         put :update, params: project_params(service: service_params, format: :json)
       end
 

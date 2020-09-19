@@ -1,11 +1,11 @@
 <script>
-import Icon from '~/vue_shared/components/icon.vue';
+import { GlIcon } from '@gitlab/ui';
 import tooltip from '~/vue_shared/directives/tooltip';
 import { sprintf, n__, __ } from '~/locale';
 
 export default {
   components: {
-    Icon,
+    GlIcon,
   },
   directives: {
     tooltip,
@@ -77,7 +77,7 @@ export default {
       data-placement="left"
       class="gl-mb-5"
     >
-      <icon v-once :name="iconName" :size="18" />
+      <gl-icon v-once :name="iconName" :size="18" />
     </div>
     <div
       v-tooltip
@@ -86,7 +86,7 @@ export default {
       data-placement="left"
       class="gl-mb-3"
     >
-      <icon :name="additionIconName" :size="18" :class="addedFilesIconClass" />
+      <gl-icon :name="additionIconName" :size="18" :class="addedFilesIconClass" />
     </div>
     {{ addedFilesLength }}
     <div
@@ -96,7 +96,7 @@ export default {
       data-placement="left"
       class="gl-mt-3 gl-mb-3"
     >
-      <icon :name="modifiedIconName" :size="18" :class="modifiedFilesClass" />
+      <gl-icon :name="modifiedIconName" :size="18" :class="modifiedFilesClass" />
     </div>
     {{ modifiedFilesLength }}
   </div>

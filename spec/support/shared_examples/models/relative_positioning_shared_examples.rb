@@ -1,9 +1,25 @@
 # frozen_string_literal: true
 
+# Notes for implementing classes:
+#
+# The following let bindings should be defined:
+# - `factory`: A symbol naming a factory to use to create items
+# - `default_params`: A HashMap of factory parameters to pass to the factory.
+#
+# The `default_params` should include the relative parent, so that any item
+# created with these parameters passed to the `factory` will be considered in
+# the same set of items relative to each other.
+#
+# For the purposes of efficiency, it is a good idea to bind the parent in
+# `let_it_be`, so that it is re-used across examples, but be careful that it
+# does not have any other children - it should only be used within this set of
+# shared examples.
 RSpec.shared_examples 'a class that supports relative positioning' do
   let(:item1) { create_item }
   let(:item2) { create_item }
-  let(:new_item) { create_item }
+  let(:new_item) { create_item(relative_position: nil) }
+
+  let(:set_size) { RelativePositioning.mover.context(item1).scoped_items.count }
 
   def create_item(params = {})
     create(factory, params.merge(default_params))
@@ -17,6 +33,7 @@ RSpec.shared_examples 'a class that supports relative positioning' do
 
   describe '.move_nulls_to_end' do
     let(:item3) { create_item }
+    let(:sibling_query) { item1.class.relative_positioning_query_base(item1) }
 
     it 'moves items with null relative_position to the end' do
       item1.update!(relative_position: 1000)
@@ -28,10 +45,9 @@ RSpec.shared_examples 'a class that supports relative positioning' do
 
       expect(items.sort_by(&:relative_position)).to eq(items)
       expect(item1.relative_position).to be(1000)
-      expect(item1.prev_relative_position).to be_nil
-      expect(item1.next_relative_position).to eq(item2.relative_position)
-      expect(item2.next_relative_position).to eq(item3.relative_position)
-      expect(item3.next_relative_position).to be_nil
+
+      expect(sibling_query.where(relative_position: nil)).not_to exist
+      expect(sibling_query.reorder(:relative_position, :id)).to eq([item1, item2, item3])
     end
 
     it 'preserves relative position' do
@@ -70,6 +86,37 @@ RSpec.shared_examples 'a class that supports relative positioning' do
       expect(items.sort_by(&:relative_position)).to eq(items)
     end
 
+    it 'manages to move nulls to the end even if there is not enough space' do
+      run = run_at_end(20).to_a
+      bunch_a = create_items_with_positions(run[0..18])
+      bunch_b = create_items_with_positions([run.last])
+
+      nils = create_items_with_positions([nil] * 4)
+      described_class.move_nulls_to_end(nils)
+
+      items = [*bunch_a, *bunch_b, *nils]
+      items.each(&:reset)
+
+      expect(items.map(&:relative_position)).to all(be_valid_position)
+      expect(items.reverse.sort_by(&:relative_position)).to eq(items)
+    end
+
+    it 'manages to move nulls to the end, stacking if we cannot create enough space' do
+      run = run_at_end(40).to_a
+      bunch = create_items_with_positions(run.select(&:even?))
+
+      nils = create_items_with_positions([nil] * 20)
+      described_class.move_nulls_to_end(nils)
+
+      items = [*bunch, *nils]
+      items.each(&:reset)
+
+      expect(items.map(&:relative_position)).to all(be_valid_position)
+      expect(bunch.reverse.sort_by(&:relative_position)).to eq(bunch)
+      expect(nils.reverse.sort_by(&:relative_position)).not_to eq(nils)
+      expect(bunch.map(&:relative_position)).to all(be < nils.map(&:relative_position).min)
+    end
+
     it 'does not have an N+1 issue' do
       create_items_with_positions(10..12)
 
@@ -89,6 +136,7 @@ RSpec.shared_examples 'a class that supports relative positioning' do
 
   describe '.move_nulls_to_start' do
     let(:item3) { create_item }
+    let(:sibling_query) { item1.class.relative_positioning_query_base(item1) }
 
     it 'moves items with null relative_position to the start' do
       item1.update!(relative_position: nil)
@@ -100,10 +148,8 @@ RSpec.shared_examples 'a class that supports relative positioning' do
       items.map(&:reload)
 
       expect(items.sort_by(&:relative_position)).to eq(items)
-      expect(item1.prev_relative_position).to eq nil
-      expect(item1.next_relative_position).to eq item2.relative_position
-      expect(item2.next_relative_position).to eq item3.relative_position
-      expect(item3.next_relative_position).to eq nil
+      expect(sibling_query.where(relative_position: nil)).not_to exist
+      expect(sibling_query.reorder(:relative_position, :id)).to eq(items)
       expect(item3.relative_position).to be(1000)
     end
 
@@ -130,193 +176,36 @@ RSpec.shared_examples 'a class that supports relative positioning' do
       expect(described_class.move_nulls_to_start([item1])).to be(0)
       expect(item1.reload.relative_position).to be(1)
     end
-  end
 
-  describe '#max_relative_position' do
-    it 'returns maximum position' do
-      expect(item1.max_relative_position).to eq item2.relative_position
-    end
-  end
+    it 'manages to move nulls to the start even if there is not enough space' do
+      run = run_at_start(20).to_a
+      bunch_a = create_items_with_positions([run.first])
+      bunch_b = create_items_with_positions(run[2..])
 
-  describe '#prev_relative_position' do
-    it 'returns previous position if there is an item above' do
-      item1.update!(relative_position: 5)
-      item2.update!(relative_position: 15)
+      nils = create_items_with_positions([nil, nil, nil, nil])
+      described_class.move_nulls_to_start(nils)
 
-      expect(item2.prev_relative_position).to eq item1.relative_position
-    end
+      items = [*nils, *bunch_a, *bunch_b]
+      items.each(&:reset)
 
-    it 'returns nil if there is no item above' do
-      expect(item1.prev_relative_position).to eq nil
-    end
-  end
-
-  describe '#next_relative_position' do
-    it 'returns next position if there is an item below' do
-      item1.update!(relative_position: 5)
-      item2.update!(relative_position: 15)
-
-      expect(item1.next_relative_position).to eq item2.relative_position
+      expect(items.map(&:relative_position)).to all(be_valid_position)
+      expect(items.reverse.sort_by(&:relative_position)).to eq(items)
     end
 
-    it 'returns nil if there is no item below' do
-      expect(item2.next_relative_position).to eq nil
-    end
-  end
+    it 'manages to move nulls to the end, stacking if we cannot create enough space' do
+      run = run_at_start(40).to_a
+      bunch = create_items_with_positions(run.select(&:even?))
 
-  describe '#find_next_gap_before' do
-    context 'there is no gap' do
-      let(:items) { create_items_with_positions(run_at_start) }
+      nils = create_items_with_positions([nil].cycle.take(20))
+      described_class.move_nulls_to_start(nils)
 
-      it 'returns nil' do
-        items.each do |item|
-          expect(item.send(:find_next_gap_before)).to be_nil
-        end
-      end
-    end
+      items = [*nils, *bunch]
+      items.each(&:reset)
 
-    context 'there is a sequence ending at MAX_POSITION' do
-      let(:items) { create_items_with_positions(run_at_end) }
-
-      let(:gaps) do
-        items.map { |item| item.send(:find_next_gap_before) }
-      end
-
-      it 'can find the gap at the start for any item in the sequence' do
-        gap = { start: items.first.relative_position, end: RelativePositioning::MIN_POSITION }
-
-        expect(gaps).to all(eq(gap))
-      end
-
-      it 'respects lower bounds' do
-        gap = { start: items.first.relative_position, end: 10 }
-        new_item.update!(relative_position: 10)
-
-        expect(gaps).to all(eq(gap))
-      end
-    end
-
-    specify do
-      item1.update!(relative_position: 5)
-
-      (0..10).each do |pos|
-        item2.update!(relative_position: pos)
-
-        gap = item2.send(:find_next_gap_before)
-
-        expect(gap[:start]).to be <= item2.relative_position
-        expect((gap[:end] - gap[:start]).abs).to be >= RelativePositioning::MIN_GAP
-        expect(gap[:start]).to be_valid_position
-        expect(gap[:end]).to be_valid_position
-      end
-    end
-
-    it 'deals with there not being any items to the left' do
-      create_items_with_positions([1, 2, 3])
-      new_item.update!(relative_position: 0)
-
-      expect(new_item.send(:find_next_gap_before)).to eq(start: 0, end: RelativePositioning::MIN_POSITION)
-    end
-
-    it 'finds the next gap to the left, skipping adjacent values' do
-      create_items_with_positions([1, 9, 10])
-      new_item.update!(relative_position: 11)
-
-      expect(new_item.send(:find_next_gap_before)).to eq(start: 9, end: 1)
-    end
-
-    it 'finds the next gap to the left' do
-      create_items_with_positions([2, 10])
-
-      new_item.update!(relative_position: 15)
-      expect(new_item.send(:find_next_gap_before)).to eq(start: 15, end: 10)
-
-      new_item.update!(relative_position: 11)
-      expect(new_item.send(:find_next_gap_before)).to eq(start: 10, end: 2)
-
-      new_item.update!(relative_position: 9)
-      expect(new_item.send(:find_next_gap_before)).to eq(start: 9, end: 2)
-
-      new_item.update!(relative_position: 5)
-      expect(new_item.send(:find_next_gap_before)).to eq(start: 5, end: 2)
-    end
-  end
-
-  describe '#find_next_gap_after' do
-    context 'there is no gap' do
-      let(:items) { create_items_with_positions(run_at_end) }
-
-      it 'returns nil' do
-        items.each do |item|
-          expect(item.send(:find_next_gap_after)).to be_nil
-        end
-      end
-    end
-
-    context 'there is a sequence starting at MIN_POSITION' do
-      let(:items) { create_items_with_positions(run_at_start) }
-
-      let(:gaps) do
-        items.map { |item| item.send(:find_next_gap_after) }
-      end
-
-      it 'can find the gap at the end for any item in the sequence' do
-        gap = { start: items.last.relative_position, end: RelativePositioning::MAX_POSITION }
-
-        expect(gaps).to all(eq(gap))
-      end
-
-      it 'respects upper bounds' do
-        gap = { start: items.last.relative_position, end: 10 }
-        new_item.update!(relative_position: 10)
-
-        expect(gaps).to all(eq(gap))
-      end
-    end
-
-    specify do
-      item1.update!(relative_position: 5)
-
-      (0..10).each do |pos|
-        item2.update!(relative_position: pos)
-
-        gap = item2.send(:find_next_gap_after)
-
-        expect(gap[:start]).to be >= item2.relative_position
-        expect((gap[:end] - gap[:start]).abs).to be >= RelativePositioning::MIN_GAP
-        expect(gap[:start]).to be_valid_position
-        expect(gap[:end]).to be_valid_position
-      end
-    end
-
-    it 'deals with there not being any items to the right' do
-      create_items_with_positions([1, 2, 3])
-      new_item.update!(relative_position: 5)
-
-      expect(new_item.send(:find_next_gap_after)).to eq(start: 5, end: RelativePositioning::MAX_POSITION)
-    end
-
-    it 'finds the next gap to the right, skipping adjacent values' do
-      create_items_with_positions([1, 2, 10])
-      new_item.update!(relative_position: 0)
-
-      expect(new_item.send(:find_next_gap_after)).to eq(start: 2, end: 10)
-    end
-
-    it 'finds the next gap to the right' do
-      create_items_with_positions([2, 10])
-
-      new_item.update!(relative_position: 0)
-      expect(new_item.send(:find_next_gap_after)).to eq(start: 0, end: 2)
-
-      new_item.update!(relative_position: 1)
-      expect(new_item.send(:find_next_gap_after)).to eq(start: 2, end: 10)
-
-      new_item.update!(relative_position: 3)
-      expect(new_item.send(:find_next_gap_after)).to eq(start: 3, end: 10)
-
-      new_item.update!(relative_position: 5)
-      expect(new_item.send(:find_next_gap_after)).to eq(start: 5, end: 10)
+      expect(items.map(&:relative_position)).to all(be_valid_position)
+      expect(bunch.reverse.sort_by(&:relative_position)).to eq(bunch)
+      expect(nils.reverse.sort_by(&:relative_position)).not_to eq(nils)
+      expect(bunch.map(&:relative_position)).to all(be > nils.map(&:relative_position).max)
     end
   end
 
@@ -384,36 +273,39 @@ RSpec.shared_examples 'a class that supports relative positioning' do
     end
 
     context 'leap-frogging to the left' do
+      let(:item3) { create(factory, default_params) }
+      let(:start) { RelativePositioning::START_POSITION }
+
       before do
-        start = RelativePositioning::START_POSITION
         item1.update!(relative_position: start - RelativePositioning::IDEAL_DISTANCE * 0)
         item2.update!(relative_position: start - RelativePositioning::IDEAL_DISTANCE * 1)
         item3.update!(relative_position: start - RelativePositioning::IDEAL_DISTANCE * 2)
       end
 
-      let(:item3) { create(factory, default_params) }
+      def leap_frog
+        a, b = [item1.reset, item2.reset].sort_by(&:relative_position)
 
-      def leap_frog(steps)
-        a = item1
-        b = item2
+        b.move_before(a)
+        b.save!
+      end
 
-        steps.times do |i|
-          a.move_before(b)
-          a.save!
-          a, b = b, a
+      it 'can leap-frog STEPS times before needing to rebalance' do
+        expect { RelativePositioning::STEPS.times { leap_frog } }
+          .to change { item3.reload.relative_position }.by(0)
+          .and change { item1.reload.relative_position }.by(be < 0)
+          .and change { item2.reload.relative_position }.by(be < 0)
+
+        expect { leap_frog }
+          .to change { item3.reload.relative_position }.by(be < 0)
+      end
+
+      context 'there is no space to the left after moving STEPS times' do
+        let(:start) { RelativePositioning::MIN_POSITION + (2 * RelativePositioning::IDEAL_DISTANCE) }
+
+        it 'rebalances to the right' do
+          expect { RelativePositioning::STEPS.succ.times { leap_frog } }
+            .not_to change { item3.reload.relative_position }
         end
-      end
-
-      it 'can leap-frog STEPS - 1 times before needing to rebalance' do
-        # This is less efficient than going right, due to the flooring of
-        # integer division
-        expect { leap_frog(RelativePositioning::STEPS - 1) }
-          .not_to change { item3.reload.relative_position }
-      end
-
-      it 'rebalances after leap-frogging STEPS times' do
-        expect { leap_frog(RelativePositioning::STEPS) }
-          .to change { item3.reload.relative_position }
       end
     end
   end
@@ -476,25 +368,25 @@ RSpec.shared_examples 'a class that supports relative positioning' do
 
       let(:item3) { create(factory, default_params) }
 
-      def leap_frog(steps)
-        a = item1
-        b = item2
+      def leap_frog
+        a, b = [item1.reset, item2.reset].sort_by(&:relative_position)
 
-        steps.times do |i|
-          a.move_after(b)
-          a.save!
-          a, b = b, a
+        a.move_after(b)
+        a.save!
+      end
+
+      it 'rebalances after STEPS jumps' do
+        RelativePositioning::STEPS.pred.times do
+          expect { leap_frog }
+            .to change { item3.reload.relative_position }.by(0)
+            .and change { item1.reset.relative_position }.by(be >= 0)
+            .and change { item2.reset.relative_position }.by(be >= 0)
         end
-      end
 
-      it 'can leap-frog STEPS times before needing to rebalance' do
-        expect { leap_frog(RelativePositioning::STEPS) }
-          .not_to change { item3.reload.relative_position }
-      end
-
-      it 'rebalances after leap-frogging STEPS+1 times' do
-        expect { leap_frog(RelativePositioning::STEPS + 1) }
-          .to change { item3.reload.relative_position }
+        expect { leap_frog }
+          .to change { item3.reload.relative_position }.by(0)
+          .and change { item1.reset.relative_position }.by(be < 0)
+          .and change { item2.reset.relative_position }.by(be < 0)
       end
     end
   end
@@ -506,10 +398,24 @@ RSpec.shared_examples 'a class that supports relative positioning' do
       end
     end
 
+    it 'places items at most IDEAL_DISTANCE from the start when the range is open' do
+      n = set_size
+
+      expect([item1, item2].map(&:relative_position)).to all(be >= (RelativePositioning::START_POSITION - (n * RelativePositioning::IDEAL_DISTANCE)))
+    end
+
     it 'moves item to the end' do
       new_item.move_to_start
 
       expect(new_item.relative_position).to be < item2.relative_position
+    end
+
+    it 'positions the item at MIN_POSITION when there is only one space left' do
+      item2.update!(relative_position: RelativePositioning::MIN_POSITION + 1)
+
+      new_item.move_to_start
+
+      expect(new_item.relative_position).to eq RelativePositioning::MIN_POSITION
     end
 
     it 'rebalances when there is already an item at the MIN_POSITION' do
@@ -543,10 +449,24 @@ RSpec.shared_examples 'a class that supports relative positioning' do
       end
     end
 
+    it 'places items at most IDEAL_DISTANCE from the start when the range is open' do
+      n = set_size
+
+      expect([item1, item2].map(&:relative_position)).to all(be <= (RelativePositioning::START_POSITION + (n * RelativePositioning::IDEAL_DISTANCE)))
+    end
+
     it 'moves item to the end' do
       new_item.move_to_end
 
       expect(new_item.relative_position).to be > item2.relative_position
+    end
+
+    it 'positions the item at MAX_POSITION when there is only one space left' do
+      item2.update!(relative_position: RelativePositioning::MAX_POSITION - 1)
+
+      new_item.move_to_end
+
+      expect(new_item.relative_position).to eq RelativePositioning::MAX_POSITION
     end
 
     it 'rebalances when there is already an item at the MAX_POSITION' do
@@ -709,63 +629,6 @@ RSpec.shared_examples 'a class that supports relative positioning' do
       items = create_items_with_positions([150, 151, 152, 153, 154])
 
       expect { new_item.move_between(items[-2], items[-1]) }.not_to exceed_query_limit(count)
-    end
-  end
-
-  describe '#move_sequence_before' do
-    it 'moves the whole sequence of items to the middle of the nearest gap' do
-      items = create_items_with_positions([90, 100, 101, 102])
-
-      items.last.move_sequence_before
-      items.last.save!
-
-      positions = items.map { |item| item.reload.relative_position }
-      expect(positions).to eq([90, 95, 96, 102])
-    end
-
-    it 'raises an error if there is no space' do
-      items = create_items_with_positions(run_at_start)
-
-      expect { items.last.move_sequence_before }.to raise_error(RelativePositioning::NoSpaceLeft)
-    end
-
-    it 'finds a gap if there are unused positions' do
-      items = create_items_with_positions([100, 101, 102])
-
-      items.last.move_sequence_before
-      items.last.save!
-
-      positions = items.map { |item| item.reload.relative_position }
-
-      expect(positions.last - positions.second).to be > RelativePositioning::MIN_GAP
-    end
-  end
-
-  describe '#move_sequence_after' do
-    it 'moves the whole sequence of items to the middle of the nearest gap' do
-      items = create_items_with_positions([100, 101, 102, 110])
-
-      items.first.move_sequence_after
-      items.first.save!
-
-      positions = items.map { |item| item.reload.relative_position }
-      expect(positions).to eq([100, 105, 106, 110])
-    end
-
-    it 'finds a gap if there are unused positions' do
-      items = create_items_with_positions([100, 101, 102])
-
-      items.first.move_sequence_after
-      items.first.save!
-
-      positions = items.map { |item| item.reload.relative_position }
-      expect(positions.second - positions.first).to be > RelativePositioning::MIN_GAP
-    end
-
-    it 'raises an error if there is no space' do
-      items = create_items_with_positions(run_at_end)
-
-      expect { items.first.move_sequence_after }.to raise_error(RelativePositioning::NoSpaceLeft)
     end
   end
 

@@ -18,8 +18,7 @@ module Gitlab
             params_for_code_stage,
             params_for_test_stage,
             params_for_review_stage,
-            params_for_staging_stage,
-            params_for_production_stage
+            params_for_staging_stage
           ]
         end
 
@@ -84,16 +83,6 @@ module Gitlab
             relative_position: 6,
             start_event_identifier: :merge_request_merged,
             end_event_identifier: :merge_request_first_deployed_to_production
-          }
-        end
-
-        def self.params_for_production_stage
-          {
-            name: 'production',
-            custom: false,
-            relative_position: 7,
-            start_event_identifier: :issue_created,
-            end_event_identifier: :production_stage_end
           }
         end
       end

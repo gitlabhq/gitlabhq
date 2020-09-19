@@ -11,6 +11,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 GitLab integrates with the following external authentication and authorization
 providers:
 
+- [Atlassian](atlassian.md)
 - [Auth0](../../integration/auth0.md)
 - [Authentiq](authentiq.md)
 - [AWS Cognito](cognito.md)

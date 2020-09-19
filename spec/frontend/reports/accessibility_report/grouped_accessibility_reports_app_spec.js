@@ -2,7 +2,7 @@ import { mount, createLocalVue } from '@vue/test-utils';
 import Vuex from 'vuex';
 import GroupedAccessibilityReportsApp from '~/reports/accessibility_report/grouped_accessibility_reports_app.vue';
 import AccessibilityIssueBody from '~/reports/accessibility_report/components/accessibility_issue_body.vue';
-import store from '~/reports/accessibility_report/store';
+import { getStoreConfig } from '~/reports/accessibility_report/store';
 import { mockReport } from './mock_data';
 
 const localVue = createLocalVue();
@@ -20,16 +20,17 @@ describe('Grouped accessibility reports app', () => {
       propsData: {
         endpoint: 'endpoint.json',
       },
-      methods: {
-        fetchReport: () => {},
-      },
     });
   };
 
   const findHeader = () => wrapper.find('[data-testid="report-section-code-text"]');
 
   beforeEach(() => {
-    mockStore = store();
+    mockStore = new Vuex.Store({
+      ...getStoreConfig(),
+      actions: { fetchReport: () => {}, setEndpoint: () => {} },
+    });
+
     mountComponent();
   });
 

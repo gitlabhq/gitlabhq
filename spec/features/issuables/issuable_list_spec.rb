@@ -51,8 +51,8 @@ RSpec.describe 'issuable list', :js do
   it "counts merge requests closing issues icons for each issue" do
     visit_issuable_list(:issue)
 
-    expect(page).to have_selector('.icon-merge-request-unmerged', count: 1)
-    expect(first('.icon-merge-request-unmerged').find(:xpath, '..')).to have_content(1)
+    expect(page).to have_selector('[data-testid="merge-requests"]', count: 1)
+    expect(first('[data-testid="merge-requests"]').find(:xpath, '..')).to have_content(1)
   end
 
   def visit_issuable_list(issuable_type)

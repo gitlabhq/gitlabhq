@@ -33,7 +33,7 @@ export default class IssuableTemplateSelector extends TemplateSelector {
     this.templateWarningEl.find('.js-close-btn').on('click', () => {
       // Explicitly check against 0 value
       if (this.previousSelectedIndex !== undefined) {
-        this.dropdown.data('glDropdown').selectRowAtIndex(this.previousSelectedIndex);
+        this.dropdown.data('deprecatedJQueryDropdown').selectRowAtIndex(this.previousSelectedIndex);
       } else {
         this.reset();
       }
@@ -61,7 +61,7 @@ export default class IssuableTemplateSelector extends TemplateSelector {
   }
 
   setSelectedIndex() {
-    this.previousSelectedIndex = this.dropdown.data('glDropdown').selectedIndex;
+    this.previousSelectedIndex = this.dropdown.data('deprecatedJQueryDropdown').selectedIndex;
   }
 
   onDropdownClicked(query) {

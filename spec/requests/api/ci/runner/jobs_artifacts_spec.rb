@@ -143,6 +143,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
                 expect(response.media_type).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
                 expect(json_response['TempPath']).to eq(JobArtifactUploader.workhorse_local_upload_path)
                 expect(json_response['RemoteObject']).to be_nil
+                expect(json_response['MaximumSize']).not_to be_nil
               end
             end
 
@@ -167,6 +168,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
                   expect(json_response['RemoteObject']).to have_key('StoreURL')
                   expect(json_response['RemoteObject']).to have_key('DeleteURL')
                   expect(json_response['RemoteObject']).to have_key('MultipartUpload')
+                  expect(json_response['MaximumSize']).not_to be_nil
                 end
               end
 
@@ -188,6 +190,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
             expect(response).to have_gitlab_http_status(:ok)
             expect(response.media_type).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
             expect(json_response['TempPath']).not_to be_nil
+            expect(json_response['MaximumSize']).not_to be_nil
           end
 
           it 'fails to post too large artifact' do
@@ -235,36 +238,41 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
             expect(json_response['ProcessLsif']).to be_truthy
           end
 
-          it 'adds ProcessLsifReferences header' do
-            authorize_artifacts_with_token_in_headers(artifact_type: :lsif)
+          it 'tracks code_intelligence usage ping' do
+            tracking_params = {
+              event_names: 'i_source_code_code_intelligence',
+              start_date: Date.yesterday,
+              end_date: Date.today
+            }
 
-            expect(response).to have_gitlab_http_status(:ok)
-            expect(json_response['ProcessLsifReferences']).to be_truthy
+            expect { authorize_artifacts_with_token_in_headers(artifact_type: :lsif) }
+              .to change { Gitlab::UsageDataCounters::HLLRedisCounter.unique_events(tracking_params) }
+              .by(1)
           end
 
           context 'code_navigation feature flag is disabled' do
-            it 'responds with a forbidden error' do
+            before do
               stub_feature_flags(code_navigation: false)
+            end
+
+            it 'responds with a forbidden error' do
               authorize_artifacts_with_token_in_headers(artifact_type: :lsif)
 
               aggregate_failures do
                 expect(response).to have_gitlab_http_status(:forbidden)
                 expect(json_response['ProcessLsif']).to be_falsy
-                expect(json_response['ProcessLsifReferences']).to be_falsy
               end
             end
-          end
 
-          context 'code_navigation_references feature flag is disabled' do
-            it 'sets ProcessLsifReferences header to false' do
-              stub_feature_flags(code_navigation_references: false)
-              authorize_artifacts_with_token_in_headers(artifact_type: :lsif)
+            it 'does not track code_intelligence usage ping' do
+              tracking_params = {
+                event_names: 'i_source_code_code_intelligence',
+                start_date: Date.yesterday,
+                end_date: Date.today
+              }
 
-              aggregate_failures do
-                expect(response).to have_gitlab_http_status(:ok)
-                expect(json_response['ProcessLsif']).to be_truthy
-                expect(json_response['ProcessLsifReferences']).to be_falsy
-              end
+              expect { authorize_artifacts_with_token_in_headers(artifact_type: :lsif) }
+                .not_to change { Gitlab::UsageDataCounters::HLLRedisCounter.unique_events(tracking_params) }
             end
           end
         end

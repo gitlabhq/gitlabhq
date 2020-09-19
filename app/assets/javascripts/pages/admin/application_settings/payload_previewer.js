@@ -3,9 +3,9 @@ import { __ } from '../../../locale';
 import { deprecatedCreateFlash as flash } from '../../../flash';
 
 export default class PayloadPreviewer {
-  constructor(trigger, container) {
+  constructor(trigger) {
     this.trigger = trigger;
-    this.container = container;
+    this.container = document.querySelector(trigger.dataset.payloadSelector);
     this.isVisible = false;
     this.isInserted = false;
   }

@@ -3,8 +3,10 @@ import createState from '~/integrations/edit/store/state';
 describe('Integration form state factory', () => {
   it('states default to null', () => {
     expect(createState()).toEqual({
-      adminState: null,
+      defaultState: null,
       customState: {},
+      isSaving: false,
+      isTesting: false,
       override: false,
     });
   });
@@ -17,9 +19,9 @@ describe('Integration form state factory', () => {
       [null, { inheritFromId: null }, false],
       [null, { inheritFromId: 25 }, false],
     ])(
-      'for adminState: %p, customState: %p: override = `%p`',
-      (adminState, customState, expected) => {
-        expect(createState({ adminState, customState }).override).toEqual(expected);
+      'for defaultState: %p, customState: %p: override = `%p`',
+      (defaultState, customState, expected) => {
+        expect(createState({ defaultState, customState }).override).toEqual(expected);
       },
     );
   });

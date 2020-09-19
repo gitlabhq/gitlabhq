@@ -11,6 +11,8 @@ class SessionsController < Devise::SessionsController
   include Gitlab::Utils::StrongMemoize
 
   skip_before_action :check_two_factor_requirement, only: [:destroy]
+  skip_before_action :check_password_expiration, only: [:destroy]
+
   # replaced with :require_no_authentication_without_flash
   skip_before_action :require_no_authentication, only: [:new, :create]
 
@@ -27,6 +29,9 @@ class SessionsController < Devise::SessionsController
   before_action :save_failed_login, if: :action_new_and_failed_login?
   before_action :load_recaptcha
   before_action :set_invite_params, only: [:new]
+  before_action do
+    push_frontend_feature_flag(:webauthn)
+  end
 
   after_action :log_failed_login, if: :action_new_and_failed_login?
   after_action :verify_known_sign_in, only: [:create]
@@ -157,13 +162,13 @@ class SessionsController < Devise::SessionsController
     (options = request.env["warden.options"]) && options[:action] == "unauthenticated"
   end
 
-  # storing sessions per IP lets us check if there are associated multiple
+  # counting sessions per IP lets us check if there are associated multiple
   # anonymous sessions with one IP and prevent situations when there are
   # multiple attempts of logging in
   def store_unauthenticated_sessions
     return if current_user
 
-    Gitlab::AnonymousSession.new(request.remote_ip, session_id: request.session.id).store_session_id_per_ip
+    Gitlab::AnonymousSession.new(request.remote_ip).count_session_ip
   end
 
   # Handle an "initial setup" state, where there's only one user, it's an admin,
@@ -285,13 +290,15 @@ class SessionsController < Devise::SessionsController
   end
 
   def exceeded_anonymous_sessions?
-    Gitlab::AnonymousSession.new(request.remote_ip).stored_sessions >= MAX_FAILED_LOGIN_ATTEMPTS
+    Gitlab::AnonymousSession.new(request.remote_ip).session_count >= MAX_FAILED_LOGIN_ATTEMPTS
   end
 
   def authentication_method
     if user_params[:otp_attempt]
       "two-factor"
-    elsif user_params[:device_response]
+    elsif user_params[:device_response] && Feature.enabled?(:webauthn)
+      "two-factor-via-webauthn-device"
+    elsif user_params[:device_response] && !Feature.enabled?(:webauthn)
       "two-factor-via-u2f-device"
     else
       "standard"

@@ -1,6 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
 import CommitsHeader from '~/vue_merge_request_widget/components/states/commits_header.vue';
-import Icon from '~/vue_shared/components/icon.vue';
 
 describe('Commits header component', () => {
   let wrapper;
@@ -23,7 +22,6 @@ describe('Commits header component', () => {
 
   const findHeaderWrapper = () => wrapper.find('.js-mr-widget-commits-count');
   const findCommitToggle = () => wrapper.find('.commit-edit-toggle');
-  const findIcon = () => wrapper.find(Icon);
   const findCommitsCountMessage = () => wrapper.find('.commits-count-message');
   const findTargetBranchMessage = () => wrapper.find('.label-branch');
   const findModifyButton = () => wrapper.find('.modify-message-button');
@@ -61,7 +59,7 @@ describe('Commits header component', () => {
       wrapper.setData({ expanded: false });
 
       return wrapper.vm.$nextTick().then(() => {
-        expect(findIcon().props('name')).toBe('chevron-right');
+        expect(findCommitToggle().props('icon')).toBe('chevron-right');
       });
     });
 
@@ -119,7 +117,7 @@ describe('Commits header component', () => {
 
     it('has a chevron-down icon', done => {
       wrapper.vm.$nextTick(() => {
-        expect(findIcon().props('name')).toBe('chevron-down');
+        expect(findCommitToggle().props('icon')).toBe('chevron-down');
         done();
       });
     });

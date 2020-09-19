@@ -12,6 +12,7 @@ export default () => ({
     lastFetchedAt: null,
     currentDiscussionId: null,
     batchSuggestionsInfo: [],
+    currentlyFetchingDiscussions: false,
     /**
      * selectedCommentPosition & selectedCommentPosition structures are the same as `position.line_range`:
      * {

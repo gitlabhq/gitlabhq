@@ -1,183 +1,65 @@
 # frozen_string_literal: true
 
+# This is the CI Linter component that runs the syntax validations
+# while parsing the YAML config into a data structure that is
+# then presented to the caller as result object.
+# After syntax validations (done by Ci::Config), this component also
+# runs logical validation on the built data structure.
 module Gitlab
   module Ci
     class YamlProcessor
-      # ValidationError is treated like a result object in the form of an exception.
-      # We can return any warnings, raised during the config validation, along with
-      # the error object until we support multiple messages to be returned.
-      class ValidationError < StandardError
-        attr_reader :warnings
-
-        def initialize(message, warnings: [])
-          @warnings = warnings
-          super(message)
-        end
-      end
-
-      include Gitlab::Config::Entry::LegacyValidationHelpers
-
-      attr_reader :stages, :jobs
-
-      class Result
-        attr_reader :config, :errors, :warnings
-
-        def initialize(config: nil, errors: [], warnings: [])
-          @config = config
-          @errors = errors
-          @warnings = warnings
-        end
-
-        def valid?
-          config.present? && errors.empty?
-        end
-      end
-
-      def initialize(config, opts = {})
-        @ci_config = Gitlab::Ci::Config.new(config, **opts)
-        @config = @ci_config.to_hash
-
-        unless @ci_config.valid?
-          error!(@ci_config.errors.first)
-        end
-
-        initial_parsing
-      rescue Gitlab::Ci::Config::ConfigError => e
-        error!(e.message)
-      end
-
-      def self.new_with_validation_errors(content, opts = {})
-        return Result.new(errors: ['Please provide content of .gitlab-ci.yml']) if content.blank?
-
-        config = Gitlab::Ci::Config.new(content, **opts)
-        return Result.new(errors: config.errors, warnings: config.warnings) unless config.valid?
-
-        config = Gitlab::Ci::YamlProcessor.new(content, opts)
-        Result.new(config: config, warnings: config.warnings)
-
-      rescue ValidationError => e
-        Result.new(errors: [e.message], warnings: e.warnings)
-
-      rescue Gitlab::Ci::Config::ConfigError => e
-        Result.new(errors: [e.message])
-      end
-
-      def warnings
-        @ci_config&.warnings || []
-      end
-
-      def builds
-        @jobs.map do |name, _|
-          build_attributes(name)
-        end
-      end
-
-      def build_attributes(name)
-        job = @jobs.fetch(name.to_sym, {})
-
-        { stage_idx: @stages.index(job[:stage]),
-          stage: job[:stage],
-          tag_list: job[:tags],
-          name: job[:name].to_s,
-          allow_failure: job[:ignore],
-          when: job[:when] || 'on_success',
-          environment: job[:environment_name],
-          coverage_regex: job[:coverage],
-          yaml_variables: transform_to_yaml_variables(job[:variables]),
-          needs_attributes: job.dig(:needs, :job),
-          interruptible: job[:interruptible],
-          only: job[:only],
-          except: job[:except],
-          rules: job[:rules],
-          cache: job[:cache],
-          resource_group_key: job[:resource_group],
-          scheduling_type: job[:scheduling_type],
-          secrets: job[:secrets],
-          options: {
-            image: job[:image],
-            services: job[:services],
-            artifacts: job[:artifacts],
-            dependencies: job[:dependencies],
-            cross_dependencies: job.dig(:needs, :cross_dependency),
-            job_timeout: job[:timeout],
-            before_script: job[:before_script],
-            script: job[:script],
-            after_script: job[:after_script],
-            environment: job[:environment],
-            retry: job[:retry],
-            parallel: job[:parallel],
-            instance: job[:instance],
-            start_in: job[:start_in],
-            trigger: job[:trigger],
-            bridge_needs: job.dig(:needs, :bridge)&.first,
-            release: release(job)
-          }.compact }.compact
-      end
-
-      def release(job)
-        job[:release]
-      end
-
-      def stage_builds_attributes(stage)
-        @jobs.values
-          .select { |job| job[:stage] == stage }
-          .map { |job| build_attributes(job[:name]) }
-      end
-
-      def stages_attributes
-        @stages.uniq.map do |stage|
-          seeds = stage_builds_attributes(stage)
-
-          { name: stage, index: @stages.index(stage), builds: seeds }
-        end
-      end
-
-      def workflow_attributes
-        {
-          rules: @config.dig(:workflow, :rules),
-          yaml_variables: transform_to_yaml_variables(@variables)
-        }
-      end
+      ValidationError = Class.new(StandardError)
 
       def self.validation_message(content, opts = {})
-        return 'Please provide content of .gitlab-ci.yml' if content.blank?
+        result = new(content, opts).execute
 
-        begin
-          Gitlab::Ci::YamlProcessor.new(content, opts)
-          nil
-        rescue ValidationError => e
-          e.message
+        result.errors.first
+      end
+
+      def initialize(config_content, opts = {})
+        @config_content = config_content
+        @opts = opts
+      end
+
+      def execute
+        if @config_content.blank?
+          return Result.new(errors: ['Please provide content of .gitlab-ci.yml'])
         end
+
+        @ci_config = Gitlab::Ci::Config.new(@config_content, **@opts)
+
+        unless @ci_config.valid?
+          return Result.new(ci_config: @ci_config, errors: @ci_config.errors, warnings: @ci_config.warnings)
+        end
+
+        run_logical_validations!
+
+        Result.new(ci_config: @ci_config, warnings: @ci_config&.warnings)
+
+      rescue Gitlab::Ci::Config::ConfigError => e
+        Result.new(ci_config: @ci_config, errors: [e.message], warnings: @ci_config&.warnings)
+
+      rescue ValidationError => e
+        Result.new(ci_config: @ci_config, errors: [e.message], warnings: @ci_config&.warnings)
       end
 
       private
 
-      def initial_parsing
-        ##
-        # Global config
-        #
-        @variables = @ci_config.variables
+      def run_logical_validations!
         @stages = @ci_config.stages
-
-        ##
-        # Jobs
-        #
-        @jobs = Ci::Config::Normalizer.new(@ci_config.jobs).normalize_jobs
+        @jobs = @ci_config.normalized_jobs
 
         @jobs.each do |name, job|
-          # logical validation for job
-          validate_job_stage!(name, job)
-          validate_job_dependencies!(name, job)
-          validate_job_needs!(name, job)
-          validate_dynamic_child_pipeline_dependencies!(name, job)
-          validate_job_environment!(name, job)
+          validate_job!(name, job)
         end
       end
 
-      def transform_to_yaml_variables(variables)
-        variables.to_h.map do |key, value|
-          { key: key.to_s, value: value, public: true }
-        end
+      def validate_job!(name, job)
+        validate_job_stage!(name, job)
+        validate_job_dependencies!(name, job)
+        validate_job_needs!(name, job)
+        validate_dynamic_child_pipeline_dependencies!(name, job)
+        validate_job_environment!(name, job)
       end
 
       def validate_job_stage!(name, job)
@@ -186,10 +68,6 @@ module Gitlab
         unless job[:stage].is_a?(String) && job[:stage].in?(@stages)
           error!("#{name} job: chosen stage does not exist; available stages are #{@stages.join(", ")}")
         end
-      end
-
-      def error!(message)
-        raise ValidationError.new(message, warnings: warnings)
       end
 
       def validate_job_dependencies!(name, job)
@@ -266,6 +144,10 @@ module Gitlab
         unless on_stop_job[:environment][:action] == 'stop'
           error!("#{name} job: on_stop job #{on_stop} needs to have action stop defined")
         end
+      end
+
+      def error!(message)
+        raise ValidationError.new(message)
       end
     end
   end

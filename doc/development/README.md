@@ -18,7 +18,7 @@ For information on how to install, configure, update, and upgrade your own GitLa
 
 ## Get started
 
-- Set up GitLab's development environment with [GitLab Development Kit (GDK)](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/master/doc/howto/README.md)
+- Set up GitLab's development environment with [GitLab Development Kit (GDK)](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/master/README.md)
 - [GitLab contributing guide](contributing/index.md)
   - [Issues workflow](contributing/issue_workflow.md) for more information on:
     - Issue tracker guidelines.
@@ -57,6 +57,7 @@ Complementary reads:
 - [Generate a changelog entry with `bin/changelog`](changelog.md)
 - [Requesting access to Chatops on GitLab.com](chatops_on_gitlabcom.md#requesting-access) (for GitLab team members)
 - [Patch release process for developers](https://gitlab.com/gitlab-org/release/docs/blob/master/general/patch/process.md#process-for-developers)
+- [Adding a new service component to GitLab](adding_service_component.md)
 
 ## UX and Frontend guides
 
@@ -197,6 +198,7 @@ See [database guidelines](database/index.md).
 - [Defining relations between files using projections](projections.md)
 - [Reference processing](./reference_processing.md)
 - [Compatibility with multiple versions of the application running at the same time](multi_version_compatibility.md)
+- [Features inside `.gitlab/`](./features_inside_dot_gitlab.md)
 
 ## Other GitLab Development Kit (GDK) guides
 

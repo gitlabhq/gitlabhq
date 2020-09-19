@@ -41,12 +41,5 @@ export default {
       autocomplete="off"
     />
     <i class="fa fa-search dropdown-input-search" aria-hidden="true" data-hidden="true"> </i>
-    <i
-      class="fa fa-times dropdown-input-clear js-dropdown-input-clear"
-      aria-hidden="true"
-      data-hidden="true"
-      role="button"
-    >
-    </i>
   </div>
 </template>

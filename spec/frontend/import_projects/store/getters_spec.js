@@ -3,6 +3,7 @@ import {
   isImportingAnyRepo,
   hasIncompatibleRepos,
   hasImportableRepos,
+  importAllCount,
   getImportTarget,
 } from '~/import_projects/store/getters';
 import { STATUSES } from '~/import_projects/constants';
@@ -10,13 +11,12 @@ import state from '~/import_projects/store/state';
 
 const IMPORTED_REPO = {
   importSource: {},
-  importedProject: { fullPath: 'some/path' },
+  importedProject: { fullPath: 'some/path', importStatus: STATUSES.FINISHED },
 };
 
 const IMPORTABLE_REPO = {
   importSource: { id: 'some-id', sanitizedName: 'sanitized' },
   importedProject: null,
-  importStatus: STATUSES.NONE,
 };
 
 const INCOMPATIBLE_REPO = {
@@ -56,13 +56,19 @@ describe('import_projects store getters', () => {
     ${STATUSES.STARTED}    | ${true}
     ${STATUSES.FINISHED}   | ${false}
   `(
-    'isImportingAnyRepo returns $value when repo with $importStatus status is available',
+    'isImportingAnyRepo returns $value when project with $importStatus status is available',
     ({ importStatus, value }) => {
-      localState.repositories = [{ importStatus }];
+      localState.repositories = [{ importedProject: { importStatus } }];
 
       expect(isImportingAnyRepo(localState)).toBe(value);
     },
   );
+
+  it('isImportingAnyRepo returns false when project with no defined importStatus status is available', () => {
+    localState.repositories = [{ importSource: {} }];
+
+    expect(isImportingAnyRepo(localState)).toBe(false);
+  });
 
   describe('hasIncompatibleRepos', () => {
     it('returns true if there are any incompatible projects', () => {
@@ -89,6 +95,19 @@ describe('import_projects store getters', () => {
       localState.repositories = [IMPORTED_REPO, INCOMPATIBLE_REPO];
 
       expect(hasImportableRepos(localState)).toBe(false);
+    });
+  });
+
+  describe('importAllCount', () => {
+    it('returns count of available importable projects ', () => {
+      localState.repositories = [
+        IMPORTABLE_REPO,
+        IMPORTABLE_REPO,
+        IMPORTED_REPO,
+        INCOMPATIBLE_REPO,
+      ];
+
+      expect(importAllCount(localState)).toBe(2);
     });
   });
 

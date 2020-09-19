@@ -334,12 +334,6 @@ RSpec.describe SnippetsController do
       snippet.reload
     end
 
-    it_behaves_like 'updating snippet checks blob is binary' do
-      let_it_be(:title) { 'Foo' }
-
-      subject { put :update, params: { id: snippet, personal_snippet: { title: title } } }
-    end
-
     context 'when the snippet is spam' do
       before do
         allow_next_instance_of(Spam::AkismetService) do |instance|
@@ -744,14 +738,6 @@ RSpec.describe SnippetsController do
 
         expect(response).to have_gitlab_http_status(:not_found)
       end
-    end
-  end
-
-  describe 'GET #edit' do
-    it_behaves_like 'editing snippet checks blob is binary' do
-      let_it_be(:snippet) { create(:personal_snippet, :public, :repository, author: user) }
-
-      subject { get :edit, params: { id: snippet } }
     end
   end
 end

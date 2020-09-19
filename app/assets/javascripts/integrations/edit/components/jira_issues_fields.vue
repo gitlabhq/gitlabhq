@@ -37,6 +37,11 @@ export default {
       required: false,
       default: null,
     },
+    gitlabIssuesEnabled: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
     upgradePlanPath: {
       type: String,
       required: false,
@@ -133,7 +138,7 @@ export default {
           :disabled="!enableJiraIssues"
         />
       </gl-form-group>
-      <p>
+      <p v-if="gitlabIssuesEnabled">
         <gl-sprintf
           :message="
             s__(

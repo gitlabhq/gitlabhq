@@ -159,7 +159,7 @@ RSpec.describe 'Project' do
 
   describe 'remove forked relationship', :js do
     let(:user)    { create(:user) }
-    let(:project) { fork_project(create(:project, :public), user, namespace_id: user.namespace) }
+    let(:project) { fork_project(create(:project, :public), user, namespace: user.namespace) }
 
     before do
       sign_in user

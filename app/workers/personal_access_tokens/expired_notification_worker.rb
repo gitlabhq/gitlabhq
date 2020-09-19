@@ -8,8 +8,6 @@ module PersonalAccessTokens
     feature_category :authentication_and_authorization
 
     def perform(*args)
-      return unless Feature.enabled?(:expired_pat_email_notification)
-
       notification_service = NotificationService.new
 
       User.with_personal_access_tokens_expired_today.find_each do |user|

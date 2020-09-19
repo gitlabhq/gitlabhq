@@ -57,17 +57,17 @@ The default value is 60 minutes. Decrease the time limit if you want to impose
 a hard limit on your jobs' running time or increase it otherwise. In any case,
 if the job surpasses the threshold, it is marked as failed.
 
-### Timeout overriding on Runner level
+### Timeout overriding for runners
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/17221) in GitLab 10.7.
 
 Project defined timeout (either specific timeout set by user or the default
-60 minutes timeout) may be [overridden on Runner level](../runners/README.md#set-maximum-job-timeout-for-a-runner).
+60 minutes timeout) may be [overridden for runners](../runners/README.md#set-maximum-job-timeout-for-a-runner).
 
 ## Maximum artifacts size **(CORE ONLY)**
 
 For information about setting a maximum artifact size for a project, see
-[Maximum artifacts size](../../user/admin_area/settings/continuous_integration.md#maximum-artifacts-size-core-only).
+[Maximum artifacts size](../../user/admin_area/settings/continuous_integration.md#maximum-artifacts-size).
 
 ## Custom CI configuration path
 
@@ -263,7 +263,15 @@ Depending on the status of your job, a badge can have the following values:
 You can access a pipeline status badge image using the following link:
 
 ```plaintext
-https://example.gitlab.com/<namespace>/<project>/badges/<branch>/pipeline.svg
+https://gitlab.example.com/<namespace>/<project>/badges/<branch>/pipeline.svg
+```
+
+#### Display only non-skipped status
+
+If you want the pipeline status badge to only display the last non-skipped status, you can use the `?ignore_skipped=true` query parameter:
+
+```plaintext
+https://gitlab.example.com/<namespace>/<project>/badges/<branch>/pipeline.svg?ignore_skipped=true
 ```
 
 ### Test coverage report badge
@@ -275,7 +283,7 @@ pipeline can have the test coverage percentage value defined.
 The test coverage badge can be accessed using following link:
 
 ```plaintext
-https://example.gitlab.com/<namespace>/<project>/badges/<branch>/coverage.svg
+https://gitlab.example.com/<namespace>/<project>/badges/<branch>/coverage.svg
 ```
 
 If you would like to get the coverage report from a specific job, you can add
@@ -294,7 +302,7 @@ Pipeline badges can be rendered in different styles by adding the `style=style_n
 #### Flat (default)
 
 ```plaintext
-https://example.gitlab.com/<namespace>/<project>/badges/<branch>/coverage.svg?style=flat
+https://gitlab.example.com/<namespace>/<project>/badges/<branch>/coverage.svg?style=flat
 ```
 
 ![Badge flat style](https://gitlab.com/gitlab-org/gitlab/badges/master/coverage.svg?job=coverage&style=flat)
@@ -304,7 +312,7 @@ https://example.gitlab.com/<namespace>/<project>/badges/<branch>/coverage.svg?st
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/30120) in GitLab 11.8.
 
 ```plaintext
-https://example.gitlab.com/<namespace>/<project>/badges/<branch>/coverage.svg?style=flat-square
+https://gitlab.example.com/<namespace>/<project>/badges/<branch>/coverage.svg?style=flat-square
 ```
 
 ![Badge flat square style](https://gitlab.com/gitlab-org/gitlab/badges/master/coverage.svg?job=coverage&style=flat-square)

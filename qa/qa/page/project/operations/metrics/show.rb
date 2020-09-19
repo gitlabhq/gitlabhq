@@ -41,6 +41,11 @@ module QA
               element :quick_range_item
             end
 
+            view 'app/assets/javascripts/monitoring/components/variables_section.vue' do
+              element :variables_content
+              element :variable_item
+            end
+
             def wait_for_metrics
               wait_for_data
               return if has_metrics?
@@ -73,6 +78,14 @@ module QA
               within('.modal-content') { click_button(class: 'btn-success') }
             end
 
+            def select_dashboard(dashboard_name)
+              click_element :dashboards_filter_dropdown
+
+              within_element :dashboards_filter_dropdown do
+                click_on dashboard_name
+              end
+            end
+
             def filter_environment(environment = 'production')
               click_element :environments_dropdown
 
@@ -92,6 +105,18 @@ module QA
             end
 
             def has_custom_metric?(metric)
+              within_element :prometheus_graphs do
+                has_text?(metric)
+              end
+            end
+
+            def has_templating_variable?(variable)
+              within_element :variables_content do
+                has_element?(:variable_item, text: variable)
+              end
+            end
+
+            def has_template_metric?(metric)
               within_element :prometheus_graphs do
                 has_text?(metric)
               end

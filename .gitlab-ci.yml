@@ -7,6 +7,7 @@ stages:
   - post-test
   - review-prepare
   - review
+  - dast
   - qa
   - post-qa
   - pages
@@ -104,3 +105,4 @@ include:
   - local: .gitlab/ci/yaml.gitlab-ci.yml
   - local: .gitlab/ci/releases.gitlab-ci.yml
   - local: .gitlab/ci/notify.gitlab-ci.yml
+  - local: .gitlab/ci/dast.gitlab-ci.yml

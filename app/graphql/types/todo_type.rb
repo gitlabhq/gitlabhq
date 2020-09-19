@@ -26,7 +26,7 @@ module Types
           resolve: -> (todo, args, context) { Gitlab::Graphql::Loaders::BatchModelLoader.new(Group, todo.group_id).find }
 
     field :author, Types::UserType,
-          description: 'The owner of this todo',
+          description: 'The author of this todo',
           null: false,
           resolve: -> (todo, args, context) { Gitlab::Graphql::Loaders::BatchModelLoader.new(User, todo.author_id).find }
 

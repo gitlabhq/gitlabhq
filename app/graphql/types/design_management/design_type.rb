@@ -12,6 +12,7 @@ module Types
 
       implements(Types::Notes::NoteableType)
       implements(Types::DesignManagement::DesignFields)
+      implements(Types::CurrentUserTodos)
 
       field :versions,
             Types::DesignManagement::VersionType.connection_type,

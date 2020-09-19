@@ -1,30 +1,40 @@
 - page_title _("CI Lint")
 - page_description _("Validate your GitLab CI configuration file")
-- content_for :library_javascripts do
-  = page_specific_javascript_tag('lib/ace.js')
+- unless Feature.enabled?(:monaco_ci)
+  - content_for :library_javascripts do
+    = page_specific_javascript_tag('lib/ace.js')
 
 %h2.pt-3.pb-3= _("Validate your GitLab CI configuration")
 
-.project-ci-linter
-  = form_tag project_ci_lint_path(@project), method: :post do
-    .row
-      .col-sm-12
-        .file-holder
-          .js-file-title.file-title.clearfix
-            = _("Contents of .gitlab-ci.yml")
-          #ci-editor.ci-editor= @content
-        = text_area_tag(:content, @content, class: 'hidden form-control span1', rows: 7, require: true)
-      .col-sm-12
-        .float-left.gl-mt-3
-          = submit_tag(_('Validate'), class: 'btn btn-success submit-yml')
-          - if Gitlab::Ci::Features.lint_creates_pipeline_with_dry_run?(@project)
-            = check_box_tag(:dry_run, 'true', params[:dry_run])
-            = label_tag(:dry_run, _('Simulate a pipeline created for the default branch'))
-            = link_to icon('question-circle'), help_page_path('ci/lint', anchor: 'pipeline-simulation'), target: '_blank', rel: 'noopener noreferrer'
-        .float-right.prepend-top-10
-          = button_tag(_('Clear'), type: 'button', class: 'btn btn-default clear-yml')
+- if Feature.enabled?(:ci_lint_vue, @project)
+  #js-ci-lint{ data: { endpoint: project_ci_lint_path(@project) } }
 
-  .row.prepend-top-20
-    .col-sm-12
-      .results.project-ci-template
-        = render partial: 'create' if defined?(@status)
+- else
+  .project-ci-linter
+    = form_tag project_ci_lint_path(@project), method: :post, class: 'js-ci-lint-form' do
+      .row
+        .col-sm-12
+          .file-holder
+            .js-file-title.file-title.clearfix
+              = _("Contents of .gitlab-ci.yml")
+            - if Feature.enabled?(:monaco_ci)
+              .file-editor.code
+                .js-edit-mode-pane.qa-editor#editor{ data: { 'editor-loading': true } }<
+                  %pre.editor-loading-content= params[:content]
+            - else
+              #ci-editor.ci-editor= @content
+          = text_area_tag(:content, @content, class: 'hidden form-control span1', rows: 7, require: true)
+        .col-sm-12
+          .float-left.gl-mt-3
+            = submit_tag(_('Validate'), class: 'btn btn-success submit-yml')
+            - if Gitlab::Ci::Features.lint_creates_pipeline_with_dry_run?(@project)
+              = check_box_tag(:dry_run, 'true', params[:dry_run])
+              = label_tag(:dry_run, _('Simulate a pipeline created for the default branch'))
+              = link_to sprite_icon('question-o'), help_page_path('ci/lint', anchor: 'pipeline-simulation'), target: '_blank', rel: 'noopener noreferrer'
+          .float-right.prepend-top-10
+            = button_tag(_('Clear'), type: 'button', class: 'btn btn-default clear-yml')
+
+    .row.prepend-top-20
+      .col-sm-12
+        .results.project-ci-template
+          = render partial: 'create' if defined?(@result)

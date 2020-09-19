@@ -2,6 +2,8 @@
 
 module Ci
   class CreateJobArtifactsService < ::BaseService
+    include Gitlab::Utils::UsageData
+
     ArtifactsExistError = Class.new(StandardError)
 
     LSIF_ARTIFACT_TYPE = 'lsif'
@@ -25,7 +27,7 @@ module Ci
 
       if lsif?(artifact_type)
         headers[:ProcessLsif] = true
-        headers[:ProcessLsifReferences] = Feature.enabled?(:code_navigation_references, project, default_enabled: true)
+        track_usage_event('i_source_code_code_intelligence', project.id)
       end
 
       success(headers: headers)

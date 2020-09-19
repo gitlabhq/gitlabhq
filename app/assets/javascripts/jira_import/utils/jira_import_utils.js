@@ -1,5 +1,5 @@
 import { last } from 'lodash';
-import { JIRA_IMPORT_SUCCESS_ALERT_HIDE_MAP_KEY } from '~/issuables_list/constants';
+import { JIRA_IMPORT_SUCCESS_ALERT_HIDE_MAP_KEY } from '~/issues_list/constants';
 
 export const IMPORT_STATE = {
   FAILED: 'failed',

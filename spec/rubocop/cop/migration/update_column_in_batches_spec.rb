@@ -1,15 +1,15 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 require 'rubocop'
 require 'rubocop/rspec/support'
 
 require_relative '../../../../rubocop/cop/migration/update_column_in_batches'
 
-RSpec.describe RuboCop::Cop::Migration::UpdateColumnInBatches do
+RSpec.describe RuboCop::Cop::Migration::UpdateColumnInBatches, type: :rubocop do
   let(:cop) { described_class.new }
-  let(:tmp_rails_root) { Rails.root.join('tmp', 'rails_root') }
+  let(:tmp_rails_root) { rails_root_join('tmp', 'rails_root') }
   let(:migration_code) do
     <<-END
     def up
@@ -27,6 +27,8 @@ RSpec.describe RuboCop::Cop::Migration::UpdateColumnInBatches do
     FileUtils.rm_rf(tmp_rails_root)
   end
 
+  let(:spec_filepath) { File.join(tmp_rails_root, 'spec', 'migrations', 'my_super_migration_spec.rb') }
+
   context 'outside of a migration' do
     it 'does not register any offenses' do
       inspect_source(migration_code)
@@ -34,8 +36,6 @@ RSpec.describe RuboCop::Cop::Migration::UpdateColumnInBatches do
       expect(cop.offenses).to be_empty
     end
   end
-
-  let(:spec_filepath) { tmp_rails_root.join('spec', 'migrations', 'my_super_migration_spec.rb') }
 
   shared_context 'with a migration file' do
     before do
@@ -83,31 +83,31 @@ RSpec.describe RuboCop::Cop::Migration::UpdateColumnInBatches do
   end
 
   context 'in a migration' do
-    let(:migration_filepath) { tmp_rails_root.join('db', 'migrate', '20121220064453_my_super_migration.rb') }
+    let(:migration_filepath) { File.join(tmp_rails_root, 'db', 'migrate', '20121220064453_my_super_migration.rb') }
 
     it_behaves_like 'a migration file with no spec file'
     it_behaves_like 'a migration file with a spec file'
   end
 
   context 'in a post migration' do
-    let(:migration_filepath) { tmp_rails_root.join('db', 'post_migrate', '20121220064453_my_super_migration.rb') }
+    let(:migration_filepath) { File.join(tmp_rails_root, 'db', 'post_migrate', '20121220064453_my_super_migration.rb') }
 
     it_behaves_like 'a migration file with no spec file'
     it_behaves_like 'a migration file with a spec file'
   end
 
   context 'EE migrations' do
-    let(:spec_filepath) { tmp_rails_root.join('ee', 'spec', 'migrations', 'my_super_migration_spec.rb') }
+    let(:spec_filepath) { File.join(tmp_rails_root, 'ee', 'spec', 'migrations', 'my_super_migration_spec.rb') }
 
     context 'in a migration' do
-      let(:migration_filepath) { tmp_rails_root.join('ee', 'db', 'migrate', '20121220064453_my_super_migration.rb') }
+      let(:migration_filepath) { File.join(tmp_rails_root, 'ee', 'db', 'migrate', '20121220064453_my_super_migration.rb') }
 
       it_behaves_like 'a migration file with no spec file'
       it_behaves_like 'a migration file with a spec file'
     end
 
     context 'in a post migration' do
-      let(:migration_filepath) { tmp_rails_root.join('ee', 'db', 'post_migrate', '20121220064453_my_super_migration.rb') }
+      let(:migration_filepath) { File.join(tmp_rails_root, 'ee', 'db', 'post_migrate', '20121220064453_my_super_migration.rb') }
 
       it_behaves_like 'a migration file with no spec file'
       it_behaves_like 'a migration file with a spec file'

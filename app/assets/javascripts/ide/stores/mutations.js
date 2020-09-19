@@ -7,7 +7,6 @@ import treeMutations from './mutations/tree';
 import branchMutations from './mutations/branch';
 import {
   sortTree,
-  replaceFileUrl,
   swapInParentTreeWithSorting,
   updateFileCollections,
   removeFromParentTree,
@@ -49,7 +48,7 @@ export default {
       entries,
     });
   },
-  [types.CREATE_TMP_ENTRY](state, { data, projectId, branchId }) {
+  [types.CREATE_TMP_ENTRY](state, { data }) {
     Object.keys(data.entries).reduce((acc, key) => {
       const entry = data.entries[key];
       const foundEntry = state.entries[key];
@@ -72,13 +71,12 @@ export default {
       return acc.concat(key);
     }, []);
 
-    const foundEntry = state.trees[`${projectId}/${branchId}`].tree.find(
-      e => e.path === data.treeList[0].path,
-    );
+    const currentTree = state.trees[`${state.currentProjectId}/${state.currentBranchId}`];
+    const foundEntry = currentTree.tree.find(e => e.path === data.treeList[0].path);
 
     if (!foundEntry) {
-      Object.assign(state.trees[`${projectId}/${branchId}`], {
-        tree: sortTree(state.trees[`${projectId}/${branchId}`].tree.concat(data.treeList)),
+      Object.assign(currentTree, {
+        tree: sortTree(currentTree.tree.concat(data.treeList)),
       });
     }
   },
@@ -139,7 +137,6 @@ export default {
       prevId: undefined,
       prevPath: undefined,
       prevName: undefined,
-      prevUrl: undefined,
       prevKey: undefined,
       prevParentPath: undefined,
     });
@@ -195,9 +192,6 @@ export default {
     const oldEntry = state.entries[path];
     const newPath = parentPath ? `${parentPath}/${name}` : name;
     const isRevert = newPath === oldEntry.prevPath;
-
-    const newUrl = replaceFileUrl(oldEntry.url, oldEntry.path, newPath);
-
     const newKey = oldEntry.key.replace(new RegExp(oldEntry.path, 'g'), newPath);
 
     const baseProps = {
@@ -205,7 +199,6 @@ export default {
       name,
       id: newPath,
       path: newPath,
-      url: newUrl,
       key: newKey,
       parentPath: parentPath || '',
     };
@@ -216,7 +209,6 @@ export default {
             prevId: undefined,
             prevPath: undefined,
             prevName: undefined,
-            prevUrl: undefined,
             prevKey: undefined,
             prevParentPath: undefined,
           }
@@ -224,7 +216,6 @@ export default {
             prevId: oldEntry.prevId || oldEntry.id,
             prevPath: oldEntry.prevPath || oldEntry.path,
             prevName: oldEntry.prevName || oldEntry.name,
-            prevUrl: oldEntry.prevUrl || oldEntry.url,
             prevKey: oldEntry.prevKey || oldEntry.key,
             prevParentPath: oldEntry.prevParentPath || oldEntry.parentPath,
           };

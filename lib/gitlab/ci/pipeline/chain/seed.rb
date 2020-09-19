@@ -9,7 +9,7 @@ module Gitlab
           include Gitlab::Utils::StrongMemoize
 
           def perform!
-            raise ArgumentError, 'missing config processor' unless @command.config_processor
+            raise ArgumentError, 'missing YAML processor result' unless @command.yaml_processor_result
 
             # Allocate next IID. This operation must be outside of transactions of pipeline creations.
             pipeline.ensure_project_iid!
@@ -56,7 +56,7 @@ module Gitlab
           end
 
           def stages_attributes
-            @command.config_processor.stages_attributes
+            @command.yaml_processor_result.stages_attributes
           end
         end
       end

@@ -83,7 +83,7 @@ exports[`grafana integration component default state to match the default snapsh
             
             More information
             
-            <icon-stub
+            <gl-icon-stub
               class="vertical-align-middle"
               name="external-link"
               size="16"

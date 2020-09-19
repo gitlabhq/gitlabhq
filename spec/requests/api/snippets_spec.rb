@@ -111,7 +111,7 @@ RSpec.describe API::Snippets do
     end
 
     it 'returns 404 for invalid snippet id' do
-      snippet.destroy
+      snippet.destroy!
 
       get api("/snippets/#{snippet.id}/raw", author)
 
@@ -201,7 +201,7 @@ RSpec.describe API::Snippets do
       end
 
       it 'returns 404 for invalid snippet id' do
-        private_snippet.destroy
+        private_snippet.destroy!
 
         subject
 
@@ -368,7 +368,7 @@ RSpec.describe API::Snippets do
       context 'when the snippet is public' do
         let(:extra_params) { { visibility: 'public' } }
 
-        it 'rejects the shippet' do
+        it 'rejects the snippet' do
           expect { subject }.not_to change { Snippet.count }
 
           expect(response).to have_gitlab_http_status(:bad_request)
@@ -391,19 +391,16 @@ RSpec.describe API::Snippets do
       create(:personal_snippet, :repository, author: user, visibility_level: visibility_level)
     end
 
-    shared_examples 'snippet updates' do
-      it 'updates a snippet' do
-        new_content = 'New content'
-        new_description = 'New description'
+    it_behaves_like 'snippet file updates'
+    it_behaves_like 'snippet non-file updates'
+    it_behaves_like 'snippet individual non-file updates'
+    it_behaves_like 'invalid snippet updates'
 
-        update_snippet(params: { content: new_content, description: new_description, visibility: 'internal' })
+    it "returns 404 for another user's snippet" do
+      update_snippet(requester: other_user, params: { title: 'foobar' })
 
-        expect(response).to have_gitlab_http_status(:ok)
-        snippet.reload
-        expect(snippet.content).to eq(new_content)
-        expect(snippet.description).to eq(new_description)
-        expect(snippet.visibility).to eq('internal')
-      end
+      expect(response).to have_gitlab_http_status(:not_found)
+      expect(json_response['message']).to eq('404 Snippet Not Found')
     end
 
     context 'with restricted visibility settings' do
@@ -413,43 +410,7 @@ RSpec.describe API::Snippets do
                                     Gitlab::VisibilityLevel::PRIVATE])
       end
 
-      it_behaves_like 'snippet updates'
-    end
-
-    it_behaves_like 'snippet updates'
-
-    it 'returns 404 for invalid snippet id' do
-      update_snippet(snippet_id: non_existing_record_id, params: { title: 'Foo' })
-
-      expect(response).to have_gitlab_http_status(:not_found)
-      expect(json_response['message']).to eq('404 Snippet Not Found')
-    end
-
-    it "returns 404 for another user's snippet" do
-      update_snippet(requester: other_user, params: { title: 'foobar' })
-
-      expect(response).to have_gitlab_http_status(:not_found)
-      expect(json_response['message']).to eq('404 Snippet Not Found')
-    end
-
-    it 'returns 400 for missing parameters' do
-      update_snippet
-
-      expect(response).to have_gitlab_http_status(:bad_request)
-    end
-
-    it 'returns 400 if content is blank' do
-      update_snippet(params: { content: '' })
-
-      expect(response).to have_gitlab_http_status(:bad_request)
-      expect(json_response['error']).to eq 'content is empty'
-    end
-
-    it 'returns 400 if title is blank' do
-      update_snippet(params: { title: '' })
-
-      expect(response).to have_gitlab_http_status(:bad_request)
-      expect(json_response['error']).to eq 'title is empty'
+      it_behaves_like 'snippet non-file updates'
     end
 
     it_behaves_like 'update with repository actions' do
@@ -475,7 +436,7 @@ RSpec.describe API::Snippets do
       context 'when the snippet is public' do
         let(:visibility_level) { Snippet::PUBLIC }
 
-        it 'rejects the shippet' do
+        it 'rejects the snippet' do
           expect { update_snippet(params: { title: 'Foo' }) }
             .not_to change { snippet.reload.title }
 

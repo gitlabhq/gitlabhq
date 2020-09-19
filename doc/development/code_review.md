@@ -99,6 +99,7 @@ with [domain expertise](#domain-experts).
 1. If your merge request includes end-to-end **and** non-end-to-end changes (*3*), it must be **approved
    by a [Software Engineer in Test](https://about.gitlab.com/handbook/engineering/quality/#individual-contributors)**.
 1. If your merge request only includes end-to-end changes (*3*) **or** if the MR author is a [Software Engineer in Test](https://about.gitlab.com/handbook/engineering/quality/#individual-contributors), it must be **approved by a [Quality maintainer](https://about.gitlab.com/handbook/engineering/projects/#gitlab_maintainers_qa)**
+1. If your merge request includes a new or updated [application limit](https://about.gitlab.com/handbook/product/product-processes/#introducing-application-limits), it must be **approved by a [product manager](https://about.gitlab.com/company/team/)**.
 
 - (*1*): Please note that specs other than JavaScript specs are considered backend code.
 - (*2*): We encourage you to seek guidance from a database maintainer if your merge
@@ -138,7 +139,7 @@ up confusion or verify that the end result matches what they had in mind, to
 database specialists to get input on the data model or specific queries, or to
 any other developer to get an in-depth review of the solution.
 
-If an author is unsure if a merge request needs a [domain experts's](#domain-experts) opinion, that's
+If an author is unsure if a merge request needs a [domain expert's](#domain-experts) opinion, that's
 usually a pretty good sign that it does, since without it the required level of
 confidence in their solution will not have been reached.
 
@@ -358,12 +359,13 @@ When ready to merge:
   messy commit history that is intended to be squashed.
 - **Start a new merge request pipeline with the `Run Pipeline` button in the merge
   request's "Pipelines" tab, and enable "Merge When Pipeline Succeeds" (MWPS).** Note that:
-  - If the **latest [Pipeline for Merged Results](../ci/merge_request_pipelines/pipelines_for_merged_results/#pipelines-for-merged-results-premium)** finished less than 2 hours ago, you
+  - If the **latest [Pipeline for Merged Results](../ci/merge_request_pipelines/pipelines_for_merged_results/#pipelines-for-merged-results)** finished less than 2 hours ago, you
     might merge without starting a new pipeline as the merge request is close
     enough to `master`.
-  - If the **merge request is from a fork**, we can't use [Pipelines for Merged Results](../ci/merge_request_pipelines/pipelines_for_merged_results/index.md#prerequisites), therefore, they're more prone to breaking `master`.
-    Check how far behind `master` the source branch is. If it's more than 100 commits behind, ask the author to
-    rebase it before merging.
+  - If the **merge request is from a fork**, we can use [Pipelines for Merged Results from a forked project](../ci/merge_request_pipelines/index.md#run-pipelines-in-the-parent-project-for-merge-requests-from-a-forked-project) with caution.
+    Before triggering the pipeline, review all changes for **malicious code**.
+    If you cannot trigger the pipeline, review the status of the fork relative to `master`.
+    If it's more than 100 commits behind, ask the author to rebase it before merging.
   - If [master is broken](https://about.gitlab.com/handbook/engineering/workflow/#broken-master),
     in addition to the two above rules, check that any failure also happens
     in `master` and post a link to the ~"master:broken" issue before clicking the

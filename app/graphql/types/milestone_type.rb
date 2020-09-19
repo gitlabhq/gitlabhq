@@ -3,7 +3,7 @@
 module Types
   class MilestoneType < BaseObject
     graphql_name 'Milestone'
-    description 'Represents a milestone.'
+    description 'Represents a milestone'
 
     present_using MilestonePresenter
 
@@ -60,3 +60,5 @@ module Types
     end
   end
 end
+
+Types::MilestoneType.prepend_if_ee('::EE::Types::MilestoneType')

@@ -14,6 +14,8 @@ RSpec.describe 'Search group member' do
   end
 
   before do
+    stub_feature_flags(vue_group_members_list: false)
+
     sign_in(user)
     visit group_group_members_path(guest_group)
   end

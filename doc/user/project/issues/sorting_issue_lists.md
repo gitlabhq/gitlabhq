@@ -11,7 +11,7 @@ etc. The available sorting options can change based on the context of the list.
 For sorting by issue priority, see [Label Priority](../labels.md#label-priority).
 
 In group and project issue lists, it is also possible to order issues manually,
-similar to [issue boards](../issue_board.md#issue-ordering-in-a-list).
+similar to [issue boards](../issue_board.md#how-gitlab-orders-issues-in-a-list).
 
 ## Manual sorting
 
@@ -31,6 +31,6 @@ a given list inside your GitLab instance, any time those two issues are subseque
 loaded in any list in the same instance (could be a different project issue list or a
 different group issue list, for example), that ordering will be maintained.
 
-This ordering also affects [issue boards](../issue_board.md#issue-ordering-in-a-list).
+This ordering also affects [issue boards](../issue_board.md#how-gitlab-orders-issues-in-a-list).
 Changing the order in an issue list changes the ordering in an issue board,
 and vice versa.

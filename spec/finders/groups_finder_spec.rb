@@ -150,6 +150,14 @@ RSpec.describe GroupsFinder do
               end
             end
           end
+
+          context 'being minimal access member of parent group' do
+            it 'do not return group with minimal_access access' do
+              create(:group_member, :minimal_access, user: user, source: parent_group)
+
+              is_expected.to contain_exactly(public_subgroup, internal_subgroup)
+            end
+          end
         end
       end
     end

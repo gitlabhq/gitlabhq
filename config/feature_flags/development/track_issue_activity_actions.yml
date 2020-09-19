@@ -1,0 +1,7 @@
+---
+name: track_issue_activity_actions
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/40904
+rollout_issue_url:
+group: group::project_management
+type: development
+default_enabled: false

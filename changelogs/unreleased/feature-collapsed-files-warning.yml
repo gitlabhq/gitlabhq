@@ -1,0 +1,5 @@
+---
+title: Add a warning when any diff files are collapsed
+merge_request: 40752
+author:
+type: added

@@ -14,7 +14,7 @@
   }
 
   .issue {
-    padding: 10px 0 10px $gl-padding;
+    padding: 10px $gl-padding;
     position: relative;
 
     .title {
@@ -294,12 +294,12 @@ ul.related-merge-requests > li {
 
       &::after {
         content: image-url('icon_anchor.svg');
-        @include invisible(hidden);
+        visibility: hidden;
       }
     }
 
     &:hover > a.anchor::after {
-      @include invisible(visible);
+      visibility: visible;
     }
   }
 }

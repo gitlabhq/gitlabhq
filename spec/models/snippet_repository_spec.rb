@@ -108,6 +108,7 @@ RSpec.describe SnippetRepository do
       before do
         allow(snippet).to receive(:repository).and_return(repo)
         allow(repo).to receive(:ls_files).and_return([])
+        allow(repo).to receive(:root_ref).and_return('master')
       end
 
       it 'infers the commit action based on the parameters if not present' do
@@ -197,7 +198,7 @@ RSpec.describe SnippetRepository do
 
     shared_examples 'snippet repository with file names' do |*filenames|
       it 'sets a name for unnamed files' do
-        ls_files = snippet.repository.ls_files(nil)
+        ls_files = snippet.repository.ls_files(snippet.default_branch)
         expect(ls_files).to include(*filenames)
       end
     end
@@ -306,6 +307,6 @@ RSpec.describe SnippetRepository do
   end
 
   def first_blob(snippet)
-    snippet.repository.blob_at('master', snippet.repository.ls_files(nil).first)
+    snippet.repository.blob_at('master', snippet.repository.ls_files(snippet.default_branch).first)
   end
 end

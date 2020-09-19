@@ -1,8 +1,8 @@
 .search-result-row
   %h4
-    = link_to project_milestone_path(milestone.project, milestone) do
+    = link_to project_milestone_path(milestone.project, milestone), data: {track_event: 'click_text', track_label: 'milestone_title', track_property: 'search_result'} do
       %span.term.str-truncated= milestone.title
 
   - if milestone.description.present?
     .description.term
-      = search_md_sanitize(milestone, :description)
+      = search_md_sanitize(milestone.description)

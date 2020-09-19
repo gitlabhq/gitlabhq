@@ -1,0 +1,5 @@
+---
+title: Prevent merge requests from triggering coverage fuzzing jobs
+merge_request: 41906
+author:
+type: fixed

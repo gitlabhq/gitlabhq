@@ -2,9 +2,10 @@ import Vuex from 'vuex';
 import { mount, createLocalVue } from '@vue/test-utils';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
-import { GlLoadingIcon, GlSearchBoxByType, GlNewDropdownItem, GlIcon } from '@gitlab/ui';
+import { GlLoadingIcon, GlSearchBoxByType, GlDropdownItem, GlIcon } from '@gitlab/ui';
 import { trimText } from 'helpers/text_helper';
 import { sprintf } from '~/locale';
+import { ENTER_KEY } from '~/lib/utils/keys';
 import RefSelector from '~/ref/components/ref_selector.vue';
 import { X_TOTAL_HEADER, DEFAULT_I18N } from '~/ref/constants';
 import createStore from '~/ref/stores/';
@@ -83,16 +84,18 @@ describe('Ref selector component', () => {
 
   const findLoadingIcon = () => wrapper.find(GlLoadingIcon);
 
+  const findSearchBox = () => wrapper.find(GlSearchBoxByType);
+
   const findBranchesSection = () => wrapper.find('[data-testid="branches-section"]');
-  const findBranchDropdownItems = () => findBranchesSection().findAll(GlNewDropdownItem);
+  const findBranchDropdownItems = () => findBranchesSection().findAll(GlDropdownItem);
   const findFirstBranchDropdownItem = () => findBranchDropdownItems().at(0);
 
   const findTagsSection = () => wrapper.find('[data-testid="tags-section"]');
-  const findTagDropdownItems = () => findTagsSection().findAll(GlNewDropdownItem);
+  const findTagDropdownItems = () => findTagsSection().findAll(GlDropdownItem);
   const findFirstTagDropdownItem = () => findTagDropdownItems().at(0);
 
   const findCommitsSection = () => wrapper.find('[data-testid="commits-section"]');
-  const findCommitDropdownItems = () => findCommitsSection().findAll(GlNewDropdownItem);
+  const findCommitDropdownItems = () => findCommitsSection().findAll(GlDropdownItem);
   const findFirstCommitDropdownItem = () => findCommitDropdownItems().at(0);
 
   //
@@ -120,7 +123,7 @@ describe('Ref selector component', () => {
   // Convenience methods
   //
   const updateQuery = newQuery => {
-    wrapper.find(GlSearchBoxByType).vm.$emit('input', newQuery);
+    findSearchBox().vm.$emit('input', newQuery);
   };
 
   const selectFirstBranch = () => {
@@ -174,7 +177,7 @@ describe('Ref selector component', () => {
         return waitForRequests();
       });
 
-      it('adds the provided ID to the GlNewDropdown instance', () => {
+      it('adds the provided ID to the GlDropdown instance', () => {
         expect(wrapper.attributes().id).toBe(id);
       });
     });
@@ -240,6 +243,23 @@ describe('Ref selector component', () => {
 
         return waitForRequests().then(() => {
           expect(commitApiCallSpy).toHaveBeenCalled();
+        });
+      });
+    });
+
+    describe('when the Enter is pressed', () => {
+      beforeEach(() => {
+        createComponent();
+
+        return waitForRequests({ andClearMocks: true });
+      });
+
+      it('requeries the endpoints when Enter is pressed', () => {
+        findSearchBox().vm.$emit('keydown', new KeyboardEvent({ key: ENTER_KEY }));
+
+        return waitForRequests().then(() => {
+          expect(branchesApiCallSpy).toHaveBeenCalledTimes(1);
+          expect(tagsApiCallSpy).toHaveBeenCalledTimes(1);
         });
       });
     });

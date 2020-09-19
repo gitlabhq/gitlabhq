@@ -265,10 +265,16 @@ This documentation gives an overview of the report JSON format,
 as well as recommendations and examples to help integrators set its fields.
 The format is extensively described in the documentation of
 [SAST](../../user/application_security/sast/index.md#reports-json-format),
+[DAST](../../user/application_security/dast/#reports),
 [Dependency Scanning](../../user/application_security/dependency_scanning/index.md#reports-json-format),
 and [Container Scanning](../../user/application_security/container_scanning/index.md#reports-json-format).
 
-The DAST variant of the report JSON format is not documented at the moment.
+You can find the schemas for these scanners here:
+
+- [SAST](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/sast-report-format.json)
+- [DAST](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/dast-report-format.json)
+- [Dependency Scanning](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/dependency-scanning-report-format.json)
+- [Container Scanning](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/container-scanning-report-format.json)
 
 ### Version
 

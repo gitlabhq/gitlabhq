@@ -9,6 +9,12 @@ type: tutorial
 
 This tutorial demonstrates how to authenticate, configure, and read secrets with HashiCorp's Vault from GitLab CI/CD.
 
+NOTE: **Note:**
+[GitLab Premium](https://about.gitlab.com/pricing/) supports read access to a
+Hashicorp Vault, and enables you to
+[use Vault secrets in a CI job](../../secrets/index.md#use-vault-secrets-in-a-ci-job).
+To learn more, read [Using external secrets in CI](../../secrets/index.md).
+
 ## Requirements
 
 This tutorial assumes you are familiar with GitLab CI/CD and Vault.
@@ -41,7 +47,7 @@ The JWT's payload looks like this:
   "project_path": "mygroup/myproject",
   "user_id": "42",
   "user_login": "myuser",
-  "user_email": "myuser@example.com"
+  "user_email": "myuser@example.com",
   "pipeline_id": "1212",
   "job_id": "1212",
   "ref": "auto-deploy-2020-04-01",               # Git ref for this job

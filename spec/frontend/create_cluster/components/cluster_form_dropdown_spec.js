@@ -92,7 +92,7 @@ describe('ClusterFormDropdown', () => {
     });
 
     it('displays a checked GlIcon next to the item', () => {
-      expect(wrapper.find(GlIcon).is('.invisible')).toBe(false);
+      expect(wrapper.find(GlIcon).classes()).not.toContain('invisible');
       expect(wrapper.find(GlIcon).props('name')).toBe('mobile-issue-close');
     });
   });

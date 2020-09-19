@@ -1,0 +1,20 @@
+query getAlert($iid: String!, $fullPath: ID!) {
+  project(fullPath: $fullPath) {
+    issue(iid: $iid) {
+      alertManagementAlert {
+        iid
+        title
+        detailsUrl
+        severity
+        status
+        startedAt
+        eventCount
+        monitoringTool
+        service
+        description
+        endedAt
+        details
+      }
+    }
+  }
+}

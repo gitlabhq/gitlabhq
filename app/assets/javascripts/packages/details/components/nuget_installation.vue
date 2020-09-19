@@ -2,8 +2,8 @@
 import { GlLink, GlSprintf } from '@gitlab/ui';
 import { mapGetters, mapState } from 'vuex';
 import { s__ } from '~/locale';
-import CodeInstruction from './code_instruction.vue';
-import { TrackingActions } from '../constants';
+import CodeInstruction from '~/vue_shared/components/registry/code_instruction.vue';
+import { TrackingActions, TrackingLabels } from '../constants';
 
 export default {
   name: 'NugetInstallation',
@@ -22,29 +22,28 @@ export default {
     ),
   },
   trackingActions: { ...TrackingActions },
+  TrackingLabels,
 };
 </script>
 
 <template>
   <div>
     <h3 class="gl-font-lg">{{ __('Installation') }}</h3>
-    <h4 class="gl-font-base">
-      {{ s__('PackageRegistry|NuGet Command') }}
-    </h4>
     <code-instruction
+      :label="s__('PackageRegistry|NuGet Command')"
       :instruction="nugetInstallationCommand"
       :copy-text="s__('PackageRegistry|Copy NuGet Command')"
       :tracking-action="$options.trackingActions.COPY_NUGET_INSTALL_COMMAND"
+      :tracking-label="$options.TrackingLabels.CODE_INSTRUCTION"
     />
     <h3 class="gl-font-lg">{{ __('Registry setup') }}</h3>
-    <h4 class="gl-font-base">
-      {{ s__('PackageRegistry|Add NuGet Source') }}
-    </h4>
 
     <code-instruction
+      :label="s__('PackageRegistry|Add NuGet Source')"
       :instruction="nugetSetupCommand"
       :copy-text="s__('PackageRegistry|Copy NuGet Setup Command')"
       :tracking-action="$options.trackingActions.COPY_NUGET_SETUP_COMMAND"
+      :tracking-label="$options.TrackingLabels.CODE_INSTRUCTION"
     />
     <gl-sprintf :message="$options.i18n.helpText">
       <template #link="{ content }">

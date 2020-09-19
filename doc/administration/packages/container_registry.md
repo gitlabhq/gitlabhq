@@ -750,11 +750,15 @@ U = <user_id>
 # Get required details / objects
 user    = User.find_by_id(U)
 project = Project.find_by_id(P)
-repo    = ContainerRepository.find_by(project_id: P)
 policy  = ContainerExpirationPolicy.find_by(project_id: P)
 
-# Start the tag cleanup
-Projects::ContainerRepository::CleanupTagsService.new(project, user, policy.attributes.except("created_at", "updated_at")).execute(repo)
+# Loop through each container repository
+project.container_repositories.find_each do |repo|
+  puts repo.attributes
+
+  # Start the tag cleanup
+  puts Projects::ContainerRepository::CleanupTagsService.new(project, user, policy.attributes.except("created_at", "updated_at")).execute(repo)
+end
 ```
 
 NOTE: **Note:**
@@ -988,8 +992,8 @@ thus the error above.
 While GitLab doesn't support using self-signed certificates with Container
 Registry out of the box, it is possible to make it work by
 [instructing the Docker daemon to trust the self-signed certificates](https://docs.docker.com/registry/insecure/#use-self-signed-certificates),
-mounting the Docker daemon and setting `privileged = false` in the Runner's
-`config.toml`. Setting `privileged = true` takes precedence over the Docker daemon:
+mounting the Docker daemon and setting `privileged = false` in the GitLab Runner
+`config.toml` file. Setting `privileged = true` takes precedence over the Docker daemon:
 
 ```toml
   [runners.docker]

@@ -1,14 +1,8 @@
 ---
 stage: Create
 group: Source Code
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers"
-author: Crt Mori
-author_gitlab: Letme
-level: intermediary
-article_type: tutorial
-date: 2017-05-15
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 type: howto
-last_updated: 2019-05-31
 ---
 
 # Numerous undo possibilities in Git
@@ -243,7 +237,7 @@ git bisect A..E
 
 Bisect will provide us with commit ID of the middle commit to test, and then guide us
 through simple bisection process. You can read more about it [in official Git Tools](https://git-scm.com/book/en/v2/Git-Tools-Debugging-with-Git)
-In our example we will end up with commit `B`, that introduced bug/error. We have
+In our example we will end up with commit `B`, that introduced the bug/error. We have
 4 options on how to remove it (or part of it) from our repository.
 
 - Undo (swap additions and deletions) changes introduced by commit `B`:
@@ -409,7 +403,7 @@ the cleanup of detached commits (happens automatically).
 ### Where modifying history is generally acceptable
 
 Modified history breaks the development chain of other developers, as changed
-history does not have matching commits'ids. For that reason it should not be
+history does not have matching commit IDs. For that reason it should not be
 used on any public branch or on branch that *might* be used by other developers.
 When contributing to big open source repositories (for example, [GitLab](https://gitlab.com/gitlab-org/gitlab/blob/master/CONTRIBUTING.md#contribution-acceptance-criteria)
 itself), it is acceptable to *squash* commits into a single one, to present a

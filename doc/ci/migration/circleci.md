@@ -120,7 +120,7 @@ stages:
   - build
   - test
   - deploy
-  
+
 job 1:
   stage: build
   script: make build dependencies
@@ -128,7 +128,7 @@ job 1:
 job 2:
   stage: build
   script: make build artifacts
-  
+
 job3:
   stage: test
   script: make test
@@ -276,17 +276,17 @@ There are two GitLab issues open addressing CircleCI Orbs and how GitLab can ach
 
 ## Build environments
 
-CircleCI offers `executors` as the underlying technology to run a specific job. In GitLab, this is done by [Runners](https://docs.gitlab.com/runner/).
+CircleCI offers `executors` as the underlying technology to run a specific job. In GitLab, this is done by [runners](https://docs.gitlab.com/runner/).
 
 The following environments are supported:
 
-Self-Managed Runners:
+Self-managed runners:
 
 - Linux
 - Windows
 - macOS
 
-GitLab.com Shared Runners:
+GitLab.com shared runners:
 
 - Linux
 - Windows
@@ -294,7 +294,7 @@ GitLab.com Shared Runners:
 
 ### Machine and specific build environments
 
-[Tags](../yaml/README.md#tags) can be used to run jobs on different platforms, by telling GitLab which Runners should run the jobs.
+[Tags](../yaml/README.md#tags) can be used to run jobs on different platforms, by telling GitLab which runners should run the jobs.
 
 CircleCI example of a job running on a specific environment:
 

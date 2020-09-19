@@ -34,7 +34,9 @@ RSpec.describe Gitlab::AlertManagement::AlertParams do
         hosts: ['gitlab.com'],
         payload: payload,
         started_at: started_at,
-        fingerprint: nil
+        ended_at: nil,
+        fingerprint: nil,
+        environment: nil
       )
     end
 

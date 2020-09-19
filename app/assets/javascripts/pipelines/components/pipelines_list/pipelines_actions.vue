@@ -1,10 +1,9 @@
 <script>
-import { GlDeprecatedButton, GlTooltipDirective, GlLoadingIcon } from '@gitlab/ui';
+import { GlTooltipDirective, GlButton, GlLoadingIcon, GlIcon } from '@gitlab/ui';
 import axios from '~/lib/utils/axios_utils';
 import { deprecatedCreateFlash as flash } from '~/flash';
 import { s__, __, sprintf } from '~/locale';
 import GlCountdown from '~/vue_shared/components/gl_countdown.vue';
-import Icon from '~/vue_shared/components/icon.vue';
 import eventHub from '../../event_hub';
 
 export default {
@@ -12,9 +11,9 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   components: {
-    Icon,
+    GlIcon,
     GlCountdown,
-    GlDeprecatedButton,
+    GlButton,
     GlLoadingIcon,
   },
   props: {
@@ -83,29 +82,32 @@ export default {
       type="button"
       :disabled="isLoading"
       class="dropdown-new btn btn-default js-pipeline-dropdown-manual-actions"
-      :title="__('Manual job')"
+      :title="__('Run manual or delayed jobs')"
       data-toggle="dropdown"
-      :aria-label="__('Manual job')"
+      :aria-label="__('Run manual or delayed jobs')"
     >
-      <icon name="play" class="icon-play" />
+      <gl-icon name="play" class="icon-play" />
       <i class="fa fa-caret-down" aria-hidden="true"></i>
       <gl-loading-icon v-if="isLoading" />
     </button>
 
     <ul class="dropdown-menu dropdown-menu-right">
       <li v-for="action in actions" :key="action.path">
-        <gl-deprecated-button
+        <gl-button
+          category="tertiary"
           :class="{ disabled: isActionDisabled(action) }"
           :disabled="isActionDisabled(action)"
-          class="js-pipeline-action-link no-btn btn d-flex align-items-center justify-content-between flex-wrap"
+          class="js-pipeline-action-link"
           @click="onClickAction(action)"
         >
-          {{ action.name }}
-          <span v-if="action.scheduled_at">
-            <icon name="clock" />
-            <gl-countdown :end-date-string="action.scheduled_at" />
-          </span>
-        </gl-deprecated-button>
+          <div class="d-flex justify-content-between flex-wrap">
+            {{ action.name }}
+            <span v-if="action.scheduled_at">
+              <gl-icon name="clock" />
+              <gl-countdown :end-date-string="action.scheduled_at" />
+            </span>
+          </div>
+        </gl-button>
       </li>
     </ul>
   </div>

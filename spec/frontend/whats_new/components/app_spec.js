@@ -11,9 +11,11 @@ describe('App', () => {
   let store;
   let actions;
   let state;
+  let propsData = { features: '[ {"title":"Whats New Drawer"} ]' };
 
-  beforeEach(() => {
+  const buildWrapper = () => {
     actions = {
+      openDrawer: jest.fn(),
       closeDrawer: jest.fn(),
     };
 
@@ -29,7 +31,12 @@ describe('App', () => {
     wrapper = mount(App, {
       localVue,
       store,
+      propsData,
     });
+  };
+
+  beforeEach(() => {
+    buildWrapper();
   });
 
   afterEach(() => {
@@ -40,6 +47,10 @@ describe('App', () => {
 
   it('contains a drawer', () => {
     expect(getDrawer().exists()).toBe(true);
+  });
+
+  it('dispatches openDrawer when mounted', () => {
+    expect(actions.openDrawer).toHaveBeenCalled();
   });
 
   it('dispatches closeDrawer when clicking close', () => {
@@ -53,5 +64,16 @@ describe('App', () => {
     await wrapper.vm.$nextTick();
 
     expect(getDrawer().props('open')).toBe(openState);
+  });
+
+  it('renders features when provided as props', () => {
+    expect(wrapper.find('h5').text()).toBe('Whats New Drawer');
+  });
+
+  it('handles bad json argument gracefully', () => {
+    propsData = { features: 'this is not json' };
+    buildWrapper();
+
+    expect(getDrawer().exists()).toBe(true);
   });
 });

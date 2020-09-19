@@ -14,6 +14,14 @@ RSpec.shared_examples 'assigns build to package' do
   end
 end
 
+RSpec.shared_examples 'assigns the package creator' do
+  it 'assigns the package creator' do
+    subject
+
+    expect(package.creator).to eq user
+  end
+end
+
 RSpec.shared_examples 'returns packages' do |container_type, user_type|
   context "for #{user_type}" do
     before do
@@ -161,6 +169,7 @@ RSpec.shared_examples 'filters on each package_type' do |is_project: false|
   let_it_be(:package4) { create(:nuget_package, project: project) }
   let_it_be(:package5) { create(:pypi_package, project: project) }
   let_it_be(:package6) { create(:composer_package, project: project) }
+  let_it_be(:package7) { create(:generic_package, project: project) }
 
   Packages::Package.package_types.keys.each do |package_type|
     context "for package type #{package_type}" do

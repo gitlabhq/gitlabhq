@@ -105,22 +105,22 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 ---
 ```
 
-### Page type metadata
+### Document type metadata
 
 Originally discussed in [this epic](https://gitlab.com/groups/gitlab-org/-/epics/1280),
-each page should have a `type` metadata. It can be one or more of the following:
+each page should have a metadata tag called `type`. It can be one or more of the
+following:
 
-- `index`: Index/overview pages. They serve as a list to other pages. Doesn't
-  necessarily mean the page should be named `index.md`. [Example page](../../install/README.md).
-- `concepts`: What you need to know before using product. Informational, not
-  instructional. For example, abstract ideas, explain meaning or benefit, support
-  understanding of tasks. They are read for background information, for example
-  "Why X is important". [Example page](../../topics/autodevops/index.md).
-- `howto`: Specific use case instructions. [Example page](../../ssh/README.md).
-- `tutorial`: Learn a process/concept by doing. [Example page](../../gitlab-basics/start-using-git.md).
-- `reference`: Covers what things are/do. Things like specific settings, facts
-  without too much explanation that are read for detailed information.
-  [Example page](../../ci/yaml/README.md).
+- `index`: It consists mostly of a list of links to other pages.
+  [Example page](../../README.md).
+- `concepts`: The background or context of a subject.
+  [Example page](../../topics/autodevops/index.md).
+- `howto`: Specific use case instructions.
+  [Example page](../../ssh/README.md).
+- `tutorial`: Learn a process/concept by doing.
+  [Example page](../../gitlab-basics/start-using-git.md).
+- `reference`: A collection of information used as a reference to use a feature
+  or a functionality. [Example page](../../ci/yaml/README.md).
 
 ### Redirection metadata
 
@@ -147,17 +147,10 @@ comments: false
 
 ### Additional page metadata
 
-Each page can have additional (optional) metadata (set in the
+Each page can have additional, optional metadata (set in the
 [default.html](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/fc3577921343173d589dfa43d837b4307e4e620f/layouts/default.html#L30-52)
-Nanoc layout), which will be shown to the top of the page if defined:
+Nanoc layout), which will be displayed at the top of the page if defined:
 
-- `author`: The name of the author of a page, usually a tutorial. It requires `author_gitlab` in order to be shown.
-- `author_gitlab`: The username of the author on GitLab.com. It requires `author` in order to be shown.
-- `date`: The date the page was created, usually for tutorials.
-- `article_type`: The type of article. Can be either `tutorial` or `user guide`.
-- `level`: The level of complexity of a how-to or tutorial. Can be either `beginner`,
-  `advanced`, or `intermediate`.
-- `last_updated`: The date in ISO format when the page was last updated. For example `2020-02-14`.
 - `reading_time`: If you want to add an indication of the approximate reading
   time of a page, you can set `reading_time` to `true`. This uses a simple
   [algorithm](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/master/lib/helpers/reading_time.rb)
@@ -335,12 +328,12 @@ You can combine one or more of the following:
    = link_to 'Help page', help_page_path('user/permissions'), target: '_blank'
    ```
 
-1. **Linking to a circle icon.** Usually used in settings where a long
+1. **Using a question icon.** Usually used in settings where a long
    description cannot be used, like near checkboxes. You can basically use
-   any font awesome icon, but prefer the `question-circle`:
+   any GitLab SVG icon, but prefer the `question-o`:
 
    ```haml
-   = link_to icon('question-circle'), help_page_path('user/permissions')
+   = link_to sprite_icon('question-o'), help_page_path('user/permissions')
    ```
 
 1. **Using a button link.** Useful in places where text would be out of context
@@ -462,7 +455,7 @@ If you want to know the in-depth details, here's what's really happening:
    [skips the test jobs](https://gitlab.com/gitlab-org/gitlab-docs/blob/8d5d5c750c602a835614b02f9db42ead1c4b2f5e/.gitlab-ci.yml#L50-55)
    to lower the build time.
 1. Once the docs site is built, the HTML files are uploaded as artifacts.
-1. A specific Runner tied only to the docs project, runs the Review App job
+1. A specific runner tied only to the docs project, runs the Review App job
    that downloads the artifacts and uses `rsync` to transfer the files over
    to a location where NGINX serves them.
 
@@ -472,7 +465,7 @@ The following GitLab features are used among others:
 - [Multi project pipelines](../../ci/multi_project_pipeline_graphs.md)
 - [Review Apps](../../ci/review_apps/index.md)
 - [Artifacts](../../ci/yaml/README.md#artifacts)
-- [Specific Runner](../../ci/runners/README.md#prevent-a-specific-runner-from-being-enabled-for-other-projects)
+- [Specific runner](../../ci/runners/README.md#prevent-a-specific-runner-from-being-enabled-for-other-projects)
 - [Pipelines for merge requests](../../ci/merge_request_pipelines/index.md)
 
 ## Testing
@@ -701,9 +694,9 @@ To configure markdownlint within your editor, install one of the following as ap
 
 To configure Vale within your editor, install one of the following as appropriate:
 
-- The Sublime Text [`SublimeLinter-contrib-vale` plugin](https://packagecontrol.io/packages/SublimeLinter-contrib-vale)
-- The Visual Studio Code [`testthedocs.vale` extension](https://marketplace.visualstudio.com/items?itemName=testthedocs.vale)
-- [Vim](https://github.com/dense-analysis/ale)
+- The Sublime Text [`SublimeLinter-contrib-vale` plugin](https://packagecontrol.io/packages/SublimeLinter-contrib-vale).
+- The Visual Studio Code [`errata-ai.vale-server` extension](https://marketplace.visualstudio.com/items?itemName=errata-ai.vale-server). You don't need Vale Server to use the plugin.
+- [Vim](https://github.com/dense-analysis/ale).
 
 We don't use [Vale Server](https://errata-ai.github.io/vale/#using-vale-with-a-text-editor-or-another-third-party-application).
 
@@ -736,9 +729,7 @@ document:
 - To disable all Vale linting rules, add a `<!-- vale off -->` tag before the text, and a
   `<!-- vale on -->` tag after the text.
 
-Whenever possible, exclude only the problematic rule and line(s). In some cases, such as list items,
-you may need to disable linting for the entire list until
-[Vale issue #175](https://github.com/errata-ai/vale/issues/175) is resolved.
+Whenever possible, exclude only the problematic rule and line(s).
 
 For more information, see
 [Vale's documentation](https://errata-ai.gitbook.io/vale/getting-started/markup#markup-based-configuration).
@@ -750,3 +741,64 @@ code review. For docs changes in merge requests, whenever a change to files unde
 is made, Danger Bot leaves a comment with further instructions about the documentation
 process. This is configured in the `Dangerfile` in the GitLab repository under
 [/danger/documentation/](https://gitlab.com/gitlab-org/gitlab/tree/master/danger/documentation).
+
+## Automatic screenshot generator
+
+You can now set up an automatic screenshot generator to take and compress screenshots, with the
+help of a configuration file known as **screenshot generator**.
+
+### Use the tool
+
+To run the tool on an existing screenshot generator, take the following steps:
+
+1. Set up the [GitLab Development Kit (GDK)](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/master/doc/howto/gitlab_docs.md).
+1. Navigate to the subdirectory with your cloned GitLab repository, typically `gdk/gitlab`.
+1. Make sure that your GDK database is fully migrated: `bin/rake db:migrate RAILS_ENV=development`.
+1. Install pngquant, see the tool website for more info: [`pngquant`](https://pngquant.org/)
+1. Run `scripts/docs_screenshots.rb spec/docs_screenshots/<name_of_screenshot_generator>.rb <milestone-version>`.
+1. Identify the location of the screenshots, based on the `gitlab/doc` location defined by the `it` parameter in your script.
+1. Commit the newly created screenshots.
+
+### Extending the tool
+
+To add an additional **screenshot generator**, take the following steps:
+
+- Locate the `spec/docs_screenshots` directory.
+- Add a new file with a `_docs.rb` extension.
+- Be sure to include the following bits in the file:
+
+```ruby
+require 'spec_helper'
+
+RSpec.describe '<What I am taking screenshots of>', :js do
+  include DocsScreenshotHelpers # Helper that enables the screenshots taking mechanism
+
+  before do
+    page.driver.browser.manage.window.resize_to(1366, 1024) # length and width of the page
+  end
+```
+
+- In addition, every `it` block must include the path where the screenshot is saved
+
+```ruby
+ it 'user/packages/container_registry/img/project_image_repositories_list'
+```
+
+#### Full page screenshots
+
+To take a full page screenshot simply `visit the page` and perform any expectation on real content (to have capybara wait till the page is ready and not take a white screenshot).
+
+#### Element screenshot
+
+To have the screenshot focuses few more steps are needed:
+
+- **find the area**: `screenshot_area = find('#js-registry-policies')`
+- **scroll the area in focus**: `scroll_to screenshot_area`
+- **wait for the content**: `expect(screenshot_area).to have_content 'Expiration interval'`
+- **set the crop area**: `set_crop_data(screenshot_area, 20)`
+
+In particular `set_crop_data` accepts as arguments: a `DOM` element and a padding, the padding will be added around the element enlarging the screenshot area.
+
+#### Live example
+
+Please use `spec/docs_screenshots/container_registry_docs.rb` as a guide and as an example to create your own scripts.

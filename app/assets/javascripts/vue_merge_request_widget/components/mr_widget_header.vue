@@ -1,24 +1,33 @@
 <script>
+/* eslint-disable vue/no-v-html */
 import Mousetrap from 'mousetrap';
 import { escape } from 'lodash';
+import {
+  GlButton,
+  GlDropdown,
+  GlDropdownSectionHeader,
+  GlDropdownItem,
+  GlTooltipDirective,
+} from '@gitlab/ui';
 import { n__, s__, sprintf } from '~/locale';
 import { mergeUrlParams, webIDEUrl } from '~/lib/utils/url_utility';
-import Icon from '~/vue_shared/components/icon.vue';
 import clipboardButton from '~/vue_shared/components/clipboard_button.vue';
-import tooltip from '~/vue_shared/directives/tooltip';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate.vue';
 import MrWidgetIcon from './mr_widget_icon.vue';
 
 export default {
   name: 'MRWidgetHeader',
   components: {
-    Icon,
     clipboardButton,
     TooltipOnTruncate,
     MrWidgetIcon,
+    GlButton,
+    GlDropdown,
+    GlDropdownSectionHeader,
+    GlDropdownItem,
   },
   directives: {
-    tooltip,
+    GlTooltip: GlTooltipDirective,
   },
   props: {
     mr: {
@@ -124,62 +133,59 @@ export default {
 
       <div class="branch-actions d-flex">
         <template v-if="mr.isOpen">
-          <a
+          <span
             v-if="!mr.sourceBranchRemoved"
-            v-tooltip
-            :href="webIdePath"
+            v-gl-tooltip
             :title="ideButtonTitle"
-            :class="{ disabled: !mr.canPushToSourceBranch }"
-            class="btn btn-default js-web-ide d-none d-md-inline-block gl-mr-3"
-            data-placement="bottom"
-            tabindex="0"
-            role="button"
-            data-qa-selector="open_in_web_ide_button"
+            class="gl-display-none d-md-inline-block gl-mr-3"
+            :tabindex="!mr.canPushToSourceBranch ? 0 : null"
           >
-            {{ s__('mrWidget|Open in Web IDE') }}
-          </a>
-          <button
+            <gl-button
+              :href="webIdePath"
+              :disabled="!mr.canPushToSourceBranch"
+              class="js-web-ide"
+              tabindex="0"
+              role="button"
+              data-qa-selector="open_in_web_ide_button"
+            >
+              {{ s__('mrWidget|Open in Web IDE') }}
+            </gl-button>
+          </span>
+          <gl-button
             :disabled="mr.sourceBranchRemoved"
             data-target="#modal_merge_info"
             data-toggle="modal"
-            class="btn btn-default js-check-out-branch gl-mr-3"
-            type="button"
+            class="js-check-out-branch gl-mr-3"
           >
             {{ s__('mrWidget|Check out branch') }}
-          </button>
+          </gl-button>
         </template>
-        <span class="dropdown">
-          <button
-            type="button"
-            class="btn dropdown-toggle qa-dropdown-toggle"
-            data-toggle="dropdown"
-            :aria-label="__('Download as')"
-            aria-haspopup="true"
-            aria-expanded="false"
+        <gl-dropdown
+          v-gl-tooltip
+          :title="__('Download as')"
+          :aria-label="__('Download as')"
+          icon="download"
+          right
+          data-qa-selector="download_dropdown"
+        >
+          <gl-dropdown-section-header>{{ s__('Download as') }}</gl-dropdown-section-header>
+          <gl-dropdown-item
+            :href="mr.emailPatchesPath"
+            class="js-download-email-patches"
+            download
+            data-qa-selector="download_email_patches"
           >
-            <icon name="download" /> <i class="fa fa-caret-down" aria-hidden="true"> </i>
-          </button>
-          <ul class="dropdown-menu dropdown-menu-right">
-            <li>
-              <a
-                :href="mr.emailPatchesPath"
-                class="js-download-email-patches qa-download-email-patches"
-                download
-              >
-                {{ s__('mrWidget|Email patches') }}
-              </a>
-            </li>
-            <li>
-              <a
-                :href="mr.plainDiffPath"
-                class="js-download-plain-diff qa-download-plain-diff"
-                download
-              >
-                {{ s__('mrWidget|Plain diff') }}
-              </a>
-            </li>
-          </ul>
-        </span>
+            {{ s__('mrWidget|Email patches') }}
+          </gl-dropdown-item>
+          <gl-dropdown-item
+            :href="mr.plainDiffPath"
+            class="js-download-plain-diff"
+            download
+            data-qa-selector="download_plain_diff"
+          >
+            {{ s__('mrWidget|Plain diff') }}
+          </gl-dropdown-item>
+        </gl-dropdown>
       </div>
     </div>
   </div>

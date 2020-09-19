@@ -2,7 +2,7 @@
 import { GlTooltipDirective, GlIcon, GlSprintf } from '@gitlab/ui';
 import { n__ } from '~/locale';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
-import ListItem from '../list_item.vue';
+import ListItem from '~/vue_shared/components/registry/list_item.vue';
 import DeleteButton from '../delete_button.vue';
 
 import {

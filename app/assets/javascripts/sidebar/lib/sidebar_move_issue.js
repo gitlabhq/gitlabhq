@@ -1,7 +1,7 @@
 import $ from 'jquery';
-import '~/gl_dropdown';
 import { escape } from 'lodash';
 import { __ } from '~/locale';
+import initDeprecatedJQueryDropdown from '~/deprecated_jquery_dropdown';
 
 function isValidProjectId(id) {
   return id > 0;
@@ -27,7 +27,7 @@ class SidebarMoveIssue {
   }
 
   initDropdown() {
-    this.$dropdownToggle.glDropdown({
+    initDeprecatedJQueryDropdown(this.$dropdownToggle, {
       search: {
         fields: ['name_with_namespace'],
       },

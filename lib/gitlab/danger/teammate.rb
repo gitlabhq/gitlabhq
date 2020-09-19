@@ -45,9 +45,7 @@ module Gitlab
         has_capability?(project, category, :maintainer, labels)
       end
 
-      def markdown_name(timezone_experiment: false, author: nil)
-        return @markdown_name unless timezone_experiment
-
+      def markdown_name(author: nil)
         "#{@markdown_name} (#{utc_offset_text(author)})"
       end
 

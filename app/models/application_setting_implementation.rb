@@ -74,6 +74,8 @@ module ApplicationSettingImplementation
         gitaly_timeout_default: 55,
         gitaly_timeout_fast: 10,
         gitaly_timeout_medium: 30,
+        gitpod_enabled: false,
+        gitpod_url: 'https://gitpod.io/',
         gravatar_enabled: Settings.gravatar['enabled'],
         group_download_export_limit: 1,
         group_export_limit: 6,
@@ -87,7 +89,6 @@ module ApplicationSettingImplementation
         housekeeping_gc_period: 200,
         housekeeping_incremental_repack_period: 10,
         import_sources: Settings.gitlab['import_sources'],
-        instance_statistics_visibility_private: false,
         issues_create_limit: 300,
         local_markdown_version: 0,
         login_recaptcha_protection_enabled: false,
@@ -132,7 +133,6 @@ module ApplicationSettingImplementation
         snowplow_collector_hostname: nil,
         snowplow_cookie_domain: nil,
         snowplow_enabled: false,
-        snowplow_iglu_registry_url: nil,
         sourcegraph_enabled: false,
         sourcegraph_public_only: true,
         sourcegraph_url: nil,
@@ -164,7 +164,8 @@ module ApplicationSettingImplementation
         user_default_external: false,
         user_default_internal_regex: nil,
         user_show_add_ssh_key_message: true,
-        wiki_page_max_content_bytes: 50.megabytes
+        wiki_page_max_content_bytes: 50.megabytes,
+        container_registry_delete_tags_service_timeout: 100
       }
     end
 

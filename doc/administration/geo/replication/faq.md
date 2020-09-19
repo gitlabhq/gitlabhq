@@ -9,7 +9,7 @@ type: howto
 
 ## What are the minimum requirements to run Geo?
 
-The requirements are listed [on the index page](index.md#requirements-for-running-geo)
+The requirements are listed [on the index page](../index.md#requirements-for-running-geo)
 
 ## How does Geo know which projects to sync?
 

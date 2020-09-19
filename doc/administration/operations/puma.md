@@ -1,6 +1,6 @@
 # Switching to Puma
 
-As of GitLab 12.9, [Puma](https://github.com/puma/puma) has replaced [Unicorn](https://yhbt.net/unicorn/).
+As of GitLab 12.9, [Puma](https://github.com/puma/puma) has replaced [Unicorn](https://yhbt.net/unicorn/)
 as the default web server. From GitLab 13.0, the following run Puma instead of Unicorn unless
 explicitly configured not to:
 
@@ -36,7 +36,8 @@ For deployments where NFS is used to store Git repository, we allow GitLab to us
 [Rugged](https://github.com/libgit2/rugged).
 
 Rugged usage is automatically enabled if direct Git access
-[is available](../gitaly/index.md#how-it-works), unless it is disabled by
+[is available](../gitaly/index.md#how-it-works)
+and Puma is running single threaded, unless it is disabled by
 [feature flags](../../development/gitaly.md#legacy-rugged-code).
 
 MRI Ruby uses a GVL. This allows MRI Ruby to be multi-threaded, but running at
@@ -49,7 +50,7 @@ We are actively working on removing Rugged usage. Even though performance withou
 is acceptable today, in some cases it might be still beneficial to run with it.
 
 Given the caveat of running Rugged with multi-threaded Puma, and acceptable
-performance of Gitaly, we are disabling Rugged usage if Puma multi-threaded is
+performance of Gitaly, we disable Rugged usage if Puma multi-threaded is
 used (when Puma is configured to run with more than one thread).
 
 This default behavior may not be the optimal configuration in some situations. If Rugged
@@ -57,7 +58,6 @@ plays an important role in your deployment, we suggest you benchmark to find the
 optimal configuration:
 
 - The safest option is to start with single-threaded Puma. When working with
-Rugged, single-threaded Puma does work the same as Unicorn.
-
-- To force Rugged auto detect with multi-threaded Puma, you can use [feature
-flags](../../development/gitaly.md#legacy-rugged-code).
+  Rugged, single-threaded Puma works the same as Unicorn.
+- To force Rugged to be used with multi-threaded Puma, you can use
+  [feature flags](../../development/gitaly.md#legacy-rugged-code).

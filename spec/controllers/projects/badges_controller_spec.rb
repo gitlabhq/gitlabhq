@@ -3,9 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe Projects::BadgesController do
-  let(:project) { pipeline.project }
-  let!(:pipeline) { create(:ci_empty_pipeline) }
-  let(:user) { create(:user) }
+  let_it_be(:project, reload: true) { create(:project, :repository) }
+  let_it_be(:pipeline, reload: true) { create(:ci_empty_pipeline, project: project) }
+  let_it_be(:user) { create(:user) }
 
   shared_examples 'a badge resource' do |badge_type|
     context 'when pipelines are public' do
@@ -137,6 +137,26 @@ RSpec.describe Projects::BadgesController do
 
   describe '#pipeline' do
     it_behaves_like 'a badge resource', :pipeline
+
+    context 'with ignore_skipped param' do
+      render_views
+
+      before do
+        pipeline.update!(status: :skipped)
+        project.add_maintainer(user)
+        sign_in(user)
+      end
+
+      it 'returns skipped badge if set to false' do
+        get_badge(:pipeline, ignore_skipped: false)
+        expect(response.body).to include('skipped')
+      end
+
+      it 'does not return skipped badge if set to true' do
+        get_badge(:pipeline, ignore_skipped: true)
+        expect(response.body).to include('unknown')
+      end
+    end
   end
 
   describe '#coverage' do
@@ -148,7 +168,7 @@ RSpec.describe Projects::BadgesController do
       namespace_id: project.namespace.to_param,
       project_id: project,
       ref: pipeline.ref
-    }.merge(args.slice(:style, :key_text, :key_width))
+    }.merge(args.slice(:style, :key_text, :key_width, :ignore_skipped))
 
     get badge, params: params, format: :svg
   end

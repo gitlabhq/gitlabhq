@@ -868,36 +868,116 @@ RSpec.describe Notify do
       end
     end
 
-    def invite_to_project(project, inviter:)
+    def invite_to_project(project, inviter:, user: nil)
       create(
         :project_member,
         :developer,
         project: project,
         invite_token: '1234',
         invite_email: 'toto@example.com',
-        user: nil,
+        user: user,
         created_by: inviter
       )
     end
 
     describe 'project invitation' do
       let(:maintainer) { create(:user).tap { |u| project.add_maintainer(u) } }
-      let(:project_member) { invite_to_project(project, inviter: maintainer) }
+      let(:project_member) { invite_to_project(project, inviter: inviter) }
+      let(:inviter) { maintainer }
 
       subject { described_class.member_invited_email('project', project_member.id, project_member.invite_token) }
 
-      it_behaves_like 'an email sent from GitLab'
-      it_behaves_like 'it should not have Gmail Actions links'
-      it_behaves_like "a user cannot unsubscribe through footer link"
-      it_behaves_like 'appearance header and footer enabled'
-      it_behaves_like 'appearance header and footer not enabled'
+      context 'when invite_email_experiment is disabled' do
+        before do
+          stub_feature_flags(invite_email_experiment: false)
+        end
 
-      it 'contains all the useful information' do
-        is_expected.to have_subject "Invitation to join the #{project.full_name} project"
-        is_expected.to have_body_text project.full_name
-        is_expected.to have_body_text project.full_name
-        is_expected.to have_body_text project_member.human_access
-        is_expected.to have_body_text project_member.invite_token
+        it_behaves_like 'an email sent from GitLab'
+        it_behaves_like 'it should not have Gmail Actions links'
+        it_behaves_like "a user cannot unsubscribe through footer link"
+        it_behaves_like 'appearance header and footer enabled'
+        it_behaves_like 'appearance header and footer not enabled'
+
+        it 'contains all the useful information' do
+          is_expected.to have_subject "Invitation to join the #{project.full_name} project"
+          is_expected.to have_body_text project.full_name
+          is_expected.to have_body_text project_member.human_access
+          is_expected.to have_body_text project_member.invite_token
+        end
+
+        context 'when member is invited via an email address' do
+          it 'does add a param to the invite link' do
+            is_expected.to have_body_text 'new_user_invite=control'
+          end
+
+          it 'tracks an event' do
+            expect(Gitlab::Tracking).to receive(:event).with(
+              'Growth::Acquisition::Experiment::InviteEmail',
+              'sent',
+              property: 'control_group'
+            )
+
+            subject.deliver_now
+          end
+        end
+
+        context 'when member is already a user' do
+          let(:project_member) { invite_to_project(project, inviter: maintainer, user: create(:user)) }
+
+          it 'does not add a param to the invite link' do
+            is_expected.not_to have_body_text 'new_user_invite'
+          end
+
+          it 'does not track an event' do
+            expect(Gitlab::Tracking).not_to receive(:event)
+
+            subject.deliver_now
+          end
+        end
+      end
+
+      context 'when invite_email_experiment is enabled' do
+        before do
+          stub_feature_flags(invite_email_experiment: true)
+        end
+
+        it_behaves_like 'an email sent from GitLab'
+        it_behaves_like 'it should not have Gmail Actions links'
+        it_behaves_like "a user cannot unsubscribe through footer link"
+
+        context 'when there is no inviter' do
+          let(:inviter) { nil }
+
+          it 'contains all the useful information' do
+            is_expected.to have_subject "Invitation to join the #{project.full_name} project"
+            is_expected.to have_body_text project.full_name
+            is_expected.to have_body_text project_member.human_access.downcase
+            is_expected.to have_body_text project_member.invite_token
+          end
+        end
+
+        context 'when there is an inviter' do
+          it 'contains all the useful information' do
+            is_expected.to have_subject "#{inviter.name} invited you to join GitLab"
+            is_expected.to have_body_text project.full_name
+            is_expected.to have_body_text project_member.human_access.downcase
+            is_expected.to have_body_text project_member.invite_token
+          end
+        end
+
+        it 'adds a param to the invite link' do
+          is_expected.to have_body_text 'new_user_invite=experiment'
+        end
+
+        it 'tracks an event' do
+          expect(Gitlab::Tracking).to receive(:event).with(
+            'Growth::Acquisition::Experiment::InviteEmail',
+            'sent',
+            property: 'experiment_group'
+          )
+
+          subject.deliver_now
+        end
       end
     end
 
@@ -1416,37 +1496,115 @@ RSpec.describe Notify do
       end
     end
 
-    def invite_to_group(group, inviter:)
+    def invite_to_group(group, inviter:, user: nil)
       create(
         :group_member,
         :developer,
         group: group,
         invite_token: '1234',
         invite_email: 'toto@example.com',
-        user: nil,
+        user: user,
         created_by: inviter
       )
     end
 
     describe 'group invitation' do
       let(:owner) { create(:user).tap { |u| group.add_user(u, Gitlab::Access::OWNER) } }
-      let(:group_member) { invite_to_group(group, inviter: owner) }
+      let(:group_member) { invite_to_group(group, inviter: inviter) }
+      let(:inviter) { owner }
 
       subject { described_class.member_invited_email('group', group_member.id, group_member.invite_token) }
 
-      it_behaves_like 'an email sent from GitLab'
-      it_behaves_like 'it should not have Gmail Actions links'
-      it_behaves_like "a user cannot unsubscribe through footer link"
-      it_behaves_like 'appearance header and footer enabled'
-      it_behaves_like 'appearance header and footer not enabled'
-      it_behaves_like 'it requires a group'
+      context 'when invite_email_experiment is disabled' do
+        before do
+          stub_feature_flags(invite_email_experiment: false)
+        end
 
-      it 'contains all the useful information' do
-        is_expected.to have_subject "Invitation to join the #{group.name} group"
-        is_expected.to have_body_text group.name
-        is_expected.to have_body_text group.web_url
-        is_expected.to have_body_text group_member.human_access
-        is_expected.to have_body_text group_member.invite_token
+        it_behaves_like 'an email sent from GitLab'
+        it_behaves_like 'it should not have Gmail Actions links'
+        it_behaves_like "a user cannot unsubscribe through footer link"
+        it_behaves_like 'appearance header and footer enabled'
+        it_behaves_like 'appearance header and footer not enabled'
+        it_behaves_like 'it requires a group'
+
+        it 'contains all the useful information' do
+          is_expected.to have_subject "Invitation to join the #{group.name} group"
+          is_expected.to have_body_text group.name
+          is_expected.to have_body_text group.web_url
+          is_expected.to have_body_text group_member.human_access
+          is_expected.to have_body_text group_member.invite_token
+        end
+
+        context 'when member is invited via an email address' do
+          it 'does add a param to the invite link' do
+            is_expected.to have_body_text 'new_user_invite=control'
+          end
+
+          it 'tracks an event' do
+            expect(Gitlab::Tracking).to receive(:event).with(
+              'Growth::Acquisition::Experiment::InviteEmail',
+              'sent',
+              property: 'control_group'
+            )
+
+            subject.deliver_now
+          end
+        end
+
+        context 'when member is already a user' do
+          let(:group_member) { invite_to_group(group, inviter: owner, user: create(:user)) }
+
+          it 'does not add a param to the invite link' do
+            is_expected.not_to have_body_text 'new_user_invite'
+          end
+
+          it 'does not track an event' do
+            expect(Gitlab::Tracking).not_to receive(:event)
+
+            subject.deliver_now
+          end
+        end
+      end
+
+      context 'when invite_email_experiment is enabled' do
+        it_behaves_like 'an email sent from GitLab'
+        it_behaves_like 'it should not have Gmail Actions links'
+        it_behaves_like "a user cannot unsubscribe through footer link"
+        it_behaves_like 'it requires a group'
+
+        context 'when there is no inviter' do
+          let(:inviter) { nil }
+
+          it 'contains all the useful information' do
+            is_expected.to have_subject "Invitation to join the #{group.name} group"
+            is_expected.to have_body_text group.name
+            is_expected.to have_body_text group_member.human_access.downcase
+            is_expected.to have_body_text group_member.invite_token
+          end
+        end
+
+        context 'when there is an inviter' do
+          it 'contains all the useful information' do
+            is_expected.to have_subject "#{group_member.created_by.name} invited you to join GitLab"
+            is_expected.to have_body_text group.name
+            is_expected.to have_body_text group_member.human_access.downcase
+            is_expected.to have_body_text group_member.invite_token
+          end
+        end
+
+        it 'does add a param to the invite link' do
+          is_expected.to have_body_text 'new_user_invite'
+        end
+
+        it 'tracks an event' do
+          expect(Gitlab::Tracking).to receive(:event).with(
+            'Growth::Acquisition::Experiment::InviteEmail',
+            'sent',
+            property: 'experiment_group'
+          )
+
+          subject.deliver_now
+        end
       end
     end
 

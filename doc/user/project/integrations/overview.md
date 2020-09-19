@@ -39,7 +39,7 @@ Click on the service links to see further configuration instructions and details
 | [Emails on push](emails_on_push.md) | Email the commits and diff of each push to a list of recipients | No |
 | External Wiki | Replaces the link to the internal wiki with a link to an external wiki | No |
 | Flowdock | Flowdock is a collaboration web app for technical teams | No |
-| [Generic alerts](generic_alerts.md) **(ULTIMATE)** | Receive alerts on GitLab from any source | No |
+| [Generic alerts](../../../operations/incident_management/generic_alerts.md) **(ULTIMATE)** | Receive alerts on GitLab from any source | No |
 | [GitHub](github.md) **(PREMIUM)** | Sends pipeline notifications to GitHub | No |
 | [Hangouts Chat](hangouts_chat.md) | Receive events notifications in Google Hangouts Chat | No |
 | [HipChat](hipchat.md) | Private group chat and IM | No |
@@ -59,6 +59,7 @@ Click on the service links to see further configuration instructions and details
 | [Prometheus](prometheus.md) | Monitor the performance of your deployed apps | No |
 | Pushover | Pushover makes it easy to get real-time notifications on your Android device, iPhone, iPad, and Desktop | No |
 | [Redmine](redmine.md) | Redmine issue tracker | No |
+| [EWM](ewm.md) | EWM work item tracker | No |
 | [Unify Circuit](unify_circuit.md) | Receive events notifications in Unify Circuit | No |
 | [Webex Teams](webex_teams.md) | Receive events notifications in Webex Teams | No |
 | [YouTrack](youtrack.md) | YouTrack issue tracker | No |
@@ -82,9 +83,9 @@ Read more about [Service templates](services_templates.md).
 
 ## Project integration management
 
-Project integraton management lets you control integration settings across all projects
+Project integration management lets you control integration settings across all projects
 of an instance. On the project level, administrators you can choose whether to inherit the
-instance configuraton or provide custom settings.
+instance configuration or provide custom settings.
 
 Read more about [Project integration management](../../admin_area/settings/project_integration_management.md).
 

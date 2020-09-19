@@ -92,6 +92,7 @@ module Gitlab
       # group client
       delegate :create_network_policy,
         :get_network_policies,
+        :get_network_policy,
         :update_network_policy,
         :delete_network_policy,
         to: :networking_client
@@ -100,6 +101,7 @@ module Gitlab
       # group client
       delegate :create_cilium_network_policy,
         :get_cilium_network_policies,
+        :get_cilium_network_policy,
         :update_cilium_network_policy,
         :delete_cilium_network_policy,
         to: :cilium_networking_client

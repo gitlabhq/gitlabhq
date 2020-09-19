@@ -18,6 +18,13 @@ FactoryBot.define do
     title { "#{prefix}::#{generate(:label_title)}" }
   end
 
+  trait :incident do
+    properties = IncidentManagement::CreateIncidentLabelService::LABEL_PROPERTIES
+    title { properties.fetch(:title) }
+    description { properties.fetch(:description) }
+    color { properties.fetch(:color) }
+  end
+
   factory :label, traits: [:base_label], class: 'ProjectLabel' do
     project
 

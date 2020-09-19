@@ -1,0 +1,5 @@
+---
+title: Stricter default timeouts for outgoing HTTP requests
+merge_request: 39188
+author:
+type: other

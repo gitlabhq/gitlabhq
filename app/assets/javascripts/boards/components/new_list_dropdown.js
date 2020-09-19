@@ -6,6 +6,7 @@ import axios from '~/lib/utils/axios_utils';
 import { deprecatedCreateFlash as flash } from '~/flash';
 import CreateLabelDropdown from '../../create_label';
 import boardsStore from '../stores/boards_store';
+import initDeprecatedJQueryDropdown from '~/deprecated_jquery_dropdown';
 
 $(document)
   .off('created.label')
@@ -36,7 +37,7 @@ export default function initNewListDropdown() {
       $dropdownToggle.data('projectPath'),
     );
 
-    $dropdownToggle.glDropdown({
+    initDeprecatedJQueryDropdown($dropdownToggle, {
       data(term, callback) {
         axios
           .get($dropdownToggle.attr('data-list-labels-path'))

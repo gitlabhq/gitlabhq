@@ -5,8 +5,8 @@ require 'spec_helper'
 RSpec.describe Projects::Ci::LintsController do
   include StubRequests
 
-  let(:project) { create(:project, :repository) }
-  let(:user) { create(:user) }
+  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:user) { create(:user) }
 
   before do
     sign_in(user)
@@ -20,7 +20,7 @@ RSpec.describe Projects::Ci::LintsController do
         get :show, params: { namespace_id: project.namespace, project_id: project }
       end
 
-      it { expect(response).to be_successful }
+      it { expect(response).to have_gitlab_http_status(:ok) }
 
       it 'renders show page' do
         expect(response).to render_template :show
@@ -47,7 +47,8 @@ RSpec.describe Projects::Ci::LintsController do
   describe 'POST #create' do
     subject { post :create, params: params }
 
-    let(:params) { { namespace_id: project.namespace, project_id: project, content: content } }
+    let(:format) { :html }
+    let(:params) { { namespace_id: project.namespace, project_id: project, content: content, format: format } }
     let(:remote_file_path) { 'https://gitlab.com/gitlab-org/gitlab-foss/blob/1234/.gitlab-ci-1.yml' }
 
     let(:remote_file_content) do
@@ -71,6 +72,20 @@ RSpec.describe Projects::Ci::LintsController do
       HEREDOC
     end
 
+    shared_examples 'successful request with format json' do
+      context 'with format json' do
+        let(:format) { :json }
+        let(:parsed_body) { Gitlab::Json.parse(response.body) }
+
+        it 'renders json' do
+          expect(response).to have_gitlab_http_status :ok
+          expect(response.content_type).to eq 'application/json'
+          expect(parsed_body).to include('errors', 'warnings', 'jobs', 'valid')
+          expect(parsed_body).to match_schema('entities/lint_result_entity')
+        end
+      end
+    end
+
     context 'with a valid gitlab-ci.yml' do
       before do
         stub_full_request(remote_file_path).to_return(body: remote_file_content)
@@ -78,27 +93,30 @@ RSpec.describe Projects::Ci::LintsController do
       end
 
       shared_examples 'returns a successful validation' do
-        it 'returns successfully' do
+        before do
           subject
-          expect(response).to be_successful
         end
 
-        it 'render show page' do
-          subject
+        it 'returns successfully' do
+          expect(response).to have_gitlab_http_status :ok
+        end
+
+        it 'renders show page' do
           expect(response).to render_template :show
         end
 
         it 'retrieves project' do
-          subject
           expect(assigns(:project)).to eq(project)
         end
+
+        it_behaves_like 'successful request with format json'
       end
 
       context 'using legacy validation (YamlProcessor)' do
         it_behaves_like 'returns a successful validation'
 
         it 'runs validations through YamlProcessor' do
-          expect(Gitlab::Ci::YamlProcessor).to receive(:new_with_validation_errors).and_call_original
+          expect(Gitlab::Ci::YamlProcessor).to receive(:new).and_call_original
 
           subject
         end
@@ -126,7 +144,7 @@ RSpec.describe Projects::Ci::LintsController do
           it_behaves_like 'returns a successful validation'
 
           it 'runs validations through YamlProcessor' do
-            expect(Gitlab::Ci::YamlProcessor).to receive(:new_with_validation_errors).and_call_original
+            expect(Gitlab::Ci::YamlProcessor).to receive(:new).and_call_original
 
             subject
           end
@@ -145,22 +163,30 @@ RSpec.describe Projects::Ci::LintsController do
 
       before do
         project.add_developer(user)
-      end
-
-      it 'assigns errors' do
         subject
-
-        expect(assigns[:errors]).to eq(['root config contains unknown keys: rubocop'])
       end
+
+      it 'assigns result with errors' do
+        expect(assigns[:result].errors).to match_array([
+          'jobs rubocop config should implement a script: or a trigger: keyword',
+          'jobs config should contain at least one visible job'
+        ])
+      end
+
+      it 'render show page' do
+        expect(response).to render_template :show
+      end
+
+      it_behaves_like 'successful request with format json'
 
       context 'with dry_run mode' do
         subject { post :create, params: params.merge(dry_run: 'true') }
 
-        it 'assigns errors' do
-          subject
-
-          expect(assigns[:errors]).to eq(['root config contains unknown keys: rubocop'])
+        it 'assigns result with errors' do
+          expect(assigns[:result].errors).to eq(['jobs rubocop config should implement a script: or a trigger: keyword'])
         end
+
+        it_behaves_like 'successful request with format json'
       end
     end
 
@@ -173,6 +199,14 @@ RSpec.describe Projects::Ci::LintsController do
 
       it 'responds with 404' do
         expect(response).to have_gitlab_http_status(:not_found)
+      end
+
+      context 'with format json' do
+        let(:format) { :json }
+
+        it 'responds with 404' do
+          expect(response).to have_gitlab_http_status :not_found
+        end
       end
     end
   end

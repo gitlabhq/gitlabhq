@@ -1,5 +1,5 @@
 import { shallowMount, mount } from '@vue/test-utils';
-import { GlDeprecatedButton } from '@gitlab/ui';
+import { GlButton } from '@gitlab/ui';
 import eventHub from '~/environments/event_hub';
 import RollbackComponent from '~/environments/components/environment_rollback.vue';
 
@@ -40,7 +40,7 @@ describe('Rollback Component', () => {
         },
       },
     });
-    const button = wrapper.find(GlDeprecatedButton);
+    const button = wrapper.find(GlButton);
 
     button.vm.$emit('click');
 

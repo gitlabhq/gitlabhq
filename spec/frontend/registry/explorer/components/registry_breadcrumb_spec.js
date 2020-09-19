@@ -117,7 +117,7 @@ describe('Registry Breadcrumb', () => {
     });
 
     it('has the same tag as the last children of the crumbs', () => {
-      expect(findLastCrumb().is(lastChildren.tagName)).toBe(true);
+      expect(findLastCrumb().element.tagName).toBe(lastChildren.tagName.toUpperCase());
     });
 
     it('has the same classes as the last children of the crumbs', () => {

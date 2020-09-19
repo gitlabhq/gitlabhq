@@ -30,6 +30,8 @@ module ObjectStorage
     REMOTE = 2
   end
 
+  SUPPORTED_STORES = [Store::LOCAL, Store::REMOTE].freeze
+
   module Extension
     # this extension is the glue between the ObjectStorage::Concern and RecordsUploads::Concern
     module RecordsUploads
@@ -178,10 +180,14 @@ module ObjectStorage
       end
 
       def workhorse_authorize(has_length:, maximum_size: nil)
-        if self.object_store_enabled? && self.direct_upload_enabled?
-          { RemoteObject: workhorse_remote_upload_options(has_length: has_length, maximum_size: maximum_size) }
-        else
-          { TempPath: workhorse_local_upload_path }
+        {}.tap do |hash|
+          if self.object_store_enabled? && self.direct_upload_enabled?
+            hash[:RemoteObject] = workhorse_remote_upload_options(has_length: has_length, maximum_size: maximum_size)
+          else
+            hash[:TempPath] = workhorse_local_upload_path
+          end
+
+          hash[:MaximumSize] = maximum_size if maximum_size.present?
         end
       end
 
@@ -203,6 +209,20 @@ module ObjectStorage
           has_length: has_length, maximum_size: maximum_size)
 
         direct_upload.to_hash.merge(ID: id)
+      end
+    end
+
+    class OpenFile
+      extend Forwardable
+
+      # Explicitly exclude :path, because rubyzip uses that to detect "real" files.
+      def_delegators :@file, *(Zip::File::IO_METHODS - [:path])
+
+      # Even though :size is not in IO_METHODS, we do need it.
+      def_delegators :@file, :size
+
+      def initialize(file)
+        @file = file
       end
     end
 
@@ -252,6 +272,24 @@ module ObjectStorage
     def use_file(&blk)
       with_exclusive_lease do
         unsafe_use_file(&blk)
+      end
+    end
+
+    def use_open_file(&blk)
+      Tempfile.open(path) do |file|
+        file.unlink
+        file.binmode
+
+        if file_storage?
+          IO.copy_stream(path, file)
+        else
+          streamer = lambda { |chunk, _, _| file.write(chunk) }
+          Excon.get(url, response_block: streamer)
+        end
+
+        file.seek(0, IO::SEEK_SET)
+
+        yield OpenFile.new(file)
       end
     end
 

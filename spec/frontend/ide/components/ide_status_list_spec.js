@@ -75,7 +75,8 @@ describe('ide/components/ide_status_list', () => {
 
   describe('with binary file', () => {
     beforeEach(() => {
-      activeFile.binary = true;
+      activeFile.name = 'abc.dat';
+      activeFile.content = '🐱'; // non-ascii binary content
       createComponent();
     });
 

@@ -29,11 +29,11 @@ module Mutations
 
         argument :move_before_id, GraphQL::ID_TYPE,
                   required: false,
-                  description: 'ID of issue before which the current issue will be positioned at'
+                  description: 'ID of issue that should be placed before the current issue'
 
         argument :move_after_id, GraphQL::ID_TYPE,
                   required: false,
-                  description: 'ID of issue after which the current issue will be positioned at'
+                  description: 'ID of issue that should be placed after the current issue'
 
         def ready?(**args)
           if move_arguments(args).blank?
@@ -50,6 +50,8 @@ module Mutations
         end
 
         def resolve(board:, **args)
+          Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab/-/issues/247861')
+
           raise_resource_not_available_error! unless board
           authorize_board!(board)
 
@@ -89,3 +91,5 @@ module Mutations
     end
   end
 end
+
+Mutations::Boards::Issues::IssueMoveList.prepend_if_ee('EE::Mutations::Boards::Issues::IssueMoveList')

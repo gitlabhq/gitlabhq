@@ -127,8 +127,10 @@ RSpec.describe 'Merge request > User sees merge widget', :js do
     end
   end
 
-  context 'when merge request is in the blocked pipeline state' do
+  context 'when merge request is in the blocked pipeline state and pipeline must succeed' do
     before do
+      project.update_attribute(:only_allow_merge_if_pipeline_succeeds, true)
+
       create(
         :ci_pipeline,
         project: project,

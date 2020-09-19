@@ -124,7 +124,7 @@ gets created. If you want to display the downstream pipeline's status instead, s
 
 NOTE: **Note:**
 Bridge jobs do not support every configuration entry that a user can use
-in the case of regular jobs. Bridge jobs will not be picked by a Runner,
+in the case of regular jobs. Bridge jobs will not be picked by a runner,
 so there is no point in adding support for `script`, for example. If a user
 tries to use unsupported configuration syntax, YAML validation will fail upon
 pipeline creation.
@@ -272,7 +272,8 @@ You can trigger a pipeline in your project whenever a pipeline finishes for a ne
 tag in a different project:
 
 1. Go to the project's **Settings > CI / CD** page, and expand the **Pipeline subscriptions** section.
-1. Enter the path to the project you want to subscribe to.
+1. Enter the project you want to subscribe to, in the format `<namespace>/<project>`.
+   For example, if the project is `https://gitlab.com/gitlab-org/gitlab`, use `gitlab-org/gitlab`.
 1. Click subscribe.
 
 Any pipelines that complete successfully for new tags in the subscribed project

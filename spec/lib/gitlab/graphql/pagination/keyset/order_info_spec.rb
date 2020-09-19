@@ -51,6 +51,18 @@ RSpec.describe Gitlab::Graphql::Pagination::Keyset::OrderInfo do
         expect(order_list.last.operator_for(:after)).to eq '>'
       end
     end
+
+    context 'when ordering by SIMILARITY' do
+      let(:relation) { Project.sorted_by_similarity_desc('test', include_in_select: true) }
+
+      it 'assigns the right attribute name, named function, and direction' do
+        expect(order_list.count).to eq 2
+        expect(order_list.first.attribute_name).to eq 'similarity'
+        expect(order_list.first.named_function).to be_kind_of(Arel::Nodes::Addition)
+        expect(order_list.first.named_function.to_sql).to include 'SIMILARITY('
+        expect(order_list.first.sort_direction).to eq :desc
+      end
+    end
   end
 
   describe '#validate_ordering' do

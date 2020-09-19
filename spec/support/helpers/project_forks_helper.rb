@@ -17,14 +17,26 @@ module ProjectForksHelper
       project.add_developer(user)
     end
 
-    unless params[:namespace] || params[:namespace_id]
+    unless params[:namespace]
       params[:namespace] = create(:group)
       params[:namespace].add_owner(user)
     end
 
+    namespace = params[:namespace]
+    create_repository = params.delete(:repository)
+
+    unless params[:target_project] || params[:using_service]
+      target_level = [project.visibility_level, namespace.visibility_level].min
+      visibility_level = Gitlab::VisibilityLevel.closest_allowed_level(target_level)
+
+      params[:target_project] =
+        create(:project,
+          (:repository if create_repository),
+          visibility_level: visibility_level, creator: user, namespace: namespace)
+    end
+
     service = Projects::ForkService.new(project, user, params)
 
-    create_repository = params.delete(:repository)
     # Avoid creating a repository
     unless create_repository
       allow(RepositoryForkWorker).to receive(:perform_async).and_return(true)

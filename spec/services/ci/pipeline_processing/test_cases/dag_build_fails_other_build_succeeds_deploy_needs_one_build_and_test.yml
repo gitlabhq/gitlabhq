@@ -47,16 +47,13 @@ transitions:
   - event: drop
     jobs: [build_2]
     expect:
-      pipeline: running
+      pipeline: failed
       stages:
         build: failed
         test: skipped
-        deploy: pending
+        deploy: skipped
       jobs:
         build_1: success
         build_2: failed
         test: skipped
-        deploy: pending
-
-# TODO: should we run deploy?
-# Further discussions: https://gitlab.com/gitlab-org/gitlab/-/issues/213080
+        deploy: skipped

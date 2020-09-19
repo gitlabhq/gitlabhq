@@ -1,0 +1,19 @@
+#js-authenticate-token-2fa
+%a.btn.btn-block.btn-info#js-login-2fa-device{ href: '#' }= _("Sign in via 2FA code")
+
+%script#js-authenticate-token-2fa-in-progress{ type: "text/template" }
+  %p= _("Trying to communicate with your device. Plug it in (if you haven't already) and press the button on the device now.")
+
+%script#js-authenticate-token-2fa-error{ type: "text/template" }
+  %div
+    %p <%= error_message %> (<%= error_name %>)
+    %a.btn.btn-block.btn-warning#js-token-2fa-try-again= _("Try again?")
+
+%script#js-authenticate-token-2fa-authenticated{ type: "text/template" }
+  %div
+    %p= _("We heard back from your device. You have been authenticated.")
+    = form_tag(target_path, method: :post, id: 'js-login-token-2fa-form') do |f|
+      - if render_remember_me
+        - resource_params = params[resource_name].presence || params
+        = hidden_field_tag 'user[remember_me]', resource_params.fetch(:remember_me, 0)
+      = hidden_field_tag 'user[device_response]', nil, class: 'form-control', required: true, id: "js-device-response"

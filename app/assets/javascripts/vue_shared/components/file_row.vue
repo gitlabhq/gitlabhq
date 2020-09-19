@@ -14,9 +14,19 @@ export default {
       type: Object,
       required: true,
     },
+    fileUrl: {
+      type: String,
+      required: false,
+      default: '',
+    },
     level: {
       type: Number,
       required: true,
+    },
+    fileClasses: {
+      type: String,
+      required: false,
+      default: '',
     },
   },
   computed: {
@@ -42,6 +52,9 @@ export default {
     textForTitle() {
       // don't output a title if we don't have the expanded path
       return this.file?.tree?.length ? this.file.tree[0].parentPath : false;
+    },
+    fileRouterUrl() {
+      return this.fileUrl || `/project${this.file.url}`;
     },
   },
   watch: {
@@ -69,7 +82,7 @@ export default {
         this.toggleTreeOpen(this.file.path);
       }
 
-      if (this.$router) this.$router.push(`/project${this.file.url}`);
+      if (this.$router && !this.hasUrlAtCurrentRoute()) this.$router.push(this.fileRouterUrl);
 
       if (this.isBlob) this.clickedFile(this.file.path);
     },
@@ -99,7 +112,7 @@ export default {
     hasUrlAtCurrentRoute() {
       if (!this.$router || !this.$router.currentRoute) return true;
 
-      return this.$router.currentRoute.path === `/project${escapeFileUrl(this.file.url)}`;
+      return this.$router.currentRoute.path === escapeFileUrl(this.fileRouterUrl);
     },
   },
 };
@@ -123,6 +136,7 @@ export default {
         :style="levelIndentation"
         class="file-row-name str-truncated"
         data-qa-selector="file_name_content"
+        :class="fileClasses"
       >
         <file-icon
           class="file-row-icon"

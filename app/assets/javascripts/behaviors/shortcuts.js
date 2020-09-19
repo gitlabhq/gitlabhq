@@ -1,5 +1,3 @@
-import Shortcuts from './shortcuts/shortcuts';
-
 export default function initPageShortcuts() {
   const { page } = document.body.dataset;
   const pagesWithCustomShortcuts = [
@@ -29,7 +27,9 @@ export default function initPageShortcuts() {
   // the pages above have their own shortcuts sub-classes instantiated elsewhere
   // TODO: replace this whitelist with something more automated/maintainable
   if (page && !pagesWithCustomShortcuts.includes(page)) {
-    return new Shortcuts();
+    import(/* webpackChunkName: 'shortcutsBundle' */ './shortcuts/shortcuts')
+      .then(({ default: Shortcuts }) => new Shortcuts())
+      .catch(() => {});
   }
   return false;
 }

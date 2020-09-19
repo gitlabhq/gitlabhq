@@ -15,7 +15,7 @@ RSpec.describe GitlabSchema.types['Milestone'] do
       stats
     ]
 
-    expect(described_class).to have_graphql_fields(*expected_fields)
+    expect(described_class).to have_graphql_fields(*expected_fields).at_least
   end
 
   describe 'stats field' do

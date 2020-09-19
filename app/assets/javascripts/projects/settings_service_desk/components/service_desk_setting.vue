@@ -157,14 +157,16 @@ export default {
             }}
           </span>
         </template>
-        <gl-button
-          variant="success"
-          class="gl-mt-5"
-          :disabled="isTemplateSaving"
-          @click="onSaveTemplate"
-        >
-          {{ __('Save template') }}
-        </gl-button>
+        <div class="gl-display-flex gl-justify-content-end">
+          <gl-button
+            variant="success"
+            class="gl-mt-5"
+            :disabled="isTemplateSaving"
+            @click="onSaveTemplate"
+          >
+            {{ __('Save changes') }}
+          </gl-button>
+        </div>
       </div>
     </div>
   </div>

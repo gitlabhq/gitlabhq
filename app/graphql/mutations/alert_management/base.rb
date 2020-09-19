@@ -3,6 +3,7 @@
 module Mutations
   module AlertManagement
     class Base < BaseMutation
+      include Gitlab::Utils::UsageData
       include ResolvesProject
 
       argument :project_path, GraphQL::ID_TYPE,

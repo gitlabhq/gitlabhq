@@ -1,5 +1,10 @@
 <script>
+import { GlIcon } from '@gitlab/ui';
+
 export default {
+  components: {
+    GlIcon,
+  },
   props: {
     label: {
       type: String,
@@ -25,7 +30,7 @@ export default {
     <label v-if="label" class="label-bold">
       {{ label }}
       <a v-if="helpPath" :href="helpPath" target="_blank">
-        <i aria-hidden="true" data-hidden="true" class="fa fa-question-circle"> </i>
+        <gl-icon name="question-o" />
       </a>
     </label>
     <span v-if="helpText" class="form-text text-muted"> {{ helpText }} </span> <slot></slot>

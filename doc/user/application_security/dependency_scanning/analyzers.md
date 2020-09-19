@@ -90,32 +90,7 @@ That's needed when one totally relies on [custom analyzers](#custom-analyzers).
 
 ## Custom analyzers
 
-### Custom analyzers with Docker-in-Docker
-
-When Docker-in-Docker for Dependency Scanning is enabled,
-you can provide your own analyzers as a comma-separated list of Docker images.
-Here's how to add `analyzers/nuget` and `analyzers/perl` to the default images.
-In `.gitlab-ci.yml` define:
-
-```yaml
-include:
-  template: Dependency-Scanning.gitlab-ci.yml
-
-variables:
-  DS_ANALYZER_IMAGES: "my-docker-registry/analyzers/nuget,amy-docker-registry/analyzers/perl"
-```
-
-The values must be the full path to the container registry images,
-like what you would feed to the `docker pull` command.
-
-NOTE: **Note:**
-This configuration doesn't benefit from the integrated detection step. Dependency
-Scanning has to fetch and spawn each Docker image to establish whether the
-custom analyzer can scan the source code.
-
-### Custom analyzers without Docker-in-Docker
-
-When Docker-in-Docker for Dependency Scanning is disabled, you can provide your own analyzers by
+You can provide your own analyzers by
 defining CI jobs in your CI configuration. For consistency, you should suffix your custom Dependency
 Scanning jobs with `-dependency_scanning`. Here's how to add a scanning job that's based on the
 Docker image `my-docker-registry/analyzers/nuget` and generates a Dependency Scanning report

@@ -70,12 +70,12 @@ This view allows you to:
 - Filter image repositories by their name.
 - [Delete](#delete-images-from-within-gitlab) one or more image repository.
 - Navigate to the image repository details page.
-- Show a **Quick start** dropdown with the most common commands to log in, build and push
+- Show a **Quick start** dropdown with the most common commands to log in, build and push.
 - Show a banner if the optional [cleanup policy](#cleanup-policy) is enabled for this project.
 
 ### Control Container Registry for your group
 
-Navigate to your groups's **{package}** **Packages & Registries > Container Registry**.
+Navigate to your group's **{package}** **Packages & Registries > Container Registry**.
 
 ![Container Registry group repositories](img/container_registry_group_repositories_v13_1.png)
 
@@ -193,7 +193,7 @@ Before diving into the details, some things you should be aware of:
   longer, but it means you don’t get stuck without security patches for base images.
 - Doing an explicit `docker pull` before each `docker run` fetches
   the latest image that was just built. This is especially important if you are
-  using multiple Runners that cache images locally. Using the Git SHA in your
+  using multiple runners that cache images locally. Using the Git SHA in your
   image tag makes this less necessary since each job is unique and you
   shouldn't ever have a stale image. However, it's still possible to have a
   stale image if you re-build a given commit after a dependency has changed.
@@ -240,8 +240,8 @@ There are three ways to authenticate to the Container Registry via
 
 ### Container Registry examples with GitLab CI/CD
 
-If you're using Docker-in-Docker on your Runners, this is how your `.gitlab-ci.yml`
-should look similar to this:
+If you're using Docker-in-Docker on your runners, this is how your `.gitlab-ci.yml`
+should look:
 
 ```yaml
 build:
@@ -532,6 +532,11 @@ The cleanup policy:
 1. Excludes from the list the tags more recent than the `older_than` value (Expiration interval).
 1. Excludes from the list any tags matching the `name_regex_keep` value (tags to preserve).
 1. Finally, the remaining tags in the list are deleted from the Container Registry.
+
+CAUTION: **Warning:**
+On GitLab.com, the execution time for the cleanup policy is limited, and some of the tags may remain in
+the Container Registry after the policy runs. The next time the policy runs, the remaining tags are included,
+so it may take multiple runs for all tags to be deleted.
 
 ### Create a cleanup policy
 

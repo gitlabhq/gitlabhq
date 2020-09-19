@@ -2,7 +2,7 @@ import { GlLoadingIcon } from '@gitlab/ui';
 import { Blob, BinaryBlob } from 'jest/blob/components/mock_data';
 import { shallowMount } from '@vue/test-utils';
 import SnippetApp from '~/snippets/components/show.vue';
-import BlobEmbeddable from '~/blob/components/blob_embeddable.vue';
+import EmbedDropdown from '~/snippets/components/embed_dropdown.vue';
 import SnippetHeader from '~/snippets/components/snippet_header.vue';
 import SnippetTitle from '~/snippets/components/snippet_title.vue';
 import SnippetBlob from '~/snippets/components/snippet_blob_view.vue';
@@ -57,7 +57,7 @@ describe('Snippet view app', () => {
     expect(wrapper.find(SnippetTitle).exists()).toBe(true);
   });
 
-  it('renders embeddable component if visibility allows', () => {
+  it('renders embed dropdown component if visibility allows', () => {
     createComponent({
       data: {
         snippet: {
@@ -66,7 +66,7 @@ describe('Snippet view app', () => {
         },
       },
     });
-    expect(wrapper.contains(BlobEmbeddable)).toBe(true);
+    expect(wrapper.find(EmbedDropdown).exists()).toBe(true);
   });
 
   it('renders correct snippet-blob components', () => {
@@ -88,7 +88,7 @@ describe('Snippet view app', () => {
       ${SNIPPET_VISIBILITY_PRIVATE}  | ${'not render'} | ${false}
       ${'foo'}                       | ${'not render'} | ${false}
       ${SNIPPET_VISIBILITY_PUBLIC}   | ${'render'}     | ${true}
-    `('does $condition blob-embeddable by default', ({ visibilityLevel, isRendered }) => {
+    `('does $condition embed-dropdown by default', ({ visibilityLevel, isRendered }) => {
       createComponent({
         data: {
           snippet: {
@@ -97,7 +97,7 @@ describe('Snippet view app', () => {
           },
         },
       });
-      expect(wrapper.contains(BlobEmbeddable)).toBe(isRendered);
+      expect(wrapper.find(EmbedDropdown).exists()).toBe(isRendered);
     });
   });
 
@@ -119,7 +119,7 @@ describe('Snippet view app', () => {
             },
           },
         });
-        expect(wrapper.contains(CloneDropdownButton)).toBe(isRendered);
+        expect(wrapper.find(CloneDropdownButton).exists()).toBe(isRendered);
       },
     );
   });

@@ -36,7 +36,7 @@ RSpec.describe SnippetStatistics do
     subject { statistics.update_file_count }
 
     it 'updates the count of files' do
-      file_count = snippet_with_repo.repository.ls_files(nil).count
+      file_count = snippet_with_repo.repository.ls_files(snippet_with_repo.default_branch).count
 
       subject
 

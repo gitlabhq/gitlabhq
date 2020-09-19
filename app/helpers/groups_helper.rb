@@ -167,7 +167,22 @@ module GroupsHelper
     @group.packages_feature_enabled?
   end
 
+  def show_invite_banner?(group)
+    Feature.enabled?(:invite_your_teammates_banner_a, group) &&
+      can?(current_user, :admin_group, group) &&
+      !just_created? &&
+      !multiple_members?(group)
+  end
+
   private
+
+  def just_created?
+    flash[:notice] =~ /successfully created/
+  end
+
+  def multiple_members?(group)
+    group.member_count > 1
+  end
 
   def get_group_sidebar_links
     links = [:overview, :group_members]

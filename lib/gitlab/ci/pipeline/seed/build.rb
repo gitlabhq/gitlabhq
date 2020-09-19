@@ -11,8 +11,6 @@ module Gitlab
 
           delegate :dig, to: :@seed_attributes
 
-          DEFAULT_NEEDS_LIMIT = 10
-
           def initialize(pipeline, attributes, previous_stages)
             @pipeline = pipeline
             @seed_attributes = attributes
@@ -140,11 +138,7 @@ module Gitlab
           end
 
           def max_needs_allowed
-            if ::Gitlab::Ci::Features.ci_plan_needs_size_limit?(@pipeline.project)
-              @pipeline.project.actual_limits.ci_needs_size_limit
-            else
-              DEFAULT_NEEDS_LIMIT
-            end
+            @pipeline.project.actual_limits.ci_needs_size_limit
           end
 
           def pipeline_attributes

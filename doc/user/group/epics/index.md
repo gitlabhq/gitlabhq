@@ -48,14 +48,14 @@ To learn what you can do with an epic, see [Manage epics](manage_epics.md). Poss
 - [Search for an epic from epics list page](manage_epics.md#search-for-an-epic-from-epics-list-page)
 - [Make an epic confidential](manage_epics.md#make-an-epic-confidential)
 - [Manage issues assigned to an epic](manage_epics.md#manage-issues-assigned-to-an-epic)
-- [Manage multi-level child epics **(ULTIMATE)**](manage_epics.md#manage-multi-level-child-epics-ultimate)
+- [Manage multi-level child epics **(ULTIMATE)**](manage_epics.md#manage-multi-level-child-epics)
 
 ## Relationships between epics and issues
 
 The possible relationships between epics and issues are:
 
 - An epic is the parent of one or more issues.
-- An epic is the parent of one or more child epics. For details see [Multi-level child epics](#multi-level-child-epics-ultimate). **(ULTIMATE)**
+- An epic is the parent of one or more child epics. For details see [Multi-level child epics](#multi-level-child-epics). **(ULTIMATE)**
 
 ```mermaid
 graph TD
@@ -73,7 +73,7 @@ to add an issue to an epic, reorder issues, move issues between epics, or promot
 > - The health status of a closed issue [will be hidden](https://gitlab.com/gitlab-org/gitlab/-/issues/220867) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.3 or later.
 
 You can report on and quickly respond to the health of individual issues and epics by setting a
-red, amber, or green [health status on an issue](../../project/issues/index.md#health-status-ultimate),
+red, amber, or green [health status on an issue](../../project/issues/index.md#health-status),
 which will appear on your Epic tree.
 
 ### Disable Issue health status in Epic tree
@@ -92,7 +92,7 @@ When you add an epic that's already linked to a parent epic, the link to its cur
 
 An epic can have multiple child epics up to the maximum depth of five.
 
-See [Manage multi-level child epics](manage_epics.md#manage-multi-level-child-epics-ultimate) for
+See [Manage multi-level child epics](manage_epics.md#manage-multi-level-child-epics) for
 steps to create, move, reorder, or delete child epics.
 
 ## Start date and due date
@@ -145,7 +145,7 @@ then the parent epic's start date will reflect the change and this will propagat
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7327) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.10.
 
-If your epic contains one or more [child epics](#multi-level-child-epics-ultimate) which
+If your epic contains one or more [child epics](#multi-level-child-epics) which
 have a [start or due date](#start-date-and-due-date), a
 [roadmap](../roadmap/index.md) view of the child epics is listed under the parent epic.
 

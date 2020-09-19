@@ -1,8 +1,11 @@
+/* eslint-disable @gitlab/require-i18n-strings */
 import { __ } from '~/locale';
 
-export const ANY_AUTHOR = 'Any';
+const DEFAULT_LABEL_NO_LABEL = { value: 'No label', text: __('No label') };
+export const DEFAULT_LABEL_NONE = { value: 'None', text: __('None') };
+export const DEFAULT_LABEL_ANY = { value: 'Any', text: __('Any') };
 
-export const NO_LABEL = 'No label';
+export const DEFAULT_LABELS = [DEFAULT_LABEL_NO_LABEL];
 
 export const DEBOUNCE_DELAY = 200;
 
@@ -11,13 +14,11 @@ export const SortDirection = {
   ascending: 'ascending',
 };
 
-export const defaultMilestones = [
-  // eslint-disable-next-line @gitlab/require-i18n-strings
-  { value: 'None', text: __('None') },
-  // eslint-disable-next-line @gitlab/require-i18n-strings
-  { value: 'Any', text: __('Any') },
-  // eslint-disable-next-line @gitlab/require-i18n-strings
+export const DEFAULT_MILESTONES = [
+  DEFAULT_LABEL_NONE,
+  DEFAULT_LABEL_ANY,
   { value: 'Upcoming', text: __('Upcoming') },
-  // eslint-disable-next-line @gitlab/require-i18n-strings
   { value: 'Started', text: __('Started') },
 ];
+
+/* eslint-enable @gitlab/require-i18n-strings */

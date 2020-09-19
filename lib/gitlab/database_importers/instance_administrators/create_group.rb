@@ -6,6 +6,8 @@ module Gitlab
       class CreateGroup < ::BaseService
         include Stepable
 
+        NAME = 'GitLab Instance'
+        PATH_PREFIX = 'gitlab-instance'
         VISIBILITY_LEVEL = Gitlab::VisibilityLevel::INTERNAL
 
         steps :validate_application_settings,
@@ -117,12 +119,12 @@ module Gitlab
 
         def create_group_params
           {
-            name: 'GitLab Instance Administrators',
+            name: NAME,
             visibility_level: VISIBILITY_LEVEL,
 
             # The 8 random characters at the end are so that the path does not
             # clash with any existing group that the user might have created.
-            path: "gitlab-instance-administrators-#{SecureRandom.hex(4)}"
+            path: "#{PATH_PREFIX}-#{SecureRandom.hex(4)}"
           }
         end
       end

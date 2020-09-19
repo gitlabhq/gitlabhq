@@ -44,7 +44,7 @@ RSpec.describe Projects::GraphsController do
 
       context 'when anonymous users can read build report results' do
         it 'sets the daily coverage options' do
-          Timecop.freeze do
+          freeze_time do
             get(:charts, params: { namespace_id: project.namespace.path, project_id: project.path, id: 'master' })
 
             expect(assigns[:daily_coverage_options]).to eq(

@@ -2,7 +2,6 @@ import $ from 'jquery';
 import MockAdapter from 'axios-mock-adapter';
 import Todos from '~/pages/dashboard/todos/index/todos';
 import '~/lib/utils/common_utils';
-import '~/gl_dropdown';
 import axios from '~/lib/utils/axios_utils';
 import { addDelimiter } from '~/lib/utils/text_utility';
 import { visitUrl } from '~/lib/utils/url_utility';

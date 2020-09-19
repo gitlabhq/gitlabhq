@@ -175,37 +175,37 @@ describe('IDE pipelines mutations', () => {
     });
   });
 
-  describe('REQUEST_JOB_TRACE', () => {
+  describe('REQUEST_JOB_LOGS', () => {
     beforeEach(() => {
       mockedState.detailJob = { ...jobs[0] };
     });
 
     it('sets loading on detail job', () => {
-      mutations[types.REQUEST_JOB_TRACE](mockedState);
+      mutations[types.REQUEST_JOB_LOGS](mockedState);
 
       expect(mockedState.detailJob.isLoading).toBe(true);
     });
   });
 
-  describe('RECEIVE_JOB_TRACE_ERROR', () => {
+  describe('RECEIVE_JOB_LOGS_ERROR', () => {
     beforeEach(() => {
       mockedState.detailJob = { ...jobs[0], isLoading: true };
     });
 
     it('sets loading to false on detail job', () => {
-      mutations[types.RECEIVE_JOB_TRACE_ERROR](mockedState);
+      mutations[types.RECEIVE_JOB_LOGS_ERROR](mockedState);
 
       expect(mockedState.detailJob.isLoading).toBe(false);
     });
   });
 
-  describe('RECEIVE_JOB_TRACE_SUCCESS', () => {
+  describe('RECEIVE_JOB_LOGS_SUCCESS', () => {
     beforeEach(() => {
       mockedState.detailJob = { ...jobs[0], isLoading: true };
     });
 
     it('sets output on detail job', () => {
-      mutations[types.RECEIVE_JOB_TRACE_SUCCESS](mockedState, { html: 'html' });
+      mutations[types.RECEIVE_JOB_LOGS_SUCCESS](mockedState, { html: 'html' });
       expect(mockedState.detailJob.output).toBe('html');
       expect(mockedState.detailJob.isLoading).toBe(false);
     });

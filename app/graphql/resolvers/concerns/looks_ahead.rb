@@ -46,7 +46,7 @@ module LooksAhead
     if lookahead.selects?(:nodes)
       lookahead.selection(:nodes)
     elsif lookahead.selects?(:edges)
-      lookahead.selection(:edges).selection(:nodes)
+      lookahead.selection(:edges).selection(:node)
     end
   end
 end

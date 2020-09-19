@@ -1,0 +1,163 @@
+#!/usr/bin/env ruby
+
+require 'set'
+
+# These tests run a sanity check on the mapping file `tests.yml`
+# used with the `test_file_finder` gem (`tff`) to identify matching test files.
+# The verification depend on the presence of actual test files,
+# so they would fail if one of the test files mentioned here is deleted.
+# To minimize the chance of this test failing due to unrelated changes,
+# the test files are chosen to be critical files that are unlikely to be deleted in a typical Merge Request
+tests = [
+  {
+    explanation: 'EE code should map to respective spec',
+    source: 'ee/app/controllers/admin/licenses_controller.rb',
+    expected: ['ee/spec/controllers/admin/licenses_controller_spec.rb']
+  },
+
+  {
+    explanation: 'FOSS code should map to respective spec',
+    source: 'app/finders/admin/projects_finder.rb',
+    expected: ['spec/finders/admin/projects_finder_spec.rb']
+  },
+
+  {
+    explanation: 'EE extension should map to its EE extension spec and its FOSS class spec',
+    source: 'ee/app/finders/ee/projects_finder.rb',
+    expected: ['ee/spec/finders/ee/projects_finder_spec.rb', 'spec/finders/projects_finder_spec.rb']
+  },
+
+  {
+    explanation: 'Some EE extensions also map to its EE class spec, but this is not recommended: https://docs.gitlab.com/ee/development/ee_features.html#testing-ee-features-based-on-ce-features',
+    source: 'ee/app/models/ee/user.rb',
+    expected: ['ee/spec/models/user_spec.rb', 'spec/models/user_spec.rb']
+  },
+
+  {
+    explanation: 'FOSS lib should map to respective spec',
+    source: 'lib/gitaly/server.rb',
+    expected: ['spec/lib/gitaly/server_spec.rb']
+  },
+
+  {
+    explanation: 'EE lib should map to respective spec',
+    source: 'ee/lib/flipper_session.rb',
+    expected: ['ee/spec/lib/flipper_session_spec.rb']
+  },
+
+  {
+    explanation: 'Tooling should map to respective spec',
+    source: 'tooling/lib/tooling/test_file_finder.rb',
+    expected: ['spec/tooling/lib/tooling/test_file_finder_spec.rb']
+  },
+
+  {
+    explanation: 'FOSS spec code should map to itself',
+    source: 'spec/models/issue_spec.rb',
+    expected: ['spec/models/issue_spec.rb']
+  },
+
+  {
+    explanation: 'EE spec code should map to itself',
+    source: 'ee/spec/models/user_spec.rb',
+    expected: ['ee/spec/models/user_spec.rb']
+  },
+
+  {
+    explanation: 'EE extension spec should map to itself and the FOSS class spec',
+    source: 'ee/spec/services/ee/notification_service_spec.rb',
+    expected: ['ee/spec/services/ee/notification_service_spec.rb', 'spec/services/notification_service_spec.rb']
+  },
+
+  {
+    explanation: 'FOSS factory should map to factories spec',
+    source: 'spec/factories/users.rb',
+    expected: ['spec/factories_spec.rb']
+  },
+
+  {
+    explanation: 'EE factory should map to factories spec',
+    source: 'ee/spec/factories/users.rb',
+    expected: ['spec/factories_spec.rb']
+  },
+
+  {
+    explanation: 'Initializers should map to respective spec',
+    source: 'config/initializers/action_mailer_hooks.rb',
+    expected: ['spec/initializers/action_mailer_hooks_spec.rb']
+  },
+
+  {
+    explanation: 'FOSS views should map to respective spec',
+    source: 'app/views/admin/users/_user.html.haml',
+    expected: ['spec/views/admin/users/_user.html.haml_spec.rb']
+  },
+
+  {
+    explanation: 'EE views should map to respective spec',
+    source: 'ee/app/views/admin/licenses/show.html.haml',
+    expected: ['ee/spec/views/admin/licenses/show.html.haml_spec.rb']
+  },
+
+  {
+    explanation: 'DB structure should map to schema spec',
+    source: 'db/structure.sql',
+    expected: ['spec/db/schema_spec.rb']
+  },
+
+  {
+    explanation: 'Migration should map to its non-timestamped spec',
+    source: 'db/migrate/20191023152913_add_default_and_free_plans.rb',
+    expected: ['spec/migrations/add_default_and_free_plans_spec.rb']
+  },
+
+  {
+    explanation: 'Migration should map to its timestamped spec',
+    source: 'db/post_migrate/20190924152703_migrate_issue_trackers_data.rb',
+    expected: ['spec/migrations/20190924152703_migrate_issue_trackers_data_spec.rb']
+  }
+]
+
+class MappingTest
+  def initialize(explanation:, source:, expected:, mapping: 'tests.yml')
+    @explanation = explanation
+    @source = source
+    @mapping = mapping
+    @expected_set = Set.new(expected)
+    @actual_set = Set.new(actual)
+  end
+
+  def passed?
+    expected_set.eql?(actual_set)
+  end
+
+  def failed?
+    !passed?
+  end
+
+  def failure_message
+    "#{explanation}: #{source}: Expected #{expected_set.to_a}, got #{actual_set.to_a}."
+  end
+
+  private
+
+  attr_reader :explanation, :source, :expected_set, :actual_set, :mapping
+
+  def actual
+    `tff -f #{mapping} #{source}`.split(' ')
+  end
+end
+
+results = tests.map { |test| MappingTest.new(test) }
+
+failed_tests = results.select(&:failed?)
+if failed_tests.any?
+  puts <<~MESSAGE
+    tff mapping verification failed:
+    #{failed_tests.map(&:failure_message).join("\n")}
+  MESSAGE
+
+  exit 1
+end
+
+puts 'tff mapping verification passed.'

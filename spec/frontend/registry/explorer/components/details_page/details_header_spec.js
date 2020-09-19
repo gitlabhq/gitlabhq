@@ -1,5 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
 import { GlSprintf } from '@gitlab/ui';
+import TitleArea from '~/vue_shared/components/registry/title_area.vue';
 import component from '~/registry/explorer/components/details_page/details_header.vue';
 import { DETAILS_PAGE_TITLE } from '~/registry/explorer/constants';
 
@@ -11,6 +12,7 @@ describe('Details Header', () => {
       propsData,
       stubs: {
         GlSprintf,
+        TitleArea,
       },
     });
   };

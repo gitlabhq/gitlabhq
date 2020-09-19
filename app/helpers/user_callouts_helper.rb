@@ -5,9 +5,11 @@ module UserCalloutsHelper
   GKE_CLUSTER_INTEGRATION = 'gke_cluster_integration'
   GCP_SIGNUP_OFFER = 'gcp_signup_offer'
   SUGGEST_POPOVER_DISMISSED = 'suggest_popover_dismissed'
+  SERVICE_TEMPLATES_DEPRECATED = 'service_templates_deprecated'
   TABS_POSITION_HIGHLIGHT = 'tabs_position_highlight'
   WEBHOOKS_MOVED = 'webhooks_moved'
   CUSTOMIZE_HOMEPAGE = 'customize_homepage'
+  WEB_IDE_ALERT_DISMISSED = 'web_ide_alert_dismissed'
 
   def show_admin_integrations_moved?
     !user_dismissed?(ADMIN_INTEGRATIONS_MOVED)
@@ -37,12 +39,20 @@ module UserCalloutsHelper
     !user_dismissed?(SUGGEST_POPOVER_DISMISSED)
   end
 
+  def show_service_templates_deprecated?
+    !user_dismissed?(SERVICE_TEMPLATES_DEPRECATED)
+  end
+
   def show_webhooks_moved_alert?
     !user_dismissed?(WEBHOOKS_MOVED)
   end
 
   def show_customize_homepage_banner?(customize_homepage)
     customize_homepage && !user_dismissed?(CUSTOMIZE_HOMEPAGE)
+  end
+
+  def show_web_ide_alert?
+    !user_dismissed?(WEB_IDE_ALERT_DISMISSED)
   end
 
   private

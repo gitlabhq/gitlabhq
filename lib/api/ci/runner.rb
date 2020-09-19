@@ -159,29 +159,29 @@ module API
         end
 
         desc 'Updates a job' do
-          http_codes [[200, 'Job was updated'], [403, 'Forbidden']]
+          http_codes [[200, 'Job was updated'],
+                      [202, 'Update accepted'],
+                      [400, 'Unknown parameters'],
+                      [403, 'Forbidden']]
         end
         params do
           requires :token, type: String, desc: %q(Runners's authentication token)
           requires :id, type: Integer, desc: %q(Job's ID)
           optional :trace, type: String, desc: %q(Job's full trace)
           optional :state, type: String, desc: %q(Job's status: success, failed)
+          optional :checksum, type: String, desc: %q(Job's trace CRC32 checksum)
           optional :failure_reason, type: String, desc: %q(Job's failure_reason)
         end
         put '/:id' do
           job = authenticate_job!
 
-          job.trace.set(params[:trace]) if params[:trace]
-
           Gitlab::Metrics.add_event(:update_build)
 
-          case params[:state].to_s
-          when 'running'
-            job.touch if job.needs_touch?
-          when 'success'
-            job.success!
-          when 'failed'
-            job.drop!(params[:failure_reason] || :unknown_failure)
+          service = ::Ci::UpdateBuildStateService
+            .new(job, declared_params(include_missing: false))
+
+          service.execute.then do |result|
+            status result.status
           end
         end
 

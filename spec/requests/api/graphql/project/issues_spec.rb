@@ -5,12 +5,13 @@ require 'spec_helper'
 RSpec.describe 'getting an issue list for a project' do
   include GraphqlHelpers
 
-  let(:project) { create(:project, :repository, :public) }
-  let(:current_user) { create(:user) }
   let(:issues_data) { graphql_data['project']['issues']['edges'] }
-  let!(:issues) do
+
+  let_it_be(:project) { create(:project, :repository, :public) }
+  let_it_be(:current_user) { create(:user) }
+  let_it_be(:issues, reload: true) do
     [create(:issue, project: project, discussion_locked: true),
-     create(:issue, project: project)]
+     create(:issue, :with_alert, project: project)]
   end
 
   let(:fields) do
@@ -85,7 +86,7 @@ RSpec.describe 'getting an issue list for a project' do
   end
 
   context 'when there is a confidential issue' do
-    let!(:confidential_issue) do
+    let_it_be(:confidential_issue) do
       create(:issue, :confidential, project: project)
     end
 
@@ -256,9 +257,140 @@ RSpec.describe 'getting an issue list for a project' do
     end
   end
 
-  def grab_iids(data = issues_data)
-    data.map do |issue|
-      issue.dig('node', 'iid').to_i
+  context 'fetching alert management alert' do
+    let(:fields) do
+      <<~QUERY
+      edges {
+        node {
+          iid
+          alertManagementAlert {
+            title
+          }
+        }
+      }
+      QUERY
+    end
+
+    # Alerts need to have developer permission and above
+    before do
+      project.add_developer(current_user)
+    end
+
+    it 'avoids N+1 queries' do
+      control = ActiveRecord::QueryRecorder.new { post_graphql(query, current_user: current_user) }
+
+      create(:alert_management_alert, :with_issue, project: project )
+
+      expect { post_graphql(query, current_user: current_user) }.not_to exceed_query_limit(control)
+    end
+
+    it 'returns the alert data' do
+      post_graphql(query, current_user: current_user)
+
+      alert_titles = issues_data.map { |issue| issue.dig('node', 'alertManagementAlert', 'title') }
+      expected_titles = issues.map { |issue| issue.alert_management_alert&.title }
+
+      expect(alert_titles).to contain_exactly(*expected_titles)
+    end
+  end
+
+  context 'fetching labels' do
+    let(:fields) do
+      <<~QUERY
+        edges {
+          node {
+            id
+            labels {
+              nodes {
+                id
+              }
+            }
+          }
+        }
+      QUERY
+    end
+
+    before do
+      issues.each do |issue|
+        # create a label for each issue we have to properly test N+1
+        label = create(:label, project: project)
+        issue.update!(labels: [label])
+      end
+    end
+
+    def response_label_ids(response_data)
+      response_data.map do |edge|
+        edge['node']['labels']['nodes'].map { |u| u['id'] }
+      end.flatten
+    end
+
+    def labels_as_global_ids(issues)
+      issues.map(&:labels).flatten.map(&:to_global_id).map(&:to_s)
+    end
+
+    it 'avoids N+1 queries', :aggregate_failures do
+      control = ActiveRecord::QueryRecorder.new { post_graphql(query, current_user: current_user) }
+      expect(issues_data.count).to eq(2)
+      expect(response_label_ids(issues_data)).to match_array(labels_as_global_ids(issues))
+
+      new_issues = issues + [create(:issue, project: project, labels: [create(:label, project: project)])]
+
+      expect { post_graphql(query, current_user: current_user) }.not_to exceed_query_limit(control)
+      # graphql_data is memoized (see spec/support/helpers/graphql_helpers.rb)
+      # so we have to parse the body ourselves the second time
+      issues_data = Gitlab::Json.parse(response.body)['data']['project']['issues']['edges']
+      expect(issues_data.count).to eq(3)
+      expect(response_label_ids(issues_data)).to match_array(labels_as_global_ids(new_issues))
+    end
+  end
+
+  context 'fetching assignees' do
+    let(:fields) do
+      <<~QUERY
+        edges {
+          node {
+            id
+            assignees {
+              nodes {
+                id
+              }
+            }
+          }
+        }
+      QUERY
+    end
+
+    before do
+      issues.each do |issue|
+        # create an assignee for each issue we have to properly test N+1
+        assignee = create(:user)
+        issue.update!(assignees: [assignee])
+      end
+    end
+
+    def response_assignee_ids(response_data)
+      response_data.map do |edge|
+        edge['node']['assignees']['nodes'].map { |node| node['id'] }
+      end.flatten
+    end
+
+    def assignees_as_global_ids(issues)
+      issues.map(&:assignees).flatten.map(&:to_global_id).map(&:to_s)
+    end
+
+    it 'avoids N+1 queries', :aggregate_failures do
+      control = ActiveRecord::QueryRecorder.new { post_graphql(query, current_user: current_user) }
+      expect(issues_data.count).to eq(2)
+      expect(response_assignee_ids(issues_data)).to match_array(assignees_as_global_ids(issues))
+
+      new_issues = issues + [create(:issue, project: project, assignees: [create(:user)])]
+
+      expect { post_graphql(query, current_user: current_user) }.not_to exceed_query_limit(control)
+      # graphql_data is memoized (see spec/support/helpers/graphql_helpers.rb)
+      # so we have to parse the body ourselves the second time
+      issues_data = Gitlab::Json.parse(response.body)['data']['project']['issues']['edges']
+      expect(issues_data.count).to eq(3)
+      expect(response_assignee_ids(issues_data)).to match_array(assignees_as_global_ids(new_issues))
     end
   end
 end

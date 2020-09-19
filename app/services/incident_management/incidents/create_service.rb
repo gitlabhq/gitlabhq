@@ -5,11 +5,12 @@ module IncidentManagement
     class CreateService < BaseService
       ISSUE_TYPE = 'incident'
 
-      def initialize(project, current_user, title:, description:)
+      def initialize(project, current_user, title:, description:, severity: IssuableSeverity::DEFAULT)
         super(project, current_user)
 
         @title = title
         @description = description
+        @severity = severity
       end
 
       def execute
@@ -18,25 +19,19 @@ module IncidentManagement
           current_user,
           title: title,
           description: description,
-          label_ids: [find_or_create_incident_label.id],
           issue_type: ISSUE_TYPE
         ).execute
 
         return error(issue.errors.full_messages.to_sentence, issue) unless issue.valid?
+
+        issue.update_severity(severity)
 
         success(issue)
       end
 
       private
 
-      attr_reader :title, :description
-
-      def find_or_create_incident_label
-        IncidentManagement::CreateIncidentLabelService
-          .new(project, current_user)
-          .execute
-          .payload[:label]
-      end
+      attr_reader :title, :description, :severity
 
       def success(issue)
         ServiceResponse.success(payload: { issue: issue })

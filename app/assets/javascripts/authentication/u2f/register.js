@@ -1,5 +1,6 @@
 import $ from 'jquery';
 import { template as lodashTemplate } from 'lodash';
+import { __ } from '~/locale';
 import importU2FLibrary from './util';
 import U2FError from './error';
 
@@ -24,11 +25,10 @@ export default class U2FRegister {
     this.signRequests = u2fParams.sign_requests;
 
     this.templates = {
-      notSupported: '#js-register-u2f-not-supported',
-      setup: '#js-register-u2f-setup',
-      inProgress: '#js-register-u2f-in-progress',
-      error: '#js-register-u2f-error',
-      registered: '#js-register-u2f-registered',
+      message: '#js-register-2fa-message',
+      setup: '#js-register-token-2fa-setup',
+      error: '#js-register-token-2fa-error',
+      registered: '#js-register-token-2fa-registered',
     };
   }
 
@@ -65,18 +65,22 @@ export default class U2FRegister {
 
   renderSetup() {
     this.renderTemplate('setup');
-    return this.container.find('#js-setup-u2f-device').on('click', this.renderInProgress);
+    return this.container.find('#js-setup-token-2fa-device').on('click', this.renderInProgress);
   }
 
   renderInProgress() {
-    this.renderTemplate('inProgress');
+    this.renderTemplate('message', {
+      message: __(
+        'Trying to communicate with your device. Plug it in (if needed) and press the button on the device now.',
+      ),
+    });
     return this.register();
   }
 
   renderError(error) {
     this.renderTemplate('error', {
       error_message: error.message(),
-      error_code: error.errorCode,
+      error_name: error.errorCode,
     });
     return this.container.find('#js-token-2fa-try-again').on('click', this.renderSetup);
   }
@@ -89,6 +93,10 @@ export default class U2FRegister {
   }
 
   renderNotSupported() {
-    return this.renderTemplate('notSupported');
+    return this.renderTemplate('message', {
+      message: __(
+        "Your browser doesn't support U2F. Please use Google Chrome desktop (version 41 or newer).",
+      ),
+    });
   }
 }

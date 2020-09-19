@@ -7,6 +7,7 @@ import {
   GlTooltipDirective,
   GlTooltip,
   GlBadge,
+  GlSafeHtmlDirective as SafeHtml,
 } from '@gitlab/ui';
 import { VISIBILITY_TYPE_ICON, GROUP_VISIBILITY_TYPE } from '~/groups/constants';
 import { __ } from '~/locale';
@@ -23,6 +24,7 @@ export default {
   },
   directives: {
     GlTooltip: GlTooltipDirective,
+    SafeHtml,
   },
   props: {
     group: {
@@ -119,7 +121,7 @@ export default {
             </span>
           </div>
           <div v-if="group.description" class="description">
-            <span v-html="group.markdown_description"> </span>
+            <span v-safe-html="group.markdown_description"> </span>
           </div>
         </div>
         <div class="gl-display-flex gl-flex-shrink-0">

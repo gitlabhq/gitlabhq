@@ -115,6 +115,14 @@
   :weight: 1
   :idempotent:
   :tags: []
+- :name: cronjob:analytics_instance_statistics_count_job_trigger
+  :feature_category: :instance_statistics
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: cronjob:authorized_project_update_periodic_recalculate
   :feature_category: :source_code_management
   :has_external_dependencies:
@@ -128,6 +136,14 @@
   :has_external_dependencies:
   :urgency: :low
   :resource_boundary: :unknown
+  :weight: 1
+  :idempotent:
+  :tags: []
+- :name: cronjob:ci_platform_metrics_update_cron
+  :feature_category: :continuous_integration
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :cpu
   :weight: 1
   :idempotent:
   :tags: []
@@ -723,6 +739,22 @@
   :weight: 2
   :idempotent:
   :tags: []
+- :name: jira_connect:jira_connect_sync_branch
+  :feature_category: :integrations
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent:
+  :tags: []
+- :name: jira_connect:jira_connect_sync_merge_request
+  :feature_category: :integrations
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent:
+  :tags: []
 - :name: jira_importer:jira_import_advance_stage
   :feature_category: :importers
   :has_external_dependencies:
@@ -881,7 +913,7 @@
   :urgency: :low
   :resource_boundary: :unknown
   :weight: 1
-  :idempotent:
+  :idempotent: true
   :tags: []
 - :name: pipeline_background:ci_daily_build_group_report_results
   :feature_category: :continuous_integration
@@ -892,6 +924,14 @@
   :idempotent: true
   :tags: []
 - :name: pipeline_background:ci_pipeline_success_unlock_artifacts
+  :feature_category: :continuous_integration
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+- :name: pipeline_background:ci_pipelines_create_artifact
   :feature_category: :continuous_integration
   :has_external_dependencies:
   :urgency: :low
@@ -980,14 +1020,6 @@
   :idempotent:
   :tags: []
 - :name: pipeline_default:pipeline_notification
-  :feature_category: :continuous_integration
-  :has_external_dependencies:
-  :urgency: :high
-  :resource_boundary: :cpu
-  :weight: 3
-  :idempotent:
-  :tags: []
-- :name: pipeline_default:pipeline_update_ci_ref_status
   :feature_category: :continuous_integration
   :has_external_dependencies:
   :urgency: :high
@@ -1180,6 +1212,14 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: analytics_instance_statistics_counter_job
+  :feature_category: :instance_statistics
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: authorized_keys
   :feature_category: :source_code_management
   :has_external_dependencies:
@@ -1350,7 +1390,7 @@
   :tags: []
 - :name: flush_counter_increments
   :feature_category: :not_owned
-  :has_external_dependencies: 
+  :has_external_dependencies:
   :urgency: :low
   :resource_boundary: :unknown
   :weight: 1
@@ -1428,6 +1468,22 @@
   :weight: 1
   :idempotent:
   :tags: []
+- :name: issue_placement
+  :feature_category: :issue_tracking
+  :has_external_dependencies:
+  :urgency: :high
+  :resource_boundary: :cpu
+  :weight: 2
+  :idempotent: true
+  :tags: []
+- :name: issue_rebalancing
+  :feature_category: :issue_tracking
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: mailers
   :feature_category:
   :has_external_dependencies:
@@ -1442,7 +1498,15 @@
   :urgency: :high
   :resource_boundary: :unknown
   :weight: 5
-  :idempotent: 
+  :idempotent:
+  :tags: []
+- :name: merge_request_cleanup_refs
+  :feature_category: :source_code_management
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
   :tags: []
 - :name: merge_request_mergeability_check
   :feature_category: :source_code_management
@@ -1517,6 +1581,22 @@
   :idempotent:
   :tags: []
 - :name: pages_domain_verification
+  :feature_category: :pages
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent:
+  :tags: []
+- :name: pages_remove
+  :feature_category: :pages
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent:
+  :tags: []
+- :name: pages_transfer
   :feature_category: :pages
   :has_external_dependencies:
   :urgency: :low

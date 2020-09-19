@@ -1,4 +1,5 @@
 <script>
+/* eslint-disable vue/no-v-html */
 import { isEmpty } from 'lodash';
 import { GlLink } from '@gitlab/ui';
 import DeprecatedModal2 from '~/vue_shared/components/deprecated_modal_2.vue';

@@ -63,14 +63,11 @@ RSpec.describe 'Restoring Todos' do
 
   context 'when todo does not belong to requesting user' do
     let(:input) { { id: other_user_todo.to_global_id.to_s } }
-    let(:access_error) { 'The resource that you are attempting to access does not exist or you don\'t have permission to perform this action' }
 
-    it 'contains the expected error' do
+    it_behaves_like 'a mutation that returns a top-level access error'
+
+    it 'results in the correct todo states' do
       post_graphql_mutation(mutation, current_user: current_user)
-
-      errors = json_response['errors']
-      expect(errors).not_to be_blank
-      expect(errors.first['message']).to eq(access_error)
 
       expect(todo1.reload.state).to eq('done')
       expect(todo2.reload.state).to eq('pending')
@@ -80,7 +77,7 @@ RSpec.describe 'Restoring Todos' do
 
   context 'when using an invalid gid' do
     let(:input) { { id: 'invalid_gid' } }
-    let(:invalid_gid_error) { 'invalid_gid is not a valid GitLab id.' }
+    let(:invalid_gid_error) { 'invalid_gid is not a valid GitLab ID.' }
 
     it 'contains the expected error' do
       post_graphql_mutation(mutation, current_user: current_user)

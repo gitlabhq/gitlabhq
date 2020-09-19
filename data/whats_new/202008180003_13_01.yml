@@ -4,7 +4,7 @@
   stage: Monitor
   self-managed: true
   gitlab-com: true
-  packages: All
+  packages: [All]
   url: https://docs.gitlab.com/ee/user/project/operations/alert_management.html
   image_url: https://about.gitlab.com/images/13_1/alert_management.png
   published_at: 2020-06-22
@@ -14,7 +14,7 @@
   stage: Verify
   self-managed: true
   gitlab-com: true
-  packages: All
+  packages: [All]
   url: https://docs.gitlab.com/ee/user/project/merge_requests/accessibility_testing.html#accessibility-merge-request-widget
   image_url: https://about.gitlab.com/images/13_1/a11y-merge-request-widget.png
   published_at: 2020-06-22
@@ -24,7 +24,7 @@
   stage: Create
   self-managed: true
   gitlab-com: true
-  packages: All
+  packages: [All]
   url: https://docs.gitlab.com/ee/user/project/issues/design_management.html#resolve-design-threads
   image_url: https://about.gitlab.com/images/13_1/resolve-design-comment.gif
   published_at: 2020-06-22
@@ -34,7 +34,7 @@
   stage: Create
   self-managed: true
   gitlab-com: true
-  packages: All
+  packages: [All]
   url: https://docs.gitlab.com/ee/user/discussions/index.html#merge-request-reviews
   image_url: https://about.gitlab.com/images/13_1/batch_comments.png
   published_at: 2020-06-22
