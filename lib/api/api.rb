@@ -216,6 +216,7 @@ module API
       mount ::API::ProjectStatistics
       mount ::API::ProjectTemplates
       mount ::API::Terraform::State
+      mount ::API::Terraform::StateVersion
       mount ::API::ProtectedBranches
       mount ::API::ProtectedTags
       mount ::API::Releases
