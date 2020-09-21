@@ -200,26 +200,42 @@ RSpec.describe Todo do
   describe '#self_assigned?' do
     let(:user_1) { build(:user) }
 
-    before do
-      subject.user = user_1
-      subject.author = user_1
-      subject.action = Todo::ASSIGNED
+    context 'when self_added' do
+      before do
+        subject.user = user_1
+        subject.author = user_1
+      end
+
+      it 'returns true for ASSIGNED' do
+        subject.action = Todo::ASSIGNED
+
+        expect(subject).to be_self_assigned
+      end
+
+      it 'returns true for REVIEW_REQUESTED' do
+        subject.action = Todo::REVIEW_REQUESTED
+
+        expect(subject).to be_self_assigned
+      end
+
+      it 'returns false for other action' do
+        subject.action = Todo::MENTIONED
+
+        expect(subject).not_to be_self_assigned
+      end
     end
 
-    it 'is true when todo is ASSIGNED and self_added' do
-      expect(subject).to be_self_assigned
-    end
+    context 'when todo is not self_added' do
+      before do
+        subject.user = user_1
+        subject.author = build(:user)
+      end
 
-    it 'is false when the todo is not ASSIGNED' do
-      subject.action = Todo::MENTIONED
+      it 'returns false' do
+        subject.action = Todo::ASSIGNED
 
-      expect(subject).not_to be_self_assigned
-    end
-
-    it 'is false when todo is not self_added' do
-      subject.author = build(:user)
-
-      expect(subject).not_to be_self_assigned
+        expect(subject).not_to be_self_assigned
+      end
     end
   end
 

@@ -12,6 +12,8 @@ RSpec.describe API::Features, stub_feature_flags: false do
     Flipper.register(:perf_team) do |actor|
       actor.respond_to?(:admin) && actor.admin?
     end
+
+    skip_feature_flags_yaml_validation
   end
 
   describe 'GET /features' do

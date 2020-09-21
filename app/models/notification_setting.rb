@@ -43,6 +43,7 @@ class NotificationSetting < ApplicationRecord
     :reopen_merge_request,
     :close_merge_request,
     :reassign_merge_request,
+    :change_reviewer_merge_request,
     :merge_merge_request,
     :failed_pipeline,
     :fixed_pipeline,

@@ -514,6 +514,7 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
         allow(migration).to receive(:table_exists?).with(partitioned_table).and_return(true)
         allow(migration).to receive(:copy_missed_records)
         allow(migration).to receive(:execute).with(/VACUUM/)
+        allow(migration).to receive(:execute).with(/^(RE)?SET/)
       end
 
       it 'finishes remaining jobs for the correct table' do
@@ -567,6 +568,7 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
 
         allow(Gitlab::BackgroundMigration).to receive(:steal)
         allow(migration).to receive(:execute).with(/VACUUM/)
+        allow(migration).to receive(:execute).with(/^(RE)?SET/)
       end
 
       it 'idempotently cleans up after failed background migrations' do

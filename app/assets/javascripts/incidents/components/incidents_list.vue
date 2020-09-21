@@ -8,7 +8,6 @@ import {
   GlAvatar,
   GlTooltipDirective,
   GlButton,
-  GlSearchBoxByType,
   GlIcon,
   GlPagination,
   GlTabs,
@@ -16,16 +15,25 @@ import {
   GlBadge,
   GlEmptyState,
 } from '@gitlab/ui';
-import { debounce } from 'lodash';
+import Api from '~/api';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
+import FilteredSearchBar from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
+import AuthorToken from '~/vue_shared/components/filtered_search_bar/tokens/author_token.vue';
 import { convertToSnakeCase } from '~/lib/utils/text_utility';
-import { s__ } from '~/locale';
-import { mergeUrlParams, joinPaths, visitUrl } from '~/lib/utils/url_utility';
+import { s__, __ } from '~/locale';
+import { urlParamsToObject } from '~/lib/utils/common_utils';
+import {
+  visitUrl,
+  mergeUrlParams,
+  joinPaths,
+  updateHistory,
+  setUrlParams,
+} from '~/lib/utils/url_utility';
 import getIncidents from '../graphql/queries/get_incidents.query.graphql';
 import getIncidentsCountByStatus from '../graphql/queries/get_count_by_status.query.graphql';
 import SeverityToken from '~/sidebar/components/severity/severity.vue';
 import { INCIDENT_SEVERITY } from '~/sidebar/components/severity/constants';
-import { I18N, DEFAULT_PAGE_SIZE, INCIDENT_SEARCH_DELAY, INCIDENT_STATUS_TABS } from '../constants';
+import { I18N, DEFAULT_PAGE_SIZE, INCIDENT_STATUS_TABS } from '../constants';
 
 const TH_TEST_ID = { 'data-testid': 'incident-management-created-at-sort' };
 const tdClass =
@@ -82,7 +90,6 @@ export default {
     GlAvatar,
     GlButton,
     TimeAgoTooltip,
-    GlSearchBoxByType,
     GlIcon,
     GlPagination,
     GlTabs,
@@ -91,6 +98,7 @@ export default {
     GlBadge,
     GlEmptyState,
     SeverityToken,
+    FilteredSearchBar,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -103,6 +111,9 @@ export default {
     'issuePath',
     'publishedAvailable',
     'emptyListSvgPath',
+    'textQuery',
+    'authorUsernamesQuery',
+    'assigneeUsernamesQuery',
   ],
   apollo: {
     incidents: {
@@ -118,6 +129,8 @@ export default {
           lastPageSize: this.pagination.lastPageSize,
           prevPageCursor: this.pagination.prevPageCursor,
           nextPageCursor: this.pagination.nextPageCursor,
+          authorUsername: this.authorUsername,
+          assigneeUsernames: this.assigneeUsernames,
         };
       },
       update({ project: { issues: { nodes = [], pageInfo = {} } = {} } = {} }) {
@@ -135,6 +148,8 @@ export default {
       variables() {
         return {
           searchTerm: this.searchTerm,
+          authorUsername: this.authorUsername,
+          assigneeUsernames: this.assigneeUsernames,
           projectPath: this.projectPath,
           issueTypes: ['INCIDENT'],
         };
@@ -149,7 +164,7 @@ export default {
       errored: false,
       isErrorAlertDismissed: false,
       redirecting: false,
-      searchTerm: '',
+      searchTerm: this.textQuery,
       pagination: initialPaginationState,
       incidents: {},
       sort: 'created_desc',
@@ -157,6 +172,9 @@ export default {
       sortDesc: true,
       statusFilter: '',
       filteredByStatus: '',
+      authorUsername: this.authorUsernamesQuery,
+      assigneeUsernames: this.assigneeUsernamesQuery,
+      filterParams: {},
     };
   },
   computed: {
@@ -242,14 +260,57 @@ export default {
         btnText: createIncidentBtnLabel,
       };
     },
+    filteredSearchTokens() {
+      return [
+        {
+          type: 'author_username',
+          icon: 'user',
+          title: __('Author'),
+          unique: true,
+          symbol: '@',
+          token: AuthorToken,
+          operators: [{ value: '=', description: __('is'), default: 'true' }],
+          fetchPath: this.projectPath,
+          fetchAuthors: Api.projectUsers.bind(Api),
+        },
+        {
+          type: 'assignee_username',
+          icon: 'user',
+          title: __('Assignees'),
+          unique: true,
+          symbol: '@',
+          token: AuthorToken,
+          operators: [{ value: '=', description: __('is'), default: 'true' }],
+          fetchPath: this.projectPath,
+          fetchAuthors: Api.projectUsers.bind(Api),
+        },
+      ];
+    },
+    filteredSearchValue() {
+      const value = [];
+
+      if (this.authorUsername) {
+        value.push({
+          type: 'author_username',
+          value: { data: this.authorUsername },
+        });
+      }
+
+      if (this.assigneeUsernames) {
+        value.push({
+          type: 'assignee_username',
+          value: { data: this.assigneeUsernames },
+        });
+      }
+
+      if (this.searchTerm) {
+        value.push(this.searchTerm);
+      }
+
+      return value;
+    },
   },
   methods: {
-    onInputChange: debounce(function debounceSearch(input) {
-      const trimmedInput = input.trim();
-      if (trimmedInput !== this.searchTerm) {
-        this.searchTerm = trimmedInput;
-      }
-    }, INCIDENT_SEARCH_DELAY),
     filterIncidentsByStatus(tabIndex) {
       const { filters, status } = this.$options.statusTabs[tabIndex];
       this.statusFilter = filters;
@@ -292,6 +353,61 @@ export default {
     getSeverity(severity) {
       return INCIDENT_SEVERITY[severity];
     },
+    handleFilterIncidents(filters) {
+      const filterParams = { authorUsername: '', assigneeUsername: [], search: '' };
+
+      filters.forEach(filter => {
+        if (typeof filter === 'object') {
+          switch (filter.type) {
+            case 'author_username':
+              filterParams.authorUsername = filter.value.data;
+              break;
+            case 'assignee_username':
+              filterParams.assigneeUsername.push(filter.value.data);
+              break;
+            case 'filtered-search-term':
+              if (filter.value.data !== '') filterParams.search = filter.value.data;
+              break;
+            default:
+              break;
+          }
+        }
+      });
+
+      this.filterParams = filterParams;
+      this.updateUrl();
+      this.searchTerm = filterParams?.search;
+      this.authorUsername = filterParams?.authorUsername;
+      this.assigneeUsernames = filterParams?.assigneeUsername;
+    },
+    updateUrl() {
+      const queryParams = urlParamsToObject(window.location.search);
+      const { authorUsername, assigneeUsername, search } = this.filterParams || {};
+
+      if (authorUsername) {
+        queryParams.author_username = authorUsername;
+      } else {
+        delete queryParams.author_username;
+      }
+
+      if (assigneeUsername) {
+        queryParams.assignee_username = assigneeUsername;
+      } else {
+        delete queryParams.assignee_username;
+      }
+
+      if (search) {
+        queryParams.search = search;
+      } else {
+        delete queryParams.search;
+      }
+
+      updateHistory({
+        url: setUrlParams(queryParams, window.location.href, true),
+        title: document.title,
+        replace: true,
+      });
+    },
   },
 };
 </script>
@@ -331,12 +447,16 @@ export default {
       </gl-button>
     </div>
 
-    <div class="gl-bg-gray-10 gl-p-5 gl-border-b-solid gl-border-b-1 gl-border-gray-100">
-      <gl-search-box-by-type
-        :value="searchTerm"
-        class="gl-bg-white"
-        :placeholder="$options.i18n.searchPlaceholder"
-        @input="onInputChange"
+    <div class="filtered-search-wrapper">
+      <filtered-search-bar
+        :namespace="projectPath"
+        :search-input-placeholder="$options.i18n.searchPlaceholder"
+        :tokens="filteredSearchTokens"
+        :initial-filter-value="filteredSearchValue"
+        initial-sortby="created_desc"
+        recent-searches-storage-key="incidents"
+        class="row-content-block"
+        @onFilter="handleFilterIncidents"
       />
     </div>
 

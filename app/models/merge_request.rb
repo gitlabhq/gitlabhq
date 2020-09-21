@@ -121,6 +121,8 @@ class MergeRequest < ApplicationRecord
   # when creating new merge request
   attr_accessor :can_be_created, :compare_commits, :diff_options, :compare
 
+  participant :reviewers
+
   # Keep states definition to be evaluated before the state_machine block to avoid spec failures.
   # If this gets evaluated after, the `merged` and `locked` states which are overrided can be nil.
   def self.available_state_names

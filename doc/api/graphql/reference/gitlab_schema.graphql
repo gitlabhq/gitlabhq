@@ -6778,7 +6778,12 @@ type Group {
     """
     Username of a user assigned to the issue
     """
-    assigneeUsername: String
+    assigneeUsername: [String!]
+
+    """
+    Username of the author of the issue
+    """
+    authorUsername: String
 
     """
     Returns the elements in the list that come before the specified cursor.
@@ -12248,7 +12253,12 @@ type Project {
     """
     Username of a user assigned to the issue
     """
-    assigneeUsername: String
+    assigneeUsername: [String!]
+
+    """
+    Username of the author of the issue
+    """
+    authorUsername: String
 
     """
     Issues closed after this date
@@ -12338,7 +12348,12 @@ type Project {
     """
     Username of a user assigned to the issue
     """
-    assigneeUsername: String
+    assigneeUsername: [String!]
+
+    """
+    Username of the author of the issue
+    """
+    authorUsername: String
 
     """
     Issues closed after this date
@@ -12418,7 +12433,12 @@ type Project {
     """
     Username of a user assigned to the issue
     """
-    assigneeUsername: String
+    assigneeUsername: [String!]
+
+    """
+    Username of the author of the issue
+    """
+    authorUsername: String
 
     """
     Returns the elements in the list that come before the specified cursor.

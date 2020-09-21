@@ -105,6 +105,7 @@ RSpec.describe Feature::Definition do
   describe '.load_all!' do
     let(:store1) { Dir.mktmpdir('path1') }
     let(:store2) { Dir.mktmpdir('path2') }
+    let(:definitions) { {} }
 
     before do
       allow(described_class).to receive(:paths).and_return(
@@ -113,6 +114,10 @@ RSpec.describe Feature::Definition do
           File.join(store2, '**', '*.yml')
         ]
       )
+
+      # We stub `definitions` to ensure that they
+      # are not overwritten by `.load_all!`
+      allow(described_class).to receive(:definitions).and_return(definitions)
     end
 
     it "when there's no feature flags a list of definitions is empty" do

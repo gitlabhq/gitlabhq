@@ -1,0 +1,7 @@
+---
+name: default_merge_ref_for_diffs
+introduced_by_url: 
+rollout_issue_url: 
+type: development
+group:
+default_enabled: false

@@ -365,6 +365,7 @@ class IssuableBaseService < BaseService
       }
     associations[:total_time_spent] = issuable.total_time_spent if issuable.respond_to?(:total_time_spent)
     associations[:description] = issuable.description
+    associations[:reviewers] = issuable.reviewers.to_a if issuable.allows_reviewers?
 
     associations
   end

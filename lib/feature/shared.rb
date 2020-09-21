@@ -13,7 +13,7 @@ class Feature
     TYPES = {
       development: {
         description: 'Short lived, used to enable unfinished code to be deployed',
-        optional: true,
+        optional: false,
         rollout_issue: true,
         default_enabled: false,
         example: <<-EOS
@@ -46,11 +46,11 @@ class Feature
 
     PARAMS = %i[
       name
-      default_enabled
-      type
       introduced_by_url
       rollout_issue_url
+      type
       group
+      default_enabled
     ].freeze
   end
 end

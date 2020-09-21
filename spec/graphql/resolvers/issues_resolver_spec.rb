@@ -54,8 +54,19 @@ RSpec.describe Resolvers::IssuesResolver do
         expect(resolve_issues(assignee_id: IssuableFinder::Params::FILTER_ANY)).to contain_exactly(issue2)
       end
 
+      it 'filters by two assignees' do
+        user_2 = create(:user)
+        issue2.update!(assignees: [assignee, user_2])
+
+        expect(resolve_issues(assignee_id: [assignee.id, user_2.id])).to contain_exactly(issue2)
+      end
+
       it 'filters by no assignee' do
         expect(resolve_issues(assignee_id: IssuableFinder::Params::FILTER_NONE)).to contain_exactly(issue1)
+      end
+
+      it 'filters by author' do
+        expect(resolve_issues(author_username: issue1.author.username)).to contain_exactly(issue1, issue2)
       end
 
       it 'filters by labels' do

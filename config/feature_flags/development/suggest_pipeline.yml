@@ -1,7 +1,7 @@
 ---
 name: suggest_pipeline
-introduced_by_url: 
-rollout_issue_url: 
-group: 
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/25547
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/212896
+group: group::expansion
 type: development
 default_enabled: false

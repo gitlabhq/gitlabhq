@@ -3964,7 +3964,7 @@ msgstr ""
 msgid "BillingPlans|@%{user_name} you are currently using the %{plan_name} plan."
 msgstr ""
 
-msgid "BillingPlans|Congratulations, your new trial is activated"
+msgid "BillingPlans|Congratulations, your free trial is activated."
 msgstr ""
 
 msgid "BillingPlans|If you would like to downgrade your plan please contact %{support_link_start}Customer Support%{support_link_end}."
@@ -4619,6 +4619,15 @@ msgid "Change your password"
 msgstr ""
 
 msgid "Change your password or recover your current one"
+msgstr ""
+
+msgid "ChangeReviewer|Reviewer changed from %{old} to %{new}"
+msgstr ""
+
+msgid "ChangeReviewer|Reviewer changed to %{new}"
+msgstr ""
+
+msgid "ChangeReviewer|Unassigned"
 msgstr ""
 
 msgid "ChangeTypeActionLabel|Pick into branch"
@@ -10657,6 +10666,12 @@ msgid "Failed to load milestones. Please try again."
 msgstr ""
 
 msgid "Failed to load related branches"
+msgstr ""
+
+msgid "Failed to load sidebar confidential toggle"
+msgstr ""
+
+msgid "Failed to load sidebar lock status"
 msgstr ""
 
 msgid "Failed to load stacktrace."
@@ -17410,6 +17425,9 @@ msgstr ""
 msgid "Notification settings saved"
 msgstr ""
 
+msgid "NotificationEvent|Change reviewer merge request"
+msgstr ""
+
 msgid "NotificationEvent|Close issue"
 msgstr ""
 
@@ -22234,9 +22252,6 @@ msgid "Search projects..."
 msgstr ""
 
 msgid "Search requirements"
-msgstr ""
-
-msgid "Search results…"
 msgstr ""
 
 msgid "Search test cases"

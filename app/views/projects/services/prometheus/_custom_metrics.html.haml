@@ -13,7 +13,7 @@
       -# haml-lint:disable NoPlainNodes
       %span.badge.badge-pill.js-custom-monitored-count 0
       -# haml-lint:enable NoPlainNodes
-      = link_to s_('PrometheusService|New metric'), new_project_prometheus_metric_path(project), class: 'btn btn-success js-new-metric-button hidden', data: { qa_selector: 'new_metric_button' }
+      = link_to s_('PrometheusService|New metric'), new_project_prometheus_metric_path(project), class: 'btn gl-button btn-success js-new-metric-button hidden', data: { qa_selector: 'new_metric_button' }
     .card-body
       .flash-container.hidden
         .flash-warning

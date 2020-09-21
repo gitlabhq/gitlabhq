@@ -13,9 +13,9 @@ import sidebarSubscriptions from './components/subscriptions/sidebar_subscriptio
 import SidebarSeverity from './components/severity/sidebar_severity.vue';
 import Translate from '../vue_shared/translate';
 import createDefaultClient from '~/lib/graphql';
-import { store } from '~/notes/stores';
 import { isInIssuePage, parseBoolean } from '~/lib/utils/common_utils';
-import mergeRequestStore from '~/mr_notes/stores';
+import createFlash from '~/flash';
+import { __ } from '~/locale';
 import labelsSelectModule from '~/vue_shared/components/sidebar/labels_select_vue/store';
 
 Vue.use(Translate);
@@ -89,47 +89,72 @@ function mountConfidentialComponent(mediator) {
   const dataNode = document.getElementById('js-confidential-issue-data');
   const initialData = JSON.parse(dataNode.innerHTML);
 
-  // eslint-disable-next-line no-new
-  new Vue({
-    el,
-    store,
-    components: {
-      ConfidentialIssueSidebar,
-    },
-    render: createElement =>
-      createElement('confidential-issue-sidebar', {
-        props: {
-          iid: String(iid),
-          fullPath,
-          isEditable: initialData.is_editable,
-          service: mediator.service,
-        },
-      }),
-  });
+  import(/* webpackChunkName: 'notesStore' */ '~/notes/stores')
+    .then(
+      ({ store }) =>
+        new Vue({
+          el,
+          store,
+          components: {
+            ConfidentialIssueSidebar,
+          },
+          render: createElement =>
+            createElement('confidential-issue-sidebar', {
+              props: {
+                iid: String(iid),
+                fullPath,
+                isEditable: initialData.is_editable,
+                service: mediator.service,
+              },
+            }),
+        }),
+    )
+    .catch(() => {
+      createFlash({ message: __('Failed to load sidebar confidential toggle') });
+    });
 }
 
 function mountLockComponent() {
   const el = document.getElementById('js-lock-entry-point');
+
+  if (!el) {
+    return;
+  }
+
   const { fullPath } = getSidebarOptions();
 
   const dataNode = document.getElementById('js-lock-issue-data');
   const initialData = JSON.parse(dataNode.innerHTML);
 
-  return el
-    ? new Vue({
-        el,
-        store: isInIssuePage() ? store : mergeRequestStore,
-        provide: {
-          fullPath,
-        },
-        render: createElement =>
-          createElement(IssuableLockForm, {
-            props: {
-              isEditable: initialData.is_editable,
-            },
-          }),
-      })
-    : undefined;
+  let importStore;
+  if (isInIssuePage()) {
+    importStore = import(/* webpackChunkName: 'notesStore' */ '~/notes/stores').then(
+      ({ store }) => store,
+    );
+  } else {
+    importStore = import(/* webpackChunkName: 'mrNotesStore' */ '~/mr_notes/stores');
+  }
+
+  importStore
+    .then(
+      store =>
+        new Vue({
+          el,
+          store,
+          provide: {
+            fullPath,
+          },
+          render: createElement =>
+            createElement(IssuableLockForm, {
+              props: {
+                isEditable: initialData.is_editable,
+              },
+            }),
+        }),
+    )
+    .catch(() => {
+      createFlash({ message: __('Failed to load sidebar lock status') });
+    });
 }
 
 function mountParticipantsComponent(mediator) {
@@ -219,7 +244,7 @@ function mountSeverityComponent() {
 export function mountSidebar(mediator) {
   mountAssigneesComponent(mediator);
   mountConfidentialComponent(mediator);
-  mountLockComponent(mediator);
+  mountLockComponent();
   mountParticipantsComponent(mediator);
   mountSubscriptionsComponent(mediator);
 

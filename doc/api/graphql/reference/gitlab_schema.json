@@ -18849,12 +18849,30 @@
                   "defaultValue": null
                 },
                 {
-                  "name": "assigneeUsername",
-                  "description": "Username of a user assigned to the issue",
+                  "name": "authorUsername",
+                  "description": "Username of the author of the issue",
                   "type": {
                     "kind": "SCALAR",
                     "name": "String",
                     "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "assigneeUsername",
+                  "description": "Username of a user assigned to the issue",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "String",
+                        "ofType": null
+                      }
+                    }
                   },
                   "defaultValue": null
                 },
@@ -36420,12 +36438,30 @@
                   "defaultValue": null
                 },
                 {
-                  "name": "assigneeUsername",
-                  "description": "Username of a user assigned to the issue",
+                  "name": "authorUsername",
+                  "description": "Username of the author of the issue",
                   "type": {
                     "kind": "SCALAR",
                     "name": "String",
                     "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "assigneeUsername",
+                  "description": "Username of a user assigned to the issue",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "String",
+                        "ofType": null
+                      }
+                    }
                   },
                   "defaultValue": null
                 },
@@ -36631,12 +36667,30 @@
                   "defaultValue": null
                 },
                 {
-                  "name": "assigneeUsername",
-                  "description": "Username of a user assigned to the issue",
+                  "name": "authorUsername",
+                  "description": "Username of the author of the issue",
                   "type": {
                     "kind": "SCALAR",
                     "name": "String",
                     "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "assigneeUsername",
+                  "description": "Username of a user assigned to the issue",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "String",
+                        "ofType": null
+                      }
+                    }
                   },
                   "defaultValue": null
                 },
@@ -36808,12 +36862,30 @@
                   "defaultValue": null
                 },
                 {
-                  "name": "assigneeUsername",
-                  "description": "Username of a user assigned to the issue",
+                  "name": "authorUsername",
+                  "description": "Username of the author of the issue",
                   "type": {
                     "kind": "SCALAR",
                     "name": "String",
                     "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "assigneeUsername",
+                  "description": "Username of a user assigned to the issue",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "String",
+                        "ofType": null
+                      }
+                    }
                   },
                   "defaultValue": null
                 },

@@ -19,6 +19,10 @@ RSpec.describe Gitlab::JobWaiter do
   describe '#wait' do
     let(:waiter) { described_class.new(2) }
 
+    before do
+      allow_any_instance_of(described_class).to receive(:wait).and_call_original
+    end
+
     it 'returns when all jobs have been completed' do
       described_class.notify(waiter.key, 'a')
       described_class.notify(waiter.key, 'b')

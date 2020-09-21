@@ -19,7 +19,7 @@ module Gitlab
         @logger = logger
       end
 
-      def execute
+      def perform
         raise ReindexError, "index #{index_name} does not exist" unless index_exists?
 
         raise ReindexError, 'UNIQUE indexes are currently not supported' if index_unique?
@@ -51,6 +51,7 @@ module Gitlab
 
       private
 
+      delegate :execute, to: :connection
       def connection
         @connection ||= ActiveRecord::Base.connection
       end

@@ -66,6 +66,10 @@ RSpec.describe API::UsageData do
       end
 
       context 'with unknown event' do
+        before do
+          skip_feature_flags_yaml_validation
+        end
+
         it 'returns status ok' do
           expect(Gitlab::Redis::HLL).not_to receive(:add)
 

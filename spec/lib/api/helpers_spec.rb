@@ -195,6 +195,10 @@ RSpec.describe API::Helpers do
     let(:unknown_event) { 'unknown' }
     let(:feature) { "usage_data_#{event_name}" }
 
+    before do
+      skip_feature_flags_yaml_validation
+    end
+
     context 'with feature enabled' do
       before do
         stub_feature_flags(feature => true)

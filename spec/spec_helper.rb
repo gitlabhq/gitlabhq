@@ -233,6 +233,12 @@ RSpec.configure do |config|
     # expect(Gitlab::Git::KeepAround).to receive(:execute).and_call_original
     allow(Gitlab::Git::KeepAround).to receive(:execute)
 
+    # Stub these calls due to being expensive operations
+    # It can be reenabled for specific tests via:
+    #
+    # expect(Gitlab::JobWaiter).to receive(:wait).and_call_original
+    allow_any_instance_of(Gitlab::JobWaiter).to receive(:wait)
+
     Gitlab::ProcessMemoryCache.cache_backend.clear
 
     Sidekiq::Worker.clear_all

@@ -16,6 +16,9 @@ export default () => {
     issuePath,
     publishedAvailable,
     emptyListSvgPath,
+    textQuery,
+    authorUsernamesQuery,
+    assigneeUsernamesQuery,
   } = domEl.dataset;
 
   const apolloProvider = new VueApollo({
@@ -32,6 +35,9 @@ export default () => {
       issuePath,
       publishedAvailable,
       emptyListSvgPath,
+      textQuery,
+      authorUsernamesQuery,
+      assigneeUsernamesQuery,
     },
     apolloProvider,
     components: {

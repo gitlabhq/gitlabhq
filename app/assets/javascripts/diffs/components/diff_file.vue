@@ -209,15 +209,14 @@ export default {
           <div v-safe-html="errorMessage" class="nothing-here-block"></div>
         </div>
         <template v-else>
-          <div v-show="isCollapsed" class="gl-p-7 gl-text-center collapsed-file-warning">
+          <div
+            v-show="isCollapsed"
+            class="gl-p-7 gl-bg-gray-10 gl-text-center collapsed-file-warning"
+          >
             <p class="gl-mb-8 gl-mt-5">
               {{ $options.i18n.collapsed }}
             </p>
-            <gl-button
-              class="gl-alert-action gl-mb-5"
-              data-testid="expandButton"
-              @click="handleToggle"
-            >
+            <gl-button class="gl-mb-5" data-testid="expandButton" @click="handleToggle">
               {{ $options.i18n.expand }}
             </gl-button>
           </div>

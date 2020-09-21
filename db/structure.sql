@@ -13727,7 +13727,8 @@ CREATE TABLE notification_settings (
     notification_email character varying,
     fixed_pipeline boolean,
     new_release boolean,
-    moved_project boolean DEFAULT true NOT NULL
+    moved_project boolean DEFAULT true NOT NULL,
+    change_reviewer_merge_request boolean
 );
 
 CREATE SEQUENCE notification_settings_id_seq

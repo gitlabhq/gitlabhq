@@ -2,12 +2,14 @@
 
 module Projects
   class UpdateRemoteMirrorService < BaseService
+    include Gitlab::Utils::StrongMemoize
+
     MAX_TRIES = 3
 
     def execute(remote_mirror, tries)
       return success unless remote_mirror.enabled?
 
-      if Gitlab::UrlBlocker.blocked_url?(CGI.unescape(Gitlab::UrlSanitizer.sanitize(remote_mirror.url)))
+      if Gitlab::UrlBlocker.blocked_url?(normalized_url(remote_mirror.url))
         return error("The remote mirror URL is invalid.")
       end
 
@@ -26,6 +28,12 @@ module Projects
     end
 
     private
+
+    def normalized_url(url)
+      strong_memoize(:normalized_url) do
+        CGI.unescape(Gitlab::UrlSanitizer.sanitize(url))
+      end
+    end
 
     def update_mirror(remote_mirror)
       remote_mirror.update_start!

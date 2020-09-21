@@ -180,7 +180,7 @@ RSpec.describe 'gitlab:db namespace rake task' do
         .with('some_index_name', logger: instance_of(Logger))
         .and_return(reindex)
 
-      expect(reindex).to receive(:execute)
+      expect(reindex).to receive(:perform)
 
       run_rake_task('gitlab:db:reindex', '[some_index_name]')
     end

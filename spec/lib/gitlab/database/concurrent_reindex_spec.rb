@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::ConcurrentReindex, '#execute' do
+RSpec.describe Gitlab::Database::ConcurrentReindex, '#perform' do
   subject { described_class.new(index_name, logger: logger) }
 
   let(:table_name) { '_test_reindex_table' }
@@ -29,7 +29,7 @@ RSpec.describe Gitlab::Database::ConcurrentReindex, '#execute' do
     end
 
     it 'raises an error' do
-      expect { subject.execute }.to raise_error(described_class::ReindexError, /does not exist/)
+      expect { subject.perform }.to raise_error(described_class::ReindexError, /does not exist/)
     end
   end
 
@@ -43,7 +43,7 @@ RSpec.describe Gitlab::Database::ConcurrentReindex, '#execute' do
 
     it 'raises an error' do
       expect do
-        subject.execute
+        subject.perform
       end.to raise_error(described_class::ReindexError, /UNIQUE indexes are currently not supported/)
     end
   end
@@ -57,35 +57,20 @@ RSpec.describe Gitlab::Database::ConcurrentReindex, '#execute' do
 
     let!(:original_index) { find_index_create_statement }
 
-    before do
-      allow(subject).to receive(:connection).and_return(connection)
-      allow(subject).to receive(:disable_statement_timeout).and_yield
-    end
-
-    it 'replaces the existing index with an identical index' do
-      expect(subject).to receive(:disable_statement_timeout).exactly(3).times.and_yield
-
-      expect_to_execute_concurrently_in_order(drop_index)
-      expect_to_execute_concurrently_in_order(create_index)
-
-      expect_next_instance_of(::Gitlab::Database::WithLockRetries) do |instance|
-        expect(instance).to receive(:run).with(raise_on_exhaustion: true).and_yield
+    it 'integration test: executing full index replacement without mocks' do
+      allow(connection).to receive(:execute).and_wrap_original do |method, sql|
+        method.call(sql.sub(/CONCURRENTLY/, ''))
       end
 
-      expect_to_execute_in_order("ALTER INDEX #{index_name} RENAME TO #{replaced_name}")
-      expect_to_execute_in_order("ALTER INDEX #{replacement_name} RENAME TO #{index_name}")
-      expect_to_execute_in_order("ALTER INDEX #{replaced_name} RENAME TO #{replacement_name}")
-
-      expect_to_execute_concurrently_in_order(drop_index)
-
-      subject.execute
+      subject.perform
 
       check_index_exists
     end
 
-    context 'when a dangling index is left from a previous run' do
+    context 'mocked specs' do
       before do
-        connection.execute("CREATE INDEX #{replacement_name} ON #{table_name} (#{column_name})")
+        allow(subject).to receive(:connection).and_return(connection)
+        allow(subject).to receive(:disable_statement_timeout).and_yield
       end
 
       it 'replaces the existing index with an identical index' do
@@ -104,78 +89,105 @@ RSpec.describe Gitlab::Database::ConcurrentReindex, '#execute' do
 
         expect_to_execute_concurrently_in_order(drop_index)
 
-        subject.execute
+        subject.perform
 
         check_index_exists
       end
-    end
 
-    context 'when it fails to create the replacement index' do
-      it 'safely cleans up and signals the error' do
-        expect_to_execute_concurrently_in_order(drop_index)
-
-        expect(connection).to receive(:execute).with(create_index).ordered
-          .and_raise(ActiveRecord::ConnectionTimeoutError, 'connect timeout')
-
-        expect_to_execute_concurrently_in_order(drop_index)
-
-        expect { subject.execute }.to raise_error(described_class::ReindexError, /connect timeout/)
-
-        check_index_exists
-      end
-    end
-
-    context 'when the replacement index is not valid' do
-      it 'safely cleans up and signals the error' do
-        expect_to_execute_concurrently_in_order(drop_index)
-        expect_to_execute_concurrently_in_order(create_index)
-
-        expect(subject).to receive(:replacement_index_valid?).and_return(false)
-
-        expect_to_execute_concurrently_in_order(drop_index)
-
-        expect { subject.execute }.to raise_error(described_class::ReindexError, /replacement index was created as INVALID/)
-
-        check_index_exists
-      end
-    end
-
-    context 'when a database error occurs while swapping the indexes' do
-      it 'safely cleans up and signals the error' do
-        expect_to_execute_concurrently_in_order(drop_index)
-        expect_to_execute_concurrently_in_order(create_index)
-
-        expect_next_instance_of(::Gitlab::Database::WithLockRetries) do |instance|
-          expect(instance).to receive(:run).with(raise_on_exhaustion: true).and_yield
+      context 'when a dangling index is left from a previous run' do
+        before do
+          connection.execute("CREATE INDEX #{replacement_name} ON #{table_name} (#{column_name})")
         end
 
-        expect(connection).to receive(:execute).ordered
-          .with("ALTER INDEX #{index_name} RENAME TO #{replaced_name}")
-          .and_raise(ActiveRecord::ConnectionTimeoutError, 'connect timeout')
+        it 'replaces the existing index with an identical index' do
+          expect(subject).to receive(:disable_statement_timeout).exactly(3).times.and_yield
 
-        expect_to_execute_concurrently_in_order(drop_index)
+          expect_to_execute_concurrently_in_order(drop_index)
+          expect_to_execute_concurrently_in_order(create_index)
 
-        expect { subject.execute }.to raise_error(described_class::ReindexError, /connect timeout/)
+          expect_next_instance_of(::Gitlab::Database::WithLockRetries) do |instance|
+            expect(instance).to receive(:run).with(raise_on_exhaustion: true).and_yield
+          end
 
-        check_index_exists
-      end
-    end
+          expect_to_execute_in_order("ALTER INDEX #{index_name} RENAME TO #{replaced_name}")
+          expect_to_execute_in_order("ALTER INDEX #{replacement_name} RENAME TO #{index_name}")
+          expect_to_execute_in_order("ALTER INDEX #{replaced_name} RENAME TO #{replacement_name}")
 
-    context 'when with_lock_retries fails to acquire the lock' do
-      it 'safely cleans up and signals the error' do
-        expect_to_execute_concurrently_in_order(drop_index)
-        expect_to_execute_concurrently_in_order(create_index)
+          expect_to_execute_concurrently_in_order(drop_index)
 
-        expect_next_instance_of(::Gitlab::Database::WithLockRetries) do |instance|
-          expect(instance).to receive(:run).with(raise_on_exhaustion: true)
-            .and_raise(::Gitlab::Database::WithLockRetries::AttemptsExhaustedError, 'exhausted')
+          subject.perform
+
+          check_index_exists
         end
+      end
 
-        expect_to_execute_concurrently_in_order(drop_index)
+      context 'when it fails to create the replacement index' do
+        it 'safely cleans up and signals the error' do
+          expect_to_execute_concurrently_in_order(drop_index)
 
-        expect { subject.execute }.to raise_error(described_class::ReindexError, /exhausted/)
+          expect(connection).to receive(:execute).with(create_index).ordered
+            .and_raise(ActiveRecord::ConnectionTimeoutError, 'connect timeout')
 
-        check_index_exists
+          expect_to_execute_concurrently_in_order(drop_index)
+
+          expect { subject.perform }.to raise_error(described_class::ReindexError, /connect timeout/)
+
+          check_index_exists
+        end
+      end
+
+      context 'when the replacement index is not valid' do
+        it 'safely cleans up and signals the error' do
+          expect_to_execute_concurrently_in_order(drop_index)
+          expect_to_execute_concurrently_in_order(create_index)
+
+          expect(subject).to receive(:replacement_index_valid?).and_return(false)
+
+          expect_to_execute_concurrently_in_order(drop_index)
+
+          expect { subject.perform }.to raise_error(described_class::ReindexError, /replacement index was created as INVALID/)
+
+          check_index_exists
+        end
+      end
+
+      context 'when a database error occurs while swapping the indexes' do
+        it 'safely cleans up and signals the error' do
+          expect_to_execute_concurrently_in_order(drop_index)
+          expect_to_execute_concurrently_in_order(create_index)
+
+          expect_next_instance_of(::Gitlab::Database::WithLockRetries) do |instance|
+            expect(instance).to receive(:run).with(raise_on_exhaustion: true).and_yield
+          end
+
+          expect(connection).to receive(:execute).ordered
+            .with("ALTER INDEX #{index_name} RENAME TO #{replaced_name}")
+            .and_raise(ActiveRecord::ConnectionTimeoutError, 'connect timeout')
+
+          expect_to_execute_concurrently_in_order(drop_index)
+
+          expect { subject.perform }.to raise_error(described_class::ReindexError, /connect timeout/)
+
+          check_index_exists
+        end
+      end
+
+      context 'when with_lock_retries fails to acquire the lock' do
+        it 'safely cleans up and signals the error' do
+          expect_to_execute_concurrently_in_order(drop_index)
+          expect_to_execute_concurrently_in_order(create_index)
+
+          expect_next_instance_of(::Gitlab::Database::WithLockRetries) do |instance|
+            expect(instance).to receive(:run).with(raise_on_exhaustion: true)
+              .and_raise(::Gitlab::Database::WithLockRetries::AttemptsExhaustedError, 'exhausted')
+          end
+
+          expect_to_execute_concurrently_in_order(drop_index)
+
+          expect { subject.perform }.to raise_error(described_class::ReindexError, /exhausted/)
+
+          check_index_exists
+        end
       end
     end
   end

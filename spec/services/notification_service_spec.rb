@@ -150,6 +150,16 @@ RSpec.describe NotificationService, :mailer do
     end
   end
 
+  shared_examples 'participating by reviewer notification' do
+    it 'emails the participant' do
+      issuable.reviewers << participant
+
+      notification_trigger
+
+      should_email(participant)
+    end
+  end
+
   shared_examples_for 'participating notifications' do
     it_behaves_like 'participating by note notification'
     it_behaves_like 'participating by author notification'
@@ -1775,6 +1785,60 @@ RSpec.describe NotificationService, :mailer do
       it_behaves_like 'project emails are disabled' do
         let(:notification_target)  { merge_request }
         let(:notification_trigger) { notification.reassigned_merge_request(merge_request, current_user, [assignee]) }
+      end
+    end
+
+    describe '#changed_reviewer_of_merge_request' do
+      let(:merge_request) { create(:merge_request, author: author, source_project: project, reviewers: [reviewer], description: 'cc @participant') }
+
+      let_it_be(:current_user) { create(:user) }
+      let_it_be(:reviewer) { create(:user) }
+
+      before do
+        update_custom_notification(:change_reviewer_merge_request, @u_guest_custom, resource: project)
+        update_custom_notification(:change_reviewer_merge_request, @u_custom_global)
+      end
+
+      it 'sends emails to relevant users only', :aggregate_failures do
+        notification.changed_reviewer_of_merge_request(merge_request, current_user, [reviewer])
+
+        merge_request.reviewers.each { |reviewer| should_email(reviewer) }
+        should_email(merge_request.author)
+        should_email(@u_watcher)
+        should_email(@u_participant_mentioned)
+        should_email(@subscriber)
+        should_email(@watcher_and_subscriber)
+        should_email(@u_guest_watcher)
+        should_email(@u_guest_custom)
+        should_email(@u_custom_global)
+        should_not_email(@unsubscriber)
+        should_not_email(@u_participating)
+        should_not_email(@u_disabled)
+        should_not_email(@u_lazy_participant)
+      end
+
+      it 'adds "review requested" reason for new reviewer' do
+        notification.changed_reviewer_of_merge_request(merge_request, current_user, [reviewer])
+
+        merge_request.reviewers.each do |assignee|
+          email = find_email_for(assignee)
+
+          expect(email).to have_header('X-GitLab-NotificationReason', NotificationReason::REVIEW_REQUESTED)
+        end
+      end
+
+      context 'participating notifications with reviewers' do
+        let(:participant) { create(:user, username: 'user-participant') }
+        let(:issuable) { merge_request }
+        let(:notification_trigger) { notification.changed_reviewer_of_merge_request(merge_request, current_user, [reviewer]) }
+
+        it_behaves_like 'participating notifications'
+        it_behaves_like 'participating by reviewer notification'
+      end
+
+      it_behaves_like 'project emails are disabled' do
+        let(:notification_target)  { merge_request }
+        let(:notification_trigger) { notification.changed_reviewer_of_merge_request(merge_request, current_user, [reviewer]) }
       end
     end
 
