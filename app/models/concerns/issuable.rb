@@ -203,15 +203,6 @@ module Issuable
       issuable_severity&.severity || IssuableSeverity::DEFAULT
     end
 
-    def update_severity(severity)
-      return unless incident?
-
-      severity = severity.to_s.downcase
-      severity = IssuableSeverity::DEFAULT unless IssuableSeverity.severities.key?(severity)
-
-      (issuable_severity || build_issuable_severity(issue_id: id)).update(severity: severity)
-    end
-
     private
 
     def description_max_length_for_new_records_is_valid

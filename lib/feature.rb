@@ -138,7 +138,7 @@ class Feature
     def register_definitions
       return unless check_feature_flags_definition?
 
-      Feature::Definition.load_all!
+      Feature::Definition.reload!
     end
 
     def register_hot_reloader

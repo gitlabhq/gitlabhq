@@ -741,4 +741,16 @@ RSpec.describe SystemNoteService do
       described_class.create_new_alert(alert, monitoring_tool)
     end
   end
+
+  describe '.change_incident_severity' do
+    let(:incident) { build(:incident) }
+
+    it 'calls IncidentService' do
+      expect_next_instance_of(SystemNotes::IncidentService) do |service|
+        expect(service).to receive(:change_incident_severity)
+      end
+
+      described_class.change_incident_severity(incident, author)
+    end
+  end
 end

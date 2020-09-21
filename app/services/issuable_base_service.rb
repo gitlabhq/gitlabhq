@@ -321,7 +321,7 @@ class IssuableBaseService < BaseService
 
   def change_severity(issuable)
     if severity = params.delete(:severity)
-      issuable.update_severity(severity)
+      ::IncidentManagement::Incidents::UpdateSeverityService.new(issuable, current_user, severity).execute
     end
   end
 

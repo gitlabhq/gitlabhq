@@ -1,5 +1,4 @@
 <script>
-/* eslint-disable vue/no-v-html */
 import { escape } from 'lodash';
 import { mapActions, mapGetters } from 'vuex';
 import {
@@ -219,16 +218,16 @@ export default {
         <span v-if="isFileRenamed">
           <strong
             v-gl-tooltip
+            v-safe-html="diffFile.old_path_html"
             :title="diffFile.old_path"
             class="file-title-name"
-            v-html="diffFile.old_path_html"
           ></strong>
           →
           <strong
             v-gl-tooltip
+            v-safe-html="diffFile.new_path_html"
             :title="diffFile.new_path"
             class="file-title-name"
-            v-html="diffFile.new_path_html"
           ></strong>
         </span>
 
@@ -296,9 +295,9 @@ export default {
         <a
           v-if="diffFile.replaced_view_path"
           ref="replacedFileButton"
+          v-safe-html="viewReplacedFileButtonText"
           :href="diffFile.replaced_view_path"
           class="btn view-file"
-          v-html="viewReplacedFileButtonText"
         >
         </a>
         <gl-deprecated-button

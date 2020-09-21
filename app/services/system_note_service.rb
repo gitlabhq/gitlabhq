@@ -308,6 +308,10 @@ module SystemNoteService
     ::SystemNotes::AlertManagementService.new(noteable: alert, project: alert.project).create_new_alert(monitoring_tool)
   end
 
+  def change_incident_severity(incident, author)
+    ::SystemNotes::IncidentService.new(noteable: incident, project: incident.project, author: author).change_incident_severity
+  end
+
   private
 
   def merge_requests_service(noteable, project, author)

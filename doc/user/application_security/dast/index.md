@@ -36,7 +36,7 @@ NOTE: **Note:**
 This comparison logic uses only the latest pipeline executed for the target branch's base commit.
 Running the pipeline on any other commit has no effect on the merge request.
 
-![DAST Widget](img/dast_v13_2.png)
+![DAST Widget](img/dast_v13_4.png)
 
 By clicking on one of the detected linked vulnerabilities, you can
 see the details and the URL(s) affected.

@@ -114,34 +114,32 @@ RSpec.describe Feature::Definition do
           File.join(store2, '**', '*.yml')
         ]
       )
-
-      # We stub `definitions` to ensure that they
-      # are not overwritten by `.load_all!`
-      allow(described_class).to receive(:definitions).and_return(definitions)
     end
 
+    subject { described_class.send(:load_all!) }
+
     it "when there's no feature flags a list of definitions is empty" do
-      expect(described_class.load_all!).to be_empty
+      is_expected.to be_empty
     end
 
     it "when there's a single feature flag it properly loads them" do
       write_feature_flag(store1, path, yaml_content)
 
-      expect(described_class.load_all!).to be_one
+      is_expected.to be_one
     end
 
     it "when the same feature flag is stored multiple times raises exception" do
       write_feature_flag(store1, path, yaml_content)
       write_feature_flag(store2, path, yaml_content)
 
-      expect { described_class.load_all! }
+      expect { subject }
         .to raise_error(/Feature flag 'feature_flag' is already defined/)
     end
 
     it "when one of the YAMLs is invalid it does raise exception" do
       write_feature_flag(store1, path, '{}')
 
-      expect { described_class.load_all! }
+      expect { subject }
         .to raise_error(/Feature flag is missing name/)
     end
 

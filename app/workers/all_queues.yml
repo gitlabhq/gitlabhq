@@ -715,6 +715,14 @@
   :weight: 2
   :idempotent: true
   :tags: []
+- :name: incident_management:incident_management_add_severity_system_note
+  :feature_category: :incident_management
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 2
+  :idempotent:
+  :tags: []
 - :name: incident_management:incident_management_pager_duty_process_incident
   :feature_category: :incident_management
   :has_external_dependencies:

@@ -2,6 +2,13 @@
 
 class IssuableSeverity < ApplicationRecord
   DEFAULT = 'unknown'
+  SEVERITY_LABELS = {
+    unknown:  'Unknown',
+    low:      'Low - S4',
+    medium:   'Medium - S3',
+    high:     'High - S2',
+    critical: 'Critical - S1'
+  }.freeze
 
   belongs_to :issue
 

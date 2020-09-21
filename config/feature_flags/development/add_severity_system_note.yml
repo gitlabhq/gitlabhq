@@ -1,0 +1,7 @@
+---
+name: add_severity_system_note
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/42358
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/251110
+group: group::health
+type: development
+default_enabled: false
