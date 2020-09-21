@@ -42,6 +42,11 @@ export default {
       required: false,
       default: null,
     },
+    suggestionsCount: {
+      type: Number,
+      required: false,
+      default: 0,
+    },
   },
   data() {
     return {
@@ -127,7 +132,7 @@ export default {
     </div>
     <div v-else class="d-flex align-items-center">
       <gl-button
-        v-if="canBeBatched && !isDisableButton"
+        v-if="suggestionsCount > 1 && canBeBatched && !isDisableButton"
         class="btn-inverted js-add-to-batch-btn btn-grouped"
         :disabled="isDisableButton"
         @click="addSuggestionToBatch"

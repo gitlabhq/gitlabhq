@@ -1,79 +1,139 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`GroupEmptyState Renders an empty state for BAD_QUERY 1`] = `
-<gl-empty-state-stub
-  compact="true"
-  primarybuttonlink="/path/to/settings"
-  primarybuttontext="Verify configuration"
-  svgpath="/path/to/empty-group-illustration.svg"
-  title="Query cannot be processed"
-/>
+exports[`GroupEmptyState given state BAD_QUERY passes the expected props to GlEmptyState 1`] = `
+Object {
+  "compact": true,
+  "description": null,
+  "primaryButtonLink": "/path/to/settings",
+  "primaryButtonText": "Verify configuration",
+  "secondaryButtonLink": null,
+  "secondaryButtonText": null,
+  "svgPath": "/path/to/empty-group-illustration.svg",
+  "title": "Query cannot be processed",
+}
 `;
 
-exports[`GroupEmptyState Renders an empty state for BAD_QUERY 2`] = `"The Prometheus server responded with \\"bad request\\". Please check your queries are correct and are supported in your Prometheus version. <a href=\\"/path/to/docs\\">More information</a>"`;
-
-exports[`GroupEmptyState Renders an empty state for CONNECTION_FAILED 1`] = `
-<gl-empty-state-stub
-  compact="true"
-  description="We couldn't reach the Prometheus server. Either the server no longer exists or the configuration details need updating."
-  primarybuttonlink="/path/to/settings"
-  primarybuttontext="Verify configuration"
-  svgpath="/path/to/empty-group-illustration.svg"
-  title="Connection failed"
-/>
+exports[`GroupEmptyState given state BAD_QUERY renders the slotted content 1`] = `
+<div>
+  <div>
+    The Prometheus server responded with "bad request". Please check your queries are correct and are supported in your Prometheus version. 
+    <a
+      href="/path/to/docs"
+    >
+      More information
+    </a>
+  </div>
+</div>
 `;
 
-exports[`GroupEmptyState Renders an empty state for CONNECTION_FAILED 2`] = `undefined`;
-
-exports[`GroupEmptyState Renders an empty state for FOO STATE 1`] = `
-<gl-empty-state-stub
-  compact="true"
-  description="An error occurred while loading the data. Please try again."
-  svgpath="/path/to/empty-group-illustration.svg"
-  title="An error has occurred"
-/>
+exports[`GroupEmptyState given state CONNECTION_FAILED passes the expected props to GlEmptyState 1`] = `
+Object {
+  "compact": true,
+  "description": "We couldn't reach the Prometheus server. Either the server no longer exists or the configuration details need updating.",
+  "primaryButtonLink": "/path/to/settings",
+  "primaryButtonText": "Verify configuration",
+  "secondaryButtonLink": null,
+  "secondaryButtonText": null,
+  "svgPath": "/path/to/empty-group-illustration.svg",
+  "title": "Connection failed",
+}
 `;
 
-exports[`GroupEmptyState Renders an empty state for FOO STATE 2`] = `undefined`;
+exports[`GroupEmptyState given state CONNECTION_FAILED renders the slotted content 1`] = `<div />`;
 
-exports[`GroupEmptyState Renders an empty state for LOADING 1`] = `
-<gl-empty-state-stub
-  compact="true"
-  description="Creating graphs uses the data from the Prometheus server. If this takes a long time, ensure that data is available."
-  svgpath="/path/to/empty-group-illustration.svg"
-  title="Waiting for performance data"
-/>
+exports[`GroupEmptyState given state FOO STATE passes the expected props to GlEmptyState 1`] = `
+Object {
+  "compact": true,
+  "description": "An error occurred while loading the data. Please try again.",
+  "primaryButtonLink": null,
+  "primaryButtonText": null,
+  "secondaryButtonLink": null,
+  "secondaryButtonText": null,
+  "svgPath": "/path/to/empty-group-illustration.svg",
+  "title": "An error has occurred",
+}
 `;
 
-exports[`GroupEmptyState Renders an empty state for LOADING 2`] = `undefined`;
+exports[`GroupEmptyState given state FOO STATE renders the slotted content 1`] = `<div />`;
 
-exports[`GroupEmptyState Renders an empty state for NO_DATA 1`] = `
-<gl-empty-state-stub
-  compact="true"
-  svgpath="/path/to/empty-group-illustration.svg"
-  title="No data to display"
-/>
+exports[`GroupEmptyState given state LOADING passes the expected props to GlEmptyState 1`] = `
+Object {
+  "compact": true,
+  "description": "Creating graphs uses the data from the Prometheus server. If this takes a long time, ensure that data is available.",
+  "primaryButtonLink": null,
+  "primaryButtonText": null,
+  "secondaryButtonLink": null,
+  "secondaryButtonText": null,
+  "svgPath": "/path/to/empty-group-illustration.svg",
+  "title": "Waiting for performance data",
+}
 `;
 
-exports[`GroupEmptyState Renders an empty state for NO_DATA 2`] = `"The data source is connected, but there is no data to display. <a href=\\"/path/to/docs\\">More information</a>"`;
+exports[`GroupEmptyState given state LOADING renders the slotted content 1`] = `<div />`;
 
-exports[`GroupEmptyState Renders an empty state for TIMEOUT 1`] = `
-<gl-empty-state-stub
-  compact="true"
-  svgpath="/path/to/empty-group-illustration.svg"
-  title="Connection timed out"
-/>
+exports[`GroupEmptyState given state NO_DATA passes the expected props to GlEmptyState 1`] = `
+Object {
+  "compact": true,
+  "description": null,
+  "primaryButtonLink": null,
+  "primaryButtonText": null,
+  "secondaryButtonLink": null,
+  "secondaryButtonText": null,
+  "svgPath": "/path/to/empty-group-illustration.svg",
+  "title": "No data to display",
+}
 `;
 
-exports[`GroupEmptyState Renders an empty state for TIMEOUT 2`] = `"Charts can't be displayed as the request for data has timed out. <a href=\\"/path/to/docs\\">More information</a>"`;
-
-exports[`GroupEmptyState Renders an empty state for UNKNOWN_ERROR 1`] = `
-<gl-empty-state-stub
-  compact="true"
-  description="An error occurred while loading the data. Please try again."
-  svgpath="/path/to/empty-group-illustration.svg"
-  title="An error has occurred"
-/>
+exports[`GroupEmptyState given state NO_DATA renders the slotted content 1`] = `
+<div>
+  <div>
+    The data source is connected, but there is no data to display. 
+    <a
+      href="/path/to/docs"
+    >
+      More information
+    </a>
+  </div>
+</div>
 `;
 
-exports[`GroupEmptyState Renders an empty state for UNKNOWN_ERROR 2`] = `undefined`;
+exports[`GroupEmptyState given state TIMEOUT passes the expected props to GlEmptyState 1`] = `
+Object {
+  "compact": true,
+  "description": null,
+  "primaryButtonLink": null,
+  "primaryButtonText": null,
+  "secondaryButtonLink": null,
+  "secondaryButtonText": null,
+  "svgPath": "/path/to/empty-group-illustration.svg",
+  "title": "Connection timed out",
+}
+`;
+
+exports[`GroupEmptyState given state TIMEOUT renders the slotted content 1`] = `
+<div>
+  <div>
+    Charts can't be displayed as the request for data has timed out. 
+    <a
+      href="/path/to/docs"
+    >
+      More information
+    </a>
+  </div>
+</div>
+`;
+
+exports[`GroupEmptyState given state UNKNOWN_ERROR passes the expected props to GlEmptyState 1`] = `
+Object {
+  "compact": true,
+  "description": "An error occurred while loading the data. Please try again.",
+  "primaryButtonLink": null,
+  "primaryButtonText": null,
+  "secondaryButtonLink": null,
+  "secondaryButtonText": null,
+  "svgPath": "/path/to/empty-group-illustration.svg",
+  "title": "An error has occurred",
+}
+`;
+
+exports[`GroupEmptyState given state UNKNOWN_ERROR renders the slotted content 1`] = `<div />`;

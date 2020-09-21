@@ -26,11 +26,14 @@ export default {
   methods: {
     listenForQuickActions() {
       $(document).on('ajax:success', '.gfm-form', this.quickActionListened);
+
       eventHub.$on('timeTrackingUpdated', data => {
-        this.quickActionListened(null, data);
+        this.quickActionListened({ detail: [data] });
       });
     },
-    quickActionListened(e, data) {
+    quickActionListened(e) {
+      const data = e.detail[0];
+
       const subscribedCommands = ['spend_time', 'time_estimate'];
       let changedCommands;
       if (data !== undefined) {

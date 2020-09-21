@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import { Rails } from '~/lib/utils/rails_ujs';
 import { disableButtonIfEmptyField } from '~/lib/utils/common_utils';
 import initDeprecatedJQueryDropdown from '~/deprecated_jquery_dropdown';
 
@@ -54,8 +55,9 @@ export default class Members {
   formSubmit(e, $el = null) {
     const $this = e ? $(e.currentTarget) : $el;
     const { $toggle, $dateInput } = this.getMemberListItems($this);
+    const formEl = $this.closest('form').get(0);
 
-    $this.closest('form').trigger('submit.rails');
+    Rails.fire(formEl, 'submit');
 
     $toggle.disable();
     $dateInput.disable();

@@ -402,7 +402,9 @@ RSpec.describe API::Repositories do
       end
 
       it "returns an empty string when the diff overflows" do
-        stub_const('Gitlab::Git::DiffCollection::DEFAULT_LIMITS', { max_files: 2, max_lines: 2 })
+        allow(Gitlab::Git::DiffCollection)
+          .to receive(:default_limits)
+          .and_return({ max_files: 2, max_lines: 2 })
 
         get api(route, current_user), params: { from: 'master', to: 'feature' }
 

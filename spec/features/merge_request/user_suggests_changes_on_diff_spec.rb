@@ -130,7 +130,9 @@ RSpec.describe 'User comments on a diff', :js do
             wait_for_requests
           end
         end
+      end
 
+      files.each_with_index do |file, index|
         page.within("[id='#{file[:hash]}']") do
           expect(page).not_to have_content('Applied')
 

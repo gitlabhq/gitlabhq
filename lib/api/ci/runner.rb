@@ -181,6 +181,7 @@ module API
             .new(job, declared_params(include_missing: false))
 
           service.execute.then do |result|
+            header 'X-GitLab-Trace-Update-Interval', result.backoff
             status result.status
           end
         end

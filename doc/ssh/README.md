@@ -24,7 +24,7 @@ connections to GitLab repositories.
 ## Requirements
 
 To support SSH, GitLab requires the installation of the OpenSSH client, which
-comes pre-installed on GNU/Linux and macOS, but not on Windows.
+comes pre-installed on GNU/Linux and macOS, as well as on Windows 10.
 
 Make sure that your system includes SSH version 6.5 or newer, as that excludes
 the now insecure MD5 signature scheme. The following command returns the version of

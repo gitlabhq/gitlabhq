@@ -3,7 +3,6 @@
 describe QA::Support::WaitForRequests do
   describe '.wait_for_requests' do
     before do
-      allow(subject).to receive(:finished_all_axios_requests?).and_return(true)
       allow(subject).to receive(:finished_all_ajax_requests?).and_return(true)
       allow(subject).to receive(:finished_loading?).and_return(true)
     end

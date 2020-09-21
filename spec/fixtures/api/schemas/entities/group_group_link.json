@@ -1,10 +1,12 @@
 {
   "type": "object",
-  "required": ["id", "created_at", "expires_at", "access_level"],
+  "required": ["id", "created_at", "expires_at", "can_update", "can_remove", "access_level"],
   "properties": {
     "id": { "type": "integer" },
     "created_at": { "type": "date-time" },
     "expires_at": { "type": ["date-time", "null"] },
+    "can_update": { "type": "boolean" },
+    "can_remove": { "type": "boolean" },
     "access_level": {
       "type": "object",
       "required": ["integer_value", "string_value"],

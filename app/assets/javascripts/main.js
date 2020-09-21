@@ -11,6 +11,7 @@ import './behaviors';
 // lib/utils
 import applyGitLabUIConfig from '@gitlab/ui/dist/config';
 import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
+import { initRails } from '~/lib/utils/rails_ujs';
 import {
   handleLocationHash,
   addSelectOnFocusBehaviour,
@@ -169,6 +170,8 @@ function deferredInitialisation() {
 
   // Adding a helper class to activate animations only after all is rendered
   setTimeout(() => $body.addClass('page-initialised'), 1000);
+
+  initRails();
 }
 
 document.addEventListener('DOMContentLoaded', () => {

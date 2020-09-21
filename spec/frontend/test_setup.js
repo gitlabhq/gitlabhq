@@ -1,4 +1,6 @@
 import Vue from 'vue';
+import 'jquery';
+
 import * as jqueryMatchers from 'custom-jquery-matchers';
 import { config as testUtilsConfig } from '@vue/test-utils';
 import Translate from '~/vue_shared/translate';
@@ -9,7 +11,6 @@ import customMatchers from './matchers';
 
 import './helpers/dom_shims';
 import './helpers/jquery';
-import '~/commons/jquery';
 import '~/commons/bootstrap';
 
 process.on('unhandledRejection', global.promiseRejectionHandler);

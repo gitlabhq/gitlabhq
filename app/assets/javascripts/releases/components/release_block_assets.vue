@@ -119,7 +119,7 @@ export default {
               {{ section.title }}
             </h5>
             <ul :key="`section-body-${index}`" class="list-unstyled gl-m-0">
-              <li v-for="link in section.links" :key="link.url">
+              <li v-for="link in section.links" :key="link.url" class="gl-display-flex">
                 <gl-link
                   :href="link.directAssetUrl || link.url"
                   class="gl-display-flex gl-align-items-center gl-line-height-24"

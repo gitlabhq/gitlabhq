@@ -651,7 +651,7 @@ class MergeRequestDiff < ApplicationRecord
     if compare.commits.empty?
       new_attributes[:state] = :empty
     else
-      diff_collection = compare.diffs(Commit.max_diff_options)
+      diff_collection = compare.diffs(Commit.max_diff_options(project: merge_request.project))
       new_attributes[:real_size] = diff_collection.real_size
 
       if diff_collection.any?

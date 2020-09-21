@@ -14,7 +14,7 @@ module Groups::GroupMembersHelper
   end
 
   def linked_groups_data_json(group_links)
-    GroupGroupLinkSerializer.new.represent(group_links).to_json
+    GroupGroupLinkSerializer.new.represent(group_links, { current_user: current_user }).to_json
   end
 
   def members_data_json(group, members)
@@ -47,10 +47,10 @@ module Groups::GroupMembersHelper
         }
       }.merge(member_created_by_data(member.created_by))
 
-      if user.present?
-        data[:user] = member_user_data(user)
-      else
+      if member.invite?
         data[:invite] = member_invite_data(member)
+      elsif user.present?
+        data[:user] = member_user_data(user)
       end
 
       data
@@ -77,6 +77,17 @@ module Groups::GroupMembersHelper
       avatar_url: avatar_icon_for_user(user, AVATAR_SIZE),
       blocked: user.blocked?,
       two_factor_enabled: user.two_factor_enabled?
+    }.merge(member_user_status_data(user.status))
+  end
+
+  def member_user_status_data(status)
+    return {} unless status.present?
+
+    {
+      status: {
+        emoji: status.emoji,
+        message_html: status.message_html
+      }
     }
   end
 

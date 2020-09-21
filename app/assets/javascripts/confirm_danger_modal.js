@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import { Rails } from '~/lib/utils/rails_ujs';
 import { rstrip } from './lib/utils/common_utils';
 
 function openConfirmDangerModal($form, $modal, text) {
@@ -21,9 +22,16 @@ function openConfirmDangerModal($form, $modal, text) {
       $submit.disable();
     }
   });
+
   $('.js-confirm-danger-submit', $modal)
     .off('click')
-    .on('click', () => $form.submit());
+    .on('click', () => {
+      if ($form.data('remote')) {
+        Rails.fire($form[0], 'submit');
+      } else {
+        $form.submit();
+      }
+    });
 }
 
 function getModal($btn) {

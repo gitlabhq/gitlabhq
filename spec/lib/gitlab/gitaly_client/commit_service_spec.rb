@@ -13,6 +13,10 @@ RSpec.describe Gitlab::GitalyClient::CommitService do
   let(:client) { described_class.new(repository) }
 
   describe '#diff_from_parent' do
+    before do
+      stub_feature_flags(increased_diff_limits: false)
+    end
+
     context 'when a commit has a parent' do
       it 'sends an RPC request with the parent ID as left commit' do
         request = Gitaly::CommitDiffRequest.new(

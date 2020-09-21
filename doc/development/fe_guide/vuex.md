@@ -32,8 +32,9 @@ When using Vuex at GitLab, separate these concerns into different files to impro
   └── mutation_types.js # mutation types
 ```
 
-The following example shows an application that lists and adds users to the state.
-(For a more complex example implementation take a look at the security applications store in [here](https://gitlab.com/gitlab-org/gitlab/tree/master/ee/app/assets/javascripts/vue_shared/security_reports/store))
+The following example shows an application that lists and adds users to the
+state. (For a more complex example implementation, review the security
+applications stored in this [repository](https://gitlab.com/gitlab-org/gitlab/tree/master/ee/app/assets/javascripts/vue_shared/security_reports/store)).
 
 ### `index.js`
 

@@ -2,7 +2,7 @@
 
 module Ci
   class UpdateBuildStateService
-    Result = Struct.new(:status, keyword_init: true)
+    Result = Struct.new(:status, :backoff, keyword_init: true)
 
     ACCEPT_TIMEOUT = 5.minutes.freeze
 
@@ -28,7 +28,9 @@ module Ci
     private
 
     def accept_build_state!
-      if Time.current - ensure_pending_state.created_at > ACCEPT_TIMEOUT
+      state_created = ensure_pending_state.created_at
+
+      if Time.current - state_created > ACCEPT_TIMEOUT
         metrics.increment_trace_operation(operation: :discarded)
 
         return update_build_state!
@@ -40,7 +42,9 @@ module Ci
 
       metrics.increment_trace_operation(operation: :accepted)
 
-      Result.new(status: 202)
+      ::Gitlab::Ci::Runner::Backoff.new(state_created).then do |backoff|
+        Result.new(status: 202, backoff: backoff.to_seconds)
+      end
     end
 
     def overwrite_trace!
