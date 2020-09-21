@@ -1,5 +1,0 @@
----
-title: Add CI_COMMIT_TIMESTAMP CI variable
-merge_request: 40388
-author: Nasko Vasilev
-type: added

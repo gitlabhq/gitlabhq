@@ -1,5 +1,0 @@
----
-title: Validates pypi required_python size to avoid 500 error
-merge_request: 40803
-author:
-type: fixed

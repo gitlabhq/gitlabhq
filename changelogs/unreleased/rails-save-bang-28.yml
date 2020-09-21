@@ -1,5 +1,0 @@
----
-title: Fix Rails/SaveBang offenses for spec/requests/api/*
-merge_request: 41362
-author: Rajendra Kadam
-type: fixed

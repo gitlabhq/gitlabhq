@@ -1,5 +1,0 @@
----
-title: Expose the todos of the current user on relevant objects in GraphQL
-merge_request: 40555
-author:
-type: added

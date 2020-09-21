@@ -1,5 +1,0 @@
----
-title: Externalize i18n strings from app/views/shared/web_hooks/_form.html.haml
-merge_request: 41234
-author: Takuya Noguchi
-type: other

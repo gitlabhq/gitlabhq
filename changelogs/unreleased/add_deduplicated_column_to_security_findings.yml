@@ -1,6 +1,0 @@
----
-title: Add `deduplicated` column to `security_findings` table along with the compound
-  index on `scan_id` and `deduplicated` and remove the index on `scan_id`
-merge_request: 42270
-author:
-type: added

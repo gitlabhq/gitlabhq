@@ -1,5 +1,0 @@
----
-title: Move Jobs/Deploy/ECS.gitlab-ci.yml to the top level of AutoDevOps template
-merge_request: 41096
-author:
-type: fixed

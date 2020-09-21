@@ -1,5 +1,0 @@
----
-title: Reduce Redis usage when viewing repositories with lots of branches and tags
-merge_request: 40615
-author:
-type: performance

@@ -1,5 +1,0 @@
----
-title: Fix upstream pipeline status when strategy dependent
-merge_request: 41930
-author:
-type: fixed

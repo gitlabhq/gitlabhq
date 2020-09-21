@@ -1,5 +1,0 @@
----
-title: Direct support for HTTP basic authentication in API Fuzzing
-merge_request: 42266
-author:
-type: changed

@@ -1,5 +1,0 @@
----
-title: allow project bot account to clone through http
-merge_request: 40635
-author: Philippe Vienne @PhilippeVienne
-type: fixed

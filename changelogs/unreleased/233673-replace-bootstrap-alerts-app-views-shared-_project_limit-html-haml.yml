@@ -1,5 +1,0 @@
----
-title: Replace bootstrap alerts in app/views/shared/_project_limit.html.haml
-merge_request: 41335
-author: Gilang Gumilar
-type: changed

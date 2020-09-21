@@ -1,5 +1,0 @@
----
-title: Increase poll interval for merged MRs widget
-merge_request: 39961
-author:
-type: performance

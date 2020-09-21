@@ -1,6 +1,0 @@
----
-title: Merge Requests are not blocked when their pipelines are waiting for manual
-  actions unless 'Pipeline must succeed' is checked in the settings.
-merge_request: 42207
-author:
-type: fixed

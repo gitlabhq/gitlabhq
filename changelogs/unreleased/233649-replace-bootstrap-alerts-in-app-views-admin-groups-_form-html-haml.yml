@@ -1,5 +1,0 @@
----
-title: Replace bootstrap alerts in app/views/admin/groups/_form.html.haml
-merge_request: 41375
-author: Gilang Gumilar
-type: changed

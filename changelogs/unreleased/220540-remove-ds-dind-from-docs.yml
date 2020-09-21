@@ -1,5 +1,0 @@
----
-title: Remove Docker-in-Docker mode from Dependency Scanning documentation
-merge_request: 40631
-author:
-type: removed

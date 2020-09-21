@@ -1,5 +1,0 @@
----
-title: Fix Style/EmptyLambdaParameter cop
-merge_request: 41248
-author: Rajendra Kadam
-type: fixed

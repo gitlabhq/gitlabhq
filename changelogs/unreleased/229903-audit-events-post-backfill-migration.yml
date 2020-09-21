@@ -1,5 +1,0 @@
----
-title: Migration to cleanup after partitioned audit_events backfill
-merge_request: 41605
-author:
-type: added

@@ -1,5 +1,0 @@
----
-title: Migrate '.fa-spinner' to '.spinner' for 'app/views/shared/issuable'
-merge_request: 41132
-author: Gilang Gumilar
-type: changed

@@ -1,5 +1,0 @@
----
-title: Fix wrong caching logic in ProcessRefChangesService
-merge_request: 40821
-author:
-type: fixed

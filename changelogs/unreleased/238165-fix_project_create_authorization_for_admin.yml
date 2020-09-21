@@ -1,5 +1,0 @@
----
-title: Do not add admins as owners to project authorizations during project creation
-merge_request: 42335
-author:
-type: fixed

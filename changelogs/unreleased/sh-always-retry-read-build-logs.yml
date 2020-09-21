@@ -1,5 +1,0 @@
----
-title: Always attempt retry of job trace read when file is missing
-merge_request: 40516
-author:
-type: fixed

@@ -1,5 +1,0 @@
----
-title: Updates CiPlatformMetrics to do bulk insertions
-merge_request: 41617
-author:
-type: performance

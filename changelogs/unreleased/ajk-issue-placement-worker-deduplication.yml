@@ -1,5 +1,0 @@
----
-title: Pass project ID to issue placement worker
-merge_request: 42091
-author:
-type: performance

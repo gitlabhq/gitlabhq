@@ -1,5 +1,0 @@
----
-title: Fixes wrong MR pipeline link when FF-merge strategy is used
-merge_request: 39396
-author:
-type: fixed

@@ -1,5 +1,0 @@
----
-title: Add 'kind' to differentiate between NetworkPolicy and CiliumNetworkPolicy Kubernetes network manifests
-merge_request: 40165
-author:
-type: changed

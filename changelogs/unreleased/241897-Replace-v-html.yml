@@ -1,5 +1,0 @@
----
-title: Replace v-html with v-safe-html in delete_project_modal.vue
-merge_request: 41130
-author: Kev @KevSlashNull
-type: other

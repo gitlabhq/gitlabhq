@@ -1,6 +1,0 @@
----
-title: Validate not null external_diff_store field on merge_request_diffs to maintain
-  data integrity
-merge_request: 42045
-author:
-type: added

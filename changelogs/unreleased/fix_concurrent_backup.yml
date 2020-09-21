@@ -1,5 +1,0 @@
----
-title: Fix deadlock in backup repositories rake task
-merge_request: 41042
-author:
-type: fixed

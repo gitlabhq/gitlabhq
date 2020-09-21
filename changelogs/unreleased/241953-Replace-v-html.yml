@@ -1,5 +1,0 @@
----
-title: Replace v-html with v-safe-html in description.vue
-merge_request: 41336
-author: Kev @KevSlashNull
-type: other

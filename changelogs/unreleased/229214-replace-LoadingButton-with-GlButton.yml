@@ -1,5 +1,0 @@
----
-title: Replace LoadingButton with GlButton for the comment dismissal modal
-merge_request: 40882
-author:
-type: performance

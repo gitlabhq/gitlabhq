@@ -1,5 +1,0 @@
----
-title: Fix non-retrying bridges after retried builds in CI pipelines
-merge_request: 39989
-author:
-type: fixed

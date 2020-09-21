@@ -1,5 +1,0 @@
----
-title: Enable coverage_report_view feature flag by default
-merge_request: 42094
-author: fh1ch
-type: performance

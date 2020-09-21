@@ -1,5 +1,0 @@
----
-title: Migrate .fa-spinner to .spinner for app/views/projects/blob/viewers
-merge_request: 25046
-author: nuwe1
-type: other

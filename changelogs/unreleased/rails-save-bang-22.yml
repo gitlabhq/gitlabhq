@@ -1,5 +1,0 @@
----
-title: Fix Rails/SaveBang offenses for spec/requests/api/pages/*
-merge_request: 41324
-author:
-type: fixed

@@ -1,5 +1,0 @@
----
-title: Flag errors from psql when restoring from backups
-merge_request: 40911
-author:
-type: fixed

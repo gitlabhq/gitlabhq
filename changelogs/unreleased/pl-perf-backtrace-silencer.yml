@@ -1,5 +1,0 @@
----
-title: Improve performance of Rails backtrace cleaner configuration
-merge_request: 40182
-author:
-type: performance

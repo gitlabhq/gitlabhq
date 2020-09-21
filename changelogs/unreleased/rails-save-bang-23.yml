@@ -1,5 +1,0 @@
----
-title: Fix Rails/SaveBang offenses for spec/models/cycle_analytics/*
-merge_request: 41326
-author: Rajendra Kadam
-type: fixed

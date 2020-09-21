@@ -1,6 +1,0 @@
----
-title: Does not update repository statistics when running housekeeping and repository
-  cleanup on a read-only instance
-merge_request: 42409
-author:
-type: fixed

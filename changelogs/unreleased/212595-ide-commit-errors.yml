@@ -1,5 +1,0 @@
----
-title: Fix error reporting for Web IDE commits
-merge_request: 42383
-author:
-type: fixed

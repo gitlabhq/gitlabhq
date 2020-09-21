@@ -1,5 +1,0 @@
----
-title: Drop one of duplicated classname from Serverless Function
-merge_request: 41832
-author: Takuya Noguchi
-type: performance

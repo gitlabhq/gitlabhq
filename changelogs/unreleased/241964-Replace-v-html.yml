@@ -1,5 +1,0 @@
----
-title: Replace v-html with v-safe-html in registry_breadcrumb.vue
-merge_request: 41207
-author: Kev @KevSlashNull
-type: other

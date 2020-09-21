@@ -1,5 +1,0 @@
----
-title: Use applogger in some files of lib/gitlab/ldap/sync/*
-merge_request: 41051
-author: Rajendra Kadam
-type: other

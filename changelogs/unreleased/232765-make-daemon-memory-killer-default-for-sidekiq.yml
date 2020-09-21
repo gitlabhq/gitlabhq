@@ -1,5 +1,0 @@
----
-title: Make Daemon Memory Killer be the default for Sidekiq
-merge_request: 41847
-author:
-type: other

@@ -1,5 +1,0 @@
----
-title: 'Geo: Add migrations for registry and details tables for external MR diff replication'
-merge_request: 34248
-author:
-type: added

@@ -1,5 +1,0 @@
----
-title: Migrate '.fa-spinner' to '.spinner' for 'app/assets/javascripts/blob/file_template_selector.js'
-merge_request: 41146
-author: Gilang Gumilar
-type: changed

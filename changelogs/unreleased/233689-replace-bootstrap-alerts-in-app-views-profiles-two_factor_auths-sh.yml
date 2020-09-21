@@ -1,5 +1,0 @@
----
-title: Replace bootstrap alerts in app/views/profiles/two_factor_auths/show.html.haml
-merge_request: 41388
-author: Gilang Gumilar
-type: changed

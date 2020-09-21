@@ -1,5 +1,0 @@
----
-title: Replace v-html with the gl-icon component in time_ago.vue
-merge_request: 41457
-author: Kev @KevSlashNull
-type: other

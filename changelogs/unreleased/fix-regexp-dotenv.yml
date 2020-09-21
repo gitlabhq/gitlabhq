@@ -1,5 +1,0 @@
----
-title: Fix RegExp for dotenv report artifact
-merge_request: 38562
-author:
-type: fixed

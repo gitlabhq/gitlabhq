@@ -1,5 +1,0 @@
----
-title: Replace bootstrap alerts in app/views/projects/_deletion_failed.html.haml
-merge_request: 41344
-author: Gilang Gumilar
-type: changed

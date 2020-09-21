@@ -1,5 +1,0 @@
----
-title: Replace bootstrap alerts in app/views/projects/merge_requests/_mr_title.html.haml
-merge_request: 41399
-author: Gilang Gumilar
-type: changed

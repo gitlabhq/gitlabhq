@@ -1,5 +1,0 @@
----
-title: Disable Sidekiq Exporter logs by default
-merge_request: 42267
-author:
-type: changed

@@ -1,5 +1,0 @@
----
-title: Add job token authentication for the GitLab PyPI package repository
-merge_request: 40888
-author:
-type: added

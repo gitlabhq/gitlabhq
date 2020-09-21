@@ -1,5 +1,0 @@
----
-title: Exclude tmp dirs from backups
-merge_request: 41706
-author:
-type: fixed

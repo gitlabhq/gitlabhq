@@ -1,5 +1,0 @@
----
-title: Refactor ee/spec/support/shared_examples/models/* and spec/support/shared_examples/models/* to fix Rails/SaveBang Cop
-merge_request: 40695
-author: Rajendra Kadam
-type: other

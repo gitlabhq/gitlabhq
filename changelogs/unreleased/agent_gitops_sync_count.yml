@@ -1,5 +1,0 @@
----
-title: Add kubernetes_agent_gitops_sync usage ping metric
-merge_request: 40568
-author:
-type: other

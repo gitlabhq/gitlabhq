@@ -1,5 +1,0 @@
----
-title: Replace GlDeprecatedDropdownDivider with GlDropdown in app/assets/javascripts/vue_shared/components/filtered_search_bar/tokens/author_token.vue
-merge_request: 41432
-author: nuwe1
-type: other

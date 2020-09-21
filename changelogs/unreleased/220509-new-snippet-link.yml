@@ -1,5 +1,0 @@
----
-title: Take relative_url_path into account when building URLs in snippets
-merge_request: 39960
-author:
-type: fixed

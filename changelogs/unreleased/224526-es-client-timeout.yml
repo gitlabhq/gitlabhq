@@ -1,5 +1,0 @@
----
-title: Add admin setting of Elasticsearch client request timeout
-merge_request: 41470
-author:
-type: added

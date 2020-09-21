@@ -1,5 +1,0 @@
----
-title: Add timeout support in the delete tags service for the GitLab Registry
-merge_request: 36319
-author:
-type: changed
