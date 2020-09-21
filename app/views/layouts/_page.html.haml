@@ -19,7 +19,6 @@
       = yield :customize_homepage_banner
       - unless @hide_breadcrumbs
         = render "layouts/nav/breadcrumbs"
-      .d-flex
     %div{ class: "#{(container_class unless @no_container)} #{@content_class}" }
       .content{ id: "content-body" }
         = render "layouts/flash", extra_flash_class: 'limit-container-width'

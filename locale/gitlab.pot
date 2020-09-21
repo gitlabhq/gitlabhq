@@ -857,9 +857,6 @@ msgstr ""
 msgid "&lt; 1 hour"
 msgstr ""
 
-msgid "&lt;no name set&gt;"
-msgstr ""
-
 msgid "&lt;no scopes selected&gt;"
 msgstr ""
 
@@ -30682,6 +30679,9 @@ msgid "no contributions"
 msgstr ""
 
 msgid "no expiration"
+msgstr ""
+
+msgid "no name set"
 msgstr ""
 
 msgid "no one can merge"

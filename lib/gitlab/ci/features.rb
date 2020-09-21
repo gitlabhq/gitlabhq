@@ -72,7 +72,7 @@ module Gitlab
       end
 
       def self.new_artifact_file_reader_enabled?(project)
-        ::Feature.enabled?(:ci_new_artifact_file_reader, project, default_enabled: false)
+        ::Feature.enabled?(:ci_new_artifact_file_reader, project, default_enabled: true)
       end
     end
   end

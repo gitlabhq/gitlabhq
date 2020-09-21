@@ -11,6 +11,8 @@ module QA
         Waiter.wait_until(log: false) do
           finished_all_ajax_requests? && finished_all_axios_requests? && (!skip_finished_loading_check ? finished_loading?(wait: 1) : true)
         end
+      rescue Repeater::WaitExceededError
+        raise $!, 'Page did not fully load. This could be due to an unending async request or loading icon.'
       end
 
       def finished_all_axios_requests?

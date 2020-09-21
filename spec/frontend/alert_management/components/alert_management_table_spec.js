@@ -295,10 +295,30 @@ describe('AlertManagementTable', () => {
         loading: false,
       });
 
+      expect(visitUrl).not.toHaveBeenCalled();
+
       findAlerts()
         .at(0)
         .trigger('click');
-      expect(visitUrl).toHaveBeenCalledWith('/1527542/details');
+      expect(visitUrl).toHaveBeenCalledWith('/1527542/details', false);
+    });
+
+    it('navigates to the detail page in new tab when alert row is clicked with the metaKey', () => {
+      mountComponent({
+        props: { alertManagementEnabled: true, userCanEnableAlertManagement: true },
+        data: { alerts: { list: mockAlerts }, alertsCount, hasError: false },
+        loading: false,
+      });
+
+      expect(visitUrl).not.toHaveBeenCalled();
+
+      findAlerts()
+        .at(0)
+        .trigger('click', {
+          metaKey: true,
+        });
+
+      expect(visitUrl).toHaveBeenCalledWith('/1527542/details', true);
     });
 
     describe('alert issue links', () => {

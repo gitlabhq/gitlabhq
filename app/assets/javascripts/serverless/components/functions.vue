@@ -1,7 +1,6 @@
 <script>
-/* eslint-disable vue/no-v-html */
 import { mapState, mapActions, mapGetters } from 'vuex';
-import { GlLink, GlLoadingIcon } from '@gitlab/ui';
+import { GlLink, GlLoadingIcon, GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
 import { sprintf, s__ } from '~/locale';
 import EnvironmentRow from './environment_row.vue';
 import EmptyState from './empty_state.vue';
@@ -13,6 +12,9 @@ export default {
     EmptyState,
     GlLink,
     GlLoadingIcon,
+  },
+  directives: {
+    SafeHtml,
   },
   computed: {
     ...mapState(['installed', 'isLoading', 'hasFunctionData', 'helpPath', 'statusPath']),
@@ -92,9 +94,9 @@ export default {
             }}
           </p>
           <ul>
-            <li v-html="noServerlessConfigFile"></li>
-            <li v-html="noGitlabYamlConfigured"></li>
-            <li v-html="mismatchedServerlessFunctions"></li>
+            <li v-safe-html="noServerlessConfigFile"></li>
+            <li v-safe-html="noGitlabYamlConfigured"></li>
+            <li v-safe-html="mismatchedServerlessFunctions"></li>
             <li>{{ s__('Serverless|The deploy job has not finished.') }}</li>
           </ul>
 
