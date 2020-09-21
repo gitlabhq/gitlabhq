@@ -1,5 +1,0 @@
----
-title: Replace bootstrap alerts in app/views/shared/issuable/_form.html.haml
-merge_request: 41390
-author: Gilang Gumilar
-type: changed

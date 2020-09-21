@@ -1,5 +1,0 @@
----
-title: Fix slow group loading on forking page
-merge_request: 39640
-author:
-type: performance

@@ -1,5 +1,0 @@
----
-title: Migrate '.fa-spinner' to '.spinner' for 'app/assets/javascripts/vue_merge_request_widget/components/deployment/memory_usage.vue'
-merge_request: 41142
-author: Gilang Gumilar
-type: changed

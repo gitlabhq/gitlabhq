@@ -1,5 +1,0 @@
----
-title: Replace bootstrap alerts in app/views/projects/blob/edit.html.haml
-merge_request: 41298
-author: Gilang Gumilar
-type: changed

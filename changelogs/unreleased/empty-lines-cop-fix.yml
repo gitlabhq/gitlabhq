@@ -1,5 +1,0 @@
----
-title: Fix Layout/EmptyLinesAroundArguments cop
-merge_request: 41086
-author: Rajendra Kadam
-type: fixed

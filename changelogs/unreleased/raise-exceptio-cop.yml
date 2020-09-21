@@ -1,5 +1,0 @@
----
-title: Fix Lint/RaiseException cop
-merge_request: 41099
-author: Rajendra Kadam
-type: fixed

@@ -1,5 +1,0 @@
----
-title: Add --if-exists to pg_dump command-line in backup creation
-merge_request: 40792
-author:
-type: other

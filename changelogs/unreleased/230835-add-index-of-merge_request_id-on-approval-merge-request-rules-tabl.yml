@@ -1,5 +1,0 @@
----
-title: Add index on merge_request_id to approval_merge_request_rules
-merge_request: 40556
-author:
-type: other

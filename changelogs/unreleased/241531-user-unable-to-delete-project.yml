@@ -1,5 +1,0 @@
----
-title: Fix delete confirm message not displaying trailing spaces
-merge_request: 40549
-author:
-type: fixed

@@ -1,5 +1,0 @@
----
-title: Add warning to stop Puma and Sidekiq when restoring from backup
-merge_request: 40791
-author:
-type: other

@@ -1,5 +1,0 @@
----
-title: Include also inherited project members in GraphQL API
-merge_request: 39444
-author:
-type: fixed

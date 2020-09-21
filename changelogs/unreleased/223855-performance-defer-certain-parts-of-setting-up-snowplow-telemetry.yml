@@ -1,5 +1,0 @@
----
-title: Defer (certain) parts of setting up snowplow telemetry
-merge_request: 40299
-author:
-type: performance

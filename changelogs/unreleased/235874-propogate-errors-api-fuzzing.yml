@@ -1,5 +1,0 @@
----
-title: Fail API Fuzzing CI/CD job when scanner errors
-merge_request: 41616
-author:
-type: fixed

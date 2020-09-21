@@ -1,5 +1,0 @@
----
-title: Database changes to support terraform state version replicaiton
-merge_request: 42492
-author:
-type: added

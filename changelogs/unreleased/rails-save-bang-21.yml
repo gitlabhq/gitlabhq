@@ -1,5 +1,0 @@
----
-title: Fix Rails/SaveBang offenses for *spec/models/project_services*
-merge_request: 41320
-author: Rajendra Kadam
-type: fixed

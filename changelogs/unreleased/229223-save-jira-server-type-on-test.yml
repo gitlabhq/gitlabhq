@@ -1,5 +1,0 @@
----
-title: Store deployment_type of Jira server in jira_tracker_data table
-merge_request: 37003
-author:
-type: changed

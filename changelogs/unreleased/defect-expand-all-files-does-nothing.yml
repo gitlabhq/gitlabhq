@@ -1,5 +1,0 @@
----
-title: Fix issue causing 'Expand All' button to not work in MR diffs view (Remove `autoExpandCollapsedDiffs` feature flag)
-merge_request: 40960
-author:
-type: fixed

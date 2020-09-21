@@ -1,5 +1,0 @@
----
-title: Apply GZip compression to discussion diffs
-merge_request: 40778
-author:
-type: performance

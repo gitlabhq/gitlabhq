@@ -1,5 +1,0 @@
----
-title: Fix missing pipeline e-mails when job logs moved to object storage
-merge_request: 40075
-author:
-type: fixed

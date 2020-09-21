@@ -1,5 +1,0 @@
----
-title: Add ignore_skipped option for pipeline status badge
-merge_request: 28288
-author: Fabian Schneider @fabsrc
-type: added

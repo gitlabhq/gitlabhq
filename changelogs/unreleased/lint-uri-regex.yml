@@ -1,5 +1,0 @@
----
-title: Fix Lint/UriRegexp cop
-merge_request: 41117
-author: Rajendra Kadam
-type: fixed

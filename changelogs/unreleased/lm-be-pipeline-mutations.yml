@@ -1,5 +1,0 @@
----
-title: 'GraphQL: Pipeline mutations for retry, cancel, and destroy'
-merge_request: 39780
-author:
-type: added

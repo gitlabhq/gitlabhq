@@ -1,5 +1,0 @@
----
-title: Update Managed Cluster Applications to v0.29.0, including WAF for ingress, a smaller CI template, and version updates to a few applications
-merge_request: 39890
-author:
-type: changed

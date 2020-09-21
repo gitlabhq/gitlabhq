@@ -1,5 +1,0 @@
----
-title: Replace v-html with v-safe-html in parallel_diff_table_row.vue
-merge_request: 41206
-author: Kev @KevSlashNull
-type: other

@@ -1,5 +1,0 @@
----
-title: Selection Highlight Oversteps Bounds of Actual Selection in Web IDE
-merge_request: 41553
-author:
-type: fixed

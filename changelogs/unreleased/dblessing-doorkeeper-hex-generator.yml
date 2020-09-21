@@ -1,5 +1,0 @@
----
-title: Restore doorkeeper generator to hex due to breaking change
-merge_request: 41169
-author:
-type: fixed

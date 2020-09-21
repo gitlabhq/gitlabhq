@@ -1,5 +1,0 @@
----
-title: Prevent MRs to be dropped from Merge Trains for open discussions
-merge_request: 39957
-author:
-type: changed

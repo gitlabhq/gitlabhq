@@ -1,5 +1,0 @@
----
-title: Drop code_owner column from approval_merge_request_rules
-merge_request: 40322
-author:
-type: other

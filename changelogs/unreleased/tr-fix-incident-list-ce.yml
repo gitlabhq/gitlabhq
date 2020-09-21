@@ -1,5 +1,0 @@
----
-title: Fix incident list by restricting query on FOSS
-merge_request: 42301
-author:
-type: fixed

@@ -1,5 +1,0 @@
----
-title: Add versioning support to Terraform state backend
-merge_request: 35211
-author:
-type: added

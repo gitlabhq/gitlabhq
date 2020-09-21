@@ -1,5 +1,0 @@
----
-title: Fix Rails/SaveBang offenses for */spec/services/merge_requests/*
-merge_request: 41315
-author: Rajendra Kadam
-type: other

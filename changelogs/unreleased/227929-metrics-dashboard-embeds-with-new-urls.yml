@@ -1,5 +1,0 @@
----
-title: Fix Metrics dashboard embeds when using new URLs
-merge_request: 39876
-author:
-type: fixed

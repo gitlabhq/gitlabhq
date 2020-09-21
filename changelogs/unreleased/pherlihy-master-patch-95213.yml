@@ -1,5 +1,0 @@
----
-title: Change merge request updated_at when assignees are changed
-merge_request: 41030
-author: Patrick Herlihy
-type: fixed

@@ -1,5 +1,0 @@
----
-title: Migrate '.fa-spinner' to '.spinner' for 'app/assets/javascripts/gpg_badges.js'
-merge_request: 41136
-author: Gilang Gumilar
-type: changed

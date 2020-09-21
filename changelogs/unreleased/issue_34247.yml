@@ -1,5 +1,0 @@
----
-title: Remove pipeline_id column from requirements_test_reports
-merge_request: 38924
-author:
-type: deprecated

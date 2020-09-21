@@ -1,5 +1,0 @@
----
-title: Replace bootstrap alerts in ee/app/views/groups/push_rules/edit.html.haml
-merge_request: 41069
-author: Jacopo Beschi @jacopo-beschi
-type: changed

@@ -1,5 +1,0 @@
----
-title: Upgrade vendored Dockerfile template to buster
-merge_request: 42169
-author: Takuya Noguchi
-type: other

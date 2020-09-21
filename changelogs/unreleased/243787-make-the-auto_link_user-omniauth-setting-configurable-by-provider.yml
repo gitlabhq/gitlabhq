@@ -1,5 +1,0 @@
----
-title: Make the auto_link_user OmniAuth setting configurable by provider
-merge_request: 41133
-author:
-type: added

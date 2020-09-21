@@ -1,5 +1,0 @@
----
-title: Fix RSpec/LetBeforeExamples cop
-merge_request: 41250
-author: Rajendra Kadam
-type: fixed

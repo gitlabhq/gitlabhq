@@ -1,6 +1,0 @@
----
-title: Fixed an issue where not all URL query parameters would apply to the filter
-  bar on initial load in the Value Stream Analytics page
-merge_request: 40975
-author:
-type: fixed

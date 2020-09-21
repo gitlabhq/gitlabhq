@@ -1,6 +1,0 @@
----
-title: Fix fork users cannot create pipelines in a fork project when parent project
-  protects all branches
-merge_request: 40724
-author:
-type: fixed

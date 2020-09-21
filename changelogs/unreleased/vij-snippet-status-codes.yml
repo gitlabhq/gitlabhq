@@ -1,5 +1,0 @@
----
-title: Change invalid Snippet params status code from 403 to 422
-merge_request: 40619
-author:
-type: changed

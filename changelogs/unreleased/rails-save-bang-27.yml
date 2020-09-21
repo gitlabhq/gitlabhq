@@ -1,5 +1,0 @@
----
-title: Fix Rails/SaveBang offenses for ee/spec/lib/ee/gitlab/background_migration/*
-merge_request: 41357
-author: Rajendra Kadam
-type: fixed

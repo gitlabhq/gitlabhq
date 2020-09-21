@@ -1,5 +1,0 @@
----
-title: Only create issues if supposed to for Prometheus alerts
-merge_request: 41468
-author:
-type: fixed

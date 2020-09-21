@@ -1,5 +1,0 @@
----
-title: Removes unused classes on initial Ci::Ref implementation
-merge_request: 41077
-author: Jacopo Beschi @jacopo-beschi
-type: removed

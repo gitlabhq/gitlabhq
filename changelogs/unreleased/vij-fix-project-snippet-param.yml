@@ -1,5 +1,0 @@
----
-title: Fix visibility param for ProjectSnippet REST endpoint
-merge_request: 40966
-author:
-type: fixed

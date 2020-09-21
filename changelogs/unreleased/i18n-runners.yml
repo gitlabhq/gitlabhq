@@ -1,5 +1,0 @@
----
-title: Externalize i18n strings from app/views/shared/runners/show.html.haml
-merge_request: 41241
-author: Takuya Noguchi
-type: other

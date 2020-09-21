@@ -1,5 +1,0 @@
----
-title: Propagate ENV variables to codequality template
-merge_request: 41318
-author:
-type: fixed

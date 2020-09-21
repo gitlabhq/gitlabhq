@@ -1,5 +1,0 @@
----
-title: 'Do not raise error when a member is not found by invite token'
-merge_request: 42349
-author:
-type: fixed

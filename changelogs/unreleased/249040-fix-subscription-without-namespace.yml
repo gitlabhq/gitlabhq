@@ -1,5 +1,0 @@
----
-title: Fix max seats used not updated in billing summary
-merge_request: 42184
-author:
-type: fixed

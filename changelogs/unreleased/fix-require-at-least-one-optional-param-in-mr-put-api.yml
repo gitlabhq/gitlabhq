@@ -1,5 +1,0 @@
----
-title: 'MR API: Allow `allow_{collaboration,maintainer_to_push}` to be updated'
-merge_request: 41088
-author:
-type: fixed

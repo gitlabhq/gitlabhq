@@ -1,5 +1,0 @@
----
-title: Fix incorrect project path warning after failed project path rename
-merge_request: 40422
-author:
-type: fixed

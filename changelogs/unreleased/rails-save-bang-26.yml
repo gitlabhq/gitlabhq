@@ -1,5 +1,0 @@
----
-title: Fix Rails/SaveBang offenses for ee/spec/lib/gitlab/geo/*
-merge_request: 41338
-author: Rajendra Kadam
-type: fixed

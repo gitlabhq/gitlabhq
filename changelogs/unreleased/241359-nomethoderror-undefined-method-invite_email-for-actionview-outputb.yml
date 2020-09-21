@@ -1,5 +1,0 @@
----
-title: 'Resolve NoMethodError: undefined method invite_email'
-merge_request: 41587
-author:
-type: fixed

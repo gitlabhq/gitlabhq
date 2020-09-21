@@ -1,5 +1,0 @@
----
-title: Remove application settings for Snowplow iglu registry url
-merge_request: 41556
-author:
-type: removed

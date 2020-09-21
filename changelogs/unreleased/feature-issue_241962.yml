@@ -1,5 +1,0 @@
----
-title: Replace v-html to v-safe-html directive
-merge_request: 41305
-author: Kazuya Kojima
-type: other

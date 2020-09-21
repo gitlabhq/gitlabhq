@@ -1,6 +1,0 @@
----
-title: Disallow awarding emojis to locked Issuables for users that are not member
-  of the project
-merge_request: 40150
-author:
-type: changed

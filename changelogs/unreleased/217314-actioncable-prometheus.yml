@@ -1,5 +1,0 @@
----
-title: Export ActionCable metrics to Prometheus
-merge_request: 41358
-author:
-type: added

@@ -1,5 +1,0 @@
----
-title: Add filter to exclude non internal users in REST API
-merge_request: 40372
-author:
-type: changed

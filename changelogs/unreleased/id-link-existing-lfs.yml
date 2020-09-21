@@ -1,5 +1,0 @@
----
-title: Verify only 1mb of existing LFS object to improve LfsDownloadService performance
-merge_request: 41770
-author:
-type: performance

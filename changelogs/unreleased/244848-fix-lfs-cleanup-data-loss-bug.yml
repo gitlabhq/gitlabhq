@@ -1,5 +1,0 @@
----
-title: Correctly preserve LFS objects in design or wiki repositories
-merge_request: 41352
-author:
-type: fixed

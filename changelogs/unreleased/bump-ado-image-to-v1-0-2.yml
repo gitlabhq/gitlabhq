@@ -1,5 +1,0 @@
----
-title: Fix auto-deploy-image external chart dependencies
-merge_request: 40730
-author:
-type: fixed

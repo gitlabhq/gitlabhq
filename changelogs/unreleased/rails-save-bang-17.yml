@@ -1,5 +1,0 @@
----
-title: Fix Rails/SaveBang offenses for spec/serializers/*
-merge_request: 41309
-author: Rajendra Kadam
-type: fixed

@@ -1,5 +1,0 @@
----
-title: Fix daemon memory killer jobs hash thread safety issue
-merge_request: 42468
-author:
-type: fixed

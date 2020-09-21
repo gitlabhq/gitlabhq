@@ -1,5 +1,0 @@
----
-title: Migrate '.fa-spinner' to '.spinner' for 'app/views/projects/services/prometheus'
-merge_request: 41126
-author: Gilang Gumilar
-type: changed

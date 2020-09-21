@@ -1,6 +1,0 @@
----
-title: Fix bug where conan does not properly check package channel when returning
-  file download urls
-merge_request: 40029
-author:
-type: fixed

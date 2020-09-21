@@ -1,5 +1,0 @@
----
-title: Fix Layout/ClosingParenthesisIndentation cop
-merge_request: 41084
-author: Rajendra Kadam
-type: fixed

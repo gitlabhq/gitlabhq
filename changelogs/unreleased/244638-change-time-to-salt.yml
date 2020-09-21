@@ -1,5 +1,0 @@
----
-title: Change 2FA to verify password hash instead of timestamp
-merge_request: 41366
-author:
-type: changed

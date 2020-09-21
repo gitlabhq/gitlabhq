@@ -1,5 +1,0 @@
----
-title: Fix Lint/NonDeterministicRequireOrder cop
-merge_request: 41098
-author: Rajendra Kadam
-type: fixed

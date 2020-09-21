@@ -1,5 +1,0 @@
----
-title: Fix incorrect merge request diff file count after deletion
-merge_request: 40384
-author:
-type: fixed
