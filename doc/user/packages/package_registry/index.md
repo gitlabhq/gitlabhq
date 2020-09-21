@@ -17,7 +17,7 @@ packages, which can be easily consumed as a dependency in downstream projects.
 You can view packages for your project or group.
 
 1. Go to the project or group.
-1. Go to **{package}** **Packages & Registries > Package Registry**.
+1. Go to **Packages & Registries > Package Registry**.
 
 You can search, sort, and filter packages on this page.
 
@@ -45,7 +45,7 @@ user who triggered it.
 
 To download a package:
 
-1. Go to **{package}** **Packages & Registries > Package Registry**.
+1. Go to **Packages & Registries > Package Registry**.
 1. Click the name of the package you want to download.
 1. In the **Activity** section, click the name of the package you want to download.
 
@@ -60,7 +60,7 @@ You can delete packages by using [the API](../../../api/packages.md#delete-a-pro
 
 To delete a package in the UI, from your group or project:
 
-1. Go to **{package}** **Packages & Registries > Package Registry**.
+1. Go to **Packages & Registries > Package Registry**.
 1. Find the name of the package you want to delete.
 1. Click **Delete**.
 
@@ -71,7 +71,7 @@ The package is permanently deleted.
 The Package Registry is automatically enabled.
 
 If you are using a self-managed instance of GitLab, your administrator can remove
-the menu item, **{package}** **Packages & Registries**, from the GitLab sidebar. For more information,
+the menu item, **Packages & Registries**, from the GitLab sidebar. For more information,
 see the [administration documentation](../../../administration/packages/index.md).
 
 You can also remove the Package Registry for your project specifically:
@@ -81,7 +81,7 @@ You can also remove the Package Registry for your project specifically:
    **Packages** feature.
 1. Click **Save changes**.
 
-The **{package}** **Packages & Registries > Package Registry** entry is removed from the sidebar.
+The **Packages & Registries > Package Registry** entry is removed from the sidebar.
 
 ## Package workflows
 

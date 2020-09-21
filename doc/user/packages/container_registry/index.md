@@ -342,7 +342,7 @@ the deleted images.
 
 To delete images from within GitLab:
 
-1. Navigate to your project's or group's **{package}** **Packages & Registries > Container Registry**.
+1. Navigate to your project's or group's **Packages & Registries > Container Registry**.
 1. From the **Container Registry** page, you can select what you want to delete,
    by either:
 

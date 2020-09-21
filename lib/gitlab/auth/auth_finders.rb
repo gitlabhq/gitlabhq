@@ -290,7 +290,7 @@ module Gitlab
       end
 
       def api_request?
-        current_request.path.starts_with?('/api/')
+        current_request.path.starts_with?(Gitlab::Utils.append_path(Gitlab.config.gitlab.relative_url_root, '/api/'))
       end
 
       def archive_request?

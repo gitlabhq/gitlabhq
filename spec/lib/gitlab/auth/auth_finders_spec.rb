@@ -419,10 +419,30 @@ RSpec.describe Gitlab::Auth::AuthFinders do
       expect(find_user_from_web_access_token(:ics)).to eq(user)
     end
 
-    it 'returns the user for API requests' do
-      set_header('SCRIPT_NAME', '/api/endpoint')
+    context 'for API requests' do
+      it 'returns the user' do
+        set_header('SCRIPT_NAME', '/api/endpoint')
 
-      expect(find_user_from_web_access_token(:api)).to eq(user)
+        expect(find_user_from_web_access_token(:api)).to eq(user)
+      end
+
+      it 'returns nil if URL does not start with /api/' do
+        set_header('SCRIPT_NAME', '/relative_root/api/endpoint')
+
+        expect(find_user_from_web_access_token(:api)).to be_nil
+      end
+
+      context 'when relative_url_root is set' do
+        before do
+          stub_config_setting(relative_url_root: '/relative_root')
+        end
+
+        it 'returns the user' do
+          set_header('SCRIPT_NAME', '/relative_root/api/endpoint')
+
+          expect(find_user_from_web_access_token(:api)).to eq(user)
+        end
+      end
     end
   end
 
