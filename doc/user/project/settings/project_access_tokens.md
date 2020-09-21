@@ -48,9 +48,10 @@ API calls made with a project access token are associated with the corresponding
 These users will appear in **Members** but can not be modified.
 Furthermore, the bot user can not be added to any other project.
 
-When the project access token is [revoked](#revoking-a-project-access-token) the bot user will be deleted and all
-records will be moved to a system-wide user with the username "Ghost User". For more information,
-see [Associated Records](../../profile/account/delete_account.md#associated-records).
+- The username is set to `project_{project_id}_bot` for the first access token, such as `project_123_bot`.
+- The username is set to `project_{project_id}_bot{bot_count}` for further access tokens, such as `project_123_bot1`.
+
+After the project access token is [revoked](#revoking-a-project-access-token), the bot user is removed from the project and blocked. All associated records are moved to a system-wide user named "Ghost User". For more information, see [Associated Records](../../profile/account/delete_account.md#associated-records).
 
 Project bot users are a [GitLab-created service account](../../../subscriptions/self_managed/index.md#choose-the-number-of-users), but count as a licensed seat.
 These users will not count against your licensed seat in the future when [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/223695) is resolved.

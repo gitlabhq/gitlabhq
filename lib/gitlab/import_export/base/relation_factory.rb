@@ -53,6 +53,7 @@ module Gitlab
           @importable = importable
           @imported_object_retries = 0
           @relation_hash[importable_column_name] = @importable.id
+          @original_user = {}
 
           # Remove excluded keys from relation_hash
           # We don't do this in the parsed_relation_hash because of the 'transformed attributes'
@@ -112,6 +113,7 @@ module Gitlab
         def update_user_references
           self.class::USER_REFERENCES.each do |reference|
             if @relation_hash[reference]
+              @original_user[reference] = @relation_hash[reference]
               @relation_hash[reference] = @members_mapper.map[@relation_hash[reference]]
             end
           end
@@ -243,7 +245,7 @@ module Gitlab
         # will be used. Otherwise, a note stating the original author name
         # is left.
         def set_note_author
-          old_author_id = @relation_hash['author_id']
+          old_author_id = @original_user['author_id']
           author = @relation_hash.delete('author')
 
           update_note_for_missing_author(author['name']) unless has_author?(old_author_id)

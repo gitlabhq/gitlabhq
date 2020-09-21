@@ -56345,7 +56345,7 @@
           "inputFields": [
             {
               "name": "id",
-              "description": "ID of the vulnerability to be resolveed",
+              "description": "ID of the vulnerability to be resolved",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,

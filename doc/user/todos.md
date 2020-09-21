@@ -15,7 +15,7 @@ spend your time. This can include taking an action, or keeping track of things
 do your work, being able to get started quickly is important.
 
 Your *To-Do List* offers a chronological list of items waiting for your input
-(known as *to-dos*) in a single dashboard.
+(known as *to do items*) in a single dashboard.
 
 The To-Do List supports tracking [actions](#what-triggers-a-to-do) related to
 the following:
@@ -26,18 +26,18 @@ the following:
 
 ![to-do screenshot showing a list of items to check on](img/todos_index.png)
 
-You can access your To-Do List by clicking the **{task-done}** To-Do List icon
-next to the search bar in the top navigation. If the to-do item count is:
+You can access your To-Do List by clicking the To-Do List icon (**{task-done}**)
+next to the search bar in the top navigation. If the to do item count is:
 
-- *Less than 100*, the number in blue is the number of to-do items.
+- *Less than 100*, the number in blue is the number of to do items.
 - *100 or more*, the number displays as 99+. The exact number displays in the
   To-Do List.
 
 ![To Do icon](img/todos_icon.png)
 
-## What triggers a to-do
+## What triggers a to do
 
-A to-do item appears on your To-Do List when:
+A to do item appears on your To-Do List when:
 
 - An issue or merge request is assigned to you.
 - You're `@mentioned` in the description or comment of an issue or merge request
@@ -57,23 +57,23 @@ A to-do item appears on your To-Do List when:
   and you're the user that added it. **(PREMIUM)**
 
 When several trigger actions occur for the same user on the same object (for
-example, an issue), GitLab displays only the first action as a single to-do
+example, an issue), GitLab displays only the first action as a single to do
 item.
 
-To-do triggers aren't affected by [GitLab notification email settings](profile/notifications.md).
+To do item triggers aren't affected by [GitLab notification email settings](profile/notifications.md).
 
 NOTE: **Note:**
-When a user no longer has access to a resource related to a to-do (such as an
-issue, merge request, project, or group), for security reasons GitLab deletes
-any related to-do items within the next hour. Deletion is delayed to prevent
-data loss, in the case where a user's access is accidentally revoked.
+When a user no longer has access to a resource related to a to do item (such as
+an issue, merge request, project, or group), for security reasons GitLab
+deletes any related to do items within the next hour. Deletion is delayed to
+prevent data loss, in the case where a user's access is accidentally revoked.
 
-### Directly addressing a to-do
+### Directly addressing a to do
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/7926) in GitLab 9.0.
 
-If you're mentioned at the start of a line, the to-do you receive will be listed
-as *directly addressed*. For example, in the following comment:
+If you're mentioned at the start of a line, the to do item you receive will be
+listed as *directly addressed*. For example, in the following comment:
 
 ```markdown
 @alice What do you think? cc: @bob
@@ -87,23 +87,23 @@ as *directly addressed*. For example, in the following comment:
 @erin @frank thank you!
 ```
 
-The people receiving directly addressed to-do items are `@alice`, `@erin`, and
-`@frank`. Directly addressed to-do items only differ from mentions in their type
+The people receiving directly addressed to do items are `@alice`, `@erin`, and
+`@frank`. Directly addressed to do items only differ from mentions in their type
 for filtering purposes; otherwise, they appear as normal.
 
-### Manually creating a to-do
+### Manually creating a to do
 
 You can add an issue or merge request (or epic **(ULTIMATE)**) to your
 To-Do List by clicking its **Add a To Do** button.
 
 ![Adding a To Do from the issuable sidebar](img/todos_add_todo_sidebar.png)
 
-## Marking a to-do as done
+## Marking a to do as done
 
 Any action to an issue or merge request (or epic **(ULTIMATE)**) will mark its
-corresponding to-do as done.
+corresponding to do item as done.
 
-Actions that dismiss to-do items include:
+Actions that dismiss to do items include:
 
 - Changing the assignee
 - Changing the milestone
@@ -111,27 +111,28 @@ Actions that dismiss to-do items include:
 - Commenting on the issue
 
 Your To-Do List is personal, and items are only marked as done if you take
-action. If you close the issue or merge request, your to-do is marked as done.
+action. If you close the issue or merge request, your to do item is marked as
+done.
 
 To prevent other users from closing issues without you being notified, if
 someone else closes, merges, or takes action on an issue or merge request (or
-epic **(ULTIMATE)**), your to-do will remain pending.
+epic **(ULTIMATE)**), your to do item remains pending.
 
-There's just one to-do for each of these, so mentioning a user many times in an
-issue will only trigger one to-do item.
+There's just one to do item for each of these, so mentioning a user many times
+in an issue only triggers one to do item.
 
-If no action is needed, you can manually mark the to-do as done by clicking its
-corresponding **Done** button to have GitLab remove the item from your
-To-Do List.
+If no action is needed, you can manually mark the to do item as done by
+clicking its corresponding **Done** button to have GitLab remove the item from
+your To-Do List.
 
 ![A to-do in the To-Do List](img/todos_todo_list_item.png)
 
-You can also mark a to-do as done by clicking the **Mark as done** button in the
-sidebar of an issue or merge request (or epic **(ULTIMATE)**).
+You can also mark a to do item as done by clicking the **Mark as done** button
+in the sidebar of an issue or merge request (or epic **(ULTIMATE)**).
 
 ![Mark as done from the issuable sidebar](img/todos_mark_done_sidebar.png)
 
-You can mark all your to-do items as done at once by clicking the
+You can mark all your to do items as done at once by clicking the
 **Mark all as done** button.
 
 ## Filtering your To-Do List

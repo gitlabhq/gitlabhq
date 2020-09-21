@@ -386,6 +386,15 @@ This happens when you have added IP addresses without a subnet mask in `postgres
 To fix this, add the subnet mask in `/etc/gitlab/gitlab.rb` under `postgresql['md5_auth_cidr_addresses']`
 to respect the CIDR format (i.e. `1.2.3.4/32`).
 
+### Message: `Found data in the gitlabhq_production database!` when running `gitlab-ctl replicate-geo-database`
+
+This happens if data is detected in the `projects` table. When one or more projects are detected, the operation
+is aborted to prevent accidental data loss. To bypass this message, pass the `--force` option to the command.
+
+In GitLab 13.4, a seed project is added when GitLab is first installed. This makes it necessary to pass `--force` even
+on a new Geo secondary node. There is an [issue to account for seed projects](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5618)
+when checking the database.
+
 ### Very large repositories never successfully synchronize on the **secondary** node
 
 GitLab places a timeout on all repository clones, including project imports

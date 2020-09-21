@@ -62,6 +62,7 @@ The Advanced Search Syntax also supports the use of filters. The available filte
 - filename: Filters by filename. You can use the glob (`*`) operator for fuzzy matching.
 - path: Filters by path. You can use the glob (`*`) operator for fuzzy matching.
 - extension: Filters by extension in the filename. Please write the extension without a leading dot. Exact match only.
+- blob: Filters by Git `object-id`. Exact match only.
 
 To use them, simply add them to your query in the format `<filter_name>:<value>` without
  any spaces between the colon (`:`) and the value.
@@ -83,6 +84,7 @@ Filters can be inversed to **filter out** results from the result set, by prefix
 - `-filename`
 - `-path`
 - `-extension`
+- `-blob`
 
 Examples:
 

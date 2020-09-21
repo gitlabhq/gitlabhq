@@ -328,6 +328,7 @@ export default {
         :add-spacing-classes="false"
         :help-page-path="helpPagePath"
         :show-suggest-popover="showSuggestPopover"
+        :textarea-value="updatedNoteBody"
         @handleSuggestDismissed="() => $emit('handleSuggestDismissed')"
       >
         <textarea

@@ -69,20 +69,43 @@ namespace that started the import process.
 
 #### User assignment by username
 
-Alternatively, user assignment by username is available behind a `bitbucket_server_user_mapping_by_username` feature flag.
-The importer will try to find a user in the GitLab user database using author's `username` or `slug` or `displayName`.
-Falls back to author's `email` if user is not found by username.
-Similarly to user assignment by email, if no such user is available, the project creator is set as the author.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/218609) in GitLab 13.4.
+> - It's [deployed behind a feature flag](../../feature_flags.md), disabled by default.
+> - It's disabled on GitLab.com.
+> - It's not recommended for production use.
+> - To use it in GitLab self-managed instances, ask a GitLab administrator to enable it.
 
-To enable or disable user assignment by username:
+CAUTION: **Warning:**
+This feature might not be available to you. Check the **version history** note above for details.
 
-Start a [Rails console](../../../administration/troubleshooting/debug.md#starting-a-rails-console-session).
+If you've enabled this feature, the importer tries to find a user in the GitLab user database with
+the author's:
+
+- `username`
+- `slug`
+- `displayName`
+
+If the user is not found by any of these properties, the search falls back to the author's
+`email` address.
+
+Alternatively, if there is also no email address, the project creator is set as the author.
+
+##### Enable or disable User assignment by username
+
+User assignment by username is under development and not ready for production use. It is
+deployed behind a feature flag that is **disabled by default**.
+[GitLab administrators with access to the GitLab Rails console](<replace with path to>/administration/feature_flags.md)
+can enable it.
+
+To enable it:
 
 ```ruby
-# Enable
 Feature.enable(:bitbucket_server_user_mapping_by_username)
+```
 
-# Disable
+To disable it:
+
+```ruby
 Feature.disable(:bitbucket_server_user_mapping_by_username)
 ```
 

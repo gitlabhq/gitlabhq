@@ -12488,6 +12488,7 @@ CREATE TABLE group_import_states (
     status smallint DEFAULT 0 NOT NULL,
     jid text,
     last_error text,
+    user_id bigint,
     CONSTRAINT check_87b58f6b30 CHECK ((char_length(last_error) <= 255)),
     CONSTRAINT check_96558fff96 CHECK ((char_length(jid) <= 100))
 );
@@ -18085,6 +18086,9 @@ ALTER TABLE vulnerability_scanners
 ALTER TABLE packages_package_files
     ADD CONSTRAINT check_4c5e6bb0b3 CHECK ((file_store IS NOT NULL)) NOT VALID;
 
+ALTER TABLE group_import_states
+    ADD CONSTRAINT check_cda75c7c3f CHECK ((user_id IS NOT NULL)) NOT VALID;
+
 ALTER TABLE ONLY ci_build_needs
     ADD CONSTRAINT ci_build_needs_pkey PRIMARY KEY (id);
 
@@ -20219,6 +20223,8 @@ CREATE INDEX index_group_group_links_on_shared_with_group_id ON group_group_link
 
 CREATE INDEX index_group_import_states_on_group_id ON group_import_states USING btree (group_id);
 
+CREATE INDEX index_group_import_states_on_user_id ON group_import_states USING btree (user_id) WHERE (user_id IS NOT NULL);
+
 CREATE UNIQUE INDEX index_group_stages_on_group_id_group_value_stream_id_and_name ON analytics_cycle_analytics_group_stages USING btree (group_id, group_value_stream_id, name);
 
 CREATE UNIQUE INDEX index_group_wiki_repositories_on_disk_path ON group_wiki_repositories USING btree (disk_path);
@@ -22116,6 +22122,9 @@ ALTER TABLE ONLY merge_requests
 
 ALTER TABLE ONLY merge_request_metrics
     ADD CONSTRAINT fk_7f28d925f3 FOREIGN KEY (merged_by_id) REFERENCES users(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY group_import_states
+    ADD CONSTRAINT fk_8053b3ebd6 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY sprints
     ADD CONSTRAINT fk_80aa8a1f95 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;

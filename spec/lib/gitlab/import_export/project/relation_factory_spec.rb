@@ -3,19 +3,22 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::ImportExport::Project::RelationFactory do
-  let(:group)   { create(:group) }
+  let(:group) { create(:group) }
   let(:project) { create(:project, :repository, group: group) }
   let(:members_mapper) { double('members_mapper').as_null_object }
-  let(:user) { create(:admin) }
+  let(:admin) { create(:admin) }
+  let(:importer_user) { admin }
   let(:excluded_keys) { [] }
   let(:created_object) do
-    described_class.create(relation_sym: relation_sym,
-                           relation_hash: relation_hash,
-                           object_builder: Gitlab::ImportExport::Project::ObjectBuilder,
-                           members_mapper: members_mapper,
-                           user: user,
-                           importable: project,
-                           excluded_keys: excluded_keys)
+    described_class.create(
+      relation_sym: relation_sym,
+      relation_hash: relation_hash,
+      object_builder: Gitlab::ImportExport::Project::ObjectBuilder,
+      members_mapper: members_mapper,
+      user: importer_user,
+      importable: project,
+      excluded_keys: excluded_keys
+    )
   end
 
   before do
@@ -113,9 +116,9 @@ RSpec.describe Gitlab::ImportExport::Project::RelationFactory do
         "created_at" => "2016-11-18T09:29:42.634Z",
         "updated_at" => "2016-11-18T09:29:42.634Z",
         "user" => {
-          "id" => user.id,
-          "email" => user.email,
-          "username" => user.username
+          "id" => admin.id,
+          "email" => admin.email,
+          "username" => admin.username
         }
       }
     end
@@ -123,7 +126,7 @@ RSpec.describe Gitlab::ImportExport::Project::RelationFactory do
     let(:members_mapper) do
       Gitlab::ImportExport::MembersMapper.new(
         exported_members: [exported_member],
-        user: user,
+        user: importer_user,
         importable: project)
     end
 
@@ -134,9 +137,9 @@ RSpec.describe Gitlab::ImportExport::Project::RelationFactory do
         'source_branch' => "feature_conflict",
         'source_project_id' => project.id,
         'target_project_id' => project.id,
-        'author_id' => user.id,
-        'assignee_id' => user.id,
-        'updated_by_id' => user.id,
+        'author_id' => admin.id,
+        'assignee_id' => admin.id,
+        'updated_by_id' => admin.id,
         'title' => "MR1",
         'created_at' => "2016-06-14T15:02:36.568Z",
         'updated_at' => "2016-06-14T15:02:56.815Z",
@@ -151,11 +154,11 @@ RSpec.describe Gitlab::ImportExport::Project::RelationFactory do
     end
 
     it 'has preloaded author' do
-      expect(created_object.author).to equal(user)
+      expect(created_object.author).to equal(admin)
     end
 
     it 'has preloaded updated_by' do
-      expect(created_object.updated_by).to equal(user)
+      expect(created_object.updated_by).to equal(admin)
     end
 
     it 'has preloaded source project' do
@@ -264,27 +267,8 @@ RSpec.describe Gitlab::ImportExport::Project::RelationFactory do
     end
   end
 
-  context 'Notes user references' do
-    let(:relation_sym) { :notes }
-    let(:new_user) { create(:user) }
-    let(:exported_member) do
-      {
-        "id" => 111,
-        "access_level" => 30,
-        "source_id" => 1,
-        "source_type" => "Project",
-        "user_id" => 3,
-        "notification_level" => 3,
-        "created_at" => "2016-11-18T09:29:42.634Z",
-        "updated_at" => "2016-11-18T09:29:42.634Z",
-        "user" => {
-          "id" => 999,
-          "email" => new_user.email,
-          "username" => new_user.username
-        }
-      }
-    end
-
+  it_behaves_like 'Notes user references' do
+    let(:importable) { project }
     let(:relation_hash) do
       {
         "id" => 4947,
@@ -304,17 +288,6 @@ RSpec.describe Gitlab::ImportExport::Project::RelationFactory do
         },
         "events" => []
       }
-    end
-
-    let(:members_mapper) do
-      Gitlab::ImportExport::MembersMapper.new(
-        exported_members: [exported_member],
-        user: user,
-        importable: project)
-    end
-
-    it 'maps the right author to the imported note' do
-      expect(created_object.author).to eq(new_user)
     end
   end
 

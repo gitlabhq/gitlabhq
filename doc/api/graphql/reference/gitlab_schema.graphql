@@ -19238,7 +19238,7 @@ input VulnerabilityResolveInput {
   clientMutationId: String
 
   """
-  ID of the vulnerability to be resolveed
+  ID of the vulnerability to be resolved
   """
   id: VulnerabilityID!
 }

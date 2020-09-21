@@ -25,6 +25,18 @@ export default {
   },
   mixins: [glFeatureFlagsMixin()],
   props: {
+    /**
+     * This prop should be bound to the value of the `<textarea>` element
+     * that is rendered as a child of this component (in the `textarea` slot)
+     */
+    textareaValue: {
+      type: String,
+      required: true,
+    },
+    markdownDocsPath: {
+      type: String,
+      required: true,
+    },
     isSubmitting: {
       type: Boolean,
       required: false,
@@ -34,10 +46,6 @@ export default {
       type: String,
       required: false,
       default: '',
-    },
-    markdownDocsPath: {
-      type: String,
-      required: true,
     },
     addSpacingClasses: {
       type: Boolean,
@@ -83,42 +91,6 @@ export default {
       type: Boolean,
       required: false,
       default: false,
-    },
-
-    /**
-     * This prop is used as a fallback if the value of the textarea can't be
-     * retreived using `this.$slots.textarea[0]?.elm?`.
-     *
-     * This happens when the `textarea` slot is defined like this:
-     *
-     * ```html
-     * <markdown-field>
-     *    <template #textarea>
-     *      <textarea></textarea>
-     *    </template>
-     *  </markdown-field>
-     * ```
-     *
-     * ... as opposed to this:
-     *
-     * ```html
-     * <markdown-field>
-     *   <textarea slot="textarea">
-     * </markdown-field>
-     * ```
-     *
-     * When using `<template #textarea>` as shown above in example #1,
-     * it's important to **always** provide a value to this prop.
-     * If `textareaValue` isn't provided, this component will not
-     * show a preview when the "Preview" tab is clicked - it
-     * will always show "Nothing to preview."
-     *
-     * For more info, see https://github.com/vuejs/vue/issues/10450.
-     */
-    textareaValue: {
-      type: String,
-      required: false,
-      default: '',
     },
   },
   data() {
@@ -219,17 +191,11 @@ export default {
 
       this.previewMarkdown = true;
 
-      /*
-          Can't use `$refs` as the component is technically in the parent component
-          so we access the VNode & then get the element
-        */
-      const text = this.$slots.textarea[0]?.elm?.value || this.textareaValue;
-
-      if (text) {
+      if (this.textareaValue) {
         this.markdownPreviewLoading = true;
         this.markdownPreview = __('Loading…');
         axios
-          .post(this.markdownPreviewPath, { text })
+          .post(this.markdownPreviewPath, { text: this.textareaValue })
           .then(response => this.renderMarkdown(response.data))
           .catch(() => new Flash(__('Error loading markdown preview')));
       } else {

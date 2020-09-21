@@ -433,6 +433,11 @@ data before running `pg_basebackup`.
    NOTE: **Note:**
    Replication slot names must only contain lowercase letters, numbers, and the underscore character.
 
+   NOTE: **Note:**
+   In GitLab 13.4, a seed project is added when GitLab is first installed. This makes it necessary to pass `--force` even
+   on a new Geo secondary node. There is an [issue to account for seed projects](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5618)
+   when checking the database.
+
    When prompted, enter the _plaintext_ password you set up for the `gitlab_replicator`
    user in the first step.
 

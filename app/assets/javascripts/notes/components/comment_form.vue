@@ -371,6 +371,7 @@ export default {
               :markdown-docs-path="markdownDocsPath"
               :quick-actions-docs-path="quickActionsDocsPath"
               :add-spacing-classes="false"
+              :textarea-value="note"
             >
               <textarea
                 id="note-body"
