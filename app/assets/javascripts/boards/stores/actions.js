@@ -226,31 +226,8 @@ export default {
       .catch(() => commit(types.RECEIVE_ISSUES_FOR_LIST_FAILURE, listId));
   },
 
-  fetchIssuesForAllLists: ({ state, commit }) => {
-    commit(types.REQUEST_ISSUES_FOR_ALL_LISTS);
-
-    const { endpoints, boardType, filterParams } = state;
-    const { fullPath, boardId } = endpoints;
-
-    const variables = {
-      fullPath,
-      boardId: fullBoardId(boardId),
-      filters: filterParams,
-      isGroup: boardType === BoardType.group,
-      isProject: boardType === BoardType.project,
-    };
-
-    return gqlClient
-      .query({
-        query: listsIssuesQuery,
-        variables,
-      })
-      .then(({ data }) => {
-        const { lists } = data[boardType]?.board;
-        const listIssues = formatListIssues(lists);
-        commit(types.RECEIVE_ISSUES_FOR_ALL_LISTS_SUCCESS, listIssues);
-      })
-      .catch(() => commit(types.RECEIVE_ISSUES_FOR_ALL_LISTS_FAILURE));
+  resetIssues: ({ commit }) => {
+    commit(types.RESET_ISSUES);
   },
 
   moveIssue: (

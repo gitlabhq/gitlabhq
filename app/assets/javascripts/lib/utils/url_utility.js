@@ -73,6 +73,7 @@ export function getParameterValues(sParam, url = window.location) {
  * @param {String} url
  * @param {Object} options
  * @param {Boolean} options.spreadArrays - split array values into separate key/value-pairs
+ * @param {Boolean} options.sort - alphabetically sort params in the returned url (in asc order, i.e., a-z)
  */
 export function mergeUrlParams(params, url, options = {}) {
   const { spreadArrays = false, sort = false } = options;

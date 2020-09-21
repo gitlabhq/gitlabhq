@@ -14,7 +14,7 @@ class SentryErrorPresenter < Gitlab::View::Presenter::Delegated
   end
 
   def project_id
-    Gitlab::GlobalId.build(model_name: 'Project', id: error.project_id).to_s
+    Gitlab::GlobalId.build(model_name: 'SentryProject', id: error.project_id).to_s
   end
 
   def frequency

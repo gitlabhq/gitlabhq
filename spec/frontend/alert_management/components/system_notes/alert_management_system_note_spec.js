@@ -1,4 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
+import { GlIcon } from '@gitlab/ui';
 import SystemNote from '~/alert_management/components/system_notes/system_note.vue';
 import mockAlerts from '../../mocks/alerts.json';
 
@@ -19,6 +20,7 @@ describe('Alert Details System Note', () => {
   afterEach(() => {
     if (wrapper) {
       wrapper.destroy();
+      wrapper = null;
     }
   });
 
@@ -29,10 +31,10 @@ describe('Alert Details System Note', () => {
 
     it('renders the correct system note', () => {
       const noteId = wrapper.find('.note-wrapper').attributes('id');
-      const iconRoute = wrapper.find('use').attributes('href');
+      const iconName = wrapper.find(GlIcon).attributes('name');
 
       expect(noteId).toBe('note_1628');
-      expect(iconRoute.includes('user')).toBe(true);
+      expect(iconName).toBe(mockAlert.notes.nodes[0].systemNoteIconName);
     });
   });
 });

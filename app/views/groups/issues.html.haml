@@ -23,9 +23,12 @@
     = render_if_exists 'shared/issuable/group_bulk_update_sidebar', group: @group, type: :issues
 
   - if Feature.enabled?(:vue_issuables_list, @group)
+    - if use_startup_call?
+      - add_page_startup_api_call(api_v4_groups_issues_path(id: @group.id, params: startup_call_params))
     .js-issuables-list{ data: { endpoint: expose_url(api_v4_groups_issues_path(id: @group.id)),
       'can-bulk-edit': @can_bulk_update.to_json,
       'empty-state-meta': { svg_path: image_path('illustrations/issues.svg') },
-      'sort-key': @sort } }
+      'sort-key': @sort,
+      type: 'issues' } }
   - else
     = render 'shared/issues'

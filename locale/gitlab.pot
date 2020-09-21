@@ -2678,12 +2678,6 @@ msgstr ""
 msgid "An error occurred while checking group path. Please refresh and try again."
 msgstr ""
 
-msgid "An error occurred while creating the issue. Please try again."
-msgstr ""
-
-msgid "An error occurred while creating the list. Please try again."
-msgstr ""
-
 msgid "An error occurred while decoding the file."
 msgstr ""
 
@@ -2756,16 +2750,10 @@ msgstr ""
 msgid "An error occurred while fetching the Service Desk address."
 msgstr ""
 
-msgid "An error occurred while fetching the board issues. Please reload the page."
-msgstr ""
-
 msgid "An error occurred while fetching the board lists. Please reload the page."
 msgstr ""
 
 msgid "An error occurred while fetching the board lists. Please try again."
-msgstr ""
-
-msgid "An error occurred while fetching the board swimlanes. Please reload the page."
 msgstr ""
 
 msgid "An error occurred while fetching the builds."
@@ -2879,9 +2867,6 @@ msgstr ""
 msgid "An error occurred while moving the issue."
 msgstr ""
 
-msgid "An error occurred while moving the issue. Please try again."
-msgstr ""
-
 msgid "An error occurred while parsing recent searches"
 msgstr ""
 
@@ -2949,9 +2934,6 @@ msgid "An error occurred while updating labels."
 msgstr ""
 
 msgid "An error occurred while updating the comment"
-msgstr ""
-
-msgid "An error occurred while updating the list. Please try again."
 msgstr ""
 
 msgid "An error occurred while validating group path"
@@ -4088,6 +4070,27 @@ msgid "Boards"
 msgstr ""
 
 msgid "Boards and Board Lists"
+msgstr ""
+
+msgid "Boards|An error occurred while creating the issue. Please try again."
+msgstr ""
+
+msgid "Boards|An error occurred while creating the list. Please try again."
+msgstr ""
+
+msgid "Boards|An error occurred while fetching issues. Please reload the page."
+msgstr ""
+
+msgid "Boards|An error occurred while fetching the board issues. Please reload the page."
+msgstr ""
+
+msgid "Boards|An error occurred while fetching the board swimlanes. Please reload the page."
+msgstr ""
+
+msgid "Boards|An error occurred while moving the issue. Please try again."
+msgstr ""
+
+msgid "Boards|An error occurred while updating the list. Please try again."
 msgstr ""
 
 msgid "Boards|Collapse"
