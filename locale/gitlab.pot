@@ -16814,6 +16814,9 @@ msgstr ""
 msgid "NetworkPolicies|Traffic that does not match any rule will be blocked."
 msgstr ""
 
+msgid "NetworkPolicies|Unable to parse policy"
+msgstr ""
+
 msgid "NetworkPolicies|YAML editor"
 msgstr ""
 
@@ -26296,9 +26299,6 @@ msgstr ""
 msgid "ThreatMonitoring|Operations Per Second"
 msgstr ""
 
-msgid "ThreatMonitoring|Overview"
-msgstr ""
-
 msgid "ThreatMonitoring|Packet Activity"
 msgstr ""
 
@@ -26315,6 +26315,9 @@ msgid "ThreatMonitoring|Something went wrong, unable to fetch environments"
 msgstr ""
 
 msgid "ThreatMonitoring|Something went wrong, unable to fetch statistics"
+msgstr ""
+
+msgid "ThreatMonitoring|Statistics"
 msgstr ""
 
 msgid "ThreatMonitoring|The firewall is not installed or has been disabled. To view this data, ensure the web application firewall is installed and enabled for your cluster."

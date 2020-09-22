@@ -10,6 +10,7 @@ module Packages
         .with_package_type(package_type)
         .safe_find_or_create_by!(name: name, version: version) do |pkg|
           pkg.creator = package_creator
+          yield pkg if block_given?
         end
     end
 
