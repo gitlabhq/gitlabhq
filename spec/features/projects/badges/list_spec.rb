@@ -17,10 +17,10 @@ RSpec.describe 'list of badges' do
       expect(page).to have_content 'Markdown'
       expect(page).to have_content 'HTML'
       expect(page).to have_content 'AsciiDoc'
-      expect(page).to have_css('.highlight', count: 3)
+      expect(page).to have_css('.js-syntax-highlight', count: 3)
       expect(page).to have_xpath("//img[@alt='pipeline status']")
 
-      page.within('.highlight', match: :first) do
+      page.within('.js-syntax-highlight', match: :first) do
         expect(page).to have_content 'badges/master/pipeline.svg'
       end
     end
@@ -32,10 +32,10 @@ RSpec.describe 'list of badges' do
       expect(page).to have_content 'Markdown'
       expect(page).to have_content 'HTML'
       expect(page).to have_content 'AsciiDoc'
-      expect(page).to have_css('.highlight', count: 3)
+      expect(page).to have_css('.js-syntax-highlight', count: 3)
       expect(page).to have_xpath("//img[@alt='coverage report']")
 
-      page.within('.highlight', match: :first) do
+      page.within('.js-syntax-highlight', match: :first) do
         expect(page).to have_content 'badges/master/coverage.svg'
       end
     end

@@ -5,16 +5,6 @@ require 'spec_helper'
 RSpec.describe BlobHelper do
   include TreeHelper
 
-  describe '#highlight' do
-    it 'wraps highlighted content' do
-      expect(helper.highlight('test.rb', '52')).to eq(%q[<pre class="code highlight"><code><span id="LC1" class="line" lang="ruby"><span class="mi">52</span></span></code></pre>])
-    end
-
-    it 'handles plain version' do
-      expect(helper.highlight('test.rb', '52', plain: true)).to eq(%q[<pre class="code highlight"><code><span id="LC1" class="line" lang="">52</span></code></pre>])
-    end
-  end
-
   describe "#sanitize_svg_data" do
     let(:input_svg_path) { File.join(Rails.root, 'spec', 'fixtures', 'unsanitized.svg') }
     let(:data) { File.read(input_svg_path) }

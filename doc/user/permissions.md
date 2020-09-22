@@ -8,7 +8,7 @@ Users have different abilities depending on the access level they have in a
 particular group or project. If a user is both in a project's group and the
 project itself, the highest permission level is used.
 
-On public and internal projects the Guest role is not enforced. All users can:
+On public and internal projects, the Guest role is not enforced. All users can:
 
 - Create issues.
 - Leave comments.
@@ -225,7 +225,7 @@ Read through the documentation on [permissions for File Locking](project/file_lo
 
 ### Confidential Issues permissions
 
-Confidential issues can be accessed by reporters and higher permission levels,
+Confidential issues can be accessed by users with reporter and higher permission levels,
 as well as by guest users that create a confidential issue. To learn more,
 read through the documentation on [permissions and access to confidential issues](project/issues/confidential_issues.md#permissions-and-access-to-confidential-issues).
 
@@ -340,7 +340,7 @@ The **Internal users** field allows specifying an email address regex pattern to
 identify default internal users. New users whose email address matches the regex
 pattern are set to internal by default rather than an external collaborator.
 
-The regex pattern format is Ruby, but it needs to be convertible to JavaScript,
+The regex pattern format is in Ruby, but it needs to be convertible to JavaScript,
 and the ignore case flag is set (`/regex pattern/i`). Here are some examples:
 
 - Use `\.internal@domain\.com$` to mark email addresses ending with

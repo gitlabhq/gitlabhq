@@ -294,6 +294,13 @@ module SearchHelper
     sanitize(html, tags: %w(a p ol ul li pre code))
   end
 
+  def simple_search_highlight_and_truncate(text, phrase, options = {})
+    truncate_length = options.delete(:length) { 200 }
+    text = truncate(text, length: truncate_length)
+    phrase = phrase.split
+    highlight(text, phrase, options)
+  end
+
   def show_user_search_tab?
     return false if Feature.disabled?(:users_search, default_enabled: true)
 

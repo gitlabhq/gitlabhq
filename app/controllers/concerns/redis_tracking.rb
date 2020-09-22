@@ -26,7 +26,6 @@ module RedisTracking
 
   def track_unique_redis_hll_event(event_name, feature, feature_default_enabled)
     return unless metric_feature_enabled?(feature, feature_default_enabled)
-    return unless Gitlab::CurrentSettings.usage_ping_enabled?
     return unless visitor_id
 
     Gitlab::UsageDataCounters::HLLRedisCounter.track_event(visitor_id, event_name)

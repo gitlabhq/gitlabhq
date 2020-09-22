@@ -191,8 +191,20 @@ To add a Kubernetes cluster to your project, group, or instance:
          ```
 
          NOTE: **Note:**
-         If the command returns the entire certificate chain, you need copy the *root ca*
-         certificate at the bottom of the chain.
+         If the command returns the entire certificate chain, you must copy the Root CA
+         certificate and any intermediate certificates at the bottom of the chain.
+         A chain file has following structure:  
+
+         ```plaintext
+            -----BEGIN MY CERTIFICATE-----  
+            -----END MY CERTIFICATE-----  
+            -----BEGIN INTERMEDIATE CERTIFICATE-----  
+            -----END INTERMEDIATE CERTIFICATE-----  
+            -----BEGIN INTERMEDIATE CERTIFICATE-----  
+            -----END INTERMEDIATE CERTIFICATE-----  
+            -----BEGIN ROOT CERTIFICATE-----  
+            -----END ROOT CERTIFICATE-----  
+         ```
 
    1. **Token** -
       GitLab authenticates against Kubernetes using service tokens, which are

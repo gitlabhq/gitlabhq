@@ -11,6 +11,8 @@ module Projects
         push_frontend_feature_flag(:ci_key_autocomplete, default_enabled: true)
       end
 
+      helper_method :highlight_badge
+
       def show
       end
 
@@ -49,6 +51,10 @@ module Projects
       end
 
       private
+
+      def highlight_badge(name, content, language = nil)
+        Gitlab::Highlight.highlight(name, content, language: language)
+      end
 
       def update_params
         params.require(:project).permit(*permitted_project_params)
