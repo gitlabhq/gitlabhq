@@ -370,7 +370,7 @@ RSpec.describe 'gitlab:app namespace rake task', :delete do
       end
 
       it 'has defaults' do
-        expect_next_instance_of(::Backup::Repository) do |instance|
+        expect_next_instance_of(::Backup::Repositories) do |instance|
           expect(instance).to receive(:dump)
             .with(max_concurrency: 1, max_storage_concurrency: 1)
             .and_call_original
@@ -383,7 +383,7 @@ RSpec.describe 'gitlab:app namespace rake task', :delete do
         stub_env('GITLAB_BACKUP_MAX_CONCURRENCY', 5)
         stub_env('GITLAB_BACKUP_MAX_STORAGE_CONCURRENCY', 2)
 
-        expect_next_instance_of(::Backup::Repository) do |instance|
+        expect_next_instance_of(::Backup::Repositories) do |instance|
           expect(instance).to receive(:dump)
             .with(max_concurrency: 5, max_storage_concurrency: 2)
             .and_call_original

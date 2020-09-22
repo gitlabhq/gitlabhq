@@ -20682,6 +20682,9 @@ msgstr ""
 msgid "Publish to status page"
 msgstr ""
 
+msgid "Published"
+msgstr ""
+
 msgid "Published on status page"
 msgstr ""
 

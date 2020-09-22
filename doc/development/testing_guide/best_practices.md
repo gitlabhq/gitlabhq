@@ -497,10 +497,9 @@ let_it_be(:project, refind: true) { create(:project) }
 
 ### Time-sensitive tests
 
-[Timecop](https://github.com/travisjeffery/timecop) is available in our
-Ruby-based tests for verifying things that are time-sensitive. Any test that
-exercises or verifies something time-sensitive should make use of Timecop to
-prevent transient test failures.
+[`ActiveSupport::Testing::TimeHelpers`](https://api.rubyonrails.org/v6.0.3.1/classes/ActiveSupport/Testing/TimeHelpers.html)
+can be used to verify things that are time-sensitive. Any test that exercises or verifies something time-sensitive
+should make use of these helpers to prevent transient test failures.
 
 Example:
 
@@ -508,7 +507,7 @@ Example:
 it 'is overdue' do
   issue = build(:issue, due_date: Date.tomorrow)
 
-  Timecop.freeze(3.days.from_now) do
+  travel_to(3.days.from_now) do
     expect(issue).to be_overdue
   end
 end
