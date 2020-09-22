@@ -66,6 +66,8 @@ To set up GitLab and its components to accommodate up to 25,000 users:
 1. [Configure Prometheus](#configure-prometheus) to monitor your GitLab environment.
 1. [Configure the Object Storage](#configure-the-object-storage)
    used for shared data objects.
+1. [Configure Advanced Search (optional)](#configure-advanced-search) for faster,
+   more advanced code search across your entire GitLab instance.
 1. [Configure NFS (Optional)](#configure-nfs-optional)
    to have shared disk storage service as an alternative to Gitaly and/or Object Storage (although
    not recommended). NFS is required for GitLab Pages, you can skip this step if you're not using
@@ -2026,6 +2028,25 @@ One risk of using a single bucket would be if your organization decided to
 migrate GitLab to the Helm deployment in the future. GitLab would run, but the situation with
 backups might not be realized until the organization had a critical requirement for the backups to
 work.
+
+<div align="right">
+  <a type="button" class="btn btn-default" href="#setup-components">
+    Back to setup components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
+  </a>
+</div>
+
+## Configure Advanced Search **(STARTER ONLY)**
+
+NOTE: **Note:**
+Elasticsearch cluster design and requirements are dependent on your specific data.
+For recommended best practices on how to set up your Elasticsearch cluster
+alongside your instance, read how to
+[choose the optimal cluster configuration](../../integration/elasticsearch.md#guidance-on-choosing-optimal-cluster-configuration).
+
+You can leverage Elasticsearch and enable Advanced Search for faster, more
+advanced code search across your entire GitLab instance.
+
+[Learn how to set it up.](../../integration/elasticsearch.md)
 
 <div align="right">
   <a type="button" class="btn btn-default" href="#setup-components">

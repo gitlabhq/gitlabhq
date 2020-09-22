@@ -71,8 +71,6 @@ class User < ApplicationRecord
 
   MINIMUM_INACTIVE_DAYS = 180
 
-  ignore_column :bio, remove_with: '13.4', remove_after: '2020-09-22'
-
   # Override Devise::Models::Trackable#update_tracked_fields!
   # to limit database writes to at most once every hour
   # rubocop: disable CodeReuse/ServiceClass

@@ -509,6 +509,8 @@ class MergeRequestDiff < ApplicationRecord
   end
 
   def encode_in_base64?(diff_text)
+    return false if diff_text.nil?
+
     (diff_text.encoding == Encoding::BINARY && !diff_text.ascii_only?) ||
       diff_text.include?("\0")
   end
@@ -536,7 +538,7 @@ class MergeRequestDiff < ApplicationRecord
       rows.each do |row|
         data = row.delete(:diff)
         row[:external_diff_offset] = file.pos
-        row[:external_diff_size] = data.bytesize
+        row[:external_diff_size] = data&.bytesize || 0
 
         file.write(data)
       end

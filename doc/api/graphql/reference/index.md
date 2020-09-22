@@ -685,6 +685,7 @@ A collection of designs.
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
+| `copyState` | DesignCollectionCopyState | Copy state of the design collection |
 | `design` | Design | Find a specific design |
 | `designAtVersion` | DesignAtVersion | Find a design as of a version |
 | `issue` | Issue! | Issue associated with the design collection |
@@ -3026,6 +3027,16 @@ Mode of a commit action.
 | `INPROGRESS_VALIDATION` | Site validation process is in progress |
 | `PASSED_VALIDATION` | Site validation process finished successfully |
 | `PENDING_VALIDATION` | Site validation process has not started |
+
+### DesignCollectionCopyState
+
+Copy state of a DesignCollection.
+
+| Value | Description |
+| ----- | ----------- |
+| `ERROR` | The DesignCollection encountered an error during a copy |
+| `IN_PROGRESS` | The DesignCollection is being copied |
+| `READY` | The DesignCollection has no copy in progress |
 
 ### DesignVersionEvent
 

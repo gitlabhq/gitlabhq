@@ -10790,6 +10790,20 @@
           "description": "A collection of designs",
           "fields": [
             {
+              "name": "copyState",
+              "description": "Copy state of the design collection",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "ENUM",
+                "name": "DesignCollectionCopyState",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "design",
               "description": "Find a specific design",
               "args": [
@@ -11104,6 +11118,35 @@
 
           ],
           "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "ENUM",
+          "name": "DesignCollectionCopyState",
+          "description": "Copy state of a DesignCollection",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "READY",
+              "description": "The DesignCollection has no copy in progress",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "IN_PROGRESS",
+              "description": "The DesignCollection is being copied",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "ERROR",
+              "description": "The DesignCollection encountered an error during a copy",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
           "possibleTypes": null
         },
         {
@@ -41104,6 +41147,16 @@
                         "ofType": null
                       }
                     }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "searchNamespaces",
+                  "description": "Include namespace in project search",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
                   },
                   "defaultValue": null
                 },

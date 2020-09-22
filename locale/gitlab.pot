@@ -1024,6 +1024,11 @@ msgid_plural "%d days"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "1 deploy key"
+msgid_plural "%d deploy keys"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "1 group"
 msgid_plural "%d groups"
 msgstr[0] ""
@@ -1322,6 +1327,9 @@ msgid "Access to '%{classification_label}' not allowed"
 msgstr ""
 
 msgid "Access to Pages websites are controlled based on the user's membership to a given project. By checking this box, users will be required to be logged in to have access to all Pages websites in your instance."
+msgstr ""
+
+msgid "AccessDropdown|Deploy Keys"
 msgstr ""
 
 msgid "AccessDropdown|Groups"
@@ -10644,6 +10652,9 @@ msgstr ""
 msgid "Failed to load branches. Please try again."
 msgstr ""
 
+msgid "Failed to load deploy keys."
+msgstr ""
+
 msgid "Failed to load emoji list."
 msgstr ""
 
@@ -10657,6 +10668,9 @@ msgid "Failed to load group activity metrics. Please try again."
 msgstr ""
 
 msgid "Failed to load groups & users."
+msgstr ""
+
+msgid "Failed to load groups, users and deploy keys."
 msgstr ""
 
 msgid "Failed to load labels. Please try again."
@@ -11147,6 +11161,9 @@ msgstr ""
 msgid "Filter by user"
 msgstr ""
 
+msgid "Filter parameters are not valid. Make sure that the end date is after the start date."
+msgstr ""
+
 msgid "Filter pipelines"
 msgstr ""
 
@@ -11171,7 +11188,7 @@ msgstr ""
 msgid "Find File"
 msgstr ""
 
-msgid "Find bugs in your code with coverage-guided fuzzing"
+msgid "Find bugs in your code with coverage-guided fuzzing."
 msgstr ""
 
 msgid "Find by path"
@@ -17913,6 +17930,9 @@ msgstr ""
 msgid "Overwrite diverged branches"
 msgstr ""
 
+msgid "Owned by %{image_tag}"
+msgstr ""
+
 msgid "Owned by anyone"
 msgstr ""
 
@@ -22460,6 +22480,9 @@ msgstr ""
 msgid "SecurityConfiguration|Manage"
 msgstr ""
 
+msgid "SecurityConfiguration|More information"
+msgstr ""
+
 msgid "SecurityConfiguration|Not enabled"
 msgstr ""
 
@@ -22470,9 +22493,6 @@ msgid "SecurityConfiguration|SAST Configuration"
 msgstr ""
 
 msgid "SecurityConfiguration|Security Control"
-msgstr ""
-
-msgid "SecurityConfiguration|See documentation"
 msgstr ""
 
 msgid "SecurityConfiguration|Status"
@@ -24190,9 +24210,6 @@ msgid "Start a review"
 msgstr ""
 
 msgid "Start and due date"
-msgstr ""
-
-msgid "Start by choosing a group to see how your team is spending time. You can then drill down to the project level."
 msgstr ""
 
 msgid "Start by choosing a group to start exploring the merge requests in that group. You can then proceed to filter by projects, labels, milestones and authors."

@@ -83,12 +83,12 @@ describe('IDE commit sidebar actions', () => {
     });
   });
 
-  describe('commitToCurrentBranchText', () => {
+  describe('currentBranchText', () => {
     it('escapes current branch', () => {
       const injectedSrc = '<img src="x" />';
       createComponent({ currentBranchId: injectedSrc });
 
-      expect(vm.commitToCurrentBranchText).not.toContain(injectedSrc);
+      expect(vm.currentBranchText).not.toContain(injectedSrc);
     });
   });
 

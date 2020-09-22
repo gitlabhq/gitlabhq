@@ -17,8 +17,16 @@ RSpec.describe InvitesController, :snowplow do
     }
   end
 
-  before do
-    controller.instance_variable_set(:@member, member)
+  shared_examples 'invalid token' do
+    context 'when invite token is not valid' do
+      let(:params) { { id: '_bogus_token_' } }
+
+      it 'renders the 404 page' do
+        request
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
   end
 
   describe 'GET #show' do
@@ -39,7 +47,7 @@ RSpec.describe InvitesController, :snowplow do
       end
 
       it 'forces re-confirmation if email does not match signed in user' do
-        member.invite_email = 'bogus@email.com'
+        member.update!(invite_email: 'bogus@email.com')
 
         expect do
           request
@@ -80,6 +88,8 @@ RSpec.describe InvitesController, :snowplow do
           expect_snowplow_event(snowplow_event.merge(action: 'accepted'))
         end
       end
+
+      it_behaves_like 'invalid token'
     end
 
     context 'when not logged in' do
@@ -139,5 +149,27 @@ RSpec.describe InvitesController, :snowplow do
         expect_snowplow_event(snowplow_event.merge(action: 'accepted'))
       end
     end
+
+    it_behaves_like 'invalid token'
+  end
+
+  describe 'POST #decline for link in UI' do
+    before do
+      sign_in(user)
+    end
+
+    subject(:request) { post :decline, params: params }
+
+    it_behaves_like 'invalid token'
+  end
+
+  describe 'GET #decline for link in email' do
+    before do
+      sign_in(user)
+    end
+
+    subject(:request) { get :decline, params: params }
+
+    it_behaves_like 'invalid token'
   end
 end

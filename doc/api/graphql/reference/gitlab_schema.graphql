@@ -3920,6 +3920,11 @@ A collection of designs
 """
 type DesignCollection {
   """
+  Copy state of the design collection
+  """
+  copyState: DesignCollectionCopyState
+
+  """
   Find a specific design
   """
   design(
@@ -4044,6 +4049,26 @@ type DesignCollection {
     """
     last: Int
   ): DesignVersionConnection!
+}
+
+"""
+Copy state of a DesignCollection
+"""
+enum DesignCollectionCopyState {
+  """
+  The DesignCollection encountered an error during a copy
+  """
+  ERROR
+
+  """
+  The DesignCollection is being copied
+  """
+  IN_PROGRESS
+
+  """
+  The DesignCollection has no copy in progress
+  """
+  READY
 }
 
 """
@@ -14023,6 +14048,11 @@ type Query {
     Search query for project name, path, or description
     """
     search: String
+
+    """
+    Include namespace in project search
+    """
+    searchNamespaces: Boolean
   ): ProjectConnection
 
   """

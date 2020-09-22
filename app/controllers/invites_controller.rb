@@ -4,6 +4,7 @@ class InvitesController < ApplicationController
   include Gitlab::Utils::StrongMemoize
 
   before_action :member
+  before_action :ensure_member_exists
   before_action :invite_details
   skip_before_action :authenticate_user!, only: :decline
 
@@ -59,14 +60,16 @@ class InvitesController < ApplicationController
   end
 
   def member
-    return @member if defined?(@member)
+    strong_memoize(:member) do
+      @token = params[:id]
+      Member.find_by_invite_token(@token)
+    end
+  end
 
-    @token = params[:id]
-    @member = Member.find_by_invite_token(@token)
+  def ensure_member_exists
+    return if member
 
-    return render_404 unless @member
-
-    @member
+    render_404
   end
 
   def authenticate_user!
@@ -76,10 +79,7 @@ class InvitesController < ApplicationController
     notice << "or create an account" if Gitlab::CurrentSettings.allow_signup?
     notice = notice.join(' ') + "."
 
-    # this is temporary finder instead of using member method due to render_404 possibility
-    # will be resolved via https://gitlab.com/gitlab-org/gitlab/-/issues/245325
-    initial_member = Member.find_by_invite_token(params[:id])
-    redirect_params = initial_member ? { invite_email: initial_member.invite_email } : {}
+    redirect_params = member ? { invite_email: member.invite_email } : {}
 
     store_location_for :user, request.fullpath
 
@@ -87,20 +87,20 @@ class InvitesController < ApplicationController
   end
 
   def invite_details
-    @invite_details ||= case @member.source
+    @invite_details ||= case member.source
                         when Project
                           {
-                            name: @member.source.full_name,
-                            url: project_url(@member.source),
+                            name: member.source.full_name,
+                            url: project_url(member.source),
                             title: _("project"),
-                            path: project_path(@member.source)
+                            path: project_path(member.source)
                           }
                         when Group
                           {
-                            name: @member.source.name,
-                            url: group_url(@member.source),
+                            name: member.source.name,
+                            url: group_url(member.source),
                             title: _("group"),
-                            path: group_path(@member.source)
+                            path: group_path(member.source)
                           }
                         end
   end

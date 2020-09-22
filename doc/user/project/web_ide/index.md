@@ -79,7 +79,7 @@ which apply to the entire Web IDE screen.
 > - Support for validation based on custom schemas [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/226982) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.4.
 
 The Web IDE provides validation support for certain JSON and YAML files using schemas
-based on the [JSON Schema Store](https://www.schemastore.org/json/). 
+based on the [JSON Schema Store](https://www.schemastore.org/json/).
 
 ### Predefined schemas
 
@@ -423,9 +423,12 @@ when:
 
 ### Limitations
 
-Interactive Terminals is in a beta phase and continues to be improved in upcoming
-releases. In the meantime, please note that the user is limited to having only one
-active terminal at a time.
+The Web IDE has a few limitations:
+
+- Interactive Terminals is in a beta phase and continues to be improved in upcoming releases. In the meantime, please note that the user is limited to having only one
+  active terminal at a time.
+
+- LFS files can be rendered and displayed but they cannot be updated and committed using the Web IDE. If an LFS file is modified and pushed to the repository, the LFS pointer in the repository will be overwritten with the modified LFS file content.
 
 ### Troubleshooting
 

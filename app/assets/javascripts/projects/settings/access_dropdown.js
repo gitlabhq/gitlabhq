@@ -2,8 +2,8 @@
 import { escape, find, countBy } from 'lodash';
 import axios from '~/lib/utils/axios_utils';
 import { deprecatedCreateFlash as Flash } from '~/flash';
-import { n__, s__, __ } from '~/locale';
-import { LEVEL_TYPES, LEVEL_ID_PROP, ACCESS_LEVEL_NONE } from './constants';
+import { n__, s__, __, sprintf } from '~/locale';
+import { LEVEL_TYPES, LEVEL_ID_PROP, ACCESS_LEVELS, ACCESS_LEVEL_NONE } from './constants';
 import initDeprecatedJQueryDropdown from '~/deprecated_jquery_dropdown';
 
 export default class AccessDropdown {
@@ -11,6 +11,7 @@ export default class AccessDropdown {
     const { $dropdown, accessLevel, accessLevelsData, hasLicense = true } = options;
     this.options = options;
     this.hasLicense = hasLicense;
+    this.deployKeysOnProtectedBranchesEnabled = gon.features.deployKeysOnProtectedBranches;
     this.groups = [];
     this.accessLevel = accessLevel;
     this.accessLevelsData = accessLevelsData.roles;
@@ -18,6 +19,7 @@ export default class AccessDropdown {
     this.$wrap = this.$dropdown.closest(`.${this.accessLevel}-container`);
     this.usersPath = '/-/autocomplete/users.json';
     this.groupsPath = '/-/autocomplete/project_groups.json';
+    this.deployKeysPath = '/-/autocomplete/deploy_keys_with_owners.json';
     this.defaultLabel = this.$dropdown.data('defaultLabel');
 
     this.setSelectedItems([]);
@@ -146,6 +148,8 @@ export default class AccessDropdown {
         obj.access_level = item.access_level;
       } else if (item.type === LEVEL_TYPES.USER) {
         obj.user_id = item.user_id;
+      } else if (item.type === LEVEL_TYPES.DEPLOY_KEY) {
+        obj.deploy_key_id = item.deploy_key_id;
       } else if (item.type === LEVEL_TYPES.GROUP) {
         obj.group_id = item.group_id;
       }
@@ -176,6 +180,9 @@ export default class AccessDropdown {
           break;
         case LEVEL_TYPES.GROUP:
           comparator = LEVEL_ID_PROP.GROUP;
+          break;
+        case LEVEL_TYPES.DEPLOY_KEY:
+          comparator = LEVEL_ID_PROP.DEPLOY_KEY;
           break;
         case LEVEL_TYPES.USER:
           comparator = LEVEL_ID_PROP.USER;
@@ -218,6 +225,11 @@ export default class AccessDropdown {
         group_id: selectedItem.id,
         type: LEVEL_TYPES.GROUP,
       };
+    } else if (selectedItem.type === LEVEL_TYPES.DEPLOY_KEY) {
+      itemToAdd = {
+        deploy_key_id: selectedItem.id,
+        type: LEVEL_TYPES.DEPLOY_KEY,
+      };
     }
 
     this.items.push(itemToAdd);
@@ -233,11 +245,12 @@ export default class AccessDropdown {
         return true;
       }
 
-      if (item.type === LEVEL_TYPES.USER && item.user_id === itemToDelete.id) {
-        index = i;
-      } else if (item.type === LEVEL_TYPES.ROLE && item.access_level === itemToDelete.id) {
-        index = i;
-      } else if (item.type === LEVEL_TYPES.GROUP && item.group_id === itemToDelete.id) {
+      if (
+        (item.type === LEVEL_TYPES.USER && item.user_id === itemToDelete.id) ||
+        (item.type === LEVEL_TYPES.ROLE && item.access_level === itemToDelete.id) ||
+        (item.type === LEVEL_TYPES.DEPLOY_KEY && item.deploy_key_id === itemToDelete.id) ||
+        (item.type === LEVEL_TYPES.GROUP && item.group_id === itemToDelete.id)
+      ) {
         index = i;
       }
 
@@ -289,6 +302,10 @@ export default class AccessDropdown {
       labelPieces.push(n__('1 user', '%d users', counts[LEVEL_TYPES.USER]));
     }
 
+    if (counts[LEVEL_TYPES.DEPLOY_KEY] > 0) {
+      labelPieces.push(n__('1 deploy key', '%d deploy keys', counts[LEVEL_TYPES.DEPLOY_KEY]));
+    }
+
     if (counts[LEVEL_TYPES.GROUP] > 0) {
       labelPieces.push(n__('1 group', '%d groups', counts[LEVEL_TYPES.GROUP]));
     }
@@ -299,20 +316,31 @@ export default class AccessDropdown {
   getData(query, callback) {
     if (this.hasLicense) {
       Promise.all([
+        this.getDeployKeys(query),
         this.getUsers(query),
         this.groupsData ? Promise.resolve(this.groupsData) : this.getGroups(),
       ])
-        .then(([usersResponse, groupsResponse]) => {
+        .then(([deployKeysResponse, usersResponse, groupsResponse]) => {
           this.groupsData = groupsResponse;
-          callback(this.consolidateData(usersResponse.data, groupsResponse.data));
+          callback(
+            this.consolidateData(deployKeysResponse.data, usersResponse.data, groupsResponse.data),
+          );
         })
-        .catch(() => Flash(__('Failed to load groups & users.')));
+        .catch(() => {
+          if (this.deployKeysOnProtectedBranchesEnabled) {
+            Flash(__('Failed to load groups, users and deploy keys.'));
+          } else {
+            Flash(__('Failed to load groups & users.'));
+          }
+        });
     } else {
-      callback(this.consolidateData());
+      this.getDeployKeys(query)
+        .then(deployKeysResponse => callback(this.consolidateData(deployKeysResponse.data)))
+        .catch(() => Flash(__('Failed to load deploy keys.')));
     }
   }
 
-  consolidateData(usersResponse = [], groupsResponse = []) {
+  consolidateData(deployKeysResponse, usersResponse = [], groupsResponse = []) {
     let consolidatedData = [];
 
     // ID property is handled differently locally from the server
@@ -328,6 +356,10 @@ export default class AccessDropdown {
     // For Users
     // In dropdown: `id`
     // For submit: `user_id`
+    //
+    // For Deploy Keys
+    // In dropdown: `id`
+    // For submit: `deploy_key_id`
 
     /*
      * Build roles
@@ -410,6 +442,38 @@ export default class AccessDropdown {
       }
     }
 
+    if (this.deployKeysOnProtectedBranchesEnabled) {
+      const deployKeys = deployKeysResponse.map(response => {
+        const {
+          id,
+          fingerprint,
+          title,
+          owner: { avatar_url, name, username },
+        } = response;
+
+        const shortFingerprint = `(${fingerprint.substring(0, 14)}...)`;
+
+        return {
+          id,
+          title: title.concat(' ', shortFingerprint),
+          avatar_url,
+          fullname: name,
+          username,
+          type: LEVEL_TYPES.DEPLOY_KEY,
+        };
+      });
+
+      if (this.accessLevel === ACCESS_LEVELS.PUSH) {
+        if (deployKeys.length) {
+          consolidatedData = consolidatedData.concat(
+            [{ type: 'divider' }],
+            [{ type: 'header', content: s__('AccessDropdown|Deploy Keys') }],
+            deployKeys,
+          );
+        }
+      }
+    }
+
     return consolidatedData;
   }
 
@@ -433,6 +497,22 @@ export default class AccessDropdown {
     });
   }
 
+  getDeployKeys(query) {
+    if (this.deployKeysOnProtectedBranchesEnabled) {
+      return axios.get(this.buildUrl(gon.relative_url_root, this.deployKeysPath), {
+        params: {
+          search: query,
+          per_page: 20,
+          active: true,
+          project_id: gon.current_project_id,
+          push_code: true,
+        },
+      });
+    }
+
+    return Promise.resolve({ data: [] });
+  }
+
   buildUrl(urlRoot, url) {
     let newUrl;
     if (urlRoot != null) {
@@ -454,6 +534,9 @@ export default class AccessDropdown {
       case LEVEL_TYPES.ROLE:
         criteria = { access_level: item.id };
         break;
+      case LEVEL_TYPES.DEPLOY_KEY:
+        criteria = { deploy_key_id: item.id };
+        break;
       case LEVEL_TYPES.GROUP:
         criteria = { group_id: item.id };
         break;
@@ -469,6 +552,10 @@ export default class AccessDropdown {
         break;
       case LEVEL_TYPES.ROLE:
         groupRowEl = this.roleRowHtml(item, isActive);
+        break;
+      case LEVEL_TYPES.DEPLOY_KEY:
+        groupRowEl =
+          this.accessLevel === ACCESS_LEVELS.PUSH ? this.deployKeyRowHtml(item, isActive) : '';
         break;
       case LEVEL_TYPES.GROUP:
         groupRowEl = this.groupRowHtml(item, isActive);
@@ -490,6 +577,31 @@ export default class AccessDropdown {
           <img src="${user.avatar_url}" class="avatar avatar-inline" width="30">
           <strong class="dropdown-menu-user-full-name">${escape(user.name)}</strong>
           <span class="dropdown-menu-user-username">${user.username}</span>
+        </a>
+      </li>
+    `;
+  }
+
+  deployKeyRowHtml(key, isActive) {
+    const isActiveClass = isActive || '';
+
+    return `
+      <li>
+        <a href="#" class="${isActiveClass}">
+          <strong>${key.title}</strong>
+          <p>
+            ${sprintf(
+              __('Owned by %{image_tag}'),
+              {
+                image_tag: `<img src="${key.avatar_url}" class="avatar avatar-inline s26" width="30">`,
+              },
+              false,
+            )}
+            <strong class="dropdown-menu-user-full-name gl-display-inline">${escape(
+              key.fullname,
+            )}</strong>
+            <span class="dropdown-menu-user-username gl-display-inline">${key.username}</span>
+          </p>
         </a>
       </li>
     `;

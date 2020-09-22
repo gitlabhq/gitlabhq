@@ -257,11 +257,7 @@ class MergeRequest < ApplicationRecord
   scope :join_project, -> { joins(:target_project) }
   scope :join_metrics, -> do
     query = joins(:metrics)
-
-    if Feature.enabled?(:improved_mr_merged_at_queries, default_enabled: true)
-      query = query.where(MergeRequest.arel_table[:target_project_id].eq(MergeRequest::Metrics.arel_table[:target_project_id]))
-    end
-
+    query = query.where(MergeRequest.arel_table[:target_project_id].eq(MergeRequest::Metrics.arel_table[:target_project_id]))
     query
   end
   scope :references_project, -> { references(:target_project) }

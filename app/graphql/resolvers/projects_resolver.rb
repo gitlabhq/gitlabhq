@@ -16,6 +16,10 @@ module Resolvers
             required: false,
             description: 'Filter projects by IDs'
 
+    argument :search_namespaces, GraphQL::BOOLEAN_TYPE,
+             required: false,
+             description: 'Include namespace in project search'
+
     def resolve(**args)
       ProjectsFinder
         .new(current_user: current_user, params: project_finder_params(args), project_ids_relation: parse_gids(args[:ids]))
@@ -28,7 +32,8 @@ module Resolvers
       {
         without_deleted: true,
         non_public: params[:membership],
-        search: params[:search]
+        search: params[:search],
+        search_namespaces: params[:search_namespaces]
       }.compact
     end
 

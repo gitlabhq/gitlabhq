@@ -1021,6 +1021,9 @@ The second facet presents the only real solution. For this, we developed
 
 ## Troubleshooting Gitaly
 
+Check [Gitaly timeouts](../../user/admin_area/settings/gitaly_timeouts.md) when troubleshooting
+Gitaly.
+
 ### Checking versions when using standalone Gitaly servers
 
 When using standalone Gitaly servers, you must make sure they are the same version

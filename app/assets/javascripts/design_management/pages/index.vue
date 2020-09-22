@@ -71,6 +71,7 @@ export default {
       selectedDesigns: [],
       isDraggingDesign: false,
       reorderedDesigns: null,
+      isReorderingInProgress: false,
     };
   },
   computed: {
@@ -277,6 +278,7 @@ export default {
       return variables;
     },
     reorderDesigns({ moved: { newIndex, element } }) {
+      this.isReorderingInProgress = true;
       this.$apollo
         .mutate({
           mutation: moveDesignMutation,
@@ -287,6 +289,9 @@ export default {
         })
         .catch(() => {
           createFlash(MOVE_DESIGN_ERROR);
+        })
+        .finally(() => {
+          this.isReorderingInProgress = false;
         });
     },
     onDesignMove(designs) {
@@ -358,7 +363,7 @@ export default {
       <vue-draggable
         v-else
         :value="designs"
-        :disabled="!isLatestVersion"
+        :disabled="!isLatestVersion || isReorderingInProgress"
         v-bind="$options.dragOptions"
         tag="ol"
         draggable=".js-design-tile"
