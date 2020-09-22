@@ -77,6 +77,6 @@
       = f.datetime_select :ends_at, {}, class: 'form-control form-control-inline'
   .form-actions
     - if @broadcast_message.persisted?
-      = f.submit "Update broadcast message", class: "btn btn-success"
+      = f.submit "Update broadcast message", class: "btn gl-button btn-success"
     - else
-      = f.submit "Add broadcast message", class: "btn btn-success"
+      = f.submit "Add broadcast message", class: "btn gl-button btn-success"

@@ -16748,6 +16748,9 @@ msgstr ""
 msgid "NetworkPolicies|Name"
 msgstr ""
 
+msgid "NetworkPolicies|Namespace"
+msgstr ""
+
 msgid "NetworkPolicies|Network Policy"
 msgstr ""
 
@@ -22560,9 +22563,6 @@ msgid "SecurityReports|Issues created from a vulnerability cannot be removed."
 msgstr ""
 
 msgid "SecurityReports|Learn more about setting up your dashboard"
-msgstr ""
-
-msgid "SecurityReports|Load more vulnerabilities"
 msgstr ""
 
 msgid "SecurityReports|Monitor vulnerabilities in your code"

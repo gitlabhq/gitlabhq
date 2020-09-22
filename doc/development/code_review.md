@@ -67,6 +67,10 @@ page, with these behaviors:
    contains the string 'OOO', or the emoji is `:palm_tree:` or `:beach:`.
 1. [Trainee maintainers](https://about.gitlab.com/handbook/engineering/workflow/code-review/#trainee-maintainer)
    are three times as likely to be picked as other reviewers.
+1. People whose [GitLab status](../user/profile/index.md#current-status) emoji
+   is `:large_blue_circle:` are more likely to be picked. This applies to both reviewers and trainee maintainers.
+   - Reviewers with `:large_blue_circle:` are two times as likely to be picked as other reviewers.
+   - Trainee maintainers with `:large_blue_circle:` are four times as likely to be picked as other reviewers.
 1. It always picks the same reviewers and maintainers for the same
    branch name (unless their OOO status changes, as in point 1). It
    removes leading `ce-` and `ee-`, and trailing `-ce` and `-ee`, so
