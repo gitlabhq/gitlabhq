@@ -182,7 +182,7 @@ module Issuable
     end
 
     def supports_time_tracking?
-      is_a?(TimeTrackable) && !incident?
+      is_a?(TimeTrackable)
     end
 
     def supports_severity?

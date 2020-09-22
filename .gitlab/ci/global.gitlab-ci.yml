@@ -34,6 +34,13 @@
       - tmp/rubocop_cache/
     policy: pull
 
+.coverage-cache:
+  cache:
+    key: "coverage-cache-v1"
+    paths:
+      - vendor/ruby/
+    policy: pull
+
 .qa-cache:
   cache:
     key: "qa-v1"

@@ -11,6 +11,9 @@
   stage: test
   needs: ["setup-test-env", "retrieve-tests-metadata", "compile-test-assets"]
   script:
+    # Only install knapsack after bundle install! Otherwise oddly some native
+    # gems could not be found under some circumstance. No idea why, hours wasted.
+    - run_timed_command "gem install knapsack --no-document"
     - run_timed_command "scripts/gitaly-test-build"
     - run_timed_command "scripts/gitaly-test-spawn"
     - source scripts/rspec_helpers.sh
@@ -32,6 +35,9 @@
 .rspec-base-migration:
   extends: .rails:rules:ee-and-foss-migration
   script:
+    # Only install knapsack after bundle install! Otherwise oddly some native
+    # gems could not be found under some circumstance. No idea why, hours wasted.
+    - run_timed_command "gem install knapsack --no-document"
     - run_timed_command "scripts/gitaly-test-build"
     - run_timed_command "scripts/gitaly-test-spawn"
     - source scripts/rspec_helpers.sh
@@ -67,6 +73,9 @@
 .rspec-ee-base-geo:
   extends: .rspec-base
   script:
+    # Only install knapsack after bundle install! Otherwise oddly some native
+    # gems could not be found under some circumstance. No idea why, hours wasted.
+    - run_timed_command "gem install knapsack --no-document"
     - run_timed_command "scripts/gitaly-test-build"
     - run_timed_command "scripts/gitaly-test-spawn"
     - source scripts/rspec_helpers.sh
@@ -160,6 +169,25 @@ update-rails-cache:
   cache:
     policy: push  # We want to rebuild the cache from scratch to ensure stale dependencies are cleaned up.
 
+.coverage-base:
+  extends:
+    - .default-retry
+    - .default-before_script
+    - .coverage-cache
+  variables:
+    SETUP_DB: "false"
+    USE_BUNDLE_INSTALL: "false"
+
+update-coverage-cache:
+  extends:
+    - .coverage-base
+    - .shared:rules:update-cache
+  stage: prepare
+  script:
+    - run_timed_command "bundle install --jobs=$(nproc) --path=vendor --retry=3 --quiet --without default development test production puma unicorn kerberos metrics omnibus ed25519"
+  cache:
+    policy: push  # We want to rebuild the cache from scratch to ensure stale dependencies are cleaned up.
+
 .static-analysis-base:
   extends:
     - .default-retry
@@ -178,7 +206,7 @@ update-static-analysis-cache:
   script:
     - rm -rf ./node_modules  # We remove node_modules because there's no mechanism to remove stall entries.
     - run_timed_command "retry yarn install --frozen-lockfile"
-    - bundle exec rubocop --parallel  # For the moment we only cache `vendor/ruby/`, `node_modules/`, and `tmp/rubocop_cache` so we don't need to run all the tasks,
+    - run_timed_command "bundle exec rubocop --parallel"  # For the moment we only cache `vendor/ruby/`, `node_modules/`, and `tmp/rubocop_cache` so we don't need to run all the tasks,
   cache:
     # We want to rebuild the cache from scratch to ensure stale dependencies are cleaned up but RuboCop has a mechanism
     # for keeping only the N latest cache files, so we take advantage of it with `pull-push` and removing `node_modules` at the start of the job.
@@ -313,7 +341,7 @@ db:backup_and_restore:
 
 rspec:coverage:
   extends:
-    - .rails-job-base
+    - .coverage-base
     - .rails:rules:rspec-coverage
   stage: post-test
   # We cannot use needs since it would mean needing 84 jobs (since most are parallelized)
@@ -333,11 +361,10 @@ rspec:coverage:
     - rspec-ee system pg11 geo
     - memory-static
     - memory-on-boot
-  variables:
-    SETUP_DB: "false"
   script:
-    - bundle exec scripts/merge-simplecov
-    - bundle exec scripts/gather-test-memory-data
+    - run_timed_command "bundle install --jobs=$(nproc) --path=vendor --retry=3 --quiet --without default development test production puma unicorn kerberos metrics omnibus ed25519"
+    - run_timed_command "bundle exec scripts/merge-simplecov"
+    - run_timed_command "bundle exec scripts/gather-test-memory-data"
   coverage: '/LOC \((\d+\.\d+%)\) covered.$/'
   artifacts:
     name: coverage

@@ -191,7 +191,7 @@ module AlertManagement
     end
 
     def prometheus?
-      monitoring_tool == Gitlab::AlertManagement::AlertParams::MONITORING_TOOLS[:prometheus]
+      monitoring_tool == Gitlab::AlertManagement::Payload::MONITORING_TOOLS[:prometheus]
     end
 
     def register_new_event!

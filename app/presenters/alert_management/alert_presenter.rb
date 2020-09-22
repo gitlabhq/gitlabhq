@@ -8,6 +8,7 @@ module AlertManagement
 
     MARKDOWN_LINE_BREAK = "  \n"
     HORIZONTAL_LINE = "\n\n---\n\n"
+    INCIDENT_LABEL_NAME = ::IncidentManagement::CreateIncidentLabelService::LABEL_PROPERTIES[:title]
 
     delegate :metrics_dashboard_url, :runbook, to: :parsed_payload
 
@@ -36,6 +37,30 @@ module AlertManagement
 
     def details
       Gitlab::Utils::InlineHash.merge_keys(payload)
+    end
+
+    def show_incident_issues_link?
+      project.incident_management_setting&.create_issue?
+    end
+
+    def show_performance_dashboard_link?
+      prometheus_alert.present?
+    end
+
+    def incident_issues_link
+      project_issues_url(project, label_name: INCIDENT_LABEL_NAME)
+    end
+
+    def performance_dashboard_link
+      if environment
+        metrics_project_environment_url(project, environment)
+      else
+        metrics_project_environments_url(project)
+      end
+    end
+
+    def email_title
+      [environment&.name, query_title].compact.join(': ')
     end
 
     private
@@ -79,6 +104,12 @@ module AlertManagement
 
     def host_links
       hosts.join(' ')
+    end
+
+    def query_title
+      return title unless prometheus_alert
+
+      "#{prometheus_alert.title} #{prometheus_alert.computed_operator} #{prometheus_alert.threshold} for 5 minutes"
     end
   end
 end

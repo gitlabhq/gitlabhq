@@ -435,6 +435,28 @@ RSpec.describe Gitlab::Danger::Helper do
     end
   end
 
+  describe '#draft_mr?' do
+    it 'returns false when `gitlab_helper` is unavailable' do
+      expect(helper).to receive(:gitlab_helper).and_return(nil)
+
+      expect(helper).not_to be_draft_mr
+    end
+
+    it 'returns true for a draft MR' do
+      expect(fake_gitlab).to receive(:mr_json)
+        .and_return('title' => 'Draft: My MR title')
+
+      expect(helper).to be_draft_mr
+    end
+
+    it 'returns false for non draft MR' do
+      expect(fake_gitlab).to receive(:mr_json)
+        .and_return('title' => 'My MR title')
+
+      expect(helper).not_to be_draft_mr
+    end
+  end
+
   describe '#cherry_pick_mr?' do
     it 'returns false when `gitlab_helper` is unavailable' do
       expect(helper).to receive(:gitlab_helper).and_return(nil)

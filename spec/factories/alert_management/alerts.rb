@@ -100,7 +100,7 @@ FactoryBot.define do
     end
 
     trait :prometheus do
-      monitoring_tool { Gitlab::AlertManagement::AlertParams::MONITORING_TOOLS[:prometheus] }
+      monitoring_tool { Gitlab::AlertManagement::Payload::MONITORING_TOOLS[:prometheus] }
       payload do
         {
           annotations: {
@@ -122,6 +122,18 @@ FactoryBot.define do
       with_host
       with_description
       low
+    end
+
+    trait :from_payload do
+      after(:build) do |alert|
+        alert_params = ::Gitlab::AlertManagement::Payload.parse(
+          alert.project,
+          alert.payload,
+          monitoring_tool: alert.monitoring_tool
+        ).alert_params
+
+        alert.assign_attributes(alert_params)
+      end
     end
   end
 end

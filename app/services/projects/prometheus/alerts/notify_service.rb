@@ -125,7 +125,7 @@ module Projects
 
           notification_service
             .async
-            .prometheus_alerts_fired(project, firings)
+            .prometheus_alerts_fired(project, alerts_attributes)
         end
 
         def process_prometheus_alerts
@@ -133,6 +133,18 @@ module Projects
             AlertManagement::ProcessPrometheusAlertService
               .new(project, nil, alert.to_h)
               .execute
+          end
+        end
+
+        def alerts_attributes
+          firings.map do |payload|
+            alert_params = Gitlab::AlertManagement::Payload.parse(
+              project,
+              payload,
+              monitoring_tool: Gitlab::AlertManagement::Payload::MONITORING_TOOLS[:prometheus]
+            ).alert_params
+
+            AlertManagement::Alert.new(alert_params).attributes
           end
         end
 

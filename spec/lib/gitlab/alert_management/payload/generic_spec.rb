@@ -86,4 +86,34 @@ RSpec.describe Gitlab::AlertManagement::Payload::Generic do
 
     it_behaves_like 'parsable alert payload field', 'gitlab_environment_name'
   end
+
+  describe '#description' do
+    subject { parsed_payload.description }
+
+    it_behaves_like 'parsable alert payload field', 'description'
+  end
+
+  describe '#ends_at' do
+    let(:current_time) { Time.current.change(usec: 0).utc }
+
+    subject { parsed_payload.ends_at }
+
+    around do |example|
+      Timecop.freeze(current_time) { example.run }
+    end
+
+    context 'without end_time' do
+      it { is_expected.to be_nil }
+    end
+
+    context "with end_time" do
+      let(:value) { 10.minutes.ago.change(usec: 0).utc }
+
+      before do
+        raw_payload['end_time'] = value.to_s
+      end
+
+      it { is_expected.to eq(value) }
+    end
+  end
 end

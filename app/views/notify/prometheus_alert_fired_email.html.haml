@@ -1,17 +1,17 @@
 %p
-  = _('An alert has been triggered in %{project_path}.') % { project_path: @alert.project_full_path }
+  = _('An alert has been triggered in %{project_path}.') % { project_path: @alert.project.full_path }
 
 - if description = @alert.description
   %p
     = _('Description:')
     = description
 
-- if env_name = @alert.environment_name
+- if env_name = @alert.environment&.name
   %p
     = _('Environment:')
     = env_name
 
-- if metric_query = @alert.metric_query
+- if metric_query = @alert.prometheus_alert&.full_query
   %p
     = _('Metric:')
 
@@ -25,4 +25,3 @@
 - if @alert.show_performance_dashboard_link?
   %p
     = link_to(_('View performance dashboard.'), @alert.performance_dashboard_link)
-

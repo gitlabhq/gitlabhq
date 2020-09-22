@@ -2,7 +2,7 @@
 
 TELEMETRY_CHANGED_FILES_MESSAGE = <<~MSG
 For the following files, a review from the [Data team and Telemetry team](https://gitlab.com/groups/gitlab-org/growth/telemetry/engineers/-/group_members?with_inherited_permissions=exclude) is recommended
-Please check the ~telemetry [guide](https://docs.gitlab.com/ee/development/telemetry/usage_ping.html) and reach out to @gitlab-org/growth/telemetry/engineers group for a review.
+Please check the ~telemetry [guide](https://docs.gitlab.com/ee/development/telemetry/usage_ping.html) and reach out to %<telemetry_engineers_group>s group for a review.
 
 %<changed_files>s
 
@@ -12,6 +12,8 @@ UPDATE_METRICS_DEFINITIONS_MESSAGE = <<~MSG
   When adding, changing, or updating metrics, please update the [Event dictionary Usage Ping table](https://docs.gitlab.com/ee/development/telemetry/event_dictionary.html#usage-ping).
 
 MSG
+
+TELEMETRY_ENGINEERS_GROUP = '@gitlab-org/growth/telemetry/engineers'
 
 tracking_files = [
   'lib/gitlab/tracking.rb',
@@ -28,7 +30,14 @@ snowplow_events_changed_files = git.modified_files & tracking_files
 changed_files = (usage_data_changed_files + snowplow_events_changed_files)
 
 if changed_files.any?
-  warn format(TELEMETRY_CHANGED_FILES_MESSAGE, changed_files: helper.markdown_list(changed_files))
+
+  mention = if helper.draft_mr?
+              "`#{TELEMETRY_ENGINEERS_GROUP}`"
+            else
+              TELEMETRY_ENGINEERS_GROUP
+            end
+
+  warn format(TELEMETRY_CHANGED_FILES_MESSAGE, changed_files: helper.markdown_list(changed_files), telemetry_engineers_group: mention)
   warn format(UPDATE_METRICS_DEFINITIONS_MESSAGE) unless helper.changed_files(/usage_ping\.md/).any?
 
   telemetry_labels = ['telemetry']

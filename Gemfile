@@ -375,8 +375,6 @@ group :development, :test do
 
   gem 'scss_lint', '~> 0.56.0', require: false
   gem 'haml_lint', '~> 0.34.0', require: false
-  gem 'simplecov', '~> 0.18.5', require: false
-  gem 'simplecov-cobertura', '~> 1.3.1', require: false
   gem 'bundler-audit', '~> 0.6.1', require: false
 
   gem 'benchmark-ips', '~> 2.3.0', require: false
@@ -392,6 +390,11 @@ group :development, :test do
   gem 'parallel', '~> 1.19', require: false
 
   gem 'rblineprof', '~> 0.3.6', platform: :mri, require: false
+end
+
+group :development, :test, :coverage do
+  gem 'simplecov', '~> 0.18.5', require: false
+  gem 'simplecov-cobertura', '~> 1.3.1', require: false
 end
 
 # Gems required in omnibus-gitlab pipeline

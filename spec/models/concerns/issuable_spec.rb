@@ -824,7 +824,7 @@ RSpec.describe Issuable do
 
     where(:issuable_type, :supports_time_tracking) do
       :issue         | true
-      :incident      | false
+      :incident      | true
       :merge_request | true
     end
 

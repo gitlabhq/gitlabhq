@@ -197,11 +197,10 @@ RSpec.describe Projects::Alerting::NotifyService do
         end
 
         context 'with overlong payload' do
-          let(:payload_raw) do
-            {
-              title: 'a' * Gitlab::Utils::DeepSize::DEFAULT_MAX_SIZE,
-              start_time: starts_at.rfc3339
-            }
+          let(:deep_size_object) { instance_double(Gitlab::Utils::DeepSize, valid?: false) }
+
+          before do
+            allow(Gitlab::Utils::DeepSize).to receive(:new).and_return(deep_size_object)
           end
 
           it_behaves_like 'does not process incident issues due to error', http_status: :bad_request
@@ -214,17 +213,6 @@ RSpec.describe Projects::Alerting::NotifyService do
           let(:issue_enabled) { true }
 
           it_behaves_like 'processes incident issues'
-
-          context 'with an invalid payload' do
-            before do
-              allow(Gitlab::Alerting::NotificationPayloadParser)
-                .to receive(:call)
-                .and_raise(Gitlab::Alerting::NotificationPayloadParser::BadPayloadError)
-            end
-
-            it_behaves_like 'does not process incident issues due to error', http_status: :bad_request
-            it_behaves_like 'does not an create alert management alert'
-          end
 
           context 'when alert already exists' do
             let(:fingerprint_sha) { Digest::SHA1.hexdigest(fingerprint) }
