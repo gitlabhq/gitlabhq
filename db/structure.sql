@@ -14364,7 +14364,8 @@ CREATE TABLE plan_limits (
     npm_max_file_size bigint DEFAULT 524288000 NOT NULL,
     nuget_max_file_size bigint DEFAULT 524288000 NOT NULL,
     pypi_max_file_size bigint DEFAULT '3221225472'::bigint NOT NULL,
-    generic_packages_max_file_size bigint DEFAULT '5368709120'::bigint NOT NULL
+    generic_packages_max_file_size bigint DEFAULT '5368709120'::bigint NOT NULL,
+    golang_max_file_size bigint DEFAULT 104857600 NOT NULL
 );
 
 CREATE SEQUENCE plan_limits_id_seq

@@ -51,16 +51,16 @@ To create a new dashboard from the command line:
      - group: 'Group Title'
        panels:
          - type: area-chart
-           title: "Chart Title"
-           y_label: "Y-Axis"
+           title: 'Chart Title'
+           y_label: 'Y-Axis'
            y_axis:
              format: number
              precision: 0
            metrics:
              - id: my_metric_id
                query_range: 'http_requests_total'
-               label: "Instance: {{instance}}, method: {{method}}"
-               unit: "count"
+               label: 'Instance: {{instance}}, method: {{method}}'
+               unit: 'count'
    ```
 
 1. Save the file, commit, and push to your repository. The file must be present in your **default** branch.

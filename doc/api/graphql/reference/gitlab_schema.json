@@ -34436,6 +34436,12 @@
               "description": "Packages from the generic package manager",
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "GOLANG",
+              "description": "Packages from the golang package manager",
+              "isDeprecated": false,
+              "deprecationReason": null
             }
           ],
           "possibleTypes": null
@@ -41796,6 +41802,33 @@
               },
               "isDeprecated": true,
               "deprecationReason": "Use `vulnerabilitiesCountByDay`. Deprecated in 13.3"
+            },
+            {
+              "name": "vulnerability",
+              "description": "Find a vulnerability",
+              "args": [
+                {
+                  "name": "id",
+                  "description": "The Global ID of the Vulnerability",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "VulnerabilityID",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "Vulnerability",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
             }
           ],
           "inputFields": null,

@@ -61,6 +61,32 @@ RSpec.describe CleanupGroupImportStatesWithNullUserId, :migration,
         expect { group_import_state_3.reload }.to raise_error(ActiveRecord::RecordNotFound)
       end
     end
+
+    context 'when group has parent' do
+      it 'updates user_id with parent group default owner id' do
+        user = users_table.create!(name: 'user4', email: 'user4@example.com', projects_limit: 1)
+        group_1 = namespaces_table.create!(name: 'group_1', path: 'group_1', type: 'Group')
+        create_member(user_id: user.id, type: 'GroupMember', source_type: 'Namespace', source_id: group_1.id, access_level: described_class::Group::OWNER)
+        group_2 = namespaces_table.create!(name: 'group_2', path: 'group_2', type: 'Group', parent_id: group_1.id)
+        group_import_state = group_import_states_table.create!(group_id: group_2.id, user_id: nil, status: 0)
+
+        disable_migrations_output { migrate! }
+
+        expect(group_import_state.reload.user_id).to eq(user.id)
+      end
+    end
+
+    context 'when group has owner_id' do
+      it 'updates user_id with owner_id' do
+        user = users_table.create!(name: 'user', email: 'user@example.com', projects_limit: 1)
+        group = namespaces_table.create!(name: 'group', path: 'group', type: 'Group', owner_id: user.id)
+        group_import_state = group_import_states_table.create!(group_id: group.id, user_id: nil, status: 0)
+
+        disable_migrations_output { migrate! }
+
+        expect(group_import_state.reload.user_id).to eq(user.id)
+      end
+    end
   end
 
   def create_member(options)

@@ -1041,7 +1041,7 @@ Be advised that, backup is successfully restored in spite of these warnings.
 The Rake task runs this as the `gitlab` user which does not have the superuser access to the database. When restore is initiated it will also run as `gitlab` user but it will also try to alter the objects it does not have access to.
 Those objects have no influence on the database backup/restore but they give this annoying warning.
 
-For more information see similar questions on PostgreSQL issue tracker [here](https://www.postgresql.org/message-id/201110220712.30886.adrian.klaver@gmail.com) and [here](https://www.postgresql.org/message-id/2039.1177339749@sss.pgh.pa.us) as well as [stack overflow](https://stackoverflow.com/questions/4368789/error-must-be-owner-of-language-plpgsql).
+For more information see these PostgreSQL issue tracker questions about [not being a superuser](https://www.postgresql.org/message-id/201110220712.30886.adrian.klaver@gmail.com), [having different owners](https://www.postgresql.org/message-id/2039.1177339749@sss.pgh.pa.us), and on stack overflow, about [resulting errors](https://stackoverflow.com/questions/4368789/error-must-be-owner-of-language-plpgsql).
 
 ### When the secrets file is lost
 

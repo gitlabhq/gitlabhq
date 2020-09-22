@@ -8,6 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-09-18 11:00+1200\n"
+"PO-Revision-Date: 2020-09-18 11:00+1200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -1317,7 +1319,13 @@ msgstr ""
 msgid "Access expiration date"
 msgstr ""
 
+msgid "Access expires"
+msgstr ""
+
 msgid "Access forbidden. Check your access level."
+msgstr ""
+
+msgid "Access granted"
 msgstr ""
 
 msgid "Access requests"
@@ -8853,6 +8861,9 @@ msgstr ""
 msgid "DesignManagement|The maximum number of designs allowed to be uploaded is %{upload_limit}. Please try again."
 msgstr ""
 
+msgid "DesignManagement|There was an error moving your designs. Please upload your designs below."
+msgstr ""
+
 msgid "DesignManagement|To upload designs, you'll need to enable LFS and have admin enable hashed storage. %{requirements_link_start}More information%{requirements_link_end}"
 msgstr ""
 
@@ -8863,6 +8874,9 @@ msgid "DesignManagement|Upload designs"
 msgstr ""
 
 msgid "DesignManagement|Upload skipped."
+msgstr ""
+
+msgid "DesignManagement|Your designs are being copied and are on their way… Please refresh to update."
 msgstr ""
 
 msgid "DesignManagement|and %{moreCount} more."
@@ -15468,6 +15482,9 @@ msgstr ""
 msgid "Max access level"
 msgstr ""
 
+msgid "Max role"
+msgstr ""
+
 msgid "Max size 15 MB"
 msgstr ""
 
@@ -17230,6 +17247,9 @@ msgid "No matching results"
 msgstr ""
 
 msgid "No matching results for \"%{query}\""
+msgstr ""
+
+msgid "No members found"
 msgstr ""
 
 msgid "No merge requests found"
@@ -21567,6 +21587,9 @@ msgid "Request parameter %{param} is missing."
 msgstr ""
 
 msgid "Request to link SAML account must be authorized"
+msgstr ""
+
+msgid "Requested"
 msgstr ""
 
 msgid "Requested %{time_ago}"
@@ -30157,6 +30180,9 @@ msgid "failed"
 msgstr ""
 
 msgid "failed to dismiss associated finding(id=%{finding_id}): %{message}"
+msgstr ""
+
+msgid "failed to revert associated finding(id=%{finding_id}) to detected"
 msgstr ""
 
 msgid "file"

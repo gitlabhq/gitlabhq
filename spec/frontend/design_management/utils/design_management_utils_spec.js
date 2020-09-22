@@ -93,6 +93,10 @@ describe('optimistic responses', () => {
             fullPath: '',
             notesCount: 0,
             event: 'NONE',
+            currentUserTodos: {
+              __typename: 'TodoConnection',
+              nodes: [],
+            },
             diffRefs: { __typename: 'DiffRefs', baseSha: '', startSha: '', headSha: '' },
             discussions: { __typename: 'DesignDiscussion', nodes: [] },
             versions: {

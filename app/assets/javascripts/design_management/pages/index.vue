@@ -76,7 +76,9 @@ export default {
   },
   computed: {
     isLoading() {
-      return this.$apollo.queries.designs.loading || this.$apollo.queries.permissions.loading;
+      return (
+        this.$apollo.queries.designCollection.loading || this.$apollo.queries.permissions.loading
+      );
     },
     isSaving() {
       return this.filesToBeSaved.length > 0;
@@ -109,6 +111,11 @@ export default {
     },
     isDesignListEmpty() {
       return !this.isSaving && !this.hasDesigns;
+    },
+    isDesignCollectionCopying() {
+      return (
+        this.designCollection && ['PENDING', 'COPYING'].includes(this.designCollection.copyState)
+      );
     },
     designDropzoneWrapperClass() {
       return this.isDesignListEmpty
@@ -360,6 +367,21 @@ export default {
       <gl-alert v-else-if="error" variant="danger" :dismissible="false">
         {{ __('An error occurred while loading designs. Please try again.') }}
       </gl-alert>
+      <header
+        v-else-if="isDesignCollectionCopying"
+        class="card gl-p-3"
+        data-testid="design-collection-is-copying"
+      >
+        <div class="card-header design-card-header border-bottom-0">
+          <div class="card-title gl-my-0 gl-h-7">
+            {{
+              s__(
+                'DesignManagement|Your designs are being copied and are on their way… Please refresh to update.',
+              )
+            }}
+          </div>
+        </div>
+      </header>
       <vue-draggable
         v-else
         :value="designs"

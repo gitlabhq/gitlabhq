@@ -18,7 +18,7 @@ export default function() {
 
   if (issueType === 'incident') {
     initIncidentApp(issuableData);
-  } else {
+  } else if (issueType === 'issue') {
     initIssueApp(issuableData);
   }
 

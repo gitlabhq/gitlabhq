@@ -8,7 +8,7 @@ import { DESIGNS_ROUTE_NAME } from '../router/constants';
 export default {
   mixins: [allVersionsMixin],
   apollo: {
-    designs: {
+    designCollection: {
       query: getDesignListQuery,
       variables() {
         return {
@@ -25,10 +25,11 @@ export default {
           'designs',
           'nodes',
         ]);
-        if (designNodes) {
-          return designNodes;
-        }
-        return [];
+        const copyState = propertyOf(data)(['project', 'issue', 'designCollection', 'copyState']);
+        return {
+          designs: designNodes,
+          copyState,
+        };
       },
       error() {
         this.error = true;
@@ -42,13 +43,26 @@ export default {
           );
           this.$router.replace({ name: DESIGNS_ROUTE_NAME, query: { version: undefined } });
         }
+        if (this.designCollection.copyState === 'ERROR') {
+          createFlash(
+            s__(
+              'DesignManagement|There was an error moving your designs. Please upload your designs below.',
+            ),
+            'warning',
+          );
+        }
       },
     },
   },
   data() {
     return {
-      designs: [],
+      designCollection: null,
       error: false,
     };
+  },
+  computed: {
+    designs() {
+      return this.designCollection?.designs || [];
+    },
   },
 };

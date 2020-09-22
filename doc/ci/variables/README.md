@@ -571,7 +571,7 @@ in which you wish to use it.
 
 ## Where variables can be used
 
-Click [here](where_variables_can_be_used.md) for a section that describes where and how the different types of variables can be used.
+[This section](where_variables_can_be_used.md) describes where and how the different types of variables can be used.
 
 ## Advanced use
 

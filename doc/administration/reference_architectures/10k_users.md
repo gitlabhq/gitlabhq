@@ -1754,6 +1754,7 @@ On each node perform the following:
    roles ['application_role']
    gitaly['enable'] = false
    nginx['enable'] = true
+   sidekiq['enable'] = false
 
    ## PostgreSQL connection details
    # Disable PostgreSQL on the application node
@@ -1797,7 +1798,6 @@ On each node perform the following:
    # Set the network addresses that the exporters used for monitoring will listen on
    node_exporter['listen_address'] = '0.0.0.0:9100'
    gitlab_workhorse['prometheus_listen_addr'] = '0.0.0.0:9229'
-   sidekiq['listen_address'] = "0.0.0.0"
    puma['listen'] = '0.0.0.0'
 
    # Add the monitoring node's IP address to the monitoring whitelist and allow it to

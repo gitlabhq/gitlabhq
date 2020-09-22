@@ -3290,6 +3290,7 @@ Values for sorting projects.
 | `COMPOSER` | Packages from the composer package manager |
 | `CONAN` | Packages from the conan package manager |
 | `GENERIC` | Packages from the generic package manager |
+| `GOLANG` | Packages from the golang package manager |
 | `MAVEN` | Packages from the maven package manager |
 | `NPM` | Packages from the npm package manager |
 | `NUGET` | Packages from the nuget package manager |

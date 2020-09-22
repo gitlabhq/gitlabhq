@@ -155,6 +155,7 @@ const addNewDesignToStore = (store, designManagementUpload, query) => {
 
     const updatedDesigns = {
       __typename: 'DesignCollection',
+      copyState: 'READY',
       designs: {
         __typename: 'DesignConnection',
         nodes: newDesigns,

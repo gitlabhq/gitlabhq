@@ -22,8 +22,8 @@ Vue.use(Translate);
 Vue.use(VueApollo);
 Vue.use(Vuex);
 
-function getSidebarOptions() {
-  return JSON.parse(document.querySelector('.js-sidebar-options').innerHTML);
+function getSidebarOptions(sidebarOptEl = document.querySelector('.js-sidebar-options')) {
+  return JSON.parse(sidebarOptEl.innerHTML);
 }
 
 function mountAssigneesComponent(mediator) {

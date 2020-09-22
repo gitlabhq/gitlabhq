@@ -80,6 +80,11 @@ module Gitlab
         @semver_regex ||= Regexp.new("\\A#{::Gitlab::Regex.unbounded_semver_regex.source}\\z", ::Gitlab::Regex.unbounded_semver_regex.options)
       end
 
+      def prefixed_semver_regex
+        # identical to semver_regex, except starting with 'v'
+        @prefixed_semver_regex ||= Regexp.new("\\Av#{::Gitlab::Regex.unbounded_semver_regex.source}\\z", ::Gitlab::Regex.unbounded_semver_regex.options)
+      end
+
       def go_package_regex
         # A Go package name looks like a URL but is not; it:
         #   - Must not have a scheme, such as http:// or https://

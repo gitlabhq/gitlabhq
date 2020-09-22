@@ -48,6 +48,7 @@ GitLab is a Git-based platform that integrates a great number of essential tools
 - Integrating with Docker by using [GitLab Container Registry](packages/container_registry/index.md).
 - Tracking the development lifecycle by using [GitLab Value Stream Analytics](project/cycle_analytics.md).
 - Provide support with [Service Desk](project/service_desk.md).
+- [Export issues as CSV](project/issues/csv_export.md).
 
 With GitLab Enterprise Edition, you can also:
 
@@ -60,7 +61,6 @@ With GitLab Enterprise Edition, you can also:
 - Leverage [Elasticsearch](../integration/elasticsearch.md) with [Advanced Search](search/advanced_global_search.md) and [Advanced Search Syntax](search/advanced_search_syntax.md) for faster, more advanced code search across your entire GitLab instance.
 - [Authenticate users with Kerberos](../integration/kerberos.md).
 - [Mirror a repository](project/repository/repository_mirroring.md) from elsewhere on your local server.
-- [Export issues as CSV](project/issues/csv_export.md).
 - View your entire CI/CD pipeline involving more than one project with [Multiple-Project Pipelines](../ci/multi_project_pipeline_graphs.md).
 - [Lock files](project/file_lock.md) to prevent conflicts.
 - View the current health and status of each CI environment running on Kubernetes with [Deploy Boards](project/deploy_boards.md).

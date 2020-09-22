@@ -170,13 +170,18 @@ namespace :gitlab do
     desc 'reindex a regular (non-unique) index without downtime to eliminate bloat'
     task :reindex, [:index_name] => :environment do |_, args|
       unless Feature.enabled?(:database_reindexing, type: :ops)
-        puts "This feature (database_reindexing) is currently disabled.".yellow
+        puts "This feature (database_reindexing) is currently disabled.".color(:yellow)
         exit
       end
 
       raise ArgumentError, 'must give the index name to reindex' unless args[:index_name]
 
-      Gitlab::Database::ConcurrentReindex.new(args[:index_name], logger: Logger.new(STDOUT)).perform
+      index = Gitlab::Database::Reindexing::Index.find_with_schema(args[:index_name])
+
+      raise ArgumentError, "Given index does not exist: #{args[:index_name]}" unless index
+
+      puts "Rebuilding index #{index}".color(:green)
+      Gitlab::Database::Reindexing::ConcurrentReindex.new(index).perform
     end
   end
 end

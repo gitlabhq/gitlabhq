@@ -19,7 +19,6 @@ class CleanupGroupImportStatesWithNullUserId < ActiveRecord::Migration[6.0]
   class Namespace < ActiveRecord::Base
     self.table_name = 'namespaces'
 
-    belongs_to :parent, class_name: 'CleanupGroupImportStatesWithNullUserId::Namespace'
     belongs_to :owner, class_name: 'CleanupGroupImportStatesWithNullUserId::User'
   end
 
@@ -37,6 +36,10 @@ class CleanupGroupImportStatesWithNullUserId < ActiveRecord::Migration[6.0]
 
     def default_owner
       owners.first || parent&.default_owner || owner
+    end
+
+    def parent
+      Group.find_by_id(parent_id)
     end
 
     def owners

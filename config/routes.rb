@@ -69,10 +69,6 @@ Rails.application.routes.draw do
   # Begin of the /-/ scope.
   # Use this scope for all new global routes.
   scope path: '-' do
-    # remove in 13.5
-    get '/instance_statistics', to: redirect('admin/dev_ops_report')
-    get '/instance_statistics/dev_ops_score', to: redirect('admin/dev_ops_report')
-    get '/instance_statistics/cohorts', to: redirect('admin/cohorts')
     # Autocomplete
     get '/autocomplete/users' => 'autocomplete#users'
     get '/autocomplete/users/:id' => 'autocomplete#user'

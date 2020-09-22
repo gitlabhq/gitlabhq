@@ -1,11 +1,12 @@
 <script>
+import MembersTable from '~/vue_shared/components/members/table/members_table.vue';
+
 export default {
   name: 'GroupMembersApp',
+  components: { MembersTable },
 };
 </script>
 
 <template>
-  <span>
-    <!-- Temporary empty template -->
-  </span>
+  <members-table />
 </template>

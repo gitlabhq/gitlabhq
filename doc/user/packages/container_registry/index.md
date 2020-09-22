@@ -587,7 +587,7 @@ you can use the Container Registry to store Helm Charts. However, due to the way
 and stored by Docker, it is not possible for GitLab to parse this data and meet performance standards.
 [This epic](https://gitlab.com/groups/gitlab-org/-/epics/2313) updates the architecture of the Container Registry to support Helm Charts.
 
-You can read more about the above challenges [here](https://gitlab.com/gitlab-org/gitlab/-/issues/38047#note_298842890).
+[Read more about the above challenges](https://gitlab.com/gitlab-org/gitlab/-/issues/38047#note_298842890).
 
 ## Limitations
 

@@ -448,4 +448,17 @@ RSpec.describe Gitlab::Regex do
     it { is_expected.not_to match('my file name') }
     it { is_expected.not_to match('!!()()') }
   end
+
+  describe '.prefixed_semver_regex' do
+    subject { described_class.prefixed_semver_regex }
+
+    it { is_expected.to match('v1.2.3') }
+    it { is_expected.to match('v1.2.3-beta') }
+    it { is_expected.to match('v1.2.3-alpha.3') }
+    it { is_expected.not_to match('v1') }
+    it { is_expected.not_to match('v1.2') }
+    it { is_expected.not_to match('v1./2.3') }
+    it { is_expected.not_to match('v../../../../../1.2.3') }
+    it { is_expected.not_to match('v%2e%2e%2f1.2.3') }
+  end
 end

@@ -4,6 +4,7 @@ export const designListQueryResponse = {
       id: '1',
       issue: {
         designCollection: {
+          copyState: 'READY',
           designs: {
             nodes: [
               {

@@ -84,8 +84,7 @@ and they will assist you with any issues you are having.
 
 ## GitLab-specific Kubernetes information
 
-- Minimal config that can be used to test a Kubernetes Helm chart can be found
-  [here](https://gitlab.com/gitlab-org/charts/gitlab/-/issues/620).
+- Minimal config that can be used to [test a Kubernetes Helm chart](https://gitlab.com/gitlab-org/charts/gitlab/-/issues/620).
 
 - Tailing logs of a separate pod. An example for a Webservice pod:
 

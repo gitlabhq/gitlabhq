@@ -4,7 +4,7 @@ import App from './components/app.vue';
 import membersModule from '~/vuex_shared/modules/members';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 
-export default el => {
+export const initGroupMembersApp = (el, tableFields) => {
   if (!el) {
     return () => {};
   }
@@ -18,6 +18,7 @@ export default el => {
       members: convertObjectPropsToCamelCase(JSON.parse(members), { deep: true }),
       sourceId: parseInt(groupId, 10),
       currentUserId: gon.current_user_id || null,
+      tableFields,
     }),
   });
 

@@ -40,12 +40,13 @@ class Packages::Package < ApplicationRecord
   validates :version, format: { with: Gitlab::Regex.conan_recipe_component_regex }, if: :conan?
   validates :version, format: { with: Gitlab::Regex.maven_version_regex }, if: -> { version? && maven? }
   validates :version, format: { with: Gitlab::Regex.pypi_version_regex }, if: :pypi?
+  validates :version, format: { with: Gitlab::Regex.prefixed_semver_regex }, if: :golang?
   validates :version,
     presence: true,
     format: { with: Gitlab::Regex.generic_package_version_regex },
     if: :generic?
 
-  enum package_type: { maven: 1, npm: 2, conan: 3, nuget: 4, pypi: 5, composer: 6, generic: 7 }
+  enum package_type: { maven: 1, npm: 2, conan: 3, nuget: 4, pypi: 5, composer: 6, generic: 7, golang: 8 }
 
   scope :with_name, ->(name) { where(name: name) }
   scope :with_name_like, ->(name) { where(arel_table[:name].matches(name)) }

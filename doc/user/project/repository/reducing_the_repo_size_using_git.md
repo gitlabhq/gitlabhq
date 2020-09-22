@@ -19,7 +19,7 @@ over [`git filter-branch`](https://git-scm.com/docs/git-filter-branch) and
 [BFG](https://rtyley.github.io/bfg-repo-cleaner/).
 
 DANGER: **Danger:**
-Rewriting repository history is a destructive operation. Make sure to backup your repository before
+Rewriting repository history is a destructive operation. Make sure to back up your repository before
 you begin. The best way back up a repository is to
 [export the project](../settings/import_export.md#exporting-a-project-and-its-data).
 
@@ -266,21 +266,20 @@ You can still:
 - Create new issues.
 - Clone the project.
 
-If you exceed the repository size limit, you might try to:
+If you exceed the repository size limit, you can:
 
 1. Remove some data.
 1. Make a new commit.
 1. Push back to the repository.
 
-Perhaps you might also:
+If these actions are insufficient, you can also:
 
 - Move some blobs to LFS.
 - Remove some old dependency updates from history.
 
-Unfortunately, this workflow won't work. Deleting files in a commit doesn't actually reduce the size
-of the repository because the earlier commits and blobs still exist.
-
-What you need to do is rewrite history. We recommend the open-source community-maintained tool
+Unfortunately, this workflow doesn't work. Deleting files in a commit doesn't actually reduce the
+size of the repository, because the earlier commits and blobs still exist. Instead, you must rewrite
+history. We recommend the open-source community-maintained tool
 [`git filter-repo`](https://github.com/newren/git-filter-repo).
 
 NOTE: **Note:**

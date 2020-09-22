@@ -43,7 +43,7 @@ describe('Design management pagination component', () => {
 
   it('renders navigation buttons', () => {
     wrapper.setData({
-      designs: [{ id: '1' }, { id: '2' }],
+      designCollection: { designs: [{ id: '1' }, { id: '2' }] },
     });
 
     return wrapper.vm.$nextTick().then(() => {
@@ -54,7 +54,7 @@ describe('Design management pagination component', () => {
   describe('keyboard buttons navigation', () => {
     beforeEach(() => {
       wrapper.setData({
-        designs: [{ filename: '1' }, { filename: '2' }, { filename: '3' }],
+        designCollection: { designs: [{ filename: '1' }, { filename: '2' }, { filename: '3' }] },
       });
     });
 

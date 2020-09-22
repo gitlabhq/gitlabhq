@@ -173,16 +173,23 @@ RSpec.describe 'gitlab:db namespace rake task' do
       end
     end
 
-    it 'calls the index rebuilder with the proper arguments' do
-      reindex = double('rebuilder')
+    context 'with index name given' do
+      let(:index) { double('index') }
+      let(:reindex) { double('reindex') }
 
-      expect(Gitlab::Database::ConcurrentReindex).to receive(:new)
-        .with('some_index_name', logger: instance_of(Logger))
-        .and_return(reindex)
+      it 'calls the index rebuilder with the proper arguments' do
+        expect(Gitlab::Database::Reindexing::Index).to receive(:find_with_schema).with('public.foo_idx').and_return(index)
+        expect(Gitlab::Database::Reindexing::ConcurrentReindex).to receive(:new).with(index, any_args).and_return(reindex)
+        expect(reindex).to receive(:perform)
 
-      expect(reindex).to receive(:perform)
+        run_rake_task('gitlab:db:reindex', '[public.foo_idx]')
+      end
 
-      run_rake_task('gitlab:db:reindex', '[some_index_name]')
+      it 'raises an error if the index does not exist' do
+        expect(Gitlab::Database::Reindexing::Index).to receive(:find_with_schema).with('public.absent_index').and_return(nil)
+
+        expect { run_rake_task('gitlab:db:reindex', '[public.absent_index]') }.to raise_error(ArgumentError, /index does not exist/)
+      end
     end
   end
 

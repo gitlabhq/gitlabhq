@@ -71,6 +71,11 @@ RSpec.describe DesignManagement::DesignPolicy do
     end
   end
 
+  shared_examples_for "read-only design abilities" do
+    it { is_expected.to be_allowed(*guest_design_abilities) }
+    it { is_expected.to be_disallowed(*developer_design_abilities) }
+  end
+
   shared_examples_for "design abilities available for members" do
     context "for owners" do
       let(:current_user) { owner }
@@ -86,8 +91,7 @@ RSpec.describe DesignManagement::DesignPolicy do
       end
 
       context "when admin mode disabled" do
-        it { is_expected.to be_allowed(*guest_design_abilities) }
-        it { is_expected.to be_disallowed(*developer_design_abilities) }
+        it_behaves_like "read-only design abilities"
       end
     end
 
@@ -106,14 +110,8 @@ RSpec.describe DesignManagement::DesignPolicy do
     context "for reporters" do
       let(:current_user) { reporter }
 
-      it { is_expected.to be_allowed(*guest_design_abilities) }
-      it { is_expected.to be_disallowed(*developer_design_abilities) }
+      it_behaves_like "read-only design abilities"
     end
-  end
-
-  shared_examples_for "read-only design abilities" do
-    it { is_expected.to be_allowed(:read_design) }
-    it { is_expected.to be_disallowed(:create_design, :destroy_design) }
   end
 
   context "when DesignManagement is not enabled" do
@@ -135,15 +133,13 @@ RSpec.describe DesignManagement::DesignPolicy do
       let_it_be(:project) { create(:project, :private) }
       let(:current_user) { guest }
 
-      it { is_expected.to be_allowed(*guest_design_abilities) }
-      it { is_expected.to be_disallowed(*developer_design_abilities) }
+      it_behaves_like "read-only design abilities"
     end
 
     context "for anonymous users in public projects" do
       let(:current_user) { nil }
 
-      it { is_expected.to be_allowed(*guest_design_abilities) }
-      it { is_expected.to be_disallowed(*developer_design_abilities) }
+      it_behaves_like "read-only design abilities"
     end
 
     context "when the issue is confidential" do
