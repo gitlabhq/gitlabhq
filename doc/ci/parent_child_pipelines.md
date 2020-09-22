@@ -68,7 +68,7 @@ microservice_a:
   trigger:
     include:
       - local: path/to/microservice_a.yml
-      - template: SAST.gitlab-ci.yml
+      - template: Security/SAST.gitlab-ci.yml
 ```
 
 NOTE: **Note:**
@@ -82,7 +82,7 @@ microservice_a:
   trigger:
     include:
       - local: path/to/microservice_a.yml
-      - template: SAST.gitlab-ci.yml
+      - template: Security/SAST.gitlab-ci.yml
     strategy: depend
 ```
 

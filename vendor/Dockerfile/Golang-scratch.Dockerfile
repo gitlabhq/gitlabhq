@@ -1,4 +1,4 @@
-FROM golang:1.8-alpine AS builder
+FROM golang:1.15-alpine AS builder
 
 # We'll likely need to add SSL root certificates
 RUN apk --no-cache add ca-certificates

@@ -1,0 +1,5 @@
+---
+title: Apply GitLab UI button styles to HAML buttons app/views/projects/blob
+merge_request: 42991
+author: Andrei Kyrnich @kyrnich
+type: other

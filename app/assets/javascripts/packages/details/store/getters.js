@@ -98,7 +98,7 @@ export const nugetSetupCommand = ({ nugetPath }) =>
 
 export const pypiPipCommand = ({ pypiPath, packageEntity }) =>
   // eslint-disable-next-line @gitlab/require-i18n-strings
-  `pip install ${packageEntity.name} --index-url ${pypiPath}`;
+  `pip install ${packageEntity.name} --extra-index-url ${pypiPath}`;
 
 export const pypiSetupCommand = ({ pypiSetupPath }) => `[gitlab]
 repository = ${pypiSetupPath}

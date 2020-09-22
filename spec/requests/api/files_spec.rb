@@ -750,7 +750,7 @@ RSpec.describe API::Files do
 
     it "updates existing file in project repo with accepts correct last commit id" do
       last_commit = Gitlab::Git::Commit
-                        .last_for_path(project.repository, 'master', URI.unescape(file_path))
+                        .last_for_path(project.repository, 'master', Addressable::URI.unencode_component(file_path))
       params_with_correct_id = params.merge(last_commit_id: last_commit.id)
 
       put api(route(file_path), user), params: params_with_correct_id
@@ -760,7 +760,7 @@ RSpec.describe API::Files do
 
     it "returns 400 when file path is invalid" do
       last_commit = Gitlab::Git::Commit
-                        .last_for_path(project.repository, 'master', URI.unescape(file_path))
+                        .last_for_path(project.repository, 'master', Addressable::URI.unencode_component(file_path))
       params_with_correct_id = params.merge(last_commit_id: last_commit.id)
 
       put api(route(rouge_file_path), user), params: params_with_correct_id
@@ -772,7 +772,7 @@ RSpec.describe API::Files do
     it_behaves_like 'when path is absolute' do
       let(:last_commit) do
         Gitlab::Git::Commit
-        .last_for_path(project.repository, 'master', URI.unescape(file_path))
+        .last_for_path(project.repository, 'master', Addressable::URI.unencode_component(file_path))
       end
 
       let(:params_with_correct_id) { params.merge(last_commit_id: last_commit.id) }

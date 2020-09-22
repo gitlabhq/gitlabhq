@@ -352,32 +352,8 @@ end
 
 ## Feature Flag Related Issues **(PREMIUM)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/36617) in GitLab 13.2.
-> - It's deployed behind a feature flag, enabled by default.
-> - It's enabled on GitLab.com.
-> - It can't be enabled or disabled per-project
-> - It's recommended for production use.
-> - For GitLab self-managed instances, GitLab administrators can opt to disable it.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/36617) in GitLab 13.2.
 
 You can link related issues to a feature flag. In the **Linked issues** section, click the `+` button and input the issue reference number or the full URL of the issue.
 
 This feature is similar to the [related issues](../user/project/issues/related_issues.md) feature.
-
-### Enable or disable Feature Flag Related Issues **(CORE ONLY)**
-
-Feature Flag Related Issues is under development but ready for production use.
-It is deployed behind a feature flag that is **enabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../administration/feature_flags.md)
-can opt to disable it for your instance.
-
-To disable it:
-
-```ruby
-Feature.disable(:feature_flags_issue_links)
-```
-
-To enable it:
-
-```ruby
-Feature.enable(:feature_flags_issue_links)
-```

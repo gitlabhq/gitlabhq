@@ -21,7 +21,7 @@ RSpec.describe Avatarable do
       it 'validates the file size' do
         expect(validator).to receive(:validate_each).and_call_original
 
-        project.update(avatar: 'uploads/avatar.png')
+        project.update!(avatar: 'uploads/avatar.png')
       end
     end
 
@@ -29,7 +29,7 @@ RSpec.describe Avatarable do
       it 'skips validation of file size' do
         expect(validator).not_to receive(:validate_each)
 
-        project.update(name: 'Hello world')
+        project.update!(name: 'Hello world')
       end
     end
   end

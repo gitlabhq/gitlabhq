@@ -14123,7 +14123,8 @@ CREATE TABLE packages_package_files (
     verified_at timestamp with time zone,
     verification_failure character varying(255),
     verification_retry_count integer,
-    verification_checksum bytea
+    verification_checksum bytea,
+    CONSTRAINT check_4c5e6bb0b3 CHECK ((file_store IS NOT NULL))
 );
 
 CREATE SEQUENCE packages_package_files_id_seq
@@ -18084,9 +18085,6 @@ ALTER TABLE design_management_designs
 ALTER TABLE vulnerability_scanners
     ADD CONSTRAINT check_37608c9db5 CHECK ((char_length(vendor) <= 255)) NOT VALID;
 
-ALTER TABLE packages_package_files
-    ADD CONSTRAINT check_4c5e6bb0b3 CHECK ((file_store IS NOT NULL)) NOT VALID;
-
 ALTER TABLE group_import_states
     ADD CONSTRAINT check_cda75c7c3f CHECK ((user_id IS NOT NULL)) NOT VALID;
 
@@ -20683,8 +20681,6 @@ CREATE INDEX index_packages_maven_metadata_on_package_id_and_path ON packages_ma
 CREATE INDEX index_packages_nuget_dl_metadata_on_dependency_link_id ON packages_nuget_dependency_link_metadata USING btree (dependency_link_id);
 
 CREATE UNIQUE INDEX index_packages_on_project_id_name_version_unique_when_generic ON packages_packages USING btree (project_id, name, version) WHERE (package_type = 7);
-
-CREATE INDEX index_packages_package_files_file_store_is_null ON packages_package_files USING btree (id) WHERE (file_store IS NULL);
 
 CREATE INDEX index_packages_package_files_on_file_store ON packages_package_files USING btree (file_store);
 

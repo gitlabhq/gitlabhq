@@ -69,7 +69,7 @@ RSpec.describe Issuable do
 
     it 'returns nil when author is nil' do
       issue.author_id = nil
-      issue.save(validate: false)
+      issue.save!(validate: false)
 
       expect(issue.author_name).to eq nil
     end
@@ -361,13 +361,13 @@ RSpec.describe Issuable do
       end
 
       it 'returns true when a subcription exists and subscribed is true' do
-        issue.subscriptions.create(user: user, project: project, subscribed: true)
+        issue.subscriptions.create!(user: user, project: project, subscribed: true)
 
         expect(issue.subscribed?(user, project)).to be_truthy
       end
 
       it 'returns false when a subcription exists and subscribed is false' do
-        issue.subscriptions.create(user: user, project: project, subscribed: false)
+        issue.subscriptions.create!(user: user, project: project, subscribed: false)
 
         expect(issue.subscribed?(user, project)).to be_falsey
       end
@@ -383,13 +383,13 @@ RSpec.describe Issuable do
       end
 
       it 'returns true when a subcription exists and subscribed is true' do
-        issue.subscriptions.create(user: user, project: project, subscribed: true)
+        issue.subscriptions.create!(user: user, project: project, subscribed: true)
 
         expect(issue.subscribed?(user, project)).to be_truthy
       end
 
       it 'returns false when a subcription exists and subscribed is false' do
-        issue.subscriptions.create(user: user, project: project, subscribed: false)
+        issue.subscriptions.create!(user: user, project: project, subscribed: false)
 
         expect(issue.subscribed?(user, project)).to be_falsey
       end
@@ -437,7 +437,7 @@ RSpec.describe Issuable do
       let(:labels) { create_list(:label, 2) }
 
       before do
-        issue.update(labels: [labels[1]])
+        issue.update!(labels: [labels[1]])
         expect(Gitlab::HookData::IssuableBuilder)
           .to receive(:new).with(issue).and_return(builder)
       end
@@ -456,7 +456,7 @@ RSpec.describe Issuable do
     context 'total_time_spent is updated' do
       before do
         issue.spend_time(duration: 2, user_id: user.id, spent_at: Time.current)
-        issue.save
+        issue.save!
         expect(Gitlab::HookData::IssuableBuilder)
           .to receive(:new).with(issue).and_return(builder)
       end
@@ -497,8 +497,8 @@ RSpec.describe Issuable do
       let(:user2) { create(:user) }
 
       before do
-        merge_request.update(assignees: [user])
-        merge_request.update(assignees: [user, user2])
+        merge_request.update!(assignees: [user])
+        merge_request.update!(assignees: [user, user2])
         expect(Gitlab::HookData::IssuableBuilder)
           .to receive(:new).with(merge_request).and_return(builder)
       end
@@ -554,7 +554,7 @@ RSpec.describe Issuable do
       before do
         label_link = issue.label_links.find_by(label_id: second_label.id)
         label_link.label_id = nil
-        label_link.save(validate: false)
+        label_link.save!(validate: false)
       end
 
       it 'filters out bad labels' do

@@ -12,8 +12,8 @@ RSpec.describe CaseSensitivity do
       end
     end
 
-    let!(:model_1) { model.create(path: 'mOdEl-1', name: 'mOdEl 1') }
-    let!(:model_2) { model.create(path: 'mOdEl-2', name: 'mOdEl 2') }
+    let!(:model_1) { model.create!(path: 'mOdEl-1', name: 'mOdEl 1') }
+    let!(:model_2) { model.create!(path: 'mOdEl-2', name: 'mOdEl 2') }
 
     it 'finds a single instance by a single attribute regardless of case' do
       expect(model.iwhere(path: 'MODEL-1')).to contain_exactly(model_1)

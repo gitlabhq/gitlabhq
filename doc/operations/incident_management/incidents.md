@@ -84,7 +84,7 @@ when you receive notification that the alert is resolved.
 
 ## Create an incident manually
 
-If you have at least Developer [permissions](../../user/permissions.md), to create an Incident, you have two options.
+If you have at least Guest [permissions](../../user/permissions.md), to create an Incident, you have two options.
 
 ### From the Incidents List
 

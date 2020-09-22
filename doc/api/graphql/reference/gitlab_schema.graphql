@@ -18733,7 +18733,7 @@ type VulnerabilitiesCountByDayEdge {
 """
 Represents a vulnerability
 """
-type Vulnerability {
+type Vulnerability implements Noteable {
   """
   Description of the vulnerability
   """
@@ -18743,6 +18743,31 @@ type Vulnerability {
   Timestamp of when the vulnerability was first detected
   """
   detectedAt: Time!
+
+  """
+  All discussions on this noteable
+  """
+  discussions(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+  ): DiscussionConnection!
 
   """
   GraphQL ID of the vulnerability
@@ -18788,6 +18813,31 @@ type Vulnerability {
   Location metadata for the vulnerability. Its fields depend on the type of security scan that found the vulnerability
   """
   location: VulnerabilityLocation
+
+  """
+  All notes on this noteable
+  """
+  notes(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+  ): NoteConnection!
 
   """
   Primary identifier of the vulnerability.

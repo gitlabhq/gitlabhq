@@ -484,7 +484,7 @@ class ApplicationController < ActionController::Base
 
   def set_page_title_header
     # Per https://tools.ietf.org/html/rfc5987, headers need to be ISO-8859-1, not UTF-8
-    response.headers['Page-Title'] = URI.escape(page_title('GitLab'))
+    response.headers['Page-Title'] = Addressable::URI.encode_component(page_title('GitLab'))
   end
 
   def set_current_admin(&block)

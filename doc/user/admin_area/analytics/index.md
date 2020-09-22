@@ -4,7 +4,8 @@
 
 Administrators have access to instance-wide analytics, as shown in **Admin Area > Analytics**.
 
-There are two kinds of statistics:
+There are several kinds of statistics:
 
 - [DevOps Report](dev_ops_report.md): Provides an overview of your entire instance's feature usage.
+- [Instance Statistics](instance_statistics.md): Shows how much data your instance contains, and how that is changing.
 - [User Cohorts](user_cohorts.md): Display the monthly cohorts of new users and their activities over time.

@@ -12,12 +12,12 @@ RSpec.describe GoogleApi::Auth do
   end
 
   describe '#authorize_url' do
-    subject { client.authorize_url }
+    subject { Addressable::URI.parse(client.authorize_url) }
 
     it 'returns authorize_url' do
-      is_expected.to start_with('https://accounts.google.com/o/oauth2')
-      is_expected.to include(URI.encode(redirect_uri, URI::PATTERN::RESERVED))
-      is_expected.to include(URI.encode(redirect_to, URI::PATTERN::RESERVED))
+      expect(subject.to_s).to start_with('https://accounts.google.com/o/oauth2')
+      expect(subject.query_values['state']).to eq(redirect_to)
+      expect(subject.query_values['redirect_uri']).to eq(redirect_uri)
     end
   end
 
