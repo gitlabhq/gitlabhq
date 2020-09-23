@@ -3037,10 +3037,10 @@ msgstr ""
 msgid "Any"
 msgstr ""
 
-msgid "Any Author"
+msgid "Any %{header}"
 msgstr ""
 
-msgid "Any Status"
+msgid "Any Author"
 msgstr ""
 
 msgid "Any branch"

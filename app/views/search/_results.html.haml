@@ -1,4 +1,5 @@
 - if @search_objects.to_a.empty?
+  = render partial: "search/results/filters"
   = render partial: "search/results/empty"
   = render_if_exists 'shared/promotions/promote_advanced_search'
   = render_if_exists 'search/form_revert_to_basic'
@@ -21,8 +22,7 @@
         - link_to_group = link_to(@group.name, @group, class: 'ml-md-1')
         = _("in group %{link_to_group}").html_safe % { link_to_group: link_to_group }
   = render_if_exists 'shared/promotions/promote_advanced_search'
-
-  #js-search-filter-by-state{ 'v-cloak': true, data: { scope: @scope, state: params[:state] } }
+  = render partial: "search/results/filters"
 
   .results.gl-mt-3
     - if @scope == 'commits'

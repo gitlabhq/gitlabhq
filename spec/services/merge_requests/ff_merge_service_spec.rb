@@ -72,15 +72,22 @@ RSpec.describe MergeRequests::FfMergeService do
       end
 
       it 'does not update squash_commit_sha if it is not a squash' do
+        expect(merge_request).to receive(:update_and_mark_in_progress_merge_commit_sha).twice.and_call_original
+
         expect { execute_ff_merge }.not_to change { merge_request.squash_commit_sha }
+        expect(merge_request.in_progress_merge_commit_sha).to be_nil
       end
 
       it 'updates squash_commit_sha if it is a squash' do
+        expect(merge_request).to receive(:update_and_mark_in_progress_merge_commit_sha).twice.and_call_original
+
         merge_request.update!(squash: true)
 
         expect { execute_ff_merge }
           .to change { merge_request.squash_commit_sha }
           .from(nil)
+
+        expect(merge_request.in_progress_merge_commit_sha).to be_nil
       end
     end
 

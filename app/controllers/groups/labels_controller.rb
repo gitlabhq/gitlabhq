@@ -60,13 +60,7 @@ class Groups::LabelsController < Groups::ApplicationController
 
   def destroy
     @label.destroy
-
-    respond_to do |format|
-      format.html do
-        redirect_to group_labels_path(@group), status: :found, notice: "#{@label.name} deleted permanently"
-      end
-      format.js
-    end
+    redirect_to group_labels_path(@group), status: :found, notice: "#{@label.name} deleted permanently"
   end
 
   protected

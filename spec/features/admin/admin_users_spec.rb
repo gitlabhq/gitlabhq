@@ -31,6 +31,7 @@ RSpec.describe "Admin::Users" do
       expect(page).to have_content(current_user.last_activity_on.strftime("%e %b, %Y"))
       expect(page).to have_content(user.email)
       expect(page).to have_content(user.name)
+      expect(page).to have_content('Projects')
       expect(page).to have_button('Block')
       expect(page).to have_button('Deactivate')
       expect(page).to have_button('Delete user')
@@ -45,6 +46,19 @@ RSpec.describe "Admin::Users" do
         first_user_link.hover
 
         expect(page).to have_selector('#__BV_popover_1__')
+      end
+    end
+
+    context 'user project count' do
+      before do
+        project = create(:project)
+        project.add_maintainer(current_user)
+      end
+
+      it 'displays count of users projects' do
+        visit admin_users_path
+
+        expect(page.find("[data-testid='user-project-count-#{current_user.id}']").text).to eq("1")
       end
     end
 

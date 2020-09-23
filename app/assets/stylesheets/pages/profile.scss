@@ -227,6 +227,10 @@
       padding-left: 40px;
     }
 
+    .gl-label-scoped {
+      --label-inset-border: inset 0 0 0 1px currentColor;
+    }
+
     @include media-breakpoint-up(lg) {
       margin-right: 5px;
     }

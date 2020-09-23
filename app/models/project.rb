@@ -2292,6 +2292,10 @@ class Project < ApplicationRecord
     []
   end
 
+  def mark_primary_write_location
+    # Overriden in EE
+  end
+
   def toggle_ci_cd_settings!(settings_attribute)
     ci_cd_settings.toggle!(settings_attribute)
   end

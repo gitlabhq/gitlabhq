@@ -445,8 +445,11 @@ module Gitlab
       # rubocop: enable UsageData/LargeTable
       # rubocop: enable CodeReuse/ActiveRecord
 
+      # augmented in EE
       def user_preferences_usage
-        {} # augmented in EE
+        {
+          user_preferences_user_gitpod_enabled: count(UserPreference.with_user.gitpod_enabled.merge(User.active))
+        }
       end
 
       def merge_requests_users(time_period)

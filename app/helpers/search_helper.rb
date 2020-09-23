@@ -299,13 +299,6 @@ module SearchHelper
     simple_search_highlight_and_truncate(issue.description, search_term, highlighter: '<span class="gl-text-black-normal gl-font-weight-bold">\1</span>')
   end
 
-  def simple_search_highlight_and_truncate(text, phrase, options = {})
-    truncate_length = options.delete(:length) { 200 }
-    text = truncate(text, length: truncate_length)
-    phrase = phrase.split
-    highlight(text, phrase, options)
-  end
-
   def show_user_search_tab?
     return false if Feature.disabled?(:users_search, default_enabled: true)
 

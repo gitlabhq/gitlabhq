@@ -9196,7 +9196,6 @@ CREATE TABLE application_settings (
     throttle_incident_management_notification_enabled boolean DEFAULT false NOT NULL,
     throttle_incident_management_notification_period_in_seconds integer DEFAULT 3600,
     throttle_incident_management_notification_per_period integer DEFAULT 3600,
-    snowplow_iglu_registry_url character varying(255),
     push_event_hooks_limit integer DEFAULT 3 NOT NULL,
     push_event_activities_limit integer DEFAULT 3 NOT NULL,
     custom_http_clone_url_root character varying(511),
@@ -19789,8 +19788,6 @@ CREATE INDEX index_cluster_agent_tokens_on_agent_id ON cluster_agent_tokens USIN
 
 CREATE UNIQUE INDEX index_cluster_agent_tokens_on_token_encrypted ON cluster_agent_tokens USING btree (token_encrypted);
 
-CREATE INDEX index_cluster_agents_on_project_id ON cluster_agents USING btree (project_id);
-
 CREATE UNIQUE INDEX index_cluster_agents_on_project_id_and_name ON cluster_agents USING btree (project_id, name);
 
 CREATE UNIQUE INDEX index_cluster_groups_on_cluster_id_and_group_id ON cluster_groups USING btree (cluster_id, group_id);
@@ -21334,6 +21331,8 @@ CREATE INDEX index_user_highest_roles_on_user_id_and_highest_access_level ON use
 CREATE UNIQUE INDEX index_user_interacted_projects_on_project_id_and_user_id ON user_interacted_projects USING btree (project_id, user_id);
 
 CREATE INDEX index_user_interacted_projects_on_user_id ON user_interacted_projects USING btree (user_id);
+
+CREATE INDEX index_user_preferences_on_gitpod_enabled ON user_preferences USING btree (gitpod_enabled);
 
 CREATE UNIQUE INDEX index_user_preferences_on_user_id ON user_preferences USING btree (user_id);
 

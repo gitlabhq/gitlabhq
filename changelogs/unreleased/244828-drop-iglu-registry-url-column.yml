@@ -1,0 +1,5 @@
+---
+title: Drop Iglu registry URL column
+merge_request: 42939
+author:
+type: removed

@@ -499,6 +499,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
 
       expect(count_data[:projects_with_packages]).to eq(2)
       expect(count_data[:packages]).to eq(4)
+      expect(count_data[:user_preferences_user_gitpod_enabled]).to eq(1)
     end
 
     it 'gathers object store usage correctly' do

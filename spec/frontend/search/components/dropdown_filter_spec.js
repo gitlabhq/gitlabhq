@@ -1,11 +1,11 @@
 import { shallowMount } from '@vue/test-utils';
 import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
-import StateFilter from '~/search/state_filter/components/state_filter.vue';
+import DropdownFilter from '~/search/components/dropdown_filter.vue';
 import {
   FILTER_STATES,
-  SCOPES,
   FILTER_STATES_BY_SCOPE,
-  FILTER_TEXT,
+  FILTER_HEADER,
+  SCOPES,
 } from '~/search/state_filter/constants';
 import * as urlUtils from '~/lib/utils/url_utility';
 
@@ -15,14 +15,19 @@ jest.mock('~/lib/utils/url_utility', () => ({
 }));
 
 function createComponent(props = { scope: 'issues' }) {
-  return shallowMount(StateFilter, {
+  return shallowMount(DropdownFilter, {
     propsData: {
+      filtersArray: FILTER_STATES_BY_SCOPE.issues,
+      filters: FILTER_STATES,
+      header: FILTER_HEADER,
+      param: 'state',
+      supportedScopes: Object.values(SCOPES),
       ...props,
     },
   });
 }
 
-describe('StateFilter', () => {
+describe('DropdownFilter', () => {
   let wrapper;
 
   beforeEach(() => {
@@ -41,7 +46,7 @@ describe('StateFilter', () => {
 
   describe('template', () => {
     describe.each`
-      scope               | showStateDropdown
+      scope               | showDropdown
       ${'issues'}         | ${true}
       ${'merge_requests'} | ${true}
       ${'projects'}       | ${false}
@@ -50,26 +55,25 @@ describe('StateFilter', () => {
       ${'notes'}          | ${false}
       ${'wiki_blobs'}     | ${false}
       ${'blobs'}          | ${false}
-    `(`state dropdown`, ({ scope, showStateDropdown }) => {
+    `(`dropdown`, ({ scope, showDropdown }) => {
       beforeEach(() => {
         wrapper = createComponent({ scope });
       });
 
-      it(`does${showStateDropdown ? '' : ' not'} render when scope is ${scope}`, () => {
-        expect(findGlDropdown().exists()).toBe(showStateDropdown);
+      it(`does${showDropdown ? '' : ' not'} render when scope is ${scope}`, () => {
+        expect(findGlDropdown().exists()).toBe(showDropdown);
       });
     });
 
     describe.each`
-      state                         | label
-      ${FILTER_STATES.ANY.value}    | ${FILTER_TEXT}
+      initialFilter                 | label
+      ${FILTER_STATES.ANY.value}    | ${`Any ${FILTER_HEADER}`}
       ${FILTER_STATES.OPEN.value}   | ${FILTER_STATES.OPEN.label}
       ${FILTER_STATES.CLOSED.value} | ${FILTER_STATES.CLOSED.label}
-      ${FILTER_STATES.MERGED.value} | ${FILTER_STATES.MERGED.label}
-    `(`filter text`, ({ state, label }) => {
-      describe(`when state is ${state}`, () => {
+    `(`filter text`, ({ initialFilter, label }) => {
+      describe(`when initialFilter is ${initialFilter}`, () => {
         beforeEach(() => {
-          wrapper = createComponent({ scope: 'issues', state });
+          wrapper = createComponent({ scope: 'issues', initialFilter });
         });
 
         it(`sets dropdown label to ${label}`, () => {

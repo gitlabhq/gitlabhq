@@ -1302,6 +1302,14 @@ class MergeRequest < ApplicationRecord
     unlock_mr
   end
 
+  def update_and_mark_in_progress_merge_commit_sha(commit_id)
+    self.update(in_progress_merge_commit_sha: commit_id)
+    # Since another process checks for matching merge request, we need
+    # to make it possible to detect whether the query should go to the
+    # primary.
+    target_project.mark_primary_write_location
+  end
+
   def diverged_commits_count
     cache = Rails.cache.read(:"merge_request_#{id}_diverged_commits")
 

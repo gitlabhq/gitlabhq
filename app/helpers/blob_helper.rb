@@ -1,6 +1,12 @@
 # frozen_string_literal: true
 
 module BlobHelper
+  def highlight(file_name, file_content, language: nil, plain: false)
+    highlighted = Gitlab::Highlight.highlight(file_name, file_content, plain: plain, language: language)
+
+    raw %(<pre class="code highlight"><code>#{highlighted}</code></pre>)
+  end
+
   def no_highlight_files
     %w(credits changelog news copying copyright license authors)
   end

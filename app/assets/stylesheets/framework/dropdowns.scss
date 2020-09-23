@@ -33,8 +33,7 @@
 }
 
 .show.dropdown {
-  .dropdown-menu,
-  .dropdown-menu-nav {
+  .dropdown-menu {
     @include set-visible;
     min-height: $dropdown-min-height;
     max-height: $dropdown-max-height;
@@ -258,8 +257,7 @@
   }
 }
 
-.dropdown-menu,
-.dropdown-menu-nav {
+.dropdown-menu {
   display: none;
   position: absolute;
   width: auto;
@@ -393,49 +391,56 @@
     pointer-events: none;
   }
 
-  .dropdown-menu li {
-    cursor: pointer;
+  .dropdown-menu {
+    display: none;
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
 
-    &.droplab-item-active button {
-      @include dropdown-item-hover;
-    }
+    li {
+      cursor: pointer;
 
-    > a,
-    > button {
-      display: flex;
-      margin: 0;
-      text-overflow: inherit;
-      text-align: left;
+      &.droplab-item-active button {
+        @include dropdown-item-hover;
+      }
 
-      &.btn .fa:not(:last-child) {
+      > a,
+      > button {
+        display: flex;
+        margin: 0;
+        text-overflow: inherit;
+        text-align: left;
+
+        &.btn .fa:not(:last-child) {
+          margin-left: 5px;
+        }
+      }
+
+      > button.dropdown-epic-button {
+        flex-direction: column;
+
+        .reference {
+          color: $gray-300;
+          margin-top: $gl-padding-4;
+        }
+      }
+
+      &.droplab-item-selected i {
+        visibility: visible;
+      }
+
+      .icon {
+        visibility: hidden;
+      }
+
+      .description {
+        display: inline-block;
+        white-space: normal;
         margin-left: 5px;
-      }
-    }
 
-    > button.dropdown-epic-button {
-      flex-direction: column;
-
-      .reference {
-        color: $gray-300;
-        margin-top: $gl-padding-4;
-      }
-    }
-
-    &.droplab-item-selected i {
-      visibility: visible;
-    }
-
-    .icon {
-      visibility: hidden;
-    }
-
-    .description {
-      display: inline-block;
-      white-space: normal;
-      margin-left: 5px;
-
-      p {
-        margin-bottom: 0;
+        p {
+          margin-bottom: 0;
+        }
       }
     }
   }
@@ -447,21 +452,12 @@
   }
 }
 
-.droplab-dropdown .dropdown-menu,
-.droplab-dropdown .dropdown-menu-nav {
-  display: none;
-  opacity: 1;
-  visibility: visible;
-  transform: translateY(0);
-}
-
 .comment-type-dropdown.show .dropdown-menu {
   display: block;
 }
 
 .filtered-search-box-input-container {
-  .dropdown-menu,
-  .dropdown-menu-nav {
+  .dropdown-menu {
     max-width: 280px;
   }
 }
@@ -850,8 +846,7 @@
   }
 
   header.navbar-gitlab .dropdown {
-    .dropdown-menu,
-    .dropdown-menu-nav {
+    .dropdown-menu {
       width: 100%;
       min-width: 100%;
     }

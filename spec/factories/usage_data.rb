@@ -102,6 +102,9 @@ FactoryBot.define do
       create(:package, project: projects[1])
       create(:package, created_at: 2.months.ago, project: projects[1])
 
+      # User Preferences
+      create(:user_preference, gitpod_enabled: true)
+
       ProjectFeature.first.update_attribute('repository_access_level', 0)
 
       # Create fresh & a month (28-days SMAU) old  data

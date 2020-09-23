@@ -56,4 +56,43 @@ RSpec.describe Groups::LabelsController do
       expect(response).to have_gitlab_http_status(:ok)
     end
   end
+
+  describe 'DELETE #destroy' do
+    context 'when current user has ability to destroy the label' do
+      before do
+        sign_in(user)
+      end
+
+      it 'removes the label' do
+        label = create(:group_label, group: group)
+        delete :destroy, params: { group_id: group.to_param, id: label.to_param }
+
+        expect { label.reload }.to raise_error(ActiveRecord::RecordNotFound)
+      end
+
+      context 'when label is succesfuly destroyed' do
+        it 'redirects to the group labels page' do
+          label = create(:group_label, group: group)
+          delete :destroy, params: { group_id: group.to_param, id: label.to_param }
+
+          expect(response).to redirect_to(group_labels_path)
+        end
+      end
+    end
+
+    context 'when current_user does not have ability to destroy the label' do
+      let(:another_user) { create(:user) }
+
+      before do
+        sign_in(another_user)
+      end
+
+      it 'responds with status 404' do
+        label = create(:group_label, group: group)
+        delete :destroy, params: { group_id: group.to_param, id: label.to_param }
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+  end
 end

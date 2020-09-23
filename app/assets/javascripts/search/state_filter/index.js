@@ -1,6 +1,13 @@
 import Vue from 'vue';
 import Translate from '~/vue_shared/translate';
-import StateFilter from './components/state_filter.vue';
+import DropdownFilter from '../components/dropdown_filter.vue';
+import {
+  FILTER_HEADER,
+  FILTER_PARAM,
+  FILTER_STATES_BY_SCOPE,
+  FILTER_STATES,
+  SCOPES,
+} from './constants';
 
 Vue.use(Translate);
 
@@ -11,22 +18,20 @@ export default () => {
 
   return new Vue({
     el,
-    components: {
-      StateFilter,
-    },
     data() {
-      const { dataset } = this.$options.el;
-      return {
-        scope: dataset.scope,
-        state: dataset.state,
-      };
+      return { ...el.dataset };
     },
 
     render(createElement) {
-      return createElement('state-filter', {
+      return createElement(DropdownFilter, {
         props: {
+          initialFilter: this.filter,
+          filtersArray: FILTER_STATES_BY_SCOPE[this.scope],
+          filters: FILTER_STATES,
+          header: FILTER_HEADER,
+          param: FILTER_PARAM,
           scope: this.scope,
-          state: this.state,
+          supportedScopes: Object.values(SCOPES),
         },
       });
     },

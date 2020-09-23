@@ -2,21 +2,9 @@
 import { mapActions, mapGetters, mapState } from 'vuex';
 import $ from 'jquery';
 import { GlTooltipDirective, GlIcon, GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
-import {
-  MATCH_LINE_TYPE,
-  NEW_LINE_TYPE,
-  OLD_LINE_TYPE,
-  CONTEXT_LINE_TYPE,
-  CONTEXT_LINE_CLASS_NAME,
-  OLD_NO_NEW_LINE_TYPE,
-  PARALLEL_DIFF_VIEW_TYPE,
-  NEW_NO_NEW_LINE_TYPE,
-  EMPTY_CELL_TYPE,
-  LINE_HOVER_CLASS_NAME,
-} from '../constants';
-import { __ } from '~/locale';
-import { getParameterByName, parseBoolean } from '~/lib/utils/common_utils';
+import { CONTEXT_LINE_CLASS_NAME, PARALLEL_DIFF_VIEW_TYPE } from '../constants';
 import DiffGutterAvatars from './diff_gutter_avatars.vue';
+import * as utils from './diff_row_utils';
 
 export default {
   components: {
@@ -63,20 +51,15 @@ export default {
     ...mapGetters(['isLoggedIn']),
     ...mapState({
       isHighlighted(state) {
-        if (this.isCommented) return true;
-
-        const lineCode =
-          (this.line.left && this.line.left.line_code) ||
-          (this.line.right && this.line.right.line_code);
-
-        return lineCode ? lineCode === state.diffs.highlightedRow : false;
+        const line = this.line.left?.line_code ? this.line.left : this.line.right;
+        return utils.isHighlighted(state, line, this.isCommented);
       },
     }),
     isContextLineLeft() {
-      return this.line.left && this.line.left.type === CONTEXT_LINE_TYPE;
+      return utils.isContextLine(this.line.left?.type);
     },
     isContextLineRight() {
-      return this.line.right && this.line.right.type === CONTEXT_LINE_TYPE;
+      return utils.isContextLine(this.line.right?.type);
     },
     classNameMap() {
       return {
@@ -85,156 +68,83 @@ export default {
       };
     },
     parallelViewLeftLineType() {
-      if (this.line.right && this.line.right.type === NEW_NO_NEW_LINE_TYPE) {
-        return OLD_NO_NEW_LINE_TYPE;
-      }
-
-      const lineTypeClass = this.line.left ? this.line.left.type : EMPTY_CELL_TYPE;
-
-      return [
-        lineTypeClass,
-        {
-          hll: this.isHighlighted,
-        },
-      ];
+      return utils.parallelViewLeftLineType(this.line, this.isHighlighted);
     },
     isMatchLineLeft() {
-      return this.line.left && this.line.left.type === MATCH_LINE_TYPE;
+      return utils.isMatchLine(this.line.left?.type);
     },
     isMatchLineRight() {
-      return this.line.right && this.line.right.type === MATCH_LINE_TYPE;
+      return utils.isMatchLine(this.line.right?.type);
     },
     coverageState() {
       return this.fileLineCoverage(this.filePath, this.line.right.new_line);
     },
     classNameMapCellLeft() {
-      const { type } = this.line.left;
-
-      return [
-        type,
-        {
-          hll: this.isHighlighted,
-          [LINE_HOVER_CLASS_NAME]:
-            this.isLoggedIn && this.isLeftHover && !this.isContextLineLeft && !this.isMetaLineLeft,
-        },
-      ];
+      return utils.classNameMapCell(
+        this.line.left,
+        this.isHighlighted,
+        this.isLoggedIn,
+        this.isLeftHover,
+      );
     },
     classNameMapCellRight() {
-      const { type } = this.line.right;
-
-      return [
-        type,
-        {
-          hll: this.isHighlighted,
-          [LINE_HOVER_CLASS_NAME]:
-            this.isLoggedIn &&
-            this.isRightHover &&
-            !this.isContextLineRight &&
-            !this.isMetaLineRight,
-        },
-      ];
+      return utils.classNameMapCell(
+        this.line.right,
+        this.isHighlighted,
+        this.isLoggedIn,
+        this.isRightHover,
+      );
     },
     addCommentTooltipLeft() {
-      const brokenSymlinks = this.line.left.commentsDisabled;
-      let tooltip = __('Add a comment to this line');
-
-      if (brokenSymlinks) {
-        if (brokenSymlinks.wasSymbolic || brokenSymlinks.isSymbolic) {
-          tooltip = __(
-            'Commenting on symbolic links that replace or are replaced by files is currently not supported.',
-          );
-        } else if (brokenSymlinks.wasReal || brokenSymlinks.isReal) {
-          tooltip = __(
-            'Commenting on files that replace or are replaced by symbolic links is currently not supported.',
-          );
-        }
-      }
-
-      return tooltip;
+      return utils.addCommentTooltip(this.line.left);
     },
     addCommentTooltipRight() {
-      const brokenSymlinks = this.line.right.commentsDisabled;
-      let tooltip = __('Add a comment to this line');
-
-      if (brokenSymlinks) {
-        if (brokenSymlinks.wasSymbolic || brokenSymlinks.isSymbolic) {
-          tooltip = __(
-            'Commenting on symbolic links that replace or are replaced by files is currently not supported.',
-          );
-        } else if (brokenSymlinks.wasReal || brokenSymlinks.isReal) {
-          tooltip = __(
-            'Commenting on files that replace or are replaced by symbolic links is currently not supported.',
-          );
-        }
-      }
-
-      return tooltip;
+      return utils.addCommentTooltip(this.line.right);
     },
     shouldRenderCommentButton() {
-      if (!this.isCommentButtonRendered) {
-        return false;
-      }
-
-      if (this.isLoggedIn) {
-        const isDiffHead = parseBoolean(getParameterByName('diff_head'));
-        return !isDiffHead || gon.features?.mergeRefHeadComments;
-      }
-
-      return false;
+      return utils.shouldRenderCommentButton(
+        this.isLoggedIn,
+        this.isCommentButtonRendered,
+        gon.features?.mergeRefHeadComments,
+      );
     },
     shouldShowCommentButtonLeft() {
-      return (
-        this.isLeftHover &&
-        !this.isContextLineLeft &&
-        !this.isMetaLineLeft &&
-        !this.hasDiscussionsLeft
+      return utils.shouldShowCommentButton(
+        this.isLeftHover,
+        this.isContextLineLeft,
+        this.isMetaLineLeft,
+        this.hasDiscussionsLeft,
       );
     },
     shouldShowCommentButtonRight() {
-      return (
-        this.isRightHover &&
-        !this.isContextLineRight &&
-        !this.isMetaLineRight &&
-        !this.hasDiscussionsRight
+      return utils.shouldShowCommentButton(
+        this.isRightHover,
+        this.isContextLineRight,
+        this.isMetaLineRight,
+        this.hasDiscussionsRight,
       );
     },
     hasDiscussionsLeft() {
-      return this.line.left?.discussions?.length > 0;
+      return utils.hasDiscussions(this.line.left);
     },
     hasDiscussionsRight() {
-      return this.line.right?.discussions?.length > 0;
+      return utils.hasDiscussions(this.line.right);
     },
     lineHrefOld() {
-      return `#${this.line.left.line_code || ''}`;
+      return utils.lineHref(this.line.left);
     },
     lineHrefNew() {
-      return `#${this.line.right.line_code || ''}`;
+      return utils.lineHref(this.line.right);
     },
     lineCode() {
-      return (
-        (this.line.left && this.line.left.line_code) ||
-        (this.line.right && this.line.right.line_code)
-      );
+      return utils.lineCode(this.line);
     },
     isMetaLineLeft() {
-      const type = this.line.left?.type;
-
-      return (
-        type === OLD_NO_NEW_LINE_TYPE || type === NEW_NO_NEW_LINE_TYPE || type === EMPTY_CELL_TYPE
-      );
+      return utils.isMetaLine(this.line.left?.type);
     },
     isMetaLineRight() {
-      const type = this.line.right?.type;
-
-      return (
-        type === OLD_NO_NEW_LINE_TYPE || type === NEW_NO_NEW_LINE_TYPE || type === EMPTY_CELL_TYPE
-      );
+      return utils.isMetaLine(this.line.right?.type);
     },
-  },
-  created() {
-    this.newLineType = NEW_LINE_TYPE;
-    this.oldLineType = OLD_LINE_TYPE;
-    this.parallelDiffViewType = PARALLEL_DIFF_VIEW_TYPE;
   },
   mounted() {
     this.scrollToLineIfNeededParallel(this.line);
@@ -341,6 +251,7 @@ export default {
       <td :class="parallelViewLeftLineType" class="line-coverage left-side"></td>
       <td
         :id="line.left.line_code"
+        :key="line.left.line_code"
         v-safe-html="line.left.rich_text"
         :class="parallelViewLeftLineType"
         class="line_content with-coverage parallel left-side"
@@ -401,6 +312,7 @@ export default {
       ></td>
       <td
         :id="line.right.line_code"
+        :key="line.right.rich_text"
         v-safe-html="line.right.rich_text"
         :class="[
           line.right.type,

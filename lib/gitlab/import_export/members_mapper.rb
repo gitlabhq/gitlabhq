@@ -35,7 +35,7 @@ module Gitlab
       end
 
       def include?(old_user_id)
-        map.has_key?(old_user_id) && map[old_user_id] != default_user_id
+        map.has_key?(old_user_id)
       end
 
       private
@@ -63,6 +63,8 @@ module Gitlab
       end
 
       def add_team_member(member, existing_user = nil)
+        return true if existing_user && @importable.members.exists?(user_id: existing_user.id)
+
         member['user'] = existing_user
         member_hash = member_hash(member)
 

@@ -5,6 +5,8 @@ require 'spec_helper'
 RSpec.describe Banzai::Filter::ExternalIssueReferenceFilter do
   include FilterSpecHelper
 
+  let_it_be_with_refind(:project) { create(:project) }
+
   shared_examples_for "external issue tracker" do
     it_behaves_like 'a reference containing an element node'
 
@@ -116,7 +118,7 @@ RSpec.describe Banzai::Filter::ExternalIssueReferenceFilter do
   end
 
   context "redmine project" do
-    let(:project) { create(:redmine_project) }
+    let_it_be(:service) { create(:redmine_service, project: project) }
 
     before do
       project.update!(issues_enabled: false)
@@ -138,7 +140,7 @@ RSpec.describe Banzai::Filter::ExternalIssueReferenceFilter do
   end
 
   context "youtrack project" do
-    let(:project) { create(:youtrack_project) }
+    let_it_be(:service) { create(:youtrack_service, project: project) }
 
     before do
       project.update!(issues_enabled: false)
@@ -181,7 +183,7 @@ RSpec.describe Banzai::Filter::ExternalIssueReferenceFilter do
   end
 
   context "jira project" do
-    let(:project) { create(:jira_project) }
+    let_it_be(:service) { create(:jira_service, project: project) }
     let(:reference) { issue.to_reference }
 
     context "with right markdown" do
@@ -210,7 +212,7 @@ RSpec.describe Banzai::Filter::ExternalIssueReferenceFilter do
   end
 
   context "ewm project" do
-    let_it_be(:project) { create(:ewm_project) }
+    let_it_be(:service) { create(:ewm_service, project: project) }
 
     before do
       project.update!(issues_enabled: false)

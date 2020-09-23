@@ -15,18 +15,18 @@
           .col-md-2.text-center
             Markdown
           .col-md-10.code.js-syntax-highlight
-            = highlight_badge('.md', badge.to_markdown, language: 'markdown')
+            = highlight('.md', badge.to_markdown, language: 'markdown')
         .row
           %hr
         .row
           .col-md-2.text-center
             HTML
           .col-md-10.code.js-syntax-highlight
-            = highlight_badge('.html', badge.to_html, language: 'html')
+            = highlight('.html', badge.to_html, language: 'html')
         .row
           %hr
         .row
           .col-md-2.text-center
             AsciiDoc
           .col-md-10.code.js-syntax-highlight
-            = highlight_badge('.adoc', badge.to_asciidoc)
+            = highlight('.adoc', badge.to_asciidoc)

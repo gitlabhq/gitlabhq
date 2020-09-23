@@ -133,6 +133,7 @@ module UsageDataHelpers
       todos
       uploads
       web_hooks
+      user_preferences_user_gitpod_enabled
     ).push(*SMAU_KEYS)
 
   USAGE_DATA_KEYS = %i(

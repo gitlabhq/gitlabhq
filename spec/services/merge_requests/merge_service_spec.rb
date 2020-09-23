@@ -22,6 +22,7 @@ RSpec.describe MergeRequests::MergeService do
     context 'valid params' do
       before do
         allow(service).to receive(:execute_hooks)
+        expect(merge_request).to receive(:update_and_mark_in_progress_merge_commit_sha).twice.and_call_original
 
         perform_enqueued_jobs do
           service.execute(merge_request)

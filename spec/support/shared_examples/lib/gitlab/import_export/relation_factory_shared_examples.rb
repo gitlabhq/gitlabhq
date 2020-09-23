@@ -65,7 +65,7 @@ RSpec.shared_examples 'Notes user references' do
 
       include_examples 'sets the note author to the mapped user'
 
-      include_examples 'adds original autor note'
+      include_examples 'does not add original autor note'
     end
 
     context 'and the note author exists in the target instance' do
