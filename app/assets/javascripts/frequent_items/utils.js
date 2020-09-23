@@ -1,6 +1,6 @@
 import { take } from 'lodash';
 import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
-import { sanitize } from 'dompurify';
+import { sanitize } from '~/lib/dompurify';
 import { FREQUENT_ITEMS, HOUR_IN_MS } from './constants';
 
 export const isMobile = () => ['md', 'sm', 'xs'].includes(bp.getBreakpointSize());

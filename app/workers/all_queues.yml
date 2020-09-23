@@ -211,6 +211,14 @@
   :weight: 1
   :idempotent:
   :tags: []
+- :name: cronjob:member_invitation_reminder_emails
+  :feature_category: :subgroups
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent:
+  :tags: []
 - :name: cronjob:metrics_dashboard_schedule_annotations_prune
   :feature_category: :metrics
   :has_external_dependencies:

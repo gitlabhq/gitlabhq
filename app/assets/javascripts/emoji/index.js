@@ -1,4 +1,5 @@
 import { uniq } from 'lodash';
+import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import emojiAliases from 'emojis/aliases.json';
 import axios from '../lib/utils/axios_utils';
 
@@ -62,13 +63,18 @@ export function isEmojiNameValid(name) {
   return validEmojiNames.indexOf(name) >= 0;
 }
 
-export function filterEmojiNames(filter) {
-  const match = filter.toLowerCase();
-  return validEmojiNames.filter(name => name.indexOf(match) >= 0);
-}
-
-export function filterEmojiNamesByAlias(filter) {
-  return uniq(filterEmojiNames(filter).map(name => normalizeEmojiName(name)));
+/**
+ * Search emoji by name or alias. Returns a normalized, deduplicated list of
+ * names.
+ *
+ * Calling with an empty filter returns an empty array.
+ *
+ * @param {String}
+ * @returns {Array}
+ */
+export function queryEmojiNames(filter) {
+  const matches = fuzzaldrinPlus.filter(validEmojiNames, filter);
+  return uniq(matches.map(name => normalizeEmojiName(name)));
 }
 
 let emojiCategoryMap;

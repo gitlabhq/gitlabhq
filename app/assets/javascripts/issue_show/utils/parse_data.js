@@ -1,4 +1,4 @@
-import { sanitize } from 'dompurify';
+import { sanitize } from '~/lib/dompurify';
 
 // We currently load + parse the data from the issue app and related merge request
 let cachedParsedData;

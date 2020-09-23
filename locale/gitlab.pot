@@ -2182,6 +2182,9 @@ msgid_plural "Alerts"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "Alert #%{alertId}"
+msgstr ""
+
 msgid "AlertManagement|Acknowledged"
 msgstr ""
 

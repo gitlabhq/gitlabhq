@@ -309,6 +309,16 @@ describe('AwardsHandler', () => {
       expect($('[data-name=alien]').is(':visible')).toBe(true);
       expect($('.js-emoji-menu-search').val()).toBe('');
     });
+
+    it('should fuzzy filter the emoji', async () => {
+      await openAndWaitForEmojiMenu();
+
+      awardsHandler.searchEmojis('sgls');
+
+      expect($('[data-name=angel]').is(':visible')).toBe(false);
+      expect($('[data-name=anger]').is(':visible')).toBe(false);
+      expect($('[data-name=sunglasses]').is(':visible')).toBe(true);
+    });
   });
 
   describe('emoji menu', () => {

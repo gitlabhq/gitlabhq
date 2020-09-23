@@ -1,5 +1,5 @@
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
-import { sanitize } from 'dompurify';
+import { sanitize } from '~/lib/dompurify';
 
 /**
  * Wraps substring matches with HTML `<span>` elements.

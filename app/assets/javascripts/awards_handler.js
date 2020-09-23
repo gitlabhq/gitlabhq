@@ -572,7 +572,7 @@ export class AwardsHandler {
   }
 
   findMatchingEmojiElements(query) {
-    const emojiMatches = this.emoji.filterEmojiNamesByAlias(query);
+    const emojiMatches = this.emoji.queryEmojiNames(query);
     const $emojiElements = $('.emoji-menu-list:not(.frequent-emojis) [data-name]');
     const $matchingElements = $emojiElements.filter(
       (i, elm) => emojiMatches.indexOf(elm.dataset.name) >= 0,

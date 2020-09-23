@@ -1,7 +1,7 @@
 import MockAdapter from 'axios-mock-adapter';
 import { trimText } from 'helpers/text_helper';
 import axios from '~/lib/utils/axios_utils';
-import { initEmojiMap, glEmojiTag, EMOJI_VERSION } from '~/emoji';
+import { initEmojiMap, glEmojiTag, queryEmojiNames, EMOJI_VERSION } from '~/emoji';
 import isEmojiUnicodeSupported, {
   isFlagEmoji,
   isRainbowFlagEmoji,
@@ -57,8 +57,15 @@ describe('gl_emoji', () => {
   let mock;
 
   beforeEach(() => {
+    const emojiData = Object.fromEntries(
+      Object.values(emojiFixtureMap).map(m => {
+        const { name: n, moji: e, unicodeVersion: u, category: c, description: d } = m;
+        return [n, { c, e, d, u }];
+      }),
+    );
+
     mock = new MockAdapter(axios);
-    mock.onGet(`/-/emojis/${EMOJI_VERSION}/emojis.json`).reply(200);
+    mock.onGet(`/-/emojis/${EMOJI_VERSION}/emojis.json`).reply(200, JSON.stringify(emojiData));
 
     return initEmojiMap().catch(() => {});
   });
@@ -377,5 +384,16 @@ describe('gl_emoji', () => {
 
       expect(isSupported).toBeFalsy();
     });
+  });
+
+  describe('queryEmojiNames', () => {
+    const contains = (e, term) => {
+      const names = queryEmojiNames(term);
+      expect(names.indexOf(e.name) >= 0).toBe(true);
+    };
+
+    it('should match by name', () => contains(emojiFixtureMap.grey_question, 'grey_question'));
+    it('should match by partial name', () => contains(emojiFixtureMap.grey_question, 'question'));
+    it('should fuzzy match by name', () => contains(emojiFixtureMap.grey_question, 'grqtn'));
   });
 });

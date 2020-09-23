@@ -1,4 +1,4 @@
-import { sanitize } from 'dompurify';
+import { sanitize } from '~/lib/dompurify';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import updateDescription from '../utils/update_description';
 

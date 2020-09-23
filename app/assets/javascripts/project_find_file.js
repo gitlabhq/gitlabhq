@@ -2,7 +2,7 @@
 
 import $ from 'jquery';
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
-import { sanitize } from 'dompurify';
+import { sanitize } from '~/lib/dompurify';
 import axios from '~/lib/utils/axios_utils';
 import { joinPaths, escapeFileUrl } from '~/lib/utils/url_utility';
 import { deprecatedCreateFlash as flash } from '~/flash';
