@@ -271,6 +271,14 @@ RSpec.describe DesignManagement::SaveDesignsService do
             expect(response[:message]).to match(/only \d+ files are allowed simultaneously/i)
           end
         end
+
+        context 'when uploading duplicate files' do
+          let(:files) { [rails_sample, dk_png, rails_sample] }
+
+          it 'returns the correct error' do
+            expect(response[:message]).to match('Duplicate filenames are not allowed!')
+          end
+        end
       end
 
       context 'when the user is not allowed to upload designs' do

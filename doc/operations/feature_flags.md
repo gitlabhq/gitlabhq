@@ -105,7 +105,8 @@ ID for the feature to be enabled. See the [Ruby example](#ruby-application-examp
 
 ### User IDs
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/8240) in GitLab 12.2. [Updated](https://gitlab.com/gitlab-org/gitlab/-/issues/34363) to be defined per environment in GitLab 12.6.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/8240) in GitLab 12.2.
+> - [Updated](https://gitlab.com/gitlab-org/gitlab/-/issues/34363) to be defined per environment in GitLab 12.6.
 
 Enables the feature for a list of target users. It is implemented
 using the Unleash [`userWithId`](https://unleash.github.io/docs/activation_strategy#userwithid)
@@ -352,8 +353,10 @@ end
 
 ## Feature Flag Related Issues **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/36617) in GitLab 13.2.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/36617) in GitLab 13.2.
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/251234) in GitLab 13.5.
 
-You can link related issues to a feature flag. In the **Linked issues** section, click the `+` button and input the issue reference number or the full URL of the issue.
+You can link related issues to a feature flag. In the **Linked issues** section,
+click the `+` button and input the issue reference number or the full URL of the issue.
 
 This feature is similar to the [related issues](../user/project/issues/related_issues.md) feature.

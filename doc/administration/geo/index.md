@@ -195,6 +195,9 @@ For information on how to update your Geo nodes to the latest GitLab version, se
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/35913) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.2.
 
+DANGER: **Danger:**
+In GitLab 13.2 and later versions, promoting a secondary node to a primary while the secondary is paused fails. We are [investigating the issue](https://gitlab.com/gitlab-org/gitlab/-/issues/225173). Do not pause replication before promoting a secondary. If the node is paused, please resume before promoting.
+
 In some circumstances, like during [upgrades](replication/updating_the_geo_nodes.md) or a [planned failover](disaster_recovery/planned_failover.md), it is desirable to pause replication between the primary and secondary.
 
 Pausing and resuming replication is done via a command line tool from the secondary node.
@@ -261,6 +264,7 @@ This list of limitations only reflects the latest version of GitLab. If you are 
 - Object pools for forked project deduplication work only on the **primary** node, and are duplicated on the **secondary** node.
 - [External merge request diffs](../merge_request_diffs.md) will not be replicated if they are on-disk, and viewing merge requests will fail. However, external MR diffs in object storage **are** supported. The default configuration (in-database) does work.
 - GitLab Runners cannot register with a **secondary** node. Support for this is [planned for the future](https://gitlab.com/gitlab-org/gitlab/-/issues/3294).
+- Geo **secondary** nodes can not be configured to [use high-availability configurations of PostgreSQL](https://gitlab.com/groups/gitlab-org/-/epics/2536).
 
 ### Limitations on replication/verification
 

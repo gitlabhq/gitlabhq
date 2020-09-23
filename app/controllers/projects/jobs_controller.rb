@@ -28,11 +28,6 @@ class Projects::JobsController < Projects::ApplicationController
 
   # rubocop: disable CodeReuse/ActiveRecord
   def show
-    @pipeline = @build.pipeline
-    @builds = @pipeline.builds
-      .order('id DESC')
-      .present(current_user: current_user)
-
     respond_to do |format|
       format.html
       format.json do

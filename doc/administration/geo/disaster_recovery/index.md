@@ -129,6 +129,9 @@ Note the following when promoting a secondary:
    ```
 
 1. Promote the **secondary** node to the **primary** node.
+
+DANGER: **Danger:**
+In GitLab 13.2 and later versions, promoting a secondary node to a primary while the secondary is paused fails. We are [investigating the issue](https://gitlab.com/gitlab-org/gitlab/-/issues/225173). Do not pause replication before promoting a secondary. If the node is paused, please resume before promoting.
    
    To promote the secondary node to primary along with preflight checks:
 
@@ -158,6 +161,9 @@ The `gitlab-ctl promote-to-primary-node` command cannot be used yet in
 conjunction with multiple servers, as it can only
 perform changes on a **secondary** with only a single machine. Instead, you must
 do this manually.
+
+DANGER: **Danger:**
+In GitLab 13.2 and later versions, promoting a secondary node to a primary while the secondary is paused fails. We are [investigating the issue](https://gitlab.com/gitlab-org/gitlab/-/issues/225173). Do not pause replication before promoting a secondary. If the node is paused, please resume before promoting.
 
 1. SSH in to the database node in the **secondary** and trigger PostgreSQL to
    promote to read-write:
@@ -200,6 +206,9 @@ The `gitlab-ctl promote-to-primary-node` command cannot be used in conjunction w
 an external PostgreSQL database, as it can only perform changes on a **secondary**
 node with GitLab and the database on the same machine. As a result, a manual process is
 required:
+
+DANGER: **Danger:**
+In GitLab 13.2 and later versions, promoting a secondary node to a primary while the secondary is paused fails. We are [investigating the issue](https://gitlab.com/gitlab-org/gitlab/-/issues/225173). Do not pause replication before promoting a secondary. If the node is paused, please resume before promoting.
 
 1. Promote the replica database associated with the **secondary** site. This will
    set the database to read-write:

@@ -140,6 +140,7 @@ RSpec.describe 'Commits' do
 
       context 'when accessing internal project with disallowed access', :js do
         before do
+          stub_feature_flags(graphql_pipeline_header: false)
           project.update(
             visibility_level: Gitlab::VisibilityLevel::INTERNAL,
             public_builds: false)

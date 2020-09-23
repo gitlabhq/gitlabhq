@@ -16,6 +16,7 @@ module DesignManagement
     def execute
       return error("Not allowed!") unless can_create_designs?
       return error("Only #{MAX_FILES} files are allowed simultaneously") if files.size > MAX_FILES
+      return error("Duplicate filenames are not allowed!") if files.map(&:original_filename).uniq.length != files.length
 
       uploaded_designs, version = upload_designs!
       skipped_designs = designs - uploaded_designs

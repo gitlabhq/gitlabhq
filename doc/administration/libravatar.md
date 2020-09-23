@@ -84,8 +84,8 @@ Note that this service requires a login, so this use case is most useful in a
 corporate installation where all users have access to Office 365.
 
 ```ruby
-gitlab_rails['gravatar_plain_url'] = 'http://outlook.office365.com/owa/service.svc/s/GetPersonaPhoto?email=%{email}&size=HR120x120'
-gitlab_rails['gravatar_ssl_url'] = 'https://outlook.office365.com/owa/service.svc/s/GetPersonaPhoto?email=%{email}&size=HR120x120'
+gitlab_rails['gravatar_plain_url'] = 'http://outlook.office.com/owa/service.svc/s/GetPersonaPhoto?email=%{email}&size=HR120x120'
+gitlab_rails['gravatar_ssl_url'] = 'https://outlook.office.com/owa/service.svc/s/GetPersonaPhoto?email=%{email}&size=HR120x120'
 ```
 
 <!-- ## Troubleshooting

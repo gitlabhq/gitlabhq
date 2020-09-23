@@ -21,3 +21,11 @@ export const FETCH_TAG_ERROR_MESSAGE = __('There was a problem fetching project 
 export const RAW_TEXT_WARNING = s__(
   'Pipeline|Raw text search is not currently supported. Please use the available search tokens.',
 );
+
+/* Error constants shared across graphs */
+export const DEFAULT = 'default';
+export const DELETE_FAILURE = 'delete_pipeline_failure';
+export const LOAD_FAILURE = 'load_failure';
+export const PARSE_FAILURE = 'parse_failure';
+export const POST_FAILURE = 'post_failure';
+export const UNSUPPORTED_DATA = 'unsupported_data';

@@ -121,13 +121,6 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state do
           expect(response).to have_gitlab_http_status(:ok)
           expect(assigns(:build).id).to eq(job.id)
         end
-
-        it 'has the correct build collection' do
-          builds = assigns(:builds).map(&:id)
-
-          expect(builds).to include(job.id, second_job.id)
-          expect(builds).not_to include(third_job.id)
-        end
       end
 
       context 'when job does not exist' do

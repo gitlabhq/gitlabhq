@@ -1,115 +1,164 @@
 import { shallowMount } from '@vue/test-utils';
-import { GlModal } from '@gitlab/ui';
+import { GlModal, GlLoadingIcon } from '@gitlab/ui';
+import MockAdapter from 'axios-mock-adapter';
+import {
+  mockCancelledPipelineHeader,
+  mockFailedPipelineHeader,
+  mockRunningPipelineHeader,
+  mockSuccessfulPipelineHeader,
+} from './mock_data';
+import axios from '~/lib/utils/axios_utils';
 import HeaderComponent from '~/pipelines/components/header_component.vue';
-import CiHeader from '~/vue_shared/components/header_ci_component.vue';
-import eventHub from '~/pipelines/event_hub';
 
 describe('Pipeline details header', () => {
   let wrapper;
   let glModalDirective;
-
-  const threeWeeksAgo = new Date();
-  threeWeeksAgo.setDate(threeWeeksAgo.getDate() - 21);
+  let mockAxios;
 
   const findDeleteModal = () => wrapper.find(GlModal);
+  const findRetryButton = () => wrapper.find('[data-testid="retryPipeline"]');
+  const findCancelButton = () => wrapper.find('[data-testid="cancelPipeline"]');
+  const findDeleteButton = () => wrapper.find('[data-testid="deletePipeline"]');
+  const findLoadingIcon = () => wrapper.find(GlLoadingIcon);
 
-  const defaultProps = {
-    pipeline: {
-      details: {
-        status: {
-          group: 'failed',
-          icon: 'status_failed',
-          label: 'failed',
-          text: 'failed',
-          details_path: 'path',
-        },
-      },
-      id: 123,
-      created_at: threeWeeksAgo.toISOString(),
-      user: {
-        web_url: 'path',
-        name: 'Foo',
-        username: 'foobar',
-        email: 'foo@bar.com',
-        avatar_url: 'link',
-      },
-      retry_path: 'retry',
-      cancel_path: 'cancel',
-      delete_path: 'delete',
+  const defaultProvideOptions = {
+    pipelineId: 14,
+    pipelineIid: 1,
+    paths: {
+      retry: '/retry',
+      cancel: '/cancel',
+      delete: '/delete',
+      fullProject: '/namespace/my-project',
     },
-    isLoading: false,
   };
 
-  const createComponent = (props = {}) => {
+  const createComponent = (pipelineMock = mockRunningPipelineHeader, { isLoading } = false) => {
     glModalDirective = jest.fn();
 
-    wrapper = shallowMount(HeaderComponent, {
-      propsData: {
-        ...props,
+    const $apollo = {
+      queries: {
+        pipeline: {
+          loading: isLoading,
+          stopPolling: jest.fn(),
+          startPolling: jest.fn(),
+        },
+      },
+    };
+
+    return shallowMount(HeaderComponent, {
+      data() {
+        return {
+          pipeline: pipelineMock,
+        };
+      },
+      provide: {
+        ...defaultProvideOptions,
       },
       directives: {
         glModal: {
-          bind(el, { value }) {
+          bind(_, { value }) {
             glModalDirective(value);
           },
         },
       },
+      mocks: { $apollo },
     });
   };
 
   beforeEach(() => {
-    jest.spyOn(eventHub, '$emit');
-
-    createComponent(defaultProps);
+    mockAxios = new MockAdapter(axios);
+    mockAxios.onGet('*').replyOnce(200);
   });
 
   afterEach(() => {
-    eventHub.$off();
-
     wrapper.destroy();
     wrapper = null;
+
+    mockAxios.restore();
   });
 
-  it('should render provided pipeline info', () => {
-    expect(wrapper.find(CiHeader).props()).toMatchObject({
-      status: defaultProps.pipeline.details.status,
-      itemId: defaultProps.pipeline.id,
-      time: defaultProps.pipeline.created_at,
-      user: defaultProps.pipeline.user,
+  describe('initial loading', () => {
+    beforeEach(() => {
+      wrapper = createComponent(null, { isLoading: true });
+    });
+
+    it('shows a loading state while graphQL is fetching initial data', () => {
+      expect(findLoadingIcon().exists()).toBe(true);
     });
   });
 
-  describe('action buttons', () => {
-    it('should not trigger eventHub when nothing happens', () => {
-      expect(eventHub.$emit).not.toHaveBeenCalled();
-    });
+  describe('visible state', () => {
+    it.each`
+      state           | pipelineData                    | retryValue | cancelValue
+      ${'cancelled'}  | ${mockCancelledPipelineHeader}  | ${true}    | ${false}
+      ${'failed'}     | ${mockFailedPipelineHeader}     | ${true}    | ${false}
+      ${'running'}    | ${mockRunningPipelineHeader}    | ${false}   | ${true}
+      ${'successful'} | ${mockSuccessfulPipelineHeader} | ${false}   | ${false}
+    `(
+      'with a $state pipeline, it will show actions: retry $retryValue and cancel $cancelValue',
+      ({ pipelineData, retryValue, cancelValue }) => {
+        wrapper = createComponent(pipelineData);
 
-    it('should call postAction when retry button action is clicked', () => {
-      wrapper.find('[data-testid="retryButton"]').vm.$emit('click');
+        expect(findRetryButton().exists()).toBe(retryValue);
+        expect(findCancelButton().exists()).toBe(cancelValue);
+      },
+    );
+  });
 
-      expect(eventHub.$emit).toHaveBeenCalledWith('headerPostAction', 'retry');
-    });
-
-    it('should call postAction when cancel button action is clicked', () => {
-      wrapper.find('[data-testid="cancelPipeline"]').vm.$emit('click');
-
-      expect(eventHub.$emit).toHaveBeenCalledWith('headerPostAction', 'cancel');
-    });
-
-    it('does not show delete modal', () => {
-      expect(findDeleteModal()).not.toBeVisible();
-    });
-
-    describe('when delete button action is clicked', () => {
-      it('displays delete modal', () => {
-        expect(findDeleteModal().props('modalId')).toBe(wrapper.vm.$options.DELETE_MODAL_ID);
-        expect(glModalDirective).toHaveBeenCalledWith(wrapper.vm.$options.DELETE_MODAL_ID);
+  describe('actions', () => {
+    describe('Retry action', () => {
+      beforeEach(() => {
+        wrapper = createComponent(mockCancelledPipelineHeader);
       });
 
-      it('should call delete when modal is submitted', () => {
+      it('should call axios with the right path when retry button is clicked', async () => {
+        jest.spyOn(axios, 'post');
+        findRetryButton().vm.$emit('click');
+
+        await wrapper.vm.$nextTick();
+
+        expect(axios.post).toHaveBeenCalledWith(defaultProvideOptions.paths.retry);
+      });
+    });
+
+    describe('Cancel action', () => {
+      beforeEach(() => {
+        wrapper = createComponent(mockRunningPipelineHeader);
+      });
+
+      it('should call axios with the right path when cancel button is clicked', async () => {
+        jest.spyOn(axios, 'post');
+        findCancelButton().vm.$emit('click');
+
+        await wrapper.vm.$nextTick();
+
+        expect(axios.post).toHaveBeenCalledWith(defaultProvideOptions.paths.cancel);
+      });
+    });
+
+    describe('Delete action', () => {
+      beforeEach(() => {
+        wrapper = createComponent(mockFailedPipelineHeader);
+      });
+
+      it('displays delete modal when clicking on delete and does not call the delete action', async () => {
+        jest.spyOn(axios, 'delete');
+        findDeleteButton().vm.$emit('click');
+
+        await wrapper.vm.$nextTick();
+
+        expect(findDeleteModal().props('modalId')).toBe(wrapper.vm.$options.DELETE_MODAL_ID);
+        expect(glModalDirective).toHaveBeenCalledWith(wrapper.vm.$options.DELETE_MODAL_ID);
+        expect(axios.delete).not.toHaveBeenCalled();
+      });
+
+      it('should call delete path when modal is submitted', async () => {
+        jest.spyOn(axios, 'delete');
         findDeleteModal().vm.$emit('ok');
 
-        expect(eventHub.$emit).toHaveBeenCalledWith('headerDeleteAction', 'delete');
+        await wrapper.vm.$nextTick();
+
+        expect(axios.delete).toHaveBeenCalledWith(defaultProvideOptions.paths.delete);
       });
     });
   });

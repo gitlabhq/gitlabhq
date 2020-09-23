@@ -99,7 +99,7 @@ module Gitlab
         def with_lock_retries(&block)
           arguments = { klass: self.class, logger: logger }
 
-          Gitlab::Database::WithLockRetries.new(arguments).run(raise_on_exhaustion: true, &block)
+          Gitlab::Database::WithLockRetries.new(**arguments).run(raise_on_exhaustion: true, &block)
         end
 
         delegate :execute, to: :connection
