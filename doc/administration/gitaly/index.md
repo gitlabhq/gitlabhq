@@ -382,10 +382,10 @@ if previously enabled manually.
 Gitaly makes the following assumptions:
 
 - Your `gitaly1.internal` Gitaly server can be reached at `gitaly1.internal:8075` from your Gitaly
-  clients, and that Gitaly server can read and write to `/mnt/gitlab/default` and
+  clients, and that Gitaly server can read, write, and set permissions on `/mnt/gitlab/default` and
   `/mnt/gitlab/storage1`.
 - Your `gitaly2.internal` Gitaly server can be reached at `gitaly2.internal:8075` from your Gitaly
-  clients, and that Gitaly server can read and write to `/mnt/gitlab/storage2`.
+  clients, and that Gitaly server can read, write, and set permissions on `/mnt/gitlab/storage2`.
 - Your `gitaly1.internal` and `gitaly2.internal` Gitaly servers can reach each other.
 
 You can't define Gitaly servers with some as a local Gitaly server

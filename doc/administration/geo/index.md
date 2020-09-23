@@ -39,7 +39,7 @@ Implementing Geo provides the following benefits:
 
 In addition, it:
 
-- Can be used for cloning and fetching projects, in addition to reading any data available in the GitLab web interface (see [current limitations](#current-limitations)).
+- Can be used for cloning and fetching projects, in addition to reading any data available in the GitLab web interface (see [limitations](#limitations)).
 - Overcomes slow connections between distant offices, saving time by improving speed for distributed teams.
 - Helps reducing the loading time for automated tasks, custom integrations, and internal workflows.
 - Can quickly fail over to a **secondary** node in a [disaster recovery](disaster_recovery/index.md) scenario.
@@ -69,7 +69,7 @@ Keep in mind that:
   - Replicate repositories, LFS Objects, and Attachments (HTTPS + JWT).
 - Since GitLab Premium 10.0, the **primary** node no longer talks to **secondary** nodes to notify for changes (API).
 - Pushing directly to a **secondary** node (for both HTTP and SSH, including Git LFS) was [introduced](https://about.gitlab.com/releases/2018/09/22/gitlab-11-3-released/) in [GitLab Premium](https://about.gitlab.com/pricing/#self-managed) 11.3.
-- There are [limitations](#current-limitations) in the current implementation.
+- There are [limitations](#limitations) when using Geo.
 
 ### Architecture
 
@@ -247,7 +247,7 @@ For more information on removing a Geo node, see [Removing **secondary** Geo nod
 
 To find out how to disable Geo, see [Disabling Geo](replication/disable_geo.md).
 
-## Current limitations
+## Limitations
 
 CAUTION: **Caution:**
 This list of limitations only reflects the latest version of GitLab. If you are using an older version, extra limitations may be in place.

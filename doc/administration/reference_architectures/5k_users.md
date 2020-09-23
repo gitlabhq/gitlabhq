@@ -55,32 +55,33 @@ applicable (n/a) in the previous table.
 To set up GitLab and its components to accommodate up to 5,000 users:
 
 1. [Configure the external load balancing node](#configure-the-external-load-balancer)
-   that will handle the load balancing of the two GitLab application services nodes.
+   to handle the load balancing of the GitLab application services nodes.
 1. [Configure Redis](#configure-redis).
 1. [Configure Consul and Sentinel](#configure-consul-and-sentinel).
 1. [Configure PostgreSQL](#configure-postgresql), the database for GitLab.
 1. [Configure PgBouncer](#configure-pgbouncer).
-1. [Configure the internal load balancing node](#configure-the-internal-load-balancer)
+1. [Configure the internal load balancing node](#configure-the-internal-load-balancer).
 1. [Configure Gitaly](#configure-gitaly),
    which provides access to the Git repositories.
 1. [Configure Sidekiq](#configure-sidekiq).
 1. [Configure the main GitLab Rails application](#configure-gitlab-rails)
-   to run Puma/Unicorn, Workhorse, GitLab Shell, and to serve all frontend requests (UI, API, Git
-   over HTTP/SSH).
-1. [Configure Prometheus](#configure-prometheus) to monitor your GitLab environment.
-1. [Configure the Object Storage](#configure-the-object-storage)
+   to run Puma/Unicorn, Workhorse, GitLab Shell, and to serve all frontend
+   requests (which include UI, API, and Git over HTTP/SSH).
+1. [Configure Prometheus](#configure-prometheus) to monitor your GitLab
+   environment.
+1. [Configure the object storage](#configure-the-object-storage)
    used for shared data objects.
-1. [Configure Advanced Search (optional)](#configure-advanced-search) for faster,
+1. [Configure Advanced Search](#configure-advanced-search) (optional) for faster,
    more advanced code search across your entire GitLab instance.
-1. [Configure NFS (Optional)](#configure-nfs-optional)
-   to have shared disk storage service as an alternative to Gitaly and/or Object Storage (although
-   not recommended). NFS is required for GitLab Pages, you can skip this step if you're not using
-   that feature.
+1. [Configure NFS](#configure-nfs-optional) (optional, and not recommended)
+   to have shared disk storage service as an alternative to Gitaly or object
+   storage. You can skip this step if you're not using GitLab Pages (which
+   requires NFS).
 
-We start with all servers on the same 10.6.0.0/16 private network range, they
-can connect to each other freely on those addresses.
+The servers start on the same 10.6.0.0/24 private network range, and can
+connect to each other freely on these addresses.
 
-Here is a list and description of each machine and the assigned IP:
+The following list includes descriptions of each server and its assigned IP:
 
 - `10.6.0.10`: External Load Balancer
 - `10.6.0.61`: Redis Primary
@@ -1582,6 +1583,11 @@ On each node perform the following:
    ```shell
    sudo gitlab-ctl tail gitaly
    ```
+
+1. Save the `/etc/gitlab/gitlab-secrets.json` file from one of the two
+   application nodes and install it on the other application node and the
+   [Gitaly node](#configure-gitaly) and
+   [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
 
 1. Verify the GitLab services are running:
 

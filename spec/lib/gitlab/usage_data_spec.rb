@@ -1186,11 +1186,13 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
       categories.each do |category|
         keys = ::Gitlab::UsageDataCounters::HLLRedisCounter.events_for_category(category)
 
+        metrics = keys.map { |key| "#{key}_weekly" } + keys.map { |key| "#{key}_monthly" }
+
         if ineligible_total_categories.exclude?(category)
-          keys.append("#{category}_total_unique_counts_weekly", "#{category}_total_unique_counts_monthly")
+          metrics.append("#{category}_total_unique_counts_weekly", "#{category}_total_unique_counts_monthly")
         end
 
-        expect(subject[:redis_hll_counters][category].keys).to match_array(keys)
+        expect(subject[:redis_hll_counters][category].keys).to match_array(metrics)
       end
     end
   end

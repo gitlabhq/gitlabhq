@@ -11,7 +11,7 @@ Geo replicates your database, your Git repositories, and few other assets.
 We will support and replicate more data in the future, that will enable you to
 failover with minimal effort, in a disaster situation.
 
-See [Geo current limitations](../index.md#current-limitations) for more information.
+See [Geo limitations](../index.md#limitations) for more information.
 
 CAUTION: **Warning:**
 Disaster recovery for multi-secondary configurations is in **Alpha**.
