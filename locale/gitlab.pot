@@ -17999,9 +17999,6 @@ msgstr ""
 msgid "Package type must be PyPi"
 msgstr ""
 
-msgid "Package was removed"
-msgstr ""
-
 msgid "PackageRegistry|%{name} version %{version} was created %{datetime}"
 msgstr ""
 

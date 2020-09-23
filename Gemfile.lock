@@ -1218,8 +1218,6 @@ GEM
       addressable (>= 2.3.6)
       crack (>= 0.3.2)
       hashdiff
-    webpack-rails (0.9.11)
-      railties (>= 3.2.0)
     websocket-driver (0.7.1)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.5)
@@ -1499,7 +1497,6 @@ DEPENDENCIES
   vmstat (~> 2.3.0)
   webauthn (~> 2.3)
   webmock (~> 3.5.1)
-  webpack-rails (~> 0.9.10)
   wikicloth (= 0.8.1)
   yajl-ruby (~> 1.4.1)
 

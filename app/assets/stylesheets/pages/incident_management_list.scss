@@ -127,9 +127,4 @@
       @include gl-w-full;
     }
   }
-
-  // TODO: Abstract to `@gitlab/ui` utility set: https://gitlab.com/gitlab-org/gitlab-ui/-/issues/921
-  .gl-fill-green-500 {
-    fill: $green-500;
-  }
 }

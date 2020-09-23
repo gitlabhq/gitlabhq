@@ -201,7 +201,13 @@ export default {
   <section v-else>
     <ancestor-notice />
 
-    <gl-table :items="clusters" :fields="fields" stacked="md" class="qa-clusters-table">
+    <gl-table
+      :items="clusters"
+      :fields="fields"
+      stacked="md"
+      class="qa-clusters-table"
+      data-testid="cluster_list_table"
+    >
       <template #cell(name)="{ item }">
         <div :class="[contentAlignClasses, 'js-status']">
           <img

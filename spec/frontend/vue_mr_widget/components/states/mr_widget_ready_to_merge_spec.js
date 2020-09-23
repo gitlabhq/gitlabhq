@@ -101,8 +101,6 @@ describe('ReadyToMerge', () => {
       expect(vm.isMakingRequest).toBeFalsy();
       expect(vm.isMergingImmediately).toBeFalsy();
       expect(vm.commitMessage).toBe(vm.mr.commitMessage);
-      expect(vm.successSvg).toBeDefined();
-      expect(vm.warningSvg).toBeDefined();
     });
   });
 

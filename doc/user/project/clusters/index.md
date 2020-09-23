@@ -31,6 +31,11 @@ Besides integration at the project level, Kubernetes clusters can also be
 integrated at the [group level](../../group/clusters/index.md) or
 [GitLab instance level](../../instance/clusters/index.md).
 
+To view your project level Kubernetes clusters, navigate to **Operations > Kubernetes**
+from your project. On this page, you can [add a new cluster](#adding-and-removing-clusters)
+and view information about your existing clusters, such as nodes count and rough estimates
+of memory and CPU usage.
+
 ## Setting up
 
 ### Supported cluster versions

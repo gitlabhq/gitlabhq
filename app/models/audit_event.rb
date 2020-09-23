@@ -5,7 +5,13 @@ class AuditEvent < ApplicationRecord
   include IgnorableColumns
   include BulkInsertSafe
 
-  PARALLEL_PERSISTENCE_COLUMNS = [:author_name, :entity_path, :target_details, :target_type].freeze
+  PARALLEL_PERSISTENCE_COLUMNS = [
+    :author_name,
+    :entity_path,
+    :target_details,
+    :target_type,
+    :target_id
+  ].freeze
 
   ignore_column :type, remove_with: '13.6', remove_after: '2020-11-22'
 

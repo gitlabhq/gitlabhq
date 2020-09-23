@@ -51,7 +51,7 @@ module PackagesHelper
     {
       resource_id: resource.id,
       page_type: type,
-      empty_list_help_url: help_page_path('administration/packages/index'),
+      empty_list_help_url: help_page_path('user/packages/package_registry/index'),
       empty_list_illustration: image_path('illustrations/no-packages.svg'),
       coming_soon_json: packages_coming_soon_data(resource).to_json
     }

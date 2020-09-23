@@ -9146,7 +9146,6 @@ CREATE TABLE application_settings (
     snowplow_enabled boolean DEFAULT false NOT NULL,
     snowplow_collector_hostname character varying,
     snowplow_cookie_domain character varying,
-    instance_statistics_visibility_private boolean DEFAULT false NOT NULL,
     web_ide_clientside_preview_enabled boolean DEFAULT false NOT NULL,
     user_show_add_ssh_key_message boolean DEFAULT true NOT NULL,
     custom_project_templates_group_id integer,

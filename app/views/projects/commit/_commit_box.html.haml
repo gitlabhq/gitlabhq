@@ -1,6 +1,6 @@
 - can_collaborate = can_collaborate_with_project?(@project)
 
-.page-content-header.js-commit-box{ 'data-commit-path' => branches_project_commit_path(@project, @commit.id) }
+.page-content-header
   .header-main-content
     = render partial: 'signature', object: @commit.signature
     %strong
@@ -58,7 +58,7 @@
     %pre.commit-description<
       = preserve(markdown_field(@commit, :description))
 
-.info-well
+.info-well.js-commit-box-info{ 'data-commit-path' => branches_project_commit_path(@project, @commit.id) }
   .well-segment.branch-info
     .icon-container.commit-icon
       = custom_icon("icon_commit")

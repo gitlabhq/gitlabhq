@@ -474,7 +474,7 @@ export default {
         <div
           v-if="showTreeList"
           :style="{ width: `${treeWidth}px` }"
-          class="diff-tree-list js-diff-tree-list mr-3"
+          class="diff-tree-list js-diff-tree-list px-3 pr-md-0"
         >
           <panel-resizer
             :size.sync="treeWidth"
@@ -487,7 +487,7 @@ export default {
           <tree-list :hide-file-stats="hideFileStats" />
         </div>
         <div
-          class="diff-files-holder"
+          class="col-12 col-md-auto diff-files-holder"
           :class="{
             [CENTERED_LIMITED_CONTAINER_CLASSES]: isLimitedContainer,
           }"
