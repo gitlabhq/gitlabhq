@@ -295,17 +295,20 @@ RSpec.describe 'GFM autocomplete', :js do
     end
 
     context 'assignees' do
-      let(:issue_assignee) { create(:issue, project: project) }
-      let(:unassigned_user) { create(:user) }
+      let_it_be(:issue_assignee) { create(:issue, project: project, assignees: [user]) }
+      let_it_be(:unassigned_user) { create(:user) }
 
-      before do
-        issue_assignee.update(assignees: [user])
+      let_it_be(:group) { create(:group) }
 
+      before_all do
         project.add_maintainer(unassigned_user)
+        group.add_developer(user)
       end
 
       it 'lists users who are currently not assigned to the issue when using /assign' do
         visit project_issue_path(project, issue_assignee)
+
+        wait_for_requests
 
         note = find('#note-body')
         page.within '.timeline-content-form' do
@@ -318,6 +321,7 @@ RSpec.describe 'GFM autocomplete', :js do
         wait_for_requests
 
         expect(find('#at-view-users .atwho-view-ul')).not_to have_content(user.username)
+        expect(find('#at-view-users .atwho-view-ul')).not_to have_content(group.name)
         expect(find('#at-view-users .atwho-view-ul')).to have_content(unassigned_user.username)
       end
 
@@ -330,6 +334,7 @@ RSpec.describe 'GFM autocomplete', :js do
         textarea.native.send_keys(:tab)
 
         expect(find('#at-view-users .atwho-view-ul')).to have_content(unassigned_user.username)
+        expect(find('#at-view-users .atwho-view-ul')).not_to have_content(group.name)
         expect(find('#at-view-users .atwho-view-ul')).to have_content(user.username)
       end
     end
@@ -644,17 +649,20 @@ RSpec.describe 'GFM autocomplete', :js do
     end
 
     context 'assignees' do
-      let(:issue_assignee) { create(:issue, project: project) }
-      let(:unassigned_user) { create(:user) }
+      let_it_be(:issue_assignee) { create(:issue, project: project, assignees: [user]) }
+      let_it_be(:unassigned_user) { create(:user) }
 
-      before do
-        issue_assignee.update(assignees: [user])
+      let_it_be(:group) { create(:group) }
 
+      before_all do
         project.add_maintainer(unassigned_user)
+        group.add_developer(user)
       end
 
       it 'lists users who are currently not assigned to the issue when using /assign' do
         visit project_issue_path(project, issue_assignee)
+
+        wait_for_requests
 
         note = find('#note-body')
         page.within '.timeline-content-form' do
@@ -668,11 +676,14 @@ RSpec.describe 'GFM autocomplete', :js do
         wait_for_requests
 
         expect(find('.tribute-container ul', visible: true)).not_to have_content(user.username)
+        expect(find('.tribute-container ul', visible: true)).not_to have_content(group.name)
         expect(find('.tribute-container ul', visible: true)).to have_content(unassigned_user.username)
       end
 
       it 'lists users who are currently not assigned to the issue when using /assign on the second line' do
         visit project_issue_path(project, issue_assignee)
+
+        wait_for_requests
 
         note = find('#note-body')
         page.within '.timeline-content-form' do

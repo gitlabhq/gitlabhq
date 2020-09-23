@@ -3,8 +3,6 @@
 module Ci
   class DailyBuildGroupReportResultService
     def execute(pipeline)
-      return unless Feature.enabled?(:ci_daily_code_coverage, pipeline.project, default_enabled: true)
-
       DailyBuildGroupReportResult.upsert_reports(coverage_reports(pipeline))
     end
 

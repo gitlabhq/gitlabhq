@@ -1,5 +1,4 @@
-import { shallowMount } from '@vue/test-utils';
-import { GlLoadingIcon } from '@gitlab/ui';
+import { mount } from '@vue/test-utils';
 import EditFormButtons from '~/sidebar/components/lock/edit_form_buttons.vue';
 import eventHub from '~/sidebar/event_hub';
 import { deprecatedCreateFlash as flash } from '~/flash';
@@ -22,7 +21,6 @@ describe('EditFormButtons', () => {
   };
 
   const findLockToggle = () => wrapper.find('[data-testid="lock-toggle"]');
-  const findGlLoadingIcon = () => wrapper.find(GlLoadingIcon);
 
   const createComponent = ({ props = {}, data = {}, resolved = true }) => {
     store = issuableType === ISSUABLE_TYPE_ISSUE ? createStore() : createMrStore();
@@ -33,7 +31,7 @@ describe('EditFormButtons', () => {
       jest.spyOn(store, 'dispatch').mockRejectedValue();
     }
 
-    wrapper = shallowMount(EditFormButtons, {
+    wrapper = mount(EditFormButtons, {
       store,
       provide: {
         fullPath: '',
@@ -78,8 +76,8 @@ describe('EditFormButtons', () => {
         expect(findLockToggle().attributes('disabled')).toBe('disabled');
       });
 
-      it('displays the GlLoadingIcon', () => {
-        expect(findGlLoadingIcon().exists()).toBe(true);
+      it('sets loading on the toggle button', () => {
+        expect(findLockToggle().props('loading')).toBe(true);
       });
     });
 
@@ -121,7 +119,7 @@ describe('EditFormButtons', () => {
 
           it('resets loading', async () => {
             await wrapper.vm.$nextTick().then(() => {
-              expect(findGlLoadingIcon().exists()).toBe(false);
+              expect(findLockToggle().props('loading')).toBe(false);
             });
           });
 
@@ -156,7 +154,7 @@ describe('EditFormButtons', () => {
 
           it('resets loading', async () => {
             await wrapper.vm.$nextTick().then(() => {
-              expect(findGlLoadingIcon().exists()).toBe(false);
+              expect(findLockToggle().props('loading')).toBe(false);
             });
           });
 

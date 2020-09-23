@@ -103,27 +103,25 @@ export default {
         />
       </template>
       <template #footer>
-        <div class="gl-display-flex gl-justify-content-end">
-          <gl-button
-            ref="cancel-button"
-            type="reset"
-            class="gl-mr-3 gl-display-block"
-            :disabled="isCancelButtonDisabled"
-          >
-            {{ __('Cancel') }}
-          </gl-button>
-          <gl-button
-            ref="save-button"
-            type="submit"
-            :disabled="isSubmitButtonDisabled"
-            variant="success"
-            category="primary"
-            class="gl-display-flex gl-justify-content-center gl-align-items-center js-no-auto-disable"
-          >
-            {{ $options.i18n.SET_CLEANUP_POLICY_BUTTON }}
-            <gl-loading-icon v-if="isLoading" class="gl-ml-3" />
-          </gl-button>
-        </div>
+        <gl-button
+          ref="cancel-button"
+          type="reset"
+          class="gl-mr-3 gl-display-block float-right"
+          :disabled="isCancelButtonDisabled"
+        >
+          {{ __('Cancel') }}
+        </gl-button>
+        <gl-button
+          ref="save-button"
+          type="submit"
+          :disabled="isSubmitButtonDisabled"
+          variant="success"
+          category="primary"
+          class="js-no-auto-disable"
+        >
+          {{ $options.i18n.SET_CLEANUP_POLICY_BUTTON }}
+          <gl-loading-icon v-if="isLoading" class="gl-ml-3" />
+        </gl-button>
       </template>
     </gl-card>
   </form>

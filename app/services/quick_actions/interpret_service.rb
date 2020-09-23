@@ -69,7 +69,7 @@ module QuickActions
     def extract_users(params)
       return [] if params.nil?
 
-      users = extract_references(params, :user)
+      users = extract_references(params, :mentioned_user)
 
       if users.empty?
         users =

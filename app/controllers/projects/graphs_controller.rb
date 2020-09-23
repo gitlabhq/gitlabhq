@@ -57,7 +57,6 @@ class Projects::GraphsController < Projects::ApplicationController
   end
 
   def get_daily_coverage_options
-    return unless Feature.enabled?(:ci_download_daily_code_coverage, @project, default_enabled: true)
     return unless can?(current_user, :read_build_report_results, project)
 
     date_today = Date.current

@@ -115,7 +115,7 @@ conjunction with [GitLab CI/CD](../../ci/README.md), the open-source continuous
 integration service included with GitLab that coordinates the jobs.
 
 If the project is on GitLab.com, [shared runners](../gitlab_com/index.md#shared-runners)
-are available, and you do not have to deploy one if they are enough for your
+are available. You don't have to deploy one if they are enough for your
 needs. If a project-specific runner is desired, or there are no shared runners,
 you can deploy one.
 
@@ -134,11 +134,13 @@ file. Customizing the installation by modifying this file is not supported.
 > - Introduced in GitLab 10.2 for project-level clusters.
 > - Introduced in GitLab 11.6 for group-level clusters.
 
-[Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress/) provides load balancing, SSL termination, and name-based virtual hosting
+[Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress/)
+provides load balancing, SSL termination, and name-based virtual hosting
 out of the box. It acts as a web proxy for your applications and is useful
 if you want to use [Auto DevOps](../../topics/autodevops/index.md) or deploy your own web apps.
 
-The Ingress Controller installed is [Ingress-NGINX](https://kubernetes.io/docs/concepts/services-networking/ingress/),
+The Ingress Controller installed is
+[Ingress-NGINX](https://kubernetes.io/docs/concepts/services-networking/ingress/),
 which is supported by the Kubernetes community.
 
 NOTE: **Note:**
@@ -146,10 +148,10 @@ With the following procedure, a load balancer must be installed in your cluster
 to obtain the endpoint. You can use either
 Ingress, or Knative's own load balancer ([Istio](https://istio.io)) if using Knative.
 
-In order to publish your web application, you first need to find the endpoint which will be either an IP
+To publish your web application, you first need to find the endpoint, which is either an IP
 address or a hostname associated with your load balancer.
 
-To install it, click on the **Install** button for Ingress. GitLab will attempt
+To install it, click on the **Install** button for Ingress. GitLab attempts
 to determine the external endpoint and it should be available within a few minutes.
 
 #### Determining the external endpoint automatically
@@ -165,11 +167,15 @@ using the `KUBE_INGRESS_BASE_DOMAIN` environment variable.
 
 If the endpoint doesn't appear and your cluster runs on Google Kubernetes Engine:
 
-1. Check your [Kubernetes cluster on Google Kubernetes Engine](https://console.cloud.google.com/kubernetes) to ensure there are no errors on its nodes.
-1. Ensure you have enough [Quotas](https://console.cloud.google.com/iam-admin/quotas) on Google Kubernetes Engine. For more information, see [Resource Quotas](https://cloud.google.com/compute/quotas).
-1. Check [Google Cloud's Status](https://status.cloud.google.com/) to ensure they are not having any disruptions.
+1. [Examine your Kubernetes cluster](https://console.cloud.google.com/kubernetes)
+   on Google Kubernetes Engine to ensure there are no errors on its nodes.
+1. Ensure you have enough [Quotas](https://console.cloud.google.com/iam-admin/quotas)
+   on Google Kubernetes Engine. For more information, see
+   [Resource Quotas](https://cloud.google.com/compute/quotas).
+1. Review [Google Cloud's Status](https://status.cloud.google.com/) for service
+   disruptions.
 
-Once installed, you may see a `?` for "Ingress IP Address" depending on the
+After installing, you may see a `?` for **Ingress IP Address** depending on the
 cloud provider. For EKS specifically, this is because the ELB is created
 with a DNS name, not an IP address. If GitLab is still unable to
 determine the endpoint of your Ingress or Knative application, you can
@@ -195,58 +201,58 @@ The output of the following examples will show the external endpoint of your
 cluster. This information can then be used to set up DNS entries and forwarding
 rules that allow external access to your deployed applications.
 
-If you installed Ingress via the **Applications**, run the following command:
+- If you installed Ingress using the **Applications**, run the following
+  command:
 
-```shell
-kubectl get service --namespace=gitlab-managed-apps ingress-nginx-ingress-controller -o jsonpath='{.status.loadBalancer.ingress[0].ip}'
-```
+  ```shell
+  kubectl get service --namespace=gitlab-managed-apps ingress-nginx-ingress-controller -o jsonpath='{.status.loadBalancer.ingress[0].ip}'
+  ```
 
-Some Kubernetes clusters return a hostname instead, like [Amazon EKS](https://aws.amazon.com/eks/). For these platforms, run:
+- Some Kubernetes clusters return a hostname instead, like
+  [Amazon EKS](https://aws.amazon.com/eks/). For these platforms, run:
 
-```shell
-kubectl get service --namespace=gitlab-managed-apps ingress-nginx-ingress-controller -o jsonpath='{.status.loadBalancer.ingress[0].hostname}'
-```
+  ```shell
+  kubectl get service --namespace=gitlab-managed-apps ingress-nginx-ingress-controller -o jsonpath='{.status.loadBalancer.ingress[0].hostname}'
+  ```
 
-For Istio/Knative, the command will be different:
+  If EKS is used, an [Elastic Load Balancer](https://docs.aws.amazon.com/elasticloadbalancing/)
+  is also created, which will incur additional AWS costs.
 
-```shell
-kubectl get svc --namespace=istio-system istio-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[0].ip} '
-```
+- For Istio/Knative, the command will be different:
 
-Otherwise, you can list the IP addresses of all load balancers:
+  ```shell
+  kubectl get svc --namespace=istio-system istio-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[0].ip} '
+  ```
 
-```shell
-kubectl get svc --all-namespaces -o jsonpath='{range.items[?(@.status.loadBalancer.ingress)]}{.status.loadBalancer.ingress[*].ip} '
-```
+- Otherwise, you can list the IP addresses of all load balancers:
 
-NOTE: **Note:**
-If EKS is used, an [Elastic Load Balancer](https://docs.aws.amazon.com/elasticloadbalancing/)
-will also be created, which will incur additional AWS costs.
+  ```shell
+  kubectl get svc --all-namespaces -o jsonpath='{range.items[?(@.status.loadBalancer.ingress)]}{.status.loadBalancer.ingress[*].ip} '
+  ```
 
-NOTE: **Note:**
-You may see a trailing `%` on some Kubernetes versions, **do not include it**.
+You may see a trailing `%` on some Kubernetes versions. Do not include it.
 
-The Ingress is now available at this address and will route incoming requests to
-the proper service based on the DNS name in the request. To support this, a
-wildcard DNS CNAME record should be created for the desired domain name. For example,
+The Ingress is now available at this address, and routes incoming requests to
+the proper service based on the DNS name in the request. To support this, create
+a wildcard DNS CNAME record for the desired domain name. For example,
 `*.myekscluster.com` would point to the Ingress hostname obtained earlier.
 
 #### Using a static IP
 
 By default, an ephemeral external IP address is associated to the cluster's load
 balancer. If you associate the ephemeral IP with your DNS and the IP changes,
-your apps will not be able to be reached, and you'd have to change the DNS
-record again. In order to avoid that, you should change it into a static
-reserved IP.
+your apps won't be reachable, and you'd have to change the DNS record again.
+To avoid that, change it into a static reserved IP.
 
 Read how to [promote an ephemeral external IP address in GKE](https://cloud.google.com/compute/docs/ip-addresses/reserve-static-external-ip-address#promote_ephemeral_ip).
 
 #### Pointing your DNS at the external endpoint
 
-Once you've set up the external endpoint, you should associate it with a [wildcard DNS
-record](https://en.wikipedia.org/wiki/Wildcard_DNS_record) such as `*.example.com.`
-in order to be able to reach your apps. If your external endpoint is an IP address,
-use an A record. If your external endpoint is a hostname, use a CNAME record.
+After you have set up the external endpoint, associate it with a
+[wildcard DNS record](https://en.wikipedia.org/wiki/Wildcard_DNS_record) (such
+as `*.example.com.`) to reach your apps. If your external endpoint is an IP
+address, use an A record. If your external endpoint is a hostname, use a CNAME
+record.
 
 #### Web Application Firewall (ModSecurity)
 
@@ -256,16 +262,16 @@ A Web Application Firewall (WAF) examines traffic being sent or received,
 and can block malicious traffic before it reaches your application. The benefits
 of a WAF are:
 
-- Real-time security monitoring for your application
-- Logging of all your HTTP traffic to the application
-- Access control for your application
-- Highly configurable logging and blocking rules
+- Real-time security monitoring for your application.
+- Logging of all your HTTP traffic to the application.
+- Access control for your application.
+- Highly configurable logging and blocking rules.
 
-Out of the box, GitLab provides you with a WAF known as [`ModSecurity`](https://www.modsecurity.org/).
-
-ModSecurity is a toolkit for real-time web application monitoring, logging,
-and access control. With GitLab's offering, the [OWASP's Core Rule Set](https://www.modsecurity.org/CRS/Documentation/),
-which provides generic attack detection capabilities, is automatically applied.
+12345678901234567890123456789012345678901234567890123456789012345678901234567890
+By default, GitLab provides you with a WAF known as [`ModSecurity`](https://www.modsecurity.org/),
+which is a toolkit for real-time web application monitoring, logging, and access
+control. GitLab's offering applies the [OWASP's Core Rule Set](https://www.modsecurity.org/CRS/Documentation/),
+which provides generic attack detection capabilities.
 
 This feature:
 
@@ -286,57 +292,61 @@ There is a small performance overhead by enabling ModSecurity. If this is
 considered significant for your application, you can disable ModSecurity's
 rule engine for your deployed application in any of the following ways:
 
-1. Setting [the deployment variable](../../topics/autodevops/index.md)
-`AUTO_DEVOPS_MODSECURITY_SEC_RULE_ENGINE` to `Off`. This will prevent ModSecurity
-from processing any requests for the given application or environment.
-
-1. Switching its respective toggle to the disabled position and applying changes through the **Save changes** button. This will reinstall
-Ingress with the recent changes.
+1. Set [the deployment variable](../../topics/autodevops/index.md)
+   `AUTO_DEVOPS_MODSECURITY_SEC_RULE_ENGINE` to `Off` to prevent ModSecurity
+   from processing any requests for the given application or environment.
+1. Switch its respective toggle to the disabled position, and then apply changes
+   by selecting **Save changes** to reinstall Ingress with the recent changes.
 
 ![Disabling WAF](../../topics/web_application_firewall/img/guide_waf_ingress_save_changes_v12_10.png)
 
 ##### Logging and blocking modes
 
 To help you tune your WAF rules, you can globally set your WAF to either
-**Logging** or **Blocking** mode:
+*Logging* or *Blocking* mode:
 
-- **Logging mode** - Allows traffic matching the rule to pass, and logs the event.
-- **Blocking mode** - Prevents traffic matching the rule from passing, and logs the event.
+- *Logging mode*: Allows traffic matching the rule to pass, and logs the event.
+- *Blocking mode*: Prevents traffic matching the rule from passing, and logs the event.
 
 To change your WAF's mode:
 
-1. [Install ModSecurity](../../topics/web_application_firewall/quick_start_guide.md) if you have not already done so.
+1. If you haven't already done so, [install ModSecurity](../../topics/web_application_firewall/quick_start_guide.md).
 1. Navigate to **Operations > Kubernetes**.
 1. In **Applications**, scroll to **Ingress**.
 1. Under **Global default**, select your desired mode.
-1. Click **Save changes**.
+1. Select **Save changes**.
 
 ##### WAF version updates
 
-Enabling, disabling, or changing the logging mode for **ModSecurity** is only allowed within same version of [Ingress](#ingress) due to limitations in [Helm](https://helm.sh/) which might be overcome in future releases.
+Enabling, disabling, or changing the logging mode for **ModSecurity** is only
+allowed within same version of [Ingress](#ingress) due to limitations in
+[Helm](https://helm.sh/) which might be overcome in future releases.
 
-**ModSecurity** UI controls are disabled if the version deployed differs from the one available in GitLab, while actions at the [Ingress](#ingress) level, such as uninstalling, can still be performed:
+**ModSecurity** user interface controls are disabled if the version deployed
+differs from the one available in GitLab, while actions at the [Ingress](#ingress)
+level, such as uninstalling, can still be performed:
 
 ![WAF settings disabled](../../topics/web_application_firewall/img/guide_waf_ingress_disabled_settings_v12_10.png)
 
-Updating [Ingress](#ingress) to the most recent version enables you to take advantage of bug fixes, security fixes, and performance improvements. To update [Ingress application](#ingress), you must first uninstall it, and then re-install it as described in [Install ModSecurity](../../topics/web_application_firewall/quick_start_guide.md).
+Update [Ingress](#ingress) to the most recent version to take advantage of bug
+fixes, security fixes, and performance improvements. To update the
+[Ingress application](#ingress), you must first uninstall it, and then re-install
+it as described in [Install ModSecurity](../../topics/web_application_firewall/quick_start_guide.md).
 
 ##### Viewing Web Application Firewall traffic
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/14707) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.9.
 
 You can view Web Application Firewall traffic by navigating to your project's
-**Security & Compliance > Threat Monitoring** page.
-
-From there, you can see tracked over time:
+**Security & Compliance > Threat Monitoring** page. From there, you can see
+tracked over time:
 
 - The total amount of traffic to your application.
 - The proportion of traffic that is considered anomalous by the Web Application
   Firewall's default [OWASP ruleset](https://www.modsecurity.org/CRS/Documentation/).
 
-If a significant percentage of traffic is anomalous, it should be investigated
-for potential threats, which can be done by
-[examining the Web Application Firewall logs](#web-application-firewall-modsecurity).
+If a significant percentage of traffic is anomalous, investigate it for potential threats
+by [examining the Web Application Firewall logs](#web-application-firewall-modsecurity).
 
 ![Threat Monitoring](img/threat_monitoring_v12_9.png)
 
@@ -345,55 +355,51 @@ for potential threats, which can be done by
 > - Introduced in GitLab 11.0 for project-level clusters.
 > - Introduced in GitLab 12.3 for group and instance-level clusters.
 
-[JupyterHub](https://jupyterhub.readthedocs.io/en/stable/) is a
-multi-user service for managing notebooks across a team. [Jupyter
-Notebooks](https://jupyter-notebook.readthedocs.io/en/latest/) provide a
-web-based interactive programming environment used for data analysis,
+[JupyterHub](https://jupyterhub.readthedocs.io/en/stable/) is a multi-user service
+for managing notebooks across a team. [Jupyter Notebooks](https://jupyter-notebook.readthedocs.io/en/latest/)
+provide a web-based interactive programming environment used for data analysis,
 visualization, and machine learning.
 
-Authentication will be enabled only for [project
-members](../project/members/index.md) for project-level clusters and group
-members for group-level clusters with [Developer or
-higher](../permissions.md) access to the associated project or group.
-
-We use a [custom Jupyter
-image](https://gitlab.com/gitlab-org/jupyterhub-user-image/blob/master/Dockerfile)
-that installs additional useful packages on top of the base Jupyter. You
-will also see ready-to-use DevOps Runbooks built with Nurtch's [Rubix library](https://github.com/Nurtch/rubix).
-
-More information on
-creating executable runbooks can be found in [our Runbooks
-documentation](../project/clusters/runbooks/index.md#configure-an-executable-runbook-with-gitlab). Note that
-Ingress must be installed and have an IP address assigned before
-JupyterHub can be installed.
-
-NOTE: **Note:**
 The [`jupyter/jupyterhub`](https://jupyterhub.github.io/helm-chart/)
 chart is used to install this application with a
 [`values.yaml`](https://gitlab.com/gitlab-org/gitlab/blob/master/vendor/jupyter/values.yaml)
 file.
+
+Authentication is enabled only for [project members](../project/members/index.md)
+for project-level clusters and group members for group-level clusters with
+[Developer or higher](../permissions.md) access to the associated project or group.
+
+GitLab uses a [custom Jupyter image](https://gitlab.com/gitlab-org/jupyterhub-user-image/blob/master/Dockerfile)
+that installs additional useful packages on top of the base Jupyter. You
+will also see ready-to-use DevOps Runbooks built with Nurtch's [Rubix library](https://github.com/Nurtch/rubix).
+
+More information on creating executable runbooks can be found in
+[our Runbooks documentation](../project/clusters/runbooks/index.md#configure-an-executable-runbook-with-gitlab).
+Ingress must be installed and have an IP address assigned before
+JupyterHub can be installed.
 
 #### Jupyter Git Integration
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/28783) in GitLab 12.0 for project-level clusters.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/32512) in GitLab 12.3 for group and instance-level clusters.
 
-When installing JupyterHub onto your Kubernetes cluster, [JupyterLab's Git extension](https://github.com/jupyterlab/jupyterlab-git)
-is automatically provisioned and configured using the authenticated user's:
+When installing JupyterHub onto your Kubernetes cluster,
+[JupyterLab's Git extension](https://github.com/jupyterlab/jupyterlab-git)
+is provisioned and configured using the authenticated user's:
 
 - Name.
 - Email.
 - Newly created access token.
 
-JupyterLab's Git extension enables full version control of your notebooks as well as issuance of Git commands within Jupyter.
-Git commands can be issued via the **Git** tab on the left panel or via Jupyter's command line prompt.
+JupyterLab's Git extension enables full version control of your notebooks, and
+issuance of Git commands within Jupyter. You can issue Git commands through the
+**Git** tab on the left panel, or through Jupyter's command-line prompt.
 
-NOTE: **Note:**
-JupyterLab's Git extension stores the user token in the JupyterHub DB in encrypted format
-and in the single user Jupyter instance as plain text. This is because [Git requires storing
-credentials as plain text](https://git-scm.com/docs/git-credential-store). Potentially, if
-a nefarious user finds a way to read from the file system in the single user Jupyter instance
-they could retrieve the token.
+JupyterLab's Git extension stores the user token in the JupyterHub DB in encrypted
+format, and in the single user Jupyter instance as plain text, because
+[Git requires storing credentials as plain text](https://git-scm.com/docs/git-credential-store)
+Potentially, if a nefarious user finds a way to read from the file system in the
+single-user Jupyter instance, they could retrieve the token.
 
 ![Jupyter's Git Extension](img/jupyter-git-extension.gif)
 
@@ -412,17 +418,15 @@ cluster. It is used in conjunction with, and includes
 [Istio](https://istio.io) to provide an external IP address for all
 programs hosted by Knative.
 
-You will be prompted to enter a wildcard
-domain where your applications will be exposed. Configure your DNS
-server to use the external IP address for that domain. For any
-application created and installed, they will be accessible as
-`<program_name>.<kubernetes_namespace>.<domain_name>`. This will require
-your Kubernetes cluster to have [RBAC
-enabled](../project/clusters/add_remove_clusters.md#rbac-cluster-resources).
-
-NOTE: **Note:**
 The [`knative/knative`](https://storage.googleapis.com/triggermesh-charts)
 chart is used to install this application.
+
+During installation, you must enter a wildcard domain where your applications
+will be exposed. Configure your DNS server to use the external IP address for that
+domain. Applications created and installed are accessible as
+`<program_name>.<kubernetes_namespace>.<domain_name>`, which requires
+your Kubernetes cluster to have
+[RBAC enabled](../project/clusters/add_remove_clusters.md#rbac-cluster-resources).
 
 ### Prometheus
 
@@ -438,14 +442,13 @@ GitLab is able to monitor applications automatically, using the
 memory metrics are automatically collected, and response metrics are retrieved
 from NGINX Ingress as well.
 
-To enable monitoring, simply install Prometheus into the cluster with the
-**Install** button.
-
-NOTE: **Note:**
 The [`stable/prometheus`](https://github.com/helm/charts/tree/master/stable/prometheus)
 chart is used to install this application with a
 [`values.yaml`](https://gitlab.com/gitlab-org/gitlab/blob/master/vendor/prometheus/values.yaml)
 file.
+
+To enable monitoring, install Prometheus into the cluster with the **Install**
+button.
 
 ### Crossplane
 
@@ -470,14 +473,13 @@ The Crossplane GitLab-managed application:
   PostgreSQL (for example, CloudSQL from GCP or RDS from AWS) and other services
   required by the application via the Auto DevOps pipeline.
 
-For information on configuring Crossplane installed on the cluster, see
-[Crossplane configuration](crossplane.md).
-
-NOTE: **Note:**
 [`alpha/crossplane`](https://github.com/crossplane/crossplane/tree/v0.4.1/cluster/charts/crossplane) chart v0.4.1 is used to
 install Crossplane using the
 [`values.yaml`](https://github.com/crossplane/crossplane/blob/master/cluster/charts/crossplane/values.yaml.tmpl)
 file.
+
+For information about configuring Crossplane installed on the cluster, see
+[Crossplane configuration](crossplane.md).
 
 ### Elastic Stack
 
@@ -487,37 +489,33 @@ file.
 log analysis solution which helps in deep searching, analyzing and visualizing the logs
 generated from different machines.
 
-GitLab is able to gather logs from pods in your cluster automatically.
-Filebeat will run as a DaemonSet on each node in your cluster, and it will ship container logs to Elasticsearch for querying.
-GitLab will then connect to Elasticsearch for logs instead of the Kubernetes API,
-and you will have access to more advanced querying capabilities.
-
-Log data is automatically deleted after 30 days using [Curator](https://www.elastic.co/guide/en/elasticsearch/client/curator/5.5/about.html).
+GitLab can gather logs from pods in your cluster. Filebeat runs as a DaemonSet
+on each node in your cluster, and ships container logs to Elasticsearch for
+querying. GitLab then connects to Elasticsearch for logs, instead of the
+Kubernetes API, giving you access to more advanced querying capabilities. Log
+data is deleted after 30 days, using [Curator](https://www.elastic.co/guide/en/elasticsearch/client/curator/5.5/about.html).
 
 To enable log shipping:
 
-1. Ensure your cluster contains at least 3 nodes of instance types larger than
-   `f1-micro`, `g1-small`, or `n1-standard-1`.
+1. Ensure your cluster contains at least three nodes of instance types larger
+   than `f1-micro`, `g1-small`, or `n1-standard-1`.
 1. Navigate to **Operations > Kubernetes**.
 1. In **Kubernetes Cluster**, select a cluster.
-1. In the **Applications** section, find **Elastic Stack** and click **Install**.
+1. In the **Applications** section, find **Elastic Stack**, and then select
+   **Install**.
 
-NOTE: **Note:**
 The [`gitlab/elastic-stack`](https://gitlab.com/gitlab-org/charts/elastic-stack)
 chart is used to install this application with a
 [`values.yaml`](https://gitlab.com/gitlab-org/gitlab/blob/master/vendor/elastic_stack/values.yaml)
-file.
+file. The chart deploys three identical Elasticsearch pods which can't be
+colocated, and each requires one CPU and 2 GB of RAM, making them
+incompatible with clusters containing fewer than three nodes, or consisting of
+`f1-micro`, `g1-small`, `n1-standard-1`, or `*-highcpu-2` instance types.
 
 NOTE: **Note:**
-The chart deploys 3 identical Elasticsearch pods which can't be colocated, and each
-requires 1 CPU and 2 GB of RAM, making them incompatible with clusters containing
-fewer than 3 nodes or consisting of `f1-micro`, `g1-small`, `n1-standard-1`, or
-`*-highcpu-2` instance types.
-
-NOTE: **Note:**
-The Elastic Stack cluster application is intended as a log aggregation solution and is not related to our
-[Advanced Search](../search/advanced_global_search.md) functionality, which uses a separate
-Elasticsearch cluster.
+The Elastic Stack cluster application is intended as a log aggregation solution
+and is not related to our [Advanced Search](../search/advanced_global_search.md)
+functionality, which uses a separate Elasticsearch cluster.
 
 #### Optional: deploy Kibana to perform advanced queries
 
@@ -1267,7 +1265,7 @@ You can check the default [`values.yaml`](https://gitlab.com/gitlab-org/gitlab/-
 You can customize the installation of Elastic Stack by defining
 `.gitlab/managed-apps/elastic-stack/values.yaml` file in your cluster
 management project. Refer to the
-[chart](https://gitlab.com/gitlab-org/charts/elastic-stack) for the
+[chart](https://gitlab.com/gitlab-org/charts/elastic-stack) for all
 available configuration options.
 
 NOTE: **Note:**
@@ -1324,7 +1322,7 @@ You can customize the installation of Fluentd by defining
 `.gitlab/managed-apps/fluentd/values.yaml` file in your cluster management
 project. Refer to the
 [configuration chart for the current development release of Fluentd](https://github.com/helm/charts/tree/master/stable/fluentd#configuration)
-for the available configuration options.
+for all available configuration options.
 
 NOTE: **Note:**
 The configuration chart link points to the current development release, which
@@ -1347,7 +1345,7 @@ knative:
 
 You can customize the installation of Knative by defining `.gitlab/managed-apps/knative/values.yaml`
 file in your cluster management project. Refer to the [chart](https://gitlab.com/gitlab-org/charts/knative)
-for the available configuration options.
+for all available configuration options.
 
 Here is an example configuration for Knative:
 

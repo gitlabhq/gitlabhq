@@ -69,15 +69,13 @@ export default {
         </p>
       </template>
     </gl-table>
-    <div class="gl-display-flex gl-justify-content-center">
-      <gl-button
-        v-gl-modal.deploy-freeze-modal
-        data-testid="add-deploy-freeze"
-        category="primary"
-        variant="success"
-      >
-        {{ $options.translations.addDeployFreeze }}
-      </gl-button>
-    </div>
+    <gl-button
+      v-gl-modal.deploy-freeze-modal
+      data-testid="add-deploy-freeze"
+      category="primary"
+      variant="success"
+    >
+      {{ $options.translations.addDeployFreeze }}
+    </gl-button>
   </div>
 </template>

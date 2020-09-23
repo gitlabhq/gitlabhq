@@ -60,5 +60,4 @@
 
     = render_if_exists 'admin/application_settings/updating_name_disabled_for_users', form: f
     = render_if_exists 'admin/application_settings/availability_on_namespace_setting', form: f
-  .gl-display-flex.gl-justify-content-end
-    = f.submit _('Save changes'), class: 'btn btn-success qa-save-changes-button'
+  = f.submit _('Save changes'), class: 'btn btn-success qa-save-changes-button'

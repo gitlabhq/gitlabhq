@@ -218,7 +218,7 @@ export default {
       </p>
     </div>
 
-    <div v-if="isEditing" class="row-content-block gl-display-flex gl-justify-content-end">
+    <div v-if="isEditing" class="row-content-block">
       <gl-button class="btn-cancel gl-mr-4" data-testid="cancelEditing" @click="onCancel">
         {{ __('Cancel') }}
       </gl-button>
@@ -232,7 +232,7 @@ export default {
         {{ s__('Badges|Save changes') }}
       </gl-button>
     </div>
-    <div v-else class="gl-display-flex gl-justify-content-end form-group">
+    <div v-else class="form-group">
       <gl-button :loading="isSaving" type="submit" variant="success" category="primary">
         {{ s__('Badges|Add badge') }}
       </gl-button>

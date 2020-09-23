@@ -159,11 +159,21 @@ found in those projects' default branches.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/213014) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.10.
 
-You can export all your vulnerabilities in CSV format by clicking the **{upload}** **Export**
-button located at top right of the **Security Dashboard**. After the report
-is built, the CSV report downloads to your local machine. The report contains all
-vulnerabilities for the projects defined in the **Security Dashboard**,
-as filters don't apply to the export function.
+You can export all your vulnerabilities in CSV (comma separated values) format by clicking the
+**{upload}** **Export** button located at top right of the Security Dashboard. When the report is
+ready, the CSV report downloads to your local machine. The report contains all vulnerabilities for
+the projects defined in the Security Dashboard, as filters don't apply to the export function.
+
+The fields in the export include:
+
+- Scanner Type
+- Scanner Name
+- Status
+- Name
+- Details
+- Severity
+- [CVE](https://cve.mitre.org/)
+- Additional Info
 
 ![Export vulnerabilities](img/instance_security_dashboard_export_csv_v13_4.png)
 

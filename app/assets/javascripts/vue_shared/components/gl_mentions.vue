@@ -63,8 +63,13 @@ const autoCompleteMap = {
           SidebarMediator.singleton?.store?.assignees?.map(assignee => assignee.username) || [];
       }
 
-      if (doesCurrentLineStartWith('/assign', fullText, selectionStart)) {
-        return this.members.filter(member => !this.assignees.includes(member.username));
+      if (
+        doesCurrentLineStartWith('/assign', fullText, selectionStart) ||
+        doesCurrentLineStartWith('/reassign', fullText, selectionStart)
+      ) {
+        return this.members.filter(
+          member => member.type === 'User' && !this.assignees.includes(member.username),
+        );
       }
 
       if (doesCurrentLineStartWith('/unassign', fullText, selectionStart)) {
