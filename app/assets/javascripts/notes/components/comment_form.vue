@@ -381,7 +381,8 @@ export default {
                 dir="auto"
                 :disabled="isSubmitting"
                 name="note[note]"
-                class="note-textarea js-vue-comment-form js-note-text js-gfm-input js-autosize markdown-area qa-comment-input"
+                class="note-textarea js-vue-comment-form js-note-text js-gfm-input js-autosize markdown-area"
+                data-qa-selector="comment_field"
                 data-supports-quick-actions="true"
                 :aria-label="__('Description')"
                 :placeholder="__('Write a comment or drag your files here…')"
@@ -426,7 +427,8 @@ export default {
               >
                 <gl-button
                   :disabled="isSubmitButtonDisabled"
-                  class="js-comment-button js-comment-submit-button qa-comment-button"
+                  class="js-comment-button js-comment-submit-button"
+                  data-qa-selector="comment_button"
                   type="submit"
                   category="primary"
                   variant="success"
@@ -440,7 +442,8 @@ export default {
                   name="button"
                   category="primary"
                   variant="success"
-                  class="note-type-toggle js-note-new-discussion dropdown-toggle qa-note-dropdown"
+                  class="note-type-toggle js-note-new-discussion dropdown-toggle"
+                  data-qa-selector="note_dropdown"
                   data-display="static"
                   data-toggle="dropdown"
                   icon="chevron-down"
@@ -469,7 +472,10 @@ export default {
                   </li>
                   <li class="divider droplab-item-ignore"></li>
                   <li :class="{ 'droplab-item-selected': noteType === 'discussion' }">
-                    <button class="qa-discussion-option" @click.prevent="setNoteType('discussion')">
+                    <button
+                      data-qa-selector="discussion_menu_item"
+                      @click.prevent="setNoteType('discussion')"
+                    >
                       <i aria-hidden="true" class="fa fa-check icon"></i>
                       <div class="description">
                         <strong>{{ __('Start thread') }}</strong>

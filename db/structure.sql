@@ -11083,7 +11083,8 @@ CREATE TABLE container_repositories (
     name character varying NOT NULL,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
-    status smallint
+    status smallint,
+    expiration_policy_started_at timestamp with time zone
 );
 
 CREATE SEQUENCE container_repositories_id_seq

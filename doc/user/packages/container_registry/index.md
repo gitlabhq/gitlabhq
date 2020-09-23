@@ -131,7 +131,7 @@ You can then create workflows and automate any processes that involve testing,
 building, and eventually deploying your project from the Docker image you
 created.
 
-Before diving into the details, some things you should be aware of:
+Before diving into details, some things you should be aware of:
 
 - You must [authenticate to the container registry](#authenticating-to-the-container-registry-with-gitlab-cicd)
   before running any commands. You can do this in the `before_script` if multiple

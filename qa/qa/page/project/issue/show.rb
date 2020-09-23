@@ -12,7 +12,7 @@ module QA
 
           view 'app/assets/javascripts/notes/components/comment_form.vue' do
             element :comment_button
-            element :comment_input
+            element :comment_field
           end
 
           view 'app/assets/javascripts/notes/components/discussion_filter.vue' do
@@ -84,7 +84,7 @@ module QA
           # attachment option should be an absolute path
           def comment(text, attachment: nil, filter: :all_activities)
             method("select_#{filter}_filter").call
-            fill_element :comment_input, "#{text}\n"
+            fill_element :comment_field, "#{text}\n"
 
             unless attachment.nil?
               QA::Page::Component::Dropzone.new(self, '.new-note')
@@ -125,6 +125,8 @@ module QA
               click_element(:title)
               click_element :discussion_filter
               find_element(:filter_options, text: text).click
+
+              wait_for_loading
             end
           end
         end

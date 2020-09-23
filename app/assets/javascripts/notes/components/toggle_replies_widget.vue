@@ -57,7 +57,12 @@ export default {
           tooltip-placement="bottom"
         />
       </div>
-      <button class="btn btn-link js-replies-text qa-expand-replies" type="button" @click="toggle">
+      <button
+        class="btn btn-link js-replies-text"
+        data-qa-selector="expand_replies_button"
+        type="button"
+        @click="toggle"
+      >
         {{ replies.length }} {{ n__('reply', 'replies', replies.length) }}
       </button>
       {{ __('Last reply by') }}
@@ -68,7 +73,8 @@ export default {
     </template>
     <span
       v-else
-      class="collapse-replies-btn js-collapse-replies qa-collapse-replies"
+      class="collapse-replies-btn js-collapse-replies"
+      data-qa-selector="collapse_replies_button"
       @click="toggle"
     >
       <gl-icon name="chevron-down" /> {{ s__('Notes|Collapse replies') }}

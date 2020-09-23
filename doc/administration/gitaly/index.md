@@ -1245,13 +1245,6 @@ unset http_proxy
 unset https_proxy
 ```
 
-### Gitaly not listening on new address after reconfiguring
-
-When updating the `gitaly['listen_addr']` or `gitaly['prometheus_listen_addr']`
-values, Gitaly may continue to listen on the old address after a `sudo gitlab-ctl reconfigure`.
-
-When this occurs, performing a `sudo gitlab-ctl restart` will resolve the issue. This will no longer be necessary after [this issue](https://gitlab.com/gitlab-org/gitaly/-/issues/2521) is resolved.
-
 ### Permission denied errors appearing in Gitaly logs when accessing repositories from a standalone Gitaly server
 
 If this error occurs even though file permissions are correct, it's likely that

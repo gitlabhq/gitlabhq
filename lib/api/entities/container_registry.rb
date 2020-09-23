@@ -16,6 +16,7 @@ module API
         expose :project_id
         expose :location
         expose :created_at
+        expose :expiration_policy_started_at, as: :cleanup_policy_started_at
         expose :tags_count, if: -> (_, options) { options[:tags_count] }
         expose :tags, using: Tag, if: -> (_, options) { options[:tags] }
       end
