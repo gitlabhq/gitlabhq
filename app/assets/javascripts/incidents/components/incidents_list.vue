@@ -354,7 +354,7 @@ export default {
       return INCIDENT_SEVERITY[severity];
     },
     handleFilterIncidents(filters) {
-      const filterParams = { authorUsername: '', assigneeUsername: [], search: '' };
+      const filterParams = { authorUsername: '', assigneeUsername: '', search: '' };
 
       filters.forEach(filter => {
         if (typeof filter === 'object') {
@@ -363,7 +363,7 @@ export default {
               filterParams.authorUsername = filter.value.data;
               break;
             case 'assignee_username':
-              filterParams.assigneeUsername.push(filter.value.data);
+              filterParams.assigneeUsername = filter.value.data;
               break;
             case 'filtered-search-term':
               if (filter.value.data !== '') filterParams.search = filter.value.data;

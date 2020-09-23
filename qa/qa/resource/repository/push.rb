@@ -11,7 +11,7 @@ module QA
                       :branch_name, :new_branch, :output, :repository_http_uri,
                       :repository_ssh_uri, :ssh_key, :user, :use_lfs, :tag_name
 
-        attr_writer :remote_branch, :gpg_key_id
+        attr_writer :remote_branch, :gpg_key_id, :merge_request_push_options
 
         def initialize
           @file_name = "file-#{SecureRandom.hex(8)}.txt"
@@ -24,6 +24,7 @@ module QA
           @use_lfs = false
           @tag_name = nil
           @gpg_key_id = nil
+          @merge_request_push_options = nil
         end
 
         def remote_branch
@@ -95,7 +96,7 @@ module QA
               end
 
               @output += commit_to repository
-              @output += repository.push_changes("#{branch_name}:#{remote_branch}")
+              @output += repository.push_changes("#{branch_name}:#{remote_branch}", push_options: @merge_request_push_options)
             end
 
             repository.delete_ssh_key

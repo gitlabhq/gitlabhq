@@ -11,7 +11,7 @@ query getIncidents(
   $nextPageCursor: String = ""
   $searchTerm: String = ""
   $authorUsername: String = ""
-  $assigneeUsernames: [String!] = []
+  $assigneeUsernames: String = ""
 ) {
   project(fullPath: $projectPath) {
     issues(

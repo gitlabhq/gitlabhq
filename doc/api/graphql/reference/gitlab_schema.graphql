@@ -6803,7 +6803,7 @@ type Group {
     """
     Username of a user assigned to the issue
     """
-    assigneeUsername: [String!]
+    assigneeUsername: String
 
     """
     Username of the author of the issue
@@ -12283,7 +12283,7 @@ type Project {
     """
     Username of a user assigned to the issue
     """
-    assigneeUsername: [String!]
+    assigneeUsername: String
 
     """
     Username of the author of the issue
@@ -12378,7 +12378,7 @@ type Project {
     """
     Username of a user assigned to the issue
     """
-    assigneeUsername: [String!]
+    assigneeUsername: String
 
     """
     Username of the author of the issue
@@ -12463,7 +12463,7 @@ type Project {
     """
     Username of a user assigned to the issue
     """
-    assigneeUsername: [String!]
+    assigneeUsername: String
 
     """
     Username of the author of the issue

@@ -380,7 +380,7 @@ describe('Incidents List', () => {
         wrapper.vm.handleFilterIncidents(mockFilters);
 
         expect(wrapper.vm.authorUsername).toBe('root');
-        expect(wrapper.vm.assigneeUsernames).toEqual(['root2']);
+        expect(wrapper.vm.assigneeUsernames).toEqual('root2');
         expect(wrapper.vm.searchTerm).toBe(mockFilters[2].value.data);
       });
 

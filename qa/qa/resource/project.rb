@@ -110,6 +110,10 @@ module QA
         response.any? { |file| file[:path] == file_path }
       end
 
+      def has_branch?(branch)
+        has_branches?(Array(branch))
+      end
+
       def has_branches?(branches)
         branches.all? do |branch|
           response = get(Runtime::API::Request.new(api_client, "#{api_repository_branches_path}/#{branch}").url)
@@ -138,6 +142,10 @@ module QA
 
       def api_members_path
         "#{api_get_path}/members"
+      end
+
+      def api_merge_requests_path
+        "#{api_get_path}/merge_requests"
       end
 
       def api_runners_path
@@ -221,6 +229,14 @@ module QA
         Runtime::Logger.error("Import failed: #{result[:import_error]}") if result[:import_status] == "failed"
 
         result[:import_status]
+      end
+
+      def merge_requests
+        parse_body(get(Runtime::API::Request.new(api_client, api_merge_requests_path).url))
+      end
+
+      def merge_request_with_title(title)
+        merge_requests.find { |mr| mr[:title] == title }
       end
 
       def runners(tag_list: nil)

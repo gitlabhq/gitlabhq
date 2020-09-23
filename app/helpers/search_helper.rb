@@ -294,6 +294,11 @@ module SearchHelper
     sanitize(html, tags: %w(a p ol ul li pre code))
   end
 
+  # _search_highlight is used in EE override
+  def highlight_and_truncate_issue(issue, search_term, _search_highlight)
+    simple_search_highlight_and_truncate(issue.description, search_term, highlighter: '<span class="gl-text-black-normal gl-font-weight-bold">\1</span>')
+  end
+
   def simple_search_highlight_and_truncate(text, phrase, options = {})
     truncate_length = options.delete(:length) { 200 }
     text = truncate(text, length: truncate_length)
