@@ -1,5 +1,0 @@
----
-title: Revert required encryption on CI runner tokens
-merge_request: 42623
-author:
-type: fixed
