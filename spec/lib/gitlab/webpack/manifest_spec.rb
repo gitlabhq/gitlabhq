@@ -16,6 +16,14 @@ RSpec.describe Gitlab::Webpack::Manifest do
     EOF
   end
 
+  around do |example|
+    Gitlab::Webpack::Manifest.clear_manifest!
+
+    example.run
+
+    Gitlab::Webpack::Manifest.clear_manifest!
+  end
+
   shared_examples_for "a valid manifest" do
     it "returns single entry asset paths from the manifest" do
       expect(Gitlab::Webpack::Manifest.asset_paths("entry2")).to eq(["/public_path/entry2.js"])

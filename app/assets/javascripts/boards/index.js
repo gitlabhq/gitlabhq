@@ -86,6 +86,7 @@ export default () => {
       boardId: $boardApp.dataset.boardId,
       groupId: Number($boardApp.dataset.groupId) || null,
       rootPath: $boardApp.dataset.rootPath,
+      canUpdate: $boardApp.dataset.canUpdate,
     },
     store,
     apolloProvider,

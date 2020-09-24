@@ -1,6 +1,6 @@
 - page_title _("CI Lint")
 - page_description _("Validate your GitLab CI configuration file")
-- unless Feature.enabled?(:monaco_ci)
+- unless Feature.enabled?(:monaco_ci, default_enabled: true)
   - content_for :library_javascripts do
     = page_specific_javascript_tag('lib/ace.js')
 
@@ -17,7 +17,7 @@
           .file-holder
             .js-file-title.file-title.clearfix
               = _("Contents of .gitlab-ci.yml")
-            - if Feature.enabled?(:monaco_ci)
+            - if Feature.enabled?(:monaco_ci, default_enabled: true)
               .file-editor.code
                 .js-edit-mode-pane.qa-editor#editor{ data: { 'editor-loading': true } }<
                   %pre.editor-loading-content= params[:content]

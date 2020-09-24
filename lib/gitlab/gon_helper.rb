@@ -45,7 +45,7 @@ module Gitlab
       # made globally available to the frontend
       push_frontend_feature_flag(:snippets_vue, default_enabled: true)
       push_frontend_feature_flag(:monaco_blobs, default_enabled: true)
-      push_frontend_feature_flag(:monaco_ci, default_enabled: false)
+      push_frontend_feature_flag(:monaco_ci, default_enabled: true)
       push_frontend_feature_flag(:snippets_edit_vue, default_enabled: true)
       push_frontend_feature_flag(:webperf_experiment, default_enabled: false)
       push_frontend_feature_flag(:snippets_binary_blob, default_enabled: false)

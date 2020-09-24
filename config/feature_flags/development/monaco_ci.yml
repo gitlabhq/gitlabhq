@@ -1,7 +1,7 @@
 ---
 name: monaco_ci
-introduced_by_url: 
-rollout_issue_url: 
-group: 
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/23666
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/249137
+group: group::editor
 type: development
-default_enabled: false
+default_enabled: true

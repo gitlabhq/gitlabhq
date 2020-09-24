@@ -24,6 +24,8 @@ module Gitlab
       AssetMissingError = Class.new(StandardError)
 
       class << self
+        include Gitlab::Utils::StrongMemoize
+
         def entrypoint_paths(source)
           raise WebpackError, manifest["errors"] unless manifest_bundled?
 
@@ -55,6 +57,10 @@ module Gitlab
           end
         end
 
+        def clear_manifest!
+          clear_memoization(:manifest)
+        end
+
         private
 
         def manifest_bundled?
@@ -67,7 +73,7 @@ module Gitlab
             load_manifest
           else
             # ... otherwise cache at class level, as JSON loading/parsing can be expensive
-            @manifest ||= load_manifest
+            strong_memoize(:manifest) { load_manifest }
           end
         end
 
