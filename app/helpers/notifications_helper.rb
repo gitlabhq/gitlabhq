@@ -29,7 +29,10 @@ module NotificationsHelper
   end
 
   def notification_icon(level)
-    sprite_icon("#{notification_icon_class(level)}")
+    icon = notification_icon_class(level)
+    return '' unless icon
+
+    sprite_icon(icon)
   end
 
   def notification_title(level)

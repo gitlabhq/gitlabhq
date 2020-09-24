@@ -10,6 +10,7 @@ RSpec.describe NotificationsHelper do
     it { expect(notification_icon(:mention)).to match('data-testid="at-icon"') }
     it { expect(notification_icon(:global)).to match('data-testid="earth-icon') }
     it { expect(notification_icon(:watch)).to match('data-testid="eye-icon"') }
+    it { expect(notification_icon(:custom)).to equal('') }
   end
 
   describe 'notification_title' do
