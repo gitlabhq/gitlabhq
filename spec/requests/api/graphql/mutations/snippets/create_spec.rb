@@ -79,18 +79,20 @@ RSpec.describe 'Creating a Snippet' do
     end
 
     shared_examples 'creates snippet' do
-      it 'returns the created Snippet' do
+      it 'returns the created Snippet', :aggregate_failures do
         expect do
           subject
         end.to change { Snippet.count }.by(1)
 
+        snippet = Snippet.last
+        created_file_1 = snippet.repository.blob_at('HEAD', file_1[:filePath])
+        created_file_2 = snippet.repository.blob_at('HEAD', file_2[:filePath])
+
+        expect(created_file_1.data).to match(file_1[:content])
+        expect(created_file_2.data).to match(file_2[:content])
         expect(mutation_response['snippet']['title']).to eq(title)
         expect(mutation_response['snippet']['description']).to eq(description)
         expect(mutation_response['snippet']['visibilityLevel']).to eq(visibility_level)
-        expect(mutation_response['snippet']['blobs'][0]['plainData']).to match(file_1[:content])
-        expect(mutation_response['snippet']['blobs'][0]['fileName']).to match(file_1[:file_path])
-        expect(mutation_response['snippet']['blobs'][1]['plainData']).to match(file_2[:content])
-        expect(mutation_response['snippet']['blobs'][1]['fileName']).to match(file_2[:file_path])
       end
 
       context 'when action is invalid' do

@@ -206,7 +206,7 @@ module IssuablesHelper
     end
 
     if access = project.team.human_max_access(issuable.author_id)
-      output << content_tag(:span, access, class: "user-access-role has-tooltip d-none d-xl-inline-block gl-ml-3 ", title: _("This user is a %{access} of the %{name} project.") % { access: access.downcase, name: project.name })
+      output << content_tag(:span, access, class: "user-access-role has-tooltip d-none d-xl-inline-block gl-ml-3 ", title: _("This user has the %{access} role in the %{name} project.") % { access: access.downcase, name: project.name })
     elsif project.team.contributor?(issuable.author_id)
       output << content_tag(:span, _("Contributor"), class: "user-access-role has-tooltip d-none d-xl-inline-block gl-ml-3", title: _("This user has previously committed to the %{name} project.") % { name: project.name })
     end

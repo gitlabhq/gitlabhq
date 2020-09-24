@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
-import { GlLink, GlSprintf } from '@gitlab/ui';
+import { GlLink } from '@gitlab/ui';
 import HighlightBar from '~/issue_show/components/incidents/highlight_bar.vue';
 import { formatDate } from '~/lib/utils/datetime_utility';
 
@@ -21,9 +21,6 @@ describe('Highlight Bar', () => {
       propsData: {
         alert,
       },
-      stubs: {
-        GlSprintf,
-      },
     });
   };
 
@@ -44,7 +41,7 @@ describe('Highlight Bar', () => {
     expect(findLink().exists()).toBe(true);
     expect(findLink().attributes('href')).toBe(alert.detailsUrl);
     expect(findLink().attributes('title')).toBe(alert.title);
-    expect(findLink().text()).toBe(`Alert #${alert.iid}`);
+    expect(findLink().text()).toBe(`#${alert.iid}`);
   });
 
   it('renders formatted start time of the alert', () => {

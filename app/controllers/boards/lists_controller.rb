@@ -42,7 +42,7 @@ module Boards
       list = board.lists.destroyable.find(params[:id])
       service = Boards::Lists::DestroyService.new(board_parent, current_user)
 
-      if service.execute(list)
+      if service.execute(list).success?
         head :ok
       else
         head :unprocessable_entity

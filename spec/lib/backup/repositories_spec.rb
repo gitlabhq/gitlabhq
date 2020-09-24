@@ -17,23 +17,33 @@ RSpec.describe Backup::Repositories do
   end
 
   describe '#dump' do
-    before do
-      allow(Gitlab.config.repositories.storages).to receive(:keys).and_return(storage_keys)
-    end
+    let_it_be(:projects) { create_list(:project, 5, :repository) }
 
-    let_it_be(:projects) { create_list(:project, 5, :repository, :wiki_repo) }
+    RSpec.shared_examples 'creates repository bundles' do
+      specify :aggregate_failures do
+        # Add data to the wiki repository, so it will be included in the dump.
+        create(:wiki_page, container: project)
 
-    let(:storage_keys) { %w[default test_second_storage] }
-
-    context 'no concurrency' do
-      it 'creates repository bundle' do
         subject.dump(max_concurrency: 1, max_storage_concurrency: 1)
 
-        projects.each do |project|
-          expect(File).to exist(File.join(Gitlab.config.backup.path, 'repositories', project.disk_path + '.bundle'))
-        end
+        expect(File).to exist(File.join(Gitlab.config.backup.path, 'repositories', project.disk_path + '.bundle'))
+        expect(File).to exist(File.join(Gitlab.config.backup.path, 'repositories', project.disk_path + '.wiki' + '.bundle'))
       end
+    end
 
+    context 'hashed storage' do
+      let_it_be(:project) { create(:project, :repository) }
+
+      it_behaves_like 'creates repository bundles'
+    end
+
+    context 'legacy storage' do
+      let_it_be(:project) { create(:project, :repository, :legacy_storage) }
+
+      it_behaves_like 'creates repository bundles'
+    end
+
+    context 'no concurrency' do
       it 'creates the expected number of threads' do
         expect(Thread).not_to receive(:new)
 
@@ -63,26 +73,22 @@ RSpec.describe Backup::Repositories do
           subject.dump(max_concurrency: 1, max_storage_concurrency: 1)
         end.count
 
-        create_list(:project, 2, :repository, :wiki_repo)
+        create_list(:project, 2, :repository)
 
         expect do
           subject.dump(max_concurrency: 1, max_storage_concurrency: 1)
         end.not_to exceed_query_limit(control_count)
       end
-
-      context 'legacy storage' do
-        let_it_be(:project) { create(:project, :repository, :legacy_storage, :wiki_repo) }
-
-        it 'creates repository bundle' do
-          subject.dump(max_concurrency: 1, max_storage_concurrency: 1)
-
-          expect(File).to exist(File.join(Gitlab.config.backup.path, 'repositories', project.disk_path + '.bundle'))
-        end
-      end
     end
 
     [4, 10].each do |max_storage_concurrency|
       context "max_storage_concurrency #{max_storage_concurrency}", quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/241701' do
+        let(:storage_keys) { %w[default test_second_storage] }
+
+        before do
+          allow(Gitlab.config.repositories.storages).to receive(:keys).and_return(storage_keys)
+        end
+
         it 'creates the expected number of threads' do
           expect(Thread).to receive(:new)
             .exactly(storage_keys.length * (max_storage_concurrency + 1)).times
@@ -135,7 +141,7 @@ RSpec.describe Backup::Repositories do
             subject.dump(max_concurrency: 1, max_storage_concurrency: max_storage_concurrency)
           end.count
 
-          create_list(:project, 2, :repository, :wiki_repo)
+          create_list(:project, 2, :repository)
 
           expect do
             subject.dump(max_concurrency: 1, max_storage_concurrency: max_storage_concurrency)
@@ -146,7 +152,25 @@ RSpec.describe Backup::Repositories do
   end
 
   describe '#restore' do
-    let_it_be(:project) { create(:project, :wiki_repo) }
+    let_it_be(:project) { create(:project) }
+
+    it 'restores repositories from bundles', :aggregate_failures do
+      next_path_to_bundle = [
+        Rails.root.join('spec/fixtures/lib/backup/project_repo.bundle'),
+        Rails.root.join('spec/fixtures/lib/backup/wiki_repo.bundle')
+      ].to_enum
+
+      allow_next_instance_of(described_class::BackupRestore) do |backup_restore|
+        allow(backup_restore).to receive(:path_to_bundle).and_return(next_path_to_bundle.next)
+      end
+
+      subject.restore
+
+      collect_commit_shas = -> (repo) { repo.commits('master', limit: 10).map(&:sha) }
+
+      expect(collect_commit_shas.call(project.repository)).to eq(['393a7d860a5a4c3cc736d7eb00604e3472bb95ec'])
+      expect(collect_commit_shas.call(project.wiki.repository)).to eq(['c74b9948d0088d703ee1fafeddd9ed9add2901ea'])
+    end
 
     describe 'command failure' do
       before do

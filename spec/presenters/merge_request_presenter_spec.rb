@@ -3,9 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe MergeRequestPresenter do
-  let(:resource) { create(:merge_request, source_project: project) }
-  let(:project) { create(:project) }
-  let(:user) { create(:user) }
+  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:resource) { create(:merge_request, source_project: project) }
+  let_it_be(:user) { create(:user) }
 
   describe '#ci_status' do
     subject { described_class.new(resource).ci_status }
@@ -73,8 +73,6 @@ RSpec.describe MergeRequestPresenter do
   end
 
   describe '#conflict_resolution_path' do
-    let(:project) { create :project }
-    let(:user) { create :user }
     let(:presenter) { described_class.new(resource, current_user: user) }
     let(:path) { presenter.conflict_resolution_path }
 
@@ -107,18 +105,21 @@ RSpec.describe MergeRequestPresenter do
   end
 
   context 'issues links' do
-    let(:project) { create(:project, :private, :repository, creator: user, namespace: user.namespace) }
-    let(:issue_a) { create(:issue, project: project) }
-    let(:issue_b) { create(:issue, project: project) }
+    let_it_be(:project) { create(:project, :private, :repository, creator: user, namespace: user.namespace) }
+    let_it_be(:issue_a) { create(:issue, project: project) }
+    let_it_be(:issue_b) { create(:issue, project: project) }
 
-    let(:resource) do
+    let_it_be(:resource) do
       create(:merge_request,
              source_project: project, target_project: project,
              description: "Fixes #{issue_a.to_reference} Related #{issue_b.to_reference}")
     end
 
-    before do
+    before_all do
       project.add_developer(user)
+    end
+
+    before do
       allow(resource.project).to receive(:default_branch)
         .and_return(resource.target_branch)
       resource.cache_merge_request_closes_issues!

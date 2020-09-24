@@ -23,89 +23,6 @@ RSpec.describe WikiPage do
     stub_feature_flags(Gitlab::WikiPages::FrontMatterParser::FEATURE_FLAG => thing)
   end
 
-  describe '.group_by_directory' do
-    context 'when there are no pages' do
-      it 'returns an empty array' do
-        expect(described_class.group_by_directory(nil)).to eq([])
-        expect(described_class.group_by_directory([])).to eq([])
-      end
-    end
-
-    context 'when there are pages' do
-      before do
-        wiki.create_page('dir_1/dir_1_1/page_3', 'content')
-        wiki.create_page('page_1', 'content')
-        wiki.create_page('dir_1/page_2', 'content')
-        wiki.create_page('dir_2', 'page with dir name')
-        wiki.create_page('dir_2/page_5', 'content')
-        wiki.create_page('page_6', 'content')
-        wiki.create_page('dir_2/page_4', 'content')
-      end
-
-      let(:page_1) { wiki.find_page('page_1') }
-      let(:page_6) { wiki.find_page('page_6') }
-      let(:page_dir_2) { wiki.find_page('dir_2') }
-
-      let(:dir_1) do
-        WikiDirectory.new('dir_1', [wiki.find_page('dir_1/page_2')])
-      end
-
-      let(:dir_1_1) do
-        WikiDirectory.new('dir_1/dir_1_1', [wiki.find_page('dir_1/dir_1_1/page_3')])
-      end
-
-      let(:dir_2) do
-        pages = [wiki.find_page('dir_2/page_5'),
-                 wiki.find_page('dir_2/page_4')]
-        WikiDirectory.new('dir_2', pages)
-      end
-
-      describe "#list_pages" do
-        context 'sort by title' do
-          let(:grouped_entries) { described_class.group_by_directory(wiki.list_pages) }
-          let(:expected_grouped_entries) { [dir_1_1, dir_1, page_dir_2, dir_2, page_1, page_6] }
-
-          it 'returns an array with pages and directories' do
-            grouped_entries.each_with_index do |page_or_dir, i|
-              expected_page_or_dir = expected_grouped_entries[i]
-              expected_slugs = get_slugs(expected_page_or_dir)
-              slugs = get_slugs(page_or_dir)
-
-              expect(slugs).to match_array(expected_slugs)
-            end
-          end
-        end
-
-        context 'sort by created_at' do
-          let(:grouped_entries) { described_class.group_by_directory(wiki.list_pages(sort: 'created_at')) }
-          let(:expected_grouped_entries) { [dir_1_1, page_1, dir_1, page_dir_2, dir_2, page_6] }
-
-          it 'returns an array with pages and directories' do
-            grouped_entries.each_with_index do |page_or_dir, i|
-              expected_page_or_dir = expected_grouped_entries[i]
-              expected_slugs = get_slugs(expected_page_or_dir)
-              slugs = get_slugs(page_or_dir)
-
-              expect(slugs).to match_array(expected_slugs)
-            end
-          end
-        end
-
-        it 'returns an array with retained order with directories at the top' do
-          expected_order = ['dir_1/dir_1_1/page_3', 'dir_1/page_2', 'dir_2', 'dir_2/page_4', 'dir_2/page_5', 'page_1', 'page_6']
-
-          grouped_entries = described_class.group_by_directory(wiki.list_pages)
-
-          actual_order =
-            grouped_entries.flat_map do |page_or_dir|
-              get_slugs(page_or_dir)
-            end
-          expect(actual_order).to eq(expected_order)
-        end
-      end
-    end
-  end
-
   describe '#front_matter' do
     let_it_be(:project) { create(:project) }
     let(:container) { project }
@@ -991,16 +908,6 @@ RSpec.describe WikiPage do
         paths: [subject.path],
         foo: 'bar'
       )
-    end
-  end
-
-  private
-
-  def get_slugs(page_or_dir)
-    if page_or_dir.is_a? WikiPage
-      [page_or_dir.slug]
-    else
-      page_or_dir.pages.present? ? page_or_dir.pages.map(&:slug) : []
     end
   end
 end

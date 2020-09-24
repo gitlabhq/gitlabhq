@@ -74,14 +74,6 @@ RSpec.describe Gitlab::ImportExport::LfsSaver do
             }
           )
         end
-
-        it 'does not save a json file if feature is disabled' do
-          stub_feature_flags(export_lfs_objects_projects: false)
-
-          saver.save
-
-          expect(File.exist?(lfs_json_file)).to eq(false)
-        end
       end
     end
 

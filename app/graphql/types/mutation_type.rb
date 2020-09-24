@@ -18,6 +18,7 @@ module Types
     mount_mutation Mutations::Boards::Issues::IssueMoveList
     mount_mutation Mutations::Boards::Lists::Create
     mount_mutation Mutations::Boards::Lists::Update
+    mount_mutation Mutations::Boards::Lists::Destroy
     mount_mutation Mutations::Branches::Create, calls_gitaly: true
     mount_mutation Mutations::Commits::Create, calls_gitaly: true
     mount_mutation Mutations::Discussions::ToggleResolve

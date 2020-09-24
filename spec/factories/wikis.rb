@@ -3,7 +3,7 @@
 FactoryBot.define do
   factory :wiki do
     transient do
-      container { association(:project, :wiki_repo) }
+      container { association(:project) }
       user { association(:user) }
     end
 
@@ -12,7 +12,7 @@ FactoryBot.define do
 
     factory :project_wiki do
       transient do
-        project { association(:project, :wiki_repo) }
+        project { association(:project) }
       end
 
       container { project }

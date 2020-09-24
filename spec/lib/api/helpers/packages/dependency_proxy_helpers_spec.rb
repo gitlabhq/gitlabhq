@@ -24,6 +24,7 @@ RSpec.describe API::Helpers::Packages::DependencyProxyHelpers do
 
     shared_examples 'executing redirect' do
       it 'redirects to package registry' do
+        expect(helper).to receive(:track_event).with('npm_request_forward').once
         expect(helper).to receive(:registry_url).once
         expect(helper).to receive(:redirect).once
         expect(helper).to receive(:fallback).never
@@ -63,6 +64,7 @@ RSpec.describe API::Helpers::Packages::DependencyProxyHelpers do
           let(:package_type) { pkg_type }
 
           it 'raises an error' do
+            allow(helper).to receive(:track_event)
             expect { subject }.to raise_error(ArgumentError, "Can't build registry_url for package_type #{package_type}")
           end
         end

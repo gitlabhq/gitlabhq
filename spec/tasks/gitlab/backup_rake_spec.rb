@@ -325,11 +325,12 @@ RSpec.describe 'gitlab:app namespace rake task', :delete do
       end
 
       let!(:project_a) { create(:project, :repository) }
+      let!(:project_a_wiki_page) { create(:wiki_page, container: project_a) }
       let!(:project_b) { create(:project, :repository, repository_storage: 'test_second_storage') }
       let!(:b_storage_dir) { File.join(test_second_storage_dir, File.dirname(project_b.disk_path)) }
 
-      context 'no concurrency' do
-        it 'includes repositories in all repository storages' do
+      shared_examples 'includes repositories in all repository storages' do
+        specify :aggregate_failures do
           expect { run_rake_task('gitlab:backup:create') }.to output.to_stdout
 
           tar_contents, exit_status = Gitlab::Popen.popen(
@@ -337,9 +338,16 @@ RSpec.describe 'gitlab:app namespace rake task', :delete do
           )
 
           expect(exit_status).to eq(0)
-          expect(tar_contents).to match("repositories/#{project_a.disk_path}.bundle")
-          expect(tar_contents).to match("repositories/#{project_b.disk_path}.bundle")
+          expect(tar_contents).to include(
+            "repositories/#{project_a.disk_path}.bundle",
+            "repositories/#{project_a.disk_path}.wiki.bundle",
+            "repositories/#{project_b.disk_path}.bundle"
+          )
         end
+      end
+
+      context 'no concurrency' do
+        it_behaves_like 'includes repositories in all repository storages'
       end
 
       context 'with concurrency' do
@@ -347,17 +355,7 @@ RSpec.describe 'gitlab:app namespace rake task', :delete do
           stub_env('GITLAB_BACKUP_MAX_CONCURRENCY', 4)
         end
 
-        it 'includes repositories in all repository storages' do
-          expect { run_rake_task('gitlab:backup:create') }.to output.to_stdout
-
-          tar_contents, exit_status = Gitlab::Popen.popen(
-            %W{tar -tvf #{backup_tar} repositories}
-          )
-
-          expect(exit_status).to eq(0)
-          expect(tar_contents).to match("repositories/#{project_a.disk_path}.bundle")
-          expect(tar_contents).to match("repositories/#{project_b.disk_path}.bundle")
-        end
+        it_behaves_like 'includes repositories in all repository storages'
       end
     end
 

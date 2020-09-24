@@ -20,8 +20,8 @@ many organizations .
 
 | Users        | Configuration           | GCP            | AWS             | Azure          |
 |--------------|-------------------------|----------------|-----------------|----------------|
-| Up to 500    | 4 vCPU, 3.6GB memory    | n1-highcpu-4   | c5.xlarge       | F4s v2         |
-| Up to 1,000  | 8 vCPU, 7.2GB memory    | n1-highcpu-8   | c5.2xlarge      | F8s v2         |
+| Up to 500    | 4 vCPU, 3.6 GB memory   | n1-highcpu-4   | c5.xlarge       | F4s v2         |
+| Up to 1,000  | 8 vCPU, 7.2 GB memory   | n1-highcpu-8   | c5.2xlarge      | F8s v2         |
 
 The Google Cloud Platform (GCP) architectures were built and tested using the
 [Intel Xeon E5 v3 (Haswell)](https://cloud.google.com/compute/docs/cpu-platforms)
@@ -30,9 +30,9 @@ or higher, are required for your CPU or node counts. For more information, see
 our [Sysbench](https://github.com/akopytov/sysbench)-based
 [CPU benchmark](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Reference-Architectures/GCP-CPU-Benchmarks).
 
-In addition to the stated configurations, we recommend having at least 2GB of
+In addition to the stated configurations, we recommend having at least 2 GB of
 swap on your server, even if you currently have enough available memory. Having
-swap will help reduce the chance of errors occurring if your available memory
+swap helps to reduce the chance of errors occurring if your available memory
 changes. We also recommend configuring the kernel's swappiness setting to a
 lower value (such as `10`) to make the most of your memory, while still having
 the swap available when needed.

@@ -116,6 +116,7 @@ The following table depicts the various user permission levels in a project.
 | Create vulnerability from vulnerability finding **(ULTIMATE)** |   |     | ✓           | ✓        | ✓      |
 | Resolve vulnerability **(ULTIMATE)**              |         |            | ✓           | ✓        | ✓      |
 | Dismiss vulnerability **(ULTIMATE)**              |         |            | ✓           | ✓        | ✓      |
+| Revert vulnerability to detected state **(ULTIMATE)** |     |            | ✓           | ✓        | ✓      |
 | Apply code change suggestions                     |         |            | ✓           | ✓        | ✓      |
 | Create and edit wiki pages                        |         |            | ✓           | ✓        | ✓      |
 | Rewrite/remove Git tags                           |         |            | ✓           | ✓        | ✓      |

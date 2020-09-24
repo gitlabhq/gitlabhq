@@ -119,7 +119,8 @@ RSpec.describe 'User comments on a diff', :js do
     it 'can add and remove suggestions from a batch' do
       files.each_with_index do |file, index|
         page.within("[id='#{file[:hash]}']") do
-          find("button[title='Show full file']").click
+          find('.js-diff-more-actions').click
+          click_button 'Show full file'
           wait_for_requests
 
           click_diff_line(find("[id='#{file[:line_code]}']"))

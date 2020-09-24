@@ -24,18 +24,18 @@ costly-to-operate environment by using the
 
 | Service                                    | Nodes       | Configuration         | GCP            | AWS         | Azure   |
 |--------------------------------------------|-------------|-----------------------|----------------|-------------|---------|
-| External load balancing node               | 1           | 2 vCPU, 1.8GB memory  | n1-highcpu-2   | c5.large    | F2s v2  |
-| Redis                                      | 3           | 2 vCPU, 7.5GB memory  | n1-standard-2  | m5.large    | D2s v3  |
-| Consul + Sentinel                          | 3           | 2 vCPU, 1.8GB memory  | n1-highcpu-2   | c5.large    | F2s v2  |
-| PostgreSQL                                 | 3           | 2 vCPU, 7.5GB memory  | n1-standard-2  | m5.large    | D2s v3  |
-| PgBouncer                                  | 3           | 2 vCPU, 1.8GB memory  | n1-highcpu-2   | c5.large    | F2s v2  |
-| Internal load balancing node               | 1           | 2 vCPU, 1.8GB memory  | n1-highcpu-2   | c5.large    | F2s v2  |
-| Gitaly                                     | 2 (minimum) | 4 vCPU, 15GB memory   | n1-standard-4  | m5.xlarge   | D4s v3  |
-| Sidekiq                                    | 4           | 2 vCPU, 7.5GB memory  | n1-standard-2  | m5.large    | D2s v3  |
-| GitLab Rails                               | 3           | 8 vCPU, 7.2GB memory  | n1-highcpu-8   | c5.2xlarge  | F8s v2  |
-| Monitoring node                            | 1           | 2 vCPU, 1.8GB memory  | n1-highcpu-2   | c5.large    | F2s v2  |
-| Object Storage                             | n/a         | n/a                   | n/a            | n/a         | n/a     |
-| NFS Server (optional, not recommended)     | 1           | 4 vCPU, 3.6GB memory  | n1-highcpu-4   | c5.xlarge   | F4s v2  |
+| External load balancing node               | 1           | 2 vCPU, 1.8 GB memory | n1-highcpu-2   | c5.large    | F2s v2  |
+| Redis                                      | 3           | 2 vCPU, 7.5 GB memory | n1-standard-2  | m5.large    | D2s v3  |
+| Consul + Sentinel                          | 3           | 2 vCPU, 1.8 GB memory | n1-highcpu-2   | c5.large    | F2s v2  |
+| PostgreSQL                                 | 3           | 2 vCPU, 7.5 GB memory | n1-standard-2  | m5.large    | D2s v3  |
+| PgBouncer                                  | 3           | 2 vCPU, 1.8 GB memory | n1-highcpu-2   | c5.large    | F2s v2  |
+| Internal load balancing node               | 1           | 2 vCPU, 1.8 GB memory | n1-highcpu-2   | c5.large    | F2s v2  |
+| Gitaly                                     | 2 (minimum) | 4 vCPU, 15 GB memory  | n1-standard-4  | m5.xlarge   | D4s v3  |
+| Sidekiq                                    | 4           | 2 vCPU, 7.5 GB memory | n1-standard-2  | m5.large    | D2s v3  |
+| GitLab Rails                               | 3           | 8 vCPU, 7.2 GB memory | n1-highcpu-8   | c5.2xlarge  | F8s v2  |
+| Monitoring node                            | 1           | 2 vCPU, 1.8 GB memory | n1-highcpu-2   | c5.large    | F2s v2  |
+| Object storage                             | n/a         | n/a                   | n/a            | n/a         | n/a     |
+| NFS server (optional, not recommended)     | 1           | 4 vCPU, 3.6 GB memory | n1-highcpu-4   | c5.xlarge   | F4s v2  |
 
 The Google Cloud Platform (GCP) architectures were built and tested using the
 [Intel Xeon E5 v3 (Haswell)](https://cloud.google.com/compute/docs/cpu-platforms)
@@ -44,11 +44,10 @@ or higher, are required for your CPU or node counts. For more information, see
 our [Sysbench](https://github.com/akopytov/sysbench)-based
 [CPU benchmark](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Reference-Architectures/GCP-CPU-Benchmarks).
 
-For data objects (such as LFS, Uploads, or Artifacts), an
-[object storage service](#configure-the-object-storage) is recommended instead
-of NFS where possible, due to better performance and availability. Since this
-doesn't require a node to be set up, *Object Storage* is noted as not
-applicable (n/a) in the previous table.
+Due to better performance and availability, for data objects (such as LFS,
+uploads, or artifacts), using an [object storage service](#configure-the-object-storage)
+is recommended instead of using NFS. Using an object storage service also
+doesn't require you to provision and maintain a node.
 
 ## Setup components
 

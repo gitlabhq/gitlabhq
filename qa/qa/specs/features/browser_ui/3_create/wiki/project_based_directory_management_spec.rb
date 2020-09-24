@@ -4,7 +4,7 @@ module QA
   RSpec.describe 'Create' do
     context 'Wiki' do
       let(:initial_wiki) { Resource::Wiki::ProjectPage.fabricate_via_api! }
-      let(:new_path) { "a/new/path" }
+      let(:new_path) { "a/new/path-with-spaces" }
 
       before do
         Flow::Login.sign_in
@@ -23,7 +23,9 @@ module QA
         Page::Project::Wiki::Edit.perform(&:click_save_changes)
 
         Page::Project::Wiki::Show.perform do |wiki|
-          expect(wiki).to have_directory(new_path)
+          expect(wiki).to have_directory('a')
+          expect(wiki).to have_directory('new')
+          expect(wiki).to have_directory('path with spaces')
         end
       end
     end

@@ -260,6 +260,17 @@ RSpec.describe Boards::ListsController do
       end
     end
 
+    context 'with an error service response' do
+      it 'returns an unprocessable entity response' do
+        allow(Boards::Lists::DestroyService).to receive(:new)
+          .and_return(double(execute: ServiceResponse.error(message: 'error')))
+
+        remove_board_list user: user, board: board, list: planning
+
+        expect(response).to have_gitlab_http_status(:unprocessable_entity)
+      end
+    end
+
     def remove_board_list(user:, board:, list:)
       sign_in(user)
 

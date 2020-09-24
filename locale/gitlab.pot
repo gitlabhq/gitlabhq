@@ -2192,9 +2192,6 @@ msgid_plural "Alerts"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "Alert #%{alertId}"
-msgstr ""
-
 msgid "AlertManagement|Acknowledged"
 msgstr ""
 
@@ -4486,9 +4483,6 @@ msgstr ""
 msgid "Can't create snippet: %{err}"
 msgstr ""
 
-msgid "Can't edit as source branch was deleted"
-msgstr ""
-
 msgid "Can't fetch content for the blob: %{err}"
 msgstr ""
 
@@ -6383,6 +6377,9 @@ msgid "Cohorts|User cohorts are shown for the last %{months_included} months. On
 msgstr ""
 
 msgid "Collapse"
+msgstr ""
+
+msgid "Collapse all threads"
 msgstr ""
 
 msgid "Collapse approvers"
@@ -9321,9 +9318,6 @@ msgstr ""
 msgid "Edit environment"
 msgstr ""
 
-msgid "Edit file in..."
-msgstr ""
-
 msgid "Edit files in the editor and commit changes here"
 msgstr ""
 
@@ -10459,6 +10453,9 @@ msgid "Expand all"
 msgstr ""
 
 msgid "Expand all files"
+msgstr ""
+
+msgid "Expand all threads"
 msgstr ""
 
 msgid "Expand approvers"
@@ -12993,6 +12990,9 @@ msgid "Hide chart"
 msgid_plural "Hide charts"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "Hide comments on this file"
+msgstr ""
 
 msgid "Hide details"
 msgstr ""
@@ -15836,9 +15836,6 @@ msgid "MergeRequests|Thread will be resolved"
 msgstr ""
 
 msgid "MergeRequests|Thread will be unresolved"
-msgstr ""
-
-msgid "MergeRequests|Toggle comments for this file"
 msgstr ""
 
 msgid "MergeRequests|View file @ %{commitId}"
@@ -23417,6 +23414,9 @@ msgstr ""
 msgid "Show comments"
 msgstr ""
 
+msgid "Show comments on this file"
+msgstr ""
+
 msgid "Show comments only"
 msgstr ""
 
@@ -26296,7 +26296,7 @@ msgstr ""
 msgid "This user has previously committed to the %{name} project."
 msgstr ""
 
-msgid "This user is a %{access} of the %{name} project."
+msgid "This user has the %{access} role in the %{name} project."
 msgstr ""
 
 msgid "This user is the author of this %{noteable}."
@@ -26808,9 +26808,6 @@ msgid "Toggle Markdown preview"
 msgstr ""
 
 msgid "Toggle Sidebar"
-msgstr ""
-
-msgid "Toggle all threads"
 msgstr ""
 
 msgid "Toggle backtrace"
@@ -28360,6 +28357,12 @@ msgid "VulnerabilityManagement|Change status"
 msgstr ""
 
 msgid "VulnerabilityManagement|Could not process %{issueReference}: %{errorMessage}."
+msgstr ""
+
+msgid "VulnerabilityManagement|Detected"
+msgstr ""
+
+msgid "VulnerabilityManagement|Needs triage"
 msgstr ""
 
 msgid "VulnerabilityManagement|Something went wrong while trying to delete the comment. Please try again later."

@@ -88,12 +88,16 @@ RSpec.describe API::NpmPackages do
         it_behaves_like 'returning the npm package info'
 
         context 'with unknown package' do
+          subject { get api("/packages/npm/unknown") }
+
           it 'returns a redirect' do
-            get api("/packages/npm/unknown")
+            subject
 
             expect(response).to have_gitlab_http_status(:found)
             expect(response.headers['Location']).to eq('https://registry.npmjs.org/unknown')
           end
+
+          it_behaves_like 'a gitlab tracking event', described_class.name, 'npm_request_forward'
         end
       end
 

@@ -11,9 +11,16 @@ export const getSnippetMixin = {
           ids: this.snippetGid,
         };
       },
-      update: data => data.snippets.edges[0]?.node,
+      update: data => {
+        const res = data.snippets.nodes[0];
+        if (res) {
+          res.blobs = res.blobs.nodes;
+        }
+
+        return res;
+      },
       result(res) {
-        this.blobs = res.data.snippets.edges[0]?.node?.blobs || blobsDefault;
+        this.blobs = res.data.snippets.nodes[0]?.blobs || blobsDefault;
         if (this.onSnippetFetch) {
           this.onSnippetFetch(res);
         }

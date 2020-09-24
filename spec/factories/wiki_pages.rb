@@ -9,7 +9,7 @@ FactoryBot.define do
       content { 'Content for wiki page' }
       format { :markdown }
       message { nil }
-      project { association(:project, :wiki_repo) }
+      project { association(:project) }
       container { project }
       wiki { association(:wiki, container: container) }
       page { OpenStruct.new(url_path: title) }
@@ -18,6 +18,7 @@ FactoryBot.define do
     initialize_with do
       new(wiki, page).tap do |page|
         page.attributes = {
+          slug: title&.tr(' ', '-'),
           title: title,
           content: content,
           format: format

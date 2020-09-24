@@ -25,10 +25,12 @@ if app.config.public_file_server.enabled
     }
 
     if Rails.env.development?
+      # /assets are proxied through a Rails middlware to the Webpack
+      # server, so we have to use the local Rails settings.
       settings.merge!(
         host: Gitlab.config.gitlab.host,
         port: Gitlab.config.gitlab.port,
-        https: false
+        https: Gitlab.config.gitlab.https
       )
       app.config.middleware.insert_before(
         Gitlab::Middleware::Static,

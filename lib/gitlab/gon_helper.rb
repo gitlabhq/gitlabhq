@@ -49,6 +49,7 @@ module Gitlab
       push_frontend_feature_flag(:snippets_edit_vue, default_enabled: true)
       push_frontend_feature_flag(:webperf_experiment, default_enabled: false)
       push_frontend_feature_flag(:snippets_binary_blob, default_enabled: false)
+      push_frontend_feature_flag(:usage_data_api, default_enabled: false)
 
       # Startup CSS feature is a special one as it can be enabled by means of cookies and params
       gon.push({ features: { 'startupCss' => use_startup_css? } }, true)

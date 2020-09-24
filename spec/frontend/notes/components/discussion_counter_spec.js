@@ -1,6 +1,6 @@
 import Vuex from 'vuex';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
-import { GlIcon } from '@gitlab/ui';
+import { GlButton } from '@gitlab/ui';
 import notesModule from '~/notes/stores/modules';
 import DiscussionCounter from '~/notes/components/discussion_counter.vue';
 import { noteableDataMock, discussionMock, notesDataMock, userDataMock } from '../mock_data';
@@ -9,6 +9,7 @@ import * as types from '~/notes/stores/mutation_types';
 describe('DiscussionCounter component', () => {
   let store;
   let wrapper;
+  let setExpandDiscussionsFn;
   const localVue = createLocalVue();
 
   localVue.use(Vuex);
@@ -16,6 +17,7 @@ describe('DiscussionCounter component', () => {
   beforeEach(() => {
     window.mrTabs = {};
     const { state, getters, mutations, actions } = notesModule();
+    setExpandDiscussionsFn = jest.fn().mockImplementation(actions.setExpandDiscussions);
 
     store = new Vuex.Store({
       state: {
@@ -24,7 +26,10 @@ describe('DiscussionCounter component', () => {
       },
       getters,
       mutations,
-      actions,
+      actions: {
+        ...actions,
+        setExpandDiscussions: setExpandDiscussionsFn,
+      },
     });
     store.dispatch('setNoteableData', {
       ...noteableDataMock,
@@ -84,7 +89,7 @@ describe('DiscussionCounter component', () => {
       wrapper = shallowMount(DiscussionCounter, { store, localVue });
 
       expect(wrapper.find(`.is-active`).exists()).toBe(isActive);
-      expect(wrapper.findAll('[role="group"').length).toBe(groupLength);
+      expect(wrapper.findAll(GlButton)).toHaveLength(groupLength);
     });
   });
 
@@ -103,23 +108,22 @@ describe('DiscussionCounter component', () => {
     it('calls button handler when clicked', () => {
       updateStoreWithExpanded(true);
 
-      wrapper.setMethods({ handleExpandDiscussions: jest.fn() });
-      toggleAllButton.trigger('click');
+      toggleAllButton.vm.$emit('click');
 
-      expect(wrapper.vm.handleExpandDiscussions).toHaveBeenCalledTimes(1);
+      expect(setExpandDiscussionsFn).toHaveBeenCalledTimes(1);
     });
 
     it('collapses all discussions if expanded', () => {
       updateStoreWithExpanded(true);
 
       expect(wrapper.vm.allExpanded).toBe(true);
-      expect(toggleAllButton.find(GlIcon).props().name).toBe('angle-up');
+      expect(toggleAllButton.props('icon')).toBe('angle-up');
 
-      toggleAllButton.trigger('click');
+      toggleAllButton.vm.$emit('click');
 
       return wrapper.vm.$nextTick().then(() => {
         expect(wrapper.vm.allExpanded).toBe(false);
-        expect(toggleAllButton.find(GlIcon).props().name).toBe('angle-down');
+        expect(toggleAllButton.props('icon')).toBe('angle-down');
       });
     });
 
@@ -127,13 +131,13 @@ describe('DiscussionCounter component', () => {
       updateStoreWithExpanded(false);
 
       expect(wrapper.vm.allExpanded).toBe(false);
-      expect(toggleAllButton.find(GlIcon).props().name).toBe('angle-down');
+      expect(toggleAllButton.props('icon')).toBe('angle-down');
 
-      toggleAllButton.trigger('click');
+      toggleAllButton.vm.$emit('click');
 
       return wrapper.vm.$nextTick().then(() => {
         expect(wrapper.vm.allExpanded).toBe(true);
-        expect(toggleAllButton.find(GlIcon).props().name).toBe('angle-up');
+        expect(toggleAllButton.props('icon')).toBe('angle-up');
       });
     });
   });

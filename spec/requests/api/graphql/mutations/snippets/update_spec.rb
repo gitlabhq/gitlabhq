@@ -73,7 +73,6 @@ RSpec.describe 'Updating a Snippet' do
         aggregate_failures do
           expect(blob_to_update.data).to eq updated_content
           expect(blob_to_delete).to be_nil
-          expect(blob_in_mutation_response(updated_file)['plainData']).to match(updated_content)
           expect(mutation_response['snippet']['title']).to eq(updated_title)
           expect(mutation_response['snippet']['description']).to eq(updated_description)
           expect(mutation_response['snippet']['visibilityLevel']).to eq('public')
@@ -100,16 +99,11 @@ RSpec.describe 'Updating a Snippet' do
           aggregate_failures do
             expect(blob_at(updated_file).data).to eq blob_to_update.data
             expect(blob_at(deleted_file).data).to eq blob_to_delete.data
-            expect(blob_in_mutation_response(deleted_file)['plainData']).not_to be_nil
             expect(mutation_response['snippet']['title']).to eq(original_title)
             expect(mutation_response['snippet']['description']).to eq(original_description)
             expect(mutation_response['snippet']['visibilityLevel']).to eq('private')
           end
         end
-      end
-
-      def blob_in_mutation_response(filename)
-        mutation_response['snippet']['blobs'].select { |blob| blob['name'] == filename }[0]
       end
 
       def blob_at(filename)

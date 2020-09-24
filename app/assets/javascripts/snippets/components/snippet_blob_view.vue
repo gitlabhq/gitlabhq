@@ -23,6 +23,7 @@ export default {
         return {
           ids: this.snippet.id,
           rich: this.activeViewerType === RICH_BLOB_VIEWER,
+          paths: [this.blob.path],
         };
       },
       update(data) {
@@ -79,8 +80,10 @@ export default {
     },
     onContentUpdate(data) {
       const { path: blobPath } = this.blob;
-      const { blobs } = data.snippets.edges[0].node;
-      const updatedBlobData = blobs.find(blob => blob.path === blobPath);
+      const {
+        blobs: { nodes: dataBlobs },
+      } = data.snippets.nodes[0];
+      const updatedBlobData = dataBlobs.find(blob => blob.path === blobPath);
       return updatedBlobData.richData || updatedBlobData.plainData;
     },
   },

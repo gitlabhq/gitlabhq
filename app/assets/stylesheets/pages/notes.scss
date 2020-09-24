@@ -858,68 +858,28 @@ $note-form-margin-left: 72px;
 }
 
 .line-resolve-all-container {
-  margin: $gl-padding-4;
-
   > div {
     white-space: nowrap;
   }
 
-  .discussion-next-btn {
-    border-radius: 0;
-  }
-
-  .toggle-all-discussions-btn {
+  .btn-group .btn:first-child {
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
-  }
-
-  .btn {
-    line-height: $gl-line-height;
-
-    svg {
-      fill: $gray-500;
-    }
-
-    &.discussion-create-issue-btn {
-      border-radius: 0;
-      border-right: 0;
-
-      a {
-        padding: 0;
-        line-height: 0;
-
-        &:hover {
-          text-decoration: none;
-          border: 0;
-        }
-      }
-    }
-
-    &.discussion-next-btn {
-      border-right: 0;
-    }
   }
 }
 
 .line-resolve-all {
   vertical-align: middle;
   display: inline-block;
-  padding: $gl-padding-4 10px;
+  padding: $gl-padding-8 $gl-padding-12;
   background-color: $gray-light;
   border: 1px solid $border-color;
+  border-right: 0;
   border-radius: $border-radius-default;
-  font-size: $gl-btn-small-font-size;
   border-top-right-radius: 0;
   border-bottom-right-radius: 0;
-  border-right: 0;
-
-  .line-resolve-btn {
-    color: $gray-500;
-
-    svg {
-      vertical-align: text-top;
-    }
-  }
+  font-size: $gl-font-size;
+  line-height: 1rem;
 
   @include media-breakpoint-down(xs) {
     flex: 1;

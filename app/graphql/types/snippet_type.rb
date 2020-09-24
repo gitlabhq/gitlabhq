@@ -69,10 +69,11 @@ module Types
           null: false,
           deprecated: { reason: 'Use `blobs`', milestone: '13.3' }
 
-    field :blobs, type: [Types::Snippets::BlobType],
+    field :blobs, type: Types::Snippets::BlobType.connection_type,
           description: 'Snippet blobs',
           calls_gitaly: true,
-          null: false
+          null: true,
+          resolver: Resolvers::Snippets::BlobsResolver
 
     field :ssh_url_to_repo, type: GraphQL::STRING_TYPE,
           description: 'SSH URL to the snippet repository',

@@ -160,7 +160,7 @@ export default {
       });
     },
     displayMemberBadgeText() {
-      return sprintf(__('This user is a %{access} of the %{name} project.'), {
+      return sprintf(__('This user has the %{access} role in the %{name} project.'), {
         access: this.accessLevel.toLowerCase(),
         name: this.projectName,
       });

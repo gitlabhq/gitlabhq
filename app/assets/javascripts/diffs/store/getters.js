@@ -46,15 +46,24 @@ export const diffHasAllCollapsedDiscussions = (state, getters) => diff => {
  * @param {Object} diff
  * @returns {Boolean}
  */
-export const diffHasExpandedDiscussions = (state, getters) => diff => {
-  const discussions = getters.getDiffFileDiscussions(diff);
+export const diffHasExpandedDiscussions = state => diff => {
+  const lines = {
+    [INLINE_DIFF_VIEW_TYPE]: diff.highlighted_diff_lines || [],
+    [PARALLEL_DIFF_VIEW_TYPE]: (diff.parallel_diff_lines || []).reduce((acc, line) => {
+      if (line.left) {
+        acc.push(line.left);
+      }
 
-  return (
-    (discussions &&
-      discussions.length &&
-      discussions.find(discussion => discussion.expanded) !== undefined) ||
-    false
-  );
+      if (line.right) {
+        acc.push(line.right);
+      }
+
+      return acc;
+    }, []),
+  };
+  return lines[window.gon?.features?.unifiedDiffLines ? 'inline' : state.diffViewType]
+    .filter(l => l.discussions.length >= 1)
+    .some(l => l.discussionsExpanded);
 };
 
 /**
@@ -62,8 +71,25 @@ export const diffHasExpandedDiscussions = (state, getters) => diff => {
  * @param {Boolean} diff
  * @returns {Boolean}
  */
-export const diffHasDiscussions = (state, getters) => diff =>
-  getters.getDiffFileDiscussions(diff).length > 0;
+export const diffHasDiscussions = state => diff => {
+  const lines = {
+    [INLINE_DIFF_VIEW_TYPE]: diff.highlighted_diff_lines || [],
+    [PARALLEL_DIFF_VIEW_TYPE]: (diff.parallel_diff_lines || []).reduce((acc, line) => {
+      if (line.left) {
+        acc.push(line.left);
+      }
+
+      if (line.right) {
+        acc.push(line.right);
+      }
+
+      return acc;
+    }, []),
+  };
+  return lines[window.gon?.features?.unifiedDiffLines ? 'inline' : state.diffViewType].some(
+    l => l.discussions.length >= 1,
+  );
+};
 
 /**
  * Returns an array with the discussions of the given diff

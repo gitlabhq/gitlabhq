@@ -17,14 +17,14 @@ For a full list of reference architectures, see
 
 | Service                                  | Nodes  | Configuration           | GCP            | AWS          | Azure   |
 |------------------------------------------|--------|-------------------------|----------------|--------------|---------|
-| Load balancer                            | 1      | 2 vCPU, 1.8GB memory    | n1-highcpu-2   | c5.large     | F2s v2  |
-| PostgreSQL                               | 1      | 2 vCPU, 7.5GB memory    | n1-standard-2  | m5.large     | D2s v3  |
-| Redis                                    | 1      | 1 vCPU, 3.75GB memory   | n1-standard-1  | m5.large     | D2s v3  |
-| Gitaly                                   | 1      | 4 vCPU, 15GB memory     | n1-standard-4  | m5.xlarge    | D4s v3  |
-| GitLab Rails                             | 2      | 8 vCPU, 7.2GB memory    | n1-highcpu-8   | c5.2xlarge   | F8s v2  |
-| Monitoring node                          | 1      | 2 vCPU, 1.8GB memory    | n1-highcpu-2   | c5.large     | F2s v2  |
+| Load balancer                            | 1      | 2 vCPU, 1.8 GB memory   | n1-highcpu-2   | c5.large     | F2s v2  |
+| PostgreSQL                               | 1      | 2 vCPU, 7.5 GB memory   | n1-standard-2  | m5.large     | D2s v3  |
+| Redis                                    | 1      | 1 vCPU, 3.75 GB memory  | n1-standard-1  | m5.large     | D2s v3  |
+| Gitaly                                   | 1      | 4 vCPU, 15 GB memory    | n1-standard-4  | m5.xlarge    | D4s v3  |
+| GitLab Rails                             | 2      | 8 vCPU, 7.2 GB memory   | n1-highcpu-8   | c5.2xlarge   | F8s v2  |
+| Monitoring node                          | 1      | 2 vCPU, 1.8 GB memory   | n1-highcpu-2   | c5.large     | F2s v2  |
 | Object storage                           | n/a    | n/a                     | n/a            | n/a          | n/a     |
-| NFS server (optional, not recommended)   | 1      | 4 vCPU, 3.6GB memory    | n1-highcpu-4   | c5.xlarge    | F4s v2  |
+| NFS server (optional, not recommended)   | 1      | 4 vCPU, 3.6 GB memory   | n1-highcpu-4   | c5.xlarge    | F4s v2  |
 
 The Google Cloud Platform (GCP) architectures were built and tested using the
 [Intel Xeon E5 v3 (Haswell)](https://cloud.google.com/compute/docs/cpu-platforms)

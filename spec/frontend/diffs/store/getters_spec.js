@@ -139,50 +139,74 @@ describe('Diffs Module Getters', () => {
 
   describe('diffHasExpandedDiscussions', () => {
     it('returns true when one of the discussions is expanded', () => {
-      discussionMock1.expanded = false;
+      const diffFile = {
+        parallel_diff_lines: [],
+        highlighted_diff_lines: [
+          {
+            discussions: [discussionMock, discussionMock],
+            discussionsExpanded: true,
+          },
+        ],
+      };
 
-      expect(
-        getters.diffHasExpandedDiscussions(localState, {
-          getDiffFileDiscussions: () => [discussionMock, discussionMock],
-        })(diffFileMock),
-      ).toEqual(true);
+      expect(getters.diffHasExpandedDiscussions(localState)(diffFile)).toEqual(true);
     });
 
     it('returns false when there are no discussions', () => {
-      expect(
-        getters.diffHasExpandedDiscussions(localState, { getDiffFileDiscussions: () => [] })(
-          diffFileMock,
-        ),
-      ).toEqual(false);
+      const diffFile = {
+        parallel_diff_lines: [],
+        highlighted_diff_lines: [
+          {
+            discussions: [],
+            discussionsExpanded: true,
+          },
+        ],
+      };
+      expect(getters.diffHasExpandedDiscussions(localState)(diffFile)).toEqual(false);
     });
 
     it('returns false when no discussion is expanded', () => {
-      discussionMock.expanded = false;
-      discussionMock1.expanded = false;
+      const diffFile = {
+        parallel_diff_lines: [],
+        highlighted_diff_lines: [
+          {
+            discussions: [discussionMock, discussionMock],
+            discussionsExpanded: false,
+          },
+        ],
+      };
 
-      expect(
-        getters.diffHasExpandedDiscussions(localState, {
-          getDiffFileDiscussions: () => [discussionMock, discussionMock1],
-        })(diffFileMock),
-      ).toEqual(false);
+      expect(getters.diffHasExpandedDiscussions(localState)(diffFile)).toEqual(false);
     });
   });
 
   describe('diffHasDiscussions', () => {
     it('returns true when getDiffFileDiscussions returns discussions', () => {
-      expect(
-        getters.diffHasDiscussions(localState, {
-          getDiffFileDiscussions: () => [discussionMock],
-        })(diffFileMock),
-      ).toEqual(true);
+      const diffFile = {
+        parallel_diff_lines: [],
+        highlighted_diff_lines: [
+          {
+            discussions: [discussionMock, discussionMock],
+            discussionsExpanded: false,
+          },
+        ],
+      };
+
+      expect(getters.diffHasDiscussions(localState)(diffFile)).toEqual(true);
     });
 
     it('returns false when getDiffFileDiscussions returns no discussions', () => {
-      expect(
-        getters.diffHasDiscussions(localState, {
-          getDiffFileDiscussions: () => [],
-        })(diffFileMock),
-      ).toEqual(false);
+      const diffFile = {
+        parallel_diff_lines: [],
+        highlighted_diff_lines: [
+          {
+            discussions: [],
+            discussionsExpanded: false,
+          },
+        ],
+      };
+
+      expect(getters.diffHasDiscussions(localState)(diffFile)).toEqual(false);
     });
   });
 
