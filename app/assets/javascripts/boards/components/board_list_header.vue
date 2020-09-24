@@ -188,7 +188,7 @@ export default {
     <h3
       :class="{
         'user-can-drag': !disabled && !list.preset,
-        'gl-py-3 gl-h-full': !list.isExpanded && !isSwimlanesHeader,
+        'gl-py-3 gl-h-full!': !list.isExpanded && !isSwimlanesHeader,
         'gl-border-b-0': !list.isExpanded || isSwimlanesHeader,
         'gl-py-2': !list.isExpanded && isSwimlanesHeader,
       }"

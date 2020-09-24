@@ -11,6 +11,9 @@
     "name": {
       "type": "string"
     },
+    "conan_package_name": {
+      "type": "string"
+    },
     "version": {
       "type": "string"
     },

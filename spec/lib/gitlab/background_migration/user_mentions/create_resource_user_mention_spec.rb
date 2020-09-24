@@ -74,14 +74,14 @@ RSpec.describe Gitlab::BackgroundMigration::UserMentions::CreateResourceUserMent
       let(:user_mentions) { merge_request_user_mentions }
       let(:resource) { merge_request }
 
-      it_behaves_like 'resource mentions migration', MigrateMergeRequestMentionsToDb, MergeRequest
+      it_behaves_like 'resource mentions migration', MigrateMergeRequestMentionsToDb, 'MergeRequest'
 
       context 'when FF disabled' do
         before do
           stub_feature_flags(migrate_user_mentions: false)
         end
 
-        it_behaves_like 'resource migration not run', MigrateMergeRequestMentionsToDb, MergeRequest
+        it_behaves_like 'resource migration not run', MigrateMergeRequestMentionsToDb, 'MergeRequest'
       end
     end
 
@@ -103,14 +103,14 @@ RSpec.describe Gitlab::BackgroundMigration::UserMentions::CreateResourceUserMent
       let(:user_mentions) { commit_user_mentions }
       let(:resource) { commit }
 
-      it_behaves_like 'resource notes mentions migration', MigrateCommitNotesMentionsToDb, Commit
+      it_behaves_like 'resource notes mentions migration', MigrateCommitNotesMentionsToDb, 'Commit'
 
       context 'when FF disabled' do
         before do
           stub_feature_flags(migrate_user_mentions: false)
         end
 
-        it_behaves_like 'resource notes migration not run', MigrateCommitNotesMentionsToDb, Commit
+        it_behaves_like 'resource notes migration not run', MigrateCommitNotesMentionsToDb, 'Commit'
       end
     end
   end

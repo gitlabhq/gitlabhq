@@ -89,6 +89,13 @@ module StubObjectStorage
                                  **params)
   end
 
+  def stub_pages_object_storage(uploader = described_class, **params)
+    stub_object_storage_uploader(config: Gitlab.config.pages.object_store,
+                                 uploader: uploader,
+                                 remote_directory: 'pages',
+                                 **params)
+  end
+
   def stub_object_storage_multipart_init(endpoint, upload_id = "upload_id")
     stub_request(:post, %r{\A#{endpoint}tmp/uploads/[a-z0-9-]*\?uploads\z})
       .to_return status: 200, body: <<-EOS.strip_heredoc

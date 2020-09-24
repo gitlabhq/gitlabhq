@@ -14,7 +14,7 @@ but you can change the sort order by clicking the headers in the Alert Managemen
 
 The alert list displays the following information:
 
-![Alert List](./img/alert_list_v13_1.png)
+![Alert List](img/alert_list_v13_1.png)
 
 - **Search** - The alert list supports a simple free text search on the title,
   description, monitoring tool, and service fields.
@@ -31,9 +31,10 @@ The alert list displays the following information:
   - **Triggered**: No one has begun investigation.
   - **Acknowledged**: Someone is actively investigating the problem.
   - **Resolved**: No further work is required.
-  
+
 TIP: **Tip:**
-Check out a [live example](https://gitlab.com/gitlab-examples/ops/incident-setup/everyone/tanuki-inc/-/alert_management)
+Check out a live example available from the
+[`tanuki-inc` project page](https://gitlab-examples-ops-incident-setup-everyone-tanuki-inc.34.69.64.147.nip.io/)
 in GitLab to examine alerts in action.
 
 ## Enable Alerts
@@ -52,8 +53,7 @@ to view the list of alerts.
 You can install the GitLab-managed Prometheus application on your Kubernetes
 cluster. For more information, read
 [Managed Prometheus on Kubernetes](../../user/project/integrations/prometheus.md#managed-prometheus-on-kubernetes).
-When GitLab-managed Prometheus is installed, the [Alerts list](alerts.md)
-is also enabled.
+When GitLab-managed Prometheus is installed, the Alerts list is also enabled.
 
 To populate the alerts with data, read
 [GitLab-Managed Prometheus instances](../metrics/alerts.md#managed-prometheus-instances).
@@ -62,7 +62,7 @@ To populate the alerts with data, read
 
 You can configure an externally-managed Prometheus instance to send alerts
 to GitLab. To set up this configuration, read the [configuring Prometheus](../metrics/alerts.md#external-prometheus-instances) documentation. Activating the external Prometheus
-configuration also enables the [Alerts list](./alerts.md).
+configuration also enables the Alerts list.
 
 To populate the alerts with data, read
 [External Prometheus instances](../metrics/alerts.md#external-prometheus-instances).
@@ -73,9 +73,9 @@ GitLab provides the Generic Alerts endpoint so you can accept alerts from a thir
 alerts service. Read the
 [instructions for toggling generic alerts](generic_alerts.md#setting-up-generic-alerts)
 to add this option. After configuring the endpoint, the
-[Alerts list](./alerts.md) is enabled.
+Alerts list is enabled.
 
-To populate the alerts with data, read [Customizing the payload](./generic_alerts.md#customizing-the-payload) for requests to the alerts endpoint.
+To populate the alerts with data, read [Customizing the payload](generic_alerts.md#customizing-the-payload) for requests to the alerts endpoint.
 
 ### Opsgenie integration **(PREMIUM)**
 
@@ -86,7 +86,7 @@ A new way of monitoring Alerts via a GitLab integration is with
 
 NOTE: **Note:**
 If you enable the Opsgenie integration, you can't have other GitLab alert services,
-such as [Generic Alerts](./generic_alerts.md) or
+such as [Generic Alerts](generic_alerts.md) or
 Prometheus alerts, active at the same time.
 
 To enable Opsgenie integration:
@@ -108,7 +108,7 @@ Each level of alert contains a uniquely shaped and color-coded icon to help
 you identify the severity of a particular alert. These severity icons help you
 immediately identify which alerts you should prioritize investigating:
 
-![Alert Management Severity System](./img/alert_management_severity_v13_0.png)
+![Alert Management Severity System](img/alert_management_severity_v13_0.png)
 
 Alerts contain one of the following icons:
 

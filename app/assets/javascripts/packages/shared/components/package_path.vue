@@ -42,7 +42,7 @@ export default {
 </script>
 
 <template>
-  <div class="gl-display-flex gl-align-items-center">
+  <div data-qa-selector="package-path" class="gl-display-flex gl-align-items-center">
     <gl-icon data-testid="base-icon" name="project" class="gl-mx-3 gl-min-w-0" />
 
     <gl-link data-testid="root-link" class="gl-text-gray-500 gl-min-w-0" :href="`/${rootLink}`">

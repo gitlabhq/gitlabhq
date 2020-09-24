@@ -50,6 +50,19 @@ Example response:
     "version": "1.0.3",
     "package_type": "npm",
     "created_at": "2019-11-27T03:37:38.711Z"
+  },
+  {
+    "id": 3,
+    "name": "Hello/0.1@mycompany/stable",
+    "conan_package_name": "Hello",
+    "version": "0.1",
+    "package_type": "conan",
+    "_links": {
+      "web_path": "/foo/bar/-/packages/3",
+      "delete_api_path": "https://gitlab.example.com/api/v4/projects/1/packages/3"
+    },
+    "created_at": "2029-12-16T20:33:34.316Z",
+    "tags": []
   }
 ]
 ```

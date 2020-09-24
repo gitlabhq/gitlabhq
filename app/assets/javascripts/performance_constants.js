@@ -1,3 +1,6 @@
+export const PERFORMANCE_TYPE_MARK = 'mark';
+export const PERFORMANCE_TYPE_MEASURE = 'measure';
+
 //
 // SNIPPET namespace
 //

@@ -90,12 +90,17 @@ module Gitlab
         def load_dev_server_manifest
           host = ::Rails.configuration.webpack.dev_server.host
           port = ::Rails.configuration.webpack.dev_server.port
-          http = Net::HTTP.new(host, port)
-          http.use_ssl = ::Rails.configuration.webpack.dev_server.https
-          http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-          http.get(dev_server_path).body
+          scheme = ::Rails.configuration.webpack.dev_server.https ? 'https' : 'http'
+          uri = Addressable::URI.new(scheme: scheme, host: host, port: port, path: dev_server_path)
+
+          # localhost could be blocked via Gitlab::HTTP
+          response = HTTParty.get(uri.to_s, verify: false) # rubocop:disable Gitlab/HTTParty
+
+          return response.body if response.code == 200
+
+          raise "HTTP error #{response.code}"
         rescue => e
-          raise ManifestLoadError.new("Could not load manifest from webpack-dev-server at http://#{host}:#{port}#{dev_server_path} - is it running, and is stats-webpack-plugin loaded?", e)
+          raise ManifestLoadError.new("Could not load manifest from webpack-dev-server at #{uri} - is it running, and is stats-webpack-plugin loaded?", e)
         end
 
         def load_static_manifest

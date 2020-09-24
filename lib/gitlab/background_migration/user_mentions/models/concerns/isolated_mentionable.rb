@@ -36,7 +36,8 @@ module Gitlab
               if extractor
                 extractors[current_user] = extractor
               else
-                extractor = extractors[current_user] ||= ::Gitlab::ReferenceExtractor.new(project, current_user)
+                extractor = extractors[current_user] ||=
+                  Gitlab::BackgroundMigration::UserMentions::Lib::Gitlab::IsolatedReferenceExtractor.new(project, current_user)
 
                 extractor.reset_memoized_values
               end
@@ -71,7 +72,7 @@ module Gitlab
 
               mentioned_users_ids = array_to_sql(refs.mentioned_users.pluck(:id))
               mentioned_projects_ids = array_to_sql(refs.mentioned_projects.pluck(:id))
-              mentioned_groups_ids = array_to_sql(refs.mentioned_groups.pluck(:id))
+              mentioned_groups_ids = array_to_sql(refs.isolated_mentioned_groups.pluck(:id))
 
               return if mentioned_users_ids.blank? && mentioned_projects_ids.blank? && mentioned_groups_ids.blank?
 

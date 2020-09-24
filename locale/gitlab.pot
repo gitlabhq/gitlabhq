@@ -21528,6 +21528,9 @@ msgstr ""
 msgid "RepositoriesAnalytics|Test Code Coverage"
 msgstr ""
 
+msgid "RepositoriesAnalytics|There was an error fetching the projects."
+msgstr ""
+
 msgid "Repository"
 msgstr ""
 
