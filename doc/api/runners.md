@@ -271,22 +271,6 @@ Example response:
 }
 ```
 
-## Remove a runner
-
-Remove a runner.
-
-```plaintext
-DELETE /runners/:id
-```
-
-| Attribute | Type    | Required | Description         |
-|-----------|---------|----------|---------------------|
-| `id`      | integer | yes      | The ID of a runner  |
-
-```shell
-curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/runners/6"
-```
-
 ## List runner's jobs
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/15432) in GitLab 10.3.
@@ -466,7 +450,7 @@ Example response:
 
 Disable a specific runner from the project. It works only if the project isn't
 the only project associated with the specified runner. If so, an error is
-returned. Use the [Remove a runner](#remove-a-runner) call instead.
+returned. Use the call to [delete a runner](#delete-a-runner) instead.
 
 ```plaintext
 DELETE /projects/:id/runners/:runner_id
@@ -580,9 +564,32 @@ Example response:
 }
 ```
 
-## Delete a registered runner
+## Delete a runner
 
-Deletes a registered runner.
+There are two ways to delete a runner:
+
+- By specifying the runner ID.
+- By specifying the runner's authentication token.
+
+### Delete a runner by ID
+
+To delete the runner by ID, use your access token with the runner's ID:
+
+```plaintext
+DELETE /runners/:id
+```
+
+| Attribute   | Type    | Required | Description         |
+|-------------|---------|----------|---------------------|
+| `id`        | integer | yes      | The ID of a runner. The ID is visible in the UI under **Settings > CI/CD**. Expand **Runners**, and below the **Remove Runner** button is an ID preceded by the pound sign, for example, `#6`. |
+
+```shell
+curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/runners/6"
+```
+
+### Delete a runner by authentication token
+
+To delete the runner by using its authentication token:
 
 ```plaintext
 DELETE /runners
@@ -590,7 +597,7 @@ DELETE /runners
 
 | Attribute   | Type    | Required | Description         |
 |-------------|---------|----------|---------------------|
-| `token`     | string  | yes      | Runner's [authentication token](#registration-and-authentication-tokens).  |
+| `token`     | string  | yes      | The runner's [authentication token](#registration-and-authentication-tokens). |
 
 ```shell
 curl --request DELETE "https://gitlab.example.com/api/v4/runners" --form "token=<authentication_token>"

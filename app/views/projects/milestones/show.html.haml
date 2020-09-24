@@ -2,6 +2,7 @@
 - breadcrumb_title @milestone.title
 - page_title       @milestone.title, _('Milestones')
 - page_description @milestone.description
+= stylesheet_link_tag 'page_bundles/milestone'
 
 = render 'shared/milestones/header', milestone: @milestone
 = render 'shared/milestones/description', milestone: @milestone
