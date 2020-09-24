@@ -1,7 +1,7 @@
 ---
 name: go_proxy_disable_gomod_validation
-introduced_by_url: 
-rollout_issue_url: 
-group: 
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/34338
+rollout_issue_url:
+group: group::package
 type: development
 default_enabled: false

@@ -9,9 +9,9 @@
   -# to the first note position when we click on a badge diff discussion
   %ul.notes{ id: "discussion_#{discussion.id}", data: { discussion_id: discussion.id, position: discussion.notes[0].position.to_json } }
     - if discussion.try(:on_image?) && show_toggle
-      %button.diff-notes-collapse.js-diff-notes-toggle{ type: 'button' }
+      %button.gl-button.diff-notes-collapse.js-diff-notes-toggle{ type: 'button' }
         = sprite_icon('collapse', css_class: 'collapse-icon')
-      %button.btn-transparent.badge.badge-pill.js-diff-notes-toggle{ type: 'button' }
+      %button.gl-button.btn-transparent.badge.badge-pill.js-diff-notes-toggle{ type: 'button' }
         = badge_counter
     = render partial: "shared/notes/note", collection: discussion.notes, as: :note, locals: { badge_counter: badge_counter, show_image_comment_badge: show_image_comment_badge }
 

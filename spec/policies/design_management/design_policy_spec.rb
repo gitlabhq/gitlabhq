@@ -160,20 +160,6 @@ RSpec.describe DesignManagement::DesignPolicy do
       end
     end
 
-    context "when the issue is locked" do
-      let_it_be(:issue) { create(:issue, :locked, project: project) }
-      let(:current_user) { owner }
-
-      it_behaves_like "read-only design abilities"
-    end
-
-    context "when the issue has moved" do
-      let_it_be(:issue) { create(:issue, project: project, moved_to: create(:issue)) }
-      let(:current_user) { owner }
-
-      it_behaves_like "read-only design abilities"
-    end
-
     context "when the project is archived" do
       let_it_be(:project) { create(:project, :public, :archived) }
       let_it_be(:issue) { create(:issue, project: project) }

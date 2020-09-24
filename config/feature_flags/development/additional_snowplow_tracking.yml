@@ -1,7 +1,6 @@
----
 name: additional_snowplow_tracking
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/12088
 rollout_issue_url:
-group: group::telemetry
+group: group::product_analytics
 type: development
 default_enabled: false

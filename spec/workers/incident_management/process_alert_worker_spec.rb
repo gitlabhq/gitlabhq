@@ -9,7 +9,6 @@ RSpec.describe IncidentManagement::ProcessAlertWorker do
   describe '#perform' do
     let_it_be(:started_at) { Time.now.rfc3339 }
     let_it_be(:payload) { { 'title' => 'title', 'start_time' => started_at } }
-    let_it_be(:parsed_payload) { Gitlab::Alerting::NotificationPayloadParser.call(payload, project) }
     let_it_be(:alert) { create(:alert_management_alert, project: project, payload: payload, started_at: started_at) }
     let(:created_issue) { Issue.last! }
 
@@ -68,7 +67,6 @@ RSpec.describe IncidentManagement::ProcessAlertWorker do
 
       context 'prometheus alert' do
         let_it_be(:alert) { create(:alert_management_alert, :prometheus, project: project, started_at: started_at) }
-        let_it_be(:parsed_payload) { alert.payload }
 
         it_behaves_like 'creates issue successfully'
       end

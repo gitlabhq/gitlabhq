@@ -329,7 +329,7 @@ group :metrics do
   gem 'method_source', '~> 1.0', require: false
 
   # Prometheus
-  gem 'prometheus-client-mmap', '~> 0.11.0'
+  gem 'prometheus-client-mmap', '~> 0.12.0'
   gem 'raindrops', '~> 0.18'
 end
 

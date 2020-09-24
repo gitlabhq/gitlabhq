@@ -81,6 +81,32 @@ module SystemNotes
       create_note(NoteSummary.new(noteable, project, author, body, action: 'assignee'))
     end
 
+    # Called when the reviewers of an issuable is changed or removed
+    #
+    # reviewers - Users being requested to review, or nil
+    #
+    # Example Note text:
+    #
+    #   "requested review from @user1 and @user2"
+    #
+    #   "requested review from @user1, @user2 and @user3 and removed review request for @user4 and @user5"
+    #
+    # Returns the created Note object
+    def change_issuable_reviewers(old_reviewers)
+      unassigned_users = old_reviewers - noteable.reviewers
+      added_users = noteable.reviewers - old_reviewers
+      text_parts = []
+
+      Gitlab::I18n.with_default_locale do
+        text_parts << "requested review from #{added_users.map(&:to_reference).to_sentence}" if added_users.any?
+        text_parts << "removed review request for #{unassigned_users.map(&:to_reference).to_sentence}" if unassigned_users.any?
+      end
+
+      body = text_parts.join(' and ')
+
+      create_note(NoteSummary.new(noteable, project, author, body, action: 'reviewer'))
+    end
+
     # Called when the title of a Noteable is changed
     #
     # old_title - Previous String title

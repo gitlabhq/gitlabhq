@@ -1,7 +1,7 @@
 ---
 name: drop_license_management_artifact
-introduced_by_url: 
-rollout_issue_url: 
-group: 
+introduced_by_url:
+rollout_issue_url:
+group: composition_analysis
 type: development
 default_enabled: true

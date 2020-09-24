@@ -73,8 +73,8 @@ RSpec.describe Gitlab::Experimentation do
       subject { controller.experiment_enabled?(:test_experiment) }
 
       context 'cookie is not present' do
-        it 'calls Gitlab::Experimentation.enabled_for_user? with the name of the experiment and an experimentation_subject_index of nil' do
-          expect(Gitlab::Experimentation).to receive(:enabled_for_user?).with(:test_experiment, nil)
+        it 'calls Gitlab::Experimentation.enabled_for_value? with the name of the experiment and an experimentation_subject_index of nil' do
+          expect(Gitlab::Experimentation).to receive(:enabled_for_value?).with(:test_experiment, nil)
           controller.experiment_enabled?(:test_experiment)
         end
       end
@@ -85,22 +85,22 @@ RSpec.describe Gitlab::Experimentation do
           get :index
         end
 
-        it 'calls Gitlab::Experimentation.enabled_for_user? with the name of the experiment and an experimentation_subject_index of the modulo 100 of the hex value of the uuid' do
+        it 'calls Gitlab::Experimentation.enabled_for_value? with the name of the experiment and an experimentation_subject_index of the modulo 100 of the hex value of the uuid' do
           # 'abcd1234'.hex % 100 = 76
-          expect(Gitlab::Experimentation).to receive(:enabled_for_user?).with(:test_experiment, 76)
+          expect(Gitlab::Experimentation).to receive(:enabled_for_value?).with(:test_experiment, 76)
           controller.experiment_enabled?(:test_experiment)
         end
       end
 
       it 'returns true when DNT: 0 is set in the request' do
-        allow(Gitlab::Experimentation).to receive(:enabled_for_user?) { true }
+        allow(Gitlab::Experimentation).to receive(:enabled_for_value?) { true }
         controller.request.headers['DNT'] = '0'
 
         is_expected.to be_truthy
       end
 
       it 'returns false when DNT: 1 is set in the request' do
-        allow(Gitlab::Experimentation).to receive(:enabled_for_user?) { true }
+        allow(Gitlab::Experimentation).to receive(:enabled_for_value?) { true }
         controller.request.headers['DNT'] = '1'
 
         is_expected.to be_falsy
@@ -336,8 +336,8 @@ RSpec.describe Gitlab::Experimentation do
     end
   end
 
-  describe '.enabled_for_user?' do
-    subject { described_class.enabled_for_user?(:test_experiment, experimentation_subject_index) }
+  describe '.enabled_for_value?' do
+    subject { described_class.enabled_for_value?(:test_experiment, experimentation_subject_index) }
 
     let(:experimentation_subject_index) { 9 }
 
@@ -374,6 +374,34 @@ RSpec.describe Gitlab::Experimentation do
 
           it { is_expected.to be_falsey }
         end
+      end
+    end
+  end
+
+  describe '.enabled_for_attribute?' do
+    subject { described_class.enabled_for_attribute?(:test_experiment, attribute) }
+
+    let(:attribute) { 'abcd' } # Digest::SHA1.hexdigest('abcd').hex % 100 = 7
+
+    context 'experiment is disabled' do
+      before do
+        allow(described_class).to receive(:enabled?).and_return(false)
+      end
+
+      it { is_expected.to be false }
+    end
+
+    context 'experiment is enabled' do
+      before do
+        allow(described_class).to receive(:enabled?).and_return(true)
+      end
+
+      it { is_expected.to be true }
+
+      context 'outside enabled ratio' do
+        let(:attribute) { 'abc' } # Digest::SHA1.hexdigest('abc').hex % 100 = 17
+
+        it { is_expected.to be false }
       end
     end
   end

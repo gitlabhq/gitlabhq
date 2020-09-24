@@ -130,6 +130,11 @@ module MergeRequests
         merge_request, merge_request.project, current_user, old_assignees)
     end
 
+    def create_reviewer_note(merge_request, old_reviewers)
+      SystemNoteService.change_issuable_reviewers(
+        merge_request, merge_request.project, current_user, old_reviewers)
+    end
+
     def create_pipeline_for(merge_request, user)
       MergeRequests::CreatePipelineService.new(project, user).execute(merge_request)
     end

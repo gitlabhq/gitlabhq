@@ -128,6 +128,65 @@ RSpec.describe ::SystemNotes::IssuablesService do
     end
   end
 
+  describe '#change_issuable_reviewers' do
+    subject { service.change_issuable_reviewers([reviewer]) }
+
+    let_it_be(:noteable) { create(:merge_request, :simple, source_project: project) }
+    let_it_be(:reviewer) { create(:user) }
+    let_it_be(:reviewer1) { create(:user) }
+    let_it_be(:reviewer2) { create(:user) }
+    let_it_be(:reviewer3) { create(:user) }
+
+    it_behaves_like 'a system note' do
+      let(:action) { 'reviewer' }
+    end
+
+    def build_note(old_reviewers, new_reviewers)
+      noteable.reviewers = new_reviewers
+      service.change_issuable_reviewers(old_reviewers).note
+    end
+
+    it 'builds a correct phrase when a reviewer is added to a non-assigned merge request' do
+      expect(build_note([], [reviewer1])).to eq "requested review from @#{reviewer1.username}"
+    end
+
+    it 'builds a correct phrase when reviewer is removed' do
+      expect(build_note([reviewer], [])).to eq "removed review request for @#{reviewer.username}"
+    end
+
+    it 'builds a correct phrase when reviewers changed' do
+      expect(build_note([reviewer1], [reviewer2])).to(
+        eq("requested review from @#{reviewer2.username} and removed review request for @#{reviewer1.username}")
+      )
+    end
+
+    it 'builds a correct phrase when three reviewers removed and one added' do
+      expect(build_note([reviewer, reviewer1, reviewer2], [reviewer3])).to(
+        eq("requested review from @#{reviewer3.username} and removed review request for @#{reviewer.username}, @#{reviewer1.username}, and @#{reviewer2.username}")
+      )
+    end
+
+    it 'builds a correct phrase when one reviewer is changed from a set' do
+      expect(build_note([reviewer, reviewer1], [reviewer, reviewer2])).to(
+        eq("requested review from @#{reviewer2.username} and removed review request for @#{reviewer1.username}")
+      )
+    end
+
+    it 'builds a correct phrase when one reviewer removed from a set' do
+      expect(build_note([reviewer, reviewer1, reviewer2], [reviewer, reviewer1])).to(
+        eq( "removed review request for @#{reviewer2.username}")
+      )
+    end
+
+    it 'builds a correct phrase when the locale is different' do
+      Gitlab::I18n.with_locale('pt-BR') do
+        expect(build_note([reviewer, reviewer1, reviewer2], [reviewer3])).to(
+          eq("requested review from @#{reviewer3.username} and removed review request for @#{reviewer.username}, @#{reviewer1.username}, and @#{reviewer2.username}")
+        )
+      end
+    end
+  end
+
   describe '#change_status' do
     subject { service.change_status(status, source) }
 

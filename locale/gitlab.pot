@@ -29195,9 +29195,6 @@ msgstr ""
 msgid "You can test your .gitlab-ci.yml in %{linkStart}CI Lint%{linkEnd}."
 msgstr ""
 
-msgid "You can try again using %{begin_link}basic search%{end_link}"
-msgstr ""
-
 msgid "You cannot access the raw file. Please wait a minute."
 msgstr ""
 

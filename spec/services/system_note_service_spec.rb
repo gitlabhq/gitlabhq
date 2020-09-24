@@ -64,6 +64,18 @@ RSpec.describe SystemNoteService do
     end
   end
 
+  describe '.change_issuable_reviewers' do
+    let(:reviewers) { [double, double] }
+
+    it 'calls IssuableService' do
+      expect_next_instance_of(::SystemNotes::IssuablesService) do |service|
+        expect(service).to receive(:change_issuable_reviewers).with(reviewers)
+      end
+
+      described_class.change_issuable_reviewers(noteable, project, author, reviewers)
+    end
+  end
+
   describe '.close_after_error_tracking_resolve' do
     it 'calls IssuableService' do
       expect_next_instance_of(::SystemNotes::IssuablesService) do |service|

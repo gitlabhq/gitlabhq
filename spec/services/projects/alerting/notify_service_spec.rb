@@ -89,6 +89,7 @@ RSpec.describe Projects::Alerting::NotifyService do
 
           it 'creates a system note corresponding to alert creation' do
             expect { subject }.to change(Note, :count).by(1)
+            expect(Note.last.note).to include(payload_raw.fetch(:monitoring_tool))
           end
 
           context 'existing alert with same fingerprint' do
@@ -192,6 +193,11 @@ RSpec.describe Projects::Alerting::NotifyService do
                 prometheus_alert_id: nil,
                 environment_id: nil
               )
+            end
+
+            it 'creates a system note corresponding to alert creation' do
+              expect { subject }.to change(Note, :count).by(1)
+              expect(Note.last.note).to include('Generic Alert Endpoint')
             end
           end
         end

@@ -106,7 +106,7 @@ module Gitlab
 
           # determine if ordering using SIMILARITY scoring based on Gitlab::Database::SimilarityScore
           def ordering_by_similarity?(order_value)
-            order_value.to_sql.match?(/SIMILARITY\(.+\*/)
+            Gitlab::Database::SimilarityScore.order_by_similarity?(order_value)
           end
         end
       end

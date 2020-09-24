@@ -2,22 +2,6 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
-## 13.4.1 (2020-09-24)
-
-### Fixed (2 changes)
-
-- Revert required encryption on CI runner tokens. !42623
-- Allow Unleash clients to request feature flags when repository is private. !43059
-
-### Added (1 change)
-
-- Add missing fontawesome file icon classes. !43091
-
-### Other (1 change)
-
-- Notifications icon: Render empty string for custom setting. !42848
-
-
 ## 13.4.0 (2020-09-22)
 
 ### Security (2 changes, 1 of them is from the community)

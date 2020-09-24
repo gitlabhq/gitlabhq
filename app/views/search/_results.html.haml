@@ -2,7 +2,6 @@
   = render partial: "search/results/filters"
   = render partial: "search/results/empty"
   = render_if_exists 'shared/promotions/promote_advanced_search'
-  = render_if_exists 'search/form_revert_to_basic'
 - else
   .row-content-block.d-md-flex.text-left.align-items-center
     - unless @search_objects.is_a?(Kaminari::PaginatableWithoutCount)

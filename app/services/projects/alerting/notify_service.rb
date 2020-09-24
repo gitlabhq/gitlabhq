@@ -66,7 +66,10 @@ module Projects
         return unless alert.save
 
         alert.execute_services
-        SystemNoteService.create_new_alert(alert, 'Generic Alert Endpoint')
+        SystemNoteService.create_new_alert(
+          alert,
+          alert.monitoring_tool || 'Generic Alert Endpoint'
+        )
       end
 
       def process_incident_issues

@@ -56972,6 +56972,18 @@
               "description": "Title in ascending order",
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "detected_desc",
+              "description": "Detection timestamp in descending order",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "detected_asc",
+              "description": "Detection timestamp in ascending order",
+              "isDeprecated": false,
+              "deprecationReason": null
             }
           ],
           "possibleTypes": null

@@ -11,6 +11,7 @@ module SystemNoteHelper
     'closed' => 'issue-close',
     'time_tracking' => 'timer',
     'assignee' => 'user',
+    'reviewer' => 'user',
     'title' => 'pencil-square',
     'task' => 'task-done',
     'label' => 'label',

@@ -114,9 +114,6 @@ Designs with the same filename as an existing uploaded design will create a new 
 of the design, and will replace the previous version. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/34353) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.9, dropping a design on an existing uploaded design will also create a new version,
 provided the filenames are the same.
 
-Designs cannot be added if the issue has been moved, or its
-[discussion is locked](../../discussions/#lock-discussions).
-
 ### Skipped designs
 
 Designs with the same filename as an existing uploaded design _and_ whose content has not changed will be skipped.

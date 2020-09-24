@@ -1,7 +1,7 @@
 ---
 name: allow_possible_spam
-introduced_by_url: 
-rollout_issue_url: 
-group: 
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/17604
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/29830
+group: group::portfolio management
 type: development
 default_enabled: false
