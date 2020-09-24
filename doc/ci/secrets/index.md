@@ -40,7 +40,7 @@ is summarized by this diagram:
 1. HashiCorp Vault verifies the JWT.
 1. HashiCorp Vault checks the bounded claims and attaches policies.
 1. HashiCorp Vault returns the token.
-1. Runner reads secrets from the HashiCoupr Vault.
+1. Runner reads secrets from the HashiCorp Vault.
 
 NOTE: **Note:**
 Read the [Authenticating and Reading Secrets With HashiCorp Vault](../examples/authenticating-with-hashicorp-vault/index.md)

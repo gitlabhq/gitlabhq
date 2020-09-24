@@ -24,7 +24,7 @@ webcast to learn about continuous methods and how GitLab’s built-in CI can hel
 ## Overview
 
 Continuous Integration works by pushing small code chunks to your
-application's code base hosted in a Git repository, and, to every
+application's code base hosted in a Git repository, and to every
 push, run a pipeline of scripts to build, test, and validate the
 code changes before merging them into the main branch.
 

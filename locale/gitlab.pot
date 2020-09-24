@@ -77,6 +77,11 @@ msgstr ""
 msgid "\"el\" parameter is required for createInstance()"
 msgstr ""
 
+msgid "%d Approval"
+msgid_plural "%d Approvals"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%d Scanned URL"
 msgid_plural "%d Scanned URLs"
 msgstr[0] ""

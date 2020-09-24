@@ -173,7 +173,7 @@ Next, install the in-cluster component of the Agent. This example file contains 
 Kubernetes resources required for the Agent to be installed. You can modify this
 example [`resources.yml` file](#example-resourcesyml-file) in the following ways:
 
-- You can replace `gitlab-agent` with your desired namespace.
+- You can replace `gitlab-agent` with `<YOUR-DESIRED-NAMESPACE>`.
 - For the `kas-address` (Kubernetes Agent Server), you can replace
   `grpc://host.docker.internal:5005` with the address of the `kas` agent initialized
   in your Helm install.
