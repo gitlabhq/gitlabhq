@@ -19478,6 +19478,16 @@ enum VulnerabilitySort {
   Severity in descending order
   """
   severity_desc
+
+  """
+  Title in ascending order
+  """
+  title_asc
+
+  """
+  Title in descending order
+  """
+  title_desc
 }
 
 """

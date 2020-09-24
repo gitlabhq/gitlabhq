@@ -200,4 +200,10 @@ module RelativePositioning
   # Override if you want to be notified of failures to move
   def could_not_move(exception)
   end
+
+  # Override if the implementing class is not a simple application record, for
+  # example if the record is loaded from a union.
+  def reset_relative_position
+    reset.relative_position
+  end
 end

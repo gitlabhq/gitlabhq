@@ -7,7 +7,7 @@ RSpec.describe QuickActions::InterpretService do
   let_it_be(:repository_project) { create(:project, :repository) }
   let_it_be(:project) { public_project }
   let_it_be(:developer) { create(:user) }
-  let(:developer2) { create(:user) }
+  let_it_be(:developer2) { create(:user) }
   let_it_be_with_reload(:issue) { create(:issue, project: project) }
   let(:milestone) { create(:milestone, project: project, title: '9.10') }
   let(:commit) { create(:commit, project: project) }

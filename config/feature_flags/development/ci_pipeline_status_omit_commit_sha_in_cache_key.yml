@@ -1,7 +1,7 @@
 ---
 name: ci_pipeline_status_omit_commit_sha_in_cache_key
-introduced_by_url: 
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/33712
 rollout_issue_url: 
-group: 
+group: group::continuous integration
 type: development
 default_enabled: true

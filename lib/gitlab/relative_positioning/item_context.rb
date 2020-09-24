@@ -131,12 +131,12 @@ module Gitlab
 
       def shift_left
         move_sequence_before(true)
-        object.reset
+        object.reset_relative_position
       end
 
       def shift_right
         move_sequence_after(true)
-        object.reset
+        object.reset_relative_position
       end
 
       def create_space_left

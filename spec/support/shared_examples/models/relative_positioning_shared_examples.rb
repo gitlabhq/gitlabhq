@@ -31,6 +31,41 @@ RSpec.shared_examples 'a class that supports relative positioning' do
     end
   end
 
+  def as_item(item)
+    item # Override to perform a transformation, if necessary
+  end
+
+  def as_items(items)
+    items.map { |item| as_item(item) }
+  end
+
+  describe '#scoped_items' do
+    it 'includes all items with the same scope' do
+      scope = as_items([item1, item2, new_item, create_item])
+      irrelevant = create(factory, {}) # This should not share the scope
+      context = RelativePositioning.mover.context(item1)
+
+      same_scope = as_items(context.scoped_items)
+
+      expect(same_scope).to include(*scope)
+      expect(same_scope).not_to include(as_item(irrelevant))
+    end
+  end
+
+  describe '#relative_siblings' do
+    it 'includes all items with the same scope, except self' do
+      scope = as_items([item2, new_item, create_item])
+      irrelevant = create(factory, {}) # This should not share the scope
+      context = RelativePositioning.mover.context(item1)
+
+      siblings = as_items(context.relative_siblings)
+
+      expect(siblings).to include(*scope)
+      expect(siblings).not_to include(as_item(item1))
+      expect(siblings).not_to include(as_item(irrelevant))
+    end
+  end
+
   describe '.move_nulls_to_end' do
     let(:item3) { create_item }
     let(:sibling_query) { item1.class.relative_positioning_query_base(item1) }
@@ -47,7 +82,7 @@ RSpec.shared_examples 'a class that supports relative positioning' do
       expect(item1.relative_position).to be(1000)
 
       expect(sibling_query.where(relative_position: nil)).not_to exist
-      expect(sibling_query.reorder(:relative_position, :id)).to eq([item1, item2, item3])
+      expect(as_items(sibling_query.reorder(:relative_position, :id))).to eq(as_items([item1, item2, item3]))
     end
 
     it 'preserves relative position' do
@@ -120,16 +155,16 @@ RSpec.shared_examples 'a class that supports relative positioning' do
     it 'does not have an N+1 issue' do
       create_items_with_positions(10..12)
 
-      a, b, c, d, e, f = create_items_with_positions([nil, nil, nil, nil, nil, nil])
+      a, b, c, d, e, f, *xs = create_items_with_positions([nil] * 10)
 
       baseline = ActiveRecord::QueryRecorder.new do
-        described_class.move_nulls_to_end([a, e])
+        described_class.move_nulls_to_end([a, b])
       end
 
-      expect { described_class.move_nulls_to_end([b, c, d]) }
+      expect { described_class.move_nulls_to_end([c, d, e, f]) }
         .not_to exceed_query_limit(baseline)
 
-      expect { described_class.move_nulls_to_end([f]) }
+      expect { described_class.move_nulls_to_end(xs) }
         .not_to exceed_query_limit(baseline.count)
     end
   end
@@ -149,7 +184,7 @@ RSpec.shared_examples 'a class that supports relative positioning' do
 
       expect(items.sort_by(&:relative_position)).to eq(items)
       expect(sibling_query.where(relative_position: nil)).not_to exist
-      expect(sibling_query.reorder(:relative_position, :id)).to eq(items)
+      expect(as_items(sibling_query.reorder(:relative_position, :id))).to eq(as_items(items))
       expect(item3.relative_position).to be(1000)
     end
 
@@ -650,5 +685,121 @@ RSpec.shared_examples 'a class that supports relative positioning' do
 
   def run_at_start(size = 3)
     (RelativePositioning::MIN_POSITION..).take(size)
+  end
+end
+
+RSpec.shared_examples 'no-op relative positioning' do
+  def create_item(**params)
+    create(factory, params.merge(default_params))
+  end
+
+  let_it_be(:item1) { create_item }
+  let_it_be(:item2) { create_item }
+  let_it_be(:new_item) { create_item(relative_position: nil) }
+
+  def any_relative_positions
+    new_item.class.reorder(:relative_position, :id).pluck(:id, :relative_position)
+  end
+
+  shared_examples 'a no-op method' do
+    it 'does not raise errors' do
+      expect { perform }.not_to raise_error
+    end
+
+    it 'does not perform any DB queries' do
+      expect { perform }.not_to exceed_query_limit(0)
+    end
+
+    it 'does not change any relative_position' do
+      expect { perform }.not_to change { any_relative_positions }
+    end
+  end
+
+  describe '.scoped_items' do
+    subject { RelativePositioning.mover.context(item1).scoped_items }
+
+    it 'is empty' do
+      expect(subject).to be_empty
+    end
+  end
+
+  describe '.relative_siblings' do
+    subject { RelativePositioning.mover.context(item1).relative_siblings }
+
+    it 'is empty' do
+      expect(subject).to be_empty
+    end
+  end
+
+  describe '.move_nulls_to_end' do
+    subject { item1.class.move_nulls_to_end([new_item, item1]) }
+
+    it_behaves_like 'a no-op method' do
+      def perform
+        subject
+      end
+    end
+
+    it 'does not move any items' do
+      expect(subject).to eq(0)
+    end
+  end
+
+  describe '.move_nulls_to_start' do
+    subject { item1.class.move_nulls_to_start([new_item, item1]) }
+
+    it_behaves_like 'a no-op method' do
+      def perform
+        subject
+      end
+    end
+
+    it 'does not move any items' do
+      expect(subject).to eq(0)
+    end
+  end
+
+  describe 'instance methods' do
+    subject { new_item }
+
+    describe '#move_to_start' do
+      it_behaves_like 'a no-op method' do
+        def perform
+          subject.move_to_start
+        end
+      end
+    end
+
+    describe '#move_to_end' do
+      it_behaves_like 'a no-op method' do
+        def perform
+          subject.move_to_end
+        end
+      end
+    end
+
+    describe '#move_between' do
+      it_behaves_like 'a no-op method' do
+        def perform
+          subject.move_between(item1, item2)
+        end
+      end
+    end
+
+    describe '#move_before' do
+      it_behaves_like 'a no-op method' do
+        def perform
+          subject.move_before(item1)
+        end
+      end
+    end
+
+    describe '#move_after' do
+      it_behaves_like 'a no-op method' do
+        def perform
+          subject.move_after(item1)
+        end
+      end
+    end
   end
 end

@@ -3592,6 +3592,8 @@ Vulnerability sort values.
 | ----- | ----------- |
 | `severity_asc` | Severity in ascending order |
 | `severity_desc` | Severity in descending order |
+| `title_asc` | Title in ascending order |
+| `title_desc` | Title in descending order |
 
 ### VulnerabilityState
 
