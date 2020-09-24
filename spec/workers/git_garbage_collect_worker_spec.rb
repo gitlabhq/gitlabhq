@@ -155,6 +155,17 @@ RSpec.describe GitGarbageCollectWorker do
 
               expect(project.lfs_objects.reload).to include(lfs_object)
             end
+
+            it 'catches and logs exceptions' do
+              expect_any_instance_of(Gitlab::Cleanup::OrphanLfsFileReferences)
+                .to receive(:run!)
+                .and_raise(/Failed/)
+
+              expect(Gitlab::GitLogger).to receive(:warn)
+              expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
+
+              subject.perform(*params)
+            end
           end
 
           context 'with cleanup_lfs_during_gc feature flag disabled' do

@@ -1,7 +1,7 @@
 import Vuex from 'vuex';
 import { shallowMount } from '@vue/test-utils';
-import { GlDeprecatedSkeletonLoading as GlSkeletonLoading } from '@gitlab/ui';
 import ReleaseShowApp from '~/releases/components/app_show.vue';
+import ReleaseSkeletonLoader from '~/releases/components/release_skeleton_loader.vue';
 import { release as originalRelease } from '../mock_data';
 import ReleaseBlock from '~/releases/components/release_block.vue';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
@@ -33,7 +33,7 @@ describe('Release show component', () => {
     wrapper = shallowMount(ReleaseShowApp, { store });
   };
 
-  const findLoadingSkeleton = () => wrapper.find(GlSkeletonLoading);
+  const findLoadingSkeleton = () => wrapper.find(ReleaseSkeletonLoader);
   const findReleaseBlock = () => wrapper.find(ReleaseBlock);
 
   it('calls fetchRelease when the component is created', () => {

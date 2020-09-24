@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Admin::SessionsController < ApplicationController
-  include Authenticates2FAForAdminMode
+  include AuthenticatesWithTwoFactorForAdminMode
   include InternalRedirect
   include RendersLdapServers
 

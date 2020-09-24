@@ -26010,6 +26010,30 @@
               "description": "Pipeline count",
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "PIPELINES_SUCCEEDED",
+              "description": "Pipeline count with success status",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "PIPELINES_FAILED",
+              "description": "Pipeline count with failed status",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "PIPELINES_CANCELED",
+              "description": "Pipeline count with canceled status",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "PIPELINES_SKIPPED",
+              "description": "Pipeline count with skipped status",
+              "isDeprecated": false,
+              "deprecationReason": null
             }
           ],
           "possibleTypes": null

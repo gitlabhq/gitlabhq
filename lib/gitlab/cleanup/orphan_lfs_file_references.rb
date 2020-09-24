@@ -19,6 +19,11 @@ module Gitlab
       def run!
         log_info("Looking for orphan LFS files for project #{project.name_with_namespace}")
 
+        if project.lfs_objects.empty?
+          log_info("Project #{project.name_with_namespace} is linked to 0 LFS objects. Nothing to do")
+          return
+        end
+
         remove_orphan_references
       end
 

@@ -11,6 +11,11 @@ RSpec.describe AuthenticationEvent do
     it { is_expected.to validate_presence_of(:provider) }
     it { is_expected.to validate_presence_of(:user_name) }
     it { is_expected.to validate_presence_of(:result) }
+
+    include_examples 'validates IP address' do
+      let(:attribute) { :ip_address }
+      let(:object) { create(:authentication_event) }
+    end
   end
 
   describe 'scopes' do

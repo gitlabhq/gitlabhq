@@ -126,10 +126,11 @@ happened over time, such as how many CI pipelines have run. They are monotonic a
 Observations are facts collected from one or more GitLab instances and can carry arbitrary data. There are no
 general guidelines around how to collect those, due to the individual nature of that data.
 
-There are four types of counters which are all found in `usage_data.rb`:
+There are several types of counters which are all found in `usage_data.rb`:
 
 - **Ordinary Batch Counters:** Simple count of a given ActiveRecord_Relation
 - **Distinct Batch Counters:** Distinct count of a given ActiveRecord_Relation on given column
+- **Sum Batch Counters:** Sum the values of a given ActiveRecord_Relation on given column
 - **Alternative Counters:** Used for settings and configurations
 - **Redis Counters:** Used for in-memory counts.
 
@@ -198,6 +199,28 @@ Examples:
 distinct_count(::Project, :creator_id)
 distinct_count(::Note.with_suggestions.where(time_period), :author_id, start: ::User.minimum(:id), finish: ::User.maximum(:id))
 distinct_count(::Clusters::Applications::CertManager.where(time_period).available.joins(:cluster), 'clusters.user_id')
+```
+
+### Sum Batch Counters
+
+Handles `ActiveRecord::StatementInvalid` error
+
+Sum the values of a given ActiveRecord_Relation on given column and handles errors.
+
+Method: `sum(relation, column, batch_size: nil, start: nil, finish: nil)`
+
+Arguments:
+
+- `relation` the ActiveRecord_Relation to perform the operation
+- `column` the column to sum on
+- `batch_size`: if none set it will use default value 1000 from `Gitlab::Database::BatchCounter`
+- `start`: custom start of the batch counting in order to avoid complex min calculations
+- `end`: custom end of the batch counting in order to avoid complex min calculations
+
+Examples:
+
+```ruby
+sum(JiraImportState.finished, :imported_issues_count)
 ```
 
 ### Redis Counters
@@ -372,7 +395,7 @@ w
 
    Example usage for an existing event already defined in  [known events](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data_counters/known_events.yml):
 
-   Note that `usage_data_api` and `usage_data_#{event_name}` should be enabled in order to rack events using API.
+   Note that `usage_data_api` and `usage_data_#{event_name}` should be enabled in order to be able to track events
 
    ```javascript
    import api from '~/api';

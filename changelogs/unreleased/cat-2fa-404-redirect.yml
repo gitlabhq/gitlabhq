@@ -1,0 +1,5 @@
+---
+title: Exclude 2FA from upload#show routes and 404s
+merge_request: 42784
+author:
+type: fixed

@@ -207,6 +207,15 @@ describe('Release detail actions', () => {
       });
     });
 
+    describe('updateReleaseGroupMilestones', () => {
+      it(`commits ${types.UPDATE_RELEASE_GROUP_MILESTONES} with the updated release group milestones`, () => {
+        const newReleaseGroupMilestones = ['v0.0', 'v0.1'];
+        return testAction(actions.updateReleaseGroupMilestones, newReleaseGroupMilestones, state, [
+          { type: types.UPDATE_RELEASE_GROUP_MILESTONES, payload: newReleaseGroupMilestones },
+        ]);
+      });
+    });
+
     describe('addEmptyAssetLink', () => {
       it(`commits ${types.ADD_EMPTY_ASSET_LINK}`, () => {
         return testAction(actions.addEmptyAssetLink, undefined, state, [

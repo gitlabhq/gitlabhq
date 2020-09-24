@@ -68,6 +68,10 @@ which is enabled for the `cache` and `shared_state`
 
 ## Redis in structured logging
 
+For GitLab Team Members: There are [basic](https://www.youtube.com/watch?v=Uhdj19Dc6vU) and
+[advanced](https://youtu.be/jw1Wv2IJxzs) videos that show how you can work with the Redis
+structured logging fields on GitLab.com.
+
 Our [structured logging](logging.md#use-structured-json-logging) for web
 requests and Sidekiq jobs contains fields for the duration, call count,
 bytes written, and bytes read per Redis instance, along with a total for

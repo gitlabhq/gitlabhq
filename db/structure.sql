@@ -14712,7 +14712,8 @@ ALTER SEQUENCE project_mirror_data_id_seq OWNED BY project_mirror_data.id;
 CREATE TABLE project_pages_metadata (
     project_id bigint NOT NULL,
     deployed boolean DEFAULT false NOT NULL,
-    artifacts_archive_id bigint
+    artifacts_archive_id bigint,
+    pages_deployment_id bigint
 );
 
 CREATE TABLE project_repositories (
@@ -19711,7 +19712,7 @@ CREATE INDEX index_ci_pipelines_on_project_id_and_user_id_and_status_and_ref ON 
 
 CREATE INDEX index_ci_pipelines_on_project_idandrefandiddesc ON ci_pipelines USING btree (project_id, ref, id DESC);
 
-CREATE INDEX index_ci_pipelines_on_status ON ci_pipelines USING btree (status);
+CREATE INDEX index_ci_pipelines_on_status_and_id ON ci_pipelines USING btree (status, id);
 
 CREATE INDEX index_ci_pipelines_on_user_id_and_created_at_and_config_source ON ci_pipelines USING btree (user_id, created_at, config_source);
 
@@ -20819,6 +20820,8 @@ CREATE INDEX index_project_mirror_data_on_status ON project_mirror_data USING bt
 
 CREATE INDEX index_project_pages_metadata_on_artifacts_archive_id ON project_pages_metadata USING btree (artifacts_archive_id);
 
+CREATE INDEX index_project_pages_metadata_on_pages_deployment_id ON project_pages_metadata USING btree (pages_deployment_id);
+
 CREATE UNIQUE INDEX index_project_pages_metadata_on_project_id ON project_pages_metadata USING btree (project_id);
 
 CREATE INDEX index_project_pages_metadata_on_project_id_and_deployed_is_true ON project_pages_metadata USING btree (project_id) WHERE (deployed = true);
@@ -21875,6 +21878,9 @@ ALTER TABLE ONLY notification_settings
 
 ALTER TABLE ONLY lists
     ADD CONSTRAINT fk_0d3f677137 FOREIGN KEY (board_id) REFERENCES boards(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY project_pages_metadata
+    ADD CONSTRAINT fk_0fd5b22688 FOREIGN KEY (pages_deployment_id) REFERENCES pages_deployments(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY group_deletion_schedules
     ADD CONSTRAINT fk_11e3ebfcdd FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;

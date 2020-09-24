@@ -220,8 +220,27 @@ module Gitlab
       "Must start with a letter, and cannot end with '-'"
     end
 
+    # The section start, e.g. section_start:12345678:NAME
+    def logs_section_prefix_regex
+      /section_((?:start)|(?:end)):(\d+):([a-zA-Z0-9_.-]+)/
+    end
+
+    # The optional section options, e.g. [collapsed=true]
+    def logs_section_options_regex
+      /(\[(?:\w+=\w+)(?:, ?(?:\w+=\w+))*\])?/
+    end
+
+    # The region end, always: \r\e\[0K
+    def logs_section_suffix_regex
+      /\r\033\[0K/
+    end
+
     def build_trace_section_regex
-      @build_trace_section_regexp ||= /section_((?:start)|(?:end)):(\d+):([a-zA-Z0-9_.-]+)\r\033\[0K/.freeze
+      @build_trace_section_regexp ||= %r{
+        #{logs_section_prefix_regex}
+        #{logs_section_options_regex}
+        #{logs_section_suffix_regex}
+      }x.freeze
     end
 
     def markdown_code_or_html_blocks

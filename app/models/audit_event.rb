@@ -22,6 +22,7 @@ class AuditEvent < ApplicationRecord
   validates :author_id, presence: true
   validates :entity_id, presence: true
   validates :entity_type, presence: true
+  validates :ip_address, ip_address: true
 
   scope :by_entity_type, -> (entity_type) { where(entity_type: entity_type) }
   scope :by_entity_id, -> (entity_id) { where(entity_id: entity_id) }

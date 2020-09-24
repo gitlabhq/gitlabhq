@@ -17,10 +17,9 @@ module Analytics
         return if Feature.disabled?(:store_instance_statistics_measurements, default_enabled: true)
 
         recorded_at = Time.zone.now
-        measurement_identifiers = Analytics::InstanceStatistics::Measurement.identifiers
 
         worker_arguments = Gitlab::Analytics::InstanceStatistics::WorkersArgumentBuilder.new(
-          measurement_identifiers: measurement_identifiers.values,
+          measurement_identifiers: ::Analytics::InstanceStatistics::Measurement.measurement_identifier_values,
           recorded_at: recorded_at
         ).execute
 

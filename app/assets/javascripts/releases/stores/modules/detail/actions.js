@@ -45,6 +45,9 @@ export const updateReleaseNotes = ({ commit }, notes) => commit(types.UPDATE_REL
 export const updateReleaseMilestones = ({ commit }, milestones) =>
   commit(types.UPDATE_RELEASE_MILESTONES, milestones);
 
+export const updateReleaseGroupMilestones = ({ commit }, groupMilestones) =>
+  commit(types.UPDATE_RELEASE_GROUP_MILESTONES, groupMilestones);
+
 export const addEmptyAssetLink = ({ commit }) => {
   commit(types.ADD_EMPTY_ASSET_LINK);
 };

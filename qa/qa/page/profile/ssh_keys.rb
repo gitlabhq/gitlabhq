@@ -38,8 +38,11 @@ module QA
         def remove_key(title)
           click_link(title)
 
-          accept_alert do
-            click_element(:delete_key_button)
+          # Retrying due to https://gitlab.com/gitlab-org/gitlab/-/issues/255287
+          retry_on_exception do
+            accept_alert do
+              click_element(:delete_key_button)
+            end
           end
         end
 

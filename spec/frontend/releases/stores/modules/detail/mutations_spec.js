@@ -30,6 +30,7 @@ describe('Release detail mutations', () => {
         name: '',
         description: '',
         milestones: [],
+        groupMilestones: [],
         assets: {
           links: [],
         },
@@ -109,6 +110,26 @@ describe('Release detail mutations', () => {
       mutations[types.UPDATE_RELEASE_NOTES](state, newNotes);
 
       expect(state.release.description).toBe(newNotes);
+    });
+  });
+
+  describe(`${types.UPDATE_RELEASE_MILESTONES}`, () => {
+    it("updates the release's milestones", () => {
+      state.release = release;
+      const newReleaseMilestones = ['v0.0', 'v0.1'];
+      mutations[types.UPDATE_RELEASE_MILESTONES](state, newReleaseMilestones);
+
+      expect(state.release.milestones).toBe(newReleaseMilestones);
+    });
+  });
+
+  describe(`${types.UPDATE_RELEASE_GROUP_MILESTONES}`, () => {
+    it("updates the release's group milestones", () => {
+      state.release = release;
+      const newReleaseGroupMilestones = ['v0.0', 'v0.1'];
+      mutations[types.UPDATE_RELEASE_GROUP_MILESTONES](state, newReleaseGroupMilestones);
+
+      expect(state.release.groupMilestones).toBe(newReleaseGroupMilestones);
     });
   });
 

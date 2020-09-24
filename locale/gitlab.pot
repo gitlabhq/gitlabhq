@@ -22439,6 +22439,12 @@ msgstr ""
 msgid "Seat Link is disabled, and cannot be configured through this form."
 msgstr ""
 
+msgid "Seats usage data as of %{last_enqueue_time}"
+msgstr ""
+
+msgid "Seats usage data is updated every day at 12:00pm UTC"
+msgstr ""
+
 msgid "Secondary"
 msgstr ""
 
@@ -30751,6 +30757,9 @@ msgid "mrWidget|to start a merge train when the pipeline succeeds"
 msgstr ""
 
 msgid "must be a root namespace"
+msgstr ""
+
+msgid "must be a valid IPv4 or IPv6 address"
 msgstr ""
 
 msgid "must be greater than start date"

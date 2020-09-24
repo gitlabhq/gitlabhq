@@ -6,6 +6,7 @@ class AuthenticationEvent < ApplicationRecord
   belongs_to :user, optional: true
 
   validates :provider, :user_name, :result, presence: true
+  validates :ip_address, ip_address: true
 
   enum result: {
     failed: 0,

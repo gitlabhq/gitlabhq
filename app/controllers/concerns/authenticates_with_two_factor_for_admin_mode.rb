@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Authenticates2FAForAdminMode
+module AuthenticatesWithTwoFactorForAdminMode
   extend ActiveSupport::Concern
 
   included do

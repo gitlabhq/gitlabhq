@@ -3224,6 +3224,10 @@ Possible identifier types for a measurement.
 | `ISSUES` | Issue count |
 | `MERGE_REQUESTS` | Merge request count |
 | `PIPELINES` | Pipeline count |
+| `PIPELINES_CANCELED` | Pipeline count with canceled status |
+| `PIPELINES_FAILED` | Pipeline count with failed status |
+| `PIPELINES_SKIPPED` | Pipeline count with skipped status |
+| `PIPELINES_SUCCEEDED` | Pipeline count with success status |
 | `PROJECTS` | Project count |
 | `USERS` | User count |
 
