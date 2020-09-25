@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe QA::Resource::Base do
+RSpec.describe QA::Resource::Base do
   include Helpers::StubENV
 
   let(:resource) { spy('resource') }

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe QA::Resource::User do
+RSpec.describe QA::Resource::User do
   let(:api_resource) do
     {
       name: "GitLab QA",

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe QA::Scenario::Test::Integration::Github do
+RSpec.describe QA::Scenario::Test::Integration::Github do
   describe '#perform' do
     let(:env) { spy('Runtime::Env') }
 

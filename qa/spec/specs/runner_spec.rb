@@ -2,7 +2,7 @@
 
 require 'active_support/core_ext/hash'
 
-describe QA::Specs::Runner do
+RSpec.describe QA::Specs::Runner do
   shared_examples 'excludes orchestrated' do
     it 'excludes the orchestrated tag and includes default args' do
       expect_rspec_runner_arguments(['--tag', '~orchestrated', *described_class::DEFAULT_TEST_PATH_ARGS])

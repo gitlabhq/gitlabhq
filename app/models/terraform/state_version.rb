@@ -14,5 +14,11 @@ module Terraform
     mount_file_store_uploader VersionedStateUploader
 
     delegate :project_id, :uuid, to: :terraform_state, allow_nil: true
+
+    def local?
+      file_store == ObjectStorage::Store::LOCAL
+    end
   end
 end
+
+Terraform::StateVersion.prepend_if_ee('EE::Terraform::StateVersion')

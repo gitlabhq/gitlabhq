@@ -4,7 +4,7 @@ require 'logger'
 require 'timecop'
 require 'active_support/core_ext/integer/time'
 
-describe QA::Support::Repeater do
+RSpec.describe QA::Support::Repeater do
   before do
     logger = ::Logger.new $stdout
     logger.level = ::Logger::DEBUG

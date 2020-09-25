@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe QA::Runtime::Feature do
+RSpec.describe QA::Runtime::Feature do
   let(:api_client) { double('QA::Runtime::API::Client') }
   let(:request) { Struct.new(:url).new('http://api') }
   let(:response_post) { Struct.new(:code).new(201) }

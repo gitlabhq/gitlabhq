@@ -18,7 +18,7 @@ RSpec.describe API::Terraform::State do
   let(:state_path) { "/projects/#{project_id}/terraform/state/#{state_name}" }
 
   before do
-    stub_terraform_state_object_storage(Terraform::StateUploader)
+    stub_terraform_state_object_storage
   end
 
   describe 'GET /projects/:id/terraform/state/:name' do

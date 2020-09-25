@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe QA::Runtime::Env do
+RSpec.describe QA::Runtime::Env do
   include Helpers::StubENV
 
   shared_examples 'boolean method' do |**kwargs|

@@ -15401,6 +15401,26 @@ type SastCiConfigurationAnalyzersEntityEdge {
 }
 
 """
+Represents the analyzers entity in SAST CI configuration
+"""
+input SastCiConfigurationAnalyzersEntityInput {
+  """
+  State of the analyzer
+  """
+  enabled: Boolean!
+
+  """
+  Name of analyzer
+  """
+  name: String!
+
+  """
+  List of variables for the analyzer
+  """
+  variables: [SastCiConfigurationEntityInput!]
+}
+
+"""
 Represents an entity in SAST CI configuration
 """
 type SastCiConfigurationEntity {
@@ -15524,6 +15544,11 @@ input SastCiConfigurationEntityInput {
 Represents a CI configuration of SAST
 """
 input SastCiConfigurationInput {
+  """
+  List of analyzers and related variables for the SAST configuration
+  """
+  analyzers: [SastCiConfigurationAnalyzersEntityInput!]
+
   """
   List of global entities related to SAST configuration
   """

@@ -29,7 +29,7 @@ RSpec.describe Terraform::StateVersion do
     subject { create(:terraform_state_version) }
 
     before do
-      stub_terraform_state_object_storage(Terraform::StateUploader)
+      stub_terraform_state_object_storage
     end
 
     describe '#file' do

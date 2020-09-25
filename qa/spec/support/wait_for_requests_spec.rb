@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe QA::Support::WaitForRequests do
+RSpec.describe QA::Support::WaitForRequests do
   describe '.wait_for_requests' do
     before do
       allow(subject).to receive(:finished_all_ajax_requests?).and_return(true)

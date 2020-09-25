@@ -532,12 +532,8 @@ corresponding to each Gitaly server must be installed on that Gitaly server.
 
 Additionally, the certificate (or its certificate authority) must be installed on all:
 
-- Gitaly servers, including the Gitaly server using the certificate.
+- Gitaly servers.
 - Gitaly clients that communicate with it.
-
-The process is documented in the
-[GitLab custom certificate configuration](https://docs.gitlab.com/omnibus/settings/ssl.html#install-custom-public-certificates)
-and repeated below.
 
 Note the following:
 

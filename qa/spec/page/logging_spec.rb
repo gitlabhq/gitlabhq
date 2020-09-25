@@ -3,7 +3,7 @@
 require 'capybara/dsl'
 require 'logger'
 
-describe QA::Support::Page::Logging do
+RSpec.describe QA::Support::Page::Logging do
   let(:page) { double.as_null_object }
 
   before do

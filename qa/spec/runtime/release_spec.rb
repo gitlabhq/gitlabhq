@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe QA::Runtime::Release do
+RSpec.describe QA::Runtime::Release do
   context 'when release version has extension strategy' do
     let(:strategy) { spy('strategy') }
 

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe QA::Runtime::Key::RSA do
+RSpec.describe QA::Runtime::Key::RSA do
   describe '#public_key' do
     subject { described_class.new.public_key }
 

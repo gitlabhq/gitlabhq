@@ -7,5 +7,13 @@ FactoryBot.define do
 
     sequence(:version)
     file { fixture_file_upload('spec/fixtures/terraform/terraform.tfstate', 'application/json') }
+
+    trait(:checksummed) do
+      verification_checksum { 'abc' }
+    end
+
+    trait(:checksum_failure) do
+      verification_failure { 'Could not calculate the checksum' }
+    end
   end
 end

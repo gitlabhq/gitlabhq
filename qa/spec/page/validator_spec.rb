@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe QA::Page::Validator do
+RSpec.describe QA::Page::Validator do
   describe '#constants' do
     subject do
       described_class.new(QA::Page::Project)

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe QA::Page::Element do
+RSpec.describe QA::Page::Element do
   describe '#selector' do
     it 'transforms element name into QA-specific selector' do
       expect(described_class.new(:sign_in_button).selector)

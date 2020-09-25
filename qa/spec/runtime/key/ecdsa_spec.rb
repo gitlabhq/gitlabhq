@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe QA::Runtime::Key::ECDSA do
+RSpec.describe QA::Runtime::Key::ECDSA do
   describe '#public_key' do
     [256, 384, 521].each do |bits|
       it "generates a public #{bits}-bits ECDSA key" do

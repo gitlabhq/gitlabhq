@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe QA::Git::Repository do
+RSpec.describe QA::Git::Repository do
   include Helpers::StubENV
 
   shared_context 'unresolvable git directory' do

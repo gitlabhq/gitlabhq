@@ -3,7 +3,7 @@
 require 'logger'
 require 'timecop'
 
-describe QA::Support::Retrier do
+RSpec.describe QA::Support::Retrier do
   before do
     logger = ::Logger.new $stdout
     logger.level = ::Logger::DEBUG

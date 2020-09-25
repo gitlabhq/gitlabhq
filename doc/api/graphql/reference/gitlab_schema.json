@@ -44827,6 +44827,63 @@
           "possibleTypes": null
         },
         {
+          "kind": "INPUT_OBJECT",
+          "name": "SastCiConfigurationAnalyzersEntityInput",
+          "description": "Represents the analyzers entity in SAST CI configuration",
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "name",
+              "description": "Name of analyzer",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "enabled",
+              "description": "State of the analyzer",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "variables",
+              "description": "List of variables for the analyzer",
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "SastCiConfigurationEntityInput",
+                    "ofType": null
+                  }
+                }
+              },
+              "defaultValue": null
+            }
+          ],
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
           "kind": "OBJECT",
           "name": "SastCiConfigurationEntity",
           "description": "Represents an entity in SAST CI configuration",
@@ -45191,6 +45248,24 @@
                   "ofType": {
                     "kind": "INPUT_OBJECT",
                     "name": "SastCiConfigurationEntityInput",
+                    "ofType": null
+                  }
+                }
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "analyzers",
+              "description": "List of analyzers and related variables for the SAST configuration",
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "SastCiConfigurationAnalyzersEntityInput",
                     "ofType": null
                   }
                 }

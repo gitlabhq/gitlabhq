@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe QA::Runtime::Namespace do
+RSpec.describe QA::Runtime::Namespace do
   include Helpers::StubENV
 
   describe '.name' do
