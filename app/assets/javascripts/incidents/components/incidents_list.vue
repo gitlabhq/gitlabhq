@@ -33,9 +33,15 @@ import getIncidents from '../graphql/queries/get_incidents.query.graphql';
 import getIncidentsCountByStatus from '../graphql/queries/get_count_by_status.query.graphql';
 import SeverityToken from '~/sidebar/components/severity/severity.vue';
 import { INCIDENT_SEVERITY } from '~/sidebar/components/severity/constants';
-import { I18N, DEFAULT_PAGE_SIZE, INCIDENT_STATUS_TABS } from '../constants';
+import {
+  I18N,
+  DEFAULT_PAGE_SIZE,
+  INCIDENT_STATUS_TABS,
+  TH_CREATED_AT_TEST_ID,
+  TH_SEVERITY_TEST_ID,
+  TH_PUBLISHED_TEST_ID,
+} from '../constants';
 
-const TH_TEST_ID = { 'data-testid': 'incident-management-created-at-sort' };
 const tdClass =
   'table-col gl-display-flex d-md-table-cell gl-align-items-center gl-white-space-nowrap';
 const thClass = 'gl-hover-bg-blue-50';
@@ -57,8 +63,10 @@ export default {
     {
       key: 'severity',
       label: s__('IncidentManagement|Severity'),
-      thClass: `gl-pointer-events-none`,
-      tdClass,
+      thClass,
+      tdClass: `${tdClass} sortable-cell`,
+      sortable: true,
+      thAttr: TH_SEVERITY_TEST_ID,
     },
     {
       key: 'title',
@@ -72,7 +80,7 @@ export default {
       thClass,
       tdClass: `${tdClass} sortable-cell`,
       sortable: true,
-      thAttr: TH_TEST_ID,
+      thAttr: TH_CREATED_AT_TEST_ID,
     },
     {
       key: 'assignees',
@@ -226,7 +234,10 @@ export default {
               {
                 key: 'published',
                 label: s__('IncidentManagement|Published'),
-                thClass: 'gl-pointer-events-none',
+                thClass,
+                tdClass: `${tdClass} sortable-cell`,
+                sortable: true,
+                thAttr: TH_PUBLISHED_TEST_ID,
               },
             ],
           ]
@@ -312,6 +323,7 @@ export default {
   },
   methods: {
     filterIncidentsByStatus(tabIndex) {
+      this.resetPagination();
       const { filters, status } = this.$options.statusTabs[tabIndex];
       this.statusFilter = filters;
       this.filteredByStatus = status;
@@ -345,15 +357,19 @@ export default {
       this.pagination = initialPaginationState;
     },
     fetchSortedData({ sortBy, sortDesc }) {
-      const sortingDirection = sortDesc ? 'desc' : 'asc';
-      const sortingColumn = convertToSnakeCase(sortBy).replace(/_.*/, '');
+      const sortingDirection = sortDesc ? 'DESC' : 'ASC';
+      const sortingColumn = convertToSnakeCase(sortBy)
+        .replace(/_.*/, '')
+        .toUpperCase();
 
+      this.resetPagination();
       this.sort = `${sortingColumn}_${sortingDirection}`;
     },
     getSeverity(severity) {
       return INCIDENT_SEVERITY[severity];
     },
     handleFilterIncidents(filters) {
+      this.resetPagination();
       const filterParams = { authorUsername: '', assigneeUsername: '', search: '' };
 
       filters.forEach(filter => {

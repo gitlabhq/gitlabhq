@@ -19,6 +19,7 @@ class Issue < ApplicationRecord
   include WhereComposite
   include StateEventable
   include IdInOrdered
+  include Presentable
 
   DueDateStruct                   = Struct.new(:title, :name).freeze
   NoDueDate                       = DueDateStruct.new('No Due Date', '0').freeze
@@ -415,6 +416,10 @@ class Issue < ApplicationRecord
     return type if issue_link_source_id == id
 
     IssueLink.inverse_link_type(type)
+  end
+
+  def relocation_target
+    moved_to || duplicated_to
   end
 
   private

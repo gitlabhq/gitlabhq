@@ -8,7 +8,7 @@ RSpec.describe Gitlab::Database::Reindexing::ConcurrentReindex, '#perform' do
   let(:table_name) { '_test_reindex_table' }
   let(:column_name) { '_test_column' }
   let(:index_name) { '_test_reindex_index' }
-  let(:index) { double('index', name: index_name, schema: 'public', unique?: false, definition: 'CREATE INDEX _test_reindex_index ON public._test_reindex_table USING btree (_test_column)') }
+  let(:index) { instance_double(Gitlab::Database::PostgresIndex, indexrelid: 42, name: index_name, schema: 'public', partitioned?: false, unique?: false, exclusion?: false, definition: 'CREATE INDEX _test_reindex_index ON public._test_reindex_table USING btree (_test_column)') }
   let(:logger) { double('logger', debug: nil, info: nil, error: nil ) }
   let(:connection) { ActiveRecord::Base.connection }
 
@@ -23,7 +23,9 @@ RSpec.describe Gitlab::Database::Reindexing::ConcurrentReindex, '#perform' do
   end
 
   context 'when the index is unique' do
-    let(:index) { double('index', name: index_name, unique?: true, definition: 'CREATE INDEX _test_reindex_index ON public._test_reindex_table USING btree (_test_column)') }
+    before do
+      allow(index).to receive(:unique?).and_return(true)
+    end
 
     it 'raises an error' do
       expect do
@@ -32,12 +34,41 @@ RSpec.describe Gitlab::Database::Reindexing::ConcurrentReindex, '#perform' do
     end
   end
 
+  context 'when the index is partitioned' do
+    before do
+      allow(index).to receive(:partitioned?).and_return(true)
+    end
+
+    it 'raises an error' do
+      expect do
+        subject.perform
+      end.to raise_error(described_class::ReindexError, /partitioned indexes are currently not supported/)
+    end
+  end
+
+  context 'when the index serves an exclusion constraint' do
+    before do
+      allow(index).to receive(:exclusion?).and_return(true)
+    end
+
+    it 'raises an error' do
+      expect do
+        subject.perform
+      end.to raise_error(described_class::ReindexError, /indexes serving an exclusion constraint are currently not supported/)
+    end
+  end
+
   context 'replacing the original index with a rebuilt copy' do
-    let(:replacement_name) { 'tmp_reindex__test_reindex_index' }
-    let(:replaced_name) { 'old_reindex__test_reindex_index' }
+    let(:replacement_name) { 'tmp_reindex_42' }
+    let(:replaced_name) { 'old_reindex_42' }
 
     let(:create_index) { "CREATE INDEX CONCURRENTLY #{replacement_name} ON public.#{table_name} USING btree (#{column_name})" }
-    let(:drop_index) { "DROP INDEX CONCURRENTLY IF EXISTS #{replacement_name}" }
+    let(:drop_index) do
+      <<~SQL
+        DROP INDEX CONCURRENTLY
+        IF EXISTS "public"."#{replacement_name}"
+      SQL
+    end
 
     let!(:original_index) { find_index_create_statement }
 
@@ -58,18 +89,17 @@ RSpec.describe Gitlab::Database::Reindexing::ConcurrentReindex, '#perform' do
       end
 
       it 'replaces the existing index with an identical index' do
-        expect(subject).to receive(:disable_statement_timeout).exactly(3).times.and_yield
+        expect(subject).to receive(:disable_statement_timeout).twice.and_yield
 
-        expect_to_execute_concurrently_in_order(drop_index)
         expect_to_execute_concurrently_in_order(create_index)
 
         expect_next_instance_of(::Gitlab::Database::WithLockRetries) do |instance|
           expect(instance).to receive(:run).with(raise_on_exhaustion: true).and_yield
         end
 
-        expect_to_execute_in_order("ALTER INDEX #{index.name} RENAME TO #{replaced_name}")
-        expect_to_execute_in_order("ALTER INDEX #{replacement_name} RENAME TO #{index.name}")
-        expect_to_execute_in_order("ALTER INDEX #{replaced_name} RENAME TO #{replacement_name}")
+        expect_index_rename(index.name, replaced_name)
+        expect_index_rename(replacement_name, index.name)
+        expect_index_rename(replaced_name, replacement_name)
 
         expect_to_execute_concurrently_in_order(drop_index)
 
@@ -93,9 +123,9 @@ RSpec.describe Gitlab::Database::Reindexing::ConcurrentReindex, '#perform' do
             expect(instance).to receive(:run).with(raise_on_exhaustion: true).and_yield
           end
 
-          expect_to_execute_in_order("ALTER INDEX #{index.name} RENAME TO #{replaced_name}")
-          expect_to_execute_in_order("ALTER INDEX #{replacement_name} RENAME TO #{index.name}")
-          expect_to_execute_in_order("ALTER INDEX #{replaced_name} RENAME TO #{replacement_name}")
+          expect_index_rename(index.name, replaced_name)
+          expect_index_rename(replacement_name, index.name)
+          expect_index_rename(replaced_name, replacement_name)
 
           expect_to_execute_concurrently_in_order(drop_index)
 
@@ -107,14 +137,12 @@ RSpec.describe Gitlab::Database::Reindexing::ConcurrentReindex, '#perform' do
 
       context 'when it fails to create the replacement index' do
         it 'safely cleans up and signals the error' do
-          expect_to_execute_concurrently_in_order(drop_index)
-
           expect(connection).to receive(:execute).with(create_index).ordered
             .and_raise(ActiveRecord::ConnectionTimeoutError, 'connect timeout')
 
           expect_to_execute_concurrently_in_order(drop_index)
 
-          expect { subject.perform }.to raise_error(described_class::ReindexError, /connect timeout/)
+          expect { subject.perform }.to raise_error(ActiveRecord::ConnectionTimeoutError, /connect timeout/)
 
           check_index_exists
         end
@@ -122,11 +150,10 @@ RSpec.describe Gitlab::Database::Reindexing::ConcurrentReindex, '#perform' do
 
       context 'when the replacement index is not valid' do
         it 'safely cleans up and signals the error' do
-          expect_to_execute_concurrently_in_order(drop_index)
-          expect_to_execute_concurrently_in_order(create_index)
+          replacement_index = double('replacement index', valid_index?: false)
+          allow(Gitlab::Database::PostgresIndex).to receive(:find_by).with(schema: 'public', name: replacement_name).and_return(nil, replacement_index)
 
-          replacement_index = double('replacement index', valid?: false)
-          allow(Gitlab::Database::Reindexing::Index).to receive(:find_with_schema).with("public.#{replacement_name}").and_return(replacement_index)
+          expect_to_execute_concurrently_in_order(create_index)
 
           expect_to_execute_concurrently_in_order(drop_index)
 
@@ -138,20 +165,20 @@ RSpec.describe Gitlab::Database::Reindexing::ConcurrentReindex, '#perform' do
 
       context 'when a database error occurs while swapping the indexes' do
         it 'safely cleans up and signals the error' do
-          expect_to_execute_concurrently_in_order(drop_index)
+          replacement_index = double('replacement index', valid_index?: true)
+          allow(Gitlab::Database::PostgresIndex).to receive(:find_by).with(schema: 'public', name: replacement_name).and_return(nil, replacement_index)
+
           expect_to_execute_concurrently_in_order(create_index)
 
           expect_next_instance_of(::Gitlab::Database::WithLockRetries) do |instance|
             expect(instance).to receive(:run).with(raise_on_exhaustion: true).and_yield
           end
 
-          expect(connection).to receive(:execute).ordered
-          .with("ALTER INDEX #{index.name} RENAME TO #{replaced_name}")
-          .and_raise(ActiveRecord::ConnectionTimeoutError, 'connect timeout')
+          expect_index_rename(index.name, replaced_name).and_raise(ActiveRecord::ConnectionTimeoutError, 'connect timeout')
 
           expect_to_execute_concurrently_in_order(drop_index)
 
-          expect { subject.perform }.to raise_error(described_class::ReindexError, /connect timeout/)
+          expect { subject.perform }.to raise_error(ActiveRecord::ConnectionTimeoutError, /connect timeout/)
 
           check_index_exists
         end
@@ -159,7 +186,6 @@ RSpec.describe Gitlab::Database::Reindexing::ConcurrentReindex, '#perform' do
 
       context 'when with_lock_retries fails to acquire the lock' do
         it 'safely cleans up and signals the error' do
-          expect_to_execute_concurrently_in_order(drop_index)
           expect_to_execute_concurrently_in_order(create_index)
 
           expect_next_instance_of(::Gitlab::Database::WithLockRetries) do |instance|
@@ -169,7 +195,7 @@ RSpec.describe Gitlab::Database::Reindexing::ConcurrentReindex, '#perform' do
 
           expect_to_execute_concurrently_in_order(drop_index)
 
-          expect { subject.perform }.to raise_error(described_class::ReindexError, /exhausted/)
+          expect { subject.perform }.to raise_error(::Gitlab::Database::WithLockRetries::AttemptsExhaustedError, /exhausted/)
 
           check_index_exists
         end
@@ -185,8 +211,11 @@ RSpec.describe Gitlab::Database::Reindexing::ConcurrentReindex, '#perform' do
     end
   end
 
-  def expect_to_execute_in_order(sql)
-    expect(connection).to receive(:execute).with(sql).ordered.and_call_original
+  def expect_index_rename(from, to)
+    expect(connection).to receive(:execute).with(<<~SQL).ordered
+      ALTER INDEX "public"."#{from}"
+      RENAME TO "#{to}"
+    SQL
   end
 
   def find_index_create_statement

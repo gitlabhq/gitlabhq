@@ -1055,7 +1055,7 @@ type Board {
     Returns the last _n_ elements from the list.
     """
     last: Int
-  ): EpicConnection
+  ): BoardEpicConnection
 
   """
   Whether or not backlog list is hidden.
@@ -1151,6 +1151,478 @@ type BoardEdge {
   The item at the end of the edge.
   """
   node: Board
+}
+
+"""
+Represents an epic on an issue board
+"""
+type BoardEpic implements CurrentUserTodos & Noteable {
+  """
+  Author of the epic
+  """
+  author: User!
+
+  """
+  Children (sub-epics) of the epic
+  """
+  children(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Filter epics by author
+    """
+    authorUsername: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    List items within a time frame where items.end_date is between startDate and
+    endDate parameters (startDate parameter must be present)
+    """
+    endDate: Time
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    IID of the epic, e.g., "1"
+    """
+    iid: ID
+
+    """
+    Filter epics by iid for autocomplete
+    """
+    iidStartsWith: String
+
+    """
+    List of IIDs of epics, e.g., [1, 2]
+    """
+    iids: [ID!]
+
+    """
+    Filter epics by labels
+    """
+    labelName: [String!]
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+
+    """
+    Filter epics by milestone title, computed from epic's issues
+    """
+    milestoneTitle: String
+
+    """
+    Search query for epic title or description
+    """
+    search: String
+
+    """
+    List epics by sort order
+    """
+    sort: EpicSort
+
+    """
+    List items within a time frame where items.start_date is between startDate
+    and endDate parameters (endDate parameter must be present)
+    """
+    startDate: Time
+
+    """
+    Filter epics by state
+    """
+    state: EpicState
+  ): EpicConnection
+
+  """
+  Timestamp of when the epic was closed
+  """
+  closedAt: Time
+
+  """
+  Indicates if the epic is confidential
+  """
+  confidential: Boolean
+
+  """
+  Timestamp of when the epic was created
+  """
+  createdAt: Time
+
+  """
+  Todos for the current user
+  """
+  currentUserTodos(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+
+    """
+    State of the todos
+    """
+    state: TodoStateEnum
+  ): TodoConnection!
+
+  """
+  Number of open and closed descendant epics and issues
+  """
+  descendantCounts: EpicDescendantCount
+
+  """
+  Total weight of open and closed issues in the epic and its descendants
+  """
+  descendantWeightSum: EpicDescendantWeights
+
+  """
+  Description of the epic
+  """
+  description: String
+
+  """
+  All discussions on this noteable
+  """
+  discussions(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+  ): DiscussionConnection!
+
+  """
+  Number of downvotes the epic has received
+  """
+  downvotes: Int!
+
+  """
+  Due date of the epic
+  """
+  dueDate: Time
+
+  """
+  Fixed due date of the epic
+  """
+  dueDateFixed: Time
+
+  """
+  Inherited due date of the epic from milestones
+  """
+  dueDateFromMilestones: Time
+
+  """
+  Indicates if the due date has been manually set
+  """
+  dueDateIsFixed: Boolean
+
+  """
+  Group to which the epic belongs
+  """
+  group: Group!
+
+  """
+  Indicates if the epic has children
+  """
+  hasChildren: Boolean!
+
+  """
+  Indicates if the epic has direct issues
+  """
+  hasIssues: Boolean!
+
+  """
+  Indicates if the epic has a parent epic
+  """
+  hasParent: Boolean!
+
+  """
+  Current health status of the epic
+  """
+  healthStatus: EpicHealthStatus
+
+  """
+  ID of the epic
+  """
+  id: ID!
+
+  """
+  Internal ID of the epic
+  """
+  iid: ID!
+
+  """
+  A list of issues associated with the epic
+  """
+  issues(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+  ): EpicIssueConnection
+
+  """
+  Labels assigned to the epic
+  """
+  labels(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+  ): LabelConnection
+
+  """
+  All notes on this noteable
+  """
+  notes(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+  ): NoteConnection!
+
+  """
+  Parent epic of the epic
+  """
+  parent: Epic
+
+  """
+  List of participants for the epic
+  """
+  participants(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+  ): UserConnection
+
+  """
+  Internal reference of the epic. Returned in shortened format by default
+  """
+  reference(
+    """
+    Indicates if the reference should be returned in full
+    """
+    full: Boolean = false
+  ): String!
+
+  """
+  URI path of the epic-issue relationship
+  """
+  relationPath: String
+
+  """
+  The relative position of the epic in the epic tree
+  """
+  relativePosition: Int
+
+  """
+  Start date of the epic
+  """
+  startDate: Time
+
+  """
+  Fixed start date of the epic
+  """
+  startDateFixed: Time
+
+  """
+  Inherited start date of the epic from milestones
+  """
+  startDateFromMilestones: Time
+
+  """
+  Indicates if the start date has been manually set
+  """
+  startDateIsFixed: Boolean
+
+  """
+  State of the epic
+  """
+  state: EpicState!
+
+  """
+  Indicates the currently logged in user is subscribed to the epic
+  """
+  subscribed: Boolean!
+
+  """
+  Title of the epic
+  """
+  title: String
+
+  """
+  Timestamp of when the epic was updated
+  """
+  updatedAt: Time
+
+  """
+  Number of upvotes the epic has received
+  """
+  upvotes: Int!
+
+  """
+  Permissions for the current user on the resource
+  """
+  userPermissions: EpicPermissions!
+
+  """
+  User preferences for the epic on the issue board
+  """
+  userPreferences: BoardEpicUserPreferences
+
+  """
+  Web path of the epic
+  """
+  webPath: String!
+
+  """
+  Web URL of the epic
+  """
+  webUrl: String!
+}
+
+"""
+The connection type for BoardEpic.
+"""
+type BoardEpicConnection {
+  """
+  A list of edges.
+  """
+  edges: [BoardEpicEdge]
+
+  """
+  A list of nodes.
+  """
+  nodes: [BoardEpic]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+}
+
+"""
+An edge in a connection.
+"""
+type BoardEpicEdge {
+  """
+  A cursor for use in pagination.
+  """
+  cursor: String!
+
+  """
+  The item at the end of the edge.
+  """
+  node: BoardEpic
+}
+
+"""
+Represents user preferences for a board epic
+"""
+type BoardEpicUserPreferences {
+  """
+  Indicates epic should be displayed as collapsed
+  """
+  collapsed: Boolean!
 }
 
 """
@@ -5277,7 +5749,7 @@ type Epic implements CurrentUserTodos & Noteable {
   ): EpicConnection
 
   """
-  Timestamp of the epic's closure
+  Timestamp of when the epic was closed
   """
   closedAt: Time
 
@@ -5287,7 +5759,7 @@ type Epic implements CurrentUserTodos & Noteable {
   confidential: Boolean
 
   """
-  Timestamp of the epic's creation
+  Timestamp of when the epic was created
   """
   createdAt: Time
 
@@ -5582,7 +6054,7 @@ type Epic implements CurrentUserTodos & Noteable {
   title: String
 
   """
-  Timestamp of the epic's last activity
+  Timestamp of when the epic was updated
   """
   updatedAt: Time
 

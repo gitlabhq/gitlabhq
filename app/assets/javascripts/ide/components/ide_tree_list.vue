@@ -12,10 +12,6 @@ export default {
     FileTree,
   },
   props: {
-    viewerType: {
-      type: String,
-      required: true,
-    },
     headerClass: {
       type: String,
       required: false,
@@ -29,11 +25,8 @@ export default {
       return !this.currentTree || this.currentTree.loading;
     },
   },
-  mounted() {
-    this.updateViewer(this.viewerType);
-  },
   methods: {
-    ...mapActions(['updateViewer', 'toggleTreeOpen']),
+    ...mapActions(['toggleTreeOpen']),
   },
   IdeFileRow,
 };

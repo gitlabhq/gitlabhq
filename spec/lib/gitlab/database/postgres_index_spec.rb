@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::Reindexing::Index do
+RSpec.describe Gitlab::Database::PostgresIndex do
   before do
     ActiveRecord::Base.connection.execute(<<~SQL)
       CREATE INDEX foo_idx ON public.users (name);
@@ -13,20 +13,40 @@ RSpec.describe Gitlab::Database::Reindexing::Index do
   end
 
   def find(name)
-    described_class.find_with_schema(name)
+    described_class.by_identifier(name)
   end
 
-  describe '.find_with_schema' do
-    it 'returns an instance of Gitlab::Database::Reindexing::Index when the index is present' do
-      expect(find('public.foo_idx')).to be_a(Gitlab::Database::Reindexing::Index)
+  describe '.by_identifier' do
+    it 'finds the index' do
+      expect(find('public.foo_idx')).to be_a(Gitlab::Database::PostgresIndex)
     end
 
-    it 'returns nil if the index is not present' do
-      expect(find('public.idontexist')).to be_nil
+    it 'raises an error if not found' do
+      expect { find('public.idontexist') }.to raise_error(ActiveRecord::RecordNotFound)
     end
 
     it 'raises ArgumentError if given a non-fully qualified index name' do
       expect { find('foo') }.to raise_error(ArgumentError, /not fully qualified/)
+    end
+  end
+
+  describe '#regular' do
+    it 'only non-unique indexes' do
+      expect(described_class.regular).to all(have_attributes(unique: false))
+    end
+
+    it 'only non partitioned indexes ' do
+      expect(described_class.regular).to all(have_attributes(partitioned: false))
+    end
+
+    it 'only indexes that dont serve an exclusion constraint' do
+      expect(described_class.regular).to all(have_attributes(exclusion: false))
+    end
+  end
+
+  describe '#random_few' do
+    it 'limits to two records by default' do
+      expect(described_class.random_few(2).size).to eq(2)
     end
   end
 
@@ -44,9 +64,9 @@ RSpec.describe Gitlab::Database::Reindexing::Index do
     end
   end
 
-  describe '#valid?' do
-    it 'returns true if the index is valid' do
-      expect(find('public.foo_idx')).to be_valid
+  describe '#valid_index?' do
+    it 'returns true if the index is invalid' do
+      expect(find('public.foo_idx')).to be_valid_index
     end
 
     it 'returns false if the index is marked as invalid' do
@@ -56,7 +76,7 @@ RSpec.describe Gitlab::Database::Reindexing::Index do
         WHERE pg_class.relname = 'foo_idx' AND pg_index.indexrelid = pg_class.oid
       SQL
 
-      expect(find('public.foo_idx')).not_to be_valid
+      expect(find('public.foo_idx')).not_to be_valid_index
     end
   end
 

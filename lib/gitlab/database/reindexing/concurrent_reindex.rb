@@ -22,6 +22,10 @@ module Gitlab
 
         def perform
           raise ReindexError, 'UNIQUE indexes are currently not supported' if index.unique?
+          raise ReindexError, 'partitioned indexes are currently not supported' if index.partitioned?
+          raise ReindexError, 'indexes serving an exclusion constraint are currently not supported' if index.exclusion?
+
+          logger.info "Starting reindex of #{index}"
 
           with_rebuilt_index do |replacement_index|
             swap_index(replacement_index)
@@ -31,12 +35,13 @@ module Gitlab
         private
 
         def with_rebuilt_index
-          logger.debug("dropping dangling index from previous run (if it exists): #{replacement_index_name}")
-          remove_replacement_index
+          if Gitlab::Database::PostgresIndex.find_by(schema: index.schema, name: replacement_index_name)
+            logger.debug("dropping dangling index from previous run (if it exists): #{replacement_index_name}")
+            remove_index(index.schema, replacement_index_name)
+          end
 
           create_replacement_index_statement = index.definition
-            .sub(/CREATE INDEX/, 'CREATE INDEX CONCURRENTLY')
-            .sub(/#{index.name}/, replacement_index_name)
+            .sub(/CREATE INDEX #{index.name}/, "CREATE INDEX CONCURRENTLY #{replacement_index_name}")
 
           logger.info("creating replacement index #{replacement_index_name}")
           logger.debug("replacement index definition: #{create_replacement_index_statement}")
@@ -45,55 +50,57 @@ module Gitlab
             connection.execute(create_replacement_index_statement)
           end
 
-          replacement_index = Index.find_with_schema("#{index.schema}.#{replacement_index_name}")
+          replacement_index = Gitlab::Database::PostgresIndex.find_by(schema: index.schema, name: replacement_index_name)
 
-          unless replacement_index.valid?
+          unless replacement_index.valid_index?
             message = 'replacement index was created as INVALID'
             logger.error("#{message}, cleaning up")
             raise ReindexError, "failed to reindex #{index}: #{message}"
           end
 
           yield replacement_index
-
-        rescue Gitlab::Database::WithLockRetries::AttemptsExhaustedError => e
-          logger.error('failed to obtain the required database locks to swap the indexes, cleaning up')
-          raise ReindexError, e.message
-        rescue ActiveRecord::ActiveRecordError, PG::Error => e
-          logger.error("database error while attempting reindex of #{index}: #{e.message}")
-          raise ReindexError, e.message
         ensure
-          logger.info("dropping unneeded replacement index: #{replacement_index_name}")
-          remove_replacement_index
-        end
-
-        def swap_index(replacement_index)
-          replaced_index_name = constrained_index_name(REPLACED_INDEX_PREFIX)
-
-          logger.info("swapping replacement index #{replacement_index} with #{index}")
-
-          with_lock_retries do
-            rename_index(index.name, replaced_index_name)
-            rename_index(replacement_index.name, index.name)
-            rename_index(replaced_index_name, replacement_index.name)
+          begin
+            remove_index(index.schema, replacement_index_name)
+          rescue => e
+            logger.error(e)
           end
         end
 
-        def rename_index(old_index_name, new_index_name)
-          connection.execute("ALTER INDEX #{old_index_name} RENAME TO #{new_index_name}")
+        def swap_index(replacement_index)
+          logger.info("swapping replacement index #{replacement_index} with #{index}")
+
+          with_lock_retries do
+            rename_index(index.schema, index.name, replaced_index_name)
+            rename_index(replacement_index.schema, replacement_index.name, index.name)
+            rename_index(index.schema, replaced_index_name, replacement_index.name)
+          end
         end
 
-        def remove_replacement_index
+        def rename_index(schema, old_index_name, new_index_name)
+          connection.execute(<<~SQL)
+            ALTER INDEX #{quote_table_name(schema)}.#{quote_table_name(old_index_name)}
+            RENAME TO #{quote_table_name(new_index_name)}
+          SQL
+        end
+
+        def remove_index(schema, name)
+          logger.info("Removing index #{schema}.#{name}")
+
           disable_statement_timeout do
-            connection.execute("DROP INDEX CONCURRENTLY IF EXISTS #{replacement_index_name}")
+            connection.execute(<<~SQL)
+              DROP INDEX CONCURRENTLY
+              IF EXISTS #{quote_table_name(schema)}.#{quote_table_name(name)}
+            SQL
           end
         end
 
         def replacement_index_name
-          @replacement_index_name ||= constrained_index_name(TEMPORARY_INDEX_PREFIX)
+          @replacement_index_name ||= "#{TEMPORARY_INDEX_PREFIX}#{index.indexrelid}"
         end
 
-        def constrained_index_name(prefix)
-          "#{prefix}#{index.name}".slice(0, PG_IDENTIFIER_LENGTH)
+        def replaced_index_name
+          @replaced_index_name ||= "#{REPLACED_INDEX_PREFIX}#{index.indexrelid}"
         end
 
         def with_lock_retries(&block)
@@ -102,7 +109,7 @@ module Gitlab
           Gitlab::Database::WithLockRetries.new(**arguments).run(raise_on_exhaustion: true, &block)
         end
 
-        delegate :execute, to: :connection
+        delegate :execute, :quote_table_name, to: :connection
         def connection
           @connection ||= ActiveRecord::Base.connection
         end

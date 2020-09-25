@@ -370,6 +370,14 @@ class Member < ApplicationRecord
     send_invite
   end
 
+  def send_invitation_reminder(reminder_index)
+    return unless invite?
+
+    generate_invite_token! unless @raw_invite_token
+
+    run_after_commit_or_now { notification_service.invite_member_reminder(self, @raw_invite_token, reminder_index) }
+  end
+
   def create_notification_setting
     user.notification_settings.find_or_create_for(source)
   end

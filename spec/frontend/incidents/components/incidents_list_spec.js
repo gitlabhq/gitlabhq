@@ -16,7 +16,13 @@ import SeverityToken from '~/sidebar/components/severity/severity.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import FilteredSearchBar from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
 import AuthorToken from '~/vue_shared/components/filtered_search_bar/tokens/author_token.vue';
-import { I18N, INCIDENT_STATUS_TABS } from '~/incidents/constants';
+import {
+  I18N,
+  INCIDENT_STATUS_TABS,
+  TH_CREATED_AT_TEST_ID,
+  TH_SEVERITY_TEST_ID,
+  TH_PUBLISHED_TEST_ID,
+} from '~/incidents/constants';
 import mockIncidents from '../mocks/incidents.json';
 import mockFilters from '../mocks/incidents_filter.json';
 
@@ -45,8 +51,6 @@ describe('Incidents List', () => {
   const findAlert = () => wrapper.find(GlAlert);
   const findLoader = () => wrapper.find(GlLoadingIcon);
   const findTimeAgo = () => wrapper.findAll(TimeAgoTooltip);
-  const findDateColumnHeader = () =>
-    wrapper.find('[data-testid="incident-management-created-at-sort"]');
   const findSearch = () => wrapper.find(FilteredSearchBar);
   const findAssingees = () => wrapper.findAll('[data-testid="incident-assignees"]');
   const findCreateIncidentBtn = () => wrapper.find('[data-testid="createIncidentBtn"]');
@@ -437,13 +441,25 @@ describe('Incidents List', () => {
       });
     });
 
-    it('updates sort with new direction and column key', () => {
-      expect(findDateColumnHeader().attributes('aria-sort')).toBe('descending');
+    const descSort = 'descending';
+    const ascSort = 'ascending';
+    const noneSort = 'none';
 
-      findDateColumnHeader().trigger('click');
-      return wrapper.vm.$nextTick(() => {
-        expect(findDateColumnHeader().attributes('aria-sort')).toBe('ascending');
-      });
+    it.each`
+      selector                 | initialSort | firstSort   | nextSort
+      ${TH_CREATED_AT_TEST_ID} | ${descSort} | ${ascSort}  | ${descSort}
+      ${TH_SEVERITY_TEST_ID}   | ${noneSort} | ${descSort} | ${ascSort}
+      ${TH_PUBLISHED_TEST_ID}  | ${noneSort} | ${descSort} | ${ascSort}
+    `('updates sort with new direction', async ({ selector, initialSort, firstSort, nextSort }) => {
+      const [[attr, value]] = Object.entries(selector);
+      const columnHeader = () => wrapper.find(`[${attr}="${value}"]`);
+      expect(columnHeader().attributes('aria-sort')).toBe(initialSort);
+      columnHeader().trigger('click');
+      await wrapper.vm.$nextTick();
+      expect(columnHeader().attributes('aria-sort')).toBe(firstSort);
+      columnHeader().trigger('click');
+      await wrapper.vm.$nextTick();
+      expect(columnHeader().attributes('aria-sort')).toBe(nextSort);
     });
   });
 });

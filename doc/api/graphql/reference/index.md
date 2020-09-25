@@ -209,6 +209,57 @@ Represents a project or group board.
 | `name` | String | Name of the board |
 | `weight` | Int | Weight of the board. |
 
+### BoardEpic
+
+Represents an epic on an issue board.
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `author` | User! | Author of the epic |
+| `closedAt` | Time | Timestamp of when the epic was closed |
+| `confidential` | Boolean | Indicates if the epic is confidential |
+| `createdAt` | Time | Timestamp of when the epic was created |
+| `descendantCounts` | EpicDescendantCount | Number of open and closed descendant epics and issues |
+| `descendantWeightSum` | EpicDescendantWeights | Total weight of open and closed issues in the epic and its descendants |
+| `description` | String | Description of the epic |
+| `downvotes` | Int! | Number of downvotes the epic has received |
+| `dueDate` | Time | Due date of the epic |
+| `dueDateFixed` | Time | Fixed due date of the epic |
+| `dueDateFromMilestones` | Time | Inherited due date of the epic from milestones |
+| `dueDateIsFixed` | Boolean | Indicates if the due date has been manually set |
+| `group` | Group! | Group to which the epic belongs |
+| `hasChildren` | Boolean! | Indicates if the epic has children |
+| `hasIssues` | Boolean! | Indicates if the epic has direct issues |
+| `hasParent` | Boolean! | Indicates if the epic has a parent epic |
+| `healthStatus` | EpicHealthStatus | Current health status of the epic |
+| `id` | ID! | ID of the epic |
+| `iid` | ID! | Internal ID of the epic |
+| `parent` | Epic | Parent epic of the epic |
+| `reference` | String! | Internal reference of the epic. Returned in shortened format by default |
+| `relationPath` | String | URI path of the epic-issue relationship |
+| `relativePosition` | Int | The relative position of the epic in the epic tree |
+| `startDate` | Time | Start date of the epic |
+| `startDateFixed` | Time | Fixed start date of the epic |
+| `startDateFromMilestones` | Time | Inherited start date of the epic from milestones |
+| `startDateIsFixed` | Boolean | Indicates if the start date has been manually set |
+| `state` | EpicState! | State of the epic |
+| `subscribed` | Boolean! | Indicates the currently logged in user is subscribed to the epic |
+| `title` | String | Title of the epic |
+| `updatedAt` | Time | Timestamp of when the epic was updated |
+| `upvotes` | Int! | Number of upvotes the epic has received |
+| `userPermissions` | EpicPermissions! | Permissions for the current user on the resource |
+| `userPreferences` | BoardEpicUserPreferences | User preferences for the epic on the issue board |
+| `webPath` | String! | Web path of the epic |
+| `webUrl` | String! | Web URL of the epic |
+
+### BoardEpicUserPreferences
+
+Represents user preferences for a board epic.
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `collapsed` | Boolean! | Indicates epic should be displayed as collapsed |
+
 ### BoardList
 
 Represents a list for an issue board.
@@ -889,9 +940,9 @@ Represents an epic.
 | Field | Type | Description |
 | ----- | ---- | ----------- |
 | `author` | User! | Author of the epic |
-| `closedAt` | Time | Timestamp of the epic's closure |
+| `closedAt` | Time | Timestamp of when the epic was closed |
 | `confidential` | Boolean | Indicates if the epic is confidential |
-| `createdAt` | Time | Timestamp of the epic's creation |
+| `createdAt` | Time | Timestamp of when the epic was created |
 | `descendantCounts` | EpicDescendantCount | Number of open and closed descendant epics and issues |
 | `descendantWeightSum` | EpicDescendantWeights | Total weight of open and closed issues in the epic and its descendants |
 | `description` | String | Description of the epic |
@@ -918,7 +969,7 @@ Represents an epic.
 | `state` | EpicState! | State of the epic |
 | `subscribed` | Boolean! | Indicates the currently logged in user is subscribed to the epic |
 | `title` | String | Title of the epic |
-| `updatedAt` | Time | Timestamp of the epic's last activity |
+| `updatedAt` | Time | Timestamp of when the epic was updated |
 | `upvotes` | Int! | Number of upvotes the epic has received |
 | `userPermissions` | EpicPermissions! | Permissions for the current user on the resource |
 | `webPath` | String! | Web path of the epic |

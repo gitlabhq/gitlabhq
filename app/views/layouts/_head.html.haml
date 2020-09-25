@@ -42,6 +42,9 @@
   %title= page_title(site_name)
   %meta{ name: "description", content: page_description }
 
+  - if page_canonical_link
+    %link{ rel: 'canonical', href: page_canonical_link }
+
   = favicon_link_tag favicon, id: 'favicon', data: { original_href: favicon }, type: 'image/png'
 
   = render 'layouts/startup_css'

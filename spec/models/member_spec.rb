@@ -676,6 +676,45 @@ RSpec.describe Member do
     end
   end
 
+  describe '#send_invitation_reminder' do
+    subject { member.send_invitation_reminder(0) }
+
+    context 'an invited group member' do
+      let!(:member) { create(:group_member, :invited) }
+
+      it 'sends a reminder' do
+        expect_any_instance_of(NotificationService).to receive(:invite_member_reminder).with(member, member.raw_invite_token, 0)
+
+        subject
+      end
+    end
+
+    context 'an invited member without a raw invite token set' do
+      let!(:member) { create(:group_member, :invited) }
+
+      before do
+        member.instance_variable_set(:@raw_invite_token, nil)
+        allow_any_instance_of(NotificationService).to receive(:invite_member_reminder)
+      end
+
+      it 'generates a new token' do
+        expect(member).to receive(:generate_invite_token!)
+
+        subject
+      end
+    end
+
+    context 'an uninvited member' do
+      let!(:member) { create(:group_member) }
+
+      it 'does not send a reminder' do
+        expect_any_instance_of(NotificationService).not_to receive(:invite_member_reminder)
+
+        subject
+      end
+    end
+  end
+
   describe "#invite_to_unknown_user?" do
     subject { member.invite_to_unknown_user? }
 
