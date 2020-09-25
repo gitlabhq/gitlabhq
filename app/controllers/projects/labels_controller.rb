@@ -2,6 +2,7 @@
 
 class Projects::LabelsController < Projects::ApplicationController
   include ToggleSubscriptionAction
+  include ShowInheritedLabelsChecker
 
   before_action :check_issuables_available!
   before_action :label, only: [:edit, :update, :destroy, :promote]
@@ -161,7 +162,7 @@ class Projects::LabelsController < Projects::ApplicationController
     @available_labels ||=
       LabelsFinder.new(current_user,
                        project_id: @project.id,
-                       include_ancestor_groups: params[:include_ancestor_groups],
+                       include_ancestor_groups: show_inherited_labels?(params[:include_ancestor_groups]),
                        search: params[:search],
                        subscribed: params[:subscribed],
                        sort: sort).execute

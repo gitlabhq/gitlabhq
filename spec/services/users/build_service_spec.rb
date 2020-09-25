@@ -16,6 +16,10 @@ RSpec.describe Users::BuildService do
         expect(service.execute).to be_valid
       end
 
+      it 'sets the created_by_id' do
+        expect(service.execute.created_by_id).to eq(admin_user.id)
+      end
+
       context 'calls the UpdateCanonicalEmailService' do
         specify do
           expect(Users::UpdateCanonicalEmailService).to receive(:new).and_call_original
@@ -127,6 +131,16 @@ RSpec.describe Users::BuildService do
 
       it 'raises AccessDeniedError exception' do
         expect { service.execute }.to raise_error Gitlab::Access::AccessDeniedError
+      end
+
+      context 'when authorization is skipped' do
+        subject(:built_user) { service.execute(skip_authorization: true) }
+
+        it { is_expected.to be_valid }
+
+        it 'sets the created_by_id' do
+          expect(built_user.created_by_id).to eq(user.id)
+        end
       end
     end
 

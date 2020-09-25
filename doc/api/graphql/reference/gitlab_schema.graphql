@@ -435,6 +435,16 @@ Values for sorting alerts
 """
 enum AlertManagementAlertSort {
   """
+  Created at ascending order
+  """
+  CREATED_ASC
+
+  """
+  Created at descending order
+  """
+  CREATED_DESC
+
+  """
   Created time by ascending order
   """
   CREATED_TIME_ASC
@@ -493,6 +503,16 @@ enum AlertManagementAlertSort {
   Status by order: Triggered > Acknowledged > Resolved > Ignored
   """
   STATUS_DESC
+
+  """
+  Updated at ascending order
+  """
+  UPDATED_ASC
+
+  """
+  Updated at descending order
+  """
+  UPDATED_DESC
 
   """
   Created time by ascending order
@@ -8713,6 +8733,16 @@ Values for sorting issues
 """
 enum IssueSort {
   """
+  Created at ascending order
+  """
+  CREATED_ASC
+
+  """
+  Created at descending order
+  """
+  CREATED_DESC
+
+  """
   Due date by ascending order
   """
   DUE_DATE_ASC
@@ -8753,9 +8783,39 @@ enum IssueSort {
   PRIORITY_DESC
 
   """
+  Published issues shown last
+  """
+  PUBLISHED_ASC
+
+  """
+  Published issues shown first
+  """
+  PUBLISHED_DESC
+
+  """
   Relative position by ascending order
   """
   RELATIVE_POSITION_ASC
+
+  """
+  Severity from less critical to more critical
+  """
+  SEVERITY_ASC
+
+  """
+  Severity from more critical to less critical
+  """
+  SEVERITY_DESC
+
+  """
+  Updated at ascending order
+  """
+  UPDATED_ASC
+
+  """
+  Updated at descending order
+  """
+  UPDATED_DESC
 
   """
   Weight by ascending order
@@ -10489,6 +10549,16 @@ Values for sorting merge requests
 """
 enum MergeRequestSort {
   """
+  Created at ascending order
+  """
+  CREATED_ASC
+
+  """
+  Created at descending order
+  """
+  CREATED_DESC
+
+  """
   Label priority by ascending order
   """
   LABEL_PRIORITY_ASC
@@ -10527,6 +10597,16 @@ enum MergeRequestSort {
   Priority by descending order
   """
   PRIORITY_DESC
+
+  """
+  Updated at ascending order
+  """
+  UPDATED_ASC
+
+  """
+  Updated at descending order
+  """
+  UPDATED_DESC
 
   """
   Created at ascending order
@@ -16761,6 +16841,26 @@ type SnippetPermissions {
 Common sort values
 """
 enum Sort {
+  """
+  Created at ascending order
+  """
+  CREATED_ASC
+
+  """
+  Created at descending order
+  """
+  CREATED_DESC
+
+  """
+  Updated at ascending order
+  """
+  UPDATED_ASC
+
+  """
+  Updated at descending order
+  """
+  UPDATED_DESC
+
   """
   Created at ascending order
   """

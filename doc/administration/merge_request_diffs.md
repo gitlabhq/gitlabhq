@@ -92,9 +92,9 @@ then `object_store:`. On Omnibus installations, they are prefixed by
 |---------|-------------|---------|
 | `enabled` | Enable/disable object storage | `false` |
 | `remote_directory` | The bucket name where external diffs will be stored| |
-| `direct_upload` | Set to true to enable direct upload of external diffs without the need of local shared storage. Option may be removed once we decide to support only single storage for all files. | `false` |
-| `background_upload` | Set to false to disable automatic upload. Option may be removed once upload is direct to S3 | `true` |
-| `proxy_download` | Set to true to enable proxying all files served. Option allows to reduce egress traffic as this allows clients to download directly from remote storage instead of proxying all data | `false` |
+| `direct_upload` | Set to `true` to enable direct upload of external diffs without the need of local shared storage. Option may be removed once we decide to support only single storage for all files. | `false` |
+| `background_upload` | Set to `false` to disable automatic upload. Option may be removed once upload is direct to S3 | `true` |
+| `proxy_download` | Set to `true` to enable proxying all files served. Option allows to reduce egress traffic as this allows clients to download directly from remote storage instead of proxying all data | `false` |
 | `connection` | Various connection options described below | |
 
 ### S3 compatible connection settings

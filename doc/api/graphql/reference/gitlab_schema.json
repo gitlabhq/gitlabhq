@@ -1249,6 +1249,30 @@
               "deprecationReason": null
             },
             {
+              "name": "UPDATED_DESC",
+              "description": "Updated at descending order",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "UPDATED_ASC",
+              "description": "Updated at ascending order",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "CREATED_DESC",
+              "description": "Created at descending order",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "CREATED_ASC",
+              "description": "Created at ascending order",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "STARTED_AT_ASC",
               "description": "Start time by ascending order",
               "isDeprecated": false,
@@ -24109,6 +24133,30 @@
               "deprecationReason": null
             },
             {
+              "name": "UPDATED_DESC",
+              "description": "Updated at descending order",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "UPDATED_ASC",
+              "description": "Updated at ascending order",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "CREATED_DESC",
+              "description": "Created at descending order",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "CREATED_ASC",
+              "description": "Created at ascending order",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "PRIORITY_ASC",
               "description": "Priority by ascending order",
               "isDeprecated": false,
@@ -24163,6 +24211,18 @@
               "deprecationReason": null
             },
             {
+              "name": "SEVERITY_ASC",
+              "description": "Severity from less critical to more critical",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "SEVERITY_DESC",
+              "description": "Severity from more critical to less critical",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "WEIGHT_ASC",
               "description": "Weight by ascending order",
               "isDeprecated": false,
@@ -24171,6 +24231,18 @@
             {
               "name": "WEIGHT_DESC",
               "description": "Weight by descending order",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "PUBLISHED_ASC",
+              "description": "Published issues shown last",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "PUBLISHED_DESC",
+              "description": "Published issues shown first",
               "isDeprecated": false,
               "deprecationReason": null
             }
@@ -29150,6 +29222,30 @@
             },
             {
               "name": "created_asc",
+              "description": "Created at ascending order",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "UPDATED_DESC",
+              "description": "Updated at descending order",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "UPDATED_ASC",
+              "description": "Updated at ascending order",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "CREATED_DESC",
+              "description": "Created at descending order",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "CREATED_ASC",
               "description": "Created at ascending order",
               "isDeprecated": false,
               "deprecationReason": null
@@ -49082,6 +49178,30 @@
             },
             {
               "name": "created_asc",
+              "description": "Created at ascending order",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "UPDATED_DESC",
+              "description": "Updated at descending order",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "UPDATED_ASC",
+              "description": "Updated at ascending order",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "CREATED_DESC",
+              "description": "Created at descending order",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "CREATED_ASC",
               "description": "Created at ascending order",
               "isDeprecated": false,
               "deprecationReason": null

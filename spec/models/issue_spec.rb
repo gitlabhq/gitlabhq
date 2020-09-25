@@ -145,6 +145,24 @@ RSpec.describe Issue do
     end
   end
 
+  describe '.order_severity' do
+    let_it_be(:issue_high_severity) { create(:issuable_severity, severity: :high).issue }
+    let_it_be(:issue_low_severity) { create(:issuable_severity, severity: :low).issue }
+    let_it_be(:issue_no_severity) { create(:incident) }
+
+    context 'sorting ascending' do
+      subject { described_class.order_severity_asc }
+
+      it { is_expected.to eq([issue_no_severity, issue_low_severity, issue_high_severity]) }
+    end
+
+    context 'sorting descending' do
+      subject { described_class.order_severity_desc }
+
+      it { is_expected.to eq([issue_high_severity, issue_low_severity, issue_no_severity]) }
+    end
+  end
+
   describe '#order_by_position_and_priority' do
     let(:project) { reusable_project }
     let(:p1) { create(:label, title: 'P1', project: project, priority: 1) }

@@ -181,8 +181,10 @@ RSpec.describe Gitlab::SearchResults do
 
         let_it_be(:closed_result) { create(:issue, :closed, project: project, title: 'foo closed') }
         let_it_be(:opened_result) { create(:issue, :opened, project: project, title: 'foo open') }
+        let_it_be(:confidential_result) { create(:issue, :confidential, project: project, title: 'foo confidential') }
 
         include_examples 'search results filtered by state'
+        include_examples 'search results filtered by confidential'
       end
     end
 

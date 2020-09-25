@@ -14,7 +14,7 @@ module Search
       Gitlab::SearchResults.new(current_user,
                                 params[:search],
                                 projects,
-                                filters: { state: params[:state] })
+                                filters: { state: params[:state], confidential: params[:confidential] })
     end
 
     def projects

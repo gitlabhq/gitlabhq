@@ -61,18 +61,17 @@ describe('Test reports suite table', () => {
       expect(allCaseRows().length).toBe(testCases.length);
     });
 
-    it('renders the correct icon for each status', () => {
-      const failedTest = testCases.findIndex(x => x.status === TestStatus.FAILED);
-      const skippedTest = testCases.findIndex(x => x.status === TestStatus.SKIPPED);
-      const successTest = testCases.findIndex(x => x.status === TestStatus.SUCCESS);
+    it.each([
+      TestStatus.ERROR,
+      TestStatus.FAILED,
+      TestStatus.SKIPPED,
+      TestStatus.SUCCESS,
+      'unknown',
+    ])('renders the correct icon for test case with %s status', status => {
+      const test = testCases.findIndex(x => x.status === status);
+      const row = findCaseRowAtIndex(test);
 
-      const failedRow = findCaseRowAtIndex(failedTest);
-      const skippedRow = findCaseRowAtIndex(skippedTest);
-      const successRow = findCaseRowAtIndex(successTest);
-
-      expect(findIconForRow(failedRow, TestStatus.FAILED).exists()).toBe(true);
-      expect(findIconForRow(skippedRow, TestStatus.SKIPPED).exists()).toBe(true);
-      expect(findIconForRow(successRow, TestStatus.SUCCESS).exists()).toBe(true);
+      expect(findIconForRow(row, status).exists()).toBe(true);
     });
   });
 });

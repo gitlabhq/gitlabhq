@@ -66,8 +66,6 @@ class CleanupProjectsWithMissingNamespace < ActiveRecord::Migration[6.0]
     end
 
     def ensure_bio_is_assigned_to_user_details
-      return if Feature.disabled?(:migrate_bio_to_user_details, default_enabled: true)
-
       user_detail.bio = bio.to_s[0...255]
     end
 

@@ -6,7 +6,7 @@ import App from './components/jira_import_app.vue';
 
 Vue.use(VueApollo);
 
-const defaultClient = createDefaultClient();
+const defaultClient = createDefaultClient({}, { assumeImmutableResults: true });
 
 const apolloProvider = new VueApollo({
   defaultClient,

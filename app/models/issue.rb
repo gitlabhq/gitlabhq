@@ -101,6 +101,8 @@ class Issue < ApplicationRecord
   scope :order_relative_position_asc, -> { reorder(::Gitlab::Database.nulls_last_order('relative_position', 'ASC')) }
   scope :order_closed_date_desc, -> { reorder(closed_at: :desc) }
   scope :order_created_at_desc, -> { reorder(created_at: :desc) }
+  scope :order_severity_asc, -> { includes(:issuable_severity).order('issuable_severities.severity ASC NULLS FIRST') }
+  scope :order_severity_desc, -> { includes(:issuable_severity).order('issuable_severities.severity DESC NULLS LAST') }
 
   scope :preload_associated_models, -> { preload(:assignees, :labels, project: :namespace) }
   scope :with_web_entity_associations, -> { preload(:author, :project) }
@@ -232,6 +234,8 @@ class Issue < ApplicationRecord
     when 'due_date', 'due_date_asc'                       then order_due_date_asc.with_order_id_desc
     when 'due_date_desc'                                  then order_due_date_desc.with_order_id_desc
     when 'relative_position', 'relative_position_asc'     then order_relative_position_asc.with_order_id_desc
+    when 'severity_asc'                                   then order_severity_asc.with_order_id_desc
+    when 'severity_desc'                                  then order_severity_desc.with_order_id_desc
     else
       super
     end

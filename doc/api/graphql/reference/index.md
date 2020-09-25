@@ -2935,6 +2935,8 @@ Values for sorting alerts.
 
 | Value | Description |
 | ----- | ----------- |
+| `CREATED_ASC` | Created at ascending order |
+| `CREATED_DESC` | Created at descending order |
 | `CREATED_TIME_ASC` | Created time by ascending order |
 | `CREATED_TIME_DESC` | Created time by descending order |
 | `ENDED_AT_ASC` | End time by ascending order |
@@ -2947,6 +2949,8 @@ Values for sorting alerts.
 | `STARTED_AT_DESC` | Start time by descending order |
 | `STATUS_ASC` | Status by order: Ignored > Resolved > Acknowledged > Triggered |
 | `STATUS_DESC` | Status by order: Triggered > Acknowledged > Resolved > Ignored |
+| `UPDATED_ASC` | Updated at ascending order |
+| `UPDATED_DESC` | Updated at descending order |
 | `UPDATED_TIME_ASC` | Created time by ascending order |
 | `UPDATED_TIME_DESC` | Created time by descending order |
 | `created_asc` | Created at ascending order |
@@ -3170,6 +3174,8 @@ Values for sorting issues.
 
 | Value | Description |
 | ----- | ----------- |
+| `CREATED_ASC` | Created at ascending order |
+| `CREATED_DESC` | Created at descending order |
 | `DUE_DATE_ASC` | Due date by ascending order |
 | `DUE_DATE_DESC` | Due date by descending order |
 | `LABEL_PRIORITY_ASC` | Label priority by ascending order |
@@ -3178,7 +3184,13 @@ Values for sorting issues.
 | `MILESTONE_DUE_DESC` | Milestone due date by descending order |
 | `PRIORITY_ASC` | Priority by ascending order |
 | `PRIORITY_DESC` | Priority by descending order |
+| `PUBLISHED_ASC` | Published issues shown last |
+| `PUBLISHED_DESC` | Published issues shown first |
 | `RELATIVE_POSITION_ASC` | Relative position by ascending order |
+| `SEVERITY_ASC` | Severity from less critical to more critical |
+| `SEVERITY_DESC` | Severity from more critical to less critical |
+| `UPDATED_ASC` | Updated at ascending order |
+| `UPDATED_DESC` | Updated at descending order |
 | `WEIGHT_ASC` | Weight by ascending order |
 | `WEIGHT_DESC` | Weight by descending order |
 | `created_asc` | Created at ascending order |
@@ -3252,6 +3264,8 @@ Values for sorting merge requests.
 
 | Value | Description |
 | ----- | ----------- |
+| `CREATED_ASC` | Created at ascending order |
+| `CREATED_DESC` | Created at descending order |
 | `LABEL_PRIORITY_ASC` | Label priority by ascending order |
 | `LABEL_PRIORITY_DESC` | Label priority by descending order |
 | `MERGED_AT_ASC` | Merge time by ascending order |
@@ -3260,6 +3274,8 @@ Values for sorting merge requests.
 | `MILESTONE_DUE_DESC` | Milestone due date by descending order |
 | `PRIORITY_ASC` | Priority by ascending order |
 | `PRIORITY_DESC` | Priority by descending order |
+| `UPDATED_ASC` | Updated at ascending order |
+| `UPDATED_DESC` | Updated at descending order |
 | `created_asc` | Created at ascending order |
 | `created_desc` | Created at descending order |
 | `updated_asc` | Updated at ascending order |
@@ -3488,6 +3504,10 @@ Common sort values.
 
 | Value | Description |
 | ----- | ----------- |
+| `CREATED_ASC` | Created at ascending order |
+| `CREATED_DESC` | Created at descending order |
+| `UPDATED_ASC` | Updated at ascending order |
+| `UPDATED_DESC` | Updated at descending order |
 | `created_asc` | Created at ascending order |
 | `created_desc` | Created at descending order |
 | `updated_asc` | Updated at ascending order |

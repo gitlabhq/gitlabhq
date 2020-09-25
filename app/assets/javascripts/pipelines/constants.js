@@ -13,6 +13,8 @@ export const TestStatus = {
   FAILED: 'failed',
   SKIPPED: 'skipped',
   SUCCESS: 'success',
+  ERROR: 'error',
+  UNKNOWN: 'unknown',
 };
 
 export const FETCH_AUTHOR_ERROR_MESSAGE = __('There was a problem fetching project users.');

@@ -13,7 +13,8 @@ module Search
                                        params[:search],
                                        project: project,
                                        repository_ref: params[:repository_ref],
-                                       filters: { state: params[:state] })
+                                       filters: { confidential: params[:confidential], state: params[:state] }
+                                      )
     end
 
     def scope

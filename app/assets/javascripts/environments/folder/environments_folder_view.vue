@@ -1,4 +1,5 @@
 <script>
+import { GlBadge, GlTab, GlTabs } from '@gitlab/ui';
 import environmentsMixin from '../mixins/environments_mixin';
 import CIPaginationMixin from '../../vue_shared/mixins/ci_pagination_api_mixin';
 import StopEnvironmentModal from '../components/stop_environment_modal.vue';
@@ -6,8 +7,11 @@ import DeleteEnvironmentModal from '../components/delete_environment_modal.vue';
 
 export default {
   components: {
-    StopEnvironmentModal,
     DeleteEnvironmentModal,
+    GlBadge,
+    GlTab,
+    GlTabs,
+    StopEnvironmentModal,
   },
 
   mixins: [environmentsMixin, CIPaginationMixin],
@@ -73,9 +77,21 @@ export default {
       <b>{{ folderName }}</b>
     </h4>
 
-    <div class="top-area">
-      <tabs v-if="!isLoading" :tabs="tabs" scope="environments" @onChangeTab="onChangeTab" />
-    </div>
+    <gl-tabs v-if="!isLoading" scope="environments" content-class="gl-display-none">
+      <gl-tab
+        v-for="(tab, i) in tabs"
+        :key="`${tab.name}-${i}`"
+        :active="tab.isActive"
+        :title-item-class="tab.isActive ? 'gl-outline-none' : ''"
+        :title-link-attributes="{ 'data-testid': `environments-tab-${tab.scope}` }"
+        @click="onChangeTab(tab.scope)"
+      >
+        <template #title>
+          <span>{{ tab.name }}</span>
+          <gl-badge size="sm" class="gl-tab-counter-badge">{{ tab.count }}</gl-badge>
+        </template>
+      </gl-tab>
+    </gl-tabs>
 
     <container
       :is-loading="isLoading"

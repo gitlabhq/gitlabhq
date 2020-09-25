@@ -53,6 +53,7 @@ RSpec.describe ResourceAccessTokens::CreateService do
         access_token = response.payload[:access_token]
 
         expect(access_token.user.reload.user_type).to eq("#{resource_type}_bot")
+        expect(access_token.user.created_by_id).to eq(user.id)
       end
 
       context 'email confirmation status' do

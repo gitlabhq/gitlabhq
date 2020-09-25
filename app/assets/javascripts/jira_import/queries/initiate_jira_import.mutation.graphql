@@ -2,7 +2,6 @@
 
 mutation($input: JiraImportStartInput!) {
   jiraImportStart(input: $input) {
-    clientMutationId
     jiraImport {
       ...JiraImport
     }
