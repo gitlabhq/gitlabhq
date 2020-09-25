@@ -418,8 +418,11 @@ We strive to create documentation that is inclusive. This section includes
 guidance and examples in the following categories:
 
 - [Gender-specific wording](#avoid-gender-specific-wording).
+  (Tested in [`InclusionGender.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/InclusionGender.yml).)
 - [Ableist language](#avoid-ableist-language).
+  (Tested in [`InclusionAbleism.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/InclusionAbleism.yml).)
 - [Cultural sensitivity](#culturally-sensitive-language).
+  (Tested in [`InclusionCultural.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/InclusionCultural.yml).)
 
 We write our developer documentation with inclusivity and diversity in mind. This
 page is not an exhaustive reference, but describes some general guidelines and
@@ -433,11 +436,13 @@ a gender-neutral pronoun.
 
 Avoid the use of gender-specific pronouns, unless referring to a specific person.
 
+<!-- vale gitlab.InclusionGender = NO -->
 | Use                               | Avoid                           |
 |-----------------------------------|---------------------------------|
 | People, humanity                  | Mankind                         |
 | GitLab Team Members               | Manpower                        |
 | You can install; They can install | He can install; She can install |
+<!-- vale gitlab.InclusionGender = YES -->
 
 If you need to set up [Fake user information](#fake-user-information), use
 diverse or non-gendered names with common surnames.
@@ -446,6 +451,7 @@ diverse or non-gendered names with common surnames.
 
 Avoid terms that are also used in negative stereotypes for different groups.
 
+<!-- vale gitlab.InclusionAbleism = NO -->
 | Use                    | Avoid                |
 |------------------------|----------------------|
 | Check for completeness | Sanity check         |
@@ -454,6 +460,7 @@ Avoid terms that are also used in negative stereotypes for different groups.
 | Placeholder variable   | Dummy variable       |
 | Active/Inactive        | Enabled/Disabled     |
 | On/Off                 | Enabled/Disabled     |
+<!-- vale gitlab.InclusionAbleism = YES -->
 
 Credit: [Avoid ableist language](https://developers.google.com/style/inclusive-documentation#ableist-language)
 in the Google Developer Style Guide.
@@ -464,10 +471,12 @@ Avoid terms that reflect negative cultural stereotypes and history. In most
 cases, you can replace terms such as `master` and `slave` with terms that are
 more precise and functional, such as `primary` and `secondary`.
 
+<!-- vale gitlab.InclusionCultural = NO -->
 | Use                  | Avoid                 |
 |----------------------|-----------------------|
 | Primary / secondary  | Master / slave        |
 | Allowlist / denylist | Blacklist / whitelist |
+<!-- vale gitlab.InclusionCultural = YES -->
 
 For more information see the following [Internet Draft specification](https://tools.ietf.org/html/draft-knodel-terminology-02).
 

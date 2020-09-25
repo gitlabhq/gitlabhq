@@ -53,3 +53,12 @@ export const FIELDS = [
     tdClass: 'col-actions',
   },
 ];
+
+export const AVATAR_SIZE = 48;
+
+export const MEMBER_TYPES = {
+  user: 'user',
+  group: 'group',
+  invite: 'invite',
+  accessRequest: 'accessRequest',
+};

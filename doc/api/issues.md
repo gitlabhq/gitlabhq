@@ -663,10 +663,10 @@ Example response:
    "weight": null,
   "has_tasks": false,
   "_links": {
-    "self": "http://gitlab.dummy:3000/api/v4/projects/1/issues/1",
-    "notes": "http://gitlab.dummy:3000/api/v4/projects/1/issues/1/notes",
-    "award_emoji": "http://gitlab.dummy:3000/api/v4/projects/1/issues/1/award_emoji",
-    "project": "http://gitlab.dummy:3000/api/v4/projects/1"
+    "self": "http://gitlab.example:3000/api/v4/projects/1/issues/1",
+    "notes": "http://gitlab.example:3000/api/v4/projects/1/issues/1/notes",
+    "award_emoji": "http://gitlab.example:3000/api/v4/projects/1/issues/1/award_emoji",
+    "project": "http://gitlab.example:3000/api/v4/projects/1"
   },
   "references": {
     "short": "#1",

@@ -3,11 +3,15 @@ import { mapState } from 'vuex';
 import { GlTable } from '@gitlab/ui';
 import { FIELDS } from '../constants';
 import initUserPopovers from '~/user_popovers';
+import MemberAvatar from './member_avatar.vue';
+import MembersTableCell from './members_table_cell.vue';
 
 export default {
   name: 'MembersTable',
   components: {
     GlTable,
+    MemberAvatar,
+    MembersTableCell,
   },
   computed: {
     ...mapState(['members', 'tableFields']),
@@ -33,6 +37,12 @@ export default {
     :empty-text="__('No members found')"
     show-empty
   >
+    <template #cell(account)="{ item: member }">
+      <members-table-cell #default="{ memberType }" :member="member">
+        <member-avatar :member-type="memberType" :member="member" />
+      </members-table-cell>
+    </template>
+
     <template #cell(source)>
       <!-- Temporarily empty -->
     </template>

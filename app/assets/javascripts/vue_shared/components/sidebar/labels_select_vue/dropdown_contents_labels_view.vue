@@ -112,6 +112,7 @@ export default {
         this.currentHighlightItem += 1;
       } else if (e.keyCode === ENTER_KEY_CODE && this.currentHighlightItem > -1) {
         this.updateSelectedLabels([this.visibleLabels[this.currentHighlightItem]]);
+        this.searchKey = '';
       } else if (e.keyCode === ESC_KEY_CODE) {
         this.toggleDropdownContents();
       }

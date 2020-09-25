@@ -133,6 +133,19 @@ describe('DropdownContentsLabelsView', () => {
         expect(wrapper.vm.currentHighlightItem).toBe(2);
       });
 
+      it('resets the search text when the Enter key is pressed', () => {
+        wrapper.setData({
+          currentHighlightItem: 1,
+          searchKey: 'bug',
+        });
+
+        wrapper.vm.handleKeyDown({
+          keyCode: ENTER_KEY_CODE,
+        });
+
+        expect(wrapper.vm.searchKey).toBe('');
+      });
+
       it('calls action `updateSelectedLabels` with currently highlighted label when Enter key is pressed', () => {
         jest.spyOn(wrapper.vm, 'updateSelectedLabels').mockImplementation();
         wrapper.setData({

@@ -103,6 +103,8 @@ module QA
         end
 
         def click_commit(commit_msg)
+          wait_for_requests
+
           within_element(:file_tree_table) do
             click_on commit_msg
           end

@@ -604,7 +604,7 @@ module KubernetesHelpers
     }
   end
 
-  def kube_deployment(name: "kube-deployment", environment_slug: "production", project_slug: "project-path-slug", track: nil)
+  def kube_deployment(name: "kube-deployment", environment_slug: "production", project_slug: "project-path-slug", track: nil, replicas: 3)
     {
       "metadata" => {
         "name" => name,
@@ -617,7 +617,7 @@ module KubernetesHelpers
           "track" => track
         }.compact
       },
-      "spec" => { "replicas" => 3 },
+      "spec" => { "replicas" => replicas },
       "status" => {
         "observedGeneration" => 4
       }

@@ -424,17 +424,17 @@ server (with `gitaly_address`) unless you setup with special
        storages:
          default:
            gitaly_address: tcp://gitaly1.internal:8075
-           path: /some/dummy/path
+           path: /some/local/path
          storage1:
            gitaly_address: tcp://gitaly1.internal:8075
-           path: /some/dummy/path
+           path: /some/local/path
          storage2:
            gitaly_address: tcp://gitaly2.internal:8075
-           path: /some/dummy/path
+           path: /some/local/path
    ```
 
    NOTE: **Note:**
-   `/some/dummy/path` should be set to a local folder that exists, however no data will be stored in
+   `/some/local/path` should be set to a local folder that exists, however no data will be stored in
    this folder. This will no longer be necessary after
    [this issue](https://gitlab.com/gitlab-org/gitaly/-/issues/1282) is resolved.
 
@@ -627,17 +627,17 @@ To configure Gitaly with TLS:
        storages:
          default:
            gitaly_address: tls://gitaly1.internal:9999
-           path: /some/dummy/path
+           path: /some/local/path
          storage1:
            gitaly_address: tls://gitaly1.internal:9999
-           path: /some/dummy/path
+           path: /some/local/path
          storage2:
            gitaly_address: tls://gitaly2.internal:9999
-           path: /some/dummy/path
+           path: /some/local/path
    ```
 
    NOTE: **Note:**
-   `/some/dummy/path` should be set to a local folder that exists, however no data will be stored
+   `/some/local/path` should be set to a local folder that exists, however no data will be stored
    in this folder. This will no longer be necessary after
    [Gitaly issue #1282](https://gitlab.com/gitlab-org/gitaly/-/issues/1282) is resolved.
 

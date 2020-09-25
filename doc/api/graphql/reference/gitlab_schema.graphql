@@ -6398,7 +6398,7 @@ type GeoNode {
   name: String
 
   """
-  Package file registries of the GeoNode. Available only when feature flag `geo_package_file_replication` is enabled
+  Package file registries of the GeoNode
   """
   packageFileRegistries(
     """
@@ -6507,6 +6507,37 @@ type GeoNode {
     """
     last: Int
   ): TerraformStateRegistryConnection
+
+  """
+  Find terraform state version registries on this Geo node. Available only when
+  feature flag `geo_terraform_state_version_replication` is enabled
+  """
+  terraformStateVersionRegistries(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Filters registries by their ID
+    """
+    ids: [ID!]
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+  ): TerraformStateVersionRegistryConnection
 
   """
   The user-facing URL for this Geo node
@@ -16921,6 +16952,86 @@ type TerraformStateRegistryEdge {
   The item at the end of the edge.
   """
   node: TerraformStateRegistry
+}
+
+"""
+Represents the Geo sync and verification state of a terraform state version
+"""
+type TerraformStateVersionRegistry {
+  """
+  Timestamp when the TerraformStateVersionRegistry was created
+  """
+  createdAt: Time
+
+  """
+  ID of the TerraformStateVersionRegistry
+  """
+  id: ID!
+
+  """
+  Error message during sync of the TerraformStateVersionRegistry
+  """
+  lastSyncFailure: String
+
+  """
+  Timestamp of the most recent successful sync of the TerraformStateVersionRegistry
+  """
+  lastSyncedAt: Time
+
+  """
+  Timestamp after which the TerraformStateVersionRegistry should be resynced
+  """
+  retryAt: Time
+
+  """
+  Number of consecutive failed sync attempts of the TerraformStateVersionRegistry
+  """
+  retryCount: Int
+
+  """
+  Sync state of the TerraformStateVersionRegistry
+  """
+  state: RegistryState
+
+  """
+  ID of the terraform state version
+  """
+  terraformStateVersionId: ID!
+}
+
+"""
+The connection type for TerraformStateVersionRegistry.
+"""
+type TerraformStateVersionRegistryConnection {
+  """
+  A list of edges.
+  """
+  edges: [TerraformStateVersionRegistryEdge]
+
+  """
+  A list of nodes.
+  """
+  nodes: [TerraformStateVersionRegistry]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+}
+
+"""
+An edge in a connection.
+"""
+type TerraformStateVersionRegistryEdge {
+  """
+  A cursor for use in pagination.
+  """
+  cursor: String!
+
+  """
+  The item at the end of the edge.
+  """
+  node: TerraformStateVersionRegistry
 }
 
 """

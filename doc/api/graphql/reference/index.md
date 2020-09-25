@@ -2409,6 +2409,21 @@ Represents the sync and verification state of a terraform state.
 | `state` | RegistryState | Sync state of the TerraformStateRegistry |
 | `terraformStateId` | ID! | ID of the TerraformState |
 
+### TerraformStateVersionRegistry
+
+Represents the Geo sync and verification state of a terraform state version.
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `createdAt` | Time | Timestamp when the TerraformStateVersionRegistry was created |
+| `id` | ID! | ID of the TerraformStateVersionRegistry |
+| `lastSyncFailure` | String | Error message during sync of the TerraformStateVersionRegistry |
+| `lastSyncedAt` | Time | Timestamp of the most recent successful sync of the TerraformStateVersionRegistry |
+| `retryAt` | Time | Timestamp after which the TerraformStateVersionRegistry should be resynced |
+| `retryCount` | Int | Number of consecutive failed sync attempts of the TerraformStateVersionRegistry |
+| `state` | RegistryState | Sync state of the TerraformStateVersionRegistry |
+| `terraformStateVersionId` | ID! | ID of the terraform state version |
+
 ### TestReport
 
 Represents a requirement test report.

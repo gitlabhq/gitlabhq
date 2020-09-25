@@ -9066,10 +9066,10 @@ msgstr ""
 msgid "Dismiss Merge Request promotion"
 msgstr ""
 
-msgid "Dismiss Selected"
+msgid "Dismiss Value Stream Analytics introduction box"
 msgstr ""
 
-msgid "Dismiss Value Stream Analytics introduction box"
+msgid "Dismiss selected"
 msgstr ""
 
 msgid "Dismiss trial promotion"
@@ -17929,6 +17929,9 @@ msgid "Or you can choose one of the suggested colors below"
 msgstr ""
 
 msgid "Origin"
+msgstr ""
+
+msgid "Orphaned member"
 msgstr ""
 
 msgid "Other Labels"
