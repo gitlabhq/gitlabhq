@@ -18,11 +18,11 @@ describe('localStorage helper', () => {
 
     localStorage.removeItem('test', 'testing');
 
-    expect(localStorage.getItem('test')).toBeUndefined();
+    expect(localStorage.getItem('test')).toBe(null);
     expect(localStorage.getItem('test2')).toBe('testing');
 
     localStorage.clear();
 
-    expect(localStorage.getItem('test2')).toBeUndefined();
+    expect(localStorage.getItem('test2')).toBe(null);
   });
 });
