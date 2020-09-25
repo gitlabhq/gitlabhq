@@ -14,6 +14,7 @@ const mockAlert = {
   assignees: { nodes: [] },
   notes: { nodes: [] },
   todos: { nodes: [] },
+  __typename: 'AlertManagementAlert',
 };
 
 describe('AlertDetails', () => {
@@ -35,6 +36,8 @@ describe('AlertDetails', () => {
   });
 
   const findTableComponent = () => wrapper.find(GlTable);
+  const findTableKeys = () => findTableComponent().findAll('tbody td:first-child');
+  const findTableField = (fields, fieldName) => fields.filter(row => row.text() === fieldName);
 
   describe('Alert details', () => {
     describe('empty state', () => {
@@ -68,6 +71,24 @@ describe('AlertDetails', () => {
 
       it('renders a cell based on alert data', () => {
         expect(findTableComponent().text()).toContain('SyntaxError: Invalid or unexpected token');
+      });
+
+      it('should show allowed alert fields', () => {
+        const fields = findTableKeys();
+
+        expect(findTableField(fields, 'Iid').exists()).toBe(true);
+        expect(findTableField(fields, 'Title').exists()).toBe(true);
+        expect(findTableField(fields, 'Severity').exists()).toBe(true);
+        expect(findTableField(fields, 'Status').exists()).toBe(true);
+      });
+
+      it('should not show disallowed alert fields', () => {
+        const fields = findTableKeys();
+
+        expect(findTableField(fields, 'Typename').exists()).toBe(false);
+        expect(findTableField(fields, 'Todos').exists()).toBe(false);
+        expect(findTableField(fields, 'Notes').exists()).toBe(false);
+        expect(findTableField(fields, 'Assignees').exists()).toBe(false);
       });
     });
   });

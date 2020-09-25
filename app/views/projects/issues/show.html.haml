@@ -66,9 +66,8 @@
       .title-container
         %h2.title= markdown_field(@issue, :title)
       - if @issue.description.present?
-        .description{ class: can?(current_user, :update_issue, @issue) ? 'js-task-list-container' : '' }
+        .description
           .md= markdown_field(@issue, :description)
-          %textarea.hidden.js-task-list-field= @issue.description
 
       = edited_time_ago_with_tooltip(@issue, placement: 'bottom', html_class: 'issue-edited-ago js-issue-edited-ago')
 

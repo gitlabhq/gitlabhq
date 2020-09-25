@@ -1,0 +1,5 @@
+---
+title: Fix branches_to_be_notified API param for hangouts chat service
+merge_request: 35599
+author:
+type: fixed

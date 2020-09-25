@@ -381,6 +381,12 @@ module API
               type: String,
               desc: 'The Hangouts Chat webhook. e.g. https://chat.googleapis.com/v1/spaces…'
             },
+            {
+              required: false,
+              name: :branches_to_be_notified,
+              type: String,
+              desc: 'Branches for which notifications are to be sent'
+            },
             chat_notification_events
           ].flatten,
           'hipchat' => [

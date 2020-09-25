@@ -1050,14 +1050,6 @@ button.mini-pipeline-graph-dropdown-toggle {
   line-height: 1.5;
 }
 
-.legend-all {
-  color: $gl-text-color-secondary;
-}
-
-.legend-success {
-  color: $green-500;
-}
-
 .test-reports-table {
   .build-trace {
     @include build-trace();

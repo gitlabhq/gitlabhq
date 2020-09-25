@@ -19,7 +19,6 @@
 - auto_devops
 - backup_restore
 - behavior_analytics
-- billing
 - chatops
 - cloud_native_installation
 - cluster_cost_optimization
@@ -87,6 +86,8 @@
 - planning_analytics
 - product_analytics
 - projects
+- provision
+- purchase
 - quality_management
 - release_evidence
 - release_orchestration

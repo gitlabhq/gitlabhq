@@ -132,7 +132,9 @@ function mountLockComponent() {
       ({ store }) => store,
     );
   } else {
-    importStore = import(/* webpackChunkName: 'mrNotesStore' */ '~/mr_notes/stores');
+    importStore = import(/* webpackChunkName: 'mrNotesStore' */ '~/mr_notes/stores').then(
+      store => store.default,
+    );
   }
 
   importStore

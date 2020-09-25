@@ -21,8 +21,6 @@
     .description
       .md
         = markdown_field(@snippet, :description)
-      %textarea.hidden.js-task-list-field
-        = @snippet.description
 
   - if @snippet.updated_at != @snippet.created_at
     = edited_time_ago_with_tooltip(@snippet, placement: 'bottom', exclude_author: true)

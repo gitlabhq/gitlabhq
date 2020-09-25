@@ -22,7 +22,7 @@ RSpec.describe 'User views an open merge request' do
       # returns the whole document, not the node's actual parent element
       expect(find(:xpath, "#{node.path}/..").text).to eq(merge_request.description[2..-1])
 
-      expect(page).to have_content(merge_request.title).and have_content(merge_request.description)
+      expect(page).to have_content(merge_request.title)
     end
   end
 
