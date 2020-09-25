@@ -11,4 +11,4 @@ level: suggestion
 ignorecase: true
 swap:
   sanity (?:check|test): check for completeness
-  dummy: placeholder
+  dummy: placeholder, sample, fake

@@ -44,20 +44,6 @@ RSpec.describe MergeRequestPollWidgetEntity do
         expect(subject[:merge_pipeline]).to eq(pipeline_payload)
       end
 
-      context 'when merge_request_short_pipeline_serializer is disabled' do
-        it 'returns detailed info about pipeline' do
-          stub_feature_flags(merge_request_short_pipeline_serializer: false)
-
-          pipeline.reload
-          pipeline_payload =
-            PipelineDetailsEntity
-              .represent(pipeline, request: request)
-              .as_json
-
-          expect(subject[:merge_pipeline]).to eq(pipeline_payload)
-        end
-      end
-
       context 'when user cannot read pipelines on target project' do
         before do
           project.add_guest(user)
@@ -243,19 +229,6 @@ RSpec.describe MergeRequestPollWidgetEntity do
               .as_json
 
           expect(subject[:pipeline]).to eq(pipeline_payload)
-        end
-
-        context 'when merge_request_short_pipeline_serializer is disabled' do
-          it 'returns detailed info about pipeline' do
-            stub_feature_flags(merge_request_short_pipeline_serializer: false)
-
-            pipeline_payload =
-              PipelineDetailsEntity
-                .represent(pipeline, request: req)
-                .as_json
-
-            expect(subject[:pipeline]).to eq(pipeline_payload)
-          end
         end
 
         it 'returns ci_status' do

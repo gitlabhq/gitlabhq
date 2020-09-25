@@ -3628,6 +3628,16 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
       expect(builds).to include(rspec, jest)
       expect(builds).not_to include(karma)
     end
+
+    it 'returns only latest builds' do
+      obsolete = create(:ci_build, name: "jest", coverage: 10.12, pipeline: pipeline, retried: true)
+      retried  = create(:ci_build, name: "jest", coverage: 20.11, pipeline: pipeline)
+
+      builds = pipeline.builds_with_coverage
+
+      expect(builds).to include(retried)
+      expect(builds).not_to include(obsolete)
+    end
   end
 
   describe '#base_and_ancestors' do

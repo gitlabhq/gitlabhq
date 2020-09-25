@@ -12,9 +12,7 @@ module AuthorizedProjectUpdate
     idempotent!
 
     def perform
-      if ::Feature.enabled?(:periodic_project_authorization_recalculation, default_enabled: true)
-        AuthorizedProjectUpdate::PeriodicRecalculateService.new.execute
-      end
+      AuthorizedProjectUpdate::PeriodicRecalculateService.new.execute
     end
   end
 end

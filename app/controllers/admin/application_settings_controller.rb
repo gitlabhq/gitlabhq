@@ -2,6 +2,7 @@
 
 class Admin::ApplicationSettingsController < Admin::ApplicationController
   include InternalRedirect
+  include ServicesHelper
 
   # NOTE: Use @application_setting in this controller when you need to access
   # application_settings after it has been modified. This is because the
@@ -32,6 +33,8 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
   end
 
   def integrations
+    return not_found unless instance_level_integrations?
+
     @integrations = Service.find_or_initialize_all(Service.for_instance).sort_by(&:title)
   end
 

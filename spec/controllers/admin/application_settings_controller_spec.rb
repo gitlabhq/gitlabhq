@@ -15,6 +15,37 @@ RSpec.describe Admin::ApplicationSettingsController do
     stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
   end
 
+  describe 'GET #integrations' do
+    before do
+      sign_in(admin)
+    end
+
+    context 'when GitLab.com' do
+      before do
+        allow(::Gitlab).to receive(:com?) { true }
+      end
+
+      it 'returns 404' do
+        get :integrations
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    context 'when not GitLab.com' do
+      before do
+        allow(::Gitlab).to receive(:com?) { false }
+      end
+
+      it 'renders correct template' do
+        get :integrations
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to render_template('admin/application_settings/integrations')
+      end
+    end
+  end
+
   describe 'GET #usage_data with no access' do
     before do
       stub_usage_data_connections

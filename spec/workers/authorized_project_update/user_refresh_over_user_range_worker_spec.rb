@@ -14,17 +14,5 @@ RSpec.describe AuthorizedProjectUpdate::UserRefreshOverUserRangeWorker do
 
       subject.perform(start_user_id, end_user_id)
     end
-
-    context 'feature flag :periodic_project_authorization_recalculation is disabled' do
-      before do
-        stub_feature_flags(periodic_project_authorization_recalculation: false)
-      end
-
-      it 'does not call AuthorizedProjectUpdate::RecalculateForUserRangeService' do
-        expect(AuthorizedProjectUpdate::RecalculateForUserRangeService).not_to receive(:new)
-
-        subject.perform(start_user_id, end_user_id)
-      end
-    end
   end
 end

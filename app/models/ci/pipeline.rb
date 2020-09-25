@@ -875,7 +875,7 @@ module Ci
     end
 
     def builds_with_coverage
-      builds.with_coverage
+      builds.latest.with_coverage
     end
 
     def has_reports?(reports_scope)

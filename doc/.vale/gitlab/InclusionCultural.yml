@@ -12,5 +12,5 @@ ignorecase: true
 swap:
   blacklist(?:ed|ing|s)?: denylist
   whitelist(?:ed|ing|s)?: allowlist
-  master: primary
+  master: primary, main
   slave: secondary

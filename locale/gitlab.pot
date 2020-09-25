@@ -1465,12 +1465,6 @@ msgstr ""
 msgid "Active Sessions"
 msgstr ""
 
-msgid "Active Users:"
-msgstr ""
-
-msgid "Active users"
-msgstr ""
-
 msgid "Activity"
 msgstr ""
 
@@ -3980,6 +3974,9 @@ msgid "Below you will find all the groups that are public."
 msgstr ""
 
 msgid "Bi-weekly code coverage"
+msgstr ""
+
+msgid "Billable Users:"
 msgstr ""
 
 msgid "Billing"
@@ -27981,6 +27978,9 @@ msgid "Username or email"
 msgstr ""
 
 msgid "Users"
+msgstr ""
+
+msgid "Users in License"
 msgstr ""
 
 msgid "Users in License:"
