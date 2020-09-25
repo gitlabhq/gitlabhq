@@ -1,6 +1,6 @@
 <script>
 /* eslint-disable vue/no-v-html */
-import { GlTooltipDirective, GlLink, GlDeprecatedButton, GlLoadingIcon, GlIcon } from '@gitlab/ui';
+import { GlTooltipDirective, GlLink, GlButton, GlLoadingIcon } from '@gitlab/ui';
 import defaultAvatarUrl from 'images/no_avatar.png';
 import { sprintf, s__ } from '~/locale';
 import UserAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
@@ -13,13 +13,12 @@ import pathLastCommitQuery from '../queries/path_last_commit.query.graphql';
 
 export default {
   components: {
-    GlIcon,
     UserAvatarLink,
     TimeagoTooltip,
     ClipboardButton,
     CiIcon,
     GlLink,
-    GlDeprecatedButton,
+    GlButton,
     GlLoadingIcon,
   },
   directives: {
@@ -123,15 +122,14 @@ export default {
             class="commit-row-message item-title"
             v-html="commit.titleHtml"
           />
-          <gl-deprecated-button
+          <gl-button
             v-if="commit.descriptionHtml"
             :class="{ open: showDescription }"
             :aria-label="__('Show commit description')"
-            class="text-expander"
+            class="text-expander gl-vertical-align-bottom!"
+            icon="ellipsis_h"
             @click="toggleShowDescription"
-          >
-            <gl-icon name="ellipsis_h" :size="10" />
-          </gl-deprecated-button>
+          />
           <div class="committer">
             <gl-link
               v-if="commit.author"

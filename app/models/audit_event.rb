@@ -66,8 +66,8 @@ class AuditEvent < ApplicationRecord
   end
 
   def lazy_author
-    BatchLoader.for(author_id).batch(default_value: default_author_value) do |author_ids, loader|
-      User.where(id: author_ids).find_each do |user|
+    BatchLoader.for(author_id).batch(default_value: default_author_value, replace_methods: false) do |author_ids, loader|
+      User.select(:id, :name, :username).where(id: author_ids).find_each do |user|
         loader.call(user.id, user)
       end
     end

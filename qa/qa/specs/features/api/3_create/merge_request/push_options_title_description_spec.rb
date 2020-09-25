@@ -30,6 +30,8 @@ module QA
 
         merge_request = project.merge_request_with_title(title)
 
+        expect(merge_request).not_to be_nil, "There was a problem creating the merge request"
+
         aggregate_failures do
           expect(merge_request[:title]).to eq(title)
           expect(merge_request[:description]).to eq(description)

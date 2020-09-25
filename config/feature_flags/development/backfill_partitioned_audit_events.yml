@@ -1,7 +1,0 @@
----
-name: backfill_partitioned_audit_events
-introduced_by_url: 
-rollout_issue_url: 
-group: 
-type: development
-default_enabled: true

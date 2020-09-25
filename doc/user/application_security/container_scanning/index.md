@@ -65,7 +65,7 @@ To enable container scanning in your pipeline, you need the following:
     variables:
       IMAGE_TAG: $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG:$CI_COMMIT_SHA
     script:
-      - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+      - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
       - docker build -t $IMAGE_TAG .
       - docker push $IMAGE_TAG
   ```
@@ -119,7 +119,7 @@ build:
     IMAGE: $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG:$CI_COMMIT_SHA
   script:
     - docker info
-    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
     - docker build -t $IMAGE .
     - docker push $IMAGE
 
@@ -287,7 +287,7 @@ build_latest_vulnerabilities:
   script:
     - docker pull arminc/clair-db:latest
     - docker tag arminc/clair-db:latest $CI_REGISTRY/namespace/clair-vulnerabilities-db
-    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
     - docker push $CI_REGISTRY/namespace/clair-vulnerabilities-db
 ```
 

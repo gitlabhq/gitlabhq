@@ -23,8 +23,8 @@ const logUserTimingMetrics = () => {
     entries.forEach(entry => {
       const { name, entryType, startTime, duration } = entry;
       const typeMapper = {
-        PERFORMANCE_MARK: String.fromCodePoint(0x1f3af),
-        PERFORMANCE_MEASURE: String.fromCodePoint(0x1f4d0),
+        [PERFORMANCE_TYPE_MARK]: String.fromCodePoint(0x1f3af),
+        [PERFORMANCE_TYPE_MEASURE]: String.fromCodePoint(0x1f4d0),
       };
       console.group(`${typeMapper[entryType]} ${name}`);
       if (entryType === PERFORMANCE_TYPE_MARK) {

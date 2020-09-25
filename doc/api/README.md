@@ -158,9 +158,21 @@ for example, without needing to explicitly pass an access token.
 With a few API endpoints you can use a [GitLab CI/CD job token](../user/project/new_ci_build_permissions_model.md#job-token)
 to authenticate with the API:
 
+- Packages:
+  - [Composer Repository](../user/packages/composer_repository/index.md)
+  - [Conan Repository](../user/packages/conan_repository/index.md)
+  - [Container Registry](../user/packages/container_registry/index.md) (`$CI_REGISTRY_PASSWORD` is actually `$CI_JOB_TOKEN`, but this may change in the future)
+  - [Go Proxy](../user/packages/go_proxy/index.md)
+  - [Maven Repository](../user/packages/maven_repository/index.md#authenticating-with-a-ci-job-token)
+  - [NPM Repository](../user/packages/npm_registry/index.md#authenticating-with-a-ci-job-token)
+  - [Nuget Repository](../user/packages/nuget_repository/index.md)
+  - [PyPI Repository](../user/packages/pypi_repository/index.md#using-gitlab-ci-with-pypi-packages)
 - [Get job artifacts](job_artifacts.md#get-job-artifacts)
-- [Pipeline triggers](pipeline_triggers.md)
+- [Pipeline triggers](pipeline_triggers.md) (via `token=` parameter)
 - [Release creation](releases/index.md#create-a-release)
+- [Terraform plan](../user/infrastructure/index.md)
+
+The token is valid as long as the job is running.
 
 ### Impersonation tokens
 

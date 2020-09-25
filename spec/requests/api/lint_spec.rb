@@ -17,23 +17,52 @@ RSpec.describe API::Lint do
         expect(json_response['status']).to eq('valid')
         expect(json_response['errors']).to eq([])
       end
+
+      it 'outputs expanded yaml content' do
+        post api('/ci/lint'), params: { content: yaml_content, include_merged_yaml: true }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to have_key('merged_yaml')
+      end
     end
 
     context 'with an invalid .gitlab_ci.yml' do
-      it 'responds with errors about invalid syntax' do
-        post api('/ci/lint'), params: { content: 'invalid content' }
+      context 'with invalid syntax' do
+        let(:yaml_content) { 'invalid content' }
 
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response['status']).to eq('invalid')
-        expect(json_response['errors']).to eq(['Invalid configuration format'])
+        it 'responds with errors about invalid syntax' do
+          post api('/ci/lint'), params: { content: yaml_content }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['status']).to eq('invalid')
+          expect(json_response['errors']).to eq(['Invalid configuration format'])
+        end
+
+        it 'outputs expanded yaml content' do
+          post api('/ci/lint'), params: { content: yaml_content, include_merged_yaml: true }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response).to have_key('merged_yaml')
+        end
       end
 
-      it "responds with errors about invalid configuration" do
-        post api('/ci/lint'), params: { content: '{ image: "ruby:2.7",  services: ["postgres"] }' }
+      context 'with invalid configuration' do
+        let(:yaml_content) { '{ image: "ruby:2.7",  services: ["postgres"] }' }
 
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response['status']).to eq('invalid')
-        expect(json_response['errors']).to eq(['jobs config should contain at least one visible job'])
+        it 'responds with errors about invalid configuration' do
+          post api('/ci/lint'), params: { content: yaml_content }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['status']).to eq('invalid')
+          expect(json_response['errors']).to eq(['jobs config should contain at least one visible job'])
+        end
+
+        it 'outputs expanded yaml content' do
+          post api('/ci/lint'), params: { content: yaml_content, include_merged_yaml: true }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response).to have_key('merged_yaml')
+        end
       end
     end
 

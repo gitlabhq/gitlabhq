@@ -812,4 +812,72 @@ RSpec.describe GroupPolicy do
       it { is_expected.to be_disallowed(:create_jira_connect_subscription) }
     end
   end
+
+  describe 'read_package' do
+    context 'admin' do
+      let(:current_user) { admin }
+
+      it { is_expected.to be_allowed(:read_package) }
+    end
+
+    context 'with owner' do
+      let(:current_user) { owner }
+
+      it { is_expected.to be_allowed(:read_package) }
+    end
+
+    context 'with maintainer' do
+      let(:current_user) { maintainer }
+
+      it { is_expected.to be_allowed(:read_package) }
+    end
+
+    context 'with reporter' do
+      let(:current_user) { reporter }
+
+      it { is_expected.to be_allowed(:read_package) }
+    end
+
+    context 'with guest' do
+      let(:current_user) { guest }
+
+      it { is_expected.to be_disallowed(:read_package) }
+    end
+
+    context 'with non member' do
+      let(:current_user) { create(:user) }
+
+      it { is_expected.to be_disallowed(:read_package) }
+    end
+
+    context 'with anonymous' do
+      let(:current_user) { nil }
+
+      it { is_expected.to be_disallowed(:read_package) }
+    end
+  end
+
+  context 'deploy token access' do
+    let!(:group_deploy_token) do
+      create(:group_deploy_token, group: group, deploy_token: deploy_token)
+    end
+
+    subject { described_class.new(deploy_token, group) }
+
+    context 'a deploy token with read_package_registry scope' do
+      let(:deploy_token) { create(:deploy_token, :group, read_package_registry: true) }
+
+      it { is_expected.to be_allowed(:read_package) }
+      it { is_expected.to be_allowed(:read_group) }
+      it { is_expected.to be_disallowed(:create_package) }
+    end
+
+    context 'a deploy token with write_package_registry scope' do
+      let(:deploy_token) { create(:deploy_token, :group, write_package_registry: true) }
+
+      it { is_expected.to be_allowed(:create_package) }
+      it { is_expected.to be_allowed(:read_group) }
+      it { is_expected.to be_disallowed(:destroy_package) }
+    end
+  end
 end

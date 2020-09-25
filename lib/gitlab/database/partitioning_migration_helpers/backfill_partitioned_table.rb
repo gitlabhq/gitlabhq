@@ -11,8 +11,6 @@ module Gitlab
         PAUSE_SECONDS = 0.25
 
         def perform(start_id, stop_id, source_table, partitioned_table, source_column)
-          return unless Feature.enabled?(:backfill_partitioned_audit_events, default_enabled: true)
-
           if transaction_open?
             raise "Aborting job to backfill partitioned #{source_table} table! Do not run this job in a transaction block!"
           end

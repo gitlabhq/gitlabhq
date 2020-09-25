@@ -95,6 +95,10 @@ module Gitlab
             }.compact }.compact
         end
 
+        def merged_yaml
+          @ci_config&.to_hash&.to_yaml
+        end
+
         private
 
         def variables

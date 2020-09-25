@@ -30,6 +30,8 @@ module QA
 
         merge_request = project.merge_request_with_title(title)
 
+        expect(merge_request).not_to be_nil, "There was a problem creating the merge request"
+
         merge_request = Resource::MergeRequest.fabricate_via_api! do |mr|
           mr.project = project
           mr.id = merge_request[:iid]

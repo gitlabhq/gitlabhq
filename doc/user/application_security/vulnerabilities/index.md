@@ -38,6 +38,9 @@ the following values:
 | Dismissed | A user has seen this vulnerability and dismissed it               |
 | Resolved  | The vulnerability has been fixed and is no longer in the codebase |
 
+A timeline shows you when the vulnerability status has changed,
+and allows you to comment on a change.
+
 ## Creating an issue for a vulnerability
 
 You can create an issue for a vulnerability by selecting the **Create issue** button.

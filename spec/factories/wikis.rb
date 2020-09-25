@@ -4,7 +4,7 @@ FactoryBot.define do
   factory :wiki do
     transient do
       container { association(:project) }
-      user { association(:user) }
+      user { container.default_owner || association(:user) }
     end
 
     initialize_with { Wiki.for_container(container, user) }

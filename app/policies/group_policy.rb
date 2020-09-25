@@ -46,6 +46,16 @@ class GroupPolicy < BasePolicy
     group_projects_for(user: @user, group: @subject, only_owned: false).any? { |p| p.design_management_enabled? }
   end
 
+  desc "Deploy token with read_package_registry scope"
+  condition(:read_package_registry_deploy_token) do
+    @user.is_a?(DeployToken) && @user.groups.include?(@subject) && @user.read_package_registry
+  end
+
+  desc "Deploy token with write_package_registry scope"
+  condition(:write_package_registry_deploy_token) do
+    @user.is_a?(DeployToken) && @user.groups.include?(@subject) && @user.write_package_registry
+  end
+
   rule { design_management_enabled }.policy do
     enable :read_design_activity
   end
@@ -91,7 +101,6 @@ class GroupPolicy < BasePolicy
 
   rule { developer }.policy do
     enable :admin_milestone
-    enable :read_package
     enable :create_metrics_dashboard_annotation
     enable :delete_metrics_dashboard_annotation
     enable :update_metrics_dashboard_annotation
@@ -105,6 +114,7 @@ class GroupPolicy < BasePolicy
     enable :admin_issue
     enable :read_metrics_dashboard_annotation
     enable :read_prometheus
+    enable :read_package
   end
 
   rule { maintainer }.policy do
@@ -166,6 +176,16 @@ class GroupPolicy < BasePolicy
   rule { owner | admin }.enable :read_statistics
 
   rule { maintainer & can?(:create_projects) }.enable :transfer_projects
+
+  rule { read_package_registry_deploy_token }.policy do
+    enable :read_package
+    enable :read_group
+  end
+
+  rule { write_package_registry_deploy_token }.policy do
+    enable :create_package
+    enable :read_group
+  end
 
   def access_level
     return GroupMember::NO_ACCESS if @user.nil?

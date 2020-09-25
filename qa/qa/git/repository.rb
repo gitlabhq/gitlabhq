@@ -224,7 +224,7 @@ module QA
         alias_method :to_s, :response
 
         def success?
-          exitstatus == 0
+          exitstatus == 0 && !response.include?('Error encountered')
         end
       end
 

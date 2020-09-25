@@ -509,7 +509,7 @@ supported by consolidated configuration form, refer to the following guides:
 | [Container Registry](packages/container_registry.md#use-object-storage) (optional feature) | No |
 | [Merge request diffs](merge_request_diffs.md#using-object-storage) | Yes |
 | [Mattermost](https://docs.mattermost.com/administration/config-settings.html#file-storage)| No |
-| [Packages](packages/index.md#using-object-storage) (optional feature) **(PREMIUM ONLY)** | Yes |
+| [Packages](packages/index.md#using-object-storage) (optional feature) | Yes |
 | [Dependency Proxy](packages/dependency_proxy.md#using-object-storage) (optional feature) **(PREMIUM ONLY)** | Yes |
 | [Pseudonymizer](pseudonymizer.md#configuration) (optional feature) **(ULTIMATE ONLY)** | No |
 | [Autoscale runner caching](https://docs.gitlab.com/runner/configuration/autoscale.html#distributed-runners-caching) (optional for improved performance) | No |

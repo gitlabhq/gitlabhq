@@ -30,6 +30,7 @@ module QA
 
         merge_request = project.merge_request_with_title(title)
 
+        expect(merge_request).not_to be_nil, "There was a problem creating the merge request"
         expect(merge_request[:labels]).to include('one').and include('two').and include('three')
       end
 
@@ -48,6 +49,8 @@ module QA
           end
 
           merge_request = project.merge_request_with_title(title)
+
+          expect(merge_request).not_to be_nil, "There was a problem creating the merge request"
 
           aggregate_failures do
             expect(merge_request[:labels]).to include('two')
