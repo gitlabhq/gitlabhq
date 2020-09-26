@@ -413,6 +413,14 @@ RSpec.describe API::Settings, 'Settings' do
       end
     end
 
+    it 'supports legacy admin_notification_email' do
+      put api('/application/settings', admin),
+          params: { admin_notification_email: 'test@example.com' }
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response['abuse_notification_email']).to eq('test@example.com')
+    end
+
     context "missing sourcegraph_url value when sourcegraph_enabled is true" do
       it "returns a blank parameter error message" do
         put api("/application/settings", admin), params: { sourcegraph_enabled: true }

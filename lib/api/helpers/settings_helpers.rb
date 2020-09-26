@@ -12,6 +12,7 @@ module API
       def self.optional_attributes
         [*::ApplicationSettingsHelper.visible_attributes,
          *::ApplicationSettingsHelper.external_authorization_service_attributes,
+         *::ApplicationSettingsHelper.deprecated_attributes,
          :performance_bar_allowed_group_id].freeze
       end
     end

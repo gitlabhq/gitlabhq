@@ -1,4 +1,6 @@
 - if @errors.present?
-  .alert.alert-danger
-    - @errors.each do |error|
-      = error
+  .gl-alert.gl-alert-danger.gl-mb-5
+    = sprite_icon('error', size: 16, css_class: 'gl-icon gl-alert-icon gl-alert-icon-no-title')
+    .gl-alert-body
+      - @errors.each do |error|
+        = error

@@ -168,7 +168,7 @@ module ApplicationSettingsHelper
 
   def visible_attributes
     [
-      :admin_notification_email,
+      :abuse_notification_email,
       :after_sign_out_path,
       :after_sign_up_text,
       :akismet_api_key,
@@ -342,6 +342,12 @@ module ApplicationSettingsHelper
       :external_authorization_service_enabled,
       :external_authorization_service_timeout,
       :external_authorization_service_url
+    ]
+  end
+
+  def deprecated_attributes
+    [
+      :admin_notification_email # ok to remove in REST API v5
     ]
   end
 
