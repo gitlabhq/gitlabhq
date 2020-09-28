@@ -92,6 +92,46 @@ RSpec.describe Gitlab::UsageDataCounters::IssueActivityUniqueCounter, :clean_git
     end
   end
 
+  context 'for Issue created actions' do
+    it_behaves_like 'tracks and counts action' do
+      let(:action) { described_class::ISSUE_CREATED }
+
+      def track_action(params)
+        described_class.track_issue_created_action(params)
+      end
+    end
+  end
+
+  context 'for Issue closed actions' do
+    it_behaves_like 'tracks and counts action' do
+      let(:action) { described_class::ISSUE_CLOSED }
+
+      def track_action(params)
+        described_class.track_issue_closed_action(params)
+      end
+    end
+  end
+
+  context 'for Issue reopened actions' do
+    it_behaves_like 'tracks and counts action' do
+      let(:action) { described_class::ISSUE_REOPENED }
+
+      def track_action(params)
+        described_class.track_issue_reopened_action(params)
+      end
+    end
+  end
+
+  context 'for Issue label changed actions' do
+    it_behaves_like 'tracks and counts action' do
+      let(:action) { described_class::ISSUE_LABEL_CHANGED }
+
+      def track_action(params)
+        described_class.track_issue_label_changed_action(params)
+      end
+    end
+  end
+
   it 'can return the count of actions per user deduplicated', :aggregate_failures do
     described_class.track_issue_title_changed_action(author: user1)
     described_class.track_issue_description_changed_action(author: user1)

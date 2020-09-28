@@ -187,7 +187,7 @@ RSpec.describe GitlabRoutingHelper do
       let(:ref) { 'test-ref' }
       let(:args) { {} }
 
-      subject { gitlab_raw_snippet_blob_path(snippet, blob.path, ref, args) }
+      subject { gitlab_raw_snippet_blob_path(snippet, blob.path, ref, **args) }
 
       it_behaves_like 'snippet blob raw path'
 
@@ -222,7 +222,7 @@ RSpec.describe GitlabRoutingHelper do
       let(:ref)  { 'snippet-test-ref' }
       let(:args) { {} }
 
-      subject { gitlab_raw_snippet_blob_url(snippet, blob.path, ref, args) }
+      subject { gitlab_raw_snippet_blob_url(snippet, blob.path, ref, **args) }
 
       it_behaves_like 'snippet blob raw url'
 

@@ -34,7 +34,7 @@ module IncidentManagement
         strong_memoize(:pager_duty_processable_events) do
           ::PagerDuty::WebhookPayloadParser
             .call(params.to_h)
-            .filter { |msg| msg['event'].in?(PAGER_DUTY_PROCESSABLE_EVENT_TYPES) }
+            .filter { |msg| msg['event'].to_s.in?(PAGER_DUTY_PROCESSABLE_EVENT_TYPES) }
         end
       end
 

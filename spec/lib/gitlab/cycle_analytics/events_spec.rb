@@ -2,15 +2,19 @@
 
 require 'spec_helper'
 
-RSpec.describe 'cycle analytics events' do
-  let(:project) { create(:project, :repository) }
+RSpec.describe 'cycle analytics events', :aggregate_failures do
+  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:user) { create(:user, :admin) }
   let(:from_date) { 10.days.ago }
-  let(:user) { create(:user, :admin) }
   let!(:context) { create(:issue, project: project, created_at: 2.days.ago) }
 
   let(:events) do
-    CycleAnalytics::ProjectLevel.new(project, options: { from: from_date, current_user: user })[stage].events
+    CycleAnalytics::ProjectLevel
+      .new(project, options: { from: from_date, current_user: user })[stage]
+      .events
   end
+
+  let(:event) { events.first }
 
   before do
     setup(context)
@@ -19,36 +23,15 @@ RSpec.describe 'cycle analytics events' do
   describe '#issue_events' do
     let(:stage) { :issue }
 
-    it 'has the total time' do
-      expect(events.first[:total_time]).not_to be_empty
-    end
-
-    it 'has a title' do
-      expect(events.first[:title]).to eq(context.title)
-    end
-
-    it 'has the URL' do
-      expect(events.first[:url]).not_to be_nil
-    end
-
-    it 'has an iid' do
-      expect(events.first[:iid]).to eq(context.iid.to_s)
-    end
-
-    it 'has a created_at timestamp' do
-      expect(events.first[:created_at]).to end_with('ago')
-    end
-
-    it "has the author's URL" do
-      expect(events.first[:author][:web_url]).not_to be_nil
-    end
-
-    it "has the author's avatar URL" do
-      expect(events.first[:author][:avatar_url]).not_to be_nil
-    end
-
-    it "has the author's name" do
-      expect(events.first[:author][:name]).to eq(context.author.name)
+    it 'has correct attributes' do
+      expect(event[:total_time]).not_to be_empty
+      expect(event[:title]).to eq(context.title)
+      expect(event[:url]).not_to be_nil
+      expect(event[:iid]).to eq(context.iid.to_s)
+      expect(event[:created_at]).to end_with('ago')
+      expect(event[:author][:web_url]).not_to be_nil
+      expect(event[:author][:avatar_url]).not_to be_nil
+      expect(event[:author][:name]).to eq(context.author.name)
     end
   end
 
@@ -59,36 +42,15 @@ RSpec.describe 'cycle analytics events' do
       create_commit_referencing_issue(context)
     end
 
-    it 'has the total time' do
-      expect(events.first[:total_time]).not_to be_empty
-    end
-
-    it 'has a title' do
-      expect(events.first[:title]).to eq(context.title)
-    end
-
-    it 'has the URL' do
-      expect(events.first[:url]).not_to be_nil
-    end
-
-    it 'has an iid' do
-      expect(events.first[:iid]).to eq(context.iid.to_s)
-    end
-
-    it 'has a created_at timestamp' do
-      expect(events.first[:created_at]).to end_with('ago')
-    end
-
-    it "has the author's URL" do
-      expect(events.first[:author][:web_url]).not_to be_nil
-    end
-
-    it "has the author's avatar URL" do
-      expect(events.first[:author][:avatar_url]).not_to be_nil
-    end
-
-    it "has the author's name" do
-      expect(events.first[:author][:name]).to eq(context.author.name)
+    it 'has correct attributes' do
+      expect(event[:total_time]).not_to be_empty
+      expect(event[:title]).to eq(context.title)
+      expect(event[:url]).not_to be_nil
+      expect(event[:iid]).to eq(context.iid.to_s)
+      expect(event[:created_at]).to end_with('ago')
+      expect(event[:author][:web_url]).not_to be_nil
+      expect(event[:author][:avatar_url]).not_to be_nil
+      expect(event[:author][:name]).to eq(context.author.name)
     end
   end
 
@@ -100,32 +62,14 @@ RSpec.describe 'cycle analytics events' do
       create_commit_referencing_issue(context)
     end
 
-    it 'has the total time' do
-      expect(events.first[:total_time]).not_to be_empty
-    end
-
-    it 'has a title' do
-      expect(events.first[:title]).to eq('Awesome merge_request')
-    end
-
-    it 'has an iid' do
-      expect(events.first[:iid]).to eq(context.iid.to_s)
-    end
-
-    it 'has a created_at timestamp' do
-      expect(events.first[:created_at]).to end_with('ago')
-    end
-
-    it "has the author's URL" do
-      expect(events.first[:author][:web_url]).not_to be_nil
-    end
-
-    it "has the author's avatar URL" do
-      expect(events.first[:author][:avatar_url]).not_to be_nil
-    end
-
-    it "has the author's name" do
-      expect(events.first[:author][:name]).to eq(MergeRequest.first.author.name)
+    it 'has correct attributes' do
+      expect(event[:total_time]).not_to be_empty
+      expect(event[:title]).to eq('Awesome merge_request')
+      expect(event[:iid]).to eq(context.iid.to_s)
+      expect(event[:created_at]).to end_with('ago')
+      expect(event[:author][:web_url]).not_to be_nil
+      expect(event[:author][:avatar_url]).not_to be_nil
+      expect(event[:author][:name]).to eq(MergeRequest.first.author.name)
     end
   end
 
@@ -152,40 +96,16 @@ RSpec.describe 'cycle analytics events' do
       merge_merge_requests_closing_issue(user, project, context)
     end
 
-    it 'has the name' do
-      expect(events.first[:name]).not_to be_nil
-    end
-
-    it 'has the ID' do
-      expect(events.first[:id]).not_to be_nil
-    end
-
-    it 'has the URL' do
-      expect(events.first[:url]).not_to be_nil
-    end
-
-    it 'has the branch name' do
-      expect(events.first[:branch]).not_to be_nil
-    end
-
-    it 'has the branch URL' do
-      expect(events.first[:branch][:url]).not_to be_nil
-    end
-
-    it 'has the short SHA' do
-      expect(events.first[:short_sha]).not_to be_nil
-    end
-
-    it 'has the commit URL' do
-      expect(events.first[:commit_url]).not_to be_nil
-    end
-
-    it 'has the date' do
-      expect(events.first[:date]).not_to be_nil
-    end
-
-    it 'has the total time' do
-      expect(events.first[:total_time]).not_to be_empty
+    it 'has correct attributes' do
+      expect(event[:name]).not_to be_nil
+      expect(event[:id]).not_to be_nil
+      expect(event[:url]).not_to be_nil
+      expect(event[:branch]).not_to be_nil
+      expect(event[:branch][:url]).not_to be_nil
+      expect(event[:short_sha]).not_to be_nil
+      expect(event[:commit_url]).not_to be_nil
+      expect(event[:date]).not_to be_nil
+      expect(event[:total_time]).not_to be_empty
     end
   end
 
@@ -197,40 +117,16 @@ RSpec.describe 'cycle analytics events' do
       merge_merge_requests_closing_issue(user, project, context)
     end
 
-    it 'has the total time' do
-      expect(events.first[:total_time]).not_to be_empty
-    end
-
-    it 'has a title' do
-      expect(events.first[:title]).to eq('Awesome merge_request')
-    end
-
-    it 'has an iid' do
-      expect(events.first[:iid]).to eq(context.iid.to_s)
-    end
-
-    it 'has the URL' do
-      expect(events.first[:url]).not_to be_nil
-    end
-
-    it 'has a state' do
-      expect(events.first[:state]).not_to be_nil
-    end
-
-    it 'has a created_at timestamp' do
-      expect(events.first[:created_at]).not_to be_nil
-    end
-
-    it "has the author's URL" do
-      expect(events.first[:author][:web_url]).not_to be_nil
-    end
-
-    it "has the author's avatar URL" do
-      expect(events.first[:author][:avatar_url]).not_to be_nil
-    end
-
-    it "has the author's name" do
-      expect(events.first[:author][:name]).to eq(MergeRequest.first.author.name)
+    it 'has correct attributes' do
+      expect(event[:total_time]).not_to be_empty
+      expect(event[:title]).to eq('Awesome merge_request')
+      expect(event[:iid]).to eq(context.iid.to_s)
+      expect(event[:url]).not_to be_nil
+      expect(event[:state]).not_to be_nil
+      expect(event[:created_at]).not_to be_nil
+      expect(event[:author][:web_url]).not_to be_nil
+      expect(event[:author][:avatar_url]).not_to be_nil
+      expect(event[:author][:name]).to eq(MergeRequest.first.author.name)
     end
   end
 
@@ -257,58 +153,25 @@ RSpec.describe 'cycle analytics events' do
       deploy_master(user, project)
     end
 
-    it 'has the name' do
-      expect(events.first[:name]).not_to be_nil
-    end
-
-    it 'has the ID' do
-      expect(events.first[:id]).not_to be_nil
-    end
-
-    it 'has the URL' do
-      expect(events.first[:url]).not_to be_nil
-    end
-
-    it 'has the branch name' do
-      expect(events.first[:branch]).not_to be_nil
-    end
-
-    it 'has the branch URL' do
-      expect(events.first[:branch][:url]).not_to be_nil
-    end
-
-    it 'has the short SHA' do
-      expect(events.first[:short_sha]).not_to be_nil
-    end
-
-    it 'has the commit URL' do
-      expect(events.first[:commit_url]).not_to be_nil
-    end
-
-    it 'has the date' do
-      expect(events.first[:date]).not_to be_nil
-    end
-
-    it 'has the total time' do
-      expect(events.first[:total_time]).not_to be_empty
-    end
-
-    it "has the author's URL" do
-      expect(events.first[:author][:web_url]).not_to be_nil
-    end
-
-    it "has the author's avatar URL" do
-      expect(events.first[:author][:avatar_url]).not_to be_nil
-    end
-
-    it "has the author's name" do
-      expect(events.first[:author][:name]).to eq(MergeRequest.first.author.name)
+    it 'has correct attributes' do
+      expect(event[:name]).not_to be_nil
+      expect(event[:id]).not_to be_nil
+      expect(event[:url]).not_to be_nil
+      expect(event[:branch]).not_to be_nil
+      expect(event[:branch][:url]).not_to be_nil
+      expect(event[:short_sha]).not_to be_nil
+      expect(event[:commit_url]).not_to be_nil
+      expect(event[:date]).not_to be_nil
+      expect(event[:total_time]).not_to be_empty
+      expect(event[:author][:web_url]).not_to be_nil
+      expect(event[:author][:avatar_url]).not_to be_nil
+      expect(event[:author][:name]).to eq(MergeRequest.first.author.name)
     end
   end
 
   def setup(context)
     milestone = create(:milestone, project: project)
-    context.update(milestone: milestone)
+    context.update!(milestone: milestone)
     mr = create_merge_request_closing_issue(user, project, context, commit_message: "References #{context.to_reference}")
 
     ProcessCommitWorker.new.perform(project.id, user.id, mr.commits.last.to_hash)

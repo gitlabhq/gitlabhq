@@ -229,7 +229,7 @@ module UsageDataHelpers
     receive_matchers.each { |m| expect(prometheus_client).to m }
   end
 
-  def for_defined_days_back(days: [29, 2])
+  def for_defined_days_back(days: [31, 3])
     days.each do |n|
       Timecop.travel(n.days.ago) do
         yield

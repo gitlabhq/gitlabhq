@@ -83,7 +83,7 @@ module Snippets
     def create_commit
       attrs = commit_attrs(@snippet, INITIAL_COMMIT_MSG)
 
-      @snippet.snippet_repository.multi_files_action(current_user, files_to_commit(@snippet), attrs)
+      @snippet.snippet_repository.multi_files_action(current_user, files_to_commit(@snippet), **attrs)
     end
 
     def move_temporary_files

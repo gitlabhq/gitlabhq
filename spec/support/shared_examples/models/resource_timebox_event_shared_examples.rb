@@ -73,3 +73,13 @@ RSpec.shared_examples 'timebox resource event actions' do
     end
   end
 end
+
+RSpec.shared_examples 'timebox resource tracks issue metrics' do |type|
+  describe '#usage_metrics' do
+    it 'tracks usage' do
+      expect(Gitlab::UsageDataCounters::IssueActivityUniqueCounter).to receive(:"track_issue_#{type}_changed_action")
+
+      create(described_class.name.underscore.to_sym, issue: create(:issue))
+    end
+  end
+end

@@ -100,7 +100,7 @@ module Snippets
       attrs = commit_attrs(snippet, INITIAL_COMMIT_MSG)
       actions = [{ file_path: snippet.file_name, content: snippet.content }]
 
-      snippet.snippet_repository.multi_files_action(current_user, actions, attrs)
+      snippet.snippet_repository.multi_files_action(current_user, actions, **attrs)
     end
 
     def create_commit(snippet)
@@ -108,7 +108,7 @@ module Snippets
 
       attrs = commit_attrs(snippet, UPDATE_COMMIT_MSG)
 
-      snippet.snippet_repository.multi_files_action(current_user, files_to_commit(snippet), attrs)
+      snippet.snippet_repository.multi_files_action(current_user, files_to_commit(snippet), **attrs)
     end
 
     # Because we are removing repositories we don't want to remove

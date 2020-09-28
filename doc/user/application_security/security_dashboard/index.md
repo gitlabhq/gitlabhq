@@ -70,7 +70,7 @@ Critical, High, Medium, Low, Info, Unknown). Below this, a table shows each vuln
 and description. Clicking a vulnerability takes you to its [Vulnerability Details](../vulnerabilities)
 page to view more information about that vulnerability.
 
-![Project Security Dashboard](img/project_security_dashboard_v13_3.png)
+![Project Security Dashboard](img/project_security_dashboard_v13_4.png)
 
 You can filter the vulnerabilities by one or more of the following:
 
@@ -83,7 +83,7 @@ You can also dismiss vulnerabilities in the table:
 1. Select the checkbox for each vulnerability you want to dismiss.
 1. In the menu that appears, select the reason for dismissal and click **Dismiss Selected**.
 
-![Project Security Dashboard](img/project_security_dashboard_v13_2.png)
+![Project Security Dashboard](img/project_security_dashboard_dismissal_v13_4.png)
 
 ## Group Security Dashboard
 
@@ -232,8 +232,14 @@ To create an issue associated with the vulnerability, click the **Create Issue**
 
 ![Create an issue for the vulnerability](img/vulnerability_page_v13_1.png)
 
-Once you create the issue, the vulnerability list contains a link to the issue and an icon whose
-color indicates the issue's status (green for open issues, blue for closed issues).
+Once you create the issue, the linked issue icon in the vulnerability list:
+
+- Indicates that an issue has been created for that vulnerability.
+- Shows a tooltip that contains a link to the issue and an icon whose
+  color indicates the issue's status:
+
+  - Open issues: green
+  - Closed issues: blue
 
 ![Display attached issues](img/vulnerability_list_table_v13_4.png)
 

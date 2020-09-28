@@ -1020,7 +1020,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
     end
   end
 
-  def for_defined_days_back(days: [29, 2])
+  def for_defined_days_back(days: [31, 3])
     days.each do |n|
       Timecop.travel(n.days.ago) do
         yield

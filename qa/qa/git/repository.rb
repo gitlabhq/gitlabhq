@@ -213,6 +213,10 @@ module QA
         run("cat #{file}").to_s
       end
 
+      def delete_netrc
+        File.delete(netrc_file_path) if File.exist?(netrc_file_path)
+      end
+
       private
 
       attr_reader :uri, :username, :password, :known_hosts_file,

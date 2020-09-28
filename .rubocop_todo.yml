@@ -942,7 +942,6 @@ Rails/SaveBang:
     - 'spec/lib/gitlab/ci/ansi2json/style_spec.rb'
     - 'spec/lib/gitlab/ci/status/build/common_spec.rb'
     - 'spec/lib/gitlab/cycle_analytics/base_event_fetcher_spec.rb'
-    - 'spec/lib/gitlab/cycle_analytics/events_spec.rb'
     - 'spec/lib/gitlab/database/custom_structure_spec.rb'
     - 'spec/lib/gitlab/database/partitioning_migration_helpers/table_management_helpers_spec.rb'
     - 'spec/lib/gitlab/database_importers/self_monitoring/project/create_service_spec.rb'

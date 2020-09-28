@@ -11,6 +11,7 @@ RSpec.describe ResourceMilestoneEvent, type: :model do
   it_behaves_like 'timebox resource event validations'
   it_behaves_like 'timebox resource event states'
   it_behaves_like 'timebox resource event actions'
+  it_behaves_like 'timebox resource tracks issue metrics', :milestone
 
   describe 'associations' do
     it { is_expected.to belong_to(:milestone) }

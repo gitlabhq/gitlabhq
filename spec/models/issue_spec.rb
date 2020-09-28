@@ -105,6 +105,14 @@ RSpec.describe Issue do
         create(:issue, project: reusable_project)
       end
     end
+
+    describe '#record_create_action' do
+      it 'records the creation action after saving' do
+        expect(Gitlab::UsageDataCounters::IssueActivityUniqueCounter).to receive(:track_issue_created_action)
+
+        create(:issue)
+      end
+    end
   end
 
   describe '.with_alert_management_alerts' do

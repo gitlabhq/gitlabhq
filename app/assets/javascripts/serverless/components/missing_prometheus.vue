@@ -1,11 +1,11 @@
 <script>
-import { GlDeprecatedButton, GlLink } from '@gitlab/ui';
+import { GlButton, GlLink } from '@gitlab/ui';
 import { mapState } from 'vuex';
 import { s__ } from '../../locale';
 
 export default {
   components: {
-    GlDeprecatedButton,
+    GlButton,
     GlLink,
   },
   props: {
@@ -47,9 +47,9 @@ export default {
         </p>
 
         <div v-if="!missingData" class="text-left">
-          <gl-deprecated-button :href="clustersPath" variant="success">
+          <gl-button :href="clustersPath" variant="success" category="primary">
             {{ s__('ServerlessDetails|Install Prometheus') }}
-          </gl-deprecated-button>
+          </gl-button>
         </div>
       </div>
     </div>

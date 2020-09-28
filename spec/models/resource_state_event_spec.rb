@@ -39,4 +39,20 @@ RSpec.describe ResourceStateEvent, type: :model do
       end
     end
   end
+
+  context 'callbacks' do
+    describe '#usage_metrics' do
+      it 'tracks closed issues' do
+        expect(Gitlab::UsageDataCounters::IssueActivityUniqueCounter).to receive(:track_issue_closed_action)
+
+        create(described_class.name.underscore.to_sym, issue: issue, state: described_class.states[:closed])
+      end
+
+      it 'tracks reopened issues' do
+        expect(Gitlab::UsageDataCounters::IssueActivityUniqueCounter).to receive(:track_issue_reopened_action)
+
+        create(described_class.name.underscore.to_sym, issue: issue, state: described_class.states[:reopened])
+      end
+    end
+  end
 end

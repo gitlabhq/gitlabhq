@@ -1,7 +1,7 @@
 ---
 name: similarity_search
-introduced_by_url: 
-rollout_issue_url: 
-group: 
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/37300/
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/38675
+group: group::analytics
 type: development
 default_enabled: true

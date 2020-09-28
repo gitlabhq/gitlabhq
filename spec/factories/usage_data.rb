@@ -97,9 +97,9 @@ FactoryBot.define do
       create(:grafana_integration, project: projects[1], enabled: true)
       create(:grafana_integration, project: projects[2], enabled: false)
 
-      create(:package, project: projects[0])
-      create(:package, project: projects[0])
-      create(:package, project: projects[1])
+      create(:package, project: projects[0], created_at: 3.days.ago)
+      create(:package, project: projects[0], created_at: 3.days.ago)
+      create(:package, project: projects[1], created_at: 3.days.ago)
       create(:package, created_at: 2.months.ago, project: projects[1])
 
       # User Preferences
@@ -109,7 +109,7 @@ FactoryBot.define do
 
       # Create fresh & a month (28-days SMAU) old  data
       env = create(:environment, project: projects[3])
-      [2, 29].each do |n|
+      [3, 31].each do |n|
         deployment_options = { created_at: n.days.ago, project: env.project, environment: env }
         create(:deployment, :failed, deployment_options)
         create(:deployment, :success, deployment_options)
