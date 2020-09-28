@@ -482,6 +482,14 @@ git_data_dirs({
   'storage1' => { 'gitaly_address' => 'tcp://gitlab.internal:8075', 'path' => '/mnt/gitlab/git-data' },
   'storage2' => { 'gitaly_address' => 'tcp://gitaly2.internal:8075' },
 })
+
+# Make Gitaly accept connections on all network interfaces
+gitaly['listen_addr'] = "0.0.0.0:8075"
+
+# Or for TLS
+gitaly['tls_listen_addr'] = "0.0.0.0:9999"
+gitaly['certificate_path'] = "/etc/gitlab/ssl/cert.pem"
+gitaly['key_path'] = "/etc/gitlab/ssl/key.pem"
 ```
 
 `path` can only be included for storage shards on the local Gitaly server.
@@ -537,11 +545,7 @@ Additionally, the certificate (or its certificate authority) must be installed o
 
 Note the following:
 
-- The certificate must specify the address you use to access the Gitaly server. If you are:
-  - Addressing the Gitaly server by a hostname, you can either use the Common Name field for this,
-    or add it as a Subject Alternative Name.
-  - Addressing the Gitaly server by its IP address, you must add it as a Subject Alternative Name to
-    the certificate. [gRPC does not support using an IP address as Common Name in a certificate](https://github.com/grpc/grpc/issues/2691).
+- The certificate must specify the address you use to access the Gitaly server. You must add the hostname or IP address as a Subject Alternative Name to the certificate.
 - You can configure Gitaly servers with both an unencrypted listening address `listen_addr` and an
   encrypted listening address `tls_listen_addr` at the same time. This allows you to gradually
   transition from unencrypted to encrypted traffic if necessary.

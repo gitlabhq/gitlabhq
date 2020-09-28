@@ -993,6 +993,8 @@ information, see the [strong consistency epic](https://gitlab.com/groups/gitlab-
 
 To enable strong consistency:
 
+- In GitLab 13.5, you must use Git v2.28.0 or higher on Gitaly nodes to enable
+  strong consistency.
 - In GitLab 13.4 and later, the strong consistency voting strategy has been
   improved. Instead of requiring all nodes to agree, only the primary and half
   of the secondaries need to agree. This strategy is enabled by default. To
