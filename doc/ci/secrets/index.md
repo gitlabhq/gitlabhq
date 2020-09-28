@@ -103,7 +103,7 @@ the secrets stored in Vault by defining them with the `vault` keyword:
 ```yaml
 secrets:
   DATABASE_PASSWORD:
-    vault: production/db/password@ops # translates to secret `ops/data/production/db`, field `password`
+    vault: production/db/password@ops  # translates to secret `ops/data/production/db`, field `password`
 ```
 
 In this example:

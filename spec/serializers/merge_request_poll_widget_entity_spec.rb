@@ -222,13 +222,21 @@ RSpec.describe MergeRequestPollWidgetEntity do
       context 'when is up to date' do
         let(:req) { double('request', current_user: user, project: project) }
 
-        it 'returns pipeline' do
-          pipeline_payload =
-            MergeRequests::PipelineEntity
-              .represent(pipeline, request: req)
-              .as_json
+        it 'does not return pipeline' do
+          expect(subject[:pipeline]).to be_nil
+        end
 
-          expect(subject[:pipeline]).to eq(pipeline_payload)
+        context 'when merge_request_cached_pipeline_serializer is disabled' do
+          it 'returns detailed info about pipeline' do
+            stub_feature_flags(merge_request_cached_pipeline_serializer: false)
+
+            pipeline_payload =
+              MergeRequests::PipelineEntity
+                .represent(pipeline, request: req)
+                .as_json
+
+            expect(subject[:pipeline]).to eq(pipeline_payload)
+          end
         end
 
         it 'returns ci_status' do
@@ -248,10 +256,6 @@ RSpec.describe MergeRequestPollWidgetEntity do
     context 'when user does not have access to pipelines' do
       let(:result) { false }
       let(:req) { double('request', current_user: user, project: project) }
-
-      it 'does not have pipeline' do
-        expect(subject[:pipeline]).to eq(nil)
-      end
 
       it 'does not return ci_status' do
         expect(subject[:ci_status]).to eq(nil)

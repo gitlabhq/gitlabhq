@@ -664,6 +664,19 @@ describe('URL utility', () => {
     });
   });
 
+  describe('cleanLeadingSeparator', () => {
+    it.each`
+      path            | expected
+      ${'/foo/bar'}   | ${'foo/bar'}
+      ${'foo/bar'}    | ${'foo/bar'}
+      ${'//foo/bar'}  | ${'foo/bar'}
+      ${'/./foo/bar'} | ${'./foo/bar'}
+      ${''}           | ${''}
+    `('$path becomes $expected', ({ path, expected }) => {
+      expect(urlUtils.cleanLeadingSeparator(path)).toBe(expected);
+    });
+  });
+
   describe('joinPaths', () => {
     it.each`
       paths                                       | expected
@@ -785,6 +798,20 @@ describe('URL utility', () => {
       ${'http://foo.bar:8080'} | ${'http'}
     `('returns correct protocol for $url', ({ url, expectation }) => {
       expect(urlUtils.getHTTPProtocol(url)).toBe(expectation);
+    });
+  });
+
+  describe('stripPathTail', () => {
+    it.each`
+      path                     | expected
+      ${''}                    | ${''}
+      ${'index.html'}          | ${''}
+      ${'/'}                   | ${'/'}
+      ${'/foo/bar'}            | ${'/foo/'}
+      ${'/foo/bar/'}           | ${'/foo/bar/'}
+      ${'/foo/bar/index.html'} | ${'/foo/bar/'}
+    `('strips the filename from $path => $expected', ({ path, expected }) => {
+      expect(urlUtils.stripPathTail(path)).toBe(expected);
     });
   });
 });

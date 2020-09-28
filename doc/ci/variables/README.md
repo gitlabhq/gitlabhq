@@ -103,8 +103,8 @@ variables:
 You can then call its value in your script:
 
 ```yaml
-  script:
-    - echo "$TEST"
+script:
+  - echo "$TEST"
 ```
 
 For more details, see [`.gitlab-ci.yml` defined variables](#gitlab-ciyml-defined-variables).

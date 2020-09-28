@@ -1547,7 +1547,7 @@ docker build:
         - Dockerfile
         - docker/scripts/*
       when: manual
-    # - when: never would be redundant here, this is implied any time rules are listed.
+      # - when: never would be redundant here, this is implied any time rules are listed.
 ```
 
 Keywords such as `branches` or `refs` that are currently available for
@@ -4074,7 +4074,7 @@ field to fetch the value for:
 job:
   secrets:
     DATABASE_PASSWORD:
-      vault: production/db/password # translates to secret `kv-v2/data/production/db`, field `password`
+      vault: production/db/password  # translates to secret `kv-v2/data/production/db`, field `password`
 ```
 
 You can specify a custom secrets engine path by adding a suffix starting with `@`:
@@ -4083,7 +4083,7 @@ You can specify a custom secrets engine path by adding a suffix starting with `@
 job:
   secrets:
     DATABASE_PASSWORD:
-      vault: production/db/password@ops # translates to secret `ops/data/production/db`, field `password`
+      vault: production/db/password@ops  # translates to secret `ops/data/production/db`, field `password`
 ```
 
 In the detailed form of the syntax, you can specify all details explicitly:

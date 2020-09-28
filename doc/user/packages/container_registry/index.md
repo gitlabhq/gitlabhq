@@ -307,15 +307,15 @@ in addition to the steps in the
 Below is an example of what your `.gitlab-ci.yml` should look like:
 
 ```yaml
- build:
-   image: $CI_REGISTRY/group/project/docker:19.03.12
-   services:
-     - name: $CI_REGISTRY/group/project/docker:19.03.12-dind
-       alias: docker
-   stage: build
-   script:
-     - docker build -t my-docker-image .
-     - docker run my-docker-image /script/to/run/tests
+build:
+  image: $CI_REGISTRY/group/project/docker:19.03.12
+  services:
+    - name: $CI_REGISTRY/group/project/docker:19.03.12-dind
+      alias: docker
+  stage: build
+  script:
+    - docker build -t my-docker-image .
+    - docker run my-docker-image /script/to/run/tests
 ```
 
 If you forget to set the service alias, the `docker:19.03.12` image is unable to find the

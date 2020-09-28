@@ -250,21 +250,21 @@ is updated:
 1. Add a `deploy` job to your `.gitlab-ci.yml` file:
 
    ```yaml
-    image: mcr.microsoft.com/dotnet/core/sdk:3.1
+   image: mcr.microsoft.com/dotnet/core/sdk:3.1
 
-    stages:
-      - deploy
+   stages:
+     - deploy
 
-    deploy:
-      stage: deploy
-      script:
-        - dotnet restore -p:Configuration=Release
-        - dotnet build -c Release
-        - dotnet pack -c Release
-        - dotnet nuget add source "$CI_SERVER_URL/api/v4/projects/$CI_PROJECT_ID/packages/nuget/index.json" --name gitlab --username gitlab-ci-token --password $CI_JOB_TOKEN --store-password-in-clear-text
-        - dotnet nuget push "bin/Release/*.nupkg" --source gitlab
-      only:
-        - master
+   deploy:
+     stage: deploy
+     script:
+       - dotnet restore -p:Configuration=Release
+       - dotnet build -c Release
+       - dotnet pack -c Release
+       - dotnet nuget add source "$CI_SERVER_URL/api/v4/projects/$CI_PROJECT_ID/packages/nuget/index.json" --name gitlab --username gitlab-ci-token --password $CI_JOB_TOKEN --store-password-in-clear-text
+       - dotnet nuget push "bin/Release/*.nupkg" --source gitlab
+     only:
+       - master
    ```
 
 1. Commit the changes and push it to your GitLab repository to trigger a new CI build.

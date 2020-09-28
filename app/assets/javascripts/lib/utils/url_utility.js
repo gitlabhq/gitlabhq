@@ -16,7 +16,7 @@ function decodeUrlParameter(val) {
   return decodeURIComponent(val.replace(/\+/g, '%20'));
 }
 
-function cleanLeadingSeparator(path) {
+export function cleanLeadingSeparator(path) {
   return path.replace(PATH_SEPARATOR_LEADING_REGEX, '');
 }
 
@@ -434,4 +434,13 @@ export function getHTTPProtocol(url) {
   }
   const protocol = url.split(':');
   return protocol.length > 1 ? protocol[0] : undefined;
+}
+
+/**
+ * Strips the filename from the given path by removing every non-slash character from the end of the
+ * passed parameter.
+ * @param {string} path
+ */
+export function stripPathTail(path = '') {
+  return path.replace(/[^/]+$/, '');
 }

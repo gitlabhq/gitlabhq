@@ -251,7 +251,7 @@ The table below shows what kind of documentation goes where.
 | `doc/legal/`          | Legal documents about contributing to GitLab.                                                                                           |
 | `doc/install/`        | Contains instructions for installing GitLab.                                                                                            |
 | `doc/update/`         | Contains instructions for updating GitLab.                                                                                              |
-| `doc/topics/`         | Indexes per topic (`doc/topics/topic-name/index.md`): all resources for that topic.                                                     |
+| `doc/topics/`         | Indexes per topic (`doc/topics/topic_name/index.md`): all resources for that topic.                                                     |
 
 ### Work with directories and files
 

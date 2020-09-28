@@ -5,19 +5,19 @@ require_relative 'workhorse_helpers'
 module GitHttpHelpers
   include WorkhorseHelpers
 
-  def clone_get(project, options = {})
+  def clone_get(project, **options)
     get "/#{project}/info/refs", params: { service: 'git-upload-pack' }, headers: auth_env(*options.values_at(:user, :password, :spnego_request_token))
   end
 
-  def clone_post(project, options = {})
+  def clone_post(project, **options)
     post "/#{project}/git-upload-pack", headers: auth_env(*options.values_at(:user, :password, :spnego_request_token))
   end
 
-  def push_get(project, options = {})
+  def push_get(project, **options)
     get "/#{project}/info/refs", params: { service: 'git-receive-pack' }, headers: auth_env(*options.values_at(:user, :password, :spnego_request_token))
   end
 
-  def push_post(project, options = {})
+  def push_post(project, **options)
     post "/#{project}/git-receive-pack", headers: auth_env(*options.values_at(:user, :password, :spnego_request_token))
   end
 

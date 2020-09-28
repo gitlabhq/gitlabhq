@@ -119,7 +119,7 @@ Once the remote is set, you can use the remote when running Conan commands by ad
 For example:
 
 ```shell
-conan search Hello* --all --remote=gitlab
+conan search Hello* --remote=gitlab
 ```
 
 ### Instance level remote
@@ -285,9 +285,9 @@ The `conan search` command can be run searching by full or partial package name,
 To search using a partial name, use the wildcard symbol `*`, which should be placed at the end of your search (for example, `my-packa*`):
 
 ```shell
-conan search Hello --all --remote=gitlab
-conan search He* --all --remote=gitlab
-conan search Hello/0.1@mycompany/beta --all --remote=gitlab
+conan search Hello --remote=gitlab
+conan search He* --remote=gitlab
+conan search Hello/0.1@mycompany/beta --remote=gitlab
 ```
 
 The scope of your search includes all projects you have permission to access, this includes your private projects as well as all public projects.
@@ -330,7 +330,6 @@ create_package:
     - conan new <package-name>/0.1 -t
     - conan create . <group-name>+<project-name>/stable
     - CONAN_LOGIN_USERNAME=ci_user CONAN_PASSWORD=${CI_JOB_TOKEN} conan upload <package-name>/0.1@<group-name>+<project-name>/stable --all --remote=gitlab
-
 ```
 
 You can find additional Conan images to use as the base of your CI file

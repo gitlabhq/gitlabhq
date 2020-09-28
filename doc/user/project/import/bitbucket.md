@@ -76,6 +76,3 @@ If you've accidentally started the import process with the wrong account, follow
 1. Revoke GitLab access to your Bitbucket account, essentially reversing the process in the following procedure: [Import your Bitbucket repositories](#import-your-bitbucket-repositories).
 
 1. Sign out of the Bitbucket account. Follow the procedure linked from the previous step.
-
-NOTE: **Note:**
-To import a repository including LFS objects from a Bitbucket server repository, use the [Repo by URL](../import/repo_by_url.md) importer.

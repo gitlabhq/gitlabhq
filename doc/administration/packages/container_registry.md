@@ -589,7 +589,7 @@ In the examples below we set the Registry's port to `5001`.
    [`http:addr`](https://docs.docker.com/registry/configuration/#http) value:
 
    ```yaml
-   http
+   http:
      addr: localhost:5001
    ```
 
@@ -1065,7 +1065,7 @@ Start with a value between `25000000` (25MB) and `50000000` (50MB).
      s3:
        accesskey: 'AKIAKIAKI'
        secretkey: 'secret123'
-       bucket:    'gitlab-registry-bucket-AKIAKIAKI'
+       bucket: 'gitlab-registry-bucket-AKIAKIAKI'
        chunksize: 25000000
    ```
 

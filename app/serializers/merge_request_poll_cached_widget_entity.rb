@@ -46,6 +46,12 @@ class MergeRequestPollCachedWidgetEntity < IssuableEntity
     end
   end
 
+  expose :actual_head_pipeline, as: :pipeline, if: -> (mr, _) {
+    Feature.enabled?(:merge_request_cached_pipeline_serializer, mr.project) && presenter(mr).can_read_pipeline?
+  } do |merge_request, options|
+    MergeRequests::PipelineEntity.represent(merge_request.actual_head_pipeline, options)
+  end
+
   # Paths
   #
   expose :target_branch_commits_path do |merge_request|

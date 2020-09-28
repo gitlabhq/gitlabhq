@@ -142,33 +142,33 @@ We recommend using the [consolidated object storage settings](../object_storage.
 1. Edit the `packages` section in `config/gitlab.yml` (uncomment where necessary):
 
    ```yaml
-     packages:
-       enabled: true
+   packages:
+     enabled: true
+     ##
+     ## The location where build packages are stored (default: shared/packages).
+     ##
+     # storage_path: shared/packages
+     object_store:
+       enabled: false
+       remote_directory: packages  # The bucket name.
+       # direct_upload: false      # Use Object Storage directly for uploads instead of background uploads if enabled (Default: false).
+       # background_upload: true   # Temporary option to limit automatic upload (Default: true).
+       # proxy_download: false     # Passthrough all downloads via GitLab instead of using Redirects to Object Storage.
+       connection:
        ##
-       ## The location where build packages are stored (default: shared/packages).
+       ## If the provider is AWS S3, use the following:
        ##
-       #storage_path: shared/packages
-       object_store:
-         enabled: false
-         remote_directory: packages # The bucket name.
-         #direct_upload: false      # Use Object Storage directly for uploads instead of background uploads if enabled (Default: false).
-         #background_upload: true   # Temporary option to limit automatic upload (Default: true).
-         #proxy_download: false     # Passthrough all downloads via GitLab instead of using Redirects to Object Storage.
-         connection:
-           ##
-           ## If the provider is AWS S3, uncomment the following
-           ##
-           #provider: AWS
-           #region: us-east-1
-           #aws_access_key_id: AWS_ACCESS_KEY_ID
-           #aws_secret_access_key: AWS_SECRET_ACCESS_KEY
-           ##
-           ## If the provider is other than AWS (an S3-compatible one), uncomment the following
-           ##
-           #host: 's3.amazonaws.com'             # default: s3.amazonaws.com.
-           #aws_signature_version: 4             # For creation of signed URLs. Set to 2 if provider does not support v4.
-           #endpoint: 'https://s3.amazonaws.com' # Useful for S3-compliant services such as DigitalOcean Spaces.
-           #path_style: false                    # If true, use 'host/bucket_name/object' instead of 'bucket_name.host/object'.
+         provider: AWS
+         region: us-east-1
+         aws_access_key_id: AWS_ACCESS_KEY_ID
+         aws_secret_access_key: AWS_SECRET_ACCESS_KEY
+         ##
+         ## If the provider is other than AWS (an S3-compatible one), comment out the previous 4 lines and use the following instead:
+         ##
+         #  host: 's3.amazonaws.com'             # default: s3.amazonaws.com.
+         #  aws_signature_version: 4             # For creation of signed URLs. Set to 2 if provider does not support v4.
+         #  endpoint: 'https://s3.amazonaws.com' # Useful for S3-compliant services such as DigitalOcean Spaces.
+         #  path_style: false                    # If true, use 'host/bucket_name/object' instead of 'bucket_name.host/object'.
    ```
 
 1. Save the file and [restart GitLab](../restart_gitlab.md#installations-from-source) for the changes to take effect.
