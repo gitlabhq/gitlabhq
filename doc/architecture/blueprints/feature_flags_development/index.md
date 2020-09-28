@@ -122,15 +122,15 @@ Proposal:
 
 | Role                         | Who
 |------------------------------|-------------------------|
-| Author                       |     Kamil Trzciński     |
+| Author                       | Kamil Trzciński         |
 | Architecture Evolution Coach | Gerardo Lopez-Fernandez |
-| Engineering Leader           |     Kamil Trzciński     |
-| Domain Expert                |       Shinya Maeda      |
+| Engineering Leader           | Kamil Trzciński         |
+| Domain Expert                | Shinya Maeda            |
 
 DRIs:
 
 | Role                         | Who
 |------------------------------|------------------------|
-| Product                      |            ?           |
-| Leadership                   |      Craig Gomes       |
-| Engineering                  |     Kamil Trzciński    |
+| Product                      | Kenny Johnston         |
+| Leadership                   | Craig Gomes            |
+| Engineering                  | Kamil Trzciński        |

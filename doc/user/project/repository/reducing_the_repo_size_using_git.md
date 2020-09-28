@@ -230,6 +230,7 @@ This will:
 - Run `git gc` against the repository to remove unreferenced objects. Repacking your repository will temporarily
   cause the size of your repository to increase significantly, because the old pack files are not removed until the
   new pack files have been created.
+- Unlink any unused LFS objects currently attached to your project, freeing up storage space.
 - Recalculate the size of your repository on disk.
 
 You will receive an email notification with the recalculated repository size after the cleanup has completed.

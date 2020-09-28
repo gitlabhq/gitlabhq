@@ -100,7 +100,7 @@
         = sprite_icon('close', size: 12, css_class: 'close-icon js-navbar-toggle-left')
 
 - if ::Feature.enabled?(:whats_new_drawer)
-  #whats-new-app{ data: { features: whats_new_most_recent_release_items } }
+  #whats-new-app{ data: { features: whats_new_most_recent_release_items, storage_key: whats_new_storage_key } }
 
 - if can?(current_user, :update_user_status, current_user)
   .js-set-status-modal-wrapper{ data: { current_emoji: current_user.status.present? ? current_user.status.emoji : '', current_message: current_user.status.present? ? current_user.status.message : '' } }

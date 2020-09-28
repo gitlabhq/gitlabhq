@@ -239,16 +239,6 @@ module Gitlab
     # See https://gitlab.com/gitlab-org/gitlab-foss/issues/64091#note_194512508
     config.assets.paths << "#{config.root}/node_modules"
 
-    if Gitlab.ee?
-      # Compile non-JS/CSS assets in the ee/app/assets folder by default
-      # Mimic sprockets-rails default: https://github.com/rails/sprockets-rails/blob/v3.2.1/lib/sprockets/railtie.rb#L84-L87
-      LOOSE_EE_APP_ASSETS = lambda do |logical_path, filename|
-        filename.start_with?(config.root.join("ee/app/assets").to_s) &&
-          !['.js', '.css', ''].include?(File.extname(logical_path))
-      end
-      config.assets.precompile << LOOSE_EE_APP_ASSETS
-    end
-
     # Version of your assets, change this if you want to expire all your assets
     config.assets.version = '1.0'
 
@@ -311,6 +301,34 @@ module Gitlab
 
     config.generators do |g|
       g.factory_bot false
+    end
+
+    # sprocket-rails adds some precompile assets we actually do not need.
+    #
+    # It copies all _non_ js and CSS files from the app/assets/ older.
+    #
+    # In our case this copies for example: Vue, Markdown and Graphql, which we do not need
+    # for production.
+    #
+    # We remove this default behavior and then reimplement it in order to consider ee/ as well
+    # and remove those other files we do not need.
+    #
+    # For reference: https://github.com/rails/sprockets-rails/blob/v3.2.1/lib/sprockets/railtie.rb#L84-L87
+    initializer :correct_precompile_targets, after: :set_default_precompile do |app|
+      app.config.assets.precompile.reject! { |entry| entry == Sprockets::Railtie::LOOSE_APP_ASSETS }
+
+      asset_roots = [config.root.join("app/assets").to_s]
+
+      if Gitlab.ee?
+        asset_roots << config.root.join("ee/app/assets").to_s
+      end
+
+      LOOSE_APP_ASSETS = lambda do |logical_path, filename|
+        filename.start_with?(*asset_roots) &&
+          !['.js', '.css', '.md', '.vue', '.graphql', ''].include?(File.extname(logical_path))
+      end
+
+      app.config.assets.precompile << LOOSE_APP_ASSETS
     end
 
     # This empty initializer forces the :let_zeitwerk_take_over initializer to run before we load

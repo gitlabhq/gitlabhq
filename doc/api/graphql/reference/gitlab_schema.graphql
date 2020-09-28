@@ -6880,6 +6880,37 @@ type GeoNode {
   internalUrl: String
 
   """
+  Find merge request diff registries on this Geo node. Available only when
+  feature flag `geo_merge_request_diff_replication` is enabled
+  """
+  mergeRequestDiffRegistries(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Filters registries by their ID
+    """
+    ids: [ID!]
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+  ): MergeRequestDiffRegistryConnection
+
+  """
   The interval (in days) in which the repository verification is valid. Once expired, it will be reverified
   """
   minimumReverificationInterval: Int
@@ -7001,8 +7032,7 @@ type GeoNode {
   ): TerraformStateRegistryConnection
 
   """
-  Find terraform state version registries on this Geo node. Available only when
-  feature flag `geo_terraform_state_version_replication` is enabled
+  Find terraform state version registries on this Geo node
   """
   terraformStateVersionRegistries(
     """
@@ -7362,6 +7392,11 @@ type Group {
     Username of a user assigned to the issue
     """
     assigneeUsername: String
+
+    """
+    Usernames of users assigned to the issue
+    """
+    assigneeUsernames: [String!]
 
     """
     Username of the author of the issue
@@ -10672,6 +10707,86 @@ type MergeRequestCreatePayload {
 }
 
 """
+Represents the Geo sync and verification state of a Merge Request diff
+"""
+type MergeRequestDiffRegistry {
+  """
+  Timestamp when the MergeRequestDiffRegistry was created
+  """
+  createdAt: Time
+
+  """
+  ID of the MergeRequestDiffRegistry
+  """
+  id: ID!
+
+  """
+  Error message during sync of the MergeRequestDiffRegistry
+  """
+  lastSyncFailure: String
+
+  """
+  Timestamp of the most recent successful sync of the MergeRequestDiffRegistry
+  """
+  lastSyncedAt: Time
+
+  """
+  ID of the Merge Request diff
+  """
+  mergeRequestDiffId: ID!
+
+  """
+  Timestamp after which the MergeRequestDiffRegistry should be resynced
+  """
+  retryAt: Time
+
+  """
+  Number of consecutive failed sync attempts of the MergeRequestDiffRegistry
+  """
+  retryCount: Int
+
+  """
+  Sync state of the MergeRequestDiffRegistry
+  """
+  state: RegistryState
+}
+
+"""
+The connection type for MergeRequestDiffRegistry.
+"""
+type MergeRequestDiffRegistryConnection {
+  """
+  A list of edges.
+  """
+  edges: [MergeRequestDiffRegistryEdge]
+
+  """
+  A list of nodes.
+  """
+  nodes: [MergeRequestDiffRegistry]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+}
+
+"""
+An edge in a connection.
+"""
+type MergeRequestDiffRegistryEdge {
+  """
+  A cursor for use in pagination.
+  """
+  cursor: String!
+
+  """
+  The item at the end of the edge.
+  """
+  node: MergeRequestDiffRegistry
+}
+
+"""
 An edge in a connection.
 """
 type MergeRequestEdge {
@@ -12086,7 +12201,7 @@ type PackageEdge {
 }
 
 """
-Represents the sync and verification state of a package file
+Represents the Geo sync and verification state of a package file
 """
 type PackageFileRegistry {
   """
@@ -12931,6 +13046,11 @@ type Project {
     assigneeUsername: String
 
     """
+    Usernames of users assigned to the issue
+    """
+    assigneeUsernames: [String!]
+
+    """
     Username of the author of the issue
     """
     authorUsername: String
@@ -13026,6 +13146,11 @@ type Project {
     assigneeUsername: String
 
     """
+    Usernames of users assigned to the issue
+    """
+    assigneeUsernames: [String!]
+
+    """
     Username of the author of the issue
     """
     authorUsername: String
@@ -13109,6 +13234,11 @@ type Project {
     Username of a user assigned to the issue
     """
     assigneeUsername: String
+
+    """
+    Usernames of users assigned to the issue
+    """
+    assigneeUsernames: [String!]
 
     """
     Username of the author of the issue
@@ -17483,7 +17613,7 @@ type TaskCompletionStatus {
 }
 
 """
-Represents the sync and verification state of a terraform state
+Represents the Geo sync and verification state of a terraform state
 """
 type TerraformStateRegistry {
   """

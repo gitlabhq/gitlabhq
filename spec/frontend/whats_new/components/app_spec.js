@@ -11,7 +11,7 @@ describe('App', () => {
   let store;
   let actions;
   let state;
-  let propsData = { features: '[ {"title":"Whats New Drawer"} ]' };
+  let propsData = { features: '[ {"title":"Whats New Drawer"} ]', storageKey: 'storage-key' };
 
   const buildWrapper = () => {
     actions = {
@@ -51,6 +51,7 @@ describe('App', () => {
 
   it('dispatches openDrawer when mounted', () => {
     expect(actions.openDrawer).toHaveBeenCalled();
+    expect(actions.openDrawer).toHaveBeenCalledWith(expect.any(Object), 'storage-key');
   });
 
   it('dispatches closeDrawer when clicking close', () => {
@@ -71,7 +72,7 @@ describe('App', () => {
   });
 
   it('handles bad json argument gracefully', () => {
-    propsData = { features: 'this is not json' };
+    propsData = { features: 'this is not json', storageKey: 'storage-key' };
     buildWrapper();
 
     expect(getDrawer().exists()).toBe(true);

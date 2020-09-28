@@ -12,6 +12,11 @@ module Projects
       end
 
       def show
+        if Feature.enabled?(:ci_pipeline_triggers_settings_vue_ui, @project)
+          @triggers_json = ::Ci::TriggerSerializer.new.represent(
+            @project.triggers, current_user: current_user, project: @project
+          ).to_json
+        end
       end
 
       def update
@@ -116,6 +121,7 @@ module Projects
       def define_triggers_variables
         @triggers = @project.triggers
           .present(current_user: current_user)
+
         @trigger = ::Ci::Trigger.new
           .present(current_user: current_user)
       end

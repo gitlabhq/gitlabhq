@@ -31,6 +31,16 @@ module QA
               element :design_file_name
               element :design_image
             end
+
+            view 'app/assets/javascripts/design_management/pages/index.vue' do
+              element :archive_button
+              element :design_checkbox
+              element :design_dropzone_content
+            end
+
+            view 'app/assets/javascripts/design_management/components/delete_button.vue' do
+              element :confirm_archiving_button
+            end
           end
         end
 
@@ -52,12 +62,14 @@ module QA
           # It accepts a `class:` option, but that only works for class attributes
           # It doesn't work as a CSS selector.
           # So instead we use the name attribute as a locator
-          page.attach_file("design_file", design_file_path, make_visible: { display: 'block' })
+          within_element(:design_dropzone_content) do
+            page.attach_file("design_file", design_file_path, make_visible: { display: 'block' })
+          end
 
           filename = ::File.basename(design_file_path)
 
           found = wait_until(reload: false, sleep_interval: 1) do
-            image = find_element(:design_image)
+            image = find_element(:design_image, filename: filename)
 
             has_element?(:design_file_name, text: filename) &&
               image["complete"] &&
@@ -71,10 +83,23 @@ module QA
           click_element(:design_file_name, text: filename)
         end
 
+        def select_design(filename)
+          click_element(:design_checkbox, design: filename)
+        end
+
+        def archive_selected_designs
+          click_element(:archive_button)
+          click_element(:confirm_archiving_button)
+        end
+
         def has_annotation?(note)
           within_element_by_index(:design_discussion_content, 0) do
             has_element?(:note_content, text: note)
           end
+        end
+
+        def has_design?(filename)
+          has_element?(:design_file_name, text: filename)
         end
       end
     end

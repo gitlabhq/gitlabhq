@@ -29,7 +29,7 @@ module QA
         end
       end
 
-      it 'creates a merge request with a milestone and label', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/514', quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/254988', type: :stale } do
+      it 'creates a merge request with a milestone and label', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/514' do
         gitlab_account_username = "@#{Runtime::User.username}"
 
         milestone = Resource::ProjectMilestone.fabricate_via_api! do |milestone|

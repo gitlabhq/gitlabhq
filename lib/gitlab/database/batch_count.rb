@@ -133,11 +133,11 @@ module Gitlab
       end
 
       def actual_start(start)
-        start || @relation.unscope(:group).minimum(@column) || 0
+        start || @relation.unscope(:group, :having).minimum(@column) || 0
       end
 
       def actual_finish(finish)
-        finish || @relation.unscope(:group).maximum(@column) || 0
+        finish || @relation.unscope(:group, :having).maximum(@column) || 0
       end
 
       def check_mode!(mode)

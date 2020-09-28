@@ -4,7 +4,11 @@ export default {
   closeDrawer({ commit }) {
     commit(types.CLOSE_DRAWER);
   },
-  openDrawer({ commit }) {
+  openDrawer({ commit }, storageKey) {
     commit(types.OPEN_DRAWER);
+
+    if (storageKey) {
+      localStorage.setItem(storageKey, JSON.stringify(false));
+    }
   },
 };

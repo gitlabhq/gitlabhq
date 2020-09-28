@@ -116,7 +116,7 @@
             selected_labels: issuable_sidebar[:labels].to_json } }
         - else
           - selected_labels = issuable_sidebar[:labels]
-          .block.labels
+          .block.labels{ data: { qa_selector: 'labels_block' } }
             .sidebar-collapsed-icon.js-sidebar-labels-tooltip{ title: issuable_labels_tooltip(selected_labels), data: { placement: "left", container: "body", boundary: 'viewport' } }
               = sprite_icon('labels')
               %span
@@ -125,11 +125,11 @@
               = _('Labels')
               = loading_icon(css_class: 'gl-vertical-align-text-bottom hidden block-loading')
               - if can_edit_issuable
-                = link_to _('Edit'), '#', class: 'js-sidebar-dropdown-toggle edit-link float-right', data: { qa_selector: "edit_labels_link", track_label: "right_sidebar", track_property: "labels", track_event: "click_edit_button", track_value: "" }
-            .value.issuable-show-labels.dont-hide.hide-collapsed{ class: ("has-labels" if selected_labels.any?), data: { qa_selector: 'labels_block' } }
+                = link_to _('Edit'), '#', class: 'js-sidebar-dropdown-toggle edit-link float-right', data: { qa_selector: "labels_edit_button", track_label: "right_sidebar", track_property: "labels", track_event: "click_edit_button", track_value: "" }
+            .value.issuable-show-labels.dont-hide.hide-collapsed{ class: ("has-labels" if selected_labels.any?) }
               - if selected_labels.any?
                 - selected_labels.each do |label_hash|
-                  = render_label(label_from_hash(label_hash).present(issuable_subject: nil), link: sidebar_label_filter_path(issuable_sidebar[:project_issuables_path], label_hash[:title]), dataset: { qa_selector: 'label', qa_label_name: label_hash[:title] })
+                  = render_label(label_from_hash(label_hash).present(issuable_subject: nil), link: sidebar_label_filter_path(issuable_sidebar[:project_issuables_path], label_hash[:title]), dataset: { qa_selector: 'selected_label_content', qa_label_name: label_hash[:title] })
               - else
                 %span.no-value
                   = _('None')
@@ -141,7 +141,7 @@
                   %span.dropdown-toggle-text{ class: ("is-default" if selected_labels.empty?) }
                     = multi_label_name(selected_labels, "Labels")
                   = icon('chevron-down', 'aria-hidden': 'true')
-                .dropdown-menu.dropdown-select.dropdown-menu-paging.qa-dropdown-menu-labels.dropdown-menu-labels.dropdown-menu-selectable.dropdown-extended-height
+                .dropdown-menu.dropdown-select.dropdown-menu-paging.dropdown-menu-labels.dropdown-menu-selectable.dropdown-extended-height{ data: { qa_selector: "labels_dropdown_content"} }
                   = render partial: "shared/issuable/label_page_default"
                   - if issuable_sidebar.dig(:current_user, :can_admin_label)
                     = render partial: "shared/issuable/label_page_create"

@@ -483,3 +483,11 @@ This error occurs when the Docker version that runs the Dependency Scanning job 
 Consider updating to Docker `19.03.1` or greater. Older versions are not
 affected. Read more in
 [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/13830#note_211354992 "Current SAST container fails").
+
+### Limitation when using rules:exists
+
+The [Dependency Scanning CI template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/Dependency-Scanning.gitlab-ci.yml)
+uses the [`rules:exists`](../../../ci/yaml/README.md#rulesexists)
+syntax. This directive is limited to 10000 checks and always returns `true` after reaching this
+number. Because of this, and depending on the number of files in your repository, a Dependency
+Scanning job might be triggered even if the scanner doesn't support your project.

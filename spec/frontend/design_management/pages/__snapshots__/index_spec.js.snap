@@ -19,6 +19,7 @@ exports[`Design management index page designs does not render toolbar when there
       >
         <design-dropzone-stub
           class="design-list-item design-list-item-new"
+          data-qa-selector="design_dropzone_content"
           hasdesigns="true"
         />
       </li>
@@ -127,6 +128,7 @@ exports[`Design management index page designs renders designs list and header wi
             buttonclass="gl-mr-3"
             buttonsize="small"
             buttonvariant="warning"
+            data-qa-selector="archive_button"
           >
             
             Archive selected
@@ -151,6 +153,7 @@ exports[`Design management index page designs renders designs list and header wi
       >
         <design-dropzone-stub
           class="design-list-item design-list-item-new"
+          data-qa-selector="design_dropzone_content"
           hasdesigns="true"
         />
       </li>
@@ -172,6 +175,8 @@ exports[`Design management index page designs renders designs list and header wi
          
         <input
           class="design-checkbox"
+          data-qa-design="design-1-name"
+          data-qa-selector="design_checkbox"
           type="checkbox"
         />
       </li>
@@ -193,6 +198,8 @@ exports[`Design management index page designs renders designs list and header wi
          
         <input
           class="design-checkbox"
+          data-qa-design="design-2-name"
+          data-qa-selector="design_checkbox"
           type="checkbox"
         />
       </li>
@@ -214,6 +221,8 @@ exports[`Design management index page designs renders designs list and header wi
          
         <input
           class="design-checkbox"
+          data-qa-design="design-3-name"
+          data-qa-selector="design_checkbox"
           type="checkbox"
         />
       </li>
@@ -299,6 +308,7 @@ exports[`Design management index page when has no designs renders design dropzon
       >
         <design-dropzone-stub
           class=""
+          data-qa-selector="design_dropzone_content"
         />
       </li>
     </ol>

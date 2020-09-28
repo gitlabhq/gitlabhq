@@ -18,16 +18,29 @@ module QA
               element :more_assignees_link
             end
 
-            base.view 'app/helpers/dropdowns_helper.rb' do
+            base.view 'app/assets/javascripts/sidebar/components/labels/sidebar_labels.vue' do
+              element :labels_block
+            end
+
+            base.view 'app/assets/javascripts/vue_shared/components/sidebar/labels_select_vue/dropdown_value.vue' do
+              element :selected_label_content
+            end
+
+            base.view 'app/assets/javascripts/vue_shared/components/sidebar/labels_select_vue/dropdown_contents.vue' do
+              element :labels_dropdown_content
+            end
+
+            base.view 'app/assets/javascripts/vue_shared/components/sidebar/labels_select/dropdown_title.vue' do
+              element :labels_edit_button
+            end
+
+            base.view 'app/assets/javascripts/vue_shared/components/sidebar/labels_select_vue/dropdown_contents_labels_view.vue' do
               element :dropdown_input_field
             end
 
             base.view 'app/views/shared/issuable/_sidebar.html.haml' do
               element :assignee_block
-              element :dropdown_menu_labels
-              element :edit_labels_link
               element :edit_milestone_link
-              element :labels_block
               element :milestone_block
               element :milestone_link
             end
@@ -64,7 +77,7 @@ module QA
 
           def has_label?(label)
             within_element(:labels_block) do
-              !!has_element?(:label, label_name: label)
+              !!has_element?(:selected_label_content, label_name: label)
             end
           end
 
@@ -80,23 +93,25 @@ module QA
 
           def select_labels_and_refresh(labels)
             Support::Retrier.retry_until do
-              click_element(:edit_labels_link)
-              has_element?(:dropdown_menu_labels, text: labels.first)
+              click_element(:labels_edit_button)
+              has_element?(:labels_dropdown_content, text: labels.first)
             end
 
             labels.each do |label|
-              within_element(:dropdown_menu_labels, text: label) do
+              within_element(:labels_dropdown_content) do
                 send_keys_to_element(:dropdown_input_field, [label, :enter])
               end
             end
 
-            click_element(:edit_labels_link)
+            click_element(:labels_edit_button)
 
             labels.each do |label|
               has_element?(:labels_block, text: label, wait: 0)
             end
 
             refresh
+
+            wait_for_requests
           end
 
           def toggle_more_assignees_link

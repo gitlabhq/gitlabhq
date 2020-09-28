@@ -37,12 +37,7 @@ Import your projects from Bitbucket Server to GitLab with minimal effort.
    empty changes.
 1. Attachments in Markdown are currently not imported.
 1. Task lists are not imported.
-1. Emoji reactions are not imported.
-1. [LFS objects](../../../topics/git/lfs/index.md) are not imported.
-
-   NOTE: **Note:**
-   To import a repository including LFS objects from a Bitbucket server repository, use the [Repo by URL](../import/repo_by_url.md) importer.
-
+1. Emoji reactions are not imported
 1. Project filtering does not support fuzzy search (only `starts with` or `full
    match strings` are currently supported)
 

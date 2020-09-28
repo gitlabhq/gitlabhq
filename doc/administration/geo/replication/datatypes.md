@@ -47,6 +47,8 @@ verification methods:
 | Blobs    | Container registry _(object storage)_         | Geo with API/Managed/Docker API (*2*) | _Not implemented_      |
 | Blobs    | Package registry _(filesystem)_               | Geo with API                          | _Not implemented_      |
 | Blobs    | Package registry _(object storage)_           | Geo with API/Managed (*2*)            | _Not implemented_      |
+| Blobs    | Versioned Terraform State _(filesystem)_      | Geo with API                          | _Not implemented_      |
+| Blobs    | Versioned Terraform State _(object storage)_  | Geo with API/Managed (*2*)            | _Not implemented_      |
 
 - (*1*): Redis replication can be used as part of HA with Redis sentinel. It's not used between Geo nodes.
 - (*2*): Object storage replication can be performed by Geo or by your object storage provider/appliance
@@ -185,7 +187,7 @@ successfully, you must replicate their data using some other means.
 | [PyPi Repository](../../../user/packages/pypi_repository/index.md)                                    | **Yes** (13.2)                                               | No                                                        | Behind feature flag `geo_package_file_replication`, enabled by default                                     |
 | [Composer Repository](../../../user/packages/composer_repository/index.md)                            | **Yes** (13.2)                                               | No                                                        | Behind feature flag `geo_package_file_replication`, enabled by default                                     |
 | [External merge request diffs](../../merge_request_diffs.md)                                          | [No](https://gitlab.com/gitlab-org/gitlab/-/issues/33817)    | No                                                        |                                                                                                            |
-| [Terraform State](../../terraform_state.md)                                                           | [No](https://gitlab.com/groups/gitlab-org/-/epics/3112)(*3*) | No                                                        |                                                                                                            |
+| [Versioned Terraform State](../../terraform_state.md)                                                 | **Yes** (13.5)                                               | No                                                        |                                                                                                            |
 | [Vulnerability Export](../../../user/application_security/security_dashboard/#export-vulnerabilities) | [No](https://gitlab.com/groups/gitlab-org/-/epics/3111)(*3*) | No                                                        |                                                                                                            |
 | Content in object storage                                                                             | **Yes** (12.4)                                               | No                                                        |                                                                                                            |
 

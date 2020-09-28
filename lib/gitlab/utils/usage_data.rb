@@ -39,9 +39,9 @@ module Gitlab
 
       FALLBACK = -1
 
-      def count(relation, column = nil, batch: true, start: nil, finish: nil)
+      def count(relation, column = nil, batch: true, batch_size: nil, start: nil, finish: nil)
         if batch
-          Gitlab::Database::BatchCount.batch_count(relation, column, start: start, finish: finish)
+          Gitlab::Database::BatchCount.batch_count(relation, column, batch_size: batch_size, start: start, finish: finish)
         else
           relation.count
         end

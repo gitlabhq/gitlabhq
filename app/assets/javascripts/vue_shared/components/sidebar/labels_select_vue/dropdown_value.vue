@@ -35,6 +35,8 @@ export default {
     <template v-for="label in selectedLabels" v-else>
       <gl-label
         :key="label.id"
+        data-qa-selector="selected_label_content"
+        :data-qa-label-name="label.title"
         :title="label.title"
         :description="label.description"
         :background-color="label.color"

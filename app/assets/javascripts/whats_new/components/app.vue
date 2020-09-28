@@ -15,6 +15,11 @@ export default {
       required: false,
       default: null,
     },
+    storageKey: {
+      type: String,
+      required: true,
+      default: null,
+    },
   },
   computed: {
     ...mapState(['open']),
@@ -31,7 +36,7 @@ export default {
     },
   },
   mounted() {
-    this.openDrawer();
+    this.openDrawer(this.storageKey);
   },
   methods: {
     ...mapActions(['openDrawer', 'closeDrawer']),
@@ -41,7 +46,7 @@ export default {
 
 <template>
   <div>
-    <gl-drawer class="mt-6" :open="open" @close="closeDrawer">
+    <gl-drawer class="whats-new-drawer" :open="open" @close="closeDrawer">
       <template #header>
         <h4 class="page-title my-2">{{ __("What's new at GitLab") }}</h4>
       </template>
@@ -69,5 +74,6 @@ export default {
         </div>
       </div>
     </gl-drawer>
+    <div v-if="open" class="whats-new-modal-backdrop modal-backdrop"></div>
   </div>
 </template>

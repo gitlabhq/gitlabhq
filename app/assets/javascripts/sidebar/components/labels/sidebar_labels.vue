@@ -89,6 +89,7 @@ export default {
     :labels-select-in-progress="labelsSelectInProgress"
     :selected-labels="selectedLabels"
     :variant="$options.sidebar"
+    data-qa-selector="labels_block"
     @onDropdownClose="handleDropdownClose"
     @updateSelectedLabels="handleUpdateSelectedLabels"
   >

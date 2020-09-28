@@ -18665,6 +18665,9 @@ msgstr ""
 msgid "Pipelines|Build with confidence"
 msgstr ""
 
+msgid "Pipelines|By revoking a trigger you will break any processes making use of it. Are you sure?"
+msgstr ""
+
 msgid "Pipelines|CI Lint"
 msgstr ""
 
@@ -18675,6 +18678,15 @@ msgid "Pipelines|Clear Runner Caches"
 msgstr ""
 
 msgid "Pipelines|Continuous Integration can help catch bugs by running your tests automatically, while Continuous Deployment can help you deliver code to your product environment."
+msgstr ""
+
+msgid "Pipelines|Copy trigger token"
+msgstr ""
+
+msgid "Pipelines|Description"
+msgstr ""
+
+msgid "Pipelines|Edit"
 msgstr ""
 
 msgid "Pipelines|Get started with Pipelines"
@@ -18692,13 +18704,25 @@ msgstr ""
 msgid "Pipelines|It is recommended the code is reviewed thoroughly before running this pipeline with the parent project's CI resource."
 msgstr ""
 
+msgid "Pipelines|Last Used"
+msgstr ""
+
 msgid "Pipelines|Loading Pipelines"
 msgstr ""
 
 msgid "Pipelines|More Information"
 msgstr ""
 
+msgid "Pipelines|No triggers have been created yet. Add one using the form above."
+msgstr ""
+
+msgid "Pipelines|Owner"
+msgstr ""
+
 msgid "Pipelines|Project cache successfully reset."
+msgstr ""
+
+msgid "Pipelines|Revoke"
 msgstr ""
 
 msgid "Pipelines|Run Pipeline"
@@ -18723,6 +18747,15 @@ msgid "Pipelines|This pipeline will run code originating from a forked project m
 msgstr ""
 
 msgid "Pipelines|This project is not currently set up to run pipelines."
+msgstr ""
+
+msgid "Pipelines|Token"
+msgstr ""
+
+msgid "Pipelines|Trigger user has insufficient permissions to project"
+msgstr ""
+
+msgid "Pipelines|invalid"
 msgstr ""
 
 msgid "Pipelines|parent"

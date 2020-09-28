@@ -46,6 +46,13 @@ RSpec.describe Resolvers::IssuesResolver do
         expect(resolve_issues(assignee_username: assignee.username)).to contain_exactly(issue2)
       end
 
+      it 'filters by two assignees' do
+        assignee2 = create(:user)
+        issue2.update!(assignees: [assignee, assignee2])
+
+        expect(resolve_issues(assignee_id: [assignee.id, assignee2.id])).to contain_exactly(issue2)
+      end
+
       it 'filters by assignee_id' do
         expect(resolve_issues(assignee_id: assignee.id)).to contain_exactly(issue2)
       end

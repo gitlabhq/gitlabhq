@@ -156,7 +156,11 @@ export default {
       />
     </div>
     <div class="dropdown-input" @click.stop="() => {}">
-      <gl-search-box-by-type v-model="searchKey" :autofocus="true" />
+      <gl-search-box-by-type
+        v-model="searchKey"
+        :autofocus="true"
+        data-qa-selector="dropdown_input_field"
+      />
     </div>
     <div
       v-show="showListContainer"

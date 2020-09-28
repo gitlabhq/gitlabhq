@@ -260,15 +260,9 @@ It is important that this SCIM `id` and SCIM `externalId` are configured to the 
 
 Group owners can see the list of users and the `externalId` stored for each user in the group SAML SSO Settings page.
 
-Alternatively, the [SCIM API](../../../api/scim.md#get-a-list-of-saml-users) can be used to manually retrieve the `externalId` we have stored for users, also called the `external_uid` or `NameId`.
+A possible alternative is to use the [SCIM API](../../../api/scim.md#get-a-list-of-saml-users) to manually retrieve the `externalId` we have stored for users, also called the `external_uid` or `NameId`.
 
-For example:
-
-```shell
-curl 'https://gitlab.example.com/api/scim/v2/groups/GROUP_NAME/Users?startIndex=1"' --header "Authorization: Bearer <your_scim_token>" --header "Content-Type: application/scim+json"
-```
-
-To see how this compares to the value returned as the SAML NameId, you can have the user use a [SAML Tracer](index.md#saml-debugging-tools).
+To see how the `external_uid` compares to the value returned as the SAML NameId, you can have the user use a [SAML Tracer](index.md#saml-debugging-tools).
 
 #### Update or fix mismatched SCIM externalId and SAML NameId
 
@@ -285,14 +279,8 @@ you can address the problem in the following ways:
 
 - You can have users unlink and relink themselves, based on the ["SAML authentication failed: User has already been taken"](./index.md#message-saml-authentication-failed-user-has-already-been-taken) section.
 - You can unlink all users simultaneously, by removing all users from the SAML app while provisioning is turned on.
-- You can use the [SCIM API](../../../api/scim.md#update-a-single-saml-user) to manually correct the `externalId` stored for users to match the SAML `NameId`.
+- It may be possible to use the [SCIM API](../../../api/scim.md#update-a-single-saml-user) to manually correct the `externalId` stored for users to match the SAML `NameId`.
   To look up a user, you'll need to know the desired value that matches the `NameId` as well as the current `externalId`.
-
-It is then possible to issue a manual SCIM#update request, for example:
-
-```shell
-curl --verbose --request PATCH 'https://gitlab.com/api/scim/v2/groups/YOUR_GROUP/Users/OLD_EXTERNAL_UID' --data '{ "Operations": [{"op":"Replace","path":"externalId","value":"NEW_EXTERNAL_UID"}] }' --header "Authorization: Bearer <your_scim_token>" --header "Content-Type: application/scim+json"
-```
 
 It is important not to update these to incorrect values, since this will cause users to be unable to sign in. It is also important not to assign a value to the wrong user, as this would cause users to get signed into the wrong account.
 

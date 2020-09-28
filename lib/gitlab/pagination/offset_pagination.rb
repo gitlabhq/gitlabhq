@@ -27,7 +27,7 @@ module Gitlab
                           end
 
         return pagination_data unless pagination_data.is_a?(ActiveRecord::Relation)
-        return pagination_data unless Feature.enabled?(:api_kaminari_count_with_limit)
+        return pagination_data unless Feature.enabled?(:api_kaminari_count_with_limit, type: :ops)
 
         limited_total_count = pagination_data.total_count_with_limit
         if limited_total_count > Kaminari::ActiveRecordRelationMethods::MAX_COUNT_LIMIT

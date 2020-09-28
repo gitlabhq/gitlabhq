@@ -2,53 +2,57 @@ import { uniq } from 'lodash';
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import emojiAliases from 'emojis/aliases.json';
 import axios from '../lib/utils/axios_utils';
-
 import AccessorUtilities from '../lib/utils/accessor';
 
 let emojiMap = null;
-let emojiPromise = null;
 let validEmojiNames = null;
 
 export const EMOJI_VERSION = '1';
 
 const isLocalStorageAvailable = AccessorUtilities.isLocalStorageAccessSafe();
 
-export function initEmojiMap() {
-  emojiPromise =
-    emojiPromise ||
-    new Promise((resolve, reject) => {
-      if (emojiMap) {
-        resolve(emojiMap);
-      } else if (
-        isLocalStorageAvailable &&
-        window.localStorage.getItem('gl-emoji-map-version') === EMOJI_VERSION &&
-        window.localStorage.getItem('gl-emoji-map')
-      ) {
-        emojiMap = JSON.parse(window.localStorage.getItem('gl-emoji-map'));
-        validEmojiNames = [...Object.keys(emojiMap), ...Object.keys(emojiAliases)];
-        resolve(emojiMap);
-      } else {
-        // We load the JSON file direct from the server
-        // because it can't be loaded from a CDN due to
-        // cross domain problems with JSON
-        axios
-          .get(`${gon.relative_url_root || ''}/-/emojis/${EMOJI_VERSION}/emojis.json`)
-          .then(({ data }) => {
-            emojiMap = data;
-            validEmojiNames = [...Object.keys(emojiMap), ...Object.keys(emojiAliases)];
-            resolve(emojiMap);
-            if (isLocalStorageAvailable) {
-              window.localStorage.setItem('gl-emoji-map-version', EMOJI_VERSION);
-              window.localStorage.setItem('gl-emoji-map', JSON.stringify(emojiMap));
-            }
-          })
-          .catch(err => {
-            reject(err);
-          });
-      }
-    });
+async function loadEmoji() {
+  if (
+    isLocalStorageAvailable &&
+    window.localStorage.getItem('gl-emoji-map-version') === EMOJI_VERSION &&
+    window.localStorage.getItem('gl-emoji-map')
+  ) {
+    return JSON.parse(window.localStorage.getItem('gl-emoji-map'));
+  }
 
-  return emojiPromise;
+  // We load the JSON file direct from the server
+  // because it can't be loaded from a CDN due to
+  // cross domain problems with JSON
+  const { data } = await axios.get(
+    `${gon.relative_url_root || ''}/-/emojis/${EMOJI_VERSION}/emojis.json`,
+  );
+  window.localStorage.setItem('gl-emoji-map-version', EMOJI_VERSION);
+  window.localStorage.setItem('gl-emoji-map', JSON.stringify(data));
+  return data;
+}
+
+async function prepareEmojiMap() {
+  emojiMap = await loadEmoji();
+
+  validEmojiNames = [...Object.keys(emojiMap), ...Object.keys(emojiAliases)];
+
+  Object.keys(emojiMap).forEach(name => {
+    emojiMap[name].aliases = [];
+    emojiMap[name].name = name;
+  });
+  Object.entries(emojiAliases).forEach(([alias, name]) => {
+    // This check, `if (name in emojiMap)` is necessary during testing. In
+    // production, it shouldn't be necessary, because at no point should there
+    // be an entry in aliases.json with no corresponding entry in emojis.json.
+    // However, during testing, the endpoint for emojis.json is mocked with a
+    // small dataset, whereas aliases.json is always `import`ed directly.
+    if (name in emojiMap) emojiMap[name].aliases.push(alias);
+  });
+}
+
+export function initEmojiMap() {
+  initEmojiMap.promise = initEmojiMap.promise || prepareEmojiMap();
+  return initEmojiMap.promise;
 }
 
 export function normalizeEmojiName(name) {
@@ -75,6 +79,37 @@ export function isEmojiNameValid(name) {
 export function queryEmojiNames(filter) {
   const matches = fuzzaldrinPlus.filter(validEmojiNames, filter);
   return uniq(matches.map(name => normalizeEmojiName(name)));
+}
+
+/**
+ * Searches emoji by name, alias, description, and unicode value and returns an
+ * array of matches.
+ *
+ * Note: `initEmojiMap` must have been called and completed before this method
+ * can safely be called.
+ *
+ * @param {String} query The search query
+ * @returns {Object[]} A list of emoji that match the query
+ */
+export function searchEmoji(query) {
+  if (!emojiMap)
+    // eslint-disable-next-line @gitlab/require-i18n-strings
+    throw new Error('The emoji map is uninitialized or initialization has not completed');
+
+  const matches = s => fuzzaldrinPlus.score(s, query) > 0;
+
+  // Search emoji
+  return Object.values(emojiMap).filter(
+    emoji =>
+      // by name
+      matches(emoji.name) ||
+      // by alias
+      emoji.aliases.some(matches) ||
+      // by description
+      matches(emoji.d) ||
+      // by unicode value
+      query === emoji.e,
+  );
 }
 
 let emojiCategoryMap;

@@ -351,6 +351,7 @@ export default {
               button-category="secondary"
               button-class="gl-mr-3"
               button-size="small"
+              data-qa-selector="archive_button"
               :loading="loading"
               :has-selected-designs="hasSelectedDesigns"
               @deleteSelectedDesigns="mutate()"
@@ -417,6 +418,8 @@ export default {
             :checked="isDesignSelected(design.filename)"
             type="checkbox"
             class="design-checkbox"
+            data-qa-selector="design_checkbox"
+            :data-qa-design="design.filename"
             @change="changeSelectedDesigns(design.filename)"
           />
         </li>
@@ -426,6 +429,7 @@ export default {
               :is-dragging-design="isDraggingDesign"
               :class="{ 'design-list-item design-list-item-new': !isDesignListEmpty }"
               :has-designs="hasDesigns"
+              data-qa-selector="design_dropzone_content"
               @change="onUploadDesign"
             />
           </li>

@@ -319,6 +319,20 @@ describe('AwardsHandler', () => {
       expect($('[data-name=anger]').is(':visible')).toBe(false);
       expect($('[data-name=sunglasses]').is(':visible')).toBe(true);
     });
+
+    it('should filter by emoji description', async () => {
+      await openAndWaitForEmojiMenu();
+
+      awardsHandler.searchEmojis('baby');
+      expect($('[data-name=angel]').is(':visible')).toBe(true);
+    });
+
+    it('should filter by emoji unicode value', async () => {
+      await openAndWaitForEmojiMenu();
+
+      awardsHandler.searchEmojis('👼');
+      expect($('[data-name=angel]').is(':visible')).toBe(true);
+    });
   });
 
   describe('emoji menu', () => {

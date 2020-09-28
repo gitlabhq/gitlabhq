@@ -1,0 +1,39 @@
+{
+  "type": "object",
+  "required": [
+    "description",
+    "owner",
+    "last_used",
+    "has_token_exposed",
+    "token",
+    "can_access_project"
+  ],
+  "properties": {
+    "description": {
+      "type": ["string", "null"]
+    },
+    "owner": {
+      "type": "object",
+      "$ref": "user.json"
+    },
+    "last_used": {
+      "type": ["datetime", "null"]
+    },
+    "token": {
+      "type": "string"
+    },
+    "has_token_exposed": {
+      "type": "boolean"
+    },
+    "can_access_project": {
+      "type": "boolean"
+    },
+    "edit_project_trigger_path": {
+      "type": "string"
+    },
+    "project_trigger_path": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": false
+}

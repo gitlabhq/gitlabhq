@@ -882,7 +882,7 @@ module Gitlab
             # column.
             opclasses[new] = opclasses.delete(old) if opclasses[old]
 
-            options[:opclasses] = opclasses
+            options[:opclass] = opclasses
           end
 
           add_concurrent_index(table, new_columns, options)

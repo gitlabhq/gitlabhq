@@ -6,23 +6,26 @@
       .card-body
         = render "projects/triggers/form", btn_text: "Add trigger"
         %hr
-        - if @triggers.any?
-          .table-responsive.triggers-list
-            %table.table
-              %thead
-                %th
-                  %strong Token
-                %th
-                  %strong Description
-                %th
-                  %strong Owner
-                %th
-                  %strong Last used
-                %th
-              = render partial: 'projects/triggers/trigger', collection: @triggers, as: :trigger
+        - if Feature.enabled?(:ci_pipeline_triggers_settings_vue_ui, @project)
+          #js-ci-pipeline-triggers-list.triggers-list{ data: { triggers: @triggers_json } }
         - else
-          %p.settings-message.text-center.gl-mb-3
-            No triggers have been created yet. Add one using the form above.
+          - if @triggers.any?
+            .table-responsive.triggers-list
+              %table.table
+                %thead
+                  %th
+                    %strong Token
+                  %th
+                    %strong Description
+                  %th
+                    %strong Owner
+                  %th
+                    %strong Last used
+                  %th
+                = render partial: 'projects/triggers/trigger', collection: @triggers, as: :trigger
+          - else
+            %p.settings-message.text-center.gl-mb-3{ data: { testid: 'no_triggers_content' } }
+              No triggers have been created yet. Add one using the form above.
 
       .card-footer
 
