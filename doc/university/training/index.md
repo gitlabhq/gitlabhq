@@ -17,7 +17,7 @@ This section contains the following topics:
 - [Cherry pick](topics/cherry_picking.md).
 - [Code review and collaboration with Merge Requests](topics/merge_requests.md).
 - [Configure your environment](topics/env_setup.md).
-- [Explore GitLab](topics/explore_gitlab.md).
+- [Explore GitLab](../../gitlab-basics/README.md).
 - [Feature branching](topics/feature_branching.md).
 - [Getting started](topics/getting_started.md).
 - [GitLab flow](gitlab_flow.md).

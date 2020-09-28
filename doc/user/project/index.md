@@ -34,7 +34,7 @@ When you create a project in GitLab, you'll have access to a large number of
   - [Protected tags](protected_tags.md): Control over who has
   permission to create tags, and prevent accidental update or deletion
   - [Repository mirroring](repository/repository_mirroring.md)
-  - [Signing commits](gpg_signed_commits/index.md): use GPG to sign your commits
+  - [Signing commits](repository/gpg_signed_commits/index.md): use GPG to sign your commits
   - [Deploy tokens](deploy_tokens/index.md): Manage project-based deploy tokens that allow permanent access to the repository and Container Registry.
 - [Web IDE](web_ide/index.md)
 - [CVE ID Requests](../application_security/cve_id_request.md): Request a CVE identifier to track a
@@ -98,7 +98,7 @@ When you create a project in GitLab, you'll have access to a large number of
 - [Snippets](../snippets.md): store, share and collaborate on code snippets.
 - [Value Stream Analytics](cycle_analytics.md): review your development lifecycle.
 - [Insights](insights/index.md): configure the Insights that matter for your projects. **(ULTIMATE)**
-- [Security Dashboard](security_dashboard.md): Security Dashboard. **(ULTIMATE)**
+- [Security Dashboard](../application_security/security_dashboard/index.md): Security Dashboard. **(ULTIMATE)**
 - [Syntax highlighting](highlighting.md): an alternative to customize
   your code blocks, overriding GitLab's default choice of language.
 - [Badges](badges.md): badges for the project overview.

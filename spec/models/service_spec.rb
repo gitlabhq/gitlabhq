@@ -320,7 +320,7 @@ RSpec.describe Service do
         end
 
         it 'sets service to inactive' do
-          service = described_class.build_from_integration(project.id, integration)
+          service = described_class.build_from_integration(integration, project_id: project.id)
 
           expect(service).to be_valid
           expect(service.active).to be false
@@ -331,7 +331,7 @@ RSpec.describe Service do
         let(:integration) { create(:jira_service, :instance) }
 
         it 'sets inherit_from_id from integration' do
-          service = described_class.build_from_integration(project.id, integration)
+          service = described_class.build_from_integration(integration, project_id: project.id)
 
           expect(service.inherit_from_id).to eq(integration.id)
         end
@@ -341,7 +341,7 @@ RSpec.describe Service do
         let(:integration) { create(:jira_service, group: group, project: nil) }
 
         it 'sets inherit_from_id from integration' do
-          service = described_class.build_from_integration(project.id, integration)
+          service = described_class.build_from_integration(integration, project_id: project.id)
 
           expect(service.inherit_from_id).to eq(integration.id)
         end
@@ -360,8 +360,8 @@ RSpec.describe Service do
         end
 
         shared_examples 'service creation from an integration' do
-          it 'creates a correct service' do
-            service = described_class.build_from_integration(project.id, integration)
+          it 'creates a correct service for a project integration' do
+            service = described_class.build_from_integration(integration, project_id: project.id)
 
             expect(service).to be_active
             expect(service.url).to eq(url)
@@ -372,6 +372,20 @@ RSpec.describe Service do
             expect(service.instance).to eq(false)
             expect(service.project).to eq(project)
             expect(service.group).to eq(nil)
+          end
+
+          it 'creates a correct service for a group integration' do
+            service = described_class.build_from_integration(integration, group_id: group.id)
+
+            expect(service).to be_active
+            expect(service.url).to eq(url)
+            expect(service.api_url).to eq(api_url)
+            expect(service.username).to eq(username)
+            expect(service.password).to eq(password)
+            expect(service.template).to eq(false)
+            expect(service.instance).to eq(false)
+            expect(service.project).to eq(nil)
+            expect(service.group).to eq(group)
           end
         end
 

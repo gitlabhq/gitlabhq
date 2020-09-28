@@ -28,9 +28,12 @@ module Groups
         @group.build_chat_team(name: response['name'], team_id: response['id'])
       end
 
-      if @group.save
-        @group.add_owner(current_user)
-        add_settings_record
+      Group.transaction do
+        if @group.save
+          @group.add_owner(current_user)
+          @group.create_namespace_settings
+          Service.create_from_active_default_integrations(@group, :group_id) if Feature.enabled?(:group_level_integrations)
+        end
       end
 
       @group
@@ -82,10 +85,6 @@ module Groups
       return if visibility_level.present?
 
       params[:visibility_level] = Gitlab::CurrentSettings.current_application_settings.default_group_visibility
-    end
-
-    def add_settings_record
-      @group.create_namespace_settings
     end
   end
 end

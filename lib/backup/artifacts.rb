@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
-require 'backup/files'
-
 module Backup
-  class Artifacts < Files
+  class Artifacts < Backup::Files
     attr_reader :progress
 
     def initialize(progress)

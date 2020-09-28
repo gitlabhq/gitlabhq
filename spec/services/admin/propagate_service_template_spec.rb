@@ -61,8 +61,8 @@ RSpec.describe Admin::PropagateServiceTemplate do
         }
       )
 
-      Service.build_from_integration(project.id, service_template).save!
-      Service.build_from_integration(project.id, other_service).save!
+      Service.build_from_integration(service_template, project_id: project.id).save!
+      Service.build_from_integration(other_service, project_id: project.id).save!
 
       expect { described_class.propagate(service_template) }
         .not_to change { Service.count }

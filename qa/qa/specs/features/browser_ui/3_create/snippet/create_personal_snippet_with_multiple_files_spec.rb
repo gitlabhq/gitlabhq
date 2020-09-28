@@ -4,11 +4,11 @@ module QA
   RSpec.describe 'Create', :requires_admin do
     describe 'Multiple file snippet' do
       before do
-        Runtime::Feature.enable_and_verify('snippet_multiple_files')
+        Runtime::Feature.enable('snippet_multiple_files')
       end
 
       after do
-        Runtime::Feature.disable_and_verify('snippet_multiple_files')
+        Runtime::Feature.disable('snippet_multiple_files')
       end
 
       it 'creates a personal snippet with multiple files', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/842' do

@@ -65,7 +65,6 @@ The GitLab University curriculum is composed of GitLab videos, screencasts, pres
 1. [Making GitLab Great for Everyone - Video](https://www.youtube.com/watch?v=GGC40y4vMx0) - Response to "Dear GitHub" letter
 1. [Using Innersourcing to Improve Collaboration](https://about.gitlab.com/blog/2014/09/05/innersourcing-using-the-open-source-workflow-to-improve-collaboration-within-an-organization/)
 1. [The Software Development Market and GitLab - Video](https://www.youtube.com/watch?v=sXlhgPK1NTY&list=PLFGfElNsQthbQu_IWlNOxul0TbS_2JH-e&index=6) - [Slides](https://docs.google.com/presentation/d/1vCU-NbZWz8NTNK8Vu3y4zGMAHb5DpC8PE5mHtw1PWfI/edit)
-1. [The GitLab Book Club](bookclub/index.md)
 1. [GitLab Resources](https://about.gitlab.com/resources/)
 
 ### 1.7 Community and Support
@@ -76,7 +75,6 @@ The GitLab University curriculum is composed of GitLab videos, screencasts, pres
    - Getting Technical Support
    - Being part of our Great Community and Contributing to GitLab
 1. [Getting Started with the GitLab Development Kit (GDK)](https://about.gitlab.com/blog/2016/06/08/getting-started-with-gitlab-development-kit/)
-1. [GitLab Training Workshops](training/end-user/README.md)
 1. [GitLab Professional Services](https://about.gitlab.com/services/)
 
 ### 1.8 GitLab Training Material

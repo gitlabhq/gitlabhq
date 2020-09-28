@@ -123,7 +123,7 @@ How this works, behind the scenes:
    we need for the stages, like issue creation date, merge request merge time,
    etc.
 
-To sum up, anything that doesn't follow [GitLab flow](../../workflow/gitlab_flow.md) will not be tracked and the
+To sum up, anything that doesn't follow [GitLab flow](../../topics/gitlab_flow.md) will not be tracked and the
 Value Stream Analytics dashboard will not present any data for:
 
 - Merge requests that do not close an issue.

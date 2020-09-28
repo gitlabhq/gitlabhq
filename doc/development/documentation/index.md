@@ -52,9 +52,9 @@ docs-only merge requests using the following guide:
 
 [Contributions to GitLab docs](workflow.md) are welcome from the entire GitLab community.
 
-To ensure that GitLab docs are current, there are special processes and responsibilities for all [feature changes](feature-change-workflow.md), that is development work that impacts the appearance, usage, or administration of a feature.
+To ensure that GitLab docs are current, there are special processes and responsibilities for all [feature changes](workflow.md), that is development work that impacts the appearance, usage, or administration of a feature.
 
-However, anyone can contribute [documentation improvements](improvement-workflow.md) that are not associated with a feature change. For example, adding a new doc on how to accomplish a use case that's already possible with GitLab or with third-party tools and GitLab.
+However, anyone can contribute [documentation improvements](workflow.md) that are not associated with a feature change. For example, adding a new doc on how to accomplish a use case that's already possible with GitLab or with third-party tools and GitLab.
 
 ## Markdown and styles
 
@@ -462,7 +462,7 @@ If you want to know the in-depth details, here's what's really happening:
 The following GitLab features are used among others:
 
 - [Manual actions](../../ci/yaml/README.md#whenmanual)
-- [Multi project pipelines](../../ci/multi_project_pipeline_graphs.md)
+- [Multi project pipelines](../../ci/multi_project_pipelines.md)
 - [Review Apps](../../ci/review_apps/index.md)
 - [Artifacts](../../ci/yaml/README.md#artifacts)
 - [Specific runner](../../ci/runners/README.md#prevent-a-specific-runner-from-being-enabled-for-other-projects)

@@ -68,7 +68,7 @@ GitLab maintains a set of official Docker images based on the Omnibus GitLab pac
 
 If the Omnibus GitLab package is not available in your distribution, you can
 install GitLab from source: Useful for unsupported systems like \*BSD. For an
-overview of the directory structure, read the [structure documentation](structure.md).
+overview of the directory structure, read the [structure documentation](installation.md#gitlab-directory-structure).
 
 [**> Install GitLab from source.**](installation.md)
 

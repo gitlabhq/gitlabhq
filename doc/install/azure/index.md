@@ -422,7 +422,7 @@ on any cloud service you choose.
 
 ## Where to next?
 
-Check out our other [Technical Articles](../../articles/index.md) or browse the [GitLab Documentation](../../README.md) to learn more about GitLab.
+Check out our other [Technical Articles](../../topics/index.md) or browse the [GitLab Documentation](../../README.md) to learn more about GitLab.
 
 ### Useful links
 

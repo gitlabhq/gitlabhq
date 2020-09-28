@@ -33,7 +33,7 @@ In the above example:
 ## How Review Apps work
 
 A Review App is a mapping of a branch with an [environment](../environments/index.md).
-Access to the Review App is made available as a link on the [merge request](../../user/project/merge_requests.md) relevant to the branch.
+Access to the Review App is made available as a link on the [merge request](../../user/project/merge_requests/index.md) relevant to the branch.
 
 The following is an example of a merge request with an environment set dynamically.
 

@@ -26,7 +26,7 @@ GitLab can be configured to authenticate access requests with the following auth
 - Enable sign in with [Bitbucket](bitbucket.md) accounts.
 - Configure GitLab to sign in using [CAS](cas.md).
 - Integrate with [Kerberos](kerberos.md).
-- Enable sign in via [LDAP](ldap.md).
+- Enable sign in via [LDAP](../administration/auth/ldap/index.md).
 - Enable [OAuth2 provider](oauth_provider.md) application creation.
 - Use [OmniAuth](omniauth.md) to enable sign in via Twitter, GitHub, GitLab.com, Google,
 Bitbucket, Facebook, Shibboleth, SAML, Crowd, Azure or Authentiq ID.

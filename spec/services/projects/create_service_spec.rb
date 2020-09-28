@@ -541,7 +541,7 @@ RSpec.describe Projects::CreateService, '#execute' do
               }
             end
 
-            it 'creates a service from the group-level integration' do
+            it 'creates a service from the subgroup-level integration' do
               expect(project.services.count).to eq(1)
               expect(project.services.first.api_url).to eq(subgroup_integration.api_url)
               expect(project.services.first.inherit_from_id).to eq(subgroup_integration.id)

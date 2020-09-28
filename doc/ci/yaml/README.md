@@ -1754,7 +1754,7 @@ the pipeline if the following is true:
 
 In the example below, the `test` job will `only` be created when **all** of the following are true:
 
-- The pipeline has been [scheduled](../../user/project/pipelines/schedules.md) **or** runs for `master`.
+- The pipeline has been [scheduled](../pipelines/schedules.md) **or** runs for `master`.
 - The `variables` keyword matches.
 - The `kubernetes` service is active on the project.
 

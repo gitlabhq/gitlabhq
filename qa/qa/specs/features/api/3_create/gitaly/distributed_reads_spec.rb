@@ -17,12 +17,12 @@ module QA
         end
 
         before do
-          Runtime::Feature.enable_and_verify('gitaly_distributed_reads')
+          Runtime::Feature.enable(:gitaly_distributed_reads)
           praefect_manager.wait_for_replication(project.id)
         end
 
         after do
-          Runtime::Feature.disable_and_verify('gitaly_distributed_reads')
+          Runtime::Feature.disable(:gitaly_distributed_reads)
         end
 
         it 'reads from each node', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/979' do

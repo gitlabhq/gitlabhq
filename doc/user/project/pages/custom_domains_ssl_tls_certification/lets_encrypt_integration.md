@@ -25,7 +25,7 @@ This feature covers only certificates for **custom domains**, not the wildcard c
 
 Before you can enable automatic provisioning of an SSL certificate for your domain, make sure you have:
 
-- Created a [project](../getting_started_part_two.md) in GitLab
+- Created a [project](../index.md#getting-started) in GitLab
   containing your website's source code.
 - Acquired a domain (`example.com`) and added a [DNS entry](index.md)
   pointing it to your Pages website.

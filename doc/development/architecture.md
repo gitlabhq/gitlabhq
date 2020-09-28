@@ -873,7 +873,7 @@ To serve repositories over SSH there's an add-on application called GitLab Shell
 
 ### Installation folder summary
 
-To summarize here's the [directory structure of the `git` user home directory](../install/structure.md).
+To summarize here's the [directory structure of the `git` user home directory](../install/installation.md#gitlab-directory-structure).
 
 ### Processes
 
@@ -985,7 +985,7 @@ GitLab Shell has a configuration file at `/home/git/gitlab-shell/config.yml`.
 
 ### Maintenance tasks
 
-[GitLab](https://gitlab.com/gitlab-org/gitlab/tree/master) provides Rake tasks with which you see version information and run a quick check on your configuration to ensure it is configured properly within the application. See [maintenance Rake tasks](../raketasks/maintenance.md).
+[GitLab](https://gitlab.com/gitlab-org/gitlab/tree/master) provides Rake tasks with which you see version information and run a quick check on your configuration to ensure it is configured properly within the application. See [maintenance Rake tasks](../administration/raketasks/maintenance.md).
 In a nutshell, do the following:
 
 ```shell

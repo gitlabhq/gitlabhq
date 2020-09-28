@@ -35,7 +35,7 @@ using metrics and logs, and promote the critical alerts to incidents.
 Are your alerts too noisy? Alerts configured on GitLab metrics can configured
 and fine-tuned in GitLab immediately following a fire-fight.
 
-- [Manage alerts and incidents](../user/incident_management/index.md) in GitLab.
+- [Manage alerts and incidents](incident_management/index.md) in GitLab.
 - [Configure alerts for metrics](metrics/alerts.md#set-up-alerts-for-prometheus-metrics) in GitLab.
 - Create a [status page](incident_management/status_page.md)
   to communicate efficiently to your users during an incident.
