@@ -1,5 +1,6 @@
 <script>
 import { GlLoadingIcon, GlTable } from '@gitlab/ui';
+import { reduce } from 'lodash';
 import { s__ } from '~/locale';
 import {
   capitalizeFirstCharacter,
@@ -21,10 +22,10 @@ const allowedFields = [
   'description',
   'endedAt',
   'details',
+  'environment',
 ];
 
-const filterAllowedFields = ([fieldName]) => allowedFields.includes(fieldName);
-const arrayToObject = ([fieldName, value]) => ({ fieldName, value });
+const isAllowed = fieldName => allowedFields.includes(fieldName);
 
 export default {
   components: {
@@ -62,9 +63,16 @@ export default {
       if (!this.alert) {
         return [];
       }
-      return Object.entries(this.alert)
-        .filter(filterAllowedFields)
-        .map(arrayToObject);
+      return reduce(
+        this.alert,
+        (allowedItems, value, fieldName) => {
+          if (isAllowed(fieldName)) {
+            return [...allowedItems, { fieldName, value }];
+          }
+          return allowedItems;
+        },
+        [],
+      );
     },
   },
 };

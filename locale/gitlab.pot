@@ -8,6 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-09-22 19:32+0200\n"
+"PO-Revision-Date: 2020-09-22 19:32+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -2232,6 +2234,9 @@ msgid "AlertManagement|Display alerts from all your monitoring tools directly wi
 msgstr ""
 
 msgid "AlertManagement|Edit"
+msgstr ""
+
+msgid "AlertManagement|Environment"
 msgstr ""
 
 msgid "AlertManagement|Events"
@@ -13953,6 +13958,42 @@ msgstr ""
 msgid "InviteMembersBanner|We noticed that you haven't invited anyone to this group. Invite your colleagues so you can discuss issues, collaborate on merge requests, and share your knowledge."
 msgstr ""
 
+msgid "InviteMembersModal|%{linkStart}Read more%{linkEnd} about role permissions"
+msgstr ""
+
+msgid "InviteMembersModal|Access expiration date (optional)"
+msgstr ""
+
+msgid "InviteMembersModal|Cancel"
+msgstr ""
+
+msgid "InviteMembersModal|Choose a role permission"
+msgstr ""
+
+msgid "InviteMembersModal|GitLab member or Email address"
+msgstr ""
+
+msgid "InviteMembersModal|Invite"
+msgstr ""
+
+msgid "InviteMembersModal|Invite team members"
+msgstr ""
+
+msgid "InviteMembersModal|Search for members to invite"
+msgstr ""
+
+msgid "InviteMembersModal|User not invited. Feature coming soon!"
+msgstr ""
+
+msgid "InviteMembersModal|Users were succesfully added"
+msgstr ""
+
+msgid "InviteMembersModal|You're inviting members to the %{group_name} group"
+msgstr ""
+
+msgid "InviteMembers|Invite team members"
+msgstr ""
+
 msgid "Invited"
 msgstr ""
 
@@ -14623,9 +14664,6 @@ msgid "Last %d day"
 msgid_plural "Last %d days"
 msgstr[0] ""
 msgstr[1] ""
-
-msgid "Last %{days} days"
-msgstr ""
 
 msgid "Last 2 weeks"
 msgstr ""
@@ -22928,9 +22966,6 @@ msgstr ""
 msgid "Select the environment scope for this feature flag."
 msgstr ""
 
-msgid "Select timeframe"
-msgstr ""
-
 msgid "Select timezone"
 msgstr ""
 
@@ -28986,6 +29021,9 @@ msgid "Write your release notes or drag your files here…"
 msgstr ""
 
 msgid "Wrong extern UID provided. Make sure Auth0 is configured correctly."
+msgstr ""
+
+msgid "YYYY-MM-DD"
 msgstr ""
 
 msgid "Yes"

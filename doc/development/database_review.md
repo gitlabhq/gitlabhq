@@ -184,10 +184,6 @@ test its execution using `CREATE INDEX CONCURRENTLY` in the `#database-lab` Slac
   - [Check query plans](understanding_explain_plans.md) and suggest improvements
     to queries (changing the query, schema or adding indexes and similar)
   - General guideline is for queries to come in below 100ms execution time
-  - If queries rely on prior migrations that are not present yet on production
-    (eg indexes, columns), you can use a [one-off instance from the restore
-    pipeline](https://ops.gitlab.net/gitlab-com/gl-infra/gitlab-restore/postgres-gprd)
-    in order to establish a proper testing environment. If you don't have access to this project, reach out to #database on Slack to get advice on how to proceed.
   - Avoid N+1 problems and minimalize the [query count](merge_request_performance_guidelines.md#query-counts).
 
 ### Timing guidelines for migrations

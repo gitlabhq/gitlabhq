@@ -10,10 +10,6 @@ module Gitlab
         ::Feature.enabled?(:ci_artifacts_exclude, default_enabled: true)
       end
 
-      def self.job_heartbeats_runner?(project)
-        ::Feature.enabled?(:ci_job_heartbeats_runner, project, default_enabled: true)
-      end
-
       def self.instance_variables_ui_enabled?
         ::Feature.enabled?(:ci_instance_variables_ui, default_enabled: true)
       end

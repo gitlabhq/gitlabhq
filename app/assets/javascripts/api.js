@@ -112,6 +112,12 @@ const Api = {
     });
   },
 
+  inviteGroupMember(id, data) {
+    const url = Api.buildUrl(this.groupMembersPath).replace(':id', encodeURIComponent(id));
+
+    return axios.post(url, data);
+  },
+
   groupMilestones(id, options) {
     const url = Api.buildUrl(this.groupMilestonesPath).replace(':id', encodeURIComponent(id));
 

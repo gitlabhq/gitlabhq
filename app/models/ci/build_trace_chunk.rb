@@ -3,6 +3,7 @@
 module Ci
   class BuildTraceChunk < ApplicationRecord
     extend ::Gitlab::Ci::Model
+    include ::Comparable
     include ::FastDestroyAll
     include ::Checksummable
     include ::Gitlab::ExclusiveLeaseHelpers
@@ -29,6 +30,7 @@ module Ci
     }
 
     scope :live, -> { redis }
+    scope :persisted, -> { not_redis.order(:chunk_index) }
 
     class << self
       def all_stores
@@ -63,10 +65,22 @@ module Ci
           get_store_class(store).delete_keys(value)
         end
       end
+
+      ##
+      # Sometimes we do not want to read raw data. This method makes it easier
+      # to find attributes that are just metadata excluding raw data.
+      #
+      def metadata_attributes
+        attribute_names - %w[raw_data]
+      end
     end
 
     def data
       @data ||= get_data.to_s
+    end
+
+    def crc32
+      checksum.to_i
     end
 
     def truncate(offset = 0)
@@ -130,6 +144,12 @@ module Ci
         build.trace_chunks.maximum(:chunk_index).to_i == chunk_index
     end
 
+    def <=>(other)
+      return unless self.build_id == other.build_id
+
+      self.chunk_index <=> other.chunk_index
+    end
+
     private
 
     def get_data
@@ -150,7 +170,7 @@ module Ci
 
       self.raw_data = nil
       self.data_store = new_store
-      self.checksum = crc32(current_data)
+      self.checksum = self.class.crc32(current_data)
 
       ##
       # We need to so persist data then save a new store identifier before we

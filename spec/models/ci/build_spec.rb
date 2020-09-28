@@ -4652,4 +4652,24 @@ RSpec.describe Ci::Build do
       it { is_expected.to be_nil }
     end
   end
+
+  describe '#run_on_status_commit' do
+    it 'runs provided hook after status commit' do
+      action = spy('action')
+
+      build.run_on_status_commit { action.perform! }
+      build.success!
+
+      expect(action).to have_received(:perform!).once
+    end
+
+    it 'does not run hooks when status has not changed' do
+      action = spy('action')
+
+      build.run_on_status_commit { action.perform! }
+      build.save!
+
+      expect(action).not_to have_received(:perform!)
+    end
+  end
 end

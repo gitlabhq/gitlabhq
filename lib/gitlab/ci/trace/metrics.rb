@@ -7,7 +7,8 @@ module Gitlab
         extend Gitlab::Utils::StrongMemoize
 
         OPERATIONS = [:appended, :streamed, :chunked, :mutated, :overwrite,
-                      :accepted, :finalized, :discarded, :conflict].freeze
+                      :accepted, :finalized, :discarded, :conflict, :locked,
+                      :invalid].freeze
 
         def increment_trace_operation(operation: :unknown)
           unless OPERATIONS.include?(operation)

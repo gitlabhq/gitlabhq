@@ -779,4 +779,62 @@ RSpec.describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
       it_behaves_like 'deletes all build_trace_chunk and data in redis'
     end
   end
+
+  describe 'comparable build trace chunks' do
+    describe '#<=>' do
+      context 'when chunks are associated with different builds' do
+        let(:first) { create(:ci_build_trace_chunk, build: build, chunk_index: 1) }
+        let(:second) { create(:ci_build_trace_chunk, chunk_index: 1) }
+
+        it 'returns nil' do
+          expect(first <=> second).to be_nil
+        end
+      end
+
+      context 'when there are two chunks with different indexes' do
+        let(:first) { create(:ci_build_trace_chunk, build: build, chunk_index: 1) }
+        let(:second) { create(:ci_build_trace_chunk, build: build, chunk_index: 0) }
+
+        it 'indicates the the first one is greater than then second' do
+          expect(first <=> second).to eq 1
+        end
+      end
+
+      context 'when there are two chunks with the same index within the same build' do
+        let(:chunk) { create(:ci_build_trace_chunk) }
+
+        it 'indicates the these are equal' do
+          expect(chunk <=> chunk).to be_zero # rubocop:disable Lint/UselessComparison
+        end
+      end
+    end
+
+    describe '#==' do
+      context 'when chunks have the same index' do
+        let(:chunk) { create(:ci_build_trace_chunk) }
+
+        it 'indicates that the chunks are equal' do
+          expect(chunk).to eq chunk
+        end
+      end
+
+      context 'when chunks have different indexes' do
+        let(:first) { create(:ci_build_trace_chunk, build: build, chunk_index: 1) }
+        let(:second) { create(:ci_build_trace_chunk, build: build, chunk_index: 0) }
+
+        it 'indicates that the chunks are not equal' do
+          expect(first).not_to eq second
+        end
+      end
+
+      context 'when chunks are associated with different builds' do
+        let(:first) { create(:ci_build_trace_chunk, build: build, chunk_index: 1) }
+        let(:second) { create(:ci_build_trace_chunk, chunk_index: 1) }
+
+        it 'indicates that the chunks are not equal' do
+          expect(first).not_to eq second
+        end
+      end
+    end
+  end
 end

@@ -85,7 +85,7 @@ RSpec.describe Ci::UpdateBuildStateService do
 
     context 'when build trace has been migrated' do
       before do
-        create(:ci_build_trace_chunk, :database_with_data, build: build)
+        create(:ci_build_trace_chunk, :persisted, build: build, initial_data: 'abcd')
       end
 
       it 'updates a build state' do
@@ -112,6 +112,48 @@ RSpec.describe Ci::UpdateBuildStateService do
         expect(metrics)
           .to have_received(:increment_trace_operation)
           .with(operation: :finalized)
+      end
+
+      context 'when trace checksum is not valid' do
+        it 'increments invalid trace metric' do
+          execute_with_stubbed_metrics!
+
+          expect(metrics)
+            .to have_received(:increment_trace_operation)
+            .with(operation: :invalid)
+        end
+      end
+
+      context 'when trace checksum is valid' do
+        let(:params) { { checksum: 'crc32:3984772369', state: 'success' } }
+
+        it 'does not increment invalid trace metric' do
+          execute_with_stubbed_metrics!
+
+          expect(metrics)
+            .not_to have_received(:increment_trace_operation)
+            .with(operation: :invalid)
+        end
+      end
+
+      context 'when failed to acquire a build trace lock' do
+        it 'accepts a state update request' do
+          build.trace.lock do
+            result = subject.execute
+
+            expect(result.status).to eq 202
+          end
+        end
+
+        it 'increment locked trace metric' do
+          build.trace.lock do
+            execute_with_stubbed_metrics!
+
+            expect(metrics)
+              .to have_received(:increment_trace_operation)
+              .with(operation: :locked)
+          end
+        end
       end
     end
 
@@ -146,14 +188,6 @@ RSpec.describe Ci::UpdateBuildStateService do
         subject.execute
       end
 
-      it 'increments trace accepted operation metric' do
-        execute_with_stubbed_metrics!
-
-        expect(metrics)
-          .to have_received(:increment_trace_operation)
-          .with(operation: :accepted)
-      end
-
       it 'creates a pending state record' do
         subject.execute
 
@@ -163,6 +197,22 @@ RSpec.describe Ci::UpdateBuildStateService do
           expect(status.trace_checksum).to eq 'crc32:12345678'
           expect(status.failure_reason).to eq 'script_failure'
         end
+      end
+
+      it 'increments trace accepted operation metric' do
+        execute_with_stubbed_metrics!
+
+        expect(metrics)
+          .to have_received(:increment_trace_operation)
+          .with(operation: :accepted)
+      end
+
+      it 'does not increment invalid trace metric' do
+        execute_with_stubbed_metrics!
+
+        expect(metrics)
+          .not_to have_received(:increment_trace_operation)
+          .with(operation: :invalid)
       end
 
       context 'when build pending state is outdated' do

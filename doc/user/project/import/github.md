@@ -35,25 +35,20 @@ The namespace is a user or group in GitLab, such as `gitlab.com/janedoe` or `git
 
 This process does not migrate or import any types of groups or organizations from GitHub to GitLab.
 
-### If you're using GitLab.com
+### Use cases
 
-If you're using GitLab.com, you can alternatively import
-GitHub repositories using a [personal access token](#using-a-github-token),
-but we don't recommend this method because it can't associate all user activity
-(such as issues and pull requests) with matching GitLab users.
+The steps you take depend on whether you are importing from GitHub.com or GitHub Enterprise, as well as whether you are importing to GitLab.com or self-managed GitLab instance.
 
-### If you're importing from GitLab Enterprise
-
-If you're importing from GitHub Enterprise, you must enable [GitHub integration][gh-import].
-
-### If you're using a self-managed GitLab instance
-
-If you're an administrator of a self-managed GitLab instance, you must enable
-[GitHub integration][gh-import].
-
-If you're an administrator of a self-managed GitLab instance, you can also use the
-[GitHub Rake task](../../../administration/raketasks/github_import.md) to import projects from
-GitHub without the constraints of a Sidekiq worker.
+- If you're importing to GitLab.com, you can alternatively import GitHub repositories
+  using a [personal access token](#using-a-github-token). We do not recommend
+  this method, as it does not associate all user activity (such as issues and
+  pull requests) with matching GitLab users.
+- If you're importing to a self-managed GitLab instance, you can alternatively use the
+  [GitHub Rake task](../../../administration/raketasks/github_import.md) to import
+  projects without the constraints of a [Sidekiq](../../../development/sidekiq_style_guide.md) worker.
+- If you're importing from GitHub Enterprise to your self-managed GitLab instance, you must first enable
+  [GitHub integration](../../../integration/github.md). However, you cannot import projects from GitHub Enterprise to GitLab.com.
+- If you're importing from GitHub.com to your self-managed GitLab instance, you do not need to set up GitHub integration.
 
 ## How it works
 

@@ -1,0 +1,10 @@
+#import "../fragments/container_expiration_policy.fragment.graphql"
+
+mutation updateContainerExpirationPolicy($input: UpdateContainerExpirationPolicyInput!) {
+  updateContainerExpirationPolicy(input: $input) {
+    containerExpirationPolicy {
+      ...ContainerExpirationPolicyFields
+    }
+    errors
+  }
+}

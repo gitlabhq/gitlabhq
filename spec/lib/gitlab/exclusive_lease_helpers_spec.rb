@@ -25,13 +25,17 @@ RSpec.describe Gitlab::ExclusiveLeaseHelpers, :clean_gitlab_redis_shared_state d
       let!(:lease) { stub_exclusive_lease(unique_key, 'uuid') }
 
       it 'calls the given block' do
-        expect { |b| class_instance.in_lock(unique_key, &b) }.to yield_with_args(false)
+        expect { |b| class_instance.in_lock(unique_key, &b) }
+          .to yield_with_args(false, an_instance_of(described_class::SleepingLock))
       end
 
       it 'calls the given block continuously' do
-        expect { |b| class_instance.in_lock(unique_key, &b) }.to yield_with_args(false)
-        expect { |b| class_instance.in_lock(unique_key, &b) }.to yield_with_args(false)
-        expect { |b| class_instance.in_lock(unique_key, &b) }.to yield_with_args(false)
+        expect { |b| class_instance.in_lock(unique_key, &b) }
+          .to yield_with_args(false, an_instance_of(described_class::SleepingLock))
+        expect { |b| class_instance.in_lock(unique_key, &b) }
+          .to yield_with_args(false, an_instance_of(described_class::SleepingLock))
+        expect { |b| class_instance.in_lock(unique_key, &b) }
+          .to yield_with_args(false, an_instance_of(described_class::SleepingLock))
       end
 
       it 'cancels the exclusive lease after the block' do
@@ -74,7 +78,8 @@ RSpec.describe Gitlab::ExclusiveLeaseHelpers, :clean_gitlab_redis_shared_state d
             expect(lease).to receive(:try_obtain).exactly(3).times { nil }
             expect(lease).to receive(:try_obtain).once { unique_key }
 
-            expect { |b| class_instance.in_lock(unique_key, &b) }.to yield_with_args(true)
+            expect { |b| class_instance.in_lock(unique_key, &b) }
+              .to yield_with_args(true, an_instance_of(described_class::SleepingLock))
           end
         end
       end

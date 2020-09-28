@@ -272,7 +272,7 @@ gem 'licensee', '~> 8.9'
 gem 'ace-rails-ap', '~> 4.1.0'
 
 # Detect and convert string character encoding
-gem 'charlock_holmes', '~> 0.7.5'
+gem 'charlock_holmes', '~> 0.7.7'
 
 # Detect mime content type from content
 gem 'mimemagic', '~> 0.3.2'

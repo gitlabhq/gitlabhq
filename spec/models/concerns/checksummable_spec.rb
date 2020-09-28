@@ -3,17 +3,21 @@
 require 'spec_helper'
 
 RSpec.describe Checksummable do
-  describe ".hexdigest" do
-    let(:fake_class) do
-      Class.new do
-        include Checksummable
-      end
-    end
+  subject do
+    Class.new { include Checksummable }
+  end
 
+  describe ".crc32" do
+    it 'returns the CRC32 of data' do
+      expect(subject.crc32('abcd')).to eq 3984772369
+    end
+  end
+
+  describe ".hexdigest" do
     it 'returns the SHA256 sum of the file' do
       expected = Digest::SHA256.file(__FILE__).hexdigest
 
-      expect(fake_class.hexdigest(__FILE__)).to eq(expected)
+      expect(subject.hexdigest(__FILE__)).to eq(expected)
     end
   end
 end

@@ -1,5 +1,5 @@
+import { GlLoadingIcon, GlTable } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
-import { GlTable, GlLoadingIcon } from '@gitlab/ui';
 import AlertDetailsTable from '~/vue_shared/components/alert_details_table.vue';
 
 const mockAlert = {
@@ -61,8 +61,10 @@ describe('AlertDetails', () => {
     });
 
     describe('with table data', () => {
+      const environment = 'myEnvironment';
+      const environmentUrl = 'fake/url';
       beforeEach(() => {
-        mountComponent();
+        mountComponent({ alert: { ...mockAlert, environment, environmentUrl } });
       });
 
       it('renders a table', () => {
@@ -80,6 +82,7 @@ describe('AlertDetails', () => {
         expect(findTableField(fields, 'Title').exists()).toBe(true);
         expect(findTableField(fields, 'Severity').exists()).toBe(true);
         expect(findTableField(fields, 'Status').exists()).toBe(true);
+        expect(findTableField(fields, 'Environment').exists()).toBe(true);
       });
 
       it('should not show disallowed alert fields', () => {
@@ -89,6 +92,7 @@ describe('AlertDetails', () => {
         expect(findTableField(fields, 'Todos').exists()).toBe(false);
         expect(findTableField(fields, 'Notes').exists()).toBe(false);
         expect(findTableField(fields, 'Assignees').exists()).toBe(false);
+        expect(findTableField(fields, 'EnvironmentUrl').exists()).toBe(false);
       });
     });
   });

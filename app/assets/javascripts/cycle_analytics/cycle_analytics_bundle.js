@@ -36,12 +36,6 @@ export default () => {
       'stage-review-component': stageReviewComponent,
       'stage-staging-component': stageStagingComponent,
       'stage-production-component': stageComponent,
-      GroupsDropdownFilter: () =>
-        import('ee_component/analytics/shared/components/groups_dropdown_filter.vue'),
-      ProjectsDropdownFilter: () =>
-        import('ee_component/analytics/shared/components/projects_dropdown_filter.vue'),
-      DateRangeDropdown: () =>
-        import('ee_component/analytics/shared/components/date_range_dropdown.vue'),
       'stage-nav-item': stageNavItem,
     },
     data() {

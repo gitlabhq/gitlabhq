@@ -35,7 +35,7 @@ RSpec.describe SnippetRepository do
     it 'returns nil when files argument is empty' do
       expect(snippet.repository).not_to receive(:multi_action)
 
-      operation = snippet_repository.multi_files_action(user, [], commit_opts)
+      operation = snippet_repository.multi_files_action(user, [], **commit_opts)
 
       expect(operation).to be_nil
     end
@@ -43,7 +43,7 @@ RSpec.describe SnippetRepository do
     it 'returns nil when files argument is nil' do
       expect(snippet.repository).not_to receive(:multi_action)
 
-      operation = snippet_repository.multi_files_action(user, nil, commit_opts)
+      operation = snippet_repository.multi_files_action(user, nil, **commit_opts)
 
       expect(operation).to be_nil
     end
@@ -60,7 +60,7 @@ RSpec.describe SnippetRepository do
       end
 
       expect do
-        snippet_repository.multi_files_action(user, data, commit_opts)
+        snippet_repository.multi_files_action(user, data, **commit_opts)
       end.not_to raise_error
 
       aggregate_failures do
@@ -77,13 +77,13 @@ RSpec.describe SnippetRepository do
     it 'tries to obtain an exclusive lease' do
       expect(Gitlab::ExclusiveLease).to receive(:new).with("multi_files_action:#{snippet.id}", anything).and_call_original
 
-      snippet_repository.multi_files_action(user, data, commit_opts)
+      snippet_repository.multi_files_action(user, data, **commit_opts)
     end
 
     it 'cancels the lease when the method has finished' do
       expect(Gitlab::ExclusiveLease).to receive(:cancel).with("multi_files_action:#{snippet.id}", anything).and_call_original
 
-      snippet_repository.multi_files_action(user, data, commit_opts)
+      snippet_repository.multi_files_action(user, data, **commit_opts)
     end
 
     it 'raises an error if the lease cannot be obtained' do
@@ -92,7 +92,7 @@ RSpec.describe SnippetRepository do
       end
 
       expect do
-        snippet_repository.multi_files_action(user, data, commit_opts)
+        snippet_repository.multi_files_action(user, data, **commit_opts)
       end.to raise_error(described_class::CommitError)
     end
 
@@ -114,7 +114,7 @@ RSpec.describe SnippetRepository do
       it 'infers the commit action based on the parameters if not present' do
         expect(repo).to receive(:multi_action).with(user, hash_including(actions: result))
 
-        snippet_repository.multi_files_action(user, data, commit_opts)
+        snippet_repository.multi_files_action(user, data, **commit_opts)
       end
 
       context 'when commit actions are present' do
@@ -128,7 +128,7 @@ RSpec.describe SnippetRepository do
                 user,
                 hash_including(actions: array_including(hash_including(action: expected_action)))))
 
-            snippet_repository.multi_files_action(user, data, commit_opts)
+            snippet_repository.multi_files_action(user, data, **commit_opts)
           end
         end
 
@@ -149,7 +149,7 @@ RSpec.describe SnippetRepository do
         specify do
           existing_content = blob_at(snippet, previous_path).data
 
-          snippet_repository.multi_files_action(user, [move_action], commit_opts)
+          snippet_repository.multi_files_action(user, [move_action], **commit_opts)
 
           blob = blob_at(snippet, new_path)
           expect(blob).not_to be_nil
@@ -177,7 +177,7 @@ RSpec.describe SnippetRepository do
         specify do
           last_commit_id = snippet.repository.head_commit.id
 
-          snippet_repository.multi_files_action(user, [update_action], commit_opts)
+          snippet_repository.multi_files_action(user, [update_action], **commit_opts)
 
           expect(snippet.repository.head_commit.id).to eq last_commit_id
         end
@@ -214,13 +214,13 @@ RSpec.describe SnippetRepository do
       before do
         expect(blob_at(snippet, default_name)).to be_nil
 
-        snippet_repository.multi_files_action(user, [new_file], commit_opts)
+        snippet_repository.multi_files_action(user, [new_file], **commit_opts)
 
         expect(blob_at(snippet, default_name)).to be
       end
 
       it 'reuses the existing file name' do
-        snippet_repository.multi_files_action(user, [existing_file], commit_opts)
+        snippet_repository.multi_files_action(user, [existing_file], **commit_opts)
 
         blob = blob_at(snippet, default_name)
         expect(blob.data).to eq existing_file[:content]
@@ -234,7 +234,7 @@ RSpec.describe SnippetRepository do
       it 'assigns a new name to the file' do
         expect(blob_at(snippet, default_name)).to be_nil
 
-        snippet_repository.multi_files_action(user, [new_file], commit_opts)
+        snippet_repository.multi_files_action(user, [new_file], **commit_opts)
 
         blob = blob_at(snippet, default_name)
         expect(blob.data).to eq new_file[:content]
@@ -246,7 +246,7 @@ RSpec.describe SnippetRepository do
 
       before do
         expect do
-          snippet_repository.multi_files_action(user, data, commit_opts)
+          snippet_repository.multi_files_action(user, data, **commit_opts)
         end.not_to raise_error
       end
 
@@ -259,10 +259,10 @@ RSpec.describe SnippetRepository do
 
       before do
         # Pre-populate repository with 9 unnamed snippets.
-        snippet_repository.multi_files_action(user, pre_populate_data, commit_opts)
+        snippet_repository.multi_files_action(user, pre_populate_data, **commit_opts)
 
         expect do
-          snippet_repository.multi_files_action(user, data, commit_opts)
+          snippet_repository.multi_files_action(user, data, **commit_opts)
         end.not_to raise_error
       end
 
@@ -274,7 +274,7 @@ RSpec.describe SnippetRepository do
 
       it 'raises a path specific error' do
         expect do
-          snippet_repository.multi_files_action(user, data, commit_opts)
+          snippet_repository.multi_files_action(user, data, **commit_opts)
         end.to raise_error(error)
       end
     end
