@@ -16,7 +16,7 @@ module QA
         project.initialize_with_readme = true
       end
 
-      it 'sets labels' do
+      it 'sets labels', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1032' do
         Resource::Repository::ProjectPush.fabricate! do |push|
           push.project = project
           push.commit_message = commit_message
@@ -35,7 +35,7 @@ module QA
       end
 
       context 'when labels are set already' do
-        it 'removes them' do
+        it 'removes them', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1033' do
           Resource::Repository::ProjectPush.fabricate! do |push|
             push.project = project
             push.file_content = "Unlabel test #{SecureRandom.hex(8)}"

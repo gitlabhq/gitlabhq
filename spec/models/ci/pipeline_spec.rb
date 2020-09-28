@@ -2436,7 +2436,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
   end
 
   describe '#retry_failed' do
-    let(:latest_status) { pipeline.statuses.latest.pluck(:status) }
+    let(:latest_status) { pipeline.latest_statuses.pluck(:status) }
 
     before do
       stub_not_protect_default_branch

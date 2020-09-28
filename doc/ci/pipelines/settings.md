@@ -75,7 +75,7 @@ For information about setting a maximum artifact size for a project, see
 > - [Support for external `.gitlab-ci.yml` locations](https://gitlab.com/gitlab-org/gitlab/-/issues/14376) introduced in GitLab 12.6.
 
 By default we look for the `.gitlab-ci.yml` file in the project's root
-directory. If needed, you can specify an alternate path and file name, including locations outside the project.
+directory. If needed, you can specify an alternate path and filename, including locations outside the project.
 
 To customize the path:
 
@@ -297,7 +297,7 @@ into your `README.md`:
 
 ### Badge styles
 
-Pipeline badges can be rendered in different styles by adding the `style=style_name` parameter to the URL. Currently two styles are available:
+Pipeline badges can be rendered in different styles by adding the `style=style_name` parameter to the URL. Two styles are available:
 
 #### Flat (default)
 

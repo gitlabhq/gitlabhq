@@ -164,7 +164,7 @@ module QA
 
         def has_pipeline_status?(text)
           # Pipelines can be slow, so we wait a bit longer than the usual 10 seconds
-          has_element?(:merge_request_pipeline_info_content, text: text, wait: 30)
+          has_element?(:merge_request_pipeline_info_content, text: text, wait: 60)
         end
 
         def has_title?(title)
@@ -198,7 +198,7 @@ module QA
         end
 
         def merged?
-          has_element?(:merged_status_content, text: 'The changes were merged into', wait: 30)
+          has_element?(:merged_status_content, text: 'The changes were merged into', wait: 60)
         end
 
         # Check if the MR is able to be merged

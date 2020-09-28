@@ -196,6 +196,8 @@ module API
       mount ::API::ComposerPackages
       mount ::API::ConanProjectPackages
       mount ::API::ConanInstancePackages
+      mount ::API::DebianGroupPackages
+      mount ::API::DebianProjectPackages
       mount ::API::MavenPackages
       mount ::API::NpmPackages
       mount ::API::GenericPackages

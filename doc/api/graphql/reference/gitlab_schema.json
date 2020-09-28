@@ -39901,7 +39901,7 @@
             },
             {
               "name": "requirement",
-              "description": "Find a single requirement. Available only when feature flag `requirements_management` is enabled.",
+              "description": "Find a single requirement",
               "args": [
                 {
                   "name": "iid",
@@ -40004,7 +40004,7 @@
             },
             {
               "name": "requirements",
-              "description": "Find requirements. Available only when feature flag `requirements_management` is enabled.",
+              "description": "Find requirements",
               "args": [
                 {
                   "name": "iid",

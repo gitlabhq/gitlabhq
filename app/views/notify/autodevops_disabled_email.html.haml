@@ -46,4 +46,4 @@
             %td{ style: "font-family: 'Menlo','Liberation Mono','Consolas','DejaVu Sans Mono','Ubuntu Mono','Courier New','andale mono','lucida console',monospace; font-size: 14px; line-height: 1.4; vertical-align: baseline; padding:0 8px;" }
               API
 
-= render 'notify/failed_builds', pipeline: @pipeline, failed: @pipeline.statuses.latest.failed
+= render 'notify/failed_builds', pipeline: @pipeline, failed: @pipeline.latest_statuses.failed

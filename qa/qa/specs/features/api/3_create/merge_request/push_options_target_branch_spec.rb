@@ -16,7 +16,7 @@ module QA
         end
       end
 
-      it 'sets a target branch' do
+      it 'sets a target branch', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1034' do
         target_branch = "push-options-test-target-#{SecureRandom.hex(8)}"
 
         Resource::Repository::ProjectPush.fabricate! do |push|

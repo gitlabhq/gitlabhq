@@ -102,7 +102,7 @@ module Clusters
       def terminals(environment, data)
         pods = filter_by_project_environment(data[:pods], environment.project.full_path_slug, environment.slug)
         terminals = pods.flat_map { |pod| terminals_for_pod(api_url, environment.deployment_namespace, pod) }.compact
-        terminals.each { |terminal| add_terminal_auth(terminal, terminal_auth) }
+        terminals.each { |terminal| add_terminal_auth(terminal, **terminal_auth) }
       end
 
       def kubeclient

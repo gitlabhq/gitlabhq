@@ -1,11 +1,8 @@
 <script>
-/* eslint-disable vue/no-v-html */
 import Vue from 'vue';
 import Cookies from 'js-cookie';
 import { GlIcon } from '@gitlab/ui';
 import Translate from '../../../../../vue_shared/translate';
-// Full path is needed for Jest to be able to correctly mock this file
-import illustrationSvg from '~/pages/projects/pipeline_schedules/shared/icons/intro_illustration.svg';
 import { parseBoolean } from '~/lib/utils/common_utils';
 
 Vue.use(Translate);
@@ -20,11 +17,9 @@ export default {
   data() {
     return {
       docsUrl: document.getElementById('pipeline-schedules-callout').dataset.docsUrl,
+      imageUrl: document.getElementById('pipeline-schedules-callout').dataset.imageUrl,
       calloutDismissed: parseBoolean(Cookies.get(cookieKey)),
     };
-  },
-  created() {
-    this.illustrationSvg = illustrationSvg;
   },
   methods: {
     dismissCallout() {
@@ -40,7 +35,9 @@ export default {
       <button id="dismiss-callout-btn" class="btn btn-default close" @click="dismissCallout">
         <gl-icon name="close" aria-hidden="true" />
       </button>
-      <div class="svg-container" v-html="illustrationSvg"></div>
+      <div class="svg-container">
+        <img :src="imageUrl" />
+      </div>
       <div class="user-callout-copy">
         <h4>{{ __('Scheduling Pipelines') }}</h4>
         <p>

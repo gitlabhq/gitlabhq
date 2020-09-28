@@ -242,6 +242,7 @@ ci_pipelines:
 - latest_builds_report_results
 - messages
 - pipeline_artifacts
+- latest_statuses
 ci_refs:
 - project
 - ci_pipelines

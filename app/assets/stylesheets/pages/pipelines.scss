@@ -1013,31 +1013,35 @@ button.mini-pipeline-graph-dropdown-toggle {
 /**
  * Terminal
  */
-.terminal-icon {
-  margin-left: 3px;
-}
+[data-page='projects:jobs:terminal'],
+[data-page='projects:environments:terminal'] {
+  .terminal-container {
+    .content-block {
+      border-bottom: 0;
+    }
 
-.terminal-container {
-  .content-block {
-    border-bottom: 0;
-  }
+    #terminal {
+      margin-top: 10px;
 
-  #terminal {
-    margin-top: 10px;
-    min-height: 450px;
-    box-sizing: border-box;
-
-    > div {
-      min-height: 450px;
+      > div {
+        min-height: 450px;
+      }
     }
   }
 }
 
-.ci-header-container {
-  min-height: 55px;
+/**
+ * Pipelines / Jobs header
+ */
+[data-page='projects:pipelines:show'],
+[data-page='projects:jobs:show'] {
+  .ci-header-container {
+    min-height: $gl-spacing-scale-7;
+    display: flex;
 
-  .text-center {
-    padding-top: 12px;
+    .text-center {
+      padding-top: 12px;
+    }
   }
 }
 

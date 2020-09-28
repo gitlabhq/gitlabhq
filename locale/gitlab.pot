@@ -2675,12 +2675,6 @@ msgstr ""
 msgid "An error occurred when toggling the notification subscription"
 msgstr ""
 
-msgid "An error occurred when trying to resolve a comment. Please try again."
-msgstr ""
-
-msgid "An error occurred when trying to resolve a discussion. Please try again."
-msgstr ""
-
 msgid "An error occurred when updating the issue weight"
 msgstr ""
 
@@ -10458,9 +10452,6 @@ msgstr ""
 msgid "Expand approvers"
 msgstr ""
 
-msgid "Expand file"
-msgstr ""
-
 msgid "Expand milestones"
 msgstr ""
 
@@ -13770,6 +13761,15 @@ msgstr ""
 msgid "Integrations|Includes commit title and branch"
 msgstr ""
 
+msgid "Integrations|Projects using custom settings will not be impacted unless the project owner chooses to use instance-level defaults."
+msgstr ""
+
+msgid "Integrations|Save settings?"
+msgstr ""
+
+msgid "Integrations|Saving will update the default settings for all projects that are not using custom settings."
+msgstr ""
+
 msgid "Integrations|Standard"
 msgstr ""
 
@@ -14449,9 +14449,6 @@ msgid "Jul"
 msgstr ""
 
 msgid "July"
-msgstr ""
-
-msgid "Jump to first unresolved thread"
 msgstr ""
 
 msgid "Jump to next unresolved thread"
@@ -21760,9 +21757,6 @@ msgstr ""
 msgid "Resolved by %{name}"
 msgstr ""
 
-msgid "Resolved by %{resolvedByName}"
-msgstr ""
-
 msgid "Resolves IP addresses once and uses them to submit requests"
 msgstr ""
 
@@ -26026,9 +26020,6 @@ msgstr ""
 msgid "This field is required."
 msgstr ""
 
-msgid "This file is collapsed."
-msgstr ""
-
 msgid "This group"
 msgstr ""
 
@@ -27246,9 +27237,6 @@ msgid "Unable to load the diff. %{button_try_again}"
 msgstr ""
 
 msgid "Unable to load the merge request widget. Try reloading the page."
-msgstr ""
-
-msgid "Unable to resolve"
 msgstr ""
 
 msgid "Unable to save iteration. Please try again"

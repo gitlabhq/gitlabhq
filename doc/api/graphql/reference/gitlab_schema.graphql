@@ -13714,7 +13714,7 @@ type Project {
   requestAccessEnabled: Boolean
 
   """
-  Find a single requirement. Available only when feature flag `requirements_management` is enabled.
+  Find a single requirement
   """
   requirement(
     """
@@ -13754,7 +13754,7 @@ type Project {
   requirementStatesCount: RequirementStatesCount
 
   """
-  Find requirements. Available only when feature flag `requirements_management` is enabled.
+  Find requirements
   """
   requirements(
     """

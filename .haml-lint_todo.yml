@@ -216,7 +216,6 @@ linters:
       - "app/views/projects/mattermosts/_team_selection.html.haml"
       - "app/views/projects/mattermosts/new.html.haml"
       - "app/views/projects/merge_requests/_commits.html.haml"
-      - "app/views/projects/merge_requests/_discussion.html.haml"
       - "app/views/projects/merge_requests/_how_to_merge.html.haml"
       - "app/views/projects/merge_requests/_mr_title.html.haml"
       - "app/views/projects/merge_requests/conflicts/_commit_stats.html.haml"

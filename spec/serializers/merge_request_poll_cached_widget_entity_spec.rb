@@ -3,12 +3,11 @@
 require 'spec_helper'
 
 RSpec.describe MergeRequestPollCachedWidgetEntity do
-  include ProjectForksHelper
   using RSpec::Parameterized::TableSyntax
 
-  let(:project)  { create :project, :repository }
-  let(:resource) { create(:merge_request, source_project: project, target_project: project) }
-  let(:user)     { create(:user) }
+  let_it_be(:project, refind: true)  { create :project, :repository }
+  let_it_be(:resource, refind: true) { create(:merge_request, source_project: project, target_project: project) }
+  let_it_be(:user)     { create(:user) }
 
   let(:request) { double('request', current_user: user, project: project) }
 
@@ -174,8 +173,6 @@ RSpec.describe MergeRequestPollCachedWidgetEntity do
     end
 
     context 'when auto merge is not enabled' do
-      let(:resource) { create(:merge_request) }
-
       it 'returns auto merge related information' do
         expect(subject[:auto_merge_enabled]).to be_falsy
       end
@@ -213,17 +210,6 @@ RSpec.describe MergeRequestPollCachedWidgetEntity do
         expect(subject[:default_squash_commit_message])
           .to eq(resource.default_squash_commit_message)
         expect(subject[:commits_without_merge_commits].size).to eq(12)
-      end
-    end
-
-    context 'when merge request is not mergeable' do
-      before do
-        allow(resource).to receive(:mergeable?).and_return(false)
-      end
-
-      it 'does not have default_squash_commit_message and commits_without_merge_commits' do
-        expect(subject[:default_squash_commit_message]).to eq(nil)
-        expect(subject[:commits_without_merge_commits]).to eq(nil)
       end
     end
   end

@@ -29,7 +29,7 @@ module QA
         runner.remove_via_api!
       end
 
-      it 'sets merge when pipeline succeeds' do
+      it 'sets merge when pipeline succeeds', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1037' do
         Resource::Repository::Commit.fabricate_via_api! do |commit|
           commit.project = project
           commit.commit_message = 'Add .gitlab-ci.yml'
@@ -72,7 +72,7 @@ module QA
         expect(merge_request.merge_when_pipeline_succeeds).to be true
       end
 
-      it 'merges when pipeline succeeds' do
+      it 'merges when pipeline succeeds', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1036' do
         Resource::Repository::Commit.fabricate_via_api! do |commit|
           commit.project = project
           commit.commit_message = 'Add .gitlab-ci.yml'

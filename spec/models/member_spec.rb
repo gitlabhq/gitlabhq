@@ -205,6 +205,16 @@ RSpec.describe Member do
       it { expect(described_class.non_request).to include @accepted_request_member }
     end
 
+    describe '.not_accepted_invitations' do
+      let_it_be(:not_accepted_invitation) { create(:project_member, :invited) }
+      let_it_be(:accepted_invitation) { create(:project_member, :invited, invite_accepted_at: Date.today) }
+
+      subject { described_class.not_accepted_invitations }
+
+      it { is_expected.to include(not_accepted_invitation) }
+      it { is_expected.not_to include(accepted_invitation) }
+    end
+
     describe '.not_accepted_invitations_by_user' do
       let(:invited_by_user) { create(:project_member, :invited, project: project, created_by: @owner_user) }
 
@@ -216,6 +226,29 @@ RSpec.describe Member do
       subject { described_class.not_accepted_invitations_by_user(@owner_user) }
 
       it { is_expected.to contain_exactly(invited_by_user) }
+    end
+
+    describe '.not_expired' do
+      let_it_be(:expiring_yesterday) { create(:group_member, expires_at: 1.day.ago) }
+      let_it_be(:expiring_today) { create(:group_member, expires_at: Date.today) }
+      let_it_be(:expiring_tomorrow) { create(:group_member, expires_at: 1.day.from_now) }
+      let_it_be(:not_expiring) { create(:group_member) }
+
+      subject { described_class.not_expired }
+
+      it { is_expected.not_to include(expiring_yesterday, expiring_today) }
+      it { is_expected.to include(expiring_tomorrow, not_expiring) }
+    end
+
+    describe '.last_ten_days_excluding_today' do
+      let_it_be(:created_today) { create(:group_member, created_at: Date.today.beginning_of_day) }
+      let_it_be(:created_yesterday) { create(:group_member, created_at: 1.day.ago) }
+      let_it_be(:created_eleven_days_ago) { create(:group_member, created_at: 11.days.ago) }
+
+      subject { described_class.last_ten_days_excluding_today }
+
+      it { is_expected.to include(created_yesterday) }
+      it { is_expected.not_to include(created_today, created_eleven_days_ago) }
     end
 
     describe '.search_invite_email' do

@@ -14,7 +14,7 @@ module QA
         end
       end
 
-      it 'sets title and description' do
+      it 'sets title and description', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1038' do
         description = "This is a test of MR push options"
         title = "MR push options test #{SecureRandom.hex(8)}"
 

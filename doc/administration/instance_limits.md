@@ -552,6 +552,9 @@ Plan.default.actual_limits.update!(maven_max_file_size: 100.megabytes)
 
 # For PyPI Packages
 Plan.default.actual_limits.update!(pypi_max_file_size: 100.megabytes)
+
+# For Debian Packages
+Plan.default.actual_limits.update!(debian_max_file_size: 100.megabytes)
 ```
 
 Set the limit to `0` to allow any file size.
