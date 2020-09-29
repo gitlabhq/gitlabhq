@@ -9,10 +9,10 @@ module DesignManagement
     # `GenerateImageVersionsService` resizing designs
     worker_resource_boundary :memory
 
-    def perform(version_id)
+    def perform(version_id, skip_system_notes = false)
       version = DesignManagement::Version.find(version_id)
 
-      add_system_note(version)
+      add_system_note(version) unless skip_system_notes
       generate_image_versions(version)
     rescue ActiveRecord::RecordNotFound => e
       Sidekiq.logger.warn(e)

@@ -1332,6 +1332,14 @@
   :weight: 1
   :idempotent:
   :tags: []
+- :name: design_management_copy_design_collection
+  :feature_category: :design_management
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: design_management_new_version
   :feature_category: :design_management
   :has_external_dependencies:

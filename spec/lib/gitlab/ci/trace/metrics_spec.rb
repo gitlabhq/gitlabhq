@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Trace::Metrics do
+RSpec.describe Gitlab::Ci::Trace::Metrics, :prometheus do
   describe '#increment_trace_bytes' do
     context 'when incrementing by more than one' do
       it 'increments a single counter' do

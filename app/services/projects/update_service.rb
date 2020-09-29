@@ -135,8 +135,8 @@ module Projects
     end
 
     def ensure_wiki_exists
-      ProjectWiki.new(project, project.owner).wiki
-    rescue Wiki::CouldNotCreateWikiError
+      return if project.create_wiki
+
       log_error("Could not create wiki for #{project.full_name}")
       Gitlab::Metrics.counter(:wiki_can_not_be_created_total, 'Counts the times we failed to create a wiki').increment
     end
