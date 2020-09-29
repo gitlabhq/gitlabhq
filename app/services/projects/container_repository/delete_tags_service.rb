@@ -23,9 +23,7 @@ module Projects
       end
 
       def delete_service
-        fast_delete_enabled = Feature.enabled?(:container_registry_fast_tag_delete, default_enabled: true)
-
-        if fast_delete_enabled && @container_repository.client.supports_tag_delete?
+        if @container_repository.client.supports_tag_delete?
           ::Projects::ContainerRepository::Gitlab::DeleteTagsService.new(@container_repository, @tag_names)
         else
           ::Projects::ContainerRepository::ThirdParty::DeleteTagsService.new(@container_repository, @tag_names)

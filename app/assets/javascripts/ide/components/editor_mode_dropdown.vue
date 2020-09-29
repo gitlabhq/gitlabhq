@@ -1,8 +1,12 @@
 <script>
+import { GlButton } from '@gitlab/ui';
 import { __, sprintf } from '~/locale';
 import { viewerTypes } from '../constants';
 
 export default {
+  components: {
+    GlButton,
+  },
   props: {
     viewer: {
       type: String,
@@ -31,7 +35,7 @@ export default {
 
 <template>
   <div class="dropdown">
-    <button type="button" class="btn btn-link" data-toggle="dropdown">{{ __('Edit') }}</button>
+    <gl-button variant="link" data-toggle="dropdown">{{ __('Edit') }}</gl-button>
     <div class="dropdown-menu dropdown-menu-selectable dropdown-open-left">
       <ul>
         <li>

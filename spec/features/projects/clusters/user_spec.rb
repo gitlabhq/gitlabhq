@@ -52,6 +52,10 @@ RSpec.describe 'User Cluster', :js do
       it 'user sees RBAC is enabled by default' do
         expect(page).to have_checked_field('RBAC-enabled cluster')
       end
+
+      it 'user sees namespace per environment is enabled by default' do
+        expect(page).to have_checked_field('Namespace per environment')
+      end
     end
 
     context 'when user filled form with invalid parameters' do

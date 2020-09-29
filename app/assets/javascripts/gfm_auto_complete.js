@@ -278,11 +278,13 @@ class GfmAutoComplete {
             return $.fn.atwho.default.callbacks.filter(query, data, searchKey);
           }
 
-          if (command === MEMBER_COMMAND.ASSIGN || command === MEMBER_COMMAND.REASSIGN) {
+          if (command === MEMBER_COMMAND.ASSIGN) {
             // Only include members which are not assigned to Issuable currently
             return data.filter(
               member => member.type === 'User' && !assignees.includes(member.search),
             );
+          } else if (command === MEMBER_COMMAND.REASSIGN) {
+            return data.filter(member => member.type === 'User');
           } else if (command === MEMBER_COMMAND.UNASSIGN) {
             // Only include members which are assigned to Issuable currently
             return data.filter(member => assignees.includes(member.search));

@@ -2,6 +2,6 @@
 name: group_export_ndjson
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/29590
 rollout_issue_url:
-group: import
+group: group::import
 type: development
 default_enabled: true

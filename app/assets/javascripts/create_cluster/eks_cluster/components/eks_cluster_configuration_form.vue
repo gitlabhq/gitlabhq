@@ -37,6 +37,10 @@ export default {
       type: String,
       required: true,
     },
+    namespacePerEnvironmentHelpPath: {
+      type: String,
+      required: true,
+    },
     kubernetesIntegrationHelpPath: {
       type: String,
       required: true,
@@ -60,6 +64,7 @@ export default {
       'selectedInstanceType',
       'nodeCount',
       'gitlabManagedCluster',
+      'namespacePerEnvironment',
       'isCreatingCluster',
     ]),
     ...mapGetters(['subnetValid']),
@@ -270,6 +275,20 @@ export default {
         false,
       );
     },
+    namespacePerEnvironmentHelpText() {
+      const escapedUrl = escape(this.namespacePerEnvironmentClusterHelpPath);
+
+      return sprintf(
+        s__(
+          'ClusterIntegration|Deploy each environment to its own namespace. Otherwise, environments within a project share a project-wide namespace. Note that anyone who can trigger a deployment of a namespace can read its secrets. If modified, existing environments will use their current namespaces until the cluster cache is cleared. %{startLink}More information%{endLink}',
+        ),
+        {
+          startLink: `<a href="${escapedUrl}" target="_blank" rel="noopener noreferrer">`,
+          endLink: '</a>',
+        },
+        false,
+      );
+    },
   },
   mounted() {
     this.fetchRegions();
@@ -290,6 +309,7 @@ export default {
       'setInstanceType',
       'setNodeCount',
       'setGitlabManagedCluster',
+      'setNamespacePerEnvironment',
     ]),
     ...mapRegionsActions({ fetchRegions: 'fetchItems' }),
     ...mapVpcActions({ fetchVpcs: 'fetchItems' }),
@@ -518,6 +538,14 @@ export default {
         >{{ s__('ClusterIntegration|GitLab-managed cluster') }}</gl-form-checkbox
       >
       <p class="form-text text-muted" v-html="gitlabManagedHelpText"></p>
+    </div>
+    <div class="form-group">
+      <gl-form-checkbox
+        :checked="namespacePerEnvironment"
+        @input="setNamespacePerEnvironment({ namespacePerEnvironment: $event })"
+        >{{ s__('ClusterIntegration|Namespace per environment') }}</gl-form-checkbox
+      >
+      <p class="form-text text-muted" v-html="namespacePerEnvironmentHelpText"></p>
     </div>
     <div class="form-group">
       <loading-button

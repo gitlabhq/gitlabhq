@@ -38,7 +38,7 @@ class Projects::Ci::DailyBuildGroupReportResultsController < Projects::Applicati
   end
 
   def report_results
-    Ci::DailyBuildGroupReportResultsFinder.new(finder_params).execute
+    Ci::DailyBuildGroupReportResultsFinder.new(**finder_params).execute
   end
 
   def finder_params

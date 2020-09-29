@@ -24,17 +24,13 @@ module Gitlab
         end
 
         def valid?
-          return false unless state_crc32 > 0
+          return false unless state_crc32.present?
 
           state_crc32 == chunks_crc32
         end
 
         def state_crc32
-          strong_memoize(:crc32) do
-            build.pending_state&.trace_checksum.then do |checksum|
-              checksum.to_s.split('crc32:').last.to_i
-            end
-          end
+          strong_memoize(:crc32) { build.pending_state&.crc32 }
         end
 
         def chunks_crc32

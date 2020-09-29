@@ -678,7 +678,6 @@ To add `DOCKER_AUTH_CONFIG` to a runner:
    - The double quotes included in the `DOCKER_AUTH_CONFIG`
      data must be escaped with backslashes. This prevents them from being
      interpreted as TOML.
-
    - The `environment` option is a list. Your runner may
      have existing entries and you should add this to the list, not replace
      it.
@@ -725,10 +724,8 @@ image which is private and requires you to log in into a private container regis
 To configure access for `aws_account_id.dkr.ecr.region.amazonaws.com`, follow these steps:
 
 1. Make sure `docker-credential-ecr-login` is available in GitLab Runner's `$PATH`.
-
 1. Have any of the following [AWS credentials setup](https://github.com/awslabs/amazon-ecr-credential-helper#aws-credentials).
    Make sure that GitLab Runner can access the credentials.
-
 1. Make GitLab Runner use it. There are two ways to accomplish this. Either:
 
    - Create a [variable](../variables/README.md#gitlab-cicd-environment-variables)

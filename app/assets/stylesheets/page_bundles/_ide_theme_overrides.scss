@@ -6,9 +6,10 @@
   $bs-input-focus-box-shadow: rgba(0, 123, 255, 0.25);
 
   a:not(.btn),
-  .btn-link:hover,
-  .btn-link:focus,
-  .btn-link:active {
+  .gl-button.btn-link,
+  .gl-button.btn-link:hover,
+  .gl-button.btn-link:focus,
+  .gl-button.btn-link:active {
     color: var(--ide-link-color, $blue-600);
   }
 

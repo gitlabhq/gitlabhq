@@ -731,30 +731,11 @@ RSpec.describe Ci::CreatePipelineService do
             .and_call_original
         end
 
-        context 'when ci_pipeline_rewind_iid is enabled' do
-          before do
-            stub_feature_flags(ci_pipeline_rewind_iid: true)
-          end
+        it 'rewinds iid' do
+          result = execute_service
 
-          it 'rewinds iid' do
-            result = execute_service
-
-            expect(result).not_to be_persisted
-            expect(internal_id.last_value).to eq(0)
-          end
-        end
-
-        context 'when ci_pipeline_rewind_iid is disabled' do
-          before do
-            stub_feature_flags(ci_pipeline_rewind_iid: false)
-          end
-
-          it 'does not rewind iid' do
-            result = execute_service
-
-            expect(result).not_to be_persisted
-            expect(internal_id.last_value).to eq(1)
-          end
+          expect(result).not_to be_persisted
+          expect(internal_id.last_value).to eq(0)
         end
       end
     end

@@ -125,7 +125,7 @@ RSpec.describe Ci::UpdateBuildStateService do
       end
 
       context 'when trace checksum is valid' do
-        let(:params) { { checksum: 'crc32:3984772369', state: 'success' } }
+        let(:params) { { checksum: 'crc32:ed82cd11', state: 'success' } }
 
         it 'does not increment invalid trace metric' do
           execute_with_stubbed_metrics!

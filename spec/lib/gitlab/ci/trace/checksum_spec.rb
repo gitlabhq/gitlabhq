@@ -9,7 +9,7 @@ RSpec.describe Gitlab::Ci::Trace::Checksum do
 
   context 'when build pending state exists' do
     before do
-      create(:ci_build_pending_state, build: build, trace_checksum: 'crc32:3564598592')
+      create(:ci_build_pending_state, build: build, trace_checksum: 'crc32:d4777540')
     end
 
     context 'when matching persisted trace chunks exist' do
@@ -70,8 +70,8 @@ RSpec.describe Gitlab::Ci::Trace::Checksum do
 
   context 'when build pending state is missing' do
     describe '#state_crc32' do
-      it 'returns zero' do
-        expect(subject.state_crc32).to be_zero
+      it 'returns nil' do
+        expect(subject.state_crc32).to be_nil
       end
     end
 

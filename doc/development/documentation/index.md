@@ -1,4 +1,7 @@
 ---
+stage: none
+group: Documentation Guidelines
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 description: Learn how to contribute to GitLab Documentation.
 ---
 
@@ -128,7 +131,7 @@ The following metadata should be added when a page is moved to another location:
 
 - `redirect_to`: The relative path and filename (with an `.md` extension) of the
   location to which visitors should be redirected for a moved page.
-  [Learn more](#changing-document-location).
+  [Learn more](#move-or-rename-a-page).
 - `disqus_identifier`: Identifier for Disqus commenting system. Used to keep
   comments with a page that's been moved to a new URL.
   [Learn more](#redirections-for-pages-with-disqus-comments).
@@ -156,17 +159,18 @@ Nanoc layout), which will be displayed at the top of the page if defined:
   [algorithm](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/master/lib/helpers/reading_time.rb)
   to calculate the reading time based on the number of words.
 
-## Changing document location
+## Move or rename a page
 
-Changing a document's location requires specific steps to ensure that
-users can seamlessly access the new doc page, whether they are accessing content
-on a GitLab instance domain at `/help` or at <https://docs.gitlab.com>. Be sure to assign a
-technical writer if you have any questions during the process (such as
-whether the move is necessary), and ensure that a technical writer reviews this
-change prior to merging.
+Moving or renaming a document is the same as changing its location. This process
+requires specific steps to ensure that visitors can find the new
+documentation page, whether they're using `/help` from a GitLab instance or by
+visiting <https://docs.gitlab.com>.
 
-If you indeed need to change a document's location, do not remove the old
-document, but instead replace all of its content with the following:
+Be sure to assign a technical writer to a page move or rename MR. Technical
+Writers can help with any questions and can review your change.
+
+To change a document's location, don't remove the old document, but instead
+replace all of its content with the following:
 
 ```markdown
 ---
@@ -176,14 +180,18 @@ redirect_to: '../path/to/file/index.md'
 This document was moved to [another location](../path/to/file/index.md).
 ```
 
-Where `../path/to/file/index.md` is usually the relative path to the old document.
+Replace `../path/to/file/index.md` with the relative path to the old document.
 
-The `redirect_to` variable supports both full and relative URLs, for example
-`https://docs.gitlab.com/ee/path/to/file.html`, `../path/to/file.html`, `path/to/file.md`.
-It ensures that the redirect will work for <https://docs.gitlab.com> and any `*.md` paths
-will be compiled to `*.html`.
-The new line underneath the front matter informs the user that the document
-changed location and is useful for someone that browses that file from the repository.
+The `redirect_to` variable supports both full and relative URLs; for example:
+
+- `https://docs.gitlab.com/ee/path/to/file.html`
+- `../path/to/file.html`
+- `path/to/file.md`
+
+The redirect works for <https://docs.gitlab.com>, and any `*.md` paths are
+changed to `*.html`. The description line following the `redirect_to` code
+informs the visitor that the document changed location if the redirect process
+doesn't complete successfully.
 
 For example, if you move `doc/workflow/lfs/index.md` to
 `doc/administration/lfs.md`, then the steps would be:

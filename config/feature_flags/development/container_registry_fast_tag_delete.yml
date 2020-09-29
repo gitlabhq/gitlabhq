@@ -1,7 +1,0 @@
----
-name: container_registry_fast_tag_delete
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/23325
-rollout_issue_url:
-group: group::package
-type: development
-default_enabled: true

@@ -86,3 +86,9 @@ export const PACKAGE_REGISTRY_TABS = [
     type: PackageType.PYPI,
   },
 ];
+
+export const LIST_TITLE_TEXT = s__('PackageRegistry|Package Registry');
+
+export const LIST_INTRO_TEXT = s__(
+  'PackageRegistry|Publish and share packages for a variety of common package managers. %{docLinkStart}More information%{docLinkEnd}',
+);

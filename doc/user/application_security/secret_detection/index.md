@@ -197,3 +197,9 @@ We have created a [short video walkthrough](https://youtu.be/wDtc_K00Y0A) showca
 <figure class="video-container">
   <iframe src="https://www.youtube.com/embed/wDtc_K00Y0A" frameborder="0" allowfullscreen="true"> </iframe>
 </figure>
+
+## Troubleshooting
+
+### Getting warning message `gl-secret-detection-report.json: no matching files`
+
+For information on this, see the [general Application Security troubleshooting section](../../../ci/pipelines/job_artifacts.md#error-message-no-files-to-upload).

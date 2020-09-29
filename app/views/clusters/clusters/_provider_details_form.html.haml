@@ -42,11 +42,17 @@
         class: 'js-gl-managed',
         label_class: 'label-bold' }
       .form-text.text-muted
-        = s_('ClusterIntegration|Allow GitLab to manage namespace and service accounts for this cluster.')
+        = s_('ClusterIntegration|Allow GitLab to manage namespaces and service accounts for this cluster.')
         = link_to _('More information'), help_page_path('user/project/clusters/index.md', anchor: 'gitlab-managed-clusters'), target: '_blank'
 
+    .form-group
+      = field.check_box :namespace_per_environment, { label: s_('ClusterIntegration|Namespace per environment'), label_class: 'label-bold' }
+      .form-text.text-muted
+        = s_('ClusterIntegration|Deploy each environment to its own namespace. Otherwise, environments within a project share a project-wide namespace. Note that anyone who can trigger a deployment of a namespace can read its secrets. If modified, existing environments will use their current namespaces until the cluster cache is cleared.')
+        = link_to _('More information'), help_page_path('user/project/clusters/index.md', anchor: 'custom-namespace'), target: '_blank'
+
     - if cluster.allow_user_defined_namespace?
-      = render('clusters/clusters/namespace', platform_field: platform_field)
+      = render('clusters/clusters/namespace', platform_field: platform_field, field: field)
 
   .form-group
     = field.submit s_('ClusterIntegration|Save changes'), class: 'btn btn-success'

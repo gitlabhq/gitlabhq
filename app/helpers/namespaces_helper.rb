@@ -53,7 +53,7 @@ module NamespacesHelper
     selected = options.delete(:selected) || :current_user
     options[:groups] = current_user.manageable_groups_with_routes(include_groups_with_developer_maintainer_access: true)
 
-    namespaces_options(selected, options)
+    namespaces_options(selected, **options)
   end
 
   private

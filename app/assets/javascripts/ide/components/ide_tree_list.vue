@@ -44,7 +44,7 @@ export default {
         <nav-dropdown />
         <slot name="header"></slot>
       </header>
-      <div class="ide-tree-body h-100">
+      <div class="ide-tree-body h-100" data-testid="ide-tree-body">
         <template v-if="currentTree.tree.length">
           <file-tree
             v-for="file in currentTree.tree"

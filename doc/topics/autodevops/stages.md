@@ -466,7 +466,7 @@ application runs.
 
 ### Upgrade auto-deploy-app Chart
 
-You can upgrade auto-deploy-app chart by following the [upgrade guide](upgrading_chart.md).
+You can upgrade the auto-deploy-app chart by following the [upgrade guide](upgrading_auto_deploy_dependencies.md).
 
 ### Workers
 

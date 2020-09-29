@@ -28,7 +28,7 @@ module Analytics
     private
 
     def navbar_sub_item(args)
-      NavbarSubItem.new(args)
+      NavbarSubItem.new(**args)
     end
 
     def cycle_analytics_navbar_link(project, current_user)

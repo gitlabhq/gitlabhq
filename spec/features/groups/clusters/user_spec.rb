@@ -66,6 +66,10 @@ RSpec.describe 'User Cluster', :js do
           expect(page.find_field('cluster[platform_kubernetes_attributes][authorization_type]', disabled: true)).to be_checked
         end
       end
+
+      it 'user sees namespace per environment is enabled by default' do
+        expect(page).to have_checked_field('Namespace per environment')
+      end
     end
 
     context 'when user filled form with invalid parameters' do

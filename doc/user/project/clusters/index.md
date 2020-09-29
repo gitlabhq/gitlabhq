@@ -270,20 +270,43 @@ If your cluster was created before GitLab 12.2, default `KUBE_NAMESPACE` will be
 
 ### Custom namespace
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/27630) in GitLab 12.6.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/27630) in GitLab 12.6.
+> - An option to use project-wide namespaces [was added](https://gitlab.com/gitlab-org/gitlab/-/issues/38054) in GitLab 13.5.
 
-The Kubernetes integration defaults to project-environment-specific namespaces
-of the form `<project_name>-<project_id>-<environment>` (see [Deployment
-variables](#deployment-variables)).
+The Kubernetes integration provides a `KUBECONFIG` with an auto-generated namespace
+to deployment jobs. It defaults to using project-environment specific namespaces
+of the form `<prefix>-<environment>`, where `<prefix>` is of the form
+`<project_name>-<project_id>`. To learn more, read [Deployment variables](#deployment-variables).
 
-For **non**-GitLab-managed clusters, the namespace can be customized using
-[`environment:kubernetes:namespace`](../../../ci/environments/index.md#configuring-kubernetes-deployments)
-in `.gitlab-ci.yml`.
+You can customize the deployment namespace in a few ways:
+
+- You can choose between a **namespace per [environment](../../../ci/environments/index.md)**
+  or a **namespace per project**. A namespace per environment is the default and recommended
+  setting, as it prevents the mixing of resources between production and non-production environments.
+- When using a project-level cluster, you can additionally customize the namespace prefix.
+  When using namespace-per-environment, the deployment namespace is `<prefix>-<environment>`,
+  but otherwise just `<prefix>`.
+- For **non-managed** clusters, the auto-generated namespace is set in the `KUBECONFIG`,
+  but the user is responsible for ensuring its existence. You can fully customize
+  this value using
+  [`environment:kubernetes:namespace`](../../../ci/environments/index.md#configuring-kubernetes-deployments)
+  in `.gitlab-ci.yml`.
 
 NOTE: **Note:**
-When using a [GitLab-managed cluster](#gitlab-managed-clusters), the
-namespaces are created automatically prior to deployment and [can not be
-customized](https://gitlab.com/gitlab-org/gitlab/-/issues/38054).
+When you customize the namespace, existing environments remain linked to their current
+namespaces until you [clear the cluster cache](#clearing-the-cluster-cache).
+
+CAUTION: **Warning:**
+By default, anyone who can create a deployment job can access any CI variable within
+an environment's deployment job. This includes `KUBECONFIG`, which gives access to
+any secret available to the associated service account in your cluster.
+To keep your production credentials safe, consider using
+[Protected Environments](../../../ci/environments/protected_environments.md),
+combined with either
+
+- a GitLab-managed cluster and namespace per environment,
+- *or*, an environment-scoped cluster per protected environment. The same cluster
+  can be added multiple times with multiple restricted service accounts.
 
 ### Integrations
 

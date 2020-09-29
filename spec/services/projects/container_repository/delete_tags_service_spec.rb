@@ -104,59 +104,35 @@ RSpec.describe Projects::ContainerRepository::DeleteTagsService do
       end
 
       context 'when the registry supports fast delete' do
-        context 'and the feature is enabled' do
-          before do
-            allow(repository.client).to receive(:supports_tag_delete?).and_return(true)
-          end
-
-          it_behaves_like 'calling the correct delete tags service', ::Projects::ContainerRepository::Gitlab::DeleteTagsService
-
-          it_behaves_like 'handling invalid params'
-
-          context 'with the real service' do
-            before do
-              stub_delete_reference_requests(tags)
-              expect_delete_tag_by_names(tags)
-            end
-
-            it { is_expected.to include(status: :success) }
-
-            it_behaves_like 'logging a success response'
-          end
-
-          context 'with a timeout error' do
-            before do
-              expect_next_instance_of(::Projects::ContainerRepository::Gitlab::DeleteTagsService) do |delete_service|
-                expect(delete_service).to receive(:delete_tags).and_raise(::Projects::ContainerRepository::Gitlab::DeleteTagsService::TimeoutError)
-              end
-            end
-
-            it { is_expected.to include(status: :error, message: 'timeout while deleting tags') }
-
-            it_behaves_like 'logging an error response', message: 'timeout while deleting tags'
-          end
+        before do
+          allow(repository.client).to receive(:supports_tag_delete?).and_return(true)
         end
 
-        context 'and the feature is disabled' do
+        it_behaves_like 'calling the correct delete tags service', ::Projects::ContainerRepository::Gitlab::DeleteTagsService
+
+        it_behaves_like 'handling invalid params'
+
+        context 'with the real service' do
           before do
-            stub_feature_flags(container_registry_fast_tag_delete: false)
+            stub_delete_reference_requests(tags)
+            expect_delete_tag_by_names(tags)
           end
 
-          it_behaves_like 'calling the correct delete tags service', ::Projects::ContainerRepository::ThirdParty::DeleteTagsService
+          it { is_expected.to include(status: :success) }
 
-          it_behaves_like 'handling invalid params'
+          it_behaves_like 'logging a success response'
+        end
 
-          context 'with the real service' do
-            before do
-              stub_upload('sha256:4435000728ee66e6a80e55637fc22725c256b61de344a2ecdeaac6bdb36e8bc3')
-              tags.each { |tag| stub_put_manifest_request(tag) }
-              expect_delete_tag_by_digest('sha256:dummy')
+        context 'with a timeout error' do
+          before do
+            expect_next_instance_of(::Projects::ContainerRepository::Gitlab::DeleteTagsService) do |delete_service|
+              expect(delete_service).to receive(:delete_tags).and_raise(::Projects::ContainerRepository::Gitlab::DeleteTagsService::TimeoutError)
             end
-
-            it { is_expected.to include(status: :success) }
-
-            it_behaves_like 'logging a success response'
           end
+
+          it { is_expected.to include(status: :error, message: 'timeout while deleting tags') }
+
+          it_behaves_like 'logging an error response', message: 'timeout while deleting tags'
         end
       end
 

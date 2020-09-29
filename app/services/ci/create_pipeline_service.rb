@@ -82,8 +82,7 @@ module Ci
       schedule_head_pipeline_update if pipeline.persisted?
 
       # If pipeline is not persisted, try to recover IID
-      pipeline.reset_project_iid unless pipeline.persisted? ||
-          Feature.disabled?(:ci_pipeline_rewind_iid, project, default_enabled: true)
+      pipeline.reset_project_iid unless pipeline.persisted?
 
       pipeline
     end

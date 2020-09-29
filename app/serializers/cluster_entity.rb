@@ -7,6 +7,7 @@ class ClusterEntity < Grape::Entity
   expose :enabled
   expose :environment_scope
   expose :id
+  expose :namespace_per_environment
   expose :name
   expose :nodes
   expose :provider_type

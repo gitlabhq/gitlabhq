@@ -6,7 +6,6 @@ import {
   GlFormCheckbox,
   GlFormCombobox,
   GlFormGroup,
-  GlFormInput,
   GlFormSelect,
   GlFormTextarea,
   GlIcon,
@@ -41,7 +40,6 @@ export default {
     GlFormCheckbox,
     GlFormCombobox,
     GlFormGroup,
-    GlFormInput,
     GlFormSelect,
     GlFormTextarea,
     GlIcon,
@@ -122,11 +120,6 @@ export default {
       return '';
     },
     tokenValidationState() {
-      // If the feature flag is off, do not validate. Remove when flag is removed.
-      if (!this.glFeatures.ciKeyAutocomplete) {
-        return true;
-      }
-
       const validator = this.$options.tokens?.[this.variable.key]?.validation;
 
       if (validator) {
@@ -204,20 +197,11 @@ export default {
   >
     <form>
       <gl-form-combobox
-        v-if="glFeatures.ciKeyAutocomplete"
         v-model="key"
         :token-list="$options.tokenList"
         :label-text="__('Key')"
         data-qa-selector="ci_variable_key_field"
       />
-
-      <gl-form-group v-else :label="__('Key')" label-for="ci-variable-key">
-        <gl-form-input
-          id="ci-variable-key"
-          v-model="key"
-          data-qa-selector="ci_variable_key_field"
-        />
-      </gl-form-group>
 
       <gl-form-group
         :label="__('Value')"

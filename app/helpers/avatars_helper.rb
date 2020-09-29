@@ -60,7 +60,7 @@ module AvatarsHelper
     avatar_size = options[:size] || 16
     user_name = options[:user].try(:name) || options[:user_name]
 
-    avatar_url = user_avatar_url_for(options.merge(size: avatar_size))
+    avatar_url = user_avatar_url_for(**options.merge(size: avatar_size))
 
     has_tooltip = options[:has_tooltip].nil? ? true : options[:has_tooltip]
     data_attributes = options[:data] || {}

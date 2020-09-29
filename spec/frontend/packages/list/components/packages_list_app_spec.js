@@ -36,6 +36,7 @@ describe('packages_list_app', () => {
           resourceId: 'project_id',
           emptyListIllustration: 'helpSvg',
           emptyListHelpUrl,
+          packageHelpUrl: 'foo',
         },
         filterQuery,
       },

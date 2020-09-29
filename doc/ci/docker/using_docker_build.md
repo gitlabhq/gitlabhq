@@ -48,7 +48,6 @@ The simplest approach is to install GitLab Runner in `shell` execution mode.
 GitLab Runner then executes job scripts as the `gitlab-runner` user.
 
 1. Install [GitLab Runner](https://gitlab.com/gitlab-org/gitlab-runner/#installation).
-
 1. During GitLab Runner installation select `shell` as method of executing job scripts or use command:
 
    ```shell
@@ -158,7 +157,6 @@ Runner is installed using the [Helm chart](https://docs.gitlab.com/runner/instal
 See the [related issue](https://gitlab.com/gitlab-org/charts/gitlab-runner/-/issues/83) for details.
 
 1. Install [GitLab Runner](https://docs.gitlab.com/runner/install/).
-
 1. Register GitLab Runner from the command line to use `docker` and `privileged`
    mode:
 
@@ -318,7 +316,6 @@ are done to the services as well, making these incompatible.
 In order to do that, follow the steps:
 
 1. Install [GitLab Runner](https://docs.gitlab.com/runner/install/).
-
 1. Register GitLab Runner from the command line to use `docker` and share `/var/run/docker.sock`:
 
    ```shell

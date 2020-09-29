@@ -458,6 +458,15 @@ To fix this issue, you can either:
 [Learn more on overriding SAST jobs](sast/index.md#overriding-sast-jobs).
 All the security scanning tools define their stage, so this error can occur with all of them.
 
+### Getting warning messages `… report.json: no matching files`
+
+This is often followed by the [error `No files to upload`](../../ci/pipelines/job_artifacts.md#error-message-no-files-to-upload),
+and preceded by other errors or warnings that indicate why the JSON report wasn't generated. Please
+check the entire job log for such messages. If you don't find these messages, retry the failed job
+after setting `SECURE_LOG_LEVEL: "debug"` as a
+[custom environment variable](../../ci/variables/README.md#custom-environment-variables).
+This provides useful information to investigate further.
+
 ### Getting error message `sast job: config key may not be used with 'rules': only/except`
 
 When [including](../../ci/yaml/README.md#includetemplate) a `.gitlab-ci.yml` template

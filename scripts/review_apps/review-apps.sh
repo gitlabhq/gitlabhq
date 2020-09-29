@@ -48,7 +48,13 @@ function delete_release() {
     return
   fi
 
-  helm_delete_release "${namespace}" "${release}"
+  # Check if helm release exists before attempting to delete
+  # There may be situation where k8s resources exist, but helm release does not,
+  # for example, following a failed helm install.
+  # In such cases, we still want to continue to clean up k8s resources.
+  if deploy_exists "${namespace}" "${release}"; then
+    helm_delete_release "${namespace}" "${release}"
+  fi
   kubectl_cleanup_release "${namespace}" "${release}"
 }
 

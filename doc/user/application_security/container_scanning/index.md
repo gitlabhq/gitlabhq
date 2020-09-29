@@ -433,3 +433,7 @@ This is a result of a bug in Docker which is now [fixed](https://github.com/cont
 To prevent the error, ensure the Docker version that the runner is using is
 `18.09.03` or higher. For more information, see
 [issue #10241](https://gitlab.com/gitlab-org/gitlab/-/issues/10241 "Investigate why Container Scanning is not working with NFS mounts").
+
+### Getting warning message `gl-container-scanning-report.json: no matching files`
+
+For information on this, see the [general Application Security troubleshooting section](../../../ci/pipelines/job_artifacts.md#error-message-no-files-to-upload).

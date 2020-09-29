@@ -15,7 +15,7 @@ Closes
 ## Moving docs to a new location?
 
 Read the guidelines:
-https://docs.gitlab.com/ee/development/documentation/index.html#changing-document-location
+https://docs.gitlab.com/ee/development/documentation/index.html#move-or-rename-a-page
 
 - [ ] Make sure the old link is not removed and has its contents replaced with
       a link to the new location.

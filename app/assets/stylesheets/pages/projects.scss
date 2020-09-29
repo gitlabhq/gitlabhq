@@ -794,11 +794,6 @@
 }
 
 .project-buttons {
-  .stat-text {
-    @extend .btn;
-    @extend .btn-default;
-  }
-
   .nav > li:not(:last-child) {
     margin-right: $gl-padding-8;
   }

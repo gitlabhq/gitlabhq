@@ -32,7 +32,7 @@ export default {
 </script>
 
 <template>
-  <nav class="ide-activity-bar">
+  <nav class="ide-activity-bar" data-testid="left-sidebar">
     <ul class="list-unstyled">
       <li>
         <button
