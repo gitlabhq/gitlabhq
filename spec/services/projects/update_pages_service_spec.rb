@@ -16,8 +16,6 @@ RSpec.describe Projects::UpdatePagesService do
   subject { described_class.new(project, build) }
 
   before do
-    stub_feature_flags(safezip_use_rubyzip: true)
-
     project.remove_pages
   end
 
@@ -104,10 +102,6 @@ RSpec.describe Projects::UpdatePagesService do
         let(:file) { fixture_file_upload("spec/fixtures/pages_non_writeable.zip") }
 
         context 'when using RubyZip' do
-          before do
-            stub_feature_flags(safezip_use_rubyzip: true)
-          end
-
           it 'succeeds to extract' do
             expect(execute).to eq(:success)
             expect(project.pages_metadatum).to be_deployed

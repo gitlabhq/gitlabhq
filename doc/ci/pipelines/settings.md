@@ -37,10 +37,10 @@ in `.gitlab-ci.yml`.
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/28919) in GitLab 12.0.
 
 NOTE: **Note:**
-As of GitLab 12.0, newly created projects will automatically have a default
+As of GitLab 12.0, newly created projects automatically have a default
 `git depth` value of `50`.
 
-It is possible to limit the number of changes that GitLab CI/CD will fetch when cloning
+It is possible to limit the number of changes that GitLab CI/CD fetches when cloning
 a repository. Setting a limit to `git depth` can speed up Pipelines execution. Maximum
 allowed value is `1000`.
 
@@ -93,11 +93,11 @@ paths and file names include:
 - `my/path/.gitlab-ci.yml`
 - `my/path/.my-custom-file.yml`
 
-If the CI configuration will be hosted on an external site, the URL link must end with `.yml`:
+If hosting the CI configuration on an external site, the URL link must end with `.yml`:
 
 - `http://example.com/generate/ci/config.yml`
 
-If the CI configuration will be hosted in a different project within GitLab, the path must be relative
+If the CI configuration is hosted in a different project within GitLab, the path must be relative
 to the root directory in the other project, with the group and project name added to the end:
 
 - `.gitlab-ci.yml@mygroup/another-project`
@@ -109,7 +109,7 @@ configuration file. For example:
 - Create a public project to host the configuration file.
 - Give write permissions on the project only to users who are allowed to edit the file.
 
-Other users and projects will be able to access the configuration file without being
+Other users and projects can access the configuration file without being
 able to edit it.
 
 ## Test coverage parsing
@@ -125,8 +125,8 @@ can use <https://rubular.com> to test your regex. The regex returns the **last**
 match found in the output.
 
 If the pipeline succeeds, the coverage is shown in the merge request widget and
-in the jobs table. If multiple jobs in the pipeline have coverage reports, they will
-be averaged.
+in the jobs table. If multiple jobs in the pipeline have coverage reports, they are
+averaged.
 
 ![MR widget coverage](img/pipelines_test_coverage_mr_widget.png)
 
@@ -150,13 +150,13 @@ you can view a graph or download a CSV file with this data. From your project:
 
 ### Removing color codes
 
-Some test coverage tools output with ANSI color codes that won't be
-parsed correctly by the regular expression and will cause coverage
+Some test coverage tools output with ANSI color codes that aren't
+parsed correctly by the regular expression and cause coverage
 parsing to fail.
 
 If your coverage tool doesn't provide an option to disable color
 codes in the output, you can pipe the output of the coverage tool through a
-small one line script that will strip the color codes off.
+small one line script that strips the color codes off.
 
 For example:
 
@@ -172,7 +172,7 @@ Pipeline visibility is determined by:
 - The **Public pipelines** project setting under your project's **Settings > CI/CD > General pipelines**.
 
 NOTE: **Note:**
-If the project visibility is set to **Private**, the [**Public pipelines** setting will have no effect](../enable_or_disable_ci.md#per-project-user-setting).
+If the project visibility is set to **Private**, the [**Public pipelines** setting has no effect](../enable_or_disable_ci.md#per-project-user-setting).
 
 This also determines the visibility of these related features:
 
@@ -213,7 +213,7 @@ you can enable this in the project settings:
 1. Check the **Auto-cancel redundant, pending pipelines** checkbox.
 1. Click **Save changes**.
 
-Note that only jobs with [interruptible](../yaml/README.md#interruptible) set to `true` will be cancelled.
+Note that only jobs with [interruptible](../yaml/README.md#interruptible) set to `true` are cancelled.
 
 ## Skip outdated deployment jobs
 
@@ -232,14 +232,14 @@ To avoid this scenario:
 1. Check the **Skip outdated deployment jobs** checkbox.
 1. Click **Save changes**.
 
-The pending deployment jobs will be skipped.
+When enabled, any older deployments job are skipped when a new deployment starts.
 
 For more information, see [Deployment safety](../environments/deployment_safety.md).
 
 ## Pipeline Badges
 
 In the pipelines settings page you can find pipeline status and test coverage
-badges for your project. The latest successful pipeline will be used to read
+badges for your project. The latest successful pipeline is used to read
 the pipeline status and test coverage values.
 
 Visit the pipelines settings page in your project to see the exact link to
@@ -276,8 +276,8 @@ https://gitlab.example.com/<namespace>/<project>/badges/<branch>/pipeline.svg?ig
 
 ### Test coverage report badge
 
-GitLab makes it possible to define the regular expression for [coverage report](#test-coverage-parsing),
-that each job log will be matched against. This means that each job in the
+GitLab makes it possible to define the regular expression for the [coverage report](#test-coverage-parsing),
+that each job log is matched against. This means that each job in the
 pipeline can have the test coverage percentage value defined.
 
 The test coverage badge can be accessed using following link:
@@ -288,7 +288,7 @@ https://gitlab.example.com/<namespace>/<project>/badges/<branch>/coverage.svg
 
 If you would like to get the coverage report from a specific job, you can add
 the `job=coverage_job_name` parameter to the URL. For example, the following
-Markdown code will embed the test coverage report badge of the `coverage` job
+Markdown code embeds the test coverage report badge of the `coverage` job
 into your `README.md`:
 
 ```markdown

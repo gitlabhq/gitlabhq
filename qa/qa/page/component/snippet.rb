@@ -122,6 +122,18 @@ module QA
           end
         end
 
+        def has_no_file_content?(file_content, file_number = nil)
+          if file_number
+            within_element_by_index(:file_content, file_number - 1) do
+              has_no_text?(file_content)
+            end
+          else
+            within_element(:file_content) do
+              has_no_text?(file_content)
+            end
+          end
+        end
+
         def has_embed_dropdown?
           has_element?(:snippet_embed_dropdown)
         end

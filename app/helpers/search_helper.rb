@@ -86,6 +86,11 @@ module SearchHelper
     }).html_safe
   end
 
+  def repository_ref(project)
+    # Always #to_s the repository_ref param in case the value is also a number
+    params[:repository_ref].to_s.presence || project.default_branch
+  end
+
   # Overridden in EE
   def search_blob_title(project, path)
     path

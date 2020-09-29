@@ -259,7 +259,7 @@ module DesignManagement
         oids = blobs.values.flat_map(&:values).map(&:lfs_oid)
         repository_type = LfsObjectsProject.repository_types[:design]
 
-        new_rows = LfsObject.where(oid: oids).map do |lfs_object|
+        new_rows = LfsObject.where(oid: oids).find_each(batch_size: 1000).map do |lfs_object|
           {
             project_id: target_project.id,
             lfs_object_id: lfs_object.id,

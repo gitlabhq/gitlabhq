@@ -6,7 +6,7 @@ module QA
       # [TODO]: Developer to remove :requires_admin and :skip_live_env once FF is removed in https://gitlab.com/gitlab-org/gitlab/-/issues/229632
 
       context 'with web only rule' do
-        let(:feature_flag) { 'new_pipeline_form' }
+        let(:feature_flag) { :new_pipeline_form }
         let(:job_name) { 'test_job' }
         let(:project) do
           Resource::Project.fabricate_via_api! do |project|
@@ -37,14 +37,14 @@ module QA
         end
 
         before do
-          Runtime::Feature.enable_and_verify(feature_flag) # [TODO]: Developer to remove when feature flag is removed
+          Runtime::Feature.enable(feature_flag) # [TODO]: Developer to remove when feature flag is removed
           Flow::Login.sign_in
           project.visit!
           Page::Project::Menu.perform(&:click_ci_cd_pipelines)
         end
 
         after do
-          Runtime::Feature.disable_and_verify(feature_flag) # [TODO]: Developer to remove when feature flag is removed
+          Runtime::Feature.disable(feature_flag) # [TODO]: Developer to remove when feature flag is removed
         end
 
         it 'can trigger pipeline', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/946' do

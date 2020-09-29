@@ -90,7 +90,6 @@ GitLab Runner then executes job scripts as the `gitlab-runner` user.
 
 1. You can now use `docker` command (and **install** `docker-compose` if needed).
 
-NOTE: **Note:**
 By adding `gitlab-runner` to the `docker` group you are effectively granting `gitlab-runner` full root permissions.
 For more information please read [On Docker security: `docker` group considered harmful](https://www.andreas-jung.com/contents/on-docker-security-docker-group-considered-harmful).
 
@@ -101,7 +100,6 @@ The second approach is to use the special Docker-in-Docker (dind)
 (`docker`) and run the job script in context of that
 image in privileged mode.
 
-NOTE: **Note:**
 `docker-compose` is not part of Docker-in-Docker (dind). To use `docker-compose` in your
 CI builds, follow the `docker-compose`
 [installation instructions](https://docs.docker.com/compose/install/).
@@ -149,19 +147,15 @@ released.
 
 #### TLS enabled
 
-NOTE: **Note:**
-Requires GitLab Runner 11.11 or later, but is not supported if GitLab
-Runner is installed using the [Helm
-chart](https://docs.gitlab.com/runner/install/kubernetes.html). See the
-[related
-issue](https://gitlab.com/gitlab-org/charts/gitlab-runner/-/issues/83) for
-details.
-
 The Docker daemon supports connection over TLS and it's done by default
 for Docker 19.03.12 or higher. This is the **suggested** way to use the
 Docker-in-Docker service and
 [GitLab.com shared runners](../../user/gitlab_com/index.md#shared-runners)
 support this.
+
+GitLab Runner 11.11 or later is required, but it is not supported if GitLab
+Runner is installed using the [Helm chart](https://docs.gitlab.com/runner/install/kubernetes.html).
+See the [related issue](https://gitlab.com/gitlab-org/charts/gitlab-runner/-/issues/83) for details.
 
 1. Install [GitLab Runner](https://docs.gitlab.com/runner/install/).
 
@@ -225,7 +219,7 @@ support this.
      # The 'docker' hostname is the alias of the service container as described at
      # https://docs.gitlab.com/ee/ci/docker/using_docker_images.html#accessing-the-services.
      #
-     # Note that if you're using GitLab Runner 12.7 or earlier with the Kubernetes executor and Kubernetes 1.6 or earlier,
+     # If you're using GitLab Runner 12.7 or earlier with the Kubernetes executor and Kubernetes 1.6 or earlier,
      # the variable must be set to tcp://localhost:2376 because of how the
      # Kubernetes executor connects services to the job container
      # DOCKER_HOST: tcp://localhost:2376
@@ -287,7 +281,7 @@ variables:
   # The 'docker' hostname is the alias of the service container as described at
   # https://docs.gitlab.com/ee/ci/docker/using_docker_images.html#accessing-the-services
   #
-  # Note that if you're using GitLab Runner 12.7 or earlier with the Kubernetes executor and Kubernetes 1.6 or earlier,
+  # If you're using GitLab Runner 12.7 or earlier with the Kubernetes executor and Kubernetes 1.6 or earlier,
   # the variable must be set to tcp://localhost:2375 because of how the
   # Kubernetes executor connects services to the job container
   # DOCKER_HOST: tcp://localhost:2375
@@ -506,7 +500,6 @@ environment = ["DOCKER_DRIVER=overlay2"]
 
 If you're running multiple runners, you have to modify all configuration files.
 
-NOTE: **Note:**
 Read more about the [runner configuration](https://docs.gitlab.com/runner/configuration/)
 and [using the OverlayFS storage driver](https://docs.docker.com/engine/userguide/storagedriver/overlayfs-driver/).
 

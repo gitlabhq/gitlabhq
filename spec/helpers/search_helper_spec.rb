@@ -399,4 +399,25 @@ RSpec.describe SearchHelper do
       end
     end
   end
+
+  describe '#repository_ref' do
+    let_it_be(:project) { create(:project, :repository) }
+    let(:params) { { repository_ref: 'the-repository-ref-param' } }
+
+    subject { repository_ref(project) }
+
+    it { is_expected.to eq('the-repository-ref-param') }
+
+    context 'when the param :repository_ref is not set' do
+      let(:params) { { repository_ref: nil } }
+
+      it { is_expected.to eq(project.default_branch) }
+    end
+
+    context 'when the repository_ref param is a number' do
+      let(:params) { { repository_ref: 111111 } }
+
+      it { is_expected.to eq('111111') }
+    end
+  end
 end
