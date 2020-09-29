@@ -163,6 +163,8 @@ body.gl-dark {
 
   --gl-text-color: #{$gray-900};
   --border-color: #{$border-color};
+
+  --white: #{$white};
 }
 
 $border-white-light: $gray-900;

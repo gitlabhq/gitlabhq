@@ -159,7 +159,7 @@ After installation, be sure to [enable Elasticsearch](#enabling-elasticsearch).
 
 NOTE: **Note:**
 If you see an error such as `Permission denied - /home/git/gitlab-elasticsearch-indexer/` while indexing, you
-may need to set the `production -> elasticsearch -> indexer_path` setting in your `gitlab.yml` file to 
+may need to set the `production -> elasticsearch -> indexer_path` setting in your `gitlab.yml` file to
 `/usr/local/bin/gitlab-elasticsearch-indexer`, which is where the binary is installed.
 
 ## Enabling Elasticsearch
@@ -703,104 +703,114 @@ However, some larger installations may wish to tune the merge policy settings:
 
 ## Troubleshooting
 
-### Common issues
+Here are some common pitfalls and how to overcome them.
 
-Here are some common pitfalls and how to overcome them:
+### How can I verify that my GitLab instance is using Elasticsearch?
 
-- **How can I verify my GitLab instance is using Elasticsearch?**
+There are a couple of ways to achieve that:
 
-  The easiest method is via the rails console (`sudo gitlab-rails console`) by running the following:
+- Whenever you perform a search there will be a link on the search results page
+  in the top right hand corner saying "Advanced search functionality is enabled".
+  This is always correctly identifying whether the current project/namespace
+  being searched is using Elasticsearch.
 
-  ```ruby
-  u = User.find_by_username('your-username')
-  s = SearchService.new(u, {:search => 'search_term'})
-  pp s.search_objects.class.name
-  ```
+- From the admin area under **Settings > General > Elasticsearch** check that the
+  Advanced Search settings are checked.
 
-  If you see `"ActiveRecord::Relation"`, you are **not** using Elasticsearch.
-  
-  If you see `"Kaminari::PaginatableArray"` you are using Elasticsearch.
-
-  NOTE: **Note:**
-  The above instructions are used to verify that GitLab is using Elasticsearch only when indexing all namespaces. This is not to be used for scenarios that only index a [subset of namespaces](#limiting-namespaces-and-projects).
-
-- **I updated GitLab and now I can't find anything**
-
-  We continuously make updates to our indexing strategies and aim to support
-  newer versions of Elasticsearch. When indexing changes are made, it may
-  be necessary for you to [reindex](#zero-downtime-reindexing) after updating GitLab.
-
-- **I indexed all the repositories but I can't get any hits for my search term in the UI**
-
-  Make sure you indexed all the database data [as stated above](#enabling-elasticsearch).
-
-  If there aren't any results (hits) in the UI search, check if you are seeing the same results via the rails console (`sudo gitlab-rails console`):
+  Those same settings there can be obtained from the Rails console if necessary:
 
   ```ruby
-  u = User.find_by_username('your-username')
-  s = SearchService.new(u, {:search => 'search_term', :scope => 'blobs'})
-  pp s.search_objects.to_a
+  ::Gitlab::CurrentSettings.elasticsearch_search?         # Whether or not searches will use Elasticsearch
+  ::Gitlab::CurrentSettings.elasticsearch_indexing?       # Whether or not content will be indexed in Elasticsearch
+  ::Gitlab::CurrentSettings.elasticsearch_limit_indexing? # Whether or not Elasticsearch is limited only to certain projects/namespaces
   ```
 
-  Beyond that, check via the [Elasticsearch Search API](https://www.elastic.co/guide/en/elasticsearch/reference/current/search-search.html) to see if the data shows up on the Elasticsearch side:
+- If Elasticsearch is limited to specific namespaces and you need to know if
+  Elasticsearch is being used for a specific project or namespace, you can use
+  the Rails console:
 
-  ```shell
-  curl --request GET <elasticsearch_server_ip>:9200/gitlab-production/_search?q=<search_term>
+  ```ruby
+  ::Gitlab::CurrentSettings.search_using_elasticsearch?(scope: Namespace.find_by_full_path("/my-namespace"))
+  ::Gitlab::CurrentSettings.search_using_elasticsearch?(scope: Project.find_by_full_path("/my-namespace/my-project"))
   ```
 
-  More [complex Elasticsearch API calls](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-filter-context.html) are also possible.
+### I updated GitLab and now I can't find anything
 
-  It is important to understand at which level the problem is manifesting (UI, Rails code, Elasticsearch side) to be able to [troubleshoot further](../administration/troubleshooting/elasticsearch.md#search-results-workflow).
+We continuously make updates to our indexing strategies and aim to support
+newer versions of Elasticsearch. When indexing changes are made, it may
+be necessary for you to [reindex](#zero-downtime-reindexing) after updating GitLab.
 
-  NOTE: **Note:**
-  The above instructions are not to be used for scenarios that only index a [subset of namespaces](#limiting-namespaces-and-projects).
+### I indexed all the repositories but I can't get any hits for my search term in the UI
 
-  See [Elasticsearch Index Scopes](#elasticsearch-index-scopes) for more information on searching for specific types of data.
+Make sure you indexed all the database data [as stated above](#enabling-elasticsearch).
 
-- **I indexed all the repositories but then switched Elasticsearch servers and now I can't find anything**
+If there aren't any results (hits) in the UI search, check if you are seeing the same results via the rails console (`sudo gitlab-rails console`):
 
-  You will need to re-run all the Rake tasks to reindex the database, repositories, and wikis.
+```ruby
+u = User.find_by_username('your-username')
+s = SearchService.new(u, {:search => 'search_term', :scope => 'blobs'})
+pp s.search_objects.to_a
+```
 
-- **The indexing process is taking a very long time**
+Beyond that, check via the [Elasticsearch Search API](https://www.elastic.co/guide/en/elasticsearch/reference/current/search-search.html) to see if the data shows up on the Elasticsearch side:
 
-  The more data present in your GitLab instance, the longer the indexing process takes.
+```shell
+curl --request GET <elasticsearch_server_ip>:9200/gitlab-production/_search?q=<search_term>
+```
 
-- **There are some projects that weren't indexed, but we don't know which ones**
+More [complex Elasticsearch API calls](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-filter-context.html) are also possible.
 
-  You can run `sudo gitlab-rake gitlab:elastic:projects_not_indexed` to display projects that aren't indexed.
+It is important to understand at which level the problem is manifesting (UI, Rails code, Elasticsearch side) to be able to [troubleshoot further](../administration/troubleshooting/elasticsearch.md#search-results-workflow).
 
-- **No new data is added to the Elasticsearch index when I push code**
+NOTE: **Note:**
+The above instructions are not to be used for scenarios that only index a [subset of namespaces](#limiting-namespaces-and-projects).
 
-  NOTE: **Note:**
-  This was [fixed in GitLab 13.2](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/35936) and the Rake task is not available for versions greater than that.
+See [Elasticsearch Index Scopes](#elasticsearch-index-scopes) for more information on searching for specific types of data.
 
-  When performing the initial indexing of blobs, we lock all projects until the project finishes indexing. It could happen that an error during the process causes one or multiple projects to remain locked. In order to unlock them, run:
+### I indexed all the repositories but then switched Elasticsearch servers and now I can't find anything
 
-  ```shell
-  sudo gitlab-rake gitlab:elastic:clear_locked_projects
-  ```
+You will need to re-run all the Rake tasks to reindex the database, repositories, and wikis.
 
-- **"Can't specify parent if no parent field has been configured"**
+### The indexing process is taking a very long time
 
-  If you enabled Elasticsearch before GitLab 8.12 and have not rebuilt indexes you will get
-  exception in lots of different cases:
+The more data present in your GitLab instance, the longer the indexing process takes.
 
-  ```plaintext
-  Elasticsearch::Transport::Transport::Errors::BadRequest([400] {
-      "error": {
-          "root_cause": [{
-              "type": "illegal_argument_exception",
-              "reason": "Can't specify parent if no parent field has been configured"
-          }],
-          "type": "illegal_argument_exception",
-          "reason": "Can't specify parent if no parent field has been configured"
-      },
-      "status": 400
-  }):
-  ```
+### There are some projects that weren't indexed, but I don't know which ones
 
-  This is because we changed the index mapping in GitLab 8.12 and the old indexes should be removed and built from scratch again,
-  see details in the [update guide](../update/upgrading_from_source.md).
+You can run `sudo gitlab-rake gitlab:elastic:projects_not_indexed` to display projects that aren't indexed.
+
+### No new data is added to the Elasticsearch index when I push code
+
+NOTE: **Note:**
+This was [fixed in GitLab 13.2](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/35936) and the Rake task is not available for versions greater than that.
+
+When performing the initial indexing of blobs, we lock all projects until the project finishes indexing. It could happen that an error during the process causes one or multiple projects to remain locked. In order to unlock them, run:
+
+```shell
+sudo gitlab-rake gitlab:elastic:clear_locked_projects
+```
+
+### `Can't specify parent if no parent field has been configured` error
+
+If you enabled Elasticsearch before GitLab 8.12 and have not rebuilt indexes you will get
+exception in lots of different cases:
+
+```plaintext
+Elasticsearch::Transport::Transport::Errors::BadRequest([400] {
+    "error": {
+        "root_cause": [{
+            "type": "illegal_argument_exception",
+            "reason": "Can't specify parent if no parent field has been configured"
+        }],
+        "type": "illegal_argument_exception",
+        "reason": "Can't specify parent if no parent field has been configured"
+    },
+    "status": 400
+}):
+```
+
+This is because we changed the index mapping in GitLab 8.12 and the old indexes should be removed and built from scratch again,
+see details in the [update guide](../update/upgrading_from_source.md).
 
 - Exception `Elasticsearch::Transport::Transport::Errors::BadRequest`
 
@@ -822,44 +832,45 @@ Here are some common pitfalls and how to overcome them:
   for this setting ("Maximum Size of HTTP Request Payloads"), based on the size of
   the underlying instance.
 
-- **My single node Elasticsearch cluster status never goes from `yellow` to `green` even though everything seems to be running properly**
+### My single node Elasticsearch cluster status never goes from `yellow` to `green` even though everything seems to be running properly
 
-  **For a single node Elasticsearch cluster the functional cluster health status will be yellow** (will never be green) because the primary shard is allocated but replicas can not be as there is no other node to which Elasticsearch can assign a replica. This also applies if you are using the
-[Amazon Elasticsearch](https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/aes-handling-errors.html#aes-handling-errors-yellow-cluster-status) service.
+**For a single node Elasticsearch cluster the functional cluster health status will be yellow** (never green) because the primary shard is allocated but replicas cannot be as there is no other node to which Elasticsearch can assign a replica. This also applies if you are using the [Amazon Elasticsearch](https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/aes-handling-errors.html#aes-handling-errors-yellow-cluster-status) service.
 
-  CAUTION: **Warning:**
-  Setting the number of replicas to `0` is not something that we recommend (this is not allowed in the GitLab Elasticsearch Integration menu). If you are planning to add more Elasticsearch nodes (for a total of more than 1 Elasticsearch) the number of replicas will need to be set to an integer value larger than `0`. Failure to do so will result in lack of redundancy (losing one node will corrupt the index).
+CAUTION: **Warning:**
+Setting the number of replicas to `0` is discouraged (this is not allowed in the GitLab Elasticsearch Integration menu). If you are planning to add more Elasticsearch nodes (for a total of more than 1 Elasticsearch) the number of replicas will need to be set to an integer value larger than `0`. Failure to do so will result in lack of redundancy (losing one node will corrupt the index).
 
-  If you have a **hard requirement to have a green status for your single node Elasticsearch cluster**, please make sure you understand the risks outlined in the previous paragraph and then simply run the following query to set the number of replicas to `0`(the cluster will no longer try to create any shard replicas):
+If you have a **hard requirement to have a green status for your single node Elasticsearch cluster**, please make sure you understand the risks outlined in the previous paragraph and then run the following query to set the number of replicas to `0`(the cluster will no longer try to create any shard replicas):
 
-  ```shell
-  curl --request PUT localhost:9200/gitlab-production/_settings --header 'Content-Type: application/json' --data '{
-  "index" : {
-     "number_of_replicas" : 0
-    }
-  }'
-  ```
+```shell
+curl --request PUT localhost:9200/gitlab-production/_settings --header 'Content-Type: application/json' --data '{
+"index" : {
+   "number_of_replicas" : 0
+  }
+}'
+```
 
-- **I'm getting a `health check timeout: no Elasticsearch node available` error in Sidekiq during the indexing process**
+### `health check timeout: no Elasticsearch node available` error in Sidekiq
 
-   ```plaintext
-   Gitlab::Elastic::Indexer::Error: time="2020-01-23T09:13:00Z" level=fatal msg="health check timeout: no Elasticsearch node available"
-   ```
+If you're getting a `health check timeout: no Elasticsearch node available` error in Sidekiq during the indexing process:
 
-   You probably have not used either `http://` or `https://` as part of your value in the **"URL"** field of the Elasticsearch Integration Menu. Please make sure you are using either `http://` or `https://` in this field as the [Elasticsearch client for Go](https://github.com/olivere/elastic) that we are using [needs the prefix for the URL to be accepted as valid](https://github.com/olivere/elastic/commit/a80af35aa41856dc2c986204e2b64eab81ccac3a).
-   Once you have corrected the formatting of the URL, delete the index (via the [dedicated Rake task](#gitlab-elasticsearch-rake-tasks)) and [reindex the content of your instance](#enabling-elasticsearch).
+```plaintext
+Gitlab::Elastic::Indexer::Error: time="2020-01-23T09:13:00Z" level=fatal msg="health check timeout: no Elasticsearch node available"
+```
+
+You probably have not used either `http://` or `https://` as part of your value in the **"URL"** field of the Elasticsearch Integration Menu. Please make sure you are using either `http://` or `https://` in this field as the [Elasticsearch client for Go](https://github.com/olivere/elastic) that we are using [needs the prefix for the URL to be accepted as valid](https://github.com/olivere/elastic/commit/a80af35aa41856dc2c986204e2b64eab81ccac3a).
+Once you have corrected the formatting of the URL, delete the index (via the [dedicated Rake task](#gitlab-elasticsearch-rake-tasks)) and [reindex the content of your instance](#enabling-elasticsearch).
 
 ### Low-level troubleshooting
 
 There is a [more structured, lower-level troubleshooting document](../administration/troubleshooting/elasticsearch.md) for when you experience other issues, including poor performance.
 
-### Known Issues
+### Known issues
 
-- **[Elasticsearch `code_analyzer` doesn't account for all code cases](https://gitlab.com/groups/gitlab-org/-/epics/3621)**
+[Elasticsearch `code_analyzer` doesn't account for all code cases](https://gitlab.com/groups/gitlab-org/-/epics/3621).
 
-   The `code_analyzer` pattern and filter configuration is being evaluated for improvement. We have fixed [most edge cases](https://gitlab.com/groups/gitlab-org/-/epics/3621#note_363429094) that were not returning expected search results due to our pattern and filter configuration.
+The `code_analyzer` pattern and filter configuration is being evaluated for improvement. We have fixed [most edge cases](https://gitlab.com/groups/gitlab-org/-/epics/3621#note_363429094) that were not returning expected search results due to our pattern and filter configuration.
 
-   Improvements to the `code_analyzer` pattern and filters is being discussed in [epic 3621](https://gitlab.com/groups/gitlab-org/-/epics/3621).
+Improvements to the `code_analyzer` pattern and filters are being discussed in [epic 3621](https://gitlab.com/groups/gitlab-org/-/epics/3621).
 
 ### Reverting to Basic Search
 

@@ -322,9 +322,11 @@
   }
 }
 
-.admin-builds-table {
-  .ci-table td:last-child {
-    min-width: 120px;
+[data-page='admin:jobs:index'] {
+  .admin-builds-table {
+    td:last-child {
+      min-width: 120px;
+    }
   }
 }
 
@@ -333,110 +335,108 @@
   border-bottom: 0;
 }
 
-.tab-pane {
-  &.builds .ci-table tr {
-    height: 71px;
-  }
-
-  .ci-table {
-    thead th {
-      border-top: 0;
-    }
-  }
-}
-
-.build-failures {
-  .build-state {
-    padding: 20px 2px;
-
-    .build-name {
-      font-weight: $gl-font-weight-normal;
-    }
-
-    .stage {
-      color: $gl-text-color-secondary;
-      font-weight: $gl-font-weight-normal;
-      vertical-align: middle;
-    }
-  }
-
-  .build-log {
-    border: 0;
-    line-height: initial;
-  }
-
-  .build-trace-row td {
-    border-top: 0;
-    border-bottom-width: 1px;
-    border-bottom-style: solid;
-    padding-top: 0;
-  }
-
-  .build-trace {
-    width: 100%;
-    text-align: left;
-    margin-top: $gl-padding;
-  }
-
-  .build-name {
-    width: 196px;
-
-    a {
-      font-weight: $gl-font-weight-bold;
-      color: $gl-text-color;
-      text-decoration: none;
-
-      &:focus,
-      &:hover {
-        text-decoration: underline;
+[data-page='projects:pipelines:show'] {
+  .tab-pane {
+    .ci-table {
+      thead th {
+        border-top: 0;
       }
     }
   }
 
-  .build-actions {
-    width: 70px;
-    text-align: right;
-  }
+  .build-failures {
+    .build-state {
+      padding: 20px 2px;
 
-  .build-stage {
-    width: 140px;
-  }
+      .build-name {
+        font-weight: $gl-font-weight-normal;
+      }
 
-  .ci-status-icon-failed {
-    padding: 10px 0 10px 12px;
-    width: 12px + 24px; // padding-left + svg width
-  }
-
-  .build-icon svg {
-    width: 24px;
-    height: 24px;
-    vertical-align: middle;
-  }
-
-  .build-state,
-  .build-trace-row {
-    > td:last-child {
-      padding-right: 0;
-    }
-  }
-
-  @include media-breakpoint-down(sm) {
-    td:empty {
-      display: none;
+      .stage {
+        color: $gl-text-color-secondary;
+        font-weight: $gl-font-weight-normal;
+        vertical-align: middle;
+      }
     }
 
-    .ci-table {
-      margin-top: 2 * $gl-padding;
+    .build-log {
+      border: 0;
+      line-height: initial;
     }
 
-    .build-trace-container {
-      padding-top: $gl-padding;
-      padding-bottom: $gl-padding;
+    .build-trace-row td {
+      border-top: 0;
+      border-bottom-width: 1px;
+      border-bottom-style: solid;
+      padding-top: 0;
     }
 
     .build-trace {
-      margin-bottom: 0;
-      margin-top: 0;
+      width: 100%;
+      text-align: left;
+      margin-top: $gl-padding;
+    }
+
+    .build-name {
+      width: 196px;
+
+      a {
+        font-weight: $gl-font-weight-bold;
+        color: $gl-text-color;
+        text-decoration: none;
+
+        &:focus,
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+    }
+
+    .build-actions {
+      width: 70px;
+      text-align: right;
+    }
+
+    .build-stage {
+      width: 140px;
+    }
+
+    .ci-status-icon-failed {
+      padding: 10px 0 10px 12px;
+      width: 12px + 24px; // padding-left + svg width
+    }
+
+    .build-icon svg {
+      width: 24px;
+      height: 24px;
+      vertical-align: middle;
+    }
+
+    .build-state,
+    .build-trace-row {
+      > td:last-child {
+        padding-right: 0;
+      }
+    }
+
+    @include media-breakpoint-down(sm) {
+      td:empty {
+        display: none;
+      }
+
+      .ci-table {
+        margin-top: 2 * $gl-padding;
+      }
+
+      .build-trace-container {
+        padding-top: $gl-padding;
+        padding-bottom: $gl-padding;
+      }
+
+      .build-trace {
+        margin-bottom: 0;
+        margin-top: 0;
+      }
     }
   }
 }

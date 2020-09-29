@@ -1,7 +1,7 @@
 ---
 name: ci_disable_validates_dependencies
-introduced_by_url: 
-rollout_issue_url: 
-group: 
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/14009
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/257847
+group: group::continuous integration
 type: development
 default_enabled: false

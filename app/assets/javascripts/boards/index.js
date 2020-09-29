@@ -155,7 +155,13 @@ export default () => {
       }
     },
     methods: {
-      ...mapActions(['setInitialBoardData', 'setFilters', 'fetchEpicsSwimlanes', 'resetIssues']),
+      ...mapActions([
+        'setInitialBoardData',
+        'setFilters',
+        'fetchEpicsSwimlanes',
+        'resetIssues',
+        'resetEpics',
+      ]),
       initialBoardLoad() {
         boardsStore
           .all()
@@ -176,7 +182,8 @@ export default () => {
       performSearch() {
         this.setFilters(convertObjectPropsToCamelCase(urlParamsToObject(window.location.search)));
         if (gon.features.boardsWithSwimlanes && this.isShowingEpicsSwimlanes) {
-          this.fetchEpicsSwimlanes(false);
+          this.resetEpics();
+          this.fetchEpicsSwimlanes({ withLists: false });
           this.resetIssues();
         }
       },

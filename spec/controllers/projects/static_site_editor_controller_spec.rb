@@ -8,6 +8,8 @@ RSpec.describe Projects::StaticSiteEditorController do
   let(:data) { instance_double(Hash) }
 
   describe 'GET show' do
+    render_views
+
     let(:default_params) do
       {
         namespace_id: project.namespace,
@@ -82,8 +84,9 @@ RSpec.describe Projects::StaticSiteEditorController do
           context 'when invalid config file' do
             let(:service_response) { ServiceResponse.error(message: 'invalid') }
 
-            it 'returns 422' do
-              expect(response).to have_gitlab_http_status(:unprocessable_entity)
+            it 'redirects to project page and flashes error message' do
+              expect(response).to redirect_to(project_path(project))
+              expect(response).to set_flash[:alert].to('invalid')
             end
           end
         end

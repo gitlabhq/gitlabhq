@@ -42,14 +42,6 @@ module ClustersHelper
     }
   end
 
-  # This method is depreciated and will be removed when associated HAML files are moved to JavaScript
-  def provider_icon(provider = nil)
-    img_data = js_clusters_list_data.dig(:img_tags, provider&.to_sym) ||
-               js_clusters_list_data.dig(:img_tags, :default)
-
-    image_tag img_data[:path], alt: img_data[:text], class: 'gl-h-full'
-  end
-
   def render_gcp_signup_offer
     return if Gitlab::CurrentSettings.current_application_settings.hide_third_party_offers?
     return unless show_gcp_signup_offer?

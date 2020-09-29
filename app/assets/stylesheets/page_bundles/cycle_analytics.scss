@@ -1,3 +1,5 @@
+@import 'mixins_and_variables_and_functions';
+
 #cycle-analytics,
 .cycle-analytics {
   margin: 24px auto 0;
@@ -84,7 +86,7 @@
       }
 
       .text {
-        color: $layout-link-gray;
+        color: var(--gray-500, $gray-500);
         margin: 0;
       }
 
@@ -127,14 +129,14 @@
       line-height: 65px;
 
       &.active {
-        background: $blue-50;
-        border-color: $blue-300;
-        box-shadow: inset 4px 0 0 0 $blue-500;
+        background: var(--blue-50, $blue-50);
+        border-color: var(--blue-300, $blue-300);
+        box-shadow: inset 4px 0 0 0 var(--blue-500, $blue-500);
       }
 
       &:hover:not(.active) {
-        background-color: $gray-lightest;
-        box-shadow: inset 2px 0 0 0 $border-color;
+        background-color: var(--gray-10, $gray-10);
+        box-shadow: inset 2px 0 0 0 var(--border-color, $border-color);
         cursor: pointer;
       }
 
@@ -148,7 +150,7 @@
 
       .stage-empty,
       .not-available {
-        color: $gl-text-color-secondary;
+        color: var(--gray-500, $gray-500);
       }
     }
   }
@@ -172,7 +174,7 @@
     }
 
     .events-info {
-      color: $gl-text-color-secondary;
+      color: var(--gray-500, $gray-500);
     }
   }
 
@@ -191,7 +193,7 @@
     list-style-type: none;
     padding: 0 0 $gl-padding;
     margin: 0 $gl-padding $gl-padding;
-    border-bottom: 1px solid $gray-darker;
+    border-bottom: 1px solid var(--gray-50, $gray-50);
 
     &:last-child {
       border-bottom: 0;
@@ -220,7 +222,7 @@
         display: block;
 
         a {
-          color: $gl-text-color;
+          color: var(--gl-text-color, $gl-text-color);
         }
       }
     }
@@ -232,24 +234,24 @@
 
     .total-time {
       font-size: $cycle-analytics-big-font;
-      color: $gl-text-color;
+      color: var(--gl-text-color, $gl-text-color);
 
       span {
-        color: $gl-text-color;
+        color: var(--gl-text-color, $gl-text-color);
         font-size: $gl-font-size;
       }
     }
 
     .issue-date,
     .build-date {
-      color: $gl-text-color;
+      color: var(--gl-text-color, $gl-text-color);
     }
 
     .mr-link,
     .issue-link,
     .commit-author-link,
     .issue-author-link {
-      color: $gl-text-color;
+      color: var(--gl-text-color, $gl-text-color);
     }
 
     // Custom CSS for components
@@ -287,16 +289,16 @@
       }
 
       .item-build-name {
-        color: $gl-text-color;
+        color: var(--gl-text-color, $gl-text-color);
       }
 
       .pipeline-id {
-        color: $gl-text-color;
+        color: var(--gl-text-color, $gl-text-color);
         padding: 0 3px 0 0;
       }
 
       .ref-name {
-        color: $black;
+        color: var(--gray-900, $gray-900);
         display: inline-block;
         max-width: 180px;
         text-overflow: ellipsis;
@@ -307,14 +309,14 @@
       }
 
       .commit-sha {
-        color: $blue-600;
+        color: var(--blue-600, $blue-600);
         line-height: 1.3;
         vertical-align: top;
         font-weight: $gl-font-weight-normal;
       }
 
       .fa {
-        color: $gl-text-color-secondary;
+        color: var(--gray-500, $gray-500);
         font-size: $code-font-size;
       }
     }
@@ -326,10 +328,10 @@
     width: 75%;
     margin: 0 auto;
     padding-top: 130px;
-    color: $gl-text-color-secondary;
+    color: var(--gray-500, $gray-500);
 
     h4 {
-      color: $gl-text-color;
+      color: var(--gl-text-color, $gl-text-color);
     }
   }
 

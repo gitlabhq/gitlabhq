@@ -5472,9 +5472,6 @@ msgstr ""
 msgid "ClusterIntegration|Clear the local cache of namespace and service accounts. This is necessary if your integration has become out of sync. The cache is repopulated during the next CI job that requires namespace and service accounts."
 msgstr ""
 
-msgid "ClusterIntegration|Cluster being created"
-msgstr ""
-
 msgid "ClusterIntegration|Cluster management project (alpha)"
 msgstr ""
 
@@ -5482,9 +5479,6 @@ msgid "ClusterIntegration|Cluster name is required."
 msgstr ""
 
 msgid "ClusterIntegration|Cluster_applications artifact too big. Maximum allowable size: %{human_size}"
-msgstr ""
-
-msgid "ClusterIntegration|Clusters are utilized by selecting the nearest ancestor with a matching environment scope. For example, project clusters will override group clusters."
 msgstr ""
 
 msgid "ClusterIntegration|Clusters are utilized by selecting the nearest ancestor with a matching environment scope. For example, project clusters will override group clusters. %{linkStart}More information%{linkEnd}"
@@ -5749,9 +5743,6 @@ msgid "ClusterIntegration|Knative domain name was updated successfully."
 msgstr ""
 
 msgid "ClusterIntegration|Knative extends Kubernetes to provide a set of middleware components that are essential to build modern, source-centric, and container-based applications that can run anywhere: on premises, in the cloud, or even in a third-party data center."
-msgstr ""
-
-msgid "ClusterIntegration|Kubernetes cluster"
 msgstr ""
 
 msgid "ClusterIntegration|Kubernetes cluster is being created..."

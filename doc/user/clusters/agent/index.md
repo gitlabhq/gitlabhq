@@ -81,7 +81,8 @@ When installing or upgrading the GitLab Helm chart, consider the following Helm 
 for the Agent to be properly installed and configured:
 
 ```shell
-helm upgrade --force --install gitlab . \
+helm repo update
+helm upgrade --force --install gitlab gitlab/gitlab \
   --timeout 600 \
   --set global.hosts.domain=<YOUR_DOMAIN> \
   --set global.hosts.externalIP=<YOUR_IP> \
@@ -336,6 +337,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: nginx-deployment
+  namespace: gitlab-agent  # Can be any namespace managed by you that the agent has access to.
 spec:
   selector:
     matchLabels:

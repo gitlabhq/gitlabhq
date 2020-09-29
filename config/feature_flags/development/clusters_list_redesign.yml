@@ -1,7 +1,0 @@
----
-name: clusters_list_redesign
-introduced_by_url:
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/220182
-group: Configure
-type: development
-default_enabled: true
