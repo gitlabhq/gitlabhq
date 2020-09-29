@@ -40,6 +40,17 @@ export default class SidebarMediator {
     return this.service.update(field, data);
   }
 
+  saveReviewers(field) {
+    const selected = this.store.reviewers.map(u => u.id);
+
+    // If there are no ids, that means we have to unassign (which is id = 0)
+    // And it only accepts an array, hence [0]
+    const reviewers = selected.length === 0 ? [0] : selected;
+    const data = { reviewer_ids: reviewers };
+
+    return this.service.update(field, data);
+  }
+
   setMoveToProjectId(projectId) {
     this.store.setMoveToProjectId(projectId);
   }
@@ -55,6 +66,7 @@ export default class SidebarMediator {
 
   processFetchedData(data) {
     this.store.setAssigneeData(data);
+    this.store.setReviewerData(data);
     this.store.setTimeTrackingData(data);
     this.store.setParticipantsData(data);
     this.store.setSubscriptionsData(data);

@@ -647,7 +647,7 @@ tables: `namespaces`. This can be translated to:
 ```sql
 ALTER TABLE namespaces
 ALTER COLUMN request_access_enabled
-DEFAULT false
+SET DEFAULT false
 ```
 
 In this particular case, the default value exists and we're just changing the metadata for

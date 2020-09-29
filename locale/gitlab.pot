@@ -8934,6 +8934,9 @@ msgstr ""
 msgid "Diffs|Something went wrong while fetching diff lines."
 msgstr ""
 
+msgid "Direct member"
+msgstr ""
+
 msgid "Direction"
 msgstr ""
 
@@ -13614,6 +13617,9 @@ msgstr ""
 msgid "Information about additional Pages templates and how to install them can be found in our %{pages_getting_started_guide}."
 msgstr ""
 
+msgid "Inherited"
+msgstr ""
+
 msgid "Inherited:"
 msgstr ""
 
@@ -17673,12 +17679,6 @@ msgstr ""
 msgid "On track"
 msgstr ""
 
-msgid "OnDemandScans|Attached branch"
-msgstr ""
-
-msgid "OnDemandScans|Attached branch is where the scan job runs."
-msgstr ""
-
 msgid "OnDemandScans|Could not fetch scanner profiles. Please refresh the page, or try again later."
 msgstr ""
 
@@ -17715,16 +17715,7 @@ msgstr ""
 msgid "OnDemandScans|On-demand scans run outside the DevOps cycle and find vulnerabilities in your projects. %{learnMoreLinkStart}Learn more%{learnMoreLinkEnd}"
 msgstr ""
 
-msgid "OnDemandScans|Only a passive scan can be performed on demand."
-msgstr ""
-
-msgid "OnDemandScans|Passive"
-msgstr ""
-
 msgid "OnDemandScans|Run scan"
-msgstr ""
-
-msgid "OnDemandScans|Scan mode"
 msgstr ""
 
 msgid "OnDemandScans|Scanner profile"
@@ -21668,6 +21659,9 @@ msgstr ""
 msgid "Request parameter %{param} is missing."
 msgstr ""
 
+msgid "Request review from"
+msgstr ""
+
 msgid "Request to link SAML account must be authorized"
 msgstr ""
 
@@ -21936,6 +21930,9 @@ msgid "Review time is defined as the time it takes from first comment until merg
 msgstr ""
 
 msgid "ReviewApp|Enable Review App"
+msgstr ""
+
+msgid "Reviewer"
 msgstr ""
 
 msgid "Reviewing"

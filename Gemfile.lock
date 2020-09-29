@@ -547,7 +547,7 @@ GEM
       tilt
     hana (1.3.6)
     hangouts-chat (0.0.5)
-    hashdiff (0.3.8)
+    hashdiff (1.0.1)
     hashie (3.6.0)
     hashie-forbidden_attributes (0.1.1)
       hashie (>= 3.0)
@@ -1214,10 +1214,10 @@ GEM
     webfinger (1.1.0)
       activesupport
       httpclient (>= 2.4)
-    webmock (3.5.1)
+    webmock (3.9.1)
       addressable (>= 2.3.6)
       crack (>= 0.3.2)
-      hashdiff
+      hashdiff (>= 0.4.0, < 2.0.0)
     websocket-driver (0.7.1)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.5)
@@ -1496,7 +1496,7 @@ DEPENDENCIES
   version_sorter (~> 2.2.4)
   vmstat (~> 2.3.0)
   webauthn (~> 2.3)
-  webmock (~> 3.5.1)
+  webmock (~> 3.9.1)
   wikicloth (= 0.8.1)
   yajl-ruby (~> 1.4.1)
 

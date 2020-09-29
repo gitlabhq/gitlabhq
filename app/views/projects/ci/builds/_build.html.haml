@@ -21,7 +21,7 @@
 
     - if ref
       - if job.ref
-        .icon-container
+        .icon-container.gl-display-inline-block
           = job.tag? ? icon('tag') : sprite_icon('fork', css_class: 'sprite')
         = link_to job.ref, project_ref_path(job.project, job.ref), class: "ref-name"
       - else

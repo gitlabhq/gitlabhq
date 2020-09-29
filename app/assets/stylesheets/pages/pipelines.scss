@@ -111,6 +111,10 @@
         white-space: nowrap;
       }
     }
+
+    .pipeline-tags .label-container {
+      white-space: normal;
+    }
   }
 }
 
@@ -124,22 +128,6 @@
 }
 
 .ci-table {
-  .build.retried {
-    background-color: $gray-lightest;
-  }
-
-  .commit-link {
-    a {
-      &:focus {
-        text-decoration: none;
-      }
-    }
-
-    a:hover {
-      text-decoration: none;
-    }
-  }
-
   .avatar {
     margin-left: 0;
     float: none;
@@ -191,44 +179,11 @@
     }
   }
 
-  .icon-container {
-    display: inline-block;
-
-    &.commit-icon {
-      width: 15px;
-      text-align: center;
-    }
-  }
-
-  /**
-   * Play button with icon in dropdowns
-   */
-  .no-btn {
-    border: 0;
-    background: none;
-    outline: none;
-    width: 100%;
-    text-align: left;
-
-    .icon-play {
-      position: relative;
-      top: 2px;
-      margin-right: 5px;
-      height: 13px;
-      width: 12px;
-    }
-  }
-
   .duration,
   .finished-at {
     color: $gl-text-color-secondary;
     margin: 0;
     white-space: nowrap;
-
-    .fa {
-      font-size: 12px;
-      margin-right: 4px;
-    }
 
     svg {
       width: 12px;
@@ -240,14 +195,6 @@
 
   .build-link a {
     color: $gl-text-color;
-  }
-
-  .btn-group.open .dropdown-toggle {
-    box-shadow: none;
-  }
-
-  .pipeline-tags .label-container {
-    white-space: normal;
   }
 }
 

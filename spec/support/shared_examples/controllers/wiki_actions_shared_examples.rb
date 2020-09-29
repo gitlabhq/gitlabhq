@@ -226,7 +226,7 @@ RSpec.shared_examples 'wiki controller actions' do
       where(:file_name) { ['dk.png', 'unsanitized.svg', 'git-cheat-sheet.pdf'] }
 
       with_them do
-        let(:id) { upload_file_to_wiki(container, user, file_name) }
+        let(:id) { upload_file_to_wiki(wiki, user, file_name) }
 
         it 'delivers the file with the correct headers' do
           subject

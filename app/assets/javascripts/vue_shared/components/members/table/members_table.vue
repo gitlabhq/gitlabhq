@@ -4,6 +4,7 @@ import { GlTable } from '@gitlab/ui';
 import { FIELDS } from '../constants';
 import initUserPopovers from '~/user_popovers';
 import MemberAvatar from './member_avatar.vue';
+import MemberSource from './member_source.vue';
 import MembersTableCell from './members_table_cell.vue';
 
 export default {
@@ -12,6 +13,7 @@ export default {
     GlTable,
     MemberAvatar,
     MembersTableCell,
+    MemberSource,
   },
   computed: {
     ...mapState(['members', 'tableFields']),
@@ -43,8 +45,10 @@ export default {
       </members-table-cell>
     </template>
 
-    <template #cell(source)>
-      <!-- Temporarily empty -->
+    <template #cell(source)="{ item: member }">
+      <members-table-cell #default="{ isDirectMember }" :member="member">
+        <member-source :is-direct-member="isDirectMember" :member-source="member.source" />
+      </members-table-cell>
     </template>
 
     <template #head(actions)="{ label }">

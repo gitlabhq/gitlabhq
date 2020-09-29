@@ -1,23 +1,22 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+# Requires a context containing:
+#   wiki
+#   user
 
-RSpec.describe 'User views wiki pages' do
+RSpec.shared_examples 'User views wiki pages' do
   include WikiHelpers
 
-  let(:user) { create(:user) }
-  let(:project) { create(:project, :wiki_repo, namespace: user.namespace) }
-
   let!(:wiki_page1) do
-    create(:wiki_page, wiki: project.wiki, title: '3 home', content: '3')
+    create(:wiki_page, wiki: wiki, title: '3 home', content: '3')
   end
 
   let!(:wiki_page2) do
-    create(:wiki_page, wiki: project.wiki, title: '1 home', content: '1')
+    create(:wiki_page, wiki: wiki, title: '1 home', content: '1')
   end
 
   let!(:wiki_page3) do
-    create(:wiki_page, wiki: project.wiki, title: '2 home', content: '2')
+    create(:wiki_page, wiki: wiki, title: '2 home', content: '2')
   end
 
   let(:pages) do
@@ -25,9 +24,8 @@ RSpec.describe 'User views wiki pages' do
   end
 
   before do
-    project.add_maintainer(user)
     sign_in(user)
-    visit(project_wikis_pages_path(project))
+    visit(wiki_path(wiki, action: :pages))
   end
 
   context 'ordered by title' do

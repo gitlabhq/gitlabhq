@@ -19,6 +19,7 @@ import initDeprecatedJQueryDropdown from '~/deprecated_jquery_dropdown';
 window.emitSidebarEvent = window.emitSidebarEvent || $.noop;
 
 function UsersSelect(currentUser, els, options = {}) {
+  const elsClassName = els?.toString().match('.(.+$)')[1];
   const $els = $(els || '.js-user-search');
   this.users = this.users.bind(this);
   this.user = this.user.bind(this);
@@ -127,9 +128,16 @@ function UsersSelect(currentUser, els, options = {}) {
             .find(`input[name='${$dropdown.data('fieldName')}'][value=${firstSelectedId}]`);
 
           firstSelected.remove();
-          emitSidebarEvent('sidebar.removeAssignee', {
-            id: firstSelectedId,
-          });
+
+          if ($dropdown.hasClass(elsClassName)) {
+            emitSidebarEvent('sidebar.removeReviewer', {
+              id: firstSelectedId,
+            });
+          } else {
+            emitSidebarEvent('sidebar.removeAssignee', {
+              id: firstSelectedId,
+            });
+          }
         }
       }
     };
@@ -392,7 +400,11 @@ function UsersSelect(currentUser, els, options = {}) {
       defaultLabel,
       hidden() {
         if ($dropdown.hasClass('js-multiselect')) {
-          emitSidebarEvent('sidebar.saveAssignees');
+          if ($dropdown.hasClass(elsClassName)) {
+            emitSidebarEvent('sidebar.saveReviewers');
+          } else {
+            emitSidebarEvent('sidebar.saveAssignees');
+          }
         }
 
         if (!$dropdown.data('alwaysShowSelectbox')) {
@@ -428,10 +440,18 @@ function UsersSelect(currentUser, els, options = {}) {
             previouslySelected.each((index, element) => {
               element.remove();
             });
-            emitSidebarEvent('sidebar.removeAllAssignees');
+            if ($dropdown.hasClass(elsClassName)) {
+              emitSidebarEvent('sidebar.removeAllReviewers');
+            } else {
+              emitSidebarEvent('sidebar.removeAllAssignees');
+            }
           } else if (isActive) {
             // user selected
-            emitSidebarEvent('sidebar.addAssignee', user);
+            if ($dropdown.hasClass(elsClassName)) {
+              emitSidebarEvent('sidebar.addReviewer', user);
+            } else {
+              emitSidebarEvent('sidebar.addAssignee', user);
+            }
 
             // Remove unassigned selection (if it was previously selected)
             const unassignedSelected = $dropdown
@@ -448,7 +468,11 @@ function UsersSelect(currentUser, els, options = {}) {
             }
 
             // User unselected
-            emitSidebarEvent('sidebar.removeAssignee', user);
+            if ($dropdown.hasClass(elsClassName)) {
+              emitSidebarEvent('sidebar.removeReviewer', user);
+            } else {
+              emitSidebarEvent('sidebar.removeAssignee', user);
+            }
           }
 
           if (getSelected().find(u => u === gon.current_user_id)) {

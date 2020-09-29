@@ -1,14 +1,12 @@
 # frozen_string_literal: true
 
 # Requires a context containing:
-#   project
+#   wiki
 
 RSpec.shared_examples 'wiki file attachments' do
   include DropzoneHelper
 
   context 'uploading attachments', :js do
-    let(:wiki) { project.wiki }
-
     def attach_with_dropzone(wait = false)
       dropzone_file([Rails.root.join('spec', 'fixtures', 'dk.png')], 0, wait)
     end

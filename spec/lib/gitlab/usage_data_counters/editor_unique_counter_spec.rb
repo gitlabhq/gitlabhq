@@ -41,11 +41,11 @@ RSpec.describe Gitlab::UsageDataCounters::EditorUniqueCounter, :clean_gitlab_red
   context 'for web IDE edit actions' do
     it_behaves_like 'tracks and counts action' do
       def track_action(params)
-        described_class.track_web_ide_edit_action(params)
+        described_class.track_web_ide_edit_action(**params)
       end
 
       def count_unique(params)
-        described_class.count_web_ide_edit_actions(params)
+        described_class.count_web_ide_edit_actions(**params)
       end
     end
   end
@@ -53,11 +53,11 @@ RSpec.describe Gitlab::UsageDataCounters::EditorUniqueCounter, :clean_gitlab_red
   context 'for SFE edit actions' do
     it_behaves_like 'tracks and counts action' do
       def track_action(params)
-        described_class.track_sfe_edit_action(params)
+        described_class.track_sfe_edit_action(**params)
       end
 
       def count_unique(params)
-        described_class.count_sfe_edit_actions(params)
+        described_class.count_sfe_edit_actions(**params)
       end
     end
   end
@@ -65,11 +65,11 @@ RSpec.describe Gitlab::UsageDataCounters::EditorUniqueCounter, :clean_gitlab_red
   context 'for snippet editor edit actions' do
     it_behaves_like 'tracks and counts action' do
       def track_action(params)
-        described_class.track_snippet_editor_edit_action(params)
+        described_class.track_snippet_editor_edit_action(**params)
       end
 
       def count_unique(params)
-        described_class.count_snippet_editor_edit_actions(params)
+        described_class.count_snippet_editor_edit_actions(**params)
       end
     end
   end

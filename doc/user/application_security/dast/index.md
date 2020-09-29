@@ -674,11 +674,6 @@ To delete an existing site profile:
 ## Scanner profile
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/222767) in GitLab 13.4.
-> - [Deployed behind a feature flag](../../feature_flags.md), enabled by default.
-> - Enabled on GitLab.com.
-> - Can be enabled or disabled per-project.
-> - Recommended for production use.
-> - For GitLab self-managed instances, GitLab administrators can [disable this feature](#enable-or-disable-dast-scanner-profiles).
 
 A scanner profile defines the scanner settings used to run an on-demand scan:
 
@@ -712,29 +707,6 @@ To delete a scanner profile:
 1. From your project's home page, go to **Security & Compliance > Configuration**.
 1. Click **Manage** in the **DAST Profiles** row.
 1. Click **{remove}** in the scanner profile's row.
-
-### Enable or disable DAST scanner profiles
-
-The scanner profile feature is ready for production use. It's deployed behind a feature flag that
-is **enabled by default**. [GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md) can opt to disable it.
-
-To disable it:
-
-```ruby
-# Instance-wide
-Feature.disable(:security_on_demand_scans_scanner_profiles)
-# or by project
-Feature.disable(:security_on_demand_scans_scanner_profiles, Project.find(<project id>))
-```
-
-To enable it:
-
-```ruby
-# Instance-wide
-Feature.enable(:security_on_demand_scans_scanner_profiles)
-# or by project
-Feature.enable(:security_on_demand_scans_scanner_profiles, Project.find(<project ID>))
-```
 
 ## On-demand scans
 

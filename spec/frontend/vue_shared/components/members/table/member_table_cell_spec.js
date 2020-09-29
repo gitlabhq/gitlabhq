@@ -1,4 +1,5 @@
 import { mount, createLocalVue } from '@vue/test-utils';
+import Vuex from 'vuex';
 import { MEMBER_TYPES } from '~/vue_shared/components/members/constants';
 import { member as memberMock, group, invite, accessRequest } from '../mock_data';
 import MembersTableCell from '~/vue_shared/components/members/table/members_table_cell.vue';
@@ -10,6 +11,10 @@ describe('MemberList', () => {
         type: String,
         required: true,
       },
+      isDirectMember: {
+        type: Boolean,
+        required: true,
+      },
     },
     render(createElement) {
       return createElement('div', this.memberType);
@@ -17,19 +22,33 @@ describe('MemberList', () => {
   };
 
   const localVue = createLocalVue();
+  localVue.use(Vuex);
   localVue.component('wrapped-component', WrappedComponent);
 
-  let wrapper;
-
-  const createComponent = propsData => {
-    wrapper = mount(MembersTableCell, {
-      localVue,
-      propsData,
-      scopedSlots: {
-        default: '<wrapped-component :member-type="props.memberType" />',
+  const createStore = (state = {}) => {
+    return new Vuex.Store({
+      state: {
+        sourceId: 1,
+        ...state,
       },
     });
   };
+
+  let wrapper;
+
+  const createComponent = (propsData, state = {}) => {
+    wrapper = mount(MembersTableCell, {
+      localVue,
+      propsData,
+      store: createStore(state),
+      scopedSlots: {
+        default:
+          '<wrapped-component :member-type="props.memberType" :is-direct-member="props.isDirectMember" />',
+      },
+    });
+  };
+
+  const findWrappedComponent = () => wrapper.find(WrappedComponent);
 
   afterEach(() => {
     wrapper.destroy();
@@ -47,7 +66,31 @@ describe('MemberList', () => {
     ({ member, expectedMemberType }) => {
       createComponent({ member });
 
-      expect(wrapper.find(WrappedComponent).props('memberType')).toBe(expectedMemberType);
+      expect(findWrappedComponent().props('memberType')).toBe(expectedMemberType);
     },
   );
+
+  describe('isDirectMember', () => {
+    it('returns `true` when member source has same ID as `sourceId`', () => {
+      createComponent({
+        member: {
+          ...memberMock,
+          source: {
+            ...memberMock.source,
+            id: 1,
+          },
+        },
+      });
+
+      expect(findWrappedComponent().props('isDirectMember')).toBe(true);
+    });
+
+    it('returns `false` when member is inherited', () => {
+      createComponent({
+        member: memberMock,
+      });
+
+      expect(findWrappedComponent().props('isDirectMember')).toBe(false);
+    });
+  });
 });

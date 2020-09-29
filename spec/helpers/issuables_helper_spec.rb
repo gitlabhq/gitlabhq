@@ -306,6 +306,38 @@ RSpec.describe IssuablesHelper do
     end
   end
 
+  describe '#reviewer_sidebar_data' do
+    let(:user) { create(:user) }
+
+    subject { helper.reviewer_sidebar_data(user, merge_request: merge_request) }
+
+    context 'without merge_request' do
+      let(:merge_request) { nil }
+
+      it 'returns hash of reviewer data' do
+        is_expected.to eql({
+          avatar_url: user.avatar_url,
+          name: user.name,
+          username: user.username
+        })
+      end
+    end
+
+    context 'with merge_request' do
+      let(:merge_request) { build(:merge_request) }
+
+      where(can_merge: [true, false])
+
+      with_them do
+        before do
+          allow(merge_request).to receive(:can_be_merged_by?).and_return(can_merge)
+        end
+
+        it { is_expected.to include({ can_merge: can_merge })}
+      end
+    end
+  end
+
   describe '#issuable_squash_option?' do
     using RSpec::Parameterized::TableSyntax
 

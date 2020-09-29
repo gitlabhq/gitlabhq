@@ -1,14 +1,13 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+# Requires a context containing:
+#   wiki
+#   user
 
-RSpec.describe 'User views a wiki page' do
+RSpec.shared_examples 'User views a wiki page' do
   include WikiHelpers
 
-  let(:user) { create(:user) }
-  let(:project) { create(:project, :wiki_repo, namespace: user.namespace) }
   let(:path) { 'image.png' }
-  let(:wiki) { project.wiki }
   let(:wiki_page) do
     create(:wiki_page,
            wiki: wiki,
@@ -16,13 +15,12 @@ RSpec.describe 'User views a wiki page' do
   end
 
   before do
-    project.add_maintainer(user)
     sign_in(user)
   end
 
   context 'when wiki is empty', :js do
     before do
-      visit project_wikis_path(project)
+      visit wiki_path(wiki)
 
       wait_for_svg_to_be_loaded
 
@@ -83,7 +81,7 @@ RSpec.describe 'User views a wiki page' do
 
   context 'when a page does not have history' do
     before do
-      visit(project_wiki_path(project, wiki_page))
+      visit(wiki_page_path(wiki, wiki_page))
     end
 
     it 'shows all the pages' do
@@ -92,7 +90,7 @@ RSpec.describe 'User views a wiki page' do
     end
 
     context 'shows a file stored in a page' do
-      let(:path) { upload_file_to_wiki(project, user, 'dk.png') }
+      let(:path) { upload_file_to_wiki(wiki, user, 'dk.png') }
 
       it do
         expect(page).to have_xpath("//img[@data-src='#{wiki.wiki_base_path}/#{path}']")
@@ -121,7 +119,7 @@ RSpec.describe 'User views a wiki page' do
     end
 
     it 'shows the page history' do
-      visit(project_wiki_path(project, wiki_page))
+      visit(wiki_page_path(wiki, wiki_page))
 
       expect(page).to have_selector('a.btn', text: 'Edit')
 
@@ -133,12 +131,16 @@ RSpec.describe 'User views a wiki page' do
     end
 
     it 'does not show the "Edit" button' do
-      visit(project_wiki_path(project, wiki_page, version_id: wiki_page.versions.last.id))
+      visit(wiki_page_path(wiki, wiki_page, version_id: wiki_page.versions.last.id))
 
       expect(page).not_to have_selector('a.btn', text: 'Edit')
     end
 
     context 'show the diff' do
+      before do
+        skip('Diffing for group wikis will be implemented in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/42610') if wiki.container.is_a?(Group)
+      end
+
       def expect_diff_links(commit)
         diff_path = wiki_page_path(wiki, wiki_page, version_id: commit, action: :diff)
 
@@ -150,7 +152,7 @@ RSpec.describe 'User views a wiki page' do
       end
 
       it 'links to the correct diffs' do
-        visit project_wiki_history_path(project, wiki_page)
+        visit wiki_page_path(wiki, wiki_page, action: :history)
 
         commit1 = wiki.commit('HEAD^')
         commit2 = wiki.commit
@@ -208,7 +210,7 @@ RSpec.describe 'User views a wiki page' do
     end
 
     it 'preserves the special characters' do
-      visit(project_wiki_path(project, wiki_page))
+      visit(wiki_page_path(wiki, wiki_page))
 
       expect(page).to have_css('.wiki-page-title', text: title)
       expect(page).to have_css('.wiki-pages li', text: title)
@@ -223,7 +225,7 @@ RSpec.describe 'User views a wiki page' do
     end
 
     it 'safely displays the page' do
-      visit(project_wiki_path(project, wiki_page))
+      visit(wiki_page_path(wiki, wiki_page))
 
       expect(page).to have_css('.wiki-page-title', text: title)
       expect(page).to have_content('foo bar')
@@ -236,7 +238,7 @@ RSpec.describe 'User views a wiki page' do
     end
 
     it 'safely displays the message' do
-      visit(project_wiki_history_path(project, wiki_page))
+      visit(wiki_page_path(wiki, wiki_page, action: :history))
 
       expect(page).to have_content('<script>alert(true)<script>')
     end
@@ -248,7 +250,7 @@ RSpec.describe 'User views a wiki page' do
     before do
       allow(Gitlab::EncodingHelper).to receive(:encode!).and_return(content)
 
-      visit(project_wiki_path(project, wiki_page))
+      visit(wiki_page_path(wiki, wiki_page))
     end
 
     it 'does not show "Edit" button' do
@@ -263,7 +265,7 @@ RSpec.describe 'User views a wiki page' do
   end
 
   it 'opens a default wiki page', :js do
-    visit project_path(project)
+    visit wiki.container.web_url
 
     find('.shortcuts-wiki').click
 
