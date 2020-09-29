@@ -85,11 +85,9 @@ export default {
     },
   },
   updated() {
-    if (window.gon?.features?.codeNavigation) {
-      this.$nextTick(() => {
-        eventHub.$emit('showBlobInteractionZones', this.diffFile.new_path);
-      });
-    }
+    this.$nextTick(() => {
+      eventHub.$emit('showBlobInteractionZones', this.diffFile.new_path);
+    });
   },
   methods: {
     ...mapActions('diffs', ['saveDiffDiscussion', 'closeDiffFileCommentForm']),

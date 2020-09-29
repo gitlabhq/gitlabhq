@@ -37,8 +37,6 @@ class PaginatedDiffEntity < Grape::Entity
   private
 
   def code_navigation_path(diffs)
-    return unless Feature.enabled?(:code_navigation, merge_request.project, default_enabled: true)
-
     Gitlab::CodeNavigationPath.new(merge_request.project, diffs.diff_refs&.head_sha)
   end
 

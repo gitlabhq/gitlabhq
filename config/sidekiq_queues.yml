@@ -234,6 +234,12 @@
   - 1
 - - propagate_integration
   - 1
+- - propagate_integration_group
+  - 1
+- - propagate_integration_inherit
+  - 1
+- - propagate_integration_project
+  - 1
 - - propagate_service_template
   - 1
 - - reactive_caching

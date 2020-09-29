@@ -483,14 +483,14 @@ describe('DiffsStoreActions', () => {
             id: 1,
             renderIt: false,
             viewer: {
-              collapsed: false,
+              automaticallyCollapsed: false,
             },
           },
           {
             id: 2,
             renderIt: false,
             viewer: {
-              collapsed: false,
+              automaticallyCollapsed: false,
             },
           },
         ],
@@ -967,7 +967,7 @@ describe('DiffsStoreActions', () => {
         {
           file_hash: 'HASH',
           viewer: {
-            collapsed,
+            automaticallyCollapsed: collapsed,
           },
           renderIt,
         },
@@ -1167,7 +1167,7 @@ describe('DiffsStoreActions', () => {
       file_hash: 'testhash',
       alternate_viewer: { name: updatedViewerName },
     };
-    const updatedViewer = { name: updatedViewerName, collapsed: false };
+    const updatedViewer = { name: updatedViewerName, automaticallyCollapsed: false };
     const testData = [{ rich_text: 'test' }, { rich_text: 'file2' }];
     let renamedFile;
     let mock;

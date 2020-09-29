@@ -106,12 +106,12 @@ export default {
       >
         <gl-icon name="close" />
       </router-link>
-      <div class="overflow-hidden d-flex align-items-center">
-        <h2 class="m-0 str-truncated-100 gl-font-base">{{ filename }}</h2>
-        <small v-if="updatedAt" class="text-secondary">{{ updatedText }}</small>
+      <div class="gl-overflow-hidden gl-display-flex gl-align-items-center">
+        <h2 class="gl-m-0 str-truncated-100 gl-font-base">{{ filename }}</h2>
+        <small v-if="updatedAt" class="gl-text-gray-500">{{ updatedText }}</small>
       </div>
     </div>
-    <design-navigation :id="id" class="ml-auto flex-shrink-0" />
+    <design-navigation :id="id" class="gl-ml-auto gl-flex-shrink-0" />
     <gl-button :href="image" icon="download" />
     <delete-button
       v-if="isLatestVersion && canDeleteDesign"

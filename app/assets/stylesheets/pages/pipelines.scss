@@ -777,7 +777,6 @@ button.mini-pipeline-graph-dropdown-toggle {
   .ci-action-icon-container {
     position: absolute;
     right: 8px;
-    top: 8px;
 
     &.ci-action-icon-wrapper {
       height: $ci-action-dropdown-button-size;
@@ -799,8 +798,6 @@ button.mini-pipeline-graph-dropdown-toggle {
         width: $ci-action-dropdown-svg-size;
         height: $ci-action-dropdown-svg-size;
         fill: $gl-text-color-secondary;
-        position: relative;
-        top: 1px;
         vertical-align: initial;
       }
     }

@@ -63,6 +63,7 @@ class Service < ApplicationRecord
   scope :active, -> { where(active: true) }
   scope :by_type, -> (type) { where(type: type) }
   scope :by_active_flag, -> (flag) { where(active: flag) }
+  scope :inherit_from_id, -> (id) { where(inherit_from_id: id) }
   scope :for_group, -> (group) { where(group_id: group, type: available_services_types) }
   scope :for_template, -> { where(template: true, type: available_services_types) }
   scope :for_instance, -> { where(instance: true, type: available_services_types) }

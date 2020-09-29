@@ -1724,6 +1724,30 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: propagate_integration_group
+  :feature_category: :integrations
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+- :name: propagate_integration_inherit
+  :feature_category: :integrations
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+- :name: propagate_integration_project
+  :feature_category: :integrations
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: propagate_service_template
   :feature_category: :integrations
   :has_external_dependencies:

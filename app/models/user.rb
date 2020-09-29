@@ -69,7 +69,7 @@ class User < ApplicationRecord
   LOGIN_FORBIDDEN = "Your account does not have the required permission to login. Please contact your GitLab " \
                     "administrator if you think this is an error."
 
-  MINIMUM_INACTIVE_DAYS = 180
+  MINIMUM_INACTIVE_DAYS = 90
 
   # Override Devise::Models::Trackable#update_tracked_fields!
   # to limit database writes to at most once every hour

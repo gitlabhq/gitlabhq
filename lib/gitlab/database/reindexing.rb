@@ -5,7 +5,9 @@ module Gitlab
     module Reindexing
       def self.perform(index_selector)
         Array.wrap(index_selector).each do |index|
-          ConcurrentReindex.new(index).perform
+          ReindexAction.keep_track_of(index) do
+            ConcurrentReindex.new(index).perform
+          end
         end
       end
     end

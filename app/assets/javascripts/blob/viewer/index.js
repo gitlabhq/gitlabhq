@@ -179,9 +179,7 @@ export default class BlobViewer {
       viewer.innerHTML = data.html;
       viewer.setAttribute('data-loaded', 'true');
 
-      if (window.gon?.features?.codeNavigation) {
-        eventHub.$emit('showBlobInteractionZones', viewer.dataset.path);
-      }
+      eventHub.$emit('showBlobInteractionZones', viewer.dataset.path);
 
       return viewer;
     });

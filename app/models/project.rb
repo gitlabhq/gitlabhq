@@ -33,6 +33,7 @@ class Project < ApplicationRecord
   include FromUnion
   include IgnorableColumns
   include Integration
+  include EachBatch
   extend Gitlab::Cache::RequestCache
 
   extend Gitlab::ConfigHelper

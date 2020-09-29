@@ -181,7 +181,7 @@ describe('DiffFile', () => {
       });
 
       it('updates local state when changing file state', done => {
-        vm.file.viewer.collapsed = true;
+        vm.file.viewer.automaticallyCollapsed = true;
 
         vm.$nextTick(() => {
           expect(vm.isCollapsed).toBe(true);

@@ -9488,7 +9488,7 @@ msgstr ""
 msgid "Enable"
 msgstr ""
 
-msgid "Enable %{gitpod_link} integration to launch a development environment in your browser directly from GitLab."
+msgid "Enable %{link_start}Gitpod%{link_end} integration to launch a development environment in your browser directly from GitLab."
 msgstr ""
 
 msgid "Enable Auto DevOps"
@@ -17837,9 +17837,6 @@ msgstr ""
 msgid "Open Selection"
 msgstr ""
 
-msgid "Open Web IDE"
-msgstr ""
-
 msgid "Open comment type dropdown"
 msgstr ""
 
@@ -25265,9 +25262,6 @@ msgid "The URL defined on the primary node that secondary nodes should use to co
 msgstr ""
 
 msgid "The URL to use for connecting to Elasticsearch. Use a comma-separated list to support clustering (e.g., \"http://localhost:9200, http://localhost:9201\")."
-msgstr ""
-
-msgid "The Web IDE offers advanced syntax highlighting capabilities and more."
 msgstr ""
 
 msgid "The X509 Certificate to use when mutual TLS is required to communicate with the external authorization service. If left blank, the server certificate is still validated when accessing over HTTPS."

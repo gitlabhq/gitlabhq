@@ -58,7 +58,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const codeNavEl = document.getElementById('js-code-navigation');
 
-  if (gon.features?.codeNavigation && codeNavEl) {
+  if (codeNavEl) {
     const { codeNavigationPath, blobPath, definitionPathPrefix } = codeNavEl.dataset;
 
     // eslint-disable-next-line promise/catch-or-return

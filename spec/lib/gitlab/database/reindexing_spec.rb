@@ -4,9 +4,17 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Database::Reindexing do
   describe '.perform' do
-    context 'multiple indexes' do
-      let(:indexes) { [double, double] }
-      let(:reindexers) { [double, double] }
+    before do
+      allow(Gitlab::Database::Reindexing::ReindexAction).to receive(:keep_track_of).and_yield
+    end
+
+    shared_examples_for 'reindexing' do
+      before do
+        indexes.zip(reindexers).each do |index, reindexer|
+          allow(Gitlab::Database::Reindexing::ConcurrentReindex).to receive(:new).with(index).and_return(reindexer)
+          allow(reindexer).to receive(:perform)
+        end
+      end
 
       it 'performs concurrent reindexing for each index' do
         indexes.zip(reindexers).each do |index, reindexer|
@@ -14,20 +22,34 @@ RSpec.describe Gitlab::Database::Reindexing do
           expect(reindexer).to receive(:perform)
         end
 
-        described_class.perform(indexes)
+        subject
+      end
+
+      it 'keeps track of actions and creates ReindexAction records' do
+        indexes.each do |index|
+          expect(Gitlab::Database::Reindexing::ReindexAction).to receive(:keep_track_of).with(index).and_yield
+        end
+
+        subject
       end
     end
 
+    context 'with multiple indexes' do
+      subject { described_class.perform(indexes) }
+
+      let(:indexes) { [instance_double('Gitlab::Database::PostgresIndex'), instance_double('Gitlab::Database::PostgresIndex')] }
+      let(:reindexers) { [instance_double('Gitlab::Database::Reindexing::ConcurrentReindex'), instance_double('Gitlab::Database::Reindexing::ConcurrentReindex')] }
+
+      it_behaves_like 'reindexing'
+    end
+
     context 'single index' do
-      let(:index) { double }
-      let(:reindexer) { double }
+      subject { described_class.perform(indexes.first) }
 
-      it 'performs concurrent reindexing for single index' do
-        expect(Gitlab::Database::Reindexing::ConcurrentReindex).to receive(:new).with(index).and_return(reindexer)
-        expect(reindexer).to receive(:perform)
+      let(:indexes) { [instance_double('Gitlab::Database::PostgresIndex')] }
+      let(:reindexers) { [instance_double('Gitlab::Database::Reindexing::ConcurrentReindex')] }
 
-        described_class.perform(index)
-      end
+      it_behaves_like 'reindexing'
     end
   end
 end

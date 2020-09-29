@@ -16,10 +16,6 @@ RSpec.describe Gitlab::CodeNavigationPath do
 
     subject { described_class.new(project, commit_sha).full_json_path_for(path) }
 
-    before do
-      stub_feature_flags(code_navigation: project)
-    end
-
     context 'when a pipeline exist for a sha' do
       it 'returns path to a file in the artifact' do
         expect(subject).to eq(lsif_path)
@@ -39,16 +35,6 @@ RSpec.describe Gitlab::CodeNavigationPath do
 
       it 'returns path to a file in the artifact' do
         expect(subject).to eq(lsif_path)
-      end
-    end
-
-    context 'when code_navigation feature is disabled' do
-      before do
-        stub_feature_flags(code_navigation: false)
-      end
-
-      it 'returns nil' do
-        expect(subject).to be_nil
       end
     end
   end

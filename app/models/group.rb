@@ -15,6 +15,7 @@ class Group < Namespace
   include WithUploads
   include Gitlab::Utils::StrongMemoize
   include GroupAPICompatibility
+  include EachBatch
 
   ACCESS_REQUEST_APPROVERS_TO_BE_NOTIFIED_LIMIT = 10
 
@@ -138,6 +139,15 @@ class Group < Namespace
       else
         super
       end
+    end
+
+    def without_integration(integration)
+      services = Service
+        .select('1')
+        .where('services.group_id = namespaces.id')
+        .where(type: integration.type)
+
+      where('NOT EXISTS (?)', services)
     end
 
     private

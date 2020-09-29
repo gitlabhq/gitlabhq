@@ -59599,6 +59599,18 @@
               "description": "Detection timestamp in ascending order",
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "report_type_desc",
+              "description": "Report Type in descending order",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "report_type_asc",
+              "description": "Report Type in ascending order",
+              "isDeprecated": false,
+              "deprecationReason": null
             }
           ],
           "possibleTypes": null

@@ -758,10 +758,6 @@ module ProjectsHelper
       !project.repository.gitlab_ci_yml
   end
 
-  def native_code_navigation_enabled?(project)
-    Feature.enabled?(:code_navigation, project, default_enabled: true)
-  end
-
   def show_visibility_confirm_modal?(project)
     project.unlink_forks_upon_visibility_decrease_enabled? && project.visibility_level > Gitlab::VisibilityLevel::PRIVATE && project.forks_count > 0
   end

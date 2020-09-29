@@ -226,7 +226,7 @@ RSpec.describe 'Projects > Show > User sees setup shortcut buttons' do
             expect(project.repository.gitlab_ci_yml).to be_nil
 
             page.within('.project-buttons') do
-              expect(page).to have_link('Set up CI/CD', href: presenter.add_ci_yml_ide_path)
+              expect(page).to have_link('Set up CI/CD', href: presenter.add_ci_yml_path)
             end
           end
 

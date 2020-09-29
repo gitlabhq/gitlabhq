@@ -2,17 +2,16 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::JobWaiter do
+RSpec.describe Gitlab::JobWaiter, :redis do
   describe '.notify' do
     it 'pushes the jid to the named queue' do
-      key = 'gitlab:job_waiter:foo'
-      jid = 1
+      key = described_class.new.key
 
-      redis = double('redis')
-      expect(Gitlab::Redis::SharedState).to receive(:with).and_yield(redis)
-      expect(redis).to receive(:lpush).with(key, jid)
+      described_class.notify(key, 123)
 
-      described_class.notify(key, jid)
+      Gitlab::Redis::SharedState.with do |redis|
+        expect(redis.ttl(key)).to be > 0
+      end
     end
   end
 

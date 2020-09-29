@@ -14429,6 +14429,26 @@ CREATE VIEW postgres_indexes AS
      JOIN pg_indexes ON ((pg_class.relname = pg_indexes.indexname)))
   WHERE (pg_namespace.nspname <> 'pg_catalog'::name);
 
+CREATE TABLE postgres_reindex_actions (
+    id bigint NOT NULL,
+    action_start timestamp with time zone NOT NULL,
+    action_end timestamp with time zone,
+    ondisk_size_bytes_start bigint NOT NULL,
+    ondisk_size_bytes_end bigint,
+    state smallint DEFAULT 0 NOT NULL,
+    index_identifier text NOT NULL,
+    CONSTRAINT check_f12527622c CHECK ((char_length(index_identifier) <= 255))
+);
+
+CREATE SEQUENCE postgres_reindex_actions_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE postgres_reindex_actions_id_seq OWNED BY postgres_reindex_actions.id;
+
 CREATE TABLE programming_languages (
     id integer NOT NULL,
     name character varying NOT NULL,
@@ -17542,6 +17562,8 @@ ALTER TABLE ONLY plans ALTER COLUMN id SET DEFAULT nextval('plans_id_seq'::regcl
 
 ALTER TABLE ONLY pool_repositories ALTER COLUMN id SET DEFAULT nextval('pool_repositories_id_seq'::regclass);
 
+ALTER TABLE ONLY postgres_reindex_actions ALTER COLUMN id SET DEFAULT nextval('postgres_reindex_actions_id_seq'::regclass);
+
 ALTER TABLE ONLY product_analytics_events_experimental ALTER COLUMN id SET DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass);
 
 ALTER TABLE ONLY programming_languages ALTER COLUMN id SET DEFAULT nextval('programming_languages_id_seq'::regclass);
@@ -18756,6 +18778,9 @@ ALTER TABLE ONLY plans
 
 ALTER TABLE ONLY pool_repositories
     ADD CONSTRAINT pool_repositories_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY postgres_reindex_actions
+    ADD CONSTRAINT postgres_reindex_actions_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY programming_languages
     ADD CONSTRAINT programming_languages_pkey PRIMARY KEY (id);
@@ -20600,7 +20625,7 @@ CREATE UNIQUE INDEX index_namespaces_on_runners_token_encrypted ON namespaces US
 
 CREATE INDEX index_namespaces_on_shared_and_extra_runners_minutes_limit ON namespaces USING btree (shared_runners_minutes_limit, extra_shared_runners_minutes_limit);
 
-CREATE INDEX index_namespaces_on_type_partial ON namespaces USING btree (type) WHERE (type IS NOT NULL);
+CREATE INDEX index_namespaces_on_type_and_id_partial ON namespaces USING btree (type, id) WHERE (type IS NOT NULL);
 
 CREATE INDEX index_non_requested_project_members_on_source_id_and_type ON members USING btree (source_id, source_type) WHERE ((requested_at IS NULL) AND ((type)::text = 'ProjectMember'::text));
 
@@ -20758,6 +20783,8 @@ CREATE INDEX index_pages_domains_on_wildcard ON pages_domains USING btree (wildc
 
 CREATE UNIQUE INDEX index_partial_am_alerts_on_project_id_and_fingerprint ON alert_management_alerts USING btree (project_id, fingerprint) WHERE (status <> 2);
 
+CREATE INDEX index_partial_ci_builds_on_user_id_name_parser_features ON ci_builds USING btree (user_id, name) WHERE (((type)::text = 'Ci::Build'::text) AND ((name)::text = ANY (ARRAY[('container_scanning'::character varying)::text, ('dast'::character varying)::text, ('dependency_scanning'::character varying)::text, ('license_management'::character varying)::text, ('license_scanning'::character varying)::text, ('sast'::character varying)::text, ('coverage_fuzzing'::character varying)::text, ('secret_detection'::character varying)::text])));
+
 CREATE UNIQUE INDEX index_partitioned_foreign_keys_unique_index ON partitioned_foreign_keys USING btree (to_table, from_table, from_column);
 
 CREATE INDEX index_pat_on_user_id_and_expires_at ON personal_access_tokens USING btree (user_id, expires_at);
@@ -20781,6 +20808,8 @@ CREATE UNIQUE INDEX index_pool_repositories_on_disk_path ON pool_repositories US
 CREATE INDEX index_pool_repositories_on_shard_id ON pool_repositories USING btree (shard_id);
 
 CREATE UNIQUE INDEX index_pool_repositories_on_source_project_id_and_shard_id ON pool_repositories USING btree (source_project_id, shard_id);
+
+CREATE INDEX index_postgres_reindex_actions_on_index_identifier ON postgres_reindex_actions USING btree (index_identifier);
 
 CREATE UNIQUE INDEX index_programming_languages_on_name ON programming_languages USING btree (name);
 

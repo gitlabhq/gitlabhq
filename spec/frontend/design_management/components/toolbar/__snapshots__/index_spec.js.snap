@@ -19,16 +19,16 @@ exports[`Design management toolbar component renders design and updated data 1`]
     </a>
      
     <div
-      class="overflow-hidden d-flex align-items-center"
+      class="gl-overflow-hidden gl-display-flex gl-align-items-center"
     >
       <h2
-        class="m-0 str-truncated-100 gl-font-base"
+        class="gl-m-0 str-truncated-100 gl-font-base"
       >
         test.jpg
       </h2>
        
       <small
-        class="text-secondary"
+        class="gl-text-gray-500"
       >
         Updated 1 hour ago by Test Name
       </small>
@@ -36,7 +36,7 @@ exports[`Design management toolbar component renders design and updated data 1`]
   </div>
    
   <design-navigation-stub
-    class="ml-auto flex-shrink-0"
+    class="gl-ml-auto gl-flex-shrink-0"
     id="1"
   />
    

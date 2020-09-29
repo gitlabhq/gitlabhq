@@ -44,7 +44,7 @@ export default {
     return {
       isLoadingCollapsedDiff: false,
       forkMessageVisible: false,
-      isCollapsed: this.file.viewer.collapsed || false,
+      isCollapsed: this.file.viewer.automaticallyCollapsed || false,
     };
   },
   computed: {
@@ -96,16 +96,16 @@ export default {
     },
     'file.file_hash': {
       handler: function watchFileHash() {
-        if (this.viewDiffsFileByFile && this.file.viewer.collapsed) {
+        if (this.viewDiffsFileByFile && this.file.viewer.automaticallyCollapsed) {
           this.isCollapsed = false;
           this.handleLoadCollapsedDiff();
         } else {
-          this.isCollapsed = this.file.viewer.collapsed || false;
+          this.isCollapsed = this.file.viewer.automaticallyCollapsed || false;
         }
       },
       immediate: true,
     },
-    'file.viewer.collapsed': function setIsCollapsed(newVal) {
+    'file.viewer.automaticallyCollapsed': function setIsCollapsed(newVal) {
       if (!this.viewDiffsFileByFile) {
         this.isCollapsed = newVal;
       }

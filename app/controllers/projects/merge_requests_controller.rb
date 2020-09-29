@@ -29,7 +29,6 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   before_action only: [:show] do
     push_frontend_feature_flag(:deploy_from_footer, @project, default_enabled: true)
     push_frontend_feature_flag(:suggest_pipeline) if experiment_enabled?(:suggest_pipeline)
-    push_frontend_feature_flag(:code_navigation, @project, default_enabled: true)
     push_frontend_feature_flag(:widget_visibility_polling, @project, default_enabled: true)
     push_frontend_feature_flag(:merge_ref_head_comments, @project, default_enabled: true)
     push_frontend_feature_flag(:mr_commit_neighbor_nav, @project, default_enabled: true)

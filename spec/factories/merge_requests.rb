@@ -290,9 +290,3 @@ FactoryBot.define do
     factory :merge_request_without_merge_request_diff, class: 'MergeRequestWithoutMergeRequestDiff'
   end
 end
-
-class MergeRequestWithoutMergeRequestDiff < ::MergeRequest
-  self.inheritance_column = :_type_disabled
-
-  def ensure_merge_request_diff; end
-end

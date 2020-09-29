@@ -20475,6 +20475,16 @@ enum VulnerabilitySort {
   detected_desc
 
   """
+  Report Type in ascending order
+  """
+  report_type_asc
+
+  """
+  Report Type in descending order
+  """
+  report_type_desc
+
+  """
   Severity in ascending order
   """
   severity_asc

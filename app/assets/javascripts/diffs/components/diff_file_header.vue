@@ -330,7 +330,7 @@ export default {
             </gl-dropdown-item>
           </template>
 
-          <template v-if="!diffFile.viewer.collapsed">
+          <template v-if="!diffFile.viewer.automaticallyCollapsed">
             <gl-dropdown-divider
               v-if="!diffFile.is_fully_expanded || diffHasDiscussions(diffFile)"
             />

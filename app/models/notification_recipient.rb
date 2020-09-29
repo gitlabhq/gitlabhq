@@ -5,7 +5,7 @@ class NotificationRecipient
 
   attr_reader :user, :type, :reason
 
-  def initialize(user, type, **opts)
+  def initialize(user, type, opts = {})
     unless NotificationSetting.levels.key?(type) || type == :subscription
       raise ArgumentError, "invalid type: #{type.inspect}"
     end
