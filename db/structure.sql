@@ -15365,7 +15365,10 @@ CREATE TABLE requirements (
     cached_markdown_version integer,
     state smallint DEFAULT 1 NOT NULL,
     title character varying(255) NOT NULL,
-    title_html text
+    title_html text,
+    description text,
+    description_html text,
+    CONSTRAINT check_785ae25b9d CHECK ((char_length(description) <= 10000))
 );
 
 CREATE SEQUENCE requirements_id_seq

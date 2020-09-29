@@ -3406,14 +3406,19 @@ input CreateRequirementInput {
   clientMutationId: String
 
   """
-  The project full path the requirement is associated with
+  Description of the requirement
+  """
+  description: String
+
+  """
+  Full project path the requirement is associated with
   """
   projectPath: ID!
 
   """
   Title of the requirement
   """
-  title: String!
+  title: String
 }
 
 """
@@ -3431,7 +3436,7 @@ type CreateRequirementPayload {
   errors: [String!]!
 
   """
-  The requirement after mutation
+  Requirement after mutation
   """
   requirement: Requirement
 }
@@ -15682,6 +15687,16 @@ type Requirement {
   createdAt: Time!
 
   """
+  Description of the requirement
+  """
+  description: String
+
+  """
+  The GitLab Flavored Markdown rendering of `description`
+  """
+  descriptionHtml: String
+
+  """
   ID of the requirement
   """
   id: ID!
@@ -15740,6 +15755,11 @@ type Requirement {
   Title of the requirement
   """
   title: String
+
+  """
+  The GitLab Flavored Markdown rendering of `title`
+  """
+  titleHtml: String
 
   """
   Timestamp of when the requirement was last updated
@@ -19005,6 +19025,11 @@ input UpdateRequirementInput {
   clientMutationId: String
 
   """
+  Description of the requirement
+  """
+  description: String
+
+  """
   The iid of the requirement to update
   """
   iid: String!
@@ -19015,7 +19040,7 @@ input UpdateRequirementInput {
   lastTestReportState: TestReportState
 
   """
-  The project full path the requirement is associated with
+  Full project path the requirement is associated with
   """
   projectPath: ID!
 
@@ -19045,7 +19070,7 @@ type UpdateRequirementPayload {
   errors: [String!]!
 
   """
-  The requirement after mutation
+  Requirement after mutation
   """
   requirement: Requirement
 }

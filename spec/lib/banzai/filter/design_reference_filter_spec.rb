@@ -74,26 +74,6 @@ RSpec.describe Banzai::Filter::DesignReferenceFilter do
 
         it_behaves_like 'a no-op filter'
       end
-
-      context 'design reference filter is not enabled' do
-        before do
-          stub_feature_flags(described_class::FEATURE_FLAG => false)
-        end
-
-        it_behaves_like 'a no-op filter'
-
-        it 'issues no queries' do
-          expect { process(input_text) }.not_to exceed_query_limit(0)
-        end
-      end
-
-      context 'the filter is enabled for the context project' do
-        before do
-          stub_feature_flags(described_class::FEATURE_FLAG => project)
-        end
-
-        it_behaves_like 'a good link reference'
-      end
     end
   end
 

@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 GitLab offers a way to view the changes made within the GitLab server for owners and administrators on a [paid plan](https://about.gitlab.com/pricing/).
 
 GitLab system administrators can also take advantage of the logs located on the
-filesystem. See [the logs system documentation](logs.md) for more details.
+file system. See [the logs system documentation](logs.md) for more details.
 
 ## Overview
 
@@ -108,7 +108,7 @@ Server-wide audit logging introduces the ability to observe user actions across
 the entire instance of your GitLab server, making it easy to understand who
 changed what and when for audit purposes.
 
-To view the server-wide admin log, visit **Admin Area > Monitoring > Audit Log**.
+To view the server-wide administrator log, visit **Admin Area > Monitoring > Audit Log**.
 
 In addition to the group and project events, the following user actions are also
 recorded:
@@ -151,7 +151,7 @@ on adding these events into GitLab:
 
 The current architecture of audit events is not prepared to receive a very high amount of records.
 It may make the user interface for your project or audit logs very busy, and the disk space consumed by the
-`audit_events` PostgreSQL table will increase considerably. It's disabled by default
+`audit_events` PostgreSQL table may increase considerably. It's disabled by default
 to prevent performance degradations on GitLab instances with very high Git write traffic.
 
 In an upcoming release, Audit Logs for Git push events will be enabled

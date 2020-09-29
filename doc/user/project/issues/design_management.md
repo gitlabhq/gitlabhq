@@ -263,10 +263,7 @@ Feature.disable(:design_management_todo_button)
 ## Referring to designs in Markdown
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/217160) in **GitLab 13.1**.
-> - It is deployed behind a feature flag, disabled by default.
-> - It is disabled on GitLab.com.
-> - It is not recommended for production use.
-> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-design-references). **(CORE ONLY)**
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/258662) in **GitLab 13.5**
 
 We support referring to designs in [Markdown](../../markdown.md), which is available
 throughout the application, including in merge request and issue descriptions, in discussions and comments, and in wiki pages.
@@ -281,25 +278,6 @@ See https://gitlab.com/your-group/your-project/-/issues/123/designs/homescreen.p
 This will be rendered as:
 
 > See [#123[homescreen.png]](https://gitlab.com/your-group/your-project/-/issues/123/designs/homescreen.png)
-
-### Enable or disable design references **(CORE ONLY)**
-
-Design reference parsing is
-deployed behind a feature flag that is **enabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
-can disable it for your instance.
-
-To disable it:
-
-```ruby
-Feature.disable(:design_management_reference_filter_gfm_pipeline)
-```
-
-To re-enable it:
-
-```ruby
-Feature.enable(:design_management_reference_filter_gfm_pipeline)
-```
 
 ## Design activity records
 
