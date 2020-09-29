@@ -104,8 +104,8 @@ of complexity, maintenance cost and enormous, negative impact on availability.
 
 1. ✓ Implement the new architecture in way that it does not depend on shared local storage
 1. ✓ Evaluate performance and edge-cases, iterate to improve the new architecture
-1. Design cloud native build logs correctness verification mechanisms
-1. Build observability mechanisms around performance and correctness
+1. ✓ Design cloud native build logs correctness verification mechanisms
+1. ✓ Build observability mechanisms around performance and correctness
 1. Rollout the feature into production environment incrementally
 
 The work needed to make the new architecture production ready and enabled on

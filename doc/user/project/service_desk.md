@@ -129,7 +129,7 @@ in the email, `%{ISSUE_PATH}` placeholder which will be replaced by
 You can customize the email display name. Emails sent from Service Desk will have
 this name in the `From` header. The default display name is `GitLab Support Bot`.
 
-### Using custom email address
+### Using custom email address **(CORE ONLY)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/2201) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.0.
 
