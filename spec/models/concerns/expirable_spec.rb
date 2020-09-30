@@ -4,9 +4,13 @@ require 'spec_helper'
 
 RSpec.describe Expirable do
   describe 'ProjectMember' do
-    let(:no_expire) { create(:project_member) }
-    let(:expire_later) { create(:project_member, expires_at: Time.current + 6.days) }
-    let(:expired) { create(:project_member, expires_at: Time.current - 6.days) }
+    let_it_be(:no_expire) { create(:project_member) }
+    let_it_be(:expire_later) { create(:project_member, expires_at: 8.days.from_now) }
+    let_it_be(:expired) { create(:project_member, expires_at: 1.day.from_now) }
+
+    before do
+      travel_to(3.days.from_now)
+    end
 
     describe '.expired' do
       it { expect(ProjectMember.expired).to match_array([expired]) }

@@ -25,6 +25,7 @@ RSpec.describe Issues::CreateService do
           assignee_ids: [assignee.id],
           label_ids: labels.map(&:id),
           milestone_id: milestone.id,
+          milestone: milestone,
           due_date: Date.tomorrow }
       end
 
@@ -101,6 +102,12 @@ RSpec.describe Issues::CreateService do
           expect(issue.labels).to be_empty
           expect(issue.milestone).to be_nil
           expect(issue.due_date).to be_nil
+        end
+
+        it 'creates confidential issues' do
+          issue = described_class.new(project, guest, confidential: true).execute
+
+          expect(issue.confidential).to be_truthy
         end
       end
 

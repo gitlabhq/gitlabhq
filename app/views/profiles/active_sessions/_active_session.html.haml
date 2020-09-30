@@ -27,6 +27,9 @@
 
   - unless is_current_session
     .float-right
-      = link_to profile_active_session_path(active_session.public_id), data: { confirm: _('Are you sure? The device will be signed out of GitLab and all remember me tokens revoked.') }, method: :delete, class: "btn btn-danger gl-ml-3" do
+      = link_to(revoke_session_path(active_session),
+                { data: { confirm: _('Are you sure? The device will be signed out of GitLab and all remember me tokens revoked.') },
+                  method: :delete,
+                  class: "btn btn-danger gl-ml-3" }) do
         %span.sr-only= _('Revoke')
         = _('Revoke')

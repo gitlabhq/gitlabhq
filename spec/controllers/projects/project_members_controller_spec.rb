@@ -129,6 +129,46 @@ RSpec.describe Projects::ProjectMembersController do
         expect(response).to redirect_to(project_project_members_path(project))
       end
     end
+
+    context 'access expiry date' do
+      before do
+        project.add_maintainer(user)
+      end
+
+      subject do
+        post :create, params: {
+                        namespace_id: project.namespace,
+                        project_id: project,
+                        user_ids: project_user.id,
+                        access_level: Gitlab::Access::GUEST,
+                        expires_at: expires_at
+                      }
+      end
+
+      context 'when set to a date in the past' do
+        let(:expires_at) { 2.days.ago }
+
+        it 'does not add user to members' do
+          subject
+
+          expect(flash[:alert]).to include('Expires at cannot be a date in the past')
+          expect(response).to redirect_to(project_project_members_path(project))
+          expect(project.users).not_to include project_user
+        end
+      end
+
+      context 'when set to a date in the future' do
+        let(:expires_at) { 5.days.from_now }
+
+        it 'adds user to members' do
+          subject
+
+          expect(response).to set_flash.to 'Users were successfully added.'
+          expect(response).to redirect_to(project_project_members_path(project))
+          expect(project.users).to include project_user
+        end
+      end
+    end
   end
 
   describe 'PUT update' do
@@ -139,16 +179,53 @@ RSpec.describe Projects::ProjectMembersController do
       sign_in(user)
     end
 
-    Gitlab::Access.options.each do |label, value|
-      it "can change the access level to #{label}" do
-        put :update, params: {
-          project_member: { access_level: value },
-          namespace_id: project.namespace,
-          project_id: project,
-          id: requester
-        }, xhr: true
+    context 'access level' do
+      Gitlab::Access.options.each do |label, value|
+        it "can change the access level to #{label}" do
+          params = {
+            project_member: { access_level: value },
+            namespace_id: project.namespace,
+            project_id: project,
+            id: requester
+          }
 
-        expect(requester.reload.human_access).to eq(label)
+          put :update, params: params, xhr: true
+
+          expect(requester.reload.human_access).to eq(label)
+        end
+      end
+    end
+
+    context 'access expiry date' do
+      subject do
+        put :update, xhr: true, params: {
+                                          project_member: {
+                                            expires_at: expires_at
+                                          },
+                                          namespace_id: project.namespace,
+                                          project_id: project,
+                                          id: requester
+                                        }
+      end
+
+      context 'when set to a date in the past' do
+        let(:expires_at) { 2.days.ago }
+
+        it 'does not update the member' do
+          subject
+
+          expect(requester.reload.expires_at).not_to eq(expires_at.to_date)
+        end
+      end
+
+      context 'when set to a date in the future' do
+        let(:expires_at) { 5.days.from_now }
+
+        it 'updates the member' do
+          subject
+
+          expect(requester.reload.expires_at).to eq(expires_at.to_date)
+        end
       end
     end
   end

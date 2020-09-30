@@ -1,0 +1,5 @@
+---
+title: Do not bypass admin mode when authenticated with deploy token
+merge_request:
+author:
+type: security
