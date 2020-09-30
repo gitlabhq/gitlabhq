@@ -81,10 +81,10 @@ RSpec.describe 'Group or Project invitations', :aggregate_failures do
     end
   end
 
-  context 'when inviting a user using their email address' do
+  context 'when inviting a user' do
     let(:new_user) { build_stubbed(:user) }
     let(:invite_email) { new_user.email }
-    let(:group_invite) { create(:group_member, :invited, group: group, invite_email: invite_email) }
+    let(:group_invite) { create(:group_member, :invited, group: group, invite_email: invite_email, created_by: owner) }
     let!(:project_invite) { create(:project_member, :invited, project: project, invite_email: invite_email) }
 
     context 'when user has not signed in yet' do
@@ -210,30 +210,43 @@ RSpec.describe 'Group or Project invitations', :aggregate_failures do
     context 'when declining the invitation' do
       let(:send_email_confirmation) { true }
 
-      context 'when signed in' do
-        before do
-          sign_in(user)
-          visit invite_path(group_invite.raw_invite_token)
+      context 'as an existing user' do
+        let(:group_invite) { create(:group_member, user: user, group: group, created_by: owner) }
+
+        context 'when signed in' do
+          before do
+            sign_in(user)
+            visit decline_invite_path(group_invite.raw_invite_token)
+          end
+
+          it 'declines application and redirects to dashboard' do
+            expect(current_path).to eq(dashboard_projects_path)
+            expect(page).to have_content('You have declined the invitation to join group Owned.')
+            expect { group_invite.reload }.to raise_error ActiveRecord::RecordNotFound
+          end
         end
 
-        it 'declines application and redirects to dashboard' do
-          page.click_link 'Decline'
+        context 'when signed out' do
+          before do
+            visit decline_invite_path(group_invite.raw_invite_token)
+          end
 
-          expect(current_path).to eq(dashboard_projects_path)
-          expect(page).to have_content('You have declined the invitation to join group Owned.')
-          expect { group_invite.reload }.to raise_error ActiveRecord::RecordNotFound
+          it 'declines application and redirects to sign in page' do
+            expect(current_path).to eq(new_user_session_path)
+            expect(page).to have_content('You have declined the invitation to join group Owned.')
+            expect { group_invite.reload }.to raise_error ActiveRecord::RecordNotFound
+          end
         end
       end
 
-      context 'when signed out' do
+      context 'as a non-existing user' do
         before do
           visit decline_invite_path(group_invite.raw_invite_token)
         end
 
-        it 'declines application and redirects to sign in page' do
-          expect(current_path).to eq(new_user_session_path)
-
-          expect(page).to have_content('You have declined the invitation to join group Owned.')
+        it 'declines application and shows a decline page' do
+          expect(current_path).to eq(decline_invite_path(group_invite.raw_invite_token))
+          expect(page).to have_content('You successfully declined the invitation')
           expect { group_invite.reload }.to raise_error ActiveRecord::RecordNotFound
         end
       end

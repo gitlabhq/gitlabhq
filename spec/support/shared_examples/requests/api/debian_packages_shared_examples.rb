@@ -128,7 +128,7 @@ RSpec.shared_examples 'Debian project repository PUT request' do |user_role, add
           expect(response.body).to eq(body)
         end
       end
-      it_behaves_like 'a gitlab tracking event', described_class.name, 'push_package'
+      it_behaves_like 'a package tracking event', described_class.name, 'push_package'
     else
       it "returns #{status}#{and_body}" do
         subject

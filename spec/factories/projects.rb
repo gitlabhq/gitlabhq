@@ -283,6 +283,12 @@ FactoryBot.define do
       end
     end
 
+    trait :with_import_url do
+      import_finished
+
+      import_url { generate(:url) }
+    end
+
     trait(:wiki_enabled)            { wiki_access_level { ProjectFeature::ENABLED } }
     trait(:wiki_disabled)           { wiki_access_level { ProjectFeature::DISABLED } }
     trait(:wiki_private)            { wiki_access_level { ProjectFeature::PRIVATE } }

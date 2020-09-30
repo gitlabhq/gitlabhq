@@ -87,7 +87,7 @@ RSpec.describe Groups::Registry::RepositoriesController do
 
         it_behaves_like 'with name parameter'
 
-        it_behaves_like 'a gitlab tracking event', described_class.name, 'list_repositories'
+        it_behaves_like 'a package tracking event', described_class.name, 'list_repositories'
 
         context 'with project in subgroup' do
           let_it_be(:test_group) { create(:group, parent: group ) }

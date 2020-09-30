@@ -44,7 +44,7 @@ module API
       end
 
       params do
-        requires :distribution, type: String, desc: 'The Debian Codename', file_path: true
+        requires :distribution, type: String, desc: 'The Debian Codename', regexp: Gitlab::Regex.debian_distribution_regex
       end
 
       namespace 'dists/*distribution', requirements: DISTRIBUTION_REQUIREMENTS do
@@ -80,8 +80,8 @@ module API
         end
 
         params do
-          requires :component, type: String, desc: 'The Debian Component'
-          requires :architecture, type: String, desc: 'The Debian Architecture'
+          requires :component, type: String, desc: 'The Debian Component', regexp: Gitlab::Regex.debian_component_regex
+          requires :architecture, type: String, desc: 'The Debian Architecture', regexp: Gitlab::Regex.debian_architecture_regex
         end
 
         namespace ':component/binary-:architecture', requirements: COMPONENT_ARCHITECTURE_REQUIREMENTS do
@@ -99,9 +99,9 @@ module API
       end
 
       params do
-        requires :component, type: String, desc: 'The Debian Component'
+        requires :component, type: String, desc: 'The Debian Component', regexp: Gitlab::Regex.debian_component_regex
         requires :letter, type: String, desc: 'The Debian Classification (first-letter or lib-first-letter)'
-        requires :source_package, type: String, desc: 'The Debian Source Package Name'
+        requires :source_package, type: String, desc: 'The Debian Source Package Name', regexp: Gitlab::Regex.debian_package_name_regex
       end
 
       namespace 'pool/:component/:letter/:source_package', requirements: COMPONENT_LETTER_SOURCE_PACKAGE_REQUIREMENTS do

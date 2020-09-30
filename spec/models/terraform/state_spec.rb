@@ -18,6 +18,23 @@ RSpec.describe Terraform::State do
     stub_terraform_state_object_storage
   end
 
+  describe 'scopes' do
+    describe '.ordered_by_name' do
+      let_it_be(:project) { create(:project) }
+      let(:names) { %w(state_d state_b state_a state_c) }
+
+      subject { described_class.ordered_by_name }
+
+      before do
+        names.each do |name|
+          create(:terraform_state, project: project, name: name)
+        end
+      end
+
+      it { expect(subject.map(&:name)).to eq(names.sort) }
+    end
+  end
+
   describe '#file' do
     context 'when a file exists' do
       it 'does not use the default file' do

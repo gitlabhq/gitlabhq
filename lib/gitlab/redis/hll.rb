@@ -7,11 +7,11 @@ module Gitlab
       KeyFormatError = Class.new(StandardError)
 
       def self.count(params)
-        self.new.count(params)
+        self.new.count(**params)
       end
 
       def self.add(params)
-        self.new.add(params)
+        self.new.add(**params)
       end
 
       def count(keys:)

@@ -192,7 +192,7 @@ RSpec.describe 'Gcp Cluster', :js, :do_not_mock_admin_mode do
     it 'user does not see offer after dismissing' do
       expect(page).to have_css('.gcp-signup-offer')
 
-      find('.gcp-signup-offer .close').click
+      find('.gcp-signup-offer .js-close').click
       wait_for_requests
 
       click_link 'Add Kubernetes cluster'

@@ -57,4 +57,9 @@ module PackagesHelper
       package_help_url: help_page_path('user/packages/index')
     }
   end
+
+  def track_package_event(event_name, scope, **args)
+    ::Packages::CreateEventService.new(nil, current_user, event_name: event_name, scope: scope).execute
+    track_event(event_name, **args)
+  end
 end

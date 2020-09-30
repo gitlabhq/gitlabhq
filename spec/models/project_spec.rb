@@ -123,6 +123,7 @@ RSpec.describe Project do
     it { is_expected.to have_many(:packages).class_name('Packages::Package') }
     it { is_expected.to have_many(:package_files).class_name('Packages::PackageFile') }
     it { is_expected.to have_many(:pipeline_artifacts) }
+    it { is_expected.to have_many(:terraform_states).class_name('Terraform::State').inverse_of(:project) }
 
     # GitLab Pages
     it { is_expected.to have_many(:pages_domains) }

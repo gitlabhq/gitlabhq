@@ -79,11 +79,3 @@ RSpec.shared_examples 'returns repositories for allowed users' do |user_type, sc
     end
   end
 end
-
-RSpec.shared_examples 'a gitlab tracking event' do |category, action|
-  it "creates a gitlab tracking event #{action}" do
-    expect(Gitlab::Tracking).to receive(:event).with(category, action, {})
-
-    subject
-  end
-end

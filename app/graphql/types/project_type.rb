@@ -294,6 +294,12 @@ module Types
               description: 'Title of the label'
           end
 
+    field :terraform_states,
+          Types::Terraform::StateType.connection_type,
+          null: true,
+          description: 'Terraform states associated with the project',
+          resolver: Resolvers::Terraform::StatesResolver
+
     def label(title:)
       BatchLoader::GraphQL.for(title).batch(key: project) do |titles, loader, args|
         LabelsFinder

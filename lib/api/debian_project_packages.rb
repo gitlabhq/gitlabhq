@@ -31,7 +31,7 @@ module API
             authorize_upload!(authorized_user_project)
             bad_request!('File is too large') if authorized_user_project.actual_limits.exceeded?(:debian_max_file_size, params[:file].size)
 
-            package_event('push_package')
+            track_package_event('push_package', :debian)
 
             created!
           rescue ObjectStorage::RemoteStoreError => e

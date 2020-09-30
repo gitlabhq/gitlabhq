@@ -994,10 +994,10 @@ into similar problems in the future (e.g. when new tables are created).
       def postgres_exists_by_name?(table, name)
         index_sql = <<~SQL
           SELECT COUNT(*)
-          FROM pg_index
-          JOIN pg_class i ON (indexrelid=i.oid)
-          JOIN pg_class t ON (indrelid=t.oid)
-          WHERE i.relname = '#{name}' AND t.relname = '#{table}'
+          FROM pg_catalog.pg_indexes
+          WHERE schemaname = #{connection.quote(current_schema)}
+            AND tablename = #{connection.quote(table)}
+            AND indexname = #{connection.quote(name)}
         SQL
 
         connection.select_value(index_sql).to_i > 0
@@ -1053,11 +1053,15 @@ into similar problems in the future (e.g. when new tables are created).
         # the table name in addition to using the constraint_name
         check_sql = <<~SQL
           SELECT COUNT(*)
-          FROM pg_constraint
-          JOIN pg_class ON pg_constraint.conrelid = pg_class.oid
-          WHERE pg_constraint.contype = 'c'
-          AND pg_constraint.conname = '#{constraint_name}'
-          AND pg_class.relname = '#{table}'
+          FROM pg_catalog.pg_constraint con
+            INNER JOIN pg_catalog.pg_class rel
+              ON rel.oid = con.conrelid
+            INNER JOIN pg_catalog.pg_namespace nsp
+              ON nsp.oid = con.connamespace
+          WHERE con.contype = 'c'
+          AND con.conname = #{connection.quote(constraint_name)}
+          AND nsp.nspname = #{connection.quote(current_schema)}
+          AND rel.relname = #{connection.quote(table)}
         SQL
 
         connection.select_value(check_sql) > 0
@@ -1284,8 +1288,9 @@ into similar problems in the future (e.g. when new tables are created).
         check_sql = <<~SQL
           SELECT c.is_nullable
           FROM information_schema.columns c
-          WHERE c.table_name = '#{table}'
-          AND c.column_name = '#{column}'
+          WHERE c.table_schema = #{connection.quote(current_schema)}
+            AND c.table_name = #{connection.quote(table)}
+            AND c.column_name = #{connection.quote(column)}
         SQL
 
         connection.select_value(check_sql) == 'YES'

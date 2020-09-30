@@ -537,6 +537,7 @@ project:
 - vulnerability_historical_statistics
 - product_analytics_events
 - pipeline_artifacts
+- terraform_states
 award_emoji:
 - awardable
 - user

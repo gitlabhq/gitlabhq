@@ -414,6 +414,140 @@ RSpec.describe Gitlab::Regex do
     it { is_expected.not_to match('%2e%2e%2f1.2.3') }
   end
 
+  describe '.debian_package_name_regex' do
+    subject { described_class.debian_package_name_regex }
+
+    it { is_expected.to match('0ad') }
+    it { is_expected.to match('g++') }
+    it { is_expected.to match('lua5.1') }
+    it { is_expected.to match('samba') }
+
+    # may not be empty string
+    it { is_expected.not_to match('') }
+    # must start with an alphanumeric character
+    it { is_expected.not_to match('-a') }
+    it { is_expected.not_to match('+a') }
+    it { is_expected.not_to match('.a') }
+    it { is_expected.not_to match('_a') }
+    # only letters, digits and characters '-+._'
+    it { is_expected.not_to match('a~') }
+    it { is_expected.not_to match('aé') }
+
+    # More strict Lintian regex
+    # at least 2 chars
+    it { is_expected.not_to match('a') }
+    # lowercase only
+    it { is_expected.not_to match('Aa') }
+    it { is_expected.not_to match('aA') }
+    # No underscore
+    it { is_expected.not_to match('a_b') }
+  end
+
+  describe '.debian_version_regex' do
+    subject { described_class.debian_version_regex }
+
+    context 'valid versions' do
+      it { is_expected.to match('1.0') }
+      it { is_expected.to match('1.0~alpha1') }
+      it { is_expected.to match('2:4.9.5+dfsg-5+deb10u1') }
+    end
+
+    context 'dpkg errors' do
+      # version string is empty
+      it { is_expected.not_to match('') }
+      # version string has embedded spaces
+      it { is_expected.not_to match('1 0') }
+      # epoch in version is empty
+      it { is_expected.not_to match(':1.0') }
+      # epoch in version is not number
+      it { is_expected.not_to match('a:1.0') }
+      # epoch in version is negative
+      it { is_expected.not_to match('-1:1.0') }
+      # epoch in version is too big
+      it { is_expected.not_to match('9999999999:1.0') }
+      # nothing after colon in version number
+      it { is_expected.not_to match('2:') }
+      # revision number is empty
+      # Note: we are less strict here
+      # it { is_expected.not_to match('1.0-') }
+      # version number is empty
+      it { is_expected.not_to match('-1') }
+      it { is_expected.not_to match('2:-1') }
+    end
+
+    context 'dpkg warnings' do
+      # version number does not start with digit
+      it { is_expected.not_to match('a') }
+      it { is_expected.not_to match('a1.0') }
+      # invalid character in version number
+      it { is_expected.not_to match('1_0') }
+      # invalid character in revision number
+      it { is_expected.not_to match('1.0-1_0') }
+    end
+
+    context 'dpkg accepts' do
+      # dpkg accepts leading or trailing space
+      it { is_expected.not_to match(' 1.0') }
+      it { is_expected.not_to match('1.0 ') }
+      # dpkg accepts multiple colons
+      it { is_expected.not_to match('1:2:3') }
+    end
+  end
+
+  describe '.debian_architecture_regex' do
+    subject { described_class.debian_architecture_regex }
+
+    it { is_expected.to match('amd64') }
+    it { is_expected.to match('kfreebsd-i386') }
+
+    # may not be empty string
+    it { is_expected.not_to match('') }
+    # must start with an alphanumeric
+    it { is_expected.not_to match('-a') }
+    it { is_expected.not_to match('+a') }
+    it { is_expected.not_to match('.a') }
+    it { is_expected.not_to match('_a') }
+    # only letters, digits and characters '-'
+    it { is_expected.not_to match('a+b') }
+    it { is_expected.not_to match('a.b') }
+    it { is_expected.not_to match('a_b') }
+    it { is_expected.not_to match('a~') }
+    it { is_expected.not_to match('aé') }
+
+    # More strict
+    # Enforce lowercase
+    it { is_expected.not_to match('AMD64') }
+    it { is_expected.not_to match('Amd64') }
+    it { is_expected.not_to match('aMD64') }
+  end
+
+  describe '.debian_distribution_regex' do
+    subject { described_class.debian_distribution_regex }
+
+    it { is_expected.to match('buster') }
+    it { is_expected.to match('buster-updates') }
+    it { is_expected.to match('Debian10.5') }
+
+    # Do not allow slash, even if this exists in the wild
+    it { is_expected.not_to match('jessie/updates') }
+
+    # Do not allow Unicode
+    it { is_expected.not_to match('hé') }
+  end
+
+  describe '.debian_component_regex' do
+    subject { described_class.debian_component_regex }
+
+    it { is_expected.to match('main') }
+    it { is_expected.to match('non-free') }
+
+    # Do not allow slash
+    it { is_expected.not_to match('non/free') }
+
+    # Do not allow Unicode
+    it { is_expected.not_to match('hé') }
+  end
+
   describe '.semver_regex' do
     subject { described_class.semver_regex }
 

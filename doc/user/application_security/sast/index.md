@@ -147,6 +147,7 @@ always take the latest SAST artifact available.
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3659) in GitLab Ultimate 13.3.
 > - [Improved](https://gitlab.com/gitlab-org/gitlab/-/issues/232862) in GitLab Ultimate 13.4.
+> - [Improved](https://gitlab.com/groups/gitlab-org/-/epics/3635) in GitLab Ultimate 13.5.
 
 You can enable and configure SAST with a basic configuration using the **SAST Configuration**
 page:
@@ -154,9 +155,11 @@ page:
 1. From the project's home page, go to **Security & Compliance** > **Configuration** in the
    left sidebar.
 1. If the project does not have a `gitlab-ci.yml` file, click **Enable** in the Static Application Security Testing (SAST) row, otherwise click **Configure**.
-1. Enter the custom SAST values, then click **Create Merge Request**.
+1. Enter the custom SAST values.
 
     Custom values are stored in the `.gitlab-ci.yml` file. For variables not in the SAST Configuration page, their values are left unchanged. Default values are inherited from the GitLab SAST template.
+1. Optionally, expand the **SAST analyzers** section, select individual [SAST analyzers](./analyzers.md) and enter custom analyzer values.
+1. Click **Create Merge Request**.
 1. Review and merge the merge request.
 
 ### Customizing the SAST settings

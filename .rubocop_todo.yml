@@ -168,7 +168,6 @@ Performance/Detect:
   Exclude:
     - 'ee/spec/controllers/projects/dependencies_controller_spec.rb'
     - 'ee/spec/controllers/projects/feature_flags_controller_spec.rb'
-    - 'ee/spec/requests/api/unleash_spec.rb'
     - 'spec/lib/gitlab/git/tree_spec.rb'
     - 'spec/lib/gitlab/import_export/project/tree_restorer_spec.rb'
     - 'spec/models/event_spec.rb'

@@ -15,6 +15,7 @@ module Terraform
     has_one :latest_version, -> { ordered_by_version_desc }, class_name: 'Terraform::StateVersion', foreign_key: :terraform_state_id
 
     scope :versioning_not_enabled, -> { where(versioning_enabled: false) }
+    scope :ordered_by_name, -> { order(:name) }
 
     validates :project_id, presence: true
     validates :uuid, presence: true, uniqueness: true, length: { is: UUID_LENGTH },

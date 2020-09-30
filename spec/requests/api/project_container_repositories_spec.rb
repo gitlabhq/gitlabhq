@@ -45,7 +45,7 @@ RSpec.describe API::ProjectContainerRepositories do
 
     it_behaves_like 'rejected container repository access', :guest, :forbidden
     it_behaves_like 'rejected container repository access', :anonymous, :not_found
-    it_behaves_like 'a gitlab tracking event', described_class.name, 'list_repositories'
+    it_behaves_like 'a package tracking event', described_class.name, 'list_repositories'
 
     it_behaves_like 'returns repositories for allowed users', :reporter, 'project' do
       let(:object) { project }
@@ -57,7 +57,7 @@ RSpec.describe API::ProjectContainerRepositories do
 
     it_behaves_like 'rejected container repository access', :developer, :forbidden
     it_behaves_like 'rejected container repository access', :anonymous, :not_found
-    it_behaves_like 'a gitlab tracking event', described_class.name, 'delete_repository'
+    it_behaves_like 'a package tracking event', described_class.name, 'delete_repository'
 
     context 'for maintainer' do
       let(:api_user) { maintainer }
@@ -86,7 +86,7 @@ RSpec.describe API::ProjectContainerRepositories do
         stub_container_registry_tags(repository: root_repository.path, tags: %w(rootA latest))
       end
 
-      it_behaves_like 'a gitlab tracking event', described_class.name, 'list_tags'
+      it_behaves_like 'a package tracking event', described_class.name, 'list_tags'
 
       it 'returns a list of tags' do
         subject
@@ -114,7 +114,7 @@ RSpec.describe API::ProjectContainerRepositories do
 
       it_behaves_like 'rejected container repository access', :developer, :forbidden
       it_behaves_like 'rejected container repository access', :anonymous, :not_found
-      it_behaves_like 'a gitlab tracking event', described_class.name, 'delete_tag_bulk'
+      it_behaves_like 'a package tracking event', described_class.name, 'delete_tag_bulk'
     end
 
     context 'for maintainer' do

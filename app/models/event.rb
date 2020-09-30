@@ -242,6 +242,8 @@ class Event < ApplicationRecord
     target if note?
   end
 
+  # rubocop: disable Metrics/CyclomaticComplexity
+  # rubocop: disable Metrics/PerceivedComplexity
   def action_name
     if push_action?
       push_action_name
@@ -267,10 +269,14 @@ class Event < ApplicationRecord
       'updated'
     elsif created_project_action?
       created_project_action_name
+    elsif approved_action?
+      'approved'
     else
       "opened"
     end
   end
+  # rubocop: enable Metrics/CyclomaticComplexity
+  # rubocop: enable Metrics/PerceivedComplexity
 
   def target_iid
     target.respond_to?(:iid) ? target.iid : target_id

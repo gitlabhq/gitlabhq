@@ -61,6 +61,39 @@ module Gitlab
             )\z}xi.freeze
       end
 
+      def debian_package_name_regex
+        # See official parser
+        # https://git.dpkg.org/cgit/dpkg/dpkg.git/tree/lib/dpkg/parsehelp.c?id=9e0c88ec09475f4d1addde9cdba1ad7849720356#n122
+        # @debian_package_name_regex ||= %r{\A[a-z0-9][-+\._a-z0-9]*\z}i.freeze
+        # But we prefer a more strict version from Lintian
+        # https://salsa.debian.org/lintian/lintian/-/blob/5080c0068ffc4a9ddee92022a91d0c2ff53e56d1/lib/Lintian/Util.pm#L116
+        @debian_package_name_regex ||= %r{\A[a-z0-9][-+\.a-z0-9]+\z}.freeze
+      end
+
+      def debian_version_regex
+        # See official parser: https://git.dpkg.org/cgit/dpkg/dpkg.git/tree/lib/dpkg/parsehelp.c?id=9e0c88ec09475f4d1addde9cdba1ad7849720356#n205
+        @debian_version_regex ||= %r{
+          \A(?:
+            (?:([0-9]{1,9}):)?    (?# epoch)
+            ([0-9][0-9a-z\.+~-]*)  (?# version)
+            (?:(-[0-0a-z\.+~]+))?  (?# revision)
+            )\z}xi.freeze
+      end
+
+      def debian_architecture_regex
+        # See official parser: https://git.dpkg.org/cgit/dpkg/dpkg.git/tree/lib/dpkg/arch.c?id=9e0c88ec09475f4d1addde9cdba1ad7849720356#n43
+        # But we limit to lower case
+        @debian_architecture_regex ||= %r{\A[a-z0-9][-a-z0-9]*\z}.freeze
+      end
+
+      def debian_distribution_regex
+        @debian_distribution_regex ||= %r{\A[a-z0-9][a-z0-9\.-]*\z}i.freeze
+      end
+
+      def debian_component_regex
+        @debian_component_regex ||= %r{#{debian_distribution_regex}}.freeze
+      end
+
       def unbounded_semver_regex
         # See the official regex: https://semver.org/#is-there-a-suggested-regular-expression-regex-to-check-a-semver-string
 

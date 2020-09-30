@@ -107,7 +107,7 @@ module API
       when 'sha1'
         package_file.file_sha1
       else
-        package_event('pull_package') if jar_file?(format)
+        track_package_event('pull_package', :maven) if jar_file?(format)
         present_carrierwave_file_with_head_support!(package_file.file)
       end
     end
@@ -145,7 +145,7 @@ module API
         when 'sha1'
           package_file.file_sha1
         else
-          package_event('pull_package') if jar_file?(format)
+          track_package_event('pull_package', :maven) if jar_file?(format)
 
           present_carrierwave_file_with_head_support!(package_file.file)
         end
@@ -181,7 +181,7 @@ module API
         when 'sha1'
           package_file.file_sha1
         else
-          package_event('pull_package') if jar_file?(format)
+          track_package_event('pull_package', :maven) if jar_file?(format)
 
           present_carrierwave_file_with_head_support!(package_file.file)
         end
@@ -233,7 +233,7 @@ module API
         when 'md5'
           nil
         else
-          package_event('push_package') if jar_file?(format)
+          track_package_event('push_package', :maven) if jar_file?(format)
 
           file_params = {
             file:      params[:file],

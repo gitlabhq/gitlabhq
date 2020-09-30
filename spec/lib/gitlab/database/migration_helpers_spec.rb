@@ -1458,13 +1458,30 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
         )
       end
 
-      after do
-        'DROP INDEX IF EXISTS test_index;'
-      end
-
       it 'returns true if an index exists' do
         expect(model.index_exists_by_name?(:projects, 'test_index'))
           .to be_truthy
+      end
+    end
+
+    context 'when an index exists for a table with the same name in another schema' do
+      before do
+        ActiveRecord::Base.connection.execute(
+          'CREATE SCHEMA new_test_schema'
+        )
+
+        ActiveRecord::Base.connection.execute(
+          'CREATE TABLE new_test_schema.projects (id integer, name character varying)'
+        )
+
+        ActiveRecord::Base.connection.execute(
+          'CREATE INDEX test_index_on_name ON new_test_schema.projects (LOWER(name));'
+        )
+      end
+
+      it 'returns false if the index does not exist in the current schema' do
+        expect(model.index_exists_by_name?(:projects, 'test_index_on_name'))
+          .to be_falsy
       end
     end
   end
@@ -1921,11 +1938,17 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
       ActiveRecord::Base.connection.execute(
         'ALTER TABLE projects ADD CONSTRAINT check_1 CHECK (char_length(path) <= 5) NOT VALID'
       )
-    end
 
-    after do
       ActiveRecord::Base.connection.execute(
-        'ALTER TABLE projects DROP CONSTRAINT IF EXISTS check_1'
+        'CREATE SCHEMA new_test_schema'
+      )
+
+      ActiveRecord::Base.connection.execute(
+        'CREATE TABLE new_test_schema.projects (id integer, name character varying)'
+      )
+
+      ActiveRecord::Base.connection.execute(
+        'ALTER TABLE new_test_schema.projects ADD CONSTRAINT check_2 CHECK (char_length(name) <= 5)'
       )
     end
 
@@ -1941,6 +1964,11 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
 
     it 'returns false if a constraint with the same name exists in another table' do
       expect(model.check_constraint_exists?(:users, 'check_1'))
+        .to be_falsy
+    end
+
+    it 'returns false if a constraint with the same name exists for the same table in another schema' do
+      expect(model.check_constraint_exists?(:projects, 'check_2'))
         .to be_falsy
     end
   end

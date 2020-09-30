@@ -136,10 +136,15 @@ RSpec.describe Groups::GroupLinksController do
     let(:expiry_date) { 1.month.from_now.to_date }
 
     subject do
-      post(:update, params: { group_id: shared_group,
-                               id: link.id,
-                               group_link: { group_access: Gitlab::Access::GUEST,
-                                             expires_at: expiry_date } })
+      post(
+        :update,
+        params: {
+          group_id: shared_group,
+          id: link.id,
+          group_link: { group_access: Gitlab::Access::GUEST, expires_at: expiry_date }
+        },
+        format: :json
+      )
     end
 
     context 'when user has admin access to the shared group' do
@@ -158,6 +163,26 @@ RSpec.describe Groups::GroupLinksController do
 
         expect(link.group_access).to eq(Gitlab::Access::GUEST)
         expect(link.expires_at).to eq(expiry_date)
+      end
+
+      context 'when `expires_at` is set' do
+        it 'returns correct json response' do
+          travel_to Time.now.utc.beginning_of_day
+
+          subject
+
+          expect(json_response).to eq({ "expires_in" => "about 1 month", "expires_soon" => false })
+        end
+      end
+
+      context 'when `expires_at` is not set' do
+        let(:expiry_date) { nil }
+
+        it 'returns empty json response' do
+          subject
+
+          expect(json_response).to be_empty
+        end
       end
 
       it 'updates project permissions' do

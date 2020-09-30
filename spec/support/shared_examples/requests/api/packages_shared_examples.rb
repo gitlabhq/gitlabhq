@@ -126,3 +126,11 @@ RSpec.shared_examples 'job token for package uploads' do
     end
   end
 end
+
+RSpec.shared_examples 'a package tracking event' do |category, action|
+  it "creates a gitlab tracking event #{action}" do
+    expect(Gitlab::Tracking).to receive(:event).with(category, action, {})
+
+    expect { subject }.to change { Packages::Event.count }.by(1)
+  end
+end

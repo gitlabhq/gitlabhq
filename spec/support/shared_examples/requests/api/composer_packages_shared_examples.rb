@@ -75,7 +75,7 @@ RSpec.shared_examples 'Composer package creation' do |user_type, status, add_mem
 
       expect(response).to have_gitlab_http_status(status)
     end
-    it_behaves_like 'a gitlab tracking event', described_class.name, 'push_package'
+    it_behaves_like 'a package tracking event', described_class.name, 'push_package'
   end
 end
 

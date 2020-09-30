@@ -2473,6 +2473,17 @@ Completion status of tasks.
 | `completedCount` | Int! | Number of completed tasks |
 | `count` | Int! | Number of total tasks |
 
+### TerraformState
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `createdAt` | Time! | Timestamp the Terraform state was created |
+| `id` | ID! | ID of the Terraform state |
+| `lockedAt` | Time | Timestamp the Terraform state was locked |
+| `lockedByUser` | User | The user currently holding a lock on the Terraform state |
+| `name` | String! | Name of the Terraform state |
+| `updatedAt` | Time! | Timestamp the Terraform state was updated |
+
 ### TerraformStateRegistry
 
 Represents the Geo sync and verification state of a terraform state.

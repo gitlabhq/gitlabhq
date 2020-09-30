@@ -48,7 +48,8 @@ module API
         require_gitlab_workhorse!
       end
 
-      def package_event(event_name, **args)
+      def track_package_event(event_name, scope, **args)
+        ::Packages::CreateEventService.new(nil, current_user, event_name: event_name, scope: scope).execute
         track_event(event_name, **args)
       end
     end

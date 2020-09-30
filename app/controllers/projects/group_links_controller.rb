@@ -21,8 +21,17 @@ class Projects::GroupLinksController < Projects::ApplicationController
   end
 
   def update
-    @group_link = @project.project_group_links.find(params[:id])
-    Projects::GroupLinks::UpdateService.new(@group_link).execute(group_link_params)
+    group_link = @project.project_group_links.find(params[:id])
+    Projects::GroupLinks::UpdateService.new(group_link).execute(group_link_params)
+
+    if group_link.expires?
+      render json: {
+        expires_in: helpers.distance_of_time_in_words_to_now(group_link.expires_at),
+        expires_soon: group_link.expires_soon?
+      }
+    else
+      render json: {}
+    end
   end
 
   def destroy

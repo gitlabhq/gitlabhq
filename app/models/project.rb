@@ -337,6 +337,8 @@ class Project < ApplicationRecord
   has_many :webide_pipelines, -> { webide_source }, class_name: 'Ci::Pipeline', inverse_of: :project
   has_many :reviews, inverse_of: :project
 
+  has_many :terraform_states, class_name: 'Terraform::State', inverse_of: :project
+
   # GitLab Pages
   has_many :pages_domains
   has_one  :pages_metadatum, class_name: 'ProjectPagesMetadatum', inverse_of: :project
@@ -2504,6 +2506,11 @@ class Project < ApplicationRecord
     return GroupDeployKey.none unless group
 
     GroupDeployKey.for_groups(group.self_and_ancestors_ids)
+  end
+
+  def feature_flags_client_token
+    instance = operations_feature_flags_client || create_operations_feature_flags_client!
+    instance.token
   end
 
   private

@@ -3,10 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe Projects::GroupLinksController do
-  let(:group) { create(:group, :private) }
-  let(:group2) { create(:group, :private) }
-  let(:project) { create(:project, :private, group: group2) }
-  let(:user) { create(:user) }
+  let_it_be(:group) { create(:group, :private) }
+  let_it_be(:group2) { create(:group, :private) }
+  let_it_be(:project) { create(:project, :private, group: group2) }
+  let_it_be(:user) { create(:user) }
 
   before do
     project.add_maintainer(user)
@@ -139,6 +139,49 @@ RSpec.describe Projects::GroupLinksController do
           project_project_members_path(project)
         )
         expect(flash[:alert]).to eq('error')
+      end
+    end
+  end
+
+  describe '#update' do
+    let_it_be(:link) do
+      create(
+        :project_group_link,
+        {
+          project: project,
+          group: group
+        }
+      )
+    end
+
+    let(:expiry_date) { 1.month.from_now.to_date }
+
+    before do
+      travel_to Time.now.utc.beginning_of_day
+
+      put(
+        :update,
+        params: {
+          namespace_id: project.namespace.to_param,
+          project_id: project.to_param,
+          id: link.id,
+          group_link: { group_access: Gitlab::Access::GUEST, expires_at: expiry_date }
+        },
+        format: :json
+      )
+    end
+
+    context 'when `expires_at` is set' do
+      it 'returns correct json response' do
+        expect(json_response).to eq({ "expires_in" => "about 1 month", "expires_soon" => false })
+      end
+    end
+
+    context 'when `expires_at` is not set' do
+      let(:expiry_date) { nil }
+
+      it 'returns empty json response' do
+        expect(json_response).to be_empty
       end
     end
   end

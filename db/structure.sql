@@ -14071,6 +14071,25 @@ CREATE SEQUENCE packages_dependency_links_id_seq
 
 ALTER SEQUENCE packages_dependency_links_id_seq OWNED BY packages_dependency_links.id;
 
+CREATE TABLE packages_events (
+    id bigint NOT NULL,
+    event_type smallint NOT NULL,
+    event_scope smallint NOT NULL,
+    originator_type smallint NOT NULL,
+    originator bigint,
+    created_at timestamp with time zone NOT NULL,
+    package_id bigint
+);
+
+CREATE SEQUENCE packages_events_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE packages_events_id_seq OWNED BY packages_events.id;
+
 CREATE TABLE packages_maven_metadata (
     id bigint NOT NULL,
     package_id bigint NOT NULL,
@@ -17540,6 +17559,8 @@ ALTER TABLE ONLY packages_dependencies ALTER COLUMN id SET DEFAULT nextval('pack
 
 ALTER TABLE ONLY packages_dependency_links ALTER COLUMN id SET DEFAULT nextval('packages_dependency_links_id_seq'::regclass);
 
+ALTER TABLE ONLY packages_events ALTER COLUMN id SET DEFAULT nextval('packages_events_id_seq'::regclass);
+
 ALTER TABLE ONLY packages_maven_metadata ALTER COLUMN id SET DEFAULT nextval('packages_maven_metadata_id_seq'::regclass);
 
 ALTER TABLE ONLY packages_package_files ALTER COLUMN id SET DEFAULT nextval('packages_package_files_id_seq'::regclass);
@@ -18734,6 +18755,9 @@ ALTER TABLE ONLY packages_dependencies
 
 ALTER TABLE ONLY packages_dependency_links
     ADD CONSTRAINT packages_dependency_links_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY packages_events
+    ADD CONSTRAINT packages_events_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY packages_maven_metadata
     ADD CONSTRAINT packages_maven_metadata_pkey PRIMARY KEY (id);
@@ -20726,6 +20750,8 @@ CREATE UNIQUE INDEX index_packages_conan_metadata_on_package_id_username_channel
 CREATE UNIQUE INDEX index_packages_dependencies_on_name_and_version_pattern ON packages_dependencies USING btree (name, version_pattern);
 
 CREATE INDEX index_packages_dependency_links_on_dependency_id ON packages_dependency_links USING btree (dependency_id);
+
+CREATE INDEX index_packages_events_on_package_id ON packages_events USING btree (package_id);
 
 CREATE INDEX index_packages_maven_metadata_on_package_id_and_path ON packages_maven_metadata USING btree (package_id, path);
 
@@ -23511,6 +23537,9 @@ ALTER TABLE ONLY merge_request_user_mentions
 
 ALTER TABLE ONLY ci_job_artifacts
     ADD CONSTRAINT fk_rails_c5137cb2c1 FOREIGN KEY (job_id) REFERENCES ci_builds(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY packages_events
+    ADD CONSTRAINT fk_rails_c6c20d0094 FOREIGN KEY (package_id) REFERENCES packages_packages(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY project_settings
     ADD CONSTRAINT fk_rails_c6df6e6328 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

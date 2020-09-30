@@ -76,25 +76,25 @@ Array [
   Object {
     "default": false,
     "key": "SEVEN_DAYS",
-    "label": "7 day until tags are automatically removed",
+    "label": "7 days until tags are automatically removed",
     "variable": 7,
   },
   Object {
     "default": false,
     "key": "FOURTEEN_DAYS",
-    "label": "14 day until tags are automatically removed",
+    "label": "14 days until tags are automatically removed",
     "variable": 14,
   },
   Object {
     "default": false,
     "key": "THIRTY_DAYS",
-    "label": "30 day until tags are automatically removed",
+    "label": "30 days until tags are automatically removed",
     "variable": 30,
   },
   Object {
     "default": true,
     "key": "NINETY_DAYS",
-    "label": "90 day until tags are automatically removed",
+    "label": "90 days until tags are automatically removed",
     "variable": 90,
   },
 ]

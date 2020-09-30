@@ -165,6 +165,11 @@ msgid_plural "%d days"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%d day until tags are automatically removed"
+msgid_plural "%d days until tags are automatically removed"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%d error"
 msgid_plural "%d errors"
 msgstr[0] ""
@@ -297,6 +302,11 @@ msgstr[1] ""
 
 msgid "%d tag"
 msgid_plural "%d tags"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "%d tag per image name"
+msgid_plural "%d tags per image name"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -13916,6 +13926,9 @@ msgid "Invalid yaml"
 msgstr ""
 
 msgid "Invitation"
+msgstr ""
+
+msgid "Invitation declined"
 msgstr ""
 
 msgid "Invite"
@@ -28641,6 +28654,9 @@ msgstr ""
 msgid "We want to be sure it is you, please confirm you are not a robot."
 msgstr ""
 
+msgid "We will notify %{inviter} that you declined their invitation to join GitLab. You will stop receiving reminders."
+msgstr ""
+
 msgid "We've found no vulnerabilities"
 msgstr ""
 
@@ -29252,6 +29268,9 @@ msgstr ""
 msgid "You can notify the app / group or a project by sending them an email notification"
 msgstr ""
 
+msgid "You can now close this window."
+msgstr ""
+
 msgid "You can now export your security dashboard to a CSV report."
 msgstr ""
 
@@ -29499,6 +29518,9 @@ msgid "You need to upload a Google Takeout archive."
 msgstr ""
 
 msgid "You reached %{usage_in_percent} of %{namespace_name}'s storage capacity (%{used_storage} of %{storage_limit})"
+msgstr ""
+
+msgid "You successfully declined the invitation"
 msgstr ""
 
 msgid "You tried to fork %{link_to_the_project} but it failed for the following reason:"

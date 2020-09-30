@@ -3,12 +3,15 @@
 module Projects
   module Registry
     class TagsController < ::Projects::Registry::ApplicationController
+      include PackagesHelper
+
       before_action :authorize_destroy_container_image!, only: [:destroy]
 
       LIMIT = 15
 
       def index
-        track_event(:list_tags)
+        track_package_event(:list_tags, :tag)
+
         respond_to do |format|
           format.json do
             render json: ContainerTagsSerializer
@@ -23,7 +26,7 @@ module Projects
         result = Projects::ContainerRepository::DeleteTagsService
           .new(image.project, current_user, tags: [params[:id]])
           .execute(image)
-        track_event(:delete_tag)
+        track_package_event(:delete_tag, :tag)
 
         respond_to do |format|
           format.json { head(result[:status] == :success ? :ok : bad_request) }
@@ -40,7 +43,7 @@ module Projects
         result = Projects::ContainerRepository::DeleteTagsService
           .new(image.project, current_user, tags: tag_names)
           .execute(image)
-        track_event(:delete_tag_bulk)
+        track_package_event(:delete_tag_bulk, :tag)
 
         respond_to do |format|
           format.json { head(result[:status] == :success ? :no_content : :bad_request) }

@@ -1,7 +1,0 @@
----
-name: store_mentioned_users_to_db
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/19088
-rollout_issue_url: 
-group: group::project management
-type: development
-default_enabled: true

@@ -24,18 +24,6 @@ module QA
             element :file_holder_container
           end
 
-          base.view 'app/views/shared/form_elements/_description.html.haml' do
-            element :issuable_form_description
-          end
-
-          base.view 'app/views/shared/snippets/_form.html.haml' do
-            element :snippet_description_field
-            element :description_placeholder
-            element :snippet_title_field
-            element :file_name_field
-            element :submit_button
-          end
-
           base.view 'app/assets/javascripts/snippets/components/snippet_blob_actions_edit.vue' do
             element :add_file_button
           end

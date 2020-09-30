@@ -14089,6 +14089,31 @@ type Project {
   tagList: String
 
   """
+  Terraform states associated with the project
+  """
+  terraformStates(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+  ): TerraformStateConnection
+
+  """
   Permissions for the current user on the resource
   """
   userPermissions: ProjectPermissions!
@@ -17630,6 +17655,73 @@ type TaskCompletionStatus {
   Number of total tasks
   """
   count: Int!
+}
+
+type TerraformState {
+  """
+  Timestamp the Terraform state was created
+  """
+  createdAt: Time!
+
+  """
+  ID of the Terraform state
+  """
+  id: ID!
+
+  """
+  Timestamp the Terraform state was locked
+  """
+  lockedAt: Time
+
+  """
+  The user currently holding a lock on the Terraform state
+  """
+  lockedByUser: User
+
+  """
+  Name of the Terraform state
+  """
+  name: String!
+
+  """
+  Timestamp the Terraform state was updated
+  """
+  updatedAt: Time!
+}
+
+"""
+The connection type for TerraformState.
+"""
+type TerraformStateConnection {
+  """
+  A list of edges.
+  """
+  edges: [TerraformStateEdge]
+
+  """
+  A list of nodes.
+  """
+  nodes: [TerraformState]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+}
+
+"""
+An edge in a connection.
+"""
+type TerraformStateEdge {
+  """
+  A cursor for use in pagination.
+  """
+  cursor: String!
+
+  """
+  The item at the end of the edge.
+  """
+  node: TerraformState
 }
 
 """
