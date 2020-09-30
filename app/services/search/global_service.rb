@@ -25,6 +25,7 @@ module Search
       strong_memoize(:allowed_scopes) do
         allowed_scopes = %w[issues merge_requests milestones]
         allowed_scopes << 'users' if Feature.enabled?(:users_search, default_enabled: true)
+        allowed_scopes
       end
     end
 

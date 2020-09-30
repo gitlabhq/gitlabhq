@@ -17,7 +17,6 @@ By default, container scanning in GitLab is based on [Clair](https://github.com/
 containers. [GitLab's Klar analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/klar/)
 scans the containers and serves as a wrapper for Clair.
 
-NOTE: **Note:**
 To integrate security scanners other than Clair and Klar into GitLab, see
 [Security scanner integration](../../../development/integrations/secure.md).
 
@@ -217,8 +216,7 @@ To use container scanning in an offline environment, you need:
 - GitLab Runner with the [`docker` or `kubernetes` executor](#requirements).
 - To configure a local Docker container registry with copies of the container scanning [analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/klar) images, found in the [container scanning container registry](https://gitlab.com/gitlab-org/security-products/analyzers/klar/container_registry).
 
-NOTE: **Note:**
-GitLab Runner has a [default `pull policy` of `always`](https://docs.gitlab.com/runner/executors/docker.html#using-the-always-pull-policy),
+Note that GitLab Runner has a [default `pull policy` of `always`](https://docs.gitlab.com/runner/executors/docker.html#using-the-always-pull-policy),
 meaning the runner tries to pull Docker images from the GitLab container registry even if a local
 copy is available. The GitLab Runner [`pull_policy` can be set to `if-not-present`](https://docs.gitlab.com/runner/executors/docker.html#using-the-if-not-present-pull-policy)
 in an offline environment if you prefer using only locally available Docker images. However, we

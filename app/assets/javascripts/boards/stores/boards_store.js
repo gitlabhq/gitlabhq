@@ -13,7 +13,6 @@ import {
   convertObjectPropsToCamelCase,
 } from '~/lib/utils/common_utils';
 import createDefaultClient from '~/lib/graphql';
-import { __ } from '~/locale';
 import axios from '~/lib/utils/axios_utils';
 import { mergeUrlParams } from '~/lib/utils/url_utility';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
@@ -119,7 +118,6 @@ const boardsStore = {
       .catch(() => {
         // https://gitlab.com/gitlab-org/gitlab-foss/issues/30821
       });
-    this.removeBlankState();
   },
   updateNewListDropdown(listId) {
     $(`.js-board-list-${listId}`).removeClass('is-active');
@@ -129,22 +127,14 @@ const boardsStore = {
     return !this.state.lists.filter(list => list.type !== 'backlog' && list.type !== 'closed')[0];
   },
   addBlankState() {
-    if (!this.shouldAddBlankState() || this.welcomeIsHidden() || this.disabled) return;
+    if (!this.shouldAddBlankState() || this.welcomeIsHidden()) return;
 
-    this.addList({
-      id: 'blank',
-      list_type: 'blank',
-      title: __('Welcome to your Issue Board!'),
-      position: 0,
-    });
-  },
-  removeBlankState() {
-    this.removeList('blank');
-
-    Cookies.set('issue_board_welcome_hidden', 'true', {
-      expires: 365 * 10,
-      path: '',
-    });
+    this.generateDefaultLists()
+      .then(res => res.data)
+      .then(data => Promise.all(data.map(list => this.addList(list))))
+      .catch(() => {
+        this.removeList(undefined, 'label');
+      });
   },
 
   findIssueLabel(issue, findLabel) {

@@ -11,8 +11,8 @@ type: reference, howto
 
 NOTE: **Note:**
 The whitepaper ["A Seismic Shift in Application Security"](https://about.gitlab.com/resources/whitepaper-seismic-shift-application-security/)
-explains how **4 of the top 6 attacks were application based**. Download it
-to learn how to protect your organization.
+explains how 4 of the top 6 attacks were application based. Download it to learn how to protect your
+organization.
 
 If you're using [GitLab CI/CD](../../../ci/README.md), you can analyze your source code for known
 vulnerabilities using Static Application Security Testing (SAST). GitLab checks the SAST report and
@@ -31,8 +31,10 @@ The results are sorted by the priority of the vulnerability:
 1. Unknown
 1. Everything else
 
-NOTE: **Note:**
-A pipeline consists of multiple jobs, including SAST and DAST scanning. If any job fails to finish for any reason, the security dashboard doesn't show SAST scanner output. For example, if the SAST job finishes but the DAST job fails, the security dashboard doesn't show SAST results. The analyzer outputs an [exit code](../../../development/integrations/secure.md#exit-code) on failure.
+A pipeline consists of multiple jobs, including SAST and DAST scanning. If any job fails to finish
+for any reason, the security dashboard doesn't show SAST scanner output. For example, if the SAST
+job finishes but the DAST job fails, the security dashboard doesn't show SAST results. On failure,
+the analyzer outputs an [exit code](../../../development/integrations/secure.md#exit-code).
 
 ## Use cases
 
@@ -82,10 +84,10 @@ You can also [view our language roadmap](https://about.gitlab.com/direction/secu
 | Scala ([Ant](https://ant.apache.org/), [Gradle](https://gradle.org/), [Maven](https://maven.apache.org/) and [SBT](https://www.scala-sbt.org/))  | [SpotBugs](https://spotbugs.github.io/) with the [find-sec-bugs](https://find-sec-bugs.github.io/) plugin     | 11.0 (SBT) & 11.9 (Ant, Gradle, Maven)        |
 | TypeScript                                                                                                                                       | [ESLint security plugin](https://github.com/nodesecurity/eslint-plugin-security)                              | 11.9, [merged](https://gitlab.com/gitlab-org/gitlab/-/issues/36059) with ESLint in 13.2                                                                               |
 
-NOTE: **Note:**
-The Java analyzers can also be used for variants like the
+Note that the Java analyzers can also be used for variants like the
 [Gradle wrapper](https://docs.gradle.org/current/userguide/gradle_wrapper.html),
-[Grails](https://grails.org/) and the [Maven wrapper](https://github.com/takari/maven-wrapper).
+[Grails](https://grails.org/),
+and the [Maven wrapper](https://github.com/takari/maven-wrapper).
 
 ### Making SAST analyzers available to all GitLab tiers
 
@@ -268,11 +270,10 @@ spotbugs-sast:
       sast: gl-sast-report.json
 ```
 
-NOTE: **Note:**
-The path to the vendored directory must be specified explicitly to allow
-the analyzer to recognize the compiled artifacts. This configuration can vary per
-analyzer but in the case of Java above, `MAVEN_REPO_PATH` can be used.
-See [Analyzer settings](#analyzer-settings) for the complete list of available options.
+To allow the analyzer to recognize the compiled artifacts, you must explicitly specify the path to
+the vendored directory. This configuration can vary per analyzer but in the case of Java above, you
+can use `MAVEN_REPO_PATH`. See
+[Analyzer settings](#analyzer-settings) for the complete list of available options.
 
 ### Available variables
 
@@ -478,7 +479,6 @@ To use SAST in an offline environment, you need:
 - A Docker Container Registry with locally available copies of SAST [analyzer](https://gitlab.com/gitlab-org/security-products/analyzers) images.
 - Configure certificate checking of packages (optional).
 
-NOTE: **Note:**
 GitLab Runner has a [default `pull policy` of `always`](https://docs.gitlab.com/runner/executors/docker.html#using-the-always-pull-policy),
 meaning the runner tries to pull Docker images from the GitLab container registry even if a local
 copy is available. The GitLab Runner [`pull_policy` can be set to `if-not-present`](https://docs.gitlab.com/runner/executors/docker.html#using-the-if-not-present-pull-policy)

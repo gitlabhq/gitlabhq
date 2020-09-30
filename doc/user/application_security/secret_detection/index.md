@@ -65,26 +65,27 @@ as shown in the following table:
 
 ## Configuration
 
-NOTE: **Note:**
-From GitLab 13.1, Secret Detection was split from the [SAST configuration](../sast#configuration) into its own CI/CD template. If using GitLab 13.1 or earlier, and SAST is enabled, Secret Detection is already enabled.
+> GitLab 13.1 splits Secret Detection from the [SAST configuration](../sast#configuration) into its own CI/CD template. If you're using GitLab 13.0 or earlier and SAST is enabled, then Secret Detection is already enabled.
 
 Secret Detection is performed by a [specific analyzer](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/Secret-Detection.gitlab-ci.yml)
-during the `secret-detection` job. It runs regardless of the programming
-language of your app.
+during the `secret-detection` job. It runs regardless of your app's programming language.
 
-The Secret Detection analyzer includes [Gitleaks](https://github.com/zricethezav/gitleaks) and [TruffleHog](https://github.com/dxa4481/truffleHog) checks.
+The Secret Detection analyzer includes [Gitleaks](https://github.com/zricethezav/gitleaks) and
+[TruffleHog](https://github.com/dxa4481/truffleHog) checks.
+
+Note that the Secret Detection analyzer ignores Password-in-URL vulnerabilities if the password
+begins with a dollar sign (`$`), as this likely indicates the password is an environment variable.
+For example, `https://username:$password@example.com/path/to/repo` isn't detected, while
+`https://username:password@example.com/path/to/repo` is.
 
 NOTE: **Note:**
-The Secret Detection analyzer will ignore "Password in URL" vulnerabilities if the password begins
-with a dollar sign (`$`) as this likely indicates the password being used is an environment
-variable. For example, `https://username:$password@example.com/path/to/repo` won't be
-detected, whereas `https://username:password@example.com/path/to/repo` would be detected.
-
-NOTE: **Note:**
-You don't have to configure Secret Detection manually as shown in this section if you're using [Auto Secret Detection](../../../topics/autodevops/stages.md#auto-secret-detection)
+You don't have to configure Secret Detection manually as shown in this section if you're using
+[Auto Secret Detection](../../../topics/autodevops/stages.md#auto-secret-detection)
 provided by [Auto DevOps](../../../topics/autodevops/index.md).
 
-To enable Secret Detection for GitLab 13.1 and later, you must include the `Secret-Detection.gitlab-ci.yml` template that’s provided as a part of your GitLab installation. For GitLab versions earlier than 11.9, you can copy and use the job as defined in that template.
+To enable Secret Detection for GitLab 13.1 and later, you must include the
+`Secret-Detection.gitlab-ci.yml` template that's provided as a part of your GitLab installation. For
+GitLab versions earlier than 11.9, you can copy and use the job as defined in that template.
 
 Add the following to your `.gitlab-ci.yml` file:
 

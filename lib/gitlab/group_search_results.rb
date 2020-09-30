@@ -38,3 +38,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::GroupSearchResults.prepend_if_ee('EE::Gitlab::GroupSearchResults')

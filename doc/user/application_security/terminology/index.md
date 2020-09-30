@@ -13,7 +13,6 @@ This terminology list for GitLab Secure and Defend aims to:
 - Improve the effectiveness of communication regarding GitLab's application security features.
 - Get new contributors up to speed faster.
 
-NOTE: **Note:**
 This document defines application security terms in the specific context of GitLab's Secure and
 Defend products. Terms may therefore have different meanings outside of GitLab Secure and Defend.
 

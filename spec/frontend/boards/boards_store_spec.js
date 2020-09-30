@@ -745,14 +745,6 @@ describe('boardsStore', () => {
         expect(boardsStore.shouldAddBlankState()).toBe(true);
       });
 
-      it('adds the blank state', () => {
-        boardsStore.addBlankState();
-
-        const list = boardsStore.findList('type', 'blank', 'blank');
-
-        expect(list).toBeDefined();
-      });
-
       it('removes list from state', () => {
         boardsStore.addList(listObj);
 

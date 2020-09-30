@@ -29,21 +29,12 @@ module Gitlab
 
     def objects(scope, page: nil, per_page: DEFAULT_PER_PAGE, without_count: true, preload_method: nil)
       should_preload = preload_method.present?
-      collection = case scope
-                   when 'projects'
-                     projects
-                   when 'issues'
-                     issues
-                   when 'merge_requests'
-                     merge_requests
-                   when 'milestones'
-                     milestones
-                   when 'users'
-                     users
-                   else
-                     should_preload = false
-                     Kaminari.paginate_array([])
-                   end
+      collection = collection_for(scope)
+
+      if collection.nil?
+        should_preload = false
+        collection = Kaminari.paginate_array([])
+      end
 
       collection = collection.public_send(preload_method) if should_preload # rubocop:disable GitlabSecurity/PublicSend
       collection = collection.page(page).per(per_page)
@@ -117,6 +108,21 @@ module Gitlab
     end
 
     private
+
+    def collection_for(scope)
+      case scope
+      when 'projects'
+        projects
+      when 'issues'
+        issues
+      when 'merge_requests'
+        merge_requests
+      when 'milestones'
+        milestones
+      when 'users'
+        users
+      end
+    end
 
     def projects
       limit_projects.search(query)

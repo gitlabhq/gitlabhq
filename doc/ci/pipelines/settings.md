@@ -97,8 +97,8 @@ If hosting the CI configuration on an external site, the URL link must end with 
 
 - `http://example.com/generate/ci/config.yml`
 
-If the CI configuration is hosted in a different project within GitLab, the path must be relative
-to the root directory in the other project, with the group and project name added to the end:
+If hosting the CI configuration in a different project within GitLab, the path must be relative
+to the root directory in the other project. Include the group and project name at the end:
 
 - `.gitlab-ci.yml@mygroup/another-project`
 - `my/path/.my-custom-file.yml@mygroup/another-project`
@@ -140,7 +140,7 @@ in the pipelines settings page.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/209121) the ability to download a `.csv` in GitLab 12.10.
 > - [Graph introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/33743) in GitLab 13.1.
 
-If you want to see the evolution of your project code coverage over time,
+To see the evolution of your project code coverage over time,
 you can view a graph or download a CSV file with this data. From your project:
 
 1. Go to **{chart}** **Project Analytics > Repository** to see the historic data for each job listed in the dropdown above the graph.
@@ -151,7 +151,7 @@ you can view a graph or download a CSV file with this data. From your project:
 ### Removing color codes
 
 Some test coverage tools output with ANSI color codes that aren't
-parsed correctly by the regular expression and cause coverage
+parsed correctly by the regular expression. This causes coverage
 parsing to fail.
 
 If your coverage tool doesn't provide an option to disable color

@@ -3032,10 +3032,10 @@ Values for sorting alerts.
 | `UPDATED_DESC` | Updated at descending order |
 | `UPDATED_TIME_ASC` | Created time by ascending order |
 | `UPDATED_TIME_DESC` | Created time by descending order |
-| `created_asc` | Created at ascending order |
-| `created_desc` | Created at descending order |
-| `updated_asc` | Updated at ascending order |
-| `updated_desc` | Updated at descending order |
+| `created_asc` **{warning-solid}** | **Deprecated:** Use CREATED_ASC. Deprecated in 13.5 |
+| `created_desc` **{warning-solid}** | **Deprecated:** Use CREATED_DESC. Deprecated in 13.5 |
+| `updated_asc` **{warning-solid}** | **Deprecated:** Use UPDATED_ASC. Deprecated in 13.5 |
+| `updated_desc` **{warning-solid}** | **Deprecated:** Use UPDATED_DESC. Deprecated in 13.5 |
 
 ### AlertManagementSeverity
 
@@ -3272,10 +3272,10 @@ Values for sorting issues.
 | `UPDATED_DESC` | Updated at descending order |
 | `WEIGHT_ASC` | Weight by ascending order |
 | `WEIGHT_DESC` | Weight by descending order |
-| `created_asc` | Created at ascending order |
-| `created_desc` | Created at descending order |
-| `updated_asc` | Updated at ascending order |
-| `updated_desc` | Updated at descending order |
+| `created_asc` **{warning-solid}** | **Deprecated:** Use CREATED_ASC. Deprecated in 13.5 |
+| `created_desc` **{warning-solid}** | **Deprecated:** Use CREATED_DESC. Deprecated in 13.5 |
+| `updated_asc` **{warning-solid}** | **Deprecated:** Use UPDATED_ASC. Deprecated in 13.5 |
+| `updated_desc` **{warning-solid}** | **Deprecated:** Use UPDATED_DESC. Deprecated in 13.5 |
 
 ### IssueState
 
@@ -3355,10 +3355,10 @@ Values for sorting merge requests.
 | `PRIORITY_DESC` | Priority by descending order |
 | `UPDATED_ASC` | Updated at ascending order |
 | `UPDATED_DESC` | Updated at descending order |
-| `created_asc` | Created at ascending order |
-| `created_desc` | Created at descending order |
-| `updated_asc` | Updated at ascending order |
-| `updated_desc` | Updated at descending order |
+| `created_asc` **{warning-solid}** | **Deprecated:** Use CREATED_ASC. Deprecated in 13.5 |
+| `created_desc` **{warning-solid}** | **Deprecated:** Use CREATED_DESC. Deprecated in 13.5 |
+| `updated_asc` **{warning-solid}** | **Deprecated:** Use UPDATED_ASC. Deprecated in 13.5 |
+| `updated_desc` **{warning-solid}** | **Deprecated:** Use UPDATED_DESC. Deprecated in 13.5 |
 
 ### MergeRequestState
 
@@ -3587,10 +3587,10 @@ Common sort values.
 | `CREATED_DESC` | Created at descending order |
 | `UPDATED_ASC` | Updated at ascending order |
 | `UPDATED_DESC` | Updated at descending order |
-| `created_asc` | Created at ascending order |
-| `created_desc` | Created at descending order |
-| `updated_asc` | Updated at ascending order |
-| `updated_desc` | Updated at descending order |
+| `created_asc` **{warning-solid}** | **Deprecated:** Use CREATED_ASC. Deprecated in 13.5 |
+| `created_desc` **{warning-solid}** | **Deprecated:** Use CREATED_DESC. Deprecated in 13.5 |
+| `updated_asc` **{warning-solid}** | **Deprecated:** Use UPDATED_ASC. Deprecated in 13.5 |
+| `updated_desc` **{warning-solid}** | **Deprecated:** Use UPDATED_DESC. Deprecated in 13.5 |
 
 ### TestReportState
 

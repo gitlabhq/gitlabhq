@@ -481,6 +481,9 @@ msgstr ""
 msgid "%{group_name} uses group managed accounts. You need to create a new GitLab account which will be managed by %{group_name}."
 msgstr ""
 
+msgid "%{group_name}&%{epic_iid} &middot; opened %{epic_created} by %{author}"
+msgstr ""
+
 msgid "%{host} sign-in from new location"
 msgstr ""
 
@@ -3688,7 +3691,10 @@ msgstr ""
 msgid "Authentication method updated"
 msgstr ""
 
-msgid "Authentication via %{method} device failed."
+msgid "Authentication via U2F device failed."
+msgstr ""
+
+msgid "Authentication via WebAuthn device failed."
 msgstr ""
 
 msgid "Author"
@@ -4085,18 +4091,6 @@ msgid "Board scope"
 msgstr ""
 
 msgid "Board scope affects which issues are displayed for anyone who visits this board"
-msgstr ""
-
-msgid "BoardBlankState|Add default lists"
-msgstr ""
-
-msgid "BoardBlankState|Add the following default lists to your Issue Board with one click:"
-msgstr ""
-
-msgid "BoardBlankState|Nevermind, I'll use my own"
-msgstr ""
-
-msgid "BoardBlankState|Starting out with the default set of lists will get you right on the way to making the most of your board."
 msgstr ""
 
 msgid "Boards"
@@ -9133,9 +9127,6 @@ msgid "Documentation for popular identity providers"
 msgstr ""
 
 msgid "Documents reindexed: %{processed_documents} (%{percentage}%%)"
-msgstr ""
-
-msgid "Doing"
 msgstr ""
 
 msgid "Domain"
@@ -22482,6 +22473,11 @@ msgid_plural "SearchResults|commits"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "SearchResults|epic"
+msgid_plural "SearchResults|epics"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "SearchResults|issue"
 msgid_plural "SearchResults|issues"
 msgstr[0] ""
@@ -28780,9 +28776,6 @@ msgid "Welcome to GitLab, %{first_name}!"
 msgstr ""
 
 msgid "Welcome to the guided GitLab tour"
-msgstr ""
-
-msgid "Welcome to your Issue Board!"
 msgstr ""
 
 msgid "Welcome to your issue board!"

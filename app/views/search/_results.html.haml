@@ -32,7 +32,7 @@
           .term
             = render 'shared/projects/list', projects: @search_objects, pipeline_status: false
         - else
-          = render partial: "search/results/#{@scope.singularize}", collection: @search_objects
+          = render_if_exists partial: "search/results/#{@scope.singularize}", collection: @search_objects
 
     - if @scope != 'projects'
       = paginate_collection(@search_objects)

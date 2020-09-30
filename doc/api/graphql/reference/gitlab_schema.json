@@ -1227,26 +1227,26 @@
             {
               "name": "updated_desc",
               "description": "Updated at descending order",
-              "isDeprecated": false,
-              "deprecationReason": null
+              "isDeprecated": true,
+              "deprecationReason": "Use UPDATED_DESC. Deprecated in 13.5"
             },
             {
               "name": "updated_asc",
               "description": "Updated at ascending order",
-              "isDeprecated": false,
-              "deprecationReason": null
+              "isDeprecated": true,
+              "deprecationReason": "Use UPDATED_ASC. Deprecated in 13.5"
             },
             {
               "name": "created_desc",
               "description": "Created at descending order",
-              "isDeprecated": false,
-              "deprecationReason": null
+              "isDeprecated": true,
+              "deprecationReason": "Use CREATED_DESC. Deprecated in 13.5"
             },
             {
               "name": "created_asc",
               "description": "Created at ascending order",
-              "isDeprecated": false,
-              "deprecationReason": null
+              "isDeprecated": true,
+              "deprecationReason": "Use CREATED_ASC. Deprecated in 13.5"
             },
             {
               "name": "UPDATED_DESC",
@@ -25468,26 +25468,26 @@
             {
               "name": "updated_desc",
               "description": "Updated at descending order",
-              "isDeprecated": false,
-              "deprecationReason": null
+              "isDeprecated": true,
+              "deprecationReason": "Use UPDATED_DESC. Deprecated in 13.5"
             },
             {
               "name": "updated_asc",
               "description": "Updated at ascending order",
-              "isDeprecated": false,
-              "deprecationReason": null
+              "isDeprecated": true,
+              "deprecationReason": "Use UPDATED_ASC. Deprecated in 13.5"
             },
             {
               "name": "created_desc",
               "description": "Created at descending order",
-              "isDeprecated": false,
-              "deprecationReason": null
+              "isDeprecated": true,
+              "deprecationReason": "Use CREATED_DESC. Deprecated in 13.5"
             },
             {
               "name": "created_asc",
               "description": "Created at ascending order",
-              "isDeprecated": false,
-              "deprecationReason": null
+              "isDeprecated": true,
+              "deprecationReason": "Use CREATED_ASC. Deprecated in 13.5"
             },
             {
               "name": "UPDATED_DESC",
@@ -30807,26 +30807,26 @@
             {
               "name": "updated_desc",
               "description": "Updated at descending order",
-              "isDeprecated": false,
-              "deprecationReason": null
+              "isDeprecated": true,
+              "deprecationReason": "Use UPDATED_DESC. Deprecated in 13.5"
             },
             {
               "name": "updated_asc",
               "description": "Updated at ascending order",
-              "isDeprecated": false,
-              "deprecationReason": null
+              "isDeprecated": true,
+              "deprecationReason": "Use UPDATED_ASC. Deprecated in 13.5"
             },
             {
               "name": "created_desc",
               "description": "Created at descending order",
-              "isDeprecated": false,
-              "deprecationReason": null
+              "isDeprecated": true,
+              "deprecationReason": "Use CREATED_DESC. Deprecated in 13.5"
             },
             {
               "name": "created_asc",
               "description": "Created at ascending order",
-              "isDeprecated": false,
-              "deprecationReason": null
+              "isDeprecated": true,
+              "deprecationReason": "Use CREATED_ASC. Deprecated in 13.5"
             },
             {
               "name": "UPDATED_DESC",
@@ -50993,26 +50993,26 @@
             {
               "name": "updated_desc",
               "description": "Updated at descending order",
-              "isDeprecated": false,
-              "deprecationReason": null
+              "isDeprecated": true,
+              "deprecationReason": "Use UPDATED_DESC. Deprecated in 13.5"
             },
             {
               "name": "updated_asc",
               "description": "Updated at ascending order",
-              "isDeprecated": false,
-              "deprecationReason": null
+              "isDeprecated": true,
+              "deprecationReason": "Use UPDATED_ASC. Deprecated in 13.5"
             },
             {
               "name": "created_desc",
               "description": "Created at descending order",
-              "isDeprecated": false,
-              "deprecationReason": null
+              "isDeprecated": true,
+              "deprecationReason": "Use CREATED_DESC. Deprecated in 13.5"
             },
             {
               "name": "created_asc",
               "description": "Created at ascending order",
-              "isDeprecated": false,
-              "deprecationReason": null
+              "isDeprecated": true,
+              "deprecationReason": "Use CREATED_ASC. Deprecated in 13.5"
             },
             {
               "name": "UPDATED_DESC",

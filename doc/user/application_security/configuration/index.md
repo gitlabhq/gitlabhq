@@ -30,11 +30,10 @@ The status of each security control is determined by the project's latest defaul
 If a job with the expected security report artifact exists in the pipeline, the feature's status is
 _enabled_.
 
-For SAST, click **View history** to see the `.gitlab-ci.yml` file’s history.
-
-NOTE: **Note:**
 If the latest pipeline used [Auto DevOps](../../../topics/autodevops/index.md),
 all security features are configured by default.
+
+For SAST, click **View history** to see the `.gitlab-ci.yml` file's history.
 
 ## Manage
 
