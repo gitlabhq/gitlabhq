@@ -61,9 +61,8 @@ GitLab administrators can
 [set project templates for an entire GitLab instance](../admin_area/custom_project_templates.md).
 
 Within this section, you can configure the group where all the custom project
-templates are sourced. Every project directly under the group namespace will be
-available to the user if they have access to them. For example, every public
-project in the group will be available to every logged in user.
+templates are sourced. Every project _template_ directly under the group namespace is
+available to every signed-in user, if all enabled [project features](../project/settings/index.md#sharing-and-permissions) are set to **Everyone With Access**.
 
 However, private projects will be available only if the user is a member of the project.
 
