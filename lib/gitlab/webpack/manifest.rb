@@ -88,10 +88,9 @@ module Gitlab
         end
 
         def load_dev_server_manifest
-          host = ::Rails.configuration.webpack.dev_server.host
-          port = ::Rails.configuration.webpack.dev_server.port
-          scheme = ::Rails.configuration.webpack.dev_server.https ? 'https' : 'http'
-          uri = Addressable::URI.new(scheme: scheme, host: host, port: port, path: dev_server_path)
+          host = ::Rails.configuration.webpack.dev_server.manifest_host
+          port = ::Rails.configuration.webpack.dev_server.manifest_port
+          uri = Addressable::URI.new(scheme: 'http', host: host, port: port, path: dev_server_path)
 
           # localhost could be blocked via Gitlab::HTTP
           response = HTTParty.get(uri.to_s, verify: false) # rubocop:disable Gitlab/HTTParty

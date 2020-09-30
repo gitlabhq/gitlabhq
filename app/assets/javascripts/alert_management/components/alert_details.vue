@@ -81,15 +81,12 @@ export default {
       default: '',
     },
     alertId: {
-      type: String,
       default: '',
     },
     projectId: {
-      type: String,
       default: '',
     },
     projectIssuesPath: {
-      type: String,
       default: '',
     },
   },

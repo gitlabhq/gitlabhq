@@ -14447,7 +14447,7 @@ CREATE VIEW postgres_indexes AS
      JOIN pg_class ON ((pg_class.oid = pg_index.indexrelid)))
      JOIN pg_namespace ON ((pg_class.relnamespace = pg_namespace.oid)))
      JOIN pg_indexes ON ((pg_class.relname = pg_indexes.indexname)))
-  WHERE (pg_namespace.nspname <> 'pg_catalog'::name);
+  WHERE ((pg_namespace.nspname <> 'pg_catalog'::name) AND (pg_namespace.nspname = ANY (ARRAY["current_schema"(), 'gitlab_partitions_dynamic'::name, 'gitlab_partitions_static'::name])));
 
 CREATE TABLE postgres_reindex_actions (
     id bigint NOT NULL,

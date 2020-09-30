@@ -22,7 +22,7 @@ module Gitlab
         def check
           return unless http_servers
 
-          http_servers.sum(&:worker_processes) # rubocop: disable CodeReuse/ActiveRecord
+          http_servers.sum(&:worker_processes)
         end
 
         # Traversal of ObjectSpace is expensive, on fully loaded application

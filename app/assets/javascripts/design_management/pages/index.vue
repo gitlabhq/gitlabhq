@@ -113,9 +113,7 @@ export default {
       return !this.isSaving && !this.hasDesigns;
     },
     isDesignCollectionCopying() {
-      return (
-        this.designCollection && ['PENDING', 'COPYING'].includes(this.designCollection.copyState)
-      );
+      return this.designCollection && this.designCollection.copyState === 'IN_PROGRESS';
     },
     designDropzoneWrapperClass() {
       return this.isDesignListEmpty
@@ -370,11 +368,11 @@ export default {
       </gl-alert>
       <header
         v-else-if="isDesignCollectionCopying"
-        class="card gl-p-3"
+        class="card"
         data-testid="design-collection-is-copying"
       >
         <div class="card-header design-card-header border-bottom-0">
-          <div class="card-title gl-my-0 gl-h-7">
+          <div class="card-title gl-display-flex gl-align-items-center gl-my-0 gl-h-7">
             {{
               s__(
                 'DesignManagement|Your designs are being copied and are on their way… Please refresh to update.',

@@ -231,7 +231,7 @@ module Gitlab
 
       def rss_increase_by_jobs
         Gitlab::SidekiqDaemon::Monitor.instance.jobs_mutex.synchronize do
-          Gitlab::SidekiqDaemon::Monitor.instance.jobs.sum do |job| # rubocop:disable CodeReuse/ActiveRecord
+          Gitlab::SidekiqDaemon::Monitor.instance.jobs.sum do |job|
             rss_increase_by_job(job)
           end
         end

@@ -80,7 +80,7 @@ module Mutations
               raise Gitlab::Graphql::Errors::ArgumentError, ANNOTATION_SOURCE_ARGUMENT_ERROR
             end
 
-            super(args)
+            super(**args)
           end
 
           def find_object(id:)

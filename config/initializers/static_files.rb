@@ -21,12 +21,12 @@ if app.config.public_file_server.enabled
     settings = {
       enabled: true,
       host: dev_server.host,
+      manifest_host: dev_server.host,
+      manifest_port: dev_server.port,
       port: dev_server.port
     }
 
     if Rails.env.development?
-      # /assets are proxied through a Rails middlware to the Webpack
-      # server, so we have to use the local Rails settings.
       settings.merge!(
         host: Gitlab.config.gitlab.host,
         port: Gitlab.config.gitlab.port,

@@ -117,9 +117,9 @@ export default class Shortcuts {
     e.preventDefault();
     const performanceBarCookieName = 'perf_bar_enabled';
     if (parseBoolean(Cookies.get(performanceBarCookieName))) {
-      Cookies.set(performanceBarCookieName, 'false', { path: '/' });
+      Cookies.set(performanceBarCookieName, 'false', { expires: 365, path: '/' });
     } else {
-      Cookies.set(performanceBarCookieName, 'true', { path: '/' });
+      Cookies.set(performanceBarCookieName, 'true', { expires: 365, path: '/' });
     }
     refreshCurrentPage();
   }

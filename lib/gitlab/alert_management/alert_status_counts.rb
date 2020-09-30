@@ -30,7 +30,7 @@ module Gitlab
       end
 
       def all
-        counts.values.sum # rubocop:disable CodeReuse/ActiveRecord
+        counts.values.sum
       end
 
       private

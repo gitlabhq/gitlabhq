@@ -224,7 +224,7 @@ export default {
       <a
         ref="titleWrapper"
         :v-once="!viewDiffsFileByFile"
-        class="gl-mr-2"
+        class="gl-mr-2 gl-text-decoration-none!"
         :href="titleLink"
         @click="handleFileNameClick"
       >

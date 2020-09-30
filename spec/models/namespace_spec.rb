@@ -1320,4 +1320,140 @@ RSpec.describe Namespace do
       end
     end
   end
+
+  describe '#shared_runners_setting' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:shared_runners_enabled, :allow_descendants_override_disabled_shared_runners, :shared_runners_setting) do
+      true  | true  | 'enabled'
+      true  | false | 'enabled'
+      false | true  | 'disabled_with_override'
+      false | false | 'disabled_and_unoverridable'
+    end
+
+    with_them do
+      let(:namespace) { build(:namespace, shared_runners_enabled: shared_runners_enabled, allow_descendants_override_disabled_shared_runners: allow_descendants_override_disabled_shared_runners)}
+
+      it 'returns the result' do
+        expect(namespace.shared_runners_setting).to eq(shared_runners_setting)
+      end
+    end
+  end
+
+  describe '#shared_runners_setting_higher_than?' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:shared_runners_enabled, :allow_descendants_override_disabled_shared_runners, :other_setting, :result) do
+      true  | true  | 'enabled'                    | false
+      true  | true  | 'disabled_with_override'     | true
+      true  | true  | 'disabled_and_unoverridable' | true
+      false | true  | 'enabled'                    | false
+      false | true  | 'disabled_with_override'     | false
+      false | true  | 'disabled_and_unoverridable' | true
+      false | false | 'enabled'                    | false
+      false | false | 'disabled_with_override'     | false
+      false | false | 'disabled_and_unoverridable' | false
+    end
+
+    with_them do
+      let(:namespace) { build(:namespace, shared_runners_enabled: shared_runners_enabled, allow_descendants_override_disabled_shared_runners: allow_descendants_override_disabled_shared_runners)}
+
+      it 'returns the result' do
+        expect(namespace.shared_runners_setting_higher_than?(other_setting)).to eq(result)
+      end
+    end
+  end
+
+  describe 'validation #changing_shared_runners_enabled_is_allowed' do
+    context 'without a parent' do
+      let(:namespace) { build(:namespace, shared_runners_enabled: true) }
+
+      it 'is valid' do
+        expect(namespace).to be_valid
+      end
+    end
+
+    context 'with a parent' do
+      context 'when parent has shared runners disabled' do
+        let(:parent) { create(:namespace, :shared_runners_disabled) }
+        let(:sub_namespace) { build(:namespace, shared_runners_enabled: true, parent_id: parent.id) }
+
+        it 'is invalid' do
+          expect(sub_namespace).to be_invalid
+          expect(sub_namespace.errors[:shared_runners_enabled]).to include('cannot be enabled because parent group has shared Runners disabled')
+        end
+      end
+
+      context 'when parent has shared runners disabled but allows override' do
+        let(:parent) { create(:namespace, :shared_runners_disabled, :allow_descendants_override_disabled_shared_runners) }
+        let(:sub_namespace) { build(:namespace, shared_runners_enabled: true, parent_id: parent.id) }
+
+        it 'is valid' do
+          expect(sub_namespace).to be_valid
+        end
+      end
+
+      context 'when parent has shared runners enabled' do
+        let(:parent) { create(:namespace, shared_runners_enabled: true) }
+        let(:sub_namespace) { build(:namespace, shared_runners_enabled: true, parent_id: parent.id) }
+
+        it 'is valid' do
+          expect(sub_namespace).to be_valid
+        end
+      end
+    end
+  end
+
+  describe 'validation #changing_allow_descendants_override_disabled_shared_runners_is_allowed' do
+    context 'without a parent' do
+      context 'with shared runners disabled' do
+        let(:namespace) { build(:namespace, :allow_descendants_override_disabled_shared_runners, :shared_runners_disabled) }
+
+        it 'is valid' do
+          expect(namespace).to be_valid
+        end
+      end
+
+      context 'with shared runners enabled' do
+        let(:namespace) { create(:namespace) }
+
+        it 'is invalid' do
+          namespace.allow_descendants_override_disabled_shared_runners = true
+
+          expect(namespace).to be_invalid
+          expect(namespace.errors[:allow_descendants_override_disabled_shared_runners]).to include('cannot be changed if shared runners are enabled')
+        end
+      end
+    end
+
+    context 'with a parent' do
+      context 'when parent does not allow shared runners' do
+        let(:parent) { create(:namespace, :shared_runners_disabled) }
+        let(:sub_namespace) { build(:namespace, :shared_runners_disabled, :allow_descendants_override_disabled_shared_runners, parent_id: parent.id) }
+
+        it 'is invalid' do
+          expect(sub_namespace).to be_invalid
+          expect(sub_namespace.errors[:allow_descendants_override_disabled_shared_runners]).to include('cannot be enabled because parent group does not allow it')
+        end
+      end
+
+      context 'when parent allows shared runners and setting to true' do
+        let(:parent) { create(:namespace, shared_runners_enabled: true) }
+        let(:sub_namespace) { build(:namespace, :shared_runners_disabled, :allow_descendants_override_disabled_shared_runners, parent_id: parent.id) }
+
+        it 'is valid' do
+          expect(sub_namespace).to be_valid
+        end
+      end
+
+      context 'when parent allows shared runners and setting to false' do
+        let(:parent) { create(:namespace, shared_runners_enabled: true) }
+        let(:sub_namespace) { build(:namespace, :shared_runners_disabled, allow_descendants_override_disabled_shared_runners: false, parent_id: parent.id) }
+
+        it 'is valid' do
+          expect(sub_namespace).to be_valid
+        end
+      end
+    end
+  end
 end

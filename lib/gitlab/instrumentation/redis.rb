@@ -37,7 +37,7 @@ module Gitlab
 
         %i[get_request_count query_time read_bytes write_bytes].each do |method|
           define_method method do
-            STORAGES.sum(&method) # rubocop:disable CodeReuse/ActiveRecord
+            STORAGES.sum(&method)
           end
         end
       end

@@ -1,7 +1,7 @@
 <script>
 import {
   GlAlert,
-  GlDeprecatedButton,
+  GlButton,
   GlDeprecatedDropdown,
   GlDeprecatedDropdownItem,
   GlFormCheckbox,
@@ -16,7 +16,7 @@ const { UPDATING, UNINSTALLING, INSTALLING, INSTALLED, UPDATED } = APPLICATION_S
 export default {
   components: {
     GlAlert,
-    GlDeprecatedButton,
+    GlButton,
     GlDeprecatedDropdown,
     GlDeprecatedDropdownItem,
     GlFormCheckbox,
@@ -221,20 +221,21 @@ export default {
           <strong>{{ s__('ClusterIntegration|Send Container Network Policies Logs') }}</strong>
         </gl-form-checkbox>
       </div>
-      <div v-if="showButtons" class="mt-3">
-        <gl-deprecated-button
+      <div v-if="showButtons" class="gl-mt-5 gl-display-flex">
+        <gl-button
           ref="saveBtn"
-          class="mr-1"
+          class="gl-mr-3"
           variant="success"
+          category="primary"
           :loading="isSaving"
           :disabled="saveButtonDisabled"
           @click="updateApplication"
         >
           {{ saveButtonLabel }}
-        </gl-deprecated-button>
-        <gl-deprecated-button ref="cancelBtn" :disabled="saveButtonDisabled" @click="resetStatus">
+        </gl-button>
+        <gl-button ref="cancelBtn" :disabled="saveButtonDisabled" @click="resetStatus">
           {{ __('Cancel') }}
-        </gl-deprecated-button>
+        </gl-button>
       </div>
     </div>
   </div>

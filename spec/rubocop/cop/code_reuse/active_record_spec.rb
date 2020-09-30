@@ -84,7 +84,7 @@ RSpec.describe RuboCop::Cop::CodeReuse::ActiveRecord, type: :rubocop do
     SOURCE
   end
 
-  it 'autocorrects offenses in instance methods by whitelisting them' do
+  it 'autocorrects offenses in instance methods by allowing them' do
     corrected = autocorrect_source(<<~SOURCE)
     def foo
       User.where
@@ -100,7 +100,7 @@ RSpec.describe RuboCop::Cop::CodeReuse::ActiveRecord, type: :rubocop do
     SOURCE
   end
 
-  it 'autocorrects offenses in class methods by whitelisting them' do
+  it 'autocorrects offenses in class methods by allowing them' do
     corrected = autocorrect_source(<<~SOURCE)
     def self.foo
       User.where
@@ -116,7 +116,7 @@ RSpec.describe RuboCop::Cop::CodeReuse::ActiveRecord, type: :rubocop do
     SOURCE
   end
 
-  it 'autocorrects offenses in blocks by whitelisting them' do
+  it 'autocorrects offenses in blocks by allowing them' do
     corrected = autocorrect_source(<<~SOURCE)
     get '/' do
       User.where

@@ -13,7 +13,7 @@ RSpec.describe Gitlab::Pagination::OffsetPagination do
 
   let(:request_context) { double("request_context") }
 
-  subject do
+  subject(:paginator) do
     described_class.new(request_context)
   end
 
@@ -118,6 +118,34 @@ RSpec.describe Gitlab::Pagination::OffsetPagination do
 
               subject.paginate(resource)
             end
+          end
+
+          it 'does not return the total headers when excluding them' do
+            expect_no_header('X-Total')
+            expect_no_header('X-Total-Pages')
+            expect_header('X-Per-Page', '2')
+            expect_header('X-Page', '1')
+
+            paginator.paginate(resource, exclude_total_headers: true)
+          end
+        end
+
+        context 'when resource is a paginatable array' do
+          let(:resource) { Kaminari.paginate_array(Project.all.to_a) }
+
+          it_behaves_like 'response with pagination headers'
+
+          it 'only returns the requested resources' do
+            expect(paginator.paginate(resource).count).to eq(2)
+          end
+
+          it 'does not return total headers when excluding them' do
+            expect_no_header('X-Total')
+            expect_no_header('X-Total-Pages')
+            expect_header('X-Per-Page', '2')
+            expect_header('X-Page', '1')
+
+            paginator.paginate(resource, exclude_total_headers: true)
           end
         end
       end

@@ -10,9 +10,9 @@ module Gitlab
         @request_context = request_context
       end
 
-      def paginate(relation)
+      def paginate(relation, exclude_total_headers: false)
         paginate_with_limit_optimization(add_default_order(relation)).tap do |data|
-          add_pagination_headers(data)
+          add_pagination_headers(data, exclude_total_headers)
         end
       end
 
@@ -47,14 +47,14 @@ module Gitlab
         relation
       end
 
-      def add_pagination_headers(paginated_data)
+      def add_pagination_headers(paginated_data, exclude_total_headers)
         header 'X-Per-Page',    paginated_data.limit_value.to_s
         header 'X-Page',        paginated_data.current_page.to_s
         header 'X-Next-Page',   paginated_data.next_page.to_s
         header 'X-Prev-Page',   paginated_data.prev_page.to_s
         header 'Link',          pagination_links(paginated_data)
 
-        return if data_without_counts?(paginated_data)
+        return if exclude_total_headers || data_without_counts?(paginated_data)
 
         header 'X-Total',       paginated_data.total_count.to_s
         header 'X-Total-Pages', total_pages(paginated_data).to_s

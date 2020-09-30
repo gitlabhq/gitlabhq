@@ -57,11 +57,11 @@ module Gitlab
         end
 
         def duration
-          Time.current - @started
+          (Time.current - @started).ceil
         end
 
         def slot
-          return 0 if duration <= 1
+          return 0 if duration < 2
 
           Math.log(duration, 2).floor - 1
         end

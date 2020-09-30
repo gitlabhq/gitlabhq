@@ -15,6 +15,8 @@ module Groups
 
       after_build_hook(@group, params)
 
+      inherit_group_shared_runners_settings
+
       unless can_use_visibility_level? && can_create_group?
         return @group
       end
@@ -85,6 +87,13 @@ module Groups
       return if visibility_level.present?
 
       params[:visibility_level] = Gitlab::CurrentSettings.current_application_settings.default_group_visibility
+    end
+
+    def inherit_group_shared_runners_settings
+      return unless @group.parent
+
+      @group.shared_runners_enabled = @group.parent.shared_runners_enabled
+      @group.allow_descendants_override_disabled_shared_runners = @group.parent.allow_descendants_override_disabled_shared_runners
     end
   end
 end

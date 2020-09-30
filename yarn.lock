@@ -1071,10 +1071,10 @@
     consola "^2.10.1"
     node-fetch "^2.6.0"
 
-"@rails/actioncable@^6.0.3-1":
-  version "6.0.3-1"
-  resolved "https://registry.yarnpkg.com/@rails/actioncable/-/actioncable-6.0.3-1.tgz#9b9eb8858a6507162911007d355d9a206e1c5caa"
-  integrity sha512-szFhWD+V5TAxVNVIG16klgq+ypqA5k5AecLarTTrXgOG8cawVbQdOAwLbCmzkwiQ60rGSxAFoC1u2LrzxSK2Aw==
+"@rails/actioncable@^6.0.3-3":
+  version "6.0.3-3"
+  resolved "https://registry.yarnpkg.com/@rails/actioncable/-/actioncable-6.0.3-3.tgz#fb1a46d3d353512764d5fa3cea2f492391601b7a"
+  integrity sha512-+DEbtzvD2ITPKOGBAV0lLdUvImCsHtUYfxwW7TDKOrGNEFqgbVJij7aO6ZE8a3aDPQ7NnO/MlyrPwLVeiIZRSw==
 
 "@rails/ujs@^6.0.3-2":
   version "6.0.3-2"

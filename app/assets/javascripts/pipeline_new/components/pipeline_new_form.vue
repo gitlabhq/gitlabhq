@@ -170,13 +170,13 @@ export default {
         .map(({ variable_type, key, value }) => ({
           variable_type,
           key,
-          value,
+          secret_value: value,
         }));
 
       return axios
         .post(this.pipelinesPath, {
           ref: this.refValue,
-          variables: filteredVariables,
+          variables_attributes: filteredVariables,
         })
         .then(({ data }) => {
           redirectTo(`${this.pipelinesPath}/${data.id}`);

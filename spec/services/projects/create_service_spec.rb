@@ -782,4 +782,100 @@ RSpec.describe Projects::CreateService, '#execute' do
   def create_project(user, opts)
     Projects::CreateService.new(user, opts).execute
   end
+
+  context 'shared Runners config' do
+    using RSpec::Parameterized::TableSyntax
+
+    let_it_be(:user) { create :user }
+
+    context 'when parent group is present' do
+      let_it_be(:group) do
+        create(:group) do |group|
+          group.add_owner(user)
+        end
+      end
+
+      before do
+        allow_next_found_instance_of(Group) do |group|
+          allow(group).to receive(:shared_runners_setting).and_return(shared_runners_setting)
+        end
+
+        user.refresh_authorized_projects # Ensure cache is warm
+      end
+
+      context 'default value based on parent group setting' do
+        where(:shared_runners_setting, :desired_config_for_new_project, :expected_result_for_project) do
+          'enabled'                    | nil | true
+          'disabled_with_override'     | nil | false
+          'disabled_and_unoverridable' | nil | false
+        end
+
+        with_them do
+          it 'creates project following the parent config' do
+            params = opts.merge(namespace_id: group.id)
+            params = params.merge(shared_runners_enabled: desired_config_for_new_project) unless desired_config_for_new_project.nil?
+            project = create_project(user, params)
+
+            expect(project).to be_valid
+            expect(project.shared_runners_enabled).to eq(expected_result_for_project)
+          end
+        end
+      end
+
+      context 'parent group is present and allows desired config' do
+        where(:shared_runners_setting, :desired_config_for_new_project, :expected_result_for_project) do
+          'enabled'                    | true  | true
+          'enabled'                    | false | false
+          'disabled_with_override'     | false | false
+          'disabled_with_override'     | true  | true
+          'disabled_and_unoverridable' | false | false
+        end
+
+        with_them do
+          it 'creates project following the parent config' do
+            params = opts.merge(namespace_id: group.id, shared_runners_enabled: desired_config_for_new_project)
+            project = create_project(user, params)
+
+            expect(project).to be_valid
+            expect(project.shared_runners_enabled).to eq(expected_result_for_project)
+          end
+        end
+      end
+
+      context 'parent group is present and disallows desired config' do
+        where(:shared_runners_setting, :desired_config_for_new_project) do
+          'disabled_and_unoverridable' | true
+        end
+
+        with_them do
+          it 'does not create project' do
+            params = opts.merge(namespace_id: group.id, shared_runners_enabled: desired_config_for_new_project)
+            project = create_project(user, params)
+
+            expect(project.persisted?).to eq(false)
+            expect(project).to be_invalid
+            expect(project.errors[:shared_runners_enabled]).to include('cannot be enabled because parent group does not allow it')
+          end
+        end
+      end
+    end
+
+    context 'parent group is not present' do
+      where(:desired_config, :expected_result) do
+        true  | true
+        false | false
+        nil   | true
+      end
+
+      with_them do
+        it 'follows desired config' do
+          opts[:shared_runners_enabled] = desired_config unless desired_config.nil?
+          project = create_project(user, opts)
+
+          expect(project).to be_valid
+          expect(project.shared_runners_enabled).to eq(expected_result)
+        end
+      end
+    end
+  end
 end

@@ -15,14 +15,36 @@ RSpec.describe Gitlab::Ci::Runner::Backoff do
         end
       end
     end
+
+    it 'returns an integer value' do
+      freeze_time do
+        described_class.new(5.seconds.ago).then do |backoff|
+          expect(backoff.duration).to be 5
+        end
+      end
+    end
+
+    it 'returns the smallest number greater than or equal to duration' do
+      freeze_time do
+        described_class.new(0.5.seconds.ago).then do |backoff|
+          expect(backoff.duration).to be 1
+        end
+      end
+    end
   end
 
   describe '#slot' do
     using RSpec::Parameterized::TableSyntax
 
     where(:started, :slot) do
+      0   | 0
+      0.1 | 0
+      0.9 | 0
       1   | 0
+      1.1 | 0
+      1.9 | 0
       2   | 0
+      2.9 | 0
       3   | 0
       4   | 1
       5   | 1
@@ -30,6 +52,7 @@ RSpec.describe Gitlab::Ci::Runner::Backoff do
       7   | 1
       8   | 2
       9   | 2
+      9.9 | 2
       10  | 2
       15  | 2
       16  | 3
@@ -59,15 +82,22 @@ RSpec.describe Gitlab::Ci::Runner::Backoff do
     using RSpec::Parameterized::TableSyntax
 
     where(:started, :backoff) do
+      0   | 1
+      0.1 | 1
+      0.9 | 1
       1   | 1
+      1.1 | 1
+      1.9 | 1
       2   | 1
       3   | 1
       4   | 2
       5   | 2
       6   | 2
+      6.5 | 2
       7   | 2
       8   | 4
       9   | 4
+      9.9 | 4
       10  | 4
       15  | 4
       16  | 8

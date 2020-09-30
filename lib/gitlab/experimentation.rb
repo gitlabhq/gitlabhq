@@ -65,6 +65,9 @@ module Gitlab
       },
       invitation_reminders: {
         tracking_category: 'Growth::Acquisition::Experiment::InvitationReminders'
+      },
+      group_only_trials: {
+        tracking_category: 'Growth::Conversion::Experiment::GroupOnlyTrials'
       }
     }.freeze
 
@@ -105,7 +108,7 @@ module Gitlab
 
       def track_experiment_event(experiment_key, action, value = nil)
         track_experiment_event_for(experiment_key, action, value) do |tracking_data|
-          ::Gitlab::Tracking.event(tracking_data.delete(:category), tracking_data.delete(:action), tracking_data)
+          ::Gitlab::Tracking.event(tracking_data.delete(:category), tracking_data.delete(:action), **tracking_data)
         end
       end
 

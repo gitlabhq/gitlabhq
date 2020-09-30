@@ -41,7 +41,9 @@ RSpec.describe Gitlab::Webpack::Manifest do
   before do
     # Test that config variables work while we're here
     ::Rails.configuration.webpack.dev_server.host = 'hostname'
-    ::Rails.configuration.webpack.dev_server.port = 2000
+    ::Rails.configuration.webpack.dev_server.port = 1999
+    ::Rails.configuration.webpack.dev_server.manifest_host = 'hostname'
+    ::Rails.configuration.webpack.dev_server.manifest_port = 2000
     ::Rails.configuration.webpack.manifest_filename = "my_manifest.json"
     ::Rails.configuration.webpack.public_path = "public_path"
     ::Rails.configuration.webpack.output_dir = "manifest_output"

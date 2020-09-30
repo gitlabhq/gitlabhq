@@ -189,15 +189,6 @@
   background-color: $gray-darker;
   color: $gl-text-color;
   outline: 0;
-
-  // make sure the text color is not overridden
-  &.text-danger {
-    color: $brand-danger;
-  }
-
-  .avatar {
-    border-color: $white;
-  }
 }
 
 @mixin dropdown-link {
@@ -216,11 +207,6 @@
   text-align: left;
   width: 100%;
 
-  // make sure the text color is not overridden
-  &.text-danger {
-    color: $brand-danger;
-  }
-
   &.disable-hover {
     text-decoration: none;
   }
@@ -232,10 +218,6 @@
     @include dropdown-item-hover;
 
     text-decoration: none;
-
-    .badge.badge-pill {
-      background-color: darken($blue-50, 5%);
-    }
   }
 
   &.dropdown-menu-user-link {
