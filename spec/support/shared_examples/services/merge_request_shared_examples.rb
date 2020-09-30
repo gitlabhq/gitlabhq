@@ -34,26 +34,6 @@ RSpec.shared_examples 'reviewer_ids filter' do
             it 'contains reviewers who can read the merge_request' do
               expect(execute.reviewers).to contain_exactly(reviewer1, reviewer2)
             end
-
-            context 'with multiple_merge_request_reviewers feature on' do
-              before do
-                stub_licensed_features(multiple_merge_request_reviewers: true)
-              end
-
-              it 'allows multiple reviewers' do
-                expect(execute.reviewers).to contain_exactly(reviewer1, reviewer2)
-              end
-            end
-
-            context 'with multiple_merge_request_reviewers feature off' do
-              before do
-                stub_licensed_features(multiple_merge_request_reviewers: false)
-              end
-
-              it 'only allows one reviewer' do
-                expect(execute.reviewers).to contain_exactly(reviewer1)
-              end
-            end
           end
         end
 

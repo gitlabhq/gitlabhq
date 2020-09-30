@@ -1,7 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
-import { GlDeprecatedDropdownItem } from '@gitlab/ui';
+import { GlDropdownItem } from '@gitlab/ui';
 import SidebarAssignee from '~/alert_management/components/sidebar/sidebar_assignee.vue';
 import SidebarAssignees from '~/alert_management/components/sidebar/sidebar_assignees.vue';
 import AlertSetAssignees from '~/alert_management/graphql/mutations/alert_set_assignees.mutation.graphql';
@@ -106,7 +106,7 @@ describe('Alert Details Sidebar Assignees', () => {
     it('renders a unassigned option', async () => {
       wrapper.setData({ isDropdownSearching: false });
       await wrapper.vm.$nextTick();
-      expect(wrapper.find(GlDeprecatedDropdownItem).text()).toBe('Unassigned');
+      expect(wrapper.find(GlDropdownItem).text()).toBe('Unassigned');
     });
 
     it('calls `$apollo.mutate` with `AlertSetAssignees` mutation and variables containing `iid`, `assigneeUsernames`, & `projectPath`', async () => {

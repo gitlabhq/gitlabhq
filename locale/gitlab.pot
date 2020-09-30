@@ -5400,7 +5400,7 @@ msgstr ""
 msgid "ClusterIntegration|All installed applications and related resources"
 msgstr ""
 
-msgid "ClusterIntegration|Allow GitLab to manage namespace and service accounts for this cluster. %{startLink}More information%{endLink}"
+msgid "ClusterIntegration|Allow GitLab to manage namespace and service accounts for this cluster. %{linkStart}More information%{linkEnd}"
 msgstr ""
 
 msgid "ClusterIntegration|Allow GitLab to manage namespaces and service accounts for this cluster."
@@ -5472,13 +5472,13 @@ msgstr ""
 msgid "ClusterIntegration|Check your token"
 msgstr ""
 
-msgid "ClusterIntegration|Choose the %{startLink}security group %{externalLinkIcon} %{endLink} to apply to the EKS-managed Elastic Network Interfaces that are created in your worker node subnets."
+msgid "ClusterIntegration|Choose the %{linkStart}security group %{linkEnd} to apply to the EKS-managed Elastic Network Interfaces that are created in your worker node subnets."
 msgstr ""
 
-msgid "ClusterIntegration|Choose the %{startLink}subnets %{externalLinkIcon} %{endLink} in your VPC where your worker nodes will run."
+msgid "ClusterIntegration|Choose the %{linkStart}subnets %{linkEnd} in your VPC where your worker nodes will run."
 msgstr ""
 
-msgid "ClusterIntegration|Choose the worker node %{startLink}instance type %{externalLinkIcon} %{endLink}."
+msgid "ClusterIntegration|Choose the worker node %{linkStart}instance type%{linkEnd}."
 msgstr ""
 
 msgid "ClusterIntegration|Choose which applications to install on your Kubernetes cluster."
@@ -5589,7 +5589,7 @@ msgstr ""
 msgid "ClusterIntegration|Deploy each environment to its own namespace. Otherwise, environments within a project share a project-wide namespace. Note that anyone who can trigger a deployment of a namespace can read its secrets. If modified, existing environments will use their current namespaces until the cluster cache is cleared."
 msgstr ""
 
-msgid "ClusterIntegration|Deploy each environment to its own namespace. Otherwise, environments within a project share a project-wide namespace. Note that anyone who can trigger a deployment of a namespace can read its secrets. If modified, existing environments will use their current namespaces until the cluster cache is cleared. %{startLink}More information%{endLink}"
+msgid "ClusterIntegration|Deploy each environment to its own namespace. Otherwise, environments within a project share a project-wide namespace. Note that anyone who can trigger a deployment of a namespace can read its secrets. If modified, existing environments will use their current namespaces until the cluster cache is cleared. %{linkStart}More information%{linkEnd}"
 msgstr ""
 
 msgid "ClusterIntegration|Did you know?"
@@ -5799,7 +5799,7 @@ msgstr ""
 msgid "ClusterIntegration|Learn more about %{help_link_start}zones%{help_link_end}."
 msgstr ""
 
-msgid "ClusterIntegration|Learn more about %{startLink}Regions %{externalLinkIcon}%{endLink}."
+msgid "ClusterIntegration|Learn more about %{linkStart}Regions%{linkEnd}."
 msgstr ""
 
 msgid "ClusterIntegration|Learn more about Kubernetes"
@@ -5946,6 +5946,9 @@ msgstr ""
 msgid "ClusterIntegration|RBAC-enabled cluster"
 msgstr ""
 
+msgid "ClusterIntegration|Read our %{linkStart}help page%{linkEnd} on Kubernetes cluster integration."
+msgstr ""
+
 msgid "ClusterIntegration|Read our %{link_start}help page%{link_end} on Kubernetes cluster integration."
 msgstr ""
 
@@ -6048,7 +6051,7 @@ msgstr ""
 msgid "ClusterIntegration|Select a VPC to choose a subnet"
 msgstr ""
 
-msgid "ClusterIntegration|Select a VPC to use for your EKS Cluster resources. To use a new VPC, first create one on %{startLink}Amazon Web Services %{externalLinkIcon} %{endLink}."
+msgid "ClusterIntegration|Select a VPC to use for your EKS Cluster resources. To use a new VPC, first create one on %{linkStart}Amazon Web Services %{linkEnd}."
 msgstr ""
 
 msgid "ClusterIntegration|Select a network to choose a subnetwork"
@@ -6081,7 +6084,7 @@ msgstr ""
 msgid "ClusterIntegration|Select project to choose zone"
 msgstr ""
 
-msgid "ClusterIntegration|Select the key pair name that will be used to create EC2 nodes. To use a new key pair name, first create one on %{startLink}Amazon Web Services %{externalLinkIcon} %{endLink}."
+msgid "ClusterIntegration|Select the key pair name that will be used to create EC2 nodes. To use a new key pair name, first create one on %{linkStart}Amazon Web Services%{linkEnd}."
 msgstr ""
 
 msgid "ClusterIntegration|Select zone"
@@ -6276,7 +6279,7 @@ msgstr ""
 msgid "ClusterIntegration|Your cluster API is unreachable. Please ensure your API URL is correct."
 msgstr ""
 
-msgid "ClusterIntegration|Your service role is distinct from the provision role used when authenticating. It will allow Amazon EKS and the Kubernetes control plane to manage AWS resources on your behalf. To use a new role, first create one on %{startLink}Amazon Web Services %{externalLinkIcon} %{endLink}."
+msgid "ClusterIntegration|Your service role is distinct from the provision role used when authenticating. It will allow Amazon EKS and the Kubernetes control plane to manage AWS resources on your behalf. To use a new role, first create one on %{linkStart}Amazon Web Services%{linkEnd}."
 msgstr ""
 
 msgid "ClusterIntegration|Zone"

@@ -151,6 +151,7 @@ namespace :admin do
 
     collection do
       get :tag_list, format: :json
+      get :runner_setup_scripts, format: :json
     end
   end
 

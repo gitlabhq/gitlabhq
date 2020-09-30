@@ -524,7 +524,14 @@ RSpec.describe ProjectsHelper do
 
     subject { helper.send(:can_view_operations_tab?, user, project) }
 
-    [:read_environment, :read_cluster, :metrics_dashboard].each do |ability|
+    [
+      :metrics_dashboard,
+      :read_alert_management_alert,
+      :read_environment,
+      :read_issue,
+      :read_sentry_issue,
+      :read_cluster
+    ].each do |ability|
       it 'includes operations tab' do
         allow(helper).to receive(:can?).and_return(false)
         allow(helper).to receive(:can?).with(user, ability, project).and_return(true)

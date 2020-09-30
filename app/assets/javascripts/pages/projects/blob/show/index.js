@@ -6,6 +6,7 @@ import GpgBadges from '~/gpg_badges';
 import '~/sourcegraph/load';
 import PipelineTourSuccessModal from '~/blob/pipeline_tour_success_modal.vue';
 import { parseBoolean } from '~/lib/utils/common_utils';
+import { isExperimentEnabled } from '~/lib/utils/experimentation';
 
 const createGitlabCiYmlVisualization = (containerId = '#js-blob-toggle-graph-preview') => {
   const el = document.querySelector(containerId);
@@ -70,7 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
     );
   }
 
-  if (gon.features?.suggestPipeline) {
+  if (isExperimentEnabled('suggestPipeline')) {
     const successPipelineEl = document.querySelector('.js-success-pipeline-modal');
 
     if (successPipelineEl) {

@@ -8,8 +8,8 @@ RSpec.describe Projects::IncidentsController do
   let_it_be(:guest) { create(:user) }
 
   before_all do
-    project.add_developer(developer)
     project.add_guest(guest)
+    project.add_developer(developer)
   end
 
   describe 'GET #index' do
@@ -17,7 +17,15 @@ RSpec.describe Projects::IncidentsController do
       get :index, params: { namespace_id: project.namespace, project_id: project }
     end
 
-    it 'shows the page for user with developer role' do
+    it 'shows the page for users with guest role' do
+      sign_in(guest)
+      make_request
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(response).to render_template(:index)
+    end
+
+    it 'shows the page for users with developer role' do
       sign_in(developer)
       make_request
 
@@ -27,19 +35,9 @@ RSpec.describe Projects::IncidentsController do
 
     context 'when user is unauthorized' do
       it 'redirects to the login page' do
-        sign_out(developer)
         make_request
 
         expect(response).to redirect_to(new_user_session_path)
-      end
-    end
-
-    context 'when user is a guest' do
-      it 'shows 404' do
-        sign_in(guest)
-        make_request
-
-        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
   end

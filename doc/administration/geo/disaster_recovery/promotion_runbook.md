@@ -192,8 +192,8 @@ follow these steps to avoid unnecessary data loss:
      this, we will avoid a single recommendation. You may need to:
 
      - Reconfigure the load balancers.
-     - Change DNS records (for example, point the **primary** DNS record to the **secondary**
-       node in order to stop usage of the **primary** node).
+     - Change DNS records (for example, point the **primary** DNS record to the
+       **secondary** node to stop usage of the **primary** node).
      - Stop the virtual servers.
      - Block traffic through a firewall.
      - Revoke object storage permissions from the **primary** node.

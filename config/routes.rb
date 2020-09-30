@@ -89,6 +89,8 @@ Rails.application.routes.draw do
     resources :metrics, only: [:index]
     mount Peek::Railtie => '/peek', as: 'peek_routes'
 
+    get 'runner_setup/platforms' => 'runner_setup#platforms'
+
     # Boards resources shared between group and projects
     resources :boards, only: [] do
       resources :lists, module: :boards, only: [:index, :create, :update, :destroy] do

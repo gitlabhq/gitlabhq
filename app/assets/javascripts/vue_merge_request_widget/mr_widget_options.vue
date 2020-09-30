@@ -45,6 +45,7 @@ import GroupedTestReportsApp from '../reports/components/grouped_test_reports_ap
 import { setFaviconOverlay } from '../lib/utils/common_utils';
 import GroupedAccessibilityReportsApp from '../reports/accessibility_report/grouped_accessibility_reports_app.vue';
 import getStateQuery from './queries/get_state.query.graphql';
+import { isExperimentEnabled } from '~/lib/utils/experimentation';
 
 export default {
   el: '#js-vue-mr-widget',
@@ -148,7 +149,7 @@ export default {
     },
     shouldSuggestPipelines() {
       return (
-        gon.features?.suggestPipeline &&
+        isExperimentEnabled('suggestPipeline') &&
         !this.mr.hasCI &&
         this.mr.mergeRequestAddCiConfigPath &&
         !this.mr.isDismissedSuggestPipeline

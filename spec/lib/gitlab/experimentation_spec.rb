@@ -69,6 +69,20 @@ RSpec.describe Gitlab::Experimentation do
       end
     end
 
+    describe '#push_frontend_experiment' do
+      it 'pushes an experiment to the frontend' do
+        gon = instance_double('gon')
+        experiments = { experiments: { 'myExperiment' => true } }
+
+        stub_experiment_for_user(my_experiment: true)
+        allow(controller).to receive(:gon).and_return(gon)
+
+        expect(gon).to receive(:push).with(experiments, true)
+
+        controller.push_frontend_experiment(:my_experiment)
+      end
+    end
+
     describe '#experiment_enabled?' do
       subject { controller.experiment_enabled?(:test_experiment) }
 

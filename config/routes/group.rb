@@ -35,6 +35,7 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
         put :reset_registration_token
         patch :update_auto_devops
         post :create_deploy_token, path: 'deploy_token/create', to: 'repository#create_deploy_token'
+        get :runner_setup_scripts, format: :json
       end
 
       resource :repository, only: [:show], controller: 'repository' do

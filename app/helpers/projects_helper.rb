@@ -468,7 +468,7 @@ module ProjectsHelper
       serverless:         :read_cluster,
       error_tracking:     :read_sentry_issue,
       alert_management:   :read_alert_management_alert,
-      incidents:          :read_incidents,
+      incidents:          :read_issue,
       labels:             :read_label,
       issues:             :read_issue,
       project_members:    :read_project_member,
@@ -477,7 +477,14 @@ module ProjectsHelper
   end
 
   def can_view_operations_tab?(current_user, project)
-    [:read_environment, :read_cluster, :metrics_dashboard].any? do |ability|
+    [
+      :metrics_dashboard,
+      :read_alert_management_alert,
+      :read_environment,
+      :read_issue,
+      :read_sentry_issue,
+      :read_cluster
+    ].any? do |ability|
       can?(current_user, ability, project)
     end
   end

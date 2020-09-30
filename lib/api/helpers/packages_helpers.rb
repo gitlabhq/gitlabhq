@@ -40,7 +40,7 @@ module API
 
         params = { has_length: has_length }
         params[:maximum_size] = maximum_size unless has_length
-        ::Packages::PackageFileUploader.workhorse_authorize(params)
+        ::Packages::PackageFileUploader.workhorse_authorize(**params)
       end
 
       def authorize_upload!(subject = user_project)

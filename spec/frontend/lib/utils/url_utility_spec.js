@@ -814,4 +814,22 @@ describe('URL utility', () => {
       expect(urlUtils.stripPathTail(path)).toBe(expected);
     });
   });
+
+  describe('getURLOrigin', () => {
+    it('when no url passed, returns correct origin from window location', () => {
+      const origin = 'https://foo.bar';
+
+      setWindowLocation({ origin });
+      expect(urlUtils.getURLOrigin()).toBe(origin);
+    });
+
+    it.each`
+      url                          | expectation
+      ${'not-a-url'}               | ${null}
+      ${'wss://example.com'}       | ${'wss://example.com'}
+      ${'https://foo.bar/foo/bar'} | ${'https://foo.bar'}
+    `('returns correct origin for $url', ({ url, expectation }) => {
+      expect(urlUtils.getURLOrigin(url)).toBe(expectation);
+    });
+  });
 });

@@ -9,17 +9,18 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32351) in GitLab 12.7, behind a disabled feature flag (`self_monitoring_project`).
 > - The feature flag was removed and the Self Monitoring Project was [made generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/198511) in GitLab 12.8.
 
-GitLab has been adding the ability for administrators to see insights into the health of
-their GitLab instance. In order to surface this experience in a native way, similar to how
-you would interact with an application deployed via GitLab, a base project called
-"GitLab self monitoring" with
-[internal visibility](../../../public_access/public_access.md#internal-projects) will be
-added under a group called "GitLab Instance Administrators" specifically created for
-visualizing and configuring the monitoring of your GitLab instance.
+GitLab has been adding the ability for administrators to see insights into the
+health of their GitLab instance. To surface this experience in a native way
+(similar to how you would interact with an application deployed using GitLab),
+a base project called "GitLab self monitoring" with
+[internal visibility](../../../public_access/public_access.md#internal-projects)
+will be added under a group called "GitLab Instance Administrators"
+specifically created for visualizing and configuring the monitoring of your
+GitLab instance.
 
-All administrators at the time of creation of the project and group will be added
-as maintainers of the group and project, and as an admin, you'll be able to add new
-members to the group in order to give them maintainer access to the project.
+All administrators at the time of creation of the project and group will be
+added as maintainers of the group and project, and as an admin, you'll be able
+to add new members to the group to give them maintainer access to the project.
 
 This project is used to self monitor your GitLab instance. The metrics dashboard
 of the project shows some basic resource usage charts, such as CPU and memory usage
@@ -74,7 +75,8 @@ you should
 ## Taking action on Prometheus alerts **(ULTIMATE)**
 
 You can [add a webhook](../../../operations/metrics/alerts.md#external-prometheus-instances)
-to the Prometheus configuration in order for GitLab to receive notifications of any alerts.
+to the Prometheus configuration for GitLab to receive notifications of any
+alerts.
 
 Once the webhook is setup, you can
 [take action on incoming alerts](../../../operations/metrics/alerts.md#trigger-actions-from-alerts).

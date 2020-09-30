@@ -32,38 +32,62 @@ addressed.
 
 ## How to create an A/B test
 
-- Add the experiment to the `Gitlab::Experimentation::EXPERIMENTS` hash in [`experimentation.rb`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib%2Fgitlab%2Fexperimentation.rb):
+### Implementation
 
-  ```ruby
-  EXPERIMENTS = {
-    other_experiment: {
-      #...
-    },
-    # Add your experiment here:
-    signup_flow: {
-      environment: ::Gitlab.dev_env_or_com?, # Target environment, defaults to enabled for development and GitLab.com
-      tracking_category: 'Growth::Acquisition::Experiment::SignUpFlow' # Used for providing the category when setting up tracking data
-    }
-  }.freeze
-  ```
+1. Add the experiment to the `Gitlab::Experimentation::EXPERIMENTS` hash in [`experimentation.rb`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib%2Fgitlab%2Fexperimentation.rb):
 
-- Use the experiment in a controller:
+   ```ruby
+   EXPERIMENTS = {
+     other_experiment: {
+       #...
+     },
+     # Add your experiment here:
+     signup_flow: {
+       environment: ::Gitlab.dev_env_or_com?, # Target environment, defaults to enabled for development and GitLab.com
+       tracking_category: 'Growth::Acquisition::Experiment::SignUpFlow' # Used for providing the category when setting up tracking data
+     }
+   }.freeze
+   ```
 
-  ```ruby
-  class RegistrationController < ApplicationController
-   def show
-     # experiment_enabled?(:feature_name) is also available in views and helpers
-     if experiment_enabled?(:signup_flow)
-       # render the experiment
-     else
-       # render the original version
-     end
-   end
-  end
-  ```
+1. Use the experiment in the code.
 
-- Track necessary events. See the [telemetry guide](../telemetry/index.md) for details.
-- After the merge request is merged, use [`chatops`](../../ci/chatops/README.md) in the
+   - Use this standard for the experiment in a controller:
+
+      ```ruby
+      class RegistrationController < ApplicationController
+       def show
+         # experiment_enabled?(:experiment_key) is also available in views and helpers
+         if experiment_enabled?(:signup_flow)
+           # render the experiment
+         else
+           # render the original version
+         end
+       end
+      end
+      ```
+
+   - Make the experiment available to the frontend in a controller:
+    
+      ```ruby
+      before_action do
+        push_frontend_experiment(:signup_flow)
+      end 
+      ```
+      
+      The above will check whether the experiment is enabled and push the result to the frontend.
+      
+      You can check the state of the feature flag in JavaScript:
+      
+      ```javascript
+      import { isExperimentEnabled } from '~/experimentation';
+      
+      if ( isExperimentEnabled('signupFlow') ) {
+        // ...
+      }
+      ```
+  
+1. Track necessary events. See the [telemetry guide](../telemetry/index.md) for details.
+1. After the merge request is merged, use [`chatops`](../../ci/chatops/README.md) in the
 [appropriate channel](../feature_flags/controls.md#communicate-the-change) to start the experiment for 10% of the users.
 The feature flag should have the name of the experiment with the `_experiment_percentage` suffix appended.
 For visibility, please also share any commands run against production in the `#s_growth` channel:
@@ -77,3 +101,19 @@ For visibility, please also share any commands run against production in the `#s
   ```shell
   /chatops run feature delete signup_flow_experiment_percentage
   ```
+
+### Tests and test helpers
+
+Use the following in Jest to test the experiment is enabled.
+
+```javascript
+import { withGonExperiment } from 'helpers/experimentation_helper';
+
+describe('given experiment is enabled', () => {
+  withGonExperiment('signupFlow');
+
+  it('should do the experimental thing', () => {
+    expect(wrapper.find('.js-some-experiment-triggered-element')).toEqual(expect.any(Element));
+  });
+});
+```

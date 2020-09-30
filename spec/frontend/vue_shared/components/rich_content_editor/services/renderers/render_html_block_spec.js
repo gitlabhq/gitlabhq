@@ -1,22 +1,21 @@
 import renderer from '~/vue_shared/components/rich_content_editor/services/renderers/render_html_block';
 import { buildUneditableHtmlAsTextTokens } from '~/vue_shared/components/rich_content_editor/services/renderers/build_uneditable_token';
 
-import { normalTextNode } from './mock_data';
+describe('rich_content_editor/services/renderers/render_html_block', () => {
+  const htmlBlockNode = {
+    literal: '<div><h1>Heading</h1><p>Paragraph.</p></div>',
+    type: 'htmlBlock',
+  };
 
-const htmlBlockNode = {
-  firstChild: null,
-  literal: '<div><h1>Heading</h1><p>Paragraph.</p></div>',
-  type: 'htmlBlock',
-};
-
-describe('Render HTML renderer', () => {
   describe('canRender', () => {
-    it('should return true when the argument is an html block', () => {
-      expect(renderer.canRender(htmlBlockNode)).toBe(true);
-    });
-
-    it('should return false when the argument is not an html block', () => {
-      expect(renderer.canRender(normalTextNode)).toBe(false);
+    it.each`
+      input                                                                                | result
+      ${htmlBlockNode}                                                                     | ${true}
+      ${{ literal: '<iframe></iframe>', type: 'htmlBlock' }}                               | ${true}
+      ${{ literal: '<iframe src="https://www.youtube.com"></iframe>', type: 'htmlBlock' }} | ${false}
+      ${{ literal: '<iframe></iframe>', type: 'text' }}                                    | ${false}
+    `('returns $result when input=$input', ({ input, result }) => {
+      expect(renderer.canRender(input)).toBe(result);
     });
   });
 

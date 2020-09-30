@@ -15,7 +15,7 @@ const markPrefix = `${marker}-${Date.now()}`;
 
 const reHelpers = {
   template: `.| |\\t|\\n(?!(\\n|${markPrefix}))`,
-  openTag: '<[a-zA-Z]+.*?>',
+  openTag: '<(?!iframe)[a-zA-Z]+.*?>',
   closeTag: '</.+>',
 };
 const reTemplated = new RegExp(`(^${wrapPrefix}(${reHelpers.template})+?${wrapPostfix}$)`, 'gm');

@@ -240,7 +240,6 @@ class ProjectPolicy < BasePolicy
     enable :read_merge_request
     enable :read_sentry_issue
     enable :update_sentry_issue
-    enable :read_incidents
     enable :read_prometheus
     enable :read_metrics_dashboard_annotation
     enable :metrics_dashboard

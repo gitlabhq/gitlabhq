@@ -10,7 +10,7 @@ RSpec.describe 'User follows pipeline suggest nudge spec when feature is enabled
 
   describe 'viewing the new blob page' do
     before do
-      stub_feature_flags(suggest_pipeline: true)
+      stub_experiment_for_user(suggest_pipeline: true)
       sign_in(user)
     end
 

@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import MockAdapter from 'axios-mock-adapter';
 import mountComponent from 'helpers/vue_mount_component_helper';
+import { withGonExperiment } from 'helpers/experimentation_helper';
 import axios from '~/lib/utils/axios_utils';
 import mrWidgetOptions from '~/vue_merge_request_widget/mr_widget_options.vue';
 import eventHub from '~/vue_merge_request_widget/event_hub';
@@ -812,43 +813,61 @@ describe('mrWidgetOptions', () => {
     });
   });
 
-  describe('given suggestPipeline feature flag is enabled', () => {
+  describe('suggestPipeline Experiment', () => {
     beforeEach(() => {
       mock.onAny().reply(200);
 
       // This is needed because some grandchildren Bootstrap components throw warnings
       // https://gitlab.com/gitlab-org/gitlab/issues/208458
       jest.spyOn(console, 'warn').mockImplementation();
-
-      gon.features = { suggestPipeline: true };
-
-      createComponent();
-
-      vm.mr.hasCI = false;
     });
 
-    it('should suggest pipelines when none exist', () => {
-      expect(findSuggestPipeline()).toEqual(expect.any(Element));
+    describe('given experiment is enabled', () => {
+      withGonExperiment('suggestPipeline');
+
+      beforeEach(() => {
+        createComponent();
+
+        vm.mr.hasCI = false;
+      });
+
+      it('should suggest pipelines when none exist', () => {
+        expect(findSuggestPipeline()).toEqual(expect.any(Element));
+      });
+
+      it.each([
+        { isDismissedSuggestPipeline: true },
+        { mergeRequestAddCiConfigPath: null },
+        { hasCI: true },
+      ])('with %s, should not suggest pipeline', async obj => {
+        Object.assign(vm.mr, obj);
+
+        await vm.$nextTick();
+
+        expect(findSuggestPipeline()).toBeNull();
+      });
+
+      it('should allow dismiss of the suggest pipeline message', async () => {
+        findSuggestPipelineButton().click();
+
+        await vm.$nextTick();
+
+        expect(findSuggestPipeline()).toBeNull();
+      });
     });
 
-    it.each([
-      { isDismissedSuggestPipeline: true },
-      { mergeRequestAddCiConfigPath: null },
-      { hasCI: true },
-    ])('with %s, should not suggest pipeline', async obj => {
-      Object.assign(vm.mr, obj);
+    describe('given suggestPipeline experiment is not enabled', () => {
+      withGonExperiment('suggestPipeline', false);
 
-      await vm.$nextTick();
+      beforeEach(() => {
+        createComponent();
 
-      expect(findSuggestPipeline()).toBeNull();
-    });
+        vm.mr.hasCI = false;
+      });
 
-    it('should allow dismiss of the suggest pipeline message', async () => {
-      findSuggestPipelineButton().click();
-
-      await vm.$nextTick();
-
-      expect(findSuggestPipeline()).toBeNull();
+      it('should not suggest pipelines when none exist', () => {
+        expect(findSuggestPipeline()).toBeNull();
+      });
     });
   });
 });

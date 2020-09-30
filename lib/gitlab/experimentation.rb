@@ -97,6 +97,13 @@ module Gitlab
         }
       end
 
+      def push_frontend_experiment(experiment_key)
+        var_name = experiment_key.to_s.camelize(:lower)
+        enabled = experiment_enabled?(experiment_key)
+
+        gon.push({ experiments: { var_name => enabled } }, true)
+      end
+
       def experiment_enabled?(experiment_key)
         return false if dnt_enabled?
 

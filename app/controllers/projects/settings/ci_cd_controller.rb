@@ -3,6 +3,8 @@
 module Projects
   module Settings
     class CiCdController < Projects::ApplicationController
+      include RunnerSetupScripts
+
       before_action :authorize_admin_pipeline!
       before_action :define_variables
       before_action do
@@ -50,6 +52,10 @@ module Projects
 
         flash[:toast] = _("New runners registration token has been generated!")
         redirect_to namespace_project_settings_ci_cd_path
+      end
+
+      def runner_setup_scripts
+        private_runner_setup_scripts(project: @project)
       end
 
       private

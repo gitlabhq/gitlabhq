@@ -42,7 +42,7 @@ module API
       def package_finder(finder_params = {})
         ::Packages::Nuget::PackageFinder.new(
           authorized_user_project,
-          finder_params.merge(package_name: params[:package_name])
+          **finder_params.merge(package_name: params[:package_name])
         )
       end
     end

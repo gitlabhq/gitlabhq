@@ -23,7 +23,7 @@ module API
 
       def initialize(object, options = {})
         options = options.opts_hash if options.is_a?(Grape::Entity::Options)
-        super(object.present(options), options)
+        super(object.present(options), **options)
       end
     end
   end

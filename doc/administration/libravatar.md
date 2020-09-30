@@ -72,10 +72,9 @@ Then run `sudo gitlab-ctl reconfigure` for the changes to take effect.
 missing images for user email addresses that are not found on the Libravatar
 service.
 
-In order to use a set other than `identicon`, replace the `&d=identicon`
-portion of the URL with another supported set.
-For example, you can use the `retro` set, in which case the URL would look like:
-`plain_url: "http://cdn.libravatar.org/avatar/%{hash}?s=%{size}&d=retro"`
+To use a set other than `identicon`, replace the `&d=identicon` portion of the
+URL with another supported set. For example, you can use the `retro` set, in
+which case the URL would look like: `plain_url: "http://cdn.libravatar.org/avatar/%{hash}?s=%{size}&d=retro"`
 
 ## Usage examples for Microsoft Office 365
 
