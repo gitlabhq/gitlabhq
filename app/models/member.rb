@@ -5,6 +5,7 @@ class Member < ApplicationRecord
   include AfterCommitQueue
   include Sortable
   include Importable
+  include CreatedAtFilterable
   include Expirable
   include Gitlab::Access
   include Presentable

@@ -93,6 +93,9 @@ invitation, change their access level, or even delete them.
 Once the user accepts the invitation, they will be prompted to create a new
 GitLab account using the same e-mail address the invitation was sent to.
 
+Note: **Note:**
+Unaccepted invites are automatically deleted after 90 days.
+
 ## Project membership and requesting access
 
 Project owners can :

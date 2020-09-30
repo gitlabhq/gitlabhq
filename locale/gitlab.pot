@@ -1942,6 +1942,9 @@ msgstr ""
 msgid "AdminUsers|You cannot remove your own admin rights."
 msgstr ""
 
+msgid "AdminUsers|You must transfer ownership or delete the groups owned by this user before you can delete their account"
+msgstr ""
+
 msgid "Administration"
 msgstr ""
 
@@ -17978,6 +17981,9 @@ msgid "Profiles|You can upload your avatar here or change it at %{gravatar_link}
 msgstr ""
 
 msgid "Profiles|You don't have access to delete this user."
+msgstr ""
+
+msgid "Profiles|You must transfer ownership or delete groups you are an owner of before you can delete your account"
 msgstr ""
 
 msgid "Profiles|You must transfer ownership or delete these groups before you can delete your account."
