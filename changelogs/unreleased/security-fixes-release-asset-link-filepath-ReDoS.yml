@@ -1,0 +1,5 @@
+---
+title: Fixes release asset link filepath ReDoS
+merge_request:
+author:
+type: security

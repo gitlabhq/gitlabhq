@@ -13891,7 +13891,8 @@ CREATE TABLE public.plan_limits (
     ci_max_artifact_size_requirements integer DEFAULT 0 NOT NULL,
     ci_max_artifact_size_coverage_fuzzing integer DEFAULT 0 NOT NULL,
     ci_max_artifact_size_browser_performance integer DEFAULT 0 NOT NULL,
-    ci_max_artifact_size_load_performance integer DEFAULT 0 NOT NULL
+    ci_max_artifact_size_load_performance integer DEFAULT 0 NOT NULL,
+    project_feature_flags integer DEFAULT 200 NOT NULL
 );
 
 CREATE SEQUENCE public.plan_limits_id_seq
@@ -23869,5 +23870,7 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200716120419
 20200717040735
 20200728182311
+20200831204646
+20200831222347
 \.
 

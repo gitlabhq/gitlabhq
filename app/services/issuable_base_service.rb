@@ -19,6 +19,7 @@ class IssuableBaseService < BaseService
 
   def filter_params(issuable)
     unless can_admin_issuable?(issuable)
+      params.delete(:milestone)
       params.delete(:milestone_id)
       params.delete(:labels)
       params.delete(:add_label_ids)

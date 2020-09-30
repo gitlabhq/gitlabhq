@@ -27623,6 +27623,9 @@ msgstr ""
 msgid "by %{user}"
 msgstr ""
 
+msgid "cannot be a date in the past"
+msgstr ""
+
 msgid "cannot be changed if a personal project has container registry tags."
 msgstr ""
 
