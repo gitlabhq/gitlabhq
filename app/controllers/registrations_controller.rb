@@ -10,7 +10,7 @@ class RegistrationsController < Devise::RegistrationsController
 
   skip_before_action :required_signup_info, :check_two_factor_requirement, only: [:welcome, :update_registration]
   prepend_before_action :check_captcha, only: :create
-  before_action :whitelist_query_limiting, only: [:destroy]
+  before_action :whitelist_query_limiting, :ensure_destroy_prerequisites_met, only: [:destroy]
   before_action :ensure_terms_accepted,
     if: -> { action_name == 'create' && Gitlab::CurrentSettings.current_application_settings.enforce_terms? }
   before_action :load_recaptcha, only: :new
@@ -123,6 +123,14 @@ class RegistrationsController < Devise::RegistrationsController
   end
 
   private
+
+  def ensure_destroy_prerequisites_met
+    if current_user.solo_owned_groups.present?
+      redirect_to profile_account_path,
+        status: :see_other,
+        alert: s_('Profiles|You must transfer ownership or delete groups you are an owner of before you can delete your account')
+    end
+  end
 
   def user_created_message(confirmed: false)
     "User Created: username=#{resource.username} email=#{resource.email} ip=#{request.remote_ip} confirmed:#{confirmed}"

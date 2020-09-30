@@ -2132,6 +2132,9 @@ msgstr ""
 msgid "AdminUsers|You cannot remove your own admin rights."
 msgstr ""
 
+msgid "AdminUsers|You must transfer ownership or delete the groups owned by this user before you can delete their account"
+msgstr ""
+
 msgid "Administration"
 msgstr ""
 
@@ -19391,6 +19394,9 @@ msgstr ""
 msgid "Profiles|You don't have access to delete this user."
 msgstr ""
 
+msgid "Profiles|You must transfer ownership or delete groups you are an owner of before you can delete your account"
+msgstr ""
+
 msgid "Profiles|You must transfer ownership or delete these groups before you can delete your account."
 msgstr ""
 
@@ -25732,6 +25738,9 @@ msgid "This action can lead to data loss. To prevent accidental actions we ask y
 msgstr ""
 
 msgid "This action cannot be undone. You will lose the project's repository and all content: issues, merge requests, etc."
+msgstr ""
+
+msgid "This action has been performed too many times. Try again later."
 msgstr ""
 
 msgid "This action will %{strongOpen}permanently delete%{strongClose} %{codeOpen}%{project}%{codeClose} %{strongOpen}immediately%{strongClose}, including its repositories and all content: issues, merge requests, etc."
