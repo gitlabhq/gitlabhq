@@ -62,3 +62,5 @@ export const MEMBER_TYPES = {
   invite: 'invite',
   accessRequest: 'accessRequest',
 };
+
+export const DAYS_TO_EXPIRE_SOON = 7;

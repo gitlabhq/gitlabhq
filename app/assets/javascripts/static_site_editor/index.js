@@ -19,6 +19,7 @@ const initStaticSiteEditor = el => {
   const router = createRouter(baseUrl);
   const apolloProvider = createApolloProvider({
     isSupportedContent: parseBoolean(isSupportedContent),
+    hasSubmittedChanges: false,
     project: `${namespace}/${project}`,
     returnUrl,
     sourcePath,

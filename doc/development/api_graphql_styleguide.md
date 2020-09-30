@@ -780,6 +780,25 @@ to advertise the need for lookahead:
 For an example of real world use, please
 see [`ResolvesMergeRequests`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/graphql/resolvers/concerns/resolves_merge_requests.rb).
 
+### Negated arguments
+
+Negated filters can filter some resources (for example, find all issues that
+have the `bug` label, but don't have the `bug2` label assigned). The `not`
+argument is the preferred syntax to pass negated arguments:
+
+```graphql
+issues(labelName: "bug", not: {labelName: "bug2"}) {
+  nodes {
+    id
+    title
+  }
+}
+```
+
+To avoid duplicated argument definitions, you can place these arguments in a reusable module (or
+class, if the arguments are nested). Alternatively, you can consider to add a
+[helper resolver method](https://gitlab.com/gitlab-org/gitlab/-/issues/258969).
+
 ## Pass a parent object into a child Presenter
 
 Sometimes you need to access the resolved query parent in a child context to compute fields. Usually the parent is only

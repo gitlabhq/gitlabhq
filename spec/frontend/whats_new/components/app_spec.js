@@ -1,6 +1,7 @@
 import { createLocalVue, mount } from '@vue/test-utils';
 import Vuex from 'vuex';
 import { GlDrawer } from '@gitlab/ui';
+import { mockTracking, unmockTracking, triggerEvent } from 'helpers/tracking_helper';
 import App from '~/whats_new/components/app.vue';
 
 const localVue = createLocalVue();
@@ -12,6 +13,7 @@ describe('App', () => {
   let actions;
   let state;
   let propsData = { features: '[ {"title":"Whats New Drawer"} ]', storageKey: 'storage-key' };
+  let trackingSpy;
 
   const buildWrapper = () => {
     actions = {
@@ -36,11 +38,16 @@ describe('App', () => {
   };
 
   beforeEach(() => {
+    document.body.dataset.page = 'test-page';
+    document.body.dataset.namespaceId = 'namespace-840';
+
+    trackingSpy = mockTracking('_category_', null, jest.spyOn);
     buildWrapper();
   });
 
   afterEach(() => {
     wrapper.destroy();
+    unmockTracking();
   });
 
   const getDrawer = () => wrapper.find(GlDrawer);
@@ -50,8 +57,11 @@ describe('App', () => {
   });
 
   it('dispatches openDrawer when mounted', () => {
-    expect(actions.openDrawer).toHaveBeenCalled();
     expect(actions.openDrawer).toHaveBeenCalledWith(expect.any(Object), 'storage-key');
+    expect(trackingSpy).toHaveBeenCalledWith(undefined, 'click_whats_new_drawer', {
+      label: 'namespace_id',
+      value: 'namespace-840',
+    });
   });
 
   it('dispatches closeDrawer when clicking close', () => {
@@ -76,5 +86,26 @@ describe('App', () => {
     buildWrapper();
 
     expect(getDrawer().exists()).toBe(true);
+  });
+
+  it('send an event when feature item is clicked', () => {
+    propsData = {
+      features: '[ {"title":"Whats New Drawer", "url": "www.url.com"} ]',
+      storageKey: 'storage-key',
+    };
+    buildWrapper();
+    trackingSpy = mockTracking('_category_', wrapper.element, jest.spyOn);
+
+    const link = wrapper.find('[data-testid="whats-new-title-link"]');
+    triggerEvent(link.element);
+
+    expect(trackingSpy.mock.calls[2]).toMatchObject([
+      '_category_',
+      'click_whats_new_item',
+      {
+        label: 'Whats New Drawer',
+        property: 'www.url.com',
+      },
+    ]);
   });
 });

@@ -8,8 +8,6 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-09-22 19:32+0200\n"
-"PO-Revision-Date: 2020-09-22 19:32+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -15700,6 +15698,18 @@ msgstr ""
 msgid "Members with access to %{strong_start}%{group_name}%{strong_end}"
 msgstr ""
 
+msgid "Members|%{time} by %{user}"
+msgstr ""
+
+msgid "Members|Expired"
+msgstr ""
+
+msgid "Members|No expiration set"
+msgstr ""
+
+msgid "Members|in %{time}"
+msgstr ""
+
 msgid "Memory Usage"
 msgstr ""
 
@@ -24434,6 +24444,9 @@ msgstr ""
 msgid "StaticSiteEditor|3. Assign a person to review and accept the merge request."
 msgstr ""
 
+msgid "StaticSiteEditor|A link to view the merge request will appear once ready."
+msgstr ""
+
 msgid "StaticSiteEditor|An error occurred while submitting your changes."
 msgstr ""
 
@@ -24444,6 +24457,9 @@ msgid "StaticSiteEditor|Could not commit the content changes."
 msgstr ""
 
 msgid "StaticSiteEditor|Could not create merge request."
+msgstr ""
+
+msgid "StaticSiteEditor|Creating your merge request"
 msgstr ""
 
 msgid "StaticSiteEditor|Incompatible file content"
@@ -24465,6 +24481,9 @@ msgid "StaticSiteEditor|Update %{sourcePath} file"
 msgstr ""
 
 msgid "StaticSiteEditor|View documentation"
+msgstr ""
+
+msgid "StaticSiteEditor|You can set an assignee to get your changes reviewed and deployed once your merge request is created."
 msgstr ""
 
 msgid "StaticSiteEditor|Your merge request has been created"

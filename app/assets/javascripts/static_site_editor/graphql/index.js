@@ -4,6 +4,7 @@ import createDefaultClient from '~/lib/graphql';
 import typeDefs from './typedefs.graphql';
 import fileResolver from './resolvers/file';
 import submitContentChangesResolver from './resolvers/submit_content_changes';
+import hasSubmittedChangesResolver from './resolvers/has_submitted_changes';
 
 Vue.use(VueApollo);
 
@@ -15,6 +16,7 @@ const createApolloProvider = appData => {
       },
       Mutation: {
         submitContentChanges: submitContentChangesResolver,
+        hasSubmittedChanges: hasSubmittedChangesResolver,
       },
     },
     {

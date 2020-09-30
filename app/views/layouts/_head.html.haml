@@ -50,8 +50,14 @@
   = render 'layouts/startup_css'
   - if user_application_theme == 'gl-dark'
     = stylesheet_link_tag_defer "application_dark"
+    - if content_for?(:page_specific_styles)
+      = yield :page_specific_styles
+    = stylesheet_link_tag_defer "application_utilities_dark"
   - else
     = stylesheet_link_tag_defer "application"
+    - if content_for?(:page_specific_styles)
+      = yield :page_specific_styles
+    = stylesheet_link_tag_defer "application_utilities"
   - unless use_startup_css?
     = stylesheet_link_tag_defer "themes/#{user_application_theme_css_filename}" if user_application_theme_css_filename
   = stylesheet_link_tag "disable_animations", media: "all" if Rails.env.test? || Gitlab.config.gitlab['disable_animations']

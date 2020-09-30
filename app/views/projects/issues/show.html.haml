@@ -12,7 +12,7 @@
 - can_report_spam = @issue.submittable_as_spam_by?(current_user)
 - can_create_issue = show_new_issue_link?(@project)
 - related_branches_path = related_branches_project_issue_path(@project, @issue)
-= stylesheet_link_tag 'page_bundles/issues'
+- add_page_specific_style 'page_bundles/issues'
 
 = render_if_exists "projects/issues/alert_blocked", issue: @issue, current_user: current_user
 = render "projects/issues/alert_moved_from_service_desk", issue: @issue

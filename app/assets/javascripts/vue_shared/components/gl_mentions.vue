@@ -66,12 +66,10 @@ const autoCompleteMap = {
       }
 
       if (doesCurrentLineStartWith('/assign', fullText, selectionStart)) {
-        return this.members.filter(
-          member => member.type === 'User' && !this.assignees.includes(member.username),
-        );
-      } else if (doesCurrentLineStartWith('/reassign', fullText, selectionStart)) {
-        return this.members.filter(member => member.type === 'User');
-      } else if (doesCurrentLineStartWith('/unassign', fullText, selectionStart)) {
+        return this.members.filter(member => !this.assignees.includes(member.username));
+      }
+
+      if (doesCurrentLineStartWith('/unassign', fullText, selectionStart)) {
         return this.members.filter(member => this.assignees.includes(member.username));
       }
 

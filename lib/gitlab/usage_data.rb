@@ -138,6 +138,7 @@ module Gitlab
             pages_domains: count(PagesDomain),
             pool_repositories: count(PoolRepository),
             projects: count(Project),
+            projects_creating_incidents: distinct_count(Issue.incident, :project_id),
             projects_imported_from_github: count(Project.where(import_type: 'github')),
             projects_with_repositories_enabled: count(ProjectFeature.where('repository_access_level > ?', ProjectFeature::DISABLED)),
             projects_with_error_tracking_enabled: count(::ErrorTracking::ProjectErrorTrackingSetting.where(enabled: true)),

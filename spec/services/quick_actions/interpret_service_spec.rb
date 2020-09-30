@@ -834,19 +834,6 @@ RSpec.describe QuickActions::InterpretService do
       let(:issuable) { issue }
     end
 
-    context 'assigning to a group' do
-      let_it_be(:group) { create(:group, :public) }
-
-      before_all do
-        group.add_developer(create(:user))
-      end
-
-      it_behaves_like 'empty command', "Failed to assign a user because no user was found." do
-        let(:content) { "/assign #{group.to_reference}" }
-        let(:issuable) { issue }
-      end
-    end
-
     context 'unassign command' do
       let(:content) { '/unassign' }
 

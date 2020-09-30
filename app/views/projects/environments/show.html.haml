@@ -1,9 +1,7 @@
 - add_to_breadcrumbs _("Environments"), project_environments_path(@project)
 - breadcrumb_title @environment.name
 - page_title _("Environments")
-
-- content_for :page_specific_javascripts do
-  = stylesheet_link_tag 'page_bundles/xterm'
+- add_page_specific_style 'page_bundles/xterm'
 
 #environments-detail-view{ data: { name: @environment.name, id: @environment.id, delete_path: environment_delete_path(@environment)} }
   - if @environment.available? && can?(current_user, :stop_environment, @environment)

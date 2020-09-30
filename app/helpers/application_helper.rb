@@ -357,6 +357,12 @@ module ApplicationHelper
     }
   end
 
+  def add_page_specific_style(path)
+    content_for :page_specific_styles do
+      stylesheet_link_tag_defer path
+    end
+  end
+
   def page_startup_api_calls
     @api_startup_calls
   end

@@ -35,7 +35,6 @@ export function membersBeforeSave(members) {
       : '';
 
     return {
-      type: member.type,
       username: member.username,
       avatarTag: autoCompleteAvatar.length === 1 ? txtAvatar : imgAvatar,
       title: sanitize(title),
@@ -280,11 +279,7 @@ class GfmAutoComplete {
 
           if (command === MEMBER_COMMAND.ASSIGN) {
             // Only include members which are not assigned to Issuable currently
-            return data.filter(
-              member => member.type === 'User' && !assignees.includes(member.search),
-            );
-          } else if (command === MEMBER_COMMAND.REASSIGN) {
-            return data.filter(member => member.type === 'User');
+            return data.filter(member => !assignees.includes(member.search));
           } else if (command === MEMBER_COMMAND.UNASSIGN) {
             // Only include members which are assigned to Issuable currently
             return data.filter(member => assignees.includes(member.search));

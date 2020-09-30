@@ -5,6 +5,7 @@ import InvalidContentMessage from '../components/invalid_content_message.vue';
 import SubmitChangesError from '../components/submit_changes_error.vue';
 import appDataQuery from '../graphql/queries/app_data.query.graphql';
 import sourceContentQuery from '../graphql/queries/source_content.query.graphql';
+import hasSubmittedChangesMutation from '../graphql/mutations/has_submitted_changes.mutation.graphql';
 import submitContentChangesMutation from '../graphql/mutations/submit_content_changes.mutation.graphql';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
 import Tracking from '~/tracking';
@@ -74,6 +75,20 @@ export default {
     submitChanges(images) {
       this.isSavingChanges = true;
 
+      // eslint-disable-next-line promise/catch-or-return
+      this.$apollo
+        .mutate({
+          mutation: hasSubmittedChangesMutation,
+          variables: {
+            input: {
+              hasSubmittedChanges: true,
+            },
+          },
+        })
+        .finally(() => {
+          this.$router.push(SUCCESS_ROUTE);
+        });
+
       this.$apollo
         .mutate({
           mutation: submitContentChangesMutation,
@@ -86,9 +101,6 @@ export default {
               images,
             },
           },
-        })
-        .then(() => {
-          this.$router.push(SUCCESS_ROUTE);
         })
         .catch(e => {
           this.submitChangesError = e.message;

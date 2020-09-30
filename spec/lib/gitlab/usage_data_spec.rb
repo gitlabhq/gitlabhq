@@ -497,6 +497,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
       expect(count_data[:personal_snippets]).to eq(2)
       expect(count_data[:project_snippets]).to eq(4)
 
+      expect(count_data[:projects_creating_incidents]).to eq(2)
       expect(count_data[:projects_with_packages]).to eq(2)
       expect(count_data[:packages]).to eq(4)
       expect(count_data[:user_preferences_user_gitpod_enabled]).to eq(1)
