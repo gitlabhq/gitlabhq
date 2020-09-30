@@ -299,6 +299,14 @@
   :weight: 1
   :idempotent:
   :tags: []
+- :name: cronjob:remove_unaccepted_member_invites
+  :feature_category: :authentication_and_authorization
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: cronjob:remove_unreferenced_lfs_objects
   :feature_category: :git_lfs
   :has_external_dependencies:

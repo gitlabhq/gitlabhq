@@ -40,7 +40,8 @@ Rails.application.configure do |config|
     activity = Gitlab::Auth::Activity.new(opts)
     tracker = Gitlab::Auth::BlockedUserTracker.new(user, auth)
 
-    ActiveSession.destroy(user, auth.request.session.id)
+    # TODO: switch to `auth.request.session.id.private_id` in 13.7
+    ActiveSession.destroy_with_rack_session_id(user, auth.request.session.id)
     activity.user_session_destroyed!
 
     ##
