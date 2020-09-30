@@ -12,6 +12,8 @@
 #     all_available: boolean (defaults to true)
 #     min_access_level: integer
 #     exclude_group_ids: array of integers
+#     include_parent_descendants: boolean (defaults to false) - includes descendant groups when
+#                                 filtering by parent. The parent param must be present.
 #
 # Users with full private access can see all groups. The `owned` and `parent`
 # params can be used to restrict the groups that are returned.
@@ -84,7 +86,11 @@ class GroupsFinder < UnionFinder
   def by_parent(groups)
     return groups unless params[:parent]
 
-    groups.where(parent: params[:parent])
+    if include_parent_descendants?
+      groups.id_in(params[:parent].descendants)
+    else
+      groups.where(parent: params[:parent])
+    end
   end
   # rubocop: enable CodeReuse/ActiveRecord
 
@@ -98,6 +104,10 @@ class GroupsFinder < UnionFinder
 
   def all_available?
     params.fetch(:all_available, true)
+  end
+
+  def include_parent_descendants?
+    params.fetch(:include_parent_descendants, false)
   end
 
   def min_access_level?

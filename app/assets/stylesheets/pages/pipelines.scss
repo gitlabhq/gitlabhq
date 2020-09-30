@@ -993,11 +993,6 @@ button.mini-pipeline-graph-dropdown-toggle {
   float: none;
 }
 
-.autodevops-title {
-  font-weight: $gl-font-weight-normal;
-  line-height: 1.5;
-}
-
 .test-reports-table {
   .build-trace {
     @include build-trace();

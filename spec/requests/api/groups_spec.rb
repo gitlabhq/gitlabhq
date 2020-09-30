@@ -1391,6 +1391,139 @@ RSpec.describe API::Groups do
     end
   end
 
+  describe 'GET /groups/:id/descendant_groups' do
+    let_it_be(:child_group1) { create(:group, parent: group1) }
+    let_it_be(:private_child_group1) { create(:group, :private, parent: group1) }
+    let_it_be(:sub_child_group1) { create(:group, parent: child_group1) }
+    let_it_be(:child_group2) { create(:group, :private, parent: group2) }
+    let_it_be(:sub_child_group2) { create(:group, :private, parent: child_group2) }
+    let(:response_groups) { json_response.map { |group| group['name'] } }
+
+    context 'when unauthenticated' do
+      it 'returns only public descendants' do
+        get api("/groups/#{group1.id}/descendant_groups")
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
+        expect(json_response.length).to eq(2)
+        expect(response_groups).to contain_exactly(child_group1.name, sub_child_group1.name)
+      end
+
+      it 'returns 404 for a private group' do
+        get api("/groups/#{group2.id}/descendant_groups")
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    context 'when authenticated as user' do
+      context 'when user is not member of a public group' do
+        it 'returns no descendants for the public group' do
+          get api("/groups/#{group1.id}/descendant_groups", user2)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response).to be_an Array
+          expect(json_response.length).to eq(0)
+        end
+
+        context 'when using all_available in request' do
+          it 'returns public descendants' do
+            get api("/groups/#{group1.id}/descendant_groups", user2), params: { all_available: true }
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response).to be_an Array
+            expect(json_response.length).to eq(2)
+            expect(response_groups).to contain_exactly(child_group1.name, sub_child_group1.name)
+          end
+        end
+      end
+
+      context 'when user is not member of a private group' do
+        it 'returns 404 for the private group' do
+          get api("/groups/#{group2.id}/descendant_groups", user1)
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+
+      context 'when user is member of public group' do
+        before do
+          group1.add_guest(user2)
+        end
+
+        it 'returns private descendants' do
+          get api("/groups/#{group1.id}/descendant_groups", user2)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to include_pagination_headers
+          expect(json_response).to be_an Array
+          expect(json_response.length).to eq(3)
+          expect(response_groups).to contain_exactly(child_group1.name, sub_child_group1.name, private_child_group1.name)
+        end
+
+        context 'when using statistics in request' do
+          it 'does not include statistics' do
+            get api("/groups/#{group1.id}/descendant_groups", user2), params: { statistics: true }
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response).to be_an Array
+            expect(json_response.first).not_to include 'statistics'
+          end
+        end
+      end
+
+      context 'when user is member of private group' do
+        before do
+          group2.add_guest(user1)
+        end
+
+        it 'returns descendants' do
+          get api("/groups/#{group2.id}/descendant_groups", user1)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response).to be_an Array
+          expect(json_response.length).to eq(2)
+          expect(response_groups).to contain_exactly(child_group2.name, sub_child_group2.name)
+        end
+      end
+    end
+
+    context 'when authenticated as admin' do
+      it 'returns private descendants of a public group' do
+        get api("/groups/#{group1.id}/descendant_groups", admin)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to be_an Array
+        expect(json_response.length).to eq(3)
+      end
+
+      it 'returns descendants of a private group' do
+        get api("/groups/#{group2.id}/descendant_groups", admin)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to be_an Array
+        expect(json_response.length).to eq(2)
+      end
+
+      it 'does not include statistics by default' do
+        get api("/groups/#{group1.id}/descendant_groups", admin)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to be_an Array
+        expect(json_response.first).not_to include('statistics')
+      end
+
+      it 'includes statistics if requested' do
+        get api("/groups/#{group1.id}/descendant_groups", admin), params: { statistics: true }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to be_an Array
+        expect(json_response.first).to include('statistics')
+      end
+    end
+  end
+
   describe "POST /groups" do
     it_behaves_like 'group avatar upload' do
       def make_upload_request

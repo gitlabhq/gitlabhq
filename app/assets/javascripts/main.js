@@ -97,6 +97,8 @@ gl.lazyLoader = new LazyLoader({
   observerNode: '#content-body',
 });
 
+initRails();
+
 // Put all initialisations here that can also wait after everything is rendered and ready
 function deferredInitialisation() {
   const $body = $('body');
@@ -170,8 +172,6 @@ function deferredInitialisation() {
 
   // Adding a helper class to activate animations only after all is rendered
   setTimeout(() => $body.addClass('page-initialised'), 1000);
-
-  initRails();
 }
 
 document.addEventListener('DOMContentLoaded', () => {

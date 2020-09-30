@@ -154,8 +154,8 @@ Some test coverage tools output with ANSI color codes that aren't
 parsed correctly by the regular expression. This causes coverage
 parsing to fail.
 
-If your coverage tool doesn't provide an option to disable color
-codes in the output, you can pipe the output of the coverage tool through a
+Some coverage tools don't provide an option to disable color
+codes in the output. If so, pipe the output of the coverage tool through a
 small one line script that strips the color codes off.
 
 For example:
@@ -204,9 +204,7 @@ If **Public pipelines** is disabled:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/9362) in GitLab 9.1.
 
-If you want all pending non-HEAD pipelines on branches to auto-cancel each time
-a new pipeline is created, such as after a Git push or manually from the UI,
-you can enable this in the project settings:
+You can set pending or running pipelines to cancel automatically when a new pipeline runs on the same branch. You can enable this in the project settings:
 
 1. Go to **Settings > CI / CD**.
 1. Expand **General Pipelines**.
@@ -243,7 +241,7 @@ badges for your project. The latest successful pipeline is used to read
 the pipeline status and test coverage values.
 
 Visit the pipelines settings page in your project to see the exact link to
-your badges, as well as ways to embed the badge image in your HTML or Markdown
+your badges. You can also see ways to embed the badge image in your HTML or Markdown
 pages.
 
 ![Pipelines badges](img/pipelines_settings_badges.png)

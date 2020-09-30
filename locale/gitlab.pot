@@ -19050,6 +19050,9 @@ msgstr ""
 msgid "Please set a new password before proceeding."
 msgstr ""
 
+msgid "Please share your feedback about %{featureName} %{linkStart}in this issue%{linkEnd} to help us improve the experience."
+msgstr ""
+
 msgid "Please solve the reCAPTCHA"
 msgstr ""
 
@@ -28779,9 +28782,6 @@ msgid "Welcome to the guided GitLab tour"
 msgstr ""
 
 msgid "Welcome to your issue board!"
-msgstr ""
-
-msgid "We’ve been making changes to %{featureName} and we’d love your feedback %{linkStart}in this issue%{linkEnd} to help us improve the experience."
 msgstr ""
 
 msgid "What are you searching for?"

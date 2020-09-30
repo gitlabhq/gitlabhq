@@ -65,6 +65,15 @@ job logs are automatically migrated to it along with the other job artifacts.
 
 See "Phase 4: uploading" in [Data flow](#data-flow) to learn about the process.
 
+## Prevent local disk usage
+
+If you want to avoid any local disk usage for job logs,
+you can do so using one of the following options:
+
+- Enable the [beta incremental logging](#new-incremental-logging-architecture) feature.
+- Set the [job logs location](#changing-the-job-logs-local-location)
+  to an NFS drive.
+
 ## How to remove job logs
 
 There isn't a way to automatically expire old job logs, but it's safe to remove
