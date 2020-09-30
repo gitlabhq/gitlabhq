@@ -64,7 +64,7 @@ module Types
           Types::BoardType,
           null: true,
           description: 'A single board of the group',
-          resolver: Resolvers::BoardsResolver.single
+          resolver: Resolvers::BoardResolver
 
     field :label,
           Types::LabelType,

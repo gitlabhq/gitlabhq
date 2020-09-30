@@ -1,9 +1,15 @@
 <script>
 /* eslint-disable @gitlab/vue-require-i18n-strings */
+import { GlTabs, GlTab, GlBadge } from '@gitlab/ui';
 import ModalStore from '../../stores/modal_store';
 import modalMixin from '../../mixins/modal_mixins';
 
 export default {
+  components: {
+    GlTabs,
+    GlTab,
+    GlBadge,
+  },
   mixins: [modalMixin],
   data() {
     return ModalStore.store;
@@ -19,18 +25,18 @@ export default {
 };
 </script>
 <template>
-  <div class="top-area gl-mt-3 gl-mb-3">
-    <ul class="nav-links issues-state-filters">
-      <li :class="{ active: activeTab == 'all' }">
-        <a href="#" role="button" @click.prevent="changeTab('all')">
-          Open issues <span class="badge badge-pill"> {{ issuesCount }} </span>
-        </a>
-      </li>
-      <li :class="{ active: activeTab == 'selected' }">
-        <a href="#" role="button" @click.prevent="changeTab('selected')">
-          Selected issues <span class="badge badge-pill"> {{ selectedCount }} </span>
-        </a>
-      </li>
-    </ul>
-  </div>
+  <gl-tabs class="gl-mt-3">
+    <gl-tab @click.prevent="changeTab('all')">
+      <template slot="title">
+        <span>Open issues</span>
+        <gl-badge size="sm" class="gl-tab-counter-badge">{{ issuesCount }}</gl-badge>
+      </template>
+    </gl-tab>
+    <gl-tab @click.prevent="changeTab('selected')">
+      <template slot="title">
+        <span>Selected issues</span>
+        <gl-badge size="sm" class="gl-tab-counter-badge">{{ selectedCount }}</gl-badge>
+      </template>
+    </gl-tab>
+  </gl-tabs>
 </template>

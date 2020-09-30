@@ -278,6 +278,14 @@ module.exports = {
           chunks: 'initial',
           minChunks: autoEntriesCount * 0.9,
         }),
+        graphql: {
+          priority: 16,
+          name: 'graphql',
+          chunks: 'all',
+          test: /[\\/]node_modules[\\/][^\\/]*(immer|apollo|graphql|zen-observable)[^\\/]*[\\/]/,
+          minChunks: 2,
+          reuseExistingChunk: true,
+        },
         monaco: {
           priority: 15,
           name: 'monaco',

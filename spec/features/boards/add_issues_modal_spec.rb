@@ -79,7 +79,7 @@ RSpec.describe 'Issue Boards add issue modal', :js do
 
     it 'loads issues' do
       page.within('.add-issues-modal') do
-        page.within('.nav-links') do
+        page.within('.gl-tabs') do
           expect(page).to have_content('2')
         end
 
@@ -146,7 +146,7 @@ RSpec.describe 'Issue Boards add issue modal', :js do
         page.within('.add-issues-modal') do
           first('.board-card .board-card-number').click
 
-          page.within('.nav-links') do
+          page.within('.gl-tabs') do
             expect(page).to have_content('Selected issues 1')
           end
         end

@@ -1,10 +1,12 @@
 import { mount } from '@vue/test-utils';
 import { GlProgressBar, GlLink, GlBadge, GlButton } from '@gitlab/ui';
 import { trimText } from 'helpers/text_helper';
+import { getJSONFixture } from 'helpers/fixtures';
 import ReleaseBlockMilestoneInfo from '~/releases/components/release_block_milestone_info.vue';
-import { milestones as originalMilestones } from '../mock_data';
 import { MAX_MILESTONES_TO_DISPLAY } from '~/releases/constants';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
+
+const { milestones: originalMilestones } = getJSONFixture('api/releases/release.json');
 
 describe('Release block milestone info', () => {
   let wrapper;
@@ -35,7 +37,7 @@ describe('Release block milestone info', () => {
     beforeEach(() => factory({ milestones }));
 
     it('renders the correct percentage', () => {
-      expect(milestoneProgressBarContainer().text()).toContain('41% complete');
+      expect(milestoneProgressBarContainer().text()).toContain('44% complete');
     });
 
     it('renders a progress bar that displays the correct percentage', () => {
@@ -44,14 +46,24 @@ describe('Release block milestone info', () => {
       expect(progressBar.exists()).toBe(true);
       expect(progressBar.attributes()).toEqual(
         expect.objectContaining({
-          value: '22',
-          max: '54',
+          value: '4',
+          max: '9',
         }),
       );
     });
 
     it('renders a list of links to all associated milestones', () => {
-      expect(trimText(milestoneListContainer().text())).toContain('Milestones 13.6 • 13.5');
+      // The API currently returns the milestones in a non-deterministic order,
+      // which causes the frontend fixture used by this test to return the
+      // milestones in one order locally and a different order in the CI pipeline.
+      // This is a bug and is tracked here: https://gitlab.com/gitlab-org/gitlab/-/issues/259012
+      // When this bug is fixed this expectation should be updated to
+      // assert the expected order.
+      const containerText = trimText(milestoneListContainer().text());
+      expect(
+        containerText.includes('Milestones 12.4 • 12.3') ||
+          containerText.includes('Milestones 12.3 • 12.4'),
+      ).toBe(true);
 
       milestones.forEach((m, i) => {
         const milestoneLink = milestoneListContainer()
@@ -65,7 +77,7 @@ describe('Release block milestone info', () => {
     });
 
     it('renders the "Issues" section with a total count of issues associated to the milestone(s)', () => {
-      const totalIssueCount = 54;
+      const totalIssueCount = 9;
       const issuesContainerText = trimText(issuesContainer().text());
 
       expect(issuesContainerText).toContain(`Issues ${totalIssueCount}`);
@@ -73,7 +85,7 @@ describe('Release block milestone info', () => {
       const badge = issuesContainer().find(GlBadge);
       expect(badge.text()).toBe(totalIssueCount.toString());
 
-      expect(issuesContainerText).toContain('Open: 32 • Closed: 22');
+      expect(issuesContainerText).toContain('Open: 5 • Closed: 4');
     });
   });
 

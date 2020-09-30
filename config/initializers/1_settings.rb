@@ -731,6 +731,7 @@ Gitlab.ee do
   Settings['kerberos'] ||= Settingslogic.new({})
   Settings.kerberos['enabled'] = false if Settings.kerberos['enabled'].nil?
   Settings.kerberos['keytab'] = nil if Settings.kerberos['keytab'].blank? # nil means use default keytab
+  Settings.kerberos['simple_ldap_linking_allowed_realms'] = [] if Settings.kerberos['simple_ldap_linking_allowed_realms'].blank?
   Settings.kerberos['service_principal_name'] = nil if Settings.kerberos['service_principal_name'].blank? # nil means any SPN in keytab
   Settings.kerberos['use_dedicated_port'] = false if Settings.kerberos['use_dedicated_port'].nil?
   Settings.kerberos['https'] = Settings.gitlab.https if Settings.kerberos['https'].nil?

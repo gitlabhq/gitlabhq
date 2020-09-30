@@ -24,16 +24,6 @@ RSpec.describe ResourceAccessTokens::CreateService do
       end
     end
 
-    shared_examples 'fails when flag is disabled' do
-      before do
-        stub_feature_flags(resource_access_token: false)
-      end
-
-      it 'returns nil' do
-        expect(subject).to be nil
-      end
-    end
-
     shared_examples 'fails on gitlab.com' do
       before do
         allow(Gitlab).to receive(:com?) { true }
@@ -181,7 +171,6 @@ RSpec.describe ResourceAccessTokens::CreateService do
       let_it_be(:resource) { project }
 
       it_behaves_like 'fails when user does not have the permission to create a Resource Bot'
-      it_behaves_like 'fails when flag is disabled'
       it_behaves_like 'fails on gitlab.com'
 
       context 'user with valid permission' do

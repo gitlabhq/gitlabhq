@@ -13,6 +13,7 @@ RSpec.describe 'Releases (JavaScript fixtures)' do
     create(:milestone,
            project: project,
            title: '12.3',
+           description: 'The 12.3 milestone',
            start_date: Time.zone.parse('2018-12-10'),
            due_date: Time.zone.parse('2019-01-10'))
   end
@@ -21,6 +22,7 @@ RSpec.describe 'Releases (JavaScript fixtures)' do
     create(:milestone,
            project: project,
            title: '12.4',
+           description: 'The 12.4 milestone',
            start_date: Time.zone.parse('2019-01-10'),
            due_date: Time.zone.parse('2019-02-10'))
   end
@@ -65,8 +67,24 @@ RSpec.describe 'Releases (JavaScript fixtures)' do
     create(:release_link,
            release: release,
            name: 'Runbook',
-           url: 'https://example.com/runbook',
+           url: "#{release.project.web_url}/runbook",
            link_type: :runbook)
+  end
+
+  let_it_be(:package_link) do
+    create(:release_link,
+           release: release,
+           name: 'Package',
+           url: 'https://example.com/package',
+           link_type: :package)
+  end
+
+  let_it_be(:image_link) do
+    create(:release_link,
+           release: release,
+           name: 'Image',
+           url: 'https://example.com/image',
+           link_type: :image)
   end
 
   after(:all) do

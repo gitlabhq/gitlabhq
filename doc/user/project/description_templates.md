@@ -79,6 +79,9 @@ This will enable the `Bug` dropdown option when creating or editing issues. When
 to the issue description field. The 'Reset template' button will discard any
 changes you made after picking the template and return it to its initial status.
 
+TIP: **Tip:**
+You can create short-cut links to create an issue using a designated template. For example: `https://gitlab.com/gitlab-org/gitlab/-/issues/new?issuable_template=Feature%20proposal`.
+
 ![Description templates](img/description_templates.png)
 
 ## Setting a default template for merge requests and issues **(STARTER)**

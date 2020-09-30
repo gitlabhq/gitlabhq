@@ -10,8 +10,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/214839) to [GitLab Starter](https://about.gitlab.com/pricing/) in 13.0.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/215364) to [GitLab Core](https://about.gitlab.com/pricing/) in 13.2.
 
-## Overview
-
 Service Desk is a module that allows your team to connect directly
 with any external party through email right inside of GitLab; no external tools required.
 An ongoing conversation right where your software is built ensures that user feedback ends

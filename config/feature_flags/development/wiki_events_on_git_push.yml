@@ -1,7 +1,0 @@
----
-name: wiki_events_on_git_push
-introduced_by_url: 
-rollout_issue_url: 
-group: 
-type: development
-default_enabled: false

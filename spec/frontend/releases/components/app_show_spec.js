@@ -1,10 +1,12 @@
 import Vuex from 'vuex';
 import { shallowMount } from '@vue/test-utils';
+import { getJSONFixture } from 'helpers/fixtures';
 import ReleaseShowApp from '~/releases/components/app_show.vue';
 import ReleaseSkeletonLoader from '~/releases/components/release_skeleton_loader.vue';
-import { release as originalRelease } from '../mock_data';
 import ReleaseBlock from '~/releases/components/release_block.vue';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
+
+const originalRelease = getJSONFixture('api/releases/release.json');
 
 describe('Release show component', () => {
   let wrapper;

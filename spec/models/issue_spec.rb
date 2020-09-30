@@ -1238,4 +1238,12 @@ RSpec.describe Issue do
       expect(issue.allows_reviewers?).to be(false)
     end
   end
+
+  describe '#issue_type_supports?' do
+    let_it_be(:issue) { create(:issue) }
+
+    it 'raises error when feature is invalid' do
+      expect { issue.issue_type_supports?(:unkown_feature) }.to raise_error(ArgumentError)
+    end
+  end
 end

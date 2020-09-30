@@ -56,6 +56,9 @@ class GroupPolicy < BasePolicy
     @user.is_a?(DeployToken) && @user.groups.include?(@subject) && @user.write_package_registry
   end
 
+  with_scope :subject
+  condition(:resource_access_token_available) { resource_access_token_available? }
+
   rule { design_management_enabled }.policy do
     enable :read_design_activity
   end
@@ -187,6 +190,10 @@ class GroupPolicy < BasePolicy
     enable :read_group
   end
 
+  rule { resource_access_token_available & can?(:admin_group) }.policy do
+    enable :admin_resource_access_tokens
+  end
+
   def access_level
     return GroupMember::NO_ACCESS if @user.nil?
     return GroupMember::NO_ACCESS unless user_is_user?
@@ -202,6 +209,14 @@ class GroupPolicy < BasePolicy
 
   def user_is_user?
     user.is_a?(User)
+  end
+
+  def group
+    @subject
+  end
+
+  def resource_access_token_available?
+    true
   end
 end
 

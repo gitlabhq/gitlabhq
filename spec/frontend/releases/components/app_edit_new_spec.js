@@ -3,11 +3,14 @@ import { mount } from '@vue/test-utils';
 import { merge } from 'lodash';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
+import { getJSONFixture } from 'helpers/fixtures';
 import ReleaseEditNewApp from '~/releases/components/app_edit_new.vue';
-import { release as originalRelease, milestones as originalMilestones } from '../mock_data';
 import * as commonUtils from '~/lib/utils/common_utils';
 import { BACK_URL_PARAM } from '~/releases/constants';
 import AssetLinksForm from '~/releases/components/asset_links_form.vue';
+
+const originalRelease = getJSONFixture('api/releases/release.json');
+const originalMilestones = originalRelease.milestones;
 
 describe('Release edit/new component', () => {
   let wrapper;

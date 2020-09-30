@@ -1,10 +1,10 @@
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import testAction from 'helpers/vuex_action_helper';
+import { getJSONFixture } from 'helpers/fixtures';
 import { cloneDeep } from 'lodash';
 import * as actions from '~/releases/stores/modules/detail/actions';
 import * as types from '~/releases/stores/modules/detail/mutation_types';
-import { release as originalRelease } from '../../../mock_data';
 import createState from '~/releases/stores/modules/detail/state';
 import { deprecatedCreateFlash as createFlash } from '~/flash';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
@@ -20,6 +20,8 @@ jest.mock('~/lib/utils/url_utility', () => ({
   redirectTo: jest.fn(),
   joinPaths: jest.requireActual('~/lib/utils/url_utility').joinPaths,
 }));
+
+const originalRelease = getJSONFixture('api/releases/release.json');
 
 describe('Release detail actions', () => {
   let state;

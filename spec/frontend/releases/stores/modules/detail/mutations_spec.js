@@ -1,9 +1,11 @@
+import { getJSONFixture } from 'helpers/fixtures';
 import createState from '~/releases/stores/modules/detail/state';
 import mutations from '~/releases/stores/modules/detail/mutations';
 import * as types from '~/releases/stores/modules/detail/mutation_types';
-import { release as originalRelease } from '../../../mock_data';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { ASSET_LINK_TYPE, DEFAULT_ASSET_LINK_TYPE } from '~/releases/constants';
+
+const originalRelease = getJSONFixture('api/releases/release.json');
 
 describe('Release detail mutations', () => {
   let state;

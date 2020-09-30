@@ -309,21 +309,22 @@ The following table gives an overview of how the API functions generally behave.
 
 The following table shows the possible return codes for API requests.
 
-| Return values | Description |
-| ------------- | ----------- |
-| `200 OK` | The `GET`, `PUT` or `DELETE` request was successful, the resource(s) itself is returned as JSON. |
-| `204 No Content` | The server has successfully fulfilled the request and that there is no additional content to send in the response payload body. |
-| `201 Created` | The `POST` request was successful and the resource is returned as JSON. |
-| `304 Not Modified` | Indicates that the resource has not been modified since the last request. |
-| `400 Bad Request` | A required attribute of the API request is missing, e.g., the title of an issue is not given. |
-| `401 Unauthorized` | The user is not authenticated, a valid [user token](#authentication) is necessary. |
-| `403 Forbidden` | The request is not allowed, e.g., the user is not allowed to delete a project. |
-| `404 Not Found` | A resource could not be accessed, e.g., an ID for a resource could not be found. |
+| Return values            | Description |
+| ------------------------ | ----------- |
+| `200 OK`                 | The `GET`, `PUT` or `DELETE` request was successful, the resource(s) itself is returned as JSON. |
+| `204 No Content`         | The server has successfully fulfilled the request and that there is no additional content to send in the response payload body. |
+| `201 Created`            | The `POST` request was successful and the resource is returned as JSON. |
+| `304 Not Modified`       | Indicates that the resource has not been modified since the last request. |
+| `400 Bad Request`        | A required attribute of the API request is missing, e.g., the title of an issue is not given. |
+| `401 Unauthorized`       | The user is not authenticated, a valid [user token](#authentication) is necessary. |
+| `403 Forbidden`          | The request is not allowed, e.g., the user is not allowed to delete a project. |
+| `404 Not Found`          | A resource could not be accessed, e.g., an ID for a resource could not be found. |
 | `405 Method Not Allowed` | The request is not supported. |
-| `409 Conflict` | A conflicting resource already exists, e.g., creating a project with a name that already exists. |
-| `412` | Indicates the request was denied. May happen if the `If-Unmodified-Since` header is provided when trying to delete a resource, which was modified in between. |
-| `422 Unprocessable` | The entity could not be processed. |
-| `500 Server Error` | While handling the request something went wrong server-side. |
+| `409 Conflict`           | A conflicting resource already exists, e.g., creating a project with a name that already exists. |
+| `412`                    | Indicates the request was denied. May happen if the `If-Unmodified-Since` header is provided when trying to delete a resource, which was modified in between. |
+| `422 Unprocessable`      | The entity could not be processed. |
+| `429 Too Many Requests`  | The user exceeded the [application rate limits](../administration/instance_limits.md#rate-limits). |
+| `500 Server Error`       | While handling the request, something went wrong server-side. |
 
 ## Pagination
 

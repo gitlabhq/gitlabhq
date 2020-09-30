@@ -1,0 +1,5 @@
+---
+title: Update button in modal_copy_button.vue to use GlButton from GitLab UI
+merge_request: 43714
+author:
+type: other

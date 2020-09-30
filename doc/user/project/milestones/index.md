@@ -7,8 +7,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Milestones
 
-## Overview
-
 Milestones in GitLab are a way to track issues and merge requests created to achieve a broader goal in a certain period of time.
 
 Milestones allow you to organize issues and merge requests into a cohesive group, with an optional start date and an optional due date.

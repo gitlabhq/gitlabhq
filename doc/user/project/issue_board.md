@@ -8,8 +8,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/5554) in [GitLab 8.11](https://about.gitlab.com/releases/2016/08/22/gitlab-8-11-released/#issue-board).
 
-## Overview
-
 The GitLab Issue Board is a software project management tool used to plan,
 organize, and visualize a workflow for a feature or product release.
 It can be used as a [Kanban](https://en.wikipedia.org/wiki/Kanban_(development)) or a

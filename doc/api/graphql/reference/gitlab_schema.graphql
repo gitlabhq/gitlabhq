@@ -7125,9 +7125,9 @@ type Group {
   """
   board(
     """
-    Find a board by its ID
+    The board's ID
     """
-    id: ID
+    id: ID!
   ): Board
 
   """
@@ -12761,9 +12761,9 @@ type Project {
   """
   board(
     """
-    Find a board by its ID
+    The board's ID
     """
-    id: ID
+    id: ID!
   ): Board
 
   """

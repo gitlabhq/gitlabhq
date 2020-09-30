@@ -1,5 +1,6 @@
 import { cloneDeep } from 'lodash';
 import testAction from 'helpers/vuex_action_helper';
+import { getJSONFixture } from 'helpers/fixtures';
 import {
   fetchReleases,
   fetchReleasesGraphQl,
@@ -17,11 +18,13 @@ import {
 } from '~/lib/utils/common_utils';
 import {
   pageInfoHeadersWithoutPagination,
-  releases as originalReleases,
   graphqlReleasesResponse as originalGraphqlReleasesResponse,
 } from '../../../mock_data';
 import allReleasesQuery from '~/releases/queries/all_releases.query.graphql';
 import { PAGE_SIZE } from '~/releases/constants';
+
+const originalRelease = getJSONFixture('api/releases/release.json');
+const originalReleases = [originalRelease];
 
 describe('Releases State actions', () => {
   let mockedState;

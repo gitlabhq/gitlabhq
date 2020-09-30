@@ -36,6 +36,10 @@ module QA
         Flow::Login.sign_in
       end
 
+      after do
+        ssh_key.remove_via_api!
+      end
+
       it 'clones, pushes, and pulls a snippet over HTTP, edits via UI', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/826' do
         Resource::Repository::Push.fabricate! do |push|
           push.repository_http_uri = repository_uri_http

@@ -625,6 +625,13 @@ To get around this, you can [change the group path](../../group/index.md#changin
 [change the project path](../../project/settings/index.md#renaming-a-repository) or change the branch
 name.
 
+You may also get a `404 Not Found` or `Unknown Manifest` message if you are using
+a Docker Engine version earlier than 17.12. Later versions of Docker Engine use
+[the v2 API](https://docs.docker.com/registry/spec/manifest-v2-2/).
+
+The images in your GitLab Container Registry must also use the Docker v2 API.
+For information on how to update your images, see the [Docker help](https://docs.docker.com/registry/spec/deprecated-schema-v1).
+
 ### Troubleshoot as a GitLab server admin
 
 Troubleshooting the GitLab Container Registry, most of the times, requires

@@ -90,7 +90,7 @@ RSpec.shared_examples 'group and project boards query' do
 
     it_behaves_like 'a working graphql query' do
       before do
-        post_graphql(query_single_board, current_user: current_user)
+        post_graphql(query_single_board("id: \"gid://gitlab/Board/1\""), current_user: current_user)
       end
     end
 

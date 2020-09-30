@@ -104,6 +104,9 @@ class ProjectPolicy < BasePolicy
   with_scope :subject
   condition(:service_desk_enabled) { @subject.service_desk_enabled? }
 
+  with_scope :subject
+  condition(:resource_access_token_available) { resource_access_token_available? }
+
   # We aren't checking `:read_issue` or `:read_merge_request` in this case
   # because it could be possible for a user to see an issuable-iid
   # (`:read_issue_iid` or `:read_merge_request_iid`) but then wouldn't be
@@ -589,6 +592,10 @@ class ProjectPolicy < BasePolicy
     prevent :read_project
   end
 
+  rule { resource_access_token_available & can?(:admin_project) }.policy do
+    enable :admin_resource_access_tokens
+  end
+
   private
 
   def user_is_user?
@@ -661,6 +668,10 @@ class ProjectPolicy < BasePolicy
     else
       true
     end
+  end
+
+  def resource_access_token_available?
+    true
   end
 
   def project

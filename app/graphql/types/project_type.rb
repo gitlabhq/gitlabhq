@@ -234,7 +234,7 @@ module Types
           Types::BoardType,
           null: true,
           description: 'A single board of the project',
-          resolver: Resolvers::BoardsResolver.single
+          resolver: Resolvers::BoardResolver
 
     field :jira_imports,
           Types::JiraImportType.connection_type,

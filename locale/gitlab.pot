@@ -31241,9 +31241,6 @@ msgstr ""
 msgid "toggle collapse"
 msgstr ""
 
-msgid "toggle dropdown"
-msgstr ""
-
 msgid "triggered"
 msgstr ""
 

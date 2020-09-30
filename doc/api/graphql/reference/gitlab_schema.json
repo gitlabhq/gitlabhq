@@ -19764,11 +19764,15 @@
               "args": [
                 {
                   "name": "id",
-                  "description": "Find a board by its ID",
+                  "description": "The board's ID",
                   "type": {
-                    "kind": "SCALAR",
-                    "name": "ID",
-                    "ofType": null
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "ID",
+                      "ofType": null
+                    }
                   },
                   "defaultValue": null
                 }
@@ -37719,11 +37723,15 @@
               "args": [
                 {
                   "name": "id",
-                  "description": "Find a board by its ID",
+                  "description": "The board's ID",
                   "type": {
-                    "kind": "SCALAR",
-                    "name": "ID",
-                    "ofType": null
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "ID",
+                      "ofType": null
+                    }
                   },
                   "defaultValue": null
                 }

@@ -880,4 +880,6 @@ RSpec.describe GroupPolicy do
       it { is_expected.to be_disallowed(:destroy_package) }
     end
   end
+
+  it_behaves_like 'Self-managed Core resource access tokens'
 end

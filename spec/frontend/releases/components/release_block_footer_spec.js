@@ -1,10 +1,12 @@
 import { mount } from '@vue/test-utils';
 import { GlLink, GlIcon } from '@gitlab/ui';
 import { trimText } from 'helpers/text_helper';
+import { getJSONFixture } from 'helpers/fixtures';
 import { cloneDeep } from 'lodash';
 import ReleaseBlockFooter from '~/releases/components/release_block_footer.vue';
-import { release as originalRelease } from '../mock_data';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
+
+const originalRelease = getJSONFixture('api/releases/release.json');
 
 const mockFutureDate = new Date(9999, 0, 0).toISOString();
 let mockIsFutureRelease = false;
