@@ -9,8 +9,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/3672) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.4.
 
-## Overview
-
 Your application's Docker image may itself be based on Docker images that contain known
 vulnerabilities. By including an extra job in your pipeline that scans for those vulnerabilities and
 displays them in a merge request, you can use GitLab to audit your Docker-based apps.

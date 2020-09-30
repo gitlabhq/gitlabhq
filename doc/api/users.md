@@ -950,7 +950,7 @@ Returns `204 No Content` on success, or `404 Not found` if the key cannot be fou
 
 ## List all GPG keys for given user
 
-Get a list of a specified user's GPG keys. Available only for admins.
+Get a list of a specified user's GPG keys. This endpoint can be accessed without authentication.
 
 ```plaintext
 GET /users/:id/gpg_keys

@@ -21,11 +21,13 @@ module Gitlab
       def resolve(user, commit_message, files)
         msg = commit_message || default_commit_message
         resolution = Gitlab::Git::Conflict::Resolution.new(user, files, msg)
-        args = {
+
+        resolver.resolve_conflicts(
+          @source_repo,
+          resolution,
           source_branch: merge_request.source_branch,
           target_branch: merge_request.target_branch
-        }
-        resolver.resolve_conflicts(@source_repo, resolution, args)
+        )
       ensure
         @merge_request.clear_memoized_shas
       end

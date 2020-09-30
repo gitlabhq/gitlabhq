@@ -12,8 +12,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/39840) in
 >   GitLab 11.11 for [instances](../../instance/clusters/index.md).
 
-## Overview
-
 Using the GitLab project Kubernetes integration, you can:
 
 - Use [Review Apps](../../../ci/review_apps/index.md).

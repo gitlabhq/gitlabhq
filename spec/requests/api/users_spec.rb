@@ -1460,39 +1460,22 @@ RSpec.describe API::Users, :do_not_mock_admin_mode do
   end
 
   describe 'GET /user/:id/gpg_keys' do
-    context 'when unauthenticated' do
-      it 'returns authentication error' do
-        get api("/users/#{user.id}/gpg_keys")
+    it 'returns 404 for non-existing user' do
+      get api('/users/0/gpg_keys')
 
-        expect(response).to have_gitlab_http_status(:unauthorized)
-      end
+      expect(response).to have_gitlab_http_status(:not_found)
+      expect(json_response['message']).to eq('404 User Not Found')
     end
 
-    context 'when authenticated' do
-      it 'returns 404 for non-existing user' do
-        get api('/users/0/gpg_keys', admin)
+    it 'returns array of GPG keys' do
+      user.gpg_keys << gpg_key
 
-        expect(response).to have_gitlab_http_status(:not_found)
-        expect(json_response['message']).to eq('404 User Not Found')
-      end
+      get api("/users/#{user.id}/gpg_keys")
 
-      it 'returns 404 error if key not foud' do
-        delete api("/users/#{user.id}/gpg_keys/#{non_existing_record_id}", admin)
-
-        expect(response).to have_gitlab_http_status(:not_found)
-        expect(json_response['message']).to eq('404 GPG Key Not Found')
-      end
-
-      it 'returns array of GPG keys' do
-        user.gpg_keys << gpg_key
-
-        get api("/users/#{user.id}/gpg_keys", admin)
-
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(response).to include_pagination_headers
-        expect(json_response).to be_an Array
-        expect(json_response.first['key']).to eq(gpg_key.key)
-      end
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(response).to include_pagination_headers
+      expect(json_response).to be_an Array
+      expect(json_response.first['key']).to eq(gpg_key.key)
     end
   end
 
