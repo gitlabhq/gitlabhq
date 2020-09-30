@@ -23978,6 +23978,9 @@ msgstr ""
 msgid "This action can lead to data loss. To prevent accidental actions we ask you to confirm your intention."
 msgstr ""
 
+msgid "This action has been performed too many times. Try again later."
+msgstr ""
+
 msgid "This also resolves all related threads"
 msgstr ""
 
