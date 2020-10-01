@@ -10700,7 +10700,6 @@ ALTER SEQUENCE cluster_projects_id_seq OWNED BY cluster_projects.id;
 CREATE TABLE cluster_providers_aws (
     id bigint NOT NULL,
     cluster_id bigint NOT NULL,
-    created_by_user_id integer,
     num_nodes integer NOT NULL,
     status integer NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -13562,7 +13561,8 @@ CREATE TABLE namespace_settings (
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
     namespace_id integer NOT NULL,
-    prevent_forking_outside_group boolean DEFAULT false NOT NULL
+    prevent_forking_outside_group boolean DEFAULT false NOT NULL,
+    allow_mfa_for_subgroups boolean DEFAULT true NOT NULL
 );
 
 CREATE TABLE namespace_statistics (
@@ -19879,8 +19879,6 @@ CREATE UNIQUE INDEX index_cluster_providers_aws_on_cluster_id ON cluster_provide
 
 CREATE INDEX index_cluster_providers_aws_on_cluster_id_and_status ON cluster_providers_aws USING btree (cluster_id, status);
 
-CREATE INDEX index_cluster_providers_aws_on_created_by_user_id ON cluster_providers_aws USING btree (created_by_user_id);
-
 CREATE INDEX index_cluster_providers_gcp_on_cloud_run ON cluster_providers_gcp USING btree (cloud_run);
 
 CREATE UNIQUE INDEX index_cluster_providers_gcp_on_cluster_id ON cluster_providers_gcp USING btree (cluster_id);
@@ -23702,9 +23700,6 @@ ALTER TABLE ONLY alert_management_alert_user_mentions
 
 ALTER TABLE ONLY snippet_statistics
     ADD CONSTRAINT fk_rails_ebc283ccf1 FOREIGN KEY (snippet_id) REFERENCES snippets(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY cluster_providers_aws
-    ADD CONSTRAINT fk_rails_ed1fdfaeb2 FOREIGN KEY (created_by_user_id) REFERENCES users(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY project_security_settings
     ADD CONSTRAINT fk_rails_ed4abe1338 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

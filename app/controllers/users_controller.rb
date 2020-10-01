@@ -106,7 +106,7 @@ class UsersController < ApplicationController
 
   def calendar_activities
     @calendar_date = Date.parse(params[:date]) rescue Date.today
-    @events = contributions_calendar.events_by_date(@calendar_date)
+    @events = contributions_calendar.events_by_date(@calendar_date).map(&:present)
 
     render 'calendar_activities', layout: false
   end

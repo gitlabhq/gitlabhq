@@ -329,14 +329,6 @@ class Event < ApplicationRecord
     end
   end
 
-  def note_target_type
-    if target.noteable_type.present?
-      target.noteable_type.titleize
-    else
-      "Wall"
-    end.downcase
-  end
-
   def body?
     if push_action?
       push_with_commits?

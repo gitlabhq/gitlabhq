@@ -14,28 +14,7 @@ being developed, efficiency and awareness can be increased.
 
 GitLab offers solutions for handling incidents in your applications and services,
 such as [setting up Prometheus alerts](#configure-prometheus-alerts),
-[displaying metrics](./alert_details.md#embed-metrics-in-incidents-and-issues), and sending notifications.
-
-## Alert notifications
-
-### Slack Notifications
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216326) in GitLab 13.1.
-
-You can be alerted via a Slack message when a new alert has been received.
-
-See the [Slack Notifications Service docs](../../user/project/integrations/slack.md) for information on how to set this up.
-
-### Notify developers of alerts
-
-GitLab can react to the alerts triggered from your applications and services
-by creating issues and alerting developers through email. By default, GitLab
-sends these emails to [owners and maintainers](../../user/permissions.md) of the project.
-These emails contain details of the alert, and a link for more information.
-
-To send separate email notifications to users with
-[Developer permissions](../../user/permissions.md), see
-[Configure incidents](./incidents.md#configure-incidents).
+[displaying metrics](./alerts.md#embed-metrics-in-incidents-and-issues), and sending notifications.
 
 ## Configure Prometheus alerts
 
@@ -54,7 +33,7 @@ When [configuring the generic alerts integration](./generic_alerts.md), GitLab
 creates a unique endpoint which receives a JSON-formatted, customizable payload.
 
 After configuration, you can manage your alerts using either the
-[alerts section](./alerts.md) or the [alert details section](./alert_details.md).
+[alerts section](./alerts.md) or the [alert details section](./alerts.md#alert-details-page).
 
 ## Integrate incidents with Slack
 

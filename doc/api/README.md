@@ -601,7 +601,7 @@ Such errors appear in two cases:
 
 - A required attribute of the API request is missing, e.g., the title of an
   issue is not given
-- An attribute did not pass the validation, e.g., user bio is too long
+- An attribute did not pass the validation, e.g., the user bio is too long
 
 When an attribute is missing, you will get something like:
 

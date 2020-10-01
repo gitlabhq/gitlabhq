@@ -267,7 +267,6 @@ of a WAF are:
 - Access control for your application.
 - Highly configurable logging and blocking rules.
 
-12345678901234567890123456789012345678901234567890123456789012345678901234567890
 By default, GitLab provides you with a WAF known as [`ModSecurity`](https://www.modsecurity.org/),
 which is a toolkit for real-time web application monitoring, logging, and access
 control. GitLab's offering applies the [OWASP's Core Rule Set](https://www.modsecurity.org/CRS/Documentation/),

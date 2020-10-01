@@ -132,5 +132,11 @@ RSpec.describe Gitlab::StaticSiteEditor::Config::GeneratedConfig do
 
       it { is_expected.to include(return_url: nil) }
     end
+
+    context 'when a commit for the ref cannot be found' do
+      let(:ref) { 'nonexistent-ref' }
+
+      it { is_expected.to include(commit_id: nil) }
+    end
   end
 end

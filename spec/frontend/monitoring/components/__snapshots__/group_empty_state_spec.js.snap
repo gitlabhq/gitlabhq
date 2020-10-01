@@ -8,6 +8,7 @@ Object {
   "primaryButtonText": "Verify configuration",
   "secondaryButtonLink": null,
   "secondaryButtonText": null,
+  "svgHeight": null,
   "svgPath": "/path/to/empty-group-illustration.svg",
   "title": "Query cannot be processed",
 }
@@ -34,6 +35,7 @@ Object {
   "primaryButtonText": "Verify configuration",
   "secondaryButtonLink": null,
   "secondaryButtonText": null,
+  "svgHeight": null,
   "svgPath": "/path/to/empty-group-illustration.svg",
   "title": "Connection failed",
 }
@@ -49,6 +51,7 @@ Object {
   "primaryButtonText": null,
   "secondaryButtonLink": null,
   "secondaryButtonText": null,
+  "svgHeight": null,
   "svgPath": "/path/to/empty-group-illustration.svg",
   "title": "An error has occurred",
 }
@@ -64,6 +67,7 @@ Object {
   "primaryButtonText": null,
   "secondaryButtonLink": null,
   "secondaryButtonText": null,
+  "svgHeight": null,
   "svgPath": "/path/to/empty-group-illustration.svg",
   "title": "Waiting for performance data",
 }
@@ -79,6 +83,7 @@ Object {
   "primaryButtonText": null,
   "secondaryButtonLink": null,
   "secondaryButtonText": null,
+  "svgHeight": null,
   "svgPath": "/path/to/empty-group-illustration.svg",
   "title": "No data to display",
 }
@@ -105,6 +110,7 @@ Object {
   "primaryButtonText": null,
   "secondaryButtonLink": null,
   "secondaryButtonText": null,
+  "svgHeight": null,
   "svgPath": "/path/to/empty-group-illustration.svg",
   "title": "Connection timed out",
 }
@@ -131,6 +137,7 @@ Object {
   "primaryButtonText": null,
   "secondaryButtonLink": null,
   "secondaryButtonText": null,
+  "svgHeight": null,
   "svgPath": "/path/to/empty-group-illustration.svg",
   "title": "An error has occurred",
 }
