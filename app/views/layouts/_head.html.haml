@@ -50,13 +50,11 @@
   = render 'layouts/startup_css'
   - if user_application_theme == 'gl-dark'
     = stylesheet_link_tag_defer "application_dark"
-    - if content_for?(:page_specific_styles)
-      = yield :page_specific_styles
+    = yield :page_specific_styles
     = stylesheet_link_tag_defer "application_utilities_dark"
   - else
     = stylesheet_link_tag_defer "application"
-    - if content_for?(:page_specific_styles)
-      = yield :page_specific_styles
+    = yield :page_specific_styles
     = stylesheet_link_tag_defer "application_utilities"
   - unless use_startup_css?
     = stylesheet_link_tag_defer "themes/#{user_application_theme_css_filename}" if user_application_theme_css_filename
@@ -70,15 +68,11 @@
 
   = Gon::Base.render_data(nonce: content_security_policy_nonce)
 
-  - if content_for?(:library_javascripts)
-    = yield :library_javascripts
-
   = javascript_include_tag locale_path unless I18n.locale == :en
   = webpack_bundle_tag "sentry" if Gitlab.config.sentry.enabled
   = webpack_bundle_tag 'performance_bar' if performance_bar_enabled?
 
-  - if content_for?(:page_specific_javascripts)
-    = yield :page_specific_javascripts
+  = yield :page_specific_javascripts
 
   = webpack_controller_bundle_tags
   = webpack_bundle_tag "chrome_84_icon_fix" if browser.chrome?([">=84", "<84.0.4147.125"]) || browser.edge?([">=84", "<84.0.522.59"])

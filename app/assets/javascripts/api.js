@@ -65,6 +65,8 @@ const Api = {
   tagsPath: '/api/:version/projects/:id/repository/tags',
   freezePeriodsPath: '/api/:version/projects/:id/freeze_periods',
   usageDataIncrementUniqueUsersPath: '/api/:version/usage_data/increment_unique_users',
+  featureFlagUserLists: '/api/:version/projects/:id/feature_flags_user_lists',
+  featureFlagUserList: '/api/:version/projects/:id/feature_flags_user_lists/:list_iid',
 
   group(groupId, callback = () => {}) {
     const url = Api.buildUrl(Api.groupPath).replace(':id', groupId);
@@ -708,6 +710,42 @@ const Api = {
 
   buildUrl(url) {
     return joinPaths(gon.relative_url_root || '', url.replace(':version', gon.api_version));
+  },
+
+  fetchFeatureFlagUserLists(id, page) {
+    const url = Api.buildUrl(this.featureFlagUserLists).replace(':id', id);
+
+    return axios.get(url, { params: { page } });
+  },
+
+  createFeatureFlagUserList(id, list) {
+    const url = Api.buildUrl(this.featureFlagUserLists).replace(':id', id);
+
+    return axios.post(url, list);
+  },
+
+  fetchFeatureFlagUserList(id, listIid) {
+    const url = Api.buildUrl(this.featureFlagUserList)
+      .replace(':id', id)
+      .replace(':list_iid', listIid);
+
+    return axios.get(url);
+  },
+
+  updateFeatureFlagUserList(id, list) {
+    const url = Api.buildUrl(this.featureFlagUserList)
+      .replace(':id', id)
+      .replace(':list_iid', list.iid);
+
+    return axios.put(url, list);
+  },
+
+  deleteFeatureFlagUserList(id, listIid) {
+    const url = Api.buildUrl(this.featureFlagUserList)
+      .replace(':id', id)
+      .replace(':list_iid', listIid);
+
+    return axios.delete(url);
   },
 };
 

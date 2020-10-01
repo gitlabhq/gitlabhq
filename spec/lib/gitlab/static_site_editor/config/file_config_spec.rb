@@ -17,11 +17,7 @@ RSpec.describe Gitlab::StaticSiteEditor::Config::FileConfig do
 
       describe '#to_hash_with_defaults' do
         it 'returns hash created from string' do
-          hash = {
-            static_site_generator: 'middleman'
-          }
-
-          expect(config.to_hash_with_defaults).to eq hash
+          expect(config.to_hash_with_defaults.fetch(:static_site_generator)).to eq 'middleman'
         end
       end
 
@@ -40,13 +36,9 @@ RSpec.describe Gitlab::StaticSiteEditor::Config::FileConfig do
   context 'when a config entry has an empty value' do
     let(:yml) { 'static_site_generator: ' }
 
-    describe '#to_hash_with_defaults' do
-      it 'returns default values' do
-        hash = {
-          static_site_generator: 'middleman'
-        }
-
-        expect(config.to_hash_with_defaults).to eq hash
+    describe '#to_hash' do
+      it 'returns default value' do
+        expect(config.to_hash_with_defaults.fetch(:static_site_generator)).to eq 'middleman'
       end
     end
 

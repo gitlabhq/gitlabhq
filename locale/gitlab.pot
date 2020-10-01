@@ -14120,6 +14120,9 @@ msgstr ""
 msgid "Issue cannot be found."
 msgstr ""
 
+msgid "Issue created from vulnerability %{vulnerability_link}"
+msgstr ""
+
 msgid "Issue events"
 msgstr ""
 

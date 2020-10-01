@@ -35,18 +35,15 @@ RSpec.describe 'Static Site Editor' do
       expect(node['data-project-id']).to eq(project.id.to_s)
 
       # assert default config file values are present
+      expect(node['data-image-upload-path']).to eq('source/images')
       expect(node['data-static-site-generator']).to eq('middleman')
     end
   end
 
   context "when a config file is present" do
     let(:config_file_yml) do
-      # NOTE: There isn't currently any support for a non-default config value, but this can be
-      #       manually tested by temporarily adding an additional supported valid value in
-      #       lib/gitlab/static_site_editor/config/file_config/entry/static_site_generator.rb.
-      #       As soon as there is a real non-default value supported by the config file,
-      #       this test can be updated to include it.
       <<-EOS
+        image_upload_path: custom-image-upload-path
         static_site_generator: middleman
       EOS
     end
@@ -63,6 +60,7 @@ RSpec.describe 'Static Site Editor' do
       node = page.find('#static-site-editor')
 
       # assert user-specified config file values are present
+      expect(node['data-image-upload-path']).to eq('custom-image-upload-path')
       expect(node['data-static-site-generator']).to eq('middleman')
     end
   end

@@ -2,8 +2,6 @@
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/39840) in GitLab 11.11.
 
-## Overview
-
 Similar to [project-level](../../project/clusters/index.md)
 and [group-level](../../group/clusters/index.md) Kubernetes clusters,
 instance-level Kubernetes clusters allow you to connect a Kubernetes cluster to

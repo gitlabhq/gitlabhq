@@ -13,7 +13,10 @@ module Gitlab
             include ::Gitlab::Config::Entry::Configurable
             include ::Gitlab::Config::Entry::Attributable
 
-            ALLOWED_KEYS = %i[static_site_generator].freeze
+            ALLOWED_KEYS = %i[
+              image_upload_path
+              static_site_generator
+            ].freeze
 
             attributes ALLOWED_KEYS
 
@@ -21,6 +24,8 @@ module Gitlab
               validates :config, allowed_keys: ALLOWED_KEYS
             end
 
+            entry :image_upload_path, Entry::ImageUploadPath,
+                  description: 'Configuration of the Static Site Editor image upload path.'
             entry :static_site_generator, Entry::StaticSiteGenerator,
                   description: 'Configuration of the Static Site Editor static site generator.'
           end

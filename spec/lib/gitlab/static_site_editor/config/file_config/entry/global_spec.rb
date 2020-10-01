@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::StaticSiteEditor::Config::FileConfig::Entry::Global do
   let(:global) { described_class.new(hash) }
   let(:default_static_site_generator_value) { 'middleman' }
+  let(:default_image_upload_path_value) { 'source/images' }
 
   shared_examples_for 'valid default configuration' do
     describe '#compose!' do
@@ -17,17 +18,15 @@ RSpec.describe Gitlab::StaticSiteEditor::Config::FileConfig::Entry::Global do
       end
 
       it 'creates node object for each entry' do
-        expect(global.descendants.count).to eq 1
+        expect(global.descendants.count).to eq 2
       end
 
       it 'creates node object using valid class' do
-        expect(global.descendants.first)
-          .to be_an_instance_of expected_node_object_class
+        expect(global.descendants.map(&:class)).to match_array(expected_node_object_classes)
       end
 
-      it 'sets correct description for nodes' do
-        expect(global.descendants.first.description)
-          .to eq 'Configuration of the Static Site Editor static site generator.'
+      it 'sets a description containing "Static Site Editor" for all nodes' do
+        expect(global.descendants.map(&:description)).to all(match(/Static Site Editor/))
       end
 
       describe '#leaf?' do
@@ -62,6 +61,12 @@ RSpec.describe Gitlab::StaticSiteEditor::Config::FileConfig::Entry::Global do
         end
       end
 
+      describe '#image_upload_path_value' do
+        it 'returns correct values' do
+          expect(global.image_upload_path_value).to eq(default_image_upload_path_value)
+        end
+      end
+
       describe '#static_site_generator_value' do
         it 'returns correct values' do
           expect(global.static_site_generator_value).to eq(default_static_site_generator_value)
@@ -77,17 +82,29 @@ RSpec.describe Gitlab::StaticSiteEditor::Config::FileConfig::Entry::Global do
 
     context 'when filtering all the entry/node names' do
       it 'contains the expected node names' do
-        expect(described_class.nodes.keys)
-          .to match_array(%i[static_site_generator])
+        expected_node_names = %i[
+          image_upload_path
+          static_site_generator
+        ]
+        expect(described_class.nodes.keys).to match_array(expected_node_names)
       end
     end
   end
 
   context 'when configuration is valid' do
     context 'when some entries defined' do
-      let(:expected_node_object_class) { Gitlab::StaticSiteEditor::Config::FileConfig::Entry::StaticSiteGenerator }
+      let(:expected_node_object_classes) do
+        [
+          Gitlab::StaticSiteEditor::Config::FileConfig::Entry::ImageUploadPath,
+          Gitlab::StaticSiteEditor::Config::FileConfig::Entry::StaticSiteGenerator
+        ]
+      end
+
       let(:hash) do
-        { static_site_generator: default_static_site_generator_value }
+        {
+          image_upload_path: default_image_upload_path_value,
+          static_site_generator: default_static_site_generator_value
+        }
       end
 
       it_behaves_like 'valid default configuration'
@@ -95,7 +112,13 @@ RSpec.describe Gitlab::StaticSiteEditor::Config::FileConfig::Entry::Global do
   end
 
   context 'when value is an empty hash' do
-    let(:expected_node_object_class) { Gitlab::Config::Entry::Unspecified }
+    let(:expected_node_object_classes) do
+      [
+        Gitlab::Config::Entry::Unspecified,
+        Gitlab::Config::Entry::Unspecified
+      ]
+    end
+
     let(:hash) { {} }
 
     it_behaves_like 'valid default configuration'
@@ -106,15 +129,35 @@ RSpec.describe Gitlab::StaticSiteEditor::Config::FileConfig::Entry::Global do
       global.compose!
     end
 
-    context 'when static_site_generator is invalid' do
+    context 'when a single entry is invalid' do
       let(:hash) do
-        { static_site_generator: { not_a_string: true } }
+        { image_upload_path: { not_a_string: true } }
       end
 
       describe '#errors' do
         it 'reports errors' do
           expect(global.errors)
-            .to include 'static_site_generator config should be a string'
+            .to include 'image_upload_path config should be a string'
+        end
+      end
+    end
+
+    context 'when a multiple entries are invalid' do
+      let(:hash) do
+        {
+          image_upload_path: { not_a_string: true },
+          static_site_generator: { not_a_string: true }
+        }
+      end
+
+      describe '#errors' do
+        it 'reports errors' do
+          expect(global.errors)
+            .to match_array([
+                              'image_upload_path config should be a string',
+                              'static_site_generator config should be a string',
+                              "static_site_generator config should be 'middleman'"
+                            ])
         end
       end
     end
