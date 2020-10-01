@@ -6,12 +6,13 @@ RSpec.describe MergeRequests::UpdateService, :mailer do
   include ProjectForksHelper
 
   let(:group) { create(:group, :public) }
-  let(:project) { create(:project, :repository, group: group) }
+  let(:project) { create(:project, :private, :repository, group: group) }
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
   let(:user3) { create(:user) }
   let(:label) { create(:label, project: project) }
   let(:label2) { create(:label) }
+  let(:milestone) { create(:milestone, project: project) }
 
   let(:merge_request) do
     create(:merge_request, :simple, title: 'Old title',
@@ -61,7 +62,8 @@ RSpec.describe MergeRequests::UpdateService, :mailer do
         }
       end
 
-      let(:service) { described_class.new(project, user, opts) }
+      let(:service) { described_class.new(project, current_user, opts) }
+      let(:current_user) { user }
 
       before do
         allow(service).to receive(:execute_hooks)
@@ -83,6 +85,26 @@ RSpec.describe MergeRequests::UpdateService, :mailer do
         expect(@merge_request.target_branch).to eq('target')
         expect(@merge_request.merge_params['force_remove_source_branch']).to eq('1')
         expect(@merge_request.discussion_locked).to be_truthy
+      end
+
+      context 'updating milestone' do
+        RSpec.shared_examples 'updates milestone' do
+          it 'sets milestone' do
+            expect(@merge_request.milestone).to eq milestone
+          end
+        end
+
+        context 'when milestone_id param' do
+          let(:opts) { { milestone_id: milestone.id } }
+
+          it_behaves_like 'updates milestone'
+        end
+
+        context 'when milestone param' do
+          let(:opts) { { milestone: milestone } }
+
+          it_behaves_like 'updates milestone'
+        end
       end
 
       it 'executes hooks with update action' do
@@ -150,6 +172,46 @@ RSpec.describe MergeRequests::UpdateService, :mailer do
 
         expect(note).not_to be_nil
         expect(note.note).to eq 'locked this merge request'
+      end
+
+      context 'when current user cannot admin issues in the project' do
+        let(:guest) { create(:user) }
+        let(:current_user) { guest }
+
+        before do
+          project.add_guest(guest)
+        end
+
+        it 'filters out params that cannot be set without the :admin_merge_request permission' do
+          expect(@merge_request).to be_valid
+          expect(@merge_request.title).to eq('New title')
+          expect(@merge_request.assignees).to match_array([user3])
+          expect(@merge_request).to be_opened
+          expect(@merge_request.labels.count).to eq(0)
+          expect(@merge_request.target_branch).to eq('target')
+          expect(@merge_request.discussion_locked).to be_falsey
+          expect(@merge_request.milestone).to be_nil
+        end
+
+        context 'updating milestone' do
+          RSpec.shared_examples 'does not update milestone' do
+            it 'sets milestone' do
+              expect(@merge_request.milestone).to be_nil
+            end
+          end
+
+          context 'when milestone_id param' do
+            let(:opts) { { milestone_id: milestone.id } }
+
+            it_behaves_like 'does not update milestone'
+          end
+
+          context 'when milestone param' do
+            let(:opts) { { milestone: milestone } }
+
+            it_behaves_like 'does not update milestone'
+          end
+        end
       end
 
       context 'when not including source branch removal options' do

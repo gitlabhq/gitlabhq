@@ -9,13 +9,9 @@ RSpec.describe Mutations::Metrics::Dashboard::Annotations::Delete do
   let_it_be(:project) { create(:project, :private, :repository) }
   let_it_be(:environment) { create(:environment, project: project) }
   let_it_be(:annotation) { create(:metrics_dashboard_annotation, environment: environment) }
-  let(:mutation) do
-    variables = {
-      id: GitlabSchema.id_from_object(annotation).to_s
-    }
 
-    graphql_mutation(:delete_annotation, variables)
-  end
+  let(:variables) { { id: GitlabSchema.id_from_object(annotation).to_s } }
+  let(:mutation)  { graphql_mutation(:delete_annotation, variables) }
 
   def mutation_response
     graphql_mutation_response(:delete_annotation)
@@ -37,15 +33,11 @@ RSpec.describe Mutations::Metrics::Dashboard::Annotations::Delete do
     end
 
     context 'with invalid params' do
-      let(:mutation) do
-        variables = {
-          id: 'invalid_id'
-        }
+      let(:variables) { { id: GitlabSchema.id_from_object(project).to_s } }
 
-        graphql_mutation(:delete_annotation, variables)
+      it_behaves_like 'a mutation that returns top-level errors' do
+        let(:match_errors) { eq(["#{variables[:id]} is not a valid ID for #{annotation.class}."]) }
       end
-
-      it_behaves_like 'a mutation that returns top-level errors', errors: ['invalid_id is not a valid GitLab ID.']
     end
 
     context 'when the delete fails' do

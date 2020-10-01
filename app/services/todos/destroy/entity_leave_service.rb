@@ -52,7 +52,14 @@ module Todos
 
       # rubocop: disable CodeReuse/ActiveRecord
       def remove_project_todos
-        Todo.where(project_id: non_authorized_projects, user_id: user.id).delete_all
+        # Issues are viewable by guests (even in private projects), so remove those todos
+        # from projects without guest access
+        Todo.where(project_id: non_authorized_guest_projects, user_id: user.id)
+          .delete_all
+
+        # MRs require reporter access, so remove those todos that are not authorized
+        Todo.where(project_id: non_authorized_reporter_projects, target_type: MergeRequest.name, user_id: user.id)
+          .delete_all
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
@@ -68,7 +75,7 @@ module Todos
                     when Project
                       { id: entity.id }
                     when Namespace
-                      { namespace_id: non_member_groups }
+                      { namespace_id: non_authorized_reporter_groups }
                     end
 
         Project.where(condition)
@@ -76,8 +83,32 @@ module Todos
       # rubocop: enable CodeReuse/ActiveRecord
 
       # rubocop: disable CodeReuse/ActiveRecord
-      def non_authorized_projects
-        projects.where('id NOT IN (?)', user.authorized_projects.select(:id))
+      def authorized_reporter_projects
+        user.authorized_projects(Gitlab::Access::REPORTER).select(:id)
+      end
+      # rubocop: enable CodeReuse/ActiveRecord
+
+      # rubocop: disable CodeReuse/ActiveRecord
+      def authorized_guest_projects
+        user.authorized_projects(Gitlab::Access::GUEST).select(:id)
+      end
+      # rubocop: enable CodeReuse/ActiveRecord
+
+      # rubocop: disable CodeReuse/ActiveRecord
+      def non_authorized_reporter_projects
+        projects.where('id NOT IN (?)', authorized_reporter_projects)
+      end
+      # rubocop: enable CodeReuse/ActiveRecord
+
+      # rubocop: disable CodeReuse/ActiveRecord
+      def non_authorized_guest_projects
+        projects.where('id NOT IN (?)', authorized_guest_projects)
+      end
+      # rubocop: enable CodeReuse/ActiveRecord
+
+      # rubocop: disable CodeReuse/ActiveRecord
+      def authorized_reporter_groups
+        GroupsFinder.new(user, min_access_level: Gitlab::Access::REPORTER).execute.select(:id)
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
@@ -91,9 +122,9 @@ module Todos
       # rubocop: enable CodeReuse/ActiveRecord
 
       # rubocop: disable CodeReuse/ActiveRecord
-      def non_member_groups
+      def non_authorized_reporter_groups
         entity.self_and_descendants.select(:id)
-          .where('id NOT IN (?)', user.membership_groups.select(:id))
+          .where('id NOT IN (?)', authorized_reporter_groups)
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
@@ -106,8 +137,6 @@ module Todos
       # rubocop: disable CodeReuse/ActiveRecord
       def confidential_issues
         assigned_ids = IssueAssignee.select(:issue_id).where(user_id: user.id)
-        authorized_reporter_projects = user
-          .authorized_projects(Gitlab::Access::REPORTER).select(:id)
 
         Issue.where(project_id: projects, confidential: true)
           .where('project_id NOT IN(?)', authorized_reporter_projects)

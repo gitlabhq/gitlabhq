@@ -15,6 +15,29 @@ RSpec.describe Profiles::EmailsController do
     end
   end
 
+  shared_examples_for 'respects the rate limit' do
+    context 'after the rate limit is exceeded' do
+      before do
+        allowed_threshold = Gitlab::ApplicationRateLimiter.rate_limits[action][:threshold]
+
+        allow(Gitlab::ApplicationRateLimiter)
+          .to receive(:increment)
+          .and_return(allowed_threshold + 1)
+      end
+
+      it 'does not send any email' do
+        expect { subject }.not_to change { ActionMailer::Base.deliveries.size }
+      end
+
+      it 'displays an alert' do
+        subject
+
+        expect(response).to have_gitlab_http_status(:redirect)
+        expect(flash[:alert]).to eq(_('This action has been performed too many times. Try again later.'))
+      end
+    end
+  end
+
   describe '#create' do
     let(:email) { 'add_email@example.com' }
     let(:params) { { email: { email: email } } }
@@ -31,6 +54,10 @@ RSpec.describe Profiles::EmailsController do
       it 'does not send an email confirmation' do
         expect { subject }.not_to change { ActionMailer::Base.deliveries.size }
       end
+    end
+
+    it_behaves_like 'respects the rate limit' do
+      let(:action) { :profile_add_new_email }
     end
   end
 
@@ -53,6 +80,10 @@ RSpec.describe Profiles::EmailsController do
       it 'does not send an email confirmation' do
         expect { subject }.not_to change { ActionMailer::Base.deliveries.size }
       end
+    end
+
+    it_behaves_like 'respects the rate limit' do
+      let(:action) { :profile_resend_email_confirmation }
     end
   end
 end

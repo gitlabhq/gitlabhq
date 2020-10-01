@@ -10,6 +10,7 @@ RSpec.describe Issues::UpdateService, :mailer do
   let_it_be(:project, reload: true) { create(:project, :repository, group: group) }
   let_it_be(:label) { create(:label, project: project) }
   let_it_be(:label2) { create(:label, project: project) }
+  let_it_be(:milestone) { create(:milestone, project: project) }
 
   let(:issue) do
     create(:issue, title: 'Old title',
@@ -53,7 +54,8 @@ RSpec.describe Issues::UpdateService, :mailer do
           label_ids: [label.id],
           due_date: Date.tomorrow,
           discussion_locked: true,
-          severity: 'low'
+          severity: 'low',
+          milestone_id: milestone.id
         }
       end
 
@@ -70,6 +72,14 @@ RSpec.describe Issues::UpdateService, :mailer do
         expect(issue.labels).to match_array [label]
         expect(issue.due_date).to eq Date.tomorrow
         expect(issue.discussion_locked).to be_truthy
+        expect(issue.confidential).to be_falsey
+        expect(issue.milestone).to eq milestone
+      end
+
+      it 'updates issue milestone when passing `milestone` param' do
+        update_issue(milestone: milestone)
+
+        expect(issue.milestone).to eq milestone
       end
 
       context 'when issue type is not incident' do
@@ -128,6 +138,8 @@ RSpec.describe Issues::UpdateService, :mailer do
         expect(TodosDestroyer::ConfidentialIssueWorker).to receive(:perform_in).with(Todo::WAIT_FOR_DELETE, issue.id)
 
         update_issue(confidential: true)
+
+        expect(issue.confidential).to be_truthy
       end
 
       it 'does not enqueue ConfidentialIssueWorker when an issue is made non confidential' do
@@ -137,6 +149,8 @@ RSpec.describe Issues::UpdateService, :mailer do
         expect(TodosDestroyer::ConfidentialIssueWorker).not_to receive(:perform_in)
 
         update_issue(confidential: false)
+
+        expect(issue.confidential).to be_falsey
       end
 
       context 'issue in incident type' do
@@ -297,7 +311,7 @@ RSpec.describe Issues::UpdateService, :mailer do
         end
 
         it 'filters out params that cannot be set without the :admin_issue permission' do
-          described_class.new(project, guest, opts).execute(issue)
+          described_class.new(project, guest, opts.merge(confidential: true)).execute(issue)
 
           expect(issue).to be_valid
           expect(issue.title).to eq 'New title'
@@ -307,6 +321,7 @@ RSpec.describe Issues::UpdateService, :mailer do
           expect(issue.milestone).to be_nil
           expect(issue.due_date).to be_nil
           expect(issue.discussion_locked).to be_falsey
+          expect(issue.confidential).to be_falsey
         end
       end
 
