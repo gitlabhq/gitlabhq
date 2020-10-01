@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module SearchHelper
-  SEARCH_PERMITTED_PARAMS = [:search, :scope, :project_id, :group_id, :repository_ref, :snippets, :state, :confidential].freeze
+  SEARCH_PERMITTED_PARAMS = [:search, :scope, :project_id, :group_id, :repository_ref, :snippets, :sort, :state, :confidential].freeze
 
   def search_autocomplete_opts(term)
     return unless current_user
@@ -305,8 +305,6 @@ module SearchHelper
   end
 
   def show_user_search_tab?
-    return false if Feature.disabled?(:users_search, default_enabled: true)
-
     if @project
       project_search_tabs?(:members)
     else

@@ -85,6 +85,41 @@ RSpec.describe Projects::ContainerRepository::DeleteTagsService do
     end
   end
 
+  RSpec.shared_examples 'supporting fast delete' do
+    context 'when the registry supports fast delete' do
+      before do
+        allow(repository.client).to receive(:supports_tag_delete?).and_return(true)
+      end
+
+      it_behaves_like 'calling the correct delete tags service', ::Projects::ContainerRepository::Gitlab::DeleteTagsService
+
+      it_behaves_like 'handling invalid params'
+
+      context 'with the real service' do
+        before do
+          stub_delete_reference_requests(tags)
+          expect_delete_tag_by_names(tags)
+        end
+
+        it { is_expected.to include(status: :success) }
+
+        it_behaves_like 'logging a success response'
+      end
+
+      context 'with a timeout error' do
+        before do
+          expect_next_instance_of(::Projects::ContainerRepository::Gitlab::DeleteTagsService) do |delete_service|
+            expect(delete_service).to receive(:delete_tags).and_raise(::Projects::ContainerRepository::Gitlab::DeleteTagsService::TimeoutError)
+          end
+        end
+
+        it { is_expected.to include(status: :error, message: 'timeout while deleting tags') }
+
+        it_behaves_like 'logging an error response', message: 'timeout while deleting tags'
+      end
+    end
+  end
+
   describe '#execute' do
     let(:tags) { %w[A Ba] }
 
@@ -103,38 +138,7 @@ RSpec.describe Projects::ContainerRepository::DeleteTagsService do
         project.add_developer(user)
       end
 
-      context 'when the registry supports fast delete' do
-        before do
-          allow(repository.client).to receive(:supports_tag_delete?).and_return(true)
-        end
-
-        it_behaves_like 'calling the correct delete tags service', ::Projects::ContainerRepository::Gitlab::DeleteTagsService
-
-        it_behaves_like 'handling invalid params'
-
-        context 'with the real service' do
-          before do
-            stub_delete_reference_requests(tags)
-            expect_delete_tag_by_names(tags)
-          end
-
-          it { is_expected.to include(status: :success) }
-
-          it_behaves_like 'logging a success response'
-        end
-
-        context 'with a timeout error' do
-          before do
-            expect_next_instance_of(::Projects::ContainerRepository::Gitlab::DeleteTagsService) do |delete_service|
-              expect(delete_service).to receive(:delete_tags).and_raise(::Projects::ContainerRepository::Gitlab::DeleteTagsService::TimeoutError)
-            end
-          end
-
-          it { is_expected.to include(status: :error, message: 'timeout while deleting tags') }
-
-          it_behaves_like 'logging an error response', message: 'timeout while deleting tags'
-        end
-      end
+      it_behaves_like 'supporting fast delete'
 
       context 'when the registry does not support fast delete' do
         before do
@@ -144,6 +148,20 @@ RSpec.describe Projects::ContainerRepository::DeleteTagsService do
         it_behaves_like 'calling the correct delete tags service', ::Projects::ContainerRepository::ThirdParty::DeleteTagsService
 
         it_behaves_like 'handling invalid params'
+      end
+    end
+
+    context 'without user' do
+      let_it_be(:user) { nil }
+
+      context 'when not run by a cleanup policy' do
+        it { is_expected.to include(status: :error) }
+      end
+
+      context 'when run by a cleanup policy' do
+        let(:params) { { tags: tags, container_expiration_policy: true } }
+
+        it_behaves_like 'supporting fast delete'
       end
     end
   end

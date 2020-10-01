@@ -12,7 +12,7 @@ class SnippetRepository < ApplicationRecord
 
   belongs_to :snippet, inverse_of: :snippet_repository
 
-  delegate :repository, to: :snippet
+  delegate :repository, :repository_storage, to: :snippet
 
   class << self
     def find_snippet(disk_path)

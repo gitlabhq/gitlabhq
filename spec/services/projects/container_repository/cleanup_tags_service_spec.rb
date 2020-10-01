@@ -245,7 +245,7 @@ RSpec.describe Projects::ContainerRepository::CleanupTagsService do
         end
 
         it 'succeeds without a user' do
-          expect_delete(%w(Bb Ba C))
+          expect_delete(%w(Bb Ba C), container_expiration_policy: true)
 
           is_expected.to include(status: :success, deleted: %w(Bb Ba C))
         end
@@ -287,10 +287,10 @@ RSpec.describe Projects::ContainerRepository::CleanupTagsService do
     end
   end
 
-  def expect_delete(tags)
+  def expect_delete(tags, container_expiration_policy: nil)
     expect(Projects::ContainerRepository::DeleteTagsService)
       .to receive(:new)
-      .with(repository.project, user, tags: tags)
+      .with(repository.project, user, tags: tags, container_expiration_policy: container_expiration_policy)
       .and_call_original
 
     expect_any_instance_of(Projects::ContainerRepository::DeleteTagsService)

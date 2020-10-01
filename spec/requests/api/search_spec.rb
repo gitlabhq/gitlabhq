@@ -231,18 +231,6 @@ RSpec.describe API::Search do
         it_behaves_like 'pagination', scope: :users
 
         it_behaves_like 'ping counters', scope: :users
-
-        context 'when users search feature is disabled' do
-          before do
-            stub_feature_flags(users_search: false)
-
-            get api(endpoint, user), params: { scope: 'users', search: 'billy' }
-          end
-
-          it 'returns 400 error' do
-            expect(response).to have_gitlab_http_status(:bad_request)
-          end
-        end
       end
 
       context 'for snippet_titles scope' do
@@ -416,18 +404,6 @@ RSpec.describe API::Search do
 
           include_examples 'pagination', scope: :users
         end
-
-        context 'when users search feature is disabled' do
-          before do
-            stub_feature_flags(users_search: false)
-
-            get api(endpoint, user), params: { scope: 'users', search: 'billy' }
-          end
-
-          it 'returns 400 error' do
-            expect(response).to have_gitlab_http_status(:bad_request)
-          end
-        end
       end
 
       context 'for users scope with group path as id' do
@@ -588,18 +564,6 @@ RSpec.describe API::Search do
           end
 
           include_examples 'pagination', scope: :users
-        end
-
-        context 'when users search feature is disabled' do
-          before do
-            stub_feature_flags(users_search: false)
-
-            get api(endpoint, user), params: { scope: 'users', search: 'billy' }
-          end
-
-          it 'returns 400 error' do
-            expect(response).to have_gitlab_http_status(:bad_request)
-          end
         end
       end
 

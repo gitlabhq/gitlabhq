@@ -357,14 +357,6 @@ RSpec.describe SearchHelper do
   describe '#show_user_search_tab?' do
     subject { show_user_search_tab? }
 
-    context 'when users_search feature is disabled' do
-      before do
-        stub_feature_flags(users_search: false)
-      end
-
-      it { is_expected.to eq(false) }
-    end
-
     context 'when project search' do
       before do
         @project = :some_project

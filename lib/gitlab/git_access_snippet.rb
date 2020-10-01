@@ -60,11 +60,15 @@ module Gitlab
     def check_valid_actor!
       # TODO: Investigate if expanding actor/authentication types are needed.
       # https://gitlab.com/gitlab-org/gitlab/issues/202190
-      if actor && !actor.is_a?(User) && !actor.instance_of?(Key)
+      if actor && !allowed_actor?
         raise ForbiddenError, ERROR_MESSAGES[:authentication_mechanism]
       end
 
       super
+    end
+
+    def allowed_actor?
+      actor.is_a?(User) || actor.instance_of?(Key)
     end
 
     def project_snippet?
@@ -138,3 +142,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::GitAccessSnippet.prepend_if_ee('EE::Gitlab::GitAccessSnippet')

@@ -73,7 +73,7 @@
               %span.gl-sr-only
                 = s_('Nav|Help')
               = sprite_icon('question')
-              = sprite_icon('angle-down', css_class: 'caret-down')
+              = sprite_icon('chevron-down', css_class: 'caret-down')
             .dropdown-menu.dropdown-menu-right
               = render 'layouts/header/help_dropdown'
           - if header_link?(:user_dropdown)
@@ -81,7 +81,7 @@
               = link_to current_user, class: user_dropdown_class, data: { toggle: "dropdown" } do
                 = image_tag avatar_icon_for_user(current_user, 23), width: 23, height: 23, class: "header-user-avatar qa-user-avatar", alt: current_user.name
                 = render_if_exists 'layouts/header/user_notification_dot', project: project, namespace: group
-                = sprite_icon('angle-down', css_class: 'caret-down')
+                = sprite_icon('chevron-down', css_class: 'caret-down')
               .dropdown-menu.dropdown-menu-right
                 = render 'layouts/header/current_user_dropdown'
           - if has_impersonation_link

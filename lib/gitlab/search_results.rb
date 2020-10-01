@@ -7,7 +7,7 @@ module Gitlab
     DEFAULT_PAGE = 1
     DEFAULT_PER_PAGE = 20
 
-    attr_reader :current_user, :query, :filters
+    attr_reader :current_user, :query, :sort, :filters
 
     # Limit search results by passed projects
     # It allows us to search only for projects user has access to
@@ -19,11 +19,12 @@ module Gitlab
     # query
     attr_reader :default_project_filter
 
-    def initialize(current_user, query, limit_projects = nil, default_project_filter: false, filters: {})
+    def initialize(current_user, query, limit_projects = nil, sort: nil, default_project_filter: false, filters: {})
       @current_user = current_user
       @query = query
       @limit_projects = limit_projects || Project.all
       @default_project_filter = default_project_filter
+      @sort = sort
       @filters = filters
     end
 
@@ -124,6 +125,19 @@ module Gitlab
       end
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
+    def apply_sort(scope)
+      case sort
+      when 'oldest'
+        scope.reorder('created_at ASC')
+      when 'newest'
+        scope.reorder('created_at DESC')
+      else
+        scope
+      end
+    end
+    # rubocop: enable CodeReuse/ActiveRecord
+
     def projects
       limit_projects.search(query)
     end
@@ -135,7 +149,7 @@ module Gitlab
         issues = issues.where(project_id: project_ids_relation) # rubocop: disable CodeReuse/ActiveRecord
       end
 
-      issues
+      apply_sort(issues)
     end
 
     # rubocop: disable CodeReuse/ActiveRecord
@@ -155,7 +169,7 @@ module Gitlab
         merge_requests = merge_requests.in_projects(project_ids_relation)
       end
 
-      merge_requests
+      apply_sort(merge_requests)
     end
 
     def default_scope

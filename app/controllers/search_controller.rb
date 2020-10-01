@@ -97,8 +97,6 @@ class SearchController < ApplicationController
   end
 
   def eager_load_user_status
-    return if Feature.disabled?(:users_search, default_enabled: true)
-
     @search_objects = @search_objects.eager_load(:status) # rubocop:disable CodeReuse/ActiveRecord
   end
 

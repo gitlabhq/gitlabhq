@@ -3,23 +3,22 @@
 - show_label_issues_link = subject_or_group_defined && show_label_issuables_link?(label, :issues)
 - show_label_merge_requests_link = subject_or_group_defined && show_label_issuables_link?(label, :merge_requests)
 
-.label-name
+.label-name.gl-flex-shrink-0.gl-mr-3
   = render_label(label, tooltip: false)
-.label-description
-  .label-description-wrapper
-    - if label.description.present?
-      .description-text
-        = markdown_field(label, :description)
-    %ul.label-links
-      - if show_label_issues_link
-        %li.label-link-item.inline
-          = link_to_label(label) { _('Issues') }
-      - if show_label_merge_requests_link
-        &middot;
-        %li.label-link-item.inline
-          = link_to_label(label, type: :merge_request) { _('Merge requests') }
-      - if force_priority
-        &middot;
-        %li.label-link-item.priority-badge.js-priority-badge.inline.gl-ml-3
-          .label-badge.label-badge-blue= _('Prioritized label')
-      = render_if_exists 'shared/label_row_epics_link', label: label
+.label-description.gl-flex-grow-1.gl-mr-3.gl-w-full
+  - if label.description.present?
+    .description-text.gl-mb-3
+      = markdown_field(label, :description)
+  %ul.label-links.gl-m-0.gl-p-0.gl-white-space-nowrap
+    - if show_label_issues_link
+      %li.inline.gl-text-blue-600
+        = link_to_label(label, css_class: 'gl-text-blue-600!') { _('Issues') }
+    - if show_label_merge_requests_link
+      &middot;
+      %li.inline.gl-text-blue-600
+        = link_to_label(label, type: :merge_request, css_class: 'gl-text-blue-600!') { _('Merge requests') }
+    = render_if_exists 'shared/label_row_epics_link', label: label
+    - if force_priority
+      &middot;
+      %li.js-priority-badge.inline.gl-ml-3
+        .label-badge.gl-bg-blue-50= _('Prioritized label')

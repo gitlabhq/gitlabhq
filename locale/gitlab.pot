@@ -4506,9 +4506,6 @@ msgstr ""
 msgid "Can't load mermaid module: %{err}"
 msgstr ""
 
-msgid "Can't remove group members without group managed account"
-msgstr ""
-
 msgid "Can't scan the code?"
 msgstr ""
 
@@ -12647,9 +12644,6 @@ msgid "GroupSAML|Toggle SAML authentication"
 msgstr ""
 
 msgid "GroupSAML|Valid SAML Response"
-msgstr ""
-
-msgid "GroupSAML|With group managed accounts enabled, all the users without a group managed account will be excluded from the group."
 msgstr ""
 
 msgid "GroupSAML|With prohibit outer forks flag enabled group members will be able to fork project only inside your group."
@@ -22305,9 +22299,6 @@ msgid "Scheduling Pipelines"
 msgstr ""
 
 msgid "Scope"
-msgstr ""
-
-msgid "Scope not supported with disabled 'users_search' feature!"
 msgstr ""
 
 msgid "Scoped issue boards"

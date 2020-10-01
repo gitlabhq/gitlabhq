@@ -7,7 +7,10 @@ module Projects
 
       def execute(container_repository)
         @container_repository = container_repository
-        return error('access denied') unless can?(current_user, :destroy_container_image, project)
+
+        unless params[:container_expiration_policy]
+          return error('access denied') unless can?(current_user, :destroy_container_image, project)
+        end
 
         @tag_names = params[:tags]
         return error('not tags specified') if @tag_names.blank?
