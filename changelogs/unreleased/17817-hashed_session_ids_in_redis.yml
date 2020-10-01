@@ -1,5 +1,0 @@
----
-title: Do not store session id in Redis
-merge_request:
-author:
-type: security
