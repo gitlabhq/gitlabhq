@@ -2,6 +2,26 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 13.4.2 (2020-10-01)
+
+### Security (14 changes)
+
+- Do not store session id in Redis.
+- Fix permission checks when updating confidentiality and milestone on issues or merge requests.
+- Purge unaccepted member invitations older than 90 days.
+- Adds feature flags plan limits.
+- Prevent SVG XSS via Web IDE.
+- Ensure user has no solo owned groups before triggering account deletion.
+- Security fix safe params helper.
+- Do not bypass admin mode when authenticated with deploy token.
+- Fixes release asset link filepath ReDoS.
+- Ensure global ID is of Annotation type in GraphQL destroy mutation.
+- Validate that membership expiry dates are not in the past.
+- Rate limit adding new email and re-sending email confirmation.
+- Fix redaction of confidential Todos.
+- Update GitLab Runner Helm Chart to 0.20.2.
+
+
 ## 13.4.0 (2020-09-22)
 
 ### Security (2 changes, 1 of them is from the community)
