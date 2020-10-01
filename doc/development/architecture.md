@@ -330,7 +330,7 @@ Consul is a tool for service discovery and configuration. Consul is distributed,
   - [Source](../integration/elasticsearch.md)
   - [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/master/doc/howto/elasticsearch.md)
 - Layer: Core Service (Data)
-- GitLab.com: [Get Advanced Global Search working on GitLab.com](https://gitlab.com/groups/gitlab-org/-/epics/153) epic.
+- GitLab.com: [Get Advanced Search working on GitLab.com](https://gitlab.com/groups/gitlab-org/-/epics/153) epic.
 
 Elasticsearch is a distributed RESTful search engine built for the cloud.
 

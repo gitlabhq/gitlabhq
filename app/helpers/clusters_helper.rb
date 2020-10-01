@@ -12,6 +12,18 @@ module ClustersHelper
     end
   end
 
+  def display_cluster_agents?(_clusterable)
+    false
+  end
+
+  def js_cluster_agents_list_data(clusterable_project)
+    {
+      default_branch_name: clusterable_project.default_branch,
+      empty_state_image: image_path('illustrations/clusters_empty.svg'),
+      project_path: clusterable_project.full_path
+    }
+  end
+
   def js_clusters_list_data(path = nil)
     {
       ancestor_help_path: help_page_path('user/group/clusters/index', anchor: 'cluster-precedence'),

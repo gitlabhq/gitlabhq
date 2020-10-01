@@ -54,8 +54,10 @@ module API
         user = find_user_from_sources
         return unless user
 
-        # Sessions are enforced to be unavailable for API calls, so ignore them for admin mode
-        Gitlab::Auth::CurrentUserMode.bypass_session!(user.id) if Feature.enabled?(:user_mode_in_session)
+        if user.is_a?(User) && Feature.enabled?(:user_mode_in_session)
+          # Sessions are enforced to be unavailable for API calls, so ignore them for admin mode
+          Gitlab::Auth::CurrentUserMode.bypass_session!(user.id)
+        end
 
         unless api_access_allowed?(user)
           forbidden!(api_access_denied_message(user))

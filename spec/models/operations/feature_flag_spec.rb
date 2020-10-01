@@ -7,6 +7,10 @@ RSpec.describe Operations::FeatureFlag do
 
   subject { create(:operations_feature_flag) }
 
+  it_behaves_like 'includes Limitable concern' do
+    subject { build(:operations_feature_flag, project: create(:project)) }
+  end
+
   describe 'associations' do
     it { is_expected.to belong_to(:project) }
     it { is_expected.to have_many(:scopes) }

@@ -33,7 +33,7 @@ RSpec.describe 'Gcp Cluster', :js, :do_not_mock_admin_mode do
       before do
         visit project_clusters_path(project)
 
-        click_link 'Add Kubernetes cluster'
+        click_link 'Integrate with a cluster certificate'
         click_link 'Create new cluster'
         click_link 'Google GKE'
       end
@@ -143,7 +143,7 @@ RSpec.describe 'Gcp Cluster', :js, :do_not_mock_admin_mode do
         before do
           visit project_clusters_path(project)
 
-          click_link 'Add Kubernetes cluster'
+          click_link 'Connect cluster with certificate'
           click_link 'Connect existing cluster'
         end
 
@@ -162,7 +162,7 @@ RSpec.describe 'Gcp Cluster', :js, :do_not_mock_admin_mode do
 
         it 'user sees creation form with the successful message' do
           expect(page).to have_content('Kubernetes cluster integration was successfully removed.')
-          expect(page).to have_link('Add Kubernetes cluster')
+          expect(page).to have_link('Integrate with a cluster certificate')
         end
       end
     end
@@ -178,7 +178,7 @@ RSpec.describe 'Gcp Cluster', :js, :do_not_mock_admin_mode do
     end
 
     it 'user sees offer on cluster create page' do
-      click_link 'Add Kubernetes cluster'
+      click_link 'Integrate with a cluster certificate'
 
       expect(page).to have_css('.gcp-signup-offer')
     end
@@ -195,7 +195,7 @@ RSpec.describe 'Gcp Cluster', :js, :do_not_mock_admin_mode do
       find('.gcp-signup-offer .js-close').click
       wait_for_requests
 
-      click_link 'Add Kubernetes cluster'
+      click_link 'Integrate with a cluster certificate'
 
       expect(page).not_to have_css('.gcp-signup-offer')
     end

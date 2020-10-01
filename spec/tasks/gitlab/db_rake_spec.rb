@@ -170,7 +170,7 @@ RSpec.describe 'gitlab:db namespace rake task' do
 
     context 'when no index_name is given' do
       it 'rebuilds a random number of large indexes' do
-        expect(Gitlab::Database::PostgresIndex).to receive_message_chain('regular.random_few').and_return(indexes)
+        expect(Gitlab::Database::Reindexing).to receive_message_chain('candidate_indexes.random_few').and_return(indexes)
         expect(Gitlab::Database::Reindexing).to receive(:perform).with(indexes)
 
         run_rake_task('gitlab:db:reindex')

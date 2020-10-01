@@ -39,7 +39,9 @@ RSpec.describe 'Projects::MetricsDashboardController' do
 
     context 'with anonymous user and public dashboard visibility' do
       let(:anonymous_user) { create(:user) }
-      let(:project) { create(:project, :public) }
+      let(:project) do
+        create(:project, :public, :metrics_dashboard_enabled)
+      end
 
       before do
         project.update!(metrics_dashboard_access_level: 'enabled')

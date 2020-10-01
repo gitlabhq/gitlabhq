@@ -16,7 +16,7 @@ RSpec.describe 'User views releases', :js do
   shared_examples 'releases page' do
     context('when the user is a maintainer') do
       before do
-        gitlab_sign_in(maintainer)
+        sign_in(maintainer)
       end
 
       it 'sees the release' do
@@ -110,7 +110,7 @@ RSpec.describe 'User views releases', :js do
 
     context('when the user is a guest') do
       before do
-        gitlab_sign_in(guest)
+        sign_in(guest)
       end
 
       it 'renders release info except for Git-related data' do

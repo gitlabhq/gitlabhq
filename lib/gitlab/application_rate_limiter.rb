@@ -31,7 +31,9 @@ module Gitlab
           group_export:                 { threshold: -> { application_settings.group_export_limit }, interval: 1.minute },
           group_download_export:        { threshold: -> { application_settings.group_download_export_limit }, interval: 1.minute },
           group_import:                 { threshold: -> { application_settings.group_import_limit }, interval: 1.minute },
-          group_testing_hook:           { threshold: 5, interval: 1.minute }
+          group_testing_hook:           { threshold: 5, interval: 1.minute },
+          profile_add_new_email:        { threshold: 5, interval: 1.minute },
+          profile_resend_email_confirmation:  { threshold: 5, interval: 1.minute }
         }.freeze
       end
 

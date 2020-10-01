@@ -42,7 +42,7 @@ RSpec.describe Admin::UsersController do
     end
   end
 
-  describe 'DELETE #user with projects', :sidekiq_might_not_need_inline do
+  describe 'DELETE #destroy', :sidekiq_might_not_need_inline do
     let(:project) { create(:project, namespace: user.namespace) }
     let!(:issue) { create(:issue, author: user) }
 
@@ -64,6 +64,41 @@ RSpec.describe Admin::UsersController do
       expect(response).to have_gitlab_http_status(:ok)
       expect(User.exists?(user.id)).to be_falsy
       expect(Issue.exists?(issue.id)).to be_falsy
+    end
+
+    context 'prerequisites for account deletion' do
+      context 'solo-owned groups' do
+        let(:group) { create(:group) }
+
+        context 'if the user is the sole owner of at least one group' do
+          before do
+            create(:group_member, :owner, group: group, user: user)
+          end
+
+          context 'soft-delete' do
+            it 'fails' do
+              delete :destroy, params: { id: user.username }
+
+              message = s_('AdminUsers|You must transfer ownership or delete the groups owned by this user before you can delete their account')
+
+              expect(flash[:alert]).to eq(message)
+              expect(response).to have_gitlab_http_status(:see_other)
+              expect(response).to redirect_to admin_user_path(user)
+              expect(User.exists?(user.id)).to be_truthy
+            end
+          end
+
+          context 'hard-delete' do
+            it 'succeeds' do
+              delete :destroy, params: { id: user.username, hard_delete: true }
+
+              expect(response).to redirect_to(admin_users_path)
+              expect(flash[:notice]).to eq(_('The user is being deleted.'))
+              expect(User.exists?(user.id)).to be_falsy
+            end
+          end
+        end
+      end
     end
   end
 

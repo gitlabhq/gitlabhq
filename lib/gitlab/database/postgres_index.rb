@@ -21,6 +21,8 @@ module Gitlab
         limit(how_many).order(Arel.sql('RANDOM()'))
       end
 
+      scope :not_match, ->(regex) { where("name !~ ?", regex)}
+
       def to_s
         name
       end

@@ -58,6 +58,28 @@ RSpec.describe Gitlab::Database::Reindexing::ConcurrentReindex, '#perform' do
     end
   end
 
+  context 'when the index is a lingering temporary index from a previous reindexing run' do
+    context 'with the temporary index prefix' do
+      let(:index_name) { 'tmp_reindex_something' }
+
+      it 'raises an error' do
+        expect do
+          subject.perform
+        end.to raise_error(described_class::ReindexError, /left-over temporary index/)
+      end
+    end
+
+    context 'with the replaced index prefix' do
+      let(:index_name) { 'old_reindex_something' }
+
+      it 'raises an error' do
+        expect do
+          subject.perform
+        end.to raise_error(described_class::ReindexError, /left-over temporary index/)
+      end
+    end
+  end
+
   context 'replacing the original index with a rebuilt copy' do
     let(:replacement_name) { 'tmp_reindex_42' }
     let(:replaced_name) { 'old_reindex_42' }

@@ -10,6 +10,13 @@ module Gitlab
           end
         end
       end
+
+      def self.candidate_indexes
+        Gitlab::Database::PostgresIndex
+          .regular
+          .not_match("^#{ConcurrentReindex::TEMPORARY_INDEX_PREFIX}")
+          .not_match("^#{ConcurrentReindex::REPLACED_INDEX_PREFIX}")
+      end
     end
   end
 end

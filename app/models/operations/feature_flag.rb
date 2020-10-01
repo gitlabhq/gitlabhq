@@ -4,8 +4,11 @@ module Operations
   class FeatureFlag < ApplicationRecord
     include AtomicInternalId
     include IidRoutes
+    include Limitable
 
     self.table_name = 'operations_feature_flags'
+    self.limit_scope = :project
+    self.limit_name = 'project_feature_flags'
 
     belongs_to :project
 

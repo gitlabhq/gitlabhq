@@ -24,6 +24,7 @@ module Gitlab
           raise ReindexError, 'UNIQUE indexes are currently not supported' if index.unique?
           raise ReindexError, 'partitioned indexes are currently not supported' if index.partitioned?
           raise ReindexError, 'indexes serving an exclusion constraint are currently not supported' if index.exclusion?
+          raise ReindexError, 'index is a left-over temporary index from a previous reindexing run' if index.name.start_with?(TEMPORARY_INDEX_PREFIX, REPLACED_INDEX_PREFIX)
 
           logger.info "Starting reindex of #{index}"
 

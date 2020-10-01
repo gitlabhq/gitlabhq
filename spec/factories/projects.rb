@@ -29,6 +29,7 @@ FactoryBot.define do
       pages_access_level do
         visibility_level == Gitlab::VisibilityLevel::PUBLIC ? ProjectFeature::ENABLED : ProjectFeature::PRIVATE
       end
+      metrics_dashboard_access_level { ProjectFeature::PRIVATE }
 
       # we can't assign the delegated `#ci_cd_settings` attributes directly, as the
       # `#ci_cd_settings` relation needs to be created first
@@ -53,7 +54,8 @@ FactoryBot.define do
         forking_access_level: evaluator.forking_access_level,
         merge_requests_access_level: merge_requests_access_level,
         repository_access_level: evaluator.repository_access_level,
-        pages_access_level: evaluator.pages_access_level
+        pages_access_level: evaluator.pages_access_level,
+        metrics_dashboard_access_level: evaluator.metrics_dashboard_access_level
       }
 
       project.build_project_feature(hash)
@@ -315,6 +317,9 @@ FactoryBot.define do
     trait(:pages_enabled)           { pages_access_level { ProjectFeature::ENABLED } }
     trait(:pages_disabled)          { pages_access_level { ProjectFeature::DISABLED } }
     trait(:pages_private)           { pages_access_level { ProjectFeature::PRIVATE } }
+    trait(:metrics_dashboard_enabled) { metrics_dashboard_access_level { ProjectFeature::ENABLED } }
+    trait(:metrics_dashboard_disabled) { metrics_dashboard_access_level { ProjectFeature::DISABLED } }
+    trait(:metrics_dashboard_private) { metrics_dashboard_access_level { ProjectFeature::PRIVATE } }
 
     trait :auto_devops do
       association :auto_devops, factory: :project_auto_devops

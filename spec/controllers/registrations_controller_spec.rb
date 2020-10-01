@@ -459,6 +459,24 @@ RSpec.describe RegistrationsController do
         expect_success
       end
     end
+
+    context 'prerequisites for account deletion' do
+      context 'solo-owned groups' do
+        let(:group) { create(:group) }
+
+        context 'if the user is the sole owner of at least one group' do
+          before do
+            create(:group_member, :owner, group: group, user: user)
+          end
+
+          it 'fails' do
+            delete :destroy, params: { password: '12345678' }
+
+            expect_failure(s_('Profiles|You must transfer ownership or delete groups you are an owner of before you can delete your account'))
+          end
+        end
+      end
+    end
   end
 
   describe '#welcome' do

@@ -18,7 +18,7 @@ RSpec.describe 'User creates release', :js do
 
     project.add_developer(user)
 
-    gitlab_sign_in(user)
+    sign_in(user)
 
     visit new_page_url
 

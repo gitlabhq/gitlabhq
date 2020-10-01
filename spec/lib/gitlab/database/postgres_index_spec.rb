@@ -30,7 +30,7 @@ RSpec.describe Gitlab::Database::PostgresIndex do
     end
   end
 
-  describe '#regular' do
+  describe '.regular' do
     it 'only non-unique indexes' do
       expect(described_class.regular).to all(have_attributes(unique: false))
     end
@@ -44,7 +44,17 @@ RSpec.describe Gitlab::Database::PostgresIndex do
     end
   end
 
-  describe '#random_few' do
+  describe '.not_match' do
+    it 'excludes indexes matching the given regex' do
+      expect(described_class.not_match('^bar_k').map(&:name)).to all(match(/^(?!bar_k).*/))
+    end
+
+    it 'matches indexes without this prefix regex' do
+      expect(described_class.not_match('^bar_k')).not_to be_empty
+    end
+  end
+
+  describe '.random_few' do
     it 'limits to two records by default' do
       expect(described_class.random_few(2).size).to eq(2)
     end

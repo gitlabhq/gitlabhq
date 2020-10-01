@@ -7,6 +7,11 @@ module Members
     def initialize(current_user = nil, params = {})
       @current_user = current_user
       @params = params
+
+      # could be a string, force to an integer, part of fix
+      # https://gitlab.com/gitlab-org/gitlab/-/issues/219496
+      # Allow the ArgumentError to be raised if it can't be converted to an integer.
+      @params[:access_level] = Integer(@params[:access_level]) if @params[:access_level]
     end
 
     def after_execute(args)

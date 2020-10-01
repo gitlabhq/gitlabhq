@@ -21,7 +21,7 @@ module Mutations
             description: "The current state of the collection"
 
       def resolve(**args)
-        service = ::DesignManagement::MoveDesignsService.new(current_user, parameters(args))
+        service = ::DesignManagement::MoveDesignsService.new(current_user, parameters(**args))
 
         { design_collection: service.collection, errors: service.execute.errors }
       end

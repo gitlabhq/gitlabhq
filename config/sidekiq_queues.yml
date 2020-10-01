@@ -62,6 +62,8 @@
   - 1
 - - cronjob
   - 1
+- - dast_site_validation
+  - 1
 - - default
   - 1
 - - delete_diff_files

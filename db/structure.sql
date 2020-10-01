@@ -11232,7 +11232,9 @@ CREATE TABLE dast_site_validations (
     validation_strategy smallint NOT NULL,
     url_base text NOT NULL,
     url_path text NOT NULL,
+    state text DEFAULT 'pending'::text NOT NULL,
     CONSTRAINT check_13b34efe4b CHECK ((char_length(url_path) <= 255)),
+    CONSTRAINT check_283be72e9b CHECK ((char_length(state) <= 255)),
     CONSTRAINT check_cd3b538210 CHECK ((char_length(url_base) <= 255))
 );
 
@@ -14385,6 +14387,7 @@ CREATE TABLE plan_limits (
     nuget_max_file_size bigint DEFAULT 524288000 NOT NULL,
     pypi_max_file_size bigint DEFAULT '3221225472'::bigint NOT NULL,
     generic_packages_max_file_size bigint DEFAULT '5368709120'::bigint NOT NULL,
+    project_feature_flags integer DEFAULT 200 NOT NULL,
     golang_max_file_size bigint DEFAULT 104857600 NOT NULL,
     debian_max_file_size bigint DEFAULT '3221225472'::bigint NOT NULL
 );
@@ -19387,7 +19390,7 @@ CREATE INDEX idx_jira_connect_subscriptions_on_installation_id ON jira_connect_s
 
 CREATE UNIQUE INDEX idx_jira_connect_subscriptions_on_installation_id_namespace_id ON jira_connect_subscriptions USING btree (jira_connect_installation_id, namespace_id);
 
-CREATE INDEX idx_merge_requests_on_id_and_merge_jid ON merge_requests USING btree (id, merge_jid) WHERE ((merge_jid IS NOT NULL) AND (state_id = 4));
+CREATE INDEX idx_members_created_at_user_id_invite_token ON members USING btree (created_at) WHERE ((invite_token IS NOT NULL) AND (user_id IS NULL));
 
 CREATE INDEX idx_merge_requests_on_source_project_and_branch_state_opened ON merge_requests USING btree (source_project_id, source_branch) WHERE (state_id = 1);
 

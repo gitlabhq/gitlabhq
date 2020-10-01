@@ -52,4 +52,15 @@ RSpec.describe Gitlab::Database::Reindexing do
       it_behaves_like 'reindexing'
     end
   end
+
+  describe '.candidate_indexes' do
+    subject { described_class.candidate_indexes }
+
+    it 'retrieves regular indexes that are no left-overs from previous runs' do
+      result = double
+      expect(Gitlab::Database::PostgresIndex).to receive_message_chain('regular.not_match.not_match').with(no_args).with('^tmp_reindex_').with('^old_reindex_').and_return(result)
+
+      expect(subject).to eq(result)
+    end
+  end
 end

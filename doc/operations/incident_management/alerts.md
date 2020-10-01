@@ -71,10 +71,10 @@ To populate the alerts with data, see [External Prometheus instances](../metrics
 ### Enable a Generic Alerts endpoint
 
 GitLab provides the Generic Alerts endpoint so you can accept alerts from a
-third-party alerts service. Read the [instructions for toggling generic alerts](generic_alerts.md#setting-up-generic-alerts)
+third-party alerts service. Read the [instructions for toggling generic alerts](alert_integrations.md#setting-up-generic-alerts)
 to add this option. After configuring the endpoint, the Alerts list is enabled.
 
-To populate the alerts with data, see [Customizing the payload](generic_alerts.md#customizing-the-payload)
+To populate the alerts with data, see [Customizing the payload](alert_integrations.md#customizing-the-payload)
 for requests to the alerts endpoint.
 
 ### Opsgenie integration **(PREMIUM)**
