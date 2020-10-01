@@ -1,6 +1,0 @@
----
-title: Fix permission checks when updating confidentiality and milestone on issues
-  or merge requests
-merge_request:
-author:
-type: security
