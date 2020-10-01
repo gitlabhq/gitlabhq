@@ -342,6 +342,12 @@ module IssuablesHelper
     issuable.closed? ^ should_inverse ? reopen_issuable_path(issuable) : close_issuable_path(issuable)
   end
 
+  def toggle_draft_issuable_path(issuable)
+    wip_event = issuable.work_in_progress? ? 'unwip' : 'wip'
+
+    issuable_path(issuable, { merge_request: { wip_event: wip_event } })
+  end
+
   def issuable_path(issuable, *options)
     polymorphic_path(issuable, *options)
   end

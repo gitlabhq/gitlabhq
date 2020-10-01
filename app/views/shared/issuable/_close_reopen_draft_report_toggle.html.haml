@@ -1,0 +1,37 @@
+- display_issuable_type = issuable_display_type(issuable)
+- button_action_class = issuable.closed? ? 'btn-default' : 'btn-warning btn-warning-secondary'
+- button_class = "btn gl-button #{!issuable.closed? && 'js-draft-toggle-button'}"
+- toggle_class = "btn gl-button dropdown-toggle"
+
+.float-left.btn-group.gl-ml-3.issuable-close-dropdown.d-none.d-md-inline-flex.js-issuable-close-dropdown
+  = link_to issuable.closed? ? reopen_issuable_path(issuable) : toggle_draft_issuable_path(issuable), method: :put, class: "#{button_class} #{button_action_class}" do
+    - if issuable.closed?
+      = _('Reopen')
+      = display_issuable_type
+    - else
+      = issuable.work_in_progress? ? _('Mark as ready') : _('Mark as draft')
+
+  - if !issuable.closed? || !issuable_author_is_current_user(issuable)
+    = button_tag type: 'button', class: "#{toggle_class} #{button_action_class}", data: { 'toggle' => 'dropdown' } do
+      %span.sr-only= _('Toggle dropdown')
+      = sprite_icon "angle-down", size: 12
+
+    %ul.js-issuable-close-menu.dropdown-menu.dropdown-menu-right
+      - if issuable.open?
+        %li
+          = link_to close_issuable_path(issuable), method: :put do
+            .description
+              %strong.title
+                = _('Close')
+                = display_issuable_type
+
+      - unless issuable_author_is_current_user(issuable)
+        - unless issuable.closed?
+          %li.divider.droplab-item-ignore
+
+        %li.report-item
+          %a.report-abuse-link{ href: new_abuse_report_path(user_id: issuable.author.id, ref_url: issuable_url(issuable)) }
+            .description
+              %strong.title= _('Report abuse')
+              %p.text
+                = _('Report %{display_issuable_type} that are abusive, inappropriate or spam.') % { display_issuable_type: display_issuable_type.pluralize }

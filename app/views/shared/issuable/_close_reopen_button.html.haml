@@ -5,7 +5,7 @@
 - if defined? warn_before_close
   - add_blocked_class = warn_before_close
 
-- if is_current_user
+- if is_current_user && !issuable.is_a?(MergeRequest)
   - if can_update
     %button{ class: "d-none d-sm-none d-md-block btn btn-grouped btn-close js-btn-issue-action #{issuable_button_visibility(issuable, true)} #{(add_blocked_class ? 'btn-issue-blocked' : '')}",
              data: { remote: 'true', endpoint: close_issuable_path(issuable), qa_selector: 'close_issue_button' } }
@@ -16,7 +16,10 @@
       = _("Reopen %{display_issuable_type}") % { display_issuable_type: display_issuable_type }
 - else
   - if can_update && !are_close_and_open_buttons_hidden
-    = render 'shared/issuable/close_reopen_report_toggle', issuable: issuable, warn_before_close: add_blocked_class
+    - if issuable.is_a?(MergeRequest)
+      = render 'shared/issuable/close_reopen_draft_report_toggle', issuable: issuable
+    - else
+      = render 'shared/issuable/close_reopen_report_toggle', issuable: issuable, warn_before_close: add_blocked_class
   - else
     = link_to _('Report abuse'), new_abuse_report_path(user_id: issuable.author.id, ref_url: issuable_url(issuable)),
               class: 'd-none d-sm-none d-md-block btn btn-grouped btn-close-color', title: _('Report abuse')

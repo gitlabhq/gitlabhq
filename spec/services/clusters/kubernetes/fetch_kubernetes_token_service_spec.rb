@@ -31,11 +31,9 @@ RSpec.describe Clusters::Kubernetes::FetchKubernetesTokenService do
         before do
           stub_kubeclient_get_secret(
             api_url,
-            {
-              metadata_name: service_account_token_name,
-              namespace: namespace,
-              token: token
-            }
+            metadata_name: service_account_token_name,
+            namespace: namespace,
+            token: token
           )
         end
 
@@ -54,11 +52,9 @@ RSpec.describe Clusters::Kubernetes::FetchKubernetesTokenService do
         before do
           stub_kubeclient_get_secret_not_found_then_found(
             api_url,
-            {
-              metadata_name: service_account_token_name,
-              namespace: namespace,
-              token: token
-            }
+            metadata_name: service_account_token_name,
+            namespace: namespace,
+            token: token
           )
         end
 
@@ -96,11 +92,9 @@ RSpec.describe Clusters::Kubernetes::FetchKubernetesTokenService do
         before do
           stub_kubeclient_get_secret(
             api_url,
-            {
-              metadata_name: service_account_token_name,
-              namespace: namespace,
-              token: nil
-            }
+            metadata_name: service_account_token_name,
+            namespace: namespace,
+            token: nil
           )
         end
 

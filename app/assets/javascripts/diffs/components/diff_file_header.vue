@@ -245,7 +245,14 @@ export default {
           ></strong>
         </span>
 
-        <strong v-else v-gl-tooltip :title="filePath" class="file-title-name" data-container="body">
+        <strong
+          v-else
+          v-gl-tooltip
+          :title="filePath"
+          class="file-title-name"
+          data-container="body"
+          data-qa-selector="file_name_content"
+        >
           {{ filePath }}
         </strong>
       </a>

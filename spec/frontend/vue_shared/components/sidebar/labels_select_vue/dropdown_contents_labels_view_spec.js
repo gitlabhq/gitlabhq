@@ -69,6 +69,16 @@ describe('DropdownContentsLabelsView', () => {
         expect(wrapper.vm.visibleLabels[0].title).toBe('Bug');
       });
 
+      it('returns matching labels with fuzzy filtering', () => {
+        wrapper.setData({
+          searchKey: 'bg',
+        });
+
+        expect(wrapper.vm.visibleLabels.length).toBe(2);
+        expect(wrapper.vm.visibleLabels[0].title).toBe('Bug');
+        expect(wrapper.vm.visibleLabels[1].title).toBe('Boog');
+      });
+
       it('returns all labels when `searchKey` is empty', () => {
         wrapper.setData({
           searchKey: '',

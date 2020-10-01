@@ -3572,6 +3572,11 @@ job split into three separate jobs.
 Use `matrix:` to configure different variables for jobs that are running in parallel.
 There can be from 2 to 50 jobs.
 
+In GitLab 13.5 and later, you can have one-dimensional matrices with a single job.
+The ability to have one-dimensional matrices is [deployed behind a feature flag](../../user/feature_flags.md),
+disabled by default. It's disabled on GitLab.com. To use it in a GitLab self-managed
+instance, ask a GitLab administrator to [enable the `one_dimensional_matrix:` feature flag](../../administration/feature_flags.md). **(CORE-ONLY)**
+
 Every job gets the same `CI_NODE_TOTAL` [environment variable](../variables/README.md#predefined-environment-variables) value, and a unique `CI_NODE_INDEX` value.
 
 ```yaml

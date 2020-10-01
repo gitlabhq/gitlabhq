@@ -100,6 +100,7 @@ export default {
           <compare-dropdown-layout
             :versions="diffCompareDropdownTargetVersions"
             class="mr-version-compare-dropdown"
+            data-qa-selector="target_version_dropdown"
           />
         </template>
         <template #source>

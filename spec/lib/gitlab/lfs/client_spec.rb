@@ -8,6 +8,7 @@ RSpec.describe Gitlab::Lfs::Client do
   let(:password) { 'password' }
   let(:credentials) { { user: username, password: password, auth_method: 'password' } }
   let(:git_lfs_content_type) { 'application/vnd.git-lfs+json' }
+  let(:git_lfs_user_agent) { "GitLab #{Gitlab::VERSION} LFS client" }
 
   let(:basic_auth_headers) do
     { 'Authorization' => "Basic #{Base64.strict_encode64("#{username}:#{password}")}" }
@@ -91,7 +92,8 @@ RSpec.describe Gitlab::Lfs::Client do
 
       headers = {
         'Accept' => git_lfs_content_type,
-        'Content-Type' => git_lfs_content_type
+        'Content-Type' => git_lfs_content_type,
+        'User-Agent' => git_lfs_user_agent
       }.merge(headers)
 
       stub_request(:post, base_url + '/info/lfs/objects/batch').with(body: body, headers: headers)
@@ -156,7 +158,8 @@ RSpec.describe Gitlab::Lfs::Client do
     def stub_upload(object:, headers:)
       headers = {
         'Content-Type' => 'application/octet-stream',
-        'Content-Length' => object.size.to_s
+        'Content-Length' => object.size.to_s,
+        'User-Agent' => git_lfs_user_agent
       }.merge(headers)
 
       stub_request(:put, upload_action['href']).with(
@@ -209,7 +212,8 @@ RSpec.describe Gitlab::Lfs::Client do
     def stub_verify(object:, headers:)
       headers = {
         'Accept' => git_lfs_content_type,
-        'Content-Type' => git_lfs_content_type
+        'Content-Type' => git_lfs_content_type,
+        'User-Agent' => git_lfs_user_agent
       }.merge(headers)
 
       stub_request(:post, verify_action['href']).with(

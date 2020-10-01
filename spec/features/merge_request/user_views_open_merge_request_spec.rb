@@ -24,6 +24,23 @@ RSpec.describe 'User views an open merge request' do
 
       expect(page).to have_content(merge_request.title)
     end
+
+    it 'has reviewers in sidebar' do
+      expect(page).to have_css('.reviewer')
+    end
+  end
+
+  context 'when merge_request_reviewers is turned off' do
+    let(:project) { create(:project, :public, :repository) }
+
+    before do
+      stub_feature_flags(merge_request_reviewers: false)
+      visit(merge_request_path(merge_request))
+    end
+
+    it 'has reviewers in sidebar' do
+      expect(page).not_to have_css('.reviewer')
+    end
   end
 
   context 'when a merge request has repository', :js do

@@ -492,19 +492,6 @@ describe('ReadyToMerge', () => {
         });
       });
 
-      it('hides close button', done => {
-        jest.spyOn(vm.service, 'poll').mockReturnValue(returnPromise('merged'));
-        jest.spyOn(vm, 'initiateRemoveSourceBranchPolling').mockImplementation(() => {});
-
-        vm.handleMergePolling(() => {}, () => {});
-
-        setImmediate(() => {
-          expect(document.querySelector('.btn-close').classList.contains('hidden')).toBeTruthy();
-
-          done();
-        });
-      });
-
       it('updates merge request count badge', done => {
         jest.spyOn(vm.service, 'poll').mockReturnValue(returnPromise('merged'));
         jest.spyOn(vm, 'initiateRemoveSourceBranchPolling').mockImplementation(() => {});

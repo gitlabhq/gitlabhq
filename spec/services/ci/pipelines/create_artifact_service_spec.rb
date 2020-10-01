@@ -35,16 +35,6 @@ RSpec.describe ::Ci::Pipelines::CreateArtifactService do
         end
       end
 
-      context 'when feature is disabled' do
-        it 'does not create a pipeline artifact' do
-          stub_feature_flags(coverage_report_view: false)
-
-          subject
-
-          expect(Ci::PipelineArtifact.count).to eq(0)
-        end
-      end
-
       context 'when pipeline artifact has already been created' do
         it 'do not raise an error and do not persist the same artifact twice' do
           expect { 2.times { described_class.new.execute(pipeline) } }.not_to raise_error(ActiveRecord::RecordNotUnique)

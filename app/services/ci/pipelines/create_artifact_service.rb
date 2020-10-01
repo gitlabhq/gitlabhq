@@ -3,7 +3,6 @@ module Ci
   module Pipelines
     class CreateArtifactService
       def execute(pipeline)
-        return unless ::Gitlab::Ci::Features.coverage_report_view?(pipeline.project)
         return unless pipeline.can_generate_coverage_reports?
         return if pipeline.has_coverage_reports?
 

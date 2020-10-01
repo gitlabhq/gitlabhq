@@ -50,7 +50,7 @@ RSpec.describe 'Merge request > User sees pipelines', :js do
 
           wait_for_requests
 
-          expect(page.find('.js-run-mr-pipeline')).to have_text('Run Pipeline')
+          expect(page.find('[data-testid="run_pipeline_button"]')).to have_text('Run Pipeline')
         end
       end
 
@@ -66,7 +66,7 @@ RSpec.describe 'Merge request > User sees pipelines', :js do
 
           wait_for_requests
 
-          expect(page.find('.js-run-mr-pipeline')).to have_text('Run Pipeline')
+          expect(page.find('[data-testid="run_pipeline_button"]')).to have_text('Run Pipeline')
         end
       end
     end

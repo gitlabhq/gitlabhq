@@ -109,8 +109,8 @@ RSpec.describe InvitesController, :snowplow do
         it 'tracks the user as experiment group' do
           request
 
-          expect_snowplow_event(snowplow_event.merge(action: 'opened'))
-          expect_snowplow_event(snowplow_event.merge(action: 'accepted'))
+          expect_snowplow_event(**snowplow_event.merge(action: 'opened'))
+          expect_snowplow_event(**snowplow_event.merge(action: 'accepted'))
         end
       end
 
@@ -121,8 +121,8 @@ RSpec.describe InvitesController, :snowplow do
         it 'tracks the user as control group' do
           request
 
-          expect_snowplow_event(snowplow_event.merge(action: 'opened'))
-          expect_snowplow_event(snowplow_event.merge(action: 'accepted'))
+          expect_snowplow_event(**snowplow_event.merge(action: 'opened'))
+          expect_snowplow_event(**snowplow_event.merge(action: 'accepted'))
         end
       end
 
@@ -173,7 +173,7 @@ RSpec.describe InvitesController, :snowplow do
       it 'tracks the user as experiment group' do
         request
 
-        expect_snowplow_event(snowplow_event.merge(action: 'accepted'))
+        expect_snowplow_event(**snowplow_event.merge(action: 'accepted'))
       end
     end
 
@@ -184,7 +184,7 @@ RSpec.describe InvitesController, :snowplow do
       it 'tracks the user as control group' do
         request
 
-        expect_snowplow_event(snowplow_event.merge(action: 'accepted'))
+        expect_snowplow_event(**snowplow_event.merge(action: 'accepted'))
       end
     end
 

@@ -19,6 +19,7 @@
 - auto_devops
 - backup_restore
 - behavior_analytics
+- boards
 - chatops
 - cloud_native_installation
 - cluster_cost_optimization
@@ -61,15 +62,15 @@
 - importers
 - incident_management
 - infrastructure_as_code
+- insights
+- instance_statistics
 - integrations
 - interactive_application_security_testing
 - internationalization
-- instance_statistics
 - issue_tracking
 - jenkins_importer
 - jira_importer
 - jupyter_notebooks
-- kanban_boards
 - kubernetes_management
 - license_compliance
 - live_preview
@@ -82,6 +83,7 @@
 - omnibus_package
 - package_registry
 - pages
+- pipeline_authoring
 - pki_management
 - planning_analytics
 - product_analytics

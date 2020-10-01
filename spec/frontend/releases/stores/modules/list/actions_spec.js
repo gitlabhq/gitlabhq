@@ -16,15 +16,16 @@ import {
   parseIntPagination,
   convertObjectPropsToCamelCase,
 } from '~/lib/utils/common_utils';
-import {
-  pageInfoHeadersWithoutPagination,
-  graphqlReleasesResponse as originalGraphqlReleasesResponse,
-} from '../../../mock_data';
+import { pageInfoHeadersWithoutPagination } from '../../../mock_data';
 import allReleasesQuery from '~/releases/queries/all_releases.query.graphql';
 import { PAGE_SIZE } from '~/releases/constants';
 
 const originalRelease = getJSONFixture('api/releases/release.json');
 const originalReleases = [originalRelease];
+
+const originalGraphqlReleasesResponse = getJSONFixture(
+  'graphql/releases/queries/all_releases.query.graphql.json',
+);
 
 describe('Releases State actions', () => {
   let mockedState;

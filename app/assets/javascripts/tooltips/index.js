@@ -58,6 +58,8 @@ const applyToElements = (elements, handler) => toArray(elements).forEach(handler
 
 const invokeBootstrapApi = (elements, method) => {
   if (isFunction(elements.tooltip)) {
+    elements.tooltip(method);
+  } else {
     jQuery(elements).tooltip(method);
   }
 };

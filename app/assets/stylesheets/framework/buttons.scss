@@ -417,12 +417,6 @@
   }
 }
 
-@include media-breakpoint-down(xs) {
-  .btn-wide-on-xs {
-    width: 100%;
-  }
-}
-
 .btn-blank {
   padding: 0;
   background: transparent;

@@ -129,14 +129,6 @@ characters to begin your search. For example, if you want to search for
 issues that have the assignee "Simone Presley", you'll need to type at
 least "Sim" before autocomplete gives any relevant results.
 
-## Code search
-
-To search through code or other documents in a single project, you can use
-the search field on the top-right of your screen while the project page is open.
-
-![code search dropdown](img/project_search_dropdown.png)
-![code search results](img/project_code_search.png)
-
 ## Search history
 
 You can view recent searches by clicking on the little arrow-clock icon, which is to the left of the search input. Click the search entry to run that search again. This feature is available for issues and merge requests. Searches are stored locally in your browser.
@@ -154,24 +146,6 @@ To delete filter tokens one at a time, the <kbd>⌥</kbd> (Mac) / <kbd>Ctrl</kbd
 Some filters can be added multiple times. These include but are not limited to assignees and labels. When you filter with these multiple filters of the same type, the AND logic is applied. For example, if you were filtering `assignee:@sam assignee:@sarah`, your results will only include entries whereby the assignees are assigned to both Sam and Sarah are returned.
 
 ![multiple assignees filtering](img/multiple_assignees.png)
-
-## Shortcut
-
-You'll also find a shortcut on the search field on the top-right of the project's dashboard to
-quickly access issues and merge requests created or assigned to you within that project:
-
-![search per project - shortcut](img/project_search.png)
-
-### Autocomplete suggestions
-
-You can also type in this search bar to see autocomplete suggestions for:
-
-- Projects and groups
-- Various help pages (try and type **API help**)
-- Project feature pages (try and type **milestones**)
-- Various settings pages (try and type **user settings**)
-- Recently viewed issues (try and type some word from the title of a recently viewed issue)
-- Recently viewed merge requests (try and type some word from the title of a recently merge request)
 
 ## To-Do List
 
@@ -218,6 +192,59 @@ you'll be able to, besides filtering them by **Name**, **Author**, **Assignee**,
 and **Labels**, select multiple issues to add to a list of your choice:
 
 ![search and select issues to add to board](img/search_issues_board.png)
+
+## Shortcut
+
+You'll find a shortcut on the search field on the top-right of the project's dashboard to
+quickly access issues and merge requests created or assigned to you within that project:
+
+![search per project - shortcut](img/project_search.png)
+
+### Autocomplete suggestions
+
+You can also type in this search bar to see autocomplete suggestions for:
+
+- Projects and groups
+- Various help pages (try and type **API help**)
+- Project feature pages (try and type **milestones**)
+- Various settings pages (try and type **user settings**)
+- Recently viewed issues (try and type some word from the title of a recently viewed issue)
+- Recently viewed merge requests (try and type some word from the title of a recently merge request)
+
+## Basic search
+
+The Basic search in GitLab is a global search service that allows you to search
+across the entire GitLab instance, within a group, or a single project. Basic search is
+backed by the database and allows searching in:
+
+- Projects
+- Issues
+- Merge requests
+- Milestones
+- Users
+- Code (Project only)
+- Comments (Project only)
+- Commits (Project only)
+- Wiki (Project only)
+
+To start a search, type into the search bar on the top-right of the screen. You can always search 
+in all GitLab and may also see the options to search within a group or project if you are in the
+group or project dashboard.
+
+![basic search](img/basic_search.png)
+
+Once the results are returned, you can modify the search, select a different type of data to
+search, or choose a specific group or project.
+
+![basic_search_results](img/basic_search_results.png)
+ 
+### Code search
+
+To search through code or other documents in a single project, you can use
+the search field on the top-right of your screen while the project page is open.
+
+![code search dropdown](img/project_search_dropdown.png)
+![code search results](img/project_code_search.png)
 
 ## Advanced Search **(STARTER)**
 

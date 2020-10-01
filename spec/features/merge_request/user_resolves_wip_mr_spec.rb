@@ -35,7 +35,9 @@ RSpec.describe 'Merge request > User resolves Work in Progress', :js do
       expect(page.find('.ci-widget-content')).to have_content("Pipeline ##{pipeline.id}")
       expect(page).to have_content "This merge request is still a work in progress."
 
-      click_button('Mark as ready')
+      page.within('.mr-state-widget') do
+        click_button('Mark as ready')
+      end
 
       wait_for_requests
 

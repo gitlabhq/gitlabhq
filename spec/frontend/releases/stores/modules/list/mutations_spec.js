@@ -3,11 +3,15 @@ import createState from '~/releases/stores/modules/list/state';
 import mutations from '~/releases/stores/modules/list/mutations';
 import * as types from '~/releases/stores/modules/list/mutation_types';
 import { parseIntPagination, convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
-import { pageInfoHeadersWithoutPagination, graphqlReleasesResponse } from '../../../mock_data';
+import { pageInfoHeadersWithoutPagination } from '../../../mock_data';
 import { convertGraphQLResponse } from '~/releases/util';
 
 const originalRelease = getJSONFixture('api/releases/release.json');
 const originalReleases = [originalRelease];
+
+const graphqlReleasesResponse = getJSONFixture(
+  'graphql/releases/queries/all_releases.query.graphql.json',
+);
 
 describe('Releases Store Mutations', () => {
   let stateCopy;

@@ -6,11 +6,13 @@ RSpec.describe 'Releases (JavaScript fixtures)' do
   include ApiHelpers
   include JavaScriptFixturesHelpers
 
-  let_it_be(:admin) { create(:admin) }
-  let_it_be(:project) { create(:project, :repository, path: 'releases-project') }
+  let_it_be(:admin) { create(:admin, username: 'administrator', email: 'admin@example.gitlab.com') }
+  let_it_be(:namespace) { create(:namespace, path: 'releases-namespace') }
+  let_it_be(:project) { create(:project, :repository, namespace: namespace, path: 'releases-project') }
 
   let_it_be(:milestone_12_3) do
     create(:milestone,
+           id: 123,
            project: project,
            title: '12.3',
            description: 'The 12.3 milestone',
@@ -20,6 +22,7 @@ RSpec.describe 'Releases (JavaScript fixtures)' do
 
   let_it_be(:milestone_12_4) do
     create(:milestone,
+           id: 124,
            project: project,
            title: '12.4',
            description: 'The 12.4 milestone',
@@ -45,18 +48,25 @@ RSpec.describe 'Releases (JavaScript fixtures)' do
 
   let_it_be(:release) do
     create(:release,
-           :with_evidence,
            milestones: [milestone_12_3, milestone_12_4],
            project: project,
            tag: 'v1.1',
            name: 'The first release',
+           author: admin,
            description: 'Best. Release. **Ever.** :rocket:',
            created_at: Time.zone.parse('2018-12-3'),
            released_at: Time.zone.parse('2018-12-10'))
   end
 
+  let_it_be(:evidence) do
+    create(:evidence,
+           release: release,
+           collected_at: Time.zone.parse('2018-12-03'))
+  end
+
   let_it_be(:other_link) do
     create(:release_link,
+           id: 10,
            release: release,
            name: 'linux-amd64 binaries',
            filepath: '/binaries/linux-amd64',
@@ -65,6 +75,7 @@ RSpec.describe 'Releases (JavaScript fixtures)' do
 
   let_it_be(:runbook_link) do
     create(:release_link,
+           id: 11,
            release: release,
            name: 'Runbook',
            url: "#{release.project.web_url}/runbook",
@@ -73,6 +84,7 @@ RSpec.describe 'Releases (JavaScript fixtures)' do
 
   let_it_be(:package_link) do
     create(:release_link,
+           id: 12,
            release: release,
            name: 'Package',
            url: 'https://example.com/package',
@@ -81,6 +93,7 @@ RSpec.describe 'Releases (JavaScript fixtures)' do
 
   let_it_be(:image_link) do
     create(:release_link,
+           id: 13,
            release: release,
            name: 'Image',
            url: 'https://example.com/image',

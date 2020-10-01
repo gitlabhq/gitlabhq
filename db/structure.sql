@@ -20007,6 +20007,8 @@ CREATE INDEX index_deployments_on_project_id_and_status_and_created_at ON deploy
 
 CREATE INDEX index_deployments_on_project_id_and_updated_at_and_id ON deployments USING btree (project_id, updated_at DESC, id DESC);
 
+CREATE INDEX index_deployments_on_project_id_sha ON deployments USING btree (project_id, sha);
+
 CREATE INDEX index_deployments_on_user_id_and_status_and_created_at ON deployments USING btree (user_id, status, created_at);
 
 CREATE INDEX index_description_versions_on_epic_id ON description_versions USING btree (epic_id) WHERE (epic_id IS NOT NULL);

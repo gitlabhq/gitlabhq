@@ -32,16 +32,19 @@
         %ul
           - if can_update_merge_request
             %li= link_to 'Edit', edit_namespace_project_merge_request_path(@project.namespace, @project, @merge_request)
-          - unless current_user == @merge_request.author
-            %li= link_to 'Report abuse', new_abuse_report_path(user_id: @merge_request.author.id, ref_url: merge_request_url(@merge_request))
           - if can_update_merge_request
+            - unless @merge_request.closed?
+              %li
+                = link_to @merge_request.work_in_progress? ? _('Mark as ready') : _('Mark as draft'), toggle_draft_issuable_path(@merge_request), method: :put, class: "js-draft-toggle-button"
             %li{ class: [merge_request_button_visibility(@merge_request, true), 'js-close-item'] }
               = link_to 'Close', merge_request_path(@merge_request, merge_request: { state_event: :close }), method: :put, title: 'Close merge request'
           - if can_reopen_merge_request
             %li{ class: merge_request_button_visibility(@merge_request, false) }
               = link_to 'Reopen', merge_request_path(@merge_request, merge_request: { state_event: :reopen }), method: :put, class: 'reopen-mr-link', title: 'Reopen merge request'
+          - unless current_user == @merge_request.author
+            %li= link_to 'Report abuse', new_abuse_report_path(user_id: @merge_request.author.id, ref_url: merge_request_url(@merge_request))
 
       - if can_update_merge_request
-        = link_to 'Edit', edit_project_merge_request_path(@project, @merge_request), class: "d-none d-sm-none d-md-block btn btn-grouped js-issuable-edit qa-edit-button"
+        = link_to 'Edit', edit_project_merge_request_path(@project, @merge_request), class: "d-none d-sm-none d-md-block btn gl-button btn-grouped js-issuable-edit qa-edit-button"
 
       = render 'shared/issuable/close_reopen_button', issuable: @merge_request, can_update: can_update_merge_request, can_reopen: can_reopen_merge_request

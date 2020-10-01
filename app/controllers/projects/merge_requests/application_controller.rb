@@ -35,6 +35,7 @@ class Projects::MergeRequests::ApplicationController < Projects::ApplicationCont
       :source_branch,
       :source_project_id,
       :state_event,
+      :wip_event,
       :squash,
       :target_branch,
       :target_project_id,

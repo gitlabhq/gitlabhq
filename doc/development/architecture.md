@@ -110,15 +110,15 @@ SSH -- TCP 22 --> GitLabShell[GitLab Shell]
 SMTP[SMTP Gateway]
 Geo[GitLab Geo Node] -- TCP 22, 80, 443 --> NGINX
 
-GitLabShell --TCP 8080 -->Unicorn["Unicorn (GitLab Rails)"]
+GitLabShell --TCP 8080 -->Puma["Puma (GitLab Rails)"]
 GitLabShell --> Praefect
-Unicorn --> PgBouncer[PgBouncer]
-Unicorn --> Redis
-Unicorn --> Praefect
+Puma --> PgBouncer[PgBouncer]
+Puma --> Redis
+Puma --> Praefect
 Sidekiq --> Redis
 Sidekiq --> PgBouncer
 Sidekiq --> Praefect
-GitLabWorkhorse[GitLab Workhorse] --> Unicorn
+GitLabWorkhorse[GitLab Workhorse] --> Puma
 GitLabWorkhorse --> Redis
 GitLabWorkhorse --> Praefect
 Praefect --> Gitaly
@@ -126,7 +126,7 @@ NGINX --> GitLabWorkhorse
 NGINX -- TCP 8090 --> GitLabPages[GitLab Pages]
 NGINX --> Grafana[Grafana]
 Grafana -- TCP 9090 --> Prometheus[Prometheus]
-Prometheus -- TCP 80, 443 --> Unicorn
+Prometheus -- TCP 80, 443 --> Puma
 RedisExporter[Redis Exporter] --> Redis
 Prometheus -- TCP 9121 --> RedisExporter
 PostgreSQLExporter[PostgreSQL Exporter] --> PostgreSQL
@@ -142,27 +142,27 @@ PgBouncer --> Consul
 PostgreSQL --> Consul
 PgBouncer --> PostgreSQL
 NGINX --> Registry
-Unicorn --> Registry
+Puma --> Registry
 NGINX --> Mattermost
-Mattermost --- Unicorn
+Mattermost --- Puma
 Prometheus --> Alertmanager
 Migrations --> PostgreSQL
 Runner -- TCP 443 --> NGINX
-Unicorn -- TCP 9200 --> Elasticsearch
+Puma -- TCP 9200 --> Elasticsearch
 Sidekiq -- TCP 9200 --> Elasticsearch
 Sidekiq -- TCP 80, 443 --> Sentry
-Unicorn -- TCP 80, 443 --> Sentry
+Puma -- TCP 80, 443 --> Sentry
 Sidekiq -- UDP 6831 --> Jaeger
-Unicorn -- UDP 6831 --> Jaeger
+Puma -- UDP 6831 --> Jaeger
 Gitaly -- UDP 6831 --> Jaeger
 GitLabShell -- UDP 6831 --> Jaeger
 GitLabWorkhorse -- UDP 6831 --> Jaeger
 Alertmanager -- TCP 25 --> SMTP
 Sidekiq -- TCP 25 --> SMTP
-Unicorn -- TCP 25 --> SMTP
-Unicorn -- TCP 369 --> LDAP
+Puma -- TCP 25 --> SMTP
+Puma -- TCP 369 --> LDAP
 Sidekiq -- TCP 369 --> LDAP
-Unicorn -- TCP 443 --> ObjectStorage["Object Storage"]
+Puma -- TCP 443 --> ObjectStorage["Object Storage"]
 Sidekiq -- TCP 443 --> ObjectStorage
 GitLabWorkhorse -- TCP 443 --> ObjectStorage
 Registry -- TCP 443 --> ObjectStorage
@@ -180,7 +180,7 @@ click Gitaly "./architecture.html#gitaly"
 click Jaeger "./architecture.html#jaeger"
 click GitLabWorkhorse "./architecture.html#gitlab-workhorse"
 click LDAP "./architecture.html#ldap-authentication"
-click Unicorn "./architecture.html#unicorn"
+click Puma "./architecture.html#puma"
 click GitLabShell "./architecture.html#gitlab-shell"
 click SSH "./architecture.html#ssh-request-22"
 click Sidekiq "./architecture.html#sidekiq"
@@ -260,7 +260,7 @@ Table description links:
 | [Runner](#gitlab-runner)                              | Executes GitLab CI/CD jobs                                           |       ⤓        |      ✅       |        ⚙         |     ✅      |   ⚙    |  ⚙  | CE & EE |
 | [Sentry integration](#sentry)                         | Error tracking for deployed apps                                     |       ⤓        |      ⤓       |        ⤓         |     ⤓      |   ⤓    |  ⤓  | CE & EE |
 | [Sidekiq](#sidekiq)                                   | Background jobs processor                                            |       ✅        |      ✅       |        ✅         |     ✅      |   ✅    |  ✅  | CE & EE |
-| [Unicorn (GitLab Rails)](#unicorn)                    | Handles requests for the web interface and API                       |       ✅        |      ✅       |        ✅         |     ✅      |   ⚙    |  ✅  | CE & EE |
+| [Puma (GitLab Rails)](#puma)                    | Handles requests for the web interface and API                       |       ✅        |      ✅       |        ✅         |     ✅      |   ⚙    |  ✅  | CE & EE |
 
 ### Component details
 
@@ -427,13 +427,13 @@ GitLab CI/CD is the open-source continuous integration service included with Git
 - [Project page](https://gitlab.com/gitlab-org/gitlab-workhorse/blob/master/README.md)
 - Configuration:
   - [Omnibus](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/files/gitlab-config-template/gitlab.rb.template)
-  - [Charts](https://docs.gitlab.com/charts/charts/gitlab/unicorn/)
+  - [Charts](https://docs.gitlab.com/charts/charts/gitlab/webservice/)
   - [Source](../install/installation.md#install-gitlab-workhorse)
 - Layer: Core Service (Processor)
 - Process: `gitlab-workhorse`
 - GitLab.com: [Service Architecture](https://about.gitlab.com/handbook/engineering/infrastructure/production/architecture/#service-architecture)
 
-[GitLab Workhorse](https://gitlab.com/gitlab-org/gitlab-workhorse) is a program designed at GitLab to help alleviate pressure from Unicorn. You can read more about the [historical reasons for developing](https://about.gitlab.com/blog/2016/04/12/a-brief-history-of-gitlab-workhorse/). It's designed to act as a smart reverse proxy to help speed up GitLab as a whole.
+[GitLab Workhorse](https://gitlab.com/gitlab-org/gitlab-workhorse) is a program designed at GitLab to help alleviate pressure from Puma. You can read more about the [historical reasons for developing](https://about.gitlab.com/blog/2016/04/12/a-brief-history-of-gitlab-workhorse/). It's designed to act as a smart reverse proxy to help speed up GitLab as a whole.
 
 #### Grafana
 
@@ -663,7 +663,29 @@ For monitoring deployed apps, see the [Sentry integration docs](../operations/er
 
 Sidekiq is a Ruby background job processor that pulls jobs from the Redis queue and processes them. Background jobs allow GitLab to provide a faster request/response cycle by moving work into the background.
 
+#### Puma
+
+NOTE: **Note:**
+Starting with GitLab 13.0, Puma is the default web server and Unicorn has been
+disabled by default.
+
+- [Project page](https://gitlab.com/gitlab-org/gitlab/blob/master/README.md)
+- Configuration:
+  - [Omnibus](https://docs.gitlab.com/omnibus/settings/puma.html)
+  - [Charts](https://docs.gitlab.com/charts/charts/gitlab/webservice/)
+  - [Source](../install/installation.md#configure-it)
+  - [GDK](https://gitlab.com/gitlab-org/gitlab/blob/master/config/gitlab.yml.example)
+- Layer: Core Service (Processor)
+- Process: `puma`
+- GitLab.com: [Puma](../user/gitlab_com/index.md#puma)
+
+[Puma](https://puma.io/) is a Ruby application server that is used to run the core Rails Application that provides the user facing features in GitLab. Often process output you will see this as `bundle` or `config.ru` depending on the GitLab version.
+
 #### Unicorn
+
+NOTE: **Note:**
+Starting with GitLab 13.0, Puma is the default web server and Unicorn has been
+disabled by default.
 
 - [Project page](https://gitlab.com/gitlab-org/gitlab/blob/master/README.md)
 - Configuration:
@@ -743,8 +765,8 @@ It's important to understand the distinction as some processes are used in both 
 When making a request to an HTTP Endpoint (think `/users/sign_in`) the request will take the following path through the GitLab Service:
 
 - NGINX - Acts as our first line reverse proxy.
-- GitLab Workhorse - This determines if it needs to go to the Rails application or somewhere else to reduce load on Unicorn.
-- Unicorn - Since this is a web request, and it needs to access the application it will go to Unicorn.
+- GitLab Workhorse - This determines if it needs to go to the Rails application or somewhere else to reduce load on Puma.
+- Puma - Since this is a web request, and it needs to access the application it will go to Puma.
 - PostgreSQL/Gitaly/Redis - Depending on the type of request, it may hit these services to store or retrieve data.
 
 ### GitLab Git request cycle
@@ -883,12 +905,12 @@ ps aux | grep '^git'
 
 GitLab has several components to operate. It requires a persistent database
 (PostgreSQL) and Redis database, and uses Apache `httpd` or NGINX to proxypass
-Unicorn. All these components should run as different system users to GitLab
+Puma. All these components should run as different system users to GitLab
 (for example, `postgres`, `redis`, and `www-data`, instead of `git`).
 
-As the `git` user it starts Sidekiq and Unicorn (a simple Ruby HTTP server
+As the `git` user it starts Sidekiq and Puma (a simple Ruby HTTP server
 running on port `8080` by default). Under the GitLab user there are normally 4
-processes: `unicorn_rails master` (1 process), `unicorn_rails worker`
+processes: `puma master` (1 process), `puma cluster worker`
 (2 processes), `sidekiq` (1 process).
 
 ### Repository access
@@ -901,7 +923,7 @@ See the README for more information.
 
 ### Init scripts of the services
 
-The GitLab init script starts and stops Unicorn and Sidekiq:
+The GitLab init script starts and stops Puma and Sidekiq:
 
 ```plaintext
 /etc/init.d/gitlab
@@ -941,9 +963,9 @@ Usage: /etc/init.d/postgresql {start|stop|restart|reload|force-reload|status} [v
 
 ### Log locations of the services
 
-GitLab (includes Unicorn and Sidekiq logs):
+GitLab (includes Puma and Sidekiq logs):
 
-- `/home/git/gitlab/log/` contains `application.log`, `production.log`, `sidekiq.log`, `unicorn.stdout.log`, `git_json.log` and `unicorn.stderr.log` normally.
+- `/home/git/gitlab/log/` contains `application.log`, `production.log`, `sidekiq.log`, `puma.stdout.log`, `git_json.log` and `puma.stderr.log` normally.
 
 GitLab Shell:
 
@@ -978,7 +1000,7 @@ GitLab has configuration files located in `/home/git/gitlab/config/*`. Commonly 
 configuration files include:
 
 - `gitlab.yml` - GitLab configuration
-- `unicorn.rb` - Unicorn web server settings
+- `puma.rb` - Puma web server settings
 - `database.yml` - Database connection settings
 
 GitLab Shell has a configuration file at `/home/git/gitlab-shell/config.yml`.

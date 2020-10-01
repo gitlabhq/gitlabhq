@@ -977,6 +977,9 @@ msgstr ""
 msgid "+ %{numberOfHiddenAssignees} more"
 msgstr ""
 
+msgid "+ %{numberOfHiddenReviewers} more"
+msgstr ""
+
 msgid "+%d more"
 msgid_plural "+%d more"
 msgstr[0] ""
@@ -1177,6 +1180,9 @@ msgid "A CI/CD pipeline must run and be successful before merge."
 msgstr ""
 
 msgid "A GitBook site that uses Netlify for CI/CD instead of GitLab, but still with all the other great GitLab features."
+msgstr ""
+
+msgid "A Gitpod configured Webapplication in Spring and Java"
 msgstr ""
 
 msgid "A Hexo site that uses Netlify for CI/CD instead of GitLab, but still with all the other great GitLab features."
@@ -2162,7 +2168,7 @@ msgstr ""
 msgid "AdminUsers|You are about to permanently delete the user %{username}. Issues, merge requests, and groups linked to them will be transferred to a system-wide \"Ghost-user\". To avoid data loss, consider using the %{strongStart}block user%{strongEnd} feature instead. Once you %{strongStart}Delete user%{strongEnd}, it cannot be undone or recovered."
 msgstr ""
 
-msgid "AdminUsers|You are about to permanently delete the user %{username}. This will delete all of the issues, merge requests, and groups linked to them. To avoid data loss, consider using the %{strong_start}block user%{strong_end} feature instead. Once you %{strong_start}Delete user%{strong_end}, it cannot be undone or recovered."
+msgid "AdminUsers|You are about to permanently delete the user %{username}. This will delete all of the issues, merge requests, and groups linked to them. To avoid data loss, consider using the %{strongStart}block user%{strongEnd} feature instead. Once you %{strongStart}Delete user%{strongEnd}, it cannot be undone or recovered."
 msgstr ""
 
 msgid "AdminUsers|You cannot remove your own admin rights."
@@ -10223,6 +10229,9 @@ msgstr ""
 msgid "Error occurred when saving assignees"
 msgstr ""
 
+msgid "Error occurred when saving reviewers"
+msgstr ""
+
 msgid "Error occurred when toggling the notification subscription"
 msgstr ""
 
@@ -15444,6 +15453,12 @@ msgstr ""
 msgid "Mark as done"
 msgstr ""
 
+msgid "Mark as draft"
+msgstr ""
+
+msgid "Mark as ready"
+msgstr ""
+
 msgid "Mark as resolved"
 msgstr ""
 
@@ -20243,6 +20258,9 @@ msgstr ""
 msgid "ProjectTemplates|GitLab Cluster Management"
 msgstr ""
 
+msgid "ProjectTemplates|Gitpod/Spring Petclinic"
+msgstr ""
+
 msgid "ProjectTemplates|Go Micro"
 msgstr ""
 
@@ -21987,6 +22005,11 @@ msgid "ReviewApp|Enable Review App"
 msgstr ""
 
 msgid "Reviewer"
+msgid_plural "%d Reviewers"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Reviewer(s)"
 msgstr ""
 
 msgid "Reviewing"
