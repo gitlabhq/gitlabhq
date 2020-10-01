@@ -5,6 +5,7 @@ class Member < ApplicationRecord
   include AfterCommitQueue
   include Sortable
   include Importable
+  include CreatedAtFilterable
   include Expirable
   include Gitlab::Access
   include Presentable
@@ -20,6 +21,7 @@ class Member < ApplicationRecord
 
   delegate :name, :username, :email, to: :user, prefix: true
 
+  validates :expires_at, allow_blank: true, future_date: true
   validates :user, presence: true, unless: :invite?
   validates :source, presence: true
   validates :user_id, uniqueness: { scope: [:source_type, :source_id],

@@ -44,8 +44,9 @@ RSpec.describe ProjectMember do
     let(:maintainer) { create(:project_member, project: project) }
 
     it "creates an expired event when left due to expiry" do
-      expired = create(:project_member, project: project, expires_at: Time.current - 6.days)
-      expired.destroy
+      expired = create(:project_member, project: project, expires_at: 1.day.from_now)
+      travel_to(2.days.from_now) { expired.destroy }
+
       expect(Event.recent.first).to be_expired_action
     end
 

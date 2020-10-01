@@ -1942,6 +1942,9 @@ msgstr ""
 msgid "AdminUsers|You cannot remove your own admin rights."
 msgstr ""
 
+msgid "AdminUsers|You must transfer ownership or delete the groups owned by this user before you can delete their account"
+msgstr ""
+
 msgid "Administration"
 msgstr ""
 
@@ -17980,6 +17983,9 @@ msgstr ""
 msgid "Profiles|You don't have access to delete this user."
 msgstr ""
 
+msgid "Profiles|You must transfer ownership or delete groups you are an owner of before you can delete your account"
+msgstr ""
+
 msgid "Profiles|You must transfer ownership or delete these groups before you can delete your account."
 msgstr ""
 
@@ -23972,6 +23978,9 @@ msgstr ""
 msgid "This action can lead to data loss. To prevent accidental actions we ask you to confirm your intention."
 msgstr ""
 
+msgid "This action has been performed too many times. Try again later."
+msgstr ""
+
 msgid "This also resolves all related threads"
 msgstr ""
 
@@ -27621,6 +27630,9 @@ msgid "by"
 msgstr ""
 
 msgid "by %{user}"
+msgstr ""
+
+msgid "cannot be a date in the past"
 msgstr ""
 
 msgid "cannot be changed if a personal project has container registry tags."

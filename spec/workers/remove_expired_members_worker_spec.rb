@@ -7,9 +7,13 @@ RSpec.describe RemoveExpiredMembersWorker do
 
   describe '#perform' do
     context 'project members' do
-      let!(:expired_project_member) { create(:project_member, expires_at: 1.hour.ago, access_level: GroupMember::DEVELOPER) }
-      let!(:project_member_expiring_in_future) { create(:project_member, expires_at: 10.days.from_now, access_level: GroupMember::DEVELOPER) }
-      let!(:non_expiring_project_member) { create(:project_member, expires_at: nil, access_level: GroupMember::DEVELOPER) }
+      let_it_be(:expired_project_member) { create(:project_member, expires_at: 1.day.from_now, access_level: GroupMember::DEVELOPER) }
+      let_it_be(:project_member_expiring_in_future) { create(:project_member, expires_at: 10.days.from_now, access_level: GroupMember::DEVELOPER) }
+      let_it_be(:non_expiring_project_member) { create(:project_member, expires_at: nil, access_level: GroupMember::DEVELOPER) }
+
+      before do
+        travel_to(3.days.from_now)
+      end
 
       it 'removes expired members' do
         expect { worker.perform }.to change { Member.count }.by(-1)
@@ -28,9 +32,13 @@ RSpec.describe RemoveExpiredMembersWorker do
     end
 
     context 'group members' do
-      let!(:expired_group_member) { create(:group_member, expires_at: 1.hour.ago, access_level: GroupMember::DEVELOPER) }
-      let!(:group_member_expiring_in_future) { create(:group_member, expires_at: 10.days.from_now, access_level: GroupMember::DEVELOPER) }
-      let!(:non_expiring_group_member) { create(:group_member, expires_at: nil, access_level: GroupMember::DEVELOPER) }
+      let_it_be(:expired_group_member) { create(:group_member, expires_at: 1.day.from_now, access_level: GroupMember::DEVELOPER) }
+      let_it_be(:group_member_expiring_in_future) { create(:group_member, expires_at: 10.days.from_now, access_level: GroupMember::DEVELOPER) }
+      let_it_be(:non_expiring_group_member) { create(:group_member, expires_at: nil, access_level: GroupMember::DEVELOPER) }
+
+      before do
+        travel_to(3.days.from_now)
+      end
 
       it 'removes expired members' do
         expect { worker.perform }.to change { Member.count }.by(-1)
@@ -49,7 +57,11 @@ RSpec.describe RemoveExpiredMembersWorker do
     end
 
     context 'when the last group owner expires' do
-      let!(:expired_group_owner) { create(:group_member, expires_at: 1.hour.ago, access_level: GroupMember::OWNER) }
+      let_it_be(:expired_group_owner) { create(:group_member, expires_at: 1.day.from_now, access_level: GroupMember::OWNER) }
+
+      before do
+        travel_to(3.days.from_now)
+      end
 
       it 'does not delete the owner' do
         worker.perform

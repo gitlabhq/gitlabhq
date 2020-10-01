@@ -13891,7 +13891,8 @@ CREATE TABLE public.plan_limits (
     ci_max_artifact_size_requirements integer DEFAULT 0 NOT NULL,
     ci_max_artifact_size_coverage_fuzzing integer DEFAULT 0 NOT NULL,
     ci_max_artifact_size_browser_performance integer DEFAULT 0 NOT NULL,
-    ci_max_artifact_size_load_performance integer DEFAULT 0 NOT NULL
+    ci_max_artifact_size_load_performance integer DEFAULT 0 NOT NULL,
+    project_feature_flags integer DEFAULT 200 NOT NULL
 );
 
 CREATE SEQUENCE public.plan_limits_id_seq
@@ -18579,6 +18580,8 @@ CREATE INDEX idx_issues_on_state_id ON public.issues USING btree (state_id);
 CREATE INDEX idx_jira_connect_subscriptions_on_installation_id ON public.jira_connect_subscriptions USING btree (jira_connect_installation_id);
 
 CREATE UNIQUE INDEX idx_jira_connect_subscriptions_on_installation_id_namespace_id ON public.jira_connect_subscriptions USING btree (jira_connect_installation_id, namespace_id);
+
+CREATE INDEX idx_members_created_at_user_id_invite_token ON public.members USING btree (created_at) WHERE ((invite_token IS NOT NULL) AND (user_id IS NULL));
 
 CREATE INDEX idx_merge_requests_on_id_and_merge_jid ON public.merge_requests USING btree (id, merge_jid) WHERE ((merge_jid IS NOT NULL) AND (state_id = 4));
 
@@ -23869,5 +23872,8 @@ COPY "schema_migrations" (version) FROM STDIN;
 20200716120419
 20200717040735
 20200728182311
+20200831204646
+20200831222347
+20200916120837
 \.
 

@@ -15,7 +15,7 @@ module ApplicationCable
     private
 
     def find_user_from_session_store
-      session = ActiveSession.sessions_from_ids([session_id]).first
+      session = ActiveSession.sessions_from_ids([session_id.private_id]).first
       Warden::SessionSerializer.new('rack.session' => session).fetch(:user)
     end
 
