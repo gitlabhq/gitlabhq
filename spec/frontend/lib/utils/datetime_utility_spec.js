@@ -667,3 +667,26 @@ describe('differenceInMilliseconds', () => {
     expect(datetimeUtility.differenceInMilliseconds(startDate, endDate)).toBe(expected);
   });
 });
+
+describe('dateAtFirstDayOfMonth', () => {
+  const date = new Date('2019-07-16T12:00:00.000Z');
+
+  it('returns the date at the first day of the month', () => {
+    const startDate = datetimeUtility.dateAtFirstDayOfMonth(date);
+    const expectedStartDate = new Date('2019-07-01T12:00:00.000Z');
+
+    expect(startDate).toStrictEqual(expectedStartDate);
+  });
+});
+
+describe('datesMatch', () => {
+  const date = new Date('2019-07-17T00:00:00.000Z');
+
+  it.each`
+    date1   | date2                                   | expected
+    ${date} | ${new Date('2019-07-17T00:00:00.000Z')} | ${true}
+    ${date} | ${new Date('2019-07-17T12:00:00.000Z')} | ${false}
+  `('returns $expected for $date1 matches $date2', ({ date1, date2, expected }) => {
+    expect(datetimeUtility.datesMatch(date1, date2)).toBe(expected);
+  });
+});

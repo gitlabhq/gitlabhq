@@ -1,5 +1,21 @@
 # frozen_string_literal: true
 
+module GraphQLExtensions
+  module ScalarExtensions
+    # Allow ID to unify with GlobalID Types
+    def ==(other)
+      if name == 'ID' && other.is_a?(self.class) &&
+          other.type_class.ancestors.include?(::Types::GlobalIDType)
+        return true
+      end
+
+      super
+    end
+  end
+end
+
+::GraphQL::ScalarType.prepend(GraphQLExtensions::ScalarExtensions)
+
 module Types
   class GlobalIDType < BaseScalar
     graphql_name 'GlobalID'

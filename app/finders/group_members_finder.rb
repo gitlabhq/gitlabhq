@@ -17,9 +17,8 @@ class GroupMembersFinder < UnionFinder
     @params = params
   end
 
-  # rubocop: disable CodeReuse/ActiveRecord
   def execute(include_relations: [:inherited, :direct])
-    group_members = group.members
+    group_members = group_members_list
     relations = []
 
     return group_members if include_relations == [:direct]
@@ -27,17 +26,13 @@ class GroupMembersFinder < UnionFinder
     relations << group_members if include_relations.include?(:direct)
 
     if include_relations.include?(:inherited) && group.parent
-      parents_members = GroupMember.non_request.non_minimal_access
-        .where(source_id: group.ancestors.select(:id))
-        .where.not(user_id: group.users.select(:id))
+      parents_members = relation_group_members(group.ancestors)
 
       relations << parents_members
     end
 
     if include_relations.include?(:descendants)
-      descendant_members = GroupMember.non_request.non_minimal_access
-        .where(source_id: group.descendants.select(:id))
-        .where.not(user_id: group.users.select(:id))
+      descendant_members = relation_group_members(group.descendants)
 
       relations << descendant_members
     end
@@ -47,7 +42,6 @@ class GroupMembersFinder < UnionFinder
     members = find_union(relations, GroupMember)
     filter_members(members)
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 
   private
 
@@ -67,6 +61,22 @@ class GroupMembersFinder < UnionFinder
   def can_manage_members
     Ability.allowed?(user, :admin_group_member, group)
   end
+
+  def group_members_list
+    group.members
+  end
+
+  def relation_group_members(relation)
+    all_group_members(relation).non_minimal_access
+  end
+
+  # rubocop: disable CodeReuse/ActiveRecord
+  def all_group_members(relation)
+    GroupMember.non_request
+      .where(source_id: relation.select(:id))
+      .where.not(user_id: group.users.select(:id))
+  end
+  # rubocop: enable CodeReuse/ActiveRecord
 end
 
 GroupMembersFinder.prepend_if_ee('EE::GroupMembersFinder')

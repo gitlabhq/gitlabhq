@@ -3666,6 +3666,9 @@ msgstr ""
 msgid "AuditLogs|Target"
 msgstr ""
 
+msgid "AuditLogs|This month"
+msgstr ""
+
 msgid "AuditLogs|User Events"
 msgstr ""
 

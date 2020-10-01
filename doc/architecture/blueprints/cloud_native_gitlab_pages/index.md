@@ -118,7 +118,7 @@ DRIs:
 |------------------------------|------------------------|
 | Product                      |    Jackie Porter       |
 | Leadership                   |    Daniel Croft        |
-| Engineering                  |         TBD            |
+| Engineering                  |    Kamil Trzciński     |
 
 Domain Experts:
 

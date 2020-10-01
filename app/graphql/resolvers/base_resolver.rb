@@ -4,6 +4,7 @@ module Resolvers
   class BaseResolver < GraphQL::Schema::Resolver
     extend ::Gitlab::Utils::Override
     include ::Gitlab::Utils::StrongMemoize
+    include ::Gitlab::Graphql::GlobalIDCompatibility
 
     def self.single
       @single ||= Class.new(self) do

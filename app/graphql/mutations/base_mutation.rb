@@ -4,6 +4,7 @@ module Mutations
   class BaseMutation < GraphQL::Schema::RelayClassicMutation
     prepend Gitlab::Graphql::Authorize::AuthorizeResource
     prepend Gitlab::Graphql::CopyFieldDescription
+    prepend ::Gitlab::Graphql::GlobalIDCompatibility
 
     ERROR_MESSAGE = 'You cannot perform write operations on a read-only instance'
 

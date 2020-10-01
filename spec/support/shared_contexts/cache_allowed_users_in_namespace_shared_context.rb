@@ -25,7 +25,7 @@ RSpec.shared_examples 'allowed user IDs are cached' do
         expect(described_class.l1_cache_backend).to receive(:fetch).and_call_original
         expect(described_class.l2_cache_backend).to receive(:fetch).and_call_original
         expect(subject).to be_truthy
-      end.not_to exceed_query_limit(2)
+      end.not_to exceed_query_limit(3)
     end
   end
 end

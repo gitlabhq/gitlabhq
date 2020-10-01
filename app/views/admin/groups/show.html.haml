@@ -113,7 +113,7 @@
             %div
               = users_select_tag(:user_ids, multiple: true, email_user: true, skip_ldap: @group.ldap_synced?, scope: :all)
             .gl-mt-3
-              = select_tag :access_level, options_for_select(GroupMember.access_level_roles), class: "project-access-select select2"
+              = select_tag :access_level, options_for_select(@group.access_level_roles), class: "project-access-select select2"
             %hr
             = button_tag _('Add users to group'), class: "btn btn-success"
       = render 'shared/members/requests', membership_source: @group, requesters: @requesters, force_mobile_view: true
