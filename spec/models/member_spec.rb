@@ -18,6 +18,13 @@ RSpec.describe Member do
     it { is_expected.to validate_presence_of(:source) }
     it { is_expected.to validate_inclusion_of(:access_level).in_array(Gitlab::Access.all_values) }
 
+    context 'expires_at' do
+      it { is_expected.not_to allow_value(Date.yesterday).for(:expires_at) }
+      it { is_expected.to allow_value(Date.tomorrow).for(:expires_at) }
+      it { is_expected.to allow_value(Date.today).for(:expires_at) }
+      it { is_expected.to allow_value(nil).for(:expires_at) }
+    end
+
     it_behaves_like 'an object with email-formated attributes', :invite_email do
       subject { build(:project_member) }
     end

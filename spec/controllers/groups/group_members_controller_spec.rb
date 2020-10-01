@@ -139,6 +139,45 @@ RSpec.describe Groups::GroupMembersController do
         expect(group.users).not_to include group_user
       end
     end
+
+    context 'access expiry date' do
+      before do
+        group.add_owner(user)
+      end
+
+      subject do
+        post :create, params: {
+                        group_id: group,
+                        user_ids: group_user.id,
+                        access_level: Gitlab::Access::GUEST,
+                        expires_at: expires_at
+                      }
+      end
+
+      context 'when set to a date in the past' do
+        let(:expires_at) { 2.days.ago }
+
+        it 'does not add user to members' do
+          subject
+
+          expect(flash[:alert]).to include('Expires at cannot be a date in the past')
+          expect(response).to redirect_to(group_group_members_path(group))
+          expect(group.users).not_to include group_user
+        end
+      end
+
+      context 'when set to a date in the future' do
+        let(:expires_at) { 5.days.from_now }
+
+        it 'adds user to members' do
+          subject
+
+          expect(response).to set_flash.to 'Users were successfully added.'
+          expect(response).to redirect_to(group_group_members_path(group))
+          expect(group.users).to include group_user
+        end
+      end
+    end
   end
 
   describe 'PUT update' do
@@ -149,15 +188,49 @@ RSpec.describe Groups::GroupMembersController do
       sign_in(user)
     end
 
-    Gitlab::Access.options.each do |label, value|
-      it "can change the access level to #{label}" do
-        put :update, params: {
-          group_member: { access_level: value },
-          group_id: group,
-          id: requester
-        }, xhr: true
+    context 'access level' do
+      Gitlab::Access.options.each do |label, value|
+        it "can change the access level to #{label}" do
+          put :update, params: {
+            group_member: { access_level: value },
+            group_id: group,
+            id: requester
+          }, xhr: true
 
-        expect(requester.reload.human_access).to eq(label)
+          expect(requester.reload.human_access).to eq(label)
+        end
+      end
+    end
+
+    context 'access expiry date' do
+      subject do
+        put :update, xhr: true, params: {
+                                          group_member: {
+                                            expires_at: expires_at
+                                          },
+                                          group_id: group,
+                                          id: requester
+                                        }
+      end
+
+      context 'when set to a date in the past' do
+        let(:expires_at) { 2.days.ago }
+
+        it 'does not update the member' do
+          subject
+
+          expect(requester.reload.expires_at).not_to eq(expires_at.to_date)
+        end
+      end
+
+      context 'when set to a date in the future' do
+        let(:expires_at) { 5.days.from_now }
+
+        it 'updates the member' do
+          subject
+
+          expect(requester.reload.expires_at).to eq(expires_at.to_date)
+        end
       end
     end
   end
