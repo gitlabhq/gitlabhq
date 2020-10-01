@@ -44,7 +44,7 @@ RSpec.describe Ci::JobArtifact do
       let!(:metrics_report) { create(:ci_job_artifact, :junit) }
       let!(:codequality_report) { create(:ci_job_artifact, :codequality) }
 
-      it { is_expected.to eq([metrics_report, codequality_report]) }
+      it { is_expected.to match_array([metrics_report, codequality_report]) }
     end
   end
 

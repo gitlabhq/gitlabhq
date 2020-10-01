@@ -15,6 +15,10 @@ describe('MemberList', () => {
         type: Boolean,
         required: true,
       },
+      isCurrentUser: {
+        type: Boolean,
+        required: true,
+      },
     },
     render(createElement) {
       return createElement('div', this.memberType);
@@ -29,6 +33,7 @@ describe('MemberList', () => {
     return new Vuex.Store({
       state: {
         sourceId: 1,
+        currentUserId: 1,
         ...state,
       },
     });
@@ -42,8 +47,13 @@ describe('MemberList', () => {
       propsData,
       store: createStore(state),
       scopedSlots: {
-        default:
-          '<wrapped-component :member-type="props.memberType" :is-direct-member="props.isDirectMember" />',
+        default: `
+          <wrapped-component
+            :member-type="props.memberType"
+            :is-direct-member="props.isDirectMember"
+            :is-current-user="props.isCurrentUser"
+          />
+        `,
       },
     });
   };
@@ -91,6 +101,30 @@ describe('MemberList', () => {
       });
 
       expect(findWrappedComponent().props('isDirectMember')).toBe(false);
+    });
+  });
+
+  describe('isCurrentUser', () => {
+    it('returns `true` when `member.user` has the same ID as `currentUserId`', () => {
+      createComponent({
+        member: {
+          ...memberMock,
+          user: {
+            ...memberMock.user,
+            id: 1,
+          },
+        },
+      });
+
+      expect(findWrappedComponent().props('isCurrentUser')).toBe(true);
+    });
+
+    it('returns `false` when `member.user` does not have the same ID as `currentUserId`', () => {
+      createComponent({
+        member: memberMock,
+      });
+
+      expect(findWrappedComponent().props('isCurrentUser')).toBe(false);
     });
   });
 });

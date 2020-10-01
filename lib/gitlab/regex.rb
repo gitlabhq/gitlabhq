@@ -142,8 +142,12 @@ module Gitlab
         /\A\d+\.\d+\.\d+\z/
       end
 
-      def generic_package_file_name_regex
+      def generic_package_name_regex
         maven_file_name_regex
+      end
+
+      def generic_package_file_name_regex
+        generic_package_name_regex
       end
     end
 

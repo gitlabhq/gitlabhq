@@ -1674,6 +1674,8 @@ class User < ApplicationRecord
   end
 
   def terms_accepted?
+    return true if project_bot?
+
     accepted_term_id.present?
   end
 

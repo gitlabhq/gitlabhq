@@ -11,7 +11,10 @@ describe('MemberList', () => {
 
   const createComponent = propsData => {
     wrapper = shallowMount(MemberAvatar, {
-      propsData,
+      propsData: {
+        isCurrentUser: false,
+        ...propsData,
+      },
     });
   };
 

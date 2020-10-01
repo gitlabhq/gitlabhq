@@ -6,7 +6,7 @@ RSpec.describe "User views milestone" do
   let_it_be(:user) { create(:user) }
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, :repository, group: group) }
-  let_it_be(:milestone) { create(:milestone, project: project) }
+  let_it_be(:milestone) { create(:milestone, project: project, description: '**Lorem** _ipsum_ dolor sit [amet](https://example.com)') }
   let_it_be(:labels) { create_list(:label, 2, project: project) }
 
   before_all do
@@ -15,6 +15,14 @@ RSpec.describe "User views milestone" do
 
   before do
     sign_in(user)
+  end
+
+  context 'page description' do
+    before do
+      visit(project_milestone_path(project, milestone))
+    end
+
+    it_behaves_like 'page meta description', 'Lorem ipsum dolor sit amet'
   end
 
   it "avoids N+1 database queries" do

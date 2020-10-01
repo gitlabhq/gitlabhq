@@ -83,7 +83,7 @@ There are some high level differences between the products worth mentioning:
 
 - You can control which jobs run in which cases, depending on how they are triggered,
   with the [`rules` syntax](../yaml/README.md#rules).
-- GitLab [pipeline scheduling concepts](../pipelines/schedules.md) are also different than with Jenkins.
+- GitLab [pipeline scheduling concepts](../pipelines/schedules.md) are also different from Jenkins.
 - You can reuse pipeline configurations using the [`include` keyword](../yaml/README.md#include)
   and [templates](#templates). Your templates can be kept in a central repository (with different
   permissions), and then any project can use them. This central project could also

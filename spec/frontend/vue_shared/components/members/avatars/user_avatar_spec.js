@@ -1,25 +1,26 @@
 import { mount, createWrapper } from '@vue/test-utils';
-import { getByText as getByTextHelper } from '@testing-library/dom';
-import { GlAvatarLink } from '@gitlab/ui';
-import { member, orphanedMember } from '../mock_data';
+import { within } from '@testing-library/dom';
+import { GlAvatarLink, GlBadge } from '@gitlab/ui';
+import { member as memberMock, orphanedMember } from '../mock_data';
 import UserAvatar from '~/vue_shared/components/members/avatars/user_avatar.vue';
 
 describe('MemberList', () => {
   let wrapper;
 
-  const { user } = member;
+  const { user } = memberMock;
 
   const createComponent = (propsData = {}) => {
     wrapper = mount(UserAvatar, {
       propsData: {
-        member,
+        member: memberMock,
+        isCurrentUser: false,
         ...propsData,
       },
     });
   };
 
   const getByText = (text, options) =>
-    createWrapper(getByTextHelper(wrapper.element, text, options));
+    createWrapper(within(wrapper.element).findByText(text, options));
 
   afterEach(() => {
     wrapper.destroy();
@@ -61,6 +62,27 @@ describe('MemberList', () => {
       createComponent({ member: orphanedMember });
 
       expect(getByText('Orphaned member').exists()).toBe(true);
+    });
+  });
+
+  describe('badges', () => {
+    it.each`
+      member                                                                     | badgeText
+      ${{ ...memberMock, usingLicense: true }}                                   | ${'Is using seat'}
+      ${{ ...memberMock, user: { ...memberMock.user, blocked: true } }}          | ${'Blocked'}
+      ${{ ...memberMock, user: { ...memberMock.user, twoFactorEnabled: true } }} | ${'2FA'}
+      ${{ ...memberMock, groupSso: true }}                                       | ${'SAML'}
+      ${{ ...memberMock, groupManagedAccount: true }}                            | ${'Managed Account'}
+    `('renders the "$badgeText" badge', ({ member, badgeText }) => {
+      createComponent({ member });
+
+      expect(wrapper.find(GlBadge).text()).toBe(badgeText);
+    });
+
+    it('renders the "It\'s you" badge when member is current user', () => {
+      createComponent({ isCurrentUser: true });
+
+      expect(getByText("It's you").exists()).toBe(true);
     });
   });
 });

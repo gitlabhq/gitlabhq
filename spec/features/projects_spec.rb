@@ -99,6 +99,15 @@ RSpec.describe 'Project' do
         expect(page).to have_css('.home-panel-description .is-expanded')
       end
     end
+
+    context 'page description' do
+      before do
+        project.update_attribute(:description, '**Lorem** _ipsum_ dolor sit [amet](https://example.com)')
+        visit path
+      end
+
+      it_behaves_like 'page meta description', 'Lorem ipsum dolor sit amet'
+    end
   end
 
   describe 'project topics' do

@@ -3,7 +3,7 @@
 - add_to_breadcrumbs _("Merge Requests"), project_merge_requests_path(@project)
 - breadcrumb_title @merge_request.to_reference
 - page_title "#{@merge_request.title} (#{@merge_request.to_reference})", _("Merge Requests")
-- page_description @merge_request.description
+- page_description @merge_request.description_html
 - page_card_attributes @merge_request.card_attributes
 - suggest_changes_help_path = help_page_path('user/discussions/index.md', anchor: 'suggest-changes')
 - number_of_pipelines = @pipelines.size

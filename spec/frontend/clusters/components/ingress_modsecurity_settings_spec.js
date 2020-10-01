@@ -28,8 +28,10 @@ describe('IngressModsecuritySettings', () => {
     });
   };
 
-  const findSaveButton = () => wrapper.find('.btn-success');
-  const findCancelButton = () => wrapper.find('[variant="secondary"]');
+  const findSaveButton = () =>
+    wrapper.find('[data-qa-selector="save_ingress_modsecurity_settings"]');
+  const findCancelButton = () =>
+    wrapper.find('[data-qa-selector="cancel_ingress_modsecurity_settings"]');
   const findModSecurityToggle = () => wrapper.find(GlToggle);
   const findModSecurityDropdown = () => wrapper.find(GlDeprecatedDropdown);
 

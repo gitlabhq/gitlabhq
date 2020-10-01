@@ -12,6 +12,10 @@ export default {
       type: String,
       required: true,
     },
+    isCurrentUser: {
+      type: Boolean,
+      required: true,
+    },
     member: {
       type: Object,
       required: true,
@@ -27,5 +31,5 @@ export default {
 </script>
 
 <template>
-  <component :is="avatarComponent" :member="member" />
+  <component :is="avatarComponent" :member="member" :is-current-user="isCurrentUser" />
 </template>

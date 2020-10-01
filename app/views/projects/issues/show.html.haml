@@ -2,7 +2,7 @@
 - add_to_breadcrumbs _("Issues"), project_issues_path(@project)
 - breadcrumb_title @issue.to_reference
 - page_title           "#{@issue.title} (#{@issue.to_reference})", _("Issues")
-- page_description     @issue.description
+- page_description     @issue.description_html
 - page_card_attributes @issue.card_attributes
 - if @issue.relocation_target
   - page_canonical_link @issue.relocation_target.present(current_user: current_user).web_url

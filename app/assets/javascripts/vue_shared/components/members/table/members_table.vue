@@ -44,8 +44,12 @@ export default {
     show-empty
   >
     <template #cell(account)="{ item: member }">
-      <members-table-cell #default="{ memberType }" :member="member">
-        <member-avatar :member-type="memberType" :member="member" />
+      <members-table-cell #default="{ memberType, isCurrentUser }" :member="member">
+        <member-avatar
+          :member-type="memberType"
+          :is-current-user="isCurrentUser"
+          :member="member"
+        />
       </members-table-cell>
     </template>
 

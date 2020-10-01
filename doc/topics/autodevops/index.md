@@ -83,9 +83,9 @@ project in a simple and automatic way:
 
 1. [Auto Build](stages.md#auto-build)
 1. [Auto Test](stages.md#auto-test)
-1. [Auto Code Quality](stages.md#auto-code-quality) **(STARTER)**
-1. [Auto SAST (Static Application Security Testing)](stages.md#auto-sast) **(ULTIMATE)**
-1. [Auto Secret Detection](stages.md#auto-secret-detection) **(ULTIMATE)**
+1. [Auto Code Quality](stages.md#auto-code-quality)
+1. [Auto SAST (Static Application Security Testing)](stages.md#auto-sast)
+1. [Auto Secret Detection](stages.md#auto-secret-detection)
 1. [Auto Dependency Scanning](stages.md#auto-dependency-scanning) **(ULTIMATE)**
 1. [Auto License Compliance](stages.md#auto-license-compliance) **(ULTIMATE)**
 1. [Auto Container Scanning](stages.md#auto-container-scanning) **(ULTIMATE)**

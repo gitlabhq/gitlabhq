@@ -1,5 +1,11 @@
 <script>
-import { GlAvatarLink, GlAvatarLabeled, GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
+import {
+  GlAvatarLink,
+  GlAvatarLabeled,
+  GlBadge,
+  GlSafeHtmlDirective as SafeHtml,
+} from '@gitlab/ui';
+import { generateBadges } from 'ee_else_ce/vue_shared/components/members/utils';
 import { __ } from '~/locale';
 import { AVATAR_SIZE } from '../constants';
 
@@ -7,7 +13,11 @@ export default {
   name: 'UserAvatar',
   avatarSize: AVATAR_SIZE,
   orphanedUserLabel: __('Orphaned member'),
-  components: { GlAvatarLink, GlAvatarLabeled },
+  components: {
+    GlAvatarLink,
+    GlAvatarLabeled,
+    GlBadge,
+  },
   directives: {
     SafeHtml,
   },
@@ -16,10 +26,17 @@ export default {
       type: Object,
       required: true,
     },
+    isCurrentUser: {
+      type: Boolean,
+      required: true,
+    },
   },
   computed: {
     user() {
       return this.member.user;
+    },
+    badges() {
+      return generateBadges(this.member, this.isCurrentUser).filter(badge => badge.show);
     },
   },
 };
@@ -41,7 +58,15 @@ export default {
       :size="$options.avatarSize"
       :entity-name="user.name"
       :entity-id="user.id"
-    />
+    >
+      <template #meta>
+        <div v-for="badge in badges" :key="badge.text" class="gl-p-1">
+          <gl-badge size="sm" :variant="badge.variant">
+            {{ badge.text }}
+          </gl-badge>
+        </div>
+      </template>
+    </gl-avatar-labeled>
   </gl-avatar-link>
 
   <gl-avatar-labeled

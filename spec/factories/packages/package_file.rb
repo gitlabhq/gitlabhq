@@ -140,6 +140,14 @@ FactoryBot.define do
       size { 1149.bytes }
     end
 
+    trait(:generic) do
+      package
+      file_fixture { 'spec/fixtures/packages/generic/myfile.tar.gz' }
+      file_name { "#{package.name}.tar.gz" }
+      file_sha256 { '440e5e148a25331bbd7991575f7d54933c0ebf6cc735a18ee5066ac1381bb590' }
+      size { 1149.bytes }
+    end
+
     trait(:object_storage) do
       file_store { Packages::PackageFileUploader::Store::REMOTE }
     end
