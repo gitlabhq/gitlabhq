@@ -12,12 +12,17 @@ import { setTitle } from './utils/title';
 import { updateFormAction } from './utils/dom';
 import { convertObjectPropsToCamelCase, parseBoolean } from '../lib/utils/common_utils';
 import { __ } from '../locale';
+import PathLastCommitQuery from './queries/path_last_commit.query.graphql';
 
 export default function setupVueRepositoryList() {
   const el = document.getElementById('js-tree-list');
   const { dataset } = el;
   const { projectPath, projectShortPath, ref, escapedRef, fullName } = dataset;
   const router = createRouter(projectPath, escapedRef);
+  const pathRegex = /-\/tree\/[^/]+\/(.+$)/;
+  const matches = window.location.href.match(pathRegex);
+
+  const currentRoutePath = matches ? matches[1] : '';
 
   apolloProvider.clients.defaultClient.cache.writeData({
     data: {
@@ -28,6 +33,43 @@ export default function setupVueRepositoryList() {
       commits: [],
     },
   });
+
+  const initLastCommitApp = () =>
+    new Vue({
+      el: document.getElementById('js-last-commit'),
+      router,
+      apolloProvider,
+      render(h) {
+        return h(LastCommit, {
+          props: {
+            currentPath: this.$route.params.path,
+          },
+        });
+      },
+    });
+
+  if (window.gl.startup_graphql_calls) {
+    const query = window.gl.startup_graphql_calls.find(
+      call => call.operationName === 'pathLastCommit',
+    );
+    query.fetchCall
+      .then(res => res.json())
+      .then(res => {
+        apolloProvider.clients.defaultClient.writeQuery({
+          query: PathLastCommitQuery,
+          data: res.data,
+          variables: {
+            projectPath,
+            ref,
+            path: currentRoutePath,
+          },
+        });
+      })
+      .catch(() => {})
+      .finally(() => initLastCommitApp());
+  } else {
+    initLastCommitApp();
+  }
 
   router.afterEach(({ params: { path } }) => {
     setTitle(path, ref, fullName);
@@ -76,20 +118,6 @@ export default function setupVueRepositoryList() {
       },
     });
   }
-
-  // eslint-disable-next-line no-new
-  new Vue({
-    el: document.getElementById('js-last-commit'),
-    router,
-    apolloProvider,
-    render(h) {
-      return h(LastCommit, {
-        props: {
-          currentPath: this.$route.params.path,
-        },
-      });
-    },
-  });
 
   const treeHistoryLinkEl = document.getElementById('js-tree-history-link');
   const { historyLink } = treeHistoryLinkEl.dataset;

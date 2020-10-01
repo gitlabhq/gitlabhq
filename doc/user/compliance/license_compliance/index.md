@@ -127,6 +127,11 @@ is used to detect the languages/frameworks and in turn analyzes the licenses.
 The License Compliance settings can be changed through [environment variables](#available-variables) by using the
 [`variables`](../../../ci/yaml/README.md#variables) parameter in `.gitlab-ci.yml`.
 
+### When License Compliance runs
+
+When using the GitLab `License-Scanning.gitlab-ci.yml` template, the License Compliance job doesn't
+wait for other stages to complete.
+
 ### Available variables
 
 License Compliance can be configured using environment variables.

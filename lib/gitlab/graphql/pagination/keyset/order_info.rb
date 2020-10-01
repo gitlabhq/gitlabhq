@@ -94,6 +94,8 @@ module Gitlab
               [order_value.expr.expressions[0].name.to_s, order_value.direction, order_value.expr]
             elsif ordering_by_similarity?(order_value)
               ['similarity', order_value.direction, order_value.expr]
+            elsif ordering_by_case?(order_value)
+              [order_value.expr.case.name.to_s, order_value.direction, order_value.expr]
             else
               [order_value.expr.name, order_value.direction, nil]
             end
@@ -107,6 +109,11 @@ module Gitlab
           # determine if ordering using SIMILARITY scoring based on Gitlab::Database::SimilarityScore
           def ordering_by_similarity?(order_value)
             Gitlab::Database::SimilarityScore.order_by_similarity?(order_value)
+          end
+
+          # determine if ordering using CASE
+          def ordering_by_case?(order_value)
+            order_value.expr.is_a?(Arel::Nodes::Case)
           end
         end
       end

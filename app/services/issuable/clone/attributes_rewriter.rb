@@ -56,7 +56,7 @@ module Issuable
       end
 
       def copy_resource_weight_events
-        return unless original_entity.respond_to?(:resource_weight_events)
+        return unless both_respond_to?(:resource_weight_events)
 
         copy_events(ResourceWeightEvent.table_name, original_entity.resource_weight_events) do |event|
           event.attributes

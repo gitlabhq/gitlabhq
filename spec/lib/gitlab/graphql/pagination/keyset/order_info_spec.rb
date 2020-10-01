@@ -63,6 +63,17 @@ RSpec.describe Gitlab::Graphql::Pagination::Keyset::OrderInfo do
         expect(order_list.first.sort_direction).to eq :desc
       end
     end
+
+    context 'when ordering by CASE', :aggregate_failuers do
+      let(:relation) { Project.order(Arel::Nodes::Case.new(Project.arel_table[:pending_delete]).when(true).then(100).else(1000).asc) }
+
+      it 'assigns the right attribute name, named function, and direction' do
+        expect(order_list.count).to eq 1
+        expect(order_list.first.attribute_name).to eq 'pending_delete'
+        expect(order_list.first.named_function).to be_kind_of(Arel::Nodes::Case)
+        expect(order_list.first.sort_direction).to eq :asc
+      end
+    end
   end
 
   describe '#validate_ordering' do

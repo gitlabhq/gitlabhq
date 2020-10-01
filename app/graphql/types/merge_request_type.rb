@@ -174,10 +174,6 @@ module Types
     def commit_count
       object&.metrics&.commits_count
     end
-
-    def approvers
-      object.approver_users
-    end
   end
 end
 Types::MergeRequestType.prepend_if_ee('::EE::Types::MergeRequestType')

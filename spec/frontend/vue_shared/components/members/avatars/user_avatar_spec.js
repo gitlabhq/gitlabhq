@@ -4,7 +4,7 @@ import { GlAvatarLink, GlBadge } from '@gitlab/ui';
 import { member as memberMock, orphanedMember } from '../mock_data';
 import UserAvatar from '~/vue_shared/components/members/avatars/user_avatar.vue';
 
-describe('MemberList', () => {
+describe('UserAvatar', () => {
   let wrapper;
 
   const { user } = memberMock;
@@ -68,11 +68,8 @@ describe('MemberList', () => {
   describe('badges', () => {
     it.each`
       member                                                                     | badgeText
-      ${{ ...memberMock, usingLicense: true }}                                   | ${'Is using seat'}
       ${{ ...memberMock, user: { ...memberMock.user, blocked: true } }}          | ${'Blocked'}
       ${{ ...memberMock, user: { ...memberMock.user, twoFactorEnabled: true } }} | ${'2FA'}
-      ${{ ...memberMock, groupSso: true }}                                       | ${'SAML'}
-      ${{ ...memberMock, groupManagedAccount: true }}                            | ${'Managed Account'}
     `('renders the "$badgeText" badge', ({ member, badgeText }) => {
       createComponent({ member });
 

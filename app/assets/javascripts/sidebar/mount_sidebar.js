@@ -14,7 +14,7 @@ import sidebarSubscriptions from './components/subscriptions/sidebar_subscriptio
 import SidebarSeverity from './components/severity/sidebar_severity.vue';
 import Translate from '../vue_shared/translate';
 import createDefaultClient from '~/lib/graphql';
-import { isInIssuePage, parseBoolean } from '~/lib/utils/common_utils';
+import { isInIssuePage, isInIncidentPage, parseBoolean } from '~/lib/utils/common_utils';
 import createFlash from '~/flash';
 import { __ } from '~/locale';
 import labelsSelectModule from '~/vue_shared/components/sidebar/labels_select_vue/store';
@@ -51,7 +51,7 @@ function mountAssigneesComponent(mediator) {
           projectPath: fullPath,
           field: el.dataset.field,
           signedIn: el.hasAttribute('data-signed-in'),
-          issuableType: isInIssuePage() ? 'issue' : 'merge_request',
+          issuableType: isInIssuePage() || isInIncidentPage() ? 'issue' : 'merge_request',
         },
       }),
   });
@@ -158,7 +158,7 @@ function mountLockComponent() {
   const initialData = JSON.parse(dataNode.innerHTML);
 
   let importStore;
-  if (isInIssuePage()) {
+  if (isInIssuePage() || isInIncidentPage()) {
     importStore = import(/* webpackChunkName: 'notesStore' */ '~/notes/stores').then(
       ({ store }) => store,
     );

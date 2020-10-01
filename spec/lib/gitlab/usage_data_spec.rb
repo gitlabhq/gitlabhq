@@ -1213,6 +1213,8 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
   end
 
   describe '.snowplow_event_counts' do
+    let_it_be(:time_period) { { collector_tstamp: 8.days.ago..1.day.ago } }
+
     context 'when self-monitoring project exists' do
       let_it_be(:project) { create(:project) }
 
@@ -1225,14 +1227,14 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
           stub_feature_flags(product_analytics: project)
 
           create(:product_analytics_event, project: project, se_category: 'epics', se_action: 'promote')
-          create(:product_analytics_event, project: project, se_category: 'epics', se_action: 'promote', collector_tstamp: 28.days.ago)
+          create(:product_analytics_event, project: project, se_category: 'epics', se_action: 'promote', collector_tstamp: 2.days.ago)
+          create(:product_analytics_event, project: project, se_category: 'epics', se_action: 'promote', collector_tstamp: 9.days.ago)
+
+          create(:product_analytics_event, project: project, se_category: 'foo', se_action: 'bar', collector_tstamp: 2.days.ago)
         end
 
         it 'returns promoted_issues for the time period' do
-          expect(described_class.snowplow_event_counts[:promoted_issues]).to eq(2)
-          expect(described_class.snowplow_event_counts(
-            time_period: described_class.last_28_days_time_period(column: :collector_tstamp)
-          )[:promoted_issues]).to eq(1)
+          expect(described_class.snowplow_event_counts(time_period)[:promoted_issues]).to eq(1)
         end
       end
 
@@ -1242,14 +1244,14 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
         end
 
         it 'returns an empty hash' do
-          expect(described_class.snowplow_event_counts).to eq({})
+          expect(described_class.snowplow_event_counts(time_period)).to eq({})
         end
       end
     end
 
     context 'when self-monitoring project does not exist' do
       it 'returns an empty hash' do
-        expect(described_class.snowplow_event_counts).to eq({})
+        expect(described_class.snowplow_event_counts(time_period)).to eq({})
       end
     end
   end

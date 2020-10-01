@@ -174,14 +174,18 @@ thousands of vulnerabilities. Don't close the page until the download finishes.
 
 The fields in the export include:
 
+- Group Name
+- Project Name
 - Scanner Type
 - Scanner Name
 - Status
-- Name
+- Vulnerability
 - Details
+- Additional Info
 - Severity
 - [CVE](https://cve.mitre.org/)
-- Additional Info
+- [CWE](https://cwe.mitre.org/)
+- Other Identifiers
 
 ![Export vulnerabilities](img/instance_security_dashboard_export_csv_v13_4.png)
 
