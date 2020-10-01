@@ -1,5 +1,0 @@
----
-title: Validate that membership expiry dates are not in the past
-merge_request:
-author:
-type: security

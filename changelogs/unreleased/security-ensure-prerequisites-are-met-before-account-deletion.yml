@@ -1,5 +1,0 @@
----
-title: Ensure user has no solo owned groups before triggering account deletion
-merge_request:
-author:
-type: security
