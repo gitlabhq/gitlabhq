@@ -120,8 +120,8 @@ module Gitlab
         # default.
         #
         # Patches surpassing this limit should still be persisted in the database.
-        def patch_safe_limit_bytes
-          patch_hard_limit_bytes / 10
+        def patch_safe_limit_bytes(limit = patch_hard_limit_bytes)
+          limit / 10
         end
 
         # Returns the limit for a single diff file (patch).
@@ -174,9 +174,13 @@ module Gitlab
         @line_count ||= Util.count_lines(@diff)
       end
 
+      def diff_bytesize
+        @diff_bytesize ||= @diff.bytesize
+      end
+
       def too_large?
         if @too_large.nil?
-          @too_large = @diff.bytesize >= self.class.patch_hard_limit_bytes
+          @too_large = diff_bytesize >= self.class.patch_hard_limit_bytes
         else
           @too_large
         end
@@ -194,7 +198,7 @@ module Gitlab
       def collapsed?
         return @collapsed if defined?(@collapsed)
 
-        @collapsed = !expanded && @diff.bytesize >= self.class.patch_safe_limit_bytes
+        @collapsed = !expanded && diff_bytesize >= self.class.patch_safe_limit_bytes
       end
 
       def collapse!

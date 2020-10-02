@@ -1,5 +1,4 @@
 <script>
-import $ from 'jquery';
 import { GlTooltipDirective } from '@gitlab/ui';
 import CiIcon from '~/vue_shared/components/ci_icon.vue';
 import JobItem from './job_item.vue';
@@ -30,27 +29,7 @@ export default {
       return `${name} - ${status.label}`;
     },
   },
-  mounted() {
-    this.stopDropdownClickPropagation();
-  },
   methods: {
-    /**
-     * When the user right clicks or cmd/ctrl + click in the group name or the action icon
-     * the dropdown should not be closed so we stop propagation
-     * of the click event inside the dropdown.
-     *
-     * Since this component is rendered multiple times per page we need to guarantee we only
-     * target the click event of this component.
-     */
-    stopDropdownClickPropagation() {
-      $(
-        '.js-grouped-pipeline-dropdown button, .js-grouped-pipeline-dropdown a.mini-pipeline-graph-dropdown-item',
-        this.$el,
-      ).on('click', e => {
-        e.stopPropagation();
-      });
-    },
-
     pipelineActionRequestComplete() {
       this.$emit('pipelineActionRequestComplete');
     },

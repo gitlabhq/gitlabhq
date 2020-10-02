@@ -135,6 +135,7 @@ export default {
       :class="jobClasses"
       class="js-pipeline-graph-job-link qa-job-link menu-item"
       data-testid="job-with-link"
+      @click.stop
     >
       <job-name-component :name="job.name" :status="job.status" />
     </gl-link>

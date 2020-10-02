@@ -4,6 +4,12 @@ module Terraform
   class State < ApplicationRecord
     include UsageStatistics
     include FileStoreMounter
+    include IgnorableColumns
+    # These columns are being removed since geo replication falls to the versioned state
+    # Tracking in https://gitlab.com/gitlab-org/gitlab/-/issues/258262
+    ignore_columns %i[verification_failure verification_retry_at verified_at verification_retry_count verification_checksum],
+                   remove_with: '13.7',
+                   remove_after: '2020-12-22'
 
     HEX_REGEXP = %r{\A\h+\z}.freeze
     UUID_LENGTH = 32
@@ -34,10 +40,6 @@ module Terraform
       versioning_enabled ? latest_version&.file : file
     end
 
-    def local?
-      file_store == ObjectStorage::Store::LOCAL
-    end
-
     def locked?
       self.lock_xid.present?
     end
@@ -54,5 +56,3 @@ module Terraform
     end
   end
 end
-
-Terraform::State.prepend_if_ee('EE::Terraform::State')

@@ -151,11 +151,14 @@ In order to reuse a single object for all calls to a named factory in implicit p
 can be used:
 
 ```ruby
+RSpec.describe API::Search, factory_default: :keep do
   let_it_be(:namespace) { create_default(:namespace) }
 ```
 
 Then every project we create will use this `namespace`, without us having to pass
-it as `namespace: namespace`.
+it as `namespace: namespace`. In order to make it work along with `let_it_be`, `factory_default: :keep`
+must be explicitly specified. That will keep the default factory for every example in a suite instead of
+recreating it for each example.
 
 Maybe we don't need to create 208 different projects - we
 can create one and reuse it. In addition, we can see that only about 1/3 of the

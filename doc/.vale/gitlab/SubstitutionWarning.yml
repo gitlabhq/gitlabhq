@@ -11,7 +11,7 @@ link: https://about.gitlab.com/handbook/communication/#top-misused-terms
 level: warning
 ignorecase: true
 swap:
-  admin: administrator
+  blacklist(ed|ing)?: denylist
   code base: codebase
   config: configuration
   distro: distribution

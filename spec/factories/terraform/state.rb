@@ -17,16 +17,6 @@ FactoryBot.define do
       locked_by_user { create(:user) }
     end
 
-    trait(:checksummed) do
-      with_file
-      verification_checksum { 'abc' }
-    end
-
-    trait(:checksum_failure) do
-      with_file
-      verification_failure { 'Could not calculate the checksum' }
-    end
-
     trait :with_version do
       after(:create) do |state|
         create(:terraform_state_version, :with_file, terraform_state: state)

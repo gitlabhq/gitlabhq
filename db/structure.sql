@@ -21682,10 +21682,6 @@ CREATE INDEX terraform_state_versions_verification_checksum_partial ON terraform
 
 CREATE INDEX terraform_state_versions_verification_failure_partial ON terraform_state_versions USING btree (verification_failure) WHERE (verification_failure IS NOT NULL);
 
-CREATE INDEX terraform_states_verification_checksum_partial ON terraform_states USING btree (verification_checksum) WHERE (verification_checksum IS NOT NULL);
-
-CREATE INDEX terraform_states_verification_failure_partial ON terraform_states USING btree (verification_failure) WHERE (verification_failure IS NOT NULL);
-
 CREATE INDEX tmp_build_stage_position_index ON ci_builds USING btree (stage_id, stage_idx) WHERE (stage_idx IS NOT NULL);
 
 CREATE INDEX tmp_index_for_email_unconfirmation_migration ON emails USING btree (id) WHERE (confirmed_at IS NOT NULL);

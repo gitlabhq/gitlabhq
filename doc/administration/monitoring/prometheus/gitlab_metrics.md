@@ -184,12 +184,6 @@ configuration option in `gitlab.yml`. These metrics are served from the
 | `geo_package_files_synced`                     | Gauge   | 13.3  | Number of syncable package files synced on secondary | `url` |
 | `geo_package_files_failed`                     | Gauge   | 13.3  | Number of syncable package files failed to sync on secondary | `url` |
 | `geo_package_files_registry`                   | Gauge   | 13.3  | Number of package files in the registry | `url` |
-| `geo_terraform_states`                         | Gauge   | 13.3  | Number of terraform states on primary | `url` |
-| `geo_terraform_states_checksummed`             | Gauge   | 13.3  | Number of terraform states checksummed on primary | `url` |
-| `geo_terraform_states_checksum_failed`         | Gauge   | 13.3  | Number of terraform states failed to calculate the checksum on primary | `url` |
-| `geo_terraform_states_synced`                  | Gauge   | 13.3  | Number of syncable terraform states synced on secondary | `url` |
-| `geo_terraform_states_failed`                  | Gauge   | 13.3  | Number of syncable terraform states failed to sync on secondary | `url` |
-| `geo_terraform_states_registry`                | Gauge   | 13.3  | Number of terraform states in the registry | `url` |
 | `geo_terraform_state_versions`                 | Gauge   | 13.5  | Number of terraform state versions on primary | `url` |
 | `geo_terraform_state_versions_checksummed`     | Gauge   | 13.5  | Number of terraform state versions checksummed on primary | `url` |
 | `geo_terraform_state_versions_checksum_failed` | Gauge   | 13.5  | Number of terraform state versions failed to calculate the checksum on primary | `url` |

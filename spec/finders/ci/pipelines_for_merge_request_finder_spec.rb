@@ -122,7 +122,7 @@ RSpec.describe Ci::PipelinesForMergeRequestFinder do
     end
 
     context 'with unsaved merge request' do
-      let(:merge_request) { build(:merge_request) }
+      let(:merge_request) { build(:merge_request, source_project: create(:project, :repository)) }
 
       let!(:pipeline) do
         create(:ci_empty_pipeline, project: project,

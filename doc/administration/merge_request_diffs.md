@@ -17,12 +17,11 @@ By default, merge request diffs are stored in the database, in a table named
 `merge_request_diff_files`. Larger installations may find this table grows too
 large, in which case, switching to external storage is recommended.
 
-## Using external storage
-
 Merge request diffs can be stored on disk, or in object storage. In general, it
-is better to store the diffs in the database than on disk.
+is better to store the diffs in the database than on disk. A compromise is available
+that only [stores outdated diffs](#alternative-in-database-storage) outside of database.
 
-To enable external storage of merge request diffs, follow the instructions below.
+## Using external storage
 
 **In Omnibus installations:**
 
@@ -68,16 +67,40 @@ To enable external storage of merge request diffs, follow the instructions below
 
 ## Using object storage
 
-CAUTION: **WARNING:**
-  Currently migrating to object storage is **non-reversible**
+CAUTION: **Warning:**
+Currently migrating to object storage is **non-reversible**
 
 Instead of storing the external diffs on disk, we recommended the use of an object
 store like AWS S3 instead. This configuration relies on valid AWS credentials to
 be configured already.
 
+**In Omnibus installations:**
+
+1. Edit `/etc/gitlab/gitlab.rb` and add the following line:
+
+   ```ruby
+   gitlab_rails['external_diffs_enabled'] = true
+   ```
+
+1. Set [object storage settings](#object-storage-settings).
+1. Save the file and [reconfigure GitLab](restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
+
+**In installations from source:**
+
+1. Edit `/home/git/gitlab/config/gitlab.yml` and add or amend the following
+   lines:
+
+   ```yaml
+   external_diffs:
+     enabled: true
+   ```
+
+1. Set [object storage settings](#object-storage-settings).
+1. Save the file and [restart GitLab](restart_gitlab.md#installations-from-source) for the changes to take effect.
+
 [Read more about using object storage with GitLab](object_storage.md).
 
-## Object Storage Settings
+### Object Storage Settings
 
 NOTE: **Note:**
 In GitLab 13.2 and later, we recommend using the
@@ -97,7 +120,7 @@ then `object_store:`. On Omnibus installations, they are prefixed by
 | `proxy_download` | Set to `true` to enable proxying all files served. Option allows to reduce egress traffic as this allows clients to download directly from remote storage instead of proxying all data | `false` |
 | `connection` | Various connection options described below | |
 
-### S3 compatible connection settings
+#### S3 compatible connection settings
 
 See [the available connection settings for different providers](object_storage.md#connection-settings).
 

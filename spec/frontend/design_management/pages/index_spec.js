@@ -653,7 +653,6 @@ describe('Design management index page', () => {
     it('ensures fullscreen layout is not applied', () => {
       createComponent(true);
 
-      wrapper.vm.$router.push('/');
       expect(mockPageEl.classList.remove).toHaveBeenCalledTimes(1);
       expect(mockPageEl.classList.remove).toHaveBeenCalledWith(...DESIGN_DETAIL_LAYOUT_CLASSLIST);
     });

@@ -3,6 +3,43 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::SQL::Pattern do
+  using RSpec::Parameterized::TableSyntax
+
+  describe '.fuzzy_search' do
+    let_it_be(:issue1) { create(:issue, title: 'noise foo noise', description: 'noise bar noise') }
+    let_it_be(:issue2) { create(:issue, title: 'noise baz noise', description: 'noise foo noise') }
+    let_it_be(:issue3) { create(:issue, title: 'Oh', description: 'Ah') }
+
+    subject(:fuzzy_search) { Issue.fuzzy_search(query, columns) }
+
+    where(:query, :columns, :expected) do
+      'foo' | [Issue.arel_table[:title]] | %i[issue1]
+
+      'foo' | %i[title]             | %i[issue1]
+      'foo' | %w[title]             | %i[issue1]
+      'foo' | %i[description]       | %i[issue2]
+      'foo' | %i[title description] | %i[issue1 issue2]
+      'bar' | %i[title description] | %i[issue1]
+      'baz' | %i[title description] | %i[issue2]
+      'qux' | %i[title description] | []
+
+      'oh' | %i[title description] | %i[issue3]
+      'OH' | %i[title description] | %i[issue3]
+      'ah' | %i[title description] | %i[issue3]
+      'AH' | %i[title description] | %i[issue3]
+      'oh' | %i[title]             | %i[issue3]
+      'ah' | %i[description]       | %i[issue3]
+    end
+
+    with_them do
+      let(:expected_issues) { expected.map { |sym| send(sym) } }
+
+      it 'finds the expected issues' do
+        expect(fuzzy_search).to match_array(expected_issues)
+      end
+    end
+  end
+
   describe '.to_pattern' do
     subject(:to_pattern) { User.to_pattern(query) }
 

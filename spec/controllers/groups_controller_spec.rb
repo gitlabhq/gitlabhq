@@ -389,8 +389,8 @@ RSpec.describe GroupsController, factory_default: :keep do
   end
 
   describe 'GET #issues', :sidekiq_might_not_need_inline do
-    let(:issue_1) { create(:issue, project: project, title: 'foo') }
-    let(:issue_2) { create(:issue, project: project, title: 'bar') }
+    let_it_be(:issue_1) { create(:issue, project: project, title: 'foo') }
+    let_it_be(:issue_2) { create(:issue, project: project, title: 'bar') }
 
     before do
       create_list(:award_emoji, 3, awardable: issue_2)
@@ -398,6 +398,15 @@ RSpec.describe GroupsController, factory_default: :keep do
       create_list(:award_emoji, 2, :downvote, awardable: issue_2)
 
       sign_in(user)
+    end
+
+    it 'lists only incidents and issues' do
+      incident = create(:incident, project: project)
+      create(:quality_test_case, project: project)
+
+      get :issues, params: { id: group.to_param }
+
+      expect(assigns(:issues)).to match_array([issue_1, issue_2, incident])
     end
 
     context 'sorting by votes' do

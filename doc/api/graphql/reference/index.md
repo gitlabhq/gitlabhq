@@ -2484,21 +2484,6 @@ Completion status of tasks.
 | `name` | String! | Name of the Terraform state |
 | `updatedAt` | Time! | Timestamp the Terraform state was updated |
 
-### TerraformStateRegistry
-
-Represents the Geo sync and verification state of a terraform state.
-
-| Field | Type | Description |
-| ----- | ---- | ----------- |
-| `createdAt` | Time | Timestamp when the TerraformStateRegistry was created |
-| `id` | ID! | ID of the TerraformStateRegistry |
-| `lastSyncFailure` | String | Error message during sync of the TerraformStateRegistry |
-| `lastSyncedAt` | Time | Timestamp of the most recent successful sync of the TerraformStateRegistry |
-| `retryAt` | Time | Timestamp after which the TerraformStateRegistry should be resynced |
-| `retryCount` | Int | Number of consecutive failed sync attempts of the TerraformStateRegistry |
-| `state` | RegistryState | Sync state of the TerraformStateRegistry |
-| `terraformStateId` | ID! | ID of the TerraformState |
-
 ### TerraformStateVersionRegistry
 
 Represents the Geo sync and verification state of a terraform state version.
