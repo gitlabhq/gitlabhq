@@ -2,8 +2,8 @@
 
 These API calls allow you to read and modify GitLab instance
 [application settings](#list-of-settings-that-can-be-accessed-via-api-calls)
-as appear in `/admin/application_settings/general`. You have to be an
-administrator in order to perform this action.
+as they appear in `/admin/application_settings/general`. You must be an
+administrator to perform this action.
 
 ## Get current application settings
 
@@ -185,12 +185,12 @@ Example responses: **(PREMIUM ONLY)**
 
 ## List of settings that can be accessed via API calls
 
-In general, all settings are optional. Certain settings though, if enabled, will
-require other settings to be set in order to function properly. These requirements
-are listed in the descriptions of the relevant settings.
+In general, all settings are optional. Certain settings though, if enabled,
+require other settings to be set to function properly. These requirements are
+listed in the descriptions of the relevant settings.
 
-| Attribute | Type | Required | Description |
-| --------- | ---- | :------: | ----------- |
+| Attribute                                | Type             | Required                             | Description |
+|------------------------------------------|------------------|:------------------------------------:|-------------|
 | `admin_notification_email`               | string           | no                                   | Deprecated: Use `abuse_notification_email` instead. If set, [abuse reports](../user/admin_area/abuse_reports.md) are sent to this address. Abuse reports are always available in the Admin Area.  |
 | `abuse_notification_email`               | string           | no                                   | If set, [abuse reports](../user/admin_area/abuse_reports.md) are sent to this address. Abuse reports are always available in the Admin Area. |
 | `after_sign_out_path`                    | string           | no                                   | Where to redirect users after logout. |

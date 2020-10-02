@@ -60,9 +60,9 @@ it's not recommended to change the port Prometheus listens
 on, as this might affect or conflict with other services running on the GitLab
 server. Proceed at your own risk.
 
-In order to access Prometheus from outside the GitLab server you will need to
-set a FQDN or IP in `prometheus['listen_address']`.
-To change the address/port that Prometheus listens on:
+To access Prometheus from outside the GitLab server, set an FQDN or IP in
+`prometheus['listen_address']`. To change the address/port that Prometheus
+listens on:
 
 1. Edit `/etc/gitlab/gitlab.rb`
 1. Add or find and uncomment the following line:

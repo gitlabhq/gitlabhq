@@ -370,8 +370,8 @@ Pages access control is disabled by default. To enable it:
 1. Users can now configure it in their [projects' settings](../../user/project/pages/pages_access_control.md).
 
 NOTE: **Important:**
-For multi-node setups, in order for this setting to be effective, it has to be applied
-to all the App nodes as well as the Sidekiq nodes.
+For this setting to be effective with multi-node setups, it has to be applied to
+all the App nodes and Sidekiq nodes.
 
 #### Disabling public access to all Pages websites
 
@@ -397,8 +397,7 @@ redeployed. This issue will be resolved by
 ### Running behind a proxy
 
 Like the rest of GitLab, Pages can be used in those environments where external
-internet connectivity is gated by a proxy. In order to use a proxy for GitLab
-pages:
+internet connectivity is gated by a proxy. To use a proxy for GitLab Pages:
 
 1. Configure in `/etc/gitlab/gitlab.rb`:
 
@@ -508,7 +507,8 @@ To override the global maximum pages size for a specific group:
 
 ## Running GitLab Pages on a separate server
 
-You can run the GitLab Pages daemon on a separate server in order to decrease the load on your main application server.
+You can run the GitLab Pages daemon on a separate server to decrease the load on
+your main application server.
 
 To configure GitLab Pages on a separate server:
 

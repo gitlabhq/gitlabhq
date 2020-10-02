@@ -1225,9 +1225,6 @@ that:
 - Are accurate, succinct, and unique.
 - Don't use *image of …* or *graphic of…* to describe the image.
 
-Also, if a heading immediately follows an image, be sure to add three dashes
-(`---`) between the image and the heading.
-
 ### Remove image shadow
 
 All images displayed on the [GitLab documentation site](https://docs.gitlab.com)

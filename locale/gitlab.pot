@@ -18590,9 +18590,6 @@ msgstr ""
 msgid "Perform common operations on GitLab project"
 msgstr ""
 
-msgid "Performance and resource management"
-msgstr ""
-
 msgid "Performance optimization"
 msgstr ""
 
@@ -25436,6 +25433,9 @@ msgstr ""
 msgid "The URL defined on the primary node that secondary nodes should use to contact it."
 msgstr ""
 
+msgid "The URL defined on the primary node that secondary nodes should use to contact it. %{linkStart}More information%{linkEnd}"
+msgstr ""
+
 msgid "The URL to use for connecting to Elasticsearch. Use a comma-separated list to support clustering (e.g., \"http://localhost:9200, http://localhost:9201\")."
 msgstr ""
 
@@ -27321,6 +27321,9 @@ msgid "Trying to communicate with your device. Plug it in (if you haven't alread
 msgstr ""
 
 msgid "Tuesday"
+msgstr ""
+
+msgid "Tuning settings"
 msgstr ""
 
 msgid "Turn Off"

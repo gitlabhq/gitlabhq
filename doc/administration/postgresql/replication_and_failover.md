@@ -93,9 +93,9 @@ information.
 
 #### Network information
 
-PostgreSQL does not listen on any network interface by default. It needs to know
-which IP address to listen on in order to be accessible to other services.
-Similarly, PostgreSQL access is controlled based on the network source.
+PostgreSQL doesn't listen on any network interface by default. It needs to know
+which IP address to listen on to be accessible to other services. Similarly,
+PostgreSQL access is controlled based on the network source.
 
 This is why you will need:
 
