@@ -529,6 +529,9 @@ Settings.cron_jobs['member_invitation_reminder_emails_worker']['cron'] ||= '0 0 
 Settings.cron_jobs['member_invitation_reminder_emails_worker']['job_class'] = 'MemberInvitationReminderEmailsWorker'
 
 Gitlab.ee do
+  Settings.cron_jobs['active_user_count_threshold_worker'] ||= Settingslogic.new({})
+  Settings.cron_jobs['active_user_count_threshold_worker']['cron'] ||= '0 12 * * *'
+  Settings.cron_jobs['active_user_count_threshold_worker']['job_class'] = 'ActiveUserCountThresholdWorker'
   Settings.cron_jobs['adjourned_group_deletion_worker'] ||= Settingslogic.new({})
   Settings.cron_jobs['adjourned_group_deletion_worker']['cron'] ||= '0 3 * * *'
   Settings.cron_jobs['adjourned_group_deletion_worker']['job_class'] = 'AdjournedGroupDeletionWorker'

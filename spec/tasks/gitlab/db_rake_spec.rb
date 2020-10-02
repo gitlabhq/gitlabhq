@@ -164,6 +164,49 @@ RSpec.describe 'gitlab:db namespace rake task' do
     end
   end
 
+  describe 'drop_tables' do
+    subject { run_rake_task('gitlab:db:drop_tables') }
+
+    let(:tables) { %w(one two) }
+    let(:views) { %w(three four) }
+    let(:connection) { ActiveRecord::Base.connection }
+
+    before do
+      allow(connection).to receive(:execute).and_return(nil)
+
+      allow(connection).to receive(:tables).and_return(tables)
+      allow(connection).to receive(:views).and_return(views)
+    end
+
+    it 'drops all tables, except schema_migrations' do
+      expect(connection).to receive(:execute).with('DROP TABLE IF EXISTS "one" CASCADE')
+      expect(connection).to receive(:execute).with('DROP TABLE IF EXISTS "two" CASCADE')
+
+      subject
+    end
+
+    it 'drops all views' do
+      expect(connection).to receive(:execute).with('DROP VIEW IF EXISTS "three" CASCADE')
+      expect(connection).to receive(:execute).with('DROP VIEW IF EXISTS "four" CASCADE')
+
+      subject
+    end
+
+    it 'truncates schema_migrations table' do
+      expect(connection).to receive(:execute).with('TRUNCATE schema_migrations')
+
+      subject
+    end
+
+    it 'drops extra schemas' do
+      Gitlab::Database::EXTRA_SCHEMAS.each do |schema|
+        expect(connection).to receive(:execute).with("DROP SCHEMA IF EXISTS \"#{schema}\"")
+      end
+
+      subject
+    end
+  end
+
   describe 'reindex' do
     let(:reindex) { double('reindex') }
     let(:indexes) { double('indexes') }

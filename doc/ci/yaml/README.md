@@ -1544,8 +1544,8 @@ docker build:
       # - when: never would be redundant here, this is implied any time rules are listed.
 ```
 
-Keywords such as `branches` or `refs` that are currently available for
-`only`/`except` are not yet available in `rules` as they are being individually
+Keywords such as `branches` or `refs` that are available for
+`only`/`except` are not available in `rules`. They are being individually
 considered for their usage and behavior in this context. Future keyword improvements
 are being discussed in our [epic for improving `rules`](https://gitlab.com/groups/gitlab-org/-/epics/2783),
 where anyone can add suggestions or requests.

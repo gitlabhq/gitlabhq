@@ -290,7 +290,7 @@ Clicking the play button in any view triggers the `deploy_prod` job. The deploym
 new environment named `production`.
 
 If your environment's name is `production` (all lowercase), it's recorded in
-[Value Stream Analytics](../../user/project/cycle_analytics.md).
+[Value Stream Analytics](../../user/analytics/value_stream_analytics.md).
 
 ### Configuring dynamic environments
 

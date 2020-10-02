@@ -55,7 +55,7 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 - [Environment variables](environment_variables.md): Supported environment
   variables that can be used to override their default values to configure
   GitLab.
-- [Plugins](plugins.md): With custom plugins, GitLab administrators can introduce custom integrations without modifying GitLab's source code.
+- [Plugins](file_hooks.md): With custom plugins, GitLab administrators can introduce custom integrations without modifying GitLab's source code.
 - [Enforcing Terms of Service](../user/admin_area/settings/terms.md)
 - [Third party offers](../user/admin_area/settings/third_party_offers.md)
 - [Compliance](compliance.md): A collection of features from across the application that you may configure to help ensure that your GitLab instance and DevOps workflow meet compliance standards.
@@ -115,7 +115,7 @@ Learn how to install, configure, update, and maintain your GitLab instance.
   - [Kerberos authentication](../integration/kerberos.md) **(STARTER ONLY)**
   - See also other [authentication](../topics/authentication/index.md#gitlab-administrators) topics (for example, enforcing 2FA).
 - [Email users](../tools/email.md): Email GitLab users from within GitLab. **(STARTER ONLY)**
-- [User Cohorts](../user/admin_area/user_cohorts.md): Display the monthly cohorts of new users and their activities over time.
+- [User Cohorts](../user/admin_area/analytics/user_cohorts.md): Display the monthly cohorts of new users and their activities over time.
 - [Audit logs and events](audit_events.md): View the changes made within the GitLab server for:
   - Groups and projects. **(STARTER)**
   - Instances. **(PREMIUM ONLY)**

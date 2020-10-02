@@ -42,7 +42,7 @@ docs lint:
   extends:
     - .default-retry
     - .docs:rules:docs-lint
-  image: "registry.gitlab.com/gitlab-org/gitlab-docs/lint:vale-2.3.4-markdownlint-0.23.2"
+  image: "registry.gitlab.com/gitlab-org/gitlab-docs/lint:vale-2.4.0-markdownlint-0.23.2"
   stage: test
   needs: []
   script:

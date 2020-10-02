@@ -326,6 +326,7 @@ RSpec.describe 'gitlab:app namespace rake task', :delete do
 
       let!(:project_a) { create(:project, :repository) }
       let!(:project_a_wiki_page) { create(:wiki_page, container: project_a) }
+      let!(:project_a_design) { create(:design, :with_file, issue: create(:issue, project: project_a)) }
       let!(:project_b) { create(:project, :repository, repository_storage: 'test_second_storage') }
       let!(:b_storage_dir) { File.join(test_second_storage_dir, File.dirname(project_b.disk_path)) }
 
@@ -341,6 +342,7 @@ RSpec.describe 'gitlab:app namespace rake task', :delete do
           expect(tar_contents).to include(
             "repositories/#{project_a.disk_path}.bundle",
             "repositories/#{project_a.disk_path}.wiki.bundle",
+            "repositories/#{project_a.disk_path}.design.bundle",
             "repositories/#{project_b.disk_path}.bundle"
           )
         end

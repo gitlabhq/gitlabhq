@@ -1,7 +1,7 @@
 ---
 name: multiline_comments
-introduced_by_url: 
-rollout_issue_url: 
-group: 
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/issues/211255
+rollout_issue_url:
+group: group::source code
 type: development
 default_enabled: true

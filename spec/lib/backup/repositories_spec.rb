@@ -21,13 +21,15 @@ RSpec.describe Backup::Repositories do
 
     RSpec.shared_examples 'creates repository bundles' do
       specify :aggregate_failures do
-        # Add data to the wiki repository, so it will be included in the dump.
+        # Add data to the wiki and design repositories, so they will be included in the dump.
         create(:wiki_page, container: project)
+        create(:design, :with_file, issue: create(:issue, project: project))
 
         subject.dump(max_concurrency: 1, max_storage_concurrency: 1)
 
         expect(File).to exist(File.join(Gitlab.config.backup.path, 'repositories', project.disk_path + '.bundle'))
         expect(File).to exist(File.join(Gitlab.config.backup.path, 'repositories', project.disk_path + '.wiki' + '.bundle'))
+        expect(File).to exist(File.join(Gitlab.config.backup.path, 'repositories', project.disk_path + '.design' + '.bundle'))
       end
     end
 
@@ -157,7 +159,8 @@ RSpec.describe Backup::Repositories do
     it 'restores repositories from bundles', :aggregate_failures do
       next_path_to_bundle = [
         Rails.root.join('spec/fixtures/lib/backup/project_repo.bundle'),
-        Rails.root.join('spec/fixtures/lib/backup/wiki_repo.bundle')
+        Rails.root.join('spec/fixtures/lib/backup/wiki_repo.bundle'),
+        Rails.root.join('spec/fixtures/lib/backup/design_repo.bundle')
       ].to_enum
 
       allow_next_instance_of(described_class::BackupRestore) do |backup_restore|
@@ -170,12 +173,16 @@ RSpec.describe Backup::Repositories do
 
       expect(collect_commit_shas.call(project.repository)).to eq(['393a7d860a5a4c3cc736d7eb00604e3472bb95ec'])
       expect(collect_commit_shas.call(project.wiki.repository)).to eq(['c74b9948d0088d703ee1fafeddd9ed9add2901ea'])
+      expect(collect_commit_shas.call(project.design_repository)).to eq(['c3cd4d7bd73a51a0f22045c3a4c871c435dc959d'])
     end
 
     describe 'command failure' do
       before do
         expect(Project).to receive(:find_each).and_yield(project)
 
+        allow_next_instance_of(DesignManagement::Repository) do |repository|
+          allow(repository).to receive(:create_repository) { raise 'Fail in tests' }
+        end
         allow_next_instance_of(Repository) do |repository|
           allow(repository).to receive(:create_repository) { raise 'Fail in tests' }
         end
@@ -214,6 +221,9 @@ RSpec.describe Backup::Repositories do
     end
 
     it 'cleans existing repositories' do
+      expect_next_instance_of(DesignManagement::Repository) do |repository|
+        expect(repository).to receive(:remove)
+      end
       expect(Repository).to receive(:new).twice.and_wrap_original do |method, *original_args|
         repository = method.call(*original_args)
 

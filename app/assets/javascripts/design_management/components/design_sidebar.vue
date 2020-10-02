@@ -126,7 +126,7 @@ export default {
       v-if="showTodoButton"
       class="gl-py-4 gl-mb-4 gl-display-flex gl-justify-content-space-between gl-align-items-center gl-border-b-1 gl-border-b-solid gl-border-b-gray-100"
     >
-      <span>{{ __('To-Do') }}</span>
+      <span>{{ __('To Do') }}</span>
       <design-todo-button :design="design" @error="$emit('todoError', $event)" />
     </div>
     <h2 class="gl-font-weight-bold gl-mt-0">

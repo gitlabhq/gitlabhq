@@ -140,8 +140,7 @@ module Ci
     # no chunk with higher index in the database.
     #
     def final?
-      build.pending_state.present? &&
-        build.trace_chunks.maximum(:chunk_index).to_i == chunk_index
+      build.pending_state.present? && chunks_max_index == chunk_index
     end
 
     def <=>(other)
@@ -165,7 +164,14 @@ module Ci
       current_size = current_data&.bytesize.to_i
 
       unless current_size == CHUNK_SIZE || final?
-        raise FailedToPersistDataError, 'Data is not fulfilled in a bucket'
+        raise FailedToPersistDataError, <<~MSG
+          data is not fulfilled in a bucket
+
+          size: #{current_size}
+          state: #{build.pending_state.present?}
+          max: #{chunks_max_index}
+          index: #{chunk_index}
+        MSG
       end
 
       self.raw_data = nil
@@ -221,6 +227,10 @@ module Ci
 
     def current_store
       self.class.get_store_class(data_store)
+    end
+
+    def chunks_max_index
+      build.trace_chunks.maximum(:chunk_index).to_i
     end
 
     def lock_params

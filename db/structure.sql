@@ -14389,7 +14389,8 @@ CREATE TABLE plan_limits (
     generic_packages_max_file_size bigint DEFAULT '5368709120'::bigint NOT NULL,
     project_feature_flags integer DEFAULT 200 NOT NULL,
     golang_max_file_size bigint DEFAULT 104857600 NOT NULL,
-    debian_max_file_size bigint DEFAULT '3221225472'::bigint NOT NULL
+    debian_max_file_size bigint DEFAULT '3221225472'::bigint NOT NULL,
+    ci_max_artifact_size_api_fuzzing integer DEFAULT 0 NOT NULL
 );
 
 CREATE SEQUENCE plan_limits_id_seq

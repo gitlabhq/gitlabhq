@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Create' do
+  RSpec.describe 'Create', :requires_admin do
     describe 'View merge request merge-ref diff' do
       let(:merge_request) do
         Resource::MergeRequest.fabricate_via_api! do |merge_request|

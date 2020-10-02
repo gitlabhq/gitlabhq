@@ -45,6 +45,7 @@ module Backup
       Project.find_each(batch_size: 1000) do |project|
         restore_repository(project, Gitlab::GlRepository::PROJECT)
         restore_repository(project, Gitlab::GlRepository::WIKI)
+        restore_repository(project, Gitlab::GlRepository::DESIGN)
       end
 
       restore_object_pools
@@ -118,6 +119,7 @@ module Backup
     def dump_project(project)
       backup_repository(project, Gitlab::GlRepository::PROJECT)
       backup_repository(project, Gitlab::GlRepository::WIKI)
+      backup_repository(project, Gitlab::GlRepository::DESIGN)
     end
 
     def backup_repository(container, type)

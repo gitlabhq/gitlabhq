@@ -5520,7 +5520,7 @@ msgstr ""
 msgid "ClusterIntegration|Clear cluster cache"
 msgstr ""
 
-msgid "ClusterIntegration|Clear the local cache of namespace and service accounts. This is necessary if your integration has become out of sync. The cache is repopulated during the next CI job that requires namespace and service accounts."
+msgid "ClusterIntegration|Clear the local cache of namespace and service accounts."
 msgstr ""
 
 msgid "ClusterIntegration|Cluster management project (alpha)"
@@ -6217,6 +6217,12 @@ msgid "ClusterIntegration|There was an HTTP error when connecting to your cluste
 msgstr ""
 
 msgid "ClusterIntegration|This account must have permissions to create a Kubernetes cluster in the %{link_to_container_project} specified below"
+msgstr ""
+
+msgid "ClusterIntegration|This is necessary if your integration has become out of sync. The cache is repopulated during the next CI job that requires namespace and service accounts."
+msgstr ""
+
+msgid "ClusterIntegration|This is necessary to clear existing environment-namespace associations from clusters previously managed by GitLab."
 msgstr ""
 
 msgid "ClusterIntegration|This option will allow you to install applications on RBAC clusters."
@@ -8218,6 +8224,9 @@ msgid "Days"
 msgstr ""
 
 msgid "Days to merge"
+msgstr ""
+
+msgid "Dear Administrator,"
 msgstr ""
 
 msgid "Debug"
@@ -11398,6 +11407,9 @@ msgstr ""
 msgid "For more info, read the documentation."
 msgstr ""
 
+msgid "For more information on how the number of active users is calculated, see the %{self_managed_subscriptions_doc_link} documentation."
+msgstr ""
+
 msgid "For more information, go to the "
 msgstr ""
 
@@ -11972,6 +11984,9 @@ msgid "GitLab / Unsubscribe"
 msgstr ""
 
 msgid "GitLab API"
+msgstr ""
+
+msgid "GitLab Billing Team."
 msgstr ""
 
 msgid "GitLab Group Runners can execute code for all the projects in this group."
@@ -13284,6 +13299,9 @@ msgid "If enabled, GitLab will handle Object Storage replication using Geo. %{li
 msgstr ""
 
 msgid "If enabled, access to projects will be validated on an external service using their classification label."
+msgstr ""
+
+msgid "If the number of active users exceeds the user limit, you will be charged for the number of %{users_over_license_link} at your next license reconciliation."
 msgstr ""
 
 msgid "If there is no previous license or if the previous license has expired, some GitLab functionality will be blocked until a new, valid license is uploaded."
@@ -19107,6 +19125,9 @@ msgid "Please provide a valid email address."
 msgstr ""
 
 msgid "Please provide attributes to update"
+msgstr ""
+
+msgid "Please reach out if you have any questions and we'll be happy to assist."
 msgstr ""
 
 msgid "Please refer to %{docs_url}"
@@ -25356,6 +25377,9 @@ msgstr ""
 msgid "Thank you for signing up for your free trial! You will get additional instructions in your inbox shortly."
 msgstr ""
 
+msgid "Thank you for your business."
+msgstr ""
+
 msgid "Thank you for your feedback!"
 msgstr ""
 
@@ -28743,6 +28767,9 @@ msgstr ""
 msgid "We will notify %{inviter} that you declined their invitation to join GitLab. You will stop receiving reminders."
 msgstr ""
 
+msgid "We would like to inform you that your subscription GitLab Enterprise Edition %{plan_name} is nearing its user limit. You have %{active_user_count} active users, which is almost at the user limit of %{maximum_user_count}."
+msgstr ""
+
 msgid "We've found no vulnerabilities"
 msgstr ""
 
@@ -29328,6 +29355,9 @@ msgid "You can easily install a Runner on a Kubernetes cluster. %{link_to_help_p
 msgstr ""
 
 msgid "You can filter by 'days to merge' by clicking on the columns in the chart."
+msgstr ""
+
+msgid "You can find more information about GitLab subscriptions in %{subscriptions_doc_link}."
 msgstr ""
 
 msgid "You can generate an access token scoped to this project for each application to use the GitLab API."

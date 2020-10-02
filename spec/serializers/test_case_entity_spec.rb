@@ -19,6 +19,7 @@ RSpec.describe TestCaseEntity do
         expect(subject[:status]).to eq('success')
         expect(subject[:name]).to eq('Test#sum when a is 1 and b is 3 returns summary')
         expect(subject[:classname]).to eq('spec.test_spec')
+        expect(subject[:file]).to eq('./spec/test_spec.rb')
         expect(subject[:execution_time]).to eq(1.11)
       end
     end
@@ -30,6 +31,7 @@ RSpec.describe TestCaseEntity do
         expect(subject[:status]).to eq('failed')
         expect(subject[:name]).to eq('Test#sum when a is 1 and b is 3 returns summary')
         expect(subject[:classname]).to eq('spec.test_spec')
+        expect(subject[:file]).to eq('./spec/test_spec.rb')
         expect(subject[:execution_time]).to eq(2.22)
       end
     end

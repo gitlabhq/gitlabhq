@@ -6,6 +6,7 @@ class TestCaseEntity < Grape::Entity
   expose :status
   expose :name
   expose :classname
+  expose :file
   expose :execution_time
   expose :system_output
   expose :stack_trace
