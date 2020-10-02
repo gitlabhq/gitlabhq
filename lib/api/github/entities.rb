@@ -119,7 +119,9 @@ module API
         expose :username, as: :login
         expose :user_url, as: :url
         expose :user_url, as: :html_url
-        expose :avatar_url
+        expose :avatar_url do |user|
+          user.avatar_url(only_path: false)
+        end
 
         private
 

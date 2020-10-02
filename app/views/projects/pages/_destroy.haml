@@ -8,7 +8,7 @@
         %p
           = s_('GitLabPages|Removing pages will prevent them from being exposed to the outside world.')
         .form-actions
-          = link_to s_('GitLabPages|Remove pages'), project_pages_path(@project), data: { confirm: s_('GitLabPages|Are you sure?')}, method: :delete, class: "btn btn-remove"
+          = link_to s_('GitLabPages|Remove pages'), project_pages_path(@project), data: { confirm: s_('GitLabPages|Are you sure?')}, method: :delete, class: "btn gl-button btn-remove"
   - else
     .nothing-here-block
       = s_('GitLabPages|Only project maintainers can remove pages')

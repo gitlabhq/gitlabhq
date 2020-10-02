@@ -6,14 +6,17 @@ module Operations
       STRATEGY_DEFAULT = 'default'
       STRATEGY_GITLABUSERLIST = 'gitlabUserList'
       STRATEGY_GRADUALROLLOUTUSERID = 'gradualRolloutUserId'
+      STRATEGY_FLEXIBLEROLLOUT = 'flexibleRollout'
       STRATEGY_USERWITHID = 'userWithId'
       STRATEGIES = {
         STRATEGY_DEFAULT => [].freeze,
         STRATEGY_GITLABUSERLIST => [].freeze,
         STRATEGY_GRADUALROLLOUTUSERID => %w[groupId percentage].freeze,
+        STRATEGY_FLEXIBLEROLLOUT => %w[groupId rollout stickiness].freeze,
         STRATEGY_USERWITHID => ['userIds'].freeze
       }.freeze
       USERID_MAX_LENGTH = 256
+      STICKINESS_SETTINGS = %w[DEFAULT USERID SESSIONID RANDOM].freeze
 
       self.table_name = 'operations_strategies'
 
@@ -67,21 +70,49 @@ module Operations
         case name
         when STRATEGY_GRADUALROLLOUTUSERID
           gradual_rollout_user_id_parameters_validation
+        when STRATEGY_FLEXIBLEROLLOUT
+          flexible_rollout_parameters_validation
         when STRATEGY_USERWITHID
           FeatureFlagUserXidsValidator.validate_user_xids(self, :parameters, parameters['userIds'], 'userIds')
         end
+      end
+
+      def within_range?(value, min, max)
+        return false unless value.is_a?(String)
+        return false unless value.match?(/\A\d+\z/)
+
+        value.to_i.between?(min, max)
       end
 
       def gradual_rollout_user_id_parameters_validation
         percentage = parameters['percentage']
         group_id = parameters['groupId']
 
-        unless percentage.is_a?(String) && percentage.match(/\A[1-9]?[0-9]\z|\A100\z/)
+        unless within_range?(percentage, 0, 100)
           parameters_error('percentage must be a string between 0 and 100 inclusive')
         end
 
         unless group_id.is_a?(String) && group_id.match(/\A[a-z]{1,32}\z/)
           parameters_error('groupId parameter is invalid')
+        end
+      end
+
+      def flexible_rollout_parameters_validation
+        stickiness = parameters['stickiness']
+        group_id = parameters['groupId']
+        rollout = parameters['rollout']
+
+        unless STICKINESS_SETTINGS.include?(stickiness)
+          options = STICKINESS_SETTINGS.to_sentence(last_word_connector: ', or ')
+          parameters_error("stickiness parameter must be #{options}")
+        end
+
+        unless group_id.is_a?(String) && group_id.match(/\A[a-z]{1,32}\z/)
+          parameters_error('groupId parameter is invalid')
+        end
+
+        unless within_range?(rollout, 0, 100)
+          parameters_error('rollout must be a string between 0 and 100 inclusive')
         end
       end
 

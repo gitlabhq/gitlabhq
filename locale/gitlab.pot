@@ -14651,6 +14651,9 @@ msgstr ""
 msgid "LDAP Synchronization"
 msgstr ""
 
+msgid "LDAP group settings"
+msgstr ""
+
 msgid "LDAP settings"
 msgstr ""
 
@@ -14658,6 +14661,9 @@ msgid "LDAP settings updated"
 msgstr ""
 
 msgid "LDAP sync in progress. This could take a few minutes. Refresh the page to see the changes."
+msgstr ""
+
+msgid "LDAP synchronizations"
 msgstr ""
 
 msgid "LFS"
