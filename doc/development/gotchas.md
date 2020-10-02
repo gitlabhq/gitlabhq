@@ -3,6 +3,21 @@
 The purpose of this guide is to document potential "gotchas" that contributors
 might encounter or should avoid during development of GitLab CE and EE.
 
+## Do not read files from app/assets directory
+
+Since GitLab 10.8, Omnibus has [dropped the `app/assets` directory](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/2456),
+after asset compilation. The `ee/app/assets`, `vendor/assets` directories are dropped as well.
+
+This means that reading files from that directory will fail in Omnibus-installed GitLab instances:
+
+```ruby
+file = Rails.root.join('app/assets/images/logo.svg')
+
+# This file does not exist, read will fail with:
+# Errno::ENOENT: No such file or directory @ rb_sysopen
+File.read(file)
+```
+
 ## Do not assert against the absolute value of a sequence-generated attribute
 
 Consider the following factory:

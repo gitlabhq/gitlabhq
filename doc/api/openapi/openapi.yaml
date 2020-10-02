@@ -9,9 +9,9 @@ info:
     When viewing this on gitlab.com, you can test API calls directly from the browser
     against the `gitlab.com` instance, if you are logged in.
     The feature uses the current [GitLab session cookie](https://docs.gitlab.com/ee/api/README.html#session-cookie),
-    so each request is made using your account. 
+    so each request is made using your account.
 
-    Read more at <https://docs.gitlab.com/ee/development/documentation/styleguide.html#restful-api>.
+    Read more at <https://docs.gitlab.com/ee/development/documentation/restful_api_styleguide.html>.
   version: "v4"
   title: "GitLab API"
   termsOfService: "https://about.gitlab.com/terms/"

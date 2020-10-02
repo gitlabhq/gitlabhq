@@ -5,6 +5,7 @@ import Cookies from 'js-cookie';
 import { deprecatedCreateFlash as flash } from './flash';
 import axios from './lib/utils/axios_utils';
 import { sprintf, s__, __ } from './locale';
+import { fixTitle, hide } from '~/tooltips';
 
 function Sidebar() {
   this.toggleTodo = this.toggleTodo.bind(this);
@@ -77,7 +78,7 @@ Sidebar.prototype.toggleTodo = function(e) {
   const ajaxType = $this.data('deletePath') ? 'delete' : 'post';
   const url = String($this.data('deletePath') || $this.data('createPath'));
 
-  $this.tooltip('hide');
+  hide($this);
 
   $('.js-issuable-todo')
     .disable()
@@ -119,7 +120,7 @@ Sidebar.prototype.todoUpdateDone = function(data) {
       .data('deletePath', deletePath);
 
     if ($el.hasClass('has-tooltip')) {
-      $el.tooltip('_fixTitle');
+      fixTitle($el);
     }
 
     if (typeof $el.data('isCollapsed') !== 'undefined') {

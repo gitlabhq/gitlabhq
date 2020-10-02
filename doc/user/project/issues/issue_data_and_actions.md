@@ -242,7 +242,7 @@ and selecting either:
 Also:
 
 - You can mention a user or a group present in your GitLab instance with
-  `@username` or `@groupname` and they will be notified via To-Do items
+  `@username` or `@groupname` and they will be notified via to-do items
   and email, unless they have [disabled all notifications](#notifications)
   in their profile settings.
 - Mentions for yourself (the current logged in user), will be highlighted

@@ -85,6 +85,7 @@ export default {
       :primary-button-text="savedContentMeta && $options.primaryButtonText"
       :primary-button-link="savedContentMeta && savedContentMeta.mergeRequest.url"
       :svg-path="mergeRequestsIllustrationPath"
+      :svg-height="146"
     >
       <template #description>
         <div v-if="savedContentMeta">

@@ -125,7 +125,7 @@ If no action is needed, you can manually mark the to do item as done by
 clicking its corresponding **Done** button to have GitLab remove the item from
 your To-Do List.
 
-![A to-do in the To-Do List](img/todos_todo_list_item.png)
+![A to do in the To-Do List](img/todos_todo_list_item.png)
 
 You can also mark a to do item as done by clicking the **Mark as done** button
 in the sidebar of an issue or merge request (or epic **(ULTIMATE)**).
@@ -143,9 +143,9 @@ You can use the following types of filters with your To-Do List:
 | ------- | ---------------------------------------------------------------- |
 | Project | Filter by project.                                               |
 | Group   | Filter by group.                                                 |
-| Author  | Filter by the author that triggered the To Do.                   |
+| Author  | Filter by the author that triggered the to do.                   |
 | Type    | Filter by issue, merge request, design, or epic. **(ULTIMATE)**  |
-| Action  | Filter by the action that triggered the To Do.                   |
+| Action  | Filter by the action that triggered the to do.                   |
 
 You can also filter by more than one of these at the same time. The previously
 described [triggering actions](#what-triggers-a-to-do) include:

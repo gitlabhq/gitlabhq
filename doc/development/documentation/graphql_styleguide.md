@@ -8,7 +8,7 @@ description: "Writing styles, markup, formatting, and other standards for GraphQ
 
 # GraphQL API
 
-GraphQL APIs are different from [RESTful APIs](styleguide.md#restful-api). Reference
+GraphQL APIs are different from [RESTful APIs](restful_api_styleguide.md). Reference
 information is generated in our [GraphQL reference](../../api/graphql/reference/index.md).
 
 However, it's helpful to include examples on how to use GraphQL for different

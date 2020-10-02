@@ -2085,10 +2085,10 @@ the `approvals_before_merge` parameter:
 }
 ```
 
-## Create a to-do
+## Create a to do
 
-Manually creates a to-do for the current user on a merge request.
-If there already exists a to-do for the user on that merge request,
+Manually creates a to do for the current user on a merge request.
+If there already exists a to do for the user on that merge request,
 status code `304` is returned.
 
 ```plaintext

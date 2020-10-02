@@ -188,7 +188,7 @@ GitLab supports only a single assignee per alert.
    **{angle-double-right}** **Expand sidebar** to expand it.
 1. In the right sidebar, locate the **Assignee**, and then select **Edit**.
    From the dropdown menu, select each user you want to assign to the alert.
-   GitLab creates a [to-do list item](../../user/todos.md) for each user.
+   GitLab creates a [to-do item](../../user/todos.md) for each user.
 
    ![Alert Details View Assignee(s)](./img/alert_todo_assignees_v13_1.png)
 
@@ -211,13 +211,13 @@ The following actions will result in a system note:
 
 ![Alert Details View System Notes](./img/alert_detail_system_notes_v13_1.png)
 
-#### Create a to-do from an alert
+#### Create a to do from an alert
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3066) in GitLab 13.1.
 
 You can manually create [To-Do list items](../../user/todos.md) for yourself
 from the Alert details screen, and view them later on your **To-Do List**. To
-add a to-do:
+add a to do:
 
 1. To display the list of current alerts, navigate to **Operations > Alerts**.
 1. Select your desired alert to display its **Alert Management Details View**.
@@ -225,9 +225,9 @@ add a to-do:
 
    ![Alert Details Add A To Do](./img/alert_detail_add_todo_v13_1.png)
 
-Select the **To-Do** **{todo-done}** in the navigation bar to view your current to-do list.
+Select the **To-Do List** **{todo-done}** in the navigation bar to view your current to-do list.
 
-![Alert Details Added to Do](./img/alert_detail_added_todo_v13_1.png)
+![Alert Details Added to do](./img/alert_detail_added_todo_v13_1.png)
 
 #### View an alert's metrics data
 

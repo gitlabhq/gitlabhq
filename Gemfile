@@ -244,7 +244,7 @@ gem 'atlassian-jwt', '~> 0.2.0'
 gem 'flowdock', '~> 0.7'
 
 # Slack integration
-gem 'slack-messenger', '~> 2.3.3'
+gem 'slack-messenger', '~> 2.3.4'
 
 # Hangouts Chat integration
 gem 'hangouts-chat', '~> 0.0.5'

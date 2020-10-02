@@ -66,6 +66,7 @@ describe('~/static_site_editor/pages/success.vue', () => {
         primaryButtonLink: savedContentMeta.mergeRequest.url,
         title: 'Your merge request has been created',
         svgPath: mergeRequestsIllustrationPath,
+        svgHeight: 146,
       });
     });
 

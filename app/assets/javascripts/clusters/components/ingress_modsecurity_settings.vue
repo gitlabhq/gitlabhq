@@ -6,8 +6,8 @@ import {
   GlLink,
   GlToggle,
   GlButton,
-  GlDeprecatedDropdown,
-  GlDeprecatedDropdownItem,
+  GlDropdown,
+  GlDropdownItem,
   GlIcon,
 } from '@gitlab/ui';
 import modSecurityLogo from 'images/cluster_app_logos/gitlab.png';
@@ -26,8 +26,8 @@ export default {
     GlLink,
     GlToggle,
     GlButton,
-    GlDeprecatedDropdown,
-    GlDeprecatedDropdownItem,
+    GlDropdown,
+    GlDropdownItem,
     GlIcon,
   },
   props: {
@@ -221,15 +221,11 @@ export default {
                   </strong>
                 </p>
               </div>
-              <gl-deprecated-dropdown :text="modSecurityModeName" :disabled="saveButtonDisabled">
-                <gl-deprecated-dropdown-item
-                  v-for="(mode, key) in modes"
-                  :key="key"
-                  @click="selectMode(key)"
-                >
+              <gl-dropdown :text="modSecurityModeName" :disabled="saveButtonDisabled">
+                <gl-dropdown-item v-for="(mode, key) in modes" :key="key" @click="selectMode(key)">
                   {{ mode.name }}
-                </gl-deprecated-dropdown-item>
-              </gl-deprecated-dropdown>
+                </gl-dropdown-item>
+              </gl-dropdown>
             </div>
           </div>
           <div v-if="showButtons" class="gl-mt-5 gl-display-flex">

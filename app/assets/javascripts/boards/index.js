@@ -84,7 +84,7 @@ export default () => {
     },
     provide: {
       boardId: $boardApp.dataset.boardId,
-      groupId: Number($boardApp.dataset.groupId) || null,
+      groupId: Number($boardApp.dataset.groupId),
       rootPath: $boardApp.dataset.rootPath,
       canUpdate: $boardApp.dataset.canUpdate,
     },
