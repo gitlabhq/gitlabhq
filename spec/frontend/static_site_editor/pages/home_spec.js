@@ -17,6 +17,7 @@ import {
   sourceContentTitle as title,
   sourcePath,
   username,
+  mergeRequestMeta,
   savedContentMeta,
   submitChangesError,
   trackingCategory,
@@ -241,6 +242,8 @@ describe('static_site_editor/pages/home', () => {
             project,
             sourcePath,
             username,
+            images: undefined,
+            mergeRequestMeta,
           },
         },
       });

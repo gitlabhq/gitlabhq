@@ -23,7 +23,10 @@ export const username = 'gitlabuser';
 export const projectId = '123456';
 export const returnUrl = 'https://www.gitlab.com';
 export const sourcePath = 'foobar.md.html';
-
+export const mergeRequestMeta = {
+  title: `Update ${sourcePath} file`,
+  description: 'Copy update',
+};
 export const savedContentMeta = {
   branch: {
     label: 'foobar',

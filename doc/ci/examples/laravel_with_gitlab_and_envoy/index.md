@@ -397,8 +397,6 @@ To be able to build, test, and deploy our app with GitLab CI/CD, we need to prep
 To do that, we'll use a Docker image which has the minimum requirements that a Laravel app needs to run.
 [There are other ways](../php.md#test-php-projects-using-the-docker-executor) to do that as well, but they may lead our builds run slowly, which is not what we want when there are faster options to use.
 
-With Docker images our builds run incredibly faster!
-
 ### Create a Container Image
 
 Let's create a [Dockerfile](https://gitlab.com/mehranrasulian/laravel-sample/blob/master/Dockerfile) in the root directory of our app with the following content:

@@ -19,6 +19,7 @@ import {
   commitBranchResponse,
   commitMultipleResponse,
   createMergeRequestResponse,
+  mergeRequestMeta,
   sourcePath,
   sourceContentYAML as content,
   trackingCategory,
@@ -28,10 +29,19 @@ import {
 jest.mock('~/static_site_editor/services/generate_branch_name');
 
 describe('submitContentChanges', () => {
-  const mergeRequestTitle = `Update ${sourcePath} file`;
   const branch = 'branch-name';
   let trackingSpy;
   let origPage;
+
+  const buildPayload = (overrides = {}) => ({
+    username,
+    projectId,
+    sourcePath,
+    content,
+    images,
+    mergeRequestMeta,
+    ...overrides,
+  });
 
   beforeEach(() => {
     jest.spyOn(Api, 'createBranch').mockResolvedValue({ data: commitBranchResponse });
@@ -53,7 +63,7 @@ describe('submitContentChanges', () => {
   });
 
   it('creates a branch named after the username and target branch', () => {
-    return submitContentChanges({ username, projectId }).then(() => {
+    return submitContentChanges(buildPayload()).then(() => {
       expect(Api.createBranch).toHaveBeenCalledWith(projectId, {
         ref: DEFAULT_TARGET_BRANCH,
         branch,
@@ -64,16 +74,16 @@ describe('submitContentChanges', () => {
   it('notifies error when branch could not be created', () => {
     Api.createBranch.mockRejectedValueOnce();
 
-    return expect(submitContentChanges({ username, projectId })).rejects.toThrow(
+    return expect(submitContentChanges(buildPayload())).rejects.toThrow(
       SUBMIT_CHANGES_BRANCH_ERROR,
     );
   });
 
   it('commits the content changes to the branch when creating branch succeeds', () => {
-    return submitContentChanges({ username, projectId, sourcePath, content, images }).then(() => {
+    return submitContentChanges(buildPayload()).then(() => {
       expect(Api.commitMultiple).toHaveBeenCalledWith(projectId, {
         branch,
-        commit_message: mergeRequestTitle,
+        commit_message: mergeRequestMeta.title,
         actions: [
           {
             action: 'update',
@@ -93,16 +103,11 @@ describe('submitContentChanges', () => {
 
   it('does not commit an image if it has been removed from the content', () => {
     const contentWithoutImages = '## Content without images';
-    return submitContentChanges({
-      username,
-      projectId,
-      sourcePath,
-      content: contentWithoutImages,
-      images,
-    }).then(() => {
+    const payload = buildPayload({ content: contentWithoutImages });
+    return submitContentChanges(payload).then(() => {
       expect(Api.commitMultiple).toHaveBeenCalledWith(projectId, {
         branch,
-        commit_message: mergeRequestTitle,
+        commit_message: mergeRequestMeta.title,
         actions: [
           {
             action: 'update',
@@ -117,17 +122,19 @@ describe('submitContentChanges', () => {
   it('notifies error when content could not be committed', () => {
     Api.commitMultiple.mockRejectedValueOnce();
 
-    return expect(submitContentChanges({ username, projectId, images })).rejects.toThrow(
+    return expect(submitContentChanges(buildPayload())).rejects.toThrow(
       SUBMIT_CHANGES_COMMIT_ERROR,
     );
   });
 
-  it('creates a merge request when commiting changes succeeds', () => {
-    return submitContentChanges({ username, projectId, sourcePath, content, images }).then(() => {
+  it('creates a merge request when committing changes succeeds', () => {
+    return submitContentChanges(buildPayload()).then(() => {
+      const { title, description } = mergeRequestMeta;
       expect(Api.createProjectMergeRequest).toHaveBeenCalledWith(
         projectId,
         convertObjectPropsToSnakeCase({
-          title: mergeRequestTitle,
+          title,
+          description,
           targetBranch: DEFAULT_TARGET_BRANCH,
           sourceBranch: branch,
         }),
@@ -138,7 +145,7 @@ describe('submitContentChanges', () => {
   it('notifies error when merge request could not be created', () => {
     Api.createProjectMergeRequest.mockRejectedValueOnce();
 
-    return expect(submitContentChanges({ username, projectId, images })).rejects.toThrow(
+    return expect(submitContentChanges(buildPayload())).rejects.toThrow(
       SUBMIT_CHANGES_MERGE_REQUEST_ERROR,
     );
   });
@@ -147,11 +154,9 @@ describe('submitContentChanges', () => {
     let result;
 
     beforeEach(() => {
-      return submitContentChanges({ username, projectId, sourcePath, content, images }).then(
-        _result => {
-          result = _result;
-        },
-      );
+      return submitContentChanges(buildPayload()).then(_result => {
+        result = _result;
+      });
     });
 
     it('returns the branch name', () => {
@@ -179,7 +184,7 @@ describe('submitContentChanges', () => {
 
   describe('sends the correct tracking event', () => {
     beforeEach(() => {
-      return submitContentChanges({ username, projectId, sourcePath, content, images });
+      return submitContentChanges(buildPayload());
     });
 
     it('for committing changes', () => {

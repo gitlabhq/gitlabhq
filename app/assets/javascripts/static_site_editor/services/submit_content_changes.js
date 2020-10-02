@@ -1,6 +1,5 @@
 import Api from '~/api';
 import Tracking from '~/tracking';
-import { s__, sprintf } from '~/locale';
 import { convertObjectPropsToSnakeCase } from '~/lib/utils/common_utils';
 import generateBranchName from '~/static_site_editor/services/generate_branch_name';
 
@@ -71,6 +70,7 @@ const commitContent = (projectId, message, branch, sourcePath, content, images) 
 const createMergeRequest = (
   projectId,
   title,
+  description,
   sourceBranch,
   targetBranch = DEFAULT_TARGET_BRANCH,
 ) => {
@@ -80,6 +80,7 @@ const createMergeRequest = (
     projectId,
     convertObjectPropsToSnakeCase({
       title,
+      description,
       sourceBranch,
       targetBranch,
     }),
@@ -88,11 +89,16 @@ const createMergeRequest = (
   });
 };
 
-const submitContentChanges = ({ username, projectId, sourcePath, content, images }) => {
+const submitContentChanges = ({
+  username,
+  projectId,
+  sourcePath,
+  content,
+  images,
+  mergeRequestMeta,
+}) => {
   const branch = generateBranchName(username);
-  const mergeRequestTitle = sprintf(s__(`StaticSiteEditor|Update %{sourcePath} file`), {
-    sourcePath,
-  });
+  const { title: mergeRequestTitle, description: mergeRequestDescription } = mergeRequestMeta;
   const meta = {};
 
   return createBranch(projectId, branch)
@@ -104,7 +110,7 @@ const submitContentChanges = ({ username, projectId, sourcePath, content, images
     .then(({ data: { short_id: label, web_url: url } }) => {
       Object.assign(meta, { commit: { label, url } });
 
-      return createMergeRequest(projectId, mergeRequestTitle, branch);
+      return createMergeRequest(projectId, mergeRequestTitle, mergeRequestDescription, branch);
     })
     .then(({ data: { iid: label, web_url: url } }) => {
       Object.assign(meta, { mergeRequest: { label: label.toString(), url } });
