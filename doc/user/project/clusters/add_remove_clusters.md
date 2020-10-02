@@ -269,7 +269,7 @@ To add a Kubernetes cluster to your project, group, or instance:
 
          Copy the `<authentication_token>` value from the output:
 
-         ```yaml
+         ```plaintext
          Name:         gitlab-token-b5zv4
          Namespace:    kube-system
          Labels:       <none>

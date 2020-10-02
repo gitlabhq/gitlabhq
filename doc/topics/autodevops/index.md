@@ -317,7 +317,7 @@ metadata:
   name: gitlab-managed-apps-default-proxy
   namespace: gitlab-managed-apps
 spec:
-   env:
+  env:
     - name: http_proxy
       value: "PUT_YOUR_HTTP_PROXY_HERE"
     - name: https_proxy

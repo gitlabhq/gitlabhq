@@ -207,9 +207,10 @@ remove the OmniAuth provider named `kerberos` from your `gitlab.yml` /
 
    ```yaml
    omniauth:
+     # Rest of configuration omitted
      # ...
      providers:
-       - { name: 'kerberos' } # <-- remove this line
+       - { name: 'kerberos' }  # <-- remove this line
    ```
 
 1. [Restart GitLab](../administration/restart_gitlab.md#installations-from-source) for the changes to take effect.

@@ -17,7 +17,7 @@ dashboard: 'Dashboard Title'
 panel_groups:
   - group: 'Group Title'
     panels:
-      - type: area-chart # or line-chart
+      - type: area-chart  # or line-chart
         title: 'Area Chart Title'
         y_label: 'Y-Axis'
         y_axis:

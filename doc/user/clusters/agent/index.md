@@ -125,27 +125,27 @@ the Agent in subsequent steps. You can create an Agent record either:
 
 - Through GraphQL: **(PREMIUM ONLY)**
 
-  ```json
-    mutation createAgent {
-      createClusterAgent(input: { projectPath: "path-to/your-awesome-project", name: "<agent-name>" }) {
-        clusterAgent {
-          id
-          name
-        }
-        errors
+  ```graphql
+  mutation createAgent {
+    createClusterAgent(input: { projectPath: "path-to/your-awesome-project", name: "<agent-name>" }) {
+      clusterAgent {
+        id
+        name
       }
+      errors
     }
+  }
 
-    mutation createToken {
-      clusterAgentTokenCreate(input: { clusterAgentId: <cluster-agent-id-taken-from-the-previous-mutation> }) {
-        secret # This is the value you need to use on the next step
-        token {
-          createdAt
-          id
-        }
-        errors
+  mutation createToken {
+    clusterAgentTokenCreate(input: { clusterAgentId: <cluster-agent-id-taken-from-the-previous-mutation> }) {
+      secret # This is the value you need to use on the next step
+      token {
+        createdAt
+        id
       }
+      errors
     }
+  }
   ```
 
   NOTE: **Note:**
@@ -245,7 +245,7 @@ spec:
         args:
         - --token-file=/config/token
         - --kas-address
-        - grpc://host.docker.internal:5005 # {"$openapi":"kas-address"}
+        - grpc://host.docker.internal:5005  # {"$openapi":"kas-address"}
         volumeMounts:
         - name: token-volume
           mountPath: /config

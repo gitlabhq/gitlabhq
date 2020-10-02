@@ -1,241 +1,146 @@
-import Vue from 'vue';
+import { shallowMount } from '@vue/test-utils';
 import { PathIdSeparator } from '~/related_issues/constants';
-import issueToken from '~/related_issues/components/issue_token.vue';
+import IssueToken from '~/related_issues/components/issue_token.vue';
 
 describe('IssueToken', () => {
   const idKey = 200;
   const displayReference = 'foo/bar#123';
-  const title = 'some title';
-  const pathIdSeparator = PathIdSeparator.Issue;
   const eventNamespace = 'pendingIssuable';
-  let IssueToken;
-  let vm;
+  const path = '/foo/bar/issues/123';
+  const pathIdSeparator = PathIdSeparator.Issue;
+  const title = 'some title';
 
-  beforeEach(() => {
-    IssueToken = Vue.extend(issueToken);
-  });
+  let wrapper;
+
+  const defaultProps = {
+    idKey,
+    displayReference,
+    pathIdSeparator,
+  };
+
+  const createComponent = (props = {}) => {
+    wrapper = shallowMount(IssueToken, {
+      propsData: { ...defaultProps, ...props },
+    });
+  };
 
   afterEach(() => {
-    if (vm) {
-      vm.$destroy();
+    if (wrapper) {
+      wrapper.destroy();
+      wrapper = null;
     }
   });
 
+  const findLink = () => wrapper.find({ ref: 'link' });
+  const findReference = () => wrapper.find({ ref: 'reference' });
+  const findReferenceIcon = () => wrapper.find('[data-testid="referenceIcon"]');
+  const findRemoveBtn = () => wrapper.find('[data-testid="removeBtn"]');
+  const findTitle = () => wrapper.find({ ref: 'title' });
+
   describe('with reference supplied', () => {
     beforeEach(() => {
-      vm = new IssueToken({
-        propsData: {
-          idKey,
-          eventNamespace,
-          displayReference,
-          pathIdSeparator,
-        },
-      }).$mount();
+      createComponent();
     });
 
     it('shows reference', () => {
-      expect(vm.$el.textContent.trim()).toEqual(displayReference);
+      expect(wrapper.text()).toContain(displayReference);
     });
 
     it('does not link without path specified', () => {
-      expect(vm.$refs.link.tagName.toLowerCase()).toEqual('span');
-      expect(vm.$refs.link.getAttribute('href')).toBeNull();
+      expect(findLink().element.tagName).toBe('SPAN');
+      expect(findLink().attributes('href')).toBeUndefined();
     });
   });
 
   describe('with reference and title supplied', () => {
-    beforeEach(() => {
-      vm = new IssueToken({
-        propsData: {
-          idKey,
-          eventNamespace,
-          displayReference,
-          pathIdSeparator,
-          title,
-        },
-      }).$mount();
-    });
-
     it('shows reference and title', () => {
-      expect(vm.$refs.reference.textContent.trim()).toEqual(displayReference);
-      expect(vm.$refs.title.textContent.trim()).toEqual(title);
+      createComponent({
+        title,
+      });
+
+      expect(findReference().text()).toBe(displayReference);
+      expect(findTitle().text()).toBe(title);
     });
   });
 
-  describe('with path supplied', () => {
-    const path = '/foo/bar/issues/123';
-    beforeEach(() => {
-      vm = new IssueToken({
-        propsData: {
-          idKey,
-          eventNamespace,
-          displayReference,
-          pathIdSeparator,
-          title,
-          path,
-        },
-      }).$mount();
-    });
-
+  describe('with path and title supplied', () => {
     it('links reference and title', () => {
-      expect(vm.$refs.link.getAttribute('href')).toEqual(path);
+      createComponent({
+        path,
+        title,
+      });
+
+      expect(findLink().attributes('href')).toBe(path);
     });
   });
 
   describe('with state supplied', () => {
-    describe("`state: 'opened'`", () => {
-      beforeEach(() => {
-        vm = new IssueToken({
-          propsData: {
-            idKey,
-            eventNamespace,
-            displayReference,
-            pathIdSeparator,
-            state: 'opened',
-          },
-        }).$mount();
+    it.each`
+      state         | icon              | cssClass
+      ${'opened'}   | ${'issue-open-m'} | ${'issue-token-state-icon-open'}
+      ${'reopened'} | ${'issue-open-m'} | ${'issue-token-state-icon-open'}
+      ${'closed'}   | ${'issue-close'}  | ${'issue-token-state-icon-closed'}
+    `('shows "$icon" icon when "$state"', ({ state, icon, cssClass }) => {
+      createComponent({
+        path,
+        state,
       });
 
-      it('shows green circle icon', () => {
-        expect(vm.$el.querySelector('.issue-token-state-icon-open.fa.fa-circle-o')).toBeDefined();
-      });
-    });
-
-    describe("`state: 'reopened'`", () => {
-      beforeEach(() => {
-        vm = new IssueToken({
-          propsData: {
-            idKey,
-            eventNamespace,
-            displayReference,
-            pathIdSeparator,
-            state: 'reopened',
-          },
-        }).$mount();
-      });
-
-      it('shows green circle icon', () => {
-        expect(vm.$el.querySelector('.issue-token-state-icon-open.fa.fa-circle-o')).toBeDefined();
-      });
-    });
-
-    describe("`state: 'closed'`", () => {
-      beforeEach(() => {
-        vm = new IssueToken({
-          propsData: {
-            idKey,
-            eventNamespace,
-            displayReference,
-            pathIdSeparator,
-            state: 'closed',
-          },
-        }).$mount();
-      });
-
-      it('shows red minus icon', () => {
-        expect(vm.$el.querySelector('.issue-token-state-icon-closed.fa.fa-minus')).toBeDefined();
-      });
+      expect(findReferenceIcon().props('name')).toBe(icon);
+      expect(findReferenceIcon().classes()).toContain(cssClass);
     });
   });
 
   describe('with reference, title, state', () => {
     const state = 'opened';
-    beforeEach(() => {
-      vm = new IssueToken({
-        propsData: {
-          idKey,
-          eventNamespace,
-          displayReference,
-          pathIdSeparator,
-          title,
-          state,
-        },
-      }).$mount();
-    });
 
     it('shows reference, title, and state', () => {
-      const stateIcon = vm.$refs.reference.querySelector('svg');
+      createComponent({
+        title,
+        state,
+      });
 
-      expect(stateIcon.getAttribute('aria-label')).toEqual(state);
-      expect(vm.$refs.reference.textContent.trim()).toEqual(displayReference);
-      expect(vm.$refs.title.textContent.trim()).toEqual(title);
+      expect(findReferenceIcon().attributes('aria-label')).toBe(state);
+      expect(findReference().text()).toBe(displayReference);
+      expect(findTitle().text()).toBe(title);
     });
   });
 
   describe('with canRemove', () => {
     describe('`canRemove: false` (default)', () => {
-      beforeEach(() => {
-        vm = new IssueToken({
-          propsData: {
-            idKey,
-            eventNamespace,
-            displayReference,
-            pathIdSeparator,
-          },
-        }).$mount();
-      });
-
       it('does not have remove button', () => {
-        expect(vm.$el.querySelector('.issue-token-remove-button')).toBeNull();
+        createComponent();
+
+        expect(findRemoveBtn().exists()).toBe(false);
       });
     });
 
     describe('`canRemove: true`', () => {
       beforeEach(() => {
-        vm = new IssueToken({
-          propsData: {
-            idKey,
-            eventNamespace,
-            displayReference,
-            pathIdSeparator,
-            canRemove: true,
-          },
-        }).$mount();
+        createComponent({
+          eventNamespace,
+          canRemove: true,
+        });
       });
 
       it('has remove button', () => {
-        expect(vm.$el.querySelector('.issue-token-remove-button')).toBeDefined();
+        expect(findRemoveBtn().exists()).toBe(true);
       });
-    });
-  });
 
-  describe('methods', () => {
-    beforeEach(() => {
-      vm = new IssueToken({
-        propsData: {
-          idKey,
-          eventNamespace,
-          displayReference,
-          pathIdSeparator,
-        },
-      }).$mount();
-    });
+      it('emits event when clicked', () => {
+        findRemoveBtn().trigger('click');
 
-    it('when getting checked', () => {
-      jest.spyOn(vm, '$emit').mockImplementation(() => {});
-      vm.onRemoveRequest();
+        const emitted = wrapper.emitted(`${eventNamespace}RemoveRequest`);
 
-      expect(vm.$emit).toHaveBeenCalledWith('pendingIssuableRemoveRequest', vm.idKey);
-    });
-  });
+        expect(emitted).toHaveLength(1);
+        expect(emitted[0]).toEqual([idKey]);
+      });
 
-  describe('tooltip', () => {
-    beforeEach(() => {
-      vm = new IssueToken({
-        propsData: {
-          idKey,
-          eventNamespace,
-          displayReference,
-          pathIdSeparator,
-          canRemove: true,
-        },
-      }).$mount();
-    });
-
-    it('should not be escaped', () => {
-      const { originalTitle } = vm.$refs.removeButton.dataset;
-
-      expect(originalTitle).toEqual(`Remove ${displayReference}`);
+      it('tooltip should not be escaped', () => {
+        expect(findRemoveBtn().attributes('data-original-title')).toBe(
+          `Remove ${displayReference}`,
+        );
+      });
     });
   });
 });

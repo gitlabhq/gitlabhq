@@ -70,7 +70,8 @@ receivers:
         bearer_token: 9e1cbfcd546896a9ea8be557caf13a76
       send_resolved: true
       url: http://192.168.178.31:3001/root/manual_prometheus/prometheus/alerts/notify.json
-  ...
+      # Rest of configuration omitted
+      # ...
 ```
 
 For GitLab to associate your alerts with an [environment](../../ci/environments/index.md),

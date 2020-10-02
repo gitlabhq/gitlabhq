@@ -45,10 +45,10 @@ To enable the CAS OmniAuth provider you must register your application with your
    - { name: 'cas3',
        label: 'cas',
        args: {
-               url: 'CAS_SERVER',
-               login_url: '/CAS_PATH/login',
-               service_validate_url: '/CAS_PATH/p3/serviceValidate',
-               logout_url: '/CAS_PATH/logout'} }
+         url: 'CAS_SERVER',
+         login_url: '/CAS_PATH/login',
+         service_validate_url: '/CAS_PATH/p3/serviceValidate',
+         logout_url: '/CAS_PATH/logout' } }
    ```
 
 1. Change 'CAS_PATH' to the root of your CAS instance (ie. `cas`).

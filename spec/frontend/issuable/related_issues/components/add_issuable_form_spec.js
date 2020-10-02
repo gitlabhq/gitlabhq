@@ -48,7 +48,10 @@ describe('AddIssuableForm', () => {
     const input = findFormInput(wrapper);
     if (input) input.blur();
 
-    wrapper.destroy();
+    if (wrapper) {
+      wrapper.destroy();
+      wrapper = null;
+    }
   });
 
   describe('with data', () => {

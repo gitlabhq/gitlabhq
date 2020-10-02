@@ -2686,6 +2686,9 @@ msgstr ""
 msgid "An error has occurred"
 msgstr ""
 
+msgid "An error occured while making the changes: %{error}"
+msgstr ""
+
 msgid "An error occurred adding a draft to the thread."
 msgstr ""
 
@@ -2957,9 +2960,6 @@ msgid "An error occurred while saving LDAP override status. Please try again."
 msgstr ""
 
 msgid "An error occurred while saving assignees"
-msgstr ""
-
-msgid "An error occurred while saving the template. Please check if the template exists."
 msgstr ""
 
 msgid "An error occurred while searching for milestones"
@@ -9525,6 +9525,9 @@ msgid "Emails"
 msgstr ""
 
 msgid "Emails sent from Service Desk will have this name"
+msgstr ""
+
+msgid "Emails sent to %{email} will still be supported"
 msgstr ""
 
 msgid "Emails separated by comma"
