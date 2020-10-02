@@ -7,7 +7,7 @@ require 'gitlab/danger/roulette'
 
 RSpec.describe Gitlab::Danger::Roulette do
   around do |example|
-    Timecop.freeze(Time.utc(2020, 06, 22, 10)) { example.run }
+    travel_to(Time.utc(2020, 06, 22, 10)) { example.run }
   end
 
   let(:backend_available) { true }

@@ -12,7 +12,7 @@ RSpec.describe 'value stream analytics events' do
       project.add_developer(user)
 
       3.times do |count|
-        Timecop.freeze(Time.now + count.days) do
+        travel_to(Time.now + count.days) do
           create_cycle
         end
       end

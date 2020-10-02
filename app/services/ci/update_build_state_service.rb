@@ -70,7 +70,9 @@ module Ci
     end
 
     def validate_build_trace!
-      if chunks_persisted?
+      return unless has_chunks?
+
+      unless live_chunks_pending?
         metrics.increment_trace_operation(operation: :finalized)
       end
 
@@ -110,8 +112,8 @@ module Ci
       build.trace_chunks.live.any?
     end
 
-    def chunks_persisted?
-      build.trace_chunks.any? && !live_chunks_pending?
+    def has_chunks?
+      build.trace_chunks.any?
     end
 
     def pending_state_outdated?

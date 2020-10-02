@@ -290,7 +290,7 @@ RSpec.describe PostReceive do
 
       # MySQL drops milliseconds in the timestamps, so advance at least
       # a second to ensure we see changes.
-      Timecop.freeze(1.second.from_now) do
+      travel_to(1.second.from_now) do
         expect do
           perform
           project.reload

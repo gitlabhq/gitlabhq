@@ -1,82 +1,67 @@
-import Vue from 'vue';
+import { shallowMount } from '@vue/test-utils';
+import { GlIcon } from '@gitlab/ui';
+import ItemStatsValue from '~/groups/components/item_stats_value.vue';
 
-import mountComponent from 'helpers/vue_mount_component_helper';
-import itemStatsValueComponent from '~/groups/components/item_stats_value.vue';
+describe('ItemStatsValue', () => {
+  let wrapper;
 
-const createComponent = ({ title, cssClass, iconName, tooltipPlacement, value }) => {
-  const Component = Vue.extend(itemStatsValueComponent);
+  const defaultProps = {
+    title: 'Subgroups',
+    cssClass: 'number-subgroups',
+    iconName: 'folder',
+    tooltipPlacement: 'left',
+  };
 
-  return mountComponent(Component, {
-    title,
-    cssClass,
-    iconName,
-    tooltipPlacement,
-    value,
-  });
-};
-
-describe('ItemStatsValueComponent', () => {
-  describe('computed', () => {
-    let vm;
-    const itemConfig = {
-      title: 'Subgroups',
-      cssClass: 'number-subgroups',
-      iconName: 'folder',
-      tooltipPlacement: 'left',
-    };
-
-    describe('isValuePresent', () => {
-      it('returns true if non-empty `value` is present', () => {
-        vm = createComponent({ ...itemConfig, value: 10 });
-
-        expect(vm.isValuePresent).toBeTruthy();
-      });
-
-      it('returns false if empty `value` is present', () => {
-        vm = createComponent(itemConfig);
-
-        expect(vm.isValuePresent).toBeFalsy();
-      });
-
-      afterEach(() => {
-        vm.$destroy();
-      });
+  const createComponent = (props = {}) => {
+    wrapper = shallowMount(ItemStatsValue, {
+      propsData: { ...defaultProps, ...props },
     });
+  };
+
+  afterEach(() => {
+    if (wrapper) {
+      wrapper.destroy();
+      wrapper = null;
+    }
   });
+
+  const findGlIcon = () => wrapper.find(GlIcon);
+  const findStatValue = () => wrapper.find('[data-testid="itemStatValue"]');
 
   describe('template', () => {
-    let vm;
-    beforeEach(() => {
-      vm = createComponent({
-        title: 'Subgroups',
-        cssClass: 'number-subgroups',
-        iconName: 'folder',
-        tooltipPlacement: 'left',
-        value: 10,
+    describe('when `value` is not provided', () => {
+      it('does not render value count', () => {
+        createComponent();
+
+        expect(findStatValue().exists()).toBe(false);
       });
     });
 
-    afterEach(() => {
-      vm.$destroy();
-    });
+    describe('when `value` is provided', () => {
+      beforeEach(() => {
+        createComponent({
+          value: 10,
+        });
+      });
 
-    it('renders component element correctly', () => {
-      expect(vm.$el.classList.contains('number-subgroups')).toBeTruthy();
-      expect(vm.$el.querySelectorAll('svg').length).toBeGreaterThan(0);
-      expect(vm.$el.querySelectorAll('.stat-value').length).toBeGreaterThan(0);
-    });
+      it('renders component element correctly', () => {
+        expect(wrapper.classes()).toContain('number-subgroups');
+      });
 
-    it('renders element tooltip correctly', () => {
-      expect(vm.$el.dataset.originalTitle).toBe('Subgroups');
-      expect(vm.$el.dataset.placement).toBe('left');
-    });
+      it('renders element tooltip correctly', () => {
+        expect(wrapper.attributes('data-original-title')).toBe('Subgroups');
+        expect(wrapper.attributes('data-placement')).toBe('left');
+      });
 
-    it('renders element icon correctly', () => {
-      expect(vm.$el.querySelector('svg').getAttribute('data-testid')).toBe('folder-icon');
-    });
+      it('renders element icon correctly', () => {
+        expect(findGlIcon().exists()).toBe(true);
+        expect(findGlIcon().props('name')).toBe('folder');
+      });
 
-    it('renders value count correctly', () => {
-      expect(vm.$el.querySelector('.stat-value').innerText.trim()).toContain('10');
+      it('renders value count correctly', () => {
+        expect(findStatValue().classes()).toContain('stat-value');
+        expect(findStatValue().text()).toBe('10');
+      });
     });
   });
 });

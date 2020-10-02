@@ -47,7 +47,7 @@ RSpec.describe Gitlab::Database::Partitioning::MonthlyStrategy do
     let(:partitioning_key) { :created_at }
 
     around do |example|
-      Timecop.freeze(Date.parse('2020-08-22')) { example.run }
+      travel_to(Date.parse('2020-08-22')) { example.run }
     end
 
     context 'with existing partitions' do

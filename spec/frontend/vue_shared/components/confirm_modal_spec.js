@@ -86,6 +86,22 @@ describe('vue_shared/components/confirm_modal', () => {
         expect(findForm().element.submit).not.toHaveBeenCalled();
       });
 
+      describe('with handleSubmit prop', () => {
+        const handleSubmit = jest.fn();
+        beforeEach(() => {
+          createComponent({ handleSubmit });
+          findModal().vm.$emit('primary');
+        });
+
+        it('will call handleSubmit', () => {
+          expect(handleSubmit).toHaveBeenCalled();
+        });
+
+        it('does not submit the form', () => {
+          expect(findForm().element.submit).not.toHaveBeenCalled();
+        });
+      });
+
       describe('when modal submitted', () => {
         beforeEach(() => {
           findModal().vm.$emit('primary');

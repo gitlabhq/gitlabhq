@@ -269,14 +269,14 @@ RSpec.describe Deployments::AfterCreateService do
           it "does not overwrite the older 'first_deployed_to_production_at' time" do
             # Previous deploy
             time = 5.minutes.from_now
-            Timecop.freeze(time) { service.execute }
+            travel_to(time) { service.execute }
 
             expect(merge_request.reload.metrics.merged_at).to be < merge_request.reload.metrics.first_deployed_to_production_at
 
             previous_time = merge_request.reload.metrics.first_deployed_to_production_at
 
             # Current deploy
-            Timecop.freeze(time + 12.hours) { service.execute }
+            travel_to(time + 12.hours) { service.execute }
 
             expect(merge_request.reload.metrics.first_deployed_to_production_at).to eq(previous_time)
           end

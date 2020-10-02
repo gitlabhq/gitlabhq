@@ -265,6 +265,11 @@ msgid_plural "%d open issues"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%d pending comment"
+msgid_plural "%d pending comments"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%d personal project will be removed and cannot be restored."
 msgid_plural "%d personal projects will be removed and cannot be restored."
 msgstr[0] ""
@@ -421,11 +426,6 @@ msgstr ""
 
 msgid "%{count} participant"
 msgid_plural "%{count} participants"
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "%{count} pending comment"
-msgid_plural "%{count} pending comments"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -3476,12 +3476,6 @@ msgstr ""
 msgid "Artifacts"
 msgstr ""
 
-msgid "As U2F devices are only supported by a few browsers, we require that you set up a two-factor authentication app before a U2F device. That way you'll always be able to log in - even when you're using an unsupported browser."
-msgstr ""
-
-msgid "As WebAuthn devices are only supported by a few browsers, we require that you set up a two-factor authentication app before a WebAuthn device. That way you'll always be able to log in - even when you're using an unsupported browser."
-msgstr ""
-
 msgid "As we continue to build more features for SAST, we'd love your feedback on the SAST configuration feature in %{linkStart}this issue%{linkEnd}."
 msgstr ""
 
@@ -3985,15 +3979,6 @@ msgid "BambooService|Bamboo root URL like https://bamboo.example.com"
 msgstr ""
 
 msgid "BambooService|You must set up automatic revision labeling and a repository trigger in Bamboo."
-msgstr ""
-
-msgid "BatchComments|Delete all pending comments"
-msgstr ""
-
-msgid "BatchComments|Discard review?"
-msgstr ""
-
-msgid "BatchComments|You're about to discard your review which will delete all of your pending comments. The deleted comments %{strong_start}cannot%{strong_end} be restored."
 msgstr ""
 
 msgid "Be careful. Changing the project's namespace can have unintended side effects."
@@ -6989,6 +6974,9 @@ msgstr[1] ""
 msgid "ContainerRegistry|Set cleanup policy"
 msgstr ""
 
+msgid "ContainerRegistry|Some tags were not deleted"
+msgstr ""
+
 msgid "ContainerRegistry|Something went wrong while fetching the cleanup policy."
 msgstr ""
 
@@ -7026,6 +7014,9 @@ msgid "ContainerRegistry|Tags with names matching this regex pattern will %{ital
 msgstr ""
 
 msgid "ContainerRegistry|Tags with names matching this regex pattern will %{italicStart}expire:%{italicEnd}"
+msgstr ""
+
+msgid "ContainerRegistry|The cleanup policy timed out before it could delete all tags. An administrator can %{adminLinkStart}manually run cleanup now%{adminLinkEnd} or you can wait for the cleanup policy to automatically run again. %{docLinkStart}More information%{docLinkEnd}"
 msgstr ""
 
 msgid "ContainerRegistry|The last tag related to this image was recently removed. This empty image and any associated data will be automatically removed as part of the regular Garbage Collection process. If you have any questions, contact your administrator."
@@ -9067,9 +9058,6 @@ msgid "Discard changes to %{path}?"
 msgstr ""
 
 msgid "Discard draft"
-msgstr ""
-
-msgid "Discard review"
 msgstr ""
 
 msgid "DiscordService|Discord Notifications"
@@ -11321,9 +11309,6 @@ msgid "Fingerprints"
 msgstr ""
 
 msgid "Finish editing this message first!"
-msgstr ""
-
-msgid "Finish review"
 msgstr ""
 
 msgid "Finish setting up your dedicated account for %{group_name}."
@@ -17544,6 +17529,12 @@ msgstr ""
 msgid "Not Implemented"
 msgstr ""
 
+msgid "Not all browsers support U2F devices. Therefore, we require that you set up a two-factor authentication app first. That way you'll always be able to sign in - even when you're using an unsupported browser."
+msgstr ""
+
+msgid "Not all browsers support WebAuthn. Therefore, we require that you set up a two-factor authentication app first. That way you'll always be able to sign in - even from an unsupported browser."
+msgstr ""
+
 msgid "Not all data has been processed yet, the accuracy of the chart for the selected timeframe is limited."
 msgstr ""
 
@@ -18576,6 +18567,9 @@ msgid "Paused Runners don't accept new jobs"
 msgstr ""
 
 msgid "Pending"
+msgstr ""
+
+msgid "Pending comments"
 msgstr ""
 
 msgid "People without permission will never get a notification and won't be able to comment."
@@ -21827,6 +21821,9 @@ msgstr ""
 msgid "Requests to these domain(s)/address(es) on the local network will be allowed when local requests from hooks and services are not allowed. IP ranges such as 1:0:0:0:0:0:0:0/124 or 127.0.0.0/28 are supported. Domain wildcards are not supported currently. Use comma, semicolon, or newline to separate multiple entries. The allowlist can hold a maximum of 1000 entries. Domains should use IDNA encoding. Ex: example.com, 192.168.1.1, 127.0.0.0/28, xn--itlab-j1a.com."
 msgstr ""
 
+msgid "Require admin approval for new sign-ups"
+msgstr ""
+
 msgid "Require all users in this group to setup Two-factor authentication"
 msgstr ""
 
@@ -23463,6 +23460,9 @@ msgid "Set up a %{type} Runner automatically"
 msgstr ""
 
 msgid "Set up a %{type} Runner manually"
+msgstr ""
+
+msgid "Set up a hardware device as a second factor to sign in."
 msgstr ""
 
 msgid "Set up assertions/attributes/claims (email, first_name, last_name) and NameID according to %{docsLinkStart}the documentation %{icon}%{docsLinkEnd}"
@@ -27920,9 +27920,6 @@ msgstr ""
 msgid "Use Service Desk to connect with your users (e.g. to offer customer support) through email right inside GitLab"
 msgstr ""
 
-msgid "Use a hardware device to add the second factor of authentication."
-msgstr ""
-
 msgid "Use an one time password authenticator on your mobile device or computer to enable two-factor authentication (2FA)."
 msgstr ""
 
@@ -28948,6 +28945,9 @@ msgid "When a deployment job is successful, skip older deployment jobs that are 
 msgstr ""
 
 msgid "When a runner is locked, it cannot be assigned to other projects"
+msgstr ""
+
+msgid "When enabled, any user visiting %{host} and creating an account will have to be explicitly approved by the admin before they can login. This setting is effective only if sign-ups are enabled."
 msgstr ""
 
 msgid "When enabled, any user visiting %{host} will be able to create an account."

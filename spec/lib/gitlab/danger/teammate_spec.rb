@@ -149,7 +149,7 @@ RSpec.describe Gitlab::Danger::Teammate do
 
   describe '#local_hour' do
     around do |example|
-      Timecop.freeze(Time.utc(2020, 6, 23, 10)) { example.run }
+      travel_to(Time.utc(2020, 6, 23, 10)) { example.run }
     end
 
     context 'when author is given' do

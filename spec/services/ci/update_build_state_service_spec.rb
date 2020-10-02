@@ -83,6 +83,23 @@ RSpec.describe Ci::UpdateBuildStateService do
       { checksum: 'crc32:12345678', state: 'failed', failure_reason: 'script_failure' }
     end
 
+    context 'when build does not have associated trace chunks' do
+      it 'updates a build status' do
+        result = subject.execute
+
+        expect(build).to be_failed
+        expect(result.status).to eq 200
+      end
+
+      it 'does not increment invalid trace metric' do
+        execute_with_stubbed_metrics!
+
+        expect(metrics)
+          .not_to have_received(:increment_trace_operation)
+          .with(operation: :invalid)
+      end
+    end
+
     context 'when build trace has been migrated' do
       before do
         create(:ci_build_trace_chunk, :persisted, build: build, initial_data: 'abcd')

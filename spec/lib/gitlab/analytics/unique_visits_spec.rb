@@ -19,7 +19,7 @@ RSpec.describe Gitlab::Analytics::UniqueVisits, :clean_gitlab_redis_shared_state
     # Without freezing the time, the test may behave inconsistently
     # depending on which day of the week test is run.
     reference_time = Time.utc(2020, 6, 1)
-    Timecop.freeze(reference_time) { example.run }
+    travel_to(reference_time) { example.run }
   end
 
   describe '#track_visit' do

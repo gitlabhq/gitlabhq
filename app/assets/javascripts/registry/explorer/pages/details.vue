@@ -4,6 +4,7 @@ import { GlPagination, GlResizeObserverDirective } from '@gitlab/ui';
 import { GlBreakpointInstance } from '@gitlab/ui/dist/utils';
 import Tracking from '~/tracking';
 import DeleteAlert from '../components/details_page/delete_alert.vue';
+import PartialCleanupAlert from '../components/details_page/partial_cleanup_alert.vue';
 import DeleteModal from '../components/details_page/delete_modal.vue';
 import DetailsHeader from '../components/details_page/details_header.vue';
 import TagsList from '../components/details_page/tags_list.vue';
@@ -21,6 +22,7 @@ import {
 export default {
   components: {
     DeleteAlert,
+    PartialCleanupAlert,
     DetailsHeader,
     GlPagination,
     DeleteModal,
@@ -37,13 +39,16 @@ export default {
       itemsToBeDeleted: [],
       isDesktop: true,
       deleteAlertType: null,
+      dismissPartialCleanupWarning: false,
     };
   },
   computed: {
     ...mapState(['tagsPagination', 'isLoading', 'config', 'tags']),
-    imageName() {
-      const { name } = decodeAndParse(this.$route.params.id);
-      return name;
+    queryParameters() {
+      return decodeAndParse(this.$route.params.id);
+    },
+    showPartialCleanupWarning() {
+      return this.queryParameters.cleanup_policy_started_at && !this.dismissPartialCleanupWarning;
     },
     tracking() {
       return {
@@ -120,7 +125,14 @@ export default {
       class="gl-my-2"
     />
 
-    <details-header :image-name="imageName" />
+    <partial-cleanup-alert
+      v-if="showPartialCleanupWarning"
+      :run-cleanup-policies-help-page-path="config.runCleanupPoliciesHelpPagePath"
+      :cleanup-policies-help-page-path="config.cleanupPoliciesHelpPagePath"
+      @dismiss="dismissPartialCleanupWarning = true"
+    />
+
+    <details-header :image-name="queryParameters.name" />
 
     <tags-loader v-if="isLoading" />
     <template v-else>

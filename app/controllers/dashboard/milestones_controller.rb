@@ -4,6 +4,8 @@ class Dashboard::MilestonesController < Dashboard::ApplicationController
   before_action :projects
   before_action :groups, only: :index
 
+  feature_category :issue_tracking
+
   def index
     respond_to do |format|
       format.html do

@@ -48,7 +48,7 @@ RSpec.describe ProjectFeatureUsage, type: :model do
         feature_usage.log_jira_dvcs_integration_usage
         first_logged_at = feature_usage.jira_dvcs_cloud_last_sync_at
 
-        Timecop.freeze(1.hour.from_now) do
+        travel_to(1.hour.from_now) do
           ProjectFeatureUsage.new(project_id: project.id).log_jira_dvcs_integration_usage
         end
 

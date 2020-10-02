@@ -199,42 +199,6 @@ describe('Batch comments store actions', () => {
     });
   });
 
-  describe('discardReview', () => {
-    it('commits mutations', done => {
-      const getters = {
-        getNotesData: { draftsDiscardPath: TEST_HOST },
-      };
-      const commit = jest.fn();
-      mock.onAny().reply(200);
-
-      actions
-        .discardReview({ getters, commit })
-        .then(() => {
-          expect(commit.mock.calls[0]).toEqual(['REQUEST_DISCARD_REVIEW']);
-          expect(commit.mock.calls[1]).toEqual(['RECEIVE_DISCARD_REVIEW_SUCCESS']);
-        })
-        .then(done)
-        .catch(done.fail);
-    });
-
-    it('commits error mutations', done => {
-      const getters = {
-        getNotesData: { draftsDiscardPath: TEST_HOST },
-      };
-      const commit = jest.fn();
-      mock.onAny().reply(500);
-
-      actions
-        .discardReview({ getters, commit })
-        .then(() => {
-          expect(commit.mock.calls[0]).toEqual(['REQUEST_DISCARD_REVIEW']);
-          expect(commit.mock.calls[1]).toEqual(['RECEIVE_DISCARD_REVIEW_ERROR']);
-        })
-        .then(done)
-        .catch(done.fail);
-    });
-  });
-
   describe('updateDraft', () => {
     let getters;
 
@@ -281,56 +245,6 @@ describe('Batch comments store actions', () => {
         })
         .then(done)
         .catch(done.fail);
-    });
-  });
-
-  describe('toggleReviewDropdown', () => {
-    it('dispatches openReviewDropdown', done => {
-      testAction(
-        actions.toggleReviewDropdown,
-        null,
-        { showPreviewDropdown: false },
-        [],
-        [{ type: 'openReviewDropdown' }],
-        done,
-      );
-    });
-
-    it('dispatches closeReviewDropdown when showPreviewDropdown is true', done => {
-      testAction(
-        actions.toggleReviewDropdown,
-        null,
-        { showPreviewDropdown: true },
-        [],
-        [{ type: 'closeReviewDropdown' }],
-        done,
-      );
-    });
-  });
-
-  describe('openReviewDropdown', () => {
-    it('commits OPEN_REVIEW_DROPDOWN', done => {
-      testAction(
-        actions.openReviewDropdown,
-        null,
-        null,
-        [{ type: 'OPEN_REVIEW_DROPDOWN' }],
-        [],
-        done,
-      );
-    });
-  });
-
-  describe('closeReviewDropdown', () => {
-    it('commits CLOSE_REVIEW_DROPDOWN', done => {
-      testAction(
-        actions.closeReviewDropdown,
-        null,
-        null,
-        [{ type: 'CLOSE_REVIEW_DROPDOWN' }],
-        [],
-        done,
-      );
     });
   });
 
@@ -383,9 +297,7 @@ describe('Batch comments store actions', () => {
 
       actions.scrollToDraft({ dispatch, rootGetters }, draft);
 
-      expect(dispatch.mock.calls[0]).toEqual(['closeReviewDropdown']);
-
-      expect(dispatch.mock.calls[1]).toEqual([
+      expect(dispatch.mock.calls[0]).toEqual([
         'expandDiscussion',
         { discussionId: '1' },
         { root: true },

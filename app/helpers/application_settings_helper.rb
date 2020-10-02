@@ -167,7 +167,7 @@ module ApplicationSettingsHelper
   end
 
   def visible_attributes
-    [
+    attributes = [
       :abuse_notification_email,
       :after_sign_out_path,
       :after_sign_up_text,
@@ -331,6 +331,9 @@ module ApplicationSettingsHelper
       :wiki_page_max_content_bytes,
       :container_registry_delete_tags_service_timeout
     ]
+
+    attributes << :require_admin_approval_after_user_signup if Feature.enabled?(:admin_approval_for_new_user_signups)
+    attributes
   end
 
   def external_authorization_service_attributes

@@ -246,7 +246,7 @@ module DesignManagement
         new_designs = DesignManagement::Design.unscoped.find(design_ids)
 
         # Execute another query to filter only designs with notes
-        DesignManagement::Design.unscoped.where(id: designs).joins(:notes).find_each(batch_size: 100) do |old_design|
+        DesignManagement::Design.unscoped.where(id: designs).joins(:notes).distinct.find_each(batch_size: 100) do |old_design|
           new_design = new_designs.find { |d| d.filename == old_design.filename }
 
           Notes::CopyService.new(current_user, old_design, new_design).execute

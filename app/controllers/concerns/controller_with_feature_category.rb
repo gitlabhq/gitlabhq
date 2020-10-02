@@ -5,35 +5,38 @@ module ControllerWithFeatureCategory
   include Gitlab::ClassAttributes
 
   class_methods do
-    def feature_category(category, config = {})
-      validate_config!(config)
+    def feature_category(category, actions = [])
+      feature_category_configuration[category] ||= []
+      feature_category_configuration[category] += actions.map(&:to_s)
 
-      category_config = Config.new(category, config[:only], config[:except], config[:if], config[:unless])
-      # Add the config to the beginning. That way, the last defined one takes precedence.
-      feature_category_configuration.unshift(category_config)
+      validate_config!(feature_category_configuration)
     end
 
     def feature_category_for_action(action)
-      category_config = feature_category_configuration.find { |config| config.matches?(action) }
+      category_config = feature_category_configuration.find do |_, actions|
+        actions.empty? || actions.include?(action)
+      end
 
-      category_config&.category || superclass_feature_category_for_action(action)
+      category_config&.first || superclass_feature_category_for_action(action)
     end
 
     private
 
     def validate_config!(config)
-      invalid_keys = config.keys - [:only, :except, :if, :unless]
-      if invalid_keys.any?
-        raise ArgumentError, "unknown arguments: #{invalid_keys} "
+      empty = config.find { |_, actions| actions.empty? }
+      duplicate_actions = config.values.flatten.group_by(&:itself).select { |_, v| v.count > 1 }.keys
+
+      if config.length > 1 && empty
+        raise ArgumentError, "#{empty.first} is defined for all actions, but other categories are set"
       end
 
-      if config.key?(:only) && config.key?(:except)
-        raise ArgumentError, "cannot configure both `only` and `except`"
+      if duplicate_actions.any?
+        raise ArgumentError, "Actions have multiple feature categories: #{duplicate_actions.join(', ')}"
       end
     end
 
     def feature_category_configuration
-      class_attributes[:feature_category_config] ||= []
+      class_attributes[:feature_category_config] ||= {}
     end
 
     def superclass_feature_category_for_action(action)

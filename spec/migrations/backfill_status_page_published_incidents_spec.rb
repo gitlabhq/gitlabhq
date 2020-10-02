@@ -37,7 +37,7 @@ RSpec.describe BackfillStatusPagePublishedIncidents, :migration do
     end
 
     it 'creates a StatusPage::PublishedIncident record for each published issue' do
-      Timecop.freeze(current_time) do
+      travel_to(current_time) do
         expect(incidents.all).to be_empty
 
         migrate!

@@ -42,6 +42,7 @@ export default {
         name: this.item.path,
         tags_path: this.item.tags_path,
         id: this.item.id,
+        cleanup_policy_started_at: this.item.cleanup_policy_started_at,
       });
       return window.btoa(params);
     },

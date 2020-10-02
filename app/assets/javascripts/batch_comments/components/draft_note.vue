@@ -18,11 +18,6 @@ export default {
       type: Object,
       required: true,
     },
-    diffFile: {
-      type: Object,
-      required: false,
-      default: () => ({}),
-    },
     line: {
       type: Object,
       required: false,

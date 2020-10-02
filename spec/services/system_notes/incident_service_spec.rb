@@ -15,64 +15,44 @@ RSpec.describe ::SystemNotes::IncidentService do
       allow(Gitlab::AppLogger).to receive(:error).and_call_original
     end
 
-    context 'with add_severity_system_note feature flag enabled' do
-      before do
-        stub_feature_flags(add_severity_system_note: project)
-      end
+    it_behaves_like 'a system note' do
+      let(:action) { 'severity' }
+    end
 
-      it_behaves_like 'a system note' do
-        let(:action) { 'severity' }
-      end
-
-      IssuableSeverity.severities.keys.each do |severity|
-        context "with #{severity} severity" do
-          before do
-            issuable_severity.update!(severity: severity)
-          end
-
-          it 'has the appropriate message' do
-            severity_label = IssuableSeverity::SEVERITY_LABELS.fetch(severity.to_sym)
-
-            expect(change_severity.note).to eq("changed the severity to **#{severity_label}**")
-          end
-        end
-      end
-
-      context 'when severity is invalid' do
-        let(:invalid_severity) { 'invalid-severity' }
-
+    IssuableSeverity.severities.keys.each do |severity|
+      context "with #{severity} severity" do
         before do
-          allow(noteable).to receive(:severity).and_return(invalid_severity)
+          issuable_severity.update!(severity: severity)
         end
 
-        it 'does not create system note' do
-          expect { change_severity }.not_to change { noteable.notes.count }
-        end
+        it 'has the appropriate message' do
+          severity_label = IssuableSeverity::SEVERITY_LABELS.fetch(severity.to_sym)
 
-        it 'writes error to logs' do
-          change_severity
-
-          expect(Gitlab::AppLogger).to have_received(:error).with(
-            message: 'Cannot create a system note for severity change',
-            noteable_class: noteable.class.to_s,
-            noteable_id: noteable.id,
-            severity: invalid_severity
-          )
+          expect(change_severity.note).to eq("changed the severity to **#{severity_label}**")
         end
       end
     end
 
-    context 'with add_severity_system_note feature flag disabled' do
+    context 'when severity is invalid' do
+      let(:invalid_severity) { 'invalid-severity' }
+
       before do
-        stub_feature_flags(add_severity_system_note: false)
+        allow(noteable).to receive(:severity).and_return(invalid_severity)
       end
 
       it 'does not create system note' do
         expect { change_severity }.not_to change { noteable.notes.count }
       end
 
-      it 'does not write error to logs' do
-        expect(Gitlab::AppLogger).not_to have_received(:error)
+      it 'writes error to logs' do
+        change_severity
+
+        expect(Gitlab::AppLogger).to have_received(:error).with(
+          message: 'Cannot create a system note for severity change',
+          noteable_class: noteable.class.to_s,
+          noteable_id: noteable.id,
+          severity: invalid_severity
+        )
       end
     end
   end

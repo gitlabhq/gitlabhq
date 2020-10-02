@@ -50,6 +50,9 @@ FactoryBot.define do
       create(:protected_branch, project: projects[0])
       create(:protected_branch, name: 'main', project: projects[0])
 
+      # Tracing
+      create(:project_tracing_setting, project: projects[0])
+
       # Incident Labeled Issues
       incident_label = create(:label, :incident, project: projects[0])
       create(:labeled_issue, project: projects[0], labels: [incident_label])

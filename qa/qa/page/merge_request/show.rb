@@ -75,8 +75,6 @@ module QA
 
         view 'app/assets/javascripts/batch_comments/components/review_bar.vue' do
           element :review_bar
-          element :discard_review
-          element :modal_delete_pending_comments
         end
 
         view 'app/assets/javascripts/notes/components/note_form.vue' do

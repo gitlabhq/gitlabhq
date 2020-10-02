@@ -285,17 +285,20 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
         cluster = create(:cluster, user: user)
         create(:project, creator: user)
         create(:clusters_applications_prometheus, :installed, cluster: cluster)
+        create(:project_tracing_setting)
       end
 
       expect(described_class.usage_activity_by_stage_monitor({})).to include(
         clusters: 2,
         clusters_applications_prometheus: 2,
-        operations_dashboard_default_dashboard: 2
+        operations_dashboard_default_dashboard: 2,
+        projects_with_tracing_enabled: 2
       )
       expect(described_class.usage_activity_by_stage_monitor(described_class.last_28_days_time_period)).to include(
         clusters: 1,
         clusters_applications_prometheus: 1,
-        operations_dashboard_default_dashboard: 1
+        operations_dashboard_default_dashboard: 1,
+        projects_with_tracing_enabled: 1
       )
     end
   end
@@ -445,6 +448,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
       expect(count_data[:projects_inheriting_instance_mattermost_active]).to eq(1)
       expect(count_data[:projects_with_repositories_enabled]).to eq(3)
       expect(count_data[:projects_with_error_tracking_enabled]).to eq(1)
+      expect(count_data[:projects_with_tracing_enabled]).to eq(1)
       expect(count_data[:projects_with_alerts_service_enabled]).to eq(1)
       expect(count_data[:projects_with_prometheus_alerts]).to eq(2)
       expect(count_data[:projects_with_terraform_reports]).to eq(2)

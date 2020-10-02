@@ -46,7 +46,7 @@ RSpec.describe Gitlab::AlertManagement::Payload::Generic do
     subject { parsed_payload.starts_at }
 
     around do |example|
-      Timecop.freeze(current_time) { example.run }
+      travel_to(current_time) { example.run }
     end
 
     context 'without start_time' do
@@ -99,7 +99,7 @@ RSpec.describe Gitlab::AlertManagement::Payload::Generic do
     subject { parsed_payload.ends_at }
 
     around do |example|
-      Timecop.freeze(current_time) { example.run }
+      travel_to(current_time) { example.run }
     end
 
     context 'without end_time' do

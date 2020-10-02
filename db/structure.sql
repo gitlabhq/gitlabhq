@@ -12676,6 +12676,24 @@ CREATE TABLE issue_assignees (
     issue_id integer NOT NULL
 );
 
+CREATE TABLE issue_email_participants (
+    id bigint NOT NULL,
+    issue_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    email text NOT NULL,
+    CONSTRAINT check_2c321d408d CHECK ((char_length(email) <= 255))
+);
+
+CREATE SEQUENCE issue_email_participants_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE issue_email_participants_id_seq OWNED BY issue_email_participants.id;
+
 CREATE TABLE issue_links (
     id integer NOT NULL,
     source_id integer NOT NULL,
@@ -17447,6 +17465,8 @@ ALTER TABLE ONLY ip_restrictions ALTER COLUMN id SET DEFAULT nextval('ip_restric
 
 ALTER TABLE ONLY issuable_severities ALTER COLUMN id SET DEFAULT nextval('issuable_severities_id_seq'::regclass);
 
+ALTER TABLE ONLY issue_email_participants ALTER COLUMN id SET DEFAULT nextval('issue_email_participants_id_seq'::regclass);
+
 ALTER TABLE ONLY issue_links ALTER COLUMN id SET DEFAULT nextval('issue_links_id_seq'::regclass);
 
 ALTER TABLE ONLY issue_metrics ALTER COLUMN id SET DEFAULT nextval('issue_metrics_id_seq'::regclass);
@@ -18564,6 +18584,9 @@ ALTER TABLE ONLY ip_restrictions
 
 ALTER TABLE ONLY issuable_severities
     ADD CONSTRAINT issuable_severities_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY issue_email_participants
+    ADD CONSTRAINT issue_email_participants_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY issue_links
     ADD CONSTRAINT issue_links_pkey PRIMARY KEY (id);
@@ -20348,6 +20371,8 @@ CREATE UNIQUE INDEX index_issuable_severities_on_issue_id ON issuable_severities
 CREATE UNIQUE INDEX index_issue_assignees_on_issue_id_and_user_id ON issue_assignees USING btree (issue_id, user_id);
 
 CREATE INDEX index_issue_assignees_on_user_id ON issue_assignees USING btree (user_id);
+
+CREATE UNIQUE INDEX index_issue_email_participants_on_issue_id_and_email ON issue_email_participants USING btree (issue_id, email);
 
 CREATE INDEX index_issue_links_on_source_id ON issue_links USING btree (source_id);
 
@@ -22620,6 +22645,9 @@ ALTER TABLE ONLY user_synced_attributes_metadata
 
 ALTER TABLE ONLY project_authorizations
     ADD CONSTRAINT fk_rails_0f84bb11f3 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY issue_email_participants
+    ADD CONSTRAINT fk_rails_0fdfd8b811 FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY merge_request_context_commits
     ADD CONSTRAINT fk_rails_0fe0039f60 FOREIGN KEY (merge_request_id) REFERENCES merge_requests(id) ON DELETE CASCADE;

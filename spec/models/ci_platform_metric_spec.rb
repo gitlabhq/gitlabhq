@@ -45,7 +45,7 @@ RSpec.describe CiPlatformMetric do
       let(:tomorrow) { today + 1.day }
 
       it 'inserts platform target counts for that day' do
-        Timecop.freeze(today) do
+        travel_to(today) do
           create(:ci_variable, key: described_class::CI_VARIABLE_KEY, value: 'ECS')
           create(:ci_variable, key: described_class::CI_VARIABLE_KEY, value: 'ECS')
           create(:ci_variable, key: described_class::CI_VARIABLE_KEY, value: 'FARGATE')
@@ -53,7 +53,7 @@ RSpec.describe CiPlatformMetric do
           create(:ci_variable, key: described_class::CI_VARIABLE_KEY, value: 'FARGATE')
           described_class.insert_auto_devops_platform_targets!
         end
-        Timecop.freeze(tomorrow) do
+        travel_to(tomorrow) do
           create(:ci_variable, key: described_class::CI_VARIABLE_KEY, value: 'FARGATE')
           described_class.insert_auto_devops_platform_targets!
         end
@@ -69,7 +69,7 @@ RSpec.describe CiPlatformMetric do
       let(:today) { Time.zone.local(1982, 4, 24) }
 
       it 'ignores those values' do
-        Timecop.freeze(today) do
+        travel_to(today) do
           create(:ci_variable, key: described_class::CI_VARIABLE_KEY, value: 'ECS')
           create(:ci_variable, key: described_class::CI_VARIABLE_KEY, value: 'FOO')
           create(:ci_variable, key: described_class::CI_VARIABLE_KEY, value: 'BAR')

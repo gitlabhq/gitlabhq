@@ -64,11 +64,6 @@ class User < ApplicationRecord
   # and should be added after Devise modules are initialized.
   include AsyncDeviseEmail
 
-  BLOCKED_MESSAGE = "Your account has been blocked. Please contact your GitLab " \
-                    "administrator if you think this is an error."
-  LOGIN_FORBIDDEN = "Your account does not have the required permission to login. Please contact your GitLab " \
-                    "administrator if you think this is an error."
-
   MINIMUM_INACTIVE_DAYS = 90
 
   # Override Devise::Models::Trackable#update_tracked_fields!
@@ -381,11 +376,12 @@ class User < ApplicationRecord
     super && can?(:log_in)
   end
 
+  # The messages for these keys are defined in `devise.en.yml`
   def inactive_message
     if blocked?
-      BLOCKED_MESSAGE
+      :blocked
     elsif internal?
-      LOGIN_FORBIDDEN
+      :forbidden
     else
       super
     end

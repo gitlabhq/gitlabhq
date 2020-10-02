@@ -15,7 +15,7 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
     # depending on which day of the week test is run.
     # Monday 6th of June
     reference_time = Time.utc(2020, 6, 1)
-    Timecop.freeze(reference_time) { example.run }
+    travel_to(reference_time) { example.run }
   end
 
   describe '.categories' do

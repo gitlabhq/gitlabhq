@@ -213,7 +213,7 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
         it 'creates partitions including the next month from today' do
           today = Date.new(2020, 5, 8)
 
-          Timecop.freeze(today) do
+          travel_to(today) do
             migration.partition_table_by_date source_table, partition_column, min_date: min_date
 
             expect_range_partitions_for(partitioned_table, {
@@ -233,7 +233,7 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
       context 'without min_date, max_date' do
         it 'creates partitions for the current and next month' do
           current_date = Date.new(2020, 05, 22)
-          Timecop.freeze(current_date.to_time) do
+          travel_to(current_date.to_time) do
             migration.partition_table_by_date source_table, partition_column
 
             expect_range_partitions_for(partitioned_table, {

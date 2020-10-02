@@ -7,6 +7,8 @@ class Dashboard::SnippetsController < Dashboard::ApplicationController
 
   skip_cross_project_access_check :index
 
+  feature_category :snippets
+
   def index
     @snippet_counts = Snippets::CountService
       .new(current_user, author: current_user)

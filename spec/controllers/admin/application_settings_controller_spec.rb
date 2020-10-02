@@ -87,6 +87,38 @@ RSpec.describe Admin::ApplicationSettingsController do
       sign_in(admin)
     end
 
+    context 'require_admin_approval_after_user_signup setting' do
+      subject do
+        put :update, params: { application_setting: { require_admin_approval_after_user_signup: true } }
+      end
+
+      context 'when feature is enabled' do
+        before do
+          stub_feature_flags(admin_approval_for_new_user_signups: true)
+        end
+
+        it 'updates the require_admin_approval_after_user_signup setting' do
+          subject
+
+          expect(response).to redirect_to(general_admin_application_settings_path)
+          expect(ApplicationSetting.current.require_admin_approval_after_user_signup).to eq(true)
+        end
+      end
+
+      context 'when feature is disabled' do
+        before do
+          stub_feature_flags(admin_approval_for_new_user_signups: false)
+        end
+
+        it 'does not update the require_admin_approval_after_user_signup setting' do
+          subject
+
+          expect(response).to redirect_to(general_admin_application_settings_path)
+          expect(ApplicationSetting.current.require_admin_approval_after_user_signup).not_to eq(true)
+        end
+      end
+    end
+
     it 'updates the password_authentication_enabled_for_git setting' do
       put :update, params: { application_setting: { password_authentication_enabled_for_git: "0" } }
 

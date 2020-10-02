@@ -1,0 +1,5 @@
+---
+title: Add issue_email_participants table and related model
+merge_request: 42943
+author:
+type: other

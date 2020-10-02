@@ -1,5 +1,5 @@
 <script>
-import { mapActions, mapGetters } from 'vuex';
+import { mapGetters } from 'vuex';
 import { GlSprintf, GlIcon } from '@gitlab/ui';
 import { IMAGE_DIFF_POSITION_TYPE } from '~/diffs/constants';
 import { sprintf, __ } from '~/locale';
@@ -78,7 +78,6 @@ export default {
     },
   },
   methods: {
-    ...mapActions('batchComments', ['scrollToDraft']),
     getLineClasses(lineNumber) {
       return getLineClasses(lineNumber);
     },
@@ -88,17 +87,7 @@ export default {
 </script>
 
 <template>
-  <button
-    type="button"
-    class="review-preview-item menu-item"
-    :class="[
-      componentClasses,
-      {
-        'is-last': isLast,
-      },
-    ]"
-    @click="scrollToDraft(draft)"
-  >
+  <span>
     <span class="review-preview-item-header">
       <gl-icon class="flex-shrink-0" :name="iconName" />
       <span
@@ -139,5 +128,5 @@ export default {
     >
       <gl-icon class="gl-mr-3" name="status_success" /> {{ resolvedStatusMessage }}
     </span>
-  </button>
+  </span>
 </template>

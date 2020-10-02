@@ -59,7 +59,7 @@ RSpec.shared_examples 'known sign in' do
     it 'notifies the user when the cookie is expired' do
       stub_cookie
 
-      Timecop.freeze((KnownSignIn::KNOWN_SIGN_IN_COOKIE_EXPIRY + 1.day).from_now) do
+      travel_to((KnownSignIn::KNOWN_SIGN_IN_COOKIE_EXPIRY + 1.day).from_now) do
         expect_next_instance_of(NotificationService) do |instance|
           expect(instance).to receive(:unknown_sign_in)
         end

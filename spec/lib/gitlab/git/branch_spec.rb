@@ -85,9 +85,9 @@ RSpec.describe Gitlab::Git::Branch, :seed_helper do
       }
     end
 
-    let(:stale_sha) { Timecop.freeze(Gitlab::Git::Branch::STALE_BRANCH_THRESHOLD.ago - 5.days) { create_commit } }
-    let(:active_sha) { Timecop.freeze(Gitlab::Git::Branch::STALE_BRANCH_THRESHOLD.ago + 5.days) { create_commit } }
-    let(:future_sha) { Timecop.freeze(100.days.since) { create_commit } }
+    let(:stale_sha) { travel_to(Gitlab::Git::Branch::STALE_BRANCH_THRESHOLD.ago - 5.days) { create_commit } }
+    let(:active_sha) { travel_to(Gitlab::Git::Branch::STALE_BRANCH_THRESHOLD.ago + 5.days) { create_commit } }
+    let(:future_sha) { travel_to(100.days.since) { create_commit } }
 
     before do
       repository.create_branch('stale-1', stale_sha)

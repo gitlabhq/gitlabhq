@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Dashboard::LabelsController < Dashboard::ApplicationController
+  feature_category :issue_tracking
+
   def index
     respond_to do |format|
       format.json { render json: LabelSerializer.new.represent_appearance(labels) }

@@ -3902,7 +3902,7 @@ RSpec.describe User do
 
           it 'changes the namespace (just to compare to when username is not changed)' do
             expect do
-              Timecop.freeze(1.second.from_now) do
+              travel_to(1.second.from_now) do
                 user.update!(username: new_username)
               end
             end.to change { user.namespace.updated_at }
@@ -4899,7 +4899,7 @@ RSpec.describe User do
         user.block
       end
 
-      it { is_expected.to eq User::BLOCKED_MESSAGE }
+      it { is_expected.to eq :blocked }
     end
 
     context 'when user is an internal user' do
@@ -4907,7 +4907,7 @@ RSpec.describe User do
         user.update(user_type: :ghost)
       end
 
-      it { is_expected.to be User::LOGIN_FORBIDDEN }
+      it { is_expected.to be :forbidden }
     end
 
     context 'when user is locked' do

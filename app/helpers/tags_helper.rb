@@ -38,4 +38,13 @@ module TagsHelper
 
     text.html_safe
   end
+
+  def delete_tag_modal_attributes(tag_name)
+    {
+      title: s_('TagsPage|Delete tag'),
+      message: s_('TagsPage|Deleting the %{tag_name} tag cannot be undone. Are you sure?') % { tag_name: tag_name },
+      okVariant: 'danger',
+      okTitle: s_('TagsPage|Delete tag')
+    }.to_json
+  end
 end

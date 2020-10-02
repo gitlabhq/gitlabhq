@@ -76,25 +76,10 @@ class Projects::TagsController < Projects::ApplicationController
   def destroy
     result = ::Tags::DestroyService.new(project, current_user).execute(params[:id])
 
-    respond_to do |format|
-      if result[:status] == :success
-        format.html do
-          redirect_to project_tags_path(@project), status: :see_other
-        end
-
-        format.js
-      else
-        @error = result[:message]
-
-        format.html do
-          redirect_to project_tags_path(@project),
-            alert: @error, status: :see_other
-        end
-
-        format.js do
-          render status: :ok
-        end
-      end
+    if result[:status] == :success
+      render json: result
+    else
+      render json: { message: result[:message] }, status: result[:return_code]
     end
   end
 

@@ -30,7 +30,7 @@ RSpec.describe Backup::Files do
     let(:timestamp) { Time.utc(2017, 3, 22) }
 
     around do |example|
-      Timecop.freeze(timestamp) { example.run }
+      travel_to(timestamp) { example.run }
     end
 
     describe 'folders with permission' do
