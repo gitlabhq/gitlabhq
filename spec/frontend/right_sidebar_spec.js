@@ -6,7 +6,9 @@ import Sidebar from '~/right_sidebar';
 
 let $aside = null;
 let $toggle = null;
-let $icon = null;
+let $toggleContainer = null;
+let $expandIcon = null;
+let $collapseIcon = null;
 let $page = null;
 let $labelsIcon = null;
 
@@ -15,10 +17,11 @@ const assertSidebarState = state => {
   const shouldBeCollapsed = state === 'collapsed';
   expect($aside.hasClass('right-sidebar-expanded')).toBe(shouldBeExpanded);
   expect($page.hasClass('right-sidebar-expanded')).toBe(shouldBeExpanded);
-  expect($icon.hasClass('fa-angle-double-right')).toBe(shouldBeExpanded);
+  expect($toggleContainer.data('is-expanded')).toBe(shouldBeExpanded);
+  expect($expandIcon.hasClass('hidden')).toBe(shouldBeExpanded);
   expect($aside.hasClass('right-sidebar-collapsed')).toBe(shouldBeCollapsed);
   expect($page.hasClass('right-sidebar-collapsed')).toBe(shouldBeCollapsed);
-  expect($icon.hasClass('fa-angle-double-left')).toBe(shouldBeCollapsed);
+  expect($collapseIcon.hasClass('hidden')).toBe(shouldBeCollapsed);
 };
 
 describe('RightSidebar', () => {
@@ -33,7 +36,9 @@ describe('RightSidebar', () => {
       new Sidebar(); // eslint-disable-line no-new
       $aside = $('.right-sidebar');
       $page = $('.layout-page');
-      $icon = $aside.find('i');
+      $toggleContainer = $('.js-sidebar-toggle-container');
+      $expandIcon = $aside.find('.js-sidebar-expand');
+      $collapseIcon = $aside.find('.js-sidebar-collapse');
       $toggle = $aside.find('.js-sidebar-toggle');
       $labelsIcon = $aside.find('.sidebar-collapsed-icon');
     });
