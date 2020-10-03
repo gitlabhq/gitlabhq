@@ -437,11 +437,13 @@ a gender-neutral pronoun.
 Avoid the use of gender-specific pronouns, unless referring to a specific person.
 
 <!-- vale gitlab.InclusionGender = NO -->
+
 | Use                               | Avoid                           |
 |-----------------------------------|---------------------------------|
 | People, humanity                  | Mankind                         |
 | GitLab Team Members               | Manpower                        |
 | You can install; They can install | He can install; She can install |
+
 <!-- vale gitlab.InclusionGender = YES -->
 
 If you need to set up [Fake user information](#fake-user-information), use
@@ -452,6 +454,7 @@ diverse or non-gendered names with common surnames.
 Avoid terms that are also used in negative stereotypes for different groups.
 
 <!-- vale gitlab.InclusionAbleism = NO -->
+
 | Use                    | Avoid                |
 |------------------------|----------------------|
 | Check for completeness | Sanity check         |
@@ -460,6 +463,7 @@ Avoid terms that are also used in negative stereotypes for different groups.
 | Placeholder variable   | Dummy variable       |
 | Active/Inactive        | Enabled/Disabled     |
 | On/Off                 | Enabled/Disabled     |
+
 <!-- vale gitlab.InclusionAbleism = YES -->
 
 Credit: [Avoid ableist language](https://developers.google.com/style/inclusive-documentation#ableist-language)
@@ -472,10 +476,12 @@ cases, you can replace terms such as `master` and `slave` with terms that are
 more precise and functional, such as `primary` and `secondary`.
 
 <!-- vale gitlab.InclusionCultural = NO -->
+
 | Use                  | Avoid                 |
 |----------------------|-----------------------|
 | Primary / secondary  | Master / slave        |
 | Allowlist / denylist | Blacklist / whitelist |
+
 <!-- vale gitlab.InclusionCultural = YES -->
 
 For more information see the following [Internet Draft specification](https://tools.ietf.org/html/draft-knodel-terminology-02).
