@@ -7259,6 +7259,9 @@ msgstr ""
 msgid "Copy the code below to implement tracking in your application:"
 msgstr ""
 
+msgid "Copy this value"
+msgstr ""
+
 msgid "Copy to clipboard"
 msgstr ""
 
@@ -10488,6 +10491,9 @@ msgid "Example: Usage = single query. (Requested) / (Capacity) = multiple querie
 msgstr ""
 
 msgid "Except policy:"
+msgstr ""
+
+msgid "Excess storage"
 msgstr ""
 
 msgid "Excluding merge commits. Limited to %{limit} commits."

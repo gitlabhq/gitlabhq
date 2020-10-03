@@ -130,7 +130,7 @@ describe('MRWidgetHeader', () => {
       });
 
       it('renders clipboard button', () => {
-        expect(vm.$el.querySelector('.btn-clipboard')).not.toEqual(null);
+        expect(vm.$el.querySelector('[data-testid="mr-widget-copy-clipboard"]')).not.toEqual(null);
       });
 
       it('renders target branch', () => {

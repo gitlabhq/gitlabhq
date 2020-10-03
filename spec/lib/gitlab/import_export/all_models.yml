@@ -539,6 +539,7 @@ project:
 - product_analytics_events
 - pipeline_artifacts
 - terraform_states
+- alert_management_http_integrations
 award_emoji:
 - awardable
 - user

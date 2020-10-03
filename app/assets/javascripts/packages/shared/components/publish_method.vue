@@ -49,7 +49,8 @@ export default {
       <clipboard-button
         :text="packageEntity.pipeline.sha"
         :title="__('Copy commit SHA')"
-        css-class="gl-border-0 gl-py-0 gl-px-2"
+        category="tertiary"
+        size="small"
       />
     </template>
 

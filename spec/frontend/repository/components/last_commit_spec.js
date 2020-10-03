@@ -78,7 +78,7 @@ describe('Repository last commit component', () => {
     factory();
 
     return vm.vm.$nextTick(() => {
-      expect(vm.find('.label-monospace').text()).toEqual('12345678');
+      expect(vm.find('[data-testid="last-commit-id-label"]').text()).toEqual('12345678');
     });
   });
 

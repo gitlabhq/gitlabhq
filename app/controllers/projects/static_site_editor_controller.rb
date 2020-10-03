@@ -25,7 +25,7 @@ class Projects::StaticSiteEditorController < Projects::ApplicationController
     ).execute
 
     if service_response.success?
-      @data = service_response.payload
+      @data = serialize_necessary_payload_values_to_json(service_response.payload)
     else
       # TODO: For now, if the service returns any error, the user is redirected
       #       to the root project page with the error message displayed as an alert.
@@ -37,6 +37,17 @@ class Projects::StaticSiteEditorController < Projects::ApplicationController
   end
 
   private
+
+  def serialize_necessary_payload_values_to_json(payload)
+    # This will convert booleans, Array-like and Hash-like objects to JSON
+    payload.transform_values do |value|
+      if value.is_a?(String) || value.is_a?(Integer)
+        value
+      else
+        value.to_json
+      end
+    end
+  end
 
   def assign_ref_and_path
     @ref, @path = extract_ref(params.fetch(:id))

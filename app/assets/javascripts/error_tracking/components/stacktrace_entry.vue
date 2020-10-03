@@ -94,7 +94,9 @@ export default {
         <clipboard-button
           :title="__('Copy file path')"
           :text="filePath"
-          css-class="btn-default btn-transparent btn-clipboard position-static"
+          category="tertiary"
+          size="small"
+          css-class="gl-mr-1"
         />
 
         <gl-sprintf v-if="errorFn" :message="__('%{spanStart}in%{spanEnd} %{errorFn}')">

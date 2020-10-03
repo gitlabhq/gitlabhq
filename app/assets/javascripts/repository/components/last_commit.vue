@@ -1,6 +1,6 @@
 <script>
 /* eslint-disable vue/no-v-html */
-import { GlTooltipDirective, GlLink, GlButton, GlLoadingIcon } from '@gitlab/ui';
+import { GlTooltipDirective, GlLink, GlButton, GlButtonGroup, GlLoadingIcon } from '@gitlab/ui';
 import defaultAvatarUrl from 'images/no_avatar.png';
 import { sprintf, s__ } from '~/locale';
 import UserAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
@@ -17,8 +17,9 @@ export default {
     TimeagoTooltip,
     ClipboardButton,
     CiIcon,
-    GlLink,
     GlButton,
+    GlButtonGroup,
+    GlLink,
     GlLoadingIcon,
   },
   directives: {
@@ -167,16 +168,19 @@ export default {
               />
             </gl-link>
           </div>
-          <div class="commit-sha-group d-flex">
-            <div class="label label-monospace monospace">
-              {{ showCommitId }}
-            </div>
+          <gl-button-group class="gl-ml-4 js-commit-sha-group">
+            <gl-button
+              label
+              class="gl-font-monospace"
+              data-testid="last-commit-id-label"
+              v-text="showCommitId"
+            />
             <clipboard-button
               :text="commit.sha"
               :title="__('Copy commit SHA')"
-              tooltip-placement="bottom"
+              class="input-group-text"
             />
-          </div>
+          </gl-button-group>
         </div>
       </div>
     </template>

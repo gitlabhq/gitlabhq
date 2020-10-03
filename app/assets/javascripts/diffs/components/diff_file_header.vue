@@ -211,7 +211,7 @@ export default {
     class="js-file-title file-title file-title-flex-parent"
     @click.self="handleToggleFile"
   >
-    <div class="file-header-content">
+    <div class="file-header-content gl-display-flex gl-align-items-center gl-pr-0!">
       <gl-icon
         v-if="collapsible"
         ref="collapseIcon"
@@ -261,7 +261,8 @@ export default {
         :title="__('Copy file path')"
         :text="diffFile.file_path"
         :gfm="gfmCopyText"
-        css-class="btn-default btn-transparent btn-clipboard"
+        data-testid="diff-file-copy-clipboard"
+        category="tertiary"
         data-track-event="click_copy_file_button"
         data-track-label="diff_copy_file_path_button"
         data-track-property="diff_copy_file"

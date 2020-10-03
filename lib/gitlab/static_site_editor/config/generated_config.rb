@@ -21,7 +21,7 @@ module Gitlab
             project: project.path,
             namespace: project.namespace.full_path,
             return_url: sanitize_url(return_url),
-            is_supported_content: supported_content?.to_s,
+            is_supported_content: supported_content?,
             base_url: Gitlab::Routing.url_helpers.project_show_sse_path(project, full_path),
             merge_requests_illustration_path: merge_requests_illustration_path
           }

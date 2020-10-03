@@ -117,6 +117,7 @@ RSpec.describe Project do
     it { is_expected.to have_many(:prometheus_alert_events) }
     it { is_expected.to have_many(:self_managed_prometheus_alert_events) }
     it { is_expected.to have_many(:alert_management_alerts) }
+    it { is_expected.to have_many(:alert_management_http_integrations) }
     it { is_expected.to have_many(:jira_imports) }
     it { is_expected.to have_many(:metrics_users_starred_dashboards).inverse_of(:project) }
     it { is_expected.to have_many(:repository_storage_moves) }

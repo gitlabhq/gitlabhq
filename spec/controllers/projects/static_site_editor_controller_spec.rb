@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Projects::StaticSiteEditorController do
   let_it_be(:project) { create(:project, :public, :repository) }
   let_it_be(:user) { create(:user) }
-  let(:data) { instance_double(Hash) }
+  let(:data) { { key: 'value' } }
 
   describe 'GET show' do
     render_views
@@ -52,42 +52,78 @@ RSpec.describe Projects::StaticSiteEditorController do
         end
       end
 
-      %w[developer maintainer].each do |role|
-        context "as #{role}" do
-          before_all do
-            project.add_role(user, role)
+      context "as developer" do
+        before do
+          project.add_role(user, 'developer')
+          sign_in(user)
+          get :show, params: default_params
+        end
+
+        it 'renders the edit page' do
+          expect(response).to render_template(:show)
+        end
+
+        it 'assigns ref and path variables' do
+          expect(assigns(:ref)).to eq('master')
+          expect(assigns(:path)).to eq('README.md')
+        end
+
+        context 'when combination of ref and path is incorrect' do
+          let(:default_params) { super().merge(id: 'unknown') }
+
+          it 'responds with 404 page' do
+            expect(response).to have_gitlab_http_status(:not_found)
+          end
+        end
+
+        context 'when invalid config file' do
+          let(:service_response) { ServiceResponse.error(message: 'invalid') }
+
+          it 'redirects to project page and flashes error message' do
+            expect(response).to redirect_to(project_path(project))
+            expect(response).to set_flash[:alert].to('invalid')
+          end
+        end
+
+        context 'with a service response payload containing multiple data types' do
+          let(:data) do
+            {
+              a_string: 'string',
+              an_array: [
+                {
+                  foo: 'bar'
+                }
+              ],
+              an_integer: 123,
+              a_hash: {
+                a_deeper_hash: {
+                  foo: 'bar'
+                }
+              },
+              a_boolean: true
+            }
           end
 
-          before do
-            sign_in(user)
-            get :show, params: default_params
+          let(:assigns_data) { assigns(:data) }
+
+          it 'leaves data values which are strings as strings' do
+            expect(assigns_data[:a_string]).to eq('string')
           end
 
-          it 'renders the edit page' do
-            expect(response).to render_template(:show)
+          it 'leaves data values which are integers as integers' do
+            expect(assigns_data[:an_integer]).to eq(123)
           end
 
-          it 'assigns a required variables' do
-            expect(assigns(:data)).to eq(data)
-            expect(assigns(:ref)).to eq('master')
-            expect(assigns(:path)).to eq('README.md')
+          it 'serializes data values which are booleans to JSON' do
+            expect(assigns_data[:a_boolean]).to eq('true')
           end
 
-          context 'when combination of ref and path is incorrect' do
-            let(:default_params) { super().merge(id: 'unknown') }
-
-            it 'responds with 404 page' do
-              expect(response).to have_gitlab_http_status(:not_found)
-            end
+          it 'serializes data values which are arrays to JSON' do
+            expect(assigns_data[:an_array]).to eq('[{"foo":"bar"}]')
           end
 
-          context 'when invalid config file' do
-            let(:service_response) { ServiceResponse.error(message: 'invalid') }
-
-            it 'redirects to project page and flashes error message' do
-              expect(response).to redirect_to(project_path(project))
-              expect(response).to set_flash[:alert].to('invalid')
-            end
+          it 'serializes data values which are hashes to JSON' do
+            expect(assigns_data[:a_hash]).to eq('{"a_deeper_hash":{"foo":"bar"}}')
           end
         end
       end

@@ -111,9 +111,10 @@ export default {
             v-html="mr.sourceBranchLink"
           /><clipboard-button
             ref="copyBranchNameButton"
+            data-testid="mr-widget-copy-clipboard"
             :text="branchNameClipboardData"
             :title="__('Copy branch name')"
-            css-class="btn-default btn-transparent btn-clipboard"
+            category="tertiary"
           />
           {{ s__('mrWidget|into') }}
           <tooltip-on-truncate

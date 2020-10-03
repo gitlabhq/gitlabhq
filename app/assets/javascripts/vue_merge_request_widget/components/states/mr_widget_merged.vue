@@ -177,7 +177,9 @@ export default {
             <clipboard-button
               :title="__('Copy commit SHA')"
               :text="mr.mergeCommitSha"
-              css-class="btn-default btn-transparent btn-clipboard js-mr-merged-copy-sha"
+              css-class="js-mr-merged-copy-sha"
+              category="tertiary"
+              size="small"
             />
           </template>
         </p>

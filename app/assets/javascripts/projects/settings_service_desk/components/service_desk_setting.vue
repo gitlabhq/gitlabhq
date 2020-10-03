@@ -110,7 +110,7 @@ export default {
             <input
               ref="service-desk-incoming-email"
               type="text"
-              class="form-control incoming-email h-auto"
+              class="form-control incoming-email"
               :placeholder="__('Incoming email')"
               :aria-label="__('Incoming email')"
               aria-describedby="incoming-email-describer"
@@ -121,7 +121,7 @@ export default {
               <clipboard-button
                 :title="__('Copy')"
                 :text="incomingEmail"
-                css-class="btn qa-clipboard-button"
+                css-class="input-group-text qa-clipboard-button"
               />
             </div>
           </div>

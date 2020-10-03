@@ -3,10 +3,11 @@
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/37115) in GitLab 10.0.
 > - Generally available on GitLab 11.0.
 
-Auto DevOps provides pre-defined CI/CD configuration allowing you to automatically
-detect, build, test, deploy, and monitor your applications. Leveraging CI/CD
-best practices and tools, Auto DevOps aims to simplify the setup and execution
-of a mature and modern software development lifecycle.
+Auto DevOps are default CI/CD templates that auto-discover the source code you have. They
+enable GitLab to automatically detect, build, test, deploy, and monitor your applications.
+Leveraging [CI/CD best practices](../../ci/pipelines/pipeline_efficiency.md) and tools,
+Auto DevOps aims to simplify the setup and execution of a mature and modern software
+development lifecycle.
 
 ## Overview
 

@@ -4,8 +4,18 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::StaticSiteEditor::Config::FileConfig::Entry::Global do
   let(:global) { described_class.new(hash) }
-  let(:default_static_site_generator_value) { 'middleman' }
   let(:default_image_upload_path_value) { 'source/images' }
+
+  let(:default_mounts_value) do
+    [
+      {
+        source: 'source',
+        target: ''
+      }
+    ]
+  end
+
+  let(:default_static_site_generator_value) { 'middleman' }
 
   shared_examples_for 'valid default configuration' do
     describe '#compose!' do
@@ -18,7 +28,7 @@ RSpec.describe Gitlab::StaticSiteEditor::Config::FileConfig::Entry::Global do
       end
 
       it 'creates node object for each entry' do
-        expect(global.descendants.count).to eq 2
+        expect(global.descendants.count).to eq 3
       end
 
       it 'creates node object using valid class' do
@@ -67,6 +77,12 @@ RSpec.describe Gitlab::StaticSiteEditor::Config::FileConfig::Entry::Global do
         end
       end
 
+      describe '#mounts_value' do
+        it 'returns correct values' do
+          expect(global.mounts_value).to eq(default_mounts_value)
+        end
+      end
+
       describe '#static_site_generator_value' do
         it 'returns correct values' do
           expect(global.static_site_generator_value).to eq(default_static_site_generator_value)
@@ -84,6 +100,7 @@ RSpec.describe Gitlab::StaticSiteEditor::Config::FileConfig::Entry::Global do
       it 'contains the expected node names' do
         expected_node_names = %i[
           image_upload_path
+          mounts
           static_site_generator
         ]
         expect(described_class.nodes.keys).to match_array(expected_node_names)
@@ -96,6 +113,7 @@ RSpec.describe Gitlab::StaticSiteEditor::Config::FileConfig::Entry::Global do
       let(:expected_node_object_classes) do
         [
           Gitlab::StaticSiteEditor::Config::FileConfig::Entry::ImageUploadPath,
+          Gitlab::StaticSiteEditor::Config::FileConfig::Entry::Mounts,
           Gitlab::StaticSiteEditor::Config::FileConfig::Entry::StaticSiteGenerator
         ]
       end
@@ -103,6 +121,7 @@ RSpec.describe Gitlab::StaticSiteEditor::Config::FileConfig::Entry::Global do
       let(:hash) do
         {
           image_upload_path: default_image_upload_path_value,
+          mounts: default_mounts_value,
           static_site_generator: default_static_site_generator_value
         }
       end
@@ -114,6 +133,7 @@ RSpec.describe Gitlab::StaticSiteEditor::Config::FileConfig::Entry::Global do
   context 'when value is an empty hash' do
     let(:expected_node_object_classes) do
       [
+        Gitlab::Config::Entry::Unspecified,
         Gitlab::Config::Entry::Unspecified,
         Gitlab::Config::Entry::Unspecified
       ]

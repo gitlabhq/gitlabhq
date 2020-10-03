@@ -8,3 +8,5 @@ module API
     end
   end
 end
+
+API::Entities::UserWithAdmin.prepend_if_ee('EE::API::Entities::UserWithAdmin')

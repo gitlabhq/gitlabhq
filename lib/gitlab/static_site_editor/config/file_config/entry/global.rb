@@ -15,6 +15,7 @@ module Gitlab
 
             ALLOWED_KEYS = %i[
               image_upload_path
+              mounts
               static_site_generator
             ].freeze
 
@@ -26,6 +27,8 @@ module Gitlab
 
             entry :image_upload_path, Entry::ImageUploadPath,
                   description: 'Configuration of the Static Site Editor image upload path.'
+            entry :mounts, Entry::Mounts,
+                  description: 'Configuration of the Static Site Editor mounts.'
             entry :static_site_generator, Entry::StaticSiteGenerator,
                   description: 'Configuration of the Static Site Editor static site generator.'
           end
