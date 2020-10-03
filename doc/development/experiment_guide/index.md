@@ -67,25 +67,44 @@ addressed.
       ```
 
    - Make the experiment available to the frontend in a controller:
-    
+
       ```ruby
       before_action do
         push_frontend_experiment(:signup_flow)
-      end 
+      end
       ```
-      
+
       The above will check whether the experiment is enabled and push the result to the frontend.
-      
+
       You can check the state of the feature flag in JavaScript:
-      
+
       ```javascript
       import { isExperimentEnabled } from '~/experimentation';
-      
+
       if ( isExperimentEnabled('signupFlow') ) {
         // ...
       }
       ```
-  
+
+   - It is also possible to run an experiment outside of the controller scope, for example in a worker:
+
+      ```ruby
+      class SomeWorker
+        def perform
+          # Check if the experiment is enabled at all (the percentage_of_time_value > 0)
+          return unless Gitlab::Experimentation.enabled?(:experiment_key)
+
+          # Since we cannot access cookies in a worker, we need to bucket models based on a unique, unchanging attribute instead.
+          # Use the following method to check if the experiment is enabled for a certain attribute, for example a username or email address:
+          if Gitlab::Experimentation.enabled_for_attribute?(:experiment_key, some_attribute)
+            # execute experimental code
+          else
+            # execute control code
+          end
+        end
+      end
+      ```
+
 1. Track necessary events. See the [telemetry guide](../telemetry/index.md) for details.
 1. After the merge request is merged, use [`chatops`](../../ci/chatops/README.md) in the
 [appropriate channel](../feature_flags/controls.md#communicate-the-change) to start the experiment for 10% of the users.
