@@ -8,6 +8,8 @@ class Oauth::Jira::AuthorizationsController < ApplicationController
   skip_before_action :authenticate_user!
   skip_before_action :verify_authenticity_token
 
+  feature_category :integrations
+
   # 1. Rewire Jira OAuth initial request to our stablished OAuth authorization URL.
   def new
     session[:redirect_uri] = params['redirect_uri']

@@ -23,7 +23,7 @@ module Gitlab
           @attachment = params.fetch(:attachment, nil)
           @job = params.fetch(:job, nil)
 
-          @key = sanitize_key_name("#{classname}_#{name}")
+          @key = hash_key("#{classname}_#{name}")
         end
 
         def has_attachment?
@@ -42,8 +42,8 @@ module Gitlab
 
         private
 
-        def sanitize_key_name(key)
-          key.gsub(/[^0-9A-Za-z]/, '-')
+        def hash_key(key)
+          Digest::SHA256.hexdigest(key)
         end
       end
     end

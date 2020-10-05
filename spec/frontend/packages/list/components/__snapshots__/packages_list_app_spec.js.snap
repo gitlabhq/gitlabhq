@@ -385,7 +385,7 @@ exports[`packages_list_app renders 1`] = `
       </b-tab-stub>
       <b-tab-stub
         tag="div"
-        title="PyPi"
+        title="PyPI"
         titlelinkclass="gl-tab-nav-item"
       >
         <template>
@@ -400,7 +400,7 @@ exports[`packages_list_app renders 1`] = `
                   class="svg-250 svg-content"
                 >
                   <img
-                    alt="There are no PyPi packages yet"
+                    alt="There are no PyPI packages yet"
                     class="gl-max-w-full"
                     src="helpSvg"
                   />
@@ -416,7 +416,7 @@ exports[`packages_list_app renders 1`] = `
                   <h1
                     class="h4"
                   >
-                    There are no PyPi packages yet
+                    There are no PyPI packages yet
                   </h1>
                    
                   <p>

@@ -3,6 +3,7 @@
 import $ from 'jquery';
 import 'cropper';
 import { isString } from 'lodash';
+import { loadCSSFile } from '../lib/utils/css_utils';
 
 (() => {
   // Matches everything but the file name
@@ -179,6 +180,9 @@ import { isString } from 'lodash';
       return this.croppedImageBlob;
     }
   }
+
+  const cropModal = document.querySelector('.modal-profile-crop');
+  if (cropModal) loadCSSFile(cropModal.dataset.cropperCssPath);
 
   $.fn.glCrop = function(opts) {
     return this.each(function() {

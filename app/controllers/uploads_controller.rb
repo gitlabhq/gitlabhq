@@ -25,6 +25,8 @@ class UploadsController < ApplicationController
   before_action :authorize_create_access!, only: [:create, :authorize]
   before_action :verify_workhorse_api!, only: [:authorize]
 
+  feature_category :not_owned
+
   def uploader_class
     PersonalFileUploader
   end

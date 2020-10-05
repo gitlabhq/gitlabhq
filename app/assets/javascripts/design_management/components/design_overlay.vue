@@ -266,7 +266,7 @@ export default {
       type="button"
       role="button"
       :aria-label="$options.i18n.newCommentButtonLabel"
-      class="gl-absolute gl-w-full gl-h-full gl-p-0 gl-top-0 gl-left-0 gl-outline-0! btn-transparent design-detail-overlay-add-comment"
+      class="gl-absolute gl-w-full gl-h-full gl-p-0 gl-top-0 gl-left-0 gl-outline-0! btn-transparent gl-hover-cursor-crosshair"
       data-qa-selector="design_image_button"
       @mouseup="onAddCommentMouseup"
     ></button>
@@ -276,7 +276,6 @@ export default {
       v-if="resolvedDiscussionsExpanded || !note.resolved"
       :key="note.id"
       :label="note.index"
-      :repositioning="isMovingNote(note.id)"
       :position="
         isMovingNote(note.id) && movingNoteNewPosition
           ? getNotePositionStyle(movingNoteNewPosition)
@@ -290,7 +289,6 @@ export default {
     <design-note-pin
       v-if="currentCommentForm"
       :position="currentCommentPositionStyle"
-      :repositioning="isMovingCurrentComment"
       @mousedown.stop="onNoteMousedown"
       @mouseup.stop="onNoteMouseup"
     />

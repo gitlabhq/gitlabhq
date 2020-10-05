@@ -12,16 +12,22 @@ module Gitlab
         def initialize(name = nil)
           @name = name
           @test_cases = {}
+          @all_test_cases = []
           @total_time = 0.0
-          @duplicate_cases = []
         end
 
         def add_test_case(test_case)
-          @duplicate_cases << test_case if existing_key?(test_case)
-
           @test_cases[test_case.status] ||= {}
           @test_cases[test_case.status][test_case.key] = test_case
           @total_time += test_case.execution_time
+        end
+
+        def each_test_case
+          @test_cases.each do |status, test_cases|
+            test_cases.values.each do |test_case|
+              yield test_case
+            end
+          end
         end
 
         # rubocop: disable CodeReuse/ActiveRecord
@@ -85,10 +91,6 @@ module Gitlab
         end
 
         private
-
-        def existing_key?(test_case)
-          @test_cases[test_case.status]&.key?(test_case.key)
-        end
 
         def sort_by_status
           @test_cases = @test_cases.sort_by { |status, _| Gitlab::Ci::Reports::TestCase::STATUS_TYPES.index(status) }.to_h

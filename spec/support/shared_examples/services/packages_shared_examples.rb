@@ -171,6 +171,7 @@ RSpec.shared_examples 'filters on each package_type' do |is_project: false|
   let_it_be(:package6) { create(:composer_package, project: project) }
   let_it_be(:package7) { create(:generic_package, project: project) }
   let_it_be(:package8) { create(:golang_package, project: project) }
+  let_it_be(:package9) { create(:debian_package, project: project) }
 
   Packages::Package.package_types.keys.each do |package_type|
     context "for package type #{package_type}" do

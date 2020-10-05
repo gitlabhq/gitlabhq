@@ -4,6 +4,8 @@ class Snippets::ApplicationController < ApplicationController
   include FindSnippet
   include SnippetAuthorizations
 
+  feature_category :snippets
+
   private
 
   def authorize_read_snippet!

@@ -4,6 +4,8 @@ class Import::BulkImportsController < ApplicationController
   before_action :ensure_group_import_enabled
   before_action :verify_blocked_uri, only: :status
 
+  feature_category :importers
+
   def configure
     session[access_token_key] = params[access_token_key]&.strip
     session[url_key] = params[url_key]

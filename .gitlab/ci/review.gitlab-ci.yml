@@ -72,7 +72,7 @@ review-deploy:
     - download_chart
     - date
     - deploy || (display_deployment_debug && exit 1)
-    - disable_sign_ups
+    - disable_sign_ups || (delete_release && exit 1)
     # When the job is manual, review-qa-smoke is also manual and we don't want people
     # to have to manually start the jobs in sequence, so we do it for them.
     - '[ -z $CI_JOB_MANUAL ] || play_job "review-qa-smoke"'

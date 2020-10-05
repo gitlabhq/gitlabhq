@@ -39,6 +39,24 @@ RSpec.describe Gitlab::Redis::HLL, :clean_gitlab_redis_shared_state do
         end
       end
     end
+
+    context 'when adding entries' do
+      let(:metric) { 'test-{metric}' }
+
+      it 'supports single value' do
+        track_event(metric, 1)
+
+        expect(count_unique_events([metric])).to eq(1)
+      end
+
+      it 'supports multiple values' do
+        stub_const("#{described_class.name}::HLL_BATCH_SIZE", 2)
+
+        track_event(metric, [1, 2, 3, 4, 5])
+
+        expect(count_unique_events([metric])).to eq(5)
+      end
+    end
   end
 
   describe '.count' do
@@ -94,13 +112,13 @@ RSpec.describe Gitlab::Redis::HLL, :clean_gitlab_redis_shared_state do
 
       expect(unique_counts).to eq(4)
     end
+  end
 
-    def track_event(key, value, expiry = 1.day)
-      described_class.add(key: key, value: value, expiry: expiry)
-    end
+  def track_event(key, value, expiry = 1.day)
+    described_class.add(key: key, value: value, expiry: expiry)
+  end
 
-    def count_unique_events(keys)
-      described_class.count(keys: keys)
-    end
+  def count_unique_events(keys)
+    described_class.count(keys: keys)
   end
 end

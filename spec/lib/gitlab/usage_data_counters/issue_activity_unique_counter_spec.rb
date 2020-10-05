@@ -132,6 +132,76 @@ RSpec.describe Gitlab::UsageDataCounters::IssueActivityUniqueCounter, :clean_git
     end
   end
 
+  context 'for Issue cross-referenced actions' do
+    it_behaves_like 'tracks and counts action' do
+      let(:action) { described_class::ISSUE_CROSS_REFERENCED }
+
+      def track_action(params)
+        described_class.track_issue_cross_referenced_action(**params)
+      end
+    end
+  end
+
+  context 'for Issue moved actions' do
+    it_behaves_like 'tracks and counts action' do
+      let(:action) { described_class::ISSUE_MOVED }
+
+      def track_action(params)
+        described_class.track_issue_moved_action(**params)
+      end
+    end
+  end
+
+  context 'for Issue relate actions' do
+    it_behaves_like 'tracks and counts action' do
+      let(:action) { described_class::ISSUE_RELATED }
+
+      def track_action(params)
+        described_class.track_issue_related_action(**params)
+      end
+    end
+  end
+
+  context 'for Issue unrelate actions' do
+    it_behaves_like 'tracks and counts action' do
+      let(:action) { described_class::ISSUE_UNRELATED }
+
+      def track_action(params)
+        described_class.track_issue_unrelated_action(**params)
+      end
+    end
+  end
+
+  context 'for Issue marked as duplicate actions' do
+    it_behaves_like 'tracks and counts action' do
+      let(:action) { described_class::ISSUE_MARKED_AS_DUPLICATE }
+
+      def track_action(params)
+        described_class.track_issue_marked_as_duplicate_action(**params)
+      end
+    end
+  end
+
+  context 'for Issue locked actions' do
+    it_behaves_like 'tracks and counts action' do
+      let(:action) { described_class::ISSUE_LOCKED }
+
+      def track_action(params)
+        described_class.track_issue_locked_action(**params)
+      end
+    end
+  end
+
+  context 'for Issue unlocked actions' do
+    it_behaves_like 'tracks and counts action' do
+      let(:action) { described_class::ISSUE_UNLOCKED }
+
+      def track_action(params)
+        described_class.track_issue_unlocked_action(**params)
+      end
+    end
+  end
+
   it 'can return the count of actions per user deduplicated', :aggregate_failures do
     described_class.track_issue_title_changed_action(author: user1)
     described_class.track_issue_description_changed_action(author: user1)

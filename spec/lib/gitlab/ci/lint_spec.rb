@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Lint do
-  let_it_be(:project) { create(:project, :repository) }
+  let(:project) { create(:project, :repository) }
   let_it_be(:user) { create(:user) }
 
   let(:lint) { described_class.new(project: project, current_user: user) }
@@ -58,6 +58,43 @@ RSpec.describe Gitlab::Ci::Lint do
         expect(rspec_job.fetch(:environment)).to be_nil
         expect(rspec_job[:when]).to eq('on_success')
         expect(rspec_job[:allow_failure]).to eq(false)
+      end
+    end
+
+    shared_examples 'sets merged yaml' do
+      let(:content) do
+        <<~YAML
+        :include:
+          :local: another-gitlab-ci.yml
+        :test_job:
+          :stage: test
+          :script: echo
+        YAML
+      end
+
+      let(:included_content) do
+        <<~YAML
+        :another_job:
+          :script: echo
+        YAML
+      end
+
+      before do
+        project.repository.create_file(
+          project.creator,
+          'another-gitlab-ci.yml',
+          included_content,
+          message: 'Automatically created another-gitlab-ci.yml',
+          branch_name: 'master'
+        )
+      end
+
+      it 'sets merged_config' do
+        root_config = YAML.safe_load(content, [Symbol])
+        included_config = YAML.safe_load(included_content, [Symbol])
+        expected_config = included_config.merge(root_config).except(:include)
+
+        expect(subject.merged_yaml).to eq(expected_config.to_yaml)
       end
     end
 
@@ -173,6 +210,8 @@ RSpec.describe Gitlab::Ci::Lint do
           end
         end
 
+        it_behaves_like 'sets merged yaml'
+
         include_context 'advanced validations' do
           it 'does not catch advanced logical errors' do
             expect(subject).to be_valid
@@ -202,6 +241,8 @@ RSpec.describe Gitlab::Ci::Lint do
             end
           end
         end
+
+        it_behaves_like 'sets merged yaml'
 
         include_context 'advanced validations' do
           it 'runs advanced logical validations' do

@@ -185,6 +185,11 @@
   redis_slot: incident_management
   category: incident_management
   aggregation: weekly
+# Testing category
+- name: i_testing_test_case_parsed
+  category: testing
+  redis_slot: testing
+  aggregation: weekly
 # Project Management group
 - name: g_project_management_issue_title_changed
   category: issues_edit
@@ -231,6 +236,34 @@
   redis_slot: project_management
   aggregation: daily
 - name: g_project_management_issue_weight_changed
+  category: issues_edit
+  redis_slot: project_management
+  aggregation: daily
+- name: g_project_management_issue_cross_referenced
+  category: issues_edit
+  redis_slot: project_management
+  aggregation: daily
+- name: g_project_management_issue_moved
+  category: issues_edit
+  redis_slot: project_management
+  aggregation: daily
+- name: g_project_management_issue_related
+  category: issues_edit
+  redis_slot: project_management
+  aggregation: daily
+- name: g_project_management_issue_unrelated
+  category: issues_edit
+  redis_slot: project_management
+  aggregation: daily
+- name: g_project_management_issue_marked_as_duplicate
+  category: issues_edit
+  redis_slot: project_management
+  aggregation: daily
+- name: g_project_management_issue_locked
+  category: issues_edit
+  redis_slot: project_management
+  aggregation: daily
+- name: g_project_management_issue_unlocked
   category: issues_edit
   redis_slot: project_management
   aggregation: daily

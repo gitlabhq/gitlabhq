@@ -223,6 +223,7 @@ Example response:
 
 - GitLab Geo
 - GitLab Shell's `bin/check`
+- Gitaly
 
 ## Get new 2FA recovery codes using an SSH key
 

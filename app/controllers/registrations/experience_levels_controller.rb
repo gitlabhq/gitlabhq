@@ -7,6 +7,8 @@ module Registrations
     before_action :check_experiment_enabled
     before_action :ensure_namespace_path_param
 
+    feature_category :navigation
+
     def update
       current_user.experience_level = params[:experience_level]
 

@@ -18305,7 +18305,7 @@ msgstr ""
 msgid "PackageRegistry|Published to the %{project} Package Registry %{datetime}"
 msgstr ""
 
-msgid "PackageRegistry|PyPi"
+msgid "PackageRegistry|PyPI"
 msgstr ""
 
 msgid "PackageRegistry|Recipe: %{recipe}"
@@ -18389,7 +18389,7 @@ msgstr ""
 msgid "PackageType|NuGet"
 msgstr ""
 
-msgid "PackageType|PyPi"
+msgid "PackageType|PyPI"
 msgstr ""
 
 msgid "Packages"

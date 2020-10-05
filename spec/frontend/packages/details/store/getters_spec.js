@@ -101,7 +101,7 @@ describe('Getters PackageDetails Store', () => {
       ${packageWithoutBuildInfo} | ${'Maven'}
       ${npmPackage}              | ${'NPM'}
       ${nugetPackage}            | ${'NuGet'}
-      ${pypiPackage}             | ${'PyPi'}
+      ${pypiPackage}             | ${'PyPI'}
     `(`package type`, ({ packageEntity, expectedResult }) => {
       beforeEach(() => setupState({ packageEntity }));
 

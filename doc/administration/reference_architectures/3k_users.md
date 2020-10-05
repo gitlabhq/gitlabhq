@@ -1223,7 +1223,7 @@ On each node:
 1. Confirm that Gitaly can perform callbacks to the internal API:
 
    ```shell
-   sudo /opt/gitlab/embedded/service/gitlab-shell/bin/check -config /opt/gitlab/embedded/service/gitlab-shell/config.yml
+   sudo /opt/gitlab/embedded/bin/gitaly-hooks check /var/opt/gitlab/gitaly/config.toml
    ```
 
 1. Verify the GitLab services are running:

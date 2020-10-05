@@ -82,7 +82,7 @@ export const PACKAGE_REGISTRY_TABS = [
     type: PackageType.NUGET,
   },
   {
-    title: s__('PackageRegistry|PyPi'),
+    title: s__('PackageRegistry|PyPI'),
     type: PackageType.PYPI,
   },
 ];

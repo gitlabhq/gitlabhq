@@ -4,7 +4,7 @@ class Packages::Event < ApplicationRecord
   belongs_to :package, optional: true
 
   # FIXME: Remove debian: 9 from here when it's added to the types in package.rb model
-  EVENT_SCOPES = ::Packages::Package.package_types.merge(debian: 9, container: 1000, tag: 1001).freeze
+  EVENT_SCOPES = ::Packages::Package.package_types.merge(container: 1000, tag: 1001).freeze
 
   enum event_scope: EVENT_SCOPES
 

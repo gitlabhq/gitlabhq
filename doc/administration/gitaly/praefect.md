@@ -873,10 +873,10 @@ Particular attention should be shown to:
    gitlab-ctl reconfigure
    ```
 
-1. Verify each `gitlab-shell` on each Gitaly node can reach GitLab. On each Gitaly node run:
+1. Verify on each Gitaly node the Git Hooks can reach GitLab. On each Gitaly node run:
 
    ```shell
-   /opt/gitlab/embedded/service/gitlab-shell/bin/check -config /opt/gitlab/embedded/service/gitlab-shell/config.yml
+   /opt/gitlab/embedded/bin/gitaly-hooks check /var/opt/gitlab/gitaly/config.toml
    ```
 
 1. Verify that GitLab can reach Praefect:

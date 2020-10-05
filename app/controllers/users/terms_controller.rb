@@ -14,6 +14,8 @@ module Users
 
     layout 'terms'
 
+    feature_category :users
+
     def index
       @redirect = redirect_path
 

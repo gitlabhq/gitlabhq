@@ -2307,6 +2307,54 @@ RSpec.describe Ci::Build do
     end
   end
 
+  describe '#has_expired_locked_archive_artifacts?' do
+    subject { build.has_expired_locked_archive_artifacts? }
+
+    context 'when build does not have artifacts' do
+      it { is_expected.to eq(nil) }
+    end
+
+    context 'when build has artifacts' do
+      before do
+        create(:ci_job_artifact, :archive, job: build)
+      end
+
+      context 'when artifacts are unlocked' do
+        before do
+          build.pipeline.unlocked!
+        end
+
+        it { is_expected.to eq(false) }
+      end
+
+      context 'when artifacts are locked' do
+        before do
+          build.pipeline.artifacts_locked!
+        end
+
+        context 'when artifacts do not expire' do
+          it { is_expected.to eq(false) }
+        end
+
+        context 'when artifacts expire in the future' do
+          before do
+            build.update!(artifacts_expire_at: 1.day.from_now)
+          end
+
+          it { is_expected.to eq(false) }
+        end
+
+        context 'when artifacts expired in the past' do
+          before do
+            build.update!(artifacts_expire_at: 1.day.ago)
+          end
+
+          it { is_expected.to eq(true) }
+        end
+      end
+    end
+  end
+
   describe '#has_expiring_archive_artifacts?' do
     context 'when artifacts have expiration date set' do
       before do

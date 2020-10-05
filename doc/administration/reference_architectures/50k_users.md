@@ -1879,7 +1879,7 @@ On each node perform the following:
 1. Optionally, from the Gitaly servers, confirm that Gitaly can perform callbacks to the internal API:
 
    ```shell
-   sudo /opt/gitlab/embedded/service/gitlab-shell/bin/check -config /opt/gitlab/embedded/service/gitlab-shell/config.yml
+   sudo /opt/gitlab/embedded/bin/gitaly-hooks check /var/opt/gitlab/gitaly/config.toml
    ```
 
 NOTE: **Note:**

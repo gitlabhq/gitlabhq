@@ -11,6 +11,8 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
   protect_from_forgery except: [:kerberos, :saml, :cas3, :failure], with: :exception, prepend: true
 
+  feature_category :authentication_and_authorization
+
   def handle_omniauth
     omniauth_flow(Gitlab::Auth::OAuth)
   end

@@ -25,6 +25,8 @@ class SearchController < ApplicationController
 
   layout 'search'
 
+  feature_category :global_search
+
   def show
     @project = search_service.project
     @group = search_service.group

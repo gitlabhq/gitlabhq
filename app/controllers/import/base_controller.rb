@@ -4,6 +4,7 @@ class Import::BaseController < ApplicationController
   include ActionView::Helpers::SanitizeHelper
 
   before_action :import_rate_limit, only: [:create]
+  feature_category :importers
 
   def status
     respond_to do |format|

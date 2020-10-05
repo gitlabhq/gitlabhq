@@ -21,6 +21,8 @@ class UsersController < ApplicationController
   before_action :authorize_read_user_profile!,
                 only: [:calendar, :calendar_activities, :groups, :projects, :contributed_projects, :starred_projects, :snippets]
 
+  feature_category :users
+
   def show
     respond_to do |format|
       format.html

@@ -94,3 +94,51 @@ Example response:
   "merged_config": "---\n:another_test:\n  :stage: test\n  :script: echo 2\n:test:\n  :stage: test\n  :script: echo 1\n"
 }
 ```
+
+## Validate a project's CI configuration
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/231352) in GitLab 13.5.
+
+Checks if a project's latest (`HEAD` of the project's default branch)
+`.gitlab-ci.yml` configuration is valid. This endpoint uses all namespace
+specific data available, including variables, local includes, and so on.
+
+```plaintext
+GET /projects/:id/ci/lint
+```
+
+| Attribute  | Type    | Required | Description |
+| ---------- | ------- | -------- | -------- |
+| `dry_run`  | boolean | no       | Run pipeline creation simulation, or only do static check. |
+
+Example request:
+
+```shell
+curl "https://gitlab.example.com/api/v4/projects/:id/ci/lint"
+```
+
+Example responses:
+
+- Valid config:
+
+```json
+{
+  "valid": true,
+  "merged_yaml": "---\n:test_job:\n  :script: echo 1\n",
+  "errors": [],
+  "warnings": []
+}
+```
+
+- Invalid config:
+
+```json
+{
+  "valid": false,
+  "merged_yaml": "---\n:test_job:\n  :script: echo 1\n",
+  "errors": [
+    "jobs config should contain at least one visible job"
+  ],
+  "warnings": []
+}
+```

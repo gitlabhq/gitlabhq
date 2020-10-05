@@ -21,6 +21,10 @@ FactoryBot.define do
       end
     end
 
+    factory :debian_package do
+      package_type { :debian }
+    end
+
     factory :npm_package do
       sequence(:name) { |n| "@#{project.root_namespace.path}/package-#{n}"}
       version { '1.0.0' }

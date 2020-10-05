@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class UserCalloutsController < ApplicationController
+  feature_category :navigation
+
   def create
     callout = ensure_callout
 

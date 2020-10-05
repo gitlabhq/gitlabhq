@@ -25,5 +25,24 @@ module API
         end
       end
     end
+
+    resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+      desc 'Validation of .gitlab-ci.yml content' do
+        detail 'This feature was introduced in GitLab 13.5.'
+      end
+      params do
+        optional :dry_run, type: Boolean, default: false, desc: 'Run pipeline creation simulation, or only do static check.'
+      end
+      get ':id/ci/lint' do
+        authorize! :download_code, user_project
+
+        content = user_project.repository.gitlab_ci_yml_for(user_project.commit.id, user_project.ci_config_path_or_default)
+        result = Gitlab::Ci::Lint
+          .new(project: user_project, current_user: current_user)
+          .validate(content, dry_run: params[:dry_run])
+
+        present result, with: Entities::Ci::Lint::Result, current_user: current_user
+      end
+    end
   end
 end

@@ -27,6 +27,13 @@ module Ci
     sha_attribute :source_sha
     sha_attribute :target_sha
 
+    # Ci::CreatePipelineService returns Ci::Pipeline so this is the only place
+    # where we can pass additional information from the service. This accessor
+    # is used for storing the processed CI YAML contents for linting purposes.
+    # There is an open issue to address this:
+    # https://gitlab.com/gitlab-org/gitlab/-/issues/259010
+    attr_accessor :merged_yaml
+
     belongs_to :project, inverse_of: :all_pipelines
     belongs_to :user
     belongs_to :auto_canceled_by, class_name: 'Ci::Pipeline'

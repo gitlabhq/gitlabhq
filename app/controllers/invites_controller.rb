@@ -12,6 +12,8 @@ class InvitesController < ApplicationController
 
   respond_to :html
 
+  feature_category :authentication_and_authorization
+
   def show
     track_new_user_invite_experiment('opened')
     accept if skip_invitation_prompt?

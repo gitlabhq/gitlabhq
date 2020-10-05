@@ -35,7 +35,7 @@ class BuildDetailsEntity < JobEntity
       browse_project_job_artifacts_path(project, build)
     end
 
-    expose :keep_path, if: -> (*) { (build.locked_artifacts? || build.has_expiring_archive_artifacts?) && can?(current_user, :update_build, build) } do |build|
+    expose :keep_path, if: -> (*) { (build.has_expired_locked_archive_artifacts? || build.has_expiring_archive_artifacts?) && can?(current_user, :update_build, build) } do |build|
       keep_project_job_artifacts_path(project, build)
     end
 

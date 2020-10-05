@@ -24,19 +24,19 @@ RSpec.describe "Every controller" do
     let_it_be(:routes_without_category) do
       controller_actions.map do |controller, action|
         next if controller.feature_category_for_action(action)
-        next unless controller.to_s.start_with?('B', 'C', 'D', 'E', 'F', 'Projects::MergeRequestsController')
+
+        next unless controller.to_s.start_with?('B', 'C', 'D', 'E', 'F',
+                                                'H', 'I', 'J', 'K', 'L',
+                                                'M', 'N', 'O', 'Q', 'R',
+                                                'S', 'T', 'U', 'V', 'W',
+                                                'X', 'Y', 'Z',
+                                                'Projects::MergeRequestsController')
 
         "#{controller}##{action}"
       end.compact
     end
 
     it "has feature categories" do
-      routes_without_category.map { |x| x.split('#') }.group_by(&:first).each do |controller, actions|
-        puts controller
-        puts actions.map { |x| ":#{x.last}" }.sort.join(', ')
-        puts ''
-      end
-
       expect(routes_without_category).to be_empty, "#{routes_without_category} did not have a category"
     end
 

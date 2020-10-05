@@ -20,6 +20,8 @@ module Repositories
 
     prepend_before_action :authenticate_user, :parse_repo_path
 
+    feature_category :source_code_management
+
     private
 
     def download_request?

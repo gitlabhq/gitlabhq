@@ -1182,9 +1182,9 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
     subject { described_class.redis_hll_counters }
 
     let(:categories) { ::Gitlab::UsageDataCounters::HLLRedisCounter.categories }
-    let(:ineligible_total_categories) { ['source_code'] }
+    let(:ineligible_total_categories) { %w[source_code testing] }
 
-    it 'has all know_events' do
+    it 'has all known_events' do
       expect(subject).to have_key(:redis_hll_counters)
 
       expect(subject[:redis_hll_counters].keys).to match_array(categories)

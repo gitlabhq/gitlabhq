@@ -1,3 +1,6 @@
+$design-pin-diameter: 28px;
+$t-gray-a-16-design-pin: rgba($black, 0.16);
+
 .layout-page.design-detail-layout {
   max-height: 100vh;
 }
@@ -9,8 +12,53 @@
     top: 35px;
   }
 
-  .design-pin {
-    transition: opacity $gl-transition-duration-medium $general-hover-transition-curve;
+  .badge.badge-pill {
+    display: flex;
+    height: $design-pin-diameter;
+    width: $design-pin-diameter;
+    box-sizing: content-box;
+    background-color: $purple-500;
+    color: $white;
+    font-weight: $gl-font-weight-bold;
+    border-radius: 50%;
+    z-index: 1;
+    padding: 0;
+
+    &.resolved {
+      background-color: $gray-500;
+    }
+  }
+
+  .comment-indicator {
+    border-radius: 50%;
+  }
+
+  .comment-indicator,
+  .frame .badge.badge-pill {
+    &:active {
+      cursor: grabbing;
+    }
+  }
+
+  /**
+   * Design pin that overlays the design
+   */
+  .frame .badge.badge-pill {
+    box-shadow: 0 2px 4px $t-gray-a-08, 0 0 1px $t-gray-a-24;
+    border: $white 2px solid;
+    will-change: transform, box-shadow, opacity;
+    // NOTE: verbose transition property required for Safari
+    transition: transform $general-hover-transition-duration linear, box-shadow $general-hover-transition-duration linear, opacity $general-hover-transition-duration linear;
+    transform-origin: 0 0;
+    transform: translate(-50%, -50%);
+
+    &:hover {
+      transform: scale(1.2) translate(-50%, -50%);
+    }
+
+    &:active {
+      box-shadow: 0 0 4px $t-gray-a-16-design-pin, 0 4px 12px $t-gray-a-16-design-pin;
+    }
 
     &.inactive {
       @include gl-opacity-5;
@@ -19,24 +67,6 @@
         @include gl-opacity-10;
       }
     }
-  }
-
-  .badge.badge-pill {
-    display: flex;
-    height: 28px;
-    width: 28px;
-    background-color: $blue-400;
-    color: $white;
-    border: $white 1px solid;
-    border-radius: 50%;
-
-    &.resolved {
-      background-color: $gray-500;
-    }
-  }
-
-  .design-detail-overlay-add-comment {
-    cursor: crosshair;
   }
 }
 
@@ -105,8 +135,8 @@
       border-left: 1px solid $gray-100;
       position: absolute;
       left: 28px;
-      top: -18px;
-      height: 18px;
+      top: -17px;
+      height: 17px;
     }
 
     .design-note {

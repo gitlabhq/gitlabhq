@@ -122,7 +122,7 @@
         = f.submit s_("Profiles|Update profile settings"), class: 'btn btn-success'
         = link_to _("Cancel"), user_path(current_user), class: 'btn btn-cancel'
 
-.modal.modal-profile-crop
+.modal.modal-profile-crop{ data: { cropper_css_path: ActionController::Base.helpers.stylesheet_path('lazy_bundles/cropper.css') } }
   .modal-dialog
     .modal-content
       .modal-header

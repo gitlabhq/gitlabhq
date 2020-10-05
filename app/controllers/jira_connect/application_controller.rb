@@ -7,6 +7,8 @@ class JiraConnect::ApplicationController < ApplicationController
   skip_before_action :verify_authenticity_token
   before_action :verify_atlassian_jwt!
 
+  feature_category :integrations
+
   attr_reader :current_jira_installation
 
   private

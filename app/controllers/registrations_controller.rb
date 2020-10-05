@@ -15,6 +15,8 @@ class RegistrationsController < Devise::RegistrationsController
     if: -> { action_name == 'create' && Gitlab::CurrentSettings.current_application_settings.enforce_terms? }
   before_action :load_recaptcha, only: :new
 
+  feature_category :authentication_and_authorization
+
   def new
     if experiment_enabled?(:signup_flow)
       track_experiment_event(:terms_opt_in, 'start')

@@ -23,24 +23,24 @@ RSpec.describe API::PypiPackages do
       using RSpec::Parameterized::TableSyntax
 
       where(:project_visibility_level, :user_role, :member, :user_token, :shared_examples_name, :expected_status) do
-        'PUBLIC'  | :developer  | true  | true  | 'PyPi package versions' | :success
-        'PUBLIC'  | :guest      | true  | true  | 'PyPi package versions' | :success
-        'PUBLIC'  | :developer  | true  | false | 'PyPi package versions' | :success
-        'PUBLIC'  | :guest      | true  | false | 'PyPi package versions' | :success
-        'PUBLIC'  | :developer  | false | true  | 'PyPi package versions' | :success
-        'PUBLIC'  | :guest      | false | true  | 'PyPi package versions' | :success
-        'PUBLIC'  | :developer  | false | false | 'PyPi package versions' | :success
-        'PUBLIC'  | :guest      | false | false | 'PyPi package versions' | :success
-        'PUBLIC'  | :anonymous  | false | true  | 'PyPi package versions' | :success
-        'PRIVATE' | :developer  | true  | true  | 'PyPi package versions' | :success
-        'PRIVATE' | :guest      | true  | true  | 'process PyPi api request' | :forbidden
-        'PRIVATE' | :developer  | true  | false | 'process PyPi api request' | :unauthorized
-        'PRIVATE' | :guest      | true  | false | 'process PyPi api request' | :unauthorized
-        'PRIVATE' | :developer  | false | true  | 'process PyPi api request' | :not_found
-        'PRIVATE' | :guest      | false | true  | 'process PyPi api request' | :not_found
-        'PRIVATE' | :developer  | false | false | 'process PyPi api request' | :unauthorized
-        'PRIVATE' | :guest      | false | false | 'process PyPi api request' | :unauthorized
-        'PRIVATE' | :anonymous  | false | true  | 'process PyPi api request' | :unauthorized
+        'PUBLIC'  | :developer  | true  | true  | 'PyPI package versions' | :success
+        'PUBLIC'  | :guest      | true  | true  | 'PyPI package versions' | :success
+        'PUBLIC'  | :developer  | true  | false | 'PyPI package versions' | :success
+        'PUBLIC'  | :guest      | true  | false | 'PyPI package versions' | :success
+        'PUBLIC'  | :developer  | false | true  | 'PyPI package versions' | :success
+        'PUBLIC'  | :guest      | false | true  | 'PyPI package versions' | :success
+        'PUBLIC'  | :developer  | false | false | 'PyPI package versions' | :success
+        'PUBLIC'  | :guest      | false | false | 'PyPI package versions' | :success
+        'PUBLIC'  | :anonymous  | false | true  | 'PyPI package versions' | :success
+        'PRIVATE' | :developer  | true  | true  | 'PyPI package versions' | :success
+        'PRIVATE' | :guest      | true  | true  | 'process PyPI api request' | :forbidden
+        'PRIVATE' | :developer  | true  | false | 'process PyPI api request' | :unauthorized
+        'PRIVATE' | :guest      | true  | false | 'process PyPI api request' | :unauthorized
+        'PRIVATE' | :developer  | false | true  | 'process PyPI api request' | :not_found
+        'PRIVATE' | :guest      | false | true  | 'process PyPI api request' | :not_found
+        'PRIVATE' | :developer  | false | false | 'process PyPI api request' | :unauthorized
+        'PRIVATE' | :guest      | false | false | 'process PyPI api request' | :unauthorized
+        'PRIVATE' | :anonymous  | false | true  | 'process PyPI api request' | :unauthorized
       end
 
       with_them do
@@ -76,24 +76,24 @@ RSpec.describe API::PypiPackages do
       using RSpec::Parameterized::TableSyntax
 
       where(:project_visibility_level, :user_role, :member, :user_token, :shared_examples_name, :expected_status) do
-        'PUBLIC'  | :developer  | true  | true  | 'process PyPi api request' | :success
-        'PUBLIC'  | :guest      | true  | true  | 'process PyPi api request' | :forbidden
-        'PUBLIC'  | :developer  | true  | false | 'process PyPi api request' | :unauthorized
-        'PUBLIC'  | :guest      | true  | false | 'process PyPi api request' | :unauthorized
-        'PUBLIC'  | :developer  | false | true  | 'process PyPi api request' | :forbidden
-        'PUBLIC'  | :guest      | false | true  | 'process PyPi api request' | :forbidden
-        'PUBLIC'  | :developer  | false | false | 'process PyPi api request' | :unauthorized
-        'PUBLIC'  | :guest      | false | false | 'process PyPi api request' | :unauthorized
-        'PUBLIC'  | :anonymous  | false | true  | 'process PyPi api request' | :unauthorized
-        'PRIVATE' | :developer  | true  | true  | 'process PyPi api request' | :success
-        'PRIVATE' | :guest      | true  | true  | 'process PyPi api request' | :forbidden
-        'PRIVATE' | :developer  | true  | false | 'process PyPi api request' | :unauthorized
-        'PRIVATE' | :guest      | true  | false | 'process PyPi api request' | :unauthorized
-        'PRIVATE' | :developer  | false | true  | 'process PyPi api request' | :not_found
-        'PRIVATE' | :guest      | false | true  | 'process PyPi api request' | :not_found
-        'PRIVATE' | :developer  | false | false | 'process PyPi api request' | :unauthorized
-        'PRIVATE' | :guest      | false | false | 'process PyPi api request' | :unauthorized
-        'PRIVATE' | :anonymous  | false | true  | 'process PyPi api request' | :unauthorized
+        'PUBLIC'  | :developer  | true  | true  | 'process PyPI api request' | :success
+        'PUBLIC'  | :guest      | true  | true  | 'process PyPI api request' | :forbidden
+        'PUBLIC'  | :developer  | true  | false | 'process PyPI api request' | :unauthorized
+        'PUBLIC'  | :guest      | true  | false | 'process PyPI api request' | :unauthorized
+        'PUBLIC'  | :developer  | false | true  | 'process PyPI api request' | :forbidden
+        'PUBLIC'  | :guest      | false | true  | 'process PyPI api request' | :forbidden
+        'PUBLIC'  | :developer  | false | false | 'process PyPI api request' | :unauthorized
+        'PUBLIC'  | :guest      | false | false | 'process PyPI api request' | :unauthorized
+        'PUBLIC'  | :anonymous  | false | true  | 'process PyPI api request' | :unauthorized
+        'PRIVATE' | :developer  | true  | true  | 'process PyPI api request' | :success
+        'PRIVATE' | :guest      | true  | true  | 'process PyPI api request' | :forbidden
+        'PRIVATE' | :developer  | true  | false | 'process PyPI api request' | :unauthorized
+        'PRIVATE' | :guest      | true  | false | 'process PyPI api request' | :unauthorized
+        'PRIVATE' | :developer  | false | true  | 'process PyPI api request' | :not_found
+        'PRIVATE' | :guest      | false | true  | 'process PyPI api request' | :not_found
+        'PRIVATE' | :developer  | false | false | 'process PyPI api request' | :unauthorized
+        'PRIVATE' | :guest      | false | false | 'process PyPI api request' | :unauthorized
+        'PRIVATE' | :anonymous  | false | true  | 'process PyPI api request' | :unauthorized
       end
 
       with_them do
@@ -142,24 +142,24 @@ RSpec.describe API::PypiPackages do
       using RSpec::Parameterized::TableSyntax
 
       where(:project_visibility_level, :user_role, :member, :user_token, :shared_examples_name, :expected_status) do
-        'PUBLIC'  | :developer  | true  | true  | 'PyPi package creation'    | :created
-        'PUBLIC'  | :guest      | true  | true  | 'process PyPi api request' | :forbidden
-        'PUBLIC'  | :developer  | true  | false | 'process PyPi api request' | :unauthorized
-        'PUBLIC'  | :guest      | true  | false | 'process PyPi api request' | :unauthorized
-        'PUBLIC'  | :developer  | false | true  | 'process PyPi api request' | :forbidden
-        'PUBLIC'  | :guest      | false | true  | 'process PyPi api request' | :forbidden
-        'PUBLIC'  | :developer  | false | false | 'process PyPi api request' | :unauthorized
-        'PUBLIC'  | :guest      | false | false | 'process PyPi api request' | :unauthorized
-        'PUBLIC'  | :anonymous  | false | true  | 'process PyPi api request' | :unauthorized
-        'PRIVATE' | :developer  | true  | true  | 'process PyPi api request' | :created
-        'PRIVATE' | :guest      | true  | true  | 'process PyPi api request' | :forbidden
-        'PRIVATE' | :developer  | true  | false | 'process PyPi api request' | :unauthorized
-        'PRIVATE' | :guest      | true  | false | 'process PyPi api request' | :unauthorized
-        'PRIVATE' | :developer  | false | true  | 'process PyPi api request' | :not_found
-        'PRIVATE' | :guest      | false | true  | 'process PyPi api request' | :not_found
-        'PRIVATE' | :developer  | false | false | 'process PyPi api request' | :unauthorized
-        'PRIVATE' | :guest      | false | false | 'process PyPi api request' | :unauthorized
-        'PRIVATE' | :anonymous  | false | true  | 'process PyPi api request' | :unauthorized
+        'PUBLIC'  | :developer  | true  | true  | 'PyPI package creation'    | :created
+        'PUBLIC'  | :guest      | true  | true  | 'process PyPI api request' | :forbidden
+        'PUBLIC'  | :developer  | true  | false | 'process PyPI api request' | :unauthorized
+        'PUBLIC'  | :guest      | true  | false | 'process PyPI api request' | :unauthorized
+        'PUBLIC'  | :developer  | false | true  | 'process PyPI api request' | :forbidden
+        'PUBLIC'  | :guest      | false | true  | 'process PyPI api request' | :forbidden
+        'PUBLIC'  | :developer  | false | false | 'process PyPI api request' | :unauthorized
+        'PUBLIC'  | :guest      | false | false | 'process PyPI api request' | :unauthorized
+        'PUBLIC'  | :anonymous  | false | true  | 'process PyPI api request' | :unauthorized
+        'PRIVATE' | :developer  | true  | true  | 'process PyPI api request' | :created
+        'PRIVATE' | :guest      | true  | true  | 'process PyPI api request' | :forbidden
+        'PRIVATE' | :developer  | true  | false | 'process PyPI api request' | :unauthorized
+        'PRIVATE' | :guest      | true  | false | 'process PyPI api request' | :unauthorized
+        'PRIVATE' | :developer  | false | true  | 'process PyPI api request' | :not_found
+        'PRIVATE' | :guest      | false | true  | 'process PyPI api request' | :not_found
+        'PRIVATE' | :developer  | false | false | 'process PyPI api request' | :unauthorized
+        'PRIVATE' | :guest      | false | false | 'process PyPI api request' | :unauthorized
+        'PRIVATE' | :anonymous  | false | true  | 'process PyPI api request' | :unauthorized
       end
 
       with_them do
@@ -185,7 +185,7 @@ RSpec.describe API::PypiPackages do
         project.update!(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
       end
 
-      it_behaves_like 'process PyPi api request', :developer, :bad_request, true
+      it_behaves_like 'process PyPI api request', :developer, :bad_request, true
     end
 
     context 'with an invalid package' do
@@ -232,24 +232,24 @@ RSpec.describe API::PypiPackages do
       using RSpec::Parameterized::TableSyntax
 
       where(:project_visibility_level, :user_role, :member, :user_token, :shared_examples_name, :expected_status) do
-        'PUBLIC'  | :developer  | true  | true  | 'PyPi package download' | :success
-        'PUBLIC'  | :guest      | true  | true  | 'PyPi package download' | :success
-        'PUBLIC'  | :developer  | true  | false | 'PyPi package download' | :success
-        'PUBLIC'  | :guest      | true  | false | 'PyPi package download' | :success
-        'PUBLIC'  | :developer  | false | true  | 'PyPi package download' | :success
-        'PUBLIC'  | :guest      | false | true  | 'PyPi package download' | :success
-        'PUBLIC'  | :developer  | false | false | 'PyPi package download' | :success
-        'PUBLIC'  | :guest      | false | false | 'PyPi package download' | :success
-        'PUBLIC'  | :anonymous  | false | true  | 'PyPi package download' | :success
-        'PRIVATE' | :developer  | true  | true  | 'PyPi package download' | :success
-        'PRIVATE' | :guest      | true  | true  | 'PyPi package download' | :success
-        'PRIVATE' | :developer  | true  | false | 'PyPi package download' | :success
-        'PRIVATE' | :guest      | true  | false | 'PyPi package download' | :success
-        'PRIVATE' | :developer  | false | true  | 'PyPi package download' | :success
-        'PRIVATE' | :guest      | false | true  | 'PyPi package download' | :success
-        'PRIVATE' | :developer  | false | false | 'PyPi package download' | :success
-        'PRIVATE' | :guest      | false | false | 'PyPi package download' | :success
-        'PRIVATE' | :anonymous  | false | true  | 'PyPi package download' | :success
+        'PUBLIC'  | :developer  | true  | true  | 'PyPI package download' | :success
+        'PUBLIC'  | :guest      | true  | true  | 'PyPI package download' | :success
+        'PUBLIC'  | :developer  | true  | false | 'PyPI package download' | :success
+        'PUBLIC'  | :guest      | true  | false | 'PyPI package download' | :success
+        'PUBLIC'  | :developer  | false | true  | 'PyPI package download' | :success
+        'PUBLIC'  | :guest      | false | true  | 'PyPI package download' | :success
+        'PUBLIC'  | :developer  | false | false | 'PyPI package download' | :success
+        'PUBLIC'  | :guest      | false | false | 'PyPI package download' | :success
+        'PUBLIC'  | :anonymous  | false | true  | 'PyPI package download' | :success
+        'PRIVATE' | :developer  | true  | true  | 'PyPI package download' | :success
+        'PRIVATE' | :guest      | true  | true  | 'PyPI package download' | :success
+        'PRIVATE' | :developer  | true  | false | 'PyPI package download' | :success
+        'PRIVATE' | :guest      | true  | false | 'PyPI package download' | :success
+        'PRIVATE' | :developer  | false | true  | 'PyPI package download' | :success
+        'PRIVATE' | :guest      | false | true  | 'PyPI package download' | :success
+        'PRIVATE' | :developer  | false | false | 'PyPI package download' | :success
+        'PRIVATE' | :guest      | false | false | 'PyPI package download' | :success
+        'PRIVATE' | :anonymous  | false | true  | 'PyPI package download' | :success
       end
 
       with_them do

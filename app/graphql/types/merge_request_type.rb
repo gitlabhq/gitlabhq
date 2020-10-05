@@ -152,6 +152,13 @@ module Types
     field :auto_merge_enabled, GraphQL::BOOLEAN_TYPE, null: false,
           description: 'Indicates if auto merge is enabled for the merge request'
 
+    field :approved_by, Types::UserType.connection_type, null: true,
+          description: 'Users who approved the merge request'
+
+    def approved_by
+      object.approved_by_users
+    end
+
     def diff_stats(path: nil)
       stats = Array.wrap(object.diff_stats&.to_a)
 

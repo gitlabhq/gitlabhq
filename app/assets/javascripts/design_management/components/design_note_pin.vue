@@ -17,18 +17,10 @@ export default {
       required: false,
       default: null,
     },
-    repositioning: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
   },
   computed: {
     isNewNote() {
       return this.label === null;
-    },
-    pinStyle() {
-      return this.repositioning ? { ...this.position, cursor: 'move' } : this.position;
     },
     pinLabel() {
       return this.isNewNote
@@ -41,13 +33,13 @@ export default {
 
 <template>
   <button
-    :style="pinStyle"
+    :style="position"
     :aria-label="pinLabel"
     :class="{
-      'btn-transparent comment-indicator': isNewNote,
+      'btn-transparent comment-indicator gl-p-0': isNewNote,
       'js-image-badge badge badge-pill': !isNewNote,
     }"
-    class="design-pin gl-absolute gl-display-flex gl-align-items-center gl-justify-content-center gl-p-0"
+    class="gl-absolute gl-display-flex gl-align-items-center gl-justify-content-center gl-font-lg gl-outline-0!"
     type="button"
     @mousedown="$emit('mousedown', $event)"
     @mouseup="$emit('mouseup', $event)"
