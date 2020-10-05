@@ -5,6 +5,8 @@ class Admin::RunnersController < Admin::ApplicationController
 
   before_action :runner, except: [:index, :tag_list, :runner_setup_scripts]
 
+  feature_category :continuous_integration
+
   def index
     finder = Ci::RunnersFinder.new(current_user: current_user, params: params)
     @runners = finder.execute

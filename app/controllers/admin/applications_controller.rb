@@ -6,6 +6,8 @@ class Admin::ApplicationsController < Admin::ApplicationController
   before_action :set_application, only: [:show, :edit, :update, :destroy]
   before_action :load_scopes, only: [:new, :create, :edit, :update]
 
+  feature_category :authentication_and_authorization
+
   def index
     applications = ApplicationsFinder.new.execute
     @applications = Kaminari.paginate_array(applications).page(params[:page])

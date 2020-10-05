@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Admin::RequestsProfilesController < Admin::ApplicationController
+  feature_category :not_owned
+
   def index
     @profile_token = Gitlab::RequestProfiler.profile_token
     @profiles      = Gitlab::RequestProfiler.all.group_by(&:request_path)

@@ -7,6 +7,8 @@ class Admin::InstanceStatisticsController < Admin::ApplicationController
 
   track_unique_visits :index, target_id: 'i_analytics_instance_statistics'
 
+  feature_category :instance_statistics
+
   def index
   end
 

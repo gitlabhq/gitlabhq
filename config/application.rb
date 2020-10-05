@@ -192,6 +192,7 @@ module Gitlab
     config.assets.precompile << "page_bundles/issues_list.css"
     config.assets.precompile << "page_bundles/jira_connect.css"
     config.assets.precompile << "page_bundles/milestone.css"
+    config.assets.precompile << "page_bundles/pipeline.css"
     config.assets.precompile << "page_bundles/todos.css"
     config.assets.precompile << "page_bundles/xterm.css"
     config.assets.precompile << "lazy_bundles/cropper.css"

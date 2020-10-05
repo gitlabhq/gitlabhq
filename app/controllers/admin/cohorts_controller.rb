@@ -5,6 +5,8 @@ class Admin::CohortsController < Admin::ApplicationController
 
   track_unique_visits :index, target_id: 'i_analytics_cohorts'
 
+  feature_category :instance_statistics
+
   def index
     if Gitlab::CurrentSettings.usage_ping_enabled
       cohorts_results = Rails.cache.fetch('cohorts', expires_in: 1.day) do

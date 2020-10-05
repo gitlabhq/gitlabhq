@@ -3,6 +3,12 @@
 class AutocompleteController < ApplicationController
   skip_before_action :authenticate_user!, only: [:users, :award_emojis, :merge_request_target_branches]
 
+  feature_category :users, [:users, :user]
+  feature_category :projects, [:projects]
+  feature_category :issue_tracking, [:award_emojis]
+  feature_category :code_review, [:merge_request_target_branches]
+  feature_category :continuous_delivery, [:deploy_keys_with_owners]
+
   def users
     group = Autocomplete::GroupFinder
       .new(current_user, project, params)

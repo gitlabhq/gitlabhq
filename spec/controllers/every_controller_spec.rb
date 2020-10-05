@@ -18,7 +18,7 @@ RSpec.describe "Every controller" do
         .select { |route| route[:controller].present? && route[:action].present? }
         .map { |route| [constantize_controller(route[:controller]), route[:action]] }
         .select { |(controller, action)| controller&.include?(ControllerWithFeatureCategory) }
-        .reject { |(controller, action)| controller == Devise::UnlocksController }
+        .reject { |(controller, action)| controller == ApplicationController || controller == Devise::UnlocksController }
     end
 
     let_it_be(:routes_without_category) do
@@ -29,7 +29,7 @@ RSpec.describe "Every controller" do
                                                 'H', 'I', 'J', 'K', 'L',
                                                 'M', 'N', 'O', 'Q', 'R',
                                                 'S', 'T', 'U', 'V', 'W',
-                                                'X', 'Y', 'Z',
+                                                'X', 'Y', 'Z', 'A',
                                                 'Projects::MergeRequestsController')
 
         "#{controller}##{action}"

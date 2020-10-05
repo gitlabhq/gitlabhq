@@ -8,6 +8,8 @@ class Admin::HookLogsController < Admin::ApplicationController
 
   respond_to :html
 
+  feature_category :integrations
+
   def show
   end
 

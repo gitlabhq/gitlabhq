@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Admin::Ci::VariablesController < Admin::ApplicationController
+  feature_category :continuous_integration
+
   def show
     respond_to do |format|
       format.json { render_instance_variables }

@@ -7,6 +7,8 @@ class Admin::SessionsController < ApplicationController
 
   before_action :user_is_admin!
 
+  feature_category :authentication_and_authorization
+
   def new
     if current_user_mode.admin_mode?
       redirect_to redirect_path, notice: _('Admin mode already enabled')

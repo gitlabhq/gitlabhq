@@ -6,6 +6,9 @@ class Admin::ProjectsController < Admin::ApplicationController
   before_action :project, only: [:show, :transfer, :repository_check, :destroy]
   before_action :group, only: [:show, :transfer]
 
+  feature_category :projects, [:index, :show, :transfer, :destroy]
+  feature_category :source_code_management, [:repository_check]
+
   def index
     params[:sort] ||= 'latest_activity_desc'
     @sort = params[:sort]

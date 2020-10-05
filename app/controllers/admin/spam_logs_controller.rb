@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Admin::SpamLogsController < Admin::ApplicationController
+  feature_category :not_owned
+
   # rubocop: disable CodeReuse/ActiveRecord
   def index
     @spam_logs = SpamLog.order(id: :desc).page(params[:page])

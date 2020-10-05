@@ -6,5 +6,6 @@
 - else
   %link{ { rel: 'preload', href: stylesheet_url('application'), as: 'style' }, ActionController::Base.asset_host ? { crossorigin: 'anonymous' } : {} }
 %link{ { rel: 'preload', href: stylesheet_url("highlight/themes/#{user_color_scheme}"), as: 'style' }, ActionController::Base.asset_host ? { crossorigin: 'anonymous' } : {} }
+%link{ { rel: 'preload', href: asset_url("fontawesome-webfont.woff2?v=4.7.0"), as: 'font', type: 'font/woff2' }, ActionController::Base.asset_host ? { crossorigin: 'anonymous' } : {} }
 - if Gitlab::CurrentSettings.snowplow_enabled? && Gitlab::CurrentSettings.snowplow_collector_hostname
   %link{ rel: 'preconnect', href: Gitlab::CurrentSettings.snowplow_collector_hostname, crossorigin: '' }

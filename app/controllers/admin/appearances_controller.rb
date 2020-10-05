@@ -3,6 +3,8 @@
 class Admin::AppearancesController < Admin::ApplicationController
   before_action :set_appearance, except: :create
 
+  feature_category :navigation
+
   def show
   end
 

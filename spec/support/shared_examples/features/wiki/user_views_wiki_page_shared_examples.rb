@@ -137,10 +137,6 @@ RSpec.shared_examples 'User views a wiki page' do
     end
 
     context 'show the diff' do
-      before do
-        skip('Diffing for group wikis will be implemented in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/42610') if wiki.container.is_a?(Group)
-      end
-
       def expect_diff_links(commit)
         diff_path = wiki_page_path(wiki, wiki_page, version_id: commit, action: :diff)
 

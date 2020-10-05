@@ -7,6 +7,8 @@ class Admin::UsersController < Admin::ApplicationController
   before_action :check_impersonation_availability, only: :impersonate
   before_action :ensure_destroy_prerequisites_met, only: [:destroy]
 
+  feature_category :users
+
   def index
     @users = User.filter_items(params[:filter]).order_name_asc
     @users = @users.search_with_secondary_emails(params[:search_query]) if params[:search_query].present?

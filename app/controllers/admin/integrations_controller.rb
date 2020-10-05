@@ -4,6 +4,8 @@ class Admin::IntegrationsController < Admin::ApplicationController
   include IntegrationsActions
   include ServicesHelper
 
+  feature_category :integrations
+
   private
 
   def find_or_initialize_integration(name)

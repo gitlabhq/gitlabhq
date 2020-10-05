@@ -1,0 +1,5 @@
+---
+title: Remove jquery tooltip API call from stop environment button
+merge_request: 44199
+author:
+type: changed

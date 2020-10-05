@@ -5,6 +5,8 @@ class Admin::HooksController < Admin::ApplicationController
 
   before_action :hook_logs, only: :edit
 
+  feature_category :integrations
+
   def index
     @hooks = SystemHook.all
     @hook = SystemHook.new

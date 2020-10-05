@@ -3,6 +3,8 @@
 class Admin::ImpersonationTokensController < Admin::ApplicationController
   before_action :user
 
+  feature_category :authentication_and_authorization
+
   def index
     set_index_vars
   end

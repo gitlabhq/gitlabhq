@@ -4,7 +4,6 @@
  * Used in environments table.
  */
 
-import $ from 'jquery';
 import { GlTooltipDirective, GlButton } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import eventHub from '../event_hub';
@@ -40,7 +39,7 @@ export default {
   },
   methods: {
     onClick() {
-      $(this.$el).tooltip('dispose');
+      this.$root.$emit('bv::hide::tooltip', this.$options.stopEnvironmentTooltipId);
       eventHub.$emit('requestStopEnvironment', this.environment);
     },
     onStopEnvironment(environment) {
@@ -49,11 +48,12 @@ export default {
       }
     },
   },
+  stopEnvironmentTooltipId: 'stop-environment-button-tooltip',
 };
 </script>
 <template>
   <gl-button
-    v-gl-tooltip
+    v-gl-tooltip="{ id: $options.stopEnvironmentTooltipId }"
     :loading="isLoading"
     :title="title"
     :aria-label="title"

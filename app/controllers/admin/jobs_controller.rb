@@ -3,6 +3,8 @@
 class Admin::JobsController < Admin::ApplicationController
   BUILDS_PER_PAGE = 30
 
+  feature_category :continuous_integration
+
   def index
     # We need all builds for tabs counters
     @all_builds = Ci::JobsFinder.new(current_user: current_user).execute

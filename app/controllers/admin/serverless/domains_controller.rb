@@ -4,6 +4,8 @@ class Admin::Serverless::DomainsController < Admin::ApplicationController
   before_action :check_feature_flag
   before_action :domain, only: [:update, :verify, :destroy]
 
+  feature_category :serverless
+
   def index
     @domain = PagesDomain.instance_serverless.first_or_initialize
   end

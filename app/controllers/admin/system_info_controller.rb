@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Admin::SystemInfoController < Admin::ApplicationController
+  feature_category :not_owned
+
   EXCLUDED_MOUNT_OPTIONS = %w[
     nobrowse
     read-only
