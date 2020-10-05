@@ -15956,7 +15956,7 @@
             },
             {
               "name": "packageFileRegistries",
-              "description": "Package file registries of the GeoNode. Available only when feature flag `geo_self_service_framework` is enabled",
+              "description": "Package file registries of the GeoNode",
               "args": [
                 {
                   "name": "ids",

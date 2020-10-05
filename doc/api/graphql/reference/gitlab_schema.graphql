@@ -5709,7 +5709,7 @@ type GeoNode {
   name: String
 
   """
-  Package file registries of the GeoNode. Available only when feature flag `geo_self_service_framework` is enabled
+  Package file registries of the GeoNode
   """
   packageFileRegistries(
     """
